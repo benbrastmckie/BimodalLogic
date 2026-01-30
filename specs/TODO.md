@@ -3,22 +3,22 @@ next_project_number: 778
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-30T01:20:10Z
+  last_assessed: 2026-01-30T02:30:00Z
 task_counts:
-  active: 11
-  completed: 326
-  in_progress: 3
-  not_started: 5
+  active: 9
+  completed: 331
+  in_progress: 2
+  not_started: 4
   abandoned: 23
-  total: 350
+  total: 355
 priority_distribution:
   critical: 0
-  high: 4
+  high: 3
   medium: 4
-  low: 1
+  low: 2
 technical_debt:
   sorry_count: 66
-  axiom_count: 10
+  axiom_count: 0
   build_errors: 0
   status: good
 ---
@@ -26,25 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 776. Refactor Metalogic to zero sorry
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/776_refactor_metalogic_to_zero_sorry/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/776_refactor_metalogic_to_zero_sorry/plans/implementation-001.md)
-- **Summary**: Achieved zero sorry count in Metalogic/FMP by archiving 3 deprecated code paths (SemanticCanonicalFrame, truth_at_implies_semantic_truth, finite_model_property_constructive) to Boneyard/Metalogic_v4/FMP/. The sorry-free semantic_weak_completeness theorem remains as the canonical completeness result.
-
-**Description**: Refactor the metalogic as needed to improve clarity, quality, organization, and most importantly, to remove the following sorries: (1) SemanticCanonicalModel.lean:233 - compositionality field sorry due to mathematical falsity for unbounded durations in finite time domain; (2) SemanticCanonicalModel.lean:695 - "forward truth lemma gap" inside a proof; (3) FiniteModelProperty.lean:233 - "truth bridge" gap in finite_model_property_constructive theorem. If a proof is not needed for an important metalogical result, archive it to Boneyard/ with clear documentation. If a proof is needed, prove the sorry or refactor to remove it. Goal: zero sorry count in Theories/Bimodal/Metalogic/.
-
----
-
-
 
 ## Medium Priority
 
@@ -70,76 +51,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/774_restore_representation_theorem_as_under_development/plans/implementation-001.md)
 
 **Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
-
----
-
-### 772. Refactor Metalogic for sorry-free archive sorried proofs
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/772_refactor_metalogic_sorry_free_archive_sorried_proofs/plans/implementation-001.md)
-- **Summary**: Archived 7 files (17 sorries) from Metalogic/ to Boneyard/Metalogic_v4/. Refactored WeakCompleteness.lean to use sorry-free semantic_weak_completeness. Resolved circular import dependency. Full project build passes with 3 documented architectural sorries remaining.
-
-**Description**: Refactor Bimodal/Metalogic/ to archive all sorried proofs to Boneyard/ for a sorry-free metalogic. Move TaskRelation.lean (5 sorries), CoherentConstruction.lean (8 sorries), TruthLemma.lean (4 sorries), and sorried FMP theorems to Boneyard/. Refactor weak_completeness to use semantic_weak_completeness approach instead of representation_theorem. Preserve all theorem statements and ensure build passes. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/, Examples/).
-
----
-
-### 771. Improve Typst formatting to AMS journal style
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: typst
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Revised**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/771_improve_typst_formatting_ams_journal_style/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/771_improve_typst_formatting_ams_journal_style/plans/implementation-002.md)
-- **Summary**: Upgraded Bimodal Reference Manual from textbook-style boxed theorems to AMS journal style using ctheorems package. Migrated theorem environments to thmplain with proper typography. Converted all diagram colors to grayscale. Document compiles cleanly to 28 pages.
-
-**Description**: Upgrade Typst formatting from textbook-style (boxed theorems) to professional math journal style. Migrate from thmbox package to ctheorems with thmplain for AMS-style plain environments. Remove all visual decoration from theorem environments (no boxes, fills, strokes). Convert diagram colors to grayscale. Match appearance of Annals of Mathematics and AMS journals.
-
----
-
-### 765. Exclude Boneyard and Examples from sorry count metrics
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Researched**: 2026-01-29
-- **Planned**: 2026-01-29
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/plans/implementation-001.md)
-- **Summary**: Implemented sorry count exclusion policy for Boneyard/ and Examples/ directories across /todo and /review commands, updated state-management.md documentation, and synced repository health metrics to reflect accurate count (66 sorries, 'good' status).
-
-**Description**: Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep at todo.md:850, (2) /review command at review.md:132, (3) state-management.md documentation, (4) current metrics in state.json and TODO.md (~72 instead of ~322).
-
----
-
-### 775. Fix WezTerm tab coloring with Claude Code hooks
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/775_fix_wezterm_tab_coloring_with_claude_code_hooks/plans/implementation-001.md)
-- **Summary**: Fixed WezTerm tab coloring by modifying both hook scripts to write OSC 1337 escape sequences directly to the pane's TTY device (obtained via wezterm cli list) instead of stdout, which was being captured by Claude Code.
-
-**Description**: Diagnose and fix WezTerm tab coloring with Claude Code hooks. The hooks are intended to color tabs that need attention (if not already open) and clear the color when switching to that tab. This has not worked and the root cause needs to be identified and fixed.
 
 ---
 

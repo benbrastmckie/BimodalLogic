@@ -11119,6 +11119,51 @@
       "completion_summary": "Implemented WezTerm tab color notification using OSC 1337 SetUserVar escape sequences. Created two hook scripts (wezterm-notify.sh for Stop events, wezterm-clear-status.sh for UserPromptSubmit), registered them in settings.json, and extended wezterm.lua format-tab-title to display amber background on inactive tabs needing attention.",
       "archived": "2026-01-30T01:20:48Z",
       "source": "archival"
+    },
+    {
+      "project_number": 765,
+      "project_name": "exclude_boneyard_examples_from_sorry_count",
+      "status": "completed",
+      "language": "meta",
+      "priority": "medium",
+      "archived": "2026-01-30T02:14:23Z",
+      "completion_summary": "Implemented sorry count exclusion policy for Boneyard/ and Examples/ directories across /todo and /review commands, updated state-management.md documentation, and synced repository health metrics to reflect accurate count (66 sorries, 'good' status)."
+    },
+    {
+      "project_number": 771,
+      "project_name": "improve_typst_formatting_ams_journal_style",
+      "status": "completed",
+      "language": "typst",
+      "priority": "medium",
+      "archived": "2026-01-30T02:14:23Z",
+      "completion_summary": "Upgraded Bimodal Reference Manual from textbook-style boxed theorems to AMS journal style using ctheorems package. Migrated theorem environments to thmplain with proper typography (bold labels, italic theorem bodies, upright definition bodies). Converted all diagram colors to grayscale. Document compiles cleanly to 28 pages."
+    },
+    {
+      "project_number": 772,
+      "project_name": "refactor_metalogic_sorry_free_archive_sorried_proofs",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "archived": "2026-01-30T02:14:23Z",
+      "completion_summary": "Archived 7 files (17 sorries) from Metalogic/ to Boneyard/Metalogic_v4/. Refactored WeakCompleteness.lean to use sorry-free semantic_weak_completeness. Resolved circular import dependency. Full project build passes with 3 documented architectural sorries remaining."
+    },
+    {
+      "project_number": 775,
+      "project_name": "fix_wezterm_tab_coloring_with_claude_code_hooks",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "archived": "2026-01-30T02:14:23Z",
+      "completion_summary": "Fixed WezTerm tab coloring by modifying both hook scripts to write OSC 1337 escape sequences directly to the pane's TTY device (obtained via wezterm cli list) instead of stdout, which was being captured by Claude Code."
+    },
+    {
+      "project_number": 776,
+      "project_name": "refactor_metalogic_to_zero_sorry",
+      "status": "completed",
+      "language": "lean",
+      "priority": "high",
+      "archived": "2026-01-30T02:14:50Z",
+      "completion_summary": "Achieved zero sorry count in Metalogic/FMP by archiving 3 deprecated code paths (SemanticCanonicalFrame, truth_at_implies_semantic_truth, finite_model_property_constructive) to Boneyard/Metalogic_v4/FMP/. The sorry-free semantic_weak_completeness theorem remains as the canonical completeness result."
     }
   ]
 }
