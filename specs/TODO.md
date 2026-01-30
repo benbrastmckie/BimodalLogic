@@ -47,14 +47,16 @@ technical_debt:
 
 ### 779. Document semantic_weak_completeness as canonical sorry-free completeness
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Completed**: 2026-01-30
 - **Research**: [research-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md), [research-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/plans/implementation-002.md)
+- **Summary**: Documented semantic_weak_completeness as canonical sorry-free completeness theorem, archived exploratory SemanticTruthCorrespondence.lean to Boneyard, confirmed architectural gap is unbridgeable.
 
 **Description**: Original goal (sorry-free weak_completeness) is architecturally impossible - the semantic model embedding approach faces the same gap as the forward truth lemma. Revised goal: document that `semantic_weak_completeness` IS the canonical sorry-free completeness theorem, clean up exploratory code, and ensure documentation directs users correctly.
 

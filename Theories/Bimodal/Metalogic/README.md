@@ -158,10 +158,13 @@ The main build has minimal sorries:
 | Location | Count | Limitation |
 |----------|-------|------------|
 | `Completeness/WeakCompleteness.lean` | 1 | Truth bridge (all models -> provable) |
-| `FMP/SemanticTruthCorrespondence.lean` | 2 | Technical correspondence lemmas |
 
 **Resolution**: Use `semantic_weak_completeness` which is **completely sorry-free** and provides
 the main completeness result via a contrapositive approach that avoids these gaps entirely.
+
+The single sorry in `weak_completeness` exists because bridging "valid in ALL models" to
+"provable" requires the forward truth lemma, which is architecturally impossible. The
+`semantic_weak_completeness` theorem uses a contrapositive approach that avoids this gap.
 
 Additional sorries (in `UnderDevelopment/`) are isolated from the main build.
 
