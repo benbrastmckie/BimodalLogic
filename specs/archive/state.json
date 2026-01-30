@@ -11097,6 +11097,17 @@
         "plans/",
         "summaries/"
       ]
+    },
+    {
+      "project_number": 431,
+      "project_name": "wezterm_tab_color_notification",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-30T01:20:48Z",
+      "completion_summary": "Implemented WezTerm tab color notification using OSC 1337 SetUserVar escape sequences. Created two hook scripts (wezterm-notify.sh for Stop events, wezterm-clear-status.sh for UserPromptSubmit), registered them in settings.json, and extended wezterm.lua format-tab-title to display amber background on inactive tabs needing attention.",
+      "archived": "2026-01-30T01:20:48Z",
+      "source": "archival"
     }
   ]
 }

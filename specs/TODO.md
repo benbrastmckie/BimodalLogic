@@ -5,16 +5,16 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-30T01:20:10Z
 task_counts:
-  active: 12
-  completed: 325
+  active: 11
+  completed: 326
   in_progress: 3
   not_started: 5
   abandoned: 23
-  total: 349
+  total: 350
 priority_distribution:
   critical: 0
   high: 4
-  medium: 5
+  medium: 4
   low: 1
 technical_debt:
   sorry_count: 79
@@ -180,23 +180,6 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Empirical testing (research-005.md) confirmed context:fork provides NO context isolation, NO tool restrictions, and NO subprocess isolation - the feature is completely non-functional. Current implementation (direct execution for Lean skills, Task delegation for others) is correct and should remain until context:fork is fixed and re-validated.
-
----
-
-### 431. WezTerm tab color notification for Claude Code input needed
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Priority**: Medium
-- **Language**: general
-- **Research**: [research-001.md](specs/431_wezterm_tab_color_notification/reports/research-001.md), [research-002.md](specs/431_wezterm_tab_color_notification/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/431_wezterm_tab_color_notification/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/431_wezterm_tab_color_notification/summaries/implementation-summary-20260130.md)
-
-**Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
 
 ---
 

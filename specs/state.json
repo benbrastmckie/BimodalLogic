@@ -199,43 +199,6 @@
       ]
     },
     {
-      "project_number": 431,
-      "status": "completed",
-      "project_name": "wezterm_tab_color_notification",
-      "section": "Medium Priority",
-      "language": "general",
-      "priority": "medium",
-      "last_updated": "2026-01-30T01:20:02Z",
-      "session_id": "sess_1769735799_4d7db0",
-      "researched": "2026-01-30T01:15:00Z",
-      "artifacts": [
-        {
-          "path": "specs/431_wezterm_tab_color_notification/reports/research-001.md",
-          "type": "research",
-          "summary": "Initial research on WezTerm user variables, OSC 1337 escape sequences, and Claude Code Notification hooks"
-        },
-        {
-          "path": "specs/431_wezterm_tab_color_notification/reports/research-002.md",
-          "type": "research",
-          "summary": "Extended research on TTS hook compatibility, Stop hook pattern, and implementation recommendations for non-conflicting tab notifications"
-        },
-        {
-          "path": "specs/431_wezterm_tab_color_notification/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for WezTerm tab color notifications using OSC 1337 user variables"
-        },
-        {
-          "path": "specs/431_wezterm_tab_color_notification/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results and testing instructions"
-        }
-      ],
-      "planned": "2026-01-30T01:15:55Z",
-      "started": "2026-01-30T01:16:56Z",
-      "completed": "2026-01-30T01:20:02Z",
-      "completion_summary": "Implemented WezTerm tab color notification using OSC 1337 SetUserVar escape sequences. Created two hook scripts (wezterm-notify.sh for Stop events, wezterm-clear-status.sh for UserPromptSubmit), registered them in settings.json, and extended wezterm.lua format-tab-title to display amber background on inactive tabs needing attention."
-    },
-    {
       "project_number": 672,
       "project_name": "implement_agent_system_upgrade_plan",
       "type": "feature",
