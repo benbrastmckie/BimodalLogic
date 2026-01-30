@@ -6,177 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 784,
-      "project_name": "export_claude_directory_to_markdown",
-      "status": "completed",
-      "language": "meta",
-      "priority": "medium",
-      "created": "2026-01-30T19:58:05Z",
-      "last_updated": "2026-01-30T20:13:15Z",
-      "session_id": "sess_1769803771_5c13bd",
-      "researched": "2026-01-30T20:02:04Z",
-      "artifacts": [
-        {
-          "path": "specs/784_export_claude_directory_to_markdown/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report covering directory structure analysis, file type distribution, exclusion patterns, and implementation recommendations for markdown export"
-        },
-        {
-          "path": "specs/784_export_claude_directory_to_markdown/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for export-to-markdown.sh shell script"
-        },
-        {
-          "path": "specs/784_export_claude_directory_to_markdown/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        },
-        {
-          "path": ".claude/scripts/export-to-markdown.sh",
-          "type": "implementation",
-          "summary": "Shell script for exporting .claude directory to markdown with TOC and code blocks"
-        }
-      ],
-      "planned": "2026-01-30T20:06:17Z",
-      "started": "2026-01-30T20:09:52Z",
-      "completed": "2026-01-30T20:13:15Z",
-      "completion_summary": "Created export-to-markdown.sh script that consolidates the .claude directory into a single markdown file with hierarchical TOC, proper code block wrapping for shell/JSON/YAML files, and header adjustment for nested markdown. Tested on 235 files producing 2.1 MB output.",
-      "claudemd_suggestions": "Added .claude/scripts/export-to-markdown.sh - new utility script for directory export"
-    },
-    {
-      "project_number": 783,
-      "project_name": "compare_branches_identify_restorable_elements",
-      "status": "completed",
-      "language": "general",
-      "priority": "high",
-      "created": "2026-01-30T18:23:53Z",
-      "last_updated": "2026-01-30T18:57:25Z",
-      "session_id": "sess_1769798727_5a06f6",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/783_compare_branches_identify_restorable_elements/reports/research-001.md",
-          "summary": "Branch comparison identifying restorable elements: 8 README files, sorry-free completeness theorem, Soundness modularization"
-        },
-        {
-          "path": "specs/783_compare_branches_identify_restorable_elements/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "4-phase plan: README docs, UnderDevelopment pattern, typst chapter 04, and FMP/SemanticCanonicalModel.lean restoration"
-        },
-        {
-          "path": "specs/783_compare_branches_identify_restorable_elements/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-30T18:44:38Z",
-      "started": "2026-01-30T18:45:47Z",
-      "completed": "2026-01-30T18:57:25Z",
-      "completion_summary": "Restored 7 README files documenting Metalogic architecture, updated typst chapter 04, and restored FMP/SemanticCanonicalModel.lean containing the sorry-free semantic_weak_completeness theorem. All phases executed successfully."
-    },
-    {
-      "project_number": 782,
-      "project_name": "revert_bimodal_metalogic_archival_refactor",
-      "status": "completed",
-      "language": "general",
-      "priority": "high",
-      "created": "2026-01-30T17:40:59Z",
-      "last_updated": "2026-01-30T17:59:30Z",
-      "session_id": "sess_1769795659_3b6732",
-      "researched": "2026-01-30T17:47:11Z",
-      "artifacts": [
-        {
-          "path": "specs/782_revert_bimodal_metalogic_archival_refactor/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with git history timeline, reversion strategy options, and risk assessment"
-        },
-        {
-          "path": "specs/782_revert_bimodal_metalogic_archival_refactor/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for Option A path reversion of Bimodal theory"
-        },
-        {
-          "path": "specs/782_revert_bimodal_metalogic_archival_refactor/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary with detailed list of removed/restored files"
-        }
-      ],
-      "planned": "2026-01-30T17:52:57Z",
-      "started": "2026-01-30T17:54:37Z",
-      "completed": "2026-01-30T17:59:30Z",
-      "completion_summary": "Reverted Bimodal theory to pre-archival state, removing Boneyard directory and restoring original Metalogic structure with 51 lean files. Build verified passing."
-    },
-    {
-      "project_number": 780,
-      "project_name": "improve_bimodal_metalogic_documentation",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-30T06:57:09Z",
-      "last_updated": "2026-01-30T07:29:19Z",
-      "session_id": "sess_1769757765_26a8ca",
-      "researched": "2026-01-30T07:09:04Z",
-      "artifacts": [
-        {
-          "path": "specs/780_improve_bimodal_metalogic_documentation/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research report with 11 README files audited, 8 specific inaccuracies documented, and prioritized recommendations"
-        },
-        {
-          "path": "specs/780_improve_bimodal_metalogic_documentation/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for cleaning Metalogic directory structure and updating 11 README files"
-        },
-        {
-          "path": "specs/780_improve_bimodal_metalogic_documentation/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting all README updates and directory cleanup"
-        }
-      ],
-      "planned": "2026-01-30T07:17:06Z",
-      "started": "2026-01-30T07:23:02Z",
-      "completed": "2026-01-30T07:29:19Z",
-      "completion_summary": "Improved all documentation in Theories/Bimodal/Metalogic/. Deleted misleading Compactness/ directory, updated 10 README files to match actual file structure, removed historical notes and task references."
-    },
-    {
-      "project_number": 779,
-      "project_name": "prove_weak_completeness_sorry_free",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "description": "Prove weak_completeness sorry-free via semantic model embedding. Instead of archiving, bridge the gap between universal validity and semantic validity by: (1) Building a TaskModel from SemanticWorldState construction, (2) Proving truth correspondence in this model, (3) Instantiating the universal valid quantification with this specific model. This avoids the forward truth lemma gap because we're not relating arbitrary models to semantic truth - we're proving properties of ONE specific model constructed to have the desired truth correspondence.",
-      "created": "2026-01-30T02:32:59Z",
-      "last_updated": "2026-01-30T07:42:56Z",
-      "session_id": "sess_1769758668_a2ef7d",
-      "researched": "2026-01-30T07:48:17Z",
-      "artifacts": [
-        {
-          "path": "specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive dependency analysis for archiving WeakCompleteness.lean to achieve zero sorry count in Metalogic"
-        },
-        {
-          "path": "specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-002.md",
-          "type": "research",
-          "summary": "Key finding: gap is bridgeable via semantic model embedding - build TaskModel from SemanticWorldState to prove truth correspondence without forward truth lemma"
-        },
-        {
-          "path": "specs/779_archive_weak_completeness_for_sorry_free_metalogic/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised plan: document semantic_weak_completeness as canonical, clean up exploratory code"
-        },
-        {
-          "path": "specs/779_archive_weak_completeness_for_sorry_free_metalogic/summaries/implementation-summary-v2-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting architectural gap resolution and cleanup"
-        }
-      ],
-      "planned": "2026-01-30T07:36:42Z",
-      "started": "2026-01-30T07:19:50Z",
-      "completed": "2026-01-30T07:42:56Z",
-      "completion_summary": "Documented semantic_weak_completeness as canonical sorry-free completeness theorem, archived exploratory SemanticTruthCorrespondence.lean to Boneyard, confirmed architectural gap is unbridgeable."
-    },
-    {
       "project_number": 778,
       "project_name": "remove_priority_system_from_task_workflow",
       "status": "planned",
@@ -218,44 +47,6 @@
           "summary": "Analysis of architectural gap between universal validity and semantic truth in finite models; documents that sorry is unfixable due to Box semantics quantifying over all histories"
         }
       ]
-    },
-    {
-      "project_number": 774,
-      "project_name": "restore_representation_theorem_as_under_development",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "description": "Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.",
-      "created": "2026-01-30T01:27:04Z",
-      "last_updated": "2026-01-30T02:42:33Z",
-      "session_id": "sess_1769739930_f27b24",
-      "researched": "2026-01-30T02:12:08Z",
-      "artifacts": [
-        {
-          "path": "specs/774_restore_representation_theorem_as_under_development/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of 7 representation theorem files for restoration with import isolation strategy following Algebraic/ pattern"
-        },
-        {
-          "path": "specs/774_restore_representation_theorem_as_under_development/reports/research-002.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of Boneyard content beyond RepresentationTheorem, identifying Decidability infrastructure as high-priority candidate for Under Development restoration"
-        },
-        {
-          "path": "specs/774_restore_representation_theorem_as_under_development/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for restoring RepresentationTheorem and Decidability to UnderDevelopment/ directory"
-        },
-        {
-          "path": "specs/774_restore_representation_theorem_as_under_development/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Restored 15 Lean files from Boneyard to UnderDevelopment/ with namespace updates and import isolation"
-        }
-      ],
-      "planned": "2026-01-30T02:18:30Z",
-      "started": "2026-01-30T02:25:59Z",
-      "completed": "2026-01-30T02:42:33Z",
-      "completion_summary": "Restored RepresentationTheorem (7 files, 17 sorries) and Decidability (8 files, 5 sorries) infrastructure from Boneyard to UnderDevelopment/ directory with updated namespaces, import isolation, and comprehensive documentation."
     },
     {
       "project_number": 619,
@@ -473,9 +264,9 @@
     "total": 334
   },
   "repository_health": {
-    "last_assessed": "2026-01-30T02:15:47Z",
-    "sorry_count": 66,
-    "axiom_count": 0,
+    "last_assessed": "2026-01-30T22:39:38Z",
+    "sorry_count": 196,
+    "axiom_count": 17,
     "build_errors": 0,
     "status": "good"
   }

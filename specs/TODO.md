@@ -3,22 +3,22 @@ next_project_number: 785
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-30T02:30:00Z
+  last_assessed: 2026-01-30T22:39:28Z
 task_counts:
-  active: 8
-  completed: 331
+  active: 9
+  completed: 337
   in_progress: 2
   not_started: 3
   abandoned: 24
-  total: 355
+  total: 361
 priority_distribution:
   critical: 0
-  high: 2
+  high: 3
   medium: 4
   low: 2
 technical_debt:
-  sorry_count: 66
-  axiom_count: 0
+  sorry_count: 196
+  axiom_count: 17
   build_errors: 0
   status: good
 ---
@@ -26,140 +26,6 @@ technical_debt:
 # TODO
 
 ## High Priority
-
-### 783. Compare branches to identify restorable elements from backup
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: general
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/783_compare_branches_identify_restorable_elements/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/783_compare_branches_identify_restorable_elements/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260130.md](specs/783_compare_branches_identify_restorable_elements/summaries/implementation-summary-20260130.md)
-
-**Description**: Compare main branch with backup/pre-revert-782 to identify critical elements worth restoring from the backup. The backup represents the state after tasks 745-781 which progressively archived Metalogic components. Need to diff the branches and identify: (1) bug fixes or improvements that were made during those tasks, (2) documentation improvements, (3) any sorry reductions or proof completions, (4) structural improvements to Metalogic organization. Goal is to cherry-pick valuable changes back to main while avoiding the problematic archival decisions.
-
----
-
-### 782. Revert Bimodal theory to before archival refactor
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: general
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/782_revert_bimodal_metalogic_archival_refactor/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/782_revert_bimodal_metalogic_archival_refactor/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/782_revert_bimodal_metalogic_archival_refactor/summaries/implementation-summary-20260130.md)
-
-**Description**: Revert the Bimodal/ theory to before the archival refactor. The archival was intended to produce a sorry-free proof leading to completeness and compactness, but this has not worked out. Attention shifted to semantic_weak_completeness instead of weak_completeness, which was a mistake. Need to revert Bimodal/ theory code while preserving unrelated changes (like .claude/ modifications). Documentation should also be reverted since there have been mistakes in emphasis there as well.
-
----
-
-### 780. Improve Bimodal Metalogic documentation
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: general
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/780_improve_bimodal_metalogic_documentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/780_improve_bimodal_metalogic_documentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/780_improve_bimodal_metalogic_documentation/summaries/implementation-summary-20260130.md)
-
-**Description**: Systematically improve all documentation in Theories/Bimodal/Metalogic/. Current documentation is not fully accurate or complete: dependency diagrams contain errors (e.g., Compactness was archived but may still appear), and historical notes about changes should be removed to focus on presenting the current implementation directly.
-
----
-
-### 779. Document semantic_weak_completeness as canonical sorry-free completeness
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md), [research-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/plans/implementation-002.md)
-- **Summary**: Documented semantic_weak_completeness as canonical sorry-free completeness theorem, archived exploratory SemanticTruthCorrespondence.lean to Boneyard, confirmed architectural gap is unbridgeable.
-
-**Description**: Original goal (sorry-free weak_completeness) is architecturally impossible - the semantic model embedding approach faces the same gap as the forward truth lemma. Revised goal: document that `semantic_weak_completeness` IS the canonical sorry-free completeness theorem, clean up exploratory code, and ensure documentation directs users correctly.
-
----
-
-## Medium Priority
-
-### 784. Export .claude directory to markdown file
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Started**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Research**: [research-001.md](specs/784_export_claude_directory_to_markdown/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/784_export_claude_directory_to_markdown/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/784_export_claude_directory_to_markdown/summaries/implementation-summary-20260130.md)
-
-**Description**: Export the .claude/ directory contents to a consolidated markdown file for documentation or sharing purposes.
-
----
-
-### 778. Remove priority system from task workflow
-- **Effort**: 4-6 hours
-- **Status**: [PLANNED]
-- **Planned**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-30
-- **Research**: [research-001.md](specs/778_remove_priority_system_from_task_workflow/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/778_remove_priority_system_from_task_workflow/plans/implementation-001.md)
-
-**Description**: Remove the High/Medium/Low priority system from task management workflow. Tasks should be added at the top of a flat ## Tasks section in TODO.md, allowing natural priority sorting (new tasks at top, older tasks sink down). Changes: (1) Update TODO.md structure to use single ## Tasks section under # TODO header instead of priority sections; (2) Update /task command (commands/task.md) to prepend new tasks at top of ## Tasks section and remove priority field assignments; (3) Remove priority field from state.json schema in state-management.md; (4) Update skills that create tasks (skill-lake-repair, skill-learn) to target ## Tasks section instead of priority sections; (5) Update CLAUDE.md to remove priority references from examples and documentation; (6) Remove priority_distribution from TODO.md frontmatter if present. Apply new behavior going forward without migrating existing tasks.
-
----
-
-### 777. Complete weak_completeness architectural sorry
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Research**: [research-001.md](specs/777_complete_weak_completeness_sorry/reports/research-001.md)
-
-**Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
-
----
-
-### 774. Restore representation theorem as Under Development
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-01-30
-- **Priority**: Medium
-- **Language**: lean
-- **Researched**: 2026-01-30
-- **Research**: [research-001.md](specs/774_restore_representation_theorem_as_under_development/reports/research-001.md), [research-002.md](specs/774_restore_representation_theorem_as_under_development/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/774_restore_representation_theorem_as_under_development/plans/implementation-002.md)
-- **Summary**: Restored RepresentationTheorem (7 files, 17 sorries) and Decidability (8 files, 5 sorries) infrastructure from Boneyard to UnderDevelopment/ directory with updated namespaces, import isolation, and comprehensive documentation.
-
-**Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
@@ -196,6 +62,36 @@ technical_debt:
 - **Dependencies**: 398
 
 **Description**: Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.
+
+---
+
+## Medium Priority
+
+### 778. Remove priority system from task workflow
+- **Effort**: 4-6 hours
+- **Status**: [PLANNED]
+- **Planned**: 2026-01-30
+- **Researched**: 2026-01-30
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-30
+- **Research**: [research-001.md](specs/778_remove_priority_system_from_task_workflow/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/778_remove_priority_system_from_task_workflow/plans/implementation-001.md)
+
+**Description**: Remove the High/Medium/Low priority system from task management workflow. Tasks should be added at the top of a flat ## Tasks section in TODO.md, allowing natural priority sorting (new tasks at top, older tasks sink down). Changes: (1) Update TODO.md structure to use single ## Tasks section under # TODO header instead of priority sections; (2) Update /task command (commands/task.md) to prepend new tasks at top of ## Tasks section and remove priority field assignments; (3) Remove priority field from state.json schema in state-management.md; (4) Update skills that create tasks (skill-lake-repair, skill-learn) to target ## Tasks section instead of priority sections; (5) Update CLAUDE.md to remove priority references from examples and documentation; (6) Remove priority_distribution from TODO.md frontmatter if present. Apply new behavior going forward without migrating existing tasks.
+
+---
+
+### 777. Complete weak_completeness architectural sorry
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-30
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/777_complete_weak_completeness_sorry/reports/research-001.md)
+
+**Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
 
 ---
 
