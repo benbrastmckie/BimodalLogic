@@ -149,6 +149,14 @@ This is the main theorem that validates our task relation definition.
 **Note**: The full proof requires detailed case analysis on the signs of d1, d2, and d1+d2.
 The formula propagation arguments depend on MCS closure properties and the
 T-axiom-like properties of temporal operators in MCS.
+
+**DEPRECATED (Task 769)**: This theorem contains 5 sorries for cross-sign duration composition
+cases. These cases are mathematically complex and NOT REQUIRED for the main completeness theorem.
+The sorry-free completeness is provided by `semantic_weak_completeness` in
+`FMP/SemanticCanonicalModel.lean`, which uses a different architecture that avoids this theorem.
+
+This theorem is retained for the `UniversalCanonicalFrame` definition but should not be
+relied upon for new proofs. Use the FMP semantic approach instead.
 -/
 theorem canonical_task_rel_comp (w u v : CanonicalWorld D) (d1 d2 : D)
     (h1 : canonical_task_rel w d1 u) (h2 : canonical_task_rel u d2 v) :

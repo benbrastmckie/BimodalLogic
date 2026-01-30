@@ -236,7 +236,16 @@ phi in family.mcs t <-> truth_at (canonical_model family) (canonical_history fam
 
 The proof uses structural induction on formulas. Each case proves both directions,
 allowing the backward IH to be used in forward direction proofs (particularly imp).
+
+**DEPRECATED (Task 769)**: This theorem contains 4 sorries:
+- Box forward/backward (lines 373, 396): S5-style universal quantification over ALL histories
+- Temporal backward (lines 423, 445): require omega-rule (infinite derivation)
+
+These are architectural limitations. The sorry-free completeness is provided by
+`semantic_weak_completeness` in `FMP/SemanticCanonicalModel.lean`, which uses a
+contrapositive approach that avoids the forward truth lemma.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness from FMP/SemanticCanonicalModel.lean instead
 theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
     phi ∈ family.mcs t ↔ truth_at (canonical_model D family) (canonical_history_family D family) t phi := by
   induction phi generalizing t with
@@ -452,21 +461,30 @@ These are derived from the mutual induction theorem for convenience.
 
 /--
 Truth lemma (forward direction): MCS membership implies truth.
+
+**DEPRECATED (Task 769)**: See `truth_lemma_mutual` for deprecation details.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness from FMP/SemanticCanonicalModel.lean instead
 theorem truth_lemma_forward (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
     phi ∈ family.mcs t → truth_at (canonical_model D family) (canonical_history_family D family) t phi :=
   (truth_lemma_mutual D family t phi).mp
 
 /--
 Truth lemma (backward direction): Truth implies MCS membership.
+
+**DEPRECATED (Task 769)**: See `truth_lemma_mutual` for deprecation details.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness from FMP/SemanticCanonicalModel.lean instead
 theorem truth_lemma_backward (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
     truth_at (canonical_model D family) (canonical_history_family D family) t phi → phi ∈ family.mcs t :=
   (truth_lemma_mutual D family t phi).mpr
 
 /--
 Truth lemma: MCS membership iff semantic truth.
+
+**DEPRECATED (Task 769)**: See `truth_lemma_mutual` for deprecation details.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness from FMP/SemanticCanonicalModel.lean instead
 theorem truth_lemma (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
     phi ∈ family.mcs t ↔ truth_at (canonical_model D family) (canonical_history_family D family) t phi :=
   truth_lemma_mutual D family t phi

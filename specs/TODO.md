@@ -239,7 +239,7 @@ technical_debt:
 
 ## Low Priority
 
-### 768. Create Ctrl-Backslash STT toggle for Claude Code sidebar in neovim
+### 768. Create Ctrl-Quote STT toggle for Claude Code sidebar in neovim
 - **Effort**: 2-3 hours
 - **Status**: [RESEARCHED]
 - **Priority**: Medium
@@ -249,7 +249,7 @@ technical_debt:
 - **Researched**: 2026-01-29
 - **Research**: [research-001.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-001.md), [research-002.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-002.md)
 
-**Description**: Create a `<C-\>` mapping in neovim config at `/home/benjamin/.config/nvim/lua/neotex/config/keymaps.lua` for use within the Claude Code sidebar in neovim (via plugin) to toggle STT. Research the claude-code.nvim plugin online to scan for solutions in GitHub issues or elsewhere.
+**Description**: Create a `<C-'>` mapping in neovim config at `/home/benjamin/.config/nvim/lua/neotex/plugins/ai/claudecode.lua` for use within the Claude Code sidebar terminal mode to toggle STT. Research confirmed `<C-\>` cannot be mapped in terminal mode (reserved by Neovim). Use `<C-'>` as the alternative binding, removing any existing `<C-\>` mappings that don't work.
 
 ---
 

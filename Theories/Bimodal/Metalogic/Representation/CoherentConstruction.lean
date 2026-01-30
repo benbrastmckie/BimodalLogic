@@ -683,7 +683,16 @@ lemma mcs_backward_chain_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsi
 
 /--
 Pairwise coherence of the unified chain construction.
+
+**DEPRECATED (Task 769)**: This lemma contains 8 sorries for cross-origin coherence cases.
+These cases are mathematically complex and NOT REQUIRED for the main completeness theorem.
+The sorry-free completeness is provided by `semantic_weak_completeness` in
+`FMP/SemanticCanonicalModel.lean`, which uses a different architecture.
+
+This lemma is retained for `construct_coherent_family` but should not be relied upon for
+new proofs. Use the FMP semantic approach instead.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness from FMP/SemanticCanonicalModel.lean instead
 lemma mcs_unified_chain_pairwise_coherent (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
     (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)
     (h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma)
@@ -809,7 +818,12 @@ Construct a CoherentIndexedFamily from a root MCS.
 - `h_no_H_bot`: H ⊥ ∉ Gamma (ensures backward temporal extension)
 
 These conditions ensure the MCS is satisfiable in an UNBOUNDED temporal model.
+
+**DEPRECATED (Task 769)**: This definition relies on `mcs_unified_chain_pairwise_coherent`
+which contains 8 sorries. The sorry-free completeness is provided by `semantic_weak_completeness`
+in `FMP/SemanticCanonicalModel.lean`, which uses a different architecture.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness from FMP/SemanticCanonicalModel.lean instead
 noncomputable def construct_coherent_family
     (Gamma : Set Formula) (h_mcs : SetMaximalConsistent Gamma)
     (h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma)

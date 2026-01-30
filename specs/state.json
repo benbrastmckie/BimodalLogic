@@ -46,9 +46,9 @@
       "status": "researched",
       "language": "general",
       "priority": "medium",
-      "description": "Create a <C-\\> mapping in neovim config at /home/benjamin/.config/nvim/lua/neotex/config/keymaps.lua for use within the Claude Code sidebar in neovim (via plugin) to toggle STT. Research the claude-code.nvim plugin online to scan for solutions in GitHub issues or elsewhere.",
+      "description": "Create a <C-'> mapping in neovim config at /home/benjamin/.config/nvim/lua/neotex/plugins/ai/claudecode.lua for use within the Claude Code sidebar terminal mode to toggle STT. Research confirmed <C-\\\\> cannot be mapped in terminal mode (reserved by Neovim). Use <C-'> as the alternative binding, removing any existing <C-\\\\> mappings that don't work.",
       "created": "2026-01-29T23:36:23Z",
-      "last_updated": "2026-01-29T23:59:45Z",
+      "last_updated": "2026-01-30T00:07:08Z",
       "session_id": "sess_1769730854_6e0a42",
       "researched": "2026-01-29T23:59:45Z",
       "artifacts": [
