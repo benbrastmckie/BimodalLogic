@@ -18,35 +18,35 @@ combinatorial - independent of any specific duration type.
 ## Main Results
 
 - `finite_model_property`: If phi is satisfiable, it has a finite model
-- `finite_model_property_constructive`: Constructive FMP with explicit bounds
-- `semanticWorldState_card_bound`: Card ≤ 2^closureSize bound
-
-## Known Limitations
-
-- `finite_model_property_constructive`: Contains a sorry for the truth bridge
-  connecting finite model truth to general `truth_at`. This gap is architectural
-  (not fixable - see Task 750 research) due to Box quantifying over ALL histories.
+- `consistent_implies_satisfiable`: Consistency implies satisfiability
+- `semanticWorldState_card_bound`: Card <= 2^closureSize bound (in SemanticCanonicalModel.lean)
 
 ## Canonical Completeness Result
 
 Use `semantic_weak_completeness` (sorry-free) for all completeness needs:
 ```
 theorem semantic_weak_completeness (phi : Formula) :
-    (∀ w : SemanticWorldState phi, semantic_truth_at_v2 phi w origin phi) → ⊢ phi
+    (forall w : SemanticWorldState phi, semantic_truth_at_v2 phi w origin phi) -> |- phi
 ```
 
-This works via contrapositive (unprovable → countermodel) and avoids the truth bridge entirely.
+This works via contrapositive (unprovable -> countermodel) and avoids the truth bridge entirely.
+
+## Archived Code
+
+The `finite_model_property_constructive` theorem was archived to
+`Boneyard/Metalogic_v4/FMP/FiniteModelPropertyConstructive.lean` because it
+contained a sorry for the truth bridge (architecturally unfixable).
 
 ## Architecture
 
 Uses:
-- `SemanticCanonicalModel` from `Metalogic/FMP/SemanticCanonicalModel.lean`
+- `SemanticWorldState` from `Metalogic/FMP/SemanticCanonicalModel.lean`
 - `FiniteWorldState` from `Metalogic/FMP/FiniteWorldState.lean`
 - `closure`, `closureSize` from `Metalogic/FMP/Closure.lean`
 
 ## References
 
-- Original: `Boneyard/Metalogic_v2/Representation/FiniteModelProperty.lean`
+- Task 776: Refactor Metalogic to zero sorry
 - Blackburn et al., Modal Logic, Chapter 4 (Finite Model Property)
 -/
 

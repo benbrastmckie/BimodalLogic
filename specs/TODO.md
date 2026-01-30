@@ -98,15 +98,17 @@ technical_debt:
 
 ### 765. Exclude Boneyard and Examples from sorry count metrics
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Researched**: 2026-01-29
 - **Planned**: 2026-01-29
+- **Completed**: 2026-01-30
 - **Research**: [research-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/765_exclude_boneyard_examples_from_sorry_count/plans/implementation-001.md)
+- **Summary**: Implemented sorry count exclusion policy for Boneyard/ and Examples/ directories across /todo and /review commands, updated state-management.md documentation, and synced repository health metrics to reflect accurate count (66 sorries, 'good' status).
 
 **Description**: Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep at todo.md:850, (2) /review command at review.md:132, (3) state-management.md documentation, (4) current metrics in state.json and TODO.md (~72 instead of ~322).
 

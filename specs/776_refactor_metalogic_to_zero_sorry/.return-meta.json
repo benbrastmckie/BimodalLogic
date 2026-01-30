@@ -3,9 +3,9 @@
   "started_at": "2026-01-30T00:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_2",
-    "details": "Starting Phase 2: Archive SemanticCanonicalFrame Code",
-    "phases_completed": 1,
+    "stage": "phase_4",
+    "details": "Phases 1-3 complete. Starting Phase 4: Archive FiniteModelProperty Code",
+    "phases_completed": 3,
     "phases_total": 6
   },
   "metadata": {

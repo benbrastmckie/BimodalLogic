@@ -1,7 +1,7 @@
 # Implementation Plan: Task #765
 
 - **Task**: 765 - exclude_boneyard_examples_from_sorry_count
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Priority**: High
 - **Dependencies**: None
