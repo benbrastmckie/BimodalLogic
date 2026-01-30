@@ -29,10 +29,12 @@ technical_debt:
 
 ### 781. Refactor Metalogic to eliminate valid and achieve zero-sorry completeness
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-30
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/781_refactor_metalogic_zero_sorry_completeness/reports/research-001.md)
 
 **Description**: Refactor Metalogic to eliminate `valid` and achieve zero-sorry completeness. Currently, `weak_completeness` has 1 architectural sorry because it bridges `valid φ` (universal quantification over ALL models with arbitrary truth definitions) to provability. The sorry-free `semantic_weak_completeness` works with `SemanticWorldState` but has an incompatible type signature. Two theorems depend on `weak_completeness`: (1) `finite_strong_completeness` at Completeness/FiniteStrongCompleteness.lean:197 uses `weak_completeness (impChain Γ φ) h_valid` where h_valid has type `valid (impChain Γ φ)`, and (2) the finite model property proof at FMP/FiniteModelProperty.lean:113 uses `weak_completeness (Formula.neg φ) h_neg_valid`. Refactoring approach: (1) Redefine `finite_strong_completeness` to work directly with semantic truth conditions instead of `valid`, eliminating the need for `weak_completeness`, (2) Similarly refactor the finite model property proof to avoid `valid`, (3) Archive `WeakCompleteness.lean` to Boneyard once dependencies are removed, (4) Update all documentation and exports. This is complex because it changes public API type signatures and requires proving that semantic truth is sufficient for these theorems. Expected outcome: Metalogic with zero sorries in active code, using only `semantic_weak_completeness` as the canonical completeness result.
 

@@ -10,7 +10,7 @@
 #   TTS_COOLDOWN - Seconds between notifications (default: 10)
 #   TTS_ENABLED - Set to "0" to disable (default: 1)
 
-set -euo pipefail
+set -uo pipefail
 
 # Configuration with defaults
 PIPER_MODEL="${PIPER_MODEL:-$HOME/.local/share/piper/en_US-lessac-medium.onnx}"
@@ -73,7 +73,7 @@ if [[ -n "${WEZTERM_PANE:-}" ]] && command -v wezterm &>/dev/null; then
     if [[ -n "$CURRENT_TAB_ID" ]] && ! [[ "$CURRENT_TAB_ID" == "null" ]]; then
         # Get list of unique tab_ids in the order they appear
         # WezTerm lists panes in tab order, so first occurrence gives us the position
-        UNIQUE_TAB_IDS=$(echo "$ALL_PANES" | jq -r '.[].tab_id' | awk '!seen[$0]++')
+        UNIQUE_TAB_IDS=$(echo "$ALL_PANES" | jq -r '[.[].tab_id] | unique | .[]')
 
         # Find the position (0-indexed) of current tab
         TAB_INDEX=0
@@ -98,22 +98,14 @@ if [[ -z "$MESSAGE" ]]; then
     MESSAGE="Tab"  # Fallback if tab detection failed
 fi
 
-# Speak using piper (synchronous, but quick - under 1 second)
-AUDIO_PLAYED=false
+# Speak using piper with paplay (background, tolerant of errors)
 if command -v paplay &>/dev/null; then
-    # paplay available (PulseAudio)
-    TEMP_WAV="/tmp/claude-tts-$RANDOM.wav"
-    if echo "$MESSAGE" | piper --model "$PIPER_MODEL" --output_file "$TEMP_WAV" 2>/dev/null; then
-        if paplay "$TEMP_WAV" 2>/dev/null; then
-            AUDIO_PLAYED=true
-        fi
-    fi
-    rm -f "$TEMP_WAV"
+    # paplay available (PulseAudio) - need to write to temp file first
+    TEMP_WAV="/tmp/claude-tts-$$.wav"
+    (timeout 10s bash -c "echo '$MESSAGE' | piper --model '$PIPER_MODEL' --output_file '$TEMP_WAV' 2>/dev/null && paplay '$TEMP_WAV' 2>/dev/null; rm -f '$TEMP_WAV'" &) || true
 elif command -v aplay &>/dev/null; then
     # aplay available (ALSA)
-    if echo "$MESSAGE" | piper --model "$PIPER_MODEL" --output_file - 2>/dev/null | aplay -q 2>/dev/null; then
-        AUDIO_PLAYED=true
-    fi
+    (timeout 10s bash -c "echo '$MESSAGE' | piper --model '$PIPER_MODEL' --output_file - 2>/dev/null | aplay -q 2>/dev/null" &) || true
 else
     log "No audio player found (aplay or paplay) - skipping TTS notification"
     exit_success
@@ -122,10 +114,6 @@ fi
 # Update cooldown timestamp
 date +%s > "$LAST_NOTIFY_FILE"
 
-if $AUDIO_PLAYED; then
-    log "Notification sent: $MESSAGE"
-else
-    log "Audio playback failed for: $MESSAGE"
-fi
+log "Notification sent: $MESSAGE"
 
 exit_success
