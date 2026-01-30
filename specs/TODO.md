@@ -45,20 +45,18 @@ technical_debt:
 
 ---
 
-### 779. Prove weak_completeness sorry-free via semantic model embedding
-- **Effort**: 8-12 hours
-- **Status**: [BLOCKED]
+### 779. Document semantic_weak_completeness as canonical sorry-free completeness
+- **Effort**: 2 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
-- **Blocked**: Architectural gap - assignment-based truth differs from recursive truth for non-MCS-derived world states
 - **Research**: [research-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md), [research-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/summaries/implementation-summary-20260130.md)
+- **Plan**: [implementation-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/plans/implementation-002.md)
 
-**Description**: Prove weak_completeness sorry-free via semantic model embedding. Instead of archiving, bridge the gap between universal validity and semantic validity by: (1) Building a TaskModel from SemanticWorldState construction, (2) Proving truth correspondence in this model, (3) Instantiating the universal valid quantification with this specific model. This avoids the forward truth lemma gap because we're not relating arbitrary models to semantic truth - we're proving properties of ONE specific model constructed to have the desired truth correspondence.
+**Description**: Original goal (sorry-free weak_completeness) is architecturally impossible - the semantic model embedding approach faces the same gap as the forward truth lemma. Revised goal: document that `semantic_weak_completeness` IS the canonical sorry-free completeness theorem, clean up exploratory code, and ensure documentation directs users correctly.
 
 ---
 

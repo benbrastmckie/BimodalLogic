@@ -10,6 +10,7 @@ The metalogic proves the fundamental metatheoretic results for TM bimodal logic:
 2. **Representation**: Consistent formulas have canonical models
 3. **Completeness**: Every valid formula is derivable (uses Representation)
 4. **Finite Model Property**: Satisfiable formulas have finite models
+5. **Algebraic**: Alternative approach via Lindenbaum quotient and ultrafilter-MCS bijection
 
 ## Main Results
 
