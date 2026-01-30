@@ -8,13 +8,21 @@
     {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-01-30T02:17:31Z",
-      "session_id": "sess_1769739438_c1504f"
+      "last_updated": "2026-01-30T02:20:25Z",
+      "session_id": "sess_1769739438_c1504f",
+      "researched": "2026-01-30T02:20:25Z",
+      "artifacts": [
+        {
+          "path": "specs/777_complete_weak_completeness_sorry/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of architectural gap between universal validity and semantic truth in finite models; documents that sorry is unfixable due to Box semantics quantifying over all histories"
+        }
+      ]
     },
     {
       "project_number": 774,
