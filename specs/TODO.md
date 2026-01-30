@@ -40,16 +40,16 @@ technical_debt:
 
 ---
 
-### 779. Archive weak_completeness for sorry-free Metalogic
-- **Effort**: 2 hours
+### 779. Prove weak_completeness sorry-free via semantic model embedding
+- **Effort**: 8-12 hours
 - **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
-- **Research**: [research-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md)
+- **Research**: [research-001.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md), [research-002.md](specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-002.md)
 
-**Description**: Archive weak_completeness theorem to achieve sorry-free Metalogic. Move Completeness/WeakCompleteness.lean (containing the architecturally unfixable sorry) to Boneyard/Metalogic_v5/Completeness/ with clear README explaining: (1) why archived (architectural sorry - forward truth lemma gap), (2) what to use instead (semantic_weak_completeness from FMP/SemanticCanonicalModel.lean), (3) mathematical reason it cannot be fixed (Box semantics quantifies over ALL histories, finite models only capture ONE state). Update Completeness/Completeness.lean to remove WeakCompleteness import. Verify finite_strong_completeness builds without weak_completeness dependency or archive it too if needed. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/).
+**Description**: Prove weak_completeness sorry-free via semantic model embedding. Instead of archiving, bridge the gap between universal validity and semantic validity by: (1) Building a TaskModel from SemanticWorldState construction, (2) Proving truth correspondence in this model, (3) Instantiating the universal valid quantification with this specific model. This avoids the forward truth lemma gap because we're not relating arbitrary models to semantic truth - we're proving properties of ONE specific model constructed to have the desired truth correspondence.
 
 ---
 
