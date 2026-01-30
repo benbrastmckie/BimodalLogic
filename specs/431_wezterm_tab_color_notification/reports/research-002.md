@@ -121,7 +121,7 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
 end)
 ```
 
-**Proposed Extension**:
+**Proposed Extension** (Hybrid Approach):
 ```lua
 wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_width)
   local edge_background = '#1a1a1a'
@@ -129,18 +129,15 @@ wezterm.on('format-tab-title', function(tab, tabs, panes, config, hover, max_wid
   local foreground = tab.is_active and '#d0d0d0' or '#808080'
 
   -- Check for Claude Code notification status
+  -- Only show notification color on INACTIVE tabs (instant visual feedback)
   local claude_status = tab.active_pane.user_vars.CLAUDE_STATUS
-  if claude_status == 'needs_input' then
+  if claude_status == 'needs_input' and not tab.is_active then
     -- Amber/yellow for inactive tab needing attention
-    if not tab.is_active then
-      background = '#e5b566'  -- Amber from user's color scheme
-      foreground = '#151515'  -- Dark text for contrast
-    else
-      -- Active tab still shows notification with subtle indicator
-      background = '#6c5333'  -- Darker amber for active tab
-      foreground = '#e5b566'  -- Amber text
-    end
+    background = '#e5b566'  -- Amber from user's color scheme
+    foreground = '#151515'  -- Dark text for contrast
   end
+  -- Note: When you switch to the tab, color disappears instantly
+  -- The user variable persists until cleared by UserPromptSubmit hook
 
   local title = tostring(tab.tab_index + 1)
   local separator = tab.tab_index < #tabs - 1 and '|' or ''
@@ -176,10 +173,31 @@ The TTS and WezTerm tab notifications operate on completely different channels:
 
 ### 6. Clearing Tab Notification
 
-The tab color persists until the user variable is cleared. Options for clearing:
+The tab color persists until the user variable is cleared. Multiple clearing strategies can be combined for optimal UX.
 
-**Option A: SessionStart Hook** (Recommended)
-When Claude resumes interaction, clear the status:
+**Hybrid Approach** (RECOMMENDED)
+
+Combine instant visual clearing with persistent state management:
+
+1. **Visual-Only Clearing (Instant)**: Configure `format-tab-title` to only show notification colors on inactive tabs
+   - When you switch to a notifying tab → Color disappears instantly (tab becomes active)
+   - User variable persists, but visual indicator is hidden
+   - No hook execution needed, zero latency
+
+2. **State Clearing (Persistent)**: Use UserPromptSubmit hook to clear the user variable when you respond
+   - Prevents color from reappearing if you switch away and back to the tab
+   - Hooks execute after you've acknowledged and responded to Claude
+
+**Benefits**:
+- **Instant feedback**: Color disappears the moment you switch to the tab
+- **No false positives**: Color doesn't reappear after you've responded
+- **Minimal overhead**: Visual clearing has zero latency, state clearing only on user action
+- **Simple logic**: One check (`and not tab.is_active`) in Lua, one hook for clearing
+
+**Alternative Options**
+
+**Option A: SessionStart Hook**
+Clear when Claude resumes interaction:
 ```json
 {
   "hooks": {
@@ -198,8 +216,8 @@ When Claude resumes interaction, clear the status:
 }
 ```
 
-**Option B: UserPromptSubmit Hook**
-Clear when user submits a new prompt:
+**Option B: UserPromptSubmit Hook Only**
+Clear when user submits a new prompt (used in hybrid approach):
 ```json
 {
   "hooks": {
@@ -218,9 +236,10 @@ Clear when user submits a new prompt:
 ```
 
 **Option C: Fish Shell Prompt Integration**
-Add to fish prompt to clear on each prompt display (most aggressive).
+Add to fish prompt to clear on each prompt display (most aggressive, continuous clearing).
 
-**Recommendation**: Use both SessionStart (for session resume) and UserPromptSubmit (for new prompts) to ensure the status is cleared when user interacts.
+**Option D: Combined SessionStart + UserPromptSubmit**
+Use both hooks to ensure the status is cleared on session resume AND user interaction.
 
 ### 7. Implementation Files Summary
 
@@ -229,8 +248,8 @@ Add to fish prompt to clear on each prompt display (most aggressive).
 2. `.claude/hooks/wezterm-clear-status.sh` - Clears CLAUDE_STATUS user variable
 
 **Modified Files**:
-1. `.claude/settings.json` - Add new hooks to Stop, SessionStart, and UserPromptSubmit
-2. `~/.dotfiles/config/wezterm.lua` - Extend format-tab-title handler
+1. `.claude/settings.json` - Add new hooks to Stop and UserPromptSubmit (hybrid approach)
+2. `~/.dotfiles/config/wezterm.lua` - Extend format-tab-title handler with `and not tab.is_active` condition
 
 **Optional New File**:
 3. `~/.dotfiles/config/config.fish` - Add `__wezterm_set_user_var` function (for potential other uses)
@@ -250,20 +269,21 @@ Add to fish prompt to clear on each prompt display (most aggressive).
    - Clear `CLAUDE_STATUS` via OSC 1337 escape sequence
    - Return `{}` on success
 
-3. **Update .claude/settings.json**:
+3. **Update .claude/settings.json** (Hybrid Approach):
    - Add wezterm-notify.sh to Stop hooks (alongside tts-notify.sh)
-   - Add wezterm-clear-status.sh to SessionStart hooks
-   - Add wezterm-clear-status.sh to UserPromptSubmit hooks
+   - Add wezterm-clear-status.sh to UserPromptSubmit hooks ONLY
+   - Skip SessionStart hook (visual clearing is instant, state clearing on prompt submit is sufficient)
 
-4. **Update wezterm.lua**:
+4. **Update wezterm.lua** (Hybrid Approach):
    - Add CLAUDE_STATUS check to format-tab-title handler
-   - Use amber/yellow colors from existing color scheme for "needs input" state
+   - Include `and not tab.is_active` condition to hide color on active tabs
+   - Use amber/yellow colors from existing color scheme for "needs input" state on inactive tabs only
 
 ### Color Scheme (From User's Palette)
 
-Based on the existing wezterm.lua colors:
+Based on the existing wezterm.lua colors (Hybrid Approach):
 - **Needs Input (Inactive Tab)**: Background `#e5b566` (yellow), Foreground `#151515` (black)
-- **Needs Input (Active Tab)**: Background `#6c5333` (dark amber), Foreground `#e5b566` (yellow)
+- **Needs Input (Active Tab)**: Normal colors (no visual indicator, color disappears when you switch to tab)
 - **Normal Inactive**: Background `#202020`, Foreground `#808080` (unchanged)
 - **Normal Active**: Background `#3a3a3a`, Foreground `#d0d0d0` (unchanged)
 
