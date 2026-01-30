@@ -8,13 +8,21 @@
     {
       "project_number": 771,
       "project_name": "improve_typst_formatting_ams_journal_style",
-      "status": "researching",
+      "status": "researched",
       "language": "typst",
       "priority": "medium",
       "description": "Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.",
       "created": "2026-01-30T00:14:14Z",
-      "last_updated": "2026-01-30T00:15:24Z",
-      "session_id": "sess_1769732112_10e2c7"
+      "last_updated": "2026-01-30T00:17:50Z",
+      "session_id": "sess_1769732112_10e2c7",
+      "researched": "2026-01-30T00:17:50Z",
+      "artifacts": [
+        {
+          "path": "specs/771_improve_typst_formatting_ams_journal_style/reports/research-001.md",
+          "type": "research",
+          "summary": "Identified color usage in 2 diagram files (00-introduction.typ, 04-metalogic.typ) requiring grayscale conversion; template.typ theorem environments already AMS-compliant"
+        }
+      ]
     },
     {
       "project_number": 770,
