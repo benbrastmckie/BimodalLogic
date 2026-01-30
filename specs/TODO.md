@@ -124,17 +124,18 @@ technical_debt:
 ---
 
 ### 771. Improve Typst formatting to AMS journal style
-- **Effort**: 1.5 hours
+- **Effort**: 3 hours
 - **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: typst
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Revised**: 2026-01-30
 - **Research**: [research-001.md](specs/771_improve_typst_formatting_ams_journal_style/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/771_improve_typst_formatting_ams_journal_style/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/771_improve_typst_formatting_ams_journal_style/plans/implementation-002.md)
 
-**Description**: Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.
+**Description**: Upgrade Typst formatting from textbook-style (boxed theorems) to professional math journal style. Migrate from thmbox package to ctheorems with thmplain for AMS-style plain environments. Remove all visual decoration from theorem environments (no boxes, fills, strokes). Convert diagram colors to grayscale. Match appearance of Annals of Mathematics and AMS journals.
 
 ---
 
