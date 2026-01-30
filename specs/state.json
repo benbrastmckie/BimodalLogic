@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 778,
+      "project_name": "remove_priority_system_from_task_workflow",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Remove the High/Medium/Low priority system from task management workflow. Tasks should be added at the top of a flat ## Tasks section in TODO.md, allowing natural priority sorting (new tasks at top, older tasks sink down). Changes: (1) Update TODO.md structure to use single ## Tasks section under # TODO header instead of priority sections; (2) Update /task command (commands/task.md) to prepend new tasks at top of ## Tasks section and remove priority field assignments; (3) Remove priority field from state.json schema in state-management.md; (4) Update skills that create tasks (skill-lake-repair, skill-learn) to target ## Tasks section instead of priority sections; (5) Update CLAUDE.md to remove priority references from examples and documentation; (6) Remove priority_distribution from TODO.md frontmatter if present. Apply new behavior going forward without migrating existing tasks.",
+      "created": "2026-01-30T02:27:18Z",
+      "last_updated": "2026-01-30T02:27:18Z",
+      "session_id": "sess_1769740024_d0fbfb"
+    },
+    {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
       "status": "researched",
@@ -27,13 +37,13 @@
     {
       "project_number": 774,
       "project_name": "restore_representation_theorem_as_under_development",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "description": "Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.",
       "created": "2026-01-30T01:27:04Z",
-      "last_updated": "2026-01-30T02:18:30Z",
-      "session_id": "sess_1769738898_172146",
+      "last_updated": "2026-01-30T02:25:59Z",
+      "session_id": "sess_1769739930_f27b24",
       "researched": "2026-01-30T02:12:08Z",
       "artifacts": [
         {
@@ -52,7 +62,8 @@
           "summary": "6-phase implementation plan for restoring RepresentationTheorem and Decidability to UnderDevelopment/ directory"
         }
       ],
-      "planned": "2026-01-30T02:18:30Z"
+      "planned": "2026-01-30T02:18:30Z",
+      "started": "2026-01-30T02:25:59Z"
     },
     {
       "project_number": 619,
@@ -256,7 +267,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 778,
+  "next_project_number": 779,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
