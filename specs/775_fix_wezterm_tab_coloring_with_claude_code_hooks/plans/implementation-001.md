@@ -1,7 +1,7 @@
 # Implementation Plan: Task #775
 
 - **Task**: 775 - Fix WezTerm tab coloring with Claude Code hooks
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Priority**: Medium
 - **Dependencies**: None
@@ -47,7 +47,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Update wezterm-notify.sh [NOT STARTED]
+### Phase 1: Update wezterm-notify.sh [COMPLETED]
 
 **Goal**: Modify the notification hook to write escape sequences to the pane's TTY instead of stdout
 
@@ -69,7 +69,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Update wezterm-clear-status.sh [NOT STARTED]
+### Phase 2: Update wezterm-clear-status.sh [IN PROGRESS]
 
 **Goal**: Modify the clear hook to write escape sequences to the pane's TTY instead of stdout
 

@@ -1,14 +1,20 @@
 {
-  "status": "researched",
-  "artifacts": [{
-    "path": "specs/776_refactor_metalogic_to_zero_sorry/reports/research-001.md",
-    "type": "research",
-    "summary": "Comprehensive analysis of 3 FMP sorries: 1 mathematical impossibility (compositionality), 2 architectural limitations (truth bridge). Recommends archiving deprecated code to achieve zero-sorry."
-  }],
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/776_refactor_metalogic_to_zero_sorry/plans/implementation-001.md",
+      "summary": "6-phase plan to achieve zero-sorry in Metalogic/ by archiving 3 deprecated code paths to Boneyard"
+    }
+  ],
+  "next_steps": "Run /implement 776 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769737988_5f5595",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1769738299_a6775e",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 3
   }
 }
