@@ -30,7 +30,11 @@ Metalogic/
 ├── Completeness/      # Weak completeness theorem
 └── Algebraic/         # Alternative algebraic approach (sorry-free)
 
-Boneyard/Metalogic_v4/ (Archived - Task 772):
+UnderDevelopment/       # Work-in-progress (isolated from build - Task 774)
+├── RepresentationTheorem/  # Universal canonical model (17 sorries)
+└── Decidability/           # Tableau decision procedure (5 sorries)
+
+Boneyard/Metalogic_v4/ (Historical reference - Task 772):
 ├── TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean
 ├── CanonicalHistory.lean, UniversalCanonicalModel.lean
 ├── InfinitaryStrongCompleteness.lean

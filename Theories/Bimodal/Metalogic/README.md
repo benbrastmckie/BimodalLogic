@@ -75,12 +75,16 @@ Metalogic/
 ├── Compactness/       # Compactness theorem
 │   └── Compactness.lean
 │
-└── Algebraic/         # Alternative algebraic approach
-    ├── LindenbaumQuotient.lean     # Quotient construction via provable equivalence
-    ├── BooleanStructure.lean       # Boolean algebra instance for quotient
-    ├── InteriorOperators.lean      # G/H as interior operators
-    ├── UltrafilterMCS.lean         # Bijection: ultrafilters <-> MCS
-    └── AlgebraicRepresentation.lean # Main representation theorem
+├── Algebraic/         # Alternative algebraic approach
+│   ├── LindenbaumQuotient.lean     # Quotient construction via provable equivalence
+│   ├── BooleanStructure.lean       # Boolean algebra instance for quotient
+│   ├── InteriorOperators.lean      # G/H as interior operators
+│   ├── UltrafilterMCS.lean         # Bijection: ultrafilters <-> MCS
+│   └── AlgebraicRepresentation.lean # Main representation theorem
+│
+└── UnderDevelopment/  # Work-in-progress approaches (NOT in main build)
+    ├── RepresentationTheorem/  # Universal canonical model (17 sorries)
+    └── Decidability/           # Tableau decision procedure (5 sorries)
 ```
 
 ### Dependency Flowchart (GitHub Rendering)
@@ -161,6 +165,7 @@ flowchart TD
 | `FMP/` | Finite model property with 2^n bound | Architectural sorries |
 | `Compactness/` | Compactness theorem | Complete |
 | `Algebraic/` | Alternative algebraic approach | Complete |
+| `UnderDevelopment/` | WIP approaches (isolated from main build) | Research |
 
 ## Known Architectural Limitations (Task 769)
 

@@ -8,13 +8,21 @@
     {
       "project_number": 779,
       "project_name": "archive_weak_completeness_for_sorry_free_metalogic",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Archive weak_completeness theorem to achieve sorry-free Metalogic. Move Completeness/WeakCompleteness.lean (containing the architecturally unfixable sorry) to Boneyard/Metalogic_v5/Completeness/ with clear README explaining: (1) why archived (architectural sorry - forward truth lemma gap), (2) what to use instead (semantic_weak_completeness from FMP/SemanticCanonicalModel.lean), (3) mathematical reason it cannot be fixed (Box semantics quantifies over ALL histories, finite models only capture ONE state). Update Completeness/Completeness.lean to remove WeakCompleteness import. Verify finite_strong_completeness builds without weak_completeness dependency or archive it too if needed. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/).",
       "created": "2026-01-30T02:32:59Z",
-      "last_updated": "2026-01-30T02:35:55Z",
-      "session_id": "sess_1769740541_653f21"
+      "last_updated": "2026-01-30T02:39:51Z",
+      "session_id": "sess_1769740541_653f21",
+      "researched": "2026-01-30T02:39:51Z",
+      "artifacts": [
+        {
+          "path": "specs/779_archive_weak_completeness_for_sorry_free_metalogic/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive dependency analysis for archiving WeakCompleteness.lean to achieve zero sorry count in Metalogic"
+        }
+      ]
     },
     {
       "project_number": 778,
