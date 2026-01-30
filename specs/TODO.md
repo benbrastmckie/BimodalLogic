@@ -31,10 +31,12 @@ technical_debt:
 
 ### 778. Remove priority system from task workflow
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-30
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-30
+- **Research**: [research-001.md](specs/778_remove_priority_system_from_task_workflow/reports/research-001.md)
 
 **Description**: Remove the High/Medium/Low priority system from task management workflow. Tasks should be added at the top of a flat ## Tasks section in TODO.md, allowing natural priority sorting (new tasks at top, older tasks sink down). Changes: (1) Update TODO.md structure to use single ## Tasks section under # TODO header instead of priority sections; (2) Update /task command (commands/task.md) to prepend new tasks at top of ## Tasks section and remove priority field assignments; (3) Remove priority field from state.json schema in state-management.md; (4) Update skills that create tasks (skill-lake-repair, skill-learn) to target ## Tasks section instead of priority sections; (5) Update CLAUDE.md to remove priority references from examples and documentation; (6) Remove priority_distribution from TODO.md frontmatter if present. Apply new behavior going forward without migrating existing tasks.
 
