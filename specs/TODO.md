@@ -29,10 +29,12 @@ technical_debt:
 
 ### 780. Improve Bimodal Metalogic documentation
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: general
 - **Created**: 2026-01-30
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/780_improve_bimodal_metalogic_documentation/reports/research-001.md)
 
 **Description**: Systematically improve all documentation in Theories/Bimodal/Metalogic/. Current documentation is not fully accurate or complete: dependency diagrams contain errors (e.g., Compactness was archived but may still appear), and historical notes about changes should be removed to focus on presenting the current implementation directly.
 
