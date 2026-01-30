@@ -1,5 +1,5 @@
 ---
-next_project_number: 782
+next_project_number: 783
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 782. Revert Bimodal theory to before archival refactor
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: general
+- **Created**: 2026-01-30
+
+**Description**: Revert the Bimodal/ theory to before the archival refactor. The archival was intended to produce a sorry-free proof leading to completeness and compactness, but this has not worked out. Attention shifted to semantic_weak_completeness instead of weak_completeness, which was a mistake. Need to revert Bimodal/ theory code while preserving unrelated changes (like .claude/ modifications). Documentation should also be reverted since there have been mistakes in emphasis there as well.
+
+---
 
 ### 781. Refactor Metalogic to eliminate valid and achieve zero-sorry completeness
 - **Effort**: TBD
