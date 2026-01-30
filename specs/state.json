@@ -8,12 +8,12 @@
     {
       "project_number": 773,
       "project_name": "update_metalogic_typst_documentation",
-      "status": "planned",
+      "status": "completed",
       "language": "typst",
       "priority": "medium",
       "created": "2026-01-30T00:45:34Z",
-      "last_updated": "2026-01-30T01:04:17Z",
-      "session_id": "sess_1769734871_612c83",
+      "last_updated": "2026-01-30T01:14:17Z",
+      "session_id": "sess_1769735303_db8b3b",
       "researched": "2026-01-30T00:49:01Z",
       "artifacts": [
         {
@@ -25,9 +25,17 @@
           "path": "specs/773_update_metalogic_typst_documentation/plans/implementation-001.md",
           "type": "plan",
           "summary": "8-phase implementation plan for updating metalogic Typst documentation to reflect semantic_weak_completeness as primary completeness theorem"
+        },
+        {
+          "path": "specs/773_update_metalogic_typst_documentation/summaries/implementation-summary-20260130.md",
+          "type": "summary",
+          "summary": "Implementation summary with all changes documented"
         }
       ],
-      "planned": "2026-01-30T01:04:17Z"
+      "planned": "2026-01-30T01:04:17Z",
+      "started": "2026-01-30T01:08:40Z",
+      "completed": "2026-01-30T01:14:17Z",
+      "completion_summary": "Updated metalogic Typst documentation to reflect current codebase architecture. Established semantic_weak_completeness as primary completeness theorem, documented 20 deprecated sorries, updated diagrams and status tables."
     },
     {
       "project_number": 772,
@@ -486,13 +494,13 @@
     },
     {
       "project_number": 431,
-      "status": "researched",
+      "status": "planning",
       "project_name": "wezterm_tab_color_notification",
       "section": "Medium Priority",
       "language": "general",
       "priority": "medium",
-      "last_updated": "2026-01-30T01:15:00Z",
-      "session_id": "sess_1769734710_45c447",
+      "last_updated": "2026-01-30T01:13:38Z",
+      "session_id": "sess_1769735603_0578ae",
       "researched": "2026-01-30T01:15:00Z",
       "artifacts": [
         {

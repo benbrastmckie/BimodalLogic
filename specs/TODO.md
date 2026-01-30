@@ -107,15 +107,17 @@ technical_debt:
 
 ### 773. Update metalogic Typst documentation to reflect recent codebase changes
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: typst
 - **Created**: 2026-01-30
 - **Started**: 2026-01-30
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Completed**: 2026-01-30
 - **Research**: [research-001.md](specs/773_update_metalogic_typst_documentation/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/773_update_metalogic_typst_documentation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260130.md](specs/773_update_metalogic_typst_documentation/summaries/implementation-summary-20260130.md)
 
 **Description**: Update Theories/Bimodal/typst/chapters/04-metalogic.typ to reflect recent changes to the metalogic codebase.
 
@@ -268,7 +270,7 @@ technical_debt:
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-01-30
 - **Priority**: Medium
 - **Language**: general
