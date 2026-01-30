@@ -6,38 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 773,
-      "project_name": "update_metalogic_typst_documentation",
-      "status": "completed",
-      "language": "typst",
-      "priority": "medium",
-      "created": "2026-01-30T00:45:34Z",
-      "last_updated": "2026-01-30T01:14:17Z",
-      "session_id": "sess_1769735303_db8b3b",
-      "researched": "2026-01-30T00:49:01Z",
-      "artifacts": [
-        {
-          "path": "specs/773_update_metalogic_typst_documentation/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive comparison of 04-metalogic.typ (502 lines) against recent codebase changes from Tasks 750, 760, 764, 769, 772, identifying 6 sections needing updates and new content to add"
-        },
-        {
-          "path": "specs/773_update_metalogic_typst_documentation/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan for updating metalogic Typst documentation to reflect semantic_weak_completeness as primary completeness theorem"
-        },
-        {
-          "path": "specs/773_update_metalogic_typst_documentation/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary with all changes documented"
-        }
-      ],
-      "planned": "2026-01-30T01:04:17Z",
-      "started": "2026-01-30T01:08:40Z",
-      "completed": "2026-01-30T01:14:17Z",
-      "completion_summary": "Updated metalogic Typst documentation to reflect current codebase architecture. Established semantic_weak_completeness as primary completeness theorem, documented 20 deprecated sorries, updated diagrams and status tables."
-    },
-    {
       "project_number": 772,
       "project_name": "refactor_metalogic_sorry_free_archive_sorried_proofs",
       "status": "implementing",
@@ -89,109 +57,6 @@
       "planned": "2026-01-30T01:05:07Z"
     },
     {
-      "project_number": 770,
-      "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-30T00:04:52Z",
-      "last_updated": "2026-01-30T00:28:02Z",
-      "session_id": "sess_1769732713_8dce94",
-      "researched": "2026-01-30T00:12:26Z",
-      "artifacts": [
-        {
-          "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/reports/research-001.md",
-          "type": "research",
-          "summary": "Identified two bugs in claude-ready-signal.sh (wrong module path and luaeval syntax) plus wrong autocommand event type in terminal-state.lua"
-        },
-        {
-          "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase plan to fix hook script bugs and terminal autocommand event"
-        },
-        {
-          "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification instructions"
-        }
-      ],
-      "planned": "2026-01-30T00:16:41Z",
-      "started": "2026-01-30T00:25:34Z",
-      "completed": "2026-01-30T00:28:02Z",
-      "completion_summary": "Fixed 30-second Claude Code sidebar delay by correcting SessionStart hook script (wrong Lua module path and eval syntax) and adding TextChangedT fallback event in terminal-state.lua."
-    },
-    {
-      "project_number": 769,
-      "project_name": "address_remaining_sorries_bimodal_metalogic",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "description": "Address all remaining sorries in Bimodal/Metalogic/, excluding Examples/ and Boneyard/ directories. Goal is zero sorry count for the Metalogic/ directory.",
-      "created": "2026-01-29T23:46:54Z",
-      "last_updated": "2026-01-30T00:15:47Z",
-      "session_id": "sess_1769731354_57c987",
-      "researched": "2026-01-29T23:51:53Z",
-      "artifacts": [
-        {
-          "path": "specs/769_address_remaining_sorries_bimodal_metalogic/reports/research-001.md",
-          "type": "research",
-          "summary": "Found 20 sorries in Metalogic/: 7 are architectural limitations (impossible), 13 are not required for completeness; semantic_weak_completeness is already sorry-free"
-        },
-        {
-          "path": "specs/769_address_remaining_sorries_bimodal_metalogic/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan to achieve zero sorry count in Metalogic/ by removing unused/impossible sorried code"
-        },
-        {
-          "path": "specs/769_address_remaining_sorries_bimodal_metalogic/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting deprecation of 20 architectural sorries and confirmation that semantic_weak_completeness is sorry-free"
-        }
-      ],
-      "planned": "2026-01-29T23:59:17Z",
-      "started": "2026-01-30T00:02:53Z",
-      "completed": "2026-01-30T00:15:47Z",
-      "completion_summary": "Confirmed main completeness theorem (semantic_weak_completeness) is sorry-free. All 20 sorries in Metalogic/ are documented as architectural limitations with deprecation notices pointing to the sorry-free alternative."
-    },
-    {
-      "project_number": 768,
-      "project_name": "neovim_ctrl_backslash_stt_toggle_claude_code",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "description": "Create a <C-'> mapping in neovim config at /home/benjamin/.config/nvim/lua/neotex/plugins/ai/claudecode.lua for use within the Claude Code sidebar terminal mode to toggle STT. Research confirmed <C-\\\\> cannot be mapped in terminal mode (reserved by Neovim). Use <C-'> as the alternative binding, removing any existing <C-\\\\> mappings that don't work.",
-      "created": "2026-01-29T23:36:23Z",
-      "last_updated": "2026-01-30T00:14:45Z",
-      "session_id": "sess_1769731911_f28c4c",
-      "researched": "2026-01-29T23:59:45Z",
-      "artifacts": [
-        {
-          "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-001.md",
-          "type": "research",
-          "summary": "Initial research finding existing implementation in claudecode.lua"
-        },
-        {
-          "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-002.md",
-          "type": "research",
-          "summary": "Root cause analysis identifying <C-\\> reservation in terminal mode and TermOpen timing issues with 5 solution recommendations"
-        },
-        {
-          "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase implementation plan: update stt/init.lua, remove redundant mapping from claudecode.lua, verify changes"
-        },
-        {
-          "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/summaries/implementation-summary-20260130.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results and key binding table"
-        }
-      ],
-      "planned": "2026-01-30T00:10:32Z",
-      "started": "2026-01-30T00:12:13Z",
-      "completed": "2026-01-30T00:14:45Z",
-      "completion_summary": "Replaced <C-\\> with <C-'> for terminal mode STT toggle, consolidated mapping to stt/init.lua, removed duplicate from claudecode.lua."
-    },
-    {
       "project_number": 767,
       "project_name": "tts_stt_claude_code_keybinding_resolution",
       "status": "not_started",
@@ -200,38 +65,6 @@
       "description": "Comprehensive report documenting TTS/STT integration implementation and Claude Code keybinding resolution: (1) Initial STT plugin implementation with neotex.plugins.tools structure and which-key integration, (2) Bug fixes including module name collision (stt.lua to stt-plugin.lua) and WezTerm tab detection using position instead of tab_id, (3) Keybinding attempts with leader-vv for regular Neovim and Ctrl-backslash for Claude Code compatibility, (4) Research findings on Claude Code keybindings.json limitations and greggh/claude-code.nvim terminal mode requirements, (5) Final solution with buffer-local terminal mode keybinding in TermOpen autocmd for Claude Code sidebar. Documents all implementation attempts, debugging steps, and final working configuration for future reference.",
       "created": "2026-01-29T23:30:14Z",
       "last_updated": "2026-01-29T23:30:14Z"
-    },
-    {
-      "project_number": 766,
-      "project_name": "improve_metalogic_documentation_ordering",
-      "status": "completed",
-      "language": "markdown",
-      "priority": "medium",
-      "created": "2026-01-29T23:10:10Z",
-      "last_updated": "2026-01-29T23:23:01Z",
-      "session_id": "sess_1769728728_14d6ef",
-      "researched": "2026-01-29T23:13:25Z",
-      "artifacts": [
-        {
-          "path": "specs/766_improve_metalogic_documentation_ordering/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report with 5 findings: README ordering issues, dependency layer diagram errors, Algebraic module status, Metalogic.lean missing imports, and Mermaid flowchart design"
-        },
-        {
-          "path": "specs/766_improve_metalogic_documentation_ordering/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase plan covering README reordering, dependency diagram fixes, Algebraic module documentation, Metalogic.lean imports, and Mermaid flowchart creation"
-        },
-        {
-          "path": "specs/766_improve_metalogic_documentation_ordering/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-01-29T23:17:07Z",
-      "started": "2026-01-29T23:19:06Z",
-      "completed": "2026-01-29T23:23:01Z",
-      "completion_summary": "Reordered Metalogic documentation to match dependency structure, fixed dependency diagram (Completeness at Layer 4, FMP/Compactness at Layer 5), updated Algebraic status to sorry-free, added Mermaid flowchart, and added missing imports."
     },
     {
       "project_number": 765,
@@ -257,133 +90,6 @@
         }
       ],
       "planned": "2026-01-29T22:33:59Z"
-    },
-    {
-      "project_number": 764,
-      "project_name": "improve_metalogic_structure_and_documentation",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-29T22:01:58Z",
-      "last_updated": "2026-01-29T23:00:29Z",
-      "session_id": "sess_1769726439_30b286",
-      "researched": "2026-01-29T22:19:37Z",
-      "artifacts": [
-        {
-          "path": "specs/764_improve_metalogic_structure_and_documentation/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research report with dependency graph, sorry analysis, documentation assessment, structural improvements, and phased implementation plan"
-        },
-        {
-          "path": "specs/764_improve_metalogic_structure_and_documentation/reports/research-002.md",
-          "type": "research",
-          "summary": "Follow-up research on Boneyard imports, FMP dependencies, and archival candidates with recovery recommendations"
-        },
-        {
-          "path": "specs/764_improve_metalogic_structure_and_documentation/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "10-phase implementation plan: full Boneyard migration (MCS theory + Soundness proof), FMP fix, and comprehensive README documentation"
-        },
-        {
-          "path": "specs/764_improve_metalogic_structure_and_documentation/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Implementation summary with file changes and verification results"
-        }
-      ],
-      "planned": "2026-01-29T22:33:05Z",
-      "revised": "2026-01-29T22:39:16Z",
-      "started": "2026-01-29T22:41:02Z",
-      "completed": "2026-01-29T23:00:29Z",
-      "completion_summary": "Eliminated all Boneyard dependencies from Metalogic/, migrated MCS theory and soundness proofs (~855 lines), and created comprehensive README documentation for all 7 subdirectories making the codebase self-contained."
-    },
-    {
-      "project_number": 761,
-      "project_name": "tts_stt_integration_for_claude_code_and_neovim",
-      "status": "completed",
-      "language": "general",
-      "priority": "medium",
-      "created": "2026-01-29T20:42:47Z",
-      "last_updated": "2026-01-29T22:43:45Z",
-      "description": "Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).",
-      "session_id": "sess_1769726311_699d27",
-      "researched": "2026-01-29T20:51:38Z",
-      "artifacts": [
-        {
-          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive research on TTS/STT solutions, Claude Code hook integration, WezTerm tab detection, and Neovim Lua patterns"
-        },
-        {
-          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-002.md",
-          "type": "research",
-          "summary": "Supplementary research evaluating 6 Neovim STT plugins, recommending whisper.nvim over custom implementation"
-        },
-        {
-          "path": ".claude/hooks/tts-notify.sh",
-          "type": "implementation",
-          "summary": "TTS notification hook with cooldown and WezTerm tab detection"
-        },
-        {
-          "path": "docs/tts-stt-integration.md",
-          "type": "implementation",
-          "summary": "Setup and usage documentation with troubleshooting"
-        },
-        {
-          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/reports/research-003.md",
-          "type": "research",
-          "summary": "Diagnostic research on STT keybindings not visible - plugin not loaded by lazy.nvim"
-        },
-        {
-          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "3-phase revision plan to fix STT plugin integration - move to neotex structure, register with lazy.nvim, add which-key mappings"
-        },
-        {
-          "path": "specs/761_tts_stt_integration_for_claude_code_and_neovim/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Revision implementation summary with verification checklist"
-        }
-      ],
-      "planned": "2026-01-29T22:34:10Z",
-      "started": "2026-01-29T22:05:13Z",
-      "completed": "2026-01-29T22:43:45Z",
-      "completion_summary": "Restructured STT plugin into neotex.plugins.tools hierarchy with lazy.nvim integration and which-key keybindings. TTS hook was already working - no changes needed."
-    },
-    {
-      "project_number": 760,
-      "project_name": "determine_sorry_disposition_archive_vs_complete",
-      "status": "completed",
-      "language": "lean",
-      "priority": "medium",
-      "created": "2026-01-29T20:26:56Z",
-      "last_updated": "2026-01-29T22:07:35Z",
-      "description": "Use specs/758_audit_and_reduce_metalogic_sorries/plans/implementation-001.md to determine which remaining sorries belong to proofs that should be archived to Bimodal/Boneyard/ and which should be completed in order to provide a sorry-free codebase",
-      "session_id": "sess_1769723685_01e218",
-      "researched": "2026-01-29T20:50:41Z",
-      "artifacts": [
-        {
-          "path": "specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive categorization of 48 sorries into ARCHIVE (25), COMPLETE (12), and KEEP (11) dispositions"
-        },
-        {
-          "path": "specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "7-phase plan to archive 29 sorries (updated after Task 750 completion)"
-        },
-        {
-          "path": "specs/760_determine_sorry_disposition_archive_vs_complete/summaries/implementation-summary-20260129.md",
-          "type": "summary",
-          "summary": "Archives 12 exercise sorries to Boneyard/Examples/, removes 4 dead code sorries from IndexedMCSFamily, documents 13 architectural sorries in place"
-        }
-      ],
-      "planned": "2026-01-29T21:52:57Z",
-      "started": "2026-01-29T21:55:05Z",
-      "completed": "2026-01-29T22:07:35Z",
-      "completion_summary": "Archived 12 exercise sorries from Examples/ to Boneyard/Examples/. Removed 4 dead code sorries from IndexedMCSFamily construct_indexed_family. Documented 8 CoherentConstruction cross-origin sorries and 5 TaskRelation compositionality sorries with Boneyard references. Net reduction of 16 sorries in main codebase.",
-      "roadmap_items": [
-        "Archive sorried code to Boneyard"
-      ]
     },
     {
       "project_number": 619,
@@ -494,13 +200,13 @@
     },
     {
       "project_number": 431,
-      "status": "planned",
+      "status": "completed",
       "project_name": "wezterm_tab_color_notification",
       "section": "Medium Priority",
       "language": "general",
       "priority": "medium",
-      "last_updated": "2026-01-30T01:15:55Z",
-      "session_id": "sess_1769735603_0578ae",
+      "last_updated": "2026-01-30T01:20:02Z",
+      "session_id": "sess_1769735799_4d7db0",
       "researched": "2026-01-30T01:15:00Z",
       "artifacts": [
         {
@@ -519,7 +225,10 @@
           "summary": "5-phase implementation plan for WezTerm tab color notifications using OSC 1337 user variables"
         }
       ],
-      "planned": "2026-01-30T01:15:55Z"
+      "planned": "2026-01-30T01:15:55Z",
+      "started": "2026-01-30T01:16:56Z",
+      "completed": "2026-01-30T01:20:02Z",
+      "completion_summary": "Implemented WezTerm tab color notification using OSC 1337 SetUserVar escape sequences. Created two hook scripts (wezterm-notify.sh for Stop events, wezterm-clear-status.sh for UserPromptSubmit), registered them in settings.json, and extended wezterm.lua format-tab-title to display amber background on inactive tabs needing attention."
     },
     {
       "project_number": 672,
@@ -630,10 +339,10 @@
     "total": 334
   },
   "repository_health": {
-    "last_assessed": "2026-01-29T21:52:39Z",
-    "sorry_count": 314,
+    "last_assessed": "2026-01-30T01:20:04Z",
+    "sorry_count": 79,
     "axiom_count": 10,
     "build_errors": 0,
-    "status": "concerning"
+    "status": "manageable"
   }
 }

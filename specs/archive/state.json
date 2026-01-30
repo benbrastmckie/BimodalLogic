@@ -10994,6 +10994,109 @@
       "claudemd_suggestions": "Modified .claude/skills/skill-lean-implementation/SKILL.md with 3 new code blocks for plan status synchronization",
       "archived": "2026-01-29T21:52:39Z",
       "source": "archival"
+    },
+    {
+      "project_number": 760,
+      "project_name": "determine_sorry_disposition_archive_vs_complete",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "completed": "2026-01-29T22:07:35Z",
+      "completion_summary": "Archived 12 exercise sorries from Examples/ to Boneyard/Examples/. Removed 4 dead code sorries from IndexedMCSFamily construct_indexed_family. Documented 8 CoherentConstruction cross-origin sorries and 5 TaskRelation compositionality sorries with Boneyard references. Net reduction of 16 sorries in main codebase.",
+      "roadmap_items": [
+        "Archive sorried code to Boneyard"
+      ],
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 761,
+      "project_name": "tts_stt_integration_for_claude_code_and_neovim",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-29T22:43:45Z",
+      "completion_summary": "Restructured STT plugin into neotex.plugins.tools hierarchy with lazy.nvim integration and which-key keybindings. TTS hook was already working - no changes needed.",
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 764,
+      "project_name": "improve_metalogic_structure_and_documentation",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-29T23:00:29Z",
+      "completion_summary": "Eliminated all Boneyard dependencies from Metalogic/, migrated MCS theory and soundness proofs (~855 lines), and created comprehensive README documentation for all 7 subdirectories making the codebase self-contained.",
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 766,
+      "project_name": "improve_metalogic_documentation_ordering",
+      "status": "completed",
+      "language": "markdown",
+      "priority": "medium",
+      "completed": "2026-01-29T23:23:01Z",
+      "completion_summary": "Reordered Metalogic documentation to match dependency structure, fixed dependency diagram (Completeness at Layer 4, FMP/Compactness at Layer 5), updated Algebraic status to sorry-free, added Mermaid flowchart, and added missing imports.",
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 768,
+      "project_name": "neovim_ctrl_backslash_stt_toggle_claude_code",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-30T00:14:45Z",
+      "completion_summary": "Replaced <C-\\> with <C-'> for terminal mode STT toggle, consolidated mapping to stt/init.lua, removed duplicate from claudecode.lua.",
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 769,
+      "project_name": "address_remaining_sorries_bimodal_metalogic",
+      "status": "completed",
+      "language": "lean",
+      "priority": "medium",
+      "completed": "2026-01-30T00:15:47Z",
+      "completion_summary": "Confirmed main completeness theorem (semantic_weak_completeness) is sorry-free. All 20 sorries in Metalogic/ are documented as architectural limitations with deprecation notices pointing to the sorry-free alternative.",
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 770,
+      "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
+      "status": "completed",
+      "language": "general",
+      "priority": "medium",
+      "completed": "2026-01-30T00:28:02Z",
+      "completion_summary": "Fixed 30-second Claude Code sidebar delay by correcting SessionStart hook script (wrong Lua module path and eval syntax) and adding TextChangedT fallback event in terminal-state.lua.",
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 773,
+      "project_name": "update_metalogic_typst_documentation",
+      "status": "completed",
+      "language": "typst",
+      "priority": "medium",
+      "completed": "2026-01-30T01:14:17Z",
+      "completion_summary": "Updated metalogic Typst documentation to reflect current codebase architecture. Established semantic_weak_completeness as primary completeness theorem, documented 20 deprecated sorries, updated diagrams and status tables.",
+      "archived": "2026-01-30T01:18:38Z",
+      "source": "archival"
+    },
+    {
+      "project_number": 750,
+      "project_name": "refactor_forward_truth_lemma_remove_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-01-30T01:18:44Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
     }
   ]
 }

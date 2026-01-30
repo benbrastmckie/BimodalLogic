@@ -3,24 +3,24 @@ next_project_number: 774
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-29T21:52:39Z
+  last_assessed: 2026-01-30T01:20:10Z
 task_counts:
-  active: 8
-  completed: 317
+  active: 12
+  completed: 325
   in_progress: 3
   not_started: 5
   abandoned: 23
-  total: 341
+  total: 349
 priority_distribution:
   critical: 0
   high: 4
-  medium: 4
-  low: 5
+  medium: 5
+  low: 1
 technical_debt:
-  sorry_count: 314
+  sorry_count: 79
   axiom_count: 10
   build_errors: 0
-  status: concerning
+  status: manageable
 ---
 
 # TODO
@@ -105,24 +105,6 @@ technical_debt:
 
 ## Medium Priority
 
-### 773. Update metalogic Typst documentation to reflect recent codebase changes
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: typst
-- **Created**: 2026-01-30
-- **Started**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/773_update_metalogic_typst_documentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/773_update_metalogic_typst_documentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/773_update_metalogic_typst_documentation/summaries/implementation-summary-20260130.md)
-
-**Description**: Update Theories/Bimodal/typst/chapters/04-metalogic.typ to reflect recent changes to the metalogic codebase.
-
----
-
 ### 772. Refactor Metalogic for sorry-free archive sorried proofs
 - **Effort**: 3 hours
 - **Status**: [IMPLEMENTING]
@@ -154,41 +136,6 @@ technical_debt:
 
 ---
 
-### 770. Fix Claude Code Neovim sidebar 30-second delay
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Planned**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/summaries/implementation-summary-20260130.md)
-
-**Description**: Claude Code sidebar has 30-second blank delay when opened from Neovim (no delay when opened directly in terminal). Already attempted fix: added claude-ready-signal.sh to SessionStart hooks in .claude/settings.json and verified hook is registered correctly. Despite this, Neovim's terminal-state.lua still waits ~30 seconds before sidebar becomes responsive, suggesting the SessionStart hook either isn't firing or the nvim --remote-expr signal isn't reaching Neovim. Need to debug: 1) whether hook actually executes (check logs), 2) whether $NVIM environment variable is set correctly in hook context, 3) whether nvim --remote-expr call succeeds, 4) whether on_claude_ready() is actually called in Neovim. May need to add debug logging to both claude-ready-signal.sh and terminal-state.lua to trace the signal path.
-
----
-
-### 769. Address remaining sorries in Bimodal/Metalogic
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Researched**: 2026-01-29
-- **Planned**: 2026-01-29
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/769_address_remaining_sorries_bimodal_metalogic/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/769_address_remaining_sorries_bimodal_metalogic/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/769_address_remaining_sorries_bimodal_metalogic/summaries/implementation-summary-20260130.md)
-
-**Description**: Address all remaining sorries in Bimodal/Metalogic/, excluding Examples/ and Boneyard/ directories. Goal is zero sorry count for the Metalogic/ directory.
-
----
-
 ### 765. Exclude Boneyard and Examples from sorry count metrics
 - **Effort**: 1 hour
 - **Status**: [PLANNED]
@@ -205,38 +152,6 @@ technical_debt:
 
 ---
 
-### 760. Determine sorry disposition: archive vs complete
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Revised**: 2026-01-29
-- **Research**: [research-001.md](specs/760_determine_sorry_disposition_archive_vs_complete/reports/research-001.md)
-- **Plan**: [implementation-004.md](specs/760_determine_sorry_disposition_archive_vs_complete/plans/implementation-004.md)
-- **Summary**: [implementation-summary-20260129.md](specs/760_determine_sorry_disposition_archive_vs_complete/summaries/implementation-summary-20260129.md)
-
-**Description**: Archive sorried code to Boneyard (complementing completed Task 750). Targets: Examples/ exercise files (12 sorries), IndexedMCSFamily dead code (4), CoherentConstruction cross-origin (8), TaskRelation compositionality (5). Total: 29 sorries.
-
----
-
-### 750. Refactor forward Truth Lemma to remove sorries and eliminate backward direction
-- **Effort**: 8-10 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-005.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-005.md), [research-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-006.md), [research-008.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-008.md), [research-011.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-011.md), [research-012.md](specs/750_refactor_forward_truth_lemma_remove_sorries/reports/research-012.md)
-- **Plan**: [implementation-006.md](specs/750_refactor_forward_truth_lemma_remove_sorries/plans/implementation-006.md)
-- **Summary**: [implementation-summary-20260129-v2.md](specs/750_refactor_forward_truth_lemma_remove_sorries/summaries/implementation-summary-20260129-v2.md)
-
-**Description**: Archive failed truth lemma approaches (MCSDerivedWorldState, AlgebraicSemanticBridge, HybridCompleteness) to Boneyard/Metalogic_v3/. Document `semantic_weak_completeness` as the canonical sorry-free completeness theorem. Clean historical mentions from primary Metalogic/ source files.
-
----
 
 
 
@@ -270,51 +185,22 @@ technical_debt:
 
 ### 431. WezTerm tab color notification for Claude Code input needed
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Started**: 2026-01-30
+- **Completed**: 2026-01-30
 - **Priority**: Medium
 - **Language**: general
 - **Research**: [research-001.md](specs/431_wezterm_tab_color_notification/reports/research-001.md), [research-002.md](specs/431_wezterm_tab_color_notification/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/431_wezterm_tab_color_notification/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260130.md](specs/431_wezterm_tab_color_notification/summaries/implementation-summary-20260130.md)
 
 **Description**: Set up WezTerm tab color notification when Claude Code needs input. Using Claude Code in neovim via a plugin and WezTerm for the terminal on NixOS (software managed in ~/.dotfiles/). Configure so that when Claude Code completes or needs input, the numbered tab in WezTerm turns a visible color to indicate which tabs need attention.
 
 ---
 
-### 761. Integrate TTS and STT for Claude Code and neovim
-- **Effort**: 4.5 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Summary**: [implementation-summary-20260129.md](specs/761_tts_stt_integration_for_claude_code_and_neovim/summaries/implementation-summary-20260129.md)
-
-**Description**: Integrate TTS and STT capabilities: (1) TTS for Claude Code completion notifications - announce wezterm tab number and brief completion summary after 60-second delay when Claude finishes; (2) STT keymapping in neovim to trigger recording, process speech, and insert text at cursor. Requirements: NixOS-installable, free, fast, small footprint (no local LLM).
-
----
-
 ## Low Priority
-
-### 768. Create Ctrl-Quote STT toggle for Claude Code sidebar in neovim
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Researched**: 2026-01-29
-- **Planned**: 2026-01-30
-- **Completed**: 2026-01-30
-- **Research**: [research-001.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-001.md), [research-002.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260130.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/summaries/implementation-summary-20260130.md)
-
-**Description**: Create a `<C-'>` mapping in neovim config at `/home/benjamin/.config/nvim/lua/neotex/plugins/ai/claudecode.lua` for use within the Claude Code sidebar terminal mode to toggle STT. Research confirmed `<C-\>` cannot be mapped in terminal mode (reserved by Neovim). Use `<C-'>` as the alternative binding, removing any existing `<C-\>` mappings that don't work.
-
----
 
 ### 767. Document TTS/STT integration and Claude Code keybinding resolution
 - **Effort**: 1 hour
@@ -324,36 +210,6 @@ technical_debt:
 - **Created**: 2026-01-29
 
 **Description**: Comprehensive report documenting TTS/STT integration implementation and Claude Code keybinding resolution: (1) Initial STT plugin implementation with neotex.plugins.tools structure and which-key integration, (2) Bug fixes including module name collision (stt.lua to stt-plugin.lua) and WezTerm tab detection using position instead of tab_id, (3) Keybinding attempts with leader-vv for regular Neovim and Ctrl-backslash for Claude Code compatibility, (4) Research findings on Claude Code keybindings.json limitations and greggh/claude-code.nvim terminal mode requirements, (5) Final solution with buffer-local terminal mode keybinding in TermOpen autocmd for Claude Code sidebar. Documents all implementation attempts, debugging steps, and final working configuration for future reference.
-
----
-
-### 766. Improve metalogic documentation ordering and add dependency flowchart
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: markdown
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Research**: [research-001.md](specs/766_improve_metalogic_documentation_ordering/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/766_improve_metalogic_documentation_ordering/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260129.md](specs/766_improve_metalogic_documentation_ordering/summaries/implementation-summary-20260129.md)
-
-**Description**: Improve the order in which the main metalogical results are presented in the documentation for Theories/Bimodal/Metalogic/ to correspond to the dependency structure. For instance, in Theories/Bimodal/Metalogic/README.md line 10, completeness is stated when it follows from representation which is below it. Find and fix all similar issues for improved consistency. Add the Algebraic module (currently in development) to support further results. Add a dependency flowchart for the metalogic as a whole.
-
----
-
-### 764. Improve Bimodal/Metalogic structure and documentation
-- **Effort**: 18-22 hours
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: general
-- **Created**: 2026-01-29
-- **Started**: 2026-01-29
-- **Completed**: 2026-01-29
-- **Summary**: [implementation-summary-20260129.md](specs/764_improve_metalogic_structure_and_documentation/summaries/implementation-summary-20260129.md)
-
-**Description**: Migrate ALL Boneyard dependencies to create self-contained Metalogic/: (1) full MCS theory migration (~500 lines), (2) full Soundness proof migration (~400 lines), (3) FMP/Closure fix, (4) document Algebraic/ as future extension, (5) comprehensive README documentation from deepest to top-level.
 
 ---
 
