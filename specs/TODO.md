@@ -1,5 +1,5 @@
 ---
-next_project_number: 773
+next_project_number: 774
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -104,6 +104,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 773. Update metalogic Typst documentation to reflect recent codebase changes
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: typst
+- **Created**: 2026-01-30
+
+**Description**: Update Theories/Bimodal/typst/chapters/04-metalogic.typ to reflect recent changes to the metalogic codebase.
+
+---
 
 ### 772. Refactor Metalogic for sorry-free archive sorried proofs
 - **Effort**: 3 hours
