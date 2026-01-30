@@ -1,24 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Documentation audit found significant inaccuracies: Compactness/ has README but no Lean files, Representation/ README lists 7 files but only 2 exist, main README has outdated architecture diagram. Historical notes about migrations should be removed.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/780_improve_bimodal_metalogic_documentation/reports/research-001.md",
-      "summary": "Comprehensive research report with 11 README files audited, 8 specific inaccuracies documented, and prioritized recommendations"
+      "type": "plan",
+      "path": "specs/780_improve_bimodal_metalogic_documentation/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for cleaning Metalogic directory structure and updating 11 README files"
     }
   ],
-  "next_steps": "Run /plan 780 to create implementation plan for documentation updates",
+  "next_steps": "Run /implement 780 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769756742_45a3eb",
-    "agent_type": "general-research-agent",
+    "session_id": "sess_1769757250_ca534b",
+    "agent_type": "planner-agent",
     "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 8,
-    "files_audited": 11,
-    "high_priority_issues": 3,
-    "medium_priority_issues": 1,
-    "low_priority_issues": 4
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 4
   }
 }

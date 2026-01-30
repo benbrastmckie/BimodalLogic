@@ -28,13 +28,15 @@ technical_debt:
 ## High Priority
 
 ### 780. Improve Bimodal Metalogic documentation
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Priority**: High
 - **Language**: general
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
+- **Planned**: 2026-01-30
 - **Research**: [research-001.md](specs/780_improve_bimodal_metalogic_documentation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/780_improve_bimodal_metalogic_documentation/plans/implementation-001.md)
 
 **Description**: Systematically improve all documentation in Theories/Bimodal/Metalogic/. Current documentation is not fully accurate or complete: dependency diagrams contain errors (e.g., Compactness was archived but may still appear), and historical notes about changes should be removed to focus on presenting the current implementation directly.
 
@@ -42,7 +44,7 @@ technical_debt:
 
 ### 779. Prove weak_completeness sorry-free via semantic model embedding
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-30
