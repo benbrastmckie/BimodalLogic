@@ -8,12 +8,12 @@
     {
       "project_number": 784,
       "project_name": "export_claude_directory_to_markdown",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-30T19:58:05Z",
-      "last_updated": "2026-01-30T20:06:17Z",
-      "session_id": "sess_1769803433_708f81",
+      "last_updated": "2026-01-30T20:13:15Z",
+      "session_id": "sess_1769803771_5c13bd",
       "researched": "2026-01-30T20:02:04Z",
       "artifacts": [
         {
@@ -25,9 +25,23 @@
           "path": "specs/784_export_claude_directory_to_markdown/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for export-to-markdown.sh shell script"
+        },
+        {
+          "path": "specs/784_export_claude_directory_to_markdown/summaries/implementation-summary-20260130.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        },
+        {
+          "path": ".claude/scripts/export-to-markdown.sh",
+          "type": "implementation",
+          "summary": "Shell script for exporting .claude directory to markdown with TOC and code blocks"
         }
       ],
-      "planned": "2026-01-30T20:06:17Z"
+      "planned": "2026-01-30T20:06:17Z",
+      "started": "2026-01-30T20:09:52Z",
+      "completed": "2026-01-30T20:13:15Z",
+      "completion_summary": "Created export-to-markdown.sh script that consolidates the .claude directory into a single markdown file with hierarchical TOC, proper code block wrapping for shell/JSON/YAML files, and header adjustment for nested markdown. Tested on 235 files producing 2.1 MB output.",
+      "claudemd_suggestions": "Added .claude/scripts/export-to-markdown.sh - new utility script for directory export"
     },
     {
       "project_number": 783,

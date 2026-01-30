@@ -115,7 +115,9 @@ technical_debt:
 
 ### 784. Export .claude directory to markdown file
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
+- **Started**: 2026-01-30
+- **Completed**: 2026-01-30
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-30
@@ -123,6 +125,7 @@ technical_debt:
 - **Planned**: 2026-01-30
 - **Research**: [research-001.md](specs/784_export_claude_directory_to_markdown/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/784_export_claude_directory_to_markdown/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260130.md](specs/784_export_claude_directory_to_markdown/summaries/implementation-summary-20260130.md)
 
 **Description**: Export the .claude/ directory contents to a consolidated markdown file for documentation or sharing purposes.
 
