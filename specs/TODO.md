@@ -1,5 +1,5 @@
 ---
-next_project_number: 774
+next_project_number: 775
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -104,6 +104,16 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 774. Restore representation theorem as Under Development
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+
+**Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
+
+---
 
 ### 772. Refactor Metalogic for sorry-free archive sorried proofs
 - **Effort**: 3 hours

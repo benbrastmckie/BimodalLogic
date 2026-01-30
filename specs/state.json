@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 774,
+      "project_name": "restore_representation_theorem_as_under_development",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.",
+      "created": "2026-01-30T01:27:04Z",
+      "last_updated": "2026-01-30T01:27:04Z"
+    },
+    {
       "project_number": 772,
       "project_name": "refactor_metalogic_sorry_free_archive_sorried_proofs",
       "status": "completed",
@@ -304,7 +314,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 774,
+  "next_project_number": 775,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
