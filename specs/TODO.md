@@ -107,10 +107,13 @@ technical_debt:
 
 ### 773. Update metalogic Typst documentation to reflect recent codebase changes
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: typst
 - **Created**: 2026-01-30
+- **Started**: 2026-01-30
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/773_update_metalogic_typst_documentation/reports/research-001.md)
 
 **Description**: Update Theories/Bimodal/typst/chapters/04-metalogic.typ to reflect recent changes to the metalogic codebase.
 
