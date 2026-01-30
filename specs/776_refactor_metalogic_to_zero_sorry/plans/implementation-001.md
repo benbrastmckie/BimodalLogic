@@ -70,7 +70,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Archive SemanticCanonicalFrame Code [IN PROGRESS]
+### Phase 2: Archive SemanticCanonicalFrame Code [COMPLETED]
 
 **Goal**: Move deprecated frame and model definitions to Boneyard
 
@@ -96,7 +96,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Archive Truth Lemma Gap Code [NOT STARTED]
+### Phase 3: Archive Truth Lemma Gap Code [COMPLETED]
 
 **Goal**: Move truth lemma related theorems that depend on the architectural gap
 
@@ -126,7 +126,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Archive FiniteModelProperty Code [NOT STARTED]
+### Phase 4: Archive FiniteModelProperty Code [IN PROGRESS]
 
 **Goal**: Move the constructive FMP theorem with sorry to Boneyard
 
