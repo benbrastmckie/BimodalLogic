@@ -92,8 +92,28 @@ if [[ -n "${WEZTERM_PANE:-}" ]] && command -v wezterm &>/dev/null; then
     fi
 fi
 
-# Generate message
-MESSAGE="${TAB_LABEL}Claude has finished"
+# Generate message based on Claude's state
+# Check if Claude is waiting for input by looking for the prompt
+NEEDS_INPUT=false
+if [[ -n "${WEZTERM_PANE:-}" ]] && command -v wezterm &>/dev/null; then
+    # Capture last few lines of the pane to check for input prompt
+    PANE_TEXT=$(wezterm cli get-text --pane-id "$WEZTERM_PANE" 2>/dev/null || echo "")
+    if echo "$PANE_TEXT" | tail -5 | grep -qE "(Continue\?|waiting for input|>|\$)"; then
+        NEEDS_INPUT=true
+    fi
+fi
+
+# Set message based on state
+if $NEEDS_INPUT; then
+    # Strip ": " suffix from TAB_LABEL if present
+    TAB_ONLY="${TAB_LABEL%: }"
+    MESSAGE="${TAB_ONLY} needs input"
+else
+    # Strip "Tab " prefix and ": " suffix to just get the number
+    TAB_NUM_ONLY="${TAB_LABEL#Tab }"
+    TAB_NUM_ONLY="${TAB_NUM_ONLY%: }"
+    MESSAGE="$TAB_NUM_ONLY"
+fi
 
 # Speak using piper with aplay
 # Use a subshell with timeout to prevent hanging
