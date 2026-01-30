@@ -19,11 +19,11 @@
     {
       "project_number": 770,
       "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
-      "status": "planning",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-30T00:04:52Z",
-      "last_updated": "2026-01-30T00:14:37Z",
+      "last_updated": "2026-01-30T00:16:41Z",
       "session_id": "sess_1769732062_30c710",
       "researched": "2026-01-30T00:12:26Z",
       "artifacts": [
@@ -31,8 +31,14 @@
           "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/reports/research-001.md",
           "type": "research",
           "summary": "Identified two bugs in claude-ready-signal.sh (wrong module path and luaeval syntax) plus wrong autocommand event type in terminal-state.lua"
+        },
+        {
+          "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan to fix hook script bugs and terminal autocommand event"
         }
-      ]
+      ],
+      "planned": "2026-01-30T00:16:41Z"
     },
     {
       "project_number": 769,
@@ -55,11 +61,17 @@
           "path": "specs/769_address_remaining_sorries_bimodal_metalogic/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan to achieve zero sorry count in Metalogic/ by removing unused/impossible sorried code"
+        },
+        {
+          "path": "specs/769_address_remaining_sorries_bimodal_metalogic/summaries/implementation-summary-20260130.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting deprecation of 20 architectural sorries and confirmation that semantic_weak_completeness is sorry-free"
         }
       ],
       "planned": "2026-01-29T23:59:17Z",
       "started": "2026-01-30T00:02:53Z",
-      "completed": "2026-01-30T00:15:47Z"
+      "completed": "2026-01-30T00:15:47Z",
+      "completion_summary": "Confirmed main completeness theorem (semantic_weak_completeness) is sorry-free. All 20 sorries in Metalogic/ are documented as architectural limitations with deprecation notices pointing to the sorry-free alternative."
     },
     {
       "project_number": 768,

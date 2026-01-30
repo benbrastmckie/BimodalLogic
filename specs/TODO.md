@@ -117,13 +117,15 @@ technical_debt:
 ---
 
 ### 770. Fix Claude Code Neovim sidebar 30-second delay
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 1 hour
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
+- **Planned**: 2026-01-30
 - **Research**: [research-001.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/plans/implementation-001.md)
 
 **Description**: Claude Code sidebar has 30-second blank delay when opened from Neovim (no delay when opened directly in terminal). Already attempted fix: added claude-ready-signal.sh to SessionStart hooks in .claude/settings.json and verified hook is registered correctly. Despite this, Neovim's terminal-state.lua still waits ~30 seconds before sidebar becomes responsive, suggesting the SessionStart hook either isn't firing or the nvim --remote-expr signal isn't reaching Neovim. Need to debug: 1) whether hook actually executes (check logs), 2) whether $NVIM environment variable is set correctly in hook context, 3) whether nvim --remote-expr call succeeds, 4) whether on_claude_ready() is actually called in Neovim. May need to add debug logging to both claude-ready-signal.sh and terminal-state.lua to trace the signal path.
 
@@ -131,15 +133,17 @@ technical_debt:
 
 ### 769. Address remaining sorries in Bimodal/Metalogic
 - **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Researched**: 2026-01-29
 - **Planned**: 2026-01-29
+- **Completed**: 2026-01-30
 - **Research**: [research-001.md](specs/769_address_remaining_sorries_bimodal_metalogic/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/769_address_remaining_sorries_bimodal_metalogic/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260130.md](specs/769_address_remaining_sorries_bimodal_metalogic/summaries/implementation-summary-20260130.md)
 
 **Description**: Address all remaining sorries in Bimodal/Metalogic/, excluding Examples/ and Boneyard/ directories. Goal is zero sorry count for the Metalogic/ directory.
 

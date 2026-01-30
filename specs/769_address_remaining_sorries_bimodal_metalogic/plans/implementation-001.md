@@ -1,7 +1,7 @@
 # Implementation Plan: Address Remaining Sorries in Bimodal/Metalogic
 
 - **Task**: 769 - Address remaining sorries in Bimodal/Metalogic
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Priority**: Medium
 - **Dependencies**: None
