@@ -8,12 +8,12 @@
     {
       "project_number": 773,
       "project_name": "update_metalogic_typst_documentation",
-      "status": "researched",
+      "status": "planning",
       "language": "typst",
       "priority": "medium",
       "created": "2026-01-30T00:45:34Z",
-      "last_updated": "2026-01-30T00:49:01Z",
-      "session_id": "sess_1769733973_ada98a",
+      "last_updated": "2026-01-30T01:01:24Z",
+      "session_id": "sess_1769734871_612c83",
       "researched": "2026-01-30T00:49:01Z",
       "artifacts": [
         {
@@ -26,13 +26,13 @@
     {
       "project_number": 772,
       "project_name": "refactor_metalogic_sorry_free_archive_sorried_proofs",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "description": "Refactor Bimodal/Metalogic/ to archive all sorried proofs to Boneyard/ for a sorry-free metalogic. Move TaskRelation.lean (5 sorries), CoherentConstruction.lean (8 sorries), TruthLemma.lean (4 sorries), and sorried FMP theorems to Boneyard/. Refactor weak_completeness to use semantic_weak_completeness approach instead of representation_theorem. Preserve all theorem statements and ensure build passes. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/, Examples/).",
       "created": "2026-01-30T00:22:16Z",
-      "last_updated": "2026-01-30T00:32:51Z",
-      "session_id": "sess_1769733008_c9f54f",
+      "last_updated": "2026-01-30T00:57:15Z",
+      "session_id": "sess_1769734614_d0cbd3",
       "researched": "2026-01-30T00:29:16Z",
       "artifacts": [
         {
@@ -46,7 +46,8 @@
           "summary": "7-phase implementation plan for archiving 20 sorried proofs to Boneyard and establishing sorry-free completeness"
         }
       ],
-      "planned": "2026-01-30T00:32:51Z"
+      "planned": "2026-01-30T00:32:51Z",
+      "started": "2026-01-30T00:57:15Z"
     },
     {
       "project_number": 771,
@@ -477,7 +478,22 @@
       "project_name": "wezterm_tab_color_notification",
       "section": "Medium Priority",
       "language": "general",
-      "priority": "medium"
+      "priority": "medium",
+      "last_updated": "2026-01-30T01:15:00Z",
+      "session_id": "sess_1769734710_45c447",
+      "researched": "2026-01-30T01:15:00Z",
+      "artifacts": [
+        {
+          "path": "specs/431_wezterm_tab_color_notification/reports/research-001.md",
+          "type": "research",
+          "summary": "Initial research on WezTerm user variables, OSC 1337 escape sequences, and Claude Code Notification hooks"
+        },
+        {
+          "path": "specs/431_wezterm_tab_color_notification/reports/research-002.md",
+          "type": "research",
+          "summary": "Extended research on TTS hook compatibility, Stop hook pattern, and implementation recommendations for non-conflicting tab notifications"
+        }
+      ]
     },
     {
       "project_number": 672,
