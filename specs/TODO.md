@@ -107,7 +107,7 @@ technical_debt:
 
 ### 770. Fix Claude Code Neovim sidebar 30-second delay
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-30
@@ -241,13 +241,15 @@ technical_debt:
 
 ### 768. Create Ctrl-Quote STT toggle for Claude Code sidebar in neovim
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-29
 - **Started**: 2026-01-29
 - **Researched**: 2026-01-29
+- **Planned**: 2026-01-30
 - **Research**: [research-001.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-001.md), [research-002.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/plans/implementation-001.md)
 
 **Description**: Create a `<C-'>` mapping in neovim config at `/home/benjamin/.config/nvim/lua/neotex/plugins/ai/claudecode.lua` for use within the Claude Code sidebar terminal mode to toggle STT. Research confirmed `<C-\>` cannot be mapped in terminal mode (reserved by Neovim). Use `<C-'>` as the alternative binding, removing any existing `<C-\>` mappings that don't work.
 

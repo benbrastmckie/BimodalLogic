@@ -153,7 +153,11 @@ This uses the Int duration type and provides:
 
 **Known Sorry**: The truth bridge connecting finite model truth to general `truth_at`
 is sorry'd. The core completeness is provided by `semantic_weak_completeness`.
+
+**DEPRECATED (Task 769, 2026-01-30)**: This theorem contains a sorry for the truth bridge.
+Use `semantic_weak_completeness` for sorry-free completeness.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness instead
 theorem finite_model_property_constructive (φ : Formula) (h_sat : formula_satisfiable φ) :
     ∃ (F : TaskFrame Int) (M : TaskModel F) (τ : WorldHistory F) (t : Int)
       (_h_finite : Finite F.WorldState)

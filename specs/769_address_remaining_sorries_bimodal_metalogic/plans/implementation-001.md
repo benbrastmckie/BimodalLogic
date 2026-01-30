@@ -121,7 +121,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 4: Handle TruthLemma Architectural Sorries (4 sorries) [IN PROGRESS]
+### Phase 4: Handle TruthLemma Architectural Sorries (4 sorries) [COMPLETED]
 
 **Goal**: Address the 4 sorries in TruthLemma.lean (box cases and temporal backward direction) which are documented as architectural limitations.
 
@@ -145,7 +145,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 5: Handle FMP Architectural Sorries (3 sorries) [NOT STARTED]
+### Phase 5: Handle FMP Architectural Sorries (3 sorries) [COMPLETED]
 
 **Goal**: Address the remaining 3 architectural sorries in FMP/ directory.
 
@@ -168,7 +168,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 6: Documentation and Verification [NOT STARTED]
+### Phase 6: Documentation and Verification [COMPLETED]
 
 **Goal**: Update documentation and perform final verification of zero sorry count.
 

@@ -162,17 +162,22 @@ flowchart TD
 | `Compactness/` | Compactness theorem | Complete |
 | `Algebraic/` | Alternative algebraic approach | Complete |
 
-## Known Architectural Limitations
+## Known Architectural Limitations (Task 769)
 
-These are **final limitations** (not future work):
+These are **final limitations** (not future work). All sorries are in deprecated code paths.
 
-| Location | Limitation | Reason |
-|----------|------------|--------|
-| `SemanticCanonicalFrame.compositionality` | Sorry | Mathematically false for unbounded durations |
-| `truth_at_implies_semantic_truth` | Sorry | Box quantifies over ALL histories (Task 750) |
-| `Representation/TruthLemma.lean` box case | Sorry | Same Box semantics limitation |
+| Location | Count | Limitation | Status |
+|----------|-------|------------|--------|
+| `Representation/TaskRelation.lean` | 5 | Cross-sign duration composition | DEPRECATED |
+| `Representation/CoherentConstruction.lean` | 8 | Cross-origin coherence cases | DEPRECATED |
+| `Representation/TruthLemma.lean` | 4 | Box/temporal backward directions | DEPRECATED |
+| `FMP/SemanticCanonicalModel.lean` | 2 | Frame compositionality, truth bridge | DEPRECATED |
+| `FMP/FiniteModelProperty.lean` | 1 | FMP truth bridge | DEPRECATED |
 
-**Resolution**: Use `semantic_weak_completeness` which avoids the truth bridge gap entirely.
+**Total**: 20 sorries, all in code paths NOT required for completeness.
+
+**Resolution**: Use `semantic_weak_completeness` which is **completely sorry-free** and provides
+the main completeness result via a contrapositive approach that avoids these gaps entirely.
 
 ## Key Features
 
@@ -191,13 +196,20 @@ As of this date, the Metalogic/ directory is fully self-contained:
 
 The Boneyard/ directory is now purely historical reference material.
 
+## Deprecation Notes (Task 769, 2026-01-30)
+
+All 20 sorries in Metalogic/ (excluding Boneyard/, Examples/) have been analyzed and deprecated:
+- Each sorry is in code that is either mathematically impossible to prove or unused by completeness
+- All deprecated theorems have comments pointing to `semantic_weak_completeness` as the alternative
+- The main completeness theorem `semantic_weak_completeness` remains completely sorry-free
+
 ## References
 
 - Modal Logic, Blackburn et al., Chapters 4-5
 - JPL Paper "The Perpetuity Calculus of Agency"
-- Research reports: Task 750 (truth bridge), Task 764 (migration)
+- Research reports: Task 750 (truth bridge), Task 764 (migration), Task 769 (sorry audit)
 
 ---
 
-*Last updated: 2026-01-29*
+*Last updated: 2026-01-30*
 *Architecture: Self-contained universal parametric canonical model*

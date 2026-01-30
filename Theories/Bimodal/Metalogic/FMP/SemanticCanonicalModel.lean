@@ -214,7 +214,13 @@ theorem semantic_task_rel_nullity (phi : Formula) (w : SemanticWorldState phi) :
 
 /--
 The semantic canonical frame.
+
+**DEPRECATED (Task 769)**: The `compositionality` field contains a sorry because it is
+mathematically false for unbounded durations in finite time domain [-k, k]. This frame
+definition is retained for compatibility but should not be used for new development.
+Use `semantic_weak_completeness` which avoids this frame entirely.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness instead
 noncomputable def SemanticCanonicalFrame (phi : Formula) : TaskFrame Int where
   WorldState := SemanticWorldState phi
   task_rel := semantic_task_rel phi
@@ -648,7 +654,11 @@ result. This theorem is only needed to connect universal validity to semantic tr
 **Note**: The `truth_at_implies_semantic_truth` theorem is the "forward truth lemma"
 for the finite model construction. The backward direction is handled implicitly by
 the MCS construction in `semantic_weak_completeness`.
+
+**DEPRECATED (Task 769, 2026-01-30)**: This theorem contains a sorry due to the forward
+truth lemma gap. Use `semantic_weak_completeness` instead for sorry-free completeness.
 -/
+-- DEPRECATED (Task 769, 2026-01-30): Use semantic_weak_completeness instead
 theorem truth_at_implies_semantic_truth (phi : Formula)
     (tau : WorldHistory (SemanticCanonicalFrame phi)) (ht : tau.domain 0)
     (h_truth : truth_at (SemanticCanonicalModel phi) tau 0 phi) :

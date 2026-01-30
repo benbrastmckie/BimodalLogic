@@ -8,11 +8,12 @@
     {
       "project_number": 770,
       "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-30T00:04:52Z",
-      "last_updated": "2026-01-30T00:04:52Z"
+      "last_updated": "2026-01-30T00:08:22Z",
+      "session_id": "sess_1769731680_9ccf4f"
     },
     {
       "project_number": 769,
@@ -43,13 +44,13 @@
     {
       "project_number": 768,
       "project_name": "neovim_ctrl_backslash_stt_toggle_claude_code",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "medium",
       "description": "Create a <C-'> mapping in neovim config at /home/benjamin/.config/nvim/lua/neotex/plugins/ai/claudecode.lua for use within the Claude Code sidebar terminal mode to toggle STT. Research confirmed <C-\\\\> cannot be mapped in terminal mode (reserved by Neovim). Use <C-'> as the alternative binding, removing any existing <C-\\\\> mappings that don't work.",
       "created": "2026-01-29T23:36:23Z",
-      "last_updated": "2026-01-30T00:07:08Z",
-      "session_id": "sess_1769730854_6e0a42",
+      "last_updated": "2026-01-30T00:10:32Z",
+      "session_id": "sess_1769731709_8ecca1",
       "researched": "2026-01-29T23:59:45Z",
       "artifacts": [
         {
@@ -61,8 +62,14 @@
           "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/reports/research-002.md",
           "type": "research",
           "summary": "Root cause analysis identifying <C-\\> reservation in terminal mode and TermOpen timing issues with 5 solution recommendations"
+        },
+        {
+          "path": "specs/768_neovim_ctrl_backslash_stt_toggle_claude_code/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan: update stt/init.lua, remove redundant mapping from claudecode.lua, verify changes"
         }
-      ]
+      ],
+      "planned": "2026-01-30T00:10:32Z"
     },
     {
       "project_number": 767,
