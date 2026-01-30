@@ -17,26 +17,28 @@ Finite Model Property proof.
 ## Design Philosophy
 
 The semantic approach defines world states as equivalence classes of
-(history, time) pairs. This makes compositionality straightforward because
-history paths compose naturally (modulo bounded time domain constraints).
-
-This is the parametric port of `Boneyard/Metalogic_v2/Representation/SemanticCanonicalModel.lean`.
-The key insight is that the FMP bound (2^closureSize) is purely combinatorial - it counts
-subsets of the subformula closure - and doesn't depend on the specific duration type.
+(history, time) pairs. This makes completeness straightforward by working
+directly with finite world states and avoiding the need for frame-level
+compositionality.
 
 ## Main Definitions
 
 - `HistoryTimePair`: A pair of (FiniteHistory, BoundedTime)
 - `htEquiv`: Equivalence relation - same world state at given time
 - `SemanticWorldState`: Quotient of history-time pairs
-- `SemanticCanonicalFrame`: TaskFrame with Int duration
-- `SemanticCanonicalModel`: TaskModel for completeness proof
+- `semantic_weak_completeness`: THE sorry-free completeness theorem
 
-## Known Limitations
+## Key Theorem
 
-The compositionality axiom (`SemanticCanonicalFrame.compositionality`) is marked sorry.
-This axiom is mathematically false for unbounded durations in finite time domain [-k, k].
-The finite model is still valid for demonstrating satisfiability.
+```lean
+noncomputable def semantic_weak_completeness (phi : Formula) :
+    (forall (w : SemanticWorldState phi),
+     semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi) ->
+    |- phi
+```
+
+This theorem is completely sorry-free and provides the completeness result via
+contrapositive: if phi is not provable, we construct a countermodel.
 
 ## Architecture
 
@@ -45,9 +47,20 @@ This module uses:
 - `FiniteWorldState` from `Metalogic/FMP/FiniteWorldState.lean`
 - `closure`, `ClosureMaximalConsistent` from `Metalogic/FMP/Closure.lean`
 
+## Archived Code
+
+Deprecated code that required sorries was archived to `Boneyard/Metalogic_v4/FMP/`:
+- `SemanticCanonicalFrame` (compositionality axiom is mathematically false)
+- `SemanticCanonicalModel` (uses deprecated frame)
+- `truth_at_implies_semantic_truth` (forward truth lemma gap is architectural)
+- `sorry_free_weak_completeness` (misnamed - depends on sorried code)
+
+See `Boneyard/Metalogic_v4/FMP/README.md` for full documentation.
+
 ## References
 
-- Original: `Boneyard/Metalogic_v2/Representation/SemanticCanonicalModel.lean`
+- Task 776: Refactor Metalogic to zero sorry
+- Task 750: Research on truth lemma gap
 -/
 
 namespace Bimodal.Metalogic.FMP

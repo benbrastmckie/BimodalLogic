@@ -78,6 +78,11 @@
           "path": "specs/774_restore_representation_theorem_as_under_development/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of 7 representation theorem files for restoration with import isolation strategy following Algebraic/ pattern"
+        },
+        {
+          "path": "specs/774_restore_representation_theorem_as_under_development/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for restoring representation theorem files to NEW/ directory"
         }
       ],
       "planned": "2026-01-30T02:06:12Z"
