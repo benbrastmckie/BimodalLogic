@@ -1,7 +1,7 @@
 # Implementation Plan: Task #765
 
 - **Task**: 765 - exclude_boneyard_examples_from_sorry_count
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -46,7 +46,7 @@ The research report (research-001.md) provided:
 
 ## Implementation Phases
 
-### Phase 1: Update Commands and Documentation [NOT STARTED]
+### Phase 1: Update Commands and Documentation [COMPLETED]
 
 **Goal**: Modify the grep commands and documentation to implement exclusion policy
 
@@ -69,7 +69,7 @@ The research report (research-001.md) provided:
 
 ---
 
-### Phase 2: Update Current Metrics [NOT STARTED]
+### Phase 2: Update Current Metrics [IN PROGRESS]
 
 **Goal**: Update state.json and TODO.md with accurate sorry count reflecting exclusions
 

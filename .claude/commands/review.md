@@ -128,8 +128,8 @@ jq '.active_projects[] | select(.status == "completed")' specs/state.json
 
 **4. Count sorries in Lean files:**
 ```bash
-# Current sorry count for metrics
-grep -r "sorry" Logos/ --include="*.lean" | wc -l
+# Current sorry count for metrics (exclude Boneyard/ and Examples/)
+grep -r "sorry" Theories/ --include="*.lean" | grep -v "/Boneyard/" | grep -v "/Examples/" | wc -l
 ```
 
 **Match roadmap items to completed work:**

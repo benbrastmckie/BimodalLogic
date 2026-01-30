@@ -47,12 +47,14 @@ technical_debt:
 ## Medium Priority
 
 ### 774. Restore representation theorem as Under Development
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
+- **Planned**: 2026-01-30
 - **Priority**: Medium
 - **Language**: lean
 - **Researched**: 2026-01-30
 - **Research**: [research-001.md](specs/774_restore_representation_theorem_as_under_development/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/774_restore_representation_theorem_as_under_development/plans/implementation-001.md)
 
 **Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
 
@@ -96,7 +98,7 @@ technical_debt:
 
 ### 765. Exclude Boneyard and Examples from sorry count metrics
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-29

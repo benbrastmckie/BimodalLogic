@@ -118,7 +118,7 @@ The `repository_health` section tracks repository-wide technical debt metrics:
 | Field | Type | Description |
 |-------|------|-------------|
 | `last_assessed` | string | ISO8601 timestamp of last metrics update |
-| `sorry_count` | number | Total `sorry` occurrences in Theories/ (from grep) |
+| `sorry_count` | number | Total `sorry` occurrences in active Theories/ (excludes Boneyard/ and Examples/) |
 | `axiom_count` | number | Total `axiom` declarations in Theories/ |
 | `build_errors` | number | Current build error count (0 = clean build) |
 | `status` | string | Overall debt status: `manageable`, `concerning`, `critical` |

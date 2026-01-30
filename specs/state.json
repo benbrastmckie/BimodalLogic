@@ -65,13 +65,13 @@
     {
       "project_number": 774,
       "project_name": "restore_representation_theorem_as_under_development",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.",
       "created": "2026-01-30T01:27:04Z",
-      "last_updated": "2026-01-30T01:33:05Z",
-      "session_id": "sess_1769736532_49e779",
+      "last_updated": "2026-01-30T02:06:12Z",
+      "session_id": "sess_1769738586_ec8f54",
       "researched": "2026-01-30T01:33:05Z",
       "artifacts": [
         {
@@ -79,7 +79,8 @@
           "type": "research",
           "summary": "Analysis of 7 representation theorem files for restoration with import isolation strategy following Algebraic/ pattern"
         }
-      ]
+      ],
+      "planned": "2026-01-30T02:06:12Z"
     },
     {
       "project_number": 772,
@@ -154,12 +155,12 @@
     {
       "project_number": 765,
       "project_name": "exclude_boneyard_examples_from_sorry_count",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "priority": "medium",
       "created": "2026-01-29T22:10:38Z",
-      "last_updated": "2026-01-29T22:33:59Z",
-      "session_id": "sess_1769725899_e827cf",
+      "last_updated": "2026-01-30T02:05:08Z",
+      "session_id": "sess_1769738691_d5041b",
       "description": "Exclude Boneyard/ and Examples/ directories from sorry count metrics. Update: (1) /todo command grep command at line 850 of todo.md, (2) /review command at line 132 of review.md if applicable, (3) state-management.md documentation to reflect exclusion policy, (4) current metrics in state.json and TODO.md to reflect accurate count (~72 instead of ~322).",
       "researched": "2026-01-29T22:22:26Z",
       "artifacts": [
@@ -174,7 +175,8 @@
           "summary": "2-phase implementation plan for excluding Boneyard/ and Examples/ from sorry count metrics"
         }
       ],
-      "planned": "2026-01-29T22:33:59Z"
+      "planned": "2026-01-29T22:33:59Z",
+      "started": "2026-01-30T02:05:08Z"
     },
     {
       "project_number": 619,

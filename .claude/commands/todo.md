@@ -846,8 +846,8 @@ Update repository-wide technical debt metrics in both state.json and TODO.md hea
 
 **Step 5.7.1: Compute current metrics**:
 ```bash
-# Count sorries (all Theories/ files, including Boneyard for historical consistency)
-sorry_count=$(grep -r "sorry" Theories/ --include="*.lean" | wc -l)
+# Count sorries (active Theories/ files, excluding Boneyard/ and Examples/)
+sorry_count=$(grep -r "sorry" Theories/ --include="*.lean" | grep -v "/Boneyard/" | grep -v "/Examples/" | wc -l)
 
 # Count axiom declarations
 axiom_count=$(grep -E "^axiom " Theories/ -r --include="*.lean" | wc -l)
