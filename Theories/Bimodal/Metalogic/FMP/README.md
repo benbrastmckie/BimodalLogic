@@ -1,6 +1,6 @@
 # Parametric Finite Model Property Infrastructure
 
-**Status**: Self-Contained (No Boneyard Dependencies)
+**Status**: Sorry-Free (Task 776 Refactoring Complete)
 
 This directory contains the parametric FMP (Finite Model Property) infrastructure for TM bimodal logic.
 
@@ -15,141 +15,99 @@ The FMP establishes that if a formula is satisfiable, it is satisfiable in a **f
 | `Closure.lean` | Subformula closure, closureWithNeg, closure-maximal consistent sets | **Sorry-free** |
 | `BoundedTime.lean` | Finite time domain `BoundedTime k = Fin (2*k+1)` | **Sorry-free** |
 | `FiniteWorldState.lean` | Finite world states as truth assignments on closure | **Sorry-free** |
-| `SemanticCanonicalModel.lean` | Semantic canonical model with finite world states | Has 2 architectural sorries |
-| `FiniteModelProperty.lean` | FMP theorem and cardinality bounds | Has 1 architectural sorry |
+| `SemanticCanonicalModel.lean` | Semantic canonical model with finite world states | **Sorry-free** |
+| `FiniteModelProperty.lean` | FMP theorem and cardinality bounds | **Sorry-free** |
 
-## Dependency Flowchart
+## Key Theorem: semantic_weak_completeness
 
+The canonical sorry-free completeness result:
+
+```lean
+noncomputable def semantic_weak_completeness (phi : Formula) :
+    (forall (w : SemanticWorldState phi),
+     semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi) ->
+    |- phi
 ```
-        Closure.lean
-             │
-             v
-      BoundedTime.lean
-             │
-             v
-    FiniteWorldState.lean
-             │
-             v
-  SemanticCanonicalModel.lean
-             │
-             v
-  FiniteModelProperty.lean
-```
+
+**Why it works**: Contrapositive approach (unprovable -> countermodel) constructs MCS-derived
+countermodels where the assignment IS the MCS membership function. This avoids the
+forward truth lemma entirely.
+
+**This is THE completeness theorem for this logic.**
+
+## Archived Code
+
+Deprecated code with sorries was archived to `Boneyard/Metalogic_v4/FMP/`:
+
+| Archived | Reason | Alternative |
+|----------|--------|-------------|
+| `SemanticCanonicalFrame` | Compositionality axiom is mathematically false | Use `SemanticWorldState` directly |
+| `SemanticCanonicalModel` | Uses deprecated frame | Use `semantic_weak_completeness` |
+| `finite_model_property_constructive` | Truth bridge gap is architectural | Use `semantic_weak_completeness` |
+| `truth_at_implies_semantic_truth` | Forward truth lemma is architecturally impossible | Use contrapositive approach |
+| `sorry_free_weak_completeness` | Misnamed - depends on sorried code | Use `semantic_weak_completeness` |
+
+See `Boneyard/Metalogic_v4/FMP/README.md` for full documentation of why these sorries are unfixable.
 
 ## Key Definitions
 
 ### Closure Infrastructure (`Closure.lean`)
 
 ```lean
-def closure (φ : Formula) : Finset Formula
-def closureWithNeg (φ : Formula) : Finset Formula
-def closureSize (φ : Formula) : Nat
-def ClosureMaximalConsistent (φ : Formula) (S : Set Formula) : Prop
+def closure (phi : Formula) : Finset Formula
+def closureWithNeg (phi : Formula) : Finset Formula
+def closureSize (phi : Formula) : Nat
+def ClosureMaximalConsistent (phi : Formula) (S : Set Formula) : Prop
 ```
 
 ### Bounded Time (`BoundedTime.lean`)
 
 ```lean
 abbrev BoundedTime (k : Nat) := Fin (2 * k + 1)
-def temporalBound (φ : Formula) : Nat := φ.temporalDepth
+def temporalBound (phi : Formula) : Nat := phi.temporalDepth
 ```
 
 ### Finite World State (`FiniteWorldState.lean`)
 
 ```lean
-structure FiniteWorldState (φ : Formula)
-structure FiniteHistory (φ : Formula)
-def worldStateFromClosureMCS (φ : Formula) (S : Set Formula)
-    (h_mcs : ClosureMaximalConsistent φ S) : FiniteWorldState φ
+structure FiniteWorldState (phi : Formula)
+structure FiniteHistory (phi : Formula)
+def worldStateFromClosureMCS (phi : Formula) (S : Set Formula)
+    (h_mcs : ClosureMaximalConsistent phi S) : FiniteWorldState phi
 ```
 
-### Semantic Canonical Model (`SemanticCanonicalModel.lean`)
+### Semantic World State (`SemanticCanonicalModel.lean`)
 
 ```lean
-def SemanticWorldState (φ : Formula) := Quotient (htSetoid φ)
-noncomputable def SemanticCanonicalFrame (φ : Formula) : TaskFrame Int
-noncomputable def SemanticCanonicalModel (φ : Formula) : TaskModel (SemanticCanonicalFrame φ)
+def SemanticWorldState (phi : Formula) := Quotient (htSetoid phi)
+def semantic_truth_at_v2 (phi : Formula) (w : SemanticWorldState phi)
+    (t : BoundedTime (temporalBound phi)) (psi : Formula) : Prop
+noncomputable def semantic_weak_completeness (phi : Formula) : ... -> |- phi
+theorem semanticWorldState_card_bound (phi : Formula) :
+    Fintype.card (SemanticWorldState phi) <= 2 ^ closureSize phi
 ```
 
 ### FMP Theorems (`FiniteModelProperty.lean`)
 
 ```lean
-theorem finite_model_property (φ : Formula) :
-    formula_satisfiable φ → ∃ (D : Type) ... truth_at M τ t φ
+theorem finite_model_property (phi : Formula) :
+    formula_satisfiable phi -> exists (D : Type) ... truth_at M tau t phi
 
-theorem finite_model_property_constructive (φ : Formula) (h_sat : formula_satisfiable φ) :
-    ∃ (F : TaskFrame Int) ... Fintype.card F.WorldState ≤ 2 ^ closureSize φ
-
-theorem semanticWorldState_card_bound (φ : Formula) :
-    Fintype.card (SemanticWorldState φ) ≤ 2 ^ closureSize φ
+theorem consistent_implies_satisfiable (phi : Formula) (h_cons : Consistent [phi]) :
+    formula_satisfiable phi
 ```
-
-## Design Rationale
-
-### Why Parametric?
-
-The original Boneyard implementation was hardcoded to `Int` duration. The parametric approach:
-
-1. **Architectural consistency**: Matches the parametric Metalogic/ design using generic D
-2. **Maximum generality**: Works for any ordered group D
-3. **Future-proofing**: New duration types work automatically
-4. **Mathematical elegance**: The bound is D-independent - the proof reflects this
-
-### BoundedTime Abstraction
-
-The `BoundedTime k` type is the key innovation:
-- Defined as `Fin (2*k+1)` - inherits Fintype from Fin
-- Provides canonical integer interpretation via `toInt : BoundedTime k → Int`
-- Combinatorial structure - the cardinality bound comes from this, not from D
-
-## Known Architectural Sorries
-
-| Location | Description | Status |
-|----------|-------------|--------|
-| `SemanticCanonicalFrame.compositionality` | Frame compositionality axiom | **Architectural** (false for unbounded durations) |
-| `finite_model_property_constructive` truth bridge | Connecting finite model truth to `truth_at` | **Architectural** (Box semantics limitation - Task 750) |
-
-### Resolution (Task 750)
-
-Research confirmed both sorries are **architectural limitations**, not incomplete work:
-
-1. **Compositionality**: Mathematically false for unbounded durations in finite time domain [-k, k].
-   Sum d1 + d2 can exceed representable range [-2k, 2k].
-
-2. **Truth bridge**: Box semantics quantifies over ALL histories (S5-style). MCS/assignment
-   constructions only have information about ONE world state. Gap is insurmountable.
-
-## Canonical Completeness Result
-
-Use `semantic_weak_completeness` (sorry-free) for **all completeness proofs**:
-
-```lean
-theorem semantic_weak_completeness (φ : Formula) :
-    (∀ (w : SemanticWorldState φ), semantic_truth_at_v2 φ w t φ) → ⊢ φ
-```
-
-**Why it works**: Contrapositive approach (unprovable → countermodel) constructs MCS-derived
-countermodels where the assignment IS the MCS membership function. This avoids the
-forward truth lemma entirely.
-
-**This is THE completeness theorem for this logic.**
 
 ## Dependencies
 
 - **Core**: MCS theory and Lindenbaum's lemma
 - **Semantics**: Truth relation and validity
 
-## Related Files
-
-- `../Core/README.md` - MCS foundations
-- `../Completeness/README.md` - Uses FMP for completeness
-- `../README.md` - Overall metalogic architecture
-
 ## References
 
+- Task 776: Refactor Metalogic to zero sorry
+- Task 750: Research on truth bridge gap
 - Blackburn et al., Modal Logic, Chapter 4 (Finite Model Property)
-- Wu, M., Verified Decision Procedures for Modal Logics
 
 ---
 
-*Last updated: 2026-01-29*
+*Last updated: 2026-01-30*

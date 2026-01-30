@@ -48,12 +48,12 @@ technical_debt:
 
 ### 774. Restore representation theorem as Under Development
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Planned**: 2026-01-30
 - **Priority**: Medium
 - **Language**: lean
 - **Researched**: 2026-01-30
-- **Research**: [research-001.md](specs/774_restore_representation_theorem_as_under_development/reports/research-001.md)
+- **Research**: [research-001.md](specs/774_restore_representation_theorem_as_under_development/reports/research-001.md), [research-002.md](specs/774_restore_representation_theorem_as_under_development/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/774_restore_representation_theorem_as_under_development/plans/implementation-001.md)
 
 **Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
@@ -130,39 +130,6 @@ technical_debt:
 
 ---
 
-
-
-
-
-### 685. Derive world-history and Barcan theorems
-- **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-26
-- **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
-- **Research**: [research-001.md](specs/685_derive_world_history_and_barcan_theorems/reports/research-001.md)
-
-**Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
-
----
-
-### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-01-28
-- **Priority**: Medium
-- **Language**: meta
-- **Created**: 2026-01-19
-- **Blocked-By**: Empirically confirmed broken (research-005.md) - GitHub #16803
-- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md), [research-003.md](specs/619_agent_system_architecture_upgrade/reports/research-003.md), [research-004.md](specs/619_agent_system_architecture_upgrade/reports/research-004.md), [research-005.md](specs/619_agent_system_architecture_upgrade/reports/research-005.md)
-- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
-
-**Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Empirical testing (research-005.md) confirmed context:fork provides NO context isolation, NO tool restrictions, and NO subprocess isolation - the feature is completely non-functional. Current implementation (direct execution for Lean skills, Task delegation for others) is correct and should remain until context:fork is fixed and re-validated.
-
----
-
-## Low Priority
-
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
@@ -201,6 +168,21 @@ technical_debt:
 
 ---
 
+### 685. Derive world-history and Barcan theorems
+ **Effort**: 8-10 hours
+ **Status**: [RESEARCHED]
+ **Priority**: Medium
+ **Language**: lean
+ **Created**: 2026-01-26
+ **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
+ **Research**: [research-001.md](specs/685_derive_world_history_and_barcan_theorems/reports/research-001.md)
+
+**Description**: Derive and prove 2 theorem groups in Logos Dynamics system based on TODO items: (1) line 200: Derive as theorem that every time in a world-history gets mapped to a world-state, then include remark discussing which constraints (from Containment subsection of counterfactual_worlds.tex line 1822) play a role in proving this theorem without assuming discreteness. Articulate theorem in Lean source with proof strategy in comments; (2) line 288: Derive Barcan formulas and prove their validity for the unrestricted quantifier and 'all possibly actual' quantifier. Similarly, show that the 'all sometimes actual' quantifier validates temporal analogs of Barcan formulas.
+
+---
+
+## Low Priority
+
 ### 672. Implement agent system upgrade plan
 - **Effort**: 6 weeks
 - **Status**: [REVISED]
@@ -237,3 +219,16 @@ technical_debt:
 **Description**: Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management
 
 ---
+
+### 619. Agent system architecture upgrade (context:fork migration)
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-01-28
+- **Priority**: Medium
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Blocked-By**: Empirically confirmed broken (research-005.md) - GitHub #16803
+- **Research**: [research-001.md](specs/619_agent_system_architecture_upgrade/reports/research-001.md), [research-002.md](specs/619_agent_system_architecture_upgrade/reports/research-002.md), [research-003.md](specs/619_agent_system_architecture_upgrade/reports/research-003.md), [research-004.md](specs/619_agent_system_architecture_upgrade/reports/research-004.md), [research-005.md](specs/619_agent_system_architecture_upgrade/reports/research-005.md)
+- **Plan**: [implementation-002.md](specs/619_agent_system_architecture_upgrade/plans/implementation-002.md)
+
+**Description**: FUTURE UPGRADE: Migrate agent system skills to use native `context: fork` frontmatter once Anthropic fixes GitHub issue #16803. Empirical testing (research-005.md) confirmed context:fork provides NO context isolation, NO tool restrictions, and NO subprocess isolation - the feature is completely non-functional. Current implementation (direct execution for Lean skills, Task delegation for others) is correct and should remain until context:fork is fixed and re-validated.
+

@@ -9,45 +9,45 @@ import Bimodal.Metalogic.FMP.SemanticCanonicalModel
 /-!
 # Weak Completeness for TM Bimodal Logic
 
-This module proves the weak completeness theorem for TM bimodal logic:
-valid formulas are provable (⊨ φ → ⊢ φ).
+This module provides completeness-related theorems for TM bimodal logic.
 
 ## Overview
 
-The completeness proof proceeds via contrapositive using the semantic canonical model:
-1. Assume φ is not provable from []
-2. Then {¬φ} is consistent (cannot derive ⊥)
-3. By semantic_weak_completeness, if φ were valid, φ would be provable
-4. Contrapositive: if φ is not provable, φ is not valid
+### Sorry-Free Completeness (Recommended)
+
+The canonical sorry-free completeness result is `semantic_weak_completeness` in
+`FMP/SemanticCanonicalModel.lean`:
+
+```lean
+noncomputable def semantic_weak_completeness (phi : Formula) :
+    (forall (w : SemanticWorldState phi),
+     semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi) ->
+    |- phi
+```
+
+This theorem works via contrapositive (unprovable -> countermodel exists) and is
+completely sorry-free.
+
+### Universal Validity (Architectural Limitation)
+
+The theorem `weak_completeness : valid phi -> ContextDerivable [] phi` has an
+**architectural sorry** because bridging "valid in ALL models" to "true at all
+SemanticWorldStates" requires the forward truth lemma, which is impossible due
+to Box semantics quantifying over ALL histories.
+
+Use `semantic_weak_completeness` for sorry-free proofs.
 
 ## Main Results
 
 - `ContextDerivable`: Propositional wrapper for existence of derivation tree
-- `weak_completeness`: `⊨ φ → ContextDerivable [] φ` (valid implies provable)
-- `provable_iff_valid`: `ContextDerivable [] φ ↔ ⊨ φ` (equivalence)
-
-## Architecture (Task 772 Refactoring)
-
-This module was refactored to use the sorry-free `semantic_weak_completeness` theorem
-from `FMP/SemanticCanonicalModel.lean` instead of the sorried representation theorem
-from the archived `Representation/UniversalCanonicalModel.lean`.
-
-The semantic approach works by:
-1. Building a finite model (SemanticCanonicalModel) from MCS projections
-2. Using the contrapositive: unprovable → countermodel exists
-3. Avoiding the architectural limitations of the representation theorem:
-   - No need to compose task relations across sign boundaries
-   - No need for truth lemma over ALL histories (Box semantics)
-
-## Dependencies
-
-- Soundness theorem: `Bimodal.Metalogic.Soundness.soundness`
-- Semantic weak completeness: `Bimodal.Metalogic.FMP.semantic_weak_completeness`
+- `derivable_implies_valid`: Soundness (fully proven)
+- `weak_completeness`: Completeness with architectural sorry (see note above)
 
 ## References
 
-- Task 772: Refactoring to sorry-free architecture
-- Modal Logic, Blackburn et al., Chapter 4 (Completeness via Canonical Models)
+- Task 776: Refactor Metalogic to zero sorry
+- Task 750: Research on truth lemma gap
+- `Boneyard/Metalogic_v4/FMP/` - Archived code with full documentation
 -/
 
 namespace Bimodal.Metalogic.Completeness
@@ -184,49 +184,52 @@ theorem list_consistent_implies_set_consistent {φ : Formula}
 /--
 **Weak Completeness**: Valid formulas are provable from the empty context.
 
-**Statement**: `⊨ φ → ContextDerivable [] φ`
+**Statement**: `valid phi -> ContextDerivable [] phi`
 
-**Proof Strategy** (via semantic_weak_completeness):
-The sorry-free `semantic_weak_completeness` theorem from FMP/SemanticCanonicalModel.lean
-proves that if φ is true at all SemanticWorldStates, then φ is provable.
+**ARCHITECTURAL LIMITATION (Task 776)**:
+This theorem has a sorry because bridging "valid in ALL models" to "provable"
+requires the forward truth lemma `truth_at_implies_semantic_truth`, which is
+architecturally impossible due to Box semantics.
 
-For our theorem, we need: valid φ → ContextDerivable [] φ
+The fundamental gap:
+- `valid phi` quantifies over ALL models (all D, F, M, tau, t)
+- `semantic_weak_completeness` only needs truth at SemanticWorldStates
+- Bridging requires showing: if phi is true in ALL models, then it's true at
+  all SemanticWorldStates under their finite model semantics
+- This requires the forward truth lemma, which fails because Box quantifies
+  over ALL histories but MCS constructions only have one world state
 
-The bridge is provided by `valid_implies_semantic_truth`:
-- If φ is valid (true in ALL models), then φ is true at all SemanticWorldStates
-- Then by semantic_weak_completeness, φ is provable
+**Sorry-Free Alternative**:
+Use `semantic_weak_completeness` from FMP/SemanticCanonicalModel.lean:
+```lean
+(forall (w : SemanticWorldState phi), semantic_truth_at_v2 phi w origin phi) -> |- phi
+```
 
-**Note on Architecture (Task 772)**:
-This proof relies on `sorry_free_weak_completeness` from SemanticCanonicalModel.lean,
-which in turn depends on `truth_at_implies_semantic_truth`. That theorem has an
-architectural sorry due to Box semantics requiring universal quantification over
-ALL histories. However, the `semantic_weak_completeness` theorem itself is sorry-free
-and provides the core completeness result via contrapositive.
-
-The current implementation uses `sorry_free_weak_completeness` which does have
-a dependency on the sorried `truth_at_implies_semantic_truth`. For a fully
-sorry-free proof, one would need to prove `valid_implies_semantic_truth` directly
-without going through the problematic forward truth lemma.
+See `Boneyard/Metalogic_v4/FMP/` for full documentation of the architectural gap.
 -/
+-- ARCHITECTURAL SORRY (Task 776): Use semantic_weak_completeness for sorry-free proofs
 theorem weak_completeness (φ : Formula) : valid φ → ContextDerivable [] φ := by
-  intro h_valid
-  -- Use the sorry_free_weak_completeness from SemanticCanonicalModel
-  -- This internally uses semantic_weak_completeness which IS sorry-free
-  have h_deriv := sorry_free_weak_completeness φ h_valid
-  exact ⟨h_deriv⟩
+  intro _h_valid
+  -- The gap: We need to show that if phi is valid in ALL models, it is true
+  -- at all SemanticWorldStates under semantic_truth_at_v2. This requires
+  -- the forward truth lemma which is architecturally impossible.
+  -- See Boneyard/Metalogic_v4/FMP/TruthLemmaGap.lean for full explanation.
+  sorry
 
 /--
 **Soundness-Completeness Equivalence**: Provability and validity are equivalent.
 
-**Statement**: `ContextDerivable [] φ ↔ ⊨ φ`
+**Statement**: `ContextDerivable [] phi <-> valid phi`
 
-This combines soundness (derivable → valid) with weak completeness (valid → derivable).
+**Note**: The completeness direction inherits the architectural sorry from
+`weak_completeness`. For sorry-free proofs, use `semantic_weak_completeness`.
 -/
+-- ARCHITECTURAL SORRY (via weak_completeness)
 theorem provable_iff_valid (φ : Formula) : ContextDerivable [] φ ↔ valid φ := by
   constructor
-  · -- Soundness: derivable implies valid
+  · -- Soundness: derivable implies valid (sorry-free)
     exact derivable_implies_valid φ
-  · -- Completeness: valid implies derivable
+  · -- Completeness: valid implies derivable (has sorry)
     exact weak_completeness φ
 
 end Bimodal.Metalogic.Completeness

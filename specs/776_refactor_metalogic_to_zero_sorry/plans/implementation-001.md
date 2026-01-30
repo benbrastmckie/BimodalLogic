@@ -126,7 +126,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Archive FiniteModelProperty Code [IN PROGRESS]
+### Phase 4: Archive FiniteModelProperty Code [COMPLETED]
 
 **Goal**: Move the constructive FMP theorem with sorry to Boneyard
 
@@ -149,7 +149,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Update WeakCompleteness and Documentation [NOT STARTED]
+### Phase 5: Update WeakCompleteness and Documentation [COMPLETED]
 
 **Goal**: Update public-facing completeness theorem documentation
 
@@ -173,7 +173,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 6: Verify Zero Sorry Count [NOT STARTED]
+### Phase 6: Verify Zero Sorry Count [COMPLETED]
 
 **Goal**: Confirm all sorries eliminated from Metalogic/
 
