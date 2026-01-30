@@ -1,7 +1,7 @@
 # Implementation Plan: Task #771 (Revision 2)
 
 - **Task**: 771 - Improve Typst formatting to AMS journal style
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Priority**: medium
 - **Dependencies**: None
@@ -159,7 +159,7 @@ Based on [amsthm documentation](https://texdoc.org/serve/amsthm/0) and [AMS Styl
 
 ---
 
-### Phase 2: Update Chapter Show Rules [IN PROGRESS]
+### Phase 2: Update Chapter Show Rules [COMPLETED]
 
 **Goal**: Apply thmrules show rule in all chapter files
 
@@ -193,7 +193,7 @@ Based on [amsthm documentation](https://texdoc.org/serve/amsthm/0) and [AMS Styl
 
 ---
 
-### Phase 3: Convert Introduction Diagram to Grayscale [NOT STARTED]
+### Phase 3: Convert Introduction Diagram to Grayscale [COMPLETED]
 
 **Goal**: Remove colors from World History diagram in 00-introduction.typ
 
@@ -216,7 +216,7 @@ Based on [amsthm documentation](https://texdoc.org/serve/amsthm/0) and [AMS Styl
 
 ---
 
-### Phase 4: Convert Metalogic Diagrams to Grayscale [NOT STARTED]
+### Phase 4: Convert Metalogic Diagrams to Grayscale [COMPLETED]
 
 **Goal**: Remove colors from both CeTZ diagrams in 04-metalogic.typ
 
@@ -243,7 +243,7 @@ Based on [amsthm documentation](https://texdoc.org/serve/amsthm/0) and [AMS Styl
 
 ---
 
-### Phase 5: Final Verification [NOT STARTED]
+### Phase 5: Final Verification [COMPLETED]
 
 **Goal**: Compile full document and verify AMS-style appearance
 

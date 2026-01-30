@@ -64,12 +64,12 @@
     {
       "project_number": 771,
       "project_name": "improve_typst_formatting_ams_journal_style",
-      "status": "implementing",
+      "status": "completed",
       "language": "typst",
       "priority": "medium",
       "description": "Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.",
       "created": "2026-01-30T00:14:14Z",
-      "last_updated": "2026-01-30T01:31:17Z",
+      "last_updated": "2026-01-30T01:35:47Z",
       "session_id": "sess_1769736660_93f003",
       "researched": "2026-01-30T00:17:50Z",
       "artifacts": [
@@ -82,10 +82,17 @@
           "path": "specs/771_improve_typst_formatting_ams_journal_style/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 5-phase plan migrating from thmbox to ctheorems for professional math journal styling"
+        },
+        {
+          "path": "specs/771_improve_typst_formatting_ams_journal_style/summaries/implementation-summary-20260130.md",
+          "type": "summary",
+          "summary": "Implementation summary with grayscale mapping and verification details"
         }
       ],
       "planned": "2026-01-30T01:26:06Z",
-      "started": "2026-01-30T01:31:17Z"
+      "started": "2026-01-30T01:31:17Z",
+      "completed": "2026-01-30T01:35:47Z",
+      "completion_summary": "Upgraded Bimodal Reference Manual from textbook-style boxed theorems to AMS journal style using ctheorems package. Migrated theorem environments to thmplain with proper typography (bold labels, italic theorem bodies, upright definition bodies). Converted all diagram colors to grayscale. Document compiles cleanly to 28 pages."
     },
     {
       "project_number": 767,
