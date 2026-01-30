@@ -1,7 +1,7 @@
 # Implementation Plan: Task #771 (Revision 2)
 
 - **Task**: 771 - Improve Typst formatting to AMS journal style
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Priority**: medium
 - **Dependencies**: None
@@ -69,7 +69,7 @@ Based on [amsthm documentation](https://texdoc.org/serve/amsthm/0) and [AMS Styl
 
 ## Implementation Phases
 
-### Phase 1: Migrate Template to ctheorems [NOT STARTED]
+### Phase 1: Migrate Template to ctheorems [COMPLETED]
 
 **Goal**: Replace thmbox package with ctheorems using AMS-style plain environments
 
@@ -159,7 +159,7 @@ Based on [amsthm documentation](https://texdoc.org/serve/amsthm/0) and [AMS Styl
 
 ---
 
-### Phase 2: Update Chapter Show Rules [NOT STARTED]
+### Phase 2: Update Chapter Show Rules [IN PROGRESS]
 
 **Goal**: Apply thmrules show rule in all chapter files
 

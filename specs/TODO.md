@@ -107,9 +107,11 @@ technical_debt:
 
 ### 774. Restore representation theorem as Under Development
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
+- **Researched**: 2026-01-30
+- **Research**: [research-001.md](specs/774_restore_representation_theorem_as_under_development/reports/research-001.md)
 
 **Description**: Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.
 
@@ -135,7 +137,7 @@ technical_debt:
 
 ### 771. Improve Typst formatting to AMS journal style
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Priority**: Medium
 - **Language**: typst
 - **Created**: 2026-01-30

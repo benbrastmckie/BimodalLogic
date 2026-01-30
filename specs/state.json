@@ -8,12 +8,21 @@
     {
       "project_number": 774,
       "project_name": "restore_representation_theorem_as_under_development",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Restore representation theorem proofs from Boneyard/Metalogic_v4/ (archived by task 772) to an Under Development section alongside the Algebraic/ approach. Include TaskRelation.lean, CoherentConstruction.lean, TruthLemma.lean and related files that naturally belong together as work-in-progress completeness approaches.",
       "created": "2026-01-30T01:27:04Z",
-      "last_updated": "2026-01-30T01:27:04Z"
+      "last_updated": "2026-01-30T01:33:05Z",
+      "session_id": "sess_1769736532_49e779",
+      "researched": "2026-01-30T01:33:05Z",
+      "artifacts": [
+        {
+          "path": "specs/774_restore_representation_theorem_as_under_development/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of 7 representation theorem files for restoration with import isolation strategy following Algebraic/ pattern"
+        }
+      ]
     },
     {
       "project_number": 772,
@@ -55,13 +64,13 @@
     {
       "project_number": 771,
       "project_name": "improve_typst_formatting_ams_journal_style",
-      "status": "planned",
+      "status": "implementing",
       "language": "typst",
       "priority": "medium",
       "description": "Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.",
       "created": "2026-01-30T00:14:14Z",
-      "last_updated": "2026-01-30T01:26:06Z",
-      "session_id": "sess_1769734979_9235be",
+      "last_updated": "2026-01-30T01:31:17Z",
+      "session_id": "sess_1769736660_93f003",
       "researched": "2026-01-30T00:17:50Z",
       "artifacts": [
         {
@@ -75,7 +84,8 @@
           "summary": "Revised 5-phase plan migrating from thmbox to ctheorems for professional math journal styling"
         }
       ],
-      "planned": "2026-01-30T01:26:06Z"
+      "planned": "2026-01-30T01:26:06Z",
+      "started": "2026-01-30T01:31:17Z"
     },
     {
       "project_number": 767,
