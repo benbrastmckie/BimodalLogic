@@ -21,6 +21,7 @@ in `FMP/SemanticCanonicalModel.lean`.
 | CanonicalHistory.lean | 0 | Depends on TaskRelation (sorried compositionality) |
 | UniversalCanonicalModel.lean | 0 | Depends on TruthLemma + CoherentConstruction |
 | InfinitaryStrongCompleteness.lean | 0 | Depends on UniversalCanonicalModel |
+| Compactness.lean | 0 | Depends on InfinitaryStrongCompleteness |
 
 ## Why the Representation Theorem Approach Failed
 
