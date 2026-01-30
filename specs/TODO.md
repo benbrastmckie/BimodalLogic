@@ -1,5 +1,5 @@
 ---
-next_project_number: 777
+next_project_number: 778
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -47,6 +47,17 @@ technical_debt:
 
 
 ## Medium Priority
+
+### 777. Complete weak_completeness architectural sorry
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-30
+
+**Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
+
+---
 
 ### 774. Restore representation theorem as Under Development
 - **Effort**: 3 hours
