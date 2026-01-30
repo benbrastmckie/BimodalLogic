@@ -8,20 +8,26 @@
     {
       "project_number": 782,
       "project_name": "revert_bimodal_metalogic_archival_refactor",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "priority": "high",
       "created": "2026-01-30T17:40:59Z",
-      "last_updated": "2026-01-30T17:47:11Z",
-      "session_id": "sess_1769794931_62b2ad",
+      "last_updated": "2026-01-30T17:52:57Z",
+      "session_id": "sess_1769795443_0f51f6",
       "researched": "2026-01-30T17:47:11Z",
       "artifacts": [
         {
           "path": "specs/782_revert_bimodal_metalogic_archival_refactor/reports/research-001.md",
           "type": "research",
           "summary": "Research report with git history timeline, reversion strategy options, and risk assessment"
+        },
+        {
+          "path": "specs/782_revert_bimodal_metalogic_archival_refactor/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for Option A path reversion of Bimodal theory"
         }
-      ]
+      ],
+      "planned": "2026-01-30T17:52:57Z"
     },
     {
       "project_number": 781,
