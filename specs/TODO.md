@@ -1,5 +1,5 @@
 ---
-next_project_number: 772
+next_project_number: 773
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -104,6 +104,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 772. Refactor Metalogic for sorry-free archive sorried proofs
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-30
+
+**Description**: Refactor Bimodal/Metalogic/ to archive all sorried proofs to Boneyard/ for a sorry-free metalogic. Move TaskRelation.lean (5 sorries), CoherentConstruction.lean (8 sorries), TruthLemma.lean (4 sorries), and sorried FMP theorems to Boneyard/. Refactor weak_completeness to use semantic_weak_completeness approach instead of representation_theorem. Preserve all theorem statements and ensure build passes. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/, Examples/).
+
+---
 
 ### 771. Improve Typst formatting to AMS journal style
 - **Effort**: TBD

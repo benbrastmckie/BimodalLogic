@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 772,
+      "project_name": "refactor_metalogic_sorry_free_archive_sorried_proofs",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Refactor Bimodal/Metalogic/ to archive all sorried proofs to Boneyard/ for a sorry-free metalogic. Move TaskRelation.lean (5 sorries), CoherentConstruction.lean (8 sorries), TruthLemma.lean (4 sorries), and sorried FMP theorems to Boneyard/. Refactor weak_completeness to use semantic_weak_completeness approach instead of representation_theorem. Preserve all theorem statements and ensure build passes. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/, Examples/).",
+      "created": "2026-01-30T00:22:16Z",
+      "last_updated": "2026-01-30T00:22:16Z"
+    },
+    {
       "project_number": 771,
       "project_name": "improve_typst_formatting_ams_journal_style",
       "status": "researched",
@@ -523,7 +533,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 772,
+  "next_project_number": 773,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
