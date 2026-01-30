@@ -1,7 +1,7 @@
 # Implementation Plan: Task #768
 
 - **Task**: 768 - neovim_ctrl_backslash_stt_toggle_claude_code
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Priority**: medium
 - **Dependencies**: None
@@ -43,7 +43,7 @@ Replace the non-functional `<C-\>` terminal mode mapping with `<C-'>` for STT to
 
 ## Implementation Phases
 
-### Phase 1: Update stt/init.lua [NOT STARTED]
+### Phase 1: Update stt/init.lua [COMPLETED]
 
 **Goal**: Replace global terminal mode `<C-\>` with `<C-'>`
 
@@ -62,7 +62,7 @@ Replace the non-functional `<C-\>` terminal mode mapping with `<C-'>` for STT to
 
 ---
 
-### Phase 2: Update claudecode.lua [NOT STARTED]
+### Phase 2: Update claudecode.lua [COMPLETED]
 
 **Goal**: Remove redundant terminal mode mapping from TermOpen autocmd
 
@@ -81,7 +81,7 @@ Replace the non-functional `<C-\>` terminal mode mapping with `<C-'>` for STT to
 
 ---
 
-### Phase 3: Verify and Document [NOT STARTED]
+### Phase 3: Verify and Document [COMPLETED]
 
 **Goal**: Ensure the changes work correctly
 

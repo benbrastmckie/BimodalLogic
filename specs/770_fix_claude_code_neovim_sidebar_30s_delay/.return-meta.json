@@ -1,21 +1,15 @@
 {
-  "status": "researched",
-  "started_at": "2026-01-30T12:00:00Z",
-  "completed_at": "2026-01-30T12:30:00Z",
-  "artifacts": [
-    {
-      "type": "research",
-      "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/reports/research-001.md",
-      "summary": "Identified two bugs in claude-ready-signal.sh (wrong module path and luaeval syntax) plus wrong autocommand event type in terminal-state.lua"
-    }
-  ],
-  "next_steps": "Run /plan 770 to create implementation plan",
+  "status": "in_progress",
+  "started_at": "2026-01-30T12:45:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
   "metadata": {
-    "session_id": "sess_1769731680_9ccf4f",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 1800,
+    "session_id": "sess_1769732062_30c710",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 4
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
