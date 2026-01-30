@@ -1,7 +1,7 @@
 # Implementation Plan: Fix Claude Code Neovim Sidebar 30-Second Delay
 
 - **Task**: 770 - Fix Claude Code Neovim sidebar 30-second delay
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Priority**: High
 - **Dependencies**: None
@@ -44,7 +44,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Fix claude-ready-signal.sh [NOT STARTED]
+### Phase 1: Fix claude-ready-signal.sh [COMPLETED]
 
 **Goal**: Correct the module path and Lua eval syntax in the signal hook script
 
@@ -65,7 +65,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Fix terminal-state.lua TextChanged Event [NOT STARTED]
+### Phase 2: Fix terminal-state.lua TextChanged Event [COMPLETED]
 
 **Goal**: Add TextChangedT to the autocommand events for terminal buffer detection
 
@@ -84,7 +84,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Verification and Testing [NOT STARTED]
+### Phase 3: Verification and Testing [COMPLETED]
 
 **Goal**: Verify the fix works end-to-end
 

@@ -107,7 +107,7 @@ technical_debt:
 
 ### 772. Refactor Metalogic for sorry-free archive sorried proofs
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-30
@@ -131,14 +131,16 @@ technical_debt:
 
 ### 770. Fix Claude Code Neovim sidebar 30-second delay
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: Medium
 - **Language**: general
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
 - **Planned**: 2026-01-30
+- **Completed**: 2026-01-30
 - **Research**: [research-001.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260130.md](specs/770_fix_claude_code_neovim_sidebar_30s_delay/summaries/implementation-summary-20260130.md)
 
 **Description**: Claude Code sidebar has 30-second blank delay when opened from Neovim (no delay when opened directly in terminal). Already attempted fix: added claude-ready-signal.sh to SessionStart hooks in .claude/settings.json and verified hook is registered correctly. Despite this, Neovim's terminal-state.lua still waits ~30 seconds before sidebar becomes responsive, suggesting the SessionStart hook either isn't firing or the nvim --remote-expr signal isn't reaching Neovim. Need to debug: 1) whether hook actually executes (check logs), 2) whether $NVIM environment variable is set correctly in hook context, 3) whether nvim --remote-expr call succeeds, 4) whether on_claude_ready() is actually called in Neovim. May need to add debug logging to both claude-ready-signal.sh and terminal-state.lua to trace the signal path.
 

@@ -8,12 +8,13 @@
     {
       "project_number": 772,
       "project_name": "refactor_metalogic_sorry_free_archive_sorried_proofs",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Refactor Bimodal/Metalogic/ to archive all sorried proofs to Boneyard/ for a sorry-free metalogic. Move TaskRelation.lean (5 sorries), CoherentConstruction.lean (8 sorries), TruthLemma.lean (4 sorries), and sorried FMP theorems to Boneyard/. Refactor weak_completeness to use semantic_weak_completeness approach instead of representation_theorem. Preserve all theorem statements and ensure build passes. Goal: zero sorry count in Theories/Bimodal/Metalogic/ (excluding Boneyard/, Examples/).",
       "created": "2026-01-30T00:22:16Z",
-      "last_updated": "2026-01-30T00:22:16Z"
+      "last_updated": "2026-01-30T00:26:14Z",
+      "session_id": "sess_1769732744_ce1b0e"
     },
     {
       "project_number": 771,
@@ -37,12 +38,12 @@
     {
       "project_number": 770,
       "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-30T00:04:52Z",
-      "last_updated": "2026-01-30T00:16:41Z",
-      "session_id": "sess_1769732062_30c710",
+      "last_updated": "2026-01-30T00:28:02Z",
+      "session_id": "sess_1769732713_8dce94",
       "researched": "2026-01-30T00:12:26Z",
       "artifacts": [
         {
@@ -54,9 +55,17 @@
           "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase plan to fix hook script bugs and terminal autocommand event"
+        },
+        {
+          "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/summaries/implementation-summary-20260130.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification instructions"
         }
       ],
-      "planned": "2026-01-30T00:16:41Z"
+      "planned": "2026-01-30T00:16:41Z",
+      "started": "2026-01-30T00:25:34Z",
+      "completed": "2026-01-30T00:28:02Z",
+      "completion_summary": "Fixed 30-second Claude Code sidebar delay by correcting SessionStart hook script (wrong Lua module path and eval syntax) and adding TextChangedT fallback event in terminal-state.lua."
     },
     {
       "project_number": 769,
