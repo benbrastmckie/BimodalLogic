@@ -17,10 +17,10 @@ priority_distribution:
   medium: 4
   low: 1
 technical_debt:
-  sorry_count: 79
+  sorry_count: 66
   axiom_count: 10
   build_errors: 0
-  status: manageable
+  status: good
 ---
 
 # TODO
