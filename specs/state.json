@@ -8,12 +8,20 @@
     {
       "project_number": 770,
       "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "priority": "medium",
       "created": "2026-01-30T00:04:52Z",
-      "last_updated": "2026-01-30T00:08:22Z",
-      "session_id": "sess_1769731680_9ccf4f"
+      "last_updated": "2026-01-30T00:12:26Z",
+      "session_id": "sess_1769731680_9ccf4f",
+      "researched": "2026-01-30T00:12:26Z",
+      "artifacts": [
+        {
+          "path": "specs/770_fix_claude_code_neovim_sidebar_30s_delay/reports/research-001.md",
+          "type": "research",
+          "summary": "Identified two bugs in claude-ready-signal.sh (wrong module path and luaeval syntax) plus wrong autocommand event type in terminal-state.lua"
+        }
+      ]
     },
     {
       "project_number": 769,
@@ -44,13 +52,13 @@
     {
       "project_number": 768,
       "project_name": "neovim_ctrl_backslash_stt_toggle_claude_code",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "priority": "medium",
       "description": "Create a <C-'> mapping in neovim config at /home/benjamin/.config/nvim/lua/neotex/plugins/ai/claudecode.lua for use within the Claude Code sidebar terminal mode to toggle STT. Research confirmed <C-\\\\> cannot be mapped in terminal mode (reserved by Neovim). Use <C-'> as the alternative binding, removing any existing <C-\\\\> mappings that don't work.",
       "created": "2026-01-29T23:36:23Z",
-      "last_updated": "2026-01-30T00:10:32Z",
-      "session_id": "sess_1769731709_8ecca1",
+      "last_updated": "2026-01-30T00:12:13Z",
+      "session_id": "sess_1769731911_f28c4c",
       "researched": "2026-01-29T23:59:45Z",
       "artifacts": [
         {
@@ -69,7 +77,8 @@
           "summary": "3-phase implementation plan: update stt/init.lua, remove redundant mapping from claudecode.lua, verify changes"
         }
       ],
-      "planned": "2026-01-30T00:10:32Z"
+      "planned": "2026-01-30T00:10:32Z",
+      "started": "2026-01-30T00:12:13Z"
     },
     {
       "project_number": 767,

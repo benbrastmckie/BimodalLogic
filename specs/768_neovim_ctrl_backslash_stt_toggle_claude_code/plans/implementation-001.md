@@ -1,7 +1,7 @@
 # Implementation Plan: Task #768
 
 - **Task**: 768 - neovim_ctrl_backslash_stt_toggle_claude_code
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Priority**: medium
 - **Dependencies**: None
