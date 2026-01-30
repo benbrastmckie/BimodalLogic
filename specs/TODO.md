@@ -5,15 +5,15 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-01-30T02:30:00Z
 task_counts:
-  active: 9
+  active: 8
   completed: 331
   in_progress: 2
-  not_started: 4
-  abandoned: 23
+  not_started: 3
+  abandoned: 24
   total: 355
 priority_distribution:
   critical: 0
-  high: 3
+  high: 2
   medium: 4
   low: 2
 technical_debt:
@@ -60,19 +60,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260130.md](specs/782_revert_bimodal_metalogic_archival_refactor/summaries/implementation-summary-20260130.md)
 
 **Description**: Revert the Bimodal/ theory to before the archival refactor. The archival was intended to produce a sorry-free proof leading to completeness and compactness, but this has not worked out. Attention shifted to semantic_weak_completeness instead of weak_completeness, which was a mistake. Need to revert Bimodal/ theory code while preserving unrelated changes (like .claude/ modifications). Documentation should also be reverted since there have been mistakes in emphasis there as well.
-
----
-
-### 781. Refactor Metalogic to eliminate valid and achieve zero-sorry completeness
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Priority**: High
-- **Language**: lean
-- **Created**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Research**: [research-001.md](specs/781_refactor_metalogic_zero_sorry_completeness/reports/research-001.md)
-
-**Description**: Refactor Metalogic to eliminate `valid` and achieve zero-sorry completeness. Currently, `weak_completeness` has 1 architectural sorry because it bridges `valid φ` (universal quantification over ALL models with arbitrary truth definitions) to provability. The sorry-free `semantic_weak_completeness` works with `SemanticWorldState` but has an incompatible type signature. Two theorems depend on `weak_completeness`: (1) `finite_strong_completeness` at Completeness/FiniteStrongCompleteness.lean:197 uses `weak_completeness (impChain Γ φ) h_valid` where h_valid has type `valid (impChain Γ φ)`, and (2) the finite model property proof at FMP/FiniteModelProperty.lean:113 uses `weak_completeness (Formula.neg φ) h_neg_valid`. Refactoring approach: (1) Redefine `finite_strong_completeness` to work directly with semantic truth conditions instead of `valid`, eliminating the need for `weak_completeness`, (2) Similarly refactor the finite model property proof to avoid `valid`, (3) Archive `WeakCompleteness.lean` to Boneyard once dependencies are removed, (4) Update all documentation and exports. This is complex because it changes public API type signatures and requires proving that semantic truth is sufficient for these theorems. Expected outcome: Metalogic with zero sorries in active code, using only `semantic_weak_completeness` as the canonical completeness result.
 
 ---
 
