@@ -1,7 +1,7 @@
 # Implementation Plan: Task #782
 
 - **Task**: 782 - Revert Bimodal theory to before archival refactor
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Priority**: High
 - **Dependencies**: None
@@ -143,7 +143,7 @@ The research report identified:
 
 ---
 
-### Phase 5: Commit Changes [IN PROGRESS]
+### Phase 5: Commit Changes [COMPLETED]
 
 **Goal**: Commit reversion with clear history
 

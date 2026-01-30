@@ -8,12 +8,12 @@
     {
       "project_number": 782,
       "project_name": "revert_bimodal_metalogic_archival_refactor",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "priority": "high",
       "created": "2026-01-30T17:40:59Z",
-      "last_updated": "2026-01-30T17:52:57Z",
-      "session_id": "sess_1769795443_0f51f6",
+      "last_updated": "2026-01-30T17:59:30Z",
+      "session_id": "sess_1769795659_3b6732",
       "researched": "2026-01-30T17:47:11Z",
       "artifacts": [
         {
@@ -25,9 +25,17 @@
           "path": "specs/782_revert_bimodal_metalogic_archival_refactor/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for Option A path reversion of Bimodal theory"
+        },
+        {
+          "path": "specs/782_revert_bimodal_metalogic_archival_refactor/summaries/implementation-summary-20260130.md",
+          "type": "summary",
+          "summary": "Implementation summary with detailed list of removed/restored files"
         }
       ],
-      "planned": "2026-01-30T17:52:57Z"
+      "planned": "2026-01-30T17:52:57Z",
+      "started": "2026-01-30T17:54:37Z",
+      "completed": "2026-01-30T17:59:30Z",
+      "completion_summary": "Reverted Bimodal theory to pre-archival state, removing Boneyard directory and restoring original Metalogic structure with 51 lean files. Build verified passing."
     },
     {
       "project_number": 781,
