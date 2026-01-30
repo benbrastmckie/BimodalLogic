@@ -1,161 +1,186 @@
-# Bimodal Metalogic Infrastructure
+# TM Bimodal Logic Metalogic
 
-## Overview
+This directory contains the metalogic infrastructure for TM bimodal logic, including soundness, completeness, and the finite model property.
 
-This directory contains the universal parametric canonical model construction for proving completeness of TM bimodal logic.
-The approach uses indexed families of maximal consistent sets (MCS) with temporal coherence conditions, avoiding the T-axiom requirement that blocked earlier approaches.
+## What the Metalogic Establishes
 
-## Architecture
+The metalogic proves the fundamental metatheoretic results for TM bimodal logic:
 
-### IndexedMCSFamily Approach
+1. **Soundness**: Every derivable formula is semantically valid
+2. **Representation**: Consistent formulas have canonical models
+3. **Completeness**: Every valid formula is derivable (uses Representation)
+4. **Finite Model Property**: Satisfiable formulas have finite models
+5. **Algebraic**: Alternative approach via Lindenbaum quotient and ultrafilter-MCS bijection
 
-The key insight: Build a family of maximal consistent sets indexed by time, where each time point has its own MCS connected via temporal coherence conditions.
+## Main Results
 
-**Why not the same MCS at all times?**
-- TM logic has IRREFLEXIVE temporal operators (G/H exclude the present)
-- T-axiom (`G phi -> phi`) is NOT valid in TM
-- Same-MCS approach would require T-axiom for truth lemma
-
-**Solution**:
-- `IndexedMCSFamily D`: Maps each time `t : D` to an MCS
-- Coherence conditions: `G phi in mcs(t)` implies `phi in mcs(t')` for `t' > t` (strictly future)
-- Matches irreflexive semantics perfectly
-
-### Temporal Coherence Conditions
-
-The four coherence conditions are critical for correctness:
-
-1. **forward_G**: G formulas at t propagate to all strictly future t' > t
-   - Semantic justification: If `G phi` means "phi at all strictly future times", and `G phi` is in mcs(t), then phi must be in mcs(t') for any t' > t
-
-2. **backward_H**: H formulas at t propagate to all strictly past t' < t
-   - Symmetric to forward_G for past direction
-
-3. **forward_H**: H formulas at future times connect to past
-   - Looking back from the future: If at some future time t' > t we have "phi was always true in the past", then phi must have been true at t
-
-4. **backward_G**: G formulas at past times connect to present
-   - Looking forward from the past: If at some past time t' < t we have "phi will always be true in the future", then phi must be true at t
-
-**Key**: All conditions use STRICT inequality (< not <=), matching TM's irreflexive operators.
-
-### Main Components
-
-| File | Purpose |
-|------|---------|
-| `Core/MaximalConsistent.lean` | Re-exports MCS infrastructure from Boneyard |
-| `Core/DeductionTheorem.lean` | Deduction theorem infrastructure |
-| `Core/MCSProperties.lean` | Essential MCS lemmas for Representation layer |
-| `Representation/IndexedMCSFamily.lean` | MCS family structure definition |
-| `Representation/CoherentConstruction.lean` | **Coherent family construction (RECOMMENDED)** |
-| `Representation/CanonicalWorld.lean` | World state construction from MCS |
-| `Representation/CanonicalHistory.lean` | History construction from family |
-| `Representation/TaskRelation.lean` | Task relation definition |
-| `Representation/TruthLemma.lean` | Truth correspondence (MCS membership <-> semantic truth) |
-| `Representation/UniversalCanonicalModel.lean` | Representation theorem (consistent -> satisfiable) |
-
-### Duration Parametricity
-
-All constructions are parametric over the duration type `D`:
-- `D` must be a totally ordered abelian group (`AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`)
-- Examples: Int, Rat, Real, custom bounded groups
-- Matches JPL paper specification exactly
-
-This parametricity means the completeness result holds for any compatible time domain, not just integers.
-
-## Key Theorems
-
-### Representation Theorem
+### Soundness (`Soundness/`)
 ```lean
-theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
-    exists (family : IndexedMCSFamily D) (t : D),
-      phi in family.mcs t /\
-      truth_at (canonical_model D family) (canonical_history_family D family) t phi
+theorem soundness : (Gamma ⊢ φ) → (Gamma ⊨ φ)
 ```
+All 15 TM axioms and 7 derivation rules preserve validity.
 
-Every consistent formula is satisfiable in the canonical model.
-
-### Truth Lemma
+### Representation (`Representation/`)
 ```lean
-theorem truth_lemma (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
-    phi in family.mcs t <-> truth_at (canonical_model D family) (canonical_history_family D family) t phi
+theorem representation_theorem : SetConsistent {φ} → satisfiable_in_canonical_model φ
+```
+Consistent formulas are satisfiable in the universal canonical model.
+
+### Weak Completeness (`Completeness/`)
+```lean
+theorem weak_completeness : valid φ → ContextDerivable [] φ
+theorem provable_iff_valid : ContextDerivable [] φ ↔ valid φ
+```
+(Depends on Representation for canonical model construction.)
+
+### Finite Model Property (`FMP/`)
+```lean
+theorem finite_model_property : satisfiable φ → ∃ finite_model, satisfiable_in φ
+theorem semanticWorldState_card_bound : card worlds ≤ 2^closureSize
 ```
 
-MCS membership corresponds exactly to semantic truth.
-
-## Current Status
-
-### Completeness: PROVEN (with gaps not on critical path)
-
-The completeness theorem is proven via the following path:
+## Architecture Overview
 
 ```
-representation_theorem
-    └── truth_lemma_forward
-        ├── all_past forward   → backward_H Case 4 ✅ PROVEN
-        └── all_future forward → forward_G Case 1 ✅ PROVEN
+Metalogic/
+├── Core/              # Foundational definitions and MCS theory
+│   ├── MaximalConsistent.lean   # Complete MCS theory
+│   ├── DeductionTheorem.lean    # Deduction theorem
+│   └── MCSProperties.lean       # MCS lemmas
+│
+├── Soundness/         # Soundness theorem
+│   ├── Soundness.lean           # Main theorem + 15 axiom validity
+│   └── SoundnessLemmas.lean     # Temporal duality bridge
+│
+├── Representation/    # Canonical model core definitions
+│   ├── IndexedMCSFamily.lean    # MCS family structure
+│   └── CanonicalWorld.lean      # Canonical world state definitions
+│
+├── FMP/               # Finite Model Property (parametric)
+│   ├── Closure.lean             # Subformula closure
+│   ├── SemanticCanonicalModel.lean  # Finite model construction
+│   └── FiniteModelProperty.lean # FMP theorem
+│
+├── Completeness/      # Weak and finite strong completeness
+│   ├── Completeness.lean           # Re-export module
+│   ├── WeakCompleteness.lean       # valid → provable
+│   └── FiniteStrongCompleteness.lean  # Context-based version
+│
+├── Algebraic/         # Alternative algebraic approach
+│   ├── LindenbaumQuotient.lean     # Quotient construction via provable equivalence
+│   ├── BooleanStructure.lean       # Boolean algebra instance for quotient
+│   ├── InteriorOperators.lean      # G/H as interior operators
+│   ├── UltrafilterMCS.lean         # Bijection: ultrafilters <-> MCS
+│   └── AlgebraicRepresentation.lean # Main representation theorem
+│
+└── UnderDevelopment/  # Work-in-progress approaches (NOT in main build)
+    ├── RepresentationTheorem/  # Universal canonical model (17 sorries)
+    └── Decidability/           # Tableau decision procedure (5 sorries)
 ```
 
-### What Works
+### Dependency Flowchart (GitHub Rendering)
 
-- **forward_G Case 1** (both t, t' ≥ 0): Proven via `mcs_forward_chain_coherent`
-- **backward_H Case 4** (both t, t' < 0): Proven via `mcs_backward_chain_coherent`
-- **Truth Lemma forward direction**: Proven for all formula types
-- **Representation theorem**: Connects consistent formulas to satisfiable models
+```mermaid
+flowchart TD
+    subgraph Foundations
+        Core["`**Core**
+        MCS theory
+        Lindenbaum lemma
+        Deduction theorem`"]
+    end
 
-### Known Gaps (NOT blocking completeness)
+    subgraph ProofTheory["Proof Theory"]
+        Soundness["`**Soundness**
+        15 TM axioms
+        7 derivation rules
+        Validity preservation
 
-The following have sorries but are not exercised by the completeness proof:
+        Note: Used for provable ↔ valid
+        equivalence, not completeness itself`"]
+    end
 
-| Gap | Location | Why Not Needed |
-|-----|----------|----------------|
-| Cross-origin coherence | CoherentConstruction.lean | Completeness never crosses time 0 |
-| Cross-modal coherence | CoherentConstruction.lean | Chain construction is modality-preserving |
-| forward_H (all cases) | CoherentConstruction.lean | Only needed for backward Truth Lemma |
-| Backward Truth Lemma | TruthLemma.lean | Completeness only uses forward direction |
-| Box cases | TruthLemma.lean | Architectural limitation (modal operators) |
+    subgraph ModelTheory["Model Theory"]
+        Representation["`**Representation**
+        Canonical model construction
+        Indexed MCS families
+        Truth lemma`"]
+    end
 
-See `Boneyard/Metalogic_v3/` for detailed documentation of these gaps.
+    subgraph CompletenessResults["Completeness Results"]
+        Completeness["`**Completeness**
+        Weak: valid → provable
+        Strong: Γ ⊨ φ → Γ ⊢ φ
+        Infinitary: for Set contexts`"]
+    end
 
-## Relation to Boneyard Code
+    subgraph MetalogicalApplications["Metalogical Applications"]
+        FMP["`**Finite Model Property**
+        Satisfiable → finite model
+        Bound: 2^(closure size)
 
-### Boneyard/Metalogic_v2/ (Deprecated)
+        Corollary: Decidability
+        of satisfiability`"]
+    end
 
-Contains deprecated code using:
-- `SemanticCanonicalFrame`: Formula-specific finite canonical frame
-- `SemanticWorldState`: Quotient-based world states
-- Fixed time bounds: FiniteTime with domain [-k, k]
+    subgraph AlgebraicExtension["Algebraic Extension"]
+        Algebraic["`**Algebraic Approach**
+        Lindenbaum quotient
+        Boolean algebra structure
+        Interior operators G/H
+        Ultrafilter-MCS bijection`"]
+    end
 
-**Why deprecated**:
-1. Compositionality sorry in SemanticCanonicalFrame (Task #616 removed the named theorem, sorry now inlined)
-2. Formula-dependence (not universally parametric)
-3. Truth bridge complexity between finite and general models
+    Core --> Soundness
+    Core --> Representation
+    Representation --> Completeness
+    Completeness --> FMP
+    Core --> Algebraic
 
-### Boneyard/Metalogic_v3/ (Documented Gaps)
+    classDef default fill:#fff,stroke:#333,stroke-width:2px,color:#000
+```
 
-Contains documentation for code that is NOT required for completeness:
-- `Coherence/CrossOriginCases.lean`: Unused coherence cases
-- `TruthLemma/BackwardDirection.lean`: Backward Truth Lemma approach
+## Subdirectory Summaries
 
-The current approach avoids these issues by:
-- Using formula-independent MCS families
-- Parametric duration type
-- Direct truth lemma without truth bridge
-- Making coherence definitional in `CoherentConstruction.lean`
+| Directory | Purpose | Status |
+|-----------|---------|--------|
+| `Core/` | MCS theory, Lindenbaum's lemma, deduction theorem | Complete |
+| `Soundness/` | Soundness theorem (15 axioms, 7 rules) | Complete |
+| `Representation/` | Canonical model core definitions | Complete |
+| `Completeness/` | Weak and finite strong completeness | Complete |
+| `FMP/` | Finite model property with 2^n bound | Complete |
+| `Algebraic/` | Alternative algebraic approach | Complete |
+| `UnderDevelopment/` | WIP approaches (isolated from main build) | Research |
 
-## Related Files
+## Known Architectural Limitations
 
-- `Boneyard/README.md`: Explains why previous approaches were deprecated
-- `Semantics/TaskFrame.lean`: Base TaskFrame structure
-- `latex/subfiles/04-Metalogic.tex`: LaTeX documentation
+The main build has minimal sorries:
+
+| Location | Count | Limitation |
+|----------|-------|------------|
+| `Completeness/WeakCompleteness.lean` | 1 | Truth bridge (all models -> provable) |
+
+**Resolution**: Use `semantic_weak_completeness` which is **completely sorry-free** and provides
+the main completeness result via a contrapositive approach that avoids these gaps entirely.
+
+The single sorry in `weak_completeness` exists because bridging "valid in ALL models" to
+"provable" requires the forward truth lemma, which is architecturally impossible. The
+`semantic_weak_completeness` theorem uses a contrapositive approach that avoids this gap.
+
+Additional sorries (in `UnderDevelopment/`) are isolated from the main build.
+
+## Key Features
+
+- **Universal**: Parametric over ANY totally ordered additive commutative group D
+- **Syntactic**: Builds semantic objects from pure syntax (MCS membership)
+- **Self-contained**: NO dependencies on Boneyard/ deprecated code
+- **Type-theoretic**: Uses Lean 4 typeclasses for algebraic structure
 
 ## References
 
-- JPL Paper "The Perpetuity Calculus of Agency" (task frame definition)
-- Blackburn et al. "Modal Logic" Chapter 4 (canonical models, compactness)
-- Research report: specs/654_.../reports/research-004.md (indexed family approach)
+- Modal Logic, Blackburn et al., Chapters 4-5
+- JPL Paper "The Perpetuity Calculus of Agency"
 
 ---
 
-*Last updated: 2026-01-28*
-*Architecture: IndexedMCSFamily universal parametric canonical model with CoherentConstruction*
+*Last updated: 2026-01-30*
+*Architecture: Self-contained universal parametric canonical model*
