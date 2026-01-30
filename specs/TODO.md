@@ -1,5 +1,5 @@
 ---
-next_project_number: 771
+next_project_number: 772
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -104,6 +104,17 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 771. Improve Typst formatting to AMS journal style
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: typst
+- **Created**: 2026-01-30
+
+**Description**: Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.
+
+---
 
 ### 770. Fix Claude Code Neovim sidebar 30-second delay
 - **Effort**: TBD

@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 771,
+      "project_name": "improve_typst_formatting_ams_journal_style",
+      "status": "not_started",
+      "language": "typst",
+      "priority": "medium",
+      "description": "Improve formatting of BimodalReference.typ to match AMS-style professional mathematics journal appearance. Current formatting resembles a college textbook. Changes needed: remove all colors except for clickable links, adopt styling closer to BimodalReference.tex (LaTeX version). Apply systematic improvements across the entire Typst project.",
+      "created": "2026-01-30T00:14:14Z",
+      "last_updated": "2026-01-30T00:14:14Z",
+      "session_id": "sess_1769732047_9e8440"
+    },
+    {
       "project_number": 770,
       "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
       "status": "researched",
@@ -484,7 +495,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 771,
+  "next_project_number": 772,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
