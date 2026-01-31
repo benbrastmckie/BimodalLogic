@@ -69,6 +69,10 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 | `/lake` | `/lake [--clean] [--max-retries N]` | Build with automatic error repair |
 | `/refresh` | `/refresh [--dry-run] [--force]` | Clean orphaned processes and old files |
 
+### Utility Scripts
+
+- `.claude/scripts/export-to-markdown.sh` - Export .claude/ directory to consolidated markdown file
+
 ## State Synchronization
 
 TODO.md and state.json must stay synchronized. Update state.json first (machine state), then TODO.md (user-facing).
