@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "summary": "efq is deprecated (since 2025-12-14) and should be replaced with efq_neg. Both have identical type signatures: (A B : Formula) : ⊢ A.neg.imp (A.imp B). Simple drop-in replacement at lines 402 and 596.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/786_migrate_efq_to_efq_neg/reports/research-001.md",
+      "summary": "Analysis of efq vs efq_neg definitions showing identical signatures and straightforward replacement pattern"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1769895356_4dab83",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

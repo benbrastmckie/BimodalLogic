@@ -29,7 +29,7 @@ technical_debt:
 
 ### 787. Review metalogic progress and determine next steps
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-31
@@ -96,11 +96,12 @@ technical_debt:
 
 ### 786. Migrate efq to efq_neg
 - **Effort**: 30 minutes
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-31
 - **Source**: Code review 2026-01-31
+- **Research**: [research-001.md](specs/786_migrate_efq_to_efq_neg/reports/research-001.md)
 
 **Description**: Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings.
 

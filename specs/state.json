@@ -8,12 +8,13 @@
     {
       "project_number": 787,
       "project_name": "review_metalogic_progress",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Review the progress on completing Bimodal/Metalogic/ and determine what should be done next to establish the results sorry-free. Focus on avoiding redundancies and removing stray proofs that didn't work out.",
       "created": "2026-01-31T21:19:48Z",
-      "last_updated": "2026-01-31T21:35:17Z"
+      "last_updated": "2026-01-31T21:36:52Z",
+      "session_id": "sess_1769895395_ba88da"
     },
     {
       "project_number": 778,
@@ -283,13 +284,21 @@
     {
       "project_number": 786,
       "project_name": "migrate_efq_to_efq_neg",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings. Review from 2026-01-31.",
       "created": "2026-01-31T10:00:00Z",
-      "last_updated": "2026-01-31T10:00:00Z",
-      "session_id": "sess_1769819176_7c46cb"
+      "last_updated": "2026-01-31T21:38:15Z",
+      "session_id": "sess_1769895356_4dab83",
+      "researched": "2026-01-31T21:38:15Z",
+      "artifacts": [
+        {
+          "path": "specs/786_migrate_efq_to_efq_neg/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of efq vs efq_neg definitions showing identical signatures and straightforward replacement pattern"
+        }
+      ]
     }
   ],
   "completed_projects": [
