@@ -11,11 +11,6 @@ task_counts:
   not_started: 2
   abandoned: 24
   total: 362
-priority_distribution:
-  critical: 0
-  high: 3
-  medium: 3
-  low: 2
 technical_debt:
   sorry_count: 196
   axiom_count: 17
@@ -25,12 +20,11 @@ technical_debt:
 
 # TODO
 
-## High Priority
+## Tasks
 
 ### 787. Review metalogic progress and determine next steps
 - **Effort**: 4 hours
 - **Status**: [PLANNED]
-- **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-31
 - **Researched**: 2026-01-31
@@ -45,7 +39,6 @@ technical_debt:
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
 - **Status**: [RESEARCHED]
-- **Priority**: High
 - **Language**: lean
 - **Parent**: Task 381
 - **Subtasks**: 398, 399
@@ -58,7 +51,6 @@ technical_debt:
 ### 398. Port causal semantics to recursive-semantics.md
 - **Effort**: 3-4 hours
 - **Status**: [IMPLEMENTING]
-- **Priority**: High
 - **Language**: markdown
 - **Parent**: Task 394
 - **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
@@ -71,7 +63,6 @@ technical_debt:
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
 - **Status**: [PLANNED]
-- **Priority**: High
 - **Language**: lean
 - **Parent**: Task 394
 - **Dependencies**: 398
@@ -80,12 +71,9 @@ technical_debt:
 
 ---
 
-## Medium Priority
-
 ### 786. Migrate efq to efq_neg
 - **Effort**: 30 minutes
 - **Status**: [RESEARCHED]
-- **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-31
 - **Source**: Code review 2026-01-31
@@ -97,10 +85,9 @@ technical_debt:
 
 ### 778. Remove priority system from task workflow
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Planned**: 2026-01-30
 - **Researched**: 2026-01-30
-- **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-30
 - **Research**: [research-001.md](specs/778_remove_priority_system_from_task_workflow/reports/research-001.md)
@@ -113,7 +100,6 @@ technical_debt:
 ### 777. Complete weak_completeness architectural sorry
 - **Effort**: TBD
 - **Status**: [RESEARCHED]
-- **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-01-30
@@ -126,7 +112,6 @@ technical_debt:
 ### 685. Derive world-history and Barcan theorems
  **Effort**: 8-10 hours
  **Status**: [RESEARCHED]
- **Priority**: Medium
  **Language**: lean
  **Created**: 2026-01-26
  **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
@@ -136,12 +121,9 @@ technical_debt:
 
 ---
 
-## Low Priority
-
 ### 672. Implement agent system upgrade plan
 - **Effort**: 6 weeks
 - **Status**: [REVISED]
-- **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
@@ -160,7 +142,6 @@ technical_debt:
 ### 674. systematic command skill agent architecture improvement
 - **Effort**: 3-4 days
 - **Status**: [IMPLEMENTING]
-- **Priority**: High
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
@@ -178,7 +159,6 @@ technical_debt:
 ### 619. Agent system architecture upgrade (context:fork migration)
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-01-28
-- **Priority**: Medium
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Blocked-By**: Empirically confirmed broken (research-005.md) - GitHub #16803
