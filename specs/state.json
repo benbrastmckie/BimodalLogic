@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 789,
+      "project_name": "wezterm_tab_title_project_and_task_number",
+      "status": "not_started",
+      "language": "general",
+      "created": "2026-01-31T22:38:44Z",
+      "last_updated": "2026-01-31T22:38:44Z"
+    },
+    {
       "project_number": 788,
       "project_name": "wezterm_tab_coloring_on_claude_completion",
       "status": "completed",
@@ -302,7 +310,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 789,
+  "next_project_number": 790,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

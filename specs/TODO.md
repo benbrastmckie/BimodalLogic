@@ -1,5 +1,5 @@
 ---
-next_project_number: 789
+next_project_number: 790
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 789. Configure WezTerm tab title to show project directory and task number
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-01-31
+
+**Description**: Configure WezTerm tab titles to show the project root directory name instead of `nvim ~`. The tab should display as `{tab_number} {project_name}` (e.g., `2 ProofChecker`). When running Claude Code commands with task numbers (`/research 788`, `/plan 788`, `/implement 788`), the tab should include the task number as `{tab_number} {project_name} #{task_number}` (e.g., `2 ProofChecker #788`). Commands without task numbers (`/todo`, `/meta`) should not append a task number. WezTerm config is at `/home/benjamin/.dotfiles/config/wezterm.lua`.
+
+---
 
 ### 788. Improve WezTerm tab coloring for Claude Code completion
 - **Effort**: TBD
