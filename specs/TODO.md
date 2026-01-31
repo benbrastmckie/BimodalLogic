@@ -3,14 +3,14 @@ next_project_number: 788
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-31T21:43:09Z
+  last_assessed: 2026-01-31T22:09:03Z
 task_counts:
-  active: 8
-  completed: 338
+  active: 10
+  completed: 339
   in_progress: 2
   not_started: 2
   abandoned: 24
-  total: 362
+  total: 363
 technical_debt:
   sorry_count: 196
   axiom_count: 17
@@ -80,22 +80,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/786_migrate_efq_to_efq_neg/reports/research-001.md)
 
 **Description**: Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings.
-
----
-
-### 778. Remove priority system from task workflow
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Planned**: 2026-01-30
-- **Researched**: 2026-01-30
-- **Completed**: 2026-01-31
-- **Language**: meta
-- **Created**: 2026-01-30
-- **Research**: [research-001.md](specs/778_remove_priority_system_from_task_workflow/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/778_remove_priority_system_from_task_workflow/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260131.md](specs/778_remove_priority_system_from_task_workflow/summaries/implementation-summary-20260131.md)
-
-**Description**: Remove the High/Medium/Low priority system from task management workflow. Tasks should be added at the top of a flat ## Tasks section in TODO.md, allowing natural priority sorting (new tasks at top, older tasks sink down). Changes: (1) Update TODO.md structure to use single ## Tasks section under # TODO header instead of priority sections; (2) Update /task command (commands/task.md) to prepend new tasks at top of ## Tasks section and remove priority field assignments; (3) Remove priority field from state.json schema in state-management.md; (4) Update skills that create tasks (skill-lake-repair, skill-learn) to target ## Tasks section instead of priority sections; (5) Update CLAUDE.md to remove priority references from examples and documentation; (6) Remove priority_distribution from TODO.md frontmatter if present. Apply new behavior going forward without migrating existing tasks.
 
 ---
 
