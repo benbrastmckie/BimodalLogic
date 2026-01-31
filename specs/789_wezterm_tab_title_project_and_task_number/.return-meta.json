@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/789_wezterm_tab_title_project_and_task_number/reports/research-001.md",
-      "summary": "Research report covering WezTerm tab title customization, user variables for task numbers, and tab activation detection patterns"
+      "type": "plan",
+      "path": "specs/789_wezterm_tab_title_project_and_task_number/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for WezTerm tab title with project name and task number display"
     }
   ],
-  "next_steps": "Run /plan 789 to create implementation plan",
+  "next_steps": "Run /implement 789 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769899434_119c45",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1769899929_249448",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2
   }
 }
