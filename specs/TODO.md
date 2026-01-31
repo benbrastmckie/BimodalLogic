@@ -1,5 +1,5 @@
 ---
-next_project_number: 785
+next_project_number: 787
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -66,6 +66,30 @@ technical_debt:
 ---
 
 ## Medium Priority
+
+### 785. Fix DeductionTheorem build warnings
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-31
+- **Source**: Code review 2026-01-31
+
+**Description**: Fix 8 build warnings in DeductionTheorem.lean: remove 6 unused simp arguments (List.filter) at lines 106, 134, 143, 228, 271, 278 and remove/replace 2 ineffective simp_wf tactics at lines 300, 442.
+
+---
+
+### 786. Migrate efq to efq_neg
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Priority**: Medium
+- **Language**: lean
+- **Created**: 2026-01-31
+- **Source**: Code review 2026-01-31
+
+**Description**: Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings.
+
+---
 
 ### 778. Remove priority system from task workflow
 - **Effort**: 4-6 hours

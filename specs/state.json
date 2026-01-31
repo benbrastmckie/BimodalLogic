@@ -236,6 +236,28 @@
           "summary": "Research report on Evolution/WorldHistory containment theorem and Barcan formula proofs for Logos Dynamics"
         }
       ]
+    },
+    {
+      "project_number": 785,
+      "project_name": "fix_deduction_theorem_warnings",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Fix 8 build warnings in DeductionTheorem.lean: remove 6 unused simp arguments (List.filter) at lines 106, 134, 143, 228, 271, 278 and remove/replace 2 ineffective simp_wf tactics at lines 300, 442. Review from 2026-01-31.",
+      "created": "2026-01-31T10:00:00Z",
+      "last_updated": "2026-01-31T10:00:00Z",
+      "session_id": "sess_1769819176_7c46cb"
+    },
+    {
+      "project_number": 786,
+      "project_name": "migrate_efq_to_efq_neg",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings. Review from 2026-01-31.",
+      "created": "2026-01-31T10:00:00Z",
+      "last_updated": "2026-01-31T10:00:00Z",
+      "session_id": "sess_1769819176_7c46cb"
     }
   ],
   "completed_projects": [
@@ -250,7 +272,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 785,
+  "next_project_number": 787,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
