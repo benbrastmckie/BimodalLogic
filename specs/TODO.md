@@ -1,5 +1,5 @@
 ---
-next_project_number: 787
+next_project_number: 788
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -26,6 +26,17 @@ technical_debt:
 # TODO
 
 ## High Priority
+
+### 787. Review metalogic progress and determine next steps
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Priority**: High
+- **Language**: lean
+- **Created**: 2026-01-31
+
+**Description**: Review the progress so far on completing the metalogic and determine what should be done next to establish the results sorry-free.
+
+---
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
