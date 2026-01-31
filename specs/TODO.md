@@ -34,7 +34,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-01-31
 
-**Description**: Review the progress so far on completing the metalogic and determine what should be done next to establish the results sorry-free.
+**Description**: Review the progress on completing Bimodal/Metalogic/ and determine what should be done next to establish the results sorry-free. Focus on avoiding redundancies and removing stray proofs that didn't work out.
 
 ---
 
