@@ -29,10 +29,12 @@ technical_debt:
 
 ### 787. Review metalogic progress and determine next steps
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Priority**: High
 - **Language**: lean
 - **Created**: 2026-01-31
+- **Researched**: 2026-01-31
+- **Research**: [research-001.md](specs/787_review_metalogic_progress/reports/research-001.md)
 
 **Description**: Review the progress on completing Bimodal/Metalogic/ and determine what should be done next to establish the results sorry-free. Focus on avoiding redundancies and removing stray proofs that didn't work out.
 

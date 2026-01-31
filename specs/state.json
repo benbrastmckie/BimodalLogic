@@ -8,13 +8,21 @@
     {
       "project_number": 787,
       "project_name": "review_metalogic_progress",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Review the progress on completing Bimodal/Metalogic/ and determine what should be done next to establish the results sorry-free. Focus on avoiding redundancies and removing stray proofs that didn't work out.",
       "created": "2026-01-31T21:19:48Z",
-      "last_updated": "2026-01-31T21:36:52Z",
-      "session_id": "sess_1769895395_ba88da"
+      "last_updated": "2026-01-31T21:40:41Z",
+      "session_id": "sess_1769895395_ba88da",
+      "researched": "2026-01-31T21:40:41Z",
+      "artifacts": [
+        {
+          "path": "specs/787_review_metalogic_progress/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Metalogic sorries, redundancies, and recommendations for sorry-free completion"
+        }
+      ]
     },
     {
       "project_number": 778,
