@@ -988,9 +988,6 @@ Skipped (no directory): {N}
 - Task #{N6}
 
 Active tasks remaining: {N}
-- High priority: {N}
-- Medium priority: {N}
-- Low priority: {N}
 
 Repository metrics updated:
 - sorry_count: {N}

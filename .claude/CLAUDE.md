@@ -86,7 +86,6 @@ TODO.md and state.json must stay synchronized. Update state.json first (machine 
     "project_name": "task_slug",
     "status": "planned",
     "language": "lean",
-    "priority": "high",
     "completion_summary": "Required when status=completed",
     "roadmap_items": ["Optional explicit roadmap items"]
   }],
