@@ -8,10 +8,19 @@
     {
       "project_number": 789,
       "project_name": "wezterm_tab_title_project_and_task_number",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "created": "2026-01-31T22:38:44Z",
-      "last_updated": "2026-01-31T22:42:25Z"
+      "last_updated": "2026-01-31T22:55:00Z",
+      "session_id": "sess_1769899434_119c45",
+      "researched": "2026-01-31T22:55:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/789_wezterm_tab_title_project_and_task_number/reports/research-001.md",
+          "summary": "Research report covering WezTerm tab title customization, user variables for task numbers, and tab activation detection patterns"
+        }
+      ]
     },
     {
       "project_number": 788,
