@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 788,
+      "project_name": "wezterm_tab_coloring_on_claude_completion",
+      "status": "not_started",
+      "language": "general",
+      "description": "Improve WezTerm tab coloring for Claude Code completion notifications in neovim. Currently the tab is colored when Claude completes, but should only color if the tab is not already active, and the color should reset when the tab is opened. Config file is managed by home-manager in NixOS at /home/benjamin/.dotfiles/config/wezterm.lua.",
+      "created": "2026-01-31T22:13:14Z",
+      "last_updated": "2026-01-31T22:13:14Z"
+    },
+    {
       "project_number": 787,
       "project_name": "review_metalogic_progress",
       "status": "planned",
@@ -270,7 +279,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 788,
+  "next_project_number": 789,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
