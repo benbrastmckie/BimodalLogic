@@ -72,7 +72,7 @@ The research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Update State Management Rules [IN PROGRESS]
+### Phase 2: Update State Management Rules [COMPLETED]
 
 **Goal**: Remove priority from state.json schema definition and TODO.md format specification
 
@@ -94,7 +94,7 @@ The research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Update Skills That Create Tasks [NOT STARTED]
+### Phase 3: Update Skills That Create Tasks [IN PROGRESS]
 
 **Goal**: Update skill-lake-repair and skill-learn to prepend tasks to ## Tasks section
 

@@ -11,13 +11,13 @@ TODO.md and state.json MUST stay synchronized. Any update to one requires updati
 ### Canonical Sources
 - **state.json**: Machine-readable source of truth
   - next_project_number
-  - active_projects array with status, language, priority
+  - active_projects array with status, language
   - Faster to query (12ms vs 100ms for TODO.md parsing)
 
 - **TODO.md**: User-facing source of truth
   - Human-readable task list with descriptions
   - Status markers in brackets: [STATUS]
-  - Grouped by priority (High/Medium/Low)
+  - Single `## Tasks` section (new tasks prepended at top)
 
 ## Status Transitions
 
@@ -66,7 +66,6 @@ When updating task status:
 ### {NUMBER}. {TITLE}
 - **Effort**: {estimate}
 - **Status**: [{STATUS}]
-- **Priority**: {High|Medium|Low}
 - **Language**: {lean|general|meta|markdown}
 - **Started**: {ISO timestamp}
 - **Completed**: {ISO timestamp}
@@ -83,7 +82,6 @@ When updating task status:
   "project_name": "task_slug_here",
   "status": "planned",
   "language": "lean",
-  "priority": "high",
   "effort": "4 hours",
   "created": "2026-01-08T10:00:00Z",
   "last_updated": "2026-01-08T14:30:00Z",
