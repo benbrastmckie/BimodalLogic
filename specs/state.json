@@ -8,12 +8,12 @@
     {
       "project_number": 788,
       "project_name": "wezterm_tab_coloring_on_claude_completion",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "description": "Improve WezTerm tab coloring for Claude Code completion notifications in neovim. Currently the tab is colored when Claude completes, but should only color if the tab is not already active, and the color should reset when the tab is opened. Config file is managed by home-manager in NixOS at /home/benjamin/.dotfiles/config/wezterm.lua.",
       "created": "2026-01-31T22:13:14Z",
-      "last_updated": "2026-01-31T22:22:18Z",
-      "session_id": "sess_1769898029_d5a5cf",
+      "last_updated": "2026-01-31T22:25:36Z",
+      "session_id": "sess_1769898208_05d8d2",
       "researched": "2026-01-31T22:18:49Z",
       "artifacts": [
         {
@@ -25,9 +25,17 @@
           "path": "specs/788_wezterm_tab_coloring_on_claude_completion/plans/implementation-001.md",
           "type": "plan",
           "summary": "Implementation plan using update-status event handler with tab tracking to auto-clear notification color on tab switch"
+        },
+        {
+          "path": "specs/788_wezterm_tab_coloring_on_claude_completion/summaries/implementation-summary-20260131.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the changes made to WezTerm configuration"
         }
       ],
-      "planned": "2026-01-31T22:22:18Z"
+      "planned": "2026-01-31T22:22:18Z",
+      "started": "2026-01-31T22:23:48Z",
+      "completed": "2026-01-31T22:25:36Z",
+      "completion_summary": "Implemented automatic clearing of WezTerm tab notification color when switching to a notified tab. Added update-status event handler that tracks active tabs via wezterm.GLOBAL and clears CLAUDE_STATUS user variable via OSC escape sequence when tab becomes active."
     },
     {
       "project_number": 787,
