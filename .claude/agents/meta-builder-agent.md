@@ -275,8 +275,6 @@ Options per task:
 - Large: 3-6 hours
 - Very Large: > 6 hours (consider splitting)
 
-**Question 6**: Priority assignment (High, Medium, Low per task)
-
 ### Interview Stage 5: ReviewAndConfirm (CRITICAL)
 
 **MANDATORY**: User MUST confirm before any task creation.
@@ -291,10 +289,10 @@ Options per task:
 
 **Tasks to Create** ({N} total):
 
-| # | Title | Language | Priority | Effort | Dependencies |
-|---|-------|----------|----------|--------|--------------|
-| {N} | {title} | {lang} | {pri} | {hrs} | None |
-| {N} | {title} | {lang} | {pri} | {hrs} | #{N} |
+| # | Title | Language | Effort | Dependencies |
+|---|-------|----------|--------|--------------|
+| {N} | {title} | {lang} | {hrs} | None |
+| {N} | {title} | {lang} | {hrs} | #{N} |
 
 **Total Estimated Effort**: {sum} hours
 ```
@@ -336,7 +334,6 @@ slug=$(echo "{title}" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9
 ### {N}. {Title}
 - **Effort**: {estimate}
 - **Status**: [NOT STARTED]
-- **Priority**: {priority}
 - **Language**: {language}
 - **Dependencies**: Task #{N}, Task #{N}
 
@@ -353,11 +350,8 @@ slug=$(echo "{title}" | tr '[:upper:]' '[:lower:]' | tr ' ' '_' | tr -cd 'a-z0-9
 
 Created {N} task(s) for {domain}:
 
-**High Priority**:
 - Task #{N}: {title}
   Path: specs/{N}_{slug}/
-
-**Medium Priority**:
 - Task #{N}: {title} (depends on #{N})
   Path: specs/{N}_{slug}/
 
@@ -556,7 +550,7 @@ Return ONLY valid JSON matching this schema:
 For each created task:
 
 1. **Update TODO.md**:
-   - Add task entry under appropriate priority section
+   - Prepend task entry to `## Tasks` section
    - Include all required fields
 
 2. **Update state.json**:

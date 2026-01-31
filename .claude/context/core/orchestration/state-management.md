@@ -73,7 +73,6 @@ specs/
       "project_name": "task_slug",
       "status": "planned",
       "language": "lean",
-      "priority": "high",
       "description": "Detailed task description (50-500 chars)",
       "created": "2025-12-29T09:00:00Z",
       "last_updated": "2025-12-29"

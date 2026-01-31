@@ -97,7 +97,6 @@ Create directory and write report.
 **Started**: {ISO8601}
 **Completed**: {ISO8601}
 **Effort**: {estimate}
-**Priority**: {priority}
 **Dependencies**: {list or None}
 **Sources/Inputs**: - Mathlib, lean_leansearch, lean_loogle, etc.
 **Artifacts**: - path to this report

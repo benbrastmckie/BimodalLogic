@@ -150,7 +150,7 @@ The research report (research-001.md) identified:
 
 ---
 
-### Phase 5: Update Format Files and Agents [IN PROGRESS]
+### Phase 5: Update Format Files and Agents [COMPLETED]
 
 **Goal**: Remove priority references from format specifications and agent definitions
 
@@ -184,7 +184,7 @@ The research report (research-001.md) identified:
 
 ---
 
-### Phase 6: Update TODO.md Structure [NOT STARTED]
+### Phase 6: Update TODO.md Structure [IN PROGRESS]
 
 **Goal**: Convert TODO.md from priority sections to single ## Tasks section
 

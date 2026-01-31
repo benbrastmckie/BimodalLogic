@@ -179,7 +179,6 @@ Write plan file following plan-format.md structure:
 - **Task**: {N} - {title}
 - **Status**: [NOT STARTED]
 - **Effort**: {total_hours} hours
-- **Priority**: {priority}
 - **Dependencies**: {deps or None}
 - **Research Inputs**: {research report path or None}
 - **Artifacts**: plans/implementation-{NNN}.md (this file)
@@ -257,7 +256,6 @@ Re-read the plan file and verify these fields exist (per plan-format.md):
 - `- **Status**: [NOT STARTED]` - **REQUIRED** - Must be present in plan header
 - `- **Task**: {N} - {title}` - Task identifier
 - `- **Effort**:` - Time estimate
-- `- **Priority**:` - Task priority
 - `- **Type**:` - Language type
 
 **If any required field is missing**:

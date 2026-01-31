@@ -477,7 +477,6 @@ Error: Routing mismatch: Lean task must route to lean-* agent
    ### 258. Resolve Truth.lean sorries
    - **Status**: [NOT STARTED]
    - **Language**: lean
-   - **Priority**: High
    ```
 2. Re-run command
 

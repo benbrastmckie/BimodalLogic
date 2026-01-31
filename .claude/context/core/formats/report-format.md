@@ -7,7 +7,6 @@
 - **Started**: `{ISO8601}` when work begins
 - **Completed**: `{ISO8601}` when work completes
 - **Effort**: `{estimate}`
-- **Priority**: `High | Medium | Low`
 - **Dependencies**: `{list or None}`
 - **Sources/Inputs**: bullet list of inputs consulted
 - **Artifacts**: list of produced artifacts (paths)
@@ -56,7 +55,6 @@
 - **Started**: 2025-12-22T10:00:00Z
 - **Completed**: 2025-12-22T13:00:00Z
 - **Effort**: 3 hours
-- **Priority**: High
 - **Dependencies**: None
 - **Sources/Inputs**: ...
 - **Artifacts**: ...
