@@ -1,7 +1,7 @@
 # Implementation Plan: Configure WezTerm Tab Titles
 
 - **Task**: 789 - Configure WezTerm tab title to show project directory and task number
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/789_wezterm_tab_title_project_and_task_number/reports/research-001.md
@@ -45,7 +45,7 @@ Integrated findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Update format-tab-title Handler [NOT STARTED]
+### Phase 1: Update format-tab-title Handler [COMPLETED]
 
 **Goal**: Modify WezTerm's `format-tab-title` to display project name from cwd and task number from user variables.
 
@@ -70,7 +70,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 2: Create Task Number Hook Script [NOT STARTED]
+### Phase 2: Create Task Number Hook Script [COMPLETED]
 
 **Goal**: Create Claude Code hook to parse task numbers from prompts and set WezTerm user variable.
 
@@ -93,7 +93,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 3: Register Hook in Settings [NOT STARTED]
+### Phase 3: Register Hook in Settings [COMPLETED]
 
 **Goal**: Add the new hook to Claude Code's UserPromptSubmit hook chain.
 
@@ -114,7 +114,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 4: Integration Testing [NOT STARTED]
+### Phase 4: Integration Testing [COMPLETED]
 
 **Goal**: Verify complete integration works end-to-end.
 

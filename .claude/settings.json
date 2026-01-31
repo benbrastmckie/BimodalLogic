@@ -94,6 +94,10 @@
         "hooks": [
           {
             "type": "command",
+            "command": "bash .claude/hooks/wezterm-task-number.sh 2>/dev/null || echo '{}'"
+          },
+          {
+            "type": "command",
             "command": "bash .claude/hooks/wezterm-clear-status.sh 2>/dev/null || echo '{}'"
           }
         ]

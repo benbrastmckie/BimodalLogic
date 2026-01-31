@@ -8,11 +8,11 @@
     {
       "project_number": 789,
       "project_name": "wezterm_tab_title_project_and_task_number",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "created": "2026-01-31T22:38:44Z",
-      "last_updated": "2026-01-31T22:54:53Z",
-      "session_id": "sess_1769899929_249448",
+      "last_updated": "2026-01-31T22:59:49Z",
+      "session_id": "sess_1769900182_a46abc",
       "researched": "2026-01-31T22:55:00Z",
       "artifacts": [
         {
@@ -24,9 +24,17 @@
           "path": "specs/789_wezterm_tab_title_project_and_task_number/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for WezTerm tab title with project name and task number display"
+        },
+        {
+          "path": "specs/789_wezterm_tab_title_project_and_task_number/summaries/implementation-summary-20260131.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-01-31T22:54:53Z"
+      "planned": "2026-01-31T22:54:53Z",
+      "started": "2026-01-31T22:56:39Z",
+      "completed": "2026-01-31T22:59:49Z",
+      "completion_summary": "Configured WezTerm tab titles to show project directory and task numbers via wezterm.lua update and new Claude Code hook."
     },
     {
       "project_number": 788,
