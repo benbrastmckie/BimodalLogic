@@ -47,8 +47,8 @@ When $ARGUMENTS contains a description (no flags):
    ```
 
 2. **Parse description** from $ARGUMENTS:
-   - Remove any trailing flags (--priority, --effort, --language)
-   - Extract optional: priority (default: medium), effort, language
+   - Remove any trailing flags (--effort, --language)
+   - Extract optional: effort, language
 
 3. **Improve description** (transform raw input into well-structured task description):
 
@@ -125,7 +125,6 @@ When $ARGUMENTS contains a description (no flags):
         "project_name": "slug",
         "status": "not_started",
         "language": "detected",
-        "priority": "medium",
         "created": $ts,
         "last_updated": $ts
       }] + .active_projects' \
@@ -142,16 +141,17 @@ When $ARGUMENTS contains a description (no flags):
      specs/TODO.md
    ```
 
-   **Part B - Add task entry** under appropriate priority section:
+   **Part B - Add task entry** by prepending to `## Tasks` section:
    ```markdown
    ### {N}. {Title}
    - **Effort**: {estimate}
    - **Status**: [NOT STARTED]
-   - **Priority**: {priority}
    - **Language**: {language}
 
    **Description**: {description}
    ```
+
+   **Insertion**: Use sed or Edit to insert the new task entry immediately after the `## Tasks` line, so new tasks appear at the top of the list.
 
    **CRITICAL**: Both state.json AND TODO.md frontmatter MUST have matching next_project_number values.
 
@@ -210,7 +210,7 @@ Parse task ranges after --recover (e.g., "343-345", "337, 343"):
    fi
    ```
 
-   **Update TODO.md**: Add recovered task entry under appropriate priority section
+   **Update TODO.md**: Prepend recovered task entry to `## Tasks` section
 
 2. Git commit: "task: recover tasks {ranges}"
 
@@ -301,7 +301,6 @@ fi
 slug=$(echo "$task_data" | jq -r '.project_name')
 status=$(echo "$task_data" | jq -r '.status')
 language=$(echo "$task_data" | jq -r '.language // "general"')
-priority=$(echo "$task_data" | jq -r '.priority // "medium"')
 ```
 
 ### Step 2: Load Task Artifacts
@@ -359,7 +358,6 @@ phases=$(grep -E "^### Phase [0-9]+:" "$plan_file" 2>/dev/null)
 
 **Status**: {status from state.json}
 **Language**: {language}
-**Priority**: {priority}
 
 ### Artifacts Found
 - Plan: {path or "Not found"}
@@ -397,7 +395,6 @@ For each incomplete phase, extract:
    - Goal: {extracted phase goal}
    - Effort: {inherited or "TBD"}
    - Language: {inherited from parent}
-   - Priority: {inherited from parent}
    - Ref: Parent task #{N}
 ```
 
@@ -448,7 +445,6 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      "project_name": "followup_{parent_N}_phase_{P}",
      "status": "not_started",
      "language": "'{language}'",
-     "priority": "'{priority}'",
      "description": $desc,
      "parent_task": '{parent_N}',
      "created": $ts,

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #778
 
 - **Task**: 778 - Remove priority system from task workflow
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/778_remove_priority_system_from_task_workflow/reports/research-001.md
@@ -49,7 +49,7 @@ The research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Update Core Task Command [NOT STARTED]
+### Phase 1: Update Core Task Command [COMPLETED]
 
 **Goal**: Remove priority from /task command - the primary entry point for task creation
 
@@ -72,7 +72,7 @@ The research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Update State Management Rules [NOT STARTED]
+### Phase 2: Update State Management Rules [IN PROGRESS]
 
 **Goal**: Remove priority from state.json schema definition and TODO.md format specification
 
