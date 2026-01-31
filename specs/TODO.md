@@ -3,24 +3,24 @@ next_project_number: 788
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-30T22:39:28Z
+  last_assessed: 2026-01-31T21:43:09Z
 task_counts:
-  active: 9
-  completed: 337
+  active: 8
+  completed: 338
   in_progress: 2
-  not_started: 3
+  not_started: 2
   abandoned: 24
-  total: 361
+  total: 362
 priority_distribution:
   critical: 0
   high: 3
-  medium: 4
+  medium: 3
   low: 2
 technical_debt:
   sorry_count: 196
   axiom_count: 17
-  build_errors: 0
-  status: good
+  build_errors: 1
+  status: manageable
 ---
 
 # TODO
@@ -79,22 +79,6 @@ technical_debt:
 ---
 
 ## Medium Priority
-
-### 785. Fix DeductionTheorem build warnings
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Priority**: Medium
-- **Language**: lean
-- **Created**: 2026-01-31
-- **Completed**: 2026-01-31
-- **Source**: Code review 2026-01-31
-- **Research**: [research-001.md](specs/785_fix_deduction_theorem_warnings/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/785_fix_deduction_theorem_warnings/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260131.md](specs/785_fix_deduction_theorem_warnings/summaries/implementation-summary-20260131.md)
-
-**Description**: Fix 8 build warnings in DeductionTheorem.lean: remove 6 unused simp arguments (List.filter) at lines 106, 134, 143, 228, 271, 278 and remove/replace 2 ineffective simp_wf tactics at lines 300, 442.
-
----
 
 ### 786. Migrate efq to efq_neg
 - **Effort**: 30 minutes
