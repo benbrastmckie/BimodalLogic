@@ -8,20 +8,26 @@
     {
       "project_number": 788,
       "project_name": "wezterm_tab_coloring_on_claude_completion",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "description": "Improve WezTerm tab coloring for Claude Code completion notifications in neovim. Currently the tab is colored when Claude completes, but should only color if the tab is not already active, and the color should reset when the tab is opened. Config file is managed by home-manager in NixOS at /home/benjamin/.dotfiles/config/wezterm.lua.",
       "created": "2026-01-31T22:13:14Z",
-      "last_updated": "2026-01-31T22:18:49Z",
-      "session_id": "sess_1769897641_61f3ac",
+      "last_updated": "2026-01-31T22:22:18Z",
+      "session_id": "sess_1769898029_d5a5cf",
       "researched": "2026-01-31T22:18:49Z",
       "artifacts": [
         {
           "path": "specs/788_wezterm_tab_coloring_on_claude_completion/reports/research-001.md",
           "type": "research",
           "summary": "Research report with WezTerm API analysis and recommended implementation using update-status event and pane:inject_output"
+        },
+        {
+          "path": "specs/788_wezterm_tab_coloring_on_claude_completion/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan using update-status event handler with tab tracking to auto-clear notification color on tab switch"
         }
-      ]
+      ],
+      "planned": "2026-01-31T22:22:18Z"
     },
     {
       "project_number": 787,
