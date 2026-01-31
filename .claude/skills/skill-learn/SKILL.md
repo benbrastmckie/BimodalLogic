@@ -387,7 +387,6 @@ has_note_dependency = (NOTE: tags exist) AND (user selected both "fix-it task" A
   "title": "Update context files from NOTE: tags",
   "description": "Update {N} context files based on learnings:\n\n{grouped by target context}",
   "language": "meta",
-  "priority": "medium",
   "effort": "1-2 hours"
 }
 ```
@@ -405,7 +404,6 @@ Increment: `next_num = next_num + 1`
   "title": "Fix issues from FIX:/NOTE: tags",
   "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}\n\n**Important**: When making changes, remove the FIX: and NOTE: tags from the source files. Leave TODO: tags untouched (they create separate tasks).",
   "language": "{predominant language from source files}",
-  "priority": "high",
   "effort": "2-4 hours",
   "dependencies": [learn_it_task_num]
 }
@@ -417,7 +415,6 @@ Increment: `next_num = next_num + 1`
   "title": "Fix issues from FIX:/NOTE: tags",
   "description": "Address {N} items from embedded tags:\n\n{list of items with file:line references}\n\n**Important**: When making changes, remove the FIX: and NOTE: tags from the source files. Leave TODO: tags untouched (they create separate tasks).",
   "language": "{predominant language from source files}",
-  "priority": "high",
   "effort": "2-4 hours"
 }
 ```
@@ -439,7 +436,6 @@ else -> "general"
   "title": "Update context files from NOTE: tags",
   "description": "Update {N} context files based on learnings:\n\n{grouped by target context}",
   "language": "meta",
-  "priority": "medium",
   "effort": "1-2 hours"
 }
 ```
@@ -459,7 +455,6 @@ For each topic group in `topic_groups`:
   "title": "{topic_label}: {item_count} TODO items",
   "description": "Address TODO items related to {topic_label}:\n\n{item_list}\n\n---\n\nShared context: {shared_terms_description}",
   "language": "{detected from majority file type in group}",
-  "priority": "medium",
   "effort": "{scaled_effort}"
 }
 ```
@@ -495,7 +490,6 @@ Create single task containing all selected TODO items:
   "title": "Address {item_count} TODO items",
   "description": "Combined TODO items from scan:\n\n{all_items_list}\n\n---\n\nFiles: {unique_files_list}",
   "language": "{detected from majority file type}",
-  "priority": "medium",
   "effort": "{scaled_effort}"
 }
 ```
@@ -516,7 +510,6 @@ For each selected TODO item individually:
   "title": "{tag content, truncated to 60 chars}",
   "description": "{full tag content}\n\nSource: {file}:{line}",
   "language": "{detected from file type}",
-  "priority": "medium",
   "effort": "1 hour"
 }
 ```
@@ -557,7 +550,6 @@ current=$(cat specs/state.json)
   "project_name": "{slug}",
   "status": "not_started",
   "language": "{language}",
-  "priority": "high",
   "dependencies": [learn_it_task_num]
 }
 ```
@@ -566,14 +558,13 @@ current=$(cat specs/state.json)
 
 #### 9.2: Update TODO.md
 
-Append new task entry in appropriate priority section:
+Prepend new task entry to `## Tasks` section (new tasks at top):
 
 **Standard format (no dependency)**:
 ```markdown
 ### {N}. {Title}
 - **Effort**: {estimate}
 - **Status**: [NOT STARTED]
-- **Priority**: {priority}
 - **Language**: {language}
 - **Started**: {timestamp}
 
@@ -587,7 +578,6 @@ Append new task entry in appropriate priority section:
 ### {N}. {Title}
 - **Effort**: {estimate}
 - **Status**: [NOT STARTED]
-- **Priority**: {priority}
 - **Language**: {language}
 - **Dependencies**: {learn_it_task_num}
 - **Started**: {timestamp}
@@ -608,11 +598,11 @@ Show summary of created tasks:
 
 ### Created Tasks
 
-| # | Type | Title | Priority | Language |
-|---|------|-------|----------|----------|
-| {N} | fix-it | Fix issues from FIX:/NOTE: tags | High | {lang} |
-| {N+1} | learn-it | Update context files from NOTE: tags | Medium | meta |
-| {N+2} | todo | {title} | Medium | {lang} |
+| # | Type | Title | Language |
+|---|------|-------|----------|
+| {N} | fix-it | Fix issues from FIX:/NOTE: tags | {lang} |
+| {N+1} | learn-it | Update context files from NOTE: tags | meta |
+| {N+2} | todo | {title} | {lang} |
 
 ---
 

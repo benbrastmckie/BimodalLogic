@@ -94,7 +94,7 @@ The research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Update Skills That Create Tasks [IN PROGRESS]
+### Phase 3: Update Skills That Create Tasks [COMPLETED]
 
 **Goal**: Update skill-lake-repair and skill-learn to prepend tasks to ## Tasks section
 
@@ -119,7 +119,7 @@ The research report (research-001.md) identified:
 
 ---
 
-### Phase 4: Update Documentation and Templates [NOT STARTED]
+### Phase 4: Update Documentation and Templates [IN PROGRESS]
 
 **Goal**: Remove priority references from documentation, format files, and agent definitions
 

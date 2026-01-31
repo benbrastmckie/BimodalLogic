@@ -657,7 +657,6 @@ jq --arg ts "$iso_date" \
       "project_name": $slug,
       "status": "not_started",
       "language": "lean",
-      "priority": "high",
       "source": $source,
       "created": $ts,
       "last_updated": $ts,
@@ -672,17 +671,16 @@ jq --arg ts "$iso_date" \
 
 #### 13E: Task Creation - TODO.md
 
-Use Edit tool to add task entry after the "## High Priority" header:
+Use Edit tool to prepend task entry after the `## Tasks` header:
 
-**Find pattern**: `## High Priority` section header
+**Find pattern**: `## Tasks` section header
 
-**Insert after header**:
+**Insert after header** (new tasks at top):
 ```markdown
 
 ### {next_num}. Fix build errors in {basename}
 - **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
-- **Priority**: High
 - **Language**: lean
 - **Source**: {file_path}
 - **Error Report**: [specs/{next_num}_{slug}/reports/error-report-{date_stamp}.md]
@@ -692,8 +690,8 @@ Use Edit tool to add task entry after the "## High Priority" header:
 
 **Edit pattern**:
 ```
-old_string: "## High Priority\n"
-new_string: "## High Priority\n\n### {next_num}. Fix build errors in {basename}\n..."
+old_string: "## Tasks\n"
+new_string: "## Tasks\n\n### {next_num}. Fix build errors in {basename}\n..."
 ```
 
 #### 13F: Final Report
