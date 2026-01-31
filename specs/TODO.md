@@ -80,11 +80,12 @@ technical_debt:
 
 ### 785. Fix DeductionTheorem build warnings
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Priority**: Medium
 - **Language**: lean
 - **Created**: 2026-01-31
 - **Source**: Code review 2026-01-31
+- **Research**: [research-001.md](specs/785_fix_deduction_theorem_warnings/reports/research-001.md)
 
 **Description**: Fix 8 build warnings in DeductionTheorem.lean: remove 6 unused simp arguments (List.filter) at lines 106, 134, 143, 228, 271, 278 and remove/replace 2 ineffective simp_wf tactics at lines 300, 442.
 

@@ -250,13 +250,21 @@
     {
       "project_number": 785,
       "project_name": "fix_deduction_theorem_warnings",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Fix 8 build warnings in DeductionTheorem.lean: remove 6 unused simp arguments (List.filter) at lines 106, 134, 143, 228, 271, 278 and remove/replace 2 ineffective simp_wf tactics at lines 300, 442. Review from 2026-01-31.",
       "created": "2026-01-31T10:00:00Z",
-      "last_updated": "2026-01-31T10:00:00Z",
-      "session_id": "sess_1769819176_7c46cb"
+      "last_updated": "2026-01-31T21:24:30Z",
+      "session_id": "sess_1769894452_efd420",
+      "researched": "2026-01-31T21:24:30Z",
+      "artifacts": [
+        {
+          "path": "specs/785_fix_deduction_theorem_warnings/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of 8 build warnings in DeductionTheorem.lean: 6 unused simp arguments and 2 ineffective simp_wf tactics with specific fix recommendations"
+        }
+      ]
     },
     {
       "project_number": 786,
