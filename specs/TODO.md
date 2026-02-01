@@ -24,11 +24,13 @@ technical_debt:
 
 ### 802. Fix WezTerm tab task number clearing on Neovim exit and /clear command
 - **Effort**: S
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
+- **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/802_wezterm_task_number_clearing_neovim_exit/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/802_wezterm_task_number_clearing_neovim_exit/plans/implementation-001.md)
 
 **Description**: Fix WezTerm tab task number clearing on Neovim exit and /clear command. Task numbers should clear when Neovim closes or when /clear is run in Claude Code, and the tab should show the correct directory (OSC 7). Currently task numbers persist after these events.
 

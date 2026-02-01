@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "summary": "3-phase implementation plan for fixing WezTerm task number clearing",
+  "artifacts": [
+    {
+      "path": "specs/802_wezterm_task_number_clearing_neovim_exit/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "3-phase plan: SessionStart hook for /clear, VimLeavePre autocmd for Neovim exit, integration testing"
+    }
+  ],
+  "next_steps": "Run /implement 802 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769990213_74d311",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.5
+  }
+}
