@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "summary": "Black screen issue likely caused by Claude Code v2.1.27+ rendering bugs, not hook system. Hooks execute quickly (<1s). Recommend testing Claude Code 2.1.25, enabling async hooks, and verifying terminal synchronized output support.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md",
+      "summary": "Comprehensive research report analyzing Claude Code rendering issues, hook system timing, and Neovim integration with 9 prioritized fix recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 793 to create implementation plan for fixes",
+  "metadata": {
+    "session_id": "sess_1769984537_dda9a0",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 2700,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5,
+    "sources_consulted": 12,
+    "files_reviewed": 10
+  }
+}

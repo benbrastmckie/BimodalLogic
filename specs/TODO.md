@@ -24,11 +24,12 @@ technical_debt:
 
 ### 794. Establish sorry-free completeness theorems
 - **Effort**: M
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
+- **Started**: 2026-02-01
 - **Research**: [research-001.md](specs/794_sorry_free_completeness_theorems/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/794_sorry_free_completeness_theorems/plans/implementation-001.md)
 
@@ -38,9 +39,11 @@ technical_debt:
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: general
 - **Created**: 2026-02-01
+- **Researched**: 2026-02-01
+- **Research**: [research-001.md](specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md)
 
 **Description**: Investigate and fix issue where running a command in Claude Code sidebar in neovim causes an initial black screen (all text disappears) for approximately 30 seconds before showing activity. Functionality works correctly otherwise. Issue started recently. Root cause may be in hook system or external. Research online and review hook configuration to identify simple and elegant fix.
 

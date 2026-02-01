@@ -8,11 +8,11 @@
     {
       "project_number": 794,
       "project_name": "sorry_free_completeness_theorems",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-01T22:07:00Z",
-      "last_updated": "2026-02-01T22:18:30Z",
-      "session_id": "sess_1769984132_cc77c1",
+      "last_updated": "2026-02-01T22:24:54Z",
+      "session_id": "sess_1769984672_2945f6",
       "researched": "2026-02-01T22:12:21Z",
       "artifacts": [
         {
@@ -26,15 +26,25 @@
           "summary": "6-phase plan covering soundness import fix, verification of InfinitaryStrongCompleteness dependencies, alternative FMP path if needed, and cleanup"
         }
       ],
-      "planned": "2026-02-01T22:18:30Z"
+      "planned": "2026-02-01T22:18:30Z",
+      "started": "2026-02-01T22:24:54Z"
     },
     {
       "project_number": 793,
       "project_name": "fix_claude_code_neovim_sidebar_black_screen",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "created": "2026-02-01T21:58:48Z",
-      "last_updated": "2026-02-01T21:58:48Z"
+      "last_updated": "2026-02-01T22:45:00Z",
+      "session_id": "sess_1769984537_dda9a0",
+      "researched": "2026-02-01T22:45:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md",
+          "summary": "Comprehensive research report analyzing Claude Code rendering issues, hook system timing, and Neovim integration with 9 prioritized fix recommendations"
+        }
+      ]
     },
     {
       "project_number": 792,
