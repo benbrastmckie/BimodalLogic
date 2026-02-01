@@ -1,5 +1,5 @@
 ---
-next_project_number: 790
+next_project_number: 791
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 790. Add WezTerm OSC 7 integration to Neovim for tab title updates
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-02-01
+
+**Description**: Add WezTerm OSC 7 integration to Neovim to update tab titles when neovim changes working directory. Currently tabs show the shell's cwd (e.g., "benjamin" when shell is in ~), but should show neovim's cwd (e.g., "ProofChecker" when nvim opens a project root). Solution: Add autocmd on DirChanged event to send OSC 7 sequences from neovim. Requires investigating the correct location in the neovim config structure and testing with nvim-tree and session management.
+
+---
 
 ### 789. Configure WezTerm tab title to show project directory and task number
 - **Effort**: S
