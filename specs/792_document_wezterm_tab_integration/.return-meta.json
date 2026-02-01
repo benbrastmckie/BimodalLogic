@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/792_document_wezterm_tab_integration/plans/implementation-001.md",
+      "summary": "4-phase documentation plan covering dotfiles, Neovim, and ProofChecker hook documentation"
+    }
+  ],
+  "next_steps": "Run /implement 792 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769983641_388330",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5
+  }
+}
