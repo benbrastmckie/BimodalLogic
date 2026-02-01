@@ -1,7 +1,15 @@
-import Bimodal.Metalogic.Core.MaximalConsistent
-import Bimodal.Metalogic.Core.MCSProperties
-import Bimodal.Metalogic.Representation.IndexedMCSFamily
-import Mathlib.Algebra.Order.Group.Defs
+/-!
+ARCHIVED FROM: Theories/Bimodal/Metalogic/Representation/TemporalCompleteness.lean
+ARCHIVED DATE: 2026-02-02
+REASON: Not required for completeness - omega-rule limitation documented below.
+        The completeness proof only uses truth_lemma_forward direction.
+
+Original imports (commented out):
+-- import Bimodal.Metalogic.Core.MaximalConsistent
+-- import Bimodal.Metalogic.Core.MCSProperties
+-- import Bimodal.Metalogic.Representation.IndexedMCSFamily
+-- import Mathlib.Algebra.Order.Group.Defs
+-/
 
 /-!
 # Temporal Completeness for Indexed MCS Families

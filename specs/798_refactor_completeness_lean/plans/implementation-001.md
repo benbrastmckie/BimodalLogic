@@ -1,7 +1,7 @@
 # Implementation Plan: Refactor Completeness.lean
 
 - **Task**: 798 - refactor_completeness_lean
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/798_refactor_completeness_lean/reports/research-001.md
@@ -48,7 +48,9 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Core/SetConsistency.lean [NOT STARTED]
+### Phase 1: Create Core/SetConsistency.lean [SKIPPED]
+
+**Note**: Content already exists in `Core/MaximalConsistent.lean` (re-exports from Boneyard) and `Core/MCSProperties.lean`. No new file needed.
 
 **Goal**: Extract consistency definitions and basic MCS properties into a new Core file
 
@@ -70,7 +72,9 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Create Core/Lindenbaum.lean [NOT STARTED]
+### Phase 2: Create Core/Lindenbaum.lean [SKIPPED]
+
+**Note**: `set_lindenbaum` and chain consistency lemmas already exist in `Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` and are re-exported via `Core/MaximalConsistent.lean`. No new file needed.
 
 **Goal**: Extract Lindenbaum lemma and chain consistency infrastructure
 
@@ -93,7 +97,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Create Boneyard Archive [NOT STARTED]
+### Phase 3: Create Boneyard Archive [IN PROGRESS]
 
 **Goal**: Archive deprecated Duration-based canonical model infrastructure
 

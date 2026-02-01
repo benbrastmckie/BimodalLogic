@@ -24,9 +24,11 @@ technical_debt:
 
 ### 802. Fix WezTerm tab task number clearing on Neovim exit and /clear command
 - **Effort**: S
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-01
+- **Researched**: 2026-02-01
+- **Research**: [research-001.md](specs/802_wezterm_task_number_clearing_neovim_exit/reports/research-001.md)
 
 **Description**: Fix WezTerm tab task number clearing on Neovim exit and /clear command. Task numbers should clear when Neovim closes or when /clear is run in Claude Code, and the tab should show the correct directory (OSC 7). Currently task numbers persist after these events.
 
@@ -64,11 +66,12 @@ technical_debt:
 
 ### 798. Refactor Completeness.lean and extract Lindenbaum infrastructure
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
+- **Started**: 2026-02-01
 - **Research**: [research-001.md](specs/798_refactor_completeness_lean/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/798_refactor_completeness_lean/plans/implementation-001.md)
 
@@ -78,11 +81,12 @@ technical_debt:
 
 ### 797. Extract Representation dependencies and archive redundant sorries
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
+- **Started**: 2026-02-01
 - **Research**: [research-001.md](specs/797_extract_representation_dependencies/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/797_extract_representation_dependencies/plans/implementation-001.md)
 

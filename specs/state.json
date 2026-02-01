@@ -8,20 +8,29 @@
     {
       "project_number": 802,
       "project_name": "wezterm_task_number_clearing_neovim_exit",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-01T23:49:49Z",
-      "last_updated": "2026-02-01T23:49:49Z"
+      "last_updated": "2026-02-01T23:54:25Z",
+      "session_id": "sess_1769989848_7ea01a",
+      "researched": "2026-02-01T23:54:25Z",
+      "artifacts": [
+        {
+          "path": "specs/802_wezterm_task_number_clearing_neovim_exit/reports/research-001.md",
+          "type": "research",
+          "summary": "Identified two root causes: SessionStart hook missing for /clear command, and VimLeavePre timing prevents TASK_NUMBER clearing on Neovim exit"
+        }
+      ]
     },
     {
       "project_number": 797,
       "project_name": "extract_representation_dependencies",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Extract the necessary elements from Representation/ that InfinitaryStrongCompleteness.lean depends on (construct_coherent_family, truth_lemma forward direction, canonical_model, canonical_history_family, UniversalCanonicalFrame) into a minimal, clean module. Then archive the redundant and sorry-filled portions of Representation/ to Boneyard/Metalogic_v4/Representation/. The goal is to reduce the 35 sorries in Representation/ while preserving the active dependency chain for infinitary completeness.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-01T23:44:57Z",
-      "session_id": "sess_1769989346_25607b",
+      "last_updated": "2026-02-01T23:51:03Z",
+      "session_id": "sess_1769989842_382d69",
       "researched": "2026-02-01T23:39:48Z",
       "artifacts": [
         {
@@ -35,17 +44,18 @@
           "summary": "4-phase implementation plan for extracting Representation dependencies and archiving redundant code"
         }
       ],
-      "planned": "2026-02-01T23:44:57Z"
+      "planned": "2026-02-01T23:44:57Z",
+      "started": "2026-02-01T23:51:03Z"
     },
     {
       "project_number": 798,
       "project_name": "refactor_completeness_lean",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Refactor the monolithic Completeness.lean (~4000 lines, 39 sorries). Extract essential content: SetConsistent, SetMaximalConsistent definitions to Core/SetConsistency.lean; set_lindenbaum (Lindenbaum lemma via Zorn) and chain consistency lemmas to Core/Lindenbaum.lean. Archive the Duration construction infrastructure, TemporalExt/Coherent interfaces, and generic weak_completeness/strong_completeness axioms to Boneyard/Metalogic_v4/Completeness/MonolithicCompleteness.lean.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-01T23:46:38Z",
-      "session_id": "sess_1769989423_a1d103",
+      "last_updated": "2026-02-01T23:50:34Z",
+      "session_id": "sess_1769989809_610d19",
       "researched": "2026-02-01T23:42:24Z",
       "artifacts": [
         {
@@ -59,7 +69,8 @@
           "summary": "5-phase plan to extract SetConsistency and Lindenbaum modules to Core/, archive Duration infrastructure to Boneyard, and refactor Completeness.lean"
         }
       ],
-      "planned": "2026-02-01T23:46:38Z"
+      "planned": "2026-02-01T23:46:38Z",
+      "started": "2026-02-01T23:50:34Z"
     },
     {
       "project_number": 799,
