@@ -1,5 +1,5 @@
 ---
-next_project_number: 797
+next_project_number: 802
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,56 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 801. Document Soundness temp_t axiom semantic validity issue
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-01
+
+**Description**: Document the 2 sorries in SoundnessLemmas.lean (temp_t axioms). These are NOT semantically valid with strict inequality but were added for syntactic completeness (MCS coherence). Add clear documentation explaining this is an acceptable known limitation. Evaluate if these can be resolved or should be marked as permanent documented technical debt.
+
+---
+
+### 800. Fix FMP/SemanticCanonicalModel sorries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-01
+
+**Description**: Fix the 5 remaining sorries in FMP/SemanticCanonicalModel.lean. This file is part of the core completeness path and contains semantic_weak_completeness. Investigate each sorry, determine if they are essential gaps or can be completed with available lemmas.
+
+---
+
+### 799. Complete Decidability proofs
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-01
+
+**Description**: Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.
+
+---
+
+### 798. Refactor Completeness.lean and extract Lindenbaum infrastructure
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-01
+
+**Description**: Refactor the monolithic Completeness.lean (~4000 lines, 39 sorries). Extract essential content: SetConsistent, SetMaximalConsistent definitions to Core/SetConsistency.lean; set_lindenbaum (Lindenbaum lemma via Zorn) and chain consistency lemmas to Core/Lindenbaum.lean. Archive the Duration construction infrastructure, TemporalExt/Coherent interfaces, and generic weak_completeness/strong_completeness axioms to Boneyard/Metalogic_v4/Completeness/MonolithicCompleteness.lean.
+
+---
+
+### 797. Extract Representation dependencies and archive redundant sorries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-01
+
+**Description**: Extract the necessary elements from Representation/ that InfinitaryStrongCompleteness.lean depends on (construct_coherent_family, truth_lemma forward direction, canonical_model, canonical_history_family, UniversalCanonicalFrame) into a minimal, clean module. Then archive the redundant and sorry-filled portions of Representation/ to Boneyard/Metalogic_v4/Representation/. The goal is to reduce the 35 sorries in Representation/ while preserving the active dependency chain for infinitary completeness.
+
+---
 
 ### 796. Complete all remaining sorries
 - **Effort**: M
