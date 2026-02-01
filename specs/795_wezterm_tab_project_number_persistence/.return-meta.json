@@ -1,0 +1,19 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/795_wezterm_tab_project_number_persistence/reports/research-001.md",
+      "summary": "Identified bug in Neovim monitor clearing TASK_NUMBER on all non-matching prompts; fix is to only clear for explicit non-project commands"
+    }
+  ],
+  "next_steps": "Run /plan 795 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1738449393_a7c3b2",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5
+  }
+}

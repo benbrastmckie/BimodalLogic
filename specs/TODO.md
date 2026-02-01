@@ -1,5 +1,5 @@
 ---
-next_project_number: 796
+next_project_number: 797
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,19 @@ technical_debt:
 
 ## Tasks
 
+### 796. Complete all remaining sorries
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-01
+
+**Description**: Draw on specs/794_sorry_free_completeness_theorems/summaries/implementation-summary-20260201.md to complete all remaining sorries.
+
+---
+
 ### 795. Fix wezterm tab project number persistence for workflow commands
 - **Effort**: S
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-01
 
