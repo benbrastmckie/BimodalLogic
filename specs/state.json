@@ -8,10 +8,10 @@
     {
       "project_number": 794,
       "project_name": "sorry_free_completeness_theorems",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-01T22:07:00Z",
-      "last_updated": "2026-02-01T22:15:48Z",
+      "last_updated": "2026-02-01T22:18:30Z",
       "session_id": "sess_1769984132_cc77c1",
       "researched": "2026-02-01T22:12:21Z",
       "artifacts": [
@@ -19,8 +19,14 @@
           "path": "specs/794_sorry_free_completeness_theorems/reports/research-001.md",
           "type": "research",
           "summary": "Complete analysis of sorry dependencies, two completeness architectures, and recommended implementation strategy for sorry-free weak_completeness, strong_completeness, and compactness"
+        },
+        {
+          "path": "specs/794_sorry_free_completeness_theorems/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan covering soundness import fix, verification of InfinitaryStrongCompleteness dependencies, alternative FMP path if needed, and cleanup"
         }
-      ]
+      ],
+      "planned": "2026-02-01T22:18:30Z"
     },
     {
       "project_number": 793,

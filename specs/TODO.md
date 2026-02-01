@@ -24,11 +24,13 @@ technical_debt:
 
 ### 794. Establish sorry-free completeness theorems
 - **Effort**: M
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
+- **Planned**: 2026-02-01
 - **Research**: [research-001.md](specs/794_sorry_free_completeness_theorems/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/794_sorry_free_completeness_theorems/plans/implementation-001.md)
 
 **Description**: Before archiving extraneous elements to produce a sorry-free metalogic, draw on specs/777_complete_weak_completeness_sorry/reports/research-007.md to identify and remove all sorries that remain in the way of a sorry-free completeness result. Establish weak_completeness and strong_completeness as well as the compactness theorem (all sorry-free) by drawing on semantic_weak_completeness and other established results, finding and filling in all sorries that stand in the way currently.
 
