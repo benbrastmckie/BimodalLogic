@@ -36,7 +36,7 @@ technical_debt:
 
 ### 795. Fix wezterm tab project number persistence for workflow commands
 - **Effort**: S
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -225,11 +225,13 @@ technical_debt:
 
 ### 777. Complete weak_completeness architectural sorry
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-02-01
+- **Planned**: 2026-02-01
 - **Research**: [research-008.md](specs/777_complete_weak_completeness_sorry/reports/research-008.md)
+- **Plan**: [implementation-001.md](specs/777_complete_weak_completeness_sorry/plans/implementation-001.md)
 
 **Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
 

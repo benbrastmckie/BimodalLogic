@@ -2,7 +2,7 @@
 
 - **Task**: 795 - Fix wezterm tab project number persistence for workflow commands
 - **Version**: 004 (Revised)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Dependencies**: Tasks 788-791 completed (WezTerm integration established)
 - **Research Inputs**: specs/795_wezterm_tab_project_number_persistence/reports/research-001.md
@@ -78,7 +78,7 @@ Alternatively, the shell hook already fires only on `UserPromptSubmit` - we can 
 
 ## Implementation Phases
 
-### Phase 1: Analyze Current Monitoring Approach [NOT STARTED]
+### Phase 1: Analyze Current Monitoring Approach [COMPLETED]
 
 **Goal**: Understand exactly how the Neovim monitor currently works and why it clears on Claude output.
 
@@ -99,7 +99,7 @@ Alternatively, the shell hook already fires only on `UserPromptSubmit` - we can 
 
 ---
 
-### Phase 2: Implement Selective Evaluation [NOT STARTED]
+### Phase 2: Implement Selective Evaluation [COMPLETED]
 
 **Goal**: Modify the monitor to only evaluate task numbers on user prompts, not Claude output.
 
@@ -137,7 +137,7 @@ Alternatively, the shell hook already fires only on `UserPromptSubmit` - we can 
 
 ---
 
-### Phase 3: Manual Testing [NOT STARTED]
+### Phase 3: Manual Testing [COMPLETED]
 
 **Goal**: Verify complete behavior across all scenarios.
 
@@ -164,7 +164,7 @@ Alternatively, the shell hook already fires only on `UserPromptSubmit` - we can 
 
 ---
 
-### Phase 4: Update Documentation [NOT STARTED]
+### Phase 4: Update Documentation [COMPLETED]
 
 **Goal**: Document the correct persistence behavior.
 

@@ -56,13 +56,18 @@ Clears `CLAUDE_STATUS` by setting it to an empty value, restoring normal tab app
 **Hook Event**: `UserPromptSubmit`
 **Purpose**: Extract and display task number in tab title
 
-Parses `CLAUDE_USER_PROMPT` environment variable for patterns:
+Parses `CLAUDE_USER_PROMPT` environment variable for workflow patterns:
 - `/research N`
 - `/plan N`
 - `/implement N`
 - `/revise N`
 
-Sets `TASK_NUMBER` user variable with the extracted number.
+**Behavior** (task 795):
+- **Workflow command**: Sets `TASK_NUMBER` user variable to N
+- **Non-workflow command**: Clears `TASK_NUMBER` user variable
+- **Claude output**: No change (preserves current state - no hook fires)
+
+This ensures task numbers persist correctly during Claude's responses and tool executions, only changing when the user submits a new prompt.
 
 ## User Variables
 
@@ -142,12 +147,17 @@ The `format-tab-title` and `update-status` handlers that consume these variables
 
 ## Integration with Neovim
 
-When Claude Code runs inside Neovim (via claude-code.nvim), the Neovim autocmds in `~/.config/nvim/lua/neotex/config/autocmds.lua` provide parallel integration:
+When Claude Code runs inside Neovim (via claude-code.nvim), the Neovim autocmds in `~/.config/nvim/lua/neotex/config/autocmds.lua` provide complementary integration:
 
 - **OSC 7**: Neovim emits directory updates on DirChanged, VimEnter, BufEnter
-- **Task Number**: Neovim monitors Claude terminal buffers and sets TASK_NUMBER via `neotex.lib.wezterm`
+- **Task Number**:
+  - **Shell hook**: Handles set/clear logic on `UserPromptSubmit` (workflow vs non-workflow)
+  - **Neovim monitor**: Only clears TASK_NUMBER when Claude terminal closes
 
-Both mechanisms can run simultaneously without conflict since they set the same user variables.
+This separation (task 795) ensures:
+1. Task numbers persist during Claude's responses (no buffer monitoring)
+2. Task numbers clear correctly on non-workflow commands (shell hook handles)
+3. Task numbers clear when terminal closes (Neovim autocmd handles)
 
 ## Related Documentation
 

@@ -1,23 +1,21 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-01T10:00:00Z",
-  "completed_at": "2026-02-01T11:00:00Z",
-  "summary": "Identified archival candidates: FiniteCanonicalModel.lean (71 sorries) is HIGH priority for archival - deprecated and unused. Representation/ (35 sorries) cannot be archived - actively used by InfinitaryStrongCompleteness. Recommended extracting Lindenbaum lemma from Completeness.lean and archiving rest.",
+  "status": "planned",
+  "summary": "6-phase implementation plan for archiving FiniteCanonicalModel.lean (71 sorries) to Boneyard",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/777_complete_weak_completeness_sorry/reports/research-008.md",
-      "summary": "Post-task-794 archival analysis identifying FiniteCanonicalModel.lean as primary archive target, documenting why Representation/ must be kept despite sorries"
+      "type": "plan",
+      "path": "specs/777_complete_weak_completeness_sorry/plans/implementation-001.md",
+      "summary": "6-phase plan to archive deprecated FiniteCanonicalModel.lean, reducing active sorry count by 71"
     }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Research complete - identified archival candidates and dependencies"
-  },
+  "next_steps": "Run /implement 777 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769986786_2b3f19",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1769987276_c5acdb",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 2
   }
 }

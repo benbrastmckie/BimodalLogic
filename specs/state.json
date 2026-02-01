@@ -25,11 +25,11 @@
     {
       "project_number": 795,
       "project_name": "wezterm_tab_project_number_persistence",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "created": "2026-02-01T22:35:38Z",
-      "last_updated": "2026-02-01T23:03:59Z",
-      "session_id": "sess_1769985956_2ec3ce",
+      "last_updated": "2026-02-01T23:06:56Z",
+      "session_id": "sess_1769987191_0ddc09",
       "researched": "2026-02-01T22:41:23Z",
       "artifacts": [
         {
@@ -43,7 +43,8 @@
           "summary": "Set/clear on user prompt only: task number persists across Claude output until next user input"
         }
       ],
-      "planned": "2026-02-01T23:03:59Z"
+      "planned": "2026-02-01T23:03:59Z",
+      "started": "2026-02-01T23:06:56Z"
     },
     {
       "project_number": 794,
@@ -277,21 +278,27 @@
     {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-02-01T23:05:16Z",
-      "session_id": "sess_1769986786_2b3f19",
+      "last_updated": "2026-02-01T23:10:17Z",
+      "session_id": "sess_1769987276_c5acdb",
       "researched": "2026-02-01T23:05:16Z",
       "artifacts": [
         {
           "path": "specs/777_complete_weak_completeness_sorry/reports/research-008.md",
           "type": "research",
           "summary": "Post-task-794 archival analysis identifying FiniteCanonicalModel.lean as primary archive target, documenting why Representation/ must be kept despite sorries"
+        },
+        {
+          "path": "specs/777_complete_weak_completeness_sorry/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan to archive deprecated FiniteCanonicalModel.lean, reducing active sorry count by 71"
         }
-      ]
+      ],
+      "planned": "2026-02-01T23:10:17Z"
     },
     {
       "project_number": 619,

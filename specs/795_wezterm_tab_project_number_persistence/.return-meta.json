@@ -1,0 +1,39 @@
+{
+  "status": "implemented",
+  "summary": "Fixed WezTerm tab project number persistence by separating concerns: shell hook handles set/clear on user prompt submission, Neovim monitor only handles terminal close cleanup. Removed per-line buffer monitoring that caused task numbers to change during Claude output.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/hooks/wezterm-task-number.sh",
+      "summary": "Added else branch to clear TASK_NUMBER on non-workflow commands"
+    },
+    {
+      "type": "implementation",
+      "path": "~/.config/nvim/lua/neotex/config/autocmds.lua",
+      "summary": "Simplified Claude task number monitoring to only handle terminal close cleanup"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/hooks/wezterm-integration.md",
+      "summary": "Updated documentation to reflect new persistence behavior"
+    },
+    {
+      "type": "summary",
+      "path": "specs/795_wezterm_tab_project_number_persistence/summaries/implementation-summary-20260201.md",
+      "summary": "Implementation summary with verification details"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1769987191_0ddc09",
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "completion_data": {
+    "completion_summary": "Fixed WezTerm tab project number persistence by moving set/clear logic to shell hook (fires only on UserPromptSubmit) and removing per-line buffer monitoring from Neovim. Task numbers now persist during Claude responses and clear on non-workflow commands.",
+    "claudemd_suggestions": "Updated .claude/context/project/hooks/wezterm-integration.md with new persistence behavior documentation"
+  },
+  "next_steps": "Restart Neovim for autocmd changes to take effect, then manually test with workflow and non-workflow commands"
+}
