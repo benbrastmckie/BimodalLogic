@@ -1,5 +1,5 @@
 ---
-next_project_number: 792
+next_project_number: 793
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 792. Review and document WezTerm tab integration with Neovim and Claude Code
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-02-01
+
+**Description**: Review and document WezTerm tab integration with Neovim and Claude Code. Update documentation in ProofChecker/.claude/, ~/.config/nvim/, and ~/.dotfiles/ following the documentation norms and standards in each location. Cover: OSC 7 directory updates (task 790), task number display (tasks 789, 791), tab coloring on Claude completion (task 788), and the interaction between shell hooks and Neovim autocmds.
+
+---
 
 ### 791. Extend WezTerm task number integration for Claude Code commands
 - **Effort**: S
@@ -153,7 +163,7 @@ technical_debt:
 
 ### 777. Complete weak_completeness architectural sorry
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-02-01
