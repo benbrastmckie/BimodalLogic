@@ -24,7 +24,7 @@ technical_debt:
 
 ### 792. Review and document WezTerm tab integration with Neovim and Claude Code
 - **Effort**: M
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 - **Created**: 2026-02-01
 
@@ -163,11 +163,11 @@ technical_debt:
 
 ### 777. Complete weak_completeness architectural sorry
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-02-01
-- **Research**: [research-006.md](specs/777_complete_weak_completeness_sorry/reports/research-006.md)
+- **Research**: [research-007.md](specs/777_complete_weak_completeness_sorry/reports/research-007.md)
 
 **Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
 
