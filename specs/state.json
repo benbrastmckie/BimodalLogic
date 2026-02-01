@@ -28,7 +28,7 @@
       "status": "planned",
       "language": "meta",
       "created": "2026-02-01T22:35:38Z",
-      "last_updated": "2026-02-01T22:56:16Z",
+      "last_updated": "2026-02-01T23:03:59Z",
       "session_id": "sess_1769985956_2ec3ce",
       "researched": "2026-02-01T22:41:23Z",
       "artifacts": [
@@ -38,12 +38,12 @@
           "summary": "Identified bug in Neovim monitor clearing TASK_NUMBER on all non-matching prompts; fix is to only clear for explicit non-project commands"
         },
         {
-          "path": "specs/795_wezterm_tab_project_number_persistence/plans/implementation-003.md",
+          "path": "specs/795_wezterm_tab_project_number_persistence/plans/implementation-004.md",
           "type": "plan",
-          "summary": "Clear-by-default approach: task number only shown during workflow command execution"
+          "summary": "Set/clear on user prompt only: task number persists across Claude output until next user input"
         }
       ],
-      "planned": "2026-02-01T22:56:16Z"
+      "planned": "2026-02-01T23:03:59Z"
     },
     {
       "project_number": 794,
@@ -277,13 +277,13 @@
     {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-02-01T21:56:41Z",
-      "session_id": "sess_1769982713_fb5717",
+      "last_updated": "2026-02-01T23:00:06Z",
+      "session_id": "sess_1769986786_2b3f19",
       "researched": "2026-02-01T21:56:41Z",
       "artifacts": [
         {
