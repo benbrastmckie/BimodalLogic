@@ -24,11 +24,12 @@ technical_debt:
 
 ### 791. Extend WezTerm task number integration for Claude Code commands
 - **Effort**: S
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
+- **Started**: 2026-02-01
 - **Research**: [research-001.md](specs/791_wezterm_task_number_from_claude_commands/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/791_wezterm_task_number_from_claude_commands/plans/implementation-001.md)
 
@@ -154,7 +155,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-02-01
-- **Research**: [research-002.md](specs/777_complete_weak_completeness_sorry/reports/research-002.md)
+- **Research**: [research-003.md](specs/777_complete_weak_completeness_sorry/reports/research-003.md)
 
 **Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
 

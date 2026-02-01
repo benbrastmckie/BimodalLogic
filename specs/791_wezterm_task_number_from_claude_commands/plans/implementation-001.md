@@ -1,7 +1,7 @@
 # Implementation Plan: Task #791
 
 - **Task**: 791 - Extend WezTerm task number integration for Claude Code commands
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: Tasks 788-790 completed, greggh/claude-code.nvim plugin
 - **Research Inputs**: specs/791_wezterm_task_number_from_claude_commands/reports/research-001.md

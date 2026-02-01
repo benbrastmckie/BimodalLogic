@@ -1,20 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/791_wezterm_task_number_from_claude_commands/plans/implementation-001.md",
-      "summary": "5-phase implementation plan for extending WezTerm task number integration to Neovim Claude Code"
-    }
-  ],
-  "next_steps": "Run /implement 791 to execute the plan",
+  "status": "in_progress",
+  "started_at": "2026-02-01T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
   "metadata": {
-    "session_id": "sess_1769980369_3ad64d",
-    "agent_type": "planner-agent",
-    "duration_seconds": 120,
+    "session_id": "sess_1769980607_fc6aa1",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 2.5
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
   }
 }

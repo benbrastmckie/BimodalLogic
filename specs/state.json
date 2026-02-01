@@ -8,11 +8,11 @@
     {
       "project_number": 791,
       "project_name": "wezterm_task_number_from_claude_commands",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "created": "2026-02-01T21:04:25Z",
-      "last_updated": "2026-02-01T21:15:19Z",
-      "session_id": "sess_1769980369_3ad64d",
+      "last_updated": "2026-02-01T21:17:05Z",
+      "session_id": "sess_1769980607_fc6aa1",
       "researched": "2026-02-01T21:10:05Z",
       "artifacts": [
         {
@@ -26,7 +26,8 @@
           "summary": "5-phase implementation plan for extending WezTerm task number integration to Neovim Claude Code"
         }
       ],
-      "planned": "2026-02-01T21:15:19Z"
+      "planned": "2026-02-01T21:15:19Z",
+      "started": "2026-02-01T21:17:05Z"
     },
     {
       "project_number": 790,
@@ -150,19 +151,19 @@
     {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-02-01T21:14:11Z",
+      "last_updated": "2026-02-01T21:17:26Z",
       "session_id": "sess_1769980439_a246e1",
-      "researched": "2026-02-01T21:04:06Z",
+      "researched": "2026-02-01T21:17:26Z",
       "artifacts": [
         {
-          "path": "specs/777_complete_weak_completeness_sorry/reports/research-002.md",
+          "path": "specs/777_complete_weak_completeness_sorry/reports/research-003.md",
           "type": "research",
-          "summary": "Alternative approaches to completeness analyzed; recommends finite model validity as primary theorem; 5 approaches evaluated"
+          "summary": "Algebraic approach analysis: infrastructure complete but same fundamental gap; Box semantics incompatible with algebraic validity"
         }
       ]
     },
