@@ -24,8 +24,11 @@ if [[ -z "${WEZTERM_PANE:-}" ]]; then
     exit_success
 fi
 
-# Get user prompt from Claude Code hook input
-PROMPT="${CLAUDE_USER_PROMPT:-}"
+# Read hook input from stdin (Claude Code provides JSON)
+HOOK_INPUT=$(cat)
+
+# Parse user prompt from JSON input
+PROMPT=$(echo "$HOOK_INPUT" | jq -r '.prompt // ""' 2>/dev/null || echo "")
 
 # Extract task number from Claude commands
 # Matches: /research N, /plan N, /implement N, /revise N
