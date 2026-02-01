@@ -24,9 +24,11 @@ technical_debt:
 
 ### 796. Complete all remaining sorries
 - **Effort**: M
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-01
+- **Researched**: 2026-02-01
+- **Research**: [research-001.md](specs/796_complete_remaining_sorries/reports/research-001.md)
 
 **Description**: Draw on specs/794_sorry_free_completeness_theorems/summaries/implementation-summary-20260201.md to complete all remaining sorries.
 
