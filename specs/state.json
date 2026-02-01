@@ -28,7 +28,7 @@
       "status": "planned",
       "language": "meta",
       "created": "2026-02-01T22:35:38Z",
-      "last_updated": "2026-02-01T22:52:51Z",
+      "last_updated": "2026-02-01T22:56:16Z",
       "session_id": "sess_1769985956_2ec3ce",
       "researched": "2026-02-01T22:41:23Z",
       "artifacts": [
@@ -38,12 +38,12 @@
           "summary": "Identified bug in Neovim monitor clearing TASK_NUMBER on all non-matching prompts; fix is to only clear for explicit non-project commands"
         },
         {
-          "path": "specs/795_wezterm_tab_project_number_persistence/plans/implementation-002.md",
+          "path": "specs/795_wezterm_tab_project_number_persistence/plans/implementation-003.md",
           "type": "plan",
-          "summary": "Simplified 3-phase plan removing clearing logic - task number persists until terminal close"
+          "summary": "Clear-by-default approach: task number only shown during workflow command execution"
         }
       ],
-      "planned": "2026-02-01T22:52:51Z"
+      "planned": "2026-02-01T22:56:16Z"
     },
     {
       "project_number": 794,
