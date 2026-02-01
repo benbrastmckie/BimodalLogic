@@ -8,10 +8,19 @@
     {
       "project_number": 790,
       "project_name": "neovim_wezterm_osc7_tab_title",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "created": "2026-02-01T19:17:34Z",
-      "last_updated": "2026-02-01T19:17:34Z"
+      "last_updated": "2026-02-01T19:22:52Z",
+      "session_id": "sess_1769973525_b099a4",
+      "researched": "2026-02-01T19:22:52Z",
+      "artifacts": [
+        {
+          "path": "specs/790_neovim_wezterm_osc7_tab_title/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with implementation details for OSC 7 integration between Neovim and WezTerm"
+        }
+      ]
     },
     {
       "project_number": 789,
