@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 793,
+      "project_name": "fix_claude_code_neovim_sidebar_black_screen",
+      "status": "not_started",
+      "language": "general",
+      "created": "2026-02-01T21:58:48Z",
+      "last_updated": "2026-02-01T21:58:48Z"
+    },
+    {
       "project_number": 792,
       "project_name": "document_wezterm_tab_integration",
       "status": "researching",
@@ -410,7 +418,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 793,
+  "next_project_number": 794,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 793
+next_project_number: 794
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 793. Fix Claude Code neovim sidebar black screen delay
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-02-01
+
+**Description**: Investigate and fix issue where running a command in Claude Code sidebar in neovim causes an initial black screen (all text disappears) for approximately 30 seconds before showing activity. Functionality works correctly otherwise. Issue started recently. Root cause may be in hook system or external. Research online and review hook configuration to identify simple and elegant fix.
+
+---
 
 ### 792. Review and document WezTerm tab integration with Neovim and Claude Code
 - **Effort**: M
