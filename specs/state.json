@@ -8,10 +8,19 @@
     {
       "project_number": 791,
       "project_name": "wezterm_task_number_from_claude_commands",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "created": "2026-02-01T21:04:25Z",
-      "last_updated": "2026-02-01T21:04:25Z"
+      "last_updated": "2026-02-01T21:10:05Z",
+      "session_id": "sess_1769979918_94c201",
+      "researched": "2026-02-01T21:10:05Z",
+      "artifacts": [
+        {
+          "path": "specs/791_wezterm_task_number_from_claude_commands/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing current wezterm-task-number.sh hook, Neovim Claude Code integration patterns, and three implementation approaches for extending task number display to Neovim-embedded Claude Code"
+        }
+      ]
     },
     {
       "project_number": 790,
