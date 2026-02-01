@@ -25,10 +25,10 @@
     {
       "project_number": 795,
       "project_name": "wezterm_tab_project_number_persistence",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-01T22:35:38Z",
-      "last_updated": "2026-02-01T23:06:56Z",
+      "last_updated": "2026-02-01T23:11:09Z",
       "session_id": "sess_1769987191_0ddc09",
       "researched": "2026-02-01T22:41:23Z",
       "artifacts": [
@@ -41,10 +41,18 @@
           "path": "specs/795_wezterm_tab_project_number_persistence/plans/implementation-004.md",
           "type": "plan",
           "summary": "Set/clear on user prompt only: task number persists across Claude output until next user input"
+        },
+        {
+          "path": "specs/795_wezterm_tab_project_number_persistence/summaries/implementation-summary-20260201.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification details"
         }
       ],
       "planned": "2026-02-01T23:03:59Z",
-      "started": "2026-02-01T23:06:56Z"
+      "started": "2026-02-01T23:06:56Z",
+      "completed": "2026-02-01T23:11:09Z",
+      "completion_summary": "Fixed WezTerm tab project number persistence by moving set/clear logic to shell hook (fires only on UserPromptSubmit) and removing per-line buffer monitoring from Neovim. Task numbers now persist during Claude responses and clear on non-workflow commands.",
+      "claudemd_suggestions": "Updated .claude/context/project/hooks/wezterm-integration.md with new persistence behavior documentation"
     },
     {
       "project_number": 794,

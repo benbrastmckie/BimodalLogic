@@ -2,7 +2,7 @@
 
 - **Task**: 795 - Fix wezterm tab project number persistence for workflow commands
 - **Version**: 004 (Revised)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: Tasks 788-791 completed (WezTerm integration established)
 - **Research Inputs**: specs/795_wezterm_tab_project_number_persistence/reports/research-001.md
