@@ -157,7 +157,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-02-01
-- **Research**: [research-004.md](specs/777_complete_weak_completeness_sorry/reports/research-004.md)
+- **Research**: [research-005.md](specs/777_complete_weak_completeness_sorry/reports/research-005.md)
 
 **Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
 
