@@ -1,7 +1,7 @@
 # Implementation Plan: Extract Representation Dependencies
 
 - **Task**: 797 - Extract Representation Dependencies
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/797_extract_representation_dependencies/reports/research-001.md
@@ -91,7 +91,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update Imports and Clean Dependencies [IN PROGRESS]
+### Phase 3: Update Imports and Clean Dependencies [COMPLETED]
 
 **Goal**: Update InfinitaryStrongCompleteness.lean to import directly from essential files, bypassing archived modules.
 
@@ -113,7 +113,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Build Verification and Sorry Count [NOT STARTED]
+### Phase 4: Build Verification and Sorry Count [COMPLETED]
 
 **Goal**: Verify clean build and document final sorry reduction.
 

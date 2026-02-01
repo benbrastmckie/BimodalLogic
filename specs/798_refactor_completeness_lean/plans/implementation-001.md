@@ -97,7 +97,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Create Boneyard Archive [IN PROGRESS]
+### Phase 3: Create Boneyard Archive [COMPLETED]
 
 **Goal**: Archive deprecated Duration-based canonical model infrastructure
 
@@ -124,7 +124,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Refactor Completeness.lean [NOT STARTED]
+### Phase 4: Refactor Completeness.lean [IN PROGRESS]
 
 **Goal**: Refactor main file to import from new Core modules and remove archived content
 

@@ -24,7 +24,7 @@ technical_debt:
 
 ### 802. Fix WezTerm tab task number clearing on Neovim exit and /clear command
 - **Effort**: S
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: meta
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -81,14 +81,16 @@ technical_debt:
 
 ### 797. Extract Representation dependencies and archive redundant sorries
 - **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
 - **Started**: 2026-02-01
+- **Completed**: 2026-02-02
 - **Research**: [research-001.md](specs/797_extract_representation_dependencies/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/797_extract_representation_dependencies/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260202.md](specs/797_extract_representation_dependencies/summaries/implementation-summary-20260202.md)
 
 **Description**: Extract the necessary elements from Representation/ that InfinitaryStrongCompleteness.lean depends on (construct_coherent_family, truth_lemma forward direction, canonical_model, canonical_history_family, UniversalCanonicalFrame) into a minimal, clean module. Then archive the redundant and sorry-filled portions of Representation/ to Boneyard/Metalogic_v4/Representation/. The goal is to reduce the 35 sorries in Representation/ while preserving the active dependency chain for infinitary completeness.
 

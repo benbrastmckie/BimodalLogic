@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Representation.CanonicalHistory
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
-import Bimodal.Metalogic.Representation.TemporalCompleteness  -- Task 741: witness extraction infrastructure
+-- TemporalCompleteness.lean archived to Boneyard/Metalogic_v4/Representation/
+-- (Task 741: witness extraction infrastructure - not required for completeness)
 import Bimodal.Semantics.Truth
 
 /-!

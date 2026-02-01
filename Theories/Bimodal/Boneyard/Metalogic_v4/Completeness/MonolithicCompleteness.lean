@@ -1,3 +1,20 @@
+import Bimodal.ProofSystem
+import Bimodal.Semantics
+import Bimodal.Metalogic.Soundness
+import Bimodal.Metalogic.Core.DeductionTheorem
+import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Theorems.Propositional
+import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Order.Zorn
+import Mathlib.Data.Finite.Defs
+import Mathlib.Order.Hom.Basic
+import Mathlib.Order.Preorder.Chain
+import Mathlib.GroupTheory.MonoidLocalization.GrothendieckGroup
+import Mathlib.Algebra.Order.Group.Defs
+import Mathlib.Tactic.Abel
+import Mathlib.SetTheory.Cardinal.Basic
+
 /-!
 # Archived Monolithic Completeness Infrastructure
 
@@ -74,27 +91,11 @@ Working completeness proofs are in:
 
 -/
 
-import Bimodal.ProofSystem
-import Bimodal.Semantics
-import Bimodal.Metalogic.Soundness
-import Bimodal.Metalogic.Core.DeductionTheorem
-import Bimodal.Metalogic.Core.MaximalConsistent
-import Bimodal.Metalogic.Core.MCSProperties
-import Bimodal.Theorems.Propositional
-import Mathlib.Algebra.Order.Group.Int
-import Mathlib.Order.Zorn
-import Mathlib.Data.Finite.Defs
-import Mathlib.Order.Hom.Basic
-import Mathlib.Order.Preorder.Chain
-import Mathlib.GroupTheory.MonoidLocalization.GrothendieckGroup
-import Mathlib.Algebra.Order.Group.Defs
-import Mathlib.Tactic.Abel
-import Mathlib.SetTheory.Cardinal.Basic
-
 namespace Bimodal.Boneyard.Metalogic_v4.Completeness
 
 open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Theorems.Combinators Bimodal.Theorems.Propositional
 open Bimodal.Metalogic.Core
+open Bimodal.Metalogic (soundness)
 
 /--
 Canonical world states are set-based maximal consistent sets.
@@ -105,6 +106,49 @@ Canonical world states are set-based maximal consistent sets.
 The authoritative version remains in the refactored Completeness.lean.
 -/
 def CanonicalWorldState : Type := {S : Set Formula // SetMaximalConsistent S}
+
+/-!
+### Modal Closure Properties (Archived)
+
+These lemmas are duplicated from the refactored Completeness.lean for archive self-containment.
+The authoritative versions are in the refactored Completeness.lean.
+-/
+
+/--
+Set-based MCS: box closure property.
+If □φ ∈ S for a SetMaximalConsistent S, then φ ∈ S.
+-/
+theorem set_mcs_box_closure {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_box : Formula.box φ ∈ S) : φ ∈ S := by
+  have h_modal_t_thm : [] ⊢ (Formula.box φ).imp φ :=
+    DerivationTree.axiom [] _ (Axiom.modal_t φ)
+  have h_modal_t : [Formula.box φ] ⊢ (Formula.box φ).imp φ :=
+    DerivationTree.weakening [] _ _ h_modal_t_thm (by intro; simp)
+  have h_box_assume : [Formula.box φ] ⊢ Formula.box φ :=
+    DerivationTree.assumption _ _ (by simp)
+  have h_deriv : [Formula.box φ] ⊢ φ :=
+    DerivationTree.modus_ponens _ _ _ h_modal_t h_box_assume
+  have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
+  exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
+
+/--
+Set-based MCS: modal 4 axiom property.
+If □φ ∈ S for a SetMaximalConsistent S, then □□φ ∈ S.
+-/
+theorem set_mcs_box_box {S : Set Formula} {φ : Formula}
+    (h_mcs : SetMaximalConsistent S)
+    (h_box : Formula.box φ ∈ S) : (Formula.box φ).box ∈ S := by
+  have h_modal_4_thm : [] ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_4 φ)
+  have h_modal_4 : [Formula.box φ] ⊢ (Formula.box φ).imp (Formula.box (Formula.box φ)) :=
+    DerivationTree.weakening [] _ _ h_modal_4_thm (by intro; simp)
+  have h_box_assume : [Formula.box φ] ⊢ Formula.box φ :=
+    DerivationTree.assumption _ _ (by simp)
+  have h_deriv : [Formula.box φ] ⊢ (Formula.box φ).box :=
+    DerivationTree.modus_ponens _ _ _ h_modal_4 h_box_assume
+  have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
+  exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
 
 /-!
 ## Agnostic Duration Construction (Task 446)
