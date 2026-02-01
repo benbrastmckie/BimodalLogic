@@ -8,11 +8,11 @@
     {
       "project_number": 794,
       "project_name": "sorry_free_completeness_theorems",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-02-01T22:07:00Z",
-      "last_updated": "2026-02-01T22:12:21Z",
-      "session_id": "sess_1769983702_97c7d8",
+      "last_updated": "2026-02-01T22:15:48Z",
+      "session_id": "sess_1769984132_cc77c1",
       "researched": "2026-02-01T22:12:21Z",
       "artifacts": [
         {
@@ -33,10 +33,10 @@
     {
       "project_number": 792,
       "project_name": "document_wezterm_tab_integration",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "created": "2026-02-01T21:54:51Z",
-      "last_updated": "2026-02-01T22:12:20Z",
+      "last_updated": "2026-02-01T22:17:07Z",
       "session_id": "sess_1769983922_726791",
       "researched": "2026-02-01T21:59:13Z",
       "artifacts": [
@@ -49,10 +49,17 @@
           "path": "specs/792_document_wezterm_tab_integration/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase documentation plan covering dotfiles, Neovim, and ProofChecker hook documentation"
+        },
+        {
+          "path": "specs/792_document_wezterm_tab_integration/summaries/implementation-summary-20260201.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-02-01T22:09:43Z",
-      "started": "2026-02-01T22:12:20Z"
+      "started": "2026-02-01T22:12:20Z",
+      "completed": "2026-02-01T22:17:07Z",
+      "completion_summary": "Documented WezTerm tab integration for Claude Code across dotfiles, Neovim, and ProofChecker with cross-references between all locations. Created 4 documentation artifacts covering OSC escape sequences, user variables, and notification behavior."
     },
     {
       "project_number": 791,

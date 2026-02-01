@@ -24,7 +24,7 @@ technical_debt:
 
 ### 794. Establish sorry-free completeness theorems
 - **Effort**: M
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -46,14 +46,16 @@ technical_debt:
 
 ### 792. Review and document WezTerm tab integration with Neovim and Claude Code
 - **Effort**: M
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
 - **Started**: 2026-02-01
+- **Completed**: 2026-02-01
 - **Research**: [research-001.md](specs/792_document_wezterm_tab_integration/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/792_document_wezterm_tab_integration/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260201.md](specs/792_document_wezterm_tab_integration/summaries/implementation-summary-20260201.md)
 
 **Description**: Review and document WezTerm tab integration with Neovim and Claude Code. Update documentation in ProofChecker/.claude/, ~/.config/nvim/, and ~/.dotfiles/ following the documentation norms and standards in each location. Cover: OSC 7 directory updates (task 790), task number display (tasks 789, 791), tab coloring on Claude completion (task 788), and the interaction between shell hooks and Neovim autocmds.
 

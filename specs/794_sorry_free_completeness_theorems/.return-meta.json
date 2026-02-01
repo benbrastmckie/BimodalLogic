@@ -1,17 +1,15 @@
 {
-  "status": "researched",
-  "summary": "Identified clear path to sorry-free completeness: semantic_weak_completeness (FMP path) is already sorry-free. Bridge lemma needed to connect to standard validity API. The Representation path has 37+ sorries and should be archived.",
-  "artifacts": [
-    {
-      "type": "research",
-      "path": "specs/794_sorry_free_completeness_theorems/reports/research-001.md",
-      "summary": "Complete analysis of sorry dependencies, two completeness architectures, and recommended implementation strategy for sorry-free weak_completeness, strong_completeness, and compactness"
-    }
-  ],
+  "status": "in_progress",
+  "started_at": "2026-02-01T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
   "metadata": {
-    "session_id": "sess_1769983702_97c7d8",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1769984132_cc77c1",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
   }
 }
