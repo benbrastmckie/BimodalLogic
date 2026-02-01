@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 791,
+      "project_name": "wezterm_task_number_from_claude_commands",
+      "status": "not_started",
+      "language": "general",
+      "created": "2026-02-01T21:04:25Z",
+      "last_updated": "2026-02-01T21:04:25Z"
+    },
+    {
       "project_number": 790,
       "project_name": "neovim_wezterm_osc7_tab_title",
       "status": "completed",
@@ -132,14 +140,14 @@
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-01-30T02:20:25Z",
-      "session_id": "sess_1769739438_c1504f",
-      "researched": "2026-01-30T02:20:25Z",
+      "last_updated": "2026-02-01T21:04:06Z",
+      "session_id": "sess_1769979539_8e9a21",
+      "researched": "2026-02-01T21:04:06Z",
       "artifacts": [
         {
-          "path": "specs/777_complete_weak_completeness_sorry/reports/research-001.md",
+          "path": "specs/777_complete_weak_completeness_sorry/reports/research-002.md",
           "type": "research",
-          "summary": "Analysis of architectural gap between universal validity and semantic truth in finite models; documents that sorry is unfixable due to Box semantics quantifying over all histories"
+          "summary": "Alternative approaches to completeness analyzed; recommends finite model validity as primary theorem; 5 approaches evaluated"
         }
       ]
     },
@@ -370,7 +378,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 791,
+  "next_project_number": 792,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
