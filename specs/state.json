@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 794,
+      "project_name": "sorry_free_completeness_theorems",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-01T22:07:00Z",
+      "last_updated": "2026-02-01T22:07:00Z"
+    },
+    {
       "project_number": 793,
       "project_name": "fix_claude_code_neovim_sidebar_black_screen",
       "status": "not_started",
@@ -426,7 +434,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 794,
+  "next_project_number": 795,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

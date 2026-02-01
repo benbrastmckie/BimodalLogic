@@ -1,5 +1,5 @@
 ---
-next_project_number: 794
+next_project_number: 795
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 794. Establish sorry-free completeness theorems
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-01
+
+**Description**: Before archiving extraneous elements to produce a sorry-free metalogic, draw on specs/777_complete_weak_completeness_sorry/reports/research-007.md to identify and remove all sorries that remain in the way of a sorry-free completeness result. Establish weak_completeness and strong_completeness as well as the compactness theorem (all sorry-free) by drawing on semantic_weak_completeness and other established results, finding and filling in all sorries that stand in the way currently.
+
+---
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
