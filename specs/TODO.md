@@ -24,7 +24,7 @@ technical_debt:
 
 ### 796. Complete all remaining sorries
 - **Effort**: M
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-01
 
@@ -34,11 +34,13 @@ technical_debt:
 
 ### 795. Fix wezterm tab project number persistence for workflow commands
 - **Effort**: S
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
+- **Planned**: 2026-02-01
 - **Research**: [research-001.md](specs/795_wezterm_tab_project_number_persistence/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/795_wezterm_tab_project_number_persistence/plans/implementation-001.md)
 
 **Description**: Fix wezterm tab project number persistence behavior. Workflow commands like `/plan N` and `/implement N` should update/replace the project number in the tab rather than clearing it. Non-project commands like `/todo`, `/review`, `/meta` should clear the project number since they have no associated project.
 

@@ -8,27 +8,34 @@
     {
       "project_number": 796,
       "project_name": "complete_remaining_sorries",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-01T22:41:14Z",
-      "last_updated": "2026-02-01T22:41:14Z"
+      "last_updated": "2026-02-01T22:46:44Z",
+      "session_id": "sess_1769985990_19fbbd"
     },
     {
       "project_number": 795,
       "project_name": "wezterm_tab_project_number_persistence",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-01T22:35:38Z",
-      "last_updated": "2026-02-01T22:41:23Z",
-      "session_id": "sess_1738449393_a7c3b2",
+      "last_updated": "2026-02-01T22:48:00Z",
+      "session_id": "sess_1769985956_2ec3ce",
       "researched": "2026-02-01T22:41:23Z",
       "artifacts": [
         {
           "path": "specs/795_wezterm_tab_project_number_persistence/reports/research-001.md",
           "type": "research",
           "summary": "Identified bug in Neovim monitor clearing TASK_NUMBER on all non-matching prompts; fix is to only clear for explicit non-project commands"
+        },
+        {
+          "path": "specs/795_wezterm_tab_project_number_persistence/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan to fix Neovim monitor clearing logic for task number persistence"
         }
-      ]
+      ],
+      "planned": "2026-02-01T22:48:00Z"
     },
     {
       "project_number": 794,
