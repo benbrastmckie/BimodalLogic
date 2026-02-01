@@ -24,14 +24,16 @@ technical_debt:
 
 ### 791. Extend WezTerm task number integration for Claude Code commands
 - **Effort**: S
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
 - **Started**: 2026-02-01
+- **Completed**: 2026-02-01
 - **Research**: [research-001.md](specs/791_wezterm_task_number_from_claude_commands/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/791_wezterm_task_number_from_claude_commands/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260201.md](specs/791_wezterm_task_number_from_claude_commands/summaries/implementation-summary-20260201.md)
 
 **Description**: Extend WezTerm task number integration to parse Claude Code commands (/research, /plan, /implement, /revise) executed within Neovim and append task number to tab title. Currently the wezterm-task-number.sh hook parses commands from the shell prompt, but when running commands from within Neovim, the task number should also be extracted and displayed as "{tab} {project} #{task}". Requires investigating how to detect Claude Code command execution from Neovim and emit the appropriate user variable updates.
 

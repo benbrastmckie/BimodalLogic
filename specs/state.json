@@ -8,10 +8,10 @@
     {
       "project_number": 791,
       "project_name": "wezterm_task_number_from_claude_commands",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "created": "2026-02-01T21:04:25Z",
-      "last_updated": "2026-02-01T21:17:05Z",
+      "last_updated": "2026-02-01T21:21:25Z",
       "session_id": "sess_1769980607_fc6aa1",
       "researched": "2026-02-01T21:10:05Z",
       "artifacts": [
@@ -24,10 +24,17 @@
           "path": "specs/791_wezterm_task_number_from_claude_commands/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for extending WezTerm task number integration to Neovim Claude Code"
+        },
+        {
+          "path": "specs/791_wezterm_task_number_from_claude_commands/summaries/implementation-summary-20260201.md",
+          "type": "summary",
+          "summary": "Implementation summary with architecture, verification steps, and related tasks"
         }
       ],
       "planned": "2026-02-01T21:15:19Z",
-      "started": "2026-02-01T21:17:05Z"
+      "started": "2026-02-01T21:17:05Z",
+      "completed": "2026-02-01T21:21:25Z",
+      "completion_summary": "Extended WezTerm task number integration for Neovim-embedded Claude Code. Created neotex/lib/wezterm.lua module for OSC 1337 emission and added Claude Code terminal monitoring to autocmds.lua with debouncing, buffer-local tracking, and proper cleanup."
     },
     {
       "project_number": 790,
