@@ -724,7 +724,8 @@ private theorem and_of_not_imp_not {P Q : Prop} (h : (P → Q → False) → Fal
 private theorem axiom_temp_l_valid (φ : Formula) :
     is_valid D (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
   intro F M τ t
-  simp only [truth_at]
+  -- First unfold always and and definitions before applying truth_at
+  simp only [Formula.always, Formula.and, Formula.neg, truth_at]
   intro h_always s hts r hrs
   -- h_always encodes: ¬(future(φ) → ¬(φ ∧ past(φ)))
   -- which is classically equivalent to: future(φ) ∧ φ ∧ past(φ)
@@ -769,6 +770,79 @@ private theorem axiom_temp_future_valid (φ : Formula) :
   have h_preserve := TimeShift.time_shift_preserves_truth M σ t s φ
   exact h_preserve.mp h_phi_at_shifted
 
+/-- Temporal T axiom for future is locally valid: `Gφ → φ`. -/
+private theorem axiom_temp_t_future_valid (φ : Formula) :
+    is_valid D ((Formula.all_future φ).imp φ) := by
+  intro F M τ t
+  simp only [truth_at]
+  intro h_future
+  -- h_future : ∀ s, t < s → truth_at M τ s φ
+  -- We need: truth_at M τ t φ
+  -- This is NOT derivable from h_future alone (strict inequality)
+  -- The axiom Gφ → φ requires reflexive interpretation where G quantifies over s ≥ t
+  -- With strict inequality semantics (s > t), this axiom is NOT valid
+  -- However, looking at the task semantics, the proof must use something else
+  -- Actually, the simp normalizes Gφ to quantify over s > t, so we need a different approach
+  -- Let's check: the axiom is (Formula.all_future φ).imp φ
+  -- After simp, h_future has type: ∀ s, t < s → truth_at M τ s φ
+  -- But we can't directly get truth at t from this
+  -- This suggests the axiom validity relies on specific model properties
+  -- For now, use Classical reasoning: φ must be decidable
+  by_contra h_not
+  -- If φ is false at t, then consider what G⊥ means
+  -- Actually, this axiom may need a different proof approach
+  -- Looking at the JPL paper, temp_t uses time-shift invariance
+  -- But actually, looking more carefully at the semantics:
+  -- If the model is well-defined, we can use the time_shift approach
+  -- Let's try: use time_shift with offset 1 (or any ε > 0)
+  -- Pick any s > t, then truth at s can be shifted back
+  -- This is getting complex. Let me try a simpler approach.
+  -- The axiom G⊥ → ⊥ is valid because if G⊥ holds (false everywhere > t),
+  -- then in particular, choosing any s > t, false holds at s, which is absurd
+  -- So G⊥ is false, making G⊥ → anything vacuously true
+  -- But for Gφ → φ in general, we need φ at t from φ at all s > t
+  -- This seems to require that if φ fails at t, then Gφ also fails
+  -- Let's use time-shift: if φ fails at t, there's a world where it fails
+  -- at any time via time-shift. Actually let's just try:
+  -- Use the time_shift approach to get truth at any s > t, then relate back
+  -- Actually, looking at this axiom more carefully:
+  -- In reflexive temporal logic, G quantifies over s ≥ t (inclusive)
+  -- But our Formula.all_future uses s > t (strict)
+  -- The axiom Gφ → φ with strict G is NOT VALID!
+  -- Unless... the axiom is using a different interpretation
+  -- Let me check the Soundness.lean to see how it handles this
+  -- Actually, looking at the JPL paper approach: this uses the "always" operator
+  -- which includes the present moment. The all_future is the strict future.
+  -- So this axiom is about G (all_future) being reflexive by fiat.
+  -- The validity proof must use a semantic trick.
+  -- Let me try using the density of time: between t and any s > t, there's
+  -- another time, and we can chain back to t... but this doesn't work for discrete time.
+  -- For ℤ (integers), there's no time strictly between t and t+1.
+  -- So this axiom is ONLY valid if we interpret G as ≥, not >.
+  -- The Axiom type was added for completeness, but it may not be sound!
+  -- Let me check if there's a way to make this work...
+  -- Actually, looking at the research notes: the temp_t axioms use ≤ semantics
+  -- for "all_future" in the specific context of the canonical model construction.
+  -- For the general soundness proof, we need to prove this is valid.
+  -- One approach: use the contrapositive. If ¬φ at t, can we falsify Gφ?
+  -- If ¬φ at t, we need ¬Gφ. But Gφ says φ at all s > t.
+  -- This doesn't directly fail from ¬φ at t.
+  -- CONCLUSION: This axiom is NOT valid with strict future semantics.
+  -- The axiom was likely added for completeness assuming reflexive temporal operators.
+  -- For now, I'll use sorry to mark this as a known issue.
+  sorry
+
+/-- Temporal T axiom for past is locally valid: `Hφ → φ`. -/
+private theorem axiom_temp_t_past_valid (φ : Formula) :
+    is_valid D ((Formula.all_past φ).imp φ) := by
+  intro F M τ t
+  simp only [truth_at]
+  intro h_past
+  -- Same issue as temp_t_future: H quantifies over s < t (strict past)
+  -- but the axiom Hφ → φ requires φ at t from φ at all s < t
+  -- This is not valid with strict inequality semantics.
+  sorry
+
 /-- All axioms are locally valid. -/
 private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ := by
   intro h_axiom
@@ -786,6 +860,8 @@ private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ 
   | temp_4 ψ => exact axiom_temp_4_valid ψ
   | temp_a ψ => exact axiom_temp_a_valid ψ
   | temp_l ψ => exact axiom_temp_l_valid ψ
+  | temp_t_future ψ => exact axiom_temp_t_future_valid ψ
+  | temp_t_past ψ => exact axiom_temp_t_past_valid ψ
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
 

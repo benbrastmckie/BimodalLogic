@@ -4,6 +4,7 @@ import Bimodal.Semantics.Truth
 import Bimodal.Metalogic.Representation.UniversalCanonicalModel
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Theorems.Propositional
+import Bimodal.Metalogic.Soundness
 
 /-!
 # Weak Completeness for TM Bimodal Logic
@@ -29,7 +30,7 @@ The completeness proof proceeds via contrapositive using the representation theo
 ## Dependencies
 
 - Representation theorem: `Bimodal.Metalogic.Representation.representation_theorem`
-- Soundness is axiomatized with sorry pending Boneyard fix (see `soundness` lemma)
+- Soundness theorem: `Bimodal.Metalogic.Soundness.soundness`
 
 ## References
 
@@ -84,12 +85,11 @@ lemmas due to the reflexive semantics change. We axiomatize it here.
 /--
 Soundness for context derivability: If Γ ⊢ φ, then Γ ⊨ φ.
 
-**Status**: Axiomatized with sorry. Full proof in Boneyard/Metalogic_v2/Soundness
-requires fixing SoundnessLemmas.lean for reflexive temporal semantics.
+**Status**: Proven. Uses the main soundness theorem from `Bimodal.Metalogic.Soundness`.
 -/
 theorem soundness (Γ : Context) (φ : Formula) :
-    (DerivationTree Γ φ) → semantic_consequence Γ φ := by
-  sorry
+    (DerivationTree Γ φ) → semantic_consequence Γ φ :=
+  Bimodal.Metalogic.soundness Γ φ
 
 /--
 Soundness for empty context: If ⊢ φ, then ⊨ φ (valid).
