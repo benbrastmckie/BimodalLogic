@@ -1,7 +1,7 @@
 # Implementation Plan: Task #792
 
 - **Task**: 792 - Review and document WezTerm tab integration
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/792_document_wezterm_tab_integration/reports/research-001.md

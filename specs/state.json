@@ -8,11 +8,19 @@
     {
       "project_number": 794,
       "project_name": "sorry_free_completeness_theorems",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-01T22:07:00Z",
-      "last_updated": "2026-02-01T22:08:38Z",
-      "session_id": "sess_1769983702_97c7d8"
+      "last_updated": "2026-02-01T22:12:21Z",
+      "session_id": "sess_1769983702_97c7d8",
+      "researched": "2026-02-01T22:12:21Z",
+      "artifacts": [
+        {
+          "path": "specs/794_sorry_free_completeness_theorems/reports/research-001.md",
+          "type": "research",
+          "summary": "Complete analysis of sorry dependencies, two completeness architectures, and recommended implementation strategy for sorry-free weak_completeness, strong_completeness, and compactness"
+        }
+      ]
     },
     {
       "project_number": 793,
@@ -25,11 +33,11 @@
     {
       "project_number": 792,
       "project_name": "document_wezterm_tab_integration",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "created": "2026-02-01T21:54:51Z",
-      "last_updated": "2026-02-01T22:09:43Z",
-      "session_id": "sess_1769983641_388330",
+      "last_updated": "2026-02-01T22:12:20Z",
+      "session_id": "sess_1769983922_726791",
       "researched": "2026-02-01T21:59:13Z",
       "artifacts": [
         {
@@ -43,7 +51,8 @@
           "summary": "4-phase documentation plan covering dotfiles, Neovim, and ProofChecker hook documentation"
         }
       ],
-      "planned": "2026-02-01T22:09:43Z"
+      "planned": "2026-02-01T22:09:43Z",
+      "started": "2026-02-01T22:12:20Z"
     },
     {
       "project_number": 791,
