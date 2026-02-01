@@ -1,5 +1,5 @@
 ---
-next_project_number: 795
+next_project_number: 796
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 795. Fix wezterm tab project number persistence for workflow commands
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-01
+
+**Description**: Fix wezterm tab project number persistence behavior. Workflow commands like `/plan N` and `/implement N` should update/replace the project number in the tab rather than clearing it. Non-project commands like `/todo`, `/review`, `/meta` should clear the project number since they have no associated project.
+
+---
 
 ### 794. Establish sorry-free completeness theorems
 - **Effort**: M

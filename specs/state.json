@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 795,
+      "project_name": "wezterm_tab_project_number_persistence",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-01T22:35:38Z",
+      "last_updated": "2026-02-01T22:35:38Z"
+    },
+    {
       "project_number": 794,
       "project_name": "sorry_free_completeness_theorems",
       "status": "implementing",
@@ -473,7 +481,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 795,
+  "next_project_number": 796,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
