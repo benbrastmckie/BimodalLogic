@@ -32,11 +32,11 @@
     {
       "project_number": 798,
       "project_name": "refactor_completeness_lean",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "description": "Refactor the monolithic Completeness.lean (~4000 lines, 39 sorries). Extract essential content: SetConsistent, SetMaximalConsistent definitions to Core/SetConsistency.lean; set_lindenbaum (Lindenbaum lemma via Zorn) and chain consistency lemmas to Core/Lindenbaum.lean. Archive the Duration construction infrastructure, TemporalExt/Coherent interfaces, and generic weak_completeness/strong_completeness axioms to Boneyard/Metalogic_v4/Completeness/MonolithicCompleteness.lean.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-01T23:44:16Z",
+      "last_updated": "2026-02-01T23:46:38Z",
       "session_id": "sess_1769989423_a1d103",
       "researched": "2026-02-01T23:42:24Z",
       "artifacts": [
@@ -44,8 +44,14 @@
           "path": "specs/798_refactor_completeness_lean/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Completeness.lean structure, extraction/archive targets with line ranges, dependency analysis, and implementation strategy"
+        },
+        {
+          "path": "specs/798_refactor_completeness_lean/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to extract SetConsistency and Lindenbaum modules to Core/, archive Duration infrastructure to Boneyard, and refactor Completeness.lean"
         }
-      ]
+      ],
+      "planned": "2026-02-01T23:46:38Z"
     },
     {
       "project_number": 799,
