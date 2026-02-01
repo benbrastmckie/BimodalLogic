@@ -1,0 +1,24 @@
+{
+  "status": "report_written",
+  "started_at": "2026-02-01T00:00:00Z",
+  "artifacts": [
+    "specs/797_extract_representation_dependencies/reports/research-001.md"
+  ],
+  "partial_progress": {
+    "stage": "finalized",
+    "details": "Research report written with full dependency analysis, sorry mapping, and extraction recommendations"
+  },
+  "metadata": {
+    "session_id": "sess_1769988998_968e32",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+  },
+  "findings_summary": {
+    "total_sorries": 35,
+    "critical_sorries": 0,
+    "files_analyzed": 8,
+    "essential_definitions": 5,
+    "recommendation": "Extract minimal Core.lean module, archive redundant files"
+  }
+}
