@@ -163,14 +163,14 @@
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-02-01T21:17:26Z",
-      "session_id": "sess_1769980439_a246e1",
-      "researched": "2026-02-01T21:17:26Z",
+      "last_updated": "2026-02-01T21:27:11Z",
+      "session_id": "sess_1769980966_3d5ffd",
+      "researched": "2026-02-01T21:27:11Z",
       "artifacts": [
         {
-          "path": "specs/777_complete_weak_completeness_sorry/reports/research-003.md",
+          "path": "specs/777_complete_weak_completeness_sorry/reports/research-004.md",
           "type": "research",
-          "summary": "Algebraic approach analysis: infrastructure complete but same fundamental gap; Box semantics incompatible with algebraic validity"
+          "summary": "Analysis of FMP bridge feasibility - concludes FMP cannot bridge finite to full validity"
         }
       ]
     },
