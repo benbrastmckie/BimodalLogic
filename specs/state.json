@@ -8,19 +8,25 @@
     {
       "project_number": 791,
       "project_name": "wezterm_task_number_from_claude_commands",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "created": "2026-02-01T21:04:25Z",
-      "last_updated": "2026-02-01T21:10:05Z",
-      "session_id": "sess_1769979918_94c201",
+      "last_updated": "2026-02-01T21:15:19Z",
+      "session_id": "sess_1769980369_3ad64d",
       "researched": "2026-02-01T21:10:05Z",
       "artifacts": [
         {
           "path": "specs/791_wezterm_task_number_from_claude_commands/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing current wezterm-task-number.sh hook, Neovim Claude Code integration patterns, and three implementation approaches for extending task number display to Neovim-embedded Claude Code"
+        },
+        {
+          "path": "specs/791_wezterm_task_number_from_claude_commands/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for extending WezTerm task number integration to Neovim Claude Code"
         }
-      ]
+      ],
+      "planned": "2026-02-01T21:15:19Z"
     },
     {
       "project_number": 790,
@@ -144,13 +150,13 @@
     {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-02-01T21:04:06Z",
-      "session_id": "sess_1769979539_8e9a21",
+      "last_updated": "2026-02-01T21:14:11Z",
+      "session_id": "sess_1769980439_a246e1",
       "researched": "2026-02-01T21:04:06Z",
       "artifacts": [
         {
