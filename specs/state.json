@@ -8,11 +8,11 @@
     {
       "project_number": 790,
       "project_name": "neovim_wezterm_osc7_tab_title",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "created": "2026-02-01T19:17:34Z",
-      "last_updated": "2026-02-01T19:26:19Z",
-      "session_id": "sess_1769973860_16c029",
+      "last_updated": "2026-02-01T20:30:25Z",
+      "session_id": "sess_1769977630_7672cd",
       "researched": "2026-02-01T19:22:52Z",
       "artifacts": [
         {
@@ -24,9 +24,17 @@
           "path": "specs/790_neovim_wezterm_osc7_tab_title/plans/implementation-001.md",
           "type": "plan",
           "summary": "2-phase implementation plan for adding WezTerm OSC 7 integration to Neovim"
+        },
+        {
+          "path": "specs/790_neovim_wezterm_osc7_tab_title/summaries/implementation-summary-20260201.md",
+          "type": "summary",
+          "summary": "Implementation summary with details of changes, verification results, and rollback instructions"
         }
       ],
-      "planned": "2026-02-01T19:26:19Z"
+      "planned": "2026-02-01T19:26:19Z",
+      "started": "2026-02-01T20:27:25Z",
+      "completed": "2026-02-01T20:30:25Z",
+      "completion_summary": "Added WezTerm OSC 7 integration to Neovim autocmds.lua with DirChanged, VimEnter, and BufEnter autocmds that emit OSC 7 escape sequences to update tab titles to show Neovim's current working directory."
     },
     {
       "project_number": 789,

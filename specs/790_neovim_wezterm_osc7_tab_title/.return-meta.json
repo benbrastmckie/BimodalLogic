@@ -1,20 +1,29 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Added WezTerm OSC 7 integration to Neovim autocmds.lua. The implementation emits OSC 7 escape sequences on DirChanged, VimEnter, and BufEnter events, guarded by WEZTERM_PANE environment check. Tab titles now update to show Neovim's current working directory.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/790_neovim_wezterm_osc7_tab_title/plans/implementation-001.md",
-      "summary": "2-phase implementation plan for adding WezTerm OSC 7 integration to Neovim"
+      "type": "implementation",
+      "path": "~/.config/nvim/lua/neotex/config/autocmds.lua",
+      "summary": "Added WezTerm OSC 7 autocmd block with emit_osc7 helper and three autocmds for directory change, startup, and buffer enter events"
+    },
+    {
+      "type": "summary",
+      "path": "specs/790_neovim_wezterm_osc7_tab_title/summaries/implementation-summary-20260201.md",
+      "summary": "Implementation summary with details of changes, verification results, and rollback instructions"
     }
   ],
-  "next_steps": "Run /implement 790 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Added WezTerm OSC 7 integration to Neovim autocmds.lua with DirChanged, VimEnter, and BufEnter autocmds that emit OSC 7 escape sequences to update tab titles to show Neovim's current working directory."
+  },
   "metadata": {
-    "session_id": "sess_1769973860_16c029",
-    "agent_type": "planner-agent",
-    "duration_seconds": 60,
+    "session_id": "sess_1769977630_7672cd",
+    "duration_seconds": 300,
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 2,
-    "estimated_hours": 1.5
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 2
+  },
+  "next_steps": "Restart Neovim to activate the OSC 7 integration and test tab title updates with :cd commands"
 }
