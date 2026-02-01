@@ -1,3 +1,39 @@
+/-!
+# ARCHIVED FILE - DO NOT USE FOR ACTIVE DEVELOPMENT
+
+**Archived**: 2026-02-01
+**Task**: 777 - complete_weak_completeness_sorry
+**Session**: sess_1769987695_38ea66
+**Original Location**: Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean
+**Sorry Count**: 71 sorries
+**Reason**: Deprecated syntactic approach superseded by sorry-free semantic approach
+
+## Why This File Was Archived
+
+This file contains two parallel approaches to completeness:
+1. **Syntactic Approach (DEPRECATED)**: Has 6+ sorry gaps in backward truth lemma directions
+2. **Semantic Approach**: Core proven, but superseded by FMP/SemanticCanonicalModel.lean
+
+The sorry-free completeness chain now uses:
+- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` for semantic_weak_completeness
+- `Theories/Bimodal/Metalogic/Completeness/WeakCompleteness.lean` for weak_completeness
+
+## Sorry-Free Alternative
+
+Use the completeness chain in the active Metalogic/ directory:
+1. Soundness.lean
+2. WeakCompleteness.lean
+3. FiniteStrongCompleteness.lean
+4. InfinitaryStrongCompleteness.lean
+5. Compactness.lean
+
+See README.md in this directory for detailed analysis.
+-/
+
+-- NOTE: This file will NOT compile in its archived state.
+-- The imports below reference the original module hierarchy.
+-- Preserved for historical reference only.
+
 import Bimodal.Syntax.Formula
 import Bimodal.Semantics
 import Bimodal.ProofSystem
@@ -11,7 +47,7 @@ import Mathlib.Order.Zorn
 import Mathlib.Data.Fintype.Pi
 
 /-!
-# Finite Canonical Model for Completeness
+# Finite Canonical Model for Completeness (ARCHIVED)
 
 This module implements the finite canonical model construction for proving completeness
 of TM bimodal logic. The key insight is that for any finite formula phi, we only need

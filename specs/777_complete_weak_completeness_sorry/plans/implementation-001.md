@@ -1,8 +1,8 @@
 # Implementation Plan: Task #777
 
 - **Task**: 777 - complete_weak_completeness_sorry
-- **Status**: [NOT STARTED]
-- **Effort**: 2 hours
+- **Status**: [COMPLETED]
+- **Effort**: 2 hours (actual: ~45 minutes)
 - **Dependencies**: Task 794 (completed - sorry-free completeness theorems)
 - **Research Inputs**: specs/777_complete_weak_completeness_sorry/reports/research-008.md
 - **Artifacts**: plans/implementation-001.md (this file)
@@ -46,14 +46,14 @@ Key findings from research-008.md:
 
 ## Implementation Phases
 
-### Phase 1: Verify No Active Dependencies [NOT STARTED]
+### Phase 1: Verify No Active Dependencies [COMPLETED]
 
 **Goal**: Confirm FiniteCanonicalModel.lean has no active imports in the codebase.
 
 **Tasks**:
-- [ ] Grep all .lean files for imports of FiniteCanonicalModel
-- [ ] Grep for any direct references to types/theorems from the file
-- [ ] Document findings
+- [x] Grep all .lean files for imports of FiniteCanonicalModel
+- [x] Grep for any direct references to types/theorems from the file
+- [x] Document findings
 
 **Timing**: 15 minutes
 
@@ -64,16 +64,24 @@ Key findings from research-008.md:
 **Verification**:
 - No imports found, or identified imports are in already-archived files
 
+**Findings** (2026-02-01):
+- No active `import Theories.Bimodal.Metalogic.Completeness.FiniteCanonicalModel` found
+- References found in 14 files are all:
+  - Comment references in Completeness.lean (documentation)
+  - Files in Boneyard/ (already archived)
+  - Demo.lean (example file, not dependent)
+- Safe to proceed with archival
+
 ---
 
-### Phase 2: Review File for Salvageable Content [NOT STARTED]
+### Phase 2: Review File for Salvageable Content [COMPLETED]
 
 **Goal**: Identify any lemmas or definitions worth extracting before archival.
 
 **Tasks**:
-- [ ] Read FiniteCanonicalModel.lean and identify key definitions
-- [ ] Check if any definitions are unique and not duplicated elsewhere
-- [ ] Document any content worth preserving separately
+- [x] Read FiniteCanonicalModel.lean and identify key definitions
+- [x] Check if any definitions are unique and not duplicated elsewhere
+- [x] Document any content worth preserving separately
 
 **Timing**: 20 minutes
 
@@ -83,15 +91,23 @@ Key findings from research-008.md:
 **Verification**:
 - Explicit decision recorded: extract vs. archive-as-is
 
+**Findings** (2026-02-01):
+- File contains 3823 lines with 71 sorries
+- **Proven content**: `semantic_weak_completeness`, `semantic_truth_lemma_v2`, `main_provable_iff_valid`
+- **Deprecated content**: `FiniteWorldState`, `finite_task_rel`, `finite_truth_lemma` (syntactic approach)
+- **Decision**: Archive as-is. The proven semantic approach is ALREADY in `FMP/SemanticCanonicalModel.lean`
+- The proven theorems in this file are redundant/superseded versions
+- File has excellent documentation explaining why the syntactic approach was deprecated
+
 ---
 
-### Phase 3: Create Boneyard Directory Structure [NOT STARTED]
+### Phase 3: Create Boneyard Directory Structure [COMPLETED]
 
 **Goal**: Prepare the Boneyard destination for archived files.
 
 **Tasks**:
-- [ ] Create `Boneyard/Metalogic_v4/Completeness/` directory if not exists
-- [ ] Add README or header comment explaining archival rationale
+- [x] Create `Boneyard/Metalogic_v4/Completeness/` directory if not exists
+- [x] Add README or header comment explaining archival rationale
 
 **Timing**: 10 minutes
 
@@ -101,16 +117,20 @@ Key findings from research-008.md:
 **Verification**:
 - Directory exists and is ready to receive archived file
 
+**Completed** (2026-02-01):
+- Created `Boneyard/Metalogic_v4/Completeness/` directory
+- Created README.md with archival documentation (sorry analysis, alternatives, historical context)
+
 ---
 
-### Phase 4: Archive FiniteCanonicalModel.lean [NOT STARTED]
+### Phase 4: Archive FiniteCanonicalModel.lean [COMPLETED]
 
 **Goal**: Move the deprecated file to Boneyard with proper documentation.
 
 **Tasks**:
-- [ ] Move `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` to `Boneyard/Metalogic_v4/Completeness/`
-- [ ] Update the file header with archival metadata (date, reason, superseded by)
-- [ ] Update any import statements in the moved file to reflect new location (if needed for historical builds)
+- [x] Move `Theories/Bimodal/Metalogic/Completeness/FiniteCanonicalModel.lean` to `Boneyard/Metalogic_v4/Completeness/`
+- [x] Update the file header with archival metadata (date, reason, superseded by)
+- [x] Update any import statements in the moved file to reflect new location (if needed for historical builds)
 
 **Timing**: 15 minutes
 
@@ -121,16 +141,21 @@ Key findings from research-008.md:
 - File moved successfully
 - Original location no longer contains the file
 
+**Completed** (2026-02-01):
+- Moved file to `Boneyard/Metalogic_v4/Completeness/FiniteCanonicalModel.lean`
+- Added archival header with date, task, session, reason, and sorry-free alternative references
+- Added note that file will NOT compile in archived state (preserved for historical reference)
+
 ---
 
-### Phase 5: Verify Build Passes [NOT STARTED]
+### Phase 5: Verify Build Passes [COMPLETED]
 
 **Goal**: Confirm the repository builds cleanly after archival.
 
 **Tasks**:
-- [ ] Run `lake build` on the full project
-- [ ] Verify no new errors introduced
-- [ ] Check that sorry count decreased by 71 in Metalogic/
+- [x] Run `lake build` on the full project
+- [x] Verify no new errors introduced
+- [x] Check that sorry count decreased by 71 in Metalogic/
 
 **Timing**: 30 minutes (including build time)
 
@@ -141,16 +166,21 @@ Key findings from research-008.md:
 - Build succeeds with no new errors
 - Metalogic/ sorry count decreased
 
+**Completed** (2026-02-01):
+- `lake build` completed successfully (707 jobs)
+- No new errors introduced (only existing warnings in Examples/, Automation/)
+- Metalogic/ sorry count reduced from ~165 to ~94 (71 sorries moved to Boneyard)
+
 ---
 
-### Phase 6: Document Changes and Update State [NOT STARTED]
+### Phase 6: Document Changes and Update State [COMPLETED]
 
 **Goal**: Record the archival in project documentation.
 
 **Tasks**:
-- [ ] Update state.json with completion status
-- [ ] Update TODO.md with completion status
-- [ ] Create implementation summary
+- [x] Update state.json with completion status
+- [x] Update TODO.md with completion status
+- [x] Create implementation summary
 
 **Timing**: 15 minutes
 
@@ -162,6 +192,10 @@ Key findings from research-008.md:
 **Verification**:
 - State files synchronized
 - Summary document created
+
+**Completed** (2026-02-01):
+- Created implementation summary at `summaries/implementation-summary-20260201.md`
+- State updates delegated to skill postflight (per agent protocol)
 
 ## Testing & Validation
 

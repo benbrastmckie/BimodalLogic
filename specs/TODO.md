@@ -228,13 +228,16 @@ technical_debt:
 
 ### 777. Complete weak_completeness architectural sorry
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-01-30
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
+- **Started**: 2026-02-01
+- **Completed**: 2026-02-01
 - **Research**: [research-008.md](specs/777_complete_weak_completeness_sorry/reports/research-008.md)
 - **Plan**: [implementation-001.md](specs/777_complete_weak_completeness_sorry/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260201.md](specs/777_complete_weak_completeness_sorry/summaries/implementation-summary-20260201.md)
 
 **Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
 

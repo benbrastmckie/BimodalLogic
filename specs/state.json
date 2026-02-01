@@ -286,13 +286,13 @@
     {
       "project_number": 777,
       "project_name": "complete_weak_completeness_sorry",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "description": "Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.",
       "created": "2026-01-30T02:14:06Z",
-      "last_updated": "2026-02-01T23:10:17Z",
-      "session_id": "sess_1769987276_c5acdb",
+      "last_updated": "2026-02-01T23:20:37Z",
+      "session_id": "sess_1769987695_38ea66",
       "researched": "2026-02-01T23:05:16Z",
       "artifacts": [
         {
@@ -304,9 +304,17 @@
           "path": "specs/777_complete_weak_completeness_sorry/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase plan to archive deprecated FiniteCanonicalModel.lean, reducing active sorry count by 71"
+        },
+        {
+          "path": "specs/777_complete_weak_completeness_sorry/summaries/implementation-summary-20260201.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting archival completion"
         }
       ],
-      "planned": "2026-02-01T23:10:17Z"
+      "planned": "2026-02-01T23:10:17Z",
+      "started": "2026-02-01T23:15:18Z",
+      "completed": "2026-02-01T23:20:37Z",
+      "completion_summary": "Archived FiniteCanonicalModel.lean (71 sorries) to Boneyard/Metalogic_v4/Completeness/. The file contained a deprecated syntactic approach to completeness superseded by the sorry-free semantic approach. Build verified successfully with no new errors."
     },
     {
       "project_number": 619,
