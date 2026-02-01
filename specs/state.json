@@ -335,21 +335,27 @@
     {
       "project_number": 786,
       "project_name": "migrate_efq_to_efq_neg",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings. Review from 2026-01-31.",
       "created": "2026-01-31T10:00:00Z",
-      "last_updated": "2026-01-31T21:38:15Z",
-      "session_id": "sess_1769895356_4dab83",
+      "last_updated": "2026-02-01T20:41:02Z",
+      "session_id": "sess_1769978349_f20df7",
       "researched": "2026-01-31T21:38:15Z",
       "artifacts": [
         {
           "path": "specs/786_migrate_efq_to_efq_neg/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of efq vs efq_neg definitions showing identical signatures and straightforward replacement pattern"
+        },
+        {
+          "path": "specs/786_migrate_efq_to_efq_neg/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan to replace deprecated efq with efq_neg at lines 402 and 596"
         }
-      ]
+      ],
+      "planned": "2026-02-01T20:41:02Z"
     }
   ],
   "completed_projects": [
