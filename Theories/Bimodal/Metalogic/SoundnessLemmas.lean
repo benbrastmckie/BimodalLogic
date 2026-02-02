@@ -707,7 +707,9 @@ private theorem axiom_temp_4_valid (φ : Formula) :
   intro F M τ t
   simp only [truth_at]
   intro h_future s hts r hsr
-  have htr : t < r := lt_trans hts hsr
+  -- With reflexive semantics: h_future: ∀ r, t ≤ r → φ at r
+  -- Need: φ at r given t ≤ s and s ≤ r
+  have htr : t ≤ r := le_trans hts hsr
   exact h_future r htr
 
 /-- Helper for temporal A axiom. -/
@@ -732,22 +734,25 @@ private theorem axiom_temp_l_valid (φ : Formula) :
   -- First unfold always and and definitions before applying truth_at
   simp only [Formula.always, Formula.and, Formula.neg, truth_at]
   intro h_always s hts r hrs
-  -- h_always encodes: ¬(future(φ) → ¬(φ ∧ past(φ)))
-  -- which is classically equivalent to: future(φ) ∧ φ ∧ past(φ)
+  -- h_always encodes: ¬(past(φ) → ¬(φ ∧ future(φ)))
+  -- which is classically equivalent to: past(φ) ∧ φ ∧ future(φ)
   -- meaning φ holds at all times
+  -- NOTE: With reflexive semantics (≤ instead of <), past/future include now
   have h1 :
-    (∀ (u : D), u < t → truth_at M τ u φ) ∧
+    (∀ (u : D), u ≤ t → truth_at M τ u φ) ∧
     ((truth_at M τ t φ →
-      (∀ (v : D), t < v → truth_at M τ v φ) → False) → False) :=
+      (∀ (v : D), t ≤ v → truth_at M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M τ t φ ∧ (∀ (v : D), t < v → truth_at M τ v φ) :=
+  have h2 : truth_at M τ t φ ∧ (∀ (v : D), t ≤ v → truth_at M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · exact h_past r h_lt
-  · subst h_eq; exact h_now
-  · exact h_future r h_gt
+  -- Goal: φ at r, given t ≤ s (hts) and r ≤ s (hrs)
+  -- φ holds at all times: use h_past for r ≤ t, use h_future for t ≤ r
+  by_cases h : r ≤ t
+  · exact h_past r h
+  · push_neg at h
+    exact h_future r (le_of_lt h)
 
 /-- Modal-Future axiom is locally valid. -/
 private theorem axiom_modal_future_valid (φ : Formula) :

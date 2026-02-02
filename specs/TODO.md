@@ -54,13 +54,16 @@ technical_debt:
 
 ### 807. Remove unused representation_theorem call
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Started**: 2026-02-02
+- **Completed**: 2026-02-02
 - **Research**: [research-001.md](specs/807_remove_unused_representation_theorem_call/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/807_remove_unused_representation_theorem_call/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260202.md](specs/807_remove_unused_representation_theorem_call/summaries/implementation-summary-20260202.md)
 
 **Description**: Remove unused representation_theorem call from InfinitaryStrongCompleteness.lean line 248 (dead code cleanup).
 
@@ -127,12 +130,13 @@ technical_debt:
 
 ### 799. Complete Decidability proofs
 - **Effort**: 5-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
 - **Revised**: 2026-02-02
+- **Started**: 2026-02-02
 - **Research**: [research-001.md](specs/799_complete_decidability_proofs/reports/research-001.md), [research-002.md](specs/799_complete_decidability_proofs/reports/research-002.md), [research-003.md](specs/799_complete_decidability_proofs/reports/research-003.md)
 - **Plan**: [implementation-003.md](specs/799_complete_decidability_proofs/plans/implementation-003.md)
 

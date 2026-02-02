@@ -165,6 +165,89 @@ def classifyBranch (b : Branch) : BranchStatus :=
   | none => .open
 
 /-!
+## Monotonicity Lemmas
+
+These lemmas establish that closure checks are monotonic: if a branch is closed,
+extending it with more formulas keeps it closed.
+-/
+
+/--
+hasNeg is monotonic: if `b` contains F(φ), then `x :: b` also contains F(φ).
+-/
+theorem hasNeg_mono (b : Branch) (x : SignedFormula) (φ : Formula) :
+    Branch.hasNeg b φ → Branch.hasNeg (x :: b) φ := by
+  intro h
+  simp only [Branch.hasNeg, Branch.contains, List.any_cons] at h ⊢
+  simp only [Bool.or_eq_true]
+  right
+  exact h
+
+/--
+hasPos is monotonic: if `b` contains T(φ), then `x :: b` also contains T(φ).
+-/
+theorem hasPos_mono (b : Branch) (x : SignedFormula) (φ : Formula) :
+    Branch.hasPos b φ → Branch.hasPos (x :: b) φ := by
+  intro h
+  simp only [Branch.hasPos, Branch.contains, List.any_cons] at h ⊢
+  simp only [Bool.or_eq_true]
+  right
+  exact h
+
+/--
+hasBotPos is monotonic: if `b` contains T(⊥), then `x :: b` also contains T(⊥).
+-/
+theorem hasBotPos_mono (b : Branch) (x : SignedFormula) :
+    Branch.hasBotPos b → Branch.hasBotPos (x :: b) := by
+  intro h
+  simp only [Branch.hasBotPos, Branch.contains, List.any_cons] at h ⊢
+  simp only [Bool.or_eq_true]
+  right
+  exact h
+
+/--
+checkBotPos is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
+-/
+theorem checkBotPos_mono (b : Branch) (x : SignedFormula) :
+    (checkBotPos b).isSome → (checkBotPos (x :: b)).isSome := by
+  simp only [checkBotPos]
+  intro h
+  split_ifs at h ⊢ with hxb hb
+  · rfl
+  · exact hasBotPos_mono b x hb
+
+/--
+checkContradiction is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
+-/
+theorem checkContradiction_mono (b : Branch) (x : SignedFormula) :
+    (checkContradiction b).isSome → (checkContradiction (x :: b)).isSome := by
+  intro h
+  rw [checkContradiction, List.findSome?_isSome_iff] at h
+  obtain ⟨sf, hsf_mem, hsf_cond⟩ := h
+  rw [checkContradiction, List.findSome?_isSome_iff]
+  refine ⟨sf, List.mem_cons_of_mem x hsf_mem, ?_⟩
+  simp only [Option.isSome_iff_exists] at hsf_cond ⊢
+  obtain ⟨reason, hreason⟩ := hsf_cond
+  split_ifs at hreason ⊢ with hcond hcond'
+  · use reason
+  · obtain ⟨hpos, hneg⟩ := hcond
+    have : Branch.hasNeg (x :: b) sf.formula := hasNeg_mono b x sf.formula hneg
+    simp only [hpos, this, and_self, not_true_eq_false] at hcond'
+  · cases hreason
+  · cases hreason
+
+/--
+checkAxiomNeg is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
+The axiom check is branch-independent (only depends on the formula pattern).
+-/
+theorem checkAxiomNeg_mono (b : Branch) (x : SignedFormula) :
+    (checkAxiomNeg b).isSome → (checkAxiomNeg (x :: b)).isSome := by
+  intro h
+  rw [checkAxiomNeg, List.findSome?_isSome_iff] at h
+  obtain ⟨sf, hsf_mem, hsf_cond⟩ := h
+  rw [checkAxiomNeg, List.findSome?_isSome_iff]
+  exact ⟨sf, List.mem_cons_of_mem x hsf_mem, hsf_cond⟩
+
+/-!
 ## Closure Properties
 
 Note: These theorems require careful reasoning about how `findSome?` interacts

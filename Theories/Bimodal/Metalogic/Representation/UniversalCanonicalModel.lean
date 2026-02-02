@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Representation.TruthLemma
 import Bimodal.Metalogic.Representation.IndexedMCSFamily
 import Bimodal.Metalogic.Representation.CoherentConstruction
+import Bimodal.Metalogic.FMP.SemanticCanonicalModel
 
 /-!
 # Universal Canonical Model and Representation Theorem
@@ -173,11 +174,8 @@ theorem non_provable_satisfiable (phi : Formula)
     ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
       phi ∈ family.mcs t := by
   -- If neg phi is not provable, then {phi} is consistent
-  have h_cons : SetConsistent {phi} := by
-    intro L hL
-    intro ⟨d⟩
-    -- Similar argument to above
-    sorry -- Requires detailed proof about consistency
+  -- phi_consistent_of_not_refutable directly gives us this
+  have h_cons : SetConsistent {phi} := Bimodal.Metalogic.FMP.phi_consistent_of_not_refutable phi h_not_prov
   obtain ⟨family, t, h_mem, _⟩ := representation_theorem phi h_cons
   exact ⟨family, t, h_mem⟩
 
@@ -193,8 +191,21 @@ theorem completeness_contrapositive (phi : Formula)
     (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] phi)) :
     ∃ (family : IndexedMCSFamily ℤ) (t : ℤ),
       ¬truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) t phi := by
-  -- If phi is not provable, then neg phi is consistent
-  -- Apply representation theorem to neg phi
-  sorry -- Requires negation consistency argument
+  -- If phi is not provable, then {phi.neg} is consistent
+  have h_neg_cons : SetConsistent {phi.neg} := Bimodal.Metalogic.FMP.neg_set_consistent_of_not_provable phi h_not_prov
+  -- Apply representation theorem to phi.neg
+  obtain ⟨family, t, h_neg_mem, h_neg_true⟩ := representation_theorem phi.neg h_neg_cons
+  -- phi.neg is true at (family, t), so phi is false there
+  -- By truth lemma, phi ∈ family.mcs t ↔ truth_at ... t phi
+  -- Since phi.neg ∈ family.mcs t and family.mcs t is an MCS, phi ∉ family.mcs t
+  have h_phi_not_mem : phi ∉ family.mcs t := by
+    have h_mcs := family.is_mcs t
+    exact set_mcs_neg_excludes h_mcs phi h_neg_mem
+  -- By contrapositive of truth lemma: phi ∉ mcs t → ¬truth_at ... t phi
+  have h_not_true : ¬truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) t phi := by
+    intro h_true
+    have h_mem := (truth_lemma ℤ family t phi).mpr h_true
+    exact h_phi_not_mem h_mem
+  exact ⟨family, t, h_not_true⟩
 
 end Bimodal.Metalogic.Representation

@@ -42,12 +42,12 @@
     {
       "project_number": 807,
       "project_name": "remove_unused_representation_theorem_call",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "description": "Remove unused representation_theorem call from InfinitaryStrongCompleteness.lean line 248 (dead code cleanup).",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:27:30Z",
-      "session_id": "sess_1769995541_614936",
+      "last_updated": "2026-02-02T01:33:52Z",
+      "session_id": "sess_1769995812_cb79a2",
       "researched": "2026-02-02T01:24:02Z",
       "artifacts": [
         {
@@ -59,9 +59,17 @@
           "path": "specs/807_remove_unused_representation_theorem_call/plans/implementation-001.md",
           "type": "plan",
           "summary": "Simple 1-phase plan for removing unused representation_theorem call and associated dead code"
+        },
+        {
+          "path": "specs/807_remove_unused_representation_theorem_call/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting dead code removal from infinitary completeness proof"
         }
       ],
-      "planned": "2026-02-02T01:27:30Z"
+      "planned": "2026-02-02T01:27:30Z",
+      "started": "2026-02-02T01:30:32Z",
+      "completed": "2026-02-02T01:33:52Z",
+      "completion_summary": "Removed unused representation_theorem call and 31 lines of dead code from InfinitaryStrongCompleteness.lean, cleaning up an abandoned proof approach that was superseded by the working set_lindenbaum-based implementation."
     },
     {
       "project_number": 808,
@@ -128,12 +136,12 @@
     {
       "project_number": 799,
       "project_name": "complete_decidability_proofs",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T01:29:00Z",
-      "session_id": "sess_1769995146_68e79a",
+      "last_updated": "2026-02-02T01:31:05Z",
+      "session_id": "sess_1769995851_174d9f",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
         {

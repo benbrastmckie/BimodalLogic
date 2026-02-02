@@ -230,39 +230,8 @@ theorem infinitary_strong_completeness (Gamma : Set Formula) (phi : Formula) :
   -- Get SetConsistent (Gamma ∪ {phi.neg})
   have h_union_cons : SetConsistent (Gamma ∪ {phi.neg}) :=
     no_finite_witness_implies_union_consistent Gamma phi h_no_witness
-  -- Use representation theorem: set_consistent {phi.neg} implies satisfiable
-  -- But we need the whole Gamma ∪ {phi.neg} to be satisfiable
-  -- Actually we need to show this gives a model satisfying all of Gamma ∪ {phi.neg}
 
-  -- Key: Since Gamma ∪ {phi.neg} is set_consistent, we can extend any finite subset to MCS
-  -- Pick {phi.neg} ⊆ Gamma ∪ {phi.neg}
-  have h_neg_cons : SetConsistent {phi.neg} := by
-    intro L hL
-    apply h_union_cons L
-    intro ψ hψ
-    right
-    exact hL ψ hψ
-
-  -- Use representation theorem to get a model satisfying phi.neg
-  obtain ⟨family, t, h_neg_in, h_neg_true⟩ :=
-    Bimodal.Metalogic.Representation.representation_theorem phi.neg h_neg_cons
-
-  -- h_neg_true : truth_at ... t phi.neg
-  -- This means phi is false at this model/point
-  -- We need to show that all of Gamma is true at this point to get contradiction
-
-  -- The representation theorem gives us phi.neg in family.mcs t
-  -- And the truth lemma gives us truth_at ... t phi.neg
-
-  -- Now apply h_set_entails: If all of Gamma is true at (model, t), then phi is true
-  -- But phi.neg is true, so phi is false
-  -- We need: all of Gamma is true at this point
-
-  -- The problem: the MCS at t extends {phi.neg}, not necessarily Gamma ∪ {phi.neg}
-  -- We need a stronger version of the representation theorem that can handle
-  -- set_consistent sets, not just singletons
-
-  -- Alternative approach: If Gamma ∪ {phi.neg} is set_consistent, then
+  -- Approach: If Gamma ∪ {phi.neg} is set_consistent, then
   -- there exists an MCS extending Gamma ∪ {phi.neg} (by Lindenbaum's lemma for sets)
   -- Then use the canonical model at that MCS
 
