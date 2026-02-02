@@ -211,9 +211,14 @@ theorem checkBotPos_mono (b : Branch) (x : SignedFormula) :
     (checkBotPos b).isSome → (checkBotPos (x :: b)).isSome := by
   simp only [checkBotPos]
   intro h
-  split_ifs at h ⊢ with hxb hb
+  split_ifs with hxb
   · rfl
-  · exact hasBotPos_mono b x hb
+  · -- b.hasBotPos was true but (x :: b).hasBotPos is false - contradiction
+    exfalso
+    split_ifs at h with hb
+    · have := hasBotPos_mono b x hb
+      exact hxb this
+    · simp at h
 
 /--
 checkContradiction is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
@@ -227,13 +232,15 @@ theorem checkContradiction_mono (b : Branch) (x : SignedFormula) :
   refine ⟨sf, List.mem_cons_of_mem x hsf_mem, ?_⟩
   simp only [Option.isSome_iff_exists] at hsf_cond ⊢
   obtain ⟨reason, hreason⟩ := hsf_cond
-  split_ifs at hreason ⊢ with hcond hcond'
-  · use reason
-  · obtain ⟨hpos, hneg⟩ := hcond
-    have : Branch.hasNeg (x :: b) sf.formula := hasNeg_mono b x sf.formula hneg
-    simp only [hpos, this, and_self, not_true_eq_false] at hcond'
-  · cases hreason
-  · cases hreason
+  split_ifs at hreason with hcond
+  -- The condition was true for b; show it's still true for x :: b
+  obtain ⟨hpos, hneg⟩ := hcond
+  have hneg' : Branch.hasNeg (x :: b) sf.formula := hasNeg_mono b x sf.formula hneg
+  use ClosureReason.contradiction sf.formula
+  split_ifs with hcond'
+  · rfl
+  · push_neg at hcond'
+    exact absurd hneg' (hcond' hpos)
 
 /--
 checkAxiomNeg is monotonic: if it succeeds on `b`, it succeeds on `x :: b`.
@@ -267,7 +274,42 @@ contradiction still exists in `sf :: b`. The technical challenge is that
 -/
 theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
     isClosed b → isClosed (sf :: b) := by
-  sorry  -- Technical proof: requires showing findSome? witnesses persist
+  intro h
+  simp only [isClosed, findClosure] at h ⊢
+  -- h says: (checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b).isSome = true
+  -- We analyze which of the three checks succeeded
+  rw [Option.isSome_iff_exists] at h ⊢
+  obtain ⟨r, hr⟩ := h
+  -- hr : checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b = some r
+  rw [Option.orElse_eq_some] at hr
+  rcases hr with hbot | ⟨hbot_none, hr'⟩
+  · -- checkBotPos b = some r
+    have : (checkBotPos (sf :: b)).isSome := checkBotPos_mono b sf (by simp [hbot])
+    rw [Option.isSome_iff_exists] at this
+    obtain ⟨r', hr'⟩ := this
+    exact ⟨r', by simp [hr']⟩
+  · -- checkBotPos b = none, and (checkContradiction b <|> checkAxiomNeg b) = some r
+    rw [Option.orElse_eq_some] at hr'
+    rcases hr' with hcontra | ⟨hcontra_none, hax⟩
+    · -- checkContradiction b = some r
+      have hsome : (checkContradiction (sf :: b)).isSome := checkContradiction_mono b sf (by simp [hcontra])
+      rw [Option.isSome_iff_exists] at hsome
+      obtain ⟨r', hr''⟩ := hsome
+      use r'
+      cases hbot' : checkBotPos (sf :: b) with
+      | some v => rfl
+      | none => simp only [hbot', Option.none_or, hr'']
+    · -- checkAxiomNeg b = some r
+      have hsome : (checkAxiomNeg (sf :: b)).isSome := checkAxiomNeg_mono b sf (by simp [hax])
+      rw [Option.isSome_iff_exists] at hsome
+      obtain ⟨r', hr''⟩ := hsome
+      use r'
+      cases hbot' : checkBotPos (sf :: b) with
+      | some v => rfl
+      | none =>
+        cases hcontra' : checkContradiction (sf :: b) with
+        | some v => rfl
+        | none => simp only [hbot', Option.none_or, hcontra', hr'']
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #805
 
 - **Task**: 805 - Investigate UniversalCanonicalModel.lean remaining sorries
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: Task 801, Task 803 (completed)
 - **Research Inputs**: specs/805_investigate_universalcanonicalmodel_remaining_sorries/reports/research-001.md
@@ -43,15 +43,17 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Complete Corollary Theorems [NOT STARTED]
+### Phase 1: Complete Corollary Theorems [COMPLETED]
+
+**Note**: This work was already completed by Task 807 (commit 52b82d03).
 
 **Goal**: Resolve both sorries using existing infrastructure from SemanticCanonicalModel.lean
 
 **Tasks**:
-- [ ] Add import for `Bimodal.Metalogic.FMP.SemanticCanonicalModel`
-- [ ] Complete `non_provable_satisfiable` using `phi_consistent_of_not_refutable`
-- [ ] Complete `completeness_contrapositive` using `neg_set_consistent_of_not_provable` and truth lemma
-- [ ] Verify build with `lake build`
+- [x] Add import for `Bimodal.Metalogic.FMP.SemanticCanonicalModel`
+- [x] Complete `non_provable_satisfiable` using `phi_consistent_of_not_refutable`
+- [x] Complete `completeness_contrapositive` using `neg_set_consistent_of_not_provable` and truth lemma
+- [ ] Verify build with `lake build` - BLOCKED by pre-existing SoundnessLemmas.lean errors
 
 **Timing**: 1 hour
 
@@ -87,9 +89,9 @@ Replace the sorry with proof using:
 
 ## Testing & Validation
 
-- [ ] `lake build` succeeds with no errors
-- [ ] No sorries remain in UniversalCanonicalModel.lean
-- [ ] Verify import doesn't create circular dependency
+- [ ] `lake build` succeeds with no errors - BLOCKED by SoundnessLemmas.lean
+- [x] No sorries remain in UniversalCanonicalModel.lean (verified with grep)
+- [x] Verify import doesn't create circular dependency (confirmed)
 
 ## Artifacts & Outputs
 

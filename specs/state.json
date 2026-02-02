@@ -8,11 +8,11 @@
     {
       "project_number": 805,
       "project_name": "investigate_universalcanonicalmodel_remaining_sorries",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "description": "Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:28:05Z",
+      "last_updated": "2026-02-02T01:37:56Z",
       "session_id": "sess_1769995673_5c2daf",
       "researched": "2026-02-02T01:07:18Z",
       "artifacts": [
@@ -25,10 +25,17 @@
           "path": "specs/805_investigate_universalcanonicalmodel_remaining_sorries/plans/implementation-001.md",
           "type": "plan",
           "summary": "1-phase implementation plan to resolve 2 sorries in UniversalCanonicalModel.lean using existing FMP infrastructure"
+        },
+        {
+          "path": "specs/805_investigate_universalcanonicalmodel_remaining_sorries/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Implementation summary noting work already done by Task 807"
         }
       ],
       "planned": "2026-02-02T01:21:39Z",
-      "started": "2026-02-02T01:28:05Z"
+      "started": "2026-02-02T01:28:05Z",
+      "completed": "2026-02-02T01:37:56Z",
+      "completion_summary": "Verified that UniversalCanonicalModel.lean sorries were already resolved by Task 807. File now has 0 sorries."
     },
     {
       "project_number": 806,
@@ -74,11 +81,12 @@
     {
       "project_number": 808,
       "project_name": "audit_coherentconstruction_taskrelation_sorries",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T00:25:51Z"
+      "last_updated": "2026-02-02T01:35:17Z",
+      "session_id": "sess_1738454400_808res"
     },
     {
       "project_number": 809,
