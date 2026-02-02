@@ -296,20 +296,13 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
       rw [Option.isSome_iff_exists] at hsome
       obtain ⟨r', hr''⟩ := hsome
       use r'
-      cases hbot' : checkBotPos (sf :: b) with
-      | some v => rfl
-      | none => simp only [hbot', Option.none_or, hr'']
+      simp only [hr'', Option.some_or]
     · -- checkAxiomNeg b = some r
       have hsome : (checkAxiomNeg (sf :: b)).isSome := checkAxiomNeg_mono b sf (by simp [hax])
       rw [Option.isSome_iff_exists] at hsome
       obtain ⟨r', hr''⟩ := hsome
       use r'
-      cases hbot' : checkBotPos (sf :: b) with
-      | some v => rfl
-      | none =>
-        cases hcontra' : checkContradiction (sf :: b) with
-        | some v => rfl
-        | none => simp only [hbot', Option.none_or, hcontra', hr'']
+      simp only [hr'', Option.some_or]
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.

@@ -44,9 +44,11 @@ technical_debt:
 
 ### 808. Audit CoherentConstruction.lean and TaskRelation.lean sorries
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-02
+- **Researched**: 2026-02-02
+- **Research**: [research-001.md](specs/808_audit_coherentconstruction_taskrelation_sorries/reports/research-001.md)
 
 **Description**: Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.
 

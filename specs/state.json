@@ -81,12 +81,20 @@
     {
       "project_number": 808,
       "project_name": "audit_coherentconstruction_taskrelation_sorries",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:35:17Z",
-      "session_id": "sess_1738454400_808res"
+      "last_updated": "2026-02-02T01:38:39Z",
+      "session_id": "sess_1738454400_808res",
+      "researched": "2026-02-02T01:38:39Z",
+      "artifacts": [
+        {
+          "path": "specs/808_audit_coherentconstruction_taskrelation_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Audited 15 sorries across CoherentConstruction.lean (10) and TaskRelation.lean (5); none block completeness theorem; recommend archiving all as non-critical"
+        }
+      ]
     },
     {
       "project_number": 809,
