@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 813,
+      "project_name": "resolve_remaining_bmcs_sorries",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Use specs/812_canonical_model_completeness/summaries/implementation-summary-20260202.md and specs/812_canonical_model_completeness/plans/implementation-003.md to find ALL remaining work to complete in order to create a minimum number of new tasks to finish all remaining work and remove all sorries.",
+      "created": "2026-02-02T21:00:15Z",
+      "last_updated": "2026-02-02T21:00:15Z"
+    },
+    {
       "project_number": 812,
       "project_name": "canonical_model_completeness",
       "status": "completed",
@@ -450,7 +459,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 813,
+  "next_project_number": 814,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

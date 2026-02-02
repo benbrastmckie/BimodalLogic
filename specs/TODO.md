@@ -1,5 +1,5 @@
 ---
-next_project_number: 813
+next_project_number: 814
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 813. Resolve remaining BMCS sorries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Use specs/812_canonical_model_completeness/summaries/implementation-summary-20260202.md and specs/812_canonical_model_completeness/plans/implementation-003.md to find ALL remaining work to complete in order to create a minimum number of new tasks to finish all remaining work and remove all sorries.
+
+---
 
 ### 812. Sorry-free weak and strong completeness for FMP-internal validity
 - **Effort**: 4 hours
