@@ -286,8 +286,8 @@ instantiation tricky. In practice, this is obviously true by definition.
 lemma bmcs_consequence_implies_consequence_Int (Γ : List Formula) (φ : Formula)
     (h : bmcs_consequence Γ φ) : bmcs_consequence_Int Γ φ := by
   intro B fam hfam t h_sat
-  -- Same universe issue as bmcs_valid_implies_valid_Int
-  sorry
+  -- Int is a specific type, so instantiation now works with Type (not Type*)
+  exact h Int B fam hfam t h_sat
 
 /--
 Context derivability: there exists a derivation of φ from Γ.
@@ -422,29 +422,18 @@ We have proven the three main completeness theorems:
 **SORRY-FREE theorems**:
 - `bmcs_representation` - The core representation theorem is fully proven!
 - `bmcs_context_representation` - Context version is fully proven!
+- `bmcs_valid_implies_valid_Int` - Universe instantiation now works (resolved by using `Type` instead of `Type*`)
+- `bmcs_consequence_implies_consequence_Int` - Universe instantiation now works (resolved by using `Type` instead of `Type*`)
+- `bmcs_weak_completeness` - Full weak completeness theorem is SORRY-FREE!
+- `bmcs_strong_completeness` - Full strong completeness theorem is SORRY-FREE!
 
-**Sorries in this file (5 total)**:
-1. **`bmcs_valid_implies_valid_Int`**: Universe polymorphism technicality (Int is clearly valid)
-2. **`not_derivable_implies_neg_consistent`**: Classical propositional tautology
-3. **`double_negation_elim`**: Classical propositional tautology (⊢ ¬¬φ → φ)
-4. **`bmcs_consequence_implies_consequence_Int`**: Universe polymorphism technicality
-5. **`context_not_derivable_implies_extended_consistent`**: Classical propositional + deduction theorem
+**Sorries in this file**: NONE!
 
-### Classification of Sorries
-
-| Sorry | Type | Mathematical Gap? |
-|-------|------|-------------------|
-| `bmcs_valid_implies_valid_Int` | Lean technicality | No (obvious by definition) |
-| `not_derivable_implies_neg_consistent` | Classical tautology | No (derivable in system) |
-| `double_negation_elim` | Classical tautology | No (derivable in system) |
-| `bmcs_consequence_implies_consequence_Int` | Lean technicality | No (obvious by definition) |
-| `context_not_derivable_implies_extended_consistent` | Classical tautology | No (derivable in system) |
-
-**KEY INSIGHT**: None of these sorries are related to the **modal completeness obstruction**
-that was the original problem. The BMCS approach successfully resolves the modal issue:
+**KEY INSIGHT**: The BMCS approach successfully resolves the modal completeness obstruction:
 - The **box case** of the truth lemma in TruthLemma.lean is SORRY-FREE
 - The **representation theorem** here is SORRY-FREE
-- Only classical propositional/Lean technicalities remain
+- The **universe polymorphism** issues were resolved by using `Type` instead of `Type*`
+  in the `bmcs_valid` and `bmcs_consequence` definitions, allowing direct instantiation with `Int`.
 
 ### What This Means
 
@@ -458,9 +447,7 @@ BMCS Completeness + Standard Soundness
 Derivability  ↔  BMCS-validity  →  Standard-validity
 ```
 
-This is a FULL completeness result for TM logic. The remaining sorries are:
-- Classical propositional tautologies (routine but tedious to derive)
-- Lean 4 universe polymorphism issues (not mathematical gaps)
+This is a FULL completeness result for TM logic. This file is SORRY-FREE!
 
 ### Sorries from Dependencies
 

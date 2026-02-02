@@ -46,12 +46,12 @@
     {
       "project_number": 815,
       "project_name": "bmcs_universe_polymorphism_resolution",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "description": "Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int - polymorphic validity to Int-specific), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int - polymorphic consequence to Int-specific). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.",
       "effort": "1-2 hours",
       "created": "2026-02-02T21:16:09Z",
-      "last_updated": "2026-02-02T22:02:34Z",
+      "last_updated": "2026-02-02T22:06:43Z",
       "parent_task": 813,
       "session_id": "sess_1770069737_99b0f2",
       "researched": "2026-02-02T21:42:59Z",
@@ -70,10 +70,17 @@
           "path": "specs/815_bmcs_universe_polymorphism_resolution/reports/research-002.md",
           "type": "research",
           "summary": "Solution A vs B comparison: recommends Type* → Type based on completeness strategy, API usage, and alignment with standard validity"
+        },
+        {
+          "path": "specs/815_bmcs_universe_polymorphism_resolution/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting resolution of 2 universe polymorphism sorries in BMCS completeness"
         }
       ],
       "planned": "2026-02-02T21:50:10Z",
-      "started": "2026-02-02T22:02:34Z"
+      "started": "2026-02-02T22:02:34Z",
+      "completed": "2026-02-02T22:06:43Z",
+      "completion_summary": "Resolved 2 universe polymorphism sorries in BMCS completeness by changing Type* to Type in bmcs_valid and bmcs_consequence definitions. Both bmcs_weak_completeness and bmcs_strong_completeness are now SORRY-FREE."
     },
     {
       "project_number": 793,
