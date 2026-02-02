@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 818,
+      "project_name": "refactor_bimodal_metalogic_modules",
+      "status": "not_started",
+      "language": "lean",
+      "effort": "8-12 hours",
+      "description": "Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.",
+      "created": "2026-02-02T22:05:32Z",
+      "last_updated": "2026-02-02T22:05:32Z"
+    },
+    {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
       "status": "researched",
@@ -334,7 +344,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 818,
+  "next_project_number": 819,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

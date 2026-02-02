@@ -1,5 +1,5 @@
 ---
-next_project_number: 818
+next_project_number: 819
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 818. Refactor Bimodal Metalogic modules
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via tasks 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.
+
+---
 
 ### 816. BMCS Temporal Modal Coherence Strengthening
 - **Effort**: 3-4 hours
