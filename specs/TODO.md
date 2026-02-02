@@ -1,5 +1,5 @@
 ---
-next_project_number: 814
+next_project_number: 818
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,54 @@ technical_debt:
 
 ## Tasks
 
+### 817. Fix Plan File Status Update in Implement
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-02
+- **Session**: sess_1770067012_04cf46
+
+**Description**: Add plan file status verification to /implement GATE OUT checkpoint and make implementation skills more explicit about plan file updates. Currently plan files are not reliably updated to [COMPLETED] status after implementation finishes (documented in skills but not executed). Fix: (1) Add verification step in implement.md GATE OUT that checks plan file status matches task status and updates if needed (defensive backup), (2) Make the sed command in skills Stage 7 more explicit with error checking and verification output.
+
+---
+
+### 816. BMCS Temporal Modal Coherence Strengthening
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+- **Parent**: Task 813
+- **Dependencies**: 814
+
+**Description**: Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past), Construction.lean:220 (modal_backward in singleFamilyBMCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction or multi-family approach.
+
+---
+
+### 815. BMCS Universe Polymorphism Resolution
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+- **Parent**: Task 813
+
+**Description**: Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.
+
+---
+
+### 814. Classical Propositional Completeness Infrastructure
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+- **Parent**: Task 813
+
+**Description**: Resolve 4 classical propositional sorries in BMCS infrastructure by importing existing double_negation theorem and porting neg_imp_fst/neg_imp_snd from Boneyard. Sorries: TruthLemma.lean:186 (neg_imp_implies_antecedent), TruthLemma.lean:198 (neg_imp_implies_neg_consequent), Completeness.lean:184 (not_derivable_implies_neg_consistent), Completeness.lean:323 (context_not_derivable_implies_extended_consistent). Note: double_negation_elim at Completeness.lean:197 is duplicate of Bimodal.Theorems.Propositional.double_negation.
+
+---
+
 ### 813. Resolve remaining BMCS sorries
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02

@@ -6,14 +6,50 @@
   },
   "active_projects": [
     {
+      "project_number": 816,
+      "project_name": "bmcs_temporal_modal_coherence_strengthening",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
+      "effort": "3-4 hours",
+      "created": "2026-02-02T21:16:37Z",
+      "last_updated": "2026-02-02T21:16:37Z",
+      "parent_task": 813,
+      "dependencies": [
+        814
+      ]
+    },
+    {
+      "project_number": 815,
+      "project_name": "bmcs_universe_polymorphism_resolution",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int - polymorphic validity to Int-specific), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int - polymorphic consequence to Int-specific). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.",
+      "effort": "1-2 hours",
+      "created": "2026-02-02T21:16:09Z",
+      "last_updated": "2026-02-02T21:16:09Z",
+      "parent_task": 813
+    },
+    {
+      "project_number": 814,
+      "project_name": "classical_propositional_completeness_infrastructure",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Resolve 4 classical propositional sorries in BMCS infrastructure by importing existing double_negation theorem and porting neg_imp_fst/neg_imp_snd from Boneyard. Sorries: TruthLemma.lean:186 (neg_imp_implies_antecedent), TruthLemma.lean:198 (neg_imp_implies_neg_consequent), Completeness.lean:184 (not_derivable_implies_neg_consistent), Completeness.lean:323 (context_not_derivable_implies_extended_consistent). Note: double_negation_elim at Completeness.lean:197 is duplicate of Bimodal.Theorems.Propositional.double_negation.",
+      "effort": "2-3 hours",
+      "created": "2026-02-02T21:15:41Z",
+      "last_updated": "2026-02-02T21:15:41Z",
+      "parent_task": 813
+    },
+    {
       "project_number": 813,
       "project_name": "resolve_remaining_bmcs_sorries",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Use specs/812_canonical_model_completeness/summaries/implementation-summary-20260202.md and specs/812_canonical_model_completeness/plans/implementation-003.md to find ALL remaining work to complete in order to create a minimum number of new tasks to finish all remaining work and remove all sorries.",
       "created": "2026-02-02T21:00:15Z",
-      "last_updated": "2026-02-02T21:10:29Z",
-      "session_id": "sess_1770066466_aac4ee",
+      "last_updated": "2026-02-02T21:14:21Z",
+      "session_id": "sess_1770066831_968479",
       "researched": "2026-02-02T21:06:05Z",
       "artifacts": [
         {
@@ -27,7 +63,8 @@
           "summary": "4-phase meta plan for creating 3 targeted sorry elimination tasks"
         }
       ],
-      "planned": "2026-02-02T21:10:29Z"
+      "planned": "2026-02-02T21:10:29Z",
+      "started": "2026-02-02T21:14:21Z"
     },
     {
       "project_number": 812,
@@ -460,6 +497,17 @@
         }
       ],
       "planned": "2026-02-01T20:41:02Z"
+    },
+    {
+      "project_number": 817,
+      "project_name": "fix_plan_file_status_update_in_implement",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Add plan file status verification to /implement GATE OUT checkpoint and make implementation skills more explicit about plan file updates. Currently plan files are not reliably updated to [COMPLETED] status after implementation finishes (documented in skills but not executed). Fix: (1) Add verification step in implement.md GATE OUT that checks plan file status matches task status and updates if needed (defensive backup), (2) Make the sed command in skills Stage 7 more explicit with error checking and verification output.",
+      "created": "2026-02-02T22:30:12Z",
+      "last_updated": "2026-02-02T22:30:12Z",
+      "session_id": "sess_1770067012_04cf46",
+      "artifacts": []
     }
   ],
   "completed_projects": [
@@ -474,7 +522,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 814,
+  "next_project_number": 818,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
