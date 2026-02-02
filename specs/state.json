@@ -206,11 +206,6 @@
           "summary": "Detailed analysis of 6 sorries with proof strategies, required Mathlib lemmas, and difficulty assessments"
         },
         {
-          "path": "specs/799_complete_decidability_proofs/summaries/implementation-summary-20260202.md",
-          "type": "summary",
-          "summary": "Documents blocked status at Phase 1 with technical analysis of checkContradiction_mono proof challenge"
-        },
-        {
           "path": "specs/799_complete_decidability_proofs/reports/research-002.md",
           "type": "research",
           "summary": "Detailed diagnosis of Phase 1 blockage with proof strategies for closed_extend_closed and add_neg_causes_closure"
@@ -224,6 +219,11 @@
           "path": "specs/799_complete_decidability_proofs/plans/implementation-003.md",
           "type": "plan",
           "summary": "5-phase revised plan with concrete proof sketches from research-003"
+        },
+        {
+          "path": "specs/799_complete_decidability_proofs/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Completed Phases 1-2 of Decidability proofs: added LawfulBEq instances and closure theorems in Closure.lean"
         }
       ],
       "planned": "2026-02-02T01:29:00Z",

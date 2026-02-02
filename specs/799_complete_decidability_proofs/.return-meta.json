@@ -1,21 +1,31 @@
 {
   "status": "partial",
-  "summary": "Completed Phase 1 (6 helper monotonicity lemmas) and partial Phase 2 (closed_extend_closed proven). Reduced sorry count from 6 to 5 in Decidability module.",
-  "artifacts": [],
+  "started_at": "2026-02-02T00:00:00Z",
+  "completed_at": "2026-02-02T12:00:00Z",
+  "artifacts": [
+    {
+      "path": "specs/799_complete_decidability_proofs/summaries/implementation-summary-20260202.md",
+      "type": "summary",
+      "summary": "Completed Phases 1-2 of Decidability proofs: added LawfulBEq instances and closure theorems in Closure.lean"
+    }
+  ],
+  "partial_progress": {
+    "stage": "implementation",
+    "details": "Phases 1-2 complete. Phases 3-5 require FMP infrastructure.",
+    "phases_completed": 2,
+    "phases_total": 5
+  },
   "metadata": {
     "session_id": "sess_1769995851_174d9f",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 1,
+    "phases_completed": 2,
     "phases_total": 5,
-    "resume_phase": 2,
-    "build_status": "success",
-    "sorry_count_before": 6,
-    "sorry_count_after": 5
+    "sorries_removed": 2,
+    "sorries_remaining": 4
   },
   "completion_data": {
-    "completion_summary": "Added 6 helper monotonicity lemmas (hasNeg_mono, hasPos_mono, hasBotPos_mono, checkBotPos_mono, checkContradiction_mono, checkAxiomNeg_mono) to Closure.lean. Proved closed_extend_closed theorem. One theorem (add_neg_causes_closure) requires additional technical work with beq on structures.",
-    "roadmap_items": []
+    "completion_summary": "Completed Phases 1-2 of task 799: Added LawfulBEq instances for Formula/Sign/SignedFormula and completed 2 closure theorems (closed_extend_closed and add_neg_causes_closure). Removed 2 sorries from Closure.lean. 4 sorries remain in Saturation.lean and Correctness.lean requiring FMP infrastructure."
   }
 }

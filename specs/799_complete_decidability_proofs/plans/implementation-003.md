@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799 (Revised v003)
 
 - **Task**: 799 - Complete Decidability proofs
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Version**: 003
 - **Effort**: 5-6 hours (reduced from 7-8 due to concrete proof sketches)
 - **Dependencies**: None (builds on existing FMP infrastructure)
@@ -136,7 +136,7 @@ theorem checkAxiomNeg_mono (b : Branch) (x : SignedFormula) :
 
 ---
 
-### Phase 2: Closure.lean - Main Theorems [IN PROGRESS]
+### Phase 2: Closure.lean - Main Theorems [COMPLETED]
 
 **Goal**: Complete `closed_extend_closed` and `add_neg_causes_closure`
 
