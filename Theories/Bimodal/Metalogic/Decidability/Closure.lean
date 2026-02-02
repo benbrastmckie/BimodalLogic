@@ -330,32 +330,36 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
     -- Goal: (none <|> checkContradiction ... <|> checkAxiomNeg ...).isSome = true
     -- First show checkContradiction succeeds
     have hcontra : (checkContradiction (SignedFormula.neg φ :: b)).isSome := by
-      rw [checkContradiction, List.findSome?_isSome_iff, Option.isSome_iff_exists]
-      -- Extract witness from hasPos
-      simp only [Branch.hasPos, Branch.contains, List.any_eq_true, beq_iff_eq] at hpos
+      rw [checkContradiction, List.findSome?_isSome_iff]
+      -- Extract witness from hasPos. After simp, hwit_eq should be a beq check
+      simp only [Branch.hasPos, Branch.contains, List.any_eq_true] at hpos
       obtain ⟨witness, hwit_mem, hwit_eq⟩ := hpos
+      -- hwit_eq : (witness == SignedFormula.pos φ) = true
+      have hwit_eq' : witness = SignedFormula.pos φ := by
+        rw [beq_eq_true_iff_eq] at hwit_eq
+        exact hwit_eq
       refine ⟨witness, List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem, ?_⟩
+      simp only [Option.isSome_iff_exists]
       use ClosureReason.contradiction witness.formula
-      rw [hwit_eq]
-      simp only [SignedFormula.pos, SignedFormula.isPos]
+      -- witness = SignedFormula.pos φ, so witness.isPos = true and witness.formula = φ
+      have hwit_isPos : witness.isPos = true := by rw [hwit_eq']; rfl
+      have hwit_formula : witness.formula = φ := by rw [hwit_eq']; rfl
+      rw [hwit_isPos, hwit_formula]
+      simp only [true_and]
       split_ifs with h
       · rfl
       · exfalso
-        push_neg at h
-        have hpos_eq : (Sign.pos = Sign.pos) = true := by decide
-        have hneg_eq : Branch.hasNeg (SignedFormula.neg φ :: b) φ = true := by
+        have hneg : Branch.hasNeg (SignedFormula.neg φ :: b) φ = true := by
           simp only [Branch.hasNeg, Branch.contains, List.any_cons]
           simp only [Bool.or_eq_true, beq_iff_eq]
           left
           rfl
-        exact h ⟨hpos_eq, hneg_eq⟩
+        exact h hneg
     -- Now use the fact that checkContradiction.isSome
-    rw [Option.isSome_iff_exists] at hcontra
+    simp only [Option.isSome_iff_exists] at hcontra ⊢
     obtain ⟨r, hr⟩ := hcontra
-    rw [Option.isSome_iff_exists]
     use r
-    simp only [hr]
-    rfl
+    simp only [hr, Option.none_or, Option.some_or]
 
 /-!
 ## Closure Detection Statistics

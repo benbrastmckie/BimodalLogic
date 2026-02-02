@@ -43,14 +43,14 @@ technical_debt:
 ---
 
 ### 808. Audit CoherentConstruction.lean and TaskRelation.lean sorries
-- **Effort**: 1.0 hours
+- **Effort**: 1.5 hours
 - **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/808_audit_coherentconstruction_taskrelation_sorries/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/808_audit_coherentconstruction_taskrelation_sorries/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/808_audit_coherentconstruction_taskrelation_sorries/plans/implementation-003.md)
 
 **Description**: Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.
 
@@ -75,7 +75,7 @@ technical_debt:
 
 ### 806. Archive deprecated Representation/ constructions
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02

@@ -40,12 +40,12 @@
     {
       "project_number": 806,
       "project_name": "archive_deprecated_representation_constructions",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "description": "Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:42:15Z",
-      "session_id": "sess_1769996369_5f91ea",
+      "last_updated": "2026-02-02T01:46:38Z",
+      "session_id": "sess_1769996781_d049e9",
       "researched": "2026-02-02T01:42:15Z",
       "artifacts": [
         {
@@ -94,8 +94,8 @@
       "language": "lean",
       "description": "Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:45:29Z",
-      "session_id": "sess_1738455300_808rev",
+      "last_updated": "2026-02-02T01:48:23Z",
+      "session_id": "sess_1738455600_808rv3",
       "researched": "2026-02-02T01:38:39Z",
       "artifacts": [
         {
@@ -104,12 +104,12 @@
           "summary": "Audited 15 sorries across CoherentConstruction.lean (10) and TaskRelation.lean (5); none block completeness theorem; recommend archiving all as non-critical"
         },
         {
-          "path": "specs/808_audit_coherentconstruction_taskrelation_sorries/plans/implementation-002.md",
+          "path": "specs/808_audit_coherentconstruction_taskrelation_sorries/plans/implementation-003.md",
           "type": "plan",
-          "summary": "Simplified 2-phase plan: archive CoherentConstruction.lean and TaskRelation.lean to Bimodal/Boneyard/"
+          "summary": "3-phase plan: archive to Boneyard with proof integrity verification and refactoring review"
         }
       ],
-      "planned": "2026-02-02T01:45:29Z"
+      "planned": "2026-02-02T01:48:23Z"
     },
     {
       "project_number": 809,
