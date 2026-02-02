@@ -1,18 +1,21 @@
 {
   "status": "researched",
-  "summary": "Strategy B (temporal saturation) combined with Strategy C (multi-family) cannot achieve sorry-free truth lemma due to fundamental circularity in temporal saturation - omega-rule limitation is architectural, not constructional. Recommended: implement C for modal, accept temporal as documented axioms.",
+  "summary": "Researched publication best practices for Lean proofs with sorry statements. Recommend Option B: provide only the forward direction of Truth Lemma (sorry-free) since it suffices for completeness. Mathlib and AFP have strict no-sorry policies. The omega-rule limitation is fundamental, not fixable.",
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-004.md",
-      "summary": "Deep analysis of Strategy B+C combination showing temporal saturation faces fundamental circularity that multi-family construction cannot address"
+      "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-005.md",
+      "summary": "Research report on publication best practices for handling sorry statements in formal Lean proofs, with recommendation to restructure Truth Lemma as forward-direction-only"
     }
   ],
+  "next_steps": "Run /plan 816 to create implementation plan for restructuring Truth Lemma",
   "metadata": {
-    "session_id": "sess_1770071164_973070",
-    "agent_type": "lean-research-agent",
-    "research_focus": "Strategy B + C viability for sorry-free truth lemma",
-    "key_finding": "Temporal sorries from omega-rule, modal sorry from single-family - different root causes requiring different solutions",
-    "recommendation": "Accept temporal sorries as axioms (completeness uses forward only), implement multi-family for modal"
+    "session_id": "sess_1770071623_6cb4a8",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 2700,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6,
+    "recommendation": "Option B - Forward direction only (sorry-free)"
   }
 }
