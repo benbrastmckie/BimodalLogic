@@ -8,12 +8,12 @@
     {
       "project_number": 805,
       "project_name": "investigate_universalcanonicalmodel_remaining_sorries",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:21:39Z",
-      "session_id": "sess_1769995175_b8cc77",
+      "last_updated": "2026-02-02T01:28:05Z",
+      "session_id": "sess_1769995673_5c2daf",
       "researched": "2026-02-02T01:07:18Z",
       "artifacts": [
         {
@@ -27,7 +27,8 @@
           "summary": "1-phase implementation plan to resolve 2 sorries in UniversalCanonicalModel.lean using existing FMP infrastructure"
         }
       ],
-      "planned": "2026-02-02T01:21:39Z"
+      "planned": "2026-02-02T01:21:39Z",
+      "started": "2026-02-02T01:28:05Z"
     },
     {
       "project_number": 806,
@@ -127,11 +128,11 @@
     {
       "project_number": 799,
       "project_name": "complete_decidability_proofs",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T01:23:54Z",
+      "last_updated": "2026-02-02T01:29:00Z",
       "session_id": "sess_1769995146_68e79a",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
@@ -151,17 +152,17 @@
           "summary": "Detailed diagnosis of Phase 1 blockage with proof strategies for closed_extend_closed and add_neg_causes_closure"
         },
         {
-          "path": "specs/799_complete_decidability_proofs/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "6-phase revised plan with helper lemma strategy for Closure.lean monotonicity proofs"
-        },
-        {
           "path": "specs/799_complete_decidability_proofs/reports/research-003.md",
           "type": "research",
           "summary": "Deep analysis of Phase 1 blocker with three proof strategies and concrete implementations"
+        },
+        {
+          "path": "specs/799_complete_decidability_proofs/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "5-phase revised plan with concrete proof sketches from research-003"
         }
       ],
-      "planned": "2026-02-02T01:02:39Z",
+      "planned": "2026-02-02T01:29:00Z",
       "started": "2026-02-02T00:24:26Z"
     },
     {
