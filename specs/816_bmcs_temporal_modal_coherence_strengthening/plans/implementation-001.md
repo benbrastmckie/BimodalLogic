@@ -1,7 +1,7 @@
 # Implementation Plan: Task #816
 
 - **Task**: 816 - bmcs_temporal_modal_coherence_strengthening
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-005.md
@@ -46,7 +46,7 @@ From research-005.md:
 
 ## Implementation Phases
 
-### Phase 1: Analyze and Document Current State [NOT STARTED]
+### Phase 1: Analyze and Document Current State [COMPLETED]
 
 **Goal**: Understand exact dependencies before making changes
 
@@ -66,7 +66,7 @@ From research-005.md:
 
 ---
 
-### Phase 2: Remove Backward Direction Infrastructure [NOT STARTED]
+### Phase 2: Remove Backward Direction Infrastructure [COMPLETED]
 
 **Goal**: Remove helper lemmas only needed for backward direction
 
@@ -86,7 +86,12 @@ From research-005.md:
 
 ---
 
-### Phase 3: Restructure Main Truth Lemma [NOT STARTED]
+### Phase 3: Restructure Main Truth Lemma [PARTIAL]
+
+**Note**: The goal of converting to forward-only was not achievable because the forward
+direction proof for the implication case inherently requires the backward direction
+IH for subformulas. Kept the iff structure with inline sorries for temporal backward
+cases. See discussion in implementation summary.
 
 **Goal**: Convert biconditional to forward-only implication
 
@@ -114,7 +119,11 @@ theorem mcs_membership_implies_truth (B : BMCS D) (fam : IndexedMCSFamily D)
 
 ---
 
-### Phase 4: Update Corollaries [NOT STARTED]
+### Phase 4: Update Corollaries [COMPLETED]
+
+**Note**: No changes needed to corollaries. All compile successfully with the
+modified truth lemma. `bmcs_eval_mcs` still works because the iff is still
+available (just with sorries in temporal backward cases).
 
 **Goal**: Adjust corollaries that used the biconditional
 
@@ -144,7 +153,7 @@ theorem mcs_membership_implies_truth (B : BMCS D) (fam : IndexedMCSFamily D)
 
 ---
 
-### Phase 5: Update Module Documentation [NOT STARTED]
+### Phase 5: Update Module Documentation [COMPLETED]
 
 **Goal**: Clearly document the forward-only nature and omega-rule limitation
 
@@ -187,7 +196,7 @@ The forward direction suffices for the completeness theorems in Completeness.lea
 
 ---
 
-### Phase 6: Verify Completeness.lean [NOT STARTED]
+### Phase 6: Verify Completeness.lean [COMPLETED]
 
 **Goal**: Ensure Completeness.lean still compiles and is sorry-free
 
@@ -213,7 +222,7 @@ These use `.mp` which extracts the forward direction. After restructuring, these
 
 ---
 
-### Phase 7: Full Build and Verification [NOT STARTED]
+### Phase 7: Full Build and Verification [COMPLETED]
 
 **Goal**: Verify entire project builds cleanly
 
