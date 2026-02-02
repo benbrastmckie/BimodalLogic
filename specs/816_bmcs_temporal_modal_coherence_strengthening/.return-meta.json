@@ -1,21 +1,21 @@
 {
-  "status": "researched",
-  "summary": "Researched publication best practices for Lean proofs with sorry statements. Recommend Option B: provide only the forward direction of Truth Lemma (sorry-free) since it suffices for completeness. Mathlib and AFP have strict no-sorry policies. The omega-rule limitation is fundamental, not fixable.",
+  "status": "planned",
+  "summary": "Created 7-phase implementation plan to restructure TruthLemma.lean as forward-direction-only, eliminating all sorries while preserving completeness functionality.",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-005.md",
-      "summary": "Research report on publication best practices for handling sorry statements in formal Lean proofs, with recommendation to restructure Truth Lemma as forward-direction-only"
+      "type": "plan",
+      "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-001.md",
+      "summary": "7-phase plan to restructure Truth Lemma as forward-direction-only (sorry-free)"
     }
   ],
-  "next_steps": "Run /plan 816 to create implementation plan for restructuring Truth Lemma",
+  "next_steps": "Run /implement 816 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770071623_6cb4a8",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1770072069_3b34d0",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6,
-    "recommendation": "Option B - Forward direction only (sorry-free)"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 2
   }
 }
