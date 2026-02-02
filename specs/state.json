@@ -8,12 +8,21 @@
     {
       "project_number": 819,
       "project_name": "create_sorry_debt_policy_context_file",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "effort": "1-2 hours",
       "description": "Create .claude/context/project/lean4/standards/sorry-debt-policy.md with philosophy, remediation paths, discovery protocol, and Boneyard references. Philosophy: sorries are mathematical debt, never acceptable in final proofs. Remediation paths: Boneyard archival, architectural refactoring, proof completion. Discovery protocol: what to do when encountering existing sorries during implementation. References to project Boneyard locations (Theories/Bimodal/Boneyard/, Boneyard/).",
       "created": "2026-02-02T23:14:16Z",
-      "last_updated": "2026-02-02T23:14:16Z"
+      "last_updated": "2026-02-02T23:31:38Z",
+      "session_id": "sess_1770074905_66f21f",
+      "researched": "2026-02-02T23:31:38Z",
+      "artifacts": [
+        {
+          "path": "specs/819_create_sorry_debt_policy_context_file/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report covering Boneyard structure, sorry categories, existing policy references, and recommendations for sorry-debt-policy.md content"
+        }
+      ]
     },
     {
       "project_number": 820,
@@ -46,13 +55,13 @@
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-02T23:19:11Z",
+      "last_updated": "2026-02-02T23:31:25Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
-      "session_id": "sess_1770074026_3b529f",
-      "researched": "2026-02-02T23:19:11Z",
+      "session_id": "sess_1770074845_a531cb",
+      "researched": "2026-02-02T23:31:25Z",
       "artifacts": [
         {
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md",
