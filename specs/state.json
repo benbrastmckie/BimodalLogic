@@ -62,11 +62,11 @@
     {
       "project_number": 803,
       "project_name": "prove_g_bot_h_bot_conditions",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "description": "Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.",
       "created": "2026-02-02T00:14:08Z",
-      "last_updated": "2026-02-02T00:50:09Z",
+      "last_updated": "2026-02-02T00:53:56Z",
       "session_id": "sess_1769993391_e7522a",
       "researched": "2026-02-02T00:44:23Z",
       "artifacts": [
@@ -79,10 +79,20 @@
           "path": "specs/803_prove_g_bot_h_bot_conditions/plans/implementation-001.md",
           "type": "plan",
           "summary": "1-phase implementation plan for G_bot/H_bot proof using T-axiom closure lemmas"
+        },
+        {
+          "path": "specs/803_prove_g_bot_h_bot_conditions/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Proved G_bot and H_bot boundary conditions using T-axiom closure lemmas"
         }
       ],
       "planned": "2026-02-02T00:48:53Z",
-      "started": "2026-02-02T00:50:09Z"
+      "started": "2026-02-02T00:50:09Z",
+      "completed": "2026-02-02T00:53:56Z",
+      "completion_summary": "Proved G_bot and H_bot boundary conditions in representation_theorem using T-axiom closure lemmas (mcs_closed_temp_t_future, mcs_closed_temp_t_past). Reduces project sorry count by 2 and makes representation_theorem sorry-free.",
+      "roadmap_items": [
+        "Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean"
+      ]
     },
     {
       "project_number": 804,

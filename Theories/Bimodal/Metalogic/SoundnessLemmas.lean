@@ -152,10 +152,15 @@ equivalent in general temporal models.
 future times but false at all past times. Then φ.swap = all_future(atom "p") is valid,
 but φ = all_past(atom "p") is not valid.
 
-**Semantic analysis**: The swap operation creates an asymmetry:
-- `all_past φ` quantifies over s < t (past times)
-- `all_future φ` quantifies over s > t (future times)
-- Swapping exchanges these ranges, which are not equivalent in arbitrary models
+**Semantic analysis**: With the OLD strict semantics, swap created an asymmetry:
+- `all_past φ` quantified over s < t (strict past times)
+- `all_future φ` quantified over s > t (strict future times)
+- Swapping exchanged these ranges, which were not equivalent in arbitrary models
+
+**Note**: With the CURRENT reflexive semantics (Task #658), temporal operators use `≤`:
+- `all_past φ` quantifies over s ≤ t (now and past)
+- `all_future φ` quantifies over s ≤ t (now and future)
+- The T-axioms (Gφ → φ, Hφ → φ) are now trivially valid via `le_refl`
 
 **The theorem IS true for derivable formulas** (see `derivable_valid_swap_involution` at end of file),
 because the temporal_duality inference rule guarantees swap preservation for provable formulas.

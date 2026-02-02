@@ -78,12 +78,28 @@ theorem representation_theorem (phi : Formula) (h_cons : SetConsistent {phi}) :
   -- These hypotheses ensure the MCS can be extended temporally in both directions.
   -- G⊥ ∉ Gamma and H⊥ ∉ Gamma are required because MCS containing these formulas
   -- are only satisfiable at bounded temporal endpoints.
-  -- TODO: Prove these from h_mcs properties (G⊥ and H⊥ in MCS implies inconsistency
-  -- with unbounded time). For now, use sorry to unblock the coherent construction.
+  -- Proof: If G⊥ ∈ Gamma, then ⊥ ∈ Gamma by T-axiom (G⊥ → ⊥), contradicting consistency.
+  -- Similarly for H⊥ using the past T-axiom (H⊥ → ⊥).
   have h_no_G_bot : Formula.all_future Formula.bot ∉ Gamma := by
-    sorry
+    intro h_G_bot_in
+    -- If G⊥ ∈ Gamma, then ⊥ ∈ Gamma by T-axiom closure
+    have h_bot_in : Formula.bot ∈ Gamma :=
+      mcs_closed_temp_t_future h_mcs Formula.bot h_G_bot_in
+    -- But ⊥ ∈ Gamma contradicts MCS consistency
+    have h_cons := h_mcs.1
+    have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    exact h_cons [Formula.bot] (by simp [h_bot_in]) ⟨h_bot_deriv⟩
   have h_no_H_bot : Formula.all_past Formula.bot ∉ Gamma := by
-    sorry
+    intro h_H_bot_in
+    -- If H⊥ ∈ Gamma, then ⊥ ∈ Gamma by T-axiom closure
+    have h_bot_in : Formula.bot ∈ Gamma :=
+      mcs_closed_temp_t_past h_mcs Formula.bot h_H_bot_in
+    -- But ⊥ ∈ Gamma contradicts MCS consistency
+    have h_cons := h_mcs.1
+    have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    exact h_cons [Formula.bot] (by simp [h_bot_in]) ⟨h_bot_deriv⟩
   -- Step 3: Construct the coherent family with Gamma at origin 0
   let coherent := construct_coherent_family Gamma h_mcs h_no_G_bot h_no_H_bot
   let family := coherent.toIndexedMCSFamily
