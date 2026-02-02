@@ -40,12 +40,12 @@
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T06:45:09Z",
-      "session_id": "sess_1770014694_96af7d",
+      "last_updated": "2026-02-02T08:50:33Z",
+      "session_id": "sess_1770022212_d914d3",
       "researched": "2026-02-02T06:06:24Z",
       "artifacts": [
         {
@@ -82,23 +82,6 @@
       "planned": "2026-02-02T06:34:46Z",
       "revised": "2026-02-02T06:34:46Z",
       "started": "2026-02-02T06:45:09Z"
-    },
-    {
-      "project_number": 796,
-      "project_name": "complete_remaining_sorries",
-      "status": "researched",
-      "language": "lean",
-      "created": "2026-02-01T22:41:14Z",
-      "last_updated": "2026-02-01T22:50:06Z",
-      "session_id": "sess_1769985990_19fbbd",
-      "researched": "2026-02-01T22:50:06Z",
-      "artifacts": [
-        {
-          "path": "specs/796_complete_remaining_sorries/reports/research-001.md",
-          "type": "research",
-          "summary": "Detailed categorization and analysis of all remaining sorries with difficulty ratings, impact assessment, and resolution strategies"
-        }
-      ]
     },
     {
       "project_number": 793,

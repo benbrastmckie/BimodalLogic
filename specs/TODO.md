@@ -5,11 +5,11 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-02T02:48:36Z
 task_counts:
-  active: 9
+  active: 8
   completed: 357
   in_progress: 4
-  not_started: 5
-  abandoned: 24
+  not_started: 4
+  abandoned: 25
   total: 381
 technical_debt:
   sorry_count: 41
@@ -24,7 +24,7 @@ technical_debt:
 
 ### 810. Strategic review: Representation/ vs semantic completeness paths
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
@@ -53,18 +53,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260202-v003.md](specs/809_audit_truthlemma_sorries/summaries/implementation-summary-20260202-v003.md)
 
 **Description**: Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.
-
----
-
-### 796. Complete all remaining sorries
-- **Effort**: M
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Research**: [research-001.md](specs/796_complete_remaining_sorries/reports/research-001.md)
-
-**Description**: Draw on specs/794_sorry_free_completeness_theorems/summaries/implementation-summary-20260201.md to complete all remaining sorries.
 
 ---
 
