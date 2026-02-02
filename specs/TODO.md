@@ -1,5 +1,5 @@
 ---
-next_project_number: 811
+next_project_number: 812
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 811. Swap WezTerm tab styling for active vs Claude Code notification
+- **Effort**: S
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-02-02
+
+**Description**: Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua
+
+---
 
 ### 810. Strategic review: Representation/ vs semantic completeness paths
 - **Effort**: 3-4 hours

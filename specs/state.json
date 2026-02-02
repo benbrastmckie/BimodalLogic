@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 811,
+      "project_name": "swap_wezterm_tab_styling",
+      "status": "not_started",
+      "language": "general",
+      "description": "Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua",
+      "created": "2026-02-02T08:58:05Z",
+      "last_updated": "2026-02-02T08:58:05Z"
+    },
+    {
       "project_number": 809,
       "project_name": "audit_truthlemma_sorries",
       "status": "completed",
@@ -357,7 +366,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 811,
+  "next_project_number": 812,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
