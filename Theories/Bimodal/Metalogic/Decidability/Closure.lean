@@ -327,19 +327,14 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
   | some _ => rfl
   | none =>
     -- checkContradiction will find the contradiction
-    simp only [hbot, Option.none_or]
-    rw [Option.isSome_iff_exists]
-    -- Use findSome?_isSome_iff to find the witness
-    rw [checkContradiction, List.findSome?_isSome_iff]
-    -- Extract witness from hasPos
-    simp only [Branch.hasPos, Branch.contains, List.any_eq_true] at hpos
-    obtain ⟨witness, hwit_mem, hwit_eq⟩ := hpos
-    simp only [beq_iff_eq] at hwit_eq
-    use witness
-    constructor
-    · exact List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem
-    · -- witness.isPos = true ∧ (SignedFormula.neg φ :: b).hasNeg witness.formula
-      simp only [Option.isSome_iff_exists]
+    -- Goal: (none <|> checkContradiction ... <|> checkAxiomNeg ...).isSome = true
+    -- First show checkContradiction succeeds
+    have hcontra : (checkContradiction (SignedFormula.neg φ :: b)).isSome := by
+      rw [checkContradiction, List.findSome?_isSome_iff, Option.isSome_iff_exists]
+      -- Extract witness from hasPos
+      simp only [Branch.hasPos, Branch.contains, List.any_eq_true, beq_iff_eq] at hpos
+      obtain ⟨witness, hwit_mem, hwit_eq⟩ := hpos
+      refine ⟨witness, List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem, ?_⟩
       use ClosureReason.contradiction witness.formula
       rw [hwit_eq]
       simp only [SignedFormula.pos, SignedFormula.isPos]
@@ -347,11 +342,20 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
       · rfl
       · exfalso
         push_neg at h
-        rcases h with ⟨hpos', _⟩ | ⟨_, hneg'⟩
-        · exact hpos' rfl
-        · -- Need to show (SignedFormula.neg φ :: b).hasNeg φ = true
-          simp only [Branch.hasNeg, Branch.contains, List.any_cons, beq_self_eq_true,
-            Bool.true_or, SignedFormula.neg] at hneg'
+        have hpos_eq : (Sign.pos = Sign.pos) = true := by decide
+        have hneg_eq : Branch.hasNeg (SignedFormula.neg φ :: b) φ = true := by
+          simp only [Branch.hasNeg, Branch.contains, List.any_cons]
+          simp only [Bool.or_eq_true, beq_iff_eq]
+          left
+          rfl
+        exact h ⟨hpos_eq, hneg_eq⟩
+    -- Now use the fact that checkContradiction.isSome
+    rw [Option.isSome_iff_exists] at hcontra
+    obtain ⟨r, hr⟩ := hcontra
+    rw [Option.isSome_iff_exists]
+    use r
+    simp only [hr]
+    rfl
 
 /-!
 ## Closure Detection Statistics
