@@ -354,12 +354,12 @@ theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.al
   intro T _ _ _ F M τ t
   unfold truth_at
   intro h_future
-  -- h_future : ∀ s, t < s → truth_at M τ s φ
-  -- Goal: ∀ s, t < s → (∀ r, s < r → truth_at M τ r φ)
+  -- h_future : ∀ s, t ≤ s → truth_at M τ s φ
+  -- Goal: ∀ s, t ≤ s → (∀ r, s ≤ r → truth_at M τ r φ)
   intro s hts r hsr
   -- Need to show: truth_at M τ r φ
-  -- We have: t < s and s < r, so t < r
-  have htr : t < r := lt_trans hts hsr
+  -- We have: t ≤ s and s ≤ r, so t ≤ r
+  have htr : t ≤ r := le_trans hts hsr
   exact h_future r htr
 
 /--
@@ -454,24 +454,23 @@ theorem temp_l_valid (φ : Formula) :
 
   -- Extract using classical logic (conjunction encoded as ¬(P → ¬Q))
   have h1 :
-    (∀ (u : T), u < t → truth_at M τ u φ) ∧
+    (∀ (u : T), u ≤ t → truth_at M τ u φ) ∧
     ((truth_at M τ t φ →
-      (∀ (v : T), t < v → truth_at M τ v φ) → False) → False) :=
+      (∀ (v : T), t ≤ v → truth_at M τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
 
-  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t < v → truth_at M τ v φ) :=
+  have h2 : truth_at M τ t φ ∧ (∀ (v : T), t ≤ v → truth_at M τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
 
-  -- Case split on whether r is before, at, or after t
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · -- r < t: use h_past
-    exact h_past r h_lt
-  · -- r = t: use h_now
-    subst h_eq; exact h_now
-  · -- t < r: use h_future
-    exact h_future r h_gt
+  -- Case split on whether r ≤ t or r > t
+  by_cases h_le : r ≤ t
+  · -- r ≤ t: use h_past
+    exact h_past r h_le
+  · -- r > t: use h_future
+    push_neg at h_le
+    exact h_future r (le_of_lt h_le)
 
 /--
 MF axiom validity: `□φ → □(Fφ)` is valid in all task semantic models.

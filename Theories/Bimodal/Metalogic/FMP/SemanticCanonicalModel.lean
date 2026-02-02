@@ -4,6 +4,8 @@ import Bimodal.Metalogic.FMP.FiniteWorldState
 import Bimodal.Metalogic.FMP.BoundedTime
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Core.DeductionTheorem
+import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Theorems.Propositional
 import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finite.Defs
@@ -65,8 +67,8 @@ See `Boneyard/Metalogic_v4/FMP/README.md` for full documentation.
 
 namespace Bimodal.Metalogic.FMP
 
-open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics
-open Bimodal.Metalogic.Core Bimodal.Metalogic.Soundness Bimodal.Theorems.Propositional
+open Bimodal.Syntax Bimodal.ProofSystem Bimodal.Semantics Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Core Bimodal.Metalogic Bimodal.Theorems.Propositional
 
 /-!
 ## History-Time Pairs

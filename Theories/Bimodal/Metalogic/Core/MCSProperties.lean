@@ -319,4 +319,44 @@ theorem set_mcs_all_past_all_past {S : Set Formula} {φ : Formula}
   have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by simp [h_all_past]
   exact set_mcs_closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
 
+/-! ## Consistency Properties -/
+
+/--
+In a set-consistent set, φ and φ.neg cannot both be members.
+
+**Proof Strategy**:
+1. Build derivation [φ, φ.neg] ⊢ ⊥ using modus ponens
+2. Since [φ, φ.neg] ⊆ S and S is consistent, this is a contradiction
+-/
+theorem set_consistent_not_both {S : Set Formula} (h_cons : SetConsistent S)
+    (phi : Formula) (h_phi : phi ∈ S) (h_neg : phi.neg ∈ S) : False := by
+  -- [phi, phi.neg] ⊢ ⊥
+  have h_deriv : DerivationTree [phi, phi.neg] Formula.bot := by
+    -- phi.neg = phi → ⊥
+    -- From phi and phi → ⊥, derive ⊥ by modus ponens
+    have h_phi_assume : DerivationTree [phi, phi.neg] phi :=
+      DerivationTree.assumption _ _ (by simp)
+    have h_neg_assume : DerivationTree [phi, phi.neg] phi.neg :=
+      DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ phi Formula.bot h_neg_assume h_phi_assume
+  -- But [phi, phi.neg] ⊆ S, so S is inconsistent
+  have h_sub : ∀ ψ ∈ [phi, phi.neg], ψ ∈ S := by
+    intro ψ hψ
+    simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+    cases hψ with
+    | inl h => exact h ▸ h_phi
+    | inr h => exact h ▸ h_neg
+  exact h_cons [phi, phi.neg] h_sub ⟨h_deriv⟩
+
+/--
+If φ.neg is in a set-maximal consistent set M, then φ is not in M.
+
+This is the contrapositive of negation completeness: if ¬φ ∈ M, then φ ∉ M.
+Used in the completeness proof to show countermodels exist.
+-/
+theorem set_mcs_neg_excludes {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    (phi : Formula) (h_neg : phi.neg ∈ S) : phi ∉ S := by
+  intro h_phi
+  exact set_consistent_not_both h_mcs.1 phi h_phi h_neg
+
 end Bimodal.Metalogic.Core

@@ -194,18 +194,14 @@ theorem completeness_contrapositive (phi : Formula)
   -- If phi is not provable, then {phi.neg} is consistent
   have h_neg_cons : SetConsistent {phi.neg} := Bimodal.Metalogic.FMP.neg_set_consistent_of_not_provable phi h_not_prov
   -- Apply representation theorem to phi.neg
-  obtain ⟨family, t, h_neg_mem, h_neg_true⟩ := representation_theorem phi.neg h_neg_cons
-  -- phi.neg is true at (family, t), so phi is false there
-  -- By truth lemma, phi ∈ family.mcs t ↔ truth_at ... t phi
-  -- Since phi.neg ∈ family.mcs t and family.mcs t is an MCS, phi ∉ family.mcs t
-  have h_phi_not_mem : phi ∉ family.mcs t := by
-    have h_mcs := family.is_mcs t
-    exact set_mcs_neg_excludes h_mcs phi h_neg_mem
-  -- By contrapositive of truth lemma: phi ∉ mcs t → ¬truth_at ... t phi
+  obtain ⟨family, t, _h_neg_mem, h_neg_true⟩ := representation_theorem phi.neg h_neg_cons
+  -- phi.neg = phi → ⊥, so truth_at phi.neg means: truth_at phi → truth_at ⊥ = False
+  -- Therefore h_neg_true directly implies ¬truth_at phi (no backward truth lemma needed!)
   have h_not_true : ¬truth_at (canonical_model ℤ family) (canonical_history_family ℤ family) t phi := by
     intro h_true
-    have h_mem := (truth_lemma ℤ family t phi).mpr h_true
-    exact h_phi_not_mem h_mem
+    -- h_neg_true : truth_at (phi.neg) = truth_at (phi → ⊥) = (truth_at phi → truth_at ⊥)
+    simp only [Formula.neg, truth_at] at h_neg_true
+    exact h_neg_true h_true
   exact ⟨family, t, h_not_true⟩
 
 end Bimodal.Metalogic.Representation

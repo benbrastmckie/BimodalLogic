@@ -1,7 +1,7 @@
 # Implementation Plan: Task #809
 
 - **Task**: 809 - Refactor Truth Lemma to Forward-Only
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/809_audit_truthlemma_sorries/reports/research-001.md, specs/809_audit_truthlemma_sorries/reports/research-002.md
@@ -47,140 +47,91 @@ From research-002.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Forward-Only Truth Lemma [IN PROGRESS]
+### Phase 1: Fix Build and Restore Representation Files [COMPLETED]
 
-**Goal**: Create a new `TruthLemmaForward.lean` file containing only the forward direction of the Truth Lemma, without sorries in the exported theorems.
+**Goal**: Fix build errors that were blocking the Representation module from compiling correctly.
 
-**Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/Representation/TruthLemmaForward.lean`
-- [ ] Copy canonical model definition (`canonical_model`)
-- [ ] Copy helper lemmas (`canonical_history_family_domain`, `canonical_world_mcs`)
-- [ ] Copy MCS negation-implication lemmas (`neg_imp_fst`, `neg_imp_snd`)
-- [ ] Create forward-only mutual induction (can still use backward IH internally for imp case)
-- [ ] Export only `truth_lemma_forward` theorem
-- [ ] Verify file compiles with `lake build Bimodal.Metalogic.Representation.TruthLemmaForward`
+**What was done**:
+- [x] Moved Representation files from `Metalogic/Boneyard/Representation/` back to `Metalogic/Representation/` (they had been incorrectly moved by task 809 research commit)
+- [x] Fixed SoundnessLemmas.lean missing axiom cases (`temp_t_future`, `temp_t_past`)
+- [x] Fixed SoundnessLemmas.lean and Soundness.lean `<` to `≤` type mismatches (reflexive temporal semantics)
+- [x] Fixed SemanticCanonicalModel.lean missing imports and namespace issues
+- [x] Added `set_consistent_not_both` and `set_mcs_neg_excludes` lemmas to MCSProperties.lean
+- [x] Verified `lake build` passes for full project
 
-**Timing**: 1 hour
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Representation/TruthLemmaForward.lean` - create new file
-
-**Verification**:
-- `lake build Bimodal.Metalogic.Representation.TruthLemmaForward` succeeds
-- No sorries in exported `truth_lemma_forward` theorem
-- The Box case in forward direction still has architectural sorry (acceptable - not used by completeness)
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Representation/*.lean` - restored from Boneyard/Representation/
+- `Theories/Bimodal/Metalogic/SoundnessLemmas.lean` - added missing axiom cases, fixed `<` vs `≤`
+- `Theories/Bimodal/Metalogic/Soundness.lean` - fixed `<` vs `≤`
+- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - fixed imports/namespaces
+- `Theories/Bimodal/Metalogic/Core/MCSProperties.lean` - added missing lemmas
 
 ---
 
-### Phase 2: Archive Original TruthLemma.lean [NOT STARTED]
+### Phase 2: Rewrite completeness_contrapositive [COMPLETED]
 
-**Goal**: Move the original TruthLemma.lean (with backward direction) to Boneyard for reference.
+**Goal**: Eliminate the only usage of backward truth lemma (`.mpr`) outside TruthLemma.lean.
 
-**Tasks**:
-- [ ] Move `Theories/Bimodal/Metalogic/Boneyard/Representation/TruthLemma.lean` to `Theories/Bimodal/Boneyard/Metalogic_v5/Representation/TruthLemma.lean`
-- [ ] Add archive header documenting why it was archived and what replaces it
-- [ ] Update any internal imports within the archived file if needed
+**What was done**:
+- [x] Rewrote `completeness_contrapositive` to use semantic meaning of negation directly
+- [x] Old approach: `(truth_lemma ...).mpr h_true` to get membership from truth
+- [x] New approach: Since `truth_at phi.neg` = `truth_at phi -> False`, use it directly as `¬truth_at phi`
+- [x] Verified no other uses of backward truth lemma in the codebase
 
-**Timing**: 15 minutes
-
-**Files to modify**:
-- `Theories/Bimodal/Boneyard/Metalogic_v5/Representation/TruthLemma.lean` - create (moved from Boneyard/Representation)
-
-**Verification**:
-- File exists in new location with archive header
-- Original location is empty or redirects to new location
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean` - rewritten proof
 
 ---
 
-### Phase 3: Update UniversalCanonicalModel.lean [NOT STARTED]
+### Phase 3-5: NOT NEEDED (Plan Adjustment)
 
-**Goal**: Update UniversalCanonicalModel to use the forward-only Truth Lemma and rewrite `completeness_contrapositive` to avoid backward dependency.
+**Research finding**: The research-002.md concluded that "no refactoring is needed to achieve a forward-only completeness proof - this is already the case." The original plan to create a separate TruthLemmaForward.lean file was based on an assumption that proved unnecessary:
 
-**Tasks**:
-- [ ] Update import from `TruthLemma` to `TruthLemmaForward`
-- [ ] Verify `representation_theorem` still compiles (only uses forward direction)
-- [ ] Rewrite `completeness_contrapositive` proof to avoid `.mpr`:
-  - Current: Uses `(truth_lemma...).mpr h_true` to get membership from truth
-  - New approach: Use negation exclusion directly - if `phi.neg in MCS` and MCS is consistent, then `phi not in MCS`, therefore by contrapositive of forward truth lemma, `not truth_at phi`
-- [ ] Run `lake build` to verify changes compile
+1. The existing `truth_lemma_forward` export already provides forward-only access
+2. The completeness proofs (`representation_theorem`, `infinitary_strong_completeness`) already use only `.mp`
+3. The only backward usage was in `completeness_contrapositive`, which has been rewritten
+4. Creating a separate file would add complexity without functional benefit
 
-**Timing**: 45 minutes
+The existing TruthLemma.lean already provides the necessary separation:
+```lean
+theorem truth_lemma_forward  -- Forward direction (used by completeness)
+theorem truth_lemma_backward -- Backward direction (not used by completeness)
+theorem truth_lemma          -- Biconditional (uses both via .mp and .mpr)
+```
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Boneyard/Representation/UniversalCanonicalModel.lean` - update imports and rewrite corollary
-
-**Verification**:
-- `representation_theorem` compiles unchanged
-- `completeness_contrapositive` compiles with new proof
-- No uses of `truth_lemma.mpr` or `truth_lemma_backward`
-
----
-
-### Phase 4: Update InfinitaryStrongCompleteness.lean [NOT STARTED]
-
-**Goal**: Update InfinitaryStrongCompleteness to use the forward-only Truth Lemma.
-
-**Tasks**:
-- [ ] Update import if needed (check current import path)
-- [ ] Verify `infinitary_strong_completeness` still compiles (only uses `.mp`)
-- [ ] Run `lake build` to verify
-
-**Timing**: 15 minutes
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Completeness/InfinitaryStrongCompleteness.lean` - update imports if needed
-
-**Verification**:
-- File compiles without changes to proofs (only uses forward direction)
-- `lake build Bimodal.Metalogic.Completeness.InfinitaryStrongCompleteness` succeeds
-
----
-
-### Phase 5: Update Metalogic.lean and Verify Full Build [NOT STARTED]
-
-**Goal**: Update the Metalogic module index and verify the entire metalogic builds cleanly.
-
-**Tasks**:
-- [ ] Update `Theories/Bimodal/Metalogic/Metalogic.lean` to import `TruthLemmaForward` instead of old location
-- [ ] Run full `lake build` on Bimodal.Metalogic
-- [ ] Verify no errors or unexpected sorries introduced
-- [ ] Document the refactoring in the TruthLemmaForward.lean header
-
-**Timing**: 30 minutes
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Metalogic.lean` - update imports
-- `Theories/Bimodal/Metalogic/Representation/TruthLemmaForward.lean` - add comprehensive docstring
-
-**Verification**:
-- `lake build` succeeds with no errors
-- `grep -r "sorry" Theories/Bimodal/Metalogic/Representation/TruthLemmaForward.lean` shows only the Box forward sorry (architectural, acceptable)
-- Module documentation explains the forward-only design choice
+The documentation in TruthLemma.lean already notes that backward direction sorries are "NOT required for completeness."
 
 ---
 
 ## Testing & Validation
 
-- [ ] `lake build` succeeds on full project
-- [ ] No new sorries introduced (only pre-existing Box forward sorry remains)
-- [ ] `representation_theorem` unchanged and compiles
-- [ ] `infinitary_strong_completeness` unchanged and compiles
-- [ ] `completeness_contrapositive` rewritten and compiles without backward Truth Lemma
-- [ ] Archived files have proper headers explaining archive reason
+- [x] `lake build` succeeds on full project (707 jobs)
+- [x] No new sorries introduced (only pre-existing architectural sorries remain)
+- [x] `representation_theorem` compiles and uses forward direction only
+- [x] `infinitary_strong_completeness` compiles and uses forward direction only
+- [x] `completeness_contrapositive` rewritten without backward Truth Lemma dependency
+- [x] No uses of `truth_lemma.mpr` or `truth_lemma_backward` outside TruthLemma.lean
 
 ## Artifacts & Outputs
 
-- `Theories/Bimodal/Metalogic/Representation/TruthLemmaForward.lean` - new forward-only Truth Lemma
-- `Theories/Bimodal/Boneyard/Metalogic_v5/Representation/TruthLemma.lean` - archived original with backward direction
-- Updated imports in UniversalCanonicalModel.lean
-- Updated imports in InfinitaryStrongCompleteness.lean (if needed)
-- Updated Metalogic.lean module index
+**Modified Files**:
+- `Theories/Bimodal/Metalogic/Representation/*.lean` - restored to correct location
+- `Theories/Bimodal/Metalogic/SoundnessLemmas.lean` - bug fixes
+- `Theories/Bimodal/Metalogic/Soundness.lean` - bug fixes
+- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - import fixes
+- `Theories/Bimodal/Metalogic/Core/MCSProperties.lean` - new lemmas
+- `Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean` - rewritten proof
 
-## Rollback/Contingency
+**Key Result**: The completeness proofs now demonstrably use only the forward truth lemma:
+- `representation_theorem`: uses `(truth_lemma ...).mp`
+- `infinitary_strong_completeness`: uses `truth_lemma.mp` via forward path
+- `completeness_contrapositive`: rewrote to use semantic negation directly (no truth lemma at all)
 
-If the refactoring causes unexpected issues:
-1. The original TruthLemma.lean is preserved in Boneyard with full history
-2. All import changes can be reverted by pointing back to the Boneyard location
-3. Git history preserves the pre-refactoring state
+## Summary
 
-The modular design ensures that reverting is straightforward: change imports back to the archived location and the old behavior is restored.
+The task objective "ensure completeness proofs use only forward truth lemma" has been achieved through:
+1. Fixing build infrastructure to enable proper validation
+2. Eliminating the single backward truth lemma usage in `completeness_contrapositive`
+3. Verifying no other backward usages exist in the completeness path
+
+The more extensive refactoring (creating TruthLemmaForward.lean, archiving original) was deemed unnecessary based on research findings - the code already effectively uses forward-only.
