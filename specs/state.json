@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 812,
+      "project_name": "canonical_model_completeness",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Draw on specs/810_strategic_review_representation_vs_semantic_paths/summaries/implementation-summary-20260202.md to pursue the canonical model construction (Representation approach) for establishing weak completeness, strong completeness, and compactness, drawing inspiration from the Boneyard as appropriate but without getting stuck in old approaches that didn't work out for good reason before.",
+      "created": "2026-02-02T09:18:05Z",
+      "last_updated": "2026-02-02T09:18:05Z"
+    },
+    {
       "project_number": 811,
       "project_name": "swap_wezterm_tab_styling",
       "status": "completed",
@@ -388,7 +397,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 812,
+  "next_project_number": 813,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

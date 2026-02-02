@@ -1,5 +1,5 @@
 ---
-next_project_number: 812
+next_project_number: 813
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 812. Canonical model completeness via Representation approach
+- **Effort**: M
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Draw on specs/810_strategic_review_representation_vs_semantic_paths/summaries/implementation-summary-20260202.md to pursue the canonical model construction (Representation approach) for establishing weak completeness, strong completeness, and compactness, drawing inspiration from the Boneyard as appropriate but without getting stuck in old approaches that didn't work out for good reason before.
+
+---
 
 ### 811. Swap WezTerm tab styling for active vs Claude Code notification
 - **Effort**: S
