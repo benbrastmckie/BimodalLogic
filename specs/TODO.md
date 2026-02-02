@@ -24,11 +24,13 @@ technical_debt:
 
 ### 812. Canonical model completeness via Representation approach
 - **Effort**: M
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
+- **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/812_canonical_model_completeness/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/812_canonical_model_completeness/plans/implementation-001.md)
 
 **Description**: Establish canonical model completeness (weak, strong, compactness) via the Representation approach. CONSTRAINTS: (1) Only restore elements that can be implemented sorry-free - avoid architectural mismatches or permanent sorries. (2) Ensure definitions align with semantics - Box quantifies over world histories, NOT world-time points. (3) Draw on Boneyard for inspiration but do not revive broken approaches. Goal is clean, correct, sorry-free proofs for the main completeness theorems.
 
