@@ -3,19 +3,19 @@ next_project_number: 811
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-02T08:30:00Z
+  last_assessed: 2026-02-02T02:48:36Z
 task_counts:
-  active: 16
-  completed: 350
-  in_progress: 2
+  active: 9
+  completed: 357
+  in_progress: 4
   not_started: 5
   abandoned: 24
-  total: 374
+  total: 381
 technical_debt:
-  sorry_count: 91
+  sorry_count: 41
   axiom_count: 15
   build_errors: 1
-  status: manageable
+  status: good
 ---
 
 # TODO
@@ -48,127 +48,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/809_audit_truthlemma_sorries/plans/implementation-001.md)
 
 **Description**: Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.
-
----
-
-### 808. Audit CoherentConstruction.lean and TaskRelation.lean sorries
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/808_audit_coherentconstruction_taskrelation_sorries/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/808_audit_coherentconstruction_taskrelation_sorries/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260202.md](specs/808_audit_coherentconstruction_taskrelation_sorries/summaries/implementation-summary-20260202.md)
-
-**Description**: Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.
-
----
-
-### 807. Remove unused representation_theorem call
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/807_remove_unused_representation_theorem_call/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/807_remove_unused_representation_theorem_call/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/807_remove_unused_representation_theorem_call/summaries/implementation-summary-20260202.md)
-
-**Description**: Remove unused representation_theorem call from InfinitaryStrongCompleteness.lean line 248 (dead code cleanup).
-
----
-
-### 806. Archive deprecated Representation/ constructions
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Revised**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/806_archive_deprecated_representation_constructions/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/806_archive_deprecated_representation_constructions/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260202.md](specs/806_archive_deprecated_representation_constructions/summaries/implementation-summary-20260202.md)
-
-**Description**: Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.
-
----
-
-### 805. Investigate UniversalCanonicalModel.lean remaining sorries
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/805_investigate_universalcanonicalmodel_remaining_sorries/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/805_investigate_universalcanonicalmodel_remaining_sorries/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/805_investigate_universalcanonicalmodel_remaining_sorries/summaries/implementation-summary-20260202.md)
-
-**Description**: Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.
-
----
-
-### 803. Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/803_prove_g_bot_h_bot_conditions/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/803_prove_g_bot_h_bot_conditions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/803_prove_g_bot_h_bot_conditions/summaries/implementation-summary-20260202.md)
-
-**Description**: Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.
-
----
-
-### 801. Document Soundness temp_t axiom semantic validity issue
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/801_document_soundness_temp_t_axiom_validity/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/801_document_soundness_temp_t_axiom_validity/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/801_document_soundness_temp_t_axiom_validity/summaries/implementation-summary-20260202.md)
-
-**Description**: Document the 2 sorries in SoundnessLemmas.lean (temp_t axioms). These are NOT semantically valid with strict inequality but were added for syntactic completeness (MCS coherence). Add clear documentation explaining this is an acceptable known limitation. Evaluate if these can be resolved or should be marked as permanent documented technical debt.
-
----
-
-### 799. Complete Decidability proofs
-- **Effort**: 5-6 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Revised**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/799_complete_decidability_proofs/reports/research-001.md), [research-002.md](specs/799_complete_decidability_proofs/reports/research-002.md), [research-003.md](specs/799_complete_decidability_proofs/reports/research-003.md)
-- **Plan**: [implementation-003.md](specs/799_complete_decidability_proofs/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260202.md](specs/799_complete_decidability_proofs/summaries/implementation-summary-20260202.md)
-
-**Description**: Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.
 
 ---
 
