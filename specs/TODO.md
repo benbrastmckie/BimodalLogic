@@ -3,18 +3,18 @@ next_project_number: 818
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-02T02:48:36Z
+  last_assessed: 2026-02-02T21:45:54Z
 task_counts:
-  active: 8
-  completed: 357
-  in_progress: 4
-  not_started: 4
+  active: 13
+  completed: 362
+  in_progress: 2
+  not_started: 5
   abandoned: 25
-  total: 381
+  total: 386
 technical_debt:
-  sorry_count: 41
+  sorry_count: 75
   axiom_count: 15
-  build_errors: 1
+  build_errors: 0
   status: good
 ---
 
@@ -46,91 +46,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md)
 
 **Description**: Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.
-
----
-
-### 814. Classical Propositional Completeness Infrastructure
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Parent**: Task 813
-- **Research**: [research-001.md](specs/814_classical_propositional_completeness_infrastructure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/814_classical_propositional_completeness_infrastructure/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/814_classical_propositional_completeness_infrastructure/summaries/implementation-summary-20260202.md)
-
-**Description**: Resolve 4 classical propositional sorries in BMCS infrastructure by importing existing double_negation theorem and porting neg_imp_fst/neg_imp_snd from Boneyard. Sorries: TruthLemma.lean:186 (neg_imp_implies_antecedent), TruthLemma.lean:198 (neg_imp_implies_neg_consequent), Completeness.lean:184 (not_derivable_implies_neg_consistent), Completeness.lean:323 (context_not_derivable_implies_extended_consistent). Note: double_negation_elim at Completeness.lean:197 is duplicate of Bimodal.Theorems.Propositional.double_negation.
-
----
-
-### 813. Resolve remaining BMCS sorries
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/813_resolve_remaining_bmcs_sorries/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/813_resolve_remaining_bmcs_sorries/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/813_resolve_remaining_bmcs_sorries/summaries/implementation-summary-20260202.md)
-
-**Description**: Use specs/812_canonical_model_completeness/summaries/implementation-summary-20260202.md and specs/812_canonical_model_completeness/plans/implementation-003.md to find ALL remaining work to complete to finish all remaining work and remove all sorries.
-
----
-
-### 812. Sorry-free weak and strong completeness for FMP-internal validity
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Revised**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/812_canonical_model_completeness/reports/research-001.md), [research-002.md](specs/812_canonical_model_completeness/reports/research-002.md), [research-003.md](specs/812_canonical_model_completeness/reports/research-003.md), [research-004.md](specs/812_canonical_model_completeness/reports/research-004.md), [research-005.md](specs/812_canonical_model_completeness/reports/research-005.md), [research-006.md](specs/812_canonical_model_completeness/reports/research-006.md), [research-007.md](specs/812_canonical_model_completeness/reports/research-007.md)
-- **Plan**: [implementation-003.md](specs/812_canonical_model_completeness/plans/implementation-003.md) (BMCS approach, supersedes v002)
-- **Summary**: [implementation-summary-20260202.md](specs/812_canonical_model_completeness/summaries/implementation-summary-20260202.md)
-
-**Description**: Establish sorry-free weak and strong completeness for FMP-internal validity. Focus on exposing existing semantic_weak_completeness as canonical result and building sorry-free strong completeness. Compactness dropped (requires Representation sorries). No semantics changes. CONSTRAINTS: (1) Only implement sorry-free elements. (2) Preserve existing semantic definitions. (3) Document architectural limitations clearly.
-
----
-
-### 811. Swap WezTerm tab styling for active vs Claude Code notification
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Plan**: [implementation-001.md](specs/811_swap_wezterm_tab_styling/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/811_swap_wezterm_tab_styling/summaries/implementation-summary-20260202.md)
-
-**Description**: Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua
-
----
-
-### 809. Audit TruthLemma.lean sorries
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Revised**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-002.md](specs/809_audit_truthlemma_sorries/reports/research-002.md)
-- **Plan**: [implementation-003.md](specs/809_audit_truthlemma_sorries/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260202-v003.md](specs/809_audit_truthlemma_sorries/summaries/implementation-summary-20260202-v003.md)
-
-**Description**: Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.
 
 ---
 
