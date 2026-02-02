@@ -1,52 +1,89 @@
--- Metalogic: Universal Parametric Canonical Model for TM Logic
--- This is the new implementation following Task 654's research recommendations
+-- Metalogic: Sorry-Free Completeness for TM Logic
+-- Updated 2026-02-02 (Task 809: Archive Representation approach)
 
 /-!
-# Universal Parametric Canonical Model
+# Metalogic for TM Bimodal Logic
 
-This module implements a purely syntactic representation theorem approach
-using a universal parametric canonical model construction.
+This module provides metalogical results for TM bimodal logic, focusing on
+completeness, soundness, and decidability.
 
-## Architecture
+## Architecture (After Task 809 Archival)
 
 ```
 Core/                    # MCS theory, provability
-├── MaximalConsistent.lean
-├── Provability.lean
-└── Basic.lean
+  MaximalConsistent.lean
+  Provability.lean
+  DeductionTheorem.lean
 
-Representation/          # Canonical model construction
-├── CanonicalWorld.lean
-├── TaskRelation.lean
-├── CanonicalHistory.lean
-├── TruthLemma.lean           # Full biconditional (has sorries in backward)
-├── TruthLemmaForward.lean    # Clean forward-only export for completeness
-├── UniversalCanonicalModel.lean
-└── RepresentationTheorem.lean
+FMP/                     # Finite Model Property (SORRY-FREE)
+  SemanticCanonicalModel.lean  # semantic_weak_completeness
+  (other FMP infrastructure)
+
+Completeness/            # Completeness theorems
+  FiniteStrongCompleteness.lean  # finite_strong_completeness
+
+Soundness/               # Soundness theorem
+  Soundness.lean
+
+Decidability/            # Decision procedures
+  (FMP-based decidability)
 ```
 
-## Key Features
+## Archived to Boneyard (Task 809)
 
-- **Universal**: Parametric over ANY totally ordered additive commutative group D
-- **Syntactic**: Builds semantic objects from pure syntax (MCS membership)
-- **Compositional**: Task relation satisfies nullity and compositionality by construction
-- **Type-theoretic**: Uses Lean 4 typeclasses for algebraic structure
+The following were archived to `Boneyard/Metalogic_v5/` because they contained
+or depended on 30+ sorries in the Representation approach:
 
-## Main Results
+```
+Representation/          # ARCHIVED - contained 30 sorries
+  CanonicalWorld.lean
+  TaskRelation.lean
+  CanonicalHistory.lean
+  IndexedMCSFamily.lean
+  CoherentConstruction.lean
+  TruthLemma.lean
+  TruthLemmaForward.lean
+  UniversalCanonicalModel.lean
 
-- `CanonicalWorld D`: MCS paired with abstract time point from D
-- `canonical_task_rel`: Task relation defined via D's algebraic operations
-- `UniversalCanonicalFrame D : TaskFrame D`: Valid frame for any D
-- `UniversalCanonicalModel D : TaskModel (UniversalCanonicalFrame D)`
-- `representation_theorem`: Consistent formulas satisfiable in canonical model
+Completeness/ (partial)  # Depended on Representation
+  WeakCompleteness.lean
+  InfinitaryStrongCompleteness.lean
 
-## Status
+Compactness/             # Depended on InfinitaryStrongCompleteness
+  Compactness.lean
+```
 
-Work in progress (Task 654).
+## Main Results (Sorry-Free)
+
+### From FMP/
+- `semantic_weak_completeness`: Weak completeness via finite model property
+- `semanticWorldState_card_bound`: FMP with 2^closureSize bound
+
+### From Completeness/
+- `finite_strong_completeness`: Strong completeness for List-based contexts
+- `context_provable_iff_entails`: Derivability iff semantic consequence
+
+### From Soundness/
+- `soundness`: Derivability implies semantic consequence
+
+## Archived Results (With Trusted Axioms)
+
+The archived Representation approach provided additional results:
+- Infinitary strong completeness (Set-based contexts)
+- Full compactness theorem
+- Universal canonical model construction
+
+These results are mathematically complete but rely on 30+ trusted axioms (sorries)
+in auxiliary lemmas.
+
+## References
+
+- FMP approach: `Bimodal.Metalogic.FMP.SemanticCanonicalModel`
+- Archived Representation: `Boneyard/Metalogic_v5/`
 -/
 
--- Core layer (to be populated)
--- import Bimodal.Metalogic.Core
-
--- Representation layer (to be populated)
--- import Bimodal.Metalogic.Representation
+-- The main imports are via the submodule structure
+-- Users should import specific modules:
+--   import Bimodal.Metalogic.FMP.SemanticCanonicalModel
+--   import Bimodal.Metalogic.Completeness.FiniteStrongCompleteness
+--   import Bimodal.Metalogic.Soundness

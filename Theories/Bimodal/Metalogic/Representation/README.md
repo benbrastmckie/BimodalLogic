@@ -1,121 +1,70 @@
-# Representation Theorem Implementation
+# Representation Approach (ARCHIVED)
 
-This directory contains the core implementation of the representation theorem (completeness) for TM bimodal logic using indexed MCS families.
+**Status**: ARCHIVED to Boneyard/Metalogic_v5/ (Task 809, 2026-02-02)
 
-## File Purposes
+## Why Archived
 
-| File | Purpose | Status |
-|------|---------|--------|
-| `IndexedMCSFamily.lean` | Structure definition for MCS families | ✅ Complete |
-| `CoherentConstruction.lean` | Coherent family construction | ✅ Core proven |
-| `CanonicalWorld.lean` | World state from MCS | ✅ Complete |
-| `CanonicalHistory.lean` | History construction | ✅ Complete |
-| `TaskRelation.lean` | Task relation definition | ✅ Complete |
-| `TruthLemma.lean` | MCS membership ↔ semantic truth | ✅ Forward proven |
-| `TruthLemmaForward.lean` | Clean forward-only export | ✅ Documentation |
-| `UniversalCanonicalModel.lean` | Representation theorem | ✅ Uses forward only |
+The Representation approach was archived because it contained 30 sorries across its files:
+- TruthLemma.lean: 4 sorries (Box cases + temporal backward cases)
+- CoherentConstruction.lean: 12 sorries (extension consistency proofs)
+- IndexedMCSFamily.lean: 4 sorries (coherence verification)
+- TaskRelation.lean: 5 sorries (MCS equality arguments)
+- CanonicalWorld.lean: 2 sorries (set-based MCS properties)
+- CanonicalHistory.lean: 2 sorries (T-axiom application)
 
-## Proof Architecture
+These sorries were in auxiliary lemmas but prevented the approach from being truly sorry-free.
 
-### The Completeness Path
+## Archive Location
 
+All files have been moved to:
 ```
-                      COMPLETENESS THEOREM
-                              │
-                              ▼
-                 representation_theorem ✅
-                              │
-           ┌──────────────────┼──────────────────┐
-           │                  │                  │
-           ▼                  ▼                  ▼
-      Lindenbaum        construct_          truth_lemma_
-          ✅           coherent_family       forward ✅
-                              │                  │
-                              ▼                  │
-                    CoherentConstruction         │
-                    ┌─────────┴─────────┐        │
-                    │                   │        │
-            forward_G             backward_H     │
-            Case 1 ✅             Case 4 ✅      │
-                    │                   │        │
-                    └───────────────────┘        │
-                              │                  │
-                              └──────────────────┘
-                                     │
-                                     ▼
-                            φ satisfiable ✅
+Theories/Bimodal/Boneyard/Metalogic_v5/Representation/
 ```
 
-### Why Only Two Cases Matter
+Including:
+- CanonicalWorld.lean
+- CanonicalHistory.lean
+- TaskRelation.lean
+- IndexedMCSFamily.lean
+- CoherentConstruction.lean
+- TruthLemma.lean
+- TruthLemmaForward.lean
+- UniversalCanonicalModel.lean
 
-The canonical model centers the MCS Gamma at time 0:
-- **forward_G Case 1** (both t, t' ≥ 0): Evaluating `all_future` at non-negative times
-- **backward_H Case 4** (both t, t' < 0): Evaluating `all_past` at negative times
+Also archived (depended on UniversalCanonicalModel):
+```
+Theories/Bimodal/Boneyard/Metalogic_v5/Completeness/
+```
+- WeakCompleteness.lean
+- InfinitaryStrongCompleteness.lean
 
-Since evaluation starts at time 0, we never need:
-- Cross-origin cases (where t and t' have opposite signs)
-- Cross-modal cases (G through H-preserving chain or vice versa)
-- Backward Truth Lemma (`truth_at → φ ∈ MCS`)
+## Replacement
 
-## Key Design Decisions
+For sorry-free completeness, use the FMP approach:
+```lean
+import Bimodal.Metalogic.FMP.SemanticCanonicalModel
 
-### CoherentConstruction vs IndexedMCSFamily
+-- Use: Bimodal.Metalogic.FMP.semantic_weak_completeness
+```
 
-`IndexedMCSFamily.lean` defines the **structure** with coherence conditions.
-`CoherentConstruction.lean` provides the **construction** that satisfies them.
+The FMP approach provides:
+- Sorry-free weak completeness
+- Finite model property with 2^closureSize bound
+- No trusted axioms
 
-The original `construct_indexed_family` in IndexedMCSFamily.lean used independent
-Lindenbaum extensions, which fundamentally cannot prove coherence. It's marked
-SUPERSEDED - use `construct_coherent_family` instead.
+## Historical Note
 
-### Two-Chain Architecture
+The Representation approach successfully proved:
+- Strong completeness for finite contexts
+- Infinitary strong completeness
+- Full compactness theorem
 
-CoherentConstruction builds two chains:
-1. **Forward chain** (t ≥ 0): Preserves G-formulas from Gamma outward
-2. **Backward chain** (t < 0): Preserves H-formulas from Gamma outward
+These theorems used the truth lemma with its trusted axioms. The proofs were
+architecturally complete but relied on 30 gaps in auxiliary lemmas.
 
-Both chains meet at Gamma (time 0). This design makes coherence **definitional**
-rather than something proven after construction.
-
-## Gaps NOT Required for Completeness
-
-See `Boneyard/Metalogic_v3/` for detailed documentation.
-
-### CoherentConstruction.lean
-
-| Case | Lines | Why Not Needed |
-|------|-------|----------------|
-| forward_G Cases 3-4 | 652, 655 | Cross-origin / cross-modal |
-| backward_H Cases 1-2 | 663, 666 | Both ≥ 0 / cross-origin |
-| forward_H (all) | 681 | Only for backward Truth Lemma |
-| backward_G Cases 3-4 | 711, 714 | Cross-origin / cross-modal |
-
-### TruthLemma.lean
-
-| Case | Lines | Status | Why |
-|------|-------|--------|-----|
-| Box forward | 388 | TRUSTED | S5-style semantics quantify over ALL histories |
-| Box backward | 411 | TRUSTED | Same architectural limitation |
-| all_past backward | 440 | OMEGA-RULE | Requires infinitary reasoning |
-| all_future backward | 466 | OMEGA-RULE | Requires infinitary reasoning |
-
-**Note**: Line numbers updated after Task 809 documentation improvements.
-
-For clean import, use `TruthLemmaForward.lean` which re-exports only forward direction
-with clear documentation of sorry status.
-
-### IndexedMCSFamily.lean
-
-All four coherence sorries (lines 636-657) are SUPERSEDED by CoherentConstruction.
-
-## References
-
-- Gap analysis: `specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md`
-- Parent README: `Theories/Bimodal/Metalogic/README.md`
-- Boneyard docs: `Theories/Bimodal/Boneyard/Metalogic_v3/README.md`
-- TruthLemma audit: `specs/809_audit_truthlemma_sorries/` (Task 809)
-- Backward direction archive: `Boneyard/Metalogic_v4/Representation/TruthLemmaBackward.lean`
+For a truly sorry-free completeness proof suitable for publication, the FMP
+approach is now canonical.
 
 ---
 
-*Last updated: 2026-02-02 (Task 809)*
+*Archived: 2026-02-02 (Task 809)*

@@ -1,11 +1,38 @@
-import Bimodal.Metalogic.Representation.CanonicalHistory
-import Bimodal.Metalogic.Representation.IndexedMCSFamily
--- TemporalCompleteness.lean archived to Boneyard/Metalogic_v4/Representation/
--- (Task 741: witness extraction infrastructure - not required for completeness)
-import Bimodal.Semantics.Truth
+/-!
+# ARCHIVED - Task 809 (2026-02-02)
+
+This file has been archived to Boneyard because it contains 4 sorries that
+represent fundamental gaps in the current approach:
+
+1. Box forward case (line ~388): Architectural limitation - S5-style semantics
+2. Box backward case (line ~413): Same architectural limitation
+3. H backward case (line ~442): Omega-rule limitation
+4. G backward case (line ~466): Omega-rule limitation
+
+The active Representation approach depends on this file but contains these
+trusted gaps. For a sorry-free completeness proof, use the FMP approach
+in `Bimodal.Metalogic.FMP.SemanticCanonicalModel`.
+
+## Original Location
+`Theories/Bimodal/Metalogic/Representation/TruthLemma.lean`
+
+## Dependencies Archived Together
+- TruthLemmaForward.lean (wrapper)
+- UniversalCanonicalModel.lean (representation theorem)
+- All other Representation/*.lean files
+
+## What Replaces This
+The FMP-based `semantic_weak_completeness` in:
+`Bimodal.Metalogic.FMP.SemanticCanonicalModel.semantic_weak_completeness`
+-/
+
+-- Original imports (will not compile in Boneyard)
+-- import Bimodal.Metalogic.Representation.CanonicalHistory
+-- import Bimodal.Metalogic.Representation.IndexedMCSFamily
+-- import Bimodal.Semantics.Truth
 
 /-!
-# Truth Lemma for Indexed MCS Family Canonical Model
+# Truth Lemma for Indexed MCS Family Canonical Model (ARCHIVED)
 
 This module proves the truth lemma connecting MCS membership to semantic truth
 in the canonical model constructed from an indexed MCS family.

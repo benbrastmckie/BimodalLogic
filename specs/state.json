@@ -8,11 +8,11 @@
     {
       "project_number": 809,
       "project_name": "audit_truthlemma_sorries",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "description": "Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T05:47:00Z",
+      "last_updated": "2026-02-02T06:00:26Z",
       "session_id": "sess_1770011200_e15cb4",
       "researched": "2026-02-02T02:10:47Z",
       "artifacts": [
@@ -25,10 +25,17 @@
           "path": "specs/809_audit_truthlemma_sorries/plans/implementation-003.md",
           "type": "plan",
           "summary": "v003: Actually archive sorried code to Boneyard instead of documenting"
+        },
+        {
+          "path": "specs/809_audit_truthlemma_sorries/summaries/implementation-summary-20260202-v003.md",
+          "type": "summary",
+          "summary": "Archived 30+ sorries from Representation approach to Boneyard/Metalogic_v5/"
         }
       ],
       "planned": "2026-02-02T02:40:37Z",
-      "started": "2026-02-02T02:45:40Z"
+      "started": "2026-02-02T02:45:40Z",
+      "completed": "2026-02-02T06:00:26Z",
+      "completion_summary": "Archived entire Representation approach (30+ sorries) to Boneyard/Metalogic_v5/. Refactored FiniteStrongCompleteness.lean to use FMP for sorry-free completeness. Active Representation/ now has zero sorries. Build passes."
     },
     {
       "project_number": 810,

@@ -1,7 +1,4 @@
-import Bimodal.Metalogic.Completeness.WeakCompleteness
 import Bimodal.Metalogic.Completeness.FiniteStrongCompleteness
-import Bimodal.Metalogic.Completeness.InfinitaryStrongCompleteness
-import Bimodal.Metalogic.Compactness.Compactness
 
 /-!
 # Completeness Module for TM Bimodal Logic
@@ -13,41 +10,54 @@ This module serves as the root of the completeness hierarchy for TM logic.
 ```
 Completeness/
 ├── Completeness.lean                   # This file - module root
-├── WeakCompleteness.lean               # weak_completeness, provable_iff_valid
-├── FiniteStrongCompleteness.lean       # finite_strong_completeness (List contexts)
-└── InfinitaryStrongCompleteness.lean   # Set-based contexts, set_semantic_consequence
+└── FiniteStrongCompleteness.lean       # finite_strong_completeness (List contexts)
 
-Compactness/
-└── Compactness.lean                    # compactness theorem
+FMP/
+└── SemanticCanonicalModel.lean         # semantic_weak_completeness (sorry-free)
 ```
 
-## Main Results
+## Archived to Boneyard/Metalogic_v5/ (Task 809)
 
-### Weak Completeness (Phase 1)
-- `weak_completeness`: `⊨ φ → ContextDerivable [] φ`
-- `provable_iff_valid`: `ContextDerivable [] φ ↔ ⊨ φ`
+The following were archived because they depended on Representation approach with 30+ sorries:
+- WeakCompleteness.lean (used Representation-based representation_theorem)
+- InfinitaryStrongCompleteness.lean (used Representation-based truth_lemma)
+- Compactness/Compactness.lean (used InfinitaryStrongCompleteness)
 
-### Finite-Premise Strong Completeness (Phase 2)
-- `finite_strong_completeness`: `Γ ⊨ φ → ContextDerivable Γ φ` (for List Γ)
-- `context_provable_iff_entails`: `ContextDerivable Γ φ ↔ Γ ⊨ φ`
+## Main Results (Active)
+
+### Finite-Premise Strong Completeness
+- `finite_strong_completeness`: `Gamma |= phi -> ContextDerivable Gamma phi` (for List Gamma)
+- `context_provable_iff_entails`: `ContextDerivable Gamma phi <-> Gamma |= phi`
 - `impChain`: Helper for building implication chains
 
-### Infinitary Strong Completeness (Phase 4)
-- `set_semantic_consequence`: Semantic consequence for Set-based contexts
-- `set_satisfiable`: Satisfiability for Set-based contexts
-- `infinitary_strong_completeness`: Set-based consequence has finite witness (axiomatized)
-- `infinitary_strong_completeness_finset`: Fully proven for finite sets
+### Sorry-Free Weak Completeness (in FMP/)
+- `semantic_weak_completeness`: `valid phi -> ContextDerivable [] phi`
 
-### True Compactness (Phase 5)
-- `compactness`: Satisfiable iff every finite subset is satisfiable
-- `compactness_iff`: Bidirectional equivalence form
-- `compactness_entailment`: Semantic consequence has finite witness
-- `compactness_unsatisfiability`: Unsatisfiability has finite witness
+## Archived Results (in Boneyard/Metalogic_v5/)
+
+These results exist but depend on trusted axioms (30 sorries in Representation approach):
+- `weak_completeness`: Weak completeness via Representation
+- `infinitary_strong_completeness`: Set-based contexts
+- `compactness`: True compactness theorem
+
+## Design Notes
+
+For a sorry-free completeness proof suitable for publication, use:
+```lean
+import Bimodal.Metalogic.FMP.SemanticCanonicalModel
+-- Use: semantic_weak_completeness
+```
+
+The FMP approach is now the canonical sorry-free completeness path.
 
 ## References
 
-- Representation theorem: `Bimodal.Metalogic.Representation.representation_theorem`
+- Representation theorem (archived): `Boneyard/Metalogic_v5/Representation/`
 - Modal Logic, Blackburn et al., Chapter 4 (Completeness via Canonical Models)
+
+---
+
+*Updated: 2026-02-02 (Task 809 archival)*
 -/
 
 -- All exports are via the imports above

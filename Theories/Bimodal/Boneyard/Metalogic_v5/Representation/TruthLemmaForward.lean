@@ -1,7 +1,18 @@
-import Bimodal.Metalogic.Representation.TruthLemma
+/-!
+# ARCHIVED - Task 809 (2026-02-02)
+
+This file has been archived together with TruthLemma.lean.
+See TruthLemma.lean header for full archival documentation.
+
+## Original Location
+`Theories/Bimodal/Metalogic/Representation/TruthLemmaForward.lean`
+-/
+
+-- Original import (will not compile in Boneyard)
+-- import Bimodal.Metalogic.Representation.TruthLemma
 
 /-!
-# Truth Lemma (Forward Direction Only)
+# Truth Lemma (Forward Direction Only) (ARCHIVED)
 
 This module exports only the forward direction of the truth lemma, providing
 a clean interface for completeness proofs.

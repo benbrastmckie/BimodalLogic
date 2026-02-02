@@ -39,15 +39,17 @@ technical_debt:
 
 ### 809. Audit TruthLemma.lean sorries
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
 - **Revised**: 2026-02-02
 - **Started**: 2026-02-02
+- **Completed**: 2026-02-02
 - **Research**: [research-002.md](specs/809_audit_truthlemma_sorries/reports/research-002.md)
 - **Plan**: [implementation-003.md](specs/809_audit_truthlemma_sorries/plans/implementation-003.md)
+- **Summary**: [implementation-summary-20260202-v003.md](specs/809_audit_truthlemma_sorries/summaries/implementation-summary-20260202-v003.md)
 
 **Description**: Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.
 
