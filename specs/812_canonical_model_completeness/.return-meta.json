@@ -1,15 +1,15 @@
 {
   "status": "researched",
-  "summary": "Analyzed FMP-internal vs general validity. The two notions differ in quantification domain - FMP-internal uses finite MCS-derived structures while general validity quantifies over all TaskModels. The validity bridge is blocked for modal operators due to S5-style universal history quantification. Phase 1's FMPSemanticConsequence approach is correctly designed and can be implemented sorry-free.",
+  "summary": "semantic_weak_completeness proves completeness for FMP-internal validity (SemanticWorldStates), NOT for the semantics validity (TaskModels). The gap is architectural - box semantics quantifies over all histories while FMP uses finite MCS-derived structures. Recommend accepting this as documented architectural limitation.",
   "artifacts": [
     {
-      "path": "specs/812_canonical_model_completeness/reports/research-003.md",
+      "path": "specs/812_canonical_model_completeness/reports/research-004.md",
       "type": "research",
-      "summary": "Detailed analysis comparing FMP-internal (SemanticWorldState) vs general (TaskModel) validity, explaining why the validity bridge is blocked for modal operators, and confirming Phase 1's design is correct"
+      "summary": "Analysis of validity notion mismatch between semantics and FMP completeness, with evaluation of options for proceeding"
     }
   ],
   "metadata": {
-    "session_id": "sess_1770026118_5745a7",
+    "session_id": "sess_1770027719_3a1291",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]

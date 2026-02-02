@@ -12,9 +12,9 @@
       "language": "lean",
       "description": "Establish sorry-free weak and strong completeness for FMP-internal validity. Focus on exposing existing semantic_weak_completeness as canonical result and building sorry-free strong completeness. Compactness dropped (requires Representation sorries). No semantics changes. CONSTRAINTS: (1) Only implement sorry-free elements. (2) Preserve existing semantic definitions. (3) Document architectural limitations clearly.",
       "created": "2026-02-02T09:18:05Z",
-      "last_updated": "2026-02-02T09:58:49Z",
-      "session_id": "sess_1770026118_5745a7",
-      "researched": "2026-02-02T09:58:49Z",
+      "last_updated": "2026-02-02T10:25:28Z",
+      "session_id": "sess_1770027719_3a1291",
+      "researched": "2026-02-02T10:25:28Z",
       "artifacts": [
         {
           "path": "specs/812_canonical_model_completeness/reports/research-001.md",
@@ -35,6 +35,11 @@
           "path": "specs/812_canonical_model_completeness/reports/research-003.md",
           "type": "research",
           "summary": "Detailed analysis comparing FMP-internal (SemanticWorldState) vs general (TaskModel) validity, explaining why the validity bridge is blocked for modal operators, and confirming Phase 1's design is correct"
+        },
+        {
+          "path": "specs/812_canonical_model_completeness/reports/research-004.md",
+          "type": "research",
+          "summary": "Analysis of validity notion mismatch between semantics and FMP completeness, with evaluation of options for proceeding"
         }
       ],
       "planned": "2026-02-02T09:51:43Z"
