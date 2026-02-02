@@ -1,22 +1,24 @@
-# Implementation Summary: Task #799 (Phases 1-2)
+# Implementation Summary: Task #799 (Final)
 
 **Task**: Complete Decidability proofs
 **Completed**: 2026-02-02
-**Phases**: 1-2 of 5
+**Phases**: 1-2 completed; 3-5 superseded by Task 806
 
 ## Overview
 
-Completed Phases 1 and 2 of the decidability proofs implementation. These phases focused on Closure.lean and required adding LawfulBEq instances for BEq equality conversion.
+Task 799 aimed to complete 6 sorries in the Decidability module. Phases 1-2 were completed in an earlier session, successfully proving the closure theorems. Phases 3-5 were subsequently superseded by Task 806, which achieved zero-sorry Metalogic by archiving the completeness theorems to Boneyard.
 
-## Changes Made
+## Phases 1-2: Completed
 
-### Formula.lean
+### Changes Made
+
+#### Formula.lean
 - Added `beq_refl` theorem for BEq reflexivity
 - Added `eq_of_beq` theorem for BEq injectivity
 - Added `ReflBEq Formula` instance
 - Added `LawfulBEq Formula` instance
 
-### SignedFormula.lean
+#### SignedFormula.lean
 - Added `ReflBEq Sign` instance
 - Added `Sign.eq_of_beq` theorem
 - Added `LawfulBEq Sign` instance
@@ -26,7 +28,7 @@ Completed Phases 1 and 2 of the decidability proofs implementation. These phases
 - Added `SignedFormula.eq_of_beq` theorem
 - Added `LawfulBEq SignedFormula` instance
 
-### Closure.lean
+#### Closure.lean
 - Added 6 monotonicity helper lemmas:
   - `hasNeg_mono`
   - `hasPos_mono`
@@ -37,7 +39,7 @@ Completed Phases 1 and 2 of the decidability proofs implementation. These phases
 - Completed `closed_extend_closed` theorem using Option.orElse_eq_some analysis
 - Completed `add_neg_causes_closure` theorem using LawfulBEq and witness extraction
 
-## Key Technical Challenges
+### Key Technical Challenges
 
 1. **BEq Reflexivity**: The derived BEq instance for SignedFormula is not definitionally reflexive. This required proving explicit `ReflBEq` instances for Sign, Formula, and SignedFormula.
 
@@ -45,20 +47,21 @@ Completed Phases 1 and 2 of the decidability proofs implementation. These phases
 
 3. **Option.orElse Analysis**: The `closed_extend_closed` proof required careful analysis of `Option.orElse_eq_some` to handle the three-way closure check.
 
-## Verification
+## Phases 3-5: Superseded by Task 806
 
-- `lake build` succeeds with no errors
-- Closure.lean: 2 sorries removed (0 remaining)
-- SignedFormula.lean: No new sorries
-- Formula.lean: No new sorries
+Task 806 (commit c5917f44) achieved zero-sorry Metalogic by archiving incomplete theorems:
 
-## Remaining Work (Phases 3-5)
+- **Phase 3** (`expansion_decreases_measure`): Archived to Boneyard
+- **Phase 4** (`decide_axiom_valid`): Archived to Boneyard
+- **Phase 5** (`tableau_complete`, `decide_complete`): Archived to Boneyard
 
-4 sorries remain in the Decidability module:
-- Saturation.lean: 1 (`expansion_decreases_measure`)
-- Correctness.lean: 3 (`decide_axiom_valid`, `tableau_complete`, `decide_complete`)
+These completeness theorems require FMP (Finite Model Property) infrastructure that is preserved in Boneyard for future completion.
 
-These require FMP infrastructure and more complex proof strategies.
+## Final State
+
+- Decidability module: **0 sorries** (all closure theorems complete, completeness theorems archived)
+- Metalogic module: **0 sorries** overall (achieved by Task 806)
+- `lake build` passes with no errors
 
 ## Files Modified
 

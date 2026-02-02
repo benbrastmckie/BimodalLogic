@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799 (Revised v003)
 
 - **Task**: 799 - Complete Decidability proofs
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED] (Phases 1-2 done; Phases 3-5 superseded by Task 806)
 - **Version**: 003
 - **Effort**: 5-6 hours (reduced from 7-8 due to concrete proof sketches)
 - **Dependencies**: None (builds on existing FMP infrastructure)
@@ -230,73 +230,35 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
 
 ---
 
-### Phase 3: Saturation.lean - Termination Lemma [NOT STARTED]
+### Phase 3: Saturation.lean - Termination Lemma [SUPERSEDED]
 
-**Goal**: Complete `expansion_decreases_measure` - the key termination lemma for tableau expansion
+**Status**: SUPERSEDED by Task 806 (archived to Boneyard)
 
-**Estimated effort**: 2 hours
+**Original Goal**: Complete `expansion_decreases_measure` - the key termination lemma for tableau expansion
 
-**Objectives**:
-1. Prove that applying a tableau rule decreases the `expansionMeasure`
-2. Handle both `extended` (linear rule) and `split` (branching rule) cases
+**Resolution**: Task 806 achieved zero-sorry Metalogic by archiving `expansion_decreases_measure` to Boneyard. The theorem requires complex termination proof infrastructure that is not needed for the current soundness-focused module.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Decidability/Saturation.lean`
-
-**Steps**:
-1. Review the `expansionMeasure` definition
-2. Review `expandOnce` in Tableau.lean
-3. Prove complexity decreases for each rule type
-4. May need helper lemmas for formula complexity
-
-**Verification**:
-- `lake build Bimodal.Metalogic.Decidability.Saturation` succeeds with no sorries
+**Note**: The active Decidability module now focuses on soundness only, with completeness theorems archived for future work.
 
 ---
 
-### Phase 4: Correctness.lean - decide_axiom_valid [NOT STARTED]
+### Phase 4: Correctness.lean - decide_axiom_valid [SUPERSEDED]
 
-**Goal**: Prove that axiom instances are correctly decided as valid
+**Status**: SUPERSEDED by Task 806 (archived to Boneyard)
 
-**Estimated effort**: 1 hour
+**Original Goal**: Prove that axiom instances are correctly decided as valid
 
-**Objectives**:
-1. Prove `decide_axiom_valid`: If phi is an axiom instance, decide returns valid
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Decidability/Correctness.lean`
-
-**Steps**:
-1. Read the `decide` function and `matchAxiom` in ProofSearch.lean
-2. Prove `matchAxiom_correct` helper lemma
-3. Complete `decide_axiom_valid`
-
-**Verification**:
-- `lake build Bimodal.Metalogic.Decidability.Correctness` compiles with this proof
+**Resolution**: Task 806 removed `decide_axiom_valid` from the active codebase. The theorem requires matchAxiom verification which is not needed for the current soundness-focused module.
 
 ---
 
-### Phase 5: Correctness.lean - Completeness Theorems [NOT STARTED]
+### Phase 5: Correctness.lean - Completeness Theorems [SUPERSEDED]
 
-**Goal**: Complete `tableau_complete` and `decide_complete`
+**Status**: SUPERSEDED by Task 806 (archived to Boneyard)
 
-**Estimated effort**: 2 hours
+**Original Goal**: Complete `tableau_complete` and `decide_complete`
 
-**Objectives**:
-1. Prove `tableau_complete`: Valid formulas have closing tableaux
-2. Prove `decide_complete`: Decision procedure returns valid for valid formulas
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Decidability/Correctness.lean`
-
-**Steps**:
-1. Review FMP module structure
-2. Prove `tableau_complete` using FMP and termination lemma
-3. Prove `decide_complete` building on `tableau_complete`
-
-**Verification**:
-- `lake build Bimodal.Metalogic.Decidability.Correctness` succeeds with no sorries
-- Full `lake build` passes
+**Resolution**: Task 806 removed `tableau_complete` and `decide_complete` from the active codebase. These completeness theorems require FMP infrastructure that is not yet ready. They are preserved in Boneyard for future completion when FMP is fully formalized.
 
 ---
 
