@@ -74,7 +74,7 @@ technical_debt:
 
 ### 805. Investigate UniversalCanonicalModel.lean remaining sorries
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 
@@ -84,7 +84,7 @@ technical_debt:
 
 ### 804. Refactor WeakCompleteness.lean to use direct construction
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Priority**: Low
@@ -128,15 +128,15 @@ technical_debt:
 ---
 
 ### 799. Complete Decidability proofs
-- **Effort**: 7 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 7-8 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Research**: [research-001.md](specs/799_complete_decidability_proofs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/799_complete_decidability_proofs/plans/implementation-001.md)
+- **Revised**: 2026-02-02
+- **Research**: [research-001.md](specs/799_complete_decidability_proofs/reports/research-001.md), [research-002.md](specs/799_complete_decidability_proofs/reports/research-002.md)
+- **Plan**: [implementation-002.md](specs/799_complete_decidability_proofs/plans/implementation-002.md)
 
 **Description**: Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.
 
