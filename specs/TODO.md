@@ -35,11 +35,13 @@ technical_debt:
 
 ### 819. Create sorry-debt-policy.md context file
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
+- **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/819_create_sorry_debt_policy_context_file/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/819_create_sorry_debt_policy_context_file/plans/implementation-001.md)
 
 **Description**: Create .claude/context/project/lean4/standards/sorry-debt-policy.md with philosophy, remediation paths, discovery protocol, and Boneyard references. Philosophy: sorries are mathematical debt, never acceptable in final proofs. Remediation paths: Boneyard archival, architectural refactoring, proof completion. Discovery protocol: what to do when encountering existing sorries during implementation. References to project Boneyard locations (Theories/Bimodal/Boneyard/, Boneyard/).
 

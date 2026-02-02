@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "summary": "5-phase implementation plan for creating sorry-debt-policy.md context file covering philosophy, categories, remediation paths, discovery protocol, and Boneyard references.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/819_create_sorry_debt_policy_context_file/plans/implementation-001.md",
+      "summary": "5-phase plan for creating comprehensive sorry debt policy context file at .claude/context/project/lean4/standards/"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1770075194_ae2137",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 1.5
+  }
+}
