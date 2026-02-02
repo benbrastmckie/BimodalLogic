@@ -8,12 +8,20 @@
     {
       "project_number": 805,
       "project_name": "investigate_universalcanonicalmodel_remaining_sorries",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:02:23Z",
-      "session_id": "sess_1769994131_dbef15"
+      "last_updated": "2026-02-02T01:07:18Z",
+      "session_id": "sess_1769994131_dbef15",
+      "researched": "2026-02-02T01:07:18Z",
+      "artifacts": [
+        {
+          "path": "specs/805_investigate_universalcanonicalmodel_remaining_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of 2 sorries: non_provable_satisfiable and completeness_contrapositive, both provable with phi_consistent_of_not_refutable and neg_set_consistent_of_not_provable"
+        }
+      ]
     },
     {
       "project_number": 806,
@@ -116,12 +124,12 @@
     {
       "project_number": 799,
       "project_name": "complete_decidability_proofs",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T01:02:39Z",
-      "session_id": "sess_1769993191_b875db",
+      "last_updated": "2026-02-02T01:04:12Z",
+      "session_id": "sess_1769994229_9ca95d",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
         {

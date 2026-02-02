@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799 (Revised)
 
 - **Task**: 799 - Complete Decidability proofs
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Version**: 002
 - **Effort**: 7-8 hours
 - **Dependencies**: None (builds on existing FMP infrastructure)

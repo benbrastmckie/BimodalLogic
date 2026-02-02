@@ -74,9 +74,11 @@ technical_debt:
 
 ### 805. Investigate UniversalCanonicalModel.lean remaining sorries
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-02
+- **Researched**: 2026-02-02
+- **Research**: [research-001.md](specs/805_investigate_universalcanonicalmodel_remaining_sorries/reports/research-001.md)
 
 **Description**: Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.
 
@@ -131,7 +133,7 @@ technical_debt:
 
 ### 799. Complete Decidability proofs
 - **Effort**: 7-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-02
