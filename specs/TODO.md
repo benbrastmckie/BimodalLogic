@@ -53,12 +53,14 @@ technical_debt:
 ---
 
 ### 807. Remove unused representation_theorem call
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 0.5 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
+- **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/807_remove_unused_representation_theorem_call/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/807_remove_unused_representation_theorem_call/plans/implementation-001.md)
 
 **Description**: Remove unused representation_theorem call from InfinitaryStrongCompleteness.lean line 248 (dead code cleanup).
 
