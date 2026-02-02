@@ -8,11 +8,11 @@
     {
       "project_number": 812,
       "project_name": "canonical_model_completeness",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
-      "description": "Establish canonical model completeness (weak, strong, compactness) via the Representation approach. CONSTRAINTS: (1) Only restore elements that can be implemented sorry-free - avoid architectural mismatches or permanent sorries. (2) Ensure definitions align with semantics - Box quantifies over world histories, NOT world-time points. (3) Draw on Boneyard for inspiration but do not revive broken approaches. Goal is clean, correct, sorry-free proofs for the main completeness theorems.",
+      "description": "Establish sorry-free weak and strong completeness for FMP-internal validity. Focus on exposing existing semantic_weak_completeness as canonical result and building sorry-free strong completeness. Compactness dropped (requires Representation sorries). No semantics changes. CONSTRAINTS: (1) Only implement sorry-free elements. (2) Preserve existing semantic definitions. (3) Document architectural limitations clearly.",
       "created": "2026-02-02T09:18:05Z",
-      "last_updated": "2026-02-02T09:45:26Z",
+      "last_updated": "2026-02-02T09:51:43Z",
       "session_id": "sess_1770025179_37356b",
       "researched": "2026-02-02T09:45:26Z",
       "artifacts": [
@@ -22,17 +22,17 @@
           "summary": "Comprehensive analysis of Boneyard Metalogic_v1-v5, FMP limitations, and recommended path forward for canonical model completeness"
         },
         {
-          "path": "specs/812_canonical_model_completeness/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for FMP-based completeness and compactness with architectural documentation"
-        },
-        {
           "path": "specs/812_canonical_model_completeness/reports/research-002.md",
           "type": "research",
           "summary": "Evaluation of implementation plan viability, finding critical flaw in Phase 1 FMP-compactness approach"
+        },
+        {
+          "path": "specs/812_canonical_model_completeness/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 4-phase plan focusing on sorry-free FMP-internal completeness without compactness"
         }
       ],
-      "planned": "2026-02-02T09:36:25Z"
+      "planned": "2026-02-02T09:51:43Z"
     },
     {
       "project_number": 811,
