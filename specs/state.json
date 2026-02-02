@@ -8,20 +8,26 @@
     {
       "project_number": 813,
       "project_name": "resolve_remaining_bmcs_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Use specs/812_canonical_model_completeness/summaries/implementation-summary-20260202.md and specs/812_canonical_model_completeness/plans/implementation-003.md to find ALL remaining work to complete in order to create a minimum number of new tasks to finish all remaining work and remove all sorries.",
       "created": "2026-02-02T21:00:15Z",
-      "last_updated": "2026-02-02T21:06:05Z",
-      "session_id": "sess_1770066151_a16113",
+      "last_updated": "2026-02-02T21:10:29Z",
+      "session_id": "sess_1770066466_aac4ee",
       "researched": "2026-02-02T21:06:05Z",
       "artifacts": [
         {
           "path": "specs/813_resolve_remaining_bmcs_sorries/reports/research-001.md",
           "type": "research",
           "summary": "Complete inventory of 10 BMCS sorries with categorization and 3-task breakdown for elimination"
+        },
+        {
+          "path": "specs/813_resolve_remaining_bmcs_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase meta plan for creating 3 targeted sorry elimination tasks"
         }
-      ]
+      ],
+      "planned": "2026-02-02T21:10:29Z"
     },
     {
       "project_number": 812,

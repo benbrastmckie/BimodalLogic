@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-02T14:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/813_resolve_remaining_bmcs_sorries/reports/research-001.md",
-      "summary": "Complete inventory of 10 BMCS sorries with categorization and 3-task breakdown for elimination"
+      "type": "plan",
+      "path": "specs/813_resolve_remaining_bmcs_sorries/plans/implementation-001.md",
+      "summary": "4-phase meta plan for creating 3 targeted sorry elimination tasks"
     }
   ],
+  "next_steps": "Run /implement 813 to execute the plan and create the 3 sorry elimination tasks",
   "metadata": {
-    "session_id": "sess_1770066151_a16113",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770066466_aac4ee",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2
   }
 }
