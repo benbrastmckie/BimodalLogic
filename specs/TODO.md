@@ -22,17 +22,6 @@ technical_debt:
 
 ## Tasks
 
-### 817. Fix Plan File Status Update in Implement
-- **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
-- **Language**: meta
-- **Created**: 2026-02-02
-- **Session**: sess_1770067012_04cf46
-
-**Description**: Add plan file status verification to /implement GATE OUT checkpoint and make implementation skills more explicit about plan file updates. Currently plan files are not reliably updated to [COMPLETED] status after implementation finishes (documented in skills but not executed). Fix: (1) Add verification step in implement.md GATE OUT that checks plan file status matches task status and updates if needed (defensive backup), (2) Make the sed command in skills Stage 7 more explicit with error checking and verification output.
-
----
-
 ### 816. BMCS Temporal Modal Coherence Strengthening
 - **Effort**: 3-4 hours
 - **Status**: [NOT STARTED]
@@ -58,7 +47,7 @@ technical_debt:
 
 ### 814. Classical Propositional Completeness Infrastructure
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
@@ -117,22 +106,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260202.md](specs/811_swap_wezterm_tab_styling/summaries/implementation-summary-20260202.md)
 
 **Description**: Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua
-
----
-
-### 810. Strategic review: Representation/ vs semantic completeness paths
-- **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Revised**: 2026-02-02
-- **Started**: 2026-02-02
-- **Research**: [research-001.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md), [research-002.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-002.md), [research-003.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-003.md), [research-004.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-004.md), [research-005.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-005.md)
-- **Plan**: [implementation-004.md](specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-004.md)
-
-**Description**: Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.
 
 ---
 

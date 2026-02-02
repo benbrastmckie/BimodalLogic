@@ -1,19 +1,17 @@
 {
-  "status": "planned",
-  "summary": "2-phase plan resolving 4 classical propositional sorries in BMCS completeness infrastructure",
-  "artifacts": [
-    {
-      "path": "specs/814_classical_propositional_completeness_infrastructure/plans/implementation-001.md",
-      "type": "plan",
-      "summary": "2-phase implementation plan for resolving classical propositional sorries using existing double_negation and deduction_theorem"
-    }
-  ],
+  "status": "in_progress",
+  "started_at": "2026-02-02T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_1",
+    "details": "Implementing TruthLemma.lean sorries"
+  },
   "metadata": {
-    "session_id": "sess_1770067519_25077d",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1770067750_7ce20f",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 2,
-    "estimated_hours": 3.0
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 0,
+    "phases_total": 2
   }
 }

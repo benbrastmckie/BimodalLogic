@@ -33,14 +33,14 @@
     {
       "project_number": 814,
       "project_name": "classical_propositional_completeness_infrastructure",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Resolve 4 classical propositional sorries in BMCS infrastructure by importing existing double_negation theorem and porting neg_imp_fst/neg_imp_snd from Boneyard. Sorries: TruthLemma.lean:186 (neg_imp_implies_antecedent), TruthLemma.lean:198 (neg_imp_implies_neg_consequent), Completeness.lean:184 (not_derivable_implies_neg_consistent), Completeness.lean:323 (context_not_derivable_implies_extended_consistent). Note: double_negation_elim at Completeness.lean:197 is duplicate of Bimodal.Theorems.Propositional.double_negation.",
       "effort": "2-3 hours",
       "created": "2026-02-02T21:15:41Z",
-      "last_updated": "2026-02-02T21:28:21Z",
+      "last_updated": "2026-02-02T21:29:27Z",
       "parent_task": 813,
-      "session_id": "sess_1770067519_25077d",
+      "session_id": "sess_1770067750_7ce20f",
       "researched": "2026-02-02T21:23:10Z",
       "artifacts": [
         {
@@ -54,7 +54,8 @@
           "summary": "2-phase implementation plan for resolving classical propositional sorries using existing double_negation and deduction_theorem"
         }
       ],
-      "planned": "2026-02-02T21:28:21Z"
+      "planned": "2026-02-02T21:28:21Z",
+      "started": "2026-02-02T21:29:27Z"
     },
     {
       "project_number": 813,
@@ -207,62 +208,6 @@
       "started": "2026-02-02T02:45:40Z",
       "completed": "2026-02-02T06:00:26Z",
       "completion_summary": "Archived entire Representation approach (30+ sorries) to Boneyard/Metalogic_v5/. Refactored FiniteStrongCompleteness.lean to use FMP for sorry-free completeness. Active Representation/ now has zero sorries. Build passes."
-    },
-    {
-      "project_number": 810,
-      "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "implementing",
-      "language": "lean",
-      "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
-      "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T09:02:06Z",
-      "session_id": "sess_1770022910_3c3a77",
-      "researched": "2026-02-02T08:54:10Z",
-      "artifacts": [
-        {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md",
-          "type": "research",
-          "summary": "Strategic comparison of Semantic FMP vs Representation approaches with archival recommendations"
-        },
-        {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-002.md",
-          "type": "research",
-          "summary": "Analysis of existing strong completeness, compactness, and infinitary completeness theorems, finding all are already proven sorry-free"
-        },
-        {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-003.md",
-          "type": "research",
-          "summary": "Comprehensive audit of Metalogic organization with sorry analysis, dependency flowcharts, and architecture recommendations"
-        },
-        {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-004.md",
-          "type": "research",
-          "summary": "Analysis of FMP feasibility for infinitary_strong_completeness and compactness - fully feasible via direct semantic argument"
-        },
-        {
-          "path": "Theories/Bimodal/Metalogic/FMP/ConsistentSatisfiable.lean",
-          "type": "implementation",
-          "summary": "Bridge lemma connecting consistency to satisfiability via FMP - partial with 6 sorries in modal/temporal cases"
-        },
-        {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-005.md",
-          "type": "research",
-          "summary": "Analysis of Phase 1 bridge lemma blockage: 6 sorries in mcs_world_truth_correspondence are unrecoverable due to architectural mismatch in model construction"
-        },
-        {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "Contrapositive approach: use semantic_weak_completeness to prove consistency-satisfiability without direct model construction"
-        },
-        {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/summaries/implementation-summary-20260202.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting Phase 1 completion and Phases 2-4 blockage discovery"
-        }
-      ],
-      "planned": "2026-02-02T08:59:54Z",
-      "revised": "2026-02-02T08:59:54Z",
-      "started": "2026-02-02T06:45:09Z"
     },
     {
       "project_number": 793,
@@ -519,17 +464,6 @@
         }
       ],
       "planned": "2026-02-01T20:41:02Z"
-    },
-    {
-      "project_number": 817,
-      "project_name": "fix_plan_file_status_update_in_implement",
-      "status": "not_started",
-      "language": "meta",
-      "description": "Add plan file status verification to /implement GATE OUT checkpoint and make implementation skills more explicit about plan file updates. Currently plan files are not reliably updated to [COMPLETED] status after implementation finishes (documented in skills but not executed). Fix: (1) Add verification step in implement.md GATE OUT that checks plan file status matches task status and updates if needed (defensive backup), (2) Make the sed command in skills Stage 7 more explicit with error checking and verification output.",
-      "created": "2026-02-02T22:30:12Z",
-      "last_updated": "2026-02-02T22:30:12Z",
-      "session_id": "sess_1770067012_04cf46",
-      "artifacts": []
     }
   ],
   "completed_projects": [
