@@ -1,20 +1,19 @@
 {
-  "status": "planned",
+  "status": "researched",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/815_bmcs_universe_polymorphism_resolution/plans/implementation-001.md",
-      "summary": "4-phase implementation plan to resolve universe polymorphism sorries by changing Type* to Type"
+      "type": "report",
+      "path": "specs/815_bmcs_universe_polymorphism_resolution/reports/research-002.md",
+      "summary": "Solution A vs B comparison: recommends Type* → Type based on completeness strategy, API usage, and alignment with standard validity"
     }
   ],
-  "next_steps": "Run /implement 815 to execute the plan",
+  "next_steps": "Execute implementation-001.md (already based on recommended Solution A)",
   "metadata": {
-    "session_id": "sess_1770068623_6bba8c",
-    "agent_type": "planner-agent",
-    "duration_seconds": 42,
+    "session_id": "sess_1770069272_03ad59",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 540,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 1.0
+    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"],
+    "findings_count": 5
   }
 }

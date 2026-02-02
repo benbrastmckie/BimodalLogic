@@ -44,7 +44,7 @@ technical_debt:
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
 - **Parent**: Task 813
-- **Research**: [research-001.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md)
+- **Research**: [research-001.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md), [research-002.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/815_bmcs_universe_polymorphism_resolution/plans/implementation-001.md)
 
 **Description**: Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.
