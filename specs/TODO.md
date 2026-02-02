@@ -5,11 +5,11 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-02T21:45:54Z
 task_counts:
-  active: 13
+  active: 12
   completed: 362
   in_progress: 2
   not_started: 5
-  abandoned: 25
+  abandoned: 26
   total: 386
 technical_debt:
   sorry_count: 75
@@ -71,20 +71,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md)
 
 **Description**: Investigate and fix issue where running a command in Claude Code sidebar in neovim causes an initial black screen (all text disappears) for approximately 30 seconds before showing activity. Functionality works correctly otherwise. Issue started recently. Root cause may be in hook system or external. Research online and review hook configuration to identify simple and elegant fix.
-
----
-
-### 787. Review metalogic progress and determine next steps
-- **Effort**: 4 hours
-- **Status**: [PLANNED]
-- **Language**: lean
-- **Created**: 2026-01-31
-- **Researched**: 2026-01-31
-- **Planned**: 2026-01-31
-- **Research**: [research-001.md](specs/787_review_metalogic_progress/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/787_review_metalogic_progress/plans/implementation-001.md)
-
-**Description**: Review the progress on completing Bimodal/Metalogic/ and determine what should be done next to establish the results sorry-free. Focus on avoiding redundancies and removing stray proofs that didn't work out.
 
 ---
 

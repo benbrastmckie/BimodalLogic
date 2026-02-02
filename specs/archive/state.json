@@ -2,6 +2,32 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 787,
+      "project_name": "review_metalogic_progress",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "description": "Review the progress on completing Bimodal/Metalogic/ and determine what should be done next to establish the results sorry-free. Focus on avoiding redundancies and removing stray proofs that didn't work out.",
+      "created": "2026-01-31T21:19:48Z",
+      "last_updated": "2026-01-31T21:53:09Z",
+      "session_id": "sess_1769896236_de9bab",
+      "researched": "2026-01-31T21:40:41Z",
+      "artifacts": [
+        {
+          "path": "specs/787_review_metalogic_progress/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Metalogic sorries, redundancies, and recommendations for sorry-free completion"
+        },
+        {
+          "path": "specs/787_review_metalogic_progress/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for establishing sorry-free core completeness via archiving deprecated code and fixing WeakCompleteness bridge"
+        }
+      ],
+      "planned": "2026-01-31T21:53:09Z",
+      "abandoned": "2026-02-02T22:06:00Z"
+    },
+    {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
       "status": "abandoned",

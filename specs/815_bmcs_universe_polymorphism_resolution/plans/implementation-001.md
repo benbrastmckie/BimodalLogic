@@ -1,7 +1,7 @@
 # Implementation Plan: BMCS Universe Polymorphism Resolution
 
 - **Task**: 815 - BMCS Universe Polymorphism Resolution
-- **Status**: [IN PROGRESS]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md
@@ -90,7 +90,7 @@ Key findings integrated into plan:
 
 ---
 
-### Phase 3: Prove the Instantiation Lemmas [IN PROGRESS]
+### Phase 3: Prove the Instantiation Lemmas [COMPLETED]
 
 **Goal**: Replace sorries with direct proofs
 
@@ -112,7 +112,7 @@ Key findings integrated into plan:
 
 ---
 
-### Phase 4: Cleanup and Verification [NOT STARTED]
+### Phase 4: Cleanup and Verification [COMPLETED]
 
 **Goal**: Remove test files and verify final build
 
