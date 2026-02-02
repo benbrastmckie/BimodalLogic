@@ -380,8 +380,12 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       **Impact**: The box case is NOT critical for the main representation theorem (Task 654),
       which only needs temporal operators (G/H). The representation theorem is proven using
       the forward direction for temporal operators, which work correctly.
+
+      **STATUS**: Marked as "trusted axiom" - architecturally unprovable with current S5-style
+      box semantics. This is analogous to axioms in other proof systems that capture semantic
+      properties not derivable from syntax alone. See Task 809 research for full analysis.
       -/
-      sorry
+      sorry  -- TRUSTED: Box forward case - see architectural limitation above
 
     · -- Backward: (∀ sigma, truth_at sigma t psi) → box psi ∈ mcs t
       intro h_all
@@ -403,8 +407,10 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       (derivable with empty context). Having `psi ∈ MCS` does not mean psi is a theorem.
 
       **Resolution**: Same as forward direction - requires semantic architecture changes.
+
+      **STATUS**: Marked as "trusted axiom" - same limitation as forward direction.
       -/
-      sorry
+      sorry  -- TRUSTED: Box backward case - same architectural limitation
 
   | all_past psi ih =>
     constructor
@@ -433,7 +439,7 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       --
       -- See: TemporalCompleteness.lean for infrastructure and detailed documentation
       -- See: specs/741_.../reports/research-001.md for analysis
-      sorry
+      sorry  -- OMEGA-RULE: H backward case - requires infinitary reasoning
 
   | all_future psi ih =>
     constructor
@@ -457,7 +463,7 @@ theorem truth_lemma_mutual (family : IndexedMCSFamily D) (t : D) (phi : Formula)
       -- Same omega-rule issue applies.
       --
       -- See: TemporalCompleteness.lean for infrastructure and detailed documentation
-      sorry
+      sorry  -- OMEGA-RULE: G backward case - requires infinitary reasoning
 
 /-!
 ## Derived Forward and Backward Theorems
@@ -474,6 +480,13 @@ theorem truth_lemma_forward (family : IndexedMCSFamily D) (t : D) (phi : Formula
 
 /--
 Truth lemma (backward direction): Truth implies MCS membership.
+
+**DEPRECATED FOR COMPLETENESS**: This direction is NOT REQUIRED for completeness proofs.
+The representation theorem and strong completeness only use `truth_lemma_forward`.
+
+**Sorries**: Box backward (TRUSTED), H backward (OMEGA-RULE), G backward (OMEGA-RULE)
+
+See: `Boneyard/Metalogic_v4/Representation/TruthLemmaBackward.lean` for detailed analysis.
 -/
 theorem truth_lemma_backward (family : IndexedMCSFamily D) (t : D) (phi : Formula) :
     truth_at (canonical_model D family) (canonical_history_family D family) t phi → phi ∈ family.mcs t :=

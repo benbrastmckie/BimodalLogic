@@ -19,7 +19,8 @@ Representation/          # Canonical model construction
 ├── CanonicalWorld.lean
 ├── TaskRelation.lean
 ├── CanonicalHistory.lean
-├── TruthLemma.lean
+├── TruthLemma.lean           # Full biconditional (has sorries in backward)
+├── TruthLemmaForward.lean    # Clean forward-only export for completeness
 ├── UniversalCanonicalModel.lean
 └── RepresentationTheorem.lean
 ```

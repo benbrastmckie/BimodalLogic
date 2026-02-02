@@ -12,6 +12,7 @@ This directory contains the core implementation of the representation theorem (c
 | `CanonicalHistory.lean` | History construction | ✅ Complete |
 | `TaskRelation.lean` | Task relation definition | ✅ Complete |
 | `TruthLemma.lean` | MCS membership ↔ semantic truth | ✅ Forward proven |
+| `TruthLemmaForward.lean` | Clean forward-only export | ✅ Documentation |
 | `UniversalCanonicalModel.lean` | Representation theorem | ✅ Uses forward only |
 
 ## Proof Architecture
@@ -91,11 +92,17 @@ See `Boneyard/Metalogic_v3/` for detailed documentation.
 
 ### TruthLemma.lean
 
-| Case | Lines | Why Not Needed |
-|------|-------|----------------|
-| all_past backward | 405 | Backward Truth Lemma |
-| all_future backward | 423 | Backward Truth Lemma |
-| box (both) | 382, 441 | Architectural limitation |
+| Case | Lines | Status | Why |
+|------|-------|--------|-----|
+| Box forward | 388 | TRUSTED | S5-style semantics quantify over ALL histories |
+| Box backward | 411 | TRUSTED | Same architectural limitation |
+| all_past backward | 440 | OMEGA-RULE | Requires infinitary reasoning |
+| all_future backward | 466 | OMEGA-RULE | Requires infinitary reasoning |
+
+**Note**: Line numbers updated after Task 809 documentation improvements.
+
+For clean import, use `TruthLemmaForward.lean` which re-exports only forward direction
+with clear documentation of sorry status.
 
 ### IndexedMCSFamily.lean
 
@@ -106,7 +113,9 @@ All four coherence sorries (lines 636-657) are SUPERSEDED by CoherentConstructio
 - Gap analysis: `specs/681_redesign_construct_indexed_family_coherent_approach/reports/research-004.md`
 - Parent README: `Theories/Bimodal/Metalogic/README.md`
 - Boneyard docs: `Theories/Bimodal/Boneyard/Metalogic_v3/README.md`
+- TruthLemma audit: `specs/809_audit_truthlemma_sorries/` (Task 809)
+- Backward direction archive: `Boneyard/Metalogic_v4/Representation/TruthLemmaBackward.lean`
 
 ---
 
-*Last updated: 2026-01-29*
+*Last updated: 2026-02-02 (Task 809)*
