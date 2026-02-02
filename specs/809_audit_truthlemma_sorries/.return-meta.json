@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-02T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/809_audit_truthlemma_sorries/plans/implementation-001.md",
+      "summary": "5-phase plan to refactor Truth Lemma to forward-only, archiving backward direction to Boneyard"
+    }
+  ],
+  "next_steps": "Run /implement 809 to execute the plan",
   "metadata": {
     "session_id": "sess_1769999882_84ed21",
     "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.0
   }
 }
