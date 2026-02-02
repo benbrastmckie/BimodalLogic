@@ -23,14 +23,15 @@ technical_debt:
 ## Tasks
 
 ### 810. Strategic review: Representation/ vs semantic completeness paths
-- **Effort**: 4 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Revised**: 2026-02-02
 - **Research**: [research-001.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md), [research-002.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-002.md)
 
 **Description**: Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.
 
