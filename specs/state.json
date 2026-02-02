@@ -40,12 +40,12 @@
     {
       "project_number": 806,
       "project_name": "archive_deprecated_representation_constructions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T02:05:46Z",
-      "session_id": "sess_1769996781_d049e9",
+      "last_updated": "2026-02-02T02:09:20Z",
+      "session_id": "sess_1769998140_1f206c",
       "researched": "2026-02-02T01:42:15Z",
       "artifacts": [
         {
@@ -60,7 +60,8 @@
         }
       ],
       "planned": "2026-02-02T02:05:46Z",
-      "effort": "4 hours"
+      "effort": "4 hours",
+      "started": "2026-02-02T02:09:20Z"
     },
     {
       "project_number": 807,
@@ -129,11 +130,20 @@
     {
       "project_number": 809,
       "project_name": "audit_truthlemma_sorries",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "description": "Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T00:25:51Z"
+      "last_updated": "2026-02-02T02:10:47Z",
+      "session_id": "sess_1769997994_581d19",
+      "researched": "2026-02-02T02:10:47Z",
+      "artifacts": [
+        {
+          "path": "specs/809_audit_truthlemma_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Audit of 4 sorries in TruthLemma.lean: 2 Box cases (architectural limitation) and 2 temporal backward cases (omega-rule limitation); none block completeness proofs."
+        }
+      ]
     },
     {
       "project_number": 810,

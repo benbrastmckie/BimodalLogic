@@ -339,52 +339,17 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
       simp only [Branch.hasPos, Branch.contains, List.any_eq_true] at hpos
       obtain ⟨witness, hwit_mem, hwit_eq⟩ := hpos
       -- hwit_eq : (witness == SignedFormula.pos φ) = true
-      -- Convert to regular equality using SignedFormula.beq_eq
-      -- Prove witness = SignedFormula.pos φ from BEq equality
-      have hwit_eq' : witness = SignedFormula.pos φ := by
-        rw [SignedFormula.beq_eq] at hwit_eq
-        simp only [Bool.and_eq_true] at hwit_eq
-        obtain ⟨hsign, hformula⟩ := hwit_eq
-        ext1
-        · -- Prove sign equality
-          cases witness.sign
-          · simp only [SignedFormula.pos, SignedFormula.sign] at hsign ⊢
-          · simp only [SignedFormula.pos, SignedFormula.sign, BEq.beq] at hsign
-        · -- Prove formula equality
-          -- We have hformula : (witness.formula == φ) = true
-          -- Use the fact that witness.sign = Sign.pos and derive formula equality
-          -- Since both Sign and Formula have DecidableEq, we can use decidability
-          cases hwit_sign : witness.sign with
-          | pos =>
-            -- witness = { sign := pos, formula := witness.formula }
-            simp only [SignedFormula.pos, SignedFormula.formula]
-            -- hformula : (witness.formula == φ) = true
-            -- This means witness.formula = φ (by decidability of Formula)
-            revert hformula
-            generalize witness.formula = wf
-            intro hformula
-            -- Now we need to prove wf = φ from (wf == φ) = true
-            -- This follows from Formula.beq_refl and the fact that BEq is injective
-            by_contra h
-            have : (wf == φ) = false := by
-              simp only [BEq.beq]
-              -- The derived BEq returns false for unequal formulas
-              -- We need to show this by cases, but this is complex
-              -- Instead, let's use the fact that Formula has DecidableEq
-              -- and the BEq is derived from it
-              sorry
-            rw [this] at hformula
-            simp at hformula
-          | neg =>
-            -- witness.sign = neg, but we need to match pos
-            simp only [SignedFormula.pos, SignedFormula.sign, BEq.beq] at hsign
+      -- Convert to regular equality using LawfulBEq (beq_iff_eq)
+      have hwit_eq' : witness = SignedFormula.pos φ := beq_iff_eq.mp hwit_eq
       -- witness is in b and witness = SignedFormula.pos φ
       refine ⟨witness, List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem, ?_⟩
       simp only [Option.isSome_iff_exists]
       use ClosureReason.contradiction witness.formula
       -- Rewrite witness using hwit_eq'
       rw [hwit_eq']
-      simp only [SignedFormula.pos, SignedFormula.isPos, hasNegPhi, ↓reduceIte]
+      -- Goal is: (if isPos (pos φ) ∧ hasNeg (...) φ then ... else ...) = some ...
+      simp only [SignedFormula.pos, SignedFormula.isPos, hasNegPhi, decide_true, and_self,
+        ↓reduceIte]
     -- Use the fact that checkContradiction.isSome to close the goal
     simp only [Option.isSome_iff_exists] at hcontra ⊢
     obtain ⟨r, hr⟩ := hcontra

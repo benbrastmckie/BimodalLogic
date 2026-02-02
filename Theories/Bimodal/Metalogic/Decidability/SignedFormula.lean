@@ -71,6 +71,18 @@ theorem flip_neg : Sign.neg.flip = Sign.pos := rfl
 instance : ReflBEq Sign where
   rfl := fun {s} => by cases s <;> native_decide
 
+/-- BEq on Sign is injective: if `s1 == s2 = true` then `s1 = s2`. -/
+theorem eq_of_beq {s1 s2 : Sign} (h : (s1 == s2) = true) : s1 = s2 := by
+  cases s1 <;> cases s2
+  · rfl
+  · exact absurd h (by native_decide)
+  · exact absurd h (by native_decide)
+  · rfl
+
+instance : LawfulBEq Sign where
+  eq_of_beq := eq_of_beq
+  rfl := by intro s; cases s <;> native_decide
+
 end Sign
 
 /-!
@@ -128,6 +140,24 @@ theorem beq_refl (sf : SignedFormula) : (sf == sf) = true := by
   simp only [beq_self_eq_true, Bool.and_self]
 
 instance : ReflBEq SignedFormula where
+  rfl := beq_refl _
+
+/-- BEq on SignedFormula is injective: if `sf1 == sf2 = true` then `sf1 = sf2`. -/
+theorem eq_of_beq {sf1 sf2 : SignedFormula} (h : (sf1 == sf2) = true) : sf1 = sf2 := by
+  rw [beq_eq] at h
+  simp only [Bool.and_eq_true] at h
+  cases sf1 with
+  | mk s1 f1 =>
+    cases sf2 with
+    | mk s2 f2 =>
+      simp only [sign, formula] at h
+      have hs : s1 = s2 := Sign.eq_of_beq h.1
+      have hf : f1 = f2 := Formula.eq_of_beq h.2
+      subst hs hf
+      rfl
+
+instance : LawfulBEq SignedFormula where
+  eq_of_beq := eq_of_beq
   rfl := beq_refl _
 
 end SignedFormula

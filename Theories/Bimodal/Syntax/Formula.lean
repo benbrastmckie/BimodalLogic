@@ -146,6 +146,79 @@ theorem beq_refl (φ : Formula) : (φ == φ) = true := by
 instance : ReflBEq Formula where
   rfl := beq_refl _
 
+/-- BEq on Formula is injective: if `φ == ψ = true` then `φ = ψ`. -/
+theorem eq_of_beq {φ ψ : Formula} (h : (φ == ψ) = true) : φ = ψ := by
+  induction φ generalizing ψ with
+  | atom p =>
+    cases ψ with
+    | atom q =>
+      have heq : (atom p == atom q) = (p == q) := rfl
+      rw [heq] at h
+      have hp : p = q := beq_iff_eq.mp h
+      subst hp; rfl
+    | bot => exact absurd h (by rw [show (atom p == bot) = false from rfl]; decide)
+    | imp c d => exact absurd h (by rw [show (atom p == imp c d) = false from rfl]; decide)
+    | box c => exact absurd h (by rw [show (atom p == box c) = false from rfl]; decide)
+    | all_past c => exact absurd h (by rw [show (atom p == all_past c) = false from rfl]; decide)
+    | all_future c => exact absurd h (by rw [show (atom p == all_future c) = false from rfl]; decide)
+  | bot =>
+    cases ψ with
+    | bot => rfl
+    | atom q => exact absurd h (by rw [show (bot == atom q) = false from rfl]; decide)
+    | imp c d => exact absurd h (by rw [show (bot == imp c d) = false from rfl]; decide)
+    | box c => exact absurd h (by rw [show (bot == box c) = false from rfl]; decide)
+    | all_past c => exact absurd h (by rw [show (bot == all_past c) = false from rfl]; decide)
+    | all_future c => exact absurd h (by rw [show (bot == all_future c) = false from rfl]; decide)
+  | imp a b iha ihb =>
+    cases ψ with
+    | imp c d =>
+      have heq : (imp a b == imp c d) = ((a == c) && (b == d)) := rfl
+      rw [heq] at h
+      simp only [Bool.and_eq_true] at h
+      exact congrArg₂ imp (iha h.1) (ihb h.2)
+    | atom q => exact absurd h (by rw [show (imp a b == atom q) = false from rfl]; decide)
+    | bot => exact absurd h (by rw [show (imp a b == bot) = false from rfl]; decide)
+    | box c => exact absurd h (by rw [show (imp a b == box c) = false from rfl]; decide)
+    | all_past c => exact absurd h (by rw [show (imp a b == all_past c) = false from rfl]; decide)
+    | all_future c => exact absurd h (by rw [show (imp a b == all_future c) = false from rfl]; decide)
+  | box a ih =>
+    cases ψ with
+    | box c =>
+      have heq : (box a == box c) = (a == c) := rfl
+      rw [heq] at h
+      exact congrArg box (ih h)
+    | atom q => exact absurd h (by rw [show (box a == atom q) = false from rfl]; decide)
+    | bot => exact absurd h (by rw [show (box a == bot) = false from rfl]; decide)
+    | imp c d => exact absurd h (by rw [show (box a == imp c d) = false from rfl]; decide)
+    | all_past c => exact absurd h (by rw [show (box a == all_past c) = false from rfl]; decide)
+    | all_future c => exact absurd h (by rw [show (box a == all_future c) = false from rfl]; decide)
+  | all_past a ih =>
+    cases ψ with
+    | all_past c =>
+      have heq : (all_past a == all_past c) = (a == c) := rfl
+      rw [heq] at h
+      exact congrArg all_past (ih h)
+    | atom q => exact absurd h (by rw [show (all_past a == atom q) = false from rfl]; decide)
+    | bot => exact absurd h (by rw [show (all_past a == bot) = false from rfl]; decide)
+    | imp c d => exact absurd h (by rw [show (all_past a == imp c d) = false from rfl]; decide)
+    | box c => exact absurd h (by rw [show (all_past a == box c) = false from rfl]; decide)
+    | all_future c => exact absurd h (by rw [show (all_past a == all_future c) = false from rfl]; decide)
+  | all_future a ih =>
+    cases ψ with
+    | all_future c =>
+      have heq : (all_future a == all_future c) = (a == c) := rfl
+      rw [heq] at h
+      exact congrArg all_future (ih h)
+    | atom q => exact absurd h (by rw [show (all_future a == atom q) = false from rfl]; decide)
+    | bot => exact absurd h (by rw [show (all_future a == bot) = false from rfl]; decide)
+    | imp c d => exact absurd h (by rw [show (all_future a == imp c d) = false from rfl]; decide)
+    | box c => exact absurd h (by rw [show (all_future a == box c) = false from rfl]; decide)
+    | all_past c => exact absurd h (by rw [show (all_future a == all_past c) = false from rfl]; decide)
+
+instance : LawfulBEq Formula where
+  eq_of_beq := eq_of_beq
+  rfl := beq_refl _
+
 /--
 Modal depth: nesting level of modal operators (□, ◇).
 
