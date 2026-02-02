@@ -24,11 +24,14 @@ technical_debt:
 
 ### 811. Swap WezTerm tab styling for active vs Claude Code notification
 - **Effort**: S
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: general
 - **Created**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Started**: 2026-02-02
+- **Completed**: 2026-02-02
 - **Plan**: [implementation-001.md](specs/811_swap_wezterm_tab_styling/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260202.md](specs/811_swap_wezterm_tab_styling/summaries/implementation-summary-20260202.md)
 
 **Description**: Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua
 
@@ -36,7 +39,7 @@ technical_debt:
 
 ### 810. Strategic review: Representation/ vs semantic completeness paths
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02

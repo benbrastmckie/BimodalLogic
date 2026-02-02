@@ -8,20 +8,28 @@
     {
       "project_number": 811,
       "project_name": "swap_wezterm_tab_styling",
-      "status": "planned",
+      "status": "completed",
       "language": "general",
       "description": "Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua",
       "created": "2026-02-02T08:58:05Z",
-      "last_updated": "2026-02-02T09:00:46Z",
-      "session_id": "sess_1770022738_73d050",
+      "last_updated": "2026-02-02T09:04:30Z",
+      "session_id": "sess_1770022949_ce9059",
       "planned": "2026-02-02T09:00:46Z",
       "artifacts": [
         {
           "path": "specs/811_swap_wezterm_tab_styling/plans/implementation-001.md",
           "type": "plan",
           "summary": "1-phase implementation plan to swap WezTerm active tab and Claude notification colors"
+        },
+        {
+          "path": "specs/811_swap_wezterm_tab_styling/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification notes"
         }
-      ]
+      ],
+      "started": "2026-02-02T09:02:49Z",
+      "completed": "2026-02-02T09:04:30Z",
+      "completion_summary": "Swapped WezTerm tab styling colors between active tabs (now amber) and Claude Code notification tabs (now gray) by editing three color locations in ~/.dotfiles/config/wezterm.lua."
     },
     {
       "project_number": 809,
@@ -58,12 +66,12 @@
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T08:59:54Z",
-      "session_id": "sess_1770022212_d914d3",
+      "last_updated": "2026-02-02T09:02:06Z",
+      "session_id": "sess_1770022910_3c3a77",
       "researched": "2026-02-02T08:54:10Z",
       "artifacts": [
         {
