@@ -1,7 +1,7 @@
 # Implementation Plan: Task #809 (v003)
 
 - **Task**: 809 - Archive TruthLemma.lean Sorries to Boneyard
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Version**: 003 (Actually archive sorries, not document them)
 - **Effort**: 2 hours
 - **Dependencies**: None

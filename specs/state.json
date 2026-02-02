@@ -8,12 +8,12 @@
     {
       "project_number": 809,
       "project_name": "audit_truthlemma_sorries",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T05:41:04Z",
-      "session_id": "sess_1770002374_f280ce",
+      "last_updated": "2026-02-02T05:47:00Z",
+      "session_id": "sess_1770011200_e15cb4",
       "researched": "2026-02-02T02:10:47Z",
       "artifacts": [
         {
@@ -33,13 +33,13 @@
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "planned",
+      "status": "researched",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T03:14:04Z",
-      "session_id": "sess_1770000659_a9ccdc",
-      "researched": "2026-02-02T02:54:17Z",
+      "last_updated": "2026-02-02T05:49:22Z",
+      "session_id": "sess_1770011105_7e266d",
+      "researched": "2026-02-02T05:49:22Z",
       "artifacts": [
         {
           "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md",
@@ -55,6 +55,11 @@
           "path": "specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 4-phase plan: keep Representation active, complete sorries, document dual-path architecture"
+        },
+        {
+          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-003.md",
+          "type": "research",
+          "summary": "Comprehensive audit of Metalogic organization with sorry analysis, dependency flowcharts, and architecture recommendations"
         }
       ],
       "planned": "2026-02-02T03:14:04Z",
