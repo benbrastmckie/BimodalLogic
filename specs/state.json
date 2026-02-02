@@ -11,7 +11,7 @@
       "status": "planned",
       "language": "meta",
       "created": "2026-02-01T23:49:49Z",
-      "last_updated": "2026-02-01T23:59:28Z",
+      "last_updated": "2026-02-02T00:03:33Z",
       "session_id": "sess_1769989848_7ea01a",
       "researched": "2026-02-01T23:54:25Z",
       "artifacts": [
@@ -21,12 +21,12 @@
           "summary": "Identified two root causes: SessionStart hook missing for /clear command, and VimLeavePre timing prevents TASK_NUMBER clearing on Neovim exit"
         },
         {
-          "path": "specs/802_wezterm_task_number_clearing_neovim_exit/plans/implementation-001.md",
+          "path": "specs/802_wezterm_task_number_clearing_neovim_exit/plans/implementation-002.md",
           "type": "plan",
-          "summary": "3-phase plan: SessionStart hook for /clear, VimLeavePre autocmd for Neovim exit, integration testing"
+          "summary": "3-phase plan (v2): Universal SessionStart hook for all non-workflow events, VimLeavePre for Neovim exit"
         }
       ],
-      "planned": "2026-02-01T23:59:28Z"
+      "planned": "2026-02-02T00:03:33Z"
     },
     {
       "project_number": 797,
