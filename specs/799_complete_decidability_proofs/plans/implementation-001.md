@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799
 
 - **Task**: 799 - Complete Decidability proofs
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6-8 hours
 - **Dependencies**: None (builds on existing FMP infrastructure)
 - **Research Inputs**: specs/799_complete_decidability_proofs/reports/research-001.md
@@ -44,7 +44,7 @@ The research report identifies:
 
 ## Implementation Phases
 
-### Phase 1: Closure.lean List Monotonicity Lemmas [NOT STARTED]
+### Phase 1: Closure.lean List Monotonicity Lemmas [IN PROGRESS]
 
 **Goal**: Complete the two sorries in Closure.lean - `closed_extend_closed` and `add_neg_causes_closure`
 

@@ -165,6 +165,123 @@ def classifyBranch (b : Branch) : BranchStatus :=
   | none => .open
 
 /-!
+## Helper Lemmas for Monotonicity
+-/
+
+/-- hasBotPos is monotonic under branch extension -/
+theorem hasBotPos_mono (b : Branch) (sf : SignedFormula) :
+    Branch.hasBotPos b → Branch.hasBotPos (sf :: b) := by
+  unfold Branch.hasBotPos Branch.contains
+  simp only [List.any_cons, Bool.or_eq_true, beq_iff_eq]
+  intro h
+  right
+  exact h
+
+/-- hasPos is monotonic under branch extension -/
+theorem hasPos_mono (b : Branch) (sf : SignedFormula) (φ : Formula) :
+    Branch.hasPos b φ → Branch.hasPos (sf :: b) φ := by
+  unfold Branch.hasPos Branch.contains
+  simp only [List.any_cons, Bool.or_eq_true, beq_iff_eq]
+  intro h
+  right
+  exact h
+
+/-- hasNeg is monotonic under branch extension -/
+theorem hasNeg_mono (b : Branch) (sf : SignedFormula) (φ : Formula) :
+    Branch.hasNeg b φ → Branch.hasNeg (sf :: b) φ := by
+  unfold Branch.hasNeg Branch.contains
+  simp only [List.any_cons, Bool.or_eq_true, beq_iff_eq]
+  intro h
+  right
+  exact h
+
+/-- checkBotPos is monotonic: if it returns some for b, it returns some for sf :: b -/
+theorem checkBotPos_mono (b : Branch) (sf : SignedFormula) :
+    (checkBotPos b).isSome → (checkBotPos (sf :: b)).isSome := by
+  unfold checkBotPos
+  intro h
+  split at h
+  · rename_i hBot
+    split
+    · simp
+    · rename_i hnoBot
+      exact absurd (hasBotPos_mono b sf hBot) hnoBot
+  · simp at h
+
+/-- If a branch contains a contradiction witness, so does the extended branch -/
+theorem checkContradiction_mono (b : Branch) (sf : SignedFormula) :
+    (checkContradiction b).isSome → (checkContradiction (sf :: b)).isSome := by
+  unfold checkContradiction
+  intro h
+  -- Key insight: We need to find an element in (sf :: b) that satisfies the predicate
+  -- If sf satisfies it, we're done. Otherwise, we look in b.
+  -- The tricky part: the predicate uses hasNeg on the extended branch, which is different.
+  -- But hasNeg is monotonic: if hasNeg b φ, then hasNeg (sf :: b) φ
+  simp only [List.findSome?_cons]
+  -- First check if sf satisfies the predicate on the extended branch
+  by_cases hsf : sf.isPos ∧ Branch.hasNeg (sf :: b) sf.formula
+  · simp [hsf]
+  · simp only [hsf, ↓reduceIte]
+    -- sf doesn't satisfy, so we look in b
+    -- We need to show that findSome? on b returns some when the predicate uses (sf :: b)
+    -- Key: if an element of b satisfied the old predicate (using b), it satisfies the new one (using sf :: b)
+    induction b with
+    | nil => simp at h
+    | cons hd tl ih =>
+      simp only [List.findSome?_cons] at h ⊢
+      by_cases hhd : hd.isPos ∧ Branch.hasNeg (hd :: tl) hd.formula
+      · -- hd satisfies old predicate, so it satisfies new predicate (with monotonicity)
+        have hhdNew : hd.isPos ∧ Branch.hasNeg (sf :: hd :: tl) hd.formula := by
+          constructor
+          · exact hhd.1
+          · -- hasNeg (hd :: tl) → hasNeg (sf :: hd :: tl)
+            apply hasNeg_mono (hd :: tl) sf
+            exact hhd.2
+        simp [hhdNew]
+      · -- hd doesn't satisfy old predicate
+        simp only [hhd, ↓reduceIte] at h
+        by_cases hhdNew : hd.isPos ∧ Branch.hasNeg (sf :: hd :: tl) hd.formula
+        · simp [hhdNew]
+        · simp only [hhdNew, ↓reduceIte]
+          -- Need to apply induction hypothesis
+          -- But ih requires findSome? on tl with predicate using (hd :: tl) to be Some
+          -- We have findSome? on tl with predicate using (hd :: tl) from h
+          -- Need to transform to predicate using (sf :: hd :: tl)
+          -- This is where the recursion gets tricky because the predicate changes
+          -- Let's use a generalized induction
+          sorry
+
+/-- checkAxiomNeg is monotonic -/
+theorem checkAxiomNeg_mono (b : Branch) (sf : SignedFormula) :
+    (checkAxiomNeg b).isSome → (checkAxiomNeg (sf :: b)).isSome := by
+  unfold checkAxiomNeg
+  intro h
+  simp only [List.findSome?_cons]
+  -- The predicate for checkAxiomNeg doesn't depend on the branch
+  cases hsf : (if sf.isNeg then
+      match matchAxiom sf.formula with
+      | some ⟨φ, witness⟩ => if _ : sf.formula = φ then some (ClosureReason.axiomNeg φ witness) else none
+      | none => none
+    else none) with
+  | none =>
+    -- sf doesn't witness, find in b
+    induction b with
+    | nil => simp at h
+    | cons hd tl ih =>
+      simp only [List.findSome?_cons] at h ⊢
+      -- The predicate is the same regardless of branch context
+      cases hhd : (if hd.isNeg then
+          match matchAxiom hd.formula with
+          | some ⟨φ, witness⟩ => if _ : hd.formula = φ then some (ClosureReason.axiomNeg φ witness) else none
+          | none => none
+        else none) with
+      | none =>
+        simp only [hhd] at h
+        exact ih h
+      | some _ => simp
+  | some _ => simp
+
+/-!
 ## Closure Properties
 -/
 
@@ -175,14 +292,39 @@ Adding more formulas cannot "undo" a contradiction.
 theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
     isClosed b → isClosed (sf :: b) := by
   intro h
-  simp only [isClosed] at *
-  cases hb : findClosure b with
-  | none => simp [hb] at h
-  | some reason =>
-    simp only [findClosure, checkBotPos, checkContradiction, checkAxiomNeg] at *
-    -- The closure reason from b will still be found in sf :: b
-    -- because b is a suffix of sf :: b
-    sorry  -- Technical: would need to show findSome? finds the same element
+  simp only [isClosed, findClosure] at *
+  -- findClosure = checkBotPos <|> checkContradiction <|> checkAxiomNeg
+  -- So if any of these is Some for b, the same or another is Some for sf :: b
+  simp only [Option.orElse_eq_some] at *
+  rcases h with hbot | ⟨hnotbot, hrest⟩
+  · -- checkBotPos b was Some
+    left
+    exact checkBotPos_mono b sf hbot
+  · rcases hrest with hcontra | ⟨hnotcontra, hax⟩
+    · -- checkContradiction b was Some
+      right
+      constructor
+      · -- checkBotPos (sf :: b) might be Some (new sf could be T(⊥))
+        -- But we don't need that, we just need the disjunction to hold
+        intro hbot'
+        left
+        exact checkContradiction_mono b sf hcontra
+      · left
+        exact checkContradiction_mono b sf hcontra
+    · -- checkAxiomNeg b was Some
+      right
+      constructor
+      · intro _
+        right
+        constructor
+        · intro _
+          exact checkAxiomNeg_mono b sf hax
+        · exact checkAxiomNeg_mono b sf hax
+      · right
+        constructor
+        · intro _
+          exact checkAxiomNeg_mono b sf hax
+        · exact checkAxiomNeg_mono b sf hax
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.
@@ -190,9 +332,52 @@ If a branch has T(φ) and we add F(φ), it becomes closed.
 theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
     b.hasPos φ → isClosed (SignedFormula.neg φ :: b) := by
   intro hpos
-  simp only [isClosed, findClosure, checkBotPos, checkContradiction]
-  -- The contradiction check will find the pair
-  sorry  -- Technical: would need to unfold definitions
+  simp only [isClosed, findClosure]
+  -- checkContradiction will find the contradiction
+  simp only [Option.orElse_eq_some]
+  right
+  constructor
+  · -- checkBotPos might not return Some, that's fine
+    intro _
+    left
+    -- checkContradiction returns Some because F(φ) is at head
+    -- and b.hasPos φ means T(φ) is in b, so T(φ) is in (F(φ) :: b)
+    simp only [checkContradiction, List.findSome?_cons]
+    -- The head element F(φ) has isNeg = true, isPos = false
+    simp only [SignedFormula.neg, SignedFormula.isPos, Sign.pos, Sign.neg,
+               decide_false, Bool.false_and, ↓reduceIte]
+    -- Now we check the rest of the list
+    -- We need to find a positive formula in b that has its negation in (F(φ) :: b)
+    -- T(φ) ∈ b, and F(φ) = SignedFormula.neg φ is at head
+    -- So T(φ).isPos ∧ hasNeg (F(φ) :: b) φ holds
+    simp only [List.findSome?_isSome]
+    use ClosureReason.contradiction φ, SignedFormula.pos φ
+    constructor
+    · -- SignedFormula.pos φ ∈ b
+      simp only [Branch.hasPos, Branch.contains] at hpos
+      exact List.any_iff.mp hpos |>.choose_spec.1
+    · -- Check condition
+      simp only [SignedFormula.pos, SignedFormula.isPos, Sign.pos, decide_true,
+                 Bool.true_and, ↓reduceIte]
+      -- hasNeg (F(φ) :: b) φ
+      simp only [Branch.hasNeg, Branch.contains, List.any_cons]
+      left
+      simp only [SignedFormula.neg, beq_self_eq_true]
+  · left
+    -- Same as above
+    simp only [checkContradiction, List.findSome?_cons]
+    simp only [SignedFormula.neg, SignedFormula.isPos, Sign.pos, Sign.neg,
+               decide_false, Bool.false_and, ↓reduceIte]
+    simp only [List.findSome?_isSome]
+    use ClosureReason.contradiction φ, SignedFormula.pos φ
+    constructor
+    · simp only [Branch.hasPos, Branch.contains] at hpos
+      exact List.any_iff.mp hpos |>.choose_spec.1
+    · simp only [SignedFormula.pos, SignedFormula.isPos, Sign.pos, decide_true,
+                 Bool.true_and, ↓reduceIte]
+      simp only [Branch.hasNeg, Branch.contains, List.any_cons]
+      left
+      simp only [SignedFormula.neg, beq_self_eq_true]
 
 /-!
 ## Closure Detection Statistics

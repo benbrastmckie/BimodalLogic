@@ -105,20 +105,30 @@
     {
       "project_number": 800,
       "project_name": "fix_fmp_semantic_canonical_model_sorries",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "description": "Fix the 5 remaining sorries in FMP/SemanticCanonicalModel.lean. This file is part of the core completeness path and contains semantic_weak_completeness. Investigate each sorry, determine if they are essential gaps or can be completed with available lemmas.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-01T23:25:21Z"
+      "last_updated": "2026-02-02T00:33:02Z",
+      "session_id": "sess_1769992195_c7c0df",
+      "researched": "2026-02-02T00:33:02Z",
+      "artifacts": [
+        {
+          "path": "specs/800_fix_fmp_semantic_canonical_model_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Verified SemanticCanonicalModel.lean is already sorry-free; task premise was based on grep matching documentation text containing 'sorry-free'"
+        }
+      ]
     },
     {
       "project_number": 801,
       "project_name": "document_soundness_temp_t_axiom_validity",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Document the 2 sorries in SoundnessLemmas.lean (temp_t axioms). These are NOT semantically valid with strict inequality but were added for syntactic completeness (MCS coherence). Add clear documentation explaining this is an acceptable known limitation. Evaluate if these can be resolved or should be marked as permanent documented technical debt.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-01T23:25:21Z"
+      "last_updated": "2026-02-02T00:32:43Z",
+      "session_id": "sess_1769992343_82bfa3"
     },
     {
       "project_number": 796,
