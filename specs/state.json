@@ -62,12 +62,20 @@
     {
       "project_number": 803,
       "project_name": "prove_g_bot_h_bot_conditions",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.",
       "created": "2026-02-02T00:14:08Z",
-      "last_updated": "2026-02-02T00:40:21Z",
-      "session_id": "sess_1769992810_e5aa89"
+      "last_updated": "2026-02-02T00:44:23Z",
+      "session_id": "sess_1769992810_e5aa89",
+      "researched": "2026-02-02T00:44:23Z",
+      "artifacts": [
+        {
+          "path": "specs/803_prove_g_bot_h_bot_conditions/reports/research-001.md",
+          "type": "research",
+          "summary": "Documents proof strategy using T-axiom mcs_closed_temp_t_future/past to prove G_bot and H_bot conditions"
+        }
+      ]
     },
     {
       "project_number": 804,

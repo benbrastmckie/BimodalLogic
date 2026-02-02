@@ -94,10 +94,12 @@ technical_debt:
 ---
 
 ### 803. Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 1 hour
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-02
+- **Researched**: 2026-02-02
+- **Research**: [research-001.md](specs/803_prove_g_bot_h_bot_conditions/reports/research-001.md)
 
 **Description**: Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.
 
