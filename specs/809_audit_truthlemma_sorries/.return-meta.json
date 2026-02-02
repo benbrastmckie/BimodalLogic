@@ -1,0 +1,8 @@
+{
+  "status": "researched",
+  "artifacts": [{
+    "type": "research",
+    "path": "specs/809_audit_truthlemma_sorries/reports/research-002.md",
+    "summary": "Forward-only Truth Lemma refactoring is feasible and already essentially in place - completeness proofs only use forward direction (.mp); no structural changes needed."
+  }]
+}

@@ -141,25 +141,26 @@
       "language": "lean",
       "description": "Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T02:10:47Z",
-      "session_id": "sess_1769997994_581d19",
+      "last_updated": "2026-02-02T02:35:23Z",
+      "session_id": "sess_1769999557_1feec8",
       "researched": "2026-02-02T02:10:47Z",
       "artifacts": [
         {
-          "path": "specs/809_audit_truthlemma_sorries/reports/research-001.md",
+          "path": "specs/809_audit_truthlemma_sorries/reports/research-002.md",
           "type": "research",
-          "summary": "Audit of 4 sorries in TruthLemma.lean: 2 Box cases (architectural limitation) and 2 temporal backward cases (omega-rule limitation); none block completeness proofs."
+          "summary": "Forward-only Truth Lemma refactoring is feasible and already essentially in place - completeness proofs only use forward direction (.mp); no structural changes needed."
         }
       ]
     },
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T00:25:51Z"
+      "last_updated": "2026-02-02T02:35:34Z",
+      "session_id": "sess_1769999722_fc848f"
     },
     {
       "project_number": 803,
@@ -203,8 +204,8 @@
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T01:31:05Z",
-      "session_id": "sess_1769995851_174d9f",
+      "last_updated": "2026-02-02T02:34:21Z",
+      "session_id": "sess_1769999642_237624",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
         {

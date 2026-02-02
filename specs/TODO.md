@@ -24,7 +24,7 @@ technical_debt:
 
 ### 810. Strategic review: Representation/ vs semantic completeness paths
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 
@@ -38,7 +38,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
-- **Research**: [research-001.md](specs/809_audit_truthlemma_sorries/reports/research-001.md)
+- **Research**: [research-002.md](specs/809_audit_truthlemma_sorries/reports/research-002.md)
 
 **Description**: Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.
 

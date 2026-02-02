@@ -1,7 +1,6 @@
 {
-  "status": "partial",
+  "status": "in_progress",
   "started_at": "2026-02-02T00:00:00Z",
-  "completed_at": "2026-02-02T12:00:00Z",
   "artifacts": [
     {
       "path": "specs/799_complete_decidability_proofs/summaries/implementation-summary-20260202.md",
@@ -11,12 +10,12 @@
   ],
   "partial_progress": {
     "stage": "implementation",
-    "details": "Phases 1-2 complete. Phases 3-5 require FMP infrastructure.",
+    "details": "Resuming from Phase 3. Phases 1-2 completed in previous session.",
     "phases_completed": 2,
     "phases_total": 5
   },
   "metadata": {
-    "session_id": "sess_1769995851_174d9f",
+    "session_id": "sess_1769999642_237624",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
@@ -24,8 +23,5 @@
     "phases_total": 5,
     "sorries_removed": 2,
     "sorries_remaining": 4
-  },
-  "completion_data": {
-    "completion_summary": "Completed Phases 1-2 of task 799: Added LawfulBEq instances for Formula/Sign/SignedFormula and completed 2 closure theorems (closed_extend_closed and add_neg_causes_closure). Removed 2 sorries from Closure.lean. 4 sorries remain in Saturation.lean and Correctness.lean requiring FMP infrastructure."
   }
 }
