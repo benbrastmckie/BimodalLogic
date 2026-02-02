@@ -326,40 +326,33 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
   cases hbot : checkBotPos (SignedFormula.neg φ :: b) with
   | some _ => rfl
   | none =>
-    -- checkContradiction will find the contradiction
-    -- Goal: (none <|> checkContradiction ... <|> checkAxiomNeg ...).isSome = true
-    -- First show checkContradiction succeeds
+    -- The extended branch contains SignedFormula.neg φ at the head
+    -- Since b contains SignedFormula.pos φ (from hpos), checkContradiction will find it
+    have hasNegPhi : Branch.hasNeg (SignedFormula.neg φ :: b) φ = true := by
+      simp only [Branch.hasNeg, Branch.contains, List.any_cons, beq_self_eq_true,
+        Bool.true_or, SignedFormula.neg]
+    -- checkContradiction will find the SignedFormula.pos φ in b
     have hcontra : (checkContradiction (SignedFormula.neg φ :: b)).isSome := by
       rw [checkContradiction, List.findSome?_isSome_iff]
-      -- Extract witness from hasPos. After simp, hwit_eq should be a beq check
       simp only [Branch.hasPos, Branch.contains, List.any_eq_true] at hpos
       obtain ⟨witness, hwit_mem, hwit_eq⟩ := hpos
-      -- hwit_eq : (witness == SignedFormula.pos φ) = true
-      have hwit_eq' : witness = SignedFormula.pos φ := by
-        rw [beq_eq_true_iff_eq] at hwit_eq
-        exact hwit_eq
-      refine ⟨witness, List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem, ?_⟩
-      simp only [Option.isSome_iff_exists]
-      use ClosureReason.contradiction witness.formula
-      -- witness = SignedFormula.pos φ, so witness.isPos = true and witness.formula = φ
-      have hwit_isPos : witness.isPos = true := by rw [hwit_eq']; rfl
-      have hwit_formula : witness.formula = φ := by rw [hwit_eq']; rfl
-      rw [hwit_isPos, hwit_formula]
-      simp only [true_and]
-      split_ifs with h
-      · rfl
-      · exfalso
-        have hneg : Branch.hasNeg (SignedFormula.neg φ :: b) φ = true := by
-          simp only [Branch.hasNeg, Branch.contains, List.any_cons]
-          simp only [Bool.or_eq_true, beq_iff_eq]
-          left
-          rfl
-        exact h hneg
+      use witness
+      constructor
+      · exact List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem
+      · simp only [Option.isSome_iff_exists]
+        use ClosureReason.contradiction witness.formula
+        -- hwit_eq says witness == SignedFormula.pos φ = true
+        -- Need to show the if condition is true
+        simp only [beq_iff_eq] at hwit_eq
+        simp only [hwit_eq, SignedFormula.pos, SignedFormula.isPos, SignedFormula.formula]
+        simp only [ite_eq_left_iff, not_and, Bool.not_eq_true]
+        intro _
+        -- Need to show Branch.hasNeg (SignedFormula.neg φ :: b) φ = true
+        exact absurd hasNegPhi
     -- Now use the fact that checkContradiction.isSome
     simp only [Option.isSome_iff_exists] at hcontra ⊢
     obtain ⟨r, hr⟩ := hcontra
-    use r
-    simp only [hr, Option.none_or, Option.some_or]
+    exact ⟨r, by simp [hr]⟩
 
 /-!
 ## Closure Detection Statistics
