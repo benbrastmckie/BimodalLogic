@@ -320,7 +320,38 @@ If a branch has T(φ) and we add F(φ), it becomes closed.
 -/
 theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
     Branch.hasPos b φ → isClosed (SignedFormula.neg φ :: b) := by
-  sorry  -- Technical proof: checkContradiction finds the new contradiction
+  intro hpos
+  simp only [isClosed, findClosure]
+  -- If checkBotPos succeeds, we're done. Otherwise, use checkContradiction.
+  cases hbot : checkBotPos (SignedFormula.neg φ :: b) with
+  | some _ => rfl
+  | none =>
+    -- checkContradiction will find the contradiction
+    simp only [hbot, Option.none_or]
+    rw [Option.isSome_iff_exists]
+    -- Use findSome?_isSome_iff to find the witness
+    rw [checkContradiction, List.findSome?_isSome_iff]
+    -- Extract witness from hasPos
+    simp only [Branch.hasPos, Branch.contains, List.any_eq_true] at hpos
+    obtain ⟨witness, hwit_mem, hwit_eq⟩ := hpos
+    simp only [beq_iff_eq] at hwit_eq
+    use witness
+    constructor
+    · exact List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem
+    · -- witness.isPos = true ∧ (SignedFormula.neg φ :: b).hasNeg witness.formula
+      simp only [Option.isSome_iff_exists]
+      use ClosureReason.contradiction witness.formula
+      rw [hwit_eq]
+      simp only [SignedFormula.pos, SignedFormula.isPos]
+      split_ifs with h
+      · rfl
+      · exfalso
+        push_neg at h
+        rcases h with ⟨hpos', _⟩ | ⟨_, hneg'⟩
+        · exact hpos' rfl
+        · -- Need to show (SignedFormula.neg φ :: b).hasNeg φ = true
+          simp only [Branch.hasNeg, Branch.contains, List.any_cons, beq_self_eq_true,
+            Bool.true_or, SignedFormula.neg] at hneg'
 
 /-!
 ## Closure Detection Statistics

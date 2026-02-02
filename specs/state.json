@@ -102,6 +102,11 @@
           "path": "specs/808_audit_coherentconstruction_taskrelation_sorries/reports/research-001.md",
           "type": "research",
           "summary": "Audited 15 sorries across CoherentConstruction.lean (10) and TaskRelation.lean (5); none block completeness theorem; recommend archiving all as non-critical"
+        },
+        {
+          "path": "specs/808_audit_coherentconstruction_taskrelation_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan to audit, document, and archive 15 non-blocking sorries to Boneyard/"
         }
       ],
       "planned": "2026-02-02T01:42:25Z"
