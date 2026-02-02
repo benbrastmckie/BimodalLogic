@@ -1,7 +1,7 @@
 # Implementation Plan: Task #809
 
 - **Task**: 809 - Refactor Truth Lemma to Forward-Only
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/809_audit_truthlemma_sorries/reports/research-001.md, specs/809_audit_truthlemma_sorries/reports/research-002.md
@@ -47,7 +47,7 @@ From research-002.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Forward-Only Truth Lemma [NOT STARTED]
+### Phase 1: Create Forward-Only Truth Lemma [IN PROGRESS]
 
 **Goal**: Create a new `TruthLemmaForward.lean` file containing only the forward direction of the Truth Lemma, without sorries in the exported theorems.
 
