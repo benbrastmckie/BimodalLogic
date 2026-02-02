@@ -30,7 +30,7 @@ technical_debt:
 - **Researched**: 2026-02-02
 - **Research**: [research-001.md](specs/812_canonical_model_completeness/reports/research-001.md)
 
-**Description**: Draw on specs/810_strategic_review_representation_vs_semantic_paths/summaries/implementation-summary-20260202.md to pursue the canonical model construction (Representation approach) for establishing weak completeness, strong completeness, and compactness, drawing inspiration from the Boneyard as appropriate but without getting stuck in old approaches that didn't work out for good reason before.
+**Description**: Establish canonical model completeness (weak, strong, compactness) via the Representation approach. CONSTRAINTS: (1) Only restore elements that can be implemented sorry-free - avoid architectural mismatches or permanent sorries. (2) Ensure definitions align with semantics - Box quantifies over world histories, NOT world-time points. (3) Draw on Boneyard for inspiration but do not revive broken approaches. Goal is clean, correct, sorry-free proofs for the main completeness theorems.
 
 ---
 
