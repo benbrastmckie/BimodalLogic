@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799
 
 - **Task**: 799 - Complete Decidability proofs
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 6-8 hours
 - **Dependencies**: None (builds on existing FMP infrastructure)
 - **Research Inputs**: specs/799_complete_decidability_proofs/reports/research-001.md
