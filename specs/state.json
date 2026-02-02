@@ -8,11 +8,11 @@
     {
       "project_number": 802,
       "project_name": "wezterm_task_number_clearing_neovim_exit",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-01T23:49:49Z",
-      "last_updated": "2026-02-02T00:03:33Z",
-      "session_id": "sess_1769989848_7ea01a",
+      "last_updated": "2026-02-02T00:10:59Z",
+      "session_id": "sess_1769990853_5b7d83",
       "researched": "2026-02-01T23:54:25Z",
       "artifacts": [
         {
@@ -24,9 +24,18 @@
           "path": "specs/802_wezterm_task_number_clearing_neovim_exit/plans/implementation-002.md",
           "type": "plan",
           "summary": "3-phase plan (v2): Universal SessionStart hook for all non-workflow events, VimLeavePre for Neovim exit"
+        },
+        {
+          "path": "specs/802_wezterm_task_number_clearing_neovim_exit/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and test matrix"
         }
       ],
-      "planned": "2026-02-02T00:03:33Z"
+      "planned": "2026-02-02T00:03:33Z",
+      "started": "2026-02-02T00:07:51Z",
+      "completed": "2026-02-02T00:10:59Z",
+      "completion_summary": "Added universal SessionStart hook to clear task numbers on all session events (/clear, startup, resume), and VimLeavePre autocmd to clear on Neovim exit. Uses 'clear by default, set for workflow' pattern.",
+      "claudemd_suggestions": "Added wezterm-clear-task-number.sh hook script, updated settings.json with SessionStart matcher='*' hook"
     },
     {
       "project_number": 797,

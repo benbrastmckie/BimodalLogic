@@ -1,0 +1,40 @@
+{
+  "status": "implemented",
+  "summary": "Implemented WezTerm task number clearing for non-workflow events. Added SessionStart hook with matcher='*' to clear task number on all session events, and VimLeavePre autocmd to clear when Neovim exits with Claude terminal.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/hooks/wezterm-clear-task-number.sh",
+      "summary": "Hook script that clears TASK_NUMBER via OSC 1337 for WezTerm"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/settings.json",
+      "summary": "Updated with SessionStart hook matcher='*' for universal task number clearing"
+    },
+    {
+      "type": "implementation",
+      "path": "~/.config/nvim/lua/neotex/config/autocmds.lua",
+      "summary": "Added VimLeavePre autocmd for Neovim exit cleanup (outside repo)"
+    },
+    {
+      "type": "summary",
+      "path": "specs/802_wezterm_task_number_clearing_neovim_exit/summaries/implementation-summary-20260202.md",
+      "summary": "Implementation summary with verification results and test matrix"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added universal SessionStart hook to clear task numbers on all session events (/clear, startup, resume), and VimLeavePre autocmd to clear on Neovim exit. Uses 'clear by default, set for workflow' pattern.",
+    "claudemd_suggestions": "Added wezterm-clear-task-number.sh hook script, updated settings.json with SessionStart matcher='*' hook"
+  },
+  "metadata": {
+    "session_id": "sess_1769990853_5b7d83",
+    "duration_seconds": 900,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 3,
+    "phases_total": 3
+  },
+  "next_steps": "Test manually: run /clear, exit Neovim, verify task numbers clear from tab title"
+}

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #802 (v2)
 
 - **Task**: 802 - Fix WezTerm tab task number clearing on Neovim exit and non-workflow commands
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/802_wezterm_task_number_clearing_neovim_exit/reports/research-001.md
@@ -56,7 +56,7 @@ This is simpler and more robust: "clear by default, set only for workflow comman
 
 ## Implementation Phases
 
-### Phase 1: Add Universal SessionStart Hook [NOT STARTED]
+### Phase 1: Add Universal SessionStart Hook [COMPLETED]
 
 **Goal:** Clear TASK_NUMBER for all session start events (not just /clear)
 
@@ -116,7 +116,7 @@ exit 0
 
 ---
 
-### Phase 2: Add VimLeavePre Autocmd for Neovim Exit [NOT STARTED]
+### Phase 2: Add VimLeavePre Autocmd for Neovim Exit [COMPLETED]
 
 **Goal:** Clear TASK_NUMBER when Neovim exits with an active Claude terminal buffer
 
@@ -152,7 +152,7 @@ api.nvim_create_autocmd('VimLeavePre', {
 
 ---
 
-### Phase 3: Integration Testing [NOT STARTED]
+### Phase 3: Integration Testing [COMPLETED]
 
 **Goal:** Verify all scenarios work together without regressions
 

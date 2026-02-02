@@ -24,13 +24,16 @@ technical_debt:
 
 ### 802. Fix WezTerm tab task number clearing on Neovim exit and /clear command
 - **Effort**: S
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-02
+- **Started**: 2026-02-02
+- **Completed**: 2026-02-02
 - **Research**: [research-001.md](specs/802_wezterm_task_number_clearing_neovim_exit/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/802_wezterm_task_number_clearing_neovim_exit/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260202.md](specs/802_wezterm_task_number_clearing_neovim_exit/summaries/implementation-summary-20260202.md)
 
 **Description**: Fix WezTerm tab task number clearing on Neovim exit and non-workflow commands. Task numbers should clear when Neovim closes, when /clear is run, or when any non-workflow command/prompt is submitted. Only workflow commands (/research N, /plan N, /implement N, /revise N) should set task numbers.
 
