@@ -285,6 +285,13 @@ theorem checkAxiomNeg_mono (b : Branch) (sf : SignedFormula) :
 ## Closure Properties
 -/
 
+/-- Helper: isSome of orElse is disjunction of isSome -/
+private theorem orElse_isSome {α : Type*} (a b : Option α) :
+    (a <|> b).isSome = true ↔ a.isSome = true ∨ b.isSome = true := by
+  cases a with
+  | none => simp
+  | some x => simp
+
 /--
 A closed branch remains closed when extended.
 Adding more formulas cannot "undo" a contradiction.
@@ -294,37 +301,24 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
   intro h
   simp only [isClosed, findClosure] at *
   -- findClosure = checkBotPos <|> checkContradiction <|> checkAxiomNeg
-  -- So if any of these is Some for b, the same or another is Some for sf :: b
-  simp only [Option.orElse_eq_some] at *
-  rcases h with hbot | ⟨hnotbot, hrest⟩
+  -- isSome of orElse: (a <|> b).isSome ↔ a.isSome ∨ b.isSome
+  rw [orElse_isSome] at *
+  rcases h with hbot | hrest
   · -- checkBotPos b was Some
     left
     exact checkBotPos_mono b sf hbot
-  · rcases hrest with hcontra | ⟨hnotcontra, hax⟩
+  · rw [orElse_isSome] at hrest
+    rcases hrest with hcontra | hax
     · -- checkContradiction b was Some
       right
-      constructor
-      · -- checkBotPos (sf :: b) might be Some (new sf could be T(⊥))
-        -- But we don't need that, we just need the disjunction to hold
-        intro hbot'
-        left
-        exact checkContradiction_mono b sf hcontra
-      · left
-        exact checkContradiction_mono b sf hcontra
+      rw [orElse_isSome]
+      left
+      exact checkContradiction_mono b sf hcontra
     · -- checkAxiomNeg b was Some
       right
-      constructor
-      · intro _
-        right
-        constructor
-        · intro _
-          exact checkAxiomNeg_mono b sf hax
-        · exact checkAxiomNeg_mono b sf hax
-      · right
-        constructor
-        · intro _
-          exact checkAxiomNeg_mono b sf hax
-        · exact checkAxiomNeg_mono b sf hax
+      rw [orElse_isSome]
+      right
+      exact checkAxiomNeg_mono b sf hax
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.
@@ -333,51 +327,43 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
     b.hasPos φ → isClosed (SignedFormula.neg φ :: b) := by
   intro hpos
   simp only [isClosed, findClosure]
+  rw [orElse_isSome]
   -- checkContradiction will find the contradiction
-  simp only [Option.orElse_eq_some]
   right
-  constructor
-  · -- checkBotPos might not return Some, that's fine
-    intro _
-    left
-    -- checkContradiction returns Some because F(φ) is at head
-    -- and b.hasPos φ means T(φ) is in b, so T(φ) is in (F(φ) :: b)
-    simp only [checkContradiction, List.findSome?_cons]
-    -- The head element F(φ) has isNeg = true, isPos = false
-    simp only [SignedFormula.neg, SignedFormula.isPos, Sign.pos, Sign.neg,
-               decide_false, Bool.false_and, ↓reduceIte]
-    -- Now we check the rest of the list
-    -- We need to find a positive formula in b that has its negation in (F(φ) :: b)
-    -- T(φ) ∈ b, and F(φ) = SignedFormula.neg φ is at head
-    -- So T(φ).isPos ∧ hasNeg (F(φ) :: b) φ holds
-    simp only [List.findSome?_isSome]
-    use ClosureReason.contradiction φ, SignedFormula.pos φ
-    constructor
-    · -- SignedFormula.pos φ ∈ b
-      simp only [Branch.hasPos, Branch.contains] at hpos
-      exact List.any_iff.mp hpos |>.choose_spec.1
-    · -- Check condition
-      simp only [SignedFormula.pos, SignedFormula.isPos, Sign.pos, decide_true,
-                 Bool.true_and, ↓reduceIte]
-      -- hasNeg (F(φ) :: b) φ
-      simp only [Branch.hasNeg, Branch.contains, List.any_cons]
-      left
-      simp only [SignedFormula.neg, beq_self_eq_true]
-  · left
-    -- Same as above
-    simp only [checkContradiction, List.findSome?_cons]
-    simp only [SignedFormula.neg, SignedFormula.isPos, Sign.pos, Sign.neg,
-               decide_false, Bool.false_and, ↓reduceIte]
-    simp only [List.findSome?_isSome]
-    use ClosureReason.contradiction φ, SignedFormula.pos φ
-    constructor
-    · simp only [Branch.hasPos, Branch.contains] at hpos
-      exact List.any_iff.mp hpos |>.choose_spec.1
-    · simp only [SignedFormula.pos, SignedFormula.isPos, Sign.pos, decide_true,
-                 Bool.true_and, ↓reduceIte]
-      simp only [Branch.hasNeg, Branch.contains, List.any_cons]
-      left
-      simp only [SignedFormula.neg, beq_self_eq_true]
+  rw [orElse_isSome]
+  left
+  -- Show checkContradiction (SignedFormula.neg φ :: b) returns Some
+  unfold checkContradiction
+  simp only [List.findSome?_cons]
+  -- The head element F(φ) has isPos = false, so condition fails
+  simp only [SignedFormula.isPos, ↓reduceIte]
+  -- Now we need to find T(φ) in b such that it has hasNeg with the extended branch
+  simp only [Branch.hasPos, Branch.contains] at hpos
+  rw [List.any_eq_true] at hpos
+  obtain ⟨sf', hsfmem, hsfeq⟩ := hpos
+  -- hsfeq : (sf' == SignedFormula.pos φ) = true, convert to eq
+  have hsfeq' : sf' = SignedFormula.pos φ := eq_of_beq_eq_true hsfeq
+  subst hsfeq'
+  -- Now we show findSome? finds this element
+  induction b with
+  | nil => exact absurd hsfmem (List.not_mem_nil _)
+  | cons hd tl ih =>
+    simp only [List.findSome?_cons]
+    cases hmem_cases : List.mem_cons.mp hsfmem with
+    | inl heq =>
+      -- hd = SignedFormula.pos φ
+      subst heq
+      -- hd.isPos = true and hasNeg (SignedFormula.neg φ :: hd :: tl) hd.formula holds
+      simp only [SignedFormula.pos, SignedFormula.isPos, decide_eq_true_eq, ↓reduceIte]
+      -- hasNeg includes SignedFormula.neg φ at the head
+      simp only [SignedFormula.formula, Branch.hasNeg, Branch.contains, List.any_cons]
+      simp only [SignedFormula.neg, beq_self_eq_true, Bool.true_or]
+    | inr hmem =>
+      -- SignedFormula.pos φ ∈ tl
+      by_cases hhd : hd.isPos ∧ Branch.hasNeg ({ sign := Sign.neg, formula := φ } :: hd :: tl) hd.formula
+      · simp only [hhd, ↓reduceIte, Option.isSome_some]
+      · simp only [hhd, ↓reduceIte]
+        exact ih hmem
 
 /-!
 ## Closure Detection Statistics

@@ -105,12 +105,20 @@
     {
       "project_number": 801,
       "project_name": "document_soundness_temp_t_axiom_validity",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Document the 2 sorries in SoundnessLemmas.lean (temp_t axioms). These are NOT semantically valid with strict inequality but were added for syntactic completeness (MCS coherence). Add clear documentation explaining this is an acceptable known limitation. Evaluate if these can be resolved or should be marked as permanent documented technical debt.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T00:32:43Z",
-      "session_id": "sess_1769992343_82bfa3"
+      "last_updated": "2026-02-02T00:37:46Z",
+      "session_id": "sess_1769992343_82bfa3",
+      "researched": "2026-02-02T00:37:46Z",
+      "artifacts": [
+        {
+          "path": "specs/801_document_soundness_temp_t_axiom_validity/reports/research-001.md",
+          "type": "research",
+          "summary": "The 4 temp_t sorries exist because proofs use strict inequality (<) but semantics were changed to reflexive (<=) in Task 658. The sorries are now trivially provable with le_refl. Recommends fixing the code to match reflexive semantics rather than reverting."
+        }
+      ]
     },
     {
       "project_number": 796,
