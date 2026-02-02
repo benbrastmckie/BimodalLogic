@@ -1,7 +1,7 @@
 # Implementation Plan: Task #799 (Revised)
 
 - **Task**: 799 - Complete Decidability proofs
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Version**: 002
 - **Effort**: 7-8 hours
 - **Dependencies**: None (builds on existing FMP infrastructure)
@@ -45,7 +45,7 @@ Complete 6 remaining sorries in the Decidability module across three files. **Re
 
 ## Implementation Phases
 
-### Phase 0: Verify Prerequisites [NOT STARTED]
+### Phase 0: Verify Prerequisites [COMPLETED]
 
 **Goal**: Verify required Mathlib lemmas exist and understand their signatures
 
@@ -66,7 +66,16 @@ Complete 6 remaining sorries in the Decidability module across three files. **Re
 
 ---
 
-### Phase 1: Closure.lean Helper Lemmas [NOT STARTED]
+### Phase 1: Closure.lean Helper Lemmas [BLOCKED]
+
+**Blockage Note**: The planned proof approach failed due to a fundamental issue: `checkContradiction` captures the branch in its lambda closure, so when proving monotonicity, the branch in the condition changes during induction. This creates a mismatch between what the induction hypothesis provides and what is needed.
+
+**Alternative approaches needed**:
+1. Refactor `checkContradiction` to take a separate `searchBranch` parameter
+2. Prove a more general lemma about `findSome?` with parameterized predicates
+3. Use a witness-based approach that extracts the contradicting formula explicitly
+
+**Original plan (for reference)**:
 
 **Goal**: Build the monotonicity infrastructure required for main theorems
 
@@ -122,7 +131,9 @@ Complete 6 remaining sorries in the Decidability module across three files. **Re
 
 ---
 
-### Phase 2: Closure.lean Check Function Monotonicity [NOT STARTED]
+### Phase 2: Closure.lean Check Function Monotonicity [BLOCKED]
+
+**Status**: Blocked by Phase 1. See Phase 1 blockage note.
 
 **Goal**: Prove monotonicity for `checkBotPos`, `checkContradiction`, `checkAxiomNeg`
 
@@ -168,7 +179,9 @@ Complete 6 remaining sorries in the Decidability module across three files. **Re
 
 ---
 
-### Phase 3: Closure.lean Main Theorems [NOT STARTED]
+### Phase 3: Closure.lean Main Theorems [BLOCKED]
+
+**Status**: Blocked by Phase 1-2. The main theorems depend on helper lemmas and check function monotonicity.
 
 **Goal**: Complete `closed_extend_closed` and `add_neg_causes_closure`
 

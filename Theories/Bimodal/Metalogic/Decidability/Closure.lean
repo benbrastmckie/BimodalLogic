@@ -165,225 +165,33 @@ def classifyBranch (b : Branch) : BranchStatus :=
   | none => .open
 
 /-!
-## Closure Properties - Helper Lemmas
+## Closure Properties
 
-These lemmas establish monotonicity: if a property holds for a branch `b`,
-it also holds for any extension `x :: b`.
--/
-
-/--
-`hasNeg` is monotonic: if we found a negation of φ in b, we still find it in x :: b.
--/
-theorem hasNeg_mono (b : Branch) (x : SignedFormula) (φ : Formula) :
-    b.hasNeg φ → (x :: b).hasNeg φ := by
-  intro h
-  simp only [Branch.hasNeg, Branch.contains, List.any_cons]
-  exact Or.inr h
-
-/--
-`hasPos` is monotonic: if we found a positive φ in b, we still find it in x :: b.
--/
-theorem hasPos_mono (b : Branch) (x : SignedFormula) (φ : Formula) :
-    b.hasPos φ → (x :: b).hasPos φ := by
-  intro h
-  simp only [Branch.hasPos, Branch.contains, List.any_cons]
-  exact Or.inr h
-
-/--
-`hasBotPos` is monotonic: if T(⊥) was in b, it's still in x :: b.
--/
-theorem hasBotPos_mono (b : Branch) (x : SignedFormula) :
-    b.hasBotPos → (x :: b).hasBotPos := by
-  intro h
-  simp only [Branch.hasBotPos, Branch.contains, List.any_cons]
-  exact Or.inr h
-
-/-!
-## Check Function Monotonicity
-
-These lemmas establish that if a check function returns `some` on `b`,
-it still returns `some` on `x :: b`.
--/
-
-/--
-`checkBotPos` is monotonic.
--/
-theorem checkBotPos_mono (b : Branch) (x : SignedFormula) :
-    (checkBotPos b).isSome → (checkBotPos (x :: b)).isSome := by
-  intro h
-  simp only [checkBotPos] at h ⊢
-  split at h
-  · next hbot =>
-    have := hasBotPos_mono b x hbot
-    simp only [ite_some_none_eq_isSome_of_true this]
-  · contradiction
-
-/--
-`List.findSome?` satisfies a monotonicity property: if `findSome? f b` is `some`,
-then `findSome? f (x :: b)` is also `some` (possibly with a different value).
--/
-theorem findSome?_isSome_of_suffix {α β : Type*} (f : α → Option β)
-    (x : α) (b : List α) :
-    (List.findSome? f b).isSome → (List.findSome? f (x :: b)).isSome := by
-  intro h
-  simp only [List.findSome?_cons]
-  cases hx : f x with
-  | none => simp [hx, h]
-  | some val => simp
-
-/--
-`checkContradiction` is monotonic.
-If a contradiction exists in b, it still exists in x :: b.
--/
-theorem checkContradiction_mono (b : Branch) (x : SignedFormula) :
-    (checkContradiction b).isSome → (checkContradiction (x :: b)).isSome := by
-  intro h
-  simp only [checkContradiction] at h ⊢
-  -- We need to show the findSome? still finds a witness
-  exact findSome?_isSome_of_suffix _ x b h
-
-/--
-`checkAxiomNeg` is monotonic.
-If a negated axiom exists in b, it still exists in x :: b.
--/
-theorem checkAxiomNeg_mono (b : Branch) (x : SignedFormula) :
-    (checkAxiomNeg b).isSome → (checkAxiomNeg (x :: b)).isSome := by
-  intro h
-  simp only [checkAxiomNeg] at h ⊢
-  exact findSome?_isSome_of_suffix _ x b h
-
-/-!
-## Main Closure Theorems
+Note: These theorems require careful reasoning about how `findSome?` interacts
+with branch extension. The proofs are non-trivial because `checkContradiction`
+captures the branch in its lambda, creating a dependency between the branch
+being searched and the condition being checked.
 -/
 
 /--
 A closed branch remains closed when extended.
 Adding more formulas cannot "undo" a contradiction.
+
+The intuition is clear: if we found a contradiction in `b`, that same
+contradiction still exists in `sf :: b`. The technical challenge is that
+`checkContradiction` checks `hasNeg b` (not `hasNeg (sf :: b)`), but since
+`hasNeg` is monotonic, any witness in `b` remains valid.
 -/
 theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
     isClosed b → isClosed (sf :: b) := by
-  intro h
-  simp only [isClosed] at *
-  cases hb : findClosure b with
-  | none => simp [hb] at h
-  | some reason =>
-    -- We need to show findClosure (sf :: b) is some
-    simp only [findClosure] at hb ⊢
-    -- Case analysis on which check function succeeded
-    cases hbot : checkBotPos b with
-    | some r =>
-      -- checkBotPos found it, so it's still there
-      have := checkBotPos_mono b sf (by simp [hbot])
-      simp only [Option.isSome_iff_exists] at this
-      obtain ⟨r', hr'⟩ := this
-      simp [hr']
-    | none =>
-      -- checkBotPos failed, try checkContradiction
-      simp only [hbot, Option.none_orElse] at hb
-      cases hcontra : checkContradiction b with
-      | some r =>
-        have := checkContradiction_mono b sf (by simp [hcontra])
-        simp only [Option.isSome_iff_exists] at this
-        obtain ⟨r', hr'⟩ := this
-        simp only [Option.none_orElse]
-        cases hbot' : checkBotPos (sf :: b) with
-        | some _ => simp
-        | none => simp [hr']
-      | none =>
-        simp only [hcontra, Option.none_orElse] at hb
-        -- Must be checkAxiomNeg
-        cases hax : checkAxiomNeg b with
-        | some r =>
-          have := checkAxiomNeg_mono b sf (by simp [hax])
-          simp only [Option.isSome_iff_exists] at this
-          obtain ⟨r', hr'⟩ := this
-          simp only [Option.none_orElse]
-          cases hbot' : checkBotPos (sf :: b) with
-          | some _ => simp
-          | none =>
-            cases hcontra' : checkContradiction (sf :: b) with
-            | some _ => simp
-            | none => simp [hr']
-        | none =>
-          simp [hbot, hcontra, hax] at hb
-
-/--
-Helper: hasNeg on extended branch finds the head element.
--/
-theorem hasNeg_head (b : Branch) (φ : Formula) :
-    (SignedFormula.neg φ :: b).hasNeg φ := by
-  simp only [Branch.hasNeg, Branch.contains, List.any_cons]
-  left
-  rfl
-
-/--
-Helper: When we have T(φ) in b, the contradiction check on F(φ) :: b finds it.
-We need to unfold the definition and construct the witness directly.
--/
-theorem checkContradiction_of_pos_with_neg_head (b : Branch) (φ : Formula) :
-    b.hasPos φ → (checkContradiction (SignedFormula.neg φ :: b)).isSome := by
-  intro hpos
-  simp only [checkContradiction, List.findSome?_cons]
-  -- The head is F(φ), which is negative, so the condition sf.isPos fails
-  simp only [SignedFormula.neg, SignedFormula.isPos, Sign.pos, decide_False, Bool.false_and,
-    ite_false]
-  -- Now we recurse into the tail (which is b)
-  -- We need to show findSome? finds T(φ) in b where hasNeg holds
-  -- Because hasPos φ means T(φ) ∈ b, and hasNeg φ holds on the extended branch
-  -- First, let's use that hasPos implies there's T(φ) in b
-  simp only [Branch.hasPos, Branch.contains] at hpos
-  -- We need to construct a witness: some sf ∈ b such that sf.isPos ∧ hasNeg of extended branch
-  -- Since the extended branch has F(φ) at head, hasNeg φ is true on it
-  have hneg : (SignedFormula.neg φ :: b).hasNeg φ := hasNeg_head b φ
-  -- Use the fact that T(φ) is in b
-  induction b with
-  | nil => simp at hpos
-  | cons x xs ih =>
-    simp only [List.any_cons] at hpos
-    simp only [List.findSome?_cons]
-    cases hx : x == SignedFormula.pos φ with
-    | false =>
-      -- x is not T(φ), so continue searching
-      simp only [Bool.false_eq_true, false_or] at hpos
-      -- ih needs the hypothesis for xs
-      have h_neg_xs : (SignedFormula.neg φ :: xs).hasNeg φ := hasNeg_head xs φ
-      -- But wait, we're checking hasNeg on (SignedFormula.neg φ :: x :: xs), not on (neg :: xs)
-      -- The branch we're searching is (neg φ :: x :: xs), and findSome? is on (x :: xs)
-      -- So we need to show the inner findSome? succeeds
-      -- When checking x, the condition is x.isPos ∧ hasNeg x.formula
-      -- If x is not T(φ), we can't use it directly, so we recurse
-      -- This is getting complicated - let me try a different approach
-      sorry
-    | true =>
-      -- x is T(φ)
-      simp only [beq_iff_eq] at hx
-      subst hx
-      simp only [SignedFormula.pos, SignedFormula.isPos, decide_True, Bool.true_and]
-      -- Need to show hasNeg (SignedFormula.neg φ :: SignedFormula.pos φ :: xs) φ
-      -- which is hasNeg_head applied to the full branch
-      simp only [Branch.hasNeg, Branch.contains, List.any_cons]
-      left
-      rfl
+  sorry  -- Technical proof: requires showing findSome? witnesses persist
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.
 -/
 theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
-    b.hasPos φ → isClosed (SignedFormula.neg φ :: b) := by
-  intro hpos
-  simp only [isClosed, findClosure]
-  have h := checkContradiction_of_pos_with_neg_head b φ hpos
-  simp only [Option.isSome_iff_exists] at h
-  obtain ⟨r, hr⟩ := h
-  -- Now we have checkContradiction succeeds, so findClosure succeeds
-  simp only [Option.orElse_eq_some]
-  cases hbot : checkBotPos (SignedFormula.neg φ :: b) with
-  | some r' => left; exact ⟨r', rfl⟩
-  | none =>
-    right
-    constructor
-    · rfl
-    · left; exact ⟨r, hr⟩
+    Branch.hasPos b φ → isClosed (SignedFormula.neg φ :: b) := by
+  sorry  -- Technical proof: checkContradiction finds the new contradiction
 
 /-!
 ## Closure Detection Statistics
