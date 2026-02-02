@@ -40,12 +40,12 @@
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T06:34:46Z",
-      "session_id": "sess_1770012115_125443",
+      "last_updated": "2026-02-02T06:45:09Z",
+      "session_id": "sess_1770014694_96af7d",
       "researched": "2026-02-02T06:06:24Z",
       "artifacts": [
         {
@@ -72,10 +72,16 @@
           "path": "specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-003.md",
           "type": "plan",
           "summary": "FMP-only approach: archive Representation, port infinitary completeness and compactness via bridge lemma"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/FMP/ConsistentSatisfiable.lean",
+          "type": "implementation",
+          "summary": "Bridge lemma connecting consistency to satisfiability via FMP - partial with 6 sorries in modal/temporal cases"
         }
       ],
       "planned": "2026-02-02T06:34:46Z",
-      "revised": "2026-02-02T06:34:46Z"
+      "revised": "2026-02-02T06:34:46Z",
+      "started": "2026-02-02T06:45:09Z"
     },
     {
       "project_number": 796,

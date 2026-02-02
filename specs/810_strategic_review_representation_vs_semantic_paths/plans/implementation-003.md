@@ -76,35 +76,45 @@
 
 ## Implementation Phases
 
-### Phase 1: Prove Bridge Lemma [NOT STARTED]
+### Phase 1: Prove Bridge Lemma [PARTIAL]
 
 **Goal**: Prove `consistent_satisfiable` - the key bridge between consistency and satisfiability
 
 **Theory**: If φ is consistent (¬φ not provable), then {φ} is satisfiable.
 
-**Proof Strategy** (from research-004):
-1. φ consistent means ¬φ not provable
-2. By `semantic_weak_completeness` contrapositive: ¬φ not valid
-3. Therefore ∃ model where ¬φ false, i.e., φ true
-4. This model witnesses satisfiability of {φ}
+**Proof Strategy** (implemented):
+1. Extend {φ} to MCS via Lindenbaum
+2. Project to closure MCS for φ
+3. Build FiniteWorldState from closure MCS
+4. Construct FMP TaskFrame/TaskModel
+5. Prove truth correspondence for propositional cases
+6. Apply correspondence to get satisfiability
 
 **Tasks**:
-- [ ] Create or update `FMP/ConsistentSatisfiable.lean` with:
-  ```lean
-  lemma consistent_satisfiable (phi : Formula) (h : SetConsistent {phi}) :
-      set_satisfiable {phi}
-  ```
-- [ ] Prove using `semantic_weak_completeness` contrapositive
-- [ ] Verify with `lake build`
+- [x] Create `FMP/ConsistentSatisfiable.lean` with bridge lemma structure
+- [x] Prove `consistent_implies_not_neg_provable`
+- [x] Define `fmpTaskFrame`, `fmpTaskModel`, `fmpWorldHistory`
+- [x] Prove truth correspondence for atoms, bot, implication
+- [ ] Complete truth correspondence for modal box (6 sorries remain)
+- [ ] Complete truth correspondence for temporal operators
+- [x] Verify with `lake build`
 
-**Timing**: 1 hour
+**Timing**: 2+ hours (exceeded estimate due to complexity)
 
-**Files to modify/create**:
-- `Theories/Bimodal/Metalogic/FMP/ConsistentSatisfiable.lean` (new)
+**Files created**:
+- `Theories/Bimodal/Metalogic/FMP/ConsistentSatisfiable.lean`
+
+**Status Notes**:
+- File builds successfully
+- Main theorem `consistent_satisfiable` compiles
+- 6 sorries remain in `mcs_world_truth_correspondence` for modal/temporal cases
+- Propositional fragment (atoms, bot, implication) is fully proven
+- Modal/temporal cases require more sophisticated FMP infrastructure to handle
+  quantification over all accessible/future/past states
 
 **Verification**:
-- `lake build Bimodal.Metalogic.FMP.ConsistentSatisfiable` succeeds
-- No sorry in the bridge lemma
+- `lake build Bimodal.Metalogic.FMP.ConsistentSatisfiable` succeeds ✓
+- Bridge lemma has sorries in underlying truth correspondence lemma
 
 ---
 
