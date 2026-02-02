@@ -31,14 +31,22 @@
     {
       "project_number": 815,
       "project_name": "bmcs_universe_polymorphism_resolution",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int - polymorphic validity to Int-specific), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int - polymorphic consequence to Int-specific). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.",
       "effort": "1-2 hours",
       "created": "2026-02-02T21:16:09Z",
-      "last_updated": "2026-02-02T21:37:02Z",
+      "last_updated": "2026-02-02T21:42:59Z",
       "parent_task": 813,
-      "session_id": "sess_1770068208_f80de2"
+      "session_id": "sess_1770068208_f80de2",
+      "researched": "2026-02-02T21:42:59Z",
+      "artifacts": [
+        {
+          "path": "specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of universe polymorphism issue with four solution approaches"
+        }
+      ]
     },
     {
       "project_number": 814,
