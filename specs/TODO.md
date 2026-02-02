@@ -58,12 +58,14 @@ technical_debt:
 
 ### 814. Classical Propositional Completeness Infrastructure
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
+- **Planned**: 2026-02-02
 - **Parent**: Task 813
 - **Research**: [research-001.md](specs/814_classical_propositional_completeness_infrastructure/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/814_classical_propositional_completeness_infrastructure/plans/implementation-001.md)
 
 **Description**: Resolve 4 classical propositional sorries in BMCS infrastructure by importing existing double_negation theorem and porting neg_imp_fst/neg_imp_snd from Boneyard. Sorries: TruthLemma.lean:186 (neg_imp_implies_antecedent), TruthLemma.lean:198 (neg_imp_implies_neg_consequent), Completeness.lean:184 (not_derivable_implies_neg_consistent), Completeness.lean:323 (context_not_derivable_implies_extended_consistent). Note: double_negation_elim at Completeness.lean:197 is duplicate of Bimodal.Theorems.Propositional.double_negation.
 

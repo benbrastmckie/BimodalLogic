@@ -1,35 +1,19 @@
 {
-  "status": "partial",
-  "started_at": "2026-02-02T18:13:20Z",
-  "finished_at": "2026-02-02T18:25:00Z",
+  "status": "planned",
+  "summary": "2-phase plan resolving 4 classical propositional sorries in BMCS completeness infrastructure",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/814_classical_propositional_completeness_infrastructure/reports/research-001.md",
-      "summary": "Analysis of 4 classical propositional sorries with proof strategies and dependency mapping"
+      "path": "specs/814_classical_propositional_completeness_infrastructure/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "2-phase implementation plan for resolving classical propositional sorries using existing double_negation and deduction_theorem"
     }
   ],
-  "partial_progress": {
-    "stage": "stage_7_finalize",
-    "details": "Research report completed with proof strategies for all 4 sorries"
-  },
   "metadata": {
-    "session_id": "sess_1738535600_a7c3e2",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770067519_25077d",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "research_findings": {
-    "sorries_analyzed": 4,
-    "proof_strategies_identified": true,
-    "existing_infrastructure": [
-      "Bimodal.Theorems.Propositional.double_negation",
-      "Bimodal.Metalogic.Core.deduction_theorem",
-      "Boneyard neg_imp_fst/neg_imp_snd (MCS level, need adaptation)"
-    ],
-    "imports_needed": [
-      "Bimodal.Theorems.Propositional",
-      "Bimodal.Metalogic.Core.DeductionTheorem"
-    ]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 3.0
   }
 }
