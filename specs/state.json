@@ -13,32 +13,37 @@
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-02T21:42:04Z",
+      "last_updated": "2026-02-02T22:04:46Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
-      "session_id": "sess_1770068302_b8844b",
+      "session_id": "sess_1770069676_858bf8",
       "researched": "2026-02-02T21:42:04Z",
       "artifacts": [
         {
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of omega-rule limitation for temporal sorries and modal saturation requirements, with three implementation strategies evaluated"
+        },
+        {
+          "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up analysis showing temporal/modal sorries have different root causes; multi-family resolves only modal sorry; recommends accepting temporal sorries as axioms"
         }
       ]
     },
     {
       "project_number": 815,
       "project_name": "bmcs_universe_polymorphism_resolution",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int - polymorphic validity to Int-specific), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int - polymorphic consequence to Int-specific). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.",
       "effort": "1-2 hours",
       "created": "2026-02-02T21:16:09Z",
-      "last_updated": "2026-02-02T21:58:32Z",
+      "last_updated": "2026-02-02T22:02:34Z",
       "parent_task": 813,
-      "session_id": "sess_1770069272_03ad59",
+      "session_id": "sess_1770069737_99b0f2",
       "researched": "2026-02-02T21:42:59Z",
       "artifacts": [
         {
@@ -57,7 +62,8 @@
           "summary": "Solution A vs B comparison: recommends Type* → Type based on completeness strategy, API usage, and alignment with standard validity"
         }
       ],
-      "planned": "2026-02-02T21:50:10Z"
+      "planned": "2026-02-02T21:50:10Z",
+      "started": "2026-02-02T22:02:34Z"
     },
     {
       "project_number": 793,

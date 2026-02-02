@@ -154,10 +154,8 @@ lemma bmcs_valid_implies_valid_Int (φ : Formula) (h : bmcs_valid φ) :
     bmcs_valid_Int φ := by
   intro B fam hfam t
   -- The polymorphic validity says: for ALL types D, ... holds
-  -- Int is a specific type, so it should be an instance
-  -- Due to universe issues in Lean 4, we use sorry here
-  -- This is not a mathematical gap - just a Lean technicality
-  sorry
+  -- Int is a specific type, so instantiation now works with Type (not Type*)
+  exact h Int B fam hfam t
 
 /--
 Helper: If `⊬ φ` (not derivable from empty context), then `[φ.neg]` is consistent.
@@ -265,7 +263,7 @@ Derivability: `Γ ⊢ φ` (there exists a derivation tree)
 BMCS semantic consequence: φ is a consequence of Γ if whenever Γ is satisfied, φ is satisfied.
 -/
 def bmcs_consequence (Γ : List Formula) (φ : Formula) : Prop :=
-  ∀ (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D],
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D],
   ∀ (B : BMCS D) (fam : IndexedMCSFamily D) (_ : fam ∈ B.families) (t : D),
   (∀ γ ∈ Γ, bmcs_truth_at B fam t γ) → bmcs_truth_at B fam t φ
 

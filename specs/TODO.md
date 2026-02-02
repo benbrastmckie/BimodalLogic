@@ -30,7 +30,7 @@ technical_debt:
 - **Researched**: 2026-02-02
 - **Parent**: Task 813
 - **Dependencies**: 814
-- **Research**: [research-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md)
+- **Research**: [research-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md), [research-002.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-002.md)
 
 **Description**: Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past), Construction.lean:220 (modal_backward in singleFamilyBMCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction or multi-family approach.
 
@@ -38,11 +38,12 @@ technical_debt:
 
 ### 815. BMCS Universe Polymorphism Resolution
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Started**: 2026-02-02
 - **Parent**: Task 813
 - **Research**: [research-001.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md), [research-002.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/815_bmcs_universe_polymorphism_resolution/plans/implementation-001.md)

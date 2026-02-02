@@ -1,7 +1,7 @@
 # Implementation Plan: BMCS Universe Polymorphism Resolution
 
 - **Task**: 815 - BMCS Universe Polymorphism Resolution
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md
@@ -48,7 +48,7 @@ Key findings integrated into plan:
 
 ## Implementation Phases
 
-### Phase 1: Modify bmcs_valid Definition [NOT STARTED]
+### Phase 1: Modify bmcs_valid Definition [COMPLETED]
 
 **Goal**: Change bmcs_valid to use universe-monomorphic Type
 
@@ -69,7 +69,7 @@ Key findings integrated into plan:
 
 ---
 
-### Phase 2: Modify bmcs_consequence Definition [NOT STARTED]
+### Phase 2: Modify bmcs_consequence Definition [COMPLETED]
 
 **Goal**: Change bmcs_consequence to use universe-monomorphic Type
 
@@ -90,7 +90,7 @@ Key findings integrated into plan:
 
 ---
 
-### Phase 3: Prove the Instantiation Lemmas [NOT STARTED]
+### Phase 3: Prove the Instantiation Lemmas [IN PROGRESS]
 
 **Goal**: Replace sorries with direct proofs
 

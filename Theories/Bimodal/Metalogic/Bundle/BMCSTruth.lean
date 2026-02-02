@@ -106,7 +106,7 @@ This is the semantic notion for the Henkin-style completeness proof.
 Completeness states: `bmcs_valid φ ↔ Derivable [] φ`
 -/
 def bmcs_valid (φ : Formula) : Prop :=
-  ∀ (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D],
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D],
   ∀ (B : BMCS D), ∀ fam ∈ B.families, ∀ t : D, bmcs_truth_at B fam t φ
 
 /--
