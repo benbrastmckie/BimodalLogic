@@ -786,16 +786,21 @@ private theorem axiom_temp_t_future_valid (φ : Formula) :
   -- With reflexive semantics, we can apply h_future at s = t using le_refl
   exact h_future t (le_refl t)
 
-/-- Temporal T axiom for past is locally valid: `Hφ → φ`. -/
+/-- Temporal T axiom for past is locally valid: `Hφ → φ`.
+
+With reflexive semantics (Task #658), `all_past` quantifies over `s ≤ t`,
+meaning "now and all past times". The T-axiom `Hφ → φ` is therefore trivially
+valid: if φ holds at all s ≤ t, then in particular φ holds at t (via `le_refl t`).
+-/
 private theorem axiom_temp_t_past_valid (φ : Formula) :
     is_valid D ((Formula.all_past φ).imp φ) := by
   intro F M τ t
   simp only [truth_at]
   intro h_past
-  -- Same issue as temp_t_future: H quantifies over s < t (strict past)
-  -- but the axiom Hφ → φ requires φ at t from φ at all s < t
-  -- This is not valid with strict inequality semantics.
-  sorry
+  -- h_past : ∀ s, s ≤ t → truth_at M τ s φ
+  -- Goal: truth_at M τ t φ
+  -- With reflexive semantics, we can apply h_past at s = t using le_refl
+  exact h_past t (le_refl t)
 
 /-- All axioms are locally valid. -/
 private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ := by

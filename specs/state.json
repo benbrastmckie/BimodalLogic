@@ -62,12 +62,12 @@
     {
       "project_number": 803,
       "project_name": "prove_g_bot_h_bot_conditions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.",
       "created": "2026-02-02T00:14:08Z",
-      "last_updated": "2026-02-02T00:48:53Z",
-      "session_id": "sess_1769993209_5d5fe8",
+      "last_updated": "2026-02-02T00:50:09Z",
+      "session_id": "sess_1769993391_e7522a",
       "researched": "2026-02-02T00:44:23Z",
       "artifacts": [
         {
@@ -81,7 +81,8 @@
           "summary": "1-phase implementation plan for G_bot/H_bot proof using T-axiom closure lemmas"
         }
       ],
-      "planned": "2026-02-02T00:48:53Z"
+      "planned": "2026-02-02T00:48:53Z",
+      "started": "2026-02-02T00:50:09Z"
     },
     {
       "project_number": 804,
@@ -99,7 +100,7 @@
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T00:46:48Z",
+      "last_updated": "2026-02-02T00:51:01Z",
       "session_id": "sess_1769993191_b875db",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
@@ -117,6 +118,11 @@
           "path": "specs/799_complete_decidability_proofs/summaries/implementation-summary-20260202.md",
           "type": "summary",
           "summary": "Documents blocked status at Phase 1 with technical analysis of checkContradiction_mono proof challenge"
+        },
+        {
+          "path": "specs/799_complete_decidability_proofs/reports/research-002.md",
+          "type": "research",
+          "summary": "Detailed diagnosis of Phase 1 blockage with proof strategies for closed_extend_closed and add_neg_causes_closure"
         }
       ],
       "planned": "2026-02-02T00:21:42Z",

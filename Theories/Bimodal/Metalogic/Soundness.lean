@@ -548,138 +548,40 @@ theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).all_futur
 /--
 Temporal T axiom for future: `Gφ → φ` is valid in all task semantic models.
 
-This axiom states that if φ holds at all strictly future times (s > t), then φ holds
-at the current time t. This is valid because we use time-shift invariance to show
-that truth at future times can be related back to the current time.
+With reflexive semantics (Task #658), `all_future` quantifies over `t ≤ s`,
+meaning "now and all future times". The T-axiom `Gφ → φ` is therefore trivially
+valid: if φ holds at all s ≥ t, then in particular φ holds at t (via `le_refl t`).
 
-**Proof Strategy**:
-Uses `WorldHistory.time_shift` with offset 0 and time-shift preservation.
-Since `time_shift τ 0 = τ` and the preservation theorem relates times via offsets,
-we can use any future truth to establish current truth.
-
-Actually, this axiom with strict inequality (s > t) is NOT directly valid.
-The axiom was added for the canonical model construction which uses reflexive
-interpretation. For soundness, we prove it using time-shift invariance:
-if Gφ holds, then for any ε > 0, φ holds at t + ε. By time-shift preservation,
-truth at (τ, t + ε) relates to truth at (shifted τ, t). This chain eventually
-gives us truth at (τ, t) by the density-independent time-shift construction.
-
-More directly: we use that time_shift_preserves_truth is an iff that works
-in both directions. If Gφ at (τ, t), pick any s > t, then φ at (τ, s).
-But also φ at (τ, s) ↔ φ at (time_shift τ (s - t), t) by preservation.
-So φ at (time_shift τ (s - t), t). Now, since box is universal over all histories,
-and we can reach τ from time_shift τ (s - t) via shift 0... Actually this is circular.
-
-The proper proof uses the fact that if Gφ is vacuously false (no future times),
-then Gφ → φ is vacuously true. If there exist future times, then φ holds at all of them,
-and by time-shift density arguments, φ must hold at t.
-
-For soundness in the task semantic model, we appeal to the time-shift construction
-that makes the temporal operators effectively reflexive at the model level.
+**Paper Reference**: The JPL paper uses reflexive temporal operators (lines 1857-1872)
+where Future quantifies over "y ∈ D where x ≤ y" (inclusive of present).
 -/
 theorem temp_t_future_valid (φ : Formula) : ⊨ ((Formula.all_future φ).imp φ) := by
   intro T _ _ _ F M τ t
   unfold truth_at
   intro h_future
-  -- h_future : ∀ s, t < s → truth_at M τ s φ
+  -- h_future : ∀ s, t ≤ s → truth_at M τ s φ
   -- Goal: truth_at M τ t φ
-  -- Use time-shift: pick any s > t, get φ at (τ, s)
-  -- Then use preservation backward to get φ at (time_shift τ (t - s), s)
-  -- Wait, that's going the wrong direction.
-  -- Let's think more carefully:
-  -- We need to show φ at (τ, t).
-  -- We know φ at (τ, s) for all s > t.
-  -- time_shift_preserves_truth says: φ at (time_shift τ (s - t), t) ↔ φ at (τ, s)
-  -- So from φ at (τ, s), we get φ at (time_shift τ (s - t), t).
-  -- But time_shift τ (s - t) ≠ τ in general.
-  -- However, we need φ at (τ, t), not at some shifted history.
-  -- This approach doesn't directly work.
-  -- Let me try the other direction:
-  -- time_shift_preserves_truth also says: φ at (τ, t) ↔ φ at (time_shift τ 0, t)
-  -- But time_shift τ 0 = τ, so this is trivial.
-  -- Actually, looking at time_shift_preserves_truth more carefully:
-  -- It relates truth at (shifted, t) to truth at (original, s) where s = t + offset.
-  -- So if we want φ at (τ, t), we need to find a (shifted, s) where:
-  --   time_shift shifted (t - s) = τ
-  --   s > t (so we can use h_future)
-  -- From time_shift shifted (t - s) = τ and s > t (so t - s < 0):
-  -- We need: ∃ shifted, s > t, time_shift shifted (t - s) = τ
-  -- Let s = t + 1 (assuming time is dense enough), then t - s = -1
-  -- time_shift shifted (-1) = τ means shifting backward by 1 gives τ
-  -- So shifted = time_shift τ 1 (the forward shift of τ)
-  -- Then: φ at (τ, t + 1) [from h_future] ↔ φ at (time_shift τ 1, t) [by preservation]
-  -- But we need φ at (τ, t), not at (time_shift τ 1, t).
-  -- This is still not giving us what we need directly.
-  -- The key insight must be different...
-  -- Actually, looking at the axiom's use case: it's for canonical model coherence.
-  -- In the canonical model, if Gφ ∈ MCS, then φ ∈ MCS (by deduction).
-  -- This is a syntactic property used in the construction.
-  -- For semantic soundness, we need a different argument.
-  -- Option: Use classical logic. Suppose ¬φ at (τ, t).
-  -- Can we derive ¬Gφ? We need ∃ s > t with ¬φ at (τ, s).
-  -- But from ¬φ at (τ, t) alone, we can't get ¬φ at some s > t.
-  -- Unless... the time-shift gives us this:
-  -- If ¬φ at (τ, t), then by time_shift_preserves_truth backward:
-  -- For any s, ¬φ at (τ, t) ↔ ¬φ at (time_shift τ (t - s), s)
-  -- Wait, that's not right either. Let me re-read the lemma...
-  -- time_shift_preserves_truth M σ t s φ:
-  --   truth_at M (time_shift σ (s - t)) t φ ↔ truth_at M σ s φ
-  -- So if we set σ = τ, we get:
-  --   φ at (time_shift τ (s - t), t) ↔ φ at (τ, s)
-  -- We want to use h_future which gives φ at (τ, s) for s > t.
-  -- This gives us φ at (time_shift τ (s - t), t) for s > t.
-  -- But (time_shift τ (s - t)) ≠ τ when s ≠ t.
-  -- The only way to get φ at (τ, t) is if τ = time_shift σ (s - t) for some σ and s > t.
-  -- τ = time_shift σ (s - t) means σ = time_shift τ (t - s) = time_shift τ (-(s - t))
-  -- So: φ at (time_shift τ (-(s-t)), s) ↔ φ at (τ, t)
-  -- Let shifted = time_shift τ (-(s-t)). Then:
-  -- φ at (shifted, s) ↔ φ at (τ, t) [this is what we want!]
-  -- And from h_future, we have φ at (τ, s) for s > t.
-  -- But shifted ≠ τ, so h_future gives φ at (τ, s), not at (shifted, s).
-  -- We need φ at (shifted, s) to get φ at (τ, t).
-  -- Unless... time_shift_preserves_truth works for all histories.
-  -- Hmm, let me try yet another approach.
-  -- The issue is that h_future only gives truth at history τ.
-  -- But the time-shift relates different histories at different times.
-  -- What if we use box? If □Gφ at (M, t), then Gφ at all histories at t.
-  -- But we don't have □Gφ, just Gφ at one history τ.
-  -- I think the axiom Gφ → φ with strict G is actually NOT semantically valid
-  -- in the standard strict-future semantics. It requires reflexive G.
-  -- The axiom was added for syntactic completeness purposes.
-  -- For now, let's use sorry and document this as a known issue.
-  -- Actually wait - there's one more approach. Let me check if the time parameter
-  -- can be "dense" in some sense. In task semantics with T = ℤ, there's no time
-  -- strictly between t and t+1, so we can't use a limit argument.
-  -- But for T = ℝ or other dense orders, we might be able to.
-  -- Since the axiom needs to work for ALL types T, including ℤ, and there's
-  -- no way to derive φ at t from φ at all s > t in ℤ, this axiom is NOT valid
-  -- for the strict-future semantics.
-  -- CONCLUSION: This axiom was added for completeness but breaks soundness.
-  -- The fix should either:
-  -- 1. Remove the axiom and fix completeness differently
-  -- 2. Change the semantics to use reflexive temporal operators (s ≥ t)
-  -- 3. Add sorry here and document the issue
-  -- For now, option 3:
-  sorry
+  -- With reflexive semantics, we can apply h_future at s = t using le_refl
+  exact h_future t (le_refl t)
 
 /--
 Temporal T axiom for past: `Hφ → φ` is valid in all task semantic models.
 
-This is the past-time dual of temp_t_future_valid.
-Same semantic issue: with strict inequality semantics (s < t for H),
-we cannot derive φ at t from φ at all s < t.
+With reflexive semantics (Task #658), `all_past` quantifies over `s ≤ t`,
+meaning "now and all past times". The T-axiom `Hφ → φ` is therefore trivially
+valid: if φ holds at all s ≤ t, then in particular φ holds at t (via `le_refl t`).
 
-See temp_t_future_valid for detailed analysis.
+**Paper Reference**: The JPL paper uses reflexive temporal operators (lines 1857-1872)
+where Past quantifies over "y ∈ D where y ≤ x" (inclusive of present).
 -/
 theorem temp_t_past_valid (φ : Formula) : ⊨ ((Formula.all_past φ).imp φ) := by
   intro T _ _ _ F M τ t
   unfold truth_at
   intro h_past
-  -- h_past : ∀ s, s < t → truth_at M τ s φ
+  -- h_past : ∀ s, s ≤ t → truth_at M τ s φ
   -- Goal: truth_at M τ t φ
-  -- Same issue as temp_t_future_valid: cannot derive truth at t from
-  -- truth at all times strictly before t.
-  sorry
+  -- With reflexive semantics, we can apply h_past at s = t using le_refl
+  exact h_past t (le_refl t)
 
 /--
 All TM axioms are valid.
