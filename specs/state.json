@@ -40,11 +40,11 @@
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T06:06:24Z",
+      "last_updated": "2026-02-02T06:34:46Z",
       "session_id": "sess_1770012115_125443",
       "researched": "2026-02-02T06:06:24Z",
       "artifacts": [
@@ -59,11 +59,6 @@
           "summary": "Analysis of existing strong completeness, compactness, and infinitary completeness theorems, finding all are already proven sorry-free"
         },
         {
-          "path": "specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 4-phase plan: keep Representation active, complete sorries, document dual-path architecture"
-        },
-        {
           "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-003.md",
           "type": "research",
           "summary": "Comprehensive audit of Metalogic organization with sorry analysis, dependency flowcharts, and architecture recommendations"
@@ -72,10 +67,15 @@
           "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-004.md",
           "type": "research",
           "summary": "Analysis of FMP feasibility for infinitary_strong_completeness and compactness - fully feasible via direct semantic argument"
+        },
+        {
+          "path": "specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "FMP-only approach: archive Representation, port infinitary completeness and compactness via bridge lemma"
         }
       ],
-      "planned": "2026-02-02T03:14:04Z",
-      "revised": "2026-02-02T03:14:04Z"
+      "planned": "2026-02-02T06:34:46Z",
+      "revised": "2026-02-02T06:34:46Z"
     },
     {
       "project_number": 796,
