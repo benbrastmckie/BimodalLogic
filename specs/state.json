@@ -40,11 +40,20 @@
     {
       "project_number": 806,
       "project_name": "archive_deprecated_representation_constructions",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "description": "Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T00:25:51Z"
+      "last_updated": "2026-02-02T01:42:15Z",
+      "session_id": "sess_1769996369_5f91ea",
+      "researched": "2026-02-02T01:42:15Z",
+      "artifacts": [
+        {
+          "path": "specs/806_archive_deprecated_representation_constructions/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis showing files cannot be fully archived due to active dependencies; recommends partial cleanup to remove deprecated constructions (6 sorries removable)"
+        }
+      ]
     },
     {
       "project_number": 807,
@@ -81,12 +90,12 @@
     {
       "project_number": 808,
       "project_name": "audit_coherentconstruction_taskrelation_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:38:39Z",
-      "session_id": "sess_1738454400_808res",
+      "last_updated": "2026-02-02T01:42:25Z",
+      "session_id": "sess_1738454900_808pln",
       "researched": "2026-02-02T01:38:39Z",
       "artifacts": [
         {
@@ -94,7 +103,8 @@
           "type": "research",
           "summary": "Audited 15 sorries across CoherentConstruction.lean (10) and TaskRelation.lean (5); none block completeness theorem; recommend archiving all as non-critical"
         }
-      ]
+      ],
+      "planned": "2026-02-02T01:42:25Z"
     },
     {
       "project_number": 809,

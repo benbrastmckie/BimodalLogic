@@ -44,7 +44,7 @@ technical_debt:
 
 ### 808. Audit CoherentConstruction.lean and TaskRelation.lean sorries
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
@@ -73,9 +73,11 @@ technical_debt:
 
 ### 806. Archive deprecated Representation/ constructions
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-02
+- **Researched**: 2026-02-02
+- **Research**: [research-001.md](specs/806_archive_deprecated_representation_constructions/reports/research-001.md)
 
 **Description**: Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.
 

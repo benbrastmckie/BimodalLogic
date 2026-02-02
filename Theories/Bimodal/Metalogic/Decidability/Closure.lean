@@ -278,31 +278,42 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
   simp only [isClosed, findClosure] at h ⊢
   -- h says: (checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b).isSome = true
   -- We analyze which of the three checks succeeded
-  rw [Option.isSome_iff_exists] at h ⊢
+  rw [Option.isSome_iff_exists] at h
   obtain ⟨r, hr⟩ := h
   -- hr : checkBotPos b <|> checkContradiction b <|> checkAxiomNeg b = some r
   rw [Option.orElse_eq_some] at hr
-  rcases hr with hbot | ⟨hbot_none, hr'⟩
+  rcases hr with hbot | ⟨_, hr'⟩
   · -- checkBotPos b = some r
-    have : (checkBotPos (sf :: b)).isSome := checkBotPos_mono b sf (by simp [hbot])
-    rw [Option.isSome_iff_exists] at this
-    obtain ⟨r', hr'⟩ := this
+    have hsome : (checkBotPos (sf :: b)).isSome := checkBotPos_mono b sf (by simp [hbot])
+    simp only [Option.isSome_iff_exists] at hsome
+    obtain ⟨r', hr'⟩ := hsome
+    rw [Option.isSome_iff_exists]
     exact ⟨r', by simp [hr']⟩
   · -- checkBotPos b = none, and (checkContradiction b <|> checkAxiomNeg b) = some r
     rw [Option.orElse_eq_some] at hr'
-    rcases hr' with hcontra | ⟨hcontra_none, hax⟩
+    rcases hr' with hcontra | ⟨_, hax⟩
     · -- checkContradiction b = some r
       have hsome : (checkContradiction (sf :: b)).isSome := checkContradiction_mono b sf (by simp [hcontra])
-      rw [Option.isSome_iff_exists] at hsome
-      obtain ⟨r', hr''⟩ := hsome
-      use r'
-      simp only [hr'', Option.some_or]
+      -- Either checkBotPos (sf :: b) is Some (then we're done) or checkContradiction is Some
+      cases hbot' : checkBotPos (sf :: b) with
+      | some _ => rfl
+      | none =>
+        simp only [Option.isSome_iff_exists] at hsome
+        obtain ⟨r', hr''⟩ := hsome
+        rw [Option.isSome_iff_exists]
+        exact ⟨r', by simp [hbot', hr'']⟩
     · -- checkAxiomNeg b = some r
       have hsome : (checkAxiomNeg (sf :: b)).isSome := checkAxiomNeg_mono b sf (by simp [hax])
-      rw [Option.isSome_iff_exists] at hsome
-      obtain ⟨r', hr''⟩ := hsome
-      use r'
-      simp only [hr'', Option.some_or]
+      cases hbot' : checkBotPos (sf :: b) with
+      | some _ => rfl
+      | none =>
+        cases hcontra' : checkContradiction (sf :: b) with
+        | some _ => rfl
+        | none =>
+          simp only [Option.isSome_iff_exists] at hsome
+          obtain ⟨r', hr''⟩ := hsome
+          rw [Option.isSome_iff_exists]
+          exact ⟨r', by simp [hbot', hcontra', hr'']⟩
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.

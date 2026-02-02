@@ -1,27 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-02T12:00:00Z",
-  "completed_at": "2026-02-02T12:15:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/808_audit_coherentconstruction_taskrelation_sorries/reports/research-001.md",
-      "type": "research",
-      "summary": "Audited 15 sorries across CoherentConstruction.lean (10) and TaskRelation.lean (5); none block completeness theorem; recommend archiving all as non-critical"
+      "type": "plan",
+      "path": "specs/808_audit_coherentconstruction_taskrelation_sorries/plans/implementation-001.md",
+      "summary": "4-phase plan to audit, document, and archive 15 non-blocking sorries to Boneyard/"
     }
   ],
+  "next_steps": "Run /implement 808 to execute the plan",
   "metadata": {
-    "session_id": "sess_1738454400_808res",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1738454900_808pln",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings": {
-      "total_sorries": 15,
-      "blocking_sorries": 0,
-      "files_analyzed": [
-        "Theories/Bimodal/Metalogic/Representation/CoherentConstruction.lean",
-        "Theories/Bimodal/Metalogic/Representation/TaskRelation.lean"
-      ],
-      "recommendation": "archive_all"
-    }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.0
   }
 }
