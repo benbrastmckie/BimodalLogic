@@ -77,14 +77,15 @@ technical_debt:
 ---
 
 ### 806. Archive deprecated Representation/ constructions
-- **Effort**: 6 hours
+- **Effort**: 4 hours
 - **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Revised**: 2026-02-02
 - **Research**: [research-001.md](specs/806_archive_deprecated_representation_constructions/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/806_archive_deprecated_representation_constructions/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/806_archive_deprecated_representation_constructions/plans/implementation-002.md)
 
 **Description**: Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.
 

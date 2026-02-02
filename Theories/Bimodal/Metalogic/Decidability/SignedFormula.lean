@@ -67,6 +67,10 @@ theorem flip_pos : Sign.pos.flip = Sign.neg := rfl
 @[simp]
 theorem flip_neg : Sign.neg.flip = Sign.pos := rfl
 
+/-- BEq on Sign is reflexive. -/
+instance : ReflBEq Sign where
+  rfl := fun {s} => by cases s <;> native_decide
+
 end Sign
 
 /-!
@@ -112,6 +116,19 @@ def isNeg (sf : SignedFormula) : Bool := sf.sign = .neg
 
 /-- Get the complexity of the signed formula (same as formula complexity). -/
 def complexity (sf : SignedFormula) : Nat := sf.formula.complexity
+
+/-- Definitional equality for SignedFormula BEq. -/
+theorem beq_eq (sf1 sf2 : SignedFormula) :
+    (sf1 == sf2) = (sf1.sign == sf2.sign && sf1.formula == sf2.formula) := by
+  cases sf1; cases sf2; rfl
+
+/-- BEq on SignedFormula is reflexive. -/
+theorem beq_refl (sf : SignedFormula) : (sf == sf) = true := by
+  rw [beq_eq]
+  simp only [beq_self_eq_true, Bool.and_self]
+
+instance : ReflBEq SignedFormula where
+  rfl := beq_refl _
 
 end SignedFormula
 

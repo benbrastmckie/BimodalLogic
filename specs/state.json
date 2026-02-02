@@ -44,7 +44,7 @@
       "language": "lean",
       "description": "Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:49:32Z",
+      "last_updated": "2026-02-02T02:05:46Z",
       "session_id": "sess_1769996781_d049e9",
       "researched": "2026-02-02T01:42:15Z",
       "artifacts": [
@@ -54,13 +54,13 @@
           "summary": "Analysis showing files cannot be fully archived due to active dependencies; recommends partial cleanup to remove deprecated constructions (6 sorries removable)"
         },
         {
-          "path": "specs/806_archive_deprecated_representation_constructions/plans/implementation-001.md",
+          "path": "specs/806_archive_deprecated_representation_constructions/plans/implementation-002.md",
           "type": "plan",
-          "summary": "6-phase implementation plan for archiving deprecated constructions and achieving sorry-free metalogic"
+          "summary": "4-hour revised plan for zero-sorry metalogic via extraction and Boneyard archival"
         }
       ],
-      "planned": "2026-02-02T01:49:32Z",
-      "effort": "6 hours"
+      "planned": "2026-02-02T02:05:46Z",
+      "effort": "4 hours"
     },
     {
       "project_number": 807,

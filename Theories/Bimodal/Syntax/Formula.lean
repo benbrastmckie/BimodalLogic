@@ -112,6 +112,40 @@ def complexity : Formula → Nat
   | all_past φ => 1 + φ.complexity
   | all_future φ => 1 + φ.complexity
 
+/-!
+### BEq Reflexivity
+
+The derived BEq instance for Formula compares structurally. We prove
+that it's reflexive to enable `beq_self_eq_true` for Formula and types
+containing Formula (like SignedFormula).
+-/
+
+/-- Helper lemmas for derived BEq definitional equalities. -/
+private theorem beq_imp_eq (a b c d : Formula) :
+    (imp a b == imp c d) = ((a == c) && (b == d)) := rfl
+
+private theorem beq_box_eq (a b : Formula) :
+    (box a == box b) = (a == b) := rfl
+
+private theorem beq_all_past_eq (a b : Formula) :
+    (all_past a == all_past b) = (a == b) := rfl
+
+private theorem beq_all_future_eq (a b : Formula) :
+    (all_future a == all_future b) = (a == b) := rfl
+
+/-- BEq on Formula is reflexive. -/
+theorem beq_refl (φ : Formula) : (φ == φ) = true := by
+  induction φ with
+  | atom p => exact @beq_self_eq_true String _ _ p
+  | bot => native_decide
+  | imp a b iha ihb => rw [beq_imp_eq, iha, ihb]; rfl
+  | box a ih => rw [beq_box_eq, ih]
+  | all_past a ih => rw [beq_all_past_eq, ih]
+  | all_future a ih => rw [beq_all_future_eq, ih]
+
+instance : ReflBEq Formula where
+  rfl := beq_refl _
+
 /--
 Modal depth: nesting level of modal operators (□, ◇).
 
