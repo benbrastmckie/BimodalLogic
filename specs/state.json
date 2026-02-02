@@ -8,11 +8,11 @@
     {
       "project_number": 812,
       "project_name": "canonical_model_completeness",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Establish sorry-free weak and strong completeness for FMP-internal validity. Focus on exposing existing semantic_weak_completeness as canonical result and building sorry-free strong completeness. Compactness dropped (requires Representation sorries). No semantics changes. CONSTRAINTS: (1) Only implement sorry-free elements. (2) Preserve existing semantic definitions. (3) Document architectural limitations clearly.",
       "created": "2026-02-02T09:18:05Z",
-      "last_updated": "2026-02-02T19:59:58Z",
+      "last_updated": "2026-02-02T20:14:16Z",
       "session_id": "sess_1770062082_55ec9e",
       "researched": "2026-02-02T19:59:58Z",
       "artifacts": [
@@ -25,11 +25,6 @@
           "path": "specs/812_canonical_model_completeness/reports/research-002.md",
           "type": "research",
           "summary": "Evaluation of implementation plan viability, finding critical flaw in Phase 1 FMP-compactness approach"
-        },
-        {
-          "path": "specs/812_canonical_model_completeness/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 4-phase plan focusing on sorry-free FMP-internal completeness without compactness"
         },
         {
           "path": "specs/812_canonical_model_completeness/reports/research-003.md",
@@ -55,9 +50,14 @@
           "path": "specs/812_canonical_model_completeness/reports/research-007.md",
           "type": "research",
           "summary": "Formalizes BMCS structure for completeness with Lean 4 type signatures, modal coherence conditions, and comparison with accessibility approach"
+        },
+        {
+          "path": "specs/812_canonical_model_completeness/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "BMCS approach: 6-phase plan for sorry-free completeness via bundled history semantics"
         }
       ],
-      "planned": "2026-02-02T09:51:43Z"
+      "planned": "2026-02-02T20:14:16Z"
     },
     {
       "project_number": 811,
