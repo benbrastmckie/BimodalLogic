@@ -1,21 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Analyzed 6 sorries across 3 Decidability files: 2 list lemmas in Closure.lean (medium), 1 termination lemma in Saturation.lean (hard), and 3 completeness theorems in Correctness.lean (very hard, requiring FMP integration). Recommended implementation order: Closure.lean first, then Saturation.lean, then Correctness.lean.",
-  "artifacts": [{
-    "type": "research",
-    "path": "specs/799_complete_decidability_proofs/reports/research-001.md",
-    "summary": "Detailed analysis of 6 sorries with proof strategies, required Mathlib lemmas, and difficulty assessments"
-  }],
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/799_complete_decidability_proofs/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for completing 6 sorries in Decidability module"
+    }
+  ],
+  "next_steps": "Run /implement 799 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769991147_20e4b3",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1769991547_52b158",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
-    "sorry_count": 6,
-    "files_analyzed": [
-      "Theories/Bimodal/Metalogic/Decidability/Closure.lean",
-      "Theories/Bimodal/Metalogic/Decidability/Saturation.lean",
-      "Theories/Bimodal/Metalogic/Decidability/Correctness.lean"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 7
   }
 }
