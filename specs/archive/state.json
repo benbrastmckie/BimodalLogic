@@ -2,6 +2,25 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 800,
+      "project_name": "fix_fmp_semantic_canonical_model_sorries",
+      "status": "abandoned",
+      "language": "lean",
+      "description": "Fix the 5 remaining sorries in FMP/SemanticCanonicalModel.lean. This file is part of the core completeness path and contains semantic_weak_completeness. Investigate each sorry, determine if they are essential gaps or can be completed with available lemmas.",
+      "created": "2026-02-01T23:25:21Z",
+      "last_updated": "2026-02-02T00:33:02Z",
+      "session_id": "sess_1769992195_c7c0df",
+      "researched": "2026-02-02T00:33:02Z",
+      "artifacts": [
+        {
+          "path": "specs/800_fix_fmp_semantic_canonical_model_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Verified SemanticCanonicalModel.lean is already sorry-free; task premise was based on grep matching documentation text containing 'sorry-free'"
+        }
+      ],
+      "abandoned": "2026-02-02T00:34:12Z"
+    },
+    {
       "project_number": 802,
       "project_name": "wezterm_task_number_clearing_neovim_exit",
       "status": "completed",

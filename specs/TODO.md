@@ -113,17 +113,6 @@ technical_debt:
 
 ---
 
-### 800. Fix FMP/SemanticCanonicalModel sorries
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Created**: 2026-02-01
-- **Research**: [research-001.md](specs/800_fix_fmp_semantic_canonical_model_sorries/reports/research-001.md)
-
-**Description**: Fix the 5 remaining sorries in FMP/SemanticCanonicalModel.lean. This file is part of the core completeness path and contains semantic_weak_completeness. Investigate each sorry, determine if they are essential gaps or can be completed with available lemmas.
-
----
-
 ### 799. Complete Decidability proofs
 - **Effort**: 7 hours
 - **Status**: [IMPLEMENTING]
