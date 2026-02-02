@@ -1,0 +1,35 @@
+{
+  "status": "partial",
+  "started_at": "2026-02-02T18:13:20Z",
+  "finished_at": "2026-02-02T18:25:00Z",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/814_classical_propositional_completeness_infrastructure/reports/research-001.md",
+      "summary": "Analysis of 4 classical propositional sorries with proof strategies and dependency mapping"
+    }
+  ],
+  "partial_progress": {
+    "stage": "stage_7_finalize",
+    "details": "Research report completed with proof strategies for all 4 sorries"
+  },
+  "metadata": {
+    "session_id": "sess_1738535600_a7c3e2",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "research_findings": {
+    "sorries_analyzed": 4,
+    "proof_strategies_identified": true,
+    "existing_infrastructure": [
+      "Bimodal.Theorems.Propositional.double_negation",
+      "Bimodal.Metalogic.Core.deduction_theorem",
+      "Boneyard neg_imp_fst/neg_imp_snd (MCS level, need adaptation)"
+    ],
+    "imports_needed": [
+      "Bimodal.Theorems.Propositional",
+      "Bimodal.Metalogic.Core.DeductionTheorem"
+    ]
+  }
+}
