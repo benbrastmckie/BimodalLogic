@@ -68,14 +68,16 @@ technical_debt:
 
 ### 798. Refactor Completeness.lean and extract Lindenbaum infrastructure
 - **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
 - **Planned**: 2026-02-01
 - **Started**: 2026-02-01
+- **Completed**: 2026-02-02
 - **Research**: [research-001.md](specs/798_refactor_completeness_lean/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/798_refactor_completeness_lean/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260201.md](specs/798_refactor_completeness_lean/summaries/implementation-summary-20260201.md)
 
 **Description**: Refactor the monolithic Completeness.lean (~4000 lines, 39 sorries). Extract essential content: SetConsistent, SetMaximalConsistent definitions to Core/SetConsistency.lean; set_lindenbaum (Lindenbaum lemma via Zorn) and chain consistency lemmas to Core/Lindenbaum.lean. Archive the Duration construction infrastructure, TemporalExt/Coherent interfaces, and generic weak_completeness/strong_completeness axioms to Boneyard/Metalogic_v4/Completeness/MonolithicCompleteness.lean.
 
