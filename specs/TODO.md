@@ -24,9 +24,11 @@ technical_debt:
 
 ### 810. Strategic review: Representation/ vs semantic completeness paths
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-02
+- **Researched**: 2026-02-02
+- **Research**: [research-001.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md)
 
 **Description**: Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.
 
@@ -34,7 +36,7 @@ technical_debt:
 
 ### 809. Audit TruthLemma.lean sorries
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02

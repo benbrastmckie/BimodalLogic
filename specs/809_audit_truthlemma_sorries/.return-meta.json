@@ -1,8 +1,15 @@
 {
-  "status": "researched",
-  "artifacts": [{
-    "type": "research",
-    "path": "specs/809_audit_truthlemma_sorries/reports/research-002.md",
-    "summary": "Forward-only Truth Lemma refactoring is feasible and already essentially in place - completeness proofs only use forward direction (.mp); no structural changes needed."
-  }]
+  "status": "in_progress",
+  "started_at": "2026-02-02T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
+  "metadata": {
+    "session_id": "sess_1769999882_84ed21",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+  }
 }

@@ -137,12 +137,12 @@
     {
       "project_number": 809,
       "project_name": "audit_truthlemma_sorries",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "description": "Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T02:35:23Z",
-      "session_id": "sess_1769999557_1feec8",
+      "last_updated": "2026-02-02T02:38:18Z",
+      "session_id": "sess_1769999882_84ed21",
       "researched": "2026-02-02T02:10:47Z",
       "artifacts": [
         {
@@ -155,12 +155,20 @@
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T02:35:34Z",
-      "session_id": "sess_1769999722_fc848f"
+      "last_updated": "2026-02-02T02:39:46Z",
+      "session_id": "sess_1769999722_fc848f",
+      "researched": "2026-02-02T02:39:46Z",
+      "artifacts": [
+        {
+          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md",
+          "type": "research",
+          "summary": "Strategic comparison of Semantic FMP vs Representation approaches with archival recommendations"
+        }
+      ]
     },
     {
       "project_number": 803,
