@@ -603,17 +603,10 @@ theorem set_mcs_diamond_box_duality {S : Set Formula} {φ : Formula}
   ⟨set_mcs_neg_box_implies_diamond_neg h_mcs, set_mcs_diamond_neg_implies_neg_box h_mcs⟩
 
 /-!
-### Saturation Lemmas (Stubs)
+### Saturation Lemmas
 
-These lemmas characterize the saturation properties of maximal consistent sets
-for modal and temporal operators. They are essential for the truth lemma.
-
-**Dependencies**:
-- Modal saturation: Requires canonical frame construction (Task 447)
-- Temporal saturation: Requires canonical history construction (Task 450)
-
-The forward directions are proven where possible; backward directions are
-left as `sorry` placeholders pending the dependent phases.
+Modal saturation (forward direction) is proven below. Full saturation theorems
+requiring canonical frame and history constructions have been archived to Boneyard.
 -/
 
 /--
@@ -624,93 +617,12 @@ if □φ ∈ S then φ ∈ T.
 
 **Note**: This follows from the box closure property: □φ ∈ S implies φ ∈ S
 by Modal T, and the task relation transfers this appropriately.
-
-**Full Version** (with canonical frame):
-```
-SetMaximalConsistent S →
-  (□φ ∈ S ↔ ∀ T : CanonicalWorldState, canonical_task_rel S 0 T → φ ∈ T.val)
-```
 -/
 theorem set_mcs_modal_saturation_forward {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_box : Formula.box φ ∈ S) : φ ∈ S :=
   -- Forward direction: Use box closure (Modal T axiom)
   set_mcs_box_closure h_mcs h_box
-
-/--
-Modal saturation (backward): If φ holds at all accessible worlds, then □φ ∈ S.
-
-**Status**: STUB - requires canonical frame construction (Task 447)
-
-**Proof Strategy** (to be implemented):
-1. Assume for all T : CanonicalWorldState, canonical_task_rel S 0 T → φ ∈ T.val
-2. By contrapositive: assume □φ ∉ S
-3. Then (□φ).neg ∈ S by negation completeness
-4. Construct witness T where ¬φ ∈ T.val, contradicting the assumption
-5. The witness construction requires the canonical frame from Task 447
-
-**Dependencies**: Task 447 (Canonical Frame Construction)
--/
-theorem set_mcs_modal_saturation_backward {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
-    (h_all : ∀ T : {T : Set Formula // SetMaximalConsistent T},
-      -- Placeholder for canonical_task_rel S 0 T condition
-      True →
-      φ ∈ T.val) :
-    Formula.box φ ∈ S := by
-  -- STUB: Requires canonical frame construction (Task 447)
-  -- The proof needs to construct a witness world from ¬□φ ∈ S
-  sorry
-
-/--
-Temporal future saturation (stub): Fφ ∈ S iff φ holds at some future time.
-
-**Status**: STUB - requires canonical history construction (Task 450)
-
-**Full Statement**:
-```
-SetMaximalConsistent S →
-  (Fφ ∈ S ↔ ∃ t > 0, ∃ h : WorldHistory, φ ∈ (history_at h t).val)
-```
-
-**Proof Strategy** (to be implemented):
-- Forward: If Fφ ∈ S, construct a future world where φ holds
-- Backward: If φ holds at some future time, derive Fφ ∈ S
-
-**Dependencies**: Task 450 (Canonical History Construction)
--/
-theorem set_mcs_temporal_future_saturation {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S) :
-    Formula.all_future φ ∈ S ↔
-      -- Placeholder condition: true for now, will be replaced with proper temporal semantics
-      (∀ T : {T : Set Formula // SetMaximalConsistent T}, True → φ ∈ T.val) := by
-  -- STUB: Requires canonical history construction (Task 450)
-  sorry
-
-/--
-Temporal past saturation (stub): Hφ ∈ S iff φ holds at some past time.
-
-**Status**: STUB - requires canonical history construction (Task 450)
-
-**Full Statement**:
-```
-SetMaximalConsistent S →
-  (Hφ ∈ S ↔ ∃ t < 0, ∃ h : WorldHistory, φ ∈ (history_at h t).val)
-```
-
-**Proof Strategy** (to be implemented):
-- Forward: If Hφ ∈ S, construct a past world where φ holds
-- Backward: If φ holds at some past time, derive Hφ ∈ S
-
-**Dependencies**: Task 450 (Canonical History Construction)
--/
-theorem set_mcs_temporal_past_saturation {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S) :
-    Formula.all_past φ ∈ S ↔
-      -- Placeholder condition: true for now, will be replaced with proper temporal semantics
-      (∀ T : {T : Set Formula // SetMaximalConsistent T}, True → φ ∈ T.val) := by
-  -- STUB: Requires canonical history construction (Task 450)
-  sorry
 
 /-!
 ## Canonical Frame

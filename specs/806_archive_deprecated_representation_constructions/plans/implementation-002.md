@@ -2,7 +2,7 @@
 
 - **Task**: 806 - Archive deprecated Representation/ constructions
 - **Version**: 002 (Revised)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/806_archive_deprecated_representation_constructions/reports/research-001.md
@@ -83,7 +83,7 @@ The Representation/ directory is already isolated (imports commented out in `Met
 
 ---
 
-### Phase 2: Move Representation/ to Boneyard [NOT STARTED]
+### Phase 2: Move Representation/ to Boneyard [COMPLETED]
 
 **Goal**: Permanently archive the entire Representation/ directory since it's not in main build.
 
@@ -114,7 +114,7 @@ The Representation/ directory is already isolated (imports commented out in `Met
 
 ---
 
-### Phase 3: Remove Completeness.lean Saturation Stubs [NOT STARTED]
+### Phase 3: Remove Completeness.lean Saturation Stubs [COMPLETED]
 
 **Goal**: Remove the 4 saturation stubs (sorry-containing) from Completeness.lean.
 
@@ -138,7 +138,7 @@ The Representation/ directory is already isolated (imports commented out in `Met
 
 ---
 
-### Phase 4: Handle Decidability Sorries [NOT STARTED]
+### Phase 4: Handle Decidability Sorries [COMPLETED]
 
 **Goal**: Remove 4 sorries from Decidability/ (3 in Correctness.lean, 1 in Saturation.lean).
 
@@ -166,7 +166,7 @@ The Representation/ directory is already isolated (imports commented out in `Met
 
 ---
 
-### Phase 5: Handle Examples/Demo.lean [NOT STARTED]
+### Phase 5: Handle Examples/Demo.lean [COMPLETED]
 
 **Goal**: Remove or update Demo.lean if it imports archived code.
 
@@ -183,7 +183,7 @@ The Representation/ directory is already isolated (imports commented out in `Met
 
 ---
 
-### Phase 6: Final Verification and Cleanup [NOT STARTED]
+### Phase 6: Final Verification and Cleanup [COMPLETED]
 
 **Goal**: Verify zero sorries in main build, update documentation.
 

@@ -52,9 +52,8 @@ Metalogic/
 │   ├── Soundness.lean           # Main theorem + 15 axiom validity
 │   └── SoundnessLemmas.lean     # Temporal duality bridge
 │
-├── Representation/    # Canonical model core definitions
-│   ├── IndexedMCSFamily.lean    # MCS family structure
-│   └── CanonicalWorld.lean      # Canonical world state definitions
+├── Boneyard/          # Archived approaches (not in main build)
+│   └── Representation/          # Universal canonical model (archived)
 │
 ├── FMP/               # Finite Model Property (parametric)
 │   ├── Closure.lean             # Subformula closure
@@ -73,9 +72,10 @@ Metalogic/
 │   ├── UltrafilterMCS.lean         # Bijection: ultrafilters <-> MCS
 │   └── AlgebraicRepresentation.lean # Main representation theorem
 │
-└── UnderDevelopment/  # Work-in-progress approaches (NOT in main build)
-    ├── RepresentationTheorem/  # Universal canonical model (17 sorries)
-    └── Decidability/           # Tableau decision procedure (5 sorries)
+├── UnderDevelopment/  # Work-in-progress approaches (NOT in main build)
+│
+└── Decidability/      # Tableau decision procedure (soundness proven)
+    └── Correctness.lean         # Soundness theorem
 ```
 
 ### Dependency Flowchart (GitHub Rendering)
@@ -143,30 +143,37 @@ flowchart TD
 
 | Directory | Purpose | Status |
 |-----------|---------|--------|
-| `Core/` | MCS theory, Lindenbaum's lemma, deduction theorem | Complete |
-| `Soundness/` | Soundness theorem (15 axioms, 7 rules) | Complete |
-| `Representation/` | Canonical model core definitions | Complete |
-| `Completeness/` | Weak and finite strong completeness | Complete |
-| `FMP/` | Finite model property with 2^n bound | Complete |
-| `Algebraic/` | Alternative algebraic approach | Complete |
+| `Core/` | MCS theory, Lindenbaum's lemma, deduction theorem | Complete (sorry-free) |
+| `Soundness/` | Soundness theorem (15 axioms, 7 rules) | Complete (sorry-free) |
+| `Completeness/` | Weak and finite strong completeness | Complete (sorry-free) |
+| `FMP/` | Finite model property with 2^n bound | Complete (sorry-free) |
+| `Algebraic/` | Alternative algebraic approach | Complete (sorry-free) |
+| `Decidability/` | Tableau decision procedure | Soundness proven |
+| `Boneyard/` | Archived approaches | Excluded from build |
 | `UnderDevelopment/` | WIP approaches (isolated from main build) | Research |
 
-## Known Architectural Limitations
+## Sorry Status
 
-The main build has minimal sorries:
+**Zero sorries in main build** (as of Task 806).
 
-| Location | Count | Limitation |
-|----------|-------|------------|
-| `Completeness/WeakCompleteness.lean` | 1 | Truth bridge (all models -> provable) |
+The main Metalogic build path is completely sorry-free. All deprecated approaches with sorries
+have been moved to `Boneyard/` (permanently archived).
 
-**Resolution**: Use `semantic_weak_completeness` which is **completely sorry-free** and provides
-the main completeness result via a contrapositive approach that avoids these gaps entirely.
+### Main Completeness Result
 
-The single sorry in `weak_completeness` exists because bridging "valid in ALL models" to
-"provable" requires the forward truth lemma, which is architecturally impossible. The
-`semantic_weak_completeness` theorem uses a contrapositive approach that avoids this gap.
+Use `semantic_weak_completeness` from `FMP/SemanticCanonicalModel.lean`:
+```lean
+theorem semantic_weak_completeness : (∀ w, model.satisfies w φ) → (⊢ φ)
+```
+This is the canonical sorry-free completeness theorem.
 
-Additional sorries (in `UnderDevelopment/`) are isolated from the main build.
+### Archived Code (Boneyard/)
+
+The `Boneyard/Representation/` directory contains archived approaches with known limitations:
+- Universal canonical model approach (28 sorries)
+- T-axiom and omega-rule issues
+
+This code is excluded from the main build and preserved for historical reference only.
 
 ## Key Features
 

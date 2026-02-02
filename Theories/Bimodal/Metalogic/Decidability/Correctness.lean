@@ -4,20 +4,20 @@ import Bimodal.Metalogic.Soundness
 /-!
 # Correctness of the Decision Procedure
 
-This module proves the correctness of the tableau decision procedure:
+This module proves the soundness of the tableau decision procedure:
 - **Soundness**: If `decide` returns `valid proof`, then the formula is valid
-- **Completeness**: If the formula is valid, `decide` returns `valid proof` (with sufficient fuel)
 
 ## Main Theorems
 
 - `decide_sound`: Decision procedure is sound
-- `decide_complete`: Decision procedure is complete (with sufficient fuel)
+- `decide_sound_when_valid`: Convenience wrapper
+- `validity_decidable`: Validity is classically decidable
 
 ## Implementation Notes
 
 The soundness proof relies on the existing soundness theorem from
-`Bimodal.Metalogic.Soundness`. The completeness proof is more complex
-and relies on the finite model property and tableau completeness.
+`Bimodal.Metalogic.Soundness`. Completeness theorems have been archived
+to Boneyard as they require finite model property formalization.
 
 ## References
 
@@ -57,35 +57,6 @@ theorem decide_valid_implies_valid (φ : Formula) (searchDepth tableauFuel : Nat
     (_ : decide φ searchDepth tableauFuel = .valid proof) :
     (⊨ φ) := by
   exact decide_sound φ proof
-
-/-!
-## Completeness (Partial)
--/
-
-/--
-The tableau method is complete: if a formula is valid, the tableau will
-eventually close all branches.
-
-Note: This is a partial formalization. Full completeness requires:
-1. Finite model property for TM logic
-2. Tableau completeness relative to FMP
-3. Termination with sufficient fuel
--/
-theorem tableau_complete (φ : Formula) :
-    (⊨ φ) → ∃ (fuel : Nat), (buildTableau φ fuel).isSome ∧
-             ∀ t, buildTableau φ fuel = some t → t.isValid := by
-  sorry  -- Requires FMP and tableau completeness proof
-
-/--
-Decision procedure completeness: if a formula is valid and we use
-sufficient fuel, decide will return valid.
-
-Note: This is stated but not fully proven due to complexity of
-FMP and completeness proofs.
--/
-theorem decide_complete (φ : Formula) (hvalid : ⊨ φ) :
-    ∃ (fuel : Nat), ∃ proof, decide φ 10 fuel = .valid proof := by
-  sorry  -- Requires tableau completeness
 
 /-!
 ## Correctness Summary
@@ -161,15 +132,6 @@ If a formula is an axiom instance, it is valid.
 theorem axiom_valid' (φ : Formula) (ax : Axiom φ) : (⊨ φ) := by
   have proof : DerivationTree [] φ := DerivationTree.axiom [] φ ax
   exact decide_sound φ proof
-
-/--
-Decision on axiom instances returns valid.
--/
-theorem decide_axiom_valid (φ : Formula) (ax : Axiom φ) :
-    ∃ proof, decide φ = .valid proof := by
-  -- matchAxiom should find the axiom and return a proof
-  use DerivationTree.axiom [] φ ax
-  sorry  -- Would need to verify matchAxiom behavior
 
 /-!
 ## Statistics and Properties
