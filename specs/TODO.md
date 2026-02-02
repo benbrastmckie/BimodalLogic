@@ -95,11 +95,13 @@ technical_debt:
 
 ### 803. Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
+- **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/803_prove_g_bot_h_bot_conditions/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/803_prove_g_bot_h_bot_conditions/plans/implementation-001.md)
 
 **Description**: Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.
 
@@ -107,11 +109,12 @@ technical_debt:
 
 ### 801. Document Soundness temp_t axiom semantic validity issue
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Started**: 2026-02-02
 - **Research**: [research-001.md](specs/801_document_soundness_temp_t_axiom_validity/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/801_document_soundness_temp_t_axiom_validity/plans/implementation-001.md)
 

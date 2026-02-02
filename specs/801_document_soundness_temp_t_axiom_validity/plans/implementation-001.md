@@ -1,7 +1,7 @@
 # Implementation Plan: Task #801
 
 - **Task**: 801 - document_soundness_temp_t_axiom_validity
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/801_document_soundness_temp_t_axiom_validity/reports/research-001.md

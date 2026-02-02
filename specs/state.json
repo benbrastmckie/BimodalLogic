@@ -62,20 +62,26 @@
     {
       "project_number": 803,
       "project_name": "prove_g_bot_h_bot_conditions",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.",
       "created": "2026-02-02T00:14:08Z",
-      "last_updated": "2026-02-02T00:44:23Z",
-      "session_id": "sess_1769992810_e5aa89",
+      "last_updated": "2026-02-02T00:48:53Z",
+      "session_id": "sess_1769993209_5d5fe8",
       "researched": "2026-02-02T00:44:23Z",
       "artifacts": [
         {
           "path": "specs/803_prove_g_bot_h_bot_conditions/reports/research-001.md",
           "type": "research",
           "summary": "Documents proof strategy using T-axiom mcs_closed_temp_t_future/past to prove G_bot and H_bot conditions"
+        },
+        {
+          "path": "specs/803_prove_g_bot_h_bot_conditions/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase implementation plan for G_bot/H_bot proof using T-axiom closure lemmas"
         }
-      ]
+      ],
+      "planned": "2026-02-02T00:48:53Z"
     },
     {
       "project_number": 804,
@@ -93,8 +99,8 @@
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T00:24:26Z",
-      "session_id": "sess_1769991847_9b9170",
+      "last_updated": "2026-02-02T00:46:48Z",
+      "session_id": "sess_1769993191_b875db",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
         {
@@ -119,12 +125,12 @@
     {
       "project_number": 801,
       "project_name": "document_soundness_temp_t_axiom_validity",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Document the 2 sorries in SoundnessLemmas.lean (temp_t axioms). These are NOT semantically valid with strict inequality but were added for syntactic completeness (MCS coherence). Add clear documentation explaining this is an acceptable known limitation. Evaluate if these can be resolved or should be marked as permanent documented technical debt.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T00:43:35Z",
-      "session_id": "sess_1769992838_200454",
+      "last_updated": "2026-02-02T00:46:06Z",
+      "session_id": "sess_1769993142_e123ef",
       "researched": "2026-02-02T00:37:46Z",
       "artifacts": [
         {
@@ -138,7 +144,8 @@
           "summary": "5-phase plan to fix 4 temp_t sorries by updating proofs for reflexive semantics"
         }
       ],
-      "planned": "2026-02-02T00:43:35Z"
+      "planned": "2026-02-02T00:43:35Z",
+      "started": "2026-02-02T00:46:06Z"
     },
     {
       "project_number": 796,

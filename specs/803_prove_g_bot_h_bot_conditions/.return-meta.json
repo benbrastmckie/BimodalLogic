@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/803_prove_g_bot_h_bot_conditions/plans/implementation-001.md",
+      "summary": "1-phase implementation plan for G_bot/H_bot proof using T-axiom closure lemmas"
+    }
+  ],
+  "next_steps": "Run /implement 803 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769993209_5d5fe8",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 1,
+    "estimated_hours": 0.5
+  }
+}
