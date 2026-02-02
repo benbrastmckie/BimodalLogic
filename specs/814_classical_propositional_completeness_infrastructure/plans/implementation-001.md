@@ -1,7 +1,7 @@
 # Implementation Plan: Task #814
 
 - **Task**: 814 - Classical Propositional Completeness Infrastructure
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: None (all required lemmas already exist)
 - **Research Inputs**: specs/814_classical_propositional_completeness_infrastructure/reports/research-001.md
@@ -48,7 +48,7 @@ This task resolves 4 classical propositional sorries in the BMCS completeness in
 
 ## Implementation Phases
 
-### Phase 1: TruthLemma.lean Sorries [NOT STARTED]
+### Phase 1: TruthLemma.lean Sorries [COMPLETED]
 
 **Goal**: Resolve the two classical tautology sorries (`neg_imp_implies_antecedent` and `neg_imp_implies_neg_consequent`)
 
@@ -79,7 +79,7 @@ This task resolves 4 classical propositional sorries in the BMCS completeness in
 
 ---
 
-### Phase 2: Completeness.lean Sorries [NOT STARTED]
+### Phase 2: Completeness.lean Sorries [COMPLETED]
 
 **Goal**: Resolve the two consistency lemma sorries and remove duplicate `double_negation_elim`
 

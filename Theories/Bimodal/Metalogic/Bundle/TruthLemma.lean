@@ -3,7 +3,9 @@ import Bimodal.Metalogic.Bundle.BMCSTruth
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Syntax.Formula
+import Bimodal.Theorems.Propositional
 
 /-!
 # BMCS Truth Lemma
@@ -177,25 +179,101 @@ Classical tautology: ¬(ψ → χ) → ψ
 
 Proof: ¬(ψ → χ) = (ψ → χ) → ⊥. Classically, this implies ψ.
 -/
-def neg_imp_implies_antecedent (ψ χ : Formula) :
+noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
     Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp ψ) := by
-  -- Use proof by contradiction: assume ¬(ψ → χ), assume ¬ψ
-  -- From ¬ψ, derive ψ → χ (vacuously), contradiction with ¬(ψ → χ)
-  -- So ψ holds.
-  -- This is a classical tautology derivable in the proof system.
-  sorry
+  -- Strategy: Prove [¬ψ, ¬(ψ → χ)] ⊢ ⊥, then apply deduction theorem twice,
+  -- then compose with double negation elimination.
+  -- Note: deduction_theorem expects (A :: Γ) ⊢ B, so the formula to discharge must be first.
+
+  -- Step 1: From [¬ψ, ¬(ψ → χ)], derive ⊥
+  -- efq_neg : ⊢ ¬ψ → (ψ → χ)
+  have h_efq : Bimodal.ProofSystem.DerivationTree [] (ψ.neg.imp (ψ.imp χ)) :=
+    Bimodal.Theorems.Propositional.efq_neg ψ χ
+
+  -- Weaken to context [¬ψ, ¬(ψ → χ)]
+  have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
+
+  -- Get ¬ψ from context
+  have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+
+  -- Apply modus ponens: ¬ψ and (¬ψ → (ψ → χ)) gives (ψ → χ)
+  have h_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq_ctx h_neg_psi
+
+  -- Get ¬(ψ → χ) from context
+  have h_neg_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+
+  -- Apply modus ponens: (ψ → χ) and ¬(ψ → χ) gives ⊥
+  -- Note: ¬(ψ → χ) = (ψ → χ) → ⊥
+  have h_bot : [ψ.neg, (ψ.imp χ).neg] ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+
+  -- Step 2: Apply deduction theorem to get [¬(ψ → χ)] ⊢ ¬ψ → ⊥ = ¬¬ψ
+  have h_neg_neg_psi : [(ψ.imp χ).neg] ⊢ ψ.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
+
+  -- Step 3: Apply deduction theorem again to get ⊢ ¬(ψ → χ) → ¬¬ψ
+  have h_deduct : [] ⊢ (ψ.imp χ).neg.imp ψ.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
+
+  -- Step 4: double_negation gives ⊢ ¬¬ψ → ψ
+  have h_dne : [] ⊢ ψ.neg.neg.imp ψ :=
+    Bimodal.Theorems.Propositional.double_negation ψ
+
+  -- Step 5: Compose using b_combinator: (¬¬ψ → ψ) → ((¬(ψ → χ) → ¬¬ψ) → (¬(ψ → χ) → ψ))
+  have h_b : [] ⊢ (ψ.neg.neg.imp ψ).imp (((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ)) :=
+    Bimodal.Theorems.Combinators.b_combinator
+
+  -- Apply modus ponens twice
+  have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
+
+  exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
 
 /--
 Classical tautology: ¬(ψ → χ) → ¬χ
 
 Proof: ¬(ψ → χ) = (ψ → χ) → ⊥. Classically, this implies ¬χ.
 -/
-def neg_imp_implies_neg_consequent (ψ χ : Formula) :
+noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
     Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp χ.neg) := by
-  -- Use proof by contradiction: assume ¬(ψ → χ), assume χ
-  -- From χ, derive ψ → χ, contradiction with ¬(ψ → χ)
-  -- So ¬χ holds.
-  sorry
+  -- Strategy: Prove [χ, ¬(ψ → χ)] ⊢ ⊥, then apply deduction theorem twice.
+  -- Note: deduction_theorem expects (A :: Γ) ⊢ B, so the formula to discharge must be first.
+
+  -- Step 1: From [χ, ¬(ψ → χ)], derive ⊥
+  -- prop_s : ⊢ χ → (ψ → χ)
+  have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ)
+
+  -- Weaken to context [χ, ¬(ψ → χ)]
+  have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
+
+  -- Get χ from context
+  have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+
+  -- Apply modus ponens: χ and (χ → (ψ → χ)) gives (ψ → χ)
+  have h_imp : [χ, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_prop_s_ctx h_chi
+
+  -- Get ¬(ψ → χ) from context
+  have h_neg_imp : [χ, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+
+  -- Apply modus ponens: (ψ → χ) and ¬(ψ → χ) gives ⊥
+  have h_bot : [χ, (ψ.imp χ).neg] ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+
+  -- Step 2: Apply deduction theorem to get [¬(ψ → χ)] ⊢ χ → ⊥ = ¬χ
+  have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
+
+  -- Step 3: Apply deduction theorem again to get ⊢ ¬(ψ → χ) → ¬χ
+  exact Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
 
 /-!
 ## Main Truth Lemma

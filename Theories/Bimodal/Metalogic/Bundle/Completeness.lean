@@ -4,7 +4,9 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Syntax.Formula
+import Bimodal.Theorems.Propositional
 
 /-!
 # BMCS Completeness Theorems
@@ -171,30 +173,28 @@ lemma not_derivable_implies_neg_consistent (φ : Formula)
     ContextConsistent [φ.neg] := by
   -- Suppose [φ.neg] is inconsistent
   intro ⟨d_bot⟩
-  -- By deduction theorem: ⊢ φ.neg → ⊥
+  -- By deduction theorem: ⊢ φ.neg → ⊥ = ⊢ ¬¬φ
   have d_neg_neg : DerivationTree [] (φ.neg.neg) :=
-    deduction_theorem [] φ.neg Formula.bot d_bot
-  -- φ.neg.neg = (φ → ⊥) → ⊥ = ¬¬φ
-  -- We need: ⊢ ¬¬φ → φ (double negation elimination)
-  -- Then: ⊢ φ by modus ponens
-  -- The DNE axiom is a classical propositional tautology
-  -- Assume we have it (via classical reasoning in the proof system)
-  -- Actually, we need to derive ⊢ φ from ⊢ ¬¬φ
-  -- This requires double negation elimination which is derivable classically
-  sorry
+    Bimodal.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_bot
+  -- Get double negation elimination: ⊢ ¬¬φ → φ
+  have h_dne : DerivationTree [] (φ.neg.neg.imp φ) :=
+    Bimodal.Theorems.Propositional.double_negation φ
+  -- Apply modus ponens to get ⊢ φ
+  have d_phi : DerivationTree [] φ :=
+    DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
+  -- Contradiction with h_not_deriv
+  exact h_not_deriv ⟨d_phi⟩
 
 /--
 Helper: Classical double negation elimination in the proof system.
 
 `⊢ ¬¬φ → φ`
 
-This is derivable in classical propositional logic from the axiom schemata.
+NOTE: This is now just an alias for `Bimodal.Theorems.Propositional.double_negation`.
+The duplicate definition with `sorry` has been removed.
 -/
-def double_negation_elim (φ : Formula) :
-    DerivationTree [] (φ.neg.neg.imp φ) := by
-  -- This is a classical tautology derivable from prop_1, prop_2, prop_3
-  -- The proof is complex but standard; we accept it for now
-  sorry
+abbrev double_negation_elim (φ : Formula) : DerivationTree [] (φ.neg.neg.imp φ) :=
+  Bimodal.Theorems.Propositional.double_negation φ
 
 /--
 **Weak Completeness (Contrapositive Form)**: If `⊬ φ`, then `φ` is not BMCS-valid.
@@ -314,13 +314,36 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
     ContextConsistent (Γ ++ [φ.neg]) := by
   -- Suppose Γ ++ [φ.neg] ⊢ ⊥
   intro ⟨d_bot⟩
-  -- This means we can derive ⊥ from Γ and the assumption ¬φ
-  -- By deduction theorem applied to the last assumption:
-  -- Γ ⊢ φ.neg → ⊥, i.e., Γ ⊢ ¬¬φ
-  -- By DNE: Γ ⊢ φ
+
+  -- Step 1: Reorder context using weakening
+  -- Γ ++ [φ.neg] and (φ.neg :: Γ) have the same elements, just in different order
+  -- Since Γ ++ [φ.neg] ⊆ (φ.neg :: Γ), we can weaken
+  have h_subset : Γ ++ [φ.neg] ⊆ φ.neg :: Γ := by
+    intro x hx
+    simp at hx ⊢
+    tauto
+
+  have d_bot_reordered : (φ.neg :: Γ) ⊢ Formula.bot :=
+    DerivationTree.weakening (Γ ++ [φ.neg]) (φ.neg :: Γ) Formula.bot d_bot h_subset
+
+  -- Step 2: Apply deduction theorem to get Γ ⊢ φ.neg → ⊥ = Γ ⊢ ¬¬φ
+  have d_neg_neg : Γ ⊢ φ.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem Γ φ.neg Formula.bot d_bot_reordered
+
+  -- Step 3: Get double negation elimination: ⊢ ¬¬φ → φ
+  have h_dne : DerivationTree [] (φ.neg.neg.imp φ) :=
+    Bimodal.Theorems.Propositional.double_negation φ
+
+  -- Weaken to Γ
+  have h_dne_ctx : Γ ⊢ φ.neg.neg.imp φ :=
+    DerivationTree.weakening [] Γ (φ.neg.neg.imp φ) h_dne (by intro; simp)
+
+  -- Step 4: Apply modus ponens to get Γ ⊢ φ
+  have d_phi : Γ ⊢ φ :=
+    DerivationTree.modus_ponens Γ φ.neg.neg φ h_dne_ctx d_neg_neg
+
   -- Contradiction with h_not_deriv
-  -- The technical proof requires careful manipulation of the derivation
-  sorry
+  exact h_not_deriv ⟨d_phi⟩
 
 /--
 **Strong Completeness (Contrapositive Form, Int)**: If Γ ⊬ φ, then φ is not a BMCS-consequence of Γ over Int.

@@ -8,37 +8,39 @@
     {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-02T21:16:37Z",
+      "last_updated": "2026-02-02T21:38:37Z",
       "parent_task": 813,
       "dependencies": [
         814
-      ]
+      ],
+      "session_id": "sess_1770068302_b8844b"
     },
     {
       "project_number": 815,
       "project_name": "bmcs_universe_polymorphism_resolution",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int - polymorphic validity to Int-specific), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int - polymorphic consequence to Int-specific). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.",
       "effort": "1-2 hours",
       "created": "2026-02-02T21:16:09Z",
-      "last_updated": "2026-02-02T21:16:09Z",
-      "parent_task": 813
+      "last_updated": "2026-02-02T21:37:02Z",
+      "parent_task": 813,
+      "session_id": "sess_1770068208_f80de2"
     },
     {
       "project_number": 814,
       "project_name": "classical_propositional_completeness_infrastructure",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "description": "Resolve 4 classical propositional sorries in BMCS infrastructure by importing existing double_negation theorem and porting neg_imp_fst/neg_imp_snd from Boneyard. Sorries: TruthLemma.lean:186 (neg_imp_implies_antecedent), TruthLemma.lean:198 (neg_imp_implies_neg_consequent), Completeness.lean:184 (not_derivable_implies_neg_consistent), Completeness.lean:323 (context_not_derivable_implies_extended_consistent). Note: double_negation_elim at Completeness.lean:197 is duplicate of Bimodal.Theorems.Propositional.double_negation.",
       "effort": "2-3 hours",
       "created": "2026-02-02T21:15:41Z",
-      "last_updated": "2026-02-02T21:29:27Z",
+      "last_updated": "2026-02-02T21:38:22Z",
       "parent_task": 813,
       "session_id": "sess_1770067750_7ce20f",
       "researched": "2026-02-02T21:23:10Z",
@@ -52,10 +54,17 @@
           "path": "specs/814_classical_propositional_completeness_infrastructure/plans/implementation-001.md",
           "type": "plan",
           "summary": "2-phase implementation plan for resolving classical propositional sorries using existing double_negation and deduction_theorem"
+        },
+        {
+          "path": "specs/814_classical_propositional_completeness_infrastructure/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting resolved sorries and code changes"
         }
       ],
       "planned": "2026-02-02T21:28:21Z",
-      "started": "2026-02-02T21:29:27Z"
+      "started": "2026-02-02T21:29:27Z",
+      "completed": "2026-02-02T21:38:22Z",
+      "completion_summary": "Resolved 4 classical propositional sorries in the BMCS completeness infrastructure by implementing proofs using deduction theorem and double negation elimination. Also removed duplicate double_negation_elim definition."
     },
     {
       "project_number": 813,

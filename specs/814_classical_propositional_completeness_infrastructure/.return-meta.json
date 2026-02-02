@@ -1,17 +1,26 @@
 {
-  "status": "in_progress",
+  "status": "implemented",
   "started_at": "2026-02-02T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "phase_1",
-    "details": "Implementing TruthLemma.lean sorries"
-  },
+  "completed_at": "2026-02-02T13:30:00Z",
+  "summary": "Resolved 4 classical propositional sorries in BMCS completeness infrastructure: neg_imp_implies_antecedent, neg_imp_implies_neg_consequent, not_derivable_implies_neg_consistent, and context_not_derivable_implies_extended_consistent. Removed duplicate double_negation_elim by replacing with import of existing double_negation theorem.",
+  "artifacts": [
+    {
+      "path": "specs/814_classical_propositional_completeness_infrastructure/summaries/implementation-summary-20260202.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting resolved sorries and code changes"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1770067750_7ce20f",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 0,
-    "phases_total": 2
+    "phases_completed": 2,
+    "phases_total": 2,
+    "sorries_resolved": 5,
+    "files_modified": 2
+  },
+  "completion_data": {
+    "completion_summary": "Resolved 4 classical propositional sorries in the BMCS completeness infrastructure by implementing proofs using deduction theorem and double negation elimination. Also removed duplicate double_negation_elim definition."
   }
 }
