@@ -26,12 +26,20 @@
     {
       "project_number": 799,
       "project_name": "complete_decidability_proofs",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T00:12:42Z",
-      "session_id": "sess_1769991147_20e4b3"
+      "last_updated": "2026-02-02T00:18:09Z",
+      "session_id": "sess_1769991147_20e4b3",
+      "researched": "2026-02-02T00:18:09Z",
+      "artifacts": [
+        {
+          "path": "specs/799_complete_decidability_proofs/reports/research-001.md",
+          "type": "research",
+          "summary": "Detailed analysis of 6 sorries with proof strategies, required Mathlib lemmas, and difficulty assessments"
+        }
+      ]
     },
     {
       "project_number": 800,

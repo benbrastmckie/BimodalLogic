@@ -65,9 +65,11 @@ technical_debt:
 
 ### 799. Complete Decidability proofs
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-01
+- **Researched**: 2026-02-02
+- **Research**: [research-001.md](specs/799_complete_decidability_proofs/reports/research-001.md)
 
 **Description**: Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.
 
