@@ -56,18 +56,18 @@
     {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-02T23:39:41Z",
+      "last_updated": "2026-02-02T23:43:29Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
       "session_id": "sess_1770075554_48a897",
-      "researched": "2026-02-02T23:31:25Z",
+      "researched": "2026-02-02T23:43:29Z",
       "artifacts": [
         {
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md",
@@ -118,6 +118,11 @@
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-008.md",
           "type": "research",
           "summary": "Resolves apparent conflict between research-006 and research-007 regarding sorry-free completeness"
+        },
+        {
+          "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-009.md",
+          "type": "research",
+          "summary": "Hybrid BoundedBMCS architecture combining FMP bounded time with BMCS multi-family saturation to eliminate temporal sorries"
         }
       ],
       "planned": "2026-02-02T22:44:09Z",
