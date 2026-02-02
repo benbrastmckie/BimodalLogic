@@ -30,7 +30,7 @@ technical_debt:
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
 - **Revised**: 2026-02-02
-- **Research**: [research-001.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md), [research-002.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-002.md), [research-003.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-003.md)
+- **Research**: [research-001.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md), [research-002.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-002.md), [research-003.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-003.md), [research-004.md](specs/810_strategic_review_representation_vs_semantic_paths/reports/research-004.md)
 - **Plan**: [implementation-002.md](specs/810_strategic_review_representation_vs_semantic_paths/plans/implementation-002.md)
 
 **Description**: Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.
