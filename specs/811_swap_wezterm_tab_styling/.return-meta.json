@@ -1,15 +1,19 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-02T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/811_swap_wezterm_tab_styling/plans/implementation-001.md",
+      "summary": "1-phase implementation plan to swap WezTerm active tab and Claude notification colors"
+    }
+  ],
+  "next_steps": "Run /implement 811 to execute the plan",
   "metadata": {
     "session_id": "sess_1770022738_73d050",
     "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 1,
+    "estimated_hours": 0.25
   }
 }

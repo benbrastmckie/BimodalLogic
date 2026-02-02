@@ -8,12 +8,20 @@
     {
       "project_number": 811,
       "project_name": "swap_wezterm_tab_styling",
-      "status": "planning",
+      "status": "planned",
       "language": "general",
       "description": "Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua",
       "created": "2026-02-02T08:58:05Z",
-      "last_updated": "2026-02-02T08:59:13Z",
-      "session_id": "sess_1770022738_73d050"
+      "last_updated": "2026-02-02T09:00:46Z",
+      "session_id": "sess_1770022738_73d050",
+      "planned": "2026-02-02T09:00:46Z",
+      "artifacts": [
+        {
+          "path": "specs/811_swap_wezterm_tab_styling/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase implementation plan to swap WezTerm active tab and Claude notification colors"
+        }
+      ]
     },
     {
       "project_number": 809,

@@ -24,9 +24,11 @@ technical_debt:
 
 ### 811. Swap WezTerm tab styling for active vs Claude Code notification
 - **Effort**: S
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: general
 - **Created**: 2026-02-02
+- **Planned**: 2026-02-02
+- **Plan**: [implementation-001.md](specs/811_swap_wezterm_tab_styling/plans/implementation-001.md)
 
 **Description**: Swap WezTerm tab styling: exchange the styling for active tabs with the styling for Claude Code completion/input notification tabs. Config at ~/.dotfiles/config/wezterm.lua
 
