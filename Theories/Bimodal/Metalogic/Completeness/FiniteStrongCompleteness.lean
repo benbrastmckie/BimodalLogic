@@ -62,7 +62,7 @@ def ContextDerivable (Gamma : Context) (phi : Formula) : Prop :=
 A context is consistent if it does not derive bot.
 -/
 def Consistent (Gamma : Context) : Prop :=
-  not Nonempty (DerivationTree Gamma Formula.bot)
+  ¬Nonempty (DerivationTree Gamma Formula.bot)
 
 /--
 Soundness for context derivability: If Gamma |- phi, then Gamma |= phi.
@@ -81,7 +81,7 @@ Weak completeness via the FMP semantic canonical model.
 If a formula is not derivable from empty context, then its negation is consistent.
 -/
 theorem not_derivable_implies_neg_consistent {phi : Formula} :
-    not ContextDerivable [] phi -> Consistent [phi.neg] := by
+    ¬ContextDerivable [] phi -> Consistent [phi.neg] := by
   intro h_not_deriv
   intro ⟨d_bot⟩
   apply h_not_deriv
@@ -99,24 +99,36 @@ Weak completeness: valid formulas are provable.
 
 **Statement**: `valid phi -> ContextDerivable [] phi`
 
-This uses the FMP-based semantic_weak_completeness via contrapositive.
+This uses the FMP-based semantic_weak_completeness via the validity bridge.
+
+**Note**: This theorem requires bridging general validity (truth in all TaskModels)
+to FMP-internal validity (truth at all SemanticWorldStates). The bridge for
+modal and temporal operators is architecturally blocked (see ConsistentSatisfiable.lean).
+For purely propositional formulas, the bridge works.
 -/
 theorem weak_completeness (phi : Formula) :
     valid phi -> ContextDerivable [] phi := by
-  -- Use contrapositive: not (ContextDerivable [] phi) -> not (valid phi)
   intro h_valid
-  by_contra h_not_deriv
-  -- If phi is not derivable, then {neg phi} is consistent
-  have h_neg_cons := not_derivable_implies_neg_consistent h_not_deriv
-  -- By FMP, neg phi is satisfiable (since it's consistent)
-  -- This means there exists a semantic world state where neg phi is true
-  -- which contradicts validity of phi
-  -- The FMP semantic_weak_completeness gives us |- phi from semantic validity
-  -- We need to show: if valid phi, then ContextDerivable [] phi
-  -- The FMP approach proves this via the semantic canonical model
-  -- Here we use the fact that FMP constructs a countermodel for non-provable formulas
-  have h_deriv := Bimodal.Metalogic.FMP.semantic_completeness phi
-  exact ⟨h_deriv h_valid⟩
+  -- The FMP semantic_weak_completeness gives: FMP-internal validity -> derivability
+  -- We need: general validity -> FMP-internal validity
+  -- This bridge is proven for propositional operators but blocked for modal/temporal
+  -- (see mcs_world_truth_correspondence in ConsistentSatisfiable.lean)
+  --
+  -- The key insight is that general validity implies FMP-internal validity because
+  -- any formula valid in ALL models is also valid in the FMP internal model.
+  -- However, proving this formally requires the truth correspondence lemma,
+  -- which has architectural issues for modal/temporal operators.
+  --
+  -- For now, we mark this as requiring the validity bridge.
+  have h_fmp_validity : ∀ (w : SemanticWorldState phi),
+      semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi := by
+    intro w
+    -- Bridge from general validity to FMP-internal validity
+    -- This direction should hold but requires proving that the FMP model
+    -- instantiates as a valid TaskModel for modal/temporal operators
+    -- Currently blocked - see research-005 for analysis
+    sorry
+  exact ⟨semantic_weak_completeness phi h_fmp_validity⟩
 
 /-!
 ## Implication Chain Construction
@@ -147,7 +159,7 @@ This lemma shows that `truth_at M tau t (impChain Gamma phi)` holds iff
 lemma impChain_semantics {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {F : TaskFrame D} {M : TaskModel F} {tau : WorldHistory F} {t : D}
     (Gamma : Context) (phi : Formula) :
-    truth_at M tau t (impChain Gamma phi) <-> ((forall psi in Gamma, truth_at M tau t psi) -> truth_at M tau t phi) := by
+    truth_at M tau t (impChain Gamma phi) <-> ((∀ psi, psi ∈ Gamma → truth_at M tau t psi) -> truth_at M tau t phi) := by
   induction Gamma with
   | nil =>
     simp only [impChain, List.not_mem_nil, false_implies, forall_const, implies_true]
@@ -156,7 +168,7 @@ lemma impChain_semantics {D : Type} [AddCommGroup D] [LinearOrder D] [IsOrderedA
     constructor
     · intro h h_all
       have h_psi : truth_at M tau t psi := h_all psi (Or.inl rfl)
-      have h_Gamma' : forall chi in Gamma', truth_at M tau t chi := fun chi hchi => h_all chi (Or.inr hchi)
+      have h_Gamma' : ∀ chi, chi ∈ Gamma' → truth_at M tau t chi := fun chi hchi => h_all chi (Or.inr hchi)
       exact h h_psi h_Gamma'
     · intro h h_psi h_Gamma'
       apply h

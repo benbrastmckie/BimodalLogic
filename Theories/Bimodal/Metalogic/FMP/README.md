@@ -1,6 +1,6 @@
 # Parametric Finite Model Property Infrastructure
 
-**Status**: Complete
+**Status**: Complete (with known architectural limitation for validity bridge)
 
 This directory contains the parametric FMP (Finite Model Property) infrastructure for TM bimodal logic.
 
@@ -17,6 +17,7 @@ The FMP establishes that if a formula is satisfiable, it is satisfiable in a **f
 | `FiniteWorldState.lean` | Finite world states as truth assignments on closure | **Sorry-free** |
 | `SemanticCanonicalModel.lean` | Semantic canonical model with finite world states | **Sorry-free** |
 | `FiniteModelProperty.lean` | FMP theorem and cardinality bounds | **Sorry-free** |
+| `ConsistentSatisfiable.lean` | Bridge from FMP to TaskModel (BLOCKED for modal/temporal) | 6 sorries |
 
 ## Key Theorem: semantic_weak_completeness
 
@@ -88,10 +89,35 @@ theorem consistent_implies_satisfiable (phi : Formula) (h_cons : Consistent [phi
 - **Core**: MCS theory and Lindenbaum's lemma
 - **Semantics**: Truth relation and validity
 
+## Architectural Limitation: Validity Bridge
+
+**IMPORTANT**: The `ConsistentSatisfiable.lean` module attempts to bridge FMP-internal validity
+(truth at SemanticWorldStates) with general TaskModel validity. This bridge is **BLOCKED** for
+modal and temporal operators.
+
+**What works**:
+- `semantic_weak_completeness`: Uses FMP-INTERNAL validity (sorry-free)
+- Propositional fragment of truth correspondence
+
+**What doesn't work**:
+- Bridging general validity (`valid phi`) to FMP-internal validity
+- Extending `consistent_implies_satisfiable` to general TaskModel semantics
+- By extension: infinitary strong completeness and compactness via FMP-only path
+
+**Why**: The FMP TaskFrame uses permissive task_rel (all states reachable) and constant histories.
+Modal box requires psi true at ALL reachable states (including non-MCS ones), and temporal
+operators require structure across time (lost with constant history).
+
+**Recommendation**: Use `semantic_weak_completeness` with FMP-internal validity as the canonical
+completeness result. Accept that general TaskModel validity is a different (stronger) notion.
+
+See `ConsistentSatisfiable.lean` header and task 810 research-005 for full analysis.
+
 ## References
 
 - Blackburn et al., Modal Logic, Chapter 4 (Finite Model Property)
+- Task 810 research-005: Detailed blockage analysis
 
 ---
 
-*Last updated: 2026-01-30*
+*Last updated: 2026-02-02*

@@ -8,40 +8,77 @@ import Mathlib.Data.Set.Basic
 /-!
 # Bridge Lemma: Consistent Sets are Satisfiable
 
-This module provides the key bridge lemma connecting syntactic consistency
-with semantic satisfiability. This enables the FMP-only approach to
-infinitary strong completeness and compactness.
+**ARCHITECTURAL LIMITATION**: This module attempts to bridge FMP-internal truth
+(`FiniteWorldState.models`) with general TaskModel truth (`truth_at`). This bridge
+is **BLOCKED** for modal and temporal operators due to fundamental model construction
+issues. See research-005 in task 810 for detailed analysis.
 
-## Main Results
+## Status Summary
 
-- `consistent_implies_not_neg_provable`: SetConsistent {phi} implies phi.neg not provable
-- `consistent_satisfiable`: SetConsistent {phi} implies set_satisfiable {phi}
-- `set_consistent_satisfiable`: General version for any set-consistent set
+| Component | Status | Notes |
+|-----------|--------|-------|
+| `consistent_implies_not_neg_provable` | PROVEN | Propositional only |
+| `mcs_world_truth_correspondence` | **6 SORRIES** | Modal/temporal blocked |
+| `consistent_satisfiable` | DEPENDS ON SORRIES | Uses blocked lemma |
+| Overall bridge approach | **BLOCKED** | Cannot be completed |
 
-## Proof Strategy
+## Why The Bridge Is Blocked
 
-The proof uses the FMP (Finite Model Property) infrastructure:
-1. From SetConsistent {phi}, derive that phi.neg is not provable
-2. Use Lindenbaum to extend {phi} to an MCS
-3. Build a finite world state from the closure-projected MCS
-4. Construct a proper TaskFrame/TaskModel from the finite world state
-5. Show phi is satisfied via the FMP truth lemma
+The truth correspondence lemma `mcs_world_truth_correspondence` attempts to show:
+```
+w.models psi h_mem <-> truth_at (fmpTaskModel phi) (fmpWorldHistory phi w) 0 psi
+```
 
-## Technical Note
+**Problem 1 (Modal box)**: The FMP TaskFrame has all FiniteWorldStates as possible
+world states with permissive accessibility (task_rel = True). For `truth_at ... (box psi)`,
+we need psi true at ALL reachable states, not just MCS-derived ones. But non-MCS states
+don't satisfy modal axioms.
 
-The embedding of FMP finite world states into the general TaskModel framework
-requires showing truth preservation for all formula types (atoms, implications,
-modal operators, temporal operators). This is proven via structural induction.
+**Problem 2 (Temporal)**: The FMP WorldHistory is constant (same state at all times).
+Temporal operators require truth at strictly future/past times, but constant history
+trivializes temporal structure.
 
-For MCS-derived world states, the key properties are:
-- Negation completeness: exactly one of psi or neg psi is true
-- Implication correspondence: imp psi chi true iff (psi true implies chi true)
-- Modal T axiom: box psi true implies psi true
+## What IS Achievable
+
+1. **`semantic_weak_completeness`** in SemanticCanonicalModel.lean is SORRY-FREE
+   - Uses FMP-internal validity (SemanticWorldState), not general validity
+   - Works via contrapositive without needing full truth correspondence
+
+2. **Propositional fragment**: The bridge works for atoms, bot, imp
+   - Lines 186-239 of `mcs_world_truth_correspondence` are proven
+   - Only modal/temporal cases (lines 240-283) are blocked
+
+3. **Finite strong completeness**: Works via impChain approach
+   - See `FiniteStrongCompleteness.lean`
+   - Has one sorry for validity bridge (same root cause)
+
+## Why Contrapositive Approach Also Doesn't Work
+
+Research-005 suggested using contrapositive of weak completeness:
+```
+consistent phi -> satisfiable phi  (via contrapositive)
+not satisfiable -> not consistent  (contrapositive)
+not satisfiable -> phi.neg valid   (definition)
+phi.neg valid -> phi.neg provable  (weak completeness)
+phi.neg provable -> not consistent (definition)
+```
+
+**But**: `semantic_weak_completeness` requires FMP-INTERNAL validity, not general validity.
+Converting "phi.neg is valid in all TaskModels" to "phi.neg is true at all SemanticWorldStates"
+requires the same blocked truth correspondence bridge.
+
+## Recommendations
+
+1. Use `semantic_weak_completeness` directly for completeness results
+2. Accept that general validity <-> FMP-internal validity bridge is blocked
+3. For publishable results, use FMP-internal validity as the semantic notion
+4. Archive this file's approach as architectural limitation documentation
 
 ## References
 
-- SemanticCanonicalModel: provides `semantic_weak_completeness` and related
-- Research report: specs/810_strategic_review_representation_vs_semantic_paths/reports/research-004.md
+- Task 810 research-005: Detailed blockage analysis
+- SemanticCanonicalModel.lean: Working sorry-free completeness
+- FiniteStrongCompleteness.lean: Finite strong completeness with validity bridge sorry
 
 -/
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #810 (v004 - Contrapositive Approach)
 
 - **Task**: 810 - Strategic review: Representation/ approach vs semantic completeness paths
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Version**: 004 (Revised based on research-005.md - blockage analysis)
 - **Effort**: 2-3 hours
 - **Dependencies**: None
@@ -69,7 +69,7 @@ compactness (corollary)
 
 ## Implementation Phases
 
-### Phase 1: Fix FiniteStrongCompleteness.lean [IN PROGRESS]
+### Phase 1: Fix FiniteStrongCompleteness.lean [COMPLETED]
 
 **Goal**: Fix syntax errors in `FiniteStrongCompleteness.lean` that reference non-existent functions.
 
@@ -93,50 +93,34 @@ compactness (corollary)
 
 ---
 
-### Phase 2: Prove Consistent Implies Satisfiable (Contrapositive) [NOT STARTED]
+### Phase 2: Prove Consistent Implies Satisfiable (Contrapositive) [BLOCKED]
 
-**Goal**: Prove that consistency implies satisfiability using contrapositive of weak completeness, NOT direct model construction.
+**Goal**: Prove that consistency implies satisfiability using contrapositive of weak completeness.
 
-**Proof Strategy** (from research-005, Section 3.2):
+**BLOCKED**: During implementation, discovered that the contrapositive approach ALSO requires the validity bridge:
 
-```lean
-lemma consistent_implies_satisfiable (phi : Formula)
-    (h_cons : Consistent phi) : Satisfiable phi := by
-  -- Contrapositive: if not satisfiable, then not consistent
-  by_contra h_not_sat
-  -- Not satisfiable means phi.neg is valid (true everywhere)
-  have h_neg_valid : Valid phi.neg := not_satisfiable_implies_neg_valid h_not_sat
-  -- By semantic_weak_completeness: phi.neg is provable
-  have h_neg_prov : ⊢ phi.neg := semantic_weak_completeness phi.neg h_neg_valid
-  -- But phi consistent means phi.neg not provable (contradiction)
-  exact h_cons (neg_provable_implies_inconsistent h_neg_prov)
-```
+1. `consistent_implies_satisfiable` requires showing: "not satisfiable → not consistent"
+2. "not satisfiable" means phi.neg is valid (general validity)
+3. To use `semantic_weak_completeness`, we need FMP-internal validity
+4. **Converting general validity to FMP-internal validity is the same blocked bridge**
 
-**Key Difference from v003**: We use the contrapositive and soundness/completeness relationship, NOT direct model construction. This avoids needing truth correspondence for modal/temporal operators.
+The research-005 sketch incorrectly assumed `semantic_weak_completeness` takes general validity. It doesn't - it takes FMP-internal validity (`∀ w : SemanticWorldState, semantic_truth_at_v2 ...`).
 
-**Tasks**:
-- [ ] Create `FMP/ConsistentSatisfiableV2.lean` with contrapositive approach
-- [ ] Define/import necessary lemmas:
-  - `not_satisfiable_implies_neg_valid`
-  - `neg_provable_implies_inconsistent`
-- [ ] Prove `consistent_implies_satisfiable` via contrapositive
-- [ ] Verify no sorries
+**Root Cause**: The fundamental gap is between:
+- General validity: truth in ALL TaskModels
+- FMP-internal validity: truth at all SemanticWorldStates (MCS membership)
 
-**Timing**: 1 hour
+For modal/temporal operators, we cannot show that general validity implies FMP-internal validity without the full truth correspondence lemma, which is blocked.
 
-**Files to create**:
-- `Theories/Bimodal/Metalogic/FMP/ConsistentSatisfiableV2.lean`
-
-**Verification**:
-- `lake build Bimodal.Metalogic.FMP.ConsistentSatisfiableV2` succeeds
-- Theorem is sorry-free
-- No direct model construction for modal/temporal
+**Status**: ABANDONED - architectural limitation, not fixable without canonical model approach
 
 ---
 
-### Phase 3: Prove Infinitary Strong Completeness [NOT STARTED]
+### Phase 3: Prove Infinitary Strong Completeness [BLOCKED]
 
 **Goal**: Prove `infinitary_strong_completeness` using the contrapositive bridge.
+
+**BLOCKED**: Depends on Phase 2 `consistent_implies_satisfiable` which is blocked.
 
 **Proof Strategy**:
 
@@ -176,9 +160,11 @@ theorem infinitary_strong_completeness (Γ : Set Formula) (phi : Formula)
 
 ---
 
-### Phase 4: Prove Compactness [NOT STARTED]
+### Phase 4: Prove Compactness [BLOCKED]
 
 **Goal**: Prove `compactness` as corollary of infinitary completeness.
+
+**BLOCKED**: Depends on Phase 3 `infinitary_strong_completeness` which is blocked.
 
 **Proof Strategy**:
 Compactness: If every finite subset of Γ is satisfiable, then Γ is satisfiable.
@@ -216,9 +202,15 @@ theorem compactness (Γ : Set Formula)
 
 ---
 
-### Phase 5: Archive and Update Exports [NOT STARTED]
+### Phase 5: Document Architectural Limitations [COMPLETED]
 
-**Goal**: Archive blocked code and update module exports.
+**Goal**: Since Phases 2-4 are blocked, update documentation to reflect what IS achievable and update module exports accordingly.
+
+**Completed**:
+- Updated ConsistentSatisfiable.lean header with full blockage analysis
+- Updated FMP/README.md with architectural limitation section
+- Updated Completeness/README.md with validity bridge explanation
+- Created implementation summary documenting findings
 
 **Tasks**:
 - [ ] Archive `ConsistentSatisfiable.lean`:
