@@ -41,9 +41,9 @@ technical_debt:
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/819_create_sorry_debt_policy_context_file/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/819_create_sorry_debt_policy_context_file/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/819_create_sorry_debt_policy_context_file/plans/implementation-002.md)
 
-**Description**: Create .claude/context/project/lean4/standards/sorry-debt-policy.md with philosophy, remediation paths, discovery protocol, and Boneyard references. Philosophy: sorries are mathematical debt, never acceptable in final proofs. Remediation paths: Boneyard archival, architectural refactoring, proof completion. Discovery protocol: what to do when encountering existing sorries during implementation. References to project Boneyard locations (Theories/Bimodal/Boneyard/, Boneyard/).
+**Description**: Create .claude/context/project/lean4/standards/sorry-debt-policy.md with philosophy, remediation paths, discovery protocol, and Boneyard references. Philosophy: sorries are mathematical debt, never acceptable in final proofs; sorries are inherited transitively where a theorem is only truly sorry-free if none of its dependencies contain sorries. Remediation paths: Boneyard archival, architectural refactoring, proof completion. Discovery protocol: what to do when encountering existing sorries during implementation. References to project Boneyard locations (Theories/Bimodal/Boneyard/, Boneyard/).
 
 ---
 
@@ -59,7 +59,7 @@ technical_debt:
 
 ### 816. BMCS Temporal Modal Coherence Strengthening
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
