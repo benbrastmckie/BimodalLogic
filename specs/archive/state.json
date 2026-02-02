@@ -2,6 +2,94 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 802,
+      "project_name": "wezterm_task_number_clearing_neovim_exit",
+      "status": "completed",
+      "language": "meta",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Added universal SessionStart hook to clear task numbers on all session events (/clear, startup, resume), and VimLeavePre autocmd to clear on Neovim exit. Uses 'clear by default, set for workflow' pattern."
+    },
+    {
+      "project_number": 797,
+      "project_name": "extract_representation_dependencies",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Archived TemporalCompleteness.lean (2 sorries) to Boneyard, reducing active Representation/ sorries from 35 to 33. UniversalCanonicalModel.lean was retained after discovering WeakCompleteness.lean dependency. Build verified successfully."
+    },
+    {
+      "project_number": 798,
+      "project_name": "refactor_completeness_lean",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Refactored monolithic Completeness.lean (~3720 lines) to 737 lines by archiving deprecated Duration-based infrastructure to Boneyard and leveraging existing Core module re-exports. Full project build succeeds."
+    },
+    {
+      "project_number": 795,
+      "project_name": "wezterm_tab_project_number_persistence",
+      "status": "completed",
+      "language": "meta",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Fixed WezTerm tab project number persistence by moving set/clear logic to shell hook (fires only on UserPromptSubmit) and removing per-line buffer monitoring from Neovim. Task numbers now persist during Claude responses and clear on non-workflow commands."
+    },
+    {
+      "project_number": 794,
+      "project_name": "sorry_free_completeness_theorems",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Established sorry-free completeness theorems by importing proven soundness into WeakCompleteness.lean. All key theorems (weak_completeness, finite_strong_completeness, infinitary_strong_completeness, compactness) now have 0 sorries. Fixed temp_t axiom cases in Soundness.lean (with sorry for semantic validity issue)."
+    },
+    {
+      "project_number": 792,
+      "project_name": "document_wezterm_tab_integration",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Documented WezTerm tab integration for Claude Code across dotfiles, Neovim, and ProofChecker with cross-references between all locations. Created 4 documentation artifacts covering OSC escape sequences, user variables, and notification behavior."
+    },
+    {
+      "project_number": 791,
+      "project_name": "wezterm_task_number_from_claude_commands",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Extended WezTerm task number integration for Neovim-embedded Claude Code. Created neotex/lib/wezterm.lua module for OSC 1337 emission and added Claude Code terminal monitoring to autocmds.lua with debouncing, buffer-local tracking, and proper cleanup."
+    },
+    {
+      "project_number": 790,
+      "project_name": "neovim_wezterm_osc7_tab_title",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Added WezTerm OSC 7 integration to Neovim autocmds.lua with DirChanged, VimEnter, and BufEnter autocmds that emit OSC 7 escape sequences to update tab titles to show Neovim's current working directory."
+    },
+    {
+      "project_number": 789,
+      "project_name": "wezterm_tab_title_project_and_task_number",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Configured WezTerm tab titles to show project directory and task numbers via wezterm.lua update and new Claude Code hook."
+    },
+    {
+      "project_number": 788,
+      "project_name": "wezterm_tab_coloring_on_claude_completion",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Implemented automatic clearing of WezTerm tab notification color when switching to a notified tab. Added update-status event handler that tracks active tabs via wezterm.GLOBAL and clears CLAUDE_STATUS user variable via OSC escape sequence when tab becomes active."
+    },
+    {
+      "project_number": 777,
+      "project_name": "complete_weak_completeness_sorry",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-02T00:15:24Z",
+      "completion_summary": "Archived FiniteCanonicalModel.lean (71 sorries) to Boneyard/Metalogic_v4/Completeness/. The file contained a deprecated syntactic approach to completeness superseded by the sorry-free semantic approach. Build verified successfully with no new errors."
+    },
+    {
       "project_number": 781,
       "project_name": "refactor_metalogic_zero_sorry_completeness",
       "status": "abandoned",

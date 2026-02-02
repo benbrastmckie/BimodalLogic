@@ -3,17 +3,17 @@ next_project_number: 805
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-01-31T22:09:03Z
+  last_assessed: 2026-02-02T08:30:00Z
 task_counts:
-  active: 10
-  completed: 339
+  active: 16
+  completed: 350
   in_progress: 2
-  not_started: 2
+  not_started: 5
   abandoned: 24
-  total: 363
+  total: 374
 technical_debt:
-  sorry_count: 196
-  axiom_count: 17
+  sorry_count: 91
+  axiom_count: 15
   build_errors: 1
   status: manageable
 ---
@@ -40,23 +40,6 @@ technical_debt:
 - **Created**: 2026-02-02
 
 **Description**: Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.
-
----
-
-### 802. Fix WezTerm tab task number clearing on Neovim exit and /clear command
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/802_wezterm_task_number_clearing_neovim_exit/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/802_wezterm_task_number_clearing_neovim_exit/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260202.md](specs/802_wezterm_task_number_clearing_neovim_exit/summaries/implementation-summary-20260202.md)
-
-**Description**: Fix WezTerm tab task number clearing on Neovim exit and non-workflow commands. Task numbers should clear when Neovim closes, when /clear is run, or when any non-workflow command/prompt is submitted. Only workflow commands (/research N, /plan N, /implement N, /revise N) should set task numbers.
 
 ---
 
@@ -90,40 +73,6 @@ technical_debt:
 
 ---
 
-### 798. Refactor Completeness.lean and extract Lindenbaum infrastructure
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/798_refactor_completeness_lean/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/798_refactor_completeness_lean/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260201.md](specs/798_refactor_completeness_lean/summaries/implementation-summary-20260201.md)
-
-**Description**: Refactor the monolithic Completeness.lean (~4000 lines, 39 sorries). Extract essential content: SetConsistent, SetMaximalConsistent definitions to Core/SetConsistency.lean; set_lindenbaum (Lindenbaum lemma via Zorn) and chain consistency lemmas to Core/Lindenbaum.lean. Archive the Duration construction infrastructure, TemporalExt/Coherent interfaces, and generic weak_completeness/strong_completeness axioms to Boneyard/Metalogic_v4/Completeness/MonolithicCompleteness.lean.
-
----
-
-### 797. Extract Representation dependencies and archive redundant sorries
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-02
-- **Research**: [research-001.md](specs/797_extract_representation_dependencies/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/797_extract_representation_dependencies/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/797_extract_representation_dependencies/summaries/implementation-summary-20260202.md)
-
-**Description**: Extract the necessary elements from Representation/ that InfinitaryStrongCompleteness.lean depends on (construct_coherent_family, truth_lemma forward direction, canonical_model, canonical_history_family, UniversalCanonicalFrame) into a minimal, clean module. Then archive the redundant and sorry-filled portions of Representation/ to Boneyard/Metalogic_v4/Representation/. The goal is to reduce the 35 sorries in Representation/ while preserving the active dependency chain for infinitary completeness.
-
----
-
 ### 796. Complete all remaining sorries
 - **Effort**: M
 - **Status**: [RESEARCHED]
@@ -136,40 +85,6 @@ technical_debt:
 
 ---
 
-### 795. Fix wezterm tab project number persistence for workflow commands
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-01
-- **Research**: [research-001.md](specs/795_wezterm_tab_project_number_persistence/reports/research-001.md)
-- **Plan**: [implementation-004.md](specs/795_wezterm_tab_project_number_persistence/plans/implementation-004.md)
-- **Summary**: [implementation-summary-20260201.md](specs/795_wezterm_tab_project_number_persistence/summaries/implementation-summary-20260201.md)
-
-**Description**: Fix wezterm tab project number persistence behavior. Workflow commands like `/plan N` and `/implement N` should update/replace the project number in the tab rather than clearing it. Non-project commands like `/todo`, `/review`, `/meta` should clear the project number since they have no associated project.
-
----
-
-### 794. Establish sorry-free completeness theorems
-- **Effort**: M
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-01
-- **Research**: [research-001.md](specs/794_sorry_free_completeness_theorems/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/794_sorry_free_completeness_theorems/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260201.md](specs/794_sorry_free_completeness_theorems/summaries/implementation-summary-20260201.md)
-
-**Description**: Before archiving extraneous elements to produce a sorry-free metalogic, draw on specs/777_complete_weak_completeness_sorry/reports/research-007.md to identify and remove all sorries that remain in the way of a sorry-free completeness result. Establish weak_completeness and strong_completeness as well as the compactness theorem (all sorry-free) by drawing on semantic_weak_completeness and other established results, finding and filling in all sorries that stand in the way currently.
-
----
-
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
 - **Status**: [RESEARCHED]
@@ -179,89 +94,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md)
 
 **Description**: Investigate and fix issue where running a command in Claude Code sidebar in neovim causes an initial black screen (all text disappears) for approximately 30 seconds before showing activity. Functionality works correctly otherwise. Issue started recently. Root cause may be in hook system or external. Research online and review hook configuration to identify simple and elegant fix.
-
----
-
-### 792. Review and document WezTerm tab integration with Neovim and Claude Code
-- **Effort**: M
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-01
-- **Research**: [research-001.md](specs/792_document_wezterm_tab_integration/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/792_document_wezterm_tab_integration/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260201.md](specs/792_document_wezterm_tab_integration/summaries/implementation-summary-20260201.md)
-
-**Description**: Review and document WezTerm tab integration with Neovim and Claude Code. Update documentation in ProofChecker/.claude/, ~/.config/nvim/, and ~/.dotfiles/ following the documentation norms and standards in each location. Cover: OSC 7 directory updates (task 790), task number display (tasks 789, 791), tab coloring on Claude completion (task 788), and the interaction between shell hooks and Neovim autocmds.
-
----
-
-### 791. Extend WezTerm task number integration for Claude Code commands
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-01
-- **Research**: [research-001.md](specs/791_wezterm_task_number_from_claude_commands/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/791_wezterm_task_number_from_claude_commands/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260201.md](specs/791_wezterm_task_number_from_claude_commands/summaries/implementation-summary-20260201.md)
-
-**Description**: Extend WezTerm task number integration to parse Claude Code commands (/research, /plan, /implement, /revise) executed within Neovim and append task number to tab title. Currently the wezterm-task-number.sh hook parses commands from the shell prompt, but when running commands from within Neovim, the task number should also be extracted and displayed as "{tab} {project} #{task}". Requires investigating how to detect Claude Code command execution from Neovim and emit the appropriate user variable updates.
-
----
-
-### 790. Add WezTerm OSC 7 integration to Neovim for tab title updates
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-01
-- **Research**: [research-001.md](specs/790_neovim_wezterm_osc7_tab_title/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/790_neovim_wezterm_osc7_tab_title/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260201.md](specs/790_neovim_wezterm_osc7_tab_title/summaries/implementation-summary-20260201.md)
-
-**Description**: Add WezTerm OSC 7 integration to Neovim to update tab titles when neovim changes working directory. Currently tabs show the shell's cwd (e.g., "benjamin" when shell is in ~), but should show neovim's cwd (e.g., "ProofChecker" when nvim opens a project root). Solution: Add autocmd on DirChanged event to send OSC 7 sequences from neovim. Requires investigating the correct location in the neovim config structure and testing with nvim-tree and session management.
-
----
-
-### 789. Configure WezTerm tab title to show project directory and task number
-- **Effort**: S
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-01-31
-- **Researched**: 2026-01-31
-- **Started**: 2026-01-31
-- **Completed**: 2026-01-31
-- **Research**: [research-001.md](specs/789_wezterm_tab_title_project_and_task_number/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/789_wezterm_tab_title_project_and_task_number/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260131.md](specs/789_wezterm_tab_title_project_and_task_number/summaries/implementation-summary-20260131.md)
-
-**Description**: Configure WezTerm tab titles to show the project root directory name instead of `nvim ~`. The tab should display as `{tab_number} {project_name}` (e.g., `2 ProofChecker`). When running Claude Code commands with task numbers (`/research 788`, `/plan 788`, `/implement 788`), the tab should include the task number as `{tab_number} {project_name} #{task_number}` (e.g., `2 ProofChecker #788`). Commands without task numbers (`/todo`, `/meta`) should not append a task number. Additionally, when Claude finishes or needs input, the tab is colored (existing behavior works well), but the color should be cleared when the tab is opened/activated so that only unseen finished tabs remain colored. Active tabs should not be colored. WezTerm config is at `/home/benjamin/.dotfiles/config/wezterm.lua`.
-
----
-
-### 788. Improve WezTerm tab coloring for Claude Code completion
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-01-31
-- **Researched**: 2026-01-31
-- **Planned**: 2026-01-31
-- **Completed**: 2026-01-31
-- **Research**: [research-001.md](specs/788_wezterm_tab_coloring_on_claude_completion/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/788_wezterm_tab_coloring_on_claude_completion/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260131.md](specs/788_wezterm_tab_coloring_on_claude_completion/summaries/implementation-summary-20260131.md)
-
-**Description**: Improve WezTerm tab coloring for Claude Code completion notifications in neovim. Currently the tab is colored when Claude completes, but should only color if the tab is not already active, and the color should reset when the tab is opened. Config file is managed by home-manager in NixOS at /home/benjamin/.dotfiles/config/wezterm.lua.
 
 ---
 
@@ -325,23 +157,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/786_migrate_efq_to_efq_neg/plans/implementation-001.md)
 
 **Description**: Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings.
-
----
-
-### 777. Complete weak_completeness architectural sorry
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-01-30
-- **Researched**: 2026-02-01
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-01
-- **Completed**: 2026-02-01
-- **Research**: [research-008.md](specs/777_complete_weak_completeness_sorry/reports/research-008.md)
-- **Plan**: [implementation-001.md](specs/777_complete_weak_completeness_sorry/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260201.md](specs/777_complete_weak_completeness_sorry/summaries/implementation-summary-20260201.md)
-
-**Description**: Complete the architectural sorry in weak_completeness. This is a bridging issue between two formulations of validity, and you should use semantic_weak_completeness for sorry-free completeness proofs.
 
 ---
 

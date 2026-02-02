@@ -1,0 +1,15 @@
+{
+  "status": "in_progress",
+  "started_at": "2026-02-02T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "analysis_complete",
+    "details": "All 6 sorries analyzed, writing research report"
+  },
+  "metadata": {
+    "session_id": "sess_1769991147_20e4b3",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+  }
+}
