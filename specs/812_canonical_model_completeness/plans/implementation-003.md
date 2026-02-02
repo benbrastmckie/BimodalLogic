@@ -132,24 +132,40 @@ structure BMCS (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid 
 
 ---
 
-### Phase 2: BMCS Truth Definition [NOT STARTED]
+### Phase 2: BMCS Truth Definition [COMPLETED]
 
 **Goal**: Define truth evaluation within a BMCS, with bundled box quantification
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/Bundle/BMCSTruth.lean`
-- [ ] Define `bmcs_truth_at : BMCS D → IndexedMCSFamily D → D → Formula → Prop`
+- [x] Create `Theories/Bimodal/Metalogic/Bundle/BMCSTruth.lean`
+- [x] Define `bmcs_truth_at : BMCS D → IndexedMCSFamily D → D → Formula → Prop`
   - Atom: `Formula.atom p ∈ fam.mcs t`
   - Bot: `False`
   - Imp: `bmcs_truth_at B fam t φ → bmcs_truth_at B fam t ψ`
   - Box: `∀ fam' ∈ B.families, bmcs_truth_at B fam' t φ` (THE KEY CHANGE)
   - G: `∀ s, t ≤ s → bmcs_truth_at B fam s φ`
   - H: `∀ s, s ≤ t → bmcs_truth_at B fam s φ`
-- [ ] Define `bmcs_valid : Formula → Prop`
-- [ ] Prove basic truth properties (negation, conjunction via imp)
-- [ ] Document that this is Henkin-style (doesn't weaken completeness)
+- [x] Define `bmcs_valid : Formula → Prop`
+- [x] Prove basic truth properties (negation, conjunction via imp)
+- [x] Document that this is Henkin-style (doesn't weaken completeness)
 
-**Timing**: 1.5 hours
+**Completed**: 2026-02-02T22:45:00Z
+
+**Timing**: 0.5 hours
+
+**Theorems Proven (sorry-free)**:
+- `bmcs_truth_neg`: Truth of negation
+- `bmcs_truth_and`: Truth of conjunction
+- `bmcs_truth_or`: Truth of disjunction
+- `bmcs_truth_diamond`: Truth of diamond (possibility)
+- `bmcs_truth_box_family_independent`: Box truth independent of family
+- `bmcs_truth_box_reflexive`: Box implies the formula (T axiom)
+- `bmcs_truth_box_transitive`: Box-box implies box (4 axiom)
+- `bmcs_truth_necessitation`: Universal implies box
+- `bmcs_truth_all_future_reflexive`: G phi implies phi
+- `bmcs_truth_all_past_reflexive`: H phi implies phi
+- `bmcs_truth_all_future_transitive`: G phi implies GG phi
+- `bmcs_truth_all_past_transitive`: H phi implies HH phi
 
 **Files to create**:
 - `Theories/Bimodal/Metalogic/Bundle/BMCSTruth.lean`
