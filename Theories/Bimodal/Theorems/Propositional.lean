@@ -399,7 +399,7 @@ def ldi (A B : Formula) : [A] ⊢ A.or B := by
   -- Strategy: From EFQ and A in context, derive the result
 
   have efq_inst : ⊢ A.neg.imp (A.imp B) :=
-    efq A B
+    efq_neg A B
 
   -- Get A from context
   have h_a : [A] ⊢ A := by
@@ -593,7 +593,7 @@ def lce (A B : Formula) : [A.and B] ⊢ A := by
   -- We need to show: A.neg → (A → B.neg)
   -- This is trivial by EFQ: A.neg → (A → X) for any X
   have efq_helper : ⊢ A.neg.imp (A.imp B.neg) :=
-    efq A B.neg
+    efq_neg A B.neg
 
   have efq_ctx : [A.and B] ⊢ A.neg.imp (A.imp B.neg) :=
     DerivationTree.weakening [] [A.and B] _ efq_helper (by intro; simp)

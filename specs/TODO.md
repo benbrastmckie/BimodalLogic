@@ -34,7 +34,7 @@ technical_debt:
 
 ### 816. BMCS Temporal Modal Coherence Strengthening
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
@@ -113,13 +113,16 @@ technical_debt:
 
 ### 786. Migrate efq to efq_neg
 - **Effort**: 30 minutes
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-01-31
 - **Planned**: 2026-02-01
+- **Started**: 2026-02-02
+- **Completed**: 2026-02-02
 - **Source**: Code review 2026-01-31
 - **Research**: [research-001.md](specs/786_migrate_efq_to_efq_neg/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/786_migrate_efq_to_efq_neg/plans/implementation-001.md)
+- **Summary**: Migrated 2 deprecated efq function calls to efq_neg in Propositional.lean. Build verified successful with no errors.
 
 **Description**: Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings.
 

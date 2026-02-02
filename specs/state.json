@@ -18,17 +18,17 @@
     {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-02T22:04:46Z",
+      "last_updated": "2026-02-02T22:15:31Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
-      "session_id": "sess_1770069676_858bf8",
+      "session_id": "sess_1770070510_acd418",
       "researched": "2026-02-02T21:42:04Z",
       "artifacts": [
         {
@@ -291,13 +291,13 @@
     {
       "project_number": 786,
       "project_name": "migrate_efq_to_efq_neg",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "description": "Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings. Review from 2026-01-31.",
       "created": "2026-01-31T10:00:00Z",
-      "last_updated": "2026-02-01T20:41:02Z",
-      "session_id": "sess_1769978349_f20df7",
+      "last_updated": "2026-02-02T22:18:53Z",
+      "session_id": "sess_1770070544_5630d1",
       "researched": "2026-01-31T21:38:15Z",
       "artifacts": [
         {
@@ -309,9 +309,17 @@
           "path": "specs/786_migrate_efq_to_efq_neg/plans/implementation-001.md",
           "type": "plan",
           "summary": "1-phase plan to replace deprecated efq with efq_neg at lines 402 and 596"
+        },
+        {
+          "path": "specs/786_migrate_efq_to_efq_neg/summaries/implementation-summary-20260202.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the migration"
         }
       ],
-      "planned": "2026-02-01T20:41:02Z"
+      "planned": "2026-02-01T20:41:02Z",
+      "started": "2026-02-02T22:16:08Z",
+      "completed": "2026-02-02T22:18:53Z",
+      "completion_summary": "Migrated 2 deprecated efq function calls to efq_neg in Propositional.lean. Build verified successful with no errors."
     }
   ],
   "completed_projects": [

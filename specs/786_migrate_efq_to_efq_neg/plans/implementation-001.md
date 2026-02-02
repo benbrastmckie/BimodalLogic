@@ -1,7 +1,7 @@
 # Implementation Plan: Task #786
 
 - **Task**: 786 - Migrate efq to efq_neg
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/786_migrate_efq_to_efq_neg/reports/research-001.md
@@ -39,14 +39,14 @@ Replace 2 deprecated `efq` function calls with `efq_neg` in Theories/Bimodal/The
 
 ## Implementation Phases
 
-### Phase 1: Replace deprecated efq calls [NOT STARTED]
+### Phase 1: Replace deprecated efq calls [COMPLETED]
 
 **Goal**: Substitute all `efq` calls with `efq_neg` calls
 
 **Tasks**:
-- [ ] Replace `efq A B` with `efq_neg A B` at line 402
-- [ ] Replace `efq A B.neg` with `efq_neg A B.neg` at line 596
-- [ ] Verify build succeeds with no errors
+- [x] Replace `efq A B` with `efq_neg A B` at line 402
+- [x] Replace `efq A B.neg` with `efq_neg A B.neg` at line 596
+- [x] Verify build succeeds with no errors
 
 **Timing**: 0.25 hours
 
@@ -61,9 +61,9 @@ Replace 2 deprecated `efq` function calls with `efq_neg` in Theories/Bimodal/The
 
 ## Testing & Validation
 
-- [ ] `lake build` completes successfully
-- [ ] No deprecation warnings for efq remain
-- [ ] Proofs using efq_neg typecheck correctly
+- [x] `lake build` completes successfully
+- [x] No deprecation warnings for efq remain
+- [x] Proofs using efq_neg typecheck correctly
 
 ## Artifacts & Outputs
 
