@@ -84,19 +84,6 @@ technical_debt:
 
 ---
 
-### 804. Refactor WeakCompleteness.lean to use direct construction
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Priority**: Low
-- **Research**: [research-001.md](specs/804_refactor_weak_completeness_direct_construction/reports/research-001.md)
-
-**Description**: Refactor WeakCompleteness.lean to use direct construction instead of representation_theorem. Would allow UniversalCanonicalModel.lean to be archived. Low priority since semantic_weak_completeness is already sorry-free. Follow-up from task #797.
-
----
-
 ### 803. Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean
 - **Effort**: 1 hour
 - **Status**: [COMPLETED]

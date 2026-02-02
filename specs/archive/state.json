@@ -2,6 +2,25 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 804,
+      "project_name": "refactor_weak_completeness_direct_construction",
+      "status": "abandoned",
+      "language": "lean",
+      "description": "Refactor WeakCompleteness.lean to use direct construction instead of representation_theorem. Would allow UniversalCanonicalModel.lean to be archived. Low priority since semantic_weak_completeness is already sorry-free. Follow-up from task #797.",
+      "created": "2026-02-02T00:14:08Z",
+      "last_updated": "2026-02-02T01:03:23Z",
+      "session_id": "sess_1769994002_0a8364",
+      "researched": "2026-02-02T01:03:23Z",
+      "artifacts": [
+        {
+          "path": "specs/804_refactor_weak_completeness_direct_construction/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of WeakCompleteness architecture and feasibility of direct construction refactor"
+        }
+      ],
+      "abandoned": "2026-02-02T01:18:11Z"
+    },
+    {
       "project_number": 800,
       "project_name": "fix_fmp_semantic_canonical_model_sorries",
       "status": "abandoned",
