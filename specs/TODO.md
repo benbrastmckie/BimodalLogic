@@ -69,13 +69,16 @@ technical_debt:
 
 ### 813. Resolve remaining BMCS sorries
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Started**: 2026-02-02
+- **Completed**: 2026-02-02
 - **Research**: [research-001.md](specs/813_resolve_remaining_bmcs_sorries/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/813_resolve_remaining_bmcs_sorries/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260202.md](specs/813_resolve_remaining_bmcs_sorries/summaries/implementation-summary-20260202.md)
 
 **Description**: Use specs/812_canonical_model_completeness/summaries/implementation-summary-20260202.md and specs/812_canonical_model_completeness/plans/implementation-003.md to find ALL remaining work to complete to finish all remaining work and remove all sorries.
 

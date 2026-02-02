@@ -1,7 +1,7 @@
 # Implementation Plan: Task #813
 
 - **Task**: 813 - Resolve Remaining BMCS Sorries
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours (meta task creating 3 implementation tasks)
 - **Dependencies**: Task 812 (BMCS Completeness - COMPLETED)
 - **Research Inputs**: specs/813_resolve_remaining_bmcs_sorries/reports/research-001.md
@@ -45,7 +45,9 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Task A - Classical Propositional Completeness [NOT STARTED]
+### Phase 1: Create Task A - Classical Propositional Completeness [COMPLETED]
+
+**Created Task**: 814 - Classical Propositional Completeness Infrastructure
 
 **Goal**: Create a task for resolving the 4 classical tautology sorries
 
@@ -86,7 +88,9 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Create Task B - Universe Polymorphism Resolution [NOT STARTED]
+### Phase 2: Create Task B - Universe Polymorphism Resolution [COMPLETED]
+
+**Created Task**: 815 - BMCS Universe Polymorphism Resolution
 
 **Goal**: Create a task for resolving the 2 universe polymorphism sorries
 
@@ -121,7 +125,9 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Create Task C - Temporal/Modal Coherence Strengthening [NOT STARTED]
+### Phase 3: Create Task C - Temporal/Modal Coherence Strengthening [COMPLETED]
+
+**Created Task**: 816 - BMCS Temporal Modal Coherence Strengthening (depends on Task 814)
 
 **Goal**: Create a task for resolving the 3 temporal/modal coherence sorries
 
@@ -165,7 +171,14 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Verification and Summary [NOT STARTED]
+### Phase 4: Verification and Summary [COMPLETED]
+
+**Tasks Created**:
+- Task 814: Classical Propositional Completeness Infrastructure
+- Task 815: BMCS Universe Polymorphism Resolution
+- Task 816: BMCS Temporal Modal Coherence Strengthening
+
+**Summary**: specs/813_resolve_remaining_bmcs_sorries/summaries/implementation-summary-20260202.md
 
 **Goal**: Confirm all tasks created correctly and update task 813 status
 

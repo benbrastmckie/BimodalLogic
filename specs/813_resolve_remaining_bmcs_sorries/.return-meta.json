@@ -1,19 +1,25 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Created 3 Lean implementation tasks for BMCS sorry elimination: Task 814 (classical tautologies, 4 sorries), Task 815 (universe polymorphism, 2 sorries), Task 816 (temporal/modal coherence, 3 sorries). Total effort 6-9 hours. Execution order: 814||815 then 816.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/813_resolve_remaining_bmcs_sorries/plans/implementation-001.md",
-      "summary": "4-phase meta plan for creating 3 targeted sorry elimination tasks"
+      "type": "summary",
+      "path": "specs/813_resolve_remaining_bmcs_sorries/summaries/implementation-summary-20260202.md",
+      "summary": "Implementation summary documenting 3 tasks created with dependencies and execution order"
     }
   ],
-  "next_steps": "Run /implement 813 to execute the plan and create the 3 sorry elimination tasks",
+  "completion_data": {
+    "completion_summary": "Created 3 Lean implementation tasks (814, 815, 816) to eliminate the 10 remaining BMCS sorries. Tasks cover classical propositional tautologies, universe polymorphism resolution, and temporal/modal coherence strengthening.",
+    "claudemd_suggestions": "none"
+  },
   "metadata": {
-    "session_id": "sess_1770066466_aac4ee",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1770066831_968479",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2
-  }
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4,
+    "tasks_created": [814, 815, 816]
+  },
+  "next_steps": "Execute created tasks in order: 814||815 (parallel), then 816"
 }
