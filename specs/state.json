@@ -23,12 +23,12 @@
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-02T22:19:18Z",
+      "last_updated": "2026-02-02T22:31:24Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
-      "session_id": "sess_1770070510_acd418",
+      "session_id": "sess_1770071164_973070",
       "researched": "2026-02-02T21:42:04Z",
       "artifacts": [
         {
@@ -45,6 +45,11 @@
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-003.md",
           "type": "research",
           "summary": "Deep analysis of whether sorry-free truth lemma is achievable via hybrid strategy, with detailed examination of omega-rule, witness extraction, and construction approaches"
+        },
+        {
+          "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-004.md",
+          "type": "research",
+          "summary": "Deep analysis of Strategy B+C combination showing temporal saturation faces fundamental circularity that multi-family construction cannot address"
         }
       ]
     },

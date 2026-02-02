@@ -1,9 +1,18 @@
 {
   "status": "researched",
-  "summary": "A fully sorry-free biconditional truth lemma is not achievable through the hybrid strategy alone due to the fundamental omega-rule limitation for temporal operators. The contrapositive approach using witness extraction shifts but does not eliminate the problem. However, the completeness theorem only uses truth_lemma_forward, making temporal sorries acceptable as construction axioms. Recommendation: accept temporal sorries as mathematically sound, implement multi-family construction for the modal sorry.",
-  "artifacts": [{
-    "type": "research",
-    "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-003.md",
-    "summary": "Deep analysis of whether sorry-free truth lemma is achievable via hybrid strategy, with detailed examination of omega-rule, witness extraction, and construction approaches"
-  }]
+  "summary": "Strategy B (temporal saturation) combined with Strategy C (multi-family) cannot achieve sorry-free truth lemma due to fundamental circularity in temporal saturation - omega-rule limitation is architectural, not constructional. Recommended: implement C for modal, accept temporal as documented axioms.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-004.md",
+      "summary": "Deep analysis of Strategy B+C combination showing temporal saturation faces fundamental circularity that multi-family construction cannot address"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1770071164_973070",
+    "agent_type": "lean-research-agent",
+    "research_focus": "Strategy B + C viability for sorry-free truth lemma",
+    "key_finding": "Temporal sorries from omega-rule, modal sorry from single-family - different root causes requiring different solutions",
+    "recommendation": "Accept temporal sorries as axioms (completeness uses forward only), implement multi-family for modal"
+  }
 }

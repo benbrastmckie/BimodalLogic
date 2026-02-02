@@ -40,7 +40,7 @@ technical_debt:
 - **Researched**: 2026-02-02
 - **Parent**: Task 813
 - **Dependencies**: 814
-- **Research**: [research-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md), [research-002.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-002.md), [research-003.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-003.md)
+- **Research**: [research-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md), [research-002.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-002.md), [research-003.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-003.md), [research-004.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-004.md)
 
 **Description**: Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past), Construction.lean:220 (modal_backward in singleFamilyBMCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction or multi-family approach.
 
