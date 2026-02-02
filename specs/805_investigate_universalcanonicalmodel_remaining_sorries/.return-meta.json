@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/805_investigate_universalcanonicalmodel_remaining_sorries/plans/implementation-001.md",
+      "summary": "1-phase implementation plan to resolve 2 sorries in UniversalCanonicalModel.lean using existing FMP infrastructure"
+    }
+  ],
+  "next_steps": "Run /implement 805 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1769995175_b8cc77",
+    "agent_type": "planner-agent",
+    "duration_seconds": 60,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 1,
+    "estimated_hours": 1.0
+  }
+}

@@ -8,20 +8,26 @@
     {
       "project_number": 805,
       "project_name": "investigate_universalcanonicalmodel_remaining_sorries",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T01:07:18Z",
-      "session_id": "sess_1769994131_dbef15",
+      "last_updated": "2026-02-02T01:21:39Z",
+      "session_id": "sess_1769995175_b8cc77",
       "researched": "2026-02-02T01:07:18Z",
       "artifacts": [
         {
           "path": "specs/805_investigate_universalcanonicalmodel_remaining_sorries/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of 2 sorries: non_provable_satisfiable and completeness_contrapositive, both provable with phi_consistent_of_not_refutable and neg_set_consistent_of_not_provable"
+        },
+        {
+          "path": "specs/805_investigate_universalcanonicalmodel_remaining_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase implementation plan to resolve 2 sorries in UniversalCanonicalModel.lean using existing FMP infrastructure"
         }
-      ]
+      ],
+      "planned": "2026-02-02T01:21:39Z"
     },
     {
       "project_number": 806,
@@ -35,11 +41,12 @@
     {
       "project_number": 807,
       "project_name": "remove_unused_representation_theorem_call",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Remove unused representation_theorem call from InfinitaryStrongCompleteness.lean line 248 (dead code cleanup).",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T00:25:51Z"
+      "last_updated": "2026-02-02T01:20:16Z",
+      "session_id": "sess_1769995198_c0d58c"
     },
     {
       "project_number": 808,
@@ -106,12 +113,12 @@
     {
       "project_number": 799,
       "project_name": "complete_decidability_proofs",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T01:04:12Z",
-      "session_id": "sess_1769994229_9ca95d",
+      "last_updated": "2026-02-02T01:19:24Z",
+      "session_id": "sess_1769995146_68e79a",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
         {
