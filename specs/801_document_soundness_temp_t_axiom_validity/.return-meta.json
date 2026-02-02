@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "session_id": "sess_1769992343_82bfa3",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/801_document_soundness_temp_t_axiom_validity/reports/research-001.md",
-      "summary": "The 4 temp_t sorries exist because proofs use strict inequality (<) but semantics were changed to reflexive (<=) in Task 658. The sorries are now trivially provable with le_refl. Recommends fixing the code to match reflexive semantics rather than reverting."
+      "type": "plan",
+      "path": "specs/801_document_soundness_temp_t_axiom_validity/plans/implementation-001.md",
+      "summary": "5-phase plan to fix 4 temp_t sorries by updating proofs for reflexive semantics"
     }
   ],
+  "next_steps": "Run /implement 801 to execute the plan",
   "metadata": {
-    "session_id": "sess_1769992343_82bfa3",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1769992838_200454",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3
   }
 }

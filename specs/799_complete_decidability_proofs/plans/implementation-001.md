@@ -44,7 +44,7 @@ The research report identifies:
 
 ## Implementation Phases
 
-### Phase 1: Closure.lean List Monotonicity Lemmas [IN PROGRESS]
+### Phase 1: Closure.lean List Monotonicity Lemmas [BLOCKED]
 
 **Goal**: Complete the two sorries in Closure.lean - `closed_extend_closed` and `add_neg_causes_closure`
 

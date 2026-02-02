@@ -95,7 +95,7 @@ technical_debt:
 
 ### 803. Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 
@@ -104,12 +104,14 @@ technical_debt:
 ---
 
 ### 801. Document Soundness temp_t axiom semantic validity issue
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 3 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-02
+- **Planned**: 2026-02-02
 - **Research**: [research-001.md](specs/801_document_soundness_temp_t_axiom_validity/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/801_document_soundness_temp_t_axiom_validity/plans/implementation-001.md)
 
 **Description**: Document the 2 sorries in SoundnessLemmas.lean (temp_t axioms). These are NOT semantically valid with strict inequality but were added for syntactic completeness (MCS coherence). Add clear documentation explaining this is an acceptable known limitation. Evaluate if these can be resolved or should be marked as permanent documented technical debt.
 
