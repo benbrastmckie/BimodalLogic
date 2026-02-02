@@ -1,5 +1,5 @@
 ---
-next_project_number: 803
+next_project_number: 805
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,27 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 804. Refactor WeakCompleteness.lean to use direct construction
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+- **Priority**: Low
+
+**Description**: Refactor WeakCompleteness.lean to use direct construction instead of representation_theorem. Would allow UniversalCanonicalModel.lean to be archived. Low priority since semantic_weak_completeness is already sorry-free. Follow-up from task #797.
+
+---
+
+### 803. Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.
+
+---
 
 ### 802. Fix WezTerm tab task number clearing on Neovim exit and /clear command
 - **Effort**: S
@@ -61,7 +82,7 @@ technical_debt:
 
 ### 799. Complete Decidability proofs
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-01
 

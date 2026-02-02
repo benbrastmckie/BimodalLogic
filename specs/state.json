@@ -6,6 +6,24 @@
   },
   "active_projects": [
     {
+      "project_number": 803,
+      "project_name": "prove_g_bot_h_bot_conditions",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Prove G_bot/H_bot conditions in UniversalCanonicalModel.lean. These 2 sorries are provable using T-axioms (as demonstrated in InfinitaryStrongCompleteness). Would make weak_completeness path sorry-free. Follow-up from task #797.",
+      "created": "2026-02-02T00:14:08Z",
+      "last_updated": "2026-02-02T00:14:08Z"
+    },
+    {
+      "project_number": 804,
+      "project_name": "refactor_weak_completeness_direct_construction",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Refactor WeakCompleteness.lean to use direct construction instead of representation_theorem. Would allow UniversalCanonicalModel.lean to be archived. Low priority since semantic_weak_completeness is already sorry-free. Follow-up from task #797.",
+      "created": "2026-02-02T00:14:08Z",
+      "last_updated": "2026-02-02T00:14:08Z"
+    },
+    {
       "project_number": 802,
       "project_name": "wezterm_task_number_clearing_neovim_exit",
       "status": "completed",
@@ -104,11 +122,12 @@
     {
       "project_number": 799,
       "project_name": "complete_decidability_proofs",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-01T23:25:21Z"
+      "last_updated": "2026-02-02T00:12:42Z",
+      "session_id": "sess_1769991147_20e4b3"
     },
     {
       "project_number": 800,
@@ -666,7 +685,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 803,
+  "next_project_number": 805,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
