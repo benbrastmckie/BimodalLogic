@@ -6,6 +6,60 @@
   },
   "active_projects": [
     {
+      "project_number": 805,
+      "project_name": "investigate_universalcanonicalmodel_remaining_sorries",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.",
+      "created": "2026-02-02T00:25:51Z",
+      "last_updated": "2026-02-02T00:25:51Z"
+    },
+    {
+      "project_number": 806,
+      "project_name": "archive_deprecated_representation_constructions",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.",
+      "created": "2026-02-02T00:25:51Z",
+      "last_updated": "2026-02-02T00:25:51Z"
+    },
+    {
+      "project_number": 807,
+      "project_name": "remove_unused_representation_theorem_call",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Remove unused representation_theorem call from InfinitaryStrongCompleteness.lean line 248 (dead code cleanup).",
+      "created": "2026-02-02T00:25:51Z",
+      "last_updated": "2026-02-02T00:25:51Z"
+    },
+    {
+      "project_number": 808,
+      "project_name": "audit_coherentconstruction_taskrelation_sorries",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.",
+      "created": "2026-02-02T00:25:51Z",
+      "last_updated": "2026-02-02T00:25:51Z"
+    },
+    {
+      "project_number": 809,
+      "project_name": "audit_truthlemma_sorries",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.",
+      "created": "2026-02-02T00:25:51Z",
+      "last_updated": "2026-02-02T00:25:51Z"
+    },
+    {
+      "project_number": 810,
+      "project_name": "strategic_review_representation_vs_semantic_paths",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
+      "created": "2026-02-02T00:25:51Z",
+      "last_updated": "2026-02-02T00:25:51Z"
+    },
+    {
       "project_number": 803,
       "project_name": "prove_g_bot_h_bot_conditions",
       "status": "not_started",
@@ -26,12 +80,12 @@
     {
       "project_number": 799,
       "project_name": "complete_decidability_proofs",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Complete the 6 remaining sorries in Decidability/: 2 sorries in Closure.lean (tableau closure proofs), 1 sorry in Saturation.lean (rule termination), and 3 sorries in Correctness.lean. These are technical completeness/termination proofs for the tableau-based decision procedure.",
       "created": "2026-02-01T23:25:21Z",
-      "last_updated": "2026-02-02T00:21:42Z",
-      "session_id": "sess_1769991547_52b158",
+      "last_updated": "2026-02-02T00:24:26Z",
+      "session_id": "sess_1769991847_9b9170",
       "researched": "2026-02-02T00:18:09Z",
       "artifacts": [
         {
@@ -45,7 +99,8 @@
           "summary": "4-phase implementation plan for completing 6 sorries in Decidability module"
         }
       ],
-      "planned": "2026-02-02T00:21:42Z"
+      "planned": "2026-02-02T00:21:42Z",
+      "started": "2026-02-02T00:24:26Z"
     },
     {
       "project_number": 800,
@@ -351,7 +406,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 805,
+  "next_project_number": 811,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

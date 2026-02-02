@@ -1,5 +1,5 @@
 ---
-next_project_number: 805
+next_project_number: 811
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,66 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 810. Strategic review: Representation/ vs semantic completeness paths
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.
+
+---
+
+### 809. Audit TruthLemma.lean sorries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Audit TruthLemma.lean sorries (4 total Box + backward temporal) and evaluate impact on completeness proofs for publishable metalogic.
+
+---
+
+### 808. Audit CoherentConstruction.lean and TaskRelation.lean sorries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Audit CoherentConstruction.lean and TaskRelation.lean sorries (16 total) to determine completion strategy vs archival for publishable metalogic.
+
+---
+
+### 807. Remove unused representation_theorem call
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Remove unused representation_theorem call from InfinitaryStrongCompleteness.lean line 248 (dead code cleanup).
+
+---
+
+### 806. Archive deprecated Representation/ constructions
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Archive deprecated Representation/ constructions (IndexedMCSFamily.lean, CanonicalHistory.lean) marked as superseded/deprecated to reduce sorry count.
+
+---
+
+### 805. Investigate UniversalCanonicalModel.lean remaining sorries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-02
+
+**Description**: Investigate remaining 3 sorries in UniversalCanonicalModel.lean beyond G_bot/H_bot conditions to determine if they are provable or fundamental gaps.
+
+---
 
 ### 804. Refactor WeakCompleteness.lean to use direct construction
 - **Effort**: TBD
@@ -65,11 +125,12 @@ technical_debt:
 
 ### 799. Complete Decidability proofs
 - **Effort**: 7 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
+- **Started**: 2026-02-02
 - **Research**: [research-001.md](specs/799_complete_decidability_proofs/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/799_complete_decidability_proofs/plans/implementation-001.md)
 
