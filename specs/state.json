@@ -40,13 +40,13 @@
     {
       "project_number": 810,
       "project_name": "strategic_review_representation_vs_semantic_paths",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Strategic review: Representation/ approach vs semantic completeness paths to determine archival vs completion strategy for publishable metalogic.",
       "created": "2026-02-02T00:25:51Z",
-      "last_updated": "2026-02-02T08:50:33Z",
+      "last_updated": "2026-02-02T08:54:10Z",
       "session_id": "sess_1770022212_d914d3",
-      "researched": "2026-02-02T06:06:24Z",
+      "researched": "2026-02-02T08:54:10Z",
       "artifacts": [
         {
           "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-001.md",
@@ -77,6 +77,11 @@
           "path": "Theories/Bimodal/Metalogic/FMP/ConsistentSatisfiable.lean",
           "type": "implementation",
           "summary": "Bridge lemma connecting consistency to satisfiability via FMP - partial with 6 sorries in modal/temporal cases"
+        },
+        {
+          "path": "specs/810_strategic_review_representation_vs_semantic_paths/reports/research-005.md",
+          "type": "research",
+          "summary": "Analysis of Phase 1 bridge lemma blockage: 6 sorries in mcs_world_truth_correspondence are unrecoverable due to architectural mismatch in model construction"
         }
       ],
       "planned": "2026-02-02T06:34:46Z",
