@@ -6,6 +6,29 @@
   },
   "active_projects": [
     {
+      "project_number": 819,
+      "project_name": "create_sorry_debt_policy_context_file",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "1-2 hours",
+      "description": "Create .claude/context/project/lean4/standards/sorry-debt-policy.md with philosophy, remediation paths, discovery protocol, and Boneyard references. Philosophy: sorries are mathematical debt, never acceptable in final proofs. Remediation paths: Boneyard archival, architectural refactoring, proof completion. Discovery protocol: what to do when encountering existing sorries during implementation. References to project Boneyard locations (Theories/Bimodal/Boneyard/, Boneyard/).",
+      "created": "2026-02-02T23:14:16Z",
+      "last_updated": "2026-02-02T23:14:16Z"
+    },
+    {
+      "project_number": 820,
+      "project_name": "add_sorry_debt_policy_references",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "30 minutes",
+      "description": "Add single-line references to sorry-debt-policy.md in Lean agent and rule files. Add to lean-implementation-agent.md and lean-research-agent.md Context References sections: '@.claude/context/project/lean4/standards/sorry-debt-policy.md - Sorry remediation policy'. Update .claude/rules/lean4.md to reference the context file.",
+      "created": "2026-02-02T23:14:16Z",
+      "last_updated": "2026-02-02T23:14:16Z",
+      "dependencies": [
+        819
+      ]
+    },
+    {
       "project_number": 818,
       "project_name": "refactor_bimodal_metalogic_modules",
       "status": "not_started",
@@ -18,17 +41,17 @@
     {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-02T23:03:12Z",
+      "last_updated": "2026-02-02T23:14:07Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
-      "session_id": "sess_1770073112_85d50a",
+      "session_id": "sess_1770074026_3b529f",
       "researched": "2026-02-02T12:45:00Z",
       "artifacts": [
         {
@@ -366,7 +389,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 819,
+  "next_project_number": 821,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

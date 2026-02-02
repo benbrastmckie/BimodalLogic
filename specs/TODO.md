@@ -1,16 +1,16 @@
 ---
-next_project_number: 819
+next_project_number: 821
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-02T21:45:54Z
 task_counts:
-  active: 12
+  active: 14
   completed: 362
   in_progress: 2
-  not_started: 5
+  not_started: 7
   abandoned: 26
-  total: 386
+  total: 388
 technical_debt:
   sorry_count: 75
   axiom_count: 15
@@ -21,6 +21,27 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 820. Add sorry-debt-policy references
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-02
+- **Dependencies**: Task 819
+
+**Description**: Add single-line references to sorry-debt-policy.md in Lean agent and rule files. Add to lean-implementation-agent.md and lean-research-agent.md Context References sections: '@.claude/context/project/lean4/standards/sorry-debt-policy.md - Sorry remediation policy'. Update .claude/rules/lean4.md to reference the context file.
+
+---
+
+### 819. Create sorry-debt-policy.md context file
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-02
+
+**Description**: Create .claude/context/project/lean4/standards/sorry-debt-policy.md with philosophy, remediation paths, discovery protocol, and Boneyard references. Philosophy: sorries are mathematical debt, never acceptable in final proofs. Remediation paths: Boneyard archival, architectural refactoring, proof completion. Discovery protocol: what to do when encountering existing sorries during implementation. References to project Boneyard locations (Theories/Bimodal/Boneyard/, Boneyard/).
+
+---
 
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 8-12 hours
@@ -34,7 +55,7 @@ technical_debt:
 
 ### 816. BMCS Temporal Modal Coherence Strengthening
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
