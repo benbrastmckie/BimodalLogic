@@ -48,7 +48,7 @@ Complete 6 remaining sorries in the Decidability module across three files.
 
 ## Implementation Phases
 
-### Phase 1: Closure.lean - Helper Lemmas and Check Monotonicity [NOT STARTED]
+### Phase 1: Closure.lean - Helper Lemmas and Check Monotonicity [COMPLETED]
 
 **Goal**: Implement all helper lemmas and check function monotonicity theorems
 
@@ -136,7 +136,7 @@ theorem checkAxiomNeg_mono (b : Branch) (x : SignedFormula) :
 
 ---
 
-### Phase 2: Closure.lean - Main Theorems [NOT STARTED]
+### Phase 2: Closure.lean - Main Theorems [IN PROGRESS]
 
 **Goal**: Complete `closed_extend_closed` and `add_neg_causes_closure`
 

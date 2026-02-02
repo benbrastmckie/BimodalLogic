@@ -327,29 +327,39 @@ theorem add_neg_causes_closure (b : Branch) (φ : Formula) :
   | some _ => rfl
   | none =>
     -- The extended branch contains SignedFormula.neg φ at the head
-    -- Since b contains SignedFormula.pos φ (from hpos), checkContradiction will find it
+    -- First establish that the extended branch has F(φ) at the head
     have hasNegPhi : Branch.hasNeg (SignedFormula.neg φ :: b) φ = true := by
-      simp only [Branch.hasNeg, Branch.contains, List.any_cons, beq_self_eq_true,
-        Bool.true_or, SignedFormula.neg]
-    -- checkContradiction will find the SignedFormula.pos φ in b
+      unfold Branch.hasNeg Branch.contains SignedFormula.neg
+      simp only [List.any_cons, Bool.or_eq_true]
+      left
+      -- Need to show: ⟨Sign.neg, φ⟩ == ⟨Sign.neg, φ⟩ = true
+      -- Since SignedFormula derives BEq and DecidableEq, we can use decide
+      simp only [BEq.beq, decide_eq_true_eq]
+    -- Now show checkContradiction succeeds by finding the witness from hpos
     have hcontra : (checkContradiction (SignedFormula.neg φ :: b)).isSome := by
-      rw [checkContradiction, List.findSome?_isSome_iff]
+      unfold checkContradiction
+      rw [List.findSome?_isSome_iff]
+      -- Extract witness from hpos
       simp only [Branch.hasPos, Branch.contains, List.any_eq_true] at hpos
       obtain ⟨witness, hwit_mem, hwit_eq⟩ := hpos
+      -- witness is in b and witness == SignedFormula.pos φ
       use witness
       constructor
       · exact List.mem_cons_of_mem (SignedFormula.neg φ) hwit_mem
       · simp only [Option.isSome_iff_exists]
         use ClosureReason.contradiction witness.formula
-        -- hwit_eq says witness == SignedFormula.pos φ = true
-        -- Need to show the if condition is true
-        simp only [beq_iff_eq] at hwit_eq
-        simp only [hwit_eq, SignedFormula.pos, SignedFormula.isPos, SignedFormula.formula]
-        simp only [ite_eq_left_iff, not_and, Bool.not_eq_true]
-        intro _
-        -- Need to show Branch.hasNeg (SignedFormula.neg φ :: b) φ = true
-        exact absurd hasNegPhi
-    -- Now use the fact that checkContradiction.isSome
+        -- Need to show: if condition is true
+        -- witness == SignedFormula.pos φ means witness.isPos = true and witness.formula = φ
+        have h1 : witness.isPos = true := by
+          simp only [beq_iff_eq] at hwit_eq
+          rw [hwit_eq]
+          rfl
+        have h2 : witness.formula = φ := by
+          simp only [beq_iff_eq] at hwit_eq
+          rw [hwit_eq]
+          rfl
+        simp only [h1, h2, hasNegPhi, and_self, ↓reduceIte]
+    -- Use the fact that checkContradiction.isSome to close the goal
     simp only [Option.isSome_iff_exists] at hcontra ⊢
     obtain ⟨r, hr⟩ := hcontra
     exact ⟨r, by simp [hr]⟩
