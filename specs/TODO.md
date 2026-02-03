@@ -43,7 +43,7 @@ technical_debt:
 
 ### 844. Redesign metalogic to use Pre-Coherent Bundle construction
 - **Effort**: 12-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
