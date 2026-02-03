@@ -22,13 +22,49 @@ technical_debt:
 
 ## Tasks
 
+### 845. Update context files from LaTeX NOTE: tags
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Priority**: medium
+- **Created**: 2026-02-03
+
+**Description**: Update .claude/context/ files based on 2 NOTE: tags from Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 474: Standardize lean source code references to follow pattern shown at end of sections; (2) Line 550: Define \set{} macro in logos-notation.sty to replace \{ \} everywhere.
+
+---
+
+### 846. Fix LaTeX Constitutive Foundation FIX:/NOTE: tags
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Priority**: high
+- **Created**: 2026-02-03
+- **Depends**: Task 845
+
+**Description**: Fix issues from FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. FIX tags: (1) Line 165: Turn remark into formal definitions; (2) Line 187: Simplify state modality definitions layout; (3) Line 202: Integrate pointwise compatibility into state modality definitions. NOTE tags: (1) Line 474: Apply standard lean source reference form; (2) Line 550: Replace \{ \} with \set{} macro. Remove all FIX: and NOTE: tags after implementing fixes.
+
+---
+
+### 847. Restructure Constitutive Semantics section
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Priority**: medium
+- **Created**: 2026-02-03
+
+**Description**: Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section "Constitutive Semantics" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.
+
+---
+
+
 ### 844. Redesign metalogic to use Pre-Coherent Bundle construction
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
 - **Related**: Task 842
 - **Research**: [research-001.md](specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-001.md)

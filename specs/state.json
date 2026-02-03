@@ -1,21 +1,60 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 39,
-    "last_sync": "2026-02-03T10:30:00Z"
+    "total_tasks": 42,
+    "last_sync": "2026-02-03T21:09:57Z"
   },
   "active_projects": [
     {
+      "project_number": 845,
+      "project_name": "update_context_files_from_latex_notes",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "medium",
+      "effort": "1 hour",
+      "description": "Update .claude/context/ files based on 2 NOTE: tags from Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 474: Standardize lean source code references to follow pattern shown at end of sections; (2) Line 550: Define \\set{} macro in logos-notation.sty to replace \\{ \\} everywhere.",
+      "created": "2026-02-03T21:09:57Z",
+      "last_updated": "2026-02-03T21:09:57Z",
+      "session_id": "sess_1770152997_23f31a"
+    },
+    {
+      "project_number": 846,
+      "project_name": "fix_latex_constitutive_foundation_tags",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "high",
+      "effort": "2 hours",
+      "description": "Fix issues from FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. FIX tags: (1) Line 165: Turn remark into formal definitions; (2) Line 187: Simplify state modality definitions layout; (3) Line 202: Integrate pointwise compatibility into state modality definitions. NOTE tags: (1) Line 474: Apply standard lean source reference form; (2) Line 550: Replace \\{ \\} with \\set{} macro. Remove all FIX: and NOTE: tags after implementing fixes.",
+      "created": "2026-02-03T21:09:57Z",
+      "last_updated": "2026-02-03T21:09:57Z",
+      "session_id": "sess_1770152997_23f31a",
+      "dependencies": [
+        845
+      ]
+    },
+    {
+      "project_number": 847,
+      "project_name": "restructure_constitutive_semantics_section",
+      "status": "not_started",
+      "language": "latex",
+      "priority": "medium",
+      "effort": "1 hour",
+      "description": "Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section \"Constitutive Semantics\" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.",
+      "created": "2026-02-03T21:09:57Z",
+      "last_updated": "2026-02-03T21:09:57Z",
+      "session_id": "sess_1770152997_23f31a"
+    },
+    {
       "project_number": 844,
       "project_name": "redesign_metalogic_precoherent_bundle_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "12-16 hours",
       "description": "Completely redesign the metalogic to use a Pre-Coherent Bundle construction that builds families and bundles simultaneously. Define SaturationClosure (finite set S of formulas), PreCoherent predicate (S-bounded Box formulas, temporal coherence), and AllPreCoherentFamilies (product of all pre-coherent families). Implement restricted Lindenbaum that filters out Box formulas with content outside S. Box coherence follows from S-boundedness by construction; saturation follows from product structure. This approach avoids the Lindenbaum control problem that causes irreducible sorries in current sequential construction. Target: zero sorries, zero axioms, publication-ready completeness proof. Based on research-003.md from Task 842.",
       "created": "2026-02-03T20:49:21Z",
-      "last_updated": "2026-02-03T21:02:26Z",
+      "last_updated": "2026-02-03T21:04:44Z",
       "related_task": 842,
-      "session_id": "sess_1770152326_5a6669",
+      "session_id": "sess_1770152665_b3b0f6",
       "researched": "2026-02-03T20:55:09Z",
       "artifacts": [
         {
@@ -29,7 +68,8 @@
           "summary": "8-phase implementation plan for Pre-Coherent Bundle construction eliminating 3 sorries"
         }
       ],
-      "planned": "2026-02-03T21:02:26Z"
+      "planned": "2026-02-03T21:02:26Z",
+      "started": "2026-02-03T21:04:44Z"
     },
     {
       "project_number": 843,
@@ -455,7 +495,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 845,
+  "next_project_number": 848,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
