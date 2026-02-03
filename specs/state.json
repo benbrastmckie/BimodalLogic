@@ -35,6 +35,11 @@
           "path": "specs/826_fdsm_completeness_saturated_construction/summaries/implementation-summary-20260203.md",
           "type": "summary",
           "summary": "Partial implementation progress: completed saturation_terminates and tracked_fixed_point_is_saturated, 8 sorries remain in ModalSaturation.lean"
+        },
+        {
+          "path": "specs/826_fdsm_completeness_saturated_construction/reports/research-002.md",
+          "type": "research",
+          "summary": "Analysis of FDSM blockers and recommendation to accept existing sorry-free completeness path"
         }
       ],
       "planned": "2026-02-03T04:26:42Z",
