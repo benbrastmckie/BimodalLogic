@@ -2,6 +2,50 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 850,
+      "project_name": "scalable_oversight_section",
+      "status": "completed",
+      "language": "latex",
+      "description": "Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone",
+      "created": "2026-02-03T22:45:49Z",
+      "archived": "2026-02-03T23:17:27Z",
+      "session_id": "sess_1770159530_c2e919",
+      "completion_summary": "Created Scalable Oversight subsection in Logos Introduction with 3 paragraphs covering AI reasoning oversight mechanisms."
+    },
+    {
+      "project_number": 847,
+      "project_name": "restructure_constitutive_semantics_section",
+      "status": "completed",
+      "language": "latex",
+      "description": "Restructure semantic clauses in 02-ConstitutiveFoundation.tex",
+      "created": "2026-02-03T21:09:57Z",
+      "archived": "2026-02-03T23:17:27Z",
+      "session_id": "sess_1770157114_634c7f",
+      "completion_summary": "Created new Constitutive Semantics subsection with introduction explaining bilateral exact truthmaker semantics."
+    },
+    {
+      "project_number": 844,
+      "project_name": "redesign_metalogic_precoherent_bundle_construction",
+      "status": "completed",
+      "language": "lean",
+      "description": "Completely redesign the metalogic to use a Pre-Coherent Bundle construction",
+      "created": "2026-02-03T20:49:21Z",
+      "archived": "2026-02-03T23:17:27Z",
+      "session_id": "sess_1770158488_078b51",
+      "completion_summary": "Completed the K-distribution chain proof in CoherentConstruction.lean, eliminating the blocking sorry."
+    },
+    {
+      "project_number": 839,
+      "project_name": "clean_linter_warnings",
+      "status": "completed",
+      "language": "lean",
+      "description": "Clean up linter warnings in SoundnessLemmas.lean, TaskFrame.lean, and WorldHistory.lean",
+      "created": "2026-02-03T11:25:00Z",
+      "archived": "2026-02-03T23:17:27Z",
+      "session_id": "sess_1770158078_337312",
+      "completion_summary": "Eliminated 16 linter warnings through mechanical refactorings."
+    },
+    {
       "project_number": 840,
       "project_name": "refactor_truthlemma_forward_backward_publication",
       "status": "abandoned",

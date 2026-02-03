@@ -3,16 +3,16 @@ next_project_number: 854
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-03T22:16:00Z
+  last_assessed: 2026-02-03T23:15:00Z
 task_counts:
-  active: 16
-  completed: 389
-  in_progress: 4
-  not_started: 4
+  active: 12
+  completed: 393
+  in_progress: 1
+  not_started: 5
   abandoned: 26
-  total: 417
+  total: 421
 technical_debt:
-  sorry_count: 83
+  sorry_count: 75
   axiom_count: 16
   build_errors: 1
   status: good
@@ -48,68 +48,19 @@ technical_debt:
 
 ### 851. Define CoherentBundle structure
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/851_define_coherentbundle_structure/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/851_define_coherentbundle_structure/plans/implementation-001.md)
+- **Summary**: Implemented CoherentBundle structure with toBMCS conversion fully proven. Defines UnionBoxContent, MutuallyCoherent predicate, and proves modal_forward/modal_backward for saturated bundles. No sorries - complete infrastructure for axiom-free BMCS construction.
 
 **Description**: Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)
 
 ---
 
-### 850. Create scalable oversight section in Introduction
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/850_scalable_oversight_section/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/850_scalable_oversight_section/plans/implementation-001.md)
-- **Summary**: Created Scalable Oversight subsection in Logos Introduction with 3 paragraphs covering AI reasoning oversight mechanisms. Content follows existing style (semantic linefeeds, italicized terms, notation macros).
-
-**Description**: Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone.
-
----
-
-### 847. Restructure Constitutive Semantics section
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Priority**: medium
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/847_restructure_constitutive_semantics_section/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/847_restructure_constitutive_semantics_section/plans/implementation-001.md)
-- **Summary**: Created new Constitutive Semantics subsection with introduction explaining bilateral exact truthmaker semantics, hyperintensionality, and exactness. Removed TODO comment and converted remark to prose. Document compiles cleanly at 41 pages.
-
-**Description**: Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section "Constitutive Semantics" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.
-
----
-
-
-### 844. Redesign metalogic to use Pre-Coherent Bundle construction
-- **Effort**: 12-16 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Related**: Task 842
-- **Research**: [research-001.md](specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-001.md), [research-002.md](specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-002.md) (supersedes v001)
-
-**Description**: Completely redesign the metalogic to use a Pre-Coherent Bundle construction that builds families and bundles simultaneously. Define SaturationClosure (finite set S of formulas), PreCoherent predicate (S-bounded Box formulas, temporal coherence), and AllPreCoherentFamilies (product of all pre-coherent families). Implement restricted Lindenbaum that filters out Box formulas with content outside S. Box coherence follows from S-boundedness by construction; saturation follows from product structure. This approach avoids the Lindenbaum control problem that causes irreducible sorries in current sequential construction. Target: zero sorries, zero axioms, publication-ready completeness proof. Based on research-003.md from Task 842.
-
----
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 2-4 hours
@@ -123,23 +74,6 @@ technical_debt:
 
 ---
 
-### 839. Clean linter warnings in Metalogic files
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Source**: /review 2026-02-03
-- **Research**: [research-001.md](specs/839_clean_linter_warnings/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/839_clean_linter_warnings/plans/implementation-001.md)
-- **Summary**: Eliminated 16 linter warnings from TaskFrame.lean, WorldHistory.lean, and SoundnessLemmas.lean through mechanical refactorings.
-
-**Description**: Clean up linter warnings in SoundnessLemmas.lean (10+ 'Try this' suggestions, unused simp args), TaskFrame.lean (duplicate namespace), and WorldHistory.lean (unused section variables). Apply suggested refactorings.
-
----
 
 ### 838. Complete or document SaturatedConstruction sorries
 - **Effort**: 32-50 hours (full), 2-4 hours (document)

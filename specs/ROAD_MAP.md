@@ -21,6 +21,22 @@ Updated by /todo command during task archival.
 
 ### 2026-02-03
 
+- **Task 850**: Created Scalable Oversight subsection in Logos Introduction
+  - *Rationale*: Added AI reasoning oversight mechanisms content from conceptual-engineering.md to LaTeX documentation
+  - *References*: [summary](specs/archive/850_scalable_oversight_section/summaries/implementation-summary-20260203.md)
+
+- **Task 847**: Restructured Constitutive Semantics section in ConstitutiveFoundation
+  - *Rationale*: Improved document structure with new subsection explaining bilateral exact truthmaker semantics
+  - *References*: [summary](specs/archive/847_restructure_constitutive_semantics_section/summaries/implementation-summary-20260203.md)
+
+- **Task 844**: Completed K-distribution chain proof in CoherentConstruction.lean
+  - *Rationale*: Eliminated blocking sorry in diamond_boxcontent_consistent_constant using generalized_modal_k
+  - *References*: [summary](specs/archive/844_redesign_metalogic_precoherent_bundle_construction/summaries/implementation-summary-20260203.md)
+
+- **Task 839**: Eliminated 16 linter warnings from Metalogic files
+  - *Rationale*: Code quality improvement through mechanical refactorings (namespace fix, omit clauses, intro patterns)
+  - *References*: [summary](specs/archive/839_clean_linter_warnings/summaries/implementation-summary-20260203.md)
+
 - **Task 827**: Eliminated modal_backward sorry in Construction.lean via singleFamily_modal_backward_axiom
   - *Rationale*: The single-family BMCS simplification required accepting modal_backward as sorry; axiom approach provides mathematically justified foundation while preserving infrastructure for future axiom-free implementation
   - *References*: [summary](specs/archive/827_complete_multi_family_bmcs_construction/summaries/implementation-summary-20260203.md)
