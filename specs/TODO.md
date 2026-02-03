@@ -24,12 +24,14 @@ technical_debt:
 
 ### 820. Add sorry-debt-policy references
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Dependencies**: Task 819
 - **Research**: [research-001.md](specs/820_add_sorry_debt_policy_references/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/820_add_sorry_debt_policy_references/plans/implementation-001.md)
 
 **Description**: Add single-line references to sorry-debt-policy.md in Lean agent and rule files. Add to lean-implementation-agent.md and lean-research-agent.md Context References sections: '@.claude/context/project/lean4/standards/sorry-debt-policy.md - Sorry remediation policy'. Update .claude/rules/lean4.md to reference the context file.
 
@@ -64,7 +66,7 @@ technical_debt:
 
 ### 816. BMCS Temporal Modal Coherence Strengthening
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
