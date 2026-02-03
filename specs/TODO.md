@@ -1,5 +1,5 @@
 ---
-next_project_number: 833
+next_project_number: 836
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,6 +22,38 @@ technical_debt:
 
 ## Tasks
 
+### 835. Enhance /review Command with ROADMAP.md Integration and Revision
+- **Effort**: 4-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-03
+- **Dependencies**: Task 833
+
+**Description**: Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic. Ensure changes follow checkpoint-based execution pattern.
+
+---
+
+### 834. Enhance /todo Command with Changelog Updates and Task Suggestions
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-03
+- **Dependencies**: Task 833
+
+**Description**: Extend /todo command to: (1) Update ROADMAP.md Changelog section when archiving completed tasks, (2) Add task suggestion generation at end of /todo execution (scan active tasks, ROADMAP.md Ambitions, and recent completions to propose 3-5 next tasks similar to /learn output), (3) Update skill-status-sync or create new skill if delegation is needed. Ensure atomic updates to ROADMAP.md follow state management rules.
+
+---
+
+### 833. Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-02-03
+
+**Description**: Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.
+
+---
+
 ### 832. Update artifact formats and agent definitions for sorry handling
 - **Effort**: TBD
 - **Status**: [RESEARCHING]
@@ -34,11 +66,12 @@ technical_debt:
 
 ### 831. Strengthen sorry-debt-policy language and guidance
 - **Effort**: 1.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
 - **Research**: [research-001.md](specs/831_strengthen_sorry_debt_policy_language/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/831_strengthen_sorry_debt_policy_language/plans/implementation-001.md)
 
