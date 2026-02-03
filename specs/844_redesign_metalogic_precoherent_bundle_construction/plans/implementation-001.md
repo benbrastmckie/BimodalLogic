@@ -1,8 +1,8 @@
 # Implementation Plan: Task #844
 
 - **Task**: 844 - Redesign metalogic to use Pre-Coherent Bundle construction
-- **Status**: [PARTIAL]
-- **Effort**: 14-18 hours
+- **Status**: [BLOCKED] - Mathematical Impossibility Discovered
+- **Effort**: 14-18 hours (TERMINATED - approach proven infeasible)
 - **Dependencies**: None (replaces current approach)
 - **Research Inputs**: specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-001.md, specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-003.md
 - **Artifacts**: plans/implementation-001.md (this file)
@@ -232,9 +232,11 @@ After implementation:
 
 ---
 
-### Phase 5: Box Coherence from PreCoherent [PARTIAL]
+### Phase 5: Box Coherence from PreCoherent [BLOCKED - MATHEMATICALLY IMPOSSIBLE]
 
 **Goal**: Prove that the pre-coherent bundle satisfies box_coherence by construction.
+
+**BLOCKING ISSUE**: The goal is mathematically impossible. See implementation summary for proof.
 
 **Estimated effort**: 3-4 hours
 
@@ -266,9 +268,11 @@ After implementation:
 
 ---
 
-### Phase 6: Modal Saturation from Product Structure [PARTIAL]
+### Phase 6: Modal Saturation from Product Structure [BLOCKED]
 
 **Goal**: Prove that the pre-coherent bundle is modally saturated because it includes all witnesses.
+
+**BLOCKED BY**: Phase 5 failure. Saturation could be proven, but is pointless without box-coherence.
 
 **Estimated effort**: 2-3 hours
 
@@ -337,9 +341,11 @@ After implementation:
 
 ---
 
-### Phase 8: Cleanup and Verification [PARTIAL]
+### Phase 8: Cleanup and Verification [BLOCKED]
 
 **Goal**: Remove old sorry-laden code, verify zero sorries and zero axioms, update documentation.
+
+**BLOCKED BY**: Phases 5-6 failures. Cannot achieve zero sorries with this approach.
 
 **Estimated effort**: 1-2 hours
 

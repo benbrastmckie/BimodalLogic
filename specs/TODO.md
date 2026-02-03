@@ -34,7 +34,7 @@ technical_debt:
 
 ### 848. Add conceptual engineering section to Introduction
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -64,7 +64,7 @@ technical_debt:
 
 ### 846. Fix LaTeX Constitutive Foundation FIX:/NOTE: tags
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: latex
 - **Priority**: high
 - **Created**: 2026-02-03

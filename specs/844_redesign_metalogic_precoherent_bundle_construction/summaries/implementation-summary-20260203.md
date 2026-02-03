@@ -1,107 +1,114 @@
 # Implementation Summary: Task #844
 
 **Completed**: 2026-02-03
-**Status**: Partial (mathematical gap discovered)
+**Status**: BLOCKED - Mathematical Impossibility Discovered
+
+## Executive Summary
+
+The Pre-Coherent Bundle approach for eliminating the `singleFamily_modal_backward_axiom` has been **proven mathematically impossible**. The approach relies on a false claim that S-bounded families will automatically satisfy box-coherence. This is fundamentally incorrect, and no amount of additional proof work can overcome this.
 
 ## Changes Made
 
-Created new module `Theories/Bimodal/Metalogic/Bundle/PreCoherentBundle.lean` implementing the Pre-Coherent Bundle construction infrastructure.
+Created and documented `Theories/Bimodal/Metalogic/Bundle/PreCoherentBundle.lean` with:
+- Complete infrastructure for Phases 1-4, 7
+- Detailed mathematical analysis of why Phases 5-6 are impossible
+- Recommendations for alternative approaches
 
 ## Files Modified
 
-- `Theories/Bimodal/Metalogic/Bundle/PreCoherentBundle.lean` - New file (355 lines)
-- `specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-001.md` - Phase status updates
+- `Theories/Bimodal/Metalogic/Bundle/PreCoherentBundle.lean` - Updated with impossibility documentation
+- `specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-001.md` - Status updates
 
-## Implementation Results
+## The Mathematical Impossibility
 
-### Completed (No Sorries)
+### The False Claim
 
-1. **Phase 1: SaturationClosure Definition**
-   - `boxContentsWithNeg`: Extracts Box contents from Finset with negations
-   - `SaturationClosure`: closureWithNeg extended with Box contents
-   - Proofs: `closureWithNeg_subset_SaturationClosure`, `self_mem_SaturationClosure`, `box_content_in_SaturationClosure`, etc.
+The Pre-Coherent Bundle approach was designed around this claim:
+> "If Box phi is in one S-bounded family f at time t, then phi is in ALL S-bounded families at time t."
 
-2. **Phase 2: SBounded and PreCoherent Predicates**
-   - `SBounded`: Box formulas have content in S
-   - `SBoundedConsistent`: Consistent and S-bounded
-   - `PreCoherent`: IndexedMCSFamily is S-bounded at each time
-   - Proofs: `SBounded_subset`, `SBounded_insert_acceptable`
+**This claim is FALSE.**
 
-3. **Phase 3: S-Bounded Restricted Lindenbaum**
-   - `SAcceptable`: Formula can be added while preserving S-boundedness
-   - `SBoundedMCS`: Maximal among S-bounded consistent sets
-   - `s_bounded_lindenbaum`: Zorn's lemma based extension (fully proven)
+### Why It's False
 
-4. **Phase 4: AllPreCoherentFamilies**
-   - `AllPreCoherentFamilies`: Set of all pre-coherent families over S
+1. **S-boundedness is an INTRA-family property**: "Box formulas have content in S"
+2. **Box-coherence is an INTER-family property**: "Box phi in f implies phi in all f'"
+3. **These are orthogonal**: The first does not imply the second
 
-5. **Phase 7: Interface**
-   - `bundle_box_coherence`: Predicate definition
-   - `is_modally_saturated_families`: Predicate definition
-   - `construct_precoherent_bmcs`: Falls back to existing construction
+### Counterexample
 
-### Partial (Contains Sorries)
+Let S = {p, ¬p}. Consider two S-bounded MCS:
+- M₁ contains p
+- M₂ contains ¬p
 
-6. **Phase 5: Box Coherence** - 1 sorry
-   - `precoherent_families_box_coherent`: Infrastructure complete, core proof has sorry
-   - **Mathematical gap**: Different MCS can contain different formulas; ensuring agreement requires additional structure
+Both are maximal, consistent, and S-bounded. If `Box p ∈ M₁`:
+- By T-axiom: `p ∈ M₁` ✓
+- Box-coherence requires: `p ∈ M₂` ✗ (M₂ contains ¬p, not p)
 
-7. **Phase 6: Modal Saturation** - 1 sorry
-   - `precoherent_families_saturated`: Infrastructure complete, core proof has sorry
-   - **Mathematical gap**: Constructing witness families requires ensuring S-boundedness of the extended MCS
+**This is not a proof gap - it's a mathematical impossibility.**
+
+## Phase Status
+
+| Phase | Status | Notes |
+|-------|--------|-------|
+| 1. SaturationClosure | [COMPLETED] | Useful infrastructure |
+| 2. SBounded/PreCoherent | [COMPLETED] | Useful infrastructure |
+| 3. S-Bounded Lindenbaum | [COMPLETED] | Novel contribution |
+| 4. AllPreCoherentFamilies | [COMPLETED] | Well-defined but unusable |
+| 5. Box Coherence | [BLOCKED] | **MATHEMATICALLY IMPOSSIBLE** |
+| 6. Modal Saturation | [BLOCKED] | Depends on Phase 5 |
+| 7. Interface | [COMPLETED] | Falls back to axiom |
+| 8. Verification | [PARTIAL] | 2 sorries remain |
+
+## Sorry Analysis
+
+| Sorry | Location | Status | Explanation |
+|-------|----------|--------|-------------|
+| `precoherent_families_box_coherent` | Line ~292 | **IMPOSSIBLE** | The claim is false; no proof exists |
+| `precoherent_families_saturated` | Line ~314 | **BLOCKED** | Could be proven, but pointless without Phase 5 |
+
+These sorries represent **fundamental mathematical impossibilities**, not incomplete proof work.
 
 ## Verification
 
-- `lake build Bimodal.Metalogic.Bundle.PreCoherentBundle` succeeds
-- Total sorries in new file: 2 (in Phases 5-6)
-- No new axioms introduced
-- Existing tests still pass
+```bash
+lake build Bimodal.Metalogic.Bundle.PreCoherentBundle  # Succeeds with warnings
+grep -c "sorry" Theories/Bimodal/Metalogic/Bundle/PreCoherentBundle.lean  # Returns 2
+```
 
-## Mathematical Analysis
+## Implications
 
-### The Fundamental Gap
+1. **The Pre-Coherent Bundle approach cannot eliminate the axiom** - it's fundamentally flawed
+2. **Any "product of all families with property P" approach faces this issue** - P cannot force inter-family agreement
+3. **Alternative approaches are needed** (see Recommendations below)
 
-The Pre-Coherent Bundle approach has a mathematical limitation that was not fully anticipated in the research phase:
+## Salvageable Components
 
-**Problem**: `AllPreCoherentFamilies S` contains ALL families where each MCS at each time is S-bounded. However, different MCS can legitimately contain different non-necessary formulas. When Box psi is in family f at time t, we need psi in ALL families at time t - but different families may have constructed their MCS differently.
+Despite the blocking issue, these components are complete and may be useful:
 
-**Why this happens**:
-1. S-bounded Lindenbaum correctly extends a seed to an S-bounded MCS
-2. But different seeds or different Lindenbaum enumeration orders yield different MCS
-3. All these MCS are pre-coherent (S-bounded), but they may disagree on non-theorem formulas
+1. **SaturationClosure** (Phase 1): Correctly bounds formula sets
+2. **S-bounded Lindenbaum** (Phase 3): Novel technique for controlling MCS extension
+3. **SBounded predicates** (Phase 2): Useful for restricted constructions
 
-### Comparison to Original Approach
+## Recommendations for Future Work
 
-| Aspect | SaturatedConstruction (old) | PreCoherentBundle (new) |
-|--------|----------------------------|------------------------|
-| Sorries | 3 (lines 714, 733, 785) | 2 (Phases 5-6) |
-| Root cause | Uncontrolled Lindenbaum | MCS disagreement |
-| Construction | Sequential witness addition | Product of all S-bounded families |
-| Progress | None - fundamental blocker | Infrastructure complete |
+To actually eliminate `singleFamily_modal_backward_axiom`, consider:
 
-The Pre-Coherent approach makes different progress but encounters a related fundamental issue.
+### 1. Canonical Model with Accessibility Relation
 
-### Potential Resolutions
+Define explicit accessibility: `w R w' iff {phi | Box phi ∈ w} ⊆ w'`
 
-1. **Canonical Model with Shared Base**: Define pre-coherent families to share a common "base" of modal truths, ensuring agreement.
+This is the standard textbook approach. Box-coherence follows by construction.
 
-2. **Single-Family Saturation**: Accept that true multi-family saturation requires a more sophisticated construction (possibly infinitary).
+### 2. Single Universal MCS
 
-3. **Weaker Box Coherence**: Relax box_coherence to only require agreement on S-bounded formulas, and prove this is sufficient for completeness.
+Construct ONE canonical MCS with built-in saturation properties, avoiding the inter-family agreement problem entirely.
 
-4. **Accept the Axiom**: The existing `singleFamily_modal_backward_axiom` is mathematically justified by canonical model theory; the full construction is a formalization luxury, not a necessity.
+### 3. Accept the Axiom as Justified
 
-## Recommendation
+The existing axiom is mathematically sound, justified by canonical model theory. The formalization is a "nice to have," not essential for the completeness result.
 
-The Pre-Coherent Bundle infrastructure provides valuable tools (S-bounded Lindenbaum, SaturationClosure) that may be useful in other contexts. However, achieving zero-sorry completeness through this approach requires additional architectural work.
+## Conclusion
 
-**Short-term**: Continue using the axiom-based single-family construction from `Construction.lean`. The axiom is mathematically sound.
+Task #844 has conclusively determined that the Pre-Coherent Bundle approach **cannot** achieve its stated goal of eliminating sorries and axioms. The 2 remaining sorries represent mathematical impossibilities, not proof gaps.
 
-**Long-term**: Investigate the "shared base" approach where pre-coherent families are constructed from a common starting point, ensuring modal agreement.
-
-## Notes
-
-- The S-bounded Lindenbaum lemma (`s_bounded_lindenbaum`) is a novel contribution
-- The SaturationClosure definition extends existing infrastructure cleanly
-- Build compiles successfully with warnings about sorries (expected)
-- No changes to existing completeness theorem infrastructure required
+The existing `singleFamily_modal_backward_axiom` in `Construction.lean` remains the practical solution until an alternative architecture is designed and implemented.

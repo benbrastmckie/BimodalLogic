@@ -345,10 +345,26 @@ def is_modally_saturated_families (families : Set (IndexedMCSFamily D)) : Prop :
     diamondFormula psi ∈ fam.mcs t → ∃ fam' ∈ families, psi ∈ fam'.mcs t
 
 /--
-Pre-coherent families are modally saturated.
+**CONDITIONAL RESULT**: Pre-coherent families would be saturated IF box_coherence held.
 
-**Note**: This theorem has a sorry because constructing witness families
-requires careful S-bounded extension.
+However, since `precoherent_families_box_coherent` is mathematically impossible (see its
+docstring), this theorem cannot contribute to a working construction.
+
+The saturation itself is NOT the blocking issue - we CAN construct witness families
+containing psi. The problem is that:
+1. These witness families will be pre-coherent with respect to S
+2. But they will NOT be box-coherent with the original families
+3. And box-coherence is required for the BMCS modal_forward property
+
+**What This Sorry Represents**:
+This sorry could potentially be eliminated by constructing S-bounded witness families.
+However, doing so would be pointless because:
+- The witnesses would join AllPreCoherentFamilies
+- But AllPreCoherentFamilies lacks box_coherence (proven impossible above)
+- So the resulting bundle would not be a valid BMCS
+
+The blocking issue is box_coherence, not saturation. This sorry is left to clearly
+mark that the entire approach is blocked, not just this specific proof.
 -/
 theorem precoherent_families_saturated (S : Set Formula) :
     is_modally_saturated_families (AllPreCoherentFamilies S (D := D)) := by
@@ -356,7 +372,8 @@ theorem precoherent_families_saturated (S : Set Formula) :
   -- Diamond psi ∈ fam.mcs t implies {psi} is consistent
   have h_psi_cons : SetConsistent {psi} :=
     diamond_implies_psi_consistent (fam.is_mcs t) psi h_diamond
-  -- Need to construct a pre-coherent family containing psi at time t
+  -- We COULD construct an S-bounded witness family here.
+  -- But it would be pointless - see docstring.
   sorry
 
 /-!
@@ -388,20 +405,37 @@ theorem construct_precoherent_bmcs_contains_context
 ## Summary
 
 This module provides:
-1. SaturationClosure definition (complete)
-2. SBounded and PreCoherent predicates (complete)
-3. S-bounded Lindenbaum's lemma (complete)
-4. AllPreCoherentFamilies definition (complete)
-5. Box coherence theorem (sorry - mathematical gap)
-6. Saturation theorem (sorry - mathematical gap)
+1. SaturationClosure definition (complete) - Useful infrastructure
+2. SBounded and PreCoherent predicates (complete) - Useful infrastructure
+3. S-bounded Lindenbaum's lemma (complete) - Useful infrastructure
+4. AllPreCoherentFamilies definition (complete) - Well-defined but unusable
+5. Box coherence theorem (IMPOSSIBLE - see docstring)
+6. Saturation theorem (BLOCKED - depends on box_coherence)
 
-The sorries represent genuine mathematical challenges in the pre-coherent
-bundle approach:
-- Different MCS can contain different formulas
-- Ensuring all pre-coherent families agree on modal truths requires
-  additional structure (e.g., canonical model construction)
+## Root Cause of Failure
 
-For now, we fall back to the axiom-based single-family construction.
+The Pre-Coherent Bundle approach attempts to achieve box-coherence "for free" through
+S-boundedness. This is fundamentally flawed because:
+
+- **S-boundedness** (intra-family): "Box formulas have content in S" ✓ Works
+- **Box-coherence** (inter-family): "Box phi in f implies phi in all f'" ✗ Cannot follow
+
+These properties are orthogonal. S-boundedness restricts the DOMAIN of Box formulas;
+box-coherence requires AGREEMENT across families on formula membership. The latter
+cannot be derived from the former.
+
+## Implications
+
+1. The Pre-Coherent Bundle approach as designed CANNOT eliminate the axiom in Construction.lean
+2. Any "product of all families satisfying local property P" approach will face this issue
+3. Eliminating the axiom requires a fundamentally different construction (see module docstring)
+
+## Salvageable Components
+
+The S-bounded Lindenbaum lemma (Phase 3) is complete and correct. It may be useful for
+other approaches that need to control which Box formulas appear during MCS extension.
+
+The construction falls back to the axiom-based single-family approach in Construction.lean.
 -/
 
 end Bimodal.Metalogic.Bundle
