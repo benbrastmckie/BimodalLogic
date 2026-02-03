@@ -140,24 +140,47 @@ After this implementation:
 
 **Goal**: Show that a maximal element M in S is fully saturated
 
+**Status**: PARTIAL - Proof structure complete but 3 sorries remain
+
 **Tasks**:
-- [ ] Prove by contradiction: assume M not fully saturated
-- [ ] Extract witness: `∃ psi, fam ∈ M, t` such that `diamondFormula psi ∈ fam.mcs t` but no witness
-- [ ] Use `diamond_implies_psi_consistent` to show `{psi}` is consistent
-- [ ] Construct witness family via Lindenbaum extension (use existing `constructWitnessFamily` or similar)
-- [ ] Show M ∪ {witness} still has box_coherence:
-  - For existing → existing: inherited from M
-  - For witness → existing / existing → witness: careful construction ensures coherence
-- [ ] Derive contradiction: M ∪ {witness} ⊃ M but both in S, contradicting maximality
+- [x] Prove by contradiction: assume M not fully saturated
+- [x] Extract witness: `∃ psi, fam ∈ M, t` such that `diamondFormula psi ∈ fam.mcs t` but no witness
+- [x] Use `diamond_implies_psi_consistent` to show `{psi}` is consistent
+- [x] Define BoxContent = {chi | ∃ fam' ∈ M, ∃ s, Box chi ∈ fam'.mcs s}
+- [x] Construct witness family W via Lindenbaum extension of {psi} ∪ BoxContent
+- [x] Show M ∪ {W} structure for box_coherence (partial):
+  - [x] For existing → existing: inherited from M
+  - [x] For existing → W: chi ∈ BoxContent ⊆ W_set
+  - [ ] For W → existing: SORRY - Lindenbaum may add Box formulas whose chi isn't in M
+- [x] Derive contradiction from maximality (assuming box_coherence)
+- [ ] Prove {psi} ∪ BoxContent is consistent: SORRY (2 cases)
+  - [ ] Case psi ∈ L: Need modal existence lemma for multi-family BoxContent
+  - [ ] Case psi ∉ L: Time mismatch (BoxContent uses ∃ s, but we need chi ∈ fam.mcs t)
 
-**Timing**: 4-5 hours (hardest phase)
+**Remaining Sorries** (3 total):
+1. Line 714: Consistency of {psi} ∪ BoxContent when psi ∈ L (modal existence lemma)
+2. Line 733: Consistency when psi ∉ L (time mismatch in BoxContent)
+3. Line 785: W → existing direction of box_coherence (Lindenbaum adds arbitrary Box formulas)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean` - Add maximality lemma
+**Analysis of Gap**:
+The core issue is the witness construction. A Lindenbaum extension of {psi} ∪ BoxContent may:
+1. Add Box chi formulas where chi is NOT in all M families (breaking W→existing coherence)
+2. The BoxContent aggregates over all times, but consistency checking needs time-specific reasoning
+
+**Possible Resolutions** (for future work):
+a) Use a "controlled" Lindenbaum that avoids adding unnecessary Box formulas
+b) Prove that any added Box chi has chi in all M families (via consistency argument)
+c) Restructure to use time-indexed witness construction instead of constantWitnessFamily
+d) Weaken the requirements (e.g., restrict to closure saturation instead of full saturation)
+
+**Timing**: Exceeded estimate - fundamental approach may need revision
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean` - Lines 567-816
 
 **Verification**:
-- Maximality implies saturation lemma compiles
-- Witness construction preserves all invariants
+- Build succeeds with sorries
+- Proof structure demonstrates the approach but cannot complete without resolving the witness construction gap
 
 ---
 

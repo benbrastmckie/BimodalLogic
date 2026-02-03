@@ -721,8 +721,16 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
           · -- x = psi, but psi ∉ L by assumption h_psi_in_L
             rw [h_eq_psi] at hx
             exact absurd hx h_psi_in_L
-          · -- x ∈ BoxContent
-            exact h_boxcontent_in_fam h_in_box
+          · -- x ∈ BoxContent (at some time s)
+            -- h_in_box : x ∈ BoxContent = {chi | ∃ fam' ∈ M, ∃ s, Box chi ∈ fam'.mcs s}
+            -- We need x ∈ fam.mcs t, but BoxContent uses ∃ s, not specifically t
+            -- This case requires that BoxContent at time t is in fam.mcs t
+            rcases h_in_box with ⟨fam', hfam', s, h_box_at_s⟩
+            -- We only know Box x ∈ fam'.mcs s, not necessarily at time t
+            -- For now, sorry this case - it requires either:
+            -- 1. Restricting BoxContent to time t only (but then Step 8 fails for other times)
+            -- 2. Showing that Box formulas are consistent across times (temporal structure)
+            sorry
         -- L ⊢ bot and L ⊆ fam.mcs t contradicts MCS consistency
         exact (fam.is_mcs t).1 L h_L_sub_fam ⟨d⟩
 
@@ -747,10 +755,10 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
         rcases h_fam2 with h_fam2_M | h_fam2_W
         · -- fam2 ∈ M: use M's box_coherence
           exact hM_in_S.2.1 fam1 h_fam1_M chi s h_box_chi fam2 h_fam2_M
-        · -- fam2 = W: need chi ∈ W.mcs s
+        · -- fam2 = W: need chi ∈ W.mcs s = W_set
           subst h_fam2_W
           -- chi ∈ BoxContent because Box chi ∈ fam1.mcs s and fam1 ∈ M
-          have h_chi_boxcontent : chi ∈ BoxContent := ⟨fam1, h_fam1_M, h_box_chi⟩
+          have h_chi_boxcontent : chi ∈ BoxContent := ⟨fam1, h_fam1_M, s, h_box_chi⟩
           -- W.mcs s = W_set contains BoxContent
           show chi ∈ W_set
           exact h_W_extends (Set.mem_union_right {psi} h_chi_boxcontent)
@@ -794,11 +802,14 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
       constructor
       · exact Set.subset_union_left
       · intro h_eq
+        -- h_eq : M ∪ {W} ⊆ M (negation of strict inequality)
+        -- Wait, the Set.ssubset definition uses ⊆ and ≠
+        -- The intro gives us M ∪ {W} = M, not ⊆
+        -- Actually Set.ssubset is: s ⊂ t ↔ s ⊆ t ∧ ¬ t ⊆ s
+        -- So we need to show ¬ (M ∪ {W} ⊆ M)
+        -- Which means finding x ∈ M ∪ {W} with x ∉ M
         have h_W_in : W ∈ M ∪ {W} := Set.mem_union_right M (Set.mem_singleton W)
-        have h_W_in' : W ∈ M := by
-          rw [h_eq] at h_W_in
-          exact h_W_in
-        exact h_W_notin_M h_W_in'
+        exact h_W_notin_M (h_eq h_W_in)
 
     -- Step 11: This contradicts maximality of M
     -- M is maximal in S: ∀ M' ∈ S, M ⊆ M' → M' ⊆ M
