@@ -2,6 +2,24 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 828,
+      "project_name": "fmp_approach_truthlemma_backward",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-03T08:51:32Z",
+      "last_updated": "2026-02-03T09:58:09Z",
+      "session_id": "sess_1770112335_480871",
+      "researched": "2026-02-03T09:58:09Z",
+      "artifacts": [
+        {
+          "path": "specs/828_fmp_approach_truthlemma_backward/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of FMP approach feasibility for G/H backward direction, concluding FMP is orthogonal to the problem"
+        }
+      ],
+      "abandoned": "2026-02-03T22:44:03Z"
+    },
+    {
       "project_number": 787,
       "project_name": "review_metalogic_progress",
       "status": "abandoned",

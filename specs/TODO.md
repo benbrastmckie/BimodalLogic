@@ -43,7 +43,7 @@ technical_debt:
 
 ### 844. Redesign metalogic to use Pre-Coherent Bundle construction
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -123,18 +123,6 @@ technical_debt:
 - **Source**: /review 2026-02-03
 
 **Description**: Address 12 sorries in Bundle/SaturatedConstruction.lean. Task 827 research indicates 32-50 hours for mathematically correct completion. Options: complete implementation, document as accepted limitation, or simplify approach.
-
----
-
-### 828. Explore FMP approach to complete backward direction of TruthLemma
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Research**: [research-001.md](specs/828_fmp_approach_truthlemma_backward/reports/research-001.md)
-
-**Description**: Explore FMP approach to complete backward direction of TruthLemma. The backward direction sorries in Bundle/TruthLemma.lean (lines 383, 395) for G/H operators currently require infinitary proof systems. Investigate whether the Finite Model Property can provide an alternative approach to proving these directions.
 
 ---
 
