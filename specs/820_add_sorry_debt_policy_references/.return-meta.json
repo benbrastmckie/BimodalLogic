@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-03T12:00:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/820_add_sorry_debt_policy_references/reports/research-001.md",
+      "summary": "Research report with exact file paths, insertion points, and edit text for all 3 target files"
+    }
+  ],
+  "next_steps": "Run /plan 820 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1770077207_fcdd12",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 45,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 3
+  }
+}

@@ -42,14 +42,23 @@
     {
       "project_number": 820,
       "project_name": "add_sorry_debt_policy_references",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "effort": "30 minutes",
       "description": "Add single-line references to sorry-debt-policy.md in Lean agent and rule files. Add to lean-implementation-agent.md and lean-research-agent.md Context References sections: '@.claude/context/project/lean4/standards/sorry-debt-policy.md - Sorry remediation policy'. Update .claude/rules/lean4.md to reference the context file.",
       "created": "2026-02-02T23:14:16Z",
-      "last_updated": "2026-02-02T23:14:16Z",
+      "last_updated": "2026-02-03T00:09:13Z",
       "dependencies": [
         819
+      ],
+      "session_id": "sess_1770077207_fcdd12",
+      "researched": "2026-02-03T00:09:13Z",
+      "artifacts": [
+        {
+          "path": "specs/820_add_sorry_debt_policy_references/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with exact file paths, insertion points, and edit text for all 3 target files"
+        }
       ]
     },
     {
