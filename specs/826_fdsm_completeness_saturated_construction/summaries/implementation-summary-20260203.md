@@ -1,120 +1,95 @@
-# Implementation Summary: Task #826
+# Implementation Summary: Task #826 (Partial - Session 2)
 
 **Task**: FDSM Completeness Saturated Construction
-**Completed**: 2026-02-03
-**Status**: Partial
+**Date**: 2026-02-03
+**Status**: Partial (Phase 3 progress, Phases 4-8 not started)
+**Session**: sess_1770094157_a7327c
 
-## Overview
+## Summary
 
-This task aimed to complete sorries in the FDSM completeness module to enable a sorry-free path through the metalogic. Progress was made on key proofs, but several sorries remain due to architectural limitations and complexity.
+Made additional progress on Phase 3 (Modal Saturation Fixed-Point Proofs) of the FDSM completeness implementation. The key achievement is completing the tracked saturation infrastructure, particularly `tracked_fixed_point_is_saturated` which is fully proven.
 
-## Changes Made
+## Changes Made (This Session)
 
-### Phase 1: Core.lean (COMPLETED)
+### ModalSaturation.lean
 
-**File**: `Theories/Bimodal/Metalogic/FDSM/Core.lean`
+**Completed Theorems:**
 
-**Change**: Modified the `modal_saturated` field in `FiniteDynamicalSystemModel` to use direct `toSet` membership instead of `.models` which required a closure membership proof.
+1. **`saturation_terminates`** (line 756) - Mostly completed
+   - Uses strong induction on (bound - hists.card)
+   - Proves termination within Fintype.card steps
+   - One sorry remains for cardinality bound verification (n <= maxHistories phi)
 
-**Before**:
-```lean
-modal_saturated : ∀ h ∈ histories, ∀ t : FDSMTime phi, ∀ psi : Formula,
-    ∀ h_psi_clos : psi ∈ closure phi,
-    (h.states t).models (Formula.neg (Formula.box (Formula.neg psi))) (by sorry) →
-    ∃ h' ∈ histories, (h'.states t).models psi h_psi_clos
-```
+2. **`tracked_saturation_terminates`** (line 1304) - New theorem added
+   - Same approach as saturation_terminates for MCSTrackedHistory
 
-**After**:
-```lean
-modal_saturated : ∀ h ∈ histories, ∀ t : FDSMTime phi, ∀ psi : Formula,
-    ∀ h_psi_clos : psi ∈ closure phi,
-    Formula.neg (Formula.box (Formula.neg psi)) ∈ (h.states t).toSet →
-    ∃ h' ∈ histories, (h'.states t).models psi h_psi_clos
-```
+3. **`tracked_fixed_point_is_saturated`** (line 1251) - Fully proven
+   - The key achievement: uses `buildMCSTrackedWitness` for witness construction
+   - Shows that at a fixed point, all diamond formulas have witnesses
 
-**Impact**: Eliminates the need for Diamond formulas to be in closure phi, which is not generally true.
+**Blocked Theorems (architectural issues):**
 
-### Phase 3: ModalSaturation.lean (PARTIAL)
+- `fixed_point_is_saturated` - Plain FDSMHistory doesn't track MCS
+- `saturated_histories_saturated` - Depends on above
+- `mcsTrackedHistory_finite` - The mcs field is unbounded (Set Formula)
+- `projectTrackedHistories_modal_saturated` - Needs to link world state back to MCS
 
-**File**: `Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean`
+### Plan File Updated
 
-#### Completed: neg_box_iff_diamond_neg (lines 286-354)
+- Updated Phase 3 status to reflect completed and blocked theorems
+- Documented the key insight: tracked versions work because they have MCS access
 
-Proved the classical equivalence theorem showing that `(Box psi).neg ∈ S` implies `(Box psi.neg.neg).neg ∈ S` for any MCS S.
+## Sorry Count (Current State)
 
-**Proof technique**:
-1. Used double negation elimination (DNE) theorem
-2. Applied necessitation to DNE inside Box
-3. Used modal_k_dist distribution axiom
-4. Derived contrapositive using b_combinator and prop_k
-5. Applied MCS closure under derivation
-
-#### Simplified: saturation_terminates (lines 756-792)
-
-Restructured the termination proof to use a cleaner argument structure. The proof now has 2 inner sorries for:
-1. Classical well-founded recursion argument
-2. Bound verification that n ≤ maxHistories phi
-
-### Phase 2: Closure.lean (BLOCKED)
-
-**File**: `Theories/Bimodal/Metalogic/FMP/Closure.lean`
-
-The lemma `diamond_in_closureWithNeg_of_box` at line 728 is **architecturally blocked**. The claim that `Box psi ∈ closure phi` implies `Diamond(psi.neg) ∈ closureWithNeg phi` is false because `Box(psi.neg.neg)` is not necessarily a subformula of phi.
-
-## Files Modified
-
-1. `Theories/Bimodal/Metalogic/FDSM/Core.lean`
-   - Changed modal_saturated field signature (removed sorry)
-
-2. `Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean`
-   - Completed neg_box_iff_diamond_neg proof
-   - Simplified saturation_terminates structure
-
-3. `specs/826_fdsm_completeness_saturated_construction/plans/implementation-001.md`
-   - Updated phase statuses
-
-## Remaining Sorries
-
-### ModalSaturation.lean (9 sorries)
-- `modal_backward_from_saturation` - Requires truth lemma
-- `saturation_terminates` - 2 inner sorries for well-founded recursion
-- `fixed_point_is_saturated` - Contrapositive argument
-- `saturated_histories_saturated` - Depends on saturation_terminates
-- `mcsTrackedHistory_finite` - Proof irrelevance
-- `tracked_saturated_histories_saturated` - Tracked version
-- `projectTrackedHistories_modal_saturated` - Projection lemma
-- `fdsm_from_tracked_saturation` modal_saturated case
-
-### TruthLemma.lean (13 sorries)
-- Closure membership tracking throughout induction
-- Modal and temporal case handling
-
-### Completeness.lean (2 sorries)
-- `fdsm_from_closure_mcs` modal_saturated case
-- `fdsm_mcs_implies_truth` and `fdsm_mcs_neg_implies_false`
-
-### Closure.lean (1 sorry)
-- `diamond_in_closureWithNeg_of_box` - BLOCKED (architecturally unprovable)
-
-### FiniteStrongCompleteness.lean (1 sorry)
-- `weak_completeness` validity bridge - Known architectural limitation
+| File | Sorries | Notes |
+|------|---------|-------|
+| Core.lean | 0 | Clean |
+| ModalSaturation.lean | 8 | 4 blocked on architecture |
+| TruthLemma.lean | 13 | Not started (Phase 5) |
+| Completeness.lean | 3 | Not started (Phase 6) |
+| **Total FDSM** | **24** | |
 
 ## Verification
 
-- `lake build` succeeds with no errors
-- All modified files compile successfully
-- Build job count: 707
+- `lake build` succeeds with 707 jobs
+- All existing functionality preserved
+- No regressions
+
+## Key Insight
+
+The tracked saturation infrastructure (MCSTrackedHistory) provides access to the underlying MCS, which is essential for constructing witnesses in the modal saturation proof. The plain FDSMHistory versions cannot be completed without this tracking because:
+
+1. World states are finite subsets of closureWithNeg, not full MCS
+2. Witness construction requires the full MCS to apply Lindenbaum
+3. The `derived_from_mcs` constraint ensures witnesses can be built
+
+## Remaining Work (Phases 4-8)
+
+- **Phase 4**: Projection lemmas (blocked on architecture)
+- **Phase 5**: TruthLemma.lean sorries (13 sorries, mostly closure membership)
+- **Phase 6**: Completeness.lean sorries (3 sorries)
+- **Phase 7**: FiniteStrongCompleteness.lean (may be architecturally blocked)
+- **Phase 8**: Final verification and audit
 
 ## Recommendations
 
-1. **Closure.lean sorry**: Mark as Boneyard candidate for task 818. The lemma should be removed or its signature corrected.
+1. Consider refactoring to use MCSTrackedHistory throughout the completeness path
+2. The plain FDSMHistory sorries may need architectural changes to resolve
+3. TruthLemma.lean sorries are mostly bookkeeping (closure membership tracking)
+4. The fuel-based iteration proofs (tracked_saturate_with_fuel) need better lemmas about stabilization
 
-2. **TruthLemma.lean**: Focus on simplifying the induction structure. Consider whether all cases need full closure tracking or if toSet membership suffices.
+---
 
-3. **Saturation termination**: Complete the well-founded recursion using Mathlib's `WellFounded.recursion` or `Nat.lt_wfRel`.
+## Previous Session Summary (for reference)
 
-4. **Modal backward**: This requires the full truth lemma infrastructure. Defer until TruthLemma.lean sorries are resolved.
+### Phase 1: Core.lean (COMPLETED - Previous Session)
 
-## Notes
+Changed modal_saturated field to use direct toSet membership instead of .models which required closure membership proof.
 
-The architectural change to Core.lean (using toSet instead of models) propagates correctly through the codebase. This pattern may be applicable to other sorries that require Diamond formulas to be in closure.
+### ModalSaturation.lean (Previous Session)
+
+Completed `neg_box_iff_diamond_neg` proof using modal_k_dist and classical contrapositive.
+
+### Phase 2: Closure.lean (BLOCKED - Previous Session)
+
+The lemma `diamond_in_closureWithNeg_of_box` is architecturally unprovable.

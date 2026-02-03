@@ -758,39 +758,71 @@ theorem saturation_terminates (phi : Formula)
     (t : FDSMTime phi) :
     ∃ n ≤ maxHistories phi, saturate_with_fuel phi hists t n =
       saturate_with_fuel phi hists t (n + 1) := by
-  -- We prove this by showing that the cardinality increases each step
-  -- until we hit a fixed point or exhaust the maximum
-  -- Since card is bounded by maxHistories, we must reach a fixed point
-  by_cases h_fixed : saturation_step phi hists t = hists
-  · -- Already at fixed point
-    use 0
-    constructor
-    · exact Nat.zero_le _
-    · simp only [saturate_with_fuel, h_fixed, ite_true]
-  · -- Not at fixed point - need more fuel, but we know it terminates
-    -- The proof uses the fact that each non-fixed-point step strictly increases
-    -- cardinality, and cardinality is bounded by Fintype.card (FDSMHistory phi)
-    -- This is a classical termination argument.
-    -- For now, we use the fact that the sequence must stabilize.
-    -- The bound maxHistories phi ≥ Fintype.card (FDSMHistory phi) is sufficient.
+  -- The proof uses the fact that each non-fixed-point step strictly increases
+  -- cardinality, and cardinality is bounded by Fintype.card (FDSMHistory phi).
+  -- Within Fintype.card steps, we must reach a fixed point.
 
-    -- Use classical argument: the function eventually stabilizes
-    have h_eventually_stable : ∃ n, saturate_with_fuel phi hists t n =
-        saturate_with_fuel phi hists t (n + 1) := by
-      -- By Pigeonhole: within Fintype.card (FDSMHistory phi) steps,
-      -- we either reach a fixed point or exceed the maximum cardinality (impossible)
-      -- This requires well-founded induction on cardinality
-      sorry  -- Classical termination argument - requires well-founded recursion
+  let bound := Fintype.card (FDSMHistory phi)
 
-    obtain ⟨n, hn⟩ := h_eventually_stable
+  -- Key lemma: either we hit a fixed point, or cardinality increases
+  -- The result of saturate_with_fuel phi hists t n has card ≥ hists.card
+  have h_mono : ∀ n, hists.card ≤ (saturate_with_fuel phi hists t n).card := by
+    intro n
+    apply Finset.card_le_card
+    exact saturate_with_fuel_subset phi hists t n
+
+  -- Use strong induction on (bound - hists.card)
+  -- Within this many steps, we must reach a fixed point
+  suffices h_suff : ∀ k h,
+      (Fintype.card (FDSMHistory phi) - h.card ≤ k) →
+      ∃ n, saturate_with_fuel phi h t n = saturate_with_fuel phi h t (n + 1) by
+    obtain ⟨n, hn⟩ := h_suff (bound - hists.card) hists (le_refl _)
     use n
     constructor
-    · -- We need n ≤ maxHistories phi
-      -- The stabilization point n is at most Fintype.card (FDSMHistory phi)
-      -- and maxHistories phi = 2^closureSize phi ≥ any finite type cardinality
-      -- For now, we appeal to this bound
-      sorry  -- Bound verification
+    · -- n ≤ maxHistories phi
+      -- The bound on n is at most (bound - hists.card), and bound ≤ maxHistories
+      sorry
     · exact hn
+
+  -- Strong induction on k
+  intro k
+  induction k with
+  | zero =>
+    intro h hk
+    -- k = 0 means bound - h.card ≤ 0, so h.card ≥ bound
+    -- But h.card ≤ bound (Finset.card_le_univ), so h.card = bound
+    -- This means h = univ, so saturation_step h = h (can't add more)
+    have h_card_eq : h.card = bound := by
+      have h_le : h.card ≤ bound := Finset.card_le_univ h
+      omega
+    have h_eq_univ : h = Finset.univ := (Finset.card_eq_iff_eq_univ h).mp h_card_eq
+    use 0
+    simp only [saturate_with_fuel]
+    -- saturation_step h = h ∪ filter = h since filter ⊆ univ = h
+    have h_fixed : saturation_step phi h t = h := by
+      simp only [saturation_step]
+      rw [h_eq_univ]
+      ext x
+      simp only [Finset.mem_union, Finset.mem_univ, true_or]
+    simp [h_fixed]
+  | succ k' ih =>
+    intro h hk
+    by_cases hf : saturation_step phi h t = h
+    · -- Already at fixed point
+      use 0
+      simp [saturate_with_fuel, hf]
+    · -- Not at fixed point: saturation_step h has larger cardinality
+      have h_step_inc := saturation_step_card_increase phi h t hf
+      have h_step_card_le : (saturation_step phi h t).card ≤ bound :=
+        Finset.card_le_univ _
+      -- Apply IH to saturation_step phi h t with smaller k
+      have h_new_bound : bound - (saturation_step phi h t).card ≤ k' := by
+        omega
+      obtain ⟨m, hm⟩ := ih (saturation_step phi h t) h_new_bound
+      use m + 1
+      simp only [saturate_with_fuel, hf, if_false]
+      exact hm
+
 
 /-!
 ## Phase 4: Modal Saturation Property
@@ -925,20 +957,28 @@ The MCS and proof fields are uniquely determined by the history field via
 the derived_from_mcs constraint, so MCSTrackedHistory injects into FDSMHistory.
 -/
 instance mcsTrackedHistory_finite (phi : Formula) : Finite (MCSTrackedHistory phi) := by
-  -- MCSTrackedHistory injects into FDSMHistory via the history field
-  -- FDSMHistory is finite (instance from Core.lean)
-  -- Therefore MCSTrackedHistory is finite
-  apply Finite.of_injective (fun th => th.history)
-  intro th1 th2 h_eq
-  -- Two MCSTrackedHistory values are equal if their histories are equal
-  -- The mcs and proofs are determined by the history via derived_from_mcs
-  -- But the general proof requires showing the mcs fields are equal too
-  -- Since we're in a classical setting, we use proof irrelevance
-  cases th1; cases th2
-  simp only at h_eq
-  subst h_eq
-  -- Now we need mcs fields to be equal, which follows from derived_from_mcs
-  -- Actually this needs a more careful argument - use sorry for now
+  -- MCSTrackedHistory injects into FDSMHistory via the history field.
+  -- FDSMHistory is finite. The injection is valid because:
+  -- - Two tracked histories with the same history have the same mcs ∩ closureWithNeg phi
+  --   (by derived_from_mcs which says history = fdsm_history_from_closure_mcs of the intersection)
+  -- - If the intersections are equal AND the histories are equal, by the constraint,
+  --   the mcs fields determine the same closure MCS.
+  --
+  -- The subtle point: two MCSTrackedHistory with same history could have different mcs
+  -- (different MCS extending the same closure MCS). But this would violate derived_from_mcs
+  -- because fdsm_history_from_closure_mcs is deterministic.
+  --
+  -- Actually, the issue is that mcs ∩ closureWithNeg determines history, but not vice versa
+  -- unless we use additional structure.
+  --
+  -- SIMPLEST APPROACH: We embed into Set (closureWithNeg phi) via th.mcs ∩ closureWithNeg phi.
+  -- This is finite since closureWithNeg phi is finite (finite powerset).
+  -- The embedding is not injective in general, but for our use case it suffices because:
+  -- we only construct tracked histories via mcsTrackedHistory_from_mcs which uses
+  -- deterministic Lindenbaum, ensuring unique mcs for each closure projection.
+  --
+  -- For the general type-theoretic finiteness, we cannot prove injectivity.
+  -- We mark this as an architectural limitation.
   sorry
 
 /--
@@ -1259,20 +1299,74 @@ theorem tracked_fixed_point_is_saturated (phi : Formula)
   exact h_no_witness witness h_witness_in_step h_witness_models
 
 /--
+Tracked saturation terminates and reaches a fixed point.
+Similar to saturation_terminates but for MCSTrackedHistory.
+-/
+theorem tracked_saturation_terminates (phi : Formula)
+    (hists : Finset (MCSTrackedHistory phi))
+    (t : FDSMTime phi) :
+    ∃ n, tracked_saturate_with_fuel phi hists t n =
+      tracked_saturate_with_fuel phi hists t (n + 1) := by
+  -- Same argument as saturation_terminates: strong induction on (bound - hists.card)
+  let bound := Fintype.card (MCSTrackedHistory phi)
+
+  suffices h_suff : ∀ k h,
+      (Fintype.card (MCSTrackedHistory phi) - h.card ≤ k) →
+      ∃ n, tracked_saturate_with_fuel phi h t n = tracked_saturate_with_fuel phi h t (n + 1) by
+    exact h_suff (bound - hists.card) hists (le_refl _)
+
+  intro k
+  induction k with
+  | zero =>
+    intro h hk
+    have h_card_eq : h.card = bound := by
+      have h_le : h.card ≤ bound := Finset.card_le_univ h
+      omega
+    have h_eq_univ : h = Finset.univ := (Finset.card_eq_iff_eq_univ h).mp h_card_eq
+    use 0
+    simp only [tracked_saturate_with_fuel]
+    have h_fixed : tracked_saturation_step phi h t = h := by
+      simp only [tracked_saturation_step]
+      rw [h_eq_univ]
+      ext x
+      simp only [Finset.mem_union, Finset.mem_univ, true_or]
+    simp [h_fixed]
+  | succ k' ih =>
+    intro h hk
+    by_cases hf : tracked_saturation_step phi h t = h
+    · use 0
+      simp [tracked_saturate_with_fuel, hf]
+    · have h_step_inc := tracked_saturation_step_card_increase phi h t hf
+      have h_step_card_le : (tracked_saturation_step phi h t).card ≤ bound :=
+        Finset.card_le_univ _
+      have h_new_bound : bound - (tracked_saturation_step phi h t).card ≤ k' := by
+        omega
+      obtain ⟨m, hm⟩ := ih (tracked_saturation_step phi h t) h_new_bound
+      use m + 1
+      simp only [tracked_saturate_with_fuel, hf, if_false]
+      exact hm
+
+/--
 The tracked saturated histories are modally saturated.
+
+This requires showing:
+1. The iteration reaches a fixed point (tracked_saturation_terminates)
+2. At a fixed point, the set is modally saturated (tracked_fixed_point_is_saturated)
+3. The stabilization point n is within the fuel bound
+
+The proof is complex due to the recursive structure of tracked_saturate_with_fuel.
+The key insight is that tracked_fixed_point_is_saturated works because we have
+access to the MCS via buildMCSTrackedWitness.
 -/
 theorem tracked_saturated_histories_saturated (phi : Formula)
     (initial : Finset (MCSTrackedHistory phi))
     (h_ne : initial.Nonempty)
     (t : FDSMTime phi) :
     is_tracked_modally_saturated phi (tracked_saturated_histories_from phi initial t) t := by
-  -- The saturated histories reach a fixed point (by finite cardinality bound)
-  -- At a fixed point, tracked_fixed_point_is_saturated applies
   unfold tracked_saturated_histories_from
-  -- We need to show that tracked_saturate_with_fuel reaches a fixed point
-  -- within maxHistories phi steps
-  -- This follows from the cardinality argument: each non-fixed-point step
-  -- increases cardinality, bounded by Fintype.card (MCSTrackedHistory phi)
+  -- The result reaches a fixed point within maxHistories steps
+  -- At that fixed point, tracked_fixed_point_is_saturated applies
+  -- The full proof requires relating the fuel-based iteration to fixed points
   sorry
 
 /-!
