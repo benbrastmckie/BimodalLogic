@@ -239,57 +239,91 @@ theorem witness_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M
 /-!
 ## Modal Backward from Saturation
 
-The key theorem: in a modally saturated model, modal_backward holds.
+The key theorem: in a modally saturated model, the modal backward direction holds.
+This means: if psi holds at ALL histories, then the world state must contain Box psi.
+
+**Why this matters**:
+The single-history construction trivializes modal operators (Box psi = psi).
+With proper multi-history saturation:
+- If Box psi is NOT in the world state, then neg(Box psi) = Diamond(neg psi) IS in the world state
+- By modal saturation, there exists a witness history where neg psi holds
+- Contrapositive: if psi holds at ALL histories, then Box psi must be in the world state
+
+**Proof Strategy**:
+1. Contrapositive: assume Box psi ∉ h.states t
+2. By MCS negation completeness: (Box psi).neg ∈ h.states t
+3. Rewrite (Box psi).neg as Diamond (psi.neg) using neg_box_eq_diamond_neg
+4. By modal saturation (M.modal_saturated): exists h' where psi.neg holds
+5. But h_all says psi holds at ALL histories including h'
+6. Contradiction: h' has both psi and psi.neg (via MCS consistency)
+
+**Note**: This proof requires that the world states are MCS-derived, ensuring
+negation completeness. The theorem is formulated for world states that come
+from a closure MCS construction.
 -/
 
 /--
-Modal backward via contrapositive.
+Key identity: neg(Box psi) = neg(Box(neg(neg psi))) = Diamond(neg psi)
 
-In a modally saturated FDSM, if psi holds at ALL histories at time t,
-then Box psi holds at each history at time t.
+More precisely: (Box psi).neg unfolds to (Box psi) → ⊥,
+and Diamond chi = neg(Box(neg chi)).
+So neg(Box psi) is equivalent to Diamond(neg psi) by double negation in classical logic.
 
-**Proof**:
-Contrapositive. Assume Box psi ∉ h.states t for some h.
-By MCS completeness, neg (Box psi) ∈ h.states t.
-neg (Box psi) = neg (Box (neg (neg psi))) = Diamond (neg psi)... wait, that's not right.
-Actually: neg (Box psi) doesn't directly give Diamond (neg psi).
+Actually, this is NOT direct syntactic equality. We have:
+- (Box psi).neg = (Box psi).imp bot = Diamond psi.neg is FALSE
+- neg(Box psi) = Box psi → ⊥
+- Diamond chi = neg(Box(neg chi)) = (Box(chi.neg)).neg
 
-We need: if Box psi ∉ h.states t, then there exists h' where psi ∉ h'.states t.
+For the equivalence, we need:
+- neg(Box psi) ∈ MCS iff Diamond(neg psi) ∈ MCS
 
-By MCS negation completeness:
-- Either Box psi ∈ h.states t, or (Box psi).neg ∈ h.states t
-- If Box psi ∉ h.states t, then (Box psi).neg ∈ h.states t
+This follows from classical logic:
+- neg(Box psi) = neg(neg(neg(Box psi))) (DNE)
+- neg(neg(neg(Box psi))) = neg(neg(Diamond(neg psi))) (definition of Diamond)
+- neg(neg(Diamond(neg psi))) ↔ Diamond(neg psi) (DNE again)
+-/
+theorem neg_box_iff_diamond_neg (phi : Formula) (S : Set Formula)
+    (h_mcs : SetMaximalConsistent S) (psi : Formula)
+    (h_box_neg_in : (Formula.box psi).neg ∈ S)
+    (h_psi_neg_clos : psi.neg ∈ closure phi)
+    (h_diamond_clos : Formula.neg (Formula.box (Formula.neg (psi.neg))) ∈ closure phi) :
+    Formula.neg (Formula.box (Formula.neg (psi.neg))) ∈ S := by
+  -- (Box psi).neg = (Box psi) → ⊥
+  -- We need: (Box (neg (neg psi))).neg ∈ S
 
-Now (Box psi).neg = Box psi → ⊥.
-We need to show: if (Box psi).neg ∈ MCS, then psi.neg can be satisfied somewhere.
+  -- Key observation: Box psi ↔ Box (neg (neg psi)) by DNE in the box
+  -- And (Box X).neg ∈ MCS iff Box X ∉ MCS (by negation completeness)
 
-This is exactly the contrapositive of: if psi in ALL, then Box psi in MCS.
+  -- From h_box_neg_in: (Box psi) → ⊥ ∈ S, so Box psi ∉ S
 
-The key insight is that in TM logic with the T axiom:
-- If Box psi ∈ MCS, then psi ∈ MCS (by T axiom)
-- Contrapositive: if psi ∉ MCS, then Box psi ∉ MCS
+  -- We need to show: neg(Box(neg(neg psi))) ∈ S
+  -- i.e., (Box (neg (neg psi))) → ⊥ ∈ S
 
-But this is for a SINGLE MCS. For multiple histories:
-- If Box psi ∉ h.states t (some history), we need witness where psi ∉ h'.states t
-- This is provided by modal saturation
+  -- Since neg(neg psi) ↔ psi (provably equivalent in classical logic),
+  -- Box (neg (neg psi)) ↔ Box psi
+  -- So (Box (neg (neg psi))).neg ∈ S iff (Box psi).neg ∈ S
 
-The modal_saturated field in FDSM gives us:
-If Diamond psi holds at h (i.e., neg(Box(neg psi)) ∈ h.states t),
-then there exists h' where psi holds.
+  -- For now, we use the fact that psi and neg(neg psi) are classically equivalent
+  -- The derivation uses DNE and necessitation
+  sorry
 
-For modal_backward, we need the dual:
-If neg(Box psi) holds at h, then there exists h' where neg psi holds.
+/--
+Modal backward via contrapositive (for MCS-derived world states).
 
-neg(Box psi) = neg(Box(neg(neg psi).neg))... this gets complicated.
+In a modally saturated FDSM where world states are MCS-derived:
+If psi holds at ALL histories at time t, then Box psi ∈ (h.states t).toSet.
 
-Actually, the simpler formulation:
-- neg(Box psi) in MCS means Box psi is not derivable from MCS
-- By MCS construction, if Box psi were derivable, it would be in MCS
-- So there's a model where Box psi fails
-- In multi-history semantics, Box psi fails iff some history lacks psi
+**Precondition**: The world state (h.states t) must be MCS-derived, meaning
+it comes from a closure MCS construction that ensures negation completeness.
+This is the case for FDSM models built via `fdsm_from_saturated_histories`.
 
-The construction in FDSM ensures: the histories are "saturated" so that
-any consistent scenario (Diamond psi holding) has a witness.
+**Proof** (by contrapositive):
+1. Assume Box psi ∉ (h.states t).toSet
+2. By MCS negation completeness: (Box psi).neg ∈ (h.states t).toSet
+3. By classical equivalence: Diamond(psi.neg) ∈ (h.states t).toSet
+4. By modal saturation: exists h' where psi.neg ∈ (h'.states t).toSet
+5. But h_all says psi ∈ (h'.states t).toSet for ALL h'
+6. Contradiction: MCS cannot contain both psi and psi.neg
 -/
 theorem modal_backward_from_saturation {phi : Formula}
     (M : FiniteDynamicalSystemModel phi)
@@ -299,9 +333,14 @@ theorem modal_backward_from_saturation {phi : Formula}
     (h_all : ∀ h' ∈ M.histories, (h'.states t).models psi h_psi_clos) :
     ∃ h_box_clos : Formula.box psi ∈ closure phi,
       (h.states t).models (Formula.box psi) h_box_clos := by
-  -- This requires Box psi to be in closure phi
-  -- The proof would use modal saturation and contrapositive
-  -- For now, we note this requires careful closure membership tracking
+  -- This requires:
+  -- 1. Box psi ∈ closure phi (closure property)
+  -- 2. The world state is MCS-derived (for negation completeness)
+  -- 3. The model has modal saturation (for witness existence)
+  --
+  -- The complete proof requires the full truth lemma infrastructure.
+  -- For now, we acknowledge this sorry represents the key modal backward property
+  -- that will be resolved when TruthLemma.lean is completed.
   sorry
 
 /-!
@@ -335,21 +374,30 @@ def maxHistories (phi : Formula) : Nat :=
 This module provides the modal saturation infrastructure:
 
 1. **witnessSet**: Construction of witness sets for diamond formulas
-2. **witness_set_consistent**: Consistency of witness sets (with sorry for modal reasoning)
-3. **modal_backward_from_saturation**: Modal backward property (with sorry)
+2. **witness_set_consistent**: PROVEN - Consistency of witness sets using generalized_modal_k
+3. **modal_backward_from_saturation**: Modal backward property (requires truth lemma completion)
 
-**Sorries in this module**:
-- `witness_set_consistent`: Complex modal reasoning for necessitation
-- `modal_backward_from_saturation`: Closure membership and saturation reasoning
+**Completed Proofs**:
+- `witness_set_consistent`: Uses generalized_modal_k to lift derivations from Gamma to Box Gamma,
+  then applies MCS closure properties. The key insight is that if the witness set were inconsistent,
+  we could derive Box(neg psi) in M, contradicting Diamond psi in M.
 
-**Why these sorries are acceptable**:
-The mathematical argument is sound - the complexity is in the proof engineering
-of tracking closure membership and applying modal axioms. A full proof would
-require explicit closure lemmas for box/diamond formulas.
+**Remaining Sorries**:
+- `neg_box_iff_diamond_neg`: Classical equivalence between neg(Box psi) and Diamond(psi.neg)
+- `modal_backward_from_saturation`: Requires truth lemma infrastructure for complete proof
+
+**Why the remaining sorries exist**:
+The `modal_backward_from_saturation` proof requires connecting:
+1. World state membership (from MCS construction)
+2. Model truth (from FDSM semantics)
+3. Modal saturation (from model property)
+
+This connection is established by the truth lemma in TruthLemma.lean.
 
 **Next Steps**:
-- Phase 5: Define FDSM truth and prove truth lemma
-- Phase 6: Connect to completeness theorem
+- Complete truth lemma cases in TruthLemma.lean
+- Use truth lemma to complete modal_backward_from_saturation
+- Update Completeness.lean to use multi-history construction
 -/
 
 end Bimodal.Metalogic.FDSM

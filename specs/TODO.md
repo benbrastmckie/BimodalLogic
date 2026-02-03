@@ -50,7 +50,7 @@ technical_debt:
 
 ### 824. Fix Constitutive Foundation Remaining Issues
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Dependencies**: 823

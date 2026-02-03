@@ -1,7 +1,7 @@
 # Implementation Plan: Task #825
 
 - **Task**: 825 - FDSM Multi-History Modal Saturation
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Dependencies**: None (builds on existing FDSM infrastructure)
 - **Research Inputs**:
@@ -63,7 +63,7 @@ From research-002.md (Gap analysis):
 
 ## Implementation Phases
 
-### Phase 1: Complete `witness_set_consistent` Proof [NOT STARTED]
+### Phase 1: Complete `witness_set_consistent` Proof [COMPLETED]
 
 **Goal**: Prove that the witness set {psi} U {chi | Box chi in M} is consistent when M is an MCS containing Diamond psi. This is the foundational lemma for modal saturation.
 
@@ -214,7 +214,7 @@ From research-002.md (Gap analysis):
 
 ---
 
-### Phase 5: Derive modal_backward from Saturation [NOT STARTED]
+### Phase 5: Derive modal_backward from Saturation [PARTIAL]
 
 **Goal**: Prove `modal_backward_from_saturation` using the saturation property via contrapositive.
 
