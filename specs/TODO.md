@@ -34,7 +34,7 @@ technical_debt:
 
 ### 821. Fix Constitutive Foundation LaTeX Issues
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03

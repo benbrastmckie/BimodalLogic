@@ -1,7 +1,7 @@
 # Implementation Plan: Task #821
 
 - **Task**: 821 - fix_constitutive_foundation_latex_issues
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/821_fix_constitutive_foundation_latex_issues/reports/research-001.md
@@ -48,14 +48,14 @@ Research report provides concrete LaTeX snippets for each fix.
 
 ## Implementation Phases
 
-### Phase 1: Notation and Primitives Fixes [NOT STARTED]
+### Phase 1: Notation and Primitives Fixes [COMPLETED]
 
 **Goal**: Address FIX tags related to notation consistency and the primitives list
 
 **Tasks**:
-- [ ] Line 21: Verify universal quantifier placement in primitives list, add existential quantifier for completeness
-- [ ] Line 114: Replace verbose `\mathsf{X}` forms with defined macros in State Modality Definitions (Definition 2.4)
-- [ ] Verify `\nverifies` and `\nfalsifies` macros exist in `logos-notation.sty`
+- [x] Line 21: Verify universal quantifier placement in primitives list, add existential quantifier for completeness
+- [x] Line 114: Replace verbose `\mathsf{X}` forms with defined macros in State Modality Definitions (Definition 2.4)
+- [x] Verify `\nverifies` and `\nfalsifies` macros exist in `logos-notation.sty`
 
 **Timing**: 30 minutes
 
@@ -69,7 +69,7 @@ Research report provides concrete LaTeX snippets for each fix.
 
 ---
 
-### Phase 2: Formal Definitions [NOT STARTED]
+### Phase 2: Formal Definitions [IN PROGRESS]
 
 **Goal**: Add formal definitions for v-variant and constant substitution remark
 

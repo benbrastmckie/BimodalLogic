@@ -1,20 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/821_fix_constitutive_foundation_latex_issues/plans/implementation-001.md",
-      "summary": "5-phase implementation plan addressing 10 FIX tags in ConstitutiveFoundation.tex"
-    }
-  ],
-  "next_steps": "Run /implement 821 to execute the plan",
+  "status": "in_progress",
+  "started_at": "2026-02-03T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
   "metadata": {
-    "session_id": "sess_1770079500_b3bbd2",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1770079806_d06ef8",
+    "agent_type": "latex-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 3.0
+    "delegation_path": ["orchestrator", "implement", "latex-implementation-agent"]
   }
 }
