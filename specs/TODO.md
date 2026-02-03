@@ -24,10 +24,12 @@ technical_debt:
 
 ### 835. Enhance /review Command with ROADMAP.md Integration and Revision
 - **Effort**: 4-5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
 - **Dependencies**: Task 833
+- **Research**: [research-001.md](specs/835_enhance_review_command_roadmap_integration_revision/reports/research-001.md)
 
 **Description**: Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic. Ensure changes follow checkpoint-based execution pattern.
 

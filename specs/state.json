@@ -629,16 +629,24 @@
     {
       "project_number": 835,
       "project_name": "enhance_review_command_roadmap_integration_revision",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:40:37Z",
+      "last_updated": "2026-02-03T09:43:40Z",
       "effort": "4-5 hours",
       "dependencies": [
         833
       ],
       "description": "Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic. Ensure changes follow checkpoint-based execution pattern.",
-      "session_id": "sess_1770111621_4c6048"
+      "session_id": "sess_1770111621_4c6048",
+      "researched": "2026-02-03T09:43:40Z",
+      "artifacts": [
+        {
+          "path": "specs/835_enhance_review_command_roadmap_integration_revision/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing current /review command structure, ROADMAP.md integration patterns, and recommendations for adding Strategies/Ambitions context loading, roadmap revision, and task suggestions output"
+        }
+      ]
     }
   ],
   "completed_projects": [
