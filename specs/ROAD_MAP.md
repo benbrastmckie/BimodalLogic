@@ -19,7 +19,23 @@
 Updated by /todo command during task archival.
 -->
 
-*No entries yet. This section will be populated by the `/todo` command when tasks are completed.*
+### 2026-02-03
+
+- **Task 827**: Eliminated modal_backward sorry in Construction.lean via singleFamily_modal_backward_axiom
+  - *Rationale*: The single-family BMCS simplification required accepting modal_backward as sorry; axiom approach provides mathematically justified foundation while preserving infrastructure for future axiom-free implementation
+  - *References*: [summary](specs/archive/827_complete_multi_family_bmcs_construction/summaries/implementation-summary-20260203.md)
+
+- **Task 833**: Restructured ROAD_MAP.md with Changelog, Strategies, Ambitions, and Dead Ends sections
+  - *Rationale*: Enable programmatic updates by /todo and /review commands with machine-parseable schemas
+  - *References*: [summary](specs/archive/833_enhance_roadmap_structure_changelog_strategies_ambitions/summaries/implementation-summary-20260203.md)
+
+- **Task 835**: Extended /review command with bidirectional ROADMAP.md integration
+  - *Rationale*: Enable /review to load strategic context (Strategies/Ambitions) and propose roadmap updates based on findings
+  - *References*: [summary](specs/archive/835_enhance_review_command_roadmap_integration_revision/summaries/implementation-summary-20260203.md)
+
+- **Task 836**: Improved Metalogic README documentation with flowcharts and subdirectory summaries
+  - *Rationale*: Following incomplete task 830 work; needed accurate sorry counts and comprehensive cross-links
+  - *References*: [summary](specs/archive/836_improve_metalogic_readme_documentation/summaries/implementation-summary-20260203.md)
 
 ---
 

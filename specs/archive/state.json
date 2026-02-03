@@ -12397,6 +12397,48 @@
       "language": "meta",
       "archived": "2026-02-03T09:46:51Z",
       "completion_summary": "Extended /todo command with Changelog integration and Task Suggestion generation. Added Step 5.8 for ROAD_MAP.md Changelog updates and Step 7.5 for generating 3-5 actionable task suggestions."
+    },
+    {
+      "project_number": 827,
+      "project_name": "complete_multi_family_bmcs_construction",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-03T10:25:40Z",
+      "completion_summary": "Eliminated the modal_backward sorry in Construction.lean by introducing singleFamily_modal_backward_axiom, a mathematically justified axiom capturing the canonical model saturation property. The axiom approach was chosen over multi-family construction due to complexity; infrastructure for future axiom-free implementation is preserved in SaturatedConstruction.lean."
+    },
+    {
+      "project_number": 833,
+      "project_name": "enhance_roadmap_structure_changelog_strategies_ambitions",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-03T10:25:40Z",
+      "completion_summary": "Restructured ROAD_MAP.md with four new sections (Changelog, Strategies, Ambitions, Dead Ends), each with machine-parseable schemas including Rationale and References fields. Populated 4 strategies, 5 ambitions, and 4 dead ends from existing content. Removed clutter including Active Tasks section and condensed Boneyard tables."
+    },
+    {
+      "project_number": 835,
+      "project_name": "enhance_review_command_roadmap_integration_revision",
+      "status": "completed",
+      "language": "meta",
+      "archived": "2026-02-03T10:25:40Z",
+      "completion_summary": "Extended /review command with bidirectional ROADMAP.md integration: Section 1.6 loads Strategies/Ambitions for review focus, Section 6.5 revises roadmap based on findings (strategy status updates, new ambition proposals with user approval, gap notes to Open Questions), Section 8.5 provides prioritized task suggestions following /todo and /learn patterns."
+    },
+    {
+      "project_number": 836,
+      "project_name": "improve_metalogic_readme_documentation",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-03T10:25:40Z",
+      "completion_summary": "Improved Metalogic README documentation with accurate sorry counts (17 across 4 files), comprehensive dependency flowcharts for Bundle/FMP/Decidability/Algebraic subsystems, removal of non-existent UnderDevelopment/ reference, and cross-links across all 8 subdirectory READMEs."
+    },
+    {
+      "project_number": 839,
+      "project_name": "contrapositive_truthlemma",
+      "status": "orphan_archived",
+      "archived": "2026-02-03T10:25:40Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
     }
   ]
 }

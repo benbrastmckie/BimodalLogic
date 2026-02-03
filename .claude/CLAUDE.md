@@ -61,7 +61,7 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 | `/plan` | `/plan N` | Create implementation plan |
 | `/implement` | `/implement N` | Execute plan, resume from incomplete phase |
 | `/revise` | `/revise N` | Create new plan version |
-| `/review` | `/review` | Analyze codebase |
+| `/review` | `/review` | Analyze codebase, load ROADMAP.md context, propose updates |
 | `/todo` | `/todo` | Archive completed/abandoned tasks, sync repository metrics |
 | `/errors` | `/errors` | Analyze error patterns, create fix plans |
 | `/meta` | `/meta` | System builder for .claude/ changes |

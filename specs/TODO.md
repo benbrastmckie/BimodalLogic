@@ -3,17 +3,17 @@ next_project_number: 842
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-03T11:15:00Z
+  last_assessed: 2026-02-03T11:34:00Z
 task_counts:
-  active: 11
-  completed: 379
+  active: 15
+  completed: 383
   in_progress: 2
-  not_started: 10
+  not_started: 3
   abandoned: 26
-  total: 407
+  total: 411
 technical_debt:
   sorry_count: 61
-  axiom_count: 15
+  axiom_count: 17
   build_errors: 0
   status: good
 ---
@@ -24,7 +24,7 @@ technical_debt:
 
 ### 841. Remove axiom from task 827 via complete multi-family saturation construction
 - **Effort**: 32-50 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 827
@@ -68,7 +68,7 @@ technical_debt:
 
 ### 837. Resolve ProofSearch blockers in example files
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -77,57 +77,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/837_resolve_proofsearch_blockers/plans/implementation-001.md)
 
 **Description**: Resolve Task 260 (ProofSearch) blockers that disable automation in 3 example files: TemporalProofs.lean, ModalProofs.lean, BimodalProofs.lean. Either unblock Task 260, update to alternative approach, or document current status.
-
----
-
-### 836. Improve Metalogic README documentation with flowcharts and subdirectory summaries
-- **Effort**: 5 hours
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/836_improve_metalogic_readme_documentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/836_improve_metalogic_readme_documentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/836_improve_metalogic_readme_documentation/summaries/implementation-summary-20260203.md)
-
-**Description**: Improve documentation for Metalogic/README.md following task 830's incomplete work. Clearly represent the representation theorem and all major modules with detailed dependency flowchart. Include comprehensive summaries of each Metalogic/ subdirectory with links to their README.md files. Review and update all subdirectory README.md files for accuracy and exhaustivity.
-
----
-
-### 835. Enhance /review Command with ROADMAP.md Integration and Revision
-- **Effort**: 4-5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Dependencies**: Task 833
-- **Research**: [research-001.md](specs/835_enhance_review_command_roadmap_integration_revision/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/835_enhance_review_command_roadmap_integration_revision/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/835_enhance_review_command_roadmap_integration_revision/summaries/implementation-summary-20260203.md)
-
-**Description**: Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic. Ensure changes follow checkpoint-based execution pattern.
-
----
-
-### 833. Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-001.md), [research-002.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260203.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/summaries/implementation-summary-20260203.md)
-
-**Description**: Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.
 
 ---
 
@@ -140,23 +89,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/828_fmp_approach_truthlemma_backward/reports/research-001.md)
 
 **Description**: Explore FMP approach to complete backward direction of TruthLemma. The backward direction sorries in Bundle/TruthLemma.lean (lines 383, 395) for G/H operators currently require infinitary proof systems. Investigate whether the Finite Model Property can provide an alternative approach to proving these directions.
-
----
-
-### 827. Complete multi-family BMCS construction to resolve modal_backward sorry
-- **Effort**: 10 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/827_complete_multi_family_bmcs_construction/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/827_complete_multi_family_bmcs_construction/plans/implementation-002.md)
-- **Summary**: Eliminated modal_backward sorry in Construction.lean via singleFamily_modal_backward_axiom capturing canonical model saturation property.
-
-**Description**: Complete multi-family BMCS construction to resolve modal_backward sorry. The single-family simplification in Bundle/Construction.lean (line 220) accepts modal_backward as a sorry. Implement the full multi-family construction that properly tracks accessibility relations across multiple MCS families to eliminate this assumption.
 
 ---
 
