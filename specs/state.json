@@ -59,12 +59,12 @@
     {
       "project_number": 824,
       "project_name": "fix_constitutive_foundation_remaining_issues",
-      "status": "planning",
+      "status": "planned",
       "language": "latex",
       "effort": "2 hours",
       "description": "Address remaining FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. Tags: (1) line 181: Make state modality definitions use dependent type theory notation consistently; (2) line 245: Add exclusivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (3) line 246: Add exhaustivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (4) line 357: Apply verum/falsum notation conventions established in task 823. Remove all tags after implementing fixes.",
       "created": "2026-02-03T06:38:40Z",
-      "last_updated": "2026-02-03T03:13:22Z",
+      "last_updated": "2026-02-03T03:15:32Z",
       "session_id": "sess_1770088387_f0e30b",
       "dependencies": [
         823
@@ -75,8 +75,14 @@
           "path": "specs/824_fix_constitutive_foundation_remaining_issues/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing all FIX/NOTE tags with source material review, notation pattern analysis, and implementation recommendations"
+        },
+        {
+          "path": "specs/824_fix_constitutive_foundation_remaining_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan covering state modality notation, exclusivity/exhaustivity constraints, verum/falsum definitions, and homomorphism identities"
         }
-      ]
+      ],
+      "planned": "2026-02-03T03:15:32Z"
     },
     {
       "project_number": 818,

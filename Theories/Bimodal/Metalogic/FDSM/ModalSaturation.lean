@@ -2,6 +2,7 @@ import Bimodal.Metalogic.FDSM.Core
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.FMP.Closure
+import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.GeneralizedNecessitation
 
@@ -369,35 +370,257 @@ def maxHistories (phi : Formula) : Nat :=
   2 ^ closureSize phi
 
 /-!
+## Phase 2: Saturation Infrastructure
+
+The following definitions implement the multi-history saturation construction:
+- `unsatisfiedDiamonds`: Find diamond formulas needing witnesses
+- `buildWitnessHistory`: Construct a witness history from a consistent witness set
+- `saturation_step`: One round of adding all missing witnesses
+-/
+
+/-!
+### Checking Diamond Satisfaction
+
+Given a collection of histories, check which diamond formulas lack witnesses.
+-/
+
+/--
+Check if a specific diamond formula (Diamond psi = neg(Box(neg psi))) has a witness
+in the given set of histories at time t.
+
+A witness exists if there is some history h' where psi holds at time t.
+-/
+def hasDiamondWitness (phi : Formula) (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi) (psi : Formula) (h_psi_clos : psi ∈ closure phi) : Prop :=
+  ∃ h' ∈ hists, (h'.states t).models psi h_psi_clos
+
+/--
+A DecidablePred for hasDiamondWitness would require classical reasoning,
+so we provide a noncomputable instance.
+-/
+noncomputable instance hasDiamondWitness_decidable (phi : Formula)
+    (hists : Finset (FDSMHistory phi)) (t : FDSMTime phi)
+    (psi : Formula) (h_psi_clos : psi ∈ closure phi) :
+    Decidable (hasDiamondWitness phi hists t psi h_psi_clos) :=
+  Classical.dec _
+
+/--
+For a given history h and time t, find all diamond formulas psi such that:
+1. Diamond psi holds at h.states t (i.e., neg(Box(neg psi)) is in the world state)
+2. No witness history exists in hists where psi holds at t
+
+Returns a set of pairs (psi, h_psi_clos) representing unsatisfied diamond inner formulas.
+-/
+def unsatisfiedDiamondFormulas (phi : Formula) (hists : Finset (FDSMHistory phi))
+    (h : FDSMHistory phi) (t : FDSMTime phi) :
+    Set { psi : Formula // psi ∈ closure phi } :=
+  { ⟨psi, h_psi_clos⟩ |
+    -- Diamond psi is in the world state
+    (Formula.neg (Formula.box (Formula.neg psi))) ∈ (h.states t).toSet ∧
+    -- But no witness exists
+    ¬hasDiamondWitness phi hists t psi h_psi_clos }
+
+/-!
+### Building Witness Histories
+
+When a diamond formula Diamond psi lacks a witness, we build a new history
+from the witness set using Lindenbaum extension and closure MCS projection.
+-/
+
+/--
+Build a witness history for a diamond formula.
+
+Given:
+- An MCS M containing Diamond psi
+- A proof that the witness set for psi is consistent
+
+We construct a new FDSMHistory whose world state at time t contains psi.
+
+The construction:
+1. Extend the witness set to a full MCS using Lindenbaum
+2. Project to a closure MCS
+3. Build a constant FDSMHistory from the closure MCS
+-/
+noncomputable def buildWitnessHistory (phi : Formula) (M : Set Formula)
+    (h_mcs : SetMaximalConsistent M)
+    (psi : Formula)
+    (h_diamond : Formula.neg (Formula.box (Formula.neg psi)) ∈ M) :
+    FDSMHistory phi :=
+  -- Step 1: The witness set is consistent (by witness_set_consistent)
+  let W := witnessSet M psi
+  -- Note: We need M to be the MCS that induced a closure MCS
+  -- For the full construction, we use set_lindenbaum to extend W to an MCS
+  -- Then project to closure MCS and build the history
+
+  -- Since we need the witness set to be consistent to extend it,
+  -- and witness_set_consistent proves this for SetMaximalConsistent M,
+  -- we can safely use Lindenbaum
+  have h_W_cons : SetConsistent W := witness_set_consistent M h_mcs psi h_diamond
+
+  -- Step 2: Extend W to full MCS M'
+  let M' := Bimodal.Metalogic.Bundle.lindenbaumMCS_set W h_W_cons
+  let h_M'_mcs := Bimodal.Metalogic.Bundle.lindenbaumMCS_set_is_mcs W h_W_cons
+  let h_W_sub_M' := Bimodal.Metalogic.Bundle.lindenbaumMCS_set_extends W h_W_cons
+
+  -- Step 3: Project M' to closure MCS
+  let S := mcs_projection phi M'
+  let h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M' h_M'_mcs
+
+  -- Step 4: Build constant FDSM history from closure MCS
+  fdsm_history_from_closure_mcs phi S h_S_mcs
+
+/--
+The witness history has psi in its world state at the origin time.
+
+This follows from:
+1. psi ∈ witnessSet M psi (by definition)
+2. witnessSet M psi ⊆ M' (Lindenbaum extension)
+3. psi ∈ closure phi ⇒ psi ∈ closureWithNeg phi
+4. Therefore psi ∈ mcs_projection phi M' = S
+5. By worldStateFromClosureMCS_models_iff, psi is modeled
+-/
+theorem buildWitnessHistory_models_psi (phi : Formula) (M : Set Formula)
+    (h_mcs : SetMaximalConsistent M)
+    (psi : Formula)
+    (h_psi_clos : psi ∈ closure phi)
+    (h_diamond : Formula.neg (Formula.box (Formula.neg psi)) ∈ M)
+    (t : FDSMTime phi) :
+    (buildWitnessHistory phi M h_mcs psi h_diamond).states t |>.models psi h_psi_clos := by
+  -- Unfold buildWitnessHistory to expose the construction
+  unfold buildWitnessHistory
+
+  -- The witness set contains psi
+  have h_psi_in_W : psi ∈ witnessSet M psi := psi_mem_witnessSet M psi
+
+  -- Set up abbreviations for clarity
+  set W := witnessSet M psi with hW_def
+  have h_W_cons : SetConsistent W := witness_set_consistent M h_mcs psi h_diamond
+
+  set M' := Bimodal.Metalogic.Bundle.lindenbaumMCS_set W h_W_cons with hM'_def
+  have h_W_sub_M' := Bimodal.Metalogic.Bundle.lindenbaumMCS_set_extends W h_W_cons
+  have h_M'_mcs := Bimodal.Metalogic.Bundle.lindenbaumMCS_set_is_mcs W h_W_cons
+
+  -- psi ∈ W ⊆ M'
+  have h_psi_in_M' : psi ∈ M' := h_W_sub_M' h_psi_in_W
+
+  -- psi ∈ closure phi implies psi ∈ closureWithNeg phi
+  have h_psi_closneg : psi ∈ closureWithNeg phi := closure_subset_closureWithNeg phi h_psi_clos
+
+  -- psi ∈ M' and psi ∈ closureWithNeg implies psi ∈ mcs_projection phi M'
+  set S := mcs_projection phi M' with hS_def
+  have h_psi_in_S : psi ∈ S := mem_mcs_projection_of_mem_both phi M' psi h_psi_in_M' h_psi_closneg
+
+  -- S is a closure MCS
+  have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M' h_M'_mcs
+
+  -- The history is constant, so states t = worldStateFromClosureMCS phi S h_S_mcs
+  have h_states_eq : (fdsm_history_from_closure_mcs phi S h_S_mcs).states t =
+      worldStateFromClosureMCS phi S h_S_mcs := fdsm_history_from_closure_mcs_states phi S h_S_mcs t
+
+  -- Now convert the goal: we need to show the model property for the world state
+  -- The goal after unfolding has the form involving the constructed S and h_S_mcs
+  -- We use convert to handle the definitional equality
+  convert (worldStateFromClosureMCS_models_iff phi S h_S_mcs psi h_psi_clos).mp h_psi_in_S using 1
+  -- The states t should equal worldStateFromClosureMCS phi S h_S_mcs
+  -- This follows from h_states_eq but we need to show it for the specific S
+  rfl
+
+/-!
+### Saturation Step
+
+One round of adding witness histories for all unsatisfied diamond formulas.
+-/
+
+/--
+Specification of what it means for a history h' to be a valid witness addition
+for some unsatisfied diamond formula in the current histories.
+-/
+def IsWitnessFor (phi : Formula) (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi) (h' : FDSMHistory phi) : Prop :=
+  ∃ h ∈ hists, ∃ psi : Formula, ∃ h_psi_clos : psi ∈ closure phi,
+    -- Diamond psi holds in h but no witness existed
+    (Formula.neg (Formula.box (Formula.neg psi))) ∈ (h.states t).toSet ∧
+    ¬hasDiamondWitness phi hists t psi h_psi_clos ∧
+    -- h' witnesses psi
+    (h'.states t).models psi h_psi_clos
+
+/--
+Noncomputable decidability for IsWitnessFor via classical logic.
+-/
+noncomputable instance IsWitnessFor_decidable (phi : Formula)
+    (hists : Finset (FDSMHistory phi)) (t : FDSMTime phi) (h' : FDSMHistory phi) :
+    Decidable (IsWitnessFor phi hists t h') :=
+  Classical.dec _
+
+/--
+Full saturation step: union of the current histories with all new witness histories.
+
+This is defined relative to a mapping from histories to their underlying MCS.
+In the actual construction, this mapping comes from the FDSM construction.
+
+The implementation uses Classical.dec to handle the decidability of the existential.
+-/
+noncomputable def saturation_step (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi) : Finset (FDSMHistory phi) :=
+  -- Union of current histories with witnesses for all unsatisfied diamonds
+  hists ∪ (Finset.univ.filter (fun h' => IsWitnessFor phi hists t h'))
+
+/--
+Saturation step is monotone: the original histories are preserved.
+-/
+theorem saturation_step_subset (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi) :
+    hists ⊆ saturation_step phi hists t := by
+  intro h hh
+  simp only [saturation_step, Finset.mem_union]
+  left
+  exact hh
+
+/--
+Saturation step preserves nonemptiness.
+-/
+theorem saturation_step_nonempty (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (h_ne : hists.Nonempty)
+    (t : FDSMTime phi) :
+    (saturation_step phi hists t).Nonempty := by
+  obtain ⟨h, hh⟩ := h_ne
+  exact ⟨h, saturation_step_subset phi hists t hh⟩
+
+/-!
 ## Summary
 
 This module provides the modal saturation infrastructure:
 
 1. **witnessSet**: Construction of witness sets for diamond formulas
 2. **witness_set_consistent**: PROVEN - Consistency of witness sets using generalized_modal_k
-3. **modal_backward_from_saturation**: Modal backward property (requires truth lemma completion)
+3. **hasDiamondWitness**: Check if a diamond formula has a witness
+4. **unsatisfiedDiamondFormulas**: Find diamond formulas needing witnesses
+5. **buildWitnessHistory**: Construct a witness history from a consistent witness set
+6. **buildWitnessHistory_models_psi**: PROVEN - The witness history contains psi
+7. **saturation_step**: One round of adding all missing witnesses
+8. **saturation_step_subset**: PROVEN - Monotonicity of saturation
+9. **modal_backward_from_saturation**: Modal backward property (requires truth lemma completion)
 
-**Completed Proofs**:
+**Completed Proofs (Phase 1 + Phase 2)**:
 - `witness_set_consistent`: Uses generalized_modal_k to lift derivations from Gamma to Box Gamma,
-  then applies MCS closure properties. The key insight is that if the witness set were inconsistent,
-  we could derive Box(neg psi) in M, contradicting Diamond psi in M.
+  then applies MCS closure properties.
+- `buildWitnessHistory_models_psi`: The witness history contains psi via Lindenbaum extension
+  and worldStateFromClosureMCS_models_iff.
+- `saturation_step_subset`: Monotonicity follows directly from union definition.
 
 **Remaining Sorries**:
 - `neg_box_iff_diamond_neg`: Classical equivalence between neg(Box psi) and Diamond(psi.neg)
 - `modal_backward_from_saturation`: Requires truth lemma infrastructure for complete proof
 
-**Why the remaining sorries exist**:
-The `modal_backward_from_saturation` proof requires connecting:
-1. World state membership (from MCS construction)
-2. Model truth (from FDSM semantics)
-3. Modal saturation (from model property)
-
-This connection is established by the truth lemma in TruthLemma.lean.
-
-**Next Steps**:
-- Complete truth lemma cases in TruthLemma.lean
-- Use truth lemma to complete modal_backward_from_saturation
-- Update Completeness.lean to use multi-history construction
+**Next Steps (Phase 3-7)**:
+- Phase 3: Implement fixed-point construction with termination proof
+- Phase 4: Prove modal saturation property at fixed point
+- Phase 5: Complete modal_backward_from_saturation
+- Phase 6: Update Completeness.lean to use multi-history construction
+- Phase 7: Verification and sorry audit
 -/
 
 end Bimodal.Metalogic.FDSM
