@@ -48,10 +48,11 @@ technical_debt:
 
 ### 851. Define CoherentBundle structure
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
+- **Research**: [research-001.md](specs/851_define_coherentbundle_structure/reports/research-001.md)
 
 **Description**: Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)
 
@@ -59,7 +60,7 @@ technical_debt:
 
 ### 850. Create scalable oversight section in Introduction
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -120,7 +121,7 @@ technical_debt:
 
 ### 842. Formalize Zorn's lemma proof in exists_fullySaturated_extension
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -135,7 +136,7 @@ technical_debt:
 
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
 - **Effort**: 8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -177,7 +178,7 @@ technical_debt:
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -189,7 +190,7 @@ technical_debt:
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Parent**: Task 381
 - **Subtasks**: 398, 399
@@ -213,7 +214,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Parent**: Task 394
 - **Dependencies**: 398
@@ -224,7 +225,7 @@ technical_debt:
 
 ### 685. Derive world-history and Barcan theorems
  **Effort**: 8-10 hours
- **Status**: [PLANNED]
+ **Status**: [IMPLEMENTING]
  **Language**: lean
  **Created**: 2026-01-26
  **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
@@ -270,7 +271,7 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-01-28
 - **Language**: meta
 - **Created**: 2026-01-19

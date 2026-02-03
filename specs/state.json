@@ -35,22 +35,30 @@
     {
       "project_number": 851,
       "project_name": "define_coherentbundle_structure",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "description": "Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)",
       "parent_task": 844,
       "created": "2026-02-03T22:53:06Z",
-      "last_updated": "2026-02-03T22:53:06Z"
+      "last_updated": "2026-02-03T23:01:15Z",
+      "researched": "2026-02-03T23:01:15Z",
+      "artifacts": [
+        {
+          "path": "specs/851_define_coherentbundle_structure/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on CoherentBundle structure design, analyzing mutual coherence patterns, Zorn's lemma usage, and the constant-family approach to sidestep Lindenbaum control problems"
+        }
+      ]
     },
     {
       "project_number": 850,
       "project_name": "scalable_oversight_section",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "description": "Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone",
       "created": "2026-02-03T22:45:49Z",
-      "last_updated": "2026-02-03T22:55:24Z",
-      "session_id": "sess_1770159169_5f4a45",
+      "last_updated": "2026-02-03T22:59:18Z",
+      "session_id": "sess_1770159530_c2e919",
       "researched": "2026-02-03T22:51:08Z",
       "artifacts": [
         {
@@ -64,7 +72,8 @@
           "summary": "Implementation plan for scalable oversight section in 01-Introduction.tex"
         }
       ],
-      "planned": "2026-02-03T22:55:24Z"
+      "planned": "2026-02-03T22:55:24Z",
+      "started": "2026-02-03T22:59:18Z"
     },
     {
       "project_number": 847,
