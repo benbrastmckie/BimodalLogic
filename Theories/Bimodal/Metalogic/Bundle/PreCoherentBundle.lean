@@ -15,30 +15,63 @@ import Mathlib.Order.Zorn
 /-!
 # Pre-Coherent Bundle Construction
 
-This module implements the Pre-Coherent Bundle construction for BMCS that achieves:
-- Zero sorries
-- Zero axioms
-- Publication-ready completeness proof
+## STATUS: MATHEMATICALLY BLOCKED
 
-## Overview
+This module attempted to implement a Pre-Coherent Bundle construction that would achieve
+zero sorries by inverting the traditional construction order. However, **the approach has
+a fundamental mathematical gap** that cannot be bridged.
 
-The key insight is to INVERT the traditional construction order:
-- **Traditional**: Build box-coherent families first, then try to add witnesses (FAILS)
-- **Pre-Coherent**: Define S-bounded families, take product of ALL such families
+## The Problem
 
-## Construction Strategy
+The approach relies on this claim:
+> "If Box phi is in one pre-coherent family f at time t, then phi is in ALL pre-coherent
+> families f' at time t."
 
-1. **SaturationClosure**: Finite set S of formulas bounding Box contents
-2. **SBounded**: Predicate requiring Box formulas have content in S
-3. **PreCoherent**: Predicate combining MCS, temporal coherence, and S-boundedness
-4. **AllPreCoherentFamilies**: Product of all pre-coherent families over S
-5. **Box coherence by construction**: S-boundedness prevents uncontrolled Box formulas
-6. **Saturation by construction**: Product includes all witnesses
+This claim is FALSE. Here's why:
+
+1. S-boundedness only restricts WHICH Box formulas can appear (those with content in S)
+2. It does NOT force agreement on the TRUTH of formulas in S
+3. Different MCS can legitimately contain different formulas, even if both are S-bounded
+4. The T-axiom gives us `phi ∈ f.mcs t` from `Box phi ∈ f.mcs t`, but NOT `phi ∈ f'.mcs t`
+
+## Why This Approach Cannot Work
+
+The "product of all pre-coherent families" approach is fundamentally misguided because:
+- Box-coherence requires inter-family agreement: `Box phi ∈ f.mcs t → phi ∈ f'.mcs t`
+- S-boundedness is an INTRA-family property: "Box contents are in S"
+- These are orthogonal properties - the latter does not imply the former
+
+## What This Module Provides (Salvageable Parts)
+
+Despite the blocking mathematical issue, the following infrastructure is complete and
+may be useful for future approaches:
+
+1. **SaturationClosure** (Phase 1): Correctly defines the formula bound
+2. **SBounded predicate** (Phase 2): Useful for restricted Lindenbaum
+3. **S-bounded Lindenbaum** (Phase 3): Complete proof that works correctly
+4. **AllPreCoherentFamilies** (Phase 4): Well-defined set of families
+
+The sorries in Phases 5-6 represent a genuine mathematical impossibility, not incomplete
+proof work. Any approach that takes "all families satisfying some local predicate" will
+face the same issue.
+
+## Alternative Approaches (Future Work)
+
+To eliminate the axiom in Construction.lean, future work should consider:
+
+1. **Canonical Model with Accessibility**: Define explicit accessibility relation where
+   w R w' iff {phi | Box phi ∈ w} ⊆ w'. This is the standard textbook approach.
+
+2. **Single Canonical Family**: Use one "universal" MCS and prove saturation properties
+   for it directly, avoiding the multi-family coherence problem.
+
+3. **Quotient Construction**: Quotient families by modal equivalence to force agreement.
 
 ## References
 
 - Research report: specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-001.md
 - Implementation plan: specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-001.md
+- Mathematical analysis: This documentation
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -273,10 +306,23 @@ def bundle_box_coherence (families : Set (IndexedMCSFamily D)) : Prop :=
     ∀ fam' ∈ families, psi ∈ fam'.mcs t
 
 /--
-Pre-coherent families satisfy box coherence (S-bounded formulas).
+**MATHEMATICALLY IMPOSSIBLE**: Pre-coherent families do NOT satisfy box coherence.
 
-**Note**: This theorem has a sorry because it requires showing that all pre-coherent
-families agree on modal truths. This is the key mathematical challenge.
+This theorem CANNOT be proven because the claim is FALSE:
+- Different MCS can contain different formulas
+- S-boundedness restricts which Box formulas appear, not what they entail across families
+- The T-axiom gives us `psi ∈ fam.mcs t`, NOT `psi ∈ fam'.mcs t` for different fam'
+
+**Counterexample Sketch**:
+Let S = {p, ¬p}. Consider two S-bounded MCS families:
+- Family f: Contains p at time 0
+- Family g: Contains ¬p at time 0
+
+Both are pre-coherent with respect to S. If `Box p ∈ f.mcs 0`:
+- By T-axiom: p ∈ f.mcs 0 (which it is)
+- By box_coherence requirement: p ∈ g.mcs 0 (FALSE - g contains ¬p, not p)
+
+This sorry represents a FUNDAMENTAL MATHEMATICAL IMPOSSIBILITY, not incomplete proof work.
 -/
 theorem precoherent_families_box_coherent (S : Set Formula) :
     bundle_box_coherence (AllPreCoherentFamilies S (D := D)) := by
@@ -286,9 +332,9 @@ theorem precoherent_families_box_coherent (S : Set Formula) :
     have h_T := DerivationTree.axiom [] ((Formula.box psi).imp psi) (Axiom.modal_t psi)
     have h_T_in := theorem_in_mcs (fam.is_mcs t) h_T
     exact set_mcs_implication_property (fam.is_mcs t) h_T_in h_box
-  -- The challenge: we need psi ∈ fam'.mcs t
-  -- This requires showing all pre-coherent families agree on psi
-  -- Mathematical gap: different MCS can contain different formulas
+  -- MATHEMATICAL IMPOSSIBILITY: We cannot prove psi ∈ fam'.mcs t
+  -- because different MCS can contain different formulas.
+  -- See docstring for detailed explanation.
   sorry
 
 /--

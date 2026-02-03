@@ -16,11 +16,19 @@
     {
       "project_number": 848,
       "project_name": "add_conceptual_engineering_section_to_introduction",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "created": "2026-02-03T21:16:25Z",
-      "last_updated": "2026-02-03T21:24:58Z",
-      "session_id": "sess_1770153878_8ad758"
+      "last_updated": "2026-02-03T21:28:03Z",
+      "session_id": "sess_1770153878_8ad758",
+      "researched": "2026-02-03T21:28:03Z",
+      "artifacts": [
+        {
+          "path": "specs/848_add_conceptual_engineering_section_to_introduction/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing conceptual-engineering.md source content, Introduction.tex structure/style, and recommending section placement after opening paragraphs with 3-4 paragraph implementation focusing on logic as normative engineering vs descriptive linguistics"
+        }
+      ]
     },
     {
       "project_number": 845,
