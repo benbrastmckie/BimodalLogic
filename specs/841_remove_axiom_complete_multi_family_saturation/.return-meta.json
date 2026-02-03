@@ -1,54 +1,20 @@
 {
-  "status": "research_done",
-  "started_at": "2026-02-03T14:30:00Z",
-  "completed_at": "2026-02-03T14:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/841_remove_axiom_complete_multi_family_saturation/reports/research-001.md",
-      "summary": "Analysis of multi-family saturation construction to remove singleFamily_modal_backward_axiom, including termination measures, well-founded recursion patterns, and implementation strategy"
+      "type": "plan",
+      "path": "specs/841_remove_axiom_complete_multi_family_saturation/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for removing singleFamily_modal_backward_axiom via multi-family saturation construction"
     }
   ],
-  "partial_progress": null,
+  "next_steps": "Run /implement 841 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770114296_f157bf",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770114640_ff7c77",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "research_summary": {
-    "key_findings": [
-      "The axiom can be eliminated by constructing a provably saturated BMCS",
-      "saturated_modal_backward theorem is ALREADY PROVEN - just needs saturated input",
-      "Termination uses Finset.card on unsatisfied Diamond formulas in closure",
-      "SubformulaClosure provides finite bound via diamondSubformulas",
-      "Total estimated effort: 16-26 hours across 5 phases"
-    ],
-    "sorries_analyzed": [
-      {
-        "location": "SaturatedConstruction.lean:279",
-        "name": "modal_forward in FamilyCollection.toBMCS",
-        "effort": "Medium (2-4 hours)",
-        "approach": "Add box_coherence field to FamilyCollection"
-      },
-      {
-        "location": "SaturatedConstruction.lean:284",
-        "name": "modal_backward in FamilyCollection.toBMCS",
-        "effort": "Low (2-4 hours)",
-        "approach": "Use existing closure_saturation_implies_modal_backward_for_closure"
-      }
-    ],
-    "missing_implementations": [
-      {
-        "name": "saturateFamilies",
-        "effort": "High (8-12 hours)",
-        "description": "Iteratively add witness families until saturation, with well-founded termination"
-      }
-    ],
-    "mathlib_patterns": [
-      "Finset.strongInduction - recursion on finsets",
-      "Finset.card_lt_card - strict subset implies smaller card",
-      "Finset.card_erase_lt_of_mem - erasing decreases card"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 21
   }
 }
