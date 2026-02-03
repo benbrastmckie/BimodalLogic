@@ -3,18 +3,18 @@ next_project_number: 850
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-03T11:34:00Z
+  last_assessed: 2026-02-03T22:16:00Z
 task_counts:
-  active: 15
-  completed: 383
-  in_progress: 2
-  not_started: 3
+  active: 16
+  completed: 389
+  in_progress: 4
+  not_started: 4
   abandoned: 26
-  total: 411
+  total: 417
 technical_debt:
-  sorry_count: 61
-  axiom_count: 17
-  build_errors: 0
+  sorry_count: 83
+  axiom_count: 16
+  build_errors: 1
   status: good
 ---
 
@@ -22,83 +22,15 @@ technical_debt:
 
 ## Tasks
 
-### 849. Add contextual parameters section to Dynamics Foundation
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/849_add_contextual_parameters_section_to_dynamics/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/849_add_contextual_parameters_section_to_dynamics/plans/implementation-001.md)
-- **Summary**: Added Contextual Parameters subsection to Dynamical Foundation documentation explaining how logical operators determine required evaluation parameters. Content adapted from conceptual-engineering.md, follows semantic linefeed convention, document compiles cleanly at 40 pages.
-
-**Description**: Draw on Theories/Logos/docs/research/conceptual-engineering.md to add a new section to the beginning of Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex on contextual parameters, explaining how the contextual parameters are determined by the logical operators included in the language (which shift these parameters). The section should include the most important and relevant content to this topic from the conceptual engineering research document while maintaining the clear and precise tone otherwise maintained in the Introduction file.
-
----
-
-### 848. Add conceptual engineering section to Introduction
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/848_add_conceptual_engineering_section_to_introduction/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/848_add_conceptual_engineering_section_to_introduction/plans/implementation-001.md)
-- **Summary**: Added Conceptual Engineering subsection to Logos Introduction explaining the philosophical motivation for formal logic's normative approach. Section covers descriptive vs normative distinction, material conditional example, ameliorative methodology, and AI reasoning implications.
-
-**Description**: Draw on Theories/Logos/docs/research/conceptual-engineering.md to add a new section to Theories/Logos/latex/subfiles/01-Introduction.tex on conceptual engineering, explaining logic's ambitions to refine concepts from natural language that are fit for systematic applications. The section should include the most important content from the conceptual engineering research document that is relevant while maintaining the clear and precise tone otherwise maintained in the Introduction file.
-
----
-
-### 845. Update context files from LaTeX NOTE: tags
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Priority**: medium
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/845_update_context_files_from_latex_notes/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/845_update_context_files_from_latex_notes/plans/implementation-001.md)
-- **Summary**: Updated 3 .claude/ context files to document LaTeX conventions for \leansrc reference placement and \set{} macro usage, with validation checklist items.
-
-**Description**: Update .claude/context/ files based on 2 NOTE: tags from Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 474: Standardize lean source code references to follow pattern shown at end of sections; (2) Line 550: Define \set{} macro in logos-notation.sty to replace \{ \} everywhere.
-
----
-
-### 846. Fix LaTeX Constitutive Foundation FIX:/NOTE: tags
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Priority**: high
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Depends**: Task 845
-- **Research**: [research-001.md](specs/846_fix_latex_constitutive_foundation_tags/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/846_fix_latex_constitutive_foundation_tags/plans/implementation-001.md)
-- **Summary**: Fixed 3 FIX tags and 2 NOTE tags in Constitutive Foundation chapter: converted lattice remark to formal definition, simplified state modality layout, integrated pointwise compatibility, applied \set{} macro notation. Document compiles cleanly at 41 pages.
-
-**Description**: Fix issues from FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. FIX tags: (1) Line 165: Turn remark into formal definitions; (2) Line 187: Simplify state modality definitions layout; (3) Line 202: Integrate pointwise compatibility into state modality definitions. NOTE tags: (1) Line 474: Apply standard lean source reference form; (2) Line 550: Replace \{ \} with \set{} macro. Remove all FIX: and NOTE: tags after implementing fixes.
-
----
-
 ### 847. Restructure Constitutive Semantics section
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: latex
 - **Priority**: medium
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
 - **Research**: [research-001.md](specs/847_restructure_constitutive_semantics_section/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/847_restructure_constitutive_semantics_section/plans/implementation-001.md)
 
@@ -150,24 +82,6 @@ technical_debt:
 
 ---
 
-### 841. Remove axiom from task 827 via complete multi-family saturation construction
-- **Effort**: 16-26 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Parent**: Task 827
-- **Research**: [research-001.md](specs/841_remove_axiom_complete_multi_family_saturation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/841_remove_axiom_complete_multi_family_saturation/plans/implementation-001.md)
-- **Summary**: Implemented non-constructive multi-family saturation construction using Zorn's lemma. Provides mathematically principled alternative to axiom-based approach. One sorry remains in existence proof (Zorn's lemma formalization). Axiom kept as fallback until sorry is resolved.
-
-**Description**: Remove axiom from task 827 via complete multi-family saturation construction. Implement saturateFamilies with well-founded recursion on closure size, prove termination using finite subformula closure, prove modal_forward preservation when adding witness families, replace singleFamily_modal_backward_axiom with proven theorem. (Follow-up from task #827)
-
----
-
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
 - **Effort**: 8 hours
 - **Status**: [RESEARCHED]
@@ -200,22 +114,6 @@ technical_debt:
 - **Source**: /review 2026-02-03
 
 **Description**: Address 12 sorries in Bundle/SaturatedConstruction.lean. Task 827 research indicates 32-50 hours for mathematically correct completion. Options: complete implementation, document as accepted limitation, or simplify approach.
-
----
-
-### 837. Resolve ProofSearch blockers in example files
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/837_resolve_proofsearch_blockers/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/837_resolve_proofsearch_blockers/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/837_resolve_proofsearch_blockers/summaries/implementation-summary-20260203.md)
-
-**Description**: Resolve Task 260 (ProofSearch) blockers that disable automation in 3 example files: TemporalProofs.lean, ModalProofs.lean, BimodalProofs.lean. Either unblock Task 260, update to alternative approach, or document current status.
 
 ---
 
