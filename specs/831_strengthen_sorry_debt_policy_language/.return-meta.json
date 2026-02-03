@@ -1,15 +1,23 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-03T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "synthesizing",
-    "details": "Analyzed sorry-debt-policy.md, found 14+ 'acceptable' usages across 20+ files, compiling report"
-  },
+  "completed_at": "2026-02-03T12:30:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/831_strengthen_sorry_debt_policy_language/reports/research-001.md",
+      "summary": "Research report with 6 findings and 4 specific text change proposals"
+    }
+  ],
+  "next_steps": "Run /plan 831 to create implementation plan",
   "metadata": {
     "session_id": "sess_1770110091_c0f656",
     "agent_type": "general-research-agent",
+    "duration_seconds": 1800,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6,
+    "files_requiring_changes": 2,
+    "proposed_text_changes": 4
   }
 }
