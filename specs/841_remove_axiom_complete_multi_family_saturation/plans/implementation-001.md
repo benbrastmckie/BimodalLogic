@@ -1,7 +1,7 @@
 # Implementation Plan: Task #841
 
 - **Task**: 841 - Remove axiom from task 827 via complete multi-family saturation construction
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 18-24 hours
 - **Dependencies**: Task #827 completed infrastructure
 - **Research Inputs**: specs/841_remove_axiom_complete_multi_family_saturation/reports/research-001.md
@@ -73,7 +73,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Add box_coherence field to FamilyCollection [NOT STARTED]
+### Phase 1: Add box_coherence field to FamilyCollection [COMPLETED]
 
 **Goal**: Extend FamilyCollection structure to track that boxed formulas propagate across all families, enabling modal_forward proof.
 
@@ -98,7 +98,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Prove modal_backward in toBMCS [NOT STARTED]
+### Phase 2: Prove modal_backward in toBMCS [IN PROGRESS]
 
 **Goal**: Connect FamilyCollection.isSaturated to closure_saturation_implies_modal_backward_for_closure theorem.
 

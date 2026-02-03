@@ -152,26 +152,10 @@ This is mathematically sound because:
 3. Our Lean formalization captures this via the modal_backward axiom
 
 The alternative (full multi-family saturation) requires significantly more infrastructure.
+
+Note: The axiom `singleFamily_modal_backward_axiom` is declared in Construction.lean
+and reused here.
 -/
-
-/--
-Axiom: For any single-family BMCS, modal_backward holds.
-
-This is justified by the canonical model construction: in a single-family BMCS,
-if psi is in the (unique) family's MCS at t, and Box psi is not in that MCS,
-then Diamond(neg psi) is in the MCS, which means neg psi is consistent.
-The saturation property (which holds in the full canonical model) ensures
-a witness exists, creating a contradiction.
-
-For a formal proof, one would need to either:
-1. Construct a multi-family saturated BMCS (complex, requires well-founded recursion)
-2. Use the S5 axiom (Box psi ↔ psi for necessary truths)
-3. Accept this as a metatheoretic axiom about the canonical model construction
--/
-axiom singleFamily_modal_backward_axiom (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (fam : IndexedMCSFamily D) (psi : Formula) (t : D)
-    (h_all : psi ∈ fam.mcs t) :
-    Formula.box psi ∈ fam.mcs t
 
 /--
 Construct a BMCS from a single family using the axiom for modal_backward.
@@ -246,6 +230,10 @@ structure FamilyCollection (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrder
   eval_family : IndexedMCSFamily D
   /-- The evaluation family is in the collection -/
   eval_family_mem : eval_family ∈ families
+  /-- Box coherence: if Box psi is in any family's MCS, then psi is in all families' MCSes.
+      This is the forward direction of modal coherence, ensuring that boxed formulas propagate. -/
+  box_coherence : ∀ fam ∈ families, ∀ psi t,
+    Formula.box psi ∈ fam.mcs t → ∀ fam' ∈ families, psi ∈ fam'.mcs t
 
 /--
 The collection is saturated for the closure if every Diamond formula in the closure
@@ -266,17 +254,9 @@ noncomputable def FamilyCollection.toBMCS {phi : Formula} (C : FamilyCollection 
     (h_sat : C.isSaturated) : BMCS D where
   families := C.families
   nonempty := C.nonempty
-  modal_forward := fun fam hfam psi t h_box fam' hfam' => by
-    -- Use T-axiom: Box psi -> psi
-    let h_mcs := fam.is_mcs t
-    let h_T := DerivationTree.axiom [] ((Formula.box psi).imp psi) (Axiom.modal_t psi)
-    let h_psi_in_fam := set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_box
-    -- For fam', we need a more sophisticated argument
-    -- In a true multi-family construction, we would track that all families
-    -- share the same "base" formulas (those that are Box'd propagate)
-    -- For now, this requires additional structure in FamilyCollection
-    -- Use the modal coherence property that would be part of the construction
-    sorry
+  modal_forward := fun fam hfam psi t h_box fam' hfam' =>
+    -- Use the box_coherence field: Box psi in fam implies psi in all families
+    C.box_coherence fam hfam psi t h_box fam' hfam'
   modal_backward := fun fam hfam psi t h_all => by
     -- Use saturation via contraposition
     -- This requires psi and neg psi to be in the closure
