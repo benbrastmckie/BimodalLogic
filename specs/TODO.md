@@ -24,7 +24,7 @@ technical_debt:
 
 ### 832. Update artifact formats and agent definitions for sorry handling
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-03
 
@@ -33,12 +33,14 @@ technical_debt:
 ---
 
 ### 831. Strengthen sorry-debt-policy language and guidance
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 1.5 hours
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/831_strengthen_sorry_debt_policy_language/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/831_strengthen_sorry_debt_policy_language/plans/implementation-001.md)
 
 **Description**: Revise sorry-debt-policy.md to eliminate 'acceptable sorry' language and add clear guidance on transitive inheritance. Replace 'Acceptable for Development' category with 'Tolerated During Development (Technical Debt)'. Add explicit section on how to characterize sorries in reports/plans emphasizing that: (1) ALL sorries are mathematical debt, (2) sorries propagate transitively through imports, (3) publication requires zero inherited sorries. Add framing: 'Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.'
 
@@ -56,7 +58,7 @@ technical_debt:
 
 ### 829. Remove backwards-compatible aliases from Metalogic
 - **Effort**: 0.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03

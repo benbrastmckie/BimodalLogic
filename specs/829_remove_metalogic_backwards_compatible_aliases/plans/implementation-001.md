@@ -1,7 +1,7 @@
 # Implementation Plan: Task #829
 
 - **Task**: 829 - Remove Metalogic Backwards-Compatible Aliases
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 0.5 hours
 - **Dependencies**: None (standalone cleanup)
 - **Research Inputs**: specs/829_remove_metalogic_backwards_compatible_aliases/reports/research-001.md
@@ -44,14 +44,14 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Remove Aliases [NOT STARTED]
+### Phase 1: Remove Aliases [COMPLETED]
 
 **Goal**: Remove both backwards-compatible alias definitions from Lean source files
 
 **Tasks**:
-- [ ] Remove `semantic_weak_completeness` alias from SemanticCanonicalModel.lean (lines 443-448)
-- [ ] Remove `double_negation_elim` alias from Bundle/Completeness.lean (lines 186-195)
-- [ ] Run `lake build` to verify no breakage
+- [x] Remove `semantic_weak_completeness` alias from SemanticCanonicalModel.lean (lines 443-448)
+- [x] Remove `double_negation_elim` alias from Bundle/Completeness.lean (lines 186-195)
+- [x] Run `lake build` to verify no breakage
 
 **Timing**: 15 minutes
 
@@ -66,14 +66,14 @@ From research-001.md:
 
 ---
 
-### Phase 2: Update Documentation [NOT STARTED]
+### Phase 2: Update Documentation [COMPLETED]
 
 **Goal**: Remove all mentions of backwards compatibility and the removed aliases from documentation
 
 **Tasks**:
-- [ ] Update FMP/README.md - Remove "also available as..." note (line 33)
-- [ ] Update Metalogic/Metalogic.lean - Remove alias mention from import comment (line 114)
-- [ ] Update FMP/SemanticCanonicalModel.lean - Update file header docstring if it references the alias
+- [x] Update FMP/README.md - Remove "also available as..." note (line 33)
+- [x] Update Metalogic/Metalogic.lean - Remove alias mention from import comment (line 114)
+- [x] Update FMP/SemanticCanonicalModel.lean - Update file header docstring if it references the alias
 
 **Timing**: 10 minutes
 
@@ -87,7 +87,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Final Verification [NOT STARTED]
+### Phase 3: Final Verification [IN PROGRESS]
 
 **Goal**: Confirm clean build and document completion
 

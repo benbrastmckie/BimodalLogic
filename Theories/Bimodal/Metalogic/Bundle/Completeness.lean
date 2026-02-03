@@ -184,17 +184,6 @@ lemma not_derivable_implies_neg_consistent (φ : Formula)
   exact h_not_deriv ⟨d_phi⟩
 
 /--
-Helper: Classical double negation elimination in the proof system.
-
-`⊢ ¬¬φ → φ`
-
-NOTE: This is now just an alias for `Bimodal.Theorems.Propositional.double_negation`.
-The duplicate definition with `sorry` has been removed.
--/
-abbrev double_negation_elim (φ : Formula) : DerivationTree [] (φ.neg.neg.imp φ) :=
-  Bimodal.Theorems.Propositional.double_negation φ
-
-/--
 **Weak Completeness (Contrapositive Form)**: If `⊬ φ`, then `φ` is not BMCS-valid.
 
 **Proof Strategy**:

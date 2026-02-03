@@ -8,38 +8,45 @@
     {
       "project_number": 831,
       "project_name": "strengthen_sorry_debt_policy_language",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-03T10:30:00Z",
-      "last_updated": "2026-02-03T09:17:52Z",
+      "last_updated": "2026-02-03T09:22:13Z",
       "description": "Revise sorry-debt-policy.md to eliminate 'acceptable sorry' language and add clear guidance on transitive inheritance. Replace 'Acceptable for Development' category with 'Tolerated During Development (Technical Debt)'. Add explicit section on how to characterize sorries in reports/plans emphasizing that: (1) ALL sorries are mathematical debt, (2) sorries propagate transitively through imports, (3) publication requires zero inherited sorries. Add framing: 'Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.'",
-      "session_id": "sess_1770110091_c0f656",
+      "session_id": "sess_1770110399_e47dc2",
       "researched": "2026-02-03T09:17:52Z",
       "artifacts": [
         {
           "path": "specs/831_strengthen_sorry_debt_policy_language/reports/research-001.md",
           "type": "research",
           "summary": "Research report with 6 findings and 4 specific text change proposals"
+        },
+        {
+          "path": "specs/831_strengthen_sorry_debt_policy_language/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for strengthening sorry-debt-policy language and adding characterization guidance"
         }
-      ]
+      ],
+      "planned": "2026-02-03T09:22:13Z"
     },
     {
       "project_number": 832,
       "project_name": "update_artifact_formats_agent_sorry_guidance",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "created": "2026-02-03T10:30:00Z",
-      "last_updated": "2026-02-03T10:30:00Z",
-      "description": "Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements."
+      "last_updated": "2026-02-03T09:21:59Z",
+      "description": "Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements.",
+      "session_id": "sess_1770110504_853535"
     },
     {
       "project_number": 829,
       "project_name": "remove_metalogic_backwards_compatible_aliases",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-03T09:00:34Z",
-      "last_updated": "2026-02-03T09:16:33Z",
-      "session_id": "sess_1770110050_e7218e",
+      "last_updated": "2026-02-03T09:19:58Z",
+      "session_id": "sess_1770110381_032a33",
       "researched": "2026-02-03T09:11:24Z",
       "artifacts": [
         {
@@ -53,7 +60,8 @@
           "summary": "3-phase implementation plan for removing backwards-compatible aliases from Metalogic"
         }
       ],
-      "planned": "2026-02-03T09:16:33Z"
+      "planned": "2026-02-03T09:16:33Z",
+      "started": "2026-02-03T09:19:58Z"
     },
     {
       "project_number": 830,

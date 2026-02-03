@@ -30,7 +30,7 @@ noncomputable def fmp_weak_completeness (phi : Formula) :
     |- phi
 ```
 
-**Note**: Also available as `semantic_weak_completeness` for backwards compatibility.
+**Naming**: Named `fmp_weak_completeness` to indicate weak completeness via the Finite Model Property approach.
 
 **Why it works**: Contrapositive approach (unprovable -> countermodel) constructs MCS-derived
 countermodels where the assignment IS the MCS membership function. This avoids the
@@ -81,7 +81,7 @@ def worldStateFromClosureMCS (phi : Formula) (S : Set Formula)
 def SemanticWorldState (phi : Formula) := Quotient (htSetoid phi)
 def semantic_truth_at_v2 (phi : Formula) (w : SemanticWorldState phi)
     (t : BoundedTime (temporalBound phi)) (psi : Formula) : Prop
-noncomputable def semantic_weak_completeness (phi : Formula) : ... -> |- phi
+noncomputable def fmp_weak_completeness (phi : Formula) : ... -> |- phi
 theorem semanticWorldState_card_bound (phi : Formula) :
     Fintype.card (SemanticWorldState phi) <= 2 ^ closureSize phi
 ```
@@ -108,7 +108,7 @@ theorem consistent_implies_satisfiable (phi : Formula) (h_cons : Consistent [phi
 modal and temporal operators.
 
 **What works**:
-- `semantic_weak_completeness`: Uses FMP-INTERNAL validity (sorry-free)
+- `fmp_weak_completeness`: Uses FMP-INTERNAL validity (sorry-free)
 - Propositional fragment of truth correspondence
 
 **What doesn't work**:
@@ -120,7 +120,7 @@ modal and temporal operators.
 Modal box requires psi true at ALL reachable states (including non-MCS ones), and temporal
 operators require structure across time (lost with constant history).
 
-**Recommendation**: Use `semantic_weak_completeness` with FMP-internal validity as the canonical
+**Recommendation**: Use `fmp_weak_completeness` with FMP-internal validity as the canonical
 completeness result. Accept that general TaskModel validity is a different (stronger) notion.
 
 See `ConsistentSatisfiable.lean` header and task 810 research-005 for full analysis.

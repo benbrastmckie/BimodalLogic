@@ -111,7 +111,7 @@ import Bimodal.Metalogic.Bundle.Completeness
 For FMP-based completeness:
 ```lean
 import Bimodal.Metalogic.FMP.SemanticCanonicalModel
--- Provides: fmp_weak_completeness (alias: semantic_weak_completeness)
+-- Provides: fmp_weak_completeness
 ```
 
 For decidability:
