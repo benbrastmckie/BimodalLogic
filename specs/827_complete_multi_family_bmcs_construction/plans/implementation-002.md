@@ -1,7 +1,7 @@
 # Implementation Plan: Task #827
 
 - **Task**: 827 - Complete multi-family BMCS construction to resolve modal_backward sorry
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 40 hours
 - **Dependencies**: Task 818 (Bimodal metalogic refactor - completed)
 - **Research Inputs**: specs/827_complete_multi_family_bmcs_construction/reports/research-002.md

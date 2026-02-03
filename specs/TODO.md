@@ -3,18 +3,18 @@ next_project_number: 837
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-03T10:30:00Z
+  last_assessed: 2026-02-03T11:15:00Z
 task_counts:
-  active: 13
-  completed: 370
+  active: 11
+  completed: 379
   in_progress: 2
-  not_started: 12
+  not_started: 10
   abandoned: 26
-  total: 398
+  total: 407
 technical_debt:
-  sorry_count: 95
+  sorry_count: 61
   axiom_count: 15
-  build_errors: 1
+  build_errors: 0
   status: good
 ---
 
@@ -45,23 +45,6 @@ technical_debt:
 
 ---
 
-### 834. Enhance /todo Command with Changelog Updates and Task Suggestions
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Dependencies**: Task 833
-- **Research**: [research-001.md](specs/834_enhance_todo_command_changelog_task_suggestions/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/834_enhance_todo_command_changelog_task_suggestions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/834_enhance_todo_command_changelog_task_suggestions/summaries/implementation-summary-20260203.md)
-
-**Description**: Extend /todo command to: (1) Update ROADMAP.md Changelog section when archiving completed tasks, (2) Add task suggestion generation at end of /todo execution (scan active tasks, ROADMAP.md Ambitions, and recent completions to propose 3-5 next tasks similar to /learn output), (3) Update skill-status-sync or create new skill if delegation is needed. Ensure atomic updates to ROADMAP.md follow state management rules.
-
----
-
 ### 833. Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
 - **Effort**: 2-3 hours
 - **Status**: [PLANNED]
@@ -73,73 +56,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-001.md)
 
 **Description**: Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.
-
----
-
-### 832. Update artifact formats and agent definitions for sorry handling
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/832_update_artifact_formats_agent_sorry_guidance/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/832_update_artifact_formats_agent_sorry_guidance/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/832_update_artifact_formats_agent_sorry_guidance/summaries/implementation-summary-20260203.md)
-
-**Description**: Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements.
-
----
-
-### 831. Strengthen sorry-debt-policy language and guidance
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/831_strengthen_sorry_debt_policy_language/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/831_strengthen_sorry_debt_policy_language/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/831_strengthen_sorry_debt_policy_language/summaries/implementation-summary-20260203.md)
-
-**Description**: Revise sorry-debt-policy.md to eliminate 'acceptable sorry' language and add clear guidance on transitive inheritance. Replace 'Acceptable for Development' category with 'Tolerated During Development (Technical Debt)'. Add explicit section on how to characterize sorries in reports/plans emphasizing that: (1) ALL sorries are mathematical debt, (2) sorries propagate transitively through imports, (3) publication requires zero inherited sorries. Add framing: 'Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.'
-
----
-
-### 830. Standardize Metalogic documentation with README.md files
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/830_standardize_metalogic_documentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/830_standardize_metalogic_documentation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/830_standardize_metalogic_documentation/summaries/implementation-summary-20260203.md)
-
-**Description**: Ensure all Bimodal/Metalogic/ subdirectories have README.md files following DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md. Each README should: (1) completely and accurately report all contents in the subdirectory, (2) include summaries of any subdirectories with links to their README.md files, (3) include appropriate cross-links to related documentation. Focus on publication-ready documentation that is direct and to the point (no fluff). Subdirectories to cover: Core/, Bundle/, FMP/, Algebraic/, and the main Metalogic/ entry point.
-
----
-
-### 829. Remove backwards-compatible aliases from Metalogic
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/829_remove_metalogic_backwards_compatible_aliases/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/829_remove_metalogic_backwards_compatible_aliases/plans/implementation-001.md)
-- **Summary**: Removed backwards-compatible aliases semantic_weak_completeness and double_negation_elim from Metalogic modules. Updated documentation to reference canonical names fmp_weak_completeness and Bimodal.Theorems.Propositional.double_negation only.
-
-**Description**: Remove backwards-compatible aliases added during task 818 refactoring for a clean and consistent codebase. Specifically remove `semantic_weak_completeness := @fmp_weak_completeness` alias from FMP/SemanticCanonicalModel.lean. The canonical name is now fmp_weak_completeness and no external code depends on the old name. This improves maintainability by avoiding duplicate entry points to the same theorem.
 
 ---
 
@@ -166,75 +82,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260203.md](specs/827_complete_multi_family_bmcs_construction/summaries/implementation-summary-20260203.md) (partial)
 
 **Description**: Complete multi-family BMCS construction to resolve modal_backward sorry. The single-family simplification in Bundle/Construction.lean (line 220) accepts modal_backward as a sorry. Implement the full multi-family construction that properly tracks accessibility relations across multiple MCS families to eliminate this assumption.
-
----
-
-### 826. Update FDSM Completeness to Use Saturated Construction
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Dependencies**: 825
-- **Research**: [research-001.md](specs/826_fdsm_completeness_saturated_construction/reports/research-001.md)
-- **Plan**: [implementation-004.md](specs/826_fdsm_completeness_saturated_construction/plans/implementation-004.md)
-- **Summary**: Pivoted from FDSM to BMCS completeness. Archived FDSM module (23 sorries) to Boneyard. BMCS completeness verified working. Active sorries reduced from 27 to 4.
-
-**Description**: Replace single-history fdsm_from_closure_mcs in Completeness.lean with proper saturated construction from Phase 4. The current implementation (lines 67-91) creates only one history, which trivializes modal operators. After task 825 completes saturated_histories, update: (1) Replace fdsm_from_closure_mcs with fdsm_from_saturated_histories that uses the modal saturation fixed point, (2) Update modal_saturated proof to use the saturation property instead of single-history trivialization, (3) Ensure eval_history is properly selected from the saturated set. This bridges Phase 4 to Phase 6.
-
----
-
-### 825. Complete FDSM Multi-History Modal Saturation
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Dependencies**: 816
-- **Research**: [research-001.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-001.md), [research-002.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-002.md), [research-003.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-003.md)
-- **Plan**: [implementation-002.md](specs/825_fdsm_multi_history_modal_saturation/plans/implementation-002.md) (revised from v001)
-- **Summary**: Implemented multi-history modal saturation for FDSM completeness. Archived broken single-history construction to Boneyard, added MCSTrackedHistory with type class instances, implemented tracked_saturation_step with proofs, proved tracked_fixed_point_is_saturated (core correctness theorem), built fdsm_from_tracked_saturation construction, and added closure_mcs_modus_ponens lemma for TruthLemma support.
-
-**Description**: Replace broken single-history FDSM construction with proper multi-history modal saturation. Revised approach: (1) Archive fdsm_from_closure_mcs to Boneyard with comments explaining modal trivialization (Box psi = psi), (2) Add DecidableEq for MCSTrackedHistory, (3) Rebuild saturation on tracked histories that carry MCS info, (4) Prove modal saturation property, (5) Update Completeness.lean, (6) Add closure membership infrastructure.
-
----
-
-### 824. Fix Constitutive Foundation Remaining Issues
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Dependencies**: 823
-- **Research**: [research-001.md](specs/824_fix_constitutive_foundation_remaining_issues/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/824_fix_constitutive_foundation_remaining_issues/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260203.md](specs/824_fix_constitutive_foundation_remaining_issues/summaries/implementation-summary-20260203.md)
-
-**Description**: Address remaining FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. Tags: (1) line 181: Make state modality definitions use dependent type theory notation consistently; (2) line 245: Add exclusivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (3) line 246: Add exhaustivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (4) line 295: Convert subsection 2.7 to remark format; (5) line 357: Apply verum/falsum notation conventions established in task 823; (6) line 481/534: Define all four extremal bilateral propositions alongside propositional operators. Remove all tags after implementing fixes.
-
----
-
-### 818. Refactor Bimodal Metalogic modules
-- **Effort**: 4-5 hours (reduced post-task 826)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/818_refactor_bimodal_metalogic_modules/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/818_refactor_bimodal_metalogic_modules/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260203.md](specs/818_refactor_bimodal_metalogic_modules/summaries/implementation-summary-20260203.md)
-
-**Description**: Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via tasks 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.
 
 ---
 

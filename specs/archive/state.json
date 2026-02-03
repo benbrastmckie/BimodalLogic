@@ -12325,6 +12325,78 @@
       "started": "2026-02-03T01:24:36Z",
       "completed": "2026-02-03T01:31:25Z",
       "completion_summary": "Restructured LaTeX documentation to follow standard logic presentation order (terms, formulas, open/closed distinction). Added free variables definition for formulas and open/closed formula definitions. Document compiles cleanly at 38 pages with all cross-references resolved."
+    },
+    {
+      "project_number": 831,
+      "project_name": "strengthen_sorry_debt_policy_language",
+      "status": "completed",
+      "language": "meta",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Strengthened sorry-debt-policy.md by eliminating \"acceptable sorry\" language, adding comprehensive \"Characterizing Sorries\" section with prohibited/required framing examples, and reinforcing transitive inheritance requirements."
+    },
+    {
+      "project_number": 832,
+      "project_name": "update_artifact_formats_agent_sorry_guidance",
+      "status": "completed",
+      "language": "meta",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Added conditional Sorry Characterization sections to report-format.md and plan-format.md with explicit framing rules. Made sorry-debt-policy.md mandatory context in both Lean agents. Added MUST NOT prohibition against \"acceptable sorry\" framing."
+    },
+    {
+      "project_number": 829,
+      "project_name": "remove_metalogic_backwards_compatible_aliases",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Removed backwards-compatible aliases semantic_weak_completeness and double_negation_elim from Metalogic modules. Updated documentation to reference canonical names fmp_weak_completeness and Bimodal.Theorems.Propositional.double_negation only."
+    },
+    {
+      "project_number": 830,
+      "project_name": "standardize_metalogic_documentation",
+      "status": "completed",
+      "language": "general",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Standardized README.md files across 6 Metalogic subdirectories: created new Decidability/README.md, corrected major inaccuracies in FMP and main READMEs, updated cross-links throughout."
+    },
+    {
+      "project_number": 826,
+      "project_name": "fdsm_completeness_saturated_construction",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Successfully pivoted from blocked FDSM completeness to BMCS approach. Archived FDSM module (23 sorries) and obsolete Completeness module to Boneyard. Active Metalogic sorries reduced from 27 to 4."
+    },
+    {
+      "project_number": 825,
+      "project_name": "fdsm_multi_history_modal_saturation",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Implemented multi-history modal saturation for FDSM completeness. Archived broken single-history construction to Boneyard, added MCSTrackedHistory with type class instances, proved tracked_fixed_point_is_saturated."
+    },
+    {
+      "project_number": 824,
+      "project_name": "fix_constitutive_foundation_remaining_issues",
+      "status": "completed",
+      "language": "latex",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Fixed all 7 FIX/NOTE tags in ConstitutiveFoundation.tex by adding dependent type notation, converting verification subsection to remark, adding exclusivity/exhaustivity constraints, defining verum/falsum operators, and adding homomorphism identities."
+    },
+    {
+      "project_number": 818,
+      "project_name": "refactor_bimodal_metalogic_modules",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Refactored Bimodal Metalogic modules for publication-ready structure. Archived duplicate DeductionTheorem to Boneyard, renamed semantic_weak_completeness to fmp_weak_completeness, rewrote Metalogic.lean with comprehensive documentation."
+    },
+    {
+      "project_number": 834,
+      "project_name": "enhance_todo_command_changelog_task_suggestions",
+      "status": "completed",
+      "language": "meta",
+      "archived": "2026-02-03T09:46:51Z",
+      "completion_summary": "Extended /todo command with Changelog integration and Task Suggestion generation. Added Step 5.8 for ROAD_MAP.md Changelog updates and Step 7.5 for generating 3-5 actionable task suggestions."
     }
   ]
 }
