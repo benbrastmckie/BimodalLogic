@@ -199,10 +199,9 @@ structure FiniteDynamicalSystemModel (phi : Formula) where
   modal_saturated : ∀ h ∈ histories, ∀ t : FDSMTime phi, ∀ psi : Formula,
     ∀ h_psi_clos : psi ∈ closure phi,
     -- If neg(Box(neg psi)) is in h.states t (i.e., Diamond psi holds)
-    (h.states t).models (Formula.neg (Formula.box (Formula.neg psi))) (by
-      -- Need: (Box (neg psi)).neg in closure phi
-      -- This requires closure properties we'll prove later
-      sorry) →
+    -- We check membership in toSet rather than using .models because
+    -- the diamond formula may not be in closure phi (only in closureWithNeg)
+    Formula.neg (Formula.box (Formula.neg psi)) ∈ (h.states t).toSet →
     -- Then there exists h' where psi holds
     ∃ h' ∈ histories, (h'.states t).models psi h_psi_clos
 

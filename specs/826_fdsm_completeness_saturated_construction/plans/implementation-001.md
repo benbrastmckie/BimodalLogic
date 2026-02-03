@@ -1,7 +1,7 @@
 # Implementation Plan: Task #826
 
 - **Task**: 826 - FDSM Completeness Saturated Construction (Expanded Scope)
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Dependencies**: Task 825 (completed - MCSTrackedHistory infrastructure)
 - **Research Inputs**: specs/826_fdsm_completeness_saturated_construction/reports/research-001.md, specs/818_refactor_bimodal_metalogic_modules/reports/research-001.md
@@ -65,67 +65,60 @@ These will be documented and archived to Boneyard/ in task 818.
 
 ## Implementation Phases
 
-### Phase 1: Closure Membership Infrastructure [NOT STARTED]
+### Phase 1: Closure Membership Infrastructure [COMPLETED]
 
 **Goal**: Establish the closure membership lemmas needed by TruthLemma.lean and Core.lean sorries
 
 **Tasks**:
-- [ ] Add `closure_neg_mem_of_mem` lemma: `psi ∈ closure phi → psi.neg ∈ closure phi`
-- [ ] Add `closure_subformula_mem` lemmas for Box, Diamond, G, H operators
-- [ ] Add `closure_binary_mem` lemmas for And, Or, Impl
-- [ ] Create `ClosureMembership.lean` module if needed for organization
-- [ ] Complete Core.lean line 205 sorry (closure membership in modal_saturated)
+- [x] Complete Core.lean line 205 sorry - Changed modal_saturated to use toSet membership instead of models (avoids closure membership requirement for Diamond formula)
 
-**Timing**: 2-3 hours
+**Result**: The Core.lean sorry was resolved by architectural change rather than adding closure lemmas. The modal_saturated field now checks membership in `(h.states t).toSet` directly rather than requiring a closure proof.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FMP/Closure.lean` - Add closure membership lemmas
-- `Theories/Bimodal/Metalogic/FDSM/Core.lean` - Fix line 205 sorry
+**Timing**: 0.5 hours
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/FDSM/Core.lean` - Changed modal_saturated signature
 
 **Verification**:
-- `lake build Theories/Bimodal/Metalogic/FMP/Closure.lean` succeeds
 - `lake build Theories/Bimodal/Metalogic/FDSM/Core.lean` succeeds with 0 sorries
 
 ---
 
-### Phase 2: FMP/Closure.lean Sorry [NOT STARTED]
+### Phase 2: FMP/Closure.lean Sorry [BLOCKED]
 
 **Goal**: Complete the diamond_in_closureWithNeg_of_box lemma
 
-**Tasks**:
-- [ ] Analyze `diamond_in_closureWithNeg_of_box` at line 728
-- [ ] Use closure membership lemmas from Phase 1
-- [ ] Complete the proof (likely uses closure_neg_mem and diamond_neg_iff_neg_box)
+**Analysis**:
+The lemma `diamond_in_closureWithNeg_of_box` claims that `Box psi ∈ closure phi` implies `Diamond(psi.neg) ∈ closureWithNeg phi`. However:
+- `Diamond(psi.neg) = neg(Box(neg(neg psi))) = neg(Box(psi.neg.neg))`
+- While `psi ∈ closure phi` (by subformula property), `Box(psi.neg.neg)` is NOT necessarily a subformula of phi
+- Therefore `neg(Box(psi.neg.neg))` is NOT necessarily in closureWithNeg phi
 
-**Timing**: 1 hour
+**Conclusion**: This lemma is NOT generally provable. The sorry represents an architectural limitation, not a gap that can be filled with proof.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FMP/Closure.lean` - Complete line 728 sorry
-
-**Verification**:
-- `lake build Theories/Bimodal/Metalogic/FMP/Closure.lean` succeeds with 0 sorries
+**Status**: BLOCKED - Architecturally unprovable
 
 ---
 
-### Phase 3: Modal Saturation Fixed-Point Proofs [NOT STARTED]
+### Phase 3: Modal Saturation Fixed-Point Proofs [PARTIAL]
 
 **Goal**: Complete the saturation termination and fixed-point theorems in ModalSaturation.lean
 
 **Tasks**:
-- [ ] Complete `neg_box_iff_diamond_neg` (line 309) - classical equivalence
-- [ ] Complete `saturation_terminates` (line 728) - cardinality-based termination
-- [ ] Complete `fixed_point_is_saturated` (lines 803, 815) - fixed point property
-- [ ] Complete `modal_backward_from_saturation` (line 877) - modal backward direction
-- [ ] Complete `tracked_saturated_histories_saturated` (line 1211) - tracked version
+- [x] Complete `neg_box_iff_diamond_neg` (line 309) - DONE: Used modal_k_dist and classical contrapositive
+- [ ] Complete `saturation_terminates` (line 756) - Partially done, has 2 inner sorries for well-founded recursion
+- [ ] Complete `fixed_point_is_saturated` (line 820) - Requires contrapositive on witness construction
+- [ ] Complete `saturated_histories_saturated` (line 873) - Depends on saturation_terminates
+- [ ] Complete `modal_backward_from_saturation` (line 374) - Requires truth lemma infrastructure
+- [ ] Complete `mcsTrackedHistory_finite` (line 927) - Requires proof irrelevance argument
+- [ ] Complete `tracked_saturated_histories_saturated` (line 1264) - Tracked version
+- [ ] Complete `projectTrackedHistories_modal_saturated` (line 1306) - Projection lemma
+- [ ] Complete `fdsm_from_tracked_saturation` modal_saturated (line 1352) - Uses saturation
 
-**Timing**: 3-4 hours
+**Status**: 1 sorry resolved, 9 remain (some with internal sorries)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean` - Complete 6 sorries
-
-**Verification**:
-- `lean_goal` at each sorry location shows "no goals" after fix
-- `lake build Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean` shows reduced sorry count
+**Files modified**:
+- `Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean` - Fixed neg_box_iff_diamond_neg, simplified saturation_terminates
 
 ---
 

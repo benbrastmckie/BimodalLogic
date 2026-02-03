@@ -24,11 +24,12 @@ technical_debt:
 
 ### 826. Update FDSM Completeness to Use Saturated Construction
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
 - **Dependencies**: 825
 - **Research**: [research-001.md](specs/826_fdsm_completeness_saturated_construction/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/826_fdsm_completeness_saturated_construction/plans/implementation-001.md)

@@ -290,23 +290,68 @@ theorem neg_box_iff_diamond_neg (phi : Formula) (S : Set Formula)
     (h_diamond_clos : Formula.neg (Formula.box (Formula.neg (psi.neg))) ∈ closure phi) :
     Formula.neg (Formula.box (Formula.neg (psi.neg))) ∈ S := by
   -- (Box psi).neg = (Box psi) → ⊥
-  -- We need: (Box (neg (neg psi))).neg ∈ S
+  -- We need: (Box (psi.neg.neg)).neg ∈ S, i.e., (Box (psi.neg.neg)) → ⊥ ∈ S
 
-  -- Key observation: Box psi ↔ Box (neg (neg psi)) by DNE in the box
-  -- And (Box X).neg ∈ MCS iff Box X ∉ MCS (by negation completeness)
+  -- Key insight: Box psi ↔ Box (psi.neg.neg) by double negation equivalence
+  -- We derive: (Box psi).neg → (Box (psi.neg.neg)).neg
 
-  -- From h_box_neg_in: (Box psi) → ⊥ ∈ S, so Box psi ∉ S
+  -- Step 1: DNE gives psi.neg.neg.imp psi as a theorem
+  have h_dne : ⊢ psi.neg.neg.imp psi := Bimodal.Theorems.Propositional.double_negation psi
 
-  -- We need to show: neg(Box(neg(neg psi))) ∈ S
-  -- i.e., (Box (neg (neg psi))) → ⊥ ∈ S
+  -- Step 2: By modal_k_dist, Box(psi.neg.neg.imp psi) → Box(psi.neg.neg).imp(Box psi)
+  -- And by necessitation, ⊢ Box(psi.neg.neg.imp psi)
+  -- So ⊢ Box(psi.neg.neg) → Box psi
+  have h_nec_dne : ⊢ Formula.box (psi.neg.neg.imp psi) :=
+    DerivationTree.necessitation (psi.neg.neg.imp psi) h_dne
+  have h_k_ax : ⊢ (Formula.box (psi.neg.neg.imp psi)).imp ((Formula.box psi.neg.neg).imp (Formula.box psi)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist psi.neg.neg psi)
+  have h_box_impl : ⊢ (Formula.box psi.neg.neg).imp (Formula.box psi) :=
+    DerivationTree.modus_ponens [] _ _ h_k_ax h_nec_dne
 
-  -- Since neg(neg psi) ↔ psi (provably equivalent in classical logic),
-  -- Box (neg (neg psi)) ↔ Box psi
-  -- So (Box (neg (neg psi))).neg ∈ S iff (Box psi).neg ∈ S
+  -- Step 3: Contrapositive: (Box psi).neg → (Box psi.neg.neg).neg
+  -- This is: (Box psi → ⊥) → (Box psi.neg.neg → ⊥)
+  -- Using b_combinator: (B → C) → ((A → B) → (A → C))
+  -- Let A = Box psi.neg.neg, B = Box psi, C = ⊥
+  -- Then (Box psi → ⊥) → ((Box psi.neg.neg → Box psi) → (Box psi.neg.neg → ⊥))
+  -- Apply with h_box_impl to get: (Box psi → ⊥) → (Box psi.neg.neg → ⊥)
+  have h_b : ⊢ ((Formula.box psi).imp Formula.bot).imp
+      (((Formula.box psi.neg.neg).imp (Formula.box psi)).imp ((Formula.box psi.neg.neg).imp Formula.bot)) :=
+    Bimodal.Theorems.Combinators.b_combinator
+  have h_step : ⊢ ((Formula.box psi).imp Formula.bot).imp ((Formula.box psi.neg.neg).imp Formula.bot) := by
+    -- h_b : (B → C) → ((A → B) → (A → C)) where A = Box psi.neg.neg, B = Box psi, C = ⊥
+    -- h_box_impl : ⊢ A → B
+    -- We want: ⊢ (B → C) → (A → C)
+    -- Use prop_k to compose: (X → Y → Z) → ((X → Y) → (X → Z))
+    -- With X = (B → C), Y = (A → B), Z = (A → C)
+    -- h_b : ⊢ X → (Y → Z)
+    -- Need: ⊢ X → Y (weakening of h_box_impl)
+    -- Then by prop_k: ⊢ X → Z
+    let X := (Formula.box psi).imp Formula.bot
+    let Y := (Formula.box psi.neg.neg).imp (Formula.box psi)
+    let Z := (Formula.box psi.neg.neg).imp Formula.bot
+    -- h_box_impl : ⊢ Y
+    -- Need: ⊢ X → Y (via prop_s: Y → (X → Y))
+    have h_s_weak : ⊢ Y.imp (X.imp Y) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s Y X)
+    have h_x_to_y : ⊢ X.imp Y := DerivationTree.modus_ponens [] Y (X.imp Y) h_s_weak h_box_impl
+    -- prop_k : (X → Y → Z) → ((X → Y) → (X → Z))
+    have h_prop_k : ⊢ (X.imp (Y.imp Z)).imp ((X.imp Y).imp (X.imp Z)) :=
+      DerivationTree.axiom [] _ (Axiom.prop_k X Y Z)
+    have h_step1 : ⊢ (X.imp Y).imp (X.imp Z) :=
+      DerivationTree.modus_ponens [] (X.imp (Y.imp Z)) ((X.imp Y).imp (X.imp Z)) h_prop_k h_b
+    exact DerivationTree.modus_ponens [] (X.imp Y) (X.imp Z) h_step1 h_x_to_y
+  have h_contrapos : ⊢ ((Formula.box psi).neg).imp ((Formula.box psi.neg.neg).neg) := h_step
 
-  -- For now, we use the fact that psi and neg(neg psi) are classically equivalent
-  -- The derivation uses DNE and necessitation
-  sorry
+  -- Step 4: Apply modus ponens in MCS
+  have h_both_in_S : (Formula.box psi).neg ∈ S ∧
+    ((Formula.box psi).neg).imp ((Formula.box psi.neg.neg).neg) ∈ S := by
+    constructor
+    · exact h_box_neg_in
+    · -- The contrapositive implication is a theorem, so it's in every MCS
+      exact set_mcs_closed_under_derivation h_mcs [] (fun _ h => by simp at h) h_contrapos
+
+  -- Step 5: By MCS implication closure, (Box psi.neg.neg).neg ∈ S
+  exact set_mcs_implication_property h_mcs h_both_in_S.2 h_both_in_S.1
 
 /--
 Modal backward via contrapositive (for MCS-derived world states).
@@ -720,12 +765,32 @@ theorem saturation_terminates (phi : Formula)
   · -- Already at fixed point
     use 0
     constructor
-    · omega
+    · exact Nat.zero_le _
     · simp only [saturate_with_fuel, h_fixed, ite_true]
   · -- Not at fixed point - need more fuel, but we know it terminates
-    -- The proof proceeds by showing card increases each step
-    -- For now, we use a classical argument
-    sorry
+    -- The proof uses the fact that each non-fixed-point step strictly increases
+    -- cardinality, and cardinality is bounded by Fintype.card (FDSMHistory phi)
+    -- This is a classical termination argument.
+    -- For now, we use the fact that the sequence must stabilize.
+    -- The bound maxHistories phi ≥ Fintype.card (FDSMHistory phi) is sufficient.
+
+    -- Use classical argument: the function eventually stabilizes
+    have h_eventually_stable : ∃ n, saturate_with_fuel phi hists t n =
+        saturate_with_fuel phi hists t (n + 1) := by
+      -- By Pigeonhole: within Fintype.card (FDSMHistory phi) steps,
+      -- we either reach a fixed point or exceed the maximum cardinality (impossible)
+      -- This requires well-founded induction on cardinality
+      sorry  -- Classical termination argument - requires well-founded recursion
+
+    obtain ⟨n, hn⟩ := h_eventually_stable
+    use n
+    constructor
+    · -- We need n ≤ maxHistories phi
+      -- The stabilization point n is at most Fintype.card (FDSMHistory phi)
+      -- and maxHistories phi = 2^closureSize phi ≥ any finite type cardinality
+      -- For now, we appeal to this bound
+      sorry  -- Bound verification
+    · exact hn
 
 /-!
 ## Phase 4: Modal Saturation Property
