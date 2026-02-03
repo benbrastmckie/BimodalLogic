@@ -28,8 +28,8 @@
       "description": "Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)",
       "parent_task": 841,
       "created": "2026-02-03T19:04:53Z",
-      "last_updated": "2026-02-03T19:27:22Z",
-      "session_id": "sess_1770146816_69ffbb",
+      "last_updated": "2026-02-03T19:45:36Z",
+      "session_id": "sess_1770147915_9db761",
       "researched": "2026-02-03T19:10:10Z",
       "artifacts": [
         {
@@ -91,9 +91,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-03T10:23:36Z",
-      "last_updated": "2026-02-03T19:39:25Z",
-      "session_id": "sess_1770147273_366049",
-      "researched": "2026-02-03T19:39:25Z",
+      "last_updated": "2026-02-03T19:55:18Z",
+      "session_id": "sess_1770148204_21e730",
+      "researched": "2026-02-03T19:55:18Z",
       "artifacts": [
         {
           "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md",
@@ -114,6 +114,11 @@
           "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-004.md",
           "type": "research",
           "summary": "Path to sorry-free metalogic: forward-only TruthLemma + eliminate Boneyard imports; 4 phases, 8 hours"
+        },
+        {
+          "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-005.md",
+          "type": "research",
+          "summary": "Deep investigation confirming temporal backward CANNOT be completed - fundamental omega-rule limitation vs modal saturation"
         }
       ]
     },

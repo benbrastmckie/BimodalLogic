@@ -569,17 +569,243 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
     intro psi fam hfam_in_M t h_diamond
     by_contra h_no_witness
     push_neg at h_no_witness
-    -- The full proof requires showing:
-    -- 1. {psi} ∪ {chi | Box chi ∈ some M family} is consistent
-    -- 2. A Lindenbaum extension exists that doesn't add new Box formulas
-    -- 3. The resulting extension is in S and strictly contains M
-    -- This contradicts maximality of M.
+    -- h_no_witness : ∀ fam' ∈ M, psi ∉ fam'.mcs t
+
+    -- Step 1: Since Diamond psi ∈ fam.mcs t (an MCS), {psi} is consistent
+    have h_psi_consistent : SetConsistent {psi} :=
+      diamond_implies_psi_consistent (fam.is_mcs t) psi h_diamond
+
+    -- Step 2: Define BoxContent(M) = {chi | ∃ fam' ∈ M, ∃ s, Box chi ∈ fam'.mcs s}
+    -- This is the set of all formulas that must be in any witness for box_coherence at ALL times
+    -- Note: We need BoxContent for all times s, not just time t, for box_coherence to hold
+    let BoxContent : Set Formula := {chi | ∃ fam' ∈ M, ∃ s : D, Formula.box chi ∈ fam'.mcs s}
+
+    -- Step 3: By box_coherence of M, every chi in BoxContent(M) at time s is in fam.mcs s
+    -- More specifically: if Box chi ∈ fam'.mcs s for some fam' ∈ M, then chi ∈ fam.mcs s
+    -- But BoxContent collects chi from ALL times, so this doesn't directly give chi ∈ fam.mcs t
     --
-    -- Key technical lemma (to be formalized):
-    -- Given Diamond psi ∈ fam.mcs t and no witness in M, construct M' ∈ S with M ⊂ M'.
-    -- The witness must be built to preserve box_coherence, which requires it to
-    -- contain all formulas chi where Box chi appears in some M family.
-    sorry
+    -- This is a fundamental issue: the witness W_set needs to contain BoxContent, but
+    -- BoxContent at different times may have different chi values that don't all belong
+    -- to fam.mcs t.
+    --
+    -- SIMPLIFICATION: Use the constant family structure. Since W is a constantWitnessFamily,
+    -- W.mcs s = W_set for all s. For box_coherence at time s:
+    -- - If Box chi ∈ fam1.mcs s (fam1 ∈ M), need chi ∈ W.mcs s = W_set
+    -- - So W_set must contain chi for ALL Box chi that appear at ANY time in M
+    --
+    -- This requires BoxContent to be universal over times.
+    have h_boxcontent_at_t_in_fam : ∀ chi, (∃ fam' ∈ M, Formula.box chi ∈ fam'.mcs t) → chi ∈ fam.mcs t := by
+      intro chi ⟨fam', hfam'_in_M, h_box_chi⟩
+      exact hM_in_S.2.1 fam' hfam'_in_M chi t h_box_chi fam hfam_in_M
+
+    -- Step 4: Show {psi} ∪ BoxContent is consistent
+    -- Key insight: if {psi} ∪ BoxContent ⊢ bot, then from BoxContent ⊆ fam.mcs t
+    -- and the deduction theorem, we can derive a contradiction with Diamond psi in fam
+    have h_witness_set_consistent : SetConsistent ({psi} ∪ BoxContent) := by
+      intro L hL_sub ⟨d⟩
+      -- L ⊆ {psi} ∪ BoxContent and L ⊢ bot
+      -- Split L into the psi part and BoxContent part
+      by_cases h_psi_in_L : psi ∈ L
+      · -- psi ∈ L: Use the argument that {psi} ∪ X is consistent when X ⊆ fam.mcs t
+        --          and Diamond psi ∈ fam.mcs t
+        -- The derivation L ⊢ bot with psi ∈ L gives [psi] ++ (L \ {psi}) ⊢ bot
+        -- By deduction: (L \ {psi}) ⊢ neg psi
+        -- But L \ {psi} ⊆ BoxContent ⊆ fam.mcs t
+        -- So by deductive closure of MCS: neg psi ∈ fam.mcs t
+        -- By necessitation on the theorem: ⊢ Box(l1 → ... → ln → neg psi) where li ∈ L \ {psi}
+        -- ... this argument is complex, need a helper lemma
+
+        -- Alternative: show directly that Diamond psi ∈ fam.mcs t prevents this inconsistency
+        -- If {psi} ∪ BoxContent ⊢ bot, we'd have a derivation showing psi inconsistent with
+        -- formulas that are all in fam.mcs t. But Diamond psi ∈ fam.mcs t guarantees
+        -- there's an accessible world where psi holds together with all necessary truths.
+
+        -- This requires the modal existence lemma: Diamond psi ∈ S (MCS) implies
+        -- {psi} ∪ {chi | Box chi ∈ S} is consistent.
+        --
+        -- Proof sketch: If {psi} ∪ {chi | Box chi ∈ S} were inconsistent, then
+        -- for some chi_1, ..., chi_n with Box chi_i ∈ S: psi, chi_1, ..., chi_n ⊢ bot
+        -- By deduction: chi_1, ..., chi_n ⊢ neg psi
+        -- This is a theorem (provable from empty context after repeated deduction)
+        -- By necessitation: Box(chi_1 → ... → chi_n → neg psi)
+        -- By K distribution: Box chi_1 → ... → Box chi_n → Box(neg psi)
+        -- Since Box chi_i ∈ S and S is MCS: Box(neg psi) ∈ S
+        -- But Diamond psi = neg(Box(neg psi)) ∈ S, contradiction.
+
+        -- The gap: {chi | Box chi ∈ S} vs BoxContent (which uses ∃ fam' ∈ M)
+        -- BoxContent may include chi where Box chi is in a DIFFERENT family than fam
+
+        -- Key observation: by box_coherence, BoxContent ⊆ fam.mcs t
+        -- So we can apply the existence lemma argument with fam.mcs t
+
+        -- Extract chi_1, ..., chi_n from L that are in BoxContent
+        -- These are all in fam.mcs t by h_boxcontent_in_fam
+
+        -- For the full proof, we need the existence lemma for this specific situation.
+        -- This is standard modal logic but requires careful formalization.
+
+        -- Technical lemma needed: diamond_existence_lemma
+        --   If Diamond psi ∈ S (MCS) and X ⊆ {chi | Box chi ∈ S}, then {psi} ∪ X is consistent
+        --
+        -- Our situation: Diamond psi ∈ fam.mcs t, and for the li in L that come from BoxContent,
+        -- we have Box li ∈ some M family, hence li ∈ fam.mcs t by box_coherence.
+        -- But we need Box li ∈ fam.mcs t (the SAME family) for the existence lemma.
+
+        -- This is where the argument breaks down: li comes from Box li in SOME fam' ∈ M,
+        -- not necessarily from Box li in fam itself.
+
+        -- HOWEVER, we can use a different argument:
+        -- If Box(neg psi) ∈ fam'.mcs t for some fam' ∈ M, then by box_coherence,
+        -- neg psi ∈ fam.mcs t. But Diamond psi = neg(Box(neg psi)) ∈ fam.mcs t too.
+        -- For fam.mcs t to be consistent, Box(neg psi) ∉ fam.mcs t.
+        -- By MCS negation completeness: neg(Box(neg psi)) ∈ fam.mcs t, which we already have.
+
+        -- The resolution: we cannot have Box(neg psi) in ANY M family!
+        -- If we could, it would need to be in fam by box_coherence, contradicting Diamond psi.
+
+        -- Wait, that's wrong. Box(neg psi) in fam' implies neg psi in fam (by coherence),
+        -- NOT Box(neg psi) in fam.
+
+        -- Let me reconsider. The existence lemma argument:
+        -- If {psi} ∪ BoxContent is inconsistent, there exist chi_1, ..., chi_n in BoxContent
+        -- with psi, chi_1, ..., chi_n ⊢ bot.
+        -- For each chi_i, Box chi_i ∈ fam_i.mcs t for some fam_i ∈ M.
+        -- By deduction: ⊢ chi_1 → ... → chi_n → (psi → bot) = chi_1 → ... → chi_n → neg psi
+        -- By necessitation: ⊢ Box(chi_1 → ... → chi_n → neg psi)
+        -- By K repeated: ⊢ Box chi_1 → ... → Box chi_n → Box(neg psi)
+
+        -- Now, each Box chi_i is in SOME fam_i.mcs t. We can't directly conclude Box(neg psi)
+        -- is in any particular MCS.
+
+        -- UNLESS: we use that the derivation ⊢ Box chi_1 → ... → Box chi_n → Box(neg psi)
+        -- is a THEOREM, so it's in every MCS.
+
+        -- Take fam (where Diamond psi is). The theorem Box chi_1 → ... → Box chi_n → Box(neg psi)
+        -- is in fam.mcs t.
+
+        -- Now, are Box chi_i in fam.mcs t? Not necessarily! Box chi_i is in fam_i.mcs t,
+        -- not necessarily in fam.mcs t.
+
+        -- By MCS negation completeness: either Box chi_i ∈ fam.mcs t or neg(Box chi_i) ∈ fam.mcs t.
+        -- If neg(Box chi_i) = Diamond(neg chi_i) ∈ fam.mcs t, that's allowed.
+
+        -- So we can't directly use modus ponens to get Box(neg psi) ∈ fam.mcs t.
+
+        -- ALTERNATIVE APPROACH: Use the union of all families' boxed contents.
+        -- Define S_union = ⋃_{fam' ∈ M} fam'.mcs t (union of all MCSes at time t)
+        -- This is NOT an MCS in general, but we can reason about derivability.
+
+        -- Actually, let's use a simpler argument based on what we know:
+        -- If {psi} ∪ BoxContent is inconsistent, that means there's no MCS containing
+        -- {psi} ∪ BoxContent. But we want to construct a witness that contains exactly
+        -- these elements (plus whatever Lindenbaum adds). If the base set is inconsistent,
+        -- we can't construct such a witness.
+
+        -- But wait - we're trying to show {psi} ∪ BoxContent IS consistent precisely
+        -- to enable witness construction. This is circular reasoning.
+
+        -- The actual proof needs the MODAL EXISTENCE LEMMA in a different form.
+        -- See ModalSaturation.lean for diamond_implies_psi_consistent.
+
+        -- For this sorry, we document the precise gap:
+        -- NEED: Lemma showing {psi} ∪ BoxContent consistent when Diamond psi ∈ fam.mcs t
+        --       and BoxContent is derived from a box-coherent M containing fam.
+
+        sorry
+      · -- psi ∉ L: L ⊆ BoxContent ⊆ fam.mcs t, so L derives bot from elements of MCS
+        have h_L_sub_fam : ∀ x ∈ L, x ∈ fam.mcs t := by
+          intro x hx
+          have h_in_union := hL_sub x hx
+          simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_union
+          rcases h_in_union with h_eq_psi | h_in_box
+          · -- x = psi, but psi ∉ L by assumption h_psi_in_L
+            rw [h_eq_psi] at hx
+            exact absurd hx h_psi_in_L
+          · -- x ∈ BoxContent
+            exact h_boxcontent_in_fam h_in_box
+        -- L ⊢ bot and L ⊆ fam.mcs t contradicts MCS consistency
+        exact (fam.is_mcs t).1 L h_L_sub_fam ⟨d⟩
+
+    -- Step 5: Use Lindenbaum to extend {psi} ∪ BoxContent to an MCS
+    have ⟨W_set, h_W_extends, h_W_mcs⟩ := set_lindenbaum ({psi} ∪ BoxContent) h_witness_set_consistent
+
+    -- Step 6: Construct the witness family as a constant family
+    let W : IndexedMCSFamily D := constantWitnessFamily W_set h_W_mcs
+
+    -- Step 7: Show psi ∈ W.mcs t (W is a witness for the Diamond)
+    have h_psi_in_W : psi ∈ W.mcs t := by
+      show psi ∈ W_set
+      exact h_W_extends (Set.mem_union_left BoxContent (Set.mem_singleton psi))
+
+    -- Step 8: Show M ∪ {W} has box_coherence
+    have h_extended_coherence : box_coherence_pred (M ∪ {W}) := by
+      intro fam1 h_fam1 chi s h_box_chi fam2 h_fam2
+      -- Cases on whether fam1 is in M or is W, and whether fam2 is in M or is W
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_fam1 h_fam2
+      rcases h_fam1 with h_fam1_M | h_fam1_W
+      · -- fam1 ∈ M
+        rcases h_fam2 with h_fam2_M | h_fam2_W
+        · -- fam2 ∈ M: use M's box_coherence
+          exact hM_in_S.2.1 fam1 h_fam1_M chi s h_box_chi fam2 h_fam2_M
+        · -- fam2 = W: need chi ∈ W.mcs s
+          subst h_fam2_W
+          -- chi ∈ BoxContent because Box chi ∈ fam1.mcs s and fam1 ∈ M
+          have h_chi_boxcontent : chi ∈ BoxContent := ⟨fam1, h_fam1_M, h_box_chi⟩
+          -- W.mcs s = W_set contains BoxContent
+          show chi ∈ W_set
+          exact h_W_extends (Set.mem_union_right {psi} h_chi_boxcontent)
+      · -- fam1 = W
+        subst h_fam1_W
+        -- Box chi ∈ W.mcs s, need chi in fam2.mcs s
+        -- W.mcs s is the MCS W_set, which is a Lindenbaum extension of {psi} ∪ BoxContent
+        -- The issue: W_set may contain Box chi where chi is NOT in all M families!
+        --
+        -- This is the critical gap. Lindenbaum extension can add arbitrary formulas
+        -- including Box formulas whose contents are not in M.
+        --
+        -- For box_coherence of M ∪ {W}, we need:
+        -- If Box chi ∈ W.mcs s, then chi ∈ fam'.mcs s for all fam' ∈ M
+        --
+        -- This requires W to be "controlled" - it shouldn't add Box formulas beyond
+        -- what's forced by the initial set.
+        --
+        -- POSSIBLE RESOLUTION: Use a different MCS construction that avoids adding
+        -- unnecessary Box formulas. Or show that any Box chi added by Lindenbaum
+        -- must have chi already in all M families.
+        --
+        -- For now, this is the remaining sorry point.
+        sorry
+
+    -- Step 9: Show M ∪ {W} ∈ S (extends C, has coherence, contains eval_family)
+    have h_extended_in_S : (M ∪ {W}) ∈ S := by
+      refine ⟨?_, h_extended_coherence, ?_⟩
+      · -- C.families ⊆ M ∪ {W}
+        exact Set.Subset.trans hM_in_S.1 (Set.subset_union_left)
+      · -- C.eval_family ∈ M ∪ {W}
+        exact Set.mem_union_left {W} hM_in_S.2.2
+
+    -- Step 10: Show M ⊂ M ∪ {W} (strict inclusion)
+    have h_W_notin_M : W ∉ M := by
+      intro h_W_in_M
+      -- If W ∈ M, then h_no_witness says psi ∉ W.mcs t, contradicting h_psi_in_W
+      exact h_no_witness W h_W_in_M h_psi_in_W
+
+    have h_strict_extension : M ⊂ M ∪ {W} := by
+      constructor
+      · exact Set.subset_union_left
+      · intro h_eq
+        have h_W_in : W ∈ M ∪ {W} := Set.mem_union_right M (Set.mem_singleton W)
+        have h_W_in' : W ∈ M := by
+          rw [h_eq] at h_W_in
+          exact h_W_in
+        exact h_W_notin_M h_W_in'
+
+    -- Step 11: This contradicts maximality of M
+    -- M is maximal in S: ∀ M' ∈ S, M ⊆ M' → M' ⊆ M
+    have h_contradiction := hM_maximal.right h_extended_in_S (Set.subset_union_left)
+    -- h_contradiction : M ∪ {W} ⊆ M
+    have h_W_in_M : W ∈ M := h_contradiction (Set.mem_union_right M (Set.mem_singleton W))
+    exact h_W_notin_M h_W_in_M
 
   -- Construct C' from M
   let C' : FamilyCollection D phi := {

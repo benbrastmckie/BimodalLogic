@@ -1,19 +1,60 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-03T10:00:00Z",
-  "completed_at": "2026-02-03T10:45:00Z",
+  "status": "partial",
+  "started_at": "2026-02-03T12:00:00Z",
+  "completed_at": "2026-02-03T12:45:00Z",
   "artifacts": [
     {
-      "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-004.md",
       "type": "research",
-      "summary": "Path to sorry-free metalogic: forward-only TruthLemma + eliminate Boneyard imports; 8-hour implementation in 4 phases"
+      "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-005.md",
+      "summary": "Deep investigation confirming temporal backward direction cannot be completed - fundamental omega-rule limitation"
     }
   ],
-  "partial_progress": null,
+  "partial_progress": {
+    "stage": "research_complete",
+    "details": "Research complete. Temporal backward sorries CANNOT be completed. Recommend archival restructuring."
+  },
   "metadata": {
-    "session_id": "sess_1770147273_366049",
+    "session_id": "sess_1770148204_21e730",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+  },
+  "findings": {
+    "conclusion": "NOT_FEASIBLE",
+    "reason": "Fundamental structural difference between modal and temporal saturation",
+    "key_insight": "Modal saturation adds NEW families as witnesses; temporal backward requires truth at ALL times within SAME family which is fixed",
+    "strategies_evaluated": [
+      {
+        "name": "Temporal Saturation via Zorn",
+        "verdict": "NOT VIABLE",
+        "reason": "Cannot add new times - time is a fixed domain D"
+      },
+      {
+        "name": "Finite Subformula Closure",
+        "verdict": "NOT VIABLE",
+        "reason": "Finite omega-rule is still infinitary"
+      },
+      {
+        "name": "Contrapositive Approach",
+        "verdict": "NOT VIABLE",
+        "reason": "Cannot extract specific time witness from MCS membership"
+      },
+      {
+        "name": "Formula Structure Induction",
+        "verdict": "NOT VIABLE",
+        "reason": "Each induction step has same fundamental gap"
+      },
+      {
+        "name": "Frame Structure Exploitation",
+        "verdict": "NOT VIABLE",
+        "reason": "Temporal operators quantify over times, not families"
+      },
+      {
+        "name": "Index Domain Properties",
+        "verdict": "NOT VIABLE",
+        "reason": "Ordering properties don't bridge syntax to semantics"
+      }
+    ],
+    "recommended_action": "Archive backward direction, restructure to forward-only TruthLemma"
   }
 }
