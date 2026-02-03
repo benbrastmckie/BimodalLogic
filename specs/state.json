@@ -16,22 +16,28 @@
     {
       "project_number": 845,
       "project_name": "update_context_files_from_latex_notes",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "priority": "medium",
       "effort": "1 hour",
       "description": "Update .claude/context/ files based on 2 NOTE: tags from Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 474: Standardize lean source code references to follow pattern shown at end of sections; (2) Line 550: Define \\set{} macro in logos-notation.sty to replace \\{ \\} everywhere.",
       "created": "2026-02-03T21:09:57Z",
-      "last_updated": "2026-02-03T21:15:12Z",
-      "session_id": "sess_1770153095_efe602",
+      "last_updated": "2026-02-03T21:20:43Z",
+      "session_id": "sess_1770153443_596d62",
       "researched": "2026-02-03T21:15:12Z",
       "artifacts": [
         {
           "path": "specs/845_update_context_files_from_latex_notes/reports/research-001.md",
           "type": "research",
           "summary": "Research report with implementation plan for updating 3 context files"
+        },
+        {
+          "path": "specs/845_update_context_files_from_latex_notes/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for documenting LaTeX conventions (leansrc placement, set macro)"
         }
-      ]
+      ],
+      "planned": "2026-02-03T21:20:43Z"
     },
     {
       "project_number": 846,

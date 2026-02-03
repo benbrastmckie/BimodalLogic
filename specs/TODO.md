@@ -34,12 +34,14 @@ technical_debt:
 
 ### 845. Update context files from LaTeX NOTE: tags
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Priority**: medium
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/845_update_context_files_from_latex_notes/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/845_update_context_files_from_latex_notes/plans/implementation-001.md)
 
 **Description**: Update .claude/context/ files based on 2 NOTE: tags from Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 474: Standardize lean source code references to follow pattern shown at end of sections; (2) Line 550: Define \set{} macro in logos-notation.sty to replace \{ \} everywhere.
 
