@@ -48,11 +48,12 @@ technical_debt:
 
 ### 851. Define CoherentBundle structure
 - **Effort**: 3-4 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
 - **Research**: [research-001.md](specs/851_define_coherentbundle_structure/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/851_define_coherentbundle_structure/plans/implementation-001.md)
 
 **Description**: Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)
 

@@ -35,21 +35,27 @@
     {
       "project_number": 851,
       "project_name": "define_coherentbundle_structure",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "description": "Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)",
       "parent_task": 844,
       "created": "2026-02-03T22:53:06Z",
-      "last_updated": "2026-02-03T23:03:09Z",
+      "last_updated": "2026-02-03T23:07:37Z",
       "researched": "2026-02-03T23:01:15Z",
       "artifacts": [
         {
           "path": "specs/851_define_coherentbundle_structure/reports/research-001.md",
           "type": "research",
           "summary": "Research on CoherentBundle structure design, analyzing mutual coherence patterns, Zorn's lemma usage, and the constant-family approach to sidestep Lindenbaum control problems"
+        },
+        {
+          "path": "specs/851_define_coherentbundle_structure/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for CoherentBundle structure with mutual coherence via UnionBoxContent"
         }
       ],
-      "session_id": "sess_1770159775_c65020"
+      "session_id": "sess_1770159775_c65020",
+      "planned": "2026-02-03T23:07:37Z"
     },
     {
       "project_number": 850,
