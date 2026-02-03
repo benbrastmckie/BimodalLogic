@@ -30,7 +30,14 @@
       "created": "2026-02-03T02:44:55Z",
       "last_updated": "2026-02-03T02:50:23Z",
       "session_id": "sess_1770086731_7dfdbc",
-      "researched": "2026-02-03T02:50:23Z"
+      "researched": "2026-02-03T02:50:23Z",
+      "artifacts": [
+        {
+          "path": "specs/825_fdsm_multi_history_modal_saturation/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research on FDSM multi-history modal saturation fixed-point construction with Mathlib termination patterns"
+        }
+      ]
     },
     {
       "project_number": 823,
