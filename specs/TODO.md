@@ -1,5 +1,5 @@
 ---
-next_project_number: 836
+next_project_number: 837
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 836. Improve Metalogic README documentation with flowcharts and subdirectory summaries
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-02-03
+
+**Description**: Improve documentation for Metalogic/README.md following task 830's incomplete work. Clearly represent the representation theorem and all major modules with detailed dependency flowchart. Include comprehensive summaries of each Metalogic/ subdirectory with links to their README.md files. Review and update all subdirectory README.md files for accuracy and exhaustivity.
+
+---
 
 ### 835. Enhance /review Command with ROADMAP.md Integration and Revision
 - **Effort**: 4-5 hours
