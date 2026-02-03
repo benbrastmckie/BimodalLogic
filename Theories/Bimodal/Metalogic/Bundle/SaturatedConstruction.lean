@@ -406,7 +406,9 @@ The initial family contains phi in its MCS at all times.
 lemma constructInitialFamily_contains (phi : Formula)
     (h_cons : ¬Nonempty (DerivationTree [] phi.neg)) (t : D) :
     phi ∈ (constructInitialFamily phi h_cons (D := D)).mcs t := by
-  simp only [constructInitialFamily, constantWitnessFamily_mcs_eq]
+  -- constructInitialFamily uses restricted_mcs_from_formula to get M containing phi
+  -- then constantWitnessFamily which assigns M to all times
+  unfold constructInitialFamily constantWitnessFamily_mcs_eq
   exact (Classical.choose_spec (restricted_mcs_from_formula phi h_cons)).1
 
 /--
@@ -424,7 +426,7 @@ noncomputable def initialFamilyCollection (phi : Formula)
       -- Use T-axiom
       let h_mcs := fam.is_mcs t
       let h_T := DerivationTree.axiom [] ((Formula.box psi).imp psi) (Axiom.modal_t psi)
-      rw [h_eq', h_eq'']
+      subst h_eq' h_eq''
       exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_box
     eval_family := fam
     eval_family_mem := Set.mem_singleton fam

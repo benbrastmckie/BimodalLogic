@@ -348,6 +348,11 @@
           "path": "specs/835_enhance_review_command_roadmap_integration_revision/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for /review command ROADMAP.md integration and revision"
+        },
+        {
+          "path": "specs/835_enhance_review_command_roadmap_integration_revision/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results and detailed change list"
         }
       ],
       "planned": "2026-02-03T09:52:14Z",
