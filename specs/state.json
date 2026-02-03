@@ -16,10 +16,10 @@
     {
       "project_number": 848,
       "project_name": "add_conceptual_engineering_section_to_introduction",
-      "status": "planning",
+      "status": "planned",
       "language": "latex",
       "created": "2026-02-03T21:16:25Z",
-      "last_updated": "2026-02-03T21:30:47Z",
+      "last_updated": "2026-02-03T21:33:27Z",
       "session_id": "sess_1770154226_168ebc",
       "researched": "2026-02-03T21:28:03Z",
       "artifacts": [
@@ -27,8 +27,14 @@
           "path": "specs/848_add_conceptual_engineering_section_to_introduction/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing conceptual-engineering.md source content, Introduction.tex structure/style, and recommending section placement after opening paragraphs with 3-4 paragraph implementation focusing on logic as normative engineering vs descriptive linguistics"
+        },
+        {
+          "path": "specs/848_add_conceptual_engineering_section_to_introduction/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for adding Conceptual Engineering section to Introduction"
         }
-      ]
+      ],
+      "planned": "2026-02-03T21:33:27Z"
     },
     {
       "project_number": 845,
@@ -68,7 +74,7 @@
     {
       "project_number": 846,
       "project_name": "fix_latex_constitutive_foundation_tags",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "high",
       "effort": "2 hours",
