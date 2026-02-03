@@ -3,16 +3,16 @@ next_project_number: 827
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-03T00:33:24Z
+  last_assessed: 2026-02-03T03:14:03Z
 task_counts:
-  active: 14
-  completed: 366
+  active: 10
+  completed: 370
   in_progress: 2
-  not_started: 9
+  not_started: 5
   abandoned: 26
   total: 396
 technical_debt:
-  sorry_count: 69
+  sorry_count: 95
   axiom_count: 15
   build_errors: 1
   status: good
@@ -50,7 +50,7 @@ technical_debt:
 
 ### 824. Fix Constitutive Foundation Remaining Issues
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -61,54 +61,6 @@ technical_debt:
 
 ---
 
-### 823. Update Context Files with Verum/Falsum Notation
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/823_update_context_verum_falsum_notation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/823_update_context_verum_falsum_notation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/823_update_context_verum_falsum_notation/summaries/implementation-summary-20260203.md)
-
-**Description**: Update .claude/context/ files based on NOTE: tag in 02-ConstitutiveFoundation.tex:357. Research notation conventions for verum/falsum in /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (lines 106, 109, 494). Since \top and \bot are not interdefinable in bilateral semantics, establish consistent terminology: reserve 'verium' and 'top' for the two top elements, 'falsum' and 'bot' for the two bottom elements. Define \ver as \neg\bot (verum) and \fal as \neg\top (falsum). Update LaTeX notation files and context documentation to match conventions from IdentityAboutness.tex.
-
----
-
-### 822. Improve Syntax and Term Algebra Structure
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/822_improve_syntax_term_algebra_structure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/822_improve_syntax_term_algebra_structure/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/822_improve_syntax_term_algebra_structure/summaries/implementation-summary-20260203.md)
-
-**Description**: Restructure syntactic definitions in 02-ConstitutiveFoundation.tex by integrating term algebra into earlier sections. Currently term algebra (line 196) is defined late, causing forward references in well-formed formula definition (line 40). Reorganize to: (1) specify term algebra first, (2) define formulas using terms, (3) distinguish open and closed sentences. This addresses TODO at line 40 and line 196.
-
----
-
-### 821. Fix Constitutive Foundation LaTeX Issues
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/821_fix_constitutive_foundation_latex_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/821_fix_constitutive_foundation_latex_issues/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/821_fix_constitutive_foundation_latex_issues/summaries/implementation-summary-20260203.md)
-
-**Description**: Address 7 FIX: tags in 02-ConstitutiveFoundation.tex: include universal quantifier in primitives list (line 21), present lattice definitions with task relation constraints (line 95), use defined symbols for state modality predicates (line 114), add explanatory remark about haecceities and modal profiles (line 161), add remark about constant substitution (line 220), formally define v-variant (line 225), elaborate on hyperintensional verification/falsification significance (line 248), clarify quantifier binding convention (line 270), divide top/bottom into separate subsubsections (line 285), add remark distinguishing propositional from sentential operators (line 435).
-
----
-
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 8-12 hours
 - **Status**: [NOT STARTED]
@@ -116,24 +68,6 @@ technical_debt:
 - **Created**: 2026-02-02
 
 **Description**: Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via tasks 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.
-
----
-
-### 816. BMCS Temporal Modal Coherence Strengthening
-- **Effort**: 12 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Parent**: Task 813
-- **Dependencies**: 814
-- **Research**: [research-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md), [research-002.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-002.md), [research-003.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-003.md), [research-004.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-004.md), [research-005.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-005.md), [research-006.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-006.md), [research-007.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-007.md), [research-008.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-008.md), [research-009.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-009.md), [research-010.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-010.md), [research-011.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-011.md), [research-012.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-012.md), [research-013.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-013.md), [research-014.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-014.md)
-- **Plan**: [implementation-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-001.md), [implementation-002.md](specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-002.md), [implementation-003.md](specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260203.md](specs/816_bmcs_temporal_modal_coherence_strengthening/summaries/implementation-summary-20260203.md)
-
-**Description**: Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past), Construction.lean:220 (modal_backward in singleFamilyBMCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction or multi-family approach.
 
 ---
 
