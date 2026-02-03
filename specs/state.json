@@ -22,7 +22,7 @@
     {
       "project_number": 852,
       "project_name": "implement_coherentbundle_tobmcs",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "description": "Implement CoherentBundle.toBMCS conversion to provide axiom-free modal_backward. Uses contraposition: if phi in all families but Box phi not in fam.mcs, then Diamond(neg phi) in fam.mcs, so exists witness with neg phi, contradicting phi in all families. Depends on task #851 CoherentBundle structure. (Follow-up from task #844, Phase 4)",
       "parent_task": 844,
@@ -30,7 +30,16 @@
         851
       ],
       "created": "2026-02-03T22:53:10Z",
-      "last_updated": "2026-02-03T22:53:10Z"
+      "last_updated": "2026-02-03T23:22:22Z",
+      "session_id": "sess_1770160802_f5dd50",
+      "researched": "2026-02-03T23:22:22Z",
+      "artifacts": [
+        {
+          "path": "specs/852_implement_coherentbundle_tobmcs/reports/research-001.md",
+          "type": "research",
+          "summary": "Research confirming task 852 is redundant - CoherentBundle.toBMCS was fully implemented in task 851"
+        }
+      ]
     },
     {
       "project_number": 851,

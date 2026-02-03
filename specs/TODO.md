@@ -36,7 +36,9 @@ technical_debt:
 
 ### 852. Implement CoherentBundle.toBMCS conversion
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/852_implement_coherentbundle_tobmcs/reports/research-001.md)
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
