@@ -16,7 +16,14 @@
       "created": "2026-02-03T10:24:04Z",
       "last_updated": "2026-02-03T10:29:08Z",
       "session_id": "sess_1770114296_f157bf",
-      "researched": "2026-02-03T10:29:08Z"
+      "researched": "2026-02-03T10:29:08Z",
+      "artifacts": [
+        {
+          "path": "specs/841_remove_axiom_complete_multi_family_saturation/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of multi-family saturation construction to remove singleFamily_modal_backward_axiom, including termination measures, well-founded recursion patterns, and implementation strategy"
+        }
+      ]
     },
     {
       "project_number": 840,
