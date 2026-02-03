@@ -1,15 +1,19 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-03T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "synthesizing",
-    "details": "Codebase exploration complete, synthesizing findings into research report"
-  },
+  "status": "researched",
+  "artifacts": [
+    {
+      "path": "specs/835_enhance_review_command_roadmap_integration_revision/reports/research-001.md",
+      "type": "research",
+      "summary": "Research report analyzing current /review command structure, ROADMAP.md integration patterns, and recommendations for adding Strategies/Ambitions context loading, roadmap revision, and task suggestions output"
+    }
+  ],
+  "next_steps": "Run /plan 835 to create implementation plan",
+  "summary": "Research found /review has read-only ROADMAP integration but lacks write-back capability. Recommends extending with Step 1.5 (load Strategies/Ambitions context), Step 6.5 (revise ROADMAP based on findings), and Step 8.5 (task suggestions output like /learn). Strategies/Ambitions sections don't exist in ROAD_MAP.md yet - may require prerequisite task.",
   "metadata": {
     "session_id": "sess_1770111621_4c6048",
     "agent_type": "general-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 9
   }
 }
