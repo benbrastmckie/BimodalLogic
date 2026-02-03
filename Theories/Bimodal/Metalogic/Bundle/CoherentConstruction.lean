@@ -45,16 +45,40 @@ whose boxes exist at different times, making the time-coherence argument fail.
 
 ## Main Results
 
+### Phase 1-3: CoherentWitness (Task 844)
 - `BoxContent`: Set of formulas whose boxes appear in a family
 - `WitnessSeed`: The seed for constructing coherent witnesses
 - `diamond_boxcontent_consistent_constant`: Core viability lemma for constant families
 - `CoherentWitness`: A witness family with built-in coherence proof
 - `constructCoherentWitness`: Construct a coherent witness for Diamond formulas
 
+### Phase 4-7: CoherentBundle (Task 851)
+- `UnionBoxContent`: Union of BoxContent across all families in a set
+- `MutuallyCoherent`: Predicate ensuring all families contain entire UnionBoxContent
+- `CoherentBundle`: Structure collecting mutually coherent constant families
+- `CoherentBundle.isSaturated`: Saturation predicate for BMCS construction
+- `CoherentBundle.toBMCS`: Convert saturated bundle to BMCS (no sorries!)
+- Basic lemmas: `chi_in_all_families`, `families_box_coherent`, `member_contains_union_boxcontent`
+
+## CoherentBundle Approach
+
+The CoherentBundle structure provides an axiom-free path to BMCS construction:
+
+1. **Constant families**: All families in a CoherentBundle are constant (time-independent MCS)
+2. **Mutual coherence**: Every family contains the UnionBoxContent from ALL families
+3. **Saturation**: Every neg(Box phi) formula has a witness family containing neg phi
+4. **BMCS conversion**: Saturated CoherentBundle converts to BMCS with proven modal_forward/backward
+
+The key insight is that constant-family witnesses avoid the Lindenbaum control problem
+(where Lindenbaum extension might add uncontrolled Box formulas) because their BoxContent
+is time-independent.
+
 ## References
 
 - Research report: specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-002.md
 - Implementation plan: specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-002.md
+- CoherentBundle research: specs/851_define_coherentbundle_structure/reports/research-001.md
+- CoherentBundle plan: specs/851_define_coherentbundle_structure/plans/implementation-001.md
 - Failed approach: Bimodal.Metalogic.Bundle.PreCoherentBundle
 -/
 
@@ -359,21 +383,247 @@ lemma constructCoherentWitness_coherent (base : IndexedMCSFamily D)
   (constructCoherentWitness base h_const psi t h_diamond).contains_boxcontent chi ⟨s, h_box⟩ r
 
 /-!
-## Phase 4-6: CoherentBundle and BMCS Conversion (Future Work)
+## Phase 4: UnionBoxContent and MutuallyCoherent Definitions
 
-The remaining phases (CoherentBundle structure, box coherence proofs, BMCS conversion,
-and construction from consistent context) require additional infrastructure:
+UnionBoxContent collects the BoxContent from ALL families in a set.
+MutuallyCoherent ensures every family contains the entire UnionBoxContent.
+-/
 
-1. **Mutual coherence**: Witnesses are coherent WITH base but not necessarily with each other.
-   Full BMCS modal_forward requires mutual coherence between all families.
+/--
+UnionBoxContent of a family set: the set of all formulas chi where Box chi appears
+in any family's MCS at any time.
 
-2. **Recursive saturation**: Witnesses may have Diamond formulas not satisfied in the bundle.
-   This requires a Zorn's lemma argument similar to SaturatedConstruction.lean.
+This generalizes BoxContent from a single family to a set of families.
+For a CoherentBundle, every family must contain this entire set.
+-/
+def UnionBoxContent (families : Set (IndexedMCSFamily D)) : Set Formula :=
+  {chi | ∃ fam ∈ families, chi ∈ BoxContent fam}
 
-These are documented in:
-- SaturatedConstruction.lean (lines 714, 733, 785)
-- research-002.md (Approach B technical challenges)
+/--
+BoxContent of a single family is a subset of UnionBoxContent.
+-/
+lemma BoxContent_subset_UnionBoxContent (families : Set (IndexedMCSFamily D))
+    (fam : IndexedMCSFamily D) (h_mem : fam ∈ families) :
+    BoxContent fam ⊆ UnionBoxContent families := by
+  intro chi h_chi
+  exact ⟨fam, h_mem, h_chi⟩
 
+/--
+UnionBoxContent is monotone: adding families only increases the union.
+-/
+lemma UnionBoxContent_monotone (families1 families2 : Set (IndexedMCSFamily D))
+    (h_sub : families1 ⊆ families2) :
+    UnionBoxContent families1 ⊆ UnionBoxContent families2 := by
+  intro chi ⟨fam, h_fam_mem, h_chi⟩
+  exact ⟨fam, h_sub h_fam_mem, h_chi⟩
+
+/--
+MutuallyCoherent predicate: all families contain the entire UnionBoxContent at all times.
+
+This is the key invariant for CoherentBundle. It ensures that box-coherence holds
+between ALL families, not just between a witness and its base.
+-/
+def MutuallyCoherent (families : Set (IndexedMCSFamily D)) : Prop :=
+  ∀ fam ∈ families, ∀ chi ∈ UnionBoxContent families, ∀ t : D, chi ∈ fam.mcs t
+
+/--
+A singleton set containing a constant family is trivially mutually coherent.
+
+This is because the UnionBoxContent equals BoxContent of that single family,
+and by the T-axiom, every chi in BoxContent is in the family's MCS.
+-/
+lemma MutuallyCoherent_singleton (fam : IndexedMCSFamily D) (h_const : IsConstantFamily fam) :
+    MutuallyCoherent ({fam} : Set (IndexedMCSFamily D)) := by
+  intro fam' h_fam'_mem chi h_chi_in_union t
+  -- fam' must be fam
+  simp only [Set.mem_singleton_iff] at h_fam'_mem
+  rw [h_fam'_mem]
+  -- chi is in UnionBoxContent {fam} = BoxContent fam
+  rcases h_chi_in_union with ⟨fam'', h_fam''_mem, h_chi_in_box⟩
+  simp only [Set.mem_singleton_iff] at h_fam''_mem
+  rw [h_fam''_mem] at h_chi_in_box
+  -- h_chi_in_box : chi ∈ BoxContent fam, i.e., ∃ s, Box chi ∈ fam.mcs s
+  rcases h_chi_in_box with ⟨s, h_box_s⟩
+  -- Since fam is constant, fam.mcs t = fam.mcs s
+  rcases h_const with ⟨M, hM⟩
+  rw [hM s] at h_box_s
+  rw [hM t]
+  -- Apply T-axiom: Box chi → chi
+  have h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
+  exact set_mcs_implication_property (by rw [← hM t]; exact fam.is_mcs t)
+    (theorem_in_mcs (by rw [← hM t]; exact fam.is_mcs t) h_T) h_box_s
+
+/-!
+## Phase 5: CoherentBundle Structure Definition
+
+A CoherentBundle is a collection of constant IndexedMCSFamilies that are mutually coherent.
+This structure is the key to eliminating `singleFamily_modal_backward_axiom`.
+-/
+
+/--
+CoherentBundle: A collection of mutually coherent constant families.
+
+A CoherentBundle satisfies:
+1. All families are constant (time-independent MCS)
+2. The collection is nonempty
+3. There is a designated evaluation family
+4. All families are mutually coherent (share BoxContent)
+
+This structure enables axiom-free BMCS construction when combined with saturation.
+-/
+structure CoherentBundle (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
+  /-- The set of families in the bundle -/
+  families : Set (IndexedMCSFamily D)
+  /-- All families are constant (time-independent) -/
+  all_constant : ∀ fam ∈ families, IsConstantFamily fam
+  /-- The bundle is nonempty -/
+  nonempty : families.Nonempty
+  /-- The designated evaluation family -/
+  eval_family : IndexedMCSFamily D
+  /-- The evaluation family is in the bundle -/
+  eval_family_mem : eval_family ∈ families
+  /-- All families contain UnionBoxContent at all times -/
+  mutually_coherent : MutuallyCoherent families
+
+/--
+A CoherentBundle is saturated if for every formula phi and every family fam,
+if neg(Box phi) is in fam.mcs t, then there exists a family containing neg phi.
+
+This is the natural saturation property matching the modal_backward requirement.
+The formulation uses neg(Box phi) directly rather than Diamond form to avoid
+syntactic mismatch issues (since Diamond psi = psi.neg.box.neg != phi.box.neg).
+-/
+def CoherentBundle.isSaturated (B : CoherentBundle D) : Prop :=
+  ∀ phi : Formula, ∀ fam ∈ B.families, ∀ t : D,
+    Formula.neg (Formula.box phi) ∈ fam.mcs t →
+    ∃ fam' ∈ B.families, Formula.neg phi ∈ fam'.mcs t
+
+/--
+The evaluation family of a CoherentBundle is constant.
+-/
+lemma CoherentBundle.eval_family_constant (B : CoherentBundle D) :
+    IsConstantFamily B.eval_family :=
+  B.all_constant B.eval_family B.eval_family_mem
+
+/-!
+## Phase 6: Basic CoherentBundle Properties
+-/
+
+/--
+If Box chi is in any family at any time, then chi is in all families at all times.
+
+This is the key coherence property that follows from MutuallyCoherent.
+-/
+lemma CoherentBundle.chi_in_all_families (B : CoherentBundle D)
+    (chi : Formula) (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families)
+    (s : D) (h_box : Formula.box chi ∈ fam.mcs s)
+    (fam' : IndexedMCSFamily D) (h_fam' : fam' ∈ B.families) (t : D) :
+    chi ∈ fam'.mcs t := by
+  -- chi is in UnionBoxContent B.families
+  have h_chi_in_union : chi ∈ UnionBoxContent B.families := by
+    exact ⟨fam, h_fam, ⟨s, h_box⟩⟩
+  -- By mutual coherence, chi is in fam'.mcs t
+  exact B.mutually_coherent fam' h_fam' chi h_chi_in_union t
+
+/--
+For constant families, BoxContent is determined by the MCS at any single time.
+
+Since all families in a CoherentBundle are constant, their BoxContent is well-defined
+and independent of time.
+-/
+lemma CoherentBundle.box_content_at_any_time (B : CoherentBundle D)
+    (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families)
+    (t s : D) : BoxContentAt fam t = BoxContentAt fam s := by
+  rcases B.all_constant fam h_fam with ⟨M, hM⟩
+  ext chi
+  simp only [BoxContentAt, Set.mem_setOf_eq]
+  rw [hM t, hM s]
+
+/--
+Box formulas propagate correctly: if Box chi is in any family at any time,
+then Box chi is NOT necessarily in other families (that's forward direction).
+However, chi IS in all families due to mutual coherence.
+-/
+lemma CoherentBundle.families_box_coherent (B : CoherentBundle D)
+    (chi : Formula) (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families)
+    (t : D) (h_box : Formula.box chi ∈ fam.mcs t) :
+    ∀ fam' ∈ B.families, ∀ s : D, chi ∈ fam'.mcs s :=
+  fun fam' h_fam' s => B.chi_in_all_families chi fam h_fam t h_box fam' h_fam' s
+
+/--
+Every family in a CoherentBundle contains the entire UnionBoxContent at all times.
+
+This is an immediate consequence of MutuallyCoherent.
+-/
+lemma CoherentBundle.member_contains_union_boxcontent (B : CoherentBundle D)
+    (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families) (t : D) :
+    UnionBoxContent B.families ⊆ fam.mcs t := by
+  intro chi h_chi
+  exact B.mutually_coherent fam h_fam chi h_chi t
+
+/-!
+## Phase 7: CoherentBundle to BMCS Conversion
+-/
+
+/--
+Convert a saturated CoherentBundle to a BMCS.
+
+**Preconditions**:
+- B is a CoherentBundle (mutually coherent constant families)
+- B is saturated (every Diamond has a witness)
+
+**Result**:
+A BMCS where:
+- modal_forward: Follows from mutual coherence + T-axiom
+- modal_backward: Follows from saturation via contraposition
+-/
+noncomputable def CoherentBundle.toBMCS (B : CoherentBundle D)
+    (h_sat : B.isSaturated) : BMCS D where
+  families := B.families
+  nonempty := B.nonempty
+  modal_forward := by
+    -- Box phi in fam.mcs t implies phi in all fam'.mcs t
+    -- This follows from mutual coherence: chi_in_all_families
+    intro fam h_fam phi t h_box fam' h_fam'
+    exact B.chi_in_all_families phi fam h_fam t h_box fam' h_fam' t
+  modal_backward := by
+    -- If phi in all fam'.mcs t, then Box phi in fam.mcs t
+    -- Prove by contraposition using the new saturation definition:
+    -- saturation: neg(Box psi) in fam.mcs t => exists fam' with neg psi in fam'.mcs t
+    -- If Box phi not in fam.mcs t, then neg(Box phi) in fam.mcs t (by MCS completeness)
+    -- By saturation with psi = phi, exists fam' with neg phi in fam'.mcs t
+    -- But h_all says phi in fam'.mcs t, contradiction
+    intro fam h_fam phi t h_all
+    -- Suppose Box phi not in fam.mcs t
+    by_contra h_not_box
+    -- By MCS negation completeness, neg (Box phi) in fam.mcs t
+    have h_mcs := fam.is_mcs t
+    have h_neg_box : Formula.neg (Formula.box phi) ∈ fam.mcs t := by
+      rcases set_mcs_negation_complete h_mcs (Formula.box phi) with h_box | h_neg
+      · exact absurd h_box h_not_box
+      · exact h_neg
+    -- By saturation (with the new definition), there exists fam' with neg phi in fam'.mcs t
+    rcases h_sat phi fam h_fam t h_neg_box with ⟨fam', h_fam', h_neg_phi⟩
+    -- But h_all says phi in fam'.mcs t
+    have h_phi := h_all fam' h_fam'
+    -- Contradiction: fam'.mcs t contains both phi and neg phi
+    exact set_consistent_not_both (fam'.is_mcs t).1 phi h_phi h_neg_phi
+  eval_family := B.eval_family
+  eval_family_mem := B.eval_family_mem
+
+/--
+The toBMCS conversion preserves the evaluation family.
+-/
+lemma CoherentBundle.toBMCS_eval_family (B : CoherentBundle D) (h_sat : B.isSaturated) :
+    (B.toBMCS h_sat).eval_family = B.eval_family := rfl
+
+/--
+The toBMCS conversion preserves the family set.
+-/
+lemma CoherentBundle.toBMCS_families (B : CoherentBundle D) (h_sat : B.isSaturated) :
+    (B.toBMCS h_sat).families = B.families := rfl
+
+/-!
 ## Relationship to singleFamily_modal_backward_axiom
 
 The axiom-based approach in Construction.lean remains valid for practical use.
@@ -383,10 +633,12 @@ This CoherentConstruction module provides:
 1. The correct approach (building coherence into construction)
 2. The key structures (BoxContent, WitnessSeed, CoherentWitness)
 3. The core viability lemma (diamond_boxcontent_consistent_constant) - COMPLETE
-4. Documentation of remaining technical gaps for full axiom elimination
+4. CoherentBundle with mutual coherence - COMPLETE
+5. Saturation predicate for full BMCS construction - COMPLETE
+6. toBMCS conversion with saturation hypothesis - COMPLETE
 
-The path to axiom elimination is clear; the remaining work is mutual saturation
-via Zorn's lemma.
+The path to axiom elimination is clear; the remaining work is constructing
+a saturated CoherentBundle via Zorn's lemma or iterative construction.
 -/
 
 /-!
@@ -395,31 +647,58 @@ via Zorn's lemma.
 ### Sorries in This Module:
 - **None** (as of 2026-02-03)
 
-### Completed:
+### Completed (Task 844: CoherentWitness):
 - `diamond_boxcontent_consistent_constant` - K-distribution chain proof completed using
   `generalized_modal_k` from GeneralizedNecessitation.lean combined with
   `set_mcs_closed_under_derivation` from MCSProperties.lean.
 
-### Key Proof Strategy (Case 1: psi ∈ L):
+### Completed (Task 851: CoherentBundle):
+- `UnionBoxContent` - Multi-family BoxContent aggregation
+- `MutuallyCoherent` - Inter-family coherence predicate
+- `MutuallyCoherent_singleton` - Singleton coherence proof using T-axiom
+- `CoherentBundle` structure with all required fields
+- `CoherentBundle.isSaturated` - Saturation predicate
+- `CoherentBundle.toBMCS` - **FULL PROOF** (no sorries!) converting saturated bundle to BMCS
+- Basic properties: `chi_in_all_families`, `families_box_coherent`, `member_contains_union_boxcontent`
+
+### Key Proof Strategies:
+
+**CoherentWitness (Case 1: psi ∈ L)**:
 1. From `L_filt ⊢ neg psi`, extract that for each `chi ∈ L_filt`, `Box chi ∈ M` (from WitnessSeed membership)
 2. Apply `generalized_modal_k` to transform `L_filt ⊢ neg psi` into `Box(L_filt) ⊢ Box(neg psi)`
 3. All formulas in Box(L_filt) are in M (via Context.mem_map_iff)
 4. By `set_mcs_closed_under_derivation`, conclude `Box(neg psi) ∈ M`
 5. Contradiction: Diamond psi = neg(Box(neg psi)) ∈ M and Box(neg psi) ∈ M
 
+**CoherentBundle.toBMCS**:
+- `modal_forward`: Follows from mutual coherence via `chi_in_all_families`
+- `modal_backward`: Proof by contraposition using MCS completeness and saturation:
+  1. Assume Box phi not in fam.mcs t
+  2. By MCS completeness, neg(Box phi) in fam.mcs t
+  3. By saturation, exists fam' with neg phi in fam'.mcs t
+  4. But universal hypothesis says phi in fam'.mcs t
+  5. Contradiction (MCS consistency)
+
 ### Related Sorries in SaturatedConstruction.lean:
 - Lines 714, 733, 785: BoxContent preservation issues
 - Different scope (requires recursive saturation with Zorn's lemma)
+- These sorries are in a different code path (general approach, not constant-family approach)
 
 ### Remaining Axiom (in Construction.lean, not this module):
 - `singleFamily_modal_backward_axiom` in Construction.lean
 - Justified by canonical model metatheory
-- Eliminable once mutual saturation is formalized (future work)
+- Eliminable once a saturated CoherentBundle can be constructed
+
+### Remaining Work for Full Axiom Elimination:
+1. Implement iterative or Zorn-based saturation for CoherentBundle
+2. Prove that saturation preserves mutual coherence
+3. Use `CoherentBundle.toBMCS` to get axiom-free BMCS
 
 ### Net Effect:
-This implementation completes the core viability proof for the Coherent Witness Chain approach.
-The sorry in CoherentConstruction.lean is eliminated. The axiom-free BMCS construction
-requires additional Zorn's lemma work for mutual saturation (documented as future work).
+This implementation provides the COMPLETE infrastructure for axiom-free BMCS construction.
+The `toBMCS` conversion is fully proven. The only remaining step is constructing a
+saturated CoherentBundle from an initial context, which is a Zorn's lemma application
+building on the existing `diamond_boxcontent_consistent_constant` theorem.
 -/
 
 end Bimodal.Metalogic.Bundle
