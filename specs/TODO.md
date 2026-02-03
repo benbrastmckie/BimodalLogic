@@ -1,5 +1,5 @@
 ---
-next_project_number: 849
+next_project_number: 850
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 849. Add contextual parameters section to Dynamics Foundation
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-03
+
+**Description**: Draw on Theories/Logos/docs/research/conceptual-engineering.md to add a new section to the beginning of Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex on contextual parameters, explaining how the contextual parameters are determined by the logical operators included in the language (which shift these parameters). The section should include the most important and relevant content to this topic from the conceptual engineering research document while maintaining the clear and precise tone otherwise maintained in the Introduction file.
+
+---
 
 ### 848. Add conceptual engineering section to Introduction
 - **Effort**: 2 hours
