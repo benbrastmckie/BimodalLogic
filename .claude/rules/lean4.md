@@ -178,3 +178,8 @@ After implementation:
 1. Run `lake build` to check compilation
 2. Verify build succeeds with no errors
 3. Check that all theorems compile without `sorry`
+
+## Context References
+
+For deeper understanding, load these context files as needed:
+- `@.claude/context/project/lean4/standards/sorry-debt-policy.md` - Sorry remediation policy

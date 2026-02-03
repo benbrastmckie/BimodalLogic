@@ -83,6 +83,9 @@ Load these on-demand using @-references:
 **Load When Creating Report**:
 - `@.claude/context/core/formats/report-format.md` - Research report structure
 
+**Load for Sorry Handling**:
+- `@.claude/context/project/lean4/standards/sorry-debt-policy.md` - Sorry remediation policy
+
 ## Search Decision Tree
 
 Use this decision tree to select the right search tool:

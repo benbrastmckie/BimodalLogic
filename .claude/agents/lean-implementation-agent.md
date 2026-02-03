@@ -81,6 +81,9 @@ Load these on-demand using @-references:
 - `@.claude/context/project/lean4/patterns/tactic-patterns.md` - Common tactic usage patterns
 - `@.claude/context/project/lean4/style/lean4-style-guide.md` - Code style conventions
 
+**Load for Sorry Handling**:
+- `@.claude/context/project/lean4/standards/sorry-debt-policy.md` - Sorry remediation policy
+
 **Load for Specific Needs**:
 - `@Logos/Layer0/` files - When implementing Layer 0 proofs
 - `@Logos/Layer1/` files - When implementing Layer 1 (modal) proofs

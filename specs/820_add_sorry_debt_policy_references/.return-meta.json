@@ -1,0 +1,40 @@
+{
+  "status": "implemented",
+  "summary": "Added sorry-debt-policy.md references to lean-implementation-agent.md, lean-research-agent.md, and lean4.md rules file. All three files now include consistent context references to the sorry remediation policy.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-implementation-agent.md",
+      "summary": "Added 'Load for Sorry Handling' subsection with sorry-debt-policy.md reference"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-research-agent.md",
+      "summary": "Added 'Load for Sorry Handling' subsection with sorry-debt-policy.md reference"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/rules/lean4.md",
+      "summary": "Added 'Context References' section with sorry-debt-policy.md reference"
+    },
+    {
+      "type": "summary",
+      "path": "specs/820_add_sorry_debt_policy_references/summaries/implementation-summary-20260203.md",
+      "summary": "Implementation summary documenting all changes made"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Added sorry-debt-policy.md references to lean-implementation-agent.md, lean-research-agent.md, and lean4.md rules file.",
+    "claudemd_suggestions": "Updated lean4.md rules file with Context References section containing sorry-debt-policy.md reference"
+  },
+  "metadata": {
+    "session_id": "sess_1770077857_f935ff",
+    "duration_seconds": 300,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 1,
+    "phases_total": 1
+  },
+  "next_steps": "Review implementation and verify references are accessible from context loading"
+}

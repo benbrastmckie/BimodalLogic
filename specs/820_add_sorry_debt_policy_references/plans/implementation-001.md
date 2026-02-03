@@ -1,7 +1,7 @@
 # Implementation Plan: Task #820
 
 - **Task**: 820 - add_sorry_debt_policy_references
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.5 hours
 - **Dependencies**: Task 819 (creates sorry-debt-policy.md)
 - **Research Inputs**: specs/820_add_sorry_debt_policy_references/reports/research-001.md
@@ -41,14 +41,14 @@ Research identified exact insertion points in all three files:
 
 ## Implementation Phases
 
-### Phase 1: Add References to Agent and Rule Files [NOT STARTED]
+### Phase 1: Add References to Agent and Rule Files [COMPLETED]
 
 **Goal**: Add sorry-debt-policy.md references to all three target files
 
 **Tasks**:
-- [ ] Edit lean-implementation-agent.md - add "Load for Sorry Handling" subsection
-- [ ] Edit lean-research-agent.md - add "Load for Sorry Handling" subsection
-- [ ] Edit lean4.md - add "Context References" section at end
+- [x] Edit lean-implementation-agent.md - add "Load for Sorry Handling" subsection
+- [x] Edit lean-research-agent.md - add "Load for Sorry Handling" subsection
+- [x] Edit lean4.md - add "Context References" section at end
 
 **Timing**: 0.5 hours
 
