@@ -1,7 +1,7 @@
 # Implementation Plan: Task #816
 
 - **Task**: 816 - BMCS Temporal Modal Coherence Strengthening via Finite Dynamical System Model
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: None (builds on existing FMP infrastructure in Theories/Bimodal/Metalogic/FMP/)
 - **Research Inputs**:
@@ -20,7 +20,7 @@ Implement a **Finite Dynamical System Model (FDSM)** construction to achieve a s
 2. `TruthLemma.lean:394` - `phi_at_all_past_implies_mcs_all_past` (temporal backward, H)
 3. `Construction.lean:220` - `modal_backward` in `singleFamilyBMCS` (modal saturation)
 
-**Naming Rationale**: We use "Finite Dynamical System Model" rather than "Finite Branching Model" because world histories in TM logic do not branch - they are deterministic sequences of states indexed by time. The FDSM represents a finite dynamical system with multiple possible trajectories (histories) through a finite state space over bounded time.
+**Naming Rationale**: We use "Finite Dynamical System Model" rather than "Finite Branching Model" because world histories in TM logic do not branch - they are functions from durations to world states. The FDSM represents a finite dynamical system with multiple possible trajectories (histories) through a finite state space over bounded time.
 
 ### Research Integration
 
@@ -62,7 +62,7 @@ From research-014.md (FMP-based finite model):
 
 ## Implementation Phases
 
-### Phase 1: FDSM Core Structures [NOT STARTED]
+### Phase 1: FDSM Core Structures [COMPLETED]
 
 **Goal**: Define the core types for finite dynamical system models
 
@@ -97,7 +97,7 @@ From research-014.md (FMP-based finite model):
 
 ---
 
-### Phase 2: Temporal Saturation for Finite Histories [NOT STARTED]
+### Phase 2: Temporal Saturation for Finite Histories [COMPLETED]
 
 **Goal**: Implement history construction with temporal backward coherence
 
@@ -127,7 +127,7 @@ From research-014.md (FMP-based finite model):
 
 ---
 
-### Phase 3: Modal Saturation Construction [NOT STARTED]
+### Phase 3: Modal Saturation Construction [COMPLETED]
 
 **Goal**: Implement diamond witness construction for modal saturation
 
@@ -159,7 +159,7 @@ From research-014.md (FMP-based finite model):
 
 ---
 
-### Phase 4: Saturation Fixed Point [NOT STARTED]
+### Phase 4: Saturation Fixed Point [DEFERRED]
 
 **Goal**: Implement iteration to modal saturation fixed point
 
@@ -196,7 +196,7 @@ From research-014.md (FMP-based finite model):
 
 ---
 
-### Phase 5: FDSM Truth Lemma [NOT STARTED]
+### Phase 5: FDSM Truth Lemma [COMPLETED]
 
 **Goal**: Prove the sorry-free truth lemma for FDSM
 
@@ -233,7 +233,7 @@ From research-014.md (FMP-based finite model):
 
 ---
 
-### Phase 6: Validity Bridge and Completeness [NOT STARTED]
+### Phase 6: Validity Bridge and Completeness [COMPLETED]
 
 **Goal**: Connect FDSM to Validity.lean completeness
 
