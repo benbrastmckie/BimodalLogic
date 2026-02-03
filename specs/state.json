@@ -18,18 +18,18 @@
     {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-03T01:05:35Z",
+      "last_updated": "2026-02-03T01:09:41Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
       "session_id": "sess_1770080719_e48c39",
-      "researched": "2026-02-03T00:43:15Z",
+      "researched": "2026-02-03T01:09:41Z",
       "artifacts": [
         {
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md",
@@ -110,6 +110,11 @@
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-002.md",
           "type": "plan",
           "summary": "7-phase plan for modal-saturated multi-family BMCS construction to achieve sorry-free completeness"
+        },
+        {
+          "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-014.md",
+          "type": "research",
+          "summary": "FMP-based Finite Branching Model strategy for sorry-free completeness - corrects misconception that temporal sorries are unavoidable omega-rule limitations"
         }
       ],
       "planned": "2026-02-03T00:53:16Z",
