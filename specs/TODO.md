@@ -1,5 +1,5 @@
 ---
-next_project_number: 851
+next_project_number: 854
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,41 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 853. Construct CoherentBundle from consistent context
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Parent**: Task 844
+- **Depends**: Tasks 851, 852
+
+**Description**: Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. Build base family via Lindenbaum, construct constantIndexedMCSFamily, add coherent witnesses for all Diamonds using Zorn's lemma. Depends on tasks #851 and #852. (Follow-up from task #844, Phase 5)
+
+---
+
+### 852. Implement CoherentBundle.toBMCS conversion
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Parent**: Task 844
+- **Depends**: Task 851
+
+**Description**: Implement CoherentBundle.toBMCS conversion to provide axiom-free modal_backward. Uses contraposition: if phi in all families but Box phi not in fam.mcs, then Diamond(neg phi) in fam.mcs, so exists witness with neg phi, contradicting phi in all families. Depends on task #851 CoherentBundle structure. (Follow-up from task #844, Phase 4)
+
+---
+
+### 851. Define CoherentBundle structure
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Parent**: Task 844
+
+**Description**: Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)
+
+---
 
 ### 850. Create scalable oversight section in Introduction
 - **Effort**: 2-3 hours

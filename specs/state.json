@@ -6,14 +6,51 @@
   },
   "active_projects": [
     {
+      "project_number": 853,
+      "project_name": "construct_coherentbundle_from_context",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. Build base family via Lindenbaum, construct constantIndexedMCSFamily, add coherent witnesses for all Diamonds using Zorn's lemma. Depends on tasks #851 and #852. (Follow-up from task #844, Phase 5)",
+      "parent_task": 844,
+      "depends_on": [
+        851,
+        852
+      ],
+      "created": "2026-02-03T22:53:13Z",
+      "last_updated": "2026-02-03T22:53:13Z"
+    },
+    {
+      "project_number": 852,
+      "project_name": "implement_coherentbundle_tobmcs",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Implement CoherentBundle.toBMCS conversion to provide axiom-free modal_backward. Uses contraposition: if phi in all families but Box phi not in fam.mcs, then Diamond(neg phi) in fam.mcs, so exists witness with neg phi, contradicting phi in all families. Depends on task #851 CoherentBundle structure. (Follow-up from task #844, Phase 4)",
+      "parent_task": 844,
+      "depends_on": [
+        851
+      ],
+      "created": "2026-02-03T22:53:10Z",
+      "last_updated": "2026-02-03T22:53:10Z"
+    },
+    {
+      "project_number": 851,
+      "project_name": "define_coherentbundle_structure",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)",
+      "parent_task": 844,
+      "created": "2026-02-03T22:53:06Z",
+      "last_updated": "2026-02-03T22:53:06Z"
+    },
+    {
       "project_number": 850,
       "project_name": "scalable_oversight_section",
-      "status": "researched",
+      "status": "planning",
       "language": "latex",
       "description": "Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone",
       "created": "2026-02-03T22:45:49Z",
-      "last_updated": "2026-02-03T22:51:08Z",
-      "session_id": "sess_1770158918_7fcad9",
+      "last_updated": "2026-02-03T22:53:08Z",
+      "session_id": "sess_1770159169_5f4a45",
       "researched": "2026-02-03T22:51:08Z",
       "artifacts": [
         {
@@ -479,7 +516,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 851,
+  "next_project_number": 854,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
