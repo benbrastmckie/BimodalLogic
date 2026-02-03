@@ -153,12 +153,12 @@
     {
       "project_number": 844,
       "project_name": "redesign_metalogic_precoherent_bundle_construction",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "effort": "12-16 hours",
       "description": "Completely redesign the metalogic to use a Pre-Coherent Bundle construction that builds families and bundles simultaneously. Define SaturationClosure (finite set S of formulas), PreCoherent predicate (S-bounded Box formulas, temporal coherence), and AllPreCoherentFamilies (product of all pre-coherent families). Implement restricted Lindenbaum that filters out Box formulas with content outside S. Box coherence follows from S-boundedness by construction; saturation follows from product structure. This approach avoids the Lindenbaum control problem that causes irreducible sorries in current sequential construction. Target: zero sorries, zero axioms, publication-ready completeness proof. Based on research-003.md from Task 842.",
       "created": "2026-02-03T20:49:21Z",
-      "last_updated": "2026-02-03T22:03:05Z",
+      "last_updated": "2026-02-03T22:06:03Z",
       "related_task": 842,
       "session_id": "sess_1770156173_493114",
       "researched": "2026-02-03T20:55:09Z",
@@ -167,11 +167,6 @@
           "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Pre-Coherent Bundle construction proposal with feasibility assessment, implementation strategy, and risk analysis for achieving zero-sorry, zero-axiom completeness proof"
-        },
-        {
-          "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan for Pre-Coherent Bundle construction eliminating 3 sorries"
         },
         {
           "path": "Theories/Bimodal/Metalogic/Bundle/PreCoherentBundle.lean",
@@ -187,9 +182,14 @@
           "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-002.md",
           "type": "research",
           "summary": "Analysis of two alternative approaches after Pre-Coherent Bundle failure; recommends Coherent Witness Chain construction"
+        },
+        {
+          "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for Coherent Witness Chain construction to eliminate singleFamily_modal_backward_axiom"
         }
       ],
-      "planned": "2026-02-03T21:02:26Z",
+      "planned": "2026-02-03T22:06:03Z",
       "started": "2026-02-03T21:04:44Z",
       "resume_phase": 5,
       "phases_completed": 5,

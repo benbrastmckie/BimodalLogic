@@ -1,0 +1,21 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-002.md",
+      "summary": "8-phase implementation plan for Coherent Witness Chain construction to eliminate singleFamily_modal_backward_axiom"
+    }
+  ],
+  "next_steps": "Run /implement 844 to execute the Coherent Witness Chain construction plan",
+  "metadata": {
+    "session_id": "sess_1770156173_493114",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": "12-16",
+    "supersedes": "implementation-001.md",
+    "approach": "Coherent Witness Chain (Approach B from research-002.md)"
+  }
+}
