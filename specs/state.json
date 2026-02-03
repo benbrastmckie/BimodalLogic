@@ -6,6 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 829,
+      "project_name": "remove_metalogic_backwards_compatible_aliases",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-03T09:00:34Z",
+      "last_updated": "2026-02-03T09:00:34Z"
+    },
+    {
+      "project_number": 830,
+      "project_name": "standardize_metalogic_documentation",
+      "status": "not_started",
+      "language": "general",
+      "created": "2026-02-03T09:00:34Z",
+      "last_updated": "2026-02-03T09:00:34Z"
+    },
+    {
       "project_number": 827,
       "project_name": "complete_multi_family_bmcs_construction",
       "status": "researched",
@@ -429,7 +445,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 829,
+  "next_project_number": 831,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

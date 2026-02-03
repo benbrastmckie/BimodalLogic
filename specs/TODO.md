@@ -1,5 +1,5 @@
 ---
-next_project_number: 829
+next_project_number: 831
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,26 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 830. Standardize Metalogic documentation with README.md files
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Created**: 2026-02-03
+
+**Description**: Ensure all Bimodal/Metalogic/ subdirectories have README.md files following DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md. Each README should: (1) completely and accurately report all contents in the subdirectory, (2) include summaries of any subdirectories with links to their README.md files, (3) include appropriate cross-links to related documentation. Focus on publication-ready documentation that is direct and to the point (no fluff). Subdirectories to cover: Core/, Bundle/, FMP/, Algebraic/, and the main Metalogic/ entry point.
+
+---
+
+### 829. Remove backwards-compatible aliases from Metalogic
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+
+**Description**: Remove backwards-compatible aliases added during task 818 refactoring for a clean and consistent codebase. Specifically remove `semantic_weak_completeness := @fmp_weak_completeness` alias from FMP/SemanticCanonicalModel.lean. The canonical name is now fmp_weak_completeness and no external code depends on the old name. This improves maintainability by avoiding duplicate entry points to the same theorem.
+
+---
 
 ### 828. Explore FMP approach to complete backward direction of TruthLemma
 - **Effort**: TBD
