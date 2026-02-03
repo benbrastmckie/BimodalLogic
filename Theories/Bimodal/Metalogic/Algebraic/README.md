@@ -2,7 +2,9 @@
 
 **Status**: Future Extension Infrastructure (Not Required for Main Completeness Proof)
 
-This directory contains an algebraic approach to the representation theorem using Lindenbaum-Tarski algebra and ultrafilter theory. This is an **independent alternative** to the seed-extension approach in `Representation/`.
+This directory contains an algebraic approach to the representation theorem using Lindenbaum-Tarski
+algebra and ultrafilter theory. This is an **independent alternative** to the BMCS approach in
+`Bundle/`.
 
 ## Purpose
 
@@ -11,7 +13,8 @@ The algebraic modules provide:
 2. Infrastructure for Stone duality and algebraic topology extensions
 3. A cleaner mathematical foundation for future algebraic modal logic research
 
-**Note**: The main completeness proof uses `Representation/` and `Completeness/`. This algebraic path is supplementary infrastructure, not required for the current proof architecture.
+**Note**: The main completeness proof uses `Bundle/` (BMCS) and `FMP/`. This algebraic path is
+supplementary infrastructure, not required for the current proof architecture.
 
 ## Modules
 
@@ -84,13 +87,15 @@ def ultrafilterToSet : Ultrafilter LindenbaumAlg -> Set Formula
 theorem mcs_ultrafilter_correspondence : -- Bijection
 ```
 
-Establishes the bijection between ultrafilters of the Lindenbaum algebra and maximal consistent sets.
+Establishes the bijection between ultrafilters of the Lindenbaum algebra and maximal
+consistent sets.
 
 ## Mathematical Overview
 
 The algebraic approach proceeds as follows:
 
-1. **Lindenbaum-Tarski Algebra**: Define provable equivalence `phi ~ psi <-> derives phi <-> psi` and form the quotient `LindenbaumAlg := Formula / ~`
+1. **Lindenbaum-Tarski Algebra**: Define provable equivalence `phi ~ psi <-> derives phi <-> psi`
+   and form the quotient `LindenbaumAlg := Formula / ~`
 
 2. **Boolean Structure**: Show `LindenbaumAlg` is a `BooleanAlgebra` where:
    - Order: `[phi] <= [psi] <-> derives phi -> psi`
@@ -111,8 +116,8 @@ The algebraic approach proceeds as follows:
 
 The main completeness proof architecture uses:
 - `Core/` - MCS foundations (shared)
-- `Representation/` - Canonical model construction via seed-extension
-- `Completeness/` - Weak completeness via representation theorem
+- `Bundle/` - BMCS completeness via bundled MCS families
+- `FMP/` - Finite model property via closure-based construction
 
 This algebraic path provides:
 - Independent verification that MCS theory is sound
@@ -131,11 +136,11 @@ This algebraic path provides:
 - **Mathlib**: `BooleanAlgebra`, `Quotient`, `Filter`
 - **ProofChecker**: `Bimodal.ProofSystem`, `Bimodal.Metalogic.Core`
 
-## Related Files
+## Related Documentation
 
-- `../Representation/README.md` - Primary representation theorem (seed-extension approach)
-- `../Core/README.md` - MCS foundations shared by both approaches
-- `../README.md` - Overall metalogic architecture
+- [Metalogic README](../README.md) - Overall metalogic architecture
+- [Core README](../Core/README.md) - MCS foundations shared by both approaches
+- [Bundle README](../Bundle/README.md) - Primary BMCS completeness approach
 
 ## References
 
@@ -144,4 +149,4 @@ This algebraic path provides:
 
 ---
 
-*Last updated: 2026-01-30*
+*Last updated: 2026-02-03*

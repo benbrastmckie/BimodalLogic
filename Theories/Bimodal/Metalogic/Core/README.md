@@ -2,11 +2,13 @@
 
 **Status**: Self-Contained (No Boneyard Dependencies)
 
-This directory contains the foundational theory for maximal consistent sets (MCS) and the deduction theorem, which underpin all canonical model constructions in the metalogic.
+This directory contains the foundational theory for maximal consistent sets (MCS) and the
+deduction theorem, which underpin all canonical model constructions in the metalogic.
 
 ## Overview
 
-The Core modules provide essential infrastructure shared by both the `Representation/` (seed-extension) and `Algebraic/` approaches:
+The Core modules provide essential infrastructure shared by both the `Bundle/` (BMCS) and
+`Algebraic/` approaches:
 - **Maximal Consistent Sets (MCS)**: Sets that are consistent and cannot be extended
 - **Lindenbaum's Lemma**: Extending consistent sets to MCS using Zorn's lemma
 - **Deduction Theorem**: Converting `A :: Gamma ⊢ B` to `Gamma ⊢ A → B`
@@ -76,7 +78,8 @@ The deduction theorem converts a derivation from an extended context into an imp
 - `deduction_assumption_other`: If `B ∈ Gamma`, then `Gamma ⊢ A → B`
 - `deduction_mp`: Modus ponens under implication
 
-**Implementation Note**: The proof uses well-founded recursion on derivation height to handle the recursive structure of derivation trees.
+**Implementation Note**: The proof uses well-founded recursion on derivation height to handle
+the recursive structure of derivation trees.
 
 ### MCS Properties (`MCSProperties.lean`)
 
@@ -117,7 +120,8 @@ These use the derived 4-axiom for temporal operators.
 
 ### Self-Contained MCS Theory
 
-The MCS theory is fully self-contained in this directory. All definitions and proofs are in `MaximalConsistent.lean`.
+The MCS theory is fully self-contained in this directory. All definitions and proofs are in
+`MaximalConsistent.lean`.
 
 ### Deduction Theorem Complexity
 
@@ -129,21 +133,21 @@ The deduction theorem for Hilbert systems requires careful handling:
 ### Relationship to Other Modules
 
 The Core modules are prerequisites for:
-- `Representation/CoherentConstruction.lean` - Uses MCS extension and deduction theorem
+- `Bundle/` - BMCS completeness uses MCS extension and truth lemma
 - `Algebraic/UltrafilterMCS.lean` - Uses MCS definitions for ultrafilter correspondence
-- `Completeness/WeakCompleteness.lean` - Uses consistency and Lindenbaum's lemma
+- `FMP/` - Uses consistency and Lindenbaum's lemma for finite model construction
 
 ## Dependencies
 
 - **ProofSystem**: Derivation trees and axioms
 - **Theorems/Propositional**: Propositional combinator infrastructure
 
-## Related Files
+## Related Documentation
 
-- `../Soundness/README.md` - Soundness theorem (uses Core indirectly)
-- `../Representation/README.md` - Representation theorem (uses Core)
-- `../Algebraic/README.md` - Algebraic approach (uses Core)
-- `../README.md` - Overall metalogic architecture
+- [Metalogic README](../README.md) - Overall metalogic architecture
+- [Bundle README](../Bundle/README.md) - BMCS completeness (uses Core)
+- [Algebraic README](../Algebraic/README.md) - Algebraic approach (uses Core)
+- [FMP README](../FMP/README.md) - Finite model property (uses Core)
 
 ## References
 
@@ -153,4 +157,4 @@ The Core modules are prerequisites for:
 
 ---
 
-*Last updated: 2026-01-30*
+*Last updated: 2026-02-03*

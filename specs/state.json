@@ -104,10 +104,10 @@
     {
       "project_number": 830,
       "project_name": "standardize_metalogic_documentation",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "created": "2026-02-03T09:00:34Z",
-      "last_updated": "2026-02-03T09:34:03Z",
+      "last_updated": "2026-02-03T09:41:12Z",
       "session_id": "sess_1770111223_cc2258",
       "researched": "2026-02-03T09:27:28Z",
       "artifacts": [
@@ -123,16 +123,18 @@
         }
       ],
       "planned": "2026-02-03T09:31:19Z",
-      "started": "2026-02-03T09:34:03Z"
+      "started": "2026-02-03T09:34:03Z",
+      "completed": "2026-02-03T09:41:12Z",
+      "completion_summary": "Standardized README.md files across 6 Metalogic subdirectories: created new Decidability/README.md, corrected major inaccuracies in FMP and main READMEs, updated cross-links throughout. All files comply with DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md."
     },
     {
       "project_number": 827,
       "project_name": "complete_multi_family_bmcs_construction",
-      "status": "implementing",
+      "status": "planning",
       "language": "lean",
       "created": "2026-02-03T08:51:32Z",
-      "last_updated": "2026-02-03T12:56:11Z",
-      "session_id": "sess_1770110119_138422",
+      "last_updated": "2026-02-03T09:40:28Z",
+      "session_id": "sess_1770111611_d7b0ac",
       "researched": "2026-02-03T08:58:06Z",
       "artifacts": [
         {
@@ -556,13 +558,13 @@
     {
       "project_number": 833,
       "project_name": "enhance_roadmap_structure_changelog_strategies_ambitions",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:36:58Z",
+      "last_updated": "2026-02-03T09:41:18Z",
       "effort": "2-3 hours",
       "description": "Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.",
-      "session_id": "sess_1770111163_2e5f22",
+      "session_id": "sess_1770111521_8917f1",
       "researched": "2026-02-03T09:29:59Z",
       "artifacts": [
         {
@@ -574,8 +576,14 @@
           "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-002.md",
           "type": "research",
           "summary": "Research on what to EXCLUDE from ROADMAP.md: clutter analysis (~270 line reduction), Dead Ends section design using ADR patterns, content boundaries (strategic/operational/tactical), and quarterly archival guidelines"
+        },
+        {
+          "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase plan covering section scaffolding, content migration, dead ends documentation, clutter removal, and validation"
         }
-      ]
+      ],
+      "planned": "2026-02-03T09:41:18Z"
     },
     {
       "project_number": 834,
@@ -608,15 +616,16 @@
     {
       "project_number": 835,
       "project_name": "enhance_review_command_roadmap_integration_revision",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:24:08Z",
+      "last_updated": "2026-02-03T09:40:37Z",
       "effort": "4-5 hours",
       "dependencies": [
         833
       ],
-      "description": "Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic. Ensure changes follow checkpoint-based execution pattern."
+      "description": "Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic. Ensure changes follow checkpoint-based execution pattern.",
+      "session_id": "sess_1770111621_4c6048"
     }
   ],
   "completed_projects": [

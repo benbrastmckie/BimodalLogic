@@ -403,6 +403,14 @@ Total CLAUDE.md suggestions: {N}
 
 Note: Interactive selection will prompt for which suggestions to apply via Edit tool.
 
+Changelog updates (for completed tasks):
+
+Entries to add:
+- {YYYY-MM-DD}: Task #{N1}, Task #{N2} ({N} entries, new date header)
+- {YYYY-MM-DD}: Task #{N3} ({N} entry, existing date header)
+
+Total: {N} entries across {M} dates
+
 Total tasks: {N}
 Total orphans: {N} (specs: {N}, archive: {N})
 Total misplaced: {N}
@@ -415,6 +423,13 @@ If no roadmap matches were found (from Step 3.5), omit the "Roadmap updates" sec
 If no CLAUDE.md suggestions were found (from Step 3.6), omit the "CLAUDE.md suggestions" section.
 
 If CLAUDE.md suggestions exist, the "Note: Interactive selection..." line is always shown in dry-run.
+
+If Changelog section doesn't exist in ROAD_MAP.md, omit the "Changelog updates" section and show:
+```
+Note: Changelog section not found in ROAD_MAP.md. Run Task 833 to add the section structure.
+```
+
+If no completed tasks are being archived (only abandoned), omit the "Changelog updates" section.
 
 Exit here if dry run.
 
@@ -911,6 +926,149 @@ Track for output:
 - `metrics_build_errors`: Current build errors
 - `metrics_synced`: true/false indicating if sync was performed
 
+### 5.8. Update Changelog Section
+
+**Condition**: At least one completed task is being archived AND Changelog section exists in ROAD_MAP.md
+
+**Step 5.8.1: Check prerequisites**:
+```bash
+# Verify Changelog section exists
+if ! grep -q "^## Changelog" specs/ROAD_MAP.md; then
+  echo "Note: Changelog section not found in ROAD_MAP.md (requires Task 833)"
+  echo "Skipping changelog updates"
+  changelog_skipped=true
+else
+  changelog_skipped=false
+fi
+
+# Filter only completed tasks (not abandoned)
+completed_for_changelog=()
+for task in "${completed_tasks[@]}"; do
+  status=$(echo "$task" | jq -r '.status')
+  if [ "$status" = "completed" ]; then
+    completed_for_changelog+=("$task")
+  fi
+done
+
+# Skip if no completed tasks
+if [ ${#completed_for_changelog[@]} -eq 0 ]; then
+  echo "No completed tasks to add to changelog"
+  changelog_skipped=true
+fi
+```
+
+**Step 5.8.2: Group completed tasks by date**:
+```bash
+if [ "$changelog_skipped" != "true" ]; then
+  # Build date -> tasks map using arrays (bash associative arrays)
+  declare -A tasks_by_date
+
+  for task in "${completed_for_changelog[@]}"; do
+    # Extract date from task completion timestamp (ISO8601 -> YYYY-MM-DD)
+    completed_ts=$(echo "$task" | jq -r '.last_updated // .completed // .archived')
+    date=$(echo "$completed_ts" | cut -c1-10)  # YYYY-MM-DD
+    project_num=$(echo "$task" | jq -r '.project_number')
+    project_name=$(echo "$task" | jq -r '.project_name')
+    summary=$(echo "$task" | jq -r '.completion_summary // "Completed"')
+
+    # Check for summary artifact
+    summary_path="specs/${project_num}_${project_name}/summaries/"
+    if [ -d "$summary_path" ] && [ -n "$(ls -A "$summary_path" 2>/dev/null)" ]; then
+      summary_file=$(ls -t "$summary_path"/*.md 2>/dev/null | head -1)
+      if [ -n "$summary_file" ]; then
+        entry="- **Task ${project_num}**: ${summary} [(details)](${summary_file})"
+      else
+        entry="- **Task ${project_num}**: ${summary}"
+      fi
+    else
+      entry="- **Task ${project_num}**: ${summary}"
+    fi
+
+    # Append to date's entry list
+    if [ -n "${tasks_by_date[$date]}" ]; then
+      tasks_by_date[$date]+=$'\n'"${entry}"
+    else
+      tasks_by_date[$date]="${entry}"
+    fi
+  done
+fi
+```
+
+**Step 5.8.3: Update ROAD_MAP.md for each date**:
+```bash
+changelog_entries_added=0
+changelog_dates_created=0
+
+if [ "$changelog_skipped" != "true" ]; then
+  # Sort dates in reverse chronological order
+  sorted_dates=($(echo "${!tasks_by_date[@]}" | tr ' ' '\n' | sort -r))
+
+  for date in "${sorted_dates[@]}"; do
+    entries="${tasks_by_date[$date]}"
+    entry_count=$(echo "$entries" | wc -l)
+
+    # Check if date header exists
+    date_header="### ${date}"
+    if grep -q "^${date_header}$" specs/ROAD_MAP.md; then
+      # Append after existing date header
+      # Use Edit tool: find the date header line and the empty line after it
+      # Insert entries between the header and existing content
+
+      # The edit pattern: "### YYYY-MM-DD\n\n" -> "### YYYY-MM-DD\n\n{entries}\n"
+      old_pattern="${date_header}"$'\n\n'
+      new_pattern="${date_header}"$'\n\n'"${entries}"$'\n'
+
+      Edit old_string: "${old_pattern}"
+           new_string: "${new_pattern}"
+
+      echo "Appended ${entry_count} entries to existing date ${date}"
+    else
+      # Insert new date header in reverse chronological position
+      # Find first date header that is older (lexically smaller) than new date
+      # Insert before that, or after ## Changelog if no older dates
+
+      # Get existing date headers
+      existing_dates=$(grep -o "^### [0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}$" specs/ROAD_MAP.md | sed 's/^### //' | sort -r)
+
+      insert_before=""
+      for existing_date in $existing_dates; do
+        if [[ "$existing_date" < "$date" ]]; then
+          insert_before="### ${existing_date}"
+          break
+        fi
+      done
+
+      if [ -n "$insert_before" ]; then
+        # Insert before older date
+        new_content="${date_header}"$'\n\n'"${entries}"$'\n\n'"${insert_before}"
+        Edit old_string: "${insert_before}"
+             new_string: "${new_content}"
+      else
+        # No older dates, insert right after ## Changelog header
+        old_changelog="## Changelog"$'\n\n'
+        new_changelog="## Changelog"$'\n\n'"${date_header}"$'\n\n'"${entries}"$'\n\n'
+        Edit old_string: "${old_changelog}"
+             new_string: "${new_changelog}"
+      fi
+
+      echo "Created date header ${date} with ${entry_count} entries"
+      ((changelog_dates_created++))
+    fi
+
+    changelog_entries_added=$((changelog_entries_added + entry_count))
+  done
+fi
+```
+
+**Step 5.8.4: Track changelog changes for reporting**:
+```bash
+# Store for output reporting
+changelog_summary="Changelog: ${changelog_entries_added} entries added"
+if [ "$changelog_dates_created" -gt 0 ]; then
+  changelog_summary+=" (${changelog_dates_created} new date headers)"
+fi
+```
+
 ### 6. Git Commit
 
 ```bash
@@ -918,28 +1076,45 @@ git add specs/
 git commit -m "todo: archive {N} completed tasks"
 ```
 
-Include roadmap, orphan, and misplaced counts in message as applicable:
+Include roadmap, changelog, orphan, and misplaced counts in message as applicable:
 ```bash
-# If roadmap items updated, orphans tracked, and misplaced moved:
-git commit -m "todo: archive {N} tasks, update {R} roadmap items, track {M} orphans, move {P} misplaced"
+# Build commit message dynamically based on what was updated
+commit_parts=("archive {N} tasks")
 
-# If roadmap items updated only:
-git commit -m "todo: archive {N} tasks, update {R} roadmap items"
+# Add roadmap items if updated
+if [ "$roadmap_completed_annotated" -gt 0 ] || [ "$roadmap_abandoned_annotated" -gt 0 ]; then
+  R=$((roadmap_completed_annotated + roadmap_abandoned_annotated))
+  commit_parts+=("update {R} roadmap items")
+fi
 
-# If roadmap items updated and orphans tracked:
-git commit -m "todo: archive {N} tasks, update {R} roadmap items, track {M} orphaned directories"
+# Add changelog entries if added
+if [ "$changelog_entries_added" -gt 0 ]; then
+  commit_parts+=("add {C} changelog entries")
+fi
 
-# If orphans tracked and misplaced moved (no roadmap):
-git commit -m "todo: archive {N} tasks, track {M} orphans, move {P} misplaced directories"
+# Add orphans if tracked
+if [ "$orphans_tracked" -gt 0 ]; then
+  commit_parts+=("track {M} orphans")
+fi
 
-# If only orphans tracked (no roadmap):
-git commit -m "todo: archive {N} tasks and track {M} orphaned directories"
+# Add misplaced if moved
+if [ "$misplaced_moved" -gt 0 ]; then
+  commit_parts+=("move {P} misplaced")
+fi
 
-# If only misplaced moved (no roadmap):
-git commit -m "todo: archive {N} tasks and move {P} misplaced directories"
+# Join parts with commas
+git commit -m "todo: $(IFS=', '; echo "${commit_parts[*]}")"
+
+# Example outputs:
+# "todo: archive 3 tasks"
+# "todo: archive 3 tasks, update 2 roadmap items"
+# "todo: archive 3 tasks, update 2 roadmap items, add 3 changelog entries"
+# "todo: archive 3 tasks, add 2 changelog entries, track 1 orphans"
 ```
 
-Where `{R}` = roadmap_completed_annotated + roadmap_abandoned_annotated (total roadmap items updated).
+Where:
+- `{R}` = roadmap_completed_annotated + roadmap_abandoned_annotated (total roadmap items updated)
+- `{C}` = changelog_entries_added (total changelog entries added)
 
 ### 7. Output
 
@@ -971,6 +1146,10 @@ Roadmap updated: {N} items
 - Marked abandoned: {N}
   - {item text} (line {N})
 - Skipped (already annotated): {N}
+
+Changelog updated: {C} entries
+- {YYYY-MM-DD}: {N} entries (new date header)
+- {YYYY-MM-DD}: {N} entries (appended)
 
 CLAUDE.md suggestions applied: {N}
 - Task #{N1}: Added {section}
@@ -1007,6 +1186,12 @@ If no misplaced directories were moved (either none found or user skipped):
 If no roadmap items were updated (no matches found in Step 3.5):
 - Omit the "Roadmap updated" section
 
+If no changelog entries were added (changelog_skipped=true or no completed tasks):
+- Omit the "Changelog updated" section
+
+If changelog section was missing from ROAD_MAP.md:
+- Show note: "Note: Changelog section not found in ROAD_MAP.md (requires Task 833)"
+
 If no CLAUDE.md suggestions were collected (no meta tasks or all had "none" action):
 - Omit the "CLAUDE.md suggestions applied/failed/skipped" sections
 
@@ -1015,6 +1200,180 @@ If all CLAUDE.md suggestions were successfully applied:
 
 If no suggestions were skipped (all selected or "Skip all" not chosen):
 - Omit the "CLAUDE.md suggestions skipped" section
+
+### 7.5. Generate Task Suggestions
+
+**Condition**: Always execute at end of /todo
+
+This step analyzes sources and proposes 3-5 next tasks, displayed as the final output section.
+
+**Step 7.5.1: Scan active tasks**:
+```bash
+# Get all active tasks
+active_tasks=$(jq '.active_projects[]' specs/state.json)
+active_count=$(jq '.active_projects | length' specs/state.json)
+
+# Find unblocked tasks (no blockedBy or all deps completed)
+unblocked_tasks=()
+for task_json in $(jq -c '.active_projects[]' specs/state.json); do
+  blocked_by=$(echo "$task_json" | jq -r '.blockedBy[]?' 2>/dev/null)
+
+  if [ -z "$blocked_by" ]; then
+    # No dependencies, check if status is not_started or researched/planned
+    status=$(echo "$task_json" | jq -r '.status')
+    if [ "$status" = "not_started" ] || [ "$status" = "researched" ] || [ "$status" = "planned" ]; then
+      project_num=$(echo "$task_json" | jq -r '.project_number')
+      project_name=$(echo "$task_json" | jq -r '.project_name')
+      unblocked_tasks+=("${project_num}:${project_name}:${status}")
+    fi
+  fi
+done
+
+# Find stale tasks (not_started for >7 days)
+stale_tasks=()
+current_ts=$(date +%s)
+for task_json in $(jq -c '.active_projects[]' specs/state.json); do
+  status=$(echo "$task_json" | jq -r '.status')
+  if [ "$status" = "not_started" ]; then
+    created=$(echo "$task_json" | jq -r '.created // .last_updated // empty')
+    if [ -n "$created" ]; then
+      created_ts=$(date -d "$created" +%s 2>/dev/null || echo 0)
+      days_old=$(( (current_ts - created_ts) / 86400 ))
+      if [ "$days_old" -ge 7 ]; then
+        project_num=$(echo "$task_json" | jq -r '.project_number')
+        project_name=$(echo "$task_json" | jq -r '.project_name')
+        stale_tasks+=("${project_num}:${project_name}:${days_old}")
+      fi
+    fi
+  fi
+done
+```
+
+**Step 7.5.2: Parse ROADMAP.md sections** (if Task 833 implemented):
+```bash
+# Check if Ambitions section exists
+if grep -q "^## Ambitions" specs/ROAD_MAP.md; then
+  # Extract unchecked criteria from Ambitions
+  # Pattern: "- [ ] {criterion text}"
+  ambition_unchecked=$(sed -n '/^## Ambitions/,/^## /p' specs/ROAD_MAP.md | grep -c "^[[:space:]]*- \[ \]" || echo 0)
+
+  # Extract specific unchecked items (first 3)
+  ambition_items=$(sed -n '/^## Ambitions/,/^## /p' specs/ROAD_MAP.md | grep "^[[:space:]]*- \[ \]" | head -3)
+else
+  ambition_unchecked=0
+  ambition_items=""
+fi
+
+# Check if Strategies section exists
+if grep -q "^## Strategies" specs/ROAD_MAP.md; then
+  # Find ACTIVE strategies with next_steps
+  # Pattern: "**Status**: ACTIVE" followed by "**Next Steps**:"
+  active_strategies=$(sed -n '/^## Strategies/,/^## /p' specs/ROAD_MAP.md | grep -B5 "^\*\*Status\*\*: ACTIVE" | grep "^### " | head -3)
+else
+  active_strategies=""
+fi
+```
+
+**Step 7.5.3: Analyze recent completions**:
+```bash
+# Check for follow-up patterns from just-archived tasks
+follow_up_suggestions=()
+
+# Pattern 1: If many sorries remain after implementation, suggest /learn
+if [ "$metrics_sorry_count" -gt 100 ]; then
+  follow_up_suggestions+=("maintenance:Consider running /learn to identify cleanup opportunities (sorry_count: ${metrics_sorry_count})")
+fi
+
+# Pattern 2: If tasks were completed in a related area, suggest next phase
+# (This is contextual based on completed task summaries)
+for task in "${completed_for_changelog[@]}"; do
+  summary=$(echo "$task" | jq -r '.completion_summary // empty')
+  # Look for patterns suggesting follow-up work
+  if echo "$summary" | grep -qi "phase 1\|first step\|initial"; then
+    project_num=$(echo "$task" | jq -r '.project_number')
+    follow_up_suggestions+=("followup:Task ${project_num} completed initial work - check for Phase 2 tasks")
+  fi
+done
+```
+
+**Step 7.5.4: Generate prioritized suggestions** (max 5):
+```bash
+suggestions=()
+
+# Priority 1: Unblocked tasks (ready to start)
+for task_info in "${unblocked_tasks[@]}"; do
+  [ ${#suggestions[@]} -ge 5 ] && break
+  IFS=':' read -r num name status <<< "$task_info"
+  if [ "$status" = "not_started" ]; then
+    suggestions+=("**Ready to start**: Task ${num} (${name}) - Run \`/research ${num}\` to begin")
+  elif [ "$status" = "researched" ]; then
+    suggestions+=("**Ready to plan**: Task ${num} (${name}) - Run \`/plan ${num}\` to create implementation plan")
+  elif [ "$status" = "planned" ]; then
+    suggestions+=("**Ready to implement**: Task ${num} (${name}) - Run \`/implement ${num}\` to execute")
+  fi
+done
+
+# Priority 2: Stale tasks (need attention)
+for task_info in "${stale_tasks[@]}"; do
+  [ ${#suggestions[@]} -ge 5 ] && break
+  IFS=':' read -r num name days <<< "$task_info"
+  suggestions+=("**Stale task**: Task ${num} (${name}) has been pending ${days} days - consider prioritizing or \`/task --abandon ${num}\`")
+done
+
+# Priority 3: Ambition progress (if section exists)
+if [ "$ambition_unchecked" -gt 0 ]; then
+  [ ${#suggestions[@]} -ge 5 ] || suggestions+=("**Ambition progress**: ${ambition_unchecked} unchecked criteria in Ambitions section")
+fi
+
+# Priority 4: Strategy next steps (if section exists)
+if [ -n "$active_strategies" ]; then
+  [ ${#suggestions[@]} -ge 5 ] || suggestions+=("**Active strategies**: Check Strategies section for next steps on active items")
+fi
+
+# Priority 5: Follow-up suggestions
+for followup in "${follow_up_suggestions[@]}"; do
+  [ ${#suggestions[@]} -ge 5 ] && break
+  IFS=':' read -r type message <<< "$followup"
+  suggestions+=("**${type^}**: ${message}")
+done
+
+# If no suggestions, default message
+if [ ${#suggestions[@]} -eq 0 ]; then
+  suggestions=("All tasks look good! No immediate actions needed.")
+fi
+```
+
+**Step 7.5.5: Display suggestions**:
+```
+## Task Suggestions
+
+Based on analysis of active tasks, ROADMAP, and recent completions:
+
+### Recommended Next Steps
+
+1. {suggestion 1}
+
+2. {suggestion 2}
+
+3. {suggestion 3}
+
+4. {suggestion 4}
+
+5. {suggestion 5}
+
+---
+
+Active tasks: {N} | Completed today: {M} | Repository health: {status}
+```
+
+If no suggestions are available (extremely rare):
+```
+## Task Suggestions
+
+All looks good! No immediate actions needed.
+
+Active tasks: {N} | Repository health: {status}
+```
 
 ## Notes
 
