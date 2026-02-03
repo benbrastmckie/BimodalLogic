@@ -2,7 +2,7 @@
 
 - **Task**: 824 - fix_constitutive_foundation_remaining_issues
 - **Version**: 002
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 823 (verum/falsum notation conventions)
 - **Research Inputs**: specs/824_fix_constitutive_foundation_remaining_issues/reports/research-001.md
@@ -64,7 +64,7 @@ The research report identified:
 
 ## Implementation Phases
 
-### Phase 1: State Modality Dependent Type Notation [NOT STARTED]
+### Phase 1: State Modality Dependent Type Notation [COMPLETED]
 
 **Goal**: Rewrite Definition 2.6 (State Modality) to use consistent dependent type theory notation with explicit type signatures.
 
@@ -88,7 +88,7 @@ The research report identified:
 
 ---
 
-### Phase 2: Convert Subsection 2.7 to Extended Remark [NOT STARTED]
+### Phase 2: Convert Subsection 2.7 to Extended Remark [IN PROGRESS]
 
 **Goal**: Convert subsection 2.7 (Verification and Falsification) to an extended remark format, matching the style of other subsections that use remarks for explanatory content.
 
