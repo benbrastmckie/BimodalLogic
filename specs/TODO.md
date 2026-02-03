@@ -1,5 +1,5 @@
 ---
-next_project_number: 825
+next_project_number: 826
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,6 +22,17 @@ technical_debt:
 
 ## Tasks
 
+### 825. Complete FDSM Multi-History Modal Saturation
+- **Effort**: 4-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Dependencies**: 816
+
+**Description**: Complete Phase 4 from implementation-003.md for task 816. The current single-history construction in Completeness.lean trivializes modal operators (making Box φ ≡ φ), which validates invalid principles as warned in research-013.md. Replace fdsm_from_closure_mcs with proper multi-history saturated construction: (1) Define saturation_step to add witness histories for unsatisfied Diamond formulas, (2) Define saturated_histories as fixed point, (3) Prove termination via 2^closureSize bound, (4) Prove modal_saturated property at fixed point, (5) Derive modal_backward from saturation contrapositive. Files: Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean (continue Phase 4 section starting line 287).
+
+---
+
 ### 824. Fix Constitutive Foundation Remaining Issues
 - **Effort**: 2 hours
 - **Status**: [NOT STARTED]
@@ -35,7 +46,7 @@ technical_debt:
 
 ### 823. Update Context Files with Verum/Falsum Notation
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-03
 

@@ -6,15 +6,26 @@
   },
   "active_projects": [
     {
+      "project_number": 825,
+      "project_name": "fdsm_multi_history_modal_saturation",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Complete Phase 4 from implementation-003.md for task 816. The current single-history construction in Completeness.lean trivializes modal operators (making Box φ ≡ φ), which validates invalid principles as warned in research-013.md. Replace fdsm_from_closure_mcs with proper multi-history saturated construction: (1) Define saturation_step to add witness histories for unsatisfied Diamond formulas, (2) Define saturated_histories as fixed point, (3) Prove termination via 2^closureSize bound, (4) Prove modal_saturated property at fixed point, (5) Derive modal_backward from saturation contrapositive. Files: Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean (continue Phase 4 section starting line 287).",
+      "effort": "4-5 hours",
+      "parent_task": 816,
+      "created": "2026-02-03T02:44:55Z",
+      "last_updated": "2026-02-03T02:44:55Z"
+    },
+    {
       "project_number": 823,
       "project_name": "update_context_verum_falsum_notation",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "1 hour",
       "description": "Update .claude/context/ files based on NOTE: tag in 02-ConstitutiveFoundation.tex:357. Research notation conventions for verum/falsum in /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (lines 106, 109, 494). Since \\top and \\bot are not interdefinable in bilateral semantics, establish consistent terminology: reserve 'verium' and 'top' for the two top elements, 'falsum' and 'bot' for the two bottom elements. Define \\ver as \\neg\\bot (verum) and \\fal as \\neg\\top (falsum). Update LaTeX notation files and context documentation to match conventions from IdentityAboutness.tex.",
       "created": "2026-02-03T06:38:40Z",
-      "last_updated": "2026-02-03T06:38:40Z",
-      "session_id": "sess_1770086320_41a7b6"
+      "last_updated": "2026-02-03T02:42:31Z",
+      "session_id": "sess_1770086533_298e80"
     },
     {
       "project_number": 824,
@@ -444,7 +455,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 825,
+  "next_project_number": 826,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
