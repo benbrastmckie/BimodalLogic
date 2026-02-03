@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Analyzed term algebra/formula ordering problem and identified restructuring strategy to move Term Algebra before WFF definitions and add missing open/closed formula definitions",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/822_improve_syntax_term_algebra_structure/reports/research-001.md",
+      "summary": "Research report analyzing forward reference problem in 02-ConstitutiveFoundation.tex with detailed restructuring recommendations including moving Term Algebra to Section 1.2, updating WFF definition, and adding free variables for formulas plus open/closed formula definitions"
+    }
+  ],
+  "next_steps": "Run /plan 822 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1770080376_b11c6e",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5
+  }
+}

@@ -358,14 +358,22 @@
     {
       "project_number": 822,
       "project_name": "improve_syntax_term_algebra_structure",
-      "status": "not_started",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "description": "Restructure syntactic definitions in 02-ConstitutiveFoundation.tex by integrating term algebra into earlier sections. Currently term algebra (line 196) is defined late, causing forward references in well-formed formula definition (line 40). Reorganize to: (1) specify term algebra first, (2) define formulas using terms, (3) distinguish open and closed sentences. This addresses TODO at line 40 and line 196.",
       "effort": "1.5 hours",
       "created": "2026-02-03T06:26:24Z",
-      "last_updated": "2026-02-03T06:26:24Z",
-      "session_id": "sess_1770078784_cb049e"
+      "last_updated": "2026-02-03T01:03:57Z",
+      "session_id": "sess_1770080376_b11c6e",
+      "researched": "2026-02-03T01:03:57Z",
+      "artifacts": [
+        {
+          "path": "specs/822_improve_syntax_term_algebra_structure/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing forward reference problem in 02-ConstitutiveFoundation.tex with detailed restructuring recommendations including moving Term Algebra to Section 1.2, updating WFF definition, and adding free variables for formulas plus open/closed formula definitions"
+        }
+      ]
     }
   ],
   "completed_projects": [
