@@ -24,7 +24,7 @@ technical_debt:
 
 ### 853. Construct CoherentBundle from consistent context
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
