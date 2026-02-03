@@ -96,7 +96,7 @@ This is a Logos-specific distinction that does not apply to standard modal logic
 
 **Note**: Typst does not have built-in strikethrough math symbols.
 For Logos documentation requiring verum/falsum distinction, use:
-- LaTeX with `logos-notation.sty` macros (`\ver`, `\fal`, `\Top`, `\Bot`)
+- LaTeX with `logos-notation.sty` macros (`\ver`, `\fal`)
 - Or define custom Typst symbols using `#let verum = ...` if needed
 
 **Terminology**:
