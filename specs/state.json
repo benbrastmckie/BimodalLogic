@@ -35,11 +35,19 @@
     {
       "project_number": 840,
       "project_name": "refactor_truthlemma_forward_backward_publication",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-03T10:23:36Z",
-      "last_updated": "2026-02-03T10:24:42Z",
-      "session_id": "sess_1770114261_db5871"
+      "last_updated": "2026-02-03T18:53:38Z",
+      "session_id": "sess_1770114261_db5871",
+      "researched": "2026-02-03T18:53:38Z",
+      "artifacts": [
+        {
+          "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report showing completeness theorems are already transitively sorry-free; no refactoring needed"
+        }
+      ]
     },
     {
       "project_number": 828,

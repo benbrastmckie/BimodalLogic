@@ -139,7 +139,7 @@ argument used in `saturated_modal_backward`.
 
 ---
 
-### Phase 3: Implement saturateFamilies with well-founded termination [PARTIAL]
+### Phase 3: Implement saturateFamilies with well-founded termination [IN PROGRESS]
 
 **Goal**: Create recursive function that iteratively adds witness families until saturation is achieved, with proven termination.
 
