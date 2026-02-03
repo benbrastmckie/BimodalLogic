@@ -22,14 +22,14 @@
     {
       "project_number": 825,
       "project_name": "fdsm_multi_history_modal_saturation",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "description": "Complete Phase 4 from implementation-003.md for task 816. The current single-history construction in Completeness.lean trivializes modal operators (making Box φ ≡ φ), which validates invalid principles as warned in research-013.md. Replace fdsm_from_closure_mcs with proper multi-history saturated construction: (1) Define saturation_step to add witness histories for unsatisfied Diamond formulas, (2) Define saturated_histories as fixed point, (3) Prove termination via 2^closureSize bound, (4) Prove modal_saturated property at fixed point, (5) Derive modal_backward from saturation contrapositive. Files: Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean (continue Phase 4 section starting line 287).",
       "effort": "4-5 hours",
       "parent_task": 816,
       "created": "2026-02-03T02:44:55Z",
-      "last_updated": "2026-02-03T02:54:50Z",
-      "session_id": "sess_1770087038_6c6841",
+      "last_updated": "2026-02-03T02:56:47Z",
+      "session_id": "sess_1770087388_57ee2e",
       "researched": "2026-02-03T02:54:50Z",
       "artifacts": [
         {
@@ -47,21 +47,27 @@
     {
       "project_number": 823,
       "project_name": "update_context_verum_falsum_notation",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "1 hour",
       "description": "Update .claude/context/ files based on NOTE: tag in 02-ConstitutiveFoundation.tex:357. Research notation conventions for verum/falsum in /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (lines 106, 109, 494). Since \\top and \\bot are not interdefinable in bilateral semantics, establish consistent terminology: reserve 'verium' and 'top' for the two top elements, 'falsum' and 'bot' for the two bottom elements. Define \\ver as \\neg\\bot (verum) and \\fal as \\neg\\top (falsum). Update LaTeX notation files and context documentation to match conventions from IdentityAboutness.tex.",
       "created": "2026-02-03T06:38:40Z",
-      "last_updated": "2026-02-03T02:45:13Z",
-      "session_id": "sess_1770086533_298e80",
+      "last_updated": "2026-02-03T02:59:25Z",
+      "session_id": "sess_1770087432_08dbd7",
       "researched": "2026-02-03T02:45:13Z",
       "artifacts": [
         {
           "path": "specs/823_update_context_verum_falsum_notation/reports/research-001.md",
           "type": "research",
           "summary": "Research report with notation conventions, four-element structure analysis, and implementation recommendations for logos-notation.sty and context documentation"
+        },
+        {
+          "path": "specs/823_update_context_verum_falsum_notation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan covering LaTeX macros, notation documentation, and section header updates"
         }
-      ]
+      ],
+      "planned": "2026-02-03T02:59:25Z"
     },
     {
       "project_number": 824,

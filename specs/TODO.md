@@ -35,7 +35,7 @@ technical_debt:
 
 ### 825. Complete FDSM Multi-History Modal Saturation
 - **Effort**: 4-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -59,11 +59,13 @@ technical_debt:
 
 ### 823. Update Context Files with Verum/Falsum Notation
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/823_update_context_verum_falsum_notation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/823_update_context_verum_falsum_notation/plans/implementation-001.md)
 
 **Description**: Update .claude/context/ files based on NOTE: tag in 02-ConstitutiveFoundation.tex:357. Research notation conventions for verum/falsum in /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (lines 106, 109, 494). Since \top and \bot are not interdefinable in bilateral semantics, establish consistent terminology: reserve 'verium' and 'top' for the two top elements, 'falsum' and 'bot' for the two bottom elements. Define \ver as \neg\bot (verum) and \fal as \neg\top (falsum). Update LaTeX notation files and context documentation to match conventions from IdentityAboutness.tex.
 
