@@ -54,9 +54,11 @@ technical_debt:
 
 ### 829. Remove backwards-compatible aliases from Metalogic
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/829_remove_metalogic_backwards_compatible_aliases/reports/research-001.md)
 
 **Description**: Remove backwards-compatible aliases added during task 818 refactoring for a clean and consistent codebase. Specifically remove `semantic_weak_completeness := @fmp_weak_completeness` alias from FMP/SemanticCanonicalModel.lean. The canonical name is now fmp_weak_completeness and no external code depends on the old name. This improves maintainability by avoiding duplicate entry points to the same theorem.
 
