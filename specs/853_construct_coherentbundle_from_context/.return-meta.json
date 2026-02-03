@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Comprehensive analysis of CoherentBundle construction infrastructure. Tasks 851 and 852 completed all prerequisite work: CoherentBundle.toBMCS is fully proven with no sorries. Main construction requires: (1) initial CoherentBundle from Lindenbaum-extended base family, (2) generalization of diamond_boxcontent_consistent_constant to UnionBoxContent, (3) iterative or Zorn-based saturation adding coherent witnesses. The constant-family approach avoids Lindenbaum control problems that block the SaturatedConstruction.lean path.",
+  "status": "planned",
+  "summary": "5-phase implementation plan for constructing saturated CoherentBundle from consistent context",
   "artifacts": [
     {
-      "path": "specs/853_construct_coherentbundle_from_context/reports/research-001.md",
-      "type": "research",
-      "summary": "Research report covering CoherentBundle construction strategy, existing infrastructure analysis, saturation approaches, and integration with completeness theorem"
+      "path": "specs/853_construct_coherentbundle_from_context/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "5-phase plan covering initial bundle construction, UnionBoxContent consistency, witness addition, Zorn-based saturation, and main entry point integration"
     }
   ],
   "metadata": {
-    "session_id": "sess_1738615424_629724",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1738615805_dc9dd5",
+    "agent_type": "planner-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6.0
   }
 }

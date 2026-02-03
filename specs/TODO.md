@@ -24,11 +24,13 @@ technical_debt:
 
 ### 853. Construct CoherentBundle from consistent context
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/853_construct_coherentbundle_from_context/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/853_construct_coherentbundle_from_context/plans/implementation-001.md)
 - **Parent**: Task 844
 - **Depends**: Task 851
 
