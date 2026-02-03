@@ -8,7 +8,7 @@
     {
       "project_number": 826,
       "project_name": "fdsm_completeness_saturated_construction",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "description": "Replace single-history fdsm_from_closure_mcs in Completeness.lean with proper saturated construction from Phase 4. The current implementation (lines 67-91) creates only one history, which trivializes modal operators. After task 825 completes saturated_histories, update: (1) Replace fdsm_from_closure_mcs with fdsm_from_saturated_histories that uses the modal saturation fixed point, (2) Update modal_saturated proof to use the saturation property instead of single-history trivialization, (3) Ensure eval_history is properly selected from the saturated set. This bridges Phase 4 to Phase 6.",
       "effort": "2 hours",
@@ -17,7 +17,8 @@
         825
       ],
       "created": "2026-02-03T02:50:16Z",
-      "last_updated": "2026-02-03T02:50:16Z"
+      "last_updated": "2026-02-03T04:16:30Z",
+      "session_id": "sess_1770092176_b59c06"
     },
     {
       "project_number": 825,
@@ -102,12 +103,21 @@
     {
       "project_number": 818,
       "project_name": "refactor_bimodal_metalogic_modules",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "effort": "8-12 hours",
       "description": "Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.",
       "created": "2026-02-02T22:05:32Z",
-      "last_updated": "2026-02-02T22:05:32Z"
+      "last_updated": "2026-02-03T04:18:36Z",
+      "session_id": "sess_1770092056_835597",
+      "researched": "2026-02-03T04:18:36Z",
+      "artifacts": [
+        {
+          "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Metalogic module structure, main theorems, sorries, archival candidates, and refactoring recommendations"
+        }
+      ]
     },
     {
       "project_number": 793,
