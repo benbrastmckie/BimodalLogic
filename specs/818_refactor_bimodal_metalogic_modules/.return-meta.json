@@ -1,17 +1,31 @@
 {
   "status": "researched",
-  "summary": "Follow-up research after task 826 partial completion. Task 826 confirmed FDSM plain history approach is blocked (needs MCSTrackedHistory), and diamond_in_closureWithNeg_of_box is architecturally unprovable. Plan revision: expand Phase 2 archival scope, simplify Phase 4 (root DeductionTheorem.lean unused), update sorry counts from 31 to ~37 actual code sorries.",
+  "summary": "VERIFIED: semantic_weak_completeness is fully sorry-free including all transitive dependencies. The only sorry in Closure.lean (line 728) is NOT used by this theorem. BMCS has 3 remaining sorries (temporal backward and modal_backward). FDSM is blocked with 24+ sorries. Recommended path: accept FMP-internal completeness as primary, continue BMCS sorry reduction for standard semantics.",
   "artifacts": [
     {
-      "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-002.md",
+      "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-003.md",
       "type": "research",
-      "summary": "Post-task-826 analysis with revised archival scope and updated plan recommendations"
+      "summary": "Deep verification of SemanticCanonicalModel.lean sorry-free claim with dependency analysis and path comparison"
     }
   ],
   "metadata": {
-    "session_id": "sess_1770095902_18bf47",
+    "session_id": "sess_1770096377_ce57a4",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings": {
+      "semantic_weak_completeness_sorry_free": true,
+      "closure_sorry_is_unused": true,
+      "bmcs_sorries": 3,
+      "fdsm_sorries": 24,
+      "validity_bridge_blocked": true
+    },
+    "recommendations": [
+      "Accept semantic_weak_completeness as primary completeness result",
+      "Archive FDSM blocked code to Boneyard",
+      "Continue BMCS sorry reduction for standard semantics",
+      "Document validity bridge limitation",
+      "Remove unused diamond_in_closureWithNeg_of_box sorry"
+    ]
   }
 }
