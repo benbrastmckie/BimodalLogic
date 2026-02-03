@@ -1,17 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Task 260 ProofSearch blockers no longer exist. Task 260 was completed 2026-01-12. The example files contain stale comments that should be updated to use working modal_search/temporal_search tactics.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/837_resolve_proofsearch_blockers/reports/research-001.md",
-      "summary": "Analysis of ProofSearch blockers - found they are resolved, comments are stale, recommends updating example files to use current automation"
+      "type": "plan",
+      "path": "specs/837_resolve_proofsearch_blockers/plans/implementation-001.md",
+      "summary": "4-phase implementation plan to remove stale Task 260 comments and add working automation examples"
     }
   ],
+  "next_steps": "Run /implement 837 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770113878_70986f",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770114162_e65d9f",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2
   }
 }

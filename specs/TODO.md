@@ -1,5 +1,5 @@
 ---
-next_project_number: 841
+next_project_number: 842
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,17 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 841. Remove axiom from task 827 via complete multi-family saturation construction
+- **Effort**: 32-50 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Parent**: Task 827
+
+**Description**: Remove axiom from task 827 via complete multi-family saturation construction. Implement saturateFamilies with well-founded recursion on closure size, prove termination using finite subformula closure, prove modal_forward preservation when adding witness families, replace singleFamily_modal_backward_axiom with proven theorem. (Follow-up from task #827)
+
+---
 
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
 - **Effort**: 4 hours
