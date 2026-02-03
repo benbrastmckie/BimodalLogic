@@ -8,10 +8,10 @@
     {
       "project_number": 831,
       "project_name": "strengthen_sorry_debt_policy_language",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-03T10:30:00Z",
-      "last_updated": "2026-02-03T09:23:33Z",
+      "last_updated": "2026-02-03T09:27:58Z",
       "description": "Revise sorry-debt-policy.md to eliminate 'acceptable sorry' language and add clear guidance on transitive inheritance. Replace 'Acceptable for Development' category with 'Tolerated During Development (Technical Debt)'. Add explicit section on how to characterize sorries in reports/plans emphasizing that: (1) ALL sorries are mathematical debt, (2) sorries propagate transitively through imports, (3) publication requires zero inherited sorries. Add framing: 'Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.'",
       "session_id": "sess_1770110399_e47dc2",
       "researched": "2026-02-03T09:17:52Z",
@@ -25,9 +25,17 @@
           "path": "specs/831_strengthen_sorry_debt_policy_language/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for strengthening sorry-debt-policy language and adding characterization guidance"
+        },
+        {
+          "path": "specs/831_strengthen_sorry_debt_policy_language/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and verification results"
         }
       ],
-      "planned": "2026-02-03T09:22:13Z"
+      "planned": "2026-02-03T09:22:13Z",
+      "completed": "2026-02-03T09:27:58Z",
+      "completion_summary": "Strengthened sorry-debt-policy.md by eliminating 'acceptable sorry' language, adding a comprehensive 'Characterizing Sorries in Reports and Plans' section with prohibited/required framing examples, and reinforcing transitive inheritance requirements. Updated verification-workflow.md with aligned terminology.",
+      "claudemd_suggestions": "Updated sorry-debt-policy.md (added 'Characterizing Sorries' section, renamed category, strengthened transitive guidance) and verification-workflow.md (reframed sorry tolerance language)"
     },
     {
       "project_number": 832,

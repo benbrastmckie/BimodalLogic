@@ -1,7 +1,7 @@
 # Implementation Plan: Strengthen sorry-debt-policy language and guidance
 
 - **Task**: 831 - strengthen_sorry_debt_policy_language
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/831_strengthen_sorry_debt_policy_language/reports/research-001.md
