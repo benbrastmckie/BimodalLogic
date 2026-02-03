@@ -31,6 +31,12 @@ For sorry-free completeness proofs, use:
 The FMP approach does not provide infinitary completeness or compactness
 because it operates on single formulas, not infinite formula sets.
 
+## Related Documentation
+
+- [Metalogic README](../README.md) - Overall metalogic architecture
+- [Bundle README](../Bundle/README.md) - BMCS completeness approach
+- [FMP README](../FMP/README.md) - FMP completeness approach
+
 ---
 
 *Archived: 2026-02-02 (Task 809)*

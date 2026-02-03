@@ -65,6 +65,12 @@ architecturally complete but relied on 30 gaps in auxiliary lemmas.
 For a truly sorry-free completeness proof suitable for publication, the FMP
 approach is now canonical.
 
+## Related Documentation
+
+- [Metalogic README](../README.md) - Overall metalogic architecture
+- [Bundle README](../Bundle/README.md) - Current BMCS completeness approach
+- [FMP README](../FMP/README.md) - Current FMP completeness approach
+
 ---
 
 *Archived: 2026-02-02 (Task 809)*

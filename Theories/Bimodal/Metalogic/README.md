@@ -92,10 +92,207 @@ Metalogic/
 │   ├── UltrafilterMCS.lean
 │   └── AlgebraicRepresentation.lean
 │
-├── Soundness/             # Soundness documentation
+├── Soundness/             # Soundness conceptual grouping (files at top-level)
 ├── Representation/        # Archived
-├── Compactness/           # Archived
-└── UnderDevelopment/      # WIP approaches
+└── Compactness/           # Archived
+```
+
+## Module Dependency Flowchart
+
+This flowchart shows how modules depend on each other. Arrows point from dependents to dependencies.
+
+### Top-Level Structure
+
+```
+                         ┌─────────────────────────────────┐
+                         │         Metalogic.lean          │
+                         │         (Entry Point)           │
+                         └─────────────────────────────────┘
+                                         │
+           ┌─────────────────────────────┼─────────────────────────────┐
+           │                             │                             │
+           v                             v                             v
+┌────────────────────┐      ┌─────────────────────┐       ┌────────────────────┐
+│   Soundness.lean   │      │ Bundle/Completeness │       │ FMP/Semantic       │
+│ (Soundness theorem)│      │  (BMCS completeness)│       │ CanonicalModel     │
+└────────────────────┘      └─────────────────────┘       └────────────────────┘
+           │                             │                             │
+           v                             │                             │
+┌────────────────────┐                   │                             │
+│ SoundnessLemmas    │                   │                             │
+│ (temporal duality) │                   │                             │
+└────────────────────┘                   │                             │
+                                         v                             v
+                                ┌─────────────────────────────────────────┐
+                                │             Core/ (Foundation)          │
+                                │ MaximalConsistent, DeductionTheorem,    │
+                                │ MCSProperties                           │
+                                └─────────────────────────────────────────┘
+```
+
+### Bundle/ Dependencies (BMCS Completeness)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           Bundle/Completeness.lean                          │
+│        (bmcs_representation, bmcs_weak_completeness, bmcs_strong_completeness) │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                         │
+           ┌─────────────────────────────┼─────────────────────────────┐
+           │                             │                             │
+           v                             v                             v
+┌────────────────────┐      ┌─────────────────────┐       ┌────────────────────┐
+│  Construction.lean │      │   TruthLemma.lean   │       │    BMCSTruth.lean  │
+│ (BMCS construction)│      │  (MCS <-> truth)    │       │   (truth defn)     │
+└────────────────────┘      └─────────────────────┘       └────────────────────┘
+           │                             │                             │
+           │                             v                             │
+           │                 ┌─────────────────────┐                   │
+           │                 │    BMCSTruth.lean   │<──────────────────┘
+           │                 └─────────────────────┘
+           │                             │
+           v                             v
+┌────────────────────┐      ┌─────────────────────┐
+│ IndexedMCSFamily   │      │      BMCS.lean      │
+│ (temporal families)│      │ (bundle structure)  │
+└────────────────────┘      └─────────────────────┘
+           │                             │
+           └─────────────────┬───────────┘
+                             v
+                   ┌─────────────────────┐
+                   │       Core/         │
+                   │ MaximalConsistent   │
+                   │ MCSProperties       │
+                   └─────────────────────┘
+```
+
+### FMP/ Dependencies (Finite Model Property)
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      FMP/SemanticCanonicalModel.lean                        │
+│                         (fmp_weak_completeness)                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                         │
+           ┌─────────────────────────────┼─────────────────────────────┐
+           │                             │                             │
+           v                             v                             v
+┌────────────────────┐      ┌─────────────────────┐       ┌────────────────────┐
+│ FiniteWorldState   │      │   BoundedTime.lean  │       │   Soundness.lean   │
+│  (finite states)   │      │  (Fin (2k+1) time)  │       │ (for verification) │
+└────────────────────┘      └─────────────────────┘       └────────────────────┘
+           │
+           v
+┌────────────────────┐
+│   Closure.lean     │
+│ (subformula close) │
+└────────────────────┘
+           │
+           v
+┌────────────────────┐
+│       Core/        │
+│ MaximalConsistent  │
+│ MCSProperties      │
+│ DeductionTheorem   │
+└────────────────────┘
+```
+
+### Decidability/ Dependencies
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                      Decidability/DecisionProcedure.lean                    │
+│                         (decide, isValid, isSatisfiable)                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                         │
+           ┌─────────────────────────────┴─────────────────────────────┐
+           v                                                           v
+┌────────────────────┐                                    ┌────────────────────┐
+│ ProofExtraction    │                                    │ CountermodelExtr   │
+│ (closed -> proof)  │                                    │ (open -> model)    │
+└────────────────────┘                                    └────────────────────┘
+           │                                                           │
+           └─────────────────────────────┬─────────────────────────────┘
+                                         v
+                              ┌─────────────────────┐
+                              │  Correctness.lean   │
+                              │ (soundness proof)   │
+                              └─────────────────────┘
+                                         │
+                              ┌─────────────────────┐
+                              │  Saturation.lean    │
+                              │ (fuel termination)  │
+                              └─────────────────────┘
+                                         │
+                              ┌─────────────────────┐
+                              │   Closure.lean      │
+                              │ (branch closure)    │
+                              └─────────────────────┘
+                                         │
+                              ┌─────────────────────┐
+                              │   Tableau.lean      │
+                              │ (expansion rules)   │
+                              └─────────────────────┘
+                                         │
+                              ┌─────────────────────┐
+                              │ SignedFormula.lean  │
+                              │   (T/F signs)       │
+                              └─────────────────────┘
+```
+
+### Algebraic/ Dependencies
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    Algebraic/AlgebraicRepresentation.lean                   │
+│                      (algebraic_representation_theorem)                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+                                         │
+                              ┌─────────────────────┐
+                              │  UltrafilterMCS     │
+                              │ (ultrafilter <-> MCS)│
+                              └─────────────────────┘
+                                         │
+                    ┌────────────────────┴────────────────────┐
+                    v                                         v
+         ┌─────────────────────┐                   ┌─────────────────────┐
+         │ InteriorOperators   │                   │  BooleanStructure   │
+         │   (G, H operators)  │                   │ (Boolean algebra)   │
+         └─────────────────────┘                   └─────────────────────┘
+                    │                                         │
+                    └────────────────────┬────────────────────┘
+                                         v
+                              ┌─────────────────────┐
+                              │ LindenbaumQuotient  │
+                              │ (Formula/~provable) │
+                              └─────────────────────┘
+                                         │
+                              ┌─────────────────────┐
+                              │       Core/         │
+                              │  MaximalConsistent  │
+                              └─────────────────────┘
+```
+
+### Cross-Module Dependencies
+
+```
+                              ┌─────────────────────┐
+                              │       Core/         │
+                              │ (Foundation Layer)  │
+                              └─────────────────────┘
+                                         ^
+                                         │
+        ┌────────────────────────────────┼────────────────────────────────┐
+        │                                │                                │
+┌───────┴───────┐              ┌─────────┴─────────┐            ┌─────────┴─────────┐
+│   Bundle/     │              │      FMP/         │            │   Algebraic/      │
+│ (BMCS appr)   │              │ (FMP approach)    │            │ (Algebraic appr)  │
+└───────────────┘              └───────────────────┘            └───────────────────┘
+
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                              Decidability/                                        │
+│                    (Self-contained decision procedure)                            │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Subdirectory Summaries
@@ -107,24 +304,29 @@ Metalogic/
 | [FMP/](FMP/README.md) | Finite model property | Sorry-free | Yes |
 | [Decidability/](Decidability/README.md) | Tableau decision procedure | Sorry-free | Yes |
 | [Algebraic/](Algebraic/README.md) | Algebraic approach | Sorry-free | Yes |
-| Soundness/ | Soundness documentation | N/A | Yes |
-| Representation/ | Archived | Archived | Yes |
-| Compactness/ | Archived | Archived | Yes |
-| UnderDevelopment/ | WIP approaches | Research | Yes |
+| [Soundness/](Soundness/README.md) | Conceptual grouping (files at top-level) | N/A | Yes |
+| [Representation/](Representation/README.md) | Archived | Archived | Yes |
+| [Compactness/](Compactness/README.md) | Archived | Archived | Yes |
 
 ## Sorry Status
 
-**Active sorries in Metalogic/**: 4 (in helper lemmas, documented with alternatives)
+**Active sorries in Metalogic/**: 17 across 4 files (in helper lemmas, documented with alternatives)
 
-| File | Location | Sorry | Status | Alternative |
-|------|----------|-------|--------|-------------|
-| Bundle/TruthLemma.lean | ~383 | all_future backward | Documented | Omega-rule |
-| Bundle/TruthLemma.lean | ~395 | all_past backward | Documented | Omega-rule |
-| Bundle/Construction.lean | ~220 | modal_backward | Documented | Multi-family BMCS |
-| FMP/Closure.lean | ~728 | diamond membership | Documented | Minor edge case |
+| File | Count | Description | Impact |
+|------|-------|-------------|--------|
+| Bundle/TruthLemma.lean | 2 | Temporal backward directions | Does not affect completeness |
+| Bundle/Construction.lean | 1 | modal_backward | Architectural limitation |
+| Bundle/SaturatedConstruction.lean | 13 | Multi-family saturation WIP | Does not affect main theorems |
+| FMP/Closure.lean | 1 | Diamond membership edge case | Minor |
 
 **Key Point**: These do NOT affect main theorems. All main completeness, soundness, and
-decidability theorems are sorry-free.
+decidability theorems are sorry-free. The `SaturatedConstruction.lean` file is work-in-progress
+infrastructure for future multi-family BMCS construction.
+
+**Verification command**:
+```bash
+grep -c "^[[:space:]]*sorry\$\|[[:space:]]sorry\$\|:= sorry\$" Theories/Bimodal/Metalogic/**/*.lean
+```
 
 ### Recommended Theorems
 
@@ -153,6 +355,24 @@ import Bimodal.Metalogic.Decidability
 - **Self-contained**: No dependencies on archived code
 - **Verified**: Decision procedure returns proofs or countermodels
 
+## Verification
+
+All documentation claims can be verified with these commands:
+
+```bash
+# Verify all directories exist
+ls -d Theories/Bimodal/Metalogic/*/
+
+# Count sorries in active files
+grep -c "^\s*sorry$\|[[:space:]]sorry$" Theories/Bimodal/Metalogic/**/*.lean | grep -v ":0"
+
+# Verify representation theorem exists
+grep -n "bmcs_representation" Theories/Bimodal/Metalogic/Bundle/Completeness.lean
+
+# Verify Soundness.lean at top level
+ls Theories/Bimodal/Metalogic/Soundness.lean
+```
+
 ## References
 
 - Modal Logic, Blackburn et al., Chapters 4-5
@@ -160,4 +380,4 @@ import Bimodal.Metalogic.Decidability
 
 ---
 
-*Last updated: 2026-02-03*
+*Last verified: 2026-02-03*

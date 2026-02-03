@@ -24,13 +24,16 @@ technical_debt:
 
 ### 836. Improve Metalogic README documentation with flowcharts and subdirectory summaries
 - **Effort**: 5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: general
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/836_improve_metalogic_readme_documentation/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/836_improve_metalogic_readme_documentation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260203.md](specs/836_improve_metalogic_readme_documentation/summaries/implementation-summary-20260203.md)
 
 **Description**: Improve documentation for Metalogic/README.md following task 830's incomplete work. Clearly represent the representation theorem and all major modules with detailed dependency flowchart. Include comprehensive summaries of each Metalogic/ subdirectory with links to their README.md files. Review and update all subdirectory README.md files for accuracy and exhaustivity.
 

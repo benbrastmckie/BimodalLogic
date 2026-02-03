@@ -26,14 +26,15 @@ soundness (derivability implies standard-validity), we get a full characterizati
 
 ```
 Bundle/
-  IndexedMCSFamily.lean    # Temporal MCS families with coherence
-  BMCS.lean                # Bundle structure with modal coherence
-  BMCSTruth.lean           # Truth definition with bundled box
-  TruthLemma.lean          # KEY: MCS membership <-> BMCS truth
-  ModalSaturation.lean     # Modal saturation for multi-family construction
-  Construction.lean        # Building BMCS from consistent context
-  Completeness.lean        # Main completeness theorems
-  README.md                # This file
+  IndexedMCSFamily.lean      # Temporal MCS families with coherence
+  BMCS.lean                  # Bundle structure with modal coherence
+  BMCSTruth.lean             # Truth definition with bundled box
+  TruthLemma.lean            # KEY: MCS membership <-> BMCS truth
+  ModalSaturation.lean       # Modal saturation for multi-family construction
+  Construction.lean          # Building BMCS from consistent context
+  SaturatedConstruction.lean # WIP: Multi-family saturation construction
+  Completeness.lean          # Main completeness theorems
+  README.md                  # This file
 ```
 
 ## Main Theorems
@@ -46,18 +47,19 @@ Bundle/
 | `bmcs_weak_completeness` | bmcs_valid -> derivable | **SORRY-FREE** | Completeness.lean |
 | `bmcs_strong_completeness` | bmcs_consequence -> derivable | **SORRY-FREE** | Completeness.lean |
 
-### Sorry Status (Task 818 Update)
+### Sorry Status
 
-**Active sorries in Bundle/**: 3 (all documented as failures with alternatives)
+**Active sorries in Bundle/**: 16 across 3 files
 
-| File | Line | Sorry | Alternative |
-|------|------|-------|-------------|
-| `TruthLemma.lean` | ~383 | all_future backward | Omega-rule (infinitary proof system) |
-| `TruthLemma.lean` | ~395 | all_past backward | Omega-rule (infinitary proof system) |
-| `Construction.lean` | ~220 | modal_backward | Multi-family BMCS construction |
+| File | Count | Description | Impact |
+|------|-------|-------------|--------|
+| `TruthLemma.lean` | 2 | Temporal backward directions | Does not affect completeness |
+| `Construction.lean` | 1 | modal_backward | Architectural limitation of single-family |
+| `SaturatedConstruction.lean` | 13 | Multi-family saturation (WIP) | Does not affect main theorems |
 
 **Key Point**: These do NOT affect main completeness theorems because completeness uses only
-the FORWARD direction of the truth lemma, which is fully proven.
+the FORWARD direction of the truth lemma, which is fully proven. The `SaturatedConstruction.lean`
+is work-in-progress infrastructure for future multi-family BMCS construction.
 
 **Key Achievement**: The **box case** of the truth lemma is **SORRY-FREE**. This was the
 fundamental obstruction that blocked traditional completeness proofs.
@@ -152,8 +154,10 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 ## Related Documentation
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
+- [Core README](../Core/README.md) - MCS foundations (dependency)
 - [FMP README](../FMP/README.md) - Alternative FMP-based completeness
 - [Decidability README](../Decidability/README.md) - Decision procedure
+- [Algebraic README](../Algebraic/README.md) - Alternative algebraic approach
 
 ## Future Work
 

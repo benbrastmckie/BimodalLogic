@@ -50,6 +50,44 @@ open Bimodal.Metalogic.Decidability
 #check isSatisfiable -- Boolean satisfiability check
 ```
 
+## Dependency Flowchart
+
+```
+┌─────────────────────────────────────────────────┐
+│          DecisionProcedure.lean                 │
+│       (decide, isValid, isSatisfiable)          │
+└─────────────────────────────────────────────────┘
+                       │
+       ┌───────────────┴───────────────┐
+       v                               v
+┌─────────────────┐           ┌─────────────────┐
+│ ProofExtraction │           │ Countermodel    │
+│   .lean         │           │ Extraction.lean │
+└─────────────────┘           └─────────────────┘
+       │                               │
+       └───────────────┬───────────────┘
+                       v
+              ┌─────────────────┐
+              │ Correctness.lean│
+              └─────────────────┘
+                       │
+              ┌─────────────────┐
+              │ Saturation.lean │
+              └─────────────────┘
+                       │
+              ┌─────────────────┐
+              │  Closure.lean   │
+              └─────────────────┘
+                       │
+              ┌─────────────────┐
+              │  Tableau.lean   │
+              └─────────────────┘
+                       │
+              ┌─────────────────┐
+              │SignedFormula.lean│
+              └─────────────────┘
+```
+
 ## Complexity
 
 - Time: `O(2^n)` where `n` = formula complexity (PSPACE-complete)
@@ -61,6 +99,8 @@ open Bimodal.Metalogic.Decidability
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BMCS completeness approach
 - [FMP README](../FMP/README.md) - Finite model property
+- [Core README](../Core/README.md) - MCS foundations
+- [Soundness README](../Soundness/README.md) - Soundness theorem
 
 ## References
 

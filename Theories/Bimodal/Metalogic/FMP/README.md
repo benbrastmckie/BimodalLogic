@@ -72,16 +72,46 @@ theorem semanticWorldState_card_bound (phi : Formula) :
     Fintype.card (SemanticWorldState phi) <= 2 ^ closureSize phi
 ```
 
+## Dependency Flowchart
+
+```
+┌─────────────────────────────────────────────────┐
+│          SemanticCanonicalModel.lean            │
+│           (fmp_weak_completeness)               │
+└─────────────────────────────────────────────────┘
+                       │
+       ┌───────────────┼───────────────┐
+       v               v               v
+┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+│ FiniteWorld │ │ BoundedTime │ │ Soundness   │
+│ State.lean  │ │   .lean     │ │   .lean     │
+└─────────────┘ └─────────────┘ └─────────────┘
+       │
+       v
+┌─────────────┐
+│ Closure.lean│
+└─────────────┘
+       │
+       v
+┌─────────────────────────────────────────────────┐
+│                    Core/                        │
+│   MaximalConsistent, MCSProperties, Deduction   │
+└─────────────────────────────────────────────────┘
+```
+
 ## Dependencies
 
 - **Core**: MCS theory and Lindenbaum's lemma
 - **Semantics**: Truth relation and validity
+- **Soundness**: Used for verification in contrapositive proofs
 
 ## Related Documentation
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
+- [Core README](../Core/README.md) - MCS foundations (dependency)
 - [Bundle README](../Bundle/README.md) - BMCS completeness approach (alternative)
 - [Decidability README](../Decidability/README.md) - Decision procedure using FMP insights
+- [Soundness README](../Soundness/README.md) - Soundness theorem (dependency)
 
 ## References
 

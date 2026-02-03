@@ -141,6 +141,8 @@ This algebraic path provides:
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Core README](../Core/README.md) - MCS foundations shared by both approaches
 - [Bundle README](../Bundle/README.md) - Primary BMCS completeness approach
+- [FMP README](../FMP/README.md) - FMP completeness approach
+- [Decidability README](../Decidability/README.md) - Decision procedure
 
 ## References
 
