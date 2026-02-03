@@ -43,8 +43,8 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-03T08:51:32Z",
-      "last_updated": "2026-02-03T09:48:13Z",
-      "session_id": "sess_1770112063_ef9661",
+      "last_updated": "2026-02-03T10:10:30Z",
+      "session_id": "sess_1770113404_917be6",
       "researched": "2026-02-03T08:58:06Z",
       "artifacts": [
         {
@@ -368,6 +368,33 @@
       "completed": "2026-02-03T09:58:28Z",
       "completion_summary": "Extended /review command with bidirectional ROADMAP.md integration: Section 1.6 loads Strategies/Ambitions for review focus, Section 6.5 revises roadmap based on findings (strategy status updates, new ambition proposals with user approval, gap notes to Open Questions), Section 8.5 provides prioritized task suggestions following /todo and /learn patterns.",
       "claudemd_suggestions": "Extended .claude/commands/review.md with 4 new sections (1.6, 6.5, 8.5, extended Section 4), ~400 lines added for roadmap context loading, revision logic, and task suggestions output"
+    },
+    {
+      "project_number": 837,
+      "project_name": "resolve_proofsearch_blockers",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-02-03T11:25:00Z",
+      "description": "Resolve Task 260 (ProofSearch) blockers that disable automation in 3 example files: TemporalProofs.lean, ModalProofs.lean, BimodalProofs.lean. Either unblock Task 260, update to alternative approach, or document current status."
+    },
+    {
+      "project_number": 838,
+      "project_name": "complete_or_document_saturatedconstruction",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-02-03T11:25:00Z",
+      "description": "Address 12 sorries in Bundle/SaturatedConstruction.lean. Task 827 research indicates 32-50 hours for mathematically correct completion. Options: complete implementation, document as accepted limitation, or simplify approach."
+    },
+    {
+      "project_number": 839,
+      "project_name": "clean_linter_warnings",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-02-03T11:25:00Z",
+      "description": "Clean up linter warnings in SoundnessLemmas.lean (10+ 'Try this' suggestions, unused simp args), TaskFrame.lean (duplicate namespace), and WorldHistory.lean (unused section variables). Apply suggested refactorings."
     }
   ],
   "completed_projects": [
@@ -382,7 +409,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 837,
+  "next_project_number": 840,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

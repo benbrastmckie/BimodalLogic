@@ -11,9 +11,9 @@ The backward direction sorries in `Theories/Bimodal/Metalogic/Bundle/TruthLemma.
 - `(forall s >= t, phi true at s) -> G phi in MCS at t`
 - `(forall s <= t, phi true at s) -> H phi in MCS at t`
 
-The current documentation attributes this to the "omega-rule" limitation - an infinitary inference that cannot be captured by finitary proof systems. This research explores whether the Finite Model Property (FMP) offers an alternative approach.
+The current documentation attributes this to the "omega-rule" limitation - an infinitary inference that cannot be captured by finitary proof systems. This research explores whether the Finite Model Property (FMP) or contrapositive reasoning offers an alternative approach.
 
-**Key Finding**: FMP **does not directly solve** the backward direction problem. The issue is not about finiteness of models but about the direction of the truth lemma proof. However, the existing completeness architecture already works around this limitation by using only the forward direction.
+**Key Finding**: FMP **does not directly solve** the backward direction problem. The fundamental issue is not about infinity or finiteness, but about the **direction of reasoning**: going from semantic truth (at specific times) to syntactic membership (in an MCS constructed independently of those times). Neither FMP, bounded time domains, nor contrapositive reasoning can bridge this gap. However, the existing completeness architecture already works around this limitation by using only the forward direction.
 
 ## Problem Analysis
 
@@ -51,7 +51,35 @@ From phi@t, phi@(t+1), phi@(t+2), ... derive (G phi)@t
 
 **Key Insight**: Finitary proof systems cannot directly encode infinitary rules. The Lindenbaum construction that builds the MCS cannot "witness" infinitely many future times.
 
+### Why the Contrapositive Doesn't Help
+
+A natural question: could proving the contrapositive be easier?
+```
+Contrapositive: G phi ∉ MCS at t  →  ∃ s ≥ t, phi false at s
+```
+
+By MCS maximality, `G phi ∉ MCS` means `¬G φ ∈ MCS`, which is semantically equivalent to `F(¬φ)` ("eventually not-φ"). However, this doesn't resolve the fundamental gap:
+
+**The Witness Extraction Problem**: Even though `F(¬φ) ∈ MCS` tells us *semantically* that some future time fails φ, we cannot extract a **concrete witness time** from MCS membership. The MCS construction is purely syntactic - it knows "some time exists" but not *which specific time*.
+
+This is the core issue: the Lindenbaum construction builds the MCS by extending a consistent set *syntactically*, without access to which concrete times would eventually satisfy or refute formulas. The contrapositive restates the problem but doesn't bypass this fundamental gap.
+
 ## Finite Model Property Analysis
+
+### Temporal Depth and the Finiteness Red Herring
+
+An important clarification: **the issue is not fundamentally about infinity**.
+
+Every formula has finite **temporal depth** (defined in `Formula.lean:256-262`) - the maximum nesting of G/H operators. A formula can only "look" finitely many steps into the future or past. The codebase already tracks this via `temporalBound phi = temporalDepth phi`.
+
+However, even with bounded depth, we still face the same gap:
+1. We have semantic truth at (finitely many relevant) times
+2. We need syntactic membership in an MCS
+3. **The MCS was constructed without knowing which times would be relevant**
+
+The problem isn't that there are infinitely many times to check. The problem is the **direction of reasoning**: going from semantic facts (truth at specific times) to syntactic facts (MCS membership), when the MCS was built independently of those semantic facts.
+
+This is a "finite omega-rule" problem: even if we only needed to check finitely many times (say, k times based on temporal depth), we still can't derive `G phi in MCS` from k individual facts `phi@t1, phi@t2, ..., phi@tk` using finitary proof rules.
 
 ### What FMP Provides
 
@@ -69,9 +97,11 @@ The backward direction problem is **not** about model size. Even with FMP:
 
 1. **The proof direction matters**: FMP gives us finite models when formulas are satisfiable. But the backward direction asks us to conclude something is in the MCS from semantic truth - this is the opposite direction.
 
-2. **The MCS construction is the issue**: The IndexedMCSFamily is built via Lindenbaum extension from a consistent context. This construction cannot "know" about infinitely many future times where phi holds.
+2. **The MCS construction is the issue**: The IndexedMCSFamily is built via Lindenbaum extension from a consistent context. This construction cannot "know" about which future times where phi holds - whether finitely or infinitely many.
 
 3. **Semantic vs Syntactic**: FMP relates satisfiability to finite models. The backward direction relates truth (semantic) to MCS membership (syntactic) - a different relationship.
+
+As discussed above regarding temporal depth: even if we restrict to finite time domains based on formula depth, this doesn't solve the directionality problem. The MCS construction is independent of which specific times will matter semantically.
 
 ### What FMP Could Theoretically Provide
 
@@ -179,10 +209,25 @@ From (phi@t) provable for all t >= s, derive (G phi)@s
 ### FMP Does Not Resolve the Backward Direction
 
 The Finite Model Property is orthogonal to the backward direction problem:
-- FMP: satisfiability -> finite model exists
-- Backward direction: semantic truth -> syntactic membership
+- FMP: satisfiability → finite model exists
+- Backward direction: semantic truth → syntactic membership
 
 These are different questions with different proof strategies.
+
+### The Core Issue: Direction of Reasoning, Not Infinity
+
+The fundamental obstacle is **not** about infinity but about **directionality**:
+
+1. **What we have**: Semantic truth of φ at specific times (whether finitely or infinitely many)
+2. **What we need**: Syntactic membership of `G φ` in an MCS
+3. **The gap**: The MCS was constructed via Lindenbaum extension, independently of which times semantically satisfy φ
+
+Even with:
+- Finite temporal depth (formulas can only "look" finitely far ahead)
+- Bounded time domains (restricting to finitely many times total)
+- Contrapositive reasoning (trying to extract witness times from MCS membership)
+
+We still cannot bridge from semantic facts to syntactic facts in the backward direction. The MCS construction is blind to semantic satisfiability at specific times.
 
 ### The Current Architecture is Sound
 

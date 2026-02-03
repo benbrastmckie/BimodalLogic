@@ -1,5 +1,5 @@
 ---
-next_project_number: 837
+next_project_number: 840
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,39 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 839. Clean linter warnings in Metalogic files
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Source**: /review 2026-02-03
+
+**Description**: Clean up linter warnings in SoundnessLemmas.lean (10+ 'Try this' suggestions, unused simp args), TaskFrame.lean (duplicate namespace), and WorldHistory.lean (unused section variables). Apply suggested refactorings.
+
+---
+
+### 838. Complete or document SaturatedConstruction sorries
+- **Effort**: 32-50 hours (full), 2-4 hours (document)
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Source**: /review 2026-02-03
+
+**Description**: Address 12 sorries in Bundle/SaturatedConstruction.lean. Task 827 research indicates 32-50 hours for mathematically correct completion. Options: complete implementation, document as accepted limitation, or simplify approach.
+
+---
+
+### 837. Resolve ProofSearch blockers in example files
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Source**: /review 2026-02-03
+
+**Description**: Resolve Task 260 (ProofSearch) blockers that disable automation in 3 example files: TemporalProofs.lean, ModalProofs.lean, BimodalProofs.lean. Either unblock Task 260, update to alternative approach, or document current status.
+
+---
 
 ### 836. Improve Metalogic README documentation with flowcharts and subdirectory summaries
 - **Effort**: 5 hours

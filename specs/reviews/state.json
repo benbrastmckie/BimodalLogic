@@ -264,7 +264,7 @@
         "medium_issues": 3,
         "low_issues": 4
       },
-      "tasks_created": [],
+      "tasks_created": [837, 838, 839],
       "registries_updated": [],
       "roadmap_analysis": {
         "strategies_active": 2,
@@ -283,6 +283,6 @@
     "total_reviews": 14,
     "last_review": "2026-02-03",
     "total_issues_found": 194,
-    "total_tasks_created": 7
+    "total_tasks_created": 10
   }
 }
