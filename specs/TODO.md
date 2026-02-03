@@ -91,10 +91,12 @@ technical_debt:
 
 ### 847. Restructure Constitutive Semantics section
 - **Effort**: 1 hour
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: latex
 - **Priority**: medium
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/847_restructure_constitutive_semantics_section/reports/research-001.md)
 
 **Description**: Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section "Constitutive Semantics" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.
 

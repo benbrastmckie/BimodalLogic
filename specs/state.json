@@ -133,14 +133,22 @@
     {
       "project_number": 847,
       "project_name": "restructure_constitutive_semantics_section",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "priority": "medium",
       "effort": "1 hour",
       "description": "Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section \"Constitutive Semantics\" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.",
       "created": "2026-02-03T21:09:57Z",
-      "last_updated": "2026-02-03T22:00:58Z",
-      "session_id": "sess_1770156042_3aead8"
+      "last_updated": "2026-02-03T22:04:56Z",
+      "session_id": "sess_1770156042_3aead8",
+      "researched": "2026-02-03T22:04:56Z",
+      "artifacts": [
+        {
+          "path": "specs/847_restructure_constitutive_semantics_section/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with draft introduction text for bilateral exact truthmaker semantics section, analysis of current document structure, and implementation recommendations"
+        }
+      ]
     },
     {
       "project_number": 844,
