@@ -59,11 +59,13 @@ technical_debt:
 
 ### 850. Create scalable oversight section in Introduction
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/850_scalable_oversight_section/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/850_scalable_oversight_section/plans/implementation-001.md)
 
 **Description**: Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone.
 
@@ -133,7 +135,7 @@ technical_debt:
 
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
 - **Effort**: 8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
