@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "summary": "Identified 19 linter warnings across 3 files: SoundnessLemmas.lean (16: 6 Try this, 10 unused simp args), TaskFrame.lean (1 duplicate namespace), WorldHistory.lean (2 unused section variables)",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/839_clean_linter_warnings/reports/research-001.md",
+      "summary": "Research report documenting linter warnings in 3 Metalogic files with fix patterns"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1770157278_d1d4c7",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
