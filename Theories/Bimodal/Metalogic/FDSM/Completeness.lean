@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.FDSM.Core
 import Bimodal.Metalogic.FDSM.TruthLemma
+import Bimodal.Metalogic.FDSM.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.FMP.Closure
@@ -97,6 +98,35 @@ theorem fdsm_from_closure_mcs_eval {phi : Formula} (S : Set Formula)
     (h_mcs : ClosureMaximalConsistent phi S) :
     (fdsm_from_closure_mcs phi S h_mcs).eval_history =
     fdsm_history_from_closure_mcs phi S h_mcs := rfl
+
+/-!
+## Multi-History FDSM Construction (Phase 6)
+
+The single-history construction above has modal saturation issues because
+Diamond psi ∈ MCS does NOT imply psi ∈ MCS.
+
+The proper fix requires building multiple histories via ModalSaturation.lean.
+The construction uses:
+1. MCSTrackedHistory to track MCS origins
+2. buildMCSTrackedWitness to construct witnesses for unsatisfied diamonds
+3. Saturation iteration until no new witnesses are needed
+
+For now, we note that the modal saturation property in the single-history
+model is semantically meaningful only for propositional and temporal formulas.
+Modal formulas require the multi-history construction.
+
+The full multi-history construction is implemented in ModalSaturation.lean
+with the following components:
+- MCSTrackedHistory: History with tracked MCS origin
+- buildMCSTrackedWitness: Witness construction for diamond formulas
+- buildMCSTrackedWitness_models: Proof that witness models the formula
+
+**TODO (Task 825 follow-up)**:
+Complete the integration by:
+1. Implementing DecidableEq for MCSTrackedHistory
+2. Building the saturation iteration with proper type class instances
+3. Proving modal_saturated for the saturated construction
+-/
 
 /-!
 ## Key Lemma: Formula in MCS ↔ True in FDSM

@@ -1,9 +1,9 @@
 # Implementation Summary: Task #825
 
-**Completed**: 2026-02-03 (Partial - Phases 1-4)
-**Duration**: ~4 hours total
-**Session ID**: sess_1770088279_3fe7d5
-**Status**: [PARTIAL] - Phases 1-4 completed (infrastructure and fixed-point), Phases 5-7 remaining
+**Completed**: 2026-02-03 (Partial - Phases 1-6)
+**Duration**: ~6 hours total (across 2 sessions)
+**Session IDs**: sess_1770088279_3fe7d5 (Phase 1-4), sess_1770088932_7e850f (Phase 4-6 continuation)
+**Status**: [PARTIAL] - MCSTrackedHistory infrastructure added, core saturation theorems remain with sorries
 
 ## Overview
 
@@ -50,13 +50,19 @@ Added definitions and proofs for:
 | `saturation_step_card_increase` | PROVEN |
 | `saturation_terminates` | sorry (classical well-founded argument) |
 
-### Phase 4: Modal Saturation Property - PARTIAL (this session)
+### Phase 4: Modal Saturation Property - PARTIAL (session 2)
 
 | Definition/Theorem | Status |
 |--------------------|--------|
 | `is_modally_saturated` | DEFINED |
-| `fixed_point_is_saturated` | sorry (contrapositive argument) |
+| `MCSTrackedHistory` | DEFINED - Structure to track MCS origin |
+| `mcsTrackedHistory_from_mcs` | DEFINED - Constructor from MCS |
+| `buildMCSTrackedWitness` | DEFINED - MCS-aware witness construction |
+| `buildMCSTrackedWitness_models` | PROVEN - Witness models the formula |
+| `fixed_point_is_saturated` | sorry (needs MCS-tracked saturation) |
 | `saturated_histories_saturated` | sorry (depends on above) |
+
+**Key Finding**: The abstract `saturation_step` filters from `Finset.univ` but doesn't know how to construct witnesses. The `MCSTrackedHistory` structure bridges this gap by tracking MCS origins, enabling witness construction via `buildMCSTrackedWitness`.
 
 ## Files Modified
 
@@ -64,8 +70,13 @@ Added definitions and proofs for:
   - Added import for `Bimodal.Metalogic.Bundle.Construction` (for `lindenbaumMCS_set`)
   - Phase 2: Lines 390-530 (~140 lines of saturation infrastructure)
   - Phase 3: Lines 600-730 (~130 lines of fixed-point construction)
-  - Phase 4: Lines 750-790 (~40 lines of modal saturation definitions)
+  - Phase 4: Lines 750-850 (~100 lines of modal saturation definitions and MCSTrackedHistory)
   - Updated summary section
+
+- `Theories/Bimodal/Metalogic/FDSM/Completeness.lean` (session 2)
+  - Added import for ModalSaturation.lean
+  - Added documentation for multi-history approach
+  - Documented blocking issues for full multi-history FDSM construction
 
 ## Verification
 
@@ -87,15 +98,21 @@ Current sorries in ModalSaturation.lean (5 actual code sorries):
 
 ## Remaining Work
 
+### Phase 4 Completion: MCS-Tracked Saturation
+- Add DecidableEq instance for MCSTrackedHistory (using classical decidability)
+- Implement saturation iteration on `Finset (MCSTrackedHistory phi)`
+- Prove `fixed_point_is_saturated` using MCS-tracked construction
+- Prove `saturated_histories_saturated` as composition
+
 ### Phase 5: Complete modal_backward_from_saturation
 - Requires connecting truth lemma to MCS membership
 - Uses contrapositive: if Box psi not in MCS, then Diamond(neg psi) holds, so witness exists
 - Blocked on TruthLemma.lean sorries
 
-### Phase 6: Update Completeness.lean
-- Replace `fdsm_from_closure_mcs` with multi-history construction
-- Use `saturated_histories_from` to build proper FDSM
-- Define `fdsm_from_saturated_histories` with proper modal_saturated field
+### Phase 6: Update Completeness.lean (continued)
+- Implement full multi-history FDSM construction
+- Replace `fdsm_from_closure_mcs` references in completeness proof
+- Verify `fdsm_internal_completeness` still holds
 
 ### Phase 7: Verification and sorry audit
 - Review all sorries in saturation path
@@ -126,6 +143,20 @@ Current sorries in ModalSaturation.lean (5 actual code sorries):
 
 1. **Phase 5-6 Dependencies**: The remaining sorries mostly depend on connecting the truth lemma to MCS membership. Consider prioritizing TruthLemma.lean completions.
 
-2. **Simpler Modal Saturation**: For Phase 4 sorries, a simpler approach might be to prove them using specific properties of the saturation_step definition rather than general fixed-point theory.
+2. **Alternative Approach for Modal Saturation**: Instead of proving abstract fixed point properties, directly construct the saturated set by:
+   - Starting with initial MCS-tracked history
+   - Explicitly enumerating Diamond formulas in closure
+   - Adding witness for each via `buildMCSTrackedWitness`
+   - The resulting finite set is trivially saturated by construction
 
 3. **Testing**: Before Phase 6, create test cases to verify the multi-history construction produces correct models.
+
+4. **DecidableEq for MCSTrackedHistory**: This requires comparing two Set Formula values for equality, which is undecidable in general. Use classical decidability or restructure to avoid this requirement.
+
+## Session 2 Key Finding
+
+The fundamental gap identified in this session:
+- The abstract `saturation_step` filters from `Finset.univ` for histories satisfying `IsWitnessFor`
+- Proving witness existence requires constructing witnesses via `buildWitnessHistory`
+- `buildWitnessHistory` needs MCS information that plain `FDSMHistory` values don't carry
+- `MCSTrackedHistory` was added to bridge this gap, but requires type class instances (DecidableEq) for full integration

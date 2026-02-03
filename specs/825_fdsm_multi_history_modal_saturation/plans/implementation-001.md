@@ -1,7 +1,7 @@
 # Implementation Plan: Task #825
 
 - **Task**: 825 - FDSM Multi-History Modal Saturation
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Dependencies**: None (builds on existing FDSM infrastructure)
 - **Research Inputs**:
@@ -160,9 +160,15 @@ From research-002.md (Gap analysis):
 
 **Goal**: Prove that the fixed point of saturation has the modal_saturated property required by FDSM.
 
+**Status**: Partial - Identified fundamental gap between abstract saturation and concrete MCS-based construction. Added MCSTrackedHistory infrastructure as bridge.
+
 **Tasks**:
 - [x] Define `is_modally_saturated` predicate on Finset (FDSMHistory phi)
-- [ ] Prove `fixed_point_is_saturated` (sorry - contrapositive argument needed)
+- [x] Added `MCSTrackedHistory` structure to track MCS origin of histories
+- [x] Added `mcsTrackedHistory_from_mcs` constructor
+- [x] Added `buildMCSTrackedWitness` for MCS-aware witness construction
+- [x] Proved `buildMCSTrackedWitness_models` - witness history models psi
+- [ ] Prove `fixed_point_is_saturated` (sorry - requires MCS-tracked saturation)
 - [ ] Prove `saturated_histories_saturated` (sorry - depends on above)
 - [ ] Prove `fixed_point_is_saturated`:
   ```lean
@@ -226,11 +232,15 @@ From research-002.md (Gap analysis):
 
 ---
 
-### Phase 6: Update Completeness.lean to Use Multi-History Construction [NOT STARTED]
+### Phase 6: Update Completeness.lean to Use Multi-History Construction [PARTIAL]
 
 **Goal**: Replace the single-history `fdsm_from_closure_mcs` with a multi-history construction using `saturated_histories`.
 
+**Status**: Partial - Added import for ModalSaturation and documentation. Full construction blocked on Phase 4 completion (needs DecidableEq for MCSTrackedHistory and proper saturation iteration).
+
 **Tasks**:
+- [x] Add import for ModalSaturation.lean
+- [x] Document the multi-history approach and requirements
 - [ ] Create `fdsm_from_saturated_histories`:
   ```lean
   noncomputable def fdsm_from_saturated_histories (phi : Formula) (S : Set Formula)
