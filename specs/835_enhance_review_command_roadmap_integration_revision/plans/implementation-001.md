@@ -46,7 +46,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Add Roadmap Context Loading (Step 1.5) [NOT STARTED]
+### Phase 1: Add Roadmap Context Loading (Step 1.5) [COMPLETED]
 
 **Goal**: Load and parse Strategies and Ambitions sections from ROAD_MAP.md at review start to inform the review analysis.
 
@@ -70,7 +70,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Extend Review Report Format (Section 4) [NOT STARTED]
+### Phase 2: Extend Review Report Format (Section 4) [COMPLETED]
 
 **Goal**: Update the review report template to include roadmap context and revision summary sections.
 
@@ -94,7 +94,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Add Roadmap Revision Step (Step 6.5) [NOT STARTED]
+### Phase 3: Add Roadmap Revision Step (Step 6.5) [COMPLETED]
 
 **Goal**: Implement roadmap revision logic to update strategy statuses and propose new ambitions based on review findings.
 
@@ -125,7 +125,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 4: Add Task Suggestions Output (Step 8.5) [NOT STARTED]
+### Phase 4: Add Task Suggestions Output (Step 8.5) [COMPLETED]
 
 **Goal**: Add task suggestions section to review output, following /todo and /learn patterns.
 
@@ -156,7 +156,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 5: Update Git Commit and Final Output [NOT STARTED]
+### Phase 5: Update Git Commit and Final Output [COMPLETED]
 
 **Goal**: Update commit message format and final output to reflect new roadmap revision capabilities.
 

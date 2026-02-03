@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Comprehensive analysis of Metalogic/ documentation identifying inaccuracies (non-existent UnderDevelopment/, mislocated Soundness files) and providing detailed dependency flowchart for implementation",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/836_improve_metalogic_readme_documentation/reports/research-001.md",
-      "type": "research",
-      "summary": "Research report with directory analysis, README quality assessment, dependency graphs, and improvement recommendations"
+      "type": "plan",
+      "path": "specs/836_improve_metalogic_readme_documentation/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for Metalogic README documentation improvements"
     }
   ],
-  "next_steps": "Run /plan 836 to create implementation plan",
+  "next_steps": "Run /implement 836 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770112225_066a72",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 300,
+    "session_id": "sess_1770112529_ceb64d",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 7
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 5
   }
 }

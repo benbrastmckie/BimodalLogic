@@ -99,7 +99,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Restricted MCS Construction [IN PROGRESS]
+### Phase 2: Restricted MCS Construction [COMPLETED]
 
 **Goal**: Implement MCS construction restricted to finite closure
 
@@ -126,7 +126,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Iterative Saturation with Termination Proof [NOT STARTED]
+### Phase 3: Iterative Saturation with Termination Proof [IN PROGRESS]
 
 **Goal**: Build saturation function that iteratively adds witness families with termination proof
 

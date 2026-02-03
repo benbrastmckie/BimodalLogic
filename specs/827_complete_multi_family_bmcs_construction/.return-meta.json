@@ -6,12 +6,17 @@
       "type": "implementation",
       "path": "Theories/Bimodal/Syntax/SubformulaClosure.lean",
       "summary": "Subformula closure infrastructure with Diamond formula detection"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/Core/RestrictedMCS.lean",
+      "summary": "Restricted MCS construction within finite closure via Lindenbaum"
     }
   ],
   "partial_progress": {
-    "stage": "phase_2",
-    "details": "Phase 1 complete, starting Phase 2: Restricted MCS Construction",
-    "phases_completed": 1,
+    "stage": "phase_3",
+    "details": "Implementing Phase 3: Iterative Saturation with Termination Proof - Creating SaturatedConstruction.lean",
+    "phases_completed": 2,
     "phases_total": 5
   },
   "metadata": {

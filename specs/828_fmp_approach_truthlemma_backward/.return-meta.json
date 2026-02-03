@@ -1,11 +1,13 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-03T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "understanding_problem",
-    "details": "Read TruthLemma.lean and existing FMP files. Understanding omega-rule limitation and exploring FMP alternatives."
-  },
+  "status": "researched",
+  "summary": "FMP does not resolve the backward direction problem. The omega-rule limitation is fundamental to finitary proof systems, not a model-size issue. Current BMCS completeness proof already works around this by using only the forward direction of the truth lemma.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/828_fmp_approach_truthlemma_backward/reports/research-001.md",
+      "summary": "Analysis of FMP approach feasibility for G/H backward direction, concluding FMP is orthogonal to the problem"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1770112335_480871",
     "agent_type": "lean-research-agent",

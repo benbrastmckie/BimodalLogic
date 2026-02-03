@@ -46,7 +46,104 @@ Updated by /todo command during task archival.
 ---
 -->
 
-*Strategies section populated in Phase 2.*
+### Strategy: Representation-First Architecture
+
+**Status**: CONCLUDED
+**Started**: 2025-12-01
+**Hypothesis**: Placing canonical model construction as the foundation (with completeness as a corollary) provides cleaner proof structure than treating completeness as primary.
+
+*Rationale*: Core completeness depends on the representation theorem as foundation. By proving representation first, soundness and completeness become natural corollaries rather than primary goals requiring separate proof machinery.
+
+**Approach**:
+The architecture places canonical model construction as the foundation, with FMP as the central bridge. Completeness derives from representation rather than being treated as primary. This inverts the traditional presentation order (soundness -> completeness) to (representation -> completeness corollaries).
+
+**Outcomes**:
+- Representation theorem proven sorry-free (Task 654)
+- Weak, finite strong, and infinitary strong completeness all derive from representation
+- Compactness proven via finitary strong completeness
+- Clear dependency hierarchy: Core < Representation < Completeness < Compactness
+
+**References**:
+- [Bimodal/Metalogic/Representation/](Theories/Bimodal/Metalogic/Representation/) - Core implementation
+- [Task 654 research](specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) - Approach analysis
+- [Bundle/Representation.lean](Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean) - Main theorem
+
+---
+
+### Strategy: Indexed MCS Family Approach
+
+**Status**: ACTIVE
+**Started**: 2025-12-15
+**Hypothesis**: Using a family of MCS indexed by time (mcs : D -> Set Formula) with temporal coherence conditions matches irreflexive G/H semantics without requiring T-axioms.
+
+*Rationale*: TM's G/H operators are irreflexive (strictly future/past, excluding present). A family-based approach naturally captures this structure, with each time point having its own MCS connected via temporal coherence conditions.
+
+**Approach**:
+Design uses a family of MCS indexed by time, where coherence conditions (forward_G, backward_H, forward_H, backward_G) connect time points. These conditions match the irreflexive semantics without requiring T-axioms.
+
+**Outcomes**:
+- Representation theorem proven without T-axiom dependency
+- Task relation (canonical_history_family_respects) proven
+- Truth lemma for temporal operators proven
+- Documented gaps in backward truth lemma cases (non-blocking)
+
+**References**:
+- [IndexedMCSFamily.lean](Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean) - Core structure
+- [CanonicalHistory.lean](Theories/Bimodal/Metalogic/Representation/CanonicalHistory.lean) - Task relation proof
+- [TruthLemma.lean](Theories/Bimodal/Metalogic/Representation/TruthLemma.lean) - Truth lemma
+
+---
+
+### Strategy: CoherentConstruction Two-Chain Design
+
+**Status**: ACTIVE
+**Started**: 2026-01-10
+**Hypothesis**: A two-chain design (forward chain for times > 0, backward chain for times < 0) from a central origin simplifies coherence proofs by making coherence conditions definitional.
+
+*Rationale*: The original construct_indexed_family approach required proving coherence conditions after the fact. CoherentConstruction provides cleaner architecture where coherence holds by construction.
+
+**Approach**:
+1. Origin MCS: Lindenbaum extension of seed formula
+2. Forward chain: G-persistence definitional for times > 0
+3. Backward chain: H-persistence definitional for times < 0
+4. Cross-origin coherence: Cases 2,3 have documented gaps, but only Cases 1,4 needed for completeness
+
+**Outcomes**:
+- Origin, forward, and backward chains proven
+- Completeness integration proven using only Cases 1,4
+- Cross-origin gaps documented as non-blocking
+
+**References**:
+- [CoherentConstruction.lean](Theories/Bimodal/Metalogic/Representation/CoherentConstruction.lean) - Implementation
+- [Task 814 research](specs/archive/814_sorry_reduction_coherentconstruction_cases_2_3/reports/) - Analysis
+- [Phase 4 overview](specs/ROAD_MAP.md#phase-4-architecture-optimization-high-priority) - Architecture context
+
+---
+
+### Strategy: Algebraic Verification Path
+
+**Status**: PAUSED
+**Started**: 2026-01-05
+**Hypothesis**: Boolean algebra with modal operators provides an alternative verification path via Stone duality, potentially simplifying some arguments.
+
+*Rationale*: Algebraic methods (Lindenbaum-Tarski quotient, ultrafilter correspondence) provide independent verification of Kripke semantics results and may offer elegant alternative proofs.
+
+**Approach**:
+1. Define Lindenbaum-Tarski quotient algebra
+2. Prove Boolean algebra structure
+3. Define interior operators for G/H
+4. Establish ultrafilter-MCS correspondence
+5. Verify completeness via algebraic methods
+
+**Outcomes**:
+- Quotient algebra defined
+- Boolean structure proven
+- Interior operators and ultrafilter correspondence partially implemented
+
+**References**:
+- [Algebraic/ module](Theories/Bimodal/Metalogic/Algebraic/) - Implementation
+- [Phase 5 description](specs/ROAD_MAP.md#phase-5-managing-remaining-sorries-low-priority) - Context
+- [research-003.md Approach 4](specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) - Original analysis
 
 ---
 
@@ -73,7 +170,123 @@ Updated by /todo command during task archival.
 ---
 -->
 
-*Ambitions section populated in Phase 3.*
+### Ambition: Publication-Ready Metalogic
+
+**Priority**: HIGH
+**Timeframe**: MEDIUM-TERM
+
+*Rationale*: Core use case for the codebase - verified modal logic proofs that can be cited in academic work and used as a reference implementation.
+
+**Success Criteria**:
+- [x] Representation theorem sorry-free
+- [x] Completeness hierarchy (weak/finite strong/infinitary) proven
+- [x] Compactness sorry-free
+- [ ] Soundness proven (currently axiomatized)
+- [ ] Full documentation with tutorials
+- [ ] Paper draft or technical report
+
+**Description**:
+A publication-ready package of verified metalogical results for TM bimodal logic, suitable for academic citation and practical verification use.
+
+**Related Phases**: Phase 6 (Polish and Publication)
+**References**:
+- [Metalogic README](Theories/Bimodal/Metalogic/README.md) - Current architecture
+- [API Reference](docs/reference/API_REFERENCE.md) - Documentation status
+- [Phase 6 description](specs/ROAD_MAP.md#phase-6-polish-and-publication-low-priority-now-high-later) - Publication tasks
+
+---
+
+### Ambition: Full LTL Extension
+
+**Priority**: MEDIUM
+**Timeframe**: LONG-TERM
+
+*Rationale*: Until/Since operators complete the temporal expressiveness. Full LTL is important for verification applications and aligns the formalization with standard temporal logic literature.
+
+**Success Criteria**:
+- [ ] Until (U) operator added to syntax
+- [ ] Since (S) operator added to syntax
+- [ ] Expansion axioms proven
+- [ ] Completeness for full LTL proven
+
+**Description**:
+Extend the current TM (G/H only) logic to full LTL with Until and Since operators, including soundness and completeness proofs.
+
+**Related Phases**: Phase 3.3.A (Temporal Logic Extensions)
+**References**:
+- [Phase 3.3 description](specs/ROAD_MAP.md#33-temporal-logic-extensions) - Extension tasks
+- [LTL.lean](Theories/Bimodal/Basic.lean) - Current syntax
+
+---
+
+### Ambition: Modular Frame Classes
+
+**Priority**: MEDIUM
+**Timeframe**: MEDIUM-TERM
+
+*Rationale*: Enables theory reuse across different modal systems (K, T, S4, S5, etc.). A generic framework parameterized by frame properties makes it easy to prove results for new logics.
+
+**Success Criteria**:
+- [ ] FrameClass typeclass defined
+- [ ] Canonical model parameterized by frame class
+- [ ] Completeness relative to frame classes proven
+- [ ] At least 2 modal logics instantiated (K, S5)
+
+**Description**:
+Parameterize the completeness framework by frame class, enabling reuse across different modal logics with different accessibility relation properties.
+
+**Related Phases**: Phase 2.3 (Modular Frame Properties)
+**References**:
+- [Phase 2.3 description](specs/ROAD_MAP.md#23-modular-frame-properties) - Frame class tasks
+- [FrameClasses concept](Theories/Bimodal/Semantics.lean) - Current semantics
+
+---
+
+### Ambition: Algebraic Verification Path
+
+**Priority**: LOW
+**Timeframe**: LONG-TERM
+
+*Rationale*: Alternative proof method that may simplify some arguments. Algebraic methods (Stone duality, Boolean algebras with operators) provide dual verification and elegant characterizations.
+
+**Success Criteria**:
+- [ ] Interior operators (G/H) fully proven
+- [ ] Ultrafilter-MCS correspondence complete
+- [ ] Completeness via algebraic methods proven
+- [ ] Documentation comparing algebraic and Kripke approaches
+
+**Description**:
+Complete the algebraic approach using Boolean algebra with modal operators, providing independent verification of Kripke semantics results via Stone duality.
+
+**Related Phases**: Phase 5 (Managing Remaining Sorries)
+**References**:
+- [Algebraic/ module](Theories/Bimodal/Metalogic/Algebraic/) - Current implementation
+- [research-003.md](specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) - Approach analysis
+
+---
+
+### Ambition: Proof Economy
+
+**Priority**: HIGH
+**Timeframe**: ONGOING
+
+*Rationale*: Reduce sorry count to achieve production-quality proofs. A low sorry count indicates a mature, trustworthy formalization and enables confident use in verification.
+
+**Success Criteria**:
+- [x] Critical path sorry-free (representation theorem)
+- [x] Compactness sorry-free
+- [ ] Sorry count below 200 (currently ~295)
+- [ ] No blocking sorries on main theorem paths
+- [ ] Documented sorry debt policy enforced
+
+**Description**:
+Systematically reduce sorries in the Metalogic module through proof completion, alternative constructions, or explicit documentation as intentional gaps.
+
+**Related Phases**: Phase 1 (Proof Quality), Phase 5 (Managing Sorries)
+**References**:
+- [sorry-debt-policy.md](docs/policies/sorry-debt-policy.md) - Debt management
+- [Task 758](specs/TODO.md) - Sorry audit task
+- [Phase 1 goals](specs/ROAD_MAP.md#phase-1-proof-quality-and-organization-high-priority) - Economy tasks
 
 ---
 
@@ -105,7 +318,104 @@ Updated by /todo command during task archival.
 ---
 -->
 
-*Dead Ends section populated in Phase 4.*
+### Dead End: Boneyard Decidability Infrastructure
+
+**Status**: SUPERSEDED
+**Tried**: 2025-10-01 to 2025-12-15
+**Related Tasks**: Task 755
+
+*Rationale*: Attempted decidability via explicit frame enumeration using tableau-based decision procedure.
+
+**What We Tried**:
+Built comprehensive decidability infrastructure in Boneyard/Metalogic_v2/Decidability/ including tableau system, saturation algorithm, branch closure detection, and decision procedure with soundness proof.
+
+**Why It Failed**:
+The parametric FMP approach (semantic_weak_completeness) provides a cleaner path to practical completeness without the full decidability machinery. The Boneyard approach required maintaining complex tableau state and rule application tracking.
+
+**Evidence**:
+- [Boneyard/Metalogic_v2/Decidability/](Theories/Boneyard/Metalogic_v2/Decidability/) - Archived implementation
+- [Decidability tables in roadmap](specs/ROAD_MAP.md#decidability-infrastructure-boneyard) - Status documentation
+
+**Lesson**:
+When multiple paths exist, evaluate which provides value faster. Full decidability is nice-to-have; sorry-free completeness was the actual blocking need.
+
+**Superseded By**: semantic_weak_completeness via parametric FMP approach
+
+---
+
+### Dead End: Single-History FDSM Construction
+
+**Status**: ABANDONED
+**Tried**: 2026-01-05 to 2026-01-10
+**Related Tasks**: Task 825
+
+*Rationale*: Attempted simpler single-history model construction, hoping to avoid the complexity of multi-history indexed MCS families.
+
+**What We Tried**:
+Constructed FDSM (Finite Deterministic State Machine) models from closure of a formula, using a single history that evolves over time.
+
+**Why It Failed**:
+Modal trivialization: with a single history, Box psi becomes equivalent to psi because there's only one "future" path to evaluate. The irreflexive G/H semantics requires multiple possible futures/pasts.
+
+**Evidence**:
+- [Task 825 research-002.md](specs/archive/825_fdsm_construction/reports/research-002.md) - Analysis of trivialization
+- Archived fdsm_from_closure_mcs attempt
+
+**Lesson**:
+Multi-history saturation is required for non-trivial modalities in TM logic. Single-history approaches trivialize modal operators.
+
+**Superseded By**: Indexed MCS Family approach with multiple histories
+
+---
+
+### Dead End: Cross-Origin Coherence Proofs
+
+**Status**: BLOCKED
+**Tried**: 2026-01-15 to 2026-01-20
+**Related Tasks**: Task 814
+
+*Rationale*: Attempted to prove coherence across different MCS origins (e.g., showing G-persistence from t<0 to t>0) for completeness of the CoherentConstruction approach.
+
+**What We Tried**:
+Proved Cases 1 and 4 of coherence conditions (same-side of origin). Attempted Cases 2 and 3 (cross-origin) to complete the full coherence proof.
+
+**Why It Failed**:
+Cases 2 and 3 are not on the critical path for completeness. The representation theorem and completeness proofs only require coherence for times on the same side of the origin.
+
+**Evidence**:
+- [CoherentConstruction.lean](Theories/Bimodal/Metalogic/Representation/CoherentConstruction.lean) - Documented sorries for Cases 2,3
+- [Task 814 research](specs/archive/814_sorry_reduction_coherentconstruction_cases_2_3/reports/) - Analysis
+
+**Lesson**:
+Focus effort on what's actually blocking main results. Not all mathematical completeness is necessary for practical theorem proving.
+
+**Superseded By**: N/A (accepted as non-blocking gap)
+
+---
+
+### Dead End: Original IndexedMCSFamily.construct_indexed_family
+
+**Status**: SUPERSEDED
+**Tried**: 2025-12-15 to 2026-01-10
+**Related Tasks**: Task 753
+
+*Rationale*: Initial attempt at indexed family construction, proving coherence conditions after constructing the family.
+
+**What We Tried**:
+Built construct_indexed_family that creates an IndexedMCSFamily and then proves coherence conditions (forward_G, backward_H, etc.) as separate theorems.
+
+**Why It Failed**:
+Proof complexity: proving coherence after construction required complex reasoning about the construction process. The two-chain design of CoherentConstruction makes coherence definitional, eliminating these proof obligations.
+
+**Evidence**:
+- Git history of IndexedMCSFamily.lean
+- [Task 753 research](specs/archive/753_prove_coherentconstruction_sorries/reports/) - Sigma-type refactoring analysis
+- [Task 814 research](specs/archive/814_sorry_reduction_coherentconstruction_cases_2_3/reports/) - Two-chain design benefits
+
+**Lesson**:
+When proofs are hard, consider whether the definition can be restructured to make properties hold by construction rather than by proof.
+
+**Superseded By**: CoherentConstruction module with two-chain design
 
 ---
 
@@ -123,47 +433,11 @@ This roadmap outlines the current state of the ProofChecker project and charts t
 
 ### Metalogic_v2: Representation-First Architecture (Boneyard)
 
-**Status**: Deprecated. This code is preserved in `Boneyard/Metalogic_v2/` and served as a reference for the current parametric approach.
+**Status**: DEPRECATED. Code preserved in `Boneyard/Metalogic_v2/` as historical reference.
 
-**Note**: The tables below document the Boneyard architecture. For active development, see the Bimodal/Metalogic section.
+The Boneyard contains a complete metalogic implementation including soundness, completeness, FMP, decidability, and compactness. This was the foundation for the current parametric approach but has been superseded by the `Bimodal/Metalogic/` architecture. Key proven results include representation theorem, truth lemma, and canonical model construction.
 
-#### Core Infrastructure
-
-| Component | Status | Location (Boneyard/Metalogic_v2/) |
-|-----------|--------|-----------------------------------|
-| **Soundness** | PROVEN | Soundness/Soundness.lean |
-| **Deduction Theorem** | PROVEN | Core/DeductionTheorem.lean |
-| **Lindenbaum's Lemma** | PROVEN | Core/MaximalConsistent.lean |
-| **MCS Properties** | PROVEN | Core/MaximalConsistent.lean |
-| **Canonical Model** | PROVEN | Representation/CanonicalModel.lean |
-| **Truth Lemma** | PROVEN | Representation/TruthLemma.lean |
-| **Representation Theorem** | PROVEN | Representation/RepresentationTheorem.lean |
-
-#### Metalogical Results
-
-| Result | Status | Location (Boneyard/Metalogic_v2/) |
-|--------|--------|-----------------------------------|
-| **Weak Completeness** | PROVEN | Completeness/WeakCompleteness.lean |
-| **Strong Completeness** | PROVEN | Completeness/StrongCompleteness.lean |
-| **Finite Model Property** | PROVEN | Representation/FiniteModelProperty.lean |
-| **Decidability** | PROVEN (noncomputable) | Representation/FiniteModelProperty.lean |
-| **Compactness** | PROVEN | Applications/Compactness.lean |
-
-#### Architecture
-
-The architecture places canonical model construction as the foundation, with FMP as the central bridge. Completeness derives from representation rather than being treated as primary.
-
-```
-Core (Soundness, Deduction, MCS)
-    ↓
-Representation (Canonical Model, Truth Lemma)
-    ↓
-FMP (Central Bridge)
-    ↓
-Completeness (Strong, Weak)
-    ↓
-Applications (Compactness)
-```
+*Full Boneyard documentation available in [Boneyard/README.md](Theories/Boneyard/README.md). For active development status, see the Bimodal/Metalogic section below.*
 
 ### Bimodal/Metalogic: Universal Parametric Representation Theorem (Task 654)
 
@@ -304,15 +578,7 @@ An alternative approach using Boolean algebra with modal operators:
 
 ### Decidability Infrastructure (Boneyard)
 
-**Note**: This infrastructure is in `Boneyard/Metalogic_v2/Decidability/` (deprecated).
-
-| Component | Status | Location (Boneyard/Metalogic_v2/) |
-|-----------|--------|-----------------------------------|
-| **Tableau System** | COMPLETE | Decidability/Tableau.lean |
-| **Saturation** | COMPLETE | Decidability/Saturation.lean |
-| **Branch Closure** | COMPLETE | Decidability/BranchClosure.lean |
-| **Decision Procedure** | COMPLETE | Decidability/DecisionProcedure.lean |
-| **Soundness** | PROVEN | Decidability/Correctness.lean |
+**Status**: DEPRECATED. Complete tableau-based decision procedure in `Boneyard/Metalogic_v2/Decidability/` (tableau, saturation, branch closure, soundness). Superseded by `semantic_weak_completeness` which provides sorry-free completeness via parametric FMP approach. See Dead Ends section for rationale.
 
 ---
 
@@ -1003,24 +1269,6 @@ instance : ModalOperator all_future where ...
 1. **Target audience**: Research tool or verification platform?
 2. **Publication venue**: Conference (LICS, CADE) or journal (JSL)?
 3. **Interoperability**: Should we support import/export to other provers?
-
----
-
-## Active Metalogic Tasks (as of 2026-01-29)
-
-The following tasks are currently in progress or planned for Metalogic improvements:
-
-| Task | Status | Goal |
-|------|--------|------|
-| **753** | IMPLEMENTING | Prove CoherentConstruction sorries (sigma-type refactoring) |
-| **755** | PLANNED | Option C: sorry-free completeness via semantic_weak_completeness |
-| **750** | PLANNED | Hybrid approach: ultrafilter → MCS → FMP for decidability |
-| **758** | NOT STARTED | Systematic sorry audit and reduction |
-
-**Quick Links**:
-- Task details: `specs/TODO.md`
-- Machine state: `specs/state.json`
-- Research reports: `specs/{N}_{SLUG}/reports/`
 
 ---
 

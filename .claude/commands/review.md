@@ -43,6 +43,135 @@ else
 fi
 ```
 
+### 1.6. Load ROADMAP Context (Strategies and Ambitions)
+
+**Purpose**: Load Strategies and Ambitions sections from ROAD_MAP.md to inform review focus areas. These sections provide strategic context about active experiments, priorities, and aspirational goals.
+
+**Context**: Load @.claude/context/core/formats/roadmap-format.md for section schemas.
+
+Parse `specs/ROAD_MAP.md` to extract Strategies and Ambitions sections:
+
+#### 1.6.1. Parse Strategies Section
+
+Extract strategies with their status and metadata:
+```
+# Look for "## Strategies" section header
+# Parse each "### Strategy: {Name}" subsection
+
+For each strategy:
+  name = text after "### Strategy: "
+  status = value after "**Status**:" (ACTIVE|PAUSED|CONCLUDED|ABANDONED)
+  hypothesis = text after "**Hypothesis**:"
+  started = date after "**Started**:"
+  outcomes = list items under "**Outcomes**:"
+```
+
+Build `strategies_context` structure:
+```json
+{
+  "strategies": [
+    {
+      "name": "Modal Soundness via FMP",
+      "status": "ACTIVE",
+      "started": "2026-01-15",
+      "hypothesis": "Using Finite Model Property simplifies soundness proofs",
+      "outcomes": ["Partial implementation in Theories/Bimodal/"],
+      "focus_areas": ["Bimodal soundness", "finite model construction"]
+    }
+  ],
+  "active_count": 1,
+  "paused_count": 0
+}
+```
+
+**Focus area extraction**: Extract key terms from hypothesis and outcomes to guide review attention to relevant files/modules.
+
+#### 1.6.2. Parse Ambitions Section
+
+Extract ambitions with their priority and success criteria:
+```
+# Look for "## Ambitions" section header
+# Parse each "### Ambition: {Name}" subsection
+
+For each ambition:
+  name = text after "### Ambition: "
+  priority = value after "**Priority**:" (HIGH|MEDIUM|LOW)
+  timeframe = value after "**Timeframe**:" (SHORT-TERM|MEDIUM-TERM|LONG-TERM|ONGOING)
+  criteria = checkbox items under "**Success Criteria**:"
+  related_phases = numbers in "**Related Phases**:"
+```
+
+Build `ambitions_context` structure:
+```json
+{
+  "ambitions": [
+    {
+      "name": "Complete Modal Logic Foundation",
+      "priority": "HIGH",
+      "timeframe": "MEDIUM-TERM",
+      "criteria": [
+        {"text": "Soundness theorem proven", "completed": true},
+        {"text": "Completeness theorem proven", "completed": false}
+      ],
+      "criteria_progress": "1/2 complete",
+      "related_phases": [1, 2]
+    }
+  ],
+  "high_priority_count": 1,
+  "incomplete_criteria_count": 1
+}
+```
+
+#### 1.6.3. Build Combined Roadmap Context
+
+Combine strategies and ambitions into unified context:
+```json
+{
+  "roadmap_context": {
+    "strategies": {...},
+    "ambitions": {...},
+    "review_focus": {
+      "active_strategy_areas": ["Bimodal soundness", "finite model construction"],
+      "high_priority_ambition_criteria": ["Completeness theorem proven"],
+      "suggested_review_paths": ["Theories/Bimodal/", "Theories/Completeness/"]
+    },
+    "loaded_successfully": true
+  }
+}
+```
+
+#### 1.6.4. Fallback Behavior
+
+If Strategies or Ambitions sections don't exist or are empty placeholders:
+
+```bash
+# Check if sections exist and contain actual content (not placeholder text)
+if sections_missing_or_placeholder; then
+  echo "INFO: Strategies/Ambitions sections not yet populated in ROAD_MAP.md"
+  echo "INFO: Review will proceed without strategic context"
+  echo "INFO: Run /todo or manually populate sections after Task 833"
+
+  roadmap_context = {
+    "strategies": {"strategies": [], "active_count": 0, "paused_count": 0},
+    "ambitions": {"ambitions": [], "high_priority_count": 0, "incomplete_criteria_count": 0},
+    "review_focus": {
+      "active_strategy_areas": [],
+      "high_priority_ambition_criteria": [],
+      "suggested_review_paths": []
+    },
+    "loaded_successfully": false,
+    "fallback_reason": "sections_not_populated"
+  }
+fi
+```
+
+**Detection of placeholder sections**: Look for text like "populated in Phase" or "*No entries yet*" to identify unpopulated sections.
+
+Variables set for later sections:
+- `roadmap_context` - Full context object for use in Section 2 (focus review) and Section 4 (report)
+- `review_focus_paths` - List of suggested file paths to prioritize in review
+- `active_strategies` - List of ACTIVE strategy names for quick reference
+
 ### 2. Gather Context
 
 **For Lean files (.lean):**
@@ -253,6 +382,36 @@ Write to `specs/reviews/review-{DATE}.md`:
 | TODO count | {N} | {Info} |
 | Build status | {Pass/Fail} | {Status} |
 
+## Roadmap Context
+
+{If roadmap_context.loaded_successfully is true, include these subsections:}
+
+### Active Strategies
+
+| Strategy | Status | Hypothesis | Focus Areas |
+|----------|--------|------------|-------------|
+| {strategy.name} | {strategy.status} | {strategy.hypothesis} | {strategy.focus_areas} |
+
+{If no active strategies:}
+*No active strategies defined in ROAD_MAP.md*
+
+### Ambition Progress
+
+| Ambition | Priority | Timeframe | Progress |
+|----------|----------|-----------|----------|
+| {ambition.name} | {ambition.priority} | {ambition.timeframe} | {ambition.criteria_progress} |
+
+**Outstanding Criteria** (high-priority ambitions):
+- [ ] {criterion.text} (from "{ambition.name}")
+
+{If no ambitions:}
+*No ambitions defined in ROAD_MAP.md*
+
+{If roadmap_context.loaded_successfully is false:}
+*Strategies and Ambitions sections not yet populated in ROAD_MAP.md. Run Task 833 or manually add content to enable strategic context.*
+
+---
+
 ## Roadmap Progress
 
 ### Completed Since Last Review
@@ -268,6 +427,45 @@ Write to `specs/reviews/review-{DATE}.md`:
 ### Recommended Next Tasks
 1. {Task recommendation} (Phase {N}, {Priority})
 2. {Task recommendation} (Phase {N}, {Priority})
+
+---
+
+## Roadmap Revisions
+
+{Document changes made to ROAD_MAP.md during this review}
+
+### Strategy Updates
+
+{If strategies_updated > 0:}
+| Strategy | Previous Status | New Status | Reason |
+|----------|-----------------|------------|--------|
+| {strategy.name} | {old_status} | {new_status} | {reason_based_on_findings} |
+
+{If no strategy updates:}
+*No strategy status changes identified during this review.*
+
+### Proposed Ambitions
+
+{If ambitions_proposed > 0:}
+The following ambitions are proposed based on review findings. User approval required before adding to ROAD_MAP.md.
+
+| Proposed Ambition | Priority | Rationale |
+|-------------------|----------|-----------|
+| {ambition_name} | {priority} | {based_on_finding} |
+
+{If no ambitions proposed:}
+*No new ambitions proposed during this review.*
+
+### Gap Notes
+
+{If gaps identified in Open Questions or architectural concerns:}
+The following concerns have been noted in the ROAD_MAP.md Open Questions section:
+- {gap_description} (added to Open Questions)
+
+{If no gaps:}
+*No architectural gaps identified for Open Questions.*
+
+---
 
 ## Recommendations
 
@@ -700,6 +898,210 @@ If reviewing specific domains, update relevant registries:
 - `.claude/docs/registries/lean-files.md`
 - `.claude/docs/registries/documentation.md`
 
+### 6.5. Revise ROADMAP.md Based on Findings
+
+**Purpose**: Update ROAD_MAP.md to reflect review findings. This includes updating strategy statuses, proposing new ambitions, and noting architectural gaps.
+
+**Precondition**: `roadmap_context` from Section 1.6 must exist. If `roadmap_context.loaded_successfully` is false, skip this section entirely.
+
+#### 6.5.1. Strategy Status Updates
+
+Analyze review findings against active strategies to determine if status changes are warranted:
+
+**Status change criteria:**
+
+| Current Status | Condition for Change | New Status |
+|----------------|---------------------|------------|
+| ACTIVE | All focus area files pass, no related issues found | CONCLUDED |
+| ACTIVE | Major blockers identified in focus areas | PAUSED |
+| PAUSED | Blocking issues resolved | ACTIVE |
+
+**For each ACTIVE strategy:**
+```
+1. Check if review findings relate to strategy.focus_areas
+2. Assess overall health of focus area files:
+   - No critical/high issues → healthy
+   - Has critical/high issues → blocked
+3. If strategy objectives appear met (based on findings), propose CONCLUDED
+4. If new blockers found, propose PAUSED
+
+strategy_update = {
+  "name": strategy.name,
+  "current_status": "ACTIVE",
+  "proposed_status": "PAUSED",
+  "reason": "Critical issue found in {focus_area}: {issue_description}"
+}
+```
+
+**Edit process for status changes:**
+
+1. Use AskUserQuestion to confirm each status change:
+   ```json
+   {
+     "question": "Update strategy '{name}' from {current} to {proposed}?",
+     "header": "Strategy Status Update",
+     "multiSelect": false,
+     "options": [
+       {"label": "Yes, update status", "description": "Reason: {reason}"},
+       {"label": "No, keep current status", "description": "No change to ROAD_MAP.md"}
+     ]
+   }
+   ```
+
+2. If approved, use Edit tool:
+   ```
+   old_string: "**Status**: ACTIVE"
+   new_string: "**Status**: PAUSED"
+   ```
+
+3. Add outcome entry under strategy:
+   ```
+   old_string: "**Outcomes**:\n- {existing_outcome}"
+   new_string: "**Outcomes**:\n- {existing_outcome}\n- [{DATE}] Status changed to PAUSED: {reason}"
+   ```
+
+**Track changes:**
+```json
+{
+  "strategies_updated": 1,
+  "strategy_changes": [
+    {"name": "Modal Soundness via FMP", "from": "ACTIVE", "to": "PAUSED", "reason": "..."}
+  ]
+}
+```
+
+#### 6.5.2. Propose New Ambitions
+
+Identify gaps from review findings that warrant new ambitions:
+
+**Gap identification criteria:**
+- Pattern of issues across multiple files suggesting systemic problem
+- Missing functionality referenced multiple times
+- Quality debt (sorry count, axiom usage) above thresholds
+- Incomplete areas not covered by existing ambitions
+
+**For each significant gap:**
+```
+gap = {
+  "description": "Improved test coverage for modal logic theorems",
+  "evidence": ["5 untested theorems found in Bimodal/", "3 sorry placeholders"],
+  "priority": "MEDIUM" (based on severity distribution),
+  "timeframe": "SHORT-TERM" (based on effort estimate)
+}
+```
+
+**Ambition proposal process:**
+
+1. Formulate proposed ambition:
+   ```markdown
+   ### Ambition: {gap.description}
+   **Priority**: {gap.priority}
+   **Timeframe**: {gap.timeframe}
+
+   *Rationale*: Identified during review on {DATE}. Evidence: {gap.evidence}
+
+   **Success Criteria**:
+   - [ ] {derived from gap findings}
+
+   **Description**:
+   {Detailed description based on gap analysis}
+
+   **Related Phases**: {inferred from file locations}
+   **References**:
+   - [Review Report](specs/reviews/review-{DATE}.md) - Gap identification
+   ```
+
+2. Present via AskUserQuestion:
+   ```json
+   {
+     "question": "Add new ambition to ROAD_MAP.md?",
+     "header": "Proposed Ambition: {gap.description}",
+     "multiSelect": false,
+     "options": [
+       {"label": "Yes, add ambition", "description": "Priority: {priority}, Timeframe: {timeframe}"},
+       {"label": "No, skip this ambition", "description": "Will be noted in review report only"},
+       {"label": "Defer to later", "description": "Will be marked as suggestion in review report"}
+     ]
+   }
+   ```
+
+3. If approved, use Edit tool to append to Ambitions section:
+   ```
+   old_string: "*Ambitions section populated in Phase 3.*"
+   new_string: "### Ambition: {name}\n...\n\n---"
+   ```
+   OR if section has content:
+   ```
+   old_string: "---\n\n## Dead Ends"
+   new_string: "---\n\n### Ambition: {name}\n...\n\n---\n\n## Dead Ends"
+   ```
+
+**Track changes:**
+```json
+{
+  "ambitions_proposed": 2,
+  "ambitions_approved": 1,
+  "ambitions_deferred": 1,
+  "proposed_ambitions": [
+    {"name": "Improved test coverage", "status": "approved"},
+    {"name": "Documentation refresh", "status": "deferred"}
+  ]
+}
+```
+
+#### 6.5.3. Update Active Tasks Section
+
+If new tasks were created (from Section 5.6), sync them to any relevant roadmap sections:
+
+**Link newly created tasks to roadmap items:**
+```
+For each created task:
+  If task relates to a roadmap phase item:
+    Update checkbox annotation: "- [ ] {item} (Task {N})"
+```
+
+**Update phase progress counts** if checkboxes were modified.
+
+#### 6.5.4. Add Gap Notes to Open Questions
+
+For gaps that don't warrant full ambitions but need tracking:
+
+**Gap note criteria:**
+- Architectural concerns requiring discussion
+- Unclear requirements needing clarification
+- Technical debt observations
+
+**Edit process:**
+1. Find "## Open Questions" section in ROAD_MAP.md
+2. Append gap note:
+   ```
+   old_string: "## Open Questions\n\n{existing_content}"
+   new_string: "## Open Questions\n\n- [{DATE}] {gap_description} (from review)\n{existing_content}"
+   ```
+
+**Track changes:**
+```json
+{
+  "gap_notes_added": 1,
+  "gap_notes": ["Unclear ownership of PropositionalLogic vs Bimodal boundary"]
+}
+```
+
+#### 6.5.5. Summary Variables for Report
+
+After all revision operations, build summary for Section 4 report:
+```json
+{
+  "roadmap_revisions": {
+    "strategies_updated": 1,
+    "ambitions_proposed": 2,
+    "ambitions_approved": 1,
+    "gap_notes_added": 1,
+    "roadmap_modified": true
+  }
+}
+```
+
 ### 7. Git Commit
 
 Commit review report, state files, task state, and any roadmap changes:
@@ -722,6 +1124,8 @@ git commit -m "$(cat <<'EOF'
 review: {scope} code review
 
 Roadmap: {annotations_made} items annotated
+Strategies: {strategies_updated} updated
+Ambitions: {ambitions_approved} added ({ambitions_proposed} proposed)
 Tasks: {tasks_created} created ({grouped_count} grouped, {individual_count} individual)
 
 Session: {session_id}
@@ -731,7 +1135,7 @@ EOF
 )"
 ```
 
-This ensures review report, state tracking, task state, and roadmap updates are committed together.
+This ensures review report, state tracking, task state, roadmap updates, and strategy/ambition changes are committed together.
 
 ### 8. Output
 
@@ -754,6 +1158,19 @@ Roadmap Progress:
 - Annotations made: {N} items marked complete
 - Current focus: {phase_name} ({priority})
 
+{If roadmap_context.loaded_successfully:}
+Roadmap Revisions:
+- Strategies updated: {strategies_updated}
+  {For each strategy change:}
+  - {strategy.name}: {from} -> {to} ({reason})
+- Ambitions: {ambitions_approved} added, {ambitions_proposed - ambitions_approved} deferred
+  {For each approved ambition:}
+  - Added: "{ambition.name}" ({priority})
+- Gap notes: {gap_notes_added} added to Open Questions
+
+{If not roadmap_context.loaded_successfully:}
+Roadmap Context: Strategies/Ambitions sections not populated (see Task 833)
+
 {If tasks created via interactive selection}
 Tasks Created: {N} total
 - Grouped tasks: {grouped_count}
@@ -770,7 +1187,157 @@ Auto-created {N} tasks for critical/high issues:
 {If no tasks created}
 No tasks created (user selected "none" or empty selection).
 
+---
+
+Task Suggestions: {task_suggestions.suggestions_shown} recommended next steps
+- By source: {review_issue}x review issues, {roadmap_ambition}x ambition criteria, {stale_task}x stale tasks
+{If roadmap_context.loaded_successfully and strategic_focus:}
+- Strategic focus: {strategic_focus}
+
+Top suggestions (see Section 8.5 output for full list):
+1. [{priority}] {title} - `{suggested_command}`
+2. [{priority}] {title} - `{suggested_command}`
+3. [{priority}] {title} - `{suggested_command}`
+
+---
+
 Top recommendations for next review:
 1. {recommendation}
 2. {recommendation}
+```
+
+### 8.5. Task Suggestions
+
+**Purpose**: Provide actionable task suggestions based on review findings, roadmap context, and task queue state. This follows the patterns established by /todo and /learn commands.
+
+#### 8.5.1. Collect Suggestion Sources
+
+Gather candidates from multiple sources:
+
+**1. Unaddressed Review Issues (not converted to tasks):**
+```json
+{
+  "source": "review_issue",
+  "title": "{issue_description}",
+  "priority": "{severity_to_priority}",
+  "rationale": "Found during {scope} review: {impact}",
+  "suggested_command": "/task \"{title}\" --language={lang}"
+}
+```
+
+**2. Incomplete Roadmap Items from Strategies/Ambitions:**
+```json
+{
+  "source": "roadmap_ambition",
+  "title": "Complete: {criterion_text}",
+  "priority": "{ambition.priority}",
+  "rationale": "From ambition '{ambition.name}' - {criteria_progress}",
+  "suggested_command": "/task \"Complete: {criterion}\" --language=lean"
+}
+```
+
+```json
+{
+  "source": "roadmap_strategy",
+  "title": "Advance: {strategy.name}",
+  "priority": "high" (if ACTIVE),
+  "rationale": "Active strategy with focus on {focus_areas}",
+  "suggested_command": "/research {related_task} \"focus on {focus_area}\""
+}
+```
+
+**3. Stale Tasks in TODO.md:**
+```bash
+# Find tasks in not_started status older than 7 days
+jq '.active_projects[] | select(.status == "not_started") | select(.created < "{7_days_ago}")' specs/state.json
+```
+
+```json
+{
+  "source": "stale_task",
+  "title": "Resume: Task #{N} - {title}",
+  "priority": "medium",
+  "rationale": "Not started for {days} days",
+  "suggested_command": "/research {N}"
+}
+```
+
+**4. Follow-up Opportunities from Completed Work:**
+```json
+{
+  "source": "followup",
+  "title": "{follow_up_description}",
+  "priority": "low",
+  "rationale": "Opportunity identified from completed task #{N}",
+  "suggested_command": "/task \"{title}\""
+}
+```
+
+#### 8.5.2. Prioritize Suggestions
+
+Apply prioritization scoring:
+
+| Factor | Score |
+|--------|-------|
+| Source is review_issue with Critical severity | +10 |
+| Source is review_issue with High severity | +7 |
+| Source is roadmap_ambition with HIGH priority | +6 |
+| Source is roadmap_strategy (ACTIVE) | +5 |
+| Source is stale_task (>14 days) | +4 |
+| Source is stale_task (7-14 days) | +2 |
+| Source is followup | +1 |
+| Related to active strategy focus area | +3 |
+| Addresses high-priority ambition criterion | +3 |
+
+Sort suggestions by score descending.
+
+#### 8.5.3. Limit and Format Output
+
+**Limit to 3-5 suggestions** to keep output focused and actionable:
+- If <5 high-priority items: Include all high-priority + top medium
+- If >5 high-priority items: Include only top 5 by score
+
+**Format pattern (following /todo):**
+```
+---
+
+## Recommended Next Steps
+
+Based on review findings and roadmap context, consider:
+
+1. **[{priority}]** {title}
+   - *Rationale*: {rationale}
+   - *Command*: `{suggested_command}`
+
+2. **[{priority}]** {title}
+   - *Rationale*: {rationale}
+   - *Command*: `{suggested_command}`
+
+3. **[{priority}]** {title}
+   - *Rationale*: {rationale}
+   - *Command*: `{suggested_command}`
+
+{If roadmap_context.loaded_successfully:}
+**Strategic Focus**: Active strategies suggest prioritizing work in: {focus_areas}
+
+{If stale tasks found:}
+**Stale Tasks**: {N} tasks have been not_started for >7 days. Consider `/research` or `/abandon` for each.
+```
+
+#### 8.5.4. Variables for Final Output
+
+Set variables for Section 8 output integration:
+```json
+{
+  "task_suggestions": {
+    "total_candidates": 12,
+    "suggestions_shown": 5,
+    "by_source": {
+      "review_issue": 3,
+      "roadmap_ambition": 1,
+      "stale_task": 1
+    },
+    "strategic_focus": ["Bimodal soundness", "finite model construction"]
+  }
+}
 ```
