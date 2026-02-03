@@ -1,7 +1,7 @@
 # Implementation Plan: Task #839
 
 - **Task**: 839 - Clean linter warnings in Metalogic files
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/839_clean_linter_warnings/reports/research-001.md
@@ -44,7 +44,7 @@ Research identified 19 total warnings:
 
 ## Implementation Phases
 
-### Phase 1: Fix TaskFrame.lean [NOT STARTED]
+### Phase 1: Fix TaskFrame.lean [COMPLETED]
 
 **Goal**: Remove duplicate namespace prefix (1 warning)
 
@@ -67,7 +67,7 @@ Research identified 19 total warnings:
 
 ---
 
-### Phase 2: Fix WorldHistory.lean [NOT STARTED]
+### Phase 2: Fix WorldHistory.lean [COMPLETED]
 
 **Goal**: Add `omit` clauses for unused section variables (2 warnings)
 
@@ -92,7 +92,7 @@ Research identified 19 total warnings:
 
 ---
 
-### Phase 3: Fix SoundnessLemmas.lean - Intro Patterns [NOT STARTED]
+### Phase 3: Fix SoundnessLemmas.lean - Intro Patterns [COMPLETED]
 
 **Goal**: Combine consecutive `intro` tactics (6 warnings)
 
@@ -120,7 +120,7 @@ Research identified 19 total warnings:
 
 ---
 
-### Phase 4: Fix SoundnessLemmas.lean - Unused Simp Args [NOT STARTED]
+### Phase 4: Fix SoundnessLemmas.lean - Unused Simp Args [COMPLETED]
 
 **Goal**: Remove unused `simp` arguments (10 warnings)
 

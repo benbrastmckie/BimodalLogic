@@ -218,9 +218,7 @@ theorem swap_axiom_m4_valid (φ : Formula) :
     is_valid D ((Formula.box φ).imp (Formula.box (Formula.box φ))).swap_past_future := by
   intro F M τ t
   simp only [Formula.swap_temporal, truth_at]
-  intro h_box_swap_φ σ
-  -- Goal: ∀ (ρ : WorldHistory F), truth_at M ρ t φ.swap_past_future
-  intro ρ
+  intro h_box_swap_φ σ ρ
   -- h_box_swap_φ says φ.swap holds at ALL histories at time t
   exact h_box_swap_φ ρ
 
@@ -235,11 +233,8 @@ The diamond ◇ψ means "there exists some history where ψ holds". We have τ w
 theorem swap_axiom_mb_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.box φ.diamond)).swap_past_future := by
   intro F M τ t
-  simp only [Formula.swap_past_future, Formula.diamond, truth_at]
-  intro h_swap_φ σ
-  -- Goal: ¬ ∀ (σ' : WorldHistory F), ¬ truth_at M σ' t φ.swap_past_future
-  -- Equivalently: ∃ σ', truth_at M σ' t φ.swap_past_future
-  intro h_all_not
+  simp only [Formula.swap_past_future, Formula.diamond]
+  intro h_swap_φ σ h_all_not
   -- h_all_not says: φ.swap is false at ALL histories at t
   -- But h_swap_φ says: φ.swap is true at (M, τ, t)
   -- Contradiction when we instantiate h_all_not with τ
@@ -283,11 +278,8 @@ Note: sometime_future φ = ¬(past (¬φ))
 theorem swap_axiom_ta_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.sometime_past)).swap_past_future := by
   intro F M τ t
-  simp only [Formula.swap_past_future, Formula.sometime_past, Formula.sometime_future, truth_at]
-  intro h_swap_φ s h_s_le_t
-  -- Goal: ¬ ∀ (u : D), s ≤ u → ¬ truth_at M τ u φ.swap_past_future
-  -- Equivalently: ∃ u ≥ s : swap φ at u
-  intro h_all_not_future
+  simp only [Formula.swap_past_future, Formula.sometime_past]
+  intro h_swap_φ s h_s_le_t h_all_not_future
   -- We can choose u = t, since t ≥ s (from h_s_le_t)
   exact h_all_not_future t h_s_le_t h_swap_φ
 
@@ -333,11 +325,9 @@ theorem swap_axiom_tl_valid (φ : Formula) :
     apply Classical.byContradiction
     intro h_neg
     apply h_always
-    intro h_fut_all
-    intro h_conj
+    intro h_fut_all h_conj
     apply h_conj
-    intro h_now
-    intro h_past
+    intro h_now h_past
     -- h_past : ∀ s' ≤ t, swap φ holds at s'
     -- Since u ≤ t, swap φ holds at u
     exact h_neg (h_past u h_ut)
@@ -347,8 +337,7 @@ theorem swap_axiom_tl_valid (φ : Formula) :
     apply Classical.byContradiction
     intro h_neg
     apply h_always
-    intro h_fut_all
-    intro h_conj
+    intro h_fut_all h_conj
     -- h_fut_all : ∀ r ≥ t, swap φ holds at r
     -- Since u > t, we have u ≥ t, so swap φ holds at u
     exact h_neg (h_fut_all u h_gt)
@@ -429,7 +418,7 @@ theorem mp_preserves_swap_valid (φ ψ : Formula)
     (h_phi : is_valid D φ.swap_past_future) :
     is_valid D ψ.swap_past_future := by
   intro F M τ t
-  simp only [Formula.swap_temporal, truth_at] at h_imp h_phi ⊢
+  simp only [Formula.swap_temporal] at h_imp h_phi ⊢
   exact h_imp F M τ t (h_phi F M τ t)
 
 /--
@@ -519,7 +508,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
     -- After swap: ◇□ψ.swap → □ψ.swap
     -- This is still modal_5_collapse applied to swapped subformula (modal operators unchanged)
     intro F M τ t
-    simp only [Formula.swap_past_future, Formula.diamond, Formula.neg, truth_at]
+    simp only [Formula.swap_past_future, Formula.diamond, Formula.neg]
     -- Goal: ((∀ σ, (∀ ρ, truth_at ... ψ.swap) → False) → False)
     --       → (∀ σ, truth_at ... ψ.swap)
     intro h_diamond_box σ
@@ -644,7 +633,6 @@ private theorem axiom_modal_b_valid (φ : Formula) :
   simp only [truth_at]
   intro h_phi σ h_box_neg
   have h_neg_at_tau := h_box_neg τ
-  simp only [truth_at] at h_neg_at_tau
   exact h_neg_at_tau h_phi
 
 /-- Modal 5 collapse axiom is locally valid. -/
@@ -691,7 +679,6 @@ private theorem axiom_modal_k_dist_valid (φ ψ : Formula) :
   intro h_box_imp h_box_phi σ
   have h_imp_at_σ := h_box_imp σ
   have h_phi_at_σ := h_box_phi σ
-  simp only [truth_at] at h_imp_at_σ
   exact h_imp_at_σ h_phi_at_σ
 
 /-- Temporal K distribution axiom is locally valid. -/
@@ -702,7 +689,6 @@ private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
   intro h_future_imp h_future_phi s hts
   have h_imp_at_s := h_future_imp s hts
   have h_phi_at_s := h_future_phi s hts
-  simp only [truth_at] at h_imp_at_s
   exact h_imp_at_s h_phi_at_s
 
 /-- Temporal 4 axiom is locally valid. -/
@@ -723,7 +709,6 @@ private theorem axiom_temp_a_valid (φ : Formula) :
   simp only [truth_at]
   intro h_phi s hts h_all_neg
   have h_neg_at_t := h_all_neg t hts
-  simp only [truth_at] at h_neg_at_t
   exact h_neg_at_t h_phi
 
 /-- Helper lemma for extracting conjunction from negated implication encoding. -/

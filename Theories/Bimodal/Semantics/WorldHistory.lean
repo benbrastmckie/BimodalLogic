@@ -391,12 +391,14 @@ theorem neg_le_neg_iff (s t : D) : s ≤ t ↔ -t ≤ -s := by
     rw [hs, ht]
     exact neg_le_neg h
 
+omit [LinearOrder D] [IsOrderedAddMonoid D] in
 /--
 Double negation is identity: -(-t) = t
 -/
 theorem neg_neg_eq (t : D) : -(-t) = t := by
   simp
 
+omit [LinearOrder D] [IsOrderedAddMonoid D] in
 /--
 Group inverse is injective: -s = -t ↔ s = t
 -/

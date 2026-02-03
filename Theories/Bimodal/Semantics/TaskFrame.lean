@@ -187,11 +187,6 @@ This allows seamless use of existing definitions and theorems.
 instance : Coe (FiniteTaskFrame D) (TaskFrame D) where
   coe F := F.toTaskFrame
 
-/-- 
-A finite task frame provides access to its underlying frame.
--/
-def FiniteTaskFrame.toTaskFrame (F : FiniteTaskFrame D) : TaskFrame D := F.toTaskFrame
-
 end FiniteTaskFrame
 
 end Bimodal.Semantics
