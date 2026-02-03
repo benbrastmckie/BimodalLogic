@@ -40,7 +40,7 @@ technical_debt:
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Dependencies**: 816
-- **Research**: [research-001.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-001.md)
+- **Research**: [research-001.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-001.md), [research-002.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-002.md)
 
 **Description**: Complete Phase 4 from implementation-003.md for task 816. The current single-history construction in Completeness.lean trivializes modal operators (making Box φ ≡ φ), which validates invalid principles as warned in research-013.md. Replace fdsm_from_closure_mcs with proper multi-history saturated construction: (1) Define saturation_step to add witness histories for unsatisfied Diamond formulas, (2) Define saturated_histories as fixed point, (3) Prove termination via 2^closureSize bound, (4) Prove modal_saturated property at fixed point, (5) Derive modal_backward from saturation contrapositive. Files: Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean (continue Phase 4 section starting line 287).
 
