@@ -18,17 +18,17 @@
     {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-03T01:09:41Z",
+      "last_updated": "2026-02-03T01:27:11Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
-      "session_id": "sess_1770080719_e48c39",
+      "session_id": "sess_1770081828_651889",
       "researched": "2026-02-03T01:09:41Z",
       "artifacts": [
         {
@@ -115,9 +115,14 @@
           "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-014.md",
           "type": "research",
           "summary": "FMP-based Finite Branching Model strategy for sorry-free completeness - corrects misconception that temporal sorries are unavoidable omega-rule limitations"
+        },
+        {
+          "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "6-phase FDSM implementation plan for sorry-free TM logic completeness using bounded time and modal saturation"
         }
       ],
-      "planned": "2026-02-03T00:53:16Z",
+      "planned": "2026-02-03T01:27:11Z",
       "started": "2026-02-02T22:45:43Z"
     },
     {
@@ -363,14 +368,14 @@
     {
       "project_number": 822,
       "project_name": "improve_syntax_term_algebra_structure",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "priority": "medium",
       "description": "Restructure syntactic definitions in 02-ConstitutiveFoundation.tex by integrating term algebra into earlier sections. Currently term algebra (line 196) is defined late, causing forward references in well-formed formula definition (line 40). Reorganize to: (1) specify term algebra first, (2) define formulas using terms, (3) distinguish open and closed sentences. This addresses TODO at line 40 and line 196.",
       "effort": "1.5 hours",
       "created": "2026-02-03T06:26:24Z",
-      "last_updated": "2026-02-03T01:08:00Z",
-      "session_id": "sess_1770080743_8e36b3",
+      "last_updated": "2026-02-03T01:24:36Z",
+      "session_id": "sess_1770081862_f760d1",
       "researched": "2026-02-03T01:03:57Z",
       "artifacts": [
         {
@@ -384,7 +389,8 @@
           "summary": "7-phase plan covering Term Algebra extraction, Variable Assignment cleanup, Free Variables of Formulas definition, Open/Closed formula definitions, WFF context update, cross-reference verification, and final review"
         }
       ],
-      "planned": "2026-02-03T01:08:00Z"
+      "planned": "2026-02-03T01:08:00Z",
+      "started": "2026-02-03T01:24:36Z"
     }
   ],
   "completed_projects": [
