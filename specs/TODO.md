@@ -35,18 +35,17 @@ technical_debt:
 ---
 
 ### 842. Formalize Zorn's lemma proof in exists_fullySaturated_extension
-- **Effort**: 8-16 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 12-16 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
-- **Started**: 2026-02-03
 - **Parent**: Task 841
 - **Research**: [research-001.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md), [research-002.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-002.md), [research-003.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-002.md) (supersedes v001)
 
-**Description**: Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)
+**Description**: Formalize Zorn's lemma proof in exists_fullySaturated_extension using Pre-Coherent Bundle construction. Define S-bounded pre-coherent families, implement restricted Lindenbaum, construct bundle as product of all pre-coherent families. Box coherence follows from S-boundedness; saturation follows from product structure. Target: zero sorries, zero axioms, publication-ready.
 
 ---
 

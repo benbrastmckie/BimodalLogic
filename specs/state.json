@@ -22,13 +22,13 @@
     {
       "project_number": 842,
       "project_name": "formalize_zorn_lemma_exists_fullySaturated_extension",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "effort": "8-16 hours",
       "description": "Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)",
       "parent_task": 841,
       "created": "2026-02-03T19:04:53Z",
-      "last_updated": "2026-02-03T20:37:15Z",
+      "last_updated": "2026-02-03T20:42:14Z",
       "session_id": "sess_1770150709_aece99",
       "researched": "2026-02-03T19:10:10Z",
       "artifacts": [
@@ -36,11 +36,6 @@
           "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md",
           "type": "research",
           "summary": "Research on Zorn'\\''s lemma formalization for exists_fullySaturated_extension: identified zorn_subset_nonempty as recommended API, outlined proof strategy for chain upper bounds and maximality implies saturation"
-        },
-        {
-          "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for Zorn'\\''s lemma proof in exists_fullySaturated_extension"
         },
         {
           "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/summaries/implementation-summary-20260203.md",
@@ -56,9 +51,14 @@
           "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-003.md",
           "type": "research",
           "summary": "Deep research proposing Pre-Coherent Bundle construction for sorry-free proof"
+        },
+        {
+          "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised plan using Pre-Coherent Bundle construction for sorry-free proof"
         }
       ],
-      "planned": "2026-02-03T19:14:09Z",
+      "planned": "2026-02-03T20:42:14Z",
       "started": "2026-02-03T19:27:22Z"
     },
     {
