@@ -1,7 +1,7 @@
 # Implementation Plan: Task #844 (Revision)
 
 - **Task**: 844 - Redesign Metalogic Pre-Coherent Bundle Construction
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Dependencies**: None (supersedes failed implementation-001.md)
 - **Research Inputs**:

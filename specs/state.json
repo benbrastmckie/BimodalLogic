@@ -58,16 +58,6 @@
           "summary": "Comprehensive analysis of Pre-Coherent Bundle construction proposal with feasibility assessment, implementation strategy, and risk analysis for achieving zero-sorry, zero-axiom completeness proof"
         },
         {
-          "path": "Theories/Bimodal/Metalogic/Bundle/PreCoherentBundle.lean",
-          "type": "implementation",
-          "summary": "Pre-Coherent Bundle infrastructure with S-bounded Lindenbaum, SaturationClosure, and predicate definitions"
-        },
-        {
-          "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/summaries/implementation-summary-20260203.md",
-          "type": "summary",
-          "summary": "Documents mathematical impossibility of Pre-Coherent Bundle approach with detailed proof and recommendations"
-        },
-        {
           "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-002.md",
           "type": "research",
           "summary": "Analysis of two alternative approaches after Pre-Coherent Bundle failure; recommends Coherent Witness Chain construction"
@@ -76,6 +66,16 @@
           "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-002.md",
           "type": "plan",
           "summary": "8-phase implementation plan for Coherent Witness Chain construction to eliminate singleFamily_modal_backward_axiom"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/CoherentConstruction.lean",
+          "type": "implementation",
+          "summary": "Coherent Witness Chain construction foundation - BoxContent, WitnessSeed, CoherentWitness, constructCoherentWitness"
+        },
+        {
+          "path": "specs/844_redesign_metalogic_precoherent_bundle_construction/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Documents partial implementation status with technical findings on constant families and blocking gaps"
         }
       ],
       "planned": "2026-02-03T22:06:03Z",
