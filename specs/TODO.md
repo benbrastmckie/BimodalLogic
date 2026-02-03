@@ -24,9 +24,11 @@ technical_debt:
 
 ### 836. Improve Metalogic README documentation with flowcharts and subdirectory summaries
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: general
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/836_improve_metalogic_readme_documentation/reports/research-001.md)
 
 **Description**: Improve documentation for Metalogic/README.md following task 830's incomplete work. Clearly represent the representation theorem and all major modules with detailed dependency flowchart. Include comprehensive summaries of each Metalogic/ subdirectory with links to their README.md files. Review and update all subdirectory README.md files for accuracy and exhaustivity.
 
@@ -34,11 +36,12 @@ technical_debt:
 
 ### 835. Enhance /review Command with ROADMAP.md Integration and Revision
 - **Effort**: 4-5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
 - **Dependencies**: Task 833
 - **Research**: [research-001.md](specs/835_enhance_review_command_roadmap_integration_revision/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/835_enhance_review_command_roadmap_integration_revision/plans/implementation-001.md)
@@ -49,7 +52,7 @@ technical_debt:
 
 ### 833. Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: general
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -63,7 +66,7 @@ technical_debt:
 
 ### 828. Explore FMP approach to complete backward direction of TruthLemma
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-03
 

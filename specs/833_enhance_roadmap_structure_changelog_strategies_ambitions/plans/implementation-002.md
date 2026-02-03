@@ -1,7 +1,7 @@
 # Implementation Plan: Task #833 (v002)
 
 - **Task**: 833 - Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours (revised from 3.5)
 - **Dependencies**: None (blocks tasks 834, 835)
 - **Research Inputs**:
@@ -167,7 +167,7 @@ This prevents circular decision-making by documenting not just WHAT was done, bu
 
 ## Implementation Phases
 
-### Phase 1: Add Section Scaffolding with Schema Comments [NOT STARTED]
+### Phase 1: Add Section Scaffolding with Schema Comments [COMPLETED]
 
 **Goal**: Insert empty section structure with enhanced schemas documented
 
@@ -189,7 +189,7 @@ This prevents circular decision-making by documenting not just WHAT was done, bu
 
 ---
 
-### Phase 2: Migrate Existing Content to Strategies with Rationale [NOT STARTED]
+### Phase 2: Migrate Existing Content to Strategies with Rationale [IN PROGRESS]
 
 **Goal**: Extract approach descriptions into Strategies format with reasons and citations
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #835
 
 - **Task**: 835 - enhance_review_command_roadmap_integration_revision
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: Task 833 (Strategies/Ambitions/Changelog sections in ROADMAP.md)
 - **Research Inputs**: specs/835_enhance_review_command_roadmap_integration_revision/reports/research-001.md

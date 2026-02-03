@@ -4,6 +4,7 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Core.RestrictedMCS
 
 /-!
 # Core Module for Metalogic

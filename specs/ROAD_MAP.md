@@ -1,7 +1,113 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-01-29
+**Last Updated**: 2026-02-03
 **Status**: Completeness Hierarchy Complete (Weak/Finite Strong/Infinitary Strong), Compactness Sorry-Free, Active Refinement Phase
+
+> **Content Boundaries**: ROADMAP = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
+> Each entry should include *Rationale* (why) and *References* (learn more).
+
+---
+
+## Changelog
+
+<!-- Schema: Dated entries of completed work
+### YYYY-MM-DD
+- **Task {N}**: {summary}
+  - *Rationale*: {Why this work was needed/pursued}
+  - *References*: [summary](path/to/summary.md), [plan](path/to/plan.md)
+
+Updated by /todo command during task archival.
+-->
+
+*No entries yet. This section will be populated by the `/todo` command when tasks are completed.*
+
+---
+
+## Strategies
+
+<!-- Schema: Active experiments with status
+### Strategy: {Name}
+**Status**: ACTIVE|PAUSED|CONCLUDED|ABANDONED
+**Started**: YYYY-MM-DD
+**Hypothesis**: {What we're testing}
+
+*Rationale*: {Why we chose this approach over alternatives}
+
+**Approach**:
+{Description}
+
+**Outcomes**:
+- {Outcome}
+
+**References**:
+- [Research Report](path) - {what it covers}
+- [Task N](specs/N_.../plans/...) - Initial implementation
+
+---
+-->
+
+*Strategies section populated in Phase 2.*
+
+---
+
+## Ambitions
+
+<!-- Schema: Big picture goals
+### Ambition: {Name}
+**Priority**: HIGH|MEDIUM|LOW
+**Timeframe**: SHORT-TERM|MEDIUM-TERM|LONG-TERM|ONGOING
+
+*Rationale*: {Why this goal matters to the project}
+
+**Success Criteria**:
+- [ ] {Criterion}
+
+**Description**:
+{What we aspire to achieve}
+
+**Related Phases**: Phase {N}
+**References**:
+- [Phase N description](ROAD_MAP.md#phase-n) - Context
+- [Task M research](path) - Supporting analysis
+
+---
+-->
+
+*Ambitions section populated in Phase 3.*
+
+---
+
+## Dead Ends
+
+<!-- Schema: Approaches that were tried and abandoned
+### Dead End: {Name}
+**Status**: ABANDONED|SUPERSEDED|BLOCKED
+**Tried**: YYYY-MM-DD to YYYY-MM-DD
+**Related Tasks**: Task {N}, Task {M}
+
+*Rationale*: {Why we originally tried this approach}
+
+**What We Tried**:
+{Description}
+
+**Why It Failed**:
+{Specific reasons}
+
+**Evidence**:
+- [Boneyard/File.lean](path) - Archived implementation
+- [Task N summary](path) - Post-mortem analysis
+
+**Lesson**:
+{1-sentence actionable takeaway}
+
+**Superseded By**: {Alternative approach if applicable}
+
+---
+-->
+
+*Dead Ends section populated in Phase 4.*
+
+---
 
 ## Overview
 
