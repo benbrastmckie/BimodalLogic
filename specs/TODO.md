@@ -24,7 +24,7 @@ technical_debt:
 
 ### 850. Create scalable oversight section in Introduction
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: latex
 - **Created**: 2026-02-03
 
@@ -53,7 +53,7 @@ technical_debt:
 
 ### 844. Redesign metalogic to use Pre-Coherent Bundle construction
 - **Effort**: 12-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03

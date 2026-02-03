@@ -5,6 +5,7 @@ import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
+import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
 # Coherent Witness Chain Construction
@@ -250,10 +251,45 @@ theorem diamond_boxcontent_consistent_constant (base : IndexedMCSFamily D)
         exact set_mcs_implication_property (by rw [← hM t]; exact base.is_mcs t)
           (theorem_in_mcs (by rw [← hM t]; exact base.is_mcs t) h_T) h_box_s
 
-    -- The full proof requires K-distribution chain to derive Box(neg psi) ∈ M
-    -- then contradict with Diamond psi = neg(Box(neg psi)) ∈ M
-    -- See research-002.md for complete proof sketch
-    sorry
+    -- Step 1: Prove that Box chi ∈ M for each chi ∈ L_filt
+    -- (We already used T-axiom to get chi ∈ M, but we also have the original Box chi ∈ M)
+    have h_box_filt_in_M : ∀ chi ∈ L_filt, Formula.box chi ∈ M := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L := h_and.1
+      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_seed := hL_sub chi h_in_L
+      simp only [WitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_box
+      · exact absurd h_eq h_ne
+      · rcases h_box with ⟨s, h_box_s⟩
+        rw [hM s] at h_box_s
+        exact h_box_s
+
+    -- Step 2: Apply generalized_modal_k to transform L_filt ⊢ neg psi
+    --         into Box(L_filt) ⊢ Box(neg psi)
+    have d_box_neg : (Context.map Formula.box L_filt) ⊢ Formula.box (Formula.neg psi) :=
+      Bimodal.Theorems.generalized_modal_k L_filt (Formula.neg psi) d_neg
+
+    -- Step 3: All formulas in Box(L_filt) are in M
+    have h_box_context_in_M : ∀ phi ∈ Context.map Formula.box L_filt, phi ∈ M := by
+      intro phi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_box_filt_in_M chi h_chi_in
+
+    -- Step 4: By MCS closure under derivation, Box(neg psi) ∈ M
+    have h_mcs : SetMaximalConsistent M := by rw [← hM t]; exact base.is_mcs t
+    have h_box_neg_in_M : Formula.box (Formula.neg psi) ∈ M :=
+      set_mcs_closed_under_derivation h_mcs (Context.map Formula.box L_filt)
+        h_box_context_in_M d_box_neg
+
+    -- Step 5: Contradiction - Diamond psi = neg(Box(neg psi)) is also in M
+    have h_diamond_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+    rw [hM t] at h_diamond
+    rw [h_diamond_eq] at h_diamond
+    exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg psi)) h_box_neg_in_M h_diamond
 
   · -- Case: psi ∉ L, so L ⊆ BoxContent
     have h_L_in_M : ∀ chi ∈ L, chi ∈ M := by
@@ -323,7 +359,7 @@ lemma constructCoherentWitness_coherent (base : IndexedMCSFamily D)
   (constructCoherentWitness base h_const psi t h_diamond).contains_boxcontent chi ⟨s, h_box⟩ r
 
 /-!
-## Phase 4-6: CoherentBundle and BMCS Conversion
+## Phase 4-6: CoherentBundle and BMCS Conversion (Future Work)
 
 The remaining phases (CoherentBundle structure, box coherence proofs, BMCS conversion,
 and construction from consistent context) require additional infrastructure:
@@ -334,10 +370,7 @@ and construction from consistent context) require additional infrastructure:
 2. **Recursive saturation**: Witnesses may have Diamond formulas not satisfied in the bundle.
    This requires a Zorn's lemma argument similar to SaturatedConstruction.lean.
 
-3. **K-distribution chain**: The core consistency proof needs formalization of the
-   K-distribution argument for chains of implications.
-
-These gaps are documented in:
+These are documented in:
 - SaturatedConstruction.lean (lines 714, 733, 785)
 - research-002.md (Approach B technical challenges)
 
@@ -346,37 +379,47 @@ These gaps are documented in:
 The axiom-based approach in Construction.lean remains valid for practical use.
 The axiom captures the metatheoretic fact that a properly saturated canonical model exists.
 
-This CoherentConstruction module documents:
+This CoherentConstruction module provides:
 1. The correct approach (building coherence into construction)
 2. The key structures (BoxContent, WitnessSeed, CoherentWitness)
-3. The core viability lemma (diamond_boxcontent_consistent_constant)
-4. The remaining technical gaps to fully eliminate the axiom
+3. The core viability lemma (diamond_boxcontent_consistent_constant) - COMPLETE
+4. Documentation of remaining technical gaps for full axiom elimination
 
-The path to axiom elimination is clear; the remaining work is formalization of
-the K-distribution chain and mutual saturation via Zorn's lemma.
+The path to axiom elimination is clear; the remaining work is mutual saturation
+via Zorn's lemma.
 -/
 
 /-!
 ## Summary of Sorry Status
 
 ### Sorries in This Module:
-1. `diamond_boxcontent_consistent_constant` (Case 1: psi ∈ L)
-   - Requires K-distribution chain formalization
-   - Proof sketch complete in research-002.md
+- **None** (as of 2026-02-03)
+
+### Completed:
+- `diamond_boxcontent_consistent_constant` - K-distribution chain proof completed using
+  `generalized_modal_k` from GeneralizedNecessitation.lean combined with
+  `set_mcs_closed_under_derivation` from MCSProperties.lean.
+
+### Key Proof Strategy (Case 1: psi ∈ L):
+1. From `L_filt ⊢ neg psi`, extract that for each `chi ∈ L_filt`, `Box chi ∈ M` (from WitnessSeed membership)
+2. Apply `generalized_modal_k` to transform `L_filt ⊢ neg psi` into `Box(L_filt) ⊢ Box(neg psi)`
+3. All formulas in Box(L_filt) are in M (via Context.mem_map_iff)
+4. By `set_mcs_closed_under_derivation`, conclude `Box(neg psi) ∈ M`
+5. Contradiction: Diamond psi = neg(Box(neg psi)) ∈ M and Box(neg psi) ∈ M
 
 ### Related Sorries in SaturatedConstruction.lean:
 - Lines 714, 733, 785: BoxContent preservation issues
-- Same root cause: time-coherence for Box formulas
+- Different scope (requires recursive saturation with Zorn's lemma)
 
-### Remaining Axiom:
+### Remaining Axiom (in Construction.lean, not this module):
 - `singleFamily_modal_backward_axiom` in Construction.lean
 - Justified by canonical model metatheory
-- Eliminable once the gaps above are resolved
+- Eliminable once mutual saturation is formalized (future work)
 
 ### Net Effect:
-This implementation provides the structural foundation for axiom elimination.
-The sorry count in bundle construction remains unchanged, but the approach is
-now proven viable and the path forward is documented.
+This implementation completes the core viability proof for the Coherent Witness Chain approach.
+The sorry in CoherentConstruction.lean is eliminated. The axiom-free BMCS construction
+requires additional Zorn's lemma work for mutual saturation (documented as future work).
 -/
 
 end Bimodal.Metalogic.Bundle

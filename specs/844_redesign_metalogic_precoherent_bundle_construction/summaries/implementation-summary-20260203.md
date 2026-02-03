@@ -1,124 +1,130 @@
 # Implementation Summary: Task #844
 
 **Completed**: 2026-02-03
-**Duration**: ~4 hours
-**Status**: PARTIAL - Core foundation implemented, advanced phases blocked
+**Duration**: ~2 hours (this session)
+**Plan Version**: implementation-003.md (Phases 1-2 completed)
 
 ## Overview
 
-Implemented the Coherent Witness Chain construction foundation in `CoherentConstruction.lean`. This provides the structural groundwork for eliminating `singleFamily_modal_backward_axiom` from Construction.lean, though full axiom elimination remains blocked on K-distribution chain formalization and mutual saturation via Zorn's lemma.
+Completed the K-distribution chain formalization to eliminate the sorry in
+`diamond_boxcontent_consistent_constant` in CoherentConstruction.lean. The core
+blocking issue identified in research-003.md has been resolved.
 
 ## Changes Made
 
-### New File Created
+### Core Achievement: Sorry Elimination
 
-**`Theories/Bimodal/Metalogic/Bundle/CoherentConstruction.lean`**
+The blocking sorry at line 256 in `diamond_boxcontent_consistent_constant` was eliminated
+using a direct proof that combines:
 
-Core definitions and infrastructure for the Coherent Witness Chain approach:
+1. **`generalized_modal_k`** from GeneralizedNecessitation.lean - transforms
+   `L_filt ⊢ neg psi` into `Box(L_filt) ⊢ Box(neg psi)`
 
-1. **Phase 1: Core Data Structures** (COMPLETED)
-   - `BoxContent`: Set of chi where Box chi appears in family's MCS at any time
-   - `BoxContentAt`: Time-restricted version for proofs
-   - `WitnessSeed`: {psi} ∪ BoxContent(base) - the seed for coherent witnesses
-   - `CoherentWitness`: Structure bundling family + coherence proofs
-   - Helper lemmas for subset relationships
+2. **`set_mcs_closed_under_derivation`** from MCSProperties.lean - derives membership
+   in MCS from list-based derivation
 
-2. **Phase 2: Core Viability Lemma** (PARTIAL - 1 sorry)
-   - `IsConstantFamily`: Predicate for constant families
-   - `constant_family_BoxContent_eq`: BoxContent = BoxContentAt for constant families
-   - `diamond_boxcontent_consistent_constant`: Core lemma with 1 sorry
-     - Case 2 (psi not in L) is complete
-     - Case 1 (psi in L) requires K-distribution chain formalization
+### Proof Strategy (Case 1: psi in L)
 
-3. **Phase 3: Witness Construction** (COMPLETED)
-   - `constructCoherentWitness`: Constructs coherent witness from WitnessSeed
-   - `constructCoherentWitness_contains_psi`: Witness contains witnessed formula
-   - `constructCoherentWitness_coherent`: Witness is coherent with base
+```
+Given: L_filt ⊢ neg psi, where L_filt consists of BoxContent elements
+       (formulas chi where Box chi is in M)
 
-## Technical Findings
+1. Prove h_box_filt_in_M: For each chi in L_filt, Box chi in M
+   (Extract directly from WitnessSeed membership, not via T-axiom)
 
-### Key Insight: Constant Families Required
+2. Apply generalized_modal_k to transform derivation:
+   L_filt ⊢ neg psi  -->  Box(L_filt) ⊢ Box(neg psi)
 
-The original plan assumed BoxContent worked for arbitrary families. Analysis revealed:
+3. Show all formulas in Box(L_filt) are in M:
+   Using Context.mem_map_iff and h_box_filt_in_M
 
-1. BoxContent(fam) collects chi where Box chi exists at ANY time
-2. For non-constant families, Box chi at time s does NOT imply Box chi at time t
-3. The K-distribution argument requires Box chi at the SAME time as Diamond psi
+4. Apply set_mcs_closed_under_derivation:
+   Box(neg psi) in M
 
-**Resolution**: Restricted to constant families (which is what we use in practice via `constantIndexedMCSFamily`).
+5. Derive contradiction:
+   Diamond psi = neg(Box(neg psi)) in M  AND  Box(neg psi) in M
+   --> Contradiction via set_consistent_not_both
+```
 
-### Blocking Technical Gap
+### Key Insight
 
-The sorry at line 256 requires:
-1. Build theorem: `[] ⊢ chi_1 → ... → chi_n → neg psi` (via deductionChain)
-2. Apply K-distribution: `[] ⊢ Box chi_1 → ... → Box chi_n → Box(neg psi)`
-3. Use that all Box chi_i ∈ M to derive Box(neg psi) ∈ M
-4. Contradict with Diamond psi = neg(Box(neg psi)) ∈ M
-
-The K-distribution chain helper was attempted but caused stack overflow. A cleaner implementation is needed.
-
-### Why Phases 4-8 Are Blocked
-
-The remaining phases (CoherentBundle structure, toBMCS conversion, full construction) require:
-
-1. **Mutual Coherence**: Witnesses are coherent WITH base, but not with each other. Full BMCS modal_forward needs mutual coherence.
-
-2. **Recursive Saturation**: Witnesses may have Diamond formulas not satisfied in the bundle. This requires Zorn's lemma (similar to SaturatedConstruction.lean).
-
-3. **The K-distribution Chain**: Completing Phase 2's sorry is prerequisite.
-
-## Sorry Status
-
-### New Sorries Introduced
-
-| Location | Count | Description |
-|----------|-------|-------------|
-| `diamond_boxcontent_consistent_constant` | 1 | K-distribution chain needed |
-
-### Related Pre-existing Sorries
-
-| File | Lines | Same Root Cause |
-|------|-------|-----------------|
-| SaturatedConstruction.lean | 714, 733, 785 | BoxContent preservation |
-
-### Unchanged
-
-- `singleFamily_modal_backward_axiom` remains in Construction.lean
-- TruthLemma temporal sorries (G, H backward) - fundamental omega-rule limitation
-
-## Verification
-
-- `lake build` succeeds for full project (996 jobs)
-- New file compiles with 1 documented sorry
-- No regressions in existing functionality
+The plan proposed creating an `mcs_chain_implication` helper using iterated modus ponens
+with `foldr`. This turned out to be unnecessary - the existing `set_mcs_closed_under_derivation`
+lemma already handles the list-based derivation context directly, making the proof simpler.
 
 ## Files Modified
 
-| File | Change |
-|------|--------|
-| `Theories/Bimodal/Metalogic/Bundle/CoherentConstruction.lean` | NEW - Core definitions |
-| `specs/844_.../plans/implementation-002.md` | Phase status updates |
+### `Theories/Bimodal/Metalogic/Bundle/CoherentConstruction.lean`
 
-## Relationship to Goal
+1. **Added import**: `Bimodal.Theorems.GeneralizedNecessitation`
 
-**Goal**: Eliminate `singleFamily_modal_backward_axiom`
+2. **Completed sorry** (lines 253-291): Replaced the sorry with a 5-step proof:
+   - `h_box_filt_in_M`: Prove Box chi in M for all chi in L_filt
+   - `d_box_neg`: Apply generalized_modal_k
+   - `h_box_context_in_M`: Show all Box(L_filt) elements are in M
+   - `h_box_neg_in_M`: Apply set_mcs_closed_under_derivation
+   - Final contradiction via set_consistent_not_both
+
+3. **Updated documentation** (lines 361-430):
+   - Updated "Phase 4-6" section to reflect future work status
+   - Updated "Summary of Sorry Status" to show completion
+   - Added key proof strategy documentation
+
+### `specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-003.md`
+
+- Marked Phases 1-2 as [COMPLETED]
+- Marked Phases 3-5 as [DEFERRED - FUTURE WORK]
+- Marked Phase 6 as [COMPLETED]
+- Added actual implementation notes
+
+## Verification
+
+- [x] `lake build` succeeds for full project (996 jobs)
+- [x] `grep "sorry" CoherentConstruction.lean` returns only comment references
+- [x] No new axioms introduced
+- [x] No regressions in dependent modules
+
+## Sorry Impact
+
+### Before Implementation (this session)
+- CoherentConstruction.lean: 1 sorry (diamond_boxcontent_consistent_constant)
+
+### After Implementation
+- CoherentConstruction.lean: 0 sorries
+
+### Remaining Technical Debt (Out of Scope)
+- SaturatedConstruction.lean: 3 sorries (lines 714, 733, 785) - different root cause
+- Construction.lean: `singleFamily_modal_backward_axiom` - valid fallback axiom
+- TruthLemma.lean: Temporal backward sorries - omega-rule limitation
+
+## Future Work
+
+The following phases were documented but deferred as they require substantial additional
+infrastructure beyond the core sorry elimination:
+
+1. **CoherentBundle structure** - requires mutual coherence between witnesses
+2. **modal_backward without axiom** - requires Zorn's lemma for saturation
+3. **Full BMCS construction** - depends on above
+
+The current implementation proves **viability** of the Coherent Witness Chain approach.
+The axiom-based fallback in Construction.lean remains valid for practical use.
+
+## Relationship to Original Goal
+
+**Goal**: Complete the K-distribution chain formalization to eliminate `singleFamily_modal_backward_axiom`
 
 **Achieved**:
-- Proven the Coherent Witness Chain approach is viable
-- Established core structures and constructions
-- Identified exactly what remains (K-distribution chain + Zorn saturation)
+- K-distribution chain proof completed using existing infrastructure
+- Zero sorries in CoherentConstruction.lean
+- Core viability lemma (`diamond_boxcontent_consistent_constant`) proven
+- `constructCoherentWitness` now builds on complete proof
 
-**Remaining**:
-- K-distribution chain formalization
-- Mutual coherence between families
-- Recursive saturation via Zorn's lemma
+**Remaining for full axiom elimination**:
+- Mutual coherence between families (Zorn's lemma)
+- CoherentBundle.toBMCS with axiom-free modal_backward
+- This is documented as future work in the module
 
-## Recommendations
+## Session Information
 
-1. **For Now**: Continue using `singleFamily_modal_backward_axiom` - it's mathematically sound
-2. **Future Work**: Complete K-distribution chain helper, then Phase 2 sorry
-3. **Alternative**: The SaturatedConstruction.lean approach could be completed first, as it addresses similar gaps
-
-## Notes
-
-The Coherent Witness Chain approach (Approach B from research-002.md) is mathematically correct. The implementation challenges are formalization complexity, not mathematical soundness. The axiom-based approach remains a valid alternative that captures the same metatheoretic fact.
+- **Session ID**: sess_1770158488_078b51
+- **Agent**: lean-implementation-agent
