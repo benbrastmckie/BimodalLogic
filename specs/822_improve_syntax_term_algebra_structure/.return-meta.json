@@ -1,20 +1,21 @@
 {
-  "status": "researched",
-  "summary": "Analyzed term algebra/formula ordering problem and identified restructuring strategy to move Term Algebra before WFF definitions and add missing open/closed formula definitions",
+  "status": "planned",
+  "summary": "Created 7-phase implementation plan to restructure Section 1 of ConstitutiveFoundation.tex, moving Term Algebra before WFF definition and adding open/closed formula definitions.",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/822_improve_syntax_term_algebra_structure/reports/research-001.md",
-      "summary": "Research report analyzing forward reference problem in 02-ConstitutiveFoundation.tex with detailed restructuring recommendations including moving Term Algebra to Section 1.2, updating WFF definition, and adding free variables for formulas plus open/closed formula definitions"
+      "type": "plan",
+      "path": "specs/822_improve_syntax_term_algebra_structure/plans/implementation-001.md",
+      "summary": "7-phase plan covering Term Algebra extraction, Variable Assignment cleanup, Free Variables of Formulas definition, Open/Closed formula definitions, WFF context update, cross-reference verification, and final review"
     }
   ],
-  "next_steps": "Run /plan 822 to create implementation plan",
+  "next_steps": "Run /implement 822 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770080376_b11c6e",
-    "agent_type": "general-research-agent",
+    "session_id": "sess_1770080743_8e36b3",
+    "agent_type": "planner-agent",
     "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 2.5
   }
 }

@@ -18,17 +18,17 @@
     {
       "project_number": 816,
       "project_name": "bmcs_temporal_modal_coherence_strengthening",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "description": "Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future - requires omega-saturation), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past - requires omega-saturation), Construction.lean:220 (modal_backward in singleFamilyBMCS - phi in MCS implies Box phi in MCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction, proving from S5 properties, or multi-family approach. Dependency: Task 814 (classical infrastructure) is helpful.",
       "effort": "3-4 hours",
       "created": "2026-02-02T21:16:37Z",
-      "last_updated": "2026-02-03T00:53:16Z",
+      "last_updated": "2026-02-03T01:05:35Z",
       "parent_task": 813,
       "dependencies": [
         814
       ],
-      "session_id": "sess_1770079761_4d6caf",
+      "session_id": "sess_1770080719_e48c39",
       "researched": "2026-02-03T00:43:15Z",
       "artifacts": [
         {
@@ -358,22 +358,28 @@
     {
       "project_number": 822,
       "project_name": "improve_syntax_term_algebra_structure",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "description": "Restructure syntactic definitions in 02-ConstitutiveFoundation.tex by integrating term algebra into earlier sections. Currently term algebra (line 196) is defined late, causing forward references in well-formed formula definition (line 40). Reorganize to: (1) specify term algebra first, (2) define formulas using terms, (3) distinguish open and closed sentences. This addresses TODO at line 40 and line 196.",
       "effort": "1.5 hours",
       "created": "2026-02-03T06:26:24Z",
-      "last_updated": "2026-02-03T01:03:57Z",
-      "session_id": "sess_1770080376_b11c6e",
+      "last_updated": "2026-02-03T01:08:00Z",
+      "session_id": "sess_1770080743_8e36b3",
       "researched": "2026-02-03T01:03:57Z",
       "artifacts": [
         {
           "path": "specs/822_improve_syntax_term_algebra_structure/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing forward reference problem in 02-ConstitutiveFoundation.tex with detailed restructuring recommendations including moving Term Algebra to Section 1.2, updating WFF definition, and adding free variables for formulas plus open/closed formula definitions"
+        },
+        {
+          "path": "specs/822_improve_syntax_term_algebra_structure/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase plan covering Term Algebra extraction, Variable Assignment cleanup, Free Variables of Formulas definition, Open/Closed formula definitions, WFF context update, cross-reference verification, and final review"
         }
-      ]
+      ],
+      "planned": "2026-02-03T01:08:00Z"
     }
   ],
   "completed_projects": [
