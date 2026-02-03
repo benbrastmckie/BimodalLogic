@@ -24,7 +24,7 @@ technical_debt:
 
 ### 826. Update FDSM Completeness to Use Saturated Construction
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -71,11 +71,13 @@ technical_debt:
 
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/818_refactor_bimodal_metalogic_modules/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/818_refactor_bimodal_metalogic_modules/plans/implementation-001.md)
 
 **Description**: Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via tasks 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.
 
