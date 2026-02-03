@@ -28,8 +28,8 @@
       "description": "Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)",
       "parent_task": 841,
       "created": "2026-02-03T19:04:53Z",
-      "last_updated": "2026-02-03T19:45:36Z",
-      "session_id": "sess_1770147915_9db761",
+      "last_updated": "2026-02-03T20:06:17Z",
+      "session_id": "sess_1770148880_743d88",
       "researched": "2026-02-03T19:10:10Z",
       "artifacts": [
         {
@@ -46,6 +46,11 @@
           "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/summaries/implementation-summary-20260203.md",
           "type": "summary",
           "summary": "Implementation summary documenting Phase 4 expansion and remaining sorries"
+        },
+        {
+          "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up research analyzing 3 remaining sorries with 4 alternative approaches and recommendations"
         }
       ],
       "planned": "2026-02-03T19:14:09Z",
@@ -88,11 +93,11 @@
     {
       "project_number": 840,
       "project_name": "refactor_truthlemma_forward_backward_publication",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-03T10:23:36Z",
-      "last_updated": "2026-02-03T19:55:18Z",
-      "session_id": "sess_1770148204_21e730",
+      "last_updated": "2026-02-03T20:06:40Z",
+      "session_id": "sess_1770149165_195a25",
       "researched": "2026-02-03T19:55:18Z",
       "artifacts": [
         {
