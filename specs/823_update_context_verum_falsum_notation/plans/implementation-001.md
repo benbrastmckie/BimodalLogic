@@ -1,7 +1,7 @@
 # Implementation Plan: Update Context Verum/Falsum Notation
 
 - **Task**: 823 - update_context_verum_falsum_notation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/823_update_context_verum_falsum_notation/reports/research-001.md
