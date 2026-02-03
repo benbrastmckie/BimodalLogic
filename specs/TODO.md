@@ -24,7 +24,7 @@ technical_debt:
 
 ### 849. Add contextual parameters section to Dynamics Foundation
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -91,12 +91,14 @@ technical_debt:
 
 ### 847. Restructure Constitutive Semantics section
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: latex
 - **Priority**: medium
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/847_restructure_constitutive_semantics_section/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/847_restructure_constitutive_semantics_section/plans/implementation-001.md)
 
 **Description**: Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section "Constitutive Semantics" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.
 
@@ -105,7 +107,7 @@ technical_debt:
 
 ### 844. Redesign metalogic to use Pre-Coherent Bundle construction
 - **Effort**: 12-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03

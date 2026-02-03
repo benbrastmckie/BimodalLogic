@@ -8,11 +8,11 @@
     {
       "project_number": 849,
       "project_name": "add_contextual_parameters_section_to_dynamics",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "created": "2026-02-03T21:22:59Z",
-      "last_updated": "2026-02-03T22:03:08Z",
-      "session_id": "sess_1770156047_1bbfb4",
+      "last_updated": "2026-02-03T22:14:04Z",
+      "session_id": "sess_1770156831_6cbb54",
       "researched": "2026-02-03T21:58:35Z",
       "artifacts": [
         {
@@ -26,7 +26,8 @@
           "summary": "4-phase implementation plan for adding Contextual Parameters section to DynamicsFoundation.tex"
         }
       ],
-      "planned": "2026-02-03T22:03:08Z"
+      "planned": "2026-02-03T22:03:08Z",
+      "started": "2026-02-03T22:14:04Z"
     },
     {
       "project_number": 848,
@@ -133,34 +134,40 @@
     {
       "project_number": 847,
       "project_name": "restructure_constitutive_semantics_section",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "effort": "1 hour",
       "description": "Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section \"Constitutive Semantics\" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.",
       "created": "2026-02-03T21:09:57Z",
-      "last_updated": "2026-02-03T22:04:56Z",
-      "session_id": "sess_1770156042_3aead8",
+      "last_updated": "2026-02-03T22:15:41Z",
+      "session_id": "sess_1770156814_8402f9",
       "researched": "2026-02-03T22:04:56Z",
       "artifacts": [
         {
           "path": "specs/847_restructure_constitutive_semantics_section/reports/research-001.md",
           "type": "research",
           "summary": "Research report with draft introduction text for bilateral exact truthmaker semantics section, analysis of current document structure, and implementation recommendations"
+        },
+        {
+          "path": "specs/847_restructure_constitutive_semantics_section/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan to create Constitutive Semantics subsection with introduction explaining bilateral exact truthmaker semantics"
         }
-      ]
+      ],
+      "planned": "2026-02-03T22:15:41Z"
     },
     {
       "project_number": 844,
       "project_name": "redesign_metalogic_precoherent_bundle_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "12-16 hours",
       "description": "Completely redesign the metalogic to use a Pre-Coherent Bundle construction that builds families and bundles simultaneously. Define SaturationClosure (finite set S of formulas), PreCoherent predicate (S-bounded Box formulas, temporal coherence), and AllPreCoherentFamilies (product of all pre-coherent families). Implement restricted Lindenbaum that filters out Box formulas with content outside S. Box coherence follows from S-boundedness by construction; saturation follows from product structure. This approach avoids the Lindenbaum control problem that causes irreducible sorries in current sequential construction. Target: zero sorries, zero axioms, publication-ready completeness proof. Based on research-003.md from Task 842.",
       "created": "2026-02-03T20:49:21Z",
-      "last_updated": "2026-02-03T22:06:03Z",
+      "last_updated": "2026-02-03T22:12:41Z",
       "related_task": 842,
-      "session_id": "sess_1770156173_493114",
+      "session_id": "sess_1770156724_d49c2f",
       "researched": "2026-02-03T20:55:09Z",
       "artifacts": [
         {

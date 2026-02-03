@@ -1,0 +1,19 @@
+{
+  "status": "planned",
+  "summary": "1-phase implementation plan for restructuring Constitutive Semantics section with bilateral exact truthmaker semantics introduction",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/847_restructure_constitutive_semantics_section/plans/implementation-001.md",
+      "summary": "1-phase plan to create Constitutive Semantics subsection with introduction explaining bilateral exact truthmaker semantics"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1770156814_8402f9",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 1,
+    "estimated_hours": 1.0
+  }
+}

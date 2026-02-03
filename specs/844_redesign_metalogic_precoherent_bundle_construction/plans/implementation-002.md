@@ -1,7 +1,7 @@
 # Implementation Plan: Task #844 (Revision)
 
 - **Task**: 844 - Redesign Metalogic Pre-Coherent Bundle Construction
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12-16 hours
 - **Dependencies**: None (supersedes failed implementation-001.md)
 - **Research Inputs**:
@@ -76,7 +76,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Define BoxContent and CoherentWitness Structures [NOT STARTED]
+### Phase 1: Define BoxContent and CoherentWitness Structures [COMPLETED]
 
 **Goal**: Establish the core data structures for the Coherent Witness Chain construction.
 
@@ -98,7 +98,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Prove diamond_boxcontent_consistent Lemma [NOT STARTED]
+### Phase 2: Prove diamond_boxcontent_consistent Lemma [IN PROGRESS]
 
 **Goal**: Prove the core viability lemma that makes Approach B possible.
 
