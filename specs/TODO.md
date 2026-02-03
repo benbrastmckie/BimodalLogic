@@ -24,7 +24,7 @@ technical_debt:
 
 ### 826. Update FDSM Completeness to Use Saturated Construction
 - **Effort**: 12-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -74,7 +74,7 @@ technical_debt:
 
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-03

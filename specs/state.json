@@ -8,7 +8,7 @@
     {
       "project_number": 826,
       "project_name": "fdsm_completeness_saturated_construction",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "description": "Replace single-history fdsm_from_closure_mcs in Completeness.lean with proper saturated construction from Phase 4. The current implementation (lines 67-91) creates only one history, which trivializes modal operators. After task 825 completes saturated_histories, update: (1) Replace fdsm_from_closure_mcs with fdsm_from_saturated_histories that uses the modal saturation fixed point, (2) Update modal_saturated proof to use the saturation property instead of single-history trivialization, (3) Ensure eval_history is properly selected from the saturated set. This bridges Phase 4 to Phase 6.",
       "effort": "2 hours",
@@ -17,8 +17,8 @@
         825
       ],
       "created": "2026-02-03T02:50:16Z",
-      "last_updated": "2026-02-03T04:49:57Z",
-      "session_id": "sess_1770094157_a7327c",
+      "last_updated": "2026-02-03T05:21:55Z",
+      "session_id": "sess_1770095890_beadac",
       "researched": "2026-02-03T04:19:15Z",
       "artifacts": [
         {
@@ -123,14 +123,14 @@
     {
       "project_number": 818,
       "project_name": "refactor_bimodal_metalogic_modules",
-      "status": "planned",
+      "status": "researched",
       "language": "lean",
       "effort": "8-12 hours",
       "description": "Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.",
       "created": "2026-02-02T22:05:32Z",
-      "last_updated": "2026-02-03T04:24:49Z",
-      "session_id": "sess_1770092513_2a3f67",
-      "researched": "2026-02-03T04:18:36Z",
+      "last_updated": "2026-02-03T05:21:55Z",
+      "session_id": "sess_1770095902_18bf47",
+      "researched": "2026-02-03T05:21:55Z",
       "artifacts": [
         {
           "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-001.md",
@@ -141,6 +141,11 @@
           "path": "specs/818_refactor_bimodal_metalogic_modules/plans/implementation-001.md",
           "type": "plan",
           "summary": "7-phase implementation plan for refactoring Bimodal Metalogic modules with clean-break methodology"
+        },
+        {
+          "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-002.md",
+          "type": "research",
+          "summary": "Post-task-826 analysis with revised archival scope and updated plan recommendations"
         }
       ],
       "planned": "2026-02-03T04:24:49Z"
