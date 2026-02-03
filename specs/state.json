@@ -374,13 +374,21 @@
     {
       "project_number": 837,
       "project_name": "resolve_proofsearch_blockers",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "created": "2026-02-03T11:25:00Z",
       "description": "Resolve Task 260 (ProofSearch) blockers that disable automation in 3 example files: TemporalProofs.lean, ModalProofs.lean, BimodalProofs.lean. Either unblock Task 260, update to alternative approach, or document current status.",
-      "last_updated": "2026-02-03T10:18:11Z",
-      "session_id": "sess_1770113878_70986f"
+      "last_updated": "2026-02-03T10:20:45Z",
+      "session_id": "sess_1770113878_70986f",
+      "researched": "2026-02-03T10:20:45Z",
+      "artifacts": [
+        {
+          "path": "specs/837_resolve_proofsearch_blockers/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of ProofSearch blockers - found they are resolved, comments are stale, recommends updating example files to use current automation"
+        }
+      ]
     },
     {
       "project_number": 838,
