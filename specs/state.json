@@ -34,6 +34,11 @@
           "path": "specs/853_construct_coherentbundle_from_context/summaries/implementation-summary-20260203.md",
           "type": "summary",
           "summary": "Implementation summary documenting partial completion with axiom for saturation"
+        },
+        {
+          "path": "specs/853_construct_coherentbundle_from_context/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up investigation into proof blockers for saturated_extension_exists axiom and multi-family witness consistency gap"
         }
       ],
       "planned": "2026-02-03T23:34:38Z",
