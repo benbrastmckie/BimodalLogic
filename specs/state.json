@@ -541,13 +541,13 @@
     {
       "project_number": 833,
       "project_name": "enhance_roadmap_structure_changelog_strategies_ambitions",
-      "status": "researched",
+      "status": "researching",
       "language": "general",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:29:59Z",
+      "last_updated": "2026-02-03T09:33:00Z",
       "effort": "2-3 hours",
       "description": "Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.",
-      "session_id": "sess_1770110711_bc0159",
+      "session_id": "sess_1770111163_2e5f22",
       "researched": "2026-02-03T09:29:59Z",
       "artifacts": [
         {
@@ -560,16 +560,24 @@
     {
       "project_number": 834,
       "project_name": "enhance_todo_command_changelog_task_suggestions",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:29:36Z",
+      "last_updated": "2026-02-03T09:32:53Z",
       "effort": "3-4 hours",
       "dependencies": [
         833
       ],
       "description": "Extend /todo command to: (1) Update ROADMAP.md Changelog section when archiving completed tasks, (2) Add task suggestion generation at end of /todo execution (scan active tasks, ROADMAP.md Ambitions, and recent completions to propose 3-5 next tasks similar to /learn output), (3) Update skill-status-sync or create new skill if delegation is needed. Ensure atomic updates to ROADMAP.md follow state management rules.",
-      "session_id": "sess_1770110965_f0af7f"
+      "session_id": "sess_1770110965_f0af7f",
+      "researched": "2026-02-03T09:32:53Z",
+      "artifacts": [
+        {
+          "path": "specs/834_enhance_todo_command_changelog_task_suggestions/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with Changelog update design, task suggestion generation pattern, and implementation recommendations for /todo command enhancement"
+        }
+      ]
     },
     {
       "project_number": 835,

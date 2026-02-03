@@ -35,10 +35,12 @@ technical_debt:
 
 ### 834. Enhance /todo Command with Changelog Updates and Task Suggestions
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
 - **Dependencies**: Task 833
+- **Research**: [research-001.md](specs/834_enhance_todo_command_changelog_task_suggestions/reports/research-001.md)
 
 **Description**: Extend /todo command to: (1) Update ROADMAP.md Changelog section when archiving completed tasks, (2) Add task suggestion generation at end of /todo execution (scan active tasks, ROADMAP.md Ambitions, and recent completions to propose 3-5 next tasks similar to /learn output), (3) Update skill-status-sync or create new skill if delegation is needed. Ensure atomic updates to ROADMAP.md follow state management rules.
 
@@ -46,7 +48,7 @@ technical_debt:
 
 ### 833. Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
