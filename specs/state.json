@@ -135,13 +135,13 @@
     {
       "project_number": 818,
       "project_name": "refactor_bimodal_metalogic_modules",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "effort": "8-12 hours",
       "description": "Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.",
       "created": "2026-02-02T22:05:32Z",
-      "last_updated": "2026-02-03T07:17:47Z",
-      "session_id": "sess_1770101674_b4e43c",
+      "last_updated": "2026-02-03T07:26:48Z",
+      "session_id": "sess_1770103149_34dc78",
       "researched": "2026-02-03T06:58:46Z",
       "artifacts": [
         {
@@ -173,9 +173,17 @@
           "path": "specs/818_refactor_bimodal_metalogic_modules/plans/implementation-002.md",
           "type": "plan",
           "summary": "4-phase revised plan post-task 826, focusing on DeductionTheorem consolidation, naming, Metalogic.lean entry point, and cleanup (4 sorries remain)"
+        },
+        {
+          "path": "specs/818_refactor_bimodal_metalogic_modules/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting refactoring of Bimodal Metalogic modules for publication-ready structure"
         }
       ],
-      "planned": "2026-02-03T07:17:47Z"
+      "planned": "2026-02-03T07:17:47Z",
+      "started": "2026-02-03T07:19:34Z",
+      "completed": "2026-02-03T07:26:48Z",
+      "completion_summary": "Refactored Bimodal Metalogic modules for publication-ready structure. Archived duplicate DeductionTheorem to Boneyard, renamed semantic_weak_completeness to fmp_weak_completeness with backwards-compatible alias, rewrote Metalogic.lean with comprehensive documentation highlighting all SORRY-FREE main theorems (soundness, completeness, decidability). Updated READMEs with current sorry counts (4 total, all in helper lemmas)."
     },
     {
       "project_number": 793,

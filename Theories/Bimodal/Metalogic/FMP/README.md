@@ -19,22 +19,34 @@ The FMP establishes that if a formula is satisfiable, it is satisfiable in a **f
 | `FiniteModelProperty.lean` | FMP theorem and cardinality bounds | **Sorry-free** |
 | `ConsistentSatisfiable.lean` | Bridge from FMP to TaskModel (BLOCKED for modal/temporal) | 6 sorries |
 
-## Key Theorem: semantic_weak_completeness
+## Key Theorem: fmp_weak_completeness
 
 The canonical sorry-free completeness result:
 
 ```lean
-noncomputable def semantic_weak_completeness (phi : Formula) :
+noncomputable def fmp_weak_completeness (phi : Formula) :
     (forall (w : SemanticWorldState phi),
      semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi) ->
     |- phi
 ```
+
+**Note**: Also available as `semantic_weak_completeness` for backwards compatibility.
 
 **Why it works**: Contrapositive approach (unprovable -> countermodel) constructs MCS-derived
 countermodels where the assignment IS the MCS membership function. This avoids the
 forward truth lemma entirely.
 
 **This is THE completeness theorem for this logic.**
+
+### Sorry Status (Task 818 Update)
+
+**Active sorries in FMP/**: 1
+
+| File | Line | Sorry | Alternative |
+|------|------|-------|-------------|
+| `Closure.lean` | ~728 | diamond membership | Minor edge case, non-blocking |
+
+This sorry is a minor technical detail that does not affect the main `fmp_weak_completeness` theorem.
 
 ## Key Definitions
 

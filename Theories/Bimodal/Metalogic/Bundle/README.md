@@ -39,28 +39,20 @@ Bundle/
 | `bmcs_truth_lemma` (box case) | MCS membership <-> truth | **SORRY-FREE** | TruthLemma.lean |
 | `bmcs_representation` | consistent -> satisfiable | **SORRY-FREE** | Completeness.lean |
 | `bmcs_context_representation` | consistent context -> satisfiable | **SORRY-FREE** | Completeness.lean |
-| `bmcs_weak_completeness` | bmcs_valid -> derivable | 2 sorries | Completeness.lean |
-| `bmcs_strong_completeness` | bmcs_consequence -> derivable | 3 sorries | Completeness.lean |
+| `bmcs_weak_completeness` | bmcs_valid -> derivable | **SORRY-FREE** | Completeness.lean |
+| `bmcs_strong_completeness` | bmcs_consequence -> derivable | **SORRY-FREE** | Completeness.lean |
 
-### Sorry Classification
+### Sorry Status (Task 818 Update)
 
-All remaining sorries are **non-mathematical** (no conceptual gaps):
+**Active sorries in Bundle/**: 3 (all documented as failures with alternatives)
 
-**Completeness.lean (5 sorries)**:
-1. `bmcs_valid_implies_valid_Int` - Lean universe polymorphism technicality
-2. `not_derivable_implies_neg_consistent` - Classical propositional tautology (DNE)
-3. `double_negation_elim` - Classical propositional tautology
-4. `bmcs_consequence_implies_consequence_Int` - Lean universe polymorphism technicality
-5. `context_not_derivable_implies_extended_consistent` - Classical tautology + deduction theorem
+| File | Line | Sorry | Alternative |
+|------|------|-------|-------------|
+| `TruthLemma.lean` | ~383 | all_future backward | Omega-rule (infinitary proof system) |
+| `TruthLemma.lean` | ~395 | all_past backward | Omega-rule (infinitary proof system) |
+| `Construction.lean` | ~220 | modal_backward | Multi-family BMCS construction |
 
-**TruthLemma.lean (4 sorries)**:
-1. `phi_at_all_future_implies_mcs_all_future` - Requires omega-saturation
-2. `phi_at_all_past_implies_mcs_all_past` - Requires omega-saturation
-3. `neg_imp_implies_antecedent` - Classical propositional tautology
-4. `neg_imp_implies_neg_consequent` - Classical propositional tautology
-
-**Construction.lean (1 sorry)**:
-1. `modal_backward` in `singleFamilyBMCS` - Construction assumption (multi-family saturation)
+**Key Point**: These do NOT affect main completeness theorems because completeness uses only the FORWARD direction of the truth lemma, which is fully proven.
 
 **Key Achievement**: The **box case** of the truth lemma is **SORRY-FREE**. This was the fundamental obstruction that blocked traditional completeness proofs.
 

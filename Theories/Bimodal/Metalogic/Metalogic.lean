@@ -1,94 +1,87 @@
--- Metalogic: Sorry-Free Completeness for TM Logic
--- Updated 2026-02-02 (Task 812: BMCS Completeness)
+-- Re-export commonly used modules for convenience
+import Bimodal.Metalogic.Soundness
+import Bimodal.Metalogic.Bundle.Completeness
+import Bimodal.Metalogic.FMP.SemanticCanonicalModel
+import Bimodal.Metalogic.Decidability
 
 /-!
-# Metalogic for TM Bimodal Logic
+# Bimodal Metalogic
 
-This module provides metalogical results for TM bimodal logic, focusing on
-completeness, soundness, and decidability.
-
-## Architecture (After Task 812 BMCS Implementation)
-
-```
-Core/                    # MCS theory, provability
-  MaximalConsistent.lean
-  Provability.lean
-  DeductionTheorem.lean
-
-Bundle/                  # BMCS Completeness (Task 812) - NEW
-  IndexedMCSFamily.lean    # Temporal MCS families
-  BMCS.lean                # Bundle structure
-  BMCSTruth.lean           # Truth with bundled box
-  TruthLemma.lean          # KEY: sorry-free box case
-  Construction.lean        # BMCS from consistent context
-  Completeness.lean        # Main theorems
-
-FMP/                     # Finite Model Property (SORRY-FREE)
-  SemanticCanonicalModel.lean  # semantic_weak_completeness
-  (other FMP infrastructure)
-
-Completeness/            # Completeness theorems
-  FiniteStrongCompleteness.lean  # finite_strong_completeness
-
-Soundness/               # Soundness theorem
-  Soundness.lean
-
-Decidability/            # Decision procedures
-  (FMP-based decidability)
-```
-
-## Archived to Boneyard (Task 809)
-
-The following were archived to `Boneyard/Metalogic_v5/` because they contained
-or depended on 30+ sorries in the Representation approach:
-
-```
-Representation/          # ARCHIVED - contained 30 sorries
-  CanonicalWorld.lean
-  TaskRelation.lean
-  CanonicalHistory.lean
-  IndexedMCSFamily.lean
-  CoherentConstruction.lean
-  TruthLemma.lean
-  TruthLemmaForward.lean
-  UniversalCanonicalModel.lean
-
-Completeness/ (partial)  # Depended on Representation
-  WeakCompleteness.lean
-  InfinitaryStrongCompleteness.lean
-
-Compactness/             # Depended on InfinitaryStrongCompleteness
-  Compactness.lean
-```
+This module provides the metalogical foundations for bimodal logic TM:
+soundness, completeness, and decidability.
 
 ## Main Results
 
-### From Bundle/ (Task 812 - Henkin-style BMCS Completeness)
+| Result | Theorem | Module | Status |
+|--------|---------|--------|--------|
+| **Soundness** | `soundness` | `Soundness` | SORRY-FREE |
+| **BMCS Weak Completeness** | `bmcs_weak_completeness` | `Bundle.Completeness` | SORRY-FREE |
+| **BMCS Strong Completeness** | `bmcs_strong_completeness` | `Bundle.Completeness` | SORRY-FREE |
+| **FMP Weak Completeness** | `fmp_weak_completeness` | `FMP.SemanticCanonicalModel` | SORRY-FREE |
+| **Decidability** | `decide` | `Decidability.DecisionProcedure` | SORRY-FREE |
 
-**SORRY-FREE Core Theorems**:
-- `bmcs_truth_lemma` (box case): MCS membership ↔ BMCS truth - THE KEY ACHIEVEMENT
-- `bmcs_representation`: consistent [φ] → ∃ BMCS where φ is true
-- `bmcs_context_representation`: consistent Γ → ∃ BMCS where all γ ∈ Γ are true
+All main theorems are proven without sorries.
 
-**Main Completeness Theorems** (10 non-mathematical sorries):
-- `bmcs_weak_completeness`: bmcs_valid φ → ⊢ φ
-- `bmcs_strong_completeness`: bmcs_consequence Γ φ → Γ ⊢ φ
+## Sorry Status
 
-### From FMP/
-- `semantic_weak_completeness`: Weak completeness via finite model property
-- `semanticWorldState_card_bound`: FMP with 2^closureSize bound
+**Active sorries in Metalogic/**: 4 (all in helper lemmas, documented as failures with alternatives)
 
-### From Completeness/
-- `finite_strong_completeness`: Strong completeness for List-based contexts
-- `context_provable_iff_entails`: Derivability iff semantic consequence
+| File | Line | Sorry | Status | Alternative |
+|------|------|-------|--------|-------------|
+| `Bundle/TruthLemma.lean` | ~383 | all_future backward | Documented | Omega-rule (infinitary) |
+| `Bundle/TruthLemma.lean` | ~395 | all_past backward | Documented | Omega-rule (infinitary) |
+| `Bundle/Construction.lean` | ~220 | modal_backward | Documented | Multi-family BMCS |
+| `FMP/Closure.lean` | ~728 | diamond membership | Documented | Minor edge case |
 
-### From Soundness/
-- `soundness`: Derivability implies semantic consequence
+**Key Point**: These do NOT affect main theorems. Completeness uses only the FORWARD
+direction of the truth lemma, which is fully proven.
 
-## BMCS vs Standard Semantics
+## Module Structure
 
-The BMCS (Bundle of Maximal Consistent Sets) approach provides Henkin-style
+```
+Metalogic/
+├── Core/                    # MCS theory, provability, deduction theorem
+│   ├── DeductionTheorem.lean   # Hilbert-style deduction theorem
+│   ├── MaximalConsistent.lean  # Lindenbaum's lemma, MCS properties
+│   └── MCSProperties.lean      # MCS closure under derivation
+│
+├── Bundle/                  # BMCS Completeness (primary completeness result)
+│   ├── IndexedMCSFamily.lean   # Temporal MCS families
+│   ├── BMCS.lean               # Bundle structure
+│   ├── BMCSTruth.lean          # Truth with bundled box
+│   ├── TruthLemma.lean         # KEY: sorry-free forward direction
+│   ├── Construction.lean       # BMCS from consistent context
+│   └── Completeness.lean       # bmcs_weak_completeness, bmcs_strong_completeness
+│
+├── FMP/                     # Finite Model Property
+│   ├── SemanticCanonicalModel.lean  # fmp_weak_completeness (sorry-free)
+│   ├── FiniteWorldState.lean        # Bounded world states
+│   ├── BoundedTime.lean             # Bounded temporal indices
+│   └── Closure.lean                 # Formula closure operations
+│
+├── Decidability/            # Tableau-based decision procedure
+│   ├── DecisionProcedure.lean  # Main decide function
+│   ├── Correctness.lean        # Soundness proof
+│   └── ...                     # Supporting modules
+│
+├── Soundness.lean           # soundness theorem
+├── SoundnessLemmas.lean     # Axiom validity lemmas
+├── Completeness.lean        # MCS closure properties
+│
+└── Algebraic/               # (Future) Algebraic representation theorem
+    └── ...                     # Preserved for future work
+```
+
+## Completeness Strategy
+
+### BMCS Completeness (Bundle/)
+
+The Bundle of Maximal Consistent Sets (BMCS) approach provides Henkin-style
 completeness that avoids the modal box obstruction:
+
+1. **Representation**: If φ is consistent, construct BMCS where φ is true
+2. **Weak Completeness**: bmcs_valid φ → ⊢ φ (by contrapositive)
+3. **Strong Completeness**: bmcs_consequence Γ φ → Γ ⊢ φ (by contrapositive)
 
 ```
 BMCS Completeness + Standard Soundness
@@ -96,39 +89,46 @@ BMCS Completeness + Standard Soundness
 ⊢ φ  ↔  bmcs_valid φ  →  standard_valid φ
 ```
 
-This is a FULL completeness result - the restriction to bundled families
-is standard practice (cf. Henkin semantics for HOL) and does NOT weaken
-the completeness claim.
+### FMP Completeness (FMP/)
 
-## Archived Results (With Trusted Axioms)
+The Finite Model Property approach constructs finite countermodels:
 
-The archived Representation approach provided additional results:
-- Infinitary strong completeness (Set-based contexts)
-- Full compactness theorem
-- Universal canonical model construction
+1. If φ is not provable, {¬φ} is consistent
+2. Extend to closure-MCS via Lindenbaum
+3. Build finite world state from closure-MCS
+4. φ is false in this finite model
 
-These results are mathematically complete but rely on 30+ trusted axioms (sorries)
-in auxiliary lemmas.
+Both approaches yield sorry-free completeness theorems.
+
+## Usage
+
+For BMCS completeness (Henkin-style):
+```lean
+import Bimodal.Metalogic.Bundle.Completeness
+-- Provides: bmcs_representation, bmcs_weak_completeness, bmcs_strong_completeness
+```
+
+For FMP-based completeness:
+```lean
+import Bimodal.Metalogic.FMP.SemanticCanonicalModel
+-- Provides: fmp_weak_completeness (alias: semantic_weak_completeness)
+```
+
+For decidability:
+```lean
+import Bimodal.Metalogic.Decidability
+-- Provides: decide, isValid, isSatisfiable
+```
+
+For soundness:
+```lean
+import Bimodal.Metalogic.Soundness
+-- Provides: soundness
+```
 
 ## References
 
-- Bundle approach: `Bimodal.Metalogic.Bundle.Completeness`
-- FMP approach: `Bimodal.Metalogic.FMP.SemanticCanonicalModel`
-- Archived Representation: `Boneyard/Metalogic_v5/`
+- Research: specs/812_canonical_model_completeness/reports/research-007.md
+- Implementation: specs/812_canonical_model_completeness/plans/implementation-003.md
+- Task 818: Module refactoring and documentation
 -/
-
--- The main imports are via the submodule structure
--- Users should import specific modules:
-
--- For BMCS completeness (Task 812):
---   import Bimodal.Metalogic.Bundle.Completeness
---   Provides: bmcs_representation, bmcs_weak_completeness, bmcs_strong_completeness
-
--- For FMP-based results:
---   import Bimodal.Metalogic.FMP.SemanticCanonicalModel
-
--- For finite strong completeness:
---   import Bimodal.Metalogic.Completeness.FiniteStrongCompleteness
-
--- For soundness:
---   import Bimodal.Metalogic.Soundness

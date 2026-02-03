@@ -28,12 +28,12 @@ compositionality.
 - `HistoryTimePair`: A pair of (FiniteHistory, BoundedTime)
 - `htEquiv`: Equivalence relation - same world state at given time
 - `SemanticWorldState`: Quotient of history-time pairs
-- `semantic_weak_completeness`: THE sorry-free completeness theorem
+- `fmp_weak_completeness`: THE sorry-free completeness theorem (also available as `semantic_weak_completeness` for backwards compatibility)
 
 ## Key Theorem
 
 ```lean
-noncomputable def semantic_weak_completeness (phi : Formula) :
+noncomputable def fmp_weak_completeness (phi : Formula) :
     (forall (w : SemanticWorldState phi),
      semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi) ->
     |- phi
@@ -41,6 +41,10 @@ noncomputable def semantic_weak_completeness (phi : Formula) :
 
 This theorem is completely sorry-free and provides the completeness result via
 contrapositive: if phi is not provable, we construct a countermodel.
+
+**Naming Convention**: The theorem is named `fmp_weak_completeness` to indicate it proves
+weak completeness via the Finite Model Property approach. The alias `semantic_weak_completeness`
+is provided for backwards compatibility with existing code and documentation.
 
 ## Architecture
 
@@ -352,8 +356,12 @@ Semantic weak completeness: if phi is true in all semantic world states, then ph
 9. This contradicts the hypothesis that phi is true everywhere
 
 **Status**: PROVEN - No sorry in this theorem.
+
+**Naming**: This theorem is named `fmp_weak_completeness` to clearly indicate it proves
+weak completeness via the Finite Model Property approach. The alias `semantic_weak_completeness`
+is provided for backwards compatibility.
 -/
-noncomputable def semantic_weak_completeness (phi : Formula) :
+noncomputable def fmp_weak_completeness (phi : Formula) :
     (∀ (w : SemanticWorldState phi), semantic_truth_at_v2 phi w (BoundedTime.origin (temporalBound phi)) phi) →
     ⊢ phi := by
   intro h_valid
@@ -431,5 +439,12 @@ theorem semanticWorldState_card_bound (phi : Formula) :
   calc Fintype.card (SemanticWorldState phi)
       ≤ Fintype.card (FiniteWorldState phi) := h_card_le
     _ ≤ 2 ^ closureSize phi := finiteWorldState_card_bound phi
+
+/--
+Backwards compatibility alias for `fmp_weak_completeness`.
+
+Use `fmp_weak_completeness` for new code.
+-/
+noncomputable abbrev semantic_weak_completeness := @fmp_weak_completeness
 
 end Bimodal.Metalogic.FMP

@@ -76,13 +76,16 @@ technical_debt:
 
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 4-5 hours (reduced post-task 826)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/818_refactor_bimodal_metalogic_modules/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/818_refactor_bimodal_metalogic_modules/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260203.md](specs/818_refactor_bimodal_metalogic_modules/summaries/implementation-summary-20260203.md)
 
 **Description**: Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via tasks 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.
 
