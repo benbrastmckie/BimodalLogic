@@ -1,15 +1,31 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-03T10:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "report_writing",
-    "details": "Completed analysis, writing research report with paths to zero-sorry repository"
-  },
+  "completed_at": "2026-02-03T10:45:00Z",
+  "artifacts": [
+    {
+      "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-003.md",
+      "type": "research",
+      "summary": "Comprehensive analysis of paths to zero-sorry publication: recommends forward-only TruthLemma restructuring (removes 2 sorries) as Phase 1, with optional Zorn's lemma completion (eliminates axiom) as Phase 2"
+    }
+  ],
+  "partial_progress": null,
   "metadata": {
     "session_id": "sess_1770145858_4ef906",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+  },
+  "findings": {
+    "sorry_inventory": {
+      "TruthLemma_383": "G backward - omega-rule limitation",
+      "TruthLemma_395": "H backward - omega-rule limitation",
+      "SaturatedConstruction_482": "Zorn's lemma formalization",
+      "Construction_228_axiom": "singleFamily_modal_backward_axiom"
+    },
+    "recommended_path": "Phase 1: Forward-only TruthLemma (archival)",
+    "phase1_complexity": "Low - removes 2 sorries, minimal code changes",
+    "phase2_complexity": "Medium - completes Zorn's lemma, eliminates axiom",
+    "completeness_impact": "None - completeness theorems already sorry-free (use only forward direction)"
   }
 }

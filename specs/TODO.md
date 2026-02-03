@@ -69,12 +69,12 @@ technical_debt:
 
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
 - **Effort**: 4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Related**: Task 828 (research basis)
-- **Research**: [research-001.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md), [research-002.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-002.md)
+- **Research**: [research-001.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md), [research-002.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-002.md), [research-003.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-003.md)
 
 **Description**: Refactor TruthLemma.lean to separate forward and backward directions into distinct theorems. Currently the biconditional truth lemma contains sorries in the G/H backward directions, which transitively contaminate the completeness theorems (verified via #print axioms showing sorryAx dependency). Split into: (1) bmcs_truth_lemma_forward (φ ∈ MCS → φ is true) - SORRY-FREE, (2) bmcs_truth_lemma_backward_partial (φ is true → φ ∈ MCS) - with documented sorries for G/H. Update Completeness.lean to use forward-only theorem directly. Verify completeness theorems no longer depend on sorryAx. This enables publication-ready completeness results.
 

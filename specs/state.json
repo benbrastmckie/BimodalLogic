@@ -82,12 +82,12 @@
     {
       "project_number": 840,
       "project_name": "refactor_truthlemma_forward_backward_publication",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-03T10:23:36Z",
-      "last_updated": "2026-02-03T19:11:17Z",
+      "last_updated": "2026-02-03T19:16:23Z",
       "session_id": "sess_1770145858_4ef906",
-      "researched": "2026-02-03T19:08:10Z",
+      "researched": "2026-02-03T19:16:23Z",
       "artifacts": [
         {
           "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md",
@@ -98,6 +98,11 @@
           "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-002.md",
           "type": "research",
           "summary": "Follow-up research analyzing archiving vs completion alternatives for TruthLemma backward direction; concludes neither is needed since completeness theorems are already transitively sorry-free"
+        },
+        {
+          "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-003.md",
+          "type": "research",
+          "summary": "Comprehensive zero-sorry path analysis: recommends forward-only TruthLemma restructuring (removes 2 sorries) as Phase 1, with optional Zorn lemma completion (eliminates axiom) as Phase 2"
         }
       ]
     },
