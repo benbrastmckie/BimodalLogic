@@ -52,10 +52,11 @@
     {
       "project_number": 828,
       "project_name": "fmp_approach_truthlemma_backward",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-03T08:51:32Z",
-      "last_updated": "2026-02-03T08:51:32Z"
+      "last_updated": "2026-02-03T09:52:28Z",
+      "session_id": "sess_1770112335_480871"
     },
     {
       "project_number": 793,
@@ -296,10 +297,10 @@
     {
       "project_number": 835,
       "project_name": "enhance_review_command_roadmap_integration_revision",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:50:09Z",
+      "last_updated": "2026-02-03T09:52:14Z",
       "effort": "4-5 hours",
       "dependencies": [
         833
@@ -312,8 +313,14 @@
           "path": "specs/835_enhance_review_command_roadmap_integration_revision/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing current /review command structure, ROADMAP.md integration patterns, and recommendations for adding Strategies/Ambitions context loading, roadmap revision, and task suggestions output"
+        },
+        {
+          "path": "specs/835_enhance_review_command_roadmap_integration_revision/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for /review command ROADMAP.md integration and revision"
         }
-      ]
+      ],
+      "planned": "2026-02-03T09:52:14Z"
     }
   ],
   "completed_projects": [

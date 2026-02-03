@@ -74,7 +74,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Subformula Closure Infrastructure [IN PROGRESS]
+### Phase 1: Subformula Closure Infrastructure [COMPLETED]
 
 **Goal**: Define subformula closure for formulas with finiteness proof
 
@@ -99,7 +99,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Restricted MCS Construction [NOT STARTED]
+### Phase 2: Restricted MCS Construction [IN PROGRESS]
 
 **Goal**: Implement MCS construction restricted to finite closure
 

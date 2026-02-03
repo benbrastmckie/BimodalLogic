@@ -1,5 +1,7 @@
 import Bimodal.Syntax.Formula
 import Bimodal.Syntax.Context
+import Bimodal.Syntax.Subformulas
+import Bimodal.Syntax.SubformulaClosure
 
 /-!
 # Bimodal.Syntax - Formula Syntax
