@@ -24,7 +24,7 @@ technical_debt:
 
 ### 849. Add contextual parameters section to Dynamics Foundation
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: latex
 - **Created**: 2026-02-03
 
@@ -68,12 +68,13 @@ technical_debt:
 
 ### 846. Fix LaTeX Constitutive Foundation FIX:/NOTE: tags
 - **Effort**: 2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: latex
 - **Priority**: high
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
 - **Depends**: Task 845
 - **Research**: [research-001.md](specs/846_fix_latex_constitutive_foundation_tags/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/846_fix_latex_constitutive_foundation_tags/plans/implementation-001.md)
@@ -96,14 +97,14 @@ technical_debt:
 
 ### 844. Redesign metalogic to use Pre-Coherent Bundle construction
 - **Effort**: 12-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
 - **Started**: 2026-02-03
 - **Related**: Task 842
-- **Research**: [research-001.md](specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-001.md)
+- **Research**: [research-001.md](specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-001.md), [research-002.md](specs/844_redesign_metalogic_precoherent_bundle_construction/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/844_redesign_metalogic_precoherent_bundle_construction/plans/implementation-001.md)
 
 **Description**: Completely redesign the metalogic to use a Pre-Coherent Bundle construction that builds families and bundles simultaneously. Define SaturationClosure (finite set S of formulas), PreCoherent predicate (S-bounded Box formulas, temporal coherence), and AllPreCoherentFamilies (product of all pre-coherent families). Implement restricted Lindenbaum that filters out Box formulas with content outside S. Box coherence follows from S-boundedness by construction; saturation follows from product structure. This approach avoids the Lindenbaum control problem that causes irreducible sorries in current sequential construction. Target: zero sorries, zero axioms, publication-ready completeness proof. Based on research-003.md from Task 842.
