@@ -35,7 +35,7 @@ technical_debt:
 
 ### 834. Enhance /todo Command with Changelog Updates and Task Suggestions
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-03
 - **Dependencies**: Task 833
@@ -46,9 +46,11 @@ technical_debt:
 
 ### 833. Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: general
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-001.md)
 
 **Description**: Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.
 
@@ -56,7 +58,7 @@ technical_debt:
 
 ### 832. Update artifact formats and agent definitions for sorry handling
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: meta
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -85,7 +87,7 @@ technical_debt:
 
 ### 830. Standardize Metalogic documentation with README.md files
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: general
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03

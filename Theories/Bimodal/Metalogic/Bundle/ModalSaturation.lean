@@ -309,8 +309,8 @@ Double negation elimination theorem: ⊢ ¬¬φ → φ
 
 This is derived using Peirce's law and Ex Falso.
 -/
-def dne_theorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
-  Bimodal.Theorems.double_negation phi
+noncomputable def dne_theorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
+  Bimodal.Theorems.Propositional.double_negation phi
 
 /--
 Double negation introduction: ⊢ φ → ¬¬φ
@@ -318,48 +318,41 @@ Double negation introduction: ⊢ φ → ¬¬φ
 Proof: Assume φ, assume ¬φ, apply to get ⊥.
 So ⊢ φ → (¬φ → ⊥) = φ → ¬¬φ.
 -/
-def dni_theorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (Formula.neg phi)) := by
+noncomputable def dni_theorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (Formula.neg phi)) := by
   -- φ → ¬¬φ = φ → ((φ → ⊥) → ⊥)
-  -- This is just the statement that if we have φ and assume φ → ⊥, we get ⊥
-  -- Using Propositional S and currying:
-  -- We have ⊢ φ → ((φ → ⊥) → φ) by Prop S
-  -- And ⊢ ((φ → ⊥) → φ) → ((φ → ⊥) → ⊥) needs: from (φ → ⊥) → φ and φ → ⊥, get ⊥
-  -- Actually simpler: use prop_s with ψ = (φ → ⊥) → ⊥:
-  -- prop_s gives: φ → (ψ → φ)
-  -- We want: φ → ((φ → ⊥) → ⊥)
+  -- Using deduction theorem approach:
+  -- We need: [(φ → ⊥), φ] ⊢ ⊥ (note: deduction_theorem expects added formula at head)
+  -- Then apply deduction_theorem for (φ → ⊥): [φ] ⊢ (φ → ⊥) → ⊥
+  -- Then apply deduction_theorem for φ: [] ⊢ φ → ((φ → ⊥) → ⊥)
 
-  -- Let's use the deduction theorem approach
-  -- We need to show: [φ, φ → ⊥] ⊢ ⊥
-  -- Then by deduction theorem twice: ⊢ φ → ((φ → ⊥) → ⊥)
-
-  have h1 : [phi, phi.imp Formula.bot] ⊢ phi :=
+  have h1 : [phi.imp Formula.bot, phi] ⊢ phi :=
     DerivationTree.assumption _ phi (by simp)
-  have h2 : [phi, phi.imp Formula.bot] ⊢ phi.imp Formula.bot :=
+  have h2 : [phi.imp Formula.bot, phi] ⊢ phi.imp Formula.bot :=
     DerivationTree.assumption _ (phi.imp Formula.bot) (by simp)
-  have h3 : [phi, phi.imp Formula.bot] ⊢ Formula.bot :=
+  have h3 : [phi.imp Formula.bot, phi] ⊢ Formula.bot :=
     DerivationTree.modus_ponens _ phi Formula.bot h2 h1
   -- Deduction theorem: [φ] ⊢ (φ → ⊥) → ⊥
   have h4 : [phi] ⊢ (phi.imp Formula.bot).imp Formula.bot :=
-    deduction_theorem [phi] (phi.imp Formula.bot) Formula.bot h3
+    Bimodal.Metalogic.Core.deduction_theorem [phi] (phi.imp Formula.bot) Formula.bot h3
   -- Deduction theorem again: [] ⊢ φ → ((φ → ⊥) → ⊥)
-  exact deduction_theorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
+  exact Bimodal.Metalogic.Core.deduction_theorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
 
 /--
 Box distributes over double negation elimination: ⊢ Box(¬¬φ) → Box φ
 
 Proof: By necessitation on DNE and modal K distribution.
 -/
-def box_dne_theorem (phi : Formula) :
+noncomputable def box_dne_theorem (phi : Formula) :
     [] ⊢ (Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi) := by
   -- Step 1: ⊢ ¬¬φ → φ (DNE)
   have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dne_theorem phi
   -- Step 2: ⊢ Box(¬¬φ → φ) (necessitation)
   have h_box_dne : [] ⊢ Formula.box ((Formula.neg (Formula.neg phi)).imp phi) :=
     DerivationTree.necessitation _ h_dne
-  -- Step 3: ⊢ Box(¬¬φ → φ) → (Box(¬¬φ) → Box φ) (K axiom)
+  -- Step 3: ⊢ Box(¬¬φ → φ) → (Box(¬¬φ) → Box φ) (K distribution axiom)
   have h_K : [] ⊢ (Formula.box ((Formula.neg (Formula.neg phi)).imp phi)).imp
                ((Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi)) :=
-    DerivationTree.axiom [] _ (Axiom.modal_k _ _)
+    DerivationTree.axiom [] _ (Axiom.modal_k_dist _ _)
   -- Step 4: ⊢ Box(¬¬φ) → Box φ (modus ponens)
   exact DerivationTree.modus_ponens [] _ _ h_K h_box_dne
 
@@ -377,22 +370,24 @@ lemma mcs_contrapositive {S : Set Formula} (h_mcs : SetMaximalConsistent S)
   -- This is: (B → ⊥) → (A → ⊥)
 
   -- Proof: Assume ¬B (i.e., B → ⊥). Assume A. Then B by A → B. Then ⊥ by B → ⊥.
-  -- So [B → ⊥, A] ⊢ ⊥. By deduction: [B → ⊥] ⊢ A → ⊥. By deduction: ⊢ (B → ⊥) → (A → ⊥).
+  -- Context: A :: [B.neg] = [A, B.neg] (deduction_theorem expects formula at head)
+  -- Then by deduction for A: [B.neg] ⊢ A → ⊥ = A.neg
+  -- Then by deduction for B.neg: [] ⊢ B.neg → A.neg
 
-  have h1 : [B.neg, A] ⊢ A :=
+  have h1 : [A, B.neg] ⊢ A :=
     DerivationTree.assumption _ A (by simp)
-  have h2 : [B.neg, A] ⊢ A.imp B :=
+  have h2 : [A, B.neg] ⊢ A.imp B :=
     DerivationTree.weakening [] _ _ h_impl (by intro x hx; exact False.elim (List.not_mem_nil hx))
-  have h3 : [B.neg, A] ⊢ B :=
+  have h3 : [A, B.neg] ⊢ B :=
     DerivationTree.modus_ponens _ A B h2 h1
-  have h4 : [B.neg, A] ⊢ B.neg :=
+  have h4 : [A, B.neg] ⊢ B.neg :=
     DerivationTree.assumption _ B.neg (by simp)
-  have h5 : [B.neg, A] ⊢ Formula.bot :=
+  have h5 : [A, B.neg] ⊢ Formula.bot :=
     DerivationTree.modus_ponens _ B Formula.bot h4 h3
   have h6 : [B.neg] ⊢ A.neg :=
-    deduction_theorem [B.neg] A Formula.bot h5
+    Bimodal.Metalogic.Core.deduction_theorem [B.neg] A Formula.bot h5
   have h7 : [] ⊢ B.neg.imp A.neg :=
-    deduction_theorem [] B.neg A.neg h6
+    Bimodal.Metalogic.Core.deduction_theorem [] B.neg A.neg h6
 
   -- Now ⊢ ¬B → ¬A is in S (as a theorem)
   have h_thm_in_S : B.neg.imp A.neg ∈ S := theorem_in_mcs h_mcs h7
