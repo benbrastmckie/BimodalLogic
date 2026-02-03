@@ -40,10 +40,10 @@
     {
       "project_number": 832,
       "project_name": "update_artifact_formats_agent_sorry_guidance",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-03T10:30:00Z",
-      "last_updated": "2026-02-03T09:33:45Z",
+      "last_updated": "2026-02-03T09:37:29Z",
       "description": "Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements.",
       "session_id": "sess_1770111207_602a37",
       "researched": "2026-02-03T09:24:48Z",
@@ -57,10 +57,18 @@
           "path": "specs/832_update_artifact_formats_agent_sorry_guidance/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan covering report-format.md, plan-format.md, lean-research-agent.md, and lean-implementation-agent.md updates"
+        },
+        {
+          "path": "specs/832_update_artifact_formats_agent_sorry_guidance/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-02-03T09:30:53Z",
-      "started": "2026-02-03T09:33:45Z"
+      "started": "2026-02-03T09:33:45Z",
+      "completed": "2026-02-03T09:37:29Z",
+      "completion_summary": "Added conditional Sorry Characterization sections to report-format.md and plan-format.md with explicit framing rules. Made sorry-debt-policy.md mandatory context in both Lean agents. Added MUST NOT prohibition against 'acceptable sorry' framing.",
+      "claudemd_suggestions": "Updated report-format.md and plan-format.md with sorry characterization sections. Updated lean-research-agent.md and lean-implementation-agent.md context references and critical requirements."
     },
     {
       "project_number": 829,

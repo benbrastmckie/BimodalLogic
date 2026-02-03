@@ -1,7 +1,7 @@
 # Implementation Plan: Task #832
 
 - **Task**: 832 - update_artifact_formats_agent_sorry_guidance
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: Task 831 (provides updated sorry-debt-policy.md with framing rules)
 - **Research Inputs**: specs/832_update_artifact_formats_agent_sorry_guidance/reports/research-001.md
