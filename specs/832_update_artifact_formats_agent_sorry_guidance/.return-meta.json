@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-03T00:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "summary": "5-phase implementation plan to propagate sorry characterization guidance into artifact formats and Lean agent definitions, with Lean-conditional sections for cross-task format files.",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/832_update_artifact_formats_agent_sorry_guidance/plans/implementation-001.md",
+      "summary": "5-phase plan covering report-format.md, plan-format.md, lean-research-agent.md, and lean-implementation-agent.md updates"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1770110908_7f2f84",
     "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 1.5
   }
 }

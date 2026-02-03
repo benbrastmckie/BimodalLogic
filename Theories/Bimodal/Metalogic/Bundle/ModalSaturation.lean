@@ -181,7 +181,7 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
       DerivationTree.weakening L [psi] _ d h_weak
     -- By deduction theorem: ⊢ psi → ⊥ = ⊢ neg psi
     have d_neg : DerivationTree [] (Formula.neg psi) :=
-      deduction_theorem [] psi Formula.bot d_psi
+      Bimodal.Metalogic.Core.deduction_theorem [] psi Formula.bot d_psi
     -- By necessitation: ⊢ Box (neg psi)
     have d_box : DerivationTree [] (Formula.box (Formula.neg psi)) :=
       DerivationTree.necessitation (Formula.neg psi) d_neg
@@ -198,10 +198,10 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
       | nil => rfl
       | cons x xs =>
         exfalso
-        have hx := hL x (List.mem_cons_self x xs)
+        have hx := hL x List.mem_cons_self
         simp only [Set.mem_singleton_iff] at hx
         rw [hx] at h_psi_in_L
-        exact h_psi_in_L (List.mem_cons_self psi xs)
+        exact h_psi_in_L List.mem_cons_self
     -- [] ⊢ ⊥ means bot is a theorem
     rw [h_L_empty] at d
     have h_bot_in_S : Formula.bot ∈ S := theorem_in_mcs h_mcs d

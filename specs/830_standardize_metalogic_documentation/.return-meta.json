@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-03T12:35:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "summary": "6-phase plan for standardizing Metalogic documentation: create Decidability/README.md, fix FMP/README.md inaccuracies, update Bundle/README.md, correct main Metalogic/README.md, standardize cross-links, and verify compliance with documentation standards",
+  "artifacts": [
+    {
+      "path": "specs/830_standardize_metalogic_documentation/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "6-phase implementation plan covering README creation, content corrections, cross-link standardization, and verification"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1770110937_cf23b7",
     "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 3.0
   }
 }
