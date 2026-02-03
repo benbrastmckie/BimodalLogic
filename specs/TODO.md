@@ -36,7 +36,7 @@ technical_debt:
 
 ### 852. Implement CoherentBundle.toBMCS conversion
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
@@ -88,7 +88,7 @@ technical_debt:
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
-- **Status**: [COMPLETED]
+- **Status**: [RESEARCHED]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -100,7 +100,7 @@ technical_debt:
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Parent**: Task 381
 - **Subtasks**: 398, 399
@@ -112,7 +112,7 @@ technical_debt:
 
 ### 398. Port causal semantics to recursive-semantics.md
 - **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
+- **Status**: [PLANNED]
 - **Language**: markdown
 - **Parent**: Task 394
 - **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
@@ -124,7 +124,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [COMPLETED]
+- **Status**: [NOT STARTED]
 - **Language**: lean
 - **Parent**: Task 394
 - **Dependencies**: 398
@@ -134,9 +134,9 @@ technical_debt:
 ---
 
 ### 685. Derive world-history and Barcan theorems
- **Effort**: 8-10 hours
- **Status**: [COMPLETED]
- **Language**: lean
+- **Effort**: 8-10 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
  **Created**: 2026-01-26
  **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
  **Research**: [research-001.md](specs/685_derive_world_history_and_barcan_theorems/reports/research-001.md)
@@ -165,7 +165,7 @@ technical_debt:
 
 ### 674. systematic command skill agent architecture improvement
 - **Effort**: 3-4 days
-- **Status**: [COMPLETED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
@@ -181,7 +181,7 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [COMPLETED]
+- **Status**: [RESEARCHED]
 - **Researched**: 2026-01-28
 - **Language**: meta
 - **Created**: 2026-01-19
