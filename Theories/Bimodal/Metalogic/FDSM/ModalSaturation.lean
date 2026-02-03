@@ -514,16 +514,20 @@ theorem buildWitnessHistory_models_psi (phi : Formula) (M : Set Formula)
   have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M' h_M'_mcs
 
   -- The history is constant, so states t = worldStateFromClosureMCS phi S h_S_mcs
-  have h_states_eq : (fdsm_history_from_closure_mcs phi S h_S_mcs).states t =
-      worldStateFromClosureMCS phi S h_S_mcs := fdsm_history_from_closure_mcs_states phi S h_S_mcs t
+  -- The goal reduces to showing the world state models psi, which follows from
+  -- psi ∈ S and the worldStateFromClosureMCS_models_iff lemma.
+  -- The technical challenge is that Lean doesn't immediately see the definitional equality.
+  -- We use native_decide or explicit definitional unfolding.
 
-  -- Now convert the goal: we need to show the model property for the world state
-  -- The goal after unfolding has the form involving the constructed S and h_S_mcs
-  -- We use convert to handle the definitional equality
-  convert (worldStateFromClosureMCS_models_iff phi S h_S_mcs psi h_psi_clos).mp h_psi_in_S using 1
-  -- The states t should equal worldStateFromClosureMCS phi S h_S_mcs
-  -- This follows from h_states_eq but we need to show it for the specific S
-  rfl
+  -- The key insight: fdsm_history_from_closure_mcs produces a constant history
+  -- whose states at any time t equals worldStateFromClosureMCS phi S h_S_mcs
+  show (fdsm_history_from_closure_mcs phi S h_S_mcs).states t |>.models psi h_psi_clos
+
+  -- This is constant history, so state at t = worldStateFromClosureMCS
+  rw [fdsm_history_from_closure_mcs_states]
+
+  -- Now apply the models iff lemma
+  exact (worldStateFromClosureMCS_models_iff phi S h_S_mcs psi h_psi_clos).mp h_psi_in_S
 
 /-!
 ### Saturation Step
@@ -590,34 +594,248 @@ theorem saturation_step_nonempty (phi : Formula)
   exact ⟨h, saturation_step_subset phi hists t hh⟩
 
 /-!
+## Phase 3: Fixed-Point Construction with Termination
+
+The saturation process iterates until a fixed point is reached.
+We use fuel-based iteration bounded by maxHistories to ensure termination.
+-/
+
+/--
+Fuel-based saturation iteration.
+
+Iterates `saturation_step` until either:
+1. A fixed point is reached (saturation_step hists = hists)
+2. Fuel runs out
+
+The fuel is bounded by `maxHistories phi` which is `2^closureSize phi`,
+ensuring termination since each step either reaches a fixed point or
+adds at least one new history.
+-/
+noncomputable def saturate_with_fuel (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi)
+    (fuel : Nat) : Finset (FDSMHistory phi) :=
+  match fuel with
+  | 0 => hists
+  | fuel + 1 =>
+      let hists' := saturation_step phi hists t
+      if hists' = hists then hists
+      else saturate_with_fuel phi hists' t fuel
+
+/--
+The saturated set of histories starting from an initial set.
+
+Uses `maxHistories phi` as fuel, which is sufficient since:
+- The set of all possible histories is finite (bounded by maxHistories)
+- Each saturation step either adds at least one history or is a fixed point
+-/
+noncomputable def saturated_histories_from (phi : Formula)
+    (initial : Finset (FDSMHistory phi))
+    (t : FDSMTime phi) : Finset (FDSMHistory phi) :=
+  saturate_with_fuel phi initial t (maxHistories phi)
+
+/--
+Saturation with fuel is monotone in the initial set: original histories are preserved.
+-/
+theorem saturate_with_fuel_subset (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi)
+    (fuel : Nat) :
+    hists ⊆ saturate_with_fuel phi hists t fuel := by
+  induction fuel generalizing hists with
+  | zero => simp [saturate_with_fuel]
+  | succ n ih =>
+    simp only [saturate_with_fuel]
+    split_ifs with h_eq
+    · -- Fixed point: hists' = hists
+      rfl
+    · -- Not fixed point: recurse
+      intro h hh
+      apply ih
+      exact saturation_step_subset phi hists t hh
+
+/--
+Saturation with fuel preserves nonemptiness.
+-/
+theorem saturate_with_fuel_nonempty (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (h_ne : hists.Nonempty)
+    (t : FDSMTime phi)
+    (fuel : Nat) :
+    (saturate_with_fuel phi hists t fuel).Nonempty := by
+  obtain ⟨h, hh⟩ := h_ne
+  exact ⟨h, saturate_with_fuel_subset phi hists t fuel hh⟩
+
+/--
+If saturation step doesn't change the set, then the set is at a fixed point.
+-/
+theorem fixed_point_stable (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi)
+    (h_fixed : saturation_step phi hists t = hists) :
+    ∀ fuel, saturate_with_fuel phi hists t fuel = hists := by
+  intro fuel
+  induction fuel with
+  | zero => simp [saturate_with_fuel]
+  | succ n ih =>
+    simp only [saturate_with_fuel]
+    rw [h_fixed]
+    simp
+
+/--
+If saturation_step hists ≠ hists, then the cardinality increases.
+This is because saturation_step is a strict superset (adds at least one history).
+-/
+theorem saturation_step_card_increase (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi)
+    (h_not_fixed : saturation_step phi hists t ≠ hists) :
+    hists.card < (saturation_step phi hists t).card := by
+  -- saturation_step hists = hists ∪ (filter ...), and hists ⊆ this union
+  -- If the union ≠ hists, then the filter part adds at least one element
+  apply Finset.card_lt_card
+  -- Show hists ⊂ saturation_step phi hists t (strict subset)
+  rw [Finset.ssubset_iff_subset_ne]
+  constructor
+  · exact saturation_step_subset phi hists t
+  · -- Show hists ≠ saturation_step phi hists t
+    intro h_eq
+    exact h_not_fixed h_eq.symm
+
+/--
+The maximum number of saturation steps before reaching a fixed point.
+
+Since FDSMHistory is finite and each non-fixed-point step increases cardinality,
+the process must terminate in at most (maxHistories - initial.card) steps.
+-/
+theorem saturation_terminates (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi) :
+    ∃ n ≤ maxHistories phi, saturate_with_fuel phi hists t n =
+      saturate_with_fuel phi hists t (n + 1) := by
+  -- We prove this by showing that the cardinality increases each step
+  -- until we hit a fixed point or exhaust the maximum
+  -- Since card is bounded by maxHistories, we must reach a fixed point
+  by_cases h_fixed : saturation_step phi hists t = hists
+  · -- Already at fixed point
+    use 0
+    constructor
+    · omega
+    · simp only [saturate_with_fuel, h_fixed, ite_true]
+  · -- Not at fixed point - need more fuel, but we know it terminates
+    -- The proof proceeds by showing card increases each step
+    -- For now, we use a classical argument
+    sorry
+
+/-!
+## Phase 4: Modal Saturation Property
+
+The fixed point of saturation has the modal saturation property.
+-/
+
+/--
+A set of histories is modally saturated at time t if for every history h in the set
+and every diamond formula Diamond psi that holds in h at t, there exists a witness
+history h' in the set where psi holds at t.
+-/
+def is_modally_saturated (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi) : Prop :=
+  ∀ h ∈ hists, ∀ psi : Formula, ∀ h_psi_clos : psi ∈ closure phi,
+    (Formula.neg (Formula.box (Formula.neg psi))) ∈ (h.states t).toSet →
+    ∃ h' ∈ hists, (h'.states t).models psi h_psi_clos
+
+/--
+A fixed point of saturation_step is modally saturated.
+
+**Proof idea**: At a fixed point, saturation_step hists = hists.
+This means no new witnesses are added, which happens only when
+all diamond formulas already have witnesses.
+-/
+theorem fixed_point_is_saturated (phi : Formula)
+    (hists : Finset (FDSMHistory phi))
+    (t : FDSMTime phi)
+    (h_fixed : saturation_step phi hists t = hists) :
+    is_modally_saturated phi hists t := by
+  intro h hh psi h_psi_clos h_diamond
+  -- At a fixed point, if Diamond psi holds, then a witness must already exist
+  -- Otherwise saturation_step would have added one
+  by_contra h_no_witness
+  -- h_no_witness : ¬∃ h' ∈ hists, (h'.states t).models psi h_psi_clos
+  push_neg at h_no_witness
+  -- This means hasDiamondWitness is false
+  have h_not_has_witness : ¬hasDiamondWitness phi hists t psi h_psi_clos := by
+    intro ⟨h', hh', h_models⟩
+    exact h_no_witness h' hh' h_models
+  -- So there should be a witness history added by saturation_step
+  -- But h_fixed says saturation_step hists = hists
+  -- This is a contradiction because the filter would be nonempty
+  sorry
+
+/--
+The saturated histories (from any nonempty initial set) are modally saturated.
+-/
+theorem saturated_histories_saturated (phi : Formula)
+    (initial : Finset (FDSMHistory phi))
+    (h_ne : initial.Nonempty)
+    (t : FDSMTime phi) :
+    is_modally_saturated phi (saturated_histories_from phi initial t) t := by
+  -- We need to show that saturated_histories_from reaches a fixed point
+  -- and then apply fixed_point_is_saturated
+  sorry
+
+/-!
 ## Summary
 
 This module provides the modal saturation infrastructure:
 
+### Phase 1 (COMPLETED):
 1. **witnessSet**: Construction of witness sets for diamond formulas
-2. **witness_set_consistent**: PROVEN - Consistency of witness sets using generalized_modal_k
+2. **witness_set_consistent**: PROVEN - Consistency of witness sets
+
+### Phase 2 (COMPLETED):
 3. **hasDiamondWitness**: Check if a diamond formula has a witness
 4. **unsatisfiedDiamondFormulas**: Find diamond formulas needing witnesses
 5. **buildWitnessHistory**: Construct a witness history from a consistent witness set
 6. **buildWitnessHistory_models_psi**: PROVEN - The witness history contains psi
 7. **saturation_step**: One round of adding all missing witnesses
 8. **saturation_step_subset**: PROVEN - Monotonicity of saturation
-9. **modal_backward_from_saturation**: Modal backward property (requires truth lemma completion)
+9. **saturation_step_nonempty**: PROVEN - Nonemptiness preservation
 
-**Completed Proofs (Phase 1 + Phase 2)**:
-- `witness_set_consistent`: Uses generalized_modal_k to lift derivations from Gamma to Box Gamma,
-  then applies MCS closure properties.
-- `buildWitnessHistory_models_psi`: The witness history contains psi via Lindenbaum extension
-  and worldStateFromClosureMCS_models_iff.
-- `saturation_step_subset`: Monotonicity follows directly from union definition.
+### Phase 3 (COMPLETED):
+10. **saturate_with_fuel**: Fuel-based saturation iteration
+11. **saturated_histories_from**: Entry point for saturation
+12. **saturate_with_fuel_subset**: PROVEN - Original histories preserved
+13. **saturate_with_fuel_nonempty**: PROVEN - Nonemptiness preserved
+14. **fixed_point_stable**: PROVEN - Fixed points are stable under iteration
+15. **saturation_step_card_increase**: PROVEN - Cardinality increases at non-fixed-points
+16. **saturation_terminates**: Termination theorem (sorry - classical argument needed)
 
-**Remaining Sorries**:
-- `neg_box_iff_diamond_neg`: Classical equivalence between neg(Box psi) and Diamond(psi.neg)
-- `modal_backward_from_saturation`: Requires truth lemma infrastructure for complete proof
+### Phase 4 (PARTIAL):
+17. **is_modally_saturated**: Definition of modal saturation property
+18. **fixed_point_is_saturated**: Fixed points are modally saturated (sorry)
+19. **saturated_histories_saturated**: Saturated histories are modally saturated (sorry)
 
-**Next Steps (Phase 3-7)**:
-- Phase 3: Implement fixed-point construction with termination proof
-- Phase 4: Prove modal saturation property at fixed point
+### Pre-existing (from early development):
+20. **neg_box_iff_diamond_neg**: Classical equivalence (sorry)
+21. **modal_backward_from_saturation**: Modal backward property (sorry)
+
+**Completed Proofs (Phase 1 + Phase 2 + Phase 3)**:
+- `witness_set_consistent`: Uses generalized_modal_k to lift derivations
+- `buildWitnessHistory_models_psi`: Witness history contains psi via Lindenbaum
+- `saturation_step_subset`: Monotonicity from union definition
+- `saturation_step_card_increase`: Strict subset implies cardinality increase
+- `saturate_with_fuel_subset`: Induction on fuel
+- `fixed_point_stable`: Induction on fuel with fixed point hypothesis
+
+**Remaining Sorries (5 total)**:
+1. `neg_box_iff_diamond_neg`: Classical logic equivalence
+2. `modal_backward_from_saturation`: Requires truth lemma
+3. `saturation_terminates`: Classical well-founded argument
+4. `fixed_point_is_saturated`: Contrapositive on saturation step
+5. `saturated_histories_saturated`: Composition of above
+
+**Next Steps (Phase 5-7)**:
 - Phase 5: Complete modal_backward_from_saturation
 - Phase 6: Update Completeness.lean to use multi-history construction
 - Phase 7: Verification and sorry audit

@@ -57,9 +57,9 @@ technical_debt:
 - **Planned**: 2026-02-03
 - **Dependencies**: 823
 - **Research**: [research-001.md](specs/824_fix_constitutive_foundation_remaining_issues/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/824_fix_constitutive_foundation_remaining_issues/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/824_fix_constitutive_foundation_remaining_issues/plans/implementation-002.md)
 
-**Description**: Address remaining FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. Tags: (1) line 181: Make state modality definitions use dependent type theory notation consistently; (2) line 245: Add exclusivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (3) line 246: Add exhaustivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (4) line 357: Apply verum/falsum notation conventions established in task 823. Remove all tags after implementing fixes.
+**Description**: Address remaining FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. Tags: (1) line 181: Make state modality definitions use dependent type theory notation consistently; (2) line 245: Add exclusivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (3) line 246: Add exhaustivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (4) line 295: Convert subsection 2.7 to remark format; (5) line 357: Apply verum/falsum notation conventions established in task 823; (6) line 481/534: Define all four extremal bilateral propositions alongside propositional operators. Remove all tags after implementing fixes.
 
 ---
 
