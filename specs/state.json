@@ -8,10 +8,19 @@
     {
       "project_number": 827,
       "project_name": "complete_multi_family_bmcs_construction",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-03T08:51:32Z",
-      "last_updated": "2026-02-03T08:51:32Z"
+      "last_updated": "2026-02-03T08:58:06Z",
+      "session_id": "sess_1770108852_d142cc",
+      "researched": "2026-02-03T08:58:06Z",
+      "artifacts": [
+        {
+          "path": "specs/827_complete_multi_family_bmcs_construction/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing modal_backward sorry, multi-family construction approaches, and recommendation to accept as architectural limitation"
+        }
+      ]
     },
     {
       "project_number": 828,

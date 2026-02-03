@@ -1,0 +1,46 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-03T12:00:00Z",
+  "completed_at": "2026-02-03T12:30:00Z",
+  "summary": "The modal_backward sorry at Construction.lean:220 exists because single-family BMCS cannot prove phi->Box phi (not valid in modal logic). A multi-family construction with modal saturation WOULD make it provable by contraposition. Recommend accepting as architectural limitation since completeness theorems are already SORRY-FREE in their execution path. Tasks 825/826 should address broader saturation infrastructure.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/827_complete_multi_family_bmcs_construction/reports/research-001.md",
+      "summary": "Research report analyzing modal_backward sorry, multi-family construction approaches, and recommendation to accept as architectural limitation"
+    }
+  ],
+  "partial_progress": {
+    "stage": "completed",
+    "details": "Research complete - analyzed single-family limitation, multi-family saturation approaches, and existing infrastructure"
+  },
+  "metadata": {
+    "session_id": "sess_1770108852_d142cc",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "findings": {
+    "sorry_location": "Theories/Bimodal/Metalogic/Bundle/Construction.lean:220",
+    "root_cause": "Single-family BMCS cannot prove phi -> Box phi (not valid in modal logic)",
+    "current_status": "Completeness theorems are SORRY-FREE in their execution path",
+    "approaches_analyzed": [
+      {
+        "name": "Accept as architectural",
+        "effort": "0 hours",
+        "recommended": true
+      },
+      {
+        "name": "Multi-family saturation in BMCS",
+        "effort": "8-12 hours",
+        "recommended": false
+      },
+      {
+        "name": "Port FDSM saturation to BMCS",
+        "effort": "16-24 hours",
+        "recommended": false
+      }
+    ],
+    "related_tasks": ["825", "826", "818", "812"]
+  }
+}
