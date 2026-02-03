@@ -3,59 +3,24 @@ next_project_number: 821
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-02T21:45:54Z
+  last_assessed: 2026-02-03T00:33:24Z
 task_counts:
-  active: 14
-  completed: 362
+  active: 10
+  completed: 366
   in_progress: 2
-  not_started: 7
+  not_started: 5
   abandoned: 26
-  total: 388
+  total: 392
 technical_debt:
-  sorry_count: 75
+  sorry_count: 69
   axiom_count: 15
-  build_errors: 0
+  build_errors: 1
   status: good
 ---
 
 # TODO
 
 ## Tasks
-
-### 820. Add sorry-debt-policy references
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Dependencies**: Task 819
-- **Research**: [research-001.md](specs/820_add_sorry_debt_policy_references/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/820_add_sorry_debt_policy_references/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260203.md](specs/820_add_sorry_debt_policy_references/summaries/implementation-summary-20260203.md)
-
-**Description**: Add single-line references to sorry-debt-policy.md in Lean agent and rule files. Add to lean-implementation-agent.md and lean-research-agent.md Context References sections: '@.claude/context/project/lean4/standards/sorry-debt-policy.md - Sorry remediation policy'. Update .claude/rules/lean4.md to reference the context file.
-
----
-
-### 819. Create sorry-debt-policy.md context file
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-03
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/819_create_sorry_debt_policy_context_file/reports/research-001.md)
-- **Plan**: [implementation-003.md](specs/819_create_sorry_debt_policy_context_file/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260203.md](specs/819_create_sorry_debt_policy_context_file/summaries/implementation-summary-20260203.md)
-
-**Description**: Create .claude/context/project/lean4/standards/sorry-debt-policy.md with philosophy, remediation paths, discovery protocol, and Boneyard references. Philosophy: sorries are mathematical debt, never acceptable in final proofs; sorries are inherited transitively where a theorem is only truly sorry-free if none of its dependencies contain sorries. Remediation paths: Boneyard archival, architectural refactoring, proof completion. Discovery protocol: what to do when encountering existing sorries during implementation. References to project Boneyard locations (Theories/Bimodal/Boneyard/, Boneyard/).
-
----
 
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 8-12 hours
@@ -80,24 +45,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-001.md)
 
 **Description**: Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past), Construction.lean:220 (modal_backward in singleFamilyBMCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction or multi-family approach.
-
----
-
-### 815. BMCS Universe Polymorphism Resolution
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-02
-- **Researched**: 2026-02-02
-- **Planned**: 2026-02-02
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Parent**: Task 813
-- **Research**: [research-001.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-001.md), [research-002.md](specs/815_bmcs_universe_polymorphism_resolution/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/815_bmcs_universe_polymorphism_resolution/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260202.md](specs/815_bmcs_universe_polymorphism_resolution/summaries/implementation-summary-20260202.md)
-
-**Description**: Resolve 2 universe polymorphism sorries in BMCS completeness by specializing completeness theorems to Int or using explicit universe instantiation. Sorries: Completeness.lean:158 (bmcs_valid_implies_valid_Int), Completeness.lean:292 (bmcs_consequence_implies_consequence_Int). Strategy options: (1) Define bmcs_valid_Int and bmcs_consequence_Int directly over Int, (2) Use @ syntax for universe level manipulation, (3) Add Int-specific completeness theorems as primary definitions.
 
 ---
 
@@ -145,23 +92,6 @@ technical_debt:
 - **Dependencies**: 398
 
 **Description**: Implement the causal operator semantics in Lean based on the approved recursive-semantics.md specification. Extend CoreFrame with closeness ordering, define Evolution and ExpectedEvolution structures, implement CausalContext with background assumptions, and replace the current counterfactual-based definition in Truth.lean with the three-condition hyperintensional semantics.
-
----
-
-### 786. Migrate efq to efq_neg
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-01-31
-- **Planned**: 2026-02-01
-- **Started**: 2026-02-02
-- **Completed**: 2026-02-02
-- **Source**: Code review 2026-01-31
-- **Research**: [research-001.md](specs/786_migrate_efq_to_efq_neg/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/786_migrate_efq_to_efq_neg/plans/implementation-001.md)
-- **Summary**: Migrated 2 deprecated efq function calls to efq_neg in Propositional.lean. Build verified successful with no errors.
-
-**Description**: Replace 2 deprecated efq references with efq_neg in Theories/Bimodal/Theorems/Propositional.lean at lines 402 and 596. The deprecated efq theorem should be replaced with efq_neg as indicated by build warnings.
 
 ---
 
