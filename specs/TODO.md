@@ -48,7 +48,7 @@ technical_debt:
 
 ### 851. Define CoherentBundle structure
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
@@ -120,21 +120,6 @@ technical_debt:
 - **Depends**: Task 842
 
 **Description**: Remove singleFamily_modal_backward_axiom after Zorn lemma is proven. Update completeness theorem in Completeness.lean to use construct_bmcs_saturated instead of axiom-based construction. Remove or comment out the axiom declaration. Verify build succeeds and completeness theorems no longer depend on the axiom. (Follow-up from task #841, depends on task #842)
-
----
-
-### 842. Formalize Zorn's lemma proof in exists_fullySaturated_extension
-- **Effort**: 12-16 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Parent**: Task 841
-- **Research**: [research-001.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md), [research-002.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-002.md), [research-003.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-003.md)
-- **Plan**: [implementation-002.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-002.md) (supersedes v001)
-
-**Description**: Formalize Zorn's lemma proof in exists_fullySaturated_extension using Pre-Coherent Bundle construction. Define S-bounded pre-coherent families, implement restricted Lindenbaum, construct bundle as product of all pre-coherent families. Box coherence follows from S-boundedness; saturation follows from product structure. Target: zero sorries, zero axioms, publication-ready.
 
 ---
 
