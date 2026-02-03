@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -34,6 +35,22 @@ A more sophisticated multi-family construction would be needed for:
 
 But for completeness (existence of satisfying model), single-family suffices.
 
+## Technical Note: Modal Backward
+
+The `modal_backward` condition requires: if phi is in ALL families' MCS, then Box phi
+is in each family's MCS. For a single-family BMCS, this becomes: phi in MCS implies
+Box phi in MCS, which is NOT valid in general modal logic.
+
+A **modally saturated** BMCS (see `ModalSaturation.lean`) would satisfy modal_backward
+by construction, using the contrapositive argument:
+1. If phi in all families but Box phi not in fam.mcs, then neg(Box phi) in fam.mcs
+2. neg(Box phi) = Diamond(neg phi) (semantically)
+3. By saturation, exists witness family with neg phi in its MCS
+4. But phi is in ALL families, contradicting consistency
+
+The single-family construction uses a sorry for modal_backward because it cannot
+be made saturated (Diamond psi in MCS does NOT imply psi in that MCS).
+
 ## Technical Note: Temporal Coherence
 
 The IndexedMCSFamily requires temporal coherence conditions (forward_G, backward_H, etc.).
@@ -51,6 +68,7 @@ We use approach (1) with a constant family, which means:
 
 - Research report: specs/812_canonical_model_completeness/reports/research-007.md
 - Implementation plan: specs/812_canonical_model_completeness/plans/implementation-003.md
+- Modal saturation theory: Bimodal.Metalogic.Bundle.ModalSaturation
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -183,13 +201,22 @@ This is acceptable because:
 Build a BMCS from a single IndexedMCSFamily.
 
 **Note**: This uses `sorry` for modal_backward because the single-family
-construction doesn't provide enough structure to prove it. A multi-family
-construction (with modal saturation) would satisfy this automatically.
+construction doesn't provide enough structure to prove it. A modally saturated
+multi-family construction would satisfy this via `saturated_modal_backward`
+(see `ModalSaturation.lean`).
+
+**Why modal_backward cannot be proven here**:
+- modal_backward requires: phi in all families => Box phi in each family
+- For single-family: phi in MCS => Box phi in MCS
+- This is `phi -> Box phi`, which is NOT valid in modal logic
+- A saturated BMCS proves this by contraposition using diamond witnesses
+- Single-family cannot be saturated: Diamond psi in MCS does NOT imply psi in MCS
 
 For completeness purposes, this is acceptable:
 - The truth lemma uses modal_forward and modal_backward as hypotheses
 - The completeness theorem only needs EXISTENCE of a satisfying BMCS
-- The single-family construction provides that existence (with sorries)
+- The single-family construction provides that existence (with this sorry)
+- See `ModalSaturation.saturated_modal_backward` for the general proof
 -/
 noncomputable def singleFamilyBMCS (fam : IndexedMCSFamily D) : BMCS D where
   families := {fam}
@@ -208,15 +235,23 @@ noncomputable def singleFamilyBMCS (fam : IndexedMCSFamily D) : BMCS D where
     h_eq'' ▸ set_mcs_implication_property h_mcs h_T_in_mcs (h_eq' ▸ hBox)
   modal_backward := fun fam' hfam' phi t h_all =>
     -- fam' is in {fam}, so fam' = fam
-    have h_eq : fam' = fam := Set.mem_singleton_iff.mp hfam'
+    have _ : fam' = fam := Set.mem_singleton_iff.mp hfam'
     -- h_all says: forall fam'' in {fam}, phi in fam''.mcs t
     -- So phi in fam.mcs t
-    have h_phi : phi ∈ fam.mcs t := h_all fam (Set.mem_singleton fam)
+    have _ : phi ∈ fam.mcs t := h_all fam (Set.mem_singleton fam)
     -- Need: Box phi in fam'.mcs t = Box phi in fam.mcs t
     -- This requires: phi in MCS implies Box phi in MCS
-    -- This is NOT provable in general - it's a construction requirement!
-    -- For a properly saturated BMCS, this would hold by construction.
-    -- In the single-family simplification, we accept this as a sorry.
+    -- This is NOT provable in general - `phi -> Box phi` is not valid!
+    --
+    -- For a modally saturated BMCS, this would follow from
+    -- `saturated_modal_backward` (see ModalSaturation.lean).
+    -- The single-family BMCS cannot be saturated because:
+    -- - Saturation requires: Diamond psi in MCS => psi in some family's MCS
+    -- - With one family: Diamond psi in MCS => psi in that MCS
+    -- - But Diamond psi in MCS does NOT imply psi in that MCS
+    --
+    -- This sorry is an architectural limitation of single-family construction.
+    -- A true multi-family construction with saturation would eliminate it.
     sorry
   eval_family := fam
   eval_family_mem := Set.mem_singleton fam

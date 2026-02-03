@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
+import Bimodal.Theorems.Propositional
 
 /-!
 # Modal Saturation for BMCS
@@ -33,9 +34,6 @@ The key insight is that modal saturation is a SUFFICIENT condition for modal_bac
 Rather than constructing a saturated BMCS from scratch, we define the saturation
 predicate and prove that any BMCS satisfying it has the modal_backward property.
 
-For the completeness theorem, we use the observation that the construction in
-Construction.lean can be enhanced to produce a saturated BMCS.
-
 ## References
 
 - Research report: specs/827_complete_multi_family_bmcs_construction/reports/research-001.md
@@ -46,6 +44,7 @@ namespace Bimodal.Metalogic.Bundle
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
+open Bimodal.ProofSystem
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 
@@ -134,11 +133,8 @@ lemma diamond_excludes_box_neg {S : Set Formula} (h_mcs : SetMaximalConsistent S
     (psi : Formula) (h_diamond : diamondFormula psi ∈ S) :
     Formula.box (Formula.neg psi) ∉ S := by
   intro h_box
-  -- Diamond psi = neg (Box (neg psi))
-  -- So we have neg (Box (neg psi)) and Box (neg psi) both in S
   have h_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
   rw [h_eq] at h_diamond
-  -- This contradicts consistency
   exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg psi)) h_box h_diamond
 
 /--
@@ -181,14 +177,14 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
       have := hL x hx
       simp only [Set.mem_singleton_iff] at this
       simp [this]
-    have d_psi : Bimodal.ProofSystem.DerivationTree [psi] Formula.bot :=
-      Bimodal.ProofSystem.DerivationTree.weakening L [psi] _ d h_weak
+    have d_psi : DerivationTree [psi] Formula.bot :=
+      DerivationTree.weakening L [psi] _ d h_weak
     -- By deduction theorem: ⊢ psi → ⊥ = ⊢ neg psi
-    have d_neg : Bimodal.ProofSystem.DerivationTree [] (Formula.neg psi) :=
+    have d_neg : DerivationTree [] (Formula.neg psi) :=
       deduction_theorem [] psi Formula.bot d_psi
     -- By necessitation: ⊢ Box (neg psi)
-    have d_box : Bimodal.ProofSystem.DerivationTree [] (Formula.box (Formula.neg psi)) :=
-      Bimodal.ProofSystem.DerivationTree.necessitation (Formula.neg psi) d_neg
+    have d_box : DerivationTree [] (Formula.box (Formula.neg psi)) :=
+      DerivationTree.necessitation (Formula.neg psi) d_neg
     -- Box (neg psi) is in S since it's a theorem
     have h_box_in_S : Formula.box (Formula.neg psi) ∈ S := theorem_in_mcs h_mcs d_box
     -- But Diamond psi = neg (Box (neg psi)) is also in S
@@ -209,8 +205,8 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
     -- [] ⊢ ⊥ means bot is a theorem
     rw [h_L_empty] at d
     have h_bot_in_S : Formula.bot ∈ S := theorem_in_mcs h_mcs d
-    have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
-      Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+    have h_deriv : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
     have h_sub : ∀ x ∈ [Formula.bot], x ∈ S := by simp [h_bot_in_S]
     exact h_mcs.1 [Formula.bot] h_sub ⟨h_deriv⟩
 
@@ -256,23 +252,23 @@ noncomputable def constantWitnessFamily (M : Set Formula) (h_mcs : SetMaximalCon
   mcs := fun _ => M
   is_mcs := fun _ => h_mcs
   forward_G := fun t t' phi _ hG =>
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_future.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_future phi)
+    let h_T := DerivationTree.axiom []
+      (phi.all_future.imp phi) (Axiom.temp_t_future phi)
     let h_T_in_M := theorem_in_mcs h_mcs h_T
     set_mcs_implication_property h_mcs h_T_in_M hG
   backward_H := fun t t' phi _ hH =>
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_past.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_past phi)
+    let h_T := DerivationTree.axiom []
+      (phi.all_past.imp phi) (Axiom.temp_t_past phi)
     let h_T_in_M := theorem_in_mcs h_mcs h_T
     set_mcs_implication_property h_mcs h_T_in_M hH
   forward_H := fun t t' phi _ hH =>
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_past.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_past phi)
+    let h_T := DerivationTree.axiom []
+      (phi.all_past.imp phi) (Axiom.temp_t_past phi)
     let h_T_in_M := theorem_in_mcs h_mcs h_T
     set_mcs_implication_property h_mcs h_T_in_M hH
   backward_G := fun t t' phi _ hG =>
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_future.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_future phi)
+    let h_T := DerivationTree.axiom []
+      (phi.all_future.imp phi) (Axiom.temp_t_future phi)
     let h_T_in_M := theorem_in_mcs h_mcs h_T
     set_mcs_implication_property h_mcs h_T_in_M hG
 
@@ -303,7 +299,109 @@ lemma constructWitnessFamily_contains (psi : Formula) (h_cons : SetConsistent {p
   exact extendToMCS_contains psi h_cons
 
 /-!
-## Phase 3 & 4: Modal Backward from Saturation
+## Phase 3: Helper Lemmas for Modal Backward Proof
+
+We need to establish the connection between neg(Box phi) and Diamond(neg phi).
+-/
+
+/--
+Double negation elimination theorem: ⊢ ¬¬φ → φ
+
+This is derived using Peirce's law and Ex Falso.
+-/
+def dne_theorem (phi : Formula) : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi :=
+  Bimodal.Theorems.double_negation phi
+
+/--
+Double negation introduction: ⊢ φ → ¬¬φ
+
+Proof: Assume φ, assume ¬φ, apply to get ⊥.
+So ⊢ φ → (¬φ → ⊥) = φ → ¬¬φ.
+-/
+def dni_theorem (phi : Formula) : [] ⊢ phi.imp (Formula.neg (Formula.neg phi)) := by
+  -- φ → ¬¬φ = φ → ((φ → ⊥) → ⊥)
+  -- This is just the statement that if we have φ and assume φ → ⊥, we get ⊥
+  -- Using Propositional S and currying:
+  -- We have ⊢ φ → ((φ → ⊥) → φ) by Prop S
+  -- And ⊢ ((φ → ⊥) → φ) → ((φ → ⊥) → ⊥) needs: from (φ → ⊥) → φ and φ → ⊥, get ⊥
+  -- Actually simpler: use prop_s with ψ = (φ → ⊥) → ⊥:
+  -- prop_s gives: φ → (ψ → φ)
+  -- We want: φ → ((φ → ⊥) → ⊥)
+
+  -- Let's use the deduction theorem approach
+  -- We need to show: [φ, φ → ⊥] ⊢ ⊥
+  -- Then by deduction theorem twice: ⊢ φ → ((φ → ⊥) → ⊥)
+
+  have h1 : [phi, phi.imp Formula.bot] ⊢ phi :=
+    DerivationTree.assumption _ phi (by simp)
+  have h2 : [phi, phi.imp Formula.bot] ⊢ phi.imp Formula.bot :=
+    DerivationTree.assumption _ (phi.imp Formula.bot) (by simp)
+  have h3 : [phi, phi.imp Formula.bot] ⊢ Formula.bot :=
+    DerivationTree.modus_ponens _ phi Formula.bot h2 h1
+  -- Deduction theorem: [φ] ⊢ (φ → ⊥) → ⊥
+  have h4 : [phi] ⊢ (phi.imp Formula.bot).imp Formula.bot :=
+    deduction_theorem [phi] (phi.imp Formula.bot) Formula.bot h3
+  -- Deduction theorem again: [] ⊢ φ → ((φ → ⊥) → ⊥)
+  exact deduction_theorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h4
+
+/--
+Box distributes over double negation elimination: ⊢ Box(¬¬φ) → Box φ
+
+Proof: By necessitation on DNE and modal K distribution.
+-/
+def box_dne_theorem (phi : Formula) :
+    [] ⊢ (Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi) := by
+  -- Step 1: ⊢ ¬¬φ → φ (DNE)
+  have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dne_theorem phi
+  -- Step 2: ⊢ Box(¬¬φ → φ) (necessitation)
+  have h_box_dne : [] ⊢ Formula.box ((Formula.neg (Formula.neg phi)).imp phi) :=
+    DerivationTree.necessitation _ h_dne
+  -- Step 3: ⊢ Box(¬¬φ → φ) → (Box(¬¬φ) → Box φ) (K axiom)
+  have h_K : [] ⊢ (Formula.box ((Formula.neg (Formula.neg phi)).imp phi)).imp
+               ((Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi)) :=
+    DerivationTree.axiom [] _ (Axiom.modal_k _ _)
+  -- Step 4: ⊢ Box(¬¬φ) → Box φ (modus ponens)
+  exact DerivationTree.modus_ponens [] _ _ h_K h_box_dne
+
+/--
+Contraposition helper: if ⊢ A → B and B → ⊥ ∈ S, then A → ⊥ ∈ S (for MCS S).
+
+This is used to transfer implications contrapositively through MCS membership.
+-/
+lemma mcs_contrapositive {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    {A B : Formula} (h_impl : [] ⊢ A.imp B) (h_negB : B.neg ∈ S) : A.neg ∈ S := by
+  -- We have ⊢ A → B and ¬B ∈ S
+  -- We want ¬A ∈ S, i.e., (A → ⊥) ∈ S
+
+  -- From ⊢ A → B, we can derive ⊢ ¬B → ¬A
+  -- This is: (B → ⊥) → (A → ⊥)
+
+  -- Proof: Assume ¬B (i.e., B → ⊥). Assume A. Then B by A → B. Then ⊥ by B → ⊥.
+  -- So [B → ⊥, A] ⊢ ⊥. By deduction: [B → ⊥] ⊢ A → ⊥. By deduction: ⊢ (B → ⊥) → (A → ⊥).
+
+  have h1 : [B.neg, A] ⊢ A :=
+    DerivationTree.assumption _ A (by simp)
+  have h2 : [B.neg, A] ⊢ A.imp B :=
+    DerivationTree.weakening [] _ _ h_impl (by intro x hx; exact False.elim (List.not_mem_nil hx))
+  have h3 : [B.neg, A] ⊢ B :=
+    DerivationTree.modus_ponens _ A B h2 h1
+  have h4 : [B.neg, A] ⊢ B.neg :=
+    DerivationTree.assumption _ B.neg (by simp)
+  have h5 : [B.neg, A] ⊢ Formula.bot :=
+    DerivationTree.modus_ponens _ B Formula.bot h4 h3
+  have h6 : [B.neg] ⊢ A.neg :=
+    deduction_theorem [B.neg] A Formula.bot h5
+  have h7 : [] ⊢ B.neg.imp A.neg :=
+    deduction_theorem [] B.neg A.neg h6
+
+  -- Now ⊢ ¬B → ¬A is in S (as a theorem)
+  have h_thm_in_S : B.neg.imp A.neg ∈ S := theorem_in_mcs h_mcs h7
+
+  -- And ¬B ∈ S, so ¬A ∈ S by MCS implication property
+  exact set_mcs_implication_property h_mcs h_thm_in_S h_negB
+
+/-!
+## Phase 4: Modal Backward from Saturation
 
 The key theorem: if a BMCS is modally saturated, then modal_backward holds.
 This is proven by contraposition using MCS negation completeness.
@@ -317,9 +415,10 @@ if phi is in ALL families' MCS at time t, then Box phi is in fam.mcs t.
 
 **Proof by Contraposition**:
 1. Assume phi is in all families but Box phi is NOT in fam.mcs t
-2. By MCS negation completeness: neg(Box phi) = Diamond(neg phi) is in fam.mcs t
-3. By modal saturation: exists fam' where neg phi is in fam'.mcs t
-4. But phi is in ALL families including fam' - contradiction with consistency
+2. By MCS negation completeness: neg(Box phi) is in fam.mcs t
+3. Use box_dne_theorem to show: neg(Box phi) implies neg(Box(neg neg phi)) = Diamond(neg phi)
+4. By modal saturation: exists fam' where neg phi is in fam'.mcs t
+5. But phi is in ALL families including fam' - contradiction with consistency
 -/
 theorem saturated_modal_backward (B : BMCS D) (h_sat : is_modally_saturated B)
     (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families) (phi : Formula) (t : D)
@@ -327,218 +426,31 @@ theorem saturated_modal_backward (B : BMCS D) (h_sat : is_modally_saturated B)
     Formula.box phi ∈ fam.mcs t := by
   -- By contradiction
   by_contra h_not_box
+
   -- By MCS negation completeness, neg(Box phi) is in fam.mcs t
   have h_mcs := fam.is_mcs t
   have h_neg_box : Formula.neg (Formula.box phi) ∈ fam.mcs t := by
     rcases set_mcs_negation_complete h_mcs (Formula.box phi) with h_box | h_neg
     · exact absurd h_box h_not_box
     · exact h_neg
-  -- neg(Box phi) = Diamond(neg phi)
-  -- We need to show Diamond(neg phi) = neg(Box(neg(neg phi))) which simplifies
-  -- Actually: neg(Box phi) is NOT the same as Diamond(neg phi)
-  -- neg(Box phi) = Box phi → ⊥
-  -- Diamond(neg phi) = neg(Box(neg(neg phi))) = neg(Box((phi → ⊥) → ⊥))
-  -- These are NOT definitionally equal!
 
-  -- Let me reconsider. In modal logic:
-  -- Diamond phi = neg(Box(neg phi))
-  -- neg(Box phi) is NOT Diamond(neg phi)
-  -- neg(Box phi) means "not necessarily phi"
-  -- Diamond(neg phi) means "possibly not phi"
+  -- We have: ⊢ Box(¬¬φ) → Box φ (from box_dne_theorem)
+  -- Contrapositive: neg(Box phi) → neg(Box(neg neg phi)) in MCS
 
-  -- Actually, these ARE equivalent in classical logic:
-  -- neg(Box phi) ↔ Diamond(neg phi)
-  -- because neg(Box phi) ↔ neg(neg(neg(Box phi))) ↔ neg(neg(Diamond(neg phi)))
-  -- Wait, that's not right either.
+  -- neg(Box(neg neg phi)) = Diamond(neg phi) by definition
+  -- So we get Diamond(neg phi) in fam.mcs t
 
-  -- Let's be more careful:
-  -- Diamond psi = neg(Box(neg psi))
-  -- If psi = neg phi, then Diamond(neg phi) = neg(Box(neg(neg phi)))
+  have h_box_dne := box_dne_theorem phi
+  have h_diamond_neg : Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) ∈ fam.mcs t :=
+    mcs_contrapositive h_mcs h_box_dne h_neg_box
 
-  -- And neg(Box phi) is NOT the same thing.
-  -- neg(Box phi) ↔ exists world where not phi ↔ Diamond(neg phi) semantically
-  -- But syntactically: neg(Box phi) = (Box phi) → ⊥
-  -- And Diamond(neg phi) = neg(Box(neg(neg phi))) = (Box((phi → ⊥) → ⊥)) → ⊥
-
-  -- We need a provable equivalence: neg(Box phi) ↔ Diamond(neg phi)
-
-  -- In our logic, we have:
-  -- neg(Box phi) = (Box phi).imp bot
-  -- Diamond(neg phi) = (neg phi).diamond = ((neg phi).neg.box.neg)
-  --                  = (((phi.imp bot).imp bot).box.imp bot)
-
-  -- We need to derive Diamond(neg phi) from neg(Box phi)
-  -- This requires the axiom schema: neg(Box phi) -> Diamond(neg phi)
-  -- which is: (Box phi -> bot) -> ((Box (neg (neg phi))) -> bot)
-  -- i.e., (Box phi -> bot) -> (Box (phi -> bot -> bot) -> bot)
-
-  -- In S5/K, we have: neg(Box phi) <-> Diamond(neg phi)
-  -- Let's assume we have or can derive this equivalence.
-
-  -- Actually, looking at the modal logic more carefully:
-  -- Box phi means "necessarily phi"
-  -- neg(Box phi) means "not necessarily phi"
-  -- Diamond(neg phi) means "possibly not phi"
-  -- These are equivalent: not necessarily phi ↔ possibly not phi
-
-  -- We need to derive this in our proof system.
-  -- For now, let me add an axiom or derive it.
-
-  -- Let's use a different approach: work with the contrapositive of modal_backward
-  -- directly using the existing bmcs_diamond_witness theorem.
-
-  -- Actually, the existing bmcs_diamond_witness already proves:
-  -- If neg(Box(neg phi)) in fam.mcs t, then exists fam' where phi in fam'.mcs t
-  -- This is: If Diamond phi in fam.mcs, then witness exists.
-
-  -- We have neg(Box phi) in fam.mcs t.
-  -- We want to show existence of fam' where neg(phi) in fam'.mcs t.
-  -- For this, we'd need Diamond(neg phi) = neg(Box(neg(neg phi))) in fam.mcs t.
-
-  -- The key insight is that in our proof system, we should be able to derive:
-  -- neg(Box phi) <-> neg(Box(neg(neg phi)))
-  -- because phi <-> neg(neg phi) is provable in classical logic.
-
-  -- Let me use the double negation property of MCS.
-  -- We have neg(Box phi) in MCS.
-  -- We want neg(Box(neg(neg phi))) in MCS.
-
-  -- First, show neg(neg phi) and phi are interchangeable in MCS.
-  -- Actually, Box(neg(neg phi)) ↔ Box phi is what we need.
-
-  -- Box(neg(neg phi)) -> Box phi requires: neg(neg phi) -> phi (T axiom applied inside)
-  -- Box phi -> Box(neg(neg phi)) requires: phi -> neg(neg phi) (intro rule)
-
-  -- Both directions are provable in classical logic within the box.
-  -- So Box phi ↔ Box(neg(neg phi)) is provable.
-  -- Therefore neg(Box phi) ↔ neg(Box(neg(neg phi))) ↔ Diamond(neg phi).
-
-  -- Let me prove this step by step using MCS properties.
-
-  -- Step 1: Box phi -> Box(neg(neg phi)) is a theorem (by phi -> neg neg phi inside Box)
-  have h_double_neg_intro : [] ⊢ (Formula.box phi).imp (Formula.box (Formula.neg (Formula.neg phi))) := by
-    -- We need the K axiom: Box(phi -> psi) -> (Box phi -> Box psi)
-    -- And the theorem: phi -> neg(neg phi) = phi -> (phi -> bot) -> bot
-
-    -- Actually, let's use axiom schemas more directly.
-    -- In our proof system, we have the modal K axiom.
-    -- ⊢ phi → neg(neg phi) is classically valid.
-
-    -- Let's construct: Box(phi -> neg(neg phi)) -> (Box phi -> Box(neg(neg phi)))
-    -- Then: ⊢ phi -> neg(neg phi), so by necessitation: ⊢ Box(phi -> neg(neg phi))
-    -- Then by K: ⊢ Box phi -> Box(neg(neg phi))
-
-    -- First derive phi -> neg(neg phi)
-    -- This is phi -> ((phi -> ⊥) -> ⊥)
-    -- Proof: assume phi, assume phi -> ⊥, apply to get ⊥
-    sorry
-
-  -- This is getting complex. Let me use a simpler approach.
-  -- We'll use the fact that saturation gives us diamond witnesses, and
-  -- derive a contradiction directly.
-
-  -- The key is: if neg(Box phi) in fam.mcs t, then by classical reasoning,
-  -- there "should be" a witness for neg phi.
-
-  -- But for our BMCS with modal_forward, if Box phi were in fam.mcs,
-  -- then phi would be in ALL families. We know phi IS in all families.
-  -- So if Box phi is NOT in fam.mcs, the BMCS is not satisfying modal_backward.
-
-  -- For a SATURATED BMCS, this can't happen because:
-  -- neg(Box phi) = Diamond(neg phi) (semantically)
-  -- and saturation means Diamond(neg phi) would have a witness.
-
-  -- Let me prove: In MCS, neg(Box phi) ↔ Diamond(neg phi)
-
-  -- Actually in our syntax:
-  -- neg(Box phi) = (Box phi).imp bot = Formula.imp (Formula.box phi) Formula.bot
-  -- Diamond(neg phi) = diamondFormula (Formula.neg phi)
-  --                  = (Formula.neg phi).diamond
-  --                  = (Formula.neg phi).neg.box.neg
-  --                  = Formula.neg (Formula.box (Formula.neg (Formula.neg phi)))
-
-  -- So we need: (Box phi → ⊥) ∈ MCS  implies  (Box(neg(neg phi)) → ⊥) ∈ MCS
-
-  -- Using phi ↔ neg(neg phi) in classical logic, Box phi ↔ Box(neg(neg phi)).
-  -- So neg(Box phi) ↔ neg(Box(neg(neg phi))) ↔ Diamond(neg phi).
-
-  -- Let me construct this proof.
-
-  -- First, prove: phi ↔ neg(neg phi) is in any MCS
-  -- Actually, we need the implication: neg(Box phi) → Diamond(neg phi)
-  -- which is: (Box phi → ⊥) → (Box(neg(neg phi)) → ⊥)
-
-  -- This is equivalent to: Box(neg(neg phi)) → Box phi
-  -- which follows from: neg(neg phi) → phi (a theorem)
-  -- and the K axiom: Box(A → B) → (Box A → Box B)
-
-  -- Proof of neg(neg phi) → phi:
-  have h_dne_theorem : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := by
-    -- double negation elimination: ((phi → ⊥) → ⊥) → phi
-    -- This is PBC (proof by contradiction) which is an axiom in our system
-    exact Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.pbc phi)
-
-  -- By necessitation: Box(neg(neg phi) → phi)
-  have h_box_dne : [] ⊢ Formula.box ((Formula.neg (Formula.neg phi)).imp phi) :=
-    Bimodal.ProofSystem.DerivationTree.necessitation _ h_dne_theorem
-
-  -- By K axiom: Box(neg(neg phi) → phi) → (Box(neg(neg phi)) → Box phi)
-  have h_K : [] ⊢ (Formula.box ((Formula.neg (Formula.neg phi)).imp phi)).imp
-               ((Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi)) :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_k _ _)
-
-  -- Modus ponens: Box(neg(neg phi)) → Box phi
-  have h_box_impl : [] ⊢ (Formula.box (Formula.neg (Formula.neg phi))).imp (Formula.box phi) :=
-    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_K h_box_dne
-
-  -- Contrapositive: neg(Box phi) → neg(Box(neg(neg phi)))
-  -- i.e., (Box phi → ⊥) → (Box(neg(neg phi)) → ⊥)
-  have h_contrapositive : [] ⊢ (Formula.neg (Formula.box phi)).imp
-                              (Formula.neg (Formula.box (Formula.neg (Formula.neg phi)))) := by
-    -- Contrapositive of (A → B) is (¬B → ¬A)
-    -- We have: Box(neg neg phi) → Box phi
-    -- We want: neg(Box phi) → neg(Box(neg neg phi))
-    -- This is derivable using the contraposition rule:
-    -- From A → B, derive ¬B → ¬A via:
-    -- Assume ¬B and A, then B by A → B, contradiction with ¬B
-    sorry
-
-  -- Now we have: neg(Box phi) → Diamond(neg phi) (since Diamond(neg phi) = neg(Box(neg(neg phi))))
-  -- And neg(Box phi) is in fam.mcs t.
-  -- So by MCS closure: Diamond(neg phi) = neg(Box(neg(neg phi))) is in fam.mcs t.
-
-  have h_mcs_closed := set_mcs_closed_under_derivation h_mcs
-
-  -- Wait, set_mcs_closed_under_derivation requires a list L ⊆ S and L ⊢ result
-  -- We need to use the implication property instead.
-
-  -- From h_neg_box: neg(Box phi) ∈ fam.mcs t
-  -- And h_contrapositive: ⊢ neg(Box phi) → Diamond(neg phi)
-  -- So Diamond(neg phi) ∈ fam.mcs t by implication property.
-
-  -- Actually, Diamond(neg phi) = diamondFormula (neg phi) by definition,
-  -- and diamondFormula (neg phi) = (neg phi).diamond = (neg phi).neg.box.neg
-  -- = neg(Box(neg(neg phi)))
-
-  -- The issue is that our implication theorem is ⊢ ..., but we need it in MCS.
-  have h_impl_in_mcs : (Formula.neg (Formula.box phi)).imp
-                       (Formula.neg (Formula.box (Formula.neg (Formula.neg phi)))) ∈ fam.mcs t := by
-    sorry  -- theorem_in_mcs requires a derivation from []
-
-  -- Let's assume h_contrapositive is proven and use it
-  have h_diamond_neg_phi : Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) ∈ fam.mcs t := by
-    sorry
-
-  -- Now apply saturation: Diamond(neg phi) in fam.mcs t implies
-  -- exists fam' where (neg phi) in fam'.mcs t
-
-  -- We need to show that our h_diamond_neg_phi is the same as diamondFormula (neg phi)
+  -- Diamond(neg phi) = neg(Box(neg(neg phi))) by definition
   have h_eq_diamond : diamondFormula (Formula.neg phi) =
                       Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) := rfl
 
   have h_diamond_in : diamondFormula (Formula.neg phi) ∈ fam.mcs t := by
     rw [h_eq_diamond]
-    exact h_diamond_neg_phi
+    exact h_diamond_neg
 
   -- By modal saturation, exists witness where neg phi is in MCS
   have ⟨fam', hfam', h_neg_phi_in⟩ := h_sat fam hfam t (Formula.neg phi) h_diamond_in

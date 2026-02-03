@@ -317,10 +317,12 @@ have h : ⊢ ψ := Derivable.modus_ponens [] φ ψ h1 h2
 - All subgoals are proven
 - All helper lemmas are proven
 
-**Exception**: Documented `sorry` placeholders for future work are acceptable if:
-- Clearly marked with comments
-- Documented in SORRY_REGISTRY.md
-- Have a resolution plan
+**Development tolerance**: Documented `sorry` placeholders may be tolerated during development if:
+- Clearly marked with comments explaining WHY the sorry exists
+- Documented in SORRY_REGISTRY.md with category and remediation path
+- Have a concrete resolution plan
+
+**Critical**: These sorries are NEVER acceptable for publication. They represent mathematical debt that blocks any downstream theorems from being claimed as proven.
 
 ---
 

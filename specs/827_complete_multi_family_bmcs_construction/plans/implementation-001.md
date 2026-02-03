@@ -73,7 +73,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Witness Family Construction [IN PROGRESS]
+### Phase 2: Witness Family Construction [COMPLETED]
 
 **Goal**: Implement construction of witness families for unsatisfied diamond formulas
 
@@ -95,7 +95,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Saturation Function [NOT STARTED]
+### Phase 3: Saturation Function [COMPLETED]
 
 **Goal**: Implement the saturation function that iteratively adds witness families
 
@@ -117,7 +117,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Modal Backward Proof [NOT STARTED]
+### Phase 4: Modal Backward Proof [COMPLETED]
 
 **Goal**: Prove that saturated BMCS satisfies `modal_backward`
 
@@ -141,7 +141,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Integration and Sorry Elimination [NOT STARTED]
+### Phase 5: Integration and Sorry Elimination [IN PROGRESS]
 
 **Goal**: Update Construction.lean to use saturated BMCS and eliminate sorry
 

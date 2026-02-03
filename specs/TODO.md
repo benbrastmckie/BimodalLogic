@@ -46,7 +46,7 @@ technical_debt:
 
 ### 833. Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 - **Created**: 2026-02-03
 
@@ -83,9 +83,11 @@ technical_debt:
 
 ### 830. Standardize Metalogic documentation with README.md files
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: general
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/830_standardize_metalogic_documentation/reports/research-001.md)
 
 **Description**: Ensure all Bimodal/Metalogic/ subdirectories have README.md files following DIRECTORY_README_STANDARD.md and DOC_QUALITY_CHECKLIST.md. Each README should: (1) completely and accurately report all contents in the subdirectory, (2) include summaries of any subdirectories with links to their README.md files, (3) include appropriate cross-links to related documentation. Focus on publication-ready documentation that is direct and to the point (no fluff). Subdirectories to cover: Core/, Bundle/, FMP/, Algebraic/, and the main Metalogic/ entry point.
 

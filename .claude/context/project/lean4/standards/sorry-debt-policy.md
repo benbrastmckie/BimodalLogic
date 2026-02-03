@@ -18,16 +18,75 @@ Sorries are **mathematical debt**, fundamentally different from technical debt:
 
 ### Transitive Sorry Inheritance
 
-A proof is only as sound as its dependencies. If theorem A uses lemma B which contains `sorry`, then A is also unproven.
+Sorries propagate through the dependency graph. If theorem A uses lemma B which contains `sorry`, then:
+- A is **also unproven** (mathematically)
+- A **inherits** B's mathematical debt
+- Any claim about A must acknowledge B's sorry
 
-**Truly sorry-free** means: the theorem AND all its transitive dependencies contain no sorries.
+**Transitively sorry-free** means: the theorem AND all its transitive dependencies contain no sorries. This is the ONLY valid state for publication.
 
 ```lean
 -- Check transitive sorry-freedom with:
 #check @MyTheorem  -- Hover shows axioms used; sorry appears as axiom
 ```
 
-**Publication requirement**: All theorems claimed as proven must be transitively sorry-free.
+**Publication requirement**: All theorems claimed as proven must be transitively sorry-free. NO EXCEPTIONS.
+
+**Reporting requirement**: When a sorry exists anywhere in the dependency chain, reports and plans must:
+1. Identify all sorries (direct and inherited)
+2. Document why each exists
+3. Specify the remediation path
+4. Note impact on dependent theorems
+
+## Characterizing Sorries in Reports and Plans
+
+When documenting sorries in research reports, implementation plans, or summaries, follow this framing:
+
+**Guiding Principle**: Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.
+
+### Required Elements
+
+1. **State the fact**: "This file contains N sorries"
+2. **Categorize each**: Which category from the taxonomy below
+3. **Explain the reason**: Why does this sorry exist
+4. **Specify remediation**: What would remove it (even if not planned)
+5. **Note transitivity**: What depends on this sorry
+
+### Prohibited Framing
+
+Do NOT use these phrases:
+- "acceptable sorry" / "sorry is acceptable"
+- "acceptable limitation"
+- "sorry is fine" / "okay to have sorry"
+- "sorry count is acceptable"
+- "<N sorries acceptable"
+
+### Required Framing
+
+USE these phrases instead:
+- "tolerated during development"
+- "technical debt requiring documentation"
+- "blocks publication if not resolved"
+- "inherited by all dependents"
+
+### Example Transformations
+
+| Prohibited | Required |
+|------------|----------|
+| "1 sorry is acceptable" | "1 sorry remains (construction assumption) - documented, blocks transitive sorry-freedom" |
+| "sorry state acceptable for publication" | "publication requires resolving all N sorries or documenting as explicit axioms" |
+| "<5 acceptable" | "target: 0 sorries; current: N sorries (categorized in SORRY_REGISTRY.md)" |
+| "acceptable architectural limitation" | "documented architectural debt - remediation path: [specific approach]" |
+
+### Transitive Inheritance in Reports
+
+ALL sorries propagate transitively through imports. When reporting on a theorem:
+
+1. **Direct sorries**: Sorries in the theorem's proof
+2. **Inherited sorries**: Sorries in any lemma the theorem uses
+3. **Publication status**: "Transitively sorry-free" or "Depends on N sorries in [files]"
+
+**Critical**: A theorem claimed as "proven" in a publication MUST be transitively sorry-free.
 
 ## Sorry Categories
 
