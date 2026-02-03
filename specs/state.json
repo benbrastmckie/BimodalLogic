@@ -16,11 +16,11 @@
     {
       "project_number": 848,
       "project_name": "add_conceptual_engineering_section_to_introduction",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "created": "2026-02-03T21:16:25Z",
-      "last_updated": "2026-02-03T21:33:27Z",
-      "session_id": "sess_1770154226_168ebc",
+      "last_updated": "2026-02-03T21:41:42Z",
+      "session_id": "sess_1770154887_a09acd",
       "researched": "2026-02-03T21:28:03Z",
       "artifacts": [
         {
@@ -74,14 +74,14 @@
     {
       "project_number": 846,
       "project_name": "fix_latex_constitutive_foundation_tags",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "high",
       "effort": "2 hours",
       "description": "Fix issues from FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. FIX tags: (1) Line 165: Turn remark into formal definitions; (2) Line 187: Simplify state modality definitions layout; (3) Line 202: Integrate pointwise compatibility into state modality definitions. NOTE tags: (1) Line 474: Apply standard lean source reference form; (2) Line 550: Replace \\{ \\} with \\set{} macro. Remove all FIX: and NOTE: tags after implementing fixes.",
       "created": "2026-02-03T21:09:57Z",
-      "last_updated": "2026-02-03T21:38:00Z",
-      "session_id": "sess_1770154216_48fcb8",
+      "last_updated": "2026-02-03T21:44:19Z",
+      "session_id": "sess_1770154903_1a18a5",
       "researched": "2026-02-03T21:38:00Z",
       "dependencies": [
         845
@@ -91,8 +91,14 @@
           "path": "specs/846_fix_latex_constitutive_foundation_tags/reports/research-001.md",
           "type": "research",
           "summary": "Research report on LaTeX FIX and NOTE tag fixes with specific implementation recommendations for 3 FIX tags and 2 NOTE tags"
+        },
+        {
+          "path": "specs/846_fix_latex_constitutive_foundation_tags/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan: convert remark to definition, simplify state modality layout, integrate pointwise compatibility, apply notation standards, verify"
         }
-      ]
+      ],
+      "planned": "2026-02-03T21:44:19Z"
     },
     {
       "project_number": 847,
