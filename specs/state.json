@@ -95,10 +95,10 @@
     {
       "project_number": 830,
       "project_name": "standardize_metalogic_documentation",
-      "status": "planning",
+      "status": "planned",
       "language": "general",
       "created": "2026-02-03T09:00:34Z",
-      "last_updated": "2026-02-03T09:29:12Z",
+      "last_updated": "2026-02-03T09:31:19Z",
       "session_id": "sess_1770110937_cf23b7",
       "researched": "2026-02-03T09:27:28Z",
       "artifacts": [
@@ -106,8 +106,14 @@
           "path": "specs/830_standardize_metalogic_documentation/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive audit of Metalogic/ README files with compliance analysis, findings, and prioritized implementation recommendations"
+        },
+        {
+          "path": "specs/830_standardize_metalogic_documentation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan covering README creation, content corrections, cross-link standardization, and verification"
         }
-      ]
+      ],
+      "planned": "2026-02-03T09:31:19Z"
     },
     {
       "project_number": 827,

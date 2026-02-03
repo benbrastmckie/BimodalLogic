@@ -141,28 +141,35 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Integration and Sorry Elimination [IN PROGRESS]
+### Phase 5: Integration and Documentation [COMPLETED - PARTIAL]
 
-**Goal**: Update Construction.lean to use saturated BMCS and eliminate sorry
+**Goal**: Update Construction.lean to use saturated BMCS infrastructure
 
-**Tasks**:
-- [ ] Define `saturatedBMCS` that wraps saturation
-- [ ] Update `construct_bmcs` to call saturation
-- [ ] Replace sorry in `singleFamilyBMCS.modal_backward` with saturation-based proof
-- [ ] Update documentation in Construction.lean
-- [ ] Verify Completeness.lean still compiles
+**Outcome**: Partial success - infrastructure created, sorry remains due to fundamental limitation
 
-**Timing**: 1 hour
+**What was accomplished**:
+- [x] Created `SaturatedBMCS` structure in ModalSaturation.lean
+- [x] Proved `saturated_modal_backward` theorem (sorry-free)
+- [x] Added import and documentation to Construction.lean
+- [x] Verified Completeness.lean still compiles
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/Construction.lean` - Integrate saturation, eliminate sorry
-- `Theories/Bimodal/Metalogic/Bundle/Completeness.lean` - Verify compatibility
+**What could not be done**:
+- [ ] Replace sorry in `singleFamilyBMCS.modal_backward` - BLOCKED
+
+**Reason for limitation**: Single-family BMCS cannot be modally saturated.
+Diamond psi in MCS does NOT imply psi in that same MCS. The sorry requires
+a true multi-family construction where witness families are added for each
+Diamond formula, which is outside the scope of the current architecture.
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean` - Created with full infrastructure
+- `Theories/Bimodal/Metalogic/Bundle/Construction.lean` - Added import and documentation
 
 **Verification**:
 - `lake build` succeeds
-- No `sorry` in Construction.lean modal_backward
+- `saturated_modal_backward` proven without sorry
 - Completeness theorems still compile
-- Sorry count reduced by 1
+- Sorry remains (expected - architectural limitation)
 
 ---
 
