@@ -13,8 +13,7 @@
       "description": "Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. Build base family via Lindenbaum, construct constantIndexedMCSFamily, add coherent witnesses for all Diamonds using Zorn's lemma. Depends on tasks #851 and #852. (Follow-up from task #844, Phase 5)",
       "parent_task": 844,
       "depends_on": [
-        851,
-        852
+        851
       ],
       "created": "2026-02-03T22:53:13Z",
       "last_updated": "2026-02-03T22:53:13Z"
@@ -22,7 +21,7 @@
     {
       "project_number": 852,
       "project_name": "implement_coherentbundle_tobmcs",
-      "status": "researched",
+      "status": "completed",
       "language": "lean",
       "description": "Implement CoherentBundle.toBMCS conversion to provide axiom-free modal_backward. Uses contraposition: if phi in all families but Box phi not in fam.mcs, then Diamond(neg phi) in fam.mcs, so exists witness with neg phi, contradicting phi in all families. Depends on task #851 CoherentBundle structure. (Follow-up from task #844, Phase 4)",
       "parent_task": 844,
@@ -30,7 +29,7 @@
         851
       ],
       "created": "2026-02-03T22:53:10Z",
-      "last_updated": "2026-02-03T23:22:22Z",
+      "last_updated": "2026-02-03T23:24:51Z",
       "session_id": "sess_1770160802_f5dd50",
       "researched": "2026-02-03T23:22:22Z",
       "artifacts": [
@@ -39,7 +38,9 @@
           "type": "research",
           "summary": "Research confirming task 852 is redundant - CoherentBundle.toBMCS was fully implemented in task 851"
         }
-      ]
+      ],
+      "completed": "2026-02-03T23:24:51Z",
+      "completion_summary": "Task subsumed by task 851. The CoherentBundle.toBMCS conversion was fully implemented in task 851 Phase 4 with no sorries. Both modal_forward and modal_backward proofs are complete."
     },
     {
       "project_number": 851,

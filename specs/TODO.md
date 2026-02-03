@@ -28,21 +28,22 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
-- **Depends**: Tasks 851, 852
+- **Depends**: Task 851
 
-**Description**: Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. Build base family via Lindenbaum, construct constantIndexedMCSFamily, add coherent witnesses for all Diamonds using Zorn's lemma. Depends on tasks #851 and #852. (Follow-up from task #844, Phase 5)
+**Description**: Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. Build base family via Lindenbaum, construct constantIndexedMCSFamily, add coherent witnesses for all Diamonds using Zorn's lemma. Depends on task #851 (852 subsumed by 851). (Follow-up from task #844, Phase 5)
 
 ---
 
 ### 852. Implement CoherentBundle.toBMCS conversion
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
-- **Researched**: 2026-02-03
+- **Status**: [COMPLETED]
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/852_implement_coherentbundle_tobmcs/reports/research-001.md)
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
 - **Depends**: Task 851
+- **Summary**: Task subsumed by task 851. The CoherentBundle.toBMCS conversion was fully implemented in task 851 Phase 4 with no sorries.
 
 **Description**: Implement CoherentBundle.toBMCS conversion to provide axiom-free modal_backward. Uses contraposition: if phi in all families but Box phi not in fam.mcs, then Diamond(neg phi) in fam.mcs, so exists witness with neg phi, contradicting phi in all families. Depends on task #851 CoherentBundle structure. (Follow-up from task #844, Phase 4)
 
