@@ -51,6 +51,11 @@
           "path": "specs/825_fdsm_multi_history_modal_saturation/summaries/implementation-summary-20260203.md",
           "type": "summary",
           "summary": "Phases 1-3 complete, 4-6 partial: MCSTrackedHistory infrastructure added, 5 sorries in saturation path"
+        },
+        {
+          "path": "specs/825_fdsm_multi_history_modal_saturation/reports/research-003.md",
+          "type": "research",
+          "summary": "Deep analysis of blockers preventing PARTIAL phase completion: MCS tracking gap, DecidableEq requirements, closure membership bookkeeping, with prioritized recommendations"
         }
       ],
       "planned": "2026-02-03T03:00:16Z",
