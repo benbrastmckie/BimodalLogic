@@ -22,14 +22,22 @@
     {
       "project_number": 842,
       "project_name": "formalize_zorn_lemma_exists_fullySaturated_extension",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "effort": "8-16 hours",
       "description": "Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)",
       "parent_task": 841,
       "created": "2026-02-03T19:04:53Z",
-      "last_updated": "2026-02-03T19:06:21Z",
-      "session_id": "sess_1738614396_2b4cf1"
+      "last_updated": "2026-02-03T19:10:10Z",
+      "session_id": "sess_1738614396_2b4cf1",
+      "researched": "2026-02-03T19:10:10Z",
+      "artifacts": [
+        {
+          "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on Zorn'\\''s lemma formalization for exists_fullySaturated_extension: identified zorn_subset_nonempty as recommended API, outlined proof strategy for chain upper bounds and maximality implies saturation"
+        }
+      ]
     },
     {
       "project_number": 841,

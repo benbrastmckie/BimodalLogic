@@ -36,10 +36,12 @@ technical_debt:
 
 ### 842. Formalize Zorn's lemma proof in exists_fullySaturated_extension
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
 - **Parent**: Task 841
+- **Research**: [research-001.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md)
 
 **Description**: Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)
 

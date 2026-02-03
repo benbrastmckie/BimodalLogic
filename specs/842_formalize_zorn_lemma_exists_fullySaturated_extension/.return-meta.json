@@ -1,11 +1,14 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-03T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "completed_at": "2026-02-03T12:30:00Z",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md",
+      "summary": "Research on Zorn's lemma formalization for exists_fullySaturated_extension: identified zorn_subset_nonempty as recommended API, outlined proof strategy for chain upper bounds and maximality implies saturation"
+    }
+  ],
   "metadata": {
     "session_id": "sess_1738614396_2b4cf1",
     "agent_type": "lean-research-agent",
