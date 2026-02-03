@@ -24,7 +24,7 @@ technical_debt:
 
 ### 836. Improve Metalogic README documentation with flowcharts and subdirectory summaries
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 - **Created**: 2026-02-03
 
@@ -34,7 +34,7 @@ technical_debt:
 
 ### 835. Enhance /review Command with ROADMAP.md Integration and Revision
 - **Effort**: 4-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: meta
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -53,7 +53,7 @@ technical_debt:
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
 - **Research**: [research-001.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-001.md), [research-002.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-002.md)
 
 **Description**: Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.
 

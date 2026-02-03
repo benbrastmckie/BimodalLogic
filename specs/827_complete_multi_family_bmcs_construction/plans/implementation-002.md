@@ -74,7 +74,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Subformula Closure Infrastructure [NOT STARTED]
+### Phase 1: Subformula Closure Infrastructure [IN PROGRESS]
 
 **Goal**: Define subformula closure for formulas with finiteness proof
 

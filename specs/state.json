@@ -8,11 +8,12 @@
     {
       "project_number": 836,
       "project_name": "improve_metalogic_readme_documentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "created": "2026-02-03T09:45:22Z",
-      "last_updated": "2026-02-03T09:45:22Z",
-      "description": "Improve documentation for Metalogic/README.md following task 830 incomplete work. Clearly represent the representation theorem and all major modules with detailed dependency flowchart. Include comprehensive summaries of each Metalogic/ subdirectory with links to their README.md files. Review and update all subdirectory README.md files for accuracy and exhaustivity."
+      "last_updated": "2026-02-03T09:50:39Z",
+      "description": "Improve documentation for Metalogic/README.md following task 830 incomplete work. Clearly represent the representation theorem and all major modules with detailed dependency flowchart. Include comprehensive summaries of each Metalogic/ subdirectory with links to their README.md files. Review and update all subdirectory README.md files for accuracy and exhaustivity.",
+      "session_id": "sess_1770112225_066a72"
     },
     {
       "project_number": 827,
@@ -268,7 +269,7 @@
       "status": "planned",
       "language": "general",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:41:18Z",
+      "last_updated": "2026-02-03T09:51:30Z",
       "effort": "2-3 hours",
       "description": "Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.",
       "session_id": "sess_1770111521_8917f1",
@@ -285,26 +286,26 @@
           "summary": "Research on what to EXCLUDE from ROADMAP.md: clutter analysis (~270 line reduction), Dead Ends section design using ADR patterns, content boundaries (strategic/operational/tactical), and quarterly archival guidelines"
         },
         {
-          "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-001.md",
+          "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-002.md",
           "type": "plan",
-          "summary": "7-phase plan covering section scaffolding, content migration, dead ends documentation, clutter removal, and validation"
+          "summary": "7-phase plan with enhanced schemas including Rationale and References fields for tracking why elements are pursued and citations to relevant artifacts"
         }
       ],
-      "planned": "2026-02-03T09:41:18Z"
+      "planned": "2026-02-03T09:51:30Z"
     },
     {
       "project_number": 835,
       "project_name": "enhance_review_command_roadmap_integration_revision",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:43:40Z",
+      "last_updated": "2026-02-03T09:50:09Z",
       "effort": "4-5 hours",
       "dependencies": [
         833
       ],
       "description": "Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic. Ensure changes follow checkpoint-based execution pattern.",
-      "session_id": "sess_1770111621_4c6048",
+      "session_id": "sess_1770112197_daddc9",
       "researched": "2026-02-03T09:43:40Z",
       "artifacts": [
         {
