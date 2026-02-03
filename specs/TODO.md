@@ -34,24 +34,27 @@ technical_debt:
 
 ### 848. Add conceptual engineering section to Introduction
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: latex
 - **Created**: 2026-02-03
 
-**Description**: Draw on Theories/Logos/docs/research/conceptual-engineering.md to add a new section to Theories/Logos/latex/subfiles/01-Introduction.tex on conceptual engineering, explaining logic's ambitions to refine concepts from natural language that are fit for systematic applications. The section should include the most important content from the conceptual engineering research document while maintaining the clear and precise tone otherwise maintained in the Introduction file.
+**Description**: Draw on Theories/Logos/docs/research/conceptual-engineering.md to add a new section to Theories/Logos/latex/subfiles/01-Introduction.tex on conceptual engineering, explaining logic's ambitions to refine concepts from natural language that are fit for systematic applications. The section should include the most important content from the conceptual engineering research document that is relevant while maintaining the clear and precise tone otherwise maintained in the Introduction file.
 
 ---
 
 ### 845. Update context files from LaTeX NOTE: tags
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Priority**: medium
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/845_update_context_files_from_latex_notes/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/845_update_context_files_from_latex_notes/plans/implementation-001.md)
+- **Summary**: Updated 3 .claude/ context files to document LaTeX conventions for \leansrc reference placement and \set{} macro usage, with validation checklist items.
 
 **Description**: Update .claude/context/ files based on 2 NOTE: tags from Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 474: Standardize lean source code references to follow pattern shown at end of sections; (2) Line 550: Define \set{} macro in logos-notation.sty to replace \{ \} everywhere.
 

@@ -96,6 +96,8 @@ Before committing LaTeX changes:
 
 - [ ] One sentence per line (semantic linefeeds)
 - [ ] `logos-notation.sty` macros used consistently
+- [ ] Use `\set{}` macro for set notation (not `\{ \}`)
+- [ ] Lean source references placed at end of sections with `\noindent`
 - [ ] Environments properly opened and closed
 - [ ] Cross-references resolve without warnings
 - [ ] No overfull hboxes in compiled output

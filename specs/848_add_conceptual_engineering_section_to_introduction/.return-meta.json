@@ -1,0 +1,29 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-03T12:00:00Z",
+  "completed_at": "2026-02-03T12:15:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/848_add_conceptual_engineering_section_to_introduction/reports/research-001.md",
+      "summary": "Research report analyzing conceptual-engineering.md source content, Introduction.tex structure/style, and recommending section placement after opening paragraphs with 3-4 paragraph implementation focusing on logic as normative engineering vs descriptive linguistics"
+    }
+  ],
+  "next_steps": "Run /plan 848 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1770153878_8ad758",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6,
+    "key_findings": [
+      "Source document has 495 lines covering logic as normative concept engineering",
+      "Target Introduction has 285 lines with 4 subsections",
+      "Recommended placement: new subsection after line 28, before Extension Dependencies",
+      "Key content: normative vs descriptive contrast, material conditional example, ameliorative approach",
+      "Suggested length: 3-4 paragraphs (15-25 lines LaTeX source)",
+      "Must follow semantic linefeeds (one sentence per line)"
+    ]
+  }
+}

@@ -87,6 +87,38 @@ determines which states make a formula true.
 For the complete semantics, see \leanref{Logos/Core/Semantics.lean}.
 ```
 
+### Lean Source Reference Placement
+
+Place Lean source references at the **end of relevant sections** using the `\noindent` prefix for proper formatting. This creates a consistent visual pattern and keeps implementation details separate from mathematical exposition.
+
+**Rules**:
+1. Use `\noindent` before `\leansrc` to prevent indentation
+2. Place after the final prose paragraph of the section
+3. Include only when a relevant Lean implementation exists
+4. Reference the most specific definition/theorem, not entire modules
+
+**Standard Pattern**:
+```latex
+\begin{definition}[Constitutive Frame]\label{def:constitutive-frame}
+A \emph{constitutive frame} is a structure $\mathbf{F} = \langle S, \sqsubseteq \rangle$...
+\end{definition}
+
+The constitutive frame captures the mereological structure of states.
+The partial order $\sqsubseteq$ represents the parthood relation.
+
+\noindent\leansrc{Logos.Foundation.Frame}{ConstitutiveFrame}
+```
+
+**When to Include**:
+- After definitions that have direct Lean counterparts
+- After theorems with formal proofs in Lean
+- At section boundaries where multiple related definitions are implemented
+
+**When to Omit**:
+- For purely expository sections without formal implementation
+- When the Lean code is under development (uncommitted)
+- For background material not specific to this project
+
 ### Lean Module Mapping
 
 | LaTeX Section | Lean Module | Primary Definitions |

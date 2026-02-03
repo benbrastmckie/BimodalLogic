@@ -170,6 +170,42 @@ The partial order $\sqsubseteq$ represents the parthood relation.
 \begin{definition}[Constitutive Frame]  % Definition comes too late
 ```
 
+## Set Notation
+
+### The \set{} Macro
+
+Use the `\set{}` macro from `logos-notation.sty` for set notation instead of raw `\{ \}` braces.
+
+**Rationale**:
+1. **Consistency**: Ensures uniform set notation across all documents
+2. **Maintainability**: Allows global styling changes from one location
+3. **Readability**: Source code is cleaner without escaped braces
+4. **Semantics**: Distinguishes set braces from other brace usages
+
+### Pass Example
+```latex
+% Good: Using \set{} macro
+The set of states $\set{s \in S \mid s \sqsubseteq t}$ forms a principal ideal.
+Let $\set{w_1, w_2, w_3}$ be the set of worlds.
+```
+
+### Fail Example
+```latex
+% Bad: Raw escaped braces
+The set of states $\{ s \in S \mid s \sqsubseteq t \}$ forms a principal ideal.
+Let $\{ w_1, w_2, w_3 \}$ be the set of worlds.
+```
+
+### When to Use
+- Set builder notation: `\set{x \mid P(x)}`
+- Enumerated sets: `\set{a, b, c}`
+- Named sets with conditions: `\set{s \in S \mid \text{condition}}`
+
+### When NOT to Use
+- Grouping in math expressions: `{a + b}^2` (no \set)
+- Function arguments: `f\{x\}` if intentionally emphasizing argument
+- Literal brace characters in text: `\{` and `\}` are appropriate
+
 ## File Organization
 
 ### Main Document Structure
@@ -222,3 +258,5 @@ A constitutive frame is F = <S, ⊑> where S is states and ⊑ is partial order.
 - [ ] No overfull hboxes in compiled output
 - [ ] Named theorems use italics in prose, normal text in environment brackets
 - [ ] Definitions appear before first use in prose
+- [ ] Use `\set{}` macro for set notation (not `\{ \}`)
+- [ ] Lean source references placed at end of sections with `\noindent`
