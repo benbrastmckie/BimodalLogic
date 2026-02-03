@@ -36,6 +36,28 @@ The `logos-notation.sty` package provides consistent notation for Logos document
 | Essence | `\essence` | ⊑ | A essential to B |
 | Ground | `\ground` | ≤ | A grounds B |
 
+### Bilateral Top/Bottom Elements
+
+In bilateral semantics, propositions are ordered by TWO distinct orderings, each with its own top and bottom elements:
+
+| Concept | Macro | Symbol | Definition | Ordering |
+|---------|-------|--------|------------|----------|
+| Top | `\top` | ⊤ | primitive | Ground ordering (≤) |
+| Bottom | `\bot` | ⊥ | primitive | Ground ordering (≤) |
+| Verum | `\ver` or `\Top` | ⊤̵ (strikethrough) | `\neg\bot` | Parthood ordering (⊑) |
+| Falsum | `\fal` or `\Bot` | ⊥̵ (strikethrough) | `\neg\top` | Parthood ordering (⊑) |
+
+**Important distinctions**:
+- `\top` and `\bot` are the standard top/bottom constants (top and bottom for the ground ordering)
+- `\Top` and `\Bot` are strikethrough variants denoting top/bottom for the parthood ordering
+- `\ver` (verum) is an alias for `\Top`, defined as `\neg\bot`
+- `\fal` (falsum) is an alias for `\Bot`, defined as `\neg\top`
+
+**When to use which**:
+- In standard propositional contexts: use `\top` and `\bot`
+- When discussing the parthood ordering: use `\ver`/`\Top` and `\fal`/`\Bot`
+- The verum is verified by all states; the falsum is verified by no state
+
 ## Core Extension Notation
 
 ### Variable Assignment

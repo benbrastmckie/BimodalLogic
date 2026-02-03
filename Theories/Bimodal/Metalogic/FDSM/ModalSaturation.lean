@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.FMP.Closure
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
 # Modal Saturation Construction for FDSM
@@ -127,15 +128,10 @@ theorem witness_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M
   -- Get the derivation from L to bot
   obtain ⟨d_bot⟩ := h_incons
 
-  -- Separate L into psi and the box formulas
-  -- For now, use a simplified proof that works for finite cases
-
   -- Key insight: if psi :: Gamma ⊢ ⊥ and Gamma comes from Box formulas in M,
-  -- then Gamma ⊢ neg psi, and by necessitation Box(neg psi) is derivable from M
+  -- then Gamma ⊢ neg psi, and by generalized_modal_k: Box Gamma ⊢ Box(neg psi)
+  -- Since Box Gamma ⊆ M, we get Box(neg psi) ∈ M, contradicting Diamond psi ∈ M
 
-  -- We'll use a proof by cases on whether psi is actually used in the derivation
-
-  -- Case 1: L doesn't contain psi
   by_cases h_psi_in_L : psi ∈ L
   · -- Case 2: L contains psi
     -- Let Gamma = L.filter (· ≠ psi)
@@ -174,20 +170,25 @@ theorem witness_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M
     have d_neg_psi : DerivationTree Gamma (Formula.neg psi) :=
       deduction_theorem Gamma psi Formula.bot d_bot'
 
-    -- Now we need to show Box(neg psi) is in M
-    -- This requires necessitation on Gamma
+    -- By generalized_modal_k: Box Gamma ⊢ Box(neg psi)
+    have d_box_neg_psi : DerivationTree (Context.map Formula.box Gamma) (Formula.box (Formula.neg psi)) :=
+      Theorems.generalized_modal_k Gamma (Formula.neg psi) d_neg_psi
 
-    -- Since all formulas in Gamma have their Box in M, and M is MCS,
-    -- if Gamma ⊢ neg psi, we need to show Box(neg psi) ∈ M
+    -- All elements of Box Gamma are in M
+    have h_box_Gamma_in_M : ∀ chi ∈ Context.map Formula.box Gamma, chi ∈ M := by
+      intro chi h_chi
+      rw [Context.mem_map_iff] at h_chi
+      obtain ⟨phi, h_phi_mem, h_chi_eq⟩ := h_chi
+      subst h_chi_eq
+      exact h_Gamma_box phi h_phi_mem
 
-    -- The key is: [Box chi_1, ..., Box chi_n] ⊢ Box (neg psi)
-    -- This follows from the K axiom and necessitation
+    -- Since M is MCS and Box Gamma ⊆ M derives Box(neg psi), we have Box(neg psi) ∈ M
+    have h_box_neg_psi_in_M : Formula.box (Formula.neg psi) ∈ M :=
+      set_mcs_closed_under_derivation h_mcs (Context.map Formula.box Gamma) h_box_Gamma_in_M d_box_neg_psi
 
-    -- However, this is the complex part of the modal logic proof.
-    -- For now, we accept this as the key modal saturation principle.
-
-    -- The inconsistency comes from: M contains both Box(neg psi) and neg(Box(neg psi))
-    sorry
+    -- But M also contains neg(Box(neg psi)) = Diamond psi
+    -- This contradicts MCS consistency: M contains both X and neg X
+    exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg psi)) h_box_neg_psi_in_M h_diamond
 
   · -- Case 1: L doesn't contain psi
     -- Then L ⊆ {chi | Box chi ∈ M}
@@ -200,16 +201,40 @@ theorem witness_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M
       · exact h_box
 
     -- L ⊢ ⊥, and all elements of L have their Box in M
-    -- By necessitation reasoning, this should give a contradiction
+    -- By generalized_modal_k: Box L ⊢ Box ⊥
+    have d_box_bot : DerivationTree (Context.map Formula.box L) (Formula.box Formula.bot) :=
+      Theorems.generalized_modal_k L Formula.bot d_bot
 
-    -- The reasoning is:
-    -- From [chi_1, ..., chi_n] ⊢ ⊥
-    -- We get [] ⊢ chi_1 → ... → chi_n → ⊥
-    -- By necessitation: [] ⊢ Box(chi_1 → ... → chi_n → ⊥)
-    -- By K axiom iterations: Box chi_1, ..., Box chi_n ⊢ Box ⊥
-    -- But Box ⊥ → ⊥ (by T axiom), so M would be inconsistent
+    -- All elements of Box L are in M
+    have h_box_L_in_M : ∀ chi ∈ Context.map Formula.box L, chi ∈ M := by
+      intro chi h_chi
+      rw [Context.mem_map_iff] at h_chi
+      obtain ⟨phi, h_phi_mem, h_chi_eq⟩ := h_chi
+      subst h_chi_eq
+      exact h_L_box phi h_phi_mem
 
-    sorry
+    -- Since M is MCS and Box L ⊆ M derives Box ⊥, we have Box ⊥ ∈ M
+    have h_box_bot_in_M : Formula.box Formula.bot ∈ M :=
+      set_mcs_closed_under_derivation h_mcs (Context.map Formula.box L) h_box_L_in_M d_box_bot
+
+    -- By T axiom: Box ⊥ → ⊥
+    have d_t_axiom : ⊢ (Formula.box Formula.bot).imp Formula.bot :=
+      DerivationTree.axiom [] _ (Axiom.modal_t Formula.bot)
+
+    -- T axiom is in every MCS
+    have h_t_in_M : (Formula.box Formula.bot).imp Formula.bot ∈ M :=
+      set_mcs_closed_under_derivation h_mcs [] (fun _ h => by simp at h) d_t_axiom
+
+    -- So ⊥ ∈ M (by MCS implication property)
+    have h_bot_in_M : Formula.bot ∈ M :=
+      set_mcs_implication_property h_mcs h_t_in_M h_box_bot_in_M
+
+    -- But M is consistent, so ⊥ ∉ M - contradiction
+    -- [⊥] ⊢ ⊥ via assumption
+    have d_bot_from_bot : DerivationTree [Formula.bot] Formula.bot :=
+      DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
+
+    exact h_mcs.1 [Formula.bot] (by intro chi hchi; simp at hchi; subst hchi; exact h_bot_in_M) ⟨d_bot_from_bot⟩
 
 /-!
 ## Modal Backward from Saturation

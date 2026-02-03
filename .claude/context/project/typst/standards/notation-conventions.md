@@ -79,7 +79,29 @@ The template.typ imports notation, making it available to chapters.
 |--------|---------|-------------|
 | `$arrow.r$` | `imp` | Implication |
 | `$not$` | `lneg` | Negation |
-| `$bot$` | `falsum` | Bottom/falsity |
+| `$bot$` | `bottom` | Bottom (primitive, ground ordering) |
+| `$top$` | `top` | Top (primitive, ground ordering) |
+
+### Bilateral Top/Bottom Elements
+
+In bilateral semantics, there are TWO orderings with distinct top/bottom elements.
+This is a Logos-specific distinction that does not apply to standard modal logic in Bimodal.
+
+| Symbol | Command | Definition | Ordering |
+|--------|---------|------------|----------|
+| `$top$` | `top` | primitive | Ground ordering |
+| `$bot$` | `bottom` | primitive | Ground ordering |
+| `$top$ with strikethrough` | `verum` | `$not bot$` | Parthood ordering |
+| `$bot$ with strikethrough` | `falsum` | `$not top$` | Parthood ordering |
+
+**Note**: Typst does not have built-in strikethrough math symbols.
+For Logos documentation requiring verum/falsum distinction, use:
+- LaTeX with `logos-notation.sty` macros (`\ver`, `\fal`, `\Top`, `\Bot`)
+- Or define custom Typst symbols using `#let verum = ...` if needed
+
+**Terminology**:
+- "top" and "bottom" refer to `$top$` and `$bot$` (ground ordering)
+- "verum" and "falsum" refer to `$not bot$` and `$not top$` (parthood ordering)
 
 ### Lean Cross-References
 
