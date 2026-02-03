@@ -3,8 +3,8 @@
   "started_at": "2026-02-03T12:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+    "stage": "synthesizing",
+    "details": "Source documents analyzed, creating research report"
   },
   "metadata": {
     "session_id": "sess_1770155762_4297dd",
