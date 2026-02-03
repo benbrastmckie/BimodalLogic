@@ -6,15 +6,31 @@
   },
   "active_projects": [
     {
+      "project_number": 826,
+      "project_name": "fdsm_completeness_saturated_construction",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Replace single-history fdsm_from_closure_mcs in Completeness.lean with proper saturated construction from Phase 4. The current implementation (lines 67-91) creates only one history, which trivializes modal operators. After task 825 completes saturated_histories, update: (1) Replace fdsm_from_closure_mcs with fdsm_from_saturated_histories that uses the modal saturation fixed point, (2) Update modal_saturated proof to use the saturation property instead of single-history trivialization, (3) Ensure eval_history is properly selected from the saturated set. This bridges Phase 4 to Phase 6.",
+      "effort": "2 hours",
+      "parent_task": 816,
+      "dependencies": [
+        825
+      ],
+      "created": "2026-02-03T02:50:16Z",
+      "last_updated": "2026-02-03T02:50:16Z"
+    },
+    {
       "project_number": 825,
       "project_name": "fdsm_multi_history_modal_saturation",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "description": "Complete Phase 4 from implementation-003.md for task 816. The current single-history construction in Completeness.lean trivializes modal operators (making Box φ ≡ φ), which validates invalid principles as warned in research-013.md. Replace fdsm_from_closure_mcs with proper multi-history saturated construction: (1) Define saturation_step to add witness histories for unsatisfied Diamond formulas, (2) Define saturated_histories as fixed point, (3) Prove termination via 2^closureSize bound, (4) Prove modal_saturated property at fixed point, (5) Derive modal_backward from saturation contrapositive. Files: Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean (continue Phase 4 section starting line 287).",
       "effort": "4-5 hours",
       "parent_task": 816,
       "created": "2026-02-03T02:44:55Z",
-      "last_updated": "2026-02-03T02:44:55Z"
+      "last_updated": "2026-02-03T02:50:23Z",
+      "session_id": "sess_1770086731_7dfdbc",
+      "researched": "2026-02-03T02:50:23Z"
     },
     {
       "project_number": 823,
@@ -463,7 +479,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 826,
+  "next_project_number": 827,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

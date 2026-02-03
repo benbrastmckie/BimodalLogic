@@ -1,5 +1,5 @@
 ---
-next_project_number: 826
+next_project_number: 827
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,20 @@ technical_debt:
 
 ## Tasks
 
+### 826. Update FDSM Completeness to Use Saturated Construction
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Dependencies**: 825
+
+**Description**: Replace single-history fdsm_from_closure_mcs in Completeness.lean with proper saturated construction from Phase 4. The current implementation (lines 67-91) creates only one history, which trivializes modal operators. After task 825 completes saturated_histories, update: (1) Replace fdsm_from_closure_mcs with fdsm_from_saturated_histories that uses the modal saturation fixed point, (2) Update modal_saturated proof to use the saturation property instead of single-history trivialization, (3) Ensure eval_history is properly selected from the saturated set. This bridges Phase 4 to Phase 6.
+
+---
+
 ### 825. Complete FDSM Multi-History Modal Saturation
 - **Effort**: 4-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Dependencies**: 816
