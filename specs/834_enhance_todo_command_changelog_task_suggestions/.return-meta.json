@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/834_enhance_todo_command_changelog_task_suggestions/reports/research-001.md",
-      "summary": "Research report with Changelog update design, task suggestion generation pattern, and implementation recommendations for /todo command enhancement"
+      "type": "plan",
+      "path": "specs/834_enhance_todo_command_changelog_task_suggestions/plans/implementation-001.md",
+      "summary": "3-phase implementation plan for adding Changelog updates and task suggestions to /todo command"
     }
   ],
-  "next_steps": "Run /plan 834 to create implementation plan",
+  "next_steps": "Run /implement 834 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770110965_f0af7f",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 600,
+    "session_id": "sess_1770111240_5d69e1",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.5
   }
 }

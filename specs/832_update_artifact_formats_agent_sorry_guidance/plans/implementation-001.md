@@ -1,7 +1,7 @@
 # Implementation Plan: Task #832
 
 - **Task**: 832 - update_artifact_formats_agent_sorry_guidance
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: Task 831 (provides updated sorry-debt-policy.md with framing rules)
 - **Research Inputs**: specs/832_update_artifact_formats_agent_sorry_guidance/reports/research-001.md
@@ -49,7 +49,7 @@ Research report research-001.md identified 6 specific updates with exact inserti
 
 ## Implementation Phases
 
-### Phase 1: Update report-format.md [NOT STARTED]
+### Phase 1: Update report-format.md [COMPLETED]
 
 **Goal**: Add conditional Sorry Characterization section for Lean reports
 
@@ -71,7 +71,7 @@ Research report research-001.md identified 6 specific updates with exact inserti
 
 ---
 
-### Phase 2: Update plan-format.md [NOT STARTED]
+### Phase 2: Update plan-format.md [COMPLETED]
 
 **Goal**: Add conditional Sorry Characterization section for Lean plans
 
@@ -93,7 +93,7 @@ Research report research-001.md identified 6 specific updates with exact inserti
 
 ---
 
-### Phase 3: Update lean-research-agent.md [NOT STARTED]
+### Phase 3: Update lean-research-agent.md [COMPLETED]
 
 **Goal**: Make sorry-debt-policy.md mandatory and add framing prohibition
 
@@ -115,7 +115,7 @@ Research report research-001.md identified 6 specific updates with exact inserti
 
 ---
 
-### Phase 4: Update lean-implementation-agent.md [NOT STARTED]
+### Phase 4: Update lean-implementation-agent.md [COMPLETED]
 
 **Goal**: Make sorry-debt-policy.md mandatory and add framing prohibition
 
@@ -137,7 +137,7 @@ Research report research-001.md identified 6 specific updates with exact inserti
 
 ---
 
-### Phase 5: Verification [NOT STARTED]
+### Phase 5: Verification [IN PROGRESS]
 
 **Goal**: Ensure all changes are correct and consistent
 

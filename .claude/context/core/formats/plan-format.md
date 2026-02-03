@@ -67,10 +67,11 @@ Plans may include a `plan_metadata` object in state.json tracking plan character
 1. **Overview** – 2-4 sentences: problem, scope, constraints, definition of done. May include "Research Integration" subsection listing integrated reports.
 2. **Goals & Non-Goals** – bullets.
 3. **Risks & Mitigations** – bullets.
-4. **Implementation Phases** – under `## Implementation Phases` with each phase at level `###` and including a status marker at the end of the heading.
-5. **Testing & Validation** – bullets/tests to run.
-6. **Artifacts & Outputs** – enumerate expected outputs with paths.
-7. **Rollback/Contingency** – brief plan if changes must be reverted.
+4. **Sorry Characterization (Lean plans only)** – document sorry handling with framing rules (see below).
+5. **Implementation Phases** – under `## Implementation Phases` with each phase at level `###` and including a status marker at the end of the heading.
+6. **Testing & Validation** – bullets/tests to run.
+7. **Artifacts & Outputs** – enumerate expected outputs with paths.
+8. **Rollback/Contingency** – brief plan if changes must be reverted.
 
 ## Implementation Phases (format)
 - Heading: `### Phase N: {name} [STATUS]`
@@ -80,6 +81,55 @@ Plans may include a `plan_metadata` object in state.json tracking plan character
   - **Timing:** expected duration or window
   - **Owner:** (optional)
   - **Started/Completed/Blocked/Abandoned:** timestamp lines when status changes (ISO8601). Do not leave null placeholders.
+
+## Sorry Characterization (Lean plans only)
+
+**Applicability**: Include this section only for Lean implementation plans. For non-Lean plans (general, meta, latex, typst), this section should be omitted.
+
+**Purpose**: Documents how the implementation will handle sorries - both pre-existing ones being resolved and any new ones being introduced. Sorries are technical debt that block publication and propagate to dependents.
+
+**Required Elements**:
+- **Pre-existing Sorries**: Sorries in scope that this implementation addresses
+- **Expected Resolution**: Which sorries will be resolved and how
+- **New Sorries**: Any sorries introduced (should be rare and justified)
+- **Remaining Debt**: Sorries that will remain after implementation, with remediation timeline
+
+**Framing Rules**:
+
+NEVER use these phrases (they imply sorries can be permanently acceptable):
+- "acceptable sorry"
+- "acceptable limitation"
+- "sorry is fine"
+- "okay to have sorry"
+- "N acceptable sorries"
+
+ALWAYS use these phrases (they acknowledge temporary technical debt):
+- "tolerated during development"
+- "technical debt requiring remediation"
+- "blocks publication"
+- "inherited by dependents"
+- "remediation priority: high/medium/low"
+
+**Example**:
+```markdown
+## Sorry Characterization
+
+### Pre-existing Sorries
+- 2 sorries in `Completeness.lean` at lines 42, 78 (inherited from prior work)
+
+### Expected Resolution
+- Phase 2 resolves line 42 sorry via canonical model construction
+- Phase 3 resolves line 78 sorry via truth preservation lemma
+
+### New Sorries
+- None expected. If proof complexity requires temporary sorry, will document with remediation timeline.
+
+### Remaining Debt
+After this implementation:
+- 0 sorries expected in `Completeness.lean`
+- Downstream theorems will no longer inherit sorry status
+- Publication no longer blocked by these specific sorries
+```
 
 ## Status Marker Requirements
 - Use markers exactly as defined in status-markers.md.

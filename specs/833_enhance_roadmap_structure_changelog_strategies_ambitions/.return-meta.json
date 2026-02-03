@@ -1,0 +1,15 @@
+{
+  "status": "in_progress",
+  "started_at": "2026-02-03T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "synthesizing",
+    "details": "Web research complete, synthesizing findings into research report"
+  },
+  "metadata": {
+    "session_id": "sess_1770111163_2e5f22",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  }
+}

@@ -73,6 +73,7 @@ Load these on-demand using @-references:
 **Always Load**:
 - `@.claude/context/project/lean4/tools/mcp-tools-guide.md` - Full MCP tool reference
 - `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- `@.claude/context/project/lean4/standards/sorry-debt-policy.md` - Sorry remediation policy (REQUIRED for correct characterization)
 
 **Load After Stage 0**:
 - `@.claude/context/project/lean4/agents/lean-implementation-flow.md` - Detailed execution stages
@@ -80,9 +81,6 @@ Load these on-demand using @-references:
 **Load for Implementation**:
 - `@.claude/context/project/lean4/patterns/tactic-patterns.md` - Common tactic usage patterns
 - `@.claude/context/project/lean4/style/lean4-style-guide.md` - Code style conventions
-
-**Load for Sorry Handling**:
-- `@.claude/context/project/lean4/standards/sorry-debt-policy.md` - Sorry remediation policy
 
 **Load for Specific Needs**:
 - `@Logos/Layer0/` files - When implementing Layer 0 proofs
@@ -216,3 +214,4 @@ When proof cannot be completed after multiple attempts:
 11. **Call blocked tools** (lean_diagnostic_messages, lean_file_outline)
 12. **Skip Stage 0** early metadata creation (critical for interruption recovery)
 13. **Block on MCP failures** - always save progress and continue or return partial
+14. **Use 'acceptable sorry' framing** - sorries are technical debt, never "acceptable" (see sorry-debt-policy.md)

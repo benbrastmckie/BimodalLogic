@@ -1,7 +1,7 @@
 # Implementation Plan: Task #830
 
 - **Task**: 830 - standardize_metalogic_documentation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/830_standardize_metalogic_documentation/reports/research-001.md
@@ -52,7 +52,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Decidability/README.md [NOT STARTED]
+### Phase 1: Create Decidability/README.md [COMPLETED]
 
 **Goal**: Create missing README for the 8-file Decidability/ subdirectory following Template D.
 
@@ -76,7 +76,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Fix FMP/README.md [NOT STARTED]
+### Phase 2: Fix FMP/README.md [COMPLETED]
 
 **Goal**: Correct major inaccuracies in FMP/README.md to reflect actual 4-file directory structure.
 
@@ -100,7 +100,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update Bundle/README.md [NOT STARTED]
+### Phase 3: Update Bundle/README.md [IN PROGRESS]
 
 **Goal**: Add missing ModalSaturation.lean and verify sorry counts.
 

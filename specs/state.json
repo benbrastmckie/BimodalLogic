@@ -40,12 +40,12 @@
     {
       "project_number": 832,
       "project_name": "update_artifact_formats_agent_sorry_guidance",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "created": "2026-02-03T10:30:00Z",
-      "last_updated": "2026-02-03T09:30:53Z",
+      "last_updated": "2026-02-03T09:33:45Z",
       "description": "Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements.",
-      "session_id": "sess_1770110908_7f2f84",
+      "session_id": "sess_1770111207_602a37",
       "researched": "2026-02-03T09:24:48Z",
       "artifacts": [
         {
@@ -59,7 +59,8 @@
           "summary": "5-phase plan covering report-format.md, plan-format.md, lean-research-agent.md, and lean-implementation-agent.md updates"
         }
       ],
-      "planned": "2026-02-03T09:30:53Z"
+      "planned": "2026-02-03T09:30:53Z",
+      "started": "2026-02-03T09:33:45Z"
     },
     {
       "project_number": 829,
@@ -95,11 +96,11 @@
     {
       "project_number": 830,
       "project_name": "standardize_metalogic_documentation",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "created": "2026-02-03T09:00:34Z",
-      "last_updated": "2026-02-03T09:31:19Z",
-      "session_id": "sess_1770110937_cf23b7",
+      "last_updated": "2026-02-03T09:34:03Z",
+      "session_id": "sess_1770111223_cc2258",
       "researched": "2026-02-03T09:27:28Z",
       "artifacts": [
         {
@@ -113,7 +114,8 @@
           "summary": "6-phase implementation plan covering README creation, content corrections, cross-link standardization, and verification"
         }
       ],
-      "planned": "2026-02-03T09:31:19Z"
+      "planned": "2026-02-03T09:31:19Z",
+      "started": "2026-02-03T09:34:03Z"
     },
     {
       "project_number": 827,
@@ -560,24 +562,30 @@
     {
       "project_number": 834,
       "project_name": "enhance_todo_command_changelog_task_suggestions",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:32:53Z",
+      "last_updated": "2026-02-03T09:36:04Z",
       "effort": "3-4 hours",
       "dependencies": [
         833
       ],
       "description": "Extend /todo command to: (1) Update ROADMAP.md Changelog section when archiving completed tasks, (2) Add task suggestion generation at end of /todo execution (scan active tasks, ROADMAP.md Ambitions, and recent completions to propose 3-5 next tasks similar to /learn output), (3) Update skill-status-sync or create new skill if delegation is needed. Ensure atomic updates to ROADMAP.md follow state management rules.",
-      "session_id": "sess_1770110965_f0af7f",
+      "session_id": "sess_1770111240_5d69e1",
       "researched": "2026-02-03T09:32:53Z",
       "artifacts": [
         {
           "path": "specs/834_enhance_todo_command_changelog_task_suggestions/reports/research-001.md",
           "type": "research",
           "summary": "Research report with Changelog update design, task suggestion generation pattern, and implementation recommendations for /todo command enhancement"
+        },
+        {
+          "path": "specs/834_enhance_todo_command_changelog_task_suggestions/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for adding Changelog updates and task suggestions to /todo command"
         }
-      ]
+      ],
+      "planned": "2026-02-03T09:36:04Z"
     },
     {
       "project_number": 835,

@@ -36,6 +36,54 @@
 - **Alternative Paths**: Where this provides redundancy or different approaches. Example: "Alternative to the algebraic completeness approach in `Theories/Algebraic/`"
 - **Potential Extensions**: New directions this enables or suggests. Example: "Could extend to multi-modal logics, temporal operators"
 
+## Sorry Characterization (Lean reports only)
+
+**Applicability**: Include this section only for Lean research reports when documenting sorry occurrences. For non-Lean reports (general, meta, latex, typst), this section should be omitted.
+
+**Purpose**: Documents sorry occurrences with accurate technical characterization. Sorries are technical debt that block publication and propagate to dependents - they require explicit remediation, not acceptance.
+
+**Required Elements**:
+- **Current State**: Count and location of sorries in scope
+- **Transitive Impact**: Which theorems/lemmas inherit sorry status from these
+- **Remediation Path**: How each sorry can be resolved (proof approach, missing lemmas, etc.)
+- **Publication Blockers**: Sorries that must be resolved before publication
+
+**Framing Rules**:
+
+NEVER use these phrases (they imply sorries can be permanently acceptable):
+- "acceptable sorry"
+- "acceptable limitation"
+- "sorry is fine"
+- "okay to have sorry"
+- "N acceptable sorries"
+
+ALWAYS use these phrases (they acknowledge temporary technical debt):
+- "tolerated during development"
+- "technical debt requiring remediation"
+- "blocks publication"
+- "inherited by dependents"
+- "remediation priority: high/medium/low"
+
+**Example**:
+```markdown
+## Sorry Characterization
+
+### Current State
+- 3 sorries in `Completeness.lean` (lines 42, 78, 156)
+
+### Transitive Impact
+- `Main.DecidabilityTheorem` inherits sorry status from `Completeness.completeness`
+- All downstream dependents are blocked from publication
+
+### Remediation Path
+- Line 42: Requires proof of canonical model construction (see task 450)
+- Line 78: Missing lemma for truth preservation, estimated 2 hours
+- Line 156: Requires induction strengthening, medium complexity
+
+### Publication Status
+These sorries block publication. Remediation priority: high.
+```
+
 ## Timestamps
 - Include **Started** timestamp when research/analysis begins
 - Include **Completed** timestamp when report is finalized
