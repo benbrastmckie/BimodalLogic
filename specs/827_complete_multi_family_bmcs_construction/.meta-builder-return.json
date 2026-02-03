@@ -1,0 +1,36 @@
+{
+  "status": "awaiting_confirmation",
+  "summary": "Analyzed ROADMAP enhancement request and proposed 3 consolidated tasks: (1) Enhance ROADMAP.md structure with Changelog/Strategies/Ambitions sections, (2) Enhance /todo command with changelog updates and task suggestions, (3) Enhance /review command with ROADMAP integration and revision.",
+  "artifacts": [],
+  "metadata": {
+    "session_id": "sess_1738619847_meta01",
+    "agent_type": "meta-builder-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "meta", "skill-meta", "meta-builder-agent"],
+    "mode": "prompt"
+  },
+  "next_steps": "User must confirm proposed task breakdown before tasks are created",
+  "proposed_tasks": [
+    {
+      "title": "Enhance ROADMAP.md Structure with Changelog, Strategies, and Ambitions",
+      "language": "general",
+      "effort": "2-3 hours",
+      "description": "Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status (e.g., 'FMP-based completeness - In Progress', 'Multi-family BMCS - Completed'), (3) Ambitions - big picture goals for the project. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.",
+      "dependencies": []
+    },
+    {
+      "title": "Enhance /todo Command with Changelog Updates and Task Suggestions",
+      "language": "meta",
+      "effort": "3-4 hours",
+      "description": "Extend /todo command to: (1) Update ROADMAP.md Changelog section when archiving completed tasks (extract completion_summary from state.json, format with date and task number), (2) Add task suggestion generation at end of /todo execution (scan active tasks, ROADMAP.md Ambitions, and recent completions to propose 3-5 next tasks similar to /learn output), (3) Update skill-status-sync or create new skill if delegation is needed. Ensure atomic updates to ROADMAP.md follow state management rules.",
+      "dependencies": [833]
+    },
+    {
+      "title": "Enhance /review Command with ROADMAP.md Integration and Revision",
+      "language": "meta",
+      "effort": "4-5 hours",
+      "description": "Extend /review command to: (1) Begin by loading and analyzing ROADMAP.md context (Strategies and Ambitions sections) to inform codebase review, (2) End by revising ROADMAP.md based on review findings (update strategy statuses, propose new ambitions, identify gaps), (3) Conclude with task suggestions based on findings (like /learn), (4) Create skill-reviewer if delegation is needed, or extend existing review logic in review.md command. Ensure changes follow checkpoint-based execution pattern.",
+      "dependencies": [833]
+    }
+  ]
+}
