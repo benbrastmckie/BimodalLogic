@@ -1516,6 +1516,61 @@ Users can choose "Skip all" to decline automatic application. Suggestions are th
 **Edit Failure Handling**:
 If an Edit operation fails (section not found, text mismatch), the failure is logged and reported. The user can manually apply the suggestion afterward.
 
+### Changelog Updates
+
+**Overview**:
+Step 5.8 automatically updates the ROAD_MAP.md Changelog section when archiving completed tasks.
+
+**Prerequisites**:
+- Task 833 must be implemented first (creates the Changelog section structure)
+- Only completed tasks are added (abandoned tasks are NOT included in Changelog)
+
+**Entry Format**:
+```markdown
+### YYYY-MM-DD
+
+- **Task {N}**: {completion_summary} [(details)](path/to/summary)
+```
+
+**Behavior**:
+1. Groups completed tasks by their completion date (YYYY-MM-DD)
+2. If a date header exists, appends new entries after it
+3. If a date header doesn't exist, creates it in reverse chronological order
+4. Optionally includes a link to the implementation summary if it exists
+
+**Graceful Degradation**:
+- If Changelog section is missing from ROAD_MAP.md, Step 5.8 is skipped with a note
+- If no completed tasks are being archived, Step 5.8 is a no-op
+
+**Date Extraction**:
+The date is extracted from the task's `last_updated`, `completed`, or `archived` timestamp in state.json.
+
+### Task Suggestions
+
+**Overview**:
+Step 7.5 generates 3-5 actionable task suggestions displayed at the end of /todo output.
+
+**Sources Analyzed** (in priority order):
+1. **Active tasks**: Identifies unblocked tasks ready to start
+2. **Stale tasks**: Finds tasks that have been `not_started` for >7 days
+3. **ROADMAP Ambitions**: Extracts unchecked success criteria (requires Task 833)
+4. **ROADMAP Strategies**: Finds ACTIVE strategies with next steps (requires Task 833)
+5. **Recent completions**: Identifies follow-up patterns (e.g., Phase 1 complete → check for Phase 2)
+
+**Suggestion Priority**:
+1. Unblocked tasks ready to start/plan/implement
+2. Stale tasks needing attention
+3. Ambition progress indicators
+4. Strategy next step reminders
+5. Maintenance suggestions (e.g., `/learn` for cleanup)
+
+**Output Format**:
+Follows the `/learn` command pattern with numbered recommendations and a summary line.
+
+**Graceful Degradation**:
+- If Ambitions/Strategies sections don't exist, those suggestion sources are skipped
+- If no suggestions are available, displays "All looks good! No immediate actions needed."
+
 ### jq Pattern Safety (Issue #1132)
 
 **Problem**: Claude Code Issue #1132 causes jq commands with `!=` operators to fail with `INVALID_CHARACTER` or syntax errors when Claude generates them inline.
