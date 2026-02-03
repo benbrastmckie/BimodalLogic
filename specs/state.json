@@ -22,22 +22,28 @@
     {
       "project_number": 842,
       "project_name": "formalize_zorn_lemma_exists_fullySaturated_extension",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "effort": "8-16 hours",
       "description": "Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)",
       "parent_task": 841,
       "created": "2026-02-03T19:04:53Z",
-      "last_updated": "2026-02-03T19:10:10Z",
-      "session_id": "sess_1738614396_2b4cf1",
+      "last_updated": "2026-02-03T19:14:09Z",
+      "session_id": "sess_1738614593_bb9017",
       "researched": "2026-02-03T19:10:10Z",
       "artifacts": [
         {
           "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md",
           "type": "research",
           "summary": "Research on Zorn'\\''s lemma formalization for exists_fullySaturated_extension: identified zorn_subset_nonempty as recommended API, outlined proof strategy for chain upper bounds and maximality implies saturation"
+        },
+        {
+          "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for Zorn'\\''s lemma proof in exists_fullySaturated_extension"
         }
-      ]
+      ],
+      "planned": "2026-02-03T19:14:09Z"
     },
     {
       "project_number": 841,
@@ -76,11 +82,11 @@
     {
       "project_number": 840,
       "project_name": "refactor_truthlemma_forward_backward_publication",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-03T10:23:36Z",
-      "last_updated": "2026-02-03T19:08:10Z",
-      "session_id": "sess_1770145446_32e7c1",
+      "last_updated": "2026-02-03T19:11:17Z",
+      "session_id": "sess_1770145858_4ef906",
       "researched": "2026-02-03T19:08:10Z",
       "artifacts": [
         {

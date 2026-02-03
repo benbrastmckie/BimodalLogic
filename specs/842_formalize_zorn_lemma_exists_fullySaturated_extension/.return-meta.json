@@ -1,18 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-03T12:00:00Z",
-  "completed_at": "2026-02-03T12:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md",
-      "summary": "Research on Zorn's lemma formalization for exists_fullySaturated_extension: identified zorn_subset_nonempty as recommended API, outlined proof strategy for chain upper bounds and maximality implies saturation"
+      "type": "plan",
+      "path": "specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for Zorn's lemma proof in exists_fullySaturated_extension"
     }
   ],
+  "next_steps": "Run /implement 842 to execute the plan",
   "metadata": {
-    "session_id": "sess_1738614396_2b4cf1",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1738614593_bb9017",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": "11-14"
   }
 }
