@@ -24,15 +24,17 @@ technical_debt:
 
 ### 847. Restructure Constitutive Semantics section
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: latex
 - **Priority**: medium
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
 - **Started**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/847_restructure_constitutive_semantics_section/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/847_restructure_constitutive_semantics_section/plans/implementation-001.md)
+- **Summary**: Created new Constitutive Semantics subsection with introduction explaining bilateral exact truthmaker semantics, hyperintensionality, and exactness. Removed TODO comment and converted remark to prose. Document compiles cleanly at 41 pages.
 
 **Description**: Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section "Constitutive Semantics" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.
 
@@ -97,7 +99,7 @@ technical_debt:
 
 ### 839. Clean linter warnings in Metalogic files
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Source**: /review 2026-02-03

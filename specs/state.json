@@ -8,13 +8,13 @@
     {
       "project_number": 847,
       "project_name": "restructure_constitutive_semantics_section",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "priority": "medium",
       "effort": "1 hour",
       "description": "Restructure semantic clauses in 02-ConstitutiveFoundation.tex: Create new section \"Constitutive Semantics\" with introduction explaining bilateral exact truthmaker semantics and hyperintensionality. Move remark at line 316 to introduction. Convert current subsections (Atomic Formulas through Propositional Identity) to subsubsections under new section. See line 312 for detailed requirements.",
       "created": "2026-02-03T21:09:57Z",
-      "last_updated": "2026-02-03T22:18:52Z",
+      "last_updated": "2026-02-03T22:21:42Z",
       "session_id": "sess_1770157114_634c7f",
       "researched": "2026-02-03T22:04:56Z",
       "artifacts": [
@@ -27,10 +27,17 @@
           "path": "specs/847_restructure_constitutive_semantics_section/plans/implementation-001.md",
           "type": "plan",
           "summary": "1-phase plan to create Constitutive Semantics subsection with introduction explaining bilateral exact truthmaker semantics"
+        },
+        {
+          "path": "specs/847_restructure_constitutive_semantics_section/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Implementation summary with compilation verification results"
         }
       ],
       "planned": "2026-02-03T22:15:41Z",
-      "started": "2026-02-03T22:18:52Z"
+      "started": "2026-02-03T22:18:52Z",
+      "completed": "2026-02-03T22:21:42Z",
+      "completion_summary": "Created new Constitutive Semantics subsection with introduction explaining bilateral exact truthmaker semantics, hyperintensionality, and exactness. Removed TODO comment and converted remark to prose. Document compiles cleanly at 41 pages."
     },
     {
       "project_number": 844,
@@ -416,11 +423,13 @@
     {
       "project_number": 839,
       "project_name": "clean_linter_warnings",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-02-03T11:25:00Z",
-      "description": "Clean up linter warnings in SoundnessLemmas.lean (10+ 'Try this' suggestions, unused simp args), TaskFrame.lean (duplicate namespace), and WorldHistory.lean (unused section variables). Apply suggested refactorings."
+      "description": "Clean up linter warnings in SoundnessLemmas.lean (10+ 'Try this' suggestions, unused simp args), TaskFrame.lean (duplicate namespace), and WorldHistory.lean (unused section variables). Apply suggested refactorings.",
+      "last_updated": "2026-02-03T22:21:35Z",
+      "session_id": "sess_1770157278_d1d4c7"
     }
   ],
   "completed_projects": [
