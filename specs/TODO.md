@@ -24,7 +24,7 @@ technical_debt:
 
 ### 826. Update FDSM Completeness to Use Saturated Construction
 - **Effort**: 12-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -74,7 +74,7 @@ technical_debt:
 
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-03
@@ -88,7 +88,7 @@ technical_debt:
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -100,7 +100,7 @@ technical_debt:
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Parent**: Task 381
 - **Subtasks**: 398, 399
@@ -135,7 +135,7 @@ technical_debt:
 
 ### 685. Derive world-history and Barcan theorems
  **Effort**: 8-10 hours
- **Status**: [RESEARCHED]
+ **Status**: [PLANNED]
  **Language**: lean
  **Created**: 2026-01-26
  **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
@@ -181,7 +181,7 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Researched**: 2026-01-28
 - **Language**: meta
 - **Created**: 2026-01-19
