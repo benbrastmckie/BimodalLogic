@@ -2,7 +2,7 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
 import Bimodal.Theorems.Propositional
--- import Bimodal.Automation.ProofSearch  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
+import Bimodal.Automation
 
 /-!
 # Modal Logic Proof Examples
@@ -57,7 +57,7 @@ open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Combinators
 open Bimodal.Theorems.Propositional
--- open Bimodal.Automation (ProofSearch)  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
+open Bimodal.Automation
 
 /-!
 ## Axiom T: Reflexivity (`□φ → φ`)
@@ -291,17 +291,33 @@ example : ⊢ (Formula.atom "I_exist").imp (Formula.atom "I_exist").diamond.box 
 /-!
 ## Automated Proof Search
 
-NOTE: The following examples are commented out pending completion of Task 260 (ProofSearch).
-The bounded proof search capabilities will demonstrate automatic proof discovery.
-
-These examples will demonstrate the bounded proof search capabilities.
-The `bounded_search` function attempts to automatically find derivations within a
-specified depth limit, using heuristics to prioritize promising search branches.
-
-TODO: Re-enable when Task 260 (ProofSearch) is unblocked.
+The `modal_search` tactic uses bounded proof search to automatically find
+derivations for modal logic goals. It discovers proofs involving axioms T, 4, B,
+modal K distribution, and modus ponens applications.
 -/
 
--- ProofSearch examples commented out - Task 260 is BLOCKED
--- See: specs/260_proof_search/plans/implementation-001.md
+/-- Automated proof of modal T axiom using modal_search -/
+example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") := by
+  modal_search
+
+/-- Automated proof of modal 4 axiom using modal_search -/
+example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").box.box := by
+  modal_search
+
+/-- Automated proof of modal B axiom using modal_search -/
+example : ⊢ (Formula.atom "p").imp (Formula.atom "p").diamond.box := by
+  modal_search
+
+/-- Automated proof of modal K distribution using modal_search -/
+example (p q : Formula) : ⊢ (p.imp q).box.imp (p.box.imp q.box) := by
+  modal_search
+
+/-- Automated context-aware proof using propositional_search -/
+example (p q : Formula) : [p, p.imp q] ⊢ q := by
+  propositional_search
+
+/-- Automated proof combining propositional reasoning -/
+example (p : Formula) : [p.imp p.neg.neg] ⊢ p.imp p.neg.neg := by
+  propositional_search
 
 end Bimodal.Examples.ModalProofs

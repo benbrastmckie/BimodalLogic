@@ -1,7 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.ProofSystem.Axioms
 import Bimodal.Theorems.Combinators
--- import Bimodal.Automation.ProofSearch  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
+import Bimodal.Automation
 
 /-!
 # Temporal Logic Proof Examples
@@ -67,7 +67,7 @@ namespace Bimodal.Examples.TemporalProofs
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Combinators
--- open Bimodal.Automation (ProofSearch)  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
+open Bimodal.Automation
 
 /-!
 ## Axiom T4: Temporal Transitivity (`Fφ → FFφ`)
@@ -313,15 +313,29 @@ example (φ : Formula) : φ.always = (△φ) := rfl
 /-!
 ## Automated Temporal Search
 
-NOTE: The following examples are commented out pending completion of Task 260 (ProofSearch).
-These examples will demonstrate automated proof search for temporal logic formulas.
-Temporal formulas typically require higher search depths than modal formulas
-due to the complexity of temporal operators.
-
-TODO: Re-enable when Task 260 (ProofSearch) is unblocked.
+The `temporal_search` tactic uses bounded proof search to automatically find
+derivations for temporal logic goals. It prioritizes temporal rules and can
+discover proofs involving axioms T4, TA, TL, and temporal K applications.
 -/
 
--- ProofSearch examples commented out - Task 260 is BLOCKED
--- See: specs/260_proof_search/plans/implementation-001.md
+/-- Automated proof of T4 axiom using temporal_search -/
+example : ⊢ (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future := by
+  temporal_search
+
+/-- Automated proof of TA axiom using temporal_search -/
+example : ⊢ (Formula.atom "p").imp (Formula.atom "p").some_past.all_future := by
+  temporal_search
+
+/-- Automated proof of TL axiom using temporal_search -/
+example : ⊢ (Formula.atom "p").always.imp (Formula.atom "p").all_past.all_future := by
+  temporal_search
+
+/-- Automated proof of modal-future axiom MF using modal_search -/
+example (φ : Formula) : ⊢ φ.box.imp φ.all_future.box := by
+  modal_search
+
+/-- Automated proof of temporal-future axiom TF using modal_search -/
+example (φ : Formula) : ⊢ φ.box.imp φ.box.all_future := by
+  modal_search
 
 end Bimodal.Examples.TemporalProofs

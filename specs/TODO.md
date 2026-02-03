@@ -68,13 +68,15 @@ technical_debt:
 
 ### 837. Resolve ProofSearch blockers in example files
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/837_resolve_proofsearch_blockers/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/837_resolve_proofsearch_blockers/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260203.md](specs/837_resolve_proofsearch_blockers/summaries/implementation-summary-20260203.md)
 
 **Description**: Resolve Task 260 (ProofSearch) blockers that disable automation in 3 example files: TemporalProofs.lean, ModalProofs.lean, BimodalProofs.lean. Either unblock Task 260, update to alternative approach, or document current status.
 

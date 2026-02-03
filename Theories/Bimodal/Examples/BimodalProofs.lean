@@ -1,6 +1,6 @@
 import Bimodal.Theorems.Perpetuity
 import Bimodal.ProofSystem.Derivation
--- import Bimodal.Automation.ProofSearch  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
+import Bimodal.Automation
 
 /-!
 # Bimodal Proof Examples
@@ -40,7 +40,7 @@ namespace Bimodal.Examples.BimodalProofs
 open Bimodal.Syntax
 open Bimodal.ProofSystem
 open Bimodal.Theorems.Perpetuity
--- open Bimodal.Automation (ProofSearch)  -- TODO: Re-enable when Task 260 (ProofSearch) is unblocked
+open Bimodal.Automation
 
 /-!
 ## P1: Necessary Implies Always
@@ -203,14 +203,26 @@ example (p : Formula) : ⊢ (▽p).diamond.imp p.diamond :=
 /-!
 ## Perpetuity Automation Examples
 
-NOTE: The following ProofSearch examples are commented out pending completion of Task 260 (ProofSearch).
-These examples will demonstrate automated discovery of perpetuity principles P1-P6 using proof search.
-
-TODO: Re-enable when Task 260 (ProofSearch) is unblocked.
+The `modal_search` tactic can automatically discover proofs of perpetuity principles
+by composing modal and temporal axioms. These examples demonstrate automated
+proof discovery for modal-temporal interactions.
 -/
 
--- ProofSearch examples commented out - Task 260 is BLOCKED
--- See: specs/260_proof_search/plans/implementation-001.md
+/-- Automated proof of modal T axiom using modal_search -/
+example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") := by
+  modal_search
+
+/-- Automated proof of modal 4 axiom using modal_search -/
+example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").box.box := by
+  modal_search
+
+/-- Automated proof of temporal T4 axiom using temporal_search -/
+example : ⊢ (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future := by
+  temporal_search
+
+/-- Automated proof combining modal and temporal reasoning -/
+example (φ : Formula) : ⊢ φ.box.imp φ.all_future.box := by
+  modal_search
 
 /-!
 ## Summary
