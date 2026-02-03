@@ -32,12 +32,20 @@
     {
       "project_number": 832,
       "project_name": "update_artifact_formats_agent_sorry_guidance",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-03T10:30:00Z",
-      "last_updated": "2026-02-03T09:21:59Z",
+      "last_updated": "2026-02-03T09:24:48Z",
       "description": "Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements.",
-      "session_id": "sess_1770110504_853535"
+      "session_id": "sess_1770110504_853535",
+      "researched": "2026-02-03T09:24:48Z",
+      "artifacts": [
+        {
+          "path": "specs/832_update_artifact_formats_agent_sorry_guidance/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 6 specific update recommendations including exact insertion points and proposed text for artifact formats and agent definitions"
+        }
+      ]
     },
     {
       "project_number": 829,
@@ -73,10 +81,11 @@
     {
       "project_number": 830,
       "project_name": "standardize_metalogic_documentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "created": "2026-02-03T09:00:34Z",
-      "last_updated": "2026-02-03T09:00:34Z"
+      "last_updated": "2026-02-03T09:24:39Z",
+      "session_id": "sess_1770110660_af151b"
     },
     {
       "project_number": 827,

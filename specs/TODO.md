@@ -56,9 +56,11 @@ technical_debt:
 
 ### 832. Update artifact formats and agent definitions for sorry handling
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/832_update_artifact_formats_agent_sorry_guidance/reports/research-001.md)
 
 **Description**: Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements.
 
@@ -81,7 +83,7 @@ technical_debt:
 
 ### 830. Standardize Metalogic documentation with README.md files
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 - **Created**: 2026-02-03
 

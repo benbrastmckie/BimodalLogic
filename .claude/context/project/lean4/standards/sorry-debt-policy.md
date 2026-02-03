@@ -31,8 +31,8 @@ A proof is only as sound as its dependencies. If theorem A uses lemma B which co
 
 ## Sorry Categories
 
-### 1. Construction Assumptions (Acceptable for Development)
-Accepted as axiomatic within the current architecture. Example:
+### 1. Construction Assumptions (Tolerated During Development - Technical Debt)
+Treated as axiomatic within the current architecture. **This is still mathematical debt that must be documented and tracked.** Example:
 ```lean
 -- Theories/Bimodal/Metalogic/Bundle/Construction.lean
 -- In the single-family simplification, we accept this as axiomatic
