@@ -135,12 +135,12 @@
     {
       "project_number": 818,
       "project_name": "refactor_bimodal_metalogic_modules",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "effort": "8-12 hours",
       "description": "Take stock of the metalogic following major completeness strategy changes (task 812, sorries removed via 814-816). Archive obsolete elements to boneyard. Refactor Bimodal/Metalogic/ modules for clean, maintainable structure with clear dependencies. Highlight main results: soundness, representation, completeness, compactness, decidability. Rename theorems/functions for clarity. Refactor proofs, APIs, imports as needed. Maintain Algebraic/ as foundation for future algebraic representation theorem.",
       "created": "2026-02-02T22:05:32Z",
-      "last_updated": "2026-02-03T06:58:46Z",
+      "last_updated": "2026-02-03T07:17:47Z",
       "session_id": "sess_1770101674_b4e43c",
       "researched": "2026-02-03T06:58:46Z",
       "artifacts": [
@@ -148,11 +148,6 @@
           "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Metalogic module structure, main theorems, sorries, archival candidates, and refactoring recommendations"
-        },
-        {
-          "path": "specs/818_refactor_bimodal_metalogic_modules/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan for refactoring Bimodal Metalogic modules with clean-break methodology"
         },
         {
           "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-002.md",
@@ -173,9 +168,14 @@
           "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-005.md",
           "type": "research",
           "summary": "Synthesis of completeness paths identifying BMCS as sorry-free primary result, with detailed archival and refactoring plan"
+        },
+        {
+          "path": "specs/818_refactor_bimodal_metalogic_modules/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "4-phase revised plan post-task 826, focusing on DeductionTheorem consolidation, naming, Metalogic.lean entry point, and cleanup (4 sorries remain)"
         }
       ],
-      "planned": "2026-02-03T04:24:49Z"
+      "planned": "2026-02-03T07:17:47Z"
     },
     {
       "project_number": 793,
