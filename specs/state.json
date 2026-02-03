@@ -319,22 +319,28 @@
     {
       "project_number": 821,
       "project_name": "fix_constitutive_foundation_latex_issues",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "priority": "medium",
       "description": "Address 7 FIX: tags in 02-ConstitutiveFoundation.tex: include universal quantifier in primitives list (line 21), present lattice definitions with task relation constraints (line 95), use defined symbols for state modality predicates (line 114), add explanatory remark about haecceities and modal profiles (line 161), add remark about constant substitution (line 220), formally define v-variant (line 225), elaborate on hyperintensional verification/falsification significance (line 248), clarify quantifier binding convention (line 270), divide top/bottom into separate subsubsections (line 285), add remark distinguishing propositional from sentential operators (line 435)",
       "effort": "3-4 hours",
       "created": "2026-02-03T06:26:24Z",
-      "last_updated": "2026-02-03T00:42:53Z",
-      "session_id": "sess_1770079153_930e7d",
+      "last_updated": "2026-02-03T00:47:11Z",
+      "session_id": "sess_1770079500_b3bbd2",
       "researched": "2026-02-03T00:42:53Z",
       "artifacts": [
         {
           "path": "specs/821_fix_constitutive_foundation_latex_issues/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing 10 FIX tags with concrete LaTeX recommendations for notation consistency, explanatory remarks, and section restructuring"
+        },
+        {
+          "path": "specs/821_fix_constitutive_foundation_latex_issues/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan addressing 10 FIX tags in ConstitutiveFoundation.tex"
         }
-      ]
+      ],
+      "planned": "2026-02-03T00:47:11Z"
     },
     {
       "project_number": 822,
