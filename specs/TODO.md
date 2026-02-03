@@ -24,15 +24,17 @@ technical_debt:
 
 ### 826. Update FDSM Completeness to Use Saturated Construction
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
 - **Started**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Dependencies**: 825
 - **Research**: [research-001.md](specs/826_fdsm_completeness_saturated_construction/reports/research-001.md)
 - **Plan**: [implementation-004.md](specs/826_fdsm_completeness_saturated_construction/plans/implementation-004.md)
+- **Summary**: Pivoted from FDSM to BMCS completeness. Archived FDSM module (23 sorries) to Boneyard. BMCS completeness verified working. Active sorries reduced from 27 to 4.
 
 **Description**: Replace single-history fdsm_from_closure_mcs in Completeness.lean with proper saturated construction from Phase 4. The current implementation (lines 67-91) creates only one history, which trivializes modal operators. After task 825 completes saturated_histories, update: (1) Replace fdsm_from_closure_mcs with fdsm_from_saturated_histories that uses the modal saturation fixed point, (2) Update modal_saturated proof to use the saturation property instead of single-history trivialization, (3) Ensure eval_history is properly selected from the saturated set. This bridges Phase 4 to Phase 6.
 

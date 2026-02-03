@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.FDSM.Core
-import Bimodal.Metalogic.FDSM.ModalSaturation
+import Bimodal.Boneyard.FDSM.Core
+import Bimodal.Boneyard.FDSM.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.FMP.Closure
