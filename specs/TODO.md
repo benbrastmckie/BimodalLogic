@@ -1,5 +1,5 @@
 ---
-next_project_number: 844
+next_project_number: 845
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,17 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 844. Redesign metalogic to use Pre-Coherent Bundle construction
+- **Effort**: 12-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Related**: Task 842
+
+**Description**: Completely redesign the metalogic to use a Pre-Coherent Bundle construction that builds families and bundles simultaneously. Define SaturationClosure (finite set S of formulas), PreCoherent predicate (S-bounded Box formulas, temporal coherence), and AllPreCoherentFamilies (product of all pre-coherent families). Implement restricted Lindenbaum that filters out Box formulas with content outside S. Box coherence follows from S-boundedness by construction; saturation follows from product structure. This approach avoids the Lindenbaum control problem that causes irreducible sorries in current sequential construction. Target: zero sorries, zero axioms, publication-ready completeness proof. Based on research-003.md from Task 842.
+
+---
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 2-4 hours
