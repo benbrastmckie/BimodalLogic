@@ -1,6 +1,8 @@
 # Bundle Completeness for TM Bimodal Logic
 
-This directory implements the **Bundle of Maximal Consistent Sets (BMCS)** approach for proving completeness of TM bimodal logic. This is a Henkin-style completeness proof that resolves the modal completeness obstruction present in traditional canonical model approaches.
+This directory implements the **Bundle of Maximal Consistent Sets (BMCS)** approach for
+proving completeness of TM bimodal logic. This is a Henkin-style completeness proof that
+resolves the modal completeness obstruction present in traditional canonical model approaches.
 
 ## Key Insight
 
@@ -17,7 +19,8 @@ The BMCS approach constructs exactly ONE such satisfying model by:
 - Henkin semantics for higher-order logic
 - Standard practice in mathematical logic
 
-The completeness theorem states that derivability and BMCS-validity coincide. Combined with soundness (derivability implies standard-validity), we get a full characterization.
+The completeness theorem states that derivability and BMCS-validity coincide. Combined with
+soundness (derivability implies standard-validity), we get a full characterization.
 
 ## Architecture
 
@@ -27,6 +30,7 @@ Bundle/
   BMCS.lean                # Bundle structure with modal coherence
   BMCSTruth.lean           # Truth definition with bundled box
   TruthLemma.lean          # KEY: MCS membership <-> BMCS truth
+  ModalSaturation.lean     # Modal saturation for multi-family construction
   Construction.lean        # Building BMCS from consistent context
   Completeness.lean        # Main completeness theorems
   README.md                # This file
@@ -38,7 +42,7 @@ Bundle/
 |---------|------|--------|------|
 | `bmcs_truth_lemma` (box case) | MCS membership <-> truth | **SORRY-FREE** | TruthLemma.lean |
 | `bmcs_representation` | consistent -> satisfiable | **SORRY-FREE** | Completeness.lean |
-| `bmcs_context_representation` | consistent context -> satisfiable | **SORRY-FREE** | Completeness.lean |
+| `bmcs_context_representation` | consistent context -> satisfiable | Sorry-free | Completeness |
 | `bmcs_weak_completeness` | bmcs_valid -> derivable | **SORRY-FREE** | Completeness.lean |
 | `bmcs_strong_completeness` | bmcs_consequence -> derivable | **SORRY-FREE** | Completeness.lean |
 
@@ -52,9 +56,11 @@ Bundle/
 | `TruthLemma.lean` | ~395 | all_past backward | Omega-rule (infinitary proof system) |
 | `Construction.lean` | ~220 | modal_backward | Multi-family BMCS construction |
 
-**Key Point**: These do NOT affect main completeness theorems because completeness uses only the FORWARD direction of the truth lemma, which is fully proven.
+**Key Point**: These do NOT affect main completeness theorems because completeness uses only
+the FORWARD direction of the truth lemma, which is fully proven.
 
-**Key Achievement**: The **box case** of the truth lemma is **SORRY-FREE**. This was the fundamental obstruction that blocked traditional completeness proofs.
+**Key Achievement**: The **box case** of the truth lemma is **SORRY-FREE**. This was the
+fundamental obstruction that blocked traditional completeness proofs.
 
 ## Why BMCS Works
 
@@ -141,7 +147,13 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 
 - Research report: `specs/812_canonical_model_completeness/reports/research-007.md`
 - Implementation plan: `specs/812_canonical_model_completeness/plans/implementation-003.md`
-- Task 809 archival: Archived the previous 30-sorry Representation approach to `Boneyard/Metalogic_v5/`
+- Task 809 archival: Archived previous 30-sorry Representation to `Boneyard/Metalogic_v5/`
+
+## Related Documentation
+
+- [Metalogic README](../README.md) - Overall metalogic architecture
+- [FMP README](../FMP/README.md) - Alternative FMP-based completeness
+- [Decidability README](../Decidability/README.md) - Decision procedure
 
 ## Future Work
 
@@ -149,3 +161,7 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 2. **Prove classical tautologies**: Derive DNE and related lemmas from the proof system
 3. **Multi-family saturation**: Generalize singleFamilyBMCS to full multi-family construction
 4. **Compactness via BMCS**: Potentially restore infinitary strong completeness using BMCS
+
+---
+
+*Last updated: 2026-02-03*

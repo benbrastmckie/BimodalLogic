@@ -100,7 +100,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update Bundle/README.md [IN PROGRESS]
+### Phase 3: Update Bundle/README.md [COMPLETED]
 
 **Goal**: Add missing ModalSaturation.lean and verify sorry counts.
 
@@ -123,7 +123,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Main Metalogic/README.md [NOT STARTED]
+### Phase 4: Update Main Metalogic/README.md [IN PROGRESS]
 
 **Goal**: Fix architecture section, subdirectory table, and sorry count in main entry point README.
 

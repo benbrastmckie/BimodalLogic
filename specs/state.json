@@ -543,10 +543,10 @@
     {
       "project_number": 833,
       "project_name": "enhance_roadmap_structure_changelog_strategies_ambitions",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:33:00Z",
+      "last_updated": "2026-02-03T09:36:58Z",
       "effort": "2-3 hours",
       "description": "Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.",
       "session_id": "sess_1770111163_2e5f22",
@@ -556,6 +556,11 @@
           "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-001.md",
           "type": "research",
           "summary": "Research report with schemas for Changelog, Strategies, and Ambitions sections, including migration plan and command integration patterns"
+        },
+        {
+          "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/reports/research-002.md",
+          "type": "research",
+          "summary": "Research on what to EXCLUDE from ROADMAP.md: clutter analysis (~270 line reduction), Dead Ends section design using ADR patterns, content boundaries (strategic/operational/tactical), and quarterly archival guidelines"
         }
       ]
     },
