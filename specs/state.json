@@ -8,11 +8,12 @@
     {
       "project_number": 831,
       "project_name": "strengthen_sorry_debt_policy_language",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "created": "2026-02-03T10:30:00Z",
-      "last_updated": "2026-02-03T10:30:00Z",
-      "description": "Revise sorry-debt-policy.md to eliminate 'acceptable sorry' language and add clear guidance on transitive inheritance. Replace 'Acceptable for Development' category with 'Tolerated During Development (Technical Debt)'. Add explicit section on how to characterize sorries in reports/plans emphasizing that: (1) ALL sorries are mathematical debt, (2) sorries propagate transitively through imports, (3) publication requires zero inherited sorries. Add framing: 'Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.'"
+      "last_updated": "2026-02-03T09:15:05Z",
+      "description": "Revise sorry-debt-policy.md to eliminate 'acceptable sorry' language and add clear guidance on transitive inheritance. Replace 'Acceptable for Development' category with 'Tolerated During Development (Technical Debt)'. Add explicit section on how to characterize sorries in reports/plans emphasizing that: (1) ALL sorries are mathematical debt, (2) sorries propagate transitively through imports, (3) publication requires zero inherited sorries. Add framing: 'Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.'",
+      "session_id": "sess_1770110091_c0f656"
     },
     {
       "project_number": 832,
@@ -26,19 +27,25 @@
     {
       "project_number": 829,
       "project_name": "remove_metalogic_backwards_compatible_aliases",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-03T09:00:34Z",
-      "last_updated": "2026-02-03T09:11:24Z",
-      "session_id": "sess_1770109719_c900ea",
+      "last_updated": "2026-02-03T09:16:33Z",
+      "session_id": "sess_1770110050_e7218e",
       "researched": "2026-02-03T09:11:24Z",
       "artifacts": [
         {
           "path": "specs/829_remove_metalogic_backwards_compatible_aliases/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of backwards-compatible aliases in Bimodal/Metalogic/, confirming semantic_weak_completeness has no dependencies"
+        },
+        {
+          "path": "specs/829_remove_metalogic_backwards_compatible_aliases/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for removing backwards-compatible aliases from Metalogic"
         }
-      ]
+      ],
+      "planned": "2026-02-03T09:16:33Z"
     },
     {
       "project_number": 830,
@@ -51,11 +58,11 @@
     {
       "project_number": 827,
       "project_name": "complete_multi_family_bmcs_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-03T08:51:32Z",
-      "last_updated": "2026-02-03T09:10:10Z",
-      "session_id": "sess_1770109645_eba115",
+      "last_updated": "2026-02-03T09:15:36Z",
+      "session_id": "sess_1770110119_138422",
       "researched": "2026-02-03T08:58:06Z",
       "artifacts": [
         {
@@ -69,7 +76,8 @@
           "summary": "5-phase implementation plan for multi-family BMCS modal saturation"
         }
       ],
-      "planned": "2026-02-03T09:10:10Z"
+      "planned": "2026-02-03T09:10:10Z",
+      "started": "2026-02-03T09:15:36Z"
     },
     {
       "project_number": 828,

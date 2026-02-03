@@ -1,0 +1,15 @@
+{
+  "status": "in_progress",
+  "started_at": "2026-02-03T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "synthesizing",
+    "details": "Analyzed sorry-debt-policy.md, found 14+ 'acceptable' usages across 20+ files, compiling report"
+  },
+  "metadata": {
+    "session_id": "sess_1770110091_c0f656",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  }
+}

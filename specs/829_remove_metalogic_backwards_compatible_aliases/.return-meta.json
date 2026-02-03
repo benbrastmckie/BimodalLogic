@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Confirmed semantic_weak_completeness alias in FMP/SemanticCanonicalModel.lean has no active dependencies and is safe to remove. Identified 3 files requiring updates. Secondary alias double_negation_elim exists but is lower priority.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/829_remove_metalogic_backwards_compatible_aliases/reports/research-001.md",
-      "type": "research",
-      "summary": "Analysis of backwards-compatible aliases in Bimodal/Metalogic/, confirming semantic_weak_completeness has no dependencies"
+      "type": "plan",
+      "path": "specs/829_remove_metalogic_backwards_compatible_aliases/plans/implementation-001.md",
+      "summary": "3-phase implementation plan for removing backwards-compatible aliases from Metalogic"
     }
   ],
+  "next_steps": "Run /implement 829 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770109719_c900ea",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770110050_e7218e",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 0.5
   }
 }
