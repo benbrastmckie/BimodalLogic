@@ -1,5 +1,5 @@
 ---
-next_project_number: 845
+next_project_number: 849
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 848. Add conceptual engineering section to Introduction
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-03
+
+**Description**: Draw on Theories/Logos/docs/research/conceptual-engineering.md to add a new section to Theories/Logos/latex/subfiles/01-Introduction.tex on conceptual engineering, explaining logic's ambitions to refine concepts from natural language that are fit for systematic applications. The section should include the most important content from the conceptual engineering research document while maintaining the clear and precise tone otherwise maintained in the Introduction file.
+
+---
 
 ### 845. Update context files from LaTeX NOTE: tags
 - **Effort**: 1 hour
