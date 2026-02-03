@@ -1,16 +1,16 @@
 ---
-next_project_number: 831
+next_project_number: 833
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-03T03:14:03Z
+  last_assessed: 2026-02-03T10:30:00Z
 task_counts:
-  active: 10
+  active: 13
   completed: 370
   in_progress: 2
-  not_started: 5
+  not_started: 12
   abandoned: 26
-  total: 396
+  total: 398
 technical_debt:
   sorry_count: 95
   axiom_count: 15
@@ -21,6 +21,26 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 832. Update artifact formats and agent definitions for sorry handling
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-03
+
+**Description**: Update artifact formats and agent definitions for consistent sorry handling. Add 'Sorry Characterization' section to report-format.md and plan-format.md with explicit guidance: (1) Never use 'acceptable sorry' language, (2) Always explain transitive inheritance impact, (3) Always specify remediation path, (4) Publication requires zero inherited sorries. Move sorry-debt-policy.md from optional to mandatory 'Always Load' context in both lean-research-agent.md and lean-implementation-agent.md. Add explicit prohibition against 'acceptable' framing in agent critical requirements.
+
+---
+
+### 831. Strengthen sorry-debt-policy language and guidance
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-03
+
+**Description**: Revise sorry-debt-policy.md to eliminate 'acceptable sorry' language and add clear guidance on transitive inheritance. Replace 'Acceptable for Development' category with 'Tolerated During Development (Technical Debt)'. Add explicit section on how to characterize sorries in reports/plans emphasizing that: (1) ALL sorries are mathematical debt, (2) sorries propagate transitively through imports, (3) publication requires zero inherited sorries. Add framing: 'Document what exists, explain WHY it exists, specify the remediation path - never call a sorry acceptable.'
+
+---
 
 ### 830. Standardize Metalogic documentation with README.md files
 - **Effort**: TBD
@@ -54,7 +74,7 @@ technical_debt:
 
 ### 827. Complete multi-family BMCS construction to resolve modal_backward sorry
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
