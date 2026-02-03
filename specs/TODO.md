@@ -1,5 +1,5 @@
 ---
-next_project_number: 827
+next_project_number: 829
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,26 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 828. Explore FMP approach to complete backward direction of TruthLemma
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+
+**Description**: Explore FMP approach to complete backward direction of TruthLemma. The backward direction sorries in Bundle/TruthLemma.lean (lines 383, 395) for G/H operators currently require infinitary proof systems. Investigate whether the Finite Model Property can provide an alternative approach to proving these directions.
+
+---
+
+### 827. Complete multi-family BMCS construction to resolve modal_backward sorry
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+
+**Description**: Complete multi-family BMCS construction to resolve modal_backward sorry. The single-family simplification in Bundle/Construction.lean (line 220) accepts modal_backward as a sorry. Implement the full multi-family construction that properly tracks accessibility relations across multiple MCS families to eliminate this assumption.
+
+---
 
 ### 826. Update FDSM Completeness to Use Saturated Construction
 - **Effort**: 4-6 hours

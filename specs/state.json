@@ -6,6 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 827,
+      "project_name": "complete_multi_family_bmcs_construction",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-03T08:51:32Z",
+      "last_updated": "2026-02-03T08:51:32Z"
+    },
+    {
+      "project_number": 828,
+      "project_name": "fmp_approach_truthlemma_backward",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-03T08:51:32Z",
+      "last_updated": "2026-02-03T08:51:32Z"
+    },
+    {
       "project_number": 826,
       "project_name": "fdsm_completeness_saturated_construction",
       "status": "completed",
@@ -404,7 +420,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 827,
+  "next_project_number": 829,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
