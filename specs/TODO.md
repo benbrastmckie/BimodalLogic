@@ -48,7 +48,7 @@ technical_debt:
 
 ### 851. Define CoherentBundle structure
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Parent**: Task 844
@@ -60,13 +60,16 @@ technical_debt:
 
 ### 850. Create scalable oversight section in Introduction
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: latex
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Research**: [research-001.md](specs/850_scalable_oversight_section/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/850_scalable_oversight_section/plans/implementation-001.md)
+- **Summary**: Created Scalable Oversight subsection in Logos Introduction with 3 paragraphs covering AI reasoning oversight mechanisms. Content follows existing style (semantic linefeeds, italicized terms, notation macros).
 
 **Description**: Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone.
 
@@ -121,7 +124,7 @@ technical_debt:
 
 ### 842. Formalize Zorn's lemma proof in exists_fullySaturated_extension
 - **Effort**: 12-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -136,7 +139,7 @@ technical_debt:
 
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
 - **Effort**: 8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
@@ -178,7 +181,7 @@ technical_debt:
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -190,7 +193,7 @@ technical_debt:
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Parent**: Task 381
 - **Subtasks**: 398, 399
@@ -202,7 +205,7 @@ technical_debt:
 
 ### 398. Port causal semantics to recursive-semantics.md
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: markdown
 - **Parent**: Task 394
 - **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
@@ -214,7 +217,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Parent**: Task 394
 - **Dependencies**: 398
@@ -225,7 +228,7 @@ technical_debt:
 
 ### 685. Derive world-history and Barcan theorems
  **Effort**: 8-10 hours
- **Status**: [IMPLEMENTING]
+ **Status**: [COMPLETED]
  **Language**: lean
  **Created**: 2026-01-26
  **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)
@@ -255,7 +258,7 @@ technical_debt:
 
 ### 674. systematic command skill agent architecture improvement
 - **Effort**: 3-4 days
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Blocking**: None
 - **Dependencies**: None
@@ -271,7 +274,7 @@ technical_debt:
 ---
 
 ### 619. Agent system architecture upgrade (context:fork migration)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Researched**: 2026-01-28
 - **Language**: meta
 - **Created**: 2026-01-19

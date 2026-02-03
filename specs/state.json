@@ -35,12 +35,12 @@
     {
       "project_number": 851,
       "project_name": "define_coherentbundle_structure",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "description": "Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)",
       "parent_task": 844,
       "created": "2026-02-03T22:53:06Z",
-      "last_updated": "2026-02-03T23:01:15Z",
+      "last_updated": "2026-02-03T23:03:09Z",
       "researched": "2026-02-03T23:01:15Z",
       "artifacts": [
         {
@@ -48,16 +48,17 @@
           "type": "research",
           "summary": "Research on CoherentBundle structure design, analyzing mutual coherence patterns, Zorn's lemma usage, and the constant-family approach to sidestep Lindenbaum control problems"
         }
-      ]
+      ],
+      "session_id": "sess_1770159775_c65020"
     },
     {
       "project_number": 850,
       "project_name": "scalable_oversight_section",
-      "status": "implementing",
+      "status": "completed",
       "language": "latex",
       "description": "Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone",
       "created": "2026-02-03T22:45:49Z",
-      "last_updated": "2026-02-03T22:59:18Z",
+      "last_updated": "2026-02-03T23:03:33Z",
       "session_id": "sess_1770159530_c2e919",
       "researched": "2026-02-03T22:51:08Z",
       "artifacts": [
@@ -70,10 +71,16 @@
           "path": "specs/850_scalable_oversight_section/plans/implementation-001.md",
           "type": "plan",
           "summary": "Implementation plan for scalable oversight section in 01-Introduction.tex"
+        },
+        {
+          "path": "specs/850_scalable_oversight_section/summaries/implementation-summary-20260203.md",
+          "type": "summary"
         }
       ],
       "planned": "2026-02-03T22:55:24Z",
-      "started": "2026-02-03T22:59:18Z"
+      "started": "2026-02-03T22:59:18Z",
+      "completed": "2026-02-03T23:03:33Z",
+      "completion_summary": "Created Scalable Oversight subsection in Logos Introduction with 3 paragraphs covering AI reasoning oversight mechanisms. Content follows existing style (semantic linefeeds, italicized terms, notation macros)."
     },
     {
       "project_number": 847,
