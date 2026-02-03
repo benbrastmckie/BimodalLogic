@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 840,
+      "project_name": "refactor_truthlemma_forward_backward_publication",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-03T10:23:36Z",
+      "last_updated": "2026-02-03T10:23:36Z"
+    },
+    {
       "project_number": 836,
       "project_name": "improve_metalogic_readme_documentation",
       "status": "completed",
@@ -374,13 +382,13 @@
     {
       "project_number": 837,
       "project_name": "resolve_proofsearch_blockers",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "created": "2026-02-03T11:25:00Z",
       "description": "Resolve Task 260 (ProofSearch) blockers that disable automation in 3 example files: TemporalProofs.lean, ModalProofs.lean, BimodalProofs.lean. Either unblock Task 260, update to alternative approach, or document current status.",
-      "last_updated": "2026-02-03T10:20:45Z",
-      "session_id": "sess_1770113878_70986f",
+      "last_updated": "2026-02-03T10:22:56Z",
+      "session_id": "sess_1770114162_e65d9f",
       "researched": "2026-02-03T10:20:45Z",
       "artifacts": [
         {
@@ -421,7 +429,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 840,
+  "next_project_number": 841,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

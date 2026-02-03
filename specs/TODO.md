@@ -1,5 +1,5 @@
 ---
-next_project_number: 840
+next_project_number: 841
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,17 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
+- **Effort**: 4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Related**: Task 828 (research basis)
+
+**Description**: Refactor TruthLemma.lean to separate forward and backward directions into distinct theorems. Currently the biconditional truth lemma contains sorries in the G/H backward directions, which transitively contaminate the completeness theorems (verified via #print axioms showing sorryAx dependency). Split into: (1) bmcs_truth_lemma_forward (φ ∈ MCS → φ is true) - SORRY-FREE, (2) bmcs_truth_lemma_backward_partial (φ is true → φ ∈ MCS) - with documented sorries for G/H. Update Completeness.lean to use forward-only theorem directly. Verify completeness theorems no longer depend on sorryAx. This enables publication-ready completeness results.
+
+---
 
 ### 839. Clean linter warnings in Metalogic files
 - **Effort**: 2 hours
@@ -46,7 +57,7 @@ technical_debt:
 
 ### 837. Resolve ProofSearch blockers in example files
 - **Effort**: 4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
