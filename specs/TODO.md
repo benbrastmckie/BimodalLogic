@@ -68,9 +68,11 @@ technical_debt:
 
 ### 828. Explore FMP approach to complete backward direction of TruthLemma
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/828_fmp_approach_truthlemma_backward/reports/research-001.md)
 
 **Description**: Explore FMP approach to complete backward direction of TruthLemma. The backward direction sorries in Bundle/TruthLemma.lean (lines 383, 395) for G/H operators currently require infinitary proof systems. Investigate whether the Finite Model Property can provide an alternative approach to proving these directions.
 

@@ -71,7 +71,14 @@
       "created": "2026-02-03T08:51:32Z",
       "last_updated": "2026-02-03T09:58:09Z",
       "session_id": "sess_1770112335_480871",
-      "researched": "2026-02-03T09:58:09Z"
+      "researched": "2026-02-03T09:58:09Z",
+      "artifacts": [
+        {
+          "path": "specs/828_fmp_approach_truthlemma_backward/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of FMP approach feasibility for G/H backward direction, concluding FMP is orthogonal to the problem"
+        }
+      ]
     },
     {
       "project_number": 793,
@@ -282,10 +289,10 @@
     {
       "project_number": 833,
       "project_name": "enhance_roadmap_structure_changelog_strategies_ambitions",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:52:59Z",
+      "last_updated": "2026-02-03T09:58:15Z",
       "effort": "2-3 hours",
       "description": "Restructure ROADMAP.md to add three new sections: (1) Changelog - dated entries of completed work from task completions, (2) Strategies - active experiments with status, (3) Ambitions - big picture goals. Migrate existing content into appropriate sections. Define clear schemas for each section to enable programmatic updates by /todo and /review commands.",
       "session_id": "sess_1770112362_f3ea3f",
@@ -308,15 +315,17 @@
         }
       ],
       "planned": "2026-02-03T09:51:30Z",
-      "started": "2026-02-03T09:52:59Z"
+      "started": "2026-02-03T09:52:59Z",
+      "completed": "2026-02-03T09:58:15Z",
+      "completion_summary": "Restructured ROAD_MAP.md with four new sections (Changelog, Strategies, Ambitions, Dead Ends), each with machine-parseable schemas including Rationale and References fields. Populated 4 strategies, 5 ambitions, and 4 dead ends from existing content. Removed clutter including Active Tasks section and condensed Boneyard tables."
     },
     {
       "project_number": 835,
       "project_name": "enhance_review_command_roadmap_integration_revision",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-03T09:24:08Z",
-      "last_updated": "2026-02-03T09:53:26Z",
+      "last_updated": "2026-02-03T09:58:28Z",
       "effort": "4-5 hours",
       "dependencies": [
         833
@@ -337,7 +346,8 @@
         }
       ],
       "planned": "2026-02-03T09:52:14Z",
-      "started": "2026-02-03T09:53:26Z"
+      "started": "2026-02-03T09:53:26Z",
+      "completed": "2026-02-03T09:58:28Z"
     }
   ],
   "completed_projects": [
