@@ -244,26 +244,200 @@ def FamilyCollection.isSaturated {phi : Formula} (C : FamilyCollection D phi) : 
     diamondFormula psi ∈ fam.mcs t → ∃ fam' ∈ C.families, psi ∈ fam'.mcs t
 
 /--
-Convert a saturated FamilyCollection to a BMCS.
+The collection is fully saturated if every Diamond formula (for ANY inner formula)
+that appears in some family has a witness. This is stronger than `isSaturated`
+which only requires saturation for closure formulas.
 
-The modal_forward and modal_backward properties need to be proven from saturation.
-For modal_forward, we use the T-axiom.
-For modal_backward, we use the saturation property via the contraposition argument.
+Full saturation is needed for `modal_backward` to work for all formulas via
+the contraposition argument from `saturated_modal_backward`.
+-/
+def FamilyCollection.isFullySaturated {phi : Formula} (C : FamilyCollection D phi) : Prop :=
+  ∀ psi : Formula, ∀ fam ∈ C.families, ∀ t : D,
+    diamondFormula psi ∈ fam.mcs t → ∃ fam' ∈ C.families, psi ∈ fam'.mcs t
+
+/--
+Full saturation implies closure saturation.
+-/
+theorem FamilyCollection.isFullySaturated_implies_isSaturated {phi : Formula}
+    (C : FamilyCollection D phi) (h_full : C.isFullySaturated) : C.isSaturated := by
+  intro psi _ fam hfam t h_diamond
+  exact h_full psi fam hfam t h_diamond
+
+/--
+Convert a fully saturated FamilyCollection to a BMCS.
+
+The modal_forward property uses the box_coherence field.
+The modal_backward property uses full saturation via the contraposition argument
+from `saturated_modal_backward`.
+
+**Note**: This requires `isFullySaturated`, not just `isSaturated`. The closure-restricted
+saturation is not sufficient for proving `modal_backward` for all formulas.
 -/
 noncomputable def FamilyCollection.toBMCS {phi : Formula} (C : FamilyCollection D phi)
-    (h_sat : C.isSaturated) : BMCS D where
+    (h_sat : C.isFullySaturated) : BMCS D where
   families := C.families
   nonempty := C.nonempty
   modal_forward := fun fam hfam psi t h_box fam' hfam' =>
     -- Use the box_coherence field: Box psi in fam implies psi in all families
     C.box_coherence fam hfam psi t h_box fam' hfam'
   modal_backward := fun fam hfam psi t h_all => by
-    -- Use saturation via contraposition
-    -- This requires psi and neg psi to be in the closure
-    -- For the completeness theorem, we only need this for closure formulas
-    sorry
+    -- Direct proof via contraposition, same logic as saturated_modal_backward
+    -- but without needing a BMCS wrapper
+
+    -- By contradiction
+    by_contra h_not_box
+
+    -- By MCS negation completeness, neg(Box psi) is in fam.mcs t
+    have h_mcs := fam.is_mcs t
+    have h_neg_box : Formula.neg (Formula.box psi) ∈ fam.mcs t := by
+      rcases set_mcs_negation_complete h_mcs (Formula.box psi) with h_box | h_neg
+      · exact absurd h_box h_not_box
+      · exact h_neg
+
+    -- From box_dne_theorem: ⊢ Box(¬¬psi) → Box psi
+    -- Contrapositive: neg(Box psi) → neg(Box(¬¬psi)) = Diamond(neg psi)
+    have h_box_dne := box_dne_theorem psi
+    have h_diamond_neg : Formula.neg (Formula.box (Formula.neg (Formula.neg psi))) ∈ fam.mcs t :=
+      mcs_contrapositive h_mcs h_box_dne h_neg_box
+
+    -- Diamond(neg psi) = neg(Box(¬¬psi)) by definition
+    have h_eq_diamond : diamondFormula (Formula.neg psi) =
+                        Formula.neg (Formula.box (Formula.neg (Formula.neg psi))) := rfl
+
+    have h_diamond_in : diamondFormula (Formula.neg psi) ∈ fam.mcs t := by
+      rw [h_eq_diamond]
+      exact h_diamond_neg
+
+    -- By full saturation: exists witness fam' where neg psi is in fam'.mcs t
+    have ⟨fam', hfam', h_neg_psi_in⟩ := h_sat (Formula.neg psi) fam hfam t h_diamond_in
+
+    -- But psi is in ALL families including fam'
+    have h_psi_in := h_all fam' hfam'
+
+    -- neg psi and psi both in fam'.mcs t contradicts consistency
+    exact set_consistent_not_both (fam'.is_mcs t).1 psi h_psi_in h_neg_psi_in
   eval_family := C.eval_family
   eval_family_mem := C.eval_family_mem
+
+/-!
+## Saturation Algorithm
+
+The saturation algorithm iteratively adds witness families until all Diamond formulas
+in a given set have witnesses. We use well-founded recursion on the cardinality of
+unsatisfied Diamond formulas.
+-/
+
+/--
+A Diamond formula is satisfied in a family collection if the inner formula
+exists in some family's MCS.
+-/
+def isDiamondSatisfied {phi : Formula} (C : FamilyCollection D phi) (diamond : Formula) : Prop :=
+  match extractDiamondInner diamond with
+  | some inner => ∃ fam ∈ C.families, inner ∈ fam.mcs 0
+  | none => True  -- Not a Diamond formula, vacuously satisfied
+
+/--
+A Diamond formula is unsatisfied if no family contains the inner formula.
+-/
+def isDiamondUnsatisfied {phi : Formula} (C : FamilyCollection D phi) (diamond : Formula) : Prop :=
+  match extractDiamondInner diamond with
+  | some inner => ∀ fam ∈ C.families, inner ∉ fam.mcs 0
+  | none => False  -- Not a Diamond formula
+
+/--
+The set of unsatisfied Diamond formulas (as a predicate, since filtering over
+arbitrary sets isn't computable).
+-/
+def unsatisfiedDiamondsPred {phi : Formula} (C : FamilyCollection D phi)
+    (candidates : Finset Formula) (diamond : Formula) : Prop :=
+  diamond ∈ candidates ∧ isDiamondUnsatisfied C diamond
+
+/--
+Check if all Diamond formulas in a candidate set are satisfied.
+-/
+def allDiamondsSatisfied {phi : Formula} (C : FamilyCollection D phi)
+    (candidates : Finset Formula) : Prop :=
+  ∀ diamond ∈ candidates, isDiamondSatisfied C diamond
+
+/--
+Adding a witness family satisfies a previously unsatisfied Diamond formula.
+-/
+theorem witness_satisfies_diamond {phi : Formula}
+    (C : FamilyCollection D phi)
+    (diamond : Formula) (h_unsatisfied : isDiamondUnsatisfied C diamond)
+    (inner : Formula) (h_extract : extractDiamondInner diamond = some inner)
+    (witness : IndexedMCSFamily D) (h_inner_in : inner ∈ witness.mcs 0)
+    (C' : FamilyCollection D phi) (h_families : C'.families = C.families ∪ {witness}) :
+    isDiamondSatisfied C' diamond := by
+  simp only [isDiamondSatisfied, h_extract]
+  use witness
+  constructor
+  · rw [h_families]
+    exact Set.mem_union_right _ (Set.mem_singleton witness)
+  · exact h_inner_in
+
+/-!
+## Initial Family Collection
+
+Create an initial family collection from a single IndexedMCSFamily.
+-/
+
+/--
+Create an initial family collection from a single family.
+
+This provides a starting point for the saturation algorithm. The single family
+trivially satisfies box_coherence (since there's only one family).
+-/
+def initialFamilyCollection (phi : Formula) (fam : IndexedMCSFamily D) : FamilyCollection D phi where
+  families := {fam}
+  nonempty := ⟨fam, Set.mem_singleton fam⟩
+  eval_family := fam
+  eval_family_mem := Set.mem_singleton fam
+  box_coherence := fun fam' hfam' psi t h_box fam'' hfam'' => by
+    -- Both fam' and fam'' equal fam
+    have h_eq' : fam' = fam := Set.mem_singleton_iff.mp hfam'
+    have h_eq'' : fam'' = fam := Set.mem_singleton_iff.mp hfam''
+    -- Use T-axiom: Box psi -> psi
+    let h_mcs := fam.is_mcs t
+    let h_T := DerivationTree.axiom [] ((Formula.box psi).imp psi) (Axiom.modal_t psi)
+    let h_T_in_mcs := theorem_in_mcs h_mcs h_T
+    have h_in_fam : psi ∈ fam.mcs t :=
+      set_mcs_implication_property h_mcs h_T_in_mcs (h_eq' ▸ h_box)
+    exact h_eq''.symm ▸ h_in_fam
+
+/--
+The initial family collection contains the original family.
+-/
+theorem initialFamilyCollection_contains_family (phi : Formula) (fam : IndexedMCSFamily D) :
+    fam ∈ (initialFamilyCollection phi fam (D := D)).families :=
+  Set.mem_singleton fam
+
+/-!
+## Saturation via Iterative Witness Addition
+
+The full saturation algorithm would iterate:
+1. Find an unsatisfied Diamond formula
+2. Extract the inner formula
+3. Prove the inner formula is consistent (via diamond_implies_psi_consistent)
+4. Construct a witness family (via constructWitnessFamily)
+5. Add the witness to the collection
+6. Repeat until all Diamonds are satisfied
+
+For termination, we track unsatisfied Diamond formulas from a finite candidate set
+(e.g., diamondSubformulas phi) and show the count strictly decreases.
+
+**Current Status**: The infrastructure is in place. A complete implementation
+requires:
+1. Proving unsatisfiedDiamonds_card_decreases without sorry
+2. Proving box_coherence is preserved when adding witness families
+3. Implementing the recursive saturateFamilies function with termination_by
+
+**Note on Full Saturation**: The current infrastructure achieves closure saturation
+(saturation for Diamond formulas in the subformula closure). For `toBMCS` to work,
+we need `isFullySaturated`. This can be achieved if:
+- The constructed families don't introduce new Diamond requirements outside the closure, OR
+- We extend the saturation to handle all Diamond formulas (requires different termination argument)
+-/
 
 /-!
 ## Summary
@@ -272,19 +446,24 @@ This module provides two approaches to eliminating the modal_backward sorry:
 
 1. **Axiom-based approach** (`singleFamilyBMCS_withAxiom`):
    - Simple and direct
-   - Uses `singleFamily_modal_backward_axiom`
+   - Uses `singleFamily_modal_backward_axiom` from Construction.lean
    - Justified by canonical model metatheory
-   - Recommended for immediate use
+   - Currently recommended for immediate use in completeness proofs
 
-2. **Multi-family construction** (infrastructure only):
-   - More complex but axiom-free
-   - Requires completing the saturation loop
-   - Left as future work with sorries marking the remaining proofs
+2. **Multi-family construction** (`FamilyCollection.toBMCS`):
+   - Axiom-free when given a fully saturated collection
+   - `modal_forward` uses `box_coherence` field
+   - `modal_backward` proven via contraposition using `isFullySaturated`
+   - Infrastructure for saturation loop in place:
+     - `isDiamondSatisfied`, `isDiamondUnsatisfied` predicates
+     - `initialFamilyCollection` for starting point
+     - `witness_satisfies_diamond` theorem
+   - Remaining work: recursive `saturateFamilies` with termination proof
 
-For the completeness theorem, the axiom-based approach is recommended as it:
-- Eliminates all sorries in the critical path
-- Is mathematically justified
-- Matches standard textbook presentations that assume the canonical model exists
+**Key Insight**: Closure-restricted saturation (`isSaturated`) is insufficient for
+`modal_backward`. The contraposition argument requires saturation for `neg psi` when
+proving `modal_backward` for `psi`, and `neg psi` may be outside the closure. Thus
+`FamilyCollection.toBMCS` requires `isFullySaturated` (full saturation for all formulas).
 -/
 
 end Bimodal.Metalogic.Bundle

@@ -98,71 +98,86 @@ After this implementation:
 
 ---
 
-### Phase 2: Prove modal_backward in toBMCS [IN PROGRESS]
+### Phase 2: Prove modal_backward in toBMCS [COMPLETED]
 
-**Goal**: Connect FamilyCollection.isSaturated to closure_saturation_implies_modal_backward_for_closure theorem.
+**Goal**: Connect FamilyCollection saturation to modal_backward proof.
 
 **Tasks**:
-- [ ] Analyze signature of `closure_saturation_implies_modal_backward_for_closure` for preconditions
-- [ ] Verify that isSaturated implies the hypotheses needed for the theorem
-- [ ] Add `closure_phi : Formula` parameter to FamilyCollection if needed to track which formula's closure is being saturated
-- [ ] Implement modal_backward proof:
+- [x] Analyze signature of `closure_saturation_implies_modal_backward_for_closure` for preconditions
+- [x] Verify that isSaturated is insufficient - requires BOTH psi AND neg psi in closure
+- [x] Define `FamilyCollection.isFullySaturated` - full saturation for ALL formulas
+- [x] Implement modal_backward proof directly via contraposition:
   ```lean
   modal_backward := fun fam hfam psi t h_all => by
-    -- Apply closure_saturation_implies_modal_backward_for_closure
-    -- Requires: psi ∈ subformulaClosure phi AND neg psi ∈ subformulaClosure phi
-    -- For closure formulas, use closureWithNeg property
-    sorry -- will be completed
+    -- Direct proof via contraposition, same logic as saturated_modal_backward
+    by_contra h_not_box
+    -- ... MCS negation completeness, box_dne_theorem, saturation gives witness
+    -- Contradiction: psi in all families but neg psi in witness
   ```
-- [ ] Handle case when psi is NOT in closure (may need to restrict or use different approach)
-- [ ] Run `lake build` to verify compilation
+- [x] Handle case when psi is NOT in closure - use isFullySaturated (full saturation)
+- [x] Run `lake build` to verify compilation
 
-**Timing**: 3-4 hours
+**Timing**: 3-4 hours (actual: ~2 hours)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean` - FamilyCollection.toBMCS.modal_backward
+**Resolution Notes**:
+The original plan used closure-restricted saturation `isSaturated`, but the contraposition
+argument for `modal_backward` requires saturation for `neg psi` which may not be in closure.
+Solution: Defined `isFullySaturated` (full saturation for all formulas) and updated `toBMCS`
+to require this stronger condition. The proof then follows directly from the contraposition
+argument used in `saturated_modal_backward`.
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean`
+  - Added `FamilyCollection.isFullySaturated` definition
+  - Added `FamilyCollection.isFullySaturated_implies_isSaturated` theorem
+  - Updated `FamilyCollection.toBMCS` to take `isFullySaturated` instead of `isSaturated`
+  - Proved `modal_backward` completely (no sorry)
 
 **Verification**:
 - `lake build` succeeds with no sorry in modal_backward
-- Both preconditions (psi and neg psi in closure) are satisfied or handled
+- `grep -n "sorry" SaturatedConstruction.lean` returns only comments, no actual sorries
 
 ---
 
-### Phase 3: Implement saturateFamilies with well-founded termination [NOT STARTED]
+### Phase 3: Implement saturateFamilies with well-founded termination [PARTIAL]
 
 **Goal**: Create recursive function that iteratively adds witness families until saturation is achieved, with proven termination.
 
 **Tasks**:
-- [ ] Define helper `unsatisfiedDiamonds : FamilyCollection -> Finset Formula` that computes Diamond formulas in closure without witnesses
-- [ ] Define `saturateFamilies` function skeleton:
-  ```lean
-  noncomputable def saturateFamilies (phi : Formula) (initial : FamilyCollection D phi)
-      : FamilyCollection D phi :=
-    if h : (unsatisfiedDiamonds initial).Nonempty then
-      let diamond := h.choose
-      let inner := extractDiamondInner diamond |>.get!
-      -- ... construct witness, add to collection, recurse
-      saturateFamilies phi new_collection
-    else
-      initial
-  termination_by (unsatisfiedDiamonds initial).card
-  ```
-- [ ] Prove `diamond_implies_psi_consistent` applies to inner formula extracted from Diamond
-- [ ] Implement witness construction using `constructWitnessFamily` or similar
-- [ ] Create new FamilyCollection with witness added, preserving box_coherence
-- [ ] Prove `decreasing_by` obligation using `Finset.card_erase_lt_of_mem`
-- [ ] Prove the resulting collection is saturated (isSaturated holds at termination)
-- [ ] Run `lake build` to verify termination and correctness
+- [x] Define helper predicates for tracking unsatisfied Diamond formulas
+  - `isDiamondSatisfied`, `isDiamondUnsatisfied`, `unsatisfiedDiamondsPred`, `allDiamondsSatisfied`
+- [x] Define `initialFamilyCollection` that wraps a single family with trivial saturation
+- [x] Prove `witness_satisfies_diamond` - adding a witness satisfies the Diamond
+- [ ] Define `saturateFamilies` recursive function
+- [ ] Prove termination using well-founded recursion on candidate set
+- [ ] Implement witness construction using `constructWitnessFamily`
+- [ ] Prove box_coherence is preserved when adding witness families
+- [ ] Prove the resulting collection achieves `isFullySaturated` (not just `isSaturated`)
 
-**Timing**: 8-10 hours
+**Key Design Decision**:
+The original plan used `isSaturated` (closure-restricted saturation). However, Phase 2 established
+that `FamilyCollection.toBMCS` requires `isFullySaturated` (full saturation for all formulas).
+This significantly complicates Phase 3 because:
+1. We need to saturate for ALL Diamond formulas, not just closure formulas
+2. Termination argument is more complex (can't just use closure size)
+3. May need to show witness families don't introduce new Diamond requirements
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean` - new saturateFamilies function
+**Infrastructure Added**:
+- `isDiamondSatisfied`, `isDiamondUnsatisfied` - check if a Diamond has a witness
+- `unsatisfiedDiamondsPred` - predicate version of unsatisfied check (non-computable)
+- `allDiamondsSatisfied` - all Diamonds in a candidate set are satisfied
+- `witness_satisfies_diamond` - proves adding witness satisfies the Diamond
+- `initialFamilyCollection` - creates a single-family collection with trivial box_coherence
+
+**Timing**: 8-10 hours (estimated: 6 hours remaining for full implementation)
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean`
 
 **Verification**:
-- `lake build` succeeds without termination errors
-- `saturateFamilies` returns a collection where `isSaturated` holds
-- No `sorry` in the termination or recursive calls
+- [x] `lake build` succeeds (infrastructure compiles)
+- [ ] `saturateFamilies` returns a collection where `isFullySaturated` holds
+- [ ] No `sorry` in the termination or recursive calls
 
 ---
 
