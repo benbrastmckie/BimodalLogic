@@ -8,11 +8,19 @@
     {
       "project_number": 849,
       "project_name": "add_contextual_parameters_section_to_dynamics",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "created": "2026-02-03T21:22:59Z",
-      "last_updated": "2026-02-03T21:56:18Z",
-      "session_id": "sess_1770155762_4297dd"
+      "last_updated": "2026-02-03T21:58:35Z",
+      "session_id": "sess_1770155762_4297dd",
+      "researched": "2026-02-03T21:58:35Z",
+      "artifacts": [
+        {
+          "path": "specs/849_add_contextual_parameters_section_to_dynamics/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing conceptual-engineering.md content for contextual parameters section and recommending placement/structure for DynamicsFoundation.tex"
+        }
+      ]
     },
     {
       "project_number": 848,
