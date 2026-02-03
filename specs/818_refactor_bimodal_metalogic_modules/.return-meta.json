@@ -1,31 +1,17 @@
 {
   "status": "researched",
-  "summary": "VERIFIED: semantic_weak_completeness is fully sorry-free including all transitive dependencies. The only sorry in Closure.lean (line 728) is NOT used by this theorem. BMCS has 3 remaining sorries (temporal backward and modal_backward). FDSM is blocked with 24+ sorries. Recommended path: accept FMP-internal completeness as primary, continue BMCS sorry reduction for standard semantics.",
+  "summary": "Researched historical context for BMCS adoption and validity notion assessment. Found: (1) Original Truth Lemma backwards direction for box was architecturally unprovable due to quantification over all histories vs. only canonical histories. (2) Current system has two complementary completeness results (BMCS and FMP-internal) that together with standard soundness form a complete metalogic. Both are 'right' completeness in the Henkin sense.",
   "artifacts": [
     {
-      "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-003.md",
+      "path": "specs/818_refactor_bimodal_metalogic_modules/reports/research-004.md",
       "type": "research",
-      "summary": "Deep verification of SemanticCanonicalModel.lean sorry-free claim with dependency analysis and path comparison"
+      "summary": "Historical analysis of Truth Lemma backwards direction problem and validity notion assessment showing BMCS provides Henkin-style completeness"
     }
   ],
   "metadata": {
-    "session_id": "sess_1770096377_ce57a4",
+    "session_id": "sess_1770098502_496622",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings": {
-      "semantic_weak_completeness_sorry_free": true,
-      "closure_sorry_is_unused": true,
-      "bmcs_sorries": 3,
-      "fdsm_sorries": 24,
-      "validity_bridge_blocked": true
-    },
-    "recommendations": [
-      "Accept semantic_weak_completeness as primary completeness result",
-      "Archive FDSM blocked code to Boneyard",
-      "Continue BMCS sorry reduction for standard semantics",
-      "Document validity bridge limitation",
-      "Remove unused diamond_in_closureWithNeg_of_box sorry"
-    ]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }
