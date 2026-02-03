@@ -8,12 +8,20 @@
     {
       "project_number": 850,
       "project_name": "scalable_oversight_section",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "description": "Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone",
       "created": "2026-02-03T22:45:49Z",
-      "last_updated": "2026-02-03T22:48:54Z",
-      "session_id": "sess_1770158918_7fcad9"
+      "last_updated": "2026-02-03T22:51:08Z",
+      "session_id": "sess_1770158918_7fcad9",
+      "researched": "2026-02-03T22:51:08Z",
+      "artifacts": [
+        {
+          "path": "specs/850_scalable_oversight_section/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing scalable oversight content and 01-Introduction.tex style patterns"
+        }
+      ]
     },
     {
       "project_number": 847,

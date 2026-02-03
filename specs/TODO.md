@@ -24,9 +24,11 @@ technical_debt:
 
 ### 850. Create scalable oversight section in Introduction
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: latex
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/850_scalable_oversight_section/reports/research-001.md)
 
 **Description**: Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone.
 
