@@ -1,15 +1,18 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-03T10:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context for task 840 follow-up research"
-  },
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-002.md",
+      "summary": "Follow-up research analyzing archiving vs completion alternatives for TruthLemma backward direction; concludes neither is needed since completeness theorems are already transitively sorry-free"
+    }
+  ],
+  "next_steps": "Close task 840 - research shows no refactoring needed; completeness theorems are publication-ready as-is",
   "metadata": {
     "session_id": "sess_1770145446_32e7c1",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"],
+    "findings_count": 4
   }
 }
