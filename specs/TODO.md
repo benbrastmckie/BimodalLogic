@@ -99,12 +99,14 @@ technical_debt:
 
 ### 839. Clean linter warnings in Metalogic files
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
+- **Planned**: 2026-02-03
 - **Source**: /review 2026-02-03
 - **Research**: [research-001.md](specs/839_clean_linter_warnings/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/839_clean_linter_warnings/plans/implementation-001.md)
 
 **Description**: Clean up linter warnings in SoundnessLemmas.lean (10+ 'Try this' suggestions, unused simp args), TaskFrame.lean (duplicate namespace), and WorldHistory.lean (unused section variables). Apply suggested refactorings.
 

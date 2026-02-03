@@ -428,21 +428,27 @@
     {
       "project_number": 839,
       "project_name": "clean_linter_warnings",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-02-03T11:25:00Z",
       "description": "Clean up linter warnings in SoundnessLemmas.lean (10+ 'Try this' suggestions, unused simp args), TaskFrame.lean (duplicate namespace), and WorldHistory.lean (unused section variables). Apply suggested refactorings.",
-      "last_updated": "2026-02-03T22:25:03Z",
-      "session_id": "sess_1770157278_d1d4c7",
+      "last_updated": "2026-02-03T22:27:48Z",
+      "session_id": "sess_1770157553_f004f9",
       "researched": "2026-02-03T22:25:03Z",
       "artifacts": [
         {
           "path": "specs/839_clean_linter_warnings/reports/research-001.md",
           "type": "research",
           "summary": "Research report documenting linter warnings in 3 Metalogic files with fix patterns"
+        },
+        {
+          "path": "specs/839_clean_linter_warnings/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan covering namespace fix, omit clauses, intro patterns, and unused simp args"
         }
-      ]
+      ],
+      "planned": "2026-02-03T22:27:48Z"
     }
   ],
   "completed_projects": [

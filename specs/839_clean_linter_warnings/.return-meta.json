@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Identified 19 linter warnings across 3 files: SoundnessLemmas.lean (16: 6 Try this, 10 unused simp args), TaskFrame.lean (1 duplicate namespace), WorldHistory.lean (2 unused section variables)",
+  "status": "planned",
+  "summary": "Created 4-phase implementation plan to fix 19 linter warnings across TaskFrame.lean, WorldHistory.lean, and SoundnessLemmas.lean",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/839_clean_linter_warnings/reports/research-001.md",
-      "summary": "Research report documenting linter warnings in 3 Metalogic files with fix patterns"
+      "type": "plan",
+      "path": "specs/839_clean_linter_warnings/plans/implementation-001.md",
+      "summary": "4-phase implementation plan covering namespace fix, omit clauses, intro patterns, and unused simp args"
     }
   ],
   "metadata": {
-    "session_id": "sess_1770157278_d1d4c7",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770157553_f004f9",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1.5
   }
 }
