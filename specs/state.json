@@ -43,10 +43,10 @@
     {
       "project_number": 827,
       "project_name": "complete_multi_family_bmcs_construction",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-03T08:51:32Z",
-      "last_updated": "2026-02-03T09:07:47Z",
+      "last_updated": "2026-02-03T09:10:10Z",
       "session_id": "sess_1770109645_eba115",
       "researched": "2026-02-03T08:58:06Z",
       "artifacts": [
@@ -54,8 +54,14 @@
           "path": "specs/827_complete_multi_family_bmcs_construction/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing modal_backward sorry, multi-family construction approaches, and recommendation to accept as architectural limitation"
+        },
+        {
+          "path": "specs/827_complete_multi_family_bmcs_construction/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for multi-family BMCS modal saturation"
         }
-      ]
+      ],
+      "planned": "2026-02-03T09:10:10Z"
     },
     {
       "project_number": 828,
