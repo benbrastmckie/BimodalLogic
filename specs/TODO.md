@@ -1,16 +1,16 @@
 ---
-next_project_number: 823
+next_project_number: 825
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-03T00:33:24Z
 task_counts:
-  active: 12
+  active: 14
   completed: 366
   in_progress: 2
-  not_started: 7
+  not_started: 9
   abandoned: 26
-  total: 394
+  total: 396
 technical_debt:
   sorry_count: 69
   axiom_count: 15
@@ -21,6 +21,27 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 824. Fix Constitutive Foundation Remaining Issues
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-03
+- **Dependencies**: 823
+
+**Description**: Address remaining FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. Tags: (1) line 181: Make state modality definitions use dependent type theory notation consistently; (2) line 245: Add exclusivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (3) line 246: Add exhaustivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (4) line 357: Apply verum/falsum notation conventions established in task 823. Remove all tags after implementing fixes.
+
+---
+
+### 823. Update Context Files with Verum/Falsum Notation
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-03
+
+**Description**: Update .claude/context/ files based on NOTE: tag in 02-ConstitutiveFoundation.tex:357. Research notation conventions for verum/falsum in /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (lines 106, 109, 494). Since \top and \bot are not interdefinable in bilateral semantics, establish consistent terminology: reserve 'verium' and 'top' for the two top elements, 'falsum' and 'bot' for the two bottom elements. Define \ver as \neg\bot (verum) and \fal as \neg\top (falsum). Update LaTeX notation files and context documentation to match conventions from IdentityAboutness.tex.
+
+---
 
 ### 822. Improve Syntax and Term Algebra Structure
 - **Effort**: 1.5 hours

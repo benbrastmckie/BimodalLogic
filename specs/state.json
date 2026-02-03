@@ -1,10 +1,35 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 35,
-    "last_sync": "2026-01-30T02:15:47Z"
+    "total_tasks": 37,
+    "last_sync": "2026-02-03T02:39:06Z"
   },
   "active_projects": [
+    {
+      "project_number": 823,
+      "project_name": "update_context_verum_falsum_notation",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "1 hour",
+      "description": "Update .claude/context/ files based on NOTE: tag in 02-ConstitutiveFoundation.tex:357. Research notation conventions for verum/falsum in /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (lines 106, 109, 494). Since \\top and \\bot are not interdefinable in bilateral semantics, establish consistent terminology: reserve 'verium' and 'top' for the two top elements, 'falsum' and 'bot' for the two bottom elements. Define \\ver as \\neg\\bot (verum) and \\fal as \\neg\\top (falsum). Update LaTeX notation files and context documentation to match conventions from IdentityAboutness.tex.",
+      "created": "2026-02-03T06:38:40Z",
+      "last_updated": "2026-02-03T06:38:40Z",
+      "session_id": "sess_1770086320_41a7b6"
+    },
+    {
+      "project_number": 824,
+      "project_name": "fix_constitutive_foundation_remaining_issues",
+      "status": "not_started",
+      "language": "latex",
+      "effort": "2 hours",
+      "description": "Address remaining FIX: and NOTE: tags in Theories/Logos/latex/subfiles/02-ConstitutiveFoundation.tex. Tags: (1) line 181: Make state modality definitions use dependent type theory notation consistently; (2) line 245: Add exclusivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (3) line 246: Add exhaustivity constraint from counterfactual_worlds.tex:861, generalizing to n-place functions; (4) line 357: Apply verum/falsum notation conventions established in task 823. Remove all tags after implementing fixes.",
+      "created": "2026-02-03T06:38:40Z",
+      "last_updated": "2026-02-03T06:38:40Z",
+      "session_id": "sess_1770086320_41a7b6",
+      "dependencies": [
+        823
+      ]
+    },
     {
       "project_number": 818,
       "project_name": "refactor_bimodal_metalogic_modules",
@@ -419,7 +444,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 823,
+  "next_project_number": 825,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -428,9 +453,9 @@
     }
   ],
   "task_counts": {
-    "active": 9,
-    "not_started": 8,
-    "total": 334
+    "active": 11,
+    "not_started": 10,
+    "total": 336
   },
   "repository_health": {
     "last_assessed": "2026-02-03T00:33:24Z",
