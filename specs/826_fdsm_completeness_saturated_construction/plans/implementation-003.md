@@ -1,7 +1,7 @@
 # Implementation Plan: Task #826
 
 - **Task**: 826 - FDSM Completeness Saturated Construction (Revised Plan v3)
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Dependencies**: Task 825 (completed - MCSTrackedHistory infrastructure)
 - **Research Inputs**: specs/826_fdsm_completeness_saturated_construction/reports/research-003.md
@@ -74,7 +74,7 @@ Every sorry represents a failure to find a proof. Failures should be:
 
 ## Implementation Phases
 
-### Phase 0: Archive and Document Failures [NOT STARTED]
+### Phase 0: Archive and Document Failures [COMPLETED]
 
 **Goal**: Remove blocked sorries by archiving files, but document the failures for future alternative approaches
 
@@ -104,7 +104,12 @@ Every sorry represents a failure to find a proof. Failures should be:
 
 ---
 
-### Phase 1: FDSM TruthLemma Core Cases [NOT STARTED]
+### Phase 1: FDSM TruthLemma Core Cases [BLOCKED]
+
+**Note**: This phase is blocked due to an architectural issue. The definition of `fdsm_truth_at`
+at line 76 has a sorry that attempts to prove `Formula.atom p ∈ closure phi` for arbitrary atoms `p`.
+This is fundamentally unprovable - not all atoms are in the closure. Restructuring the truth
+definition is required. See Implementation Summary for alternative approaches.
 
 **Goal**: Complete the first 8 sorries in TruthLemma.lean (atomic, negation, conjunction cases)
 
@@ -135,7 +140,9 @@ Every sorry represents a failure to find a proof. Failures should be:
 
 ---
 
-### Phase 2: FDSM TruthLemma Modal/Temporal Cases [NOT STARTED]
+### Phase 2: FDSM TruthLemma Modal/Temporal Cases [BLOCKED]
+
+**Note**: Blocked due to Phase 1 architectural issue. Cannot proceed until truth definition is fixed.
 
 **Goal**: Complete the remaining 8 sorries in TruthLemma.lean (box, diamond, temporal cases)
 
@@ -163,7 +170,10 @@ Every sorry represents a failure to find a proof. Failures should be:
 
 ---
 
-### Phase 3: Modal Saturation Core Proofs [NOT STARTED]
+### Phase 3: Modal Saturation Core Proofs [PARTIAL]
+
+**Note**: Partial progress made on `saturation_terminates` - restructured proof to track bound but
+left sorry for the cardinality bound. Other core sorries remain.
 
 **Goal**: Complete the 5 core sorries in ModalSaturation.lean
 

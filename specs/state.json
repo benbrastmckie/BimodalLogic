@@ -8,7 +8,7 @@
     {
       "project_number": 826,
       "project_name": "fdsm_completeness_saturated_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Replace single-history fdsm_from_closure_mcs in Completeness.lean with proper saturated construction from Phase 4. The current implementation (lines 67-91) creates only one history, which trivializes modal operators. After task 825 completes saturated_histories, update: (1) Replace fdsm_from_closure_mcs with fdsm_from_saturated_histories that uses the modal saturation fixed point, (2) Update modal_saturated proof to use the saturation property instead of single-history trivialization, (3) Ensure eval_history is properly selected from the saturated set. This bridges Phase 4 to Phase 6.",
       "effort": "2 hours",
@@ -17,19 +17,14 @@
         825
       ],
       "created": "2026-02-03T02:50:16Z",
-      "last_updated": "2026-02-03T06:39:08Z",
-      "session_id": "sess_1770100338_b8a564",
+      "last_updated": "2026-02-03T06:51:21Z",
+      "session_id": "sess_1770101007_42ba21",
       "researched": "2026-02-03T04:19:15Z",
       "artifacts": [
         {
           "path": "specs/826_fdsm_completeness_saturated_construction/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive sorry inventory and prioritization for sorry-free metalogic"
-        },
-        {
-          "path": "specs/826_fdsm_completeness_saturated_construction/summaries/implementation-summary-20260203.md",
-          "type": "summary",
-          "summary": "Partial implementation progress: completed saturation_terminates and tracked_fixed_point_is_saturated, 8 sorries remain in ModalSaturation.lean"
         },
         {
           "path": "specs/826_fdsm_completeness_saturated_construction/reports/research-002.md",
@@ -45,6 +40,11 @@
           "path": "specs/826_fdsm_completeness_saturated_construction/plans/implementation-003.md",
           "type": "plan",
           "summary": "7-phase revised plan v3: no accepted limitations, only documented failures with alternative approaches"
+        },
+        {
+          "path": "specs/826_fdsm_completeness_saturated_construction/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Partial implementation: Phase 0 complete (10 sorries archived), architectural blockers documented for Phases 1-5"
         }
       ],
       "planned": "2026-02-03T06:39:08Z",

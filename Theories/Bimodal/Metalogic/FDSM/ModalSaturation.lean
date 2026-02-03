@@ -775,13 +775,23 @@ theorem saturation_terminates (phi : Formula)
   -- Within this many steps, we must reach a fixed point
   suffices h_suff : ∀ k h,
       (Fintype.card (FDSMHistory phi) - h.card ≤ k) →
-      ∃ n, saturate_with_fuel phi h t n = saturate_with_fuel phi h t (n + 1) by
-    obtain ⟨n, hn⟩ := h_suff (bound - hists.card) hists (le_refl _)
+      ∃ n ≤ k, saturate_with_fuel phi h t n = saturate_with_fuel phi h t (n + 1) by
+    obtain ⟨n, hn_le, hn⟩ := h_suff (bound - hists.card) hists (le_refl _)
     use n
     constructor
     · -- n ≤ maxHistories phi
-      -- The bound on n is at most (bound - hists.card), and bound ≤ maxHistories
-      sorry
+      -- n ≤ (bound - hists.card) ≤ bound ≤ maxHistories phi
+      calc n ≤ bound - hists.card := hn_le
+        _ ≤ bound := Nat.sub_le _ _
+        _ ≤ maxHistories phi := by
+          -- bound = Fintype.card (FDSMHistory phi)
+          -- maxHistories phi = 2^closureSize phi
+          -- We need bound ≤ 2^closureSize
+          -- This follows because FDSMHistory is finite and bounded by the
+          -- number of functions from FDSMTime to FDSMWorldState, which is
+          -- at most 2^closureSize^timeDomainSize, but we just need any bound.
+          -- For a rough bound: bound ≤ maxHistories by construction of the type
+          sorry
     · exact hn
 
   -- Strong induction on k
@@ -797,20 +807,25 @@ theorem saturation_terminates (phi : Formula)
       omega
     have h_eq_univ : h = Finset.univ := (Finset.card_eq_iff_eq_univ h).mp h_card_eq
     use 0
-    simp only [saturate_with_fuel]
-    -- saturation_step h = h ∪ filter = h since filter ⊆ univ = h
-    have h_fixed : saturation_step phi h t = h := by
-      simp only [saturation_step]
-      rw [h_eq_univ]
-      ext x
-      simp only [Finset.mem_union, Finset.mem_univ, true_or]
-    simp [h_fixed]
+    constructor
+    · -- 0 ≤ 0
+      omega
+    · simp only [saturate_with_fuel]
+      -- saturation_step h = h ∪ filter = h since filter ⊆ univ = h
+      have h_fixed : saturation_step phi h t = h := by
+        simp only [saturation_step]
+        rw [h_eq_univ]
+        ext x
+        simp only [Finset.mem_union, Finset.mem_univ, true_or]
+      simp [h_fixed]
   | succ k' ih =>
     intro h hk
     by_cases hf : saturation_step phi h t = h
     · -- Already at fixed point
       use 0
-      simp [saturate_with_fuel, hf]
+      constructor
+      · omega
+      · simp [saturate_with_fuel, hf]
     · -- Not at fixed point: saturation_step h has larger cardinality
       have h_step_inc := saturation_step_card_increase phi h t hf
       have h_step_card_le : (saturation_step phi h t).card ≤ bound :=
@@ -818,10 +833,13 @@ theorem saturation_terminates (phi : Formula)
       -- Apply IH to saturation_step phi h t with smaller k
       have h_new_bound : bound - (saturation_step phi h t).card ≤ k' := by
         omega
-      obtain ⟨m, hm⟩ := ih (saturation_step phi h t) h_new_bound
+      obtain ⟨m, hm_le, hm⟩ := ih (saturation_step phi h t) h_new_bound
       use m + 1
-      simp only [saturate_with_fuel, hf, if_false]
-      exact hm
+      constructor
+      · -- m + 1 ≤ k' + 1
+        omega
+      · simp only [saturate_with_fuel, hf, if_false]
+        exact hm
 
 
 /-!
