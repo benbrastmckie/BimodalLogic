@@ -22,13 +22,13 @@
     {
       "project_number": 825,
       "project_name": "fdsm_multi_history_modal_saturation",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "description": "Complete Phase 4 from implementation-003.md for task 816. The current single-history construction in Completeness.lean trivializes modal operators (making Box φ ≡ φ), which validates invalid principles as warned in research-013.md. Replace fdsm_from_closure_mcs with proper multi-history saturated construction: (1) Define saturation_step to add witness histories for unsatisfied Diamond formulas, (2) Define saturated_histories as fixed point, (3) Prove termination via 2^closureSize bound, (4) Prove modal_saturated property at fixed point, (5) Derive modal_backward from saturation contrapositive. Files: Theories/Bimodal/Metalogic/FDSM/ModalSaturation.lean (continue Phase 4 section starting line 287).",
       "effort": "4-5 hours",
       "parent_task": 816,
       "created": "2026-02-03T02:44:55Z",
-      "last_updated": "2026-02-03T03:31:11Z",
+      "last_updated": "2026-02-03T03:40:28Z",
       "session_id": "sess_1770088932_7e850f",
       "researched": "2026-02-03T02:54:50Z",
       "artifacts": [
@@ -43,11 +43,6 @@
           "summary": "Gap analysis of implementation-003.md execution: Phase 4 skipped, single-history workaround used, 28 sorries remain. Details remaining work and dependency order."
         },
         {
-          "path": "specs/825_fdsm_multi_history_modal_saturation/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan for FDSM multi-history modal saturation construction"
-        },
-        {
           "path": "specs/825_fdsm_multi_history_modal_saturation/summaries/implementation-summary-20260203.md",
           "type": "summary",
           "summary": "Phases 1-3 complete, 4-6 partial: MCSTrackedHistory infrastructure added, 5 sorries in saturation path"
@@ -56,9 +51,14 @@
           "path": "specs/825_fdsm_multi_history_modal_saturation/reports/research-003.md",
           "type": "research",
           "summary": "Deep analysis of blockers preventing PARTIAL phase completion: MCS tracking gap, DecidableEq requirements, closure membership bookkeeping, with prioritized recommendations"
+        },
+        {
+          "path": "specs/825_fdsm_multi_history_modal_saturation/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "6-phase revised plan: archive single-history to Boneyard, rebuild saturation on MCSTrackedHistory, add closure infrastructure"
         }
       ],
-      "planned": "2026-02-03T03:00:16Z",
+      "planned": "2026-02-03T03:40:28Z",
       "started": "2026-02-03T03:01:33Z"
     },
     {
