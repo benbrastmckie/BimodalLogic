@@ -1,5 +1,5 @@
 ---
-next_project_number: 850
+next_project_number: 851
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 850. Create scalable oversight section in Introduction
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-03
+
+**Description**: Draw on conceptual-engineering.md to create a section in 01-Introduction.tex on scalable oversight that matches the other sections in style and tone.
+
+---
 
 ### 847. Restructure Constitutive Semantics section
 - **Effort**: 1 hour
