@@ -53,6 +53,7 @@ open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {phi : Formula}
 
 /-!
 ## Family Collection
@@ -163,19 +164,9 @@ noncomputable def constructClosureWitnessFamily (phi psi : Formula)
     (h_psi_clos : psi ∈ closureWithNeg phi)
     (h_cons : SetConsistent {psi}) : IndexedMCSFamily D :=
   -- Use restricted Lindenbaum to get an MCS within closure
-  let S : Set Formula := {psi}
-  let h_restricted : ClosureRestricted phi S := by
-    intro chi hchi
-    simp only [Set.mem_singleton_iff] at hchi
-    exact hchi ▸ h_psi_clos
-  let M_spec := restricted_lindenbaum phi S h_restricted h_cons
-  let M := Classical.choose M_spec
-  let h_M := Classical.choose_spec M_spec
-  -- Build constant family from the restricted MCS
-  -- The restricted MCS satisfies SetMaximalConsistent within closure
-  -- We need to verify it's globally set-maximal-consistent
-  -- For now, we use the fact that restricted MCS is consistent
-  -- and use constructWitnessFamily pattern
+  -- For now, we use the existing constructWitnessFamily which doesn't
+  -- restrict to closure but does produce an MCS containing psi
+  -- A more refined version would use restricted_lindenbaum
   constructWitnessFamily psi h_cons
 
 /--
@@ -185,7 +176,7 @@ lemma constructClosureWitnessFamily_contains (phi psi : Formula)
     (h_psi_clos : psi ∈ closureWithNeg phi)
     (h_cons : SetConsistent {psi}) (t : D) :
     psi ∈ (constructClosureWitnessFamily phi psi h_psi_clos h_cons (D := D)).mcs t := by
-  simp only [constructClosureWitnessFamily]
+  unfold constructClosureWitnessFamily
   exact constructWitnessFamily_contains psi h_cons t
 
 /-!
@@ -208,9 +199,16 @@ Extend a family collection by adding a witness family for psi.
 noncomputable def extendWithWitness (C : FamilyCollection D phi) (psi : Formula)
     (h_psi_clos : psi ∈ closureWithNeg phi)
     (h_needs : ∃ t : D, needsWitness C psi t) : FamilyCollection D phi :=
-  -- Get witness that Diamond psi is in some family
-  let ⟨t, h_diamond_exists, h_no_witness⟩ := h_needs
-  let ⟨fam, hfam, h_diamond⟩ := h_diamond_exists
+  -- Use Classical.choose to extract the witness time and proofs
+  let t := Classical.choose h_needs
+  let h_witness := Classical.choose_spec h_needs
+  -- needsWitness C psi t = (∃ fam ∈ C.families, diamondFormula psi ∈ fam.mcs t) ∧
+  --                        (∀ fam ∈ C.families, psi ∉ fam.mcs t)
+  let h_diamond_exists : ∃ fam ∈ C.families, diamondFormula psi ∈ fam.mcs t := h_witness.1
+  let fam := Classical.choose h_diamond_exists
+  let h_fam_spec := Classical.choose_spec h_diamond_exists
+  let hfam : fam ∈ C.families := h_fam_spec.1
+  let h_diamond : diamondFormula psi ∈ fam.mcs t := h_fam_spec.2
   -- Diamond psi in MCS implies {psi} is consistent
   let h_cons : SetConsistent {psi} := diamond_implies_singleton_consistent (fam.is_mcs t) psi h_diamond
   -- Construct witness family
@@ -220,47 +218,25 @@ noncomputable def extendWithWitness (C : FamilyCollection D phi) (psi : Formula)
     modal_forward := fun fam' hfam' chi s h_chi_clos h_box fam'' hfam'' => by
       -- Need: chi ∈ fam''.mcs s
       -- Case analysis on whether fam' or fam'' is the witness
-      cases Set.mem_insert_iff.mp hfam' with
-      | inl h_eq =>
-        -- fam' is the witness
-        cases Set.mem_insert_iff.mp hfam'' with
-        | inl h_eq'' =>
-          -- fam'' is also the witness - use T-axiom
-          rw [h_eq, h_eq'']
-          let h_mcs := witness.is_mcs s
-          let h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
+      rcases Set.mem_insert_iff.mp hfam' with h_eq | h_in_C
+      · -- fam' is the witness
+        rcases Set.mem_insert_iff.mp hfam'' with h_eq'' | h_in_C'
+        · -- fam'' is also the witness - use T-axiom
+          subst h_eq h_eq''
+          have h_mcs := witness.is_mcs s
+          have h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
           exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_box
-        | inr h_in_C =>
-          -- fam'' is from C
-          -- Box chi is in witness.mcs s, chi ∈ closureWithNeg phi
-          -- We need chi ∈ fam''.mcs s (where fam'' ∈ C.families)
-          -- This is the core modal propagation - use T-axiom on witness,
-          -- then we need to show chi propagates to old families
-          -- This requires that witness satisfies same Box formulas as C
-          -- For now, use the modal forward property with T-axiom
-          rw [h_eq] at h_box
-          let h_mcs := witness.is_mcs s
-          let h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
-          let h_chi_in_witness := set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_box
-          -- Now we need chi in fam''.mcs s
-          -- This is the challenging part - new family may have different Box formulas
-          -- For constant witness families, this works because they share the same MCS
-          -- The proper proof requires showing witness family is compatible
+        · -- fam'' is from C, fam' is witness
+          subst h_eq
+          -- This case needs careful analysis - witness family may differ
           sorry
-      | inr h_in_C =>
-        -- fam' is from C - use original modal_forward
-        cases Set.mem_insert_iff.mp hfam'' with
-        | inl h_eq'' =>
-          -- fam'' is the witness
-          rw [h_eq'']
-          let h_mcs := witness.is_mcs s
-          let h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
-          -- Need Box chi in fam'.mcs s to imply chi in witness.mcs s
-          -- fam' ∈ C.families, so use C.modal_forward to get chi in all C families
-          -- But witness may not have chi
+      · -- fam' is from C
+        rcases Set.mem_insert_iff.mp hfam'' with h_eq'' | h_in_C'
+        · -- fam'' is the witness
+          subst h_eq''
+          -- Use C.modal_forward for fam', then need chi in witness
           sorry
-        | inr h_in_C' =>
-          -- Both in C - use original modal_forward
+        · -- Both in C - use original modal_forward
           exact C.modal_forward fam' h_in_C chi s h_chi_clos h_box fam'' h_in_C'
     eval_family := C.eval_family
     eval_family_mem := Set.mem_insert_of_mem witness C.eval_family_mem
@@ -275,12 +251,15 @@ The main saturation loop with termination proof.
 /--
 Count of Diamond formulas in closure that are satisfied (have witnesses) in C.
 Used as part of termination measure.
+
+Note: This definition uses Classical.propDecidable because the predicate
+"∃ fam ∈ C.families, ∃ t : D, psi ∈ fam.mcs t" is not computably decidable.
 -/
 noncomputable def satisfiedDiamondCount (C : FamilyCollection D phi) : Nat :=
-  -- For each psi in diamondSubformulas phi, check if some family has psi
-  -- This is a finite count because diamondSubformulas phi is a Finset
-  (diamondSubformulas phi).filter (fun psi => ∃ fam ∈ C.families, ∃ t : D, psi ∈ fam.mcs t)
-    |>.card
+  -- Count using Classical decidability
+  @Finset.card _ <| @Finset.filter _ (fun psi =>
+    ∃ fam ∈ C.families, ∃ t : D, psi ∈ fam.mcs t) (fun _ => Classical.propDecidable _)
+    (diamondSubformulas phi)
 
 /--
 The termination measure for saturation.
@@ -313,27 +292,8 @@ noncomputable def saturateFamilies (C : FamilyCollection D phi) :
   · -- Already saturated - return C
     exact ⟨C, h_sat, Set.Subset.refl _⟩
   · -- Not saturated - find an unsatisfied Diamond and add witness
-    -- h_sat is false, so ∃ psi t such that Diamond psi in some family but psi in no family
-    push_neg at h_sat
-    obtain ⟨psi, h_psi_sub, t, h_diamond_exists, h_no_witness⟩ := h_sat
-    -- psi ∈ diamondSubformulas phi, so psi ∈ subformulaClosure phi
-    have h_psi_clos : psi ∈ subformulaClosure phi := diamondSubformulas_subset phi h_psi_sub
-    have h_psi_closneg : psi ∈ closureWithNeg phi :=
-      subformulaClosure_subset_closureWithNeg phi h_psi_clos
-    -- psi needs a witness at time t
-    have h_needs : ∃ t' : D, needsWitness C psi t' := ⟨t, ⟨h_diamond_exists, h_no_witness⟩⟩
-    -- Extend with witness
-    let C' := extendWithWitness C psi h_psi_closneg h_needs
-    -- Recursively saturate C'
-    -- TERMINATION: saturationMeasure C' < saturationMeasure C
-    -- because C' satisfies one more Diamond formula
-    -- For now, we use sorry for the termination proof
-    -- A proper implementation would use well-founded recursion
-    have h_decreases : saturationMeasure C' < saturationMeasure C := by
-      sorry -- Requires showing new family satisfies psi
-    -- Use well-founded recursion
-    -- In Lean 4, we'd use `termination_by saturationMeasure C`
-    -- For now, we use sorry to represent the recursive structure
+    -- The full implementation requires well-founded recursion on saturationMeasure
+    -- For now, we use sorry to represent this structure
     sorry
 
 /-!
@@ -389,16 +349,38 @@ construct an IndexedMCSFamily containing phi.
 -/
 noncomputable def constructInitialFamily (phi : Formula)
     (h_cons : ¬Nonempty (DerivationTree [] phi.neg)) : IndexedMCSFamily D :=
-  -- Use restricted_mcs_from_formula to get an MCS containing phi
-  let ⟨M, h_phi_in, h_mcs⟩ := restricted_mcs_from_formula phi h_cons
-  -- Build constant family from M
-  -- We need to convert RestrictedMCS phi M to SetMaximalConsistent M
-  -- RestrictedMCS gives us consistency within closure
-  -- For global consistency, we use the fact that MCS within closure
-  -- can be extended to global MCS via Lindenbaum
-  -- For now, use the same pattern as constantIndexedMCSFamily
-  -- but with the restricted MCS
-  constantWitnessFamily M h_mcs
+  -- Use diamond_implies_psi_consistent approach: {phi} is consistent
+  -- if neg phi is not a theorem
+  let h_singleton_cons : SetConsistent {phi} := by
+    intro L hL ⟨d⟩
+    by_cases h_phi_in_L : phi ∈ L
+    · -- Derive [phi] ⊢ ⊥ by weakening
+      have h_weak : ∀ x ∈ L, x ∈ [phi] := fun x hx =>
+        List.mem_singleton.mpr (Set.mem_singleton_iff.mp (hL x hx))
+      have d_phi : DerivationTree [phi] Formula.bot :=
+        DerivationTree.weakening L [phi] _ d h_weak
+      -- By deduction theorem: ⊢ phi → ⊥ = ⊢ phi.neg
+      have d_neg : DerivationTree [] phi.neg :=
+        deduction_theorem [] phi Formula.bot d_phi
+      exact h_cons ⟨d_neg⟩
+    · -- phi ∉ L, so L ⊆ {phi} means L = []
+      have h_L_empty : L = [] := by
+        cases L with
+        | nil => rfl
+        | cons x xs =>
+          exfalso
+          have hx := hL x List.mem_cons_self
+          simp only [Set.mem_singleton_iff] at hx
+          rw [hx] at h_phi_in_L
+          exact h_phi_in_L List.mem_cons_self
+      -- [] ⊢ ⊥ means bot is a theorem
+      rw [h_L_empty] at d
+      have d_neg : DerivationTree [] phi.neg := by
+        have d_efq := DerivationTree.axiom [] (Formula.bot.imp phi.neg) (Axiom.ex_falso phi.neg)
+        exact DerivationTree.modus_ponens [] _ _ d_efq d
+      exact h_cons ⟨d_neg⟩
+  -- Use constructWitnessFamily which extends {phi} to a global MCS
+  constructWitnessFamily phi h_singleton_cons
 
 /--
 The initial family contains phi in its MCS at all times.
@@ -406,10 +388,9 @@ The initial family contains phi in its MCS at all times.
 lemma constructInitialFamily_contains (phi : Formula)
     (h_cons : ¬Nonempty (DerivationTree [] phi.neg)) (t : D) :
     phi ∈ (constructInitialFamily phi h_cons (D := D)).mcs t := by
-  -- constructInitialFamily uses restricted_mcs_from_formula to get M containing phi
-  -- then constantWitnessFamily which assigns M to all times
-  unfold constructInitialFamily constantWitnessFamily_mcs_eq
-  exact (Classical.choose_spec (restricted_mcs_from_formula phi h_cons)).1
+  -- constructInitialFamily uses constructWitnessFamily which uses extendToMCS
+  unfold constructInitialFamily
+  exact constructWitnessFamily_contains phi _ t
 
 /--
 Build initial FamilyCollection from a single family.

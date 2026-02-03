@@ -126,31 +126,36 @@ After this implementation:
 
 ---
 
-### Phase 3: Iterative Saturation with Termination Proof [IN PROGRESS]
+### Phase 3: Iterative Saturation with Termination Proof [PARTIAL]
 
 **Goal**: Build saturation function that iteratively adds witness families with termination proof
 
 **Tasks**:
-- [ ] Create new file `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean`
-- [ ] Define `unsatisfied_diamonds` predicate: Diamond formulas in families without witnesses
-- [ ] Define `saturation_step`: adds one witness family for unsatisfied diamond
-- [ ] Prove `saturation_step_reduces`: each step reduces unsatisfied diamond count
-- [ ] Define `saturate_families` using well-founded recursion on (closure.card - satisfied_count)
-- [ ] Prove `saturate_families_terminates`: recursion measure decreases each step
-- [ ] Prove `saturate_families_preserves_validity`: new families satisfy modal_forward
-- [ ] Add imports to `Theories/Bimodal/Metalogic/Bundle.lean`
+- [x] Create new file `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean`
+- [x] Define `FamilyCollection` structure for tracking families with modal coherence
+- [x] Define `needsWitness` predicate: Diamond formulas in families without witnesses
+- [x] Define `isSaturatedForClosure` predicate for saturation within closure
+- [x] Define `extendWithWitness`: adds one witness family for unsatisfied diamond
+- [x] Define `satisfiedDiamondCount` termination measure
+- [x] Define `saturateFamilies` function structure (with sorry for recursion)
+- [ ] Prove termination via well-founded recursion (remaining sorry)
+- [ ] Prove modal_forward preservation when extending (2 sorries)
+- [ ] Prove saturation implies full modal saturation (1 sorry)
 
-**Timing**: 15 hours
+**Timing**: 15 hours (8 hours completed)
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean` - Create new file
-- `Theories/Bimodal/Metalogic/Bundle.lean` - Add import
+**Files created**:
+- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean` - Created with infrastructure
+
+**Sorries in Phase 3**:
+1. `saturatedForClosure_implies_saturated` - 2 sorries for closure containment
+2. `extendWithWitness.modal_forward` - 2 sorries for cross-family propagation
+3. `saturateFamilies` - 1 sorry for recursive structure
 
 **Verification**:
-- `lake build` succeeds
-- `saturate_families` compiles with explicit termination proof (no sorry in decreasing_by)
-- Termination measure uses Finset.card (well-founded on Nat)
-- Each recursive call strictly decreases measure
+- `lake build` succeeds on new file
+- Core infrastructure compiles (FamilyCollection, witnesses, measures)
+- Termination argument structure in place but not fully proven
 
 ---
 
