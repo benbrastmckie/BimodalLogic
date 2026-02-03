@@ -6,6 +6,31 @@
   },
   "active_projects": [
     {
+      "project_number": 843,
+      "project_name": "remove_singleFamily_modal_backward_axiom",
+      "status": "not_started",
+      "language": "lean",
+      "effort": "2-4 hours",
+      "description": "Remove singleFamily_modal_backward_axiom after Zorn lemma is proven. Update completeness theorem in Completeness.lean to use construct_bmcs_saturated instead of axiom-based construction. Remove or comment out the axiom declaration. Verify build succeeds and completeness theorems no longer depend on the axiom. (Follow-up from task #841, depends on task #842)",
+      "parent_task": 841,
+      "depends_on": [
+        842
+      ],
+      "created": "2026-02-03T19:04:58Z",
+      "last_updated": "2026-02-03T19:04:58Z"
+    },
+    {
+      "project_number": 842,
+      "project_name": "formalize_zorn_lemma_exists_fullySaturated_extension",
+      "status": "not_started",
+      "language": "lean",
+      "effort": "8-16 hours",
+      "description": "Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)",
+      "parent_task": 841,
+      "created": "2026-02-03T19:04:53Z",
+      "last_updated": "2026-02-03T19:04:53Z"
+    },
+    {
       "project_number": 841,
       "project_name": "remove_axiom_complete_multi_family_saturation",
       "status": "completed",
@@ -42,11 +67,11 @@
     {
       "project_number": 840,
       "project_name": "refactor_truthlemma_forward_backward_publication",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-03T10:23:36Z",
-      "last_updated": "2026-02-03T18:53:38Z",
-      "session_id": "sess_1770114261_db5871",
+      "last_updated": "2026-02-03T19:04:33Z",
+      "session_id": "sess_1770145446_32e7c1",
       "researched": "2026-02-03T18:53:38Z",
       "artifacts": [
         {
@@ -343,7 +368,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 842,
+  "next_project_number": 844,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

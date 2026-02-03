@@ -1,5 +1,5 @@
 ---
-next_project_number: 842
+next_project_number: 844
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,6 +22,29 @@ technical_debt:
 
 ## Tasks
 
+### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Parent**: Task 841
+- **Depends**: Task 842
+
+**Description**: Remove singleFamily_modal_backward_axiom after Zorn lemma is proven. Update completeness theorem in Completeness.lean to use construct_bmcs_saturated instead of axiom-based construction. Remove or comment out the axiom declaration. Verify build succeeds and completeness theorems no longer depend on the axiom. (Follow-up from task #841, depends on task #842)
+
+---
+
+### 842. Formalize Zorn's lemma proof in exists_fullySaturated_extension
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-03
+- **Parent**: Task 841
+
+**Description**: Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)
+
+---
+
 ### 841. Remove axiom from task 827 via complete multi-family saturation construction
 - **Effort**: 16-26 hours
 - **Status**: [COMPLETED]
@@ -42,7 +65,7 @@ technical_debt:
 
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
 - **Effort**: 4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
