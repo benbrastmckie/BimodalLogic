@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-03T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "research_analyzed",
-    "details": "Analyzed research reports and sorry inventory. Creating plan structure."
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/826_fdsm_completeness_saturated_construction/plans/implementation-001.md",
+      "summary": "8-phase implementation plan to complete 27-28 sorries for sorry-free FDSM metalogic"
+    }
+  ],
+  "next_steps": "Run /implement 826 to execute the plan",
   "metadata": {
     "session_id": "sess_1770092594_fe9510",
     "agent_type": "planner-agent",
+    "duration_seconds": 300,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 14
   }
 }
