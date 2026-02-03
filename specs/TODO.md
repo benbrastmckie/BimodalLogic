@@ -66,14 +66,14 @@ technical_debt:
 
 ### 816. BMCS Temporal Modal Coherence Strengthening
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-02
 - **Researched**: 2026-02-02
 - **Planned**: 2026-02-02
 - **Parent**: Task 813
 - **Dependencies**: 814
-- **Research**: [research-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md), [research-002.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-002.md), [research-003.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-003.md), [research-004.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-004.md), [research-005.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-005.md), [research-006.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-006.md), [research-007.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-007.md), [research-008.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-008.md), [research-009.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-009.md), [research-010.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-010.md)
+- **Research**: [research-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-001.md), [research-002.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-002.md), [research-003.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-003.md), [research-004.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-004.md), [research-005.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-005.md), [research-006.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-006.md), [research-007.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-007.md), [research-008.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-008.md), [research-009.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-009.md), [research-010.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-010.md), [research-011.md](specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-011.md)
 - **Plan**: [implementation-001.md](specs/816_bmcs_temporal_modal_coherence_strengthening/plans/implementation-001.md)
 
 **Description**: Resolve 3 temporal/modal sorries by adding backward coherence conditions to IndexedMCSFamily and implementing modal saturation for singleFamilyBMCS. Sorries: TruthLemma.lean:156 (phi_at_all_future_implies_mcs_all_future), TruthLemma.lean:166 (phi_at_all_past_implies_mcs_all_past), Construction.lean:220 (modal_backward in singleFamilyBMCS). Strategy: Add backward_from_all_future and backward_from_all_past fields to IndexedMCSFamily; for modal_backward, options include modal saturation during MCS construction or multi-family approach.

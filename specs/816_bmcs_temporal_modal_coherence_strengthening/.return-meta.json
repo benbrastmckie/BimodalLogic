@@ -1,11 +1,15 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-03T14:30:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "research",
-    "details": "Reviewed historical documents from tasks 810, 812. Found detailed analysis of FMP validity bridge blockage."
-  },
+  "completed_at": "2026-02-03T14:45:00Z",
+  "artifacts": [
+    {
+      "path": "specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-011.md",
+      "type": "research",
+      "summary": "Historical analysis of FMP vs BMCS approaches, documenting why both prove completeness for different validity notions than Validity.lean"
+    }
+  ],
+  "partial_progress": null,
   "metadata": {
     "session_id": "sess_1770077534_0cbe66",
     "agent_type": "lean-research-agent",
