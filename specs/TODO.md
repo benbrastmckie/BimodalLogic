@@ -36,11 +36,12 @@ technical_debt:
 
 ### 842. Formalize Zorn's lemma proof in exists_fullySaturated_extension
 - **Effort**: 8-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Started**: 2026-02-03
 - **Parent**: Task 841
 - **Research**: [research-001.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/842_formalize_zorn_lemma_exists_fullySaturated_extension/plans/implementation-001.md)
@@ -68,13 +69,13 @@ technical_debt:
 ---
 
 ### 840. Refactor TruthLemma to separate forward/backward directions for publication readiness
-- **Effort**: 4 hours
+- **Effort**: 8 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Related**: Task 828 (research basis)
-- **Research**: [research-001.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md), [research-002.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-002.md), [research-003.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-003.md)
+- **Research**: [research-001.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md), [research-002.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-002.md), [research-003.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-003.md), [research-004.md](specs/840_refactor_truthlemma_forward_backward_publication/reports/research-004.md)
 
 **Description**: Refactor TruthLemma.lean to separate forward and backward directions into distinct theorems. Currently the biconditional truth lemma contains sorries in the G/H backward directions, which transitively contaminate the completeness theorems (verified via #print axioms showing sorryAx dependency). Split into: (1) bmcs_truth_lemma_forward (φ ∈ MCS → φ is true) - SORRY-FREE, (2) bmcs_truth_lemma_backward_partial (φ is true → φ ∈ MCS) - with documented sorries for G/H. Update Completeness.lean to use forward-only theorem directly. Verify completeness theorems no longer depend on sorryAx. This enables publication-ready completeness results.
 

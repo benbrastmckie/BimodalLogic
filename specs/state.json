@@ -22,14 +22,14 @@
     {
       "project_number": 842,
       "project_name": "formalize_zorn_lemma_exists_fullySaturated_extension",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "8-16 hours",
       "description": "Formalize Zorn's lemma proof in exists_fullySaturated_extension. Fill the sorry by proving: (1) family collections ordered by inclusion form a partial order, (2) chains have upper bounds (union preserves box_coherence), (3) maximality implies full saturation (if not saturated, could add witness). Use Mathlib.Order.Zorn. (Follow-up from task #841)",
       "parent_task": 841,
       "created": "2026-02-03T19:04:53Z",
-      "last_updated": "2026-02-03T19:14:09Z",
-      "session_id": "sess_1738614593_bb9017",
+      "last_updated": "2026-02-03T19:27:22Z",
+      "session_id": "sess_1770146816_69ffbb",
       "researched": "2026-02-03T19:10:10Z",
       "artifacts": [
         {
@@ -43,7 +43,8 @@
           "summary": "5-phase implementation plan for Zorn'\\''s lemma proof in exists_fullySaturated_extension"
         }
       ],
-      "planned": "2026-02-03T19:14:09Z"
+      "planned": "2026-02-03T19:14:09Z",
+      "started": "2026-02-03T19:27:22Z"
     },
     {
       "project_number": 841,
@@ -85,9 +86,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-03T10:23:36Z",
-      "last_updated": "2026-02-03T19:16:23Z",
-      "session_id": "sess_1770145858_4ef906",
-      "researched": "2026-02-03T19:16:23Z",
+      "last_updated": "2026-02-03T19:39:25Z",
+      "session_id": "sess_1770147273_366049",
+      "researched": "2026-02-03T19:39:25Z",
       "artifacts": [
         {
           "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-001.md",
@@ -103,6 +104,11 @@
           "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-003.md",
           "type": "research",
           "summary": "Comprehensive zero-sorry path analysis: recommends forward-only TruthLemma restructuring (removes 2 sorries) as Phase 1, with optional Zorn lemma completion (eliminates axiom) as Phase 2"
+        },
+        {
+          "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-004.md",
+          "type": "research",
+          "summary": "Path to sorry-free metalogic: forward-only TruthLemma + eliminate Boneyard imports; 4 phases, 8 hours"
         }
       ]
     },

@@ -4,28 +4,16 @@
   "completed_at": "2026-02-03T10:45:00Z",
   "artifacts": [
     {
-      "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-003.md",
+      "path": "specs/840_refactor_truthlemma_forward_backward_publication/reports/research-004.md",
       "type": "research",
-      "summary": "Comprehensive analysis of paths to zero-sorry publication: recommends forward-only TruthLemma restructuring (removes 2 sorries) as Phase 1, with optional Zorn's lemma completion (eliminates axiom) as Phase 2"
+      "summary": "Path to sorry-free metalogic: forward-only TruthLemma + eliminate Boneyard imports; 8-hour implementation in 4 phases"
     }
   ],
   "partial_progress": null,
   "metadata": {
-    "session_id": "sess_1770145858_4ef906",
+    "session_id": "sess_1770147273_366049",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
-  },
-  "findings": {
-    "sorry_inventory": {
-      "TruthLemma_383": "G backward - omega-rule limitation",
-      "TruthLemma_395": "H backward - omega-rule limitation",
-      "SaturatedConstruction_482": "Zorn's lemma formalization",
-      "Construction_228_axiom": "singleFamily_modal_backward_axiom"
-    },
-    "recommended_path": "Phase 1: Forward-only TruthLemma (archival)",
-    "phase1_complexity": "Low - removes 2 sorries, minimal code changes",
-    "phase2_complexity": "Medium - completes Zorn's lemma, eliminates axiom",
-    "completeness_impact": "None - completeness theorems already sorry-free (use only forward direction)"
   }
 }
