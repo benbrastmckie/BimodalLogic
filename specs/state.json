@@ -312,6 +312,11 @@
           "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/plans/implementation-002.md",
           "type": "plan",
           "summary": "7-phase plan with enhanced schemas including Rationale and References fields for tracking why elements are pursued and citations to relevant artifacts"
+        },
+        {
+          "path": "specs/833_enhance_roadmap_structure_changelog_strategies_ambitions/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Implementation summary with metrics and verification results"
         }
       ],
       "planned": "2026-02-03T09:51:30Z",
@@ -347,7 +352,9 @@
       ],
       "planned": "2026-02-03T09:52:14Z",
       "started": "2026-02-03T09:53:26Z",
-      "completed": "2026-02-03T09:58:28Z"
+      "completed": "2026-02-03T09:58:28Z",
+      "completion_summary": "Extended /review command with bidirectional ROADMAP.md integration: Section 1.6 loads Strategies/Ambitions for review focus, Section 6.5 revises roadmap based on findings (strategy status updates, new ambition proposals with user approval, gap notes to Open Questions), Section 8.5 provides prioritized task suggestions following /todo and /learn patterns.",
+      "claudemd_suggestions": "Extended .claude/commands/review.md with 4 new sections (1.6, 6.5, 8.5, extended Section 4), ~400 lines added for roadmap context loading, revision logic, and task suggestions output"
     }
   ],
   "completed_projects": [

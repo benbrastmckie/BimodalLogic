@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Bundle.ModalSaturation
+import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.RestrictedMCS
