@@ -34,9 +34,11 @@ technical_debt:
 
 ### 821. Fix Constitutive Foundation LaTeX Issues
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: latex
 - **Created**: 2026-02-03
+- **Researched**: 2026-02-03
+- **Research**: [research-001.md](specs/821_fix_constitutive_foundation_latex_issues/reports/research-001.md)
 
 **Description**: Address 7 FIX: tags in 02-ConstitutiveFoundation.tex: include universal quantifier in primitives list (line 21), present lattice definitions with task relation constraints (line 95), use defined symbols for state modality predicates (line 114), add explanatory remark about haecceities and modal profiles (line 161), add remark about constant substitution (line 220), formally define v-variant (line 225), elaborate on hyperintensional verification/falsification significance (line 248), clarify quantifier binding convention (line 270), divide top/bottom into separate subsubsections (line 285), add remark distinguishing propositional from sentential operators (line 435).
 
