@@ -134,6 +134,11 @@
           "path": "specs/827_complete_multi_family_bmcs_construction/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for multi-family BMCS modal saturation"
+        },
+        {
+          "path": "specs/827_complete_multi_family_bmcs_construction/summaries/implementation-summary-20260203.md",
+          "type": "summary",
+          "summary": "Modal saturation infrastructure implemented. Core theorem saturated_modal_backward proven without sorry. Single-family BMCS cannot be saturated so original sorry remains."
         }
       ],
       "planned": "2026-02-03T09:10:10Z",
