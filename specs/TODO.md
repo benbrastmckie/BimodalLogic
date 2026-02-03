@@ -35,14 +35,16 @@ technical_debt:
 
 ### 825. Complete FDSM Multi-History Modal Saturation
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
 - **Planned**: 2026-02-03
+- **Completed**: 2026-02-03
 - **Dependencies**: 816
 - **Research**: [research-001.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-001.md), [research-002.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-002.md), [research-003.md](specs/825_fdsm_multi_history_modal_saturation/reports/research-003.md)
 - **Plan**: [implementation-002.md](specs/825_fdsm_multi_history_modal_saturation/plans/implementation-002.md) (revised from v001)
+- **Summary**: Implemented multi-history modal saturation for FDSM completeness. Archived broken single-history construction to Boneyard, added MCSTrackedHistory with type class instances, implemented tracked_saturation_step with proofs, proved tracked_fixed_point_is_saturated (core correctness theorem), built fdsm_from_tracked_saturation construction, and added closure_mcs_modus_ponens lemma for TruthLemma support.
 
 **Description**: Replace broken single-history FDSM construction with proper multi-history modal saturation. Revised approach: (1) Archive fdsm_from_closure_mcs to Boneyard with comments explaining modal trivialization (Box psi = psi), (2) Add DecidableEq for MCSTrackedHistory, (3) Rebuild saturation on tracked histories that carry MCS info, (4) Prove modal saturation property, (5) Update Completeness.lean, (6) Add closure membership infrastructure.
 

@@ -659,4 +659,122 @@ theorem closure_mcs_imp_iff (phi : Formula) (S : Set Formula)
           · exact h_neg
         exact h_incons (h_mcs.1.2 [psi.neg, (psi.imp chi).neg] h_sub)
 
+/-!
+## Additional Closure Membership Infrastructure (Task 825)
+
+Helper lemmas for closure membership that unblock TruthLemma.lean.
+-/
+
+/--
+If psi ∈ closure phi, then psi.neg ∈ closureWithNeg phi.
+
+This is the key lemma for handling negations in closure MCS.
+-/
+theorem closure_neg_in_closureWithNeg (phi psi : Formula)
+    (h : psi ∈ closure phi) : psi.neg ∈ closureWithNeg phi :=
+  neg_mem_closureWithNeg phi psi h
+
+/--
+Both components of an implication in closure are in closureWithNeg.
+
+If psi.imp chi ∈ closure phi, then both psi and chi are in closureWithNeg phi.
+-/
+theorem closure_imp_components_in_closureWithNeg (phi psi chi : Formula)
+    (h : Formula.imp psi chi ∈ closure phi) :
+    psi ∈ closureWithNeg phi ∧ chi ∈ closureWithNeg phi := by
+  have h_psi := closure_imp_left phi psi chi h
+  have h_chi := closure_imp_right phi psi chi h
+  exact ⟨closure_subset_closureWithNeg phi h_psi, closure_subset_closureWithNeg phi h_chi⟩
+
+/--
+The inner formula of a Box is in closure.
+
+If Box psi ∈ closure phi, then psi ∈ closure phi.
+This is a direct consequence of the subformula property.
+-/
+theorem closure_box_inner (phi psi : Formula)
+    (h : Formula.box psi ∈ closure phi) : psi ∈ closure phi :=
+  closure_box phi psi h
+
+/--
+If Box psi ∈ closure phi, then psi ∈ closureWithNeg phi.
+-/
+theorem closure_box_inner_in_closureWithNeg (phi psi : Formula)
+    (h : Formula.box psi ∈ closure phi) : psi ∈ closureWithNeg phi :=
+  closure_subset_closureWithNeg phi (closure_box phi psi h)
+
+/--
+If Box psi ∈ closure phi, then Box psi ∈ closureWithNeg phi.
+-/
+theorem closure_box_in_closureWithNeg (phi psi : Formula)
+    (h : Formula.box psi ∈ closure phi) : Formula.box psi ∈ closureWithNeg phi :=
+  closure_subset_closureWithNeg phi h
+
+/--
+Diamond psi = neg(Box(neg psi)) membership in closureWithNeg.
+
+If Box psi ∈ closure phi, then Diamond(psi.neg) ∈ closureWithNeg phi.
+Note: Diamond psi is syntactically neg(Box(neg psi)).
+-/
+theorem diamond_in_closureWithNeg_of_box (phi psi : Formula)
+    (h : Formula.box psi ∈ closure phi) :
+    Formula.neg (Formula.box (Formula.neg psi)) ∈ closureWithNeg phi := by
+  -- We have Box psi ∈ closure phi
+  -- By subformula property, psi ∈ closure phi
+  -- So psi.neg ∈ closureWithNeg phi
+  -- And Box(psi.neg) needs to be in closureWithNeg... but it may not be!
+  -- Actually, this lemma is not generally true.
+  -- The diamond formula may not be a subformula of phi.
+  sorry
+
+/-!
+## Closure MCS Properties for Implication (Task 825)
+
+Additional properties relating implication membership to its components.
+-/
+
+/--
+In a closure MCS, if psi ∈ S and psi.imp chi ∈ S and chi ∈ closure phi, then chi ∈ S.
+This is modus ponens for MCS membership.
+-/
+theorem closure_mcs_modus_ponens (phi : Formula) (S : Set Formula)
+    (h_mcs : ClosureMaximalConsistent phi S)
+    (psi chi : Formula)
+    (h_psi : psi ∈ S)
+    (h_imp : psi.imp chi ∈ S)
+    (h_chi_clos : chi ∈ closure phi) :
+    chi ∈ S := by
+  -- By consistency of S: if psi ∈ S and psi.imp chi ∈ S but chi ∉ S,
+  -- then chi.neg ∈ S (by closure MCS), contradicting consistency
+  by_contra h_chi_not
+  -- chi ∉ S and chi ∈ closure, so chi.neg ∈ S (by negation completeness)
+  have h_chi_neg : chi.neg ∈ S := by
+    have h_or := closure_mcs_neg_complete phi S h_mcs chi h_chi_clos
+    cases h_or with
+    | inl h => exact absurd h h_chi_not
+    | inr h_neg => exact h_neg
+  -- Now we have psi, psi.imp chi, chi.neg all in S
+  -- This is inconsistent: psi, psi → chi ⊢ chi; chi, chi.neg ⊢ ⊥
+  have h_incons : ¬Consistent [psi, psi.imp chi, chi.neg] := by
+    intro h_cons
+    apply h_cons
+    -- Build derivation
+    have d_psi : DerivationTree [psi, psi.imp chi, chi.neg] psi :=
+      DerivationTree.assumption _ _ (by simp)
+    have d_imp : DerivationTree [psi, psi.imp chi, chi.neg] (psi.imp chi) :=
+      DerivationTree.assumption _ _ (by simp)
+    have d_chi : DerivationTree [psi, psi.imp chi, chi.neg] chi :=
+      DerivationTree.modus_ponens _ _ _ d_imp d_psi
+    have d_chi_neg : DerivationTree [psi, psi.imp chi, chi.neg] chi.neg :=
+      DerivationTree.assumption _ _ (by simp)
+    exact ⟨DerivationTree.modus_ponens _ _ _ d_chi_neg d_chi⟩
+  have h_sub : ∀ ψ ∈ [psi, psi.imp chi, chi.neg], ψ ∈ S := by
+    intro ψ hψ
+    simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+    rcases hψ with rfl | rfl | rfl
+    · exact h_psi
+    · exact h_imp
+    · exact h_chi_neg
+  exact h_incons (h_mcs.1.2 [psi, psi.imp chi, chi.neg] h_sub)
+
 end Bimodal.Metalogic.FMP

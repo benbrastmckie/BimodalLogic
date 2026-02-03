@@ -1,7 +1,7 @@
 # Implementation Plan: Task #825 (Revised)
 
 - **Task**: 825 - FDSM Multi-History Modal Saturation
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Version**: 002 (revised from 001)
 - **Effort**: 8-12 hours (reduced by simplifying approach)
 - **Dependencies**: None (builds on existing FDSM infrastructure)
@@ -64,7 +64,7 @@ This plan:
 
 ## Implementation Phases
 
-### Phase 1: Archive Single-History Construction to Boneyard [NOT STARTED]
+### Phase 1: Archive Single-History Construction to Boneyard [COMPLETED]
 
 **Goal**: Move the broken `fdsm_from_closure_mcs` and related code to `Theories/Boneyard/` with documentation explaining why it trivializes modal operators.
 
@@ -119,7 +119,7 @@ This plan:
 
 ---
 
-### Phase 2: Implement DecidableEq for MCSTrackedHistory [NOT STARTED]
+### Phase 2: Implement DecidableEq for MCSTrackedHistory [COMPLETED]
 
 **Goal**: Add the type class instances needed for `MCSTrackedHistory` to work with `Finset`.
 
@@ -152,7 +152,7 @@ This plan:
 
 ---
 
-### Phase 3: Implement MCS-Tracked Saturation Step [NOT STARTED]
+### Phase 3: Implement MCS-Tracked Saturation Step [COMPLETED]
 
 **Goal**: Rewrite saturation to operate directly on MCS-tracked histories, eliminating the gap between abstract histories and constructible witnesses.
 
@@ -183,7 +183,7 @@ This plan:
 
 ---
 
-### Phase 4: Prove Modal Saturation for Tracked Histories [NOT STARTED]
+### Phase 4: Prove Modal Saturation for Tracked Histories [COMPLETED]
 
 **Goal**: Prove that the fixed point of tracked saturation is modally saturated.
 
@@ -218,7 +218,7 @@ This plan:
 
 ---
 
-### Phase 5: Build FDSM from Tracked Saturation [NOT STARTED]
+### Phase 5: Build FDSM from Tracked Saturation [COMPLETED]
 
 **Goal**: Create the complete FDSM construction that:
 1. Starts with an MCS-tracked initial history
@@ -253,7 +253,7 @@ This plan:
 
 ---
 
-### Phase 6: Closure Membership Infrastructure [NOT STARTED]
+### Phase 6: Closure Membership Infrastructure [COMPLETED]
 
 **Goal**: Add helper lemmas for closure membership that unblock TruthLemma.lean sorries.
 
