@@ -767,9 +767,39 @@ theorem fixed_point_is_saturated (phi : Formula)
   have h_not_has_witness : ¬hasDiamondWitness phi hists t psi h_psi_clos := by
     intro ⟨h', hh', h_models⟩
     exact h_no_witness h' hh' h_models
-  -- So there should be a witness history added by saturation_step
-  -- But h_fixed says saturation_step hists = hists
-  -- This is a contradiction because the filter would be nonempty
+
+  -- The key insight: if there's an unsatisfied diamond, some witness h' exists
+  -- in Finset.univ with IsWitnessFor phi hists t h'
+
+  -- saturation_step = hists ∪ (filter IsWitnessFor)
+  -- h_fixed says hists ∪ (filter IsWitnessFor) = hists
+  -- This means (filter IsWitnessFor) ⊆ hists
+
+  -- If any h' ∉ hists had IsWitnessFor phi hists t h', then
+  -- h' ∈ filter, so h' ∈ hists ∪ filter = hists (by h_fixed)
+  -- Therefore h' ∈ hists, contradiction with h' ∉ hists
+
+  -- So there are NO histories h' with IsWitnessFor phi hists t h' and h' ∉ hists
+
+  -- But we claim there IS such an h'. Why?
+  -- Because h ∈ hists, Diamond psi holds at h (i.e., h_diamond),
+  -- and ¬hasDiamondWitness phi hists t psi h_psi_clos (i.e., h_not_has_witness)
+
+  -- A witness history h' exists in Finset.univ (since FDSMHistory is finite)
+  -- that satisfies IsWitnessFor. Actually, this requires constructing the witness
+  -- which needs more infrastructure linking world states to MCS.
+
+  -- For now, we use classical reasoning on the finite type
+  -- If no witness exists at all, then IsWitnessFor is vacuously false for all h'
+  -- But then saturation_step = hists, which is consistent with h_fixed
+  -- The contradiction comes from showing a witness DOES exist
+
+  -- The existence of a witness follows from the model's structure:
+  -- In a well-formed FDSM, world states come from MCS constructions,
+  -- so we can build witness histories via buildWitnessHistory.
+
+  -- This proof requires tracking the MCS origin of world states,
+  -- which is implicit in the FDSM construction. For now we note this gap.
   sorry
 
 /--
@@ -783,6 +813,96 @@ theorem saturated_histories_saturated (phi : Formula)
   -- We need to show that saturated_histories_from reaches a fixed point
   -- and then apply fixed_point_is_saturated
   sorry
+
+/-!
+## MCS-Tracked Saturation (Phase 6 preparation)
+
+For completeness, we need histories that track their underlying MCS.
+This allows us to prove modal saturation by constructing witnesses.
+-/
+
+/--
+A history with tracked MCS origin.
+This pairs an FDSMHistory with the MCS it was derived from.
+-/
+structure MCSTrackedHistory (phi : Formula) where
+  /-- The underlying FDSM history -/
+  history : FDSMHistory phi
+  /-- The MCS this history was derived from -/
+  mcs : Set Formula
+  /-- Proof that the MCS is maximal consistent -/
+  mcs_is_mcs : SetMaximalConsistent mcs
+  /-- The history is derived from the MCS via worldStateFromClosureMCS -/
+  derived_from_mcs : history = fdsm_history_from_closure_mcs phi
+    (mcs ∩ closureWithNeg phi) (mcs_projection_is_closure_mcs phi mcs mcs_is_mcs)
+
+/--
+Build an MCS-tracked history from an MCS.
+-/
+noncomputable def mcsTrackedHistory_from_mcs (phi : Formula) (M : Set Formula)
+    (h_mcs : SetMaximalConsistent M) : MCSTrackedHistory phi :=
+  let S := M ∩ closureWithNeg phi
+  let h_S_mcs := mcs_projection_is_closure_mcs phi M h_mcs
+  ⟨fdsm_history_from_closure_mcs phi S h_S_mcs, M, h_mcs, rfl⟩
+
+/--
+When Diamond psi holds in an MCS-tracked history's world state,
+we can build a witness history that models psi.
+-/
+noncomputable def buildMCSTrackedWitness (phi : Formula) (th : MCSTrackedHistory phi)
+    (psi : Formula) (h_psi_clos : psi ∈ closure phi)
+    (t : FDSMTime phi)
+    (h_diamond : Formula.neg (Formula.box (Formula.neg psi)) ∈ th.mcs) :
+    MCSTrackedHistory phi :=
+  -- Use the witness set construction
+  let W := witnessSet th.mcs psi
+  have h_W_cons : SetConsistent W := witness_set_consistent th.mcs th.mcs_is_mcs psi h_diamond
+  -- Extend W to full MCS
+  let M' := Bimodal.Metalogic.Bundle.lindenbaumMCS_set W h_W_cons
+  let h_M'_mcs := Bimodal.Metalogic.Bundle.lindenbaumMCS_set_is_mcs W h_W_cons
+  -- Build the tracked history
+  mcsTrackedHistory_from_mcs phi M' h_M'_mcs
+
+/--
+The witness history models psi.
+-/
+theorem buildMCSTrackedWitness_models (phi : Formula) (th : MCSTrackedHistory phi)
+    (psi : Formula) (h_psi_clos : psi ∈ closure phi)
+    (t : FDSMTime phi)
+    (h_diamond : Formula.neg (Formula.box (Formula.neg psi)) ∈ th.mcs) :
+    let witness := buildMCSTrackedWitness phi th psi h_psi_clos t h_diamond
+    (witness.history.states t).models psi h_psi_clos := by
+  -- Follows from buildWitnessHistory_models_psi and the construction
+  simp only [buildMCSTrackedWitness, mcsTrackedHistory_from_mcs]
+  -- The history is fdsm_history_from_closure_mcs applied to the projected MCS
+  -- psi is in the witness set, which is extended to MCS, then projected
+  -- We need to show psi ends up in the closure projection
+
+  -- Key facts:
+  -- 1. psi ∈ witnessSet th.mcs psi
+  -- 2. witnessSet ⊆ M' (Lindenbaum extension)
+  -- 3. psi ∈ closure phi ⊆ closureWithNeg phi
+  -- 4. So psi ∈ M' ∩ closureWithNeg phi
+
+  let W := witnessSet th.mcs psi
+  have h_W_cons : SetConsistent W := witness_set_consistent th.mcs th.mcs_is_mcs psi h_diamond
+  let M' := Bimodal.Metalogic.Bundle.lindenbaumMCS_set W h_W_cons
+  have h_psi_in_W : psi ∈ W := psi_mem_witnessSet th.mcs psi
+  have h_W_sub_M' := Bimodal.Metalogic.Bundle.lindenbaumMCS_set_extends W h_W_cons
+  have h_psi_in_M' : psi ∈ M' := h_W_sub_M' h_psi_in_W
+
+  have h_psi_in_closureWithNeg : psi ∈ closureWithNeg phi :=
+    closure_subset_closureWithNeg phi h_psi_clos
+
+  have h_M'_mcs := Bimodal.Metalogic.Bundle.lindenbaumMCS_set_is_mcs W h_W_cons
+  let S := M' ∩ closureWithNeg phi
+  have h_S_mcs : ClosureMaximalConsistent phi S := mcs_projection_is_closure_mcs phi M' h_M'_mcs
+
+  have h_psi_in_S : psi ∈ S := ⟨h_psi_in_M', h_psi_in_closureWithNeg⟩
+
+  -- Now use the worldStateFromClosureMCS_models_iff
+  rw [fdsm_history_from_closure_mcs_states]
+  exact (worldStateFromClosureMCS_models_iff phi S h_S_mcs psi h_psi_clos).mp h_psi_in_S
 
 /-!
 ## Summary
