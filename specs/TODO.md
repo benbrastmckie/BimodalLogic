@@ -1,16 +1,16 @@
 ---
-next_project_number: 821
+next_project_number: 823
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-03T00:33:24Z
 task_counts:
-  active: 10
+  active: 12
   completed: 366
   in_progress: 2
-  not_started: 5
+  not_started: 7
   abandoned: 26
-  total: 392
+  total: 394
 technical_debt:
   sorry_count: 69
   axiom_count: 15
@@ -21,6 +21,26 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 822. Improve Syntax and Term Algebra Structure
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-03
+
+**Description**: Restructure syntactic definitions in 02-ConstitutiveFoundation.tex by integrating term algebra into earlier sections. Currently term algebra (line 196) is defined late, causing forward references in well-formed formula definition (line 40). Reorganize to: (1) specify term algebra first, (2) define formulas using terms, (3) distinguish open and closed sentences. This addresses TODO at line 40 and line 196.
+
+---
+
+### 821. Fix Constitutive Foundation LaTeX Issues
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-03
+
+**Description**: Address 7 FIX: tags in 02-ConstitutiveFoundation.tex: include universal quantifier in primitives list (line 21), present lattice definitions with task relation constraints (line 95), use defined symbols for state modality predicates (line 114), add explanatory remark about haecceities and modal profiles (line 161), add remark about constant substitution (line 220), formally define v-variant (line 225), elaborate on hyperintensional verification/falsification significance (line 248), clarify quantifier binding convention (line 270), divide top/bottom into separate subsubsections (line 285), add remark distinguishing propositional from sentential operators (line 435).
+
+---
 
 ### 818. Refactor Bimodal Metalogic modules
 - **Effort**: 8-12 hours
