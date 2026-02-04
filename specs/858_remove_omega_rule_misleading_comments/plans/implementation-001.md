@@ -1,7 +1,7 @@
 # Implementation Plan: Remove Misleading Omega-Rule Comments
 
 - **Task**: 858 - Remove misleading omega-rule comments from Bundle/ modules
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: Task 857 (temporal_backward_G/H properties)
 - **Research Inputs**: specs/858_remove_omega_rule_misleading_comments/reports/research-001.md
@@ -45,7 +45,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Update TruthLemma.lean Module Docstring [NOT STARTED]
+### Phase 1: Update TruthLemma.lean Module Docstring [COMPLETED]
 
 **Goal**: Replace the misleading omega-saturation section in the module-level documentation
 
@@ -66,7 +66,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Update TruthLemma.lean Inline Comments [NOT STARTED]
+### Phase 2: Update TruthLemma.lean Inline Comments [COMPLETED]
 
 **Goal**: Replace mid-file notes and sorry-location comments with accurate explanations
 
@@ -89,7 +89,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Update Completeness.lean and README.md [NOT STARTED]
+### Phase 3: Update Completeness.lean and README.md [COMPLETED]
 
 **Goal**: Correct the supporting documentation files
 
@@ -112,7 +112,7 @@ From research-001.md:
 
 ---
 
-### Phase 4: Verify and Final Validation [NOT STARTED]
+### Phase 4: Verify and Final Validation [COMPLETED]
 
 **Goal**: Ensure all misleading comments are removed and build is clean
 

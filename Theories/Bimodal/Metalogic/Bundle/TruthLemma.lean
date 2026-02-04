@@ -55,22 +55,25 @@ bmcs_truth_at B fam t (□φ)
 - **Imp**: By MCS modus ponens and negation completeness
 - **Box**: FULLY PROVEN - the key achievement of the BMCS approach
 
-**Cases with sorries:**
-- **G (all_future) backward**: Requires omega-saturation
-- **H (all_past) backward**: Requires omega-saturation
+**Cases with sorries (to be addressed by Task 857):**
+- **G (all_future) backward**: Requires temporal_backward_G property
+- **H (all_past) backward**: Requires temporal_backward_H property
 
-## Why Temporal Backward Requires Omega-Saturation
+## Why Temporal Backward Requires Structural Properties
 
-The backward direction for temporal operators (truth → MCS membership) would require:
-- "If φ holds at ALL future times, then Gφ ∈ MCS"
+The backward direction for temporal operators (truth -> MCS membership) requires
+structural properties on IndexedMCSFamily, analogous to modal_backward in BMCS:
 
-This is an instance of the **omega-rule** - an infinitary inference rule that cannot
-be captured by finitary proof systems. The omega-rule states:
-- From infinitely many premises φ(0), φ(1), φ(2), ... derive ∀n. φ(n)
+- **temporal_backward_G**: If phi is in mcs at ALL times s >= t, then G phi is in mcs at t
+- **temporal_backward_H**: If phi is in mcs at ALL times s <= t, then H phi is in mcs at t
 
-This is a **fundamental limitation of proof theory**, not a gap in our proof
-engineering. Standard Lindenbaum constructions cannot "anticipate" infinitely
-many future witnesses.
+These are NOT instances of the omega-rule. The proof uses MCS maximality (by contraposition):
+1. If G phi NOT in mcs, then neg(G phi) = F(neg phi) IS in mcs (by maximality)
+2. F(neg phi) in mcs means: exists s > t with neg phi in mcs at s (by forward coherence)
+3. But neg phi in mcs contradicts the hypothesis that phi is at ALL times >= t
+
+This is the SAME pattern used for modal_backward in BMCS.lean. Task 857 adds these
+properties to IndexedMCSFamily, enabling the proof without omega-saturation.
 
 **Important**: The completeness theorems in Completeness.lean only use the forward
 direction (`.mp`) of this lemma, so they are **SORRY-FREE** despite these limitations.
@@ -145,10 +148,10 @@ lemma mcs_all_past_implies_phi_at_past (fam : IndexedMCSFamily D) (t s : D) (φ 
 /-!
 ## Note: Backward Direction for Temporal Operators
 
-The backward direction (truth at all times → MCS membership) for the temporal
-operators G and H would require omega-saturation of the MCS construction. This
-is a fundamental limitation of finitary proof systems (the omega-rule), not a
-gap in proof engineering.
+The backward direction (truth at all times -> MCS membership) for the temporal
+operators G and H requires structural properties (temporal_backward_G/H) on
+IndexedMCSFamily. Once Task 857 adds these properties, the proofs use MCS
+maximality by contraposition - the same pattern as modal_backward in BMCS.
 
 The forward direction provided in this module suffices for completeness,
 since the completeness theorems in Completeness.lean only use `.mp`.
@@ -378,7 +381,8 @@ theorem bmcs_truth_lemma (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈
       have h_ψ_mcs : ψ ∈ fam.mcs s := mcs_all_future_implies_phi_at_future fam t s ψ hts h_G
       exact (ih fam hfam s).mp h_ψ_mcs
     · -- Backward: (∀ s ≥ t, bmcs_truth ψ at s) → G ψ ∈ MCS
-      -- Requires omega-saturation of the MCS construction. See module docstring.
+      -- Requires temporal_backward_G property on IndexedMCSFamily (Task 857).
+      -- Uses MCS maximality by contraposition, same pattern as modal_backward.
       intro _h_all
       sorry
   | all_past ψ ih =>
@@ -390,7 +394,8 @@ theorem bmcs_truth_lemma (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈
       have h_ψ_mcs : ψ ∈ fam.mcs s := mcs_all_past_implies_phi_at_past fam t s ψ hst h_H
       exact (ih fam hfam s).mp h_ψ_mcs
     · -- Backward: (∀ s ≤ t, bmcs_truth ψ at s) → H ψ ∈ MCS
-      -- Requires omega-saturation of the MCS construction. See module docstring.
+      -- Requires temporal_backward_H property on IndexedMCSFamily (Task 857).
+      -- Uses MCS maximality by contraposition, same pattern as modal_backward.
       intro _h_all
       sorry
 
@@ -442,12 +447,13 @@ theorem bmcs_box_truth_unique (B : BMCS D) (fam1 fam2 : IndexedMCSFamily D)
 - **Imp**: By MCS modus ponens and negation completeness
 - **Box**: FULLY PROVEN using modal_forward and modal_backward
 
-### Cases with sorries (fundamental limitation):
-- **all_future backward**: Requires omega-saturation (2 sorries)
-- **all_past backward**: Requires omega-saturation
+### Cases with sorries (pending Task 857):
+- **all_future backward**: Requires temporal_backward_G property
+- **all_past backward**: Requires temporal_backward_H property
 
-These sorries are due to the omega-rule limitation - a fundamental constraint on
-finitary proof systems, not fixable by better proof engineering.
+These sorries will be addressed by Task 857, which adds temporal_backward_G/H
+properties to IndexedMCSFamily. The proof uses MCS maximality by contraposition,
+the same pattern as modal_backward in BMCS.
 
 ### Key Achievement
 

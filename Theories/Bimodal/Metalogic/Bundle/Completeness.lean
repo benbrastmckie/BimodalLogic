@@ -442,7 +442,7 @@ This is a FULL completeness result for TM logic. This file is SORRY-FREE!
 
 This module inherits sorries from:
 - **Construction.lean**: 1 sorry in `modal_backward` (construction assumption)
-- **TruthLemma.lean**: 4 sorries in temporal backward directions (omega-saturation)
+- **TruthLemma.lean**: 2 sorries in temporal backward directions (pending Task 857 temporal_backward properties)
 
 These are documented in those files and are not related to the core completeness result.
 -/

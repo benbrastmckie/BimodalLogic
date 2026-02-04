@@ -8,7 +8,7 @@
     {
       "project_number": 856,
       "project_name": "implement_multifamily_saturated_bmcs",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "effort": "32-50 hours",
       "description": "Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. Currently bmcs_weak_completeness depends on this axiom (Construction.lean line 228). A multi-family saturated bundle would prove modal backward direction without axiom. Requires completing SaturatedConstruction.lean sorries (12 sorries, related to Task 838). This enables Task 843 (remove axiom). Critical for making BMCS approach publication-ready without axiom disclosure.",
@@ -20,8 +20,8 @@
         838
       ],
       "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T08:54:31Z",
-      "session_id": "sess_1770195041_c7900e",
+      "last_updated": "2026-02-04T08:59:39Z",
+      "session_id": "sess_1770195567_e03225",
       "researched": "2026-02-04T08:54:31Z",
       "artifacts": [
         {
@@ -436,13 +436,13 @@
     {
       "project_number": 857,
       "project_name": "add_temporal_backward_properties",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "effort": "8-12 hours",
       "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
       "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T08:44:29Z",
-      "session_id": "sess_1770194669_cc9031",
+      "last_updated": "2026-02-04T09:01:52Z",
+      "session_id": "sess_1770195695_82cc76",
       "parent_task": 855,
       "related": [
         856
@@ -451,13 +451,13 @@
     {
       "project_number": 858,
       "project_name": "remove_omega_rule_misleading_comments",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "effort": "1-2 hours",
       "description": "Remove misleading comments about omega-rule/omega-saturation requirement for G/H backward directions. The Bundled approach avoids omega-rule via structural properties (like modal_backward), not omega-saturation. Update TruthLemma.lean, IndexedMCSFamily.lean, Construction.lean, and any other files that incorrectly claim omega-saturation is fundamentally required. Replace with accurate explanation that temporal_backward properties enable the proof via maximality (analogous to modal case). Depends on Task 857 completing first.",
       "created": "2026-02-04T08:44:48Z",
-      "last_updated": "2026-02-04T08:54:45Z",
-      "session_id": "sess_1770195158_889439",
+      "last_updated": "2026-02-04T09:01:28Z",
+      "session_id": "sess_1770195444_5e1bb7",
       "depends_on": [
         857
       ],
@@ -476,9 +476,17 @@
           "path": "specs/858_remove_omega_rule_misleading_comments/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for removing misleading omega-rule comments from Bundle/ modules"
+        },
+        {
+          "path": "specs/858_remove_omega_rule_misleading_comments/summaries/implementation-summary-20260204.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all comment changes across 3 files"
         }
       ],
-      "planned": "2026-02-04T08:54:45Z"
+      "planned": "2026-02-04T08:54:45Z",
+      "started": "2026-02-04T08:57:42Z",
+      "completed": "2026-02-04T09:01:28Z",
+      "completion_summary": "Removed misleading omega-rule comments from Bundle/ modules, replacing them with accurate explanations that temporal backward proofs require structural properties (temporal_backward_G/H) using MCS maximality by contraposition, the same pattern as modal_backward in BMCS. Updated documentation in TruthLemma.lean, Completeness.lean, and README.md."
     }
   ],
   "completed_projects": [

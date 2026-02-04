@@ -161,7 +161,7 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 
 ## Future Work
 
-1. **Eliminate temporal sorries**: Add omega-saturation to IndexedMCSFamily construction
+1. **Eliminate temporal sorries**: Add temporal_backward_G/H properties to IndexedMCSFamily (Task 857)
 2. **Prove classical tautologies**: Derive DNE and related lemmas from the proof system
 3. **Multi-family saturation**: Generalize singleFamilyBMCS to full multi-family construction
 4. **Compactness via BMCS**: Potentially restore infinitary strong completeness using BMCS

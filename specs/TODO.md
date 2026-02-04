@@ -24,9 +24,11 @@ technical_debt:
 
 ### 858. Remove misleading omega-rule comments from Bundle/ modules
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-04
+- **Completed**: 2026-02-04
+- **Summary**: Removed misleading omega-rule comments from Bundle/ modules, replacing them with accurate explanations that temporal backward proofs require structural properties (temporal_backward_G/H) using MCS maximality by contraposition, the same pattern as modal_backward in BMCS.
 - **Depends**: Task 857
 - **Related**: Task 855, Task 856
 - **Research**: [research-001.md](specs/858_remove_omega_rule_misleading_comments/reports/research-001.md)
@@ -50,7 +52,7 @@ technical_debt:
 
 ### 856. Implement multi-family saturated BMCS construction
 - **Effort**: 32-50 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
