@@ -48,7 +48,7 @@ technical_debt:
 
 ### 859. Establish Axiom Debt Policy in Core Documentation
 - **Effort**: 1.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-04
 
@@ -72,6 +72,7 @@ technical_debt:
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Parent**: Task 855
+- **Depends**: Task 856
 - **Related**: Task 856
 - **Research**: [research-001.md](specs/857_add_temporal_backward_properties/reports/research-001.md), [research-002.md](specs/857_add_temporal_backward_properties/reports/research-002.md)
 

@@ -365,17 +365,21 @@
           "type": "research",
           "summary": "Analysis of zero-axiom feasibility for temporal backward properties. Concludes axiom-based approach is correct for constant families; zero-axiom requires multi-family saturation (future work)."
         }
+      ],
+      "dependencies": [
+        856
       ]
     },
     {
       "project_number": 859,
       "project_name": "establish_axiom_debt_policy",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "1.5 hours",
       "description": "Expand sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Update plan-format.md and report-format.md to add Axiom Characterization sections with framing rules parallel to sorries. Files: rename sorry-debt-policy.md to proof-debt-policy.md, update plan-format.md and report-format.md.",
       "created": "2026-02-04T09:22:49Z",
-      "last_updated": "2026-02-04T09:22:49Z"
+      "last_updated": "2026-02-04T09:24:19Z",
+      "session_id": "sess_1770199015_a3c9b1"
     },
     {
       "project_number": 860,
