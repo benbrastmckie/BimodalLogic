@@ -181,9 +181,9 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T20:01:39Z",
-      "session_id": "sess_1770235081_113d2b",
-      "researched": "2026-02-04T10:11:30Z",
+      "last_updated": "2026-02-04T20:36:30Z",
+      "session_id": "sess_1770237154_e9464c",
+      "researched": "2026-02-04T20:36:30Z",
       "artifacts": [
         {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md",
@@ -214,6 +214,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-004.md",
           "type": "research",
           "summary": "Analysis of forward/backward truth lemma separation - forward direction already sorry-free, temporal backward sorries do not block completeness"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-005.md",
+          "type": "research",
+          "summary": "Confirms Eval-Only approach fails; identifies mutual recursion and full saturation as viable strategies for sorry/axiom-free completeness"
         }
       ],
       "planned": "2026-02-04T19:40:45Z",
