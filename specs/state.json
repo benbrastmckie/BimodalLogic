@@ -8,7 +8,7 @@
     {
       "project_number": 856,
       "project_name": "implement_multifamily_saturated_bmcs",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "effort": "32-50 hours",
       "description": "Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. Currently bmcs_weak_completeness depends on this axiom (Construction.lean line 228). A multi-family saturated bundle would prove modal backward direction without axiom. Requires completing SaturatedConstruction.lean sorries (12 sorries, related to Task 838). This enables Task 843 (remove axiom). Critical for making BMCS approach publication-ready without axiom disclosure.",
@@ -20,7 +20,7 @@
         838
       ],
       "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T09:04:24Z",
+      "last_updated": "2026-02-04T09:07:05Z",
       "session_id": "sess_1770195851_84b6c5",
       "researched": "2026-02-04T09:02:46Z",
       "artifacts": [
@@ -38,8 +38,14 @@
           "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-003.md",
           "type": "research",
           "summary": "Mathematical correctness analysis comparing SaturatedConstruction (Option A) vs WeakCoherentBundle (Option B)"
+        },
+        {
+          "path": "specs/856_implement_multifamily_saturated_bmcs/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for completing SaturatedConstruction.lean with 45 hours estimated effort"
         }
-      ]
+      ],
+      "planned": "2026-02-04T09:07:05Z"
     },
     {
       "project_number": 855,
