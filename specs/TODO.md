@@ -23,18 +23,18 @@ technical_debt:
 ## Tasks
 
 ### 853. Construct CoherentBundle from consistent context
-- **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 40-60 hours (revised)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Researched**: 2026-02-03
-- **Planned**: 2026-02-03
-- **Research**: [research-001.md](specs/853_construct_coherentbundle_from_context/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/853_construct_coherentbundle_from_context/plans/implementation-001.md)
+- **Planned**: 2026-02-04
+- **Research**: [research-001.md](specs/853_construct_coherentbundle_from_context/reports/research-001.md), [research-004.md](specs/853_construct_coherentbundle_from_context/reports/research-004.md)
+- **Plan**: [implementation-002.md](specs/853_construct_coherentbundle_from_context/plans/implementation-002.md) (revised)
 - **Parent**: Task 844
 - **Depends**: Task 851
 
-**Description**: Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. Build base family via Lindenbaum, construct constantIndexedMCSFamily, add coherent witnesses for all Diamonds using Zorn's lemma. Depends on task #851 (852 subsumed by 851). (Follow-up from task #844, Phase 5)
+**Description**: Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. REVISED: Using WeakCoherentBundle approach (Approach B from research-004.md) which separates core and witness families to avoid Lindenbaum control obstacle. Eliminates saturated_extension_exists axiom. (Follow-up from task #844, Phase 5)
 
 ---
 

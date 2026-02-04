@@ -8,7 +8,7 @@
     {
       "project_number": 853,
       "project_name": "construct_coherentbundle_from_context",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "description": "Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. Build base family via Lindenbaum, construct constantIndexedMCSFamily, add coherent witnesses for all Diamonds using Zorn's lemma. Depends on tasks #851 and #852. (Follow-up from task #844, Phase 5)",
       "parent_task": 844,
@@ -16,19 +16,14 @@
         851
       ],
       "created": "2026-02-03T22:53:13Z",
-      "last_updated": "2026-02-04T00:33:35Z",
-      "session_id": "sess_1738616133_d9da81",
+      "last_updated": "2026-02-04T00:47:43Z",
+      "session_id": "sess_1770165963_7ee7c6",
       "researched": "2026-02-03T23:31:05Z",
       "artifacts": [
         {
           "path": "specs/853_construct_coherentbundle_from_context/reports/research-001.md",
           "type": "research",
           "summary": "Research report covering CoherentBundle construction strategy, existing infrastructure analysis, saturation approaches, and integration with completeness theorem"
-        },
-        {
-          "path": "specs/853_construct_coherentbundle_from_context/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase plan covering initial bundle construction, UnionBoxContent consistency, witness addition, Zorn-based saturation, and main entry point integration"
         },
         {
           "path": "specs/853_construct_coherentbundle_from_context/summaries/implementation-summary-20260203.md",
@@ -49,9 +44,14 @@
           "path": "specs/853_construct_coherentbundle_from_context/reports/research-004.md",
           "type": "research",
           "summary": "Comparative analysis of three approaches for eliminating saturated_extension_exists axiom. Recommends Approach B (WeakCoherentBundle) as most mathematically tenable with lowest risk and 40-60 hour estimated effort."
+        },
+        {
+          "path": "specs/853_construct_coherentbundle_from_context/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 5-phase plan using WeakCoherentBundle approach to eliminate saturated_extension_exists axiom. Separates core and witness families to avoid Lindenbaum control obstacle."
         }
       ],
-      "planned": "2026-02-03T23:34:38Z",
+      "planned": "2026-02-04T00:47:43Z",
       "started": "2026-02-03T23:37:11Z"
     },
     {
