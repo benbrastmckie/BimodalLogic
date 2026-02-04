@@ -77,6 +77,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-009.md",
           "type": "research",
           "summary": "Review of failed Phase 1 implementation: TemporalLindenbaum.lean is 70-75% usable, 4 sorries need restructuring (7-11h remaining)"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-010.md",
+          "type": "research",
+          "summary": "Analysis proving temporally_saturated_mcs_exists axiom is mathematically false (counterexample: {F(psi), neg(psi)}), invalidating plan v004 Phase 1"
         }
       ],
       "planned": "2026-02-04T22:17:03Z",
