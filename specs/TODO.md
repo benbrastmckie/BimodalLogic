@@ -24,12 +24,13 @@ technical_debt:
 
 ### 858. Remove misleading omega-rule comments from Bundle/ modules
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Depends**: Task 857
 - **Related**: Task 855, Task 856
 - **Research**: [research-001.md](specs/858_remove_omega_rule_misleading_comments/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/858_remove_omega_rule_misleading_comments/plans/implementation-001.md)
 
 **Description**: Remove misleading comments about omega-rule/omega-saturation requirement for G/H backward directions. The Bundled approach avoids omega-rule via structural properties (like modal_backward), not omega-saturation. Update TruthLemma.lean, IndexedMCSFamily.lean, Construction.lean, and any other files that incorrectly claim omega-saturation is fundamentally required. Replace with accurate explanation that temporal_backward properties enable the proof via maximality (analogous to modal case). Depends on Task 857 completing first.
 

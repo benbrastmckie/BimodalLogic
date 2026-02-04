@@ -471,6 +471,11 @@
           "path": "specs/858_remove_omega_rule_misleading_comments/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of misleading omega-rule comments with specific replacement text for all affected files"
+        },
+        {
+          "path": "specs/858_remove_omega_rule_misleading_comments/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for removing misleading omega-rule comments from Bundle/ modules"
         }
       ],
       "planned": "2026-02-04T08:54:45Z"
