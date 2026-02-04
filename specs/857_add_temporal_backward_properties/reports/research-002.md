@@ -2,19 +2,21 @@
 
 ## Executive Summary
 
-This follow-up research investigates whether `temporal_backward_G` and `temporal_backward_H` can be proven structurally without introducing new axioms. After comprehensive analysis of the codebase, the answer is **conditional**: a zero-axiom approach is possible but requires adopting the multi-family saturated construction approach (via `FamilyCollection.toBMCS` in SaturatedConstruction.lean), which has its own incomplete proofs.
+This follow-up research investigates whether `temporal_backward_G` and `temporal_backward_H` can be proven structurally without introducing new axioms. **Axioms are not an acceptable solution** - the goal is to find a structural proof approach.
 
-**Key Finding**: The constant family construction CANNOT support a zero-axiom temporal backward proof. The fundamental issue is identical to modal_backward: proving `G phi` from "phi at all future times" requires a witness existence property that constant families cannot provide.
+**Key Finding**: The constant family construction CANNOT support temporal backward proofs. The fundamental issue is identical to modal_backward: proving `G phi` from "phi at all future times" requires a witness existence property that constant families cannot provide. **We must use a different construction approach** - either complete the multi-family saturated construction or develop temporally-saturated families.
 
 ## 1. Summary of Previous Research (research-001.md)
 
-The first research report recommended an axiom-based approach following `singleFamily_modal_backward_axiom`. The recommendation was based on:
+The first research report incorrectly recommended an axiom-based approach following `singleFamily_modal_backward_axiom`. That recommendation was based on:
 
 1. The constant family cannot satisfy `forward_F` (F phi in MCS does NOT imply phi in MCS)
 2. Without temporal saturation properties, the contraposition proof cannot complete
 3. The axiom pattern is consistent with existing `singleFamily_modal_backward_axiom`
 
-## 2. Why Axiom-Based Was Originally Recommended
+**This recommendation is rejected.** Axioms are never the appropriate strategy - we must find structural proofs.
+
+## 2. Why the Constant Family Construction Cannot Work
 
 ### The Constant Family Limitation
 
@@ -50,9 +52,9 @@ The proof by contraposition requires:
 
 **Step 3 is the gap**: For a constant family, `F(neg phi)` being in MCS does NOT imply there exists a witness time. The MCS is the same at all times, so there's no "different time" to witness the F formula.
 
-## 3. What Would Be Required for Zero-Axiom
+## 3. Required Approaches for Structural Proofs
 
-### Option A: Full Multi-Family Saturation
+### Approach A: Complete Multi-Family Saturation
 
 The fully saturated construction in `SaturatedConstruction.lean` provides a zero-axiom path for modal_backward. The same approach could work for temporal_backward_G/H if we had:
 
@@ -63,7 +65,7 @@ However, `SaturatedConstruction.lean` has sorries in `FamilyCollection.exists_fu
 - Line 714: Consistency of `{psi} ∪ BoxContent` when psi is in L
 - Line 733: BoxContent at different times
 
-### Option B: Temporal-Specific Saturation
+### Approach B: Temporal-Specific Saturation
 
 A simpler approach: define a "temporally saturated" family that specifically supports F/P witnesses:
 
@@ -137,121 +139,113 @@ The constant family construction is fundamentally incompatible with temporal bac
 
 This means ANY approach using constant families will require an axiom for temporal_backward, just as it requires `singleFamily_modal_backward_axiom` for modal_backward.
 
-## 6. Alternative Approaches
+## 6. Structural Proof Strategies
 
-### 6.1 Time-Varying MCS Family (Not Recommended)
+### 6.1 Strategy: Complete Multi-Family Saturated Construction (Recommended)
 
-One could construct a family where `mcs t` varies with t. However:
-- This would break the existing coherence proofs
-- Would require completely new infrastructure
-- The construction complexity would exceed the axiom cost
-
-### 6.2 Accept Axioms for Single-Family Construction
-
-The mathematically honest approach: accept that single-family constructions require axioms for backward directions. Document these as "construction assumptions" per sorry-debt-policy.md.
-
-### 6.3 Complete the Multi-Family Saturated Construction
-
-The zero-axiom path exists but requires completing the sorries in `SaturatedConstruction.lean`:
+The correct path requires completing the sorries in `SaturatedConstruction.lean`:
 - Line 714: `{psi} ∪ BoxContent` consistency proof
 - Line 733: BoxContent time-independence
 
-This would provide zero-axiom modal_backward. Temporal_backward would then require an additional saturation layer.
+This would provide zero-axiom modal_backward. Then extend the saturation to cover temporal operators:
+- Add temporal saturation properties to `FamilyCollection`
+- Prove temporal_backward_G/H as structural theorems
 
-## 7. Recommendation
+**Estimated effort**: 40-60 hours
+**Benefit**: Eliminates ALL axioms from BMCS construction, making it publication-ready
 
-### Immediate Implementation (Task 857)
+### 6.2 Strategy: Develop Temporally-Saturated Family Type
 
-**Use the axiom-based approach from research-001.md**. Rationale:
-
-1. **Consistency**: Follows the existing `singleFamily_modal_backward_axiom` pattern
-2. **Correctness**: The axioms are mathematically justified by canonical model theory
-3. **Pragmatism**: The zero-axiom alternative requires significant additional infrastructure
-4. **Documentation**: Per sorry-debt-policy.md, axioms are documented technical debt, not sorries
-
-### Implementation Details
-
-Add to Construction.lean after line 231:
+Create a new family type that guarantees temporal witness properties:
 
 ```lean
-/--
-Axiom: For any single-family BMCS, temporal_backward_G holds.
-
-**Mathematical Justification**:
-If phi is in the MCS at ALL times s >= t, then G phi must be in the MCS at t.
-This is NOT provable from first principles for a single constant family because
-F phi in MCS does not imply existence of a witness time where phi holds.
-
-This axiom captures the metatheoretic fact that G phi should be derivable from
-the premise that phi holds at all future times, which is valid in TM logic.
--/
-axiom singleFamily_temporal_backward_G_axiom (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (fam : IndexedMCSFamily D) (phi : Formula) (t : D)
-    (h_all_future : forall s, t <= s -> phi in fam.mcs s) :
-    Formula.all_future phi in fam.mcs t
-
-/--
-Axiom: For any single-family BMCS, temporal_backward_H holds.
-Symmetric to temporal_backward_G for past times.
--/
-axiom singleFamily_temporal_backward_H_axiom (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (fam : IndexedMCSFamily D) (phi : Formula) (t : D)
-    (h_all_past : forall s, s <= t -> phi in fam.mcs s) :
-    Formula.all_past phi in fam.mcs t
+structure TemporallySaturatedIndexedMCSFamily extends IndexedMCSFamily where
+  /-- F phi at t implies exists s > t with phi at s -/
+  forward_F : forall t phi, Formula.some_future phi in mcs t ->
+              exists s, t < s ∧ phi in mcs s
+  /-- P phi at t implies exists s < t with phi at s -/
+  backward_P : forall t phi, Formula.some_past phi in mcs t ->
+               exists s, s < t ∧ phi in mcs s
 ```
 
-Then in TruthLemma.lean, replace the sorries:
+Then construct such families using Lindenbaum extension at each time point. This requires:
+- Proving consistency of witness sets
+- Proving coherence between time points
+- Proving the resulting structure satisfies temporal saturation
 
-**Line 387 (all_future backward)**:
-```lean
-    · -- Backward: (forall s >= t, bmcs_truth psi at s) -> G psi in MCS
-      intro h_all
-      have h_psi_all_mcs : forall s, t <= s -> psi in fam.mcs s := by
-        intro s hts
-        exact (ih fam hfam s).mpr (h_all s hts)
-      exact singleFamily_temporal_backward_G_axiom D fam psi t h_psi_all_mcs
-```
+**Estimated effort**: 25-35 hours
+**Benefit**: Cleaner separation between modal and temporal saturation
 
-**Line 400 (all_past backward)**:
-```lean
-    · -- Backward: (forall s <= t, bmcs_truth psi at s) -> H psi in MCS
-      intro h_all
-      have h_psi_all_mcs : forall s, s <= t -> psi in fam.mcs s := by
-        intro s hst
-        exact (ih fam hfam s).mpr (h_all s hst)
-      exact singleFamily_temporal_backward_H_axiom D fam psi t h_psi_all_mcs
-```
+### 6.3 Strategy: Time-Varying MCS Construction
 
-### Future Work (Beyond Task 857)
+Construct a family where `mcs t` genuinely varies with t, built by:
+1. Starting with a base consistent set
+2. At each time t, extending to include appropriate G/H formulas
+3. Ensuring coherence via forward/backward properties
 
-To achieve truly zero-axiom completeness:
+**Estimated effort**: 30-45 hours
+**Challenge**: Requires proving coherence across varying time points
 
-1. Complete the sorries in `SaturatedConstruction.lean`
-2. Add temporal saturation properties to `FamilyCollection`
-3. Prove temporal_backward_G/H as lemmas from temporal saturation
-4. Update the construction pipeline to use saturated families
+## 7. Recommendation for Task 857
 
-This is estimated at 40+ hours of work and should be a separate task.
+**Task 857 must be blocked pending completion of structural infrastructure.** We cannot implement temporal_backward_G/H properties without one of the following:
+
+### Option 1: Complete Task 856 First (Recommended)
+
+Task 856 ("Implement multi-family saturated BMCS construction") is the correct prerequisite. Once multi-family saturation is complete:
+
+1. The saturated construction eliminates `singleFamily_modal_backward_axiom`
+2. We can extend the saturation layer to cover temporal operators
+3. Both modal_backward AND temporal_backward become structural theorems
+
+**Action**: Mark Task 857 as blocked by Task 856.
+
+### Option 2: Develop Temporally-Saturated Family Construction
+
+Create a new construction pipeline:
+
+1. Define `TemporallySaturatedIndexedMCSFamily` structure (Section 6.2)
+2. Prove construction exists using Lindenbaum lemma at each time
+3. Prove temporal_backward_G/H as structural theorems
+4. Update TruthLemma.lean to use the new construction
+
+**Estimated effort**: 25-35 hours
+**Benefit**: Can proceed independently of Task 856
+
+### Option 3: Wait for Better Understanding
+
+The obstacle may indicate a deeper conceptual issue. Consider:
+- Consulting literature on temporal logic completeness proofs
+- Checking if the TruthLemma backward directions are actually needed
+- Verifying if the sorries are in the dependency chain of main theorems
+
+**Action**: Research whether TruthLemma backward completeness is necessary for the main completeness theorem.
 
 ## 8. Summary
 
-| Aspect | Zero-Axiom Approach | Axiom-Based Approach |
-|--------|---------------------|----------------------|
-| Feasibility | Blocked by SaturatedConstruction sorries | Immediately implementable |
-| Complexity | High (new infrastructure needed) | Low (follows existing pattern) |
-| Mathematical Soundness | Sound | Sound (canonical model theory) |
-| Consistency | Would eliminate all axioms | Consistent with modal_backward |
-| Recommendation | Future work | **Use for Task 857** |
+| Aspect | Complete Saturation (Task 856) | New Temporally-Saturated Type | Wait for Clarification |
+|--------|-------------------------------|------------------------------|----------------------|
+| Feasibility | Blocked by SaturatedConstruction sorries | Requires new infrastructure | Requires research |
+| Complexity | High (40-60 hours) | Medium (25-35 hours) | Low (4-6 hours research) |
+| Mathematical Soundness | Sound | Sound | TBD |
+| Axioms | Zero axioms | Zero axioms | Zero axioms |
+| Recommendation | **Best long-term solution** | Viable independent path | Check if needed first |
 
 ## 9. References
 
-- Construction.lean: Single-family BMCS construction with `singleFamily_modal_backward_axiom`
-- SaturatedConstruction.lean: Multi-family saturation infrastructure (incomplete)
+- Construction.lean: Single-family BMCS construction with `singleFamily_modal_backward_axiom` (to be eliminated)
+- SaturatedConstruction.lean: Multi-family saturation infrastructure (Task 856)
 - TruthLemma.lean: Location of the sorries at lines 387 and 400
 - MCSProperties.lean: Key lemmas for MCS manipulation
 - IndexedMCSFamily.lean: Structure definition with temporal coherence
-- sorry-debt-policy.md: Framing for axioms as documented technical debt
+- Task 856: Multi-family saturated BMCS construction (prerequisite)
 
 ## 10. Conclusion
 
-The zero-axiom approach is not viable for Task 857 within the current single-family architecture. The axiom-based approach is the correct immediate implementation, with zero-axiom completeness as a future enhancement requiring substantial infrastructure work.
+**Task 857 should be blocked pending structural infrastructure.** The constant family construction cannot support temporal_backward proofs without axioms, and axioms are not an acceptable solution.
+
+**Recommended path**: Complete Task 856 (multi-family saturated construction) first, then extend the saturation layer to cover temporal operators. This eliminates both modal axioms AND temporal axioms, resulting in a fully axiom-free completeness proof suitable for publication.
+
+**Alternative path**: Develop temporally-saturated family construction as independent infrastructure (25-35 hours estimated).
+
+**Do not**: Add axioms to "solve" this problem. The existence of `singleFamily_modal_backward_axiom` is technical debt that should be eliminated, not replicated for temporal operators.
