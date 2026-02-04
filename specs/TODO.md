@@ -24,14 +24,16 @@ technical_debt:
 
 ### 862. Divide TruthLemma into forward and backward parts
 - **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
 - **Started**: 2026-02-04
+- **Completed**: 2026-02-04
 - **Research**: [research-001.md](specs/862_divide_truthlemma_forward_backward/reports/research-001.md), [research-002.md](specs/862_divide_truthlemma_forward_backward/reports/research-002.md)
 - **Plan**: [implementation-003.md](specs/862_divide_truthlemma_forward_backward/plans/implementation-003.md)
+- **Summary**: [implementation-summary-20260204.md](specs/862_divide_truthlemma_forward_backward/summaries/implementation-summary-20260204.md)
 
 **Description**: Clean up TruthLemma.lean comments to guide future work toward completing the full TruthLemma (both directions) via modified Lindenbaum construction for temporal saturation. Remove misleading comments about "functional separation" and ineffective suggestions (mutual recursion, strong induction). Document the actual mathematical path to sorry-freedom.
 
