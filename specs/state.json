@@ -405,18 +405,18 @@
     {
       "project_number": 857,
       "project_name": "add_temporal_backward_properties",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "effort": "12-18 hours",
       "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
       "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T19:31:55Z",
-      "session_id": "sess_1770232662_6f0d78",
+      "last_updated": "2026-02-04T19:39:45Z",
+      "session_id": "sess_1770233798_d0fd5d",
       "parent_task": 855,
       "related": [
         856
       ],
-      "researched": "2026-02-04T19:08:40Z",
+      "researched": "2026-02-04T19:39:45Z",
       "artifacts": [
         {
           "path": "specs/857_add_temporal_backward_properties/reports/research-001.md",
@@ -462,6 +462,11 @@
           "path": "specs/857_add_temporal_backward_properties/summaries/implementation-summary-20260204-v2.md",
           "type": "summary",
           "summary": "Partial v2: Phase 1 complete (saturation structures), Phase 2 partial (6 sorries remain). Key finding: completeness already sorry-free"
+        },
+        {
+          "path": "specs/857_add_temporal_backward_properties/reports/research-006.md",
+          "type": "research",
+          "summary": "Completion path analysis: 4 sorries in temporal saturation, completeness already publication-ready, documentation strategy recommended"
         }
       ],
       "dependencies": [
