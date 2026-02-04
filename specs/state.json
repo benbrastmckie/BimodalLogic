@@ -8,10 +8,19 @@
     {
       "project_number": 862,
       "project_name": "divide_truthlemma_forward_backward",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-04T20:06:55Z",
-      "last_updated": "2026-02-04T20:06:55Z"
+      "last_updated": "2026-02-04T20:13:43Z",
+      "session_id": "sess_1770235839_05082b",
+      "researched": "2026-02-04T20:13:43Z",
+      "artifacts": [
+        {
+          "path": "specs/862_divide_truthlemma_forward_backward/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of TruthLemma forward/backward separation with cross-dependency findings and mutual recursion solution"
+        }
+      ]
     },
     {
       "project_number": 861,
