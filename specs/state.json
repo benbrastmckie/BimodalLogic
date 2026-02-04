@@ -126,14 +126,19 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T10:11:30Z",
-      "session_id": "sess_1770199649_bc01d6",
+      "last_updated": "2026-02-04T18:52:00Z",
+      "session_id": "sess_1770230903_731e58",
       "researched": "2026-02-04T10:11:30Z",
       "artifacts": [
         {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing how to remove singleFamily_modal_backward_axiom using EvalCoherentBundle from task 856"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md",
+          "type": "research",
+          "summary": "Analysis confirming EvalCoherentBundle approach is mathematically sound and avoids converse T-axiom problem"
         }
       ]
     },
@@ -351,13 +356,13 @@
     {
       "project_number": 857,
       "project_name": "add_temporal_backward_properties",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "40-55 hours",
       "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
       "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T17:53:53Z",
-      "session_id": "sess_1770227442_4a5dce",
+      "last_updated": "2026-02-04T18:49:27Z",
+      "session_id": "sess_1770230946_76196c",
       "parent_task": 855,
       "related": [
         856
@@ -393,7 +398,8 @@
       "dependencies": [
         856
       ],
-      "planned": "2026-02-04T17:53:53Z"
+      "planned": "2026-02-04T17:53:53Z",
+      "started": "2026-02-04T18:49:27Z"
     },
     {
       "project_number": 859,

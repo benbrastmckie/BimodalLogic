@@ -81,11 +81,12 @@ technical_debt:
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Effort**: 40-55 hours (revised)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
+- **Started**: 2026-02-04
 - **Parent**: Task 855
 - **Depends**: Task 856
 - **Related**: Task 856
@@ -133,7 +134,7 @@ technical_debt:
 ---
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
-- **Effort**: 3-6 hours
+- **Effort**: 8-10 hours (revised)
 - **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-03
@@ -141,9 +142,9 @@ technical_debt:
 - **Researched**: 2026-02-04
 - **Depends**: Task 856
 - **Related**: Task 856
-- **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md)
+- **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md), [research-002.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md)
 
-**Description**: Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.
+**Description**: Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom.
 
 ---
 

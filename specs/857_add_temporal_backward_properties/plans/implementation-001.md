@@ -1,7 +1,7 @@
 # Implementation Plan: Task #857 - Zero-Axiom Temporal Backward Properties
 
 - **Task**: 857 - Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 40-55 hours
 - **Dependencies**: Task 856 (EvalCoherent pattern reference)
 - **Research Inputs**: specs/857_add_temporal_backward_properties/reports/research-004.md
@@ -90,7 +90,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Temporal Duality Infrastructure [NOT STARTED]
+### Phase 1: Temporal Duality Infrastructure [IN PROGRESS]
 
 **Goal**: Establish lemmas for transforming negated temporal operators in MCS context.
 
