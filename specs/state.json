@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 862,
+      "project_name": "divide_truthlemma_forward_backward",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-04T20:06:55Z",
+      "last_updated": "2026-02-04T20:06:55Z"
+    },
+    {
       "project_number": 861,
       "project_name": "reorganize_logos_introduction_latex",
       "status": "completed",
@@ -564,7 +572,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 862,
+  "next_project_number": 863,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

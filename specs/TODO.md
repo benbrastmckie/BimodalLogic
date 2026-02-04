@@ -1,5 +1,5 @@
 ---
-next_project_number: 862
+next_project_number: 863
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 862. Divide TruthLemma into forward and backward parts
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-04
+
+**Description**: Use research-004.md findings from task 843 to divide the TruthLemma into separate forward and backward parts. Archive the backward direction to Boneyard/ to achieve a fully sorry-free forward direction. No sorries are permitted anywhere in the Lean source code that will be published.
+
+---
 
 ### 861. Reorganize Logos Introduction LaTeX document
 - **Effort**: 4 hours
