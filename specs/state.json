@@ -12,9 +12,9 @@
       "language": "lean",
       "description": "Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.",
       "created": "2026-02-04T01:49:53Z",
-      "last_updated": "2026-02-04T08:14:46Z",
-      "session_id": "sess_1770192674_0166e8",
-      "researched": "2026-02-04T08:14:46Z",
+      "last_updated": "2026-02-04T08:22:38Z",
+      "session_id": "sess_1770193152_b9acb4",
+      "researched": "2026-02-04T08:22:38Z",
       "artifacts": [
         {
           "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-001.md",
@@ -30,6 +30,11 @@
           "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-003.md",
           "type": "research",
           "summary": "Focused analysis confirming completeness theorems are correct - BMCS completeness is Henkin-style (valid for its validity notion), FMP completeness is axiom-free, both are mathematically sound when combined with standard soundness"
+        },
+        {
+          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-004.md",
+          "type": "research",
+          "summary": "Verified sorry/axiom dependencies: FMP approach is sorry-free and publication-ready; BMCS approach depends on one axiom (singleFamily_modal_backward_axiom)"
         }
       ]
     },
