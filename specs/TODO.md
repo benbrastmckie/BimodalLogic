@@ -24,12 +24,14 @@ technical_debt:
 
 ### 860. Propagate Axiom Policy to Agents and Rules
 - **Effort**: 1.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
+- **Planned**: 2026-02-04
 - **Dependencies**: Task 859
 - **Research**: [research-001.md](specs/860_propagate_axiom_policy_to_agents_rules/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/860_propagate_axiom_policy_to_agents_rules/plans/implementation-001.md)
 
 **Description**: Update agent instructions, rules, and workflows to prohibit axiom additions with same strictness as sorries. Reference new proof-debt-policy.md and add axiom checks parallel to sorry checks.
 
@@ -121,7 +123,7 @@ technical_debt:
 
 ### 854. Bimodal metalogic audit and cleanup
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04

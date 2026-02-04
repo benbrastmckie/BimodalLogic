@@ -459,6 +459,86 @@ lemma MutuallyCoherent_singleton (fam : IndexedMCSFamily D) (h_const : IsConstan
     (theorem_in_mcs (by rw [← hM t]; exact fam.is_mcs t) h_T) h_box_s
 
 /-!
+## Phase 4.5: BoxEquivalent Predicate (Task 856)
+
+A stronger coherence property where Box chi agreement is required across all families.
+This is stronger than MutuallyCoherent, which only requires chi agreement.
+
+For S5-like behavior, if Box chi is in ANY family at ANY time, it should be in ALL families
+at ALL times. This makes the K-distribution argument work for multi-family bundles.
+-/
+
+/--
+BoxEquivalent predicate: if Box chi is in any family at any time, it's in all families at all times.
+
+This is stronger than MutuallyCoherent, which only ensures chi (not Box chi) is in all families.
+With BoxEquivalent, the K-distribution argument works for multi-family bundles because
+we can lift Box formulas from any family to the source family containing the Diamond.
+
+Mathematical definition:
+  ∀ chi, (∃ fam ∈ families, ∃ t, Box chi ∈ fam.mcs t) →
+         (∀ fam' ∈ families, ∀ t', Box chi ∈ fam'.mcs t')
+-/
+def BoxEquivalent (families : Set (IndexedMCSFamily D)) : Prop :=
+  ∀ chi : Formula, (∃ fam ∈ families, ∃ t : D, Formula.box chi ∈ fam.mcs t) →
+         (∀ fam' ∈ families, ∀ t' : D, Formula.box chi ∈ fam'.mcs t')
+
+/--
+BoxEquivalent implies MutuallyCoherent (the converse is not true).
+
+If Box chi is in all families at all times, then by the T-axiom (Box chi → chi),
+chi is in all families at all times.
+-/
+lemma BoxEquivalent_implies_MutuallyCoherent (families : Set (IndexedMCSFamily D))
+    (all_constant : ∀ fam ∈ families, IsConstantFamily fam)
+    (h_box_eq : BoxEquivalent families) : MutuallyCoherent families := by
+  intro fam h_fam chi h_chi_union t
+  -- chi is in UnionBoxContent, so there exists fam' with Box chi in fam'.mcs s
+  rcases h_chi_union with ⟨fam', h_fam', h_chi_box⟩
+  rcases h_chi_box with ⟨s, h_box_s⟩
+  -- By BoxEquivalent, Box chi is in fam.mcs t
+  have h_box_in_fam : Formula.box chi ∈ fam.mcs t :=
+    h_box_eq chi ⟨fam', h_fam', s, h_box_s⟩ fam h_fam t
+  -- Apply T-axiom: Box chi → chi
+  have h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
+  exact set_mcs_implication_property (fam.is_mcs t)
+    (theorem_in_mcs (fam.is_mcs t) h_T) h_box_in_fam
+
+/--
+A singleton set containing a constant family trivially satisfies BoxEquivalent.
+
+Since there's only one family, the condition becomes: if Box chi is in fam.mcs s,
+then Box chi is in fam.mcs t for all t. This holds by constancy.
+-/
+lemma BoxEquivalent_singleton (fam : IndexedMCSFamily D) (h_const : IsConstantFamily fam) :
+    BoxEquivalent ({fam} : Set (IndexedMCSFamily D)) := by
+  intro chi ⟨fam', h_fam'_mem, s, h_box_s⟩ fam'' h_fam''_mem t
+  -- fam' = fam and fam'' = fam
+  simp only [Set.mem_singleton_iff] at h_fam'_mem h_fam''_mem
+  rw [h_fam'_mem] at h_box_s
+  rw [h_fam''_mem]
+  -- Since fam is constant, fam.mcs t = fam.mcs s
+  rcases h_const with ⟨M, hM⟩
+  rw [hM s] at h_box_s
+  rw [hM t]
+  exact h_box_s
+
+/--
+All constant families with the same base MCS are box-equivalent.
+
+If all families in the set have the same underlying MCS M, then any Box chi in one
+family is in M, hence in all families.
+-/
+lemma constant_same_mcs_BoxEquivalent (families : Set (IndexedMCSFamily D))
+    (M : Set Formula)
+    (all_same : ∀ fam ∈ families, ∀ t : D, fam.mcs t = M) :
+    BoxEquivalent families := by
+  intro chi ⟨fam, h_fam, s, h_box_s⟩ fam' h_fam' t'
+  rw [all_same fam h_fam s] at h_box_s
+  rw [all_same fam' h_fam' t']
+  exact h_box_s
+
+/-!
 ## Phase 5: CoherentBundle Structure Definition
 
 A CoherentBundle is a collection of constant IndexedMCSFamilies that are mutually coherent.
@@ -694,6 +774,18 @@ lemma initialCoherentBundle_all_constant (base : IndexedMCSFamily D)
     (h_const : IsConstantFamily base) :
     ∀ fam ∈ (initialCoherentBundle base h_const).families, IsConstantFamily fam :=
   (initialCoherentBundle base h_const).all_constant
+
+/--
+The initial bundle satisfies BoxEquivalent.
+
+This follows directly from BoxEquivalent_singleton since the initial bundle
+is a singleton set containing just the base family.
+-/
+lemma initialCoherentBundle_box_equivalent (base : IndexedMCSFamily D)
+    (h_const : IsConstantFamily base) :
+    BoxEquivalent (initialCoherentBundle base h_const).families := by
+  rw [initialCoherentBundle_families_eq]
+  exact BoxEquivalent_singleton base h_const
 
 /-!
 ### Phase 8.2: UnionBoxContent Consistency for Singleton Bundles

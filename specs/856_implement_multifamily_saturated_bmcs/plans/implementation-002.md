@@ -87,7 +87,7 @@ This plan resolves the `saturated_extension_exists` axiom by:
 
 ## Implementation Phases
 
-### Phase 1: Strengthen CoherentBundle Coherence [NOT STARTED]
+### Phase 1: Strengthen CoherentBundle Coherence [COMPLETED]
 
 **Goal**: Define and implement box-equivalence coherence requirement.
 
@@ -117,7 +117,7 @@ This is **stronger** than the current MutuallyCoherent, which only requires chi 
 
 ---
 
-### Phase 2: Prove Singleton Bundles Satisfy Coherence [NOT STARTED]
+### Phase 2: Prove Singleton Bundles Satisfy Coherence [COMPLETED]
 
 **Goal**: Establish that initial CoherentBundles (from single constant family) satisfy box-equivalence.
 
@@ -137,7 +137,7 @@ This is **stronger** than the current MutuallyCoherent, which only requires chi 
 
 ---
 
-### Phase 3: Prove Witness Addition Preserves Coherence [NOT STARTED]
+### Phase 3: Prove Witness Addition Preserves Coherence [IN PROGRESS]
 
 **Goal**: Show that adding a CoherentWitness to a box-equivalent bundle produces a box-equivalent bundle.
 

@@ -1,22 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Analyzed 6 target files for axiom policy propagation; identified 9 specific locations needing updates parallel to existing sorry rules",
+  "status": "planned",
+  "summary": "5-phase implementation plan for propagating axiom policy to agents and rules",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/860_propagate_axiom_policy_to_agents_rules/reports/research-001.md",
-      "summary": "Research report documenting exact file locations, required changes, and implementation order for axiom policy propagation"
+      "type": "plan",
+      "path": "specs/860_propagate_axiom_policy_to_agents_rules/plans/implementation-001.md",
+      "summary": "5-phase plan covering agent files, lean4 rules, verification workflow, and CLAUDE.md updates"
     }
   ],
-  "next_steps": "Run /plan 860 to create implementation plan",
   "metadata": {
-    "session_id": "sess_1770197966_bed5ba",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1770198339_b0689b",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6,
-    "files_analyzed": 6,
-    "changes_identified": 9
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 2.0
   }
 }
