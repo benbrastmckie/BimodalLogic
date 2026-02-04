@@ -48,6 +48,11 @@
           "path": "specs/856_implement_multifamily_saturated_bmcs/summaries/implementation-summary-20260204.md",
           "type": "summary",
           "summary": "Detailed analysis of remaining sorries and recommendations"
+        },
+        {
+          "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-004.md",
+          "type": "research",
+          "summary": "Analysis of alternative construction approaches: enumeration-based saturation, strengthened coherence requirements, and path to eliminating singleFamily_modal_backward_axiom"
         }
       ],
       "planned": "2026-02-04T09:07:05Z",
@@ -373,13 +378,13 @@
     {
       "project_number": 859,
       "project_name": "establish_axiom_debt_policy",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "effort": "1.5 hours",
       "description": "Expand sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Update plan-format.md and report-format.md to add Axiom Characterization sections with framing rules parallel to sorries. Files: rename sorry-debt-policy.md to proof-debt-policy.md, update plan-format.md and report-format.md.",
       "created": "2026-02-04T09:22:49Z",
-      "last_updated": "2026-02-04T09:31:02Z",
-      "session_id": "sess_1770197335_db399d",
+      "last_updated": "2026-02-04T09:33:21Z",
+      "session_id": "sess_1770197582_6269fd",
       "researched": "2026-02-04T09:26:57Z",
       "artifacts": [
         {
@@ -393,7 +398,8 @@
           "summary": "4-phase implementation plan for establishing axiom debt policy alongside existing sorry debt policy"
         }
       ],
-      "planned": "2026-02-04T09:31:02Z"
+      "planned": "2026-02-04T09:31:02Z",
+      "started": "2026-02-04T09:33:21Z"
     },
     {
       "project_number": 860,

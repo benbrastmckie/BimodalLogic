@@ -1,7 +1,7 @@
 # Implementation Plan: Task #859
 
 - **Task**: 859 - establish_axiom_debt_policy
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/859_establish_axiom_debt_policy/reports/research-001.md
@@ -46,7 +46,7 @@ This implementation expands the existing sorry-debt-policy.md into a comprehensi
 
 ## Implementation Phases
 
-### Phase 1: Rename and Expand Policy File [NOT STARTED]
+### Phase 1: Rename and Expand Policy File [IN PROGRESS]
 
 **Goal**: Transform sorry-debt-policy.md into comprehensive proof-debt-policy.md covering both sorries and axioms.
 

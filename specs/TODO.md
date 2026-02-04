@@ -48,11 +48,12 @@ technical_debt:
 
 ### 859. Establish Axiom Debt Policy in Core Documentation
 - **Effort**: 1.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
+- **Started**: 2026-02-04
 - **Research**: [research-001.md](specs/859_establish_axiom_debt_policy/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/859_establish_axiom_debt_policy/plans/implementation-001.md)
 
