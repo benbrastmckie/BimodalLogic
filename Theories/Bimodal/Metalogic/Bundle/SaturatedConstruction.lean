@@ -447,7 +447,58 @@ The key subtlety is that adding an arbitrary witness family may not preserve
 box_coherence. The Zorn's lemma argument must be over collections that maintain
 this invariant, which is non-trivial to formalize. The existence of such
 saturated collections is guaranteed by classical modal logic metatheory.
+
+**Constant Family Restriction**:
+To simplify the proof, we work with constant families where mcs t = mcs s for all t, s.
+This is the case for:
+- constantIndexedMCSFamily (used for initial families from Lindenbaum)
+- constantWitnessFamily (used for all witness families)
+
+For constant families, BoxContent is time-invariant, which makes the consistency
+argument tractable.
 -/
+
+/--
+A family is constant if its MCS is the same at all times.
+-/
+def IndexedMCSFamily.isConstant (fam : IndexedMCSFamily D) : Prop :=
+  ∀ s t : D, fam.mcs s = fam.mcs t
+
+/--
+constantWitnessFamily is constant.
+-/
+lemma constantWitnessFamily_isConstant (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    (constantWitnessFamily M h_mcs (D := D)).isConstant := by
+  intro s t
+  rfl
+
+/--
+For a constant family, Box chi at any time means Box chi at all times.
+-/
+lemma constant_family_box_time_invariant {fam : IndexedMCSFamily D}
+    (h_const : fam.isConstant) (chi : Formula) (s t : D) :
+    Formula.box chi ∈ fam.mcs s ↔ Formula.box chi ∈ fam.mcs t := by
+  rw [h_const s t]
+
+/--
+For a set of constant families, BoxContent is time-invariant.
+When all families are constant, the set {chi | ∃ fam' ∈ M, ∃ s, Box chi ∈ fam'.mcs s}
+equals {chi | ∃ fam' ∈ M, Box chi ∈ fam'.mcs t} for any fixed t.
+-/
+lemma constant_families_boxcontent_time_invariant
+    (fams : Set (IndexedMCSFamily D))
+    (h_all_const : ∀ fam ∈ fams, fam.isConstant)
+    (t : D) :
+    {chi | ∃ fam' ∈ fams, ∃ s : D, Formula.box chi ∈ fam'.mcs s} =
+    {chi | ∃ fam' ∈ fams, Formula.box chi ∈ fam'.mcs t} := by
+  ext chi
+  constructor
+  · intro ⟨fam', hfam', s, h_box⟩
+    use fam', hfam'
+    rw [← h_all_const fam' hfam' s t]
+    exact h_box
+  · intro ⟨fam', hfam', h_box⟩
+    use fam', hfam', t, h_box
 
 /-!
 ### Helper Definitions for Zorn's Lemma Application
@@ -485,6 +536,206 @@ lemma box_coherence_sUnion (c : Set (Set (IndexedMCSFamily D)))
     · -- Case s2 ⊆ s1: both fam and fam' are in s1, use s1's box_coherence
       have hfam'_in_s1 : fam' ∈ s1 := h_s2_sub_s1 hfam'_in_s2
       exact h_coherence s1 hs1_in_c fam hfam_in_s1 psi t h_box fam' hfam'_in_s1
+
+/--
+K distribution lemma: Applies K axiom repeatedly to extract Box of the target from a chain.
+
+If we have Box(chi_1 → ... → chi_n → target) ∈ S and all Box chi_i ∈ S,
+then Box(target) ∈ S.
+
+Note: We use ctx.reverse.foldr to match derivation_to_theorem_rev.
+ctx.reverse.foldr imp target [c, b, a] = c → (b → (a → target))
+-/
+lemma k_distribution_chain_rev {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    (ctx : List Formula) (target : Formula)
+    (h_box_chain : Formula.box (ctx.reverse.foldr Formula.imp target) ∈ S)
+    (h_boxes_in_S : ∀ chi ∈ ctx, Formula.box chi ∈ S) :
+    Formula.box target ∈ S := by
+  -- Induct on ctx, generalizing target and h_box_chain
+  induction ctx generalizing target with
+  | nil =>
+    simp only [List.reverse_nil, List.foldr] at h_box_chain
+    exact h_box_chain
+  | cons c cs ih =>
+    -- ctx = c :: cs
+    -- ctx.reverse = cs.reverse ++ [c]
+    -- ctx.reverse.foldr imp target = cs.reverse.foldr imp (c → target) by foldr_append
+    -- h_box_chain : Box((c :: cs).reverse.foldr imp target) ∈ S
+    --             = Box(cs.reverse.foldr imp (c → target)) ∈ S
+    -- h_boxes_in_S : Box c ∈ S and all Box chi ∈ S for chi ∈ cs
+
+    -- First apply K to peel off c
+    have h_box_c : Formula.box c ∈ S := h_boxes_in_S c List.mem_cons_self
+
+    -- Rewrite h_box_chain to use the foldr_append form
+    have h_eq : (c :: cs).reverse.foldr Formula.imp target = cs.reverse.foldr Formula.imp (c.imp target) := by
+      simp [List.reverse_cons, List.foldr_append, List.foldr]
+    rw [h_eq] at h_box_chain
+
+    -- Now h_box_chain : Box(cs.reverse.foldr imp (c → target)) ∈ S
+    -- By IH with target' = c → target: Box(c → target) ∈ S
+    have h_cs_boxes : ∀ chi ∈ cs, Formula.box chi ∈ S :=
+      fun chi hchi => h_boxes_in_S chi (List.mem_cons_of_mem c hchi)
+    have h_box_c_imp_target : Formula.box (c.imp target) ∈ S :=
+      ih (c.imp target) h_box_chain h_cs_boxes
+
+    -- Now use K: Box(c → target) → Box c → Box target
+    have h_K : Bimodal.ProofSystem.DerivationTree []
+        ((Formula.box (c.imp target)).imp ((Formula.box c).imp (Formula.box target))) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _
+        (Bimodal.ProofSystem.Axiom.modal_k_dist c target)
+    have h_K_in_S := theorem_in_mcs h_mcs h_K
+    have h_step1 := set_mcs_implication_property h_mcs h_K_in_S h_box_c_imp_target
+    exact set_mcs_implication_property h_mcs h_step1 h_box_c
+
+/--
+Close a derivation to a theorem via repeated deduction theorem.
+If ctx ⊢ phi, then [] ⊢ ctx.reverse.foldr imp phi
+
+Note: The deduction theorem removes from the HEAD of the context:
+  deduction_theorem Gamma A phi : (A :: Gamma ⊢ phi) → (Gamma ⊢ A → phi)
+
+So for [a, b, c] ⊢ phi:
+- deduction_theorem gives [b, c] ⊢ a → phi
+- Then: [c] ⊢ b → (a → phi)
+- Then: [] ⊢ c → (b → (a → phi))
+
+This produces [c, b, a].foldr imp phi = ctx.reverse.foldr imp phi
+-/
+noncomputable def derivation_to_theorem_rev :
+    (ctx : List Formula) → (phi : Formula) →
+    Bimodal.ProofSystem.DerivationTree ctx phi →
+    Bimodal.ProofSystem.DerivationTree [] (ctx.reverse.foldr Formula.imp phi)
+  | [], phi, h_deriv => h_deriv
+  | c :: cs, phi, h_deriv =>
+    -- We have c :: cs ⊢ phi
+    -- deduction_theorem gives cs ⊢ c → phi
+    let hd' := Bimodal.Metalogic.Core.deduction_theorem cs c phi h_deriv
+    -- Recursively: [] ⊢ cs.reverse.foldr imp (c → phi)
+    let h_rec := derivation_to_theorem_rev cs (c.imp phi) hd'
+    -- We need [] ⊢ (c :: cs).reverse.foldr imp phi
+    --        = [] ⊢ (cs.reverse ++ [c]).foldr imp phi
+    -- And cs.reverse.foldr imp (c → phi) should match this
+    -- foldr imp phi (cs.reverse ++ [c]) = foldr imp (c → phi) cs.reverse by foldr_append with single element
+    -- Actually: foldr f z (xs ++ [y]) = foldr f (f y z) xs
+    -- So: foldr imp phi (cs.reverse ++ [c]) = foldr imp (c.imp phi) cs.reverse
+    -- Which is exactly cs.reverse.foldr imp (c → phi)!
+    -- So h_rec has the right type after unfolding
+    cast (by simp [List.reverse_cons, List.foldr_append, List.foldr]) h_rec
+
+/--
+Modal existence lemma: If Diamond psi is in an MCS S, then {psi} ∪ {chi | Box chi ∈ S} is consistent.
+
+This is the key lemma enabling the coherent witness construction. The proof uses:
+1. If {psi, chi_1, ..., chi_n} is inconsistent (with Box chi_i ∈ S), then chi_1 → ... → chi_n → neg psi is provable
+2. By necessitation: Box(chi_1 → ... → chi_n → neg psi) is provable
+3. By K distribution: Box chi_1 → ... → Box chi_n → Box(neg psi) is provable (in any MCS)
+4. Since all Box chi_i ∈ S, we get Box(neg psi) ∈ S
+5. But Diamond psi = neg(Box(neg psi)) ∈ S, contradicting S's consistency
+
+This lemma also works when the chi come from box_coherent families via box_coherence.
+-/
+lemma diamond_box_coherent_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    (psi : Formula) (h_diamond : diamondFormula psi ∈ S)
+    (BoxSet : Set Formula) (h_boxset_sub : ∀ chi ∈ BoxSet, Formula.box chi ∈ S) :
+    SetConsistent ({psi} ∪ BoxSet) := by
+  intro L hL_sub ⟨d⟩
+  -- L ⊆ {psi} ∪ BoxSet and L ⊢ bot
+  by_cases h_psi_in_L : psi ∈ L
+  · -- psi ∈ L: Use deduction theorem to derive neg psi from BoxSet elements
+    -- Reorder L to put psi first
+    let L_filt := L.filter (fun y => decide (y ≠ psi))
+    have h_perm := Bimodal.Metalogic.Core.cons_filter_neq_perm h_psi_in_L
+    have d_bot_reord : Bimodal.ProofSystem.DerivationTree (psi :: L_filt) Formula.bot :=
+      Bimodal.Metalogic.Core.derivation_exchange d (fun x => (h_perm x).symm)
+
+    -- By deduction theorem: L_filt ⊢ neg psi
+    have d_neg_psi : Bimodal.ProofSystem.DerivationTree L_filt (Formula.neg psi) :=
+      Bimodal.Metalogic.Core.deduction_theorem L_filt psi Formula.bot d_bot_reord
+
+    -- L_filt ⊆ BoxSet, so each element has its Box in S
+    have h_filt_sub_boxset : ∀ chi ∈ L_filt, chi ∈ BoxSet := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L : chi ∈ L := h_and.1
+      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_union := hL_sub chi h_in_L
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_union
+      cases h_in_union with
+      | inl h_eq => exact absurd h_eq h_ne
+      | inr h_in_box => exact h_in_box
+
+    -- Close to theorem via helper (produces L_filt.reverse.foldr imp (neg psi))
+    have d_theorem : Bimodal.ProofSystem.DerivationTree [] (L_filt.reverse.foldr Formula.imp (Formula.neg psi)) :=
+      derivation_to_theorem_rev L_filt (Formula.neg psi) d_neg_psi
+
+    -- Necessitation: [] ⊢ Box(... → neg psi)
+    have d_box_theorem : Bimodal.ProofSystem.DerivationTree [] (Formula.box (L_filt.reverse.foldr Formula.imp (Formula.neg psi))) :=
+      Bimodal.ProofSystem.DerivationTree.necessitation _ d_theorem
+
+    -- This Box formula is in S
+    have h_box_chain_in_S : Formula.box (L_filt.reverse.foldr Formula.imp (Formula.neg psi)) ∈ S :=
+      theorem_in_mcs h_mcs d_box_theorem
+
+    -- All Box chi ∈ S for chi ∈ L_filt (and thus for chi ∈ L_filt.reverse)
+    have h_boxes_in_S : ∀ chi ∈ L_filt, Formula.box chi ∈ S :=
+      fun chi hchi => h_boxset_sub chi (h_filt_sub_boxset chi hchi)
+
+    -- Apply K distribution (note: k_distribution_chain_rev expects ctx, and h_box_chain uses ctx.reverse)
+    -- So we pass L_filt.reverse as ctx, and h_box_chain has Box((L_filt.reverse).reverse.foldr imp target)
+    -- = Box(L_filt.foldr imp target). Hmm, that's not quite right.
+    -- Actually we need to pass L_filt as ctx, and h_box_chain should have L_filt.reverse.foldr form.
+    -- The lemma k_distribution_chain_rev takes h_box_chain : Box(ctx.reverse.foldr ...)
+    -- So with ctx = L_filt, we need Box(L_filt.reverse.foldr ...) which is what we have!
+    have h_boxes_in_S' : ∀ chi ∈ L_filt, Formula.box chi ∈ S := h_boxes_in_S
+    have h_box_neg_psi_in_S : Formula.box (Formula.neg psi) ∈ S :=
+      k_distribution_chain_rev h_mcs L_filt (Formula.neg psi) h_box_chain_in_S h_boxes_in_S'
+
+    -- Contradiction: Box(neg psi) and Diamond psi = neg(Box(neg psi)) both in S
+    have h_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+    rw [h_eq] at h_diamond
+    exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg psi)) h_box_neg_psi_in_S h_diamond
+
+  · -- psi ∉ L: L ⊆ BoxSet
+    have h_L_sub_boxset : ∀ x ∈ L, x ∈ BoxSet := by
+      intro x hx
+      have h_in_union := hL_sub x hx
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_union
+      cases h_in_union with
+      | inl h_eq =>
+        -- x = psi, but psi ∉ L
+        rw [h_eq] at hx
+        exact absurd hx h_psi_in_L
+      | inr h_in => exact h_in
+
+    -- Close derivation to theorem (produces L.reverse.foldr imp bot)
+    have d_theorem : Bimodal.ProofSystem.DerivationTree [] (L.reverse.foldr Formula.imp Formula.bot) :=
+      derivation_to_theorem_rev L Formula.bot d
+
+    have d_box_theorem : Bimodal.ProofSystem.DerivationTree [] (Formula.box (L.reverse.foldr Formula.imp Formula.bot)) :=
+      Bimodal.ProofSystem.DerivationTree.necessitation _ d_theorem
+
+    have h_box_chain_in_S : Formula.box (L.reverse.foldr Formula.imp Formula.bot) ∈ S :=
+      theorem_in_mcs h_mcs d_box_theorem
+
+    -- All Box chi ∈ S for chi ∈ L
+    have h_boxes_in_S : ∀ chi ∈ L, Formula.box chi ∈ S :=
+      fun chi hchi => h_boxset_sub chi (h_L_sub_boxset chi hchi)
+
+    -- Apply K distribution to get Box bot ∈ S
+    have h_box_bot_in_S : Formula.box Formula.bot ∈ S :=
+      k_distribution_chain_rev h_mcs L Formula.bot h_box_chain_in_S h_boxes_in_S
+
+    -- By T axiom: Box bot → bot
+    have h_T_bot : Bimodal.ProofSystem.DerivationTree [] ((Formula.box Formula.bot).imp Formula.bot) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_t Formula.bot)
+    have h_T_in_S := theorem_in_mcs h_mcs h_T_bot
+    have h_bot_in_S := set_mcs_implication_property h_mcs h_T_in_S h_box_bot_in_S
+
+    -- bot ∈ S contradicts S being consistent
+    have h_bot_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
 
 /--
 The key existence theorem: every family collection has a fully saturated extension.
@@ -711,6 +962,26 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
         -- NEED: Lemma showing {psi} ∪ BoxContent consistent when Diamond psi ∈ fam.mcs t
         --       and BoxContent is derived from a box-coherent M containing fam.
 
+        -- We can use diamond_box_coherent_consistent if we have:
+        -- 1. Diamond psi ∈ fam.mcs t (we have this as h_diamond)
+        -- 2. ∀ chi ∈ BoxContent, Box chi ∈ fam.mcs t
+        --
+        -- But BoxContent uses ∃ s, not specifically t. If all families in M are constant,
+        -- then Box chi ∈ fam'.mcs s implies Box chi ∈ fam'.mcs t (same MCS).
+        -- Then by box_coherence of M: chi ∈ fam.mcs t.
+        -- But we need Box chi ∈ fam.mcs t, not chi ∈ fam.mcs t!
+        --
+        -- This is where the proof breaks down - we don't have Box chi ∈ fam.mcs t
+        -- unless we assume some form of modal positive introspection (Box A → Box Box A).
+        --
+        -- ALTERNATIVE: Restrict BoxContent to only those chi where Box chi ∈ fam.mcs t.
+        -- Then use diamond_box_coherent_consistent directly.
+        -- But this changes the witness construction and may not satisfy box_coherence
+        -- for other families in M.
+        --
+        -- This sorry represents a fundamental gap in the multi-family saturation approach
+        -- without additional modal axioms.
+
         sorry
       · -- psi ∉ L: L ⊆ BoxContent ⊆ fam.mcs t, so L derives bot from elements of MCS
         have h_L_sub_fam : ∀ x ∈ L, x ∈ fam.mcs t := by
@@ -724,12 +995,13 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
           · -- x ∈ BoxContent (at some time s)
             -- h_in_box : x ∈ BoxContent = {chi | ∃ fam' ∈ M, ∃ s, Box chi ∈ fam'.mcs s}
             -- We need x ∈ fam.mcs t, but BoxContent uses ∃ s, not specifically t
-            -- This case requires that BoxContent at time t is in fam.mcs t
             rcases h_in_box with ⟨fam', hfam', s, h_box_at_s⟩
-            -- We only know Box x ∈ fam'.mcs s, not necessarily at time t
-            -- For now, sorry this case - it requires either:
-            -- 1. Restricting BoxContent to time t only (but then Step 8 fails for other times)
-            -- 2. Showing that Box formulas are consistent across times (temporal structure)
+            -- We know Box x ∈ fam'.mcs s, and by box_coherence of M: x ∈ fam.mcs s
+            have h_x_at_s : x ∈ fam.mcs s := hM_in_S.2.1 fam' hfam' x s h_box_at_s fam hfam_in_M
+            -- To get x ∈ fam.mcs t, we need the family to be constant (mcs s = mcs t)
+            -- or some temporal coherence property.
+            -- Without additional assumptions, this cannot be proven.
+            -- This sorry represents the temporal uniformity gap.
             sorry
         -- L ⊢ bot and L ⊆ fam.mcs t contradicts MCS consistency
         exact (fam.is_mcs t).1 L h_L_sub_fam ⟨d⟩
@@ -781,7 +1053,19 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
         -- unnecessary Box formulas. Or show that any Box chi added by Lindenbaum
         -- must have chi already in all M families.
         --
-        -- For now, this is the remaining sorry point.
+        -- Mathematical argument (not yet formalized):
+        -- If Box chi ∈ W_set (Lindenbaum extension of {psi} ∪ BoxContent), either:
+        -- (a) Box chi was in {psi} ∪ BoxContent originally - but BoxContent only has chi, not Box chi
+        -- (b) Box chi was added by Lindenbaum to maintain maximality
+        --
+        -- For (b): If Box chi was added, then neg(Box chi) = Diamond(neg chi) is not in W_set
+        -- This means {psi} ∪ BoxContent ∪ {Diamond(neg chi)} is inconsistent
+        -- Which would require Diamond(neg chi) to derive a contradiction with the base set
+        --
+        -- This is where the proof requires additional work to show that any Box chi
+        -- added by Lindenbaum has chi already "forced" to be in all M families.
+        --
+        -- For now, this sorry represents the coherent witness construction gap.
         sorry
 
     -- Step 9: Show M ∪ {W} ∈ S (extends C, has coherence, contains eval_family)
