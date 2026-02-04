@@ -147,7 +147,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "planned",
+      "status": "researched",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -158,8 +158,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T19:40:45Z",
-      "session_id": "sess_1770233319_14327c",
+      "last_updated": "2026-02-04T20:01:39Z",
+      "session_id": "sess_1770235081_113d2b",
       "researched": "2026-02-04T10:11:30Z",
       "artifacts": [
         {
@@ -186,6 +186,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 2-phase plan using eval-only strategy aligned with task 857"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-004.md",
+          "type": "research",
+          "summary": "Analysis of forward/backward truth lemma separation - forward direction already sorry-free, temporal backward sorries do not block completeness"
         }
       ],
       "planned": "2026-02-04T19:40:45Z",
