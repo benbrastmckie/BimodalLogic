@@ -482,11 +482,6 @@
           "summary": "Zero-axiom path identified: time-varying MCS with TemporalCoherentFamily structure; 35-50 hours estimated for full implementation"
         },
         {
-          "path": "specs/857_add_temporal_backward_properties/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for zero-axiom temporal backward properties"
-        },
-        {
           "path": "specs/857_add_temporal_backward_properties/summaries/implementation-summary-20260204.md",
           "type": "summary",
           "summary": "Partial implementation: infrastructure complete, sorries remain but don't block completeness proof"
@@ -495,11 +490,6 @@
           "path": "specs/857_add_temporal_backward_properties/reports/research-005.md",
           "type": "research",
           "summary": "Zero-sorry path analysis: temporal saturation construction following EvalCoherentBundle pattern; 8-12 hours additional effort"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "3-phase revised plan following EvalCoherent pattern for temporal saturation"
         },
         {
           "path": "specs/857_add_temporal_backward_properties/summaries/implementation-summary-20260204-v2.md",
@@ -515,6 +505,11 @@
           "path": "specs/857_add_temporal_backward_properties/reports/research-007.md",
           "type": "research",
           "summary": "Mathematical completion path from Task 862 insights: temporalLindenbaumMCS with witness insertion required for zero-sorry temporal saturation"
+        },
+        {
+          "path": "specs/857_add_temporal_backward_properties/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "3-phase plan: temporalLindenbaumMCS with witness insertion for zero-sorry temporal saturation"
         }
       ],
       "dependencies": [

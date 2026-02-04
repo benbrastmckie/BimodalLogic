@@ -111,8 +111,8 @@ technical_debt:
 ---
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
-- **Effort**: 12-18 hours (revised)
-- **Status**: [RESEARCHED]
+- **Effort**: 8-12 hours (revised)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
@@ -120,9 +120,9 @@ technical_debt:
 - **Started**: 2026-02-04
 - **Parent**: Task 855
 - **Depends**: Task 856
-- **Related**: Task 856
+- **Related**: Task 856, Task 862
 - **Research**: [research-001.md](specs/857_add_temporal_backward_properties/reports/research-001.md), [research-002.md](specs/857_add_temporal_backward_properties/reports/research-002.md), [research-003.md](specs/857_add_temporal_backward_properties/reports/research-003.md), [research-004.md](specs/857_add_temporal_backward_properties/reports/research-004.md), [research-005.md](specs/857_add_temporal_backward_properties/reports/research-005.md), [research-006.md](specs/857_add_temporal_backward_properties/reports/research-006.md), [research-007.md](specs/857_add_temporal_backward_properties/reports/research-007.md)
-- **Plan**: [implementation-002.md](specs/857_add_temporal_backward_properties/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/857_add_temporal_backward_properties/plans/implementation-003.md)
 
 **Description**: Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.
 
