@@ -122,12 +122,14 @@ technical_debt:
 ---
 
 ### 854. Bimodal metalogic audit and cleanup
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
+- **Planned**: 2026-02-04
 - **Research**: [research-001.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-001.md), [research-002.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-002.md), [research-003.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-003.md), [research-004.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-004.md), [research-005.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-005.md)
+- **Plan**: [implementation-001.md](specs/854_bimodal_metalogic_audit_and_cleanup/plans/implementation-001.md)
 
 **Description**: Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.
 
