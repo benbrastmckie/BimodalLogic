@@ -2,7 +2,7 @@
 
 - **Task**: 857 - Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Version**: 002
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12-18 hours (revised down from 40-55)
 - **Dependencies**: Task 856 (EvalCoherent pattern reference)
 - **Research Inputs**:
