@@ -194,9 +194,9 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T21:12:47Z",
-      "session_id": "sess_1770239346_1af20d",
-      "researched": "2026-02-04T21:12:47Z",
+      "last_updated": "2026-02-04T21:51:00Z",
+      "session_id": "sess_1770241651_4af934",
+      "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md",
@@ -242,6 +242,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-007.md",
           "type": "research",
           "summary": "S5 axioms proven present in TM; EvalBMCS path (fully proven, no axioms) is the correct solution for axiom-free completeness"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-008.md",
+          "type": "research",
+          "summary": "Post-857 assessment: completeness has 2 axioms (not 1); EvalBMCS path has structural box-case limitation; recommend temporalLindenbaumMCS first then multi-family saturation"
         }
       ],
       "planned": "2026-02-04T19:40:45Z",
