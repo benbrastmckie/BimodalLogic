@@ -182,4 +182,4 @@ After implementation:
 ## Context References
 
 For deeper understanding, load these context files as needed:
-- `@.claude/context/project/lean4/standards/sorry-debt-policy.md` - Sorry remediation policy
+- `@.claude/context/project/lean4/standards/proof-debt-policy.md` - Sorry remediation policy

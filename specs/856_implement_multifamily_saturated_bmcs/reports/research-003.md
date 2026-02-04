@@ -276,7 +276,7 @@ Could use Option B for immediate completeness, then refactor to Option A later:
 
 ## 9. Summary of Sorry Technical Debt
 
-Per the sorry-debt-policy.md requirements:
+Per the proof-debt-policy.md requirements:
 
 ### Option A Sorries
 | Sorry | Category | Reason | Remediation | Transitivity Impact |

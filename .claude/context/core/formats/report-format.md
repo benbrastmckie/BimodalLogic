@@ -84,6 +84,57 @@ ALWAYS use these phrases (they acknowledge temporary technical debt):
 These sorries block publication. Remediation priority: high.
 ```
 
+## Axiom Characterization (Lean reports only)
+
+**Applicability**: Include this section only for Lean research reports when documenting axiom dependencies. For non-Lean reports (general, meta, latex, typst), this section should be omitted.
+
+**Purpose**: Documents axiom dependencies with accurate technical characterization. Axioms are technical debt that require structural proofs - they are never an acceptable permanent solution.
+
+**Required Elements**:
+- **Current State**: Count and location of axioms in scope
+- **Transitive Impact**: Which theorems/lemmas inherit axiom dependency
+- **Remediation Path**: Structural proof approach to eliminate each axiom
+- **Publication Status**: Zero-axiom status or explicit disclosure requirement
+
+**Framing Rules**:
+
+NEVER use these phrases (they imply axioms can be permanently acceptable):
+- "acceptable axiom"
+- "axiom-based solution"
+- "add axiom to solve"
+- "N acceptable axioms"
+
+ALWAYS use these phrases (they acknowledge technical debt requiring structural proof):
+- "axiom as technical debt"
+- "axiom requires structural proof"
+- "eliminates need for axiom"
+- "zero-axiom approach"
+- "inherits axiom dependency"
+- "publication requires axiom disclosure or elimination"
+
+**Example**:
+```markdown
+## Axiom Characterization
+
+### Current State
+- 1 axiom in `SaturatedConstruction.lean`: `singleFamily_modal_backward_axiom`
+- Purpose: Asserts modal backward direction in single-family simplification
+
+### Transitive Impact
+- `Completeness.completeness` inherits axiom dependency
+- All downstream theorems using completeness require axiom disclosure
+
+### Remediation Path
+- Complete saturation construction (Task 856) eliminates axiom
+- Structural proof: extend world state family to include backward-reachable worlds
+- Estimated effort: 4-6 hours
+
+### Publication Status
+This axiom blocks undisclosed publication. Options:
+- Eliminate via structural proof (preferred)
+- Disclose as explicit assumption in publication
+```
+
 ## Timestamps
 - Include **Started** timestamp when research/analysis begins
 - Include **Completed** timestamp when report is finalized

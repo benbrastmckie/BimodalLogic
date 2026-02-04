@@ -1,7 +1,7 @@
 # Implementation Plan: Task #859
 
 - **Task**: 859 - establish_axiom_debt_policy
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/859_establish_axiom_debt_policy/reports/research-001.md
@@ -73,7 +73,7 @@ This implementation expands the existing sorry-debt-policy.md into a comprehensi
 
 ---
 
-### Phase 2: Update plan-format.md [IN PROGRESS]
+### Phase 2: Update plan-format.md [COMPLETED]
 
 **Goal**: Add "Axiom Characterization (Lean plans only)" section to plan-format.md with framing rules parallel to Sorry Characterization.
 
@@ -95,7 +95,7 @@ This implementation expands the existing sorry-debt-policy.md into a comprehensi
 
 ---
 
-### Phase 3: Update report-format.md [NOT STARTED]
+### Phase 3: Update report-format.md [COMPLETED]
 
 **Goal**: Add "Axiom Characterization (Lean reports only)" section to report-format.md with framing rules parallel to Sorry Characterization.
 
@@ -117,7 +117,7 @@ This implementation expands the existing sorry-debt-policy.md into a comprehensi
 
 ---
 
-### Phase 4: Cross-Reference Validation [NOT STARTED]
+### Phase 4: Cross-Reference Validation [COMPLETED]
 
 **Goal**: Verify all references are updated and documentation is internally consistent.
 

@@ -1,15 +1,40 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-04T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
+  "status": "implemented",
+  "summary": "Expanded sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Added Axiom Characterization sections to plan-format.md and report-format.md with parallel framing rules. Updated 6 cross-references in active .claude/ files.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/lean4/standards/proof-debt-policy.md",
+      "summary": "Comprehensive proof debt policy covering sorries and axioms with unified philosophy, categories, and framing rules"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/core/formats/plan-format.md",
+      "summary": "Added Axiom Characterization section with framing rules for Lean implementation plans"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/core/formats/report-format.md",
+      "summary": "Added Axiom Characterization section with framing rules for Lean research reports"
+    },
+    {
+      "type": "summary",
+      "path": "specs/859_establish_axiom_debt_policy/summaries/implementation-summary-20260204.md",
+      "summary": "Implementation summary documenting all changes and verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Expanded sorry-debt-policy.md into proof-debt-policy.md with unified proof debt philosophy covering both sorries and axioms. Added Axiom Characterization sections to plan-format.md and report-format.md with parallel framing rules. Updated 6 active cross-references.",
+    "claudemd_suggestions": "Renamed sorry-debt-policy.md to proof-debt-policy.md in .claude/context/project/lean4/standards/, added Axiom Characterization sections to plan-format.md and report-format.md, updated references in lean4.md rules, lean-research-agent.md, and lean-implementation-agent.md"
   },
   "metadata": {
     "session_id": "sess_1770197582_6269fd",
+    "duration_seconds": 1800,
     "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"]
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Run /todo to archive completed task and sync repository metrics"
 }

@@ -131,6 +131,55 @@ After this implementation:
 - Publication no longer blocked by these specific sorries
 ```
 
+## Axiom Characterization (Lean plans only)
+
+**Applicability**: Include this section only for Lean implementation plans that involve axiom dependencies. For non-Lean plans (general, meta, latex, typst), this section should be omitted.
+
+**Purpose**: Documents how the implementation handles axioms - both pre-existing ones being addressed and any impact on axiom dependencies. Axioms are technical debt that require structural proofs for elimination.
+
+**Required Elements**:
+- **Pre-existing Axioms**: Axioms in scope that this implementation addresses
+- **Expected Resolution**: Which axioms will be eliminated and how (structural proof approach)
+- **New Axioms**: NEVER introduce new axioms (if unavoidable, justify with remediation timeline)
+- **Remaining Debt**: Axioms that will remain after implementation, with downstream impact
+
+**Framing Rules**:
+
+NEVER use these phrases (they imply axioms can be permanently acceptable):
+- "acceptable axiom"
+- "axiom-based solution"
+- "add axiom to solve"
+- "N acceptable axioms"
+
+ALWAYS use these phrases (they acknowledge technical debt requiring structural proof):
+- "axiom as technical debt"
+- "structural proof eliminates axiom"
+- "inherits axiom dependency"
+- "zero-axiom target"
+- "axiom to be removed via [specific approach]"
+- "publication requires axiom disclosure or elimination"
+
+**Example**:
+```markdown
+## Axiom Characterization
+
+### Pre-existing Axioms
+- 1 axiom in `SaturatedConstruction.lean`: `singleFamily_modal_backward_axiom` (construction assumption)
+
+### Expected Resolution
+- Phase 3 eliminates axiom via completed saturation construction
+- Structural proof approach: extend world state family to include backward-reachable worlds
+
+### New Axioms
+- None. NEVER introduce new axioms. If proof complexity requires temporary gap, use sorry with remediation timeline.
+
+### Remaining Debt
+After this implementation:
+- 0 axioms expected in saturation module
+- Downstream theorems will no longer inherit axiom dependency
+- Completeness theorem becomes axiom-free (publication-ready without disclosure)
+```
+
 ## Status Marker Requirements
 - Use markers exactly as defined in status-markers.md.
 - Every phase starts as `[NOT STARTED]` and progresses through valid transitions.

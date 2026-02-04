@@ -316,7 +316,7 @@ Systematically reduce sorries in the Metalogic module through proof completion, 
 
 **Related Phases**: Phase 1 (Proof Quality), Phase 5 (Managing Sorries)
 **References**:
-- [sorry-debt-policy.md](docs/policies/sorry-debt-policy.md) - Debt management
+- [proof-debt-policy.md](.claude/context/project/lean4/standards/proof-debt-policy.md) - Proof debt management (sorries + axioms)
 - [Task 758](specs/TODO.md) - Sorry audit task
 - [Phase 1 goals](specs/ROAD_MAP.md#phase-1-proof-quality-and-organization-high-priority) - Economy tasks
 

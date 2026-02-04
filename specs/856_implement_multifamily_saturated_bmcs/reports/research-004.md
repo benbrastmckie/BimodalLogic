@@ -230,7 +230,7 @@ This is a **stronger** coherence requirement than the current MutuallyCoherent, 
 
 ## 6. Summary of Technical Debt
 
-Per the sorry-debt-policy.md requirements:
+Per the proof-debt-policy.md requirements:
 
 ### SaturatedConstruction.lean Sorries
 

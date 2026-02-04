@@ -76,7 +76,7 @@ Load these on-demand using @-references:
 **Always Load**:
 - `@.claude/context/project/lean4/tools/mcp-tools-guide.md` - Full MCP tool reference
 - `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
-- `@.claude/context/project/lean4/standards/sorry-debt-policy.md` - Sorry remediation policy (REQUIRED for correct characterization)
+- `@.claude/context/project/lean4/standards/proof-debt-policy.md` - Sorry remediation policy (REQUIRED for correct characterization)
 
 **Load After Stage 0**:
 - `@.claude/context/project/lean4/agents/lean-research-flow.md` - Detailed execution stages
@@ -196,4 +196,4 @@ If searches yield no useful results:
 9. **Skip Stage 0** early metadata creation (critical for interruption recovery)
 10. **Block on MCP failures** - always continue with available information
 11. **Call blocked tools** (lean_diagnostic_messages, lean_file_outline)
-12. **Use 'acceptable sorry' framing** - sorries are technical debt, never "acceptable" (see sorry-debt-policy.md)
+12. **Use 'acceptable sorry' framing** - sorries are technical debt, never "acceptable" (see proof-debt-policy.md)

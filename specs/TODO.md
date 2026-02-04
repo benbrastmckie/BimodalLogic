@@ -48,14 +48,16 @@ technical_debt:
 
 ### 859. Establish Axiom Debt Policy in Core Documentation
 - **Effort**: 1.5 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
 - **Started**: 2026-02-04
+- **Completed**: 2026-02-04
 - **Research**: [research-001.md](specs/859_establish_axiom_debt_policy/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/859_establish_axiom_debt_policy/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260204.md](specs/859_establish_axiom_debt_policy/summaries/implementation-summary-20260204.md)
 
 **Description**: Expand sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Update plan-format.md and report-format.md to add "Axiom Characterization" sections with framing rules parallel to sorries.
 
