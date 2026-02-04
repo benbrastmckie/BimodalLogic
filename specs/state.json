@@ -20,8 +20,8 @@
         838
       ],
       "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T09:23:19Z",
-      "session_id": "sess_1770196166_c192d2",
+      "last_updated": "2026-02-04T09:28:46Z",
+      "session_id": "sess_1770197312_73f521",
       "researched": "2026-02-04T09:02:46Z",
       "artifacts": [
         {
@@ -75,12 +75,12 @@
     {
       "project_number": 854,
       "project_name": "bimodal_metalogic_audit_and_cleanup",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "description": "Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.",
       "created": "2026-02-04T01:49:53Z",
-      "last_updated": "2026-02-04T08:22:38Z",
-      "session_id": "sess_1770193152_b9acb4",
+      "last_updated": "2026-02-04T09:30:33Z",
+      "session_id": "sess_1770197416_eae1f9",
       "researched": "2026-02-04T08:22:38Z",
       "artifacts": [
         {
@@ -373,21 +373,27 @@
     {
       "project_number": 859,
       "project_name": "establish_axiom_debt_policy",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "1.5 hours",
       "description": "Expand sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Update plan-format.md and report-format.md to add Axiom Characterization sections with framing rules parallel to sorries. Files: rename sorry-debt-policy.md to proof-debt-policy.md, update plan-format.md and report-format.md.",
       "created": "2026-02-04T09:22:49Z",
-      "last_updated": "2026-02-04T09:26:57Z",
-      "session_id": "sess_1770199015_a3c9b1",
+      "last_updated": "2026-02-04T09:31:02Z",
+      "session_id": "sess_1770197335_db399d",
       "researched": "2026-02-04T09:26:57Z",
       "artifacts": [
         {
           "path": "specs/859_establish_axiom_debt_policy/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing sorry-debt-policy structure, format file sections, and proposing parallel axiom characterization with framing rules"
+        },
+        {
+          "path": "specs/859_establish_axiom_debt_policy/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for establishing axiom debt policy alongside existing sorry debt policy"
         }
-      ]
+      ],
+      "planned": "2026-02-04T09:31:02Z"
     },
     {
       "project_number": 860,
