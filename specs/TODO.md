@@ -3,17 +3,17 @@ next_project_number: 859
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-03T23:15:00Z
+  last_assessed: 2026-02-04T09:04:15Z
 task_counts:
-  active: 12
-  completed: 393
+  active: 14
+  completed: 397
   in_progress: 1
   not_started: 5
   abandoned: 26
-  total: 421
+  total: 428
 technical_debt:
-  sorry_count: 75
-  axiom_count: 16
+  sorry_count: 87
+  axiom_count: 18
   build_errors: 1
   status: good
 ---
@@ -21,22 +21,6 @@ technical_debt:
 # TODO
 
 ## Tasks
-
-### 858. Remove misleading omega-rule comments from Bundle/ modules
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Summary**: Removed misleading omega-rule comments from Bundle/ modules, replacing them with accurate explanations that temporal backward proofs require structural properties (temporal_backward_G/H) using MCS maximality by contraposition, the same pattern as modal_backward in BMCS.
-- **Depends**: Task 857
-- **Related**: Task 855, Task 856
-- **Research**: [research-001.md](specs/858_remove_omega_rule_misleading_comments/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/858_remove_omega_rule_misleading_comments/plans/implementation-001.md)
-
-**Description**: Remove misleading comments about omega-rule/omega-saturation requirement for G/H backward directions. The Bundled approach avoids omega-rule via structural properties (like modal_backward), not omega-saturation. Update TruthLemma.lean, IndexedMCSFamily.lean, Construction.lean, and any other files that incorrectly claim omega-saturation is fundamentally required. Replace with accurate explanation that temporal_backward properties enable the proof via maximality (analogous to modal case). Depends on Task 857 completing first.
-
----
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Effort**: 8-12 hours
@@ -89,56 +73,6 @@ technical_debt:
 **Description**: Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.
 
 ---
-
-### 853. Construct CoherentBundle from consistent context
-- **Effort**: 40-60 hours (revised)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Researched**: 2026-02-03
-- **Planned**: 2026-02-04
-- **Started**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Research**: [research-001.md](specs/853_construct_coherentbundle_from_context/reports/research-001.md), [research-004.md](specs/853_construct_coherentbundle_from_context/reports/research-004.md)
-- **Plan**: [implementation-002.md](specs/853_construct_coherentbundle_from_context/plans/implementation-002.md) (revised)
-- **Parent**: Task 844
-- **Depends**: Task 851
-- **Summary**: Implemented WeakCoherentBundle approach for completeness theorem integration. Created new module with core/witness family separation that avoids the multi-family coherence obstacle. Full pipeline from consistent context to WeakBMCS is now available.
-
-**Description**: Construct CoherentBundle from consistent context as main entry point for completeness theorem integration. REVISED: Using WeakCoherentBundle approach (Approach B from research-004.md) which separates core and witness families to avoid Lindenbaum control obstacle. Eliminates saturated_extension_exists axiom. (Follow-up from task #844, Phase 5)
-
----
-
-### 852. Implement CoherentBundle.toBMCS conversion
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/852_implement_coherentbundle_tobmcs/reports/research-001.md)
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Parent**: Task 844
-- **Depends**: Task 851
-- **Summary**: Task subsumed by task 851. The CoherentBundle.toBMCS conversion was fully implemented in task 851 Phase 4 with no sorries.
-
-**Description**: Implement CoherentBundle.toBMCS conversion to provide axiom-free modal_backward. Uses contraposition: if phi in all families but Box phi not in fam.mcs, then Diamond(neg phi) in fam.mcs, so exists witness with neg phi, contradicting phi in all families. Depends on task #851 CoherentBundle structure. (Follow-up from task #844, Phase 4)
-
----
-
-### 851. Define CoherentBundle structure
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Parent**: Task 844
-- **Completed**: 2026-02-03
-- **Research**: [research-001.md](specs/851_define_coherentbundle_structure/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/851_define_coherentbundle_structure/plans/implementation-001.md)
-- **Summary**: Implemented CoherentBundle structure with toBMCS conversion fully proven. Defines UnionBoxContent, MutuallyCoherent predicate, and proves modal_forward/modal_backward for saturated bundles. No sorries - complete infrastructure for axiom-free BMCS construction.
-
-**Description**: Define CoherentBundle structure that collects coherent witnesses with mutual coherence. Requires extending CoherentWitness to enforce coherence not just with base but between all witnesses. May require Zorn's lemma for recursive saturation. (Follow-up from task #844, Phase 3)
-
----
-
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 2-4 hours
