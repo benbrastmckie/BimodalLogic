@@ -80,15 +80,17 @@ technical_debt:
 ---
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
-- **Effort**: 35-50 hours (revised)
-- **Status**: [RESEARCHED]
+- **Effort**: 40-55 hours (revised)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
+- **Planned**: 2026-02-04
 - **Parent**: Task 855
 - **Depends**: Task 856
 - **Related**: Task 856
 - **Research**: [research-001.md](specs/857_add_temporal_backward_properties/reports/research-001.md), [research-002.md](specs/857_add_temporal_backward_properties/reports/research-002.md), [research-003.md](specs/857_add_temporal_backward_properties/reports/research-003.md), [research-004.md](specs/857_add_temporal_backward_properties/reports/research-004.md)
+- **Plan**: [implementation-001.md](specs/857_add_temporal_backward_properties/plans/implementation-001.md)
 
 **Description**: Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.
 
