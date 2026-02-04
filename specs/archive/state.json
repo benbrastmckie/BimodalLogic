@@ -2,6 +2,27 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 855,
+      "project_name": "complete_truthlemma_backward_directions",
+      "status": "abandoned",
+      "language": "lean",
+      "effort": "8-12 hours",
+      "description": "Complete TruthLemma backward directions for all_future and all_past in Bundle/TruthLemma.lean (lines 383, 395). While NOT in bmcs_weak_completeness dependency chain (only uses .mp direction), completing these would make TruthLemma fully bidirectional. Requires omega-saturation. Cleanup task, not critical for publication. Related: Task 854 research-004.md",
+      "created": "2026-02-04T08:26:12Z",
+      "last_updated": "2026-02-04T08:34:05Z",
+      "session_id": "sess_1770193814_66b7e0",
+      "researched": "2026-02-04T08:34:05Z",
+      "artifacts": [
+        {
+          "path": "specs/855_complete_truthlemma_backward_directions/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of omega-saturation requirements, comparison with modal saturation, and recommendation to abandon task"
+        }
+      ],
+      "abandoned": "2026-02-04T10:08:15Z",
+      "abandonment_reason": "Represents fundamental omega-rule limitation, not proof engineering gap. Task 856 (modal saturation) is unrelated - it solved Box/Diamond operators over finite bundles, not G/H operators over infinite time domains. Forward direction suffices for all completeness theorems."
+    },
+    {
       "project_number": 850,
       "project_name": "scalable_oversight_section",
       "status": "completed",

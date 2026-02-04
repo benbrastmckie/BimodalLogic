@@ -81,7 +81,7 @@ technical_debt:
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
@@ -114,19 +114,6 @@ technical_debt:
 
 ---
 
-### 855. Complete TruthLemma backward directions for all_future and all_past
-- **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Related**: Task 854 research-004.md
-- **Research**: [research-001.md](specs/855_complete_truthlemma_backward_directions/reports/research-001.md)
-
-**Description**: Complete TruthLemma backward directions for all_future and all_past in Bundle/TruthLemma.lean (lines 383, 395). While NOT in bmcs_weak_completeness dependency chain (only uses .mp direction), completing these would make TruthLemma fully bidirectional. Requires omega-saturation. Cleanup task, not critical for publication.
-
----
-
 ### 854. Bimodal metalogic audit and cleanup
 - **Effort**: 6 hours
 - **Status**: [COMPLETED]
@@ -145,7 +132,7 @@ technical_debt:
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 3-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Updated**: 2026-02-04
