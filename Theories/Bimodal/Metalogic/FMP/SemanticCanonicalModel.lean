@@ -11,24 +11,23 @@ import Mathlib.Data.Set.Basic
 import Mathlib.Data.Finite.Defs
 
 /-!
-# Parametric Semantic Canonical Model for FMP
+# Semantic Canonical Model and Completeness
 
-This module provides the semantic canonical model construction for the parametric
-Finite Model Property proof.
+This module provides the semantic canonical model construction for the Finite
+Model Property (FMP) proof, culminating in the sorry-free completeness theorem.
 
 ## Design Philosophy
 
 The semantic approach defines world states as equivalence classes of
 (history, time) pairs. This makes completeness straightforward by working
-directly with finite world states and avoiding the need for frame-level
-compositionality.
+directly with finite world states and avoiding frame-level compositionality.
 
 ## Main Definitions
 
 - `HistoryTimePair`: A pair of (FiniteHistory, BoundedTime)
 - `htEquiv`: Equivalence relation - same world state at given time
 - `SemanticWorldState`: Quotient of history-time pairs
-- `fmp_weak_completeness`: THE sorry-free completeness theorem
+- `semantic_truth_at_v2`: Truth at a semantic world state
 
 ## Key Theorem
 
@@ -39,33 +38,28 @@ noncomputable def fmp_weak_completeness (phi : Formula) :
     |- phi
 ```
 
-This theorem is completely sorry-free and provides the completeness result via
-contrapositive: if phi is not provable, we construct a countermodel.
+This theorem is **sorry-free** and provides completeness via contrapositive:
+if phi is not provable, we construct a countermodel from the closure-MCS
+of {phi.neg}.
 
-**Naming Convention**: The theorem is named `fmp_weak_completeness` to indicate it proves
-weak completeness via the Finite Model Property approach.
+## Cardinality Bound
 
-## Architecture
+The FMP cardinality bound is established by `semanticWorldState_card_bound`:
 
-This module uses:
-- `BoundedTime k` from `Metalogic/FMP/BoundedTime.lean`
-- `FiniteWorldState` from `Metalogic/FMP/FiniteWorldState.lean`
-- `closure`, `ClosureMaximalConsistent` from `Metalogic/FMP/Closure.lean`
+```lean
+theorem semanticWorldState_card_bound (phi : Formula) :
+    Fintype.card (SemanticWorldState phi) ≤ 2 ^ closureSize phi
+```
 
-## Archived Code
+## Cross-References
 
-Deprecated code that required sorries was archived to `Boneyard/Metalogic_v4/FMP/`:
-- `SemanticCanonicalFrame` (compositionality axiom is mathematically false)
-- `SemanticCanonicalModel` (uses deprecated frame)
-- `truth_at_implies_semantic_truth` (forward truth lemma gap is architectural)
-- `sorry_free_weak_completeness` (misnamed - depends on sorried code)
-
-See `Boneyard/Metalogic_v4/FMP/README.md` for full documentation.
+- `BoundedTime.lean`: Finite time domain
+- `FiniteWorldState.lean`: Finite world state construction
+- `Closure.lean`: Subformula closure and closure-MCS
 
 ## References
 
-- Task 776: Refactor Metalogic to zero sorry
-- Task 750: Research on truth lemma gap
+- Modal Logic, Blackburn et al., Chapter 4 (Finite Model Property)
 -/
 
 namespace Bimodal.Metalogic.FMP

@@ -1,6 +1,6 @@
-# Parametric Finite Model Property Infrastructure
+# Finite Model Property (FMP) Completeness Module
 
-**Status**: Complete (sorry-free main theorems)
+**Status**: SORRY-FREE and AXIOM-FREE (publication ready)
 
 This directory contains the parametric FMP (Finite Model Property) infrastructure for TM bimodal
 logic.
@@ -119,4 +119,20 @@ theorem semanticWorldState_card_bound (phi : Formula) :
 
 ---
 
-*Last updated: 2026-02-03*
+## Publication Claims
+
+The following claims are supported by this implementation:
+
+1. **Completeness** is proven without sorries (`fmp_weak_completeness`)
+2. **No custom axioms** are used (only standard Lean axioms: `propext`, `Classical.choice`, `Quot.sound`)
+3. **Finite Model Property** is established via `semanticWorldState_card_bound`
+
+To verify:
+```bash
+# Check axiom dependencies in Lean REPL:
+#print axioms Bimodal.Metalogic.FMP.fmp_weak_completeness
+```
+
+---
+
+*Last updated: 2026-02-04*

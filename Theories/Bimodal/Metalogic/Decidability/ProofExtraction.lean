@@ -19,8 +19,8 @@ The key insight is that each closure reason corresponds to a proof fragment:
 - `botPos`: T(⊥) is impossible in valid branches
 - `axiomNeg`: F(axiom) closes via the axiom's validity
 
-The Type-based Axiom (from task 260) enables us to use `matchAxiom` to
-obtain actual axiom witnesses that can be used in `DerivationTree.axiom`.
+The type-based Axiom representation enables `matchAxiom` to obtain actual
+axiom witnesses that can be used in `DerivationTree.axiom`.
 
 ## References
 

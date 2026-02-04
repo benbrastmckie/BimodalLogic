@@ -16,8 +16,8 @@ This module proves the soundness of the tableau decision procedure:
 ## Implementation Notes
 
 The soundness proof relies on the existing soundness theorem from
-`Bimodal.Metalogic.Soundness`. Completeness theorems have been archived
-to Boneyard as they require finite model property formalization.
+`Bimodal.Metalogic.Soundness`. Completeness is established separately
+via the Finite Model Property in `Metalogic/FMP/SemanticCanonicalModel.lean`.
 
 ## References
 

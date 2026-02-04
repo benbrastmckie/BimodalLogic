@@ -1,7 +1,7 @@
 # Implementation Plan: Task #856 (Revised)
 
 - **Task**: 856 - Implement multi-family saturated BMCS construction
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Version**: 002
 - **Effort**: 30-48 hours
 - **Dependencies**: None (self-contained)
@@ -241,7 +241,7 @@ add_witness_if_needed(B, Diamond psi) :=
 
 ---
 
-### Phase 6: Integration and Axiom Elimination [IN PROGRESS]
+### Phase 6: Integration and Axiom Elimination [PARTIAL]
 
 **Goal**: Verify the complete construction works and prepare for axiom removal.
 

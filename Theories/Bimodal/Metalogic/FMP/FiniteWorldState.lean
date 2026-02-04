@@ -34,15 +34,15 @@ We use `BoundedTime k` (which is `Fin (2*k+1)`) as the time domain, where
 
 ## Architecture
 
-This is the parametric version of `Boneyard/Metalogic_v2/Representation/FiniteWorldState.lean`.
-The original used hardcoded `Int` duration; this version uses the combinatorial
-`BoundedTime k` abstraction that works with any parametric duration type.
+This module uses the combinatorial `BoundedTime k` abstraction as the time domain.
+The bound `k = temporalBound φ = φ.temporalDepth` ensures sufficient time points
+for the finite model construction.
 
-## References
+## Cross-References
 
-- Original: `Boneyard/Metalogic_v2/Representation/FiniteWorldState.lean`
-- BoundedTime: `Metalogic/FMP/BoundedTime.lean`
-- Closure: `Metalogic/FMP/Closure.lean`
+- `BoundedTime.lean`: Finite time domain definition
+- `Closure.lean`: Subformula closure and closure-MCS
+- `SemanticCanonicalModel.lean`: Main completeness theorem using these constructions
 -/
 
 namespace Bimodal.Metalogic.FMP

@@ -40,11 +40,6 @@
           "summary": "Mathematical correctness analysis comparing SaturatedConstruction (Option A) vs WeakCoherentBundle (Option B)"
         },
         {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/summaries/implementation-summary-20260204.md",
-          "type": "summary",
-          "summary": "Detailed analysis of remaining sorries and recommendations"
-        },
-        {
           "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-004.md",
           "type": "research",
           "summary": "Analysis of alternative construction approaches: enumeration-based saturation, strengthened coherence requirements, and path to eliminating singleFamily_modal_backward_axiom"
@@ -53,6 +48,11 @@
           "path": "specs/856_implement_multifamily_saturated_bmcs/plans/implementation-002.md",
           "type": "plan",
           "summary": "6-phase revised plan using CoherentConstruction.lean with enumeration-based saturation (30-48 hours)"
+        },
+        {
+          "path": "specs/856_implement_multifamily_saturated_bmcs/summaries/implementation-summary-20260204.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting EvalCoherentBundle approach, phase completion status, and remaining technical debt"
         }
       ],
       "planned": "2026-02-04T09:40:26Z",
