@@ -1368,32 +1368,40 @@ The witness seed `{neg phi} ∪ BoxContent(eval)` is consistent by the same
 K-distribution argument used in `diamond_boxcontent_consistent_constant`.
 -/
 
-/--
-Main saturation theorem using axiom: An EvalSaturated bundle exists.
+/-!
+### Helper: Diamond-Saturation Implies EvalSaturation
 
-**Current approach**: We've built the infrastructure for enumeration-based construction:
-- EvalCoherentBundle with addWitness
-- Witnesses contain the inner formula
-- EvalCoherent is preserved
+The key insight is that:
+- EvalSaturated demands: neg(Box phi) ∈ M → ∃ fam', neg phi ∈ fam'
+- We prove: diamondFormula (neg phi) ∈ M → ∃ fam', neg phi ∈ fam' (using witnesses)
+- These are equivalent via: neg(Box phi) ↔ diamondFormula (neg phi) in MCS
 
-**Remaining gap**: The syntactic mismatch between Diamond(neg phi) and neg(Box phi)
-requires additional work. In an MCS, these are logically equivalent but not
-syntactically identical.
-
-**Solution options**:
-1. Enumerate neg(Box phi) formulas directly and build custom witnesses
-2. Use the MCS double-negation property to relate Diamond(neg phi) to neg(Box phi)
-3. Accept an axiom capturing this construction
-
-For now, we introduce a theorem capturing the existence of an EvalSaturated extension.
-This REPLACES the original `saturated_extension_exists` axiom with a more principled
-construction via EvalCoherentBundle.
-
-**Justification**: The EvalCoherentBundle approach is mathematically sound:
-1. Witness construction via Lindenbaum is proven (diamond_boxcontent_consistent_constant)
-2. EvalCoherent preservation is proven (addWitness_preserves_EvalCoherent)
-3. The only gap is the formula enumeration, which is finite for any MCS closure
+The transformation uses box_dne_theorem: ⊢ Box(¬¬φ) → Box φ
+Contrapositive in MCS: neg(Box phi) → neg(Box(neg neg phi)) = diamondFormula (neg phi)
 -/
+
+/--
+Transform neg(Box phi) membership to diamondFormula (neg phi) membership in an MCS.
+
+This uses the box_dne_theorem and mcs_contrapositive to show:
+  neg(Box phi) ∈ MCS → diamondFormula (neg phi) ∈ MCS
+-/
+lemma neg_box_to_diamond_neg (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_neg_box : Formula.neg (Formula.box phi) ∈ M) :
+    diamondFormula (Formula.neg phi) ∈ M := by
+  -- neg(Box phi) relates to Diamond(neg phi) via the box_dne_theorem
+  -- box_dne_theorem: ⊢ Box(¬¬φ) → Box φ
+  -- Contrapositive in MCS: neg(Box phi) → neg(Box(neg neg phi)) = Diamond(neg phi)
+  have h_box_dne := box_dne_theorem phi
+  have h_diamond_neg : Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) ∈ M :=
+    mcs_contrapositive h_mcs h_box_dne h_neg_box
+
+  -- Diamond(neg phi) = neg(Box(neg(neg phi))) by definition
+  have h_eq_diamond : diamondFormula (Formula.neg phi) =
+                      Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) := rfl
+  rw [h_eq_diamond]
+  exact h_diamond_neg
+
 theorem eval_saturated_bundle_exists (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∃ B : EvalCoherentBundle D,
       (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
@@ -1404,12 +1412,150 @@ theorem eval_saturated_bundle_exists (Gamma : List Formula) (h_cons : ContextCon
   -- Step 2: Create constant family
   let base : IndexedMCSFamily D := constantIndexedMCSFamily M h_mcs
   let h_const : IsConstantFamily base := constantIndexedMCSFamily_is_constant M h_mcs
-  -- Step 3: Create initial EvalCoherentBundle
+  -- Step 3: Create initial EvalCoherentBundle (singleton bundle with just base)
   let B₀ := initialEvalCoherentBundle base h_const
-  -- Step 4: For saturation, we need to add witnesses for all neg(Box phi) formulas
-  -- This is where we'd enumerate and add witnesses
-  -- For now, we use sorry to mark this as the remaining construction gap
-  sorry
+
+  -- Step 4: Prove EvalSaturated by constructing witnesses on demand
+  -- Key insight: EvalSaturated is ∀ phi, ∀ t, neg(Box phi) ∈ M → ∃ fam' with neg phi
+  -- We don't need to precompute; we use Classical.choice to pick a witness
+
+  -- First, we construct a bundle by adding witnesses for ALL needed Diamond formulas
+  -- using the axiom of choice. For each phi with neg(Box phi) ∈ M, we get a witness.
+
+  -- Actually, since EvalSaturated is a Prop (existential), we can use a non-constructive
+  -- approach: prove that IF neg(Box phi) ∈ M, THEN we can build a witness.
+
+  -- Use the singleton bundle B₀ directly, but prove saturation via witness construction
+  -- The trick: for the existential, we use Classical.choice to pick witnesses
+
+  -- We'll use a different approach: construct all needed witnesses via induction
+  -- on a well-founded relation, or just use Classical.choice directly.
+
+  -- Simplest approach: use the fact that EvalSaturated is a universally quantified
+  -- implication, and for each instance, construct the witness.
+
+  -- The bundle we return is: B₀ extended with all necessary witnesses
+  -- But we can't enumerate them. Instead, we use the "all witnesses bundle" approach:
+  -- Define a bundle that includes base plus ALL possible witnesses.
+
+  -- Actually, the cleanest approach is:
+  -- Define the saturated bundle as having families = { W | W is coherent witness for some Diamond }
+  -- union with { base }.
+
+  -- Let's use the axiom of choice to construct the required bundle.
+  -- For each formula phi, if neg(Box phi) ∈ base.mcs t, we need a witness containing neg phi.
+  -- The witness is constructed via constructCoherentWitness applied to diamondFormula (neg phi).
+
+  -- Since constructCoherentWitness requires diamondFormula psi ∈ base.mcs t,
+  -- we use neg_box_to_diamond_neg to convert neg(Box phi) to diamondFormula (neg phi).
+
+  -- Define the saturated bundle as base plus all possible coherent witnesses
+  let allWitnesses : Set (IndexedMCSFamily D) :=
+    { W | ∃ psi : Formula, ∃ t : D, ∃ h_diamond : diamondFormula psi ∈ base.mcs t,
+          W = (constructCoherentWitness base h_const psi t h_diamond).family }
+
+  let saturatedFamilies : Set (IndexedMCSFamily D) := {base} ∪ allWitnesses
+
+  -- Build the EvalCoherentBundle
+  have h_all_const : ∀ fam ∈ saturatedFamilies, IsConstantFamily fam := by
+    intro fam h_mem
+    rcases h_mem with h_base | h_witness
+    · simp only [Set.mem_singleton_iff] at h_base
+      rw [h_base]; exact h_const
+    · rcases h_witness with ⟨psi, t, h_diamond, h_eq⟩
+      rw [h_eq]
+      exact constructCoherentWitness_is_constant base h_const psi t h_diamond
+
+  have h_nonempty : saturatedFamilies.Nonempty := ⟨base, Set.mem_union_left _ (Set.mem_singleton _)⟩
+
+  have h_base_mem : base ∈ saturatedFamilies := Set.mem_union_left _ (Set.mem_singleton _)
+
+  -- Prove EvalCoherent: all families contain BoxContent(base)
+  have h_eval_coherent : EvalCoherent saturatedFamilies base h_base_mem := by
+    intro fam h_mem chi h_chi t
+    rcases h_mem with h_is_base | h_is_witness
+    · -- fam is base itself
+      simp only [Set.mem_singleton_iff] at h_is_base
+      rw [h_is_base]
+      -- chi ∈ BoxContent base means ∃ s, Box chi ∈ base.mcs s
+      rcases h_chi with ⟨s, h_box_s⟩
+      -- Since base is constant, base.mcs t = base.mcs s
+      rcases h_const with ⟨M', hM'⟩
+      rw [hM' s] at h_box_s
+      rw [hM' t]
+      -- Apply T-axiom: Box chi → chi
+      have h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
+      exact set_mcs_implication_property (by rw [← hM' t]; exact base.is_mcs t)
+        (theorem_in_mcs (by rw [← hM' t]; exact base.is_mcs t) h_T) h_box_s
+    · -- fam is a witness family
+      rcases h_is_witness with ⟨psi, s, h_diamond, h_eq⟩
+      rw [h_eq]
+      -- Witness families contain BoxContent(base) by construction
+      exact constructCoherentWitness_eval_coherent base h_const psi s h_diamond chi h_chi t
+
+  let B : EvalCoherentBundle D := {
+    families := saturatedFamilies
+    all_constant := h_all_const
+    nonempty := h_nonempty
+    eval_family := base
+    eval_constant := h_const
+    eval_family_mem := h_base_mem
+    eval_coherent := h_eval_coherent
+  }
+
+  -- Now prove the two properties
+  use B
+  constructor
+
+  -- Property 1: Gamma ⊆ eval_family.mcs 0
+  · intro gamma h_mem
+    -- base = constantIndexedMCSFamily M h_mcs, so base.mcs 0 = M
+    rw [constantIndexedMCSFamily_mcs_eq]
+    exact lindenbaumMCS_extends Gamma h_cons h_mem
+
+  -- Property 2: EvalSaturated
+  · intro phi t h_neg_box
+    -- Given: neg(Box phi) ∈ base.mcs t
+    -- Need: ∃ fam' ∈ B.families, neg phi ∈ fam'.mcs t
+
+    -- Save h_const before destructuring for later use
+    have h_const_copy : IsConstantFamily base := h_const
+
+    -- Convert neg(Box phi) to diamondFormula (neg phi)
+    -- base.mcs t is an MCS (need to get the set)
+    have h_base_mcs := base.is_mcs t
+
+    -- For constant family, base.mcs t = M (the underlying set)
+    rcases h_const with ⟨M', hM'⟩
+    have h_eq_M : base.mcs t = M' := hM' t
+
+    -- neg(Box phi) is in M'
+    have h_neg_box_M : Formula.neg (Formula.box phi) ∈ M' := by rw [← h_eq_M]; exact h_neg_box
+
+    -- h_base_mcs shows SetMaximalConsistent (base.mcs t), which equals M'
+    have h_mcs_M' : SetMaximalConsistent M' := by rw [← h_eq_M]; exact h_base_mcs
+
+    -- Convert to diamondFormula (neg phi) ∈ M' using neg_box_to_diamond_neg
+    have h_diamond : diamondFormula (Formula.neg phi) ∈ M' :=
+      neg_box_to_diamond_neg M' h_mcs_M' phi h_neg_box_M
+
+    -- Convert back: diamondFormula (neg phi) ∈ base.mcs t
+    have h_diamond_base : diamondFormula (Formula.neg phi) ∈ base.mcs t := by
+      rw [h_eq_M]; exact h_diamond
+
+    -- The witness for Diamond (neg phi) is in allWitnesses
+    let witness := constructCoherentWitness base h_const_copy (Formula.neg phi) t h_diamond_base
+
+    -- witness.family ∈ allWitnesses ⊆ saturatedFamilies
+    have h_witness_mem : witness.family ∈ saturatedFamilies := by
+      apply Set.mem_union_right
+      exact ⟨Formula.neg phi, t, h_diamond_base, rfl⟩
+
+    -- witness contains neg phi at all times
+    have h_neg_phi : Formula.neg phi ∈ witness.family.mcs t :=
+      witness.contains_witnessed t
+
+    exact ⟨witness.family, h_witness_mem, h_neg_phi⟩
 
 /--
 Construct an EvalBMCS from a consistent context.
@@ -1439,7 +1585,7 @@ theorem construct_eval_bmcs_contains_context
   exact h_spec.1 gamma h_mem
 
 /-!
-## Summary: Task 856 Implementation Status
+## Summary: Task 856 Implementation Status (COMPLETED)
 
 ### Completed Infrastructure:
 1. **BoxEquivalent predicate** (Phase 1): Stronger coherence requiring Box chi agreement
@@ -1449,23 +1595,31 @@ theorem construct_eval_bmcs_contains_context
 5. **Witness addition** (Phase 3): addWitness preserves EvalCoherent
 6. **EvalBMCS structure** (Phase 4): Weakened BMCS sufficient for completeness
 7. **EvalBMCS conversion** (Phase 4): Convert EvalCoherent + EvalSaturated to EvalBMCS
+8. **neg_box_to_diamond_neg** (Phase 5): Transform neg(Box phi) to diamondFormula(neg phi) in MCS
+9. **eval_saturated_bundle_exists** (Phase 5): PROVEN - no sorry needed
 
-### Remaining Technical Gap:
-The `eval_saturated_bundle_exists` theorem has a sorry for the enumeration-based
-construction. The gap is:
-- Enumerate all neg(Box phi) formulas in the MCS
-- For each, add a witness via the proven constructCoherentWitness
-- Handle the syntactic mismatch between Diamond(neg phi) and neg(Box phi)
+### Key Technical Insight:
+The original gap was the syntactic mismatch between Diamond(neg phi) and neg(Box phi).
+This was resolved using:
+- `box_dne_theorem`: ⊢ Box(¬¬φ) → Box φ
+- `mcs_contrapositive`: transfers implications contrapositively through MCS membership
+- Result: neg(Box phi) ∈ MCS → neg(Box(¬¬phi)) ∈ MCS = diamondFormula(neg phi) ∈ MCS
+
+### Approach:
+Instead of enumerating formulas and adding witnesses one by one, we define the saturated
+bundle directly as `{base} ∪ allWitnesses` where `allWitnesses` contains ALL possible
+coherent witnesses. This is a non-constructive but mathematically valid approach using
+the axiom of choice.
 
 ### Relationship to Original Axiom:
-- `saturated_extension_exists` required full CoherentBundle saturation (ALL families)
-- `eval_saturated_bundle_exists` only requires EvalSaturated (eval_family only)
+- `saturated_extension_exists` remains as an axiom for full CoherentBundle saturation
+- `eval_saturated_bundle_exists` is PROVEN for EvalSaturated (eval_family only)
 - The EvalBMCS structure is sufficient for completeness (truth lemma evaluates at eval)
 
 ### Path Forward:
-1. Complete the formula enumeration in eval_saturated_bundle_exists
-2. Or accept EvalSaturated as the target property (mathematically justified)
-3. Update completeness proof to use EvalBMCS instead of full BMCS
+1. Update completeness proof to use EvalBMCS instead of full BMCS
+2. The original `saturated_extension_exists` axiom can be removed once completeness is updated
+3. `singleFamily_modal_backward_axiom` in Construction.lean can then be eliminated
 -/
 
 end Bimodal.Metalogic.Bundle
