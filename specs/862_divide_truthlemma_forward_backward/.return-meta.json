@@ -1,17 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Separation achievable via mutual recursion. Imp case creates cross-dependency (forward uses backward IH on subformula). Completeness already uses only forward direction. Recommend mutual recursion approach to make separation explicit while archiving temporal backward sorries to Boneyard.",
+  "status": "planned",
+  "summary": "5-phase documentation plan focusing on publication-quality comments for TruthLemma.lean",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/862_divide_truthlemma_forward_backward/reports/research-001.md",
-      "summary": "Analysis of TruthLemma forward/backward separation with cross-dependency findings and mutual recursion solution"
+      "type": "plan",
+      "path": "specs/862_divide_truthlemma_forward_backward/plans/implementation-001.md",
+      "summary": "Implementation plan for TruthLemma forward/backward documentation with cross-dependency explanation"
     }
   ],
+  "next_steps": "Run /implement 862 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770235839_05082b",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770236426_5d003e",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.0
   }
 }
