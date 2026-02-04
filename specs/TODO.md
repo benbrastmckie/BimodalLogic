@@ -151,20 +151,19 @@ technical_debt:
 ---
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
-- **Effort**: 9 hours (revised)
-- **Status**: [RESEARCHED]
+- **Effort**: 4-6 hours (revised)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Updated**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
-- **Started**: 2026-02-04
 - **Depends**: Task 856
 - **Related**: Task 856, Task 857
 - **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md), [research-002.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md), [research-003.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-002.md)
 
-**Description**: Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom.
+**Description**: Remove singleFamily_modal_backward_axiom using eval-only strategy aligned with task 857. Completeness theorems only use forward direction of truth lemma at eval_family, so full modal coherence is unnecessary. Create eval-only forward truth lemma, rewire completeness to use construct_eval_bmcs, and comment out the axiom.
 
 ---
 
