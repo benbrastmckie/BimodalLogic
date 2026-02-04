@@ -175,7 +175,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -186,9 +186,9 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T20:55:56Z",
+      "last_updated": "2026-02-04T20:59:47Z",
       "session_id": "sess_1770238541_c178eb",
-      "researched": "2026-02-04T20:36:30Z",
+      "researched": "2026-02-04T20:59:47Z",
       "artifacts": [
         {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md",
@@ -224,6 +224,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-005.md",
           "type": "research",
           "summary": "Confirms Eval-Only approach fails; identifies mutual recursion and full saturation as viable strategies for sorry/axiom-free completeness"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-006.md",
+          "type": "research",
+          "summary": "Deep analysis of Strategy C: identifies BoxEquivalent preservation as the single blocking gap preventing axiom-free BMCS construction"
         }
       ],
       "planned": "2026-02-04T19:40:45Z",
