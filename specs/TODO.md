@@ -24,12 +24,12 @@ technical_debt:
 
 ### 862. Divide TruthLemma into forward and backward parts
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
-- **Research**: [research-001.md](specs/862_divide_truthlemma_forward_backward/reports/research-001.md)
+- **Research**: [research-001.md](specs/862_divide_truthlemma_forward_backward/reports/research-001.md), [research-002.md](specs/862_divide_truthlemma_forward_backward/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/862_divide_truthlemma_forward_backward/plans/implementation-002.md)
 
 **Description**: Use research-004.md findings from task 843 to divide the TruthLemma into separate forward and backward parts. Archive the backward direction to Boneyard/ to achieve a fully sorry-free forward direction. No sorries are permitted anywhere in the Lean source code that will be published.
