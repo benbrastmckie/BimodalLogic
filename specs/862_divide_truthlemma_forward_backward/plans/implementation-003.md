@@ -1,7 +1,7 @@
 # Implementation Plan: Task #862 (Revision 003)
 
 - **Task**: 862 - divide_truthlemma_forward_backward
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**:
@@ -104,7 +104,7 @@ Estimated effort: 8-12 hours of careful proof development (Task 857 scope).
 
 ## Implementation Phases
 
-### Phase 1: Remove Misleading Comments About Functional Separation [NOT STARTED]
+### Phase 1: Remove Misleading Comments About Functional Separation [IN PROGRESS]
 
 **Goal**: Remove all language suggesting that "completeness only uses forward" is a reason to accept sorries.
 

@@ -15,6 +15,20 @@ import Bimodal.Theorems.Propositional
 This module proves the **key theorem** of the BMCS completeness approach:
 the truth lemma connecting MCS membership to BMCS truth.
 
+## Publication Status: BLOCKED
+
+This file contains `sorry` in temporal backward cases (G, H). These sorries
+**block publication** because:
+
+1. The forward direction requires backward direction on subformulas (imp case)
+2. The backward direction cannot be archived (forward depends on it)
+3. Therefore the entire file carries sorry debt
+
+The sorries represent genuine incomplete proofs in the **temporal saturation
+construction**, not architectural issues that can be worked around.
+
+See "Path to Resolution" section below.
+
 ## Main Result
 
 ```
@@ -51,43 +65,90 @@ bmcs_truth_at B fam t (□φ)
 
 ## Sorry Status
 
-**SORRY-FREE Cases (the key achievements):**
+**SORRY-FREE Cases:**
 - **Atom**: Trivial by definition
 - **Bot**: By MCS consistency
 - **Imp**: By MCS modus ponens and negation completeness
 - **Box**: FULLY PROVEN - the key achievement of the BMCS approach
 
-**Cases with sorries (do NOT affect completeness):**
-- **G (all_future) backward**: Requires temporal saturation (forward_F property)
-- **H (all_past) backward**: Requires temporal saturation (backward_P property)
+**Cases with sorries (technical debt):**
+- **G (all_future) backward**: Requires temporal saturation construction
+- **H (all_past) backward**: Requires temporal saturation construction
 
-NOTE: These sorries do NOT affect completeness because the completeness proof
-only uses the forward direction (.mp) of this lemma.
+## Why Separation Strategies Fail
 
-## Why Temporal Backward Requires Structural Properties
+Research (Task 862 research-002) definitively established:
 
-The backward direction for temporal operators (truth -> MCS membership) requires
-structural properties on IndexedMCSFamily, analogous to modal_backward in BMCS:
+### Mutual Recursion Does NOT Help
+Forward calls backward (imp case uses `ih_psi.mpr`). If forward and backward
+are mutually recursive, backward must exist in active code. Backward has temporal
+sorries. Therefore sorries remain in active code. Reorganization does not equal
+elimination.
 
-- **temporal_backward_G**: If phi is in mcs at ALL times s >= t, then G phi is in mcs at t
-- **temporal_backward_H**: If phi is in mcs at ALL times s <= t, then H phi is in mcs at t
+### Strong Induction Does NOT Help
+Strong induction where IH provides both directions for smaller formulas still
+requires proving BOTH directions. The temporal backward cases still need temporal
+saturation properties that don't exist. Strong induction changes WHEN we can
+assume something, not WHAT we must prove.
 
-These are NOT instances of the omega-rule. The proof uses MCS maximality (by contraposition):
-1. If G phi NOT in mcs, then neg(G phi) = F(neg phi) IS in mcs (by maximality)
-2. F(neg phi) in mcs means: exists s > t with neg phi in mcs at s (by forward coherence)
-3. But neg phi in mcs contradicts the hypothesis that phi is at ALL times >= t
+### The Fundamental Issue
+The imp forward case MUST convert `bmcs_truth ψ` to `ψ ∈ MCS` (backward on ψ).
+This is inherent in bridging syntactic (MCS) and semantic (truth) worlds.
+No reformulation avoids this dependency.
 
-This is the SAME pattern used for modal_backward in BMCS.lean. Task 857 adds these
-properties to IndexedMCSFamily, enabling the proof without omega-saturation.
+## Path to Resolution: Modified Lindenbaum Construction
 
-**Important**: The completeness theorems in Completeness.lean only use the forward
-direction (`.mp`) of this lemma, so they are **SORRY-FREE** despite these limitations.
+The sorries in temporal backward are in the **construction** of temporally
+saturated families, not in the theorems themselves. The theorems
+`temporal_backward_G` and `temporal_backward_H` ARE proven in
+TemporalCoherentConstruction.lean for `TemporalCoherentFamily` structures.
+
+### The Mathematical Gap
+
+Standard Lindenbaum extension (`lindenbaumMCS`) does NOT preserve temporal
+saturation. Given `F(ψ) ∈ M`:
+- `F(ψ) = ¬G(¬ψ)` says "not always ¬ψ" (eventually ψ at SOME future time)
+- M can consistently contain `F(ψ)` AND `¬ψ` (at THIS time)
+- The witness ψ must be at a DIFFERENT time, but we only have one MCS M
+
+### Required Construction: `temporalLindenbaumMCS`
+
+```
+temporalLindenbaumMCS(Gamma, h_cons):
+  M := contextAsSet Gamma
+  for phi in enumFormulas:
+    if consistent(M ∪ {phi}):
+      M := M ∪ {phi}
+      -- Temporal witness step
+      if phi = F(psi) for some psi:
+        if consistent(M ∪ {psi}):
+          M := M ∪ {psi}
+      if phi = P(psi) for some psi:
+        if consistent(M ∪ {psi}):
+          M := M ∪ {psi}
+  return M
+```
+
+### Key Lemma Required
+
+```lean
+theorem temporal_witness_addable (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
+    SetConsistent (M ∪ {psi})
+```
+
+This uses `temporal_witness_seed_consistent` (already exists) and requires
+showing M contains its own GContent via T-axiom iteration.
+
+### Implementation Task
+
+Task 857 addresses this construction. Estimated effort: 8-12 hours.
 
 ## References
 
-- Research report: specs/812_canonical_model_completeness/reports/research-007.md
-- Research report: specs/816_bmcs_temporal_modal_coherence_strengthening/reports/research-005.md
-- Implementation plan: specs/812_canonical_model_completeness/plans/implementation-003.md
+- Research report: specs/862_divide_truthlemma_forward_backward/reports/research-002.md
+- Research report: specs/843_remove_singleFamily_modal_backward_axiom/reports/research-005.md
+- Research report: specs/857_add_temporal_backward_properties/reports/research-007.md
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -158,8 +219,8 @@ operators G and H requires structural properties (temporal_backward_G/H) on
 IndexedMCSFamily. Once Task 857 adds these properties, the proofs use MCS
 maximality by contraposition - the same pattern as modal_backward in BMCS.
 
-The forward direction provided in this module suffices for completeness,
-since the completeness theorems in Completeness.lean only use `.mp`.
+The sorries in backward cases block this file from publication. See the module
+docstring "Path to Resolution" for the mathematical path to eliminating them.
 -/
 
 /-!

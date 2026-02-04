@@ -8,11 +8,11 @@
     {
       "project_number": 862,
       "project_name": "divide_truthlemma_forward_backward",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-04T20:06:55Z",
-      "last_updated": "2026-02-04T21:02:56Z",
-      "session_id": "sess_1770237791_bc9dfb",
+      "last_updated": "2026-02-04T21:11:01Z",
+      "session_id": "sess_1770239443_9b5e39",
       "researched": "2026-02-04T20:46:45Z",
       "artifacts": [
         {
@@ -31,7 +31,8 @@
           "summary": "Revised plan: remove misleading comments, guide toward modified Lindenbaum for temporal saturation"
         }
       ],
-      "planned": "2026-02-04T21:02:56Z"
+      "planned": "2026-02-04T21:02:56Z",
+      "started": "2026-02-04T21:11:01Z"
     },
     {
       "project_number": 861,
@@ -186,9 +187,9 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T20:59:47Z",
-      "session_id": "sess_1770238541_c178eb",
-      "researched": "2026-02-04T20:59:47Z",
+      "last_updated": "2026-02-04T21:12:47Z",
+      "session_id": "sess_1770239346_1af20d",
+      "researched": "2026-02-04T21:12:47Z",
       "artifacts": [
         {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md",
@@ -229,6 +230,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-006.md",
           "type": "research",
           "summary": "Deep analysis of Strategy C: identifies BoxEquivalent preservation as the single blocking gap preventing axiom-free BMCS construction"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-007.md",
+          "type": "research",
+          "summary": "S5 axioms proven present in TM; EvalBMCS path (fully proven, no axioms) is the correct solution for axiom-free completeness"
         }
       ],
       "planned": "2026-02-04T19:40:45Z",

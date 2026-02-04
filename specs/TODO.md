@@ -24,11 +24,12 @@ technical_debt:
 
 ### 862. Divide TruthLemma into forward and backward parts
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
+- **Started**: 2026-02-04
 - **Research**: [research-001.md](specs/862_divide_truthlemma_forward_backward/reports/research-001.md), [research-002.md](specs/862_divide_truthlemma_forward_backward/reports/research-002.md)
 - **Plan**: [implementation-003.md](specs/862_divide_truthlemma_forward_backward/plans/implementation-003.md)
 
@@ -174,7 +175,7 @@ technical_debt:
 - **Planned**: 2026-02-04
 - **Depends**: Task 856
 - **Related**: Task 856, Task 857
-- **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md), [research-002.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md), [research-003.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-003.md), [research-004.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-004.md), [research-005.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-005.md), [research-006.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-006.md)
+- **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md), [research-002.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md), [research-003.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-003.md), [research-004.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-004.md), [research-005.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-005.md), [research-006.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-006.md), [research-007.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-007.md)
 - **Plan**: [implementation-002.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-002.md)
 
 **Description**: Remove singleFamily_modal_backward_axiom using eval-only strategy aligned with task 857. Completeness theorems only use forward direction of truth lemma at eval_family, so full modal coherence is unnecessary. Create eval-only forward truth lemma, rewire completeness to use construct_eval_bmcs, and comment out the axiom.
