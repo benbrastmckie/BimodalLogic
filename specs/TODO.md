@@ -126,11 +126,13 @@ technical_debt:
 
 ### 854. Bimodal metalogic audit and cleanup
 - **Effort**: 6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
+- **Completed**: 2026-02-04
+- **Summary**: Cleaned FMP completeness line to publication quality. Archived dead sorry-containing code to Boneyard, removed all task references and WIP comments from FMP (4 files) and Decidability (2 files) modules, added professional documentation.
 - **Research**: [research-001.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-001.md), [research-002.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-002.md), [research-003.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-003.md), [research-004.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-004.md), [research-005.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-005.md)
 - **Plan**: [implementation-001.md](specs/854_bimodal_metalogic_audit_and_cleanup/plans/implementation-001.md)
 

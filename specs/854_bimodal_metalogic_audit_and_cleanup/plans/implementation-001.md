@@ -1,7 +1,7 @@
 # Implementation Plan: Task #854
 
 - **Task**: 854 - Bimodal metalogic audit and cleanup
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6 hours
 - **Dependencies**: None (FMP line is already sorry-free and axiom-free)
 - **Research Inputs**: reports/research-001.md, reports/research-004.md, reports/research-005.md

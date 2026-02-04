@@ -20,8 +20,8 @@
         838
       ],
       "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T09:42:00Z",
-      "session_id": "sess_1770198094_90f26e",
+      "last_updated": "2026-02-04T09:56:12Z",
+      "session_id": "sess_1770198947_201ed1",
       "researched": "2026-02-04T09:02:46Z",
       "artifacts": [
         {
@@ -80,11 +80,11 @@
     {
       "project_number": 854,
       "project_name": "bimodal_metalogic_audit_and_cleanup",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "description": "Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.",
       "created": "2026-02-04T01:49:53Z",
-      "last_updated": "2026-02-04T09:50:29Z",
+      "last_updated": "2026-02-04T09:56:17Z",
       "session_id": "sess_1770198608_378677",
       "researched": "2026-02-04T09:35:17Z",
       "artifacts": [
@@ -117,10 +117,17 @@
           "path": "specs/854_bimodal_metalogic_audit_and_cleanup/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan for cleaning FMP completeness line to publication quality"
+        },
+        {
+          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/summaries/implementation-summary-20260204.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes made to FMP and Decidability modules"
         }
       ],
       "planned": "2026-02-04T09:48:19Z",
-      "started": "2026-02-04T09:50:29Z"
+      "started": "2026-02-04T09:50:29Z",
+      "completed": "2026-02-04T09:56:17Z",
+      "completion_summary": "Cleaned FMP completeness line to publication quality. Archived dead sorry-containing code to Boneyard, removed all task references and WIP comments from FMP (4 files) and Decidability (2 files) modules, added professional documentation. The fmp_weak_completeness theorem is now documented as sorry-free and axiom-free with publication-ready docstrings."
     },
     {
       "project_number": 843,
