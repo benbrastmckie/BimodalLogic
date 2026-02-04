@@ -144,26 +144,30 @@ technical_debt:
 ---
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
-- **Effort**: 2-4 hours
+- **Effort**: 3-6 hours
 - **Status**: [NOT STARTED]
 - **Language**: lean
 - **Created**: 2026-02-03
-- **Parent**: Task 841
-- **Depends**: Task 842
+- **Updated**: 2026-02-04
+- **Depends**: Task 856
+- **Related**: Task 856
 
-**Description**: Remove singleFamily_modal_backward_axiom after Zorn lemma is proven. Update completeness theorem in Completeness.lean to use construct_bmcs_saturated instead of axiom-based construction. Remove or comment out the axiom declaration. Verify build succeeds and completeness theorems no longer depend on the axiom. (Follow-up from task #841, depends on task #842)
+**Description**: Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.
 
 ---
 
 
 ### 838. Complete or document SaturatedConstruction sorries
 - **Effort**: 32-50 hours (full), 2-4 hours (document)
-- **Status**: [NOT STARTED]
+- **Status**: [ABANDONED]
 - **Language**: lean
 - **Created**: 2026-02-03
+- **Abandoned**: 2026-02-04
 - **Source**: /review 2026-02-03
 
 **Description**: Address 12 sorries in Bundle/SaturatedConstruction.lean. Task 827 research indicates 32-50 hours for mathematically correct completion. Options: complete implementation, document as accepted limitation, or simplify approach.
+
+**Abandoned**: SaturatedConstruction.lean has fundamental mathematical obstacles (Lindenbaum control problem per task 856 research-004). Task 856 created EvalCoherentBundle approach to avoid these obstacles. File should be archived to Bimodal/Boneyard/.
 
 ---
 
