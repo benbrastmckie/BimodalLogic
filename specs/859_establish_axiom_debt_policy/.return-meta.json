@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-04T10:00:00Z",
+  "completed_at": "2026-02-04T10:30:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/859_establish_axiom_debt_policy/reports/research-001.md",
+      "summary": "Research report analyzing sorry-debt-policy structure, format file sections, and proposing parallel axiom characterization with framing rules"
+    }
+  ],
+  "next_steps": "Run /plan 859 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1770199015_a3c9b1",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 1800,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 9
+  }
+}
