@@ -8,11 +8,12 @@
     {
       "project_number": 861,
       "project_name": "reorganize_logos_introduction_latex",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "description": "Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.",
       "created": "2026-02-04T19:03:21Z",
-      "last_updated": "2026-02-04T19:03:21Z"
+      "last_updated": "2026-02-04T19:09:00Z",
+      "session_id": "sess_1770232126_aa5590"
     },
     {
       "project_number": 856,
@@ -124,7 +125,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -135,8 +136,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T18:52:00Z",
-      "session_id": "sess_1770230903_731e58",
+      "last_updated": "2026-02-04T19:06:53Z",
+      "session_id": "sess_1770232001_6538b1",
       "researched": "2026-02-04T10:11:30Z",
       "artifacts": [
         {
@@ -365,18 +366,18 @@
     {
       "project_number": 857,
       "project_name": "add_temporal_backward_properties",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "effort": "40-55 hours",
       "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
       "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T19:02:38Z",
-      "session_id": "sess_1770230946_76196c",
+      "last_updated": "2026-02-04T19:08:40Z",
+      "session_id": "sess_1770231906_2a6144",
       "parent_task": 855,
       "related": [
         856
       ],
-      "researched": "2026-02-04T10:16:41Z",
+      "researched": "2026-02-04T19:08:40Z",
       "artifacts": [
         {
           "path": "specs/857_add_temporal_backward_properties/reports/research-001.md",
@@ -407,6 +408,11 @@
           "path": "specs/857_add_temporal_backward_properties/summaries/implementation-summary-20260204.md",
           "type": "summary",
           "summary": "Partial implementation: infrastructure complete, sorries remain but don't block completeness proof"
+        },
+        {
+          "path": "specs/857_add_temporal_backward_properties/reports/research-005.md",
+          "type": "research",
+          "summary": "Zero-sorry path analysis: temporal saturation construction following EvalCoherentBundle pattern; 8-12 hours additional effort"
         }
       ],
       "dependencies": [
