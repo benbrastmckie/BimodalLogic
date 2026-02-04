@@ -125,7 +125,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -136,8 +136,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T19:09:15Z",
-      "session_id": "sess_1770232001_6538b1",
+      "last_updated": "2026-02-04T19:10:35Z",
+      "session_id": "sess_1770232217_e791e8",
       "researched": "2026-02-04T10:11:30Z",
       "artifacts": [
         {
@@ -156,7 +156,8 @@
           "summary": "4-phase implementation plan covering EvalBMCS truth definitions, truth lemma, completeness rewiring, and axiom removal"
         }
       ],
-      "planned": "2026-02-04T19:09:15Z"
+      "planned": "2026-02-04T19:09:15Z",
+      "started": "2026-02-04T19:10:35Z"
     },
     {
       "project_number": 793,
@@ -372,12 +373,12 @@
     {
       "project_number": 857,
       "project_name": "add_temporal_backward_properties",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
-      "effort": "40-55 hours",
+      "effort": "12-18 hours",
       "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
       "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T19:08:40Z",
+      "last_updated": "2026-02-04T19:10:43Z",
       "session_id": "sess_1770231906_2a6144",
       "parent_task": 855,
       "related": [
@@ -419,12 +420,17 @@
           "path": "specs/857_add_temporal_backward_properties/reports/research-005.md",
           "type": "research",
           "summary": "Zero-sorry path analysis: temporal saturation construction following EvalCoherentBundle pattern; 8-12 hours additional effort"
+        },
+        {
+          "path": "specs/857_add_temporal_backward_properties/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "3-phase revised plan following EvalCoherent pattern for temporal saturation"
         }
       ],
       "dependencies": [
         856
       ],
-      "planned": "2026-02-04T17:53:53Z",
+      "planned": "2026-02-04T19:10:43Z",
       "started": "2026-02-04T18:49:27Z"
     },
     {
