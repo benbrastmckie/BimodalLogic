@@ -1,5 +1,5 @@
 ---
-next_project_number: 863
+next_project_number: 864
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,17 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 863. Improve Introduction LaTeX formatting and content
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-04
+- **Source**: Theories/Logos/latex/subfiles/01-Introduction.tex (4 FIX: tags)
+
+**Description**: Improve LaTeX content and formatting in 01-Introduction.tex: (1) line 21: Introduce Logos paradigm (modular extensible logic system) before architecture details, explain layers (proof theory, recursive semantics, metalogic), describe dual RL signal (LEAN 4 theorems, Z3 counterexamples); (2) line 27: Add interpreted reasoning explanation from interpreted_reasoning.md; (3) line 113: Make \Cref references appear in italics; (4) line 424: Fix description list formatting (justified blocks without indents)
+
+---
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 4-6 hours (revised)
