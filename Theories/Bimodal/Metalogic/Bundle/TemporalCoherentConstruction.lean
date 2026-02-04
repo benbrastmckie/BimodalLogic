@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Bundle.ModalSaturation
+import Bimodal.Metalogic.Bundle.Construction
+import Bimodal.Metalogic.Bundle.CoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -280,5 +282,142 @@ theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
 
   -- Contradiction: fam.mcs s contains both φ and neg φ
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
+
+/-!
+## Phase 1: Temporal Saturation Structures (Task 857 v002)
+
+Following the EvalCoherentBundle pattern from CoherentConstruction.lean, we define
+analogous structures for temporal saturation.
+-/
+
+/--
+GContent of an MCS: the set of all formulas phi where G phi appears in the MCS.
+-/
+def GContent (M : Set Formula) : Set Formula :=
+  {phi | Formula.all_future phi ∈ M}
+
+/--
+HContent of an MCS: the set of all formulas phi where H phi appears in the MCS.
+-/
+def HContent (M : Set Formula) : Set Formula :=
+  {phi | Formula.all_past phi ∈ M}
+
+/--
+TemporalForwardSaturated: Every F(psi) in the MCS has its witness (psi also in the MCS).
+
+For a constant family, this means F(psi) -> psi within the MCS.
+-/
+def TemporalForwardSaturated (M : Set Formula) : Prop :=
+  ∀ psi : Formula, Formula.some_future psi ∈ M → psi ∈ M
+
+/--
+TemporalBackwardSaturated: Every P(psi) in the MCS has its witness (psi also in the MCS).
+-/
+def TemporalBackwardSaturated (M : Set Formula) : Prop :=
+  ∀ psi : Formula, Formula.some_past psi ∈ M → psi ∈ M
+
+/--
+TemporallySaturated: Both forward and backward temporal saturation hold.
+-/
+def TemporallySaturated (M : Set Formula) : Prop :=
+  TemporalForwardSaturated M ∧ TemporalBackwardSaturated M
+
+/--
+TemporalEvalSaturatedBundle: A constant IndexedMCSFamily with temporally saturated MCS.
+
+This structure provides:
+1. A constant family (same MCS M at all times)
+2. M is temporally saturated (F psi -> psi and P psi -> psi in M)
+3. The family therefore satisfies forward_F and backward_P
+-/
+structure TemporalEvalSaturatedBundle (D : Type*) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] where
+  /-- The underlying MCS -/
+  baseMCS : Set Formula
+  /-- The MCS is maximal consistent -/
+  is_mcs : SetMaximalConsistent baseMCS
+  /-- Forward temporal saturation -/
+  forward_saturated : TemporalForwardSaturated baseMCS
+  /-- Backward temporal saturation -/
+  backward_saturated : TemporalBackwardSaturated baseMCS
+
+/--
+Convert a TemporalEvalSaturatedBundle to a constant IndexedMCSFamily.
+-/
+noncomputable def TemporalEvalSaturatedBundle.toIndexedMCSFamily
+    (B : TemporalEvalSaturatedBundle D) : IndexedMCSFamily D where
+  mcs _ := B.baseMCS
+  is_mcs _ := B.is_mcs
+  forward_G := fun _ _ phi _ h_G => by
+    have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
+    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_G
+  backward_H := fun _ _ phi _ h_H => by
+    have h_T : [] ⊢ (Formula.all_past phi).imp phi :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_past phi)
+    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_H
+  forward_H := fun _ _ phi _ h_H => by
+    have h_T : [] ⊢ (Formula.all_past phi).imp phi :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_past phi)
+    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_H
+  backward_G := fun _ _ phi _ h_G => by
+    have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
+      DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
+    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_G
+
+/--
+The toIndexedMCSFamily conversion produces a constant family.
+-/
+lemma TemporalEvalSaturatedBundle.toIndexedMCSFamily_constant
+    (B : TemporalEvalSaturatedBundle D) :
+    IsConstantFamily B.toIndexedMCSFamily :=
+  ⟨B.baseMCS, fun _ => rfl⟩
+
+variable [Nontrivial D]
+
+/--
+In an ordered additive group, for any t there exists s > t.
+-/
+lemma exists_gt_in_ordered_group (t : D) : ∃ s : D, t < s := by
+  obtain ⟨a, b, hab⟩ := Nontrivial.exists_pair_ne (α := D)
+  rcases lt_trichotomy a b with h_lt | h_eq | h_gt
+  · use t + (b - a)
+    have h_pos : (0 : D) < b - a := sub_pos.mpr h_lt
+    have h1 : t + 0 < t + (b - a) := add_lt_add_right h_pos t
+    rw [add_zero] at h1
+    exact h1
+  · exact absurd h_eq hab
+  · use t + (a - b)
+    have h_pos : (0 : D) < a - b := sub_pos.mpr h_gt
+    have h1 : t + 0 < t + (a - b) := add_lt_add_right h_pos t
+    rw [add_zero] at h1
+    exact h1
+
+/--
+In an ordered additive group, for any t there exists s < t.
+-/
+lemma exists_lt_in_ordered_group (t : D) : ∃ s : D, s < t := by
+  obtain ⟨s, hs⟩ := exists_gt_in_ordered_group (D := D) (-t)
+  use -s
+  have h : -s < -(-t) := neg_lt_neg hs
+  simp only [neg_neg] at h
+  exact h
+
+/--
+Convert a TemporalEvalSaturatedBundle to a TemporalCoherentFamily.
+
+**Requires** [Nontrivial D] to ensure the existence of witness times.
+-/
+noncomputable def TemporalEvalSaturatedBundle.toTemporalCoherentFamily
+    (B : TemporalEvalSaturatedBundle D) : TemporalCoherentFamily D where
+  toIndexedMCSFamily := B.toIndexedMCSFamily
+  forward_F := fun t psi h_F => by
+    have h_psi : psi ∈ B.baseMCS := B.forward_saturated psi h_F
+    obtain ⟨s, hs⟩ := exists_gt_in_ordered_group (D := D) t
+    exact ⟨s, hs, h_psi⟩
+  backward_P := fun t psi h_P => by
+    have h_psi : psi ∈ B.baseMCS := B.backward_saturated psi h_P
+    obtain ⟨s, hs⟩ := exists_lt_in_ordered_group (D := D) t
+    exact ⟨s, hs, h_psi⟩
 
 end Bimodal.Metalogic.Bundle
