@@ -1,22 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-04T12:00:00Z",
-  "summary": "EvalCoherentBundle correctly avoids converse T-axiom via multi-family saturation contraposition proof. Task 843 can proceed with 8-10 hour implementation rewiring completeness to EvalBMCS.",
+  "status": "planned",
+  "summary": "4-phase implementation plan for removing singleFamily_modal_backward_axiom using EvalBMCS infrastructure from task 856",
   "artifacts": [
     {
-      "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md",
-      "type": "research",
-      "summary": "Analysis confirming EvalCoherentBundle approach is mathematically sound and avoids converse T-axiom problem"
+      "type": "plan",
+      "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-001.md",
+      "summary": "4-phase implementation plan covering EvalBMCS truth definitions, truth lemma, completeness rewiring, and axiom removal"
     }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Research complete - analyzed EvalCoherentBundle proof structure, confirmed modal_backward_eval uses contraposition not converse T-axiom"
-  },
+  "next_steps": "Run /implement 843 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770230903_731e58",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770232001_6538b1",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 9
   }
 }

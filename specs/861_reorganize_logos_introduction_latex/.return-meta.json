@@ -1,0 +1,15 @@
+{
+  "status": "in_progress",
+  "started_at": "2026-02-04T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, reading source documents"
+  },
+  "metadata": {
+    "session_id": "sess_1770232126_aa5590",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+  }
+}
