@@ -179,12 +179,12 @@
     {
       "project_number": 863,
       "project_name": "improve_introduction_latex_formatting_content",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "effort": "2-3 hours",
       "created": "2026-02-04T22:55:36Z",
-      "last_updated": "2026-02-04T23:02:31Z",
-      "session_id": "sess_1770245820_bc230c",
+      "last_updated": "2026-02-04T23:05:51Z",
+      "session_id": "sess_1770246191_c9f0f2",
       "description": "Improve LaTeX content and formatting in 01-Introduction.tex: (1) line 21: Introduce Logos paradigm (modular extensible logic system) before architecture details, explain layers (proof theory, recursive semantics, metalogic), describe dual RL signal (LEAN 4 theorems, Z3 counterexamples); (2) line 27: Add interpreted reasoning explanation from interpreted_reasoning.md; (3) line 113: Make \\Cref references appear in italics; (4) line 424: Fix description list formatting (justified blocks without indents)",
       "researched": "2026-02-04T23:02:31Z",
       "artifacts": [
@@ -192,8 +192,14 @@
           "path": "specs/863_improve_introduction_latex_formatting_content/reports/research-001.md",
           "type": "research",
           "summary": "Research report covering Motivation restructuring, interpreted reasoning content, cleveref italic formatting, and description list indentation fixes with specific LaTeX code"
+        },
+        {
+          "path": "specs/863_improve_introduction_latex_formatting_content/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for LaTeX content restructuring and formatting fixes"
         }
-      ]
+      ],
+      "planned": "2026-02-04T23:05:51Z"
     }
   ],
   "completed_projects": [
