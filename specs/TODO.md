@@ -1,5 +1,5 @@
 ---
-next_project_number: 855
+next_project_number: 856
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,17 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 855. Complete TruthLemma backward directions for all_future and all_past
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-04
+- **Related**: Task 854 research-004.md
+
+**Description**: Complete TruthLemma backward directions for all_future and all_past in Bundle/TruthLemma.lean (lines 383, 395). While NOT in bmcs_weak_completeness dependency chain (only uses .mp direction), completing these would make TruthLemma fully bidirectional. Requires omega-saturation. Cleanup task, not critical for publication.
+
+---
 
 ### 854. Bimodal metalogic audit and cleanup
 - **Effort**: TBD
