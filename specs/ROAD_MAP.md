@@ -19,6 +19,29 @@
 Updated by /todo command during task archival.
 -->
 
+### 2026-02-04
+
+- **Task 862**: Cleaned up TruthLemma.lean documentation to remove misleading comments about functional separation and ineffective solution suggestions. Added accurate documentation of the mathematical path to sorry-freedom via modified Lindenbaum construction (Task 857).
+  - *References*: [summary](specs/archive/862_divide_truthlemma_forward_backward/summaries/implementation-summary-20260204.md)
+
+- **Task 861**: Reorganized Logos introduction LaTeX document adding 3 new sections (Motivation, Planning Under Uncertainty, AI Applications) and expanding Conceptual Engineering.
+  - *References*: [summary](specs/archive/861_reorganize_logos_introduction_latex/summaries/implementation-summary-20260204.md)
+
+- **Task 860**: Propagated axiom policy to agents, rules, and workflows. Added MUST NOT rules for axiom framing and verification checks.
+  - *References*: [summary](specs/archive/860_propagate_axiom_policy_to_agents_rules/summaries/implementation-summary-20260204.md)
+
+- **Task 859**: Expanded sorry-debt-policy.md into proof-debt-policy.md with unified proof debt philosophy covering both sorries and axioms.
+  - *References*: [summary](specs/archive/859_establish_axiom_debt_policy/summaries/implementation-summary-20260204.md)
+
+- **Task 857**: Proved temporal backward G and H cases in bmcs_truth_lemma, achieving sorry-free completeness theorem using temporally_saturated_mcs_exists axiom with TemporalCoherentFamily infrastructure.
+  - *References*: [summary](specs/archive/857_add_temporal_backward_properties/summaries/implementation-summary-20260204.md)
+
+- **Task 856**: Proved eval_saturated_bundle_exists theorem, eliminating the final sorry in the EvalBMCS construction using box_dne_theorem and mcs_contrapositive.
+  - *References*: [summary](specs/archive/856_implement_multifamily_saturated_bmcs/summaries/implementation-summary-20260204.md)
+
+- **Task 854**: Cleaned FMP completeness line to publication quality. Archived dead sorry-containing code to Boneyard, removed WIP comments, added professional documentation.
+  - *References*: [summary](specs/archive/854_bimodal_metalogic_audit_and_cleanup/summaries/implementation-summary-20260204.md)
+
 ### 2026-02-03
 
 - **Task 850**: Created Scalable Oversight subsection in Logos Introduction
