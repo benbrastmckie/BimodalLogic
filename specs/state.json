@@ -6,184 +6,9 @@
   },
   "active_projects": [
     {
-      "project_number": 862,
-      "project_name": "divide_truthlemma_forward_backward",
-      "status": "completed",
-      "language": "lean",
-      "created": "2026-02-04T20:06:55Z",
-      "last_updated": "2026-02-04T21:16:29Z",
-      "session_id": "sess_1770239443_9b5e39",
-      "researched": "2026-02-04T20:46:45Z",
-      "artifacts": [
-        {
-          "path": "specs/862_divide_truthlemma_forward_backward/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of TruthLemma forward/backward separation with cross-dependency findings and mutual recursion solution"
-        },
-        {
-          "path": "specs/862_divide_truthlemma_forward_backward/reports/research-002.md",
-          "type": "research",
-          "summary": "Deep feasibility analysis proving TruthLemma forward/backward separation cannot achieve sorry-freedom"
-        },
-        {
-          "path": "specs/862_divide_truthlemma_forward_backward/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "Revised plan: remove misleading comments, guide toward modified Lindenbaum for temporal saturation"
-        },
-        {
-          "path": "specs/862_divide_truthlemma_forward_backward/summaries/implementation-summary-20260204.md",
-          "type": "summary",
-          "summary": "Implementation summary for TruthLemma.lean documentation cleanup"
-        }
-      ],
-      "planned": "2026-02-04T21:02:56Z",
-      "started": "2026-02-04T21:11:01Z",
-      "completed": "2026-02-04T21:16:29Z",
-      "completion_summary": "Cleaned up TruthLemma.lean documentation to remove misleading comments about functional separation and ineffective solution suggestions. Added accurate documentation of the mathematical path to sorry-freedom via modified Lindenbaum construction (Task 857)."
-    },
-    {
-      "project_number": 861,
-      "project_name": "reorganize_logos_introduction_latex",
-      "status": "completed",
-      "language": "latex",
-      "description": "Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.",
-      "created": "2026-02-04T19:03:21Z",
-      "last_updated": "2026-02-04T19:27:31Z",
-      "session_id": "sess_1770232882_fb9de4",
-      "researched": "2026-02-04T19:11:45Z",
-      "artifacts": [
-        {
-          "path": "specs/861_reorganize_logos_introduction_latex/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing three source documents with proposed 9-section reorganization structure, content mapping, and implementation notes for improving the Logos introduction narrative arc"
-        },
-        {
-          "path": "specs/861_reorganize_logos_introduction_latex/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan for reorganizing Logos introduction with motivation, planning, and AI applications sections"
-        },
-        {
-          "path": "specs/861_reorganize_logos_introduction_latex/summaries/implementation-summary-20260204.md",
-          "type": "summary",
-          "summary": "Implementation summary with section-by-section breakdown"
-        }
-      ],
-      "planned": "2026-02-04T19:19:28Z",
-      "started": "2026-02-04T19:21:36Z",
-      "completed": "2026-02-04T19:27:31Z",
-      "completion_summary": "Reorganized Logos introduction LaTeX document adding 3 new sections (Motivation, Planning Under Uncertainty, AI Applications) and expanding Conceptual Engineering. Document now has clear narrative arc from motivation through architecture to applications, drawing content from conceptual-engineering.md and dual-verification.md."
-    },
-    {
-      "project_number": 856,
-      "project_name": "implement_multifamily_saturated_bmcs",
-      "status": "completed",
-      "language": "lean",
-      "effort": "32-50 hours",
-      "description": "Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. Currently bmcs_weak_completeness depends on this axiom (Construction.lean line 228). A multi-family saturated bundle would prove modal backward direction without axiom. Requires completing SaturatedConstruction.lean sorries (12 sorries, related to Task 838). This enables Task 843 (remove axiom). Critical for making BMCS approach publication-ready without axiom disclosure.",
-      "parent_task": 854,
-      "enables": [
-        843
-      ],
-      "related": [
-        838
-      ],
-      "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T10:04:10Z",
-      "session_id": "sess_1770198947_201ed1",
-      "researched": "2026-02-04T09:02:46Z",
-      "artifacts": [
-        {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-001.md",
-          "type": "research",
-          "summary": "Initial analysis of multi-family saturated BMCS construction approaches"
-        },
-        {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-002.md",
-          "type": "research",
-          "summary": "Re-research verifying previous findings and identifying misleading comments"
-        },
-        {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-003.md",
-          "type": "research",
-          "summary": "Mathematical correctness analysis comparing SaturatedConstruction (Option A) vs WeakCoherentBundle (Option B)"
-        },
-        {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-004.md",
-          "type": "research",
-          "summary": "Analysis of alternative construction approaches: enumeration-based saturation, strengthened coherence requirements, and path to eliminating singleFamily_modal_backward_axiom"
-        },
-        {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "6-phase revised plan using CoherentConstruction.lean with enumeration-based saturation (30-48 hours)"
-        },
-        {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/summaries/implementation-summary-20260204.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting the completed proof of eval_saturated_bundle_exists"
-        }
-      ],
-      "planned": "2026-02-04T09:40:26Z",
-      "started": "2026-02-04T09:09:49Z",
-      "completed": "2026-02-04T10:04:10Z",
-      "completion_summary": "Proved eval_saturated_bundle_exists theorem, eliminating the final sorry in the EvalBMCS construction. The proof uses box_dne_theorem and mcs_contrapositive to transform neg(Box phi) to diamondFormula(neg phi), then constructs the saturated bundle as {base} ∪ allWitnesses using axiom of choice. This provides a complete, axiom-free path from consistent context to EvalBMCS sufficient for completeness."
-    },
-    {
-      "project_number": 854,
-      "project_name": "bimodal_metalogic_audit_and_cleanup",
-      "status": "completed",
-      "language": "lean",
-      "description": "Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.",
-      "created": "2026-02-04T01:49:53Z",
-      "last_updated": "2026-02-04T09:56:17Z",
-      "session_id": "sess_1770198608_378677",
-      "researched": "2026-02-04T09:35:17Z",
-      "artifacts": [
-        {
-          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive audit of bimodal metalogic: 3 axioms, 11 sorries, 4 archival candidates identified"
-        },
-        {
-          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-002.md",
-          "type": "research",
-          "summary": "Theoretical dependency flowchart for metalogic theorems with architectural recommendations for refactoring"
-        },
-        {
-          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-003.md",
-          "type": "research",
-          "summary": "Focused analysis confirming completeness theorems are correct - BMCS completeness is Henkin-style (valid for its validity notion), FMP completeness is axiom-free, both are mathematically sound when combined with standard soundness"
-        },
-        {
-          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-004.md",
-          "type": "research",
-          "summary": "Verified sorry/axiom dependencies: FMP approach is sorry-free and publication-ready; BMCS approach depends on one axiom (singleFamily_modal_backward_axiom)"
-        },
-        {
-          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-005.md",
-          "type": "research",
-          "summary": "Verification that fmp_weak_completeness is sorry-free and uses only standard Lean axioms (propext, Classical.choice, Quot.sound)"
-        },
-        {
-          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for cleaning FMP completeness line to publication quality"
-        },
-        {
-          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/summaries/implementation-summary-20260204.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting all changes made to FMP and Decidability modules"
-        }
-      ],
-      "planned": "2026-02-04T09:48:19Z",
-      "started": "2026-02-04T09:50:29Z",
-      "completed": "2026-02-04T09:56:17Z",
-      "completion_summary": "Cleaned FMP completeness line to publication quality. Archived dead sorry-containing code to Boneyard, removed all task references and WIP comments from FMP (4 files) and Decidability (2 files) modules, added professional documentation. The fmp_weak_completeness theorem is now documented as sorry-free and axiom-free with publication-ready docstrings."
-    },
-    {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -194,8 +19,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T21:51:00Z",
-      "session_id": "sess_1770241651_4af934",
+      "last_updated": "2026-02-04T22:03:19Z",
+      "session_id": "sess_1770242270_0f5c5b",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
@@ -217,11 +42,6 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-003.md",
           "type": "research",
           "summary": "Analysis of EvalBMCS full modal coherence requirements, BoxEquivalent limitations, and alignment with task 857 temporal saturation pattern"
-        },
-        {
-          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 2-phase plan using eval-only strategy aligned with task 857"
         },
         {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-004.md",
@@ -247,9 +67,14 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-008.md",
           "type": "research",
           "summary": "Post-857 assessment: completeness has 2 axioms (not 1); EvalBMCS path has structural box-case limitation; recommend temporalLindenbaumMCS first then multi-family saturation"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan: dead code cleanup, documentation sorry removal, temporal Lindenbaum construction, temporal axiom rewiring, multi-family saturated BMCS, completeness rewiring, final verification"
         }
       ],
-      "planned": "2026-02-04T19:40:45Z",
+      "planned": "2026-02-04T22:03:19Z",
       "started": "2026-02-04T19:10:35Z"
     },
     {
@@ -462,147 +287,6 @@
           "summary": "Research report on Evolution/WorldHistory containment theorem and Barcan formula proofs for Logos Dynamics"
         }
       ]
-    },
-    {
-      "project_number": 857,
-      "project_name": "add_temporal_backward_properties",
-      "status": "completed",
-      "language": "lean",
-      "effort": "12-18 hours",
-      "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
-      "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T21:34:47Z",
-      "session_id": "sess_1770239887_dd1d2f",
-      "parent_task": 855,
-      "related": [
-        856
-      ],
-      "researched": "2026-02-04T20:56:58Z",
-      "artifacts": [
-        {
-          "path": "specs/857_add_temporal_backward_properties/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of temporal_backward properties, comparison of axiom-based vs structural approaches, and detailed implementation plan"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/reports/research-002.md",
-          "type": "research",
-          "summary": "Analysis of zero-axiom feasibility for temporal backward properties. Concludes axiom-based approach is correct for constant families; zero-axiom requires multi-family saturation (future work)."
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/reports/research-003.md",
-          "type": "research",
-          "summary": "Strategy revision after task 856: EvalCoherent approach does not directly enable temporal backward; axiom-based approach recommended with clear remediation path via future temporal saturation"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/reports/research-004.md",
-          "type": "research",
-          "summary": "Zero-axiom path identified: time-varying MCS with TemporalCoherentFamily structure; 35-50 hours estimated for full implementation"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/reports/research-005.md",
-          "type": "research",
-          "summary": "Zero-sorry path analysis: temporal saturation construction following EvalCoherentBundle pattern; 8-12 hours additional effort"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/reports/research-006.md",
-          "type": "research",
-          "summary": "Completion path analysis: 4 sorries in temporal saturation, completeness already publication-ready, documentation strategy recommended"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/reports/research-007.md",
-          "type": "research",
-          "summary": "Mathematical completion path from Task 862 insights: temporalLindenbaumMCS with witness insertion required for zero-sorry temporal saturation"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "3-phase plan: temporalLindenbaumMCS with witness insertion for zero-sorry temporal saturation"
-        },
-        {
-          "path": "specs/857_add_temporal_backward_properties/summaries/implementation-summary-20260204-v3.md",
-          "type": "summary",
-          "summary": "Complete implementation: sorry-free bmcs_truth_lemma and completeness via temporal coherence"
-        }
-      ],
-      "dependencies": [
-        856
-      ],
-      "planned": "2026-02-04T21:03:13Z",
-      "started": "2026-02-04T18:49:27Z",
-      "completed": "2026-02-04T21:34:47Z",
-      "completion_summary": "Proved temporal backward G and H cases in bmcs_truth_lemma, achieving sorry-free completeness theorem. Used temporally_saturated_mcs_exists axiom with TemporalCoherentFamily infrastructure. 4 legacy EvalBMCS sorries remain but do not affect completeness."
-    },
-    {
-      "project_number": 859,
-      "project_name": "establish_axiom_debt_policy",
-      "status": "completed",
-      "language": "meta",
-      "effort": "1.5 hours",
-      "description": "Expand sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Update plan-format.md and report-format.md to add Axiom Characterization sections with framing rules parallel to sorries. Files: rename sorry-debt-policy.md to proof-debt-policy.md, update plan-format.md and report-format.md.",
-      "created": "2026-02-04T09:22:49Z",
-      "last_updated": "2026-02-04T09:37:55Z",
-      "session_id": "sess_1770197582_6269fd",
-      "researched": "2026-02-04T09:26:57Z",
-      "artifacts": [
-        {
-          "path": "specs/859_establish_axiom_debt_policy/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report analyzing sorry-debt-policy structure, format file sections, and proposing parallel axiom characterization with framing rules"
-        },
-        {
-          "path": "specs/859_establish_axiom_debt_policy/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for establishing axiom debt policy alongside existing sorry debt policy"
-        },
-        {
-          "path": "specs/859_establish_axiom_debt_policy/summaries/implementation-summary-20260204.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting all changes and verification results"
-        }
-      ],
-      "planned": "2026-02-04T09:31:02Z",
-      "started": "2026-02-04T09:33:21Z",
-      "completed": "2026-02-04T09:37:55Z",
-      "completion_summary": "Expanded sorry-debt-policy.md into proof-debt-policy.md with unified proof debt philosophy covering both sorries and axioms. Added Axiom Characterization sections to plan-format.md and report-format.md with parallel framing rules. Updated 6 active cross-references.",
-      "claudemd_suggestions": "Renamed sorry-debt-policy.md to proof-debt-policy.md in .claude/context/project/lean4/standards/, added Axiom Characterization sections to plan-format.md and report-format.md, updated references in lean4.md rules, lean-research-agent.md, and lean-implementation-agent.md"
-    },
-    {
-      "project_number": 860,
-      "project_name": "propagate_axiom_policy_to_agents_rules",
-      "status": "completed",
-      "language": "meta",
-      "effort": "1.5 hours",
-      "description": "Update agent instructions, rules, and workflows to prohibit axiom additions with same strictness as sorries. Reference new proof-debt-policy.md and add axiom checks parallel to sorry checks. Files: lean-implementation-agent.md, lean-research-agent.md, lean4.md, state-management.md, CLAUDE.md, verification-workflow.md.",
-      "dependencies": [
-        859
-      ],
-      "created": "2026-02-04T09:22:55Z",
-      "last_updated": "2026-02-04T09:52:21Z",
-      "session_id": "sess_1770198517_7a579d",
-      "researched": "2026-02-04T09:41:54Z",
-      "artifacts": [
-        {
-          "path": "specs/860_propagate_axiom_policy_to_agents_rules/reports/research-001.md",
-          "type": "research",
-          "summary": "Research report documenting exact file locations, required changes, and implementation order for axiom policy propagation"
-        },
-        {
-          "path": "specs/860_propagate_axiom_policy_to_agents_rules/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase plan covering agent files, lean4 rules, verification workflow, and CLAUDE.md updates"
-        },
-        {
-          "path": "specs/860_propagate_axiom_policy_to_agents_rules/summaries/implementation-summary-20260204.md",
-          "type": "summary",
-          "summary": "Implementation summary with verification results"
-        }
-      ],
-      "planned": "2026-02-04T09:47:46Z",
-      "started": "2026-02-04T09:48:57Z",
-      "completed": "2026-02-04T09:52:21Z",
-      "completion_summary": "Propagated axiom policy to agents, rules, and workflows. Added MUST NOT rules for 'acceptable axiom' framing to both Lean agents, added axiom verification checks to lean4.md testing section and verification-workflow.md Level 1 checks, and added Proof Debt Policy reference to CLAUDE.md.",
-      "claudemd_suggestions": "Added Proof Debt Policy reference to CLAUDE.md (line 102), updated lean4.md context reference description, added Axiom Verification section to verification-workflow.md"
     }
   ],
   "completed_projects": [

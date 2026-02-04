@@ -5,9 +5,9 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-04T09:04:15Z
 task_counts:
-  active: 16
-  completed: 397
-  in_progress: 1
+  active: 9
+  completed: 404
+  in_progress: 0
   not_started: 7
   abandoned: 26
   total: 430
@@ -22,156 +22,9 @@ technical_debt:
 
 ## Tasks
 
-### 862. Divide TruthLemma into forward and backward parts
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Started**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Research**: [research-001.md](specs/862_divide_truthlemma_forward_backward/reports/research-001.md), [research-002.md](specs/862_divide_truthlemma_forward_backward/reports/research-002.md)
-- **Plan**: [implementation-003.md](specs/862_divide_truthlemma_forward_backward/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260204.md](specs/862_divide_truthlemma_forward_backward/summaries/implementation-summary-20260204.md)
-
-**Description**: Clean up TruthLemma.lean comments to guide future work toward completing the full TruthLemma (both directions) via modified Lindenbaum construction for temporal saturation. Remove misleading comments about "functional separation" and ineffective suggestions (mutual recursion, strong induction). Document the actual mathematical path to sorry-freedom.
-
----
-
-### 861. Reorganize Logos Introduction LaTeX document
-- **Effort**: 4 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Started**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Research**: [research-001.md](specs/861_reorganize_logos_introduction_latex/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/861_reorganize_logos_introduction_latex/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260204.md](specs/861_reorganize_logos_introduction_latex/summaries/implementation-summary-20260204.md)
-
-**Description**: Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.
-
----
-
-### 860. Propagate Axiom Policy to Agents and Rules
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Started**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Dependencies**: Task 859
-- **Research**: [research-001.md](specs/860_propagate_axiom_policy_to_agents_rules/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/860_propagate_axiom_policy_to_agents_rules/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260204.md](specs/860_propagate_axiom_policy_to_agents_rules/summaries/implementation-summary-20260204.md)
-
-**Description**: Update agent instructions, rules, and workflows to prohibit axiom additions with same strictness as sorries. Reference new proof-debt-policy.md and add axiom checks parallel to sorry checks.
-
-**Files to modify:**
-- Agents: `lean-implementation-agent.md`, `lean-research-agent.md`
-- Rules: `lean4.md`, `state-management.md`
-- Top-level: `CLAUDE.md`
-- Workflows: `verification-workflow.md`
-
-**Key changes:**
-- Add "MUST NOT add axioms" rules to agent instructions
-- Update lean4.md with axiom compilation checks
-- Add axiom thresholds to state-management.md
-- Update CLAUDE.md to reference proof-debt-policy.md
-- Add axiom tolerance rules to verification-workflow.md
-
----
-
-### 859. Establish Axiom Debt Policy in Core Documentation
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Started**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Research**: [research-001.md](specs/859_establish_axiom_debt_policy/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/859_establish_axiom_debt_policy/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260204.md](specs/859_establish_axiom_debt_policy/summaries/implementation-summary-20260204.md)
-
-**Description**: Expand sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Update plan-format.md and report-format.md to add "Axiom Characterization" sections with framing rules parallel to sorries.
-
-**Files to modify:**
-- Rename: `sorry-debt-policy.md` → `proof-debt-policy.md`
-- Update: `plan-format.md`, `report-format.md`
-
-**Key changes:**
-- Add "Axiom Debt" section to policy with same framing rules as sorries
-- Document that axioms, like sorries, block publication and propagate transitively
-- Add "Axiom Characterization" sections to format standards
-
----
-
-### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
-- **Effort**: 8-12 hours (revised)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Started**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Summary**: Proved temporal backward G and H cases in bmcs_truth_lemma, achieving sorry-free completeness theorem. Used temporally_saturated_mcs_exists axiom with TemporalCoherentFamily infrastructure.
-- **Parent**: Task 855
-- **Depends**: Task 856
-- **Related**: Task 856, Task 862
-- **Research**: [research-001.md](specs/857_add_temporal_backward_properties/reports/research-001.md), [research-002.md](specs/857_add_temporal_backward_properties/reports/research-002.md), [research-003.md](specs/857_add_temporal_backward_properties/reports/research-003.md), [research-004.md](specs/857_add_temporal_backward_properties/reports/research-004.md), [research-005.md](specs/857_add_temporal_backward_properties/reports/research-005.md), [research-006.md](specs/857_add_temporal_backward_properties/reports/research-006.md), [research-007.md](specs/857_add_temporal_backward_properties/reports/research-007.md)
-- **Plan**: [implementation-003.md](specs/857_add_temporal_backward_properties/plans/implementation-003.md)
-
-**Description**: Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.
-
----
-
-### 856. Implement multi-family saturated BMCS construction
-- **Effort**: 30-48 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Started**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Parent**: Task 854
-- **Enables**: Task 843
-- **Related**: Task 838
-- **Research**: [research-001.md](specs/856_implement_multifamily_saturated_bmcs/reports/research-001.md), [research-002.md](specs/856_implement_multifamily_saturated_bmcs/reports/research-002.md), [research-003.md](specs/856_implement_multifamily_saturated_bmcs/reports/research-003.md), [research-004.md](specs/856_implement_multifamily_saturated_bmcs/reports/research-004.md)
-- **Plan**: [implementation-002.md](specs/856_implement_multifamily_saturated_bmcs/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260204.md](specs/856_implement_multifamily_saturated_bmcs/summaries/implementation-summary-20260204.md)
-
-**Description**: Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. **REVISED**: Use CoherentConstruction.lean with enumeration-based saturation instead of SaturatedConstruction.lean (which has fundamental mathematical obstacles). Build coherence into witness seed using proven `diamond_boxcontent_consistent_constant` infrastructure.
-
----
-
-### 854. Bimodal metalogic audit and cleanup
-- **Effort**: 6 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Summary**: Cleaned FMP completeness line to publication quality. Archived dead sorry-containing code to Boneyard, removed all task references and WIP comments from FMP (4 files) and Decidability (2 files) modules, added professional documentation.
-- **Research**: [research-001.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-001.md), [research-002.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-002.md), [research-003.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-003.md), [research-004.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-004.md), [research-005.md](specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-005.md)
-- **Plan**: [implementation-001.md](specs/854_bimodal_metalogic_audit_and_cleanup/plans/implementation-001.md)
-
-**Description**: Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.
-
----
-
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 4-6 hours (revised)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Updated**: 2026-02-04
@@ -180,9 +33,9 @@ technical_debt:
 - **Depends**: Task 856
 - **Related**: Task 856, Task 857
 - **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md), [research-002.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md), [research-003.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-003.md), [research-004.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-004.md), [research-005.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-005.md), [research-006.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-006.md), [research-007.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-007.md), [research-008.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-008.md)
-- **Plan**: [implementation-002.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-002.md)
+- **Plan**: [implementation-003.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-003.md)
 
-**Description**: Remove singleFamily_modal_backward_axiom using eval-only strategy aligned with task 857. Completeness theorems only use forward direction of truth lemma at eval_family, so full modal coherence is unnecessary. Create eval-only forward truth lemma, rewire completeness to use construct_eval_bmcs, and comment out the axiom.
+**Description**: Remove ALL axioms and sorries from active codebase for publication-ready repo. Two completeness-chain axioms (singleFamily_modal_backward_axiom, temporally_saturated_mcs_exists), two dead-code axioms, and ~17 active sorries across non-Boneyard files.
 
 ---
 
