@@ -81,14 +81,14 @@ technical_debt:
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Parent**: Task 855
 - **Depends**: Task 856
 - **Related**: Task 856
-- **Research**: [research-001.md](specs/857_add_temporal_backward_properties/reports/research-001.md), [research-002.md](specs/857_add_temporal_backward_properties/reports/research-002.md)
+- **Research**: [research-001.md](specs/857_add_temporal_backward_properties/reports/research-001.md), [research-002.md](specs/857_add_temporal_backward_properties/reports/research-002.md), [research-003.md](specs/857_add_temporal_backward_properties/reports/research-003.md)
 
 **Description**: Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.
 
@@ -140,21 +140,6 @@ technical_debt:
 - **Related**: Task 856
 
 **Description**: Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.
-
----
-
-
-### 838. Complete or document SaturatedConstruction sorries
-- **Effort**: 32-50 hours (full), 2-4 hours (document)
-- **Status**: [ABANDONED]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Abandoned**: 2026-02-04
-- **Source**: /review 2026-02-03
-
-**Description**: Address 12 sorries in Bundle/SaturatedConstruction.lean. Task 827 research indicates 32-50 hours for mathematically correct completion. Options: complete implementation, document as accepted limitation, or simplify approach.
-
-**Abandoned**: SaturatedConstruction.lean has fundamental mathematical obstacles (Lindenbaum control problem per task 856 research-004). Task 856 created EvalCoherentBundle approach to avoid these obstacles. File should be archived to Bimodal/Boneyard/.
 
 ---
 

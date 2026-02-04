@@ -1,10 +1,17 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-04T15:25:00Z",
-  "artifacts": [],
+  "completed_at": "2026-02-04T15:45:00Z",
+  "artifacts": [
+    {
+      "path": "specs/857_add_temporal_backward_properties/reports/research-003.md",
+      "type": "research",
+      "summary": "Strategy revision after task 856: EvalCoherent approach does not directly enable temporal backward; axiom-based approach recommended with clear remediation path via future temporal saturation"
+    }
+  ],
   "partial_progress": {
-    "stage": "writing_report",
-    "details": "Creating research-003.md with strategy revision analysis"
+    "stage": "done",
+    "details": "Research report created, axiom-based approach confirmed as correct strategy"
   },
   "metadata": {
     "session_id": "sess_1770199501_1bf884",
