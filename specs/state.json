@@ -8,7 +8,7 @@
     {
       "project_number": 856,
       "project_name": "implement_multifamily_saturated_bmcs",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "effort": "32-50 hours",
       "description": "Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. Currently bmcs_weak_completeness depends on this axiom (Construction.lean line 228). A multi-family saturated bundle would prove modal backward direction without axiom. Requires completing SaturatedConstruction.lean sorries (12 sorries, related to Task 838). This enables Task 843 (remove axiom). Critical for making BMCS approach publication-ready without axiom disclosure.",
@@ -20,7 +20,7 @@
         838
       ],
       "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T09:28:46Z",
+      "last_updated": "2026-02-04T09:40:26Z",
       "session_id": "sess_1770197312_73f521",
       "researched": "2026-02-04T09:02:46Z",
       "artifacts": [
@@ -40,11 +40,6 @@
           "summary": "Mathematical correctness analysis comparing SaturatedConstruction (Option A) vs WeakCoherentBundle (Option B)"
         },
         {
-          "path": "specs/856_implement_multifamily_saturated_bmcs/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for completing SaturatedConstruction.lean with 45 hours estimated effort"
-        },
-        {
           "path": "specs/856_implement_multifamily_saturated_bmcs/summaries/implementation-summary-20260204.md",
           "type": "summary",
           "summary": "Detailed analysis of remaining sorries and recommendations"
@@ -53,9 +48,14 @@
           "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-004.md",
           "type": "research",
           "summary": "Analysis of alternative construction approaches: enumeration-based saturation, strengthened coherence requirements, and path to eliminating singleFamily_modal_backward_axiom"
+        },
+        {
+          "path": "specs/856_implement_multifamily_saturated_bmcs/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "6-phase revised plan using CoherentConstruction.lean with enumeration-based saturation (30-48 hours)"
         }
       ],
-      "planned": "2026-02-04T09:07:05Z",
+      "planned": "2026-02-04T09:40:26Z",
       "started": "2026-02-04T09:09:49Z"
     },
     {
@@ -417,7 +417,7 @@
     {
       "project_number": 860,
       "project_name": "propagate_axiom_policy_to_agents_rules",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "1.5 hours",
       "description": "Update agent instructions, rules, and workflows to prohibit axiom additions with same strictness as sorries. Reference new proof-debt-policy.md and add axiom checks parallel to sorry checks. Files: lean-implementation-agent.md, lean-research-agent.md, lean4.md, state-management.md, CLAUDE.md, verification-workflow.md.",
@@ -425,7 +425,8 @@
         859
       ],
       "created": "2026-02-04T09:22:55Z",
-      "last_updated": "2026-02-04T09:22:55Z"
+      "last_updated": "2026-02-04T09:39:39Z",
+      "session_id": "sess_1770197966_bed5ba"
     }
   ],
   "completed_projects": [
