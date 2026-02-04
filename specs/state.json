@@ -69,9 +69,9 @@
           "summary": "Post-857 assessment: completeness has 2 axioms (not 1); EvalBMCS path has structural box-case limitation; recommend temporalLindenbaumMCS first then multi-family saturation"
         },
         {
-          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-003.md",
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-004.md",
           "type": "plan",
-          "summary": "7-phase implementation plan: dead code cleanup, documentation sorry removal, temporal Lindenbaum construction, temporal axiom rewiring, multi-family saturated BMCS, completeness rewiring, final verification"
+          "summary": "5-phase plan: temporal Lindenbaum construction, temporal axiom elimination, multi-family saturated BMCS, completeness rewiring, final verification"
         }
       ],
       "planned": "2026-02-04T22:17:03Z",
