@@ -8,7 +8,7 @@
     {
       "project_number": 856,
       "project_name": "implement_multifamily_saturated_bmcs",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "32-50 hours",
       "description": "Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. Currently bmcs_weak_completeness depends on this axiom (Construction.lean line 228). A multi-family saturated bundle would prove modal backward direction without axiom. Requires completing SaturatedConstruction.lean sorries (12 sorries, related to Task 838). This enables Task 843 (remove axiom). Critical for making BMCS approach publication-ready without axiom disclosure.",
@@ -20,8 +20,8 @@
         838
       ],
       "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T09:07:05Z",
-      "session_id": "sess_1770195851_84b6c5",
+      "last_updated": "2026-02-04T09:09:49Z",
+      "session_id": "sess_1770196166_c192d2",
       "researched": "2026-02-04T09:02:46Z",
       "artifacts": [
         {
@@ -45,7 +45,8 @@
           "summary": "5-phase implementation plan for completing SaturatedConstruction.lean with 45 hours estimated effort"
         }
       ],
-      "planned": "2026-02-04T09:07:05Z"
+      "planned": "2026-02-04T09:07:05Z",
+      "started": "2026-02-04T09:09:49Z"
     },
     {
       "project_number": 855,
@@ -341,8 +342,8 @@
       "effort": "8-12 hours",
       "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
       "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T09:05:45Z",
-      "session_id": "sess_1770195695_82cc76",
+      "last_updated": "2026-02-04T09:12:24Z",
+      "session_id": "sess_1770196115_992a6f",
       "parent_task": 855,
       "related": [
         856
@@ -353,6 +354,11 @@
           "path": "specs/857_add_temporal_backward_properties/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of temporal_backward properties, comparison of axiom-based vs structural approaches, and detailed implementation plan"
+        },
+        {
+          "path": "specs/857_add_temporal_backward_properties/reports/research-002.md",
+          "type": "research",
+          "summary": "Analysis of zero-axiom feasibility for temporal backward properties. Concludes axiom-based approach is correct for constant families; zero-axiom requires multi-family saturation (future work)."
         }
       ]
     }
