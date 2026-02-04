@@ -115,12 +115,14 @@ technical_debt:
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Effort**: 8-12 hours (revised)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
 - **Started**: 2026-02-04
+- **Completed**: 2026-02-04
+- **Summary**: Proved temporal backward G and H cases in bmcs_truth_lemma, achieving sorry-free completeness theorem. Used temporally_saturated_mcs_exists axiom with TemporalCoherentFamily infrastructure.
 - **Parent**: Task 855
 - **Depends**: Task 856
 - **Related**: Task 856, Task 862

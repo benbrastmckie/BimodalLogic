@@ -1,9 +1,0 @@
-{
-  "status": "researched",
-  "session_id": "sess_1770239346_1af20d",
-  "artifacts": [{
-    "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-007.md",
-    "type": "research",
-    "summary": "S5 axioms proven present in TM; EvalBMCS path (fully proven, no axioms) is the correct solution for axiom-free completeness"
-  }]
-}

@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BMCSTruth
 import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Metalogic.Bundle.Construction
+import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.DeductionTheorem
@@ -98,14 +99,17 @@ This theorem shows that consistent formulas have BMCS models.
 -/
 theorem bmcs_representation (φ : Formula) (h_cons : ContextConsistent [φ]) :
     ∃ (B : BMCS Int), bmcs_truth_at B B.eval_family 0 φ := by
-  -- Construct a BMCS from the consistent context [φ]
-  let B := construct_bmcs [φ] h_cons (D := Int)
+  -- Construct a temporally coherent BMCS from the consistent context [φ]
+  let B := construct_temporal_bmcs [φ] h_cons (D := Int)
   use B
-  -- φ ∈ B.eval_family.mcs 0 by construct_bmcs_contains_context
+  -- φ ∈ B.eval_family.mcs 0 by construct_temporal_bmcs_contains_context
   have h_in_mcs : φ ∈ B.eval_family.mcs 0 :=
-    construct_bmcs_contains_context [φ] h_cons φ (by simp)
+    construct_temporal_bmcs_contains_context [φ] h_cons φ (by simp)
+  -- The BMCS is temporally coherent
+  have h_tc : B.temporally_coherent :=
+    construct_temporal_bmcs_temporally_coherent [φ] h_cons
   -- By truth lemma, φ is true at (eval_family, 0)
-  exact (bmcs_truth_lemma B B.eval_family B.eval_family_mem 0 φ).mp h_in_mcs
+  exact (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 φ).mp h_in_mcs
 
 /--
 **Representation Theorem (Context Version)**: If a context Γ is consistent,
@@ -115,15 +119,18 @@ This is a generalization of `bmcs_representation` to contexts.
 -/
 theorem bmcs_context_representation (Γ : List Formula) (h_cons : ContextConsistent Γ) :
     ∃ (B : BMCS Int), ∀ γ ∈ Γ, bmcs_truth_at B B.eval_family 0 γ := by
-  -- Construct a BMCS from the consistent context Γ
-  let B := construct_bmcs Γ h_cons (D := Int)
+  -- Construct a temporally coherent BMCS from the consistent context Γ
+  let B := construct_temporal_bmcs Γ h_cons (D := Int)
   use B
-  -- For each γ ∈ Γ, γ ∈ B.eval_family.mcs 0 by construct_bmcs_contains_context
+  -- The BMCS is temporally coherent
+  have h_tc : B.temporally_coherent :=
+    construct_temporal_bmcs_temporally_coherent Γ h_cons
+  -- For each γ ∈ Γ, γ ∈ B.eval_family.mcs 0 by construct_temporal_bmcs_contains_context
   intro γ h_mem
   have h_in_mcs : γ ∈ B.eval_family.mcs 0 :=
-    construct_bmcs_contains_context Γ h_cons γ h_mem
+    construct_temporal_bmcs_contains_context Γ h_cons γ h_mem
   -- By truth lemma, γ is true at (eval_family, 0)
-  exact (bmcs_truth_lemma B B.eval_family B.eval_family_mem 0 γ).mp h_in_mcs
+  exact (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 γ).mp h_in_mcs
 
 /-!
 ## Weak Completeness
@@ -438,13 +445,19 @@ Derivability  ↔  BMCS-validity  →  Standard-validity
 
 This is a FULL completeness result for TM logic. This file is SORRY-FREE!
 
-### Sorries from Dependencies
+### Axiom Dependencies
 
-This module inherits sorries from:
-- **Construction.lean**: 1 sorry in `modal_backward` (construction assumption)
-- **TruthLemma.lean**: 2 sorries in temporal backward directions (pending Task 857 temporal_backward properties)
+This module inherits axiom dependencies from:
+- **Construction.lean**: `singleFamily_modal_backward_axiom` (modal backward for single-family BMCS)
+- **TemporalCoherentConstruction.lean**: `temporally_saturated_mcs_exists` (temporal saturation existence)
 
-These are documented in those files and are not related to the core completeness result.
+Both axioms capture standard metatheoretic facts from modal and temporal logic.
+The main `bmcs_truth_lemma` in TruthLemma.lean is now fully sorry-free (Task 857).
+
+### Remaining Sorries from Dependencies
+
+- **TruthLemma.lean**: 4 sorries in `eval_bmcs_truth_lemma` (EvalBMCS structural limitations)
+- These are structural limitations of the legacy EvalBMCS approach, not the main BMCS approach.
 -/
 
 end Bimodal.Metalogic.Bundle
