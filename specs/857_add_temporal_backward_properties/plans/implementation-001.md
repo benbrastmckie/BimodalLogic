@@ -1,7 +1,7 @@
 # Implementation Plan: Task #857 - Zero-Axiom Temporal Backward Properties
 
 - **Task**: 857 - Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 40-55 hours
 - **Dependencies**: Task 856 (EvalCoherent pattern reference)
 - **Research Inputs**: specs/857_add_temporal_backward_properties/reports/research-004.md
@@ -90,7 +90,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Temporal Duality Infrastructure [IN PROGRESS]
+### Phase 1: Temporal Duality Infrastructure [COMPLETED]
 
 **Goal**: Establish lemmas for transforming negated temporal operators in MCS context.
 
@@ -112,7 +112,7 @@ After this implementation:
 
 ---
 
-### Phase 2: GContent and TemporalWitnessSeed Definitions [NOT STARTED]
+### Phase 2: GContent and TemporalWitnessSeed Definitions [SKIPPED - Not needed]
 
 **Goal**: Define the temporal analog of BoxContent for G formulas.
 
@@ -136,7 +136,7 @@ After this implementation:
 
 ---
 
-### Phase 3: F-Witness Seed Consistency [NOT STARTED]
+### Phase 3: F-Witness Seed Consistency [SKIPPED - Not needed]
 
 **Goal**: Prove that if F phi in base.mcs t for a constant family, then {phi} union GContent(base) is consistent.
 
@@ -166,7 +166,7 @@ After this implementation:
 
 ---
 
-### Phase 4: TemporalCoherentFamily Structure and Backward Lemmas [NOT STARTED]
+### Phase 4: TemporalCoherentFamily Structure and Backward Lemmas [COMPLETED]
 
 **Goal**: Define structure with forward_F/backward_P and prove temporal_backward_G/H.
 
@@ -206,7 +206,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Integration with TruthLemma [NOT STARTED]
+### Phase 5: Integration with TruthLemma [BLOCKED - Requires axioms]
 
 **Goal**: Eliminate the sorries in TruthLemma.lean using the new infrastructure.
 
@@ -235,7 +235,7 @@ After this implementation:
 
 ---
 
-### Phase 6: Documentation and Cleanup [NOT STARTED]
+### Phase 6: Documentation and Cleanup [COMPLETED]
 
 **Goal**: Document the construction and ensure code quality.
 

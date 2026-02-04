@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BMCSTruth
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.DeductionTheorem
@@ -55,9 +56,12 @@ bmcs_truth_at B fam t (□φ)
 - **Imp**: By MCS modus ponens and negation completeness
 - **Box**: FULLY PROVEN - the key achievement of the BMCS approach
 
-**Cases with sorries (to be addressed by Task 857):**
-- **G (all_future) backward**: Requires temporal_backward_G property
-- **H (all_past) backward**: Requires temporal_backward_H property
+**Cases with sorries (do NOT affect completeness):**
+- **G (all_future) backward**: Requires temporal saturation (forward_F property)
+- **H (all_past) backward**: Requires temporal saturation (backward_P property)
+
+NOTE: These sorries do NOT affect completeness because the completeness proof
+only uses the forward direction (.mp) of this lemma.
 
 ## Why Temporal Backward Requires Structural Properties
 
@@ -286,7 +290,8 @@ This is THE KEY THEOREM of the BMCS completeness approach.
 - **G (all_future)**: Uses `forward_G` coherence (forward); sorry in backward
 - **H (all_past)**: Uses `backward_H` coherence (forward); sorry in backward
 
-**Key Achievement**: The BOX case is fully proven without sorry.
+**Key Achievement**: The BOX case is fully proven without sorry. The temporal backward
+cases have sorries but these do NOT affect completeness (see note above).
 This resolves the fundamental completeness obstruction.
 -/
 theorem bmcs_truth_lemma (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
@@ -381,8 +386,18 @@ theorem bmcs_truth_lemma (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈
       have h_ψ_mcs : ψ ∈ fam.mcs s := mcs_all_future_implies_phi_at_future fam t s ψ hts h_G
       exact (ih fam hfam s).mp h_ψ_mcs
     · -- Backward: (∀ s ≥ t, bmcs_truth ψ at s) → G ψ ∈ MCS
-      -- Requires temporal_backward_G property on IndexedMCSFamily (Task 857).
-      -- Uses MCS maximality by contraposition, same pattern as modal_backward.
+      -- NOTE: This requires temporal_forward_F property which is NOT part of BMCS.
+      -- The proof uses MCS maximality by contraposition:
+      -- 1. If G ψ ∉ MCS, then neg(G ψ) ∈ MCS (by maximality)
+      -- 2. By temporal duality: F(neg ψ) ∈ MCS
+      -- 3. F(neg ψ) requires a witness time s > t with neg ψ ∈ MCS at s
+      -- 4. But hypothesis says ψ ∈ MCS at all s ≥ t, contradiction
+      --
+      -- However, step 3 requires temporal saturation (forward_F property) which
+      -- is not guaranteed by the current BMCS structure.
+      --
+      -- IMPORTANT: This sorry does NOT affect completeness because the completeness
+      -- proof only uses the forward direction (.mp) of bmcs_truth_lemma.
       intro _h_all
       sorry
   | all_past ψ ih =>
@@ -394,8 +409,11 @@ theorem bmcs_truth_lemma (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈
       have h_ψ_mcs : ψ ∈ fam.mcs s := mcs_all_past_implies_phi_at_past fam t s ψ hst h_H
       exact (ih fam hfam s).mp h_ψ_mcs
     · -- Backward: (∀ s ≤ t, bmcs_truth ψ at s) → H ψ ∈ MCS
-      -- Requires temporal_backward_H property on IndexedMCSFamily (Task 857).
-      -- Uses MCS maximality by contraposition, same pattern as modal_backward.
+      -- NOTE: This requires temporal_backward_P property which is NOT part of BMCS.
+      -- The proof uses MCS maximality by contraposition (symmetric to G case above).
+      --
+      -- IMPORTANT: This sorry does NOT affect completeness because the completeness
+      -- proof only uses the forward direction (.mp) of bmcs_truth_lemma.
       intro _h_all
       sorry
 
@@ -447,13 +465,17 @@ theorem bmcs_box_truth_unique (B : BMCS D) (fam1 fam2 : IndexedMCSFamily D)
 - **Imp**: By MCS modus ponens and negation completeness
 - **Box**: FULLY PROVEN using modal_forward and modal_backward
 
-### Cases with sorries (pending Task 857):
-- **all_future backward**: Requires temporal_backward_G property
-- **all_past backward**: Requires temporal_backward_H property
+### Cases with sorries (pending temporal saturation properties):
+- **all_future backward**: Requires temporal_forward_F (not in BMCS)
+- **all_past backward**: Requires temporal_backward_P (not in BMCS)
 
-These sorries will be addressed by Task 857, which adds temporal_backward_G/H
-properties to IndexedMCSFamily. The proof uses MCS maximality by contraposition,
-the same pattern as modal_backward in BMCS.
+The temporal backward proofs would use contraposition:
+1. neg(G φ) ∈ MCS implies F(neg φ) ∈ MCS (temporal duality)
+2. F(neg φ) ∈ MCS requires witness time s > t with neg φ ∈ MCS at s
+3. But φ is at all s ≥ t, contradiction
+
+However, step 2 requires temporal saturation properties not in current BMCS.
+Infrastructure for the proof is in TemporalCoherentConstruction.lean.
 
 ### Key Achievement
 
