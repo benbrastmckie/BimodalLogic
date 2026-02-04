@@ -1,5 +1,5 @@
 ---
-next_project_number: 854
+next_project_number: 855
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 854. Bimodal metalogic audit and cleanup
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-04
+
+**Description**: Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.
+
+---
 
 ### 853. Construct CoherentBundle from consistent context
 - **Effort**: 40-60 hours (revised)

@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 854,
+      "project_name": "bimodal_metalogic_audit_and_cleanup",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.",
+      "created": "2026-02-04T01:49:53Z",
+      "last_updated": "2026-02-04T01:49:53Z"
+    },
+    {
       "project_number": 853,
       "project_name": "construct_coherentbundle_from_context",
       "status": "completed",
@@ -363,7 +372,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 854,
+  "next_project_number": 855,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
