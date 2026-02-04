@@ -197,3 +197,4 @@ If searches yield no useful results:
 10. **Block on MCP failures** - always continue with available information
 11. **Call blocked tools** (lean_diagnostic_messages, lean_file_outline)
 12. **Use 'acceptable sorry' framing** - sorries are technical debt, never "acceptable" (see proof-debt-policy.md)
+13. **Use 'acceptable axiom' framing** - axioms are technical debt, never "acceptable" (see proof-debt-policy.md)

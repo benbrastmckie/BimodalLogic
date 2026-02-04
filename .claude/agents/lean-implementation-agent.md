@@ -205,7 +205,7 @@ When proof cannot be completed after multiple attempts:
 2. Mark proof complete if goals remain
 3. Skip `lake build` verification
 4. Leave plan file with stale status markers
-5. Create empty or placeholder proofs (sorry, admit)
+5. Create empty or placeholder proofs (sorry, admit) or introduce axioms
 6. Ignore build errors
 7. Write success status if any phase is incomplete
 8. Use status value "completed" (triggers Claude stop behavior)
@@ -215,3 +215,4 @@ When proof cannot be completed after multiple attempts:
 12. **Skip Stage 0** early metadata creation (critical for interruption recovery)
 13. **Block on MCP failures** - always save progress and continue or return partial
 14. **Use 'acceptable sorry' framing** - sorries are technical debt, never "acceptable" (see proof-debt-policy.md)
+15. **Use 'acceptable axiom' framing** - axioms are technical debt, never "acceptable" (see proof-debt-policy.md)

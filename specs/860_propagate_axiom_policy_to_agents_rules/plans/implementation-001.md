@@ -1,7 +1,7 @@
 # Implementation Plan: Task #860
 
 - **Task**: 860 - Propagate Axiom Policy to Agents and Rules
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: Task 859 (completed - proof-debt-policy.md)
 - **Research Inputs**: specs/860_propagate_axiom_policy_to_agents_rules/reports/research-001.md
@@ -47,7 +47,7 @@ Key findings from research:
 
 ## Implementation Phases
 
-### Phase 1: Agent Files [NOT STARTED]
+### Phase 1: Agent Files [COMPLETED]
 
 **Goal**: Add axiom MUST NOT rules to lean-implementation-agent.md and lean-research-agent.md
 
@@ -77,7 +77,7 @@ lean-research-agent.md:
 
 ---
 
-### Phase 2: Lean4 Rules [NOT STARTED]
+### Phase 2: Lean4 Rules [COMPLETED]
 
 **Goal**: Add axiom checks to lean4.md testing and verification section
 
@@ -101,7 +101,7 @@ lean-research-agent.md:
 
 ---
 
-### Phase 3: Verification Workflow [NOT STARTED]
+### Phase 3: Verification Workflow [COMPLETED]
 
 **Goal**: Add axiom verification parallel to sorry verification in verification-workflow.md
 
@@ -137,7 +137,7 @@ lean-research-agent.md:
 
 ---
 
-### Phase 4: Top-Level Documentation [NOT STARTED]
+### Phase 4: Top-Level Documentation [COMPLETED]
 
 **Goal**: Add policy reference to CLAUDE.md for visibility
 
@@ -161,7 +161,7 @@ lean-research-agent.md:
 
 ---
 
-### Phase 5: Verification [NOT STARTED]
+### Phase 5: Verification [COMPLETED]
 
 **Goal**: Verify all changes are consistent and complete
 

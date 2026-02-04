@@ -1,7 +1,7 @@
 # Implementation Plan: Task #854
 
 - **Task**: 854 - Bimodal metalogic audit and cleanup
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None (FMP line is already sorry-free and axiom-free)
 - **Research Inputs**: reports/research-001.md, reports/research-004.md, reports/research-005.md
@@ -66,7 +66,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Archive dead code and audit FMP/Closure.lean [NOT STARTED]
+### Phase 1: Archive dead code and audit FMP/Closure.lean [COMPLETED]
 
 **Goal**: Remove unused sorry and clean up Closure.lean documentation
 

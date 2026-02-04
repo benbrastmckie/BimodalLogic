@@ -177,9 +177,9 @@ lake clean && lake build
 After implementation:
 1. Run `lake build` to check compilation
 2. Verify build succeeds with no errors
-3. Check that all theorems compile without `sorry`
+3. Check that all theorems compile without `sorry` or new `axiom` declarations
 
 ## Context References
 
 For deeper understanding, load these context files as needed:
-- `@.claude/context/project/lean4/standards/proof-debt-policy.md` - Sorry remediation policy
+- `@.claude/context/project/lean4/standards/proof-debt-policy.md` - Axiom and sorry handling policies

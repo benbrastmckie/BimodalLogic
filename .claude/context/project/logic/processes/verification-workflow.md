@@ -38,7 +38,7 @@ This document describes the proof verification processes used in the ProofChecke
 **Checks**:
 - Type signatures match
 - All tactics succeed
-- No `sorry` placeholders (unless documented)
+- No `sorry` placeholders (unless documented) and no new `axiom` declarations
 - All imports resolve
 
 **Example**:
@@ -324,6 +324,15 @@ have h : ⊢ ψ := Derivable.modus_ponens [] φ ψ h1 h2
 
 **Critical**: These sorries are NEVER acceptable for publication. They represent mathematical debt that blocks any downstream theorems from being claimed as proven.
 
+### Axiom Verification
+
+**Development policy**: No new axioms should be introduced. If structural proof cannot avoid an axiom:
+- Document the axiom with clear justification
+- Register in SORRY_REGISTRY.md with remediation path
+- Note transitive impact on dependent theorems
+
+**Critical**: New axioms are NEVER acceptable as a solution. They represent technical debt requiring structural proof to eliminate. See @.claude/context/project/lean4/standards/proof-debt-policy.md.
+
 ---
 
 ## Soundness Verification Workflow
@@ -556,6 +565,7 @@ You've successfully verified a proof when:
 - [ ] Proof compiles without errors (syntactic verification)
 - [ ] All axioms and rules are sound (semantic verification)
 - [ ] Proof is complete with no undocumented `sorry` (completeness verification)
+- [ ] No new axiom declarations (or documented with remediation plan)
 - [ ] Proof passes quality checklist (quality verification)
 - [ ] No circular reasoning detected
 - [ ] All helper lemmas are verified

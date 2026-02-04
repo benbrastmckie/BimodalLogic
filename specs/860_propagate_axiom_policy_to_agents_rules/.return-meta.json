@@ -1,0 +1,50 @@
+{
+  "status": "implemented",
+  "summary": "Propagated axiom policy to 5 files: lean-implementation-agent.md, lean-research-agent.md, lean4.md, verification-workflow.md, and CLAUDE.md. Added MUST NOT rules for 'acceptable axiom' framing and axiom verification checks parallel to existing sorry policies.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-implementation-agent.md",
+      "summary": "Added axiom to placeholder rule and new MUST NOT rule 15 for acceptable axiom framing"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-research-agent.md",
+      "summary": "Added new MUST NOT rule 13 for acceptable axiom framing"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/rules/lean4.md",
+      "summary": "Added axiom check to testing checklist and updated context reference"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/logic/processes/verification-workflow.md",
+      "summary": "Added axiom verification section and success criterion"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/CLAUDE.md",
+      "summary": "Added Proof Debt Policy reference"
+    },
+    {
+      "type": "summary",
+      "path": "specs/860_propagate_axiom_policy_to_agents_rules/summaries/implementation-summary-20260204.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Propagated axiom policy to agents, rules, and workflows. Added MUST NOT rules for 'acceptable axiom' framing to both Lean agents, added axiom verification checks to lean4.md testing section and verification-workflow.md Level 1 checks, and added Proof Debt Policy reference to CLAUDE.md.",
+    "claudemd_suggestions": "Added Proof Debt Policy reference to CLAUDE.md (line 102), updated lean4.md context reference description, added Axiom Verification section to verification-workflow.md"
+  },
+  "metadata": {
+    "session_id": "sess_1770198517_7a579d",
+    "duration_seconds": 900,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "next_steps": "Review implementation and verify axiom policy is consistently applied"
+}

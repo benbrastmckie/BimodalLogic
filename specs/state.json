@@ -80,12 +80,12 @@
     {
       "project_number": 854,
       "project_name": "bimodal_metalogic_audit_and_cleanup",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.",
       "created": "2026-02-04T01:49:53Z",
-      "last_updated": "2026-02-04T09:48:19Z",
-      "session_id": "sess_1770198325_b5c917",
+      "last_updated": "2026-02-04T09:50:29Z",
+      "session_id": "sess_1770198608_378677",
       "researched": "2026-02-04T09:35:17Z",
       "artifacts": [
         {
@@ -119,7 +119,8 @@
           "summary": "6-phase implementation plan for cleaning FMP completeness line to publication quality"
         }
       ],
-      "planned": "2026-02-04T09:48:19Z"
+      "planned": "2026-02-04T09:48:19Z",
+      "started": "2026-02-04T09:50:29Z"
     },
     {
       "project_number": 843,
@@ -423,7 +424,7 @@
     {
       "project_number": 860,
       "project_name": "propagate_axiom_policy_to_agents_rules",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "effort": "1.5 hours",
       "description": "Update agent instructions, rules, and workflows to prohibit axiom additions with same strictness as sorries. Reference new proof-debt-policy.md and add axiom checks parallel to sorry checks. Files: lean-implementation-agent.md, lean-research-agent.md, lean4.md, state-management.md, CLAUDE.md, verification-workflow.md.",
@@ -431,8 +432,8 @@
         859
       ],
       "created": "2026-02-04T09:22:55Z",
-      "last_updated": "2026-02-04T09:47:46Z",
-      "session_id": "sess_1770198339_b0689b",
+      "last_updated": "2026-02-04T09:52:21Z",
+      "session_id": "sess_1770198517_7a579d",
       "researched": "2026-02-04T09:41:54Z",
       "artifacts": [
         {
@@ -444,9 +445,18 @@
           "path": "specs/860_propagate_axiom_policy_to_agents_rules/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase plan covering agent files, lean4 rules, verification workflow, and CLAUDE.md updates"
+        },
+        {
+          "path": "specs/860_propagate_axiom_policy_to_agents_rules/summaries/implementation-summary-20260204.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-02-04T09:47:46Z"
+      "planned": "2026-02-04T09:47:46Z",
+      "started": "2026-02-04T09:48:57Z",
+      "completed": "2026-02-04T09:52:21Z",
+      "completion_summary": "Propagated axiom policy to agents, rules, and workflows. Added MUST NOT rules for 'acceptable axiom' framing to both Lean agents, added axiom verification checks to lean4.md testing section and verification-workflow.md Level 1 checks, and added Proof Debt Policy reference to CLAUDE.md.",
+      "claudemd_suggestions": "Added Proof Debt Policy reference to CLAUDE.md (line 102), updated lean4.md context reference description, added Axiom Verification section to verification-workflow.md"
     }
   ],
   "completed_projects": [

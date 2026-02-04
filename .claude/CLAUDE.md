@@ -99,6 +99,8 @@ TODO.md and state.json must stay synchronized. Update state.json first (machine 
 }
 ```
 
+**Proof Debt Policy**: See @.claude/context/project/lean4/standards/proof-debt-policy.md for axiom and sorry handling policies.
+
 ### Completion Workflow
 - Non-meta tasks: `completion_summary` + optional `roadmap_items` -> /todo annotates ROAD_MAP.md
 - Meta tasks: `completion_summary` + `claudemd_suggestions` -> /todo displays for user review

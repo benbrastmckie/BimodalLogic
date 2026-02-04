@@ -10,15 +10,15 @@ import Mathlib.Data.List.Basic
 /-!
 # Subformula Closure for Finite Model Property
 
-This module provides the closure infrastructure for the finite model construction
-in the parametric FMP architecture. It defines closures, closure-restricted consistency,
-and projections from full MCS to closure-restricted MCS.
+This module provides the closure infrastructure for the finite model construction.
+It defines closures, closure-restricted consistency, and projections from full
+maximal consistent sets (MCS) to closure-restricted MCS.
 
 ## Overview
 
-For a formula `φ`, the **closure** is the set of all subformulas. The **closure with negations**
-extends this to include negations of all closure members. This finite set is the domain
-for finite world states.
+For a formula `φ`, the **closure** is the set of all its subformulas. The
+**closure with negations** extends this to include negations of all closure
+members. This finite set is the domain for finite world states.
 
 ## Main Definitions
 
@@ -29,17 +29,18 @@ for finite world states.
 - `mcs_projection`: Project a full MCS to closure
 - `mcs_projection_is_closure_mcs`: The projection is closure-maximal
 
-## Known Issue: Double-Negation Escape
+## Technical Note: Double-Negation Escape
 
 When `ψ = χ.neg` for some `χ ∈ closure φ`, then `ψ.neg = χ.neg.neg` may escape
-`closureWithNeg` because negation (defined as `imp _ bot`) is not involutive.
-This is handled via explicit case analysis in the proofs (see `mcs_projection_is_closure_mcs`).
+`closureWithNeg` because negation (defined as `imp _ bot`) is not syntactically
+involutive. This is handled via explicit case analysis in the proofs (see
+`mcs_projection_is_closure_mcs`).
 
 ## Cross-References
 
 - `BoundedTime.lean`: Parametric bounded time domain
 - `FiniteWorldState.lean`: Uses closure for finite world construction
-- `FiniteModelProperty.lean`: Uses closure-MCS for FMP proof
+- `SemanticCanonicalModel.lean`: Uses closure-MCS for completeness proof
 
 ## References
 
@@ -660,9 +661,9 @@ theorem closure_mcs_imp_iff (phi : Formula) (S : Set Formula)
         exact h_incons (h_mcs.1.2 [psi.neg, (psi.imp chi).neg] h_sub)
 
 /-!
-## Additional Closure Membership Infrastructure (Task 825)
+## Additional Closure Membership Infrastructure
 
-Helper lemmas for closure membership that unblock TruthLemma.lean.
+Helper lemmas for closure membership used by the truth lemma.
 -/
 
 /--
@@ -710,25 +711,8 @@ theorem closure_box_in_closureWithNeg (phi psi : Formula)
     (h : Formula.box psi ∈ closure phi) : Formula.box psi ∈ closureWithNeg phi :=
   closure_subset_closureWithNeg phi h
 
-/--
-Diamond psi = neg(Box(neg psi)) membership in closureWithNeg.
-
-If Box psi ∈ closure phi, then Diamond(psi.neg) ∈ closureWithNeg phi.
-Note: Diamond psi is syntactically neg(Box(neg psi)).
--/
-theorem diamond_in_closureWithNeg_of_box (phi psi : Formula)
-    (h : Formula.box psi ∈ closure phi) :
-    Formula.neg (Formula.box (Formula.neg psi)) ∈ closureWithNeg phi := by
-  -- We have Box psi ∈ closure phi
-  -- By subformula property, psi ∈ closure phi
-  -- So psi.neg ∈ closureWithNeg phi
-  -- And Box(psi.neg) needs to be in closureWithNeg... but it may not be!
-  -- Actually, this lemma is not generally true.
-  -- The diamond formula may not be a subformula of phi.
-  sorry
-
 /-!
-## Closure MCS Properties for Implication (Task 825)
+## Closure MCS Properties for Implication
 
 Additional properties relating implication membership to its components.
 -/
