@@ -80,13 +80,13 @@
     {
       "project_number": 854,
       "project_name": "bimodal_metalogic_audit_and_cleanup",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "description": "Take stock of the bimodal metalogic after completing tasks 851-854 (following 844). Audit to identify: (1) what has been established and how (theorems, axioms, dependencies), (2) what remains to be established for completeness, (3) what can be safely archived to Bimodal/Boneyard/ without breaking anything. Goal is a well-structured metalogic ready for publication.",
       "created": "2026-02-04T01:49:53Z",
-      "last_updated": "2026-02-04T09:30:33Z",
+      "last_updated": "2026-02-04T09:35:17Z",
       "session_id": "sess_1770197416_eae1f9",
-      "researched": "2026-02-04T08:22:38Z",
+      "researched": "2026-02-04T09:35:17Z",
       "artifacts": [
         {
           "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-001.md",
@@ -107,6 +107,11 @@
           "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-004.md",
           "type": "research",
           "summary": "Verified sorry/axiom dependencies: FMP approach is sorry-free and publication-ready; BMCS approach depends on one axiom (singleFamily_modal_backward_axiom)"
+        },
+        {
+          "path": "specs/854_bimodal_metalogic_audit_and_cleanup/reports/research-005.md",
+          "type": "research",
+          "summary": "Verification that fmp_weak_completeness is sorry-free and uses only standard Lean axioms (propext, Classical.choice, Quot.sound)"
         }
       ]
     },

@@ -46,7 +46,7 @@ This implementation expands the existing sorry-debt-policy.md into a comprehensi
 
 ## Implementation Phases
 
-### Phase 1: Rename and Expand Policy File [IN PROGRESS]
+### Phase 1: Rename and Expand Policy File [COMPLETED]
 
 **Goal**: Transform sorry-debt-policy.md into comprehensive proof-debt-policy.md covering both sorries and axioms.
 
@@ -73,7 +73,7 @@ This implementation expands the existing sorry-debt-policy.md into a comprehensi
 
 ---
 
-### Phase 2: Update plan-format.md [NOT STARTED]
+### Phase 2: Update plan-format.md [IN PROGRESS]
 
 **Goal**: Add "Axiom Characterization (Lean plans only)" section to plan-format.md with framing rules parallel to Sorry Characterization.
 
