@@ -1,5 +1,5 @@
 ---
-next_project_number: 857
+next_project_number: 859
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,30 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 858. Remove misleading omega-rule comments from Bundle/ modules
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-04
+- **Depends**: Task 857
+- **Related**: Task 855, Task 856
+
+**Description**: Remove misleading comments about omega-rule/omega-saturation requirement for G/H backward directions. The Bundled approach avoids omega-rule via structural properties (like modal_backward), not omega-saturation. Update TruthLemma.lean, IndexedMCSFamily.lean, Construction.lean, and any other files that incorrectly claim omega-saturation is fundamentally required. Replace with accurate explanation that temporal_backward properties enable the proof via maximality (analogous to modal case). Depends on Task 857 completing first.
+
+---
+
+### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-04
+- **Parent**: Task 855
+- **Related**: Task 856
+
+**Description**: Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.
+
+---
 
 ### 856. Implement multi-family saturated BMCS construction
 - **Effort**: 32-50 hours
