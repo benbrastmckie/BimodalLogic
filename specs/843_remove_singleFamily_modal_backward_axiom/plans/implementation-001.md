@@ -1,7 +1,7 @@
 # Implementation Plan: Remove singleFamily_modal_backward_axiom
 
 - **Task**: 843 - remove_singleFamily_modal_backward_axiom
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 9 hours
 - **Dependencies**: Task 856 (COMPLETED - provides EvalCoherentBundle infrastructure)
 - **Research Inputs**: reports/research-001.md, reports/research-002.md

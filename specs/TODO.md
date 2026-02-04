@@ -24,9 +24,11 @@ technical_debt:
 
 ### 861. Reorganize Logos Introduction LaTeX document
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: latex
 - **Created**: 2026-02-04
+- **Researched**: 2026-02-04
+- **Research**: [research-001.md](specs/861_reorganize_logos_introduction_latex/reports/research-001.md)
 
 **Description**: Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.
 

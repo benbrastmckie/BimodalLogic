@@ -1,15 +1,24 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-04T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, reading source documents"
-  },
+  "completed_at": "2026-02-04T12:35:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/861_reorganize_logos_introduction_latex/reports/research-001.md",
+      "summary": "Research report analyzing three source documents with proposed 9-section reorganization structure, content mapping, and implementation notes for improving the Logos introduction narrative arc"
+    }
+  ],
+  "next_steps": "Run /plan 861 to create implementation plan",
   "metadata": {
     "session_id": "sess_1770232126_aa5590",
     "agent_type": "general-research-agent",
+    "duration_seconds": 2100,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7,
+    "documents_analyzed": 3,
+    "proposed_sections": 9,
+    "estimated_line_change": "340 -> 450-480 lines"
   }
 }

@@ -8,12 +8,20 @@
     {
       "project_number": 861,
       "project_name": "reorganize_logos_introduction_latex",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "description": "Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.",
       "created": "2026-02-04T19:03:21Z",
-      "last_updated": "2026-02-04T19:09:00Z",
-      "session_id": "sess_1770232126_aa5590"
+      "last_updated": "2026-02-04T19:11:45Z",
+      "session_id": "sess_1770232126_aa5590",
+      "researched": "2026-02-04T19:11:45Z",
+      "artifacts": [
+        {
+          "path": "specs/861_reorganize_logos_introduction_latex/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing three source documents with proposed 9-section reorganization structure, content mapping, and implementation notes for improving the Logos introduction narrative arc"
+        }
+      ]
     },
     {
       "project_number": 856,
