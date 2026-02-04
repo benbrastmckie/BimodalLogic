@@ -1,16 +1,16 @@
 ---
-next_project_number: 859
+next_project_number: 861
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-04T09:04:15Z
 task_counts:
-  active: 14
+  active: 16
   completed: 397
   in_progress: 1
-  not_started: 5
+  not_started: 7
   abandoned: 26
-  total: 428
+  total: 430
 technical_debt:
   sorry_count: 87
   axiom_count: 18
@@ -21,6 +21,49 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 860. Propagate Axiom Policy to Agents and Rules
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-04
+- **Dependencies**: Task 859
+
+**Description**: Update agent instructions, rules, and workflows to prohibit axiom additions with same strictness as sorries. Reference new proof-debt-policy.md and add axiom checks parallel to sorry checks.
+
+**Files to modify:**
+- Agents: `lean-implementation-agent.md`, `lean-research-agent.md`
+- Rules: `lean4.md`, `state-management.md`
+- Top-level: `CLAUDE.md`
+- Workflows: `verification-workflow.md`
+
+**Key changes:**
+- Add "MUST NOT add axioms" rules to agent instructions
+- Update lean4.md with axiom compilation checks
+- Add axiom thresholds to state-management.md
+- Update CLAUDE.md to reference proof-debt-policy.md
+- Add axiom tolerance rules to verification-workflow.md
+
+---
+
+### 859. Establish Axiom Debt Policy in Core Documentation
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-04
+
+**Description**: Expand sorry-debt-policy.md into proof-debt-policy.md covering both sorries and axioms as mathematical debt. Update plan-format.md and report-format.md to add "Axiom Characterization" sections with framing rules parallel to sorries.
+
+**Files to modify:**
+- Rename: `sorry-debt-policy.md` → `proof-debt-policy.md`
+- Update: `plan-format.md`, `report-format.md`
+
+**Key changes:**
+- Add "Axiom Debt" section to policy with same framing rules as sorries
+- Document that axioms, like sorries, block publication and propagate transitively
+- Add "Axiom Characterization" sections to format standards
+
+---
 
 ### 857. Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Effort**: 8-12 hours
