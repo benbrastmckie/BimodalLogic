@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Identified 3 files with misleading omega-rule/omega-saturation comments: TruthLemma.lean (6 locations), Completeness.lean (1 location), README.md (1 location). The correct explanation is that temporal backward directions require structural properties (temporal_backward_G/H) using MCS maximality by contraposition - the SAME pattern as modal_backward - not omega-saturation. Detailed replacement text provided for all locations.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/858_remove_omega_rule_misleading_comments/reports/research-001.md",
-      "summary": "Comprehensive analysis of misleading omega-rule comments with specific replacement text for all affected files"
+      "type": "plan",
+      "path": "specs/858_remove_omega_rule_misleading_comments/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for removing misleading omega-rule comments from Bundle/ modules"
     }
   ],
+  "next_steps": "Run /implement 858 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770194740_2311db",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770195158_889439",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1.5
   }
 }

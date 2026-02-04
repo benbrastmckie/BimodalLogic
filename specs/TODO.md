@@ -24,7 +24,7 @@ technical_debt:
 
 ### 858. Remove misleading omega-rule comments from Bundle/ modules
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Depends**: Task 857
@@ -56,7 +56,7 @@ technical_debt:
 - **Parent**: Task 854
 - **Enables**: Task 843
 - **Related**: Task 838
-- **Research**: [research-001.md](specs/856_implement_multifamily_saturated_bmcs/reports/research-001.md)
+- **Research**: [research-001.md](specs/856_implement_multifamily_saturated_bmcs/reports/research-001.md), [research-002.md](specs/856_implement_multifamily_saturated_bmcs/reports/research-002.md)
 
 **Description**: Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. Currently bmcs_weak_completeness depends on this axiom (Construction.lean line 228). A multi-family saturated bundle would prove modal backward direction without axiom. Requires completing SaturatedConstruction.lean sorries (12 sorries, related to Task 838). Critical for making BMCS approach publication-ready without axiom disclosure.
 

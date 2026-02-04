@@ -20,14 +20,19 @@
         838
       ],
       "created": "2026-02-04T08:27:55Z",
-      "last_updated": "2026-02-04T08:34:39Z",
-      "session_id": "sess_1738668430_f79144",
-      "researched": "2026-02-04T08:34:39Z",
+      "last_updated": "2026-02-04T08:54:31Z",
+      "session_id": "sess_1770195041_c7900e",
+      "researched": "2026-02-04T08:54:31Z",
       "artifacts": [
         {
           "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-001.md",
           "type": "research",
-          "summary": "Comprehensive analysis of multi-family saturated BMCS construction approaches with 3 axioms and 6 sorries identified"
+          "summary": "Initial analysis of multi-family saturated BMCS construction approaches"
+        },
+        {
+          "path": "specs/856_implement_multifamily_saturated_bmcs/reports/research-002.md",
+          "type": "research",
+          "summary": "Re-research verifying previous findings, identifying misleading comments, and devising correct axiom removal path via WeakCoherentBundle approach"
         }
       ]
     },
@@ -446,13 +451,13 @@
     {
       "project_number": 858,
       "project_name": "remove_omega_rule_misleading_comments",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "effort": "1-2 hours",
       "description": "Remove misleading comments about omega-rule/omega-saturation requirement for G/H backward directions. The Bundled approach avoids omega-rule via structural properties (like modal_backward), not omega-saturation. Update TruthLemma.lean, IndexedMCSFamily.lean, Construction.lean, and any other files that incorrectly claim omega-saturation is fundamentally required. Replace with accurate explanation that temporal_backward properties enable the proof via maximality (analogous to modal case). Depends on Task 857 completing first.",
       "created": "2026-02-04T08:44:48Z",
-      "last_updated": "2026-02-04T08:49:09Z",
-      "session_id": "sess_1770194740_2311db",
+      "last_updated": "2026-02-04T08:54:45Z",
+      "session_id": "sess_1770195158_889439",
       "depends_on": [
         857
       ],
@@ -467,7 +472,8 @@
           "type": "research",
           "summary": "Comprehensive analysis of misleading omega-rule comments with specific replacement text for all affected files"
         }
-      ]
+      ],
+      "planned": "2026-02-04T08:54:45Z"
     }
   ],
   "completed_projects": [
