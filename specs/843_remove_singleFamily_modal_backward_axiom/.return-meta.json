@@ -1,15 +1,19 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-02-04T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "research_in_progress",
-    "details": "Located axiom declaration, analyzed EvalCoherentBundle infrastructure, reviewing completeness theorem dependencies"
-  },
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md",
+      "summary": "Research report analyzing how to remove singleFamily_modal_backward_axiom using EvalCoherentBundle from task 856"
+    }
+  ],
+  "next_steps": "Run /plan 843 to create implementation plan for EvalBMCS integration and axiom removal",
   "metadata": {
     "session_id": "sess_1770199649_bc01d6",
     "agent_type": "lean-research-agent",
+    "duration_seconds": 2700,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings_count": 6
   }
 }
