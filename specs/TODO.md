@@ -24,7 +24,7 @@ technical_debt:
 
 ### 856. Implement multi-family saturated BMCS construction
 - **Effort**: 32-50 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-04
 - **Parent**: Task 854
@@ -37,10 +37,12 @@ technical_debt:
 
 ### 855. Complete TruthLemma backward directions for all_future and all_past
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-04
+- **Researched**: 2026-02-04
 - **Related**: Task 854 research-004.md
+- **Research**: [research-001.md](specs/855_complete_truthlemma_backward_directions/reports/research-001.md)
 
 **Description**: Complete TruthLemma backward directions for all_future and all_past in Bundle/TruthLemma.lean (lines 383, 395). While NOT in bmcs_weak_completeness dependency chain (only uses .mp direction), completing these would make TruthLemma fully bidirectional. Requires omega-saturation. Cleanup task, not critical for publication.
 
