@@ -446,19 +446,27 @@
     {
       "project_number": 858,
       "project_name": "remove_omega_rule_misleading_comments",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "effort": "1-2 hours",
       "description": "Remove misleading comments about omega-rule/omega-saturation requirement for G/H backward directions. The Bundled approach avoids omega-rule via structural properties (like modal_backward), not omega-saturation. Update TruthLemma.lean, IndexedMCSFamily.lean, Construction.lean, and any other files that incorrectly claim omega-saturation is fundamentally required. Replace with accurate explanation that temporal_backward properties enable the proof via maximality (analogous to modal case). Depends on Task 857 completing first.",
       "created": "2026-02-04T08:44:48Z",
-      "last_updated": "2026-02-04T08:44:48Z",
-      "session_id": "",
+      "last_updated": "2026-02-04T08:49:09Z",
+      "session_id": "sess_1770194740_2311db",
       "depends_on": [
         857
       ],
       "related": [
         855,
         856
+      ],
+      "researched": "2026-02-04T08:49:09Z",
+      "artifacts": [
+        {
+          "path": "specs/858_remove_omega_rule_misleading_comments/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of misleading omega-rule comments with specific replacement text for all affected files"
+        }
       ]
     }
   ],
