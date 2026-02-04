@@ -24,11 +24,12 @@ technical_debt:
 
 ### 861. Reorganize Logos Introduction LaTeX document
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: latex
 - **Created**: 2026-02-04
 - **Researched**: 2026-02-04
 - **Planned**: 2026-02-04
+- **Started**: 2026-02-04
 - **Research**: [research-001.md](specs/861_reorganize_logos_introduction_latex/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/861_reorganize_logos_introduction_latex/plans/implementation-001.md)
 

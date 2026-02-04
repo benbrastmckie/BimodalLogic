@@ -1,7 +1,7 @@
 # Implementation Plan: Remove singleFamily_modal_backward_axiom
 
 - **Task**: 843 - remove_singleFamily_modal_backward_axiom
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 9 hours
 - **Dependencies**: Task 856 (COMPLETED - provides EvalCoherentBundle infrastructure)
 - **Research Inputs**: reports/research-001.md, reports/research-002.md
@@ -84,7 +84,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: EvalBMCS Truth Definitions [NOT STARTED]
+### Phase 1: EvalBMCS Truth Definitions [COMPLETED]
 
 **Goal**: Create truth definitions for EvalBMCS that mirror existing BMCS truth definitions
 
@@ -107,7 +107,7 @@ After this implementation:
 
 ---
 
-### Phase 2: EvalBMCS Truth Lemma [NOT STARTED]
+### Phase 2: EvalBMCS Truth Lemma [BLOCKED]
 
 **Goal**: Create truth lemma for EvalBMCS linking formula membership to semantic truth
 

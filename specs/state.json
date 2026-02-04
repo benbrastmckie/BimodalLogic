@@ -8,12 +8,12 @@
     {
       "project_number": 861,
       "project_name": "reorganize_logos_introduction_latex",
-      "status": "planned",
+      "status": "implementing",
       "language": "latex",
       "description": "Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.",
       "created": "2026-02-04T19:03:21Z",
-      "last_updated": "2026-02-04T19:19:28Z",
-      "session_id": "sess_1770232624_7df8ab",
+      "last_updated": "2026-02-04T19:21:36Z",
+      "session_id": "sess_1770232882_fb9de4",
       "researched": "2026-02-04T19:11:45Z",
       "artifacts": [
         {
@@ -27,7 +27,8 @@
           "summary": "7-phase implementation plan for reorganizing Logos introduction with motivation, planning, and AI applications sections"
         }
       ],
-      "planned": "2026-02-04T19:19:28Z"
+      "planned": "2026-02-04T19:19:28Z",
+      "started": "2026-02-04T19:21:36Z"
     },
     {
       "project_number": 856,
@@ -168,6 +169,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan covering EvalBMCS truth definitions, truth lemma, completeness rewiring, and axiom removal"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/summaries/implementation-summary-20260204.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the blocking issue - EvalBMCS lacks full modal coherence"
         }
       ],
       "planned": "2026-02-04T19:09:15Z",
