@@ -1,5 +1,5 @@
 ---
-next_project_number: 856
+next_project_number: 857
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,19 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 856. Implement multi-family saturated BMCS construction
+- **Effort**: 32-50 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-04
+- **Parent**: Task 854
+- **Enables**: Task 843
+- **Related**: Task 838
+
+**Description**: Implement multi-family saturated BMCS construction to eliminate singleFamily_modal_backward_axiom. Currently bmcs_weak_completeness depends on this axiom (Construction.lean line 228). A multi-family saturated bundle would prove modal backward direction without axiom. Requires completing SaturatedConstruction.lean sorries (12 sorries, related to Task 838). Critical for making BMCS approach publication-ready without axiom disclosure.
+
+---
 
 ### 855. Complete TruthLemma backward directions for all_future and all_past
 - **Effort**: 8-12 hours
