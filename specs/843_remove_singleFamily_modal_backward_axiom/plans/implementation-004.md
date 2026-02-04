@@ -2,7 +2,7 @@
 
 - **Task**: 843 - remove_singleFamily_modal_backward_axiom
 - **Version**: 004
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20-30 hours
 - **Dependencies**: Task 856 (COMPLETED), Task 857 (COMPLETED)
 - **Research Inputs**: research-008.md (post-857 assessment)

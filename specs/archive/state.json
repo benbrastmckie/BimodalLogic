@@ -2,6 +2,121 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 619,
+      "project_name": "agent_system_architecture_upgrade",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T20:33:57Z",
+      "last_updated": "2026-02-03T22:25:41Z",
+      "session_id": "sess_1769573256_b38d39",
+      "researched": "2026-01-28T04:09:09Z",
+      "artifacts": [
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on agent system architecture improvements with 5 prioritized recommendations"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplemental research on context:fork feature and official Claude Code skill documentation"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 3-phase plan for future context:fork migration after GitHub #16803 is fixed"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-003.md",
+          "type": "research",
+          "summary": "Status check on GitHub #16803 revealing plugin vs user-level skill distinction for context:fork functionality"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-004.md",
+          "type": "research",
+          "summary": "Context fork analysis for Lean direct execution skills post-Task 710 refactoring"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-005.md",
+          "type": "research",
+          "summary": "Empirical validation of context:fork via test-lean-research confirming feature is non-functional (no isolation, unrestricted tools)"
+        },
+        {
+          "path": "specs/619_agent_system_architecture_upgrade/reports/research-006.md",
+          "type": "research",
+          "summary": "February 2026 status check: GitHub #16803 still OPEN, plugin vs user-level distinction confirmed"
+        }
+      ],
+      "planned": "2026-01-19T21:36:36Z",
+      "abandoned": "2026-02-04T22:22:50Z"
+    },
+    {
+      "project_number": 674,
+      "project_name": "systematic_command_skill_agent_architecture_improvement",
+      "status": "abandoned",
+      "language": "meta",
+      "priority": "high",
+      "created": "2026-01-24T17:00:00Z",
+      "description": "Systematically improve command-skill-agent architecture with focus on preflight and postflight sequences across /research, /plan, /revise, /implement commands to ensure complete workflow execution and atomic state management",
+      "effort": "3-4 days",
+      "blocking": [],
+      "dependencies": [],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-001.md",
+          "summary": "Comprehensive architecture analysis identifying command bypass issues, lifecycle inconsistencies, and providing 5-phase implementation plan for systematic improvement"
+        },
+        {
+          "type": "research",
+          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-002.md",
+          "summary": "Focused analysis of preflight/postflight inconsistencies, command bypass vulnerabilities, and detailed implementation roadmap with 5-phase priority matrix"
+        },
+        {
+          "type": "research",
+          "path": "specs/674_systematic_command_skill_agent_architecture_improvement/reports/research-003.md",
+          "summary": "Integrated preflight/postflight operations design confirming existing patterns, identifying implementation gap, and providing 3-phase migration approach"
+        }
+      ],
+      "last_updated": "2026-01-24T00:59:55Z",
+      "abandoned": "2026-02-04T22:22:50Z"
+    },
+    {
+      "project_number": 672,
+      "project_name": "implement_agent_system_upgrade_plan",
+      "type": "feature",
+      "phase": "planned",
+      "status": "abandoned",
+      "priority": "high",
+      "language": "meta",
+      "description": "Implement the .opencode system upgrade plan following specs/agent_system_upgrade_plan.md and specs/implementation_roadmap.md. This 6-week upgrade involves 4 phases: Phase 1 (Week 1): Foundation - file-based metadata exchange and state management; Phase 2 (Week 2): Workflow Ownership Migration - transfer postflight responsibilities to subagents; Phase 3 (Weeks 3-4): Meta System Builder Port - enable dynamic system extension; Phase 4 (Weeks 5-6): Forked Subagent Pattern - achieve token efficiency.",
+      "effort": "6 weeks",
+      "blocking": [],
+      "dependencies": [],
+      "created": "2026-01-22T00:48:23Z",
+      "last_updated": "2026-01-22T01:27:39Z",
+      "session_id": "sess_1769043708_tq9iv",
+      "started": "2025-01-22T12:52:47Z",
+      "researched": "2025-01-22T12:53:47Z",
+      "planned": "2025-01-22T13:04:47Z",
+      "revised": "2026-01-22T01:27:39Z",
+      "plan_path": "specs/672_implement_agent_system_upgrade_plan/plans/implementation-002.md",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/672_implement_agent_system_upgrade_plan/reports/research-001.md",
+          "summary": "Research report for .opencode system upgrade plan implementation, noting hooks can be deferred"
+        },
+        {
+          "type": "plan",
+          "path": "specs/672_implement_agent_system_upgrade_plan/plans/implementation-002.md",
+          "summary": "Revised upgrade plan enforcing workflow contract sequencing and cross-command consistency"
+        }
+      ],
+      "abandoned": "2026-02-04T22:22:50Z"
+    },
+    {
       "project_number": 838,
       "project_name": "complete_or_document_saturatedconstruction",
       "status": "abandoned",
