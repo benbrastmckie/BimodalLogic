@@ -8,10 +8,10 @@
     {
       "project_number": 862,
       "project_name": "divide_truthlemma_forward_backward",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-04T20:06:55Z",
-      "last_updated": "2026-02-04T20:46:45Z",
+      "last_updated": "2026-02-04T21:02:56Z",
       "session_id": "sess_1770237791_bc9dfb",
       "researched": "2026-02-04T20:46:45Z",
       "artifacts": [
@@ -21,17 +21,17 @@
           "summary": "Analysis of TruthLemma forward/backward separation with cross-dependency findings and mutual recursion solution"
         },
         {
-          "path": "specs/862_divide_truthlemma_forward_backward/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised plan focusing on signpost comments guiding toward sorry-freedom"
-        },
-        {
           "path": "specs/862_divide_truthlemma_forward_backward/reports/research-002.md",
           "type": "research",
           "summary": "Deep feasibility analysis proving TruthLemma forward/backward separation cannot achieve sorry-freedom"
+        },
+        {
+          "path": "specs/862_divide_truthlemma_forward_backward/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "Revised plan: remove misleading comments, guide toward modified Lindenbaum for temporal saturation"
         }
       ],
-      "planned": "2026-02-04T20:29:44Z"
+      "planned": "2026-02-04T21:02:56Z"
     },
     {
       "project_number": 861,
@@ -448,12 +448,12 @@
     {
       "project_number": 857,
       "project_name": "add_temporal_backward_properties",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "effort": "12-18 hours",
       "description": "Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily structure. These properties should mirror modal_backward in BMCS: temporal_backward_G states that if phi is in mcs at all future times t' >= t, then G phi is in mcs at t; temporal_backward_H states that if phi is in mcs at all past times t' <= t, then H phi is in mcs at t. For constantIndexedMCSFamily, prove these using T-axiom and MCS maximality (analogous to singleFamily_modal_backward_axiom). This eliminates sorries in TruthLemma.lean lines 383 and 395.",
       "created": "2026-02-04T08:44:29Z",
-      "last_updated": "2026-02-04T20:56:58Z",
+      "last_updated": "2026-02-04T21:03:13Z",
       "session_id": "sess_1770238350_e317d2",
       "parent_task": 855,
       "related": [
@@ -520,7 +520,7 @@
       "dependencies": [
         856
       ],
-      "planned": "2026-02-04T19:10:43Z",
+      "planned": "2026-02-04T21:03:13Z",
       "started": "2026-02-04T18:49:27Z"
     },
     {
