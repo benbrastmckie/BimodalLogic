@@ -1,5 +1,5 @@
 ---
-next_project_number: 861
+next_project_number: 862
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 861. Reorganize Logos Introduction LaTeX document
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-04
+
+**Description**: Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.
+
+---
 
 ### 860. Propagate Axiom Policy to Agents and Rules
 - **Effort**: 1.5 hours

@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 861,
+      "project_name": "reorganize_logos_introduction_latex",
+      "status": "not_started",
+      "language": "latex",
+      "description": "Reorganize Logos introduction LaTeX document (01-Introduction.tex) drawing on conceptual-engineering.md and dual-verification.md. Add introductory sections before presenting the Logos extension architecture. Add concluding sections on AI applications: training systems for verified synthetic data generation, hypothesis generation, spatial reasoning (molecules, robotics, self-driving cars), and forecasting. Focus on improving organization and presentation of existing content rather than introducing new material.",
+      "created": "2026-02-04T19:03:21Z",
+      "last_updated": "2026-02-04T19:03:21Z"
+    },
+    {
       "project_number": 856,
       "project_name": "implement_multifamily_saturated_bmcs",
       "status": "completed",
@@ -490,7 +499,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 861,
+  "next_project_number": 862,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
