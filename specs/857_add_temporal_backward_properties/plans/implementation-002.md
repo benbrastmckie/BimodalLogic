@@ -2,7 +2,7 @@
 
 - **Task**: 857 - Add temporal_backward_G and temporal_backward_H properties to IndexedMCSFamily
 - **Version**: 002
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 12-18 hours (revised down from 40-55)
 - **Dependencies**: Task 856 (EvalCoherent pattern reference)
 - **Research Inputs**:
@@ -75,7 +75,7 @@ For a constant family, this is impossible without constructing **time-varying wi
 
 ## Implementation Phases
 
-### Phase 1: Temporal Saturation Structures [NOT STARTED]
+### Phase 1: Temporal Saturation Structures [COMPLETED]
 
 **Goal**: Define temporal saturation predicates mirroring EvalCoherent/EvalSaturated.
 
@@ -105,7 +105,7 @@ For a constant family, this is impossible without constructing **time-varying wi
 
 ---
 
-### Phase 2: Temporal Saturation Construction [NOT STARTED]
+### Phase 2: Temporal Saturation Construction [PARTIAL]
 
 **Goal**: Prove that temporally saturated families exist for any consistent context.
 
