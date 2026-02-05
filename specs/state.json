@@ -8,7 +8,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -19,8 +19,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-04T23:29:58Z",
-      "session_id": "sess_1770247770_506dfb",
+      "last_updated": "2026-02-05T00:49:48Z",
+      "session_id": "sess_1770252188_40aaff",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
@@ -69,11 +69,6 @@
           "summary": "Post-857 assessment: completeness has 2 axioms (not 1); EvalBMCS path has structural box-case limitation; recommend temporalLindenbaumMCS first then multi-family saturation"
         },
         {
-          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "5-phase plan: temporal Lindenbaum construction, temporal axiom elimination, multi-family saturated BMCS, completeness rewiring, final verification"
-        },
-        {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-009.md",
           "type": "research",
           "summary": "Review of failed Phase 1 implementation: TemporalLindenbaum.lean is 70-75% usable, 4 sorries need restructuring (7-11h remaining)"
@@ -92,9 +87,14 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-012.md",
           "type": "research",
           "summary": "Definitive analysis of complete axiom elimination: temporal chain via dovetailing, modal saturation via Zorn, infrastructure inventory"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan for axiom-free bimodal completeness: temporal chain construction + multi-family modal saturation via Zorn"
         }
       ],
-      "planned": "2026-02-04T22:17:03Z",
+      "planned": "2026-02-05T00:49:48Z",
       "started": "2026-02-04T19:10:35Z"
     },
     {
