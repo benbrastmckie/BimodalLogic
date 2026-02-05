@@ -1,17 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Researched recursive seed construction for Henkin model completeness. The approach builds a finite seed from the recursive structure of a consistent formula, where negated Box operators create new families and negated temporal operators (G/H) create new time indices. The seed is then completed to a full model via Lindenbaum. Key finding: the temporal-modal interaction problem (BoxContent vs GContent preservation) from task 843 persists during Lindenbaum extension, but the seed approach provides a better starting point by building both layers simultaneously. Existing infrastructure (temporal_witness_seed_consistent, eval_saturated_bundle_exists, constructCoherentWitness) is reusable. Estimated 30-44 hours for full implementation.",
+  "status": "planned",
+  "summary": "6-phase implementation plan for recursive seed Henkin model construction, targeting elimination of both false/unproven axioms from completeness chain",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/864_recursive_seed_henkin_model/reports/research-001.md",
-      "summary": "Research report on recursive seed construction for Henkin model completeness: operator-specific rules, completion strategy, Lean formalization approach, and codebase inventory"
+      "type": "plan",
+      "path": "specs/864_recursive_seed_henkin_model/plans/implementation-001.md",
+      "summary": "6-phase plan: formula classification and seed data structures, recursive seed builder, seed consistency proof, seed completion to MCS families, BMCS assembly with coherence proofs, verification and cleanup"
     }
   ],
+  "next_steps": "Run /implement 864 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770254635_1e1fb7",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770255376_82aa6e",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 34
   }
 }

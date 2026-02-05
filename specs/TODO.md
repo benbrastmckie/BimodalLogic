@@ -24,11 +24,12 @@ technical_debt:
 
 ### 864. Implement recursive seed construction for Henkin model completeness
 - **Effort**: 30-44 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-05
 - **Researched**: 2026-02-05
 - **Research**: [research-001.md](specs/864_recursive_seed_henkin_model/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/864_recursive_seed_henkin_model/plans/implementation-001.md)
 
 **Description**: Improving on task 843 and the various attempts tried there, develop a new strategy which proceeds by taking a consistent formula and using its recursive structure to define a seed which consists of a bundle of indexed families of MCSs. The idea is to start with a singleton CS indexed at 0 for the consistent sentence we start with. If the main operator is a Box, then every CS must include its argument. If the main operator is a negated Box, then some indexed family must have a CS indexed by the present time that includes the negation of its argument. If the main operator is H, then every CS indexed by a present and past time in the family must include the argument. If the main operator is a negated H, then some CS indexed by the present or past time in the family must include the negation of the argument. Similarly for G, but for the future. Negated modal operators require new indexed families to be created, and negated tense operators require new CSs at new indexes to be created. Boolean operators unpack in the usual way. This returns some indexed families with some CSs based on the logical form of the initial sentence. This is then completed to provide an appropriate Henkin model.
 
