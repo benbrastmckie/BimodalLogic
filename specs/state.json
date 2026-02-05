@@ -63,7 +63,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -74,8 +74,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-05T19:46:14Z",
-      "session_id": "sess_1770320758_97ef25",
+      "last_updated": "2026-02-05T20:09:20Z",
+      "session_id": "sess_1770321853_75425e",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
@@ -144,11 +144,6 @@
           "summary": "Definitive analysis of complete axiom elimination: temporal chain via dovetailing, modal saturation via Zorn, infrastructure inventory"
         },
         {
-          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-005.md",
-          "type": "plan",
-          "summary": "7-phase implementation plan for axiom-free bimodal completeness: temporal chain construction + multi-family modal saturation via Zorn"
-        },
-        {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-013.md",
           "type": "research",
           "summary": "Post-implementation review analyzing v005 learnings, reusable components, mathematical obstacles, and recommending EvalBMCS integration as the primary path forward"
@@ -162,9 +157,14 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-015.md",
           "type": "research",
           "summary": "Synthesis of task 865 canonical task frame insights with task 843 axiom elimination approaches; identifies S5 Box invariance as key enabler for full canonical model construction that eliminates both axioms"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-006.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for S5-based full canonical model construction with time-shifted temporal chains to eliminate both axioms"
         }
       ],
-      "planned": "2026-02-05T00:49:48Z",
+      "planned": "2026-02-05T20:09:20Z",
       "started": "2026-02-05T00:52:38Z"
     },
     {

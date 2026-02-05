@@ -62,12 +62,12 @@ technical_debt:
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 30-40 hours (revised v005)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
-- **Updated**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
+- **Updated**: 2026-02-05
+- **Researched**: 2026-02-05
+- **Planned**: 2026-02-05
 - **Depends**: Task 856
 - **Related**: Task 856, Task 857
 - **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md), [research-002.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-002.md), [research-003.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-003.md), [research-004.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-004.md), [research-005.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-005.md), [research-006.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-006.md), [research-007.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-007.md), [research-008.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-008.md), [research-009.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-009.md), [research-010.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-010.md), [research-011.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-011.md), [research-012.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-012.md)
