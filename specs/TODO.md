@@ -62,7 +62,7 @@ technical_debt:
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 30-40 hours (revised v005)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Updated**: 2026-02-05

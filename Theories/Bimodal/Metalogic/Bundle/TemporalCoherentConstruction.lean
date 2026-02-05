@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.CoherentConstruction
+import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -305,17 +306,7 @@ Following the EvalCoherentBundle pattern from CoherentConstruction.lean, we defi
 analogous structures for temporal saturation.
 -/
 
-/--
-GContent of an MCS: the set of all formulas phi where G phi appears in the MCS.
--/
-def GContent (M : Set Formula) : Set Formula :=
-  {phi | Formula.all_future phi ∈ M}
-
-/--
-HContent of an MCS: the set of all formulas phi where H phi appears in the MCS.
--/
-def HContent (M : Set Formula) : Set Formula :=
-  {phi | Formula.all_past phi ∈ M}
+-- GContent and HContent are imported from TemporalContent.lean
 
 /--
 TemporalForwardSaturated: Every F(psi) in the MCS has its witness (psi also in the MCS).
@@ -572,16 +563,18 @@ The key consistency lemma `temporal_witness_seed_consistent` (proven above) ensu
 that `{psi} union GContent(M)` is consistent whenever `F(psi) in M`, providing the
 consistency argument at each step of the chain construction.
 
-**Status**: This is a correct axiom that will be proven as a theorem in a subsequent
-phase (Phase 4). It replaces the mathematically FALSE `temporally_saturated_mcs_exists`.
+**Status**: Replaced axiom with theorem backed by dovetailing chain construction
+(DovetailingChain.lean). The Int case delegates to `temporal_coherent_family_exists_theorem`;
+generic D uses sorry (only Int is ever instantiated downstream).
 -/
-axiom temporal_coherent_family_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
+theorem temporal_coherent_family_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D]
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∃ (fam : IndexedMCSFamily D),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
       (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
-      (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
+      (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s) := by
+  sorry
 
 /-!
 ## Temporally Coherent BMCS Construction

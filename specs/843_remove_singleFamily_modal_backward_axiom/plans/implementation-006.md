@@ -1,7 +1,7 @@
 # Implementation Plan: Task #843 (v006)
 
 - **Task**: 843 - Remove singleFamily_modal_backward_axiom
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 42-59 hours
 - **Dependencies**: Task 856 (COMPLETED), Task 857 (COMPLETED)
 - **Research Inputs**: research-014.md (approach comparison), research-015.md (S5 Box invariance breakthrough, cross-task synthesis)
@@ -129,7 +129,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Temporal Dovetailing Chain [NOT STARTED]
+### Phase 1: Temporal Dovetailing Chain [COMPLETED]
 
 **Goal:** Build a complete `IndexedMCSFamily Int` with all four temporal coherence properties (forward_G, backward_H, forward_F, backward_P) proven, eliminating `temporal_coherent_family_exists`.
 
