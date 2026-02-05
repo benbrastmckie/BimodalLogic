@@ -18,24 +18,42 @@ Given a consistent context Gamma, we build an `IndexedMCSFamily Int` using two
 Nat-indexed chains meeting at a shared base:
 
 1. **Base**: Extend Gamma to MCS M_0 via standard Lindenbaum
-2. **Forward chain** (non-negative indices): M_{n+1} extends GContent(M_n)
-3. **Backward chain** (negative indices): M_{-(n+1)} extends HContent(M_{-n})
+2. **Forward chain** (non-negative indices): M_{n+1} extends TemporalContent(M_n)
+3. **Backward chain** (negative indices): M_{-(n+1)} extends TemporalContent(M_{-n})
+
+where TemporalContent(M) = GContent(M) ∪ HContent(M). Using the combined
+TemporalContent seed ensures that BOTH G and H formulas propagate along each chain
+in the direction of construction.
 
 ## Proven Properties
 
-- `forward_G` for non-negative pairs: G phi in M_t -> phi in M_{t'} for 0 <= t < t'
-- `backward_H` for non-positive pairs: H phi in M_t -> phi in M_{t'} for t' < t <= 0
+- `forward_G` for non-negative pairs: G phi ∈ M_t → phi ∈ M_{t'} for 0 ≤ t < t'
+- `backward_H` for non-positive pairs: H phi ∈ M_t → phi ∈ M_{t'} for t' < t ≤ 0
+- G and H formulas propagate forward in BOTH chains (via TemporalContent seeds)
 
-## Technical Debt (6 sorries)
+## Technical Debt (4 sorries)
 
-- `forward_G` cross-sign cases: 2 sorries (negative-negative, negative-positive)
-- `backward_H` cross-sign cases: 2 sorries (positive-positive, positive-negative)
+- `forward_G` when t < 0: 1 sorry (requires backward propagation through chain)
+- `backward_H` when t ≥ 0: 1 sorry (requires backward propagation through chain)
 - `forward_F`: 1 sorry (requires dovetailing witness construction)
 - `backward_P`: 1 sorry (requires dovetailing witness construction)
 
-These represent genuine technical debt. The two-chain construction propagates G
-formulas forward through GContent and H formulas backward through HContent, but
-cross-sign propagation and F/P witnessing require a more sophisticated construction.
+### Why Cross-Sign Cases Cannot Be Proven with Two-Chain Construction
+
+The cross-sign cases (forward_G when t < 0, backward_H when t ≥ 0) require formulas
+to propagate AGAINST the direction of chain construction. Specifically:
+- forward_G at t < 0: G phi in backward chain must yield phi at EARLIER chain indices
+  (closer to time 0 or into the forward chain)
+- backward_H at t ≥ 0: H phi in forward chain must yield phi at EARLIER chain indices
+  (toward time 0 or into the backward chain)
+
+Lindenbaum extension only propagates formulas FROM seed TO extension (increasing chain
+index), never in the reverse direction. No choice of seed set (GContent, HContent,
+or TemporalContent) can change this fundamental limitation.
+
+Resolution requires either:
+1. A dovetailing construction that interleaves forward/backward steps, or
+2. A global selection argument (Zorn's lemma) that avoids chain construction entirely
 
 ## References
 
@@ -85,6 +103,48 @@ lemma HContent_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
   exact h_mcs.1 L hL_in_M ⟨d⟩
 
 /-!
+## TemporalContent: Combined GContent ∪ HContent
+
+Using TemporalContent as seed for both chains ensures that BOTH G and H formulas
+propagate along each chain in the direction of construction. This means:
+- Forward chain: G phi AND H phi propagate to higher indices (future times)
+- Backward chain: G phi AND H phi propagate to higher indices (more negative times)
+
+This is a structural improvement over using separate GContent/HContent seeds, and
+provides the foundation for the eventual dovetailing construction.
+-/
+
+/-- TemporalContent(M) = GContent(M) ∪ HContent(M): all formulas accessible via G or H. -/
+def TemporalContent (M : Set Formula) : Set Formula :=
+  GContent M ∪ HContent M
+
+/-- TemporalContent(M) is a subset of M when M is an MCS (by T-axioms). -/
+lemma TemporalContent_subset_of_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    TemporalContent M ⊆ M := by
+  intro phi h_phi
+  rcases h_phi with h_g | h_h
+  · exact GContent_subset_of_mcs M h_mcs h_g
+  · exact HContent_subset_of_mcs M h_mcs h_h
+
+/-- TemporalContent(M) is consistent when M is an MCS. -/
+lemma TemporalContent_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    SetConsistent (TemporalContent M) := by
+  intro L hL ⟨d⟩
+  have hL_in_M : ∀ x ∈ L, x ∈ M := fun x hx =>
+    TemporalContent_subset_of_mcs M h_mcs (hL x hx)
+  exact h_mcs.1 L hL_in_M ⟨d⟩
+
+/-- GContent is a subset of TemporalContent. -/
+lemma GContent_subset_TemporalContent (M : Set Formula) :
+    GContent M ⊆ TemporalContent M :=
+  Set.subset_union_left
+
+/-- HContent is a subset of TemporalContent. -/
+lemma HContent_subset_TemporalContent (M : Set Formula) :
+    HContent M ⊆ TemporalContent M :=
+  Set.subset_union_right
+
+/-!
 ## Temporal 4-Axiom Lemmas
 -/
 
@@ -115,13 +175,26 @@ lemma H_in_HContent_of_H_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent 
     Formula.all_past phi ∈ HContent M :=
   H_implies_HH_in_mcs M h_mcs phi h_H
 
+/-- G phi ∈ M implies G phi ∈ TemporalContent(M) (via GContent ⊆ TemporalContent). -/
+lemma G_in_TemporalContent_of_G_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
+    Formula.all_future phi ∈ TemporalContent M :=
+  GContent_subset_TemporalContent M (G_in_GContent_of_G_in_mcs M h_mcs phi h_G)
+
+/-- H phi ∈ M implies H phi ∈ TemporalContent(M) (via HContent ⊆ TemporalContent). -/
+lemma H_in_TemporalContent_of_H_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
+    Formula.all_past phi ∈ TemporalContent M :=
+  HContent_subset_TemporalContent M (H_in_HContent_of_H_in_mcs M h_mcs phi h_H)
+
 /-!
 ## Forward Chain Construction
 
-Packaged (set, proof_mcs) pairs. Step 0 extends base, step n+1 extends GContent(M_n).
+Packaged (set, proof_mcs) pairs. Step 0 extends base, step n+1 extends TemporalContent(M_n).
+Using TemporalContent (= GContent ∪ HContent) ensures both G and H formulas propagate.
 -/
 
-/-- Build the forward chain: step 0 extends base, step n+1 extends GContent(M_n). -/
+/-- Build the forward chain: step 0 extends base, step n+1 extends TemporalContent(M_n). -/
 noncomputable def forwardChainMCS (base : Set Formula) (h_base_cons : SetConsistent base) :
     Nat → { M : Set Formula // SetMaximalConsistent M }
   | 0 =>
@@ -129,11 +202,11 @@ noncomputable def forwardChainMCS (base : Set Formula) (h_base_cons : SetConsist
     ⟨Classical.choose h, (Classical.choose_spec h).2⟩
   | n + 1 =>
     let ⟨M_n, h_mcs_n⟩ := forwardChainMCS base h_base_cons n
-    let h_gc_cons := GContent_consistent M_n h_mcs_n
-    let h := set_lindenbaum (GContent M_n) h_gc_cons
+    let h_tc_cons := TemporalContent_consistent M_n h_mcs_n
+    let h := set_lindenbaum (TemporalContent M_n) h_tc_cons
     ⟨Classical.choose h, (Classical.choose_spec h).2⟩
 
-/-- Build the backward chain: step 0 extends base, step n+1 extends HContent(M_n). -/
+/-- Build the backward chain: step 0 extends base, step n+1 extends TemporalContent(M_n). -/
 noncomputable def backwardChainMCS (base : Set Formula) (h_base_cons : SetConsistent base) :
     Nat → { M : Set Formula // SetMaximalConsistent M }
   | 0 =>
@@ -141,8 +214,8 @@ noncomputable def backwardChainMCS (base : Set Formula) (h_base_cons : SetConsis
     ⟨Classical.choose h, (Classical.choose_spec h).2⟩
   | n + 1 =>
     let ⟨M_n, h_mcs_n⟩ := backwardChainMCS base h_base_cons n
-    let h_hc_cons := HContent_consistent M_n h_mcs_n
-    let h := set_lindenbaum (HContent M_n) h_hc_cons
+    let h_tc_cons := TemporalContent_consistent M_n h_mcs_n
+    let h := set_lindenbaum (TemporalContent M_n) h_tc_cons
     ⟨Classical.choose h, (Classical.choose_spec h).2⟩
 
 /-- Unified temporal chain: non-negative uses forward, negative uses backward. -/
@@ -182,21 +255,49 @@ lemma backwardChainMCS_zero_extends (base : Set Formula) (h_base_cons : SetConsi
   simp only [backwardChainMCS]
   exact (Classical.choose_spec (set_lindenbaum base h_base_cons)).1
 
-lemma forwardChainMCS_GContent_extends (base : Set Formula) (h_base_cons : SetConsistent base) (n : Nat) :
-    GContent (forwardChainMCS base h_base_cons n).val ⊆
+lemma forwardChainMCS_TemporalContent_extends (base : Set Formula) (h_base_cons : SetConsistent base) (n : Nat) :
+    TemporalContent (forwardChainMCS base h_base_cons n).val ⊆
       (forwardChainMCS base h_base_cons (n + 1)).val := by
   simp only [forwardChainMCS]
   let ⟨M_n, h_mcs_n⟩ := forwardChainMCS base h_base_cons n
-  let h_gc_cons := GContent_consistent M_n h_mcs_n
-  exact (Classical.choose_spec (set_lindenbaum (GContent M_n) h_gc_cons)).1
+  let h_tc_cons := TemporalContent_consistent M_n h_mcs_n
+  exact (Classical.choose_spec (set_lindenbaum (TemporalContent M_n) h_tc_cons)).1
+
+lemma forwardChainMCS_GContent_extends (base : Set Formula) (h_base_cons : SetConsistent base) (n : Nat) :
+    GContent (forwardChainMCS base h_base_cons n).val ⊆
+      (forwardChainMCS base h_base_cons (n + 1)).val := by
+  intro phi h_phi
+  exact forwardChainMCS_TemporalContent_extends base h_base_cons n
+    (GContent_subset_TemporalContent _ h_phi)
+
+lemma forwardChainMCS_HContent_extends (base : Set Formula) (h_base_cons : SetConsistent base) (n : Nat) :
+    HContent (forwardChainMCS base h_base_cons n).val ⊆
+      (forwardChainMCS base h_base_cons (n + 1)).val := by
+  intro phi h_phi
+  exact forwardChainMCS_TemporalContent_extends base h_base_cons n
+    (HContent_subset_TemporalContent _ h_phi)
+
+lemma backwardChainMCS_TemporalContent_extends (base : Set Formula) (h_base_cons : SetConsistent base) (n : Nat) :
+    TemporalContent (backwardChainMCS base h_base_cons n).val ⊆
+      (backwardChainMCS base h_base_cons (n + 1)).val := by
+  simp only [backwardChainMCS]
+  let ⟨M_n, h_mcs_n⟩ := backwardChainMCS base h_base_cons n
+  let h_tc_cons := TemporalContent_consistent M_n h_mcs_n
+  exact (Classical.choose_spec (set_lindenbaum (TemporalContent M_n) h_tc_cons)).1
+
+lemma backwardChainMCS_GContent_extends (base : Set Formula) (h_base_cons : SetConsistent base) (n : Nat) :
+    GContent (backwardChainMCS base h_base_cons n).val ⊆
+      (backwardChainMCS base h_base_cons (n + 1)).val := by
+  intro phi h_phi
+  exact backwardChainMCS_TemporalContent_extends base h_base_cons n
+    (GContent_subset_TemporalContent _ h_phi)
 
 lemma backwardChainMCS_HContent_extends (base : Set Formula) (h_base_cons : SetConsistent base) (n : Nat) :
     HContent (backwardChainMCS base h_base_cons n).val ⊆
       (backwardChainMCS base h_base_cons (n + 1)).val := by
-  simp only [backwardChainMCS]
-  let ⟨M_n, h_mcs_n⟩ := backwardChainMCS base h_base_cons n
-  let h_hc_cons := HContent_consistent M_n h_mcs_n
-  exact (Classical.choose_spec (set_lindenbaum (HContent M_n) h_hc_cons)).1
+  intro phi h_phi
+  exact backwardChainMCS_TemporalContent_extends base h_base_cons n
+    (HContent_subset_TemporalContent _ h_phi)
 
 /-!
 ## Forward G Coherence (Nat-indexed forward chain)
@@ -228,6 +329,37 @@ lemma forwardChain_forward_G (base : Set Formula) (h_base_cons : SetConsistent b
   exact set_mcs_implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_T) h_G_n
 
 /-!
+## Forward H Coherence (Nat-indexed forward chain)
+
+With TemporalContent seeds, H formulas also propagate through the forward chain.
+-/
+
+lemma forwardChain_H_propagates (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (forwardChainMCS base h_base_cons n).val) :
+    Formula.all_past phi ∈ (forwardChainMCS base h_base_cons (n + 1)).val := by
+  have h_mcs_n := forwardChainMCS_is_mcs base h_base_cons n
+  have h_in_hc := H_in_HContent_of_H_in_mcs _ h_mcs_n phi h_H
+  exact forwardChainMCS_HContent_extends base h_base_cons n h_in_hc
+
+lemma forwardChain_H_propagates_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (forwardChainMCS base h_base_cons m).val) :
+    Formula.all_past phi ∈ (forwardChainMCS base h_base_cons n).val := by
+  induction h_le with
+  | refl => exact h_H
+  | step _ ih => exact forwardChain_H_propagates base h_base_cons _ phi ih
+
+lemma forwardChain_backward_H (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (forwardChainMCS base h_base_cons m).val) :
+    phi ∈ (forwardChainMCS base h_base_cons n).val := by
+  have h_H_n := forwardChain_H_propagates_le base h_base_cons m n (Nat.le_of_lt h_lt) phi h_H
+  have h_mcs_n := forwardChainMCS_is_mcs base h_base_cons n
+  have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+  exact set_mcs_implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_T) h_H_n
+
+/-!
 ## Backward H Coherence (Nat-indexed backward chain)
 -/
 
@@ -256,6 +388,37 @@ lemma backwardChain_backward_H (base : Set Formula) (h_base_cons : SetConsistent
   have h_mcs_n := backwardChainMCS_is_mcs base h_base_cons n
   have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
   exact set_mcs_implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_T) h_H_n
+
+/-!
+## Backward G Coherence (Nat-indexed backward chain)
+
+With TemporalContent seeds, G formulas also propagate through the backward chain.
+-/
+
+lemma backwardChain_G_propagates (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (backwardChainMCS base h_base_cons n).val) :
+    Formula.all_future phi ∈ (backwardChainMCS base h_base_cons (n + 1)).val := by
+  have h_mcs_n := backwardChainMCS_is_mcs base h_base_cons n
+  have h_in_gc := G_in_GContent_of_G_in_mcs _ h_mcs_n phi h_G
+  exact backwardChainMCS_GContent_extends base h_base_cons n h_in_gc
+
+lemma backwardChain_G_propagates_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (backwardChainMCS base h_base_cons m).val) :
+    Formula.all_future phi ∈ (backwardChainMCS base h_base_cons n).val := by
+  induction h_le with
+  | refl => exact h_G
+  | step _ ih => exact backwardChain_G_propagates base h_base_cons _ phi ih
+
+lemma backwardChain_forward_G (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (backwardChainMCS base h_base_cons m).val) :
+    phi ∈ (backwardChainMCS base h_base_cons n).val := by
+  have h_G_n := backwardChain_G_propagates_le base h_base_cons m n (Nat.le_of_lt h_lt) phi h_G
+  have h_mcs_n := backwardChainMCS_is_mcs base h_base_cons n
+  have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
+  exact set_mcs_implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_T) h_G_n
 
 /-!
 ## Int-indexed Coherence Proofs
@@ -296,13 +459,13 @@ lemma temporalChainSet_backward_H_nonpos (base : Set Formula) (h_base_cons : Set
 Build a temporal coherent family from a consistent context.
 
 **Proven cases**:
-- forward_G for 0 <= t < t'
-- backward_H for t' < t < 0
+- forward_G for 0 ≤ t < t' (both non-negative, forward chain)
+- backward_H for t' < t < 0 (both negative, backward chain)
 
-**Technical debt** (6 sorries):
-- forward_G negative-negative and cross-boundary: 2 sorries
-- backward_H positive-positive and cross-boundary: 2 sorries
-- forward_F and backward_P: 2 sorries
+**Technical debt** (4 sorries):
+- forward_G when t < 0: requires backward chain propagation toward time 0
+- backward_H when t ≥ 0: requires forward chain propagation toward time 0
+- forward_F and backward_P: require dovetailing witness construction
 -/
 noncomputable def buildTemporalChainFamily (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     IndexedMCSFamily Int where
@@ -321,10 +484,11 @@ noncomputable def buildTemporalChainFamily (Gamma : List Formula) (h_cons : Cont
     · -- Both non-negative (t' > t >= 0)
       have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
       exact temporalChainSet_forward_G_nonneg base h_base_cons t t' h_t h_t' h_lt phi h_G'
-    · -- t < 0
+    · -- t < 0: G phi in backward chain, need phi at later time.
+      -- Requires backward propagation through the chain (from higher to lower
+      -- Nat index in backward chain), which Lindenbaum extension does not support.
+      -- Resolution requires dovetailing construction or global selection argument.
       push_neg at h_t
-      -- G phi in backward chain element; propagation toward 0 not supported
-      -- by GContent/HContent chain construction.
       sorry
   backward_H := fun t t' phi h_lt h_H => by
     let base := contextAsSet Gamma
@@ -335,10 +499,11 @@ noncomputable def buildTemporalChainFamily (Gamma : List Formula) (h_cons : Cont
     · -- Both negative (t' < t < 0)
       have h_t' : t' < 0 := lt_trans h_lt h_t
       exact temporalChainSet_backward_H_nonpos base h_base_cons t t' h_t h_t' h_lt phi h_H'
-    · -- t >= 0
+    · -- t >= 0: H phi in forward chain, need phi at earlier time.
+      -- Requires backward propagation through the chain (from higher to lower
+      -- Nat index in forward chain), which Lindenbaum extension does not support.
+      -- Resolution requires dovetailing construction or global selection argument.
       push_neg at h_t
-      -- H phi in forward chain element; backward propagation not supported
-      -- by GContent/HContent chain construction.
       sorry
 
 /-- The temporal chain family preserves the context at time 0. -/
@@ -368,10 +533,13 @@ lemma buildTemporalChainFamily_backward_P (Gamma : List Formula) (h_cons : Conte
 Main theorem: temporal_coherent_family_exists for D = Int.
 
 **Sorry inventory** (4 total in this theorem's transitive closure):
-- forward_G when t < 0: 1 sorry (negative G propagation toward zero)
-- backward_H when t >= 0: 1 sorry (positive H propagation toward zero)
-- forward_F: 1 sorry (dovetailing witnesses)
-- backward_P: 1 sorry (dovetailing witnesses)
+- forward_G when t < 0: 1 sorry (backward chain propagation toward zero)
+- backward_H when t ≥ 0: 1 sorry (forward chain propagation toward zero)
+- forward_F: 1 sorry (dovetailing witness construction)
+- backward_P: 1 sorry (dovetailing witness construction)
+
+All 4 sorries require a fundamentally different construction (dovetailing or
+global selection) rather than the current two-chain Lindenbaum approach.
 -/
 theorem temporal_coherent_family_exists_Int
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :

@@ -8,10 +8,19 @@
     {
       "project_number": 864,
       "project_name": "recursive_seed_henkin_model",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-05T01:22:18Z"
+      "last_updated": "2026-02-05T01:30:31Z",
+      "session_id": "sess_1770254635_1e1fb7",
+      "researched": "2026-02-05T01:30:31Z",
+      "artifacts": [
+        {
+          "path": "specs/864_recursive_seed_henkin_model/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on recursive seed construction for Henkin model completeness: operator-specific rules, completion strategy, Lean formalization approach, and codebase inventory"
+        }
+      ]
     },
     {
       "project_number": 843,
