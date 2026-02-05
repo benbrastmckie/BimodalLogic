@@ -120,7 +120,7 @@ bmcs_strong_completeness (sorry-free, axiom-free)
 
 ---
 
-### Phase 1: Build Temporal Chain Construction [NOT STARTED]
+### Phase 1: Build Temporal Chain Construction [PARTIAL]
 
 **Goal**: Create a new file `TemporalChain.lean` implementing the dovetailing temporal chain construction that replaces the false `temporally_saturated_mcs_exists` axiom.
 

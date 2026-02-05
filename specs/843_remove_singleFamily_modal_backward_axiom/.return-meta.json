@@ -1,10 +1,10 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "started_at": "2026-02-05T12:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_3_complete",
-    "details": "Phase 0: Removed forward_H/backward_G from IndexedMCSFamily. Phase 3: Replaced FALSE axiom temporally_saturated_mcs_exists with CORRECT axiom temporal_coherent_family_exists. Rewired construct_temporal_bmcs to use the new axiom directly. lake build succeeds."
+    "stage": "phase_1_partial",
+    "details": "Phase 1 partially completed. Cleaned up dead code (removed 3 abandoned definitions with sorry). Proved forward_G for non-negative Int pairs and backward_H for non-positive Int pairs via Nat-indexed chain lemmas. Identified fundamental mathematical difficulty: GContent/HContent two-chain construction cannot prove cross-sign forward_G/backward_H because Lindenbaum can introduce new G/H formulas. F/P witnessing requires dovetailing which has seed consistency challenges. 4 sorries remain (down from 7)."
   },
   "metadata": {
     "session_id": "sess_1770252740_106a34",
