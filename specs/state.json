@@ -82,6 +82,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-010.md",
           "type": "research",
           "summary": "Analysis proving temporally_saturated_mcs_exists axiom is mathematically false (counterexample: {F(psi), neg(psi)}), invalidating plan v004 Phase 1"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-011.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Option B (non-constant family construction) with gap-free TruthLemma case verification, architectural change catalog, and phased implementation strategy"
         }
       ],
       "planned": "2026-02-04T22:17:03Z",
