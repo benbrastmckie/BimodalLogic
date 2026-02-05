@@ -11,9 +11,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-05T17:27:11Z",
-      "last_updated": "2026-02-05T18:38:04Z",
-      "session_id": "sess_1770316139_654121",
-      "researched": "2026-02-05T18:38:04Z",
+      "last_updated": "2026-02-05T19:27:27Z",
+      "session_id": "sess_1770319116_379e3e",
+      "researched": "2026-02-05T19:27:27Z",
       "artifacts": [
         {
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md",
@@ -29,6 +29,11 @@
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-003.md",
           "type": "research",
           "summary": "Detailed analysis of canonical tasks as composable parametric duration-indexed functions, accessibility relation between MCSs, the offset problem in the box case of the TruthLemma, and its resolution via MF/TF axioms. 1027 lines."
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-004.md",
+          "type": "research",
+          "summary": "932-line comparison of two canonical frame constructions: trajectory-based vs family-based, with full mathematical definitions, TruthLemma case analysis, formalization estimates, and recommendation for Construction B2 (family-indexed)"
         }
       ]
     },
