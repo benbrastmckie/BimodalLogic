@@ -60,3 +60,62 @@ Plus 1 sorry in TemporalCoherentConstruction.lean (generic D version of the theo
 - Phase 4: Time-Shifted Temporal Chains
 - Phase 5: S5 Canonical BMCS Construction
 - Phase 6: Integration and Axiom Removal (eliminate `singleFamily_modal_backward_axiom`)
+
+---
+
+## Phase 2 Analysis (2026-02-05, Session sess_1770325123_e65ce6)
+
+### Status: BLOCKED - Mathematical Error in Plan
+
+Phase 2 calls for proving S5 Box Invariance:
+```
+s5_box_invariance : SetMaximalConsistent M -> SetMaximalConsistent M' ->
+    Formula.box phi in M -> Formula.box phi in M'
+```
+
+**This statement is mathematically false.** See detailed analysis below.
+
+### Counterexample
+
+For `phi = Formula.atom "p"`:
+- `Box(atom "p")` is neither provable nor refutable in the TM proof system
+- Both `Box(atom "p")` and `neg(Box(atom "p"))` are consistent
+- By Lindenbaum, there exist MCS M1 with `Box(atom "p")` and MCS M2 with `neg(Box(atom "p"))`
+- So `Box(atom "p") in M1` but `Box(atom "p") not in M2`
+
+### Root Cause
+
+Research-015 conflated two distinct claims:
+1. **True**: In the S5 canonical model (universal accessibility), Box phi true at one world implies
+   true at all worlds.
+2. **False**: For arbitrary MCS of the proof system, Box phi in one MCS implies in all MCS.
+
+Statement (1) is about a specific model's structure. Statement (2) would require all MCS to
+agree on Box formulas, which is false for contingent atoms.
+
+### Proof Circularity
+
+All attempted proof approaches encounter circularity:
+- The "negative 5" theorem `neg(Box psi) -> Box(neg(Box psi))` can be derived.
+- But using it to transfer Box formulas between MCS requires Box invariance itself.
+- No mechanism exists in pure MCS theory to transfer Box-formulas between unrelated MCS.
+
+### Impact on Phases 3-6
+
+- **Phase 3** (Diamond-BoxContent): Independent, can proceed.
+- **Phase 4** (Shifted Chains): Independent, can proceed.
+- **Phase 5** (BMCS Construction): modal_backward is correct (no S5 invariance needed).
+  modal_forward DOES depend on S5 invariance and needs reformulation.
+- **Phase 6**: Depends on Phase 5.
+
+### Recommended Alternatives for modal_forward
+
+1. **Canonical accessibility approach**: Define R(M,M') = BoxContent(M) subset M'. Prove R is
+   universal using modal_b (symmetry argument). Derive modal_forward from universal R.
+2. **Structural coherence**: Restrict family set to MCS sharing BoxContent (CoherentBundle approach).
+3. **EvalBMCS approach**: Use already-proven eval_saturated_bundle_exists (avoids full modal_forward).
+
+### Plan Revision Required
+
+Plan v006 Phase 2 needs substantial redesign. Recommend creating v007 with revised Phase 2 that
+either (a) constructs the canonical accessibility relation or (b) uses structural coherence.

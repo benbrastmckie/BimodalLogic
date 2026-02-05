@@ -163,7 +163,7 @@ After this implementation:
 
 ---
 
-### Phase 2: S5 Box Invariance Lemma [NOT STARTED]
+### Phase 2: S5 Box Invariance Lemma [BLOCKED]
 
 **Goal:** Prove that Box formulas are uniform across all MCS: `Box phi in M -> Box phi in M'` for any two MCS M, M'. This is the key enabling lemma that resolves the BoxContent preservation problem.
 
