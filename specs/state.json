@@ -6,9 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 864,
+      "project_name": "recursive_seed_henkin_model",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-05T01:22:18Z",
+      "last_updated": "2026-02-05T01:22:18Z"
+    },
+    {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -19,8 +27,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-05T00:49:48Z",
-      "session_id": "sess_1770252188_40aaff",
+      "last_updated": "2026-02-05T00:52:38Z",
+      "session_id": "sess_1770252740_106a34",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
@@ -95,7 +103,7 @@
         }
       ],
       "planned": "2026-02-05T00:49:48Z",
-      "started": "2026-02-04T19:10:35Z"
+      "started": "2026-02-05T00:52:38Z"
     },
     {
       "project_number": 793,
@@ -242,7 +250,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 864,
+  "next_project_number": 865,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
