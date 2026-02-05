@@ -120,6 +120,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-013.md",
           "type": "research",
           "summary": "Post-implementation review analyzing v005 learnings, reusable components, mathematical obstacles, and recommending EvalBMCS integration as the primary path forward"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-014.md",
+          "type": "research",
+          "summary": "In-depth comparative analysis of all viable approaches for axiom elimination, identifying the BoxContent preservation problem as the fundamental obstacle to full modal axiom elimination"
         }
       ],
       "planned": "2026-02-05T00:49:48Z",
