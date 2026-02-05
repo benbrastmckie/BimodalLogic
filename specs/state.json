@@ -11,9 +11,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-05T17:27:11Z",
-      "last_updated": "2026-02-05T17:54:58Z",
-      "session_id": "sess_1770313809_01eb8b",
-      "researched": "2026-02-05T17:54:58Z",
+      "last_updated": "2026-02-05T18:38:04Z",
+      "session_id": "sess_1770316139_654121",
+      "researched": "2026-02-05T18:38:04Z",
       "artifacts": [
         {
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md",
@@ -24,6 +24,11 @@
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-002.md",
           "type": "research",
           "summary": "Follow-up research on compositionality of the canonical task relation via family composition, showing the 4-axiom enables cross-boundary temporal coherence"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-003.md",
+          "type": "research",
+          "summary": "Detailed analysis of canonical tasks as composable parametric duration-indexed functions, accessibility relation between MCSs, the offset problem in the box case of the TruthLemma, and its resolution via MF/TF axioms. 1027 lines."
         }
       ]
     },
