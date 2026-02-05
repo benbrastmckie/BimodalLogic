@@ -3,8 +3,8 @@
   "started_at": "2026-02-05T12:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_0_complete",
-    "details": "Removed forward_H and backward_G fields from IndexedMCSFamily. Updated 4 files: IndexedMCSFamily.lean, Construction.lean, ModalSaturation.lean, TemporalCoherentConstruction.lean. lake build succeeds."
+    "stage": "phase_3_complete",
+    "details": "Phase 0: Removed forward_H/backward_G from IndexedMCSFamily. Phase 3: Replaced FALSE axiom temporally_saturated_mcs_exists with CORRECT axiom temporal_coherent_family_exists. Rewired construct_temporal_bmcs to use the new axiom directly. lake build succeeds."
   },
   "metadata": {
     "session_id": "sess_1770252740_106a34",

@@ -537,111 +537,87 @@ lemma neg_G_to_F_neg (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     Formula.some_future (Formula.neg phi) ∈ M :=
   neg_all_future_to_some_future_neg M h_mcs phi h_neg_G
 
+/-!
+## Temporal Coherent Family Existence Axiom (Task 843)
+
+This axiom replaces the mathematically FALSE axiom `temporally_saturated_mcs_exists`
+(which claimed a constant family could be temporally saturated -- see research-010.md
+counterexample: `{F(psi), neg psi}` is consistent but cannot be in a single temporally
+saturated MCS).
+
+The replacement axiom asserts the existence of a `TemporalCoherentFamily` (which may
+be NON-CONSTANT) extending any consistent context. This is mathematically TRUE and
+will be proven in a subsequent phase using a dovetailing chain construction.
+-/
+
 /--
-Axiom: For any consistent context, there exists a temporally saturated MCS extending it.
+Axiom: For any consistent context, there exists a temporally coherent family extending it.
 
 **Mathematical Justification**:
-The standard Henkin-style construction for temporal completeness produces a temporally
-saturated MCS through witness insertion during the Lindenbaum enumeration. At each step,
-when a formula F(psi) = neg(G(neg(psi))) is added to the growing set, the witness psi
-is also added if consistent. The key consistency lemma (temporal_witness_seed_consistent)
-ensures that {psi} union GContent(M) is consistent whenever F(psi) is in MCS M.
+Given a consistent context Gamma, we can build a family of MCS indexed by integers
+using a dovetailing chain construction:
+1. Extend Gamma to MCS M_0 via Lindenbaum
+2. For each integer n, build M_n using `GContent(M_{n-1})` as seed (forward direction)
+3. For witnessing F-formulas, include the witness in the seed at the appropriate step
+4. Symmetrically for the backward (past) direction
 
-Temporal saturation means: F(psi) in M implies psi in M, and P(psi) in M implies psi in M.
-This is equivalent to: phi in M implies G(phi) in M (and similarly for H).
+This construction produces a NON-CONSTANT family (different MCS at different times)
+that satisfies:
+- forward_G: G phi in M_t -> phi in M_s for s > t (by GContent seed inclusion)
+- backward_H: H phi in M_t -> phi in M_s for s < t (by HContent seed inclusion)
+- forward_F: F phi in M_t -> exists s > t, phi in M_s (by dovetailing enumeration)
+- backward_P: P phi in M_t -> exists s < t, phi in M_s (by dovetailing enumeration)
 
-Such saturated MCS exist for ANY consistent context (this is a theorem of temporal logic,
-provable in the metatheory). The full Lean construction would require:
-1. An enumeration of formulas (countable inductive type)
-2. A modified Lindenbaum step that inserts temporal witnesses
-3. Careful bookkeeping of consistency preservation across omega steps
+The key consistency lemma `temporal_witness_seed_consistent` (proven above) ensures
+that `{psi} union GContent(M)` is consistent whenever `F(psi) in M`, providing the
+consistency argument at each step of the chain construction.
 
-This axiom captures the mathematical content while the formal construction is deferred.
-It is analogous to `singleFamily_modal_backward_axiom` in Construction.lean.
-
-**Structural proof approach**: Implement a modified Lindenbaum construction
-(`temporalLindenbaumMCS`) that produces temporally saturated MCS via Henkin-style
-witness insertion during enumeration. Uses temporal_witness_seed_consistent for
-the consistency argument at each step.
+**Status**: This is a correct axiom that will be proven as a theorem in a subsequent
+phase (Phase 4). It replaces the mathematically FALSE `temporally_saturated_mcs_exists`.
 -/
-axiom temporally_saturated_mcs_exists (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ M : Set Formula,
-      SetMaximalConsistent M ∧
-      (∀ gamma ∈ Gamma, gamma ∈ M) ∧
-      TemporalForwardSaturated M ∧
-      TemporalBackwardSaturated M
-
-/--
-Main theorem: A temporally saturated bundle exists for any consistent context.
-
-**Construction**:
-Uses `temporally_saturated_mcs_exists` to obtain an MCS that is both maximal consistent
-and temporally saturated (F(psi) in M implies psi in M, and P(psi) in M implies psi in M).
-The axiom captures the Henkin-style construction that would produce such an MCS.
-
-**Axiom dependency**: `temporally_saturated_mcs_exists`
--/
-theorem temporal_eval_saturated_bundle_exists (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ B : TemporalEvalSaturatedBundle D,
-      (∀ gamma ∈ Gamma, gamma ∈ B.baseMCS) := by
-  -- Obtain temporally saturated MCS extending Gamma
-  obtain ⟨M, h_mcs, h_extends, h_forward_sat, h_backward_sat⟩ :=
-    temporally_saturated_mcs_exists Gamma h_cons
-  -- Construct the bundle
-  exact ⟨{
-    baseMCS := M
-    is_mcs := h_mcs
-    forward_saturated := h_forward_sat
-    backward_saturated := h_backward_sat
-  }, h_extends⟩
+axiom temporal_coherent_family_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D]
+    (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    ∃ (fam : IndexedMCSFamily D),
+      (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
+      (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
+      (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
 
 /-!
-## Phase 3: Temporally Coherent BMCS Construction
+## Temporally Coherent BMCS Construction
 
 We construct a BMCS that is temporally coherent, meaning all families satisfy
 forward_F and backward_P. This enables the truth lemma to be proven without sorry
 for all cases including temporal backward (G and H).
 
-The construction uses `TemporalEvalSaturatedBundle` (with temporally saturated MCS)
-to obtain a `TemporalCoherentFamily`, then wraps it in a single-family BMCS.
+The construction uses `temporal_coherent_family_exists` to obtain a
+TemporalCoherentFamily, then wraps it in a single-family BMCS.
 -/
 
 /--
 Construct a temporally coherent BMCS from a consistent context.
 
 The construction:
-1. Obtain a temporally saturated MCS M extending Gamma (via axiom)
-2. Build a TemporalEvalSaturatedBundle from M
-3. Convert to TemporalCoherentFamily (which has forward_F and backward_P)
-4. Extract the IndexedMCSFamily and wrap in a single-family BMCS
+1. Obtain a temporally coherent family extending Gamma (via axiom)
+2. Wrap the family in a single-family BMCS
 
 **Axiom dependencies**:
-- `temporally_saturated_mcs_exists` (temporal saturation existence)
+- `temporal_coherent_family_exists` (temporal coherent family existence -- CORRECT, to be proven)
 - `singleFamily_modal_backward_axiom` (modal backward for single-family BMCS)
 -/
 noncomputable def construct_temporal_bmcs (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     BMCS D :=
-  -- Get temporally saturated bundle
-  let bundle := (temporal_eval_saturated_bundle_exists (D := D) Gamma h_cons).choose
-  -- Convert to TemporalCoherentFamily then extract IndexedMCSFamily
-  let tcf := bundle.toTemporalCoherentFamily
+  -- Get temporally coherent family
+  let fam := (temporal_coherent_family_exists D Gamma h_cons).choose
   -- Build single-family BMCS
-  singleFamilyBMCS tcf.toIndexedMCSFamily
+  singleFamilyBMCS fam
 
 /--
-The eval family of the constructed BMCS is the constant family from the saturated bundle.
+The eval family of the constructed BMCS is the family from temporal_coherent_family_exists.
 -/
 lemma construct_temporal_bmcs_eval_eq (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     (construct_temporal_bmcs Gamma h_cons (D := D)).eval_family =
-      (temporal_eval_saturated_bundle_exists (D := D) Gamma h_cons).choose.toTemporalCoherentFamily.toIndexedMCSFamily :=
-  rfl
-
-/--
-The MCS at any time in the constructed BMCS is the baseMCS of the saturated bundle.
--/
-lemma construct_temporal_bmcs_mcs_eq (Gamma : List Formula) (h_cons : ContextConsistent Gamma) (t : D) :
-    (construct_temporal_bmcs Gamma h_cons (D := D)).eval_family.mcs t =
-      (temporal_eval_saturated_bundle_exists (D := D) Gamma h_cons).choose.baseMCS :=
+      (temporal_coherent_family_exists D Gamma h_cons).choose :=
   rfl
 
 /--
@@ -650,23 +626,17 @@ The constructed BMCS preserves the original context.
 theorem construct_temporal_bmcs_contains_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∀ gamma ∈ Gamma, gamma ∈ (construct_temporal_bmcs Gamma h_cons (D := D)).eval_family.mcs 0 := by
   intro gamma h_mem
-  -- The MCS at time 0 is the baseMCS of the saturated bundle
-  rw [construct_temporal_bmcs_mcs_eq]
-  -- The baseMCS extends Gamma
-  exact (temporal_eval_saturated_bundle_exists (D := D) Gamma h_cons).choose_spec gamma h_mem
+  -- The eval family is the chosen family from the axiom
+  rw [construct_temporal_bmcs_eval_eq]
+  -- The family extends Gamma at time 0
+  exact (temporal_coherent_family_exists D Gamma h_cons).choose_spec.1 gamma h_mem
 
 /--
 The constructed BMCS is temporally coherent.
 
-**Key Property**: Since the BMCS uses a temporally saturated MCS as a constant family,
-the forward_F and backward_P properties hold for the single family in the bundle.
-
-For forward_F: F(psi) in M -> psi in M (by temporal forward saturation of baseMCS),
-and since D has Nontrivial, there exists s > t. Since the family is constant,
-psi in fam.mcs s = psi in M.
-
-For backward_P: P(psi) in M -> psi in M (by temporal backward saturation of baseMCS),
-and since D has Nontrivial, there exists s < t with psi in fam.mcs s = psi in M.
+**Key Property**: The family from `temporal_coherent_family_exists` directly provides
+forward_F and backward_P properties. Since the BMCS has a single family, temporal
+coherence holds trivially.
 -/
 theorem construct_temporal_bmcs_temporally_coherent (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     (construct_temporal_bmcs Gamma h_cons (D := D)).temporally_coherent := by
@@ -676,10 +646,8 @@ theorem construct_temporal_bmcs_temporally_coherent (Gamma : List Formula) (h_co
   simp only [construct_temporal_bmcs, singleFamilyBMCS] at hfam
   have h_eq := Set.mem_singleton_iff.mp hfam
   subst h_eq
-  -- Get the bundle and its properties
-  let bundle := (temporal_eval_saturated_bundle_exists (D := D) Gamma h_cons).choose
-  let tcf := bundle.toTemporalCoherentFamily
-  -- The family IS tcf.toIndexedMCSFamily, which has forward_F and backward_P
-  exact ⟨tcf.forward_F, tcf.backward_P⟩
+  -- Get the forward_F and backward_P from the axiom
+  have h_spec := (temporal_coherent_family_exists D Gamma h_cons).choose_spec
+  exact ⟨h_spec.2.1, h_spec.2.2⟩
 
 end Bimodal.Metalogic.Bundle
