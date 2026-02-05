@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "summary": "Researched canonical task frame construction for bimodal TM logic representation theorem. The key finding is that the canonical task frame can be built directly from the existing BMCS completeness infrastructure by defining WorldState as (family, family_mem, time) triples, task_rel as family-local temporal progression, and world histories as per-family functions. The canonical TruthLemma reduces to the proven BMCS truth lemma for all six formula cases. The main technical challenge is the box case (showing world-history quantification matches BMCS family quantification), resolved by proving canonical world histories are exactly indexed by families up to time-shift.",
+  "artifacts": [
+    {
+      "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md",
+      "type": "research",
+      "summary": "624-line report covering codebase semantics inventory, two-place task relation analysis, duration construction strategies, three-place task relation from two-place, canonical task frame per-family construction, seed-to-model pipeline, canonical TruthLemma case analysis, literature review, and phased implementation strategy."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1770312510_39ddda",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

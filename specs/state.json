@@ -8,10 +8,19 @@
     {
       "project_number": 865,
       "project_name": "canonical_task_frame_bimodal_completeness",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-05T17:27:11Z",
-      "last_updated": "2026-02-05T17:27:11Z"
+      "last_updated": "2026-02-05T17:36:14Z",
+      "session_id": "sess_1770312510_39ddda",
+      "researched": "2026-02-05T17:36:14Z",
+      "artifacts": [
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md",
+          "type": "research",
+          "summary": "624-line report covering codebase semantics inventory, two-place task relation analysis, duration construction strategies, three-place task relation from two-place, canonical task frame per-family construction, seed-to-model pipeline, canonical TruthLemma case analysis, literature review, and phased implementation strategy."
+        }
+      ]
     },
     {
       "project_number": 864,
