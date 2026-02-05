@@ -26,8 +26,16 @@ MCS connected to adjacent times via temporal coherence conditions.
 - `IndexedMCSFamily D`: Structure pairing each time `t : D` with an MCS, plus coherence
 - `forward_G`: G formulas at t propagate to all future t' > t
 - `backward_H`: H formulas at t propagate to all past t' < t
-- `forward_H`: H formulas at future times connect to past
-- `backward_G`: G formulas at past times connect to future
+
+## Design Note (Task 843)
+
+The structure previously included `forward_H` and `backward_G` fields. These were
+removed because:
+1. The TruthLemma does NOT use them (verified by grep)
+2. They existed only because constant-family constructions provided them trivially
+3. Removing them simplifies all downstream family constructions
+4. The temporal backward properties (G backward, H backward) are proven via
+   contraposition using `forward_F`/`backward_P` from `TemporalCoherentFamily`
 
 ## References
 
@@ -57,18 +65,17 @@ A family of maximal consistent sets indexed by time, with temporal coherence.
 - `is_mcs`: Proof that each assigned set is maximal consistent
 - `forward_G`: G formulas propagate to strictly future times
 - `backward_H`: H formulas propagate to strictly past times
-- `forward_H`: H formulas at future times connect back to present
-- `backward_G`: G formulas at past times connect forward to present
 
 **Key Properties**:
 - The coherence conditions use STRICT inequalities (< not <=)
 - This matches TM's temporal operator semantics
 - The T-axiom is used for reflexivity within a single MCS
 
-**Design Note**:
-The `forward_X` conditions handle propagation FROM time t TO future times.
-The `backward_X` conditions handle propagation FROM time t TO past times.
-Both directions (forward/backward in coherence name) are needed for compositionality.
+**Design Note (Task 843)**:
+The structure previously included `forward_H` and `backward_G` fields. These were
+removed because the TruthLemma does not use them. The temporal backward properties
+are instead proven via contraposition using `forward_F`/`backward_P` from
+`TemporalCoherentFamily` in TemporalCoherentConstruction.lean.
 -/
 structure IndexedMCSFamily where
   /-- The MCS assignment: each time t gets an MCS -/
@@ -89,20 +96,6 @@ structure IndexedMCSFamily where
   and `H phi` is in the MCS at t, then phi must be in the MCS at any t' < t.
   -/
   backward_H : forall t t' phi, t' < t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
-  /--
-  Forward H coherence: H phi at a future time t' implies phi at present time t.
-
-  This is the "looking back from the future" condition. If at some future time t' > t
-  we have "phi was always true in the past", then phi must have been true at t.
-  -/
-  forward_H : forall t t' phi, t < t' -> Formula.all_past phi ∈ mcs t' -> phi ∈ mcs t
-  /--
-  Backward G coherence: G phi at a past time t' implies phi at present time t.
-
-  This is the "looking forward from the past" condition. If at some past time t' < t
-  we have "phi will always be true in the future", then phi must be true at t.
-  -/
-  backward_G : forall t t' phi, t' < t -> Formula.all_future phi ∈ mcs t' -> phi ∈ mcs t
 
 variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 

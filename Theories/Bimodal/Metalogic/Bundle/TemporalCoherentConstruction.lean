@@ -371,14 +371,6 @@ noncomputable def TemporalEvalSaturatedBundle.toIndexedMCSFamily
     have h_T : [] ⊢ (Formula.all_past phi).imp phi :=
       DerivationTree.axiom [] _ (Axiom.temp_t_past phi)
     exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_H
-  forward_H := fun _ _ phi _ h_H => by
-    have h_T : [] ⊢ (Formula.all_past phi).imp phi :=
-      DerivationTree.axiom [] _ (Axiom.temp_t_past phi)
-    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_H
-  backward_G := fun _ _ phi _ h_G => by
-    have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
-      DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
-    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_G
 
 /--
 The toIndexedMCSFamily conversion produces a constant family.

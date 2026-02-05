@@ -3,7 +3,7 @@
 - **Task**: 843 - Remove singleFamily_modal_backward_axiom
 - **Version**: 005
 - **Created**: 2026-02-05
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 30-40 hours
 - **Dependencies**: Task 856 (COMPLETED), Task 857 (COMPLETED)
 - **Research Inputs**: research-010.md (axiom falsity), research-011.md (architecture), research-012.md (definitive analysis)
@@ -87,7 +87,7 @@ bmcs_strong_completeness (sorry-free, axiom-free)
 
 ## Implementation Phases
 
-### Phase 0: Simplify IndexedMCSFamily [NOT STARTED]
+### Phase 0: Simplify IndexedMCSFamily [COMPLETED]
 
 **Goal**: Remove unnecessary `forward_H` and `backward_G` fields from `IndexedMCSFamily`, reducing the proof obligations for all subsequent phases.
 

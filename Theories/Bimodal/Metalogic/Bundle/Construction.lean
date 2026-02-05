@@ -58,16 +58,14 @@ multi-family construction.
 
 ## Technical Note: Temporal Coherence
 
-The IndexedMCSFamily requires temporal coherence conditions (forward_G, backward_H, etc.).
+The IndexedMCSFamily requires temporal coherence conditions (forward_G, backward_H).
 For a properly constructed canonical model, these require either:
 1. A single MCS used at all times (constant family) - what we use here
 2. A temporal saturation construction (more complex)
 
 We use approach (1) with a constant family, which means:
-- forward_G: G phi at t implies phi at t' > t - holds trivially (same MCS)
-- backward_H: H phi at t implies phi at t' < t - holds trivially (same MCS)
-- forward_H: H phi at t' > t implies phi at t - holds trivially (same MCS)
-- backward_G: G phi at t' < t implies phi at t - holds trivially (same MCS)
+- forward_G: G phi at t implies phi at t' > t - holds trivially (same MCS, T-axiom)
+- backward_H: H phi at t implies phi at t' < t - holds trivially (same MCS, T-axiom)
 
 ## References
 
@@ -124,8 +122,6 @@ conditions hold trivially because the MCS is the same at all times.
 **Key Property**: For this family:
 - forward_G: G phi at t and t < t' implies phi at t' - by T-axiom (G phi -> phi)
 - backward_H: H phi at t and t' < t implies phi at t' - by T-axiom (H phi -> phi)
-- forward_H: H phi at t' and t < t' implies phi at t - by T-axiom (H phi -> phi)
-- backward_G: G phi at t' and t' < t implies phi at t - by T-axiom (G phi -> phi)
 -/
 noncomputable def constantIndexedMCSFamily (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     IndexedMCSFamily D where
@@ -145,20 +141,6 @@ noncomputable def constantIndexedMCSFamily (M : Set Formula) (h_mcs : SetMaximal
       (phi.all_past.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_past phi)
     let h_T_in_M := theorem_in_mcs h_mcs h_T
     set_mcs_implication_property h_mcs h_T_in_M hH
-  forward_H := fun t t' phi _ hH =>
-    -- H phi in M at t' and t < t' - need phi in M at t
-    -- But M is the same at both times, so use T-axiom
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_past.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_past phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hH
-  backward_G := fun t t' phi _ hG =>
-    -- G phi in M at t' and t' < t - need phi in M at t
-    -- But M is the same at both times, so use T-axiom
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_future.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_future phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hG
 
 /--
 The MCS at any time in a constant family is the original MCS.

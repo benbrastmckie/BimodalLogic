@@ -261,16 +261,6 @@ noncomputable def constantWitnessFamily (M : Set Formula) (h_mcs : SetMaximalCon
       (phi.all_past.imp phi) (Axiom.temp_t_past phi)
     let h_T_in_M := theorem_in_mcs h_mcs h_T
     set_mcs_implication_property h_mcs h_T_in_M hH
-  forward_H := fun t t' phi _ hH =>
-    let h_T := DerivationTree.axiom []
-      (phi.all_past.imp phi) (Axiom.temp_t_past phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hH
-  backward_G := fun t t' phi _ hG =>
-    let h_T := DerivationTree.axiom []
-      (phi.all_future.imp phi) (Axiom.temp_t_future phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hG
 
 /--
 The MCS at any time in a constant witness family is the original MCS.
