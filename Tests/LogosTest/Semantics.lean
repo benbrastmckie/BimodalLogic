@@ -1,2 +1,0 @@
-import BimodalTest.Semantics.TaskFrameTest
-import BimodalTest.Semantics.TruthTest

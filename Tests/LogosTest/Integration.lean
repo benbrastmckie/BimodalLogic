@@ -1,7 +1,0 @@
-import BimodalTest.Integration.EndToEndTest
-import BimodalTest.Integration.ProofSystemSemanticsTest
-import BimodalTest.Integration.AutomationProofSystemTest
-import BimodalTest.Integration.Helpers
-import BimodalTest.Integration.ComplexDerivationTest
-import BimodalTest.Integration.TemporalIntegrationTest
-import BimodalTest.Integration.BimodalIntegrationTest
