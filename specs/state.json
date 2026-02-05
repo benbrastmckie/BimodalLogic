@@ -74,8 +74,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-05T00:52:38Z",
-      "session_id": "sess_1770252740_106a34",
+      "last_updated": "2026-02-05T19:46:14Z",
+      "session_id": "sess_1770320758_97ef25",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
@@ -157,6 +157,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-014.md",
           "type": "research",
           "summary": "In-depth comparative analysis of all viable approaches for axiom elimination, identifying the BoxContent preservation problem as the fundamental obstacle to full modal axiom elimination"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-015.md",
+          "type": "research",
+          "summary": "Synthesis of task 865 canonical task frame insights with task 843 axiom elimination approaches; identifies S5 Box invariance as key enabler for full canonical model construction that eliminates both axioms"
         }
       ],
       "planned": "2026-02-05T00:49:48Z",
