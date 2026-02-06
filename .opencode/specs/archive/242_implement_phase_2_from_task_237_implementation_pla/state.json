@@ -1,0 +1,25 @@
+{
+  "project_name": "phase2_split_command_files",
+  "project_number": 242,
+  "type": "abandonment",
+  "phase": "planning_completed",
+  "reports": [
+    ".opencode/specs/242_phase2_split_command_files/reports/research-001.md"
+  ],
+  "plans": [
+    ".opencode/specs/242_phase2_split_command_files/plans/implementation-001.md"
+  ],
+  "summaries": [],
+  "status": "planned",
+  "created": "2025-12-29T06:25:00Z",
+  "last_updated": "2025-12-29",
+  "started": "2025-12-28",
+  "research_completed": "2025-12-28",
+  "planning_completed": "2025-12-29",
+  "plan_path": ".opencode/specs/242_phase2_split_command_files/plans/implementation-001.md",
+  "plan_metadata": {
+    "phase_count": 3,
+    "estimated_hours": 2.5,
+    "complexity": "low"
+  }
+}

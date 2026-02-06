@@ -4,7 +4,7 @@
 
 The project also includes the **Bimodal** theory, a fragment of independent interest providing a complete bimodal logic for reasoning about past and future contingency. While the Bimodal theory serves as a methodological testbed for Logos development, it captures fundamental relationships between time and possibility in its own right. See [Bimodal Theory](#bimodal-theory) for details.
 
-**Specifications**: [Logos](Theories/Logos/latex/LogosReference.pdf) | [Bimodal](Theories/Bimodal/latex/BimodalReference.pdf)
+**Specifications**: [Bimodal](Theories/Bimodal/latex/BimodalReference.pdf)
 
 **Demo**: [Bimodal](Theories/Bimodal/Examples/Demo.lean)
 
@@ -22,7 +22,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
                                       │ required
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
- │                            Dynamical Foundation                                │
+│                            Dynamical Foundation                                 │
 │                  (modal, temporal, counterfactual, causal)                      │
 └─────────────────────────────────────┬───────────────────────────────────────────┘
                                       │

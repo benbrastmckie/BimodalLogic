@@ -1,0 +1,59 @@
+{
+  "task_number": 266,
+  "status": "completed",
+  "language": "markdown",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": ".opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/plans/implementation-001.md",
+      "created_at": "2026-01-03T00:00:00Z"
+    },
+    {
+      "type": "research",
+      "path": ".opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/reports/research-001.md",
+      "created_at": "2026-01-03T00:00:00Z"
+    },
+    {
+      "type": "implementation",
+      "path": ".opencode/agent/orchestrator.md",
+      "summary": "Implemented Stage 2 (DetermineRouting) and enhanced Stage 4 (ValidateReturn)",
+      "created_at": "2026-01-03T01:54:00Z"
+    },
+    {
+      "type": "implementation",
+      "path": ".opencode/context/core/system/routing-guide.md",
+      "summary": "Added implementation status and troubleshooting section",
+      "created_at": "2026-01-03T01:54:00Z"
+    },
+    {
+      "type": "implementation",
+      "path": ".opencode/command/research.md",
+      "summary": "Clarified orchestrator responsibilities and validation details",
+      "created_at": "2026-01-03T01:54:00Z"
+    },
+    {
+      "type": "implementation",
+      "path": ".opencode/command/implement.md",
+      "summary": "Clarified orchestrator responsibilities and validation details",
+      "created_at": "2026-01-03T01:54:00Z"
+    },
+    {
+      "type": "summary",
+      "path": ".opencode/specs/266_fix_research_command_language_based_routing_to_properly_invoke_lean_research_agent_for_lean_tasks/summaries/implementation-summary-20260103.md",
+      "created_at": "2026-01-03T01:54:00Z"
+    }
+  ],
+  "plan_metadata": {
+    "phases": 7,
+    "total_effort_hours": 6,
+    "complexity": "medium",
+    "research_integrated": true
+  },
+  "implementation_metadata": {
+    "phases_completed": 5,
+    "files_modified": 4,
+    "files_created": 1,
+    "implementation_date": "2026-01-03"
+  },
+  "updated_at": "2026-01-03T01:54:00Z"
+}
