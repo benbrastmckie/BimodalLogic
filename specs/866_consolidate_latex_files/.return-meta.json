@@ -1,15 +1,21 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-10T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "completed_at": "2026-02-10T12:15:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/866_consolidate_latex_files/reports/research-001.md",
+      "summary": "Research report analyzing LaTeX file dependencies and consolidation options"
+    }
+  ],
+  "next_steps": "Run /plan 866 to create implementation plan for chosen consolidation approach",
   "metadata": {
     "session_id": "sess_1770749540_f5a642",
     "agent_type": "general-research-agent",
+    "duration_seconds": 900,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6
   }
 }

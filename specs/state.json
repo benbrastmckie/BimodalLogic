@@ -8,11 +8,19 @@
     {
       "project_number": 866,
       "project_name": "consolidate_latex_files",
-      "status": "researching",
+      "status": "researched",
       "language": "latex",
       "created": "2026-02-10T18:51:10Z",
-      "last_updated": "2026-02-10T18:52:36Z",
-      "session_id": "sess_1770749540_f5a642"
+      "last_updated": "2026-02-10T18:55:31Z",
+      "session_id": "sess_1770749540_f5a642",
+      "researched": "2026-02-10T18:55:31Z",
+      "artifacts": [
+        {
+          "path": "specs/866_consolidate_latex_files/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing LaTeX file dependencies and consolidation options"
+        }
+      ]
     },
     {
       "project_number": 865,
@@ -83,8 +91,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-10T18:53:37Z",
-      "session_id": "sess_1770749259_053421",
+      "last_updated": "2026-02-10T18:55:04Z",
+      "session_id": "sess_1770749682_60e2bf",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
