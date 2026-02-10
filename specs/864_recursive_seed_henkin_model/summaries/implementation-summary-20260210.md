@@ -1,8 +1,8 @@
 # Implementation Summary: Task #864
 
-**Completed**: 2026-02-10
-**Duration**: ~4 hours
-**Status**: PARTIAL (infrastructure complete, proofs incomplete)
+**Last Updated**: 2026-02-10
+**Duration**: ~4 hours (session 1) + ~2 hours (session 2)
+**Status**: PARTIAL (Phase 3 in progress, key lemmas proven)
 
 ## Overview
 
@@ -46,14 +46,25 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 
 4. **Build Verification**: All three files compile successfully; full Bimodal module builds
 
-## Sorries Remaining
+## Sorries Remaining (Updated Session 2)
 
-| File | Count | Description |
-|------|-------|-------------|
-| RecursiveSeed.lean | 3 | Consistency lemmas (addFormula, diamond_box_interaction, seedConsistent) |
-| SeedCompletion.lean | 6 | MCS properties, family construction, BoxContent inclusion |
-| SeedBMCS.lean | 8 | Modal coherence, temporal coherence, context wrapper |
-| **Total** | **17** | Infrastructure complete, proofs need completion |
+| File | Before | After | Description |
+|------|--------|-------|-------------|
+| RecursiveSeed.lean | 3 | 1 | seedConsistent (induction proof pending) |
+| SeedCompletion.lean | 6 | 6 | MCS properties, family construction, BoxContent inclusion |
+| SeedBMCS.lean | 8 | 8 | Modal coherence, temporal coherence, context wrapper |
+| **Total** | **17** | **15** | Key diamond-box lemma completed |
+
+### Session 2 Completed Proofs
+
+1. **`diamond_box_interaction`** (KEY LEMMA) - ~170 lines
+   - Proves: If Box phi and neg(Box psi) are jointly consistent in S, then {phi, neg psi} is consistent
+   - Uses: double negation elimination, necessitation, modal K distribution
+   - This is the mathematical core for seed consistency
+
+2. **`addFormula_preserves_consistent_of_theorem`** - ~60 lines
+   - Proves: Adding a theorem to a consistent set preserves consistency
+   - Uses: deduction theorem, modus ponens, cut elimination pattern
 
 ## Phase Status
 
@@ -61,7 +72,7 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 |-------|--------|-------|
 | Phase 1: Formula Classification | COMPLETED | Data structures and classification |
 | Phase 2: Recursive Seed Builder | COMPLETED | buildSeedAux with termination proof |
-| Phase 3: Seed Consistency | PARTIAL | 3 sorries in key lemmas |
+| Phase 3: Seed Consistency | IN PROGRESS | 1 sorry (seedConsistent) - key lemmas done |
 | Phase 4: Seed Completion | PARTIAL | 6 sorries in MCS construction |
 | Phase 5: BMCS Assembly | PARTIAL | 8 sorries in coherence proofs |
 | Phase 6: Verification | PARTIAL | Build verified, documentation added |
@@ -87,9 +98,13 @@ Target axioms for elimination (not yet removed pending sorry resolution):
 
 ## Next Steps
 
-1. Complete the 3 sorries in RecursiveSeed.lean (diamond-box interaction key lemma)
-2. Complete the 6 sorries in SeedCompletion.lean (MCS properties)
-3. Complete the 8 sorries in SeedBMCS.lean (coherence proofs)
+1. **Complete `seedConsistent`** - The remaining sorry in RecursiveSeed.lean
+   - Requires induction on formula complexity
+   - Uses the completed `diamond_box_interaction` lemma
+   - Proof sketch and invariant structure added
+
+2. Complete the 6 sorries in SeedCompletion.lean (depends on seedConsistent)
+3. Complete the 8 sorries in SeedBMCS.lean (depends on SeedCompletion)
 4. Update Completeness.lean to use construct_seed_bmcs
 5. Remove/comment axioms after verification
 6. Run full `lake build` and `#print axioms` verification

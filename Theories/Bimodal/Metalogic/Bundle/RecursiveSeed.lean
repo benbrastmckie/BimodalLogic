@@ -600,9 +600,88 @@ theorem addFormula_preserves_consistent_of_theorem {S : Set Formula} {phi : Form
   intro L hL
   unfold Consistent
   intro ⟨d⟩
-  -- If L ⊆ S ∪ {phi} derives bot, we need to show S is inconsistent
-  -- But if phi is a theorem, we can replace occurrences of phi with its derivation
-  sorry
+  -- If L ⊆ insert phi S derives bot, need to show contradiction
+  -- Key insight: if phi ∉ L, then L ⊆ S, contradicting S consistent
+  -- If phi ∈ L, we can use the theorem proof to eliminate phi from the derivation
+  by_cases h_phi_in_L : phi ∈ L
+  · -- phi ∈ L: use the theorem to replace phi
+    -- L ⊢ ⊥ and phi is a theorem means we can derive ⊥ from L \ {phi}
+    -- Actually, since phi is a theorem, removing it doesn't change consistency
+    -- We have L ⊢ ⊥. Let L' = L.filter (· ≠ phi)
+    -- We can show L' ⊢ ⊥ by weakening from [] ⊢ phi
+    -- No wait, that's not right. We need to show S is inconsistent.
+    -- Actually, the issue is that L ⊆ insert phi S, so L \ {phi} ⊆ S
+    -- And from L ⊢ ⊥ with phi being a theorem, we get L' ⊢ ⊥
+    -- where L' = L \ {phi} ⊆ S
+    -- The key is: if [] ⊢ phi and L ⊢ ⊥, then L.filter(· ≠ phi) ⊢ ⊥
+    -- This is because we can replace assumptions of phi with the theorem proof
+    obtain ⟨d_thm, _⟩ := h_thm
+    -- Let L' = L \ {phi}
+    let L' := L.filter (· ≠ phi)
+    -- L' ⊆ S since L ⊆ insert phi S and we removed phi
+    have h_L'_sub : ∀ ψ ∈ L', ψ ∈ S := by
+      intro ψ hψ
+      have h_mem := List.mem_filter.mp hψ
+      have h_in_L := h_mem.1
+      have h_ne : ψ ≠ phi := by simpa using h_mem.2
+      have := hL ψ h_in_L
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq h_ne
+      | inr h_in_S => exact h_in_S
+    -- We need to show L' ⊢ ⊥, which gives a contradiction with S consistent
+    -- From L ⊢ ⊥ and [] ⊢ phi, we can construct L' ⊢ ⊥
+    -- This is because any assumption of phi in L can be replaced with the theorem
+    -- The idea: weaken d_thm to L' ⊢ phi, then use it wherever phi was assumed
+    -- Actually, this requires a proper "cut elimination" style argument
+    -- Simpler: weaken L' to L' ++ [phi] which is "similar" to L
+    -- We need: L' ++ [phi] has same elements as L (since phi ∈ L and L' = L \ {phi})
+    -- Then weaken d : L ⊢ ⊥ to L' ++ [phi] ⊢ ⊥ won't work directly
+    -- Instead: from L ⊢ ⊥ and phi ∈ L, by deduction theorem: L' ⊢ phi → ⊥
+    -- But we also have [] ⊢ phi, so L' ⊢ phi (by weakening)
+    -- By modus ponens: L' ⊢ ⊥
+    -- However, this assumes L' = L with phi at front, which isn't quite right
+    -- Let me use the deduction_with_mem approach
+    -- Actually, let's use the perm approach: L has same elements as phi :: L'
+    have h_perm : ∀ x, x ∈ L ↔ x ∈ phi :: L' := by
+      intro x
+      constructor
+      · intro hx
+        by_cases h_eq : x = phi
+        · simp only [List.mem_cons, h_eq, true_or]
+        · simp only [List.mem_cons]
+          right
+          exact List.mem_filter.mpr ⟨hx, by simpa using h_eq⟩
+      · intro hx
+        simp only [List.mem_cons] at hx
+        cases hx with
+        | inl h_eq => exact h_eq ▸ h_phi_in_L
+        | inr h_in_L' =>
+          have h_mem := List.mem_filter.mp h_in_L'
+          exact h_mem.1
+    -- Exchange: phi :: L' ⊢ ⊥
+    have d_reord : Bimodal.ProofSystem.DerivationTree (phi :: L') Formula.bot := by
+      apply Bimodal.ProofSystem.DerivationTree.weakening L (phi :: L') Formula.bot d
+      intro x hx
+      exact (h_perm x).mp hx
+    -- By deduction theorem: L' ⊢ phi → ⊥ = L' ⊢ phi.neg
+    have d_neg : Bimodal.ProofSystem.DerivationTree L' phi.neg :=
+      Bimodal.Metalogic.Core.deduction_theorem L' phi Formula.bot d_reord
+    -- Weaken the theorem: L' ⊢ phi
+    have d_phi : Bimodal.ProofSystem.DerivationTree L' phi :=
+      Bimodal.ProofSystem.DerivationTree.weakening [] L' phi d_thm (List.nil_subset L')
+    -- Modus ponens: L' ⊢ ⊥
+    have d_bot_L' : Bimodal.ProofSystem.DerivationTree L' Formula.bot :=
+      Bimodal.ProofSystem.DerivationTree.modus_ponens L' phi Formula.bot d_neg d_phi
+    -- This contradicts S being consistent
+    exact h_cons L' h_L'_sub ⟨d_bot_L'⟩
+  · -- phi ∉ L: L ⊆ S directly
+    have h_L_sub : ∀ ψ ∈ L, ψ ∈ S := by
+      intro ψ hψ
+      have := hL ψ hψ
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq (fun h => h_phi_in_L (h ▸ hψ))
+      | inr h_in_S => exact h_in_S
+    exact h_cons L h_L_sub ⟨d⟩
 
 /--
 The diamond-box interaction consistency lemma.
@@ -629,21 +708,221 @@ theorem diamond_box_interaction {S : Set Formula} {phi psi : Formula}
   push_neg at hL_incons
   obtain ⟨d_bot⟩ := hL_incons
   -- L ⊆ {phi, neg psi} and L ⊢ ⊥
-  -- This means {phi, neg psi} is inconsistent
-  -- From phi and neg psi = (psi → ⊥), if we derive ⊥, then phi ⊢ psi
-  -- By necessitation: Box phi ⊢ Box psi
-  -- But Box phi ∈ S and neg(Box psi) ∈ S, so S derives both Box psi and neg(Box psi)
-  sorry
+  -- First, weaken L ⊢ ⊥ to [psi.neg, phi] ⊢ ⊥
+  -- Note: deduction_theorem expects [A, ...Gamma] where A is the formula to abstract
+  have h_L_subset : L ⊆ [psi.neg, phi] := by
+    intro x hx
+    have := hL_sub x hx
+    simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at this
+    cases this with
+    | inl h => simp [h]
+    | inr h => simp [h]
+  have d_bot_full : Bimodal.ProofSystem.DerivationTree [psi.neg, phi] Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.weakening L [psi.neg, phi] Formula.bot d_bot h_L_subset
+  -- By deduction theorem: [phi] ⊢ psi.neg → ⊥
+  have d_neg_neg_psi : Bimodal.ProofSystem.DerivationTree [phi] (psi.neg.neg) :=
+    Bimodal.Metalogic.Core.deduction_theorem [phi] psi.neg Formula.bot d_bot_full
+  -- psi.neg.neg = (psi → ⊥) → ⊥ = double negation of psi
+  -- We need to derive psi from psi.neg.neg using double negation elimination
+  -- First, apply deduction again: [] ⊢ phi → psi.neg.neg
+  have d_phi_imp : Bimodal.ProofSystem.DerivationTree [] (phi.imp psi.neg.neg) :=
+    Bimodal.Metalogic.Core.deduction_theorem [] phi psi.neg.neg d_neg_neg_psi
+  -- By necessitation: [] ⊢ Box(phi → psi.neg.neg)
+  have d_box_imp : Bimodal.ProofSystem.DerivationTree [] (phi.imp psi.neg.neg).box :=
+    Bimodal.ProofSystem.DerivationTree.necessitation _ d_phi_imp
+  -- By modal_k_dist: Box(phi → psi.neg.neg) → (Box phi → Box psi.neg.neg)
+  have d_k_dist : Bimodal.ProofSystem.DerivationTree [] ((phi.imp psi.neg.neg).box.imp (phi.box.imp psi.neg.neg.box)) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_k_dist phi psi.neg.neg)
+  -- Modus ponens: [] ⊢ Box phi → Box psi.neg.neg
+  have d_box_phi_imp : Bimodal.ProofSystem.DerivationTree [] (phi.box.imp psi.neg.neg.box) :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ d_k_dist d_box_imp
+  -- Now we have Box phi ∈ S, so we can derive Box psi.neg.neg
+  -- We need to show S is inconsistent
+  -- Since Box phi ∈ S and we have Box phi → Box (psi.neg.neg)
+  -- We can derive Box (psi.neg.neg) from S
+  -- But we also have neg(Box psi) ∈ S
+  -- We need: Box (psi.neg.neg) → Box psi, then S derives Box psi and neg(Box psi)
+  -- Actually, we need double negation elimination inside Box
+  -- By modal_5 and related S5 properties, Box psi.neg.neg ↔ Box psi in S5
+  -- Let's use the DNE theorem: psi.neg.neg → psi
+  have d_dne : Bimodal.ProofSystem.DerivationTree [] (psi.neg.neg.imp psi) := by
+    -- DNE is derivable from Peirce's law and ex_falso
+    -- We use the standard derivation
+    -- Peirce: ((psi → ⊥) → psi) → psi
+    -- We have psi.neg.neg = (psi → ⊥) → ⊥
+    -- Need: ((psi → ⊥) → ⊥) → psi
+    -- Let A = psi.neg = psi → ⊥, B = ⊥
+    -- Need: (A → ⊥) → psi, i.e., A.neg → psi
+    -- From Peirce: ((psi → ⊥) → psi) → psi
+    -- If we can show (A → ⊥) → ((psi → ⊥) → psi), we can compose
+    -- (A → ⊥) means ((psi → ⊥) → ⊥)
+    -- We need: ((psi → ⊥) → ⊥) → ((psi → ⊥) → psi)
+    -- By ex_falso: ⊥ → psi
+    -- So if (psi → ⊥) → ⊥, and we have ⊥ → psi, we can show (psi → ⊥) → psi
+    -- Actually, we need: from psi.neg.neg and psi.neg, derive psi
+    -- Hmm, this is getting complex. Let's use a different approach.
+    -- Use the theorem_in_mcs approach: if DNE is a theorem, we can use it
+    -- The standard DNE proof from Peirce:
+    have peirce : Bimodal.ProofSystem.DerivationTree [] (((psi.imp psi.neg).imp psi).imp psi) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.peirce psi psi.neg)
+    -- We need: psi.neg.neg → (psi.neg → psi)
+    -- psi.neg.neg = (psi → ⊥) → ⊥
+    -- psi.neg → psi = (psi → ⊥) → psi
+    -- By ex_falso applied: ⊥ → psi
+    have ex_falso_psi : Bimodal.ProofSystem.DerivationTree [] (Formula.bot.imp psi) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso psi)
+    -- We want: psi.neg.neg → psi
+    -- From (⊥ → psi) we can get ((psi → ⊥) → ⊥) → psi
+    -- Using B combinator: (⊥ → psi) → ((psi → ⊥) → ⊥) → ((psi → ⊥) → psi)
+    -- But we need the final step to psi
+    -- Actually simpler: use Peirce directly
+    -- Peirce says: ((psi → anything) → psi) → psi
+    -- If we can derive (psi.neg → psi) from psi.neg.neg, then we get psi
+    -- From psi.neg.neg and psi.neg we can derive ⊥ (modus ponens)
+    -- From ⊥ we can derive psi (ex_falso)
+    -- So psi.neg.neg → (psi.neg → psi)
+    -- Actually we want psi.neg.neg → ((psi → q) → psi) for Peirce
+    -- Let's work in context [psi.neg.neg]
+    -- Have psi.neg.neg
+    -- Assume psi.neg, derive psi:
+    --   From psi.neg.neg and psi.neg, MP gives ⊥
+    --   From ⊥, ex_falso gives psi
+    -- So [psi.neg.neg] ⊢ psi.neg → psi
+    -- By deduction: [] ⊢ psi.neg.neg → (psi.neg → psi)
+    -- But we want [] ⊢ psi.neg.neg → psi directly
+    -- Use Peirce: ((psi.neg → psi) → psi) → psi
+    -- Hmm wait, Peirce is: ((A → B) → A) → A
+    -- With A = psi, B = psi.neg: ((psi → psi.neg) → psi) → psi
+    -- Not quite right. Let me reconsider.
+    -- The standard DNE proof: psi.neg.neg → psi
+    -- In context [psi.neg.neg, psi.neg]:
+    --   psi.neg.neg : (psi → ⊥) → ⊥
+    --   psi.neg : psi → ⊥
+    --   MP: ⊥
+    --   ex_falso: psi
+    -- So [psi.neg.neg, psi.neg] ⊢ psi
+    -- By deduction: [psi.neg.neg] ⊢ psi.neg → psi
+    -- But Peirce: ((psi → ⊥) → psi) → psi
+    -- So if we have psi.neg → psi, and that's (psi → ⊥) → psi, Peirce gives psi
+    -- In context [psi.neg.neg]:
+    --   Have psi.neg → psi (from above)
+    --   Peirce instance: ((psi → ⊥) → psi) → psi
+    --   MP: psi
+    -- By deduction: [] ⊢ psi.neg.neg → psi
+    -- Let's implement this step by step
+    -- First: [psi.neg, psi.neg.neg] ⊢ psi
+    -- Note: context order matters for deduction_theorem - first element is abstracted
+    have step1 : Bimodal.ProofSystem.DerivationTree [psi.neg, psi.neg.neg] psi := by
+      have h_neg_neg : Bimodal.ProofSystem.DerivationTree [psi.neg, psi.neg.neg] psi.neg.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_neg : Bimodal.ProofSystem.DerivationTree [psi.neg, psi.neg.neg] psi.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_bot : Bimodal.ProofSystem.DerivationTree [psi.neg, psi.neg.neg] Formula.bot :=
+        Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_neg h_neg
+      have h_ex_falso : Bimodal.ProofSystem.DerivationTree [] (Formula.bot.imp psi) :=
+        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso psi)
+      have h_ex_falso' : Bimodal.ProofSystem.DerivationTree [psi.neg, psi.neg.neg] (Formula.bot.imp psi) :=
+        Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_ex_falso (by intro; simp)
+      exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_ex_falso' h_bot
+    -- [psi.neg.neg] ⊢ psi.neg → psi
+    have step2 : Bimodal.ProofSystem.DerivationTree [psi.neg.neg] (psi.neg.imp psi) :=
+      Bimodal.Metalogic.Core.deduction_theorem [psi.neg.neg] psi.neg psi step1
+    -- psi.neg = psi.imp Formula.bot, so psi.neg.imp psi = (psi.imp Formula.bot).imp psi
+    -- Peirce: (((psi.imp Formula.bot).imp psi).imp psi)
+    have step3_peirce : Bimodal.ProofSystem.DerivationTree [] ((psi.neg.imp psi).imp psi) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.peirce psi Formula.bot)
+    have step3_peirce' : Bimodal.ProofSystem.DerivationTree [psi.neg.neg] ((psi.neg.imp psi).imp psi) :=
+      Bimodal.ProofSystem.DerivationTree.weakening [] _ _ step3_peirce (by intro; simp)
+    have step3 : Bimodal.ProofSystem.DerivationTree [psi.neg.neg] psi :=
+      Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ step3_peirce' step2
+    exact Bimodal.Metalogic.Core.deduction_theorem [] psi.neg.neg psi step3
+  -- Now use necessitation on DNE: [] ⊢ Box(psi.neg.neg → psi)
+  have d_box_dne : Bimodal.ProofSystem.DerivationTree [] (psi.neg.neg.imp psi).box :=
+    Bimodal.ProofSystem.DerivationTree.necessitation _ d_dne
+  -- K-dist on DNE: Box(psi.neg.neg → psi) → (Box psi.neg.neg → Box psi)
+  have d_k_dist_dne : Bimodal.ProofSystem.DerivationTree [] ((psi.neg.neg.imp psi).box.imp (psi.neg.neg.box.imp psi.box)) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_k_dist psi.neg.neg psi)
+  -- Modus ponens: [] ⊢ Box psi.neg.neg → Box psi
+  have d_box_neg_neg_imp_box : Bimodal.ProofSystem.DerivationTree [] (psi.neg.neg.box.imp psi.box) :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ d_k_dist_dne d_box_dne
+  -- Compose: [] ⊢ Box phi → Box psi
+  -- We have: Box phi → Box psi.neg.neg and Box psi.neg.neg → Box psi
+  have d_box_phi_imp_box_psi : Bimodal.ProofSystem.DerivationTree [] (phi.box.imp psi.box) :=
+    Bimodal.Theorems.Combinators.imp_trans d_box_phi_imp d_box_neg_neg_imp_box
+  -- Now show S is inconsistent
+  -- We have Box phi ∈ S, and [] ⊢ Box phi → Box psi
+  -- By closure, Box psi ∈ S (or we derive it)
+  -- But neg(Box psi) ∈ S, contradiction
+  -- Use h_cons to derive a contradiction
+  -- Build L' = [Box phi, Box phi → Box psi, neg(Box psi)]
+  -- From this L' we can derive ⊥, and L' ⊆ S (after weakening theorem)
+  -- Actually simpler: [Box phi, neg(Box psi)] ⊢ ⊥
+  have d_incons : Bimodal.ProofSystem.DerivationTree [phi.box, psi.box.neg] Formula.bot := by
+    have h_box_phi : Bimodal.ProofSystem.DerivationTree [phi.box, psi.box.neg] phi.box :=
+      Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    have h_neg_box_psi : Bimodal.ProofSystem.DerivationTree [phi.box, psi.box.neg] psi.box.neg :=
+      Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+    have h_imp : Bimodal.ProofSystem.DerivationTree [phi.box, psi.box.neg] (phi.box.imp psi.box) :=
+      Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_box_phi_imp_box_psi (by intro; simp)
+    have h_box_psi : Bimodal.ProofSystem.DerivationTree [phi.box, psi.box.neg] psi.box :=
+      Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_imp h_box_phi
+    -- neg(Box psi) = Box psi → ⊥
+    exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_box_psi h_box_psi
+  -- Now apply h_cons with L' = [Box phi, neg(Box psi)]
+  have h_L'_sub : ∀ ψ ∈ [phi.box, psi.box.neg], ψ ∈ S := by
+    intro ψ hψ
+    simp only [List.mem_cons, List.mem_nil_iff, or_false] at hψ
+    cases hψ with
+    | inl h => exact h ▸ h_box
+    | inr h => exact h ▸ h_neg_box
+  exact h_cons [phi.box, psi.box.neg] h_L'_sub ⟨d_incons⟩
+
+/--
+Invariant for seed consistency proof.
+
+At each step of buildSeedAux, we maintain:
+1. All existing entries in the seed are consistent
+2. The "current" entry at (famIdx, timeIdx) contains formulas derivable from phi
+3. New witness entries contain singleton sets which are consistent
+-/
+structure SeedConsistentInvariant (seed : ModelSeed) (phi : Formula) (famIdx : Nat) (timeIdx : Int) : Prop where
+  /-- All entries in the seed are consistent -/
+  entries_consistent : SeedConsistent seed
+  /-- The current position has formulas all derivable from the root formula -/
+  current_derivable : ∀ ψ ∈ seed.getFormulas famIdx timeIdx, ∃ d : Bimodal.ProofSystem.DerivationTree [phi] ψ, True
 
 /--
 Main theorem: if phi is consistent, then buildSeed phi produces a consistent seed.
 
 This is proven by induction on the formula structure.
+
+**Proof Sketch:**
+1. Initial seed `{(0, 0, {phi})}` is consistent by singleton_consistent_iff
+2. For each recursive call, we maintain the invariant that:
+   - Existing entries remain consistent (formulas added are derivable from existing)
+   - New entries contain singletons (always consistent) or witness formulas (consistent by diamond_box_interaction)
+3. Base cases (atoms, implications) just add to existing entries
+4. Modal cases: Box adds derivable formulas, neg Box creates consistent witness families
+5. Temporal cases: G/H add derivable formulas, neg G/neg H create temporal witnesses
+
+**Remaining Work:**
+- Define buildSeedAux_preserves_invariant lemma
+- Prove each case of buildSeedAux maintains the invariant
+- Compose to get final seedConsistent theorem
 -/
 theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
     SeedConsistent (buildSeed phi) := by
   -- The proof proceeds by induction on the formula complexity
   -- At each step, we maintain the invariant that all seed entries are consistent
+  -- This requires proving that buildSeedAux preserves consistency
+  --
+  -- Key lemmas used:
+  -- - initialSeedConsistent: {phi} consistent when phi consistent
+  -- - addFormula_preserves_consistent_of_theorem: adding theorems preserves consistency
+  -- - diamond_box_interaction: witness families are consistent
+  --
+  -- The full proof requires tracking the invariant through buildSeedAux
+  -- which is left as future work
   sorry
 
 end Bimodal.Metalogic.Bundle
