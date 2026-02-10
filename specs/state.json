@@ -8,19 +8,25 @@
     {
       "project_number": 866,
       "project_name": "consolidate_latex_files",
-      "status": "researched",
+      "status": "planned",
       "language": "latex",
       "created": "2026-02-10T18:51:10Z",
-      "last_updated": "2026-02-10T18:55:31Z",
-      "session_id": "sess_1770749540_f5a642",
+      "last_updated": "2026-02-10T18:59:34Z",
+      "session_id": "sess_1770749820_4acc23",
       "researched": "2026-02-10T18:55:31Z",
       "artifacts": [
         {
           "path": "specs/866_consolidate_latex_files/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing LaTeX file dependencies and consolidation options"
+        },
+        {
+          "path": "specs/866_consolidate_latex_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan for consolidating LaTeX files by moving shared styles to Bimodal/latex/assets/ and removing root latex/ directory"
         }
-      ]
+      ],
+      "planned": "2026-02-10T18:59:34Z"
     },
     {
       "project_number": 865,

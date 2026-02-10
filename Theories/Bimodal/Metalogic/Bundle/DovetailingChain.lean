@@ -174,13 +174,55 @@ Verified computationally for small cases. Full proof requires careful Int case a
 theorem dovetail_neighbor_constructed (n : Nat) (hn : n > 0) :
     let t := dovetailIndex n
     (dovetailRank (t - 1) < n ∨ dovetailRank (t + 1) < n) := by
-  simp only [dovetailIndex, dovetailRank]
-  cases n with
-  | zero => omega
-  | succ m =>
+  match n with
+  | 0 => omega
+  | m + 1 =>
+    simp only [dovetailIndex]
     split_ifs with h
-    all_goals simp_all
-    all_goals omega
+    · -- Case: m % 2 = 0, so t = m / 2 + 1 (positive)
+      -- t - 1 = m / 2 >= 0
+      left
+      -- We need to show dovetailRank ((m/2 + 1) - 1) < m + 1
+      -- (m/2 + 1) - 1 = m/2 as a Nat (when m/2 >= 0)
+      have key : dovetailRank (↑(m / 2) + 1 - 1) = dovetailRank (↑(m / 2) : Int) := by
+        congr 1
+        omega
+      rw [key]
+      cases hm2 : m / 2 with
+      | zero =>
+        simp only [dovetailRank]
+        omega
+      | succ k =>
+        simp only [dovetailRank]
+        have hm_ge : m ≥ 2 * (k + 1) := by
+          have := Nat.div_mul_le_self m 2
+          simp only [hm2] at this
+          linarith
+        omega
+    · -- Case: m % 2 ≠ 0, so t = -(m / 2 + 1) (negative)
+      -- t + 1 = -(m / 2)
+      right
+      -- We need to show dovetailRank (-(m/2 + 1) + 1) < m + 1
+      have key : dovetailRank (-(↑(m / 2) + 1 : Int) + 1) = dovetailRank (-(↑(m / 2) : Int)) := by
+        congr 1
+        omega
+      rw [key]
+      cases hm2 : m / 2 with
+      | zero =>
+        simp only [Int.neg_zero, dovetailRank]
+        omega
+      | succ k =>
+        -- -(k + 1) = Int.negSucc k
+        have h_neg : (-(↑(k + 1) : Int)) = Int.negSucc k := by
+          simp only [Int.negSucc_eq, Nat.cast_add, Nat.cast_one]
+          omega
+        rw [h_neg]
+        simp only [dovetailRank]
+        have hm_ge : m ≥ 2 * (k + 1) := by
+          have := Nat.div_mul_le_self m 2
+          simp only [hm2] at this
+          linarith
+        omega
 
 /-!
 ## GContent and HContent Consistency

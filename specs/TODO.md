@@ -23,12 +23,14 @@ technical_debt:
 ## Tasks
 
 ### 866. Consolidate LaTeX files into Theories/Bimodal/latex
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 1.5 hours
+- **Status**: [PLANNED]
 - **Language**: latex
 - **Created**: 2026-02-10
 - **Researched**: 2026-02-10
+- **Planned**: 2026-02-10
 - **Research**: [research-001.md](specs/866_consolidate_latex_files/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/866_consolidate_latex_files/plans/implementation-001.md)
 
 **Description**: Consolidate LaTeX files by removing root latex/ directory if not needed for Theories/Bimodal/latex/BimodalReference.tex, or moving required files to Theories/Bimodal/latex/ and updating references. The aim is to have Bimodal/latex/ include all necessary LaTeX files in a tidy way.
 
