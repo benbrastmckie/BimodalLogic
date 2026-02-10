@@ -1,38 +1,18 @@
 {
-  "status": "partial",
+  "status": "researched",
   "started_at": "2026-02-10T12:00:00Z",
-  "completed_at": "2026-02-10T13:30:00Z",
+  "summary": "Analyzed cross-sign propagation blocking issue in DovetailingChain.lean. The two-chain architecture cannot support cross-sign G/H propagation due to one-directional Lindenbaum extension. Evaluated three alternatives: interleaved chain (15-20h, medium-high risk), global Zorn (20-30h, high risk), deferral (0h, maintains debt). Recommended deferral since Phase 4 (critical goal) is complete. Task 865 recommendations remain valid - no changes needed.",
   "artifacts": [
     {
-      "path": "specs/843_remove_singleFamily_modal_backward_axiom/summaries/implementation-summary-20260210.md",
-      "type": "summary",
-      "summary": "Implementation summary updated with Phase 1 progress: shared base MCS construction and cross-sign blocking analysis"
-    },
-    {
-      "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-007.md",
-      "type": "plan",
-      "summary": "Plan updated to reflect Phase 1 partial status with detailed blocking analysis"
+      "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-017.md",
+      "type": "research",
+      "summary": "Architectural analysis of cross-sign temporal propagation blocking issue and task 865 cross-evaluation"
     }
   ],
-  "partial_progress": {
-    "stage": "phase_1_partial",
-    "details": "Implemented shared base MCS construction. Cross-sign cases blocked by architectural limitations. 4 sorries remain.",
-    "phases_attempted": ["phase_1"],
-    "phases_blocked": ["cross-sign forward_G", "cross-sign backward_H"],
-    "remaining_sorries": 4,
-    "architectural_improvement": "chains_share_base lemma proves forward and backward chains share M_0"
-  },
   "metadata": {
-    "session_id": "sess_1770746935_4a7b4f",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1770747586_b243a2",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 0,
-    "phases_total": 5,
-    "phase_4_status": "already_completed_prior_session"
-  },
-  "completion_data": {
-    "completion_summary": "Implemented shared base MCS construction in DovetailingChain.lean (chains_share_base lemma). Cross-sign propagation cases remain blocked due to fundamental architectural limitations of two-chain construction. Phase 4 (FALSE->CORRECT axiom replacement) was already completed in prior session.",
-    "roadmap_items": []
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }

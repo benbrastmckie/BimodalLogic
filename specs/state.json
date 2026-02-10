@@ -74,8 +74,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-10T18:16:35Z",
-      "session_id": "sess_1770746935_4a7b4f",
+      "last_updated": "2026-02-10T18:20:09Z",
+      "session_id": "sess_1770747586_b243a2",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
@@ -177,6 +177,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/summaries/implementation-summary-20260210.md",
           "type": "summary",
           "summary": "Implementation summary for Phase 4 completion - FALSE axiom replaced with CORRECT axiom"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-017.md",
+          "type": "research",
+          "summary": "Architectural analysis of cross-sign temporal propagation blocking issue and task 865 cross-evaluation"
         }
       ],
       "planned": "2026-02-10T17:54:48Z",
