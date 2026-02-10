@@ -1311,22 +1311,95 @@ theorem addFormula_seed_preserves_consistent
       exact singleton_consistent_iff.mpr h_phi_cons
 
 /--
+createNewTime preserves seed consistency if the new formula is consistent.
+-/
+theorem createNewTime_preserves_seedConsistent
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula)
+    (h_seed_cons : SeedConsistent seed)
+    (h_phi_cons : FormulaConsistent phi) :
+    SeedConsistent (seed.createNewTime famIdx timeIdx phi) := by
+  intro entry h_entry
+  unfold ModelSeed.createNewTime at h_entry
+  rw [List.mem_append, List.mem_singleton] at h_entry
+  cases h_entry with
+  | inl h_old => exact h_seed_cons entry h_old
+  | inr h_new =>
+    subst h_new
+    simp only
+    exact singleton_consistent_iff.mpr h_phi_cons
+
+/--
+createNewFamily preserves seed consistency if the new formula is consistent.
+-/
+theorem createNewFamily_preserves_seedConsistent
+    (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
+    (h_seed_cons : SeedConsistent seed)
+    (h_phi_cons : FormulaConsistent phi) :
+    SeedConsistent (seed.createNewFamily timeIdx phi).1 := by
+  intro entry h_entry
+  unfold ModelSeed.createNewFamily at h_entry
+  simp only at h_entry
+  rw [List.mem_append, List.mem_singleton] at h_entry
+  cases h_entry with
+  | inl h_old => exact h_seed_cons entry h_old
+  | inr h_new =>
+    subst h_new
+    simp only
+    exact singleton_consistent_iff.mpr h_phi_cons
+
+/--
 buildSeedAux preserves seed consistency.
 
-Key insight: buildSeedAux only adds formulas that are:
-1. Derivable from the current formula being processed (for addFormula)
-2. Witness formulas that are consistent by the diamond-box interaction lemma
+This is a fundamental theorem showing that the recursive seed construction maintains
+consistency at every step. The key insights are:
 
-The proof requires tracking that all formulas added are consistent with existing entries.
-This is a complex proof that requires careful invariant management.
+1. For atomic/implication cases: Adding a formula to an entry preserves consistency
+   when the existing entry is consistent and the formula is compatible.
+
+2. For positive modal/temporal operators (Box, G, H): The subformula is a theorem
+   when the operator formula is consistent, so adding it preserves consistency.
+
+3. For negative modal/temporal operators (neg Box, neg G, neg H): New entries are
+   created with singleton sets, which are consistent if the witness formula is consistent.
+
+The proof requires tracking that:
+- The seed is consistent (SeedConsistent)
+- The formula being processed is in the current position and is consistent
+
+This is left as sorry for now as the full proof requires a stronger invariant that
+tracks the relationship between the formula being processed and the seed contents.
+The core difficulty is proving that adding a formula to an existing entry preserves
+consistency, which requires knowing that the formula is derivable from or consistent
+with the existing entry.
+
+See research-002.md Section 5 for the diamond-box interaction lemma that is key
+to the cross-family consistency proof.
 -/
 theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (timeIdx : Int)
     (seed : ModelSeed) (h_cons : SeedConsistent seed)
     (h_pos_cons : ∀ ψ ∈ seed.getFormulas famIdx timeIdx, SetConsistent {ψ}) :
     SeedConsistent (buildSeedAux phi famIdx timeIdx seed) := by
-  -- This is a complex proof that follows the same induction pattern as buildSeedAux
-  -- For now, we leave it as sorry since the full proof requires tracking
-  -- consistency through each case of the recursion
+  -- The full proof requires a stronger invariant that tracks:
+  -- 1. The seed is consistent
+  -- 2. phi is in seed.getFormulas famIdx timeIdx
+  -- 3. All entries are consistent
+  --
+  -- Each case of buildSeedAux needs to maintain these properties:
+  --
+  -- For atoms: Adding an atom to a consistent set needs proof that
+  --   the atom is compatible (requires tracking that atoms come from subformulas)
+  --
+  -- For Box psi: Adding Box psi, then psi to all families, then recursing on psi.
+  --   The key is that psi is derivable from Box psi (by T axiom if present,
+  --   or by semantic analysis of what formulas are in the seed).
+  --
+  -- For neg(Box psi): Creating a new family with neg(psi). The witness is
+  --   consistent because it's a singleton of the negation of a subformula.
+  --   The diamond-box interaction lemma handles cross-family consistency.
+  --
+  -- For G/H and neg(G)/neg(H): Similar reasoning with temporal instead of modal.
+  --
+  -- The proof is blocked on establishing the correct invariant and helper lemmas.
   sorry
 
 theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :

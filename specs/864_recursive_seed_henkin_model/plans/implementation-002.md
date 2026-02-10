@@ -221,9 +221,20 @@ After this implementation:
 - `addFormula_seed_preserves_consistent`: COMPLETED (key lemma for adding formulas to seed)
 - RecursiveSeed.lean sorries reduced from 4 to 1 (only `buildSeedAux_preserves_seedConsistent`)
 
+**Progress Update (2026-02-10, Session 7):**
+- `createNewTime_preserves_seedConsistent`: COMPLETED (new helper)
+- `createNewFamily_preserves_seedConsistent`: COMPLETED (new helper)
+- Simplified proof structure in `buildSeedAux_preserves_seedConsistent`
+- Cleaned up code: removed 10+ intermediate sorries, leaving 1 core sorry
+- Build succeeds with only 1 sorry in RecursiveSeed.lean
+
 **Blocking Issues:**
 - `buildSeedAux_preserves_seedConsistent` requires tracking consistency through each case of the buildSeedAux recursion. This is the primary blocking sorry for Phase 3.
 - The proof requires showing that for each case of `buildSeedAux`, the `h_compat` condition of `addFormula_seed_preserves_consistent` holds - i.e., that inserting the formula into existing entries at that position preserves consistency.
+- **Key insight from analysis**: The current hypothesis `h_pos_cons` (formulas at position are individually consistent) is too weak. The proof needs a stronger invariant that tracks:
+  1. The seed is consistent (SeedConsistent)
+  2. The formula being processed (phi) is IN the current position's formula set
+  3. All formulas at current position are mutually compatible (not just individually consistent)
 
 - **Goal:** Prove that if the starting formula is consistent, then every (family, time) entry in the seed is consistent. This is the mathematically hardest phase.
 
