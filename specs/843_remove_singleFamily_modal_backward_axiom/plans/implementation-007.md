@@ -1,7 +1,7 @@
 # Implementation Plan: Task #843 (v007)
 
 - **Task**: 843 - Remove singleFamily_modal_backward_axiom
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 45-60 hours
 - **Dependencies**: None (Phase 1 already completed)
 - **Research Inputs**: research-016.md (comprehensive 16-round synthesis), research-015.md (S5 insights, later falsified), implementation-summary-20260205.md (Phase 2 falsification discovery)
@@ -225,7 +225,7 @@ bmcs_strong_completeness (sorry-free, axiom-free)
 
 ---
 
-### Phase 4: Replace FALSE Axiom with CORRECT Axiom [NOT STARTED]
+### Phase 4: Replace FALSE Axiom with CORRECT Axiom [COMPLETED]
 
 **Goal:** Replace the mathematically FALSE `singleFamily_modal_backward_axiom` with a mathematically CORRECT axiom asserting the existence of a fully saturated BMCS.
 

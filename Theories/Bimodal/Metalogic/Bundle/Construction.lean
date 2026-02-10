@@ -184,28 +184,37 @@ This is acceptable because:
 3. Single-family is a simplification for the existence proof
 -/
 
-/--
-Axiom: For any single-family BMCS, modal_backward holds.
+-- ============================================================================
+-- DEPRECATED: singleFamily_modal_backward_axiom
+-- ============================================================================
 
-**Mathematical Justification**:
-In a single-family BMCS, if phi is in the (unique) family's MCS at t, we need Box phi
-also in that MCS. This is NOT provable from first principles because `phi -> Box phi`
-is not valid in modal logic.
+/-!
+### singleFamily_modal_backward_axiom
 
-However, the canonical model construction from modal logic textbooks shows that a
-properly saturated BMCS does satisfy this property. The saturation ensures that if
-Diamond(neg phi) is in the MCS (which would be the case if Box phi is not), then
-neg phi appears in some witness family, contradicting the assumption that phi is
-in all families.
+**STATUS**: DEPRECATED - This axiom is mathematically FALSE but retained for
+backward compatibility. New code should use `fully_saturated_bmcs_exists` from
+`TemporalCoherentConstruction.lean` instead.
 
-For a single-family construction, we cannot achieve saturation (Diamond psi in MCS
-does not imply psi in that MCS). Therefore, we accept this as an axiom, justified by:
-1. The existence of the saturated canonical model (metatheoretic fact)
-2. The need to express completeness in Lean's logic
-3. Standard textbook treatments that assume the canonical model exists
+**Why This Axiom Is FALSE**:
 
-A future implementation could eliminate this axiom by constructing a true
-multi-family saturated BMCS using the infrastructure in SaturatedConstruction.lean.
+The axiom claims: phi in fam.mcs t -> Box phi in fam.mcs t
+
+This fails for non-necessary formulas. For example:
+- phi = atom "p" (a propositional variable)
+- Box(atom "p") is neither provable nor refutable in TM logic
+- Some MCS contain Box(atom "p"), others contain neg(Box(atom "p"))
+
+The counterexample was discovered during plan v006 Phase 2 implementation.
+See research-016.md for the full analysis.
+
+**REPLACEMENT**: Use `fully_saturated_bmcs_exists` from `TemporalCoherentConstruction.lean`
+instead, which asserts the existence of a modally saturated BMCS. Combined with
+`saturated_modal_backward`, this gives modal_backward for the constructed BMCS.
+
+**DEPRECATION PATH**:
+1. New code should use `construct_temporal_bmcs` (which uses correct axiom)
+2. This axiom will be removed in a future version
+3. The `singleFamilyBMCS` construction using this axiom is also deprecated
 -/
 axiom singleFamily_modal_backward_axiom (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] (fam : IndexedMCSFamily D) (phi : Formula) (t : D)

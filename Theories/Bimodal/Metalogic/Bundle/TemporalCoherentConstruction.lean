@@ -643,4 +643,130 @@ theorem construct_temporal_bmcs_temporally_coherent (Gamma : List Formula) (h_co
   have h_spec := (temporal_coherent_family_exists D Gamma h_cons).choose_spec
   exact ⟨h_spec.2.1, h_spec.2.2⟩
 
+/-!
+## Fully Saturated BMCS Axiom (Task 843 Phase 4)
+
+This axiom replaces the mathematically FALSE `singleFamily_modal_backward_axiom`
+(which claimed phi in MCS -> Box phi in MCS).
+
+The new axiom is mathematically CORRECT: it asserts the existence of a fully
+saturated BMCS, which is guaranteed by standard canonical model theory for
+S5 modal logic + temporal logic.
+
+### Why the Old Axiom Was FALSE
+
+The old axiom `singleFamily_modal_backward_axiom` claimed:
+  forall phi t, phi in fam.mcs t -> Box phi in fam.mcs t
+
+This is FALSE because:
+- For phi = atom "p", Box(atom "p") is neither provable nor refutable
+- Some MCS contain Box(atom "p"), others contain neg(Box(atom "p"))
+- A single MCS does NOT satisfy phi -> Box phi for arbitrary phi
+
+The counterexample was discovered during plan v006 Phase 2 implementation.
+See research-016.md for the full analysis.
+
+### Why the New Axiom Is CORRECT
+
+The new axiom asserts: for any consistent context, there exists a BMCS that is
+(a) temporally coherent, (b) modally saturated, and (c) contains the context.
+
+This is TRUE by the standard canonical model construction:
+1. Build the canonical model with ALL MCS as worlds
+2. Define accessibility via BoxContent inclusion
+3. S5 axioms (T, 4, B, 5-collapse) make accessibility an equivalence relation
+4. The equivalence relation is universal (single equivalence class)
+5. Universal accessibility gives modal_forward
+6. Modal saturation (exists witness for every Diamond) gives modal_backward
+   via the PROVEN `saturated_modal_backward` theorem (ModalSaturation.lean)
+
+### References
+
+- Research report: specs/843_remove_singleFamily_modal_backward_axiom/reports/research-016.md
+- Proof of saturated_modal_backward: Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean
+- Implementation plan: specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-007.md
+-/
+
+/--
+Axiom: For any consistent context, there exists a fully saturated temporally coherent BMCS.
+
+**Mathematical Justification**:
+This is guaranteed by the standard canonical model construction for S5 modal logic
+combined with temporal logic:
+
+1. **Modal saturation**: The canonical model includes witness families for every
+   Diamond formula, ensuring `is_modally_saturated` holds.
+
+2. **Temporal coherence**: The dovetailing chain construction ensures `forward_F`
+   and `backward_P` hold for temporal operators.
+
+3. **Context preservation**: Lindenbaum extension preserves the original context
+   at the evaluation family's MCS at time 0.
+
+Combined with `saturated_modal_backward` (PROVEN in ModalSaturation.lean), this
+gives a complete BMCS construction that does NOT rely on the FALSE single-family
+axiom.
+
+**This axiom will be proven in a future phase** using the full canonical model
+construction infrastructure (BoxContent accessibility symmetry, universal
+accessibility, etc.). See implementation plan v007 Phase 5.
+-/
+axiom fully_saturated_bmcs_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
+    [IsOrderedAddMonoid D] (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    ∃ (B : BMCS D),
+      (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
+      B.temporally_coherent ∧
+      is_modally_saturated B
+
+/-!
+## Fully Saturated BMCS Construction
+
+This construction uses the CORRECT `fully_saturated_bmcs_exists` axiom instead of
+the FALSE `singleFamily_modal_backward_axiom`.
+
+The key insight is that modal saturation + the PROVEN `saturated_modal_backward`
+theorem gives modal_backward without requiring the false single-family axiom.
+-/
+
+/--
+Construct a fully saturated BMCS from a consistent context.
+
+**Key Properties**:
+- Context is preserved at eval_family.mcs 0
+- Temporally coherent (forward_F and backward_P hold)
+- Modally saturated (every Diamond has a witness)
+- modal_backward holds via `saturated_modal_backward` theorem
+
+**Axiom dependencies**:
+- `fully_saturated_bmcs_exists` (CORRECT axiom)
+
+**Does NOT use**:
+- `singleFamily_modal_backward_axiom` (FALSE axiom, deprecated)
+-/
+noncomputable def construct_saturated_bmcs (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    BMCS D :=
+  (fully_saturated_bmcs_exists D Gamma h_cons).choose
+
+/--
+The constructed saturated BMCS preserves the original context.
+-/
+theorem construct_saturated_bmcs_contains_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    ∀ gamma ∈ Gamma, gamma ∈ (construct_saturated_bmcs Gamma h_cons (D := D)).eval_family.mcs 0 := by
+  intro gamma h_mem
+  exact (fully_saturated_bmcs_exists D Gamma h_cons).choose_spec.1 gamma h_mem
+
+/--
+The constructed saturated BMCS is temporally coherent.
+-/
+theorem construct_saturated_bmcs_temporally_coherent (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    (construct_saturated_bmcs Gamma h_cons (D := D)).temporally_coherent :=
+  (fully_saturated_bmcs_exists D Gamma h_cons).choose_spec.2.1
+
+/--
+The constructed saturated BMCS is modally saturated.
+-/
+theorem construct_saturated_bmcs_is_modally_saturated (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    is_modally_saturated (construct_saturated_bmcs Gamma h_cons (D := D)) :=
+  (fully_saturated_bmcs_exists D Gamma h_cons).choose_spec.2.2
+
 end Bimodal.Metalogic.Bundle
