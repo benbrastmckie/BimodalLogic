@@ -96,7 +96,7 @@ This ensures G formulas from any constructed MCS propagate forward to later time
 
 ## Implementation Phases
 
-### Phase 1: Unified Interleaved Chain Construction [PARTIAL]
+### Phase 1: Unified Interleaved Chain Construction [BLOCKED]
 
 **Goal:** Replace the two-chain architecture with a unified interleaved chain that supports cross-sign temporal propagation.
 
@@ -160,6 +160,16 @@ At step n (constructing M_t where t = dovetail_decode(n)):
 - Original 4 temporal sorries remain (cross-sign G/H, F/P witnesses)
 - Remaining work requires implementing interleavedChainSeed and related infrastructure
 - Current two-chain architecture fundamentally cannot support cross-sign propagation
+
+**Progress Notes (2026-02-10, Session 3):**
+- Fixed broken arithmetic proofs (Int coercion handling for dovetail functions)
+- Build now succeeds with only the 4 expected sorry warnings
+- Phase 1 marked [BLOCKED] based on research-017 analysis:
+  - The two-chain architecture cannot support cross-sign G/H propagation
+  - Interleaved construction with specified seed pattern does NOT solve the problem
+  - MCS at negative indices are constructed AFTER less negative ones, so G formulas cannot propagate
+- Phase 4 (critical goal) is already COMPLETE: FALSE axiom replaced with CORRECT axiom
+- Recommendation: Accept 4 sorries as documented technical debt per Alternative C from research-017
 
 **Timing:** 15-20 hours
 

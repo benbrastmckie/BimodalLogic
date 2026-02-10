@@ -180,12 +180,14 @@ theorem dovetailIndex_dovetailRank (t : Int) : dovetailIndex (dovetailRank t) = 
     | succ m => simp [dovetailRank, dovetailIndex]
   | negSucc n =>
     simp only [dovetailRank, dovetailIndex]
-    -- Goal: -1 + -((2 * n + 1) / 2) = Int.negSucc n
-    -- (2 * n + 1) / 2 = n (integer division)
-    -- So -1 + -(n) = -(n + 1) = Int.negSucc n
+    -- (2 * n + 1) % 2 = 1 ≠ 0, so the else branch is taken
+    have h_odd : ¬((2 * n + 1) % 2 = 0) := by omega
+    simp only [h_odd, ↓reduceIte]
+    -- Now goal: -(↑(2*n+1)/2 + 1) = Int.negSucc n
+    -- First rewrite ↑(2*n+1) / 2 to ↑((2*n+1)/2)
+    conv_lhs => rw [show (↑(2 * n + 1) : Int) / 2 = ↑((2 * n + 1) / 2) from Int.ofNat_ediv_ofNat]
     have h1 : (2 * n + 1) / 2 = n := by omega
     simp only [h1, Int.negSucc_eq]
-    omega
 
 /--
 At step n > 0, exactly one of t-1 or t+1 has already been constructed.
@@ -215,9 +217,6 @@ theorem dovetail_neighbor_constructed (n : Nat) (hn : n > 0) :
       | zero => omega
       | succ k =>
         -- ↑(k+1) = Int.ofNat (k+1), and the match on Int.ofNat n.succ gives 2*n+1
-        have h_cast : (↑(k + 1) : Int) = Int.ofNat (k + 1) := rfl
-        simp only [h_cast]
-        -- Now the goal is (match Int.ofNat (k + 1) with ...) < m + 1
         -- Int.ofNat (k + 1) = Int.ofNat (k.succ) matches the second branch
         show 2 * k + 1 < m + 1
         have hm_ge : m ≥ 2 * (k + 1) := by
