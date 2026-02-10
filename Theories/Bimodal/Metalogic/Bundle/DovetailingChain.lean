@@ -141,7 +141,26 @@ theorem dovetailRank_dovetailIndex (n : Nat) : dovetailRank (dovetailIndex n) = 
   | zero => rfl
   | succ m =>
     simp only [dovetailIndex]
-    split_ifs with h <;> simp only [dovetailRank] <;> omega
+    split_ifs with h
+    · -- m % 2 = 0, so dovetailIndex (m+1) = m/2 + 1
+      simp only [dovetailRank]
+      -- ↑m / 2 + 1 is Int.ofNat (m/2 + 1), so rank gives 2*(m/2) + 1
+      conv_lhs => rw [show (↑m : Int) / 2 = ↑(m / 2) from Int.ofNat_ediv_ofNat]
+      -- ↑(m/2) + 1 is Int.ofNat (m/2 + 1), and rank(n+1) = 2n + 1
+      -- We need to show 2 * (m/2) + 1 = m + 1
+      -- Since m % 2 = 0, m = 2 * (m/2), so 2*(m/2) + 1 = m + 1
+      show 2 * (m / 2) + 1 = m + 1
+      omega
+    · -- m % 2 ≠ 0, so dovetailIndex (m+1) = -(m/2 + 1)
+      simp only [dovetailRank]
+      conv_lhs => rw [show (↑m : Int) / 2 = ↑(m / 2) from Int.ofNat_ediv_ofNat]
+      -- -(↑(m/2) + 1) = Int.negSucc (m/2)
+      have h_neg : (-(↑(m / 2) + 1 : Int)) = Int.negSucc (m / 2) := by
+        simp only [Int.negSucc_eq]
+      simp only [h_neg]
+      -- rank(Int.negSucc n) = 2n + 2
+      show 2 * (m / 2) + 2 = m + 1
+      omega
 
 /--
 dovetailIndex is a left inverse of dovetailRank.
@@ -159,7 +178,14 @@ theorem dovetailIndex_dovetailRank (t : Int) : dovetailIndex (dovetailRank t) = 
     cases n with
     | zero => rfl
     | succ m => simp [dovetailRank, dovetailIndex]
-  | negSucc n => simp [dovetailRank, dovetailIndex]
+  | negSucc n =>
+    simp only [dovetailRank, dovetailIndex]
+    -- Goal: -1 + -((2 * n + 1) / 2) = Int.negSucc n
+    -- (2 * n + 1) / 2 = n (integer division)
+    -- So -1 + -(n) = -(n + 1) = Int.negSucc n
+    have h1 : (2 * n + 1) / 2 = n := by omega
+    simp only [h1, Int.negSucc_eq]
+    omega
 
 /--
 At step n > 0, exactly one of t-1 or t+1 has already been constructed.
@@ -180,48 +206,44 @@ theorem dovetail_neighbor_constructed (n : Nat) (hn : n > 0) :
     simp only [dovetailIndex]
     split_ifs with h
     · -- Case: m % 2 = 0, so t = m / 2 + 1 (positive)
-      -- t - 1 = m / 2 >= 0
       left
-      -- We need to show dovetailRank ((m/2 + 1) - 1) < m + 1
-      -- (m/2 + 1) - 1 = m/2 as a Nat (when m/2 >= 0)
-      have key : dovetailRank (↑(m / 2) + 1 - 1) = dovetailRank (↑(m / 2) : Int) := by
-        congr 1
-        omega
-      rw [key]
+      simp only [dovetailRank]
+      conv_lhs => rw [show (↑m : Int) / 2 = ↑(m / 2) from Int.ofNat_ediv_ofNat]
+      have h_simp : (↑(m / 2) : Int) + 1 - 1 = ↑(m / 2) := by omega
+      simp only [h_simp]
       cases hm2 : m / 2 with
-      | zero =>
-        simp only [dovetailRank]
-        omega
+      | zero => omega
       | succ k =>
-        simp only [dovetailRank]
+        -- ↑(k+1) = Int.ofNat (k+1), and the match on Int.ofNat n.succ gives 2*n+1
+        have h_cast : (↑(k + 1) : Int) = Int.ofNat (k + 1) := rfl
+        simp only [h_cast]
+        -- Now the goal is (match Int.ofNat (k + 1) with ...) < m + 1
+        -- Int.ofNat (k + 1) = Int.ofNat (k.succ) matches the second branch
+        show 2 * k + 1 < m + 1
         have hm_ge : m ≥ 2 * (k + 1) := by
           have := Nat.div_mul_le_self m 2
-          simp only [hm2] at this
-          linarith
+          omega
         omega
     · -- Case: m % 2 ≠ 0, so t = -(m / 2 + 1) (negative)
-      -- t + 1 = -(m / 2)
       right
-      -- We need to show dovetailRank (-(m/2 + 1) + 1) < m + 1
-      have key : dovetailRank (-(↑(m / 2) + 1 : Int) + 1) = dovetailRank (-(↑(m / 2) : Int)) := by
-        congr 1
-        omega
-      rw [key]
+      simp only [dovetailRank]
+      conv_lhs => rw [show (↑m : Int) / 2 = ↑(m / 2) from Int.ofNat_ediv_ofNat]
+      -- The goal has -(↑(m/2) + 1) + 1 which equals -↑(m/2)
+      have h_simp : (-(↑(m / 2) + 1 : Int) + 1) = -(↑(m / 2) : Int) := by omega
+      simp only [h_simp]
       cases hm2 : m / 2 with
       | zero =>
-        simp only [Int.neg_zero, dovetailRank]
+        simp only [Int.ofNat_zero, neg_zero]
         omega
       | succ k =>
-        -- -(k + 1) = Int.negSucc k
         have h_neg : (-(↑(k + 1) : Int)) = Int.negSucc k := by
-          simp only [Int.negSucc_eq, Nat.cast_add, Nat.cast_one]
+          simp only [Int.negSucc_eq]
           omega
-        rw [h_neg]
-        simp only [dovetailRank]
+        simp only [h_neg]
+        show 2 * k + 2 < m + 1
         have hm_ge : m ≥ 2 * (k + 1) := by
           have := Nat.div_mul_le_self m 2
-          simp only [hm2] at this
-          linarith
+          omega
         omega
 
 /-!
