@@ -61,8 +61,8 @@ technical_debt:
 ---
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
-- **Effort**: 45-60 hours (revised v007)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 50-65 hours (revised v008)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Updated**: 2026-02-10
@@ -70,8 +70,8 @@ technical_debt:
 - **Planned**: 2026-02-10
 - **Depends**: Task 856
 - **Related**: Task 856, Task 857
-- **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md) through [research-016.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-016.md)
-- **Plan**: [implementation-007.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-007.md)
+- **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md) through [research-017.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-017.md)
+- **Plan**: [implementation-008.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-008.md)
 
 **Description**: Make Bimodal/Metalogic/ axiom-free and sorry-free for publication-ready completeness. Eliminate 2 completeness-chain axioms (singleFamily_modal_backward_axiom, temporally_saturated_mcs_exists) via temporal Lindenbaum construction and multi-family saturated BMCS. Delete 4 legacy eval_bmcs_truth_lemma sorries.
 

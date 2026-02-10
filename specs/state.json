@@ -63,7 +63,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -74,7 +74,7 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-10T18:20:09Z",
+      "last_updated": "2026-02-10T18:28:44Z",
       "session_id": "sess_1770747586_b243a2",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
@@ -169,11 +169,6 @@
           "summary": "Comprehensive synthesis of 15 prior rounds plus cross-task analysis; identifies BoxContent accessibility symmetry as key enabling lemma and recommends replacing FALSE axiom with correct one while pursuing full canonical model construction"
         },
         {
-          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-007.md",
-          "type": "plan",
-          "summary": "5-phase plan with BoxContent symmetry approach to replace FALSE axiom with CORRECT one"
-        },
-        {
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/summaries/implementation-summary-20260210.md",
           "type": "summary",
           "summary": "Implementation summary for Phase 4 completion - FALSE axiom replaced with CORRECT axiom"
@@ -182,9 +177,14 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-017.md",
           "type": "research",
           "summary": "Architectural analysis of cross-sign temporal propagation blocking issue and task 865 cross-evaluation"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-008.md",
+          "type": "plan",
+          "summary": "v008 plan using Alternative A (unified interleaved chain) for cross-sign temporal propagation"
         }
       ],
-      "planned": "2026-02-10T17:54:48Z",
+      "planned": "2026-02-10T18:28:44Z",
       "started": "2026-02-05T00:52:38Z"
     },
     {
