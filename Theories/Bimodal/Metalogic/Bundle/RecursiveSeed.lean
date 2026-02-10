@@ -1311,6 +1311,43 @@ theorem addFormula_seed_preserves_consistent
       exact singleton_consistent_iff.mpr h_phi_cons
 
 /--
+If a seed is well-formed (unique entries per position), and entry is at position (famIdx, timeIdx),
+then getFormulas returns entry.formulas.
+-/
+theorem getFormulas_eq_of_wellformed_and_at_position
+    (seed : ModelSeed) (entry : SeedEntry) (famIdx : Nat) (timeIdx : Int)
+    (h_wf : SeedWellFormed seed)
+    (h_entry : entry ∈ seed.entries)
+    (h_fam : entry.familyIdx = famIdx)
+    (h_time : entry.timeIdx = timeIdx) :
+    seed.getFormulas famIdx timeIdx = entry.formulas := by
+  unfold ModelSeed.getFormulas ModelSeed.findEntry
+  -- find? returns the first entry matching the predicate
+  -- By well-formedness, there's only one entry at (famIdx, timeIdx)
+  -- So find? must return entry
+  have h_pred : (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) entry = true := by
+    simp only [beq_iff_eq, Bool.and_eq_true, decide_eq_true_eq]
+    exact ⟨h_fam, h_time⟩
+  -- By List.find?_isSome, there exists an entry satisfying the predicate
+  have h_exists : (seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx)).isSome := by
+    rw [List.find?_isSome]
+    exact ⟨entry, h_entry, h_pred⟩
+  -- Get that entry
+  have ⟨found, h_find⟩ := Option.isSome_iff_exists.mp h_exists
+  simp only [h_find]
+  -- Show found = entry by well-formedness (unique positions)
+  have h_found_pred := List.find?_some h_find
+  simp only [beq_iff_eq, Bool.and_eq_true, decide_eq_true_eq] at h_found_pred
+  have h_found_in : found ∈ seed.entries := List.mem_of_find?_eq_some h_find
+  -- found and entry are both at (famIdx, timeIdx), and well-formedness says they're equal
+  by_cases h_eq : found = entry
+  · simp [h_eq]
+  · -- found ≠ entry but both at same position: contradiction with well-formedness
+    exfalso
+    have h_same_pos := h_wf.2 found h_found_in entry h_entry h_eq
+    exact h_same_pos ⟨h_found_pred.1.trans h_fam.symm, h_found_pred.2.trans h_time.symm⟩
+
+/--
 createNewTime preserves seed consistency if the new formula is consistent.
 -/
 theorem createNewTime_preserves_seedConsistent
@@ -1362,45 +1399,171 @@ consistency at every step. The key insights are:
 3. For negative modal/temporal operators (neg Box, neg G, neg H): New entries are
    created with singleton sets, which are consistent if the witness formula is consistent.
 
-The proof requires tracking that:
-- The seed is consistent (SeedConsistent)
-- The formula being processed is in the current position and is consistent
+**Stronger Invariant Approach**:
+The theorem uses a stronger precondition: not just that individual formulas are
+consistent as singletons, but that:
+1. phi is already IN the current position's formula set
+2. The current position's formula set is consistent as a whole
 
-This is left as sorry for now as the full proof requires a stronger invariant that
-tracks the relationship between the formula being processed and the seed contents.
-The core difficulty is proving that adding a formula to an existing entry preserves
-consistency, which requires knowing that the formula is derivable from or consistent
-with the existing entry.
+This ensures that when we add additional formulas (subformulas of phi), they are
+compatible with the existing set because they're derived from phi.
 
 See research-002.md Section 5 for the diamond-box interaction lemma that is key
 to the cross-family consistency proof.
 -/
 theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (timeIdx : Int)
     (seed : ModelSeed) (h_cons : SeedConsistent seed)
-    (h_pos_cons : ∀ ψ ∈ seed.getFormulas famIdx timeIdx, SetConsistent {ψ}) :
+    (h_phi_in : phi ∈ seed.getFormulas famIdx timeIdx)
+    (h_phi_cons : FormulaConsistent phi) :
     SeedConsistent (buildSeedAux phi famIdx timeIdx seed) := by
-  -- The full proof requires a stronger invariant that tracks:
-  -- 1. The seed is consistent
-  -- 2. phi is in seed.getFormulas famIdx timeIdx
-  -- 3. All entries are consistent
-  --
-  -- Each case of buildSeedAux needs to maintain these properties:
-  --
-  -- For atoms: Adding an atom to a consistent set needs proof that
-  --   the atom is compatible (requires tracking that atoms come from subformulas)
-  --
-  -- For Box psi: Adding Box psi, then psi to all families, then recursing on psi.
-  --   The key is that psi is derivable from Box psi (by T axiom if present,
-  --   or by semantic analysis of what formulas are in the seed).
-  --
-  -- For neg(Box psi): Creating a new family with neg(psi). The witness is
-  --   consistent because it's a singleton of the negation of a subformula.
-  --   The diamond-box interaction lemma handles cross-family consistency.
-  --
-  -- For G/H and neg(G)/neg(H): Similar reasoning with temporal instead of modal.
-  --
-  -- The proof is blocked on establishing the correct invariant and helper lemmas.
-  sorry
+  -- Use strong induction on formula complexity
+  generalize h_c : phi.complexity = c
+  induction c using Nat.strong_induction_on generalizing phi famIdx timeIdx seed with
+  | h c ih =>
+    -- Case split on formula structure to match buildSeedAux
+    match phi with
+    | Formula.atom s =>
+      -- Atom case: just adds atom to current position
+      simp only [buildSeedAux]
+      -- addFormula just merges into existing entry, seed stays consistent
+      apply addFormula_seed_preserves_consistent
+      · exact h_cons
+      · exact h_phi_cons
+      · intro entry h_entry h_fam h_time
+        -- entry is at position (famIdx, timeIdx) and is consistent
+        have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+        --
+        -- KEY INSIGHT: Although h_compat is quantified over all entries at the position,
+        -- addFormula_seed_preserves_consistent only CALLS it with the FIRST matching entry
+        -- (old_entry, found by findIdx?). This entry is exactly the one whose formulas
+        -- are returned by getFormulas.
+        --
+        -- h_phi_in : atom s ∈ seed.getFormulas famIdx timeIdx
+        -- getFormulas returns entry.formulas for the first entry at (famIdx, timeIdx)
+        -- The h_compat callback will only be called with that first entry.
+        --
+        -- Since findEntry/getFormulas uses find? and findIdx? finds the first match,
+        -- and entry is at position (famIdx, timeIdx), if entry is the first match,
+        -- then getFormulas famIdx timeIdx = entry.formulas.
+        --
+        -- The matching between find? and findIdx? is guaranteed:
+        -- findIdx? finds index i where predicate first holds, find? returns element at that index.
+        -- Since entry matches the predicate and is in the list, and findIdx? found some index,
+        -- the entry at that index is the first one matching the predicate.
+        --
+        -- If entry IS the first matching entry:
+        --   getFormulas famIdx timeIdx = entry.formulas (by definition of findEntry/getFormulas)
+        --   So phi ∈ entry.formulas by h_phi_in
+        --   Then insert phi entry.formulas = entry.formulas (phi already there)
+        --   So SetConsistent (insert phi entry.formulas) = SetConsistent entry.formulas ✓
+        --
+        -- The h_compat callback is only called when findIdx? finds an entry, and with
+        -- that specific entry. So we can assume entry is the first matching one.
+        -- This is captured by the proof of addFormula_seed_preserves_consistent which
+        -- uses old_entry = entries[idx] where idx is from findIdx?.
+        --
+        -- To formalize: we need that when h_compat is called with entry at (famIdx, timeIdx),
+        -- entry is the first such entry in the list. This is true by construction.
+        --
+        -- For now, proceed assuming phi ∈ entry.formulas (sound by the above reasoning)
+        -- and later add formal well-formedness tracking if needed.
+        --
+        -- The structural invariant is: seeds built by buildSeedAux have at most one
+        -- entry per position (because addFormula merges rather than duplicates).
+        -- This should be proven as a separate lemma.
+        --
+        -- Assuming phi ∈ entry.formulas:
+        have h_phi_in_entry : (Formula.atom s) ∈ entry.formulas := by
+          -- The entry passed here is the first matching entry (from addFormula_seed_preserves_consistent)
+          -- So getFormulas famIdx timeIdx = entry.formulas
+          -- We need to show this formally or assume it via well-formedness
+          sorry  -- Well-formedness assumption: entry is the unique/first entry at position
+        have h_insert_eq : insert (Formula.atom s) entry.formulas = entry.formulas :=
+          Set.insert_eq_of_mem h_phi_in_entry
+        rw [h_insert_eq]
+        exact h_entry_cons
+    | Formula.bot =>
+      -- Bot case: adds bot to current position
+      simp only [buildSeedAux]
+      apply addFormula_seed_preserves_consistent
+      · exact h_cons
+      · exact h_phi_cons
+      · intro entry h_entry h_fam h_time
+        have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+        -- Same reasoning as atom case: entry is the first matching entry
+        have h_phi_in_entry : Formula.bot ∈ entry.formulas := by
+          sorry  -- Well-formedness: entry is the unique/first entry at position
+        rw [Set.insert_eq_of_mem h_phi_in_entry]
+        exact h_entry_cons
+    | Formula.box psi =>
+      -- Box case: adds Box psi to current, then psi to all families, then recurses on psi
+      simp only [buildSeedAux]
+      -- This requires several steps:
+      -- 1. Add Box psi to current position (preserves consistency since phi is already there)
+      -- 2. Add psi to all families at current time (needs compatibility proof)
+      -- 3. Recurse on psi at current position (needs stronger invariant)
+      --
+      -- The challenge is that adding psi to OTHER families requires showing psi is compatible
+      -- with those families. This is where the modal coherence comes in:
+      -- If Box psi is consistent, then psi is consistent (as a singleton)
+      -- But we need {existing formulas at other family} ∪ {psi} to be consistent
+      --
+      -- Actually, the seed construction adds psi ONLY when Box psi is being processed,
+      -- meaning Box psi is in the current family. For psi to be in all families,
+      -- we need the modal forward property. But this is what we're BUILDING, not assuming.
+      --
+      -- Key insight: at this stage, we're just building the SEED. The consistency property
+      -- is about the seed itself, not about the full MCS structure yet.
+      --
+      -- For the seed: when we add Box psi to position (f, t), and then add psi to all
+      -- other families at time t, those other families might not have Box psi.
+      -- But that's OK because:
+      -- - If another family has neg(Box psi), then by diamond_box_interaction,
+      --   {psi, neg psi'} is consistent (where psi' is the inner formula)
+      -- - Actually no, the issue is simpler: other families at this stage only have
+      --   the formulas we've put there via previous buildSeedAux calls
+      --
+      -- For now, let's handle this case more carefully with the structural property
+      -- that the seed only contains formulas derived from the root
+      sorry
+    | Formula.all_future psi =>
+      -- G case: similar to Box but temporal
+      sorry
+    | Formula.all_past psi =>
+      -- H case: similar to Box but temporal past
+      sorry
+    | Formula.imp psi1 psi2 =>
+      match psi1, psi2 with
+      | Formula.box inner, Formula.bot =>
+        -- neg(Box inner) case: creates new family with neg inner
+        simp only [buildSeedAux]
+        -- Adding neg(Box inner) to current position, then creating new family with neg inner
+        -- The new family has a singleton {neg inner}, which is consistent if neg inner is consistent
+        -- neg inner is consistent because neg(Box inner) is consistent
+        -- (if neg inner were inconsistent, i.e., ⊢ inner, then ⊢ Box inner, contradicting neg(Box inner) consistent)
+        sorry
+      | Formula.all_future inner, Formula.bot =>
+        -- neg(G inner) case
+        sorry
+      | Formula.all_past inner, Formula.bot =>
+        -- neg(H inner) case
+        sorry
+      | _, _ =>
+        -- Generic implication case: buildSeedAux just adds the implication
+        -- The goal is: SeedConsistent (buildSeedAux (psi1.imp psi2) famIdx timeIdx seed)
+        -- By definition: buildSeedAux (psi1.imp psi2) = seed.addFormula famIdx timeIdx (psi1.imp psi2) .universal_target
+        -- when psi1/psi2 don't match the special cases (box/bot, all_future/bot, all_past/bot)
+        --
+        -- Since we're in the | _, _ branch after excluding those special cases, buildSeedAux
+        -- should reduce to addFormula. However, Lean's pattern matching doesn't automatically
+        -- reduce when the arguments are abstract variables (x✝¹, x✝).
+        --
+        -- This case needs careful handling with split/cases tactics or showing that
+        -- buildSeedAux preserves consistency by structural induction.
+        --
+        -- For now, mark as sorry since the structural argument is sound:
+        -- Adding a formula that's already in the seed doesn't change consistency.
+        sorry
 
 theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
     SeedConsistent (buildSeed phi) := by
@@ -1408,14 +1571,13 @@ theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
   apply buildSeedAux_preserves_seedConsistent
   · -- Initial seed is consistent
     exact initialSeedConsistent phi h_cons
-  · -- Initial position has consistent formulas
-    intro ψ hψ
-    -- The initial seed has getFormulas 0 0 = {phi}
+  · -- phi is in the initial seed at position (0, 0)
     have h_init : (ModelSeed.initial phi).getFormulas 0 0 = {phi} := by
       unfold ModelSeed.initial ModelSeed.getFormulas ModelSeed.findEntry
-      simp only [List.find?_cons_of_pos, beq_self_eq_true, Bool.and_self, List.find?_nil]
-    rw [h_init] at hψ
-    rw [Set.mem_singleton_iff.mp hψ]
-    exact singleton_consistent_iff.mpr h_cons
+      simp only [List.find?_cons_of_pos, beq_self_eq_true, Bool.and_self]
+    rw [h_init]
+    exact Set.mem_singleton_iff.mpr rfl
+  · -- phi is consistent
+    exact h_cons
 
 end Bimodal.Metalogic.Bundle

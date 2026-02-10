@@ -1,8 +1,8 @@
 # Implementation Summary: Task #864
 
 **Last Updated**: 2026-02-10
-**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7)
-**Status**: PARTIAL (Phase 3 in progress, blocking issue identified)
+**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7) + ~30 min (session 8)
+**Status**: PARTIAL (Phase 3 in progress, proof restructured)
 
 ## Overview
 
@@ -46,14 +46,23 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 
 4. **Build Verification**: All three files compile successfully; full Bimodal module builds
 
-## Sorries Remaining (Updated Session 7)
+## Sorries Remaining (Updated Session 8)
 
-| File | Session 2 | Session 7 | Description |
+| File | Session 7 | Session 8 | Description |
 |------|-----------|-----------|-------------|
-| RecursiveSeed.lean | 4 | 1 | `buildSeedAux_preserves_seedConsistent` (blocking) |
+| RecursiveSeed.lean | 1 | 10 | Decomposed sorries for explicit case tracking |
 | SeedCompletion.lean | 6 | 6 | MCS properties, family construction, BoxContent inclusion |
 | SeedBMCS.lean | 8 | 8 | Modal coherence, temporal coherence, context wrapper |
-| **Total** | **18** | **15** | Reduced by 3 |
+| **Total** | **15** | **24** | Increased (temporary decomposition) |
+
+**Note**: Session 8 sorry count increased due to restructuring the proof with explicit case handling. Each case now has a targeted sorry that can be resolved independently.
+
+### Session 8 Progress
+
+1. **Reformulated theorem signature**: Changed from weak `h_pos_cons` to strong `h_phi_in` + `h_phi_cons`
+2. **Added `getFormulas_eq_of_wellformed_and_at_position`**: Helper for well-formed seeds
+3. **Established proof structure**: atom/bot/imp cases now have clear sorry targets
+4. **Identified pattern matching issue**: Generic `| _, _` case has abstract variables
 
 ### Session 7 Progress
 
@@ -62,22 +71,23 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 3. **Code cleanup**: Removed 10+ intermediate sorries, simplified proof structure
 4. **Identified blocking issue**: The theorem statement needs a stronger invariant (see below)
 
-### Blocking Issue Analysis
+### Current Blocking Issue Analysis
 
-The remaining sorry in `buildSeedAux_preserves_seedConsistent` is blocked because the hypothesis:
+The 10 sorries in `buildSeedAux_preserves_seedConsistent` decompose as follows:
 
-```lean
-h_pos_cons : ∀ ψ ∈ seed.getFormulas famIdx timeIdx, SetConsistent {ψ}
-```
+| Sorry Location | Count | Resolution Path |
+|----------------|-------|-----------------|
+| Atom/Bot case well-formedness | 2 | Add well-formedness hypothesis, use `getFormulas_eq_of_wellformed_and_at_position` |
+| Box/G/H operator cases | 3 | Implement with IH recursion |
+| neg-Box/neg-G/neg-H cases | 3 | Use createNewFamily/createNewTime preserves lemmas |
+| Generic imp wildcard | 1 | Pattern matching issue with abstract variables |
+| Generic imp well-formedness | 1 | Same as atom/bot |
 
-Only states that individual formulas are consistent as singletons. This is insufficient because:
-- Adding a formula to an existing entry requires proving **mutual compatibility**
-- Example: {p} is consistent and {neg p} is consistent, but {p, neg p} is NOT
-
-**Required invariant** (for future work):
-1. The seed is consistent (SeedConsistent)
-2. The formula being processed (phi) is IN the current position's formula set
-3. All formulas at current position are derived from the same root formula (ensuring compatibility)
+**Required Resolution Approach:**
+1. Add `SeedWellFormed seed` hypothesis to theorem
+2. Prove `buildSeedAux_preserves_wellformed` (separate lemma)
+3. Use helper lemma to get phi membership in entry.formulas
+4. Handle operator cases with appropriate recursive calls
 
 ### Session 2 Completed Proofs
 

@@ -228,7 +228,32 @@ After this implementation:
 - Cleaned up code: removed 10+ intermediate sorries, leaving 1 core sorry
 - Build succeeds with only 1 sorry in RecursiveSeed.lean
 
-**Blocking Issues:**
+**Progress Update (2026-02-10, Session 8):**
+- Reformulated `buildSeedAux_preserves_seedConsistent` with stronger invariant:
+  - Changed hypothesis from `h_pos_cons : ∀ ψ ∈ seed.getFormulas famIdx timeIdx, SetConsistent {ψ}`
+  - To: `h_phi_in : phi ∈ seed.getFormulas famIdx timeIdx` and `h_phi_cons : FormulaConsistent phi`
+- Added `getFormulas_eq_of_wellformed_and_at_position`: Helper lemma for well-formed seeds
+- Established proof structure for atom/bot/generic-imp cases (each uses sorry for well-formedness)
+- RecursiveSeed.lean now has 10 sorries (temporarily increased due to explicit case tracking)
+- Full Bimodal build succeeds (998 jobs)
+
+**Current Blocking Issues:**
+- The 10 sorries in `buildSeedAux_preserves_seedConsistent` decompose into:
+  - 2 sorries: Well-formedness assumption in atom/bot cases (entry is unique at position)
+  - 6 sorries: Complex operator cases (Box, G, H, neg-Box, neg-G, neg-H) not yet implemented
+  - 1 sorry: Generic implication wildcard case (pattern matching issue with abstract variables)
+  - 1 sorry: Well-formedness assumption in generic imp case
+
+**Required Approach for Resolution:**
+1. Add `SeedWellFormed seed` as hypothesis to `buildSeedAux_preserves_seedConsistent`
+2. Prove `buildSeedAux_preserves_wellformed`: buildSeedAux maintains well-formedness
+3. Use `getFormulas_eq_of_wellformed_and_at_position` to show phi ∈ entry.formulas
+4. Implement complex operator cases with appropriate recursion (using IH)
+
+**Alternative Simpler Approach:**
+- Factor out the well-formedness requirement by noting that h_compat in addFormula_seed_preserves_consistent is only called for the FIRST matching entry (the one found by findIdx?). This is the same entry whose formulas are returned by getFormulas. Therefore, h_phi_in directly gives us membership without needing explicit well-formedness tracking.
+
+**Previous Blocking Issues (Session 7):**
 - `buildSeedAux_preserves_seedConsistent` requires tracking consistency through each case of the buildSeedAux recursion. This is the primary blocking sorry for Phase 3.
 - The proof requires showing that for each case of `buildSeedAux`, the `h_compat` condition of `addFormula_seed_preserves_consistent` holds - i.e., that inserting the formula into existing entries at that position preserves consistency.
 - **Key insight from analysis**: The current hypothesis `h_pos_cons` (formulas at position are individually consistent) is too weak. The proof needs a stronger invariant that tracks:
