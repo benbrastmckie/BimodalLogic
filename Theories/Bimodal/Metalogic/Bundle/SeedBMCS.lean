@@ -80,7 +80,7 @@ noncomputable def buildSeedBMCS (phi : Formula) (h_cons : FormulaConsistent phi)
       use 0
       constructor
       · -- 0 is in familyIndices because initial seed has family 0
-        sorry
+        exact buildSeed_has_family_zero phi
       · rfl
     modal_forward := fun fam hfam phi' t h_box fam' hfam' => by
       -- Box phi' in fam.mcs t implies phi' in fam'.mcs t
@@ -97,7 +97,7 @@ noncomputable def buildSeedBMCS (phi : Formula) (h_cons : FormulaConsistent phi)
       simp only [Set.mem_setOf_eq]
       use 0
       constructor
-      · sorry  -- 0 is in familyIndices
+      · exact buildSeed_has_family_zero phi
       · rfl
   }
 

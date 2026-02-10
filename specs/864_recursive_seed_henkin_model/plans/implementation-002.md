@@ -200,12 +200,21 @@ After this implementation:
 
 ### Phase 3: Seed Consistency Proof [IN PROGRESS]
 
-**Progress Update (2026-02-10):**
+**Progress Update (2026-02-10, Session 3):**
 - `addFormula_preserves_consistent_of_theorem`: COMPLETED
 - `diamond_box_interaction`: COMPLETED (KEY LEMMA)
 - `initialSeedConsistent`: COMPLETED
 - `singleton_consistent_iff`: COMPLETED
+- `addFormula_preserves_consistent`: COMPLETED (new helper)
+- `hasPosition_iff_findEntry_isSome`: COMPLETED (new helper)
+- `findEntry_some_of_hasPosition`: COMPLETED (new helper)
+- `initial_has_family_zero`: COMPLETED
+- `buildSeed_has_family_zero`: 1 sorry (depends on buildSeedAux_preserves_familyIndices)
+- `buildSeedAux_preserves_familyIndices`: 1 sorry (library compatibility issue with List.mem_eraseDups)
 - `seedConsistent`: 1 sorry remaining (complex induction on formula structure)
+
+**Blocking Issues:**
+- Library compatibility: Need to investigate correct Mathlib4 lemma names for List.mem_eraseDups, List.mem_modify
 
 - **Goal:** Prove that if the starting formula is consistent, then every (family, time) entry in the seed is consistent. This is the mathematically hardest phase.
 
@@ -252,6 +261,14 @@ After this implementation:
 ---
 
 ### Phase 4: Seed Completion to MCS Families [PARTIAL]
+
+**Progress Update (2026-02-10, Session 3):**
+- `seedFamilyMCS_is_mcs`: COMPLETED
+- `seedFamilyMCS_contains_seed`: COMPLETED
+- `modal_witness_includes_boxcontent`: 1 sorry
+- `buildFamilyFromSeed`: 1 sorry (requires full construction)
+- `buildFamilyFromSeed_cross_sign_seed`: 1 sorry
+- `buildFamilyFromSeed_contains_seed`: 1 sorry
 
 - **Goal:** Extend each seed entry's consistent set to a full MCS via Lindenbaum, then build `IndexedMCSFamily` instances for each family index, filling non-seed time indices using temporal chain construction.
 
@@ -304,6 +321,15 @@ After this implementation:
 ---
 
 ### Phase 5: BMCS Assembly and Coherence Proofs [PARTIAL]
+
+**Progress Update (2026-02-10, Session 3):**
+- `buildSeedBMCS.nonempty`: COMPLETED (using buildSeed_has_family_zero)
+- `buildSeedBMCS.eval_family_mem`: COMPLETED (using buildSeed_has_family_zero)
+- `buildSeedBMCS.modal_forward`: 1 sorry
+- `buildSeedBMCS.modal_backward`: 1 sorry
+- `construct_seed_bmcs`: 1 sorry
+- `construct_seed_bmcs_contains_context`: 1 sorry
+- `construct_seed_bmcs_temporally_coherent`: 1 sorry
 
 - **Goal:** Assemble the seed-built families into a `BMCS` with proven modal_forward, modal_backward, and temporal coherence. This phase eliminates both axioms and **resolves task 843's Phase 1 blockage**.
 

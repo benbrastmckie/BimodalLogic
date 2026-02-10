@@ -99,8 +99,15 @@ theorem seedFamilyMCS_is_mcs (seed : ModelSeed) (h_cons : SeedConsistent seed)
     SetMaximalConsistent (seedFamilyMCS seed h_cons famIdx timeIdx) := by
   unfold seedFamilyMCS
   -- Since position exists, findEntry returns some
-  -- The proof requires showing that hasPosition implies findEntry returns some
-  sorry
+  obtain ⟨entry, h_find⟩ := ModelSeed.findEntry_some_of_hasPosition seed famIdx timeIdx h_exists
+  split
+  · next h_eq =>
+    rw [h_find] at h_eq
+    cases h_eq
+    exact extendSeedEntry_is_mcs entry _
+  · next h_none =>
+    rw [h_find] at h_none
+    cases h_none
 
 /--
 For seed positions, the MCS contains the seed formulas.
@@ -109,8 +116,19 @@ theorem seedFamilyMCS_contains_seed (seed : ModelSeed) (h_cons : SeedConsistent 
     (famIdx : Nat) (timeIdx : Int) (h_exists : seed.hasPosition famIdx timeIdx) :
     seed.getFormulas famIdx timeIdx ⊆ seedFamilyMCS seed h_cons famIdx timeIdx := by
   unfold seedFamilyMCS ModelSeed.getFormulas
-  -- Similar to above, use that findEntry returns some
-  sorry
+  -- Since position exists, findEntry returns some
+  obtain ⟨entry, h_find⟩ := ModelSeed.findEntry_some_of_hasPosition seed famIdx timeIdx h_exists
+  -- First simplify the getFormulas match
+  simp only [h_find]
+  -- Now split on the seedFamilyMCS match
+  split
+  · next entry' h_eq =>
+    rw [h_find] at h_eq
+    cases h_eq
+    exact extendSeedEntry_contains_seed entry _
+  · next h_none =>
+    rw [h_find] at h_none
+    cases h_none
 
 /-!
 ## Box Content for Modal Witnesses

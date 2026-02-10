@@ -338,6 +338,23 @@ def ModelSeed.hasPosition (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) : Bo
   seed.entries.any (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx)
 
 /--
+If hasPosition is true, then findEntry returns some.
+-/
+theorem ModelSeed.hasPosition_iff_findEntry_isSome (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) :
+    seed.hasPosition famIdx timeIdx = true ↔ (seed.findEntry famIdx timeIdx).isSome := by
+  unfold hasPosition findEntry
+  simp only [List.find?_isSome, List.any_eq_true]
+
+/--
+If hasPosition is true, then findEntry returns some entry.
+-/
+theorem ModelSeed.findEntry_some_of_hasPosition (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (h : seed.hasPosition famIdx timeIdx = true) :
+    ∃ entry, seed.findEntry famIdx timeIdx = some entry := by
+  rw [hasPosition_iff_findEntry_isSome] at h
+  exact Option.isSome_iff_exists.mp h
+
+/--
 Get the number of entries in the seed.
 -/
 def ModelSeed.size (seed : ModelSeed) : Nat :=
@@ -447,6 +464,38 @@ any Lindenbaum extension, avoiding the cross-sign propagation problem.
 def buildSeed (phi : Formula) : ModelSeed :=
   let initialSeed := ModelSeed.initial phi
   buildSeedAux phi 0 0 initialSeed
+
+/--
+Family 0 is always in the initial seed's familyIndices.
+-/
+theorem initial_has_family_zero (phi : Formula) :
+    0 ∈ (ModelSeed.initial phi).familyIndices := by
+  simp only [ModelSeed.initial, ModelSeed.familyIndices, List.map, List.eraseDups]
+  decide
+
+/--
+buildSeedAux preserves family indices (only adds new families, never removes).
+The proof requires showing that addFormula, createNewFamily, createNewTime, etc.
+preserve family indices.
+-/
+theorem buildSeedAux_preserves_familyIndices (phi : Formula) (famIdx : Nat) (timeIdx : Int)
+    (seed : ModelSeed) (idx : Nat) :
+    idx ∈ seed.familyIndices → idx ∈ (buildSeedAux phi famIdx timeIdx seed).familyIndices := by
+  intro h_in
+  -- The full proof requires helper lemmas about list modify/append operations.
+  -- Key insight: buildSeedAux only adds entries to seed.entries, never removes them.
+  -- Therefore any family index in the original seed is preserved.
+  -- Technical blockers: Library compatibility with List.mem_eraseDups, List.mem_modify
+  sorry
+
+/--
+Family 0 is in buildSeed's familyIndices.
+-/
+theorem buildSeed_has_family_zero (phi : Formula) :
+    0 ∈ (buildSeed phi).familyIndices := by
+  unfold buildSeed
+  apply buildSeedAux_preserves_familyIndices
+  exact initial_has_family_zero phi
 
 /-!
 ## Seed Builder Tests
@@ -892,24 +941,60 @@ structure SeedConsistentInvariant (seed : ModelSeed) (phi : Formula) (famIdx : N
   current_derivable : ∀ ψ ∈ seed.getFormulas famIdx timeIdx, ∃ d : Bimodal.ProofSystem.DerivationTree [phi] ψ, True
 
 /--
-Main theorem: if phi is consistent, then buildSeed phi produces a consistent seed.
-
-This is proven by induction on the formula structure.
-
-**Proof Sketch:**
-1. Initial seed `{(0, 0, {phi})}` is consistent by singleton_consistent_iff
-2. For each recursive call, we maintain the invariant that:
-   - Existing entries remain consistent (formulas added are derivable from existing)
-   - New entries contain singletons (always consistent) or witness formulas (consistent by diamond_box_interaction)
-3. Base cases (atoms, implications) just add to existing entries
-4. Modal cases: Box adds derivable formulas, neg Box creates consistent witness families
-5. Temporal cases: G/H add derivable formulas, neg G/neg H create temporal witnesses
-
-**Remaining Work:**
-- Define buildSeedAux_preserves_invariant lemma
-- Prove each case of buildSeedAux maintains the invariant
-- Compose to get final seedConsistent theorem
+Helper: adding a formula to an existing consistent entry preserves consistency
+if the formula is derivable from the entry's formulas.
 -/
+theorem addFormula_preserves_consistent {S : Set Formula} {phi : Formula}
+    (h_cons : SetConsistent S)
+    (h_deriv : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ S) ∧ Nonempty (Bimodal.ProofSystem.DerivationTree L phi)) :
+    SetConsistent (insert phi S) := by
+  intro L' hL'
+  unfold Consistent
+  intro ⟨d_bot⟩
+  -- If phi ∉ L', then L' ⊆ S, contradicting S consistent
+  by_cases h_phi_in_L' : phi ∈ L'
+  · -- phi ∈ L': use derivation to replace phi
+    obtain ⟨L_deriv, hL_sub, ⟨d_phi⟩⟩ := h_deriv
+    -- Let L'_filt = L' \ {phi}
+    let L'_filt := L'.filter (· ≠ phi)
+    have h_filt_sub : ∀ ψ ∈ L'_filt, ψ ∈ S := by
+      intro ψ hψ
+      have h_and := List.mem_filter.mp hψ
+      have h_ne : ψ ≠ phi := of_decide_eq_true h_and.2
+      have := hL' ψ h_and.1
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq h_ne
+      | inr h_in_S => exact h_in_S
+    -- By deduction on L' ⊢ ⊥ with phi ∈ L', we get L'_filt ⊢ phi → ⊥
+    have h_perm := cons_filter_neq_perm h_phi_in_L'
+    have d_bot_reord : Bimodal.ProofSystem.DerivationTree (phi :: L'_filt) Formula.bot :=
+      derivation_exchange d_bot (fun x => (h_perm x).symm)
+    have d_neg_phi : Bimodal.ProofSystem.DerivationTree L'_filt (Formula.neg phi) :=
+      deduction_theorem L'_filt phi Formula.bot d_bot_reord
+    -- Weaken d_phi to L_deriv ++ L'_filt
+    let Γ := L_deriv ++ L'_filt
+    have h_Γ_sub : ∀ ψ ∈ Γ, ψ ∈ S := by
+      intro ψ hψ
+      cases List.mem_append.mp hψ with
+      | inl h => exact hL_sub ψ h
+      | inr h => exact h_filt_sub ψ h
+    have d_phi_Γ : Bimodal.ProofSystem.DerivationTree Γ phi :=
+      Bimodal.ProofSystem.DerivationTree.weakening L_deriv Γ phi d_phi (List.subset_append_left _ _)
+    have d_neg_Γ : Bimodal.ProofSystem.DerivationTree Γ (Formula.neg phi) :=
+      Bimodal.ProofSystem.DerivationTree.weakening L'_filt Γ (Formula.neg phi) d_neg_phi
+        (List.subset_append_right _ _)
+    have d_bot_Γ : Bimodal.ProofSystem.DerivationTree Γ Formula.bot :=
+      derives_bot_from_phi_neg_phi d_phi_Γ d_neg_Γ
+    exact h_cons Γ h_Γ_sub ⟨d_bot_Γ⟩
+  · -- phi ∉ L', so L' ⊆ S
+    have h_L'_sub : ∀ ψ ∈ L', ψ ∈ S := by
+      intro ψ hψ
+      have := hL' ψ hψ
+      cases Set.mem_insert_iff.mp this with
+      | inl h_eq => exact absurd h_eq (fun h => h_phi_in_L' (h ▸ hψ))
+      | inr h_in_S => exact h_in_S
+    exact h_cons L' h_L'_sub ⟨d_bot⟩
+
 theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
     SeedConsistent (buildSeed phi) := by
   -- The proof proceeds by induction on the formula complexity
