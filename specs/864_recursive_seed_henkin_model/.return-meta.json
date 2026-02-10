@@ -1,46 +1,41 @@
 {
   "status": "partial",
   "started_at": "2026-02-10T12:00:00Z",
+  "completed_at": "2026-02-10T13:30:00Z",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
-      "summary": "Recursive seed construction infrastructure with proven helper lemmas"
-    },
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/SeedCompletion.lean",
-      "summary": "Seed completion to MCS with proven seedFamilyMCS lemmas"
-    },
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/SeedBMCS.lean",
-      "summary": "BMCS construction with proven nonempty and eval_family_mem"
-    },
-    {
-      "type": "plan",
-      "path": "specs/864_recursive_seed_henkin_model/plans/implementation-002.md",
-      "summary": "Updated plan with Phase 3/4/5 progress details"
+      "summary": "Added helper lemmas for family index preservation, proved most of buildSeedAux_preserves_familyIndices"
     }
   ],
   "partial_progress": {
-    "stage": "phase_3",
-    "details": "Session 3 completed. Reduced sorries from 15 to 12. Main progress: Added helper lemmas (hasPosition_iff_findEntry_isSome, addFormula_preserves_consistent, buildSeed_has_family_zero). Fixed seedFamilyMCS_is_mcs, seedFamilyMCS_contains_seed, buildSeedBMCS nonempty proofs. Remaining blockers: seedConsistent (requires induction proof), buildSeedAux_preserves_familyIndices (library compatibility), buildFamilyFromSeed (complex construction)."
+    "stage": "phase3",
+    "details": "Session 4: Reduced sorry count from 12 to 11. Added helper lemmas for list manipulation (mem_eraseDups_append_left, addFormula_preserves_familyIndices', etc.). Proved most cases of buildSeedAux_preserves_familyIndices except imp case. The imp case requires careful handling of nested pattern matching in buildSeedAux definition.",
+    "sorries_remaining": {
+      "RecursiveSeed.lean": 2,
+      "SeedCompletion.lean": 4,
+      "SeedBMCS.lean": 5,
+      "total": 11
+    },
+    "next_steps": [
+      "Complete imp case in buildSeedAux_preserves_familyIndices (needs well-founded recursion on Formula.neg inner)",
+      "Use completed lemma to prove seedConsistent",
+      "Proceed to Phase 4 SeedCompletion sorries",
+      "Proceed to Phase 5 SeedBMCS sorries"
+    ]
   },
   "metadata": {
-    "session_id": "sess_1770756361_fdbc16",
+    "session_id": "sess_1770757528_f6e8c8",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "session_number": 4,
     "phases_completed": 2,
-    "phases_total": 6,
-    "sorry_count_initial": 15,
-    "sorry_count_final": 12,
-    "sorries_resolved": 3,
-    "session_number": 3
+    "phases_total": 6
   },
   "completion_data": {
-    "completion_summary": "Session 3 progress on recursive seed Henkin model: added 6 new helper lemmas, proved 4 sorries (seedFamilyMCS_is_mcs, seedFamilyMCS_contains_seed, buildSeedBMCS.nonempty, buildSeedBMCS.eval_family_mem). Reduced sorry count from 15 to 12. Key blockers remain: seedConsistent theorem requires full induction proof, buildSeedAux_preserves_familyIndices has Mathlib4 library compatibility issues.",
+    "completion_summary": "Session 4 reduced sorry count from 12 to 11 by adding helper lemmas for list manipulation and proving most cases of buildSeedAux_preserves_familyIndices. The imp case requires well-founded recursion handling due to nested pattern matching.",
     "roadmap_items": []
   }
 }

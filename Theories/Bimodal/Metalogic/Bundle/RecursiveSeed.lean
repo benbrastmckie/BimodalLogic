@@ -473,20 +473,126 @@ theorem initial_has_family_zero (phi : Formula) :
   simp only [ModelSeed.initial, ModelSeed.familyIndices, List.map, List.eraseDups]
   decide
 
+/-!
+## Helper lemmas for family index preservation
+-/
+
+/-- Membership in eraseDups of appended lists preserves membership from left. -/
+private theorem mem_eraseDups_append_left {α : Type*} [BEq α] [LawfulBEq α] {a : α} {l1 l2 : List α}
+    (h : a ∈ l1.eraseDups) : a ∈ (l1 ++ l2).eraseDups := by
+  rw [List.eraseDups_append]; exact List.mem_append_left _ h
+
+/-- addFormula preserves family indices. -/
+private theorem addFormula_preserves_familyIndices' (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) (newType : SeedEntryType) (idx : Nat)
+    (h_in : idx ∈ seed.familyIndices) : idx ∈ (seed.addFormula famIdx timeIdx phi newType).familyIndices := by
+  unfold ModelSeed.familyIndices at *; unfold ModelSeed.addFormula
+  cases h_match : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | some i =>
+    have h_modify_pres : (seed.entries.modify i
+        (fun e => { e with formulas := insert phi e.formulas })).map SeedEntry.familyIdx =
+        seed.entries.map SeedEntry.familyIdx := by
+      apply List.ext_getElem; simp only [List.length_map, List.length_modify]
+      intro n h1 h2; simp only [List.getElem_map, List.getElem_modify]; split <;> rfl
+    simp only [h_modify_pres]; exact h_in
+  | none => simp only [List.map_append, List.map_cons, List.map_nil]; exact mem_eraseDups_append_left h_in
+
+/-- foldl with addFormula over family indices preserves family indices. -/
+private theorem foldl_addFormula_fam_preserves (phi : Formula) (ty : SeedEntryType) (timeIdx : Int)
+    (fams : List Nat) (seed : ModelSeed) (idx : Nat)
+    (h_in : idx ∈ seed.familyIndices) :
+    idx ∈ (fams.foldl (fun s f => s.addFormula f timeIdx phi ty) seed).familyIndices := by
+  induction fams generalizing seed with
+  | nil => exact h_in
+  | cons f fs ih => simp only [List.foldl_cons]; apply ih
+                    exact addFormula_preserves_familyIndices' seed f timeIdx phi ty idx h_in
+
+/-- foldl with addFormula over time indices preserves family indices. -/
+private theorem foldl_addFormula_times_preserves (phi : Formula) (famIdx : Nat)
+    (times : List Int) (seed : ModelSeed) (idx : Nat)
+    (h_in : idx ∈ seed.familyIndices) :
+    idx ∈ (times.foldl (fun s t => s.addFormula famIdx t phi .universal_target) seed).familyIndices := by
+  induction times generalizing seed with
+  | nil => exact h_in
+  | cons t ts ih => simp only [List.foldl_cons]; apply ih
+                    exact addFormula_preserves_familyIndices' seed famIdx t phi .universal_target idx h_in
+
+/-- addToAllFamilies preserves family indices. -/
+private theorem addToAllFamilies_preserves_familyIndices' (seed : ModelSeed) (timeIdx : Int)
+    (phi : Formula) (idx : Nat) (h : idx ∈ seed.familyIndices) :
+    idx ∈ (seed.addToAllFamilies timeIdx phi).familyIndices := by
+  unfold ModelSeed.addToAllFamilies
+  exact foldl_addFormula_fam_preserves phi .universal_target timeIdx _ seed idx h
+
+/-- addToAllFutureTimes preserves family indices. -/
+private theorem addToAllFutureTimes_preserves_familyIndices' (seed : ModelSeed) (famIdx : Nat)
+    (t : Int) (phi : Formula) (idx : Nat) (h : idx ∈ seed.familyIndices) :
+    idx ∈ (seed.addToAllFutureTimes famIdx t phi).familyIndices := by
+  unfold ModelSeed.addToAllFutureTimes
+  exact foldl_addFormula_times_preserves phi famIdx _ seed idx h
+
+/-- addToAllPastTimes preserves family indices. -/
+private theorem addToAllPastTimes_preserves_familyIndices' (seed : ModelSeed) (famIdx : Nat)
+    (t : Int) (phi : Formula) (idx : Nat) (h : idx ∈ seed.familyIndices) :
+    idx ∈ (seed.addToAllPastTimes famIdx t phi).familyIndices := by
+  unfold ModelSeed.addToAllPastTimes
+  exact foldl_addFormula_times_preserves phi famIdx _ seed idx h
+
+/-- createNewFamily preserves family indices. -/
+private theorem createNewFamily_preserves_familyIndices' (seed : ModelSeed) (t : Int)
+    (phi : Formula) (idx : Nat) (h : idx ∈ seed.familyIndices) :
+    idx ∈ (seed.createNewFamily t phi).1.familyIndices := by
+  unfold ModelSeed.createNewFamily ModelSeed.familyIndices at *
+  simp only [List.map_append, List.map_cons, List.map_nil]
+  exact mem_eraseDups_append_left h
+
+/-- createNewTime preserves family indices. -/
+private theorem createNewTime_preserves_familyIndices' (seed : ModelSeed) (f : Nat) (t : Int)
+    (phi : Formula) (idx : Nat) (h : idx ∈ seed.familyIndices) :
+    idx ∈ (seed.createNewTime f t phi).familyIndices := by
+  unfold ModelSeed.createNewTime ModelSeed.familyIndices at *
+  simp only [List.map_append, List.map_cons, List.map_nil]
+  exact mem_eraseDups_append_left h
+
 /--
 buildSeedAux preserves family indices (only adds new families, never removes).
-The proof requires showing that addFormula, createNewFamily, createNewTime, etc.
-preserve family indices.
 -/
 theorem buildSeedAux_preserves_familyIndices (phi : Formula) (famIdx : Nat) (timeIdx : Int)
     (seed : ModelSeed) (idx : Nat) :
     idx ∈ seed.familyIndices → idx ∈ (buildSeedAux phi famIdx timeIdx seed).familyIndices := by
   intro h_in
-  -- The full proof requires helper lemmas about list modify/append operations.
+  -- The proof is by structural induction on phi, using equation lemmas
   -- Key insight: buildSeedAux only adds entries to seed.entries, never removes them.
-  -- Therefore any family index in the original seed is preserved.
-  -- Technical blockers: Library compatibility with List.mem_eraseDups, List.mem_modify
-  sorry
+  induction phi using Formula.rec generalizing famIdx timeIdx seed with
+  | atom s =>
+    simp only [buildSeedAux]
+    exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.atom s) .universal_target idx h_in
+  | bot =>
+    simp only [buildSeedAux]
+    exact addFormula_preserves_familyIndices' seed famIdx timeIdx .bot .universal_target idx h_in
+  | box psi ih =>
+    simp only [buildSeedAux]
+    have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.box psi) .universal_target idx h_in
+    have h2 := addToAllFamilies_preserves_familyIndices' _ timeIdx psi idx h1
+    exact ih famIdx timeIdx _ h2
+  | all_future psi ih =>
+    simp only [buildSeedAux]
+    have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_future psi) .universal_target idx h_in
+    have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
+    have h3 := addToAllFutureTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
+    exact ih famIdx timeIdx _ h3
+  | all_past psi ih =>
+    simp only [buildSeedAux]
+    have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_past psi) .universal_target idx h_in
+    have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
+    have h3 := addToAllPastTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
+    exact ih famIdx timeIdx _ h3
+  | imp psi1 psi2 _ih1 _ih2 =>
+    -- The imp case requires careful handling of special patterns
+    -- buildSeedAux has special matching for: imp (box _) bot, imp (all_future _) bot, imp (all_past _) bot
+    -- Due to dependent matching complexity, we use sorry for now.
+    -- The proof follows the same structure: each case adds entries, never removes.
+    sorry
 
 /--
 Family 0 is in buildSeed's familyIndices.
