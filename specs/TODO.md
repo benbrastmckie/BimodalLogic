@@ -24,7 +24,7 @@ technical_debt:
 
 ### 866. Consolidate LaTeX files into Theories/Bimodal/latex
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: latex
 - **Created**: 2026-02-10
 

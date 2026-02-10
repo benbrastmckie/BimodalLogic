@@ -138,9 +138,9 @@ At step n (constructing M_t where t = dovetail_decode(n)):
   - `dovetailIndex (2k+1) = k+1` (positive times)
   - `dovetailIndex (2k+2) = -(k+1)` (negative times)
 - [x] Define `dovetailRank : Int → Nat` inverse function
-- [SORRY] Prove `dovetailRank_dovetailIndex`: inverse property (computationally verified)
-- [SORRY] Prove `dovetailIndex_dovetailRank`: inverse property (computationally verified)
-- [SORRY] Prove `dovetail_neighbor_constructed`: neighbor availability property
+- [x] Prove `dovetailRank_dovetailIndex`: inverse property (COMPLETED 2026-02-10)
+- [x] Prove `dovetailIndex_dovetailRank`: inverse property (COMPLETED 2026-02-10)
+- [x] Prove `dovetail_neighbor_constructed`: neighbor availability property (COMPLETED 2026-02-10)
 - [ ] Define `interleavedChainSeed` incorporating bidirectional content
   - Takes current time t and already-constructed MCS map
   - Returns seed set including GContent/HContent from neighbors
@@ -154,12 +154,12 @@ At step n (constructing M_t where t = dovetail_decode(n)):
 - [ ] Prove F/P completeness
 - [ ] Verify `temporal_coherent_family_exists` compiles without sorry or axiom
 
-**Progress Notes (2026-02-10):**
-- Added dovetailing infrastructure to DovetailingChain.lean
-- Updated module documentation to describe interleaved chain approach
-- Inverse property proofs are computationally verified but full proofs require careful Int coercion handling
+**Progress Notes (2026-02-10, Session 2):**
+- Completed 3 dovetailing arithmetic proofs (dovetailRank_dovetailIndex, dovetailIndex_dovetailRank, dovetail_neighbor_constructed)
+- Reduced sorry count from 7 to 4 (eliminated arithmetic sorries)
 - Original 4 temporal sorries remain (cross-sign G/H, F/P witnesses)
-- Total sorries in file: 7 (3 new arithmetic + 4 original temporal)
+- Remaining work requires implementing interleavedChainSeed and related infrastructure
+- Current two-chain architecture fundamentally cannot support cross-sign propagation
 
 **Timing:** 15-20 hours
 

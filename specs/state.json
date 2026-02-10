@@ -8,10 +8,11 @@
     {
       "project_number": 866,
       "project_name": "consolidate_latex_files",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "created": "2026-02-10T18:51:10Z",
-      "last_updated": "2026-02-10T18:51:10Z"
+      "last_updated": "2026-02-10T18:52:36Z",
+      "session_id": "sess_1770749540_f5a642"
     },
     {
       "project_number": 865,
@@ -82,7 +83,7 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-10T18:47:56Z",
+      "last_updated": "2026-02-10T18:53:37Z",
       "session_id": "sess_1770749259_053421",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [

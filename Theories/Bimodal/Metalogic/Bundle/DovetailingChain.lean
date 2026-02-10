@@ -137,7 +137,11 @@ dovetailRank is a left inverse of dovetailIndex.
 The full proof requires careful handling of Int coercions between Int.ofNat and Int.negSucc patterns.
 -/
 theorem dovetailRank_dovetailIndex (n : Nat) : dovetailRank (dovetailIndex n) = n := by
-  sorry  -- Verified computationally; full proof requires Int coercion handling
+  cases n with
+  | zero => rfl
+  | succ m =>
+    simp only [dovetailIndex]
+    split_ifs with h <;> simp only [dovetailRank] <;> omega
 
 /--
 dovetailIndex is a left inverse of dovetailRank.
@@ -150,7 +154,12 @@ dovetailIndex is a left inverse of dovetailRank.
 **Technical note**: Verified computationally for the range of Int values tested.
 -/
 theorem dovetailIndex_dovetailRank (t : Int) : dovetailIndex (dovetailRank t) = t := by
-  sorry  -- Verified computationally; full proof requires Int pattern matching
+  cases t with
+  | ofNat n =>
+    cases n with
+    | zero => rfl
+    | succ m => simp [dovetailRank, dovetailIndex]
+  | negSucc n => simp [dovetailRank, dovetailIndex]
 
 /--
 At step n > 0, exactly one of t-1 or t+1 has already been constructed.
@@ -165,7 +174,13 @@ Verified computationally for small cases. Full proof requires careful Int case a
 theorem dovetail_neighbor_constructed (n : Nat) (hn : n > 0) :
     let t := dovetailIndex n
     (dovetailRank (t - 1) < n ∨ dovetailRank (t + 1) < n) := by
-  sorry  -- Arithmetic fact about dovetailing order
+  simp only [dovetailIndex, dovetailRank]
+  cases n with
+  | zero => omega
+  | succ m =>
+    split_ifs with h
+    all_goals simp_all
+    all_goals omega
 
 /-!
 ## GContent and HContent Consistency
