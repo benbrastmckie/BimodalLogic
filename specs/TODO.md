@@ -1,5 +1,5 @@
 ---
-next_project_number: 866
+next_project_number: 867
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,14 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 866. Consolidate LaTeX files into Theories/Bimodal/latex
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-10
+
+**Description**: Consolidate LaTeX files by removing root latex/ directory if not needed for Theories/Bimodal/latex/BimodalReference.tex, or moving required files to Theories/Bimodal/latex/ and updating references. The aim is to have Bimodal/latex/ include all necessary LaTeX files in a tidy way.
 
 ### 865. Construct canonical task frame for Bimodal completeness
 - **Effort**: TBD

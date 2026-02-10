@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 866,
+      "project_name": "consolidate_latex_files",
+      "status": "not_started",
+      "language": "latex",
+      "created": "2026-02-10T18:51:10Z",
+      "last_updated": "2026-02-10T18:51:10Z"
+    },
+    {
       "project_number": 865,
       "project_name": "canonical_task_frame_bimodal_completeness",
       "status": "researched",
@@ -74,8 +82,8 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-10T18:44:53Z",
-      "session_id": "sess_1770748252_437b4a",
+      "last_updated": "2026-02-10T18:47:56Z",
+      "session_id": "sess_1770749259_053421",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
         {
@@ -332,7 +340,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 866,
+  "next_project_number": 867,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
