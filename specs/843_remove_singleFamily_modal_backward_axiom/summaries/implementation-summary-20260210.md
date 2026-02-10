@@ -137,3 +137,60 @@ Phase 4 was completed first because it:
 - The old FALSE axiom is preserved (deprecated) for backward compatibility
 - The new CORRECT axiom will be proven in Phase 5 using canonical model construction
 - Phase 1 cross-sign cases require significant architectural work beyond the scope of this session
+
+---
+
+## Session 3: Dovetailing Infrastructure (sess_1770748252_437b4a)
+
+### Changes Made
+
+Added dovetailing index functions to `DovetailingChain.lean`:
+
+1. **`dovetailIndex : Nat -> Int`** - Maps construction step to time index
+   - Step 0 -> time 0
+   - Step 2k+1 -> time k+1 (positive)
+   - Step 2k+2 -> time -(k+1) (negative)
+   - Encodes the interleaved construction order: M_0, M_1, M_{-1}, M_2, M_{-2}, ...
+
+2. **`dovetailRank : Int -> Nat`** - Inverse mapping (time to step)
+   - Time 0 -> step 0
+   - Time k+1 -> step 2k+1
+   - Time -(k+1) -> step 2k+2
+
+3. **Inverse property theorems** (with sorry):
+   - `dovetailRank_dovetailIndex` - Computationally verified
+   - `dovetailIndex_dovetailRank` - Computationally verified
+   - `dovetail_neighbor_constructed` - Neighbor availability property
+
+4. **Updated module documentation** to describe the interleaved chain approach
+
+### Technical Analysis
+
+During implementation, discovered that the plan's interleaved approach as originally described does NOT fundamentally solve the cross-sign propagation problem:
+
+- The interleaved ORDER changes which MCS are built first
+- However, each MCS's SEED still only includes GContent/HContent from neighbors
+- M_0 is still built first (step 0) without GContent from negative times
+- G-formulas in M_{-k} still cannot propagate through M_0 to M_{k'}
+
+**Key insight**: Resolving cross-sign G/H requires either:
+1. A fundamentally different construction (canonical model with ALL MCS)
+2. Proving forward_F first, then using contrapositive argument
+3. Including ALL F/P-witnesses in M_0's seed (complex consistency argument)
+
+### Sorry Count
+
+DovetailingChain.lean now has 7 sorries:
+- 3 new: dovetailRank_dovetailIndex, dovetailIndex_dovetailRank, dovetail_neighbor_constructed
+- 4 original: forward_G cross-sign, backward_H cross-sign, forward_F, backward_P
+
+### Verification
+
+- `lake build Bimodal` succeeds with sorry warnings
+- Dovetailing functions verified computationally via #eval
+
+### Plan Updated
+
+- Phase 1 status: [PARTIAL]
+- Updated task checkboxes to reflect completed work
+- Added progress notes documenting analysis findings

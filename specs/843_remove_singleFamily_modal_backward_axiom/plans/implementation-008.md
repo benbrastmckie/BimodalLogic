@@ -1,7 +1,7 @@
 # Implementation Plan: Task #843 (v008)
 
 - **Task**: 843 - Remove singleFamily_modal_backward_axiom
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 50-65 hours
 - **Dependencies**: None (Phase 4 already completed)
 - **Research Inputs**: research-017.md (architectural redesign analysis), research-016.md (16-round synthesis)
@@ -96,7 +96,7 @@ This ensures G formulas from any constructed MCS propagate forward to later time
 
 ## Implementation Phases
 
-### Phase 1: Unified Interleaved Chain Construction [NOT STARTED]
+### Phase 1: Unified Interleaved Chain Construction [PARTIAL]
 
 **Goal:** Replace the two-chain architecture with a unified interleaved chain that supports cross-sign temporal propagation.
 
@@ -133,11 +133,14 @@ At step n (constructing M_t where t = dovetail_decode(n)):
 5. **P-witness completeness**: Symmetric for P formulas
 
 **Tasks:**
-- [ ] Define `dovetailIndex : Nat → Int` mapping construction step to time index
+- [x] Define `dovetailIndex : Nat → Int` mapping construction step to time index
   - `dovetailIndex 0 = 0`
   - `dovetailIndex (2k+1) = k+1` (positive times)
   - `dovetailIndex (2k+2) = -(k+1)` (negative times)
-- [ ] Define `dovetailRank : Int → Nat` inverse function
+- [x] Define `dovetailRank : Int → Nat` inverse function
+- [SORRY] Prove `dovetailRank_dovetailIndex`: inverse property (computationally verified)
+- [SORRY] Prove `dovetailIndex_dovetailRank`: inverse property (computationally verified)
+- [SORRY] Prove `dovetail_neighbor_constructed`: neighbor availability property
 - [ ] Define `interleavedChainSeed` incorporating bidirectional content
   - Takes current time t and already-constructed MCS map
   - Returns seed set including GContent/HContent from neighbors
@@ -150,6 +153,13 @@ At step n (constructing M_t where t = dovetail_decode(n)):
 - [ ] Implement dovetailing enumeration for P-witnesses
 - [ ] Prove F/P completeness
 - [ ] Verify `temporal_coherent_family_exists` compiles without sorry or axiom
+
+**Progress Notes (2026-02-10):**
+- Added dovetailing infrastructure to DovetailingChain.lean
+- Updated module documentation to describe interleaved chain approach
+- Inverse property proofs are computationally verified but full proofs require careful Int coercion handling
+- Original 4 temporal sorries remain (cross-sign G/H, F/P witnesses)
+- Total sorries in file: 7 (3 new arithmetic + 4 original temporal)
 
 **Timing:** 15-20 hours
 
