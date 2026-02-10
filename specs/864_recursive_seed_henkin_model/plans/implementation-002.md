@@ -200,7 +200,7 @@ After this implementation:
 
 ### Phase 3: Seed Consistency Proof [IN PROGRESS]
 
-**Progress Update (2026-02-10, Session 3):**
+**Progress Update (2026-02-10, Session 5):**
 - `addFormula_preserves_consistent_of_theorem`: COMPLETED
 - `diamond_box_interaction`: COMPLETED (KEY LEMMA)
 - `initialSeedConsistent`: COMPLETED
@@ -209,12 +209,13 @@ After this implementation:
 - `hasPosition_iff_findEntry_isSome`: COMPLETED (new helper)
 - `findEntry_some_of_hasPosition`: COMPLETED (new helper)
 - `initial_has_family_zero`: COMPLETED
-- `buildSeed_has_family_zero`: 1 sorry (depends on buildSeedAux_preserves_familyIndices)
-- `buildSeedAux_preserves_familyIndices`: 1 sorry (library compatibility issue with List.mem_eraseDups)
-- `seedConsistent`: 1 sorry remaining (complex induction on formula structure)
+- `buildSeed_has_family_zero`: COMPLETED (fixed in Session 5)
+- `buildSeedAux_preserves_familyIndices`: COMPLETED (fixed in Session 5 - complex imp case handling)
+- `buildSeedAux_preserves_seedConsistent`: 1 sorry (new helper, complex induction)
+- `seedConsistent`: COMPLETED (proof structure, but depends on above sorry)
 
 **Blocking Issues:**
-- Library compatibility: Need to investigate correct Mathlib4 lemma names for List.mem_eraseDups, List.mem_modify
+- `buildSeedAux_preserves_seedConsistent` requires tracking consistency through each case of the buildSeedAux recursion. This is the primary blocking sorry for Phase 3.
 
 - **Goal:** Prove that if the starting formula is consistent, then every (family, time) entry in the seed is consistent. This is the mathematically hardest phase.
 

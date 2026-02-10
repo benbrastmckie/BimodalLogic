@@ -560,39 +560,98 @@ buildSeedAux preserves family indices (only adds new families, never removes).
 theorem buildSeedAux_preserves_familyIndices (phi : Formula) (famIdx : Nat) (timeIdx : Int)
     (seed : ModelSeed) (idx : Nat) :
     idx ∈ seed.familyIndices → idx ∈ (buildSeedAux phi famIdx timeIdx seed).familyIndices := by
-  intro h_in
-  -- The proof is by structural induction on phi, using equation lemmas
-  -- Key insight: buildSeedAux only adds entries to seed.entries, never removes them.
-  induction phi using Formula.rec generalizing famIdx timeIdx seed with
-  | atom s =>
-    simp only [buildSeedAux]
-    exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.atom s) .universal_target idx h_in
-  | bot =>
-    simp only [buildSeedAux]
-    exact addFormula_preserves_familyIndices' seed famIdx timeIdx .bot .universal_target idx h_in
-  | box psi ih =>
-    simp only [buildSeedAux]
-    have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.box psi) .universal_target idx h_in
-    have h2 := addToAllFamilies_preserves_familyIndices' _ timeIdx psi idx h1
-    exact ih famIdx timeIdx _ h2
-  | all_future psi ih =>
-    simp only [buildSeedAux]
-    have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_future psi) .universal_target idx h_in
-    have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
-    have h3 := addToAllFutureTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
-    exact ih famIdx timeIdx _ h3
-  | all_past psi ih =>
-    simp only [buildSeedAux]
-    have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_past psi) .universal_target idx h_in
-    have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
-    have h3 := addToAllPastTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
-    exact ih famIdx timeIdx _ h3
-  | imp psi1 psi2 _ih1 _ih2 =>
-    -- The imp case requires careful handling of special patterns
-    -- buildSeedAux has special matching for: imp (box _) bot, imp (all_future _) bot, imp (all_past _) bot
-    -- Due to dependent matching complexity, we use sorry for now.
-    -- The proof follows the same structure: each case adds entries, never removes.
-    sorry
+  -- Use strong induction on formula complexity to match the recursion pattern of buildSeedAux
+  generalize h_c : phi.complexity = c
+  induction c using Nat.strong_induction_on generalizing phi famIdx timeIdx seed with
+  | h c ih =>
+    intro h_in
+    -- Case split on the formula structure
+    match phi with
+    | Formula.atom s =>
+      simp only [buildSeedAux]
+      exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.atom s) .universal_target idx h_in
+    | Formula.bot =>
+      simp only [buildSeedAux]
+      exact addFormula_preserves_familyIndices' seed famIdx timeIdx .bot .universal_target idx h_in
+    | Formula.box psi =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.box psi) .universal_target idx h_in
+      have h2 := addToAllFamilies_preserves_familyIndices' _ timeIdx psi idx h1
+      have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h2
+    | Formula.all_future psi =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_future psi) .universal_target idx h_in
+      have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
+      have h3 := addToAllFutureTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
+      have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h3
+    | Formula.all_past psi =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_past psi) .universal_target idx h_in
+      have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
+      have h3 := addToAllPastTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
+      have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h3
+    | Formula.imp psi1 psi2 =>
+      -- The imp case has several subcases depending on psi1 and psi2
+      -- We need to match the pattern matching structure of buildSeedAux
+      match psi1, psi2 with
+      | Formula.box inner, Formula.bot =>
+        -- Case: neg(Box inner) = imp (box inner) bot, recurses on neg inner = inner.imp bot
+        simp only [buildSeedAux]
+        have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.neg (.box inner)) .universal_target idx h_in
+        have h2 := createNewFamily_preserves_familyIndices' _ timeIdx (Formula.neg inner) idx h1
+        have h_lt : (Formula.neg inner).complexity < c := by
+          rw [← h_c]; simp only [Formula.complexity, Formula.neg]; omega
+        exact ih (Formula.neg inner).complexity h_lt (Formula.neg inner) _ timeIdx _ rfl h2
+      | Formula.all_future inner, Formula.bot =>
+        -- Case: neg(G inner) = imp (all_future inner) bot
+        simp only [buildSeedAux]
+        let seed1 := seed.addFormula famIdx timeIdx (.neg (.all_future inner)) .universal_target
+        let newTime := seed1.freshFutureTime famIdx timeIdx
+        have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.neg (.all_future inner)) .universal_target idx h_in
+        have h2 := createNewTime_preserves_familyIndices' seed1 famIdx newTime (Formula.neg inner) idx h1
+        have h_lt : (Formula.neg inner).complexity < c := by
+          rw [← h_c]; simp only [Formula.complexity, Formula.neg]; omega
+        exact ih (Formula.neg inner).complexity h_lt (Formula.neg inner) famIdx newTime _ rfl h2
+      | Formula.all_past inner, Formula.bot =>
+        -- Case: neg(H inner) = imp (all_past inner) bot
+        simp only [buildSeedAux]
+        let seed1 := seed.addFormula famIdx timeIdx (.neg (.all_past inner)) .universal_target
+        let newTime := seed1.freshPastTime famIdx timeIdx
+        have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.neg (.all_past inner)) .universal_target idx h_in
+        have h2 := createNewTime_preserves_familyIndices' seed1 famIdx newTime (Formula.neg inner) idx h1
+        have h_lt : (Formula.neg inner).complexity < c := by
+          rw [← h_c]; simp only [Formula.complexity, Formula.neg]; omega
+        exact ih (Formula.neg inner).complexity h_lt (Formula.neg inner) famIdx newTime _ rfl h2
+      | Formula.atom s, Formula.bot =>
+        -- Generic negation case (psi1 is atom)
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp (.atom s) .bot) .universal_target idx h_in
+      | Formula.bot, Formula.bot =>
+        -- Generic negation case (psi1 is bot)
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp .bot .bot) .universal_target idx h_in
+      | Formula.imp a b, Formula.bot =>
+        -- Generic negation case (psi1 is imp)
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp (.imp a b) .bot) .universal_target idx h_in
+      | p1, Formula.atom s =>
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp p1 (.atom s)) .universal_target idx h_in
+      | p1, Formula.box inner =>
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp p1 (.box inner)) .universal_target idx h_in
+      | p1, Formula.all_future inner =>
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp p1 (.all_future inner)) .universal_target idx h_in
+      | p1, Formula.all_past inner =>
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp p1 (.all_past inner)) .universal_target idx h_in
+      | p1, Formula.imp a b =>
+        simp only [buildSeedAux]
+        exact addFormula_preserves_familyIndices' seed famIdx timeIdx (.imp p1 (.imp a b)) .universal_target idx h_in
 
 /--
 Family 0 is in buildSeed's familyIndices.
@@ -1101,19 +1160,39 @@ theorem addFormula_preserves_consistent {S : Set Formula} {phi : Formula}
       | inr h_in_S => exact h_in_S
     exact h_cons L' h_L'_sub ⟨d_bot⟩
 
+/--
+buildSeedAux preserves seed consistency.
+
+Key insight: buildSeedAux only adds formulas that are:
+1. Derivable from the current formula being processed (for addFormula)
+2. Witness formulas that are consistent by the diamond-box interaction lemma
+
+The proof requires tracking that all formulas added are consistent with existing entries.
+This is a complex proof that requires careful invariant management.
+-/
+theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (timeIdx : Int)
+    (seed : ModelSeed) (h_cons : SeedConsistent seed)
+    (h_pos_cons : ∀ ψ ∈ seed.getFormulas famIdx timeIdx, SetConsistent {ψ}) :
+    SeedConsistent (buildSeedAux phi famIdx timeIdx seed) := by
+  -- This is a complex proof that follows the same induction pattern as buildSeedAux
+  -- For now, we leave it as sorry since the full proof requires tracking
+  -- consistency through each case of the recursion
+  sorry
+
 theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
     SeedConsistent (buildSeed phi) := by
-  -- The proof proceeds by induction on the formula complexity
-  -- At each step, we maintain the invariant that all seed entries are consistent
-  -- This requires proving that buildSeedAux preserves consistency
-  --
-  -- Key lemmas used:
-  -- - initialSeedConsistent: {phi} consistent when phi consistent
-  -- - addFormula_preserves_consistent_of_theorem: adding theorems preserves consistency
-  -- - diamond_box_interaction: witness families are consistent
-  --
-  -- The full proof requires tracking the invariant through buildSeedAux
-  -- which is left as future work
-  sorry
+  unfold buildSeed
+  apply buildSeedAux_preserves_seedConsistent
+  · -- Initial seed is consistent
+    exact initialSeedConsistent phi h_cons
+  · -- Initial position has consistent formulas
+    intro ψ hψ
+    -- The initial seed has getFormulas 0 0 = {phi}
+    have h_init : (ModelSeed.initial phi).getFormulas 0 0 = {phi} := by
+      unfold ModelSeed.initial ModelSeed.getFormulas ModelSeed.findEntry
+      simp only [List.find?_cons_of_pos, beq_self_eq_true, Bool.and_self, List.find?_nil]
+    rw [h_init] at hψ
+    rw [Set.mem_singleton_iff.mp hψ]
+    exact singleton_consistent_iff.mpr h_cons
 
 end Bimodal.Metalogic.Bundle

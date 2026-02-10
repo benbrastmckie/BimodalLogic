@@ -1,41 +1,44 @@
 {
   "status": "partial",
   "started_at": "2026-02-10T12:00:00Z",
-  "completed_at": "2026-02-10T13:30:00Z",
   "artifacts": [
     {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
-      "summary": "Added helper lemmas for family index preservation, proved most of buildSeedAux_preserves_familyIndices"
+      "type": "plan",
+      "path": "specs/864_recursive_seed_henkin_model/plans/implementation-002.md",
+      "summary": "Implementation plan v2 for recursive seed Henkin model construction"
     }
   ],
   "partial_progress": {
-    "stage": "phase3",
-    "details": "Session 4: Reduced sorry count from 12 to 11. Added helper lemmas for list manipulation (mem_eraseDups_append_left, addFormula_preserves_familyIndices', etc.). Proved most cases of buildSeedAux_preserves_familyIndices except imp case. The imp case requires careful handling of nested pattern matching in buildSeedAux definition.",
-    "sorries_remaining": {
-      "RecursiveSeed.lean": 2,
-      "SeedCompletion.lean": 4,
-      "SeedBMCS.lean": 5,
-      "total": 11
-    },
-    "next_steps": [
-      "Complete imp case in buildSeedAux_preserves_familyIndices (needs well-founded recursion on Formula.neg inner)",
-      "Use completed lemma to prove seedConsistent",
-      "Proceed to Phase 4 SeedCompletion sorries",
-      "Proceed to Phase 5 SeedBMCS sorries"
-    ]
+    "stage": "phase_3",
+    "details": "Session 5 completed. Fixed buildSeedAux_preserves_familyIndices imp case (complex pattern matching). Current sorry count: 10 (1 in RecursiveSeed, 4 in SeedCompletion, 5 in SeedBMCS). Primary blocker: buildSeedAux_preserves_seedConsistent.",
+    "sorries": {
+      "RecursiveSeed.lean": ["buildSeedAux_preserves_seedConsistent (line 1180)"],
+      "SeedCompletion.lean": [
+        "modal_witness_includes_boxcontent (line 158)",
+        "buildFamilyFromSeed (line 189)",
+        "buildFamilyFromSeed_cross_sign_seed (line 260)",
+        "buildFamilyFromSeed_contains_seed (line 269)"
+      ],
+      "SeedBMCS.lean": [
+        "buildSeedBMCS.modal_forward (line 89)",
+        "buildSeedBMCS.modal_backward (line 94)",
+        "construct_seed_bmcs (line 180)",
+        "construct_seed_bmcs_contains_context (line 188)",
+        "construct_seed_bmcs_temporally_coherent (line 199)"
+      ]
+    }
   },
   "metadata": {
-    "session_id": "sess_1770757528_f6e8c8",
+    "session_id": "sess_1770758614_747b79",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "session_number": 4,
+    "session_number": 5,
     "phases_completed": 2,
     "phases_total": 6
   },
   "completion_data": {
-    "completion_summary": "Session 4 reduced sorry count from 12 to 11 by adding helper lemmas for list manipulation and proving most cases of buildSeedAux_preserves_familyIndices. The imp case requires well-founded recursion handling due to nested pattern matching.",
+    "completion_summary": "Session 5 fixed buildSeedAux_preserves_familyIndices using strong induction on formula complexity with explicit pattern matching for all imp subcases. Sorry count reduced from 11 to 10. Primary blocker is buildSeedAux_preserves_seedConsistent which requires tracking consistency through buildSeedAux recursion.",
     "roadmap_items": []
   }
 }
