@@ -801,6 +801,25 @@ theorem initialSeedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
   exact singleton_consistent_iff.mpr h_cons
 
 /--
+Initial seed well-formedness: the initial seed has unique entries per position.
+-/
+theorem initialSeedWellFormed (phi : Formula) :
+    SeedWellFormed (ModelSeed.initial phi) := by
+  constructor
+  · -- All family indices are valid (< nextFamilyIdx)
+    intro entry h_entry
+    simp only [ModelSeed.initial] at h_entry
+    simp only [List.mem_singleton] at h_entry
+    rw [h_entry]
+    simp only [ModelSeed.initial]
+    omega
+  · -- No duplicate positions
+    intro ei h_ei ej h_ej h_ne
+    simp only [ModelSeed.initial, List.mem_singleton] at h_ei h_ej
+    rw [h_ei, h_ej] at h_ne
+    exact absurd rfl h_ne
+
+/--
 Adding a formula derivable from existing formulas preserves consistency.
 
 If S is consistent, and phi is derivable from formulas in S, then S ∪ {phi} is consistent.
@@ -1254,6 +1273,40 @@ private theorem findIdx_go_pred {α : Type*} {l : List α} {p : α → Bool} {n 
         exact h_pred
 
 /--
+Helper: find? and findIdx? agree on the first matching element.
+When findIdx? returns some i, find? returns xs[i].
+-/
+private theorem find?_getElem_of_findIdx?
+    {α : Type*} {p : α → Bool} {xs : List α} {i : Nat}
+    (h : xs.findIdx? p = some i) :
+    ∃ (hi : i < xs.length), xs.find? p = some xs[i] := by
+  have ⟨hi, hp, hn⟩ := List.findIdx?_eq_some_iff_getElem.mp h
+  refine ⟨hi, ?_⟩
+  rw [List.find?_eq_some_iff_getElem]
+  -- Need: p xs[i] = true ∧ ∃ j, ∃ h, xs[j] = xs[i] ∧ ∀ k < j, (!p xs[k]) = true
+  refine ⟨hp, i, hi, rfl, ?_⟩
+  -- Need: ∀ j < i, (!p xs[j]) = true
+  intro j hj
+  have h_not := hn j hj
+  cases h_eq : p xs[j]
+  · rfl
+  · exact absurd h_eq h_not
+
+/--
+Helper: When findIdx? finds an index, find? returns that element, which matches getFormulas.
+This shows that h_compat in addFormula_seed_preserves_consistent is called with the same
+entry whose formulas are returned by getFormulas.
+-/
+private theorem getFormulas_eq_findIdx?_entry
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (i : Nat)
+    (h_findIdx : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) = some i) :
+    ∃ (hi : i < seed.entries.length), seed.getFormulas famIdx timeIdx = seed.entries[i].formulas := by
+  have ⟨hi, h_find⟩ := find?_getElem_of_findIdx? h_findIdx
+  refine ⟨hi, ?_⟩
+  unfold ModelSeed.getFormulas ModelSeed.findEntry
+  simp only [h_find]
+
+/--
 Helper: Adding a consistent formula to an entry in the seed.
 If the formula is consistent and compatible with the target entry, the result is SeedConsistent.
 -/
@@ -1366,6 +1419,49 @@ theorem createNewTime_preserves_seedConsistent
     exact singleton_consistent_iff.mpr h_phi_cons
 
 /--
+addFormula preserves nextFamilyIdx.
+-/
+theorem addFormula_nextFamilyIdx (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) (newType : SeedEntryType) :
+    (seed.addFormula famIdx timeIdx phi newType).nextFamilyIdx = seed.nextFamilyIdx := by
+  unfold ModelSeed.addFormula
+  cases seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) <;> rfl
+
+/--
+addFormula preserves seed well-formedness when called with a valid family index.
+Note: If the position doesn't exist in the seed, famIdx must be < nextFamilyIdx.
+      If it does exist, this is automatically satisfied.
+
+Session 9: Complex proof with pattern matching on List.modify_iff. Marked as sorry for future session.
+-/
+theorem addFormula_preserves_wellFormed
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula)
+    (newType : SeedEntryType) (h_wf : SeedWellFormed seed)
+    (h_famIdx_valid : seed.findEntry famIdx timeIdx = none → famIdx < seed.nextFamilyIdx) :
+    SeedWellFormed (seed.addFormula famIdx timeIdx phi newType) := by
+  sorry -- Complex proof involving List.mem_modify_iff cases, will complete in future session
+
+/--
+createNewFamily preserves seed well-formedness.
+-/
+theorem createNewFamily_preserves_wellFormed
+    (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
+    (h_wf : SeedWellFormed seed) :
+    SeedWellFormed (seed.createNewFamily timeIdx phi).1 := by
+  sorry -- Will complete in future session
+
+/--
+createNewTime preserves seed well-formedness.
+-/
+theorem createNewTime_preserves_wellFormed
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula)
+    (h_wf : SeedWellFormed seed)
+    (h_famIdx_valid : famIdx < seed.nextFamilyIdx)
+    (h_no_entry : seed.findEntry famIdx timeIdx = none) :
+    SeedWellFormed (seed.createNewTime famIdx timeIdx phi) := by
+  sorry -- Will complete in future session
+
+/--
 createNewFamily preserves seed consistency if the new formula is consistent.
 -/
 theorem createNewFamily_preserves_seedConsistent
@@ -1412,7 +1508,7 @@ See research-002.md Section 5 for the diamond-box interaction lemma that is key
 to the cross-family consistency proof.
 -/
 theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (timeIdx : Int)
-    (seed : ModelSeed) (h_cons : SeedConsistent seed)
+    (seed : ModelSeed) (h_cons : SeedConsistent seed) (h_wf : SeedWellFormed seed)
     (h_phi_in : phi ∈ seed.getFormulas famIdx timeIdx)
     (h_phi_cons : FormulaConsistent phi) :
     SeedConsistent (buildSeedAux phi famIdx timeIdx seed) := by
@@ -1472,12 +1568,13 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         -- entry per position (because addFormula merges rather than duplicates).
         -- This should be proven as a separate lemma.
         --
-        -- Assuming phi ∈ entry.formulas:
+        -- Use well-formedness to show phi ∈ entry.formulas:
+        -- Since seed is well-formed and entry is at (famIdx, timeIdx),
+        -- getFormulas returns entry.formulas
+        have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
         have h_phi_in_entry : (Formula.atom s) ∈ entry.formulas := by
-          -- The entry passed here is the first matching entry (from addFormula_seed_preserves_consistent)
-          -- So getFormulas famIdx timeIdx = entry.formulas
-          -- We need to show this formally or assume it via well-formedness
-          sorry  -- Well-formedness assumption: entry is the unique/first entry at position
+          rw [← h_getFormulas_eq]
+          exact h_phi_in
         have h_insert_eq : insert (Formula.atom s) entry.formulas = entry.formulas :=
           Set.insert_eq_of_mem h_phi_in_entry
         rw [h_insert_eq]
@@ -1490,9 +1587,11 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
       · exact h_phi_cons
       · intro entry h_entry h_fam h_time
         have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
-        -- Same reasoning as atom case: entry is the first matching entry
+        -- Use well-formedness to show phi ∈ entry.formulas
+        have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
         have h_phi_in_entry : Formula.bot ∈ entry.formulas := by
-          sorry  -- Well-formedness: entry is the unique/first entry at position
+          rw [← h_getFormulas_eq]
+          exact h_phi_in
         rw [Set.insert_eq_of_mem h_phi_in_entry]
         exact h_entry_cons
     | Formula.box psi =>
@@ -1571,6 +1670,8 @@ theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
   apply buildSeedAux_preserves_seedConsistent
   · -- Initial seed is consistent
     exact initialSeedConsistent phi h_cons
+  · -- Initial seed is well-formed
+    exact initialSeedWellFormed phi
   · -- phi is in the initial seed at position (0, 0)
     have h_init : (ModelSeed.initial phi).getFormulas 0 0 = {phi} := by
       unfold ModelSeed.initial ModelSeed.getFormulas ModelSeed.findEntry

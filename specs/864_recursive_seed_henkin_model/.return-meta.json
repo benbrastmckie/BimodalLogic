@@ -1,38 +1,28 @@
 {
   "status": "partial",
-  "summary": "Reformulated buildSeedAux_preserves_seedConsistent with stronger invariant tracking phi membership in current position. Added getFormulas_eq_of_wellformed_and_at_position helper. Proof structure established for atom/bot/imp cases. 10 sorries in RecursiveSeed.lean (decomposed from 1), 24 total. Full Bimodal build succeeds.",
+  "started_at": "2026-02-10T14:30:00Z",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
-      "summary": "Reformulated proof with explicit case tracking and well-formedness helper"
-    },
-    {
-      "type": "summary",
-      "path": "specs/864_recursive_seed_henkin_model/summaries/implementation-summary-20260210.md",
-      "summary": "Updated with session 8 progress and blocking issue analysis"
+      "summary": "Restructured buildSeedAux_preserves_seedConsistent with SeedWellFormed hypothesis; fixed atom/bot cases; added well-formedness infrastructure"
     }
   ],
   "partial_progress": {
-    "phases_completed": 2,
-    "phases_total": 6,
-    "current_phase": "Phase 3: Seed Consistency Proof",
-    "current_phase_status": "IN PROGRESS",
-    "sorries_in_recursiveseed": 10,
-    "sorries_total": 24,
-    "blocking_issues": [
-      "Well-formedness hypothesis needed for getFormulas = entry.formulas",
-      "Complex operator cases (Box/G/H/neg variants) not yet implemented",
-      "Generic implication pattern matching issue with abstract variables"
-    ]
-  },
-  "metadata": {
-    "session_id": "sess_1770765226_ae9a56",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "stage": "phase_3_proof_development",
+    "details": "Session 9: (1) Added SeedWellFormed hypothesis to buildSeedAux_preserves_seedConsistent. (2) Proved initialSeedWellFormed for initial seed. (3) Added helper lemmas: find?_getElem_of_findIdx?, getFormulas_eq_findIdx?_entry, addFormula_nextFamilyIdx. (4) Fixed atom and bot cases using getFormulas_eq_of_wellformed_and_at_position. (5) Added 3 well-formedness lemma stubs: addFormula_preserves_wellFormed, createNewFamily_preserves_wellFormed, createNewTime_preserves_wellFormed (marked sorry for future session). RecursiveSeed.lean: 10 sorries (unchanged count, but 3 atom/bot fixed + 3 new well-formedness stubs).",
+    "sorries_before_session": 10,
+    "sorries_after_session": 10,
+    "sorries_fixed": 3,
+    "sorries_added": 3,
     "phases_completed": 2,
     "phases_total": 6
   },
-  "next_steps": "Add SeedWellFormed hypothesis to buildSeedAux_preserves_seedConsistent, prove buildSeedAux_preserves_wellformed, then complete operator cases using IH recursion"
+  "metadata": {
+    "session_id": "sess_1770766064_9b67d5",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+  },
+  "next_steps": "1. Complete 3 well-formedness preservation lemmas (addFormula, createNewFamily, createNewTime). 2. Complete 7 operator sorries in buildSeedAux_preserves_seedConsistent: Box/G/H (3), neg-Box/neg-G/neg-H (3), generic imp (1). Each requires showing seed transformations preserve consistency and well-formedness, and IH hypotheses are satisfied."
 }

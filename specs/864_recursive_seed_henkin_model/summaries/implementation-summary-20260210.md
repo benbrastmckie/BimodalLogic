@@ -1,8 +1,8 @@
 # Implementation Summary: Task #864
 
 **Last Updated**: 2026-02-10
-**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7) + ~30 min (session 8)
-**Status**: PARTIAL (Phase 3 in progress, proof restructured)
+**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7) + ~30 min (session 8) + ~45 min (session 9)
+**Status**: PARTIAL (Phase 3 in progress, well-formedness infrastructure added)
 
 ## Overview
 
@@ -46,16 +46,30 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 
 4. **Build Verification**: All three files compile successfully; full Bimodal module builds
 
-## Sorries Remaining (Updated Session 8)
+## Sorries Remaining (Updated Session 9)
 
-| File | Session 7 | Session 8 | Description |
+| File | Session 8 | Session 9 | Description |
 |------|-----------|-----------|-------------|
-| RecursiveSeed.lean | 1 | 10 | Decomposed sorries for explicit case tracking |
+| RecursiveSeed.lean | 10 | 10 | 3 fixed (atom/bot), 3 added (well-formedness infra), 7 operator cases |
 | SeedCompletion.lean | 6 | 6 | MCS properties, family construction, BoxContent inclusion |
 | SeedBMCS.lean | 8 | 8 | Modal coherence, temporal coherence, context wrapper |
-| **Total** | **15** | **24** | Increased (temporary decomposition) |
+| **Total** | **24** | **24** | Structural improvement, net zero change |
 
-**Note**: Session 8 sorry count increased due to restructuring the proof with explicit case handling. Each case now has a targeted sorry that can be resolved independently.
+**Note**: Session 9 restructured the proof with SeedWellFormed hypothesis, fixing atom/bot cases but adding 3 well-formedness infrastructure sorries. Net sorry count unchanged, but proof structure improved.
+
+### Session 9 Progress
+
+1. **Added `SeedWellFormed` hypothesis** to `buildSeedAux_preserves_seedConsistent`
+2. **Proved `initialSeedWellFormed`**: The initial seed is well-formed
+3. **Added `find?_getElem_of_findIdx?`**: Helper showing find? and findIdx? agree on first match
+4. **Added `getFormulas_eq_findIdx?_entry`**: Links getFormulas to findIdx? for h_compat proofs
+5. **Added `addFormula_nextFamilyIdx`**: Helper showing addFormula preserves nextFamilyIdx
+6. **Fixed atom/bot cases**: Using `getFormulas_eq_of_wellformed_and_at_position` with new hypothesis
+7. **Added well-formedness lemma stubs** (marked sorry for complex List.mem_modify_iff proofs):
+   - `addFormula_preserves_wellFormed`: With family index validity condition
+   - `createNewFamily_preserves_wellFormed`: New families maintain well-formedness
+   - `createNewTime_preserves_wellFormed`: New times maintain well-formedness
+8. **RecursiveSeed.lean sorries**: 10 (3 fixed + 3 new = net 0 change, but structural improvement)
 
 ### Session 8 Progress
 
@@ -71,23 +85,28 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 3. **Code cleanup**: Removed 10+ intermediate sorries, simplified proof structure
 4. **Identified blocking issue**: The theorem statement needs a stronger invariant (see below)
 
-### Current Blocking Issue Analysis
+### Current Blocking Issue Analysis (Session 9)
 
-The 10 sorries in `buildSeedAux_preserves_seedConsistent` decompose as follows:
+The 7 sorries in `buildSeedAux_preserves_seedConsistent` decompose as follows:
 
 | Sorry Location | Count | Resolution Path |
 |----------------|-------|-----------------|
-| Atom/Bot case well-formedness | 2 | Add well-formedness hypothesis, use `getFormulas_eq_of_wellformed_and_at_position` |
-| Box/G/H operator cases | 3 | Implement with IH recursion |
-| neg-Box/neg-G/neg-H cases | 3 | Use createNewFamily/createNewTime preserves lemmas |
+| ~~Atom/Bot case well-formedness~~ | ~~2~~ | FIXED in Session 9 |
+| Box/G/H operator cases | 3 | Need addToAllFamilies/addToAllFutureTimes/addToAllPastTimes preserves lemmas |
+| neg-Box/neg-G/neg-H cases | 3 | Need to show IH hypotheses satisfied after createNew* |
 | Generic imp wildcard | 1 | Pattern matching issue with abstract variables |
-| Generic imp well-formedness | 1 | Same as atom/bot |
 
-**Required Resolution Approach:**
-1. Add `SeedWellFormed seed` hypothesis to theorem
-2. Prove `buildSeedAux_preserves_wellformed` (separate lemma)
-3. Use helper lemma to get phi membership in entry.formulas
-4. Handle operator cases with appropriate recursive calls
+**Required Resolution Approach (Updated):**
+1. ~~Add `SeedWellFormed seed` hypothesis to theorem~~ DONE
+2. Prove `addToAllFamilies_preserves_wellFormed` and consistency
+3. Prove `addToAllFutureTimes_preserves_wellFormed` and consistency
+4. Prove `addToAllPastTimes_preserves_wellFormed` and consistency
+5. For each operator case, show:
+   - The modified seed is well-formed
+   - The modified seed is consistent
+   - The formula to recurse on is in the modified seed at the target position
+   - The formula is consistent (derivable from parent formula consistency)
+6. Handle generic implication case with explicit case analysis
 
 ### Session 2 Completed Proofs
 

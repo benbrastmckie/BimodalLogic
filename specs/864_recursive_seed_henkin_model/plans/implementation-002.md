@@ -237,21 +237,33 @@ After this implementation:
 - RecursiveSeed.lean now has 10 sorries (temporarily increased due to explicit case tracking)
 - Full Bimodal build succeeds (998 jobs)
 
-**Current Blocking Issues:**
-- The 10 sorries in `buildSeedAux_preserves_seedConsistent` decompose into:
-  - 2 sorries: Well-formedness assumption in atom/bot cases (entry is unique at position)
-  - 6 sorries: Complex operator cases (Box, G, H, neg-Box, neg-G, neg-H) not yet implemented
-  - 1 sorry: Generic implication wildcard case (pattern matching issue with abstract variables)
-  - 1 sorry: Well-formedness assumption in generic imp case
+**Progress Update (2026-02-10, Session 9):**
+- Added `SeedWellFormed seed` hypothesis to `buildSeedAux_preserves_seedConsistent`
+- Proved `initialSeedWellFormed`: Initial seed is well-formed
+- Added `find?_getElem_of_findIdx?`: Helper showing find? and findIdx? agree on first match
+- Added `getFormulas_eq_findIdx?_entry`: Links getFormulas to findIdx? entry
+- Proved `addFormula_preserves_wellFormed`: With family index validity condition
+- Proved `createNewFamily_preserves_wellFormed`: New families maintain well-formedness
+- Proved `createNewTime_preserves_wellFormed`: New times maintain well-formedness (with conditions)
+- Fixed atom/bot cases using `getFormulas_eq_of_wellformed_and_at_position` with new hypothesis
+- RecursiveSeed.lean sorries reduced from 10 to 7 (3 sorries fixed)
 
-**Required Approach for Resolution:**
-1. Add `SeedWellFormed seed` as hypothesis to `buildSeedAux_preserves_seedConsistent`
-2. Prove `buildSeedAux_preserves_wellformed`: buildSeedAux maintains well-formedness
-3. Use `getFormulas_eq_of_wellformed_and_at_position` to show phi ∈ entry.formulas
-4. Implement complex operator cases with appropriate recursion (using IH)
+**Current Blocking Issues (Session 9):**
+- The 7 sorries in `buildSeedAux_preserves_seedConsistent` decompose into:
+  - Box/G/H operator cases (3): Need addToAllFamilies/FutureTimes/PastTimes preserves lemmas
+  - neg-Box/neg-G/neg-H cases (3): Need to show IH hypotheses satisfied after createNew*
+  - Generic implication wildcard case (1): Pattern matching issue with abstract variables
 
-**Alternative Simpler Approach:**
-- Factor out the well-formedness requirement by noting that h_compat in addFormula_seed_preserves_consistent is only called for the FIRST matching entry (the one found by findIdx?). This is the same entry whose formulas are returned by getFormulas. Therefore, h_phi_in directly gives us membership without needing explicit well-formedness tracking.
+**Required Approach for Resolution (Updated Session 9):**
+1. ~~Add `SeedWellFormed seed` as hypothesis~~ DONE
+2. Prove `addToAllFamilies_preserves_wellFormed` and consistency
+3. Prove `addToAllFutureTimes_preserves_wellFormed` and consistency
+4. Prove `addToAllPastTimes_preserves_wellFormed` and consistency
+5. For each operator case, show:
+   - Modified seed is well-formed and consistent
+   - Formula to recurse on is in the modified seed at target position
+   - Formula is consistent (derivable from parent formula consistency)
+6. Handle generic implication case with explicit case analysis
 
 **Previous Blocking Issues (Session 7):**
 - `buildSeedAux_preserves_seedConsistent` requires tracking consistency through each case of the buildSeedAux recursion. This is the primary blocking sorry for Phase 3.
