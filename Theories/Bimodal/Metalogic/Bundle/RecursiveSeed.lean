@@ -1432,14 +1432,21 @@ addFormula preserves seed well-formedness when called with a valid family index.
 Note: If the position doesn't exist in the seed, famIdx must be < nextFamilyIdx.
       If it does exist, this is automatically satisfied.
 
-Session 9: Complex proof with pattern matching on List.modify_iff. Marked as sorry for future session.
+Session 10: Complex proof involving List.modify reasoning. Marked as sorry for future session.
+The proof requires showing:
+1. Family indices remain valid after modification/append
+2. Unique positions are preserved (no duplicates created)
+
+The key insight is that addFormula either:
+- Modifies an existing entry (preserving well-formedness since position already exists)
+- Adds a new entry only if no entry at (famIdx, timeIdx) exists (h_famIdx_valid ensures validity)
 -/
 theorem addFormula_preserves_wellFormed
     (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula)
     (newType : SeedEntryType) (h_wf : SeedWellFormed seed)
     (h_famIdx_valid : seed.findEntry famIdx timeIdx = none → famIdx < seed.nextFamilyIdx) :
     SeedWellFormed (seed.addFormula famIdx timeIdx phi newType) := by
-  sorry -- Complex proof involving List.mem_modify_iff cases, will complete in future session
+  sorry
 
 /--
 createNewFamily preserves seed well-formedness.
@@ -1460,6 +1467,163 @@ theorem createNewTime_preserves_wellFormed
     (h_no_entry : seed.findEntry famIdx timeIdx = none) :
     SeedWellFormed (seed.createNewTime famIdx timeIdx phi) := by
   sorry -- Will complete in future session
+
+/--
+If neg(Box phi) is consistent, then neg phi is consistent.
+Proof: By contraposition. If neg phi is inconsistent, then ⊢ phi (from neg phi ⊢ ⊥).
+By necessitation: ⊢ Box phi. Then neg(Box phi) is inconsistent (derives ⊥ via modus ponens).
+-/
+theorem negBox_consistent_implies_neg_consistent {phi : Formula}
+    (h : FormulaConsistent (Formula.neg (Formula.box phi))) :
+    FormulaConsistent (Formula.neg phi) := by
+  intro ⟨d, _⟩
+  apply h
+  -- d : DerivationTree [neg phi] bot
+  -- We need: DerivationTree [neg(Box phi)] bot
+  -- From [neg phi] ⊢ ⊥, by deduction: [] ⊢ neg phi → ⊥ = [] ⊢ phi.neg.neg
+  -- By DNE: [] ⊢ phi
+  -- By necessitation: [] ⊢ Box phi
+  -- Weakening: [neg(Box phi)] ⊢ Box phi
+  -- With [neg(Box phi)] ⊢ neg(Box phi) (assumption), modus ponens gives ⊥
+  have d_neg_neg : Bimodal.ProofSystem.DerivationTree [] phi.neg.neg :=
+    deduction_theorem [] phi.neg Formula.bot d
+  -- Use DNE to get [] ⊢ phi
+  -- We have phi.neg.neg = (phi → ⊥) → ⊥
+  -- DNE: ((phi → ⊥) → ⊥) → phi
+  have d_dne : Bimodal.ProofSystem.DerivationTree [] (phi.neg.neg.imp phi) := by
+    -- Reuse the DNE construction from diamond_box_interaction
+    have step1 : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi := by
+      have h_neg_neg : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi.neg.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_neg : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_bot : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] Formula.bot :=
+        Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_neg h_neg
+      have h_ex_falso : Bimodal.ProofSystem.DerivationTree [] (Formula.bot.imp phi) :=
+        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso phi)
+      have h_ex_falso' : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] (Formula.bot.imp phi) :=
+        Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_ex_falso (by intro; simp)
+      exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_ex_falso' h_bot
+    have step2 : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] (phi.neg.imp phi) :=
+      deduction_theorem [phi.neg.neg] phi.neg phi step1
+    have step3_peirce : Bimodal.ProofSystem.DerivationTree [] ((phi.neg.imp phi).imp phi) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.peirce phi Formula.bot)
+    have step3_peirce' : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] ((phi.neg.imp phi).imp phi) :=
+      Bimodal.ProofSystem.DerivationTree.weakening [] _ _ step3_peirce (by intro; simp)
+    have step3 : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] phi :=
+      Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ step3_peirce' step2
+    exact deduction_theorem [] phi.neg.neg phi step3
+  have d_phi : Bimodal.ProofSystem.DerivationTree [] phi :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_dne d_neg_neg
+  have d_box_phi : Bimodal.ProofSystem.DerivationTree [] phi.box :=
+    Bimodal.ProofSystem.DerivationTree.necessitation _ d_phi
+  -- Now derive ⊥ from [neg(Box phi)]
+  have d_box_phi' : Bimodal.ProofSystem.DerivationTree [phi.box.neg] phi.box :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_box_phi (by intro; simp)
+  have d_neg_box : Bimodal.ProofSystem.DerivationTree [phi.box.neg] phi.box.neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have d_bot : Bimodal.ProofSystem.DerivationTree [phi.box.neg] Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_neg_box d_box_phi'
+  exact ⟨d_bot, trivial⟩
+
+/--
+If neg(G phi) is consistent, then neg phi is consistent.
+Proof: By contraposition. If neg phi is inconsistent, then ⊢ phi.
+By necessitation for G: ⊢ G phi. Then neg(G phi) is inconsistent.
+-/
+theorem negG_consistent_implies_neg_consistent {phi : Formula}
+    (h : FormulaConsistent (Formula.neg (Formula.all_future phi))) :
+    FormulaConsistent (Formula.neg phi) := by
+  intro ⟨d, _⟩
+  apply h
+  -- Similar structure to negBox_consistent_implies_neg_consistent
+  have d_neg_neg : Bimodal.ProofSystem.DerivationTree [] phi.neg.neg :=
+    deduction_theorem [] phi.neg Formula.bot d
+  -- DNE to get [] ⊢ phi
+  have d_dne : Bimodal.ProofSystem.DerivationTree [] (phi.neg.neg.imp phi) := by
+    have step1 : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi := by
+      have h_neg_neg : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi.neg.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_neg : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_bot : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] Formula.bot :=
+        Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_neg h_neg
+      have h_ex_falso : Bimodal.ProofSystem.DerivationTree [] (Formula.bot.imp phi) :=
+        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso phi)
+      have h_ex_falso' : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] (Formula.bot.imp phi) :=
+        Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_ex_falso (by intro; simp)
+      exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_ex_falso' h_bot
+    have step2 : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] (phi.neg.imp phi) :=
+      deduction_theorem [phi.neg.neg] phi.neg phi step1
+    have step3_peirce : Bimodal.ProofSystem.DerivationTree [] ((phi.neg.imp phi).imp phi) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.peirce phi Formula.bot)
+    have step3_peirce' : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] ((phi.neg.imp phi).imp phi) :=
+      Bimodal.ProofSystem.DerivationTree.weakening [] _ _ step3_peirce (by intro; simp)
+    have step3 : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] phi :=
+      Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ step3_peirce' step2
+    exact deduction_theorem [] phi.neg.neg phi step3
+  have d_phi : Bimodal.ProofSystem.DerivationTree [] phi :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_dne d_neg_neg
+  -- Use temporal necessitation (for G)
+  have d_g_phi : Bimodal.ProofSystem.DerivationTree [] phi.all_future :=
+    Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ d_phi
+  have d_g_phi' : Bimodal.ProofSystem.DerivationTree [phi.all_future.neg] phi.all_future :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_g_phi (by intro; simp)
+  have d_neg_g : Bimodal.ProofSystem.DerivationTree [phi.all_future.neg] phi.all_future.neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have d_bot : Bimodal.ProofSystem.DerivationTree [phi.all_future.neg] Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_neg_g d_g_phi'
+  exact ⟨d_bot, trivial⟩
+
+/--
+If neg(H phi) is consistent, then neg phi is consistent.
+Proof: By contraposition. If neg phi is inconsistent, then ⊢ phi.
+By past necessitation: ⊢ H phi. Then neg(H phi) is inconsistent.
+
+Note: The proof uses temporal_duality since there's no direct H necessitation rule.
+From ⊢ phi, we get ⊢ G phi via temporal_necessitation.
+Then ⊢ swap_past_future (G phi) = H (swap_past_future phi) via temporal_duality.
+For atoms and box formulas where swap_past_future phi = phi, this gives H phi directly.
+-/
+theorem negH_consistent_implies_neg_consistent {phi : Formula}
+    (h : FormulaConsistent (Formula.neg (Formula.all_past phi))) :
+    FormulaConsistent (Formula.neg phi) := by
+  -- This proof is symmetric to negG_consistent_implies_neg_consistent but requires
+  -- using temporal_duality to get from G to H. The key insight is that if ⊢ phi,
+  -- then by the temporal axioms (H4 and related), we can derive ⊢ H phi.
+  -- For simplicity, we use sorry here as the proof is routine but lengthy.
+  sorry
+
+/--
+createNewFamily puts the formula at the new family position.
+The new family index is seed.nextFamilyIdx, and the formula is at (newFamIdx, timeIdx).
+Requires well-formedness to ensure no existing entry has familyIdx = nextFamilyIdx.
+-/
+theorem createNewFamily_formula_at_new_position
+    (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
+    (h_wf : SeedWellFormed seed) :
+    let (seed', newFamIdx) := seed.createNewFamily timeIdx phi
+    phi ∈ seed'.getFormulas newFamIdx timeIdx := by
+  simp only [ModelSeed.createNewFamily, ModelSeed.getFormulas, ModelSeed.findEntry]
+  -- The new entry is at the end of the list with (nextFamilyIdx, timeIdx)
+  -- Need to show find? returns the new entry (the one we appended)
+  -- This requires showing no existing entry satisfies the predicate
+  have h_no_match : ∀ x ∈ seed.entries, ¬(x.familyIdx = seed.nextFamilyIdx ∧ x.timeIdx = timeIdx) := by
+    intro x hx ⟨h_fam, _⟩
+    have h_lt := h_wf.1 x hx
+    omega
+  -- Use find?_append: find? (l1 ++ l2) = (find? l1).or (find? l2)
+  rw [List.find?_append]
+  -- Show find? on the original list is none
+  have h_none : seed.entries.find? (fun e => e.familyIdx == seed.nextFamilyIdx && e.timeIdx == timeIdx) = none := by
+    rw [List.find?_eq_none]
+    intro x hx
+    have := h_no_match x hx
+    simp only [beq_iff_eq, Bool.and_eq_true, not_and] at this ⊢
+    intro h_fam h_time
+    exact this h_fam h_time
+  simp only [h_none, Option.none_or, List.find?_cons_of_pos, beq_self_eq_true, Bool.and_self,
+             Set.mem_singleton_iff]
 
 /--
 createNewFamily preserves seed consistency if the new formula is consistent.
@@ -1636,10 +1800,53 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
       | Formula.box inner, Formula.bot =>
         -- neg(Box inner) case: creates new family with neg inner
         simp only [buildSeedAux]
-        -- Adding neg(Box inner) to current position, then creating new family with neg inner
-        -- The new family has a singleton {neg inner}, which is consistent if neg inner is consistent
-        -- neg inner is consistent because neg(Box inner) is consistent
-        -- (if neg inner were inconsistent, i.e., ⊢ inner, then ⊢ Box inner, contradicting neg(Box inner) consistent)
+        -- The goal is to show consistency after:
+        -- 1. addFormula: adds neg(Box inner) to current position
+        -- 2. createNewFamily: creates new family with neg inner
+        -- 3. buildSeedAux: recurses on neg inner at the new family
+        --
+        -- Use IH on inner.neg with:
+        -- - seed' = (seed.addFormula ...).createNewFamily ...
+        -- - famIdx' = the new family index
+        -- - timeIdx' = timeIdx (same time)
+        --
+        -- We need:
+        -- - seed' is consistent (via addFormula + createNewFamily preserves)
+        -- - seed' is well-formed (via preservation lemmas - sorry for now)
+        -- - inner.neg ∈ seed'.getFormulas newFamIdx timeIdx (by construction of createNewFamily)
+        -- - inner.neg is consistent (via negBox_consistent_implies_neg_consistent)
+        -- - (inner.neg).complexity < c
+        let seed1 := seed.addFormula famIdx timeIdx inner.box.neg .universal_target
+        let (seed2, newFamIdx) := seed1.createNewFamily timeIdx inner.neg
+        -- Show inner.neg is consistent
+        have h_inner_neg_cons : FormulaConsistent inner.neg :=
+          negBox_consistent_implies_neg_consistent h_phi_cons
+        -- Show complexity decreases
+        have h_complexity : inner.neg.complexity < c := by
+          rw [← h_c]
+          simp only [Formula.complexity, Formula.neg]
+          omega
+        -- Show seed1 is consistent (addFormula preserves since phi is already in the set)
+        have h_seed1_cons : SeedConsistent seed1 := by
+          apply addFormula_seed_preserves_consistent
+          · exact h_cons
+          · -- neg(Box inner) is consistent since it's in the original seed and seed is consistent
+            -- Actually, h_phi_cons says inner.box.neg is FormulaConsistent
+            exact h_phi_cons
+          · intro entry h_entry h_fam h_time
+            have h_entry_cons := h_cons entry h_entry
+            have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
+            have h_phi_in_entry : inner.box.neg ∈ entry.formulas := by
+              rw [← h_getFormulas_eq]
+              exact h_phi_in
+            rw [Set.insert_eq_of_mem h_phi_in_entry]
+            exact h_entry_cons
+        -- Show seed2 is consistent
+        -- Note: (seed2, newFamIdx) = seed1.createNewFamily timeIdx inner.neg
+        have h_seed2_cons : SeedConsistent (seed1.createNewFamily timeIdx inner.neg).1 :=
+          createNewFamily_preserves_seedConsistent seed1 timeIdx inner.neg h_seed1_cons h_inner_neg_cons
+        -- For IH, we need seed2 well-formed and inner.neg in the right position
+        -- These require additional helper lemmas. For now, use sorry to demonstrate progress.
         sorry
       | Formula.all_future inner, Formula.bot =>
         -- neg(G inner) case

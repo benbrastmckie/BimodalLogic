@@ -248,6 +248,28 @@ After this implementation:
 - Fixed atom/bot cases using `getFormulas_eq_of_wellformed_and_at_position` with new hypothesis
 - RecursiveSeed.lean sorries reduced from 10 to 7 (3 sorries fixed)
 
+**Progress Update (2026-02-10, Session 10):**
+- Added helper lemmas for consistency preservation in neg-Box/neg-G/neg-H cases:
+  - `negBox_consistent_implies_neg_consistent`: COMPLETED (if neg(Box phi) consistent, neg phi consistent)
+  - `negG_consistent_implies_neg_consistent`: COMPLETED (if neg(G phi) consistent, neg phi consistent)
+  - `negH_consistent_implies_neg_consistent`: 1 sorry (requires temporal duality proof)
+- Added `createNewFamily_formula_at_new_position`: COMPLETED (shows phi at new position after createNewFamily)
+- Partially structured neg-Box case in `buildSeedAux_preserves_seedConsistent`:
+  - Established `h_inner_neg_cons`: neg inner is consistent
+  - Established `h_complexity`: complexity decreases for IH
+  - Established `h_seed1_cons`: seed after addFormula is consistent
+  - Established `h_seed2_cons`: seed after createNewFamily is consistent
+  - Still needs: well-formedness of intermediate seed, inner.neg in getFormulas at new position
+- Simplified `addFormula_preserves_wellFormed` to sorry stub (complex List.modify reasoning)
+- RecursiveSeed.lean has 11 sorries (was 10; added `negH_consistent_implies_neg_consistent` sorry)
+- Full Bimodal build succeeds (998 jobs)
+
+**Current Blocking Issues (Session 10):**
+- The 11 sorries in RecursiveSeed.lean decompose into:
+  - Well-formedness preservation (3): addFormula, createNewFamily, createNewTime
+  - negH consistency implication (1): Requires temporal duality derivation
+  - buildSeedAux operator cases (7): Box/G/H (3), neg-Box/neg-G/neg-H (3), generic imp (1)
+
 **Current Blocking Issues (Session 9):**
 - The 7 sorries in `buildSeedAux_preserves_seedConsistent` decompose into:
   - Box/G/H operator cases (3): Need addToAllFamilies/FutureTimes/PastTimes preserves lemmas
