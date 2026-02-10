@@ -131,9 +131,36 @@ bmcs_strong_completeness (sorry-free, axiom-free)
 
 ## Implementation Phases
 
-### Phase 1: Complete Temporal Dovetailing Sorries [NOT STARTED]
+### Phase 1: Complete Temporal Dovetailing Sorries [PARTIAL]
 
 **Goal:** Resolve the 4 remaining sorries in DovetailingChain.lean from v006 Phase 1.
+
+**Progress:**
+- [x] Unified shared base MCS construction (chains_share_base lemma)
+  - Both forward and backward chains now share a single MCS at index 0
+  - This is a prerequisite for cross-sign propagation but not sufficient alone
+- [ ] Resolve `forward_G` cross-sign case (BLOCKED - requires full interleaved chain)
+  - Current two-chain architecture cannot support cross-sign G propagation
+  - Would require restructuring to interleaved chain construction
+- [ ] Resolve `backward_H` cross-sign case (BLOCKED - symmetric to above)
+- [ ] Implement dovetailing enumeration for `forward_F` (NOT STARTED)
+  - Use `Nat.pair`/`Nat.unpair` with `Encodable Formula`
+  - At each step n, process the formula with code `n mod enum_bound` at time `n / enum_bound`
+  - Prove completeness: every (formula, time) pair is eventually processed
+- [ ] Resolve `backward_P` symmetrically (NOT STARTED)
+- [ ] Verify `temporal_coherent_family_exists` compiles without sorry or axiom (BLOCKED by above)
+
+**Analysis:**
+The cross-sign cases require fundamental architectural changes beyond what can be achieved
+by sharing the base MCS. The current two-chain construction (forward Nat chain + backward
+Nat chain meeting at shared base) is structurally incapable of cross-sign temporal propagation
+because:
+1. Forward chain propagates GContent going positive (0 -> 1 -> 2 -> ...)
+2. Backward chain propagates HContent going negative (0 -> -1 -> -2 -> ...)
+3. G formulas in the backward chain do not propagate toward the shared base
+
+Per rollback contingency: accept sorry markers at cross-sign cases as non-blocking for the
+modal axiom goal (Phase 4 is complete).
 
 **Tasks:**
 - [ ] Resolve `forward_G` cross-sign case using unified bidirectional chain

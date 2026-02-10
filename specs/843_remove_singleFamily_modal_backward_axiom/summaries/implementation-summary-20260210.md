@@ -72,11 +72,41 @@ After (CORRECT axiom):
 - `lake build Bimodal` succeeds with no errors
 - All 998 jobs complete successfully
 
+## Phase 1 Progress (Session 2: sess_1770746935_4a7b4f)
+
+### Architectural Improvement: Unified Shared Base MCS
+
+Modified `DovetailingChain.lean` to use a single shared MCS at index 0:
+
+1. **Added `sharedBaseMCS`**: A single base MCS constructed once via Lindenbaum
+2. **Modified `dovetailForwardChainMCS`**: Step 0 now returns `sharedBaseMCS` instead of independent Lindenbaum call
+3. **Modified `dovetailBackwardChainMCS`**: Step 0 now returns `sharedBaseMCS` instead of independent Lindenbaum call
+4. **Added `chains_share_base` lemma**: Proves `M_0 = M_{-1}` (both chains share the same base MCS)
+
+This change is a prerequisite for cross-sign propagation but is not sufficient alone. The fundamental issue is that:
+- Forward chain propagates GContent going positive (0 -> 1 -> 2 -> ...)
+- Backward chain propagates HContent going negative (0 -> -1 -> -2 -> ...)
+- G formulas in the backward chain do not propagate toward the shared base
+
+### Analysis: Why Cross-Sign Cases Are Blocked
+
+The current two-chain architecture (forward Nat chain + backward Nat chain) is structurally incapable of cross-sign temporal propagation because Lindenbaum extension is one-directional. For G(phi) at time t < 0 to propagate to time t' >= 0, we would need G-content to flow from the backward chain toward the shared base, but the backward chain construction only includes HContent (not GContent) in its seeds.
+
+Resolution options (per plan contingency):
+1. Restructure to interleaved chain construction (significant effort, 12-15 hours)
+2. Accept sorry markers at cross-sign cases as non-blocking for modal axiom goal (Phase 4 complete)
+
+Per plan contingency, accepting sorry markers is acceptable since Phase 4 (the critical goal) is complete.
+
 ## Remaining Work (Phases 1, 2, 3, 5)
 
-### Phase 1: Complete Temporal Dovetailing Sorries [NOT STARTED]
-- 4 sorries in DovetailingChain.lean require architectural redesign
-- Cross-sign propagation needs unified bidirectional chain construction
+### Phase 1: Complete Temporal Dovetailing Sorries [PARTIAL]
+- [x] Unified shared base MCS construction (chains_share_base)
+- [ ] Cross-sign forward_G (BLOCKED - requires interleaved chain architecture)
+- [ ] Cross-sign backward_H (BLOCKED - requires interleaved chain architecture)
+- [ ] forward_F dovetailing enumeration (NOT STARTED)
+- [ ] backward_P dovetailing enumeration (NOT STARTED)
+- 4 sorries remain in DovetailingChain.lean
 
 ### Phase 2: BoxContent Accessibility Symmetry [NOT STARTED]
 - Prove symmetry lemma for BoxContent inclusion

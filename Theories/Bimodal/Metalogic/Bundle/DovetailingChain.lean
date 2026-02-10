@@ -165,18 +165,34 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
     exact h_mcs.1 L h_L_in_M ⟨d⟩
 
 /-!
+## Shared Base MCS
+
+Both forward and backward chains share a single base MCS at time 0.
+This enables cross-sign temporal propagation.
+-/
+
+/-- Build the shared base MCS that both chains emanate from. -/
+noncomputable def sharedBaseMCS (base : Set Formula) (h_base_cons : SetConsistent base) :
+    { M : Set Formula // SetMaximalConsistent M } :=
+  let h := set_lindenbaum base h_base_cons
+  ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+
+/-- The shared base MCS extends the base. -/
+lemma sharedBaseMCS_extends (base : Set Formula) (h_base_cons : SetConsistent base) :
+    base ⊆ (sharedBaseMCS base h_base_cons).val :=
+  (Classical.choose_spec (set_lindenbaum base h_base_cons)).1
+
+/-!
 ## Forward Chain Construction
 
-Forward chain: step 0 extends base, step n+1 extends GContent(M_n).
+Forward chain: step 0 is the shared base, step n+1 extends GContent(M_n).
 GContent seeds ensure forward_G for non-negative indices.
 -/
 
-/-- Build the forward chain: step 0 extends base, step n+1 extends GContent(M_n). -/
+/-- Build the forward chain: step 0 is shared base, step n+1 extends GContent(M_n). -/
 noncomputable def dovetailForwardChainMCS (base : Set Formula) (h_base_cons : SetConsistent base) :
     Nat → { M : Set Formula // SetMaximalConsistent M }
-  | 0 =>
-    let h := set_lindenbaum base h_base_cons
-    ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+  | 0 => sharedBaseMCS base h_base_cons
   | n + 1 =>
     let prev := dovetailForwardChainMCS base h_base_cons n
     let h_gc_cons := dovetail_GContent_consistent prev.val prev.property
@@ -186,21 +202,24 @@ noncomputable def dovetailForwardChainMCS (base : Set Formula) (h_base_cons : Se
 /-!
 ## Backward Chain Construction
 
-Backward chain: step 0 extends base, step n+1 extends HContent(M_n).
+Backward chain: step 0 is the shared base, step n+1 extends HContent(M_n).
 HContent seeds ensure backward_H for non-positive indices.
 -/
 
-/-- Build the backward chain: step 0 extends base, step n+1 extends HContent(M_n). -/
+/-- Build the backward chain: step 0 is shared base, step n+1 extends HContent(M_n). -/
 noncomputable def dovetailBackwardChainMCS (base : Set Formula) (h_base_cons : SetConsistent base) :
     Nat → { M : Set Formula // SetMaximalConsistent M }
-  | 0 =>
-    let h := set_lindenbaum base h_base_cons
-    ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+  | 0 => sharedBaseMCS base h_base_cons
   | n + 1 =>
     let prev := dovetailBackwardChainMCS base h_base_cons n
     let h_hc_cons := dovetail_HContent_consistent prev.val prev.property
     let h := set_lindenbaum (HContent prev.val) h_hc_cons
     ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+
+/-- Forward and backward chains share the same MCS at index 0. -/
+lemma chains_share_base (base : Set Formula) (h_base_cons : SetConsistent base) :
+    (dovetailForwardChainMCS base h_base_cons 0).val =
+    (dovetailBackwardChainMCS base h_base_cons 0).val := rfl
 
 /-- Unified dovetail temporal chain: non-negative uses forward, negative uses backward. -/
 noncomputable def dovetailChainSet (base : Set Formula) (h_base_cons : SetConsistent base)
