@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model Construction (v2)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 36 hours (revised from 34)
 - **Version**: 002 (revised from 001)
 - **Dependencies**: None (supersedes task 843's approach)
@@ -127,7 +127,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Formula Classification and Seed Data Structures [NOT STARTED]
+### Phase 1: Formula Classification and Seed Data Structures [COMPLETED]
 
 - **Goal:** Define the `FormulaClass` inductive type for classifying formulas by their main operator, the `ModelSeed` data structure with entry type tracking, and helper functions for seed manipulation.
 
@@ -162,7 +162,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Recursive Seed Builder [NOT STARTED]
+### Phase 2: Recursive Seed Builder [COMPLETED]
 
 - **Goal:** Implement the `buildSeed` function that recursively unpacks a formula to build a `ModelSeed`, with a termination proof and formula merging for existing entries.
 
@@ -198,7 +198,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Seed Consistency Proof [NOT STARTED]
+### Phase 3: Seed Consistency Proof [PARTIAL]
 
 - **Goal:** Prove that if the starting formula is consistent, then every (family, time) entry in the seed is consistent. This is the mathematically hardest phase.
 
@@ -244,7 +244,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Seed Completion to MCS Families [NOT STARTED]
+### Phase 4: Seed Completion to MCS Families [PARTIAL]
 
 - **Goal:** Extend each seed entry's consistent set to a full MCS via Lindenbaum, then build `IndexedMCSFamily` instances for each family index, filling non-seed time indices using temporal chain construction.
 
@@ -296,7 +296,7 @@ After this implementation:
 
 ---
 
-### Phase 5: BMCS Assembly and Coherence Proofs [NOT STARTED]
+### Phase 5: BMCS Assembly and Coherence Proofs [PARTIAL]
 
 - **Goal:** Assemble the seed-built families into a `BMCS` with proven modal_forward, modal_backward, and temporal coherence. This phase eliminates both axioms and **resolves task 843's Phase 1 blockage**.
 
@@ -365,7 +365,7 @@ After this implementation:
 
 ---
 
-### Phase 6: Verification, Documentation, and Cleanup [NOT STARTED]
+### Phase 6: Verification, Documentation, and Cleanup [PARTIAL]
 
 - **Goal:** Final verification that the construction is correct, clean up temporary constructs, add documentation, and verify the full build.
 

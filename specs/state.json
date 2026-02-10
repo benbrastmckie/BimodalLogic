@@ -76,11 +76,11 @@
     {
       "project_number": 864,
       "project_name": "recursive_seed_henkin_model",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-10T20:17:16Z",
-      "session_id": "sess_1770754082_ad96f3",
+      "last_updated": "2026-02-10T20:32:13Z",
+      "session_id": "sess_1770754704_40d10f",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
         {
@@ -102,9 +102,15 @@
           "path": "specs/864_recursive_seed_henkin_model/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 6-phase plan with: SeedEntryType tracking, formula merging, diamond-box interaction lemma, 4-axiom cross-sign handling, task 843 blockage resolution documentation"
+        },
+        {
+          "path": "specs/864_recursive_seed_henkin_model/summaries/implementation-summary-20260210.md",
+          "type": "summary",
+          "summary": "Partial implementation of recursive seed construction for Henkin model completeness"
         }
       ],
-      "planned": "2026-02-10T20:17:16Z"
+      "planned": "2026-02-10T20:17:16Z",
+      "started": "2026-02-10T20:18:52Z"
     },
     {
       "project_number": 843,
