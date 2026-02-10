@@ -1161,6 +1161,156 @@ theorem addFormula_preserves_consistent {S : Set Formula} {phi : Formula}
     exact h_cons L' h_L'_sub ⟨d_bot⟩
 
 /--
+Helper: A formula is a subformula_consistent if adding it to a consistent set preserves consistency.
+For our purposes, this holds when the formula is:
+1. A theorem (can be added to any consistent set)
+2. Derivable from formulas already in the set
+3. A consistent singleton (for new entries)
+-/
+def SubformulaConsistent (phi : Formula) : Prop := FormulaConsistent phi
+
+/--
+Membership characterization for List.modify.
+If x is in the modified list, then either:
+1. x is in the original list at some index other than i
+2. x is f(original[i]) where i is the modified index
+-/
+private theorem List.mem_modify_iff {α : Type*} {l : List α} {i : Nat} {f : α → α} {x : α} :
+    x ∈ l.modify i f ↔
+    (∃ j, l[j]? = some x ∧ i ≠ j) ∨ (∃ y, l[i]? = some y ∧ x = f y) := by
+  constructor
+  · intro h
+    rw [List.mem_iff_getElem?] at h
+    obtain ⟨j, hj⟩ := h
+    rw [List.getElem?_modify] at hj
+    cases h_get : l[j]? with
+    | none =>
+      rw [h_get] at hj
+      simp at hj
+    | some y =>
+      rw [h_get] at hj
+      have hj' : (if i = j then f y else y) = x := Option.some_inj.mp hj
+      by_cases h_eq : i = j
+      · right
+        simp only [h_eq, ↓reduceIte] at hj'
+        exact ⟨y, h_eq ▸ h_get, hj'.symm⟩
+      · left
+        simp only [h_eq, ↓reduceIte] at hj'
+        exact ⟨j, hj' ▸ h_get, h_eq⟩
+  · intro h
+    rw [List.mem_iff_getElem?]
+    cases h with
+    | inl h =>
+      obtain ⟨j, hj, h_ne⟩ := h
+      use j
+      rw [List.getElem?_modify, hj]
+      simp only [h_ne, ↓reduceIte]
+      rfl
+    | inr h =>
+      obtain ⟨y, hy, h_eq⟩ := h
+      use i
+      rw [List.getElem?_modify, hy]
+      simp only [↓reduceIte, h_eq]
+      rfl
+
+/--
+Helper: findIdx?.go returns values >= its starting index.
+-/
+private theorem findIdx_go_ge {α : Type*} {l : List α} {p : α → Bool} {n m : Nat}
+    (h : List.findIdx?.go p l n = some m) : m ≥ n := by
+  induction l generalizing n m with
+  | nil => simp [List.findIdx?.go] at h
+  | cons x xs ih =>
+    simp only [List.findIdx?.go] at h
+    by_cases hpx : p x
+    · simp only [hpx, ↓reduceIte, Option.some.injEq] at h
+      omega
+    · simp only [hpx, Bool.false_eq_true, ↓reduceIte] at h
+      have := ih h
+      omega
+
+/--
+Helper: If findIdx?.go p l n = some m, then the element at position m-n satisfies p.
+-/
+private theorem findIdx_go_pred {α : Type*} {l : List α} {p : α → Bool} {n m : Nat}
+    (h : List.findIdx?.go p l n = some m) :
+    ∃ (h_lt : m - n < l.length), p l[m - n] = true := by
+  induction l generalizing n m with
+  | nil => simp [List.findIdx?.go] at h
+  | cons x xs ih =>
+    simp only [List.findIdx?.go] at h
+    by_cases hpx : p x
+    · simp only [hpx, ↓reduceIte, Option.some.injEq] at h
+      subst h
+      simp only [Nat.sub_self, List.length_cons, Nat.zero_lt_succ, List.getElem_cons_zero, hpx,
+        exists_prop, and_self]
+    · simp only [hpx, Bool.false_eq_true, ↓reduceIte] at h
+      have ⟨h_lt, h_pred⟩ := ih h
+      have h_m_ge : m ≥ n + 1 := findIdx_go_ge h
+      have h_eq : m - n = (m - (n + 1)) + 1 := by omega
+      refine ⟨?_, ?_⟩
+      · simp only [List.length_cons]; omega
+      · simp only [h_eq, List.getElem_cons_succ]
+        exact h_pred
+
+/--
+Helper: Adding a consistent formula to an entry in the seed.
+If the formula is consistent and compatible with the target entry, the result is SeedConsistent.
+-/
+theorem addFormula_seed_preserves_consistent
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula)
+    (newType : SeedEntryType)
+    (h_seed_cons : SeedConsistent seed)
+    (h_phi_cons : FormulaConsistent phi)
+    (h_compat : ∀ entry ∈ seed.entries, entry.familyIdx = famIdx → entry.timeIdx = timeIdx →
+                SetConsistent (insert phi entry.formulas)) :
+    SeedConsistent (seed.addFormula famIdx timeIdx phi newType) := by
+  intro entry h_entry
+  unfold ModelSeed.addFormula at h_entry
+  -- Case split on whether there's an existing entry
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | some idx =>
+    simp only [h_find] at h_entry
+    -- h_entry : entry ∈ seed.entries.modify idx (...)
+    rw [List.mem_modify_iff] at h_entry
+    match h_entry with
+    | .inl ⟨j, hj, h_ne⟩ =>
+      -- Unchanged entry
+      have h_entry_mem : entry ∈ seed.entries := List.mem_of_getElem? hj
+      exact h_seed_cons entry h_entry_mem
+    | .inr ⟨old_entry, h_old_at_idx, h_entry_eq⟩ =>
+      -- This is the modified entry
+      subst h_entry_eq
+      have h_old_mem : old_entry ∈ seed.entries := List.mem_of_getElem? h_old_at_idx
+      -- The predicate holds for old_entry since it's at idx where findIdx? found it
+      have h_pred : old_entry.familyIdx = famIdx ∧ old_entry.timeIdx = timeIdx := by
+        have h_findIdx_go : List.findIdx?.go
+            (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) seed.entries 0 = some idx := by
+          simp only [List.findIdx?] at h_find; exact h_find
+        have ⟨h_lt, h_at_idx⟩ := findIdx_go_pred h_findIdx_go
+        simp only [Nat.sub_zero] at h_lt h_at_idx
+        -- h_old_at_idx : seed.entries[idx]? = some old_entry
+        -- h_at_idx : predicate holds for seed.entries[idx]
+        -- We need: predicate holds for old_entry
+        have h_eq_entry : seed.entries[idx]'h_lt = old_entry := by
+          have := List.getElem?_eq_getElem h_lt
+          rw [h_old_at_idx] at this
+          exact (Option.some_inj.mp this.symm)
+        rw [h_eq_entry] at h_at_idx
+        simp only [beq_iff_eq, Bool.and_eq_true, decide_eq_true_eq] at h_at_idx
+        exact h_at_idx
+      exact h_compat old_entry h_old_mem h_pred.1 h_pred.2
+  | none =>
+    simp only [h_find] at h_entry
+    rw [List.mem_append, List.mem_singleton] at h_entry
+    match h_entry with
+    | .inl h_old => exact h_seed_cons entry h_old
+    | .inr h_new =>
+      subst h_new
+      simp only
+      exact singleton_consistent_iff.mpr h_phi_cons
+
+/--
 buildSeedAux preserves seed consistency.
 
 Key insight: buildSeedAux only adds formulas that are:

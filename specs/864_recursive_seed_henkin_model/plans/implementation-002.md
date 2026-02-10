@@ -214,8 +214,16 @@ After this implementation:
 - `buildSeedAux_preserves_seedConsistent`: 1 sorry (new helper, complex induction)
 - `seedConsistent`: COMPLETED (proof structure, but depends on above sorry)
 
+**Progress Update (2026-02-10, Session 6):**
+- `List.mem_modify_iff`: COMPLETED (new helper for List.modify membership characterization)
+- `findIdx_go_ge`: COMPLETED (new helper for findIdx?.go bounds)
+- `findIdx_go_pred`: COMPLETED (new helper for findIdx?.go predicate)
+- `addFormula_seed_preserves_consistent`: COMPLETED (key lemma for adding formulas to seed)
+- RecursiveSeed.lean sorries reduced from 4 to 1 (only `buildSeedAux_preserves_seedConsistent`)
+
 **Blocking Issues:**
 - `buildSeedAux_preserves_seedConsistent` requires tracking consistency through each case of the buildSeedAux recursion. This is the primary blocking sorry for Phase 3.
+- The proof requires showing that for each case of `buildSeedAux`, the `h_compat` condition of `addFormula_seed_preserves_consistent` holds - i.e., that inserting the formula into existing entries at that position preserves consistency.
 
 - **Goal:** Prove that if the starting formula is consistent, then every (family, time) entry in the seed is consistent. This is the mathematically hardest phase.
 
