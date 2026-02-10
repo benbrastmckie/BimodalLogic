@@ -42,8 +42,8 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-05T17:27:11Z",
-      "last_updated": "2026-02-05T19:27:27Z",
-      "session_id": "sess_1770319116_379e3e",
+      "last_updated": "2026-02-10T19:50:16Z",
+      "session_id": "sess_1770752714_ab082d",
       "researched": "2026-02-05T19:27:27Z",
       "artifacts": [
         {
@@ -65,6 +65,11 @@
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-004.md",
           "type": "research",
           "summary": "932-line comparison of two canonical frame constructions: trajectory-based vs family-based, with full mathematical definitions, TruthLemma case analysis, formalization estimates, and recommendation for Construction B2 (family-indexed)"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-005.md",
+          "type": "research",
+          "summary": "Analysis of Phase 1 blockage (actually task 843's issue), task 864 seed construction applicability, and debt-free paths for temporal coherence construction"
         }
       ]
     },
