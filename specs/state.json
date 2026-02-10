@@ -76,10 +76,10 @@
     {
       "project_number": 864,
       "project_name": "recursive_seed_henkin_model",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-10T20:12:31Z",
+      "last_updated": "2026-02-10T20:17:16Z",
       "session_id": "sess_1770754082_ad96f3",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
@@ -97,9 +97,14 @@
           "path": "specs/864_recursive_seed_henkin_model/reports/research-002.md",
           "type": "research",
           "summary": "Analyzes how seed construction bypasses task 843's cross-sign temporal blockage by pre-placing witnesses before Lindenbaum extension"
+        },
+        {
+          "path": "specs/864_recursive_seed_henkin_model/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 6-phase plan with: SeedEntryType tracking, formula merging, diamond-box interaction lemma, 4-axiom cross-sign handling, task 843 blockage resolution documentation"
         }
       ],
-      "planned": "2026-02-05T01:40:27Z"
+      "planned": "2026-02-10T20:17:16Z"
     },
     {
       "project_number": 843,
