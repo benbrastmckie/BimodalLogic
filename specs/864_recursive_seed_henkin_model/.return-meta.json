@@ -1,0 +1,57 @@
+{
+  "status": "partial",
+  "started_at": "2026-02-10T12:00:00Z",
+  "completed_at": "2026-02-10T14:30:00Z",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
+      "summary": "Fixed Mathlib API breakages (List.mem_cons_self, List.mem_filter); marked 5 helper lemmas with sorry due to deeper API changes"
+    }
+  ],
+  "partial_progress": {
+    "stage": "phase_3_in_progress",
+    "details": "Fixed API breakages at lines 2616, 2636, 2657. Marked 5 helper lemmas (find?_modify_of_preserves, find?_modify_diff_pred, addFormula_formula_in_getFormulas, addFormula_preserves_getFormulas_diff_fam, addFormula_preserves_getFormulas_diff_time) as sorry due to Mathlib API changes with List.modify and List.findIdx?. Build now succeeds with 11 sorries total (5 API + 6 original)."
+  },
+  "sorry_summary": {
+    "total": 11,
+    "api_compatibility": 5,
+    "original_blockers": 6,
+    "api_sorries": [
+      {"line": 2356, "lemma": "find?_modify_of_preserves", "reason": "List.modify API changes"},
+      {"line": 2365, "lemma": "addFormula_formula_in_getFormulas", "reason": "Depends on find?_modify_of_preserves"},
+      {"line": 2376, "lemma": "find?_modify_diff_pred", "reason": "List.modify API changes"},
+      {"line": 2386, "lemma": "addFormula_preserves_getFormulas_diff_fam", "reason": "Depends on find?_modify_diff_pred"},
+      {"line": 2396, "lemma": "addFormula_preserves_getFormulas_diff_time", "reason": "Depends on find?_modify_diff_pred"}
+    ],
+    "original_sorries": [
+      {"line": 2827, "case": "Box", "issue": "addToAllFamilies_preserves_consistent - needs subformula consistency invariant"},
+      {"line": 2925, "case": "G", "issue": "addToAllFutureTimes_preserves_consistent - similar to Box case"},
+      {"line": 2927, "case": "G", "issue": "seed3_wf - well-formedness through addToAllFutureTimes"},
+      {"line": 3026, "case": "H", "issue": "addToAllPastTimes_preserves_consistent - similar to Box case"},
+      {"line": 3028, "case": "H", "issue": "seed3_wf - well-formedness through addToAllPastTimes"},
+      {"line": 3255, "case": "imp", "issue": "Generic pattern matching - needs exhaustive case analysis"}
+    ]
+  },
+  "blocking_issues": [
+    {
+      "issue": "Mathlib API changes",
+      "description": "List.modify_cons_zero/succ, List.findIdx?_eq_none.mp, List.findIdx?_isSome_iff_lt no longer exist with the same signatures",
+      "impact": "5 helper lemmas now have sorry; does not block main proof structure",
+      "resolution": "Rewrite helper lemmas using List.get and updated Mathlib API"
+    },
+    {
+      "issue": "Subformula consistency invariant",
+      "description": "The addToAll*_preserves_consistent lemmas require proving that subformulas added to seed entries preserve consistency. This requires tracking that all formulas in seed are subformulas of the consistent root.",
+      "impact": "Core blocking issue for 5 of 6 original sorries",
+      "resolution": "Either (1) strengthen SeedConsistent with subformula tracking, or (2) prove compatibility case-by-case using derivability"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1770778421_948458",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "session_number": 20
+  }
+}
