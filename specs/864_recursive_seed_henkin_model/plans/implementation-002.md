@@ -326,12 +326,30 @@ After this implementation:
 - RecursiveSeed.lean still has 4 sorries (Nodup case now resolved, count unchanged)
 - Full Bimodal build succeeds (998 jobs)
 
-**Current Blocking Issues (Session 15):**
-- The 4 sorries in RecursiveSeed.lean decompose into:
-  - Box case (1): Needs addToAllFamilies_preserves_consistent
-  - G case (1): Needs addToAllFutureTimes_preserves_consistent
-  - H case (1): Needs addToAllPastTimes_preserves_consistent
-  - Generic imp case (1): Needs exhaustive case analysis for buildSeedAux reduction
+**Progress Update (2026-02-10, Session 16):**
+- Added 3 key helper lemmas for consistency preservation:
+  - `box_consistent_implies_content_consistent`: If Box phi consistent, then phi consistent
+  - `all_future_consistent_implies_content_consistent`: If G phi consistent, then phi consistent
+  - `all_past_consistent_implies_content_consistent`: If H phi consistent, then phi consistent
+- Structured Box/G/H cases in `buildSeedAux_preserves_seedConsistent`:
+  - Explicit proof outline with intermediate seeds (seed1, seed2, seed3)
+  - Complexity decrease for IH, seed1 consistency, seed1 well-formedness all structured
+  - Remaining sorries are for: addToAll* lemmas, psi-in-seed membership, well-formedness
+- RecursiveSeed.lean now has 15 sorries (increased from 4 due to explicit proof structure)
+  - Box case: 3 sorries (h_psi_in_seed2, h_seed2_cons, h_seed2_wf)
+  - G case: 6 sorries (seed2 consistency, addToAllFutureTimes lemmas, well-formedness)
+  - H case: 5 sorries (seed2 consistency, addToAllPastTimes lemmas, well-formedness)
+  - Generic imp case: 1 sorry (unchanged)
+- Full Bimodal build succeeds (695 jobs)
+
+**Current Blocking Issues (Session 16):**
+- The 15 sorries decompose into:
+  - Need `addToAllFamilies_preserves_consistent`: Adding psi to all families preserves consistency
+  - Need `addToAllFutureTimes_preserves_consistent`: Adding psi to future times preserves consistency
+  - Need `addToAllPastTimes_preserves_consistent`: Adding psi to past times preserves consistency
+  - Need psi derivable from G/H psi via temporal T-axiom for seed2 consistency
+  - Need well-formedness preservation through addToAll* operations
+  - Generic imp case: Pattern matching with abstract variables
 
 **Required Next Steps:**
 1. Implement addToAllFamilies_preserves_consistent (key lemma)

@@ -1874,6 +1874,116 @@ theorem createNewTime_preserves_wellFormed
     exact h_contra trivial
 
 /--
+If Box phi is consistent, then phi is consistent.
+Proof: By contraposition. If phi is inconsistent, then [phi] ⊢ ⊥.
+By deduction: [] ⊢ neg phi.
+By necessitation: [] ⊢ Box(neg phi).
+With Box phi, we have [Box phi, Box(neg phi)] ⊢ phi ∧ neg phi ⊢ ⊥ via T-axiom.
+Hence Box phi is inconsistent.
+-/
+theorem box_consistent_implies_content_consistent {phi : Formula}
+    (h : FormulaConsistent (Formula.box phi)) :
+    FormulaConsistent phi := by
+  intro ⟨d, _⟩
+  apply h
+  -- d : DerivationTree [phi] bot
+  -- We need: DerivationTree [Box phi] bot
+  -- From [phi] ⊢ ⊥, by deduction: [] ⊢ phi → ⊥ = [] ⊢ phi.neg
+  have d_neg : Bimodal.ProofSystem.DerivationTree [] phi.neg :=
+    deduction_theorem [] phi Formula.bot d
+  -- By necessitation: [] ⊢ Box(phi.neg)
+  have d_box_neg : Bimodal.ProofSystem.DerivationTree [] (Formula.box phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.necessitation _ d_neg
+  -- Weakening: [Box phi] ⊢ Box(phi.neg)
+  have d_box_neg_weak : Bimodal.ProofSystem.DerivationTree [Formula.box phi] (Formula.box phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_box_neg (by intro; simp)
+  -- We also have [Box phi] ⊢ Box phi (assumption)
+  have d_box_phi : Bimodal.ProofSystem.DerivationTree [Formula.box phi] (Formula.box phi) :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  -- By T-axiom: Box phi ⊢ phi and Box(neg phi) ⊢ neg phi
+  have d_T_phi : Bimodal.ProofSystem.DerivationTree [] ((Formula.box phi).imp phi) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_t phi)
+  have d_T_neg : Bimodal.ProofSystem.DerivationTree [] ((Formula.box phi.neg).imp phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_t phi.neg)
+  -- Weaken to context [Box phi]
+  have d_T_phi_weak : Bimodal.ProofSystem.DerivationTree [Formula.box phi] ((Formula.box phi).imp phi) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_T_phi (by intro; simp)
+  have d_T_neg_weak : Bimodal.ProofSystem.DerivationTree [Formula.box phi] ((Formula.box phi.neg).imp phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_T_neg (by intro; simp)
+  -- MP to get [Box phi] ⊢ phi and [Box phi] ⊢ neg phi
+  have d_phi : Bimodal.ProofSystem.DerivationTree [Formula.box phi] phi :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_T_phi_weak d_box_phi
+  have d_neg_phi : Bimodal.ProofSystem.DerivationTree [Formula.box phi] phi.neg :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_T_neg_weak d_box_neg_weak
+  -- phi and neg phi give ⊥
+  exact ⟨derives_bot_from_phi_neg_phi d_phi d_neg_phi, trivial⟩
+
+/--
+If G phi (all_future) is consistent, then phi is consistent.
+Proof: Same structure as box_consistent_implies_content_consistent, using temp_t_future axiom.
+-/
+theorem all_future_consistent_implies_content_consistent {phi : Formula}
+    (h : FormulaConsistent (Formula.all_future phi)) :
+    FormulaConsistent phi := by
+  intro ⟨d, _⟩
+  apply h
+  -- From [phi] ⊢ ⊥, derive [] ⊢ phi.neg, then [] ⊢ G(phi.neg)
+  -- With [G phi], we get phi and neg phi via T-axiom, contradiction
+  have d_neg : Bimodal.ProofSystem.DerivationTree [] phi.neg :=
+    deduction_theorem [] phi Formula.bot d
+  have d_G_neg : Bimodal.ProofSystem.DerivationTree [] (Formula.all_future phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ d_neg
+  have d_G_neg_weak : Bimodal.ProofSystem.DerivationTree [Formula.all_future phi] (Formula.all_future phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_G_neg (by intro; simp)
+  have d_G_phi : Bimodal.ProofSystem.DerivationTree [Formula.all_future phi] (Formula.all_future phi) :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  -- T-axiom: G phi -> phi
+  have d_T_phi : Bimodal.ProofSystem.DerivationTree [] ((Formula.all_future phi).imp phi) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future phi)
+  have d_T_neg : Bimodal.ProofSystem.DerivationTree [] ((Formula.all_future phi.neg).imp phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future phi.neg)
+  have d_T_phi_weak : Bimodal.ProofSystem.DerivationTree [Formula.all_future phi] ((Formula.all_future phi).imp phi) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_T_phi (by intro; simp)
+  have d_T_neg_weak : Bimodal.ProofSystem.DerivationTree [Formula.all_future phi] ((Formula.all_future phi.neg).imp phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_T_neg (by intro; simp)
+  have d_phi : Bimodal.ProofSystem.DerivationTree [Formula.all_future phi] phi :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_T_phi_weak d_G_phi
+  have d_neg_phi : Bimodal.ProofSystem.DerivationTree [Formula.all_future phi] phi.neg :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_T_neg_weak d_G_neg_weak
+  exact ⟨derives_bot_from_phi_neg_phi d_phi d_neg_phi, trivial⟩
+
+/--
+If H phi (all_past) is consistent, then phi is consistent.
+Proof: Same structure as all_future_consistent_implies_content_consistent, using temp_t_past axiom.
+-/
+theorem all_past_consistent_implies_content_consistent {phi : Formula}
+    (h : FormulaConsistent (Formula.all_past phi)) :
+    FormulaConsistent phi := by
+  intro ⟨d, _⟩
+  apply h
+  have d_neg : Bimodal.ProofSystem.DerivationTree [] phi.neg :=
+    deduction_theorem [] phi Formula.bot d
+  have d_H_neg : Bimodal.ProofSystem.DerivationTree [] (Formula.all_past phi.neg) :=
+    Bimodal.Theorems.past_necessitation _ d_neg
+  have d_H_neg_weak : Bimodal.ProofSystem.DerivationTree [Formula.all_past phi] (Formula.all_past phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_H_neg (by intro; simp)
+  have d_H_phi : Bimodal.ProofSystem.DerivationTree [Formula.all_past phi] (Formula.all_past phi) :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have d_T_phi : Bimodal.ProofSystem.DerivationTree [] ((Formula.all_past phi).imp phi) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past phi)
+  have d_T_neg : Bimodal.ProofSystem.DerivationTree [] ((Formula.all_past phi.neg).imp phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past phi.neg)
+  have d_T_phi_weak : Bimodal.ProofSystem.DerivationTree [Formula.all_past phi] ((Formula.all_past phi).imp phi) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_T_phi (by intro; simp)
+  have d_T_neg_weak : Bimodal.ProofSystem.DerivationTree [Formula.all_past phi] ((Formula.all_past phi.neg).imp phi.neg) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_T_neg (by intro; simp)
+  have d_phi : Bimodal.ProofSystem.DerivationTree [Formula.all_past phi] phi :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_T_phi_weak d_H_phi
+  have d_neg_phi : Bimodal.ProofSystem.DerivationTree [Formula.all_past phi] phi.neg :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_T_neg_weak d_H_neg_weak
+  exact ⟨derives_bot_from_phi_neg_phi d_phi d_neg_phi, trivial⟩
+
+/--
 If neg(Box phi) is consistent, then neg phi is consistent.
 Proof: By contraposition. If neg phi is inconsistent, then ⊢ phi (from neg phi ⊢ ⊥).
 By necessitation: ⊢ Box phi. Then neg(Box phi) is inconsistent (derives ⊥ via modus ponens).
@@ -2219,45 +2329,201 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
     | Formula.box psi =>
       -- Box case: adds Box psi to current, then psi to all families, then recurses on psi
       simp only [buildSeedAux]
-      -- This requires several steps:
-      -- 1. Add Box psi to current position (preserves consistency since phi is already there)
-      -- 2. Add psi to all families at current time (needs compatibility proof)
-      -- 3. Recurse on psi at current position (needs stronger invariant)
-      --
-      -- The challenge is that adding psi to OTHER families requires showing psi is compatible
-      -- with those families. This is where the modal coherence comes in:
-      -- If Box psi is consistent, then psi is consistent (as a singleton)
-      -- But we need {existing formulas at other family} ∪ {psi} to be consistent
-      --
-      -- Actually, the seed construction adds psi ONLY when Box psi is being processed,
-      -- meaning Box psi is in the current family. For psi to be in all families,
-      -- we need the modal forward property. But this is what we're BUILDING, not assuming.
-      --
-      -- Key insight: at this stage, we're just building the SEED. The consistency property
-      -- is about the seed itself, not about the full MCS structure yet.
-      --
-      -- For the seed: when we add Box psi to position (f, t), and then add psi to all
-      -- other families at time t, those other families might not have Box psi.
-      -- But that's OK because:
-      -- - If another family has neg(Box psi), then by diamond_box_interaction,
-      --   {psi, neg psi'} is consistent (where psi' is the inner formula)
-      -- - Actually no, the issue is simpler: other families at this stage only have
-      --   the formulas we've put there via previous buildSeedAux calls
-      --
-      -- BLOCKING: Requires addToAllFamilies_preserves_consistent lemma
-      -- The key challenge is proving that adding psi to other families preserves
-      -- consistency. This requires tracking that all seed formulas are subformulas
-      -- of a consistent root, hence mutually compatible.
-      -- See research-002.md Section 5 for the theoretical justification.
-      sorry
+      -- Define intermediate seeds for clarity
+      let seed1 := seed.addFormula famIdx timeIdx psi.box .universal_target
+      let seed2 := seed1.addToAllFamilies timeIdx psi
+      -- Show psi is consistent (from Box psi being consistent)
+      have h_psi_cons : FormulaConsistent psi := box_consistent_implies_content_consistent h_phi_cons
+      -- Show complexity decreases for IH
+      have h_complexity : psi.complexity < c := by
+        rw [← h_c]; simp only [Formula.complexity]; omega
+      -- Show seed1 is consistent (Box psi already in seed, insert is identity)
+      have h_seed1_cons : SeedConsistent seed1 := by
+        apply addFormula_seed_preserves_consistent
+        · exact h_cons
+        · exact h_phi_cons
+        · intro entry h_entry h_fam h_time
+          have h_entry_cons := h_cons entry h_entry
+          have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
+          have h_phi_in_entry : psi.box ∈ entry.formulas := by
+            rw [← h_getFormulas_eq]; exact h_phi_in
+          rw [Set.insert_eq_of_mem h_phi_in_entry]
+          exact h_entry_cons
+      -- Show seed1 is well-formed
+      have h_seed1_wf : SeedWellFormed seed1 := by
+        apply addFormula_preserves_wellFormed
+        · exact h_wf
+        · intro _
+          unfold ModelSeed.getFormulas at h_phi_in
+          cases h_find_entry : seed.findEntry famIdx timeIdx with
+          | some entry =>
+            unfold ModelSeed.findEntry at h_find_entry
+            have h_mem := List.mem_of_find?_eq_some h_find_entry
+            have h_entry_valid := h_wf.1 entry h_mem
+            have h_pred := List.find?_some h_find_entry
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+            rw [← h_pred.1]; exact h_entry_valid
+          | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+      -- Show psi is in seed2 at (famIdx, timeIdx)
+      -- addToAllFamilies adds psi to famIdx (since it's a family index in seed1)
+      -- This requires showing that addFormula adds psi to the entry at (famIdx, timeIdx)
+      have h_psi_in_seed2 : psi ∈ seed2.getFormulas famIdx timeIdx := by
+        -- famIdx is in seed1's family indices (since there's an entry at (famIdx, timeIdx))
+        -- addToAllFamilies will call addFormula famIdx timeIdx psi
+        -- This adds psi to the entry at (famIdx, timeIdx)
+        -- We need a lemma: addToAllFamilies_adds_to_position
+        -- For now, use sorry as this is a structural lemma
+        sorry
+      -- Show seed2 is consistent
+      -- This requires showing that adding psi to all families preserves consistency
+      -- For entries that already have Box psi, psi is derivable via T-axiom
+      -- For entries that don't have Box psi, we need the "all subformulas compatible" invariant
+      have h_seed2_cons : SeedConsistent seed2 := by
+        -- BLOCKING: Requires addToAllFamilies_preserves_consistent lemma
+        -- The key insight is that psi is compatible with all formulas in the seed because:
+        -- 1. All seed formulas derive from the consistent root formula
+        -- 2. psi is a subformula of the root (through Box psi)
+        -- 3. Subformulas of a consistent formula are mutually compatible
+        sorry
+      -- Show seed2 is well-formed
+      have h_seed2_wf : SeedWellFormed seed2 := by
+        -- addToAllFamilies preserves well-formedness (calls addFormula repeatedly)
+        -- Each addFormula preserves well-formedness
+        sorry
+      -- Apply IH
+      exact ih psi.complexity h_complexity psi famIdx timeIdx seed2
+        h_seed2_cons h_seed2_wf h_psi_in_seed2 h_psi_cons rfl
     | Formula.all_future psi =>
-      -- G case: similar structure to Box but adds psi to all FUTURE times
-      -- BLOCKING: Requires addToAllFutureTimes_preserves_consistent lemma
-      sorry
+      -- G case: adds G psi to current, psi to current, psi to all future times, recurses on psi
+      simp only [buildSeedAux]
+      -- Define intermediate seeds for clarity
+      let seed1 := seed.addFormula famIdx timeIdx psi.all_future .universal_target
+      let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
+      let seed3 := seed2.addToAllFutureTimes famIdx timeIdx psi
+      -- Show psi is consistent (from G psi being consistent)
+      have h_psi_cons : FormulaConsistent psi := all_future_consistent_implies_content_consistent h_phi_cons
+      -- Show complexity decreases for IH
+      have h_complexity : psi.complexity < c := by
+        rw [← h_c]; simp only [Formula.complexity]; omega
+      -- Show seed1 is consistent
+      have h_seed1_cons : SeedConsistent seed1 := by
+        apply addFormula_seed_preserves_consistent
+        · exact h_cons
+        · exact h_phi_cons
+        · intro entry h_entry h_fam h_time
+          have h_entry_cons := h_cons entry h_entry
+          have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
+          have h_phi_in_entry : psi.all_future ∈ entry.formulas := by
+            rw [← h_getFormulas_eq]; exact h_phi_in
+          rw [Set.insert_eq_of_mem h_phi_in_entry]
+          exact h_entry_cons
+      -- Show seed1 is well-formed
+      have h_seed1_wf : SeedWellFormed seed1 := by
+        apply addFormula_preserves_wellFormed
+        · exact h_wf
+        · intro _
+          unfold ModelSeed.getFormulas at h_phi_in
+          cases h_find_entry : seed.findEntry famIdx timeIdx with
+          | some entry =>
+            unfold ModelSeed.findEntry at h_find_entry
+            have h_mem := List.mem_of_find?_eq_some h_find_entry
+            have h_entry_valid := h_wf.1 entry h_mem
+            have h_pred := List.find?_some h_find_entry
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+            rw [← h_pred.1]; exact h_entry_valid
+          | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+      -- Show seed2 is consistent (adding psi which is derivable from G psi via T-axiom)
+      have h_seed2_cons : SeedConsistent seed2 := by
+        apply addFormula_seed_preserves_consistent
+        · exact h_seed1_cons
+        · exact h_psi_cons
+        · intro entry h_entry h_fam h_time
+          -- psi is derivable from G psi via temporal T-axiom
+          -- The entry at (famIdx, timeIdx) in seed1 has G psi
+          -- So psi is derivable, and insert preserves consistency
+          sorry
+      -- Show seed2 is well-formed
+      have h_seed2_wf : SeedWellFormed seed2 := by
+        apply addFormula_preserves_wellFormed
+        · exact h_seed1_wf
+        · intro _; sorry  -- famIdx is valid in seed1
+      -- Show seed3 is consistent and well-formed
+      -- Adding psi to all future times preserves consistency
+      have h_seed3_cons : SeedConsistent seed3 := by
+        -- BLOCKING: Requires addToAllFutureTimes_preserves_consistent lemma
+        sorry
+      have h_seed3_wf : SeedWellFormed seed3 := by
+        sorry
+      -- Show psi is in seed3 at (famIdx, timeIdx)
+      have h_psi_in_seed3 : psi ∈ seed3.getFormulas famIdx timeIdx := by
+        sorry
+      -- Apply IH
+      exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
+        h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons rfl
     | Formula.all_past psi =>
-      -- H case: similar structure to Box but adds psi to all PAST times
-      -- BLOCKING: Requires addToAllPastTimes_preserves_consistent lemma
-      sorry
+      -- H case: adds H psi to current, psi to current, psi to all past times, recurses on psi
+      simp only [buildSeedAux]
+      -- Define intermediate seeds for clarity
+      let seed1 := seed.addFormula famIdx timeIdx psi.all_past .universal_target
+      let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
+      let seed3 := seed2.addToAllPastTimes famIdx timeIdx psi
+      -- Show psi is consistent (from H psi being consistent)
+      have h_psi_cons : FormulaConsistent psi := all_past_consistent_implies_content_consistent h_phi_cons
+      -- Show complexity decreases for IH
+      have h_complexity : psi.complexity < c := by
+        rw [← h_c]; simp only [Formula.complexity]; omega
+      -- Show seed1 is consistent
+      have h_seed1_cons : SeedConsistent seed1 := by
+        apply addFormula_seed_preserves_consistent
+        · exact h_cons
+        · exact h_phi_cons
+        · intro entry h_entry h_fam h_time
+          have h_entry_cons := h_cons entry h_entry
+          have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
+          have h_phi_in_entry : psi.all_past ∈ entry.formulas := by
+            rw [← h_getFormulas_eq]; exact h_phi_in
+          rw [Set.insert_eq_of_mem h_phi_in_entry]
+          exact h_entry_cons
+      -- Show seed1 is well-formed
+      have h_seed1_wf : SeedWellFormed seed1 := by
+        apply addFormula_preserves_wellFormed
+        · exact h_wf
+        · intro _
+          unfold ModelSeed.getFormulas at h_phi_in
+          cases h_find_entry : seed.findEntry famIdx timeIdx with
+          | some entry =>
+            unfold ModelSeed.findEntry at h_find_entry
+            have h_mem := List.mem_of_find?_eq_some h_find_entry
+            have h_entry_valid := h_wf.1 entry h_mem
+            have h_pred := List.find?_some h_find_entry
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+            rw [← h_pred.1]; exact h_entry_valid
+          | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+      -- Show seed2 is consistent (adding psi which is derivable from H psi via T-axiom)
+      have h_seed2_cons : SeedConsistent seed2 := by
+        apply addFormula_seed_preserves_consistent
+        · exact h_seed1_cons
+        · exact h_psi_cons
+        · intro entry h_entry h_fam h_time
+          -- psi is derivable from H psi via temporal T-axiom
+          sorry
+      -- Show seed2 is well-formed
+      have h_seed2_wf : SeedWellFormed seed2 := by
+        apply addFormula_preserves_wellFormed
+        · exact h_seed1_wf
+        · intro _; sorry  -- famIdx is valid in seed1
+      -- Show seed3 is consistent and well-formed
+      have h_seed3_cons : SeedConsistent seed3 := by
+        -- BLOCKING: Requires addToAllPastTimes_preserves_consistent lemma
+        sorry
+      have h_seed3_wf : SeedWellFormed seed3 := by
+        sorry
+      -- Show psi is in seed3 at (famIdx, timeIdx)
+      have h_psi_in_seed3 : psi ∈ seed3.getFormulas famIdx timeIdx := by
+        sorry
+      -- Apply IH
+      exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
+        h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons rfl
     | Formula.imp psi1 psi2 =>
       match psi1, psi2 with
       | Formula.box inner, Formula.bot =>
