@@ -61,10 +61,10 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T23:34:16Z",
+      "last_updated": "2026-02-11T23:42:43Z",
       "session_id": "sess_1770852604_ac1c05",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
@@ -77,11 +77,6 @@
           "path": "specs/870_zorn_family_temporal_coherence/reports/research-002.md",
           "type": "research",
           "summary": "Deep-dive unified solution for all 4 sorries"
-        },
-        {
-          "path": "specs/870_zorn_family_temporal_coherence/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase plan: CoherentPartialFamily structure, Zorn application, eliminate all 4 sorries"
         },
         {
           "path": "Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean",
@@ -97,9 +92,14 @@
           "path": "specs/870_zorn_family_temporal_coherence/reports/research-003.md",
           "type": "research",
           "summary": "Implementation diagnostic: 3 root causes, restructuring recommendations"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 6-phase plan: Remove F/P from structure, add Preorder instance, F/P recovery for total families"
         }
       ],
-      "planned": "2026-02-11T22:53:11Z",
+      "planned": "2026-02-11T23:42:43Z",
       "started": "2026-02-11T23:11:43Z"
     },
     {
