@@ -24,7 +24,7 @@ technical_debt:
 
 ### 871. Implement safer git staging to prevent concurrent agent race conditions
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-11
 
@@ -68,7 +68,7 @@ technical_debt:
 
 ### 870. Zorn-based family selection for temporal coherence
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-11
 

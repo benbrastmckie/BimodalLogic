@@ -8,27 +8,44 @@
     {
       "project_number": 871,
       "project_name": "safer_git_staging_concurrent_agents",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "created": "2026-02-11T22:36:45Z",
-      "last_updated": "2026-02-11T22:36:45Z"
+      "last_updated": "2026-02-11T22:38:00Z",
+      "session_id": "sess_1770849463_8eaf7f"
     },
     {
       "project_number": 870,
       "project_name": "safer_git_staging_concurrent_agents",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-11T22:36:32Z",
-      "last_updated": "2026-02-11T22:36:32Z"
+      "last_updated": "2026-02-11T22:39:40Z",
+      "researched": "2026-02-11T22:39:40Z",
+      "artifacts": [
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/reports/research-001.md",
+          "type": "research",
+          "summary": "Zorn-based family selection for temporal coherence research"
+        }
+      ]
     },
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T22:34:36Z",
-      "session_id": "sess_1770849241_5c5666"
+      "last_updated": "2026-02-11T22:39:40Z",
+      "session_id": "sess_1770849241_5c5666",
+      "researched": "2026-02-11T22:39:40Z",
+      "artifacts": [
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/reports/research-001.md",
+          "type": "research",
+          "summary": "Zorn-based family selection for temporal coherence research"
+        }
+      ]
     },
     {
       "project_number": 868,
