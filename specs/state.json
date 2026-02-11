@@ -8,11 +8,11 @@
     {
       "project_number": 871,
       "project_name": "safer_git_staging_concurrent_agents",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "created": "2026-02-11T22:36:45Z",
-      "last_updated": "2026-02-11T22:45:04Z",
-      "session_id": "sess_1770849760_6acd49",
+      "last_updated": "2026-02-11T22:47:02Z",
+      "session_id": "sess_1770849993_03459c",
       "researched": "2026-02-11T22:41:23Z",
       "artifacts": [
         {
@@ -26,7 +26,8 @@
           "summary": "4-phase implementation plan for replacing git add -A with targeted staging across skills, agents, and commands"
         }
       ],
-      "planned": "2026-02-11T22:45:04Z"
+      "planned": "2026-02-11T22:45:04Z",
+      "started": "2026-02-11T22:47:02Z"
     },
     {
       "project_number": 870,
@@ -47,11 +48,11 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T22:46:38Z",
-      "session_id": "sess_1770849710_cd5e6a",
+      "last_updated": "2026-02-11T22:53:11Z",
+      "session_id": "sess_1770850182_ca0444",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
         {
@@ -63,8 +64,14 @@
           "path": "specs/870_zorn_family_temporal_coherence/reports/research-002.md",
           "type": "research",
           "summary": "Deep-dive unified solution for all 4 sorries"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan: CoherentPartialFamily structure, Zorn application, eliminate all 4 sorries"
         }
-      ]
+      ],
+      "planned": "2026-02-11T22:53:11Z"
     },
     {
       "project_number": 868,
