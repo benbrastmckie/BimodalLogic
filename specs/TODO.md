@@ -75,7 +75,7 @@ technical_debt:
 
 ### 870. Zorn-based family selection for temporal coherence
 - **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-11
 

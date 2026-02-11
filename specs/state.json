@@ -61,11 +61,11 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T23:28:05Z",
-      "session_id": "sess_1770851482_8b4a31",
+      "last_updated": "2026-02-11T23:34:16Z",
+      "session_id": "sess_1770852604_ac1c05",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
         {
@@ -92,6 +92,11 @@
           "path": "specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260211.md",
           "type": "summary",
           "summary": "Partial implementation summary with 8 sorries"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/reports/research-003.md",
+          "type": "research",
+          "summary": "Implementation diagnostic: 3 root causes, restructuring recommendations"
         }
       ],
       "planned": "2026-02-11T22:53:11Z",
