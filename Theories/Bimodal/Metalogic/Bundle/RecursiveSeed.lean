@@ -577,6 +577,16 @@ theorem initial_familyIndices_eq (phi : Formula) :
   simp only [ModelSeed.initial, ModelSeed.familyIndices, List.map, List.eraseDups]
   decide
 
+/--
+The initial seed has exactly [0] as its timeIndices for family 0.
+This is key for the single-time invariant in buildSeedAux_preserves_seedConsistent.
+-/
+theorem initial_timeIndices_eq (phi : Formula) :
+    (ModelSeed.initial phi).timeIndices 0 = [0] := by
+  simp only [ModelSeed.initial, ModelSeed.timeIndices, List.filter, beq_self_eq_true,
+             List.map, List.eraseDups]
+  native_decide
+
 /-!
 ## Helper lemmas for family index preservation
 -/
@@ -768,6 +778,54 @@ theorem createNewTime_preserves_single_family (seed : ModelSeed) (famIdx : Nat)
     rw [h_empty] at this
     simp at this
   exact eraseDups_all_same h_all_new h_ne
+
+/-!
+### Single-Time Invariant Lemmas
+
+These lemmas show that if timeIndices famIdx = [timeIdx], then there are no future/past times.
+This is key for the G/H cases in buildSeedAux_preserves_seedConsistent.
+-/
+
+/--
+If seed.timeIndices famIdx = [timeIdx], then there are no entries with timeIdx > currentTime.
+-/
+theorem no_future_times_of_single_time (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (h_single : seed.timeIndices famIdx = [timeIdx]) :
+    (seed.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx > timeIdx) = [] := by
+  -- Session 25: API compatibility issues with List.eq_nil lemmas - marked sorry
+  -- Proof strategy: if timeIndices = [timeIdx], all entries have time = timeIdx, so filter for > is empty
+  sorry
+
+/--
+If seed.timeIndices famIdx = [timeIdx], then there are no entries with timeIdx < currentTime.
+-/
+theorem no_past_times_of_single_time (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (h_single : seed.timeIndices famIdx = [timeIdx]) :
+    (seed.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx < timeIdx) = [] := by
+  -- Session 25: API compatibility issues - symmetric to no_future_times
+  sorry
+
+/--
+If seed.timeIndices famIdx = [timeIdx], then addFormula at (famIdx, timeIdx) preserves single-time.
+addFormula only modifies/adds entries at the same (famIdx, timeIdx) position.
+-/
+theorem addFormula_preserves_single_time (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) (ty : SeedEntryType)
+    (h_single : seed.timeIndices famIdx = [timeIdx]) :
+    (seed.addFormula famIdx timeIdx phi ty).timeIndices famIdx = [timeIdx] := by
+  -- Session 25: API compatibility issues with filter/modify interaction
+  sorry
+
+/--
+If seed.timeIndices famIdx = [timeIdx], then addToAllFamilies at timeIdx preserves single-time.
+-/
+theorem addToAllFamilies_preserves_single_time (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) (h_single_fam : seed.familyIndices = [famIdx])
+    (h_single_time : seed.timeIndices famIdx = [timeIdx]) :
+    (seed.addToAllFamilies timeIdx phi).timeIndices famIdx = [timeIdx] := by
+  unfold ModelSeed.addToAllFamilies ModelSeed.familyIndices at *
+  simp only [h_single_fam, List.foldl_cons, List.foldl_nil]
+  exact addFormula_preserves_single_time seed famIdx timeIdx phi .universal_target h_single_time
 
 /-- addFormula preserves family indices. -/
 private theorem addFormula_preserves_familyIndices' (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
@@ -3435,8 +3493,19 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
       -- Show seed3 is consistent and well-formed
       -- Adding psi to all future times preserves consistency
       have h_seed3_cons : SeedConsistent seed3 := by
-        -- BLOCKING: Requires addToAllFutureTimes_preserves_consistent lemma
-        sorry
+        -- Key insight: on the positive branch with single-family, there are no future times
+        -- addToAllFutureTimes folds over an empty list, so seed3 = seed2
+        have h_no_future : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx > timeIdx) = [] := by
+          -- TODO: Need invariant tracking that positive branch has no future times
+          sorry
+        -- Show seed3 = seed2 via the empty fold
+        have h_seed3_eq : seed3 = seed2 := by
+          show seed2.addToAllFutureTimes famIdx timeIdx psi = seed2
+          unfold ModelSeed.addToAllFutureTimes
+          simp only [h_no_future, List.map_nil]
+          rfl
+        rw [h_seed3_eq]
+        exact h_seed2_cons
       have h_seed3_wf : SeedWellFormed seed3 := by
         apply addToAllFutureTimes_preserves_wellFormed
         · exact h_seed2_wf
@@ -3556,8 +3625,19 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           exact Set.not_mem_empty _ h_in
       -- Show seed3 is consistent and well-formed
       have h_seed3_cons : SeedConsistent seed3 := by
-        -- BLOCKING: Requires addToAllPastTimes_preserves_consistent lemma
-        sorry
+        -- Key insight: on the positive branch with single-family, there are no past times
+        -- addToAllPastTimes folds over an empty list, so seed3 = seed2
+        have h_no_past : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx < timeIdx) = [] := by
+          -- TODO: Need invariant tracking that positive branch has no past times
+          sorry
+        -- Show seed3 = seed2 via the empty fold
+        have h_seed3_eq : seed3 = seed2 := by
+          show seed2.addToAllPastTimes famIdx timeIdx psi = seed2
+          unfold ModelSeed.addToAllPastTimes
+          simp only [h_no_past, List.map_nil]
+          rfl
+        rw [h_seed3_eq]
+        exact h_seed2_cons
       have h_seed3_wf : SeedWellFormed seed3 := by
         apply addToAllPastTimes_preserves_wellFormed
         · exact h_seed2_wf
