@@ -43,7 +43,7 @@ technical_debt:
 
 ### 864. Implement recursive seed construction for Henkin model completeness
 - **Effort**: 36 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-05
 - **Researched**: 2026-02-10
@@ -55,7 +55,7 @@ technical_debt:
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 50-65 hours (revised v008)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-03
 - **Updated**: 2026-02-10
