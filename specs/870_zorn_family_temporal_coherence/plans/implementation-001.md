@@ -1,7 +1,7 @@
 # Implementation Plan: Task #870
 
 - **Task**: 870 - Zorn-based family selection for temporal coherence
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 18-22 hours (5-6 sessions)
 - **Dependencies**: None (builds on existing infrastructure)
 - **Research Inputs**: specs/870_zorn_family_temporal_coherence/reports/research-002.md
@@ -47,17 +47,17 @@ Key findings from research-002.md integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: CoherentPartialFamily Structure [NOT STARTED]
+### Phase 1: CoherentPartialFamily Structure [COMPLETED]
 
 **Goal**: Define the core structure and basic infrastructure in a new file.
 
 **Tasks**:
-- [ ] Create new file `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean`
-- [ ] Define `CoherentPartialFamily` structure with non-dependent MCS field
-- [ ] Define GContent and HContent extractors for partial families
-- [ ] Define the partial order `CoherentPartialFamily.le`
-- [ ] Prove reflexivity, antisymmetry, and transitivity
-- [ ] Add basic accessor lemmas
+- [x] Create new file `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean`
+- [x] Define `CoherentPartialFamily` structure with non-dependent MCS field
+- [x] Define GContent and HContent extractors for partial families
+- [x] Define the partial order `CoherentPartialFamily.le`
+- [x] Prove reflexivity, antisymmetry, and transitivity
+- [x] Add basic accessor lemmas
 
 **Timing**: 2-3 hours
 
@@ -89,7 +89,7 @@ structure CoherentPartialFamily where
 
 ---
 
-### Phase 2: Chain Upper Bound Lemma [NOT STARTED]
+### Phase 2: Chain Upper Bound Lemma [IN PROGRESS]
 
 **Goal**: Prove that chains of coherent partial families have upper bounds.
 
