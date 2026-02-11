@@ -8,19 +8,25 @@
     {
       "project_number": 871,
       "project_name": "safer_git_staging_concurrent_agents",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-11T22:36:45Z",
-      "last_updated": "2026-02-11T22:41:23Z",
-      "session_id": "sess_1770849463_8eaf7f",
+      "last_updated": "2026-02-11T22:45:04Z",
+      "session_id": "sess_1770849760_6acd49",
       "researched": "2026-02-11T22:41:23Z",
       "artifacts": [
         {
           "path": "specs/871_safer_git_staging_concurrent_agents/reports/research-001.md",
           "type": "research",
           "summary": "Research report with 6 findings and 4-phase implementation plan"
+        },
+        {
+          "path": "specs/871_safer_git_staging_concurrent_agents/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for replacing git add -A with targeted staging across skills, agents, and commands"
         }
-      ]
+      ],
+      "planned": "2026-02-11T22:45:04Z"
     },
     {
       "project_number": 870,
@@ -41,11 +47,11 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T22:39:40Z",
-      "session_id": "sess_1770849241_5c5666",
+      "last_updated": "2026-02-11T22:42:04Z",
+      "session_id": "sess_1770849710_cd5e6a",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
         {

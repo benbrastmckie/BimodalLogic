@@ -1,21 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-11T12:00:00Z",
-  "completed_at": "2026-02-11T12:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/871_safer_git_staging_concurrent_agents/reports/research-001.md",
-      "summary": "Research report with 6 findings and 4-phase implementation plan"
+      "type": "plan",
+      "path": "specs/871_safer_git_staging_concurrent_agents/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for replacing git add -A with targeted staging across skills, agents, and commands"
     }
   ],
-  "next_steps": "Run /plan 871 to create implementation plan",
+  "next_steps": "Run /implement 871 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770849463_8eaf7f",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1770849760_6acd49",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 6
   }
 }
