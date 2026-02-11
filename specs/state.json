@@ -8,10 +8,10 @@
     {
       "project_number": 867,
       "project_name": "check_lean_lsp_mcp_github_issues",
-      "status": "researched",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-11T00:31:36Z",
-      "last_updated": "2026-02-11T00:45:00Z",
+      "last_updated": "2026-02-11T00:40:09Z",
       "session_id": "sess_1770769976_b8b13a",
       "researched": "2026-02-11T00:45:00Z",
       "artifacts": [
@@ -20,7 +20,9 @@
           "path": "specs/867_check_lean_lsp_mcp_github_issues/reports/research-001.md",
           "summary": "Research report on lean-lsp MCP GitHub issues: #115 (diagnostic_messages halts) is OPEN, #118 is unrelated feature request. Documentation references need correction."
         }
-      ]
+      ],
+      "completed": "2026-02-11T00:40:09Z",
+      "completion_summary": "Updated blocked-mcp-tools.md and CLAUDE.md to correct GitHub issue references: lean_diagnostic_messages now correctly references issue #115 (server halts), and lean_file_outline documented as having no specific open issue."
     },
     {
       "project_number": 866,
