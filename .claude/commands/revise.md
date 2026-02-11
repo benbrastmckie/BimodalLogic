@@ -135,9 +135,14 @@ For tasks without plans (not_started, researched):
 
 ### CHECKPOINT 3: COMMIT
 
+**Note**: Use targeted staging to prevent race conditions with concurrent agents. See `.claude/context/core/standards/git-staging-scope.md`.
+
 **For Plan Revision:**
 ```bash
-git add -A
+git add \
+  "specs/${N}_${SLUG}/plans/" \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "$(cat <<'EOF'
 task {N}: revise plan (v{NEW_VERSION})
 
@@ -150,7 +155,9 @@ EOF
 
 **For Description Update:**
 ```bash
-git add -A
+git add \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "$(cat <<'EOF'
 task {N}: revise description
 

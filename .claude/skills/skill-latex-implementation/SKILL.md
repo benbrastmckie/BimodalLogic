@@ -313,16 +313,24 @@ fi
 
 ### 6. Git Commit
 
-Commit changes with session ID:
+Commit changes with session ID using targeted staging (prevents race conditions with concurrent agents):
 
 ```bash
-git add -A
+git add \
+  "docs/" \
+  "specs/${task_number}_${project_name}/summaries/" \
+  "specs/${task_number}_${project_name}/plans/" \
+  "specs/${task_number}_${project_name}/.return-meta.json" \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "task ${task_number}: complete implementation
 
 Session: ${session_id}
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
+
+**Note**: Use targeted staging, NOT `git add -A`. See `.claude/context/core/standards/git-staging-scope.md`.
 
 ### 7. Cleanup
 

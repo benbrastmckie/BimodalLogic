@@ -175,7 +175,11 @@ EOF
 
 ### Task Commit
 ```bash
-git add specs/
+# Use targeted staging - stage only task-specific files, not entire specs/
+git add \
+  "specs/${task_number}_${project_name}/" \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "$(cat <<'EOF'
 task {N}: {action}
 
@@ -183,6 +187,8 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 EOF
 )"
 ```
+
+**Note**: See `.claude/context/core/standards/git-staging-scope.md` for agent-specific staging rules.
 
 ## Return Format
 

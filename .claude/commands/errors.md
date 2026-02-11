@@ -185,7 +185,12 @@ Mark fixed errors:
 
 ### 5. Git Commit
 
+**Note**: Use targeted staging to prevent race conditions with concurrent agents. See `.claude/context/core/standards/git-staging-scope.md`.
+
 ```bash
-git add -A
+git add \
+  "specs/errors.json" \
+  "specs/errors/" \
+  "${fixed_files[@]}"
 git commit -m "errors: fix {N} errors (task {M})"
 ```

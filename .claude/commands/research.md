@@ -80,8 +80,14 @@ The skill will spawn the appropriate agent to conduct research and create a repo
 
 ### CHECKPOINT 3: COMMIT
 
+**Note**: Use targeted staging to prevent race conditions with concurrent agents. See `.claude/context/core/standards/git-staging-scope.md`.
+
 ```bash
-git add -A
+git add \
+  "specs/${N}_${SLUG}/reports/" \
+  "specs/${N}_${SLUG}/.return-meta.json" \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "$(cat <<'EOF'
 task {N}: complete research
 

@@ -124,9 +124,18 @@ The skill will spawn the appropriate agent which executes plan phases sequential
 
 ### CHECKPOINT 3: COMMIT
 
+**Note**: Use targeted staging to prevent race conditions with concurrent agents. See `.claude/context/core/standards/git-staging-scope.md`.
+
 **On completion:**
 ```bash
-git add -A
+# Stage task-specific files plus implementation files based on language
+git add \
+  "specs/${N}_${SLUG}/summaries/" \
+  "specs/${N}_${SLUG}/plans/" \
+  "specs/${N}_${SLUG}/.return-meta.json" \
+  "specs/TODO.md" \
+  "specs/state.json" \
+  "${implementation_files[@]}"
 git commit -m "$(cat <<'EOF'
 task {N}: complete implementation
 
@@ -139,7 +148,12 @@ EOF
 
 **On partial:**
 ```bash
-git add -A
+git add \
+  "specs/${N}_${SLUG}/plans/" \
+  "specs/${N}_${SLUG}/.return-meta.json" \
+  "specs/TODO.md" \
+  "specs/state.json" \
+  "${implementation_files[@]}"
 git commit -m "$(cat <<'EOF'
 task {N}: partial implementation (phases 1-{M} of {total})
 

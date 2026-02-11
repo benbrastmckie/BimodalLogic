@@ -393,16 +393,22 @@ Write team execution metadata:
 
 ### Stage 12: Git Commit
 
-Commit all changes:
+Commit using targeted staging (prevents race conditions with concurrent agents):
 
 ```bash
-git add -A
+git add \
+  "specs/${task_number}_${project_name}/reports/" \
+  "specs/${task_number}_${project_name}/.return-meta.json" \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "task ${task_number}: complete team research (${team_size} teammates)
 
 Session: ${session_id}
 
 Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
 ```
+
+**Note**: Use targeted staging, NOT `git add -A`. See `.claude/context/core/standards/git-staging-scope.md`.
 
 ---
 

@@ -76,8 +76,14 @@ The skill spawns `planner-agent` which analyzes task requirements and research f
 
 ### CHECKPOINT 3: COMMIT
 
+**Note**: Use targeted staging to prevent race conditions with concurrent agents. See `.claude/context/core/standards/git-staging-scope.md`.
+
 ```bash
-git add -A
+git add \
+  "specs/${N}_${SLUG}/plans/" \
+  "specs/${N}_${SLUG}/.return-meta.json" \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "$(cat <<'EOF'
 task {N}: create implementation plan
 
