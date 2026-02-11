@@ -47,10 +47,10 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T22:42:04Z",
+      "last_updated": "2026-02-11T22:46:38Z",
       "session_id": "sess_1770849710_cd5e6a",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
@@ -58,6 +58,11 @@
           "path": "specs/870_zorn_family_temporal_coherence/reports/research-001.md",
           "type": "research",
           "summary": "Zorn-based family selection for temporal coherence research"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/reports/research-002.md",
+          "type": "research",
+          "summary": "Deep-dive unified solution for all 4 sorries"
         }
       ]
     },
