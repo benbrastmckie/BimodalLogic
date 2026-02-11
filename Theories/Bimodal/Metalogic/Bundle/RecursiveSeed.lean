@@ -2470,6 +2470,41 @@ private lemma addFormula_preserves_getFormulas_diff_fam
     simp only [h_find_same]
 
 /--
+Helper: addFormula at different time preserves getFormulas.
+-/
+private lemma addFormula_preserves_getFormulas_diff_time
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx timeIdx' : Int) (phi : Formula) (ty : SeedEntryType)
+    (h_diff : timeIdx ≠ timeIdx') :
+    (seed.addFormula famIdx timeIdx' phi ty).getFormulas famIdx timeIdx = seed.getFormulas famIdx timeIdx := by
+  unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx') with
+  | none =>
+    simp only [h_find]
+    rw [List.find?_append]
+    have h_new_no_match : (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx)
+        ({ familyIdx := famIdx, timeIdx := timeIdx', formulas := {phi}, entryType := ty } : SeedEntry) = false := by
+      simp only [beq_iff_eq, Bool.and_eq_true, decide_eq_true_eq, not_and, Bool.and_eq_false_iff,
+        beq_eq_false_iff_ne, decide_eq_false_iff_not, ne_eq]
+      intro _; exact h_diff.symm
+    simp only [List.find?_cons, h_new_no_match, ↓reduceIte, List.find?_nil]
+    cases seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+    | none => rfl
+    | some e => simp only [Option.or_none]
+  | some idx =>
+    simp only [h_find]
+    have h_idx_lt : idx < seed.entries.length := List.findIdx?_isSome_iff_lt.mp ⟨h_find⟩
+    have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+    have h_pred : (seed.entries[idx].familyIdx == famIdx && seed.entries[idx].timeIdx == timeIdx') = true := h_spec.2.1
+    let f := fun e : SeedEntry => { e with formulas := insert phi e.formulas }
+    have h_preserve : (fun e : SeedEntry => e.familyIdx == famIdx && e.timeIdx == timeIdx) (f seed.entries[idx]) =
+        (fun e : SeedEntry => e.familyIdx == famIdx && e.timeIdx == timeIdx) seed.entries[idx] := rfl
+    have h_find_same := find?_modify_diff_pred seed.entries idx f
+      (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx')
+      (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx)
+      h_idx_lt h_pred h_preserve
+    simp only [h_find_same]
+
+/--
 Helper: addFormula at same position keeps existing membership.
 -/
 private lemma addFormula_preserves_mem_getFormulas_same
@@ -2564,6 +2599,65 @@ private lemma foldl_addFormula_adds_at_family
       exact foldl_addFormula_preserves_mem phi phi timeIdx fs (seed.addFormula famIdx timeIdx phi .universal_target) famIdx h_added
     | inr h_in_fs =>
       exact ih (seed.addFormula f timeIdx phi .universal_target) h_in_fs
+
+/--
+Helper: foldl addFormula over times preserves getFormulas at a time not in the list.
+-/
+private lemma foldl_addFormula_times_preserves_getFormulas
+    (phi : Formula) (famIdx : Nat) (timeIdx : Int) (times : List Int) (seed : ModelSeed)
+    (h_not_in : timeIdx ∉ times) :
+    (times.foldl (fun s t => s.addFormula famIdx t phi .universal_target) seed).getFormulas famIdx timeIdx =
+    seed.getFormulas famIdx timeIdx := by
+  induction times generalizing seed with
+  | nil => rfl
+  | cons t ts ih =>
+    simp only [List.foldl_cons]
+    rw [ih]
+    · have h_diff : timeIdx ≠ t := fun h => h_not_in (h ▸ List.mem_cons_self t ts)
+      exact addFormula_preserves_getFormulas_diff_time seed famIdx timeIdx t phi .universal_target h_diff
+    · exact fun h => h_not_in (List.mem_cons_of_mem t h)
+
+/--
+addToAllFutureTimes preserves getFormulas at currentTime.
+-/
+theorem addToAllFutureTimes_preserves_getFormulas_current
+    (seed : ModelSeed) (famIdx : Nat) (currentTime : Int) (phi : Formula) :
+    (seed.addToAllFutureTimes famIdx currentTime phi).getFormulas famIdx currentTime =
+    seed.getFormulas famIdx currentTime := by
+  unfold ModelSeed.addToAllFutureTimes
+  apply foldl_addFormula_times_preserves_getFormulas
+  intro h_in
+  have h_times := mem_of_eraseDups h_in
+  rw [List.mem_map] at h_times
+  obtain ⟨e, h_e_mem, h_e_time⟩ := h_times
+  rw [List.mem_filter] at h_e_mem
+  have h_gt : e.timeIdx > currentTime := by
+    have h_filter := h_e_mem.2
+    rw [List.mem_filter] at h_filter
+    simp only [gt_iff_lt, decide_eq_true_eq] at h_filter
+    exact h_filter.2
+  omega
+
+/--
+addToAllPastTimes preserves getFormulas at currentTime.
+-/
+theorem addToAllPastTimes_preserves_getFormulas_current
+    (seed : ModelSeed) (famIdx : Nat) (currentTime : Int) (phi : Formula) :
+    (seed.addToAllPastTimes famIdx currentTime phi).getFormulas famIdx currentTime =
+    seed.getFormulas famIdx currentTime := by
+  unfold ModelSeed.addToAllPastTimes
+  apply foldl_addFormula_times_preserves_getFormulas
+  intro h_in
+  have h_times := mem_of_eraseDups h_in
+  rw [List.mem_map] at h_times
+  obtain ⟨e, h_e_mem, h_e_time⟩ := h_times
+  rw [List.mem_filter] at h_e_mem
+  have h_lt : e.timeIdx < currentTime := by
+    have h_filter := h_e_mem.2
+    rw [List.mem_filter] at h_filter
+    simp only [decide_eq_true_eq] at h_filter
+    exact h_filter.2
+  omega
 
 /--
 If famIdx is in seed.familyIndices, then addToAllFamilies adds phi at (famIdx, timeIdx).
@@ -2898,12 +2992,45 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           -- psi is derivable from G psi via temporal T-axiom
           -- The entry at (famIdx, timeIdx) in seed1 has G psi
           -- So psi is derivable, and insert preserves consistency
-          sorry
+          have h_entry_cons := h_seed1_cons entry h_entry
+          -- entry is at (famIdx, timeIdx) in seed1, so G psi ∈ entry.formulas
+          have h_gpsi_in : psi.all_future ∈ entry.formulas := by
+            have h_eq := getFormulas_eq_of_wellformed_and_at_position seed1 entry famIdx timeIdx
+              h_seed1_wf h_entry h_fam h_time
+            have h_in_seed1 : psi.all_future ∈ seed1.getFormulas famIdx timeIdx :=
+              addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_future .universal_target
+            rw [h_eq] at h_in_seed1
+            exact h_in_seed1
+          -- Build derivation: [G psi] ⊢ psi via temp_t_future
+          have d_psi : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ entry.formulas) ∧
+              Nonempty (Bimodal.ProofSystem.DerivationTree L psi) := by
+            use [psi.all_future]
+            constructor
+            · intro ψ hψ
+              simp only [List.mem_singleton] at hψ
+              rw [hψ]
+              exact h_gpsi_in
+            · constructor
+              have d_t : Bimodal.ProofSystem.DerivationTree [] (psi.all_future.imp psi) :=
+                Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future psi)
+              have d_gpsi : Bimodal.ProofSystem.DerivationTree [psi.all_future] psi.all_future :=
+                Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+              have d_t' : Bimodal.ProofSystem.DerivationTree [psi.all_future] (psi.all_future.imp psi) :=
+                Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_t (by intro; simp)
+              exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_t' d_gpsi
+          exact addFormula_preserves_consistent h_entry_cons d_psi
       -- Show seed2 is well-formed
       have h_seed2_wf : SeedWellFormed seed2 := by
         apply addFormula_preserves_wellFormed
         · exact h_seed1_wf
-        · intro _; sorry  -- famIdx is valid in seed1
+        · intro h_none
+          -- This case is impossible: seed1 has G psi at (famIdx, timeIdx)
+          exfalso
+          have h_in : psi.all_future ∈ seed1.getFormulas famIdx timeIdx :=
+            addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_future .universal_target
+          unfold ModelSeed.getFormulas at h_in
+          rw [h_none] at h_in
+          exact Set.not_mem_empty _ h_in
       -- Show seed3 is consistent and well-formed
       -- Adding psi to all future times preserves consistency
       have h_seed3_cons : SeedConsistent seed3 := by
@@ -2913,7 +3040,11 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         sorry
       -- Show psi is in seed3 at (famIdx, timeIdx)
       have h_psi_in_seed3 : psi ∈ seed3.getFormulas famIdx timeIdx := by
-        sorry
+        -- seed3 = seed2.addToAllFutureTimes famIdx timeIdx psi
+        -- addToAllFutureTimes only modifies times > timeIdx, so psi at timeIdx is preserved
+        rw [addToAllFutureTimes_preserves_getFormulas_current]
+        -- psi is in seed2 at (famIdx, timeIdx)
+        exact addFormula_formula_in_getFormulas seed1 famIdx timeIdx psi .universal_target
       -- Apply IH
       exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
         h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons rfl
@@ -2963,12 +3094,45 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         · exact h_psi_cons
         · intro entry h_entry h_fam h_time
           -- psi is derivable from H psi via temporal T-axiom
-          sorry
+          -- The entry at (famIdx, timeIdx) in seed1 has H psi
+          have h_entry_cons := h_seed1_cons entry h_entry
+          have h_hpsi_in : psi.all_past ∈ entry.formulas := by
+            have h_eq := getFormulas_eq_of_wellformed_and_at_position seed1 entry famIdx timeIdx
+              h_seed1_wf h_entry h_fam h_time
+            have h_in_seed1 : psi.all_past ∈ seed1.getFormulas famIdx timeIdx :=
+              addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_past .universal_target
+            rw [h_eq] at h_in_seed1
+            exact h_in_seed1
+          -- Build derivation: [H psi] ⊢ psi via temp_t_past
+          have d_psi : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ entry.formulas) ∧
+              Nonempty (Bimodal.ProofSystem.DerivationTree L psi) := by
+            use [psi.all_past]
+            constructor
+            · intro ψ hψ
+              simp only [List.mem_singleton] at hψ
+              rw [hψ]
+              exact h_hpsi_in
+            · constructor
+              have d_t : Bimodal.ProofSystem.DerivationTree [] (psi.all_past.imp psi) :=
+                Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past psi)
+              have d_hpsi : Bimodal.ProofSystem.DerivationTree [psi.all_past] psi.all_past :=
+                Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+              have d_t' : Bimodal.ProofSystem.DerivationTree [psi.all_past] (psi.all_past.imp psi) :=
+                Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_t (by intro; simp)
+              exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_t' d_hpsi
+          exact addFormula_preserves_consistent h_entry_cons d_psi
       -- Show seed2 is well-formed
       have h_seed2_wf : SeedWellFormed seed2 := by
         apply addFormula_preserves_wellFormed
         · exact h_seed1_wf
-        · intro _; sorry  -- famIdx is valid in seed1
+        · intro h_none
+          -- This case is impossible: seed1 has H psi at (famIdx, timeIdx)
+          exfalso
+          have h_in : psi.all_past ∈ seed1.getFormulas famIdx timeIdx :=
+            addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_past .universal_target
+          unfold ModelSeed.getFormulas at h_in
+          rw [h_none] at h_in
+          exact Set.not_mem_empty _ h_in
       -- Show seed3 is consistent and well-formed
       have h_seed3_cons : SeedConsistent seed3 := by
         -- BLOCKING: Requires addToAllPastTimes_preserves_consistent lemma
@@ -2977,7 +3141,11 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         sorry
       -- Show psi is in seed3 at (famIdx, timeIdx)
       have h_psi_in_seed3 : psi ∈ seed3.getFormulas famIdx timeIdx := by
-        sorry
+        -- seed3 = seed2.addToAllPastTimes famIdx timeIdx psi
+        -- addToAllPastTimes only modifies times < timeIdx, so psi at timeIdx is preserved
+        rw [addToAllPastTimes_preserves_getFormulas_current]
+        -- psi is in seed2 at (famIdx, timeIdx)
+        exact addFormula_formula_in_getFormulas seed1 famIdx timeIdx psi .universal_target
       -- Apply IH
       exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
         h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons rfl
