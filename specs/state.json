@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 868,
+      "project_name": "reinstate_lean_mcp_tools",
+      "status": "blocked",
+      "language": "meta",
+      "created": "2026-02-11T00:41:47Z",
+      "last_updated": "2026-02-11T00:41:47Z",
+      "blocked_on": "lean-lsp-mcp issue #115 resolution"
+    },
+    {
       "project_number": 867,
       "project_name": "check_lean_lsp_mcp_github_issues",
       "status": "completed",
@@ -403,7 +412,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 868,
+  "next_project_number": 869,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

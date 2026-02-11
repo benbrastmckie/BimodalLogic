@@ -1,5 +1,5 @@
 ---
-next_project_number: 868
+next_project_number: 869
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 868. Reinstate lean-lsp MCP tools after GitHub issue resolution
+- **Effort**: 1 hour
+- **Status**: [BLOCKED]
+- **Language**: meta
+- **Created**: 2026-02-11
+- **Blocked on**: lean-lsp-mcp issue #115 resolution
+
+**Description**: Once lean-lsp-mcp issue #115 (server halts on lean_diagnostic_messages) is resolved, reinstate the blocked MCP tools. Follow the unblocking procedure: verify fix in repository, update package version, test tools manually, update blocked-mcp-tools.md to mark as UNBLOCKED, remove from CLAUDE.md blocked list, and restore documentation in mcp-tools-guide.md. Consider re-testing lean_file_outline as well since no specific open issue exists for it.
 
 ### 867. Check if lean-lsp MCP GitHub issues for disabled tools have been resolved
 - **Effort**: 0.5 hours
