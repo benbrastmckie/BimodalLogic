@@ -17,12 +17,12 @@
     {
       "project_number": 865,
       "project_name": "canonical_task_frame_bimodal_completeness",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-05T17:27:11Z",
-      "last_updated": "2026-02-11T22:18:28Z",
+      "last_updated": "2026-02-11T22:22:47Z",
       "session_id": "sess_1770848279_3706e5",
-      "researched": "2026-02-05T19:27:27Z",
+      "researched": "2026-02-11T22:22:47Z",
       "artifacts": [
         {
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md",
@@ -48,6 +48,11 @@
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-005.md",
           "type": "research",
           "summary": "Analysis of Phase 1 blockage (actually task 843's issue), task 864 seed construction applicability, and debt-free paths for temporal coherence construction"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-006.md",
+          "type": "research",
+          "summary": "Comparative analysis: task 865 challenges illuminated by task 864 progress, showing shared cross-sign blockage and single-path invariant solution"
         }
       ]
     },
