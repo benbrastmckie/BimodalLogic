@@ -61,11 +61,11 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T22:53:11Z",
-      "session_id": "sess_1770850182_ca0444",
+      "last_updated": "2026-02-11T23:11:43Z",
+      "session_id": "sess_1770851482_8b4a31",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
         {
@@ -84,7 +84,8 @@
           "summary": "6-phase plan: CoherentPartialFamily structure, Zorn application, eliminate all 4 sorries"
         }
       ],
-      "planned": "2026-02-11T22:53:11Z"
+      "planned": "2026-02-11T22:53:11Z",
+      "started": "2026-02-11T23:11:43Z"
     },
     {
       "project_number": 868,
@@ -101,7 +102,7 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-05T17:27:11Z",
-      "last_updated": "2026-02-11T22:22:47Z",
+      "last_updated": "2026-02-11T23:13:42Z",
       "session_id": "sess_1770848279_3706e5",
       "researched": "2026-02-11T22:22:47Z",
       "artifacts": [
@@ -134,6 +135,11 @@
           "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-006.md",
           "type": "research",
           "summary": "Comparative analysis: task 865 challenges illuminated by task 864 progress, showing shared cross-sign blockage and single-path invariant solution"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-007.md",
+          "type": "research",
+          "summary": "Impact analysis of task 870 (Zorn-based family construction) on task 865, recommending task 870 as primary upstream dependency"
         }
       ]
     },
