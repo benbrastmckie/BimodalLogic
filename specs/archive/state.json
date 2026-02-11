@@ -2,6 +2,92 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 863,
+      "project_name": "improve_introduction_latex_formatting_content",
+      "status": "completed",
+      "language": "latex",
+      "effort": "2-3 hours",
+      "created": "2026-02-04T22:55:36Z",
+      "last_updated": "2026-02-04T23:12:00Z",
+      "session_id": "sess_1770246400_ad6322",
+      "description": "Improve LaTeX content and formatting in 01-Introduction.tex: (1) line 21: Introduce Logos paradigm (modular extensible logic system) before architecture details, explain layers (proof theory, recursive semantics, metalogic), describe dual RL signal (LEAN 4 theorems, Z3 counterexamples); (2) line 27: Add interpreted reasoning explanation from interpreted_reasoning.md; (3) line 113: Make \\Cref references appear in italics; (4) line 424: Fix description list formatting (justified blocks without indents)",
+      "researched": "2026-02-04T23:02:31Z",
+      "artifacts": [
+        {
+          "path": "specs/863_improve_introduction_latex_formatting_content/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report covering Motivation restructuring, interpreted reasoning content, cleveref italic formatting, and description list indentation fixes with specific LaTeX code"
+        },
+        {
+          "path": "specs/863_improve_introduction_latex_formatting_content/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for LaTeX content restructuring and formatting fixes"
+        },
+        {
+          "path": "specs/863_improve_introduction_latex_formatting_content/summaries/implementation-summary-20260204.md",
+          "type": "summary",
+          "summary": "Implementation summary with compilation results and verification details"
+        }
+      ],
+      "planned": "2026-02-04T23:05:51Z",
+      "started": "2026-02-04T23:06:55Z",
+      "completed": "2026-02-04T23:12:00Z",
+      "completion_summary": "Resolved 4 FIX items in Introduction chapter: restructured Motivation subsection to introduce the Logos paradigm before architecture details, added interpreted reasoning paragraph, configured italic cleveref references across all reference types, and reformatted Document Organization description list as justified blocks. Document compiles cleanly at 46 pages.",
+      "archived": "2026-02-11T00:43:12Z"
+    },
+    {
+      "project_number": 866,
+      "project_name": "consolidate_latex_files",
+      "status": "completed",
+      "language": "latex",
+      "created": "2026-02-10T18:51:10Z",
+      "last_updated": "2026-02-10T19:05:31Z",
+      "session_id": "sess_1770750040_89ad56",
+      "researched": "2026-02-10T18:55:31Z",
+      "artifacts": [
+        {
+          "path": "specs/866_consolidate_latex_files/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing LaTeX file dependencies and consolidation options"
+        },
+        {
+          "path": "specs/866_consolidate_latex_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan for consolidating LaTeX files by moving shared styles to Bimodal/latex/assets/ and removing root latex/ directory"
+        },
+        {
+          "path": "specs/866_consolidate_latex_files/summaries/implementation-summary-20260210.md",
+          "type": "summary",
+          "summary": "Implementation summary with full change details"
+        }
+      ],
+      "planned": "2026-02-10T18:59:34Z",
+      "started": "2026-02-10T19:00:57Z",
+      "completed": "2026-02-10T19:05:31Z",
+      "completion_summary": "Consolidated all LaTeX files into Theories/Bimodal/latex/ by copying shared style files to assets/, making latexmkrc self-contained, and removing the root latex/ directory. BimodalReference.tex compiles cleanly as a 29-page PDF.",
+      "archived": "2026-02-11T00:43:12Z"
+    },
+    {
+      "project_number": 867,
+      "project_name": "check_lean_lsp_mcp_github_issues",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-11T00:31:36Z",
+      "last_updated": "2026-02-11T00:40:09Z",
+      "session_id": "sess_1770769976_b8b13a",
+      "researched": "2026-02-11T00:45:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/867_check_lean_lsp_mcp_github_issues/reports/research-001.md",
+          "summary": "Research report on lean-lsp MCP GitHub issues: #115 (diagnostic_messages halts) is OPEN, #118 is unrelated feature request. Documentation references need correction."
+        }
+      ],
+      "completed": "2026-02-11T00:40:09Z",
+      "completion_summary": "Updated blocked-mcp-tools.md and CLAUDE.md to correct GitHub issue references: lean_diagnostic_messages now correctly references issue #115 (server halts), and lean_file_outline documented as having no specific open issue.",
+      "archived": "2026-02-11T00:43:12Z"
+    },
+    {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
       "status": "abandoned",

@@ -1,8 +1,8 @@
 # Implementation Summary: Task #864
 
 **Last Updated**: 2026-02-10
-**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7) + ~30 min (session 8) + ~45 min (session 9)
-**Status**: PARTIAL (Phase 3 in progress, well-formedness infrastructure added)
+**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7) + ~30 min (session 8) + ~45 min (session 9) + ~45 min (sessions 10-12) + ~1 hour (session 13)
+**Status**: PARTIAL (Phase 3 in progress, existential cases complete)
 
 ## Overview
 
@@ -46,78 +46,54 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 
 4. **Build Verification**: All three files compile successfully; full Bimodal module builds
 
-## Sorries Remaining (Updated Session 9)
+## Sorries Remaining (Updated Session 13)
 
-| File | Session 8 | Session 9 | Description |
+| File | Session 12 | Session 13 | Description |
 |------|-----------|-----------|-------------|
-| RecursiveSeed.lean | 10 | 10 | 3 fixed (atom/bot), 3 added (well-formedness infra), 7 operator cases |
+| RecursiveSeed.lean | 9 | 7 | 2 completed (neg-G, neg-H); 2 in freshTime, 1 in wellFormed, 3 universal, 1 generic imp |
 | SeedCompletion.lean | 6 | 6 | MCS properties, family construction, BoxContent inclusion |
 | SeedBMCS.lean | 8 | 8 | Modal coherence, temporal coherence, context wrapper |
-| **Total** | **24** | **24** | Structural improvement, net zero change |
+| **Total** | **23** | **21** | Net reduction of 2 sorries |
 
-**Note**: Session 9 restructured the proof with SeedWellFormed hypothesis, fixing atom/bot cases but adding 3 well-formedness infrastructure sorries. Net sorry count unchanged, but proof structure improved.
+### Session 13 Progress
 
-### Session 9 Progress
+1. **Completed neg-Box case** in `buildSeedAux_preserves_seedConsistent`:
+   - Used explicit result tuple instead of let-binding to avoid type unification issues
+   - Applied IH using createNewFamily_preserves_seedConsistent/wellFormed and formula_at_new_position
 
-1. **Added `SeedWellFormed` hypothesis** to `buildSeedAux_preserves_seedConsistent`
-2. **Proved `initialSeedWellFormed`**: The initial seed is well-formed
-3. **Added `find?_getElem_of_findIdx?`**: Helper showing find? and findIdx? agree on first match
-4. **Added `getFormulas_eq_findIdx?_entry`**: Links getFormulas to findIdx? for h_compat proofs
-5. **Added `addFormula_nextFamilyIdx`**: Helper showing addFormula preserves nextFamilyIdx
-6. **Fixed atom/bot cases**: Using `getFormulas_eq_of_wellformed_and_at_position` with new hypothesis
-7. **Added well-formedness lemma stubs** (marked sorry for complex List.mem_modify_iff proofs):
-   - `addFormula_preserves_wellFormed`: With family index validity condition
-   - `createNewFamily_preserves_wellFormed`: New families maintain well-formedness
-   - `createNewTime_preserves_wellFormed`: New times maintain well-formedness
-8. **RecursiveSeed.lean sorries**: 10 (3 fixed + 3 new = net 0 change, but structural improvement)
+2. **Completed neg-G case** in `buildSeedAux_preserves_seedConsistent`:
+   - Added `createNewTime_formula_at_new_position` helper lemma
+   - Added `freshFutureTime_no_entry` and `freshPastTime_no_entry` stub lemmas (with sorry)
+   - Full proof structure: addFormula -> freshFutureTime -> createNewTime -> IH
 
-### Session 8 Progress
+3. **Completed neg-H case** in `buildSeedAux_preserves_seedConsistent`:
+   - Symmetric to neg-G using freshPastTime instead of freshFutureTime
 
-1. **Reformulated theorem signature**: Changed from weak `h_pos_cons` to strong `h_phi_in` + `h_phi_cons`
-2. **Added `getFormulas_eq_of_wellformed_and_at_position`**: Helper for well-formed seeds
-3. **Established proof structure**: atom/bot/imp cases now have clear sorry targets
-4. **Identified pattern matching issue**: Generic `| _, _` case has abstract variables
+4. **RecursiveSeed.lean sorries**: Reduced from 9 to 7
 
-### Session 7 Progress
+### Session 12 Progress (Previous)
 
-1. **Proved `createNewTime_preserves_seedConsistent`**: Creating a new time entry with a consistent formula preserves seed consistency
-2. **Proved `createNewFamily_preserves_seedConsistent`**: Creating a new family entry with a consistent formula preserves seed consistency
-3. **Code cleanup**: Removed 10+ intermediate sorries, simplified proof structure
-4. **Identified blocking issue**: The theorem statement needs a stronger invariant (see below)
+- `createNewFamily_preserves_wellFormed`: COMPLETED
+- `createNewTime_preserves_wellFormed`: COMPLETED
+- First position-uniqueness case (i < idx) in `addFormula_preserves_wellFormed`: COMPLETED
 
-### Current Blocking Issue Analysis (Session 9)
+### Current Blocking Issue Analysis
 
-The 7 sorries in `buildSeedAux_preserves_seedConsistent` decompose as follows:
+The 7 sorries in RecursiveSeed.lean decompose as follows:
 
 | Sorry Location | Count | Resolution Path |
 |----------------|-------|-----------------|
-| ~~Atom/Bot case well-formedness~~ | ~~2~~ | FIXED in Session 9 |
-| Box/G/H operator cases | 3 | Need addToAllFamilies/addToAllFutureTimes/addToAllPastTimes preserves lemmas |
-| neg-Box/neg-G/neg-H cases | 3 | Need to show IH hypotheses satisfied after createNew* |
-| Generic imp wildcard | 1 | Pattern matching issue with abstract variables |
+| `freshFutureTime_no_entry` | 1 | Foldl max/min reasoning |
+| `freshPastTime_no_entry` | 1 | Foldl max/min reasoning |
+| Position uniqueness (i > idx) | 1 | Needs strengthened SeedWellFormed invariant |
+| Box/G/H operator cases | 3 | Need addToAllFamilies/FutureTimes/PastTimes preserves lemmas |
+| Generic imp wildcard | 1 | Pattern matching with abstract variables |
 
-**Required Resolution Approach (Updated):**
-1. ~~Add `SeedWellFormed seed` hypothesis to theorem~~ DONE
-2. Prove `addToAllFamilies_preserves_wellFormed` and consistency
-3. Prove `addToAllFutureTimes_preserves_wellFormed` and consistency
-4. Prove `addToAllPastTimes_preserves_wellFormed` and consistency
-5. For each operator case, show:
-   - The modified seed is well-formed
-   - The modified seed is consistent
-   - The formula to recurse on is in the modified seed at the target position
-   - The formula is consistent (derivable from parent formula consistency)
-6. Handle generic implication case with explicit case analysis
-
-### Session 2 Completed Proofs
-
-1. **`diamond_box_interaction`** (KEY LEMMA) - ~170 lines
-   - Proves: If Box phi and neg(Box psi) are jointly consistent in S, then {phi, neg psi} is consistent
-   - Uses: double negation elimination, necessitation, modal K distribution
-   - This is the mathematical core for seed consistency
-
-2. **`addFormula_preserves_consistent_of_theorem`** - ~60 lines
-   - Proves: Adding a theorem to a consistent set preserves consistency
-   - Uses: deduction theorem, modus ponens, cut elimination pattern
+**Required Resolution Approach:**
+1. Prove foldl lemmas for freshTime functions (1-2 hours)
+2. Strengthen SeedWellFormed to track no duplicate entry values (1 hour)
+3. Prove addToAll* preserves lemmas for universal operators (4-6 hours)
+4. Handle generic imp case with explicit case analysis or reflection (1 hour)
 
 ## Phase Status
 
@@ -125,7 +101,7 @@ The 7 sorries in `buildSeedAux_preserves_seedConsistent` decompose as follows:
 |-------|--------|-------|
 | Phase 1: Formula Classification | COMPLETED | Data structures and classification |
 | Phase 2: Recursive Seed Builder | COMPLETED | buildSeedAux with termination proof |
-| Phase 3: Seed Consistency | IN PROGRESS | 1 sorry (seedConsistent) - key lemmas done |
+| Phase 3: Seed Consistency | IN PROGRESS | 7 sorries in buildSeedAux_preserves_seedConsistent |
 | Phase 4: Seed Completion | PARTIAL | 6 sorries in MCS construction |
 | Phase 5: BMCS Assembly | PARTIAL | 8 sorries in coherence proofs |
 | Phase 6: Verification | PARTIAL | Build verified, documentation added |
@@ -151,24 +127,23 @@ Target axioms for elimination (not yet removed pending sorry resolution):
 
 ## Next Steps
 
-1. **Complete `seedConsistent`** - The remaining sorry in RecursiveSeed.lean
-   - Requires induction on formula complexity
-   - Uses the completed `diamond_box_interaction` lemma
-   - Proof sketch and invariant structure added
-
-2. Complete the 6 sorries in SeedCompletion.lean (depends on seedConsistent)
-3. Complete the 8 sorries in SeedBMCS.lean (depends on SeedCompletion)
-4. Update Completeness.lean to use construct_seed_bmcs
-5. Remove/comment axioms after verification
-6. Run full `lake build` and `#print axioms` verification
+1. **Complete freshTime no_entry lemmas** (foldl max/min reasoning)
+2. **Complete universal operator cases** (Box/G/H) - requires addToAll* preserves lemmas
+3. **Handle generic implication case** - explicit case analysis or reflection
+4. Complete the 6 sorries in SeedCompletion.lean (depends on seedConsistent)
+5. Complete the 8 sorries in SeedBMCS.lean (depends on SeedCompletion)
+6. Update Completeness.lean to use construct_seed_bmcs
+7. Remove/comment axioms after verification
+8. Run full `lake build` and `#print axioms` verification
 
 ## Files Modified
 
+- Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean (extended with new lemmas)
 - specs/864_recursive_seed_henkin_model/plans/implementation-002.md (phase markers updated)
 
 ## Verification
 
-- `lake build Bimodal` succeeds with 998 jobs
+- `lake build Bimodal` succeeds with 695 jobs
 - All new files compile without errors (warnings for sorries only)
 - Classification tests pass (example proofs verify FormulaClass)
 - Seed builder tests show correct family/time creation

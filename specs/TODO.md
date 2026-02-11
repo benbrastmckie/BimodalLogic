@@ -3,19 +3,19 @@ next_project_number: 869
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-04T22:16:26Z
+  last_assessed: 2026-02-11T00:44:06Z
 task_counts:
   active: 6
-  completed: 404
+  completed: 407
   in_progress: 1
   not_started: 4
   abandoned: 29
-  total: 433
+  total: 436
 technical_debt:
-  sorry_count: 90
+  sorry_count: 135
   axiom_count: 20
   build_errors: 1
-  status: good
+  status: manageable
 ---
 
 # TODO
@@ -30,31 +30,6 @@ technical_debt:
 - **Blocked on**: lean-lsp-mcp issue #115 resolution
 
 **Description**: Once lean-lsp-mcp issue #115 (server halts on lean_diagnostic_messages) is resolved, reinstate the blocked MCP tools. Follow the unblocking procedure: verify fix in repository, update package version, test tools manually, update blocked-mcp-tools.md to mark as UNBLOCKED, remove from CLAUDE.md blocked list, and restore documentation in mcp-tools-guide.md. Consider re-testing lean_file_outline as well since no specific open issue exists for it.
-
-### 867. Check if lean-lsp MCP GitHub issues for disabled tools have been resolved
-- **Effort**: 0.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-10
-- **Researched**: 2026-02-11
-- **Completed**: 2026-02-11
-- **Research**: [research-001.md](specs/867_check_lean_lsp_mcp_github_issues/reports/research-001.md)
-
-**Description**: Find the GitHub issues for the two lean-lsp MCP tools that have been disabled (they hang when used) and check if the issues are still open or have been closed.
-
-### 866. Consolidate LaTeX files into Theories/Bimodal/latex
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-10
-- **Researched**: 2026-02-10
-- **Planned**: 2026-02-10
-- **Completed**: 2026-02-10
-- **Research**: [research-001.md](specs/866_consolidate_latex_files/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/866_consolidate_latex_files/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260210.md](specs/866_consolidate_latex_files/summaries/implementation-summary-20260210.md)
-
-**Description**: Consolidate LaTeX files by removing root latex/ directory if not needed for Theories/Bimodal/latex/BimodalReference.tex, or moving required files to Theories/Bimodal/latex/ and updating references. The aim is to have Bimodal/latex/ include all necessary LaTeX files in a tidy way.
 
 ### 865. Construct canonical task frame for Bimodal completeness
 - **Effort**: TBD
@@ -77,23 +52,6 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/864_recursive_seed_henkin_model/plans/implementation-002.md) (v2), [implementation-001.md](specs/864_recursive_seed_henkin_model/plans/implementation-001.md) (v1)
 
 **Description**: Improving on task 843 and the various attempts tried there, develop a new strategy which proceeds by taking a consistent formula and using its recursive structure to define a seed which consists of a bundle of indexed families of MCSs. The idea is to start with a singleton CS indexed at 0 for the consistent sentence we start with. If the main operator is a Box, then every CS must include its argument. If the main operator is a negated Box, then some indexed family must have a CS indexed by the present time that includes the negation of its argument. If the main operator is H, then every CS indexed by a present and past time in the family must include the argument. If the main operator is a negated H, then some CS indexed by the present or past time in the family must include the negation of the argument. Similarly for G, but for the future. Negated modal operators require new indexed families to be created, and negated tense operators require new CSs at new indexes to be created. Boolean operators unpack in the usual way. This returns some indexed families with some CSs based on the logical form of the initial sentence. This is then completed to provide an appropriate Henkin model.
-
-### 863. Improve Introduction LaTeX formatting and content
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: latex
-- **Created**: 2026-02-04
-- **Researched**: 2026-02-04
-- **Planned**: 2026-02-04
-- **Completed**: 2026-02-04
-- **Summary**: [implementation-summary-20260204.md](specs/863_improve_introduction_latex_formatting_content/summaries/implementation-summary-20260204.md)
-- **Source**: Theories/Logos/latex/subfiles/01-Introduction.tex (4 FIX: tags)
-- **Research**: [research-001.md](specs/863_improve_introduction_latex_formatting_content/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/863_improve_introduction_latex_formatting_content/plans/implementation-001.md)
-
-**Description**: Improve LaTeX content and formatting in 01-Introduction.tex: (1) line 21: Introduce Logos paradigm (modular extensible logic system) before architecture details, explain layers (proof theory, recursive semantics, metalogic), describe dual RL signal (LEAN 4 theorems, Z3 counterexamples); (2) line 27: Add interpreted reasoning explanation from interpreted_reasoning.md; (3) line 113: Make \Cref references appear in italics; (4) line 424: Fix description list formatting (justified blocks without indents)
-
----
 
 ### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
 - **Effort**: 50-65 hours (revised v008)
