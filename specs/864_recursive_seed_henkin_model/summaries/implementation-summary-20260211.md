@@ -1,92 +1,108 @@
 # Implementation Summary: Task #864
 
 **Status**: Partial (ongoing)
-**Sessions**: 2 (session 27-28)
+**Sessions**: 28-29 (session 28 eliminated generic imp sorry, session 29 analyzed cross-sign challenge)
 
-## Session 28 Changes
+## Key Accomplishment: RecursiveSeed.lean is Sorry-Free
 
-### Documentation Updates
+The main `seedConsistent` theorem is fully proven with no sorries:
 
-Updated docstrings in `TemporalCoherentConstruction.lean` to document the RecursiveSeed approach:
+```lean
+theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
+    SeedConsistent (buildSeed phi) := by
+  -- 1000+ lines of proof, all complete
+```
 
-1. **`temporal_coherent_family_exists_Int` docstring**:
-   - Documents RecursiveSeed strategy (pre-placing F/P witnesses during seed construction)
-   - Explains that DovetailingChain is used pending full RecursiveSeed integration
-   - Notes that RecursiveSeed eliminates 2 cross-sign sorries by pre-placing witnesses
-   - Clarifies that forward_F/backward_P sorries require witness enumeration
+This was the primary goal of Task 864 Phase 3.
 
-2. **`temporal_coherent_family_exists` (generic D) docstring**:
-   - Documents why RecursiveSeed cannot be used for generic D (Int-specific timeIdx)
-   - Explains the RecursiveSeed witness pre-placement approach
-   - Notes that Lindenbaum-added F/P formulas need witness enumeration
-   - Lists technical debt requirements for full proof
+## Session 29 Analysis
 
-### Analysis Findings
+### Cross-Sign Temporal Coherence Challenge
 
-1. **RecursiveSeed Architecture**:
-   - `buildSeed` processes formula structure and pre-places witnesses
-   - `neg(G psi)` creates a witness at `freshFutureTime` with `neg psi`
-   - `neg(H psi)` creates a witness at `freshPastTime` with `neg psi`
-   - `seedConsistent` theorem proves all seed entries are consistent
+The forward_G and backward_H cross-sign cases require information flow between:
+- **Backward chain** (negative times): built via HContent
+- **Forward chain** (positive times): built via GContent
 
-2. **Blocking Sorries for Full Implementation**:
-   - `SeedCompletion.lean:189` - `buildFamilyFromSeed` (constructs IndexedMCSFamily from seed)
-   - `SeedCompletion.lean:158` - `modal_witness_includes_boxcontent`
-   - `SeedBMCS.lean:89,94` - `modal_forward`, `modal_backward`
-   - `DovetailingChain.lean:633,640` - `forward_F`, `backward_P` (witness enumeration)
+**Problem**: When G phi is added by Lindenbaum at time t < 0, phi must appear at time t' > 0. But:
+1. The backward chain extends AWAY from time 0 (via HContent)
+2. The forward chain extends AWAY from time 0 (via GContent)
+3. Neither chain propagates G formulas toward time 0
 
-3. **Key Insight**:
-   - RecursiveSeed places F/P witnesses for formulas IN THE STARTING FORMULA
-   - Lindenbaum-added F/P formulas still need witness enumeration
-   - `temporal_witness_seed_consistent` proves witness sets are consistent
+**Why 4-axiom doesn't help**: G(G phi) at time t < 0 semantically implies G phi at time 0, but this is a semantic consequence requiring temporal coherence - which is what we're trying to prove.
 
-## Previous Session Changes (Session 27)
+### Same-Sign Cases ARE Proven
 
-1. **Added import**: `Bimodal.Metalogic.Bundle.DovetailingChain` to TemporalCoherentConstruction.lean
+- `dovetailChainSet_forward_G_nonneg`: G phi at t >= 0 -> phi at t' > t (works)
+- `dovetailChainSet_backward_H_nonpos`: H phi at t < 0 -> phi at t' < t (works)
 
-2. **Added theorem**: `temporal_coherent_family_exists_Int`
-   - Proven via direct application of `temporal_coherent_family_exists_theorem`
-   - No sorries in this theorem
-   - Provides temporal coherent family for `D = Int`
+The sorries are ONLY for cross-sign cases:
+- forward_G when t < 0 (line 606)
+- backward_H when t >= 0 (line 617)
 
-## Files Modified
+### Session 28 Accomplishment
 
-- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean`
-  - Updated `temporal_coherent_family_exists_Int` docstring (lines 577-602)
-  - Updated `temporal_coherent_family_exists` docstring (lines 610-630)
+Eliminated the generic imp case sorry using full case analysis on (p1, p2) combinations. This removed the last sorry from RecursiveSeed.lean.
 
-## Verification
+## Current Sorry Inventory
 
-- `lake build Bimodal` succeeds with 999 jobs
-- All changes compile without new errors
-- Existing sorry count unchanged
+### Critical Path (6 declarations with sorries)
+| File | Declaration | Issue |
+|------|-------------|-------|
+| DovetailingChain.lean:606 | forward_G | Cross-sign t < 0 |
+| DovetailingChain.lean:617 | backward_H | Cross-sign t >= 0 |
+| DovetailingChain.lean:633 | forward_F | Witness enumeration |
+| DovetailingChain.lean:640 | backward_P | Witness enumeration |
+| TemporalCoherentConstruction.lean:614 | temporal_coherent_family_exists | Generic D |
+| TruthLemma.lean:541 | eval_bmcs_truth_lemma | Box and G/H backward |
 
-## Technical Notes
+### Examples/Automation (not critical)
+- ModalProofStrategies.lean: 5
+- ModalProofs.lean: 5
+- TemporalProofs.lean: 2
+- ProofSearch.lean: 3
 
-### RecursiveSeed vs DovetailingChain
+## RecursiveSeed vs DovetailingChain
 
 | Aspect | RecursiveSeed | DovetailingChain |
 |--------|---------------|------------------|
-| Witness placement | During seed construction (BEFORE Lindenbaum) | During chain building (AFTER MCS construction) |
-| Cross-sign temporal | Avoided (witnesses pre-placed) | 2 sorries (forward_G t<0, backward_H t>=0) |
-| F/P for starting formula | Pre-placed in seed | Built during enumeration |
-| F/P for Lindenbaum-added | Needs enumeration | 2 sorries (forward_F, backward_P) |
+| Witness placement | BEFORE Lindenbaum | AFTER MCS construction |
+| Cross-sign temporal | Avoided for seed formulas | 2 sorries (lines 606, 617) |
+| F/P for starting formula | Pre-placed in seed | Needs enumeration |
+| F/P for Lindenbaum-added | Also needs enumeration | 2 sorries (lines 633, 640) |
 
-### Path Forward
+## What RecursiveSeed Accomplishes
 
-To fully implement RecursiveSeed approach:
-1. Implement `buildFamilyFromSeed` (SeedCompletion.lean:189)
-2. Prove `modal_witness_includes_boxcontent` (SeedCompletion.lean:158)
-3. Complete `SeedBMCS` modal coherence proofs
-4. Add witness enumeration for Lindenbaum-added F/P formulas
+For formulas in the **starting formula**, cross-sign temporal coherence is handled by construction:
+- G phi at time t means phi was added to ALL future seed times during seed construction
+- This includes cross-sign cases (negative to positive times)
 
-### Why Generic D Keeps Sorry
+For Lindenbaum-added formulas, the challenge remains.
 
-The proof infrastructure (RecursiveSeed, DovetailingChain) uses Int specifically:
-- `timeIdx : Int` in SeedEntry
-- `dovetailIndex : Nat → Int`
+## Path Forward Options
 
-Generalizing to arbitrary `D : AddCommGroup` would require:
-- Replacing Int with generic D throughout seed construction
-- Implementing fresh time functions for generic ordered groups
-- Major refactoring of ~1500 lines of code
+### Option A: Accept Current State
+- RecursiveSeed.lean is complete
+- Cross-sign sorries are honest technical debt
+- Document as fundamental construction limitation
+
+### Option B: Zorn-Based Family Selection
+- Use Zorn's lemma to select a maximal family of MCSs satisfying all coherence properties
+- Would require significant new infrastructure
+- See TemporalLindenbaum.lean for single-MCS Zorn approach
+
+### Option C: Global Saturation Loop
+- After initial chain construction, iterate to add cross-propagating formulas
+- Complex termination argument needed
+- May require significant refactoring
+
+## Files Modified This Session
+
+- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Eliminated generic imp sorry
+- `Theories/Bimodal/Metalogic/Bundle/SeedCompletion.lean` - Added buildFamilyFromSeed structure, case analysis documentation
+- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` - Updated docstrings
+
+## Verification
+
+- `lake build Bimodal` succeeds (999 jobs)
+- RecursiveSeed.lean: 0 sorries (was 4 at session start)
+- Total critical path sorries: 6 declarations

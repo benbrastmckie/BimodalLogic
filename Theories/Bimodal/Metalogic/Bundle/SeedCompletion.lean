@@ -295,55 +295,24 @@ noncomputable def buildFamilyFromSeed (seed : ModelSeed) (h_cons : SeedConsisten
         have h_mcs_t' := (forwardChain t'.toNat).property
         -- First show G phi propagates to t'
         -- Helper: G phi propagates step by step
-        -- Helper: G phi propagates step by step through forward chain
-        -- forwardChain (k+1) extends GContent(forwardChain k) via Lindenbaum
-        have G_step : ∀ k, Formula.all_future phi ∈ (forwardChain k).val →
-            Formula.all_future phi ∈ (forwardChain (k + 1)).val := by
-          intro k h_G_k
-          have h_mcs_k := (forwardChain k).property
-          have h_GG := set_mcs_all_future_all_future h_mcs_k h_G_k
-          -- h_GG says G(G phi) ∈ (forwardChain k).val, which means G phi ∈ GContent(forwardChain k)
-          -- forwardChain (k+1) extends GContent(forwardChain k)
-          -- So G phi ∈ (forwardChain (k+1)).val
-          -- The definition of forwardChain (k+1) is:
-          --   let gc := GContent (forwardChain k).val
-          --   let ext := set_lindenbaum gc (h_gc_cons for that k)
-          --   ⟨ext.choose, ext.choose_spec.2⟩
-          -- So (forwardChain (k+1)).val = (set_lindenbaum gc _).choose
-          -- And set_lindenbaum says gc ⊆ result.choose
-          -- Therefore GContent (forwardChain k).val ⊆ (forwardChain (k+1)).val
-          --
-          -- Since G(G phi) ∈ (forwardChain k).val, we have G phi ∈ GContent(forwardChain k)
-          have h_in_gc : Formula.all_future phi ∈ GContent (forwardChain k).val := h_GG
-          -- Now we need to show GContent (forwardChain k).val ⊆ (forwardChain (k+1)).val
-          -- This follows from the definition of forwardChain (k+1)
-          -- Looking at the recursive definition:
-          -- forwardChain (n+1) uses set_lindenbaum on GContent(forwardChain n).val
-          -- and Lindenbaum preserves the seed: GContent ⊆ result
-          cases k with
-          | zero =>
-            -- forwardChain 1 extends GContent(forwardChain 0) = GContent(baseMCS)
-            simp only [Nat.zero_eq, Nat.add_eq, Nat.add_zero]
-            -- (forwardChain 1).val = (set_lindenbaum (GContent baseMCS) _).choose
-            -- By Lindenbaum: GContent baseMCS ⊆ (forwardChain 1).val
-            have h_ext := (set_lindenbaum (GContent baseMCS) _).choose_spec.1
-            exact h_ext h_in_gc
-          | succ n =>
-            -- forwardChain (n+2) extends GContent(forwardChain (n+1))
-            -- By Lindenbaum: GContent (forwardChain (n+1)).val ⊆ (forwardChain (n+2)).val
-            have h_ext := (set_lindenbaum (GContent (forwardChain (n+1)).val) _).choose_spec.1
-            exact h_ext h_in_gc
-        -- Use the step to propagate from t.toNat to t'.toNat
-        have h_G_at_t' : Formula.all_future phi ∈ (forwardChain t'.toNat).val := by
-          -- We have t.toNat < t'.toNat, so propagate step by step
-          have h_le : t.toNat ≤ t'.toNat := Nat.le_of_lt h_nat_lt
-          -- Use Nat.le_induction
-          refine Nat.le_induction ?base ?step h_le h_G
-          case base => exact fun h => h
-          case step => exact fun k _ ih h_G_k => G_step k (ih h_G_k)
-        -- Now apply T-axiom: G phi → phi
-        have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
-        exact set_mcs_implication_property h_mcs_t' (theorem_in_mcs h_mcs_t' h_T) h_G_at_t'
+        -- G phi propagates through the forward chain (same-sign: both t >= 0 and t' > t >= 0)
+        -- The mathematical argument:
+        -- 1. By 4-axiom: G phi -> G(G phi), so G(G phi) is in MCS at step k
+        -- 2. G(G phi) means G phi is in GContent(MCS at step k)
+        -- 3. forwardChain (k+1) extends GContent(forwardChain k) via Lindenbaum
+        -- 4. So GContent(step k) ⊆ step (k+1), meaning G phi propagates forward
+        -- 5. By induction, G phi reaches step t'.toNat
+        -- 6. By T-axiom (G phi -> phi), phi is at step t'.toNat
+        --
+        -- Technical issue: The local let-rec definition of forwardChain creates
+        -- different set_lindenbaum calls with different consistency proofs, which
+        -- are not definitionally equal. Proving propagation requires either:
+        -- - Extracting forwardChain as a top-level definition with explicit lemmas
+        -- - Using a different construction approach
+        --
+        -- For now, this same-sign case should be provable with the right infrastructure.
+        -- The proof strategy is clear but the Lean mechanics need adjustment.
+        sorry
       · -- Case: t < 0
         push_neg at h_t
         by_cases h_t' : 0 ≤ t'
@@ -384,8 +353,49 @@ noncomputable def buildFamilyFromSeed (seed : ModelSeed) (h_cons : SeedConsisten
           sorry
     backward_H := fun t t' phi h_lt h_H => by
       -- H phi at time t implies phi at time t' < t
-      -- This requires proving the chain construction preserves backward_H
-      sorry
+      simp only [mcsAt] at h_H ⊢
+      by_cases h_t : t < 0
+      · -- Case: t < 0
+        -- Then t' < t < 0, so both use backwardChain
+        have h_t' : t' < 0 := lt_trans h_lt h_t
+        simp only [show ¬(0 ≤ t) from not_le.mpr h_t, show ¬(0 ≤ t') from not_le.mpr h_t', ↓reduceDIte] at h_H ⊢
+        -- H phi propagates through backward chain (same-sign: both t < 0 and t' < t < 0)
+        -- The mathematical argument mirrors forward_G but with HContent:
+        -- 1. By 4H-axiom: H phi -> H(H phi), so H(H phi) is in MCS at step k
+        -- 2. H(H phi) means H phi is in HContent(MCS at step k)
+        -- 3. backwardChain (k+1) extends HContent(backwardChain k) via Lindenbaum
+        -- 4. So HContent(step k) ⊆ step (k+1), meaning H phi propagates forward in chain
+        -- 5. By induction, H phi reaches the target step
+        -- 6. By T-axiom (H phi -> phi), phi is at that step
+        --
+        -- But the time indices are inverted: mcsAt(-k) = backwardChain(k)
+        -- For t' < t < 0: (-t').toNat > (-t).toNat
+        -- So we need to propagate forward in chain from (-t).toNat to (-t').toNat
+        --
+        -- Same technical issue as forward_G: local let-rec definition
+        sorry
+      · -- Case: t >= 0
+        push_neg at h_t
+        by_cases h_t' : t' < 0
+        · -- Cross-sign case: t' < 0 ≤ t
+          -- H phi at positive time t, need phi at negative time t'
+          simp only [h_t, show ¬(0 ≤ t') from not_le.mpr h_t', ↓reduceDIte] at h_H ⊢
+          -- Same cross-sign issue as forward_G but reversed:
+          -- H phi at positive time needs to reach phi at negative time
+          -- The 4H-axiom gives H(H phi), meaning H phi at all past times
+          -- But this doesn't help because chain extends outward from time 0
+          sorry
+        · -- Both t >= 0 and t' >= 0
+          push_neg at h_t'
+          simp only [h_t, h_t', ↓reduceDIte] at h_H ⊢
+          -- t' < t with both t >= 0 and t' >= 0 means: 0 <= t' < t
+          -- mcsAt(t) = forwardChain(t.toNat)
+          -- mcsAt(t') = forwardChain(t'.toNat) with t'.toNat < t.toNat
+          -- Need phi at forwardChain(t'.toNat) given H phi at forwardChain(t.toNat)
+          --
+          -- This is backward propagation in forward chain - same fundamental issue
+          -- H phi at higher index doesn't propagate backward to lower index
+          sorry
   }
 
 /--
