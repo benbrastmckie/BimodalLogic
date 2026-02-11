@@ -1,0 +1,26 @@
+{
+  "status": "partial",
+  "started_at": "2026-02-10T12:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_3_partial",
+    "details": "Session 21: Fixed 6 sorries (4 API compatibility, 2 wellformedness). Remaining 5 sorries: 1 unused (find?_modify_diff_pred), 4 blocking (3 consistency + 1 generic imp). RecursiveSeed.lean compiles with 5 sorries."
+  },
+  "metadata": {
+    "session_id": "sess_1770779184_be12c7",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "sorry_breakdown": {
+      "fixed_this_session": 6,
+      "remaining": 5,
+      "unused_sorries": ["find?_modify_diff_pred (line 2474)"],
+      "blocking_sorries": [
+        "addToAllFamilies_preserves_consistent (Box case, line 3117)",
+        "addToAllFutureTimes_preserves_consistent (G case, line 3215)",
+        "addToAllPastTimes_preserves_consistent (H case, line 3329)",
+        "generic imp case (line 3571)"
+      ]
+    }
+  }
+}
