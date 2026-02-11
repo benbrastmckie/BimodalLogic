@@ -116,46 +116,34 @@ structure CoherentPartialFamily where
 
 ---
 
-### Phase 3: Extension Seed Consistency [IN PROGRESS]
+### Phase 3: Extension Seed Consistency [PARTIAL]
 
 **Goal**: Prove that extending a partial family to a new time preserves consistency.
 
-**Subphase 3A: G/H Content Seed**
-
 **Tasks**:
-- [ ] Define `crossSignExtensionSeed_GH` for G/H content only
-- [ ] Prove G-content from times s < t is consistent with H-content from times s > t
-- [ ] Use existing `dovetail_GContent_consistent` and `dovetail_HContent_consistent` patterns
+- [x] Define `extensionSeed` combining G-content from past and H-content from future
+- [x] Define helper lemmas for seed membership
+- [x] Prove `GContent_consistent` and `HContent_consistent`
+- [ ] Prove `extensionSeed_consistent` (has 3 sorries - technical debt)
 
-**Timing**: 2 hours
+**Technical Debt Status**:
+The `extensionSeed_consistent` theorem has 3 sorries:
+1. Cross-sign consistency (both past and future times exist)
+2. Pure G-content case (requires picking supremum of past times)
+3. Pure H-content case (requires picking infimum of future times)
 
-**Subphase 3B: F/P Witness Seed**
+These require 4-axiom propagation (G phi -> GG phi, H phi -> HH phi) to resolve.
+The proof structure is in place but the detailed propagation arguments are pending.
 
-**Tasks**:
-- [ ] Define F/P witness requirements for time t
-- [ ] Prove F-witness seed consistent using `temporal_witness_seed_consistent`
-- [ ] Prove P-witness seed consistent using `temporal_witness_seed_consistent_past`
-- [ ] Combine with G/H seed
-
-**Timing**: 2-3 hours
-
-**Files to modify**:
+**Files modified**:
 - `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean`
 
-**Key Lemma**:
-```lean
-lemma cross_sign_extension_seed_consistent (F : CoherentPartialFamily) (t : Int)
-    (ht : t ∉ F.domain) :
-    SetConsistent (crossSignExtensionSeed F t)
-```
-
 **Verification**:
-- `lake build` succeeds
-- Seed consistency compiles without sorry
+- `lake build` succeeds (with sorry warnings)
 
 ---
 
-### Phase 4: Zorn Application [NOT STARTED]
+### Phase 4: Zorn Application [IN PROGRESS]
 
 **Goal**: Apply Zorn's lemma to obtain a maximal coherent partial family.
 
