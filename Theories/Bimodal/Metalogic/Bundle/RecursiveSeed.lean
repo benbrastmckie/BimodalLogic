@@ -1470,7 +1470,7 @@ theorem addFormula_preserves_wellFormed
       -- So if ei and ej have same position, their originals would too
       cases h_ei with
       | inl h_ei_orig =>
-        obtain ⟨i, hi, _⟩ := h_ei_orig
+        obtain ⟨i, hi, h_i_ne_idx⟩ := h_ei_orig
         cases h_ej with
         | inl h_ej_orig =>
           obtain ⟨j, hj, _⟩ := h_ej_orig
@@ -1494,10 +1494,27 @@ theorem addFormula_preserves_wellFormed
             have h_idx_lt := h_idx_info.1
             have h_at_i := (List.getElem?_eq_some_iff.mp hi).2
             have h_at_idx := (List.getElem?_eq_some_iff.mp h_old_ej).2
-            -- Both point to the same entry, so positions must be equal - need i = idx
-            -- Since entries[i] = entries[idx] = ei, and we're in a proof context, use sorry here
-            -- (The full proof requires showing that List positions are unique for same values)
-            sorry
+            -- Both entries[i] and entries[idx] equal ei (after subst h_eq)
+            -- The predicate matches at idx (from findIdx?), so it also matches at i
+            have h_idx_pred : (seed.entries[idx].familyIdx == famIdx && seed.entries[idx].timeIdx == timeIdx) = true :=
+              h_idx_info.2.1
+            have h_i_pred : (seed.entries[i].familyIdx == famIdx && seed.entries[i].timeIdx == timeIdx) = true := by
+              rw [h_at_i, h_at_idx.symm]; exact h_idx_pred
+            have h_no_earlier := h_idx_info.2.2
+            have h_ne_idx : i ≠ idx := fun h_eq => h_i_ne_idx h_eq.symm
+            -- If i < idx, the predicate at i contradicts findIdx? finding idx first
+            rcases Nat.lt_or_gt_of_ne h_ne_idx with h_i_lt | h_i_gt
+            · have h_contra := h_no_earlier i h_i_lt
+              rw [h_at_i] at h_contra
+              simp only [h_idx_pred, h_at_idx.symm] at h_contra
+              exact h_contra trivial
+            · -- If i > idx, we have duplicate entry values at different positions
+              -- This requires entries[i] = entries[idx] = ei with i ≠ idx
+              -- Our seed construction never creates such duplicates (merges at same position)
+              -- The predicate matches at both positions, but since they're the same entry value,
+              -- h_wf.2 doesn't apply (requires ei ≠ ej). This is a gap in SeedWellFormed.
+              -- For properly constructed seeds, this case is impossible.
+              sorry
           · exact h_wf.2 ei h_ei_in old_ej h_old_ej_in h_eq ⟨h_fam, h_time⟩
       | inr h_ei_mod =>
         obtain ⟨old_ei, h_old_ei, h_eq_ei⟩ := h_ei_mod
@@ -1573,7 +1590,52 @@ theorem createNewFamily_preserves_wellFormed
     (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
     (h_wf : SeedWellFormed seed) :
     SeedWellFormed (seed.createNewFamily timeIdx phi).1 := by
-  sorry -- Will complete in future session
+  unfold SeedWellFormed ModelSeed.createNewFamily
+  simp only
+  constructor
+  · -- All family indices are valid in the new seed (with nextFamilyIdx + 1)
+    intro entry h_entry
+    rw [List.mem_append, List.mem_singleton] at h_entry
+    cases h_entry with
+    | inl h_old =>
+      -- Old entry has familyIdx < nextFamilyIdx < nextFamilyIdx + 1
+      have h_valid := h_wf.1 entry h_old
+      omega
+    | inr h_new =>
+      -- New entry has familyIdx = nextFamilyIdx < nextFamilyIdx + 1
+      subst h_new
+      simp only
+      omega
+  · -- Unique positions
+    intro ei h_ei ej h_ej h_ne
+    rw [List.mem_append, List.mem_singleton] at h_ei h_ej
+    intro ⟨h_fam, h_time⟩
+    cases h_ei with
+    | inl h_ei_old =>
+      cases h_ej with
+      | inl h_ej_old =>
+        -- Both old: use h_wf.2
+        exact h_wf.2 ei h_ei_old ej h_ej_old h_ne ⟨h_fam, h_time⟩
+      | inr h_ej_new =>
+        -- ei old, ej new (has familyIdx = nextFamilyIdx)
+        subst h_ej_new
+        simp only at h_fam
+        -- ei.familyIdx = nextFamilyIdx, but old entries have familyIdx < nextFamilyIdx
+        have h_bound := h_wf.1 ei h_ei_old
+        omega
+    | inr h_ei_new =>
+      cases h_ej with
+      | inl h_ej_old =>
+        -- ei new, ej old
+        subst h_ei_new
+        simp only at h_fam
+        -- ej.familyIdx = nextFamilyIdx, but old entries have familyIdx < nextFamilyIdx
+        have h_bound := h_wf.1 ej h_ej_old
+        omega
+      | inr h_ej_new =>
+        -- Both new: contradicts h_ne since both are the same new entry
+        subst h_ei_new h_ej_new
+        exact h_ne rfl
 
 /--
 createNewTime preserves seed well-formedness.
@@ -1584,7 +1646,54 @@ theorem createNewTime_preserves_wellFormed
     (h_famIdx_valid : famIdx < seed.nextFamilyIdx)
     (h_no_entry : seed.findEntry famIdx timeIdx = none) :
     SeedWellFormed (seed.createNewTime famIdx timeIdx phi) := by
-  sorry -- Will complete in future session
+  unfold SeedWellFormed ModelSeed.createNewTime
+  simp only
+  constructor
+  · -- All family indices are valid (nextFamilyIdx unchanged)
+    intro entry h_entry
+    rw [List.mem_append, List.mem_singleton] at h_entry
+    cases h_entry with
+    | inl h_old => exact h_wf.1 entry h_old
+    | inr h_new =>
+      subst h_new
+      simp only
+      exact h_famIdx_valid
+  · -- Unique positions
+    intro ei h_ei ej h_ej h_ne
+    rw [List.mem_append, List.mem_singleton] at h_ei h_ej
+    intro ⟨h_fam, h_time⟩
+    cases h_ei with
+    | inl h_ei_old =>
+      cases h_ej with
+      | inl h_ej_old =>
+        -- Both old: use h_wf.2
+        exact h_wf.2 ei h_ei_old ej h_ej_old h_ne ⟨h_fam, h_time⟩
+      | inr h_ej_new =>
+        -- ei old, ej is the new entry
+        subst h_ej_new
+        simp only at h_fam h_time
+        -- ei has position (famIdx, timeIdx) but h_no_entry says no old entry has this position
+        unfold ModelSeed.findEntry at h_no_entry
+        rw [List.find?_eq_none] at h_no_entry
+        have h_contra := h_no_entry ei h_ei_old
+        rw [h_fam, h_time, beq_self_eq_true, beq_self_eq_true, Bool.and_self] at h_contra
+        exact h_contra rfl
+    | inr h_ei_new =>
+      cases h_ej with
+      | inl h_ej_old =>
+        -- ei is the new entry, ej old
+        subst h_ei_new
+        simp only at h_fam h_time
+        -- ej has position (famIdx, timeIdx) but h_no_entry says no old entry has this position
+        unfold ModelSeed.findEntry at h_no_entry
+        rw [List.find?_eq_none] at h_no_entry
+        have h_contra := h_no_entry ej h_ej_old
+        rw [← h_fam, ← h_time, beq_self_eq_true, beq_self_eq_true, Bool.and_self] at h_contra
+        exact h_contra rfl
+      | inr h_ej_new =>
+        -- Both new: contradicts h_ne
+        subst h_ei_new h_ej_new
+        exact h_ne rfl
 
 /--
 If neg(Box phi) is consistent, then neg phi is consistent.
@@ -1994,12 +2103,37 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
               exact h_phi_in
             rw [Set.insert_eq_of_mem h_phi_in_entry]
             exact h_entry_cons
-        -- Show seed2 is consistent
-        -- Note: (seed2, newFamIdx) = seed1.createNewFamily timeIdx inner.neg
-        have h_seed2_cons : SeedConsistent (seed1.createNewFamily timeIdx inner.neg).1 :=
-          createNewFamily_preserves_seedConsistent seed1 timeIdx inner.neg h_seed1_cons h_inner_neg_cons
-        -- For IH, we need seed2 well-formed and inner.neg in the right position
-        -- These require additional helper lemmas. For now, use sorry to demonstrate progress.
+        -- Show seed1 is well-formed
+        have h_seed1_wf : SeedWellFormed seed1 := by
+          apply addFormula_preserves_wellFormed
+          · exact h_wf
+          · intro _
+            -- famIdx is in the seed (since phi is at famIdx), so famIdx < nextFamilyIdx
+            unfold ModelSeed.getFormulas at h_phi_in
+            cases h_find_entry : seed.findEntry famIdx timeIdx with
+            | some entry =>
+              unfold ModelSeed.findEntry at h_find_entry
+              have h_mem := List.mem_of_find?_eq_some h_find_entry
+              have h_entry_valid := h_wf.1 entry h_mem
+              -- entry.familyIdx = famIdx from findEntry predicate
+              have h_pred := List.find?_some h_find_entry
+              simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+              rw [← h_pred.1]
+              exact h_entry_valid
+            | none =>
+              simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+        -- Apply IH. Technical issue: Lean's let (a,b) := p binding doesn't create
+        -- definitional equality between (a,b) and p that unification recognizes.
+        -- The goal has (seed2, newFamIdx).1/.2 which SHOULD equal seed2/newFamIdx,
+        -- but Lean sees them as different expressions.
+        --
+        -- The proof structure is:
+        -- 1. h_seed1_cons, h_inner_neg_cons => createNewFamily_preserves_seedConsistent => SeedConsistent seed2
+        -- 2. h_seed1_wf => createNewFamily_preserves_wellFormed => SeedWellFormed seed2
+        -- 3. h_seed1_wf => createNewFamily_formula_at_new_position => inner.neg ∈ seed2.getFormulas newFamIdx timeIdx
+        -- 4. h_complexity, h_inner_neg_cons, above => IH => SeedConsistent (buildSeedAux inner.neg newFamIdx timeIdx seed2)
+        --
+        -- Pending: Fix type unification between let-bound pairs and explicit projections.
         sorry
       | Formula.all_future inner, Formula.bot =>
         -- neg(G inner) case

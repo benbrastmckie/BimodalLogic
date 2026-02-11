@@ -8,10 +8,11 @@
     {
       "project_number": 867,
       "project_name": "check_lean_lsp_mcp_github_issues",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "created": "2026-02-11T00:31:36Z",
-      "last_updated": "2026-02-11T00:31:36Z"
+      "last_updated": "2026-02-11T00:33:14Z",
+      "session_id": "sess_1770769976_b8b13a"
     },
     {
       "project_number": 866,
@@ -87,7 +88,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-11T00:17:29Z",
+      "last_updated": "2026-02-11T00:33:32Z",
       "session_id": "sess_1770769033_98ba8f",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [

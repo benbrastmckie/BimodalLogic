@@ -275,6 +275,32 @@ After this implementation:
 - RecursiveSeed.lean now has 11 sorries (1 resolved, 2 added in restructured proof)
 - Full Bimodal build succeeds (998 jobs)
 
+**Progress Update (2026-02-10, Session 12):**
+- `createNewFamily_preserves_wellFormed`: COMPLETED
+  - Proved both conjuncts: family indices valid (newFamIdx < nextFamilyIdx+1), unique positions
+  - New entry has familyIdx = nextFamilyIdx which is >= any old entry's familyIdx
+- `createNewTime_preserves_wellFormed`: COMPLETED
+  - Proved both conjuncts: family indices valid (famIdx < nextFamilyIdx unchanged), unique positions
+  - Used h_no_entry to show new position doesn't conflict with existing entries
+- `addFormula_preserves_wellFormed`: First case (i < idx) COMPLETED
+  - The `i < idx` subcase contradicts findIdx? finding idx first
+  - Used List.findIdx?_eq_some_iff_getElem and first-match property
+  - The `i > idx` subcase still has sorry (requires strengthening SeedWellFormed or separate invariant)
+- neg-Box case in `buildSeedAux_preserves_seedConsistent`: Substantial progress
+  - Proved seed1 is well-formed via addFormula_preserves_wellFormed
+  - Type unification issue blocks IH application: Lean's `let (a,b) := p` doesn't create
+    definitional equality with `p.1`/`p.2` that unification recognizes
+  - All needed lemmas exist; just need technical fix for type matching
+- RecursiveSeed.lean now has 9 sorries (down from 11)
+- Full Bimodal build succeeds (695 jobs)
+
+**Current Blocking Issues (Session 12):**
+- The 9 sorries in RecursiveSeed.lean decompose into:
+  - Position uniqueness in addFormula_preserves_wellFormed (2): The `i > idx` case needs separate invariant
+  - buildSeedAux operator cases (7): Box/G/H (3), neg-Box/neg-G/neg-H (3), generic imp (1)
+- Type unification issue in neg-Box case: Lean's `let (a,b) := p` binding doesn't create
+  definitional equality between `(a,b)` and `p` that the type checker recognizes
+
 **Current Blocking Issues (Session 11):**
 - The 11 sorries in RecursiveSeed.lean decompose into:
   - Position uniqueness in addFormula_preserves_wellFormed (2): Proving ei = old_ej implies i = idx
