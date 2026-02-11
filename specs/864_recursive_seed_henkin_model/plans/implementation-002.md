@@ -294,6 +294,31 @@ After this implementation:
 - RecursiveSeed.lean now has 9 sorries (down from 11)
 - Full Bimodal build succeeds (695 jobs)
 
+**Progress Update (2026-02-10, Session 14):**
+- `freshFutureTime_no_entry`: COMPLETED (was sorry)
+  - Added helper lemmas `foldl_max_timeIdx_ge_acc` and `foldl_max_timeIdx_ge_mem` for foldl max bounds
+  - Proof uses omega after establishing that e.timeIdx <= max < max + 1
+- `freshPastTime_no_entry`: COMPLETED (was sorry)
+  - Added helper lemmas `foldl_min_timeIdx_le_acc` and `foldl_min_timeIdx_le_mem` for foldl min bounds
+  - Proof uses omega after establishing that min - 1 < min <= e.timeIdx
+- `SeedWellFormed` definition: STRENGTHENED with `List.Nodup seed.entries`
+  - This resolves the position uniqueness issues in addFormula_preserves_wellFormed
+  - Updated `initialSeedWellFormed` to prove singleton is nodup
+  - Updated `createNewFamily_preserves_wellFormed` to prove append preserves nodup
+  - Updated `createNewTime_preserves_wellFormed` to prove append preserves nodup
+- Position uniqueness (i > idx) cases in `addFormula_preserves_wellFormed`: COMPLETED
+  - Used `List.Nodup.getElem_inj_iff` to derive contradiction from same element at different indices
+- `addFormula_preserves_wellFormed` Nodup case: 1 sorry (requires Option.map reasoning in List.getElem?_modify)
+- neg-Box/neg-G/neg-H cases: COMPLETED in previous sessions
+- RecursiveSeed.lean now has 4 sorries (down from 7)
+- Full Bimodal build succeeds (695 jobs)
+
+**Current Blocking Issues (Session 14):**
+- The 4 sorries in RecursiveSeed.lean decompose into:
+  - Nodup preservation in addFormula_preserves_wellFormed (1): Complex Option.map reasoning
+  - buildSeedAux operator cases (3): Box/G/H (universal operators requiring addToAll* lemmas)
+  - Generic implication case (1): Pattern matching with abstract variables
+
 **Current Blocking Issues (Session 12):**
 - The 9 sorries in RecursiveSeed.lean decompose into:
   - Position uniqueness in addFormula_preserves_wellFormed (2): The `i > idx` case needs separate invariant

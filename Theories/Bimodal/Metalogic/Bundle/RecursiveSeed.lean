@@ -368,6 +368,56 @@ The core recursive function that builds a model seed from a formula.
 -/
 
 /--
+Helper lemma: foldl max is monotone in the accumulator.
+-/
+theorem foldl_max_timeIdx_ge_acc {α : Type} (l : List α) (a : Int) (f : α → Int) :
+    a ≤ List.foldl (fun acc e => max acc (f e)) a l := by
+  induction l generalizing a with
+  | nil => simp only [List.foldl_nil]; exact le_refl a
+  | cons hd tl ih =>
+    simp only [List.foldl_cons]
+    exact le_trans (le_max_left a (f hd)) (ih (max a (f hd)))
+
+/--
+Helper lemma: foldl max bounds any list element.
+-/
+theorem foldl_max_timeIdx_ge_mem {α : Type} (l : List α) (a : Int) (f : α → Int) (x : α)
+    (h : x ∈ l) : f x ≤ List.foldl (fun acc e => max acc (f e)) a l := by
+  induction l generalizing a with
+  | nil => simp at h
+  | cons hd tl ih =>
+    simp only [List.foldl_cons]
+    rw [List.mem_cons] at h
+    cases h with
+    | inl h => subst h; exact le_trans (le_max_right a (f x)) (foldl_max_timeIdx_ge_acc tl (max a (f x)) f)
+    | inr h => exact ih (max a (f hd)) h
+
+/--
+Helper lemma: foldl min is anti-monotone in the accumulator.
+-/
+theorem foldl_min_timeIdx_le_acc {α : Type} (l : List α) (a : Int) (f : α → Int) :
+    List.foldl (fun acc e => min acc (f e)) a l ≤ a := by
+  induction l generalizing a with
+  | nil => simp only [List.foldl_nil]; exact le_refl a
+  | cons hd tl ih =>
+    simp only [List.foldl_cons]
+    exact le_trans (ih (min a (f hd))) (min_le_left a (f hd))
+
+/--
+Helper lemma: foldl min bounds any list element from below.
+-/
+theorem foldl_min_timeIdx_le_mem {α : Type} (l : List α) (a : Int) (f : α → Int) (x : α)
+    (h : x ∈ l) : List.foldl (fun acc e => min acc (f e)) a l ≤ f x := by
+  induction l generalizing a with
+  | nil => simp at h
+  | cons hd tl ih =>
+    simp only [List.foldl_cons]
+    rw [List.mem_cons] at h
+    cases h with
+    | inl h => subst h; exact le_trans (foldl_min_timeIdx_le_acc tl (min a (f x)) f) (min_le_right a (f x))
+    | inr h => exact ih (min a (f hd)) h
+
+/--
 Compute a fresh time index for temporal witnesses.
 For future witnesses (F phi = neg(G(neg phi))), we need a time greater than current.
 For past witnesses (P phi = neg(H(neg phi))), we need a time less than current.
@@ -393,10 +443,16 @@ theorem ModelSeed.freshFutureTime_no_entry (seed : ModelSeed) (famIdx : Nat) (cu
   intro e he
   simp only [beq_iff_eq, Bool.and_eq_true, Bool.eq_false_iff, not_and, decide_eq_true_eq]
   intro h_fam
-  -- freshFutureTime returns maxTime + 1 where maxTime >= all times at famIdx
-  -- So any existing entry at famIdx has timeIdx <= maxTime < maxTime + 1
-  -- The key lemma: foldl max acc l >= any element's timeIdx in l
-  sorry
+  -- e is in the filtered list since e.familyIdx = famIdx
+  have h_in_filtered : e ∈ List.filter (fun e => e.familyIdx == famIdx) seed.entries := by
+    rw [List.mem_filter]
+    exact ⟨he, by simp [h_fam]⟩
+  -- e.timeIdx is <= the max
+  have h_le : e.timeIdx ≤ List.foldl (fun acc e => max acc e.timeIdx) currentTime
+      (List.filter (fun e => e.familyIdx == famIdx) seed.entries) :=
+    foldl_max_timeIdx_ge_mem _ _ _ e h_in_filtered
+  -- max + 1 > e.timeIdx
+  omega
 
 /--
 freshPastTime produces a time with no existing entry.
@@ -409,9 +465,16 @@ theorem ModelSeed.freshPastTime_no_entry (seed : ModelSeed) (famIdx : Nat) (curr
   intro e he
   simp only [beq_iff_eq, Bool.and_eq_true, Bool.eq_false_iff, not_and, decide_eq_true_eq]
   intro h_fam
-  -- freshPastTime returns minTime - 1 where minTime <= all times at famIdx
-  -- So any existing entry at famIdx has timeIdx >= minTime > minTime - 1
-  sorry
+  -- e is in the filtered list since e.familyIdx = famIdx
+  have h_in_filtered : e ∈ List.filter (fun e => e.familyIdx == famIdx) seed.entries := by
+    rw [List.mem_filter]
+    exact ⟨he, by simp [h_fam]⟩
+  -- min is <= e.timeIdx
+  have h_le : List.foldl (fun acc e => min acc e.timeIdx) currentTime
+      (List.filter (fun e => e.familyIdx == famIdx) seed.entries) ≤ e.timeIdx :=
+    foldl_min_timeIdx_le_mem _ _ _ e h_in_filtered
+  -- min - 1 < e.timeIdx
+  omega
 
 /--
 The recursive seed builder auxiliary function.
@@ -778,13 +841,16 @@ def SeedConsistent (seed : ModelSeed) : Prop :=
 A seed is well-formed if structural invariants hold:
 - Unique entries per (family, time)
 - Valid family indices (all < nextFamilyIdx)
+- No duplicate entries in the list
 -/
 def SeedWellFormed (seed : ModelSeed) : Prop :=
   -- All family indices are valid
   (∀ entry ∈ seed.entries, entry.familyIdx < seed.nextFamilyIdx) ∧
   -- Entries at different positions in the list with same (family, time) are merged
   (∀ ei ∈ seed.entries, ∀ ej ∈ seed.entries, ei ≠ ej →
-    ¬(ei.familyIdx = ej.familyIdx ∧ ei.timeIdx = ej.timeIdx))
+    ¬(ei.familyIdx = ej.familyIdx ∧ ei.timeIdx = ej.timeIdx)) ∧
+  -- No duplicate entries in the list
+  List.Nodup seed.entries
 
 /--
 Formula consistency: a formula is consistent if it is not derivable to bot.
@@ -837,7 +903,7 @@ Initial seed well-formedness: the initial seed has unique entries per position.
 -/
 theorem initialSeedWellFormed (phi : Formula) :
     SeedWellFormed (ModelSeed.initial phi) := by
-  constructor
+  refine ⟨?_, ?_, ?_⟩
   · -- All family indices are valid (< nextFamilyIdx)
     intro entry h_entry
     simp only [ModelSeed.initial] at h_entry
@@ -850,6 +916,8 @@ theorem initialSeedWellFormed (phi : Formula) :
     simp only [ModelSeed.initial, List.mem_singleton] at h_ei h_ej
     rw [h_ei, h_ej] at h_ne
     exact absurd rfl h_ne
+  · -- List.Nodup
+    simp only [ModelSeed.initial, List.nodup_singleton]
 
 /--
 Adding a formula derivable from existing formulas preserves consistency.
@@ -1429,7 +1497,7 @@ theorem getFormulas_eq_of_wellformed_and_at_position
   · simp [h_eq]
   · -- found ≠ entry but both at same position: contradiction with well-formedness
     exfalso
-    have h_same_pos := h_wf.2 found h_found_in entry h_entry h_eq
+    have h_same_pos := h_wf.2.1 found h_found_in entry h_entry h_eq
     exact h_same_pos ⟨h_found_pred.1.trans h_fam.symm, h_found_pred.2.trans h_time.symm⟩
 
 /--
@@ -1481,8 +1549,8 @@ theorem addFormula_preserves_wellFormed
   unfold SeedWellFormed ModelSeed.addFormula at *
   cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
   | some idx =>
-    simp only [h_find]
-    constructor
+    simp only
+    refine ⟨?_, ?_, ?_⟩
     · -- All family indices are valid: List.modify only changes formulas, not family indices
       intro entry h_entry
       rw [List.mem_modify_iff] at h_entry
@@ -1497,68 +1565,57 @@ theorem addFormula_preserves_wellFormed
     · -- Unique positions: List.modify preserves positions, only changes formulas
       intro ei h_ei ej h_ej h_ne
       rw [List.mem_modify_iff] at h_ei h_ej
-      -- Modified entries have same position as their originals
-      -- So if ei and ej have same position, their originals would too
       cases h_ei with
       | inl h_ei_orig =>
         obtain ⟨i, hi, h_i_ne_idx⟩ := h_ei_orig
         cases h_ej with
         | inl h_ej_orig =>
           obtain ⟨j, hj, _⟩ := h_ej_orig
-          exact h_wf.2 ei (List.mem_of_getElem? hi) ej (List.mem_of_getElem? hj) h_ne
+          exact h_wf.2.1 ei (List.mem_of_getElem? hi) ej (List.mem_of_getElem? hj) h_ne
         | inr h_ej_mod =>
           obtain ⟨old_ej, h_old_ej, h_eq_ej⟩ := h_ej_mod
           subst h_eq_ej; simp only
           intro ⟨h_fam, h_time⟩
-          -- ei is original at i, old_ej is original at idx
-          -- Modified entry has same familyIdx/timeIdx as old_ej
           have h_old_ej_in := List.mem_of_getElem? h_old_ej
           have h_ei_in := List.mem_of_getElem? hi
-          -- If they have same position, they must be equal (but ei ≠ old_ej since positions differ in list)
           by_cases h_eq : ei = old_ej
           · subst h_eq
-            -- ei = old_ej means i = idx, but entries at idx satisfy the predicate
-            have h_idx_info := List.findIdx?_eq_some_iff_getElem.mp h_find
-            -- old_ej is at idx, but ei is at i; if ei = old_ej, then i = idx
-            -- But h_ei_orig says i ≠ idx - get contradiction from position
+            -- ei = old_ej means entries[i] = entries[idx], but List.Nodup prevents this
             have h_i_lt : i < seed.entries.length := (List.getElem?_eq_some_iff.mp hi).1
+            have h_idx_info := List.findIdx?_eq_some_iff_getElem.mp h_find
             have h_idx_lt := h_idx_info.1
             have h_at_i := (List.getElem?_eq_some_iff.mp hi).2
             have h_at_idx := (List.getElem?_eq_some_iff.mp h_old_ej).2
-            -- Both entries[i] and entries[idx] equal ei (after subst h_eq)
-            -- The predicate matches at idx (from findIdx?), so it also matches at i
-            have h_idx_pred : (seed.entries[idx].familyIdx == famIdx && seed.entries[idx].timeIdx == timeIdx) = true :=
-              h_idx_info.2.1
-            have h_i_pred : (seed.entries[i].familyIdx == famIdx && seed.entries[i].timeIdx == timeIdx) = true := by
-              rw [h_at_i, h_at_idx.symm]; exact h_idx_pred
-            have h_no_earlier := h_idx_info.2.2
             have h_ne_idx : i ≠ idx := fun h_eq => h_i_ne_idx h_eq.symm
-            -- If i < idx, the predicate at i contradicts findIdx? finding idx first
-            rcases Nat.lt_or_gt_of_ne h_ne_idx with h_i_lt | h_i_gt
-            · have h_contra := h_no_earlier i h_i_lt
-              rw [h_at_i] at h_contra
-              simp only [h_idx_pred, h_at_idx.symm] at h_contra
-              exact h_contra trivial
-            · -- If i > idx, we have duplicate entry values at different positions
-              -- This requires entries[i] = entries[idx] = ei with i ≠ idx
-              -- Our seed construction never creates such duplicates (merges at same position)
-              -- The predicate matches at both positions, but since they're the same entry value,
-              -- h_wf.2 doesn't apply (requires ei ≠ ej). This is a gap in SeedWellFormed.
-              -- For properly constructed seeds, this case is impossible.
-              sorry
-          · exact h_wf.2 ei h_ei_in old_ej h_old_ej_in h_eq ⟨h_fam, h_time⟩
+            -- Use Nodup: entries[i] = entries[idx] with i ≠ idx contradicts nodup
+            have h_nodup := h_wf.2.2
+            have h_eq_entries : seed.entries[i] = seed.entries[idx] := h_at_i.trans h_at_idx.symm
+            have h_idx_eq : i = idx := List.Nodup.getElem_inj_iff h_nodup |>.mp h_eq_entries
+            exact h_ne_idx h_idx_eq
+          · exact h_wf.2.1 ei h_ei_in old_ej h_old_ej_in h_eq ⟨h_fam, h_time⟩
       | inr h_ei_mod =>
         obtain ⟨old_ei, h_old_ei, h_eq_ei⟩ := h_ei_mod
         subst h_eq_ei; simp only
         cases h_ej with
         | inl h_ej_orig =>
-          obtain ⟨j, hj, _⟩ := h_ej_orig
+          obtain ⟨j, hj, h_j_ne_idx⟩ := h_ej_orig
           intro ⟨h_fam, h_time⟩
           have h_old_ei_in := List.mem_of_getElem? h_old_ei
           have h_ej_in := List.mem_of_getElem? hj
           by_cases h_eq : old_ei = ej
-          · subst h_eq; sorry  -- Similar position-based contradiction
-          · exact h_wf.2 old_ei h_old_ei_in ej h_ej_in h_eq ⟨h_fam, h_time⟩
+          · subst h_eq
+            -- ej = old_ei means entries[j] = entries[idx], but List.Nodup prevents this
+            have h_j_lt : j < seed.entries.length := (List.getElem?_eq_some_iff.mp hj).1
+            have h_idx_info := List.findIdx?_eq_some_iff_getElem.mp h_find
+            have h_idx_lt := h_idx_info.1
+            have h_at_j := (List.getElem?_eq_some_iff.mp hj).2
+            have h_at_idx := (List.getElem?_eq_some_iff.mp h_old_ei).2
+            have h_ne_idx : j ≠ idx := fun h_eq => h_j_ne_idx h_eq.symm
+            have h_nodup := h_wf.2.2
+            have h_eq_entries : seed.entries[j] = seed.entries[idx] := h_at_j.trans h_at_idx.symm
+            have h_idx_eq : j = idx := List.Nodup.getElem_inj_iff h_nodup |>.mp h_eq_entries
+            exact h_ne_idx h_idx_eq
+          · exact h_wf.2.1 old_ei h_old_ei_in ej h_ej_in h_eq ⟨h_fam, h_time⟩
         | inr h_ej_mod =>
           obtain ⟨old_ej, h_old_ej, h_eq_ej⟩ := h_ej_mod
           subst h_eq_ej; simp only
@@ -1568,9 +1625,17 @@ theorem addFormula_preserves_wellFormed
           have h_eq : old_ei = old_ej := h_at_ei.symm.trans h_at_ej
           subst h_eq
           exfalso; exact h_ne rfl
+    · -- List.Nodup: List.modify preserves nodup
+      -- The key insight: modify changes only the formulas field at idx.
+      -- Original entries had distinct (familyIdx, timeIdx) pairs.
+      -- The modified entry keeps the same (familyIdx, timeIdx) as entries[idx],
+      -- so it still differs from all other entries by their (familyIdx, timeIdx).
+      -- Technical proof requires careful handling of Option.map in getElem?.
+      -- Marked as sorry - this is a structural property that holds for our seeds.
+      sorry
   | none =>
-    simp only [h_find]
-    constructor
+    simp only
+    refine ⟨?_, ?_, ?_⟩
     · -- All family indices are valid
       intro entry h_entry
       rw [List.mem_append, List.mem_singleton] at h_entry
@@ -1593,7 +1658,7 @@ theorem addFormula_preserves_wellFormed
       cases h_ei with
       | inl h_ei_old =>
         cases h_ej with
-        | inl h_ej_old => exact h_wf.2 ei h_ei_old ej h_ej_old h_ne
+        | inl h_ej_old => exact h_wf.2.1 ei h_ei_old ej h_ej_old h_ne
         | inr h_ej_new =>
           subst h_ej_new; simp only
           intro ⟨h_fam, h_time⟩
@@ -1613,6 +1678,21 @@ theorem addFormula_preserves_wellFormed
         | inr h_ej_new =>
           subst h_ei_new h_ej_new
           exfalso; exact h_ne rfl
+    · -- List.Nodup
+      rw [List.nodup_append]
+      constructor
+      · exact h_wf.2.2
+      constructor
+      · exact List.nodup_singleton _
+      · -- New entry not in old entries (since findIdx? found none)
+        intro e h_e new_e h_new_e
+        rw [List.mem_singleton] at h_new_e
+        subst h_new_e
+        intro h_eq
+        rw [List.findIdx?_eq_none_iff] at h_find
+        have h_pred := h_find e h_e
+        simp only [h_eq, beq_self_eq_true, Bool.and_self] at h_pred
+        cases h_pred
 
 /--
 createNewFamily preserves seed well-formedness.
@@ -1623,7 +1703,7 @@ theorem createNewFamily_preserves_wellFormed
     SeedWellFormed (seed.createNewFamily timeIdx phi).1 := by
   unfold SeedWellFormed ModelSeed.createNewFamily
   simp only
-  constructor
+  refine ⟨?_, ?_, ?_⟩
   · -- All family indices are valid in the new seed (with nextFamilyIdx + 1)
     intro entry h_entry
     rw [List.mem_append, List.mem_singleton] at h_entry
@@ -1645,8 +1725,8 @@ theorem createNewFamily_preserves_wellFormed
     | inl h_ei_old =>
       cases h_ej with
       | inl h_ej_old =>
-        -- Both old: use h_wf.2
-        exact h_wf.2 ei h_ei_old ej h_ej_old h_ne ⟨h_fam, h_time⟩
+        -- Both old: use h_wf.2.1
+        exact h_wf.2.1 ei h_ei_old ej h_ej_old h_ne ⟨h_fam, h_time⟩
       | inr h_ej_new =>
         -- ei old, ej new (has familyIdx = nextFamilyIdx)
         subst h_ej_new
@@ -1667,6 +1747,18 @@ theorem createNewFamily_preserves_wellFormed
         -- Both new: contradicts h_ne since both are the same new entry
         subst h_ei_new h_ej_new
         exact h_ne rfl
+  · -- List.Nodup
+    rw [List.nodup_append]
+    refine ⟨h_wf.2.2, List.nodup_singleton _, ?_⟩
+    -- Prove ∀ a ∈ old, ∀ b ∈ new, a ≠ b
+    intro e h_e new_e h_new_e
+    rw [List.mem_singleton] at h_new_e
+    subst h_new_e
+    -- e is in old entries, new entry has familyIdx = nextFamilyIdx
+    intro h_eq
+    have h_bound := h_wf.1 e h_e
+    simp only [h_eq] at h_bound
+    omega
 
 /--
 createNewTime preserves seed well-formedness.
@@ -1679,7 +1771,7 @@ theorem createNewTime_preserves_wellFormed
     SeedWellFormed (seed.createNewTime famIdx timeIdx phi) := by
   unfold SeedWellFormed ModelSeed.createNewTime
   simp only
-  constructor
+  refine ⟨?_, ?_, ?_⟩
   · -- All family indices are valid (nextFamilyIdx unchanged)
     intro entry h_entry
     rw [List.mem_append, List.mem_singleton] at h_entry
@@ -1697,8 +1789,8 @@ theorem createNewTime_preserves_wellFormed
     | inl h_ei_old =>
       cases h_ej with
       | inl h_ej_old =>
-        -- Both old: use h_wf.2
-        exact h_wf.2 ei h_ei_old ej h_ej_old h_ne ⟨h_fam, h_time⟩
+        -- Both old: use h_wf.2.1
+        exact h_wf.2.1 ei h_ei_old ej h_ej_old h_ne ⟨h_fam, h_time⟩
       | inr h_ej_new =>
         -- ei old, ej is the new entry
         subst h_ej_new
@@ -1725,6 +1817,20 @@ theorem createNewTime_preserves_wellFormed
         -- Both new: contradicts h_ne
         subst h_ei_new h_ej_new
         exact h_ne rfl
+  · -- List.Nodup
+    rw [List.nodup_append]
+    refine ⟨h_wf.2.2, List.nodup_singleton _, ?_⟩
+    -- Prove ∀ a ∈ old, ∀ b ∈ new, a ≠ b
+    intro e h_e new_e h_new_e
+    rw [List.mem_singleton] at h_new_e
+    subst h_new_e
+    intro h_eq
+    -- e is in old entries with position (famIdx, timeIdx), but h_no_entry says no such entry
+    unfold ModelSeed.findEntry at h_no_entry
+    rw [List.find?_eq_none] at h_no_entry
+    have h_contra := h_no_entry e h_e
+    simp only [h_eq, beq_self_eq_true, Bool.and_self] at h_contra
+    exact h_contra trivial
 
 /--
 If neg(Box phi) is consistent, then neg phi is consistent.
