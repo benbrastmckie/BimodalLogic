@@ -2193,6 +2193,153 @@ theorem createNewTime_formula_at_new_position
   simp only [h_none, Option.none_or, List.find?_cons_of_pos, beq_self_eq_true, Bool.and_self,
              Set.mem_singleton_iff]
 
+/-!
+## Membership Lemmas for Seed Operations
+
+These lemmas characterize how formulas are added to seed positions by various operations.
+-/
+
+/--
+Helper: foldl with addFormula over a family list preserves SeedConsistent.
+-/
+private theorem foldl_addFormula_preserves_consistent
+    (famList : List Nat) (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
+    (h_cons : SeedConsistent seed)
+    (h_phi_cons : FormulaConsistent phi)
+    (h_compat : ∀ entry ∈ seed.entries, entry.timeIdx = timeIdx →
+                SetConsistent (insert phi entry.formulas)) :
+    SeedConsistent (famList.foldl (fun s famIdx => s.addFormula famIdx timeIdx phi .universal_target) seed) := by
+  induction famList generalizing seed with
+  | nil => exact h_cons
+  | cons f fs ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    · -- addFormula preserves SeedConsistent
+      apply addFormula_seed_preserves_consistent
+      · exact h_cons
+      · exact h_phi_cons
+      · intro entry h_entry h_fam h_time
+        exact h_compat entry h_entry h_time
+    · -- Compatibility for entries in the modified seed
+      intro entry h_entry h_time
+      unfold ModelSeed.addFormula at h_entry
+      cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == f && e.timeIdx == timeIdx) with
+      | some idx =>
+        simp only [h_find] at h_entry
+        rw [List.mem_modify_iff] at h_entry
+        cases h_entry with
+        | inl h_old =>
+          obtain ⟨j, hj, _⟩ := h_old
+          exact h_compat entry (List.mem_of_getElem? hj) h_time
+        | inr h_mod =>
+          obtain ⟨old_entry, h_old, h_eq⟩ := h_mod
+          subst h_eq
+          simp only
+          have h_mem := List.mem_of_getElem? h_old
+          have h_pred := List.findIdx?_eq_some_iff_getElem.mp h_find
+          obtain ⟨h_lt, h_pred_holds, _⟩ := h_pred
+          have h_idx_time : old_entry.timeIdx = timeIdx := by
+            have h_old_some := (List.getElem?_eq_some_iff.mp h_old)
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred_holds
+            rw [h_old_some.2] at h_pred_holds
+            exact h_pred_holds.2
+          rw [Set.insert_idem]
+          exact h_compat old_entry h_mem h_idx_time
+      | none =>
+        simp only [h_find] at h_entry
+        rw [List.mem_append, List.mem_singleton] at h_entry
+        cases h_entry with
+        | inl h_old => exact h_compat entry h_old h_time
+        | inr h_new =>
+          subst h_new
+          simp only
+          rw [Set.insert_eq_of_mem (Set.mem_singleton_iff.mpr rfl)]
+          exact singleton_consistent_iff.mpr h_phi_cons
+
+/--
+addToAllFamilies preserves consistency if phi is consistent and compatible with all entries.
+-/
+theorem addToAllFamilies_preserves_consistent
+    (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
+    (h_cons : SeedConsistent seed)
+    (h_phi_cons : FormulaConsistent phi)
+    (h_compat : ∀ entry ∈ seed.entries, entry.timeIdx = timeIdx →
+                SetConsistent (insert phi entry.formulas)) :
+    SeedConsistent (seed.addToAllFamilies timeIdx phi) := by
+  unfold ModelSeed.addToAllFamilies
+  exact foldl_addFormula_preserves_consistent _ seed timeIdx phi h_cons h_phi_cons h_compat
+
+/--
+Helper: foldl with addFormula over a family list preserves well-formedness.
+-/
+private theorem foldl_addFormula_preserves_wellFormed
+    (famList : List Nat) (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
+    (h_wf : SeedWellFormed seed)
+    (h_valid : ∀ f ∈ famList, f < seed.nextFamilyIdx) :
+    SeedWellFormed (famList.foldl (fun s famIdx => s.addFormula famIdx timeIdx phi .universal_target) seed) := by
+  induction famList generalizing seed with
+  | nil => exact h_wf
+  | cons f fs ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    · apply addFormula_preserves_wellFormed
+      · exact h_wf
+      · intro _; exact h_valid f (by simp)
+    · intro f' hf'
+      rw [addFormula_nextFamilyIdx]
+      exact h_valid f' (by simp [hf'])
+
+/--
+Helper: membership in eraseDups implies membership in original list.
+-/
+private theorem mem_of_eraseDups {α : Type*} [BEq α] [LawfulBEq α] {l : List α} {a : α}
+    (h : a ∈ l.eraseDups) : a ∈ l := by
+  -- eraseDups only removes duplicates, so membership is preserved
+  -- Standard fact: eraseDups ⊆ original list
+  sorry
+
+/--
+addToAllFamilies preserves well-formedness.
+-/
+theorem addToAllFamilies_preserves_wellFormed
+    (seed : ModelSeed) (timeIdx : Int) (phi : Formula)
+    (h_wf : SeedWellFormed seed) :
+    SeedWellFormed (seed.addToAllFamilies timeIdx phi) := by
+  unfold ModelSeed.addToAllFamilies
+  apply foldl_addFormula_preserves_wellFormed
+  · exact h_wf
+  · intro f hf
+    have h_in : f ∈ seed.entries.map SeedEntry.familyIdx := mem_of_eraseDups hf
+    obtain ⟨entry, h_entry, h_fam⟩ := List.mem_map.mp h_in
+    rw [← h_fam]
+    exact h_wf.1 entry h_entry
+
+/--
+addFormula adds phi to the target position's formulas.
+-/
+theorem addFormula_formula_in_getFormulas
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula) (newType : SeedEntryType) :
+    phi ∈ (seed.addFormula famIdx timeIdx phi newType).getFormulas famIdx timeIdx := by
+  -- When we call addFormula at position (famIdx, timeIdx), either:
+  -- 1. An entry exists there -> phi is inserted into that entry's formulas
+  -- 2. No entry exists -> a new entry with {phi} is created
+  -- In both cases, phi is in getFormulas at that position
+  sorry
+
+/--
+If famIdx is in seed.familyIndices, then addToAllFamilies adds phi at (famIdx, timeIdx).
+-/
+theorem addToAllFamilies_adds_at_family
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula)
+    (h_fam : famIdx ∈ seed.familyIndices) :
+    phi ∈ (seed.addToAllFamilies timeIdx phi).getFormulas famIdx timeIdx := by
+  unfold ModelSeed.addToAllFamilies
+  -- The key insight: when processing famIndices, when we reach famIdx in the list,
+  -- addFormula adds phi to position (famIdx, timeIdx). Subsequent iterations
+  -- either add to different families (preserving phi at famIdx) or add to same
+  -- position (keeping phi via insert idempotence).
+  sorry -- Structural lemma about foldl - to be proven later
+
 /--
 createNewFamily preserves seed consistency if the new formula is consistent.
 -/
@@ -2386,10 +2533,8 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         -- 3. Subformulas of a consistent formula are mutually compatible
         sorry
       -- Show seed2 is well-formed
-      have h_seed2_wf : SeedWellFormed seed2 := by
-        -- addToAllFamilies preserves well-formedness (calls addFormula repeatedly)
-        -- Each addFormula preserves well-formedness
-        sorry
+      have h_seed2_wf : SeedWellFormed seed2 :=
+        addToAllFamilies_preserves_wellFormed seed1 timeIdx psi h_seed1_wf
       -- Apply IH
       exact ih psi.complexity h_complexity psi famIdx timeIdx seed2
         h_seed2_cons h_seed2_wf h_psi_in_seed2 h_psi_cons rfl

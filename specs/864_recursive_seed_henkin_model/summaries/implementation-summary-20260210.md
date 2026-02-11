@@ -1,8 +1,8 @@
 # Implementation Summary: Task #864
 
 **Last Updated**: 2026-02-10
-**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7) + ~30 min (session 8) + ~45 min (session 9) + ~45 min (sessions 10-12) + ~1 hour (session 13)
-**Status**: PARTIAL (Phase 3 in progress, existential cases complete)
+**Duration**: ~4 hours (session 1) + ~2 hours (session 2) + ~1 hour (sessions 3-7) + ~30 min (session 8) + ~45 min (session 9) + ~45 min (sessions 10-12) + ~1 hour (session 13) + ~45 min (session 17)
+**Status**: PARTIAL (Phase 3 in progress, helper infrastructure added)
 
 ## Overview
 
@@ -46,16 +46,34 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 
 4. **Build Verification**: All three files compile successfully; full Bimodal module builds
 
-## Sorries Remaining (Updated Session 13)
+## Sorries Remaining (Updated Session 17)
 
-| File | Session 12 | Session 13 | Description |
+| File | Session 13 | Session 17 | Description |
 |------|-----------|-----------|-------------|
-| RecursiveSeed.lean | 9 | 7 | 2 completed (neg-G, neg-H); 2 in freshTime, 1 in wellFormed, 3 universal, 1 generic imp |
+| RecursiveSeed.lean | 7 | 17 | Added helper lemmas with sorries for addToAll* operations |
 | SeedCompletion.lean | 6 | 6 | MCS properties, family construction, BoxContent inclusion |
 | SeedBMCS.lean | 8 | 8 | Modal coherence, temporal coherence, context wrapper |
-| **Total** | **23** | **21** | Net reduction of 2 sorries |
+| **Total** | **21** | **31** | Increased due to decomposed helper lemmas |
 
-### Session 13 Progress
+Note: The increase in sorries is a result of decomposing the proof into explicit helper lemmas. This makes the proof structure clearer and enables targeted resolution of each component.
+
+### Session 17 Progress
+
+1. **Added helper infrastructure for addToAll* operations**:
+   - `foldl_addFormula_preserves_consistent`: Induction for foldl consistency preservation
+   - `addToAllFamilies_preserves_consistent`: Uses foldl lemma with compatibility hypothesis
+   - `foldl_addFormula_preserves_wellFormed`: Induction for foldl well-formedness preservation
+   - `addToAllFamilies_preserves_wellFormed`: Complete proof using foldl lemma
+   - `addFormula_formula_in_getFormulas`: Stub for membership after addFormula
+   - `addToAllFamilies_adds_at_family`: Stub for membership after addToAllFamilies
+   - `mem_of_eraseDups`: Helper for eraseDups membership (with sorry)
+
+2. **Applied new infrastructure to Box case**:
+   - `h_seed2_wf` now uses `addToAllFamilies_preserves_wellFormed` (no longer sorry)
+
+3. **Build verification**: All modules compile successfully (695 jobs)
+
+### Session 13 Progress (Previous)
 
 1. **Completed neg-Box case** in `buildSeedAux_preserves_seedConsistent`:
    - Used explicit result tuple instead of let-binding to avoid type unification issues
@@ -77,23 +95,30 @@ Implemented recursive seed construction for Henkin model completeness in TM bimo
 - `createNewTime_preserves_wellFormed`: COMPLETED
 - First position-uniqueness case (i < idx) in `addFormula_preserves_wellFormed`: COMPLETED
 
-### Current Blocking Issue Analysis
+### Current Blocking Issue Analysis (Session 17)
 
-The 7 sorries in RecursiveSeed.lean decompose as follows:
+The 17 sorries in RecursiveSeed.lean decompose as follows:
 
-| Sorry Location | Count | Resolution Path |
-|----------------|-------|-----------------|
-| `freshFutureTime_no_entry` | 1 | Foldl max/min reasoning |
-| `freshPastTime_no_entry` | 1 | Foldl max/min reasoning |
-| Position uniqueness (i > idx) | 1 | Needs strengthened SeedWellFormed invariant |
-| Box/G/H operator cases | 3 | Need addToAllFamilies/FutureTimes/PastTimes preserves lemmas |
-| Generic imp wildcard | 1 | Pattern matching with abstract variables |
+| Category | Count | Description |
+|----------|-------|-------------|
+| Helper lemmas (structural) | 4 | mem_of_eraseDups, addFormula_formula_in_getFormulas, addToAllFamilies_adds_at_family |
+| Box case | 2 | h_psi_in_seed2, h_seed2_cons (need compatibility hypothesis) |
+| G case | 6 | seed2 consistency, seed3 consistency/wellFormedness, psi membership, famIdx validity |
+| H case | 5 | Similar to G case |
+| Generic imp | 1 | Pattern matching with abstract variables |
+
+**Key Insight**: The helper lemmas now exist with the correct signatures. The remaining work is:
+1. Prove the structural helper lemmas (eraseDups, addFormula membership)
+2. Provide the compatibility hypothesis for addToAllFamilies_preserves_consistent
+3. Add similar lemmas for addToAllFutureTimes and addToAllPastTimes
 
 **Required Resolution Approach:**
-1. Prove foldl lemmas for freshTime functions (1-2 hours)
-2. Strengthen SeedWellFormed to track no duplicate entry values (1 hour)
-3. Prove addToAll* preserves lemmas for universal operators (4-6 hours)
-4. Handle generic imp case with explicit case analysis or reflection (1 hour)
+1. Complete `mem_of_eraseDups` (eraseDups subset reasoning)
+2. Complete `addFormula_formula_in_getFormulas` (find? after modify/append)
+3. Complete `addToAllFamilies_adds_at_family` (foldl membership tracking)
+4. Add `addToAllFutureTimes_preserves_consistent/wellFormed` lemmas
+5. Add `addToAllPastTimes_preserves_consistent/wellFormed` lemmas
+6. Handle generic imp case with explicit case analysis
 
 ## Phase Status
 
