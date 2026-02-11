@@ -143,38 +143,34 @@ The proof structure is in place but the detailed propagation arguments are pendi
 
 ---
 
-### Phase 4: Zorn Application [IN PROGRESS]
+### Phase 4: Zorn Application [PARTIAL]
 
 **Goal**: Apply Zorn's lemma to obtain a maximal coherent partial family.
 
 **Tasks**:
-- [ ] Define `CoherentPartialFamilies` as the set of all coherent partial families extending base
-- [ ] Construct base family with domain = {0} containing context
-- [ ] Apply `zorn_le_nonempty₀` or `zorn_preorder_nonempty`
-- [ ] Extract maximal element
+- [x] Define `CoherentExtensions` as the set of coherent partial families extending base
+- [x] Construct base family infrastructure (buildBaseFamily)
+- [x] Structure for Zorn application (maximalCoherentFamily)
+- [ ] Complete Zorn lemma application (3 sorries)
 
-**Timing**: 2-3 hours
+**Technical Debt Status**:
+The Zorn application has 3 sorries:
+1. `maximalCoherentFamily` definition (Classical.choice placeholder)
+2. `maximalCoherentFamily_extends` (base extension property)
+3. `maximalCoherentFamily_maximal` (maximality property)
 
-**Files to modify**:
+The base family construction also has 2 sorries for forward_F/backward_P since
+a singleton domain cannot satisfy these without temporal saturation.
+
+**Files modified**:
 - `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean`
 
-**Key Theorem**:
-```lean
-theorem maximal_coherent_partial_family_exists (Gamma : List Formula)
-    (h_cons : ContextConsistent Gamma) :
-    ∃ F : CoherentPartialFamily,
-      (∀ gamma ∈ Gamma, gamma ∈ F.mcs 0) ∧
-      0 ∈ F.domain ∧
-      (∀ G : CoherentPartialFamily, F.le G → G.le F)
-```
-
 **Verification**:
-- `lake build` succeeds
-- Maximal family existence compiles
+- `lake build` succeeds (with sorry warnings)
 
 ---
 
-### Phase 5: Maximality Implies Totality [NOT STARTED]
+### Phase 5: Maximality Implies Totality [BLOCKED]
 
 **Goal**: Prove that a maximal coherent partial family has domain = Set.univ.
 
@@ -205,7 +201,7 @@ lemma maximal_coherent_family_total (F : CoherentPartialFamily)
 
 ---
 
-### Phase 6: Final Construction and Integration [NOT STARTED]
+### Phase 6: Final Construction and Integration [BLOCKED]
 
 **Goal**: Extract IndexedMCSFamily and prove all properties, replacing DovetailingChain sorries.
 
