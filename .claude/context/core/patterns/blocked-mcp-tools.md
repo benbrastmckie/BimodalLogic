@@ -1,6 +1,6 @@
 # Blocked MCP Tools Reference
 
-**Last Updated**: 2026-01-28
+**Last Updated**: 2026-02-11
 
 This document is the authoritative reference for blocked MCP tools. These tools must NOT be called directly due to known issues.
 
@@ -8,18 +8,18 @@ This document is the authoritative reference for blocked MCP tools. These tools 
 
 | Tool | Bug | Alternative |
 |------|-----|-------------|
-| `lean_diagnostic_messages` | lean-lsp-mcp #118 | `lean_goal` or `lake build` |
-| `lean_file_outline` | lean-lsp-mcp #115 | `Read` + `lean_hover_info` |
+| `lean_diagnostic_messages` | lean-lsp-mcp #115 | `lean_goal` or `lake build` |
+| `lean_file_outline` | No specific issue (see notes) | `Read` + `lean_hover_info` |
 
 ## Blocked Tools
 
 ### lean_diagnostic_messages
 
 **Status**: BLOCKED (DO NOT USE)
-**Bug Reference**: [lean-lsp-mcp #118](https://github.com/joshuaferrara/lean-lsp-mcp/issues/118)
+**Bug Reference**: [lean-lsp-mcp #115](https://github.com/oOo0oOo/lean-lsp-mcp/issues/115)
 **Tool ID**: `mcp__lean-lsp__lean_diagnostic_messages`
 
-**Problem**: Returns inconsistent or incorrect diagnostic information. Can cause agent confusion and incorrect error handling decisions.
+**Problem**: Server halts indefinitely when this tool is called after file imports have been edited (e.g., adding `import Mathlib`). The tool works correctly on the first call, but subsequent calls after import changes cause the MCP server to hang and never respond. Requires server restart to recover.
 
 **Alternatives**:
 - `lean_goal` - Check proof state at a specific line to see errors in context
@@ -32,10 +32,10 @@ This document is the authoritative reference for blocked MCP tools. These tools 
 ### lean_file_outline
 
 **Status**: BLOCKED (DO NOT USE)
-**Bug Reference**: [lean-lsp-mcp #115](https://github.com/joshuaferrara/lean-lsp-mcp/issues/115)
+**Bug Reference**: No specific GitHub issue exists for hanging behavior
 **Tool ID**: `mcp__lean-lsp__lean_file_outline`
 
-**Problem**: Returns incomplete or malformed outline information. The tool's output is unreliable for determining file structure.
+**Problem**: Originally blocked due to hanging behavior, but no specific GitHub issue documents this problem. Related issue [#97](https://github.com/oOo0oOo/lean-lsp-mcp/issues/97) (diagnostics truncated after file_outline) was closed in December 2025. The tool may no longer be problematic, but remains blocked pending verification testing.
 
 **Alternatives**:
 - `Read` - Read the file directly to see its full contents

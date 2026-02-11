@@ -126,8 +126,8 @@ Standard actions: `create`, `complete research`, `create implementation plan`, `
 
 | Tool | Bug | Alternative |
 |------|-----|-------------|
-| `lean_diagnostic_messages` | lean-lsp-mcp #118 | `lean_goal` or `lake build` |
-| `lean_file_outline` | lean-lsp-mcp #115 | `Read` + `lean_hover_info` |
+| `lean_diagnostic_messages` | lean-lsp-mcp #115 | `lean_goal` or `lake build` |
+| `lean_file_outline` | No specific issue (see docs) | `Read` + `lean_hover_info` |
 
 **Full documentation**: @.claude/context/core/patterns/blocked-mcp-tools.md
 
