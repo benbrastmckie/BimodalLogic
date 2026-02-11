@@ -23,10 +23,12 @@ technical_debt:
 ## Tasks
 
 ### 867. Check if lean-lsp MCP GitHub issues for disabled tools have been resolved
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 0.5 hours
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-10
+- **Researched**: 2026-02-11
+- **Research**: [research-001.md](specs/867_check_lean_lsp_mcp_github_issues/reports/research-001.md)
 
 **Description**: Find the GitHub issues for the two lean-lsp MCP tools that have been disabled (they hang when used) and check if the issues are still open or have been closed.
 

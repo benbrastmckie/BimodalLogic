@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Issue #115 (diagnostic_messages halts) is OPEN - bug not fixed. Issue #118 is unrelated (build concurrency feature request). Documentation has incorrect issue references that need correction.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/867_check_lean_lsp_mcp_github_issues/reports/research-001.md",
+      "summary": "Research report on lean-lsp MCP GitHub issues status"
+    }
+  ],
+  "next_steps": "Run /plan 867 to create implementation plan for documentation corrections",
+  "metadata": {
+    "session_id": "sess_1770769976_b8b13a",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5
+  }
+}

@@ -8,11 +8,19 @@
     {
       "project_number": 867,
       "project_name": "check_lean_lsp_mcp_github_issues",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-11T00:31:36Z",
-      "last_updated": "2026-02-11T00:33:14Z",
-      "session_id": "sess_1770769976_b8b13a"
+      "last_updated": "2026-02-11T00:45:00Z",
+      "session_id": "sess_1770769976_b8b13a",
+      "researched": "2026-02-11T00:45:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/867_check_lean_lsp_mcp_github_issues/reports/research-001.md",
+          "summary": "Research report on lean-lsp MCP GitHub issues: #115 (diagnostic_messages halts) is OPEN, #118 is unrelated feature request. Documentation references need correction."
+        }
+      ]
     },
     {
       "project_number": 866,
@@ -88,8 +96,8 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-11T00:33:32Z",
-      "session_id": "sess_1770769033_98ba8f",
+      "last_updated": "2026-02-11T00:35:08Z",
+      "session_id": "sess_1770770094_8913cd",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
         {
