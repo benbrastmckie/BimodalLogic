@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 870,
+      "project_name": "zorn_family_temporal_coherence",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-11T22:28:31Z",
+      "last_updated": "2026-02-11T22:28:31Z"
+    },
+    {
       "project_number": 868,
       "project_name": "reinstate_lean_mcp_tools",
       "status": "blocked",
@@ -339,7 +347,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 870,
+  "next_project_number": 871,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

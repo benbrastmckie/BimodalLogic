@@ -1,5 +1,5 @@
 ---
-next_project_number: 870
+next_project_number: 871
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,14 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 870. Zorn-based family selection for temporal coherence
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-11
+
+**Description**: Use Zorn's lemma to construct IndexedMCSFamily with guaranteed cross-sign temporal coherence (forward_G, backward_H). This bypasses task 864's chain construction limitations where G phi at time t<0 cannot reach time t'>0 because chains extend away from time 0. Key approach: Define partial order on candidate families satisfying coherence properties, apply Zorn to obtain maximal element. See task 864 session 28-30 analysis for cross-sign challenge details, TemporalLindenbaum.lean for single-MCS Zorn infrastructure, DovetailingChain.lean:606,617 for blocked cross-sign cases. Critical: Ensure termination of Zorn argument, prove maximal family is actually an IndexedMCSFamily, handle witness enumeration for F/P formulas. Success eliminates DovetailingChain sorries at lines 606,617,633,640.
 
 ### 868. Reinstate lean-lsp MCP tools after GitHub issue resolution
 - **Effort**: 1 hour
