@@ -1,6 +1,7 @@
 import Bimodal.Syntax.Formula
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Theorems.GeneralizedNecessitation
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Set.Finite.Basic
 
@@ -1446,7 +1447,124 @@ theorem addFormula_preserves_wellFormed
     (newType : SeedEntryType) (h_wf : SeedWellFormed seed)
     (h_famIdx_valid : seed.findEntry famIdx timeIdx = none → famIdx < seed.nextFamilyIdx) :
     SeedWellFormed (seed.addFormula famIdx timeIdx phi newType) := by
-  sorry
+  unfold SeedWellFormed ModelSeed.addFormula at *
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | some idx =>
+    simp only [h_find]
+    constructor
+    · -- All family indices are valid: List.modify only changes formulas, not family indices
+      intro entry h_entry
+      rw [List.mem_modify_iff] at h_entry
+      cases h_entry with
+      | inl h_unchanged =>
+        obtain ⟨j, hj, _⟩ := h_unchanged
+        exact h_wf.1 entry (List.mem_of_getElem? hj)
+      | inr h_modified =>
+        obtain ⟨old_entry, h_old, h_eq⟩ := h_modified
+        subst h_eq; simp only
+        exact h_wf.1 old_entry (List.mem_of_getElem? h_old)
+    · -- Unique positions: List.modify preserves positions, only changes formulas
+      intro ei h_ei ej h_ej h_ne
+      rw [List.mem_modify_iff] at h_ei h_ej
+      -- Modified entries have same position as their originals
+      -- So if ei and ej have same position, their originals would too
+      cases h_ei with
+      | inl h_ei_orig =>
+        obtain ⟨i, hi, _⟩ := h_ei_orig
+        cases h_ej with
+        | inl h_ej_orig =>
+          obtain ⟨j, hj, _⟩ := h_ej_orig
+          exact h_wf.2 ei (List.mem_of_getElem? hi) ej (List.mem_of_getElem? hj) h_ne
+        | inr h_ej_mod =>
+          obtain ⟨old_ej, h_old_ej, h_eq_ej⟩ := h_ej_mod
+          subst h_eq_ej; simp only
+          intro ⟨h_fam, h_time⟩
+          -- ei is original at i, old_ej is original at idx
+          -- Modified entry has same familyIdx/timeIdx as old_ej
+          have h_old_ej_in := List.mem_of_getElem? h_old_ej
+          have h_ei_in := List.mem_of_getElem? hi
+          -- If they have same position, they must be equal (but ei ≠ old_ej since positions differ in list)
+          by_cases h_eq : ei = old_ej
+          · subst h_eq
+            -- ei = old_ej means i = idx, but entries at idx satisfy the predicate
+            have h_idx_info := List.findIdx?_eq_some_iff_getElem.mp h_find
+            -- old_ej is at idx, but ei is at i; if ei = old_ej, then i = idx
+            -- But h_ei_orig says i ≠ idx - get contradiction from position
+            have h_i_lt : i < seed.entries.length := (List.getElem?_eq_some_iff.mp hi).1
+            have h_idx_lt := h_idx_info.1
+            have h_at_i := (List.getElem?_eq_some_iff.mp hi).2
+            have h_at_idx := (List.getElem?_eq_some_iff.mp h_old_ej).2
+            -- Both point to the same entry, so positions must be equal - need i = idx
+            -- Since entries[i] = entries[idx] = ei, and we're in a proof context, use sorry here
+            -- (The full proof requires showing that List positions are unique for same values)
+            sorry
+          · exact h_wf.2 ei h_ei_in old_ej h_old_ej_in h_eq ⟨h_fam, h_time⟩
+      | inr h_ei_mod =>
+        obtain ⟨old_ei, h_old_ei, h_eq_ei⟩ := h_ei_mod
+        subst h_eq_ei; simp only
+        cases h_ej with
+        | inl h_ej_orig =>
+          obtain ⟨j, hj, _⟩ := h_ej_orig
+          intro ⟨h_fam, h_time⟩
+          have h_old_ei_in := List.mem_of_getElem? h_old_ei
+          have h_ej_in := List.mem_of_getElem? hj
+          by_cases h_eq : old_ei = ej
+          · subst h_eq; sorry  -- Similar position-based contradiction
+          · exact h_wf.2 old_ei h_old_ei_in ej h_ej_in h_eq ⟨h_fam, h_time⟩
+        | inr h_ej_mod =>
+          obtain ⟨old_ej, h_old_ej, h_eq_ej⟩ := h_ej_mod
+          subst h_eq_ej; simp only
+          -- Both modified from entries at idx, so old_ei = old_ej
+          have h_at_ei := (List.getElem?_eq_some_iff.mp h_old_ei).2
+          have h_at_ej := (List.getElem?_eq_some_iff.mp h_old_ej).2
+          have h_eq : old_ei = old_ej := h_at_ei.symm.trans h_at_ej
+          subst h_eq
+          exfalso; exact h_ne rfl
+  | none =>
+    simp only [h_find]
+    constructor
+    · -- All family indices are valid
+      intro entry h_entry
+      rw [List.mem_append, List.mem_singleton] at h_entry
+      cases h_entry with
+      | inl h_old => exact h_wf.1 entry h_old
+      | inr h_new =>
+        subst h_new; simp only
+        have h_findEntry_none : seed.findEntry famIdx timeIdx = none := by
+          unfold ModelSeed.findEntry
+          rw [List.find?_eq_none]
+          intro e he
+          rw [List.findIdx?_eq_none_iff] at h_find
+          have h_pred := h_find e he
+          simp only [Bool.eq_false_iff] at h_pred
+          exact h_pred
+        exact h_famIdx_valid h_findEntry_none
+    · -- Unique positions
+      intro ei h_ei ej h_ej h_ne
+      rw [List.mem_append, List.mem_singleton] at h_ei h_ej
+      cases h_ei with
+      | inl h_ei_old =>
+        cases h_ej with
+        | inl h_ej_old => exact h_wf.2 ei h_ei_old ej h_ej_old h_ne
+        | inr h_ej_new =>
+          subst h_ej_new; simp only
+          intro ⟨h_fam, h_time⟩
+          rw [List.findIdx?_eq_none_iff] at h_find
+          have h_pred := h_find ei h_ei_old
+          rw [h_fam.symm, h_time.symm, beq_self_eq_true, beq_self_eq_true, Bool.and_self] at h_pred
+          cases h_pred
+      | inr h_ei_new =>
+        cases h_ej with
+        | inl h_ej_old =>
+          subst h_ei_new; simp only
+          intro ⟨h_fam, h_time⟩
+          rw [List.findIdx?_eq_none_iff] at h_find
+          have h_pred := h_find ej h_ej_old
+          rw [h_fam, h_time, beq_self_eq_true, beq_self_eq_true, Bool.and_self] at h_pred
+          cases h_pred
+        | inr h_ej_new =>
+          subst h_ei_new h_ej_new
+          exfalso; exact h_ne rfl
 
 /--
 createNewFamily preserves seed well-formedness.
@@ -1588,11 +1706,46 @@ For atoms and box formulas where swap_past_future phi = phi, this gives H phi di
 theorem negH_consistent_implies_neg_consistent {phi : Formula}
     (h : FormulaConsistent (Formula.neg (Formula.all_past phi))) :
     FormulaConsistent (Formula.neg phi) := by
-  -- This proof is symmetric to negG_consistent_implies_neg_consistent but requires
-  -- using temporal_duality to get from G to H. The key insight is that if ⊢ phi,
-  -- then by the temporal axioms (H4 and related), we can derive ⊢ H phi.
-  -- For simplicity, we use sorry here as the proof is routine but lengthy.
-  sorry
+  intro ⟨d, _⟩
+  apply h
+  -- Similar structure to negG_consistent_implies_neg_consistent
+  have d_neg_neg : Bimodal.ProofSystem.DerivationTree [] phi.neg.neg :=
+    deduction_theorem [] phi.neg Formula.bot d
+  -- DNE to get [] ⊢ phi
+  have d_dne : Bimodal.ProofSystem.DerivationTree [] (phi.neg.neg.imp phi) := by
+    have step1 : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi := by
+      have h_neg_neg : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi.neg.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_neg : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] phi.neg :=
+        Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+      have h_bot : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] Formula.bot :=
+        Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_neg h_neg
+      have h_ex_falso : Bimodal.ProofSystem.DerivationTree [] (Formula.bot.imp phi) :=
+        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.ex_falso phi)
+      have h_ex_falso' : Bimodal.ProofSystem.DerivationTree [phi.neg, phi.neg.neg] (Formula.bot.imp phi) :=
+        Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_ex_falso (by intro; simp)
+      exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_ex_falso' h_bot
+    have step2 : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] (phi.neg.imp phi) :=
+      deduction_theorem [phi.neg.neg] phi.neg phi step1
+    have step3_peirce : Bimodal.ProofSystem.DerivationTree [] ((phi.neg.imp phi).imp phi) :=
+      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.peirce phi Formula.bot)
+    have step3_peirce' : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] ((phi.neg.imp phi).imp phi) :=
+      Bimodal.ProofSystem.DerivationTree.weakening [] _ _ step3_peirce (by intro; simp)
+    have step3 : Bimodal.ProofSystem.DerivationTree [phi.neg.neg] phi :=
+      Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ step3_peirce' step2
+    exact deduction_theorem [] phi.neg.neg phi step3
+  have d_phi : Bimodal.ProofSystem.DerivationTree [] phi :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_dne d_neg_neg
+  -- Use past necessitation (for H)
+  have d_h_phi : Bimodal.ProofSystem.DerivationTree [] phi.all_past :=
+    Bimodal.Theorems.past_necessitation _ d_phi
+  have d_h_phi' : Bimodal.ProofSystem.DerivationTree [phi.all_past.neg] phi.all_past :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_h_phi (by intro; simp)
+  have d_neg_h : Bimodal.ProofSystem.DerivationTree [phi.all_past.neg] phi.all_past.neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have d_bot : Bimodal.ProofSystem.DerivationTree [phi.all_past.neg] Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_neg_h d_h_phi'
+  exact ⟨d_bot, trivial⟩
 
 /--
 createNewFamily puts the formula at the new family position.

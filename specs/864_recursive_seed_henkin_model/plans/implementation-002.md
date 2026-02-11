@@ -264,10 +264,27 @@ After this implementation:
 - RecursiveSeed.lean has 11 sorries (was 10; added `negH_consistent_implies_neg_consistent` sorry)
 - Full Bimodal build succeeds (998 jobs)
 
-**Current Blocking Issues (Session 10):**
+**Progress Update (2026-02-10, Session 11):**
+- `negH_consistent_implies_neg_consistent`: COMPLETED using Bimodal.Theorems.past_necessitation
+  - Added import for Bimodal.Theorems.GeneralizedNecessitation
+  - Proof is symmetric to negG_consistent_implies_neg_consistent
+- `addFormula_preserves_wellFormed`: Substantially progressed
+  - Proved the `none` case completely (appending new entries)
+  - Proved `some idx` case with 2 remaining sorries for position uniqueness
+  - Structure uses List.modify_iff and findIdx?_eq_some_iff_getElem lemmas
+- RecursiveSeed.lean now has 11 sorries (1 resolved, 2 added in restructured proof)
+- Full Bimodal build succeeds (998 jobs)
+
+**Current Blocking Issues (Session 11):**
 - The 11 sorries in RecursiveSeed.lean decompose into:
-  - Well-formedness preservation (3): addFormula, createNewFamily, createNewTime
-  - negH consistency implication (1): Requires temporal duality derivation
+  - Position uniqueness in addFormula_preserves_wellFormed (2): Proving ei = old_ej implies i = idx
+  - Well-formedness preservation (2): createNewFamily, createNewTime (full proofs)
+  - buildSeedAux operator cases (7): Box/G/H (3), neg-Box/neg-G/neg-H (3), generic imp (1)
+
+**Resolved from Session 10:**
+- negH_consistent_implies_neg_consistent: NOW COMPLETED (was sorry)
+
+**Current Blocking Issues (Session 10, Updated):**
   - buildSeedAux operator cases (7): Box/G/H (3), neg-Box/neg-G/neg-H (3), generic imp (1)
 
 **Current Blocking Issues (Session 9):**
