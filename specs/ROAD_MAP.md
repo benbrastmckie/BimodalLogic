@@ -19,6 +19,11 @@
 Updated by /todo command during task archival.
 -->
 
+### 2026-02-11
+
+- **Task 869**: Implemented team mode for wave-based multi-agent coordination. Added --team flag to /research, /plan, /implement commands. Created skill-team-research, skill-team-plan, and skill-team-implement skills with synthesis and debug support.
+  - *References*: [summary](specs/archive/869_claude_teams_wave_coordination/summaries/implementation-summary-20260211.md)
+
 ### 2026-02-04
 
 - **Task 862**: Cleaned up TruthLemma.lean documentation to remove misleading comments about functional separation and ineffective solution suggestions. Added accurate documentation of the mathematical path to sorry-freedom via modified Lindenbaum construction (Task 857).

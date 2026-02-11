@@ -13510,6 +13510,39 @@
       "completed": "2026-02-04T09:52:21Z",
       "completion_summary": "Propagated axiom policy to agents, rules, and workflows. Added MUST NOT rules for 'acceptable axiom' framing to both Lean agents, added axiom verification checks to lean4.md testing section and verification-workflow.md Level 1 checks, and added Proof Debt Policy reference to CLAUDE.md.",
       "claudemd_suggestions": "Added Proof Debt Policy reference to CLAUDE.md (line 102), updated lean4.md context reference description, added Axiom Verification section to verification-workflow.md"
+    },
+    {
+      "project_number": 869,
+      "project_name": "claude_teams_wave_coordination",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-11T21:50:05Z",
+      "last_updated": "2026-02-11T22:12:59Z",
+      "session_id": "sess_1770847425_50b49b",
+      "researched": "2026-02-11T21:55:03Z",
+      "artifacts": [
+        {
+          "path": "specs/869_claude_teams_wave_coordination/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive research report covering Claude Teams integration, wave-based parallelization patterns, result aggregation, and implementation approach with --team flag"
+        },
+        {
+          "path": "specs/869_claude_teams_wave_coordination/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for Claude Teams wave coordination with --team flag integration"
+        },
+        {
+          "path": "specs/869_claude_teams_wave_coordination/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with all created files and changes"
+        }
+      ],
+      "planned": "2026-02-11T22:01:03Z",
+      "started": "2026-02-11T22:04:04Z",
+      "completed": "2026-02-11T22:12:59Z",
+      "completion_summary": "Implemented team mode for wave-based multi-agent coordination. Added --team flag to /research, /plan, /implement commands. Created skill-team-research, skill-team-plan, and skill-team-implement skills with synthesis and debug support. Updated orchestrator routing and error handling.",
+      "claudemd_suggestions": "Added 3 team skills (skill-team-research, skill-team-plan, skill-team-implement), 4 context/format files (team-orchestration.md, team-metadata-extension.md, debug-report-format.md, team-wave-helpers.md), updated CLAUDE.md command reference and skill mapping, updated README.md with Team Mode section, updated error-handling.md with team error types",
+      "archived": "2026-02-11T22:20:58Z"
     }
   ]
 }
