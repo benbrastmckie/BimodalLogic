@@ -342,6 +342,39 @@ After this implementation:
   - Generic imp case: 1 sorry (unchanged)
 - Full Bimodal build succeeds (695 jobs)
 
+**Progress Update (2026-02-11, Session 22):**
+- Deleted unused `find?_modify_diff_pred` lemma (was a sorry at line 2474)
+- Analyzed the 4 remaining sorries in depth:
+  - Line 3106: `addToAllFamilies_preserves_consistent` (Box case)
+  - Line 3204: `addToAllFutureTimes_preserves_consistent` (G case)
+  - Line 3318: `addToAllPastTimes_preserves_consistent` (H case)
+  - Line 3560: Generic imp case (pattern matching issue)
+- Attempted explicit case analysis for generic imp case:
+  - Discovered that nested match on (p1, p2) inside | p1, p2 => still needs to cover
+    cases that would reduce buildSeedAux to special handling (e.g., all_past/bot)
+  - These "unreachable" cases from the proof's perspective are still required by Lean
+  - Proof would need to use the special-case IH logic, not addFormula logic
+- Identified core blocking issue for addToAll* cases:
+  - When Box psi at position (famIdx, timeIdx), we add psi to ALL families at timeIdx
+  - Other families may have been created by neg Box (diamond witnesses) with unrelated formulas
+  - We need to prove {other_family_formulas ∪ {psi}} is consistent
+  - This requires showing all seed formulas are "mutually compatible"
+- Explored subformula compatibility hypothesis:
+  - Claim: "subformulas of a consistent formula are mutually compatible" is FALSE in general
+  - Counter-example: Box p ∧ Diamond(neg p) is consistent but {p, neg p} is not
+  - However, buildSeedAux follows a SINGLE PATH through the formula tree
+  - This structural property may prevent conflicting formulas from coexisting
+- RecursiveSeed.lean now has 4 sorries (down from 5)
+- Full Bimodal build succeeds (695 jobs)
+
+**Current Blocking Issues (Session 22):**
+- The 4 sorries require one of:
+  1. **Stronger invariant**: Track that all seed formulas derive from a single-path traversal
+     of the consistent root formula, ensuring mutual compatibility
+  2. **Structural argument**: Prove that buildSeedAux's single-path processing prevents
+     conflicts (e.g., can't have both Box psi and neg Box psi processed)
+  3. **Different proof approach**: Redesign the consistency proof to avoid addToAll* lemmas
+
 **Current Blocking Issues (Session 16):**
 - The 15 sorries decompose into:
   - Need `addToAllFamilies_preserves_consistent`: Adding psi to all families preserves consistency

@@ -2463,17 +2463,6 @@ theorem addFormula_formula_in_getFormulas
     exact Set.mem_insert phi entry.formulas
 
 /--
-Helper: find? on modified list when looking for different predicate is unchanged.
-NOTE: API compatibility issues - marked sorry for now.
--/
-private lemma find?_modify_diff_pred {α : Type*} (l : List α) (idx : Nat) (f : α → α) (p p' : α → Bool)
-    (h_idx : idx < l.length)
-    (h_p_idx : p (l.get ⟨idx, h_idx⟩) = true)
-    (h_p'_f : p' (f (l.get ⟨idx, h_idx⟩)) = p' (l.get ⟨idx, h_idx⟩)) :
-    (l.modify idx f).find? p' = l.find? p' := by
-  sorry
-
-/--
 Helper: addFormula at different family preserves getFormulas.
 NOTE: API compatibility issues - marked sorry for now.
 -/
