@@ -89,19 +89,19 @@ structure CoherentPartialFamily where
 
 ---
 
-### Phase 2: Chain Upper Bound Lemma [IN PROGRESS]
+### Phase 2: Chain Upper Bound Lemma [COMPLETED]
 
 **Goal**: Prove that chains of coherent partial families have upper bounds.
 
 **Tasks**:
-- [ ] Define chain union operation for CoherentPartialFamily
-- [ ] Prove domain of upper bound is union of domains
-- [ ] Prove MCS agreement: chain property forces unique MCS at each time
-- [ ] Prove forward_G inherited from chain
-- [ ] Prove backward_H inherited from chain
-- [ ] Prove forward_F inherited (witness time also in union)
-- [ ] Prove backward_P inherited (witness time also in union)
-- [ ] State and prove `coherent_chain_has_upper_bound`
+- [x] Define chain union operation for CoherentPartialFamily
+- [x] Prove domain of upper bound is union of domains
+- [x] Prove MCS agreement: chain property forces unique MCS at each time
+- [x] Prove forward_G inherited from chain
+- [x] Prove backward_H inherited from chain
+- [x] Prove forward_F inherited (witness time also in union)
+- [x] Prove backward_P inherited (witness time also in union)
+- [x] State and prove `coherent_chain_has_upper_bound`
 
 **Timing**: 3-4 hours
 
@@ -116,7 +116,7 @@ structure CoherentPartialFamily where
 
 ---
 
-### Phase 3: Extension Seed Consistency [NOT STARTED]
+### Phase 3: Extension Seed Consistency [IN PROGRESS]
 
 **Goal**: Prove that extending a partial family to a new time preserves consistency.
 

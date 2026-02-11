@@ -187,4 +187,180 @@ lemma CoherentPartialFamily.maximal (F : CoherentPartialFamily) (t : Int) (ht : 
     ∀ phi : Formula, phi ∉ F.mcs t → ¬SetConsistent (insert phi (F.mcs t)) :=
   (F.is_mcs t ht).2
 
+/-!
+## Part 5: Chain Upper Bound for Zorn
+
+When applying Zorn's lemma, we need to prove that every chain of coherent partial families
+has an upper bound. The upper bound is constructed by taking the union of domains and
+using chain monotonicity to define a consistent MCS at each time.
+-/
+
+/--
+For a chain C of coherent partial families (ordered by le), every time in the union of domains
+has a unique associated MCS (because chains agree on overlap by the le definition).
+-/
+lemma chain_mcs_unique {C : Set CoherentPartialFamily} (hC_chain : IsChain CoherentPartialFamily.le C)
+    (F G : CoherentPartialFamily) (hF : F ∈ C) (hG : G ∈ C) (t : Int)
+    (htF : t ∈ F.domain) (htG : t ∈ G.domain) : F.mcs t = G.mcs t := by
+  rcases hC_chain.total hF hG with hle | hle
+  · exact hle.2 t htF
+  · exact (hle.2 t htG).symm
+
+/--
+For a nonempty chain C, construct an upper bound: domain is the union, MCS at t is the MCS
+from any family in C containing t.
+-/
+noncomputable def chainUpperBound (C : Set CoherentPartialFamily)
+    (hC_ne : C.Nonempty) (hC_chain : IsChain CoherentPartialFamily.le C) :
+    CoherentPartialFamily where
+  domain := ⋃ F ∈ C, F.domain
+  mcs := fun t =>
+    if h : ∃ F ∈ C, t ∈ F.domain then
+      (Classical.choose h).mcs t
+    else
+      ∅  -- default: never used since we only care about t in domain
+  domain_nonempty := by
+    obtain ⟨F, hF⟩ := hC_ne
+    obtain ⟨t, ht⟩ := F.domain_nonempty
+    exact ⟨t, Set.mem_biUnion hF ht⟩
+  is_mcs := fun t ht => by
+    simp only [Set.mem_iUnion] at ht
+    obtain ⟨F, hF, htF⟩ := ht
+    have h : ∃ F ∈ C, t ∈ F.domain := ⟨F, hF, htF⟩
+    simp only [dif_pos h]
+    -- The chosen F' has t ∈ F'.domain by definition
+    have ⟨hF', htF'⟩ := Classical.choose_spec h
+    -- F and F' agree on t since they're in the same chain
+    have h_eq := chain_mcs_unique hC_chain F (Classical.choose h) hF hF' t htF htF'
+    rw [← h_eq]
+    exact F.is_mcs t htF
+  forward_G := fun t t' ht ht' h_lt phi h_G => by
+    simp only [Set.mem_iUnion] at ht ht'
+    obtain ⟨F, hF, htF⟩ := ht
+    obtain ⟨F', hF', htF'⟩ := ht'
+    -- Get the MCS at t and t' in the upper bound
+    have h_t : ∃ F ∈ C, t ∈ F.domain := ⟨F, hF, htF⟩
+    have h_t' : ∃ F ∈ C, t' ∈ F.domain := ⟨F', hF', htF'⟩
+    simp only [dif_pos h_t, dif_pos h_t']
+    -- By chain property, either F ≤ F' or F' ≤ F
+    rcases hC_chain.total hF hF' with hle | hle
+    · -- F ≤ F', so F.domain ⊆ F'.domain and F agrees with F' on F.domain
+      have htF'_from_F : t ∈ F'.domain := hle.1 htF
+      -- G phi is in F'.mcs t (since F and F' agree, and by chain definition)
+      have h_Ft := Classical.choose_spec h_t
+      have h_eq_t := chain_mcs_unique hC_chain (Classical.choose h_t) F' h_Ft.1 hF' t h_Ft.2 htF'_from_F
+      -- Use F'.forward_G
+      have h_G_in_F' : Formula.all_future phi ∈ F'.mcs t := by
+        rw [← h_eq_t]
+        exact h_G
+      have h_phi_in_F' := F'.forward_G t t' htF'_from_F htF' h_lt phi h_G_in_F'
+      -- The result MCS at t' is F'.mcs t' by chain agreement
+      have h_Ft' := Classical.choose_spec h_t'
+      have h_eq_t' := chain_mcs_unique hC_chain (Classical.choose h_t') F' h_Ft'.1 hF' t' h_Ft'.2 htF'
+      rw [← h_eq_t']
+      exact h_phi_in_F'
+    · -- F' ≤ F, so F'.domain ⊆ F.domain
+      have htF'_in_F : t' ∈ F.domain := hle.1 htF'
+      have h_Ft := Classical.choose_spec h_t
+      have h_eq_t := chain_mcs_unique hC_chain (Classical.choose h_t) F h_Ft.1 hF t h_Ft.2 htF
+      have h_G_in_F : Formula.all_future phi ∈ F.mcs t := by
+        rw [← h_eq_t]
+        exact h_G
+      have h_phi_in_F := F.forward_G t t' htF htF'_in_F h_lt phi h_G_in_F
+      have h_Ft' := Classical.choose_spec h_t'
+      have h_eq_t' := chain_mcs_unique hC_chain (Classical.choose h_t') F h_Ft'.1 hF t' h_Ft'.2 htF'_in_F
+      rw [← h_eq_t']
+      exact h_phi_in_F
+  backward_H := fun t t' ht' ht h_lt phi h_H => by
+    simp only [Set.mem_iUnion] at ht ht'
+    obtain ⟨F, hF, htF⟩ := ht
+    obtain ⟨F', hF', htF'⟩ := ht'
+    have h_t : ∃ F ∈ C, t ∈ F.domain := ⟨F, hF, htF⟩
+    have h_t' : ∃ F ∈ C, t' ∈ F.domain := ⟨F', hF', htF'⟩
+    simp only [dif_pos h_t, dif_pos h_t']
+    rcases hC_chain.total hF hF' with hle | hle
+    · have htF'_from_F : t ∈ F'.domain := hle.1 htF
+      have h_Ft := Classical.choose_spec h_t
+      have h_eq_t := chain_mcs_unique hC_chain (Classical.choose h_t) F' h_Ft.1 hF' t h_Ft.2 htF'_from_F
+      have h_H_in_F' : Formula.all_past phi ∈ F'.mcs t := by
+        rw [← h_eq_t]
+        exact h_H
+      have h_phi_in_F' := F'.backward_H t t' htF' htF'_from_F h_lt phi h_H_in_F'
+      have h_Ft' := Classical.choose_spec h_t'
+      have h_eq_t' := chain_mcs_unique hC_chain (Classical.choose h_t') F' h_Ft'.1 hF' t' h_Ft'.2 htF'
+      rw [← h_eq_t']
+      exact h_phi_in_F'
+    · have htF'_in_F : t' ∈ F.domain := hle.1 htF'
+      have h_Ft := Classical.choose_spec h_t
+      have h_eq_t := chain_mcs_unique hC_chain (Classical.choose h_t) F h_Ft.1 hF t h_Ft.2 htF
+      have h_H_in_F : Formula.all_past phi ∈ F.mcs t := by
+        rw [← h_eq_t]
+        exact h_H
+      have h_phi_in_F := F.backward_H t t' htF'_in_F htF h_lt phi h_H_in_F
+      have h_Ft' := Classical.choose_spec h_t'
+      have h_eq_t' := chain_mcs_unique hC_chain (Classical.choose h_t') F h_Ft'.1 hF t' h_Ft'.2 htF'_in_F
+      rw [← h_eq_t']
+      exact h_phi_in_F
+  forward_F := fun t ht phi h_F => by
+    simp only [Set.mem_iUnion] at ht
+    obtain ⟨F, hF, htF⟩ := ht
+    have h_t : ∃ F ∈ C, t ∈ F.domain := ⟨F, hF, htF⟩
+    simp only [dif_pos h_t] at h_F
+    -- Get witness from F
+    have h_Ft := Classical.choose_spec h_t
+    have h_eq_t := chain_mcs_unique hC_chain (Classical.choose h_t) F h_Ft.1 hF t h_Ft.2 htF
+    have h_F_in_F : Formula.some_future phi ∈ F.mcs t := by
+      rw [← h_eq_t]
+      exact h_F
+    obtain ⟨s, hs_dom, hs_lt, hs_phi⟩ := F.forward_F t htF phi h_F_in_F
+    -- s is in upper bound domain and phi is in mcs(s)
+    have h_s : ∃ F ∈ C, s ∈ F.domain := ⟨F, hF, hs_dom⟩
+    use s
+    refine ⟨Set.mem_biUnion hF hs_dom, hs_lt, ?_⟩
+    simp only [dif_pos h_s]
+    have h_Fs := Classical.choose_spec h_s
+    have h_eq_s := chain_mcs_unique hC_chain (Classical.choose h_s) F h_Fs.1 hF s h_Fs.2 hs_dom
+    rw [← h_eq_s]
+    exact hs_phi
+  backward_P := fun t ht phi h_P => by
+    simp only [Set.mem_iUnion] at ht
+    obtain ⟨F, hF, htF⟩ := ht
+    have h_t : ∃ F ∈ C, t ∈ F.domain := ⟨F, hF, htF⟩
+    simp only [dif_pos h_t] at h_P
+    have h_Ft := Classical.choose_spec h_t
+    have h_eq_t := chain_mcs_unique hC_chain (Classical.choose h_t) F h_Ft.1 hF t h_Ft.2 htF
+    have h_P_in_F : Formula.some_past phi ∈ F.mcs t := by
+      rw [← h_eq_t]
+      exact h_P
+    obtain ⟨s, hs_dom, hs_lt, hs_phi⟩ := F.backward_P t htF phi h_P_in_F
+    have h_s : ∃ F ∈ C, s ∈ F.domain := ⟨F, hF, hs_dom⟩
+    use s
+    refine ⟨Set.mem_biUnion hF hs_dom, hs_lt, ?_⟩
+    simp only [dif_pos h_s]
+    have h_Fs := Classical.choose_spec h_s
+    have h_eq_s := chain_mcs_unique hC_chain (Classical.choose h_s) F h_Fs.1 hF s h_Fs.2 hs_dom
+    rw [← h_eq_s]
+    exact hs_phi
+
+/-- The chain upper bound extends all members of the chain. -/
+lemma chainUpperBound_extends (C : Set CoherentPartialFamily)
+    (hC_ne : C.Nonempty) (hC_chain : IsChain CoherentPartialFamily.le C)
+    (F : CoherentPartialFamily) (hF : F ∈ C) :
+    F.le (chainUpperBound C hC_ne hC_chain) := by
+  constructor
+  · intro t ht
+    exact Set.mem_biUnion hF ht
+  · intro t ht
+    have h_t : ∃ F ∈ C, t ∈ F.domain := ⟨F, hF, ht⟩
+    simp only [chainUpperBound, dif_pos h_t]
+    exact chain_mcs_unique hC_chain F (Classical.choose h_t) hF (Classical.choose_spec h_t).1 t ht (Classical.choose_spec h_t).2
+
+/--
+Zorn chain upper bound lemma: Every chain of coherent partial families has an upper bound.
+-/
+theorem coherent_chain_has_upper_bound (C : Set CoherentPartialFamily)
+    (hC_ne : C.Nonempty) (hC_chain : IsChain CoherentPartialFamily.le C) :
+    ∃ ub : CoherentPartialFamily, ∀ F ∈ C, F.le ub :=
+  ⟨chainUpperBound C hC_ne hC_chain, chainUpperBound_extends C hC_ne hC_chain⟩
+
 end Bimodal.Metalogic.Bundle
