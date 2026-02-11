@@ -2290,13 +2290,42 @@ private theorem foldl_addFormula_preserves_wellFormed
       exact h_valid f' (by simp [hf'])
 
 /--
+Helper: eraseDups subset by length induction.
+-/
+private theorem eraseDups_subset_length {α : Type*} [BEq α] [LawfulBEq α] :
+    ∀ (n : Nat) (l : List α), l.length ≤ n → l.eraseDups ⊆ l := by
+  intro n
+  induction n with
+  | zero =>
+    intro l hl
+    have h_empty : l = [] := List.eq_nil_of_length_eq_zero (Nat.le_zero.mp hl)
+    simp [h_empty]
+  | succ n ih =>
+    intro l hl
+    match l with
+    | [] => simp
+    | x :: xs =>
+      simp only [List.eraseDups_cons]
+      intro a h
+      rw [List.mem_cons] at h ⊢
+      rcases h with h | h
+      · left; exact h
+      · right
+        have h_filter_len : (List.filter (fun b => !b == x) xs).length ≤ n := by
+          calc (List.filter (fun b => !b == x) xs).length
+              ≤ xs.length := List.length_filter_le _ _
+            _ ≤ n := by simp only [List.length_cons] at hl; omega
+        have h1 : (List.filter (fun b => !b == x) xs).eraseDups ⊆ List.filter (fun b => !b == x) xs :=
+          ih (List.filter (fun b => !b == x) xs) h_filter_len
+        have h2 : a ∈ List.filter (fun b => !b == x) xs := h1 h
+        exact List.mem_of_mem_filter h2
+
+/--
 Helper: membership in eraseDups implies membership in original list.
 -/
 private theorem mem_of_eraseDups {α : Type*} [BEq α] [LawfulBEq α] {l : List α} {a : α}
-    (h : a ∈ l.eraseDups) : a ∈ l := by
-  -- eraseDups only removes duplicates, so membership is preserved
-  -- Standard fact: eraseDups ⊆ original list
-  sorry
+    (h : a ∈ l.eraseDups) : a ∈ l :=
+  eraseDups_subset_length l.length l (le_refl _) h
 
 /--
 addToAllFamilies preserves well-formedness.
@@ -2315,16 +2344,226 @@ theorem addToAllFamilies_preserves_wellFormed
     exact h_wf.1 entry h_entry
 
 /--
+Helper: find? on modified list returns the modified element if predicate is preserved.
+-/
+private lemma find?_modify_of_preserves {α : Type*} (l : List α) (idx : Nat) (f : α → α) (p : α → Bool)
+    (h_idx : idx < l.length)
+    (h_pred : p l[idx] = true)
+    (h_pres : p (f l[idx]) = true)
+    (h_first : ∀ i, i < idx → p l[i] = false) :
+    (l.modify idx f).find? p = some (f l[idx]) := by
+  induction l generalizing idx with
+  | nil => simp at h_idx
+  | cons x xs ih =>
+    cases idx with
+    | zero =>
+      simp only [List.modify_cons_zero, List.find?_cons]
+      simp only [List.getElem_cons_zero] at h_pres
+      simp only [h_pres, ↓reduceIte]
+    | succ n =>
+      simp only [List.modify_cons_succ, List.find?_cons]
+      have h_x_not_p : p x = false := h_first 0 (Nat.zero_lt_succ n)
+      simp only [h_x_not_p, ↓reduceIte]
+      apply ih
+      · simp only [List.length_cons] at h_idx; omega
+      · simp only [List.getElem_cons_succ] at h_pred; exact h_pred
+      · simp only [List.getElem_cons_succ] at h_pres; exact h_pres
+      · intro i hi
+        have := h_first (i + 1) (by omega)
+        simp only [List.getElem_cons_succ] at this
+        exact this
+
+/--
 addFormula adds phi to the target position's formulas.
 -/
 theorem addFormula_formula_in_getFormulas
     (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula) (newType : SeedEntryType) :
     phi ∈ (seed.addFormula famIdx timeIdx phi newType).getFormulas famIdx timeIdx := by
-  -- When we call addFormula at position (famIdx, timeIdx), either:
-  -- 1. An entry exists there -> phi is inserted into that entry's formulas
-  -- 2. No entry exists -> a new entry with {phi} is created
-  -- In both cases, phi is in getFormulas at that position
-  sorry
+  unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | none =>
+    simp only [h_find, List.find?_append]
+    have h_orig_none : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) = none := by
+      rw [List.find?_eq_none]
+      intro x hx
+      have h := List.findIdx?_eq_none.mp h_find x hx
+      simp only [beq_iff_eq, Bool.and_eq_true, Bool.not_eq_true, Bool.and_eq_false_iff,
+        beq_eq_false_iff_ne, ne_eq] at h
+      cases h with
+      | inl h => simp [h]
+      | inr h => simp [h]
+    simp only [h_orig_none, Option.none_or, List.find?_cons_of_pos]
+    · exact Set.mem_singleton_iff.mpr rfl
+    · simp only [beq_self_eq_true, Bool.and_self]
+  | some idx =>
+    simp only [h_find]
+    have h_idx_lt : idx < seed.entries.length := List.findIdx?_isSome_iff_lt.mp ⟨h_find⟩
+    have h_findIdx_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+    have h_pred : (seed.entries[idx].familyIdx == famIdx && seed.entries[idx].timeIdx == timeIdx) = true :=
+      h_findIdx_spec.2.2
+    have h_first : ∀ i, i < idx → (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) seed.entries[i] = false :=
+      h_findIdx_spec.2.1
+    let f := fun e : SeedEntry => { e with formulas := insert phi e.formulas }
+    have h_pres : (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) (f seed.entries[idx]) = true := by
+      simp only [f, h_pred]
+    have h_find_modified := find?_modify_of_preserves seed.entries idx f
+      (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx)
+      h_idx_lt h_pred h_pres h_first
+    simp only [h_find_modified]
+    exact Set.mem_insert _ _
+
+/--
+Helper: find? on modified list when looking for different predicate is unchanged.
+-/
+private lemma find?_modify_diff_pred {α : Type*} (l : List α) (idx : Nat) (f : α → α) (p p' : α → Bool)
+    (h_idx : idx < l.length)
+    (h_p_idx : p l[idx] = true)
+    (h_p'_f : p' (f l[idx]) = p' l[idx]) :
+    (l.modify idx f).find? p' = l.find? p' := by
+  induction l generalizing idx with
+  | nil => simp at h_idx
+  | cons x xs ih =>
+    cases idx with
+    | zero =>
+      simp only [List.modify_cons_zero, List.find?_cons]
+      simp only [List.getElem_cons_zero] at h_p'_f
+      simp only [h_p'_f]
+    | succ n =>
+      simp only [List.modify_cons_succ, List.find?_cons]
+      congr 1
+      apply ih
+      · simp only [List.length_cons] at h_idx; omega
+      · simp only [List.getElem_cons_succ] at h_p_idx; exact h_p_idx
+      · simp only [List.getElem_cons_succ] at h_p'_f; exact h_p'_f
+
+/--
+Helper: addFormula at different family preserves getFormulas.
+-/
+private lemma addFormula_preserves_getFormulas_diff_fam
+    (seed : ModelSeed) (famIdx famIdx' : Nat) (timeIdx : Int) (phi : Formula) (ty : SeedEntryType)
+    (h_diff : famIdx ≠ famIdx') :
+    (seed.addFormula famIdx' timeIdx phi ty).getFormulas famIdx timeIdx = seed.getFormulas famIdx timeIdx := by
+  unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx' && e.timeIdx == timeIdx) with
+  | none =>
+    simp only [h_find]
+    rw [List.find?_append]
+    have h_new_no_match : (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx)
+        ({ familyIdx := famIdx', timeIdx := timeIdx, formulas := {phi}, entryType := ty } : SeedEntry) = false := by
+      simp [h_diff, beq_eq_false_iff_ne]
+    simp only [List.find?_cons, h_new_no_match, ↓reduceIte, List.find?_nil]
+    cases seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+    | none => rfl
+    | some e => simp only [Option.or_none]
+  | some idx =>
+    simp only [h_find]
+    have h_idx_lt : idx < seed.entries.length := List.findIdx?_isSome_iff_lt.mp ⟨h_find⟩
+    have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+    have h_pred : (seed.entries[idx].familyIdx == famIdx' && seed.entries[idx].timeIdx == timeIdx) = true := h_spec.2.2
+    let f := fun e : SeedEntry => { e with formulas := insert phi e.formulas }
+    have h_preserve : (fun e : SeedEntry => e.familyIdx == famIdx && e.timeIdx == timeIdx) (f seed.entries[idx]) =
+        (fun e : SeedEntry => e.familyIdx == famIdx && e.timeIdx == timeIdx) seed.entries[idx] := rfl
+    have h_find_same := find?_modify_diff_pred seed.entries idx f
+      (fun e => e.familyIdx == famIdx' && e.timeIdx == timeIdx)
+      (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx)
+      h_idx_lt h_pred h_preserve
+    simp only [h_find_same]
+
+/--
+Helper: addFormula at same position keeps existing membership.
+-/
+private lemma addFormula_preserves_mem_getFormulas_same
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi psi : Formula) (ty : SeedEntryType)
+    (h_mem : phi ∈ seed.getFormulas famIdx timeIdx) :
+    phi ∈ (seed.addFormula famIdx timeIdx psi ty).getFormulas famIdx timeIdx := by
+  unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry at *
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | none =>
+    have h_none : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) = none := by
+      rw [List.find?_eq_none]
+      intro x hx
+      have := List.findIdx?_eq_none_iff.mp h_find x hx
+      simp only [Bool.not_eq_true]
+      exact this
+    rw [h_none] at h_mem
+    exact absurd h_mem (Set.notMem_empty phi)
+  | some idx =>
+    have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+    have h_idx_lt : idx < seed.entries.length := h_spec.1
+    have h_pred : (seed.entries[idx].familyIdx == famIdx && seed.entries[idx].timeIdx == timeIdx) = true := h_spec.2.1
+    have h_find_orig : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) = some seed.entries[idx] := by
+      rw [List.find?_eq_some_iff_getElem]
+      constructor
+      · exact h_pred
+      · use idx, h_idx_lt
+        constructor
+        · rfl
+        · intro j hj
+          have := h_spec.2.2 j hj
+          simp only [Bool.not_eq_true] at this
+          simp only [this, Bool.not_false]
+    simp only [h_find_orig] at h_mem
+    set entry' := { seed.entries[idx] with formulas := insert psi seed.entries[idx].formulas } with h_entry'
+    have h_pres : (entry'.familyIdx == famIdx && entry'.timeIdx == timeIdx) = true := h_pred
+    have h_find_modified : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).find?
+        (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) = some entry' := by
+      rw [List.find?_eq_some_iff_getElem]
+      constructor
+      · exact h_pres
+      · have h_len : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).length =
+            seed.entries.length := List.length_modify _ _ _
+        use idx, (h_len ▸ h_idx_lt)
+        constructor
+        · rw [List.getElem_modify]
+          simp only [↓reduceIte, h_entry']
+        · intro j hj
+          rw [List.getElem_modify]
+          split
+          · omega
+          · have := h_spec.2.2 j hj
+            simp only [Bool.not_eq_true] at this
+            simp only [this, Bool.not_false]
+    rw [h_find_modified, h_entry']
+    exact Set.mem_insert_of_mem psi h_mem
+
+/--
+Helper: foldl addFormula preserves membership.
+-/
+private lemma foldl_addFormula_preserves_mem
+    (phi : Formula) (psi : Formula) (timeIdx : Int) (famIndices : List Nat) (seed : ModelSeed)
+    (famIdx : Nat) (h_mem : phi ∈ seed.getFormulas famIdx timeIdx) :
+    phi ∈ (famIndices.foldl (fun s f => s.addFormula f timeIdx psi .universal_target) seed).getFormulas famIdx timeIdx := by
+  induction famIndices generalizing seed with
+  | nil => exact h_mem
+  | cons f fs ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    by_cases h_diff : famIdx = f
+    · subst h_diff
+      exact addFormula_preserves_mem_getFormulas_same seed famIdx timeIdx phi psi .universal_target h_mem
+    · rw [addFormula_preserves_getFormulas_diff_fam seed famIdx f timeIdx psi .universal_target h_diff]
+      exact h_mem
+
+/--
+Helper: foldl addFormula adds phi at famIdx if famIdx is in the list.
+-/
+private lemma foldl_addFormula_adds_at_family
+    (phi : Formula) (timeIdx : Int) (famIndices : List Nat) (seed : ModelSeed)
+    (famIdx : Nat) (h_in : famIdx ∈ famIndices) :
+    phi ∈ (famIndices.foldl (fun s f => s.addFormula f timeIdx phi .universal_target) seed).getFormulas famIdx timeIdx := by
+  induction famIndices generalizing seed with
+  | nil => simp at h_in
+  | cons f fs ih =>
+    simp only [List.foldl_cons]
+    rw [List.mem_cons] at h_in
+    cases h_in with
+    | inl h_eq =>
+      subst h_eq
+      have h_added : phi ∈ (seed.addFormula famIdx timeIdx phi .universal_target).getFormulas famIdx timeIdx :=
+        addFormula_formula_in_getFormulas seed famIdx timeIdx phi .universal_target
+      exact foldl_addFormula_preserves_mem phi phi timeIdx fs (seed.addFormula famIdx timeIdx phi .universal_target) famIdx h_added
+    | inr h_in_fs =>
+      exact ih (seed.addFormula f timeIdx phi .universal_target) h_in_fs
 
 /--
 If famIdx is in seed.familyIndices, then addToAllFamilies adds phi at (famIdx, timeIdx).
@@ -2334,11 +2573,88 @@ theorem addToAllFamilies_adds_at_family
     (h_fam : famIdx ∈ seed.familyIndices) :
     phi ∈ (seed.addToAllFamilies timeIdx phi).getFormulas famIdx timeIdx := by
   unfold ModelSeed.addToAllFamilies
-  -- The key insight: when processing famIndices, when we reach famIdx in the list,
-  -- addFormula adds phi to position (famIdx, timeIdx). Subsequent iterations
-  -- either add to different families (preserving phi at famIdx) or add to same
-  -- position (keeping phi via insert idempotence).
-  sorry -- Structural lemma about foldl - to be proven later
+  exact foldl_addFormula_adds_at_family phi timeIdx
+    (seed.entries.map SeedEntry.familyIdx).eraseDups seed famIdx h_fam
+
+/--
+Helper: membership in list implies membership in eraseDups (length induction).
+-/
+private lemma mem_eraseDups_of_mem_length {α : Type*} [BEq α] [LawfulBEq α] :
+    ∀ (n : Nat) (l : List α), l.length ≤ n → ∀ a ∈ l, a ∈ l.eraseDups := by
+  intro n
+  induction n with
+  | zero =>
+    intro l hl a ha
+    have : l = [] := List.eq_nil_of_length_eq_zero (Nat.le_zero.mp hl)
+    simp [this] at ha
+  | succ n ih =>
+    intro l hl a ha
+    match l with
+    | [] => simp at ha
+    | x :: xs =>
+      simp only [List.eraseDups_cons]
+      rw [List.mem_cons] at ha
+      rw [List.mem_cons]
+      cases ha with
+      | inl h => left; exact h
+      | inr h =>
+        by_cases hax : a == x
+        · left; exact beq_iff_eq.mp hax
+        · right
+          have h_in_filter : a ∈ List.filter (fun b => !b == x) xs := by
+            rw [List.mem_filter]
+            constructor
+            · exact h
+            · simp only [hax, Bool.not_eq_true']
+          have h_len : (List.filter (fun b => !b == x) xs).length ≤ n := by
+            calc (List.filter (fun b => !b == x) xs).length
+                ≤ xs.length := List.length_filter_le _ _
+              _ ≤ n := by simp only [List.length_cons] at hl; omega
+          exact ih (List.filter (fun b => !b == x) xs) h_len a h_in_filter
+
+private lemma mem_eraseDups_of_mem_list {α : Type*} [BEq α] [LawfulBEq α] (a : α) (l : List α) (h : a ∈ l) :
+    a ∈ l.eraseDups :=
+  mem_eraseDups_of_mem_length l.length l (Nat.le_refl _) a h
+
+/--
+If there's a formula at position (famIdx, timeIdx), then famIdx is in familyIndices after addFormula.
+-/
+private lemma addFormula_famIdx_in_familyIndices
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula) (ty : SeedEntryType)
+    (h_phi_in : phi ∈ seed.getFormulas famIdx timeIdx) :
+    famIdx ∈ (seed.addFormula famIdx timeIdx phi ty).familyIndices := by
+  unfold ModelSeed.addFormula
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | none =>
+    unfold ModelSeed.familyIndices
+    simp only [List.map_append, List.map_cons, List.map_nil]
+    apply mem_eraseDups_of_mem_list
+    apply List.mem_append_right
+    exact List.mem_singleton_self famIdx
+  | some idx =>
+    unfold ModelSeed.familyIndices
+    have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+    have h_idx_lt : idx < seed.entries.length := h_spec.1
+    have h_pred := h_spec.2.1
+    simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+    have h_fam_eq : seed.entries[idx].familyIdx = famIdx := h_pred.1
+    have h_in_orig : famIdx ∈ seed.familyIndices := by
+      unfold ModelSeed.familyIndices
+      apply mem_eraseDups_of_mem_list
+      rw [List.mem_map]
+      use seed.entries[idx]
+      constructor
+      · exact List.getElem_mem h_idx_lt
+      · exact h_fam_eq
+    have h_map_eq : (seed.entries.modify idx (fun e => { e with formulas := insert phi e.formulas })).map SeedEntry.familyIdx =
+        seed.entries.map SeedEntry.familyIdx := by
+      apply List.ext_getElem
+      simp only [List.length_map, List.length_modify]
+      intro n h1 h2
+      simp only [List.getElem_map, List.getElem_modify]
+      split <;> rfl
+    rw [h_map_eq]
+    exact h_in_orig
 
 /--
 createNewFamily preserves seed consistency if the new formula is consistent.
@@ -2513,14 +2829,10 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
       -- Show psi is in seed2 at (famIdx, timeIdx)
       -- addToAllFamilies adds psi to famIdx (since it's a family index in seed1)
-      -- This requires showing that addFormula adds psi to the entry at (famIdx, timeIdx)
       have h_psi_in_seed2 : psi ∈ seed2.getFormulas famIdx timeIdx := by
-        -- famIdx is in seed1's family indices (since there's an entry at (famIdx, timeIdx))
-        -- addToAllFamilies will call addFormula famIdx timeIdx psi
-        -- This adds psi to the entry at (famIdx, timeIdx)
-        -- We need a lemma: addToAllFamilies_adds_to_position
-        -- For now, use sorry as this is a structural lemma
-        sorry
+        have h_fam_in_seed1 : famIdx ∈ seed1.familyIndices :=
+          addFormula_famIdx_in_familyIndices seed famIdx timeIdx psi.box .universal_target h_phi_in
+        exact addToAllFamilies_adds_at_family seed1 famIdx timeIdx psi h_fam_in_seed1
       -- Show seed2 is consistent
       -- This requires showing that adding psi to all families preserves consistency
       -- For entries that already have Box psi, psi is derivable via T-axiom
