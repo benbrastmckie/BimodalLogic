@@ -1,15 +1,21 @@
 {
-  "status": "in_progress",
+  "status": "researched",
   "started_at": "2026-02-11T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "codebase_exploration",
-    "details": "Explored git staging patterns, found 40+ uses of git add -A across skills/agents/commands"
-  },
+  "completed_at": "2026-02-11T12:45:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/871_safer_git_staging_concurrent_agents/reports/research-001.md",
+      "summary": "Research report with 6 findings and 4-phase implementation plan"
+    }
+  ],
+  "next_steps": "Run /plan 871 to create implementation plan",
   "metadata": {
     "session_id": "sess_1770849463_8eaf7f",
     "agent_type": "general-research-agent",
+    "duration_seconds": 2700,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"]
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 6
   }
 }

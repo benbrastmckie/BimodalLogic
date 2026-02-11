@@ -24,9 +24,11 @@ technical_debt:
 
 ### 871. Implement safer git staging to prevent concurrent agent race conditions
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-11
+- **Researched**: 2026-02-11
+- **Research**: [research-001.md](specs/871_safer_git_staging_concurrent_agents/reports/research-001.md)
 
 **Description**: Address the race condition where concurrent agents using `git add -A` or `git add specs/` can accidentally overwrite files modified by other processes. Demonstrated by task 865 research agent (session sess_1770848379_6843ee) wiping TODO.md to empty while task 869 archival was completing.
 

@@ -8,11 +8,19 @@
     {
       "project_number": 871,
       "project_name": "safer_git_staging_concurrent_agents",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-11T22:36:45Z",
-      "last_updated": "2026-02-11T22:38:00Z",
-      "session_id": "sess_1770849463_8eaf7f"
+      "last_updated": "2026-02-11T22:41:23Z",
+      "session_id": "sess_1770849463_8eaf7f",
+      "researched": "2026-02-11T22:41:23Z",
+      "artifacts": [
+        {
+          "path": "specs/871_safer_git_staging_concurrent_agents/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 6 findings and 4-phase implementation plan"
+        }
+      ]
     },
     {
       "project_number": 870,
