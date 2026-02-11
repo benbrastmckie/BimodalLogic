@@ -1,7 +1,7 @@
 # Implementation Plan: Task #871
 
 - **Task**: 871 - safer_git_staging_concurrent_agents
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/871_safer_git_staging_concurrent_agents/reports/research-001.md
@@ -47,7 +47,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Create Documentation and Patterns [NOT STARTED]
+### Phase 1: Create Documentation and Patterns [COMPLETED]
 
 **Goal**: Establish authoritative documentation for git staging scopes per agent type
 
@@ -70,7 +70,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Update High-Priority Skills [NOT STARTED]
+### Phase 2: Update High-Priority Skills [IN PROGRESS]
 
 **Goal**: Replace `git add -A` in skills that handle research, planning, and implementation
 

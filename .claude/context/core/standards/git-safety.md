@@ -565,6 +565,7 @@ When removing .bak files and adding git safety:
 
 ## References
 
+- **Git Staging Scope**: `.claude/context/core/standards/git-staging-scope.md` - Agent-specific staging rules
 - **Command Structure**: `.claude/context/core/standards/command-structure.md`
 - **Subagent Structure**: `.claude/context/core/standards/subagent-structure.md`
 - **Error Handling**: `.claude/context/core/standards/error-handling.md`
