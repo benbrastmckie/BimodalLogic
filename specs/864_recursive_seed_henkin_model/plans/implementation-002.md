@@ -342,6 +342,27 @@ After this implementation:
   - Generic imp case: 1 sorry (unchanged)
 - Full Bimodal build succeeds (695 jobs)
 
+**Progress Update (2026-02-11, Session 23):**
+- Restructured Box case proof to use `addToAllFamilies_preserves_consistent` with T-axiom derivation
+  - Split by_cases on `entry.familyIdx = famIdx`
+  - Positive case: Entry at (famIdx, timeIdx) has Box psi, so psi derivable via modal_t
+  - Negative case: Entry at other family - requires single-path invariant (sorry)
+- Analyzed the recursion structure in depth:
+  - Positive branch (Box/G/H): never creates families, stays at same timeIdx=0
+  - Negative branch (neg-Box/neg-G/neg-H): creates families/times but never reaches positive Box
+  - Key insight: Box psi and neg(Box psi) cannot both be processed on same path
+  - Families created by neg-Box don't receive addToAllFamilies formulas (created after)
+- Attempted generic imp case proof with exhaustive case analysis:
+  - Cases p2 <;> cases p1 <;> simp only [buildSeedAux] doesn't work
+  - Lean's pattern matching in catch-all `| p1, p2 =>` doesn't provide negative information
+  - Restructured to h_eq lemma + addFormula_seed_preserves_consistent, but h_eq needs proof
+- RecursiveSeed.lean has 4 sorries at new line numbers (code restructured):
+  - Line 3138: Box case h_same_fam = false (other families at timeIdx)
+  - Line 3236: G case addToAllFutureTimes_preserves_consistent
+  - Line 3350: H case addToAllPastTimes_preserves_consistent
+  - Line 3598: Generic imp case h_eq (buildSeedAux = addFormula)
+- Full Bimodal build succeeds (695 jobs)
+
 **Progress Update (2026-02-11, Session 22):**
 - Deleted unused `find?_modify_diff_pred` lemma (was a sorry at line 2474)
 - Analyzed the 4 remaining sorries in depth:
@@ -366,6 +387,25 @@ After this implementation:
   - This structural property may prevent conflicting formulas from coexisting
 - RecursiveSeed.lean now has 4 sorries (down from 5)
 - Full Bimodal build succeeds (695 jobs)
+
+**Current Blocking Issues (Session 23):**
+- The 4 sorries decompose into two categories:
+  1. **addToAll* compatibility (3 sorries)**: Box/G/H cases need to show entries at other
+     positions are compatible with the universal formula content (psi)
+     - Box: other families at same timeIdx
+     - G: future times in same family
+     - H: past times in same family
+     - All require proving the "single-path" property prevents incompatible formulas
+  2. **Pattern match negative info (1 sorry)**: Generic imp case needs buildSeedAux = addFormula
+     - Lean doesn't provide proof that (p1, p2) don't match special patterns in catch-all case
+     - Options: explicit decidable conditions, auxiliary lemma, or accept this sorry
+
+**Refined Solution Approach:**
+- For addToAll* sorries: The key observation is that when processing Box psi in the positive
+  branch, NO other families exist at this timeIdx (families only created by neg-Box).
+  Proof sketch: Use induction showing positive-branch processing maintains familyIndices = {famIdx}.
+- For generic imp sorry: Either refactor buildSeedAux to use `if`/`decide` instead of pattern
+  matching, or prove a separate lemma characterizing when buildSeedAux reduces to addFormula.
 
 **Current Blocking Issues (Session 22):**
 - The 4 sorries require one of:

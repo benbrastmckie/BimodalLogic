@@ -3098,12 +3098,44 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
       -- For entries that already have Box psi, psi is derivable via T-axiom
       -- For entries that don't have Box psi, we need the "all subformulas compatible" invariant
       have h_seed2_cons : SeedConsistent seed2 := by
-        -- BLOCKING: Requires addToAllFamilies_preserves_consistent lemma
-        -- The key insight is that psi is compatible with all formulas in the seed because:
-        -- 1. All seed formulas derive from the consistent root formula
-        -- 2. psi is a subformula of the root (through Box psi)
-        -- 3. Subformulas of a consistent formula are mutually compatible
-        sorry
+        -- Use addToAllFamilies_preserves_consistent with T-axiom derivation
+        apply addToAllFamilies_preserves_consistent seed1 timeIdx psi h_seed1_cons h_psi_cons
+        -- Need to show: for every entry at timeIdx in seed1, adding psi preserves consistency
+        intro entry h_entry h_time
+        -- The key insight: Box psi is in seed at (famIdx, timeIdx)
+        -- For the entry at (famIdx, timeIdx), psi is derivable via T-axiom (Box psi -> psi)
+        -- For other entries, we need to argue they share Box psi or are compatible
+        -- Check if entry is at (famIdx, timeIdx)
+        by_cases h_same_fam : entry.familyIdx = famIdx
+        · -- Entry is at (famIdx, timeIdx): has Box psi, so psi is derivable
+          have h_entry_has_box : psi.box ∈ entry.formulas := by
+            have h_eq := getFormulas_eq_of_wellformed_and_at_position seed1 entry famIdx timeIdx
+              h_seed1_wf h_entry h_same_fam h_time
+            have h_box_in_seed1 : psi.box ∈ seed1.getFormulas famIdx timeIdx :=
+              addFormula_formula_in_getFormulas seed famIdx timeIdx psi.box .universal_target
+            rw [h_eq] at h_box_in_seed1
+            exact h_box_in_seed1
+          -- psi is derivable from Box psi via T-axiom
+          have h_entry_cons : SetConsistent entry.formulas := h_seed1_cons entry h_entry
+          have d_psi : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ entry.formulas) ∧
+              Nonempty (Bimodal.ProofSystem.DerivationTree L psi) := by
+            use [psi.box]
+            constructor
+            · intro ψ hψ; simp only [List.mem_singleton] at hψ; rw [hψ]; exact h_entry_has_box
+            · constructor
+              have d_t : Bimodal.ProofSystem.DerivationTree [] (psi.box.imp psi) :=
+                Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_t psi)
+              have d_box : Bimodal.ProofSystem.DerivationTree [psi.box] psi.box :=
+                Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+              have d_t' : Bimodal.ProofSystem.DerivationTree [psi.box] (psi.box.imp psi) :=
+                Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_t (by intro; simp)
+              exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_t' d_box
+          exact addFormula_preserves_consistent h_entry_cons d_psi
+        · -- Entry is at a different family: this case requires the single-path invariant
+          -- For now, we use sorry as this requires additional tracking
+          -- The structural argument is: in the Box case, we only reach this through positive
+          -- Box ancestors, so no other families were created at this timeIdx
+          sorry
       -- Show seed2 is well-formed
       have h_seed2_wf : SeedWellFormed seed2 :=
         addToAllFamilies_preserves_wellFormed seed1 timeIdx psi h_seed1_wf
@@ -3553,11 +3585,32 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         -- special cases (box/bot, all_future/bot, all_past/bot) were already matched
         -- in the inner match, this case catches remaining patterns.
         --
-        -- BLOCKING: Requires either:
-        -- 1. Explicit case analysis on p1 and p2 to exhaust remaining patterns
-        -- 2. A lemma showing buildSeedAux_imp_generic_eq_addFormula for non-special patterns
-        -- 3. Native_decide or similar to reduce the pattern match
-        sorry
+        -- For generic imp case, buildSeedAux just adds the formula
+        -- We know this because the special cases (neg-Box, neg-G, neg-H) were not matched
+        have h_eq : buildSeedAux (p1.imp p2) famIdx timeIdx seed =
+            seed.addFormula famIdx timeIdx (p1.imp p2) .universal_target := by
+          -- BLOCKING: Need to show buildSeedAux reduces to addFormula for generic imp
+          -- The issue is that Lean's pattern matching doesn't provide negative information
+          -- (i.e., that p1, p2 don't match box/bot, all_future/bot, all_past/bot)
+          -- Requires either:
+          -- 1. Refactoring buildSeedAux to use explicit decidable conditions
+          -- 2. A separate lemma proving the catch-all case
+          sorry
+        rw [h_eq]
+        -- Now just need to show addFormula preserves consistency
+        apply addFormula_seed_preserves_consistent
+        · exact h_cons
+        · exact h_phi_cons
+        · -- For entries at (famIdx, timeIdx), inserting p1.imp p2 preserves consistency
+          -- since it's already there by h_phi_in
+          intro entry h_entry h_fam h_time
+          have h_entry_cons := h_cons entry h_entry
+          have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx
+            h_wf h_entry h_fam h_time
+          have h_phi_in_entry : p1.imp p2 ∈ entry.formulas := by
+            rw [← h_getFormulas_eq]; exact h_phi_in
+          rw [Set.insert_eq_of_mem h_phi_in_entry]
+          exact h_entry_cons
 
 theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
     SeedConsistent (buildSeed phi) := by
