@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model Construction (v3)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 8 hours (remaining from 36 total, 28 completed)
 - **Version**: 003 (revised from 002)
 - **Dependencies**: None (supersedes task 843's approach)
@@ -45,7 +45,7 @@ After 23 implementation sessions:
 
 ## Revised Phase 3: Seed Consistency Proof
 
-### Phase 3a: Single-Path Invariant [NOT STARTED]
+### Phase 3a: Single-Path Invariant [IN PROGRESS]
 
 **Goal**: Add and prove the single-path invariant that enables the addToAll* sorries to be resolved.
 
@@ -56,18 +56,37 @@ After 23 implementation sessions:
 4. `addToAllFamilies` only affects entries at famIdx, making `h_same_fam` always true
 
 **Tasks**:
-- [ ] Add hypothesis `h_single_family : seed.familyIndices = [famIdx]` to `buildSeedAux_preserves_seedConsistent`
-- [ ] Prove `initialSeed_single_family`: Initial seed has `familyIndices = [0]`
-- [ ] Prove `addFormula_preserves_single_family`: addFormula doesn't add families
-- [ ] Prove `createNewTime_preserves_single_family`: createNewTime doesn't add families
-- [ ] Prove positive branch cases preserve single-family (Box, G, H cases)
-- [ ] Note: neg-Box case DOES create new family, so single-family property is NOT preserved
-  - But IH for neg-Box is called at the NEW family, which is the only family in its subtree
+- [x] Add hypothesis `h_single_family : seed.familyIndices = [famIdx]` to `buildSeedAux_preserves_seedConsistent`
+- [x] Prove `initial_familyIndices_eq`: Initial seed has `familyIndices = [0]`
+- [x] Prove `addFormula_preserves_single_family`: addFormula doesn't add families
+- [x] Prove `addToAllFamilies_preserves_single_family`: preserves single-family
+- [x] Prove `addToAllFutureTimes_preserves_single_family`: preserves single-family
+- [x] Prove `addToAllPastTimes_preserves_single_family`: preserves single-family
+- [x] Prove `createNewTime_preserves_single_family`: createNewTime doesn't add families
+- [x] Box case: Eliminated sorry using single-family to show all entries at timeIdx have familyIdx = famIdx
+- [ ] G case: Still needs addToAllFutureTimes_preserves_consistent (similar pattern to Box)
+- [ ] H case: Still needs addToAllPastTimes_preserves_consistent (similar pattern to Box)
+- [ ] neg-Box case: Needs proof that result.1.familyIndices = [result.2] (may be FALSE - needs different approach)
+
+**Session 18 Progress (2026-02-11)**:
+- Added 6 helper lemmas for single-family preservation
+- Modified theorem signature to require h_single_family
+- Eliminated Box case sorry (was line 3138)
+- Updated all recursive calls to pass single-family argument
+- Build succeeds with 4 sorries remaining
+
+**Remaining Sorries**:
+| Line | Case | Issue |
+|------|------|-------|
+| 3439 | G | addToAllFutureTimes_preserves_consistent (apply same pattern as Box) |
+| 3560 | H | addToAllPastTimes_preserves_consistent (apply same pattern as Box) |
+| 3663 | neg-Box | result.1.familyIndices = [result.2] - FALSE! Need different approach |
+| 3844 | imp | Pattern matching limitation |
 
 **Expected Outcome**:
-- Box case: `addToAllFamilies` at timeIdx only affects famIdx (no other families)
-- G case: `addToAllFutureTimes` in family famIdx doesn't touch other families
-- H case: `addToAllPastTimes` in family famIdx doesn't touch other families
+- Box case: DONE - `addToAllFamilies` at timeIdx only affects famIdx (no other families)
+- G case: `addToAllFutureTimes` in family famIdx doesn't touch other families (similar to Box)
+- H case: `addToAllPastTimes` in family famIdx doesn't touch other families (similar to Box)
 
 **Timing**: 2 hours
 

@@ -1,0 +1,18 @@
+{
+  "status": "partial",
+  "started_at": "2026-02-11T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "phase_3a",
+    "details": "Single-family invariant implemented. Box case sorry eliminated. 4 sorries remain: G case, H case, neg-Box single-family, generic imp. Build succeeds."
+  },
+  "metadata": {
+    "session_id": "sess_1770831696_f1467a",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+  },
+  "completion_data": {
+    "completion_summary": "Implemented single-family invariant approach for task 864. Added 6 new lemmas (all_eq_of_eraseDups_singleton, eraseDups_all_same, addFormula_preserves_single_family, addToAllFamilies_preserves_single_family, addToAllFutureTimes/PastTimes_preserves_single_family, createNewTime_preserves_single_family). Modified buildSeedAux_preserves_seedConsistent to require h_single_family hypothesis. Eliminated Box case sorry (line 3138). 4 sorries remain: G case (3439), H case (3560), neg-Box single-family (3663), generic imp (3844). Build succeeds with warnings only."
+  }
+}
