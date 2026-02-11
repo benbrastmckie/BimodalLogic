@@ -1627,12 +1627,53 @@ theorem addFormula_preserves_wellFormed
           exfalso; exact h_ne rfl
     · -- List.Nodup: List.modify preserves nodup
       -- The key insight: modify changes only the formulas field at idx.
-      -- Original entries had distinct (familyIdx, timeIdx) pairs.
-      -- The modified entry keeps the same (familyIdx, timeIdx) as entries[idx],
-      -- so it still differs from all other entries by their (familyIdx, timeIdx).
-      -- Technical proof requires careful handling of Option.map in getElem?.
-      -- Marked as sorry - this is a structural property that holds for our seeds.
-      sorry
+      -- We use unique positions: if two entries have same (familyIdx, timeIdx), they're equal.
+      -- The modified entry has the same (familyIdx, timeIdx) as original, so it can't match
+      -- any other entry which has a different position.
+      rw [List.nodup_iff_getElem?_ne_getElem?]
+      intro i j h_i_lt_j h_j_lt
+      let f : SeedEntry → SeedEntry := fun e => ⟨e.familyIdx, e.timeIdx, insert phi e.formulas, e.entryType⟩
+      have h_len := List.length_modify f seed.entries idx
+      rw [h_len] at h_j_lt
+      have h_i_lt_len : i < seed.entries.length := Nat.lt_trans h_i_lt_j h_j_lt
+      -- Key helper: f preserves position (familyIdx, timeIdx)
+      have h_f_pos : ∀ e : SeedEntry, (f e).familyIdx = e.familyIdx ∧ (f e).timeIdx = e.timeIdx :=
+        fun e => ⟨rfl, rfl⟩
+      -- Get elements at positions i and j in the modified list
+      rw [List.getElem?_modify f idx seed.entries i, List.getElem?_modify f idx seed.entries j]
+      have h_some_i : seed.entries[i]? = some seed.entries[i] := List.getElem?_eq_some_iff.mpr ⟨h_i_lt_len, rfl⟩
+      have h_some_j : seed.entries[j]? = some seed.entries[j] := List.getElem?_eq_some_iff.mpr ⟨h_j_lt, rfl⟩
+      simp only [h_some_i, h_some_j, Option.map, ne_eq]
+      intro h_eq
+      -- After simp: h_eq : some (if idx = i then f seed.entries[i] else seed.entries[i]) =
+      --                    some (if idx = j then f seed.entries[j] else seed.entries[j])
+      have h_eq' : (if idx = i then f seed.entries[i] else seed.entries[i]) =
+                   (if idx = j then f seed.entries[j] else seed.entries[j]) := by
+        injection h_eq
+      -- The key insight: f preserves familyIdx and timeIdx, so we can extract position equality
+      have h_pos_i : (if idx = i then f seed.entries[i] else seed.entries[i]).familyIdx =
+                     seed.entries[i].familyIdx ∧
+                     (if idx = i then f seed.entries[i] else seed.entries[i]).timeIdx =
+                     seed.entries[i].timeIdx := by
+        by_cases h_eq_i : idx = i <;> simp only [h_eq_i, ↓reduceIte, h_f_pos, and_self]
+      have h_pos_j : (if idx = j then f seed.entries[j] else seed.entries[j]).familyIdx =
+                     seed.entries[j].familyIdx ∧
+                     (if idx = j then f seed.entries[j] else seed.entries[j]).timeIdx =
+                     seed.entries[j].timeIdx := by
+        by_cases h_eq_j : idx = j <;> simp only [h_eq_j, ↓reduceIte, h_f_pos, and_self]
+      -- From h_eq' we get equal positions
+      have h_fam_eq : seed.entries[i].familyIdx = seed.entries[j].familyIdx :=
+        h_pos_i.1.symm.trans (congrArg SeedEntry.familyIdx h_eq' |>.trans h_pos_j.1)
+      have h_time_eq : seed.entries[i].timeIdx = seed.entries[j].timeIdx :=
+        h_pos_i.2.symm.trans (congrArg SeedEntry.timeIdx h_eq' |>.trans h_pos_j.2)
+      -- But entries[i] ≠ entries[j] by nodup, so they must have different positions
+      have h_ei_in : seed.entries[i] ∈ seed.entries := List.getElem_mem h_i_lt_len
+      have h_ej_in : seed.entries[j] ∈ seed.entries := List.getElem_mem h_j_lt
+      have h_idx_ne : seed.entries[i] ≠ seed.entries[j] := by
+        intro h_eq''
+        have : i = j := List.Nodup.getElem_inj_iff h_wf.2.2 |>.mp h_eq''
+        omega
+      exact h_wf.2.1 _ h_ei_in _ h_ej_in h_idx_ne ⟨h_fam_eq, h_time_eq⟩
   | none =>
     simp only
     refine ⟨?_, ?_, ?_⟩

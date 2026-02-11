@@ -313,6 +313,33 @@ After this implementation:
 - RecursiveSeed.lean now has 4 sorries (down from 7)
 - Full Bimodal build succeeds (695 jobs)
 
+**Progress Update (2026-02-10, Session 15):**
+- `addFormula_preserves_wellFormed` Nodup case: COMPLETED
+  - Used `List.nodup_iff_getElem?_ne_getElem?` to reformulate Nodup preservation
+  - Used `List.getElem?_modify` to simplify modified list element access
+  - Key insight: f preserves (familyIdx, timeIdx), so if positions equal, entries must equal
+  - Used `List.Nodup.getElem_inj_iff` for the position-based contradiction
+- Attempted generic imp case: Requires exhaustive case analysis (~30 subcases)
+  - Lean cannot reduce buildSeedAux with abstract p1, p2 pattern variables
+  - Each concrete (p1, p2) combination reduces buildSeedAux to addFormula
+  - Proof strategy is correct but tedious - marked as lower priority
+- RecursiveSeed.lean still has 4 sorries (Nodup case now resolved, count unchanged)
+- Full Bimodal build succeeds (998 jobs)
+
+**Current Blocking Issues (Session 15):**
+- The 4 sorries in RecursiveSeed.lean decompose into:
+  - Box case (1): Needs addToAllFamilies_preserves_consistent
+  - G case (1): Needs addToAllFutureTimes_preserves_consistent
+  - H case (1): Needs addToAllPastTimes_preserves_consistent
+  - Generic imp case (1): Needs exhaustive case analysis for buildSeedAux reduction
+
+**Required Next Steps:**
+1. Implement addToAllFamilies_preserves_consistent (key lemma)
+   - Requires tracking that all seed formulas are subformulas of consistent root
+   - May need stronger invariant that tracks subformula relationships
+2. Implement similar lemmas for addToAllFutureTimes and addToAllPastTimes
+3. Complete generic imp case with exhaustive pattern matching
+
 **Current Blocking Issues (Session 14):**
 - The 4 sorries in RecursiveSeed.lean decompose into:
   - Nodup preservation in addFormula_preserves_wellFormed (1): Complex Option.map reasoning
