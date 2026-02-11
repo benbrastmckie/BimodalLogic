@@ -383,6 +383,37 @@ def ModelSeed.freshPastTime (seed : ModelSeed) (famIdx : Nat) (currentTime : Int
   minTime - 1
 
 /--
+freshFutureTime produces a time with no existing entry.
+The returned time is greater than all existing times at famIdx.
+-/
+theorem ModelSeed.freshFutureTime_no_entry (seed : ModelSeed) (famIdx : Nat) (currentTime : Int) :
+    seed.findEntry famIdx (seed.freshFutureTime famIdx currentTime) = none := by
+  unfold freshFutureTime findEntry
+  rw [List.find?_eq_none]
+  intro e he
+  simp only [beq_iff_eq, Bool.and_eq_true, Bool.eq_false_iff, not_and, decide_eq_true_eq]
+  intro h_fam
+  -- freshFutureTime returns maxTime + 1 where maxTime >= all times at famIdx
+  -- So any existing entry at famIdx has timeIdx <= maxTime < maxTime + 1
+  -- The key lemma: foldl max acc l >= any element's timeIdx in l
+  sorry
+
+/--
+freshPastTime produces a time with no existing entry.
+The returned time is less than all existing times at famIdx.
+-/
+theorem ModelSeed.freshPastTime_no_entry (seed : ModelSeed) (famIdx : Nat) (currentTime : Int) :
+    seed.findEntry famIdx (seed.freshPastTime famIdx currentTime) = none := by
+  unfold freshPastTime findEntry
+  rw [List.find?_eq_none]
+  intro e he
+  simp only [beq_iff_eq, Bool.and_eq_true, Bool.eq_false_iff, not_and, decide_eq_true_eq]
+  intro h_fam
+  -- freshPastTime returns minTime - 1 where minTime <= all times at famIdx
+  -- So any existing entry at famIdx has timeIdx >= minTime > minTime - 1
+  sorry
+
+/--
 The recursive seed builder auxiliary function.
 
 This function recursively unpacks a formula and builds seed entries:
@@ -1888,6 +1919,24 @@ theorem createNewFamily_formula_at_new_position
              Set.mem_singleton_iff]
 
 /--
+createNewTime puts the formula at the specified position.
+Requires no existing entry at that position.
+-/
+theorem createNewTime_formula_at_new_position
+    (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int) (phi : Formula)
+    (h_no_entry : seed.findEntry famIdx timeIdx = none) :
+    phi ∈ (seed.createNewTime famIdx timeIdx phi).getFormulas famIdx timeIdx := by
+  simp only [ModelSeed.createNewTime, ModelSeed.getFormulas, ModelSeed.findEntry]
+  -- The new entry is at the end of the list with (famIdx, timeIdx)
+  -- Since no existing entry is at this position, find? will return the new entry
+  rw [List.find?_append]
+  have h_none : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) = none := by
+    unfold ModelSeed.findEntry at h_no_entry
+    exact h_no_entry
+  simp only [h_none, Option.none_or, List.find?_cons_of_pos, beq_self_eq_true, Bool.and_self,
+             Set.mem_singleton_iff]
+
+/--
 createNewFamily preserves seed consistency if the new formula is consistent.
 -/
 theorem createNewFamily_preserves_seedConsistent
@@ -2048,38 +2097,28 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
       -- - Actually no, the issue is simpler: other families at this stage only have
       --   the formulas we've put there via previous buildSeedAux calls
       --
-      -- For now, let's handle this case more carefully with the structural property
-      -- that the seed only contains formulas derived from the root
+      -- BLOCKING: Requires addToAllFamilies_preserves_consistent lemma
+      -- The key challenge is proving that adding psi to other families preserves
+      -- consistency. This requires tracking that all seed formulas are subformulas
+      -- of a consistent root, hence mutually compatible.
+      -- See research-002.md Section 5 for the theoretical justification.
       sorry
     | Formula.all_future psi =>
-      -- G case: similar to Box but temporal
+      -- G case: similar structure to Box but adds psi to all FUTURE times
+      -- BLOCKING: Requires addToAllFutureTimes_preserves_consistent lemma
       sorry
     | Formula.all_past psi =>
-      -- H case: similar to Box but temporal past
+      -- H case: similar structure to Box but adds psi to all PAST times
+      -- BLOCKING: Requires addToAllPastTimes_preserves_consistent lemma
       sorry
     | Formula.imp psi1 psi2 =>
       match psi1, psi2 with
       | Formula.box inner, Formula.bot =>
         -- neg(Box inner) case: creates new family with neg inner
         simp only [buildSeedAux]
-        -- The goal is to show consistency after:
-        -- 1. addFormula: adds neg(Box inner) to current position
-        -- 2. createNewFamily: creates new family with neg inner
-        -- 3. buildSeedAux: recurses on neg inner at the new family
-        --
-        -- Use IH on inner.neg with:
-        -- - seed' = (seed.addFormula ...).createNewFamily ...
-        -- - famIdx' = the new family index
-        -- - timeIdx' = timeIdx (same time)
-        --
-        -- We need:
-        -- - seed' is consistent (via addFormula + createNewFamily preserves)
-        -- - seed' is well-formed (via preservation lemmas - sorry for now)
-        -- - inner.neg ∈ seed'.getFormulas newFamIdx timeIdx (by construction of createNewFamily)
-        -- - inner.neg is consistent (via negBox_consistent_implies_neg_consistent)
-        -- - (inner.neg).complexity < c
+        -- Work with explicit projections to avoid let-binding issues
         let seed1 := seed.addFormula famIdx timeIdx inner.box.neg .universal_target
-        let (seed2, newFamIdx) := seed1.createNewFamily timeIdx inner.neg
+        let result := seed1.createNewFamily timeIdx inner.neg
         -- Show inner.neg is consistent
         have h_inner_neg_cons : FormulaConsistent inner.neg :=
           negBox_consistent_implies_neg_consistent h_phi_cons
@@ -2088,19 +2127,16 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           rw [← h_c]
           simp only [Formula.complexity, Formula.neg]
           omega
-        -- Show seed1 is consistent (addFormula preserves since phi is already in the set)
+        -- Show seed1 is consistent
         have h_seed1_cons : SeedConsistent seed1 := by
           apply addFormula_seed_preserves_consistent
           · exact h_cons
-          · -- neg(Box inner) is consistent since it's in the original seed and seed is consistent
-            -- Actually, h_phi_cons says inner.box.neg is FormulaConsistent
-            exact h_phi_cons
+          · exact h_phi_cons
           · intro entry h_entry h_fam h_time
             have h_entry_cons := h_cons entry h_entry
             have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
             have h_phi_in_entry : inner.box.neg ∈ entry.formulas := by
-              rw [← h_getFormulas_eq]
-              exact h_phi_in
+              rw [← h_getFormulas_eq]; exact h_phi_in
             rw [Set.insert_eq_of_mem h_phi_in_entry]
             exact h_entry_cons
         -- Show seed1 is well-formed
@@ -2108,54 +2144,189 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           apply addFormula_preserves_wellFormed
           · exact h_wf
           · intro _
-            -- famIdx is in the seed (since phi is at famIdx), so famIdx < nextFamilyIdx
             unfold ModelSeed.getFormulas at h_phi_in
             cases h_find_entry : seed.findEntry famIdx timeIdx with
             | some entry =>
               unfold ModelSeed.findEntry at h_find_entry
               have h_mem := List.mem_of_find?_eq_some h_find_entry
               have h_entry_valid := h_wf.1 entry h_mem
-              -- entry.familyIdx = famIdx from findEntry predicate
               have h_pred := List.find?_some h_find_entry
               simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
-              rw [← h_pred.1]
-              exact h_entry_valid
-            | none =>
-              simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
-        -- Apply IH. Technical issue: Lean's let (a,b) := p binding doesn't create
-        -- definitional equality between (a,b) and p that unification recognizes.
-        -- The goal has (seed2, newFamIdx).1/.2 which SHOULD equal seed2/newFamIdx,
-        -- but Lean sees them as different expressions.
-        --
-        -- The proof structure is:
-        -- 1. h_seed1_cons, h_inner_neg_cons => createNewFamily_preserves_seedConsistent => SeedConsistent seed2
-        -- 2. h_seed1_wf => createNewFamily_preserves_wellFormed => SeedWellFormed seed2
-        -- 3. h_seed1_wf => createNewFamily_formula_at_new_position => inner.neg ∈ seed2.getFormulas newFamIdx timeIdx
-        -- 4. h_complexity, h_inner_neg_cons, above => IH => SeedConsistent (buildSeedAux inner.neg newFamIdx timeIdx seed2)
-        --
-        -- Pending: Fix type unification between let-bound pairs and explicit projections.
-        sorry
+              rw [← h_pred.1]; exact h_entry_valid
+            | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+        -- Show result.1 (seed2) is consistent
+        have h_seed2_cons : SeedConsistent result.1 :=
+          createNewFamily_preserves_seedConsistent seed1 timeIdx inner.neg h_seed1_cons h_inner_neg_cons
+        -- Show result.1 (seed2) is well-formed
+        have h_seed2_wf : SeedWellFormed result.1 :=
+          createNewFamily_preserves_wellFormed seed1 timeIdx inner.neg h_seed1_wf
+        -- Show inner.neg is in result.1's formulas at result.2
+        have h_neg_in : inner.neg ∈ result.1.getFormulas result.2 timeIdx :=
+          createNewFamily_formula_at_new_position seed1 timeIdx inner.neg h_seed1_wf
+        -- Apply IH
+        exact ih inner.neg.complexity h_complexity inner.neg result.2 timeIdx result.1
+          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons rfl
       | Formula.all_future inner, Formula.bot =>
-        -- neg(G inner) case
-        sorry
+        -- neg(G inner) case: creates new time in same family with neg inner
+        simp only [buildSeedAux]
+        let seed1 := seed.addFormula famIdx timeIdx inner.all_future.neg .universal_target
+        let newTime := seed1.freshFutureTime famIdx timeIdx
+        let seed2 := seed1.createNewTime famIdx newTime inner.neg
+        -- Show inner.neg is consistent
+        have h_inner_neg_cons : FormulaConsistent inner.neg :=
+          negG_consistent_implies_neg_consistent h_phi_cons
+        -- Show complexity decreases
+        have h_complexity : inner.neg.complexity < c := by
+          rw [← h_c]
+          simp only [Formula.complexity, Formula.neg]
+          omega
+        -- Show seed1 is consistent
+        have h_seed1_cons : SeedConsistent seed1 := by
+          apply addFormula_seed_preserves_consistent
+          · exact h_cons
+          · exact h_phi_cons
+          · intro entry h_entry h_fam h_time
+            have h_entry_cons := h_cons entry h_entry
+            have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
+            have h_phi_in_entry : inner.all_future.neg ∈ entry.formulas := by
+              rw [← h_getFormulas_eq]; exact h_phi_in
+            rw [Set.insert_eq_of_mem h_phi_in_entry]
+            exact h_entry_cons
+        -- Show seed1 is well-formed
+        have h_seed1_wf : SeedWellFormed seed1 := by
+          apply addFormula_preserves_wellFormed
+          · exact h_wf
+          · intro _
+            unfold ModelSeed.getFormulas at h_phi_in
+            cases h_find_entry : seed.findEntry famIdx timeIdx with
+            | some entry =>
+              unfold ModelSeed.findEntry at h_find_entry
+              have h_mem := List.mem_of_find?_eq_some h_find_entry
+              have h_entry_valid := h_wf.1 entry h_mem
+              have h_pred := List.find?_some h_find_entry
+              simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+              rw [← h_pred.1]; exact h_entry_valid
+            | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+        -- Show no entry exists at newTime
+        have h_no_entry : seed1.findEntry famIdx newTime = none :=
+          ModelSeed.freshFutureTime_no_entry seed1 famIdx timeIdx
+        -- Show seed2 is consistent
+        have h_seed2_cons : SeedConsistent seed2 :=
+          createNewTime_preserves_seedConsistent seed1 famIdx newTime inner.neg h_seed1_cons h_inner_neg_cons
+        -- Show seed2 is well-formed
+        have h_seed2_wf : SeedWellFormed seed2 := by
+          apply createNewTime_preserves_wellFormed
+          · exact h_seed1_wf
+          · -- famIdx < seed1.nextFamilyIdx
+            rw [addFormula_nextFamilyIdx]
+            unfold ModelSeed.getFormulas at h_phi_in
+            cases h_find_entry : seed.findEntry famIdx timeIdx with
+            | some entry =>
+              unfold ModelSeed.findEntry at h_find_entry
+              have h_mem := List.mem_of_find?_eq_some h_find_entry
+              have h_entry_valid := h_wf.1 entry h_mem
+              have h_pred := List.find?_some h_find_entry
+              simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+              rw [← h_pred.1]; exact h_entry_valid
+            | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+          · exact h_no_entry
+        -- Show inner.neg is in seed2's formulas at newTime
+        have h_neg_in : inner.neg ∈ seed2.getFormulas famIdx newTime :=
+          createNewTime_formula_at_new_position seed1 famIdx newTime inner.neg h_no_entry
+        -- Apply IH
+        exact ih inner.neg.complexity h_complexity inner.neg famIdx newTime seed2
+          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons rfl
       | Formula.all_past inner, Formula.bot =>
-        -- neg(H inner) case
-        sorry
-      | _, _ =>
-        -- Generic implication case: buildSeedAux just adds the implication
-        -- The goal is: SeedConsistent (buildSeedAux (psi1.imp psi2) famIdx timeIdx seed)
-        -- By definition: buildSeedAux (psi1.imp psi2) = seed.addFormula famIdx timeIdx (psi1.imp psi2) .universal_target
-        -- when psi1/psi2 don't match the special cases (box/bot, all_future/bot, all_past/bot)
+        -- neg(H inner) case: creates new time in same family with neg inner
+        simp only [buildSeedAux]
+        let seed1 := seed.addFormula famIdx timeIdx inner.all_past.neg .universal_target
+        let newTime := seed1.freshPastTime famIdx timeIdx
+        let seed2 := seed1.createNewTime famIdx newTime inner.neg
+        -- Show inner.neg is consistent
+        have h_inner_neg_cons : FormulaConsistent inner.neg :=
+          negH_consistent_implies_neg_consistent h_phi_cons
+        -- Show complexity decreases
+        have h_complexity : inner.neg.complexity < c := by
+          rw [← h_c]
+          simp only [Formula.complexity, Formula.neg]
+          omega
+        -- Show seed1 is consistent
+        have h_seed1_cons : SeedConsistent seed1 := by
+          apply addFormula_seed_preserves_consistent
+          · exact h_cons
+          · exact h_phi_cons
+          · intro entry h_entry h_fam h_time
+            have h_entry_cons := h_cons entry h_entry
+            have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
+            have h_phi_in_entry : inner.all_past.neg ∈ entry.formulas := by
+              rw [← h_getFormulas_eq]; exact h_phi_in
+            rw [Set.insert_eq_of_mem h_phi_in_entry]
+            exact h_entry_cons
+        -- Show seed1 is well-formed
+        have h_seed1_wf : SeedWellFormed seed1 := by
+          apply addFormula_preserves_wellFormed
+          · exact h_wf
+          · intro _
+            unfold ModelSeed.getFormulas at h_phi_in
+            cases h_find_entry : seed.findEntry famIdx timeIdx with
+            | some entry =>
+              unfold ModelSeed.findEntry at h_find_entry
+              have h_mem := List.mem_of_find?_eq_some h_find_entry
+              have h_entry_valid := h_wf.1 entry h_mem
+              have h_pred := List.find?_some h_find_entry
+              simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+              rw [← h_pred.1]; exact h_entry_valid
+            | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+        -- Show no entry exists at newTime
+        have h_no_entry : seed1.findEntry famIdx newTime = none :=
+          ModelSeed.freshPastTime_no_entry seed1 famIdx timeIdx
+        -- Show seed2 is consistent
+        have h_seed2_cons : SeedConsistent seed2 :=
+          createNewTime_preserves_seedConsistent seed1 famIdx newTime inner.neg h_seed1_cons h_inner_neg_cons
+        -- Show seed2 is well-formed
+        have h_seed2_wf : SeedWellFormed seed2 := by
+          apply createNewTime_preserves_wellFormed
+          · exact h_seed1_wf
+          · -- famIdx < seed1.nextFamilyIdx
+            rw [addFormula_nextFamilyIdx]
+            unfold ModelSeed.getFormulas at h_phi_in
+            cases h_find_entry : seed.findEntry famIdx timeIdx with
+            | some entry =>
+              unfold ModelSeed.findEntry at h_find_entry
+              have h_mem := List.mem_of_find?_eq_some h_find_entry
+              have h_entry_valid := h_wf.1 entry h_mem
+              have h_pred := List.find?_some h_find_entry
+              simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+              rw [← h_pred.1]; exact h_entry_valid
+            | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+          · exact h_no_entry
+        -- Show inner.neg is in seed2's formulas at newTime
+        have h_neg_in : inner.neg ∈ seed2.getFormulas famIdx newTime :=
+          createNewTime_formula_at_new_position seed1 famIdx newTime inner.neg h_no_entry
+        -- Apply IH
+        exact ih inner.neg.complexity h_complexity inner.neg famIdx newTime seed2
+          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons rfl
+      | p1, p2 =>
+        -- Generic implication case: buildSeedAux adds the implication to current position.
+        -- The tricky part is that Lean can't reduce buildSeedAux with abstract pattern variables.
         --
-        -- Since we're in the | _, _ branch after excluding those special cases, buildSeedAux
-        -- should reduce to addFormula. However, Lean's pattern matching doesn't automatically
-        -- reduce when the arguments are abstract variables (x✝¹, x✝).
+        -- We need to show: SeedConsistent (buildSeedAux (p1.imp p2) famIdx timeIdx seed)
+        -- By buildSeedAux's definition, the last case for imp just calls addFormula.
+        -- But we can't prove definitional equality with abstract p1, p2.
         --
-        -- This case needs careful handling with split/cases tactics or showing that
-        -- buildSeedAux preserves consistency by structural induction.
+        -- Instead, we use the semantic argument: adding a formula that's already in the
+        -- seed preserves consistency (since insert of existing element is identity).
+        -- The seed already has (p1.imp p2) at (famIdx, timeIdx) by h_phi_in.
         --
-        -- For now, mark as sorry since the structural argument is sound:
-        -- Adding a formula that's already in the seed doesn't change consistency.
+        -- However, we need to connect buildSeedAux to the resulting seed structure.
+        -- Since buildSeedAux's last imp case just calls addFormula, and the earlier
+        -- special cases (box/bot, all_future/bot, all_past/bot) were already matched
+        -- in the inner match, this case catches remaining patterns.
+        --
+        -- BLOCKING: Requires either:
+        -- 1. Explicit case analysis on p1 and p2 to exhaust remaining patterns
+        -- 2. A lemma showing buildSeedAux_imp_generic_eq_addFormula for non-special patterns
+        -- 3. Native_decide or similar to reduce the pattern match
         sorry
 
 theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
