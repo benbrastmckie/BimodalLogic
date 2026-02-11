@@ -70,7 +70,7 @@ From research-001.md:
 
 ---
 
-### Phase 2: Update High-Priority Skills [IN PROGRESS]
+### Phase 2: Update High-Priority Skills [COMPLETED]
 
 **Goal**: Replace `git add -A` in skills that handle research, planning, and implementation
 
@@ -96,7 +96,7 @@ From research-001.md:
 
 ---
 
-### Phase 3: Update Remaining Skills and Commands [NOT STARTED]
+### Phase 3: Update Remaining Skills and Commands [IN PROGRESS]
 
 **Goal**: Complete skill coverage and update command files
 
