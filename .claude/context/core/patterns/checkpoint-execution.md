@@ -110,10 +110,12 @@ fi
 **Purpose**: Finalize operation with git commit.
 
 **Operations**:
-1. Stage all changes: `git add -A`
+1. Stage changes with targeted scope (see `.claude/context/core/standards/git-staging-scope.md`)
 2. Create commit with session_id
 3. Handle commit failure (non-blocking)
 4. Return final result to user
+
+**IMPORTANT**: Do NOT use `git add -A`. Use targeted staging to prevent race conditions with concurrent agents. See git-staging-scope.md for agent-specific allowed files.
 
 **Commit Message Format**:
 ```

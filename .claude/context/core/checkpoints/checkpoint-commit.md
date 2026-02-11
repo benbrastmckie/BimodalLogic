@@ -4,10 +4,19 @@ The COMMIT checkpoint creates a git commit and completes the operation.
 
 ## Execution Steps
 
-### 1. Stage All Changes
+### 1. Stage Changes (Targeted Staging)
+
+**IMPORTANT**: Do NOT use `git add -A`. Use targeted staging to prevent race conditions with concurrent agents.
+
+See `.claude/context/core/standards/git-staging-scope.md` for agent-specific allowed files.
 
 ```bash
-git add -A
+# Stage task-specific files (adjust based on agent type)
+git add \
+  "specs/${task_number}_${project_name}/" \
+  "specs/TODO.md" \
+  "specs/state.json"
+# Add implementation files based on language (Theories/, docs/, .claude/, etc.)
 ```
 
 ### 2. Compose Commit Message

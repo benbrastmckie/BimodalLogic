@@ -67,9 +67,11 @@ Execute checkpoint-gate-out.md:
 
 Execute checkpoint-commit.md:
 
-1. `git add -A`
+1. Stage changes with targeted scope (see `.claude/context/core/standards/git-staging-scope.md`)
 2. Create commit with session_id
 3. Verify commit (non-blocking)
+
+**IMPORTANT**: Do NOT use `git add -A`. Use targeted staging to prevent race conditions with concurrent agents.
 
 ## Output
 

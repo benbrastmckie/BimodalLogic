@@ -270,8 +270,12 @@ if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
               specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
         fi
 
-        # Git commit
-        git add -A
+        # Git commit with targeted staging (prevents race conditions with concurrent agents)
+        # See .claude/context/core/standards/git-staging-scope.md for agent-specific rules
+        git add \
+          "specs/${task_number}_${task_slug}/" \
+          "specs/TODO.md" \
+          "specs/state.json"
         git commit -m "task ${task_number}: complete ${status}
 
 Session: ${session_id}

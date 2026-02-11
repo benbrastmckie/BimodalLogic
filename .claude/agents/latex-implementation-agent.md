@@ -339,13 +339,18 @@ For each phase in the implementation plan:
 3. **Execute LaTeX creation/modification** as documented
 4. **Update phase status** to `[COMPLETED]` or `[BLOCKED]` or `[PARTIAL]`
 5. **Git commit** with message: `task {N} phase {P}: {phase_name}`
+   Use targeted staging (prevents race conditions with concurrent agents):
    ```bash
-   git add -A && git commit -m "task {N} phase {P}: {phase_name}
+   git add \
+     "docs/" \
+     "specs/${task_number}_${project_name}/plans/" && \
+   git commit -m "task {N} phase {P}: {phase_name}
 
    Session: {session_id}
 
    Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
    ```
+   **Note**: See `.claude/context/core/standards/git-staging-scope.md` for agent-specific staging rules.
 6. **Proceed to next phase** or return if blocked
 
 **This ensures**:

@@ -212,9 +212,14 @@ git diff --stat
 ```
 
 **Fix**:
-1. Manually commit if needed:
+1. Manually commit if needed (use targeted staging per agent type):
 ```bash
-git add -A
+# Use targeted staging, not git add -A
+# See .claude/context/core/standards/git-staging-scope.md for agent-specific rules
+git add \
+  "specs/${task_number}_${project_name}/" \
+  "specs/TODO.md" \
+  "specs/state.json"
 git commit -m "task {N}: {action}
 
 Session: {session_id}

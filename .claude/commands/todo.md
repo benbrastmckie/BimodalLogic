@@ -9,6 +9,13 @@ model: claude-opus-4-5-20251101
 
 Archive completed and abandoned tasks to clean up active task list.
 
+**IMPORTANT: Exclusive Access Required**
+
+This command modifies `specs/TODO.md`, `specs/state.json`, `specs/archive/`, and moves project directories.
+Do NOT run `/todo` while other agents are operating on tasks - it requires exclusive access to `specs/`.
+
+See `.claude/context/core/standards/git-staging-scope.md` for details on why `/todo` is a special case.
+
 ## Arguments
 
 - `--dry-run` - Show what would be archived without making changes
