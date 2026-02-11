@@ -1,5 +1,5 @@
 ---
-next_project_number: 869
+next_project_number: 870
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,30 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 869. Implement Claude Teams wave-based multi-agent coordination for research, planning, and implementation commands
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+
+**Description**: Upgrade the .claude/ agent system to leverage Claude Teams for coordinated multi-agent execution across the /research, /plan, and /implement command lifecycle. The design introduces wave-based parallelization where 1-4 specialized subagents work concurrently, with additional waves spawned as needed until resolution.
+
+**Research Phase (team-research)**: Invoke a research team that investigates the task from multiple angles appropriate to the task's complexity and depth requirements. Each subagent explores a different facet (e.g., codebase analysis, API documentation, prior art review, implementation patterns). Continue spawning waves until findings converge or a clear resolution emerges. Distill all subagent reports into a unified research summary that cites individual reports, then present to the user for review and approval before proceeding.
+
+**Planning Phase (team-plan)**: Invoke a planning team that uses approved research reports to design implementation approaches. For moderate tasks, develop and evaluate multiple candidate plans, narrowing to a single recommended plan when confidence is high. For difficult, high-stakes tasks requiring expert insight, present 2-3 alternative solutions with trade-off analysis for user selection. Each plan must include a full dependency analysis between phases to guide the implementation team. Summarize team outputs for user review and approval.
+
+**Implementation Phase (team-implement)**: Invoke an implementation team that executes the approved plan in coordinated waves. Each wave tackles independent phases concurrently. Include dedicated debugger agents that can be called if a phase encounters unexpected failures or needs to pivot, generating reports in a debug/ subdirectory for use in subsequent redesigns. Continue execution across phases until all are complete or blocked, then generate a comprehensive implementation run summary documenting outcomes, any pivots, and remaining blockers.
+
+**Design Decision Required**: Determine whether to implement as new dedicated commands (/team-research, /team-plan, /team-implement) for explicit team invocation, or extend existing commands with a --team flag for optional team execution mode. Consider backwards compatibility, discoverability, and user workflow preferences.
+
+**Technical Requirements**:
+- Research and incorporate February 2026 best practices for Claude Teams coordination patterns
+- Design subagent communication and context-sharing protocols
+- Implement wave orchestration with configurable parallelism (1-4 agents)
+- Create artifact schemas for team reports, debug reports, and run summaries
+- Ensure graceful degradation when individual subagents fail or timeout
+- Integrate with existing skill-to-agent mapping architecture
 
 ### 868. Reinstate lean-lsp MCP tools after GitHub issue resolution
 - **Effort**: 1 hour
