@@ -1,5 +1,5 @@
 ---
-next_project_number: 867
+next_project_number: 868
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,14 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 867. Check if lean-lsp MCP GitHub issues for disabled tools have been resolved
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-10
+
+**Description**: Find the GitHub issues for the two lean-lsp MCP tools that have been disabled (they hang when used) and check if the issues are still open or have been closed.
 
 ### 866. Consolidate LaTeX files into Theories/Bimodal/latex
 - **Effort**: 1.5 hours

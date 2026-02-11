@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 867,
+      "project_name": "check_lean_lsp_mcp_github_issues",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-11T00:31:36Z",
+      "last_updated": "2026-02-11T00:31:36Z"
+    },
+    {
       "project_number": 866,
       "project_name": "consolidate_latex_files",
       "status": "completed",
@@ -79,8 +87,8 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-11T00:16:11Z",
-      "session_id": "sess_1770768103_21260b",
+      "last_updated": "2026-02-11T00:17:29Z",
+      "session_id": "sess_1770769033_98ba8f",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
         {
@@ -384,7 +392,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 867,
+  "next_project_number": 868,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
