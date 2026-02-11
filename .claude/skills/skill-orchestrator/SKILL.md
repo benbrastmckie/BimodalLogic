@@ -37,15 +37,60 @@ Given a task number, retrieve full context:
 
 ### 2. Language-Based Routing
 
-Route to appropriate skill based on task language:
+Route to appropriate skill based on task language and team mode:
 
-| Language | Research Skill | Implementation Skill |
-|----------|---------------|---------------------|
-| lean | skill-lean-research | skill-lean-implementation |
-| latex | skill-researcher | skill-latex-implementation |
-| general | skill-researcher | skill-implementer |
-| meta | skill-researcher | skill-implementer |
-| markdown | skill-researcher | skill-implementer |
+**Standard Mode (default)**:
+
+| Language | Research Skill | Planning Skill | Implementation Skill |
+|----------|---------------|----------------|---------------------|
+| lean | skill-lean-research | skill-planner | skill-lean-implementation |
+| latex | skill-researcher | skill-planner | skill-latex-implementation |
+| general | skill-researcher | skill-planner | skill-implementer |
+| meta | skill-researcher | skill-planner | skill-implementer |
+| markdown | skill-researcher | skill-planner | skill-implementer |
+
+**Team Mode (--team flag)**:
+
+| Operation | Team Skill |
+|-----------|------------|
+| research | skill-team-research |
+| plan | skill-team-plan |
+| implement | skill-team-implement |
+
+Team skills handle all languages and apply wave-based parallelization.
+
+### 2a. Team Mode Flag Parsing
+
+Parse --team and --team-size flags from command input:
+
+```bash
+# Example: /research 123 --team --team-size 3
+# Example: /implement 456 --team
+
+team_mode=false
+team_size=2  # default
+
+if [[ "$args" == *"--team"* ]]; then
+  team_mode=true
+  # Extract team size if specified
+  if [[ "$args" =~ --team-size[[:space:]]+([0-9]+) ]]; then
+    team_size="${BASH_REMATCH[1]}"
+  fi
+fi
+```
+
+### 2b. Team Mode Routing Logic
+
+```
+IF --team flag present:
+  SWITCH operation:
+    research -> skill-team-research
+    plan -> skill-team-plan
+    implement -> skill-team-implement
+  Pass team_size to selected skill
+ELSE:
+  Use standard language-based routing
+```
 
 ### 3. Status Validation
 
@@ -72,7 +117,17 @@ Prepare context package for delegated skill:
     "research": ["path/to/research.md"],
     "plan": "path/to/plan.md"
   },
-  "focus_prompt": "Optional user-provided focus"
+  "focus_prompt": "Optional user-provided focus",
+  "team_mode": false,
+  "team_size": 2
+}
+```
+
+For team mode, include additional fields:
+```json
+{
+  "team_mode": true,
+  "team_size": 3
 }
 ```
 

@@ -24,13 +24,15 @@ technical_debt:
 
 ### 869. Implement Claude Teams wave-based multi-agent coordination for research, planning, and implementation commands
 - **Effort**: 7 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
 - **Planned**: 2026-02-11
+- **Completed**: 2026-02-11
 - **Research**: [research-001.md](specs/869_claude_teams_wave_coordination/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/869_claude_teams_wave_coordination/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260211.md](specs/869_claude_teams_wave_coordination/summaries/implementation-summary-20260211.md)
 
 **Description**: Upgrade the .claude/ agent system to leverage Claude Teams for coordinated multi-agent execution across the /research, /plan, and /implement command lifecycle. The design introduces wave-based parallelization where 1-4 specialized subagents work concurrently, with additional waves spawned as needed until resolution.
 

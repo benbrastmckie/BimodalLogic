@@ -57,9 +57,9 @@ All commands use checkpoint-based execution: GATE IN (preflight) -> DELEGATE (sk
 |---------|-------|-------------|
 | `/task` | `/task "Description"` | Create task |
 | `/task` | `/task --recover N`, `--expand N`, `--sync`, `--abandon N` | Manage tasks |
-| `/research` | `/research N [focus]` | Research task, route by language |
-| `/plan` | `/plan N` | Create implementation plan |
-| `/implement` | `/implement N` | Execute plan, resume from incomplete phase |
+| `/research` | `/research N [focus] [--team [--team-size N]]` | Research task, route by language |
+| `/plan` | `/plan N [--team [--team-size N]]` | Create implementation plan |
+| `/implement` | `/implement N [--team [--team-size N]]` | Execute plan, resume from incomplete phase |
 | `/revise` | `/revise N` | Create new plan version |
 | `/review` | `/review` | Analyze codebase, load ROADMAP.md context, propose updates |
 | `/todo` | `/todo` | Archive completed/abandoned tasks, sync repository metrics |
@@ -160,6 +160,9 @@ Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.c
 | skill-status-sync | (direct execution) | Atomic status updates |
 | skill-refresh | (direct execution) | Process and file cleanup |
 | skill-lake-repair | (direct execution) | Build with error repair |
+| skill-team-research | (team lead) | Multi-agent parallel research |
+| skill-team-plan | (team lead) | Multi-agent parallel planning |
+| skill-team-implement | (team lead) | Multi-agent parallel implementation |
 
 ## Rules References
 

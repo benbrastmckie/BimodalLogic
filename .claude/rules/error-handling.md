@@ -27,6 +27,15 @@ Errors from external systems:
 - `delegation_interrupted` - Agent interrupted before completion (metadata shows in_progress)
 - `jq_parse_failure` - jq command parse error (often due to Issue #1132)
 
+### Team Mode Errors
+Errors specific to multi-agent team execution:
+- `team_creation_failed` - Unable to spawn teammates (Teams feature unavailable)
+- `teammate_timeout` - Teammate did not complete within timeout period
+- `teammate_failure` - Teammate returned error status
+- `synthesis_failed` - Lead unable to synthesize teammate results
+- `wave_timeout` - Entire wave did not complete within timeout
+- `debug_cycle_exhausted` - Max debug cycles reached without resolution
+
 ## Error Response Pattern
 
 When an error occurs:
@@ -169,11 +178,48 @@ prevention strategies.
 Claude Code abort) before writing final metadata. The early-metadata-pattern.md ensures
 metadata exists for recovery.
 
+### Team Mode Recovery
+
+When team mode errors occur:
+
+```
+Team Creation Failed:
+1. Log warning: "Team mode unavailable, falling back to single agent"
+2. Invoke standard single-agent skill (skill-researcher, skill-planner, etc.)
+3. Mark degraded_to_single: true in metadata
+4. Continue with single-agent result
+```
+
+```
+Teammate Timeout:
+1. Continue with available teammate results
+2. Note timeout in synthesis
+3. Mark result as partial if critical teammate missing
+4. Log which teammate timed out
+```
+
+```
+Synthesis Failed:
+1. Preserve raw teammate findings
+2. Mark status as partial
+3. Provide teammate result files to user
+4. Log synthesis failure reason
+```
+
+```
+Debug Cycle Exhausted:
+1. Mark phase as [PARTIAL] in plan
+2. Preserve all debug reports
+3. Return partial with debug history
+4. Suggest manual intervention
+```
+
 ## Non-Blocking Errors
 
 These should not stop execution:
 - Git commit failures
 - Metric collection failures
 - Non-critical logging failures
+- Team mode degradation (falls back gracefully)
 
 Log and continue, report at end.

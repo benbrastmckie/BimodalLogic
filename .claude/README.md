@@ -1069,6 +1069,77 @@ See `.claude/context/project/lean4/operations/multi-instance-optimization.md` fo
 
 ---
 
+## Team Mode (Multi-Agent Coordination)
+
+Team mode enables wave-based multi-agent coordination using Claude Code's Agent Teams feature (experimental, February 2026).
+
+### Enabling Team Mode
+
+Add `--team` flag to commands:
+```bash
+/research 123 --team              # Multi-angle research with 2-4 teammates
+/plan 123 --team                  # Parallel plan generation with trade-offs
+/implement 123 --team             # Parallel phase execution with debugging
+```
+
+Optionally specify team size:
+```bash
+/research 123 --team --team-size 3    # Use 3 teammates
+```
+
+### How It Works
+
+**Research**: Spawns 2-4 teammates investigating complementary angles (primary approach, alternatives, risks, devil's advocate), then synthesizes findings into a unified report.
+
+**Planning**: Spawns 2-3 teammates creating candidate plans with different trade-offs, then synthesizes a best-of-breed final plan with documented decisions.
+
+**Implementation**: Analyzes plan for parallelizable phases, executes independent phases concurrently, and spawns debugger agents when errors occur.
+
+### When to Use Team Mode
+
+**Good candidates**:
+- Complex research requiring multiple perspectives
+- Trade-off analysis needing parallel exploration
+- Large implementations with independent phases
+- Debugging sessions benefiting from hypothesis diversity
+
+**Poor candidates**:
+- Simple, linear tasks (overhead not justified)
+- Token-sensitive operations (~5x token usage)
+- Time-critical fast operations
+- Well-defined single-path implementations
+
+### Token Usage Warning
+
+Team mode uses approximately 5x more tokens than single-agent execution. Each teammate is a separate Claude instance. Use sparingly for tasks that benefit from parallelization.
+
+### Configuration
+
+Enable the experimental Agent Teams feature:
+```json
+// In settings.json or ~/.claude.json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
+
+### Graceful Degradation
+
+If team mode is unavailable (feature not enabled, spawning fails), commands automatically fall back to single-agent execution with a warning message.
+
+### Related Files
+
+- `.claude/context/core/patterns/team-orchestration.md` - Wave coordination patterns
+- `.claude/context/core/formats/team-metadata-extension.md` - Team result schema
+- `.claude/context/core/formats/debug-report-format.md` - Debug cycle reports
+- `.claude/skills/skill-team-research/SKILL.md` - Team research implementation
+- `.claude/skills/skill-team-plan/SKILL.md` - Team planning implementation
+- `.claude/skills/skill-team-implement/SKILL.md` - Team implementation
+
+---
+
 ## Related Documentation
 
 - Quick Start Guide: `.claude/QUICK-START.md`
