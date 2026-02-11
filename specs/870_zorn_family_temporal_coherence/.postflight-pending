@@ -1,0 +1,9 @@
+{
+  "session_id": "sess_1770849241_5c5666",
+  "skill": "skill-team-research",
+  "task_number": 870,
+  "operation": "team-research",
+  "team_size": 2,
+  "degraded_to_single": true,
+  "reason": "Research in progress: synthesis, status update, git commit pending"
+}

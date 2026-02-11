@@ -1,5 +1,5 @@
 ---
-next_project_number: 871
+next_project_number: 872
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,53 @@ technical_debt:
 
 ## Tasks
 
+### 871. Implement safer git staging to prevent concurrent agent race conditions
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+
+**Description**: Address the race condition where concurrent agents using `git add -A` or `git add specs/` can accidentally overwrite files modified by other processes. Demonstrated by task 865 research agent (session sess_1770848379_6843ee) wiping TODO.md to empty while task 869 archival was completing.
+
+**Root Cause**: Background agents stage all modified files in specs/ directory regardless of which files they actually created or modified. When multiple agents run concurrently, later commits can overwrite earlier changes.
+
+**Proposed Solutions**:
+
+1. **Targeted Git Staging** (Required):
+   - Replace `git add -A` and `git add specs/` with explicit file staging
+   - Agents should only stage files in their task directory: `specs/{N}_{SLUG}/`
+   - Shared files (TODO.md, state.json, ROAD_MAP.md) require special handling
+
+2. **Pre-Commit Validation** (Required):
+   - Before commit, check `git diff --cached --name-only`
+   - Verify staged files match expected scope for the operation
+   - Abort if unexpected files are staged (e.g., other task directories, TODO.md during research)
+
+3. **Staging Scope Rules** (Required):
+   - Research agents: Stage only `specs/{N}_{SLUG}/reports/` + state.json + TODO.md
+   - Plan agents: Stage only `specs/{N}_{SLUG}/plans/` + state.json + TODO.md
+   - Implement agents: Stage modified source files + `specs/{N}_{SLUG}/summaries/` + state.json + TODO.md + plan file
+   - Todo command: Stage entire `specs/` directory (by design, runs exclusively)
+
+4. **File Locking Pattern** (Optional):
+   - Create `.editing-{file}.lock` files to signal active edits
+   - Check for locks before modifying shared files
+   - Clean up stale locks (>1 hour old)
+
+**Implementation Areas**:
+- Update git commit patterns in skill postflight sections
+- Add pre-commit validation helper in `.claude/utils/git-safety.md`
+- Document staging scope rules in `.claude/rules/git-workflow.md`
+- Add lock file protocol to `.claude/context/core/patterns/file-locking.md` (optional)
+
+**Success Criteria**:
+- No agent stages files outside its authorized scope
+- Concurrent agents can run without file conflicts
+- Clear error messages when staging validation fails
+
 ### 870. Zorn-based family selection for temporal coherence
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-11
 
