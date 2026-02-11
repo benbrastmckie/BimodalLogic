@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/869_claude_teams_wave_coordination/reports/research-001.md",
-      "summary": "Comprehensive research report covering Claude Teams integration, wave-based parallelization patterns, result aggregation, and implementation approach with --team flag"
+      "type": "plan",
+      "path": "specs/869_claude_teams_wave_coordination/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for Claude Teams wave coordination with --team flag integration"
     }
   ],
-  "next_steps": "Run /plan 869 to create implementation plan",
+  "next_steps": "Run /implement 869 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770846663_39fad3",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1770847107_545319",
+    "agent_type": "planner-agent",
+    "duration_seconds": 300,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 8
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 7.0
   }
 }

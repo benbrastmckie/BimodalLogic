@@ -8,19 +8,25 @@
     {
       "project_number": 869,
       "project_name": "claude_teams_wave_coordination",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-11T21:50:05Z",
-      "last_updated": "2026-02-11T21:55:03Z",
-      "session_id": "sess_1770846663_39fad3",
+      "last_updated": "2026-02-11T22:01:03Z",
+      "session_id": "sess_1770847107_545319",
       "researched": "2026-02-11T21:55:03Z",
       "artifacts": [
         {
           "path": "specs/869_claude_teams_wave_coordination/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive research report covering Claude Teams integration, wave-based parallelization patterns, result aggregation, and implementation approach with --team flag"
+        },
+        {
+          "path": "specs/869_claude_teams_wave_coordination/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for Claude Teams wave coordination with --team flag integration"
         }
-      ]
+      ],
+      "planned": "2026-02-11T22:01:03Z"
     },
     {
       "project_number": 868,
