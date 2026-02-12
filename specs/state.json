@@ -8,10 +8,10 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-12T01:30:02Z",
+      "last_updated": "2026-02-12T01:35:59Z",
       "session_id": "sess_1770855612_d4c54f",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
@@ -54,9 +54,14 @@
           "path": "specs/870_zorn_family_temporal_coherence/reports/research-004.md",
           "type": "research",
           "summary": "Team research diagnostic: boundary-only extension approach recommended, G-distribution fallacy identified"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "Revised 4-phase plan: Boundary-only extension approach, eliminates G-distribution fallacy"
         }
       ],
-      "planned": "2026-02-11T23:42:43Z",
+      "planned": "2026-02-12T01:35:59Z",
       "started": "2026-02-11T23:11:43Z"
     },
     {
@@ -456,12 +461,13 @@
     {
       "project_number": 878,
       "project_name": "update_skill_team_implement_use_structured_dependencies",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "2 hours",
       "description": "Update skill-team-implement/SKILL.md Stage 2 to parse structured Dependencies field from phases instead of heuristic analysis. Build execution waves from parsed dependency graph. Handle missing Dependencies field (backward compat - treat as sequential).",
       "created": "2026-02-11T16:57:59Z",
-      "last_updated": "2026-02-11T16:57:59Z"
+      "last_updated": "2026-02-12T01:34:17Z",
+      "session_id": "sess_1770860044_fca725"
     }
   ],
   "completed_projects": [

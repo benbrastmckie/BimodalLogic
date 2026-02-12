@@ -24,7 +24,7 @@ technical_debt:
 
 ### 878. Update skill-team-implement to use structured phase dependencies
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Dependencies**: Task 876, Task 877
@@ -65,14 +65,14 @@ technical_debt:
 
 ### 870. Zorn-based family selection for temporal coherence
 - **Effort**: TBD
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
-- **Planned**: 2026-02-11
+- **Planned**: 2026-02-12
 - **Started**: 2026-02-11
-- **Research**: [research-001.md](specs/870_zorn_family_temporal_coherence/reports/research-001.md), [research-002.md](specs/870_zorn_family_temporal_coherence/reports/research-002.md), [research-003.md](specs/870_zorn_family_temporal_coherence/reports/research-003.md)
-- **Plan**: [implementation-002.md](specs/870_zorn_family_temporal_coherence/plans/implementation-002.md)
+- **Research**: [research-001.md](specs/870_zorn_family_temporal_coherence/reports/research-001.md), [research-002.md](specs/870_zorn_family_temporal_coherence/reports/research-002.md), [research-003.md](specs/870_zorn_family_temporal_coherence/reports/research-003.md), [research-004.md](specs/870_zorn_family_temporal_coherence/reports/research-004.md)
+- **Plan**: [implementation-003.md](specs/870_zorn_family_temporal_coherence/plans/implementation-003.md)
 - **Summaries**: [implementation-summary-20260211.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260211.md), [implementation-summary-20260212.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212.md)
 - **Implementation**: [ZornFamily.lean](Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean)
 
