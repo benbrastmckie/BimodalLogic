@@ -1,56 +1,37 @@
 {
   "status": "researched",
-  "summary": "Team research completed: augmented seed approach NOT viable for pure past/future cases; cross-sign case IS solvable; universal forward_F incompatible with domain extension",
+  "summary": "Wave 2: Identified 6-step implementation plan for sorry-free ZornFamily. Steps 0-3 eliminate 9/12 sorries with 90% confidence. Steps 4-6 require controlled Lindenbaum (55% confidence). Fallback: DovetailingChain.",
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/880_augmented_extension_seed_approach/reports/research-001.md",
-      "summary": "Synthesized research from 2 teammates on augmented extension seed approach"
+      "path": "specs/880_augmented_extension_seed_approach/reports/research-002.md",
+      "summary": "Wave 2 synthesis: optimal path to sorry-free proofs"
     },
     {
       "type": "teammate_findings",
-      "path": "specs/880_augmented_extension_seed_approach/reports/teammate-a-findings.md",
-      "summary": "Teammate A: Augmented seed definition analysis - not viable"
+      "path": "specs/880_augmented_extension_seed_approach/reports/teammate-a-wave2.md",
+      "summary": "Teammate A: Sorry classification, approach comparison"
     },
     {
       "type": "teammate_findings",
-      "path": "specs/880_augmented_extension_seed_approach/reports/teammate-b-findings.md",
-      "summary": "Teammate B: Alternative approaches comparison - 6 approaches analyzed"
+      "path": "specs/880_augmented_extension_seed_approach/reports/teammate-b-wave2.md",
+      "summary": "Teammate B: Detailed implementation steps, proof strategies"
     }
   ],
   "team_execution": {
     "enabled": true,
-    "wave_count": 1,
+    "wave_count": 2,
     "teammates_spawned": 2,
     "teammates_completed": 2,
-    "teammates_failed": 0,
-    "token_usage_multiplier": 5.0,
-    "degraded_to_single": false
+    "teammates_failed": 0
   },
-  "teammate_results": [
-    {
-      "id": "A",
-      "angle": "Augmented seed definition and consistency proof",
-      "status": "completed",
-      "confidence": "high on findings, medium on recommendations",
-      "key_finding": "Augmented seed not viable; universal forward_F incompatible with domain extension"
-    },
-    {
-      "id": "B",
-      "angle": "Alternative approaches and prior art",
-      "status": "completed",
-      "confidence": "medium-low on single approach",
-      "key_finding": "6 alternatives analyzed; A+B combined has best theoretical coverage"
-    }
-  ],
   "synthesis": {
-    "conflicts_found": 0,
-    "conflicts_resolved": 0,
-    "gaps_identified": 4,
-    "wave_2_triggered": false
+    "conflicts_found": 1,
+    "conflicts_resolved": 1,
+    "gaps_identified": 3
   },
   "metadata": {
-    "session_id": "sess_1770921898_b765d1",
+    "session_id": "sess_1770923218_d57f7a",
     "agent_type": "skill-team-research"
   }
 }
