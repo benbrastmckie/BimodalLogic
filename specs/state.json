@@ -8,11 +8,11 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-12T17:26:14Z",
-      "session_id": "sess_1770916498_37a95c",
+      "last_updated": "2026-02-12T17:32:47Z",
+      "session_id": "sess_1770917332_b16728",
       "researched": "2026-02-12T17:26:14Z",
       "artifacts": [
         {
@@ -69,9 +69,14 @@
           "path": "specs/870_zorn_family_temporal_coherence/reports/research-005.md",
           "type": "research",
           "summary": "Sorry analysis: 3 clusters (9 sites), unified resolution via strengthened GHCoherentPartialFamily"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "6-phase plan: Strengthened GHCoherentPartialFamily with universal forward_F/backward_P fields"
         }
       ],
-      "planned": "2026-02-12T01:35:59Z",
+      "planned": "2026-02-12T17:32:47Z",
       "started": "2026-02-11T23:11:43Z"
     },
     {

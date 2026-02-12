@@ -1,20 +1,19 @@
 {
-  "status": "partial",
-  "summary": "Research identified 3 sorry clusters (9 sites), 2 dead-code sorries, and proposed unified resolution: strengthen GHCoherentPartialFamily with universal forward_F/backward_P fields + controlled Lindenbaum extension. Estimated 18-26 hours across 6 phases.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/870_zorn_family_temporal_coherence/reports/research-005.md",
-      "type": "research"
+      "type": "plan",
+      "path": "specs/870_zorn_family_temporal_coherence/plans/implementation-004.md",
+      "summary": "6-phase implementation plan for eliminating all 11 sorries via strengthened GHCoherentPartialFamily with universal forward_F/backward_P fields"
     }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research report with sorry analysis, Mathlib search results, and 6-phase resolution strategy"
-  },
+  "next_steps": "Run /implement 870 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770916498_37a95c",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1770917332_b16728",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 21
   }
 }
