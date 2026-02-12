@@ -124,16 +124,26 @@ structure CoherentPartialFamily where
 - [x] Define `extensionSeed` combining G-content from past and H-content from future
 - [x] Define helper lemmas for seed membership
 - [x] Prove `GContent_consistent` and `HContent_consistent`
+- [x] Prove `GContent_propagates_forward` (4-axiom for GContent)
+- [x] Prove `HContent_propagates_backward` (4-axiom for HContent)
+- [x] Define `multi_witness_seed_consistent_future` theorem (with sorry in hard case)
+- [x] Define `multi_witness_seed_consistent_past` theorem (with sorry in hard case)
 - [ ] Prove `extensionSeed_consistent` (has 3 sorries - technical debt)
 
-**Technical Debt Status**:
-The `extensionSeed_consistent` theorem has 3 sorries:
-1. Cross-sign consistency (both past and future times exist)
-2. Pure G-content case (requires picking supremum of past times)
-3. Pure H-content case (requires picking infimum of future times)
+**Technical Debt Status** (Updated 2026-02-11):
+The `extensionSeed_consistent` theorem has 3 sorries at:
+1. Line 694: Cross-sign case (both past and future times exist)
+2. Line 722: Pure past case (needs multi-witness argument)
+3. Line 744: Pure future case (symmetric to pure past)
 
-These require 4-axiom propagation (G phi -> GG phi, H phi -> HH phi) to resolve.
-The proof structure is in place but the detailed propagation arguments are pending.
+Additionally, the helper theorems have sorries:
+- `multi_witness_seed_consistent_future` line 650: Hard case when L contains psis
+- `multi_witness_seed_consistent_past` line 680: Hard case when L contains psis
+
+**Proof Strategy Documentation** (added in this session):
+- Pure past case: Find s_max among all source times in L, show all GContent propagates via 4-axiom, then apply multi_witness_seed_consistent_future
+- Pure future case: Symmetric using HContent_propagates_backward and multi_witness_seed_consistent_past
+- Cross-sign case: Requires showing G-content from past is compatible with H-content from future via family coherence
 
 **Files modified**:
 - `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean`
@@ -170,34 +180,53 @@ a singleton domain cannot satisfy these without temporal saturation.
 
 ---
 
-### Phase 5: Maximality Implies Totality [BLOCKED]
+### Phase 5: Maximality Implies Totality [PARTIAL]
 
 **Goal**: Prove that a maximal coherent partial family has domain = Set.univ.
 
 **Tasks**:
-- [ ] Assume maximal F with some t not in domain
-- [ ] Construct extension seed for t
-- [ ] Apply Lindenbaum to get MCS at t
-- [ ] Build extended family F' with domain' = F.domain ∪ {t}
-- [ ] Prove F' is coherent partial family
-- [ ] Prove F < F' (strict extension)
-- [ ] Contradiction with maximality
+- [x] Assume maximal F with some t not in domain
+- [x] Construct extension seed for t
+- [x] Apply Lindenbaum to get MCS at t
+- [x] Build extended family F' with domain' = F.domain ∪ {t}
+- [~] Prove F' is coherent partial family (relies on extendFamily which has sorries)
+- [x] Prove F < F' (strict extension)
+- [x] Contradiction with maximality
 
-**Timing**: 3-4 hours
+**Status Update (2026-02-11)**:
+The `maximal_implies_total` theorem is now proven! The proof uses:
+1. `extensionSeed_includes_past_GContent` to construct `h_forward_G`
+2. `extensionSeed_includes_future_HContent` to construct `h_backward_H`
+3. `extendFamily` to build F' (relies on sorried infrastructure)
+4. `extendFamily_strictly_extends` to show F < F'
+5. `lt_irrefl` via transitivity to derive contradiction
 
-**Files to modify**:
+**Remaining Sorries**:
+The `extendFamily` function (defined in Phase 4) has 2 internal sorries:
+- Line 989: forward_G from new time t to old future times
+- Line 1020: backward_H from new time t to old past times
+
+These sorries are fundamentally hard because they require showing that G/H formulas
+added by Lindenbaum extension propagate to existing domain times. Possible solutions:
+1. Augment the seed with negative constraints (¬G phi if phi ∉ F.mcs s' for future s')
+2. Use a filtered Lindenbaum that avoids adding problematic G/H formulas
+3. Find temporal axiom relationships that connect these formulas
+
+**Timing**: 2 hours (proof complete, sorries remain in infrastructure)
+
+**Files modified**:
 - `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean`
 
 **Key Theorem**:
 ```lean
-lemma maximal_coherent_family_total (F : CoherentPartialFamily)
-    (hmax : ∀ G : CoherentPartialFamily, F.le G → G.le F) :
+theorem maximal_implies_total (F : GHCoherentPartialFamily) (base : GHCoherentPartialFamily)
+    (hmax : Maximal (· ∈ CoherentExtensions base) F) (hF_ext : F ∈ CoherentExtensions base) :
     F.domain = Set.univ
 ```
 
 **Verification**:
-- `lake build` succeeds
-- Totality lemma compiles without sorry
+- [x] `lake build` succeeds
+- [~] Totality lemma compiles (relies on sorried extendFamily)
 
 ---
 

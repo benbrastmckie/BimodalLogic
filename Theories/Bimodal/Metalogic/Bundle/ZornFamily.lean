@@ -497,6 +497,188 @@ because they all derive from the coherent MCS structure.
 G-content from past times must be compatible with H-content from future times. This uses
 the 4-axiom (G phi → GG phi, H phi → HH phi) to show that formulas propagate correctly.
 -/
+/-
+Key lemma: All GContent from times ≤ s propagates to GContent at s via the 4-axiom.
+
+If s1 < s2 and both in domain, then GContent(mcs(s1)) ⊆ GContent(mcs(s2)).
+Proof: G phi ∈ mcs(s1) → GG phi ∈ mcs(s1) (4-axiom) → G phi ∈ mcs(s2) (forward_G)
+-/
+lemma GContent_propagates_forward (F : GHCoherentPartialFamily) (s1 s2 : Int)
+    (hs1 : s1 ∈ F.domain) (hs2 : s2 ∈ F.domain) (h_lt : s1 < s2) :
+    GContent (F.mcs s1) ⊆ GContent (F.mcs s2) := by
+  intro phi h_in_G1
+  -- G phi ∈ mcs(s1)
+  have h_G_phi : Formula.all_future phi ∈ F.mcs s1 := h_in_G1
+  -- By 4-axiom: GG phi ∈ mcs(s1)
+  have h_GG_phi : Formula.all_future (Formula.all_future phi) ∈ F.mcs s1 :=
+    set_mcs_all_future_all_future (F.is_mcs s1 hs1) h_G_phi
+  -- By forward_G from s1 to s2: G phi ∈ mcs(s2)
+  exact F.forward_G s1 s2 hs1 hs2 h_lt (Formula.all_future phi) h_GG_phi
+
+/-
+Symmetric lemma for HContent propagating backward.
+-/
+lemma HContent_propagates_backward (F : GHCoherentPartialFamily) (s1 s2 : Int)
+    (hs1 : s1 ∈ F.domain) (hs2 : s2 ∈ F.domain) (h_lt : s1 < s2) :
+    HContent (F.mcs s2) ⊆ HContent (F.mcs s1) := by
+  intro phi h_in_H2
+  -- H phi ∈ mcs(s2)
+  have h_H_phi : Formula.all_past phi ∈ F.mcs s2 := h_in_H2
+  -- By 4-axiom (past): HH phi ∈ mcs(s2)
+  have h_HH_phi : Formula.all_past (Formula.all_past phi) ∈ F.mcs s2 :=
+    set_mcs_all_past_all_past (F.is_mcs s2 hs2) h_H_phi
+  -- By backward_H from s2 to s1: H phi ∈ mcs(s1)
+  exact F.backward_H s2 s1 hs1 hs2 h_lt (Formula.all_past phi) h_HH_phi
+
+/-
+Key lemma: All GContent from past times flows to the MCS at ANY past time.
+This is because G phi at time s implies G phi at all times s' > s (via 4-axiom + forward_G).
+For times s' < s, we need backward reasoning which isn't available.
+So we need to pick the "supremum" past time.
+-/
+
+/-
+Multi-temporal witness seed consistency for multiple F-obligations.
+
+If all F psi_i are in the same MCS M, then {psi_1, ..., psi_k} ∪ GContent(M) is consistent.
+
+**Proof Strategy**:
+By induction on the number of F-obligations.
+Base case: GContent(M) is consistent (GContent_consistent).
+Inductive case: Given {psi_1, ..., psi_{k-1}} ∪ GContent(M) is consistent,
+  show adding psi_k preserves consistency using the temporal_witness_seed_consistent argument.
+
+Actually, the temporal_witness_seed_consistent proof handles this:
+If L ⊆ {psi_1, ..., psi_k} ∪ GContent(M) and L ⊢ ⊥, then
+- Filter L into L_psis (elements in {psi_1, ..., psi_k}) and L_G (elements in GContent(M))
+- Use deduction theorem: L_G ⊢ neg(conjunction of L_psis)
+- Apply generalized_temporal_k: G(L_G) ⊢ G(neg(...))
+- Since G(L_G) ⊆ M and F(psi_i) ∈ M, derive contradiction
+-/
+
+/--
+Helper: Given L ⊆ GContent(M), all elements of L are in M (via T-axiom).
+-/
+lemma GContent_subset_MCS (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (L : List Formula) (hL : ∀ phi ∈ L, phi ∈ GContent M) :
+    ∀ phi ∈ L, phi ∈ M := by
+  intro phi h_mem
+  have h_G_phi : Formula.all_future phi ∈ M := hL phi h_mem
+  have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G_phi
+
+/--
+Helper: Given L ⊆ HContent(M), all elements of L are in M (via T-axiom).
+-/
+lemma HContent_subset_MCS (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (L : List Formula) (hL : ∀ phi ∈ L, phi ∈ HContent M) :
+    ∀ phi ∈ L, phi ∈ M := by
+  intro phi h_mem
+  have h_H_phi : Formula.all_past phi ∈ M := hL phi h_mem
+  have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H_phi
+
+/--
+Multi-witness temporal seed consistency: If F psi_1, ..., F psi_n are all in MCS M,
+then {psi_1, ..., psi_n} ∪ GContent(M) is consistent.
+
+This generalizes temporal_witness_seed_consistent from a single F-obligation to multiple.
+
+**Proof Strategy**:
+Suppose L ⊆ {psi_1, ..., psi_n} ∪ GContent(M) and L ⊢ ⊥.
+Let L_psi = {psi_i ∈ L} and L_G = {chi ∈ L : chi ∈ GContent(M), chi ∉ {psi_1,...,psi_n}}.
+We have L = L_psi ++ L_G (modulo ordering) and L ⊢ ⊥.
+
+By deduction theorem (applied multiple times):
+  L_G ⊢ neg(psi_{i_1}) ∨ ... ∨ neg(psi_{i_k})
+where psi_{i_1}, ..., psi_{i_k} are the elements of L_psi.
+
+By generalized_temporal_k:
+  G(L_G) ⊢ G(neg(psi_{i_1}) ∨ ... ∨ neg(psi_{i_k}))
+
+Since G distributes over disjunction (requires proof), and G(L_G) ⊆ M:
+  G(neg(psi_{i_1})) ∨ ... ∨ G(neg(psi_{i_k})) ∈ M (or derivable from M)
+
+But each F psi_i = neg(G(neg psi_i)) ∈ M, so G(neg psi_i) ∉ M.
+In an MCS, exactly one of G(neg psi_i) or neg(G(neg psi_i)) is in M.
+So all G(neg psi_i) are NOT in M.
+But a disjunction is in MCS iff some disjunct is in MCS.
+So G(neg(psi_{i_j})) ∈ M for some j.
+Contradiction!
+
+**Technical Note**: This proof sketch assumes G distributes over disjunction,
+which requires additional lemmas. The actual proof may use a different approach.
+-/
+theorem multi_witness_seed_consistent_future (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (Psis : List Formula) (h_F : ∀ psi ∈ Psis, Formula.some_future psi ∈ M) :
+    SetConsistent ({phi | phi ∈ Psis} ∪ GContent M) := by
+  -- The proof is complex; for now we use the structure to identify the key steps
+  -- and leave sorry for the detailed derivation manipulation
+  intro L hL ⟨d⟩
+
+  -- Partition L into elements from Psis and elements from GContent
+  let L_psis := L.filter (fun phi => decide (phi ∈ Psis))
+  let L_G := L.filter (fun phi => decide (phi ∉ Psis))
+
+  -- If no psis in L, then L ⊆ GContent M which is consistent
+  by_cases h_any_psi : L_psis = []
+  · -- L contains no psis, so L ⊆ GContent M
+    have h_L_in_G : ∀ phi ∈ L, phi ∈ GContent M := by
+      intro phi h_mem
+      have h_in_union := hL phi h_mem
+      simp only [Set.mem_union, Set.mem_setOf_eq] at h_in_union
+      rcases h_in_union with h_in_psis | h_in_G
+      · -- phi ∈ Psis, but L_psis = [], contradiction
+        have h_filter : phi ∈ L_psis := by
+          simp only [L_psis, List.mem_filter, decide_eq_true_eq]
+          exact ⟨h_mem, h_in_psis⟩
+        rw [h_any_psi] at h_filter
+        exact False.elim (List.not_mem_nil h_filter)
+      · exact h_in_G
+    -- L ⊆ GContent M is consistent by GContent_consistent
+    have h_cons := GContent_consistent M h_mcs
+    have h_L_in_M := GContent_subset_MCS M h_mcs L h_L_in_G
+    exact h_mcs.1 L h_L_in_M ⟨d⟩
+
+  · -- L contains at least one psi
+    -- This is the hard case requiring the derivation manipulation
+    -- The key insight: we use the same argument as temporal_witness_seed_consistent
+    -- but applied to a conjunction of negations
+
+    -- For now, we leave this as sorry - the full proof requires
+    -- building infrastructure for multi-formula deduction
+    sorry
+
+/--
+Symmetric version for P-obligations (past temporal operators).
+-/
+theorem multi_witness_seed_consistent_past (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (Psis : List Formula) (h_P : ∀ psi ∈ Psis, Formula.some_past psi ∈ M) :
+    SetConsistent ({phi | phi ∈ Psis} ∪ HContent M) := by
+  -- Symmetric to multi_witness_seed_consistent_future
+  intro L hL ⟨d⟩
+
+  let L_psis := L.filter (fun phi => decide (phi ∈ Psis))
+  let L_H := L.filter (fun phi => decide (phi ∉ Psis))
+
+  by_cases h_any_psi : L_psis = []
+  · have h_L_in_H : ∀ phi ∈ L, phi ∈ HContent M := by
+      intro phi h_mem
+      have h_in_union := hL phi h_mem
+      simp only [Set.mem_union, Set.mem_setOf_eq] at h_in_union
+      rcases h_in_union with h_in_psis | h_in_H
+      · have h_filter : phi ∈ L_psis := by
+          simp only [L_psis, List.mem_filter, decide_eq_true_eq]
+          exact ⟨h_mem, h_in_psis⟩
+        rw [h_any_psi] at h_filter
+        exact False.elim (List.not_mem_nil h_filter)
+      · exact h_in_H
+    have h_cons := HContent_consistent M h_mcs
+    have h_L_in_M := HContent_subset_MCS M h_mcs L h_L_in_H
+    exact h_mcs.1 L h_L_in_M ⟨d⟩
+
+  · sorry
+
 theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t ∉ F.domain) :
     SetConsistent (extensionSeed F t) := by
   intro L hL ⟨d⟩
@@ -511,19 +693,55 @@ theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t
       -- with the MCS structure by construction
       sorry  -- Cross-sign consistency: requires 4-axiom propagation
 
-    · -- Only past times exist
+    · -- Only past times exist (pure past case)
       push_neg at h_future
-      obtain ⟨s, hs_dom, hs_lt⟩ := h_past
-      -- All seed content is from past times (GContent and FObligations)
-      -- H-content and P-obligations are empty since no future times exist
-      sorry  -- Pure past case: G-content and F-obligations only
+      obtain ⟨s_witness, hs_witness_dom, hs_witness_lt⟩ := h_past
+
+      -- PROOF STRATEGY (Pure Past Case):
+      -- The seed simplifies to: (⋃ s<t GContent(mcs(s))) ∪ FObligations
+      -- (HContent and PObligations are empty since no future times exist)
+      --
+      -- Key insights:
+      -- 1. GContent propagates forward via 4-axiom: GContent(mcs(s1)) ⊆ GContent(mcs(s2)) for s1 < s2
+      -- 2. For each F-obligation psi (where F psi ∈ mcs(s)), {psi} ∪ GContent(mcs(s)) is consistent
+      --    (by temporal_witness_seed_consistent)
+      --
+      -- Strategy:
+      -- - Find s_max = maximum source time among all elements of L
+      -- - All GContent elements from L propagate to GContent(mcs(s_max))
+      -- - All F-obligation source F formulas also exist in mcs(s_max) (they propagate forward)
+      -- - Apply multi_witness_seed_consistent_future at mcs(s_max)
+      --
+      -- Technical detail: F psi ∈ mcs(s) for s < s' does NOT imply F psi ∈ mcs(s') directly.
+      -- However, we can use the multi_witness_seed_consistent_future theorem which handles
+      -- multiple witnesses with their F formulas all in the same MCS.
+      --
+      -- Technical debt: Complete proof requires detailed source time analysis and
+      -- showing that all F-obligations can be "collected" into a single MCS via the
+      -- coherence of the partial family.
+      sorry  -- Pure past case: needs multi-witness argument
 
   · push_neg at h_past
     by_cases h_future : ∃ s, s ∈ F.domain ∧ t < s
-    · obtain ⟨s, hs_dom, hs_gt⟩ := h_future
-      -- All seed content is from future times (HContent and PObligations)
-      -- G-content and F-obligations are empty since no past times exist
-      sorry  -- Pure future case: H-content and P-obligations only
+    · obtain ⟨s_witness, hs_witness_dom, hs_witness_gt⟩ := h_future
+      -- Only future times exist (pure future case - symmetric to pure past)
+      --
+      -- PROOF STRATEGY:
+      -- The seed simplifies to: (⋃ s>t HContent(mcs(s))) ∪ PObligations
+      -- (GContent and FObligations are empty since no past times exist)
+      --
+      -- Key insights:
+      -- 1. HContent propagates backward via 4-axiom: HContent(mcs(s2)) ⊆ HContent(mcs(s1)) for s1 < s2
+      -- 2. For each P-obligation psi (where P psi ∈ mcs(s)), {psi} ∪ HContent(mcs(s)) is consistent
+      --    (by temporal_witness_seed_consistent_past)
+      --
+      -- Strategy (symmetric to pure past):
+      -- - Find s_min = minimum source time among all elements of L
+      -- - All HContent elements from L propagate backward to HContent(mcs(s_min))
+      -- - Apply multi_witness_seed_consistent_past at mcs(s_min)
+      --
+      -- Technical debt: Symmetric to pure past case
+      sorry  -- Pure future case: symmetric to pure past
 
     · -- No past or future times - domain must equal {t} but t ∉ domain
       push_neg at h_future
@@ -858,9 +1076,29 @@ theorem maximal_implies_total (F : GHCoherentPartialFamily) (base : GHCoherentPa
   -- First, build the extension seed and extend via Lindenbaum
   have h_seed_cons : SetConsistent (extensionSeed F t) := extensionSeed_consistent F t ht
   obtain ⟨mcs_t, h_mcs_t_ext, h_mcs_t⟩ := set_lindenbaum (extensionSeed F t) h_seed_cons
-  -- The extended family strictly extends F
-  -- But we need to verify the preconditions for extendFamily
-  sorry  -- Requires proving h_forward_G and h_backward_H from seed inclusion
+  -- Construct h_forward_G from seed inclusion
+  have h_forward_G : ∀ s, s ∈ F.domain → s < t → ∀ phi, Formula.all_future phi ∈ F.mcs s → phi ∈ mcs_t := by
+    intro s hs_dom hs_lt phi h_G
+    have h_in_seed := extensionSeed_includes_past_GContent F t s hs_dom hs_lt phi h_G
+    exact h_mcs_t_ext h_in_seed
+  -- Construct h_backward_H from seed inclusion
+  have h_backward_H : ∀ s, s ∈ F.domain → t < s → ∀ phi, Formula.all_past phi ∈ F.mcs s → phi ∈ mcs_t := by
+    intro s hs_dom hs_gt phi h_H
+    have h_in_seed := extensionSeed_includes_future_HContent F t s hs_dom hs_gt phi h_H
+    exact h_mcs_t_ext h_in_seed
+  -- Build the extended family
+  let F' := extendFamily F t ht mcs_t h_mcs_t h_mcs_t_ext h_forward_G h_backward_H
+  -- F' strictly extends F
+  have hF_lt_F' : F < F' := extendFamily_strictly_extends F t ht mcs_t h_mcs_t h_mcs_t_ext h_forward_G h_backward_H
+  -- F' is in CoherentExtensions base since F is and F < F'
+  have hF'_ext : F' ∈ CoherentExtensions base := by
+    have hF_le_F' : F ≤ F' := le_of_lt hF_lt_F'
+    exact le_trans hF_ext hF_le_F'
+  -- But F is maximal, so F' ≤ F
+  have hF'_le_F : F' ≤ F := hmax.2 hF'_ext (le_of_lt hF_lt_F')
+  -- This gives F' ≤ F and F < F', contradiction via lt_irrefl
+  have h_lt_F : F < F := lt_of_lt_of_le hF_lt_F' hF'_le_F
+  exact lt_irrefl F h_lt_F
 
 /-!
 ## Part 11: F/P Recovery for Total Family
@@ -870,30 +1108,104 @@ The key insight is that the witness t+1 (or t-1) is always in the domain.
 -/
 
 /--
-For a total family, forward F witness: If F phi ∈ mcs(t), then phi ∈ mcs(t+1).
+For a maximal family, forward F witness: If F phi ∈ mcs(t), then phi ∈ mcs(t+1).
 
-This works because:
-1. The extension seed at t+1 includes FObligations
-2. FObligations includes phi when F phi ∈ mcs(t) for t < t+1
-3. Lindenbaum preserves the seed, so phi ∈ mcs(t+1)
+**Strategy**: Use maximality to derive a contradiction if no witness exists.
+If F phi ∈ mcs(t) but phi ∉ mcs(s) for all s > t, the family could be extended
+to satisfy this F-obligation, contradicting maximality.
+
+**Note**: This theorem requires the maximality proof, not just totality, because:
+- Totality alone doesn't guarantee F-obligation satisfaction
+- The Zorn construction explicitly includes F-obligations in the extension seed
+- Maximality ensures the construction completed correctly
+
+**Dependencies**:
+- Requires `maximal_implies_total` to get totality from maximality
+- Requires `extensionSeed_consistent` (Phase 3) for seed consistency
+- These dependencies have sorries, so this theorem also requires sorry
 -/
+theorem maximal_family_forward_F (F : GHCoherentPartialFamily) (base : GHCoherentPartialFamily)
+    (hmax : Maximal (· ∈ CoherentExtensions base) F) (hF_ext : F ∈ CoherentExtensions base)
+    (t : Int) (phi : Formula)
+    (hF : Formula.some_future phi ∈ F.mcs t) :
+    ∃ s, t < s ∧ phi ∈ F.mcs s := by
+  -- First establish totality from maximality
+  have htotal : F.domain = Set.univ := maximal_implies_total F base hmax hF_ext
+  -- Now prove the F witness exists
+  -- Key: t ∈ F.domain and t+1 ∈ F.domain (since domain = Set.univ)
+  have ht_dom : t ∈ F.domain := htotal ▸ Set.mem_univ t
+  have ht1_dom : t + 1 ∈ F.domain := htotal ▸ Set.mem_univ (t + 1)
+  -- The witness is t+1, need to show phi ∈ F.mcs (t+1)
+  use t + 1
+  constructor
+  · omega
+  · -- phi should be in F.mcs (t+1) because:
+    -- 1. F phi ∈ F.mcs t means phi is an F-obligation for time t+1
+    -- 2. The extensionSeed at t+1 includes FObligations
+    -- 3. The MCS at t+1 extends the extensionSeed (via Lindenbaum)
+    --
+    -- However, tracing through the Zorn construction is complex because
+    -- we don't have direct access to how mcs(t+1) was constructed.
+    --
+    -- Technical debt: This requires proving that for the maximal family,
+    -- F-obligations are always satisfied. This depends on:
+    -- - extensionSeed_consistent (Phase 3)
+    -- - maximal_implies_total (Phase 5)
+    -- Both have sorries in the current implementation.
+    sorry
+
+/-- Alias for backward compatibility with existing uses. -/
 theorem total_family_forward_F (F : GHCoherentPartialFamily)
     (htotal : F.domain = Set.univ) (t : Int) (phi : Formula)
     (hF : Formula.some_future phi ∈ F.mcs t) :
     ∃ s, t < s ∧ phi ∈ F.mcs s := by
-  -- For a total family built via Zorn, phi was included in the seed for t+1
-  -- because phi is an F-obligation from t < t+1
-  -- However, we need to trace through the Zorn construction to verify this
-  sorry  -- Requires detailed analysis of Zorn construction
+  -- This version doesn't have access to the maximality proof
+  -- It's kept for signature compatibility but cannot be proven without construction details
+  sorry
 
 /--
-For a total family, backward P witness: If P phi ∈ mcs(t), then phi ∈ mcs(t-1).
+For a maximal family, backward P witness: If P phi ∈ mcs(t), then phi ∈ mcs(t-1).
+
+**Strategy**: Symmetric to maximal_family_forward_F.
+If P phi ∈ mcs(t) but phi ∉ mcs(s) for all s < t, the family could be extended
+to satisfy this P-obligation, contradicting maximality.
+
+**Dependencies**:
+- Requires `maximal_implies_total` to get totality from maximality
+- Requires `extensionSeed_consistent` (Phase 3) for seed consistency
+- These dependencies have sorries, so this theorem also requires sorry
 -/
+theorem maximal_family_backward_P (F : GHCoherentPartialFamily) (base : GHCoherentPartialFamily)
+    (hmax : Maximal (· ∈ CoherentExtensions base) F) (hF_ext : F ∈ CoherentExtensions base)
+    (t : Int) (phi : Formula)
+    (hP : Formula.some_past phi ∈ F.mcs t) :
+    ∃ s, s < t ∧ phi ∈ F.mcs s := by
+  -- First establish totality from maximality
+  have htotal : F.domain = Set.univ := maximal_implies_total F base hmax hF_ext
+  -- Now prove the P witness exists
+  have ht_dom : t ∈ F.domain := htotal ▸ Set.mem_univ t
+  have ht1_dom : t - 1 ∈ F.domain := htotal ▸ Set.mem_univ (t - 1)
+  -- The witness is t-1
+  use t - 1
+  constructor
+  · omega
+  · -- Similar reasoning to forward_F
+    -- phi should be in F.mcs (t-1) because:
+    -- 1. P phi ∈ F.mcs t means phi is a P-obligation for time t-1
+    -- 2. The extensionSeed at t-1 includes PObligations
+    -- 3. The MCS at t-1 extends the extensionSeed (via Lindenbaum)
+    --
+    -- Technical debt: Same dependency on extensionSeed_consistent and
+    -- maximal_implies_total as maximal_family_forward_F.
+    sorry
+
+/-- Alias for backward compatibility with existing uses. -/
 theorem total_family_backward_P (F : GHCoherentPartialFamily)
     (htotal : F.domain = Set.univ) (t : Int) (phi : Formula)
     (hP : Formula.some_past phi ∈ F.mcs t) :
     ∃ s, s < t ∧ phi ∈ F.mcs s := by
-  sorry  -- Similar to forward_F
+  -- This version doesn't have access to the maximality proof
+  sorry
 
 /-!
 ## Part 12: Main Theorem
@@ -944,11 +1256,11 @@ theorem temporal_coherent_family_exists_zorn (Gamma : List Formula)
   · -- Backward H (from structure field)
     intro t t' hlt phi hH
     exact fam.backward_H t t' phi hlt hH
-  · -- Forward F
+  · -- Forward F (uses maximality, not just totality)
     intro t phi hF
-    exact total_family_forward_F F hF_total t phi hF
-  · -- Backward P
+    exact maximal_family_forward_F F base hF_max hF_ext t phi hF
+  · -- Backward P (uses maximality, not just totality)
     intro t phi hP
-    exact total_family_backward_P F hF_total t phi hP
+    exact maximal_family_backward_P F base hF_max hF_ext t phi hP
 
 end Bimodal.Metalogic.Bundle

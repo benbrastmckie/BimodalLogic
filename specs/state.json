@@ -171,7 +171,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-12T00:20:45Z",
+      "last_updated": "2026-02-12T01:02:05Z",
       "session_id": "sess_1770855612_d4c54f",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
@@ -204,6 +204,11 @@
           "path": "specs/870_zorn_family_temporal_coherence/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 6-phase plan: Remove F/P from structure, add Preorder instance, F/P recovery for total families"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212.md",
+          "type": "summary",
+          "summary": "Partial implementation summary - 9 sorries remain"
         }
       ],
       "planned": "2026-02-11T23:42:43Z",

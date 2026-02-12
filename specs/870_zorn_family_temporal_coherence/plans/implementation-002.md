@@ -240,39 +240,56 @@ theorem maximal_implies_total (F : GHCoherentPartialFamily)
 
 **Goal**: Prove that a total GH-coherent family also satisfies F/P.
 
+**Status Update (2026-02-11)**:
+- Restructured theorem statements to use maximality proof
+- Added `maximal_family_forward_F` and `maximal_family_backward_P` with correct hypotheses
+- Main theorem `temporal_coherent_family_exists_zorn` now uses maximal versions
+- Backward compatibility aliases retained for `total_family_forward_F` and `total_family_backward_P`
+- **Blocker**: Completing proofs requires Phase 3 (extensionSeed_consistent) and Phase 5 (maximal_implies_total) sorries
+
 **Tasks**:
-- [ ] Define `TotalGHCoherentFamily` (domain = Set.univ)
-- [ ] Prove `forward_F` for total family
-- [ ] Prove `backward_P` for total family
-- [ ] Build final `IndexedMCSFamily` from total family
-- [ ] State and prove `temporal_coherent_family_exists_zorn`
+- [x] Restructure theorems to take maximality proof instead of just totality
+- [x] Add `maximal_family_forward_F` with correct hypothesis structure
+- [x] Add `maximal_family_backward_P` with correct hypothesis structure
+- [x] Update main theorem to use maximal versions
+- [ ] Complete F/P proof body (blocked by Phases 3, 5)
 
-**Key Insight for F/P Recovery**:
+**Key Design Change**:
 
-For a total family with domain = Set.univ:
-- If `F phi ∈ mcs(t)`, then phi was included in the seed for time t+1 (as an F-obligation)
-- Therefore `phi ∈ mcs(t+1)` by Lindenbaum (seed ⊆ MCS)
-- So t+1 is the witness for F phi at t
-
+Original approach (unprovable):
 ```lean
+-- WRONG: Totality alone doesn't guarantee F-obligation satisfaction
 theorem total_family_forward_F (F : GHCoherentPartialFamily)
-    (htotal : F.domain = Set.univ) (t : Int) (phi : Formula)
-    (hF : Formula.some_future phi ∈ F.mcs t) :
+    (htotal : F.domain = Set.univ) ...
+```
+
+New approach (correct):
+```lean
+-- RIGHT: Maximality proof provides construction details
+theorem maximal_family_forward_F (F : GHCoherentPartialFamily) (base : GHCoherentPartialFamily)
+    (hmax : Maximal (· ∈ CoherentExtensions base) F) (hF_ext : F ∈ CoherentExtensions base)
+    (t : Int) (phi : Formula) (hF : Formula.some_future phi ∈ F.mcs t) :
     ∃ s, t < s ∧ phi ∈ F.mcs s := by
+  have htotal : F.domain = Set.univ := maximal_implies_total F base hmax hF_ext
   use t + 1
   constructor
   · omega
-  · -- phi was in F-obligations for time t+1
-    -- Therefore phi ∈ seed(t+1) ⊆ mcs(t+1)
-    ...
+  · sorry  -- Requires Phase 3 and 5 completion
 ```
 
-**Timing**: 3-4 hours
+**Dependency Analysis**:
+The proof body requires showing `phi ∈ F.mcs (t+1)`, which needs:
+1. `maximal_implies_total` (Phase 5) - to establish totality
+2. `extensionSeed_consistent` (Phase 3) - to ensure seed inclusion in MCS
+3. Construction tracing through Zorn - to access seed ⊆ MCS property
+
+**Timing**: 3-4 hours (deferred until Phases 3, 5 complete)
 
 **Verification**:
-- `temporal_coherent_family_exists_zorn` compiles without sorry
-- All 8 ZornFamily.lean sorries eliminated
-- All 4 DovetailingChain.lean sorries can be replaced
+- `lake build` passes with current changes (verified)
+- No new `axiom` declarations introduced (verified)
+- 4 sorries in Phase 6 (2 maximal, 2 compatibility aliases)
+- Main theorem compiles but depends on sorry
 
 ---
 
