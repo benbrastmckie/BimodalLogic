@@ -1,7 +1,7 @@
 # Implementation Plan: Augmented Extension Seed Approach
 
 - **Task**: 880 - Investigate augmented extension seed approach for pure past/future cases
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 21-31 hours (Phase 1: ~9h, Phase 2: ~12-18h)
 - **Dependencies**: None (builds on task 870 Phase 4 findings)
 - **Research Inputs**: specs/880_augmented_extension_seed_approach/reports/research-002.md
@@ -84,49 +84,68 @@ After full implementation:
 
 ## Implementation Phases
 
-### Phase 1: Delete False Lemmas (Step 0) [NOT STARTED]
+### Phase 1: Delete False Lemmas (Step 0) [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Remove mathematically false lemmas that can never be proven
 - **Tasks:**
-  - [ ] Delete `multi_witness_seed_consistent_future` (lines 806-844)
-  - [ ] Delete `multi_witness_seed_consistent_past` (lines 849-874)
-  - [ ] Remove any references to these lemmas
-  - [ ] Verify build still compiles (with remaining sorries)
+  - [x] Delete `multi_witness_seed_consistent_future` (lines 806-844)
+  - [x] Delete `multi_witness_seed_consistent_past` (lines 849-874)
+  - [x] Remove any references to these lemmas
+  - [x] Verify build still compiles (with remaining sorries)
 - **Timing:** 0.5 hours
 - **Verification:**
-  - `lake build` succeeds (with existing sorry count minus 2)
-  - No references to deleted lemmas remain
+  - [x] `lake build` succeeds (10 sorries remain, down from 12)
+  - [x] No references to deleted lemmas remain (comments updated)
 
 ---
 
-### Phase 2: Analyze F/P Field Dependencies [NOT STARTED]
+### Phase 2: Analyze F/P Field Dependencies [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Map all usages of `forward_F` and `backward_P` to prepare for removal
 - **Tasks:**
-  - [ ] Search all uses of `forward_F` in codebase
-  - [ ] Search all uses of `backward_P` in codebase
-  - [ ] Identify which theorems depend on these fields
-  - [ ] Document the dependency graph
-  - [ ] Plan removal order to minimize cascading breaks
+  - [x] Search all uses of `forward_F` in codebase
+  - [x] Search all uses of `backward_P` in codebase
+  - [x] Identify which theorems depend on these fields
+  - [x] Document the dependency graph
+  - [x] Plan removal order to minimize cascading breaks
 - **Timing:** 1 hour
 - **Verification:**
-  - Complete list of F/P usages documented
-  - Clear removal sequence identified
+  - [x] Complete list of F/P usages documented (see below)
+  - [x] Clear removal sequence identified
+
+**Dependency Graph (ZornFamily.lean)**:
+1. Structure fields (lines 121, 127): `forward_F`, `backward_P` in `GHCoherentPartialFamily`
+2. Chain upper bound (lines 390, 421): `chainUpperBound` must prove F/P fields
+3. Singleton family (lines 1434, 1439): `singletonGHCoherentFamily` proves F/P vacuously
+4. Extension (lines 1613-1672, 1786-1845): `extendFamilyUpperBoundary`, `extendFamilyLowerBoundary` have 4 sorries for F/P
+5. F/P satisfaction (lines 2115-2141): `total_family_FObligations_satisfied`, `total_family_PObligations_satisfied` use structural fields
+6. Final extraction (lines 2151-2256): Delegation to F/P satisfaction lemmas
+
+**Removal Sequence**:
+1. Remove fields from structure
+2. Remove F/P proofs from `chainUpperBound`
+3. Remove F/P proofs from `singletonGHCoherentFamily`
+4. Remove F/P branches from extension functions (eliminating 4 sorries)
+5. Refactor `total_family_*_satisfied` to use alternative derivation
 
 ---
 
-### Phase 3: Remove forward_F and backward_P (Step 1) [NOT STARTED]
+### Phase 3: Remove forward_F and backward_P (Step 1) [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Remove the fundamentally broken F/P fields from GHCoherentPartialFamily
 - **Tasks:**
-  - [ ] Remove `forward_F` field from `GHCoherentPartialFamily` structure
-  - [ ] Remove `backward_P` field from `GHCoherentPartialFamily` structure
-  - [ ] Update all structure instantiations (remove F/P proofs)
-  - [ ] Update `extend_family_preserves_GHCoherence` to not require F/P
-  - [ ] Remove S8, S9 sorry sites (F/P extension proofs no longer needed)
+  - [x] Remove `forward_F` field from `GHCoherentPartialFamily` structure
+  - [x] Remove `backward_P` field from `GHCoherentPartialFamily` structure
+  - [x] Update all structure instantiations (remove F/P proofs)
+  - [x] Update `extend_family_preserves_GHCoherence` to not require F/P
+  - [x] Remove S8, S9 sorry sites (F/P extension proofs no longer needed)
+- **Verification:**
+  - [x] Build succeeds (8 sorries remain, down from 10)
+  - [x] 4 extension sorries removed (upper/lower boundary F/P proofs)
+  - [x] 2 new sorries added for F/P satisfaction (alternative proof needed)
   - [ ] Verify remaining sorry count
 - **Timing:** 4-6 hours
 - **Files to modify:**
@@ -138,24 +157,23 @@ After full implementation:
 
 ---
 
-### Phase 4: Simplify extensionSeed and Prove Consistency (Steps 2-3) [NOT STARTED]
+### Phase 4: Simplify extensionSeed and Prove Consistency (Steps 2-3) [PARTIAL]
 
 - **Dependencies:** Phase 3
 - **Goal:** Simplify seed to GContent + HContent only and prove consistency for all cases
 - **Tasks:**
-  - [ ] Simplify `extensionSeed` definition to GContent + HContent only (remove FObligations, PObligations)
-  - [ ] Prove `extensionSeed_consistent` for pure future boundary case (S4)
-  - [ ] Prove `extensionSeed_consistent` for pure past boundary case (S5)
-  - [ ] Prove `extensionSeed_consistent` for cross-sign case (S3)
-    - GContent propagates forward via `GContent_propagates_forward`
-    - HContent propagates backward via `HContent_propagates_backward`
-    - All elements land in consistent MCS via T-axiom
-  - [ ] Verify all 3 seed consistency sorries eliminated
+  - [x] Simplify `extensionSeed` definition to GContent + HContent only (remove FObligations, PObligations)
+  - [x] Update `upperBoundarySeed` and `lowerBoundarySeed` to match
+  - [x] Update seed equivalence theorems
+  - [x] Rewrite `extensionSeed_consistent` proof structure for simplified seed
+  - [~] Prove pure past/future cases - structure complete, list induction needs fixing
+  - [ ] Prove cross-sign case (S3) - requires forward_G/backward_H interaction proof
 - **Timing:** 4-7 hours
+- **Status:** Seed simplified, pure past/future cases have placeholder sorries for list induction, cross-sign case has 1 sorry
 - **Verification:**
-  - S3, S4, S5 eliminated
-  - Build succeeds with 9 fewer sorries total (Phase 1-4)
-  - Cross-sign case proven via propagation lemmas
+  - [x] Build succeeds (8 sorries, but different distribution)
+  - [ ] S3 (cross-sign) - still has sorry
+  - [~] S4, S5 (pure cases) - have auxiliary sorries for list induction (provable)
 
 ---
 

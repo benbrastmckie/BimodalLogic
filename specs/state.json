@@ -473,6 +473,11 @@
           "path": "specs/880_augmented_extension_seed_approach/plans/implementation-001.md",
           "type": "plan",
           "summary": "7-phase plan: delete false lemmas, remove F/P fields, simplify seed, decision checkpoint"
+        },
+        {
+          "path": "specs/880_augmented_extension_seed_approach/summaries/implementation-summary-20260212.md",
+          "type": "summary",
+          "summary": "Detailed summary of changes made, remaining sorries, and recommendations"
         }
       ],
       "planned": "2026-02-12T19:33:20Z",
