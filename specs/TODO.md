@@ -1,5 +1,5 @@
 ---
-next_project_number: 879
+next_project_number: 880
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,14 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 879. Investigate and fix team mode context limit failures
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-12
+
+**Description**: When running `/implement --team 870`, the team mode correctly spawned two lean-implementation-agent subagents for parallel execution of phases 3 and 4. However, one agent (ad8d16b) hit a context limit during execution, preventing completion. Team mode DID work (subagents were spawned correctly), but the context limit prevented phase completion. Root cause to investigate: Why does the lean-implementation-agent context window fill up during proof work? Is this related to excessive MCP tool calls, file reads, or lean_goal queries? Can we add context management (periodic /compact) to long-running agents? Desired outcome: Identify why agents hit context limits during Lean implementation, implement solution (e.g., periodic context compression, reduced verbosity, better chunking), enable successful team mode execution for complex Lean tasks.
 
 ### 870. Zorn-based family selection for temporal coherence
 - **Effort**: TBD

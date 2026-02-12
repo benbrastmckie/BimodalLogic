@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 879,
+      "project_name": "team_mode_context_limit_failures",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-12T18:08:37Z",
+      "last_updated": "2026-02-12T18:08:37Z"
+    },
+    {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
       "status": "implementing",
@@ -424,7 +432,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 879,
+  "next_project_number": 880,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
