@@ -2,7 +2,7 @@
 
 - **Task**: 870 - Zorn-based family selection for temporal coherence
 - **Version**: 002
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours (3-4 sessions)
 - **Dependencies**: None (builds on existing ZornFamily.lean infrastructure)
 - **Research Inputs**: research-002.md, research-003.md (diagnostic)
