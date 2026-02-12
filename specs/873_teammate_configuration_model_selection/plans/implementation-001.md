@@ -1,7 +1,7 @@
 # Implementation Plan: Task #873
 
 - **Task**: 873 - Create teammate configuration system with model selection
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 872 (language-aware routing) should be complete or coordinated
 - **Research Inputs**: specs/873_teammate_configuration_model_selection/reports/research-001.md
@@ -44,7 +44,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Extend Language Routing Configuration [NOT STARTED]
+### Phase 1: Extend Language Routing Configuration [COMPLETED]
 
 **Goal**: Add `default_model` field to the language routing pattern in `team-wave-helpers.md`
 
@@ -69,7 +69,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Modify skill-team-research [NOT STARTED]
+### Phase 2: Modify skill-team-research [COMPLETED]
 
 **Goal**: Include model preference in research teammate prompts
 
@@ -92,7 +92,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Modify skill-team-implement [NOT STARTED]
+### Phase 3: Modify skill-team-implement [COMPLETED]
 
 **Goal**: Include model preference in implementation and debugger teammate prompts
 
@@ -115,7 +115,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Modify skill-team-plan [NOT STARTED]
+### Phase 4: Modify skill-team-plan [COMPLETED]
 
 **Goal**: Include model preference in planning teammate prompts
 
@@ -136,7 +136,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Documentation Update [NOT STARTED]
+### Phase 5: Documentation Update [COMPLETED]
 
 **Goal**: Document model routing in CLAUDE.md and verify consistency
 

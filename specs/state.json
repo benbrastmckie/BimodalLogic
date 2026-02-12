@@ -47,12 +47,12 @@
     {
       "project_number": 873,
       "project_name": "teammate_configuration_model_selection",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "effort": "2-3 hours",
       "description": "Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:33:19Z",
+      "last_updated": "2026-02-12T00:38:13Z",
       "session_id": "sess_1770856380_0479b7",
       "researched": "2026-02-12T00:25:34Z",
       "artifacts": [
@@ -65,10 +65,18 @@
           "path": "specs/873_teammate_configuration_model_selection/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for teammate model configuration system"
+        },
+        {
+          "path": "specs/873_teammate_configuration_model_selection/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-02-12T00:31:05Z",
-      "started": "2026-02-12T00:33:19Z"
+      "started": "2026-02-12T00:33:19Z",
+      "completed": "2026-02-12T00:38:13Z",
+      "completion_summary": "Implemented teammate model selection system allowing team skills to specify preferred Claude models per language type. Lean tasks default to Opus for complex theorem proving, while document and system tasks use Sonnet for cost-effectiveness.",
+      "claudemd_suggestions": "Added default_model field to team-wave-helpers.md, updated skill-team-research/SKILL.md, skill-team-implement/SKILL.md, skill-team-plan/SKILL.md with model extraction and prompt inclusion, added model defaults table to CLAUDE.md"
     },
     {
       "project_number": 874,

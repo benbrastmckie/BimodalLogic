@@ -155,19 +155,37 @@ case "$language" in
     # Lean-specific configuration
     use_lean_prompts=true
     research_agent_pattern="lean-research-agent"
+    default_model="opus"
     context_refs="@.claude/context/project/lean4/tools/mcp-tools-guide.md, @.claude/context/project/lean4/standards/proof-debt-policy.md"
     blocked_tools="lean_diagnostic_messages (lean-lsp-mcp #115), lean_file_outline (unreliable)"
     available_tools="lean_leansearch, lean_loogle, lean_leanfinder, lean_local_search, lean_hover_info"
     ;;
-  *)
-    # Generic configuration (general, meta, latex, typst)
+  "latex"|"typst"|"meta")
+    # Document/system tasks - Sonnet is cost-effective
     use_lean_prompts=false
     research_agent_pattern="general-research-agent"
+    default_model="sonnet"
+    context_refs=""
+    blocked_tools=""
+    available_tools="WebSearch, WebFetch, Read, Grep, Glob"
+    ;;
+  *)
+    # Generic configuration - inherit lead's model
+    use_lean_prompts=false
+    research_agent_pattern="general-research-agent"
+    default_model="inherit"
     context_refs=""
     blocked_tools=""
     available_tools="WebSearch, WebFetch, Read, Grep, Glob"
     ;;
 esac
+
+# Prepare model preference line for prompts
+if [ "$default_model" = "inherit" ]; then
+  model_preference_line=""
+else
+  model_preference_line="Model preference: Use Claude ${default_model^} for this analysis."
+fi
 ```
 
 See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.
@@ -189,6 +207,8 @@ Use the Lean teammate prompt template from `.claude/utils/team-wave-helpers.md#l
 **Teammate A - Primary Angle (Lean)**:
 ```
 Research task {task_number}: {description}
+
+{model_preference_line}
 
 You are a Lean 4/Mathlib research specialist. Follow the lean-research-agent pattern.
 
@@ -270,6 +290,8 @@ Use generic prompts (existing behavior preserved).
 **Teammate A - Primary Angle (Generic)**:
 ```
 Research task {task_number}: {description}
+
+{model_preference_line}
 
 Focus on implementation approaches and patterns.
 Challenge assumptions and provide specific examples.

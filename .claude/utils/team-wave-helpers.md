@@ -255,6 +255,7 @@ language_config = {
   "lean": {
     "research_agent": "lean-research-agent",
     "implementation_agent": "lean-implementation-agent",
+    "default_model": "opus",
     "context_references": [
       "@.claude/context/project/lean4/tools/mcp-tools-guide.md",
       "@.claude/context/project/lean4/patterns/tactic-patterns.md",
@@ -284,6 +285,7 @@ language_config = {
   "latex": {
     "research_agent": "general-research-agent",
     "implementation_agent": "latex-implementation-agent",
+    "default_model": "sonnet",
     "context_references": [],
     "blocked_tools": [],
     "research_tools": ["WebSearch", "WebFetch", "Read"],
@@ -293,6 +295,7 @@ language_config = {
   "typst": {
     "research_agent": "general-research-agent",
     "implementation_agent": "typst-implementation-agent",
+    "default_model": "sonnet",
     "context_references": [],
     "blocked_tools": [],
     "research_tools": ["WebSearch", "WebFetch", "Read"],
@@ -302,6 +305,7 @@ language_config = {
   "general": {
     "research_agent": "general-research-agent",
     "implementation_agent": "general-implementation-agent",
+    "default_model": "inherit",
     "context_references": [],
     "blocked_tools": [],
     "research_tools": ["WebSearch", "WebFetch", "Read"],
@@ -311,6 +315,7 @@ language_config = {
   "meta": {
     "research_agent": "general-research-agent",
     "implementation_agent": "general-implementation-agent",
+    "default_model": "sonnet",
     "context_references": [
       "@.claude/CLAUDE.md",
       "@.claude/context/index.md"
@@ -321,6 +326,19 @@ language_config = {
     "verification": "File creation and consistency checks"
   }
 }
+
+# Model Selection Rationale
+#
+# default_model specifies the preferred Claude model for teammates:
+# - "opus": Most capable model, recommended for complex theorem proving (Lean)
+# - "sonnet": Balanced model, good for document generation and system tasks
+# - "inherit": Use the lead agent's model (no override)
+#
+# Rationale:
+# - lean: Opus provides superior mathematical reasoning for theorem proving
+# - latex/typst: Sonnet handles document generation well, more cost-effective
+# - meta: Sonnet handles system configuration tasks efficiently
+# - general: Inherit allows flexibility, lead determines appropriate model
 ```
 
 ### Lean Teammate Prompt Template (Research)

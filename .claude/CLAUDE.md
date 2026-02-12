@@ -164,7 +164,19 @@ Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.c
 | skill-team-plan | (team lead) | Multi-agent parallel planning |
 | skill-team-implement | (team lead) | Multi-agent parallel implementation |
 
-**Team Skill Language Routing**: Team skills (skill-team-research, skill-team-plan, skill-team-implement) route teammates to language-appropriate agents. For Lean tasks, teammates use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools and blocked tool warnings. See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration.
+**Team Skill Language Routing**: Team skills (skill-team-research, skill-team-plan, skill-team-implement) route teammates to language-appropriate agents and models. For Lean tasks, teammates use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools and blocked tool warnings. See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration.
+
+**Team Skill Model Defaults**:
+
+| Language | Default Model | Rationale |
+|----------|---------------|-----------|
+| `lean` | Opus | Complex theorem proving benefits from most capable model |
+| `latex` | Sonnet | Document generation well-handled by Sonnet |
+| `typst` | Sonnet | Similar to LaTeX |
+| `meta` | Sonnet | System tasks well-handled by Sonnet |
+| `general` | Inherit | Uses lead agent's model |
+
+Model preference is communicated via natural language in teammate prompts (advisory, not enforced).
 
 ## Rules References
 

@@ -139,30 +139,48 @@ case "$language" in
   "lean")
     # Lean-specific planning configuration
     use_lean_prompts=true
+    default_model="opus"
     context_refs="@.claude/context/project/lean4/patterns/tactic-patterns.md, @.claude/context/project/lean4/standards/proof-debt-policy.md"
     planning_guidance="Phases should correspond to proof milestones (e.g., helper lemmas, main theorem). Each phase must include 'lake build' verification."
     verification_command="lake build"
     ;;
   "latex")
+    use_lean_prompts=false
+    default_model="sonnet"
     context_refs=""
     planning_guidance="Phases should correspond to document sections."
     verification_command="pdflatex"
-    use_lean_prompts=false
     ;;
   "typst")
+    use_lean_prompts=false
+    default_model="sonnet"
     context_refs=""
     planning_guidance="Phases should correspond to document sections."
     verification_command="typst compile"
+    ;;
+  "meta")
     use_lean_prompts=false
+    default_model="sonnet"
+    context_refs=""
+    planning_guidance=""
+    verification_command="File creation and consistency checks"
     ;;
   *)
-    # Generic configuration (general, meta)
+    # Generic configuration - inherit lead's model
+    use_lean_prompts=false
+    default_model="inherit"
     context_refs=""
     planning_guidance=""
     verification_command="Project-specific build/test"
-    use_lean_prompts=false
     ;;
 esac
+
+# Prepare model preference line for prompts
+if [ "$default_model" = "inherit" ]; then
+  model_preference_line=""
+else
+  model_preference_line="Model preference: Use Claude ${default_model^} for planning."
+fi
 ```
 
 See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.
@@ -184,6 +202,8 @@ Use the Lean teammate prompt template from `.claude/utils/team-wave-helpers.md#l
 **Teammate A - Plan Version A (Lean)**:
 ```
 Create an implementation plan for task {task_number}: {description}
+
+{model_preference_line}
 
 This is a Lean 4 theorem proving task.
 
@@ -216,6 +236,8 @@ Output to: specs/{N}_{SLUG}/plans/candidate-a.md
 ```
 Create an ALTERNATIVE implementation plan for task {task_number}: {description}
 
+{model_preference_line}
+
 This is a Lean 4 theorem proving task.
 
 ## Context References (load as needed)
@@ -244,6 +266,8 @@ Output to: specs/{N}_{SLUG}/plans/candidate-b.md
 **Teammate C - Risk/Dependency Analysis (Lean, if team_size >= 3)**:
 ```
 Analyze dependencies and risks for implementing task {task_number}: {description}
+
+{model_preference_line}
 
 This is a Lean 4 theorem proving task.
 
@@ -275,6 +299,8 @@ Use generic prompts (existing behavior preserved).
 ```
 Create an implementation plan for task {task_number}: {description}
 
+{model_preference_line}
+
 Research findings:
 {research_content}
 
@@ -296,6 +322,8 @@ Use standard plan format with phases, each containing:
 ```
 Create an ALTERNATIVE implementation plan for task {task_number}: {description}
 
+{model_preference_line}
+
 Research findings:
 {research_content}
 
@@ -312,6 +340,8 @@ Clearly document what trade-offs this alternative makes.
 **Teammate C - Risk/Dependency Analysis (Generic, if team_size >= 3)**:
 ```
 Analyze dependencies and risks for implementing task {task_number}: {description}
+
+{model_preference_line}
 
 Research findings:
 {research_content}

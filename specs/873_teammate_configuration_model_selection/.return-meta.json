@@ -1,0 +1,50 @@
+{
+  "status": "implemented",
+  "summary": "Implemented teammate configuration system with model selection for team skills. Added default_model field to language routing config (Opus for Lean, Sonnet for latex/typst/meta, inherit for general). Updated all three team skills to include model preference in teammate prompts.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": ".claude/utils/team-wave-helpers.md",
+      "summary": "Added default_model field to all 5 language configurations"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-team-research/SKILL.md",
+      "summary": "Added model extraction and preference in teammate prompts"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-team-implement/SKILL.md",
+      "summary": "Added model extraction and preference in implementer/debugger prompts"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-team-plan/SKILL.md",
+      "summary": "Added model extraction and preference in planner prompts"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/CLAUDE.md",
+      "summary": "Added model defaults table to team skill documentation"
+    },
+    {
+      "type": "summary",
+      "path": "specs/873_teammate_configuration_model_selection/summaries/implementation-summary-20260211.md",
+      "summary": "Implementation summary with verification results"
+    }
+  ],
+  "completion_data": {
+    "completion_summary": "Implemented teammate model selection system allowing team skills to specify preferred Claude models per language type. Lean tasks default to Opus for complex theorem proving, while document and system tasks use Sonnet for cost-effectiveness.",
+    "claudemd_suggestions": "Added default_model field to team-wave-helpers.md, updated skill-team-research/SKILL.md, skill-team-implement/SKILL.md, skill-team-plan/SKILL.md with model extraction and prompt inclusion, added model defaults table to CLAUDE.md"
+  },
+  "metadata": {
+    "session_id": "sess_1770856380_0479b7",
+    "duration_seconds": 1800,
+    "agent_type": "general-implementation-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "next_steps": "Review implementation and test with /research N --team or /implement N --team"
+}

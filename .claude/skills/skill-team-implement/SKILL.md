@@ -132,6 +132,7 @@ case "$language" in
     # Lean-specific configuration
     use_lean_prompts=true
     implementation_agent_pattern="lean-implementation-agent"
+    default_model="opus"
     context_refs="@.claude/context/project/lean4/tools/mcp-tools-guide.md, @.claude/context/project/lean4/patterns/tactic-patterns.md, @.claude/context/project/lean4/standards/proof-debt-policy.md"
     blocked_tools="lean_diagnostic_messages (lean-lsp-mcp #115), lean_file_outline (unreliable)"
     implementation_tools="lean_goal (MOST IMPORTANT), lean_multi_attempt, lean_state_search, lean_hover_info, lean_local_search"
@@ -140,20 +141,36 @@ case "$language" in
   "latex")
     use_lean_prompts=false
     implementation_agent_pattern="latex-implementation-agent"
+    default_model="sonnet"
     verification_command="pdflatex"
     ;;
   "typst")
     use_lean_prompts=false
     implementation_agent_pattern="typst-implementation-agent"
+    default_model="sonnet"
     verification_command="typst compile"
     ;;
-  *)
-    # Generic configuration (general, meta)
+  "meta")
     use_lean_prompts=false
     implementation_agent_pattern="general-implementation-agent"
+    default_model="sonnet"
+    verification_command="File creation and consistency checks"
+    ;;
+  *)
+    # Generic configuration - inherit lead's model
+    use_lean_prompts=false
+    implementation_agent_pattern="general-implementation-agent"
+    default_model="inherit"
     verification_command="Project-specific build/test"
     ;;
 esac
+
+# Prepare model preference line for prompts
+if [ "$default_model" = "inherit" ]; then
+  model_preference_line=""
+else
+  model_preference_line="Model preference: Use Claude ${default_model^} for this task."
+fi
 ```
 
 See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.
@@ -183,6 +200,8 @@ Use the Lean teammate prompt template from `.claude/utils/team-wave-helpers.md#l
 **Teammate Prompt (Lean Phase Implementer)**:
 ```
 Implement phase {P} of task {task_number}: {phase_description}
+
+{model_preference_line}
 
 You are a Lean 4 proof implementer. Follow the lean-implementation-agent pattern.
 
@@ -239,6 +258,8 @@ Use generic prompts (existing behavior preserved).
 ```
 Implement phase {P} of task {task_number}: {phase_description}
 
+{model_preference_line}
+
 Plan context:
 {phase_details}
 
@@ -270,6 +291,8 @@ Use the Lean debugger prompt template from `.claude/utils/team-wave-helpers.md#l
 **Spawn Lean Debugger Teammate**:
 ```
 Analyze the error in task {task_number} phase {P}:
+
+{model_preference_line}
 
 You are a Lean 4 debugging specialist.
 
@@ -305,6 +328,8 @@ Use generic debugger prompts (existing behavior preserved).
 **Spawn Generic Debugger Teammate**:
 ```
 Analyze the error in task {task_number} phase {P}:
+
+{model_preference_line}
 
 Error output:
 {error_details}
