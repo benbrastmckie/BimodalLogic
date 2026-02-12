@@ -3,16 +3,16 @@ next_project_number: 879
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-12T01:08:01Z
+  last_assessed: 2026-02-12T17:38:08Z
 task_counts:
-  active: 13
-  completed: 412
+  active: 10
+  completed: 600
   in_progress: 1
-  not_started: 7
+  not_started: 6
   abandoned: 29
-  total: 444
+  total: 639
 technical_debt:
-  sorry_count: 161
+  sorry_count: 169
   axiom_count: 20
   build_errors: 1
   status: manageable
@@ -22,54 +22,9 @@ technical_debt:
 
 ## Tasks
 
-### 878. Update skill-team-implement to use structured phase dependencies
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Completed**: 2026-02-12
-- **Dependencies**: Task 876, Task 877
-- **Research**: [research-001.md](specs/878_update_skill_team_implement_use_structured_dependencies/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/878_update_skill_team_implement_use_structured_dependencies/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260212.md](specs/878_update_skill_team_implement_use_structured_dependencies/summaries/implementation-summary-20260212.md)
-
-**Description**: Update skill-team-implement/SKILL.md Stage 2 to parse structured Dependencies field from phases instead of heuristic analysis. Build execution waves from parsed dependency graph. Handle missing Dependencies field (backward compat - treat as sequential).
-
----
-
-### 877. Update planner-agent to generate phase dependencies
-- **Effort**: 1.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Completed**: 2026-02-12
-- **Dependencies**: Task 876
-- **Research**: [research-001.md](specs/877_update_planner_agent_generate_phase_dependencies/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/877_update_planner_agent_generate_phase_dependencies/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260212.md](specs/877_update_planner_agent_generate_phase_dependencies/summaries/implementation-summary-20260212.md)
-
-**Description**: Update planner-agent.md Stage 5 plan template to include Dependencies field for each phase. Add dependency analysis during Stage 4 (task decomposition). Generate Dependencies field based on outputs/inputs between phases. Reference task-breakdown.md dependency patterns.
-
----
-
-### 876. Add phase dependency field to plan format standards
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Completed**: 2026-02-12
-- **Dependencies**: None
-- **Research**: [research-001.md](specs/876_add_phase_dependency_field_plan_format_standards/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/876_add_phase_dependency_field_plan_format_standards/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260211.md](specs/876_add_phase_dependency_field_plan_format_standards/summaries/implementation-summary-20260211.md)
-
-**Description**: Add Dependencies field to phase format in plan-format.md and artifact-formats.md. Define notation: Dependencies: None | Phase {N} | Phase {N}, Phase {M}. Ensure backward compatibility (field is optional).
-
----
-
 ### 870. Zorn-based family selection for temporal coherence
 - **Effort**: TBD
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
