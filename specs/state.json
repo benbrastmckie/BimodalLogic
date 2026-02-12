@@ -8,12 +8,12 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-12T05:26:18Z",
-      "session_id": "sess_1770860511_3200fc",
-      "researched": "2026-02-11T22:39:40Z",
+      "last_updated": "2026-02-12T17:26:14Z",
+      "session_id": "sess_1770916498_37a95c",
+      "researched": "2026-02-12T17:26:14Z",
       "artifacts": [
         {
           "path": "specs/870_zorn_family_temporal_coherence/reports/research-001.md",
@@ -64,6 +64,11 @@
           "path": "specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212-v003.md",
           "type": "summary",
           "summary": "Team implementation v003: 4 phases, boundary-only approach, 9 sorries remaining (well-isolated)"
+        },
+        {
+          "path": "specs/870_zorn_family_temporal_coherence/reports/research-005.md",
+          "type": "research",
+          "summary": "Sorry analysis: 3 clusters (9 sites), unified resolution via strengthened GHCoherentPartialFamily"
         }
       ],
       "planned": "2026-02-12T01:35:59Z",
