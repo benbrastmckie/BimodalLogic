@@ -8,11 +8,11 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-12T01:35:59Z",
-      "session_id": "sess_1770855612_d4c54f",
+      "last_updated": "2026-02-12T01:42:25Z",
+      "session_id": "sess_1770860511_3200fc",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
         {
@@ -461,21 +461,27 @@
     {
       "project_number": 878,
       "project_name": "update_skill_team_implement_use_structured_dependencies",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "2 hours",
       "description": "Update skill-team-implement/SKILL.md Stage 2 to parse structured Dependencies field from phases instead of heuristic analysis. Build execution waves from parsed dependency graph. Handle missing Dependencies field (backward compat - treat as sequential).",
       "created": "2026-02-11T16:57:59Z",
-      "last_updated": "2026-02-12T01:37:02Z",
-      "session_id": "sess_1770860044_fca725",
+      "last_updated": "2026-02-12T01:45:21Z",
+      "session_id": "sess_1770860584_c5d5ec",
       "researched": "2026-02-12T01:37:02Z",
       "artifacts": [
         {
           "path": "specs/878_update_skill_team_implement_use_structured_dependencies/reports/research-001.md",
           "type": "research",
           "summary": "Research report with parsing algorithm, graph building approach, topological sort for wave computation, and backward compatibility handling"
+        },
+        {
+          "path": "specs/878_update_skill_team_implement_use_structured_dependencies/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan covering dependency parsing, graph building, wave computation, backward compatibility, and verification"
         }
-      ]
+      ],
+      "planned": "2026-02-12T01:45:21Z"
     }
   ],
   "completed_projects": [

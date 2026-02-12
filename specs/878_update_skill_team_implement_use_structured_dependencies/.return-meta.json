@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Analyzed skill-team-implement Stage 2 and identified exact changes needed to parse Dependencies field, build dependency graph, and compute execution waves with backward compatibility.",
+  "status": "planned",
+  "summary": "5-phase plan to replace heuristic dependency analysis with explicit Dependencies field parsing in skill-team-implement Stage 2",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/878_update_skill_team_implement_use_structured_dependencies/reports/research-001.md",
-      "summary": "Research report with parsing algorithm, graph building approach, topological sort for wave computation, and backward compatibility handling"
+      "type": "plan",
+      "path": "specs/878_update_skill_team_implement_use_structured_dependencies/plans/implementation-001.md",
+      "summary": "5-phase implementation plan covering dependency parsing, graph building, wave computation, backward compatibility, and verification"
     }
   ],
-  "next_steps": "Run /plan 878 to create implementation plan",
+  "next_steps": "Run /implement 878 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770860044_fca725",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1770860584_c5d5ec",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 1.5
   }
 }
