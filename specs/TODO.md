@@ -27,9 +27,11 @@ technical_debt:
 - **Status**: [NOT STARTED]
 - **Language**: meta
 - **Created**: 2026-02-11
-- **Dependencies**: Task #872
+- **Dependencies**: Task #872 (routing must exist before prompts can be used)
 
 **Description**: Create lean-specific teammate prompt templates that instruct teammates to use lean-lsp MCP tools (leansearch, loogle, leanfinder, lean_goal, etc.) and follow proof-checking workflows. Store in .claude/context/core/templates/.
+
+**Rationale**: Once task #872 implements language-aware routing, lean teammates need specialized prompts that include MCP tool access instructions and Lean 4 proof patterns. Generic teammate prompts lack lean-lsp context and result in attempts to implement Lean code without proper tooling.
 
 ---
 
@@ -51,6 +53,8 @@ technical_debt:
 
 **Description**: Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.
 
+**Current State**: Commands have `model` frontmatter in COMMAND.md files, but agents and skills do not. No mechanism exists to propagate model selection to spawned teammates. For Lean tasks requiring deep reasoning (Zorn's lemma, proof tactics), Opus 4.6 is needed, while general meta tasks can use faster/cheaper Sonnet 4.5.
+
 ---
 
 ### 872. Add language-aware teammate routing to team skills
@@ -58,8 +62,11 @@ technical_debt:
 - **Status**: [NOT STARTED]
 - **Language**: meta
 - **Created**: 2026-02-11
+- **Evidence**: [/implement --team 870 failure](.claude/output/implement.md) (lines 1740-1770)
 
 **Description**: Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.
+
+**Observed Failure**: During `/implement --team 870`, skill-team-implement attempted to implement Lean code directly using MCP tools (lean-lsp hover, loogle) instead of spawning lean-implementation-agent teammates. User had to interrupt and revert changes. The skill acknowledged it should have spawned specialized Lean agents but bypassed language routing entirely.
 
 ---
 

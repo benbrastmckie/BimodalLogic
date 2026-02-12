@@ -13,7 +13,14 @@
       "effort": "3-4 hours",
       "description": "Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:01:01Z"
+      "last_updated": "2026-02-12T00:03:00Z",
+      "artifacts": [
+        {
+          "type": "evidence",
+          "path": ".claude/output/implement.md",
+          "summary": "/implement --team 870 failure (lines 1740-1770): skill-team-implement bypassed language routing and attempted direct Lean implementation"
+        }
+      ]
     },
     {
       "project_number": 873,
