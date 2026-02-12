@@ -24,10 +24,13 @@ technical_debt:
 
 ### 875. Create lean-specific teammate prompts
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-11
+- **Researched**: 2026-02-11
 - **Dependencies**: Task #872 (routing must exist before prompts can be used)
+- **Research**: [research-001.md](specs/875_lean_specific_teammate_prompts/reports/research-001.md)
+- **Recommendation**: ABANDON - Task 872 already implemented all Lean prompts
 
 **Description**: Create lean-specific teammate prompt templates that instruct teammates to use lean-lsp MCP tools (leansearch, loogle, leanfinder, lean_goal, etc.) and follow proof-checking workflows. Store in .claude/context/core/templates/.
 
