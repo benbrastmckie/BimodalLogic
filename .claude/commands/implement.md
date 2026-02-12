@@ -1,7 +1,7 @@
 ---
 description: Execute implementation with resume support
 allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit, Glob
-argument-hint: TASK_NUMBER
+argument-hint: TASK_NUMBER [--team [--team-size N]] [--force]
 model: claude-opus-4-5-20251101
 ---
 
@@ -12,7 +12,16 @@ Execute implementation plan with automatic resume support by delegating to the a
 ## Arguments
 
 - `$1` - Task number (required)
-- Optional: `--force` to override status validation
+
+## Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--team` | Enable multi-agent parallel implementation with phase parallelization | false |
+| `--team-size N` | Number of teammates to spawn (2-4) | 2 |
+| `--force` | Override status validation (e.g., re-implement completed task) | false |
+
+When `--team` is specified, implementation is delegated to `skill-team-implement` which spawns multiple implementation agents to work on independent phases in parallel. Includes automated debugging support where failed phases trigger debugger agents to diagnose and fix issues.
 
 ## Execution
 

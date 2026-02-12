@@ -46,7 +46,7 @@ technical_debt:
 
 ### 876. Add phase dependency field to plan format standards
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Dependencies**: None
@@ -57,14 +57,16 @@ technical_debt:
 
 ### 874. Document --team flag in command files
 - **Effort**: 1 hour
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
 - **Planned**: 2026-02-11
 - **Started**: 2026-02-11
+- **Completed**: 2026-02-11
 - **Research**: [research-001.md](specs/874_document_team_flag_command_files/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/874_document_team_flag_command_files/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260211.md](specs/874_document_team_flag_command_files/summaries/implementation-summary-20260211.md)
 
 **Description**: Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.
 

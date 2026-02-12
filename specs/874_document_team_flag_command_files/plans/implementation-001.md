@@ -1,7 +1,7 @@
 # Implementation Plan: Document --team flag in command files
 
 - **Task**: 874 - document_team_flag_command_files
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/874_document_team_flag_command_files/reports/research-001.md
@@ -45,7 +45,7 @@ Research report identified:
 
 ## Implementation Phases
 
-### Phase 1: Update research.md [NOT STARTED]
+### Phase 1: Update research.md [COMPLETED]
 
 **Goal**: Add --team and --team-size documentation to the /research command file
 
@@ -65,7 +65,7 @@ Research report identified:
 
 ---
 
-### Phase 2: Update plan.md [NOT STARTED]
+### Phase 2: Update plan.md [COMPLETED]
 
 **Goal**: Add --team and --team-size documentation to the /plan command file
 
@@ -85,7 +85,7 @@ Research report identified:
 
 ---
 
-### Phase 3: Update implement.md [NOT STARTED]
+### Phase 3: Update implement.md [COMPLETED]
 
 **Goal**: Add --team and --team-size documentation to the /implement command file
 
@@ -107,7 +107,7 @@ Research report identified:
 
 ---
 
-### Phase 4: Verification [NOT STARTED]
+### Phase 4: Verification [COMPLETED]
 
 **Goal**: Verify all changes are consistent and complete
 

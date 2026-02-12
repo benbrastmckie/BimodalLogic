@@ -81,12 +81,12 @@
     {
       "project_number": 874,
       "project_name": "document_team_flag_command_files",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "effort": "1 hour",
       "description": "Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:58:32Z",
+      "last_updated": "2026-02-12T01:01:39Z",
       "session_id": "sess_1770857886_7687ec",
       "researched": "2026-02-12T00:41:27Z",
       "artifacts": [
@@ -99,10 +99,18 @@
           "path": "specs/874_document_team_flag_command_files/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for documenting --team flag in command files"
+        },
+        {
+          "path": "specs/874_document_team_flag_command_files/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-02-12T00:45:12Z",
-      "started": "2026-02-12T00:58:32Z"
+      "started": "2026-02-12T00:58:32Z",
+      "completed": "2026-02-12T01:01:39Z",
+      "completion_summary": "Added --team and --team-size flag documentation to /research, /plan, and /implement command files, following the established Options table pattern from lake.md.",
+      "claudemd_suggestions": "Updated .claude/commands/research.md, .claude/commands/plan.md, and .claude/commands/implement.md with Options tables documenting team flags"
     },
     {
       "project_number": 871,
@@ -530,12 +538,13 @@
     {
       "project_number": 876,
       "project_name": "add_phase_dependency_field_plan_format_standards",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "1 hour",
       "description": "Add Dependencies field to phase format in plan-format.md and artifact-formats.md. Define notation: Dependencies: None | Phase {N} | Phase {N}, Phase {M}. Ensure backward compatibility (field is optional).",
       "created": "2026-02-11T16:57:59Z",
-      "last_updated": "2026-02-11T16:57:59Z"
+      "last_updated": "2026-02-12T01:01:51Z",
+      "session_id": "sess_1770858098_03e455"
     },
     {
       "project_number": 877,

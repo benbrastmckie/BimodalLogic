@@ -1,7 +1,7 @@
 ---
 description: Research a task and create reports
 allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
-argument-hint: TASK_NUMBER [FOCUS]
+argument-hint: TASK_NUMBER [FOCUS] [--team [--team-size N]]
 model: claude-opus-4-5-20251101
 ---
 
@@ -13,6 +13,15 @@ Conduct research for a task by delegating to the appropriate research skill/suba
 
 - `$1` - Task number (required)
 - Remaining args - Optional focus/prompt for research direction
+
+## Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--team` | Enable multi-agent parallel research with multiple teammates | false |
+| `--team-size N` | Number of teammates to spawn (2-4) | 2 |
+
+When `--team` is specified, research is delegated to `skill-team-research` which spawns multiple research agents working in parallel on different aspects of the task. Each teammate produces a research report, and the lead synthesizes findings into a final comprehensive report.
 
 ## Execution
 

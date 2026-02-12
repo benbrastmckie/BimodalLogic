@@ -1,7 +1,7 @@
 ---
 description: Create implementation plan for a task
 allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
-argument-hint: TASK_NUMBER
+argument-hint: TASK_NUMBER [--team [--team-size N]]
 model: claude-opus-4-5-20251101
 ---
 
@@ -12,6 +12,15 @@ Create a phased implementation plan for a task by delegating to the planner skil
 ## Arguments
 
 - `$1` - Task number (required)
+
+## Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--team` | Enable multi-agent parallel planning with multiple plan variants | false |
+| `--team-size N` | Number of teammates to spawn (2-3) | 2 |
+
+When `--team` is specified, planning is delegated to `skill-team-plan` which spawns multiple planning agents working in parallel. Each teammate produces a candidate implementation plan, and the lead synthesizes the best elements into a final comprehensive plan with trade-off analysis.
 
 ## Execution
 
