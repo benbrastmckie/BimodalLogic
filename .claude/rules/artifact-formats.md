@@ -73,6 +73,7 @@ Placeholders in path templates and content follow these conventions:
 
 ### Phase 1: {Name}
 
+**Dependencies**: None
 **Estimated effort**: {hours}
 **Status**: [NOT STARTED]
 

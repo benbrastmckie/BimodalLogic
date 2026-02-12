@@ -401,6 +401,11 @@
           "path": "specs/876_add_phase_dependency_field_plan_format_standards/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase plan to add Dependencies field to plan-format.md and artifact-formats.md"
+        },
+        {
+          "path": "specs/876_add_phase_dependency_field_plan_format_standards/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-02-12T01:07:52Z",

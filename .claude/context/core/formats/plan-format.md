@@ -76,11 +76,44 @@ Plans may include a `plan_metadata` object in state.json tracking plan character
 ## Implementation Phases (format)
 - Heading: `### Phase N: {name} [STATUS]`
 - Under each phase include:
+  - **Dependencies:** `None` | `Phase {N}` | `Phase {N}, Phase {M}` (optional, defaults to None if omitted for backward compatibility)
   - **Goal:** short statement
   - **Tasks:** bullet checklist
   - **Timing:** expected duration or window
   - **Owner:** (optional)
   - **Started/Completed/Blocked/Abandoned:** timestamp lines when status changes (ISO8601). Do not leave null placeholders.
+
+### Phase Dependencies Notation
+
+The `Dependencies` field declares which phases must complete before this phase can start. This enables explicit DAG representation for parallel execution.
+
+**Syntax**:
+- `None` - Phase can start immediately (no blockers)
+- `Phase 1` - Phase blocked until Phase 1 completes
+- `Phase 1, Phase 3` - Phase blocked until both Phase 1 and Phase 3 complete
+
+**Examples**:
+```
+### Phase 1: Setup [NOT STARTED]
+- **Dependencies:** None
+- **Goal:** Initialize project structure
+
+### Phase 2: Core Implementation [NOT STARTED]
+- **Dependencies:** Phase 1
+- **Goal:** Implement core functionality
+
+### Phase 3: Documentation [NOT STARTED]
+- **Dependencies:** Phase 1
+- **Goal:** Write user documentation
+
+### Phase 4: Integration [NOT STARTED]
+- **Dependencies:** Phase 2, Phase 3
+- **Goal:** Integrate and test everything
+```
+
+In this example, Phases 2 and 3 can run in parallel after Phase 1 completes. Phase 4 waits for both.
+
+**Backward Compatibility**: The Dependencies field is optional. Plans without this field treat all phases as having `Dependencies: None` (sequential by default, dependency inferred).
 
 ## Sorry Characterization (Lean plans only)
 
@@ -217,12 +250,14 @@ After this implementation:
 
 ## Implementation Phases
 ### Phase 1: {name} [NOT STARTED]
+- **Dependencies:** None
 - **Goal:** ...
 - **Tasks:**
   - [ ] ...
 - **Timing:** ...
 
 ### Phase 2: ... [NOT STARTED]
+- **Dependencies:** Phase 1
 ...
 
 ## Testing & Validation
