@@ -24,7 +24,7 @@ technical_debt:
 
 ### 880. Investigate augmented extension seed approach for pure past/future cases
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [specs/880_augmented_extension_seed_approach/reports/research-001.md]
 - **Created**: 2026-02-12
