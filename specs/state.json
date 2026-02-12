@@ -182,7 +182,7 @@
     {
       "project_number": 843,
       "project_name": "remove_singleFamily_modal_backward_axiom",
-      "status": "implementing",
+      "status": "partial",
       "language": "lean",
       "effort": "3-6 hours",
       "description": "Remove singleFamily_modal_backward_axiom using the EvalCoherentBundle construction from task 856. Update completeness theorem in Completeness.lean to use construct_eval_bmcs instead of axiom-based construction. Remove or comment out the axiom declaration in Construction.lean. Verify build succeeds and completeness theorems no longer depend on the axiom. BLOCKED: Requires task 856 to complete Phase 5 enumeration sorry first.",
@@ -193,7 +193,7 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-12T15:01:09Z",
+      "last_updated": "2026-02-12T15:03:00Z",
       "session_id": "sess_1770749682_60e2bf",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
@@ -309,7 +309,8 @@
         }
       ],
       "planned": "2026-02-10T18:28:44Z",
-      "started": "2026-02-05T00:52:38Z"
+      "started": "2026-02-05T00:52:38Z",
+      "completion_summary": "Phase 4 completed successfully - FALSE axiom (singleFamily_modal_backward_axiom) replaced with CORRECT axiom (fully_saturated_bmcs_exists). Remaining phases (1-3,5) superseded by task 864's recursive seed approach, which provides superior path to axiom-free completeness. Phase 1 was architecturally blocked; task 864 bypasses this limitation."
     },
     {
       "project_number": 793,
