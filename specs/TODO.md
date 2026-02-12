@@ -1,5 +1,5 @@
 ---
-next_project_number: 876
+next_project_number: 879
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,13 +22,47 @@ technical_debt:
 
 ## Tasks
 
+### 878. Update skill-team-implement to use structured phase dependencies
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+- **Dependencies**: Task 876, Task 877
+
+**Description**: Update skill-team-implement/SKILL.md Stage 2 to parse structured Dependencies field from phases instead of heuristic analysis. Build execution waves from parsed dependency graph. Handle missing Dependencies field (backward compat - treat as sequential).
+
+---
+
+### 877. Update planner-agent to generate phase dependencies
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+- **Dependencies**: Task 876
+
+**Description**: Update planner-agent.md Stage 5 plan template to include Dependencies field for each phase. Add dependency analysis during Stage 4 (task decomposition). Generate Dependencies field based on outputs/inputs between phases. Reference task-breakdown.md dependency patterns.
+
+---
+
+### 876. Add phase dependency field to plan format standards
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+- **Dependencies**: None
+
+**Description**: Add Dependencies field to phase format in plan-format.md and artifact-formats.md. Define notation: Dependencies: None | Phase {N} | Phase {N}, Phase {M}. Ensure backward compatibility (field is optional).
+
+---
+
 ### 874. Document --team flag in command files
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
 - **Planned**: 2026-02-11
+- **Started**: 2026-02-11
 - **Research**: [research-001.md](specs/874_document_team_flag_command_files/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/874_document_team_flag_command_files/plans/implementation-001.md)
 

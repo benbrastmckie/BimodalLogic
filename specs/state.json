@@ -81,13 +81,13 @@
     {
       "project_number": 874,
       "project_name": "document_team_flag_command_files",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "effort": "1 hour",
       "description": "Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:45:12Z",
-      "session_id": "sess_1770856971_cf7e22",
+      "last_updated": "2026-02-12T00:58:32Z",
+      "session_id": "sess_1770857886_7687ec",
       "researched": "2026-02-12T00:41:27Z",
       "artifacts": [
         {
@@ -101,7 +101,8 @@
           "summary": "4-phase implementation plan for documenting --team flag in command files"
         }
       ],
-      "planned": "2026-02-12T00:45:12Z"
+      "planned": "2026-02-12T00:45:12Z",
+      "started": "2026-02-12T00:58:32Z"
     },
     {
       "project_number": 871,
@@ -525,6 +526,36 @@
           "summary": "Research report on Evolution/WorldHistory containment theorem and Barcan formula proofs for Logos Dynamics"
         }
       ]
+    },
+    {
+      "project_number": 876,
+      "project_name": "add_phase_dependency_field_plan_format_standards",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "1 hour",
+      "description": "Add Dependencies field to phase format in plan-format.md and artifact-formats.md. Define notation: Dependencies: None | Phase {N} | Phase {N}, Phase {M}. Ensure backward compatibility (field is optional).",
+      "created": "2026-02-11T16:57:59Z",
+      "last_updated": "2026-02-11T16:57:59Z"
+    },
+    {
+      "project_number": 877,
+      "project_name": "update_planner_agent_generate_phase_dependencies",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "1.5 hours",
+      "description": "Update planner-agent.md Stage 5 plan template to include Dependencies field for each phase. Add dependency analysis during Stage 4 (task decomposition). Generate Dependencies field based on outputs/inputs between phases. Reference task-breakdown.md dependency patterns.",
+      "created": "2026-02-11T16:57:59Z",
+      "last_updated": "2026-02-11T16:57:59Z"
+    },
+    {
+      "project_number": 878,
+      "project_name": "update_skill_team_implement_use_structured_dependencies",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "2 hours",
+      "description": "Update skill-team-implement/SKILL.md Stage 2 to parse structured Dependencies field from phases instead of heuristic analysis. Build execution waves from parsed dependency graph. Handle missing Dependencies field (backward compat - treat as sequential).",
+      "created": "2026-02-11T16:57:59Z",
+      "last_updated": "2026-02-11T16:57:59Z"
     }
   ],
   "completed_projects": [
@@ -539,7 +570,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 876,
+  "next_project_number": 879,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
