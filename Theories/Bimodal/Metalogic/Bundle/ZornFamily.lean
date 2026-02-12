@@ -119,6 +119,39 @@ structure GHCoherentPartialFamily where
 abbrev CoherentPartialFamily := GHCoherentPartialFamily
 
 /-!
+### Boundary Time Predicates
+
+A time is a **boundary** of the domain if it is outside the domain and either
+greater than all domain elements (upper boundary) or less than all domain elements
+(lower boundary). At boundary times, extension is simpler because the forward_G or
+backward_H coherence from the new time becomes vacuously true.
+-/
+
+/-- A time is an upper boundary if it's outside the domain and greater than all domain elements. -/
+def GHCoherentPartialFamily.isUpperBoundary (F : GHCoherentPartialFamily) (t : Int) : Prop :=
+  t ∉ F.domain ∧ ∀ s ∈ F.domain, s < t
+
+/-- A time is a lower boundary if it's outside the domain and less than all domain elements. -/
+def GHCoherentPartialFamily.isLowerBoundary (F : GHCoherentPartialFamily) (t : Int) : Prop :=
+  t ∉ F.domain ∧ ∀ s ∈ F.domain, t < s
+
+/-- A time is a boundary if it's either an upper or lower boundary. -/
+def GHCoherentPartialFamily.isBoundaryTime (F : GHCoherentPartialFamily) (t : Int) : Prop :=
+  F.isUpperBoundary t ∨ F.isLowerBoundary t
+
+lemma GHCoherentPartialFamily.isUpperBoundary.not_in_domain {F : GHCoherentPartialFamily} {t : Int}
+    (h : F.isUpperBoundary t) : t ∉ F.domain := h.1
+
+lemma GHCoherentPartialFamily.isLowerBoundary.not_in_domain {F : GHCoherentPartialFamily} {t : Int}
+    (h : F.isLowerBoundary t) : t ∉ F.domain := h.1
+
+lemma GHCoherentPartialFamily.isUpperBoundary.all_lt {F : GHCoherentPartialFamily} {t : Int}
+    (h : F.isUpperBoundary t) : ∀ s ∈ F.domain, s < t := h.2
+
+lemma GHCoherentPartialFamily.isLowerBoundary.all_gt {F : GHCoherentPartialFamily} {t : Int}
+    (h : F.isLowerBoundary t) : ∀ s ∈ F.domain, t < s := h.2
+
+/-!
 ## Part 2: Partial Order on GHCoherentPartialFamily
 
 The partial order for Zorn: F ≤ G iff G extends F (larger domain, agrees on overlap).
@@ -454,6 +487,93 @@ lemma extensionSeed_includes_PObligations (F : GHCoherentPartialFamily) (t s : I
     phi ∈ extensionSeed F t := by
   apply Set.mem_union_right
   exact ⟨s, hs_dom, hs_gt, h_P⟩
+
+/-!
+### Boundary Seed Definitions
+
+At a boundary time, the extension seed simplifies because only one temporal direction
+contributes. For an upper boundary (t > all domain elements), there are no future domain
+elements, so HContent and PObligations are empty. For a lower boundary (t < all domain
+elements), GContent and FObligations are empty.
+-/
+
+/--
+The boundary seed for extending at an upper boundary time.
+Since t is greater than all domain elements, only GContent from past times
+and FObligations (from past times) contribute.
+-/
+def upperBoundarySeed (F : GHCoherentPartialFamily) (t : Int) : Set Formula :=
+  (⋃ s ∈ {s | s ∈ F.domain ∧ s < t}, GContent (F.mcs s)) ∪
+  FObligations F t
+
+/--
+The boundary seed for extending at a lower boundary time.
+Since t is less than all domain elements, only HContent from future times
+and PObligations (from future times) contribute.
+-/
+def lowerBoundarySeed (F : GHCoherentPartialFamily) (t : Int) : Set Formula :=
+  (⋃ s ∈ {s | s ∈ F.domain ∧ t < s}, HContent (F.mcs s)) ∪
+  PObligations F t
+
+/--
+At an upper boundary, the extension seed equals the upper boundary seed.
+The HContent and PObligations parts are empty since all domain elements are < t.
+-/
+theorem extensionSeed_eq_upperBoundarySeed (F : GHCoherentPartialFamily) (t : Int)
+    (h_upper : F.isUpperBoundary t) :
+    extensionSeed F t = upperBoundarySeed F t := by
+  ext phi
+  simp only [extensionSeed, upperBoundarySeed, Set.mem_union, Set.mem_iUnion, Set.mem_setOf_eq]
+  constructor
+  · -- extensionSeed → upperBoundarySeed
+    rintro (((⟨s, ⟨hs_dom, hs_lt⟩, h_G⟩ | ⟨s, ⟨hs_dom, hs_gt⟩, h_H⟩) | h_F) | h_P)
+    · -- GContent: same
+      left
+      exact ⟨s, ⟨hs_dom, hs_lt⟩, h_G⟩
+    · -- HContent: impossible (no future domain elements at upper boundary)
+      exact absurd hs_gt (by have := h_upper.all_lt s hs_dom; omega)
+    · -- FObligations: same
+      right
+      exact h_F
+    · -- PObligations: impossible (no future domain elements)
+      obtain ⟨s, hs_dom, hs_gt, _⟩ := h_P
+      exact absurd (h_upper.all_lt s hs_dom) (by omega)
+  · -- upperBoundarySeed → extensionSeed
+    rintro (⟨s, ⟨hs_dom, hs_lt⟩, h_G⟩ | h_F)
+    · left; left; left
+      exact ⟨s, ⟨hs_dom, hs_lt⟩, h_G⟩
+    · left; right
+      exact h_F
+
+/--
+At a lower boundary, the extension seed equals the lower boundary seed.
+The GContent and FObligations parts are empty since all domain elements are > t.
+-/
+theorem extensionSeed_eq_lowerBoundarySeed (F : GHCoherentPartialFamily) (t : Int)
+    (h_lower : F.isLowerBoundary t) :
+    extensionSeed F t = lowerBoundarySeed F t := by
+  ext phi
+  simp only [extensionSeed, lowerBoundarySeed, Set.mem_union, Set.mem_iUnion, Set.mem_setOf_eq]
+  constructor
+  · -- extensionSeed → lowerBoundarySeed
+    rintro (((⟨s, ⟨hs_dom, hs_lt⟩, h_G⟩ | ⟨s, ⟨hs_dom, hs_gt⟩, h_H⟩) | h_F) | h_P)
+    · -- GContent: impossible (no past domain elements)
+      exact absurd (h_lower.all_gt s hs_dom) (by omega)
+    · -- HContent: same
+      left
+      exact ⟨s, ⟨hs_dom, hs_gt⟩, h_H⟩
+    · -- FObligations: impossible (no past domain elements)
+      obtain ⟨s, hs_dom, hs_lt, _⟩ := h_F
+      exact absurd (h_lower.all_gt s hs_dom) (by omega)
+    · -- PObligations: same
+      right
+      exact h_P
+  · -- lowerBoundarySeed → extensionSeed
+    rintro (⟨s, ⟨hs_dom, hs_gt⟩, h_H⟩ | h_P)
+    · left; left; right
+      exact ⟨s, ⟨hs_dom, hs_gt⟩, h_H⟩
+    · right
+      exact h_P
 
 /--
 GContent of an MCS is consistent.
@@ -1075,6 +1195,173 @@ theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t
       exact ht (h_anchor_eq_t ▸ h_anchor)
 
 /-!
+### Boundary Seed Consistency (Phase 3)
+
+The key theorems of Phase 3: at boundary times, the simplified seed is consistent.
+
+**Why boundary seeds are simpler than general seeds**:
+- General extensionSeed has both past GContent + FObligations AND future HContent + PObligations
+- The "cross-sign" case (reconciling past and future content) is the hardest part
+- At boundary times, only one direction exists, eliminating the cross-sign case entirely
+
+**Remaining challenge**: Even at boundaries, the seed contains both temporal content
+(GContent or HContent) and temporal obligations (FObligations or PObligations) from
+potentially different source times. The temporal content propagates monotonically
+(GContent forward, HContent backward), but temporal obligations do NOT propagate.
+Proving joint consistency of obligations from different source times is the
+multi-witness consistency problem, which is the remaining sorry in extensionSeed_consistent.
+
+**Proof structure**: Each boundary seed consistency proof reduces to the corresponding
+pure-past or pure-future case of extensionSeed_consistent, which splits into:
+1. All elements from temporal content only -- fully proven using propagation lemmas
+2. Some elements from temporal obligations -- requires multi-witness reasoning (sorry)
+-/
+
+/--
+At an upper boundary, the seed is consistent. The seed contains only GContent from
+past domain times and FObligations (no HContent or PObligations since no future
+domain elements exist).
+
+**Proof strategy**:
+- Case 1 (all GContent): All GContent propagates forward to a maximum source time
+  via the 4-axiom (G phi -> GG phi) and forward_G. At the max time, GContent is a
+  subset of the MCS, which is consistent. Fully proven.
+- Case 2 (some FObligations): For each F obligation phi (where F phi in mcs(s)),
+  {phi} union GContent(mcs(s)) is consistent by temporal_witness_seed_consistent.
+  But obligations may come from DIFFERENT source times, and F doesn't propagate
+  forward. Joint consistency of multiple obligations from different MCSs requires
+  the multi-witness consistency argument.
+
+**Technical debt**: Case 2 requires multi_witness_seed_consistent_future, which
+needs a proof strategy that does NOT assume G distributes over disjunction (it doesn't).
+The correct approach may involve compactness or a progressive Lindenbaum construction.
+-/
+theorem upper_boundary_seed_consistent (F : GHCoherentPartialFamily) (t : Int)
+    (h_upper : F.isUpperBoundary t) :
+    SetConsistent (upperBoundarySeed F t) := by
+  rw [← extensionSeed_eq_upperBoundarySeed F t h_upper]
+  exact extensionSeed_consistent F t h_upper.not_in_domain
+
+/--
+At a lower boundary, the seed is consistent. The seed contains only HContent from
+future domain times and PObligations (no GContent or FObligations since no past
+domain elements exist).
+
+**Proof strategy**: Symmetric to upper_boundary_seed_consistent.
+- Case 1 (all HContent): Fully proven using backward propagation.
+- Case 2 (some PObligations): Requires multi_witness_seed_consistent_past (sorry).
+-/
+theorem lower_boundary_seed_consistent (F : GHCoherentPartialFamily) (t : Int)
+    (h_lower : F.isLowerBoundary t) :
+    SetConsistent (lowerBoundarySeed F t) := by
+  rw [← extensionSeed_eq_lowerBoundarySeed F t h_lower]
+  exact extensionSeed_consistent F t h_lower.not_in_domain
+
+/--
+At a boundary time, the extension seed is consistent.
+This combines the upper and lower boundary cases.
+-/
+theorem boundary_seed_consistent (F : GHCoherentPartialFamily) (t : Int)
+    (h_boundary : F.isBoundaryTime t) :
+    SetConsistent (extensionSeed F t) := by
+  rcases h_boundary with h_upper | h_lower
+  · rw [extensionSeed_eq_upperBoundarySeed F t h_upper]
+    exact upper_boundary_seed_consistent F t h_upper
+  · rw [extensionSeed_eq_lowerBoundarySeed F t h_lower]
+    exact lower_boundary_seed_consistent F t h_lower
+
+/-!
+### GContent/HContent Containment at Maximum/Minimum Source Time
+
+These lemmas show that for a finite list of elements from the GContent/HContent union,
+there exists a single source time to which all elements propagate. This is the key
+structural property enabling the pure-content case of boundary seed consistency.
+-/
+
+/--
+GContent from all past times is contained in GContent at a maximum source time.
+Uses forward_G coherence and 4-axiom (G phi -> GG phi) for transitive propagation.
+
+For any s1 < s2 both in domain: GContent(mcs(s1)) ⊆ GContent(mcs(s2)).
+This means the union ⋃ s<t GContent(mcs(s)) is "upward directed":
+all content from earlier times flows into later times' GContent.
+
+For a finite list L, there exists a maximum source time s_max such that
+all elements of L are in GContent(mcs(s_max)).
+-/
+lemma GContent_union_contained_at_max
+    (F : GHCoherentPartialFamily) (t : Int)
+    (L : List Formula) (h_ne : L ≠ [])
+    (h_all_G : ∀ phi ∈ L, ∃ s ∈ F.domain, s < t ∧ phi ∈ GContent (F.mcs s)) :
+    ∃ s_max ∈ F.domain, s_max < t ∧ ∀ phi ∈ L, phi ∈ GContent (F.mcs s_max) := by
+  induction L with
+  | nil => exact absurd rfl h_ne
+  | cons phi L' ih =>
+    obtain ⟨s_phi, hs_phi_dom, hs_phi_lt, h_phi_G⟩ := h_all_G phi List.mem_cons_self
+    by_cases h_L'_empty : L' = []
+    · exact ⟨s_phi, hs_phi_dom, hs_phi_lt, fun psi h_mem => by
+        simp only [h_L'_empty, List.mem_cons, List.not_mem_nil, or_false] at h_mem
+        rw [h_mem]; exact h_phi_G⟩
+    · have h_all_G' : ∀ psi ∈ L', ∃ s ∈ F.domain, s < t ∧ psi ∈ GContent (F.mcs s) :=
+        fun psi h_mem => h_all_G psi (List.mem_cons_of_mem phi h_mem)
+      obtain ⟨s_max', hs_max'_dom, hs_max'_lt, h_all'⟩ := ih h_L'_empty h_all_G'
+      by_cases h_cmp : s_phi ≤ s_max'
+      · -- s_phi ≤ s_max': use s_max'
+        exact ⟨s_max', hs_max'_dom, hs_max'_lt, fun psi h_mem => by
+          simp only [List.mem_cons] at h_mem
+          rcases h_mem with rfl | h_in_L'
+          · by_cases h_eq : s_phi = s_max'
+            · rw [← h_eq]; exact h_phi_G
+            · exact GContent_propagates_forward F s_phi s_max' hs_phi_dom hs_max'_dom (by omega) h_phi_G
+          · exact h_all' psi h_in_L'⟩
+      · -- s_max' < s_phi: use s_phi
+        push_neg at h_cmp
+        exact ⟨s_phi, hs_phi_dom, hs_phi_lt, fun psi h_mem => by
+          simp only [List.mem_cons] at h_mem
+          rcases h_mem with rfl | h_in_L'
+          · exact h_phi_G
+          · exact GContent_propagates_forward F s_max' s_phi hs_max'_dom hs_phi_dom (by omega) (h_all' psi h_in_L')⟩
+
+/--
+HContent from all future times is contained in HContent at a minimum source time.
+Uses backward_H coherence and 4-axiom (H phi -> HH phi) for transitive propagation.
+-/
+lemma HContent_union_contained_at_min
+    (F : GHCoherentPartialFamily) (t : Int)
+    (L : List Formula) (h_ne : L ≠ [])
+    (h_all_H : ∀ phi ∈ L, ∃ s ∈ F.domain, t < s ∧ phi ∈ HContent (F.mcs s)) :
+    ∃ s_min ∈ F.domain, t < s_min ∧ ∀ phi ∈ L, phi ∈ HContent (F.mcs s_min) := by
+  induction L with
+  | nil => exact absurd rfl h_ne
+  | cons phi L' ih =>
+    obtain ⟨s_phi, hs_phi_dom, hs_phi_gt, h_phi_H⟩ := h_all_H phi List.mem_cons_self
+    by_cases h_L'_empty : L' = []
+    · exact ⟨s_phi, hs_phi_dom, hs_phi_gt, fun psi h_mem => by
+        simp only [h_L'_empty, List.mem_cons, List.not_mem_nil, or_false] at h_mem
+        rw [h_mem]; exact h_phi_H⟩
+    · have h_all_H' : ∀ psi ∈ L', ∃ s ∈ F.domain, t < s ∧ psi ∈ HContent (F.mcs s) :=
+        fun psi h_mem => h_all_H psi (List.mem_cons_of_mem phi h_mem)
+      obtain ⟨s_min', hs_min'_dom, hs_min'_gt, h_all'⟩ := ih h_L'_empty h_all_H'
+      -- Take MINIMUM for backward propagation
+      by_cases h_cmp : s_phi ≤ s_min'
+      · -- s_phi ≤ s_min': use s_phi (smaller)
+        exact ⟨s_phi, hs_phi_dom, hs_phi_gt, fun psi h_mem => by
+          simp only [List.mem_cons] at h_mem
+          rcases h_mem with rfl | h_in_L'
+          · exact h_phi_H
+          · have h_in_min' := h_all' psi h_in_L'
+            by_cases h_eq : s_phi = s_min'
+            · rw [h_eq]; exact h_in_min'
+            · exact HContent_propagates_backward F s_phi s_min' hs_phi_dom hs_min'_dom (by omega) h_in_min'⟩
+      · -- s_min' < s_phi: use s_min' (smaller)
+        push_neg at h_cmp
+        exact ⟨s_min', hs_min'_dom, hs_min'_gt, fun psi h_mem => by
+          simp only [List.mem_cons] at h_mem
+          rcases h_mem with rfl | h_in_L'
+          · exact HContent_propagates_backward F s_min' s_phi hs_min'_dom hs_phi_dom (by omega) h_phi_H
+          · exact h_all' psi h_in_L'⟩
+
+/-!
 ## Part 7: Zorn's Lemma Application
 
 We apply Zorn's lemma to the collection of GH-coherent partial families extending a base family.
@@ -1383,151 +1670,579 @@ lemma extendFamily_strictly_extends (F : GHCoherentPartialFamily) (t : Int) (ht 
     have ht_in_F : t ∈ F.domain := hle.1 ht_in_ext
     exact ht ht_in_F
 
+/-!
+### Boundary Extension Functions
+
+When extending at a **boundary time** (greater than ALL or less than ALL domain elements),
+one of the two problematic cases in `extendFamily` becomes vacuously true:
+
+- **Upper boundary** (t > all domain): No s' > t exists in domain, so `forward_G` from t
+  to old domain elements is vacuous. `backward_H` to t is also vacuous (no s > t in domain).
+  We still need hypotheses for `forward_G` to t (from old elements) and `backward_H` from t
+  (to old elements).
+
+- **Lower boundary** (t < all domain): No s' < t exists in domain, so `backward_H` from t
+  to old domain elements is vacuous. `forward_G` to t is also vacuous (no s < t in domain).
+  We still need hypotheses for `backward_H` to t (from old elements) and `forward_G` from t
+  (to old elements).
+-/
+
+/-- Extend family at an upper boundary time. At an upper boundary, t > all domain elements, so:
+    - forward_G FROM t is vacuously true (no s' > t in domain)
+    - backward_H TO t is vacuously true (no s > t in domain)
+    The remaining cases need explicit hypotheses. -/
+noncomputable def extendFamilyAtUpperBoundary
+    (F : GHCoherentPartialFamily) (t : Int)
+    (h_upper : F.isUpperBoundary t)
+    (mcs_t : Set Formula)
+    (h_mcs : SetMaximalConsistent mcs_t)
+    (h_forward_G_to_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_future phi ∈ F.mcs s → phi ∈ mcs_t)
+    (h_backward_H_from_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_past phi ∈ mcs_t → phi ∈ F.mcs s) :
+    GHCoherentPartialFamily where
+  domain := F.domain ∪ {t}
+  mcs := fun s => if s = t then mcs_t else F.mcs s
+  domain_nonempty := ⟨t, Set.mem_union_right _ (Set.mem_singleton t)⟩
+  is_mcs := fun s hs => by
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hs
+    by_cases hs_eq : s = t
+    · simp only [hs_eq, ↓reduceIte]; exact h_mcs
+    · simp only [hs_eq, ↓reduceIte]
+      rcases hs with hs_old | hs_t
+      · exact F.is_mcs s hs_old
+      · exact absurd hs_t hs_eq
+  forward_G := fun s s' hs hs' h_lt phi h_G => by
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hs hs'
+    by_cases hs_eq : s = t
+    · -- Source is the new time t
+      simp only [hs_eq, ↓reduceIte] at h_G ⊢
+      by_cases hs'_eq : s' = t
+      · -- s' = t too, but s < s', contradiction
+        omega
+      · -- s' is an old time with s' > t, but all old times are < t
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs' with hs'_old | hs'_t
+        · -- s' ∈ F.domain and t < s', but all domain elements are < t
+          have h_s'_lt_t := h_upper.all_lt s' hs'_old
+          omega
+        · exact absurd hs'_t hs'_eq
+    · -- Source is an old time s
+      simp only [hs_eq, ↓reduceIte] at h_G
+      by_cases hs'_eq : s' = t
+      · -- Target is the new time t
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs with hs_old | hs_t
+        · exact h_forward_G_to_new s hs_old phi h_G
+        · exact absurd hs_t hs_eq
+      · -- Both times are old
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs with hs_old | hs_t
+        · rcases hs' with hs'_old | hs'_t
+          · exact F.forward_G s s' hs_old hs'_old h_lt phi h_G
+          · exact absurd hs'_t hs'_eq
+        · exact absurd hs_t hs_eq
+  backward_H := fun s s' hs' hs h_lt phi h_H => by
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hs hs'
+    by_cases hs_eq : s = t
+    · -- Source is the new time t (has H phi)
+      simp only [hs_eq, ↓reduceIte] at h_H ⊢
+      by_cases hs'_eq : s' = t
+      · -- s' = t too, but s' < s, contradiction
+        omega
+      · -- s' is an old time with s' < t
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs' with hs'_old | hs'_t
+        · exact h_backward_H_from_new s' hs'_old phi h_H
+        · exact absurd hs'_t hs'_eq
+    · -- Source is an old time s
+      simp only [hs_eq, ↓reduceIte] at h_H
+      by_cases hs'_eq : s' = t
+      · -- Target is the new time t, need s' < s, i.e., t < s
+        -- But all domain elements are < t, so t < s with s ∈ domain is impossible
+        rcases hs with hs_old | hs_t
+        · have h_s_lt_t := h_upper.all_lt s hs_old
+          omega
+        · exact absurd hs_t hs_eq
+      · -- Both times are old
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs' with hs'_old | hs'_t
+        · rcases hs with hs_old | hs_t
+          · exact F.backward_H s s' hs'_old hs_old h_lt phi h_H
+          · exact absurd hs_t hs_eq
+        · exact absurd hs'_t hs'_eq
+
+/-- The upper boundary extension strictly extends F. -/
+lemma extendFamilyAtUpperBoundary_strictly_extends
+    (F : GHCoherentPartialFamily) (t : Int)
+    (h_upper : F.isUpperBoundary t)
+    (mcs_t : Set Formula)
+    (h_mcs : SetMaximalConsistent mcs_t)
+    (h_forward_G_to_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_future phi ∈ F.mcs s → phi ∈ mcs_t)
+    (h_backward_H_from_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_past phi ∈ mcs_t → phi ∈ F.mcs s) :
+    F < extendFamilyAtUpperBoundary F t h_upper mcs_t h_mcs h_forward_G_to_new h_backward_H_from_new := by
+  constructor
+  · -- F ≤ extended
+    constructor
+    · intro s hs
+      exact Set.mem_union_left _ hs
+    · intro s hs
+      have : s ≠ t := fun h => h_upper.not_in_domain (h ▸ hs)
+      simp only [extendFamilyAtUpperBoundary, this, ↓reduceIte]
+  · -- extended ≰ F
+    intro hle
+    have ht_in_ext : t ∈ (extendFamilyAtUpperBoundary F t h_upper mcs_t h_mcs h_forward_G_to_new h_backward_H_from_new).domain := by
+      simp only [extendFamilyAtUpperBoundary]
+      exact Set.mem_union_right _ (Set.mem_singleton t)
+    exact h_upper.not_in_domain (hle.1 ht_in_ext)
+
+/-- Extend family at a lower boundary time. At a lower boundary, t < all domain elements, so:
+    - backward_H FROM t is vacuously true (no s' < t in domain)
+    - forward_G TO t is vacuously true (no s < t in domain)
+    The remaining cases need explicit hypotheses. -/
+noncomputable def extendFamilyAtLowerBoundary
+    (F : GHCoherentPartialFamily) (t : Int)
+    (h_lower : F.isLowerBoundary t)
+    (mcs_t : Set Formula)
+    (h_mcs : SetMaximalConsistent mcs_t)
+    (h_backward_H_to_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_past phi ∈ F.mcs s → phi ∈ mcs_t)
+    (h_forward_G_from_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_future phi ∈ mcs_t → phi ∈ F.mcs s) :
+    GHCoherentPartialFamily where
+  domain := F.domain ∪ {t}
+  mcs := fun s => if s = t then mcs_t else F.mcs s
+  domain_nonempty := ⟨t, Set.mem_union_right _ (Set.mem_singleton t)⟩
+  is_mcs := fun s hs => by
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hs
+    by_cases hs_eq : s = t
+    · simp only [hs_eq, ↓reduceIte]; exact h_mcs
+    · simp only [hs_eq, ↓reduceIte]
+      rcases hs with hs_old | hs_t
+      · exact F.is_mcs s hs_old
+      · exact absurd hs_t hs_eq
+  forward_G := fun s s' hs hs' h_lt phi h_G => by
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hs hs'
+    by_cases hs_eq : s = t
+    · -- Source is the new time t (has G phi)
+      simp only [hs_eq, ↓reduceIte] at h_G ⊢
+      by_cases hs'_eq : s' = t
+      · -- s' = t too, but s < s', contradiction
+        omega
+      · -- s' is an old time with s' > t
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs' with hs'_old | hs'_t
+        · exact h_forward_G_from_new s' hs'_old phi h_G
+        · exact absurd hs'_t hs'_eq
+    · -- Source is an old time s
+      simp only [hs_eq, ↓reduceIte] at h_G
+      by_cases hs'_eq : s' = t
+      · -- Target is the new time t, need s < t
+        -- But all domain elements are > t, so s < t with s ∈ domain is impossible
+        rcases hs with hs_old | hs_t
+        · have h_t_lt_s := h_lower.all_gt s hs_old
+          omega
+        · exact absurd hs_t hs_eq
+      · -- Both times are old
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs with hs_old | hs_t
+        · rcases hs' with hs'_old | hs'_t
+          · exact F.forward_G s s' hs_old hs'_old h_lt phi h_G
+          · exact absurd hs'_t hs'_eq
+        · exact absurd hs_t hs_eq
+  backward_H := fun s s' hs' hs h_lt phi h_H => by
+    simp only [Set.mem_union, Set.mem_singleton_iff] at hs hs'
+    by_cases hs_eq : s = t
+    · -- Source is the new time t
+      simp only [hs_eq, ↓reduceIte] at h_H ⊢
+      by_cases hs'_eq : s' = t
+      · -- s' = t too, but s' < s, contradiction
+        omega
+      · -- s' is an old time with s' < t, but all old times are > t
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs' with hs'_old | hs'_t
+        · -- s' ∈ F.domain and s' < t, but all domain elements are > t
+          have h_t_lt_s' := h_lower.all_gt s' hs'_old
+          omega
+        · exact absurd hs'_t hs'_eq
+    · -- Source is an old time s
+      simp only [hs_eq, ↓reduceIte] at h_H
+      by_cases hs'_eq : s' = t
+      · -- Target is the new time t
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs with hs_old | hs_t
+        · exact h_backward_H_to_new s hs_old phi h_H
+        · exact absurd hs_t hs_eq
+      · -- Both times are old
+        simp only [hs'_eq, ↓reduceIte]
+        rcases hs' with hs'_old | hs'_t
+        · rcases hs with hs_old | hs_t
+          · exact F.backward_H s s' hs'_old hs_old h_lt phi h_H
+          · exact absurd hs_t hs_eq
+        · exact absurd hs'_t hs'_eq
+
+/-- The lower boundary extension strictly extends F. -/
+lemma extendFamilyAtLowerBoundary_strictly_extends
+    (F : GHCoherentPartialFamily) (t : Int)
+    (h_lower : F.isLowerBoundary t)
+    (mcs_t : Set Formula)
+    (h_mcs : SetMaximalConsistent mcs_t)
+    (h_backward_H_to_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_past phi ∈ F.mcs s → phi ∈ mcs_t)
+    (h_forward_G_from_new : ∀ s, s ∈ F.domain → ∀ phi,
+      Formula.all_future phi ∈ mcs_t → phi ∈ F.mcs s) :
+    F < extendFamilyAtLowerBoundary F t h_lower mcs_t h_mcs h_backward_H_to_new h_forward_G_from_new := by
+  constructor
+  · -- F ≤ extended
+    constructor
+    · intro s hs
+      exact Set.mem_union_left _ hs
+    · intro s hs
+      have : s ≠ t := fun h => h_lower.not_in_domain (h ▸ hs)
+      simp only [extendFamilyAtLowerBoundary, this, ↓reduceIte]
+  · -- extended ≰ F
+    intro hle
+    have ht_in_ext : t ∈ (extendFamilyAtLowerBoundary F t h_lower mcs_t h_mcs h_backward_H_to_new h_forward_G_from_new).domain := by
+      simp only [extendFamilyAtLowerBoundary]
+      exact Set.mem_union_right _ (Set.mem_singleton t)
+    exact h_lower.not_in_domain (hle.1 ht_in_ext)
+
+open Classical in
+/-- Unified boundary extension: dispatch based on boundary type. -/
+noncomputable def extendFamilyAtBoundary
+    (F : GHCoherentPartialFamily) (t : Int)
+    (h_boundary : F.isBoundaryTime t)
+    (mcs_t : Set Formula)
+    (h_mcs : SetMaximalConsistent mcs_t)
+    (h_G_to_new : ∀ s, s ∈ F.domain → s < t → ∀ phi,
+      Formula.all_future phi ∈ F.mcs s → phi ∈ mcs_t)
+    (h_H_to_new : ∀ s, s ∈ F.domain → t < s → ∀ phi,
+      Formula.all_past phi ∈ F.mcs s → phi ∈ mcs_t)
+    (h_G_from_new : ∀ s, s ∈ F.domain → t < s → ∀ phi,
+      Formula.all_future phi ∈ mcs_t → phi ∈ F.mcs s)
+    (h_H_from_new : ∀ s, s ∈ F.domain → s < t → ∀ phi,
+      Formula.all_past phi ∈ mcs_t → phi ∈ F.mcs s) :
+    GHCoherentPartialFamily :=
+  if h_upper : F.isUpperBoundary t then
+    extendFamilyAtUpperBoundary F t h_upper mcs_t h_mcs
+      (fun s hs phi hG => h_G_to_new s hs (h_upper.all_lt s hs) phi hG)
+      (fun s hs phi hH => h_H_from_new s hs (h_upper.all_lt s hs) phi hH)
+  else
+    have h_lower : F.isLowerBoundary t := h_boundary.resolve_left h_upper
+    extendFamilyAtLowerBoundary F t h_lower mcs_t h_mcs
+      (fun s hs phi hH => h_H_to_new s hs (h_lower.all_gt s hs) phi hH)
+      (fun s hs phi hG => h_G_from_new s hs (h_lower.all_gt s hs) phi hG)
+
+/-!
+### Unified Boundary Seed
+
+A single entry point that dispatches to the upper or lower boundary seed
+defined earlier in Part 6.
+-/
+
+open Classical in
+/-- Unified boundary seed: dispatches to upper or lower based on boundary type. -/
+noncomputable def boundarySeed (F : GHCoherentPartialFamily) (t : Int)
+    (_h_boundary : F.isBoundaryTime t) : Set Formula :=
+  if F.isUpperBoundary t then upperBoundarySeed F t
+  else lowerBoundarySeed F t
+
+/-!
+### Non-Total Domain Has Boundary Time
+
+Every non-total domain either has a boundary time (when bounded above or below) or
+has an internal gap (when unbounded in both directions). We prove the existence of
+a boundary time for the bounded cases.
+-/
+
+/-- Every non-total domain has at least one boundary time.
+
+    **Proof structure**: Given t not in domain, we perform a trichotomy:
+    - Case 1: All domain elements are less than t -- t is an upper boundary
+    - Case 2: All domain elements are greater than t -- t is a lower boundary
+    - Case 3: Domain elements exist on both sides of t -- internal gap
+
+    For Cases 1 and 2, t itself is the boundary time.
+    Case 3 (internal gap with domain unbounded in both directions) requires showing
+    that a maximal family cannot have such gaps, which depends on general extension
+    seed consistency (Phase 3 work). -/
+lemma non_total_has_boundary (F : GHCoherentPartialFamily)
+    (h_non_total : F.domain ≠ Set.univ) :
+    ∃ t, F.isBoundaryTime t := by
+  have ⟨t, ht⟩ := (Set.ne_univ_iff_exists_notMem F.domain).mp h_non_total
+  by_cases h_upper : ∀ s ∈ F.domain, s < t
+  · -- Case 1: t is an upper boundary
+    exact ⟨t, Or.inl ⟨ht, h_upper⟩⟩
+  · push_neg at h_upper
+    obtain ⟨s_above, hs_above_dom, hs_above_ge⟩ := h_upper
+    have hs_above_gt : t < s_above := by
+      rcases eq_or_lt_of_le hs_above_ge with h_eq | h_lt
+      · exact absurd (h_eq ▸ hs_above_dom) ht
+      · exact h_lt
+    by_cases h_lower : ∀ s ∈ F.domain, t < s
+    · -- Case 2: t is a lower boundary
+      exact ⟨t, Or.inr ⟨ht, h_lower⟩⟩
+    · -- Case 3: Internal gap - domain elements exist on both sides of t
+      push_neg at h_lower
+      obtain ⟨s_below, hs_below_dom, hs_below_le⟩ := h_lower
+      have _hs_below_lt : s_below < t := by
+        rcases eq_or_lt_of_le hs_below_le with h_eq | h_lt
+        · exact absurd (h_eq ▸ hs_below_dom) ht
+        · omega
+      -- We have s_below < t < s_above with both in domain, t not in domain.
+      -- This internal gap case requires either:
+      -- (a) Showing that bounded domains always have boundary times elsewhere, or
+      -- (b) Using the general extension approach for gap times (Phase 3).
+      -- Technical debt: depends on Phase 3 cross-sign seed consistency.
+      sorry
+
+/-!
+## Part 10: Maximality Implies Totality (Restructured)
+
+A maximal GH-coherent partial family must have domain = Set.univ.
+If not, we can find a boundary time and extend the family there, contradicting maximality.
+
+**Restructuring (v003)**: This proof now uses the boundary extension infrastructure
+from Phase 1. At boundary times, the extension has no problematic forward_G/backward_H
+cases from the new time to old domain elements (those become vacuously true).
+
+The proof depends on:
+1. `non_total_has_boundary` -- that a non-total domain has a boundary time
+2. `extensionSeed_consistent` -- that the extension seed is consistent (Phase 3)
+3. Lindenbaum extension to get an MCS from the seed
+-/
+
 /--
 Maximality implies totality: A maximal GH-coherent family has domain = Set.univ.
 
-If the domain is not Set.univ, there exists t ∉ domain. We can then extend the family
-by constructing an MCS at t from the extension seed, contradicting maximality.
+**Proof approach (v003 - boundary extension)**:
+1. Assume domain is not Set.univ for contradiction
+2. Find a boundary time t via `non_total_has_boundary`
+3. Build the extension seed (which simplifies at boundary times)
+4. Extend to MCS via Lindenbaum
+5. Use `extendFamilyAtBoundary` to construct strictly larger family
+6. Derive contradiction with maximality
+
+The boundary approach avoids the problematic forward_G/backward_H from the new time,
+which become vacuously true at boundary times.
 -/
 theorem maximal_implies_total (F : GHCoherentPartialFamily) (base : GHCoherentPartialFamily)
     (hmax : Maximal (· ∈ CoherentExtensions base) F) (hF_ext : F ∈ CoherentExtensions base) :
     F.domain = Set.univ := by
   by_contra h
-  obtain ⟨t, ht⟩ := (Set.ne_univ_iff_exists_notMem F.domain).mp h
-  -- We can extend F to include t, contradicting maximality
-  -- First, build the extension seed and extend via Lindenbaum
+  -- Step 1: Find a boundary time
+  obtain ⟨t, h_boundary⟩ := non_total_has_boundary F h
+  have ht : t ∉ F.domain := by
+    rcases h_boundary with h_upper | h_lower
+    · exact h_upper.not_in_domain
+    · exact h_lower.not_in_domain
+  -- Step 2: Build extension seed and get MCS via Lindenbaum
+  -- At a boundary time, extensionSeed simplifies to one-directional content
   have h_seed_cons : SetConsistent (extensionSeed F t) := extensionSeed_consistent F t ht
   obtain ⟨mcs_t, h_mcs_t_ext, h_mcs_t⟩ := set_lindenbaum (extensionSeed F t) h_seed_cons
-  -- Construct h_forward_G from seed inclusion
-  have h_forward_G : ∀ s, s ∈ F.domain → s < t → ∀ phi, Formula.all_future phi ∈ F.mcs s → phi ∈ mcs_t := by
-    intro s hs_dom hs_lt phi h_G
-    have h_in_seed := extensionSeed_includes_past_GContent F t s hs_dom hs_lt phi h_G
-    exact h_mcs_t_ext h_in_seed
-  -- Construct h_backward_H from seed inclusion
-  have h_backward_H : ∀ s, s ∈ F.domain → t < s → ∀ phi, Formula.all_past phi ∈ F.mcs s → phi ∈ mcs_t := by
-    intro s hs_dom hs_gt phi h_H
-    have h_in_seed := extensionSeed_includes_future_HContent F t s hs_dom hs_gt phi h_H
-    exact h_mcs_t_ext h_in_seed
-  -- Build the extended family
-  let F' := extendFamily F t ht mcs_t h_mcs_t h_mcs_t_ext h_forward_G h_backward_H
-  -- F' strictly extends F
-  have hF_lt_F' : F < F' := extendFamily_strictly_extends F t ht mcs_t h_mcs_t h_mcs_t_ext h_forward_G h_backward_H
-  -- F' is in CoherentExtensions base since F is and F < F'
-  have hF'_ext : F' ∈ CoherentExtensions base := by
-    have hF_le_F' : F ≤ F' := le_of_lt hF_lt_F'
-    exact le_trans hF_ext hF_le_F'
-  -- But F is maximal, so F' ≤ F
+  -- Step 3: Construct boundary extension hypotheses from seed inclusion
+  -- h_G_to_new: G phi in old MCS implies phi in new MCS (via GContent in seed)
+  have h_G_to_new : ∀ s, s ∈ F.domain → s < t → ∀ phi,
+      Formula.all_future phi ∈ F.mcs s → phi ∈ mcs_t := by
+    intro s hs_dom hs_lt phi hG
+    exact h_mcs_t_ext (extensionSeed_includes_past_GContent F t s hs_dom hs_lt phi hG)
+  -- h_H_to_new: H phi in old MCS implies phi in new MCS (via HContent in seed)
+  have h_H_to_new : ∀ s, s ∈ F.domain → t < s → ∀ phi,
+      Formula.all_past phi ∈ F.mcs s → phi ∈ mcs_t := by
+    intro s hs_dom hs_gt phi hH
+    exact h_mcs_t_ext (extensionSeed_includes_future_HContent F t s hs_dom hs_gt phi hH)
+  -- h_G_from_new and h_H_from_new: propagation FROM new time to old domain.
+  -- At boundary times, one of these is vacuously true:
+  -- - Upper boundary: h_G_from_new is vacuous (no s > t in domain)
+  -- - Lower boundary: h_H_from_new is vacuous (no s < t in domain)
+  -- The non-vacuous direction requires showing that temporal content in mcs_t
+  -- (the Lindenbaum extension of the seed) propagates correctly to existing MCS.
+  -- This is a Phase 3/Phase 4 obligation.
+  have h_G_from_new : ∀ s, s ∈ F.domain → t < s → ∀ phi,
+      Formula.all_future phi ∈ mcs_t → phi ∈ F.mcs s := by
+    intro s hs_dom hs_gt phi _h_G_in_new
+    -- At upper boundary: vacuously impossible (all domain elements < t, but hs_gt says t < s)
+    -- At lower boundary: G phi in mcs_t, need phi in F.mcs s for s > t in domain
+    -- Technical debt: requires Phase 3 refinements (boundary seed consistency)
+    sorry
+  have h_H_from_new : ∀ s, s ∈ F.domain → s < t → ∀ phi,
+      Formula.all_past phi ∈ mcs_t → phi ∈ F.mcs s := by
+    intro s hs_dom hs_lt phi _h_H_in_new
+    -- At lower boundary: vacuously impossible (all domain elements > t, but hs_lt says s < t)
+    -- At upper boundary: H phi in mcs_t, need phi in F.mcs s for s < t in domain
+    -- Technical debt: requires Phase 3 refinements (boundary seed consistency)
+    sorry
+  -- Step 4: Build the extended family using boundary extension
+  let F' := extendFamilyAtBoundary F t h_boundary mcs_t h_mcs_t
+    h_G_to_new h_H_to_new h_G_from_new h_H_from_new
+  -- Step 5: Show F' strictly extends F
+  -- We need F < F'. Since F' = extendFamilyAtBoundary ..., we case split on boundary type.
+  have hF_lt_F' : F < F' := by
+    show F < extendFamilyAtBoundary F t h_boundary mcs_t h_mcs_t
+      h_G_to_new h_H_to_new h_G_from_new h_H_from_new
+    rcases h_boundary with h_upper | h_lower
+    · -- Upper boundary case
+      simp only [extendFamilyAtBoundary, dif_pos h_upper]
+      exact extendFamilyAtUpperBoundary_strictly_extends F t h_upper mcs_t h_mcs_t
+        (fun s hs phi hG => h_G_to_new s hs (h_upper.all_lt s hs) phi hG)
+        (fun s hs phi hH => h_H_from_new s hs (h_upper.all_lt s hs) phi hH)
+    · -- Lower boundary case
+      have h_not_upper : ¬F.isUpperBoundary t := by
+        intro h_upper
+        obtain ⟨s, hs⟩ := F.domain_nonempty
+        exact absurd (h_upper.all_lt s hs) (not_lt.mpr (le_of_lt (h_lower.all_gt s hs)))
+      simp only [extendFamilyAtBoundary, dif_neg h_not_upper]
+      exact extendFamilyAtLowerBoundary_strictly_extends F t h_lower mcs_t h_mcs_t
+        (fun s hs phi hH => h_H_to_new s hs (h_lower.all_gt s hs) phi hH)
+        (fun s hs phi hG => h_G_from_new s hs (h_lower.all_gt s hs) phi hG)
+  -- Step 6: F' is in CoherentExtensions base (since F is and F <= F')
+  have hF'_ext : F' ∈ CoherentExtensions base := le_trans hF_ext (le_of_lt hF_lt_F')
+  -- Step 7: Contradiction - F is maximal but F < F'
   have hF'_le_F : F' ≤ F := hmax.2 hF'_ext (le_of_lt hF_lt_F')
-  -- This gives F' ≤ F and F < F', contradiction via lt_irrefl
-  have h_lt_F : F < F := lt_of_lt_of_le hF_lt_F' hF'_le_F
-  exact lt_irrefl F h_lt_F
+  exact lt_irrefl F (lt_of_lt_of_le hF_lt_F' hF'_le_F)
 
 /-!
 ## Part 11: F/P Recovery for Total Family
 
-A total (domain = Set.univ) GH-coherent family automatically satisfies F/P coherence.
-The key insight is that the witness t+1 (or t-1) is always in the domain.
+### Architectural Analysis
+
+For a GH-coherent partial family with domain = Set.univ, F/P coherence requires
+showing that F-obligations and P-obligations are satisfied: if F phi ∈ mcs(t), then
+phi ∈ mcs(s) for some s > t (and symmetrically for P).
+
+**Why maximality alone is insufficient**: The partial order on families is
+  `F ≤ G iff F.domain ⊆ G.domain ∧ ∀ t ∈ F.domain, F.mcs t = G.mcs t`
+When F.domain = Set.univ, any G with F ≤ G must satisfy G.domain ⊇ Set.univ and
+G.mcs t = F.mcs t for all t. Thus G = F, making maximality vacuously true for
+total families. Maximality provides no additional constraints.
+
+**What IS needed**: The F/P recovery property is a construction invariant. It holds
+because the Zorn construction builds each MCS from a seed (extensionSeed) that includes
+F/P obligations. However, the abstract Zorn argument (via `zorn_le_nonempty₀`) does not
+expose this construction trace. The maximal element is obtained non-constructively.
+
+**Seed inclusion decomposition**: For the extensionSeed F t ⊆ F.mcs t property:
+- GContent part: follows from forward_G (proven)
+- HContent part: follows from backward_H (proven)
+- FObligations part: IS forward_F (circular)
+- PObligations part: IS backward_P (circular)
+
+**Resolution path**: Either:
+1. Strengthen GHCoherentPartialFamily to include F/P coherence within the domain, so
+   Zorn preserves the invariant (requires refactoring the entire family infrastructure)
+2. Use a non-Zorn construction (like DovetailingChain) where F/P is proven by
+   construction trace
+3. Accept these as sorry with clear documentation of the gap
+
+The proofs below isolate the sorry into minimal auxiliary lemmas, with the main
+theorems structurally complete modulo these lemmas.
 -/
+
+/--
+F-obligation satisfaction for total GH-coherent families (sorry).
+
+For a total family, if F phi ∈ F.mcs t, then phi ∈ F.mcs s for some s > t.
+This is the core property that requires a construction trace to prove.
+
+**Why this is unprovable from the current structure**: The `GHCoherentPartialFamily`
+structure only records forward_G and backward_H coherence. F-obligation satisfaction
+(forward_F) is a strictly stronger property that is not derivable from G/H coherence
+alone -- a total GH-coherent family could in principle violate it.
+
+**Why it holds mathematically**: In the Zorn construction, each time point t is
+added with an MCS extending `extensionSeed F t`, which includes `FObligations F t`.
+Any phi with F phi ∈ mcs(s) for s < t is in FObligations, hence in the seed,
+hence in the MCS. But the Zorn abstraction hides this construction trace.
+
+**Technical debt**: This sorry can be eliminated by either:
+(a) Adding forward_F/backward_P as fields of GHCoherentPartialFamily and showing
+    Zorn chains preserve them (recommended approach)
+(b) Replacing the Zorn proof with an explicit iterative construction
+(c) Proving a "seed inclusion" invariant is preserved by the chain upper bound
+-/
+lemma total_family_FObligations_satisfied (F : GHCoherentPartialFamily)
+    (htotal : F.domain = Set.univ)
+    (t : Int) (phi : Formula) (s : Int) (hs_lt : s < t)
+    (hF_phi : Formula.some_future phi ∈ F.mcs s) :
+    phi ∈ F.mcs t := by
+  sorry
+
+/--
+P-obligation satisfaction for total GH-coherent families (sorry).
+
+Symmetric to `total_family_FObligations_satisfied`.
+For a total family, if P phi ∈ F.mcs t, then phi ∈ F.mcs s for some s < t.
+
+**Technical debt**: Same architectural issue as FObligations. See documentation
+on `total_family_FObligations_satisfied` for full analysis.
+-/
+lemma total_family_PObligations_satisfied (F : GHCoherentPartialFamily)
+    (htotal : F.domain = Set.univ)
+    (t : Int) (phi : Formula) (s : Int) (hs_gt : t < s)
+    (hP_phi : Formula.some_past phi ∈ F.mcs s) :
+    phi ∈ F.mcs t := by
+  sorry
 
 /--
 For a maximal family, forward F witness: If F phi ∈ mcs(t), then phi ∈ mcs(t+1).
 
-**Strategy**: Use maximality to derive a contradiction if no witness exists.
-If F phi ∈ mcs(t) but phi ∉ mcs(s) for all s > t, the family could be extended
-to satisfy this F-obligation, contradicting maximality.
+The witness is t+1, which is in the domain since the family is total (domain = Set.univ).
+The proof that phi ∈ mcs(t+1) follows from `total_family_FObligations_satisfied`.
 
-**Note**: This theorem requires the maximality proof, not just totality, because:
-- Totality alone doesn't guarantee F-obligation satisfaction
-- The Zorn construction explicitly includes F-obligations in the extension seed
-- Maximality ensures the construction completed correctly
-
-**Dependencies**:
-- Requires `maximal_implies_total` to get totality from maximality
-- Requires `extensionSeed_consistent` (Phase 3) for seed consistency
-- These dependencies have sorries, so this theorem also requires sorry
+**Sorry dependency**: Delegates to `total_family_FObligations_satisfied` (1 sorry).
 -/
 theorem maximal_family_forward_F (F : GHCoherentPartialFamily) (base : GHCoherentPartialFamily)
     (hmax : Maximal (· ∈ CoherentExtensions base) F) (hF_ext : F ∈ CoherentExtensions base)
     (t : Int) (phi : Formula)
     (hF : Formula.some_future phi ∈ F.mcs t) :
     ∃ s, t < s ∧ phi ∈ F.mcs s := by
-  -- First establish totality from maximality
   have htotal : F.domain = Set.univ := maximal_implies_total F base hmax hF_ext
-  -- Now prove the F witness exists
-  -- Key: t ∈ F.domain and t+1 ∈ F.domain (since domain = Set.univ)
-  have ht_dom : t ∈ F.domain := htotal ▸ Set.mem_univ t
-  have ht1_dom : t + 1 ∈ F.domain := htotal ▸ Set.mem_univ (t + 1)
-  -- The witness is t+1, need to show phi ∈ F.mcs (t+1)
-  use t + 1
-  constructor
-  · omega
-  · -- phi should be in F.mcs (t+1) because:
-    -- 1. F phi ∈ F.mcs t means phi is an F-obligation for time t+1
-    -- 2. The extensionSeed at t+1 includes FObligations
-    -- 3. The MCS at t+1 extends the extensionSeed (via Lindenbaum)
-    --
-    -- However, tracing through the Zorn construction is complex because
-    -- we don't have direct access to how mcs(t+1) was constructed.
-    --
-    -- Technical debt: This requires proving that for the maximal family,
-    -- F-obligations are always satisfied. This depends on:
-    -- - extensionSeed_consistent (Phase 3)
-    -- - maximal_implies_total (Phase 5)
-    -- Both have sorries in the current implementation.
-    sorry
+  -- Witness: t + 1 (in domain since domain = Set.univ)
+  exact ⟨t + 1, by omega,
+    total_family_FObligations_satisfied F htotal (t + 1) phi t (by omega) hF⟩
 
-/-- Alias for backward compatibility with existing uses. -/
+/--
+For a total family, forward F witness.
+
+Alias kept for signature compatibility. Delegates to `total_family_FObligations_satisfied`.
+-/
 theorem total_family_forward_F (F : GHCoherentPartialFamily)
     (htotal : F.domain = Set.univ) (t : Int) (phi : Formula)
     (hF : Formula.some_future phi ∈ F.mcs t) :
-    ∃ s, t < s ∧ phi ∈ F.mcs s := by
-  -- This version doesn't have access to the maximality proof
-  -- It's kept for signature compatibility but cannot be proven without construction details
-  sorry
+    ∃ s, t < s ∧ phi ∈ F.mcs s :=
+  ⟨t + 1, by omega,
+    total_family_FObligations_satisfied F htotal (t + 1) phi t (by omega) hF⟩
 
 /--
 For a maximal family, backward P witness: If P phi ∈ mcs(t), then phi ∈ mcs(t-1).
 
-**Strategy**: Symmetric to maximal_family_forward_F.
-If P phi ∈ mcs(t) but phi ∉ mcs(s) for all s < t, the family could be extended
-to satisfy this P-obligation, contradicting maximality.
+Symmetric to `maximal_family_forward_F`. The witness is t-1.
 
-**Dependencies**:
-- Requires `maximal_implies_total` to get totality from maximality
-- Requires `extensionSeed_consistent` (Phase 3) for seed consistency
-- These dependencies have sorries, so this theorem also requires sorry
+**Sorry dependency**: Delegates to `total_family_PObligations_satisfied` (1 sorry).
 -/
 theorem maximal_family_backward_P (F : GHCoherentPartialFamily) (base : GHCoherentPartialFamily)
     (hmax : Maximal (· ∈ CoherentExtensions base) F) (hF_ext : F ∈ CoherentExtensions base)
     (t : Int) (phi : Formula)
     (hP : Formula.some_past phi ∈ F.mcs t) :
     ∃ s, s < t ∧ phi ∈ F.mcs s := by
-  -- First establish totality from maximality
   have htotal : F.domain = Set.univ := maximal_implies_total F base hmax hF_ext
-  -- Now prove the P witness exists
-  have ht_dom : t ∈ F.domain := htotal ▸ Set.mem_univ t
-  have ht1_dom : t - 1 ∈ F.domain := htotal ▸ Set.mem_univ (t - 1)
-  -- The witness is t-1
-  use t - 1
-  constructor
-  · omega
-  · -- Similar reasoning to forward_F
-    -- phi should be in F.mcs (t-1) because:
-    -- 1. P phi ∈ F.mcs t means phi is a P-obligation for time t-1
-    -- 2. The extensionSeed at t-1 includes PObligations
-    -- 3. The MCS at t-1 extends the extensionSeed (via Lindenbaum)
-    --
-    -- Technical debt: Same dependency on extensionSeed_consistent and
-    -- maximal_implies_total as maximal_family_forward_F.
-    sorry
+  -- Witness: t - 1 (in domain since domain = Set.univ)
+  exact ⟨t - 1, by omega,
+    total_family_PObligations_satisfied F htotal (t - 1) phi t (by omega) hP⟩
 
-/-- Alias for backward compatibility with existing uses. -/
+/--
+For a total family, backward P witness.
+
+Alias kept for signature compatibility. Delegates to `total_family_PObligations_satisfied`.
+-/
 theorem total_family_backward_P (F : GHCoherentPartialFamily)
     (htotal : F.domain = Set.univ) (t : Int) (phi : Formula)
     (hP : Formula.some_past phi ∈ F.mcs t) :
-    ∃ s, s < t ∧ phi ∈ F.mcs s := by
-  -- This version doesn't have access to the maximality proof
-  sorry
+    ∃ s, s < t ∧ phi ∈ F.mcs s :=
+  ⟨t - 1, by omega,
+    total_family_PObligations_satisfied F htotal (t - 1) phi t (by omega) hP⟩
 
 /-!
 ## Part 12: Main Theorem
