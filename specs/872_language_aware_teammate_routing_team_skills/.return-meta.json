@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/872_language_aware_teammate_routing_team_skills/reports/research-001.md",
-      "summary": "Research report with 7 findings on language-aware teammate routing"
+      "type": "plan",
+      "path": "specs/872_language_aware_teammate_routing_team_skills/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for language-aware teammate routing in team skills"
     }
   ],
-  "next_steps": "Run /plan 872 to create implementation plan",
+  "next_steps": "Run /implement 872 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770854913_d82a8c",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 300,
+    "session_id": "sess_1770855200_5f0645",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 7
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5
   }
 }

@@ -8,12 +8,12 @@
     {
       "project_number": 872,
       "project_name": "language_aware_teammate_routing_team_skills",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "3-4 hours",
       "description": "Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:11:37Z",
+      "last_updated": "2026-02-12T00:15:46Z",
       "artifacts": [
         {
           "type": "evidence",
@@ -24,10 +24,16 @@
           "path": "specs/872_language_aware_teammate_routing_team_skills/reports/research-001.md",
           "type": "report",
           "summary": "Research report with 7 findings on language-aware teammate routing"
+        },
+        {
+          "path": "specs/872_language_aware_teammate_routing_team_skills/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for language-aware teammate routing in team skills"
         }
       ],
-      "session_id": "sess_1770854913_d82a8c",
-      "researched": "2026-02-12T00:11:37Z"
+      "session_id": "sess_1770855200_5f0645",
+      "researched": "2026-02-12T00:11:37Z",
+      "planned": "2026-02-12T00:15:46Z"
     },
     {
       "project_number": 873,

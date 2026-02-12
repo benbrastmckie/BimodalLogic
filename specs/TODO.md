@@ -59,11 +59,13 @@ technical_debt:
 
 ### 872. Add language-aware teammate routing to team skills
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
+- **Planned**: 2026-02-11
 - **Research**: [research-001.md](specs/872_language_aware_teammate_routing_team_skills/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/872_language_aware_teammate_routing_team_skills/plans/implementation-001.md)
 - **Evidence**: [/implement --team 870 failure](.claude/output/implement.md) (lines 1740-1770)
 
 **Description**: Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.
