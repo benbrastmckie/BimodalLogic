@@ -24,7 +24,7 @@ technical_debt:
 
 ### 880. Investigate augmented extension seed approach for pure past/future cases
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Research**: [specs/880_augmented_extension_seed_approach/reports/research-001.md]
 - **Created**: 2026-02-12
@@ -32,12 +32,14 @@ technical_debt:
 **Description**: Task 870 Phase 4 discovered that `multi_witness_seed_consistent_future/past` are mathematically FALSE (counterexample: F(p) and F(¬p) can coexist in an MCS, but {p, ¬p} is inconsistent). The collect-into-one-MCS strategy fails for pure past/future cases. Research the augmented seed approach from Phase 3's fallback strategy: include negative GH constraints in the seed, and prove this augmented seed is consistent. Questions: (1) What exactly should the augmented extension seed contain? (2) Can we prove augmented seed is consistent? (3) Does augmented seed enable proving forward_F/backward_P for extended family? (4) Can augmented seed approach unify all three cases (cross-sign, pure past, pure future)? (5) If unworkable, what are viable alternatives? Desired outputs: Clear definition of augmented extension seed, proof sketch or counterexample for consistency, recommendation to revise plan or pivot direction.
 *
 ### 879. Investigate and fix team mode context limit failures
-- **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 4 hours
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-12
 - **Researched**: 2026-02-12
+- **Planned**: 2026-02-12
 - **Research**: [research-001.md](specs/879_team_mode_context_limit_failures/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/879_team_mode_context_limit_failures/plans/implementation-001.md)
 
 **Description**: When running `/implement --team 870`, the team mode correctly spawned two lean-implementation-agent subagents for parallel execution of phases 3 and 4. However, one agent (ad8d16b) hit a context limit during execution, preventing completion. Team mode DID work (subagents were spawned correctly), but the context limit prevented phase completion. Root cause to investigate: Why does the lean-implementation-agent context window fill up during proof work? Is this related to excessive MCP tool calls, file reads, or lean_goal queries? Can we add context management (periodic /compact) to long-running agents? Desired outcome: Identify why agents hit context limits during Lean implementation, implement solution (e.g., periodic context compression, reduced verbosity, better chunking), enable successful team mode execution for complex Lean tasks.
 
