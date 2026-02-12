@@ -47,21 +47,27 @@
     {
       "project_number": 873,
       "project_name": "teammate_configuration_model_selection",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "2-3 hours",
       "description": "Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:25:34Z",
-      "session_id": "sess_1770855717_dfb18c",
+      "last_updated": "2026-02-12T00:31:05Z",
+      "session_id": "sess_1770856127_b142aa",
       "researched": "2026-02-12T00:25:34Z",
       "artifacts": [
         {
           "path": "specs/873_teammate_configuration_model_selection/reports/research-001.md",
           "type": "report",
           "summary": "Research report analyzing Task 872 coordination, TeammateTool model parameter API, and configuration schema for per-language model defaults"
+        },
+        {
+          "path": "specs/873_teammate_configuration_model_selection/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for teammate model configuration system"
         }
-      ]
+      ],
+      "planned": "2026-02-12T00:31:05Z"
     },
     {
       "project_number": 874,
@@ -76,15 +82,16 @@
     {
       "project_number": 875,
       "project_name": "lean_specific_teammate_prompts",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "2-3 hours",
       "description": "Create lean-specific teammate prompt templates that instruct teammates to use lean-lsp MCP tools (leansearch, loogle, leanfinder, lean_goal, etc.) and follow proof-checking workflows. Store in .claude/context/core/templates/.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:29:59Z",
       "depends_on": [
         872
-      ]
+      ],
+      "session_id": "sess_1770856182_b5cf8b"
     },
     {
       "project_number": 871,

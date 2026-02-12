@@ -24,7 +24,7 @@ technical_debt:
 
 ### 875. Create lean-specific teammate prompts
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Dependencies**: Task #872 (routing must exist before prompts can be used)
@@ -47,11 +47,13 @@ technical_debt:
 
 ### 873. Create teammate configuration system with model selection
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
+- **Planned**: 2026-02-11
 - **Research**: [research-001.md](specs/873_teammate_configuration_model_selection/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/873_teammate_configuration_model_selection/plans/implementation-001.md)
 
 **Description**: Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.
 
