@@ -35,10 +35,11 @@ technical_debt:
 
 ### 877. Update planner-agent to generate phase dependencies
 - **Effort**: 1.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Dependencies**: Task 876
+- **Research**: [research-001.md](specs/877_update_planner_agent_generate_phase_dependencies/reports/research-001.md)
 
 **Description**: Update planner-agent.md Stage 5 plan template to include Dependencies field for each phase. Add dependency analysis during Stage 4 (task decomposition). Generate Dependencies field based on outputs/inputs between phases. Reference task-breakdown.md dependency patterns.
 
@@ -46,7 +47,7 @@ technical_debt:
 
 ### 876. Add phase dependency field to plan format standards
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Dependencies**: None
