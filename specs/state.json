@@ -193,7 +193,7 @@
         856
       ],
       "created": "2026-02-03T19:04:58Z",
-      "last_updated": "2026-02-10T19:08:37Z",
+      "last_updated": "2026-02-12T15:01:09Z",
       "session_id": "sess_1770749682_60e2bf",
       "researched": "2026-02-04T21:51:00Z",
       "artifacts": [
@@ -301,6 +301,11 @@
           "path": "specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-008.md",
           "type": "plan",
           "summary": "v008 plan using Alternative A (unified interleaved chain) for cross-sign temporal propagation"
+        },
+        {
+          "path": "specs/843_remove_singleFamily_modal_backward_axiom/reports/research-018.md",
+          "type": "research",
+          "summary": "Relevance assessment in light of task 864 progress - recommends archiving as PARTIAL"
         }
       ],
       "planned": "2026-02-10T18:28:44Z",
