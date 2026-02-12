@@ -8,13 +8,24 @@
     {
       "project_number": 879,
       "project_name": "team_mode_context_limit_failures",
-      "status": "planned",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-12T18:08:37Z",
-      "last_updated": "2026-02-12T19:10:29Z",
-      "session_id": "sess_1770923247_44442a",
+      "last_updated": "2026-02-12T20:15:00Z",
+      "session_id": "sess_1770925322_f01ce4",
+      "researched": "2026-02-12T20:15:00Z",
       "planned": "2026-02-12T19:10:29Z",
       "artifacts": [
+        {
+          "path": "specs/879_team_mode_context_limit_failures/reports/research-001.md",
+          "type": "research",
+          "summary": "Initial diagnosis: context exhaustion from Lean proof work, not team mode bug; mitigations via phase chunking and context-aware prompts"
+        },
+        {
+          "path": "specs/879_team_mode_context_limit_failures/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplementary research on artifact-based handoff patterns for graceful context exhaustion, including Anthropic incremental progress patterns, LangChain context compression, and session-handoff skills"
+        },
         {
           "path": "specs/879_team_mode_context_limit_failures/plans/implementation-001.md",
           "type": "plan",
@@ -441,12 +452,12 @@
     {
       "project_number": 880,
       "project_name": "augmented_extension_seed_approach",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-12T18:15:26Z",
-      "last_updated": "2026-02-12T19:33:20Z",
+      "last_updated": "2026-02-12T19:36:02Z",
       "researched": "2026-02-12T18:59:10Z",
-      "session_id": "sess_1770924632_356cb0",
+      "session_id": "sess_1770924891_a0d146",
       "artifacts": [
         {
           "path": "specs/880_augmented_extension_seed_approach/reports/research-001.md",
@@ -464,7 +475,8 @@
           "summary": "7-phase plan: delete false lemmas, remove F/P fields, simplify seed, decision checkpoint"
         }
       ],
-      "planned": "2026-02-12T19:33:20Z"
+      "planned": "2026-02-12T19:33:20Z",
+      "started": "2026-02-12T19:36:02Z"
     }
   ],
   "completed_projects": [
