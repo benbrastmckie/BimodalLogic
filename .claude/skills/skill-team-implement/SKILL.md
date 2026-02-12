@@ -1,17 +1,21 @@
 ---
 name: skill-team-implement
-description: Orchestrate multi-agent implementation with parallel phase execution and debugging support. Spawns teammates for independent phases and debugger agents for error resolution.
+description: Orchestrate multi-agent implementation with parallel phase execution and debugging support. Spawns teammates for independent phases and debugger agents for error resolution. Routes to language-appropriate agents (e.g., Lean tasks use lean-implementation-agent pattern with lean-lsp MCP tools).
 allowed-tools: Task, Bash, Edit, Read, Write
 # This skill uses TeammateTool for team coordination (available when CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1)
 # Context loaded by lead:
 #   - .claude/context/core/patterns/team-orchestration.md
 #   - .claude/context/core/formats/team-metadata-extension.md
 #   - .claude/context/core/formats/debug-report-format.md
+# Language routing patterns:
+#   - .claude/utils/team-wave-helpers.md#language-routing-pattern
 ---
 
 # Team Implementation Skill
 
 Multi-agent implementation with parallel phase execution and debugging support. Analyzes plan for independent phases, spawns teammates to execute them in parallel, and deploys debugger agents when errors occur.
+
+**Language-Aware Routing**: Phase implementers and debuggers are spawned with language-appropriate prompts and tools. For Lean tasks, teammates use lean-implementation-agent patterns with access to lean-lsp MCP tools, blocked tool warnings, and `lake build` verification requirements.
 
 **IMPORTANT**: This skill requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable. If team creation fails, gracefully degrades to single-agent implementation via skill-implementer.
 
@@ -117,6 +121,45 @@ If team mode unavailable, fall back to skill-implementer.
 
 ---
 
+### Stage 5a: Language Routing Decision
+
+Determine language-specific configuration for phase implementer and debugger prompts:
+
+```bash
+# Route by task language
+case "$language" in
+  "lean")
+    # Lean-specific configuration
+    use_lean_prompts=true
+    implementation_agent_pattern="lean-implementation-agent"
+    context_refs="@.claude/context/project/lean4/tools/mcp-tools-guide.md, @.claude/context/project/lean4/patterns/tactic-patterns.md, @.claude/context/project/lean4/standards/proof-debt-policy.md"
+    blocked_tools="lean_diagnostic_messages (lean-lsp-mcp #115), lean_file_outline (unreliable)"
+    implementation_tools="lean_goal (MOST IMPORTANT), lean_multi_attempt, lean_state_search, lean_hover_info, lean_local_search"
+    verification_command="lake build"
+    ;;
+  "latex")
+    use_lean_prompts=false
+    implementation_agent_pattern="latex-implementation-agent"
+    verification_command="pdflatex"
+    ;;
+  "typst")
+    use_lean_prompts=false
+    implementation_agent_pattern="typst-implementation-agent"
+    verification_command="typst compile"
+    ;;
+  *)
+    # Generic configuration (general, meta)
+    use_lean_prompts=false
+    implementation_agent_pattern="general-implementation-agent"
+    verification_command="Project-specific build/test"
+    ;;
+esac
+```
+
+See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.
+
+---
+
 ### Stage 6: Execute Implementation Waves
 
 For each wave of phases:
@@ -127,10 +170,72 @@ For each wave of phases:
 
 **If wave has multiple independent phases**:
 - Spawn teammate per phase (up to team_size)
+- Use language-appropriate prompts (see Stage 5a)
 - Wait for all to complete
 - Collect results and update plan statuses
 
-**Teammate Prompt (Phase Implementer)**:
+---
+
+#### For Lean Tasks (language == "lean")
+
+Use the Lean teammate prompt template from `.claude/utils/team-wave-helpers.md#lean-teammate-prompt-template-implementation`.
+
+**Teammate Prompt (Lean Phase Implementer)**:
+```
+Implement phase {P} of task {task_number}: {phase_description}
+
+You are a Lean 4 proof implementer. Follow the lean-implementation-agent pattern.
+
+## Available MCP Tools (via lean-lsp server)
+- lean_goal: Check proof state (MOST IMPORTANT - use constantly!)
+- lean_multi_attempt: Try multiple tactics without editing file
+- lean_state_search: Find lemmas to close current goal (3 req/30s)
+- lean_hammer_premise: Premise suggestions for simp/aesop (3 req/30s)
+- lean_hover_info: Type signatures and documentation
+- lean_local_search: Verify lemma existence
+
+## BLOCKED TOOLS - NEVER CALL
+- lean_diagnostic_messages: Bug lean-lsp-mcp #115 - hangs after import edits
+- lean_file_outline: Unreliable output
+
+## Workflow
+1. Read plan phase details
+2. Use lean_goal before and after each tactic
+3. Use lean_multi_attempt to explore tactic options
+4. Verify lemmas exist with lean_local_search
+5. Run lake build for verification
+
+## Context References (load as needed)
+- @.claude/context/project/lean4/tools/mcp-tools-guide.md
+- @.claude/context/project/lean4/patterns/tactic-patterns.md
+- @.claude/context/project/lean4/standards/proof-debt-policy.md
+
+Plan context:
+{phase_details}
+
+Files to modify:
+{files_list}
+
+Steps:
+{steps_list}
+
+Verification: lake build (must pass with no errors)
+
+When complete:
+1. Verify proof state shows "no goals"
+2. Run lake build
+3. Mark phase [COMPLETED] in plan file
+4. Write results to: specs/{N}_{SLUG}/phases/phase-{P}-results.md
+5. Return brief summary of changes made
+```
+
+---
+
+#### For Non-Lean Tasks (general, meta, latex, typst)
+
+Use generic prompts (existing behavior preserved).
+
+**Teammate Prompt (Generic Phase Implementer)**:
 ```
 Implement phase {P} of task {task_number}: {phase_description}
 
@@ -158,7 +263,46 @@ When complete:
 
 When a phase fails (build error, test failure, etc.):
 
-**Spawn Debugger Teammate**:
+#### For Lean Tasks (language == "lean")
+
+Use the Lean debugger prompt template from `.claude/utils/team-wave-helpers.md#lean-teammate-prompt-template-debugger`.
+
+**Spawn Lean Debugger Teammate**:
+```
+Analyze the error in task {task_number} phase {P}:
+
+You are a Lean 4 debugging specialist.
+
+## Available MCP Tools
+- lean_goal: Check proof state at error location (MOST IMPORTANT)
+- lean_hover_info: Get type information for identifiers
+- lean_local_search: Verify if expected lemmas exist
+
+## BLOCKED TOOLS - NEVER CALL
+- lean_diagnostic_messages: Bug lean-lsp-mcp #115 - hangs after import edits
+- lean_file_outline: Unreliable output
+
+Error output:
+{error_details}
+
+Context:
+{phase_context}
+
+Generate:
+1. Hypothesis about the cause (use lean_goal to check state)
+2. Analysis of the error
+3. Proposed fix with specific tactic suggestions
+
+Output to: specs/{N}_{SLUG}/debug/debug-{NNN}-hypothesis.md
+```
+
+---
+
+#### For Non-Lean Tasks (general, meta, latex, typst)
+
+Use generic debugger prompts (existing behavior preserved).
+
+**Spawn Generic Debugger Teammate**:
 ```
 Analyze the error in task {task_number} phase {P}:
 
@@ -176,12 +320,14 @@ Generate:
 Output to: specs/{N}_{SLUG}/debug/debug-{NNN}-hypothesis.md
 ```
 
+---
+
 **Debug Report Cycle**:
 1. Debugger generates hypothesis
 2. Lead evaluates hypothesis
-3. If promising, spawn Fixer teammate
+3. If promising, spawn Fixer teammate (with language-appropriate prompt)
 4. Fixer attempts fix
-5. Re-run verification
+5. Re-run verification (lake build for Lean, project-specific for others)
 6. If fixed, continue; else, repeat cycle (max 3 attempts)
 
 ---

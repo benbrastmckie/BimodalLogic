@@ -1,17 +1,21 @@
 ---
 name: skill-team-research
-description: Orchestrate multi-agent research with wave-based parallel execution. Spawns 2-4 teammates for diverse investigation angles and synthesizes findings.
+description: Orchestrate multi-agent research with wave-based parallel execution. Spawns 2-4 teammates for diverse investigation angles and synthesizes findings. Routes to language-appropriate agents (e.g., Lean tasks use lean-research-agent pattern with lean-lsp MCP tools).
 allowed-tools: Task, Bash, Edit, Read, Write
 # This skill uses TeammateTool for team coordination (available when CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1)
 # Context loaded by lead during synthesis:
 #   - .claude/context/core/patterns/team-orchestration.md
 #   - .claude/context/core/formats/team-metadata-extension.md
 #   - .claude/utils/team-wave-helpers.md
+# Language routing patterns:
+#   - .claude/utils/team-wave-helpers.md#language-routing-pattern
 ---
 
 # Team Research Skill
 
 Multi-agent research with wave-based parallelization. Spawns 2-4 teammates to investigate complementary angles, then synthesizes findings into a unified report.
+
+**Language-Aware Routing**: Teammates are spawned with language-appropriate prompts and tools. For Lean tasks, teammates use lean-research-agent patterns with access to lean-lsp MCP tools and blocked tool warnings.
 
 **IMPORTANT**: This skill requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable. If team creation fails, gracefully degrades to single-agent research via skill-researcher.
 
@@ -140,11 +144,130 @@ If team mode is unavailable:
 
 ---
 
+### Stage 5a: Language Routing Decision
+
+Determine language-specific configuration for teammate prompts:
+
+```bash
+# Route by task language
+case "$language" in
+  "lean")
+    # Lean-specific configuration
+    use_lean_prompts=true
+    research_agent_pattern="lean-research-agent"
+    context_refs="@.claude/context/project/lean4/tools/mcp-tools-guide.md, @.claude/context/project/lean4/standards/proof-debt-policy.md"
+    blocked_tools="lean_diagnostic_messages (lean-lsp-mcp #115), lean_file_outline (unreliable)"
+    available_tools="lean_leansearch, lean_loogle, lean_leanfinder, lean_local_search, lean_hover_info"
+    ;;
+  *)
+    # Generic configuration (general, meta, latex, typst)
+    use_lean_prompts=false
+    research_agent_pattern="general-research-agent"
+    context_refs=""
+    blocked_tools=""
+    available_tools="WebSearch, WebFetch, Read, Grep, Glob"
+    ;;
+esac
+```
+
+See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.
+
+---
+
 ### Stage 5: Spawn Research Wave
 
-Create teammate prompts and spawn wave:
+Create teammate prompts and spawn wave.
 
-**Teammate A - Primary Angle (always)**:
+**For Lean tasks** (`language == "lean"`), use Lean-specific prompts with MCP tools and blocked tool warnings.
+
+**For non-Lean tasks**, use generic prompts (existing behavior preserved).
+
+#### For Lean Tasks (language == "lean")
+
+Use the Lean teammate prompt template from `.claude/utils/team-wave-helpers.md#lean-teammate-prompt-template-research`.
+
+**Teammate A - Primary Angle (Lean)**:
+```
+Research task {task_number}: {description}
+
+You are a Lean 4/Mathlib research specialist. Follow the lean-research-agent pattern.
+
+## Available MCP Tools (via lean-lsp server)
+- lean_leansearch: Natural language search (3 req/30s)
+- lean_loogle: Type pattern search (3 req/30s)
+- lean_leanfinder: Semantic/conceptual search (10 req/30s)
+- lean_local_search: Fast local search (no limit) - USE FIRST
+- lean_hover_info: Type signatures and documentation
+
+## BLOCKED TOOLS - NEVER CALL
+- lean_diagnostic_messages: Bug lean-lsp-mcp #115 - hangs after import edits
+- lean_file_outline: Unreliable output
+
+## Search Decision Tree
+1. "Does X exist locally?" -> lean_local_search
+2. "I need a lemma that says X" -> lean_leansearch
+3. "Find lemma with type pattern" -> lean_loogle
+4. "What's the Lean name for concept X?" -> lean_leanfinder
+
+## Context References (load as needed)
+- @.claude/context/project/lean4/tools/mcp-tools-guide.md
+- @.claude/context/project/lean4/standards/proof-debt-policy.md
+
+Focus on: Implementation approaches and Mathlib patterns for this task.
+Challenge assumptions. Verify lemma existence with lean_local_search.
+Consider {focus_prompt} if provided.
+
+Output your findings to: specs/{N}_{SLUG}/reports/teammate-a-findings.md
+
+Format: Markdown with sections for Key Findings, Recommended Approach,
+Evidence (including lemma names verified via lean_local_search), Confidence Level
+```
+
+**Teammate B - Alternative Approaches (Lean)**:
+```
+[Same header as Teammate A with tools, blocked tools, etc.]
+
+Focus on: Alternative Mathlib patterns and prior art.
+Look for existing lemmas/theorems we could adapt.
+Do NOT duplicate Teammate A's primary focus.
+Verify all lemma names with lean_local_search.
+
+Output your findings to: specs/{N}_{SLUG}/reports/teammate-b-findings.md
+```
+
+**Teammate C - Risk Analysis (Lean, if team_size >= 3)**:
+```
+[Same header as Teammate A with tools, blocked tools, etc.]
+
+Focus on: Proof risks, missing lemmas, and edge cases.
+Identify where proof strategies could fail.
+Note any suspicious axioms or sorry placeholders in related code.
+Check for Mathlib version compatibility issues.
+
+Output your findings to: specs/{N}_{SLUG}/reports/teammate-c-findings.md
+```
+
+**Teammate D - Devil's Advocate (Lean, if team_size >= 4)**:
+```
+[Same header as Teammate A with tools, blocked tools, etc.]
+
+Focus on: Challenging findings from other teammates.
+Verify their claimed lemmas actually exist (use lean_local_search).
+Look for gaps in proof strategy.
+Question complexity assumptions.
+
+Wait for other teammates to complete, then analyze their outputs.
+
+Output your findings to: specs/{N}_{SLUG}/reports/teammate-d-findings.md
+```
+
+---
+
+#### For Non-Lean Tasks (general, meta, latex, typst)
+
+Use generic prompts (existing behavior preserved).
+
+**Teammate A - Primary Angle (Generic)**:
 ```
 Research task {task_number}: {description}
 
@@ -162,7 +285,7 @@ Format: Markdown with clear sections for:
 - Confidence Level (high/medium/low)
 ```
 
-**Teammate B - Alternative Approaches (always)**:
+**Teammate B - Alternative Approaches (Generic)**:
 ```
 Research task {task_number}: {description}
 
@@ -176,7 +299,7 @@ specs/{N}_{SLUG}/reports/teammate-b-findings.md
 Format: Same as Teammate A
 ```
 
-**Teammate C - Risk Analysis (if team_size >= 3)**:
+**Teammate C - Risk Analysis (Generic, if team_size >= 3)**:
 ```
 Research task {task_number}: {description}
 
@@ -190,7 +313,7 @@ specs/{N}_{SLUG}/reports/teammate-c-findings.md
 Format: Same as Teammate A
 ```
 
-**Teammate D - Devil's Advocate (if team_size >= 4)**:
+**Teammate D - Devil's Advocate (Generic, if team_size >= 4)**:
 ```
 Research task {task_number}: {description}
 
@@ -205,6 +328,8 @@ specs/{N}_{SLUG}/reports/teammate-d-findings.md
 
 Format: Same as Teammate A
 ```
+
+---
 
 **Spawn teammates using TeammateTool**.
 

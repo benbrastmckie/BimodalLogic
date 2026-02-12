@@ -164,6 +164,8 @@ Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.c
 | skill-team-plan | (team lead) | Multi-agent parallel planning |
 | skill-team-implement | (team lead) | Multi-agent parallel implementation |
 
+**Team Skill Language Routing**: Team skills (skill-team-research, skill-team-plan, skill-team-implement) route teammates to language-appropriate agents. For Lean tasks, teammates use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools and blocked tool warnings. See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration.
+
 ## Rules References
 
 Core rules (auto-applied by file path):

@@ -1,17 +1,21 @@
 ---
 name: skill-team-plan
-description: Orchestrate multi-agent planning with candidate plan generation and trade-off analysis. Spawns 2-3 teammates for parallel plan creation, then synthesizes best-of-breed final plan.
+description: Orchestrate multi-agent planning with candidate plan generation and trade-off analysis. Spawns 2-3 teammates for parallel plan creation, then synthesizes best-of-breed final plan. Includes Lean-specific context references for Lean tasks (proof milestones, tactic patterns).
 allowed-tools: Task, Bash, Edit, Read, Write
 # This skill uses TeammateTool for team coordination (available when CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1)
 # Context loaded by lead during synthesis:
 #   - .claude/context/core/patterns/team-orchestration.md
 #   - .claude/context/core/formats/team-metadata-extension.md
 #   - .claude/utils/team-wave-helpers.md
+# Language routing patterns:
+#   - .claude/utils/team-wave-helpers.md#language-routing-pattern
 ---
 
 # Team Planning Skill
 
 Multi-agent planning with parallel candidate generation. Spawns 2-3 teammates to create alternative implementation plans, then synthesizes a best-of-breed final plan with documented trade-offs.
+
+**Language-Aware Context**: For Lean tasks, planner teammates include tactic-patterns.md context references and are instructed to structure phases around proof milestones (helper lemmas, main theorems).
 
 **IMPORTANT**: This skill requires `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1` environment variable. If team creation fails, gracefully degrades to single-agent planning via skill-planner.
 
@@ -125,11 +129,149 @@ If `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS != "1"`:
 
 ---
 
+### Stage 5a: Language Routing Decision
+
+Determine language-specific configuration for planner prompts:
+
+```bash
+# Route by task language
+case "$language" in
+  "lean")
+    # Lean-specific planning configuration
+    use_lean_prompts=true
+    context_refs="@.claude/context/project/lean4/patterns/tactic-patterns.md, @.claude/context/project/lean4/standards/proof-debt-policy.md"
+    planning_guidance="Phases should correspond to proof milestones (e.g., helper lemmas, main theorem). Each phase must include 'lake build' verification."
+    verification_command="lake build"
+    ;;
+  "latex")
+    context_refs=""
+    planning_guidance="Phases should correspond to document sections."
+    verification_command="pdflatex"
+    use_lean_prompts=false
+    ;;
+  "typst")
+    context_refs=""
+    planning_guidance="Phases should correspond to document sections."
+    verification_command="typst compile"
+    use_lean_prompts=false
+    ;;
+  *)
+    # Generic configuration (general, meta)
+    context_refs=""
+    planning_guidance=""
+    verification_command="Project-specific build/test"
+    use_lean_prompts=false
+    ;;
+esac
+```
+
+See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.
+
+---
+
 ### Stage 6: Spawn Planning Wave
 
-Create teammate prompts and spawn wave:
+Create teammate prompts and spawn wave.
 
-**Teammate A - Plan Version A (always)**:
+**For Lean tasks** (`language == "lean"`), use Lean-specific prompts with context references and proof milestone guidance.
+
+**For non-Lean tasks**, use generic prompts (existing behavior preserved).
+
+#### For Lean Tasks (language == "lean")
+
+Use the Lean teammate prompt template from `.claude/utils/team-wave-helpers.md#lean-teammate-prompt-template-planning`.
+
+**Teammate A - Plan Version A (Lean)**:
+```
+Create an implementation plan for task {task_number}: {description}
+
+This is a Lean 4 theorem proving task.
+
+## Context References (load as needed)
+- @.claude/context/project/lean4/patterns/tactic-patterns.md
+- @.claude/context/project/lean4/standards/proof-debt-policy.md
+
+Research findings:
+{research_content}
+
+## Planning Guidelines for Lean Tasks
+- Phases should correspond to proof milestones (e.g., helper lemmas, main theorem)
+- Each phase should produce a verifiable result (lake build passes)
+- Consider proof structure: auxiliary lemmas before main theorems
+- Note which proofs can be parallelized (independent theorems)
+- Include tactic strategy hints in phase descriptions
+
+Create a phased implementation plan focusing on:
+- Incremental delivery with verification at each phase
+- Clear success criteria for each phase
+- Realistic effort estimates
+
+## Verification
+Each phase must include: "Run lake build and verify no errors"
+
+Output to: specs/{N}_{SLUG}/plans/candidate-a.md
+```
+
+**Teammate B - Plan Version B (Lean)**:
+```
+Create an ALTERNATIVE implementation plan for task {task_number}: {description}
+
+This is a Lean 4 theorem proving task.
+
+## Context References (load as needed)
+- @.claude/context/project/lean4/patterns/tactic-patterns.md
+- @.claude/context/project/lean4/standards/proof-debt-policy.md
+
+Research findings:
+{research_content}
+
+## Planning Guidelines for Lean Tasks
+- Phases should correspond to proof milestones
+- Consider alternative proof strategies (e.g., more automation vs explicit steps)
+- Different phase boundaries (e.g., grouping related lemmas differently)
+
+Create a plan that differs from a typical phased approach. Consider:
+- Different proof strategies
+- Alternative ordering of lemmas
+- Different trade-offs (e.g., more sorry placeholders vs complete proofs)
+
+## Verification
+Each phase must include: "Run lake build and verify no errors"
+
+Output to: specs/{N}_{SLUG}/plans/candidate-b.md
+```
+
+**Teammate C - Risk/Dependency Analysis (Lean, if team_size >= 3)**:
+```
+Analyze dependencies and risks for implementing task {task_number}: {description}
+
+This is a Lean 4 theorem proving task.
+
+## Context References
+- @.claude/context/project/lean4/standards/proof-debt-policy.md
+
+Research findings:
+{research_content}
+
+Focus on:
+- Which proofs can be parallelized (independent theorems)
+- Lemma dependencies (which must come before main theorem)
+- Points where proofs could get stuck
+- Mathlib version or import risks
+- sorry remediation strategies
+
+Output to: specs/{N}_{SLUG}/plans/risk-analysis.md
+
+Do NOT create a full plan - focus on analysis that informs plan selection.
+```
+
+---
+
+#### For Non-Lean Tasks (general, meta, latex, typst)
+
+Use generic prompts (existing behavior preserved).
+
+**Teammate A - Plan Version A (Generic)**:
 ```
 Create an implementation plan for task {task_number}: {description}
 
@@ -150,7 +292,7 @@ Use standard plan format with phases, each containing:
 - Verification criteria
 ```
 
-**Teammate B - Plan Version B (always)**:
+**Teammate B - Plan Version B (Generic)**:
 ```
 Create an ALTERNATIVE implementation plan for task {task_number}: {description}
 
@@ -167,7 +309,7 @@ Output to: specs/{N}_{SLUG}/plans/candidate-b.md
 Clearly document what trade-offs this alternative makes.
 ```
 
-**Teammate C - Risk/Dependency Analysis (if team_size >= 3)**:
+**Teammate C - Risk/Dependency Analysis (Generic, if team_size >= 3)**:
 ```
 Analyze dependencies and risks for implementing task {task_number}: {description}
 
@@ -184,6 +326,8 @@ Output to: specs/{N}_{SLUG}/plans/risk-analysis.md
 
 Do NOT create a full plan - focus on analysis that informs plan selection.
 ```
+
+---
 
 **Spawn teammates using TeammateTool**.
 

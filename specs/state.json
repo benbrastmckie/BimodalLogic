@@ -8,12 +8,12 @@
     {
       "project_number": 872,
       "project_name": "language_aware_teammate_routing_team_skills",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "effort": "3-4 hours",
       "description": "Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:15:46Z",
+      "last_updated": "2026-02-12T00:24:43Z",
       "artifacts": [
         {
           "type": "evidence",
@@ -29,21 +29,31 @@
           "path": "specs/872_language_aware_teammate_routing_team_skills/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for language-aware teammate routing in team skills"
+        },
+        {
+          "path": "specs/872_language_aware_teammate_routing_team_skills/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with all changes documented"
         }
       ],
-      "session_id": "sess_1770855200_5f0645",
+      "session_id": "sess_1770855489_219229",
       "researched": "2026-02-12T00:11:37Z",
-      "planned": "2026-02-12T00:15:46Z"
+      "planned": "2026-02-12T00:15:46Z",
+      "started": "2026-02-12T00:18:30Z",
+      "completed": "2026-02-12T00:24:43Z",
+      "completion_summary": "Added language-aware teammate routing to skill-team-research, skill-team-plan, and skill-team-implement. For Lean tasks, teammates are now spawned with lean-lsp MCP tool instructions, blocked tool warnings, and verification requirements (lake build). Non-Lean tasks preserve existing generic prompts.",
+      "claudemd_suggestions": "Added Language Routing Pattern to team-wave-helpers.md, updated 3 team skill SKILL.md files with Stage 5a routing, added routing note to CLAUDE.md Skill-to-Agent Mapping section"
     },
     {
       "project_number": 873,
       "project_name": "teammate_configuration_model_selection",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "2-3 hours",
       "description": "Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:01:01Z"
+      "last_updated": "2026-02-12T00:22:18Z",
+      "session_id": "sess_1770855717_dfb18c"
     },
     {
       "project_number": 874,
@@ -124,11 +134,11 @@
     {
       "project_number": 870,
       "project_name": "zorn_family_temporal_coherence",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-11T22:28:31Z",
-      "last_updated": "2026-02-11T23:42:43Z",
-      "session_id": "sess_1770852604_ac1c05",
+      "last_updated": "2026-02-12T00:20:45Z",
+      "session_id": "sess_1770855612_d4c54f",
       "researched": "2026-02-11T22:39:40Z",
       "artifacts": [
         {

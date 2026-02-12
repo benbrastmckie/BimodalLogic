@@ -1,7 +1,7 @@
 # Implementation Plan: Task #872
 
 - **Task**: 872 - Add language-aware teammate routing to team skills
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: None (builds on existing infrastructure)
 - **Research Inputs**: specs/872_language_aware_teammate_routing_team_skills/reports/research-001.md
@@ -48,7 +48,7 @@ Key findings from research-001.md integrated:
 
 ## Implementation Phases
 
-### Phase 1: Add Language Routing Helper Pattern [NOT STARTED]
+### Phase 1: Add Language Routing Helper Pattern [COMPLETED]
 
 **Goal**: Create a reusable pattern for language routing that all team skills can reference.
 
@@ -71,7 +71,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 2: Modify skill-team-research [NOT STARTED]
+### Phase 2: Modify skill-team-research [COMPLETED]
 
 **Goal**: Add language routing to research teammate prompts.
 
@@ -96,7 +96,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 3: Modify skill-team-implement [NOT STARTED]
+### Phase 3: Modify skill-team-implement [COMPLETED]
 
 **Goal**: Add language routing to implementation teammate prompts (most critical change).
 
@@ -123,7 +123,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 4: Modify skill-team-plan [NOT STARTED]
+### Phase 4: Modify skill-team-plan [COMPLETED]
 
 **Goal**: Add Lean context references to planning teammates for Lean tasks.
 
@@ -145,7 +145,7 @@ Key findings from research-001.md integrated:
 
 ---
 
-### Phase 5: Update Documentation [NOT STARTED]
+### Phase 5: Update Documentation [COMPLETED]
 
 **Goal**: Document the language-aware routing in team skill headers and CLAUDE.md.
 
