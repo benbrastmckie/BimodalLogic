@@ -3,7 +3,7 @@ next_project_number: 879
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-11T22:21:25Z
+  last_assessed: 2026-02-12T01:08:01Z
 task_counts:
   active: 13
   completed: 412
@@ -12,7 +12,7 @@ task_counts:
   abandoned: 29
   total: 444
 technical_debt:
-  sorry_count: 146
+  sorry_count: 161
   axiom_count: 20
   build_errors: 1
   status: manageable

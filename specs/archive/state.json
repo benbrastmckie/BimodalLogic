@@ -13567,6 +13567,154 @@
       "completion_summary": "Implemented team mode for wave-based multi-agent coordination. Added --team flag to /research, /plan, /implement commands. Created skill-team-research, skill-team-plan, and skill-team-implement skills with synthesis and debug support. Updated orchestrator routing and error handling.",
       "claudemd_suggestions": "Added 3 team skills (skill-team-research, skill-team-plan, skill-team-implement), 4 context/format files (team-orchestration.md, team-metadata-extension.md, debug-report-format.md, team-wave-helpers.md), updated CLAUDE.md command reference and skill mapping, updated README.md with Team Mode section, updated error-handling.md with team error types",
       "archived": "2026-02-11T22:20:58Z"
+    },
+    {
+      "project_number": 872,
+      "project_name": "language_aware_teammate_routing_team_skills",
+      "status": "completed",
+      "language": "meta",
+      "effort": "3-4 hours",
+      "description": "Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:24:43Z",
+      "artifacts": [
+        {
+          "type": "evidence",
+          "path": ".claude/output/implement.md",
+          "summary": "/implement --team 870 failure (lines 1740-1770): skill-team-implement bypassed language routing and attempted direct Lean implementation"
+        },
+        {
+          "path": "specs/872_language_aware_teammate_routing_team_skills/reports/research-001.md",
+          "type": "report",
+          "summary": "Research report with 7 findings on language-aware teammate routing"
+        },
+        {
+          "path": "specs/872_language_aware_teammate_routing_team_skills/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for language-aware teammate routing in team skills"
+        },
+        {
+          "path": "specs/872_language_aware_teammate_routing_team_skills/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with all changes documented"
+        }
+      ],
+      "session_id": "sess_1770855489_219229",
+      "researched": "2026-02-12T00:11:37Z",
+      "planned": "2026-02-12T00:15:46Z",
+      "started": "2026-02-12T00:18:30Z",
+      "completed": "2026-02-12T00:24:43Z",
+      "completion_summary": "Added language-aware teammate routing to skill-team-research, skill-team-plan, and skill-team-implement. For Lean tasks, teammates are now spawned with lean-lsp MCP tool instructions, blocked tool warnings, and verification requirements (lake build). Non-Lean tasks preserve existing generic prompts.",
+      "claudemd_suggestions": "Added Language Routing Pattern to team-wave-helpers.md, updated 3 team skill SKILL.md files with Stage 5a routing, added routing note to CLAUDE.md Skill-to-Agent Mapping section",
+      "archived": "2026-02-12T01:15:00Z"
+    },
+    {
+      "project_number": 873,
+      "project_name": "teammate_configuration_model_selection",
+      "status": "completed",
+      "language": "meta",
+      "effort": "2-3 hours",
+      "description": "Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:38:13Z",
+      "session_id": "sess_1770856380_0479b7",
+      "researched": "2026-02-12T00:25:34Z",
+      "artifacts": [
+        {
+          "path": "specs/873_teammate_configuration_model_selection/reports/research-001.md",
+          "type": "report",
+          "summary": "Research report analyzing Task 872 coordination, TeammateTool model parameter API, and configuration schema for per-language model defaults"
+        },
+        {
+          "path": "specs/873_teammate_configuration_model_selection/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for teammate model configuration system"
+        },
+        {
+          "path": "specs/873_teammate_configuration_model_selection/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-02-12T00:31:05Z",
+      "started": "2026-02-12T00:33:19Z",
+      "completed": "2026-02-12T00:38:13Z",
+      "completion_summary": "Implemented teammate model selection system allowing team skills to specify preferred Claude models per language type. Lean tasks default to Opus for complex theorem proving, while document and system tasks use Sonnet for cost-effectiveness.",
+      "claudemd_suggestions": "Added default_model field to team-wave-helpers.md, updated skill-team-research/SKILL.md, skill-team-implement/SKILL.md, skill-team-plan/SKILL.md with model extraction and prompt inclusion, added model defaults table to CLAUDE.md",
+      "archived": "2026-02-12T01:15:00Z"
+    },
+    {
+      "project_number": 874,
+      "project_name": "document_team_flag_command_files",
+      "status": "completed",
+      "language": "meta",
+      "effort": "1 hour",
+      "description": "Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T01:01:39Z",
+      "session_id": "sess_1770857886_7687ec",
+      "researched": "2026-02-12T00:41:27Z",
+      "artifacts": [
+        {
+          "path": "specs/874_document_team_flag_command_files/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with command file analysis and implementation recommendations"
+        },
+        {
+          "path": "specs/874_document_team_flag_command_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for documenting --team flag in command files"
+        },
+        {
+          "path": "specs/874_document_team_flag_command_files/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-02-12T00:45:12Z",
+      "started": "2026-02-12T00:58:32Z",
+      "completed": "2026-02-12T01:01:39Z",
+      "completion_summary": "Added --team and --team-size flag documentation to /research, /plan, and /implement command files, following the established Options table pattern from lake.md.",
+      "claudemd_suggestions": "Updated .claude/commands/research.md, .claude/commands/plan.md, and .claude/commands/implement.md with Options tables documenting team flags",
+      "archived": "2026-02-12T01:15:00Z"
+    },
+    {
+      "project_number": 871,
+      "project_name": "safer_git_staging_concurrent_agents",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-11T22:36:45Z",
+      "last_updated": "2026-02-11T22:57:50Z",
+      "session_id": "sess_1770849993_03459c",
+      "researched": "2026-02-11T22:41:23Z",
+      "artifacts": [
+        {
+          "path": "specs/871_safer_git_staging_concurrent_agents/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with 6 findings and 4-phase implementation plan"
+        },
+        {
+          "path": "specs/871_safer_git_staging_concurrent_agents/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for replacing git add -A with targeted staging across skills, agents, and commands"
+        },
+        {
+          "path": "specs/871_safer_git_staging_concurrent_agents/summaries/implementation-summary-20260211.md",
+          "type": "summary",
+          "summary": "Implementation summary with all modified files and verification results"
+        },
+        {
+          "path": ".claude/context/core/standards/git-staging-scope.md",
+          "type": "implementation",
+          "summary": "New documentation defining allowed git staging scopes per agent type"
+        }
+      ],
+      "planned": "2026-02-11T22:45:04Z",
+      "started": "2026-02-11T22:47:02Z",
+      "completed": "2026-02-11T22:57:50Z",
+      "completion_summary": "Replaced unsafe git add -A patterns with targeted staging across all skills, agents, commands, and context patterns. Created comprehensive git-staging-scope.md documentation defining agent-specific allowed file scopes.",
+      "claudemd_suggestions": "Added git-staging-scope.md to .claude/context/core/standards/, updated git-safety.md reference. Modified 10 skills, 3 agents, 5 commands, and 7 context pattern files.",
+      "archived": "2026-02-12T01:15:00Z"
     }
   ]
 }
