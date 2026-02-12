@@ -24,11 +24,13 @@ technical_debt:
 
 ### 874. Document --team flag in command files
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
+- **Planned**: 2026-02-11
 - **Research**: [research-001.md](specs/874_document_team_flag_command_files/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/874_document_team_flag_command_files/plans/implementation-001.md)
 
 **Description**: Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.
 

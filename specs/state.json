@@ -81,21 +81,27 @@
     {
       "project_number": 874,
       "project_name": "document_team_flag_command_files",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "1 hour",
       "description": "Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:41:27Z",
-      "session_id": "sess_1770856720_ebac7e",
+      "last_updated": "2026-02-12T00:45:12Z",
+      "session_id": "sess_1770856971_cf7e22",
       "researched": "2026-02-12T00:41:27Z",
       "artifacts": [
         {
           "path": "specs/874_document_team_flag_command_files/reports/research-001.md",
           "type": "research",
           "summary": "Research report with command file analysis and implementation recommendations"
+        },
+        {
+          "path": "specs/874_document_team_flag_command_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for documenting --team flag in command files"
         }
-      ]
+      ],
+      "planned": "2026-02-12T00:45:12Z"
     },
     {
       "project_number": 871,

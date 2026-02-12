@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Identified 3 command files needing --team/--team-size documentation. Documented established Options table pattern from lake.md. Created specific recommendations for each file.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/874_document_team_flag_command_files/reports/research-001.md",
-      "summary": "Research report with command file analysis and implementation recommendations"
+      "type": "plan",
+      "path": "specs/874_document_team_flag_command_files/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for documenting --team flag in command files"
     }
   ],
-  "next_steps": "Run /plan 874 to create implementation plan",
+  "next_steps": "Run /implement 874 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770856720_ebac7e",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1770856971_cf7e22",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1
   }
 }
