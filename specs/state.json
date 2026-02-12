@@ -424,6 +424,23 @@
           "summary": "Research report on Evolution/WorldHistory containment theorem and Barcan formula proofs for Logos Dynamics"
         }
       ]
+    },
+    {
+      "project_number": 880,
+      "project_name": "augmented_extension_seed_approach",
+      "status": "researched",
+      "language": "lean",
+      "created": "2026-02-12T18:15:26Z",
+      "last_updated": "2026-02-12T18:59:10Z",
+      "researched": "2026-02-12T18:59:10Z",
+      "session_id": "sess_1770921898_b765d1",
+      "artifacts": [
+        {
+          "path": "specs/880_augmented_extension_seed_approach/reports/research-001.md",
+          "type": "research",
+          "summary": "Team research: augmented seed not viable, cross-sign case solvable"
+        }
+      ]
     }
   ],
   "completed_projects": [
@@ -438,7 +455,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 880,
+  "next_project_number": 881,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
