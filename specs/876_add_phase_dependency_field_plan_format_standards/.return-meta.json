@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Analyzed current plan format, skill-team-implement phase parsing, and DAG best practices. Recommended Dependencies field notation: None | Phase {N} | Phase {N}, Phase {M}. Field is optional for backward compatibility. Integration needed in plan-format.md, artifact-formats.md, skill-team-implement, and planner-agent.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/876_add_phase_dependency_field_plan_format_standards/reports/research-001.md",
+      "summary": "Research report with current format analysis, industry DAG notation patterns, and implementation recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 876 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1770858098_03e455",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 6
+  }
+}

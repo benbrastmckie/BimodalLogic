@@ -46,10 +46,11 @@ technical_debt:
 
 ### 876. Add phase dependency field to plan format standards
 - **Effort**: 1 hour
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Dependencies**: None
+- **Research**: [research-001.md](specs/876_add_phase_dependency_field_plan_format_standards/reports/research-001.md)
 
 **Description**: Add Dependencies field to phase format in plan-format.md and artifact-formats.md. Define notation: Dependencies: None | Phase {N} | Phase {N}, Phase {M}. Ensure backward compatibility (field is optional).
 
