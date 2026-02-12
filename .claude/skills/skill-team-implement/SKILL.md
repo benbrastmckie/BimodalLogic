@@ -73,20 +73,102 @@ fi
 
 ### Stage 2: Analyze Phase Dependencies
 
-Parse plan to identify parallelizable phases:
+Parse plan to build execution waves from explicit Dependencies field:
 
-1. **Extract all phases** from plan
-2. **Identify dependencies** (phases that reference outputs of other phases)
-3. **Group independent phases** that can run in parallel
-4. **Create execution waves** respecting dependencies
+#### Step 1: Parse Dependencies Field
 
-Example grouping:
+For each phase in the plan:
+1. Extract `- **Dependencies**:` line value
+2. Parse format: `None` | `Phase N` | `Phase N, Phase M`
+3. Convert to list of phase numbers (empty list for `None`)
+
+**Parsing logic**:
 ```
-Wave 1: [Phase 1] - must go first (foundational)
-Wave 2: [Phase 2, Phase 3] - independent, can parallelize
-Wave 3: [Phase 4] - depends on Phase 2 and 3
-Wave 4: [Phase 5, Phase 6] - independent cleanup phases
+IF value == "None":
+    dependencies = []
+ELSE:
+    # Extract phase numbers from "Phase N, Phase M" format
+    dependencies = regex_findall(value, r'Phase\s+(\d+)')
+    dependencies = [int(n) for n in dependencies]
 ```
+
+If ANY phase is missing the Dependencies field, enter backward compatibility mode (see below).
+
+#### Step 2: Build Dependency Graph
+
+Create adjacency list from parsed dependencies:
+- Key: phase number
+- Value: list of phase numbers this phase depends on
+
+Example:
+```
+Phase 1: []           # No dependencies
+Phase 2: [1]          # Depends on Phase 1
+Phase 3: [1]          # Depends on Phase 1
+Phase 4: [2, 3]       # Depends on Phase 2 and 3
+```
+
+#### Step 3: Compute Execution Waves
+
+Use topological sort to group phases by execution order:
+1. Find phases with all dependencies completed -> Wave N
+2. Mark those phases as completed
+3. Repeat until all phases assigned to waves
+
+**Algorithm**:
+```
+waves = []
+remaining = all_phases
+completed = {}
+
+WHILE remaining not empty:
+    ready = [p for p in remaining if all deps in completed]
+    IF ready is empty:
+        # Circular dependency detected - fall back to sequential
+        RETURN fallback_to_sequential()
+    waves.append(sorted(ready))
+    completed.update(ready)
+    remaining -= ready
+
+RETURN waves
+```
+
+**Output example** (from graph above):
+```
+Wave 1: [Phase 1] - no dependencies
+Wave 2: [Phase 2, Phase 3] - both depend only on Phase 1 (parallel)
+Wave 3: [Phase 4] - depends on Phase 2 and 3 (waits for both)
+```
+
+#### Backward Compatibility Mode
+
+If the Dependencies field is missing from ANY phase in the plan:
+
+1. **Log**: "Using sequential execution (backward compat mode)"
+2. **Create sequential waves**: Each phase executes in its own wave
+   ```
+   [[1], [2], [3], [4], ...]  # No parallelization
+   ```
+3. **Rationale**: Plans created before the Dependencies field was introduced should continue to work correctly with predictable sequential execution
+
+This ensures old plans without the Dependencies field work unchanged.
+
+#### Error Handling
+
+**Circular Dependencies**:
+- Detected when topological sort cannot make progress (no phase has all deps completed)
+- Recovery: Log error "Circular dependency detected", fall back to sequential execution
+- Report in metadata: `circular_dependency_detected: true`
+
+**Invalid Phase References**:
+- When `Phase N` references a non-existent phase number
+- Recovery: Log warning, skip invalid reference, continue with valid dependencies
+- Example: `Dependencies: Phase 1, Phase 99` with only 4 phases -> treat as `Dependencies: Phase 1`
+
+**Malformed Dependencies Field**:
+- When field exists but has unparseable format (e.g., `Dependencies: depends on first phase`)
+- Recovery: Log warning with malformed value, treat that phase as having no dependencies
+- Continue with wave computation
 
 ---
 
@@ -178,6 +260,8 @@ See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full confi
 ---
 
 ### Stage 6: Execute Implementation Waves
+
+Execute waves computed in Stage 2 (from Dependencies field analysis or sequential fallback).
 
 For each wave of phases:
 
