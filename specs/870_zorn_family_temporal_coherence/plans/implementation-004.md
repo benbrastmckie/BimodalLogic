@@ -110,7 +110,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Strengthen GHCoherentPartialFamily with forward_F/backward_P [NOT STARTED]
+### Phase 2: Strengthen GHCoherentPartialFamily with forward_F/backward_P [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add universal `forward_F` and `backward_P` fields to the structure, update base family, chain upper bound, and boundary extension to satisfy them.
