@@ -172,7 +172,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Seed Consistency via Collect-into-One-MCS [NOT STARTED]
+### Phase 4: Seed Consistency via Collect-into-One-MCS [PARTIAL]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove `extensionSeed_consistent` and `multi_witness_seed_consistent_*` using the strengthened family's forward_F/backward_P to collect all seed elements into a single reference MCS.
