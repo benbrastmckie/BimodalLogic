@@ -2,6 +2,30 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 875,
+      "project_name": "lean_specific_teammate_prompts",
+      "status": "abandoned",
+      "language": "meta",
+      "effort": "2-3 hours",
+      "description": "Create lean-specific teammate prompt templates that instruct teammates to use lean-lsp MCP tools (leansearch, loogle, leanfinder, lean_goal, etc.) and follow proof-checking workflows. Store in .claude/context/core/templates/.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:31:52Z",
+      "depends_on": [
+        872
+      ],
+      "session_id": "sess_1770856182_b5cf8b",
+      "researched": "2026-02-12T00:31:52Z",
+      "artifacts": [
+        {
+          "path": "specs/875_lean_specific_teammate_prompts/reports/research-001.md",
+          "type": "report",
+          "summary": "Research report recommending ABANDON - Task 872 already implemented all Lean prompts"
+        }
+      ],
+      "abandoned": "2026-02-12T00:33:26Z",
+      "abandon_reason": "Task 872 already implemented all Lean prompts"
+    },
+    {
       "project_number": 863,
       "project_name": "improve_introduction_latex_formatting_content",
       "status": "completed",

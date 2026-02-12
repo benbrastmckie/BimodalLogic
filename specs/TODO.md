@@ -22,22 +22,6 @@ technical_debt:
 
 ## Tasks
 
-### 875. Create lean-specific teammate prompts
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Researched**: 2026-02-11
-- **Dependencies**: Task #872 (routing must exist before prompts can be used)
-- **Research**: [research-001.md](specs/875_lean_specific_teammate_prompts/reports/research-001.md)
-- **Recommendation**: ABANDON - Task 872 already implemented all Lean prompts
-
-**Description**: Create lean-specific teammate prompt templates that instruct teammates to use lean-lsp MCP tools (leansearch, loogle, leanfinder, lean_goal, etc.) and follow proof-checking workflows. Store in .claude/context/core/templates/.
-
-**Rationale**: Once task #872 implements language-aware routing, lean teammates need specialized prompts that include MCP tool access instructions and Lean 4 proof patterns. Generic teammate prompts lack lean-lsp context and result in attempts to implement Lean code without proper tooling.
-
----
-
 ### 874. Document --team flag in command files
 - **Effort**: 1 hour
 - **Status**: [NOT STARTED]
@@ -50,11 +34,12 @@ technical_debt:
 
 ### 873. Create teammate configuration system with model selection
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Researched**: 2026-02-11
 - **Planned**: 2026-02-11
+- **Started**: 2026-02-11
 - **Research**: [research-001.md](specs/873_teammate_configuration_model_selection/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/873_teammate_configuration_model_selection/plans/implementation-001.md)
 

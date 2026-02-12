@@ -2,7 +2,7 @@
 
 - **Task**: 870 - Zorn-based family selection for temporal coherence
 - **Version**: 002
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12-16 hours (3-4 sessions)
 - **Dependencies**: None (builds on existing ZornFamily.lean infrastructure)
 - **Research Inputs**: research-002.md, research-003.md (diagnostic)
@@ -44,7 +44,7 @@ This change simplifies the entire construction and eliminates the base family im
 
 ## Implementation Phases
 
-### Phase 1: Restructure CoherentPartialFamily [NOT STARTED]
+### Phase 1: Restructure CoherentPartialFamily [COMPLETED]
 
 **Goal**: Remove F/P fields from structure, add Preorder instance.
 
@@ -86,7 +86,7 @@ instance : Preorder GHCoherentPartialFamily where
 
 ---
 
-### Phase 2: Simplify Base Family [NOT STARTED]
+### Phase 2: Simplify Base Family [COMPLETED]
 
 **Goal**: Build base family with domain={0}, no F/P requirements.
 
@@ -119,7 +119,7 @@ noncomputable def buildBaseFamily (Gamma : List Formula) (h_cons : ContextConsis
 
 ---
 
-### Phase 3: Extension Seed with F/P Obligations [NOT STARTED]
+### Phase 3: Extension Seed with F/P Obligations [PARTIAL]
 
 **Goal**: Add F/P witness formulas to extension seed.
 
@@ -171,7 +171,7 @@ The key insight: F/P obligations are CONSISTENT with G/H content because:
 
 ---
 
-### Phase 4: Zorn Application [NOT STARTED]
+### Phase 4: Zorn Application [COMPLETED]
 
 **Goal**: Apply Mathlib's Zorn lemma to get maximal family.
 
@@ -199,7 +199,7 @@ theorem zorn_gives_maximal (base : GHCoherentPartialFamily) :
 
 ---
 
-### Phase 5: Maximality Implies Totality [NOT STARTED]
+### Phase 5: Maximality Implies Totality [PARTIAL]
 
 **Goal**: Prove maximal family has domain = Set.univ.
 
@@ -236,7 +236,7 @@ theorem maximal_implies_total (F : GHCoherentPartialFamily)
 
 ---
 
-### Phase 6: F/P Recovery for Total Family [NOT STARTED]
+### Phase 6: F/P Recovery for Total Family [PARTIAL]
 
 **Goal**: Prove that a total GH-coherent family also satisfies F/P.
 
