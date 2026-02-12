@@ -157,6 +157,21 @@ Apply task-breakdown.md guidelines:
    - What blocks what?
    - What's the critical path?
 
+   **Generate Dependencies Field Values**:
+   - `None` - Phase has no prerequisites (typically Phase 1)
+   - `Phase N` - Single dependency on phase N
+   - `Phase N, Phase M` - Multiple dependencies (phase can start when both complete)
+
+   **Dependency Heuristics** (determine if Phase B depends on Phase A):
+   | Condition | Dependency? |
+   |-----------|-------------|
+   | Phase B modifies files created by Phase A | Yes |
+   | Phase B requires artifacts/outputs from Phase A | Yes |
+   | Phase B tests or verifies functionality from Phase A | Yes |
+   | Phase B can run with only initial project state | No (use None) |
+
+   **Parallel Opportunities**: Phases with the same predecessor can run in parallel (e.g., if Phase 2 and Phase 3 both depend only on Phase 1)
+
 5. **Estimate Effort**
    - Realistic time estimates
    - Include testing time
@@ -213,7 +228,8 @@ Write plan file following plan-format.md structure:
 
 ### Phase 1: {Name} [NOT STARTED]
 
-**Goal**: {What this phase accomplishes}
+- **Dependencies**: None
+- **Goal**: {What this phase accomplishes}
 
 **Tasks**:
 - [ ] {Task 1}
@@ -230,6 +246,10 @@ Write plan file following plan-format.md structure:
 ---
 
 ### Phase 2: {Name} [NOT STARTED]
+
+- **Dependencies**: Phase 1
+- **Goal**: {What this phase accomplishes}
+
 {Continue pattern...}
 
 ## Testing & Validation
@@ -257,6 +277,7 @@ Re-read the plan file and verify these fields exist (per plan-format.md):
 - `- **Task**: {N} - {title}` - Task identifier
 - `- **Effort**:` - Time estimate
 - `- **Type**:` - Language type
+- `- **Dependencies**: ...` - **REQUIRED** for each phase (None, Phase N, or Phase N, Phase M)
 
 **If any required field is missing**:
 1. Edit the plan file to add the missing field
