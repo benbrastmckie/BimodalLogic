@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-11T22:21:25Z
 task_counts:
-  active: 9
-  completed: 408
+  active: 13
+  completed: 412
   in_progress: 1
   not_started: 7
   abandoned: 29
-  total: 440
+  total: 444
 technical_debt:
   sorry_count: 146
   axiom_count: 20
@@ -46,128 +46,29 @@ technical_debt:
 
 ### 876. Add phase dependency field to plan format standards
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-11
 - **Dependencies**: None
 - **Research**: [research-001.md](specs/876_add_phase_dependency_field_plan_format_standards/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/876_add_phase_dependency_field_plan_format_standards/plans/implementation-001.md)
 
 **Description**: Add Dependencies field to phase format in plan-format.md and artifact-formats.md. Define notation: Dependencies: None | Phase {N} | Phase {N}, Phase {M}. Ensure backward compatibility (field is optional).
 
 ---
-
-### 874. Document --team flag in command files
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Researched**: 2026-02-11
-- **Planned**: 2026-02-11
-- **Started**: 2026-02-11
-- **Completed**: 2026-02-11
-- **Research**: [research-001.md](specs/874_document_team_flag_command_files/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/874_document_team_flag_command_files/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260211.md](specs/874_document_team_flag_command_files/summaries/implementation-summary-20260211.md)
-
-**Description**: Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.
-
----
-
-### 873. Create teammate configuration system with model selection
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Researched**: 2026-02-11
-- **Planned**: 2026-02-11
-- **Started**: 2026-02-11
-- **Completed**: 2026-02-11
-- **Research**: [research-001.md](specs/873_teammate_configuration_model_selection/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/873_teammate_configuration_model_selection/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260211.md](specs/873_teammate_configuration_model_selection/summaries/implementation-summary-20260211.md)
-
-**Description**: Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.
-
-**Current State**: Commands have `model` frontmatter in COMMAND.md files, but agents and skills do not. No mechanism exists to propagate model selection to spawned teammates. For Lean tasks requiring deep reasoning (Zorn's lemma, proof tactics), Opus 4.6 is needed, while general meta tasks can use faster/cheaper Sonnet 4.5.
-
----
-
-### 872. Add language-aware teammate routing to team skills
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Researched**: 2026-02-11
-- **Planned**: 2026-02-11
-- **Started**: 2026-02-11
-- **Completed**: 2026-02-11
-- **Research**: [research-001.md](specs/872_language_aware_teammate_routing_team_skills/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/872_language_aware_teammate_routing_team_skills/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260211.md](specs/872_language_aware_teammate_routing_team_skills/summaries/implementation-summary-20260211.md)
-- **Evidence**: [/implement --team 870 failure](.claude/output/implement.md) (lines 1740-1770)
-
-**Description**: Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.
-
-**Observed Failure**: During `/implement --team 870`, skill-team-implement attempted to implement Lean code directly using MCP tools (lean-lsp hover, loogle) instead of spawning lean-implementation-agent teammates. User had to interrupt and revert changes. The skill acknowledged it should have spawned specialized Lean agents but bypassed language routing entirely.
-
----
-
-### 871. Implement safer git staging to prevent concurrent agent race conditions
-- **Effort**: 6 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-11
-- **Researched**: 2026-02-11
-- **Planned**: 2026-02-11
-- **Started**: 2026-02-11
-- **Completed**: 2026-02-11
-- **Research**: [research-001.md](specs/871_safer_git_staging_concurrent_agents/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/871_safer_git_staging_concurrent_agents/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260211.md](specs/871_safer_git_staging_concurrent_agents/summaries/implementation-summary-20260211.md)
-
-**Description**: Address the race condition where concurrent agents using `git add -A` or `git add specs/` can accidentally overwrite files modified by other processes. Demonstrated by task 865 research agent (session sess_1770848379_6843ee) wiping TODO.md to empty while task 869 archival was completing.
-
-**Root Cause**: Background agents stage all modified files in specs/ directory regardless of which files they actually created or modified. When multiple agents run concurrently, later commits can overwrite earlier changes.
-
-**Proposed Solutions**:
-
-1. **Targeted Git Staging** (Required):
-   - Replace `git add -A` and `git add specs/` with explicit file staging
-   - Agents should only stage files in their task directory: `specs/{N}_{SLUG}/`
-   - Shared files (TODO.md, state.json, ROAD_MAP.md) require special handling
-
-2. **Pre-Commit Validation** (Required):
-   - Before commit, check `git diff --cached --name-only`
-   - Verify staged files match expected scope for the operation
-   - Abort if unexpected files are staged (e.g., other task directories, TODO.md during research)
-
-3. **Staging Scope Rules** (Required):
-   - Research agents: Stage only `specs/{N}_{SLUG}/reports/` + state.json + TODO.md
-   - Plan agents: Stage only `specs/{N}_{SLUG}/plans/` + state.json + TODO.md
-   - Implement agents: Stage modified source files + `specs/{N}_{SLUG}/summaries/` + state.json + TODO.md + plan file
-   - Todo command: Stage entire `specs/` directory (by design, runs exclusively)
-
-4. **File Locking Pattern** (Optional):
-   - Create `.editing-{file}.lock` files to signal active edits
-   - Check for locks before modifying shared files
-   - Clean up stale locks (>1 hour old)
-
-**Implementation Areas**:
-- Update git commit patterns in skill postflight sections
-- Add pre-commit validation helper in `.claude/utils/git-safety.md`
-- Document staging scope rules in `.claude/rules/git-workflow.md`
-- Add lock file protocol to `.claude/context/core/patterns/file-locking.md` (optional)
-
-**Success Criteria**:
-- No agent stages files outside its authorized scope
-- Concurrent agents can run without file conflicts
-- Clear error messages when staging validation fails
 
 ### 870. Zorn-based family selection for temporal coherence
 - **Effort**: TBD
 - **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-11
+- **Researched**: 2026-02-11
+- **Planned**: 2026-02-11
+- **Started**: 2026-02-11
+- **Research**: [research-001.md](specs/870_zorn_family_temporal_coherence/reports/research-001.md), [research-002.md](specs/870_zorn_family_temporal_coherence/reports/research-002.md), [research-003.md](specs/870_zorn_family_temporal_coherence/reports/research-003.md)
+- **Plan**: [implementation-002.md](specs/870_zorn_family_temporal_coherence/plans/implementation-002.md)
+- **Summaries**: [implementation-summary-20260211.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260211.md), [implementation-summary-20260212.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212.md)
+- **Implementation**: [ZornFamily.lean](Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean)
 
 **Description**: Use Zorn's lemma to construct IndexedMCSFamily with guaranteed cross-sign temporal coherence (forward_G, backward_H). This bypasses task 864's chain construction limitations where G phi at time t<0 cannot reach time t'>0 because chains extend away from time 0. Key approach: Define partial order on candidate families satisfying coherence properties, apply Zorn to obtain maximal element. See task 864 session 28-30 analysis for cross-sign challenge details, TemporalLindenbaum.lean for single-MCS Zorn infrastructure, DovetailingChain.lean:606,617 for blocked cross-sign cases. Critical: Ensure termination of Zorn argument, prove maximal family is actually an IndexedMCSFamily, handle witness enumeration for F/P formulas. Success eliminates DovetailingChain sorries at lines 606,617,633,640.
 

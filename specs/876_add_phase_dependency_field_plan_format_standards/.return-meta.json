@@ -1,20 +1,21 @@
 {
-  "status": "researched",
-  "summary": "Analyzed current plan format, skill-team-implement phase parsing, and DAG best practices. Recommended Dependencies field notation: None | Phase {N} | Phase {N}, Phase {M}. Field is optional for backward compatibility. Integration needed in plan-format.md, artifact-formats.md, skill-team-implement, and planner-agent.",
+  "status": "planned",
+  "summary": "3-phase implementation plan for adding Dependencies field to plan format standards",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/876_add_phase_dependency_field_plan_format_standards/reports/research-001.md",
-      "summary": "Research report with current format analysis, industry DAG notation patterns, and implementation recommendations"
+      "type": "plan",
+      "path": "specs/876_add_phase_dependency_field_plan_format_standards/plans/implementation-001.md",
+      "summary": "3-phase plan to add Dependencies field to plan-format.md and artifact-formats.md"
     }
   ],
-  "next_steps": "Run /plan 876 to create implementation plan",
+  "next_steps": "Run /implement 876 to execute the plan",
   "metadata": {
-    "session_id": "sess_1770858098_03e455",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1770858345_0c669b",
+    "agent_type": "planner-agent",
+    "duration_seconds": 45,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.5
   }
 }
