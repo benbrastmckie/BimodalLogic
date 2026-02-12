@@ -47,9 +47,11 @@ technical_debt:
 
 ### 873. Create teammate configuration system with model selection
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-11
+- **Researched**: 2026-02-11
+- **Research**: [research-001.md](specs/873_teammate_configuration_model_selection/reports/research-001.md)
 
 **Description**: Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.
 

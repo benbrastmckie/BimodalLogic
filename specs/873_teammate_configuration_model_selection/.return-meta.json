@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/873_teammate_configuration_model_selection/reports/research-001.md",
+      "summary": "Research report analyzing Task 872 coordination, TeammateTool model parameter API, and configuration schema for per-language model defaults"
+    }
+  ],
+  "next_steps": "Run /plan 873 to create implementation plan",
+  "summary": "Task 872 has Phases 1-3 complete with language routing infrastructure in place. Claude Code supports model specification via natural language in teammate prompts (model: sonnet/opus/haiku/inherit). Recommended approach: extend team-wave-helpers.md language_config with default_model field per language, defaulting Lean to opus for complex theorem proving.",
+  "metadata": {
+    "session_id": "sess_1770855717_dfb18c",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 1800,
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 7
+  }
+}

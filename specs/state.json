@@ -47,13 +47,21 @@
     {
       "project_number": 873,
       "project_name": "teammate_configuration_model_selection",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "effort": "2-3 hours",
       "description": "Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.",
       "created": "2026-02-12T00:01:01Z",
-      "last_updated": "2026-02-12T00:22:18Z",
-      "session_id": "sess_1770855717_dfb18c"
+      "last_updated": "2026-02-12T00:25:34Z",
+      "session_id": "sess_1770855717_dfb18c",
+      "researched": "2026-02-12T00:25:34Z",
+      "artifacts": [
+        {
+          "path": "specs/873_teammate_configuration_model_selection/reports/research-001.md",
+          "type": "report",
+          "summary": "Research report analyzing Task 872 coordination, TeammateTool model parameter API, and configuration schema for per-language model defaults"
+        }
+      ]
     },
     {
       "project_number": 874,
