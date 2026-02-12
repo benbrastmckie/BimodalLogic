@@ -24,7 +24,7 @@ technical_debt:
 
 ### 880. Investigate augmented extension seed approach for pure past/future cases
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-12
 
@@ -46,7 +46,7 @@ technical_debt:
 - **Researched**: 2026-02-11
 - **Planned**: 2026-02-12
 - **Started**: 2026-02-11
-- **Research**: [research-001.md](specs/870_zorn_family_temporal_coherence/reports/research-001.md), [research-002.md](specs/870_zorn_family_temporal_coherence/reports/research-002.md), [research-003.md](specs/870_zorn_family_temporal_coherence/reports/research-003.md), [research-004.md](specs/870_zorn_family_temporal_coherence/reports/research-004.md), [research-005.md](specs/870_zorn_family_temporal_coherence/reports/research-005.md)
+- **Research**: [research-001.md](specs/870_zorn_family_temporal_coherence/reports/research-001.md), [research-002.md](specs/870_zorn_family_temporal_coherence/reports/research-002.md), [research-003.md](specs/870_zorn_family_temporal_coherence/reports/research-003.md), [research-004.md](specs/870_zorn_family_temporal_coherence/reports/research-004.md), [research-005.md](specs/870_zorn_family_temporal_coherence/reports/research-005.md), [research-006.md](specs/870_zorn_family_temporal_coherence/reports/research-006.md)
 - **Plan**: [implementation-004.md](specs/870_zorn_family_temporal_coherence/plans/implementation-004.md)
 - **Summaries**: [implementation-summary-20260211.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260211.md), [implementation-summary-20260212.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212.md), [implementation-summary-20260212-v003.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212-v003.md)
 - **Implementation**: [ZornFamily.lean](Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean)
