@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 880,
+      "project_name": "augmented_extension_seed_approach",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-12T18:15:26Z",
+      "last_updated": "2026-02-12T18:15:26Z"
+    },
+    {
       "project_number": 879,
       "project_name": "team_mode_context_limit_failures",
       "status": "not_started",
@@ -432,7 +440,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 880,
+  "next_project_number": 881,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

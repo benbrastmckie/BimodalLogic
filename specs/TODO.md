@@ -1,5 +1,5 @@
 ---
-next_project_number: 880
+next_project_number: 881
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,14 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 880. Investigate augmented extension seed approach for pure past/future cases
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-12
+
+**Description**: Task 870 Phase 4 discovered that `multi_witness_seed_consistent_future/past` are mathematically FALSE (counterexample: F(p) and F(¬p) can coexist in an MCS, but {p, ¬p} is inconsistent). The collect-into-one-MCS strategy fails for pure past/future cases. Research the augmented seed approach from Phase 3's fallback strategy: include negative GH constraints in the seed, and prove this augmented seed is consistent. Questions: (1) What exactly should the augmented extension seed contain? (2) Can we prove augmented seed is consistent? (3) Does augmented seed enable proving forward_F/backward_P for extended family? (4) Can augmented seed approach unify all three cases (cross-sign, pure past, pure future)? (5) If unworkable, what are viable alternatives? Desired outputs: Clear definition of augmented extension seed, proof sketch or counterexample for consistency, recommendation to revise plan or pivot direction.
 
 ### 879. Investigate and fix team mode context limit failures
 - **Effort**: TBD
