@@ -705,21 +705,225 @@ theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t
       -- 1. GContent propagates forward via 4-axiom: GContent(mcs(s1)) ⊆ GContent(mcs(s2)) for s1 < s2
       -- 2. For each F-obligation psi (where F psi ∈ mcs(s)), {psi} ∪ GContent(mcs(s)) is consistent
       --    (by temporal_witness_seed_consistent)
-      --
-      -- Strategy:
-      -- - Find s_max = maximum source time among all elements of L
-      -- - All GContent elements from L propagate to GContent(mcs(s_max))
-      -- - All F-obligation source F formulas also exist in mcs(s_max) (they propagate forward)
-      -- - Apply multi_witness_seed_consistent_future at mcs(s_max)
-      --
-      -- Technical detail: F psi ∈ mcs(s) for s < s' does NOT imply F psi ∈ mcs(s') directly.
-      -- However, we can use the multi_witness_seed_consistent_future theorem which handles
-      -- multiple witnesses with their F formulas all in the same MCS.
-      --
-      -- Technical debt: Complete proof requires detailed source time analysis and
-      -- showing that all F-obligations can be "collected" into a single MCS via the
-      -- coherence of the partial family.
-      sorry  -- Pure past case: needs multi-witness argument
+
+      -- Step 1: Show each element of L comes from GContent or FObligations
+      -- (HContent and PObligations are vacuously empty since no future times exist)
+      have h_L_simplified : ∀ phi ∈ L,
+          (∃ s, s ∈ F.domain ∧ s < t ∧ phi ∈ GContent (F.mcs s)) ∨
+          (∃ s, s ∈ F.domain ∧ s < t ∧ Formula.some_future phi ∈ F.mcs s) := by
+        intro phi h_phi_L
+        have h_in_seed := hL phi h_phi_L
+        simp only [extensionSeed, Set.mem_union, Set.mem_iUnion, Set.mem_setOf_eq] at h_in_seed
+        -- extensionSeed is ((GContent_union ∪ HContent_union) ∪ FObligations) ∪ PObligations
+        rcases h_in_seed with ((h_GH | h_F) | h_P)
+        · -- From GContent ∪ HContent
+          rcases h_GH with ⟨s, ⟨hs_dom, hs_lt⟩, h_in_G⟩ | ⟨s, ⟨hs_dom, hs_gt⟩, h_in_H⟩
+          · -- From GContent
+            left
+            exact ⟨s, hs_dom, hs_lt, h_in_G⟩
+          · -- From HContent - but no future times exist!
+            have h_le := h_future s hs_dom
+            omega
+        · -- From FObligations
+          right
+          obtain ⟨s, hs_dom, hs_lt, h_F_in⟩ := h_F
+          exact ⟨s, hs_dom, hs_lt, h_F_in⟩
+        · -- From PObligations - but no future times exist!
+          obtain ⟨s, hs_dom, hs_gt, _⟩ := h_P
+          have h_le := h_future s hs_dom
+          omega
+
+      -- Step 2: Use s_witness as the reference MCS and show GContent propagates to it
+      -- Note: GContent propagates FORWARD, so elements from s < s_witness propagate to s_witness
+      -- For elements from s > s_witness, we need s_witness < s, and then GContent(mcs(s_witness)) ⊆ GContent(mcs(s))
+      -- So we should use the MAXIMUM source time, not s_witness
+
+      -- Helper: Given phi ∈ GContent(mcs(s)) for s ∈ domain with s < t,
+      -- phi propagates to GContent(mcs(s')) for any s' ∈ domain with s ≤ s' < t
+      have h_GContent_to_witness : ∀ phi, ∀ s s', s ∈ F.domain → s' ∈ F.domain →
+          s ≤ s' → phi ∈ GContent (F.mcs s) → phi ∈ GContent (F.mcs s') := by
+        intro phi s s' hs_dom hs'_dom h_le h_in_G
+        by_cases h_eq : s = s'
+        · rw [← h_eq]; exact h_in_G
+        · have h_lt : s < s' := by omega
+          exact GContent_propagates_forward F s s' hs_dom hs'_dom h_lt h_in_G
+
+      -- Step 3: Case split on whether all elements come from GContent
+      by_cases h_all_G : ∀ phi ∈ L, ∃ s, s ∈ F.domain ∧ s < t ∧ phi ∈ GContent (F.mcs s)
+      · -- All elements come from GContent
+        -- Strategy: Find the maximum source time and show all elements propagate there
+        -- For simplicity, use s_witness and show elements from smaller times propagate forward
+        -- Elements from larger times: we need a different approach
+
+        -- Actually, let's just show all elements eventually end up in some mcs via T-axiom
+        -- If phi ∈ GContent(mcs(s)), then G phi ∈ mcs(s), so by T-axiom, phi ∈ mcs(s)
+        have h_L_in_some_M : ∀ phi ∈ L, ∃ s, s ∈ F.domain ∧ phi ∈ F.mcs s := by
+          intro phi h_mem
+          obtain ⟨s, hs_dom, _, h_in_G⟩ := h_all_G phi h_mem
+          have h_G_phi : Formula.all_future phi ∈ F.mcs s := h_in_G
+          have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
+          exact ⟨s, hs_dom, set_mcs_implication_property (F.is_mcs s hs_dom) (theorem_in_mcs (F.is_mcs s hs_dom) h_T) h_G_phi⟩
+
+        -- Key insight: All GContent propagates forward to the maximum source time
+        -- Since L is finite, we can find the maximum source time among its elements
+
+        -- Define the set of source times for L
+        let source_times : Set Int := { s | ∃ phi ∈ L, s ∈ F.domain ∧ s < t ∧ phi ∈ GContent (F.mcs s) }
+
+        -- source_times is nonempty (assuming L is nonempty)
+        by_cases h_L_empty : L = []
+        · -- L is empty: [] ⊢ ⊥ means all elements of [] are in any GContent
+          -- Since [] has no elements, vacuously all are in GContent(mcs(s_witness))
+          -- So we can show L ⊆ GContent(mcs(s_witness)) and use its consistency
+          have h_L_in_G : ∀ phi ∈ L, phi ∈ GContent (F.mcs s_witness) := by
+            intro phi h_mem
+            rw [h_L_empty] at h_mem
+            exact False.elim (List.not_mem_nil h_mem)
+          have h_L_in_M := GContent_subset_MCS (F.mcs s_witness) (F.is_mcs s_witness hs_witness_dom) L h_L_in_G
+          exact (F.is_mcs s_witness hs_witness_dom).1 L h_L_in_M ⟨d⟩
+
+        · -- L is nonempty
+          have h_L_ne : L ≠ [] := h_L_empty
+          obtain ⟨phi0, h_phi0_mem⟩ := List.exists_mem_of_ne_nil L h_L_ne
+          obtain ⟨s0, hs0_dom, hs0_lt, h_phi0_G⟩ := h_all_G phi0 h_phi0_mem
+
+          -- Strategy: Use induction on L to find maximum source time and show
+          -- all elements propagate to GContent at that time
+
+          -- For a cleaner proof, we use the following approach:
+          -- Define a "max source time" function recursively on L
+          -- Then show all elements propagate to GContent at max time
+
+          -- Alternative: Use the structure of GContent propagation more directly
+          -- Since GContent propagates forward, if we have multiple source times s1 < s2,
+          -- elements from s1 propagate to s2
+
+          -- Claim: All elements of L are in GContent(mcs(s_max)) where s_max is the
+          -- maximum source time among L's elements
+
+          -- For the actual proof, we use a simpler approach:
+          -- We show by induction that for any prefix of L, all elements are in
+          -- GContent of the maximum source time seen so far
+
+          -- Actually, the cleanest approach: since L is finite, use List.foldl
+          -- to compute the maximum source time, then show all elements propagate there
+
+          -- For now, we implement a direct argument using strong induction on List length
+          -- or using the well-foundedness of the < relation on bounded integers
+
+          -- Simpler approach: Use the fact that all source times are < t and ≥ some minimum
+          -- So the set of possible source times is finite
+
+          -- Let s_max be the maximum source time among elements of L
+          -- We prove this exists by showing source_times is finite and nonempty
+
+          -- Technical implementation: Use Finset operations on the bounded integer interval
+          -- This requires decidable membership in F.domain, which we might not have
+
+          -- Practical approach: Prove by cases or use a specific construction
+          -- For L = [phi1, ..., phin], find max{s_i} where phi_i ∈ GContent(mcs(s_i))
+
+          -- The cleanest proof: use List.rec induction
+          -- Base case: single element - trivially in GContent of its source
+          -- Inductive case: add one element - either new source is larger (use it) or smaller (propagate)
+
+          suffices h_all_in_max : ∃ s_max, s_max ∈ F.domain ∧ s_max < t ∧
+              ∀ phi ∈ L, phi ∈ GContent (F.mcs s_max) by
+            obtain ⟨s_max, hs_max_dom, _, h_all_G_max⟩ := h_all_in_max
+            -- L ⊆ GContent(mcs(s_max)), which is consistent
+            have h_L_in_G : ∀ phi ∈ L, phi ∈ GContent (F.mcs s_max) := h_all_G_max
+            have h_L_in_M := GContent_subset_MCS (F.mcs s_max) (F.is_mcs s_max hs_max_dom) L h_L_in_G
+            exact (F.is_mcs s_max hs_max_dom).1 L h_L_in_M ⟨d⟩
+
+          -- Prove the existence of s_max by a lemma about lists with GContent sources
+          -- The key insight: for a nonempty list L with all elements from GContent,
+          -- there exists a maximum source time to which all elements propagate
+
+          -- Helper lemma applied to L
+          have h_max_exists : ∀ L' : List Formula,
+              L' ≠ [] →
+              (∀ phi ∈ L', ∃ s ∈ F.domain, s < t ∧ phi ∈ GContent (F.mcs s)) →
+              ∃ s_max ∈ F.domain, s_max < t ∧ ∀ phi ∈ L', phi ∈ GContent (F.mcs s_max) := by
+            intro L' h_ne h_all_G_L'
+            induction L' with
+            | nil => exact absurd rfl h_ne
+            | cons phi L'' ih_inner =>
+              obtain ⟨s_phi, hs_phi_dom, hs_phi_lt, h_phi_G⟩ := h_all_G_L' phi List.mem_cons_self
+              by_cases h_L''_empty : L'' = []
+              · -- Base case: L' = [phi]
+                use s_phi, hs_phi_dom, hs_phi_lt
+                intro psi h_psi_mem
+                simp only [h_L''_empty, List.mem_cons, List.not_mem_nil, or_false] at h_psi_mem
+                rw [h_psi_mem]; exact h_phi_G
+              · -- Inductive case
+                have h_all_G_L'' : ∀ psi ∈ L'', ∃ s ∈ F.domain, s < t ∧ psi ∈ GContent (F.mcs s) := by
+                  intro psi h_psi_mem
+                  exact h_all_G_L' psi (List.mem_cons_of_mem phi h_psi_mem)
+                obtain ⟨s_max'', hs_max''_dom, hs_max''_lt, h_all_G''_max⟩ := ih_inner h_L''_empty h_all_G_L''
+                by_cases h_cmp : s_phi ≤ s_max''
+                · -- Use s_max''
+                  use s_max'', hs_max''_dom, hs_max''_lt
+                  intro psi h_psi_mem
+                  simp only [List.mem_cons] at h_psi_mem
+                  rcases h_psi_mem with rfl | h_in_L''
+                  · exact h_GContent_to_witness psi s_phi s_max'' hs_phi_dom hs_max''_dom h_cmp h_phi_G
+                  · exact h_all_G''_max psi h_in_L''
+                · -- Use s_phi
+                  push_neg at h_cmp
+                  use s_phi, hs_phi_dom, hs_phi_lt
+                  intro psi h_psi_mem
+                  simp only [List.mem_cons] at h_psi_mem
+                  rcases h_psi_mem with rfl | h_in_L''
+                  · exact h_phi_G
+                  · have h_psi_in_max'' := h_all_G''_max psi h_in_L''
+                    exact h_GContent_to_witness psi s_max'' s_phi hs_max''_dom hs_phi_dom (by omega) h_psi_in_max''
+
+          exact h_max_exists L h_L_ne h_all_G
+
+      · -- Some elements come from FObligations (not from GContent alone)
+        -- This case requires multi_witness_seed_consistent_future.
+        push_neg at h_all_G
+        obtain ⟨phi_F, h_phi_F_mem, h_phi_F_not_G⟩ := h_all_G
+
+        -- phi_F is an F-obligation element (not from GContent)
+        have h_phi_F_is_obligation : ∃ s, s ∈ F.domain ∧ s < t ∧ Formula.some_future phi_F ∈ F.mcs s := by
+          rcases h_L_simplified phi_F h_phi_F_mem with h_from_G | h_from_F
+          · obtain ⟨s, hs_dom, hs_lt, h_in_G⟩ := h_from_G
+            exfalso
+            exact h_phi_F_not_G s hs_dom hs_lt h_in_G
+          · exact h_from_F
+
+        -- Strategy:
+        -- 1. Partition L into GContent elements and FObligations elements
+        -- 2. Find a reference MCS M where:
+        --    - All GContent elements propagate to GContent(M)
+        --    - All F phi ∈ M for FObligations elements
+        -- 3. Apply multi_witness_seed_consistent_future
+        --
+        -- The challenge: F phi ∈ mcs(s) does NOT imply F phi ∈ mcs(s') for s' > s!
+        -- (F phi is existential, not universal like G phi)
+        --
+        -- Alternative approach: Use the MINIMUM source time s_min
+        -- Then GContent doesn't propagate backward, but F obligations at larger times
+        -- might still work...
+        --
+        -- Actually, neither direction works cleanly:
+        -- - Forward: F doesn't propagate
+        -- - Backward: GContent doesn't propagate
+        --
+        -- The key insight should be:
+        -- - The seed is designed to be exactly the formulas needed for F/P coherence
+        -- - Its consistency follows from the structure of temporal logic
+        --
+        -- Technical debt: This case requires infrastructure for:
+        -- 1. Tracking source times for GContent and FObligations separately
+        -- 2. Finding a common MCS (if one exists) or proving consistency directly
+        -- 3. The multi_witness_seed_consistent_future theorem itself has a sorry
+        --
+        -- The fundamental issue: we need to prove that mixing GContent from different
+        -- times with FObligations from different times remains consistent.
+        -- This likely requires a more sophisticated argument about derivations.
+        sorry
 
   · push_neg at h_past
     by_cases h_future : ∃ s, s ∈ F.domain ∧ t < s
@@ -736,12 +940,130 @@ theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t
       --    (by temporal_witness_seed_consistent_past)
       --
       -- Strategy (symmetric to pure past):
-      -- - Find s_min = minimum source time among all elements of L
-      -- - All HContent elements from L propagate backward to HContent(mcs(s_min))
-      -- - Apply multi_witness_seed_consistent_past at mcs(s_min)
+      -- - All HContent elements from L propagate backward to HContent(mcs(s_witness))
+      -- - Apply multi_witness_seed_consistent_past at mcs(s_witness)
+
+      -- Step 1: Show each element of L comes from HContent or PObligations
+      -- (GContent and FObligations are vacuously empty since no past times exist)
+      have h_L_simplified : ∀ phi ∈ L,
+          (∃ s, s ∈ F.domain ∧ t < s ∧ phi ∈ HContent (F.mcs s)) ∨
+          (∃ s, s ∈ F.domain ∧ t < s ∧ Formula.some_past phi ∈ F.mcs s) := by
+        intro phi h_phi_L
+        have h_phi := hL phi h_phi_L
+        simp only [extensionSeed, Set.mem_union, Set.mem_iUnion, Set.mem_setOf_eq] at h_phi
+        rcases h_phi with (((h_G | h_H) | h_FObl) | h_PObl)
+        · -- GContent case - impossible since no past times
+          obtain ⟨s, ⟨hs_dom, hs_lt⟩, _⟩ := h_G
+          have := h_past s hs_dom
+          omega
+        · -- HContent case
+          obtain ⟨s, ⟨hs_dom, hs_gt⟩, h_in⟩ := h_H
+          left
+          exact ⟨s, hs_dom, hs_gt, h_in⟩
+        · -- FObligations case - impossible since no past times
+          obtain ⟨s, hs_dom, hs_lt, _⟩ := h_FObl
+          have := h_past s hs_dom
+          omega
+        · -- PObligations case
+          right
+          exact h_PObl
+
+      -- Step 2: For HContent elements, use backward propagation to a MINIMUM source time
+      -- HContent propagates backward: if s1 < s2, then HContent(mcs(s2)) ⊆ HContent(mcs(s1))
+      -- So we need to find the MINIMUM source time to collect all elements
       --
-      -- Technical debt: Symmetric to pure past case
-      sorry  -- Pure future case: symmetric to pure past
+      -- Helper: propagate from larger time to smaller time
+      have h_HContent_backward : ∀ phi s1 s2, s1 ∈ F.domain → s2 ∈ F.domain →
+          s1 ≤ s2 → phi ∈ HContent (F.mcs s2) → phi ∈ HContent (F.mcs s1) := by
+        intro phi s1 s2 hs1_dom hs2_dom h_le h_in
+        by_cases h_eq : s1 = s2
+        · exact h_eq ▸ h_in
+        · have h_lt : s1 < s2 := by omega
+          exact HContent_propagates_backward F s1 s2 hs1_dom hs2_dom h_lt h_in
+
+      -- Step 3: Case split on whether all elements come from HContent
+      by_cases h_all_H : ∀ phi ∈ L, ∃ s, s ∈ F.domain ∧ t < s ∧ phi ∈ HContent (F.mcs s)
+      · -- All elements come from HContent at various times
+        -- Strategy: find the MINIMUM source time and show all elements propagate there
+        -- (Since HContent propagates backward, later times' content is in earlier times)
+
+        by_cases h_L_empty : L = []
+        · -- L is empty: vacuously all elements are in HContent(mcs(s_witness))
+          have h_L_in_H : ∀ phi ∈ L, phi ∈ HContent (F.mcs s_witness) := by
+            intro phi h_mem
+            rw [h_L_empty] at h_mem
+            exact False.elim (List.not_mem_nil h_mem)
+          have h_L_in_M := HContent_subset_MCS (F.mcs s_witness) (F.is_mcs s_witness hs_witness_dom) L h_L_in_H
+          exact (F.is_mcs s_witness hs_witness_dom).1 L h_L_in_M ⟨d⟩
+
+        · -- L is nonempty
+          -- Prove existence of minimum source time by induction on L
+          have h_min_exists : ∀ L' : List Formula,
+              L' ≠ [] →
+              (∀ phi ∈ L', ∃ s ∈ F.domain, t < s ∧ phi ∈ HContent (F.mcs s)) →
+              ∃ s_min ∈ F.domain, t < s_min ∧ ∀ phi ∈ L', phi ∈ HContent (F.mcs s_min) := by
+            intro L' h_ne h_all_H_L'
+            induction L' with
+            | nil => exact absurd rfl h_ne
+            | cons phi L'' ih_inner =>
+              obtain ⟨s_phi, hs_phi_dom, hs_phi_gt, h_phi_H⟩ := h_all_H_L' phi List.mem_cons_self
+              by_cases h_L''_empty : L'' = []
+              · -- Base case: L' = [phi]
+                use s_phi, hs_phi_dom, hs_phi_gt
+                intro psi h_psi_mem
+                simp only [h_L''_empty, List.mem_cons, List.not_mem_nil, or_false] at h_psi_mem
+                rw [h_psi_mem]; exact h_phi_H
+              · -- Inductive case
+                have h_all_H_L'' : ∀ psi ∈ L'', ∃ s ∈ F.domain, t < s ∧ psi ∈ HContent (F.mcs s) := by
+                  intro psi h_psi_mem
+                  exact h_all_H_L' psi (List.mem_cons_of_mem phi h_psi_mem)
+                obtain ⟨s_min'', hs_min''_dom, hs_min''_gt, h_all_H''_min⟩ := ih_inner h_L''_empty h_all_H_L''
+                -- Compare s_phi and s_min'' - take the MINIMUM
+                by_cases h_cmp : s_phi ≤ s_min''
+                · -- s_phi ≤ s_min'', so use s_phi (the smaller one)
+                  use s_phi, hs_phi_dom, hs_phi_gt
+                  intro psi h_psi_mem
+                  simp only [List.mem_cons] at h_psi_mem
+                  rcases h_psi_mem with rfl | h_in_L''
+                  · exact h_phi_H
+                  · -- psi is in HContent at s_min'', propagate backward to s_phi
+                    have h_psi_in_min'' := h_all_H''_min psi h_in_L''
+                    exact h_HContent_backward psi s_phi s_min'' hs_phi_dom hs_min''_dom h_cmp h_psi_in_min''
+                · -- s_min'' < s_phi, so use s_min'' (the smaller one)
+                  push_neg at h_cmp
+                  use s_min'', hs_min''_dom, hs_min''_gt
+                  intro psi h_psi_mem
+                  simp only [List.mem_cons] at h_psi_mem
+                  rcases h_psi_mem with rfl | h_in_L''
+                  · -- psi (was phi) is in HContent at s_phi, propagate backward to s_min''
+                    exact h_HContent_backward psi s_min'' s_phi hs_min''_dom hs_phi_dom (by omega) h_phi_H
+                  · exact h_all_H''_min psi h_in_L''
+
+          obtain ⟨s_min, hs_min_dom, _, h_L_in_H_min⟩ := h_min_exists L h_L_empty h_all_H
+          -- L ⊆ HContent(mcs(s_min)), which is consistent
+          have h_L_in_M := HContent_subset_MCS (F.mcs s_min) (F.is_mcs s_min hs_min_dom) L h_L_in_H_min
+          exact (F.is_mcs s_min hs_min_dom).1 L h_L_in_M ⟨d⟩
+
+      · -- Some elements come purely from PObligations (not from HContent)
+        -- This case requires multi_witness_seed_consistent_past.
+        --
+        -- The proof strategy would be:
+        -- 1. Collect all pure PObligations as a list Psis
+        -- 2. Show all HContent elements propagate to HContent(mcs(s_witness))
+        -- 3. Show all P psi_i ∈ mcs(s_witness) for some appropriate witness MCS
+        --    (This step is non-trivial: P phi ∈ mcs(s) for s > s_witness
+        --     does NOT imply P phi ∈ mcs(s_witness) directly)
+        -- 4. Apply multi_witness_seed_consistent_past to get consistency
+        --
+        -- Technical debt: Step 4 is blocked on completing multi_witness_seed_consistent_past
+        -- at line 680, which requires infrastructure for multi-formula deduction.
+        -- The single-witness version (temporal_witness_seed_consistent_past in
+        -- TemporalLindenbaum.lean) is complete but doesn't handle multiple witnesses.
+        --
+        -- Note: The issue is that P obligations from different times s1 > t, s2 > t
+        -- cannot be easily "collected" into a single MCS without additional coherence
+        -- properties (like forward_P which the partial family doesn't have).
+        sorry  -- Blocked on multi_witness_seed_consistent_past (line 680)
 
     · -- No past or future times - domain must equal {t} but t ∉ domain
       push_neg at h_future
