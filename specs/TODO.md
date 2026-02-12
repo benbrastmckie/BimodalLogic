@@ -1,16 +1,16 @@
 ---
-next_project_number: 872
+next_project_number: 876
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-11T22:21:25Z
 task_counts:
-  active: 5
+  active: 9
   completed: 408
   in_progress: 1
-  not_started: 3
+  not_started: 7
   abandoned: 29
-  total: 436
+  total: 440
 technical_debt:
   sorry_count: 146
   axiom_count: 20
@@ -21,6 +21,47 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 875. Create lean-specific teammate prompts
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+- **Dependencies**: Task #872
+
+**Description**: Create lean-specific teammate prompt templates that instruct teammates to use lean-lsp MCP tools (leansearch, loogle, leanfinder, lean_goal, etc.) and follow proof-checking workflows. Store in .claude/context/core/templates/.
+
+---
+
+### 874. Document --team flag in command files
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+
+**Description**: Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.
+
+---
+
+### 873. Create teammate configuration system with model selection
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+
+**Description**: Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.
+
+---
+
+### 872. Add language-aware teammate routing to team skills
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-11
+
+**Description**: Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.
+
+---
 
 ### 871. Implement safer git staging to prevent concurrent agent race conditions
 - **Effort**: 6 hours

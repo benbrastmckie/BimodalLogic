@@ -1,10 +1,53 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 42,
+    "total_tasks": 46,
     "last_sync": "2026-02-03T21:09:57Z"
   },
   "active_projects": [
+    {
+      "project_number": 872,
+      "project_name": "language_aware_teammate_routing_team_skills",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "3-4 hours",
+      "description": "Modify skill-team-research, skill-team-plan, and skill-team-implement to check task language and spawn language-appropriate teammates. For lean tasks, teammates should use lean-research-agent/lean-implementation-agent patterns with access to lean-lsp MCP tools.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:01:01Z"
+    },
+    {
+      "project_number": 873,
+      "project_name": "teammate_configuration_model_selection",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "2-3 hours",
+      "description": "Design and implement a teammate configuration mechanism that allows specifying model (e.g., Opus 4.6 for lean specialists, Sonnet 4.5 for general). Investigate TeammateTool model parameter usage.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:01:01Z"
+    },
+    {
+      "project_number": 874,
+      "project_name": "document_team_flag_command_files",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "1 hour",
+      "description": "Add --team and --team-size documentation to /research, /plan, and /implement command files. Currently the orchestrator handles these flags but the commands do not document them.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:01:01Z"
+    },
+    {
+      "project_number": 875,
+      "project_name": "lean_specific_teammate_prompts",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "2-3 hours",
+      "description": "Create lean-specific teammate prompt templates that instruct teammates to use lean-lsp MCP tools (leansearch, loogle, leanfinder, lean_goal, etc.) and follow proof-checking workflows. Store in .claude/context/core/templates/.",
+      "created": "2026-02-12T00:01:01Z",
+      "last_updated": "2026-02-12T00:01:01Z",
+      "depends_on": [
+        872
+      ]
+    },
     {
       "project_number": 871,
       "project_name": "safer_git_staging_concurrent_agents",
@@ -441,7 +484,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 872,
+  "next_project_number": 876,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
