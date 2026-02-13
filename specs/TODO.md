@@ -1,5 +1,5 @@
 ---
-next_project_number: 880
+next_project_number: 882
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,14 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 882. Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination
+- **Effort**: 8 to 12 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Parent**: Task #881
+
+**Description**: Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination. Sorries: henkinLimit_forward_saturated base case (line 444), henkinLimit_backward_saturated base case (line 485), maximal_tcs_is_mcs F-formula case (line 655), maximal_tcs_is_mcs P-formula case (line 662), generic temporal_coherent_family_exists (line 636). These block the constructive proof of fully_saturated_bmcs_exists.
 
 ### 881. Construct modally saturated BMCS to eliminate fully_saturated_bmcs_exists axiom
 - **Effort**: 40-60 hours
