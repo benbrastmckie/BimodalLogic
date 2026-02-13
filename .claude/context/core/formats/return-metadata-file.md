@@ -121,13 +121,18 @@ Tracks progress for interrupted or partially completed work:
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `stage` | string | Yes | Current execution stage (e.g., "strategy_determined", "phase_2_completed") |
+| `stage` | string | Yes | Current execution stage (e.g., "strategy_determined", "phase_2_completed", "context_exhaustion_handoff") |
 | `details` | string | Yes | Human-readable description of progress |
 | `phases_completed` | number | No | For implementation agents: phases completed |
 | `phases_total` | number | No | For implementation agents: total phases |
+| `handoff_path` | string | No | Path to handoff artifact when stage is "context_exhaustion_handoff" |
 
 **Purpose**: Enables skill postflight to determine resume point and provide user guidance when
 an agent is interrupted before completion.
+
+**Context Exhaustion Handoff**: When `stage` is `"context_exhaustion_handoff"`, the `handoff_path` field
+contains the path to the handoff document that a successor teammate should read. See
+`.claude/context/core/formats/handoff-artifact.md` for the handoff document schema.
 
 ### completion_data (optional)
 
@@ -478,6 +483,40 @@ For implementation agents tracking phase progress:
 }
 ```
 
+### Context Exhaustion Handoff
+
+When a teammate approaches context limits and writes a handoff:
+
+```json
+{
+  "status": "partial",
+  "started_at": "2026-01-28T10:30:00Z",
+  "artifacts": [
+    {
+      "type": "handoff",
+      "path": "specs/259_prove_completeness/handoffs/phase-3-handoff-20260128T113000Z.md",
+      "summary": "Context exhaustion handoff with proof state and approach constraints"
+    }
+  ],
+  "partial_progress": {
+    "stage": "context_exhaustion_handoff",
+    "details": "Approaching context limit. Handoff written with current proof state and failed approaches.",
+    "handoff_path": "specs/259_prove_completeness/handoffs/phase-3-handoff-20260128T113000Z.md",
+    "phases_completed": 2,
+    "phases_total": 4
+  },
+  "metadata": {
+    "session_id": "sess_1736700000_def456",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"]
+  }
+}
+```
+
+**Note**: The `handoff_path` field enables the lead to spawn a successor teammate with minimal context.
+See `.claude/context/core/formats/handoff-artifact.md` for the handoff document schema.
+
 ## Relationship to subagent-return.md
 
 This file-based format complements `subagent-return.md`:
@@ -495,6 +534,8 @@ This file-based format complements `subagent-return.md`:
 ## Related Documentation
 
 - `.claude/context/core/formats/subagent-return.md` - Original console-based format
+- `.claude/context/core/formats/handoff-artifact.md` - Handoff document schema for context exhaustion
+- `.claude/context/core/formats/progress-file.md` - Progress tracking for phases
 - `.claude/context/core/patterns/postflight-control.md` - Marker file protocol
 - `.claude/context/core/patterns/file-metadata-exchange.md` - File I/O patterns
 - `.claude/context/core/patterns/early-metadata-pattern.md` - Early metadata creation pattern

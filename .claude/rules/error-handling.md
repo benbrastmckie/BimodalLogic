@@ -36,6 +36,10 @@ Errors specific to multi-agent team execution:
 - `wave_timeout` - Entire wave did not complete within timeout
 - `debug_cycle_exhausted` - Max debug cycles reached without resolution
 
+### Team Mode Expected Events (NOT Errors)
+These are normal events that have recovery patterns, not failures:
+- `context_exhaustion_handoff` - Teammate approaching context limit, wrote handoff for successor
+
 ## Error Response Pattern
 
 When an error occurs:
@@ -213,6 +217,57 @@ Debug Cycle Exhausted:
 3. Return partial with debug history
 4. Suggest manual intervention
 ```
+
+### Context Exhaustion Recovery
+
+Context exhaustion is **expected** for complex phases, not a bug. Teammates have finite context windows and cannot use /compact during execution.
+
+**Context exhaustion is NOT an error**. It is a normal part of complex work that should be handled gracefully through handoffs.
+
+**Recovery Pattern** (Successor Teammate):
+```
+1. Teammate detects approaching context limit (~80% usage)
+2. Teammate writes handoff artifact:
+   - specs/{N}_{SLUG}/handoffs/phase-{P}-handoff-{TIMESTAMP}.md
+3. Teammate updates progress file:
+   - specs/{N}_{SLUG}/progress/phase-{P}-progress.json
+4. Teammate returns `partial` status with `handoff_path` in metadata
+5. Lead spawns **successor teammate** (NOT single-agent fallback)
+6. Successor reads minimal handoff context (Immediate Next Action + Current State)
+7. Successor continues from handoff
+8. Successor can chain further handoffs if needed
+```
+
+**Metadata format for context exhaustion**:
+```json
+{
+  "status": "partial",
+  "partial_progress": {
+    "stage": "context_exhaustion_handoff",
+    "details": "Approaching context limit. Handoff written with current state.",
+    "handoff_path": "specs/{N}_{SLUG}/handoffs/phase-{P}-handoff-{TIMESTAMP}.md",
+    "phases_completed": 2,
+    "phases_total": 4
+  }
+}
+```
+
+**Important**: Do NOT have lead agent complete the work. Spawn a successor teammate to:
+- Maintain parallelism (other phases can continue)
+- Preserve context isolation
+- Enable handoff chains for very long phases
+
+**Successor Prompt Minimal Context**:
+```
+Quick Start (read ONLY this first):
+- Immediate Next Action: {from handoff}
+- Current State: {from handoff}
+
+If stuck, read full handoff at: {handoff_path}
+```
+
+See `.claude/context/core/formats/handoff-artifact.md` for handoff document schema.
+See `.claude/utils/team-wave-helpers.md#successor-teammate-pattern` for successor templates.
 
 ## Non-Blocking Errors
 

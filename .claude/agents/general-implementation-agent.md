@@ -434,6 +434,66 @@ If task or plan is invalid:
 2. Include clear error message
 3. Return brief error summary
 
+## Context Management
+
+You have a finite context window. Plan FOR exhaustion, not against it. Context exhaustion is expected for complex work, not a failure.
+
+### Progress Tracking
+
+1. Create `specs/{N}_{SLUG}/progress/phase-{P}-progress.json` when starting a phase
+2. Update after each objective: set `status` to `done`, update `current_objective`
+3. Log failed approaches in `approaches_tried` to prevent successor retries
+4. See `.claude/context/core/formats/progress-file.md` for schema
+
+### Handoff Triggers
+
+Write a handoff when ANY of:
+- Context estimate reaches ~80% (based on tool call volume and file reads)
+- About to attempt an operation that might push over the limit
+- Completing any objective (natural checkpoint for clean handoff)
+- Finding yourself re-reading the same context repeatedly (signal of context pressure)
+
+**Estimating context usage**: Track mentally - each tool response adds to context, file reads add file size. After reading many large files or extended implementation work, consider handoff.
+
+### Handoff Protocol
+
+When approaching context limit:
+
+1. **Write progress file** with current state:
+   ```bash
+   mkdir -p "specs/${N}_${SLUG}/progress"
+   # Write phase-{P}-progress.json with objectives and approaches_tried
+   ```
+
+2. **Write handoff document**:
+   ```bash
+   mkdir -p "specs/${N}_${SLUG}/handoffs"
+   # Write to specs/{N}_{SLUG}/handoffs/phase-{P}-handoff-{TIMESTAMP}.md
+   ```
+   Include:
+   - Immediate Next Action (single specific step)
+   - Current State (file, line, current work state)
+   - Key Decisions Made (rationale for choices)
+   - What NOT to Try (failed approaches with reasons)
+   - Critical Context (max 5 essential facts)
+   - References (plan path, research path)
+
+3. **Update metadata** with `handoff_path`:
+   ```json
+   {
+     "status": "partial",
+     "partial_progress": {
+       "stage": "context_exhaustion_handoff",
+       "details": "Approaching context limit. Handoff written with current state.",
+       "handoff_path": "specs/{N}_{SLUG}/handoffs/phase-{P}-handoff-{TIMESTAMP}.md"
+     }
+   }
+   ```
+
+4. **Return immediately** - do NOT attempt more work after writing handoff
+
+See `.claude/context/core/formats/handoff-artifact.md` for full handoff template.
+
 ## Return Format Examples
 
 ### Successful Implementation (Text Summary)

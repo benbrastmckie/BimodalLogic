@@ -625,6 +625,29 @@ Team implementation completed for task {N}:
 - Log timeout in debug directory
 - Continue with available phases
 
+### Context Exhaustion (Handoff)
+When teammate returns `partial` with `handoff_path`:
+1. Read handoff document to get minimal successor context
+2. Spawn successor teammate (NOT lead taking over)
+3. Pass only: Immediate Next Action, Current State, handoff_path
+4. Successor continues from handoff, can chain further handoffs
+5. Track handoff_count in progress file
+
+```bash
+# Pattern: Detect handoff and spawn successor
+if teammate_status == "partial" && handoff_path exists:
+  handoff_content = read_handoff(handoff_path)
+  successor_prompt = build_successor_prompt(
+    immediate_action = handoff_content.immediate_next_action,
+    current_state = handoff_content.current_state,
+    handoff_path = handoff_path,
+    language = task_language
+  )
+  spawn_successor(successor_prompt)
+```
+
+See `.claude/utils/team-wave-helpers.md#successor-teammate-pattern` for prompt templates.
+
 ### Verification Failure
 - Treat as phase failure
 - Trigger debug cycle

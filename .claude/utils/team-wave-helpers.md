@@ -487,8 +487,124 @@ Each phase must include: "Run lake build and verify no errors"
 Output to: specs/{N}_{SLUG}/plans/candidate-{letter}.md
 ```
 
+## Successor Teammate Pattern
+
+When a teammate exhausts context and writes a handoff, the lead spawns a successor teammate with minimal context. The successor reads the handoff document, NOT the full history.
+
+### When to Spawn Successor vs New Wave
+
+| Situation | Response |
+|-----------|----------|
+| Teammate returns `partial` with `handoff_path` | Spawn successor teammate |
+| Teammate returns `partial` without handoff (timeout) | Mark phase [PARTIAL], continue |
+| Teammate returns `failed` | Evaluate, possibly spawn debugger |
+| All teammates in wave complete | Start next wave |
+
+### Successor Prompt Template (Lean)
+
+```
+## Successor Teammate for Phase {P} (Task {N})
+
+You are continuing work started by a previous teammate who exhausted context.
+{model_preference_line}
+
+### Quick Start (read ONLY this first)
+
+**Immediate Next Action**:
+{contents from handoff Immediate Next Action section}
+
+**Current State**:
+{contents from handoff Current State section}
+
+### If You Get Stuck
+Read the full handoff at: {handoff_path}
+
+### Do NOT
+- Re-read files already processed by predecessor (listed in handoff)
+- Try approaches listed in "What NOT to Try" (already failed)
+- Read full research reports or plans unless stuck
+
+### Progress File
+Update: `specs/{N}_{SLUG}/progress/phase-{P}-progress.json`
+(Increment handoff_count when you start)
+
+### Tools Available
+You are a Lean 4 proof implementer with access to:
+- lean_goal (MOST IMPORTANT - check proof state constantly)
+- lean_multi_attempt (try tactics without editing)
+- lean_state_search (find lemmas to close goal)
+- lean_hover_info (type signatures)
+
+## BLOCKED TOOLS - NEVER CALL
+- lean_diagnostic_messages (bug lean-lsp-mcp #115)
+- lean_file_outline (unreliable)
+
+### Verification
+Run `lake build` before returning implemented status.
+
+### Context Management
+You also have a finite context. If approaching limit:
+1. Write your own handoff document
+2. Return partial with handoff_path
+3. Another successor will continue
+```
+
+### Successor Prompt Template (General)
+
+```
+## Successor Teammate for Phase {P} (Task {N})
+
+You are continuing work started by a previous teammate who exhausted context.
+{model_preference_line}
+
+### Quick Start (read ONLY this first)
+
+**Immediate Next Action**:
+{contents from handoff Immediate Next Action section}
+
+**Current State**:
+{contents from handoff Current State section}
+
+### If You Get Stuck
+Read the full handoff at: {handoff_path}
+
+### Do NOT
+- Re-read files already processed by predecessor (listed in handoff)
+- Try approaches listed in "What NOT to Try" (already failed)
+- Read full research reports or plans unless stuck
+
+### Progress File
+Update: `specs/{N}_{SLUG}/progress/phase-{P}-progress.json`
+(Increment handoff_count when you start)
+
+### Context Management
+You also have a finite context. If approaching limit:
+1. Write your own handoff document
+2. Return partial with handoff_path
+3. Another successor will continue
+```
+
+### Key Principles
+
+1. **Minimal Context Start**: Successor reads only Immediate Next Action + Current State initially
+2. **Progressive Disclosure**: Full handoff is escape hatch, not starting point
+3. **No History Reading**: Successor does NOT read full conversation history or large files predecessor processed
+4. **Chain Allowed**: Successors can spawn their own successors (handoff chains)
+5. **Progress Accumulation**: Progress file tracks cumulative work across all successors
+
+### Successor vs Lead Taking Over
+
+**Do NOT** have the lead agent complete teammate work. Always spawn a successor teammate instead.
+
+| Approach | Why Avoid / Why Use |
+|----------|---------------------|
+| Lead takes over | Loses parallelism, lead becomes bottleneck, lead context also fills |
+| Spawn successor | Maintains isolation, fresh context, can continue in parallel |
+
 ## Related Files
 
 - `.claude/context/core/patterns/team-orchestration.md` - Overall coordination
 - `.claude/context/core/formats/team-metadata-extension.md` - Result schema
+- `.claude/context/core/formats/handoff-artifact.md` - Handoff document schema
+- `.claude/context/core/formats/progress-file.md` - Progress tracking schema
 - `.claude/skills/skill-team-*/SKILL.md` - Skill implementations
