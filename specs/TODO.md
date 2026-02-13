@@ -24,11 +24,13 @@ technical_debt:
 
 ### 882. Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination
 - **Effort**: 8 to 12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Parent**: Task #881
 - **Researched**: 2026-02-13
+- **Planned**: 2026-02-13
 - **Research**: [research-001.md](specs/882_fix_temporallindenbaum_sorries/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/882_fix_temporallindenbaum_sorries/plans/implementation-001.md)
 
 **Description**: Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination. Sorries: henkinLimit_forward_saturated base case (line 444), henkinLimit_backward_saturated base case (line 485), maximal_tcs_is_mcs F-formula case (line 655), maximal_tcs_is_mcs P-formula case (line 662), generic temporal_coherent_family_exists (line 636). These block the constructive proof of fully_saturated_bmcs_exists.
 
