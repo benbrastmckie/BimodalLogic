@@ -1,89 +1,124 @@
-# Implementation Summary: Task #880
+# Implementation Summary: Task #880 (Partial - DovetailingChain Analysis)
 
-**Completed**: 2026-02-12
-**Status**: Partial (Phases 1-4 complete, Decision Checkpoint complete, Phases 5-6 pending)
-**Session**: sess_1770943131_d71a0c (resumed from sess_1770924891_a0d146)
+**Date**: 2026-02-12
+**Status**: BLOCKED
+**Session**: sess_1770946835_bf219f
+**Prior Sessions**: sess_1770943131_d71a0c, sess_1770924891_a0d146 (ZornFamily work)
 
 ## Overview
 
-Implemented the augmented extension seed approach for ZornFamily.lean through Phase 4. The core architectural flaw (mathematically unsatisfiable `forward_F` and `backward_P` structural fields) has been addressed by removing these fields and simplifying the extension seed. The critical `extensionSeed_consistent` theorem is now fully proven, including the challenging cross-sign case.
+This session attempted Phase 1 of the DovetailingChain completion plan (v002). The plan pivoted from ZornFamily to DovetailingChain based on team research (research-004.md). During implementation, discovered a fundamental architectural flaw that makes cross-sign temporal propagation impossible with the current DovetailingChain construction.
 
-## Changes Made
+## Critical Finding
 
-### Phase 1: Delete False Lemmas [COMPLETED]
-- Deleted `multi_witness_seed_consistent_future` (was at lines 806-844)
-- Deleted `multi_witness_seed_consistent_past` (was at lines 849-874)
-- These theorems were mathematically false (asserted universal propagation for existential operators)
-- Updated comments referencing these lemmas
+**The DovetailingChain two-chain architecture cannot support cross-sign temporal propagation.**
 
-### Phase 2: Analyze F/P Field Dependencies [COMPLETED]
-- Documented complete dependency graph for `forward_F` and `backward_P` fields
-- Identified removal sequence to minimize cascading breaks
+### Technical Analysis
 
-### Phase 3: Remove forward_F and backward_P Fields [COMPLETED]
-- Removed `forward_F` field from `GHCoherentPartialFamily` structure
-- Removed `backward_P` field from `GHCoherentPartialFamily` structure
-- Updated all structure instantiations and extension functions
-- Added documentation notes explaining the architectural change
+1. **Chain Construction**:
+   - Forward chain: step n+1 extends GContent(step n)
+   - Backward chain: step n+1 extends HContent(step n)
+   - Chains share M_0 as base (step 0)
 
-### Phase 4: Simplify extensionSeed and Prove Consistency [COMPLETED]
-- Simplified `extensionSeed` to `GContent ∪ HContent` only (removed FObligations and PObligations)
-- Updated `upperBoundarySeed` and `lowerBoundarySeed` to match
-- Updated `extensionSeed_eq_upperBoundarySeed` and `extensionSeed_eq_lowerBoundarySeed` proofs
-- **PROVEN**: Pure past case - list induction for max source time
-- **PROVEN**: Pure future case - list induction for min source time
-- **PROVEN**: Cross-sign case - forward_G to future time + backward_H propagation + T-axiom
+2. **Why Cross-Sign Fails**:
+   - G formulas propagate through forward chain (GContent seeds)
+   - H formulas propagate through backward chain (HContent seeds)
+   - G formulas do NOT propagate through backward chain
+   - H formulas do NOT propagate through forward chain
 
-### Decision Checkpoint [COMPLETED]
-- Verified 9/12 original sorries eliminated (S1-S9)
-- Assessed remaining 5 sorries and their resolution paths
-- **Decision**: Continue with ZornFamily approach (not pivot to DovetailingChain)
+3. **Why the Research Assumption Was Wrong**:
+   The research report (research-004.md) claimed:
+   > G phi in M_t (t < 0) propagates via backward chain to M_0
+
+   This is incorrect. The backward chain uses HContent seeds, so G formulas added by Lindenbaum at step n have no connection to M_0.
+
+4. **Attempted Fix - Augmented Seed**:
+   Tried: seed with HContent(M_n) ∪ GContent(M_0)
+
+   Problem: Lindenbaum can add H(¬p) to backward chain step while G(p) ∈ M_0.
+   This puts both p (from GContent(M_0)) and ¬p (from HContent where H(¬p) was added) in the augmented seed, causing inconsistency.
+
+5. **Fundamental Issue**:
+   The Lindenbaum extension at each step can introduce temporal formulas that conflict with cross-direction content from M_0. There's no constraint preventing this.
+
+## Semantic vs Syntactic Gap
+
+Semantically, cross-sign propagation should work:
+- G phi at time t < 0 means phi at all future times (including t' > 0)
+- This is the defining property of temporal logic
+
+Syntactically, the chain construction doesn't enforce this:
+- Each chain is built independently (except sharing M_0)
+- Lindenbaum can add arbitrary consistent formulas
+- No mechanism ensures cross-chain coherence
+
+## Required Solution
+
+The cross-sign sorries cannot be resolved with the current architecture. Options:
+
+1. **RecursiveSeed Approach** (existing alternative):
+   - Pre-place ALL temporal witnesses in seed before Lindenbaum
+   - Avoids cross-sign propagation by construction
+   - Has its own 13 sorries but different issues
+
+2. **Unified Chain Construction** (new approach):
+   - Single chain covering all integers
+   - Each step includes both GContent AND HContent from previous steps
+   - Would require consistency proof for combined seed
+
+3. **Controlled Lindenbaum** (complex):
+   - Modify Lindenbaum to respect temporal constraints
+   - Add formulas only if they don't conflict with cross-direction content
+   - Requires proving this produces an MCS
+
+## Comparison Summary
+
+| Approach | Issue Type | Sorries | Tractability |
+|----------|------------|---------|--------------|
+| ZornFamily | Theorem-level flaw (universal forward_F impossible) | 5 | Blocked |
+| DovetailingChain | Architecture flaw (cross-sign blocked) | 4 | Blocked |
+| RecursiveSeed | Implementation gaps | 13 | Unknown |
 
 ## Files Modified
 
-- `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean` - major structural changes
+- `specs/880_augmented_extension_seed_approach/plans/implementation-002.md` - Updated Phase 1 status to [BLOCKED] with detailed analysis
 
-## Sorry Count
+## Files NOT Modified
 
-| Phase | Sorry Count | Notes |
-|-------|-------------|-------|
-| Original | 12 | Plan estimate |
-| Phase 1 | 10 | Deleted 2 false lemmas |
-| Phase 3 | 8 | Removed 4 F/P extension, added 2 F/P satisfaction |
-| **Phase 4** | **5** | Proven 3 seed consistency sorries |
+- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - No changes; cannot implement cross-sign fix with current architecture
 
-### Current Sorries (5 total)
+## Prior Work Summary (ZornFamily phases 1-4)
 
-1. **Line 1607**: `non_total_has_boundary` internal gap case - requires general extension approach
-2. **Line 1677**: `h_G_from_new` in maximal_implies_total - controlled Lindenbaum needed
-3. **Line 1684**: `h_H_from_new` in maximal_implies_total - controlled Lindenbaum needed
-4. **Line 1774**: `total_family_FObligations_satisfied` - alternative proof needed
-5. **Line 1790**: `total_family_PObligations_satisfied` - alternative proof needed
+Previous sessions completed:
+- Phase 1: Deleted false lemmas (multi_witness_seed_consistent_future/past)
+- Phase 2: Analyzed F/P field dependencies
+- Phase 3: Removed forward_F and backward_P fields
+- Phase 4: Simplified extensionSeed and proved consistency
 
-## Key Insights
+This reduced ZornFamily sorries from 12 to 5, but the remaining 5 require controlled Lindenbaum which is high-effort.
 
-1. **Architectural Fix**: The `forward_F` and `backward_P` fields were fundamentally broken - they asserted that existential operators (F, P) imply universal propagation, which is mathematically false.
+## Next Steps
 
-2. **Seed Simplification**: Removing F/P from the seed makes consistency proofs tractable - the seed now contains only GContent + HContent.
+1. **Option A - Pivot to RecursiveSeed**: Complete the 13 sorries in RecursiveSeed approach
+2. **Option B - Redesign DovetailingChain**: Create unified chain with combined G/H content
+3. **Option C - Accept Technical Debt**: Document the sorries as known limitations
 
-3. **Cross-Sign Case Solution**: For times with both past and future domain elements, all seed content can be shown to land in a single reference MCS (s_future) via:
-   - GContent: forward_G propagation from past times to s_future
-   - HContent: backward propagation to s_future + T-axiom (H phi → phi)
+Recommendation: Option B (redesign) appears most tractable - the unified chain approach would inherit all existing same-sign proofs while adding cross-sign support. Estimated effort: 10-15 hours for redesign + 10-15 hours for proof migration.
 
-4. **Internal Gap Issue**: The lemma `non_total_has_boundary` is false for domains with internal gaps. Resolution requires restructuring maximal_implies_total to use general extension.
+## DovetailingChain Sorry Status
 
-5. **F/P Satisfaction**: For total families, F/P coherence should be provable via maximality arguments or construction invariants rather than structural fields.
+| Sorry | Line | Status | Blocker |
+|-------|------|--------|---------|
+| D1: forward_G (t < 0) | 606 | BLOCKED | Architecture flaw |
+| D2: backward_H (t >= 0) | 617 | BLOCKED | Architecture flaw |
+| D3: forward_F | 633 | NOT STARTED | Depends on D1/D2 |
+| D4: backward_P | 640 | NOT STARTED | Depends on D1/D2 |
 
-## Remaining Work (Phases 5-6)
+## References
 
-1. **Internal Gap Handling**: Either prove GH-coherent families cannot have internal gaps, or restructure maximal_implies_total to not require boundary times
-
-2. **Controlled Lindenbaum**: Prove h_G_from_new and h_H_from_new for extension at any non-domain time
-
-3. **F/P Satisfaction**: Prove total_family_F/P_Obligations_satisfied using maximality or construction trace
-
-## Recommendations
-
-1. Consider whether internal gaps are actually possible for GH-coherent families built via Zorn - they may be ruled out by the construction
-2. The controlled Lindenbaum approach may simplify if we can show the Lindenbaum extension preserves temporal content structure
-3. F/P satisfaction might follow from a careful analysis of what formulas can enter the seed during construction
+- Analysis session: sess_1770946835_bf219f
+- Plan: specs/880_augmented_extension_seed_approach/plans/implementation-002.md
+- Research: specs/880_augmented_extension_seed_approach/reports/research-004.md
+- Source: Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean
+- Alternative: Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean
+- SeedBMCS analysis: Theories/Bimodal/Metalogic/Bundle/SeedBMCS.lean (confirms flaw)

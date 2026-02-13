@@ -4,7 +4,7 @@
 **Version**: 002
 **Created**: 2026-02-12
 **Language**: lean
-**Status**: [NOT STARTED]
+**Status**: [BLOCKED]
 **Estimated Effort**: 15-21 hours
 **Research Input**: research-004.md (team research recommending pivot)
 
@@ -80,26 +80,44 @@ After full implementation:
 
 ## Implementation Phases
 
-### Phase 1: Global Cross-Sign Propagation (6-8 hours) [NOT STARTED]
+### Phase 1: Global Cross-Sign Propagation (6-8 hours) [BLOCKED]
 
 **Dependencies**: None
 **Goal**: Prove forward_G and backward_H across the time-zero boundary
 
-**Key Insight**: Both forward and backward chains share M_0 as their base MCS. This enables:
-- G phi in M_t (t < 0) → G phi in M_0 → phi in M_{t'} (t' > 0)
-- H phi in M_t (t > 0) → H phi in M_0 → phi in M_{t'} (t' < 0)
+**BLOCKING FINDING (2026-02-12)**:
 
-**Tasks**:
-- [ ] Create lemma: `G_backward_to_base` - G phi in backward chain implies G phi in M_0
-- [ ] Create lemma: `G_base_to_forward` - G phi in M_0 implies phi in forward chain
-- [ ] Prove `forward_G` for t < 0 case (D1) using composition
-- [ ] Create symmetric lemmas for H: `H_forward_to_base`, `H_base_to_backward`
-- [ ] Prove `backward_H` for t >= 0 case (D2) using composition
+The "Key Insight" from research is **incorrect**. Analysis reveals a fundamental architectural flaw:
 
-**Verification**:
-- [ ] `lake build` succeeds
-- [ ] D1, D2 sorry sites eliminated
-- [ ] 2 sorries remain (D3, D4)
+1. **G does NOT propagate through the backward chain**:
+   - Backward chain uses HContent seeds (not GContent)
+   - G phi ∈ M_t (t < 0) does NOT imply G phi ∈ M_0
+   - Lindenbaum can add G formulas to backward chain steps independently
+
+2. **H does NOT propagate through the forward chain**:
+   - Forward chain uses GContent seeds (not HContent)
+   - Symmetric issue to above
+
+3. **Augmented seed approach is also blocked**:
+   - Attempted fix: seed with HContent(M_n) ∪ GContent(M_0)
+   - Problem: Lindenbaum can add H(¬p) to M_t while G(p) ∈ M_0
+   - This puts both ¬p and p in the augmented seed, causing inconsistency
+
+**Conclusion**: The two-chain architecture with separate GContent/HContent seeds fundamentally cannot support cross-sign temporal propagation. The research assumption was overly optimistic.
+
+**Required fix**: Complete redesign - either:
+- Use RecursiveSeed approach (pre-place all temporal witnesses)
+- Build unified chain with combined G/H content at each step
+- Use controlled Lindenbaum that respects cross-sign constraints
+
+**Original Tasks** (now blocked):
+- [ ] ~~Create lemma: `G_backward_to_base`~~ - IMPOSSIBLE with current architecture
+- [ ] ~~Create lemma: `G_base_to_forward`~~ - This part works, but useless without above
+- [ ] ~~Prove `forward_G` for t < 0 case (D1)~~ - BLOCKED
+- [ ] ~~Create symmetric lemmas for H~~ - BLOCKED
+- [ ] ~~Prove `backward_H` for t >= 0 case (D2)~~ - BLOCKED
+
+**Status**: Phase 1 cannot proceed without architectural redesign.
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean`
