@@ -528,6 +528,15 @@
       "started": "2026-02-13T02:09:55Z",
       "completed": "2026-02-13T20:10:57Z",
       "completion_summary": "Completed RecursiveSeed temporal coherent family construction by adding needsPositiveHypotheses to correct namespace, re-applying seed4 propagation, weakening hypotheses with conditional pattern, and proving supporting lemmas with Nodup hypotheses. Build passes with 0 sorries."
+    },
+    {
+      "project_number": 881,
+      "project_name": "modally_saturated_bmcs_construction",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-13T20:28:06Z",
+      "last_updated": "2026-02-13T20:28:06Z",
+      "artifacts": []
     }
   ],
   "completed_projects": [
@@ -542,7 +551,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 881,
+  "next_project_number": 882,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

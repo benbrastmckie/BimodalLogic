@@ -22,6 +22,14 @@ technical_debt:
 
 ## Tasks
 
+### 881. Construct modally saturated BMCS to eliminate fully_saturated_bmcs_exists axiom
+- **Effort**: 40-60 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-13
+
+**Description**: Replace the `fully_saturated_bmcs_exists` axiom in TemporalCoherentConstruction.lean with a constructive proof, achieving fully axiom-free completeness. The axiom currently requires: (1) context preservation, (2) temporal coherence, and (3) modal saturation. Tasks 870/880 have proven temporal coherence via ZornFamily/DovetailingChain, but modal saturation remains. Modal saturation requires that every Diamond formula in a family's MCS has a witness family in the bundle where the inner formula holds. The construction must enumerate all Diamond formulas (neg(Box(neg psi))) and extend the family set to include witnesses. Key approaches: (a) Extend ZornFamily with modal witness enumeration using Zorn's lemma on families satisfying both temporal coherence AND modal saturation conditions, (b) Extend DovetailingChain to interleave modal witness creation with temporal witness creation, or (c) Post-process a temporally coherent family by iteratively adding modal witnesses until saturated. Critical challenge: Proving termination/well-foundedness when adding infinitely many witness families. Success eliminates the final axiom blocker for sorry-free completeness, connecting proven temporal infrastructure (RecursiveSeed, ZornFamily) to the representation theorem. See ModalSaturation.lean for is_modally_saturated definition, Completeness.lean for usage, and DovetailingChain.lean/ZornFamily.lean for temporal coherence infrastructure to extend.
+
 ### 880. Investigate augmented extension seed approach for pure past/future cases
 - **Effort**: 12-18 hours
 - **Status**: [COMPLETED]
