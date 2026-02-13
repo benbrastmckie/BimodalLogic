@@ -100,15 +100,15 @@ This theorem shows that consistent formulas have BMCS models.
 theorem bmcs_representation (φ : Formula) (h_cons : ContextConsistent [φ]) :
     ∃ (B : BMCS Int), bmcs_truth_at B B.eval_family 0 φ := by
   -- Construct a fully saturated BMCS from the consistent context [φ]
-  -- This uses the CORRECT axiom `fully_saturated_bmcs_exists` (not the FALSE single-family axiom)
-  let B := construct_saturated_bmcs [φ] h_cons (D := Int)
+  -- Task 881: Now uses Int-specialized axiom (to be replaced with constructive proof)
+  let B := construct_saturated_bmcs_int [φ] h_cons
   use B
-  -- φ ∈ B.eval_family.mcs 0 by construct_saturated_bmcs_contains_context
+  -- φ ∈ B.eval_family.mcs 0 by construct_saturated_bmcs_int_contains_context
   have h_in_mcs : φ ∈ B.eval_family.mcs 0 :=
-    construct_saturated_bmcs_contains_context [φ] h_cons φ (by simp)
+    construct_saturated_bmcs_int_contains_context [φ] h_cons φ (by simp)
   -- The BMCS is temporally coherent
   have h_tc : B.temporally_coherent :=
-    construct_saturated_bmcs_temporally_coherent [φ] h_cons
+    construct_saturated_bmcs_int_temporally_coherent [φ] h_cons
   -- By truth lemma, φ is true at (eval_family, 0)
   exact (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 φ).mp h_in_mcs
 
@@ -121,16 +121,16 @@ This is a generalization of `bmcs_representation` to contexts.
 theorem bmcs_context_representation (Γ : List Formula) (h_cons : ContextConsistent Γ) :
     ∃ (B : BMCS Int), ∀ γ ∈ Γ, bmcs_truth_at B B.eval_family 0 γ := by
   -- Construct a fully saturated BMCS from the consistent context Γ
-  -- This uses the CORRECT axiom `fully_saturated_bmcs_exists` (not the FALSE single-family axiom)
-  let B := construct_saturated_bmcs Γ h_cons (D := Int)
+  -- Task 881: Now uses Int-specialized axiom (to be replaced with constructive proof)
+  let B := construct_saturated_bmcs_int Γ h_cons
   use B
   -- The BMCS is temporally coherent
   have h_tc : B.temporally_coherent :=
-    construct_saturated_bmcs_temporally_coherent Γ h_cons
-  -- For each γ ∈ Γ, γ ∈ B.eval_family.mcs 0 by construct_saturated_bmcs_contains_context
+    construct_saturated_bmcs_int_temporally_coherent Γ h_cons
+  -- For each γ ∈ Γ, γ ∈ B.eval_family.mcs 0 by construct_saturated_bmcs_int_contains_context
   intro γ h_mem
   have h_in_mcs : γ ∈ B.eval_family.mcs 0 :=
-    construct_saturated_bmcs_contains_context Γ h_cons γ h_mem
+    construct_saturated_bmcs_int_contains_context Γ h_cons γ h_mem
   -- By truth lemma, γ is true at (eval_family, 0)
   exact (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 γ).mp h_in_mcs
 
@@ -447,15 +447,17 @@ Derivability  ↔  BMCS-validity  →  Standard-validity
 
 This is a FULL completeness result for TM logic. This file is SORRY-FREE!
 
-### Axiom Dependencies (Task 843 Updated)
+### Axiom Dependencies (Task 881 Updated)
 
 This module inherits axiom dependencies from:
-- **TemporalCoherentConstruction.lean**: `fully_saturated_bmcs_exists` (CORRECT axiom)
-  - Asserts existence of a fully saturated, temporally coherent BMCS
+- **TemporalCoherentConstruction.lean**: `fully_saturated_bmcs_exists_int` (Int-specialized axiom)
+  - Asserts existence of a fully saturated, temporally coherent BMCS indexed by Int
   - Modal backward follows from `saturated_modal_backward` (PROVEN in ModalSaturation.lean)
-  - Will be proven in a future phase using canonical model construction
+  - Task 881: Specialized to Int to enable constructive proof via DovetailingChain
 
-**DEPRECATED AXIOM** (no longer used in completeness chain):
+**DEPRECATED AXIOMS** (no longer used in completeness chain):
+- **TemporalCoherentConstruction.lean**: `fully_saturated_bmcs_exists` (polymorphic version)
+  - Deprecated in Task 881 in favor of Int-specialized version
 - **Construction.lean**: `singleFamily_modal_backward_axiom` (FALSE, deprecated)
   - This axiom was mathematically false (claimed phi -> Box phi in MCS)
   - Replaced by `fully_saturated_bmcs_exists` in Task 843

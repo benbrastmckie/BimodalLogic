@@ -1,7 +1,7 @@
 # Implementation Plan: Task #881 (Revised)
 
 - **Task**: 881 - Modally Saturated BMCS Construction
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 6-8 hours
 - **Dependencies**: None (builds on existing SaturatedConstruction.lean infrastructure)
 - **Research Inputs**: research-004.md, research-005.md (team research on path forward and Int safety)
@@ -97,7 +97,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Specialize Axiom to Int [NOT STARTED]
+### Phase 1: Specialize Axiom to Int [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Replace polymorphic D with Int in axiom and downstream usages
@@ -123,7 +123,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Create InterleaveConstruction.lean [NOT STARTED]
+### Phase 2: Create InterleaveConstruction.lean [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Implement omega-step interleaving construction for temporal witness placement
@@ -184,9 +184,25 @@ For G phi at time t, the construction must include phi in ALL times (both alread
 - No sorries in InterleaveConstruction.lean (or documented with clear remediation)
 - `interleave_family_temporally_coherent` theorem compiles
 
+**Blocking Issue (Task 881 Session sess_1771024479_16a793)**:
+The core problem is that combining temporal coherence with modal saturation is non-trivial:
+1. **Temporal coherence** (from DovetailingChain) gives us a single temporally-coherent family
+2. **Modal saturation** (from exists_fullySaturated_extension) adds witness families via Zorn
+3. **The new witness families** are constant (same MCS at all times)
+4. **Constant families need temporally-saturated MCS** (F psi -> psi, P psi -> psi in MCS)
+5. **Temporally-saturated MCS requires Henkin-style construction** which is proven flawed
+
+The InterleaveConstruction approach would build ALL families together uniformly, avoiding
+the need to combine separate temporal and modal constructions. However, this requires
+significant new infrastructure not covered by existing codebase.
+
+**Alternative Approach Identified**: Restructure truth lemma to only require temporal
+coherence for eval_family (not all families). This would allow the existing constructions
+to be combined without the Henkin requirement.
+
 ---
 
-### Phase 3: Wire Construction to Replace Axiom [NOT STARTED]
+### Phase 3: Wire Construction to Replace Axiom [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Replace `fully_saturated_bmcs_exists_int` axiom with constructive proof
