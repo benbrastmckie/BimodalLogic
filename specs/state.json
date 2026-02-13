@@ -535,7 +535,7 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T20:50:54Z",
+      "last_updated": "2026-02-13T21:04:28Z",
       "artifacts": [
         {
           "type": "research",
@@ -546,6 +546,11 @@
           "type": "research",
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-002.md",
           "summary": "Two-tier vs single-pass analysis - recommends unified Zorn approach over two-tier"
+        },
+        {
+          "type": "research",
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-003.md",
+          "summary": "Final analysis: Fix existing 3 sorries with S5 BoxContent invariance (supersedes unified Zorn recommendation)"
         }
       ],
       "session_id": "sess_1771014607_51a8ef",
