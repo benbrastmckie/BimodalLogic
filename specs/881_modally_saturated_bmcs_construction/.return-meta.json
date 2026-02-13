@@ -1,14 +1,44 @@
 {
   "status": "researched",
-  "artifacts": [{
-    "type": "research",
-    "path": "specs/881_modally_saturated_bmcs_construction/reports/research-006.md",
-    "summary": "Analyzes blocking issue between modal saturation and temporal coherence, recommends truth lemma restructuring as primary path forward"
-  }],
+  "summary": "Team research completed with 2 teammates",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/881_modally_saturated_bmcs_construction/reports/research-007.md",
+      "summary": "Team research v4: constant families are design choice, zero-compromise path requires dovetailing per-witness"
+    }
+  ],
+  "team_execution": {
+    "enabled": true,
+    "wave_count": 1,
+    "teammates_spawned": 2,
+    "teammates_completed": 2,
+    "teammates_failed": 0,
+    "token_usage_multiplier": 5.0,
+    "degraded_to_single": false
+  },
+  "teammate_results": [
+    {
+      "id": "teammate-a",
+      "status": "completed",
+      "output_file": "specs/881_modally_saturated_bmcs_construction/reports/teammate-a-findings.md",
+      "key_finding": "Constant families are design simplification, not mathematical necessity"
+    },
+    {
+      "id": "teammate-b",
+      "status": "completed",
+      "output_file": "specs/881_modally_saturated_bmcs_construction/reports/teammate-b-v4-findings.md",
+      "key_finding": "Zero-compromise requires dovetailing per-witness; 4 DovetailingChain sorries are blockers"
+    }
+  ],
+  "synthesis": {
+    "conflicts_found": 2,
+    "conflicts_resolved": 2,
+    "gaps_identified": 3,
+    "wave_2_triggered": false
+  },
   "metadata": {
-    "session_id": "sess_1771025390_d768ce",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "session_id": "sess_1771025990_5d87c1",
+    "agent_type": "skill-team-research"
   }
 }

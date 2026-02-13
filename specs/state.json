@@ -568,7 +568,7 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T23:33:23Z",
+      "last_updated": "2026-02-13T23:46:23Z",
       "artifacts": [
         {
           "type": "research",
@@ -624,10 +624,15 @@
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-006.md",
           "type": "research",
           "summary": "Analyzes blocking issue between modal saturation and temporal coherence, recommends truth lemma restructuring as primary path forward"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-007.md",
+          "type": "research",
+          "summary": "Team research v4: constant families are design choice, zero-compromise path requires dovetailing per-witness"
         }
       ],
-      "session_id": "sess_1771025390_d768ce",
-      "researched": "2026-02-13T23:33:23Z",
+      "session_id": "sess_1771025990_5d87c1",
+      "researched": "2026-02-13T23:46:23Z",
       "planned": "2026-02-13T23:08:58Z",
       "started": "2026-02-13T21:26:53Z"
     }
