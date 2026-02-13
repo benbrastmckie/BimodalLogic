@@ -535,12 +535,17 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T20:42:57Z",
+      "last_updated": "2026-02-13T20:50:54Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-001.md",
           "summary": "Team research: S5 axiom 5 breakthrough resolves 3 sorries in SaturatedConstruction via BoxContent invariance"
+        },
+        {
+          "type": "research",
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-002.md",
+          "summary": "Two-tier vs single-pass analysis - recommends unified Zorn approach over two-tier"
         }
       ],
       "session_id": "sess_1771014607_51a8ef",
