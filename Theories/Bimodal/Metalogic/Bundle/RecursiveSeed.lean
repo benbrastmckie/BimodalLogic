@@ -503,19 +503,21 @@ def buildSeedAux : Formula → Nat → Int → ModelSeed → ModelSeed
     let seed2 := seed1.addToAllFamilies timeIdx psi
     buildSeedAux psi famIdx timeIdx seed2
   | Formula.all_future psi, famIdx, timeIdx, seed =>
-    -- G psi: add G psi and psi to current, add psi to all future times, recurse
+    -- G psi: add G psi and psi to current, add psi to all future times, propagate G psi, recurse
     let phi := Formula.all_future psi
     let seed1 := seed.addFormula famIdx timeIdx phi .universal_target
     let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
     let seed3 := seed2.addToAllFutureTimes famIdx timeIdx psi
-    buildSeedAux psi famIdx timeIdx seed3
+    let seed4 := seed3.addToAllFutureTimes famIdx timeIdx phi  -- Propagate G psi to future times
+    buildSeedAux psi famIdx timeIdx seed4
   | Formula.all_past psi, famIdx, timeIdx, seed =>
-    -- H psi: add H psi and psi to current, add psi to all past times, recurse
+    -- H psi: add H psi and psi to current, add psi to all past times, propagate H psi, recurse
     let phi := Formula.all_past psi
     let seed1 := seed.addFormula famIdx timeIdx phi .universal_target
     let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
     let seed3 := seed2.addToAllPastTimes famIdx timeIdx psi
-    buildSeedAux psi famIdx timeIdx seed3
+    let seed4 := seed3.addToAllPastTimes famIdx timeIdx phi  -- Propagate H psi to past times
+    buildSeedAux psi famIdx timeIdx seed4
   -- Negated Box: neg(Box psi) = diamond(neg psi)
   | Formula.imp (Formula.box psi) Formula.bot, famIdx, timeIdx, seed =>
     let phi := Formula.neg (Formula.box psi)
@@ -1027,15 +1029,17 @@ theorem buildSeedAux_preserves_familyIndices (phi : Formula) (famIdx : Nat) (tim
       have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_future psi) .universal_target idx h_in
       have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
       have h3 := addToAllFutureTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
+      have h4 := addToAllFutureTimes_preserves_familyIndices' _ famIdx timeIdx (.all_future psi) idx h3
       have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
-      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h3
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h4
     | Formula.all_past psi =>
       simp only [buildSeedAux]
       have h1 := addFormula_preserves_familyIndices' seed famIdx timeIdx (.all_past psi) .universal_target idx h_in
       have h2 := addFormula_preserves_familyIndices' _ famIdx timeIdx psi .universal_target idx h1
       have h3 := addToAllPastTimes_preserves_familyIndices' _ famIdx timeIdx psi idx h2
+      have h4 := addToAllPastTimes_preserves_familyIndices' _ famIdx timeIdx (.all_past psi) idx h3
       have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
-      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h3
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h4
     | Formula.imp psi1 psi2 =>
       -- The imp case has several subcases depending on psi1 and psi2
       -- We need to match the pattern matching structure of buildSeedAux
@@ -2780,6 +2784,47 @@ either:
 For now, these lemmas provide the template for what's needed.
 -/
 
+/-- Membership in eraseDups implies membership in original list. -/
+private lemma mem_eraseDups_imp_mem {α : Type*} [BEq α] [LawfulBEq α] {a : α} (l : List α)
+    (h : a ∈ l.eraseDups) : a ∈ l := by
+  match l with
+  | [] => simp [List.eraseDups] at h
+  | x :: xs =>
+    rw [List.eraseDups_cons] at h
+    simp only [List.mem_cons] at h ⊢
+    cases h with
+    | inl heq => exact Or.inl heq
+    | inr h_rest =>
+      right
+      have h_in_filter := mem_eraseDups_imp_mem (xs.filter (fun b => !(b == x))) h_rest
+      exact (List.mem_filter.mp h_in_filter).1
+termination_by l.length
+decreasing_by
+  simp_wf
+  calc (List.filter (fun b => !b == x) xs).length
+      ≤ xs.length := List.length_filter_le _ _
+    _ < (x :: xs).length := by simp
+
+/-- eraseDups produces a list with no duplicates. -/
+private lemma nodup_eraseDups {α : Type*} [BEq α] [LawfulBEq α] (l : List α) :
+    l.eraseDups.Nodup := by
+  match l with
+  | [] => simp [List.eraseDups]
+  | x :: xs =>
+    rw [List.eraseDups_cons]
+    apply List.Nodup.cons
+    · intro h
+      have h' := mem_eraseDups_imp_mem _ h
+      simp only [List.mem_filter, beq_self_eq_true, Bool.not_true, and_false] at h'
+      exact Bool.false_ne_true h'.2  -- false = true is absurd
+    · exact nodup_eraseDups (xs.filter (fun b => !(b == x)))
+termination_by l.length
+decreasing_by
+  simp_wf
+  calc (List.filter (fun b => !b == x) xs).length
+      ≤ xs.length := List.length_filter_le _ _
+    _ < (x :: xs).length := by simp
+
 /--
 addToAllFutureTimes preserves seed consistency when G psi is present at all future entries.
 
@@ -2791,6 +2836,106 @@ psi preserves consistency.
 to satisfy this, G psi must be propagated to future times along with psi. See the
 positive G case in buildSeedAux_preserves_seedConsistent for how this applies.
 -/
+-- Helper: foldl adding psi to times preserves consistency when G psi is at each target entry
+private theorem foldl_addFormula_times_preserves_consistent_with_gpsi
+    (timeList : List Int) (seed : ModelSeed) (famIdx : Nat) (psi : Formula)
+    (h_seed_cons : SeedConsistent seed)
+    (h_psi_cons : FormulaConsistent psi)
+    (h_nodup : timeList.Nodup)
+    (h_gpsi_compat : ∀ t ∈ timeList, ∀ entry ∈ seed.entries,
+        entry.familyIdx = famIdx → entry.timeIdx = t →
+        psi.all_future ∈ entry.formulas) :
+    SeedConsistent (timeList.foldl (fun s t => s.addFormula famIdx t psi .universal_target) seed) := by
+  induction timeList generalizing seed with
+  | nil => exact h_seed_cons
+  | cons t ts ih =>
+    simp only [List.foldl_cons]
+    -- Get the nodup info for the tail
+    have h_nodup_tail : ts.Nodup := (List.nodup_cons.mp h_nodup).2
+    have h_t_not_in_ts : t ∉ ts := (List.nodup_cons.mp h_nodup).1
+    apply ih
+    · -- addFormula preserves SeedConsistent
+      apply addFormula_seed_preserves_consistent
+      · exact h_seed_cons
+      · exact h_psi_cons
+      · intro entry h_entry h_fam h_time
+        -- entry is at (famIdx, t) in seed, so G psi ∈ entry.formulas
+        have h_gpsi_in : psi.all_future ∈ entry.formulas :=
+          h_gpsi_compat t (List.mem_cons_self) entry h_entry h_fam h_time
+        -- psi is derivable from G psi via temp_t_future
+        have h_entry_cons : SetConsistent entry.formulas := h_seed_cons entry h_entry
+        have d_psi : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ entry.formulas) ∧
+            Nonempty (Bimodal.ProofSystem.DerivationTree L psi) := by
+          use [psi.all_future]
+          constructor
+          · intro ψ hψ; simp only [List.mem_singleton] at hψ; rw [hψ]; exact h_gpsi_in
+          · constructor
+            have d_t : Bimodal.ProofSystem.DerivationTree [] (psi.all_future.imp psi) :=
+              Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future psi)
+            have d_gpsi : Bimodal.ProofSystem.DerivationTree [psi.all_future] psi.all_future :=
+              Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+            have d_t' : Bimodal.ProofSystem.DerivationTree [psi.all_future] (psi.all_future.imp psi) :=
+              Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_t (by intro; simp)
+            exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_t' d_gpsi
+        exact addFormula_preserves_consistent h_entry_cons d_psi
+    · -- ts.Nodup
+      exact h_nodup_tail
+    · -- G psi compat for remaining times in modified seed
+      intro t' ht' entry h_entry h_fam h_time
+      unfold ModelSeed.addFormula at h_entry
+      cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == t) with
+      | some idx =>
+        simp only [h_find] at h_entry
+        rw [List.mem_modify_iff] at h_entry
+        cases h_entry with
+        | inl h_old =>
+          obtain ⟨j, hj, _⟩ := h_old
+          exact h_gpsi_compat t' (List.mem_cons_of_mem t ht') entry (List.mem_of_getElem? hj) h_fam h_time
+        | inr h_mod =>
+          obtain ⟨old_entry, h_old, h_eq⟩ := h_mod
+          subst h_eq
+          simp only
+          have h_mem := List.mem_of_getElem? h_old
+          have h_pred := List.findIdx?_eq_some_iff_getElem.mp h_find
+          obtain ⟨_, h_pred_holds, _⟩ := h_pred
+          have h_old_fam : old_entry.familyIdx = famIdx := by
+            have h_old_some := (List.getElem?_eq_some_iff.mp h_old)
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred_holds
+            rw [h_old_some.2] at h_pred_holds
+            exact h_pred_holds.1
+          -- h_time says old_entry.timeIdx = t', but modified entry preserves timeIdx
+          -- Since old_entry.familyIdx = famIdx = h_fam and old_entry.timeIdx = t' = h_time
+          have h_gpsi_in := h_gpsi_compat t' (List.mem_cons_of_mem t ht') old_entry h_mem h_old_fam h_time
+          exact Set.mem_insert_of_mem psi h_gpsi_in
+      | none =>
+        simp only [h_find] at h_entry
+        rw [List.mem_append, List.mem_singleton] at h_entry
+        cases h_entry with
+        | inl h_old => exact h_gpsi_compat t' (List.mem_cons_of_mem t ht') entry h_old h_fam h_time
+        | inr h_new =>
+          subst h_new
+          simp only at h_fam h_time
+          -- New entry has formulas = {psi}, not G psi
+          -- But if t' = t, then we're looking at the new entry which has psi, not G psi
+          -- The h_find = none means no existing entry at (famIdx, t)
+          -- But the new entry has timeIdx = t, and h_time says timeIdx = t'
+          -- So t = t', but we have ts which doesn't include t (since t is head)
+          -- Wait, ht' : t' ∈ ts, so t' ≠ t (unless ts has duplicates)
+          -- The new entry has timeIdx = t, but h_time says entry.timeIdx = t' with t' ∈ ts
+          -- Since entry is the new entry {psi}, its timeIdx = t
+          -- But h_time says t = t', yet t' ∈ ts (the tail after removing t)
+          -- The time list comes from eraseDups, so there are no duplicates
+          -- If t' ∈ ts and new entry has timeIdx = t (head), then t ≠ t' unless ts has t
+          -- This means the case is impossible because t' ≠ t
+          -- Case is impossible: t = t' but t ∉ ts and t' ∈ ts
+          exfalso
+          -- h_time gives t = t' (new entry has timeIdx = t)
+          have h_t_eq_t' : t = t' := h_time
+          -- ht' : t' ∈ ts, so by substitution t ∈ ts
+          rw [← h_t_eq_t'] at ht'
+          -- But h_t_not_in_ts : t ∉ ts - contradiction!
+          exact h_t_not_in_ts ht'
+
 theorem addToAllFutureTimes_preserves_seedConsistent_with_gpsi
     (seed : ModelSeed) (famIdx : Nat) (currentTime : Int) (psi : Formula)
     (h_seed_cons : SeedConsistent seed)
@@ -2800,12 +2945,104 @@ theorem addToAllFutureTimes_preserves_seedConsistent_with_gpsi
         psi.all_future ∈ entry.formulas) :
     SeedConsistent (seed.addToAllFutureTimes famIdx currentTime psi) := by
   unfold ModelSeed.addToAllFutureTimes
-  -- The fold adds psi to each future time entry
-  -- At each entry, G psi is present (by h_gpsi_at_futures)
-  -- So psi is derivable from G psi via temp_t_future
-  -- This derivation ensures adding psi preserves consistency
-  -- For now, use a sorry to mark this as the target proof
-  sorry
+  apply foldl_addFormula_times_preserves_consistent_with_gpsi
+  · exact h_seed_cons
+  · exact h_psi_cons
+  · exact nodup_eraseDups _
+  · intro t ht entry h_entry h_fam h_time
+    -- t is in the future times list, so entry.timeIdx = t > currentTime
+    -- Need to show t > currentTime
+    have h_t_future : t > currentTime := by
+      -- t comes from filtering entries with timeIdx > currentTime
+      have ht' := mem_eraseDups_imp_mem _ ht
+      simp only [List.mem_map, List.mem_filter] at ht'
+      obtain ⟨e, ⟨he_mem, he_filter⟩, he_t⟩ := ht'
+      simp only [Bool.and_eq_true, decide_eq_true_eq] at he_filter
+      rw [← he_t]
+      exact he_filter
+    exact h_gpsi_at_futures entry h_entry h_fam (h_time ▸ h_t_future)
+
+-- Helper: foldl adding psi to times preserves consistency when H psi is at each target entry
+private theorem foldl_addFormula_times_preserves_consistent_with_hpsi
+    (timeList : List Int) (seed : ModelSeed) (famIdx : Nat) (psi : Formula)
+    (h_seed_cons : SeedConsistent seed)
+    (h_psi_cons : FormulaConsistent psi)
+    (h_nodup : timeList.Nodup)
+    (h_hpsi_compat : ∀ t ∈ timeList, ∀ entry ∈ seed.entries,
+        entry.familyIdx = famIdx → entry.timeIdx = t →
+        psi.all_past ∈ entry.formulas) :
+    SeedConsistent (timeList.foldl (fun s t => s.addFormula famIdx t psi .universal_target) seed) := by
+  induction timeList generalizing seed with
+  | nil => exact h_seed_cons
+  | cons t ts ih =>
+    simp only [List.foldl_cons]
+    have h_nodup_tail : ts.Nodup := (List.nodup_cons.mp h_nodup).2
+    have h_t_not_in_ts : t ∉ ts := (List.nodup_cons.mp h_nodup).1
+    apply ih
+    · -- addFormula preserves SeedConsistent
+      apply addFormula_seed_preserves_consistent
+      · exact h_seed_cons
+      · exact h_psi_cons
+      · intro entry h_entry h_fam h_time
+        -- entry is at (famIdx, t) in seed, so H psi ∈ entry.formulas
+        have h_hpsi_in : psi.all_past ∈ entry.formulas :=
+          h_hpsi_compat t (List.mem_cons_self) entry h_entry h_fam h_time
+        -- psi is derivable from H psi via temp_t_past
+        have h_entry_cons : SetConsistent entry.formulas := h_seed_cons entry h_entry
+        have d_psi : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ entry.formulas) ∧
+            Nonempty (Bimodal.ProofSystem.DerivationTree L psi) := by
+          use [psi.all_past]
+          constructor
+          · intro ψ hψ; simp only [List.mem_singleton] at hψ; rw [hψ]; exact h_hpsi_in
+          · constructor
+            have d_t : Bimodal.ProofSystem.DerivationTree [] (psi.all_past.imp psi) :=
+              Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past psi)
+            have d_hpsi : Bimodal.ProofSystem.DerivationTree [psi.all_past] psi.all_past :=
+              Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+            have d_t' : Bimodal.ProofSystem.DerivationTree [psi.all_past] (psi.all_past.imp psi) :=
+              Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_t (by intro; simp)
+            exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_t' d_hpsi
+        exact addFormula_preserves_consistent h_entry_cons d_psi
+    · -- ts.Nodup
+      exact h_nodup_tail
+    · -- H psi compat for remaining times in modified seed
+      intro t' ht' entry h_entry h_fam h_time
+      unfold ModelSeed.addFormula at h_entry
+      cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == t) with
+      | some idx =>
+        simp only [h_find] at h_entry
+        rw [List.mem_modify_iff] at h_entry
+        cases h_entry with
+        | inl h_old =>
+          obtain ⟨j, hj, _⟩ := h_old
+          exact h_hpsi_compat t' (List.mem_cons_of_mem t ht') entry (List.mem_of_getElem? hj) h_fam h_time
+        | inr h_mod =>
+          obtain ⟨old_entry, h_old, h_eq⟩ := h_mod
+          subst h_eq
+          simp only
+          have h_mem := List.mem_of_getElem? h_old
+          have h_pred := List.findIdx?_eq_some_iff_getElem.mp h_find
+          obtain ⟨_, h_pred_holds, _⟩ := h_pred
+          have h_old_fam : old_entry.familyIdx = famIdx := by
+            have h_old_some := (List.getElem?_eq_some_iff.mp h_old)
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred_holds
+            rw [h_old_some.2] at h_pred_holds
+            exact h_pred_holds.1
+          have h_hpsi_in := h_hpsi_compat t' (List.mem_cons_of_mem t ht') old_entry h_mem h_old_fam h_time
+          exact Set.mem_insert_of_mem psi h_hpsi_in
+      | none =>
+        simp only [h_find] at h_entry
+        rw [List.mem_append, List.mem_singleton] at h_entry
+        cases h_entry with
+        | inl h_old => exact h_hpsi_compat t' (List.mem_cons_of_mem t ht') entry h_old h_fam h_time
+        | inr h_new =>
+          -- Case is impossible: t = t' but t ∉ ts and t' ∈ ts
+          exfalso
+          subst h_new
+          simp only at h_fam h_time
+          have h_t_eq_t' : t = t' := h_time
+          rw [← h_t_eq_t'] at ht'
+          exact h_t_not_in_ts ht'
 
 /--
 addToAllPastTimes preserves seed consistency when H psi is present at all past entries.
@@ -2821,8 +3058,20 @@ theorem addToAllPastTimes_preserves_seedConsistent_with_hpsi
         psi.all_past ∈ entry.formulas) :
     SeedConsistent (seed.addToAllPastTimes famIdx currentTime psi) := by
   unfold ModelSeed.addToAllPastTimes
-  -- Symmetric to future case, using temp_t_past
-  sorry
+  apply foldl_addFormula_times_preserves_consistent_with_hpsi
+  · exact h_seed_cons
+  · exact h_psi_cons
+  · exact nodup_eraseDups _
+  · intro t ht entry h_entry h_fam h_time
+    -- t is in the past times list, so entry.timeIdx = t < currentTime
+    have h_t_past : t < currentTime := by
+      have ht' := mem_eraseDups_imp_mem _ ht
+      simp only [List.mem_map, List.mem_filter] at ht'
+      obtain ⟨e, ⟨he_mem, he_filter⟩, he_t⟩ := ht'
+      simp only [Bool.and_eq_true, decide_eq_true_eq] at he_filter
+      rw [← he_t]
+      exact he_filter
+    exact h_hpsi_at_pasts entry h_entry h_fam (h_time ▸ h_t_past)
 
 /--
 Helper: find? on modified list returns the modified element if predicate is preserved.
@@ -3406,8 +3655,8 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
     (seed : ModelSeed) (h_cons : SeedConsistent seed) (h_wf : SeedWellFormed seed)
     (h_phi_in : phi ∈ seed.getFormulas famIdx timeIdx)
     (h_phi_cons : FormulaConsistent phi)
-    (h_single_family : seed.familyIndices = [famIdx])
-    (h_single_time : seed.timeIndices famIdx = [timeIdx]) :
+    (h_single_family : phi.needsPositiveHypotheses → seed.familyIndices = [famIdx])
+    (h_single_time : phi.needsPositiveHypotheses → seed.timeIndices famIdx = [timeIdx]) :
     SeedConsistent (buildSeedAux phi famIdx timeIdx seed) := by
   -- Use strong induction on formula complexity
   generalize h_c : phi.complexity = c
@@ -3497,6 +3746,9 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
       -- Define intermediate seeds for clarity
       let seed1 := seed.addFormula famIdx timeIdx psi.box .universal_target
       let seed2 := seed1.addToAllFamilies timeIdx psi
+      -- Extract concrete hypotheses (box is a positive case, needsPositiveHypotheses = true)
+      have h_single_family_proof : seed.familyIndices = [famIdx] := h_single_family rfl
+      have h_single_time_proof : seed.timeIndices famIdx = [timeIdx] := h_single_time rfl
       -- Show psi is consistent (from Box psi being consistent)
       have h_psi_cons : FormulaConsistent psi := box_consistent_implies_content_consistent h_phi_cons
       -- Show complexity decreases for IH
@@ -3537,7 +3789,7 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         exact addToAllFamilies_adds_at_family seed1 famIdx timeIdx psi h_fam_in_seed1
       -- Show seed1 preserves single-family property (needed for both seed2 consistency and IH)
       have h_seed1_single : seed1.familyIndices = [famIdx] :=
-        addFormula_preserves_single_family seed famIdx timeIdx psi.box .universal_target h_single_family
+        addFormula_preserves_single_family seed famIdx timeIdx psi.box .universal_target h_single_family_proof
       -- Show seed2 is consistent
       -- This requires showing that adding psi to all families preserves consistency
       -- For entries that already have Box psi, psi is derivable via T-axiom
@@ -3593,19 +3845,25 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         addToAllFamilies_preserves_single_family seed1 famIdx timeIdx psi h_seed1_single
       -- Show seed2 preserves single-time property
       have h_seed1_single_time : seed1.timeIndices famIdx = [timeIdx] :=
-        addFormula_preserves_single_time seed famIdx timeIdx psi.box .universal_target h_single_time
+        addFormula_preserves_single_time seed famIdx timeIdx psi.box .universal_target h_single_time_proof
       have h_seed2_single_time : seed2.timeIndices famIdx = [timeIdx] :=
         addToAllFamilies_preserves_single_time seed1 famIdx timeIdx psi h_seed1_single h_seed1_single_time
-      -- Apply IH
+      -- Apply IH with conditional hypotheses for psi (which may or may not need them)
       exact ih psi.complexity h_complexity psi famIdx timeIdx seed2
-        h_seed2_cons h_seed2_wf h_psi_in_seed2 h_psi_cons h_seed2_single h_seed2_single_time rfl
+        h_seed2_cons h_seed2_wf h_psi_in_seed2 h_psi_cons
+        (fun _ => h_seed2_single) (fun _ => h_seed2_single_time) rfl
     | Formula.all_future psi =>
-      -- G case: adds G psi to current, psi to current, psi to all future times, recurses on psi
+      -- G case: adds G psi to current, psi to current, psi to all future times, G psi to all future times, recurses on psi
       simp only [buildSeedAux]
       -- Define intermediate seeds for clarity
-      let seed1 := seed.addFormula famIdx timeIdx psi.all_future .universal_target
+      let phi := psi.all_future
+      let seed1 := seed.addFormula famIdx timeIdx phi .universal_target
       let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
       let seed3 := seed2.addToAllFutureTimes famIdx timeIdx psi
+      let seed4 := seed3.addToAllFutureTimes famIdx timeIdx phi
+      -- Extract concrete hypotheses (all_future is a positive case, needsPositiveHypotheses = true)
+      have h_single_family_proof : seed.familyIndices = [famIdx] := h_single_family rfl
+      have h_single_time_proof : seed.timeIndices famIdx = [timeIdx] := h_single_time rfl
       -- Show psi is consistent (from G psi being consistent)
       have h_psi_cons : FormulaConsistent psi := all_future_consistent_implies_content_consistent h_phi_cons
       -- Show complexity decreases for IH
@@ -3619,7 +3877,7 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         · intro entry h_entry h_fam h_time
           have h_entry_cons := h_cons entry h_entry
           have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
-          have h_phi_in_entry : psi.all_future ∈ entry.formulas := by
+          have h_phi_in_entry : phi ∈ entry.formulas := by
             rw [← h_getFormulas_eq]; exact h_phi_in
           rw [Set.insert_eq_of_mem h_phi_in_entry]
           exact h_entry_cons
@@ -3649,28 +3907,28 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           -- So psi is derivable, and insert preserves consistency
           have h_entry_cons := h_seed1_cons entry h_entry
           -- entry is at (famIdx, timeIdx) in seed1, so G psi ∈ entry.formulas
-          have h_gpsi_in : psi.all_future ∈ entry.formulas := by
+          have h_gpsi_in : phi ∈ entry.formulas := by
             have h_eq := getFormulas_eq_of_wellformed_and_at_position seed1 entry famIdx timeIdx
               h_seed1_wf h_entry h_fam h_time
-            have h_in_seed1 : psi.all_future ∈ seed1.getFormulas famIdx timeIdx :=
-              addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_future .universal_target
+            have h_in_seed1 : phi ∈ seed1.getFormulas famIdx timeIdx :=
+              addFormula_formula_in_getFormulas seed famIdx timeIdx phi .universal_target
             rw [h_eq] at h_in_seed1
             exact h_in_seed1
           -- Build derivation: [G psi] ⊢ psi via temp_t_future
           have d_psi : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ entry.formulas) ∧
               Nonempty (Bimodal.ProofSystem.DerivationTree L psi) := by
-            use [psi.all_future]
+            use [phi]
             constructor
             · intro ψ hψ
               simp only [List.mem_singleton] at hψ
               rw [hψ]
               exact h_gpsi_in
             · constructor
-              have d_t : Bimodal.ProofSystem.DerivationTree [] (psi.all_future.imp psi) :=
+              have d_t : Bimodal.ProofSystem.DerivationTree [] (phi.imp psi) :=
                 Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future psi)
-              have d_gpsi : Bimodal.ProofSystem.DerivationTree [psi.all_future] psi.all_future :=
+              have d_gpsi : Bimodal.ProofSystem.DerivationTree [phi] phi :=
                 Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
-              have d_t' : Bimodal.ProofSystem.DerivationTree [psi.all_future] (psi.all_future.imp psi) :=
+              have d_t' : Bimodal.ProofSystem.DerivationTree [phi] (phi.imp psi) :=
                 Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_t (by intro; simp)
               exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_t' d_gpsi
           exact addFormula_preserves_consistent h_entry_cons d_psi
@@ -3681,31 +3939,28 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         · intro h_none
           -- This case is impossible: seed1 has G psi at (famIdx, timeIdx)
           exfalso
-          have h_in : psi.all_future ∈ seed1.getFormulas famIdx timeIdx :=
-            addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_future .universal_target
+          have h_in : phi ∈ seed1.getFormulas famIdx timeIdx :=
+            addFormula_formula_in_getFormulas seed famIdx timeIdx phi .universal_target
           unfold ModelSeed.getFormulas at h_in
           rw [h_none] at h_in
           exact Set.not_mem_empty _ h_in
       -- Establish single-time properties first (needed for h_no_future)
       have h_seed1_single_time : seed1.timeIndices famIdx = [timeIdx] :=
-        addFormula_preserves_single_time seed famIdx timeIdx psi.all_future .universal_target h_single_time
+        addFormula_preserves_single_time seed famIdx timeIdx phi .universal_target h_single_time_proof
       have h_seed2_single_time : seed2.timeIndices famIdx = [timeIdx] :=
         addFormula_preserves_single_time seed1 famIdx timeIdx psi .universal_target h_seed1_single_time
+      -- Key insight: on the positive branch with single-time, there are no future times
+      -- addToAllFutureTimes folds over an empty list, so seed3 = seed2 and seed4 = seed3 = seed2
+      have h_no_future : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx > timeIdx) = [] :=
+        no_future_times_of_single_time seed2 famIdx timeIdx h_seed2_single_time
+      -- Show seed3 = seed2 via the empty fold
+      have h_seed3_eq : seed3 = seed2 := by
+        show seed2.addToAllFutureTimes famIdx timeIdx psi = seed2
+        unfold ModelSeed.addToAllFutureTimes
+        simp only [h_no_future, List.map_nil]
+        rfl
       -- Show seed3 is consistent and well-formed
-      -- Adding psi to all future times preserves consistency
-      have h_seed3_cons : SeedConsistent seed3 := by
-        -- Key insight: on the positive branch with single-time, there are no future times
-        -- addToAllFutureTimes folds over an empty list, so seed3 = seed2
-        have h_no_future : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx > timeIdx) = [] :=
-          no_future_times_of_single_time seed2 famIdx timeIdx h_seed2_single_time
-        -- Show seed3 = seed2 via the empty fold
-        have h_seed3_eq : seed3 = seed2 := by
-          show seed2.addToAllFutureTimes famIdx timeIdx psi = seed2
-          unfold ModelSeed.addToAllFutureTimes
-          simp only [h_no_future, List.map_nil]
-          rfl
-        rw [h_seed3_eq]
-        exact h_seed2_cons
+      have h_seed3_cons : SeedConsistent seed3 := by rw [h_seed3_eq]; exact h_seed2_cons
       have h_seed3_wf : SeedWellFormed seed3 := by
         apply addToAllFutureTimes_preserves_wellFormed
         · exact h_seed2_wf
@@ -3721,42 +3976,67 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
             simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
             rw [← h_pred.1]; exact h_entry_valid
           | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
-      -- Show psi is in seed3 at (famIdx, timeIdx)
-      have h_psi_in_seed3 : psi ∈ seed3.getFormulas famIdx timeIdx := by
-        -- seed3 = seed2.addToAllFutureTimes famIdx timeIdx psi
-        -- addToAllFutureTimes only modifies times > timeIdx, so psi at timeIdx is preserved
-        rw [addToAllFutureTimes_preserves_getFormulas_current]
-        -- psi is in seed2 at (famIdx, timeIdx)
-        exact addFormula_formula_in_getFormulas seed1 famIdx timeIdx psi .universal_target
       -- Show seed3 preserves single-family property
       have h_seed1_single : seed1.familyIndices = [famIdx] :=
-        addFormula_preserves_single_family seed famIdx timeIdx psi.all_future .universal_target h_single_family
+        addFormula_preserves_single_family seed famIdx timeIdx phi .universal_target h_single_family_proof
       have h_seed2_single : seed2.familyIndices = [famIdx] :=
         addFormula_preserves_single_family seed1 famIdx timeIdx psi .universal_target h_seed1_single
       have h_seed3_single : seed3.familyIndices = [famIdx] :=
         addToAllFutureTimes_preserves_single_family seed2 famIdx timeIdx psi h_seed2_single
       -- Show seed3 preserves single-time property
-      -- Since there are no future times, seed3 = seed2, so timeIndices is preserved
       have h_seed3_single_time : seed3.timeIndices famIdx = [timeIdx] := by
-        have h_no_future : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx > timeIdx) = [] :=
-          no_future_times_of_single_time seed2 famIdx timeIdx h_seed2_single_time
-        have h_seed3_eq : seed3 = seed2 := by
-          show seed2.addToAllFutureTimes famIdx timeIdx psi = seed2
-          unfold ModelSeed.addToAllFutureTimes
-          simp only [h_no_future, List.map_nil]
-          rfl
-        rw [h_seed3_eq]
-        exact h_seed2_single_time
-      -- Apply IH
-      exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
-        h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons h_seed3_single h_seed3_single_time rfl
+        rw [h_seed3_eq]; exact h_seed2_single_time
+      -- Now handle seed4 (adding G psi to all future times)
+      -- Since seed3 = seed2 has no future times, seed4 = seed3
+      have h_no_future_seed3 : (seed3.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx > timeIdx) = [] := by
+        rw [h_seed3_eq]; exact h_no_future
+      have h_seed4_eq : seed4 = seed3 := by
+        show seed3.addToAllFutureTimes famIdx timeIdx phi = seed3
+        unfold ModelSeed.addToAllFutureTimes
+        simp only [h_no_future_seed3, List.map_nil]
+        rfl
+      -- Show seed4 properties via seed4 = seed3
+      have h_seed4_cons : SeedConsistent seed4 := by rw [h_seed4_eq]; exact h_seed3_cons
+      have h_seed4_wf : SeedWellFormed seed4 := by
+        apply addToAllFutureTimes_preserves_wellFormed
+        · exact h_seed3_wf
+        · -- Need famIdx < seed3.nextFamilyIdx
+          rw [h_seed3_eq, addFormula_nextFamilyIdx, addFormula_nextFamilyIdx]
+          unfold ModelSeed.getFormulas at h_phi_in
+          cases h_find_entry : seed.findEntry famIdx timeIdx with
+          | some entry =>
+            unfold ModelSeed.findEntry at h_find_entry
+            have h_mem := List.mem_of_find?_eq_some h_find_entry
+            have h_entry_valid := h_wf.1 entry h_mem
+            have h_pred := List.find?_some h_find_entry
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+            rw [← h_pred.1]; exact h_entry_valid
+          | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+      -- Show psi is in seed4 at (famIdx, timeIdx)
+      have h_psi_in_seed4 : psi ∈ seed4.getFormulas famIdx timeIdx := by
+        rw [h_seed4_eq, h_seed3_eq]
+        -- psi is in seed2 at (famIdx, timeIdx)
+        exact addFormula_formula_in_getFormulas seed1 famIdx timeIdx psi .universal_target
+      have h_seed4_single : seed4.familyIndices = [famIdx] :=
+        addToAllFutureTimes_preserves_single_family seed3 famIdx timeIdx phi h_seed3_single
+      have h_seed4_single_time : seed4.timeIndices famIdx = [timeIdx] := by
+        rw [h_seed4_eq]; exact h_seed3_single_time
+      -- Apply IH with conditional hypotheses for psi
+      exact ih psi.complexity h_complexity psi famIdx timeIdx seed4
+        h_seed4_cons h_seed4_wf h_psi_in_seed4 h_psi_cons
+        (fun _ => h_seed4_single) (fun _ => h_seed4_single_time) rfl
     | Formula.all_past psi =>
-      -- H case: adds H psi to current, psi to current, psi to all past times, recurses on psi
+      -- H case: adds H psi to current, psi to current, psi to all past times, H psi to all past times, recurses on psi
       simp only [buildSeedAux]
       -- Define intermediate seeds for clarity
-      let seed1 := seed.addFormula famIdx timeIdx psi.all_past .universal_target
+      let phi := psi.all_past
+      let seed1 := seed.addFormula famIdx timeIdx phi .universal_target
       let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
       let seed3 := seed2.addToAllPastTimes famIdx timeIdx psi
+      let seed4 := seed3.addToAllPastTimes famIdx timeIdx phi
+      -- Extract concrete hypotheses (all_past is a positive case, needsPositiveHypotheses = true)
+      have h_single_family_proof : seed.familyIndices = [famIdx] := h_single_family rfl
+      have h_single_time_proof : seed.timeIndices famIdx = [timeIdx] := h_single_time rfl
       -- Show psi is consistent (from H psi being consistent)
       have h_psi_cons : FormulaConsistent psi := all_past_consistent_implies_content_consistent h_phi_cons
       -- Show complexity decreases for IH
@@ -3770,7 +4050,7 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         · intro entry h_entry h_fam h_time
           have h_entry_cons := h_cons entry h_entry
           have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position seed entry famIdx timeIdx h_wf h_entry h_fam h_time
-          have h_phi_in_entry : psi.all_past ∈ entry.formulas := by
+          have h_phi_in_entry : phi ∈ entry.formulas := by
             rw [← h_getFormulas_eq]; exact h_phi_in
           rw [Set.insert_eq_of_mem h_phi_in_entry]
           exact h_entry_cons
@@ -3798,28 +4078,28 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           -- psi is derivable from H psi via temporal T-axiom
           -- The entry at (famIdx, timeIdx) in seed1 has H psi
           have h_entry_cons := h_seed1_cons entry h_entry
-          have h_hpsi_in : psi.all_past ∈ entry.formulas := by
+          have h_hpsi_in : phi ∈ entry.formulas := by
             have h_eq := getFormulas_eq_of_wellformed_and_at_position seed1 entry famIdx timeIdx
               h_seed1_wf h_entry h_fam h_time
-            have h_in_seed1 : psi.all_past ∈ seed1.getFormulas famIdx timeIdx :=
-              addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_past .universal_target
+            have h_in_seed1 : phi ∈ seed1.getFormulas famIdx timeIdx :=
+              addFormula_formula_in_getFormulas seed famIdx timeIdx phi .universal_target
             rw [h_eq] at h_in_seed1
             exact h_in_seed1
           -- Build derivation: [H psi] ⊢ psi via temp_t_past
           have d_psi : ∃ L : List Formula, (∀ ψ ∈ L, ψ ∈ entry.formulas) ∧
               Nonempty (Bimodal.ProofSystem.DerivationTree L psi) := by
-            use [psi.all_past]
+            use [phi]
             constructor
             · intro ψ hψ
               simp only [List.mem_singleton] at hψ
               rw [hψ]
               exact h_hpsi_in
             · constructor
-              have d_t : Bimodal.ProofSystem.DerivationTree [] (psi.all_past.imp psi) :=
+              have d_t : Bimodal.ProofSystem.DerivationTree [] (phi.imp psi) :=
                 Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past psi)
-              have d_hpsi : Bimodal.ProofSystem.DerivationTree [psi.all_past] psi.all_past :=
+              have d_hpsi : Bimodal.ProofSystem.DerivationTree [phi] phi :=
                 Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
-              have d_t' : Bimodal.ProofSystem.DerivationTree [psi.all_past] (psi.all_past.imp psi) :=
+              have d_t' : Bimodal.ProofSystem.DerivationTree [phi] (phi.imp psi) :=
                 Bimodal.ProofSystem.DerivationTree.weakening [] _ _ d_t (by intro; simp)
               exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ d_t' d_hpsi
           exact addFormula_preserves_consistent h_entry_cons d_psi
@@ -3830,30 +4110,28 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         · intro h_none
           -- This case is impossible: seed1 has H psi at (famIdx, timeIdx)
           exfalso
-          have h_in : psi.all_past ∈ seed1.getFormulas famIdx timeIdx :=
-            addFormula_formula_in_getFormulas seed famIdx timeIdx psi.all_past .universal_target
+          have h_in : phi ∈ seed1.getFormulas famIdx timeIdx :=
+            addFormula_formula_in_getFormulas seed famIdx timeIdx phi .universal_target
           unfold ModelSeed.getFormulas at h_in
           rw [h_none] at h_in
           exact Set.not_mem_empty _ h_in
       -- Establish single-time properties first (needed for h_no_past)
       have h_seed1_single_time : seed1.timeIndices famIdx = [timeIdx] :=
-        addFormula_preserves_single_time seed famIdx timeIdx psi.all_past .universal_target h_single_time
+        addFormula_preserves_single_time seed famIdx timeIdx phi .universal_target h_single_time_proof
       have h_seed2_single_time : seed2.timeIndices famIdx = [timeIdx] :=
         addFormula_preserves_single_time seed1 famIdx timeIdx psi .universal_target h_seed1_single_time
+      -- Key insight: on the positive branch with single-time, there are no past times
+      -- addToAllPastTimes folds over an empty list, so seed3 = seed2 and seed4 = seed3 = seed2
+      have h_no_past : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx < timeIdx) = [] :=
+        no_past_times_of_single_time seed2 famIdx timeIdx h_seed2_single_time
+      -- Show seed3 = seed2 via the empty fold
+      have h_seed3_eq : seed3 = seed2 := by
+        show seed2.addToAllPastTimes famIdx timeIdx psi = seed2
+        unfold ModelSeed.addToAllPastTimes
+        simp only [h_no_past, List.map_nil]
+        rfl
       -- Show seed3 is consistent and well-formed
-      have h_seed3_cons : SeedConsistent seed3 := by
-        -- Key insight: on the positive branch with single-time, there are no past times
-        -- addToAllPastTimes folds over an empty list, so seed3 = seed2
-        have h_no_past : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx < timeIdx) = [] :=
-          no_past_times_of_single_time seed2 famIdx timeIdx h_seed2_single_time
-        -- Show seed3 = seed2 via the empty fold
-        have h_seed3_eq : seed3 = seed2 := by
-          show seed2.addToAllPastTimes famIdx timeIdx psi = seed2
-          unfold ModelSeed.addToAllPastTimes
-          simp only [h_no_past, List.map_nil]
-          rfl
-        rw [h_seed3_eq]
-        exact h_seed2_cons
+      have h_seed3_cons : SeedConsistent seed3 := by rw [h_seed3_eq]; exact h_seed2_cons
       have h_seed3_wf : SeedWellFormed seed3 := by
         apply addToAllPastTimes_preserves_wellFormed
         · exact h_seed2_wf
@@ -3869,35 +4147,55 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
             simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
             rw [← h_pred.1]; exact h_entry_valid
           | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
-      -- Show psi is in seed3 at (famIdx, timeIdx)
-      have h_psi_in_seed3 : psi ∈ seed3.getFormulas famIdx timeIdx := by
-        -- seed3 = seed2.addToAllPastTimes famIdx timeIdx psi
-        -- addToAllPastTimes only modifies times < timeIdx, so psi at timeIdx is preserved
-        rw [addToAllPastTimes_preserves_getFormulas_current]
-        -- psi is in seed2 at (famIdx, timeIdx)
-        exact addFormula_formula_in_getFormulas seed1 famIdx timeIdx psi .universal_target
       -- Show seed3 preserves single-family property
       have h_seed1_single : seed1.familyIndices = [famIdx] :=
-        addFormula_preserves_single_family seed famIdx timeIdx psi.all_past .universal_target h_single_family
+        addFormula_preserves_single_family seed famIdx timeIdx phi .universal_target h_single_family_proof
       have h_seed2_single : seed2.familyIndices = [famIdx] :=
         addFormula_preserves_single_family seed1 famIdx timeIdx psi .universal_target h_seed1_single
       have h_seed3_single : seed3.familyIndices = [famIdx] :=
         addToAllPastTimes_preserves_single_family seed2 famIdx timeIdx psi h_seed2_single
       -- Show seed3 preserves single-time property
-      -- Since there are no past times, seed3 = seed2, so timeIndices is preserved
       have h_seed3_single_time : seed3.timeIndices famIdx = [timeIdx] := by
-        have h_no_past : (seed2.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx < timeIdx) = [] :=
-          no_past_times_of_single_time seed2 famIdx timeIdx h_seed2_single_time
-        have h_seed3_eq : seed3 = seed2 := by
-          show seed2.addToAllPastTimes famIdx timeIdx psi = seed2
-          unfold ModelSeed.addToAllPastTimes
-          simp only [h_no_past, List.map_nil]
-          rfl
-        rw [h_seed3_eq]
-        exact h_seed2_single_time
-      -- Apply IH
-      exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
-        h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons h_seed3_single h_seed3_single_time rfl
+        rw [h_seed3_eq]; exact h_seed2_single_time
+      -- Now handle seed4 (adding H psi to all past times)
+      -- Since seed3 = seed2 has no past times, seed4 = seed3
+      have h_no_past_seed3 : (seed3.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx < timeIdx) = [] := by
+        rw [h_seed3_eq]; exact h_no_past
+      have h_seed4_eq : seed4 = seed3 := by
+        show seed3.addToAllPastTimes famIdx timeIdx phi = seed3
+        unfold ModelSeed.addToAllPastTimes
+        simp only [h_no_past_seed3, List.map_nil]
+        rfl
+      -- Show seed4 properties via seed4 = seed3
+      have h_seed4_cons : SeedConsistent seed4 := by rw [h_seed4_eq]; exact h_seed3_cons
+      have h_seed4_wf : SeedWellFormed seed4 := by
+        apply addToAllPastTimes_preserves_wellFormed
+        · exact h_seed3_wf
+        · -- Need famIdx < seed3.nextFamilyIdx
+          rw [h_seed3_eq, addFormula_nextFamilyIdx, addFormula_nextFamilyIdx]
+          unfold ModelSeed.getFormulas at h_phi_in
+          cases h_find_entry : seed.findEntry famIdx timeIdx with
+          | some entry =>
+            unfold ModelSeed.findEntry at h_find_entry
+            have h_mem := List.mem_of_find?_eq_some h_find_entry
+            have h_entry_valid := h_wf.1 entry h_mem
+            have h_pred := List.find?_some h_find_entry
+            simp only [beq_iff_eq, Bool.and_eq_true] at h_pred
+            rw [← h_pred.1]; exact h_entry_valid
+          | none => simp only [h_find_entry, Set.mem_empty_iff_false] at h_phi_in
+      -- Show psi is in seed4 at (famIdx, timeIdx)
+      have h_psi_in_seed4 : psi ∈ seed4.getFormulas famIdx timeIdx := by
+        rw [h_seed4_eq, h_seed3_eq]
+        -- psi is in seed2 at (famIdx, timeIdx)
+        exact addFormula_formula_in_getFormulas seed1 famIdx timeIdx psi .universal_target
+      have h_seed4_single : seed4.familyIndices = [famIdx] :=
+        addToAllPastTimes_preserves_single_family seed3 famIdx timeIdx phi h_seed3_single
+      have h_seed4_single_time : seed4.timeIndices famIdx = [timeIdx] := by
+        rw [h_seed4_eq]; exact h_seed3_single_time
+      -- Apply IH with conditional hypotheses for psi
+      exact ih psi.complexity h_complexity psi famIdx timeIdx seed4
+        h_seed4_cons h_seed4_wf h_psi_in_seed4 h_psi_cons
+        (fun _ => h_seed4_single) (fun _ => h_seed4_single_time) rfl
     | Formula.imp psi1 psi2 =>
       match psi1, psi2 with
       | Formula.box inner, Formula.bot =>
@@ -3950,33 +4248,16 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         -- Show inner.neg is in result.1's formulas at result.2
         have h_neg_in : inner.neg ∈ result.1.getFormulas result.2 timeIdx :=
           createNewFamily_formula_at_new_position seed1 timeIdx inner.neg h_seed1_wf
-        -- Show new family has single-family property for its subtree
-        -- After createNewFamily, result.2 is the newly created family index
-        -- The new family entry is the only entry at position (result.2, timeIdx)
-        -- For the IH, we need result.1.familyIndices = [result.2]
-        -- But this is NOT true - result.1 has both famIdx and result.2
-        -- However, the recursive call processes inner.neg which is an imp
-        -- and imp cases never recursively hit Box/G/H cases (only more neg-* or terminal)
-        -- So we need to pass SOME single-family value - let's compute what the new family is
-        have h_seed1_single : seed1.familyIndices = [famIdx] :=
-          addFormula_preserves_single_family seed famIdx timeIdx inner.box.neg .universal_target h_single_family
-        -- The new family is result.2 = seed1.nextFamilyIdx
-        -- For the new subtree, we claim familyIndices restricted to new family is just [result.2]
-        -- But actually, the full familyIndices is [famIdx, result.2]
-        -- We need to show that the IH doesn't actually NEED single-family for imp cases
-        -- For now, provide [result.2] as the hypothesis - we'll need to prove this separately
-        have h_seed2_single : result.1.familyIndices = [result.2] := by
-          -- This is FALSE: familyIndices = [famIdx, result.2] after createNewFamily
-          -- However, the hypothesis is "dead code" - inner.neg is an imp formula,
-          -- so the recursion never directly hits Box/G/H cases where single-family is needed.
-          sorry  -- DEAD CODE: inner.neg is imp, Box/G/H cases unreachable in recursion
         -- Show seed2 has single-time property at the NEW family
         -- For the new family result.2, there's only one entry at timeIdx, so this is TRUE
         have h_seed2_single_time : result.1.timeIndices result.2 = [timeIdx] :=
           createNewFamily_timeIndices_new_family seed1 timeIdx inner.neg h_seed1_wf
-        -- Apply IH
+        -- Apply IH with vacuous conditional hypotheses (inner.neg is an imp, needsPositiveHypotheses = false)
+        -- The hypotheses are never called because needsPositiveHypotheses returns false for all imp forms
         exact ih inner.neg.complexity h_complexity inner.neg result.2 timeIdx result.1
-          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons h_seed2_single h_seed2_single_time rfl
+          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons
+          (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim)
+          (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim) rfl
       | Formula.all_future inner, Formula.bot =>
         -- neg(G inner) case: creates new time in same family with neg inner
         simp only [buildSeedAux]
@@ -4044,20 +4325,12 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         -- Show inner.neg is in seed2's formulas at newTime
         have h_neg_in : inner.neg ∈ seed2.getFormulas famIdx newTime :=
           createNewTime_formula_at_new_position seed1 famIdx newTime inner.neg h_no_entry
-        -- Show seed2 preserves single-family property
-        have h_seed1_single : seed1.familyIndices = [famIdx] :=
-          addFormula_preserves_single_family seed famIdx timeIdx inner.all_future.neg .universal_target h_single_family
-        have h_seed2_single : seed2.familyIndices = [famIdx] :=
-          createNewTime_preserves_single_family seed1 famIdx newTime inner.neg h_seed1_single
-        -- Show seed2 has single-time property at the NEW time
-        -- NOTE: This is technically FALSE since timeIndices = [timeIdx, newTime]
-        -- However, the hypothesis is "dead code" - inner.neg is an imp formula,
-        -- so the recursion never directly hits G/H cases where single-time is needed.
-        have h_seed2_single_time : seed2.timeIndices famIdx = [newTime] := by
-          sorry  -- DEAD CODE: inner.neg is imp, G/H cases unreachable in recursion
-        -- Apply IH
+        -- Apply IH with vacuous conditional hypotheses (inner.neg is an imp, needsPositiveHypotheses = false)
+        -- The hypotheses are never called because needsPositiveHypotheses returns false for all imp forms
         exact ih inner.neg.complexity h_complexity inner.neg famIdx newTime seed2
-          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons h_seed2_single h_seed2_single_time rfl
+          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons
+          (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim)
+          (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim) rfl
       | Formula.all_past inner, Formula.bot =>
         -- neg(H inner) case: creates new time in same family with neg inner
         simp only [buildSeedAux]
@@ -4125,20 +4398,12 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
         -- Show inner.neg is in seed2's formulas at newTime
         have h_neg_in : inner.neg ∈ seed2.getFormulas famIdx newTime :=
           createNewTime_formula_at_new_position seed1 famIdx newTime inner.neg h_no_entry
-        -- Show seed2 preserves single-family property
-        have h_seed1_single : seed1.familyIndices = [famIdx] :=
-          addFormula_preserves_single_family seed famIdx timeIdx inner.all_past.neg .universal_target h_single_family
-        have h_seed2_single : seed2.familyIndices = [famIdx] :=
-          createNewTime_preserves_single_family seed1 famIdx newTime inner.neg h_seed1_single
-        -- Show seed2 has single-time property at the NEW time
-        -- NOTE: This is technically FALSE since timeIndices = [newTime, timeIdx]
-        -- However, the hypothesis is "dead code" - inner.neg is an imp formula,
-        -- so the recursion never directly hits G/H cases where single-time is needed.
-        have h_seed2_single_time : seed2.timeIndices famIdx = [newTime] := by
-          sorry  -- DEAD CODE: inner.neg is imp, G/H cases unreachable in recursion
-        -- Apply IH
+        -- Apply IH with vacuous conditional hypotheses (inner.neg is an imp, needsPositiveHypotheses = false)
+        -- The hypotheses are never called because needsPositiveHypotheses returns false for all imp forms
         exact ih inner.neg.complexity h_complexity inner.neg famIdx newTime seed2
-          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons h_seed2_single h_seed2_single_time rfl
+          h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons
+          (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim)
+          (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim) rfl
       | p1, p2 =>
         -- Generic implication case: We prove by case analysis on p1 and p2.
         -- For most combinations, buildSeedAux reduces to addFormula.
@@ -4216,14 +4481,11 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
               createNewFamily_preserves_wellFormed seed1 timeIdx inner.neg h_seed1_wf
             have h_neg_in : inner.neg ∈ result.1.getFormulas result.2 timeIdx :=
               createNewFamily_formula_at_new_position seed1 timeIdx inner.neg h_seed1_wf
-            have h_seed1_single : seed1.familyIndices = [famIdx] :=
-              addFormula_preserves_single_family seed famIdx timeIdx inner.box.neg .universal_target h_single_family
-            have h_seed2_single : result.1.familyIndices = [result.2] := by
-              sorry  -- STRUCTURAL: False but unused - inner.neg recursion ends at generic imp
-            have h_seed2_single_time : result.1.timeIndices result.2 = [timeIdx] :=
-              createNewFamily_timeIndices_new_family seed1 timeIdx inner.neg h_seed1_wf
+            -- Apply IH with vacuous conditional hypotheses (inner.neg is an imp, needsPositiveHypotheses = false)
             exact ih inner.neg.complexity h_complexity inner.neg result.2 timeIdx result.1
-              h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons h_seed2_single h_seed2_single_time rfl
+              h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons
+              (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim)
+              (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim) rfl
           | all_future inner =>
             -- neg-G case (duplicate of earlier case but reached via catch-all)
             subst hp1 hp2
@@ -4280,14 +4542,11 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
               · exact h_no_entry
             have h_neg_in : inner.neg ∈ seed2.getFormulas famIdx newTime :=
               createNewTime_formula_at_new_position seed1 famIdx newTime inner.neg h_no_entry
-            have h_seed1_single : seed1.familyIndices = [famIdx] :=
-              addFormula_preserves_single_family seed famIdx timeIdx inner.all_future.neg .universal_target h_single_family
-            have h_seed2_single : seed2.familyIndices = [famIdx] :=
-              createNewTime_preserves_single_family seed1 famIdx newTime inner.neg h_seed1_single
-            have h_seed2_single_time : seed2.timeIndices famIdx = [newTime] := by
-              sorry  -- STRUCTURAL: False but unused - inner.neg recursion ends at generic imp
+            -- Apply IH with vacuous conditional hypotheses (inner.neg is an imp, needsPositiveHypotheses = false)
             exact ih inner.neg.complexity h_complexity inner.neg famIdx newTime seed2
-              h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons h_seed2_single h_seed2_single_time rfl
+              h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons
+              (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim)
+              (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim) rfl
           | all_past inner =>
             -- neg-H case (duplicate of earlier case but reached via catch-all)
             subst hp1 hp2
@@ -4344,14 +4603,11 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
               · exact h_no_entry
             have h_neg_in : inner.neg ∈ seed2.getFormulas famIdx newTime :=
               createNewTime_formula_at_new_position seed1 famIdx newTime inner.neg h_no_entry
-            have h_seed1_single : seed1.familyIndices = [famIdx] :=
-              addFormula_preserves_single_family seed famIdx timeIdx inner.all_past.neg .universal_target h_single_family
-            have h_seed2_single : seed2.familyIndices = [famIdx] :=
-              createNewTime_preserves_single_family seed1 famIdx newTime inner.neg h_seed1_single
-            have h_seed2_single_time : seed2.timeIndices famIdx = [newTime] := by
-              sorry  -- STRUCTURAL: False but unused - inner.neg recursion ends at generic imp
+            -- Apply IH with vacuous conditional hypotheses (inner.neg is an imp, needsPositiveHypotheses = false)
             exact ih inner.neg.complexity h_complexity inner.neg famIdx newTime seed2
-              h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons h_seed2_single h_seed2_single_time rfl
+              h_seed2_cons h_seed2_wf h_neg_in h_inner_neg_cons
+              (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim)
+              (fun h => by simp only [Formula.neg] at h; exact (Bool.false_ne_true h).elim) rfl
           | imp q1 q2 =>
             -- Generic negation of implication
             subst hp2 hp1
@@ -4449,9 +4705,11 @@ theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
     exact Set.mem_singleton_iff.mpr rfl
   · -- phi is consistent
     exact h_cons
-  · -- Initial seed has single-family property: familyIndices = [0]
+  · -- Initial seed has single-family property: familyIndices = [0] (conditional)
+    intro _
     exact initial_familyIndices_eq phi
-  · -- Initial seed has single-time property: timeIndices 0 = [0]
+  · -- Initial seed has single-time property: timeIndices 0 = [0] (conditional)
+    intro _
     exact initial_timeIndices_eq phi
 
 end Bimodal.Metalogic.Bundle

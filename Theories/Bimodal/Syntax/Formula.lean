@@ -449,6 +449,34 @@ theorem swap_temporal_neg (φ : Formula) :
     φ.neg.swap_temporal = φ.swap_temporal.neg := by
   simp only [neg, swap_temporal]
 
+/--
+Formula requires the single-family/single-time hypotheses in buildSeedAux.
+All non-imp formulas need these for propagation. Imp formulas (including
+neg-Box, neg-G, neg-H, and generic imp) don't need them because they only
+recurse into other imp formulas which also don't need them.
+-/
+def needsPositiveHypotheses : Formula → Bool
+  | Formula.imp _ _ => false  -- All imp cases
+  | _ => true  -- atom, bot, box, G, H
+
+@[simp] lemma needsPositiveHypotheses_atom (s : String) :
+    (Formula.atom s).needsPositiveHypotheses = true := rfl
+
+@[simp] lemma needsPositiveHypotheses_bot :
+    Formula.bot.needsPositiveHypotheses = true := rfl
+
+@[simp] lemma needsPositiveHypotheses_box (psi : Formula) :
+    (Formula.box psi).needsPositiveHypotheses = true := rfl
+
+@[simp] lemma needsPositiveHypotheses_all_future (psi : Formula) :
+    (Formula.all_future psi).needsPositiveHypotheses = true := rfl
+
+@[simp] lemma needsPositiveHypotheses_all_past (psi : Formula) :
+    (Formula.all_past psi).needsPositiveHypotheses = true := rfl
+
+@[simp] lemma needsPositiveHypotheses_imp (p q : Formula) :
+    (Formula.imp p q).needsPositiveHypotheses = false := rfl
+
 end Formula
 
 end Bimodal.Syntax
