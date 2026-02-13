@@ -1,260 +1,249 @@
-# Teammate B: Multi-Witness Patterns Research
+# Teammate B: Alternative Approaches Analysis
 
 **Task**: 870 - Zorn-based family selection for temporal coherence
-**Focus**: Mathlib patterns for multi-witness seed consistency
-**Date**: 2026-02-11
+**Focus**: Alternative approaches for sorry-free path
+**Date**: 2026-02-12
+**Session**: sess_1770947549_cdaca1
 
 ## Summary
 
-Researched Mathlib and local codebase patterns for proving `multi_witness_seed_consistent_future/past`. The key challenge is handling multiple F-obligations (psi_1, ..., psi_n where F psi_i is in mcs(s_i) for various s_i < t) and proving their union with GContent is consistent.
+DovetailingChain has 4 sorry sites compared to ZornFamily's 6 active sorries. Critically, DovetailingChain's cross-sign propagation sorries are SOLVABLE using the same "collect-into-one-MCS" argument that works for Zorn's cross-sign case. The one-at-a-time witness strategy via `temporal_witness_seed_consistent` provides correct granularity for F/P witness placement. A combined approach using one-at-a-time witnesses plus GH-controlled Lindenbaum is theoretically cleanest but requires significant new infrastructure.
 
-## Mathlib Patterns Found
+## DovetailingChain Analysis
 
-### 1. MCS Disjunction Property (Local - Completeness.lean)
+### Current State
+- **File**: `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean`
+- **Lines**: 667
+- **Sorry count**: 4
+- **Construction**: Interleaved dovetailing (M_0, M_1, M_{-1}, M_2, M_{-2}, ...)
 
-```lean
-theorem set_mcs_disjunction_iff {S : Set Formula} {φ ψ : Formula}
-    (h_mcs : SetMaximalConsistent S) :
-    (φ.or ψ) ∈ S ↔ (φ ∈ S ∨ ψ ∈ S)
-```
+### Sorry Locations
 
-**Critical for multi-witness**: In MCS, a disjunction holds iff some disjunct holds. This is needed in the proof sketch where G(neg psi_1 | ... | neg psi_k) in M implies some G(neg psi_j) in M.
+| Line | Location | Type |
+|------|----------|------|
+| 606 | `buildDovetailingChainFamily.forward_G` (t < 0 branch) | Cross-sign G propagation |
+| 617 | `buildDovetailingChainFamily.backward_H` (t >= 0 branch) | Cross-sign H propagation |
+| 633 | `buildDovetailingChainFamily_forward_F` | F-witness construction |
+| 640 | `buildDovetailingChainFamily_backward_P` | P-witness construction |
 
-### 2. Generalized K Rules (Local - GeneralizedNecessitation.lean)
+### Sorry Classification
 
-```lean
-noncomputable def generalized_temporal_k : (Γ : Context) → (φ : Formula) →
-    (h : Γ ⊢ φ) → ((Context.map Formula.all_future Γ) ⊢ Formula.all_future φ)
+| Sorry | Type | Solvability |
+|-------|------|-------------|
+| Line 606 (forward_G cross-sign) | Cross-sign propagation | **SOLVABLE** - same "collect-into-one-MCS" argument as Zorn cross-sign |
+| Line 617 (backward_H cross-sign) | Cross-sign propagation | **SOLVABLE** - symmetric to line 606 |
+| Line 633 (forward_F) | F-witness construction | **HARDER** - requires dovetailing enumeration tracking |
+| Line 640 (backward_P) | P-witness construction | **HARDER** - symmetric to line 633 |
 
-noncomputable def generalized_past_k : (Γ : Context) → (φ : Formula) →
-    (h : Γ ⊢ φ) → ((Context.map Formula.all_past Γ) ⊢ Formula.all_past φ)
-```
+### Why DovetailingChain Might Be Better
 
-**Already available**: These lift derivations under G/H. Key for: L_G |--> G(neg_disjunction) when L_G |- neg_disjunction.
+1. **Cross-sign sorries are solvable**: Unlike Zorn's seed consistency problem (which is mathematically FALSE for conflicting F-obligations), DovetailingChain's cross-sign issues use the same "collect-into-one-MCS" argument that works in the Zorn cross-sign case.
 
-### 3. Single-Witness Seed Consistency (Local - TemporalCoherentConstruction.lean)
+2. **No multi-witness seed inconsistency**: DovetailingChain builds one MCS at a time with explicit witness placement. It never needs to place multiple F-witnesses simultaneously in the same seed.
 
-```lean
-theorem temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
-    SetConsistent ({psi} ∪ GContent M)
-```
+3. **Construction trace available**: The explicit construction order (dovetailIndex/dovetailRank) provides a trace that Zorn's maximality argument hides.
 
-**Proof technique**: Deduction theorem on filtered list, then generalized_temporal_k, then contradict F psi = neg(G(neg psi)) with G(neg psi) in M.
+4. **Proven infrastructure**:
+   - `dovetailRank_dovetailIndex` and `dovetailIndex_dovetailRank` are proven (inverses)
+   - `dovetail_neighbor_constructed` is proven
+   - Same-sign coherence (forward_G for t >= 0, backward_H for t <= 0) is fully proven
 
-### 4. De Morgan Laws (Mathlib - Logic.Basic)
+### Why DovetailingChain Has Different Challenges
 
-```lean
-theorem and_iff_not_or_not : a ∧ b ↔ ¬(¬a ∨ ¬b)
-theorem or_iff_not_and_not : a ∨ b ↔ ¬(¬a ∧ ¬b)
-```
+1. **F/P witness enumeration**: The F/P witness sorries require proving that the dovetailing enumeration eventually processes all (time, formula) pairs, ensuring witnesses are placed. This is a counting/enumeration argument, not a consistency argument.
 
-**Useful for**: Converting between conjunctions and disjunctions of negations.
+2. **Cross-sign requires global view**: Cross-sign propagation (G from negative to positive times) requires understanding that the construction propagates content through time 0 (the shared base MCS).
 
-## Applicable Techniques
+## One-at-a-Time Witness Strategy
 
-### Approach 1: Iterated Deduction Theorem
+### Available Infrastructure
 
-The proof sketch in ZornFamily.lean line 591-607 outlines this approach:
+- **`temporal_witness_seed_consistent`** (TemporalCoherentConstruction.lean):
+  - **Status**: PROVEN
+  - **Signature**: `(M : Set Formula) -> SetMaximalConsistent M -> (psi : Formula) -> some_future psi in M -> SetConsistent ({psi} union GContent M)`
+  - **Purpose**: Single F-witness seed is consistent
 
-1. Given L ⊆ {psi_1, ..., psi_n} ∪ GContent(M) with L |- bot
-2. Let L_psi = psis in L, L_G = GContent elements
-3. By iterated deduction theorem: L_G |- neg(psi_1 & ... & psi_k)
-4. By De Morgan: L_G |- neg(psi_1) | ... | neg(psi_k)
-5. By generalized_temporal_k: G(L_G) |- G(neg(psi_1) | ... | neg(psi_k))
-6. **Gap**: Need G(A | B) implies G(A) | G(B) (FALSE in general!)
+- **`temporal_witness_seed_consistent_past`** (TemporalLindenbaum.lean):
+  - **Status**: PROVEN
+  - **Signature**: `(M : Set Formula) -> SetMaximalConsistent M -> (psi : Formula) -> some_past psi in M -> SetConsistent ({psi} union HContent M)`
+  - **Purpose**: Single P-witness seed is consistent
 
-**Issue**: G does NOT distribute over disjunction in normal modal logic. G(A | B) is WEAKER than G(A) | G(B). This approach requires a different technique.
+### Related Lemmas (All Verified via lean_local_search)
 
-### Approach 2: Finite Conjunction Reduction (Recommended)
+| Lemma | File | Status |
+|-------|------|--------|
+| `GContent_consistent` | ZornFamily.lean, TemporalChain.lean | PROVEN |
+| `HContent_consistent` | ZornFamily.lean, TemporalChain.lean | PROVEN |
+| `GContent_propagates_forward` | ZornFamily.lean | PROVEN |
+| `HContent_propagates_backward` | ZornFamily.lean | PROVEN |
+| `CoherentExtensions_chain_has_ub` | ZornFamily.lean | PROVEN |
 
-Instead of distributing G over disjunction, reduce to single-witness case:
+### Implementation Sketch
 
-1. Given L ⊆ {psi_1, ..., psi_n} ∪ GContent(M) with L |- bot
-2. Let L_psi = [psi_{i_1}, ..., psi_{i_k}] (the psis in L)
-3. L = L_psi ++ L_G where L_G ⊆ GContent(M)
-4. From L |- bot, derive: L_G |- neg(psi_{i_1}) | neg(psi_{i_2}) | ... | neg(psi_{i_k})
-5. Apply generalized_temporal_k: G(L_G) |- G(neg(psi_{i_1}) | ... | neg(psi_{i_k}))
-6. Since all G chi in G(L_G) are in M, we have G(neg_disjunction) in M
-7. **Key insight**: Use De Morgan at MCS level:
-   - G(neg A | neg B) = G(neg(A & B)) (propositional)
-   - If G(neg(A & B)) in M, then neg(F(A & B)) in M
-   - Need: F(A) in M and F(B) in M implies F(A & B) in M? NO, this fails.
+One-at-a-time witness construction would work as follows:
 
-**Issue**: This approach also fails because F doesn't distribute over conjunction.
+1. **Base**: Start with singleton domain {0} containing consistent MCS extending context
+2. **Iterative Extension**: For each F-obligation `F(psi) in mcs(t)`:
+   - Use `temporal_witness_seed_consistent` to show `{psi} union GContent(mcs(t))` is consistent
+   - Extend via Lindenbaum to get MCS at time t+1
+   - Mark F(psi) as witnessed
+3. **Symmetric for P**: Use `temporal_witness_seed_consistent_past` for past direction
+4. **Repeat**: Process all F/P obligations one at a time
 
-### Approach 3: Induction on L_psis Length (Most Promising)
+**Key advantage**: Never tries to place conflicting witnesses simultaneously.
 
-Prove by induction on the number of psis in L:
+### Missing Pieces
 
-**Base case (k=0)**: L ⊆ GContent(M) is consistent (proven as GContent_consistent)
+1. **Iteration machinery**: Need to define:
+   - Enumeration of (time, formula) pairs
+   - "Already witnessed" predicate
+   - Termination argument (or use omega-step construction)
 
-**Base case (k=1)**: Single psi in L. This IS the single-witness case already proven.
+2. **Coherence preservation**: After adding witness, must show:
+   - Extended family still satisfies forward_G/backward_H
+   - New MCS integrates correctly with existing structure
 
-**Inductive case (k -> k+1)**:
-- Assume consistency for any list with k psis from same MCS M
-- Given L with k+1 psis: [psi_0, psi_1, ..., psi_k]
-- Key: All F(psi_i) are in the SAME MCS M
+3. **GH-controlled Lindenbaum** (for new-to-old propagation): Must ensure the Lindenbaum extension doesn't introduce G/H formulas that violate coherence with existing MCSs.
 
-The inductive step requires showing: if {psi_0, ..., psi_{k-1}} ∪ GContent(M) is consistent and F(psi_k) in M, then {psi_0, ..., psi_k} ∪ GContent(M) is consistent.
+## GH-Controlled Lindenbaum
 
-**Critical lemma needed**:
-```lean
-lemma extend_multi_witness_consistency (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (Psis : List Formula) (psi_new : Formula)
-    (h_F_old : ∀ psi ∈ Psis, Formula.some_future psi ∈ M)
-    (h_F_new : Formula.some_future psi_new ∈ M)
-    (h_cons : SetConsistent ({phi | phi ∈ Psis} ∪ GContent M)) :
-    SetConsistent ({phi | phi ∈ (psi_new :: Psis)} ∪ GContent M)
-```
+### Concept
 
-This requires showing that adding one more psi to a consistent multi-witness seed preserves consistency.
+GH-controlled Lindenbaum is a modified Lindenbaum extension that:
+1. Takes a "compatibility predicate" with existing family F
+2. Only adds G(phi) to the extension if phi is in all future domain MCSs
+3. Only adds H(phi) to the extension if phi is in all past domain MCSs
+4. Results in an MCS that is "GH-compatible" with F
 
-### Approach 4: Direct Contradiction with Finitary Witness Selection
+### Current Infrastructure
 
-Alternative approach using the finiteness of L directly:
+**Existing components**:
+- `set_lindenbaum` (MaximalConsistent.lean): Standard Lindenbaum extension
+- `TemporalForwardSaturated`, `TemporalBackwardSaturated` predicates
+- `henkinLimit` construction in TemporalLindenbaum.lean (partial model)
 
-1. Given L ⊆ {psi_1, ..., psi_n} ∪ GContent(M) with L |- bot
-2. L is finite, so L_psi = {psi_i : psi_i in L} is finite
-3. For each psi_i in L_psi: F(psi_i) in M, so by MCS: neg(G(neg(psi_i))) in M
-4. Therefore G(neg(psi_i)) NOT in M for all psi_i in L_psi
-5. Build contradiction: Need to show that L |- bot implies some G(neg(psi_j)) in M
+**Missing components**:
+- GH-compatibility predicate definition
+- Selective Lindenbaum that respects GH-compatibility
+- Proof that selective extension is still maximally consistent
 
-**Key derivation**: From L_psi ++ L_G |- bot:
-- Apply deduction once to get L_G ++ [psi_1, ..., psi_{k-1}] |- psi_k -> bot = neg(psi_k)
-- Apply generalized_temporal_k: G(L_G ++ [psi_1, ..., psi_{k-1}]) |- G(neg(psi_k))
-- But G([psi_1, ..., psi_{k-1}]) is NOT in M (psi_i are witnesses, not necessarily have G(psi_i) in M)
+### What It Would Take
 
-**This doesn't work directly** because psi_i are not in GContent(M).
+**Estimated effort**: 6-8 hours (high complexity)
 
-## Gaps in Mathlib/Local Codebase
+1. **Define GH-compatibility** (1-2 hours):
+   ```lean
+   def GHCompatible (S : Set Formula) (F : PartialFamily) (t : Int) : Prop :=
+     (forall phi, G phi in S -> forall s in domain, t < s -> phi in F.mcs s) and
+     (forall phi, H phi in S -> forall s in domain, s < t -> phi in F.mcs s)
+   ```
 
-### Gap 1: Multi-Formula Deduction Infrastructure
+2. **Prove seed is GH-compatible** (1 hour):
+   Show extensionSeed F t is GH-compatible with F at t.
 
-Missing: A systematic way to apply deduction theorem to extract a disjunction of negations from a conjunction of hypotheses.
+3. **Selective Lindenbaum construction** (2-3 hours):
+   Modify Lindenbaum to only add G/H formulas that preserve compatibility.
+   This requires careful handling of the enumeration order.
 
-**Needed lemma**:
-```lean
-lemma multi_deduction_to_disjunction (L_psis : List Formula) (L_G : List Formula)
-    (h : (L_psis ++ L_G) ⊢ Formula.bot) :
-    L_G ⊢ list_disjunction (L_psis.map Formula.neg)
-```
+4. **Prove result is MCS** (2 hours):
+   Show the selective extension is still maximally consistent.
+   Key: if G(phi) is rejected, neg(G(phi)) = F(neg(phi)) can be added.
 
-This exists implicitly via iterated deduction theorem but needs explicit construction.
+### Solves New-to-Old Problem
 
-### Gap 2: G Does NOT Distribute Over Disjunction
+With GH-controlled Lindenbaum:
+- Line 1677 (h_G_from_new in Zorn): G phi in mcs_t implies phi in F.mcs(s') for s' > t
+  - Proof: mcs_t was built via GH-compatible extension, so GH-compatibility holds
+- Line 1684 (h_H_from_new in Zorn): Symmetric
 
-In normal modal logic: G(A | B) does NOT imply G(A) | G(B).
+**Does NOT solve**: Seed consistency for pure past/future cases (those are mathematically false).
 
-**Counter-example**: G(A | B) says "at all future times, A or B holds" - different times could use different disjuncts.
+## Comparison: ZornFamily vs DovetailingChain Sorries
 
-This is a fundamental limitation, not fixable.
+### ZornFamily Sorry Inventory (6 Active)
 
-### Gap 3: List-Based Disjunction/Conjunction Operations
+| Line | Type | Status |
+|------|------|--------|
+| 1607 | `non_total_has_boundary` (gap case) | Mathematically FALSE |
+| 1677 | `maximal_implies_total` h_G_from_new | Requires GH-controlled Lindenbaum |
+| 1684 | `maximal_implies_total` h_H_from_new | Requires GH-controlled Lindenbaum |
+| 1774 | `total_family_FObligations_satisfied` | Requires construction trace |
+| 1790 | `total_family_PObligations_satisfied` | Requires construction trace |
 
-Missing: Recursive definitions and lemmas for:
-```lean
-def list_disjunction : List Formula -> Formula
-def list_conjunction : List Formula -> Formula
+**Note**: The false lemmas `multi_witness_seed_consistent_future/past` (lines 844, 874) have been identified as FALSE and should be deleted.
 
-lemma list_disjunction_in_mcs_iff : list_disjunction L ∈ M ↔ ∃ phi ∈ L, phi ∈ M
-lemma list_conjunction_in_mcs_iff : list_conjunction L ∈ M ↔ ∀ phi ∈ L, phi ∈ M
-```
+### DovetailingChain Sorry Inventory (4 Active)
 
-## Proposed Solution
+| Line | Type | Status |
+|------|------|--------|
+| 606 | forward_G cross-sign | **SOLVABLE** via collect-into-one-MCS |
+| 617 | backward_H cross-sign | **SOLVABLE** via collect-into-one-MCS |
+| 633 | forward_F witnesses | Requires enumeration tracking |
+| 640 | backward_P witnesses | Requires enumeration tracking |
 
-### Solution: Reduce to Single-Witness via Different Reference Point
+### Summary Comparison
 
-**Key insight**: The problem arises because F-obligations come from DIFFERENT times s_i. But when extending to time t, we need consistency with GContent from a SINGLE reference MCS.
+| Criterion | ZornFamily | DovetailingChain |
+|-----------|------------|------------------|
+| Total sorries | 6 | 4 |
+| Mathematically FALSE | 1 (gap case) | 0 |
+| Solvable now | 0 | 2 (cross-sign) |
+| Requires new infrastructure | 4 (GH-Lindenbaum) | 2 (enumeration) |
+| Construction trace available | No (Zorn hides it) | Yes (explicit) |
 
-**Strategy for `multi_witness_seed_consistent_future`**:
+## Recommendation
 
-When all F(psi_i) are in the SAME MCS M:
-1. {psi_1} ∪ GContent(M) is consistent (single-witness, proven)
-2. {psi_2} ∪ GContent(M) is consistent (single-witness)
-3. Need: {psi_1, psi_2} ∪ GContent(M) is consistent
+### Primary Path: Pivot to DovetailingChain
 
-**New observation**: Since F(psi_1), F(psi_2) are BOTH in M:
-- {psi_1} ∪ GContent(M) ∪ {psi_2} = {psi_1, psi_2} ∪ GContent(M)
-- By single-witness: {psi_1} ∪ GContent(M) is consistent
-- We need: adding psi_2 preserves consistency
+**Rationale**:
+1. DovetailingChain has 4 sorries vs Zorn's 6 active sorries
+2. DovetailingChain's cross-sign sorries (2 of 4) are SOLVABLE with existing argument
+3. DovetailingChain's F/P sorries require enumeration tracking, not consistency arguments
+4. ZornFamily's `multi_witness_seed_consistent` lemmas are mathematically FALSE - no amount of work fixes them
+5. ZornFamily's `non_total_has_boundary` is mathematically FALSE for gap domains
 
-**Lemma needed**: If F(psi) in M and S is consistent with GContent(M) ⊆ S, then S ∪ {psi} is consistent.
+**Action items**:
+1. Factor out cross-sign collection argument as shared lemma
+2. Apply to DovetailingChain lines 606, 617 (estimated 2-3 hours)
+3. Design F/P witness enumeration tracking for DovetailingChain (estimated 4-6 hours)
+4. Archive ZornFamily approach with lessons learned
 
-**Proof sketch**:
-- Suppose S ∪ {psi} is inconsistent
-- Then some L ⊆ S ∪ {psi} derives bot
-- If psi not in L, then L ⊆ S contradicts S consistent
-- If psi in L, by deduction: L\{psi} |- neg(psi)
-- L\{psi} ⊆ S, so L\{psi} ⊆ "some consistent set extending GContent(M)"
-- Apply generalized_temporal_k to parts that map under G
-- **Issue**: L\{psi} may contain psi_1 from earlier iteration, which doesn't map under G
+### Alternative Path: Combined One-at-a-Time + GH-Controlled Lindenbaum (NOT recommended unless time permits)
 
-### Alternative: Co-Lindenbaum Approach
+This is theoretically cleanest but requires:
+- GH-controlled Lindenbaum implementation (6-8 hours)
+- Iteration machinery for one-at-a-time witnesses (4-6 hours)
+- Integration with existing infrastructure (2-3 hours)
 
-Instead of proving multi-witness consistency directly, use Lindenbaum lemma iteratively:
+**Total**: 12-17 hours vs 6-9 hours for DovetailingChain pivot
 
-1. Start with GContent(M) (consistent by GContent_consistent)
-2. For each F(psi_i) in M: Apply Lindenbaum to extend to MCS containing psi_i
-3. Take intersection/union carefully
+### Estimated Effort
 
-This is essentially what TemporalLindenbaum.lean does with the Henkin construction.
+| Approach | Effort | Sorry Outcome | Risk |
+|----------|--------|---------------|------|
+| DovetailingChain pivot | 6-9 hours | 2 sorries (F/P) | Medium |
+| Combined approach | 12-17 hours | 0 sorries (if successful) | High |
+| Accept Zorn debt | 2-3 hours | 6 sorries (3 mathematically false) | Low |
 
-## Implementation Recommendation
+## Confidence Level
 
-### Short Term: Accept Sorry with Documentation
+**Medium-High** on DovetailingChain recommendation.
 
-The `multi_witness_seed_consistent_future` and `multi_witness_seed_consistent_past` theorems at lines 650 and 680 represent genuine technical challenges. The proof sketch in comments is incomplete because G doesn't distribute over disjunction.
+**Basis**:
+- Cross-sign argument is well-understood (same as Zorn cross-sign case)
+- Single-witness lemmas are proven and work correctly
+- The mathematical falsity of multi_witness_seed_consistent is definitive
+- DovetailingChain's F/P sorries are qualitatively different (enumeration tracking vs consistency)
 
-**Recommendation**: Document as technical debt with the understanding that:
-1. The single-witness case is fully proven
-2. The multi-witness case occurs in extensionSeed_consistent
-3. A full proof requires either new infrastructure or a different proof strategy
-
-### Medium Term: Build List-Based Derivation Infrastructure
-
-Create helper functions:
-```lean
-def list_disjunction_neg (L : List Formula) : Formula :=
-  L.foldr (fun phi acc => (Formula.neg phi).or acc) Formula.bot
-
-lemma derives_list_disjunction_neg (L_psis L_G : List Formula)
-    (h : (L_psis ++ L_G) ⊢ Formula.bot) :
-    L_G ⊢ list_disjunction_neg L_psis
-```
-
-Then prove the multi-witness lemma by showing the G-lifted disjunction leads to contradiction via MCS disjunction property.
-
-### Long Term: Temporal Saturation Approach
-
-The cleanest solution may be to require the reference MCS M to already be temporally saturated. Then:
-- F(psi) in M implies psi in M (by temporal saturation)
-- GContent(M) ⊆ M
-- So {psi_1, ..., psi_n} ∪ GContent(M) ⊆ M, which is consistent
-
-This aligns with the TemporalLindenbaum.lean approach where MCS are built to be temporally saturated from the start.
+**Uncertainty**:
+- F/P witness enumeration in DovetailingChain may reveal additional challenges
+- GH-controlled Lindenbaum complexity is estimated, not measured
 
 ## References
 
-### Local Files
-- `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean` - Main file with sorries
-- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` - Single-witness proof
-- `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean` - Past-witness proof
-- `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean` - K-rule theorems
-- `Theories/Bimodal/Metalogic/Completeness.lean` - MCS disjunction property
-- `Theories/Bimodal/Metalogic/Core/MCSProperties.lean` - MCS helper lemmas
-
-### Mathlib
-- `Mathlib.Logic.Basic` - De Morgan laws
-- `Mathlib.Order.Zorn` - Zorn's lemma infrastructure
-
-## Appendix: Why G Doesn't Distribute Over Disjunction
-
-Consider a bi-infinite timeline with worlds w_t for t in Z.
-- Let A = "it rains" and B = "it snows"
-- Suppose at each time, either it rains or snows (but not predictably which)
-- Then G(A | B) is true at t=0: at all future times, rain or snow
-- But G(A) is false (some future time has no rain) and G(B) is false
-- So G(A | B) does not imply G(A) | G(B)
-
-This is a fundamental feature of temporal logic, not a bug. The proof must work around this.
+- Task 880 research: `specs/880_augmented_extension_seed_approach/reports/research-001.md`
+- Task 870 research-005 through research-007
+- DovetailingChain.lean: `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean`
+- ZornFamily.lean: `Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean`
+- TemporalLindenbaum.lean: `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean`
+- Proof debt policy: `.claude/context/project/lean4/standards/proof-debt-policy.md`
