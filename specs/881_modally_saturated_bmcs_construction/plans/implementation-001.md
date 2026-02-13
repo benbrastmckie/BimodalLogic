@@ -1,7 +1,7 @@
 # Implementation Plan: Task #881
 
 - **Task**: 881 - Modally Saturated BMCS Construction
-- **Status**: [PARTIAL]
+- **Status**: [PARTIAL] - Phases 1-3 complete, Phase 4 in progress
 - **Effort**: 4-6 hours
 - **Dependencies**: None (builds on existing SaturatedConstruction.lean infrastructure)
 - **Research Inputs**: research-003.md, teammate-a-v2-findings.md, teammate-b-v2-findings.md
@@ -110,7 +110,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Fix the 3 Sorries in SaturatedConstruction.lean [PARTIAL]
+### Phase 2: Fix the 3 Sorries in SaturatedConstruction.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Eliminate all 3 sorries in `FamilyCollection.exists_fullySaturated_extension` using S5 lemmas
@@ -120,13 +120,12 @@ After this implementation:
 - [x] Prove `allConstant_sUnion`: union of constant-family sets preserves allConstant property
 - [x] Add `box_coherent_constant_boxcontent_complete`: BoxContent = {chi | Box chi in fam.mcs t}
 - [x] Add `box_coherent_box_uniform`: Box chi in any family implies Box chi in all families (via axiom 4)
-- [ ] Add `box_content_preservation_for_extension`: `Box chi in W_set -> chi in fam.mcs t` via axiom 5
 - [x] Fix sorry 1 (line 985): Applied `diamond_box_coherent_consistent` with h_boxcontent_boxes_in_fam
 - [x] Fix sorry 2 (line 1005): Removed - now handled by constancy constraint on S
-- [ ] Fix sorry 3 (line 1044): Apply box_content_preservation using axiom 5
-- [ ] Verify with `lake build`
+- [x] Fix sorry 3 (line 1044): Axiom 5 contradiction argument - if Box chi in W_set but chi not in BoxContent, then neg(Box chi) in BoxContent by axiom 5, contradicting W_set being consistent
+- [x] Verify with `lake build`
 
-**Progress**: 2 of 3 sorries fixed. Sorry 3 (Lindenbaum coherence) remains.
+**Completed**: All 3 sorries fixed. Build succeeds with only warnings about unused section variables.
 
 **Timing**: 2-3 hours
 
@@ -140,30 +139,29 @@ After this implementation:
 
 ---
 
-### Phase 3: Investigate Truth Lemma Temporal Usage [NOT STARTED]
+### Phase 3: Investigate Truth Lemma Temporal Usage [COMPLETED]
 
 - **Dependencies:** None (can run parallel to Phase 2)
 - **Goal:** Determine if `bmcs_truth_lemma` uses temporal coherence for non-eval families
 
 **Tasks**:
-- [ ] Examine `TruthLemma.lean` for temporal coherence usage patterns
-- [ ] Identify which families require forward_F/backward_P properties
-- [ ] Check if `B.temporally_coherent` is only used for eval_family
-- [ ] Document findings for temporal integration decision
+- [x] Examine `TruthLemma.lean` for temporal coherence usage patterns
+- [x] Identify which families require forward_F/backward_P properties
+- [x] Check if `B.temporally_coherent` is only used for eval_family
+- [x] Document findings for temporal integration decision
 
-**Timing**: 30-45 minutes
+**Findings**:
+1. `bmcs_truth_lemma` requires `B.temporally_coherent` which applies to ALL families
+2. However, the temporal cases (G, H) only use forward_F/backward_P for the SPECIFIC family being evaluated
+3. Completeness.lean only uses truth lemma for `B.eval_family`
+4. For CONSTANT families: if MCS is TemporalForwardSaturated and TemporalBackwardSaturated, then forward_F/backward_P are automatically satisfied
+5. Key insight: Using `henkinLimit` + `temporalSetLindenbaum` for witness construction would ensure all witnesses are temporally coherent
 
-**Files to examine**:
-- `Theories/Bimodal/Metalogic/Bundle/TruthLemma.lean`
-- `Theories/Bimodal/Metalogic/Bundle/Completeness.lean`
-
-**Verification**:
-- Clear understanding of temporal coherence requirements
-- Decision documented on whether to modify `temporally_coherent` scope or upgrade witness families
+**Decision**: Upgrade witness families using temporal Lindenbaum (henkinLimit + temporalSetLindenbaum) instead of regular set_lindenbaum
 
 ---
 
-### Phase 4: Wire Constructive Proof to Replace Axiom [NOT STARTED]
+### Phase 4: Wire Constructive Proof to Replace Axiom [IN PROGRESS]
 
 - **Dependencies:** Phase 2, Phase 3
 - **Goal:** Replace `fully_saturated_bmcs_exists` axiom with constructive proof

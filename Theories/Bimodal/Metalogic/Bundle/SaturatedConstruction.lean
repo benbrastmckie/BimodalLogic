@@ -1013,35 +1013,65 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
         subst h_fam1_W
         -- Box chi ∈ W.mcs s, need chi in fam2.mcs s
         -- W.mcs s is the MCS W_set, which is a Lindenbaum extension of {psi} ∪ BoxContent
-        -- The issue: W_set may contain Box chi where chi is NOT in all M families!
         --
-        -- This is the critical gap. Lindenbaum extension can add arbitrary formulas
-        -- including Box formulas whose contents are not in M.
+        -- Key insight: If Box chi ∈ W_set but chi ∉ BoxContent, we can derive a contradiction
+        -- using axiom 5 (negative introspection). Here's the argument:
+        -- 1. chi ∉ BoxContent means ∀ fam' ∈ M, Box chi ∉ fam'.mcs t
+        -- 2. For each fam' ∈ M, neg(Box chi) ∈ fam'.mcs t (MCS negation complete)
+        -- 3. By axiom 5: Box(neg(Box chi)) ∈ fam'.mcs t
+        -- 4. Therefore neg(Box chi) ∈ BoxContent (taking chi' = neg(Box chi))
+        -- 5. Since W_set ⊇ BoxContent: neg(Box chi) ∈ W_set
+        -- 6. But Box chi ∈ W_set, so W_set contains both Box chi and neg(Box chi)
+        -- 7. This contradicts W_set being consistent
+        -- Therefore chi ∈ BoxContent, and by M's box_coherence, chi ∈ fam2.mcs s
         --
-        -- For box_coherence of M ∪ {W}, we need:
-        -- If Box chi ∈ W.mcs s, then chi ∈ fam'.mcs s for all fam' ∈ M
-        --
-        -- This requires W to be "controlled" - it shouldn't add Box formulas beyond
-        -- what's forced by the initial set.
-        --
-        -- POSSIBLE RESOLUTION: Use a different MCS construction that avoids adding
-        -- unnecessary Box formulas. Or show that any Box chi added by Lindenbaum
-        -- must have chi already in all M families.
-        --
-        -- Mathematical argument (not yet formalized):
-        -- If Box chi ∈ W_set (Lindenbaum extension of {psi} ∪ BoxContent), either:
-        -- (a) Box chi was in {psi} ∪ BoxContent originally - but BoxContent only has chi, not Box chi
-        -- (b) Box chi was added by Lindenbaum to maintain maximality
-        --
-        -- For (b): If Box chi was added, then neg(Box chi) = Diamond(neg chi) is not in W_set
-        -- This means {psi} ∪ BoxContent ∪ {Diamond(neg chi)} is inconsistent
-        -- Which would require Diamond(neg chi) to derive a contradiction with the base set
-        --
-        -- This is where the proof requires additional work to show that any Box chi
-        -- added by Lindenbaum has chi already "forced" to be in all M families.
-        --
-        -- For now, this sorry represents the coherent witness construction gap.
-        sorry
+        rcases h_fam2 with h_fam2_M | h_fam2_W
+        · -- fam2 ∈ M: use axiom 5 argument to show chi ∈ BoxContent
+          -- First, prove chi ∈ BoxContent by contradiction
+          have h_chi_in_boxcontent : chi ∈ BoxContent := by
+            by_contra h_chi_not_in_boxcontent
+            -- chi ∉ BoxContent means ∀ fam' ∈ M, Box chi ∉ fam'.mcs t
+            -- (by box_coherent_constant_boxcontent_complete, BoxContent = {chi | Box chi ∈ fam.mcs t})
+            rw [h_boxcontent_eq] at h_chi_not_in_boxcontent
+            -- h_chi_not_in_boxcontent : Box chi ∉ fam.mcs t
+            -- Since fam.mcs t is MCS, neg(Box chi) ∈ fam.mcs t
+            have h_neg_box_chi : (Formula.box chi).neg ∈ fam.mcs t :=
+              (set_mcs_negation_complete (fam.is_mcs t) (Formula.box chi)).resolve_left h_chi_not_in_boxcontent
+            -- By axiom 5: Box(neg(Box chi)) ∈ fam.mcs t
+            have h_box_neg_box_chi : Formula.box (Formula.box chi).neg ∈ fam.mcs t :=
+              mcs_neg_box_implies_box_neg_box (fam.is_mcs t) chi h_neg_box_chi
+            -- Therefore neg(Box chi) ∈ BoxContent
+            have h_neg_box_chi_in_boxcontent : (Formula.box chi).neg ∈ BoxContent := by
+              rw [h_boxcontent_eq]
+              exact h_box_neg_box_chi
+            -- Since W_set ⊇ BoxContent: neg(Box chi) ∈ W_set
+            have h_neg_box_chi_in_W : (Formula.box chi).neg ∈ W_set :=
+              h_W_extends (Set.mem_union_right {psi} h_neg_box_chi_in_boxcontent)
+            -- But Box chi ∈ W.mcs s = W_set (by W being constant)
+            have h_box_chi_in_W : Formula.box chi ∈ W_set := by
+              show Formula.box chi ∈ W.mcs s
+              exact h_box_chi
+            -- W_set contains both Box chi and neg(Box chi) - contradiction!
+            exact set_consistent_not_both h_W_mcs.1 (Formula.box chi) h_box_chi_in_W h_neg_box_chi_in_W
+          -- Now we know chi ∈ BoxContent
+          -- By M's box_coherence: ∃ fam' ∈ M with Box chi ∈ fam'.mcs t', so chi ∈ fam2.mcs s
+          -- Actually, chi ∈ BoxContent means Box chi ∈ fam.mcs t (by h_boxcontent_eq)
+          rw [h_boxcontent_eq] at h_chi_in_boxcontent
+          -- So we have Box chi ∈ fam.mcs t where fam ∈ M
+          -- By M's box_coherence (hM_coherent): chi ∈ fam2.mcs s for fam2 ∈ M
+          -- Use constancy to convert between times
+          have h_fam2_const := hM_const fam2 h_fam2_M
+          rw [h_fam2_const s t]
+          exact hM_in_S.2.1 fam hfam_in_M chi t h_chi_in_boxcontent fam2 h_fam2_M
+        · -- fam2 = W: use T-axiom
+          subst h_fam2_W
+          -- Box chi ∈ W.mcs s = W_set, need chi ∈ W.mcs s = W_set
+          show chi ∈ W_set
+          have h_box_chi_in_W : Formula.box chi ∈ W_set := h_box_chi
+          -- By T-axiom: Box chi → chi
+          have h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
+          have h_T_in := theorem_in_mcs h_W_mcs h_T
+          exact set_mcs_implication_property h_W_mcs h_T_in h_box_chi_in_W
 
     -- Step 9: Show M ∪ {W} ∈ S (extends C, has coherence, contains eval_family, all constant)
     have h_extended_in_S : (M ∪ {W}) ∈ S := by
