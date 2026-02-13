@@ -2760,6 +2760,70 @@ theorem addToAllPastTimes_preserves_wellFormed
   unfold ModelSeed.addToAllPastTimes
   exact foldl_addFormula_times_preserves_wellFormed _ seed famIdx phi h_wf h_valid
 
+/-!
+### addToAllFutureTimes/addToAllPastTimes Consistency Preservation
+
+These lemmas show that adding a formula to all future/past times preserves seed consistency,
+provided that the formula is derivable at each affected entry.
+
+Key insight: If G psi is present at all entries where psi is being added, then psi is
+derivable via temp_t_future (G psi -> psi), so adding psi preserves consistency.
+
+**Current status**: The lemmas below require G psi to be present at future entries.
+For the construction to satisfy this, G psi must be propagated to future times.
+Currently, buildSeedAux only propagates psi, not G psi. This is a gap that requires
+either:
+1. Modifying buildSeedAux to also propagate G psi (semantically correct)
+2. Using the no-op trick (single-time means no future times)
+3. A different proof strategy
+
+For now, these lemmas provide the template for what's needed.
+-/
+
+/--
+addToAllFutureTimes preserves seed consistency when G psi is present at all future entries.
+
+**Key Insight**: If G psi is in each future time entry's formula set, then psi is
+derivable via temp_t_future (`G psi -> psi`). This derivation witnesses that adding
+psi preserves consistency.
+
+**Note**: This version requires G psi to be at all future entries. For the construction
+to satisfy this, G psi must be propagated to future times along with psi. See the
+positive G case in buildSeedAux_preserves_seedConsistent for how this applies.
+-/
+theorem addToAllFutureTimes_preserves_seedConsistent_with_gpsi
+    (seed : ModelSeed) (famIdx : Nat) (currentTime : Int) (psi : Formula)
+    (h_seed_cons : SeedConsistent seed)
+    (h_psi_cons : FormulaConsistent psi)
+    (h_gpsi_at_futures : ∀ entry ∈ seed.entries,
+        entry.familyIdx = famIdx → entry.timeIdx > currentTime →
+        psi.all_future ∈ entry.formulas) :
+    SeedConsistent (seed.addToAllFutureTimes famIdx currentTime psi) := by
+  unfold ModelSeed.addToAllFutureTimes
+  -- The fold adds psi to each future time entry
+  -- At each entry, G psi is present (by h_gpsi_at_futures)
+  -- So psi is derivable from G psi via temp_t_future
+  -- This derivation ensures adding psi preserves consistency
+  -- For now, use a sorry to mark this as the target proof
+  sorry
+
+/--
+addToAllPastTimes preserves seed consistency when H psi is present at all past entries.
+
+Symmetric to `addToAllFutureTimes_preserves_seedConsistent_with_gpsi` using temp_t_past.
+-/
+theorem addToAllPastTimes_preserves_seedConsistent_with_hpsi
+    (seed : ModelSeed) (famIdx : Nat) (currentTime : Int) (psi : Formula)
+    (h_seed_cons : SeedConsistent seed)
+    (h_psi_cons : FormulaConsistent psi)
+    (h_hpsi_at_pasts : ∀ entry ∈ seed.entries,
+        entry.familyIdx = famIdx → entry.timeIdx < currentTime →
+        psi.all_past ∈ entry.formulas) :
+    SeedConsistent (seed.addToAllPastTimes famIdx currentTime psi) := by
+  unfold ModelSeed.addToAllPastTimes
+  -- Symmetric to future case, using temp_t_past
+  sorry
+
 /--
 Helper: find? on modified list returns the modified element if predicate is preserved.
 NOTE: This lemma is not currently used.

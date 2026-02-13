@@ -1,6 +1,8 @@
 {
   "phase": 2,
-  "status": "blocked",
+  "phase_name": "Supporting Lemmas",
+  "status": "partial",
+  "current_objective": "fix_construction_gap",
   "objectives": [
     {
       "name": "Analyze IH hypothesis structure",
@@ -8,29 +10,61 @@
       "details": "Identified that the claims are FALSE - familyIndices/timeIndices have 2 elements after create, not 1"
     },
     {
-      "name": "Attempt direct addFormula bypass",
+      "name": "Add supporting lemma signatures",
       "status": "done",
-      "details": "FAILED - buildSeedAux pattern match has special cases for neg-Box/G/H that may apply to inner.imp .bot"
+      "details": "Added addToAllFutureTimes_preserves_seedConsistent_with_gpsi and addToAllPastTimes_preserves_seedConsistent_with_hpsi at lines 2763-2816"
     },
     {
-      "name": "Restructure IH hypotheses (Approach A or B)",
-      "status": "pending",
-      "details": "Requires either weakening theorem statement or case-splitting on inner formula structure"
+      "name": "Identify construction gap",
+      "status": "done",
+      "details": "G psi is NOT propagated to future times - only psi is. This breaks the derivability chain."
+    },
+    {
+      "name": "Fix construction gap",
+      "status": "not_started",
+      "details": "Modify buildSeedAux positive G/H cases to also propagate G psi / H psi to future/past times"
+    },
+    {
+      "name": "Prove supporting lemmas",
+      "status": "blocked",
+      "details": "Cannot complete until construction is fixed to provide G psi at future entries"
     }
   ],
-  "current_objective": "Restructure IH hypotheses (Approach A or B)",
   "approaches_tried": [
     {
-      "approach": "Direct addFormula bypass",
-      "result": "failed",
-      "reason": "buildSeedAux matches inner.imp .bot against special neg-Box/G/H cases if inner has right form"
+      "approach": "Direct proof using temp_t_future",
+      "result": "partial_success",
+      "reason": "Proof strategy is correct but requires G psi at future entries"
     },
     {
-      "approach": "Show unfold to generic imp case",
-      "result": "failed",
-      "reason": "Lean cannot simplify the match without knowing inner's structure"
+      "approach": "Complex helper lemma foldl_addFormula_times_preserves_consistent",
+      "result": "abandoned",
+      "reason": "Too complex - simplified to show signature correctness first"
     }
   ],
-  "blocking_issue": "The IH requires h_single_family and h_single_time which are FALSE after create operations. The comments claim these are 'dead code' but this is incorrect - inner.neg can recursively hit neg-Box/G/H cases.",
-  "recommended_next_step": "Case split on inner to handle all buildSeedAux branches explicitly, or weaken theorem to use conditional hypotheses"
+  "blocking_issue": "The construction at lines 505-511 only propagates psi to future times, not G psi. The supporting lemmas require G psi to be present at future entries so that psi can be derived via temp_t_future.",
+  "recommended_next_step": "Modify buildSeedAux to add seed4 := seed3.addToAllFutureTimes famIdx timeIdx phi (for G psi) after adding psi",
+  "key_findings": [
+    "G psi NOT propagated to future times in current construction",
+    "Semantically correct to propagate G psi: if G psi at t, then G psi at t' > t",
+    "Fix requires modifying buildSeedAux positive G/H cases",
+    "Added lemma signatures with sorry - proofs blocked until construction fixed"
+  ],
+  "files_modified": [
+    {
+      "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
+      "changes": "Added lemma signatures at lines 2763-2816"
+    }
+  ],
+  "new_sorries": [
+    {
+      "line": 2794,
+      "lemma": "addToAllFutureTimes_preserves_seedConsistent_with_gpsi"
+    },
+    {
+      "line": 2815,
+      "lemma": "addToAllPastTimes_preserves_seedConsistent_with_hpsi"
+    }
+  ],
+  "handoff_path": "specs/880_augmented_extension_seed_approach/handoffs/phase-2-handoff-20260213.md"
 }
