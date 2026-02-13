@@ -1,7 +1,7 @@
 # Implementation Plan: Augmented Extension Seed Approach
 
 - **Task**: 880 - Investigate augmented extension seed approach for pure past/future cases
-- **Status**: [PARTIAL]
+- **Status**: [PARTIAL] (Phases 1-4 + Decision Checkpoint complete, Phases 5-6 pending)
 - **Effort**: 21-31 hours (Phase 1: ~9h, Phase 2: ~12-18h)
 - **Dependencies**: None (builds on task 870 Phase 4 findings)
 - **Research Inputs**: specs/880_augmented_extension_seed_approach/reports/research-002.md
@@ -157,7 +157,7 @@ After full implementation:
 
 ---
 
-### Phase 4: Simplify extensionSeed and Prove Consistency (Steps 2-3) [PARTIAL]
+### Phase 4: Simplify extensionSeed and Prove Consistency (Steps 2-3) [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Simplify seed to GContent + HContent only and prove consistency for all cases
@@ -166,35 +166,37 @@ After full implementation:
   - [x] Update `upperBoundarySeed` and `lowerBoundarySeed` to match
   - [x] Update seed equivalence theorems
   - [x] Rewrite `extensionSeed_consistent` proof structure for simplified seed
-  - [~] Prove pure past/future cases - structure complete, list induction needs fixing
-  - [ ] Prove cross-sign case (S3) - requires forward_G/backward_H interaction proof
-- **Timing:** 4-7 hours
-- **Status:** Seed simplified, pure past/future cases have placeholder sorries for list induction, cross-sign case has 1 sorry
+  - [x] Prove pure past/future cases - list induction proofs completed
+  - [x] Prove cross-sign case (S3) - forward_G/backward_H interaction proof completed
+- **Timing:** 4-7 hours (actual: ~2 hours for Phase 4 completion)
+- **Status:** COMPLETED - extensionSeed_consistent fully proven
 - **Verification:**
-  - [x] Build succeeds (8 sorries, but different distribution)
-  - [ ] S3 (cross-sign) - still has sorry
-  - [~] S4, S5 (pure cases) - have auxiliary sorries for list induction (provable)
+  - [x] Build succeeds (5 sorries remaining, down from 8)
+  - [x] S3 (cross-sign) - PROVEN via forward_G to s_future + backward_H propagation
+  - [x] S4, S5 (pure cases) - PROVEN via list induction for max/min source time
 
 ---
 
-### DECISION CHECKPOINT [NOT STARTED]
+### DECISION CHECKPOINT [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Evaluate progress and decide whether to continue with ZornFamily or pivot
 - **Tasks:**
-  - [ ] Verify 9/12 sorries eliminated (S1-S9)
-  - [ ] Assess complexity of remaining 3 sorries (S10, S11, S12)
-  - [ ] Evaluate controlled Lindenbaum feasibility based on Phase 3-4 learnings
-  - [ ] Document decision: continue with ZornFamily vs. pivot to DovetailingChain
-- **Timing:** 0.5 hours
-- **Criteria for continuing:**
-  - 9/12 sorries eliminated as expected
-  - Clear path visible for controlled Lindenbaum
-  - No unexpected blockers discovered
-- **Criteria for pivot:**
-  - Unexpected structural issues discovered
-  - Controlled Lindenbaum appears fundamentally blocked
-  - DovetailingChain path seems shorter
+  - [x] Verify 9/12 sorries eliminated (S1-S9) - CONFIRMED: down from 12 to 5 sorries
+  - [x] Assess complexity of remaining sorries:
+    - S10 (line 1595): `non_total_has_boundary` internal gap - MEDIUM complexity
+    - S11 (line 1665): `h_G_from_new` - requires controlled Lindenbaum
+    - S12 (line 1672): `h_H_from_new` - requires controlled Lindenbaum
+    - NEW S13 (line 1762): `total_family_FObligations_satisfied` - related to S11/S12
+    - NEW S14 (line 1778): `total_family_PObligations_satisfied` - related to S11/S12
+  - [x] Evaluate controlled Lindenbaum feasibility - FEASIBLE but non-trivial
+  - [x] Document decision: CONTINUE with ZornFamily
+- **Decision:** Continue with ZornFamily approach
+- **Rationale:**
+  - 9/12 original sorries eliminated as planned
+  - S10 (internal gap) may be solvable by showing gaps can always be filled from boundaries
+  - S11-S14 cluster around the same issue: controlled Lindenbaum for G/H from-new-to-old
+  - Phase 5-6 remains viable, though will require careful Lindenbaum refinement
 
 ---
 

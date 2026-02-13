@@ -724,22 +724,53 @@ theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t
         · right; exact ⟨s, hs_dom, hs_gt, h_H⟩
 
       -- The cross-sign case proof:
-      -- 1. Find max past time s_max where all GContent elements propagate (via 4-axiom)
-      -- 2. Find min future time s_min where all HContent elements propagate (via 4-axiom)
-      -- 3. Show GContent(s_max) and HContent(s_min) are compatible via forward_G/backward_H
-      --
-      -- The key insight: G phi at s_max implies phi at all t' > s_max via forward_G,
-      -- so GContent(s_max) ⊆ mcs(s_min) (since s_max < t < s_min).
-      -- Similarly, H phi at s_min implies phi at all t' < s_min via backward_H,
-      -- so HContent(s_min) ⊆ mcs(s_max).
-      -- Therefore, GContent(s_max) ∪ HContent(s_min) ⊆ mcs(s_max) ∩ mcs(s_min).
-      -- But wait, mcs(s_max) and mcs(s_min) are different MCSs!
-      --
-      -- Correct approach: Show both GContent and HContent land in a single MCS.
-      -- Pick s_min (the minimum future time). Then:
-      -- - HContent elements are in mcs(s_min) via T-axiom
-      -- - GContent elements propagate via forward_G: G phi at s < t, phi at s_min since s < t < s_min
-      sorry  -- Cross-sign case: GContent + HContent consistency via forward_G/backward_H
+      -- Strategy: Show all elements of L land in a single MCS (s_future).
+      -- - GContent elements: G phi ∈ mcs(s) for s < t < s_future. By forward_G, phi ∈ mcs(s_future).
+      -- - HContent elements: H phi ∈ mcs(s') for s' ≥ s_future. By backward propagation to s_future,
+      --   then by T-axiom (H phi -> phi), phi ∈ mcs(s_future).
+      -- Since all L elements are in mcs(s_future), and MCS is consistent, L is consistent.
+
+      -- HContent propagates backward
+      have h_HContent_propagates : ∀ phi s s', s ∈ F.domain → s' ∈ F.domain →
+          s' ≤ s → phi ∈ HContent (F.mcs s) → phi ∈ HContent (F.mcs s') := by
+        intro phi s s' hs_dom hs'_dom h_le h_in_H
+        by_cases h_eq : s = s'
+        · exact h_eq.symm ▸ h_in_H
+        · exact HContent_propagates_backward F s' s hs'_dom hs_dom (by omega) h_in_H
+
+      -- Show all elements of L are in mcs(s_future)
+      have h_L_in_mcs : ∀ phi ∈ L, phi ∈ F.mcs s_future := by
+        intro phi h_phi_L
+        rcases h_L_classified phi h_phi_L with ⟨s, hs_dom, hs_lt, h_G⟩ | ⟨s, hs_dom, hs_gt, h_H⟩
+        · -- GContent case: G phi ∈ mcs(s), s < t < s_future
+          -- phi ∈ GContent(mcs(s)) means G phi ∈ mcs(s)
+          -- By forward_G from s to s_future (since s < t < s_future), phi ∈ mcs(s_future)
+          have h_lt_future : s < s_future := by omega
+          exact F.forward_G s s_future hs_dom hs_future_dom h_lt_future phi h_G
+        · -- HContent case: H phi ∈ mcs(s), t < s
+          -- If s = s_future, then H phi ∈ mcs(s_future), so phi ∈ mcs(s_future) via T-axiom
+          -- If s > s_future, propagate backward to s_future first
+          by_cases h_eq : s = s_future
+          · -- s = s_future: use T-axiom directly
+            have h_H_at_future : Formula.all_past phi ∈ F.mcs s_future := h_eq ▸ h_H
+            have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+            exact set_mcs_implication_property (F.is_mcs s_future hs_future_dom)
+              (theorem_in_mcs (F.is_mcs s_future hs_future_dom) h_T) h_H_at_future
+          · -- s ≠ s_future, so s > s_future (since both > t and s ≠ s_future implies one is bigger)
+            -- Propagate H backward from s to s_future
+            have h_gt_future : s_future < s := by
+              rcases lt_trichotomy s s_future with h | h | h
+              · exact absurd (le_of_lt h) (not_le.mpr hs_gt)
+              · exact absurd h h_eq
+              · exact h
+            have h_H_at_future := h_HContent_propagates phi s s_future hs_dom hs_future_dom (le_of_lt h_gt_future) h_H
+            -- Now apply T-axiom
+            have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+            exact set_mcs_implication_property (F.is_mcs s_future hs_future_dom)
+              (theorem_in_mcs (F.is_mcs s_future hs_future_dom) h_T) h_H_at_future
+
+      -- Since all L elements are in mcs(s_future), L is consistent
+      exact (F.is_mcs s_future hs_future_dom).1 L h_L_in_mcs ⟨d⟩
 
     · -- Pure past case: Only GContent contributes (HContent is empty)
       push_neg at h_future
@@ -776,7 +807,37 @@ theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t
             ∀ phi ∈ L, phi ∈ GContent (F.mcs s_max) := by
           -- Proof by induction on L: find max source time, propagate all elements there
           -- GContent propagates forward, so elements from smaller times propagate to max
-          sorry  -- Pure past case max source time (provable by list induction)
+          induction L with
+          | nil => exact absurd rfl h_L_ne
+          | cons hd tl ih =>
+            -- Get source time for head element
+            obtain ⟨s_hd, hs_hd_dom, hs_hd_lt, h_hd_G⟩ := h_L_all_G hd (List.mem_cons_self hd tl)
+            by_cases h_tl_empty : tl = []
+            · -- Singleton list: head's source time is the max
+              refine ⟨s_hd, hs_hd_dom, hs_hd_lt, ?_⟩
+              intro phi h_phi_mem
+              simp only [h_tl_empty, List.mem_singleton] at h_phi_mem
+              exact h_phi_mem ▸ h_hd_G
+            · -- Non-empty tail: use induction hypothesis
+              have h_tl_all_G : ∀ phi ∈ tl, ∃ s ∈ F.domain, s < t ∧ phi ∈ GContent (F.mcs s) := by
+                intro phi h_mem; exact h_L_all_G phi (List.mem_cons_of_mem hd h_mem)
+              obtain ⟨s_tl, hs_tl_dom, hs_tl_lt, h_tl_G⟩ := ih h_tl_empty h_tl_all_G
+              -- Max of s_hd and s_tl
+              by_cases h_cmp : s_hd ≤ s_tl
+              · -- s_tl is max: propagate head element forward
+                refine ⟨s_tl, hs_tl_dom, hs_tl_lt, ?_⟩
+                intro phi h_phi_mem
+                rcases List.mem_cons.mp h_phi_mem with rfl | h_in_tl
+                · exact h_GContent_propagates phi s_hd s_tl hs_hd_dom hs_tl_dom h_cmp h_hd_G
+                · exact h_tl_G phi h_in_tl
+              · -- s_hd is max: propagate tail elements forward
+                push_neg at h_cmp
+                refine ⟨s_hd, hs_hd_dom, hs_hd_lt, ?_⟩
+                intro phi h_phi_mem
+                rcases List.mem_cons.mp h_phi_mem with rfl | h_in_tl
+                · exact h_hd_G
+                · have h_tl_phi := h_tl_G phi h_in_tl
+                  exact h_GContent_propagates phi s_tl s_hd hs_tl_dom hs_hd_dom (le_of_lt h_cmp) h_tl_phi
 
         obtain ⟨s_max, hs_max_dom, _, h_all_G_max⟩ := h_max_exists
         have h_L_in_M := GContent_subset_MCS (F.mcs s_max) (F.is_mcs s_max hs_max_dom) L h_all_G_max
@@ -819,7 +880,37 @@ theorem extensionSeed_consistent (F : GHCoherentPartialFamily) (t : Int) (ht : t
             ∀ phi ∈ L, phi ∈ HContent (F.mcs s_min) := by
           -- Proof by induction on L: find min source time, propagate all elements there
           -- HContent propagates backward, so elements from larger times propagate to min
-          sorry  -- Pure future case min source time (provable by list induction)
+          induction L with
+          | nil => exact absurd rfl h_L_ne
+          | cons hd tl ih =>
+            -- Get source time for head element
+            obtain ⟨s_hd, hs_hd_dom, hs_hd_gt, h_hd_H⟩ := h_L_all_H hd (List.mem_cons_self hd tl)
+            by_cases h_tl_empty : tl = []
+            · -- Singleton list: head's source time is the min
+              refine ⟨s_hd, hs_hd_dom, hs_hd_gt, ?_⟩
+              intro phi h_phi_mem
+              simp only [h_tl_empty, List.mem_singleton] at h_phi_mem
+              exact h_phi_mem ▸ h_hd_H
+            · -- Non-empty tail: use induction hypothesis
+              have h_tl_all_H : ∀ phi ∈ tl, ∃ s ∈ F.domain, t < s ∧ phi ∈ HContent (F.mcs s) := by
+                intro phi h_mem; exact h_L_all_H phi (List.mem_cons_of_mem hd h_mem)
+              obtain ⟨s_tl, hs_tl_dom, hs_tl_gt, h_tl_H⟩ := ih h_tl_empty h_tl_all_H
+              -- Min of s_hd and s_tl (HContent propagates backward, so we take min)
+              by_cases h_cmp : s_hd ≤ s_tl
+              · -- s_hd is min: propagate tail elements backward
+                refine ⟨s_hd, hs_hd_dom, hs_hd_gt, ?_⟩
+                intro phi h_phi_mem
+                rcases List.mem_cons.mp h_phi_mem with rfl | h_in_tl
+                · exact h_hd_H
+                · have h_tl_phi := h_tl_H phi h_in_tl
+                  exact h_HContent_propagates phi s_tl s_hd hs_tl_dom hs_hd_dom h_cmp h_tl_phi
+              · -- s_tl is min: propagate head element backward
+                push_neg at h_cmp
+                refine ⟨s_tl, hs_tl_dom, hs_tl_gt, ?_⟩
+                intro phi h_phi_mem
+                rcases List.mem_cons.mp h_phi_mem with rfl | h_in_tl
+                · exact h_HContent_propagates phi s_hd s_tl hs_hd_dom hs_tl_dom (le_of_lt h_cmp) h_hd_H
+                · exact h_tl_H phi h_in_tl
 
         obtain ⟨s_min, hs_min_dom, _, h_all_H_min⟩ := h_min_exists
         have h_L_in_M := HContent_subset_MCS (F.mcs s_min) (F.is_mcs s_min hs_min_dom) L h_all_H_min
@@ -1497,10 +1588,22 @@ lemma non_total_has_boundary (F : GHCoherentPartialFamily)
         · exact absurd (h_eq ▸ hs_below_dom) ht
         · omega
       -- We have s_below < t < s_above with both in domain, t not in domain.
-      -- This internal gap case requires either:
-      -- (a) Showing that bounded domains always have boundary times elsewhere, or
-      -- (b) Using the general extension approach for gap times (Phase 3).
-      -- Technical debt: depends on Phase 3 cross-sign seed consistency.
+      -- This is an "internal gap" case where the domain has elements on both sides of t.
+      --
+      -- STRUCTURAL ISSUE: The lemma `non_total_has_boundary` is false for domains with
+      -- internal gaps! A boundary time requires ALL domain elements to be on one side,
+      -- which is impossible when elements exist on both sides.
+      --
+      -- RESOLUTION OPTIONS:
+      -- 1. Prove GH-coherent families cannot have internal gaps (domains are intervals)
+      -- 2. Change `maximal_implies_total` to not require boundary times
+      -- 3. Use a different extension approach that works at any non-domain time
+      --
+      -- Option 2/3 is the intended approach for Phase 5-6: use `extensionSeed_consistent`
+      -- (which handles cross-sign cases) to extend at ANY non-domain time, not just boundaries.
+      -- The remaining challenge is proving h_G_from_new/h_H_from_new for non-boundary times.
+      --
+      -- Technical debt: Requires restructuring maximal_implies_total to use general extension.
       sorry
 
 /-!
