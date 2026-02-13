@@ -1,23 +1,68 @@
 {
   "phase": 1,
+  "phase_name": "Analysis and Lemma Discovery",
   "status": "done",
-  "objectives": [
+  "started_at": "2026-02-13T12:00:00Z",
+  "completed_at": "2026-02-13T14:00:00Z",
+  "current_objective": "completed",
+  "objectives": {
+    "map_hypothesis_usage": "done",
+    "identify_supporting_lemmas": "done",
+    "confidence_assessment": "done"
+  },
+  "approaches_tried": [
     {
-      "name": "Fix filter_modify_eq_modify_filter sorry",
-      "status": "done",
-      "details": "Added h_idx and h_passes hypotheses to lemma; proof by induction with case split on idx and hd.familyIdx == famIdx"
-    },
-    {
-      "name": "Fix map_modify_eq_map_of_eq sorry",
-      "status": "done",
-      "details": "Proof: ext i; simp [List.getElem?_modify]; split_ifs <;> simp [hf]"
-    },
-    {
-      "name": "Verify lake build",
-      "status": "done",
-      "details": "Build passes with only sorry warnings (expected - Phase 2 sorries remain)"
+      "approach": "case_split_at_sorry_sites",
+      "result": "partial_success",
+      "details": "Successfully proved non-modal cases (atom, bot, imp) directly without IH. Modal cases (box, all_future, all_past) still need IH with false hypotheses. Net effect: increased sorry count from 6 to 8.",
+      "abandoned_reason": "Modal subcases still require false hypotheses, doesn't eliminate sorries"
     }
   ],
-  "current_objective": null,
-  "approaches_tried": []
+  "key_findings": [
+    {
+      "finding": "Sorries claim mathematically false statements",
+      "details": "After createNewFamily: familyIndices has two families, not one. After createNewTime: timeIndices has two times, not one."
+    },
+    {
+      "finding": "Positive G/H cases unreachable from neg paths",
+      "details": "After any neg case, phi is always an imp formula, which can only match neg cases or generic imp. Positive Box/G/H require phi to be box/all_future/all_past, which imp formulas are not."
+    },
+    {
+      "finding": "addToAllFutureTimes needs consistency preservation lemma",
+      "details": "Positive G/H cases use no_future_times_of_single_time to prove addToAllFutureTimes is no-op. Without single-time, need addToAllFutureTimes_preserves_seedConsistent."
+    },
+    {
+      "finding": "temp_4 axiom enables derivation at future times",
+      "details": "G phi -> G(G phi) means if G phi is at timeIdx, then G phi is derivable at any future time t'. From G phi, derive phi via temp_t. This chain enables proving addToAllFutureTimes preserves consistency."
+    }
+  ],
+  "required_lemmas": {
+    "exists": [
+      "addFormula_preserves_single_family",
+      "addFormula_preserves_single_time",
+      "addFormula_seed_preserves_consistent",
+      "createNewFamily_preserves_seedConsistent",
+      "createNewFamily_timeIndices_new_family",
+      "createNewTime_preserves_seedConsistent",
+      "createNewTime_preserves_single_family",
+      "no_future_times_of_single_time",
+      "no_past_times_of_single_time"
+    ],
+    "needs_to_be_proven": [
+      {
+        "name": "addToAllFutureTimes_preserves_seedConsistent",
+        "proof_strategy": "Use temp_4 axiom (G psi -> G(G psi)) to derive G psi at future times, then temp_t (G psi -> psi) to derive psi.",
+        "effort_estimate": "4-6 hours"
+      },
+      {
+        "name": "addToAllPastTimes_preserves_seedConsistent",
+        "proof_strategy": "Similar to future case, using appropriate past temporal axioms.",
+        "effort_estimate": "4-6 hours"
+      }
+    ]
+  },
+  "recommended_next_action": "prove_supporting_lemmas",
+  "recommended_approach": "Option B from research-007.md: Add supporting lemmas, then weaken hypotheses",
+  "confidence_level": "medium",
+  "blockers": []
 }
