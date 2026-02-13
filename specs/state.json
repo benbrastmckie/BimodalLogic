@@ -532,10 +532,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T21:04:28Z",
+      "last_updated": "2026-02-13T21:24:53Z",
       "artifacts": [
         {
           "type": "research",
@@ -551,10 +551,16 @@
           "type": "research",
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-003.md",
           "summary": "Final analysis: Fix existing 3 sorries with S5 BoxContent invariance (supersedes unified Zorn recommendation)"
+        },
+        {
+          "type": "plan",
+          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-001.md",
+          "summary": "5-phase plan: derive axiom 5, fix 3 modal saturation sorries, investigate temporal coherence, wire constructive proof"
         }
       ],
-      "session_id": "sess_1771014607_51a8ef",
-      "researched": "2026-02-13T20:42:57Z"
+      "session_id": "sess_1771017697_6c94a3",
+      "researched": "2026-02-13T20:42:57Z",
+      "planned": "2026-02-13T21:24:53Z"
     }
   ],
   "completed_projects": [
