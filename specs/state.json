@@ -532,11 +532,19 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T20:28:06Z",
-      "artifacts": []
+      "last_updated": "2026-02-13T20:42:57Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-001.md",
+          "summary": "Team research: S5 axiom 5 breakthrough resolves 3 sorries in SaturatedConstruction via BoxContent invariance"
+        }
+      ],
+      "session_id": "sess_1771014607_51a8ef",
+      "researched": "2026-02-13T20:42:57Z"
     }
   ],
   "completed_projects": [
