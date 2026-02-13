@@ -461,10 +461,10 @@
     {
       "project_number": 880,
       "project_name": "augmented_extension_seed_approach",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-12T18:15:26Z",
-      "last_updated": "2026-02-13T00:50:52Z",
+      "last_updated": "2026-02-13T01:38:28Z",
       "researched": "2026-02-12T18:59:10Z",
       "session_id": "sess_1770943830_20572f",
       "artifacts": [
@@ -479,11 +479,6 @@
           "summary": "Wave 2: 6-step implementation plan, 21-31h total, 90% confidence on 9/12 sorries"
         },
         {
-          "path": "specs/880_augmented_extension_seed_approach/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "7-phase plan: delete false lemmas, remove F/P fields, simplify seed, decision checkpoint"
-        },
-        {
           "path": "specs/880_augmented_extension_seed_approach/summaries/implementation-summary-20260212.md",
           "type": "summary",
           "summary": "Detailed implementation summary covering Phases 1-4 completion, Decision Checkpoint, and remaining work"
@@ -492,9 +487,14 @@
           "path": "specs/880_augmented_extension_seed_approach/reports/research-004.md",
           "type": "research",
           "summary": "Team research (Wave 3): Pivot recommendation from ZornFamily to DovetailingChain with zero-sorry path analysis"
+        },
+        {
+          "path": "specs/880_augmented_extension_seed_approach/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "v002: Pivot to DovetailingChain, 3-phase plan for 4 sorries (15-21h estimated)"
         }
       ],
-      "planned": "2026-02-12T19:33:20Z",
+      "planned": "2026-02-13T01:38:28Z",
       "started": "2026-02-12T19:36:02Z"
     }
   ],
