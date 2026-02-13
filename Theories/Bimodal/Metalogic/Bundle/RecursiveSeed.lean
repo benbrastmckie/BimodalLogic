@@ -503,19 +503,21 @@ def buildSeedAux : Formula → Nat → Int → ModelSeed → ModelSeed
     let seed2 := seed1.addToAllFamilies timeIdx psi
     buildSeedAux psi famIdx timeIdx seed2
   | Formula.all_future psi, famIdx, timeIdx, seed =>
-    -- G psi: add G psi and psi to current, add psi to all future times, recurse
+    -- G psi: add G psi and psi to current, add G psi and psi to all future times, recurse
     let phi := Formula.all_future psi
     let seed1 := seed.addFormula famIdx timeIdx phi .universal_target
     let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
     let seed3 := seed2.addToAllFutureTimes famIdx timeIdx psi
-    buildSeedAux psi famIdx timeIdx seed3
+    let seed4 := seed3.addToAllFutureTimes famIdx timeIdx phi  -- Also propagate G psi
+    buildSeedAux psi famIdx timeIdx seed4
   | Formula.all_past psi, famIdx, timeIdx, seed =>
-    -- H psi: add H psi and psi to current, add psi to all past times, recurse
+    -- H psi: add H psi and psi to current, add H psi and psi to all past times, recurse
     let phi := Formula.all_past psi
     let seed1 := seed.addFormula famIdx timeIdx phi .universal_target
     let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
     let seed3 := seed2.addToAllPastTimes famIdx timeIdx psi
-    buildSeedAux psi famIdx timeIdx seed3
+    let seed4 := seed3.addToAllPastTimes famIdx timeIdx phi  -- Also propagate H psi
+    buildSeedAux psi famIdx timeIdx seed4
   -- Negated Box: neg(Box psi) = diamond(neg psi)
   | Formula.imp (Formula.box psi) Formula.bot, famIdx, timeIdx, seed =>
     let phi := Formula.neg (Formula.box psi)
@@ -2769,15 +2771,14 @@ provided that the formula is derivable at each affected entry.
 Key insight: If G psi is present at all entries where psi is being added, then psi is
 derivable via temp_t_future (G psi -> psi), so adding psi preserves consistency.
 
-**Current status**: The lemmas below require G psi to be present at future entries.
-For the construction to satisfy this, G psi must be propagated to future times.
-Currently, buildSeedAux only propagates psi, not G psi. This is a gap that requires
-either:
-1. Modifying buildSeedAux to also propagate G psi (semantically correct)
-2. Using the no-op trick (single-time means no future times)
-3. A different proof strategy
+**Current status**: The construction (buildSeedAux) now propagates both G psi and psi
+to all future times in the positive G case. Similarly, H psi and psi are propagated
+to all past times in the positive H case. This ensures the precondition for these
+lemmas is satisfied when future/past times exist.
 
-For now, these lemmas provide the template for what's needed.
+In the current proof, we use the single-time invariant to show that the propagation
+is a no-op (empty fold over no future/past times). These lemmas remain as templates
+for when the construction is extended to handle multiple times.
 -/
 
 /--
@@ -3600,12 +3601,13 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
       exact ih psi.complexity h_complexity psi famIdx timeIdx seed2
         h_seed2_cons h_seed2_wf h_psi_in_seed2 h_psi_cons h_seed2_single h_seed2_single_time rfl
     | Formula.all_future psi =>
-      -- G case: adds G psi to current, psi to current, psi to all future times, recurses on psi
+      -- G case: adds G psi to current, psi to current, G psi and psi to all future times, recurses on psi
       simp only [buildSeedAux]
       -- Define intermediate seeds for clarity
       let seed1 := seed.addFormula famIdx timeIdx psi.all_future .universal_target
       let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
       let seed3 := seed2.addToAllFutureTimes famIdx timeIdx psi
+      let seed4 := seed3.addToAllFutureTimes famIdx timeIdx psi.all_future
       -- Show psi is consistent (from G psi being consistent)
       have h_psi_cons : FormulaConsistent psi := all_future_consistent_implies_content_consistent h_phi_cons
       -- Show complexity decreases for IH
@@ -3747,16 +3749,32 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           rfl
         rw [h_seed3_eq]
         exact h_seed2_single_time
-      -- Apply IH
-      exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
-        h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons h_seed3_single h_seed3_single_time rfl
+      -- Show seed4 = seed3 (since no future times, the G psi propagation is also a no-op)
+      have h_seed4_eq : seed4 = seed3 := by
+        show seed3.addToAllFutureTimes famIdx timeIdx psi.all_future = seed3
+        -- seed3 = seed2 has the same single-time property
+        have h_no_future_3 : (seed3.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx > timeIdx) = [] :=
+          no_future_times_of_single_time seed3 famIdx timeIdx h_seed3_single_time
+        unfold ModelSeed.addToAllFutureTimes
+        simp only [h_no_future_3, List.map_nil]
+        rfl
+      -- Transfer properties from seed3 to seed4
+      have h_seed4_cons : SeedConsistent seed4 := by rw [h_seed4_eq]; exact h_seed3_cons
+      have h_seed4_wf : SeedWellFormed seed4 := by rw [h_seed4_eq]; exact h_seed3_wf
+      have h_psi_in_seed4 : psi ∈ seed4.getFormulas famIdx timeIdx := by rw [h_seed4_eq]; exact h_psi_in_seed3
+      have h_seed4_single : seed4.familyIndices = [famIdx] := by rw [h_seed4_eq]; exact h_seed3_single
+      have h_seed4_single_time : seed4.timeIndices famIdx = [timeIdx] := by rw [h_seed4_eq]; exact h_seed3_single_time
+      -- Apply IH with seed4
+      exact ih psi.complexity h_complexity psi famIdx timeIdx seed4
+        h_seed4_cons h_seed4_wf h_psi_in_seed4 h_psi_cons h_seed4_single h_seed4_single_time rfl
     | Formula.all_past psi =>
-      -- H case: adds H psi to current, psi to current, psi to all past times, recurses on psi
+      -- H case: adds H psi to current, psi to current, H psi and psi to all past times, recurses on psi
       simp only [buildSeedAux]
       -- Define intermediate seeds for clarity
       let seed1 := seed.addFormula famIdx timeIdx psi.all_past .universal_target
       let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
       let seed3 := seed2.addToAllPastTimes famIdx timeIdx psi
+      let seed4 := seed3.addToAllPastTimes famIdx timeIdx psi.all_past
       -- Show psi is consistent (from H psi being consistent)
       have h_psi_cons : FormulaConsistent psi := all_past_consistent_implies_content_consistent h_phi_cons
       -- Show complexity decreases for IH
@@ -3895,9 +3913,24 @@ theorem buildSeedAux_preserves_seedConsistent (phi : Formula) (famIdx : Nat) (ti
           rfl
         rw [h_seed3_eq]
         exact h_seed2_single_time
-      -- Apply IH
-      exact ih psi.complexity h_complexity psi famIdx timeIdx seed3
-        h_seed3_cons h_seed3_wf h_psi_in_seed3 h_psi_cons h_seed3_single h_seed3_single_time rfl
+      -- Show seed4 = seed3 (since no past times, the H psi propagation is also a no-op)
+      have h_seed4_eq : seed4 = seed3 := by
+        show seed3.addToAllPastTimes famIdx timeIdx psi.all_past = seed3
+        -- seed3 = seed2 has the same single-time property
+        have h_no_past_3 : (seed3.entries.filter (fun e => e.familyIdx == famIdx)).filter (fun e => e.timeIdx < timeIdx) = [] :=
+          no_past_times_of_single_time seed3 famIdx timeIdx h_seed3_single_time
+        unfold ModelSeed.addToAllPastTimes
+        simp only [h_no_past_3, List.map_nil]
+        rfl
+      -- Transfer properties from seed3 to seed4
+      have h_seed4_cons : SeedConsistent seed4 := by rw [h_seed4_eq]; exact h_seed3_cons
+      have h_seed4_wf : SeedWellFormed seed4 := by rw [h_seed4_eq]; exact h_seed3_wf
+      have h_psi_in_seed4 : psi ∈ seed4.getFormulas famIdx timeIdx := by rw [h_seed4_eq]; exact h_psi_in_seed3
+      have h_seed4_single : seed4.familyIndices = [famIdx] := by rw [h_seed4_eq]; exact h_seed3_single
+      have h_seed4_single_time : seed4.timeIndices famIdx = [timeIdx] := by rw [h_seed4_eq]; exact h_seed3_single_time
+      -- Apply IH with seed4
+      exact ih psi.complexity h_complexity psi famIdx timeIdx seed4
+        h_seed4_cons h_seed4_wf h_psi_in_seed4 h_psi_cons h_seed4_single h_seed4_single_time rfl
     | Formula.imp psi1 psi2 =>
       match psi1, psi2 with
       | Formula.box inner, Formula.bot =>

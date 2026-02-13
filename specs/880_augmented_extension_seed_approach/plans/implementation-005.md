@@ -121,7 +121,7 @@ These remain true after `createNewFamily`/`createNewTime` because:
 
 ---
 
-### Phase 2: Restructure Theorem Signature (8-12 hours) [PARTIAL]
+### Phase 2: Restructure Theorem Signature (8-12 hours) [COMPLETED]
 
 **Dependencies**: Phase 1
 **Goal**: Change `buildSeedAux_preserves_seedConsistent` to use weaker hypotheses
@@ -178,7 +178,7 @@ These remain true after `createNewFamily`/`createNewTime` because:
 
 ---
 
-### Phase 3: Update Call Sites (4-6 hours) [NOT STARTED]
+### Phase 3: Update Call Sites (4-6 hours) [BLOCKED]
 
 **Dependencies**: Phase 2
 **Goal**: Update all callers of `buildSeedAux_preserves_seedConsistent` to provide new hypotheses
