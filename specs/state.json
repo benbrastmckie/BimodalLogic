@@ -568,7 +568,7 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T23:46:23Z",
+      "last_updated": "2026-02-13T23:54:55Z",
       "artifacts": [
         {
           "type": "research",
@@ -629,10 +629,15 @@
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-007.md",
           "type": "research",
           "summary": "Team research v4: constant families are design choice, zero-compromise path requires dovetailing per-witness"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-008.md",
+          "type": "research",
+          "summary": "Semantic alignment analysis confirming the codebase uses history-based semantics throughout, with product frame referring only to BMCS internal structure"
         }
       ],
-      "session_id": "sess_1771025990_5d87c1",
-      "researched": "2026-02-13T23:46:23Z",
+      "session_id": "sess_1771026646_496c2c",
+      "researched": "2026-02-13T23:54:55Z",
       "planned": "2026-02-13T23:08:58Z",
       "started": "2026-02-13T21:26:53Z"
     }
