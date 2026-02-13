@@ -466,28 +466,13 @@
     {
       "project_number": 880,
       "project_name": "augmented_extension_seed_approach",
-      "status": "planned",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-12T18:15:26Z",
-      "last_updated": "2026-02-13T18:07:04Z",
-      "researched": "2026-02-13T17:01:53Z",
-      "session_id": "sess_1771005272_fa6709",
+      "last_updated": "2026-02-13T19:25:23Z",
+      "researched": "2026-02-13T19:25:23Z",
+      "session_id": "sess_1771010401_d56029",
       "artifacts": [
-        {
-          "path": "specs/880_augmented_extension_seed_approach/reports/research-001.md",
-          "type": "research",
-          "summary": "Team research: augmented seed not viable, cross-sign case solvable"
-        },
-        {
-          "path": "specs/880_augmented_extension_seed_approach/reports/research-002.md",
-          "type": "research",
-          "summary": "Wave 2: 6-step implementation plan, 21-31h total, 90% confidence on 9/12 sorries"
-        },
-        {
-          "path": "specs/880_augmented_extension_seed_approach/reports/research-004.md",
-          "type": "research",
-          "summary": "Team research (Wave 3): Pivot recommendation from ZornFamily to DovetailingChain with zero-sorry path analysis"
-        },
         {
           "path": "specs/880_augmented_extension_seed_approach/summaries/implementation-summary-20260212.md",
           "type": "summary",
@@ -499,19 +484,9 @@
           "summary": "Unified chain structure with combined GContent/HContent seeds (Phase 1 complete, 9 sorries)"
         },
         {
-          "path": "specs/880_augmented_extension_seed_approach/reports/research-006.md",
-          "type": "research",
-          "summary": "Comprehensive RecursiveSeed analysis with sorry inventory, dependency graph, and sorry-free implementation roadmap"
-        },
-        {
           "path": "specs/880_augmented_extension_seed_approach/handoffs/phase-2-handoff-20260212.md",
           "type": "handoff",
           "summary": "Phase 2 blocked: IH requires false hypotheses, theorem needs restructuring"
-        },
-        {
-          "path": "specs/880_augmented_extension_seed_approach/reports/research-007.md",
-          "type": "research",
-          "summary": "Analysis of Approach 3 (case split on inner) for eliminating 6 sorries in buildSeedAux_preserves_seedConsistent. Confirmed viability with 75% confidence."
         },
         {
           "path": "specs/880_augmented_extension_seed_approach/progress/phase-1-progress.json",
@@ -537,6 +512,11 @@
           "path": "specs/880_augmented_extension_seed_approach/plans/implementation-006.md",
           "type": "plan",
           "summary": "v006: Weaken hypotheses with construction fix retained - 12-18h"
+        },
+        {
+          "path": "specs/880_augmented_extension_seed_approach/reports/research-008.md",
+          "type": "research",
+          "summary": "Analysis of broken commits (namespace error for needsPositiveHypotheses), working version structure, and 4-phase fix strategy with 12-18 hour estimate"
         }
       ],
       "planned": "2026-02-13T18:07:04Z",
