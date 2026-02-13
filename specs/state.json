@@ -487,6 +487,11 @@
           "path": "specs/880_augmented_extension_seed_approach/summaries/implementation-summary-20260212.md",
           "type": "summary",
           "summary": "Detailed implementation summary covering Phases 1-4 completion, Decision Checkpoint, and remaining work"
+        },
+        {
+          "path": "specs/880_augmented_extension_seed_approach/reports/research-004.md",
+          "type": "research",
+          "summary": "Team research (Wave 3): Pivot recommendation from ZornFamily to DovetailingChain with zero-sorry path analysis"
         }
       ],
       "planned": "2026-02-12T19:33:20Z",
