@@ -565,10 +565,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T23:01:04Z",
+      "last_updated": "2026-02-13T23:08:58Z",
       "artifacts": [
         {
           "type": "research",
@@ -584,11 +584,6 @@
           "type": "research",
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-003.md",
           "summary": "Final analysis: Fix existing 3 sorries with S5 BoxContent invariance (supersedes unified Zorn recommendation)"
-        },
-        {
-          "type": "plan",
-          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-001.md",
-          "summary": "5-phase plan: derive axiom 5, fix 3 modal saturation sorries, investigate temporal coherence, wire constructive proof"
         },
         {
           "path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-2-handoff-20260213.md",
@@ -619,11 +614,16 @@
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-005.md",
           "type": "research",
           "summary": "Analysis confirming Int specialization is safe for completeness proof - no density axioms in logic system, soundness covers all frames"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "4-phase revised plan: Int specialization, omega-step interleaving construction, axiom elimination, with DovetailingChain fallback"
         }
       ],
-      "session_id": "sess_1771023420_608051",
+      "session_id": "sess_1771023925_8c4710",
       "researched": "2026-02-13T23:01:04Z",
-      "planned": "2026-02-13T21:24:53Z",
+      "planned": "2026-02-13T23:08:58Z",
       "started": "2026-02-13T21:26:53Z"
     }
   ],
