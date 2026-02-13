@@ -818,23 +818,45 @@ theorem no_past_times_of_single_time (seed : ModelSeed) (famIdx : Nat) (timeIdx 
   have h_eq := h_all h_in_map
   simp only [h_eq, lt_self_iff_false, decide_false, Bool.false_eq_true, not_false_eq_true]
 
-/-- filter commutes with modify when the modifier doesn't affect the filter predicate -/
+/-- filter commutes with modify when the modifier doesn't affect the filter predicate
+    and the element at idx passes the filter -/
 private lemma filter_modify_eq_modify_filter (l : List SeedEntry) (idx : Nat) (f : SeedEntry → SeedEntry)
-    (hf : ∀ e, (f e).familyIdx = e.familyIdx) (famIdx : Nat) :
+    (hf : ∀ e, (f e).familyIdx = e.familyIdx) (famIdx : Nat)
+    (h_idx : idx < l.length)
+    (h_passes : ((l.get ⟨idx, h_idx⟩).familyIdx == famIdx) = true) :
     (l.modify idx f).filter (fun e => e.familyIdx == famIdx) =
     (l.filter (fun e => e.familyIdx == famIdx)).modify
       (l.take idx |>.filter (fun e => e.familyIdx == famIdx)).length f := by
-  -- SESSION 28 NOTE: Pre-existing broken proof - marked sorry for now
-  -- Lean 4 List.modify API changes caused this to break
-  sorry
+  induction l generalizing idx with
+  | nil => simp at h_idx
+  | cons hd tl ih =>
+    cases idx with
+    | zero =>
+      simp only [List.modify_cons, ite_true, List.take_zero, List.filter_nil, List.length_nil, List.filter_cons]
+      have heq : ((f hd).familyIdx == famIdx) = (hd.familyIdx == famIdx) := by
+        simp only [beq_iff_eq, hf]
+      have h_passes' : (hd.familyIdx == famIdx) = true := h_passes
+      simp only [h_passes', ↓reduceIte, heq, List.modify_cons, ite_true]
+    | succ n =>
+      simp only [List.modify_cons, Nat.add_one_ne_zero, ↓reduceIte, Nat.add_one_sub_one,
+        List.take_succ_cons, List.filter_cons]
+      have h_idx' : n < tl.length := Nat.lt_of_succ_lt_succ h_idx
+      have h_passes' : ((tl.get ⟨n, h_idx'⟩).familyIdx == famIdx) = true := by
+        simp only [List.get_cons_succ] at h_passes
+        exact h_passes
+      cases hb : hd.familyIdx == famIdx
+      · simp only [Bool.false_eq_true, ↓reduceIte]
+        exact ih n h_idx' h_passes'
+      · simp only [↓reduceIte, List.length_cons, List.modify_cons, Nat.add_one_ne_zero,
+          ite_false, Nat.add_one_sub_one]
+        congr 1
+        exact ih n h_idx' h_passes'
 
 /-- map . modify = map when the modifier doesn't affect the mapped field -/
 private lemma map_modify_eq_map_of_eq {α β : Type*} (l : List α) (idx : Nat) (f : α → α) (g : α → β)
     (hf : ∀ a, g (f a) = g a) :
     (l.modify idx f).map g = l.map g := by
-  -- SESSION 28 NOTE: Pre-existing broken proof - marked sorry for now
-  -- Lean 4 List.modify API changes caused this to break
-  sorry
+  ext i; simp [List.getElem?_modify]; split_ifs <;> simp [hf]
 
 /--
 If seed.timeIndices famIdx = [timeIdx], then addFormula at (famIdx, timeIdx) preserves single-time.
@@ -854,9 +876,17 @@ theorem addFormula_preserves_single_time (seed : ModelSeed) (famIdx : Nat) (time
       intro e; rfl
     have h_time_eq : ∀ e : SeedEntry, ({ e with formulas := insert phi e.formulas } : SeedEntry).timeIdx = e.timeIdx := by
       intro e; rfl
+    -- Get idx bounds and filter predicate from findIdx? result
+    have h_findIdx_iff := List.findIdx?_eq_some_iff_getElem.mp h_find
+    have h_idx : idx < seed.entries.length := h_findIdx_iff.1
+    have h_passes : ((seed.entries.get ⟨idx, h_idx⟩).familyIdx == famIdx) = true := by
+      have h_pred := h_findIdx_iff.2.1
+      simp only [Bool.and_eq_true] at h_pred
+      rw [List.get_eq_getElem]
+      exact h_pred.1
     -- Show filter commutes with modify
     have h1 := filter_modify_eq_modify_filter seed.entries idx
-      (fun e => { e with formulas := insert phi e.formulas }) h_fam_eq famIdx
+      (fun e => { e with formulas := insert phi e.formulas }) h_fam_eq famIdx h_idx h_passes
     rw [h1]
     -- Show map commutes with modify
     have h2 := map_modify_eq_map_of_eq

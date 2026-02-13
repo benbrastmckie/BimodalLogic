@@ -4,7 +4,7 @@
 **Version**: 004
 **Created**: 2026-02-12
 **Language**: lean
-**Status**: [NOT STARTED]
+**Status**: [PARTIAL]
 **Estimated Effort**: 12-18 hours (current file) | 36-56 hours (full completeness)
 **Research Input**: research-006.md (RecursiveSeed analysis)
 
@@ -70,7 +70,7 @@ RecursiveSeed handles cross-sign trivially by construction:
 
 ## Implementation Phases
 
-### Phase 1: Fix List.modify API Issues (2-4 hours) [NOT STARTED]
+### Phase 1: Fix List.modify API Issues (2-4 hours) [COMPLETED]
 
 **Dependencies**: None
 **Goal**: Resolve 2 API-related sorries at lines 829, 837
@@ -94,7 +94,7 @@ RecursiveSeed handles cross-sign trivially by construction:
 
 ---
 
-### Phase 2: Restructure IH Hypotheses (8-12 hours) [NOT STARTED]
+### Phase 2: Restructure IH Hypotheses (8-12 hours) [BLOCKED]
 
 **Dependencies**: Phase 1
 **Goal**: Resolve 6 structural false assertion sorries (lines 3878, 3963, 4044, 4128, 4194, 4258)

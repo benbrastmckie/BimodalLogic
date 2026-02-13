@@ -1,0 +1,36 @@
+{
+  "phase": 2,
+  "status": "blocked",
+  "objectives": [
+    {
+      "name": "Analyze IH hypothesis structure",
+      "status": "done",
+      "details": "Identified that the claims are FALSE - familyIndices/timeIndices have 2 elements after create, not 1"
+    },
+    {
+      "name": "Attempt direct addFormula bypass",
+      "status": "done",
+      "details": "FAILED - buildSeedAux pattern match has special cases for neg-Box/G/H that may apply to inner.imp .bot"
+    },
+    {
+      "name": "Restructure IH hypotheses (Approach A or B)",
+      "status": "pending",
+      "details": "Requires either weakening theorem statement or case-splitting on inner formula structure"
+    }
+  ],
+  "current_objective": "Restructure IH hypotheses (Approach A or B)",
+  "approaches_tried": [
+    {
+      "approach": "Direct addFormula bypass",
+      "result": "failed",
+      "reason": "buildSeedAux matches inner.imp .bot against special neg-Box/G/H cases if inner has right form"
+    },
+    {
+      "approach": "Show unfold to generic imp case",
+      "result": "failed",
+      "reason": "Lean cannot simplify the match without knowing inner's structure"
+    }
+  ],
+  "blocking_issue": "The IH requires h_single_family and h_single_time which are FALSE after create operations. The comments claim these are 'dead code' but this is incorrect - inner.neg can recursively hit neg-Box/G/H cases.",
+  "recommended_next_step": "Case split on inner to handle all buildSeedAux branches explicitly, or weaken theorem to use conditional hypotheses"
+}
