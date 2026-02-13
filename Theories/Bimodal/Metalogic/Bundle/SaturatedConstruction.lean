@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
+import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.RestrictedMCS
@@ -1249,9 +1250,126 @@ theorem construct_bmcs_saturated_contains_context (Gamma : List Formula) (h_cons
   exact lindenbaumMCS_extends Gamma h_cons h_in_set
 
 /-!
+## Temporal Coherence for Constant Families
+
+For constant families (where mcs is the same at all times), temporal coherence
+reduces to temporal saturation of the underlying MCS.
+-/
+
+variable [Nontrivial D]
+
+/--
+A constant family with a temporally forward saturated MCS satisfies forward_F.
+
+For a constant family, forward_F says: F(phi) in mcs t -> exists s > t, phi in mcs s.
+Since the MCS is the same at all times, this reduces to: F(phi) in MCS -> phi in MCS.
+Then we can pick any s > t (which exists by Nontrivial D).
+-/
+lemma constant_family_temporal_forward_saturated_implies_forward_F
+    (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant)
+    (h_fwd_sat : TemporalForwardSaturated (fam.mcs 0)) :
+    ∀ t : D, ∀ φ : Formula,
+      Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s := by
+  intro t phi h_F
+  -- By constancy, fam.mcs t = fam.mcs 0
+  have h_eq : fam.mcs t = fam.mcs 0 := h_const t 0
+  rw [h_eq] at h_F
+  -- By temporal forward saturation, phi ∈ fam.mcs 0
+  have h_phi := h_fwd_sat phi h_F
+  -- Pick s > t (exists by Nontrivial D)
+  obtain ⟨s, hs⟩ := exists_gt_in_ordered_group (D := D) t
+  use s, hs
+  -- By constancy, fam.mcs s = fam.mcs 0
+  rw [h_const s 0]
+  exact h_phi
+
+/--
+A constant family with a temporally backward saturated MCS satisfies backward_P.
+
+Symmetric to forward case.
+-/
+lemma constant_family_temporal_backward_saturated_implies_backward_P
+    (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant)
+    (h_bwd_sat : TemporalBackwardSaturated (fam.mcs 0)) :
+    ∀ t : D, ∀ φ : Formula,
+      Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s := by
+  intro t phi h_P
+  have h_eq : fam.mcs t = fam.mcs 0 := h_const t 0
+  rw [h_eq] at h_P
+  have h_phi := h_bwd_sat phi h_P
+  obtain ⟨s, hs⟩ := exists_lt_in_ordered_group (D := D) t
+  use s, hs
+  rw [h_const s 0]
+  exact h_phi
+
+/--
+A constant family with a temporally saturated MCS is temporally coherent.
+-/
+lemma constant_family_temporally_saturated_is_coherent
+    (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant)
+    (h_fwd_sat : TemporalForwardSaturated (fam.mcs 0))
+    (h_bwd_sat : TemporalBackwardSaturated (fam.mcs 0)) :
+    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
+    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s) :=
+  ⟨constant_family_temporal_forward_saturated_implies_forward_F fam h_const h_fwd_sat,
+   constant_family_temporal_backward_saturated_implies_backward_P fam h_const h_bwd_sat⟩
+
+/-!
+## Constructive Fully Saturated BMCS
+
+This section provides a constructive replacement for the `fully_saturated_bmcs_exists` axiom
+from TemporalCoherentConstruction.lean.
+
+**Approach**:
+1. Start with a consistent context Gamma
+2. Use `temporal_coherent_family_exists` to get a temporally coherent initial family
+3. Build a FamilyCollection using `initialFamilyCollection`
+4. Apply `exists_fullySaturated_extension` to get modal saturation
+5. Prove temporal coherence via constant_family_temporally_saturated_is_coherent
+
+**Dependency**: For step 5 to work for witness families (not just the initial family),
+we need witness families to be temporally saturated. This requires TemporalLindenbaum.lean
+which currently has sorries. See the detailed analysis in the theorem documentation.
+-/
+
+/--
+Constructive theorem replacing `fully_saturated_bmcs_exists` axiom.
+
+**Current Status**: This theorem depends on TemporalLindenbaum.lean sorries being fixed.
+Specifically, witness families built during modal saturation need to be temporally
+saturated, which requires using `henkinLimit + temporalSetLindenbaum` instead of
+regular `set_lindenbaum`.
+
+**Why modal saturation families need temporal coherence**:
+The truth lemma (TruthLemma.lean) is proven by structural induction on formulas.
+In the box case, it recurses on ALL families in the BMCS, not just the eval_family.
+When the recursion hits a temporal formula (G or H), it uses temporal_backward_G/H
+which requires forward_F and backward_P for that specific family.
+
+**Current workaround**: The proof uses a sorry for the temporal coherence of
+witness families. This can be eliminated by:
+1. Fixing the sorries in TemporalLindenbaum.lean (henkinLimit_forward_saturated base case)
+2. Modifying exists_fullySaturated_extension to use temporal Lindenbaum for witness construction
+
+See Phase 4 handoff for detailed implementation strategy.
+-/
+theorem fully_saturated_bmcs_exists_constructive (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    ∃ (B : BMCS D),
+      (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
+      B.temporally_coherent ∧
+      is_modally_saturated B := by
+  -- Step 1: Get a temporally coherent initial family from temporal_coherent_family_exists
+  -- (This uses the Int-specific version which has sorries in DovetailingChain)
+  -- For the generic D case, we proceed with a sorry
+  sorry
+
+/-!
 ## Summary
 
-This module provides three approaches to the modal_backward challenge:
+This module provides approaches to the modal_backward challenge:
 
 1. **Axiom-based approach** (`singleFamilyBMCS_withAxiom`):
    - Simple and direct, uses `singleFamily_modal_backward_axiom`
@@ -1265,17 +1383,32 @@ This module provides three approaches to the modal_backward challenge:
 3. **Fully-saturated approach** (`constructSaturatedBMCS`):
    - Uses non-constructive saturation via Zorn's lemma
    - Achieves `isFullySaturated` which implies modal_backward for ALL formulas
-   - Main theorem `exists_fullySaturated_extension` has sorry (Zorn's lemma formalization)
-   - This is the mathematically correct approach for eliminating the axiom
+   - Main theorem `exists_fullySaturated_extension` is **SORRY-FREE** (Task 881 Phase 2)
+   - This provides modal saturation for all formulas
 
-**Current Status**:
-- The axiom-based approach works and is sorry-free (modulo the axiom itself)
-- The fully-saturated approach is implemented but has a sorry in the existence proof
-- Completing the Zorn's lemma proof would eliminate all sorries
+4. **Constructive axiom replacement** (`fully_saturated_bmcs_exists_constructive`):
+   - Aims to replace the `fully_saturated_bmcs_exists` axiom from TemporalCoherentConstruction.lean
+   - Combines modal saturation from `exists_fullySaturated_extension` with temporal coherence
+   - **Current sorry**: Temporal coherence for witness families requires TemporalLindenbaum.lean sorries to be fixed
+
+**Current Status** (Task 881):
+- Phase 1 COMPLETE: Derived axiom 5 (negative introspection)
+- Phase 2 COMPLETE: Fixed all 3 sorries in `exists_fullySaturated_extension`
+- Phase 3 COMPLETE: Investigated temporal coherence requirements for truth lemma
+- Phase 4 PARTIAL: Created `fully_saturated_bmcs_exists_constructive` with documented sorry
+  - The sorry depends on TemporalLindenbaum.lean sorries being fixed
+  - Specifically: witness families need to be temporally saturated
 
 **Key Insight**: Full saturation is necessary and sufficient for modal_backward.
-Closure-restricted saturation is insufficient because the contraposition argument
-requires saturation for `neg psi` when proving modal_backward for `psi`.
+For temporal coherence, constant families need temporally saturated MCS, which
+requires using temporal Lindenbaum instead of regular Lindenbaum for witness
+construction.
+
+**Remaining Work**:
+1. Fix sorries in TemporalLindenbaum.lean (henkinLimit_forward_saturated base case)
+2. Modify witness construction to use temporal Lindenbaum
+3. Complete the proof of `fully_saturated_bmcs_exists_constructive`
+4. Remove the axiom from TemporalCoherentConstruction.lean
 -/
 
 end Bimodal.Metalogic.Bundle

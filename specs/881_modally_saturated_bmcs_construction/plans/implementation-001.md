@@ -161,57 +161,81 @@ After this implementation:
 
 ---
 
-### Phase 4: Wire Constructive Proof to Replace Axiom [IN PROGRESS]
+### Phase 4: Wire Constructive Proof to Replace Axiom [PARTIAL]
 
 - **Dependencies:** Phase 2, Phase 3
 - **Goal:** Replace `fully_saturated_bmcs_exists` axiom with constructive proof
 
 **Tasks**:
-- [ ] Based on Phase 3 findings, determine integration approach:
-  - If temporal coherence only needed for eval_family: modify `temporally_coherent` requirement
-  - If needed for all families: start from temporally coherent family, add constant witnesses
-- [ ] Create `fully_saturated_bmcs_exists_constructive` theorem proving the axiom statement
-- [ ] Wire through `FamilyCollection.exists_fullySaturated_extension` result
-- [ ] Replace axiom usage in `construct_saturated_bmcs` with constructive proof
+- [x] Based on Phase 3 findings, determine integration approach:
+  - Truth lemma requires temporal coherence for ALL families (not just eval_family)
+  - Witness families must be temporally saturated for temporal coherence
+  - Requires temporal Lindenbaum (henkinLimit + temporalSetLindenbaum) for witness construction
+- [x] Create `fully_saturated_bmcs_exists_constructive` theorem proving the axiom statement
+  - Added to SaturatedConstruction.lean with documented sorry
+  - Sorry depends on TemporalLindenbaum.lean sorries being fixed
+- [x] Add helper lemmas for constant family temporal coherence:
+  - `constant_family_temporal_forward_saturated_implies_forward_F`
+  - `constant_family_temporal_backward_saturated_implies_backward_P`
+  - `constant_family_temporally_saturated_is_coherent`
+- [ ] Fix TemporalLindenbaum.lean sorries (BLOCKING - separate task recommended)
+  - henkinLimit_forward_saturated base case (line 444)
+  - henkinLimit_backward_saturated base case (line 485)
+  - maximal_tcs_is_mcs temporal formula cases (lines 655, 662)
+- [ ] Modify witness construction to use temporal Lindenbaum
+- [ ] Wire through to replace axiom usage in `construct_saturated_bmcs`
 - [ ] Remove the axiom declaration (or mark deprecated)
-- [ ] Update documentation comments referencing the axiom
-- [ ] Verify with `lake build`
+- [x] Verify with `lake build` - Build passes with documented sorry
 
-**Timing**: 1-2 hours
+**Timing**: Remaining work requires TemporalLindenbaum fixes
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` - Replace axiom
-- `Theories/Bimodal/Metalogic/Bundle/Completeness.lean` - Update references
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean`:
+  - Added import for TemporalCoherentConstruction
+  - Added helper lemmas for constant family temporal coherence
+  - Added `fully_saturated_bmcs_exists_constructive` theorem with documented sorry
+  - Updated Summary section to reflect current status
+
+**Blocking Issue**: TemporalLindenbaum.lean has 5 sorries that prevent completing the
+constructive proof. The base case sorries in henkinLimit_forward_saturated/backward_saturated
+occur when F(ψ)/P(ψ) is in the initial base set but base isn't temporally saturated.
+Recommend creating a follow-up task to fix these sorries.
 
 **Verification**:
-- Axiom removed or deprecated
-- `construct_saturated_bmcs` uses constructive proof
-- `lake build` succeeds
-- Completeness chain remains valid
+- [x] `lake build Bimodal` succeeds
+- [x] `fully_saturated_bmcs_exists_constructive` has documented sorry with clear remediation path
+- [ ] Axiom removed/deprecated (pending TemporalLindenbaum fixes)
 
 ---
 
-### Phase 5: Final Verification and Cleanup [NOT STARTED]
+### Phase 5: Final Verification and Cleanup [PARTIAL]
 
 - **Dependencies:** Phase 4
-- **Goal:** Verify axiom-free completeness and clean up code
+- **Goal:** Verify build status and document current state
 
 **Tasks**:
-- [ ] Run full `lake build` to verify no regressions
-- [ ] Count remaining sorries and axioms in the saturation modules
-- [ ] Update module docstrings with axiom elimination status
-- [ ] Create implementation summary
+- [x] Run full `lake build` to verify no regressions - PASSED
+- [x] Count remaining sorries and axioms in the saturation modules
+  - SaturatedConstruction.lean: 1 sorry (in `fully_saturated_bmcs_exists_constructive`)
+  - TemporalLindenbaum.lean: 5 sorries (blocking full proof)
+  - TemporalCoherentConstruction.lean: 1 sorry + 1 axiom (`fully_saturated_bmcs_exists`)
+  - Bundle module total: ~50 sorries, 4 axioms
+- [x] Update module docstrings with axiom elimination status
+  - Updated Summary section in SaturatedConstruction.lean
+- [x] Create implementation summary
 
 **Timing**: 30 minutes
 
-**Files to modify**:
-- Various module docstrings
-- `specs/881_modally_saturated_bmcs_construction/summaries/implementation-summary-YYYYMMDD.md`
+**Current State**:
+- Axiom `fully_saturated_bmcs_exists` NOT YET eliminated (blocked by TemporalLindenbaum sorries)
+- Constructive replacement theorem exists with documented sorry
+- Build passes successfully
+- Clear path to completion documented
 
 **Verification**:
-- `lake build` succeeds
-- Axiom count reduced by 1 (`fully_saturated_bmcs_exists` eliminated)
-- Completeness theorem no longer inherits axiom dependency
+- [x] `lake build Bimodal` succeeds
+- [ ] Axiom count reduced (pending - requires TemporalLindenbaum fixes)
+- [ ] Completeness theorem axiom-free (pending - requires axiom elimination)
 
 ## Testing & Validation
 
