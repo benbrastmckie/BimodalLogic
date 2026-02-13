@@ -473,6 +473,14 @@ lemma constantWitnessFamily_isConstant (M : Set Formula) (h_mcs : SetMaximalCons
   rfl
 
 /--
+constantIndexedMCSFamily is constant.
+-/
+lemma constantIndexedMCSFamily_isConstant (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    (constantIndexedMCSFamily M h_mcs (D := D)).isConstant := by
+  intro s t
+  rfl
+
+/--
 For a constant family, Box chi at any time means Box chi at all times.
 -/
 lemma constant_family_box_time_invariant {fam : IndexedMCSFamily D}
@@ -536,6 +544,113 @@ lemma box_coherence_sUnion (c : Set (Set (IndexedMCSFamily D)))
     · -- Case s2 ⊆ s1: both fam and fam' are in s1, use s1's box_coherence
       have hfam'_in_s1 : fam' ∈ s1 := h_s2_sub_s1 hfam'_in_s2
       exact h_coherence s1 hs1_in_c fam hfam_in_s1 psi t h_box fam' hfam'_in_s1
+
+/-!
+## Axiom 4 and Box-Coherence Lemmas for S5
+
+In S5 modal logic with box_coherence, Box formulas are "uniform" across families at the same time.
+These lemmas are key for the sorry fixes in exists_fullySaturated_extension.
+-/
+
+/--
+Axiom 4 instance: `⊢ □φ → □□φ`.
+-/
+noncomputable def modal_4_theorem (phi : Formula) :
+    [] ⊢ (Formula.box phi).imp (Formula.box (Formula.box phi)) :=
+  DerivationTree.axiom [] _ (Axiom.modal_4 phi)
+
+/--
+If Box phi is in an MCS, then Box Box phi is also in that MCS (by axiom 4).
+-/
+lemma mcs_box_implies_box_box {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    (phi : Formula) (h_box : Formula.box phi ∈ S) :
+    Formula.box (Formula.box phi) ∈ S := by
+  have h_ax4 := modal_4_theorem phi
+  have h_ax4_in := theorem_in_mcs h_mcs h_ax4
+  exact set_mcs_implication_property h_mcs h_ax4_in h_box
+
+/--
+In a box-coherent set, Box chi in any family implies Box chi in ALL families at that time.
+
+This is the key S5 property: boxes are "uniform" across families when box_coherence holds.
+
+**Proof**: By axiom 4, Box chi implies Box Box chi. By box_coherence, Box Box chi in fam
+implies Box chi in fam' for any fam' in the set.
+-/
+lemma box_coherent_box_uniform (fams : Set (IndexedMCSFamily D))
+    (h_coherent : box_coherence_pred fams)
+    (fam : IndexedMCSFamily D) (hfam : fam ∈ fams)
+    (chi : Formula) (t : D) (h_box : Formula.box chi ∈ fam.mcs t)
+    (fam' : IndexedMCSFamily D) (hfam' : fam' ∈ fams) :
+    Formula.box chi ∈ fam'.mcs t := by
+  -- By axiom 4: Box chi ∈ fam.mcs t → Box Box chi ∈ fam.mcs t
+  have h_box_box := mcs_box_implies_box_box (fam.is_mcs t) chi h_box
+  -- By box_coherence: Box Box chi ∈ fam.mcs t → Box chi ∈ fam'.mcs t
+  exact h_coherent fam hfam (Formula.box chi) t h_box_box fam' hfam'
+
+/--
+In a box-coherent set of constant families, BoxContent at a fixed family and time
+contains all chi where Box chi is in ANY family at ANY time.
+
+This shows that BC_fam_t = {chi | Box chi ∈ fam.mcs t} is the "universal" BoxContent.
+-/
+lemma box_coherent_constant_boxcontent_complete
+    (fams : Set (IndexedMCSFamily D))
+    (h_coherent : box_coherence_pred fams)
+    (h_all_const : ∀ fam ∈ fams, fam.isConstant)
+    (fam : IndexedMCSFamily D) (hfam : fam ∈ fams)
+    (t : D) :
+    {chi | ∃ fam' ∈ fams, ∃ s : D, Formula.box chi ∈ fam'.mcs s} =
+    {chi | Formula.box chi ∈ fam.mcs t} := by
+  ext chi
+  constructor
+  · -- If Box chi in some fam' at some time s, then Box chi in fam at time t
+    intro ⟨fam', hfam', s, h_box⟩
+    -- By constancy, Box chi ∈ fam'.mcs s → Box chi ∈ fam'.mcs t
+    have h_box_t : Formula.box chi ∈ fam'.mcs t := by
+      rw [← h_all_const fam' hfam' s t]
+      exact h_box
+    -- By box_coherent_box_uniform, Box chi ∈ fam'.mcs t → Box chi ∈ fam.mcs t
+    exact box_coherent_box_uniform fams h_coherent fam' hfam' chi t h_box_t fam hfam
+  · -- If Box chi in fam at time t, then exists (fam, t) as witness
+    intro h_box
+    exact ⟨fam, hfam, t, h_box⟩
+
+/--
+For a constant family, chi at any time equals chi at all times.
+-/
+lemma constant_family_formula_time_invariant {fam : IndexedMCSFamily D}
+    (h_const : fam.isConstant) (chi : Formula) (s t : D) :
+    chi ∈ fam.mcs s ↔ chi ∈ fam.mcs t := by
+  rw [h_const s t]
+
+/--
+Predicate: all families in a set are constant.
+-/
+def allConstant (fams : Set (IndexedMCSFamily D)) : Prop :=
+  ∀ fam ∈ fams, fam.isConstant
+
+/--
+Constancy is preserved under unions.
+If all families in each set of a collection are constant, then all families
+in the union are constant.
+-/
+lemma allConstant_sUnion (c : Set (Set (IndexedMCSFamily D)))
+    (h_all : ∀ s ∈ c, allConstant s) :
+    allConstant (⋃₀ c) := by
+  intro fam ⟨s, hs, hfam⟩
+  exact h_all s hs fam hfam
+
+/--
+If the input family is constant, then the initial family collection has all constant families.
+-/
+theorem initialFamilyCollection_allConstant (phi : Formula) (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant) :
+    allConstant (initialFamilyCollection phi fam (D := D)).families := by
+  intro fam' h_fam'
+  have h_eq : fam' = fam := Set.mem_singleton_iff.mp h_fam'
+  rw [h_eq]
+  exact h_const
 
 /--
 K distribution lemma: Applies K axiom repeatedly to extract Box of the target from a chain.
@@ -755,16 +870,17 @@ proofs in modal logic.
 saturation) has a sorry for the coherent witness construction.
 -/
 theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
-    (C : FamilyCollection D phi) :
+    (C : FamilyCollection D phi)
+    (h_C_const : allConstant C.families) :
     ∃ C' : FamilyCollection D phi, C.families ⊆ C'.families ∧
       C'.eval_family = C.eval_family ∧ C'.isFullySaturated := by
-  -- Define S as the set of family sets that extend C and preserve box_coherence
+  -- Define S as the set of family sets that extend C, preserve box_coherence, and are all constant
   let S : Set (Set (IndexedMCSFamily D)) :=
-    { fams | C.families ⊆ fams ∧ box_coherence_pred fams ∧ C.eval_family ∈ fams }
+    { fams | C.families ⊆ fams ∧ box_coherence_pred fams ∧ C.eval_family ∈ fams ∧ allConstant fams }
 
   -- C.families is in S
   have hC_in_S : C.families ∈ S := by
-    refine ⟨Set.Subset.rfl, ?_, C.eval_family_mem⟩
+    refine ⟨Set.Subset.rfl, ?_, C.eval_family_mem, h_C_const⟩
     -- box_coherence_pred C.families follows from C.box_coherence
     intro fam hfam psi t h_box fam' hfam'
     exact C.box_coherence fam hfam psi t h_box fam' hfam'
@@ -776,7 +892,7 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
     use ⋃₀ c
     constructor
     · -- ⋃₀ c ∈ S
-      refine ⟨?_, ?_, ?_⟩
+      refine ⟨?_, ?_, ?_, ?_⟩
       · -- C.families ⊆ ⋃₀ c: use that C.families ⊆ s0 and s0 ⊆ ⋃₀ c
         have h_s0_in_S := hc_sub_S hs0
         have h_C_sub_s0 : C.families ⊆ s0 := h_s0_in_S.1
@@ -787,7 +903,11 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
         exact (hc_sub_S hs).2.1
       · -- C.eval_family ∈ ⋃₀ c
         have h_s0_in_S := hc_sub_S hs0
-        exact Set.mem_sUnion.mpr ⟨s0, hs0, h_s0_in_S.2.2⟩
+        exact Set.mem_sUnion.mpr ⟨s0, hs0, h_s0_in_S.2.2.1⟩
+      · -- allConstant (⋃₀ c)
+        apply allConstant_sUnion c
+        intro s hs
+        exact (hc_sub_S hs).2.2.2
     · -- ∀ s ∈ c, s ⊆ ⋃₀ c
       intro s hs
       exact Set.subset_sUnion_of_mem hs
@@ -797,6 +917,10 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
 
   -- M is in S (from maximality)
   have hM_in_S : M ∈ S := hM_maximal.prop
+
+  -- Extract M's properties from S membership
+  have hM_coherent : box_coherence_pred M := hM_in_S.2.1
+  have hM_const : allConstant M := hM_in_S.2.2.2
 
   -- Prove that M is fully saturated (maximality implies saturation)
   -- This is the core argument: if M were not fully saturated, we could construct
@@ -810,11 +934,8 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
   -- 5. Adding this witness to M gives M' ∈ S with M ⊂ M'
   -- 6. This contradicts maximality of M
   --
-  -- The technical difficulty is step 4-5: ensuring the witness preserves box_coherence.
-  -- A simple Lindenbaum extension may introduce Box formulas not in M, breaking coherence.
-  -- The solution requires a more careful "minimal" witness construction.
-  --
-  -- For now, we use sorry and document this as the key technical lemma.
+  -- Key insight: Since all families in M are constant, BoxContent at any time equals
+  -- BoxContent at time t (by box_coherent_constant_boxcontent_complete).
   have h_fully_saturated : ∀ psi : Formula, ∀ fam ∈ M, ∀ t : D,
       diamondFormula psi ∈ fam.mcs t → ∃ fam' ∈ M, psi ∈ fam'.mcs t := by
     intro psi fam hfam_in_M t h_diamond
@@ -827,184 +948,38 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
       diamond_implies_psi_consistent (fam.is_mcs t) psi h_diamond
 
     -- Step 2: Define BoxContent(M) = {chi | ∃ fam' ∈ M, ∃ s, Box chi ∈ fam'.mcs s}
-    -- This is the set of all formulas that must be in any witness for box_coherence at ALL times
-    -- Note: We need BoxContent for all times s, not just time t, for box_coherence to hold
+    -- By constancy, this equals {chi | Box chi ∈ fam.mcs t}
     let BoxContent : Set Formula := {chi | ∃ fam' ∈ M, ∃ s : D, Formula.box chi ∈ fam'.mcs s}
 
-    -- Step 3: By box_coherence of M, every chi in BoxContent(M) at time s is in fam.mcs s
-    -- More specifically: if Box chi ∈ fam'.mcs s for some fam' ∈ M, then chi ∈ fam.mcs s
-    -- But BoxContent collects chi from ALL times, so this doesn't directly give chi ∈ fam.mcs t
-    --
-    -- This is a fundamental issue: the witness W_set needs to contain BoxContent, but
-    -- BoxContent at different times may have different chi values that don't all belong
-    -- to fam.mcs t.
-    --
-    -- SIMPLIFICATION: Use the constant family structure. Since W is a constantWitnessFamily,
-    -- W.mcs s = W_set for all s. For box_coherence at time s:
-    -- - If Box chi ∈ fam1.mcs s (fam1 ∈ M), need chi ∈ W.mcs s = W_set
-    -- - So W_set must contain chi for ALL Box chi that appear at ANY time in M
-    --
-    -- This requires BoxContent to be universal over times.
-    have h_boxcontent_at_t_in_fam : ∀ chi, (∃ fam' ∈ M, Formula.box chi ∈ fam'.mcs t) → chi ∈ fam.mcs t := by
-      intro chi ⟨fam', hfam'_in_M, h_box_chi⟩
-      exact hM_in_S.2.1 fam' hfam'_in_M chi t h_box_chi fam hfam_in_M
+    -- Key lemma: BoxContent = {chi | Box chi ∈ fam.mcs t} (by constancy + box-coherence)
+    have h_boxcontent_eq : BoxContent = {chi | Formula.box chi ∈ fam.mcs t} :=
+      box_coherent_constant_boxcontent_complete M hM_coherent hM_const fam hfam_in_M t
+
+    -- Step 3: By box_coherence of M, every chi in BoxContent(M) is in fam.mcs t
+    have h_boxcontent_in_fam : ∀ chi ∈ BoxContent, chi ∈ fam.mcs t := by
+      intro chi h_chi
+      rw [h_boxcontent_eq] at h_chi
+      -- h_chi : Box chi ∈ fam.mcs t
+      -- By T-axiom, chi ∈ fam.mcs t
+      have h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
+      have h_T_in := theorem_in_mcs (fam.is_mcs t) h_T
+      exact set_mcs_implication_property (fam.is_mcs t) h_T_in h_chi
+
+    -- Also, Box chi ∈ fam.mcs t for all chi ∈ BoxContent
+    have h_boxcontent_boxes_in_fam : ∀ chi ∈ BoxContent, Formula.box chi ∈ fam.mcs t := by
+      intro chi h_chi
+      rw [h_boxcontent_eq] at h_chi
+      exact h_chi
 
     -- Step 4: Show {psi} ∪ BoxContent is consistent
-    -- Key insight: if {psi} ∪ BoxContent ⊢ bot, then from BoxContent ⊆ fam.mcs t
-    -- and the deduction theorem, we can derive a contradiction with Diamond psi in fam
+    -- Key insight: BoxContent = {chi | Box chi ∈ fam.mcs t} (by constancy + box-coherence)
+    -- So we can apply diamond_box_coherent_consistent directly
     have h_witness_set_consistent : SetConsistent ({psi} ∪ BoxContent) := by
-      intro L hL_sub ⟨d⟩
-      -- L ⊆ {psi} ∪ BoxContent and L ⊢ bot
-      -- Split L into the psi part and BoxContent part
-      by_cases h_psi_in_L : psi ∈ L
-      · -- psi ∈ L: Use the argument that {psi} ∪ X is consistent when X ⊆ fam.mcs t
-        --          and Diamond psi ∈ fam.mcs t
-        -- The derivation L ⊢ bot with psi ∈ L gives [psi] ++ (L \ {psi}) ⊢ bot
-        -- By deduction: (L \ {psi}) ⊢ neg psi
-        -- But L \ {psi} ⊆ BoxContent ⊆ fam.mcs t
-        -- So by deductive closure of MCS: neg psi ∈ fam.mcs t
-        -- By necessitation on the theorem: ⊢ Box(l1 → ... → ln → neg psi) where li ∈ L \ {psi}
-        -- ... this argument is complex, need a helper lemma
-
-        -- Alternative: show directly that Diamond psi ∈ fam.mcs t prevents this inconsistency
-        -- If {psi} ∪ BoxContent ⊢ bot, we'd have a derivation showing psi inconsistent with
-        -- formulas that are all in fam.mcs t. But Diamond psi ∈ fam.mcs t guarantees
-        -- there's an accessible world where psi holds together with all necessary truths.
-
-        -- This requires the modal existence lemma: Diamond psi ∈ S (MCS) implies
-        -- {psi} ∪ {chi | Box chi ∈ S} is consistent.
-        --
-        -- Proof sketch: If {psi} ∪ {chi | Box chi ∈ S} were inconsistent, then
-        -- for some chi_1, ..., chi_n with Box chi_i ∈ S: psi, chi_1, ..., chi_n ⊢ bot
-        -- By deduction: chi_1, ..., chi_n ⊢ neg psi
-        -- This is a theorem (provable from empty context after repeated deduction)
-        -- By necessitation: Box(chi_1 → ... → chi_n → neg psi)
-        -- By K distribution: Box chi_1 → ... → Box chi_n → Box(neg psi)
-        -- Since Box chi_i ∈ S and S is MCS: Box(neg psi) ∈ S
-        -- But Diamond psi = neg(Box(neg psi)) ∈ S, contradiction.
-
-        -- The gap: {chi | Box chi ∈ S} vs BoxContent (which uses ∃ fam' ∈ M)
-        -- BoxContent may include chi where Box chi is in a DIFFERENT family than fam
-
-        -- Key observation: by box_coherence, BoxContent ⊆ fam.mcs t
-        -- So we can apply the existence lemma argument with fam.mcs t
-
-        -- Extract chi_1, ..., chi_n from L that are in BoxContent
-        -- These are all in fam.mcs t by h_boxcontent_in_fam
-
-        -- For the full proof, we need the existence lemma for this specific situation.
-        -- This is standard modal logic but requires careful formalization.
-
-        -- Technical lemma needed: diamond_existence_lemma
-        --   If Diamond psi ∈ S (MCS) and X ⊆ {chi | Box chi ∈ S}, then {psi} ∪ X is consistent
-        --
-        -- Our situation: Diamond psi ∈ fam.mcs t, and for the li in L that come from BoxContent,
-        -- we have Box li ∈ some M family, hence li ∈ fam.mcs t by box_coherence.
-        -- But we need Box li ∈ fam.mcs t (the SAME family) for the existence lemma.
-
-        -- This is where the argument breaks down: li comes from Box li in SOME fam' ∈ M,
-        -- not necessarily from Box li in fam itself.
-
-        -- HOWEVER, we can use a different argument:
-        -- If Box(neg psi) ∈ fam'.mcs t for some fam' ∈ M, then by box_coherence,
-        -- neg psi ∈ fam.mcs t. But Diamond psi = neg(Box(neg psi)) ∈ fam.mcs t too.
-        -- For fam.mcs t to be consistent, Box(neg psi) ∉ fam.mcs t.
-        -- By MCS negation completeness: neg(Box(neg psi)) ∈ fam.mcs t, which we already have.
-
-        -- The resolution: we cannot have Box(neg psi) in ANY M family!
-        -- If we could, it would need to be in fam by box_coherence, contradicting Diamond psi.
-
-        -- Wait, that's wrong. Box(neg psi) in fam' implies neg psi in fam (by coherence),
-        -- NOT Box(neg psi) in fam.
-
-        -- Let me reconsider. The existence lemma argument:
-        -- If {psi} ∪ BoxContent is inconsistent, there exist chi_1, ..., chi_n in BoxContent
-        -- with psi, chi_1, ..., chi_n ⊢ bot.
-        -- For each chi_i, Box chi_i ∈ fam_i.mcs t for some fam_i ∈ M.
-        -- By deduction: ⊢ chi_1 → ... → chi_n → (psi → bot) = chi_1 → ... → chi_n → neg psi
-        -- By necessitation: ⊢ Box(chi_1 → ... → chi_n → neg psi)
-        -- By K repeated: ⊢ Box chi_1 → ... → Box chi_n → Box(neg psi)
-
-        -- Now, each Box chi_i is in SOME fam_i.mcs t. We can't directly conclude Box(neg psi)
-        -- is in any particular MCS.
-
-        -- UNLESS: we use that the derivation ⊢ Box chi_1 → ... → Box chi_n → Box(neg psi)
-        -- is a THEOREM, so it's in every MCS.
-
-        -- Take fam (where Diamond psi is). The theorem Box chi_1 → ... → Box chi_n → Box(neg psi)
-        -- is in fam.mcs t.
-
-        -- Now, are Box chi_i in fam.mcs t? Not necessarily! Box chi_i is in fam_i.mcs t,
-        -- not necessarily in fam.mcs t.
-
-        -- By MCS negation completeness: either Box chi_i ∈ fam.mcs t or neg(Box chi_i) ∈ fam.mcs t.
-        -- If neg(Box chi_i) = Diamond(neg chi_i) ∈ fam.mcs t, that's allowed.
-
-        -- So we can't directly use modus ponens to get Box(neg psi) ∈ fam.mcs t.
-
-        -- ALTERNATIVE APPROACH: Use the union of all families' boxed contents.
-        -- Define S_union = ⋃_{fam' ∈ M} fam'.mcs t (union of all MCSes at time t)
-        -- This is NOT an MCS in general, but we can reason about derivability.
-
-        -- Actually, let's use a simpler argument based on what we know:
-        -- If {psi} ∪ BoxContent is inconsistent, that means there's no MCS containing
-        -- {psi} ∪ BoxContent. But we want to construct a witness that contains exactly
-        -- these elements (plus whatever Lindenbaum adds). If the base set is inconsistent,
-        -- we can't construct such a witness.
-
-        -- But wait - we're trying to show {psi} ∪ BoxContent IS consistent precisely
-        -- to enable witness construction. This is circular reasoning.
-
-        -- The actual proof needs the MODAL EXISTENCE LEMMA in a different form.
-        -- See ModalSaturation.lean for diamond_implies_psi_consistent.
-
-        -- For this sorry, we document the precise gap:
-        -- NEED: Lemma showing {psi} ∪ BoxContent consistent when Diamond psi ∈ fam.mcs t
-        --       and BoxContent is derived from a box-coherent M containing fam.
-
-        -- We can use diamond_box_coherent_consistent if we have:
-        -- 1. Diamond psi ∈ fam.mcs t (we have this as h_diamond)
-        -- 2. ∀ chi ∈ BoxContent, Box chi ∈ fam.mcs t
-        --
-        -- But BoxContent uses ∃ s, not specifically t. If all families in M are constant,
-        -- then Box chi ∈ fam'.mcs s implies Box chi ∈ fam'.mcs t (same MCS).
-        -- Then by box_coherence of M: chi ∈ fam.mcs t.
-        -- But we need Box chi ∈ fam.mcs t, not chi ∈ fam.mcs t!
-        --
-        -- This is where the proof breaks down - we don't have Box chi ∈ fam.mcs t
-        -- unless we assume some form of modal positive introspection (Box A → Box Box A).
-        --
-        -- ALTERNATIVE: Restrict BoxContent to only those chi where Box chi ∈ fam.mcs t.
-        -- Then use diamond_box_coherent_consistent directly.
-        -- But this changes the witness construction and may not satisfy box_coherence
-        -- for other families in M.
-        --
-        -- This sorry represents a fundamental gap in the multi-family saturation approach
-        -- without additional modal axioms.
-
-        sorry
-      · -- psi ∉ L: L ⊆ BoxContent ⊆ fam.mcs t, so L derives bot from elements of MCS
-        have h_L_sub_fam : ∀ x ∈ L, x ∈ fam.mcs t := by
-          intro x hx
-          have h_in_union := hL_sub x hx
-          simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_union
-          rcases h_in_union with h_eq_psi | h_in_box
-          · -- x = psi, but psi ∉ L by assumption h_psi_in_L
-            rw [h_eq_psi] at hx
-            exact absurd hx h_psi_in_L
-          · -- x ∈ BoxContent (at some time s)
-            -- h_in_box : x ∈ BoxContent = {chi | ∃ fam' ∈ M, ∃ s, Box chi ∈ fam'.mcs s}
-            -- We need x ∈ fam.mcs t, but BoxContent uses ∃ s, not specifically t
-            rcases h_in_box with ⟨fam', hfam', s, h_box_at_s⟩
-            -- We know Box x ∈ fam'.mcs s, and by box_coherence of M: x ∈ fam.mcs s
-            have h_x_at_s : x ∈ fam.mcs s := hM_in_S.2.1 fam' hfam' x s h_box_at_s fam hfam_in_M
-            -- To get x ∈ fam.mcs t, we need the family to be constant (mcs s = mcs t)
-            -- or some temporal coherence property.
-            -- Without additional assumptions, this cannot be proven.
-            -- This sorry represents the temporal uniformity gap.
-            sorry
-        -- L ⊢ bot and L ⊆ fam.mcs t contradicts MCS consistency
-        exact (fam.is_mcs t).1 L h_L_sub_fam ⟨d⟩
+      -- Use diamond_box_coherent_consistent with BoxSet = BoxContent
+      -- We have h_boxcontent_boxes_in_fam : ∀ chi ∈ BoxContent, Box chi ∈ fam.mcs t
+      exact diamond_box_coherent_consistent (fam.is_mcs t) psi h_diamond BoxContent h_boxcontent_boxes_in_fam
+      -- The previous case (psi ∈ L) used diamond_box_coherent_consistent which handles both cases
+      -- This code is now unreachable due to the earlier exact statement
 
     -- Step 5: Use Lindenbaum to extend {psi} ∪ BoxContent to an MCS
     have ⟨W_set, h_W_extends, h_W_mcs⟩ := set_lindenbaum ({psi} ∪ BoxContent) h_witness_set_consistent
@@ -1068,13 +1043,20 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
         -- For now, this sorry represents the coherent witness construction gap.
         sorry
 
-    -- Step 9: Show M ∪ {W} ∈ S (extends C, has coherence, contains eval_family)
+    -- Step 9: Show M ∪ {W} ∈ S (extends C, has coherence, contains eval_family, all constant)
     have h_extended_in_S : (M ∪ {W}) ∈ S := by
-      refine ⟨?_, h_extended_coherence, ?_⟩
+      refine ⟨?_, h_extended_coherence, ?_, ?_⟩
       · -- C.families ⊆ M ∪ {W}
         exact Set.Subset.trans hM_in_S.1 (Set.subset_union_left)
       · -- C.eval_family ∈ M ∪ {W}
-        exact Set.mem_union_left {W} hM_in_S.2.2
+        exact Set.mem_union_left {W} hM_in_S.2.2.1
+      · -- allConstant (M ∪ {W})
+        intro fam' h_fam'
+        simp only [Set.mem_union, Set.mem_singleton_iff] at h_fam'
+        rcases h_fam' with h_in_M | h_eq_W
+        · exact hM_const fam' h_in_M
+        · subst h_eq_W
+          exact constantWitnessFamily_isConstant W_set h_W_mcs
 
     -- Step 10: Show M ⊂ M ∪ {W} (strict inclusion)
     have h_W_notin_M : W ∉ M := by
@@ -1105,10 +1087,10 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
   -- Construct C' from M
   let C' : FamilyCollection D phi := {
     families := M
-    nonempty := ⟨C.eval_family, hM_in_S.2.2⟩
+    nonempty := ⟨C.eval_family, hM_in_S.2.2.1⟩
     eval_family := C.eval_family
-    eval_family_mem := hM_in_S.2.2
-    box_coherence := hM_in_S.2.1
+    eval_family_mem := hM_in_S.2.2.1
+    box_coherence := hM_coherent
   }
 
   use C'
@@ -1116,31 +1098,35 @@ theorem FamilyCollection.exists_fullySaturated_extension {phi : Formula}
 
 /--
 Non-constructively select a fully saturated extension of a family collection.
+Requires all initial families to be constant.
 -/
 noncomputable def FamilyCollection.saturate {phi : Formula}
-    (C : FamilyCollection D phi) : FamilyCollection D phi :=
-  Classical.choose (C.exists_fullySaturated_extension)
+    (C : FamilyCollection D phi) (h_const : allConstant C.families) : FamilyCollection D phi :=
+  Classical.choose (C.exists_fullySaturated_extension h_const)
 
 /--
 The saturated collection extends the original.
 -/
-theorem FamilyCollection.saturate_extends {phi : Formula} (C : FamilyCollection D phi) :
-    C.families ⊆ C.saturate.families :=
-  (Classical.choose_spec C.exists_fullySaturated_extension).1
+theorem FamilyCollection.saturate_extends {phi : Formula} (C : FamilyCollection D phi)
+    (h_const : allConstant C.families) :
+    C.families ⊆ (C.saturate h_const).families :=
+  (Classical.choose_spec (C.exists_fullySaturated_extension h_const)).1
 
 /--
 The saturated collection preserves the evaluation family.
 -/
-theorem FamilyCollection.saturate_eval_family {phi : Formula} (C : FamilyCollection D phi) :
-    C.saturate.eval_family = C.eval_family :=
-  (Classical.choose_spec C.exists_fullySaturated_extension).2.1
+theorem FamilyCollection.saturate_eval_family {phi : Formula} (C : FamilyCollection D phi)
+    (h_const : allConstant C.families) :
+    (C.saturate h_const).eval_family = C.eval_family :=
+  (Classical.choose_spec (C.exists_fullySaturated_extension h_const)).2.1
 
 /--
 The saturated collection is fully saturated.
 -/
-theorem FamilyCollection.saturate_isFullySaturated {phi : Formula} (C : FamilyCollection D phi) :
-    C.saturate.isFullySaturated :=
-  (Classical.choose_spec C.exists_fullySaturated_extension).2.2
+theorem FamilyCollection.saturate_isFullySaturated {phi : Formula} (C : FamilyCollection D phi)
+    (h_const : allConstant C.families) :
+    (C.saturate h_const).isFullySaturated :=
+  (Classical.choose_spec (C.exists_fullySaturated_extension h_const)).2.2
 
 /-!
 ## Complete Multi-Family BMCS Construction
@@ -1151,39 +1137,48 @@ initial family that is proven to be modally coherent, without relying on axioms.
 
 /--
 Construct a fully saturated BMCS from an initial family.
+Requires the input family to be constant.
 
 This combines:
 1. Initial family collection from a single family
 2. Non-constructive saturation to achieve isFullySaturated
 3. Conversion to BMCS via FamilyCollection.toBMCS
 -/
-noncomputable def constructSaturatedBMCS (phi : Formula) (fam : IndexedMCSFamily D) : BMCS D :=
+noncomputable def constructSaturatedBMCS (phi : Formula) (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant) : BMCS D :=
   let initial := initialFamilyCollection phi fam
-  let saturated := initial.saturate
-  saturated.toBMCS initial.saturate_isFullySaturated
+  let h_all_const := initialFamilyCollection_allConstant phi fam h_const
+  let saturated := initial.saturate h_all_const
+  saturated.toBMCS (initial.saturate_isFullySaturated h_all_const)
 
 /--
 The saturated BMCS contains the original family.
 -/
-theorem constructSaturatedBMCS_contains_family (phi : Formula) (fam : IndexedMCSFamily D) :
-    fam ∈ (constructSaturatedBMCS phi fam (D := D)).families := by
+theorem constructSaturatedBMCS_contains_family (phi : Formula) (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant) :
+    fam ∈ (constructSaturatedBMCS phi fam h_const (D := D)).families := by
   unfold constructSaturatedBMCS
   have h_init : fam ∈ (initialFamilyCollection phi fam).families := initialFamilyCollection_contains_family phi fam
-  exact (initialFamilyCollection phi fam).saturate_extends h_init
+  have h_all_const := initialFamilyCollection_allConstant phi fam h_const
+  exact (initialFamilyCollection phi fam).saturate_extends h_all_const h_init
 
 /--
 The saturated BMCS has the original family as its evaluation family.
 -/
-theorem constructSaturatedBMCS_eval_family (phi : Formula) (fam : IndexedMCSFamily D) :
-    (constructSaturatedBMCS phi fam (D := D)).eval_family = fam := by
+theorem constructSaturatedBMCS_eval_family (phi : Formula) (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant) :
+    (constructSaturatedBMCS phi fam h_const (D := D)).eval_family = fam := by
   -- The eval_family of toBMCS is the same as the FamilyCollection's eval_family
   -- saturate preserves eval_family
   -- initialFamilyCollection's eval_family is fam
-  show (initialFamilyCollection phi fam).saturate.eval_family = fam
-  have h1 : (initialFamilyCollection phi fam).saturate.eval_family = (initialFamilyCollection phi fam).eval_family :=
-    (initialFamilyCollection phi fam).saturate_eval_family
+  have h_all_const := initialFamilyCollection_allConstant phi fam h_const
+  have h1 := (initialFamilyCollection phi fam).saturate_eval_family h_all_const
   have h2 : (initialFamilyCollection phi fam).eval_family = fam := rfl
-  rw [h1, h2]
+  -- Unfold and use transitivity
+  calc (constructSaturatedBMCS phi fam h_const (D := D)).eval_family
+      = ((initialFamilyCollection phi fam).saturate h_all_const).eval_family := rfl
+    _ = (initialFamilyCollection phi fam).eval_family := h1
+    _ = fam := h2
 
 /-!
 ## Integration with Completeness
@@ -1201,7 +1196,8 @@ noncomputable def construct_bmcs_saturated (Gamma : List Formula) (h_cons : Cont
   let M := lindenbaumMCS Gamma h_cons
   let h_mcs := lindenbaumMCS_is_mcs Gamma h_cons
   let fam := constantIndexedMCSFamily M h_mcs (D := D)
-  constructSaturatedBMCS phi fam
+  let h_const := constantIndexedMCSFamily_isConstant M h_mcs (D := D)
+  constructSaturatedBMCS phi fam h_const
 
 /--
 The saturation-based BMCS construction preserves the context.
@@ -1210,10 +1206,13 @@ theorem construct_bmcs_saturated_contains_context (Gamma : List Formula) (h_cons
     (phi : Formula) :
     ∀ gamma ∈ Gamma, gamma ∈ (construct_bmcs_saturated Gamma h_cons phi (D := D)).eval_family.mcs 0 := by
   intro gamma h_mem
+  let M := lindenbaumMCS Gamma h_cons
+  let h_mcs := lindenbaumMCS_is_mcs Gamma h_cons
+  let h_const := constantIndexedMCSFamily_isConstant M h_mcs (D := D)
   have h_eval : (construct_bmcs_saturated Gamma h_cons phi (D := D)).eval_family =
-                constantIndexedMCSFamily (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons) := by
+                constantIndexedMCSFamily M h_mcs := by
     unfold construct_bmcs_saturated
-    exact constructSaturatedBMCS_eval_family phi _
+    exact constructSaturatedBMCS_eval_family phi (constantIndexedMCSFamily M h_mcs (D := D)) h_const
   rw [h_eval]
   simp only [constantIndexedMCSFamily_mcs_eq]
   have h_in_set : gamma ∈ contextAsSet Gamma := h_mem

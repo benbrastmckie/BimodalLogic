@@ -1,7 +1,7 @@
 # Implementation Plan: Task #881
 
 - **Task**: 881 - Modally Saturated BMCS Construction
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4-6 hours
 - **Dependencies**: None (builds on existing SaturatedConstruction.lean infrastructure)
 - **Research Inputs**: research-003.md, teammate-a-v2-findings.md, teammate-b-v2-findings.md
@@ -88,7 +88,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Derive Axiom 5 (Negative Introspection) [NOT STARTED]
+### Phase 1: Derive Axiom 5 (Negative Introspection) [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Derive `neg(Box phi) -> Box(neg(Box phi))` from `modal_5_collapse` contrapositive
@@ -110,21 +110,23 @@ After this implementation:
 
 ---
 
-### Phase 2: Fix the 3 Sorries in SaturatedConstruction.lean [NOT STARTED]
+### Phase 2: Fix the 3 Sorries in SaturatedConstruction.lean [PARTIAL]
 
 - **Dependencies:** Phase 1
 - **Goal:** Eliminate all 3 sorries in `FamilyCollection.exists_fullySaturated_extension` using S5 lemmas
 
 **Tasks**:
-- [ ] Add `isConstant` constraint to Zorn set S definition (around line 762)
-- [ ] Prove `isConstant_preserved_by_sUnion`: union of constant-family sets preserves isConstant property
-- [ ] Redefine BoxContent to fixed-family-fixed-time version: `{chi | Box chi in fam.mcs t}`
-- [ ] Add `box_content_invariance_in_constant_coherent_set`: `Box chi in fam.mcs t -> Box chi in fam'.mcs t` via axiom 4 + box_coherence
-- [ ] Add `box_content_preservation_for_extension`: `Box chi in W_set -> Box chi in fam.mcs t` via axiom 5
-- [ ] Fix sorry 1 (line 985): Apply `diamond_box_coherent_consistent` with restricted BoxContent
-- [ ] Fix sorry 2 (line 1005): Use T-axiom + constant families: `Box chi in fam.mcs t -> chi in fam.mcs t`
-- [ ] Fix sorry 3 (line 1069): Apply `box_content_preservation_for_extension`
+- [x] Add `isConstant` constraint to Zorn set S definition
+- [x] Prove `allConstant_sUnion`: union of constant-family sets preserves allConstant property
+- [x] Add `box_coherent_constant_boxcontent_complete`: BoxContent = {chi | Box chi in fam.mcs t}
+- [x] Add `box_coherent_box_uniform`: Box chi in any family implies Box chi in all families (via axiom 4)
+- [ ] Add `box_content_preservation_for_extension`: `Box chi in W_set -> chi in fam.mcs t` via axiom 5
+- [x] Fix sorry 1 (line 985): Applied `diamond_box_coherent_consistent` with h_boxcontent_boxes_in_fam
+- [x] Fix sorry 2 (line 1005): Removed - now handled by constancy constraint on S
+- [ ] Fix sorry 3 (line 1044): Apply box_content_preservation using axiom 5
 - [ ] Verify with `lake build`
+
+**Progress**: 2 of 3 sorries fixed. Sorry 3 (Lindenbaum coherence) remains.
 
 **Timing**: 2-3 hours
 

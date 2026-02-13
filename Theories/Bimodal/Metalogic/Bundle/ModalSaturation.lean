@@ -472,4 +472,133 @@ theorem SaturatedBMCS.modal_backward (S : SaturatedBMCS D)
     Formula.box phi ∈ fam.mcs t :=
   saturated_modal_backward S.bmcs S.saturated fam hfam phi t h_all
 
+/-!
+## Axiom 5 (Negative Introspection) Derivation
+
+This section derives negative introspection from the modal_5_collapse axiom via contraposition.
+Negative introspection is required for the BoxContent preservation lemma in SaturatedConstruction.
+-/
+
+/--
+Modal 5 collapse axiom instance: `⊢ ◇□φ → □φ`.
+
+This is a wrapper around the axiom for convenience.
+-/
+noncomputable def modal_5_collapse_theorem (phi : Formula) :
+    [] ⊢ Formula.box phi |>.diamond.imp (Formula.box phi) :=
+  DerivationTree.axiom [] _ (Axiom.modal_5_collapse phi)
+
+/--
+Axiom 5 (Negative Introspection): `⊢ ¬□φ → □¬□φ`.
+
+This derives negative introspection from modal_5_collapse via contraposition.
+
+**Proof**:
+1. `modal_5_collapse` gives `⊢ ◇□φ → □φ`
+2. By contraposition: `⊢ ¬□φ → ¬◇□φ`
+3. `¬◇□φ = ¬(¬□(¬□φ)) = □(¬□φ)` by definition and double negation
+4. Therefore: `⊢ ¬□φ → □(¬□φ)`
+
+The key observation is that `¬◇A = □¬A` (necessity of the negation equals
+negation of possibility).
+-/
+noncomputable def axiom_5_negative_introspection (phi : Formula) :
+    [] ⊢ (Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg) := by
+  -- Step 1: modal_5_collapse gives ◇□φ → □φ
+  have h_collapse : [] ⊢ (Formula.box phi).diamond.imp (Formula.box phi) :=
+    modal_5_collapse_theorem phi
+  -- Step 2: By contraposition: ¬□φ → ¬◇□φ
+  have h_contra : [] ⊢ (Formula.box phi).neg.imp (Formula.box phi).diamond.neg :=
+    Bimodal.Theorems.Propositional.contraposition h_collapse
+  -- Step 3: ¬◇□φ = □¬□φ by definition
+  -- ◇A = ¬□¬A, so ¬◇A = ¬¬□¬A
+  -- ¬◇□φ = ¬¬□(¬□φ) = □(¬□φ) (by double negation)
+  --
+  -- But Formula.diamond unfolds as: phi.diamond = phi.neg.box.neg
+  -- So (Formula.box phi).diamond = (Formula.box phi).neg.box.neg
+  -- Therefore (Formula.box phi).diamond.neg = ((Formula.box phi).neg.box.neg).neg
+  --                                         = (Formula.box phi).neg.box (by DNE)
+  --
+  -- We need to show (Formula.box phi).diamond.neg equals Formula.box (Formula.box phi).neg
+  -- This requires applying double negation elimination.
+  --
+  -- Expand the diamond:
+  -- (Formula.box phi).diamond = (Formula.box phi).neg.box.neg
+  -- So (Formula.box phi).diamond.neg = (Formula.box phi).neg.box.neg.neg
+  --
+  -- We have h_contra : ¬□φ → ((□φ).neg.box.neg).neg
+  -- We need: ¬□φ → (□φ).neg.box
+  --
+  -- The gap: ((□φ).neg.box.neg).neg vs (□φ).neg.box
+  -- These are syntactically different but semantically equivalent (double negation)
+
+  -- Use double negation elimination to convert ¬¬□(¬□φ) to □(¬□φ)
+  -- h_contra has conclusion: (Formula.box phi).diamond.neg
+  --                        = ((Formula.box phi).neg.box.neg).neg  (expanding diamond)
+  --
+  -- Goal is: (Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg)
+  --        = (Formula.box phi).neg.imp ((Formula.box phi).neg.box)
+
+  -- The diamond of A is: A.neg.box.neg (¬□¬A)
+  -- So (Formula.box phi).diamond = (Formula.box phi).neg.box.neg
+
+  -- The conclusion of h_contra is:
+  -- ((Formula.box phi).neg.box.neg).neg = (Formula.box phi).neg.box.neg.neg
+
+  -- We need to prove: (Formula.box phi).neg.box
+
+  -- Use DNE: ¬¬B → B where B = (Formula.box phi).neg.box
+
+  have h_dne : [] ⊢ ((Formula.box phi).neg.box.neg.neg).imp ((Formula.box phi).neg.box) :=
+    Bimodal.Theorems.Propositional.double_negation ((Formula.box phi).neg.box)
+
+  -- Now compose: ¬□φ → ¬¬□¬□φ → □¬□φ
+  -- h_contra : ¬□φ → (diamond □φ).neg = ¬□φ → (¬□(¬□φ)).neg = ¬□φ → ¬¬□¬□φ
+  -- h_dne : ¬¬□¬□φ → □¬□φ
+
+  -- Check the types align:
+  -- h_contra : (Formula.box phi).neg.imp (Formula.box phi).diamond.neg
+  -- (Formula.box phi).diamond.neg = ((Formula.box phi).neg.box.neg).neg
+  --                               = (Formula.box phi).neg.box.neg.neg
+
+  -- So h_contra : (Formula.box phi).neg.imp ((Formula.box phi).neg.box.neg.neg)
+  -- And h_dne : (Formula.box phi).neg.box.neg.neg.imp ((Formula.box phi).neg.box)
+
+  -- We need: (Formula.box phi).neg.imp ((Formula.box phi).neg.box)
+
+  -- Use imp_trans to compose them
+  have h_result : [] ⊢ (Formula.box phi).neg.imp ((Formula.box phi).neg.box) := by
+    -- First verify h_contra has the right form
+    have h_contra_expanded :
+      (Formula.box phi).diamond.neg = (Formula.box phi).neg.box.neg.neg := rfl
+    rw [h_contra_expanded] at h_contra
+    -- Now h_contra : (Formula.box phi).neg.imp ((Formula.box phi).neg.box.neg.neg)
+
+    -- Compose with DNE using imp_trans
+    exact Bimodal.Theorems.Combinators.imp_trans h_contra h_dne
+
+  exact h_result
+
+/--
+Alternative name for axiom 5: `neg_box_to_box_neg_box`.
+
+This is the form needed for BoxContent preservation: if ¬□φ is true at a world,
+then □(¬□φ) is also true at that world (negative introspection).
+-/
+noncomputable def neg_box_to_box_neg_box (phi : Formula) :
+    [] ⊢ (Formula.box phi).neg.imp (Formula.box (Formula.box phi).neg) :=
+  axiom_5_negative_introspection phi
+
+/--
+If ¬□φ is in an MCS, then □(¬□φ) is also in that MCS.
+
+This follows from axiom 5 and deductive closure of MCS.
+-/
+lemma mcs_neg_box_implies_box_neg_box {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    (phi : Formula) (h_neg_box : (Formula.box phi).neg ∈ S) :
+    Formula.box (Formula.box phi).neg ∈ S := by
+  have h_ax5 := neg_box_to_box_neg_box phi
+  have h_ax5_in := theorem_in_mcs h_mcs h_ax5
+  exact set_mcs_implication_property h_mcs h_ax5_in h_neg_box
+
 end Bimodal.Metalogic.Bundle
