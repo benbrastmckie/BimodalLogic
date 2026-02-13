@@ -23,11 +23,11 @@ technical_debt:
 ## Tasks
 
 ### 880. Investigate augmented extension seed approach for pure past/future cases
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 12-18 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-006.md](specs/880_augmented_extension_seed_approach/reports/research-006.md) (RecursiveSeed sorry-free path), [research-007.md](specs/880_augmented_extension_seed_approach/reports/research-007.md) (Approach 3 viability), [research-008.md](specs/880_augmented_extension_seed_approach/reports/research-008.md) (Broken commit analysis and fix strategy)
-- **Plan**: [implementation-006.md](specs/880_augmented_extension_seed_approach/plans/implementation-006.md) (v6 - Weaken Hypotheses with Construction Fix)
+- **Plan**: [implementation-007.md](specs/880_augmented_extension_seed_approach/plans/implementation-007.md) (v7 - Namespace fix and hypothesis weakening)
 - **Created**: 2026-02-12
 - **Researched**: 2026-02-13
 - **Planned**: 2026-02-13

@@ -4,7 +4,7 @@
 **Version**: 006
 **Created**: 2026-02-13
 **Language**: lean
-**Status**: [PARTIAL] - Phase 1 complete, Phase 3 attempted but reverted
+**Status**: [BLOCKED] - Phase 1 commit (54d6e95d) broken, reverted to f4779656
 **Estimated Effort**: 12-18 hours (reduced from v005 due to completed construction fix)
 **Previous**: v005 (partially executed - construction fix done, hypothesis weakening not done)
 
@@ -35,20 +35,22 @@ The 6 sorries at lines 4005, 4090, 4171, 4255, 4321, 4385 claim "dead code" but:
 
 **Solution**: With weakened hypotheses, we don't need to prove these false claims. Instead, we prove monotonic properties that survive `createNewFamily`/`createNewTime`.
 
-## Current State (After Phase 3)
+## Current State (BLOCKED)
+
+**CRITICAL**: Commits 13018b3b and 54d6e95d have **namespace errors** (`needsPositiveHypotheses` defined in wrong namespace) and **do not build**. Reverted to last working version f4779656.
 
 | Metric | Value |
 |--------|-------|
-| Sorries in RecursiveSeed.lean | 5 (was 8) |
-| False hypothesis sorries | 5 remaining (was 6) |
-| Supporting lemma sorries | 0 (was 2) - ELIMINATED |
-| Lake build | Success (with sorry warnings in other files) |
-| Construction fix | Done (seed4 propagation) |
-| Phase 3 | COMPLETED - proved both temporal propagation lemmas |
+| Sorries in RecursiveSeed.lean | 8 (working f4779656) |
+| Supporting lemma sorries | 2 (lines 2808, 2825) |
+| DEAD CODE sorries | 3 (lines 3972, 4057, 4138) |
+| STRUCTURAL sorries | 3 (lines 4222, 4288, 4352) |
+| Lake build | Success (at f4779656) |
+| Construction fix | LOST (was in broken commits) |
 
 ## Implementation Phases
 
-### Phase 1: Weaken Theorem Hypotheses (4-6 hours) [COMPLETED]
+### Phase 1: Weaken Theorem Hypotheses (4-6 hours) [BLOCKED - commit broken]
 
 **Dependencies**: None (construction fix already done)
 **Goal**: Change `buildSeedAux_preserves_seedConsistent` to use weaker hypotheses

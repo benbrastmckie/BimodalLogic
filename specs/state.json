@@ -466,12 +466,12 @@
     {
       "project_number": 880,
       "project_name": "augmented_extension_seed_approach",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-12T18:15:26Z",
-      "last_updated": "2026-02-13T19:25:23Z",
+      "last_updated": "2026-02-13T19:31:09Z",
       "researched": "2026-02-13T19:25:23Z",
-      "session_id": "sess_1771010401_d56029",
+      "session_id": "sess_1771010868_1e76bf",
       "artifacts": [
         {
           "path": "specs/880_augmented_extension_seed_approach/summaries/implementation-summary-20260212.md",
@@ -509,17 +509,17 @@
           "summary": "Phase 2 analysis: construction gap identified - G psi not propagated to future times"
         },
         {
-          "path": "specs/880_augmented_extension_seed_approach/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "v006: Weaken hypotheses with construction fix retained - 12-18h"
-        },
-        {
           "path": "specs/880_augmented_extension_seed_approach/reports/research-008.md",
           "type": "research",
           "summary": "Analysis of broken commits (namespace error for needsPositiveHypotheses), working version structure, and 4-phase fix strategy with 12-18 hour estimate"
+        },
+        {
+          "path": "specs/880_augmented_extension_seed_approach/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "v007: Namespace fix and correct hypothesis weakening - 12-18h"
         }
       ],
-      "planned": "2026-02-13T18:07:04Z",
+      "planned": "2026-02-13T19:31:09Z",
       "started": "2026-02-13T02:09:55Z"
     }
   ],
