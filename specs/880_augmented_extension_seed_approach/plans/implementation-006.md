@@ -47,7 +47,7 @@ The 6 sorries at lines 4005, 4090, 4171, 4255, 4321, 4385 claim "dead code" but:
 
 ## Implementation Phases
 
-### Phase 1: Weaken Theorem Hypotheses (4-6 hours) [NOT STARTED]
+### Phase 1: Weaken Theorem Hypotheses (4-6 hours) [COMPLETED]
 
 **Dependencies**: None (construction fix already done)
 **Goal**: Change `buildSeedAux_preserves_seedConsistent` to use weaker hypotheses
@@ -92,7 +92,7 @@ theorem buildSeedAux_preserves_seedConsistent
 
 ---
 
-### Phase 2: Prove Monotonicity Lemmas (3-5 hours) [NOT STARTED]
+### Phase 2: Prove Monotonicity Lemmas (3-5 hours) [SKIPPED - Not needed with new approach]
 
 **Dependencies**: Phase 1
 **Goal**: Prove the lemmas needed for IH applications
@@ -127,7 +127,7 @@ lemma createNewTime_preserves_entry_exists ...
 
 ---
 
-### Phase 3: Prove Supporting Lemmas (3-5 hours) [NOT STARTED]
+### Phase 3: Prove Supporting Lemmas (3-5 hours) [PARTIAL]
 
 **Dependencies**: Phase 1, Phase 2
 **Goal**: Eliminate the 2 supporting lemma sorries
