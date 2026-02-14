@@ -565,10 +565,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-14T00:28:08Z",
+      "last_updated": "2026-02-14T00:33:54Z",
       "artifacts": [
         {
           "type": "research",
@@ -639,10 +639,15 @@
           "path": "specs/881_modally_saturated_bmcs_construction/progress/phase-1-progress.json",
           "type": "progress",
           "summary": "Detailed analysis of why Phase 1 is blocked - architecture limitation in DovetailingChain"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-009.md",
+          "type": "research",
+          "summary": "Team research v5: RecursiveSeed recommended as sorry-free path forward for modal saturation"
         }
       ],
-      "session_id": "sess_1771028322_74f62b",
-      "researched": "2026-02-13T23:54:55Z",
+      "session_id": "sess_1771028987_1b44a1",
+      "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-14T00:11:32Z",
       "started": "2026-02-13T21:26:53Z"
     }
