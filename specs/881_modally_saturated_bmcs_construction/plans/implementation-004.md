@@ -1,7 +1,7 @@
 # Implementation Plan: Task #881 (Version 4)
 
 - **Task**: 881 - Construct modally saturated BMCS to eliminate `fully_saturated_bmcs_exists` axiom
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Dependencies**: None (builds on sorry-free RecursiveSeed from task 880)
 - **Research Inputs**: research-009.md (team research v5: RecursiveSeed extension path)
@@ -97,7 +97,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Multi-Formula Seed Builder [NOT STARTED]
+### Phase 1: Multi-Formula Seed Builder [PARTIAL]
 
 - **Dependencies:** None
 - **Goal:** Extend RecursiveSeed to process ALL formulas in a seed set (evaluation MCS content)
@@ -119,21 +119,33 @@ def buildSeedForList (formulas : List Formula) : ModelSeed :=
 ```
 
 **Tasks**:
-- [ ] Define `buildSeedForMCS`: Takes MCS content and builds combined ModelSeed
-- [ ] Prove `buildSeedForMCS_consistent`: Combined seed preserves consistency
-- [ ] Prove `buildSeedForMCS_contains_all`: Each input formula appears at (0, 0)
-- [ ] Prove `buildSeedForMCS_preserves_boxcontent`: Box phi propagation preserved
-- [ ] Test with example MCS content
+- [x] Define `buildSeedForList`: Takes list of formulas and builds combined ModelSeed
+- [x] Define `buildSeedForList'`: Alternative definition starting from initial seed
+- [ ] Prove `buildSeedForList_consistent`: Combined seed preserves consistency (SORRY)
+- [x] Define `buildSeed_contains_formula`: Formula in buildSeed at (0,0) (PARTIAL - 6 sorry branches)
+- [ ] Prove `buildSeedForList_contains_input`: Each input formula at (0, 0) (SORRY - 1 branch)
+- [ ] Prove `buildSeedForList_propagates_box`: Box phi propagation preserved (SORRY)
 
-**Timing**: 3-4 hours
+**Technical Debt (5 sorries)**:
+1. `foldl_buildSeedAux_preserves_seedConsistent` - requires generalizing consistency proofs
+2. `buildSeedForList_consistent` - depends on mutual consistency from MCS
+3. `buildSeed_contains_formula` - 6 branches require `buildSeedAux_preserves_getFormulas` lemma
+4. `buildSeedForList_contains_input` - depends on foldl preservation
+5. `buildSeedForList_propagates_box` - depends on box propagation through foldl
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Add multi-formula builders
+**Required Infrastructure (not yet implemented)**:
+- `buildSeedAux_preserves_getFormulas`: Lemma showing buildSeedAux preserves membership at (famIdx, timeIdx)
+- `foldl_buildSeedAux_preserves_getFormulas`: Lemma for foldl preservation
+
+**Timing**: 3-4 hours (spent ~2 hours, ~2 hours remaining for proofs)
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Added multi-formula builders (lines 4716-4922)
 
 **Verification**:
-- `lake build` succeeds
-- `buildSeedForMCS_consistent` compiles without sorry
-- Combined seed contains all input formulas at initial position
+- [x] `lake build` succeeds
+- [ ] `buildSeedForList_consistent` compiles without sorry (NOT YET)
+- [ ] Combined seed contains all input formulas at initial position (PARTIAL)
 
 ---
 

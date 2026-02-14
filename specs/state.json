@@ -565,10 +565,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-14T00:43:07Z",
+      "last_updated": "2026-02-14T00:57:48Z",
       "artifacts": [
         {
           "type": "research",
@@ -649,9 +649,14 @@
           "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-004.md",
           "type": "plan",
           "summary": "4-phase plan extending RecursiveSeed for modal saturation: multi-formula seed builder, seed-to-family bridge, modal witness construction, saturation closure"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
+          "type": "implementation",
+          "summary": "Added multi-formula seed builder section (lines 4716-4922)"
         }
       ],
-      "session_id": "sess_1771029326_8794b9",
+      "session_id": "sess_1771030645_147726",
       "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-14T00:43:07Z",
       "started": "2026-02-13T21:26:53Z"

@@ -4712,4 +4712,219 @@ theorem seedConsistent (phi : Formula) (h_cons : FormulaConsistent phi) :
     intro _
     exact initial_timeIndices_eq phi
 
+/-!
+## Phase 1 (Task 881): Multi-Formula Seed Builder
+
+This section extends RecursiveSeed to process multiple formulas, enabling construction
+of seeds for entire MCS content. This is the foundation for modal saturation:
+- Process ALL formulas in an evaluation MCS
+- Pre-place witnesses for ALL neg(Box phi) formulas
+- Maintain consistency throughout
+
+### Key Insight
+
+When formulas come from a consistent set (like an MCS), adding them sequentially
+to the seed preserves consistency because:
+1. Each formula is individually consistent (subset of consistent set)
+2. buildSeedAux only adds subformulas and logical consequences
+3. Adding derivable formulas preserves consistency
+-/
+
+/--
+Build a model seed from a list of formulas by processing each sequentially.
+
+Each formula is processed at position (0, 0) in family 0, starting from an
+initial seed containing the first formula (if the list is non-empty).
+
+This is used to build seeds for MCS content where all formulas should be
+present at the evaluation position (0, 0).
+-/
+def buildSeedForList : List Formula → ModelSeed
+  | [] => ModelSeed.empty
+  | [phi] => buildSeed phi
+  | phi :: psi :: rest =>
+    -- Start with seed for phi, then add psi and remaining formulas
+    let seed0 := buildSeed phi
+    (psi :: rest).foldl (fun seed phi' => buildSeedAux phi' 0 0 seed) seed0
+
+/--
+Alternative definition: foldl starting from an initial seed with the first formula.
+-/
+def buildSeedForList' (formulas : List Formula) : ModelSeed :=
+  match formulas with
+  | [] => ModelSeed.empty
+  | phi :: rest =>
+    let initialSeed := ModelSeed.initial phi
+    -- First process phi to build its structure
+    let seed0 := buildSeedAux phi 0 0 initialSeed
+    -- Then add each remaining formula at (0, 0)
+    rest.foldl (fun seed phi' => buildSeedAux phi' 0 0 seed) seed0
+
+/--
+buildSeedForList preserves the single-formula case.
+-/
+theorem buildSeedForList_singleton (phi : Formula) :
+    buildSeedForList [phi] = buildSeed phi := rfl
+
+/--
+buildSeedForList on empty list gives empty seed.
+-/
+theorem buildSeedForList_nil : buildSeedForList [] = ModelSeed.empty := rfl
+
+/--
+Helper: foldl with buildSeedAux preserves SeedConsistent when all formulas are consistent.
+-/
+theorem foldl_buildSeedAux_preserves_seedConsistent
+    (formulas : List Formula) (seed : ModelSeed)
+    (h_seed_cons : SeedConsistent seed)
+    (h_seed_wf : SeedWellFormed seed)
+    (h_formulas_cons : ∀ phi ∈ formulas, FormulaConsistent phi)
+    (h_has_family_0 : 0 ∈ seed.familyIndices)
+    (h_single_fam : seed.familyIndices = [0] → ∀ phi ∈ formulas,
+        (buildSeedAux phi 0 0 seed).familyIndices = [0])
+    (h_single_time : seed.timeIndices 0 = [0] → ∀ phi ∈ formulas,
+        (buildSeedAux phi 0 0 seed).timeIndices 0 = [0]) :
+    SeedConsistent (formulas.foldl (fun s phi => buildSeedAux phi 0 0 s) seed) := by
+  induction formulas generalizing seed with
+  | nil => exact h_seed_cons
+  | cons phi rest ih =>
+    simp only [List.foldl_cons]
+    -- For the recursive call, we need to show buildSeedAux phi 0 0 seed is consistent
+    -- This requires the entry at (0, 0) to contain phi (which it does after addFormula)
+    -- and phi to be consistent
+    have h_phi_cons := h_formulas_cons phi List.mem_cons_self
+    -- We need to establish that buildSeedAux phi 0 0 seed satisfies SeedConsistent
+    -- This follows a similar pattern to seedConsistent but starting from an existing seed
+    -- The key insight is that buildSeedAux adds phi and its subformulas/consequences
+    -- For now, we use the fact that the seed already has structure at (0, 0)
+    -- and phi is consistent
+    -- TODO: The full proof requires generalizing buildSeedAux_preserves_seedConsistent
+    -- to work with arbitrary starting seeds that already have formulas at (0, 0)
+    -- For Phase 1, we establish the definition; full proof comes in later phases
+    sorry
+
+/--
+If all formulas in a list are consistent, then buildSeedForList produces a consistent seed.
+
+**Note**: This theorem requires that the formulas be MUTUALLY consistent (e.g., from the same MCS),
+not just individually consistent. A full proof requires showing that buildSeedAux preserves
+consistency when adding formulas that are compatible with existing seed content.
+-/
+theorem buildSeedForList_consistent (formulas : List Formula) (h_ne : formulas ≠ [])
+    (h_all_cons : ∀ phi ∈ formulas, FormulaConsistent phi)
+    (h_mutual_cons : SetConsistent (formulas.toFinset.toSet)) :
+    SeedConsistent (buildSeedForList formulas) := by
+  match formulas with
+  | [] => contradiction
+  | [phi] =>
+    simp only [buildSeedForList]
+    exact seedConsistent phi (h_all_cons phi (by simp))
+  | phi :: psi :: rest =>
+    simp only [buildSeedForList]
+    -- Start from buildSeed phi which is consistent
+    have h_phi_cons := h_all_cons phi (by simp)
+    have h_seed_cons : SeedConsistent (buildSeed phi) := seedConsistent phi h_phi_cons
+    -- Now we need to show the foldl preserves consistency
+    -- This requires the mutual consistency hypothesis
+    sorry
+
+/--
+buildSeed phi contains phi at position (0, 0).
+
+This holds because buildSeedAux calls addFormula at (0, 0) for the formula phi,
+and addFormula_formula_in_getFormulas ensures phi is in the result.
+-/
+theorem buildSeed_contains_formula (phi : Formula) : phi ∈ (buildSeed phi).getFormulas 0 0 := by
+  unfold buildSeed
+  -- For non-recursive cases, buildSeedAux directly calls addFormula
+  -- For recursive cases, we need to trace through and show membership is preserved
+  induction phi with
+  | atom s =>
+    simp only [buildSeedAux]
+    exact addFormula_formula_in_getFormulas _ _ _ _ _
+  | bot =>
+    simp only [buildSeedAux]
+    exact addFormula_formula_in_getFormulas _ _ _ _ _
+  | box psi ih =>
+    simp only [buildSeedAux]
+    -- Box psi is added at (0, 0), then recursion happens
+    -- Need lemma: buildSeedAux preserves membership at (0, 0) after adding psi
+    sorry -- Requires buildSeedAux_preserves_getFormulas lemma
+  | all_future psi ih =>
+    simp only [buildSeedAux]
+    sorry -- Requires buildSeedAux_preserves_getFormulas lemma
+  | all_past psi ih =>
+    simp only [buildSeedAux]
+    sorry -- Requires buildSeedAux_preserves_getFormulas lemma
+  | imp psi1 psi2 ih1 ih2 =>
+    -- Case split on negation vs regular implication
+    cases hp2 : psi2 with
+    | bot =>
+      cases hp1 : psi1 with
+      | box inner =>
+        simp only [buildSeedAux]
+        sorry -- Requires buildSeedAux_preserves_getFormulas lemma
+      | all_future inner =>
+        simp only [buildSeedAux]
+        sorry -- Requires buildSeedAux_preserves_getFormulas lemma
+      | all_past inner =>
+        simp only [buildSeedAux]
+        sorry -- Requires buildSeedAux_preserves_getFormulas lemma
+      | atom s =>
+        simp only [buildSeedAux]
+        exact addFormula_formula_in_getFormulas _ _ _ _ _
+      | bot =>
+        simp only [buildSeedAux]
+        exact addFormula_formula_in_getFormulas _ _ _ _ _
+      | imp q1 q2 =>
+        simp only [buildSeedAux]
+        exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | atom s =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | box q =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | all_future q =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | all_past q =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | imp q1 q2 =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+
+/--
+A formula is in buildSeedForList's seed at (0, 0) if it's in the input list.
+-/
+theorem buildSeedForList_contains_input (formulas : List Formula) (phi : Formula)
+    (h_mem : phi ∈ formulas) :
+    phi ∈ (buildSeedForList formulas).getFormulas 0 0 := by
+  match formulas with
+  | [] => simp at h_mem
+  | [psi] =>
+    simp only [List.mem_singleton] at h_mem
+    subst h_mem
+    simp only [buildSeedForList]
+    exact buildSeed_contains_formula phi
+  | psi1 :: psi2 :: rest =>
+    simp only [buildSeedForList]
+    -- Each call to buildSeedAux adds the formula at (0, 0)
+    -- Need to trace through foldl and show all formulas are preserved
+    sorry -- Requires foldl_buildSeedAux_preserves_getFormulas lemma
+
+/--
+Box formulas are propagated to all families in the seed.
+
+If Box psi is in the input list, then psi appears in all families at time 0.
+-/
+theorem buildSeedForList_propagates_box (formulas : List Formula) (psi : Formula)
+    (h_box_mem : Formula.box psi ∈ formulas) :
+    ∀ famIdx ∈ (buildSeedForList formulas).familyIndices,
+      psi ∈ (buildSeedForList formulas).getFormulas famIdx 0 := by
+  intro famIdx h_fam
+  -- Box psi processing adds psi to ALL families at current time
+  sorry -- Requires proving box propagation through foldl
+
 end Bimodal.Metalogic.Bundle
