@@ -1,24 +1,23 @@
 {
   "status": "partial",
-  "summary": "Phase 1 partial: Multi-formula seed builder definitions complete (buildSeedForList, buildSeedForList'), 5 sorries remain for consistency and containment proofs. Build succeeds. Discovered existing SeedCompletion.lean has Phase 2-4 infrastructure.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
-      "summary": "Added multi-formula seed builder section (lines 4716-4922)"
-    }
-  ],
+  "summary": "Phase 1 infrastructure partially complete. Helper lemmas for membership preservation added but require sorry for complex position-mismatch cases.",
+  "artifacts": [],
   "partial_progress": {
     "stage": "phase_1_partial",
-    "details": "Definitions complete, proofs have 5 sorries requiring buildSeedAux_preserves_getFormulas lemma. Discovered SeedCompletion.lean already has Phase 2-4 infrastructure with sorries.",
-    "phases_completed": 0,
-    "phases_total": 4,
-    "handoff_path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-1-handoff-20260213.md"
+    "details": "Added infrastructure lemmas (addToAllFamilies/FutureTimes/PastTimes_preserves_mem_getFormulas) and helper lemma addFormula_preserves_mem_diff_position. Key sorry: addFormula_preserves_mem_diff_position requires generalizing existing diff_fam/diff_time lemmas. Build succeeds with sorries.",
+    "sorries_added": 18,
+    "sorries_original": 5,
+    "files_modified": ["Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean"]
   },
   "metadata": {
-    "session_id": "sess_1771030645_147726",
+    "phases_completed": 0,
+    "phases_total": 4,
+    "session_id": "sess_1771031369_96dacd",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+  },
+  "completion_data": {
+    "completion_summary": "Phase 1 infrastructure for multi-formula seed builder partially implemented. Added preservation lemmas for addToAllFamilies, addToAllFutureTimes, addToAllPastTimes. Key blocker: addFormula_preserves_mem_diff_position requires extending existing lemmas to handle mismatched query/add positions."
   }
 }

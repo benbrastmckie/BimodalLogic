@@ -568,7 +568,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-14T00:57:48Z",
+      "last_updated": "2026-02-14T01:09:56Z",
       "artifacts": [
         {
           "type": "research",
@@ -654,9 +654,14 @@
           "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
           "type": "implementation",
           "summary": "Added multi-formula seed builder section (lines 4716-4922)"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-1-handoff-20260213-v2.md",
+          "type": "handoff",
+          "summary": "Phase 1 partial: added membership preservation lemmas, key blocker is addFormula_preserves_mem_diff_position"
         }
       ],
-      "session_id": "sess_1771030645_147726",
+      "session_id": "sess_1771031369_96dacd",
       "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-14T00:43:07Z",
       "started": "2026-02-13T21:26:53Z"
