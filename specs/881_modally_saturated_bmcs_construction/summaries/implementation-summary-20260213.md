@@ -1,105 +1,107 @@
 # Implementation Summary: Task #881
 
 **Last Updated**: 2026-02-13
-**Status**: PARTIAL - Phase 1 complete, Phases 2-4 blocked
-**Session**: sess_1771024479_16a793
+**Status**: PARTIAL - Plan v3 Phase 1 BLOCKED due to fundamental architecture limitation
+**Sessions**: sess_1771024479_16a793 (earlier), sess_1771028322_74f62b (current)
 
 ## Objective
 
 Construct modally saturated BMCS to eliminate `fully_saturated_bmcs_exists` axiom.
 
-## Session Progress (sess_1771024479_16a793)
+## Current Session Progress (sess_1771028322_74f62b)
+
+### Plan v3 Phase 1: Fix DovetailingChain Cross-Sign Propagation [BLOCKED]
+
+**Goal**: Fix sorries at lines 606 and 617 for cross-sign G/H propagation
+
+**Result**: BLOCKED - Fundamental architecture limitation discovered
+
+#### The Problem
+
+The plan assumes this propagation path:
+```
+G phi in M_t (t < 0)
+-> G(G phi) in M_t (by 4-axiom)
+-> G phi in HContent(M_t)
+-> propagates via backward chain
+```
+
+**This is incorrect.** The definitions are:
+- `GContent M = {phi | G phi in M}` (formulas whose G is in M)
+- `HContent M = {phi | H phi in M}` (formulas whose H is in M)
+
+So `G(G phi) in M` puts `G phi` in **GContent(M)**, NOT HContent(M).
+
+For `G phi` to be in HContent(M), we need `H(G phi) in M`, which is a different formula entirely.
+
+#### Architecture Limitation
+
+DovetailingChain uses a two-chain architecture:
+- **Forward chain**: M_0 -> M_1 -> M_2 -> ... (each extends GContent of previous)
+- **Backward chain**: M_0 -> M_{-1} -> M_{-2} -> ... (each extends HContent of previous)
+
+The chains share M_0 but otherwise build independently:
+- G formulas propagate within the forward chain only
+- H formulas propagate within the backward chain only
+- **There is no cross-chain propagation mechanism**
+
+A G formula added by Lindenbaum to M_{-2} cannot reach M_{-1} or the forward chain.
+
+#### Conclusion
+
+The cross-sign sorries in DovetailingChain.lean are **fundamentally unprovable** with the current two-chain architecture. Plan v3 needs revision.
+
+### Alternative Approaches Identified
+
+1. **UnifiedChain.lean**: Combines GContent and HContent in every seed
+   - `unifiedSeed(n) = GContent(all prior times < t) ∪ HContent(all prior times > t)`
+   - Enables cross-sign propagation
+   - Has its own sorries but different architecture
+
+2. **RecursiveSeed.lean**: Pre-places all temporal witnesses before Lindenbaum
+   - Avoids cross-sign problem by construction
+   - Different completeness proof structure
+
+## Prior Session Progress (sess_1771024479_16a793)
 
 ### Phase 1: Int Specialization [COMPLETED]
 
-Specialized the polymorphic axiom to Int, the only case used in completeness proofs.
+Specialized the polymorphic axiom to Int:
+- Deprecated `fully_saturated_bmcs_exists` (polymorphic axiom)
+- Added `fully_saturated_bmcs_exists_int` as THEOREM (sorry-backed)
+- Updated `Completeness.lean` to use Int versions
 
-**Files Modified:**
-
-1. `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean`:
-   - Deprecated polymorphic `fully_saturated_bmcs_exists` axiom
-   - Added `fully_saturated_bmcs_exists_int` as a THEOREM (sorry-backed)
-   - Added `construct_saturated_bmcs_int` and associated theorems
-   - Comprehensive documentation of blocking issues
-
-2. `Theories/Bimodal/Metalogic/Bundle/Completeness.lean`:
-   - Updated `bmcs_representation` to use Int-specialized version
-   - Updated `bmcs_context_representation` to use Int-specialized version
-   - Updated axiom dependencies documentation
-
-### Phase 2-4: [BLOCKED]
-
-**Blocking Issue Identified**: Combining temporal coherence with modal saturation requires ALL witness families to be temporally coherent. The problem is:
-
-1. Modal saturation (via Zorn's lemma in `exists_fullySaturated_extension`) creates CONSTANT witness families
-2. Constant families need temporally-saturated MCS (F psi -> psi in the MCS)
-3. Creating temporally-saturated MCS requires Henkin-style construction
-4. Research-004.md proves Henkin approach is flawed (counterexample: base = {F(p), not p} is consistent but Henkin package {F(p), p} conflicts)
-
-## Key Technical Analysis
-
-### Axiom Status After This Session
+## Axiom Status
 
 | Axiom | Status | Notes |
 |-------|--------|-------|
 | `fully_saturated_bmcs_exists` | DEPRECATED | Polymorphic version |
 | `fully_saturated_bmcs_exists_int` | THEOREM (1 sorry) | Replaces axiom |
 
-### Why This Is Progress
-
-**Before**: 1 axiom in trusted kernel (cannot be verified by type system)
-**After**: 1 sorry-backed theorem (explicitly incomplete but verified up to sorry point)
-
-Axioms are in the trusted kernel and escape verification. Sorry-backed theorems explicitly localize incompleteness.
-
-## Resolution Paths
-
-Three approaches to complete the axiom elimination:
-
-1. **InterleaveConstruction (Plan Phase 2)**: Build a unified omega-step construction
-   - Estimate: 3-4 hours
-   - Avoids combining separate temporal/modal constructions
-
-2. **Fix DovetailingChain**: Resolve the 4 existing sorries
-   - Cross-sign propagation (2 sorries)
-   - F/P witness placement (2 sorries)
-   - Still requires solving witness family temporal coherence
-
-3. **Truth Lemma Restructuring**: Modify `bmcs_truth_lemma` to only require temporal coherence for eval_family
-   - Would allow combining existing infrastructure
-   - Most architecturally clean solution
-
-## Verification
-
-- `lake build` succeeds
-- All completeness theorems compile
-- No new axioms introduced
-
 ## Technical Debt Summary
 
 | Source | Sorries | Status |
 |--------|---------|--------|
-| `fully_saturated_bmcs_exists_int` | 1 | NEW (replaces axiom) |
-| DovetailingChain.lean | 4 | UNCHANGED |
+| `fully_saturated_bmcs_exists_int` | 1 | UNCHANGED (target) |
+| DovetailingChain.lean (cross-sign) | 2 | BLOCKED (architecture) |
+| DovetailingChain.lean (F/P witness) | 2 | NOT ATTEMPTED |
 
-## Prior Session Work (Earlier Today)
+## Files Analyzed This Session
 
-Previous sessions in Task 881 accomplished:
-- Phase 1: Derived axiom 5 (negative introspection)
-- Phase 2: Fixed 3 sorries in `exists_fullySaturated_extension` (now sorry-free)
-- Phase 3: Truth lemma analysis confirming all-family temporal coherence requirement
-- Phase 4 partial: Added `fully_saturated_bmcs_exists_constructive` with documented sorry
-
-## Files Affected (This Session)
-
-| File | Change |
-|------|--------|
-| `TemporalCoherentConstruction.lean` | Int specialization, deprecated axiom |
-| `Completeness.lean` | Updated to use Int versions |
-| `implementation-002.md` | Updated blocking issues |
+- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - Two-chain construction
+- `Theories/Bimodal/Metalogic/Bundle/UnifiedChain.lean` - Combined seed approach
+- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Pre-placed witness approach
+- `Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean` - GContent/HContent definitions
+- `Theories/Bimodal/Metalogic/Core/MCSProperties.lean` - 4-axiom theorems
 
 ## Recommendations
 
-1. **Immediate**: Accept sorry-backed theorem as progress over axiom
-2. **Follow-up Task**: Investigate truth lemma restructuring as cleanest path forward
-3. **Alternative**: Implement InterleaveConstruction if truth lemma cannot be restructured
+1. **Revise Plan v3**: Phase 1 is not achievable with DovetailingChain's architecture
+2. **Consider UnifiedChain or RecursiveSeed**: These architectures support cross-sign propagation
+3. **Alternative**: Deprecate DovetailingChain.lean to Boneyard with documentation
+4. **Truth Lemma Restructuring**: Still viable as a scope-restricted approach (eval-only coherence)
+
+## Verification
+
+- Plan v3 Phase 1 marked [BLOCKED] in implementation-003.md
+- Progress file created: progress/phase-1-progress.json with detailed analysis

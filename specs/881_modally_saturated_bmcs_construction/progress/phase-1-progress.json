@@ -1,0 +1,76 @@
+{
+  "phase": 1,
+  "phase_name": "Fix DovetailingChain Cross-Sign Propagation",
+  "status": "blocked",
+  "current_objective": "Prove forward_G cross-sign (line 606)",
+  "objectives": [
+    {
+      "id": "1.1",
+      "description": "Add lemma dovetailChainSet_G_propagates_to_zero",
+      "status": "blocked",
+      "blocking_reason": "Fundamental architecture limitation - see analysis below"
+    },
+    {
+      "id": "1.2",
+      "description": "Add lemma dovetailChainSet_cross_sign_forward_G",
+      "status": "blocked",
+      "blocking_reason": "Depends on 1.1"
+    },
+    {
+      "id": "1.3",
+      "description": "Fix forward_G at line 606",
+      "status": "blocked",
+      "blocking_reason": "Depends on 1.1 and 1.2"
+    },
+    {
+      "id": "1.4",
+      "description": "Add symmetric H propagation lemmas",
+      "status": "blocked",
+      "blocking_reason": "Same fundamental limitation"
+    },
+    {
+      "id": "1.5",
+      "description": "Fix backward_H at line 617",
+      "status": "blocked",
+      "blocking_reason": "Depends on 1.4"
+    }
+  ],
+  "approaches_tried": [
+    {
+      "approach": "Plan's GContent-to-HContent propagation via 4-axiom",
+      "result": "failed",
+      "reason": "Plan incorrectly states 'G phi in HContent(M_t)' from 'G(G phi) in M_t'. HContent = {phi | H phi in M}, not {phi | G phi in M}. G formulas go into GContent, not HContent."
+    },
+    {
+      "approach": "Forward chain propagation for negative times",
+      "result": "not_applicable",
+      "reason": "Backward chain uses HContent (H formulas), not GContent (G formulas). There is no mechanism for G formulas to propagate in the backward chain."
+    },
+    {
+      "approach": "Cross-chain propagation via shared base M_0",
+      "result": "insufficient",
+      "reason": "M_0 is shared but formulas added by Lindenbaum to M_t (t < 0) have no connection to M_0 or the forward chain. Only formulas in HContent of previous backward step transfer."
+    }
+  ],
+  "blocking_analysis": {
+    "fundamental_issue": "DovetailingChain uses two-chain architecture: forward chain extends GContent, backward chain extends HContent. G formulas propagate within forward chain; H formulas propagate within backward chain. There is no cross-propagation mechanism.",
+    "why_plan_approach_fails": "The plan assumes G phi -> G(G phi) puts G phi into HContent for backward chain propagation. This is incorrect: G(G phi) means G phi is in GContent (since GContent = {phi | G phi in M}), not HContent (which is {phi | H phi in M}).",
+    "alternatives_considered": [
+      {
+        "name": "UnifiedChain approach",
+        "description": "Combine GContent and HContent in every seed",
+        "status": "separate_file_exists",
+        "file": "UnifiedChain.lean"
+      },
+      {
+        "name": "RecursiveSeed approach",
+        "description": "Pre-place all temporal witnesses before Lindenbaum",
+        "status": "separate_file_exists",
+        "file": "RecursiveSeed.lean"
+      }
+    ],
+    "recommendation": "The cross-sign sorries in DovetailingChain.lean are fundamentally unprovable with the current architecture. Plan v3 should be revised to either: (1) Use UnifiedChain approach which combines GContent/HContent, or (2) Use RecursiveSeed approach which pre-places witnesses, or (3) Document that DovetailingChain's two-chain architecture has this limitation and is superseded."
+  },
+  "session_id": "sess_1771028322_74f62b",
+  "last_updated": "2026-02-13T12:30:00Z"
+}
