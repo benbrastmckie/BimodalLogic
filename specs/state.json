@@ -565,10 +565,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-13T23:54:55Z",
+      "last_updated": "2026-02-14T00:11:32Z",
       "artifacts": [
         {
           "type": "research",
@@ -611,11 +611,6 @@
           "summary": "Analysis confirming Int specialization is safe for completeness proof - no density axioms in logic system, soundness covers all frames"
         },
         {
-          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "4-phase revised plan: Int specialization, omega-step interleaving construction, axiom elimination, with DovetailingChain fallback"
-        },
-        {
           "path": "specs/881_modally_saturated_bmcs_construction/summaries/implementation-summary-20260213.md",
           "type": "summary",
           "summary": "Phase 1 complete (Int specialization), Phases 2-4 blocked by temporal coherence + modal saturation conflict"
@@ -634,11 +629,16 @@
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-008.md",
           "type": "research",
           "summary": "Semantic alignment analysis confirming the codebase uses history-based semantics throughout, with product frame referring only to BMCS internal structure"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "4-phase plan to fix DovetailingChain sorries and build temporally coherent witness families for axiom elimination"
         }
       ],
-      "session_id": "sess_1771026646_496c2c",
+      "session_id": "sess_1771027642_ba9966",
       "researched": "2026-02-13T23:54:55Z",
-      "planned": "2026-02-13T23:08:58Z",
+      "planned": "2026-02-14T00:11:32Z",
       "started": "2026-02-13T21:26:53Z"
     }
   ],
