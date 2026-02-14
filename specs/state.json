@@ -565,10 +565,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-14T00:33:54Z",
+      "last_updated": "2026-02-14T00:43:07Z",
       "artifacts": [
         {
           "type": "research",
@@ -644,11 +644,16 @@
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-009.md",
           "type": "research",
           "summary": "Team research v5: RecursiveSeed recommended as sorry-free path forward for modal saturation"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "4-phase plan extending RecursiveSeed for modal saturation: multi-formula seed builder, seed-to-family bridge, modal witness construction, saturation closure"
         }
       ],
-      "session_id": "sess_1771028987_1b44a1",
+      "session_id": "sess_1771029326_8794b9",
       "researched": "2026-02-14T00:33:54Z",
-      "planned": "2026-02-14T00:11:32Z",
+      "planned": "2026-02-14T00:43:07Z",
       "started": "2026-02-13T21:26:53Z"
     }
   ],
