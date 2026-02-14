@@ -1,23 +1,28 @@
 {
   "status": "partial",
-  "summary": "Phase 1 infrastructure partially complete. Helper lemmas for membership preservation added but require sorry for complex position-mismatch cases.",
-  "artifacts": [],
+  "summary": "Proved addFormula_preserves_mem_diff_position lemma - key infrastructure for foldl preservation proofs. Reduced sorries in RecursiveSeed.lean from 23 to 21.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
+      "summary": "Added addFormula_preserves_mem_diff_position proof (lines 4729-4820)"
+    }
+  ],
   "partial_progress": {
-    "stage": "phase_1_partial",
-    "details": "Added infrastructure lemmas (addToAllFamilies/FutureTimes/PastTimes_preserves_mem_getFormulas) and helper lemma addFormula_preserves_mem_diff_position. Key sorry: addFormula_preserves_mem_diff_position requires generalizing existing diff_fam/diff_time lemmas. Build succeeds with sorries.",
-    "sorries_added": 18,
-    "sorries_original": 5,
-    "files_modified": ["Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean"]
+    "stage": "phase_1_infrastructure",
+    "details": "Proved key lemma addFormula_preserves_mem_diff_position. This enables foldl_addFormula_preserves_mem_general and foldl_addFormula_fam_preserves_mem_general to work. Remaining phase 1 sorries require buildSeedAux_preserves_getFormulas lemma.",
+    "objectives_completed": ["addFormula_preserves_mem_diff_position proof"],
+    "remaining_work": "buildSeedAux_preserves_getFormulas lemma and downstream proofs"
+  },
+  "completion_data": {
+    "completion_summary": "Proved addFormula_preserves_mem_diff_position lemma enabling foldl membership preservation proofs in RecursiveSeed.lean. Build succeeds with 21 sorries (reduced from 23)."
   },
   "metadata": {
     "phases_completed": 0,
     "phases_total": 4,
-    "session_id": "sess_1771031369_96dacd",
+    "session_id": "sess_1771033134_24c6f1",
     "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
-  },
-  "completion_data": {
-    "completion_summary": "Phase 1 infrastructure for multi-formula seed builder partially implemented. Added preservation lemmas for addToAllFamilies, addToAllFutureTimes, addToAllPastTimes. Key blocker: addFormula_preserves_mem_diff_position requires extending existing lemmas to handle mismatched query/add positions."
+    "sorry_delta": -2,
+    "build_status": "success"
   }
 }

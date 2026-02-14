@@ -568,7 +568,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-14T01:09:56Z",
+      "last_updated": "2026-02-14T01:39:19Z",
       "artifacts": [
         {
           "type": "research",
@@ -659,9 +659,14 @@
           "path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-1-handoff-20260213-v2.md",
           "type": "handoff",
           "summary": "Phase 1 partial: added membership preservation lemmas, key blocker is addFormula_preserves_mem_diff_position"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
+          "type": "implementation",
+          "summary": "Added addFormula_preserves_mem_diff_position proof (lines 4729-4820)"
         }
       ],
-      "session_id": "sess_1771031369_96dacd",
+      "session_id": "sess_1771033134_24c6f1",
       "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-14T00:43:07Z",
       "started": "2026-02-13T21:26:53Z"
