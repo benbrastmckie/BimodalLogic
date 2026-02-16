@@ -133,11 +133,19 @@ def buildSeedForList (formulas : List Formula) : ModelSeed :=
 4. `buildSeedForList_contains_input` - depends on foldl preservation
 5. `buildSeedForList_propagates_box` - depends on box propagation through foldl
 
-**Required Infrastructure (not yet implemented)**:
-- `buildSeedAux_preserves_getFormulas`: Lemma showing buildSeedAux preserves membership at (famIdx, timeIdx)
-- `foldl_buildSeedAux_preserves_getFormulas`: Lemma for foldl preservation
+**Infrastructure Added (2026-02-16)**:
+- `freshFutureTime_gt_current`, `freshFutureTime_ne_current`: Helper lemmas for fresh time properties
+- `freshPastTime_lt_current`, `freshPastTime_ne_current`: Helper lemmas for fresh time properties
+- `wellFormed_mem_implies_famIdx_lt`: If membership holds at (famIdx, t), then famIdx < nextFamilyIdx
+- `buildSeedAux_preserves_mem_general`: Monotonicity - membership at any position preserved (SORRIED, key lemma)
+- `buildSeedAux_preserves_getFormulas_v2`: Same-position preservation without well-formedness requirement
+- Fixed `createNewFamily_preserves_getFormulas` by adding precondition
 
-**Timing**: 3-4 hours (spent ~2 hours, ~2 hours remaining for proofs)
+**Remaining Infrastructure Needed**:
+- Prove `buildSeedAux_preserves_mem_general` - key lemma that unblocks 9 other sorries
+- The proof structure is outlined; needs proper handling of `not_and_or` for disjunction conversion
+
+**Timing**: 3-4 hours (spent ~4 hours, ~2 hours remaining for proofs)
 
 **Files modified**:
 - `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Added multi-formula builders (lines 4716-4922)

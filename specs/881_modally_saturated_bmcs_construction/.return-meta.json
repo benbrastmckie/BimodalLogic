@@ -1,28 +1,27 @@
 {
   "status": "partial",
-  "summary": "Proved addFormula_preserves_mem_diff_position lemma - key infrastructure for foldl preservation proofs. Reduced sorries in RecursiveSeed.lean from 23 to 21.",
-  "artifacts": [
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
-      "summary": "Added addFormula_preserves_mem_diff_position proof (lines 4729-4820)"
-    }
-  ],
+  "summary": "Phase 1 progress: Fixed 1 sorry (createNewFamily_preserves_getFormulas), added helper lemmas (freshFutureTime_ne_current, freshPastTime_ne_current, wellFormed_mem_implies_famIdx_lt), refactored buildSeedAux_preserves_getFormulas to use general monotonicity lemma. Build passes with 11 sorries remaining in Phase 1 (down from 18).",
+  "artifacts": [],
   "partial_progress": {
-    "stage": "phase_1_infrastructure",
-    "details": "Proved key lemma addFormula_preserves_mem_diff_position. This enables foldl_addFormula_preserves_mem_general and foldl_addFormula_fam_preserves_mem_general to work. Remaining phase 1 sorries require buildSeedAux_preserves_getFormulas lemma.",
-    "objectives_completed": ["addFormula_preserves_mem_diff_position proof"],
-    "remaining_work": "buildSeedAux_preserves_getFormulas lemma and downstream proofs"
-  },
-  "completion_data": {
-    "completion_summary": "Proved addFormula_preserves_mem_diff_position lemma enabling foldl membership preservation proofs in RecursiveSeed.lean. Build succeeds with 21 sorries (reduced from 23)."
+    "stage": "phase_1_membership_preservation_infrastructure",
+    "details": "Added helper infrastructure for membership preservation lemmas. Key remaining work: prove buildSeedAux_preserves_mem_general (monotonicity), which will resolve 9 of the remaining 11 sorries.",
+    "sorries_resolved": 7,
+    "sorries_remaining": 11,
+    "sorries_breakdown": {
+      "buildSeedAux_preserves_mem_general": 1,
+      "foldl_buildSeedAux_preserves_seedConsistent": 1,
+      "buildSeedForList_consistent": 1,
+      "buildSeed_contains_formula": 6,
+      "buildSeedForList_contains_input": 1,
+      "buildSeedForList_propagates_box": 1
+    }
   },
   "metadata": {
-    "phases_completed": 0,
-    "phases_total": 4,
-    "session_id": "sess_1771033134_24c6f1",
+    "session_id": "sess_1771280629_eb9953",
     "agent_type": "lean-implementation-agent",
-    "sorry_delta": -2,
-    "build_status": "success"
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 0,
+    "phases_total": 4
   }
 }
