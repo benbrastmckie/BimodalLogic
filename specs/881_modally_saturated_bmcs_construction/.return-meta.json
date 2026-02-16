@@ -1,27 +1,33 @@
 {
   "status": "partial",
-  "summary": "Phase 1 progress: Fixed 1 sorry (createNewFamily_preserves_getFormulas), added helper lemmas (freshFutureTime_ne_current, freshPastTime_ne_current, wellFormed_mem_implies_famIdx_lt), refactored buildSeedAux_preserves_getFormulas to use general monotonicity lemma. Build passes with 11 sorries remaining in Phase 1 (down from 18).",
+  "summary": "Phase 1 significant progress: Proved key monotonicity lemma (buildSeedAux_preserves_mem_general), which unblocked 8 sorries. Now 3 sorries remaining in Phase 1 (down from 11). Completed: buildSeed_contains_formula (all branches), buildSeedForList_contains_input. Remaining: consistency and box propagation proofs requiring mutual consistency argument.",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_1_membership_preservation_infrastructure",
-    "details": "Added helper infrastructure for membership preservation lemmas. Key remaining work: prove buildSeedAux_preserves_mem_general (monotonicity), which will resolve 9 of the remaining 11 sorries.",
-    "sorries_resolved": 7,
-    "sorries_remaining": 11,
+    "stage": "phase_1_membership_proofs_complete",
+    "details": "Key monotonicity lemma (buildSeedAux_preserves_mem_general) proven. All membership preservation proofs complete. Remaining 3 sorries are consistency-related: foldl_buildSeedAux_preserves_seedConsistent, buildSeedForList_consistent, buildSeedForList_propagates_box. These require mutual consistency reasoning (formulas from same MCS).",
+    "sorries_resolved": 8,
+    "sorries_remaining": 3,
     "sorries_breakdown": {
-      "buildSeedAux_preserves_mem_general": 1,
       "foldl_buildSeedAux_preserves_seedConsistent": 1,
       "buildSeedForList_consistent": 1,
-      "buildSeed_contains_formula": 6,
-      "buildSeedForList_contains_input": 1,
       "buildSeedForList_propagates_box": 1
-    }
+    },
+    "key_lemmas_proven": [
+      "buildSeedAux_preserves_mem_general (monotonicity - key blocker resolved)",
+      "buildSeed_contains_formula (all cases)",
+      "buildSeedAux_adds_formula_at_position",
+      "foldl_buildSeedAux_preserves_mem_at_origin",
+      "foldl_buildSeedAux_adds_formula_at_origin",
+      "buildSeedForList_contains_input"
+    ]
   },
   "metadata": {
-    "session_id": "sess_1771280629_eb9953",
+    "session_id": "sess_1771282452_a451a1",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
     "phases_completed": 0,
-    "phases_total": 4
+    "phases_total": 4,
+    "build_status": "success"
   }
 }

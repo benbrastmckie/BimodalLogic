@@ -122,38 +122,47 @@ def buildSeedForList (formulas : List Formula) : ModelSeed :=
 - [x] Define `buildSeedForList`: Takes list of formulas and builds combined ModelSeed
 - [x] Define `buildSeedForList'`: Alternative definition starting from initial seed
 - [ ] Prove `buildSeedForList_consistent`: Combined seed preserves consistency (SORRY)
-- [x] Define `buildSeed_contains_formula`: Formula in buildSeed at (0,0) (PARTIAL - 6 sorry branches)
-- [ ] Prove `buildSeedForList_contains_input`: Each input formula at (0, 0) (SORRY - 1 branch)
+- [x] Prove `buildSeed_contains_formula`: Formula in buildSeed at (0,0) - COMPLETED
+- [x] Prove `buildSeedForList_contains_input`: Each input formula at (0, 0) - COMPLETED
 - [ ] Prove `buildSeedForList_propagates_box`: Box phi propagation preserved (SORRY)
 
-**Technical Debt (5 sorries)**:
+**Technical Debt (3 sorries, down from 11)**:
 1. `foldl_buildSeedAux_preserves_seedConsistent` - requires generalizing consistency proofs
 2. `buildSeedForList_consistent` - depends on mutual consistency from MCS
-3. `buildSeed_contains_formula` - 6 branches require `buildSeedAux_preserves_getFormulas` lemma
-4. `buildSeedForList_contains_input` - depends on foldl preservation
-5. `buildSeedForList_propagates_box` - depends on box propagation through foldl
+3. `buildSeedForList_propagates_box` - depends on box propagation through foldl
 
-**Infrastructure Added (2026-02-16)**:
+**Infrastructure Added (2026-02-16, Session 1)**:
 - `freshFutureTime_gt_current`, `freshFutureTime_ne_current`: Helper lemmas for fresh time properties
 - `freshPastTime_lt_current`, `freshPastTime_ne_current`: Helper lemmas for fresh time properties
 - `wellFormed_mem_implies_famIdx_lt`: If membership holds at (famIdx, t), then famIdx < nextFamilyIdx
-- `buildSeedAux_preserves_mem_general`: Monotonicity - membership at any position preserved (SORRIED, key lemma)
 - `buildSeedAux_preserves_getFormulas_v2`: Same-position preservation without well-formedness requirement
 - Fixed `createNewFamily_preserves_getFormulas` by adding precondition
 
-**Remaining Infrastructure Needed**:
-- Prove `buildSeedAux_preserves_mem_general` - key lemma that unblocks 9 other sorries
-- The proof structure is outlined; needs proper handling of `not_and_or` for disjunction conversion
+**Infrastructure Added (2026-02-16, Session 2)**:
+- `buildSeedAux_preserves_mem_general`: KEY LEMMA - Monotonicity proof COMPLETED (was blocking 9 sorries)
+- `createNewFamily_preserves_mem_getFormulas`: Simplified (removed unnecessary precondition)
+- `buildSeed_contains_formula`: All branches now proven (was 6 sorries)
+- `buildSeedAux_adds_formula_at_position`: Generalization of buildSeed_contains_formula to arbitrary seeds
+- `foldl_buildSeedAux_preserves_mem_at_origin`: foldl preserves membership at (0,0)
+- `foldl_buildSeedAux_adds_formula_at_origin`: foldl adds each formula to (0,0)
+- `buildSeedForList_contains_input`: Now proven using foldl helpers
 
-**Timing**: 3-4 hours (spent ~4 hours, ~2 hours remaining for proofs)
+**Remaining Infrastructure Needed**:
+- Prove consistency through foldl (`foldl_buildSeedAux_preserves_seedConsistent`)
+  - Key challenge: `buildSeedAux_preserves_seedConsistent` requires formula already in seed
+  - For foldl, we're adding NEW formulas from a mutually consistent set
+  - Need mutual consistency argument: phi + existing formulas are jointly consistent
+- Prove box propagation through foldl
+
+**Timing**: 3-4 hours (spent ~6 hours across 2 sessions, sorries reduced from 18 to 3)
 
 **Files modified**:
-- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Added multi-formula builders (lines 4716-4922)
+- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Multi-formula builders (lines 4716-5900+)
 
 **Verification**:
 - [x] `lake build` succeeds
-- [ ] `buildSeedForList_consistent` compiles without sorry (NOT YET)
-- [ ] Combined seed contains all input formulas at initial position (PARTIAL)
+- [ ] `buildSeedForList_consistent` compiles without sorry (NOT YET - requires mutual consistency)
+- [x] Combined seed contains all input formulas at initial position - COMPLETED
 
 ---
 
