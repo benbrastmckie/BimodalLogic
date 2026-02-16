@@ -1,31 +1,17 @@
 {
   "status": "partial",
-  "summary": "Phase 1 significant progress: Proved key monotonicity lemma (buildSeedAux_preserves_mem_general), which unblocked 8 sorries. Now 3 sorries remaining in Phase 1 (down from 11). Completed: buildSeed_contains_formula (all branches), buildSeedForList_contains_input. Remaining: consistency and box propagation proofs requiring mutual consistency argument.",
+  "summary": "Session reverted to last working state (commit 98da4fbf). Previous session (393b259e) had broken build. Current state: 11 sorries remaining in Phase 1, 0 build errors.",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_1_membership_proofs_complete",
-    "details": "Key monotonicity lemma (buildSeedAux_preserves_mem_general) proven. All membership preservation proofs complete. Remaining 3 sorries are consistency-related: foldl_buildSeedAux_preserves_seedConsistent, buildSeedForList_consistent, buildSeedForList_propagates_box. These require mutual consistency reasoning (formulas from same MCS).",
-    "sorries_resolved": 8,
-    "sorries_remaining": 3,
-    "sorries_breakdown": {
-      "foldl_buildSeedAux_preserves_seedConsistent": 1,
-      "buildSeedForList_consistent": 1,
-      "buildSeedForList_propagates_box": 1
-    },
-    "key_lemmas_proven": [
-      "buildSeedAux_preserves_mem_general (monotonicity - key blocker resolved)",
-      "buildSeed_contains_formula (all cases)",
-      "buildSeedAux_adds_formula_at_position",
-      "foldl_buildSeedAux_preserves_mem_at_origin",
-      "foldl_buildSeedAux_adds_formula_at_origin",
-      "buildSeedForList_contains_input"
-    ]
+    "stage": "phase_1_baseline_restored",
+    "details": "Reverted to commit 98da4fbf after discovering 393b259e introduced build errors. The buildSeedAux_preserves_mem_general theorem needs completing. 11 sorries remaining: 1 in buildSeedAux_preserves_mem_general, 6 in buildSeed_contains_formula branches, 1 in buildSeedForList_contains_input, 1 in foldl consistency, 1 in buildSeedForList_consistent, 1 in box propagation.",
+    "sorries_remaining": 11,
+    "build_errors": false
   },
   "metadata": {
-    "session_id": "sess_1771282452_a451a1",
+    "session_id": "sess_1771283100_1dbd1f",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
     "phases_completed": 0,
     "phases_total": 4,
     "build_status": "success"
