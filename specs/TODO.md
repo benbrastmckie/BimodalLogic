@@ -52,7 +52,7 @@ technical_debt:
 - **Planned**: 2026-02-16
 - **Dependencies**: Task 883
 - **Research**: [research-001.md](specs/884_incremental_summary_updates_per_phase/reports/research-001.md), [research-002.md](specs/884_incremental_summary_updates_per_phase/reports/research-002.md) (context file analysis)
-- **Plan**: [implementation-001.md](specs/884_incremental_summary_updates_per_phase/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/884_incremental_summary_updates_per_phase/plans/implementation-002.md) (v2: +context cleanup, +metadata quick-ref)
 
 **Description**: Modify implementation agents to create/update the summary file after each phase completes rather than only at full task completion. The summary file becomes a running log with phase entries appended. Update skill postflight to link the summary artifact even for partial completions. Update summary-format.md with incremental format and phase-entry schema. Update lean-implementation-agent.md and general-implementation-agent.md execution flow.
 

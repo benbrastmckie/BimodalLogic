@@ -42,8 +42,8 @@
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T05:04:08Z",
-      "session_id": "sess_1771304365_0b99b6",
+      "last_updated": "2026-02-17T05:47:02Z",
+      "session_id": "sess_1771307112_f526ee",
       "description": "Modify implementation agents to create/update the summary file after each phase completes rather than only at full task completion. The summary file becomes a running log with phase entries appended. Update skill postflight to link the summary artifact even for partial completions. Update summary-format.md with incremental format and phase-entry schema. Update lean-implementation-agent.md and general-implementation-agent.md execution flow.",
       "depends_on": [
         883
@@ -56,14 +56,14 @@
           "summary": "Research report analyzing summary creation patterns and proposing incremental running-log format for per-phase updates"
         },
         {
-          "path": "specs/884_incremental_summary_updates_per_phase/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for incremental summary updates per phase"
-        },
-        {
           "path": "specs/884_incremental_summary_updates_per_phase/reports/research-002.md",
           "type": "research",
           "summary": "Context file analysis for /implement workflow with 5 prioritized improvement recommendations"
+        },
+        {
+          "path": "specs/884_incremental_summary_updates_per_phase/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "7-phase revised plan (v2) with context cleanup, metadata quick reference, research-002 integration"
         }
       ],
       "planned": "2026-02-17T04:56:21Z"
@@ -665,7 +665,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-17T04:56:40Z",
+      "last_updated": "2026-02-17T05:44:21Z",
       "artifacts": [
         {
           "type": "research",
@@ -763,7 +763,7 @@
           "summary": "5-phase plan: FamilyCollection architecture (Option D), abandons buildSeedForList"
         }
       ],
-      "session_id": "sess_1771304171_a2d968",
+      "session_id": "sess_1771307041_ed36a2",
       "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-17T04:54:37Z",
       "started": "2026-02-13T21:26:53Z"
