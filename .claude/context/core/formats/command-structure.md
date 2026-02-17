@@ -601,7 +601,7 @@ Benefit: Clear separation, easy to test, flexible composition
 </validation>
 ```
 
-**See Also**: `orchestration/validation.md` for validation strategies
+**See Also**: `orchestration/orchestration-validation.md` for validation strategies
 
 ---
 
@@ -955,8 +955,7 @@ Layer 3: Execution Subagent (Work Executor)
 
 **Related Documentation**:
 - `orchestration/architecture.md` - Three-layer delegation pattern
-- `orchestration/delegation.md` - Delegation patterns and depth tracking
-- `orchestration/state-management.md` - State management patterns
+- `core/standards/delegation.md` - Delegation patterns and depth tracking
 - `orchestration/state-management.md` - State management and query patterns
 - `workflows/preflight-postflight.md` - Workflow timing standards
 - `standards/error-handling.md` - Error handling patterns

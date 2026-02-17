@@ -137,7 +137,7 @@
 
 **Tier 1: Orchestrator (Minimal)**
 - Budget: <5% context window (~10KB)
-- Files: `orchestration/routing.md`, `orchestration/delegation.md`
+- Files: `orchestration/orchestration-core.md`, `core/standards/delegation.md`
 - Purpose: Routing and delegation safety
 
 **Tier 2: Commands (Targeted)**
@@ -218,13 +218,12 @@ Add to `project/`:
 2. `formats/command-structure.md` - Commands as agents
 3. `workflows/preflight-postflight.md` - Workflow timing standards
 
-### Merged Files
-1. `orchestrator-design.md` + `orchestrator-guide.md` → `orchestration/orchestrator.md`
-2. `routing-guide.md` + `routing-logic.md` → `orchestration/routing.md`
-3. `delegation.md` + `delegation-guide.md` → `orchestration/delegation.md`
-4. `validation-strategy.md` + `validation-rules.md` → `orchestration/validation.md`
-5. `state-management.md` + `artifact-management.md` → `orchestration/state-management.md`
-6. `code.md` + `patterns.md` → `standards/code-patterns.md`
+### Merged Files (Historical)
+*Note: Original merged files have been further consolidated. Current files are:*
+- `orchestration/orchestration-core.md` - Core orchestration patterns
+- `orchestration/orchestration-validation.md` - Validation patterns
+- `orchestration/orchestration-reference.md` - Examples and troubleshooting
+- `core/standards/delegation.md` - Delegation patterns (510 lines)
 
 ### Meta-Builder Files Moved
 - `standards/domain-patterns.md` → `project/meta/domain-patterns.md`

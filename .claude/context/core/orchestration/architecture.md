@@ -433,7 +433,7 @@ Orchestrator (depth 0)
 ```
 
 **See Also**:
-- `orchestration/delegation.md` - Delegation patterns and depth tracking
+- `core/standards/delegation.md` - Delegation patterns and depth tracking
 
 ---
 
@@ -748,8 +748,8 @@ ProofChecker's three-layer delegation pattern provides:
 
 **Related Documentation**:
 - `formats/command-structure.md` - Command file anatomy and patterns
-- `orchestration/delegation.md` - Delegation patterns and depth tracking
-- `orchestration/routing.md` - Routing logic and patterns
+- `core/standards/delegation.md` - Delegation patterns and depth tracking
+- `orchestration/orchestration-core.md` - Routing logic and patterns
 - `orchestration/state-management.md` - State management and optimization
 - `workflows/preflight-postflight.md` - Workflow timing standards
 - `standards/error-handling.md` - Error handling patterns

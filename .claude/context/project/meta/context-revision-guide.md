@@ -16,7 +16,7 @@ Update an existing context file when:
 - File is under 200 lines and change fits naturally
 - Change is directly related to existing content
 
-**Example**: Adding a new routing pattern to `core/orchestration/routing.md`
+**Example**: Adding a new routing pattern to `core/orchestration/orchestration-core.md`
 
 ### Create New File
 
@@ -37,7 +37,7 @@ Split an existing file when:
 - File has low cohesion (unrelated sections)
 - Natural boundaries exist between sections
 
-**Example**: Splitting `core/orchestration/delegation.md` into `delegation-basics.md` and `delegation-patterns.md`
+**Example**: Splitting a large orchestration file into focused modules like `orchestration-core.md` and `orchestration-validation.md`
 
 ---
 
@@ -202,10 +202,10 @@ Split an existing file when:
 
 ### Scenario 1: New Pattern Discovered
 
-**Situation**: Agent-generator discovers new delegation pattern  
-**Action**: Update `core/orchestration/delegation.md`  
+**Situation**: Agent-generator discovers new delegation pattern
+**Action**: Update `core/standards/delegation.md`
 **Steps**:
-1. Read delegation.md (currently 180 lines)
+1. Read delegation.md (currently ~500 lines)
 2. Add new pattern section (20 lines)
 3. Total: 200 lines (within limit)
 4. Update version/date

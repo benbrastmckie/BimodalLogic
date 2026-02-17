@@ -64,7 +64,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
   optional:
     - "core/standards/git-safety.md"  # Only if git operations needed
@@ -92,7 +92,7 @@ context_loading:
   strategy: eager
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
     - "core/standards/git-safety.md"
     - "core/formats/plan-format.md"
@@ -121,7 +121,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
   conditional:
     - condition: "language == 'lean'"
@@ -157,11 +157,11 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
   optional:
-    - "core/orchestration/orchestrator.md"  # 870 lines - load only if needed
+    - "core/orchestration/orchestration-core.md"  # 870 lines - load only if needed
   summaries:
-    - "core/orchestration/orchestrator.md": "core/orchestration/orchestrator-summary.md"
+    - "core/orchestration/orchestration-core.md": "core/orchestration/orchestrator-summary.md"
   max_context_size: 30000
 ```
 
@@ -187,7 +187,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
   sections:
     - file: "specs/TODO.md"
       pattern: "grep -A 50 '^### {task_number}\\.'"
@@ -224,9 +224,9 @@ Before:
 - orchestration.md (2000 lines)
 
 After:
-- orchestration/delegation.md (654 lines)
-- orchestration/routing.md (699 lines)
-- orchestration/validation.md (466 lines)
+- core/standards/delegation.md (510 lines)
+- orchestration/orchestration-core.md (~250 lines)
+- orchestration/orchestration-validation.md (~200 lines)
 ```
 
 ### 3.2 When to Create Summaries
@@ -237,7 +237,7 @@ After:
 ```markdown
 # File Summary
 
-**Full File**: core/orchestration/orchestrator.md (870 lines)
+**Full File**: core/orchestration/orchestration-core.md (870 lines)
 **Summary**: 100 lines
 
 ## Key Concepts
@@ -345,7 +345,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"      # Always needed
+    - "core/standards/delegation.md"      # Always needed
     - "core/orchestration/state-management.md" # Always needed
   optional:
     - "core/standards/git-safety.md"          # Only if git operations
@@ -366,7 +366,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
   conditional:
     # Language-based
     - condition: "language == 'lean'"
@@ -428,10 +428,10 @@ context_loading:
     enabled: true
     ttl: 3600  # Cache for 1 hour
     files:
-      - "core/orchestration/delegation.md"
+      - "core/standards/delegation.md"
       - "core/orchestration/state-management.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
   max_context_size: 30000
 ```
@@ -549,7 +549,7 @@ context_loading:
       - cache_hit_rate
       - broken_references
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
   max_context_size: 30000
 ```
 
@@ -607,7 +607,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
     - "core/formats/report-format.md"
   conditional:
@@ -637,7 +637,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
     - "core/formats/plan-format.md"
     - "core/workflows/task-breakdown.md"
@@ -663,7 +663,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
     - "core/standards/git-safety.md"
   conditional:
@@ -692,7 +692,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
     - "core/workflows/review-process.md"
   max_context_size: 30000
@@ -718,7 +718,7 @@ context_loading:
   strategy: lazy
   index: ".claude/context/index.md"
   required:
-    - "core/orchestration/delegation.md"
+    - "core/standards/delegation.md"
     - "core/orchestration/state-management.md"
     - "core/formats/subagent-return.md"
   conditional:
@@ -820,7 +820,7 @@ done
 **Diagnosis**:
 ```bash
 # Measure loading time
-time grep -r "core/orchestration/delegation.md" .claude/command
+time grep -r "core/standards/delegation.md" .claude/command
 
 # Check file sizes
 find .claude/context/core -name "*.md" -exec wc -l {} + | sort -n | tail -10

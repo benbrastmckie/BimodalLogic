@@ -115,14 +115,6 @@
 - **postflight-pattern.md** (~340 lines) - Post-completion process
   - **LOAD when implementing postflight**
 
-**Deprecated files** (still available for reference):
-- orchestrator.md -> orchestration-core.md, orchestration-reference.md
-- delegation.md -> orchestration-core.md, orchestration-validation.md
-- routing.md -> orchestration-core.md
-- validation.md -> orchestration-validation.md
-- subagent-validation.md -> orchestration-validation.md
-- sessions.md -> orchestration-core.md
-
 ---
 
 ## Core Architecture (core/architecture/) **NEW**
