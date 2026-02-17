@@ -1,5 +1,5 @@
 ---
-next_project_number: 888
+next_project_number: 889
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,17 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 888. Research Lindenbaum temporal saturation preservation for witness families
+- **Effort**: 8-12 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-17
+- **Parent**: Task #881
+
+**Description**: Research the mathematical gap blocking temporal coherence of witness families. Task 887's FinalConstruction.lean has sorries because regular Lindenbaum extension does NOT preserve temporal saturation - it can add F(psi) formulas without adding their witness psi. Research questions: (1) Can Lindenbaum preserve temporal saturation when seed contains sufficient temporal content ({psi} union M where M is temporally saturated)? (2) If not, can we use temporal-aware Lindenbaum that adds F(psi) and psi together? (3) Is there an alternative architectural approach that avoids this issue entirely? (4) Does the truth lemma actually require all families to be temporally coherent, or only eval_family? Output: Clear mathematical characterization of the gap, proof or disproof of preservation conditions, and recommended remediation path.
+
+---
 
 ### 887. Create FinalConstruction.lean and prove fully_saturated_bmcs_exists_int
 - **Effort**: 8-12 hours
@@ -117,14 +128,16 @@ technical_debt:
 
 ### 881. Construct modally saturated BMCS to eliminate fully_saturated_bmcs_exists axiom
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Created**: 2026-02-13
 - **Researched**: 2026-02-16
 - **Planned**: 2026-02-17
-- **Dependencies**: Task 887 (FinalConstruction.lean)
+- **Blocked**: Task 887 completed with sorries. Temporal coherence of witness families requires temporal-aware Lindenbaum. See task 888.
+- **Dependencies**: Task 888 (research required)
 - **Research**: [research-011.md](specs/881_modally_saturated_bmcs_construction/reports/research-011.md) (Implementation review, remaining work after task 887), [research-010.md](specs/881_modally_saturated_bmcs_construction/reports/research-010.md) (Team v10: Option D)
 - **Plan**: [implementation-007.md](specs/881_modally_saturated_bmcs_construction/plans/implementation-007.md) (v7: No technical debt; Options A/C/D decision tree)
+- **Summary**: [implementation-summary-20260217.md](specs/881_modally_saturated_bmcs_construction/summaries/implementation-summary-20260217.md) (Phase 3 escalation)
 
 **Description**: Replace the `fully_saturated_bmcs_exists` axiom in TemporalCoherentConstruction.lean with a constructive proof, achieving fully axiom-free completeness. The axiom currently requires: (1) context preservation, (2) temporal coherence, and (3) modal saturation. Tasks 870/880 have proven temporal coherence via ZornFamily/DovetailingChain, but modal saturation remains. Modal saturation requires that every Diamond formula in a family's MCS has a witness family in the bundle where the inner formula holds. The construction must enumerate all Diamond formulas (neg(Box(neg psi))) and extend the family set to include witnesses. Key approaches: (a) Extend ZornFamily with modal witness enumeration using Zorn's lemma on families satisfying both temporal coherence AND modal saturation conditions, (b) Extend DovetailingChain to interleave modal witness creation with temporal witness creation, or (c) Post-process a temporally coherent family by iteratively adding modal witnesses until saturated. Critical challenge: Proving termination/well-foundedness when adding infinitely many witness families. Success eliminates the final axiom blocker for sorry-free completeness, connecting proven temporal infrastructure (RecursiveSeed, ZornFamily) to the representation theorem. See ModalSaturation.lean for is_modally_saturated definition, Completeness.lean for usage, and DovetailingChain.lean/ZornFamily.lean for temporal coherence infrastructure to extend.
 
