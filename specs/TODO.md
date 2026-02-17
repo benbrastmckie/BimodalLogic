@@ -39,10 +39,12 @@ technical_debt:
 
 ### 886. Implement continuous subagent handoff loop in implement skills
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-16
+- **Researched**: 2026-02-17
 - **Dependencies**: Tasks 883, 884, 885
+- **Research**: [research-001.md](specs/886_continuous_subagent_handoff_loop/reports/research-001.md)
 
 **Description**: Modify skill-implementer and skill-lean-implementation to loop after subagent returns partial: automatically invoke another subagent unless a blocker requiring user review is detected. The skill checks the `requires_user_review` flag in metadata; if false and status is partial, it re-invokes a new subagent with the handoff context. Stops on: implemented, blocked/requires_user_review, or configurable iteration limit. Update implement.md to document the auto-resume behavior.
 
