@@ -46,7 +46,7 @@ technical_debt:
 
 ### 884. Implement incremental summary updates per phase
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: meta
 - **Created**: 2026-02-16
 - **Dependencies**: Task 883
@@ -85,14 +85,14 @@ technical_debt:
 **Description**: Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination. Sorries: henkinLimit_forward_saturated base case (line 444), henkinLimit_backward_saturated base case (line 485), maximal_tcs_is_mcs F-formula case (line 655), maximal_tcs_is_mcs P-formula case (line 662), generic temporal_coherent_family_exists (line 636). These block the constructive proof of fully_saturated_bmcs_exists.
 
 ### 881. Construct modally saturated BMCS to eliminate fully_saturated_bmcs_exists axiom
-- **Effort**: 40-60 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 8-12 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-13
 - **Researched**: 2026-02-14
-- **Planned**: 2026-02-14
-- **Research**: [research-009.md](specs/881_modally_saturated_bmcs_construction/reports/research-009.md) (Team v5: RecursiveSeed recommended path), [research-008.md](specs/881_modally_saturated_bmcs_construction/reports/research-008.md) (Semantic alignment confirmed)
-- **Plan**: [implementation-004.md](specs/881_modally_saturated_bmcs_construction/plans/implementation-004.md) (v4: RecursiveSeed extension approach)
+- **Planned**: 2026-02-16
+- **Research**: [research-010.md](specs/881_modally_saturated_bmcs_construction/reports/research-010.md) (Team v10: Option D FamilyCollection architecture), [research-009.md](specs/881_modally_saturated_bmcs_construction/reports/research-009.md) (Team v5: RecursiveSeed)
+- **Plan**: [implementation-005.md](specs/881_modally_saturated_bmcs_construction/plans/implementation-005.md) (v5: FamilyCollection architecture, abandons buildSeedForList)
 
 **Description**: Replace the `fully_saturated_bmcs_exists` axiom in TemporalCoherentConstruction.lean with a constructive proof, achieving fully axiom-free completeness. The axiom currently requires: (1) context preservation, (2) temporal coherence, and (3) modal saturation. Tasks 870/880 have proven temporal coherence via ZornFamily/DovetailingChain, but modal saturation remains. Modal saturation requires that every Diamond formula in a family's MCS has a witness family in the bundle where the inner formula holds. The construction must enumerate all Diamond formulas (neg(Box(neg psi))) and extend the family set to include witnesses. Key approaches: (a) Extend ZornFamily with modal witness enumeration using Zorn's lemma on families satisfying both temporal coherence AND modal saturation conditions, (b) Extend DovetailingChain to interleave modal witness creation with temporal witness creation, or (c) Post-process a temporally coherent family by iteratively adding modal witnesses until saturated. Critical challenge: Proving termination/well-foundedness when adding infinitely many witness families. Success eliminates the final axiom blocker for sorry-free completeness, connecting proven temporal infrastructure (RecursiveSeed, ZornFamily) to the representation theorem. See ModalSaturation.lean for is_modally_saturated definition, Completeness.lean for usage, and DovetailingChain.lean/ZornFamily.lean for temporal coherence infrastructure to extend.
 

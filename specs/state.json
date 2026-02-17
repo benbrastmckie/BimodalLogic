@@ -38,12 +38,12 @@
     {
       "project_number": 884,
       "project_name": "incremental_summary_updates_per_phase",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T04:51:36Z",
-      "session_id": "sess_1771303680_85aa22",
+      "last_updated": "2026-02-17T04:53:12Z",
+      "session_id": "sess_1771303969_6f5ef5",
       "description": "Modify implementation agents to create/update the summary file after each phase completes rather than only at full task completion. The summary file becomes a running log with phase entries appended. Update skill postflight to link the summary artifact even for partial completions. Update summary-format.md with incremental format and phase-entry schema. Update lean-implementation-agent.md and general-implementation-agent.md execution flow.",
       "depends_on": [
         883
@@ -651,10 +651,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-17T04:44:13Z",
+      "last_updated": "2026-02-17T04:54:37Z",
       "artifacts": [
         {
           "type": "research",
@@ -717,11 +717,6 @@
           "summary": "Semantic alignment analysis confirming the codebase uses history-based semantics throughout, with product frame referring only to BMCS internal structure"
         },
         {
-          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "4-phase plan to fix DovetailingChain sorries and build temporally coherent witness families for axiom elimination"
-        },
-        {
           "path": "specs/881_modally_saturated_bmcs_construction/progress/phase-1-progress.json",
           "type": "progress",
           "summary": "Detailed analysis of why Phase 1 is blocked - architecture limitation in DovetailingChain"
@@ -730,11 +725,6 @@
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-009.md",
           "type": "research",
           "summary": "Team research v5: RecursiveSeed recommended as sorry-free path forward for modal saturation"
-        },
-        {
-          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "4-phase plan extending RecursiveSeed for modal saturation: multi-formula seed builder, seed-to-family bridge, modal witness construction, saturation closure"
         },
         {
           "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
@@ -755,11 +745,16 @@
           "type": "research",
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-010.md",
           "summary": "Team research v10: Option D (FamilyCollection architecture) recommended for sorry-free path"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "5-phase plan: FamilyCollection architecture (Option D), abandons buildSeedForList"
         }
       ],
       "session_id": "sess_1771302909_fb93d5",
       "researched": "2026-02-14T00:33:54Z",
-      "planned": "2026-02-14T00:43:07Z",
+      "planned": "2026-02-17T04:54:37Z",
       "started": "2026-02-13T21:26:53Z"
     }
   ],
