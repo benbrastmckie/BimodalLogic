@@ -83,12 +83,31 @@
 
 ---
 
+### Phase 3: Update Lean Implementation Agent [COMPLETED]
+
+**Session**: 2026-02-16, sess_1771307296_4d328c
+**Duration**: ~10 minutes
+
+**Changes Made**:
+- Added "Load When Creating Summary" context reference pointing to summary-format.md
+- Added MUST DO items 15-16 for per-phase summary updates and artifact linking
+
+**Files Modified**:
+- `.claude/agents/lean-implementation-agent.md` - Added context reference and MUST DO items
+
+**Verification**:
+- Agent Context References now includes summary-format.md
+- MUST DO section includes per-phase summary requirements
+- Agent references lean-implementation-flow.md which contains full Stage 4F documentation
+
+---
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 3 of 7 |
-| Files Modified | 8 |
+| Phases Completed | 4 of 7 |
+| Files Modified | 9 |
 | Files Created | 0 |
 | Files Deleted | 6 |
 | Overall Status | In Progress |

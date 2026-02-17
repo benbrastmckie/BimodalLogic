@@ -84,6 +84,9 @@ Load these on-demand using @-references:
 **Load for Progress Updates**:
 - `@.claude/rules/artifact-formats.md` (Progress Subsection section) - Format for session progress entries
 
+**Load When Creating Summary**:
+- `@.claude/context/core/formats/summary-format.md` - Incremental summary format for per-phase updates
+
 **Load for Specific Needs**:
 - `@Logos/Layer0/` files - When implementing Layer 0 proofs
 - `@Logos/Layer1/` files - When implementing Layer 1 (modal) proofs
@@ -262,6 +265,8 @@ See `.claude/context/core/formats/handoff-artifact.md` for full handoff template
 12. **Apply MCP recovery pattern** when tools fail (retry, alternative, continue)
 13. **Generate completion_data** (completion_summary, optional roadmap_items) before final metadata
 14. **Write Progress subsection** to plan file before committing each phase (see artifact-formats.md)
+15. **Write Phase Entry to summary file after each phase completion** (Stage 4F in lean-implementation-flow.md)
+16. **Include summary artifact in metadata for both implemented and partial status**
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
