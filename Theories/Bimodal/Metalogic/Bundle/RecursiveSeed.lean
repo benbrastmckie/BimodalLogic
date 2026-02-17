@@ -4986,6 +4986,36 @@ theorem createNewFamily_preserves_getFormulas
       · exact h_time h_pred.2.symm
 
 /--
+createNewFamily preserves membership at ANY position where membership already holds.
+This is stronger than createNewFamily_preserves_mem_getFormulas_precond because
+we don't need the position to differ - if membership holds in the original,
+find? will find that entry before reaching any appended entry.
+-/
+theorem createNewFamily_preserves_mem_getFormulas'
+    (seed : ModelSeed) (timeIdx : Int) (phi psi : Formula) (famIdx : Nat) (t : Int)
+    (h_mem : phi ∈ seed.getFormulas famIdx t) :
+    phi ∈ (seed.createNewFamily timeIdx psi).1.getFormulas famIdx t := by
+  -- Key insight: createNewFamily APPENDS a new entry. The find? in getFormulas
+  -- searches from the beginning. If an entry at (famIdx, t) exists in seed.entries
+  -- (which it must for h_mem to hold), find? will find it before any appended entry.
+  unfold ModelSeed.createNewFamily ModelSeed.getFormulas ModelSeed.findEntry at *
+  simp only at *
+  -- The new entries = seed.entries ++ [new_entry]
+  -- find? on (l1 ++ l2) = find? l1 if find? l1 = Some _
+  rw [List.find?_append]
+  -- h_mem implies find? seed.entries (...) = Some entry
+  cases h_find : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == t) with
+  | none =>
+    -- If find? returns none, then h_mem is membership in empty set - contradiction
+    simp only [h_find] at h_mem
+    exact absurd h_mem (Set.not_mem_empty phi)
+  | some entry =>
+    -- find? found an entry in the original list, so the append doesn't matter
+    simp only [Option.some_or]
+    simp only [h_find] at h_mem
+    exact h_mem
+
+/--
 createNewFamily preserves membership of existing formulas at any position
 that differs from (newFamIdx, timeIdx).
 -/
@@ -5052,6 +5082,27 @@ theorem createNewTime_preserves_mem_getFormulas
   exact h_mem
 
 /--
+createNewTime preserves membership at ANY position where membership already holds.
+Similar to createNewFamily_preserves_mem_getFormulas'.
+-/
+theorem createNewTime_preserves_mem_getFormulas'
+    (seed : ModelSeed) (famIdxTarget : Nat) (newTime : Int) (phi psi : Formula)
+    (famIdx : Nat) (t : Int)
+    (h_mem : phi ∈ seed.getFormulas famIdx t) :
+    phi ∈ (seed.createNewTime famIdxTarget newTime psi).getFormulas famIdx t := by
+  unfold ModelSeed.createNewTime ModelSeed.getFormulas ModelSeed.findEntry at *
+  simp only at *
+  rw [List.find?_append]
+  cases h_find : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == t) with
+  | none =>
+    simp only [h_find] at h_mem
+    exact absurd h_mem (Set.not_mem_empty phi)
+  | some entry =>
+    simp only [Option.some_or]
+    simp only [h_find] at h_mem
+    exact h_mem
+
+/--
 If there's a formula at position (famIdx, timeIdx) in a well-formed seed,
 then famIdx < nextFamilyIdx.
 -/
@@ -5074,6 +5125,7 @@ theorem wellFormed_mem_implies_famIdx_lt (seed : ModelSeed) (famIdx : Nat) (time
     rw [← h_entry_fam]
     exact h_lt
 
+set_option maxHeartbeats 400000 in
 /--
 buildSeedAux preserves membership at ANY position, not just the processing position.
 This is the monotonicity property: buildSeedAux only adds formulas, never removes.
@@ -5081,10 +5133,6 @@ This is the monotonicity property: buildSeedAux only adds formulas, never remove
 **Proof strategy**: By strong induction on formula complexity. Each buildSeedAux operation
 (addFormula, addToAllFamilies, createNewFamily, etc.) only adds formulas, never removes.
 So membership at any position is preserved.
-
-**Remaining work**: The proof requires handling many cases with proper disjunction conversion
-using `not_and_or`. The key lemmas (addFormula_preserves_mem_diff_position,
-addToAllFamilies_preserves_mem_getFormulas, etc.) are already proven.
 -/
 theorem buildSeedAux_preserves_mem_general (phi : Formula) (procFam : Nat) (procTime : Int)
     (seed : ModelSeed) (psi : Formula) (queryFam : Nat) (queryTime : Int)
@@ -5092,8 +5140,188 @@ theorem buildSeedAux_preserves_mem_general (phi : Formula) (procFam : Nat) (proc
     psi ∈ (buildSeedAux phi procFam procTime seed).getFormulas queryFam queryTime := by
   -- All operations in buildSeedAux only add formulas, never remove them
   -- This is a monotonicity property: formulas at any position are preserved
-  -- The full proof is a large case analysis on phi with induction
-  sorry
+  -- Proof by induction on formula complexity with case analysis on phi
+  generalize h_c : phi.complexity = c
+  induction c using Nat.strong_induction_on generalizing phi procFam procTime seed with
+  | h c ih =>
+    match phi with
+    | Formula.atom s =>
+      -- Atom case: addFormula only
+      simp only [buildSeedAux]
+      by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+      · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+        exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi (Formula.atom s) .universal_target h_mem
+      · push_neg at h_same
+        have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+          by_cases hf : queryFam = procFam
+          · exact Or.inr (h_same hf)
+          · exact Or.inl hf
+        exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi (Formula.atom s) .universal_target h_diff h_mem
+    | Formula.bot =>
+      -- Bot case: addFormula only
+      simp only [buildSeedAux]
+      by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+      · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+        exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi Formula.bot .universal_target h_mem
+      · push_neg at h_same
+        have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+          by_cases hf : queryFam = procFam
+          · exact Or.inr (h_same hf)
+          · exact Or.inl hf
+        exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi Formula.bot .universal_target h_diff h_mem
+    | Formula.box inner =>
+      -- Box case: addFormula, addToAllFamilies, recurse
+      simp only [buildSeedAux]
+      have h_complexity : inner.complexity < c := by rw [← h_c]; simp only [Formula.complexity]; omega
+      -- Step through: seed -> seed1 -> seed2 -> buildSeedAux inner ...
+      have h1 : psi ∈ (seed.addFormula procFam procTime inner.box .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi inner.box .universal_target h_mem
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi inner.box .universal_target h_diff h_mem
+      have h2 : psi ∈ ((seed.addFormula procFam procTime inner.box .universal_target).addToAllFamilies procTime inner).getFormulas queryFam queryTime :=
+        addToAllFamilies_preserves_mem_getFormulas _ procTime psi inner queryFam queryTime h1
+      exact ih inner.complexity h_complexity inner procFam procTime _ h2 rfl
+    | Formula.all_future inner =>
+      -- G case: addFormula twice, addToAllFutureTimes twice, recurse
+      simp only [buildSeedAux]
+      have h_complexity : inner.complexity < c := by rw [← h_c]; simp only [Formula.complexity]; omega
+      have h1 : psi ∈ (seed.addFormula procFam procTime inner.all_future .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi inner.all_future .universal_target h_mem
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi inner.all_future .universal_target h_diff h_mem
+      let seed1 := seed.addFormula procFam procTime inner.all_future .universal_target
+      have h2 : psi ∈ (seed1.addFormula procFam procTime inner .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed1 queryFam queryTime psi inner .universal_target h1
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed1 queryFam procFam queryTime procTime psi inner .universal_target h_diff h1
+      let seed2 := seed1.addFormula procFam procTime inner .universal_target
+      have h3 : psi ∈ (seed2.addToAllFutureTimes procFam procTime inner).getFormulas queryFam queryTime :=
+        addToAllFutureTimes_preserves_mem_getFormulas seed2 procFam procTime psi inner queryFam queryTime h2
+      let seed3 := seed2.addToAllFutureTimes procFam procTime inner
+      have h4 : psi ∈ (seed3.addToAllFutureTimes procFam procTime inner.all_future).getFormulas queryFam queryTime :=
+        addToAllFutureTimes_preserves_mem_getFormulas seed3 procFam procTime psi inner.all_future queryFam queryTime h3
+      exact ih inner.complexity h_complexity inner procFam procTime _ h4 rfl
+    | Formula.all_past inner =>
+      -- H case: addFormula twice, addToAllPastTimes twice, recurse
+      simp only [buildSeedAux]
+      have h_complexity : inner.complexity < c := by rw [← h_c]; simp only [Formula.complexity]; omega
+      have h1 : psi ∈ (seed.addFormula procFam procTime inner.all_past .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi inner.all_past .universal_target h_mem
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi inner.all_past .universal_target h_diff h_mem
+      let seed1 := seed.addFormula procFam procTime inner.all_past .universal_target
+      have h2 : psi ∈ (seed1.addFormula procFam procTime inner .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed1 queryFam queryTime psi inner .universal_target h1
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed1 queryFam procFam queryTime procTime psi inner .universal_target h_diff h1
+      let seed2 := seed1.addFormula procFam procTime inner .universal_target
+      have h3 : psi ∈ (seed2.addToAllPastTimes procFam procTime inner).getFormulas queryFam queryTime :=
+        addToAllPastTimes_preserves_mem_getFormulas seed2 procFam procTime psi inner queryFam queryTime h2
+      let seed3 := seed2.addToAllPastTimes procFam procTime inner
+      have h4 : psi ∈ (seed3.addToAllPastTimes procFam procTime inner.all_past).getFormulas queryFam queryTime :=
+        addToAllPastTimes_preserves_mem_getFormulas seed3 procFam procTime psi inner.all_past queryFam queryTime h3
+      exact ih inner.complexity h_complexity inner procFam procTime _ h4 rfl
+    | Formula.imp (Formula.box inner) Formula.bot =>
+      -- neg(Box inner) = Diamond(neg inner): addFormula, createNewFamily, recurse at newFamIdx
+      simp only [buildSeedAux]
+      have h_complexity : inner.neg.complexity < c := by
+        rw [← h_c]; simp only [Formula.complexity, Formula.neg]; omega
+      have h1 : psi ∈ (seed.addFormula procFam procTime (Formula.neg (Formula.box inner)) .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi (Formula.neg (Formula.box inner)) .universal_target h_mem
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi (Formula.neg (Formula.box inner)) .universal_target h_diff h_mem
+      let seed1 := seed.addFormula procFam procTime (Formula.neg (Formula.box inner)) .universal_target
+      let result := seed1.createNewFamily procTime (Formula.neg inner)
+      let seed2 := result.1
+      let newFamIdx := result.2
+      have h2 : psi ∈ seed2.getFormulas queryFam queryTime :=
+        createNewFamily_preserves_mem_getFormulas' seed1 procTime psi (Formula.neg inner) queryFam queryTime h1
+      exact ih inner.neg.complexity h_complexity inner.neg newFamIdx procTime seed2 h2 rfl
+    | Formula.imp (Formula.all_future inner) Formula.bot =>
+      -- neg(G inner) = F(neg inner): addFormula, createNewTime, recurse at newTime
+      simp only [buildSeedAux]
+      have h_complexity : inner.neg.complexity < c := by
+        rw [← h_c]; simp only [Formula.complexity, Formula.neg]; omega
+      have h1 : psi ∈ (seed.addFormula procFam procTime (Formula.neg (Formula.all_future inner)) .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi (Formula.neg (Formula.all_future inner)) .universal_target h_mem
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi (Formula.neg (Formula.all_future inner)) .universal_target h_diff h_mem
+      let seed1 := seed.addFormula procFam procTime (Formula.neg (Formula.all_future inner)) .universal_target
+      let newTime := seed1.freshFutureTime procFam procTime
+      have h2 : psi ∈ (seed1.createNewTime procFam newTime (Formula.neg inner)).getFormulas queryFam queryTime :=
+        createNewTime_preserves_mem_getFormulas' seed1 procFam newTime psi (Formula.neg inner) queryFam queryTime h1
+      exact ih inner.neg.complexity h_complexity inner.neg procFam newTime _ h2 rfl
+    | Formula.imp (Formula.all_past inner) Formula.bot =>
+      -- neg(H inner) = P(neg inner): addFormula, createNewTime, recurse at newTime
+      simp only [buildSeedAux]
+      have h_complexity : inner.neg.complexity < c := by
+        rw [← h_c]; simp only [Formula.complexity, Formula.neg]; omega
+      have h1 : psi ∈ (seed.addFormula procFam procTime (Formula.neg (Formula.all_past inner)) .universal_target).getFormulas queryFam queryTime := by
+        by_cases h_same : queryFam = procFam ∧ queryTime = procTime
+        · obtain ⟨h_fam, h_time⟩ := h_same; subst h_fam h_time
+          exact addFormula_preserves_mem_getFormulas_same seed queryFam queryTime psi (Formula.neg (Formula.all_past inner)) .universal_target h_mem
+        · push_neg at h_same
+          have h_diff : queryFam ≠ procFam ∨ queryTime ≠ procTime := by
+            by_cases hf : queryFam = procFam
+            · exact Or.inr (h_same hf)
+            · exact Or.inl hf
+          exact addFormula_preserves_mem_diff_position seed queryFam procFam queryTime procTime psi (Formula.neg (Formula.all_past inner)) .universal_target h_diff h_mem
+      let seed1 := seed.addFormula procFam procTime (Formula.neg (Formula.all_past inner)) .universal_target
+      let newTime := seed1.freshPastTime procFam procTime
+      have h2 : psi ∈ (seed1.createNewTime procFam newTime (Formula.neg inner)).getFormulas queryFam queryTime :=
+        createNewTime_preserves_mem_getFormulas' seed1 procFam newTime psi (Formula.neg inner) queryFam queryTime h1
+      exact ih inner.neg.complexity h_complexity inner.neg procFam newTime _ h2 rfl
+    | Formula.imp psi1 psi2 =>
+      -- Generic implication (catchall): just addFormula
+      -- This case handles implications that aren't matched by neg(Box), neg(G), neg(H)
+      -- For generic implications, buildSeedAux directly returns addFormula result
+      -- The key technical challenge: proving definitional equality with buildSeedAux
+      -- when psi1/psi2 are generic formulas requires case splitting
+      -- TODO: Complete this case by case-splitting on psi1/psi2 to help Lean
+      -- see which branch of buildSeedAux's match applies
+      sorry
 
 /--
 buildSeedAux preserves membership of existing formulas at the processing position.
@@ -5264,6 +5492,7 @@ theorem buildSeedForList_consistent (formulas : List Formula) (h_ne : formulas �
     -- This requires the mutual consistency hypothesis
     sorry
 
+set_option maxHeartbeats 400000 in
 /--
 buildSeed phi contains phi at position (0, 0).
 
@@ -5282,13 +5511,16 @@ theorem buildSeed_contains_formula (phi : Formula) : phi ∈ (buildSeed phi).get
     simp only [buildSeedAux]
     exact addFormula_formula_in_getFormulas _ _ _ _ _
   | box psi ih =>
+    -- Box psi: addFormula, addToAllFamilies, recurse on psi - uses buildSeedAux_preserves_mem_general
     simp only [buildSeedAux]
-    -- Proof requires buildSeedAux_preserves_mem_general which is sorried
+    -- TODO: The proof follows: addFormula adds Box psi, subsequent operations preserve it
     sorry
   | all_future psi ih =>
+    -- G psi: similar pattern using buildSeedAux_preserves_mem_general
     simp only [buildSeedAux]
     sorry
   | all_past psi ih =>
+    -- H psi: similar pattern using buildSeedAux_preserves_mem_general
     simp only [buildSeedAux]
     sorry
   | imp psi1 psi2 ih1 ih2 =>
