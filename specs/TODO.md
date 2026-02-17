@@ -1,5 +1,5 @@
 ---
-next_project_number: 887
+next_project_number: 888
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,6 +22,17 @@ technical_debt:
 
 ## Tasks
 
+### 887. Create FinalConstruction.lean and prove fully_saturated_bmcs_exists_int
+- **Effort**: 6-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-16
+- **Dependencies**: Task 881 (current blocker)
+
+**Description**: Create FinalConstruction.lean that imports both SaturatedConstruction.lean and TemporalCoherentConstruction.lean (resolving the circular import that blocks task 881 Phase 2). Implement a sorry-free proof of fully_saturated_bmcs_exists_int using constructSaturatedBMCS from SaturatedConstruction. Key challenge: BMCS.temporally_coherent requires ALL families (including witness families from modal saturation) to have forward_F and backward_P properties. Witness families are built via constantWitnessFamily with regular Lindenbaum, which doesn't guarantee temporal coherence. Options: (A) Use temporal Lindenbaum for witness families (requires fixing TemporalLindenbaum sorries), (B) Prove that constant witness families from temporally saturated MCSes inherit temporal coherence, (C) Restructure truth lemma to only require eval_family temporal coherence. Research needed to determine which approach is viable.
+
+---
+
 ### 886. Implement continuous subagent handoff loop in implement skills
 - **Effort**: 3-4 hours
 - **Status**: [NOT STARTED]
@@ -35,7 +46,7 @@ technical_debt:
 
 ### 885. Add blocker detection and user review triggers to implementation agents
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-16
 - **Researched**: 2026-02-16
