@@ -24,7 +24,7 @@ technical_debt:
 
 ### 889. Review artifact naming scheme for team workflow uniformity
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 
 **Description**: Review the artifact naming scheme used by the workflow command-skill-agent workflows in the .claude/ agent system to make sure there is a standard approach used both with and without the --team flag. For instance, `/research --team NNN` should create reports that have both the report number followed by the team member, and then call a team member to synthesize to create just a report with the appropriate number. Review all other cases where team members might create artifacts that don't indicate the research run, or planning run, etc., that they are associated with. The aim is uniformity of approach.
@@ -102,13 +102,14 @@ technical_debt:
 
 ### 619. Migrate skills to native context:fork isolation
 - **Effort**: 3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-02-17
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-28
 - **Planned**: 2026-01-19
 - **Blocked on**: GitHub anthropics/claude-code #16803 (context:fork runs inline instead of forking)
-- **Research**: [research-001.md](specs/archive/619_agent_system_architecture_upgrade/reports/research-001.md), [research-006.md](specs/archive/619_agent_system_architecture_upgrade/reports/research-006.md)
+- **Research**: [research-001.md](specs/archive/619_agent_system_architecture_upgrade/reports/research-001.md), [research-006.md](specs/archive/619_agent_system_architecture_upgrade/reports/research-006.md), [research-007.md](specs/619_agent_system_architecture_upgrade/reports/research-007.md)
 - **Plan**: [implementation-002.md](specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
