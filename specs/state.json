@@ -36,7 +36,7 @@
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T06:08:29Z",
+      "last_updated": "2026-02-17T06:11:46Z",
       "session_id": "sess_1771308500_3db6bd",
       "description": "Define blocker types that require user review vs normal partial completions. Agents write requires_user_review: true with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.",
       "depends_on": [
@@ -48,6 +48,11 @@
           "path": "specs/885_blocker_detection_user_review_triggers/reports/research-001.md",
           "type": "research",
           "summary": "Blocker taxonomy: soft vs hard blockers, schema changes for requires_user_review"
+        },
+        {
+          "path": "specs/885_blocker_detection_user_review_triggers/reports/research-002.md",
+          "type": "research",
+          "summary": "Context file optimization research for /implement workflow"
         }
       ]
     },
