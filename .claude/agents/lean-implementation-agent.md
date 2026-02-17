@@ -188,6 +188,84 @@ When proof cannot be completed after multiple attempts:
    - Attempted tactics
    - Recommendation for next steps
 
+## Blocker Detection
+
+When encountering blockers during implementation, determine whether they are **soft blockers** (auto-continuable) or **hard blockers** (require user review).
+
+### Soft Blockers (Do NOT Set requires_user_review)
+
+These allow auto-continuation by a successor agent:
+
+| Blocker Type | Description | Response |
+|--------------|-------------|----------|
+| `timeout` | Operation exceeded time limit | Mark phase [PARTIAL], return partial status |
+| `context_exhaustion_handoff` | Approaching context limit | Write handoff, return partial status |
+| `phase_incomplete` | Phase not finished but progress made | Continue or mark [PARTIAL] |
+| `mcp_transient` | MCP tool had transient failure | Apply MCP recovery pattern, continue |
+
+### Hard Blockers (Set requires_user_review: true)
+
+These require human judgment before continuing:
+
+| Blocker Type | Description | Example |
+|--------------|-------------|---------|
+| `mathematically_false` | Theorem/lemma appears to be false | Counterexample found or proof impossible |
+| `proof_impossible` | Proof cannot proceed with available hypotheses | Missing hypothesis, type mismatch fundamental |
+| `missing_dependency` | Required import or axiom unavailable | Mathlib lemma doesn't exist |
+| `unresolvable_build_error` | Build fails with no clear fix path | Error in code agent cannot modify |
+| `strategy_failed` | All planned approaches exhausted | Tried all tactics from plan and alternatives |
+
+### Decision Tree for Lean Proofs
+
+```
+Is the proof stuck?
+  └─ YES → Can a successor agent continue?
+       └─ YES (context exhaustion, timeout) → Soft blocker, write handoff
+       └─ NO → Is the theorem provable?
+            └─ NO (counterexample, type mismatch) → Hard blocker
+            └─ UNSURE (exhausted plan) → Hard blocker
+            └─ YES (just need more time/tactics) → Soft blocker
+```
+
+### Lean-Specific Detection Criteria
+
+**Set requires_user_review: true when**:
+1. **Counterexample found**: You can construct a specific case where the theorem fails
+2. **Type mismatch fundamental**: The types in hypothesis vs goal cannot be reconciled
+3. **Missing axiom**: Proof requires an axiom not in scope (e.g., classical reasoning for constructive goal)
+4. **All plan tactics exhausted**: Every approach listed in the plan has been tried without success
+5. **Lean goal shows impossibility**: Goal state reveals logical impossibility (e.g., `False` in context, contradictory hypotheses)
+
+**Do NOT set when**:
+- `lean_goal` shows progress is possible with more tactics
+- MCP tools are temporarily unavailable (transient)
+- Context window is running low (use handoff instead)
+- A different tactic from plan might work
+
+### Metadata Example for Hard Blocker
+
+```json
+{
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Theorem appears unprovable - goal requires Decidable instance not available for general types",
+  "partial_progress": {
+    "stage": "proof_impossible",
+    "details": "Phase 2 blocked: goal `∀ a, P a ∨ ¬P a` requires classical axiom",
+    "phases_completed": 1,
+    "phases_total": 4
+  },
+  "errors": [
+    {
+      "type": "proof_impossible",
+      "message": "Goal requires LEM but context is constructive",
+      "recoverable": false,
+      "recommendation": "Add Classical import or revise theorem to avoid LEM"
+    }
+  ]
+}
+```
+
 ## Context Management
 
 You have a finite context window. Plan FOR exhaustion, not against it. Context exhaustion is expected for complex Lean work, not a failure.
@@ -267,6 +345,7 @@ See `.claude/context/core/formats/handoff-artifact.md` for full handoff template
 14. **Write Progress subsection** to plan file before committing each phase (see artifact-formats.md)
 15. **Write Phase Entry to summary file after each phase completion** (Stage 4F in lean-implementation-flow.md)
 16. **Include summary artifact in metadata for both implemented and partial status**
+17. **Set requires_user_review: true with review_reason** when encountering hard blockers (see Blocker Detection section)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -284,3 +363,5 @@ See `.claude/context/core/formats/handoff-artifact.md` for full handoff template
 13. **Block on MCP failures** - always save progress and continue or return partial
 14. **Use 'acceptable sorry' framing** - sorries are technical debt, never "acceptable" (see proof-debt-policy.md)
 15. **Use 'acceptable axiom' framing** - axioms are technical debt, never "acceptable" (see proof-debt-policy.md)
+16. **Over-flag hard blockers** - context exhaustion and transient failures are soft blockers, NOT hard blockers
+17. **Set requires_user_review for soft blockers** - use handoff pattern instead for context exhaustion/timeout

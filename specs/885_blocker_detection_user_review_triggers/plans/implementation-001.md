@@ -75,19 +75,19 @@ Implement blocker detection fields and guidance to distinguish hard blockers req
 
 ---
 
-### Phase 2: Update lean-implementation-agent.md [NOT STARTED]
+### Phase 2: Update lean-implementation-agent.md [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add Blocker Detection section with criteria and decision tree for Lean proofs
 
 **Tasks**:
-- [ ] Add new section "## Blocker Detection" after Error Handling section
-- [ ] Document hard blocker criteria specific to Lean (mathematically false, proof impossible, build fails)
-- [ ] Document soft blocker criteria (timeout, context exhaustion, MCP transient)
-- [ ] Add decision tree for determining soft vs hard blockers
-- [ ] Add concrete examples for each blocker type
-- [ ] Update Critical Requirements MUST DO list to include blocker detection
-- [ ] Update Critical Requirements MUST NOT list to include over-flagging guidance
+- [x] Add new section "## Blocker Detection" after Error Handling section
+- [x] Document hard blocker criteria specific to Lean (mathematically false, proof impossible, build fails)
+- [x] Document soft blocker criteria (timeout, context exhaustion, MCP transient)
+- [x] Add decision tree for determining soft vs hard blockers
+- [x] Add concrete examples for each blocker type
+- [x] Update Critical Requirements MUST DO list to include blocker detection
+- [x] Update Critical Requirements MUST NOT list to include over-flagging guidance
 
 **Timing**: 45 minutes
 
@@ -99,6 +99,16 @@ Implement blocker detection fields and guidance to distinguish hard blockers req
 - Decision tree is present and actionable
 - Lean-specific examples (counterexample found, proof impossible) included
 - MUST DO includes "Set requires_user_review when encountering hard blockers"
+
+**Progress:**
+
+**Session: 2026-02-16, sess_1771309217_479a4b**
+- Added: "Blocker Detection" section with soft/hard blocker tables
+- Added: Decision tree for Lean proofs (is proof stuck -> can successor continue -> is theorem provable)
+- Added: Lean-specific detection criteria (counterexample, type mismatch, missing axiom, etc.)
+- Added: Metadata example for hard blocker with proof_impossible type
+- Added: MUST DO #17 - Set requires_user_review when encountering hard blockers
+- Added: MUST NOT #16-17 - Over-flagging guidance and soft blocker handling
 
 ---
 

@@ -27,12 +27,31 @@ Implementing blocker detection fields and guidance to distinguish hard blockers 
 
 ---
 
+### Phase 2: Update lean-implementation-agent.md
+
+**Session**: 2026-02-16, sess_1771309217_479a4b
+
+**Changes**:
+- Added "Blocker Detection" section after Error Handling section
+- Documented soft blockers (timeout, context_exhaustion_handoff, phase_incomplete, mcp_transient)
+- Documented hard blockers (mathematically_false, proof_impossible, missing_dependency, unresolvable_build_error, strategy_failed)
+- Added decision tree for Lean proofs
+- Added Lean-specific detection criteria with 5 hard blocker triggers
+- Added metadata example for proof_impossible blocker
+- Updated MUST DO list with #17 for requires_user_review
+- Updated MUST NOT list with #16-17 for over-flagging guidance
+
+**Files Modified**:
+- `.claude/agents/lean-implementation-agent.md`
+
+---
+
 ## Cumulative Statistics
 
-- **Phases Completed**: 1 of 4
-- **Files Modified**: 1
-- **.claude/ Files Changed**: 1
+- **Phases Completed**: 2 of 4
+- **Files Modified**: 2
+- **.claude/ Files Changed**: 2
 
 ## Notes
 
-Phase 1 adds the schema foundation. Phases 2-3 will add agent-specific detection guidance.
+Phases 1-2 add the schema foundation and Lean-specific guidance. Phase 3 will add general agent detection guidance.
