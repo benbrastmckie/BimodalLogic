@@ -144,7 +144,21 @@ If team mode is unavailable:
 
 ---
 
-### Stage 5a: Language Routing Decision
+### Stage 5a: Calculate Run Number
+
+Determine the next run number by counting existing synthesis artifacts:
+
+```bash
+# Count existing research reports to determine run number
+run_num=$(ls "specs/${task_number}_${project_name}/reports/research-"[0-9][0-9][0-9].md 2>/dev/null | wc -l)
+run_num=$((run_num + 1))
+run_padded=$(printf "%03d" $run_num)
+# run_padded is now the run number for this team research run (e.g., "001")
+```
+
+---
+
+### Stage 5b: Language Routing Decision
 
 Determine language-specific configuration for teammate prompts:
 
@@ -237,7 +251,7 @@ Focus on: Implementation approaches and Mathlib patterns for this task.
 Challenge assumptions. Verify lemma existence with lean_local_search.
 Consider {focus_prompt} if provided.
 
-Output your findings to: specs/{N}_{SLUG}/reports/teammate-a-findings.md
+Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md
 
 Format: Markdown with sections for Key Findings, Recommended Approach,
 Evidence (including lemma names verified via lean_local_search), Confidence Level
@@ -252,7 +266,7 @@ Look for existing lemmas/theorems we could adapt.
 Do NOT duplicate Teammate A's primary focus.
 Verify all lemma names with lean_local_search.
 
-Output your findings to: specs/{N}_{SLUG}/reports/teammate-b-findings.md
+Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md
 ```
 
 **Teammate C - Risk Analysis (Lean, if team_size >= 3)**:
@@ -264,7 +278,7 @@ Identify where proof strategies could fail.
 Note any suspicious axioms or sorry placeholders in related code.
 Check for Mathlib version compatibility issues.
 
-Output your findings to: specs/{N}_{SLUG}/reports/teammate-c-findings.md
+Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-c-findings.md
 ```
 
 **Teammate D - Devil's Advocate (Lean, if team_size >= 4)**:
@@ -278,7 +292,7 @@ Question complexity assumptions.
 
 Wait for other teammates to complete, then analyze their outputs.
 
-Output your findings to: specs/{N}_{SLUG}/reports/teammate-d-findings.md
+Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-d-findings.md
 ```
 
 ---
@@ -298,7 +312,7 @@ Challenge assumptions and provide specific examples.
 Consider {focus_prompt} if provided.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/teammate-a-findings.md
+specs/{N}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md
 
 Format: Markdown with clear sections for:
 - Key Findings
@@ -316,7 +330,7 @@ Look for existing solutions we could adapt.
 Do NOT duplicate Teammate A's focus on primary approaches.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/teammate-b-findings.md
+specs/{N}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md
 
 Format: Same as Teammate A
 ```
@@ -330,7 +344,7 @@ Identify what could go wrong with proposed approaches.
 Consider integration challenges and dependencies.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/teammate-c-findings.md
+specs/{N}_{SLUG}/reports/research-{RRR}-teammate-c-findings.md
 
 Format: Same as Teammate A
 ```
@@ -346,7 +360,7 @@ Question assumptions and identify blind spots.
 Wait for other teammates to complete, then analyze their outputs.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/teammate-d-findings.md
+specs/{N}_{SLUG}/reports/research-{RRR}-teammate-d-findings.md
 
 Format: Same as Teammate A
 ```
@@ -378,13 +392,14 @@ On timeout:
 
 ### Stage 7: Collect Teammate Results
 
-Read each teammate's output file:
+Read each teammate's output file using run-scoped paths:
 
 ```bash
 teammate_results=[]
 
 for teammate in A B C D; do
-  file="specs/${task_number}_${project_name}/reports/teammate-${teammate,,}-findings.md"
+  # Use run-scoped path: research-{RRR}-teammate-{letter}-findings.md
+  file="specs/${task_number}_${project_name}/reports/research-${run_padded}-teammate-${teammate,,}-findings.md"
   if [ -f "$file" ]; then
     # Parse findings
     # Extract confidence level
@@ -466,7 +481,7 @@ Write synthesized report:
 {Sources cited by teammates}
 ```
 
-Output to: `specs/{N}_{SLUG}/reports/research-001.md`
+Output to: `specs/{N}_{SLUG}/reports/research-{RRR}.md` (where `{RRR}` is `$run_padded`)
 
 ---
 
@@ -489,9 +504,9 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 **Link artifact**:
 ```bash
-jq --arg path "specs/${task_number}_${project_name}/reports/research-001.md" \
+jq --arg path "specs/${task_number}_${project_name}/reports/research-${run_padded}.md" \
    --arg type "research" \
-   --arg summary "Team research with ${team_size} teammates" \
+   --arg summary "Team research with ${team_size} teammates (run ${run_padded})" \
   '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": $type, "summary": $summary}]' \
   specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 ```
@@ -509,8 +524,8 @@ Write team execution metadata:
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/{N}_{SLUG}/reports/research-001.md",
-      "summary": "Synthesized research from {team_size} teammates"
+      "path": "specs/{N}_{SLUG}/reports/research-{RRR}.md",
+      "summary": "Synthesized research from {team_size} teammates (run {RRR})"
     }
   ],
   "team_execution": {

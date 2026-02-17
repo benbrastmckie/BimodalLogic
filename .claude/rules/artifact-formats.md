@@ -174,6 +174,86 @@ After fixing, run `/lake` again to verify the build passes.
 - Reports are linked as artifacts in state.json with type `"error_report"`
 - The Source field in the task entry links back to the affected file
 
+## Team Artifacts
+
+Team workflows (`/research --team`, `/plan --team`, `/implement --team`) create intermediate artifacts that must correlate with their synthesized outputs. All team artifacts include a run number (`{RRR}`) to associate teammate outputs with their synthesis run.
+
+### Run Number Determination
+
+Before spawning teammates, the lead calculates the next run number by counting existing synthesis artifacts:
+
+```bash
+# For research: count existing research-*.md files
+run_num=$(ls specs/${N}_${SLUG}/reports/research-[0-9][0-9][0-9].md 2>/dev/null | wc -l)
+run_num=$((run_num + 1))
+run_padded=$(printf "%03d" $run_num)
+
+# For planning: count existing implementation-*.md files
+run_num=$(ls specs/${N}_${SLUG}/plans/implementation-[0-9][0-9][0-9].md 2>/dev/null | wc -l)
+run_num=$((run_num + 1))
+run_padded=$(printf "%03d" $run_num)
+```
+
+### Team Research Artifacts
+
+| Artifact | Path Pattern | Example |
+|----------|--------------|---------|
+| Teammate findings | `specs/{N}_{SLUG}/reports/research-{RRR}-teammate-{letter}-findings.md` | `research-001-teammate-a-findings.md` |
+| Synthesized report | `specs/{N}_{SLUG}/reports/research-{RRR}.md` | `research-001.md` |
+
+**Correlation example**:
+```
+Run 1:
+  research-001-teammate-a-findings.md  -> synthesized to -> research-001.md
+  research-001-teammate-b-findings.md  ->                -> research-001.md
+  research-001-teammate-c-findings.md  ->                -> research-001.md
+
+Run 2:
+  research-002-teammate-a-findings.md  -> synthesized to -> research-002.md
+  research-002-teammate-b-findings.md  ->                -> research-002.md
+```
+
+### Team Planning Artifacts
+
+| Artifact | Path Pattern | Example |
+|----------|--------------|---------|
+| Candidate plan | `specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-{letter}.md` | `plan-001-candidate-a.md` |
+| Risk analysis | `specs/{N}_{SLUG}/plans/plan-{RRR}-risk-analysis.md` | `plan-001-risk-analysis.md` |
+| Synthesized plan | `specs/{N}_{SLUG}/plans/implementation-{RRR}.md` | `implementation-001.md` |
+
+**Correlation example**:
+```
+Run 1:
+  plan-001-candidate-a.md    -> synthesized to -> implementation-001.md
+  plan-001-candidate-b.md    ->                -> implementation-001.md
+  plan-001-risk-analysis.md  ->                -> implementation-001.md
+```
+
+### Team Implementation Artifacts
+
+| Artifact | Path Pattern | Example |
+|----------|--------------|---------|
+| Phase results | `specs/{N}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md` | `impl-001-phase-2-results.md` |
+| Debug hypothesis | `specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md` | `impl-001-debug-001-hypothesis.md` |
+| Debug analysis | `specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-analysis.md` | `impl-001-debug-001-analysis.md` |
+| Debug resolution | `specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-resolution.md` | `impl-001-debug-001-resolution.md` |
+| Synthesized summary | `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md` | `implementation-summary-20260217.md` |
+
+The implementation run number (`{RRR}`) comes from the plan version being implemented (e.g., `implementation-001.md` -> `impl-001-*`).
+
+### Placeholder Legend
+
+| Placeholder | Format | Description |
+|-------------|--------|-------------|
+| `{RRR}` | 3-digit padded | Run number (001, 002, ...) |
+| `{letter}` | lowercase | Teammate identifier (a, b, c, d) |
+| `{P}` | unpadded integer | Phase number (1, 2, 3, ...) |
+| `{DDD}` | 3-digit padded | Debug cycle number (001, 002, ...) |
+
+### Backward Compatibility
+
+Existing artifacts without run numbers are valid. The new naming scheme applies to future team runs only. Synthesis artifacts (`research-{NNN}.md`, `implementation-{NNN}.md`, `implementation-summary-{DATE}.md`) retain their existing names.
+
 ## Phase Status Markers
 
 Use in plan files:

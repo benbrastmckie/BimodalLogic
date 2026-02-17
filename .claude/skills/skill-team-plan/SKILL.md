@@ -129,7 +129,21 @@ If `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS != "1"`:
 
 ---
 
-### Stage 5a: Language Routing Decision
+### Stage 5a: Calculate Run Number
+
+Determine the next run number by counting existing synthesis artifacts:
+
+```bash
+# Count existing implementation plans to determine run number
+run_num=$(ls "specs/${task_number}_${project_name}/plans/implementation-"[0-9][0-9][0-9].md 2>/dev/null | wc -l)
+run_num=$((run_num + 1))
+run_padded=$(printf "%03d" $run_num)
+# run_padded is now the run number for this team planning run (e.g., "001")
+```
+
+---
+
+### Stage 5b: Language Routing Decision
 
 Determine language-specific configuration for planner prompts:
 
@@ -229,7 +243,7 @@ Create a phased implementation plan focusing on:
 ## Verification
 Each phase must include: "Run lake build and verify no errors"
 
-Output to: specs/{N}_{SLUG}/plans/candidate-a.md
+Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md
 ```
 
 **Teammate B - Plan Version B (Lean)**:
@@ -260,7 +274,7 @@ Create a plan that differs from a typical phased approach. Consider:
 ## Verification
 Each phase must include: "Run lake build and verify no errors"
 
-Output to: specs/{N}_{SLUG}/plans/candidate-b.md
+Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-b.md
 ```
 
 **Teammate C - Risk/Dependency Analysis (Lean, if team_size >= 3)**:
@@ -284,7 +298,7 @@ Focus on:
 - Mathlib version or import risks
 - sorry remediation strategies
 
-Output to: specs/{N}_{SLUG}/plans/risk-analysis.md
+Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-risk-analysis.md
 
 Do NOT create a full plan - focus on analysis that informs plan selection.
 ```
@@ -309,7 +323,7 @@ Create a phased implementation plan focusing on:
 - Clear success criteria for each phase
 - Realistic effort estimates
 
-Output to: specs/{N}_{SLUG}/plans/candidate-a.md
+Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md
 
 Use standard plan format with phases, each containing:
 - Objectives
@@ -332,7 +346,7 @@ Create a plan that differs from a typical phased approach. Consider:
 - Alternative ordering of work
 - Different trade-offs (e.g., speed vs safety, simplicity vs completeness)
 
-Output to: specs/{N}_{SLUG}/plans/candidate-b.md
+Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-b.md
 
 Clearly document what trade-offs this alternative makes.
 ```
@@ -352,7 +366,7 @@ Focus on:
 - Points where the implementation could fail
 - Fallback strategies for high-risk phases
 
-Output to: specs/{N}_{SLUG}/plans/risk-analysis.md
+Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-risk-analysis.md
 
 Do NOT create a full plan - focus on analysis that informs plan selection.
 ```
@@ -371,12 +385,13 @@ Wait with 30-minute timeout for planning wave.
 
 ### Stage 8: Collect Candidate Plans
 
-Read each teammate's output:
+Read each teammate's output using run-scoped paths:
 
 ```bash
-candidate_a="specs/${task_number}_${project_name}/plans/candidate-a.md"
-candidate_b="specs/${task_number}_${project_name}/plans/candidate-b.md"
-risk_analysis="specs/${task_number}_${project_name}/plans/risk-analysis.md"
+# Use run-scoped paths: plan-{RRR}-candidate-{letter}.md
+candidate_a="specs/${task_number}_${project_name}/plans/plan-${run_padded}-candidate-a.md"
+candidate_b="specs/${task_number}_${project_name}/plans/plan-${run_padded}-candidate-b.md"
+risk_analysis="specs/${task_number}_${project_name}/plans/plan-${run_padded}-risk-analysis.md"
 
 # Parse and store each candidate
 ```
@@ -463,8 +478,8 @@ Update task status to "planned":
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/{N}_{SLUG}/plans/implementation-001.md",
-      "summary": "Best-of-breed plan from {team_size} candidates"
+      "path": "specs/{N}_{SLUG}/plans/implementation-{RRR}.md",
+      "summary": "Best-of-breed plan from {team_size} candidates (run {RRR})"
     }
   ],
   "team_execution": {
@@ -478,13 +493,13 @@ Update task status to "planned":
       "name": "PlannerA",
       "angle": "Phased incremental approach",
       "status": "completed",
-      "artifact_path": "specs/{N}_{SLUG}/plans/candidate-a.md"
+      "artifact_path": "specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md"
     },
     {
       "name": "PlannerB",
       "angle": "Alternative structure",
       "status": "completed",
-      "artifact_path": "specs/{N}_{SLUG}/plans/candidate-b.md"
+      "artifact_path": "specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-b.md"
     }
   ],
   "synthesis": {

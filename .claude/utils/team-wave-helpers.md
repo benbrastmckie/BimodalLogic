@@ -10,81 +10,107 @@ This file contains reference patterns for implementing team skills. Copy and ada
 
 ### Spawn Research Wave
 
-Spawn 2-4 teammates for parallel research:
+Spawn 2-4 teammates for parallel research. First, calculate the run number:
+
+```bash
+# Calculate run number before spawning
+run_num=$(ls specs/${N}_${SLUG}/reports/research-[0-9][0-9][0-9].md 2>/dev/null | wc -l)
+run_num=$((run_num + 1))
+run_padded=$(printf "%03d" $run_num)
+```
+
+Then spawn teammates with run-scoped output paths:
 
 ```
-# Research Wave Spawning
+# Research Wave Spawning (run {RRR})
 Wave 1 teammates:
 1. Primary Angle (required)
    - Name: "{Task}ResearcherA"
    - Prompt: "Research {task} focusing on implementation approaches.
      Challenge assumptions. Provide specific examples.
-     Output to: specs/{N}_{SLUG}/reports/teammate-a-findings.md"
+     Output to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md"
 
 2. Alternative Approaches (required)
    - Name: "{Task}ResearcherB"
    - Prompt: "Research {task} focusing on alternative patterns and prior art.
      Look for existing solutions we could adapt.
-     Output to: specs/{N}_{SLUG}/reports/teammate-b-findings.md"
+     Output to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md"
 
 3. Risk Analysis (optional, size >= 3)
    - Name: "{Task}ResearcherC"
    - Prompt: "Research {task} focusing on risks, blockers, and edge cases.
      Identify what could go wrong.
-     Output to: specs/{N}_{SLUG}/reports/teammate-c-findings.md"
+     Output to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-c-findings.md"
 
 4. Devil's Advocate (optional, size >= 4)
    - Name: "{Task}ResearcherD"
    - Prompt: "Challenge findings from other teammates.
      Look for gaps, inconsistencies, and missed alternatives.
-     Output to: specs/{N}_{SLUG}/reports/teammate-d-findings.md"
+     Output to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-d-findings.md"
 ```
 
 ### Spawn Planning Wave
 
-Spawn teammates for parallel plan generation:
+Spawn teammates for parallel plan generation. First, calculate the run number:
+
+```bash
+# Calculate run number before spawning
+run_num=$(ls specs/${N}_${SLUG}/plans/implementation-[0-9][0-9][0-9].md 2>/dev/null | wc -l)
+run_num=$((run_num + 1))
+run_padded=$(printf "%03d" $run_num)
+```
+
+Then spawn teammates with run-scoped output paths:
 
 ```
-# Planning Wave Spawning
+# Planning Wave Spawning (run {RRR})
 Wave 1 teammates:
 1. Plan Version A (required)
    - Name: "{Task}PlannerA"
    - Prompt: "Create a phased implementation plan for {task}.
      Focus on incremental delivery with verification at each phase.
-     Output to: specs/{N}_{SLUG}/plans/candidate-a.md"
+     Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md"
 
 2. Plan Version B (required)
    - Name: "{Task}PlannerB"
    - Prompt: "Create an alternative implementation plan for {task}.
      Consider different phase boundaries or ordering.
-     Output to: specs/{N}_{SLUG}/plans/candidate-b.md"
+     Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-b.md"
 
 3. Risk/Dependency Analysis (optional, size >= 3)
    - Name: "{Task}PlannerC"
    - Prompt: "Analyze dependencies and risks for implementing {task}.
      Identify which phases can be parallelized vs sequential.
-     Output to: specs/{N}_{SLUG}/plans/risk-analysis.md"
+     Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-risk-analysis.md"
 ```
 
 ### Spawn Implementation Wave
 
-Spawn teammates for parallel implementation:
+Spawn teammates for parallel implementation. The run number comes from the plan version being implemented:
+
+```bash
+# Extract run number from plan file name (e.g., implementation-001.md -> 001)
+run_padded=$(echo "$plan_file" | grep -oP 'implementation-\K[0-9]{3}(?=\.md)')
+```
+
+Then spawn teammates with run-scoped output paths:
 
 ```
-# Implementation Wave Spawning
+# Implementation Wave Spawning (run {RRR})
 For each independent phase group:
 1. Phase Implementer (per independent phase)
-   - Name: "{Task}Phase{N}Impl"
-   - Prompt: "Implement phase {N} of the plan for {task}.
+   - Name: "{Task}Phase{P}Impl"
+   - Prompt: "Implement phase {P} of the plan for {task}.
      Follow the steps in the implementation plan.
-     Update phase status markers as you complete."
+     Update phase status markers as you complete.
+     Write results to: specs/{N}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md"
 
 2. Debugger (spawned on error)
    - Name: "{Task}Debugger"
    - Prompt: "Analyze the error in {task} implementation.
      Error: {error_details}
      Generate hypothesis and create debug report at:
-     specs/{N}_{SLUG}/debug/debug-{NNN}-hypothesis.md"
+     specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md"
 ```
 
 ## Wait and Collect Pattern
@@ -106,12 +132,14 @@ Collect results:
 
 ### Collect Teammate Results
 
+Use run-scoped paths to collect teammate findings:
+
 ```bash
-# Pattern: Collect results from teammate files
+# Pattern: Collect results from teammate files (run-scoped)
 teammate_files=(
-  "specs/${N}_${SLUG}/reports/teammate-a-findings.md"
-  "specs/${N}_${SLUG}/reports/teammate-b-findings.md"
-  # ... add more as needed
+  "specs/${N}_${SLUG}/reports/research-${run_padded}-teammate-a-findings.md"
+  "specs/${N}_${SLUG}/reports/research-${run_padded}-teammate-b-findings.md"
+  # ... add more as needed based on team_size
 )
 
 for file in "${teammate_files[@]}"; do
@@ -373,7 +401,7 @@ You are a Lean 4/Mathlib research specialist. Follow the lean-research-agent pat
 
 Focus on: {focus_area}
 
-Output your findings to: specs/{N}_{SLUG}/reports/teammate-{letter}-findings.md
+Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-{letter}-findings.md
 
 Format: Markdown with sections for Key Findings, Recommended Approach, Evidence (including lemma names verified via lean_local_search), Confidence Level
 ```
@@ -423,7 +451,7 @@ When complete:
 1. Verify proof state shows "no goals"
 2. Run lake build
 3. Mark phase [COMPLETED] in plan file
-4. Write results to: specs/{N}_{SLUG}/phases/phase-{P}-results.md
+4. Write results to: specs/{N}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md
 ```
 
 ### Lean Teammate Prompt Template (Debugger)
@@ -455,7 +483,7 @@ Generate:
 2. Analysis of the error
 3. Proposed fix with specific tactic suggestions
 
-Output to: specs/{N}_{SLUG}/debug/debug-{NNN}-hypothesis.md
+Output to: specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
 ```
 
 ### Lean Teammate Prompt Template (Planning)
@@ -484,7 +512,7 @@ Research findings:
 ## Verification
 Each phase must include: "Run lake build and verify no errors"
 
-Output to: specs/{N}_{SLUG}/plans/candidate-{letter}.md
+Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-{letter}.md
 ```
 
 ## Successor Teammate Pattern

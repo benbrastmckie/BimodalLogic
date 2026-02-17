@@ -31,7 +31,7 @@ When a skill executes in team mode, the metadata file includes additional fields
       "name": "ResearcherA",
       "angle": "Primary implementation approach",
       "status": "completed",
-      "artifact_path": "specs/{N}_{SLUG}/reports/teammate-a-findings.md",
+      "artifact_path": "specs/{N}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md",
       "confidence": "high",
       "conflicts_with": []
     },
@@ -39,7 +39,7 @@ When a skill executes in team mode, the metadata file includes additional fields
       "name": "ResearcherB",
       "angle": "Alternative patterns",
       "status": "completed",
-      "artifact_path": "specs/{N}_{SLUG}/reports/teammate-b-findings.md",
+      "artifact_path": "specs/{N}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md",
       "confidence": "medium",
       "conflicts_with": ["ResearcherA finding 2"]
     }

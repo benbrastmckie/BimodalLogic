@@ -59,11 +59,14 @@ task_data=$(jq -r --argjson num "$task_number" \
 project_name=$(echo "$task_data" | jq -r '.project_name')
 language=$(echo "$task_data" | jq -r '.language // "general"')
 
-# Load plan
-plan_path="specs/${task_number}_${project_name}/plans/implementation-001.md"
-if [ ! -f "$plan_path" ]; then
+# Find the latest implementation plan
+plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"[0-9][0-9][0-9].md 2>/dev/null | sort -V | tail -1)
+if [ -z "$plan_file" ]; then
   return error "No implementation plan found for task $task_number"
 fi
+
+# Extract run number from plan file name (e.g., implementation-001.md -> 001)
+run_padded=$(echo "$plan_file" | grep -oP 'implementation-\K[0-9]{3}(?=\.md)')
 
 # Parse phases from plan
 # Identify phase status markers: [NOT STARTED], [IN PROGRESS], [COMPLETED]
@@ -328,7 +331,7 @@ When complete:
 1. Verify proof state shows "no goals"
 2. Run lake build
 3. Mark phase [COMPLETED] in plan file
-4. Write results to: specs/{N}_{SLUG}/phases/phase-{P}-results.md
+4. Write results to: specs/{N}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md
 5. Return brief summary of changes made
 ```
 
@@ -358,7 +361,7 @@ Verification:
 
 When complete:
 1. Mark phase as [COMPLETED] in plan file
-2. Write results to: specs/{N}_{SLUG}/phases/phase-{P}-results.md
+2. Write results to: specs/{N}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md
 3. Return brief summary of changes made
 ```
 
@@ -400,7 +403,7 @@ Generate:
 2. Analysis of the error
 3. Proposed fix with specific tactic suggestions
 
-Output to: specs/{N}_{SLUG}/debug/debug-{NNN}-hypothesis.md
+Output to: specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
 ```
 
 ---
@@ -426,7 +429,7 @@ Generate:
 2. Analysis of the error
 3. Proposed fix
 
-Output to: specs/{N}_{SLUG}/debug/debug-{NNN}-hypothesis.md
+Output to: specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
 ```
 
 ---
@@ -443,14 +446,14 @@ Output to: specs/{N}_{SLUG}/debug/debug-{NNN}-hypothesis.md
 
 ### Stage 8: Write Debug Reports
 
-For each debug cycle, create reports:
+For each debug cycle, create reports with run-scoped names:
 
 ```
 specs/{N}_{SLUG}/debug/
-├── debug-001-hypothesis.md   # Initial hypothesis
-├── debug-001-analysis.md     # Detailed analysis
-├── debug-001-resolution.md   # How resolved (or not)
-├── debug-002-hypothesis.md   # Second attempt (if needed)
+├── impl-001-debug-001-hypothesis.md   # Initial hypothesis (run 001, debug cycle 001)
+├── impl-001-debug-001-analysis.md     # Detailed analysis
+├── impl-001-debug-001-resolution.md   # How resolved (or not)
+├── impl-001-debug-002-hypothesis.md   # Second attempt (if needed)
 └── ...
 ```
 
