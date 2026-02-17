@@ -23,7 +23,7 @@ technical_debt:
 ## Tasks
 
 ### 887. Create FinalConstruction.lean and prove fully_saturated_bmcs_exists_int
-- **Effort**: 6-8 hours
+- **Effort**: 8-12 hours
 - **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-16
@@ -31,7 +31,7 @@ technical_debt:
 - **Planned**: 2026-02-16
 - **Dependencies**: Task 881 (current blocker)
 - **Research**: [research-001.md](specs/887_create_finalconstruction_prove_fully_saturated_bmcs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-002.md) (v2: No technical debt, Options B→A→C)
 
 **Description**: Create FinalConstruction.lean that imports both SaturatedConstruction.lean and TemporalCoherentConstruction.lean (resolving the circular import that blocks task 881 Phase 2). Implement a sorry-free proof of fully_saturated_bmcs_exists_int using constructSaturatedBMCS from SaturatedConstruction. Key challenge: BMCS.temporally_coherent requires ALL families (including witness families from modal saturation) to have forward_F and backward_P properties. Witness families are built via constantWitnessFamily with regular Lindenbaum, which doesn't guarantee temporal coherence. Options: (A) Use temporal Lindenbaum for witness families (requires fixing TemporalLindenbaum sorries), (B) Prove that constant witness families from temporally saturated MCSes inherit temporal coherence, (C) Restructure truth lemma to only require eval_family temporal coherence. Research needed to determine which approach is viable.
 

@@ -11,8 +11,8 @@
       "status": "planned",
       "language": "lean",
       "created": "2026-02-17T06:09:35Z",
-      "last_updated": "2026-02-17T06:21:23Z",
-      "session_id": "sess_1771309078_72cea1",
+      "last_updated": "2026-02-17T06:28:38Z",
+      "session_id": "sess_1771309474_fb2e9c",
       "researched": "2026-02-17T06:16:45Z",
       "artifacts": [
         {
@@ -21,12 +21,13 @@
           "summary": "Research report on FinalConstruction options for temporal coherence"
         },
         {
-          "path": "specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-001.md",
+          "path": "specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-002.md",
           "type": "plan",
-          "summary": "Implementation plan for FinalConstruction.lean and sorry-free fully_saturated_bmcs_exists_int"
+          "summary": "v2: No technical debt fallback, Options B→A→C decision tree"
         }
       ],
-      "planned": "2026-02-17T06:21:23Z"
+      "planned": "2026-02-17T06:28:38Z",
+      "started": "2026-02-17T06:25:00Z"
     },
     {
       "project_number": 886,
@@ -47,11 +48,11 @@
     {
       "project_number": 885,
       "project_name": "blocker_detection_user_review_triggers",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T06:20:40Z",
+      "last_updated": "2026-02-17T06:29:02Z",
       "session_id": "sess_1771309217_479a4b",
       "description": "Define blocker types that require user review vs normal partial completions. Agents write requires_user_review: true with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.",
       "depends_on": [
@@ -76,7 +77,10 @@
         }
       ],
       "planned": "2026-02-17T06:16:07Z",
-      "started": "2026-02-17T06:20:40Z"
+      "started": "2026-02-17T06:20:40Z",
+      "completed": "2026-02-17T06:29:02Z",
+      "completion_summary": "Added blocker detection schema and agent guidance to distinguish hard blockers (requiring user review) from soft blockers (auto-continuable). Added requires_user_review and review_reason fields to return-metadata-file.md, Blocker Detection sections to both implementation agents with decision trees, and updated Critical Requirements.",
+      "claudemd_suggestions": "Updated return-metadata-file.md schema with requires_user_review/review_reason fields and Blocker Taxonomy section. Updated lean-implementation-agent.md and general-implementation-agent.md with Blocker Detection sections and Critical Requirements entries."
     },
     {
       "project_number": 884,
