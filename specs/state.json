@@ -714,10 +714,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-17T06:20:57Z",
+      "last_updated": "2026-02-17T06:23:53Z",
       "artifacts": [
         {
           "type": "research",
@@ -810,19 +810,19 @@
           "summary": "Team research v10: Option D (FamilyCollection architecture) recommended for sorry-free path"
         },
         {
-          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-005.md",
-          "type": "plan",
-          "summary": "5-phase plan: FamilyCollection architecture (Option D), abandons buildSeedForList"
-        },
-        {
           "path": "specs/881_modally_saturated_bmcs_construction/reports/research-011.md",
           "type": "research",
           "summary": "Review of recent implementation attempts, circular import analysis, and remaining work assessment after task 887"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-006.md",
+          "type": "plan",
+          "summary": "5-phase plan with task 887 dependency, wiring seedToConstantMCS to FinalConstruction"
         }
       ],
       "session_id": "sess_1771309241_0d2f8a",
       "researched": "2026-02-17T06:17:21Z",
-      "planned": "2026-02-17T04:54:37Z",
+      "planned": "2026-02-17T06:23:53Z",
       "started": "2026-02-13T21:26:53Z"
     }
   ],
