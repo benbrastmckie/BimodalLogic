@@ -6,13 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 890,
+      "project_name": "fix_measure_wf_build_error_temporallindenbaum",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Fix the Unknown identifier measure_wf build error in TemporalLindenbaum.lean at lines 220 and 263. This pre-existing error is blocking task 888 from completing. The identifier measure_wf is used for well-founded induction in helper lemmas. Likely a missing import or definition.",
+      "created": "2026-02-17T23:07:05Z",
+      "last_updated": "2026-02-17T23:07:05Z"
+    },
+    {
       "project_number": 889,
       "project_name": "artifact_naming_scheme_review",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "created": "2026-02-17T22:37:17Z",
-      "last_updated": "2026-02-17T23:04:44Z",
-      "session_id": "sess_1771369318_8ae718",
+      "last_updated": "2026-02-17T23:07:13Z",
+      "session_id": "sess_1771369613_a433e1",
       "researched": "2026-02-17T22:49:20Z",
       "artifacts": [
         {
@@ -26,7 +35,8 @@
           "summary": "6-phase implementation plan for uniform artifact naming scheme across team workflows"
         }
       ],
-      "planned": "2026-02-17T23:04:44Z"
+      "planned": "2026-02-17T23:04:44Z",
+      "started": "2026-02-17T23:07:13Z"
     },
     {
       "project_number": 888,
@@ -35,7 +45,7 @@
       "language": "lean",
       "effort": "8-12 hours",
       "created": "2026-02-17T20:00:00Z",
-      "last_updated": "2026-02-17T22:18:01Z",
+      "last_updated": "2026-02-17T23:07:11Z",
       "session_id": "sess_1771366548_399c2b",
       "parent_task": 881,
       "description": "Research the mathematical gap blocking temporal coherence of witness families. Task 887s FinalConstruction.lean has sorries because regular Lindenbaum extension does NOT preserve temporal saturation - it can add F(psi) formulas without adding their witness psi. Research questions: (1) Can Lindenbaum preserve temporal saturation when seed contains sufficient temporal content ({psi} union M where M is temporally saturated)? (2) If not, can we use temporal-aware Lindenbaum that adds F(psi) and psi together? (3) Is there an alternative architectural approach that avoids this issue entirely? (4) Does the truth lemma actually require all families to be temporally coherent, or only eval_family? Output: Clear mathematical characterization of the gap, proof or disproof of preservation conditions, and recommended remediation path.",
@@ -58,7 +68,10 @@
         }
       ],
       "planned": "2026-02-17T22:10:51Z",
-      "started": "2026-02-17T22:18:01Z"
+      "started": "2026-02-17T22:18:01Z",
+      "depends_on": [
+        890
+      ]
     },
     {
       "project_number": 882,
@@ -697,7 +710,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 890,
+  "next_project_number": 891,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

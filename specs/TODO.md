@@ -1,5 +1,5 @@
 ---
-next_project_number: 890
+next_project_number: 891
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,11 +22,22 @@ technical_debt:
 
 ## Tasks
 
+### 890. Fix measure_wf build error in TemporalLindenbaum.lean
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-17
+
+**Description**: Fix the Unknown identifier measure_wf build error in TemporalLindenbaum.lean at lines 220 and 263. This pre-existing error is blocking task 888 from completing. The identifier measure_wf is used for well-founded induction in helper lemmas. Likely a missing import or definition.
+
+---
+
 ### 889. Review artifact naming scheme for team workflow uniformity
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Researched**: 2026-02-17
 - **Planned**: 2026-02-17
+- **Started**: 2026-02-17
 - **Language**: meta
 - **Research**: [research-001.md](specs/889_artifact_naming_scheme_review/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/889_artifact_naming_scheme_review/plans/implementation-001.md)
@@ -40,6 +51,7 @@ technical_debt:
 - **Status**: [IMPLEMENTING]
 - **Planned**: 2026-02-17
 - **Started**: 2026-02-17
+- **Depends**: Task #890
 - **Plan**: [implementation-001.md](specs/888_lindenbaum_temporal_saturation_preservation/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260217.md](specs/888_lindenbaum_temporal_saturation_preservation/summaries/implementation-summary-20260217.md)
 - **Language**: lean
