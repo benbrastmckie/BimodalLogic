@@ -1,5 +1,5 @@
 ---
-next_project_number: 889
+next_project_number: 890
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 889. Review artifact naming scheme for team workflow uniformity
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Review the artifact naming scheme used by the workflow command-skill-agent workflows in the .claude/ agent system to make sure there is a standard approach used both with and without the --team flag. For instance, `/research --team NNN` should create reports that have both the report number followed by the team member, and then call a team member to synthesize to create just a report with the appropriate number. Review all other cases where team members might create artifacts that don't indicate the research run, or planning run, etc., that they are associated with. The aim is uniformity of approach.
+
+---
 
 ### 888. Research Lindenbaum temporal saturation preservation for witness families
 - **Effort**: 8-12 hours
@@ -93,7 +102,7 @@ technical_debt:
 
 ### 619. Migrate skills to native context:fork isolation
 - **Effort**: 3 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-01-19
 - **Researched**: 2026-01-28
