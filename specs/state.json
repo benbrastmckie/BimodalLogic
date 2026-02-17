@@ -38,11 +38,11 @@
     {
       "project_number": 884,
       "project_name": "incremental_summary_updates_per_phase",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T04:53:12Z",
+      "last_updated": "2026-02-17T04:56:21Z",
       "session_id": "sess_1771303969_6f5ef5",
       "description": "Modify implementation agents to create/update the summary file after each phase completes rather than only at full task completion. The summary file becomes a running log with phase entries appended. Update skill postflight to link the summary artifact even for partial completions. Update summary-format.md with incremental format and phase-entry schema. Update lean-implementation-agent.md and general-implementation-agent.md execution flow.",
       "depends_on": [
@@ -54,8 +54,14 @@
           "path": "specs/884_incremental_summary_updates_per_phase/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing summary creation patterns and proposing incremental running-log format for per-phase updates"
+        },
+        {
+          "path": "specs/884_incremental_summary_updates_per_phase/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for incremental summary updates per phase"
         }
-      ]
+      ],
+      "planned": "2026-02-17T04:56:21Z"
     },
     {
       "project_number": 883,
@@ -651,10 +657,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-17T04:54:37Z",
+      "last_updated": "2026-02-17T04:56:40Z",
       "artifacts": [
         {
           "type": "research",
@@ -752,7 +758,7 @@
           "summary": "5-phase plan: FamilyCollection architecture (Option D), abandons buildSeedForList"
         }
       ],
-      "session_id": "sess_1771302909_fb93d5",
+      "session_id": "sess_1771304171_a2d968",
       "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-17T04:54:37Z",
       "started": "2026-02-13T21:26:53Z"
