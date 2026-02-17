@@ -275,7 +275,7 @@ Research-002.md identified:
 
 ---
 
-### Phase 4: Update General Implementation Agent [NOT STARTED]
+### Phase 4: Update General Implementation Agent [COMPLETED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Add per-phase summary update to Phase Checkpoint Protocol
@@ -325,6 +325,16 @@ Research-002.md identified:
 - Context References includes summary-format.md
 
 **Estimated effort**: 30 minutes
+
+**Progress:**
+
+**Session: 2026-02-16, sess_1771307296_4d328c**
+- Added: Step 6 (Update summary file) to Phase Checkpoint Protocol with create-or-append logic
+- Updated: Git staging in step 7 to include summaries/ directory
+- Fixed: Stage 6 from "Create" to "Finalize" with update instructions
+- Fixed: Stage 7 metadata to include summary artifact for both implemented and partial status
+- Added: MUST DO items 12-13 for per-phase summary update and artifact linking
+- Verified: Context References already includes summary-format.md (line 49)
 
 ---
 

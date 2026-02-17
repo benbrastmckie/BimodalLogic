@@ -173,35 +173,28 @@ After all phases complete:
 - Run tests (if applicable)
 - Verify all created files exist
 
-### Stage 6: Create Implementation Summary
+### Stage 6: Finalize Implementation Summary
 
-Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
+The summary file already exists with Phase Entries from step 6 of the Phase Checkpoint Protocol. Finalize it:
 
+1. **Update header Status** to `[COMPLETED]`
+2. **Add Completed timestamp** to header
+3. **Verify all phases have entries** in Phase Log section
+4. **Update Cumulative Statistics** to show all phases completed
+5. **Add final Notes section** if needed for follow-up items
+
+**Example finalized header**:
 ```markdown
 # Implementation Summary: Task #{N}
 
-**Completed**: {ISO_DATE}
-**Duration**: {time}
-
-## Changes Made
-
-{Summary of work done}
-
-## Files Modified
-
-- `path/to/file.ext` - {change description}
-- `path/to/new-file.ext` - Created new file
-
-## Verification
-
-- Build: Success/Failure/N/A
-- Tests: Passed/Failed/N/A
-- Files verified: Yes
-
-## Notes
-
-{Any additional notes, follow-up items, or caveats}
+**Task**: {title}
+**Status**: [COMPLETED]
+**Started**: 2026-02-16
+**Completed**: 2026-02-16
+**Language**: {meta|general|...}
 ```
+
+**Note**: If summary does not exist (edge case), create complete summary as fallback following the incremental format from summary-format.md.
 
 ### Stage 6a: Generate Completion Data
 
@@ -255,9 +248,10 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 
 Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
+**For implemented status (all phases complete)**:
 ```json
 {
-  "status": "implemented|partial|failed",
+  "status": "implemented",
   "summary": "Brief 2-5 sentence summary (<100 tokens)",
   "artifacts": [
     {
@@ -287,6 +281,41 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
   "next_steps": "Review implementation and run verification"
 }
 ```
+
+**For partial status (some phases complete)**:
+```json
+{
+  "status": "partial",
+  "summary": "Completed phases 1-2 of 4. Phase 3 blocked on dependency.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "path/to/modified/file.ext",
+      "summary": "Partial changes"
+    },
+    {
+      "type": "summary",
+      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "summary": "Incremental summary with phases 1-2 complete"
+    }
+  ],
+  "partial_progress": {
+    "stage": "phase_3_blocked",
+    "details": "Phase 3 requires external dependency resolution",
+    "phases_completed": 2,
+    "phases_total": 4
+  },
+  "metadata": {
+    "session_id": "{from delegation context}",
+    "agent_type": "general-implementation-agent",
+    "phases_completed": 2,
+    "phases_total": 4
+  },
+  "next_steps": "Resolve dependency issue, then resume"
+}
+```
+
+**IMPORTANT**: Include summary artifact for **both** `implemented` and `partial` status. The summary file contains Phase Entries for completed work, enabling visibility into partial progress.
 
 **Note**: Include `completion_data` when status is `implemented`. For meta tasks, always include `claudemd_suggestions`. For non-meta tasks, optionally include `roadmap_items` instead.
 
@@ -320,11 +349,18 @@ For each phase in the implementation plan:
    - Action items: Added/Fixed/Completed with names
    - Outcome delta if applicable
    - For no-progress sessions: document what was attempted and why it failed
-6. **Git commit** with message: `task {N} phase {P}: {phase_name}`
+6. **Update summary file** with Phase Entry:
+   **Load**: @.claude/context/core/formats/summary-format.md (Incremental format section)
+   - If first phase: Create summary at `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`
+   - If subsequent: Append Phase Entry to existing summary's Phase Log
+   - Update Cumulative Statistics section
+   - If final phase: Set header Status to `[COMPLETED]`
+7. **Git commit** with message: `task {N} phase {P}: {phase_name}`
    Use targeted staging (prevents race conditions with concurrent agents):
    ```bash
    git add \
      "specs/${task_number}_${project_name}/plans/" \
+     "specs/${task_number}_${project_name}/summaries/" \
      "${modified_files[@]}" && \
    git commit -m "task {N} phase {P}: {phase_name}
 
@@ -333,13 +369,14 @@ For each phase in the implementation plan:
    Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
    ```
    **Note**: See `.claude/context/core/standards/git-staging-scope.md` for agent-specific staging rules.
-7. **Proceed to next phase** or return if blocked
+8. **Proceed to next phase** or return if blocked
 
 **This ensures**:
 - Resume point is always discoverable from plan file
 - Git history reflects phase-level progress
 - Failed phases can be retried from beginning
 - Progress is canonically tracked in the plan file itself
+- Summary provides visibility into partial progress across sessions
 
 ---
 
@@ -552,6 +589,8 @@ General implementation failed for task 999:
 9. Read existing files before modifying them
 10. **Update partial_progress** after each phase completion
 11. **Write Progress subsection** to plan file before committing each phase (see artifact-formats.md)
+12. **Write Phase Entry to summary file after each phase completion** (step 6 in Phase Checkpoint Protocol)
+13. **Include summary artifact in metadata for both implemented and partial status**
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)

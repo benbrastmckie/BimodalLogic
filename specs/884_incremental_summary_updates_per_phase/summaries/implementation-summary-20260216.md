@@ -102,12 +102,35 @@
 
 ---
 
+### Phase 4: Update General Implementation Agent [COMPLETED]
+
+**Session**: 2026-02-16, sess_1771307296_4d328c
+**Duration**: ~20 minutes
+
+**Changes Made**:
+- Added step 6 (Update summary file) to Phase Checkpoint Protocol with create-or-append logic
+- Updated git staging in step 7 to include summaries/ directory
+- Updated Stage 6 from "Create" to "Finalize" implementation summary
+- Updated Stage 7 metadata to include summary artifact for both implemented and partial status
+- Added MUST DO items 12-13 for per-phase summary update and artifact linking
+
+**Files Modified**:
+- `.claude/agents/general-implementation-agent.md` - Updated Phase Checkpoint Protocol, Stage 6-7, Critical Requirements
+
+**Verification**:
+- Phase Checkpoint Protocol now includes step 6 for summary update with lazy loading
+- Stage 6 finalization documented with header update steps
+- Stage 7 shows examples for both implemented and partial status with summary artifact
+- MUST DO section includes per-phase summary requirements
+
+---
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 4 of 7 |
-| Files Modified | 9 |
+| Phases Completed | 5 of 7 |
+| Files Modified | 10 |
 | Files Created | 0 |
 | Files Deleted | 6 |
 | Overall Status | In Progress |
