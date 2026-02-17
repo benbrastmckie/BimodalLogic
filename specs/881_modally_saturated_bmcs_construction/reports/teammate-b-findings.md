@@ -1,266 +1,219 @@
-# Teammate B Findings: Alternative Approaches and Prior Art for Modal Saturation
+# Teammate B: Alternative Approaches Analysis
 
-**Task**: 881 - Construct modally saturated BMCS to eliminate `fully_saturated_bmcs_exists` axiom
-**Date**: 2026-02-13
-**Focus**: Alternative approaches, prior art analysis, Mathlib patterns, failed approach post-mortem
+**Task**: 881 - Construct modally saturated BMCS
+**Session**: sess_1771302909_fb93d5
+**Date**: 2026-02-16
+**Focus**: Analyze alternatives to bypass `buildSeedForList_propagates_box` blocker
 
 ## Key Findings
 
-### 1. Three Distinct Axioms Must Be Eliminated
+1. **The blocker is fundamental to the current architecture**: `createNewFamily` creates a brand new seed entry with ONLY the witness formula. It does NOT copy BoxContent from existing families, so when later Box formulas are processed, they only propagate to families that exist AT THAT MOMENT.
 
-The codebase currently contains **three** related axioms for modal saturation (all in active Theories/ code):
+2. **`buildSeedForList_propagates_box` is NOT strictly needed for the final goal**: The lemma serves `modal_forward` in SeedBMCS.lean, but SaturatedConstruction.lean has an alternative path via `exists_fullySaturated_extension` that handles box_coherence differently.
 
-| Axiom | File | Purpose |
-|-------|------|---------|
-| `fully_saturated_bmcs_exists` | TemporalCoherentConstruction.lean:773 | Combined temporal+modal BMCS |
-| `saturated_extension_exists` | CoherentConstruction.lean:871 | CoherentBundle saturation extension |
-| `singleFamily_modal_backward_axiom` | Construction.lean:219 | Single-family modal backward (known FALSE) |
+3. **Processing order (Box-last) does not fully solve the problem**: While it would help for formulas in the initial list, recursive `buildSeedAux` calls create families mid-processing, so ordering the top-level list doesn't prevent the issue.
 
-Additionally, `weak_saturated_extension_exists` in WeakCoherentBundle.lean:826 is another axiom variant.
+4. **The existing codebase has two proven approaches for box_coherence**:
+   - `FamilyCollection` structure with explicit `box_coherence` field
+   - Lindenbaum extension combined with MCS negation completeness
 
-**Important**: `singleFamily_modal_backward_axiom` is documented as mathematically FALSE (see TemporalCoherentConstruction.lean:706-746). The other axioms are mathematically correct but unproven. `fully_saturated_bmcs_exists` subsumes both `saturated_extension_exists` and `singleFamily_modal_backward_axiom`.
+## Option B: Remove the Lemma
 
-### 2. The EvalCoherentBundle Approach Is the Most Promising Near-Complete Path
+### Analysis
 
-The `EvalCoherentBundle` construction in CoherentConstruction.lean (lines 1094-1336) is the most developed path. It:
+`buildSeedForList_propagates_box` exists to support `modal_forward` in the seed-based BMCS construction (SeedBMCS.lean line 89). However, examining the dependency chain:
 
-- **Has working witness addition**: `EvalCoherentBundle.addWitness` (line 1217) adds a single witness family preserving EvalCoherent invariant
-- **Has proven key lemma**: `diamond_boxcontent_consistent_constant` (line 249) proves WitnessSeed consistency for constant families
-- **Has enumeration infrastructure**: `addWitnessesForList` (line 1284) iterates over a list of Diamond formulas
-- **Has the right architecture**: EvalCoherent only cares about BoxContent of the fixed eval_family, avoiding the Lindenbaum control problem
+**Downstream usage**:
+- `SeedBMCS.buildSeedBMCS` uses it for `modal_forward` (line 89, sorry)
+- This flows to `seedBMCS_modal_forward` theorem
 
-**Gap**: The bridge from `EvalCoherentBundle` + `EvalSaturated` to a full `BMCS` with `is_modally_saturated` is incomplete. The `toEvalBMCS` conversion (line 1119) produces an `EvalBMCS` (weaker structure), not a full `BMCS`.
+**Alternative paths in codebase**:
+- `SaturatedConstruction.FamilyCollection.toBMCS` (line 278) achieves `modal_forward` via the `box_coherence` field of `FamilyCollection`, NOT through seed propagation
+- The `exists_fullySaturated_extension` theorem (line 873) is SORRY-FREE and provides full modal saturation
 
-### 3. Prior Art in Boneyard: The FDSM Approach Failed Due to MCS-Tracking
+**Critical insight**: The final goal `fully_saturated_bmcs_exists_int` (TemporalCoherentConstruction.lean:822) does NOT require seed-based construction. It needs:
+1. A temporally coherent initial family
+2. Modal saturation (witness families for all Diamond formulas)
+3. Box coherence across all families
 
-The Boneyard/FDSM/ModalSaturation.lean (1577 lines) represents the most extensive prior attempt. It:
+The FamilyCollection approach provides (2) and (3) directly. Only (1) requires RecursiveSeed.
 
-- **Proved witness set consistency** (`witness_set_consistent`, line 123) -- a complete proof
-- **Proved witness history models psi** (`buildWitnessHistory_models_psi`, line 527) -- complete
-- **Built fuel-based saturation** (`saturate_with_fuel`, line 659) -- working iteration
-- **Built MCS-tracked saturation** (`tracked_saturate_with_fuel`, line 1197) -- enhanced version
+### Verdict
 
-**Why it was abandoned**:
-1. The `mcsTrackedHistory_finite` sorry (line 977) blocks the tracked approach -- proving that `MCSTrackedHistory` is finite requires showing the `history` field determines the structure, which is not injective in general
-2. The `fixed_point_is_saturated` theorem (line 870) has a sorry because it requires linking world states back to MCS to invoke the witness builder
-3. The `projectTrackedHistories_modal_saturated` sorry (line 1450) requires relating world state `toSet` membership back to MCS membership
-4. The FDSM construction is specific to finite closure-based models, while the current BMCS uses unrestricted Set Formula
+**YES, we can potentially remove this lemma** by restructuring:
+- Use RecursiveSeed ONLY for the eval_family's temporal coherence
+- Use FamilyCollection + Zorn (exists_fullySaturated_extension) for modal saturation
+- Box coherence comes from FamilyCollection's `box_coherence` field, not seed propagation
 
-**Salvageable parts**: The witness set consistency proof and the generalized modal K argument are reusable. The fuel-based iteration pattern with monotone cardinality is correct.
-
-### 4. The Lindenbaum Control Problem is the Central Obstacle
-
-Every approach in the codebase has hit the same fundamental obstacle:
-
-> When extending a seed `{psi} union BoxContent` to a full MCS via Lindenbaum, the resulting MCS may contain new Box formulas. These new boxes propagate coherence obligations to ALL other families, but those families were already constructed and cannot be modified.
-
-The different approaches handle this differently:
-
-| Approach | Handling Strategy | Outcome |
-|----------|-------------------|---------|
-| CoherentBundle (full) | Require all families share UnionBoxContent | Fails: Lindenbaum adds uncontrolled boxes |
-| WeakCoherentBundle | Only require BoxClosure(core) | Better: Core is fixed, but axiom remains |
-| EvalCoherentBundle | Only require BoxContent(eval) | Best: eval_family is fixed permanently |
-| FDSM (Boneyard) | MCS-tracked histories | Fails: Finiteness sorry, world-state-to-MCS gap |
-| RecursiveSeed | Pre-place all witnesses before Lindenbaum | Incomplete: Only handles formula-structural witnesses |
-
-**The EvalCoherentBundle approach avoids the problem entirely** because:
-- `BoxContent(eval_family)` is fixed at construction time
-- New Box formulas in witness families do NOT create obligations for other families
-- Only the eval_family needs modal_backward; other families just need to exist
-
-### 5. Mathlib Patterns Available for Saturation Termination
-
-Relevant Mathlib lemmas verified via `lean_local_search`:
-
-| Lemma | Location | Relevance |
-|-------|----------|-----------|
-| `Nat.stabilises_of_monotone` | Mathlib.Order.Monotone.Basic | Proves bounded monotone sequences stabilize |
-| `zorn_subset_nonempty` | Mathlib.Order.Zorn | For maximal consistent set extension |
-| `Group.card_pow_eq_card_pow_card_univ_aux` | Mathlib | Same stabilization pattern |
-| `OmegaCompletePartialOrder.fixedPoints.iterateChain` | Mathlib | Iterate monotone function to fixed point |
-
-For the EvalCoherentBundle approach, termination is NOT the main issue because we enumerate Diamond formulas from the eval_family (which is an MCS with a fixed formula set). The issue is proving the resulting bundle satisfies `is_modally_saturated` as defined for BMCS.
-
-### 6. Alternative Architecture: Single-Pass Modal+Temporal Construction
-
-The current architecture separates temporal and modal construction:
-1. Build temporal coherent family (DovetailingChain)
-2. Add modal witnesses (saturation step)
-
-An alternative single-pass approach would:
-1. Enumerate ALL formulas in the starting MCS
-2. Process each formula based on its type (Box/Diamond/G/H/F/P)
-3. Create families AND time witnesses simultaneously
-
-This is essentially what RecursiveSeed.lean attempts. The challenge is that RecursiveSeed only handles structural witnesses (from the formula tree), not Lindenbaum-added witnesses.
-
-### 7. Countable Enumeration Approach for MCS Diamond Witnesses
-
-For a set-theoretic MCS M (uncountable in general), enumerating all Diamond formulas is problematic. However:
-
-- **The Formula type is countable** (built from countable atoms, finite constructors)
-- **Diamond formulas in M form a subset of all formulas**
-- **We can use Choice to select witnesses** -- no constructive enumeration needed
-
-The key insight is that we do NOT need to iterate. We can use a **single-step construction**:
+### Proof Structure Without This Lemma
 
 ```
-For every formula psi such that Diamond(psi) in M:
-  Let M_psi = Lindenbaum({psi} union BoxContent(M))
-  Let fam_psi = constantWitnessFamily(M_psi)
+fully_saturated_bmcs_exists_int
+  |
+  +-- Step 1: Build temporally coherent eval_family
+  |     Use: buildSeed for single formula, seedToIndexedFamily
+  |     (No buildSeedForList needed - one formula at a time)
+  |
+  +-- Step 2: Create initial FamilyCollection
+  |     Use: initialFamilyCollection with box_coherence = trivial
+  |     (Single constant family trivially satisfies box_coherence)
+  |
+  +-- Step 3: Saturate via Zorn
+  |     Use: exists_fullySaturated_extension (SORRY-FREE!)
+  |     box_coherence maintained by construction (see line 880)
+  |
+  +-- Result: BMCS via FamilyCollection.toBMCS
 ```
 
-Then the BMCS families = {base} union {fam_psi | Diamond(psi) in base.mcs t}.
+## Option C: Constrain Processing Order
 
-This works because:
-- `diamond_boxcontent_consistent_constant` proves each seed is consistent
-- Each witness family contains BoxContent(base) by Lindenbaum extension
-- No iteration needed -- all witnesses are independent
+### Analysis
 
-The challenge: proving this is `is_modally_saturated` requires showing `psi in fam_psi.mcs t`, which follows from Lindenbaum extension of {psi} union BoxContent(M).
+**Box-last processing approach**:
+1. Partition input formulas: `(non_box_formulas, box_formulas)`
+2. Process non-box first (creates families)
+3. Process box formulas last (propagates to all existing families)
 
-## Alternative Approaches Analysis
+**Why this doesn't fully work**:
 
-### Approach A: Direct Zorn-Based Maximal Saturated Extension
+```lean
+-- When processing neg(Box psi), createNewFamily is called
+| Formula.imp (Formula.box psi) Formula.bot, famIdx, timeIdx, seed =>
+    let (seed2, newFamIdx) := seed1.createNewFamily timeIdx (Formula.neg psi)
+    buildSeedAux (Formula.neg psi) newFamIdx timeIdx seed2  -- RECURSIVE!
+```
 
-**Idea**: Define the set of all CoherentBundles extending the initial bundle, ordered by family inclusion. Apply `zorn_subset_nonempty` to get a maximal element. Prove maximality implies saturation.
+The recursion can create new families DURING processing of any formula, not just at the top level. Even if we sort the input list, the recursive calls don't respect ordering.
 
-**Pros**:
-- Clean mathematical argument
-- Mathlib's `zorn_subset_nonempty` is available and verified
+**Partial solution**:
+- Sort only delays the problem
+- Would need to fundamentally restructure `buildSeedAux` to:
+  1. Collect ALL families that will be created first (without adding formulas)
+  2. Then propagate Box content to all collected families
+  3. Finally add formulas to families
 
-**Cons**:
-- Proving the chain upper bound preserves mutual coherence is hard
-- Union of infinitely many families may not preserve MutuallyCoherent
-- Maximality -> saturation requires showing we can always extend non-saturated bundles
+This is essentially Option D (different architecture).
 
-**Assessment**: Medium difficulty. The chain bound argument is the main gap.
+### Verdict
 
-### Approach B: Single-Step Family Set Construction (RECOMMENDED)
+**NOT recommended as standalone fix**. Ordering helps marginally but doesn't address the fundamental issue that families are created during recursive processing.
 
-**Idea**: Build all witness families at once, non-iteratively:
-1. Start with constant base family from Lindenbaum(Gamma)
-2. For each neg(Box phi) in base.mcs t, construct witness family via Lindenbaum({neg phi} union BoxContent(base))
-3. The BMCS families = {base} union {all witnesses}
+## Option D: Alternative Architecture
 
-**Pros**:
-- No iteration or termination argument needed
-- BoxContent(base) is fixed, so Lindenbaum control problem doesn't apply
-- `diamond_boxcontent_consistent_constant` already proves seed consistency
-- Witness families are independent of each other
+### Pattern 1: FamilyCollection with Explicit box_coherence
 
-**Cons**:
-- Produces an `EvalBMCS` (eval-centered), not full BMCS
-- For full BMCS `is_modally_saturated`, need Diamond witnesses for ALL families, not just base
-- Witness families may introduce new Diamond formulas without witnesses
+The codebase already has this pattern in SaturatedConstruction.lean:
 
-**Assessment**: High feasibility for EvalBMCS. For full `is_modally_saturated`, witness families also need their own witnesses (recursive/iterative).
+```lean
+structure FamilyCollection (D : Type*) (phi : Formula) where
+  families : Set (IndexedMCSFamily D)
+  nonempty : families.Nonempty
+  eval_family : IndexedMCSFamily D
+  eval_family_mem : eval_family ∈ families
+  box_coherence : forall fam in families, forall psi t,
+    Formula.box psi in fam.mcs t -> forall fam' in families, psi in fam'.mcs t
+```
 
-### Approach C: Eval-Centered BMCS with Relaxed Saturation
+Box coherence is a PROPERTY OF THE COLLECTION, not something that needs to be proven through seed propagation.
 
-**Idea**: Instead of full `is_modally_saturated` (all families), prove a weaker condition that still implies `fully_saturated_bmcs_exists`:
-- Only require modal saturation at the eval_family
-- Other families only need modal_forward (which follows from EvalCoherent)
-- Modify `fully_saturated_bmcs_exists` to return an EvalBMCS instead
+**How it's maintained**:
+- `exists_fullySaturated_extension` (line 873) uses Zorn's lemma
+- The set `S` is defined to include `box_coherence_pred` (line 880)
+- New families are only added if they preserve box_coherence
+- Witness construction explicitly ensures box_coherence (line ~1000)
 
-**Pros**:
-- Avoids the recursive witness problem entirely
-- All infrastructure exists in EvalCoherentBundle
-- Sufficient for completeness theorem (truth lemma evaluates at eval_family)
+### Pattern 2: Constant Families with Lindenbaum
 
-**Cons**:
-- Requires modifying how the BMCS is used downstream
-- May need to change the BMCS structure or add an alternative path in Completeness.lean
+```lean
+-- From SaturatedConstruction.lean
+def allConstant (families : Set (IndexedMCSFamily D)) : Prop :=
+  forall fam in families, isConstant fam
 
-**Assessment**: High feasibility but requires downstream refactoring.
+def isConstant (fam : IndexedMCSFamily D) : Prop :=
+  forall t t' : D, fam.mcs t = fam.mcs t'
+```
 
-### Approach D: Countable Iteration with Stabilization
+For constant families, box_coherence is achievable because:
+1. MCS at all times are identical
+2. If Box psi is in one MCS, it's in all MCSes of that family
+3. New witness families are built with `BoxContent` included in the MCS
 
-**Idea**: Use `Nat.stabilises_of_monotone` pattern:
-1. Start with singleton EvalCoherentBundle
-2. At each step, add witnesses for all unsatisfied Diamond formulas across ALL current families
-3. New witnesses may introduce new Diamond formulas
-4. Each step increases the total formula count; bounded by countability of Formula
-5. Prove stabilization using Mathlib's monotone stabilization lemma
+### Pattern 3: Two-Phase Construction
 
-**Pros**:
-- Achieves full `is_modally_saturated`
-- Clean termination argument
+From the implementation plan Phase 3 design:
 
-**Cons**:
-- Need to maintain EvalCoherent at each step (proved: `addWitness_preserves_EvalCoherent`)
-- New witness families may have Diamond formulas that require FURTHER witnesses
-- The iteration may not terminate in finite steps (Formula is countable but infinite)
-- Need omega-indexed construction or transfinite argument
+```lean
+def buildModalWitnessFamily
+    (psi : Formula)
+    (BoxContent : Set Formula)
+    (h_cons : SetConsistent ({psi} union BoxContent)) : IndexedMCSFamily Int :=
+  let seed := buildSeed psi  -- Start with psi
+  let seedWithBox := seed.addBoxContent BoxContent  -- Add BoxContent at all positions
+  seedToIndexedFamily seedWithBox (by ... prove consistency ...)
+```
 
-**Assessment**: Theoretically sound but technically challenging in Lean.
+This approach:
+1. Computes `BoxContent` from existing families FIRST
+2. Adds BoxContent to ALL positions in the new seed
+3. Avoids the timing issue (content added after families exist)
 
-## Prior Art Analysis: What Failed and Why
+### Recommended Architecture
 
-### Attempt 1: Pre-Coherent Bundle (Pre-Task-844)
-- **What**: Product of families satisfying local property P
-- **Why failed**: Local properties cannot enforce global agreement
-- **Lesson**: Bundle construction must BUILD agreement into the construction process
+**Hybrid approach**:
+1. Use `buildSeed` for SINGLE-FORMULA temporal coherence (eval_family only)
+2. Use `FamilyCollection` with explicit `box_coherence` field for multi-family structure
+3. Use `exists_fullySaturated_extension` for saturation (Zorn's lemma)
+4. Witness families created via `constantWitnessFamily` with BoxContent
 
-### Attempt 2: CoherentBundle + Zorn (Task 851-853)
-- **What**: Mutually coherent families, Zorn for maximal extension
-- **Why stalled**: Multi-family UnionWitnessSeed consistency unproven; Lindenbaum adds uncontrolled boxes
-- **Lesson**: UnionBoxContent grows when adding families, creating circular dependency
+This avoids `buildSeedForList_propagates_box` entirely because:
+- Single-formula buildSeed doesn't need cross-family box propagation
+- Multi-family box_coherence is a FamilyCollection invariant
+- Witness construction explicitly includes BoxContent
 
-### Attempt 3: WeakCoherentBundle (Post-Task-853)
-- **What**: Core/witness separation, BoxClosure instead of UnionBoxContent
-- **Why stalled**: Still has `weak_saturated_extension_exists` axiom
-- **Lesson**: Separation helps but doesn't fully resolve the extension problem
+## Recommended Path Forward
 
-### Attempt 4: FDSM Tracked Saturation (Task 825)
-- **What**: Finite dynamical system model with MCS-tracked histories
-- **Why abandoned**: `mcsTrackedHistory_finite` sorry, world-state-to-MCS gap
-- **Lesson**: Tracking MCS origin is useful but type-level finiteness is hard
+**Option D (Alternative Architecture) is recommended**, specifically:
 
-### Attempt 5: RecursiveSeed (Task 864/880)
-- **What**: Pre-place all witnesses from formula structure before Lindenbaum
-- **Why incomplete**: Only handles formula-structural witnesses, not Lindenbaum-added ones
-- **Lesson**: Pre-placement avoids cross-sign propagation but is incomplete for F/P witnesses
+1. **Abandon `buildSeedForList_propagates_box` entirely** - it's fighting the architecture
 
-## Evidence: Verified Lemma Names
+2. **Narrow Phase 1 scope** to single-formula seed building:
+   - Keep `buildSeed` (single formula)
+   - Keep `seedToIndexedFamily` (single family)
+   - Remove/archive `buildSeedForList` machinery
 
-All lemma names below verified via `lean_local_search`:
+3. **Use FamilyCollection for multi-family structure**:
+   - Initial collection: single constant family from eval_family
+   - Saturation: `exists_fullySaturated_extension` (SORRY-FREE!)
+   - Box coherence: maintained by FamilyCollection invariant
 
-| Name | File | Status |
-|------|------|--------|
-| `diamond_boxcontent_consistent_constant` | CoherentConstruction.lean | Proven (no sorry) |
-| `constructCoherentWitness` | CoherentConstruction.lean | Defined |
-| `addWitness_preserves_EvalCoherent` | CoherentConstruction.lean | Proven (no sorry) |
-| `EvalCoherentBundle.addWitness` | CoherentConstruction.lean | Defined |
-| `EvalCoherentBundle.toEvalBMCS` | CoherentConstruction.lean | Defined |
-| `saturated_modal_backward` | ModalSaturation.lean | Proven (no sorry) |
-| `CoherentBundle.toBMCS` | CoherentConstruction.lean | Defined (no sorry) |
-| `witness_set_consistent` | FDSM/ModalSaturation.lean | Proven (no sorry) |
-| `neg_box_to_diamond_neg` | CoherentConstruction.lean | Proven (no sorry) |
-| `zorn_subset_nonempty` | Mathlib.Order.Zorn | Available in Mathlib |
-| `Nat.stabilises_of_monotone` | Mathlib.Order.Monotone.Basic | Available in Mathlib |
+4. **Phase 2-4 wire to FamilyCollection**:
+   - `seedToIndexedFamily` produces eval_family
+   - `initialFamilyCollection` wraps it
+   - `saturate` applies Zorn extension
+   - `toBMCS` produces final BMCS
+
+**Why this works**:
+- `exists_fullySaturated_extension` is ALREADY SORRY-FREE
+- Box coherence is an invariant of FamilyCollection, not a property to prove through seeds
+- We only need RecursiveSeed for temporal coherence of ONE family
 
 ## Confidence Level
 
-**Overall**: Medium-High
+**HIGH confidence** for the following reasons:
 
-**Approach B (Single-Step)**: High confidence for EvalBMCS path. The key lemma (`diamond_boxcontent_consistent_constant`) is already proven and the EvalCoherentBundle infrastructure is solid.
+1. **Existing infrastructure**: `exists_fullySaturated_extension` is sorry-free and proven to work
 
-**Full `is_modally_saturated`**: Medium confidence. Achieving full saturation (witnesses for ALL families, not just eval) requires either:
-1. Showing single-step is sufficient (witness families don't introduce unsatisfied Diamonds), or
-2. An iterative/transfinite construction
+2. **Clear dependency analysis**: `buildSeedForList_propagates_box` is only needed if we insist on seed-based multi-family construction, which is not the only path
 
-**Risk**: The biggest risk is that achieving full `is_modally_saturated` is not needed. If the completeness proof only needs EvalBMCS-level properties, then the simpler path suffices and the `fully_saturated_bmcs_exists` axiom can be replaced with a weaker statement.
+3. **Architectural precedent**: The FamilyCollection approach is already the "official" path in SaturatedConstruction.lean
 
-## Recommendations
+4. **Scope reduction**: This approach REDUCES the problem from "prove box propagation through complex foldl" to "wire existing infrastructure together"
 
-1. **Prioritize Approach B + C**: Build the single-step EvalCoherentBundle saturation first, then assess if full `is_modally_saturated` is actually needed downstream.
+**Risk**: The one remaining challenge is ensuring witness families are temporally coherent (constant families need temporally saturated MCS). This is the same challenge noted in Phase 3-4 of the plan, but it's a DIFFERENT problem from `buildSeedForList_propagates_box`.
 
-2. **Audit downstream usage**: Check how `fully_saturated_bmcs_exists` is used in the completeness proof. If only eval_family properties are needed, the axiom can be weakened significantly.
+## References
 
-3. **Reuse proven infrastructure**: The `diamond_boxcontent_consistent_constant`, `constructCoherentWitness`, and `addWitness_preserves_EvalCoherent` lemmas are solid foundations.
-
-4. **Consider two-phase elimination**: Phase 1: Replace axiom with EvalBMCS-based construction. Phase 2: (if needed) Strengthen to full BMCS with iterative saturation.
-
-5. **Do NOT attempt the Zorn approach for full MutuallyCoherent saturation** -- the Lindenbaum control problem makes this fundamentally harder than the eval-centered approach.
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` (lines 300-310, 560-590, 5912-5924)
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean` (lines 220-285, 873-1160)
+- `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/Bundle/SeedBMCS.lean` (lines 85-95)
+- `/home/benjamin/Projects/ProofChecker/specs/881_modally_saturated_bmcs_construction/plans/implementation-004.md`
