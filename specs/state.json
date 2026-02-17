@@ -52,12 +52,12 @@
     {
       "project_number": 883,
       "project_name": "phase_progress_tracking_in_plan_files",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "2-3 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T04:12:54Z",
-      "session_id": "sess_1771301217_e93d04",
+      "last_updated": "2026-02-17T04:19:27Z",
+      "session_id": "sess_1771301800_9971cb",
       "description": "Add structured Progress subsections to plan file phases. After a subagent completes or partially completes a phase, it updates the phase section with: what was accomplished, what remains, and any issues found. Update artifact-formats.md with the Progress subsection format. Update lean-implementation-agent.md and general-implementation-agent.md to write progress updates as part of the phase checkpoint protocol.",
       "researched": "2026-02-17T04:12:54Z",
       "artifacts": [
@@ -65,8 +65,14 @@
           "path": "specs/883_phase_progress_tracking_in_plan_files/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing gap between implementation runs and recorded progress, with recommended Progress subsection format"
+        },
+        {
+          "path": "specs/883_phase_progress_tracking_in_plan_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan to add Progress subsections to plan files via artifact-formats.md and agent updates"
         }
-      ]
+      ],
+      "planned": "2026-02-17T04:19:27Z"
     },
     {
       "project_number": 882,
@@ -631,7 +637,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-17T04:00:20Z",
+      "last_updated": "2026-02-17T04:16:34Z",
       "artifacts": [
         {
           "type": "research",
@@ -729,7 +735,7 @@
           "summary": "Added addFormula_preserves_mem_diff_position proof (lines 4729-4820)"
         }
       ],
-      "session_id": "sess_1771300803_c69ed0",
+      "session_id": "sess_1771301778_65a281",
       "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-14T00:43:07Z",
       "started": "2026-02-13T21:26:53Z"

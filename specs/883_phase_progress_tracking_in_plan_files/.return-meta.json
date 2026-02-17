@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/883_phase_progress_tracking_in_plan_files/reports/research-001.md",
-      "summary": "Research report analyzing gap between implementation runs and recorded progress, with recommended Progress subsection format"
+      "type": "plan",
+      "path": "specs/883_phase_progress_tracking_in_plan_files/plans/implementation-001.md",
+      "summary": "4-phase plan to add Progress subsections to plan files via artifact-formats.md and agent updates"
     }
   ],
-  "next_steps": "Run /plan 883 to create implementation plan",
+  "next_steps": "Run /implement 883 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771301374_512615",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1771301800_9971cb",
+    "agent_type": "planner-agent",
+    "duration_seconds": 45,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 8
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.0
   }
 }
