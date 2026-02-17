@@ -147,14 +147,24 @@ def buildSeedForList (formulas : List Formula) : ModelSeed :=
 - `foldl_buildSeedAux_adds_formula_at_origin`: foldl adds each formula to (0,0)
 - `buildSeedForList_contains_input`: Now proven using foldl helpers
 
+**Infrastructure Added (2026-02-16, Session 3)**:
+- `buildSeedAux_adds_formula`: KEY LEMMA - Shows `phi ∈ (buildSeedAux phi famIdx timeIdx seed).getFormulas famIdx timeIdx`
+  - Generalizes `buildSeed_contains_formula` to arbitrary starting seeds
+  - Enables membership proofs through arbitrary foldl operations
+- `buildSeedForList_contains_input`: Full proof completed using `buildSeedAux_adds_formula`
+  - Sorries reduced from 4 to 3
+
 **Remaining Infrastructure Needed**:
 - Prove consistency through foldl (`foldl_buildSeedAux_preserves_seedConsistent`)
   - Key challenge: `buildSeedAux_preserves_seedConsistent` requires formula already in seed
   - For foldl, we're adding NEW formulas from a mutually consistent set
   - Need mutual consistency argument: phi + existing formulas are jointly consistent
 - Prove box propagation through foldl
+  - Note: `buildSeedForList_propagates_box` may not be provable with current construction
+  - `createNewFamily` doesn't copy box contents from existing families
+  - May need definition change or different approach in Phase 2
 
-**Timing**: 3-4 hours (spent ~6 hours across 2 sessions, sorries reduced from 18 to 3)
+**Timing**: 3-4 hours (spent ~7 hours across 3 sessions, sorries reduced from 18 to 3)
 
 **Files modified**:
 - `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Multi-formula builders (lines 4716-5900+)

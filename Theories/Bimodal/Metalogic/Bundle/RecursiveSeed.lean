@@ -5510,6 +5510,113 @@ theorem buildSeedAux_preserves_getFormulas_v2 (phi : Formula) (famIdx : Nat) (ti
   -- Version without well-formedness requirement, using the general lemma
   buildSeedAux_preserves_mem_general phi famIdx timeIdx seed psi famIdx timeIdx h_mem
 
+set_option maxHeartbeats 800000 in
+/--
+buildSeedAux adds the processed formula to the target position.
+
+This generalizes buildSeed_contains_formula to arbitrary starting seeds.
+buildSeedAux always adds the formula via addFormula at the target position,
+either directly (for atoms, bot, imp) or before recursing (for box, G, H, neg modal).
+-/
+theorem buildSeedAux_adds_formula (phi : Formula) (famIdx : Nat) (timeIdx : Int)
+    (seed : ModelSeed) :
+    phi ∈ (buildSeedAux phi famIdx timeIdx seed).getFormulas famIdx timeIdx := by
+  induction phi generalizing famIdx timeIdx seed with
+  | atom s =>
+    simp only [buildSeedAux]
+    exact addFormula_formula_in_getFormulas _ _ _ _ _
+  | bot =>
+    simp only [buildSeedAux]
+    exact addFormula_formula_in_getFormulas _ _ _ _ _
+  | box psi ih =>
+    simp only [buildSeedAux]
+    have h1 : psi.box ∈ (seed.addFormula famIdx timeIdx psi.box .universal_target).getFormulas famIdx timeIdx :=
+      addFormula_formula_in_getFormulas _ _ _ _ _
+    have h2 : psi.box ∈ ((seed.addFormula famIdx timeIdx psi.box .universal_target).addToAllFamilies timeIdx psi).getFormulas famIdx timeIdx :=
+      addToAllFamilies_preserves_mem_getFormulas _ timeIdx psi.box psi famIdx timeIdx h1
+    exact buildSeedAux_preserves_mem_general psi famIdx timeIdx _ psi.box famIdx timeIdx h2
+  | all_future psi ih =>
+    simp only [buildSeedAux]
+    let seed1 := seed.addFormula famIdx timeIdx psi.all_future .universal_target
+    let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
+    let seed3 := seed2.addToAllFutureTimes famIdx timeIdx psi
+    let seed4 := seed3.addToAllFutureTimes famIdx timeIdx psi.all_future
+    have h1 : psi.all_future ∈ seed1.getFormulas famIdx timeIdx := addFormula_formula_in_getFormulas _ _ _ _ _
+    have h2 : psi.all_future ∈ seed2.getFormulas famIdx timeIdx := addFormula_preserves_mem_getFormulas_same _ _ _ _ _ _ h1
+    have h3 : psi.all_future ∈ seed3.getFormulas famIdx timeIdx := addToAllFutureTimes_preserves_mem_getFormulas _ famIdx timeIdx psi.all_future psi famIdx timeIdx h2
+    have h4 : psi.all_future ∈ seed4.getFormulas famIdx timeIdx := addToAllFutureTimes_preserves_mem_getFormulas _ famIdx timeIdx psi.all_future psi.all_future famIdx timeIdx h3
+    exact buildSeedAux_preserves_mem_general psi famIdx timeIdx seed4 psi.all_future famIdx timeIdx h4
+  | all_past psi ih =>
+    simp only [buildSeedAux]
+    let seed1 := seed.addFormula famIdx timeIdx psi.all_past .universal_target
+    let seed2 := seed1.addFormula famIdx timeIdx psi .universal_target
+    let seed3 := seed2.addToAllPastTimes famIdx timeIdx psi
+    let seed4 := seed3.addToAllPastTimes famIdx timeIdx psi.all_past
+    have h1 : psi.all_past ∈ seed1.getFormulas famIdx timeIdx := addFormula_formula_in_getFormulas _ _ _ _ _
+    have h2 : psi.all_past ∈ seed2.getFormulas famIdx timeIdx := addFormula_preserves_mem_getFormulas_same _ _ _ _ _ _ h1
+    have h3 : psi.all_past ∈ seed3.getFormulas famIdx timeIdx := addToAllPastTimes_preserves_mem_getFormulas _ famIdx timeIdx psi.all_past psi famIdx timeIdx h2
+    have h4 : psi.all_past ∈ seed4.getFormulas famIdx timeIdx := addToAllPastTimes_preserves_mem_getFormulas _ famIdx timeIdx psi.all_past psi.all_past famIdx timeIdx h3
+    exact buildSeedAux_preserves_mem_general psi famIdx timeIdx seed4 psi.all_past famIdx timeIdx h4
+  | imp psi1 psi2 ih1 ih2 =>
+    cases hp2 : psi2 with
+    | bot =>
+      cases hp1 : psi1 with
+      | box inner =>
+        simp only [buildSeedAux]
+        let seed1 := seed.addFormula famIdx timeIdx inner.box.neg .universal_target
+        let result := seed1.createNewFamily timeIdx inner.neg
+        let seed2 := result.1
+        let newFamIdx := result.2
+        have h1 : inner.box.neg ∈ seed1.getFormulas famIdx timeIdx :=
+          addFormula_formula_in_getFormulas _ _ _ _ _
+        have h2 : inner.box.neg ∈ seed2.getFormulas famIdx timeIdx :=
+          createNewFamily_preserves_mem_getFormulas' seed1 timeIdx _ inner.neg famIdx timeIdx h1
+        exact buildSeedAux_preserves_mem_general inner.neg newFamIdx timeIdx seed2 _ famIdx timeIdx h2
+      | all_future inner =>
+        simp only [buildSeedAux]
+        let seed1 := seed.addFormula famIdx timeIdx inner.all_future.neg .universal_target
+        let newTime := seed1.freshFutureTime famIdx timeIdx
+        let seed2 := seed1.createNewTime famIdx newTime inner.neg
+        have h1 : inner.all_future.neg ∈ seed1.getFormulas famIdx timeIdx :=
+          addFormula_formula_in_getFormulas _ _ _ _ _
+        have h2 : inner.all_future.neg ∈ seed2.getFormulas famIdx timeIdx :=
+          createNewTime_preserves_mem_getFormulas' seed1 famIdx newTime _ inner.neg famIdx timeIdx h1
+        exact buildSeedAux_preserves_mem_general inner.neg famIdx newTime seed2 _ famIdx timeIdx h2
+      | all_past inner =>
+        simp only [buildSeedAux]
+        let seed1 := seed.addFormula famIdx timeIdx inner.all_past.neg .universal_target
+        let newTime := seed1.freshPastTime famIdx timeIdx
+        let seed2 := seed1.createNewTime famIdx newTime inner.neg
+        have h1 : inner.all_past.neg ∈ seed1.getFormulas famIdx timeIdx :=
+          addFormula_formula_in_getFormulas _ _ _ _ _
+        have h2 : inner.all_past.neg ∈ seed2.getFormulas famIdx timeIdx :=
+          createNewTime_preserves_mem_getFormulas' seed1 famIdx newTime _ inner.neg famIdx timeIdx h1
+        exact buildSeedAux_preserves_mem_general inner.neg famIdx newTime seed2 _ famIdx timeIdx h2
+      | atom s =>
+        simp only [buildSeedAux]
+        exact addFormula_formula_in_getFormulas _ _ _ _ _
+      | bot =>
+        simp only [buildSeedAux]
+        exact addFormula_formula_in_getFormulas _ _ _ _ _
+      | imp q1 q2 =>
+        simp only [buildSeedAux]
+        exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | atom s =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | box q =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | all_future q =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | all_past q =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+    | imp q1 q2 =>
+      simp only [buildSeedAux]
+      exact addFormula_formula_in_getFormulas _ _ _ _ _
+
 /-!
 ## Phase 1 (Task 881): Multi-Formula Seed Builder
 
@@ -5762,9 +5869,45 @@ theorem buildSeedForList_contains_input (formulas : List Formula) (phi : Formula
     exact buildSeed_contains_formula phi
   | psi1 :: psi2 :: rest =>
     simp only [buildSeedForList]
-    -- Each call to buildSeedAux adds the formula at (0, 0)
-    -- Need to trace through foldl and show all formulas are preserved
-    sorry -- Requires foldl_buildSeedAux_preserves_getFormulas lemma
+    -- Key helper: foldl preserves existing membership at (0, 0)
+    have h_foldl_preserves : ∀ (l : List Formula) (s : ModelSeed) (f : Formula),
+        f ∈ s.getFormulas 0 0 →
+        f ∈ (l.foldl (fun seed phi' => buildSeedAux phi' 0 0 seed) s).getFormulas 0 0 := by
+      intro l
+      induction l with
+      | nil => intro s f hf; exact hf
+      | cons phi' rest' ih =>
+        intro s f hf
+        simp only [List.foldl_cons]
+        apply ih
+        exact buildSeedAux_preserves_mem_general phi' 0 0 s f 0 0 hf
+    -- Key helper: if phi is in the list, foldl adds it via buildSeedAux_adds_formula
+    have h_foldl_adds : ∀ (l : List Formula) (s : ModelSeed) (f : Formula),
+        f ∈ l →
+        f ∈ (l.foldl (fun seed phi' => buildSeedAux phi' 0 0 seed) s).getFormulas 0 0 := by
+      intro l
+      induction l with
+      | nil => intro s f hf; simp at hf
+      | cons phi' rest' ih =>
+        intro s f hf
+        simp only [List.foldl_cons]
+        simp only [List.mem_cons] at hf
+        cases hf with
+        | inl h_eq =>
+          subst h_eq
+          -- f gets added by buildSeedAux, then preserved through rest'
+          apply h_foldl_preserves rest'
+          exact buildSeedAux_adds_formula f 0 0 s
+        | inr h_mem' =>
+          exact ih (buildSeedAux phi' 0 0 s) f h_mem'
+    simp only [List.mem_cons] at h_mem
+    cases h_mem with
+    | inl h_eq =>
+      subst h_eq
+      exact h_foldl_preserves (psi2 :: rest) (buildSeed phi) phi (buildSeed_contains_formula phi)
+    | inr h_mem' =>
+      have h_phi_in_rest : phi ∈ psi2 :: rest := List.mem_cons.mpr h_mem'
+      exact h_foldl_adds (psi2 :: rest) (buildSeed psi1) phi h_phi_in_rest
 
 /--
 Box formulas are propagated to all families in the seed.
