@@ -24,11 +24,12 @@ technical_debt:
 
 ### 890. Fix measure_wf build error in TemporalLindenbaum.lean
 - **Effort**: 5 minutes
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
 - **Planned**: 2026-02-17
+- **Completed**: 2026-02-17
 - **Research**: [research-001.md](specs/890_fix_measure_wf_build_error_temporallindenbaum/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/890_fix_measure_wf_build_error_temporallindenbaum/plans/implementation-001.md)
 

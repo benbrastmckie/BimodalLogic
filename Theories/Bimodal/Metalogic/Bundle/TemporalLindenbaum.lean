@@ -215,16 +215,16 @@ lemma temporalWitnessChain_head (φ : Formula) : φ ∈ temporalWitnessChain φ 
 
 /-- If F(ψ) is in a witness chain, then ψ is also in the chain -/
 lemma forward_witness_in_chain {φ ψ : Formula}
-    (h : Formula.some_future ψ ∈ temporalWitnessChain φ) :
+    (h_mem : Formula.some_future ψ ∈ temporalWitnessChain φ) :
     ψ ∈ temporalWitnessChain φ := by
-  induction φ using (measure_wf Formula.complexity).wf.induction with
-  | ind χ ih =>
-    unfold temporalWitnessChain at h ⊢
-    split at h ⊢
+  induction φ using (measure Formula.complexity).wf.induction with
+  | h χ ih =>
+    unfold temporalWitnessChain at h_mem ⊢
+    split at h_mem ⊢
     · -- χ has a forward witness ψ'
       rename_i ψ' h_fwd
-      simp only [List.mem_cons] at h
-      rcases h with rfl | h_rest
+      simp only [List.mem_cons] at h_mem
+      rcases h_mem with rfl | h_rest
       · -- F(ψ) = χ, so witness chain of χ starts with χ = F(ψ), then ψ, ...
         -- ψ is in the tail: temporalWitnessChain ψ'
         -- Since h_fwd : extractForwardWitness χ = some ψ' and χ = F(ψ),
@@ -238,8 +238,8 @@ lemma forward_witness_in_chain {φ ψ : Formula}
     · split
       · -- χ has a backward witness ψ'
         rename_i ψ' h_bwd
-        simp only [List.mem_cons] at h
-        rcases h with rfl | h_rest
+        simp only [List.mem_cons] at h_mem
+        rcases h_mem with rfl | h_rest
         · -- F(ψ) = χ, but χ has a backward witness, meaning χ is P-type
           -- But χ = F(ψ) and χ has extractBackwardWitness = some ψ'
           -- F(ψ) = imp (all_future (imp ψ bot)) bot
@@ -249,25 +249,25 @@ lemma forward_witness_in_chain {φ ψ : Formula}
         · exact List.mem_cons_of_mem χ
             (ih ψ' (extractBackwardWitness_complexity h_bwd) h_rest)
       · -- χ is non-temporal, chain is [χ]
-        simp only [List.mem_singleton] at h
+        simp only [List.mem_singleton] at h_mem
         -- F(ψ) = χ, but χ has no forward or backward witness
         -- extractForwardWitness(F(ψ)) = some ψ, contradiction
         rename_i h_no_fwd h_no_bwd
-        rw [h] at h_no_fwd
+        rw [h_mem] at h_no_fwd
         simp [extractForwardWitness_some_future] at h_no_fwd
 
 /-- If P(ψ) is in a witness chain, then ψ is also in the chain -/
 lemma backward_witness_in_chain {φ ψ : Formula}
-    (h : Formula.some_past ψ ∈ temporalWitnessChain φ) :
+    (h_mem : Formula.some_past ψ ∈ temporalWitnessChain φ) :
     ψ ∈ temporalWitnessChain φ := by
-  induction φ using (measure_wf Formula.complexity).wf.induction with
-  | ind χ ih =>
-    unfold temporalWitnessChain at h ⊢
-    split at h ⊢
+  induction φ using (measure Formula.complexity).wf.induction with
+  | h χ ih =>
+    unfold temporalWitnessChain at h_mem ⊢
+    split at h_mem ⊢
     · -- χ has a forward witness ψ'
       rename_i ψ' h_fwd
-      simp only [List.mem_cons] at h
-      rcases h with rfl | h_rest
+      simp only [List.mem_cons] at h_mem
+      rcases h_mem with rfl | h_rest
       · -- P(ψ) = χ, but χ has a forward witness
         -- P(ψ) = imp (all_past (imp ψ bot)) bot
         -- extractForwardWitness matches imp (all_future ...) bot
@@ -278,8 +278,8 @@ lemma backward_witness_in_chain {φ ψ : Formula}
     · split
       · -- χ has a backward witness ψ'
         rename_i ψ' h_bwd
-        simp only [List.mem_cons] at h
-        rcases h with rfl | h_rest
+        simp only [List.mem_cons] at h_mem
+        rcases h_mem with rfl | h_rest
         · -- P(ψ) = χ, and χ has backward witness ψ'
           -- By matching, ψ' = ψ
           simp [Formula.some_past, Formula.neg, extractBackwardWitness] at h_bwd
@@ -288,9 +288,9 @@ lemma backward_witness_in_chain {φ ψ : Formula}
         · exact List.mem_cons_of_mem χ
             (ih ψ' (extractBackwardWitness_complexity h_bwd) h_rest)
       · -- χ is non-temporal, chain is [χ]
-        simp only [List.mem_singleton] at h
+        simp only [List.mem_singleton] at h_mem
         rename_i h_no_fwd h_no_bwd
-        rw [h] at h_no_bwd
+        rw [h_mem] at h_no_bwd
         simp [extractBackwardWitness_some_past] at h_no_bwd
 
 /-- The temporal package of a formula: the set of all elements in its witness chain -/
