@@ -1,0 +1,20 @@
+{
+  "status": "researched",
+  "summary": "Defined blocker taxonomy: soft blockers (timeout, context exhaustion, transient failures) allow auto-continuation; hard blockers (mathematically false, missing dependency, unresolvable errors) require user review. Recommended schema additions: requires_user_review boolean and review_reason string fields.",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/885_blocker_detection_user_review_triggers/reports/research-001.md",
+      "summary": "Research report with blocker taxonomy, schema changes, and agent detection guidance"
+    }
+  ],
+  "next_steps": "Run /plan 885 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1771308208_c8eb00",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 300,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  }
+}
