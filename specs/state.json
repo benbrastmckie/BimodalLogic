@@ -8,11 +8,19 @@
     {
       "project_number": 887,
       "project_name": "create_finalconstruction_prove_fully_saturated_bmcs",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-17T06:09:35Z",
-      "last_updated": "2026-02-17T06:12:10Z",
-      "session_id": "sess_1771308695_939a6e"
+      "last_updated": "2026-02-17T06:16:45Z",
+      "session_id": "sess_1771308695_939a6e",
+      "researched": "2026-02-17T06:16:45Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/887_create_finalconstruction_prove_fully_saturated_bmcs/reports/research-001.md",
+          "summary": "Research report on FinalConstruction options for temporal coherence"
+        }
+      ]
     },
     {
       "project_number": 886,
