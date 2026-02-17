@@ -43,17 +43,17 @@ Implement blocker detection fields and guidance to distinguish hard blockers req
 
 ## Implementation Phases
 
-### Phase 1: Update return-metadata-file.md Schema [NOT STARTED]
+### Phase 1: Update return-metadata-file.md Schema [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add requires_user_review and review_reason fields to metadata schema
 
 **Tasks**:
-- [ ] Add field specifications section for `requires_user_review` (boolean, optional, default false)
-- [ ] Add field specifications section for `review_reason` (string, required if requires_user_review)
-- [ ] Add example showing partial status with user review required
-- [ ] Add section documenting when to set these fields (soft vs hard blockers)
-- [ ] Update Related Documentation section if needed
+- [x] Add field specifications section for `requires_user_review` (boolean, optional, default false)
+- [x] Add field specifications section for `review_reason` (string, required if requires_user_review)
+- [x] Add example showing partial status with user review required
+- [x] Add section documenting when to set these fields (soft vs hard blockers)
+- [x] Update Related Documentation section if needed
 
 **Timing**: 30 minutes
 
@@ -64,6 +64,14 @@ Implement blocker detection fields and guidance to distinguish hard blockers req
 - Schema section includes both new fields with types and requirements
 - At least one example shows requires_user_review: true with review_reason
 - Blocker taxonomy (soft vs hard) is documented
+
+**Progress:**
+
+**Session: 2026-02-16, sess_1771309217_479a4b**
+- Added: `requires_user_review` field specification to return-metadata-file.md
+- Added: `review_reason` field specification with conditional requirement
+- Added: Example "Implementation Partial (Requires User Review)" with mathematically_false blocker
+- Added: "Blocker Taxonomy" section with soft vs hard blocker tables and decision tree
 
 ---
 

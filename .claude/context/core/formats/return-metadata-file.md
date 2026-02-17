@@ -155,6 +155,38 @@ Contains fields needed for task completion processing. Skills extract this data 
 - `roadmap_items` is optional and only relevant for non-meta tasks
 - Skills propagate these fields to state.json for use by `/todo` command
 
+### requires_user_review (optional)
+
+**Type**: boolean
+**Include if**: status is `partial` or `blocked` and the blocker requires human judgment
+**Default**: false (if not present)
+
+Indicates whether the partial completion encountered a **hard blocker** that requires human review before the system should auto-continue. Skills check this flag before suggesting auto-resume.
+
+**Set to true when**:
+- Proof/implementation appears mathematically impossible (counterexample found)
+- Required external dependency is unavailable
+- Build fails with no clear fix path
+- Task specification or plan is fundamentally flawed
+- All planned approaches have been exhausted without success
+
+**Do NOT set when**:
+- Normal timeout or context exhaustion (auto-continuable)
+- Transient MCP tool failures
+- Partial phase completion with clear next steps
+- Handoff to successor teammate
+
+### review_reason (conditionally required)
+
+**Type**: string
+**Include if**: `requires_user_review` is true (REQUIRED in that case)
+
+A 1-2 sentence explanation of why user review is needed. Should clearly describe:
+- What hard blocker was encountered
+- Why auto-continuation would be counterproductive
+
+**Example**: "Theorem appears mathematically false - counterexample found where n=5 invalidates the hypothesis."
+
 ### errors (optional)
 
 **Type**: array of objects
@@ -348,7 +380,9 @@ rm -f "specs/${task_number}_${task_slug}/.return-meta.json"
 }
 ```
 
-### Implementation Partial
+### Implementation Partial (Auto-Continuable)
+
+Normal partial completion where `/implement` can safely resume:
 
 ```json
 {
@@ -381,6 +415,54 @@ rm -f "specs/${task_number}_${task_slug}/.return-meta.json"
       "message": "Implementation timed out after 1 hour",
       "recoverable": true,
       "recommendation": "Resume with /implement 259"
+    }
+  ]
+}
+```
+
+### Implementation Partial (Requires User Review)
+
+Hard blocker encountered - user must review before continuing:
+
+```json
+{
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Theorem appears mathematically false - found counterexample where the hypothesis fails for n=5",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "Logos/Layer1/Modal/Completeness.lean",
+      "summary": "Partial proof with counterexample documented"
+    },
+    {
+      "type": "summary",
+      "path": "specs/259_prove_completeness/summaries/implementation-summary-20260118.md",
+      "summary": "Implementation summary with counterexample analysis"
+    }
+  ],
+  "partial_progress": {
+    "stage": "mathematically_blocked",
+    "details": "Phase 2 blocked: the lemma being proven appears to be false",
+    "phases_completed": 1,
+    "phases_total": 4
+  },
+  "next_steps": "Review counterexample. Either revise the theorem statement or confirm the approach is incorrect.",
+  "metadata": {
+    "session_id": "sess_1736700000_def456",
+    "agent_type": "lean-implementation-agent",
+    "duration_seconds": 3600,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "lean-implementation-agent"],
+    "phases_completed": 1,
+    "phases_total": 4
+  },
+  "errors": [
+    {
+      "type": "mathematically_false",
+      "message": "Counterexample found: when n=5, the antecedent holds but consequent fails",
+      "recoverable": false,
+      "recommendation": "Revise theorem statement or abandon approach"
     }
   ]
 }
@@ -532,6 +614,48 @@ This file-based format complements `subagent-return.md`:
 | Cleanup | N/A | Deleted after postflight |
 
 **Migration path**: Skills migrate from validating console JSON to reading file metadata. The schema is nearly identical for compatibility.
+
+## Blocker Taxonomy
+
+When returning `partial` status, agents must determine whether the blocker allows auto-continuation or requires user review.
+
+### Soft Blockers (Auto-Continuable)
+
+These are normal partial completions where `/implement` can safely resume. Do NOT set `requires_user_review`:
+
+| Blocker Type | Description | Example |
+|--------------|-------------|---------|
+| `timeout` | Operation exceeded time limit | Context exhaustion handoff |
+| `context_exhaustion_handoff` | Agent approaching context limit | Normal handoff to successor |
+| `phase_incomplete` | Phase not finished but progress made | Proof stuck at specific tactic |
+| `mcp_transient` | MCP tool had transient failure | Network timeout, retry may succeed |
+
+**Common Pattern**: The situation is recoverable by the system without human intervention. A successor agent can continue.
+
+### Hard Blockers (Require User Review)
+
+These blockers require human judgment before continuing. Set `requires_user_review: true` with `review_reason`:
+
+| Blocker Type | Description | Example |
+|--------------|-------------|---------|
+| `mathematically_false` | Theorem/lemma appears to be false | Counterexample found, no proof exists |
+| `missing_dependency` | Required external dependency unavailable | Missing library, axiom, or import |
+| `unresolvable_build_error` | Build fails with no clear fix path | Type error in external dependency |
+| `invalid_specification` | Task description or plan is flawed | Research shows approach is impossible |
+| `resource_exhausted` | Critical resource permanently unavailable | Required MCP tool consistently failing |
+| `strategy_failed` | All planned approaches exhausted | Tried all tactics in plan, none work |
+
+**Common Pattern**: The situation requires human judgment to decide the next step. Auto-continuing would waste resources.
+
+### Decision Tree
+
+```
+Is the blocker fixable by a successor agent?
+  └─ YES → Normal partial, do NOT set requires_user_review
+  └─ NO → Requires human judgment?
+       └─ NO → Use failed status (not partial)
+       └─ YES → Set requires_user_review: true with review_reason
+```
 
 ## Related Documentation
 
