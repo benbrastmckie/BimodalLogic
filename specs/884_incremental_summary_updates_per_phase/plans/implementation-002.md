@@ -338,7 +338,7 @@ Research-002.md identified:
 
 ---
 
-### Phase 5: Update Skill Postflight (Both Skills) [NOT STARTED]
+### Phase 5: Update Skill Postflight (Both Skills) [COMPLETED]
 
 - **Dependencies**: Phases 2, 3, 4
 - **Goal**: Link summary artifacts for partial status in both skill postflight sections
@@ -371,6 +371,14 @@ Research-002.md identified:
 - TODO.md Summary link added for partial completions
 
 **Estimated effort**: 30 minutes
+
+**Progress:**
+
+**Session: 2026-02-16, sess_1771307296_4d328c**
+- Fixed: skill-implementer Stage 8 to find and link summary artifact for both implemented and partial
+- Fixed: skill-lean-implementation Stage 8 with same pattern
+- Added: Instructions to update TODO.md with Summary link for partial status
+- Added: Comments explaining why summary linking for partial status enables progress visibility
 
 ---
 

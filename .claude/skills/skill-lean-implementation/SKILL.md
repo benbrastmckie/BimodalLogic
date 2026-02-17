@@ -273,18 +273,30 @@ fi
 
 ### Stage 8: Link Artifacts
 
-Add artifact to state.json with summary.
+Add artifact to state.json with summary. Summary artifacts should be linked for **both** implemented and partial status, since incremental summaries contain Phase Entries for completed work.
 
 **IMPORTANT**: Use two-step jq pattern to avoid Issue #1132 escaping bug.
 
 ```bash
-if [ -n "$artifact_path" ]; then
+# Find summary artifact in metadata (regardless of status)
+summary_artifact_path=$(jq -r '.artifacts[] | select(.type == "summary") | .path // ""' "$metadata_file" | head -1)
+summary_artifact_summary=$(jq -r '.artifacts[] | select(.type == "summary") | .summary // ""' "$metadata_file" | head -1)
+
+if [ -n "$summary_artifact_path" ]; then
     # Step 1: Filter out existing summary artifacts
     jq '(.active_projects[] | select(.project_number == '$task_number')).artifacts =
         [(.active_projects[] | select(.project_number == '$task_number')).artifacts // [] | .[] | select(.type == "summary" | not)]' \
       specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 
     # Step 2: Add new summary artifact
+    jq --arg path "$summary_artifact_path" \
+       --arg summary "$summary_artifact_summary" \
+      '(.active_projects[] | select(.project_number == '$task_number')).artifacts += [{"path": $path, "type": "summary", "summary": $summary}]' \
+      specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
+fi
+
+# Also link implementation artifacts if present
+if [ -n "$artifact_path" ] && [ "$artifact_type" != "summary" ]; then
     jq --arg path "$artifact_path" \
        --arg type "$artifact_type" \
        --arg summary "$artifact_summary" \
@@ -292,6 +304,13 @@ if [ -n "$artifact_path" ]; then
       specs/state.json > /tmp/state.json && mv /tmp/state.json specs/state.json
 fi
 ```
+
+**Update TODO.md** (for both implemented AND partial): Add summary artifact link:
+```markdown
+- **Summary**: [implementation-summary-{DATE}.md]({summary_artifact_path})
+```
+
+This enables visibility into partial progress through the summary file even when implementation is incomplete.
 
 ---
 

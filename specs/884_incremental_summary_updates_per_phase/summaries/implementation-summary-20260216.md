@@ -125,12 +125,34 @@
 
 ---
 
+### Phase 5: Update Skill Postflight (Both Skills) [COMPLETED]
+
+**Session**: 2026-02-16, sess_1771307296_4d328c
+**Duration**: ~15 minutes
+
+**Changes Made**:
+- Updated Stage 8 in both skills to find and link summary artifact for both implemented and partial status
+- Added logic to extract summary artifact from metadata file regardless of overall status
+- Added instruction to update TODO.md with Summary link for partial completions
+- Added explanatory comments about why partial status summaries enable progress visibility
+
+**Files Modified**:
+- `.claude/skills/skill-implementer/SKILL.md` - Updated Stage 8 artifact linking
+- `.claude/skills/skill-lean-implementation/SKILL.md` - Updated Stage 8 artifact linking
+
+**Verification**:
+- Both skills now find summary artifacts in metadata regardless of status
+- Artifact linking handles both implemented and partial
+- TODO.md Summary link instruction added for both status values
+
+---
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 5 of 7 |
-| Files Modified | 10 |
+| Phases Completed | 6 of 7 |
+| Files Modified | 12 |
 | Files Created | 0 |
 | Files Deleted | 6 |
 | Overall Status | In Progress |
