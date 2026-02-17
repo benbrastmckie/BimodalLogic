@@ -33,12 +33,12 @@
     {
       "project_number": 885,
       "project_name": "blocker_detection_user_review_triggers",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T06:12:14Z",
-      "session_id": "sess_1771308500_3db6bd",
+      "last_updated": "2026-02-17T06:16:07Z",
+      "session_id": "sess_1771308804_a7d1c9",
       "description": "Define blocker types that require user review vs normal partial completions. Agents write requires_user_review: true with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.",
       "depends_on": [
         883
@@ -54,8 +54,14 @@
           "path": "specs/885_blocker_detection_user_review_triggers/reports/research-002.md",
           "type": "research",
           "summary": "Context file optimization research for /implement workflow"
+        },
+        {
+          "path": "specs/885_blocker_detection_user_review_triggers/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for blocker detection and user review triggers"
         }
-      ]
+      ],
+      "planned": "2026-02-17T06:16:07Z"
     },
     {
       "project_number": 884,
@@ -693,10 +699,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-17T05:44:21Z",
+      "last_updated": "2026-02-17T06:13:19Z",
       "artifacts": [
         {
           "type": "research",
@@ -794,7 +800,7 @@
           "summary": "5-phase plan: FamilyCollection architecture (Option D), abandons buildSeedForList"
         }
       ],
-      "session_id": "sess_1771307041_ed36a2",
+      "session_id": "sess_1771308786_081f5c",
       "researched": "2026-02-14T00:33:54Z",
       "planned": "2026-02-17T04:54:37Z",
       "started": "2026-02-13T21:26:53Z"

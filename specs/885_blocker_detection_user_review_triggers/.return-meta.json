@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "summary": "4-phase plan for blocker detection with requires_user_review schema field, agent detection guidance, and cross-file verification",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/885_blocker_detection_user_review_triggers/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for blocker detection and user review triggers"
+    }
+  ],
+  "next_steps": "Run /implement 885 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1771308804_a7d1c9",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2.5
+  }
+}
