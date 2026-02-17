@@ -1,37 +1,40 @@
 {
   "status": "partial",
-  "summary": "Partial progress on Phase 1: buildSeedAux_preserves_mem_general mostly proven (9 of 10 cases complete). Added helper lemmas createNewFamily_preserves_mem_getFormulas' and createNewTime_preserves_mem_getFormulas' without preconditions. Build passes with 0 errors, 11 sorries (same count as baseline but different distribution).",
+  "summary": "Phase 1 progress: Completed 7 sorries (11->4). Proved buildSeedAux_preserves_mem_general fully (10/10 cases). Proved buildSeed_contains_formula for all 6 recursive cases (box, all_future, all_past, neg_box, neg_G, neg_H). Build passes with 0 errors, 4 sorries remaining.",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
-      "summary": "Extended monotonicity proof for buildSeedAux with 9/10 cases complete"
+      "summary": "Completed monotonicity lemma and buildSeed_contains_formula; reduced sorries from 11 to 4"
     }
   ],
   "partial_progress": {
-    "stage": "phase_1_monotonicity_partial",
-    "details": "buildSeedAux_preserves_mem_general now has 9 of 10 formula cases proven. The generic Formula.imp catchall case remains sorried due to pattern matching complexity. New helper lemmas added for createNewFamily and createNewTime.",
+    "stage": "phase_1_monotonicity_complete",
+    "details": "buildSeedAux_preserves_mem_general now fully proven (all 10 formula cases). buildSeed_contains_formula proven for all 6 recursive cases. Remaining 4 sorries are multi-formula foldl-based lemmas.",
     "remaining_work": [
-      "Complete generic imp case in buildSeedAux_preserves_mem_general",
-      "Use monotonicity to prove buildSeed_contains_formula cases",
-      "Complete foldl_buildSeedAux_preserves_seedConsistent",
-      "Complete buildSeedForList_consistent",
-      "Complete buildSeedForList_propagates_box"
+      "foldl_buildSeedAux_preserves_seedConsistent (line 5602)",
+      "buildSeedForList_consistent (line 5627)",
+      "buildSeedForList_contains_input (line 5767)",
+      "buildSeedForList_propagates_box (line 5780)"
+    ],
+    "proven_lemmas": [
+      "buildSeedAux_preserves_mem_general (full 10 cases)",
+      "buildSeed_contains_formula (6 recursive cases: box, all_future, all_past, neg_box, neg_G, neg_H)"
     ]
   },
   "metadata": {
-    "session_id": "sess_1771284921_4de813",
+    "session_id": "sess_1771298885_f9954a",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
     "phases_completed": 0,
     "phases_total": 4,
     "sorry_count_before": 11,
-    "sorry_count_after": 11,
+    "sorry_count_after": 4,
     "build_errors_before": 0,
     "build_errors_after": 0
   },
   "completion_data": {
-    "completion_summary": "Partial progress on Phase 1 multi-formula seed builder. The key blocking lemma buildSeedAux_preserves_mem_general is now 90% complete (9/10 formula cases proven). Added two helper lemmas for membership preservation. Build clean with 0 errors."
+    "completion_summary": "Significant Phase 1 progress: eliminated 7 sorries (11->4). Key blocking lemmas buildSeedAux_preserves_mem_general and buildSeed_contains_formula now proven. Remaining work is multi-formula foldl lemmas."
   }
 }
