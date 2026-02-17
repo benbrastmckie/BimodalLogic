@@ -1,5 +1,5 @@
 ---
-next_project_number: 882
+next_project_number: 887
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,49 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 886. Implement continuous subagent handoff loop in implement skills
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-16
+- **Dependencies**: Tasks 883, 884, 885
+
+**Description**: Modify skill-implementer and skill-lean-implementation to loop after subagent returns partial: automatically invoke another subagent unless a blocker requiring user review is detected. The skill checks the `requires_user_review` flag in metadata; if false and status is partial, it re-invokes a new subagent with the handoff context. Stops on: implemented, blocked/requires_user_review, or configurable iteration limit. Update implement.md to document the auto-resume behavior.
+
+---
+
+### 885. Add blocker detection and user review triggers to implementation agents
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-16
+- **Dependencies**: Task 883
+
+**Description**: Define blocker types that require user review vs normal partial completions. Agents write `requires_user_review: true` with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.
+
+---
+
+### 884. Implement incremental summary updates per phase
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-16
+- **Dependencies**: Task 883
+
+**Description**: Modify implementation agents to create/update the summary file after each phase completes rather than only at full task completion. The summary file becomes a running log with phase entries appended. Update skill postflight to link the summary artifact even for partial completions. Update summary-format.md with incremental format and phase-entry schema. Update lean-implementation-agent.md and general-implementation-agent.md execution flow.
+
+---
+
+### 883. Add phase progress tracking to plan files
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-16
+
+**Description**: Add structured Progress subsections to plan file phases. After a subagent completes or partially completes a phase, it updates the phase section with: what was accomplished, what remains, and any issues found. Update artifact-formats.md with the Progress subsection format. Update lean-implementation-agent.md and general-implementation-agent.md to write progress updates as part of the phase checkpoint protocol.
+
+---
 
 ### 882. Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination
 - **Effort**: 8 to 12 hours
