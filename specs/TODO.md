@@ -24,7 +24,7 @@ technical_debt:
 
 ### 887. Create FinalConstruction.lean and prove fully_saturated_bmcs_exists_int
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-16
 - **Dependencies**: Task 881 (current blocker)
@@ -46,12 +46,12 @@ technical_debt:
 
 ### 885. Add blocker detection and user review triggers to implementation agents
 - **Effort**: 2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-16
 - **Researched**: 2026-02-16
 - **Dependencies**: Task 883
-- **Research**: [research-001.md](specs/885_blocker_detection_user_review_triggers/reports/research-001.md)
+- **Research**: [research-001.md](specs/885_blocker_detection_user_review_triggers/reports/research-001.md), [research-002.md](specs/885_blocker_detection_user_review_triggers/reports/research-002.md) (context optimization)
 
 **Description**: Define blocker types that require user review vs normal partial completions. Agents write `requires_user_review: true` with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.
 

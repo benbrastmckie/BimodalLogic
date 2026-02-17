@@ -8,10 +8,11 @@
     {
       "project_number": 887,
       "project_name": "create_finalconstruction_prove_fully_saturated_bmcs",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-17T06:09:35Z",
-      "last_updated": "2026-02-17T06:09:35Z"
+      "last_updated": "2026-02-17T06:12:10Z",
+      "session_id": "sess_1771308695_939a6e"
     },
     {
       "project_number": 886,
@@ -32,11 +33,11 @@
     {
       "project_number": 885,
       "project_name": "blocker_detection_user_review_triggers",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T06:11:46Z",
+      "last_updated": "2026-02-17T06:12:14Z",
       "session_id": "sess_1771308500_3db6bd",
       "description": "Define blocker types that require user review vs normal partial completions. Agents write requires_user_review: true with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.",
       "depends_on": [
