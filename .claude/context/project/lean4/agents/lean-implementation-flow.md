@@ -140,6 +140,46 @@ After marking phase status, append session entry to plan file:
 
 See `artifact-formats.md` for full Progress Subsection format.
 
+### 4F. Update Implementation Summary
+
+After updating Progress subsection, create or update the implementation summary:
+
+**Load**: @.claude/context/core/formats/summary-format.md (Incremental format section)
+
+1. **Check if summary file exists** at `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`
+
+2. **If not exists**: Create new summary with:
+   - Header with Status: `[IN PROGRESS]`
+   - Initial Phase Entry in Phase Log section
+   - Cumulative Statistics section
+
+3. **If exists**: Append new Phase Entry:
+   - Read current summary file
+   - Append Phase Entry to Phase Log section (before Cumulative Statistics)
+   - Update Cumulative Statistics with current totals
+
+4. **Phase Entry format**:
+   ```markdown
+   ### Phase {N}: {Phase Name} [COMPLETED]
+
+   **Session**: {YYYY-MM-DD}, {session_id}
+   **Duration**: ~{N} minutes
+
+   **Changes Made**:
+   - {description of proofs developed}
+
+   **Files Modified**:
+   - `Theories/Path/File.lean` - {theorem/lemma description}
+
+   **Verification**:
+   - Lake build: Success/Failure
+   - Sorries: {before} -> {after}
+   ```
+
+5. **If final phase**: Update header Status to `[COMPLETED]` and add Completed timestamp
+
+**Why per-phase summaries**: Enables visibility into partial progress and provides audit trail even when implementation spans multiple sessions.
+
 ---
 
 ## Stage 5: Run Final Build Verification
@@ -155,34 +195,28 @@ If build fails:
 
 ---
 
-## Stage 6: Create Implementation Summary
+## Stage 6: Finalize Implementation Summary
 
-Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
+The summary file already exists with Phase Entries from Stage 4F. Finalize it:
 
+1. **Update header Status** to `[COMPLETED]`
+2. **Add Completed timestamp** to header
+3. **Verify all phases have entries** in Phase Log section
+4. **Update Cumulative Statistics** to show all phases completed
+5. **Add final Notes section** if needed for follow-up items
+
+**Example finalized header**:
 ```markdown
 # Implementation Summary: Task #{N}
 
-**Completed**: {ISO_DATE}
-**Duration**: {time}
-
-## Changes Made
-
-{Summary of proofs developed}
-
-## Files Modified
-
-- `Logos/Layer{X}/File.lean` - {proof description}
-
-## Verification
-
-- Lake build: Success/Failure
-- All goals closed: Yes/No
-- Tests passed: {if applicable}
-
-## Notes
-
-{Any additional notes, follow-up items, or caveats}
+**Task**: {title}
+**Status**: [COMPLETED]
+**Started**: 2026-02-16
+**Completed**: 2026-02-16
+**Language**: lean
 ```
+
+**Note**: If summary does not exist (edge case), create complete summary as fallback.
 
 ---
 
@@ -222,15 +256,16 @@ Write to `specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md`:
 
 Write to `specs/{N}_{SLUG}/.return-meta.json`:
 
+**For implemented status (all phases complete)**:
 ```json
 {
-  "status": "implemented|partial|failed",
+  "status": "implemented",
   "summary": "Brief 2-5 sentence summary (<100 tokens)",
   "artifacts": [
     {
       "type": "implementation",
-      "path": "Logos/Layer1/Soundness.lean",
-      "summary": "Completed soundness proof with 3 lemmas"
+      "path": "Theories/Path/File.lean",
+      "summary": "Completed proof with N lemmas"
     },
     {
       "type": "summary",
@@ -255,7 +290,40 @@ Write to `specs/{N}_{SLUG}/.return-meta.json`:
 }
 ```
 
-**Note**: Include `completion_data` when status is `implemented`. The `roadmap_items` field is optional.
+**For partial status (some phases complete)**:
+```json
+{
+  "status": "partial",
+  "summary": "Completed phases 1-2 of 4. Phase 3 blocked on missing lemma.",
+  "artifacts": [
+    {
+      "type": "implementation",
+      "path": "Theories/Path/File.lean",
+      "summary": "Partial proof progress"
+    },
+    {
+      "type": "summary",
+      "path": "specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md",
+      "summary": "Incremental summary with phases 1-2 complete"
+    }
+  ],
+  "partial_progress": {
+    "stage": "phase_3_blocked",
+    "details": "Phase 3 requires List.mem_append lemma not found in Mathlib",
+    "phases_completed": 2,
+    "phases_total": 4
+  },
+  "metadata": {
+    "session_id": "{from delegation context}",
+    "agent_type": "lean-implementation-agent",
+    "phases_completed": 2,
+    "phases_total": 4
+  },
+  "next_steps": "Search Mathlib for missing lemma, then resume"
+}
+```
+
+**IMPORTANT**: Include summary artifact for **both** `implemented` and `partial` status. The summary file contains Phase Entries for completed work, enabling visibility into partial progress.
 
 Use the Write tool to create this file.
 
@@ -292,12 +360,17 @@ For each phase in the implementation plan:
    - Action items: Added/Fixed/Completed with lemma names
    - Outcome delta: sorries/axioms change
    - For no-progress sessions: document what was attempted and why it failed
-6. **Git commit** with message: `task {N} phase {P}: {phase_name}`
+6. **Update summary file** with Phase Entry (Stage 4F):
+   - Create summary if first phase, append if subsequent
+   - Include session, changes made, files modified, verification
+   - Update Cumulative Statistics section
+7. **Git commit** with message: `task {N} phase {P}: {phase_name}`
    Use targeted staging (prevents race conditions with concurrent agents):
    ```bash
    git add \
      "Theories/" \
-     "specs/${task_number}_${project_name}/plans/" && \
+     "specs/${task_number}_${project_name}/plans/" \
+     "specs/${task_number}_${project_name}/summaries/" && \
    git commit -m "task {N} phase {P}: {phase_name}
 
    Session: {session_id}
@@ -305,13 +378,14 @@ For each phase in the implementation plan:
    Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
    ```
    **Note**: See `.claude/context/core/standards/git-staging-scope.md` for agent-specific staging rules.
-7. **Proceed to next phase** or return if blocked
+8. **Proceed to next phase** or return if blocked
 
 **This ensures**:
 - Resume point is always discoverable from plan file
 - Git history reflects phase-level progress
 - Failed proofs can be retried from beginning
 - Progress is canonically tracked in the plan file itself
+- Summary provides visibility into partial progress across sessions
 
 ---
 
