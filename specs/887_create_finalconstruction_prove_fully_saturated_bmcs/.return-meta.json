@@ -1,17 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Analyzed three options for proving fully_saturated_bmcs_exists_int constructively. Option B (prove constant witness families from temporally saturated MCSes inherit temporal coherence) is most viable. Key insight: constant_family_temporally_saturated_is_coherent is already proven in SaturatedConstruction.lean. The challenge is ensuring witness construction preserves temporal saturation through Lindenbaum extension. Recommended path: prove lindenbaum_preserves_temporal_saturation, then modify exists_fullySaturated_extension to use temporally saturated seeds.",
+  "status": "planned",
+  "summary": "4-phase implementation plan for FinalConstruction.lean combining modal saturation with temporal coherence",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/887_create_finalconstruction_prove_fully_saturated_bmcs/reports/research-001.md",
-      "summary": "Research report on FinalConstruction options for temporal coherence"
+      "type": "plan",
+      "path": "specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-001.md",
+      "summary": "Implementation plan for FinalConstruction.lean and sorry-free fully_saturated_bmcs_exists_int"
     }
   ],
+  "next_steps": "Run /implement 887 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771308695_939a6e",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771309078_72cea1",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 4.0
   }
 }

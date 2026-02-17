@@ -8,19 +8,25 @@
     {
       "project_number": 887,
       "project_name": "create_finalconstruction_prove_fully_saturated_bmcs",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-17T06:09:35Z",
-      "last_updated": "2026-02-17T06:16:45Z",
-      "session_id": "sess_1771308695_939a6e",
+      "last_updated": "2026-02-17T06:21:23Z",
+      "session_id": "sess_1771309078_72cea1",
       "researched": "2026-02-17T06:16:45Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/887_create_finalconstruction_prove_fully_saturated_bmcs/reports/research-001.md",
           "summary": "Research report on FinalConstruction options for temporal coherence"
+        },
+        {
+          "path": "specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Implementation plan for FinalConstruction.lean and sorry-free fully_saturated_bmcs_exists_int"
         }
-      ]
+      ],
+      "planned": "2026-02-17T06:21:23Z"
     },
     {
       "project_number": 886,
@@ -41,12 +47,12 @@
     {
       "project_number": 885,
       "project_name": "blocker_detection_user_review_triggers",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-17T06:16:07Z",
-      "session_id": "sess_1771308804_a7d1c9",
+      "last_updated": "2026-02-17T06:20:40Z",
+      "session_id": "sess_1771309217_479a4b",
       "description": "Define blocker types that require user review vs normal partial completions. Agents write requires_user_review: true with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.",
       "depends_on": [
         883
@@ -69,7 +75,8 @@
           "summary": "4-phase implementation plan for blocker detection and user review triggers"
         }
       ],
-      "planned": "2026-02-17T06:16:07Z"
+      "planned": "2026-02-17T06:16:07Z",
+      "started": "2026-02-17T06:20:40Z"
     },
     {
       "project_number": 884,
@@ -707,10 +714,10 @@
     {
       "project_number": 881,
       "project_name": "modally_saturated_bmcs_construction",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-02-13T20:28:06Z",
-      "last_updated": "2026-02-17T06:17:21Z",
+      "last_updated": "2026-02-17T06:20:57Z",
       "artifacts": [
         {
           "type": "research",
@@ -813,7 +820,7 @@
           "summary": "Review of recent implementation attempts, circular import analysis, and remaining work assessment after task 887"
         }
       ],
-      "session_id": "sess_1771308786_081f5c",
+      "session_id": "sess_1771309241_0d2f8a",
       "researched": "2026-02-17T06:17:21Z",
       "planned": "2026-02-17T04:54:37Z",
       "started": "2026-02-13T21:26:53Z"
