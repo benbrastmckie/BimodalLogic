@@ -38,15 +38,23 @@
     {
       "project_number": 884,
       "project_name": "incremental_summary_updates_per_phase",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-16T00:00:00Z",
-      "session_id": "sess_1739721600_meta01",
+      "last_updated": "2026-02-17T04:51:36Z",
+      "session_id": "sess_1771303680_85aa22",
       "description": "Modify implementation agents to create/update the summary file after each phase completes rather than only at full task completion. The summary file becomes a running log with phase entries appended. Update skill postflight to link the summary artifact even for partial completions. Update summary-format.md with incremental format and phase-entry schema. Update lean-implementation-agent.md and general-implementation-agent.md execution flow.",
       "depends_on": [
         883
+      ],
+      "researched": "2026-02-17T04:51:36Z",
+      "artifacts": [
+        {
+          "path": "specs/884_incremental_summary_updates_per_phase/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing summary creation patterns and proposing incremental running-log format for per-phase updates"
+        }
       ]
     },
     {
