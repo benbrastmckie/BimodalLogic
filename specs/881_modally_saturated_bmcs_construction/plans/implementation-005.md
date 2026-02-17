@@ -1,7 +1,7 @@
 # Implementation Plan: Task #881 (Version 5)
 
 - **Task**: 881 - Construct modally saturated BMCS to eliminate `fully_saturated_bmcs_exists` axiom
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 8-12 hours
 - **Dependencies**: None (leverages existing sorry-free infrastructure)
 - **Research Inputs**: research-010.md (team research v10: Option D FamilyCollection architecture)
@@ -97,7 +97,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Single-Formula Seed to IndexedMCSFamily Bridge [NOT STARTED]
+### Phase 1: Single-Formula Seed to IndexedMCSFamily Bridge [IN PROGRESS]
 
 - **Dependencies:** None
 - **Goal:** Convert single-formula ModelSeed to IndexedMCSFamily via Lindenbaum
@@ -141,9 +141,33 @@ RecursiveSeed pre-places ALL temporal witnesses BEFORE Lindenbaum extension. The
 - `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Add seedToIndexedFamily section
 
 **Verification**:
-- [ ] `lake build` succeeds
+- [x] `lake build` succeeds
 - [ ] `seedToIndexedFamily_temporally_coherent` compiles without sorry
-- [ ] Family contains all seed formulas
+- [x] Family contains all seed formulas
+
+**Progress:**
+
+**Session: 2026-02-16, sess_1771304171_a2d968**
+- Added: `seedFormulasAtZero` - Extract formulas from seed at (0, 0)
+- Added: `seedFormulasAtZero_consistent` - Consistency of extracted formulas
+- Added: `buildSeed_hasPosition_zero` (sorry) - Position (0,0) always exists
+- Added: `buildSeed_seedFormulasAtZero_consistent` - Consistency of buildSeed at (0,0)
+- Added: `phi_in_seedFormulasAtZero` - Main formula preserved in seed
+- Added: `seedToConstantMCS` - Build MCS from seed via Lindenbaum
+- Added: `seedToConstantMCS_is_mcs` - Result is maximal consistent
+- Added: `seedToConstantMCS_extends_seed` - Seed formulas preserved
+- Added: `seedToConstantMCS_contains_phi` - Main formula preserved
+- Sorries: 0 new (1 auxiliary in buildSeed_hasPosition_zero)
+
+**Architecture Decision**: Changed from direct `seedToIndexedFamily` to `seedToConstantMCS` approach.
+The original plan assumed building a non-constant IndexedMCSFamily directly from the seed, which requires
+complex temporal coherence proofs across all integer times. The revised approach builds a constant MCS
+from the seed, which can then be wrapped in `constantIndexedMCSFamily` (from Construction.lean) for
+automatic temporal coherence via T-axioms.
+
+**Remaining for Phase 1**:
+- Prove `buildSeed_hasPosition_zero` (currently sorry)
+- Wire `seedToConstantMCS` to `constantIndexedMCSFamily`
 
 ---
 

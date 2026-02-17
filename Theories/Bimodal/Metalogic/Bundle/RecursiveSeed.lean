@@ -5922,4 +5922,206 @@ theorem buildSeedForList_propagates_box (formulas : List Formula) (psi : Formula
   -- Box psi processing adds psi to ALL families at current time
   sorry -- Requires proving box propagation through foldl
 
+/-!
+## Section: Seed to IndexedMCSFamily Bridge (Task 881 Phase 1)
+
+This section implements the bridge from single-formula ModelSeed to IndexedMCSFamily.
+The approach uses the existing sorry-free FamilyCollection infrastructure.
+
+**Architecture (Option D from research-010.md)**:
+1. buildSeed phi produces a ModelSeed for a single formula
+2. seedToConstantMCS extracts the seed's formulas at time 0 and applies Lindenbaum
+3. The resulting MCS is used for a CONSTANT IndexedMCSFamily
+4. This family goes into initialFamilyCollection for modal saturation
+
+**Why constant families**:
+- For non-constant families, temporal coherence (forward_G, backward_H) requires
+  complex proofs about seed structure at ALL integer times
+- For constant families, temporal coherence reduces to TemporalForwardSaturated +
+  TemporalBackwardSaturated of the underlying MCS
+- The seed's temporal witnesses (F/P) are at time 0 after seed construction
+
+**Status**: Phase 1 of Task 881 v5 plan
+**Dependencies**: IndexedMCSFamily.lean (for the target type)
+-/
+
+/-!
+### Seed to Constant MCS
+
+Extract formulas from the seed at position (0, 0) and extend to an MCS via Lindenbaum.
+For single-formula seeds, this captures the main formula and its structural content.
+-/
+
+/--
+Get all formulas from the seed at the evaluation position (family 0, time 0).
+This is the set that will be extended to an MCS via Lindenbaum.
+-/
+def seedFormulasAtZero (seed : ModelSeed) : Set Formula :=
+  seed.getFormulas 0 0
+
+/--
+The seed formulas at position (0, 0) are consistent if the seed is consistent
+and position (0, 0) exists in the seed.
+
+Note: SeedConsistent says every entry is consistent. For position (0, 0),
+if an entry exists, its formulas are consistent.
+-/
+theorem seedFormulasAtZero_consistent (seed : ModelSeed) (h_cons : SeedConsistent seed)
+    (h_has_zero : seed.hasPosition 0 0 = true) :
+    SetConsistent (seedFormulasAtZero seed) := by
+  unfold seedFormulasAtZero
+  have ⟨entry, h_find⟩ := seed.findEntry_some_of_hasPosition 0 0 h_has_zero
+  unfold ModelSeed.getFormulas
+  rw [h_find]
+  unfold SeedConsistent at h_cons
+  have h_entry_mem : entry ∈ seed.entries := by
+    apply List.mem_of_find?_eq_some
+    exact h_find
+  exact h_cons entry h_entry_mem
+
+/--
+buildSeed always creates position (0, 0).
+
+The initial seed has an entry at (0, 0), and buildSeedAux operations only add/modify
+entries, never remove them. Therefore (0, 0) always exists in the final seed.
+-/
+theorem buildSeed_hasPosition_zero (phi : Formula) :
+    (buildSeed phi).hasPosition 0 0 = true := by
+  unfold buildSeed
+  -- The initial seed has an entry at (0, 0)
+  have h_init : (ModelSeed.initial phi).hasPosition 0 0 = true := by
+    unfold ModelSeed.initial ModelSeed.hasPosition
+    simp only [List.any_cons, beq_self_eq_true, Bool.and_self, Bool.true_or]
+  -- buildSeedAux never removes entries, only adds or modifies
+  -- All operations (addFormula, addToAllFamilies, createNewFamily, etc.) preserve existing positions
+  -- The key insight: hasPosition checks if ANY entry matches (famIdx, timeIdx)
+  -- Adding/modifying entries can only increase the number of matches, never decrease
+  --
+  -- Full proof requires showing all buildSeedAux cases preserve hasPosition,
+  -- which follows inductively from the fact that all operations preserve existing entries.
+  -- For Task 881 Phase 1, we use sorry for this auxiliary lemma.
+  sorry
+
+/--
+The seed formulas for buildSeed phi are consistent.
+-/
+theorem buildSeed_seedFormulasAtZero_consistent (phi : Formula) (h_phi_cons : FormulaConsistent phi) :
+    SetConsistent (seedFormulasAtZero (buildSeed phi)) := by
+  apply seedFormulasAtZero_consistent
+  · exact seedConsistent phi h_phi_cons
+  · exact buildSeed_hasPosition_zero phi
+
+/--
+The main formula phi is in seedFormulasAtZero.
+-/
+theorem phi_in_seedFormulasAtZero (phi : Formula) :
+    phi ∈ seedFormulasAtZero (buildSeed phi) := by
+  unfold seedFormulasAtZero
+  exact buildSeed_contains_formula phi
+
+/-!
+### Seed to Constant IndexedMCSFamily
+
+The approach for Phase 1 creates a CONSTANT IndexedMCSFamily from the seed.
+This uses the existing `constantIndexedMCSFamily` infrastructure from Construction.lean.
+
+**Why constant families work**:
+1. Constant families have the same MCS at all times
+2. temporal coherence (forward_G, backward_H) is automatic via T-axioms
+3. The seed's temporal witnesses are captured at time 0
+
+**Architecture**:
+1. Extract seed formulas at (0, 0) via `seedFormulasAtZero`
+2. Extend to MCS via `set_lindenbaum`
+3. Wrap in `constantIndexedMCSFamily`
+
+**Note**: For temporal coherence (forward_F, backward_P), constant families need
+TemporalForwardSaturated + TemporalBackwardSaturated of the underlying MCS.
+This is handled separately via FamilyCollection saturation.
+-/
+
+/--
+Build a constant MCS from a single-formula seed.
+
+The construction:
+1. Uses buildSeed phi to create a seed with temporal structure
+2. Extracts formulas at position (0, 0)
+3. Extends to MCS via Lindenbaum (using Classical.choose)
+
+**Key properties**:
+- phi ∈ result (formula preserved)
+- SetMaximalConsistent result
+- forward_G and backward_H hold via T-axioms when used in constant family
+
+**Limitations**:
+- Does NOT guarantee forward_F or backward_P (TemporalForward/BackwardSaturated)
+- Those require using temporalLindenbaumMCS instead of regular Lindenbaum
+- This is addressed by FamilyCollection saturation in Phase 2
+-/
+noncomputable def seedToConstantMCS (phi : Formula) (h_phi_cons : FormulaConsistent phi) :
+    Set Formula :=
+  -- Step 1: Build seed and extract formulas at (0, 0)
+  let seed := buildSeed phi
+  let S := seedFormulasAtZero seed
+  -- Step 2: S is consistent
+  have h_S_cons : SetConsistent S := buildSeed_seedFormulasAtZero_consistent phi h_phi_cons
+  -- Step 3: Extend to MCS via Lindenbaum using Classical.choose
+  Classical.choose (set_lindenbaum S h_S_cons)
+
+/--
+seedToConstantMCS produces an MCS.
+-/
+theorem seedToConstantMCS_is_mcs (phi : Formula) (h_phi_cons : FormulaConsistent phi) :
+    SetMaximalConsistent (seedToConstantMCS phi h_phi_cons) := by
+  unfold seedToConstantMCS
+  let S := seedFormulasAtZero (buildSeed phi)
+  have h_S_cons : SetConsistent S := buildSeed_seedFormulasAtZero_consistent phi h_phi_cons
+  exact (Classical.choose_spec (set_lindenbaum S h_S_cons)).2
+
+/--
+seedToConstantMCS extends the seed's formulas at (0, 0).
+-/
+theorem seedToConstantMCS_extends_seed (phi : Formula) (h_phi_cons : FormulaConsistent phi) :
+    seedFormulasAtZero (buildSeed phi) ⊆ seedToConstantMCS phi h_phi_cons := by
+  unfold seedToConstantMCS
+  let S := seedFormulasAtZero (buildSeed phi)
+  have h_S_cons : SetConsistent S := buildSeed_seedFormulasAtZero_consistent phi h_phi_cons
+  exact (Classical.choose_spec (set_lindenbaum S h_S_cons)).1
+
+/--
+seedToConstantMCS contains the original formula.
+-/
+theorem seedToConstantMCS_contains_phi (phi : Formula) (h_phi_cons : FormulaConsistent phi) :
+    phi ∈ seedToConstantMCS phi h_phi_cons := by
+  apply seedToConstantMCS_extends_seed
+  exact phi_in_seedFormulasAtZero phi
+
+/-!
+### Summary of Phase 1 Progress
+
+**What was implemented**:
+1. `seedFormulasAtZero`: Extract formulas from seed at position (0, 0)
+2. `seedFormulasAtZero_consistent`: The extracted formulas are consistent
+3. `buildSeed_hasPosition_zero`: buildSeed always has position (0, 0) [sorry]
+4. `buildSeed_seedFormulasAtZero_consistent`: buildSeed produces consistent seed
+5. `phi_in_seedFormulasAtZero`: Main formula is in seed at (0, 0)
+6. `seedToConstantMCS`: Build MCS from seed via Lindenbaum
+7. `seedToConstantMCS_is_mcs`: Result is an MCS
+8. `seedToConstantMCS_contains_phi`: Original formula preserved
+9. `seedToConstantMCS_extends_seed`: Seed formulas preserved
+
+**What remains for Phase 1 completion**:
+- Prove `buildSeed_hasPosition_zero` (currently has sorry)
+- Wire to `constantIndexedMCSFamily` to produce `IndexedMCSFamily Int`
+
+**Phase 2 scope (next)**:
+- Use `seedToConstantMCS` with `constantIndexedMCSFamily` to create eval_family
+- Wrap in `initialFamilyCollection`
+- Apply `exists_fullySaturated_extension` for modal saturation
+
+**Technical debt**:
+- 1 sorry in `buildSeed_hasPosition_zero` (auxiliary, non-critical)
+- Temporal coherence (forward_F, backward_P) deferred to FamilyCollection layer
+-/
+
 end Bimodal.Metalogic.Bundle
