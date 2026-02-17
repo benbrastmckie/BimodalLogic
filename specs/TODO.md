@@ -24,10 +24,12 @@ technical_debt:
 
 ### 888. Research Lindenbaum temporal saturation preservation for witness families
 - **Effort**: 8-12 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-17
+- **Researched**: 2026-02-17
 - **Parent**: Task #881
+- **Research**: [research-001.md](specs/888_lindenbaum_temporal_saturation_preservation/reports/research-001.md)
 
 **Description**: Research the mathematical gap blocking temporal coherence of witness families. Task 887's FinalConstruction.lean has sorries because regular Lindenbaum extension does NOT preserve temporal saturation - it can add F(psi) formulas without adding their witness psi. Research questions: (1) Can Lindenbaum preserve temporal saturation when seed contains sufficient temporal content ({psi} union M where M is temporally saturated)? (2) If not, can we use temporal-aware Lindenbaum that adds F(psi) and psi together? (3) Is there an alternative architectural approach that avoids this issue entirely? (4) Does the truth lemma actually require all families to be temporally coherent, or only eval_family? Output: Clear mathematical characterization of the gap, proof or disproof of preservation conditions, and recommended remediation path.
 
@@ -52,7 +54,7 @@ technical_debt:
 
 ### 886. Implement continuous subagent handoff loop in implement skills
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-16
 - **Researched**: 2026-02-17
