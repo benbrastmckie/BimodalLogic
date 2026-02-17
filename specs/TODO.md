@@ -24,8 +24,10 @@ technical_debt:
 
 ### 889. Review artifact naming scheme for team workflow uniformity
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Researched**: 2026-02-17
 - **Language**: meta
+- **Research**: [research-001.md](specs/889_artifact_naming_scheme_review/reports/research-001.md)
 
 **Description**: Review the artifact naming scheme used by the workflow command-skill-agent workflows in the .claude/ agent system to make sure there is a standard approach used both with and without the --team flag. For instance, `/research --team NNN` should create reports that have both the report number followed by the team member, and then call a team member to synthesize to create just a report with the appropriate number. Review all other cases where team members might create artifacts that don't indicate the research run, or planning run, etc., that they are associated with. The aim is uniformity of approach.
 
