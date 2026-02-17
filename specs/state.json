@@ -8,10 +8,10 @@
     {
       "project_number": 889,
       "project_name": "artifact_naming_scheme_review",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-17T22:37:17Z",
-      "last_updated": "2026-02-17T23:02:18Z",
+      "last_updated": "2026-02-17T23:04:44Z",
       "session_id": "sess_1771369318_8ae718",
       "researched": "2026-02-17T22:49:20Z",
       "artifacts": [
@@ -19,8 +19,14 @@
           "type": "research",
           "path": "specs/889_artifact_naming_scheme_review/reports/research-001.md",
           "summary": "Research report analyzing artifact naming inconsistencies between solo and team workflows, with uniform naming proposal"
+        },
+        {
+          "path": "specs/889_artifact_naming_scheme_review/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for uniform artifact naming scheme across team workflows"
         }
-      ]
+      ],
+      "planned": "2026-02-17T23:04:44Z"
     },
     {
       "project_number": 888,

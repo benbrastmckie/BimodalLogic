@@ -1,19 +1,19 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/889_artifact_naming_scheme_review/reports/research-001.md",
-      "summary": "Research report analyzing artifact naming inconsistencies between solo and team workflows, with uniform naming proposal"
+      "type": "plan",
+      "path": "specs/889_artifact_naming_scheme_review/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for uniform artifact naming scheme across team workflows"
     }
   ],
-  "next_steps": "Run /plan 889 to create implementation plan for updating naming scheme",
+  "next_steps": "Run /implement 889 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771368244_06071e",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1771369318_8ae718",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 3
   }
 }
