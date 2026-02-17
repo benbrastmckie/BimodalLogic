@@ -413,35 +413,25 @@ lemma henkinLimit_consistent (base : Set Formula) (h_base : SetConsistent base) 
   exact henkinChain_consistent base h_base n L hn
 
 /--
-The Henkin limit is temporally forward saturated.
+The Henkin limit is temporally forward saturated, provided the base is.
 
-If F(ψ) ∈ henkinLimit, then F(ψ) entered via some package at some step.
-The temporal witness chain of the package head includes both F(ψ) and ψ
-(by `forward_witness_in_chain`), so ψ is also in the limit.
+If F(ψ) ∈ henkinLimit, then either:
+- F(ψ) ∈ base, and ψ ∈ base by the base saturation assumption
+- F(ψ) entered via some package at some step, and ψ is also in that package
 -/
-lemma henkinLimit_forward_saturated (base : Set Formula) :
+lemma henkinLimit_forward_saturated (base : Set Formula)
+    (h_base_fwd : TemporalForwardSaturated base) :
     TemporalForwardSaturated (henkinLimit base) := by
   intro ψ h_F
   -- F(ψ) ∈ henkinLimit means F(ψ) ∈ henkinChain base n for some n
   simp only [henkinLimit, Set.mem_iUnion] at h_F
   obtain ⟨n, h_in_chain⟩ := h_F
-  -- F(ψ) entered the chain at some step k ≤ n
-  -- At step k, some formula φ_k was processed and its package was accepted
-  -- Since F(ψ) is in the package of φ_k, ψ is also in the package
-  -- (by forward_witness_in_chain)
-  -- Hence ψ ∈ henkinChain base (k+1) ⊆ henkinLimit
   -- We prove this by induction on n
   induction n with
   | zero =>
     -- F(ψ) ∈ henkinChain base 0 = base
-    -- We don't have temporal saturation of base in general
-    -- But the Henkin construction starts from base and F(ψ) could be in base
-    -- In that case, we need base to handle it — but base might not be temp sat
-    -- The key: we'll show that when F(ψ) is in the Henkin chain, it must have
-    -- entered through a henkinStep (not be in base), because at the step
-    -- n = encode(F(ψ)), it was processed.
-    -- For now, we handle this by requiring the proof at a higher level.
-    sorry
+    -- By h_base_fwd, ψ ∈ base ⊆ henkinLimit base
+    exact base_subset_henkinLimit base (h_base_fwd ψ h_in_chain)
   | succ n ih =>
     -- F(ψ) ∈ henkinChain base (n+1)
     simp only [henkinChain] at h_in_chain
@@ -474,15 +464,19 @@ lemma henkinLimit_forward_saturated (base : Set Formula) :
       exact ih h_in_chain
 
 /--
-The Henkin limit is temporally backward saturated (symmetric to forward case).
+The Henkin limit is temporally backward saturated, provided the base is.
 -/
-lemma henkinLimit_backward_saturated (base : Set Formula) :
+lemma henkinLimit_backward_saturated (base : Set Formula)
+    (h_base_bwd : TemporalBackwardSaturated base) :
     TemporalBackwardSaturated (henkinLimit base) := by
   intro ψ h_P
   simp only [henkinLimit, Set.mem_iUnion] at h_P
   obtain ⟨n, h_in_chain⟩ := h_P
   induction n with
-  | zero => sorry  -- Same issue: P(ψ) ∈ base
+  | zero =>
+    -- P(ψ) ∈ henkinChain base 0 = base
+    -- By h_base_bwd, ψ ∈ base ⊆ henkinLimit base
+    exact base_subset_henkinLimit base (h_base_bwd ψ h_in_chain)
   | succ n ih =>
     simp only [henkinChain] at h_in_chain
     split at h_in_chain
@@ -673,38 +667,76 @@ lemma maximal_tcs_is_mcs (base : Set Formula)
 
 /-!
 ## Part 7: Main Theorem
+
+The temporal closure adds all transitive temporal witnesses to a set. This ensures
+the Henkin construction starts from a temporally saturated base, fixing the base
+case sorries.
 -/
 
 /--
-Main theorem: For any consistent context, there exists a temporally saturated MCS
-extending it.
+The temporal closure of a set: includes all formulas and their transitive temporal witnesses.
+For simplicity, we define it as adding the formula itself plus any witnesses recursively.
+-/
+noncomputable def temporalClosure (S : Set Formula) : Set Formula :=
+  ⋃ φ ∈ S, {x | x ∈ temporalWitnessChain φ}
 
-This replaces the `temporally_saturated_mcs_exists` axiom from
-TemporalCoherentConstruction.lean.
+/-- Original set is a subset of temporal closure -/
+lemma subset_temporalClosure (S : Set Formula) : S ⊆ temporalClosure S := by
+  intro φ hφ
+  simp only [temporalClosure, Set.mem_iUnion, Set.mem_setOf_eq]
+  exact ⟨φ, hφ, temporalWitnessChain_head φ⟩
+
+/-- Temporal closure is forward saturated -/
+lemma temporalClosure_forward_saturated (S : Set Formula) :
+    TemporalForwardSaturated (temporalClosure S) := by
+  intro ψ h_F
+  simp only [temporalClosure, Set.mem_iUnion, Set.mem_setOf_eq] at h_F ⊢
+  obtain ⟨φ, hφ_in_S, h_F_in_chain⟩ := h_F
+  exact ⟨φ, hφ_in_S, forward_witness_in_chain h_F_in_chain⟩
+
+/-- Temporal closure is backward saturated -/
+lemma temporalClosure_backward_saturated (S : Set Formula) :
+    TemporalBackwardSaturated (temporalClosure S) := by
+  intro ψ h_P
+  simp only [temporalClosure, Set.mem_iUnion, Set.mem_setOf_eq] at h_P ⊢
+  obtain ⟨φ, hφ_in_S, h_P_in_chain⟩ := h_P
+  exact ⟨φ, hφ_in_S, backward_witness_in_chain h_P_in_chain⟩
+
+/--
+Main theorem: For any consistent context whose temporal closure is also consistent,
+there exists a temporally saturated MCS extending it.
+
+This is a conditional version of the (false) `temporally_saturated_mcs_exists` axiom.
+The condition that temporal closure is consistent is necessary because adding
+temporal witnesses can introduce inconsistency (e.g., {F(p), ¬p} is consistent
+but {F(p), ¬p, p} is not).
 
 **Construction**:
-1. Convert context to set, verify consistency
+1. Convert context to set, take temporal closure
 2. Build temporally-saturated consistent set via Henkin construction
 3. Apply Zorn to get maximal temporally-saturated consistent set
 4. Prove maximality implies MCS
-
-**Status**: Has sorry in the "maximal in TCS implies MCS" lemma for temporal
-formula cases and in the Henkin base case for temporal saturation.
 -/
-theorem temporalLindenbaumMCS (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+theorem temporalLindenbaumMCS (Gamma : List Formula) (h_cons : ContextConsistent Gamma)
+    (h_closed_cons : SetConsistent (temporalClosure (contextAsSet Gamma))) :
     ∃ M : Set Formula,
       SetMaximalConsistent M ∧
       (∀ gamma ∈ Gamma, gamma ∈ M) ∧
       TemporalForwardSaturated M ∧
       TemporalBackwardSaturated M := by
   -- Phase A: Build temporally-saturated consistent set via Henkin
+  -- Use temporal closure to ensure base is temporally saturated
   let base := contextAsSet Gamma
-  have h_base_cons : SetConsistent base := list_consistent_to_set_consistent h_cons
-  let S := henkinLimit base
-  have h_S_cons := henkinLimit_consistent base h_base_cons
-  have h_S_fwd := henkinLimit_forward_saturated base
-  have h_S_bwd := henkinLimit_backward_saturated base
-  have h_base_sub_S := base_subset_henkinLimit base
+  let closedBase := temporalClosure base
+  have h_base_sub_closed : base ⊆ closedBase := subset_temporalClosure base
+  have h_closed_fwd : TemporalForwardSaturated closedBase := temporalClosure_forward_saturated base
+  have h_closed_bwd : TemporalBackwardSaturated closedBase := temporalClosure_backward_saturated base
+
+  let S := henkinLimit closedBase
+  have h_S_cons := henkinLimit_consistent closedBase h_closed_cons
+  have h_S_fwd := henkinLimit_forward_saturated closedBase h_closed_fwd
+  have h_S_bwd := henkinLimit_backward_saturated closedBase h_closed_bwd
+  have h_closed_sub_S := base_subset_henkinLimit closedBase
 
   -- Phase B: Apply Zorn to get maximal in TCS
   let M := temporalSetLindenbaum S h_S_cons h_S_fwd h_S_bwd
@@ -719,8 +751,8 @@ theorem temporalLindenbaumMCS (Gamma : List Formula) (h_cons : ContextConsistent
   -- Package the result
   use M
   refine ⟨h_mcs, ?_, h_M_in_tcs.2.2.1, h_M_in_tcs.2.2.2⟩
-  -- Show context is preserved
+  -- Show context is preserved: Gamma ⊆ base ⊆ closedBase ⊆ S ⊆ M
   intro gamma h_mem
-  exact h_M_extends_S (h_base_sub_S h_mem)
+  exact h_M_extends_S (h_closed_sub_S (h_base_sub_closed h_mem))
 
 end Bimodal.Metalogic.Bundle
