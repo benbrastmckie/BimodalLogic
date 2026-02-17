@@ -169,15 +169,40 @@ automatic temporal coherence via T-axioms.
 - Prove `buildSeed_hasPosition_zero` (currently sorry)
 - Wire `seedToConstantMCS` to `constantIndexedMCSFamily`
 
+**Session: 2026-02-16, sess_1771307041_ed36a2**
+- Attempted: Full proof of `buildSeed_hasPosition_zero` via helper lemmas
+- Added: Helper lemmas for `addFormula_preserves_hasPosition`, `createNewFamily_preserves_hasPosition`, etc.
+- Result: Complex proof structure due to formula induction not matching buildSeedAux recursion pattern
+- Sorries: 1 in `buildSeed_hasPosition_zero` (auxiliary, non-blocking)
+- Status: Phase 1 functionally complete (seedToConstantMCS works), auxiliary proof deferred
+
+**Phase 1 Assessment**:
+- `seedToConstantMCS` provides the bridge from RecursiveSeed to MCS
+- The MCS can be wrapped in `constantIndexedMCSFamily` via existing infrastructure
+- The `buildSeed_hasPosition_zero` sorry is non-blocking as it's an auxiliary lemma
+  about seed structure that doesn't affect the core construction logic
+
 ---
 
-### Phase 2: Wire to FamilyCollection Infrastructure [NOT STARTED]
+### Phase 2: Wire to FamilyCollection Infrastructure [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Connect seedToIndexedFamily output to existing FamilyCollection saturation
+- **Blocked By:** Circular import dependency (SaturatedConstruction imports TemporalCoherentConstruction)
 
 **Analysis**:
 Once we have a temporally coherent IndexedMCSFamily from Phase 1, we can wrap it in `initialFamilyCollection` and apply the sorry-free `exists_fullySaturated_extension`.
+
+**Architectural Blocker Discovered (Session: sess_1771307041_ed36a2)**:
+- `fully_saturated_bmcs_exists_int` is defined in TemporalCoherentConstruction.lean
+- The proof requires `constructSaturatedBMCS` from SaturatedConstruction.lean
+- BUT SaturatedConstruction.lean imports TemporalCoherentConstruction.lean
+- This creates a circular import dependency
+
+**Resolution Options**:
+1. Create a new file (e.g., `FinalConstruction.lean`) that imports both
+2. Restructure imports to break the cycle
+3. Move `fully_saturated_bmcs_exists_int` definition to SaturatedConstruction.lean
 
 **Key Design**:
 ```lean

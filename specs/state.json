@@ -24,12 +24,12 @@
     {
       "project_number": 885,
       "project_name": "blocker_detection_user_review_triggers",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "effort": "2 hours",
       "created": "2026-02-16T00:00:00Z",
-      "last_updated": "2026-02-16T00:00:00Z",
-      "session_id": "sess_1739721600_meta01",
+      "last_updated": "2026-02-17T06:03:53Z",
+      "session_id": "sess_1771308208_c8eb00",
       "description": "Define blocker types that require user review vs normal partial completions. Agents write requires_user_review: true with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.",
       "depends_on": [
         883
