@@ -24,7 +24,9 @@ technical_debt:
 
 ### 888. Research Lindenbaum temporal saturation preservation for witness families
 - **Effort**: 8-12 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Planned**: 2026-02-17
+- **Plan**: [implementation-001.md](specs/888_lindenbaum_temporal_saturation_preservation/plans/implementation-001.md)
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
@@ -32,87 +34,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/888_lindenbaum_temporal_saturation_preservation/reports/research-001.md)
 
 **Description**: Research the mathematical gap blocking temporal coherence of witness families. Task 887's FinalConstruction.lean has sorries because regular Lindenbaum extension does NOT preserve temporal saturation - it can add F(psi) formulas without adding their witness psi. Research questions: (1) Can Lindenbaum preserve temporal saturation when seed contains sufficient temporal content ({psi} union M where M is temporally saturated)? (2) If not, can we use temporal-aware Lindenbaum that adds F(psi) and psi together? (3) Is there an alternative architectural approach that avoids this issue entirely? (4) Does the truth lemma actually require all families to be temporally coherent, or only eval_family? Output: Clear mathematical characterization of the gap, proof or disproof of preservation conditions, and recommended remediation path.
-
----
-
-### 887. Create FinalConstruction.lean and prove fully_saturated_bmcs_exists_int
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-16
-- **Researched**: 2026-02-16
-- **Planned**: 2026-02-16
-- **Completed**: 2026-02-17
-- **Dependencies**: Task 881 (current blocker)
-- **Research**: [research-001.md](specs/887_create_finalconstruction_prove_fully_saturated_bmcs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260217.md](specs/887_create_finalconstruction_prove_fully_saturated_bmcs/summaries/implementation-summary-20260217.md)
-
-**Description**: Create FinalConstruction.lean that imports both SaturatedConstruction.lean and TemporalCoherentConstruction.lean (resolving the circular import that blocks task 881 Phase 2). Implement a sorry-free proof of fully_saturated_bmcs_exists_int using constructSaturatedBMCS from SaturatedConstruction. Key challenge: BMCS.temporally_coherent requires ALL families (including witness families from modal saturation) to have forward_F and backward_P properties. Witness families are built via constantWitnessFamily with regular Lindenbaum, which doesn't guarantee temporal coherence. Options: (A) Use temporal Lindenbaum for witness families (requires fixing TemporalLindenbaum sorries), (B) Prove that constant witness families from temporally saturated MCSes inherit temporal coherence, (C) Restructure truth lemma to only require eval_family temporal coherence. Research needed to determine which approach is viable.
-
----
-
-### 886. Implement continuous subagent handoff loop in implement skills
-- **Effort**: 3-4 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-16
-- **Researched**: 2026-02-17
-- **Planned**: 2026-02-17
-- **Completed**: 2026-02-17
-- **Dependencies**: Tasks 883, 884, 885
-- **Research**: [research-001.md](specs/886_continuous_subagent_handoff_loop/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/886_continuous_subagent_handoff_loop/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260217.md](specs/886_continuous_subagent_handoff_loop/summaries/implementation-summary-20260217.md)
-
-**Description**: Modify skill-implementer and skill-lean-implementation to loop after subagent returns partial: automatically invoke another subagent unless a blocker requiring user review is detected. The skill checks the `requires_user_review` flag in metadata; if false and status is partial, it re-invokes a new subagent with the handoff context. Stops on: implemented, blocked/requires_user_review, or configurable iteration limit. Update implement.md to document the auto-resume behavior.
-
----
-
-### 885. Add blocker detection and user review triggers to implementation agents
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-16
-- **Researched**: 2026-02-16
-- **Planned**: 2026-02-16
-- **Completed**: 2026-02-17
-- **Dependencies**: Task 883
-- **Research**: [research-001.md](specs/885_blocker_detection_user_review_triggers/reports/research-001.md), [research-002.md](specs/885_blocker_detection_user_review_triggers/reports/research-002.md) (context optimization)
-- **Plan**: [implementation-001.md](specs/885_blocker_detection_user_review_triggers/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260216.md](specs/885_blocker_detection_user_review_triggers/summaries/implementation-summary-20260216.md)
-
-**Description**: Define blocker types that require user review vs normal partial completions. Agents write `requires_user_review: true` with a reason field in metadata when encountering blockers (e.g., mathematically false theorem, missing dependency, unresolvable build error). Skills check this flag before auto-continuing. Update return-metadata-file.md schema, lean-implementation-agent.md, and general-implementation-agent.md with blocker detection guidance.
-
----
-
-### 884. Implement incremental summary updates per phase
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-16
-- **Planned**: 2026-02-16
-- **Completed**: 2026-02-17
-- **Dependencies**: Task 883
-- **Research**: [research-001.md](specs/884_incremental_summary_updates_per_phase/reports/research-001.md), [research-002.md](specs/884_incremental_summary_updates_per_phase/reports/research-002.md) (context file analysis)
-- **Plan**: [implementation-002.md](specs/884_incremental_summary_updates_per_phase/plans/implementation-002.md) (v2: +context cleanup, +metadata quick-ref)
-- **Summary**: [implementation-summary-20260216.md](specs/884_incremental_summary_updates_per_phase/summaries/implementation-summary-20260216.md)
-
-**Description**: Modify implementation agents to create/update the summary file after each phase completes rather than only at full task completion. The summary file becomes a running log with phase entries appended. Update skill postflight to link the summary artifact even for partial completions. Update summary-format.md with incremental format and phase-entry schema. Update lean-implementation-agent.md and general-implementation-agent.md execution flow.
-
----
-
-### 883. Add phase progress tracking to plan files
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-16
-- **Completed**: 2026-02-17
-- **Research**: [research-002.md](specs/883_phase_progress_tracking_in_plan_files/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/883_phase_progress_tracking_in_plan_files/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260217.md](specs/883_phase_progress_tracking_in_plan_files/summaries/implementation-summary-20260217.md)
-
-**Description**: Add structured Progress subsections to plan file phases. After a subagent completes or partially completes a phase, it updates the phase section with: what was accomplished, what remains, and any issues found. Update artifact-formats.md with the Progress subsection format. Update lean-implementation-agent.md and general-implementation-agent.md to write progress updates as part of the phase checkpoint protocol.
 
 ---
 
