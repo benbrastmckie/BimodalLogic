@@ -600,6 +600,56 @@
       "planned": "2026-02-17T18:18:31Z",
       "started": "2026-02-13T21:26:53Z",
       "blocked_reason": "Task 887 completed with sorries. Temporal coherence of witness families requires temporal-aware Lindenbaum construction. See task 888 for mathematical gap research."
+    },
+    {
+      "project_number": 619,
+      "project_name": "agent_system_architecture_upgrade",
+      "status": "blocked",
+      "language": "meta",
+      "priority": "medium",
+      "created": "2026-01-19T20:33:57Z",
+      "last_updated": "2026-02-17T00:00:00Z",
+      "session_id": "sess_1769573256_b38d39",
+      "researched": "2026-01-28T04:09:09Z",
+      "planned": "2026-01-19T21:36:36Z",
+      "blocked_reason": "Waiting for Anthropic to fix GitHub issue #16803: context:fork in skill frontmatter doesn't work (skill still runs inline). Issue confirmed still OPEN as of 2026-02-05 (v2.1.32). Current workaround: Task tool delegation (working). Re-check when #16803 is resolved.",
+      "artifacts": [
+        {
+          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on agent system architecture improvements with 5 prioritized recommendations"
+        },
+        {
+          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplemental research on context:fork feature and official Claude Code skill documentation"
+        },
+        {
+          "path": "specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 3-phase plan for future context:fork migration after GitHub #16803 is fixed"
+        },
+        {
+          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-003.md",
+          "type": "research",
+          "summary": "Status check on GitHub #16803 revealing plugin vs user-level skill distinction for context:fork functionality"
+        },
+        {
+          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-004.md",
+          "type": "research",
+          "summary": "Context fork analysis for Lean direct execution skills post-Task 710 refactoring"
+        },
+        {
+          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-005.md",
+          "type": "research",
+          "summary": "Empirical validation of context:fork via test-lean-research confirming feature is non-functional (no isolation, unrestricted tools)"
+        },
+        {
+          "path": "specs/archive/619_agent_system_architecture_upgrade/reports/research-006.md",
+          "type": "research",
+          "summary": "February 2026 status check: GitHub #16803 still OPEN as of v2.1.32, plugin vs user-level distinction confirmed"
+        }
+      ]
     }
   ],
   "completed_projects": [

@@ -24,8 +24,9 @@ technical_debt:
 
 ### 888. Research Lindenbaum temporal saturation preservation for witness families
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Planned**: 2026-02-17
+- **Started**: 2026-02-17
 - **Plan**: [implementation-001.md](specs/888_lindenbaum_temporal_saturation_preservation/plans/implementation-001.md)
 - **Language**: lean
 - **Created**: 2026-02-17
@@ -89,6 +90,19 @@ technical_debt:
 - **Blocked on**: lean-lsp-mcp issue #115 resolution
 
 **Description**: Once lean-lsp-mcp issue #115 (server halts on lean_diagnostic_messages) is resolved, reinstate the blocked MCP tools. Follow the unblocking procedure: verify fix in repository, update package version, test tools manually, update blocked-mcp-tools.md to mark as UNBLOCKED, remove from CLAUDE.md blocked list, and restore documentation in mcp-tools-guide.md. Consider re-testing lean_file_outline as well since no specific open issue exists for it.
+
+### 619. Migrate skills to native context:fork isolation
+- **Effort**: 3 hours
+- **Status**: [BLOCKED]
+- **Language**: meta
+- **Created**: 2026-01-19
+- **Researched**: 2026-01-28
+- **Planned**: 2026-01-19
+- **Blocked on**: GitHub anthropics/claude-code #16803 (context:fork runs inline instead of forking)
+- **Research**: [research-001.md](specs/archive/619_agent_system_architecture_upgrade/reports/research-001.md), [research-006.md](specs/archive/619_agent_system_architecture_upgrade/reports/research-006.md)
+- **Plan**: [implementation-002.md](specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md)
+
+**Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
 
 ### 865. Construct canonical task frame for Bimodal completeness
 - **Effort**: TBD
