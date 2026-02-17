@@ -480,6 +480,86 @@ If task or plan is invalid:
 2. Include clear error message
 3. Return brief error summary
 
+## Blocker Detection
+
+When encountering blockers during implementation, determine whether they are **soft blockers** (auto-continuable) or **hard blockers** (require user review).
+
+### Soft Blockers (Do NOT Set requires_user_review)
+
+These allow auto-continuation by a successor agent:
+
+| Blocker Type | Description | Response |
+|--------------|-------------|----------|
+| `timeout` | Operation exceeded time limit | Mark phase [PARTIAL], return partial status |
+| `context_exhaustion_handoff` | Approaching context limit | Write handoff, return partial status |
+| `phase_incomplete` | Phase not finished but progress made | Continue or mark [PARTIAL] |
+| `mcp_transient` | Tool had transient failure | Retry once, continue with available info |
+| `build_warning` | Build succeeds but has warnings | Note warnings, continue |
+
+### Hard Blockers (Set requires_user_review: true)
+
+These require human judgment before continuing:
+
+| Blocker Type | Description | Example |
+|--------------|-------------|---------|
+| `invalid_specification` | Task description or plan is fundamentally flawed | Research shows approach is impossible |
+| `missing_dependency` | Required external dependency unavailable | Missing library, API, or service |
+| `unresolvable_build_error` | Build fails with no clear fix path | Circular dependency, version conflict |
+| `resource_exhausted` | Critical resource permanently unavailable | API quota exceeded, service discontinued |
+| `strategy_failed` | All planned approaches exhausted | Tried all approaches from plan, none work |
+| `permission_denied` | Cannot access required resources | Auth failure, missing credentials |
+
+### Decision Tree for General Tasks
+
+```
+Is the task blocked?
+  └─ YES → Can a successor agent continue?
+       └─ YES (context exhaustion, timeout, transient failure) → Soft blocker
+       └─ NO → Is the issue fixable without user input?
+            └─ YES (retry, alternative approach) → Soft blocker, try fix first
+            └─ NO (spec invalid, dependency missing) → Hard blocker
+```
+
+### General Task Detection Criteria
+
+**Set requires_user_review: true when**:
+1. **Spec is invalid**: Task description or plan contains contradictory or impossible requirements
+2. **External dependency unavailable**: Required library, API, or service is missing and cannot be substituted
+3. **Build/test consistently fails**: Same error across multiple fix attempts with no clear solution
+4. **All plan approaches exhausted**: Every approach listed in the plan has been tried without success
+5. **Permission/access denied**: Required resource access is blocked at a system level
+
+**Do NOT set when**:
+- Build/test fails but fix path is clear
+- Context window is running low (use handoff instead)
+- Tool temporarily unavailable (retry or continue)
+- A different approach from plan might work
+- Warning/info messages that don't block completion
+
+### Metadata Example for Hard Blocker
+
+```json
+{
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Required npm package @company/internal-lib is not published - dependency resolution fails",
+  "partial_progress": {
+    "stage": "missing_dependency",
+    "details": "Phase 2 blocked: cannot install required dependency",
+    "phases_completed": 1,
+    "phases_total": 3
+  },
+  "errors": [
+    {
+      "type": "missing_dependency",
+      "message": "npm ERR! 404 Not Found - GET https://registry.npmjs.org/@company/internal-lib",
+      "recoverable": false,
+      "recommendation": "Publish internal-lib package or provide alternative dependency"
+    }
+  ]
+}
+```
+
 ## Context Management
 
 You have a finite context window. Plan FOR exhaustion, not against it. Context exhaustion is expected for complex work, not a failure.
@@ -591,6 +671,7 @@ General implementation failed for task 999:
 11. **Write Progress subsection** to plan file before committing each phase (see artifact-formats.md)
 12. **Write Phase Entry to summary file after each phase completion** (step 6 in Phase Checkpoint Protocol)
 13. **Include summary artifact in metadata for both implemented and partial status**
+14. **Set requires_user_review: true with review_reason** when encountering hard blockers (see Blocker Detection section)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -604,3 +685,5 @@ General implementation failed for task 999:
 9. Use phrases like "task is complete", "work is done", or "finished"
 10. Assume your return ends the workflow (skill continues with postflight)
 11. **Skip Stage 0** early metadata creation (critical for interruption recovery)
+12. **Over-flag hard blockers** - context exhaustion, timeouts, and transient failures are soft blockers, NOT hard blockers
+13. **Set requires_user_review for soft blockers** - use handoff pattern instead for context exhaustion/timeout

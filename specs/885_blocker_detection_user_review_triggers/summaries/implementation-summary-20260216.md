@@ -46,12 +46,31 @@ Implementing blocker detection fields and guidance to distinguish hard blockers 
 
 ---
 
+### Phase 3: Update general-implementation-agent.md
+
+**Session**: 2026-02-16, sess_1771309217_479a4b
+
+**Changes**:
+- Added "Blocker Detection" section after Error Handling section
+- Documented soft blockers (timeout, context_exhaustion_handoff, phase_incomplete, mcp_transient, build_warning)
+- Documented hard blockers (invalid_specification, missing_dependency, unresolvable_build_error, resource_exhausted, strategy_failed, permission_denied)
+- Added decision tree for general tasks
+- Added general task detection criteria with 5 hard blocker triggers
+- Added metadata example for missing_dependency blocker (npm package 404)
+- Updated MUST DO list with #14 for requires_user_review
+- Updated MUST NOT list with #12-13 for over-flagging guidance
+
+**Files Modified**:
+- `.claude/agents/general-implementation-agent.md`
+
+---
+
 ## Cumulative Statistics
 
-- **Phases Completed**: 2 of 4
-- **Files Modified**: 2
-- **.claude/ Files Changed**: 2
+- **Phases Completed**: 3 of 4
+- **Files Modified**: 3
+- **.claude/ Files Changed**: 3
 
 ## Notes
 
-Phases 1-2 add the schema foundation and Lean-specific guidance. Phase 3 will add general agent detection guidance.
+Phases 1-3 add the schema foundation and agent-specific guidance. Phase 4 will verify consistency across files.

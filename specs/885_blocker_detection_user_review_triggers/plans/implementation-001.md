@@ -112,19 +112,19 @@ Implement blocker detection fields and guidance to distinguish hard blockers req
 
 ---
 
-### Phase 3: Update general-implementation-agent.md [NOT STARTED]
+### Phase 3: Update general-implementation-agent.md [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add Blocker Detection section with criteria and decision tree for general tasks
 
 **Tasks**:
-- [ ] Add new section "## Blocker Detection" after Error Handling section
-- [ ] Document hard blocker criteria for general tasks (invalid spec, missing dependency, unresolvable build error)
-- [ ] Document soft blocker criteria (timeout, context exhaustion, transient failures)
-- [ ] Add decision tree (same structure as Lean agent, different examples)
-- [ ] Add concrete examples for each blocker type
-- [ ] Update Critical Requirements MUST DO list
-- [ ] Update Critical Requirements MUST NOT list
+- [x] Add new section "## Blocker Detection" after Error Handling section
+- [x] Document hard blocker criteria for general tasks (invalid spec, missing dependency, unresolvable build error)
+- [x] Document soft blocker criteria (timeout, context exhaustion, transient failures)
+- [x] Add decision tree (same structure as Lean agent, different examples)
+- [x] Add concrete examples for each blocker type
+- [x] Update Critical Requirements MUST DO list
+- [x] Update Critical Requirements MUST NOT list
 
 **Timing**: 45 minutes
 
@@ -136,6 +136,16 @@ Implement blocker detection fields and guidance to distinguish hard blockers req
 - Decision tree is present and actionable
 - General task examples (build fails, missing dependency) included
 - MUST DO includes blocker detection requirement
+
+**Progress:**
+
+**Session: 2026-02-16, sess_1771309217_479a4b**
+- Added: "Blocker Detection" section with soft/hard blocker tables
+- Added: Decision tree for general tasks
+- Added: General task detection criteria (spec invalid, dependency missing, build fails, permission denied)
+- Added: Metadata example for missing_dependency blocker (npm package not found)
+- Added: MUST DO #14 - Set requires_user_review when encountering hard blockers
+- Added: MUST NOT #12-13 - Over-flagging guidance and soft blocker handling
 
 ---
 
