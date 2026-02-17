@@ -1,20 +1,39 @@
 {
-  "status": "planned",
-  "summary": "4-phase plan for blocker detection with requires_user_review schema field, agent detection guidance, and cross-file verification",
+  "status": "implemented",
+  "summary": "Added requires_user_review and review_reason fields to return-metadata-file.md schema. Added Blocker Detection sections to lean-implementation-agent.md and general-implementation-agent.md with soft vs hard blocker taxonomy, decision trees, and domain-specific examples. Updated Critical Requirements in both agents.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/885_blocker_detection_user_review_triggers/plans/implementation-001.md",
-      "summary": "4-phase implementation plan for blocker detection and user review triggers"
+      "type": "implementation",
+      "path": ".claude/context/core/formats/return-metadata-file.md",
+      "summary": "Added requires_user_review, review_reason fields and Blocker Taxonomy section"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/lean-implementation-agent.md",
+      "summary": "Added Blocker Detection section with Lean-specific criteria and decision tree"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/general-implementation-agent.md",
+      "summary": "Added Blocker Detection section with general task criteria and decision tree"
+    },
+    {
+      "type": "summary",
+      "path": "specs/885_blocker_detection_user_review_triggers/summaries/implementation-summary-20260216.md",
+      "summary": "Implementation summary with all 4 phases and verification results"
     }
   ],
-  "next_steps": "Run /implement 885 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Added blocker detection schema and agent guidance to distinguish hard blockers (requiring user review) from soft blockers (auto-continuable). Added requires_user_review and review_reason fields to return-metadata-file.md, Blocker Detection sections to both implementation agents with decision trees, and updated Critical Requirements.",
+    "claudemd_suggestions": "Updated return-metadata-file.md schema with requires_user_review/review_reason fields and Blocker Taxonomy section. Updated lean-implementation-agent.md and general-implementation-agent.md with Blocker Detection sections and Critical Requirements entries."
+  },
   "metadata": {
-    "session_id": "sess_1771308804_a7d1c9",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1771309217_479a4b",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2.5
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Run /todo to archive task. Consider creating task 886 for skill postflight updates to check requires_user_review before auto-resume."
 }

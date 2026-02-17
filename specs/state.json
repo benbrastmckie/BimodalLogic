@@ -74,6 +74,11 @@
           "path": "specs/885_blocker_detection_user_review_triggers/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for blocker detection and user review triggers"
+        },
+        {
+          "path": "specs/885_blocker_detection_user_review_triggers/summaries/implementation-summary-20260216.md",
+          "type": "summary",
+          "summary": "Implementation summary with all 4 phases and verification results"
         }
       ],
       "planned": "2026-02-17T06:16:07Z",
