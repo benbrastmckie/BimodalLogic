@@ -144,9 +144,17 @@ Prepare delegation context for the subagent:
     "language": "lean"
   },
   "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
-  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
+  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json",
+  "iteration": 1,
+  "resume_phase": null,
+  "handoff_path": null
 }
 ```
+
+**Iteration Fields** (used by Stage 6a auto-resume loop):
+- `iteration`: Current loop iteration (1 for initial invocation, incremented on re-invocations)
+- `resume_phase`: Phase number to resume from (null for initial, set from `partial_progress.phases_completed + 1` on re-invocation)
+- `handoff_path`: Path to handoff document for context exhaustion cases (null unless agent wrote handoff)
 
 ---
 
@@ -213,6 +221,122 @@ else
     status="failed"
 fi
 ```
+
+---
+
+### Stage 6a: Continuous Handoff Loop
+
+If status is "partial" and `requires_user_review` is not true, automatically re-invoke the subagent with updated context. This enables multi-phase implementations to complete without manual intervention for recoverable partials.
+
+**Loop Guard File**: Create `.postflight-loop-guard` to track iteration count across potential skill restarts:
+
+```bash
+# Create or read loop guard
+loop_guard_file="specs/${task_number}_${project_name}/.postflight-loop-guard"
+if [ -f "$loop_guard_file" ]; then
+    iteration_count=$(cat "$loop_guard_file")
+else
+    iteration_count=0
+fi
+max_iterations=${MAX_ITERATIONS:-5}
+
+# Enter loop (loop body starts here, checked each iteration)
+while true; do
+    iteration_count=$((iteration_count + 1))
+    echo "$iteration_count" > "$loop_guard_file"
+
+    # Already have status from Stage 6
+    requires_review=$(jq -r '.requires_user_review // false' "$metadata_file")
+    handoff_path=$(jq -r '.partial_progress.handoff_path // ""' "$metadata_file")
+
+    # Stop condition: implemented (success)
+    if [ "$status" == "implemented" ]; then
+        break
+    fi
+
+    # Stop condition: hard failure
+    if [ "$status" == "blocked" ] || [ "$status" == "failed" ]; then
+        break
+    fi
+
+    # Stop condition: partial but requires user review
+    if [ "$status" == "partial" ] && [ "$requires_review" == "true" ]; then
+        echo "Partial completion requires user review - exiting loop"
+        break
+    fi
+
+    # Stop condition: iteration limit reached
+    if [ "$status" == "partial" ] && [ "$iteration_count" -ge "$max_iterations" ]; then
+        echo "Max iterations ($max_iterations) reached - exiting loop"
+        break
+    fi
+
+    # If partial and not blocked, re-invoke subagent
+    if [ "$status" == "partial" ]; then
+        echo "Iteration $iteration_count: Partial completion, auto-resuming..."
+
+        # Commit iteration progress before re-invocation
+        git add \
+          "Theories/" \
+          "specs/${task_number}_${project_name}/summaries/" \
+          "specs/${task_number}_${project_name}/plans/" \
+          "specs/${task_number}_${project_name}/.return-meta.json"
+        git commit -m "task ${task_number}: iteration ${iteration_count} partial progress
+
+Session: ${session_id}
+
+Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>" || true
+
+        # Update delegation context with resume info
+        resume_phase=$((phases_completed + 1))
+
+        # Re-invoke subagent (same as Stage 5) with updated context
+        # Delegation context now includes:
+        #   - iteration: current loop iteration
+        #   - resume_phase: phase to resume from
+        #   - handoff_path: path to handoff document (if context exhaustion)
+
+        # ... invoke Task tool with updated context ...
+        # After subagent returns, re-read metadata (repeat Stage 6)
+
+        if [ -f "$metadata_file" ] && jq empty "$metadata_file" 2>/dev/null; then
+            status=$(jq -r '.status' "$metadata_file")
+            phases_completed=$(jq -r '.metadata.phases_completed // 0' "$metadata_file")
+            phases_total=$(jq -r '.metadata.phases_total // 0' "$metadata_file")
+            completion_summary=$(jq -r '.completion_data.completion_summary // ""' "$metadata_file")
+            roadmap_items=$(jq -c '.completion_data.roadmap_items // []' "$metadata_file")
+        else
+            echo "Error: Invalid or missing metadata file after re-invocation"
+            status="failed"
+            break
+        fi
+
+        continue
+    fi
+
+    # Unknown status - exit loop
+    break
+done
+```
+
+**Stop Conditions Summary**:
+
+| Condition | Result | User Action Required |
+|-----------|--------|---------------------|
+| `status == "implemented"` | Proceed to postflight | None |
+| `status == "blocked"` | Exit with blocker report | Yes - resolve blocker |
+| `status == "failed"` | Exit with error | Yes - investigate failure |
+| `status == "partial" && requires_user_review == true` | Exit with blocker | Yes - review required |
+| `status == "partial" && iteration >= max_iterations` | Exit with limit warning | Optional - run again |
+| `status == "partial" && requires_user_review != true` | Re-invoke subagent | None (automatic) |
+
+**Iteration Context Passage**:
+
+Each re-invocation includes in delegation context:
+- `iteration`: Current loop iteration number
+- `resume_phase`: Next phase to execute (phases_completed + 1)
+- `handoff_path`: Path to handoff document if available (for context exhaustion cases)
+- `session_id`: Same session ID for commit continuity
 
 ---
 

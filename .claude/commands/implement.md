@@ -23,6 +23,66 @@ Execute implementation plan with automatic resume support by delegating to the a
 
 When `--team` is specified, implementation is delegated to `skill-team-implement` which spawns multiple implementation agents to work on independent phases in parallel. Includes automated debugging support where failed phases trigger debugger agents to diagnose and fix issues.
 
+## Auto-Resume Behavior
+
+The implementation skills include a **continuous handoff loop** that automatically re-invokes subagents when partial progress is made without requiring user review. This enables multi-phase implementations to complete without manual intervention.
+
+### How It Works
+
+When a subagent returns `status: "partial"`:
+
+1. **Check `requires_user_review`**: If `true`, the loop exits and reports the blocker to the user
+2. **Check iteration limit**: If the loop has already run `MAX_ITERATIONS` times (default: 5), it exits with a limit warning
+3. **Auto-resume**: If neither condition is met, the skill commits the partial progress and re-invokes a new subagent with updated context
+
+### Stop Conditions
+
+| Condition | Result | User Action |
+|-----------|--------|-------------|
+| `status == "implemented"` | Success - all phases complete | None |
+| `status == "blocked"` | Exit with blocker report | Resolve blocker, re-run |
+| `status == "failed"` | Exit with error | Investigate failure |
+| `requires_user_review == true` | Exit with review request | Review issue, re-run |
+| `iteration >= MAX_ITERATIONS` | Exit with limit warning | Re-run to continue |
+| `status == "partial"` (otherwise) | Auto-resume | None (automatic) |
+
+### Configuration
+
+- **MAX_ITERATIONS**: Environment variable controlling iteration limit (default: 5)
+  ```bash
+  MAX_ITERATIONS=10 /implement 259  # Allow up to 10 iterations
+  ```
+
+### Examples
+
+**Normal multi-phase implementation**:
+```
+Phase 1 completes -> partial (phases_completed: 1)
+  Loop iteration 2: re-invoke
+Phase 2 completes -> partial (phases_completed: 2)
+  Loop iteration 3: re-invoke
+Phase 3 completes -> implemented
+  Loop exits, proceed to postflight
+```
+
+**Blocker requiring review**:
+```
+Phase 1 completes -> partial (phases_completed: 1)
+  Loop iteration 2: re-invoke
+Phase 2 stuck on proof -> partial (requires_user_review: true)
+  Loop exits immediately
+  User sees: "Partial completion requires user review"
+```
+
+**Context exhaustion handoff**:
+```
+Phase 2 in progress -> context limit approaching
+  Agent writes handoff document
+  Returns partial with handoff_path
+  Loop iteration 2: re-invoke with handoff_path
+  New agent reads handoff, continues Phase 2
+```
+
 ## Execution
 
 **MCP Safety**: Do not call `lean_diagnostic_messages` or `lean_file_outline` - they hang. Delegate to skills.
