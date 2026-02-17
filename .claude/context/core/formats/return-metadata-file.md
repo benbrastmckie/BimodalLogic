@@ -1,5 +1,7 @@
 # Return Metadata File Schema
 
+**Quick Reference**: For common cases, use @.claude/context/core/formats/metadata-quick-ref.md (~100 lines vs ~500 lines here)
+
 ## Overview
 
 Agents write structured metadata to files instead of returning JSON to the console. This enables reliable data exchange without console pollution and avoids the limitation where Claude treats JSON output as conversational text.
