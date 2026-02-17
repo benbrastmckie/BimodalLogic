@@ -183,6 +183,87 @@ Use in plan files:
 - `[PARTIAL]` - Partially complete (interrupted)
 - `[BLOCKED]` - Cannot proceed
 
+## Progress Subsection
+
+Each phase in a plan file may include a **Progress:** subsection to track work done across implementation sessions. This provides a canonical record of implementation progress directly in the plan file.
+
+### Format
+
+```markdown
+**Progress:**
+
+**Session: YYYY-MM-DD, sess_NNNNNN_XXXXXX**
+- Added: `lemma_name` - description
+- Fixed: `function_name` by adding precondition
+- Completed: `objective_name` (was N sorries, now 0)
+- Sorries: 18 -> 14 (4 eliminated)
+
+**Session: YYYY-MM-DD, sess_NNNNNN_YYYYYY** (no progress)
+- Attempted: approach description
+- Result: blocked by issue
+- No changes committed
+```
+
+### Session Header
+
+Each implementation session gets a header with:
+- **Date**: In YYYY-MM-DD format
+- **Session ID**: The session_id from delegation context (sess_NNNNNN_XXXXXX)
+
+### Action Verbs
+
+Use these standard action verbs for consistency:
+
+| Verb | Usage |
+|------|-------|
+| `Added` | New lemma, theorem, function, or file created |
+| `Fixed` | Bug fix, error correction, or issue resolution |
+| `Completed` | Objective or sub-goal fully finished |
+| `Removed` | Deleted code, deprecated functionality |
+| `Refactored` | Code reorganization without behavior change |
+| `Attempted` | Tried an approach (for no-progress sessions) |
+
+### Outcome Tracking
+
+For Lean tasks, track sorry/axiom delta using the format:
+- `Sorries: N -> M (K eliminated)` - where K = N - M
+- `Axioms: N -> M (K eliminated)` - for axiom reduction
+
+### No-Progress Sessions
+
+When a session makes no progress, document it to prevent successor retries:
+
+```markdown
+**Session: YYYY-MM-DD, sess_NNNNNN_XXXXXX** (no progress)
+- Attempted: description of what was tried
+- Result: why it failed or was blocked
+- No changes committed
+```
+
+### Example from Task 881
+
+```markdown
+**Progress:**
+
+**Session: 2026-02-16, sess_1771302929_655861**
+- Added: `buildSeedAux_preserves_mem_general` (key monotonicity lemma)
+- Added: `buildSeedAux_preserves_modal_backward` (Box preservation)
+- Completed: Phase 1 monotonicity objectives
+- Sorries: 18 -> 11 (7 eliminated)
+
+**Session: 2026-02-17, sess_1771386000_abc123** (no progress)
+- Attempted: induction on world index for consistency
+- Result: blocked by mutual consistency requirement between worlds
+- No changes committed
+```
+
+### Placement
+
+The Progress subsection should appear:
+- After the phase's **Verification:** section (if present)
+- Before the horizontal rule (`---`) separating phases
+- Only in phases that have been started ([IN PROGRESS], [COMPLETED], or [PARTIAL])
+
 ## Versioning
 
 ### Research Reports

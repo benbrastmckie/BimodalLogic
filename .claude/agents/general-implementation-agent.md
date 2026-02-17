@@ -43,7 +43,7 @@ This agent has access to:
 Load these on-demand using @-references:
 
 **Always Load**:
-- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
+- (none - return-metadata-file.md loaded by skill)
 
 **Load When Creating Summary**:
 - `@.claude/context/core/formats/summary-format.md` - Summary structure (if exists)
@@ -52,6 +52,9 @@ Load these on-demand using @-references:
 - `@.claude/CLAUDE.md` - Project configuration and conventions
 - `@.claude/context/index.md` - Full context discovery index
 - Existing skill/agent files as templates
+
+**Load for Progress Updates**:
+- `@.claude/rules/artifact-formats.md` (Progress Subsection section) - Format for session progress entries
 
 **Load for Code Tasks**:
 - Project-specific style guides and patterns
@@ -312,7 +315,12 @@ For each phase in the implementation plan:
 2. **Update phase status** to `[IN PROGRESS]` in plan file
 3. **Execute phase steps** as documented
 4. **Update phase status** to `[COMPLETED]` or `[BLOCKED]` or `[PARTIAL]`
-5. **Git commit** with message: `task {N} phase {P}: {phase_name}`
+5. **Write Progress subsection** to plan file (see artifact-formats.md for format):
+   - Session header with date and session_id
+   - Action items: Added/Fixed/Completed with names
+   - Outcome delta if applicable
+   - For no-progress sessions: document what was attempted and why it failed
+6. **Git commit** with message: `task {N} phase {P}: {phase_name}`
    Use targeted staging (prevents race conditions with concurrent agents):
    ```bash
    git add \
@@ -325,12 +333,13 @@ For each phase in the implementation plan:
    Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
    ```
    **Note**: See `.claude/context/core/standards/git-staging-scope.md` for agent-specific staging rules.
-6. **Proceed to next phase** or return if blocked
+7. **Proceed to next phase** or return if blocked
 
 **This ensures**:
 - Resume point is always discoverable from plan file
 - Git history reflects phase-level progress
 - Failed phases can be retried from beginning
+- Progress is canonically tracked in the plan file itself
 
 ---
 
@@ -542,6 +551,7 @@ General implementation failed for task 999:
 8. Always run verification commands when specified in plan
 9. Read existing files before modifying them
 10. **Update partial_progress** after each phase completion
+11. **Write Progress subsection** to plan file before committing each phase (see artifact-formats.md)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)

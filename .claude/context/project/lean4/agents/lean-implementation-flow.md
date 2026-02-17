@@ -107,6 +107,39 @@ For each proof/theorem in the phase:
 
 Edit plan file: Change phase status to `[COMPLETED]`
 
+### 4E. Update Progress Subsection
+
+After marking phase status, append session entry to plan file:
+
+1. Read current plan file
+2. Find the current phase section
+3. Locate or create **Progress:** subsection (after **Verification:** if present)
+4. Append session entry with:
+   - Session header: `**Session: {date}, {session_id}**`
+   - Action items: Added/Fixed/Completed with lemma/theorem names
+   - Outcome delta: sorries/axioms change if applicable
+5. Write updated plan file
+
+**Example Progress Entry**:
+```markdown
+**Progress:**
+
+**Session: 2026-02-16, sess_1771302929_655861**
+- Added: `buildSeedAux_preserves_mem_general` (key monotonicity lemma)
+- Completed: `buildSeed_contains_formula` (was 6 sorries, now 0)
+- Sorries: 18 -> 11 (7 eliminated)
+```
+
+**If no changes were made** (blocked or failed):
+```markdown
+**Session: 2026-02-16, sess_1771302929_655861** (no progress)
+- Attempted: induction approach for consistency
+- Result: blocked by mutual consistency requirement
+- No changes committed
+```
+
+See `artifact-formats.md` for full Progress Subsection format.
+
 ---
 
 ## Stage 5: Run Final Build Verification
@@ -254,7 +287,12 @@ For each phase in the implementation plan:
 2. **Update phase status** to `[IN PROGRESS]` in plan file
 3. **Execute proof development** as documented
 4. **Update phase status** to `[COMPLETED]` or `[BLOCKED]` or `[PARTIAL]`
-5. **Git commit** with message: `task {N} phase {P}: {phase_name}`
+5. **Write Progress subsection** to plan file (Stage 4E):
+   - Session header with date and session_id
+   - Action items: Added/Fixed/Completed with lemma names
+   - Outcome delta: sorries/axioms change
+   - For no-progress sessions: document what was attempted and why it failed
+6. **Git commit** with message: `task {N} phase {P}: {phase_name}`
    Use targeted staging (prevents race conditions with concurrent agents):
    ```bash
    git add \
@@ -267,12 +305,13 @@ For each phase in the implementation plan:
    Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>"
    ```
    **Note**: See `.claude/context/core/standards/git-staging-scope.md` for agent-specific staging rules.
-6. **Proceed to next phase** or return if blocked
+7. **Proceed to next phase** or return if blocked
 
 **This ensures**:
 - Resume point is always discoverable from plan file
 - Git history reflects phase-level progress
 - Failed proofs can be retried from beginning
+- Progress is canonically tracked in the plan file itself
 
 ---
 

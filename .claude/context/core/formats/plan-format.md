@@ -82,6 +82,7 @@ Plans may include a `plan_metadata` object in state.json tracking plan character
   - **Timing:** expected duration or window
   - **Owner:** (optional)
   - **Started/Completed/Blocked/Abandoned:** timestamp lines when status changes (ISO8601). Do not leave null placeholders.
+  - **Progress:** (optional) session entries tracking work done (see Progress Subsection below)
 
 ### Phase Dependencies Notation
 
@@ -114,6 +115,40 @@ The `Dependencies` field declares which phases must complete before this phase c
 In this example, Phases 2 and 3 can run in parallel after Phase 1 completes. Phase 4 waits for both.
 
 **Backward Compatibility**: The Dependencies field is optional. Plans without this field treat all phases as having `Dependencies: None` (sequential by default, dependency inferred).
+
+### Progress Subsection
+
+Each phase may include a **Progress:** subsection to track work done across implementation sessions. This provides a canonical record of progress directly in the plan file.
+
+**Format**:
+```markdown
+**Progress:**
+
+**Session: YYYY-MM-DD, sess_NNNNNN_XXXXXX**
+- Added: `lemma_name` - description
+- Fixed: `function_name` by adding precondition
+- Completed: `objective_name` (was N sorries, now 0)
+- Sorries: 18 -> 14 (4 eliminated)
+
+**Session: YYYY-MM-DD, sess_NNNNNN_YYYYYY** (no progress)
+- Attempted: approach description
+- Result: blocked by issue
+- No changes committed
+```
+
+**Session Header**: Each session entry includes the date (YYYY-MM-DD) and session_id from delegation context.
+
+**Action Verbs**: Use `Added`, `Fixed`, `Completed`, `Removed`, `Refactored`, `Attempted` for consistency.
+
+**Outcome Tracking**: For Lean tasks, track sorry/axiom delta: `Sorries: N -> M (K eliminated)`.
+
+**No-Progress Sessions**: Document failed attempts to prevent successor retries. Mark with `(no progress)` and include what was attempted and why it failed.
+
+**Placement**: After **Verification:** section (if present), before the horizontal rule separating phases.
+
+**Backward Compatibility**: The Progress subsection is optional. Plans without it remain valid.
+
+See `artifact-formats.md` for full Progress Subsection documentation.
 
 ## Sorry Characterization (Lean plans only)
 

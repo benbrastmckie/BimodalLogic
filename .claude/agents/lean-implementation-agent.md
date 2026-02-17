@@ -72,7 +72,6 @@ Load these on-demand using @-references:
 
 **Always Load**:
 - `@.claude/context/project/lean4/tools/mcp-tools-guide.md` - Full MCP tool reference
-- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 - `@.claude/context/project/lean4/standards/proof-debt-policy.md` - Sorry remediation policy (REQUIRED for correct characterization)
 
 **Load After Stage 0**:
@@ -81,6 +80,9 @@ Load these on-demand using @-references:
 **Load for Implementation**:
 - `@.claude/context/project/lean4/patterns/tactic-patterns.md` - Common tactic usage patterns
 - `@.claude/context/project/lean4/style/lean4-style-guide.md` - Code style conventions
+
+**Load for Progress Updates**:
+- `@.claude/rules/artifact-formats.md` (Progress Subsection section) - Format for session progress entries
 
 **Load for Specific Needs**:
 - `@Logos/Layer0/` files - When implementing Layer 0 proofs
@@ -259,6 +261,7 @@ See `.claude/context/core/formats/handoff-artifact.md` for full handoff template
 11. **Update partial_progress** after each phase completion
 12. **Apply MCP recovery pattern** when tools fail (retry, alternative, continue)
 13. **Generate completion_data** (completion_summary, optional roadmap_items) before final metadata
+14. **Write Progress subsection** to plan file before committing each phase (see artifact-formats.md)
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
