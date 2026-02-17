@@ -8,20 +8,26 @@
     {
       "project_number": 890,
       "project_name": "fix_measure_wf_build_error_temporallindenbaum",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Fix the Unknown identifier measure_wf build error in TemporalLindenbaum.lean at lines 220 and 263. This pre-existing error is blocking task 888 from completing. The identifier measure_wf is used for well-founded induction in helper lemmas. Likely a missing import or definition.",
       "created": "2026-02-17T23:07:05Z",
-      "last_updated": "2026-02-17T23:18:38Z",
-      "session_id": "sess_1771369781_c5cc48",
+      "last_updated": "2026-02-17T23:24:12Z",
+      "session_id": "sess_1771370491_3e51db",
       "researched": "2026-02-17T23:18:38Z",
       "artifacts": [
         {
           "path": "specs/890_fix_measure_wf_build_error_temporallindenbaum/reports/research-001.md",
           "type": "research",
           "summary": "Identified fix: replace measure_wf with measure (from Init.WF) and change alternative name from ind to h"
+        },
+        {
+          "path": "specs/890_fix_measure_wf_build_error_temporallindenbaum/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan for fixing measure_wf build error"
         }
-      ]
+      ],
+      "planned": "2026-02-17T23:24:12Z"
     },
     {
       "project_number": 889,

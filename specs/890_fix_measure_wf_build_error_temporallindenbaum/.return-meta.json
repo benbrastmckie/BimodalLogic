@@ -1,26 +1,19 @@
 {
-  "status": "success",
-  "started_at": "2026-02-17T12:00:00Z",
-  "completed_at": "2026-02-17T12:15:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/890_fix_measure_wf_build_error_temporallindenbaum/reports/research-001.md",
-      "summary": "Identified fix: replace measure_wf with measure (from Init.WF) and change alternative name from ind to h"
+      "type": "plan",
+      "path": "specs/890_fix_measure_wf_build_error_temporallindenbaum/plans/implementation-001.md",
+      "summary": "1-phase plan for fixing measure_wf build error"
     }
   ],
-  "partial_progress": null,
+  "next_steps": "Run /implement 890 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771369781_c5cc48",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771370491_3e51db",
+    "agent_type": "skill-planner",
+    "duration_seconds": 30,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "research_summary": {
-    "root_cause": "measure_wf was never defined - should be measure from Init.WF",
-    "fix_type": "syntactic",
-    "estimated_effort": "5 minutes",
-    "changes_required": 2,
-    "files_affected": 1
+    "phase_count": 1,
+    "estimated_hours": 0.1
   }
 }

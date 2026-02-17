@@ -24,11 +24,13 @@ technical_debt:
 
 ### 890. Fix measure_wf build error in TemporalLindenbaum.lean
 - **Effort**: 5 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
+- **Planned**: 2026-02-17
 - **Research**: [research-001.md](specs/890_fix_measure_wf_build_error_temporallindenbaum/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/890_fix_measure_wf_build_error_temporallindenbaum/plans/implementation-001.md)
 
 **Description**: Fix the Unknown identifier measure_wf build error in TemporalLindenbaum.lean at lines 220 and 263. This pre-existing error is blocking task 888 from completing. The identifier measure_wf is used for well-founded induction in helper lemmas. Likely a missing import or definition.
 
