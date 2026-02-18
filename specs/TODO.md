@@ -24,14 +24,14 @@ technical_debt:
 
 ### 900. Prove cut rule and derivation tree manipulation for recursive seed Henkin model
 - **Effort**: 6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-18
 - **Researched**: 2026-02-18
 - **Planned**: 2026-02-18
 - **Started**: 2026-02-18
-- **Research**: [research-001.md](specs/900_prove_cut_rule_derivation_tree_manipulation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/900_prove_cut_rule_derivation_tree_manipulation/plans/implementation-001.md)
+- **Research**: [research-002.md](specs/900_prove_cut_rule_derivation_tree_manipulation/reports/research-002.md)
+- **Plan**: [implementation-002.md](specs/900_prove_cut_rule_derivation_tree_manipulation/plans/implementation-002.md)
 - **Summary**: [implementation-summary-20260218.md](specs/900_prove_cut_rule_derivation_tree_manipulation/summaries/implementation-summary-20260218.md)
 
 **Description**: In order to complete phase 4 from /home/benjamin/Projects/ProofChecker/specs/864_recursive_seed_henkin_model/plans/implementation-005.md in the most mathematically correct manner, prove: the cut rule / derivation tree manipulation.
