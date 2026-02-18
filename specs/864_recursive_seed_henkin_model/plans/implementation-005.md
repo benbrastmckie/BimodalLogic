@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model Construction (v5 - Worklist Algorithm)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 13 hours
 - **Dependencies**: None (supersedes implementation-004.md approach)
 - **Research Inputs**:
@@ -106,19 +106,19 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Data Structures [NOT STARTED]
+### Phase 1: Data Structures [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add WorkItem, WorklistState structures and helper types to RecursiveSeed.lean
 
 **Tasks**:
-- [ ] Define `WorkItem` structure with formula, famIdx, timeIdx fields
-- [ ] Add `DecidableEq`, `BEq`, `Hashable` instances for WorkItem
-- [ ] Define `WorklistState` structure with seed, worklist, processed fields
-- [ ] Define `FormulaClass` inductive for formula classification
-- [ ] Implement `classifyFormula : Formula -> FormulaClass` function
-- [ ] Add helper functions: `getFutureTimes`, `getPastTimes` for seed queries
-- [ ] Verify all definitions compile
+- [x] Define `WorkItem` structure with formula, famIdx, timeIdx fields
+- [x] Add `DecidableEq`, `BEq`, `Hashable` instances for WorkItem
+- [x] Define `WorklistState` structure with seed, worklist, processed fields
+- [x] Define `FormulaClass` inductive for formula classification (reusing existing)
+- [x] Implement `classifyFormula : Formula -> FormulaClass` function (reusing existing)
+- [x] Add helper functions: `getFutureTimes`, `getPastTimes` for seed queries
+- [x] Verify all definitions compile
 
 **Timing:** 1 hour
 
@@ -129,15 +129,27 @@ After this implementation:
 - `lake build` succeeds
 - All new definitions have correct types
 
+**Progress:**
+
+**Session: 2026-02-17, sess_1771395402_e6313c**
+- Added: `WorkItem` structure with formula, famIdx, timeIdx fields
+- Added: `DecidableEq`, `BEq`, `LawfulBEq`, `Hashable` instances for WorkItem
+- Added: `WorklistState` structure with seed, worklist, processed fields
+- Added: `WorklistState.empty` and `WorklistState.initial` constructors
+- Added: `getFutureTimes`, `getPastTimes` helper functions
+- Added: `WorkItem.complexity`, `totalPendingComplexity`, `terminationMeasure` functions
+- Note: `FormulaClass` and `classifyFormula` already existed in file (lines 73-111)
+- Completed: Phase 1 objectives
+
 ---
 
-### Phase 2: Core Algorithm [NOT STARTED]
+### Phase 2: Core Algorithm [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Implement processWorkItem and processWorklist functions
 
 **Tasks**:
-- [ ] Implement `processWorkItem` with all 10 formula classification cases:
+- [x] Implement `processWorkItem` with all 10 formula classification cases:
   - `.atomic` - Add to seed, no new work
   - `.bottom` - Add to seed, no new work
   - `.implication` - Add to seed, no new work (Lindenbaum handles)
@@ -148,9 +160,9 @@ After this implementation:
   - `.pastPositive` - Add H and psi to past times, create work items
   - `.pastNegative` - Create fresh past time with neg psi
   - `.negation` - Add to seed, no new work
-- [ ] Implement `processWorklist` main loop (initially with `sorry` for termination)
-- [ ] Implement `buildSeedComplete : Formula -> ModelSeed` entry point
-- [ ] Add test theorem: `buildSeedComplete_computes` (verify it evaluates on simple formula)
+- [x] Implement `processWorklist` main loop (initially with `sorry` for termination)
+- [x] Implement `buildSeedComplete : Formula -> ModelSeed` entry point
+- [x] Add test theorem: `buildSeedComplete_computes` (verify it evaluates on simple formula)
 
 **Timing:** 2 hours
 
@@ -159,31 +171,39 @@ After this implementation:
 
 **Verification:**
 - `lake build` succeeds (with termination sorry)
+
+**Progress:**
+
+**Session: 2026-02-17, sess_1771395402_e6313c**
+- Added: `processWorkItem` with all 10 formula classification cases (lines 6495-6575)
+- Added: `processWorklist` main loop with termination_by annotation (lines 6577-6613)
+- Added: `buildSeedComplete` entry point (lines 6626-6627)
+- Added: `buildSeedComplete_computes` test theorem (sorry due to termination)
+- Sorries: 2 in termination proof (expected - Phase 3 scope)
+- Completed: Phase 2 objectives
 - `#check buildSeedComplete` shows correct type
 - `#reduce buildSeedComplete (Formula.atom "p")` produces non-empty seed
 
 ---
 
-### Phase 3: Termination Proof [NOT STARTED]
+### Phase 3: Termination Proof [PARTIAL]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove processWorklist terminates using lexicographic measure
 
 **Tasks**:
-- [ ] Define `WorkItem.complexity : WorkItem -> Nat` (delegates to Formula.complexity)
-- [ ] Define `totalPendingComplexity : List WorkItem -> Finset WorkItem -> Nat`
-- [ ] Define `terminationMeasure : WorklistState -> Nat x Nat`
-- [ ] Prove `processWorkItem_complexity_decreases`:
-  - For each formula class, new work items have strictly smaller complexity
-- [ ] Prove `complexity_facts` for formula constructors:
-  - `(Box psi).complexity = 1 + psi.complexity`
-  - `(neg phi).complexity = phi.complexity + 2`
-  - `(G psi).complexity = 1 + psi.complexity`
-  - etc.
-- [ ] Replace termination sorry with `termination_by terminationMeasure state`
-- [ ] Prove termination argument (may need `decreasing_by` block)
+- [x] Define `WorkItem.complexity : WorkItem -> Nat` (delegates to Formula.complexity)
+- [x] Define `totalPendingComplexity : List WorkItem -> Finset WorkItem -> Nat`
+- [x] Define `terminationMeasure : WorklistState -> Nat x Nat`
+- [x] Prove `complexity_facts` for formula constructors (Formula.neg_complexity, etc.)
+- [x] Prove `totalPendingComplexity_rest_le` and `totalPendingComplexity_of_in_processed`
+- [x] Prove `rest_length_lt` for worklist length decrease
+- [x] Set up `termination_by` and `decreasing_by` block structure
+- [ ] Complete Case 1 termination proof (item in processed)
+- [ ] Complete Case 2 termination proof (new work items)
+- [ ] Prove `processWorkItem_complexity_decreases` for all formula classes
 
-**Timing:** 3 hours
+**Timing:** 3 hours (estimated 1.5 hours remaining)
 
 **Files to modify:**
 - `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` - Add termination infrastructure
@@ -192,6 +212,18 @@ After this implementation:
 - `lake build` succeeds with NO termination sorries
 - `processWorklist` compiles with proven termination
 - `#check processWorklist` confirms it is not marked partial/sorry
+
+**Progress:**
+
+**Session: 2026-02-17, sess_1771395402_e6313c**
+- Added: `Formula.complexity_pos`, `Formula.neg_complexity` complexity lemmas
+- Added: `Formula.box_inner_complexity_lt`, `Formula.all_future_inner_complexity_lt`, `Formula.all_past_inner_complexity_lt`
+- Added: `Formula.neg_box_inner_complexity_lt`, `Formula.neg_future_inner_complexity_lt`, `Formula.neg_past_inner_complexity_lt`
+- Added: `totalPendingComplexity_rest_le`, `totalPendingComplexity_of_in_processed` helper lemmas
+- Added: `rest_length_lt` for length comparison
+- Set up: `termination_by` with lexicographic measure, `decreasing_by` block structure
+- Sorries: 2 remaining in decreasing_by block (Case 1 partial, Case 2 todo)
+- Blocker: decreasing_by doesn't expose the match binding for `state.worklist = item :: rest`
 
 ---
 
