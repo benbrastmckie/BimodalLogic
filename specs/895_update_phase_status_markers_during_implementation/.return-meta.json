@@ -1,19 +1,20 @@
 {
-  "status": "planned",
+  "status": "researched",
+  "summary": "Follow-up investigation confirmed documentation vs implementation gap. Agent definitions describe phase status updates in natural language but provide no concrete Edit tool examples. Skills only update plan HEADER status via sed, not individual PHASE markers. This explains why phases go directly from [NOT STARTED] to [PARTIAL] without intermediate [IN PROGRESS].",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/895_update_phase_status_markers_during_implementation/plans/implementation-001.md",
-      "summary": "5-phase implementation plan for updating phase status markers in agent definitions"
+      "type": "research",
+      "path": "specs/895_update_phase_status_markers_during_implementation/reports/research-002.md",
+      "summary": "Follow-up investigation revealing documentation vs implementation gap for phase status updates"
     }
   ],
-  "next_steps": "Run /implement 895 to execute the plan",
+  "next_steps": "Update implementation plan to add concrete Edit tool examples to agent definitions",
   "metadata": {
-    "session_id": "sess_1771377535_b0726b",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1771378236_c253ea",
+    "agent_type": "general-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 2.5
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5,
+    "key_finding": "Natural language instructions exist but no concrete Edit tool invocation examples"
   }
 }
