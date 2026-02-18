@@ -72,8 +72,8 @@ technical_debt:
 - **Researched**: 2026-02-18
 - **Planned**: 2026-02-18
 - **Parent**: Task #888
-- **Blocked**: Theorem maximal_tcs_is_mcs unprovable (3 plan versions tried). Recommend RecursiveSeed (tasks 864/880).
-- **Research**: [research-002.md](specs/892_modify_henkinstep_add_negations/reports/research-002.md)
+- **Blocked**: Mathematical obstruction confirmed. maximal_tcs_is_mcs is FALSE (TCS-maximality ≠ MCS). Recommend RecursiveSeed (task 864).
+- **Research**: [research-003.md](specs/892_modify_henkinstep_add_negations/reports/research-003.md) (synthesized)
 - **Plan**: [implementation-003.md](specs/892_modify_henkinstep_add_negations/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260217.md](specs/892_modify_henkinstep_add_negations/summaries/implementation-summary-20260217.md)
 
