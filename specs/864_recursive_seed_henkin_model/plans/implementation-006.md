@@ -236,6 +236,19 @@ After this implementation:
 - Created: handoff document at `specs/864_recursive_seed_henkin_model/handoffs/phase-2-handoff-20260218-4.md`
 - Remaining: futurePositive, pastPositive, pastNegative (3 cases)
 
+**Session: 2026-02-18 (iteration 5), sess_1771447870_20a856**
+- Added: `hasPosition_time_lt_freshFutureTime` helper lemma (line ~544)
+  - Proves: if position exists at (famIdx, t), then t < freshFutureTime
+  - Used to establish t != freshFutureTime in futureNegative case
+- Added: `hasPosition_time_gt_freshPastTime` helper lemma (line ~569)
+  - Proves: if position exists at (famIdx, t), then t > freshPastTime
+  - Used for pastNegative case
+- Completed: futureNegative case (fixed all 3 sorries using hasPosition_time_lt_freshFutureTime)
+- Completed: pastNegative case (full implementation using hasPosition_time_gt_freshPastTime)
+- Sorries: 26 -> 22 (eliminated 4 sorries: 3 in futureNegative + 1 pastNegative top-level sorry)
+- Remaining in processWorkItem_preserves_closure: futurePositive, pastPositive (2 cases)
+- Note: futurePositive/pastPositive require compound foldl helpers (adds both psi and G/H psi)
+
 **Timing:** 2 hours
 
 **Files to modify:**

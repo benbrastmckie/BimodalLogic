@@ -540,6 +540,48 @@ theorem ModelSeed.freshPastTime_ne_current (seed : ModelSeed) (famIdx : Nat) (cu
   omega
 
 /--
+If a position exists at (famIdx, t), then t < freshFutureTime famIdx currentTime.
+This is because freshFutureTime is max(currentTime, all existing times) + 1.
+-/
+theorem ModelSeed.hasPosition_time_lt_freshFutureTime (seed : ModelSeed) (famIdx : Nat)
+    (t currentTime : Int) (h_pos : seed.hasPosition famIdx t) :
+    t < seed.freshFutureTime famIdx currentTime := by
+  unfold freshFutureTime hasPosition at *
+  simp only [List.any_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq] at h_pos
+  obtain ⟨e, h_mem, h_fam, h_time⟩ := h_pos
+  -- e.timeIdx = t and e is in entries with e.familyIdx = famIdx
+  have h_in_filtered : e ∈ List.filter (fun e => e.familyIdx == famIdx) seed.entries := by
+    rw [List.mem_filter]
+    exact ⟨h_mem, by simp [h_fam]⟩
+  -- e.timeIdx ≤ max over filtered entries
+  have h_le := foldl_max_timeIdx_ge_mem
+    (List.filter (fun e => e.familyIdx == famIdx) seed.entries)
+    currentTime SeedEntry.timeIdx e h_in_filtered
+  -- So t = e.timeIdx ≤ maxTime, hence t < maxTime + 1
+  omega
+
+/--
+If a position exists at (famIdx, t), then t > freshPastTime famIdx currentTime.
+This is because freshPastTime is min(currentTime, all existing times) - 1.
+-/
+theorem ModelSeed.hasPosition_time_gt_freshPastTime (seed : ModelSeed) (famIdx : Nat)
+    (t currentTime : Int) (h_pos : seed.hasPosition famIdx t) :
+    t > seed.freshPastTime famIdx currentTime := by
+  unfold freshPastTime hasPosition at *
+  simp only [List.any_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq] at h_pos
+  obtain ⟨e, h_mem, h_fam, h_time⟩ := h_pos
+  -- e.timeIdx = t and e is in entries with e.familyIdx = famIdx
+  have h_in_filtered : e ∈ List.filter (fun e => e.familyIdx == famIdx) seed.entries := by
+    rw [List.mem_filter]
+    exact ⟨h_mem, by simp [h_fam]⟩
+  -- min over filtered entries ≤ e.timeIdx
+  have h_le := foldl_min_timeIdx_le_mem
+    (List.filter (fun e => e.familyIdx == famIdx) seed.entries)
+    currentTime SeedEntry.timeIdx e h_in_filtered
+  -- So minTime ≤ t = e.timeIdx, hence minTime - 1 < t
+  omega
+
+/--
 The recursive seed builder auxiliary function.
 
 This function recursively unpacks a formula and builds seed entries:
@@ -9300,9 +9342,25 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_theta_orig := h_closed f' h_pos_orig
           have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f' t theta
                                   (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+          -- Need to prove f' ≠ item.famIdx ∨ t ≠ freshFutureTime
+          have h_diff : f' ≠ item.famIdx ∨ t ≠ seed1.freshFutureTime item.famIdx item.timeIdx := by
+            by_cases h_fam : f' = item.famIdx
+            · -- f' = item.famIdx, so we prove t ≠ freshFutureTime
+              right
+              subst h_fam
+              -- h_pos_orig : state.seed.hasPosition item.famIdx t
+              -- addFormula preserves hasPosition
+              have h_pos_seed1 := addFormula_preserves_hasPosition state.seed item.famIdx item.timeIdx
+                                    (Formula.neg (Formula.all_future psi)) .universal_target item.famIdx t h_pos_orig
+              -- By our helper lemma, t < freshFutureTime
+              have h_lt := ModelSeed.hasPosition_time_lt_freshFutureTime seed1 item.famIdx t item.timeIdx h_pos_seed1
+              omega
+            · -- f' ≠ item.famIdx
+              left
+              exact h_fam
           exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
                   (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) f' t h_theta_seed1
-                  (Or.inl (fun h => by simp only [h] at h_or_pos; sorry)) -- Need: f' ≠ item.famIdx OR t ≠ newTime
+                  h_diff
         | inr h_new_pos =>
           obtain ⟨hf', ht'⟩ := h_new_pos
           subst hf' ht'
@@ -9353,9 +9411,19 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_theta_orig := h_closed t' h_lt h_pos_orig
           have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
                                   (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+          -- Need to prove f ≠ item.famIdx ∨ t' ≠ freshFutureTime
+          have h_diff : f ≠ item.famIdx ∨ t' ≠ seed1.freshFutureTime item.famIdx item.timeIdx := by
+            by_cases h_fam : f = item.famIdx
+            · right
+              subst h_fam
+              have h_pos_seed1 := addFormula_preserves_hasPosition state.seed item.famIdx item.timeIdx
+                                    (Formula.neg (Formula.all_future psi)) .universal_target item.famIdx t' h_pos_orig
+              have h_lt' := ModelSeed.hasPosition_time_lt_freshFutureTime seed1 item.famIdx t' item.timeIdx h_pos_seed1
+              omega
+            · left; exact h_fam
           exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
                   (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) f t' h_theta_seed1
-                  (Or.inl (fun h => by simp only [h] at h_or_pos; sorry))
+                  h_diff
         | inr h_new_pos =>
           obtain ⟨hf', ht'⟩ := h_new_pos
           subst hf' ht'
@@ -9404,9 +9472,19 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_theta_orig := h_closed t' h_lt h_pos_orig
           have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
                                   (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+          -- Need to prove f ≠ item.famIdx ∨ t' ≠ freshFutureTime
+          have h_diff : f ≠ item.famIdx ∨ t' ≠ seed1.freshFutureTime item.famIdx item.timeIdx := by
+            by_cases h_fam : f = item.famIdx
+            · right
+              subst h_fam
+              have h_pos_seed1 := addFormula_preserves_hasPosition state.seed item.famIdx item.timeIdx
+                                    (Formula.neg (Formula.all_future psi)) .universal_target item.famIdx t' h_pos_orig
+              have h_lt' := ModelSeed.hasPosition_time_lt_freshFutureTime seed1 item.famIdx t' item.timeIdx h_pos_seed1
+              omega
+            · left; exact h_fam
           exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
                   (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) f t' h_theta_seed1
-                  (Or.inl (fun h => by simp only [h] at h_or_pos; sorry))
+                  h_diff
         | inr h_new_pos =>
           obtain ⟨hf', ht'⟩ := h_new_pos
           subst hf' ht'
@@ -9430,7 +9508,210 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
   | .pastPositive psi =>
     sorry -- Adds psi to ALL past times
   | .pastNegative psi =>
-    sorry -- Creates new time with pending work item
+    -- pastNegative case: adds neg(H psi) to item position, creates new past time with neg psi
+    -- processWorkItem for pastNegative:
+    --   seed1 := state.seed.addFormula item.famIdx item.timeIdx (neg(H psi))
+    --   newTime := seed1.freshPastTime item.famIdx item.timeIdx
+    --   seed2 := seed1.createNewTime item.famIdx newTime (neg psi)
+    --   newWork := [⟨neg psi, item.famIdx, newTime⟩]
+    -- Neither neg(H psi) nor neg psi is a Box/G/H formula
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    let seed1 := state.seed.addFormula item.famIdx item.timeIdx (Formula.neg (Formula.all_past psi)) .universal_target
+    constructor
+    · -- Box theta closure
+      intro f t theta h_box
+      -- Trace back: createNewTime adds neg psi, addFormula adds neg(H psi) - neither is Box
+      have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
+                      (seed1.freshPastTime item.famIdx item.timeIdx) (Formula.neg psi)
+                      (Formula.box theta) f t h_box
+      have h_in_seed1 : Formula.box theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.all_past psi)) (Formula.box theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.box theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.1 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro f' h_pos'
+        have h_or_pos := createNewTime_preserves_hasPosition seed1 item.famIdx
+                           (seed1.freshPastTime item.famIdx item.timeIdx) (Formula.neg psi) f' t h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.all_past psi)) .universal_target f' t h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed f' h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f' t theta
+                                  (Formula.neg (Formula.all_past psi)) .universal_target h_theta_orig
+          -- Need to prove f' ≠ item.famIdx ∨ t ≠ freshPastTime
+          have h_diff : f' ≠ item.famIdx ∨ t ≠ seed1.freshPastTime item.famIdx item.timeIdx := by
+            by_cases h_fam : f' = item.famIdx
+            · -- f' = item.famIdx, so we prove t ≠ freshPastTime
+              right
+              subst h_fam
+              -- h_pos_orig : state.seed.hasPosition item.famIdx t
+              -- addFormula preserves hasPosition
+              have h_pos_seed1 := addFormula_preserves_hasPosition state.seed item.famIdx item.timeIdx
+                                    (Formula.neg (Formula.all_past psi)) .universal_target item.famIdx t h_pos_orig
+              -- By our helper lemma, t > freshPastTime
+              have h_gt := ModelSeed.hasPosition_time_gt_freshPastTime seed1 item.famIdx t item.timeIdx h_pos_seed1
+              omega
+            · -- f' ≠ item.famIdx
+              left
+              exact h_fam
+          exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                  (seed1.freshPastTime item.famIdx item.timeIdx) theta (Formula.neg psi) f' t h_theta_seed1
+                  h_diff
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.famIdx h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.all_past psi)) .universal_target h_theta_orig
+            exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                    (seed1.freshPastTime item.famIdx item.timeIdx) theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+                    (Or.inr (fun h => by
+                      -- item.timeIdx ≠ freshPastTime because freshPastTime < item.timeIdx
+                      have h_fresh := ModelSeed.freshPastTime_lt_current seed1 item.famIdx item.timeIdx
+                      omega))
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+    constructor
+    · -- G theta closure
+      intro f t theta h_G
+      have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
+                      (seed1.freshPastTime item.famIdx item.timeIdx) (Formula.neg psi)
+                      (Formula.all_future theta) f t h_G
+      have h_in_seed1 : Formula.all_future theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.all_past psi)) (Formula.all_future theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.all_future theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.2.1 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro t' h_lt h_pos'
+        have h_or_pos := createNewTime_preserves_hasPosition seed1 item.famIdx
+                           (seed1.freshPastTime item.famIdx item.timeIdx) (Formula.neg psi) f t' h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.all_past psi)) .universal_target f t' h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed t' h_lt h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
+                                  (Formula.neg (Formula.all_past psi)) .universal_target h_theta_orig
+          -- Need to prove f ≠ item.famIdx ∨ t' ≠ freshPastTime
+          have h_diff : f ≠ item.famIdx ∨ t' ≠ seed1.freshPastTime item.famIdx item.timeIdx := by
+            by_cases h_fam : f = item.famIdx
+            · right
+              subst h_fam
+              have h_pos_seed1 := addFormula_preserves_hasPosition state.seed item.famIdx item.timeIdx
+                                    (Formula.neg (Formula.all_past psi)) .universal_target item.famIdx t' h_pos_orig
+              have h_gt := ModelSeed.hasPosition_time_gt_freshPastTime seed1 item.famIdx t' item.timeIdx h_pos_seed1
+              omega
+            · left; exact h_fam
+          exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                  (seed1.freshPastTime item.famIdx item.timeIdx) theta (Formula.neg psi) f t' h_theta_seed1
+                  h_diff
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.timeIdx h_lt h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.all_past psi)) .universal_target h_theta_orig
+            exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                    (seed1.freshPastTime item.famIdx item.timeIdx) theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+                    (Or.inr (fun h => by
+                      have h_fresh := ModelSeed.freshPastTime_lt_current seed1 item.famIdx item.timeIdx
+                      omega))
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+    · -- H theta closure
+      intro f t theta h_H
+      have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
+                      (seed1.freshPastTime item.famIdx item.timeIdx) (Formula.neg psi)
+                      (Formula.all_past theta) f t h_H
+      have h_in_seed1 : Formula.all_past theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.all_past psi)) (Formula.all_past theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.all_past theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.2.2 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro t' h_lt h_pos'
+        have h_or_pos := createNewTime_preserves_hasPosition seed1 item.famIdx
+                           (seed1.freshPastTime item.famIdx item.timeIdx) (Formula.neg psi) f t' h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.all_past psi)) .universal_target f t' h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed t' h_lt h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
+                                  (Formula.neg (Formula.all_past psi)) .universal_target h_theta_orig
+          -- Need to prove f ≠ item.famIdx ∨ t' ≠ freshPastTime
+          have h_diff : f ≠ item.famIdx ∨ t' ≠ seed1.freshPastTime item.famIdx item.timeIdx := by
+            by_cases h_fam : f = item.famIdx
+            · right
+              subst h_fam
+              have h_pos_seed1 := addFormula_preserves_hasPosition state.seed item.famIdx item.timeIdx
+                                    (Formula.neg (Formula.all_past psi)) .universal_target item.famIdx t' h_pos_orig
+              have h_gt := ModelSeed.hasPosition_time_gt_freshPastTime seed1 item.famIdx t' item.timeIdx h_pos_seed1
+              omega
+            · left; exact h_fam
+          exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                  (seed1.freshPastTime item.famIdx item.timeIdx) theta (Formula.neg psi) f t' h_theta_seed1
+                  h_diff
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.timeIdx h_lt h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.all_past psi)) .universal_target h_theta_orig
+            exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                    (seed1.freshPastTime item.famIdx item.timeIdx) theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+                    (Or.inr (fun h => by
+                      have h_fresh := ModelSeed.freshPastTime_lt_current seed1 item.famIdx item.timeIdx
+                      omega))
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
 
 /--
 processWorklistAux preserves closure invariant.
