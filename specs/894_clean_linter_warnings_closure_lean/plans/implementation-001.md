@@ -1,7 +1,7 @@
 # Implementation Plan: Task #894
 
 - **Task**: 894 - clean_linter_warnings_closure_lean
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 0.25 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/894_clean_linter_warnings_closure_lean/reports/research-001.md
@@ -38,16 +38,16 @@ Remove unused simp arguments and an unused variable binding in `Closure.lean` to
 
 ## Implementation Phases
 
-### Phase 1: Remove Unused Arguments [NOT STARTED]
+### Phase 1: Remove Unused Arguments [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Eliminate all 4 linter warnings by removing unused simp arguments and variable bindings
 
 **Tasks**:
-- [ ] Line 99: Change `if h : sf.formula = φ then` to `if sf.formula = φ then`
-- [ ] Line 304: Change `simp [hbot', hr'']` to `simp [hr'']`
-- [ ] Line 316: Change `simp [hbot', hcontra', hr'']` to `simp [hr'']`
-- [ ] Run `lake build` and verify no warnings for `Closure.lean`
+- [x] Line 99: Change `if h : sf.formula = φ then` to `if sf.formula = φ then`
+- [x] Line 304: Change `simp [hbot', hr'']` to `simp [hr'']`
+- [x] Line 316: Change `simp [hbot', hcontra', hr'']` to `simp [hr'']`
+- [x] Run `lake build` and verify no warnings for `Closure.lean`
 
 **Timing**: 10-15 minutes
 
@@ -57,6 +57,14 @@ Remove unused simp arguments and an unused variable binding in `Closure.lean` to
 **Verification**:
 - `lake build` completes successfully
 - No warnings appear for `Closure.lean` in build output
+
+**Progress:**
+
+**Session: 2026-02-18, sess_1771381924_d1724f**
+- Removed: unused variable `h` at line 99 (decidable if-then-else)
+- Removed: unused simp argument `hbot'` at line 304
+- Removed: unused simp arguments `hbot', hcontra'` at line 316
+- Verified: `lake build` shows no warnings for `Decidability/Closure.lean`
 
 ---
 

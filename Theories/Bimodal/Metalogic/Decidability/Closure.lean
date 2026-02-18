@@ -96,7 +96,7 @@ def checkAxiomNeg (b : Branch) : Option ClosureReason :=
     if sf.isNeg then
       match matchAxiom sf.formula with
       | some ⟨φ, witness⟩ =>
-          if h : sf.formula = φ then
+          if sf.formula = φ then
             some (.axiomNeg φ witness)
           else
             none
@@ -301,7 +301,7 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
         simp only [Option.isSome_iff_exists] at hsome
         obtain ⟨r', hr''⟩ := hsome
         rw [Option.isSome_iff_exists]
-        exact ⟨r', by simp [hbot', hr'']⟩
+        exact ⟨r', by simp [hr'']⟩
     · -- checkAxiomNeg b = some r
       have hsome : (checkAxiomNeg (sf :: b)).isSome := checkAxiomNeg_mono b sf (by simp [hax])
       cases hbot' : checkBotPos (sf :: b) with
@@ -313,7 +313,7 @@ theorem closed_extend_closed (b : Branch) (sf : SignedFormula) :
           simp only [Option.isSome_iff_exists] at hsome
           obtain ⟨r', hr''⟩ := hsome
           rw [Option.isSome_iff_exists]
-          exact ⟨r', by simp [hbot', hcontra', hr'']⟩
+          exact ⟨r', by simp [hr'']⟩
 
 /--
 If a branch has T(φ) and we add F(φ), it becomes closed.
