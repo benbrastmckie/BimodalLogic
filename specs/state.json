@@ -8,25 +8,25 @@
     {
       "project_number": 895,
       "project_name": "update_phase_status_markers_during_implementation",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-18T01:13:43Z",
-      "last_updated": "2026-02-18T01:34:16Z",
+      "last_updated": "2026-02-18T01:37:58Z",
       "session_id": "sess_1771378236_c253ea",
       "researched": "2026-02-18T01:17:22Z",
       "artifacts": [
         {
-          "path": "specs/895_update_phase_status_markers_during_implementation/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for updating phase status markers in agent definitions"
-        },
-        {
           "path": "specs/895_update_phase_status_markers_during_implementation/reports/research-002.md",
           "type": "research",
           "summary": "Follow-up investigation revealing documentation vs implementation gap for phase status updates"
+        },
+        {
+          "path": "specs/895_update_phase_status_markers_during_implementation/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 5-phase plan with concrete Edit tool examples for phase status updates (v002)"
         }
       ],
-      "planned": "2026-02-18T01:21:34Z"
+      "planned": "2026-02-18T01:37:58Z"
     },
     {
       "project_number": 893,

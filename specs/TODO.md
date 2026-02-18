@@ -23,15 +23,15 @@ technical_debt:
 ## Tasks
 
 ### 895. Update phase status markers during implementation
-- **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 2 hours
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
 - **Planned**: 2026-02-18
 - **Research**: [research-002.md](specs/895_update_phase_status_markers_during_implementation/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/895_update_phase_status_markers_during_implementation/plans/implementation-001.md)
-- **Note**: Follow-up research found documentation vs implementation gap - plan needs revision
+- **Plan**: [implementation-002.md](specs/895_update_phase_status_markers_during_implementation/plans/implementation-002.md)
+- **Note**: Plan v002 - Add concrete Edit tool examples (research-002 corrective findings)
 
 **Description**: Modify the /implement workflow to update phase status markers at appropriate times. Currently, phase status remains [NOT STARTED] until after progress is made. Instead, update each phase to [IMPLEMENTING] before starting work on that phase, and then to [COMPLETE], [PARTIAL], or [BLOCKED] as appropriate after work on that phase concludes, before proceeding to the next phase or handing off to another subagent.
 
