@@ -1245,6 +1245,75 @@ private theorem classifyFormula_eq_atomic (phi : Formula) (s : String)
       | _ => simp only [classifyFormula] at h
     | _ => simp only [classifyFormula] at h
 
+/-- Classification inversion: bottom classification implies bot formula. -/
+private theorem classifyFormula_eq_bottom (phi : Formula)
+    (h : classifyFormula phi = FormulaClass.bottom) : phi = Formula.bot := by
+  cases phi with
+  | atom _ => simp only [classifyFormula] at h
+  | bot => rfl
+  | box _ => simp only [classifyFormula] at h
+  | all_future _ => simp only [classifyFormula] at h
+  | all_past _ => simp only [classifyFormula] at h
+  | imp phi1 phi2 =>
+    cases phi2 with
+    | bot =>
+      cases phi1 with
+      | box _ => simp only [classifyFormula] at h
+      | all_future _ => simp only [classifyFormula] at h
+      | all_past _ => simp only [classifyFormula] at h
+      | _ => simp only [classifyFormula] at h
+    | _ => simp only [classifyFormula] at h
+
+/-- Classification inversion: implication classification implies imp formula. -/
+private theorem classifyFormula_eq_implication (phi : Formula) (p1 p2 : Formula)
+    (h : classifyFormula phi = FormulaClass.implication p1 p2) :
+    phi = Formula.imp p1 p2 := by
+  cases phi with
+  | atom _ => simp only [classifyFormula] at h
+  | bot => simp only [classifyFormula] at h
+  | box _ => simp only [classifyFormula] at h
+  | all_future _ => simp only [classifyFormula] at h
+  | all_past _ => simp only [classifyFormula] at h
+  | imp phi1 phi2 =>
+    cases phi2 with
+    | bot =>
+      cases phi1 with
+      | box _ => simp only [classifyFormula] at h
+      | all_future _ => simp only [classifyFormula] at h
+      | all_past _ => simp only [classifyFormula] at h
+      | _ => simp only [classifyFormula] at h
+    | _ =>
+      simp only [classifyFormula, FormulaClass.implication.injEq] at h
+      exact congrArg₂ Formula.imp h.1 h.2
+
+/-- Classification inversion: negation classification implies neg formula (phi.imp bot with non-modal phi). -/
+private theorem classifyFormula_eq_negation (phi inner : Formula)
+    (h : classifyFormula phi = FormulaClass.negation inner) :
+    phi = Formula.neg inner := by
+  cases phi with
+  | atom _ => simp only [classifyFormula] at h
+  | bot => simp only [classifyFormula] at h
+  | box _ => simp only [classifyFormula] at h
+  | all_future _ => simp only [classifyFormula] at h
+  | all_past _ => simp only [classifyFormula] at h
+  | imp phi1 phi2 =>
+    cases phi2 with
+    | bot =>
+      cases phi1 with
+      | box _ => simp only [classifyFormula] at h
+      | all_future _ => simp only [classifyFormula] at h
+      | all_past _ => simp only [classifyFormula] at h
+      | atom s =>
+        simp only [classifyFormula, FormulaClass.negation.injEq] at h
+        rw [h]; rfl
+      | imp a b =>
+        simp only [classifyFormula, FormulaClass.negation.injEq] at h
+        rw [h]; rfl
+      | bot =>
+        simp only [classifyFormula, FormulaClass.negation.injEq] at h
+        rw [h]; rfl
+    | _ => simp only [classifyFormula] at h
+
 /-!
 ## Phase 3: Seed Consistency Proof
 
@@ -8062,7 +8131,8 @@ For H psi: we add psi to ALL past times that exist
 -/
 theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistState)
     (h_inv : WorklistClosureInvariant state)
-    (h_item_not_proc : item ∉ state.processed) :
+    (h_item_not_proc : item ∉ state.processed)
+    (h_item_pos : state.seed.hasPosition item.famIdx item.timeIdx) :
     let (newWork, state') := processWorkItem item state
     WorklistClosureInvariant {
       seed := state'.seed,
@@ -8110,7 +8180,145 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
   --   - foldl_addFormula_times_puts_phi_in_all (line 8007)
   --   - addFormula_preserves_mem_getFormulas_same (line 3515)
   --
-  sorry -- processWorkItem_preserves_closure: 10-case proof with helper lemmas above
+  -- Destructure the match on processWorkItem
+  split
+  rename_i newWork state' h_proc
+  -- Now case-split on classifyFormula to handle all 10 formula types
+  match h_class : classifyFormula item.formula with
+  | .atomic a =>
+    -- atomic case: just adds item.formula, which is not Box/G/H
+    -- So any Box/G/H in new seed must be from old seed
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    simp only [List.filter_nil, List.append_nil]
+    constructor
+    · -- Box psi closure
+      intro f t psi h_box
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.box psi) .universal_target f t h_box
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro f' h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf', ht'⟩ := h_new_pos
+            subst hf' ht'
+            -- (f', t) = (item.famIdx, item.timeIdx), so t = item.timeIdx
+            -- Need to show psi is at (item.famIdx, item.timeIdx) in new seed
+            -- Since h_closed says psi is at all old positions at time t = item.timeIdx,
+            -- we use that if old seed had position at (item.famIdx, item.timeIdx), psi was there
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · -- Position existed before, so psi was there by h_closed, preserved by addFormula
+              exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.famIdx h_old_pos)
+            · -- Position didn't exist before - this is a new position
+              -- In this case, the new position only has item.formula (an atom), not psi
+              -- But we need psi there. This case requires the pending branch instead.
+              -- Since we're in the inl case (closed), there's no pending work item,
+              -- which means Box psi's closure was already satisfied for ALL positions.
+              -- But h_old_pos says position didn't exist, while h_item_pos says it did.
+              exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        -- Box psi = item.formula, but item.formula is atomic
+        have h_atom := classifyFormula_eq_atomic item.formula a h_class
+        simp only [h_atom] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    constructor
+    · -- G psi closure
+      intro f t psi h_G
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_future psi) .universal_target f t h_G
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            -- (f, t') = (item.famIdx, item.timeIdx), need psi at (item.famIdx, item.timeIdx)
+            -- h_closed applies for t' > t where old has position at f t'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_atom := classifyFormula_eq_atomic item.formula a h_class
+        simp only [h_atom] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    · -- H psi closure
+      intro f t psi h_H
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_past psi) .universal_target f t h_H
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.2 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_atom := classifyFormula_eq_atomic item.formula a h_class
+        simp only [h_atom] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+  | .bottom =>
+    sorry -- Similar to atomic
+  | .implication phi1 phi2 =>
+    sorry -- Similar to atomic
+  | .negation phi =>
+    sorry -- Similar to atomic
+  | .boxPositive psi =>
+    sorry -- Key case: adds psi to ALL families
+  | .boxNegative psi =>
+    sorry -- Creates new family with pending work item
+  | .futurePositive psi =>
+    sorry -- Adds psi to ALL future times
+  | .futureNegative psi =>
+    sorry -- Creates new time with pending work item
+  | .pastPositive psi =>
+    sorry -- Adds psi to ALL past times
+  | .pastNegative psi =>
+    sorry -- Creates new time with pending work item
 
 /--
 processWorklistAux preserves closure invariant.

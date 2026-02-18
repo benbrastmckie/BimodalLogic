@@ -203,6 +203,21 @@ After this implementation:
 - Identified potential issue: new position creation requires careful invariant handling
 - Created: handoff document at `specs/864_recursive_seed_henkin_model/handoffs/phase-2-handoff-20260218-1.md`
 - Sorries: 21 (unchanged - added 2 helper lemmas with 0 sorries)
+
+**Session: 2026-02-18 (iteration 2), sess_1771444424_210e88**
+- Added: `h_item_pos` hypothesis to `processWorkItem_preserves_closure` theorem
+  - Requires work item position to exist in seed
+  - Enables contradiction in "new position" subcase
+- Added: `classifyFormula_eq_bottom`, `classifyFormula_eq_implication`, `classifyFormula_eq_negation` lemmas
+  - Classification inversion for simple formula types
+  - Enables Formula.noConfusion proofs in simple cases
+- Completed: atomic case proof (130 lines)
+  - Uses `mem_getFormulas_after_addFormula` for backward reasoning
+  - Uses `by_cases` on old position existence
+  - Uses `absurd h_item_pos h_old_pos` for new position contradiction
+- Sorries: 21 -> 29 (net +8 from 10-case structure minus 1 completed atomic case)
+- Created: handoff document at `specs/864_recursive_seed_henkin_model/handoffs/phase-2-handoff-20260218-2.md`
+- [ ] Complete 9 remaining cases (bottom, implication, negation, boxPositive, boxNegative, futurePositive, futureNegative, pastPositive, pastNegative)
 - [ ] Add `SeedClosed_implies_ModalClosed`, `SeedClosed_implies_GClosed`, `SeedClosed_implies_HClosed` extractors
 
 **Timing:** 2 hours
