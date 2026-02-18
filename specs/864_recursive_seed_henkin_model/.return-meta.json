@@ -1,32 +1,17 @@
 {
-  "status": "partial",
-  "summary": "Phase 4 analysis complete: 5 sorries remain but all stem from same architectural blocker",
+  "status": "researched",
+  "summary": "Hypothesis disproven but deeper insight gained: RecursiveSeed does create non-zero times for temporal witnesses, BUT it also propagates G-formulas TO time 0. The actual blocker is chain architecture: forward/backward chains only support single-direction propagation, lacking cross-chain communication needed for cross-sign coherence.",
   "artifacts": [
     {
-      "path": "specs/864_recursive_seed_henkin_model/plans/implementation-004.md",
-      "type": "plan",
-      "summary": "Updated Phase 4 with session 32 progress - architectural analysis of remaining sorries"
+      "path": "specs/864_recursive_seed_henkin_model/reports/research-005.md",
+      "type": "research",
+      "summary": "Analysis of RecursiveSeed formula placement showing chain architecture is the true blocker, not seed placement"
     }
   ],
   "metadata": {
-    "session_id": "sess_1771383160_c559b2",
-    "agent_type": "lean-implementation-agent",
-    "phases_completed": 3,
-    "phases_total": 6,
-    "iteration": 2
-  },
-  "partial_progress": {
-    "stage": "phase_4_architectural_blocker",
-    "phases_completed": 3,
-    "current_phase": 4,
-    "phase_name": "SeedCompletion.lean",
-    "sorries_remaining": 5,
-    "sorries_reduced_from": 10,
-    "details": "All 5 remaining sorries (lines 161, 246, 256, 328, 372) stem from same architectural issue: chain construction goes OUTWARD from time 0 but cross-sign temporal coherence requires INWARD propagation. Line 161 (modal_witness_includes_boxcontent) is in unused seedFamilyMCS function. Proven buildFamilyFromSeed_contains_seed_zero as separate theorem."
-  },
-  "requires_user_review": true,
-  "review_reason": "Architectural blocker: Cross-sign temporal coherence cannot be resolved with current dovetailing chain construction. The chain builds outward from time 0, but G phi at t<0 needs phi at t'>0, requiring inward propagation through time 0. Options: (1) Different construction using Zorn's lemma, (2) Prove RecursiveSeed places all formulas at time 0, (3) Accept as documented technical debt.",
-  "completion_data": {
-    "completion_summary": "Phase 4 analysis complete. Reduced SeedCompletion.lean from 10 to 5 sorries via dovetailChainSet refactoring. Remaining 5 sorries all require different construction approach - current chain builds outward from time 0 but cross-sign coherence needs inward propagation."
+    "session_id": "sess_1771384724_cb46b9",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
   }
 }
