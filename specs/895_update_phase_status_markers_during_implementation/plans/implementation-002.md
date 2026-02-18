@@ -1,7 +1,7 @@
 # Implementation Plan: Task #895 (Version 002)
 
 - **Task**: 895 - Update phase status markers during implementation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Version**: 002 (revised based on research-002.md findings)
 - **Effort**: 2 hours
 - **Dependencies**: None
@@ -43,7 +43,7 @@ The fix is to add **concrete Edit tool invocation examples** to agent definition
 
 ## Implementation Phases
 
-### Phase 1: Update general-implementation-agent.md with concrete Edit examples [NOT STARTED]
+### Phase 1: Update general-implementation-agent.md with concrete Edit examples [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add executable Edit tool patterns for phase status updates in Stage 4
@@ -122,7 +122,7 @@ The fix is to add **concrete Edit tool invocation examples** to agent definition
 
 ---
 
-### Phase 2: Update lean-implementation-flow.md with same patterns [NOT STARTED]
+### Phase 2: Update lean-implementation-flow.md with same patterns [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Apply identical concrete Edit patterns to Lean implementation flow
@@ -145,7 +145,7 @@ Mirror the patterns from Phase 1:
 
 ---
 
-### Phase 3: Update other implementation agents [NOT STARTED]
+### Phase 3: Update other implementation agents [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Apply same patterns to latex and typst implementation agents
@@ -161,7 +161,7 @@ Mirror the patterns from Phase 1:
 
 ---
 
-### Phase 4: Update artifact-formats.md with status decision tree [NOT STARTED]
+### Phase 4: Update artifact-formats.md with status decision tree [COMPLETED]
 
 - **Dependencies:** None (can run in parallel)
 - **Goal:** Document when each terminal phase status should be used
@@ -215,7 +215,7 @@ Use when:
 
 ---
 
-### Phase 5: Verification and testing [NOT STARTED]
+### Phase 5: Verification and testing [COMPLETED]
 
 - **Dependencies:** Phases 1-4
 - **Goal:** Verify all changes are consistent

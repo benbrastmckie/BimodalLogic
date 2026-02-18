@@ -1,20 +1,49 @@
 {
-  "status": "researched",
-  "summary": "Follow-up investigation confirmed documentation vs implementation gap. Agent definitions describe phase status updates in natural language but provide no concrete Edit tool examples. Skills only update plan HEADER status via sed, not individual PHASE markers. This explains why phases go directly from [NOT STARTED] to [PARTIAL] without intermediate [IN PROGRESS].",
+  "status": "implemented",
+  "summary": "Added concrete Edit tool invocation examples to all implementation agent definitions for phase status transitions. Updated general-implementation-agent.md, lean-implementation-flow.md, latex-implementation-agent.md, typst-implementation-agent.md with executable patterns. Added Phase Status Decision Tree to artifact-formats.md.",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/895_update_phase_status_markers_during_implementation/reports/research-002.md",
-      "summary": "Follow-up investigation revealing documentation vs implementation gap for phase status updates"
+      "type": "implementation",
+      "path": ".claude/agents/general-implementation-agent.md",
+      "summary": "Updated with Edit tool examples for phase status transitions"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/project/lean4/agents/lean-implementation-flow.md",
+      "summary": "Updated with Edit tool examples for phase status transitions"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/latex-implementation-agent.md",
+      "summary": "Updated with Edit tool examples for phase status transitions"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/agents/typst-implementation-agent.md",
+      "summary": "Updated with Edit tool examples for phase status transitions"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/rules/artifact-formats.md",
+      "summary": "Added Phase Status Decision Tree section"
+    },
+    {
+      "type": "summary",
+      "path": "specs/895_update_phase_status_markers_during_implementation/summaries/implementation-summary-20260217.md",
+      "summary": "Implementation summary with all phases complete"
     }
   ],
-  "next_steps": "Update implementation plan to add concrete Edit tool examples to agent definitions",
+  "completion_data": {
+    "completion_summary": "Added concrete Edit tool examples for phase status updates to all 4 implementation agents (general, lean, latex, typst) and updated artifact-formats.md with a status decision tree documenting when to use [COMPLETED], [PARTIAL], or [BLOCKED].",
+    "claudemd_suggestions": "Updated 4 agent definitions in .claude/agents/ and .claude/context/project/lean4/agents/, updated artifact-formats.md in .claude/rules/"
+  },
   "metadata": {
-    "session_id": "sess_1771378236_c253ea",
-    "agent_type": "general-research-agent",
+    "session_id": "sess_1771378740_5f4a9a",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 5,
-    "key_finding": "Natural language instructions exist but no concrete Edit tool invocation examples"
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "next_steps": "Review implementation and verify phase status markers are updated correctly in future implementation runs"
 }

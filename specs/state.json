@@ -8,11 +8,11 @@
     {
       "project_number": 895,
       "project_name": "update_phase_status_markers_during_implementation",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-18T01:13:43Z",
-      "last_updated": "2026-02-18T01:37:58Z",
-      "session_id": "sess_1771378236_c253ea",
+      "last_updated": "2026-02-17T00:00:00Z",
+      "session_id": "sess_1771378740_5f4a9a",
       "researched": "2026-02-18T01:17:22Z",
       "artifacts": [
         {
@@ -24,9 +24,18 @@
           "path": "specs/895_update_phase_status_markers_during_implementation/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 5-phase plan with concrete Edit tool examples for phase status updates (v002)"
+        },
+        {
+          "path": "specs/895_update_phase_status_markers_during_implementation/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Implementation summary with all 5 phases complete"
         }
       ],
-      "planned": "2026-02-18T01:37:58Z"
+      "planned": "2026-02-18T01:37:58Z",
+      "started": "2026-02-18T01:39:22Z",
+      "completed": "2026-02-17T00:00:00Z",
+      "completion_summary": "Added concrete Edit tool examples for phase status updates to all 4 implementation agents (general, lean, latex, typst) and updated artifact-formats.md with a status decision tree documenting when to use [COMPLETED], [PARTIAL], or [BLOCKED].",
+      "claudemd_suggestions": "Updated 4 agent definitions in .claude/agents/ and .claude/context/project/lean4/agents/, updated artifact-formats.md in .claude/rules/"
     },
     {
       "project_number": 893,
@@ -109,14 +118,14 @@
     {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "2-4 hours",
       "description": "Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T01:36:56Z",
-      "session_id": "sess_1771377751_c70928",
+      "last_updated": "2026-02-18T01:38:53Z",
+      "session_id": "sess_1771378714_714c1e",
       "researched": "2026-02-18T00:51:06Z",
       "artifacts": [
         {

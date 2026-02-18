@@ -137,7 +137,20 @@ If all phases are `[COMPLETED]`: Task already done, return completed status.
 For each phase starting from resume point:
 
 **A. Mark Phase In Progress**
-Edit plan file: Change phase status to `[IN PROGRESS]`
+
+Before starting work on a phase, update its status marker in the plan file:
+
+1. Read the plan file to get the exact phase header text
+2. Use Edit tool to update status:
+
+```
+Edit:
+  file_path: specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+  old_string: "### Phase {P}: {exact_phase_name} [NOT STARTED]"
+  new_string: "### Phase {P}: {exact_phase_name} [IN PROGRESS]"
+```
+
+**Important**: Match the exact phase name from the plan file, including any punctuation
 
 **B. Execute Typst Creation/Modification**
 
@@ -174,7 +187,30 @@ For each .typ file in the phase:
 - All planned sections/content present
 
 **D. Mark Phase Complete**
-Edit plan file: Change phase status to `[COMPLETED]`
+
+After all steps succeed and verification passes, update the phase status:
+
+```
+Edit:
+  file_path: specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+  old_string: "### Phase {P}: {exact_phase_name} [IN PROGRESS]"
+  new_string: "### Phase {P}: {exact_phase_name} [COMPLETED]"
+```
+
+**On compilation failure or verification failure**, determine terminal status:
+- `[PARTIAL]`: Some progress made, work can resume later
+- `[BLOCKED]`: Cannot proceed without external change (missing package, dependency)
+
+Update phase status accordingly:
+
+```
+Edit:
+  file_path: specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+  old_string: "### Phase {P}: {exact_phase_name} [IN PROGRESS]"
+  new_string: "### Phase {P}: {exact_phase_name} [PARTIAL]"
+```
+
+Then proceed to write Progress Subsection before returning
 
 ### Stage 5: Run Final Compilation Verification
 
@@ -311,9 +347,25 @@ Typst implementation completed for task 500:
 For each phase in the implementation plan:
 
 1. **Read plan file**, identify current phase
-2. **Update phase status** to `[IN PROGRESS]` in plan file
+2. **Update phase status** to `[IN PROGRESS]` in plan file:
+   ```
+   Edit:
+     file_path: specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+     old_string: "### Phase {P}: {exact_phase_name} [NOT STARTED]"
+     new_string: "### Phase {P}: {exact_phase_name} [IN PROGRESS]"
+   ```
 3. **Execute Typst creation/modification** as documented
-4. **Update phase status** to `[COMPLETED]` or `[BLOCKED]` or `[PARTIAL]`
+4. **Update phase status** to `[COMPLETED]` or `[BLOCKED]` or `[PARTIAL]`:
+   ```
+   Edit:
+     file_path: specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+     old_string: "### Phase {P}: {exact_phase_name} [IN PROGRESS]"
+     new_string: "### Phase {P}: {exact_phase_name} [COMPLETED]"
+   ```
+   **Status Decision**:
+   - `[COMPLETED]`: All steps succeeded, PDF compiles
+   - `[PARTIAL]`: Some progress made, can resume later
+   - `[BLOCKED]`: Missing package or dependency
 5. **Git commit** with message: `task {N} phase {P}: {phase_name}`
    Use targeted staging (prevents race conditions with concurrent agents):
    ```bash

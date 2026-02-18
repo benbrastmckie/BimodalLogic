@@ -263,6 +263,37 @@ Use in plan files:
 - `[PARTIAL]` - Partially complete (interrupted)
 - `[BLOCKED]` - Cannot proceed
 
+### Phase Status Decision Tree
+
+When transitioning a phase to a terminal status, use these criteria:
+
+**[COMPLETED]** - Use when:
+- All steps in the phase executed successfully
+- Verification criteria passed (build succeeds, tests pass)
+- No sorries/axioms introduced (Lean tasks)
+- Changes committed
+
+**[PARTIAL]** - Use when:
+- Some steps completed but not all
+- Work can be resumed by another agent
+- Progress was made but interrupted (timeout, context limit)
+- Verification failed but changes are salvageable
+
+**[BLOCKED]** - Use when:
+- Cannot proceed without external change
+- Dependency on another task not yet complete
+- Bug discovered in upstream code
+- Mathematical obstruction (theorem unprovable as stated)
+- Requires user input or decision
+
+**Decision Flow:**
+```
+1. Did all steps succeed? --> Yes --> [COMPLETED]
+2. Was any progress made? --> Yes --> [PARTIAL]
+3. Is there an external blocker? --> Yes --> [BLOCKED]
+4. Otherwise --> [PARTIAL]
+```
+
 ## Progress Subsection
 
 Each phase in a plan file may include a **Progress:** subsection to track work done across implementation sessions. This provides a canonical record of implementation progress directly in the plan file.
