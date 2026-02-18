@@ -210,7 +210,7 @@ decreasing_by
 
 /-- The head of the witness chain is the formula itself -/
 lemma temporalWitnessChain_head (φ : Formula) : φ ∈ temporalWitnessChain φ := by
-  unfold temporalWitnessChain
+  rw [temporalWitnessChain]
   split <;> (try split) <;> simp
 
 /-- If F(ψ) is in a witness chain, then ψ is also in the chain -/
@@ -219,41 +219,39 @@ lemma forward_witness_in_chain {φ ψ : Formula}
     ψ ∈ temporalWitnessChain φ := by
   induction φ using (measure Formula.complexity).wf.induction with
   | h χ ih =>
-    unfold temporalWitnessChain at h_mem ⊢
-    split at h_mem ⊢
-    · -- χ has a forward witness ψ'
+    rw [temporalWitnessChain] at h_mem ⊢
+    -- Split the goal first, then match h_mem to each case
+    split
+    · -- goal: extractForwardWitness χ = some ψ'
       rename_i ψ' h_fwd
-      simp only [List.mem_cons] at h_mem
+      -- Simplify h_mem by substituting h_fwd into the match discriminant
+      conv at h_mem => rw [h_fwd]
+      simp only [List.mem_cons] at h_mem ⊢
       rcases h_mem with rfl | h_rest
-      · -- F(ψ) = χ, so witness chain of χ starts with χ = F(ψ), then ψ, ...
-        -- ψ is in the tail: temporalWitnessChain ψ'
-        -- Since h_fwd : extractForwardWitness χ = some ψ' and χ = F(ψ),
-        -- by matching, ψ' = ψ
+      · -- F(ψ) = χ
         simp [Formula.some_future, Formula.neg, extractForwardWitness] at h_fwd
         subst h_fwd
-        exact List.mem_cons_of_mem χ (temporalWitnessChain_head ψ)
+        right; exact temporalWitnessChain_head ψ
       · -- F(ψ) ∈ temporalWitnessChain ψ', use IH
-        exact List.mem_cons_of_mem χ
-          (ih ψ' (extractForwardWitness_complexity h_fwd) h_rest)
-    · split
-      · -- χ has a backward witness ψ'
+        right
+        exact ih ψ' (extractForwardWitness_complexity h_fwd) h_rest
+    · -- goal: extractForwardWitness χ = none
+      rename_i h_no_fwd
+      split
+      · -- goal: extractBackwardWitness χ = some ψ'
         rename_i ψ' h_bwd
-        simp only [List.mem_cons] at h_mem
+        conv at h_mem => rw [h_no_fwd, h_bwd]
+        simp only [List.mem_cons] at h_mem ⊢
         rcases h_mem with rfl | h_rest
-        · -- F(ψ) = χ, but χ has a backward witness, meaning χ is P-type
-          -- But χ = F(ψ) and χ has extractBackwardWitness = some ψ'
-          -- F(ψ) = imp (all_future (imp ψ bot)) bot
-          -- extractBackwardWitness matches imp (all_past ...) bot
-          -- So F(ψ) has extractBackwardWitness = none
+        · -- F(ψ) = χ, but χ is P-type
           simp [Formula.some_future, Formula.neg, extractBackwardWitness] at h_bwd
-        · exact List.mem_cons_of_mem χ
-            (ih ψ' (extractBackwardWitness_complexity h_bwd) h_rest)
-      · -- χ is non-temporal, chain is [χ]
-        simp only [List.mem_singleton] at h_mem
-        -- F(ψ) = χ, but χ has no forward or backward witness
-        -- extractForwardWitness(F(ψ)) = some ψ, contradiction
-        rename_i h_no_fwd h_no_bwd
-        rw [h_mem] at h_no_fwd
+        · right
+          exact ih ψ' (extractBackwardWitness_complexity h_bwd) h_rest
+      · -- goal: extractBackwardWitness χ = none
+        rename_i h_no_bwd
+        conv at h_mem => rw [h_no_fwd, h_no_bwd]
+        simp only [List.mem_singleton] at h_mem ⊢
+        rw [← h_mem] at h_no_fwd
         simp [extractForwardWitness_some_future] at h_no_fwd
 
 /-- If P(ψ) is in a witness chain, then ψ is also in the chain -/
@@ -262,35 +260,39 @@ lemma backward_witness_in_chain {φ ψ : Formula}
     ψ ∈ temporalWitnessChain φ := by
   induction φ using (measure Formula.complexity).wf.induction with
   | h χ ih =>
-    unfold temporalWitnessChain at h_mem ⊢
-    split at h_mem ⊢
+    rw [temporalWitnessChain] at h_mem ⊢
+    split
     · -- χ has a forward witness ψ'
       rename_i ψ' h_fwd
-      simp only [List.mem_cons] at h_mem
+      conv at h_mem => rw [h_fwd]
+      simp only [List.mem_cons] at h_mem ⊢
       rcases h_mem with rfl | h_rest
       · -- P(ψ) = χ, but χ has a forward witness
         -- P(ψ) = imp (all_past (imp ψ bot)) bot
         -- extractForwardWitness matches imp (all_future ...) bot
         -- So P(ψ) has extractForwardWitness = none
         simp [Formula.some_past, Formula.neg, extractForwardWitness] at h_fwd
-      · exact List.mem_cons_of_mem χ
-          (ih ψ' (extractForwardWitness_complexity h_fwd) h_rest)
-    · split
+      · right
+        exact ih ψ' (extractForwardWitness_complexity h_fwd) h_rest
+    · rename_i h_no_fwd
+      split
       · -- χ has a backward witness ψ'
         rename_i ψ' h_bwd
-        simp only [List.mem_cons] at h_mem
+        conv at h_mem => rw [h_no_fwd, h_bwd]
+        simp only [List.mem_cons] at h_mem ⊢
         rcases h_mem with rfl | h_rest
         · -- P(ψ) = χ, and χ has backward witness ψ'
           -- By matching, ψ' = ψ
           simp [Formula.some_past, Formula.neg, extractBackwardWitness] at h_bwd
           subst h_bwd
-          exact List.mem_cons_of_mem χ (temporalWitnessChain_head ψ)
-        · exact List.mem_cons_of_mem χ
-            (ih ψ' (extractBackwardWitness_complexity h_bwd) h_rest)
+          right; exact temporalWitnessChain_head ψ
+        · right
+          exact ih ψ' (extractBackwardWitness_complexity h_bwd) h_rest
       · -- χ is non-temporal, chain is [χ]
-        simp only [List.mem_singleton] at h_mem
-        rename_i h_no_fwd h_no_bwd
-        rw [h_mem] at h_no_bwd
+        rename_i h_no_bwd
+        conv at h_mem => rw [h_no_fwd, h_no_bwd]
+        simp only [List.mem_singleton] at h_mem ⊢
+        rw [← h_mem] at h_no_bwd
         simp [extractBackwardWitness_some_past] at h_no_bwd
 
 /-- The temporal package of a formula: the set of all elements in its witness chain -/
@@ -319,6 +321,7 @@ lemma backward_witness_in_package {φ ψ : Formula}
 The omega-step construction that builds a consistent, temporally-saturated set.
 -/
 
+attribute [local instance] Classical.propDecidable in
 /-- One step of the Henkin construction: add the temporal package if consistent -/
 noncomputable def henkinStep (S : Set Formula) (φ : Formula) : Set Formula :=
   if SetConsistent (S ∪ temporalPackage φ) then S ∪ temporalPackage φ else S
@@ -391,11 +394,11 @@ lemma finite_list_in_henkinChain (base : Set Formula) (L : List Formula)
     (hL : ∀ φ ∈ L, φ ∈ henkinLimit base) :
     ∃ n, ∀ φ ∈ L, φ ∈ henkinChain base n := by
   induction L with
-  | nil => exact ⟨0, fun _ h => absurd h (List.not_mem_nil _)⟩
+  | nil => exact ⟨0, by simp⟩
   | cons a rest ih =>
-    have hrest : ∀ φ ∈ rest, φ ∈ henkinLimit base := fun φ h => hL φ (List.mem_cons_of_mem a h)
+    have hrest : ∀ φ ∈ rest, φ ∈ henkinLimit base := fun φ h => hL φ (List.mem_cons.mpr (Or.inr h))
     obtain ⟨n₁, hn₁⟩ := ih hrest
-    have ha := hL a (List.mem_cons_self a rest)
+    have ha := hL a (List.mem_cons.mpr (Or.inl rfl))
     simp only [henkinLimit, Set.mem_iUnion] at ha
     obtain ⟨n₂, hn₂⟩ := ha
     use max n₁ n₂
@@ -443,10 +446,8 @@ lemma henkinLimit_forward_saturated (base : Set Formula)
       · -- package was accepted: henkinChain base (n+1) = S_n ∪ temporalPackage φ
         rename_i h_cons_pkg
         rcases (Set.mem_union _ _ _).mp h_in_chain with h_old | h_new
-        · -- F(ψ) was already in S_n
-          have h_ψ_old := ih h_old
-          exact henkinChain_subset_limit base (n + 1)
-            (henkinChain_mono base n h_ψ_old)
+        · -- F(ψ) was already in S_n, so by IH, ψ ∈ henkinLimit
+          exact ih h_old
         · -- F(ψ) ∈ temporalPackage φ
           -- By forward_witness_in_package, ψ ∈ temporalPackage φ
           have h_ψ_in_pkg := forward_witness_in_package h_new
@@ -485,9 +486,8 @@ lemma henkinLimit_backward_saturated (base : Set Formula)
       split at h_in_chain
       · rename_i h_cons_pkg
         rcases (Set.mem_union _ _ _).mp h_in_chain with h_old | h_new
-        · have h_ψ_old := ih h_old
-          exact henkinChain_subset_limit base (n + 1)
-            (henkinChain_mono base n h_ψ_old)
+        · -- P(ψ) was already in S_n, so by IH, ψ ∈ henkinLimit
+          exact ih h_old
         · have h_ψ_in_pkg := backward_witness_in_package h_new
           have : ψ ∈ henkinChain base (n + 1) := by
             simp only [henkinChain]

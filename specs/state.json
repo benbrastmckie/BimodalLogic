@@ -52,13 +52,13 @@
     {
       "project_number": 891,
       "project_name": "fix_split_at_tactic_temporallindenbaum",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "effort": "1-2 hours",
       "description": "Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:25:59Z",
+      "last_updated": "2026-02-18T00:41:18Z",
       "session_id": "sess_1771374336_9df87c",
       "researched": "2026-02-18T00:20:39Z",
       "artifacts": [
@@ -71,22 +71,29 @@
           "path": "specs/891_fix_split_at_tactic_temporallindenbaum/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan to fix 8 build errors in TemporalLindenbaum.lean for Lean 4.27.0-rc1 compatibility"
+        },
+        {
+          "path": "specs/891_fix_split_at_tactic_temporallindenbaum/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting fixes for 8 Lean 4.27.0-rc1 tactic incompatibilities in TemporalLindenbaum.lean"
         }
       ],
       "planned": "2026-02-18T00:24:03Z",
-      "started": "2026-02-18T00:25:59Z"
+      "started": "2026-02-18T00:25:59Z",
+      "completed": "2026-02-18T00:41:18Z",
+      "completion_summary": "Fixed 8 Lean 4.27.0-rc1 tactic incompatibilities in TemporalLindenbaum.lean: replaced unfold with rw to avoid have-wrappers, converted split-at-multi-target to separate operations using conv, added Classical.propDecidable for henkinStep, and updated List API usage. Build now succeeds with 0 errors."
     },
     {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
-      "status": "blocked",
+      "status": "researching",
       "language": "lean",
       "effort": "2-4 hours",
       "description": "Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:39:06Z",
-      "session_id": "sess_1771374357_3e4c3a",
+      "last_updated": "2026-02-18T00:41:13Z",
+      "session_id": "sess_1771375251_9d55f5",
       "researched": "2026-02-18T00:19:42Z",
       "artifacts": [
         {

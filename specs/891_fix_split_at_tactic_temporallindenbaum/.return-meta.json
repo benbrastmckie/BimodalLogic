@@ -1,20 +1,25 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-02-17T12:00:00Z",
+  "completed_at": "2026-02-17T13:30:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/891_fix_split_at_tactic_temporallindenbaum/plans/implementation-001.md",
-      "summary": "4-phase implementation plan to fix 8 build errors in TemporalLindenbaum.lean for Lean 4.27.0-rc1 compatibility"
+      "type": "summary",
+      "path": "specs/891_fix_split_at_tactic_temporallindenbaum/summaries/implementation-summary-20260217.md",
+      "summary": "Implementation summary documenting fixes for 8 Lean 4.27.0-rc1 tactic incompatibilities in TemporalLindenbaum.lean"
     }
   ],
-  "next_steps": "Run /implement 891 to execute the plan",
+  "partial_progress": null,
   "metadata": {
-    "session_id": "sess_1771374089_a229a9",
-    "agent_type": "planner-agent",
-    "duration_seconds": 120,
+    "session_id": "sess_1771374336_9df87c",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3.0
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4,
+    "build_status": "success"
+  },
+  "completion_data": {
+    "completion_summary": "Fixed 8 Lean 4.27.0-rc1 tactic incompatibilities in TemporalLindenbaum.lean: replaced unfold with rw to avoid have-wrappers, converted split-at-multi-target to separate operations using conv, added Classical.propDecidable for henkinStep, and updated List API usage. Build now succeeds with 0 errors."
   }
 }
