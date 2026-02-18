@@ -51,12 +51,14 @@ technical_debt:
 
 ### 897. Fix FIX:/NOTE: tags in ConstitutiveFoundation LaTeX
 - **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: latex
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
+- **Planned**: 2026-02-18
 - **Depends**: Task #896
 - **Research**: [research-001.md](specs/897_fix_tags_constitutive_foundation_latex/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/897_fix_tags_constitutive_foundation_latex/plans/implementation-001.md)
 
 **Description**: Fix 5 `FIX:`/`NOTE:` tags in `/home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex`: (1) **Line 479**: Add remark that identity sentences receive only `\bot` (trivially false) or `\neg\bot` (trivially true), requiring nothing (null state) to make them true/false. (2) **Line 566**: Extend remark to include `\equiv`, define `\sem{\metaA \equiv \metaB}`, and add `\forall`, `\lambda`, `F(t_1,...,t_n)` to show model+assignment provide a homomorphism; define `\interp{\cdot}^\assignment_\model` prior to the remark. (3) **Line 568**: Rename `\sem` to `\ext` (extension of term); use `\interp{\cdot}^\assignment_\model` for semantic interpretation. (4) **Line 582**: Provide formal definition of the homomorphism from syntax to semantics. (5) **Line 583**: Replace vague 'directly mirrors' with correct language explaining the homomorphism embedding. Depends on task #896 to first codify the notation convention in context files.
 

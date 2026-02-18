@@ -56,11 +56,11 @@
     {
       "project_number": 897,
       "project_name": "fix_tags_constitutive_foundation_latex",
-      "status": "planning",
+      "status": "planned",
       "language": "latex",
       "effort": "2-3 hours",
       "created": "2026-02-17T00:00:00Z",
-      "last_updated": "2026-02-18T17:08:07Z",
+      "last_updated": "2026-02-18T17:10:31Z",
       "depends_on": [
         896
       ],
@@ -72,8 +72,14 @@
           "path": "specs/897_fix_tags_constitutive_foundation_latex/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing 5 FIX:/NOTE: tags with detailed recommendations for each"
+        },
+        {
+          "path": "specs/897_fix_tags_constitutive_foundation_latex/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for fixing FIX:/NOTE: tags related to semantic notation and homomorphism formalization"
         }
-      ]
+      ],
+      "planned": "2026-02-18T17:10:31Z"
     },
     {
       "project_number": 896,
