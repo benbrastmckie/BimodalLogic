@@ -1,46 +1,20 @@
 {
-  "status": "partial",
-  "started_at": "2026-02-17T10:00:00Z",
-  "completed_at": "2026-02-17T10:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/864_recursive_seed_henkin_model/reports/research-007.md",
-      "summary": "Complete worklist algorithm design for seed construction with termination proof strategy, consistency invariants, closure properties, and cross-sign coherence resolution"
+      "type": "plan",
+      "path": "specs/864_recursive_seed_henkin_model/plans/implementation-005.md",
+      "summary": "6-phase worklist algorithm plan replacing buildSeedAux to resolve cross-sign coherence"
     }
   ],
-  "partial_progress": {
-    "stage": "research_complete",
-    "details": "Designed complete worklist-based seed construction algorithm with: (1) WorkItem/WorklistState data structures, (2) processWorkItem for each formula class, (3) termination measure via lexicographic (complexity sum, worklist length), (4) consistency invariant preservation, (5) closure property proofs (ModalClosed, GClosed, HClosed), (6) cross-sign coherence resolution via explicit propagation"
-  },
+  "next_steps": "Run /implement 864 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771394690_0e5fff",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771395097_178a6a",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
-  },
-  "findings": {
-    "termination_measure": "Lexicographic pair: (sum of unprocessed formula complexities, worklist length)",
-    "key_insight": "Formula complexity strictly decreases with each recursion; positions bounded by subformula count",
-    "consistency_strategy": "Witness creation produces trivially consistent singletons; universal propagation preserves consistency via T/4 axioms",
-    "closure_properties": ["ModalClosed: Box psi → psi at all families", "GClosed: G psi → psi at all future times in seed", "HClosed: H psi → psi at all past times in seed"],
-    "cross_sign_resolution": "Worklist processes H psi at future times created by G(H psi), explicitly placing psi at past times including origin"
-  },
-  "recommendations": [
-    "Implement WorkItem and WorklistState structures",
-    "Implement processWorkItem with pattern matching on FormulaClass",
-    "Add processWorklist with termination annotation",
-    "Prove termination via formula complexity decrease",
-    "Prove consistency preservation",
-    "Prove closure properties",
-    "Connect to SeedCompletion.lean to resolve 5 sorries"
-  ],
-  "implementation_phases": [
-    {"phase": 1, "name": "Data Structures", "effort": "1 hour"},
-    {"phase": 2, "name": "Core Algorithm", "effort": "2 hours"},
-    {"phase": 3, "name": "Termination Proof", "effort": "3 hours"},
-    {"phase": 4, "name": "Consistency Proof", "effort": "2 hours"},
-    {"phase": 5, "name": "Closure Proofs", "effort": "3 hours"},
-    {"phase": 6, "name": "Truth Lemma Connection", "effort": "2 hours"}
-  ]
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 6,
+    "estimated_hours": 13
+  }
 }
