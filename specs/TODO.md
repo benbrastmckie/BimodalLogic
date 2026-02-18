@@ -1,5 +1,5 @@
 ---
-next_project_number: 900
+next_project_number: 901
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,6 +22,16 @@ technical_debt:
 
 ## Tasks
 
+### 900. Prove cut rule and derivation tree manipulation for recursive seed Henkin model
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-18
+
+**Description**: In order to complete phase 4 from /home/benjamin/Projects/ProofChecker/specs/864_recursive_seed_henkin_model/plans/implementation-005.md in the most mathematically correct manner, prove: the cut rule / derivation tree manipulation.
+
+---
+
 ### 899. Define identity sentences in syntax section of ConstitutiveFoundation
 - **Effort**: 1 hour
 - **Status**: [COMPLETED]
@@ -41,7 +51,7 @@ technical_debt:
 
 ### 898. Bilattice structure remarks in ConstitutiveFoundation
 - **Effort**: 1.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: latex
 - **Created**: 2026-02-17
 
