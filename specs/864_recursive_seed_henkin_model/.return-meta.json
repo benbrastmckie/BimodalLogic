@@ -1,17 +1,20 @@
 {
   "status": "researched",
-  "summary": "Hypothesis disproven but deeper insight gained: RecursiveSeed does create non-zero times for temporal witnesses, BUT it also propagates G-formulas TO time 0. The actual blocker is chain architecture: forward/backward chains only support single-direction propagation, lacking cross-chain communication needed for cross-sign coherence.",
+  "started_at": "2026-02-17T10:30:00Z",
   "artifacts": [
     {
-      "path": "specs/864_recursive_seed_henkin_model/reports/research-005.md",
-      "type": "research",
-      "summary": "Analysis of RecursiveSeed formula placement showing chain architecture is the true blocker, not seed placement"
+      "type": "report",
+      "path": "specs/864_recursive_seed_henkin_model/reports/research-006.md",
+      "summary": "Analysis of nested temporal unpacking gap in buildSeedAux with 4 proposed solution approaches"
     }
   ],
+  "next_steps": "Implement Approach C (cross-sign placement) as targeted fix, then design worklist algorithm for complete solution",
   "metadata": {
-    "session_id": "sess_1771384724_cb46b9",
+    "session_id": "sess_1771390604_24ddef",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+    "delegation_path": ["orchestrator", "research", "skill-lean-research"],
+    "findings_count": 10,
+    "key_insight": "buildSeedAux recurses only on inner formula, not on propagated formulas - causes incomplete nested unpacking"
   }
 }
