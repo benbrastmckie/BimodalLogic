@@ -5979,30 +5979,199 @@ theorem seedFormulasAtZero_consistent (seed : ModelSeed) (h_cons : SeedConsisten
     exact h_find
   exact h_cons entry h_entry_mem
 
+/-!
+### Position Preservation Lemmas
+
+These lemmas show that `hasPosition` is preserved through seed operations.
+Each operation either modifies existing entries (preserving the position property)
+or appends new entries (preserving existing positions).
+-/
+
+/-- List.any is monotone under appending. -/
+private theorem any_append_of_any {α : Type*} (l1 l2 : List α) (p : α → Bool)
+    (h : l1.any p) : (l1 ++ l2).any p := by
+  induction l1 with
+  | nil => simp at h
+  | cons x xs ih =>
+    simp only [List.any_cons, List.cons_append] at *
+    cases h_p : p x with
+    | true => simp [h_p]
+    | false =>
+      simp only [h_p, Bool.false_or] at h ⊢
+      exact ih h
+
+/-- List.any is preserved under List.modify when the predicate doesn't change. -/
+private theorem any_modify_of_any {α : Type*} (l : List α) (idx : Nat) (f : α → α) (p : α → Bool)
+    (h : l.any p) (h_pres : ∀ a, p a → p (f a)) : (l.modify idx f).any p := by
+  induction l generalizing idx with
+  | nil => exact h
+  | cons x xs ih =>
+    simp only [List.any_cons] at h ⊢
+    cases idx with
+    | zero =>
+      simp only [List.modify_cons, Nat.zero_eq]
+      cases h_p : p x with
+      | true => simp only [h_pres x h_p, Bool.true_or]
+      | false => simp only [h_p, Bool.false_or] at h ⊢; exact h
+    | succ n =>
+      simp only [List.modify_cons]
+      cases h_p : p x with
+      | true => simp [h_p]
+      | false => simp only [h_p, Bool.false_or] at h ⊢; exact ih n h
+
+/-- addFormula preserves hasPosition. -/
+private theorem addFormula_preserves_hasPosition (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) (ty : SeedEntryType) (fam' : Nat) (time' : Int)
+    (h : seed.hasPosition fam' time') :
+    (seed.addFormula famIdx timeIdx phi ty).hasPosition fam' time' := by
+  unfold ModelSeed.hasPosition ModelSeed.addFormula at *
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | some idx =>
+    simp only [h_find]
+    -- modify preserves any when the predicate check doesn't change
+    apply any_modify_of_any
+    · exact h
+    · intro e h_e
+      -- The modification only changes formulas, not familyIdx or timeIdx
+      simp only [h_e]
+  | none =>
+    simp only [h_find]
+    exact any_append_of_any _ _ _ h
+
+/-- foldl with addFormula over family indices preserves hasPosition. -/
+private theorem foldl_addFormula_fam_preserves_hasPosition (phi : Formula) (ty : SeedEntryType)
+    (timeIdx : Int) (fams : List Nat) (seed : ModelSeed) (fam' : Nat) (time' : Int)
+    (h : seed.hasPosition fam' time') :
+    (fams.foldl (fun s f => s.addFormula f timeIdx phi ty) seed).hasPosition fam' time' := by
+  induction fams generalizing seed with
+  | nil => exact h
+  | cons f fs ih =>
+    simp only [List.foldl_cons]
+    exact ih _ (addFormula_preserves_hasPosition seed f timeIdx phi ty fam' time' h)
+
+/-- foldl with addFormula over time indices preserves hasPosition. -/
+private theorem foldl_addFormula_times_preserves_hasPosition (phi : Formula) (famIdx : Nat)
+    (times : List Int) (seed : ModelSeed) (fam' : Nat) (time' : Int)
+    (h : seed.hasPosition fam' time') :
+    (times.foldl (fun s t => s.addFormula famIdx t phi .universal_target) seed).hasPosition fam' time' := by
+  induction times generalizing seed with
+  | nil => exact h
+  | cons t ts ih =>
+    simp only [List.foldl_cons]
+    exact ih _ (addFormula_preserves_hasPosition seed famIdx t phi .universal_target fam' time' h)
+
+/-- addToAllFamilies preserves hasPosition. -/
+private theorem addToAllFamilies_preserves_hasPosition (seed : ModelSeed) (timeIdx : Int)
+    (phi : Formula) (fam' : Nat) (time' : Int) (h : seed.hasPosition fam' time') :
+    (seed.addToAllFamilies timeIdx phi).hasPosition fam' time' := by
+  unfold ModelSeed.addToAllFamilies
+  exact foldl_addFormula_fam_preserves_hasPosition phi .universal_target timeIdx _ seed fam' time' h
+
+/-- addToAllFutureTimes preserves hasPosition. -/
+private theorem addToAllFutureTimes_preserves_hasPosition (seed : ModelSeed) (famIdx : Nat)
+    (currentTime : Int) (phi : Formula) (fam' : Nat) (time' : Int)
+    (h : seed.hasPosition fam' time') :
+    (seed.addToAllFutureTimes famIdx currentTime phi).hasPosition fam' time' := by
+  unfold ModelSeed.addToAllFutureTimes
+  exact foldl_addFormula_times_preserves_hasPosition phi famIdx _ seed fam' time' h
+
+/-- addToAllPastTimes preserves hasPosition. -/
+private theorem addToAllPastTimes_preserves_hasPosition (seed : ModelSeed) (famIdx : Nat)
+    (currentTime : Int) (phi : Formula) (fam' : Nat) (time' : Int)
+    (h : seed.hasPosition fam' time') :
+    (seed.addToAllPastTimes famIdx currentTime phi).hasPosition fam' time' := by
+  unfold ModelSeed.addToAllPastTimes
+  exact foldl_addFormula_times_preserves_hasPosition phi famIdx _ seed fam' time' h
+
+/-- createNewFamily preserves hasPosition. -/
+private theorem createNewFamily_preserves_hasPosition (seed : ModelSeed) (timeIdx : Int)
+    (phi : Formula) (fam' : Nat) (time' : Int) (h : seed.hasPosition fam' time') :
+    (seed.createNewFamily timeIdx phi).1.hasPosition fam' time' := by
+  unfold ModelSeed.createNewFamily ModelSeed.hasPosition at *
+  exact any_append_of_any _ _ _ h
+
+/-- createNewTime preserves hasPosition. -/
+private theorem createNewTime_preserves_hasPosition (seed : ModelSeed) (famIdx : Nat)
+    (timeIdx : Int) (phi : Formula) (fam' : Nat) (time' : Int)
+    (h : seed.hasPosition fam' time') :
+    (seed.createNewTime famIdx timeIdx phi).hasPosition fam' time' := by
+  unfold ModelSeed.createNewTime ModelSeed.hasPosition at *
+  exact any_append_of_any _ _ _ h
+
+/--
+buildSeedAux preserves hasPosition (only adds new entries, never removes).
+-/
+theorem buildSeedAux_preserves_hasPosition (phi : Formula) (famIdx : Nat) (timeIdx : Int)
+    (seed : ModelSeed) (fam' : Nat) (time' : Int)
+    (h : seed.hasPosition fam' time') :
+    (buildSeedAux phi famIdx timeIdx seed).hasPosition fam' time' := by
+  generalize h_c : phi.complexity = c
+  induction c using Nat.strong_induction_on generalizing phi famIdx timeIdx seed with
+  | h c ih =>
+    match phi with
+    | Formula.atom s =>
+      simp only [buildSeedAux]
+      exact addFormula_preserves_hasPosition seed famIdx timeIdx (.atom s) .universal_target fam' time' h
+    | Formula.bot =>
+      simp only [buildSeedAux]
+      exact addFormula_preserves_hasPosition seed famIdx timeIdx .bot .universal_target fam' time' h
+    | Formula.box psi =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_hasPosition seed famIdx timeIdx (.box psi) .universal_target fam' time' h
+      have h2 := addToAllFamilies_preserves_hasPosition _ timeIdx psi fam' time' h1
+      have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h2
+    | Formula.all_future psi =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_hasPosition seed famIdx timeIdx (.all_future psi) .universal_target fam' time' h
+      have h2 := addFormula_preserves_hasPosition _ famIdx timeIdx psi .universal_target fam' time' h1
+      have h3 := addToAllFutureTimes_preserves_hasPosition _ famIdx timeIdx psi fam' time' h2
+      have h4 := addToAllFutureTimes_preserves_hasPosition _ famIdx timeIdx (.all_future psi) fam' time' h3
+      have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h4
+    | Formula.all_past psi =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_hasPosition seed famIdx timeIdx (.all_past psi) .universal_target fam' time' h
+      have h2 := addFormula_preserves_hasPosition _ famIdx timeIdx psi .universal_target fam' time' h1
+      have h3 := addToAllPastTimes_preserves_hasPosition _ famIdx timeIdx psi fam' time' h2
+      have h4 := addToAllPastTimes_preserves_hasPosition _ famIdx timeIdx (.all_past psi) fam' time' h3
+      have h_lt : psi.complexity < c := by rw [← h_c]; simp [Formula.complexity]
+      exact ih psi.complexity h_lt psi famIdx timeIdx _ rfl h4
+    | Formula.imp (Formula.box psi) Formula.bot =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_hasPosition seed famIdx timeIdx (Formula.neg (.box psi)) .universal_target fam' time' h
+      have h2 := createNewFamily_preserves_hasPosition _ timeIdx (Formula.neg psi) fam' time' h1
+      have h_lt : (Formula.neg psi).complexity < c := by rw [← h_c]; simp [Formula.complexity, Formula.neg]
+      exact ih (Formula.neg psi).complexity h_lt (Formula.neg psi) _ timeIdx _ rfl h2
+    | Formula.imp (Formula.all_future psi) Formula.bot =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_hasPosition seed famIdx timeIdx (Formula.neg (.all_future psi)) .universal_target fam' time' h
+      have h2 := createNewTime_preserves_hasPosition _ famIdx _ (Formula.neg psi) fam' time' h1
+      have h_lt : (Formula.neg psi).complexity < c := by rw [← h_c]; simp [Formula.complexity, Formula.neg]
+      exact ih (Formula.neg psi).complexity h_lt (Formula.neg psi) famIdx _ _ rfl h2
+    | Formula.imp (Formula.all_past psi) Formula.bot =>
+      simp only [buildSeedAux]
+      have h1 := addFormula_preserves_hasPosition seed famIdx timeIdx (Formula.neg (.all_past psi)) .universal_target fam' time' h
+      have h2 := createNewTime_preserves_hasPosition _ famIdx _ (Formula.neg psi) fam' time' h1
+      have h_lt : (Formula.neg psi).complexity < c := by rw [← h_c]; simp [Formula.complexity, Formula.neg]
+      exact ih (Formula.neg psi).complexity h_lt (Formula.neg psi) famIdx _ _ rfl h2
+    | Formula.imp psi1 psi2 =>
+      simp only [buildSeedAux]
+      exact addFormula_preserves_hasPosition seed famIdx timeIdx (.imp psi1 psi2) .universal_target fam' time' h
+
 /--
 buildSeed always creates position (0, 0).
 
 The initial seed has an entry at (0, 0), and buildSeedAux operations only add/modify
 entries, never remove them. Therefore (0, 0) always exists in the final seed.
-
-NOTE: This is a technical lemma about the seed construction. The proof that
-buildSeedAux preserves existing positions follows from the fact that all operations
-(addFormula, addToAllFamilies, createNewFamily, createNewTime) only add or modify
-entries, never remove them.
 -/
 theorem buildSeed_hasPosition_zero (phi : Formula) :
     (buildSeed phi).hasPosition 0 0 = true := by
   unfold buildSeed
-  -- The initial seed has an entry at (0, 0)
   have h_init : (ModelSeed.initial phi).hasPosition 0 0 = true := by
     unfold ModelSeed.initial ModelSeed.hasPosition
     simp only [List.any_cons, beq_self_eq_true, Bool.and_self, Bool.true_or]
-  -- buildSeedAux never removes entries, only adds or modifies.
-  -- This follows from inspecting the definition: all branches either
-  -- use addFormula (which preserves or adds), addToAllFamilies/FutureTimes/PastTimes
-  -- (which use foldl addFormula), or createNewFamily/createNewTime (which append).
-  -- The formal proof by induction on formula complexity is lengthy but straightforward.
-  sorry
+  exact buildSeedAux_preserves_hasPosition phi 0 0 (ModelSeed.initial phi) 0 0 h_init
 
 /--
 The seed formulas for buildSeed phi are consistent.

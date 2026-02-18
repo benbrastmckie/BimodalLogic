@@ -40,7 +40,7 @@ technical_debt:
 
 ### 894. Clean linter warnings in Closure.lean
 - **Effort**: 30 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
