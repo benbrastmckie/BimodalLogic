@@ -127,21 +127,16 @@ After 28+ implementation sessions:
 
 **Current state**: 5 sorries (reduced from 10)
 
-**Sorry Analysis (audited, updated session 31):**
+**Sorry Analysis (audited, updated session 32):**
 | Line | Theorem | Issue | Classification | Status |
 |------|---------|-------|----------------|--------|
-| 159 | modal_witness_includes_boxcontent | BoxContent propagation to witness | Infrastructure | OPEN |
-| 224 | h_base_cons (in buildFamilyFromSeed) | Empty list soundness | Non-blocking (provable via soundness) | **RESOLVED** |
-| 315 | forward_G (same-sign positive) | Chain propagation | CRITICAL | **RESOLVED** (uses dovetailChainSet) |
-| 339 | forward_G (cross-sign) | Cross-sign propagation | CRITICAL | **RESOLVED** (merged with neg case) |
-| 353 | forward_G (both negative) | Backward in backward chain | CRITICAL | **RESOLVED** (merged with neg case) |
-| 246 (new) | forward_G (t < 0 case) | Cross-sign or both-negative | CRITICAL | OPEN |
-| 376 | backward_H (same-sign negative) | Chain propagation | CRITICAL | **RESOLVED** (uses dovetailChainSet) |
-| 387 | backward_H (cross-sign) | Cross-sign propagation | CRITICAL | **RESOLVED** (merged with pos case) |
-| 398 | backward_H (both positive) | Backward in forward chain | CRITICAL | **RESOLVED** (merged with pos case) |
-| 256 (new) | backward_H (t >= 0 case) | Cross-sign or both-positive | CRITICAL | OPEN |
-| 470→328 | buildFamilyFromSeed_cross_sign_seed | Cross-sign seed formula | Depends on temporal coherence | OPEN |
-| 479→337 | buildFamilyFromSeed_contains_seed | Seed containment | Depends on base construction | OPEN |
+| 161 | modal_witness_includes_boxcontent | BoxContent propagation to witness | Infrastructure (UNUSED) | OPEN (not on critical path) |
+| 246 | forward_G (t < 0 case) | Cross-sign or both-negative | ARCHITECTURAL | OPEN (requires different construction) |
+| 256 | backward_H (t >= 0 case) | Cross-sign or both-positive | ARCHITECTURAL | OPEN (requires different construction) |
+| 328 | buildFamilyFromSeed_cross_sign_seed | Cross-sign seed formula | ARCHITECTURAL | OPEN (same blocker as 246/256) |
+| 372 | buildFamilyFromSeed_contains_seed (t≠0) | Seed containment at non-zero times | ARCHITECTURAL | OPEN (t=0 proven separately) |
+
+**Session 32 Finding**: All 5 remaining sorries stem from the same architectural limitation. The `seedFamilyMCS` function (line 161) is not used by the main `buildFamilyFromSeed` construction.
 
 **Architectural Blocker Identified:**
 The `buildFamilyFromSeed` function builds MCS chains that extend OUTWARD from time 0:
@@ -198,6 +193,16 @@ This is the same cross-sign issue documented in DovetailingChain.lean (9 sorries
 - Remaining: 5 sorries - 2 cross-sign architectural (246, 256), 3 seed-related (161, 328, 337)
 - Sorries: 10 → 5 (5 eliminated)
 - Build: Verified lake build succeeds
+
+**Session 32: 2026-02-17, sess_1771383160_c559b2 (iteration 2)**
+- Added: `buildFamilyFromSeed_contains_seed_zero` theorem (proven)
+- Refactored: `buildFamilyFromSeed_contains_seed` to use case analysis (t=0 proven, t≠0 sorry)
+- Analyzed: All 5 remaining sorries are manifestations of same architectural issue
+- Finding: Chain construction goes OUTWARD from time 0, but cross-sign coherence needs INWARD
+- Finding: `seedFamilyMCS` and `modal_witness_includes_boxcontent` (line 161) are unused by main path
+- Sorries: 5 → 5 (no reduction - all require architectural solution)
+- Build: Verified lake build succeeds
+- Recommendation: Cross-sign sorries cannot be resolved without different construction approach
 
 ---
 

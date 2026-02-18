@@ -328,12 +328,47 @@ theorem buildFamilyFromSeed_cross_sign_seed (seed : ModelSeed) (h_cons : SeedCon
   sorry
 
 /--
+Seed formulas at time 0 are contained in the constructed family's MCS.
+
+This is the base case: seed formulas at time 0 form the base of the dovetailing chain,
+so they are automatically included in the MCS at time 0.
+-/
+theorem buildFamilyFromSeed_contains_seed_zero (seed : ModelSeed) (h_cons : SeedConsistent seed)
+    (famIdx : Nat) :
+    seed.getFormulas famIdx 0 ⊆ (buildFamilyFromSeed seed h_cons famIdx).mcs 0 := by
+  intro phi h_phi
+  -- The MCS at time 0 is dovetailChainSet(baseFormulas, 0)
+  -- where baseFormulas = seed.getFormulas famIdx 0
+  -- dovetailChainSet at 0 extends baseFormulas by construction
+  unfold buildFamilyFromSeed
+  simp only [dovetailChainSet]
+  simp only [show (0 : Int) >= 0 from le_refl _, ↓reduceDIte, Int.toNat_zero]
+  apply dovetailForwardChainMCS_zero_extends
+  exact h_phi
+
+/--
 Seed formulas are contained in the constructed family's MCS.
+
+**Status**: [PARTIAL] - Proven for t = 0. Non-zero times require either:
+1. Proving seed temporal propagation (G at t<0 → phi at 0) ensures formulas reach time 0
+2. A different construction that incorporates seed structure at all times
+
+**Architectural Note**: The current construction uses dovetailChainSet which only
+takes seed formulas at time 0 as its base. Seed formulas at other times are not
+directly incorporated into the chain. For complete coverage, either prove that
+RecursiveSeed's addToAllFutureTimes/addToAllPastTimes places all relevant formulas
+at time 0, or use a construction that builds from all seed entries.
 -/
 theorem buildFamilyFromSeed_contains_seed (seed : ModelSeed) (h_cons : SeedConsistent seed)
     (famIdx : Nat) (t : Int) (h_exists : seed.hasPosition famIdx t) :
     seed.getFormulas famIdx t ⊆ (buildFamilyFromSeed seed h_cons famIdx).mcs t := by
-  -- The MCS at seed positions extends the seed formulas
-  sorry
+  by_cases h_t : t = 0
+  · -- Case t = 0: use the proven lemma
+    subst h_t
+    exact buildFamilyFromSeed_contains_seed_zero seed h_cons famIdx
+  · -- Case t ≠ 0: architectural limitation
+    -- Seed formulas at non-zero times are not directly in the chain base.
+    -- Would need to prove RecursiveSeed propagation places them at time 0.
+    sorry
 
 end Bimodal.Metalogic.Bundle
