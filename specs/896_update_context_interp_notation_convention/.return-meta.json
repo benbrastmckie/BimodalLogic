@@ -1,0 +1,28 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-17T12:00:00Z",
+  "completed_at": "2026-02-17T12:30:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/896_update_context_interp_notation_convention/reports/research-001.md",
+      "summary": "Research report documenting \\interp vs \\ext notation convention from Logos LaTeX project"
+    }
+  ],
+  "next_steps": "Run /plan 896 to create implementation plan for updating notation-conventions.md",
+  "metadata": {
+    "session_id": "sess_1771397163_27e0a9",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 120,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5,
+    "key_findings": [
+      "\\sem macro should be renamed to \\ext for term extension",
+      "\\interp{\\cdot}^\\sigma_M should be used for sentence interpretation",
+      "Distinction enables homomorphism statement between sentences and propositions",
+      "Target file: .claude/context/project/latex/standards/notation-conventions.md",
+      "Add new 'Semantic Functions' section after Variable Assignment"
+    ]
+  }
+}
