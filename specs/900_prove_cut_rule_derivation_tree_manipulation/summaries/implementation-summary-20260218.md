@@ -1,97 +1,100 @@
 # Implementation Summary: Task #900
 
-**Status**: Partial (Phases 1-2 complete, Phase 3-4 partial)
+**Status**: Partial
 **Date**: 2026-02-18
-**Session**: sess_1771436504_b7f48c
+**Sessions**:
+- sess_1771436504_b7f48c (Iterations 1-3)
+- sess_1771443646_20904f (Iteration 4 - Plan v2)
 
-## Changes Made
+## Current State
 
-### Phase 1: Positive Subformula Consistency Lemmas [COMPLETED]
-Proved 3 subformula consistency theorems using T-axioms and derivation composition:
+- **Sorries remaining**: 3 in `processWorkItem_preserves_consistent` (boxPositive, futurePositive, pastPositive)
+- **Phase 2 building blocks**: Added and ready to use
+- **Blocked on**: Phase 5 of task 864 (closure property proofs)
 
-- `box_inner_consistent`: If `Box psi` is consistent, then `psi` is consistent
-- `all_future_inner_consistent`: If `G psi` is consistent, then `psi` is consistent
-- `all_past_inner_consistent`: If `H psi` is consistent, then `psi` is consistent
+---
 
-**Proof pattern**: Assume `[psi] |- bot`. Use deduction theorem to get `|- psi -> bot`, combine with T-axiom via `imp_trans` to get `|- Box psi -> bot`, then modus ponens to derive contradiction.
+## Iteration 4 (sess_1771443646_20904f) - Plan v2
 
-### Phase 2: Negative Subformula Consistency Lemmas [COMPLETED]
-Proved 3 negative subformula consistency theorems using necessitation and DNE:
+### Phase 1: Verify Temporal Cases [PARTIAL]
 
-- `neg_box_neg_inner_consistent`: If `neg(Box psi)` is consistent, then `neg psi` is consistent
-- `neg_future_neg_inner_consistent`: If `neg(G psi)` is consistent, then `neg psi` is consistent
-- `neg_past_neg_inner_consistent`: If `neg(H psi)` is consistent, then `neg psi` is consistent
+**Analysis completed, no code changes:**
+- Investigated whether `futurePositive` and `pastPositive` could use existing lemmas
+- **Finding**: Add order is REVERSED from what existing lemma requires
+  - Actual order: `psi` added BEFORE `G psi` in the foldl loop (lines 6551-6553)
+  - Required order: `G psi` must be present BEFORE adding `psi`
+- The existing `foldl_addFormula_times_preserves_consistent_with_gpsi` cannot be applied directly
+- **Blocked**: Requires new helper lemma or Phase 3 post-condition approach
 
-**Proof pattern**: Assume `[neg psi] |- bot`. Use deduction theorem and DNE to get `|- psi`, apply necessitation to get `|- Box psi`, then derive contradiction with `neg(Box psi)`.
+### Phase 2: Add insert_consistent_of_derivable_parent [COMPLETED]
 
-### Phase 3: processWorkItem Consistency Cases [PARTIAL]
+**Added 4 new definitions to RecursiveSeed.lean at line ~1698:**
 
-**Completed in iteration 2**:
-1. **Strengthened `WorklistInvariant`** to include:
-   - `SeedWellFormed state.seed` - well-formedness
-   - `item.formula ∈ state.seed.getFormulas item.famIdx item.timeIdx` - formula presence
+1. `insert_consistent_of_derivable_parent` - Main theorem: if parent in consistent set S and parent implies child, then insert child S is consistent
+2. `insert_psi_consistent_of_box_psi_in` - Corollary for Box using modal_t axiom
+3. `insert_psi_consistent_of_g_psi_in` - Corollary for G using temp_t_future axiom
+4. `insert_psi_consistent_of_h_psi_in` - Corollary for H using temp_t_past axiom
 
-2. **Updated `processWorkItem_preserves_consistent` signature** to use strengthened hypotheses
+All definitions have zero sorries and compile successfully.
 
-3. **Completed simple cases** (4 of 10):
+### Phase 3: Post-Condition Architecture for boxPositive [BLOCKED]
+
+**Analysis completed, no code changes:**
+- Checked closure property status: `ModalClosed`, `GClosed`, `HClosed` are defined but proofs incomplete
+- `processWorkItem_preserves_closure` (line 8023) has sorry ("10-case proof")
+- **Blocked**: Cannot implement post-condition approach until Phase 5 of task 864
+- The `insert_psi_consistent_of_box_psi_in` corollary is READY to use once closure proven
+
+---
+
+## Prior Iterations (sess_1771436504_b7f48c)
+
+### Completed Work
+
+1. **Subformula Consistency Lemmas (6 total)**:
+   - `box_inner_consistent`, `all_future_inner_consistent`, `all_past_inner_consistent`
+   - `neg_box_neg_inner_consistent`, `neg_future_neg_inner_consistent`, `neg_past_neg_inner_consistent`
+
+2. **processWorkItem_preserves_consistent Simple Cases (4 of 10)**:
    - `atomic`, `bottom`, `implication`, `negation`
 
-**Completed in iteration 3**:
-4. **Completed negative modal/temporal cases** (3 additional):
-   - `boxNegative`: Uses `createNewFamily_preserves_seedConsistent` + `neg_box_neg_inner_consistent`
-   - `futureNegative`: Uses `createNewTime_preserves_seedConsistent` + `neg_future_neg_inner_consistent`
-   - `pastNegative`: Uses `createNewTime_preserves_seedConsistent` + `neg_past_neg_inner_consistent`
+3. **processWorkItem_preserves_consistent Negative Cases (3 additional)**:
+   - `boxNegative`, `futureNegative`, `pastNegative`
 
-**Remaining sorries** (3):
-- `boxPositive`, `futurePositive`, `pastPositive`: Require cross-family/time compatibility proof
+4. **processWorkItem_newWork_consistent (All 6 cases)**:
+   - All modal/temporal positive and negative cases
 
-### Phase 4: processWorkItem_newWork Consistency [COMPLETED]
-All 6 cases completed in iteration 3:
-
-- `boxPositive`: New work has `psi`, consistent by `box_inner_consistent`
-- `boxNegative`: New work has `neg psi`, consistent by `neg_box_neg_inner_consistent`
-- `futurePositive`: New work has `psi`, consistent by `all_future_inner_consistent`
-- `futureNegative`: New work has `neg psi`, consistent by `neg_future_neg_inner_consistent`
-- `pastPositive`: New work has `psi`, consistent by `all_past_inner_consistent`
-- `pastNegative`: New work has `neg psi`, consistent by `neg_past_neg_inner_consistent`
-
-### processWorklistAux_preserves_invariant [BLOCKED]
-3 sorries remain, dependent on Phase 3 positive cases:
-- Line 7420: processWorkItem preserves well-formedness
-- Line 7431: Formula membership preserved through processWorkItem
-- Line 7437: New work items have formulas in updated seed
-
-## Technical Blocker: Cross-Family/Time Compatibility
-
-The `boxPositive`, `futurePositive`, and `pastPositive` cases require proving that when adding a formula to ALL families/times, the insert is compatible with EVERY entry.
-
-**Issue**: When `Box psi` is processed at family `f`, we add `psi` to all families. But `Box psi` is only at family `f`, not at other families. So we cannot derive `psi` from `Box psi` via T-axiom at other families.
-
-**Possible solutions**:
-1. Strengthen worklist invariant to track Box propagation (complex)
-2. Add semantic compatibility lemma (requires model-theoretic argument)
-3. Modify algorithm to ensure Box formulas are propagated before content
+---
 
 ## Files Modified
 
-- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean`:
-  - Proved 6 subformula consistency lemmas (Phases 1-2)
-  - Completed 7/10 `processWorkItem_preserves_consistent` cases (Phase 3)
-  - Completed all 6 `processWorkItem_newWork_consistent` cases (Phase 4)
+| File | Change |
+|------|--------|
+| `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` | Added 4 new theorems (insert_consistent_of_derivable_parent and corollaries) |
 
 ## Verification
 
-- `lake build` completes successfully
-- Sorries remaining in RecursiveSeed.lean Phase 4 scope: 6 (down from 22)
+- `lake build` succeeds (1000 jobs)
+- No new sorries introduced in iteration 4
+- No new axioms introduced
+- Build errors: 0
 
-## Key Infrastructure Used
+## Technical Debt
 
-- `Bimodal.Metalogic.Core.deduction_theorem` - Convert context derivation to implication
-- `Bimodal.Theorems.Combinators.imp_trans` - Chain implications
-- `Bimodal.Theorems.Propositional.double_negation` - DNE for classical reasoning
-- `Bimodal.ProofSystem.DerivationTree.necessitation` - Modal necessitation
-- `Bimodal.ProofSystem.DerivationTree.temporal_necessitation` - Temporal necessitation
-- `Bimodal.Theorems.past_necessitation` - Past necessitation via duality
-- `derives_bot_from_phi_neg_phi` - Derive contradiction from phi and neg phi
-- `createNewFamily_preserves_seedConsistent` - New family preserves consistency
-- `createNewTime_preserves_seedConsistent` - New time preserves consistency
+| Category | Status |
+|----------|--------|
+| Sorries in positive cases | 3 (unchanged) |
+| New infrastructure added | 4 theorems ready for use |
+
+## Dependencies
+
+**Task 900 blocked on Task 864 Phase 5**:
+- Closure property proofs (`processWorkItem_preserves_closure`)
+- Once proven, `insert_psi_consistent_of_box_psi_in` can complete boxPositive
+- Temporal cases may also benefit from closure-based approach
+
+## Recommendations
+
+1. Complete Task 864 Phase 5 (closure properties)
+2. Return to Task 900 to apply post-condition approach
+3. Or: Create combined (psi, G psi) addition helper lemma for temporal cases

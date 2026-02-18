@@ -1695,6 +1695,69 @@ theorem addFormula_preserves_consistent {S : Set Formula} {phi : Formula}
     exact h_cons L' h_L'_sub ⟨d_bot⟩
 
 /--
+If a parent formula is in a consistent set S and the parent implies the child,
+then inserting the child into S preserves consistency.
+
+This is a key building block for the post-condition architecture where we derive
+`SeedConsistent` from closure properties rather than maintaining it as a loop invariant.
+-/
+noncomputable def insert_consistent_of_derivable_parent
+    {S : Set Formula} {parent child : Formula}
+    (h_S_cons : SetConsistent S)
+    (h_parent_in : parent ∈ S)
+    (h_derives : ⊢ parent.imp child) :
+    SetConsistent (insert child S) := by
+  apply addFormula_preserves_consistent h_S_cons
+  use [parent]
+  constructor
+  · intro ψ hψ
+    simp only [List.mem_singleton] at hψ
+    rw [hψ]; exact h_parent_in
+  · constructor
+    have d_imp : Bimodal.ProofSystem.DerivationTree [parent] (parent.imp child) :=
+      Bimodal.ProofSystem.DerivationTree.weakening [] [parent] (parent.imp child) h_derives
+        (List.nil_subset _)
+    have d_parent : Bimodal.ProofSystem.DerivationTree [parent] parent :=
+      Bimodal.ProofSystem.DerivationTree.assumption parent [parent] (by simp)
+    exact Bimodal.ProofSystem.DerivationTree.modus_ponens [parent] parent child d_imp d_parent
+
+/--
+Corollary: If Box psi is in a consistent set S, then insert psi S is consistent.
+Uses the T-axiom: Box psi -> psi.
+-/
+noncomputable def insert_psi_consistent_of_box_psi_in
+    {S : Set Formula} {psi : Formula}
+    (h_S_cons : SetConsistent S)
+    (h_box_in : Formula.box psi ∈ S) :
+    SetConsistent (insert psi S) :=
+  insert_consistent_of_derivable_parent h_S_cons h_box_in
+    (Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_t psi))
+
+/--
+Corollary: If G psi is in a consistent set S, then insert psi S is consistent.
+Uses the temporal T-axiom: G psi -> psi.
+-/
+noncomputable def insert_psi_consistent_of_g_psi_in
+    {S : Set Formula} {psi : Formula}
+    (h_S_cons : SetConsistent S)
+    (h_gpsi_in : Formula.all_future psi ∈ S) :
+    SetConsistent (insert psi S) :=
+  insert_consistent_of_derivable_parent h_S_cons h_gpsi_in
+    (Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future psi))
+
+/--
+Corollary: If H psi is in a consistent set S, then insert psi S is consistent.
+Uses the temporal T-axiom: H psi -> psi.
+-/
+noncomputable def insert_psi_consistent_of_h_psi_in
+    {S : Set Formula} {psi : Formula}
+    (h_S_cons : SetConsistent S)
+    (h_hpsi_in : Formula.all_past psi ∈ S) :
+    SetConsistent (insert psi S) :=
+  insert_consistent_of_derivable_parent h_S_cons h_hpsi_in
+    (Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past psi))
+
+/--
 Helper: A formula is a subformula_consistent if adding it to a consistent set preserves consistency.
 For our purposes, this holds when the formula is:
 1. A theorem (can be added to any consistent set)
@@ -7105,19 +7168,27 @@ theorem processWorkItem_preserves_consistent (item : WorkItem) (state : Worklist
     -- neg(Box psi): add to current, create new family with neg psi
     simp only
     -- Establish item.formula = neg(Box psi) from h_class
+    -- The match-on-hf approach handles all formula patterns
     have h_eq : item.formula = psi.box.neg := by
-      cases item.formula with
-      | imp left right =>
-        cases left with
-        | box inner =>
-          cases right with
-          | bot =>
-            simp only [classifyFormula] at h_class
-            injection h_class with h
-            exact congrArg (fun x => Formula.imp (Formula.box x) Formula.bot) h.symm
-          | _ => simp only [classifyFormula] at h_class
-        | _ => simp only [classifyFormula] at h_class
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.imp (Formula.box inner) Formula.bot =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_future _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_past _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- neg psi is consistent since neg(Box psi) is consistent
     have h_neg_psi_cons : FormulaConsistent psi.neg :=
       neg_box_neg_inner_consistent psi (h_eq ▸ h_item_cons)
@@ -7144,18 +7215,25 @@ theorem processWorkItem_preserves_consistent (item : WorkItem) (state : Worklist
     simp only
     -- Establish item.formula = neg(G psi) from h_class
     have h_eq : item.formula = psi.all_future.neg := by
-      cases item.formula with
-      | imp left right =>
-        cases left with
-        | all_future inner =>
-          cases right with
-          | bot =>
-            simp only [classifyFormula] at h_class
-            injection h_class with h
-            exact congrArg (fun x => Formula.imp (Formula.all_future x) Formula.bot) h.symm
-          | _ => simp only [classifyFormula] at h_class
-        | _ => simp only [classifyFormula] at h_class
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.imp (Formula.all_future inner) Formula.bot =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.box _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_past _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- neg psi is consistent since neg(G psi) is consistent
     have h_neg_psi_cons : FormulaConsistent psi.neg :=
       neg_future_neg_inner_consistent psi (h_eq ▸ h_item_cons)
@@ -7184,18 +7262,25 @@ theorem processWorkItem_preserves_consistent (item : WorkItem) (state : Worklist
     simp only
     -- Establish item.formula = neg(H psi) from h_class
     have h_eq : item.formula = psi.all_past.neg := by
-      cases item.formula with
-      | imp left right =>
-        cases left with
-        | all_past inner =>
-          cases right with
-          | bot =>
-            simp only [classifyFormula] at h_class
-            injection h_class with h
-            exact congrArg (fun x => Formula.imp (Formula.all_past x) Formula.bot) h.symm
-          | _ => simp only [classifyFormula] at h_class
-        | _ => simp only [classifyFormula] at h_class
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.imp (Formula.all_past inner) Formula.bot =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.box _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_future _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- neg psi is consistent since neg(H psi) is consistent
     have h_neg_psi_cons : FormulaConsistent psi.neg :=
       neg_past_neg_inner_consistent psi (h_eq ▸ h_item_cons)
@@ -7248,36 +7333,57 @@ theorem processWorkItem_newWork_consistent (item : WorkItem) (state : WorklistSt
     -- New work items have formula psi, which is consistent by box_inner_consistent
     -- From h_class, item.formula = Box psi
     have h_eq : item.formula = psi.box := by
-      cases item.formula with
-      | box inner => simp only [classifyFormula] at h_class; injection h_class with h; exact congrArg Formula.box h.symm
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.box inner =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.box _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_future _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_past _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- psi is consistent since Box psi is consistent
     have h_psi_cons : FormulaConsistent psi := box_inner_consistent psi (h_eq ▸ h_item_cons)
     -- hw : w is in newWork, which maps psi to all families
-    simp only [h_class] at hw
+    simp only [processWorkItem, h_class, List.mem_map, WorkItem.mk.injEq] at hw
     have h_w_formula : w.formula = psi := by
-      simp only [List.mem_map] at hw
-      obtain ⟨f, _, h_eq_w⟩ := hw
-      simp only [WorkItem.mk.injEq] at h_eq_w
-      exact h_eq_w.1
+      obtain ⟨_, _, h_eq_w, _, _⟩ := hw
+      exact h_eq_w
     rw [h_w_formula]
     exact h_psi_cons
   | .boxNegative psi =>
     -- item.formula = neg(Box psi), new work has formula neg psi
     -- From h_class, item.formula = neg(Box psi)
     have h_eq : item.formula = psi.box.neg := by
-      cases item.formula with
-      | imp left right =>
-        cases left with
-        | box inner =>
-          cases right with
-          | bot =>
-            simp only [classifyFormula] at h_class
-            injection h_class with h
-            exact congrArg (fun x => Formula.imp (Formula.box x) Formula.bot) h.symm
-          | _ => simp only [classifyFormula] at h_class
-        | _ => simp only [classifyFormula] at h_class
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.imp (Formula.box inner) Formula.bot =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_future _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_past _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- neg psi is consistent since neg(Box psi) is consistent
     have h_neg_psi_cons : FormulaConsistent psi.neg :=
       neg_box_neg_inner_consistent psi (h_eq ▸ h_item_cons)
@@ -7289,41 +7395,59 @@ theorem processWorkItem_newWork_consistent (item : WorkItem) (state : WorklistSt
   | .futurePositive psi =>
     -- item.formula = G psi, new work items have formula psi
     have h_eq : item.formula = psi.all_future := by
-      cases item.formula with
-      | all_future inner =>
-        simp only [classifyFormula] at h_class
-        injection h_class with h
-        exact congrArg Formula.all_future h.symm
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.all_future inner =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.box _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_future _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_past _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- psi is consistent since G psi is consistent
     have h_psi_cons : FormulaConsistent psi := all_future_inner_consistent psi (h_eq ▸ h_item_cons)
     -- hw : w is in (psi at current) :: (psi at future times)
-    simp only [h_class] at hw
-    simp only [List.mem_cons, List.mem_map] at hw
+    simp only [processWorkItem, h_class, List.mem_cons, List.mem_map, WorkItem.mk.injEq] at hw
     cases hw with
     | inl h_head =>
       rw [h_head]
       exact h_psi_cons
     | inr h_tail =>
-      obtain ⟨t, _, h_eq_w⟩ := h_tail
-      simp only [WorkItem.mk.injEq] at h_eq_w
-      rw [h_eq_w.1]
+      obtain ⟨_, _, h_eq_w, _, _⟩ := h_tail
+      rw [h_eq_w]
       exact h_psi_cons
   | .futureNegative psi =>
     -- item.formula = neg(G psi), new work has formula neg psi
     have h_eq : item.formula = psi.all_future.neg := by
-      cases item.formula with
-      | imp left right =>
-        cases left with
-        | all_future inner =>
-          cases right with
-          | bot =>
-            simp only [classifyFormula] at h_class
-            injection h_class with h
-            exact congrArg (fun x => Formula.imp (Formula.all_future x) Formula.bot) h.symm
-          | _ => simp only [classifyFormula] at h_class
-        | _ => simp only [classifyFormula] at h_class
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.imp (Formula.all_future inner) Formula.bot =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.box _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_past _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- neg psi is consistent since neg(G psi) is consistent
     have h_neg_psi_cons : FormulaConsistent psi.neg :=
       neg_future_neg_inner_consistent psi (h_eq ▸ h_item_cons)
@@ -7335,41 +7459,59 @@ theorem processWorkItem_newWork_consistent (item : WorkItem) (state : WorklistSt
   | .pastPositive psi =>
     -- item.formula = H psi, new work items have formula psi
     have h_eq : item.formula = psi.all_past := by
-      cases item.formula with
-      | all_past inner =>
-        simp only [classifyFormula] at h_class
-        injection h_class with h
-        exact congrArg Formula.all_past h.symm
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.all_past inner =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.box _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_future _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_past _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- psi is consistent since H psi is consistent
     have h_psi_cons : FormulaConsistent psi := all_past_inner_consistent psi (h_eq ▸ h_item_cons)
     -- hw : w is in (psi at current) :: (psi at past times)
-    simp only [h_class] at hw
-    simp only [List.mem_cons, List.mem_map] at hw
+    simp only [processWorkItem, h_class, List.mem_cons, List.mem_map, WorkItem.mk.injEq] at hw
     cases hw with
     | inl h_head =>
       rw [h_head]
       exact h_psi_cons
     | inr h_tail =>
-      obtain ⟨t, _, h_eq_w⟩ := h_tail
-      simp only [WorkItem.mk.injEq] at h_eq_w
-      rw [h_eq_w.1]
+      obtain ⟨_, _, h_eq_w, _, _⟩ := h_tail
+      rw [h_eq_w]
       exact h_psi_cons
   | .pastNegative psi =>
     -- item.formula = neg(H psi), new work has formula neg psi
     have h_eq : item.formula = psi.all_past.neg := by
-      cases item.formula with
-      | imp left right =>
-        cases left with
-        | all_past inner =>
-          cases right with
-          | bot =>
-            simp only [classifyFormula] at h_class
-            injection h_class with h
-            exact congrArg (fun x => Formula.imp (Formula.all_past x) Formula.bot) h.symm
-          | _ => simp only [classifyFormula] at h_class
-        | _ => simp only [classifyFormula] at h_class
-      | _ => simp only [classifyFormula] at h_class
+      match hf : item.formula with
+      | Formula.imp (Formula.all_past inner) Formula.bot =>
+        simp only [classifyFormula, hf] at h_class
+        cases h_class; rfl
+      | Formula.atom _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.box _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_future _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.all_past _ => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.atom _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp Formula.bot Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.imp _ _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.box _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp (Formula.all_future _) Formula.bot => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.atom _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.imp _ _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.box _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_future _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
+      | Formula.imp _ (Formula.all_past _) => simp only [classifyFormula, hf] at h_class; nomatch h_class
     -- neg psi is consistent since neg(H psi) is consistent
     have h_neg_psi_cons : FormulaConsistent psi.neg :=
       neg_past_neg_inner_consistent psi (h_eq ▸ h_item_cons)
@@ -7652,11 +7794,11 @@ private lemma mem_getFormulas_after_addFormula
   · obtain ⟨hf, ht⟩ := h_pos
     subst hf ht
     unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry at h_mem
-    cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) with
+    cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == f ∧ e.timeIdx == t) with
     | none =>
       simp only at h_mem
       rw [List.find?_append] at h_mem
-      have h_none : seed.entries.find? (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) = none := by
+      have h_none : seed.entries.find? (fun e => e.familyIdx == f ∧ e.timeIdx == t) = none := by
         rw [List.find?_eq_none]
         intro x hx
         exact List.findIdx?_eq_none_iff.mp h_find x hx
@@ -7667,11 +7809,11 @@ private lemma mem_getFormulas_after_addFormula
       simp only at h_mem
       have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
       have h_idx_lt : idx < seed.entries.length := h_spec.1
-      have h_pred : (seed.entries[idx].familyIdx == addF ∧ seed.entries[idx].timeIdx == addT) = true := h_spec.2.1
+      have h_pred : (seed.entries[idx].familyIdx == f ∧ seed.entries[idx].timeIdx == t) = true := h_spec.2.1
       set entry' := { seed.entries[idx] with formulas := insert psi seed.entries[idx].formulas } with h_entry'
-      have h_pres : (entry'.familyIdx == addF ∧ entry'.timeIdx == addT) = true := h_pred
+      have h_pres : (entry'.familyIdx == f ∧ entry'.timeIdx == t) = true := h_pred
       have h_find_modified : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).find?
-          (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) = some entry' := by
+          (fun e => e.familyIdx == f ∧ e.timeIdx == t) = some entry' := by
         rw [List.find?_eq_some_iff_getElem]
         constructor
         · exact h_pres
@@ -7679,7 +7821,7 @@ private lemma mem_getFormulas_after_addFormula
               seed.entries.length := List.length_modify _ _ _
           use idx, (h_len ▸ h_idx_lt)
           constructor
-          · rw [List.getElem_modify]; simp only [↑↓reduceIte, h_entry']
+          · rw [List.getElem_modify]; simp only [↓reduceIte, h_entry']
           · intro j hj
             rw [List.getElem_modify]
             split
@@ -7688,7 +7830,7 @@ private lemma mem_getFormulas_after_addFormula
               simp only [Bool.not_eq_true] at this
               simp only [this, Bool.not_false]
       rw [h_find_modified, h_entry'] at h_mem
-      have h_find_orig : seed.entries.find? (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) = some seed.entries[idx] := by
+      have h_find_orig : seed.entries.find? (fun e => e.familyIdx == f ∧ e.timeIdx == t) = some seed.entries[idx] := by
         rw [List.find?_eq_some_iff_getElem]
         constructor
         · exact h_pred

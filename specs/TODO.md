@@ -24,7 +24,7 @@ technical_debt:
 
 ### 900. Prove cut rule and derivation tree manipulation for recursive seed Henkin model
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-18
 - **Researched**: 2026-02-18

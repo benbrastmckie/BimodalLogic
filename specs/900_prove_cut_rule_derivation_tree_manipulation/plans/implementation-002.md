@@ -1,7 +1,7 @@
 # Implementation Plan: Task #900
 
 - **Task**: 900 - Prove cut rule / derivation tree manipulation for RecursiveSeed consistency
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4 hours
 - **Dependencies**: Task 864 (parent task, Phase 4)
 - **Research Inputs**: specs/900_prove_cut_rule_derivation_tree_manipulation/reports/research-002.md
@@ -72,7 +72,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Verify Temporal Cases [NOT STARTED]
+### Phase 1: Verify Temporal Cases [PARTIAL]
 
 - **Dependencies:** None
 - **Goal:** Determine if `futurePositive` and `pastPositive` are provable NOW with existing infrastructure
@@ -80,13 +80,23 @@ After this implementation:
 **Rationale**: The `processWorkItem` for `futurePositive` adds BOTH `G psi` AND `psi` to each future time. The existing lemma `foldl_addFormula_times_preserves_consistent_with_gpsi` handles exactly this case - it requires `G psi` to be at target entries.
 
 **Tasks**:
-- [ ] Read `processWorkItem` futurePositive case (lines 6544-6555) to verify exact add order
-- [ ] Verify `G psi` is added BEFORE `psi` at each time step
-- [ ] Attempt proof using `addToAllFutureTimes_preserves_seedConsistent_with_gpsi`
-- [ ] If successful, repeat for `pastPositive` using `_with_hpsi` variant
-- [ ] If blocked, document exactly what's missing
+- [x] Read `processWorkItem` futurePositive case (lines 6544-6555) to verify exact add order
+- [x] Verify `G psi` is added BEFORE `psi` at each time step
+- [ ] ~~Attempt proof using `addToAllFutureTimes_preserves_seedConsistent_with_gpsi`~~
+- [ ] ~~If successful, repeat for `pastPositive` using `_with_hpsi` variant~~
+- [x] If blocked, document exactly what's missing
+
+**Finding**: The add order is REVERSED from what the lemma requires:
+- Actual order in foldl: `psi` is added FIRST, then `G psi` is added second
+- Required order for existing lemma: `G psi` must be present BEFORE adding `psi`
+
+This means `foldl_addFormula_times_preserves_consistent_with_gpsi` cannot be applied directly. The `addFormula_seed_preserves_consistent` requires that adding `psi` to each entry preserves consistency, but without `G psi` already in the entry, we cannot use the derivability argument.
+
+**Blocked - requires Phase 3 approach**: A new helper lemma is needed that proves adding BOTH `psi` and `G psi` together preserves consistency, regardless of the internal add order. This is the "post-condition architecture" from Phase 3.
 
 **Expected Outcome**: 2 sorries eliminated if add order is as expected; 0 sorries eliminated if order is reversed.
+
+**Actual Outcome**: 0 sorries eliminated. Blocked on add order.
 
 **Timing**: 1 hour
 
@@ -97,9 +107,17 @@ After this implementation:
 - If successful: `lake build` succeeds, 2 fewer sorries in positive cases
 - If blocked: Document blockers for Phase 3 approach
 
+**Progress:**
+
+**Session: 2026-02-18, sess_1771443646_20904f**
+- Analyzed: `processWorkItem` futurePositive case structure (lines 6544-6555)
+- Found: Add order is reversed - psi added before G psi in foldl
+- Blocked: Cannot use `foldl_addFormula_times_preserves_consistent_with_gpsi` directly
+- No changes committed (analysis only)
+
 ---
 
-### Phase 2: Add insert_consistent_of_derivable_parent [NOT STARTED]
+### Phase 2: Add insert_consistent_of_derivable_parent [COMPLETED]
 
 - **Dependencies:** None (can run in parallel with Phase 1)
 - **Goal:** Add the verified `insert_consistent_of_derivable_parent` theorem and its corollaries to the codebase
@@ -117,14 +135,14 @@ noncomputable def insert_consistent_of_derivable_parent
 ```
 
 **Tasks**:
-- [ ] Find appropriate location in RecursiveSeed.lean (near existing consistency lemmas, ~line 2648-3002)
-- [ ] Add `insert_consistent_of_derivable_parent` theorem
-- [ ] Add three corollaries:
+- [x] Find appropriate location in RecursiveSeed.lean (near existing consistency lemmas, ~line 2648-3002)
+- [x] Add `insert_consistent_of_derivable_parent` theorem
+- [x] Add three corollaries:
   - `insert_psi_consistent_of_box_psi_in`: If `Box psi` in S, then `insert psi S` consistent
   - `insert_psi_consistent_of_g_psi_in`: If `G psi` in S, then `insert psi S` consistent
   - `insert_psi_consistent_of_h_psi_in`: If `H psi` in S, then `insert psi S` consistent
-- [ ] Verify proofs use only existing infrastructure (T-axioms, imp_trans)
-- [ ] Build and verify no errors
+- [x] Verify proofs use only existing infrastructure (T-axioms, imp_trans)
+- [x] Build and verify no errors
 
 **Timing**: 0.5 hours
 
@@ -136,11 +154,20 @@ noncomputable def insert_consistent_of_derivable_parent
 - New theorems have no sorries
 - `lean_verify` on each theorem shows no axiom dependencies beyond standard ones
 
+**Progress:**
+
+**Session: 2026-02-18, sess_1771443646_20904f**
+- Added: `insert_consistent_of_derivable_parent` at line ~1698 (after `addFormula_preserves_consistent`)
+- Added: `insert_psi_consistent_of_box_psi_in` (corollary for Box using modal_t axiom)
+- Added: `insert_psi_consistent_of_g_psi_in` (corollary for G using temp_t_future axiom)
+- Added: `insert_psi_consistent_of_h_psi_in` (corollary for H using temp_t_past axiom)
+- Verified: `lake build` succeeds (1000 jobs), no new sorries
+
 ---
 
-### Phase 3: Post-Condition Architecture for boxPositive [NOT STARTED]
+### Phase 3: Post-Condition Architecture for boxPositive [BLOCKED]
 
-- **Dependencies:** Phase 2 (uses insert_consistent_of_derivable_parent)
+- **Dependencies:** Phase 2 (uses insert_consistent_of_derivable_parent), **Phase 5 of parent task 864 (closure properties)**
 - **Goal:** Prove `boxPositive` case using post-condition architecture
 
 **Rationale**: The `boxPositive` case adds `psi` to ALL families at current time, but `Box psi` is only present in ONE family. This makes per-entry consistency unprovable as a loop invariant. Solution: prove consistency is a POST-CONDITION derived from closure properties.
@@ -151,13 +178,20 @@ noncomputable def insert_consistent_of_derivable_parent
 3. Derive `SeedConsistent` from closures: In the completed seed, if `Box psi` is at any position, then by `ModalClosed`, `psi` is also there. The `insert_consistent_of_derivable_parent` corollaries then justify each formula's presence.
 
 **Tasks**:
-- [ ] Check if `ModalClosed`, `GClosed`, `HClosed` are proven (Phase 5 of parent task)
-- [ ] If closure properties exist:
-  - [ ] Refactor `processWorkItem_preserves_consistent` for boxPositive to use post-condition approach
-  - [ ] Use `insert_psi_consistent_of_box_psi_in` with closure property witness
-- [ ] If closure properties don't exist:
-  - [ ] Document dependency on Phase 5 of parent task
-  - [ ] Mark sorry with detailed comment explaining the dependency
+- [x] Check if `ModalClosed`, `GClosed`, `HClosed` are proven (Phase 5 of parent task)
+- [ ] ~~If closure properties exist:~~
+  - [ ] ~~Refactor `processWorkItem_preserves_consistent` for boxPositive to use post-condition approach~~
+  - [ ] ~~Use `insert_psi_consistent_of_box_psi_in` with closure property witness~~
+- [x] If closure properties don't exist:
+  - [x] Document dependency on Phase 5 of parent task
+
+**Blocker Analysis**:
+- `processWorkItem_preserves_closure` (line 8023) has a sorry - "10-case proof"
+- This theorem is needed to prove that the completed seed satisfies closure properties
+- Without closure properties proven, the post-condition approach cannot be applied
+- The `insert_psi_consistent_of_box_psi_in` corollary (added in Phase 2) IS ready to use once closure is proven
+
+**Dependency**: Requires Phase 5 of task 864 (closure property proofs) to be completed first
 
 **Alternative Approach** (if closures blocked): The worklist algorithm ensures `Box psi` work item is processed before its subformula `psi` is added globally. We can potentially track that `Box psi` WAS added to the seed before `psi` was propagated, even if `Box psi` isn't present at every entry.
 
@@ -171,14 +205,25 @@ noncomputable def insert_consistent_of_derivable_parent
 - `boxPositive` case has no sorry
 - No new axioms introduced
 
+**Progress:**
+
+**Session: 2026-02-18, sess_1771443646_20904f**
+- Checked: Closure properties (ModalClosed, GClosed, HClosed) defined but not fully proven
+- Found: `processWorkItem_preserves_closure` at line 8023 has sorry ("10-case proof")
+- Found: `processWorklistAux_preserves_closure` at line 8037 has sorry ("fuel sufficiency argument")
+- Blocked: Cannot apply post-condition architecture until Phase 5 closure properties are proven
+- Added building block: `insert_psi_consistent_of_box_psi_in` corollary is READY to use once closure proven
+- No changes committed to boxPositive case (blocked on dependency)
+
 ---
 
 ## Testing & Validation
 
-- [ ] `lake build` completes with no errors
-- [ ] No new sorries introduced in RecursiveSeed.lean
-- [ ] No new axioms introduced
+- [x] `lake build` completes with no errors
+- [x] No new sorries introduced in RecursiveSeed.lean
+- [x] No new axioms introduced
 - [ ] Three positive cases (`boxPositive`, `futurePositive`, `pastPositive`) have no sorries
+  - **Status**: Still have 3 sorries (blocked on Phase 1 add order, Phase 3 closure properties)
 - [ ] `lean_verify` on `processWorkItem_preserves_consistent` shows no suspicious axioms
 
 ## Artifacts & Outputs
