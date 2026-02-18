@@ -24,9 +24,11 @@ technical_debt:
 
 ### 900. Prove cut rule and derivation tree manipulation for recursive seed Henkin model
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-18
+- **Researched**: 2026-02-18
+- **Research**: [research-001.md](specs/900_prove_cut_rule_derivation_tree_manipulation/reports/research-001.md)
 
 **Description**: In order to complete phase 4 from /home/benjamin/Projects/ProofChecker/specs/864_recursive_seed_henkin_model/plans/implementation-005.md in the most mathematically correct manner, prove: the cut rule / derivation tree manipulation.
 
@@ -51,11 +53,13 @@ technical_debt:
 
 ### 898. Bilattice structure remarks in ConstitutiveFoundation
 - **Effort**: 1.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: latex
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
+- **Planned**: 2026-02-18
 - **Research**: [research-001.md](specs/898_bilattice_structure_remarks_constitutive_foundation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/898_bilattice_structure_remarks_constitutive_foundation/plans/implementation-001.md)
 
 **Description**: Two related bilattice improvements in `/home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex`: (1) **Line 595**: Draw on `IdentityAboutness.tex` (line 801-2) to carefully define interlaced and distributive bilattices, adding a remark that every distributive bilattice is interlaced (cite Fitting1990 per line 806). (2) **Line 609**: Turn the conjunction/disjunction-as-lub facts into their own remark with glb definitions and commentary. Move remainder of current bilattice remark to just below the new definition of interlaced, with counterexamples from `IdentityAboutness.tex`. Source: `TODO:` tags at lines 595 and 609.
 
