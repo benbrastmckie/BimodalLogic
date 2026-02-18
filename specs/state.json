@@ -86,15 +86,15 @@
     {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "effort": "2-4 hours",
       "description": "Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:41:13Z",
+      "last_updated": "2026-02-18T00:51:06Z",
       "session_id": "sess_1771375251_9d55f5",
-      "researched": "2026-02-18T00:19:42Z",
+      "researched": "2026-02-18T00:51:06Z",
       "artifacts": [
         {
           "type": "research",
@@ -110,6 +110,11 @@
           "type": "summary",
           "path": "specs/892_modify_henkinstep_add_negations/summaries/implementation-summary-20260217.md",
           "summary": "Documents mathematical impossibility discovered during implementation attempt, including detailed counterexample and recommendations"
+        },
+        {
+          "type": "research",
+          "path": "specs/892_modify_henkinstep_add_negations/reports/research-002.md",
+          "summary": "Team research: Counterexample INVALID - T-axiom proof unblocks task 892"
         }
       ],
       "planned": "2026-02-18T00:24:49Z",
