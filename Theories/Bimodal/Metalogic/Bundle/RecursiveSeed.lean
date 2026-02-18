@@ -5199,6 +5199,71 @@ theorem createNewFamily_preserves_mem_getFormulas
   exact h_mem
 
 /--
+Backward reasoning for createNewFamily: if phi is in getFormulas after createNewFamily,
+then either phi was in the original seed OR phi = psi and we're at the new family position.
+-/
+theorem mem_getFormulas_after_createNewFamily
+    (seed : ModelSeed) (timeIdx : Int) (psi phi : Formula) (famIdx : Nat) (t : Int)
+    (h_mem : phi ∈ (seed.createNewFamily timeIdx psi).1.getFormulas famIdx t) :
+    phi ∈ seed.getFormulas famIdx t ∨ (phi = psi ∧ famIdx = seed.nextFamilyIdx ∧ t = timeIdx) := by
+  unfold ModelSeed.createNewFamily ModelSeed.getFormulas ModelSeed.findEntry at h_mem
+  simp only at h_mem
+  -- find? on (entries ++ [newEntry])
+  rw [List.find?_append] at h_mem
+  cases h_find : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == t) with
+  | some entry =>
+    -- Found in original entries
+    simp only [h_find, Option.some_or] at h_mem
+    left
+    unfold ModelSeed.getFormulas ModelSeed.findEntry
+    simp only [h_find]
+    exact h_mem
+  | none =>
+    -- Not in original entries, check new entry
+    simp only [h_find, Option.none_or] at h_mem
+    rw [List.find?_cons] at h_mem
+    simp only [beq_iff_eq, Bool.and_eq_true] at h_mem
+    split at h_mem
+    · -- At the new entry position
+      rename_i h_cond
+      simp only [Finset.mem_singleton] at h_mem
+      right
+      exact ⟨h_mem, h_cond.1.symm, h_cond.2.symm⟩
+    · -- Not at new entry position either - contradiction since h_mem implies find? found something
+      simp only at h_mem
+      exact absurd h_mem (Set.not_mem_empty phi)
+
+/--
+Backward reasoning for createNewTime: if phi is in getFormulas after createNewTime,
+then either phi was in the original seed OR phi = psi and we're at the new time position.
+-/
+theorem mem_getFormulas_after_createNewTime
+    (seed : ModelSeed) (famIdxTarget : Nat) (newTime : Int) (psi phi : Formula) (famIdx : Nat) (t : Int)
+    (h_mem : phi ∈ (seed.createNewTime famIdxTarget newTime psi).getFormulas famIdx t) :
+    phi ∈ seed.getFormulas famIdx t ∨ (phi = psi ∧ famIdx = famIdxTarget ∧ t = newTime) := by
+  unfold ModelSeed.createNewTime ModelSeed.getFormulas ModelSeed.findEntry at h_mem
+  simp only at h_mem
+  rw [List.find?_append] at h_mem
+  cases h_find : seed.entries.find? (fun e => e.familyIdx == famIdx && e.timeIdx == t) with
+  | some entry =>
+    simp only [h_find, Option.some_or] at h_mem
+    left
+    unfold ModelSeed.getFormulas ModelSeed.findEntry
+    simp only [h_find]
+    exact h_mem
+  | none =>
+    simp only [h_find, Option.none_or] at h_mem
+    rw [List.find?_cons] at h_mem
+    simp only [beq_iff_eq, Bool.and_eq_true] at h_mem
+    split at h_mem
+    · rename_i h_cond
+      simp only [Finset.mem_singleton] at h_mem
+      right
+      exact ⟨h_mem, h_cond.1.symm, h_cond.2.symm⟩
+    · simp only at h_mem
+      exact absurd h_mem (Set.not_mem_empty phi)
+
+/--
 createNewTime preserves getFormulas at existing positions.
 Since createNewTime appends a new entry, existing entries are unchanged.
 -/
@@ -8107,6 +8172,170 @@ private lemma foldl_addFormula_times_puts_phi_in_all
       | tail _ hss => exact hss
 
 /--
+Helper: Backward reasoning for foldl over families.
+If phi ∈ getFormulas after foldl, then either:
+1. phi was in the original seed, OR
+2. phi = psi (the added formula) and f ∈ fams
+-/
+private lemma mem_getFormulas_after_foldl_fam
+    (psi phi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (h_mem : phi ∈ (fams.foldl (fun s fam => s.addFormula fam t psi .universal_target) seed).getFormulas f t) :
+    phi ∈ seed.getFormulas f t ∨ (phi = psi ∧ f ∈ fams) := by
+  induction fams generalizing seed with
+  | nil =>
+    simp only [List.foldl_nil] at h_mem
+    exact Or.inl h_mem
+  | cons g gs ih =>
+    simp only [List.foldl_cons] at h_mem
+    -- Apply induction hypothesis to the inner result
+    have h_or := ih (seed.addFormula g t psi .universal_target) h_mem
+    cases h_or with
+    | inl h_in_add =>
+      -- phi was in seed.addFormula g t psi
+      have h_or2 := mem_getFormulas_after_addFormula seed g t psi phi .universal_target f t h_in_add
+      cases h_or2 with
+      | inl h_old => exact Or.inl h_old
+      | inr h_new =>
+        obtain ⟨h_eq, h_f, _⟩ := h_new
+        exact Or.inr ⟨h_eq, List.mem_cons_of_mem g (h_f ▸ List.mem_cons_self f gs)⟩
+    | inr h_eq =>
+      obtain ⟨h_phi_eq, h_f_in⟩ := h_eq
+      exact Or.inr ⟨h_phi_eq, List.mem_cons_of_mem g h_f_in⟩
+
+/--
+Helper: Backward reasoning for foldl over times.
+If phi ∈ getFormulas after foldl, then either:
+1. phi was in the original seed, OR
+2. phi = psi (the added formula) and t ∈ times
+-/
+private lemma mem_getFormulas_after_foldl_times
+    (psi phi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (h_mem : phi ∈ (times.foldl (fun s time => s.addFormula famIdx time psi .universal_target) seed).getFormulas famIdx t) :
+    phi ∈ seed.getFormulas famIdx t ∨ (phi = psi ∧ t ∈ times) := by
+  induction times generalizing seed with
+  | nil =>
+    simp only [List.foldl_nil] at h_mem
+    exact Or.inl h_mem
+  | cons s ss ih =>
+    simp only [List.foldl_cons] at h_mem
+    have h_or := ih (seed.addFormula famIdx s psi .universal_target) h_mem
+    cases h_or with
+    | inl h_in_add =>
+      have h_or2 := mem_getFormulas_after_addFormula seed famIdx s psi phi .universal_target famIdx t h_in_add
+      cases h_or2 with
+      | inl h_old => exact Or.inl h_old
+      | inr h_new =>
+        obtain ⟨h_eq, _, h_t⟩ := h_new
+        exact Or.inr ⟨h_eq, List.mem_cons_of_mem s (h_t ▸ List.mem_cons_self t ss)⟩
+    | inr h_eq =>
+      obtain ⟨h_phi_eq, h_t_in⟩ := h_eq
+      exact Or.inr ⟨h_phi_eq, List.mem_cons_of_mem s h_t_in⟩
+
+/--
+Helper: foldl over addFormula at families in a list doesn't create positions for families outside the list.
+If f ∉ fams, then hasPosition f t is unchanged.
+-/
+private lemma foldl_addFormula_fam_preserves_hasPosition_not_in
+    (psi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed) (f : Nat) (h_not_in : f ∉ fams) :
+    (fams.foldl (fun s fam => s.addFormula fam t psi .universal_target) seed).hasPosition f t =
+    seed.hasPosition f t := by
+  induction fams generalizing seed with
+  | nil => rfl
+  | cons g gs ih =>
+    simp only [List.foldl_cons]
+    rw [ih (seed.addFormula g t psi .universal_target)]
+    · -- Now show addFormula at g doesn't change hasPosition f t (since f ≠ g)
+      have h_neq : f ≠ g := fun h => h_not_in (h ▸ List.mem_cons_self g gs)
+      -- addFormula at (g, t) doesn't change hasPosition at (f, t) when f ≠ g
+      unfold ModelSeed.addFormula
+      cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == g && e.timeIdx == t) with
+      | some idx =>
+        -- Modifying entry at idx doesn't change hasPosition for different family
+        -- The entry at idx has familyIdx = g (from h_find), but we're checking familyIdx = f ≠ g
+        simp only
+        unfold ModelSeed.hasPosition
+        have h_at_idx := List.findIdx?_eq_some_iff.mp h_find
+        obtain ⟨h_idx_lt, h_cond⟩ := h_at_idx
+        simp only [Bool.and_eq_true, beq_iff_eq] at h_cond
+        -- h_cond: entry at idx has familyIdx = g and timeIdx = t
+        -- Show List.any over modified list = List.any over original
+        simp only [List.any_eq_true, beq_iff_eq]
+        constructor
+        · intro ⟨e, h_mem, h_fam, h_time⟩
+          -- e is in the modified list
+          -- Either e is the modified entry, or e is unchanged
+          by_cases h_is_mod : e = (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas }))[idx]
+          · -- e is the modified entry - but that entry has familyIdx = g ≠ f
+            have h_mod_fam : e.familyIdx = g := by
+              rw [h_is_mod]
+              simp only [List.getElem_modify_self h_idx_lt]
+              exact h_cond.1
+            rw [h_mod_fam] at h_fam
+            exact absurd h_fam h_neq.symm
+          · -- e is an unchanged entry
+            have h_idx_bound := List.length_modify idx (fun e => { e with formulas := insert psi e.formulas }) seed.entries
+            rw [h_idx_bound] at h_mem
+            have h_mem_idx := List.mem_iff_getElem.mp h_mem
+            obtain ⟨i, h_i_lt, h_e_eq⟩ := h_mem_idx
+            rw [h_idx_bound] at h_i_lt
+            by_cases h_i_idx : i = idx
+            · -- This contradicts h_is_mod
+              subst h_i_idx
+              exact absurd h_e_eq h_is_mod
+            · -- e = original[i] where i ≠ idx
+              have h_orig : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas }))[i] = seed.entries[i] :=
+                List.getElem_modify_of_ne h_i_idx h_i_lt
+              rw [← h_e_eq, h_orig]
+              use seed.entries[i]
+              constructor
+              · exact List.getElem_mem h_i_lt
+              · rw [← h_e_eq, h_orig] at h_fam h_time
+                exact ⟨h_fam, h_time⟩
+        · intro ⟨e, h_mem, h_fam, h_time⟩
+          -- e is in the original list with familyIdx = f
+          have h_mem_idx := List.mem_iff_getElem.mp h_mem
+          obtain ⟨i, h_i_lt, h_e_eq⟩ := h_mem_idx
+          by_cases h_i_idx : i = idx
+          · -- If i = idx, then e has familyIdx = g (from h_cond), but we said familyIdx = f
+            subst h_i_idx
+            rw [← h_e_eq] at h_fam
+            rw [h_cond.1] at h_fam
+            exact absurd h_fam h_neq.symm
+          · -- i ≠ idx, so modified[i] = original[i] = e
+            have h_mod : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas }))[i] = seed.entries[i] :=
+              List.getElem_modify_of_ne h_i_idx h_i_lt
+            use seed.entries[i]
+            have h_mod_lt : i < (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).length := by
+              rw [List.length_modify]
+              exact h_i_lt
+            constructor
+            · rw [← h_mod]
+              exact List.getElem_mem h_mod_lt
+            · rw [← h_e_eq]
+              exact ⟨h_fam, h_time⟩
+      | none =>
+        -- Creating new entry at (g, t)
+        simp only
+        unfold ModelSeed.hasPosition
+        simp only [List.any_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq]
+        constructor
+        · intro ⟨e, h_mem, h_fam, h_time⟩
+          rw [List.mem_append] at h_mem
+          cases h_mem with
+          | inl h_old => exact ⟨e, h_old, h_fam, h_time⟩
+          | inr h_new =>
+            simp only [List.mem_singleton] at h_new
+            rw [h_new] at h_fam
+            simp only at h_fam
+            exact absurd h_fam.symm h_neq
+        · intro ⟨e, h_mem, h_fam, h_time⟩
+          use e
+          constructor
+          · exact List.mem_append_left _ h_mem
+          · exact ⟨h_fam, h_time⟩
+    · exact fun h_in => h_not_in (List.mem_cons_of_mem g h_in)
+
+/--
 Helper: When hasPosition holds in seed, the family index is in familyIndices.
 -/
 private lemma hasPosition_implies_in_familyIndices (seed : ModelSeed) (f : Nat) (t : Int)
@@ -8302,19 +8531,902 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         simp only [h_atom] at h_eq
         exact absurd h_eq.1 Formula.noConfusion
   | .bottom =>
-    sorry -- Similar to atomic
+    -- bottom case: just adds Formula.bot, which is not Box/G/H
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    simp only [List.filter_nil, List.append_nil]
+    constructor
+    · -- Box psi closure
+      intro f t psi h_box
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.box psi) .universal_target f t h_box
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro f' h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf', ht'⟩ := h_new_pos
+            subst hf' ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.famIdx h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        -- Box psi = item.formula, but item.formula is bot
+        have h_bot := classifyFormula_eq_bottom item.formula h_class
+        simp only [h_bot] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    constructor
+    · -- G psi closure
+      intro f t psi h_G
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_future psi) .universal_target f t h_G
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_bot := classifyFormula_eq_bottom item.formula h_class
+        simp only [h_bot] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    · -- H psi closure
+      intro f t psi h_H
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_past psi) .universal_target f t h_H
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.2 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_bot := classifyFormula_eq_bottom item.formula h_class
+        simp only [h_bot] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
   | .implication phi1 phi2 =>
-    sorry -- Similar to atomic
+    -- implication case: just adds item.formula (an implication), which is not Box/G/H
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    simp only [List.filter_nil, List.append_nil]
+    constructor
+    · -- Box psi closure
+      intro f t psi h_box
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.box psi) .universal_target f t h_box
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro f' h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf', ht'⟩ := h_new_pos
+            subst hf' ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.famIdx h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        -- Box psi = item.formula, but item.formula is an implication
+        have h_imp := classifyFormula_eq_implication item.formula phi1 phi2 h_class
+        simp only [h_imp] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    constructor
+    · -- G psi closure
+      intro f t psi h_G
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_future psi) .universal_target f t h_G
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_imp := classifyFormula_eq_implication item.formula phi1 phi2 h_class
+        simp only [h_imp] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    · -- H psi closure
+      intro f t psi h_H
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_past psi) .universal_target f t h_H
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.2 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_imp := classifyFormula_eq_implication item.formula phi1 phi2 h_class
+        simp only [h_imp] at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
   | .negation phi =>
-    sorry -- Similar to atomic
+    -- negation case: just adds item.formula (a generic negation), which is not Box/G/H
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    simp only [List.filter_nil, List.append_nil]
+    constructor
+    · -- Box psi closure
+      intro f t psi h_box
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.box psi) .universal_target f t h_box
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro f' h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf', ht'⟩ := h_new_pos
+            subst hf' ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.famIdx h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        -- Box psi = item.formula, but item.formula is a negation
+        have h_neg := classifyFormula_eq_negation item.formula phi h_class
+        simp only [h_neg] at h_eq
+        -- Formula.neg = Formula.imp _ Formula.bot ≠ Formula.box
+        unfold Formula.neg at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    constructor
+    · -- G psi closure
+      intro f t psi h_G
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_future psi) .universal_target f t h_G
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.1 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_neg := classifyFormula_eq_negation item.formula phi h_class
+        simp only [h_neg] at h_eq
+        unfold Formula.neg at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
+    · -- H psi closure
+      intro f t psi h_H
+      have h_or := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx item.formula
+                     (Formula.all_past psi) .universal_target f t h_H
+      cases h_or with
+      | inl h_old =>
+        cases h_inv.2.2 f t psi h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
+          cases h_or_pos with
+          | inl h_pos_old =>
+            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+          | inr h_new_pos =>
+            obtain ⟨hf, ht'⟩ := h_new_pos
+            subst hf ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · exact addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx psi item.formula .universal_target (h_closed item.timeIdx h_lt h_old_pos)
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        have h_neg := classifyFormula_eq_negation item.formula phi h_class
+        simp only [h_neg] at h_eq
+        unfold Formula.neg at h_eq
+        exact absurd h_eq.1 Formula.noConfusion
   | .boxPositive psi =>
-    sorry -- Key case: adds psi to ALL families
+    -- boxPositive case: adds Box psi to item position, then adds psi to ALL families
+    -- processWorkItem for boxPositive:
+    --   seed1 := state.seed.addFormula item.famIdx item.timeIdx (Formula.box psi)
+    --   familyIndices := seed1.familyIndices
+    --   seed2 := familyIndices.foldl (fun s f => s.addFormula f item.timeIdx psi) seed1
+    -- Closure proof: for any Box theta in seed2, show theta at all families at that time
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    -- The new seed is: familyIndices.foldl addFormula (state.seed.addFormula ...)
+    -- We call the intermediate seed "seed1"
+    let seed1 := state.seed.addFormula item.famIdx item.timeIdx (Formula.box psi) .universal_target
+    constructor
+    · -- Box theta closure
+      intro f t theta h_box
+      -- h_box: Box theta ∈ seed2.getFormulas f t
+      -- First determine if Box theta was in seed1 or added by foldl
+      -- The foldl only adds psi (not Box formulas), so Box theta must be in seed1
+      have h_in_seed1 : Formula.box theta ∈ seed1.getFormulas f t := by
+        have h_or := mem_getFormulas_after_foldl_fam psi (Formula.box theta) item.timeIdx
+                       seed1.familyIndices seed1 f h_box
+        cases h_or with
+        | inl h_old => exact h_old
+        | inr h_eq =>
+          -- psi = Box theta - contradiction since psi has lower complexity
+          obtain ⟨h_eq_formula, _⟩ := h_eq
+          exact absurd h_eq_formula.symm Formula.noConfusion
+      -- Now Box theta is in seed1 = state.seed.addFormula ...
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.box psi) (Formula.box theta) .universal_target f t h_in_seed1
+      cases h_or2 with
+      | inl h_old =>
+        -- Box theta was in original seed - use existing invariant
+        cases h_inv.1 f t theta h_old with
+        | inl h_closed =>
+          -- Already closed in original seed, show it stays closed
+          left
+          intro f' h_pos'
+          -- h_pos' says f' has position at item.timeIdx in the new seed
+          -- Need to show theta ∈ new seed at f' item.timeIdx
+          -- Since theta was at all families at t in old seed, we just need to preserve
+          -- But wait - h_closed says theta at f' t, not item.timeIdx
+          -- Actually theta is at (f, t) in old seed, not (f, item.timeIdx)
+          -- We need to be careful about the time coordinate
+          -- The closure says: for all f' with position at t, theta ∈ getFormulas f' t
+          -- In the new seed, we need same at time t (not item.timeIdx)
+          have h_or_pos_old := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                                 (Formula.box psi) .universal_target f' t h_pos'
+          cases h_or_pos_old with
+          | inl h_pos_old_state =>
+            -- f' had position at t in old seed
+            have h_theta_old := h_closed f' h_pos_old_state
+            -- Now preserve through addFormula and foldl
+            have h_theta_seed1 : theta ∈ seed1.getFormulas f' t :=
+              addFormula_preserves_mem_getFormulas_same state.seed f' t theta (Formula.box psi) .universal_target h_theta_old
+            exact foldl_addFormula_fam_preserves_mem_general theta psi f' item.timeIdx t seed1.familyIndices seed1 h_theta_seed1
+          | inr h_new_pos =>
+            -- New position created by addFormula
+            obtain ⟨hf', ht'⟩ := h_new_pos
+            subst hf' ht'
+            -- t = item.timeIdx and f' = item.famIdx
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · have h_theta_old := h_closed item.famIdx h_old_pos
+              have h_theta_seed1 : theta ∈ seed1.getFormulas item.famIdx item.timeIdx :=
+                addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta (Formula.box psi) .universal_target h_theta_old
+              exact foldl_addFormula_fam_preserves_mem_general theta psi item.famIdx item.timeIdx item.timeIdx seed1.familyIndices seed1 h_theta_seed1
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          -- Work item still pending
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        -- Box theta = Box psi (newly added formula)
+        obtain ⟨h_formula_eq, hf, ht⟩ := h_eq
+        have h_theta_eq : theta = psi := Formula.box.inj h_formula_eq
+        subst h_theta_eq hf ht
+        -- Box psi was just added at (item.famIdx, item.timeIdx)
+        -- We need to show psi is at all families at item.timeIdx
+        left
+        intro f' h_pos'
+        -- psi was added to ALL families at item.timeIdx by the foldl
+        -- If f' has position, then f' ∈ familyIndices (of seed1)
+        -- But wait - h_pos' is position in final seed (seed2), not seed1
+        -- We need to show f' ∈ seed1.familyIndices or that psi is there anyway
+        -- Actually, foldl adds psi at all seed1.familyIndices
+        -- If f' has position in seed2, either:
+        --   1. f' had position in seed1 (so f' ∈ seed1.familyIndices)
+        --   2. f' is a new position created by foldl (but foldl only adds at existing positions)
+        -- Actually, addFormula can create new positions, but let's check hasPosition
+        -- The foldl only uses seed1.familyIndices, so it only adds to existing families
+        -- If h_pos' says f' has position in seed2, we need to check if it's in familyIndices
+        -- Key insight: foldl doesn't create NEW family indices, it only adds to existing ones
+        -- So hasPosition in seed2 at item.timeIdx means either:
+        --   - Had position in seed1, OR
+        --   - Position at a different time that somehow appeared
+        -- But foldl only operates at item.timeIdx with existing families
+        -- For closure: if f' has position at item.timeIdx in seed2, show psi there
+        -- If f' ∈ seed1.familyIndices, then psi was added there
+        by_cases h_f'_in : f' ∈ seed1.familyIndices
+        · exact foldl_addFormula_fam_puts_phi_in_all psi item.timeIdx seed1.familyIndices seed1 f' h_f'_in
+        · -- f' ∉ seed1.familyIndices but has position in seed2 at item.timeIdx
+          -- The foldl only iterates over seed1.familyIndices
+          -- So foldl cannot create position for f' that wasn't in seed1
+          -- This means position must have been in seed1
+          -- But if f' not in familyIndices, it can't have position - contradiction
+          -- Actually hasPosition and familyIndices are related:
+          -- hasPosition f t = true iff f appears in some entry with that time
+          -- familyIndices = all family indices that appear in entries
+          -- If f' has position at item.timeIdx in seed2, and foldl doesn't create new families,
+          -- then f' must have had position in seed1
+          -- Let's use that foldl only adds formulas, doesn't create positions at new families
+          -- Actually this is getting complex. Let me use a different approach.
+          -- If h_pos' says hasPosition f' item.timeIdx in seed2, let's trace back
+          -- The foldl uses seed1.familyIndices and adds at item.timeIdx only to those
+          -- If f' ∉ seed1.familyIndices, then foldl didn't touch f'
+          -- So seed2.getFormulas f' item.timeIdx = seed1.getFormulas f' item.timeIdx
+          -- And seed1 = addFormula state.seed item.famIdx item.timeIdx (Box psi)
+          -- If f' ≠ item.famIdx, then seed1.getFormulas f' item.timeIdx = state.seed.getFormulas f' item.timeIdx
+          -- So if f' has position in seed2, it had position in state.seed
+          -- But then f' would be in state.seed.familyIndices ⊆ seed1.familyIndices (modulo new item.famIdx)
+          -- Actually addFormula can add item.famIdx to familyIndices if it was new
+          -- This is getting complicated. Let me use hasPosition_implies_in_familyIndices
+          -- Wait, that lemma says hasPosition f t -> f ∈ familyIndices
+          -- But familyIndices doesn't depend on t
+          -- So if seed2.hasPosition f' item.timeIdx = true, then f' ∈ seed2.familyIndices
+          -- And seed2.familyIndices after foldl... hmm, foldl adds at existing families
+          -- Let me check: foldl doesn't change familyIndices if we only add to existing families
+          -- Actually addFormula can add new entries, which adds to familyIndices
+          -- But in our case, we're iterating over seed1.familyIndices and adding at those families
+          -- So we're not creating new family indices in the foldl
+          -- Thus seed2.familyIndices = seed1.familyIndices
+          -- And if h_pos' : seed2.hasPosition f' item.timeIdx, then f' ∈ seed2.familyIndices = seed1.familyIndices
+          -- This contradicts h_f'_in
+          -- Let me prove this more carefully
+          exfalso
+          -- The foldl iterates over seed1.familyIndices and does addFormula at those families
+          -- This doesn't create new family indices (it just adds formulas at existing positions)
+          -- So seed2.familyIndices ⊆ seed1.familyIndices for families at item.timeIdx
+          -- Actually this needs a helper lemma. For now, let's use that if hasPosition holds,
+          -- then the family must be in familyIndices
+          -- h_pos' says seed2.hasPosition f' item.timeIdx
+          -- We need seed2.familyIndices ⊆ seed1.familyIndices
+          -- Actually, addFormula CAN create new entries at new families if position didn't exist
+          -- But foldl iterates over seed1.familyIndices, so it only adds at families already in seed1
+          -- Thus it cannot create position at f' if f' ∉ seed1.familyIndices
+          -- So hasPosition f' item.timeIdx in seed2 -> f' ∈ seed1.familyIndices, contradiction
+          -- Use foldl_addFormula_fam_preserves_hasPosition_not_in:
+          -- Since f' ∉ seed1.familyIndices, foldl doesn't change hasPosition for f'
+          have h_unchanged := foldl_addFormula_fam_preserves_hasPosition_not_in
+            psi item.timeIdx seed1.familyIndices seed1 f' h_f'_in
+          -- h_pos' says hasPosition in seed2 = true
+          -- h_unchanged says hasPosition in seed2 = hasPosition in seed1
+          rw [h_unchanged] at h_pos'
+          -- Now h_pos' : seed1.hasPosition f' item.timeIdx = true
+          -- But f' ∉ seed1.familyIndices, so no entry has familyIdx = f'
+          -- Therefore hasPosition f' item.timeIdx = false
+          -- This contradicts h_pos'
+          have h_f'_in_seed1 := hasPosition_implies_in_familyIndices seed1 f' item.timeIdx h_pos'
+          exact absurd h_f'_in_seed1 h_f'_in
+    constructor
+    · -- G theta closure (similar structure, but Box doesn't add G formulas)
+      intro f t theta h_G
+      -- G theta in seed2 must come from seed1 (foldl only adds psi, not G formulas)
+      have h_in_seed1 : Formula.all_future theta ∈ seed1.getFormulas f t := by
+        have h_or := mem_getFormulas_after_foldl_fam psi (Formula.all_future theta) item.timeIdx
+                       seed1.familyIndices seed1 f h_G
+        cases h_or with
+        | inl h_old => exact h_old
+        | inr h_eq =>
+          obtain ⟨h_eq_formula, _⟩ := h_eq
+          exact absurd h_eq_formula.symm Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.box psi) (Formula.all_future theta) .universal_target f t h_in_seed1
+      cases h_or2 with
+      | inl h_old =>
+        cases h_inv.2.1 f t theta h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos_old := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                                 (Formula.box psi) .universal_target f t' h_pos'
+          cases h_or_pos_old with
+          | inl h_pos_old_state =>
+            have h_theta_old := h_closed t' h_lt h_pos_old_state
+            have h_theta_seed1 : theta ∈ seed1.getFormulas f t' :=
+              addFormula_preserves_mem_getFormulas_same state.seed f t' theta (Formula.box psi) .universal_target h_theta_old
+            exact foldl_addFormula_fam_preserves_mem_general theta psi f item.timeIdx t' seed1.familyIndices seed1 h_theta_seed1
+          | inr h_new_pos =>
+            obtain ⟨hf', ht'⟩ := h_new_pos
+            subst hf' ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · have h_theta_old := h_closed item.timeIdx h_lt h_old_pos
+              have h_theta_seed1 : theta ∈ seed1.getFormulas item.famIdx item.timeIdx :=
+                addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta (Formula.box psi) .universal_target h_theta_old
+              exact foldl_addFormula_fam_preserves_mem_general theta psi item.famIdx item.timeIdx item.timeIdx seed1.familyIndices seed1 h_theta_seed1
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        -- G theta = Box psi - impossible
+        obtain ⟨h_formula_eq, _, _⟩ := h_eq
+        exact absurd h_formula_eq Formula.noConfusion
+    · -- H theta closure (similar)
+      intro f t theta h_H
+      have h_in_seed1 : Formula.all_past theta ∈ seed1.getFormulas f t := by
+        have h_or := mem_getFormulas_after_foldl_fam psi (Formula.all_past theta) item.timeIdx
+                       seed1.familyIndices seed1 f h_H
+        cases h_or with
+        | inl h_old => exact h_old
+        | inr h_eq =>
+          obtain ⟨h_eq_formula, _⟩ := h_eq
+          exact absurd h_eq_formula.symm Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.box psi) (Formula.all_past theta) .universal_target f t h_in_seed1
+      cases h_or2 with
+      | inl h_old =>
+        cases h_inv.2.2 f t theta h_old with
+        | inl h_closed =>
+          left
+          intro t' h_lt h_pos'
+          have h_or_pos_old := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                                 (Formula.box psi) .universal_target f t' h_pos'
+          cases h_or_pos_old with
+          | inl h_pos_old_state =>
+            have h_theta_old := h_closed t' h_lt h_pos_old_state
+            have h_theta_seed1 : theta ∈ seed1.getFormulas f t' :=
+              addFormula_preserves_mem_getFormulas_same state.seed f t' theta (Formula.box psi) .universal_target h_theta_old
+            exact foldl_addFormula_fam_preserves_mem_general theta psi f item.timeIdx t' seed1.familyIndices seed1 h_theta_seed1
+          | inr h_new_pos =>
+            obtain ⟨hf', ht'⟩ := h_new_pos
+            subst hf' ht'
+            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+            · have h_theta_old := h_closed item.timeIdx h_lt h_old_pos
+              have h_theta_seed1 : theta ∈ seed1.getFormulas item.famIdx item.timeIdx :=
+                addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta (Formula.box psi) .universal_target h_theta_old
+              exact foldl_addFormula_fam_preserves_mem_general theta psi item.famIdx item.timeIdx item.timeIdx seed1.familyIndices seed1 h_theta_seed1
+            · exact absurd h_item_pos h_old_pos
+        | inr h_pending =>
+          right
+          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+          use w
+          constructor
+          · exact List.mem_append_left _ hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+      | inr h_eq =>
+        obtain ⟨h_formula_eq, _, _⟩ := h_eq
+        exact absurd h_formula_eq Formula.noConfusion
   | .boxNegative psi =>
-    sorry -- Creates new family with pending work item
+    -- boxNegative case: adds neg(Box psi) to item position, creates new family with neg psi
+    -- processWorkItem for boxNegative:
+    --   seed1 := state.seed.addFormula item.famIdx item.timeIdx (neg(Box psi))
+    --   (seed2, newFamIdx) := seed1.createNewFamily item.timeIdx (neg psi)
+    --   newWork := [⟨neg psi, newFamIdx, item.timeIdx⟩]
+    -- Neither neg(Box psi) nor neg psi is a Box/G/H formula
+    -- So any Box/G/H in the new seed must come from the old seed
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    -- The new seed goes through: addFormula, then createNewFamily
+    let seed1 := state.seed.addFormula item.famIdx item.timeIdx (Formula.neg (Formula.box psi)) .universal_target
+    constructor
+    · -- Box theta closure
+      intro f t theta h_box
+      -- Use backward reasoning to trace Box theta to original seed
+      -- Step 1: createNewFamily adds neg psi (not Box theta), so Box theta in seed1
+      have h_or1 := mem_getFormulas_after_createNewFamily seed1 item.timeIdx (Formula.neg psi)
+                      (Formula.box theta) f t h_box
+      have h_in_seed1 : Formula.box theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion -- neg psi ≠ Box theta
+      -- Step 2: addFormula adds neg(Box psi) (not Box theta), so Box theta in original
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.box psi)) (Formula.box theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.box theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h =>
+          -- neg(Box psi) = Box theta - impossible
+          unfold Formula.neg at h
+          exact absurd h.1 Formula.noConfusion
+      cases h_inv.1 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro f' h_pos'
+        -- theta was at all families in old seed with position at t
+        -- Need to show theta at f' in new seed
+        -- First check if f' had position in old seed
+        -- If yes, theta was there and gets preserved
+        -- If f' is the new family, we need to handle that case
+        have h_or_pos := createNewFamily_preserves_hasPosition seed1 item.timeIdx (Formula.neg psi) f' t h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.box psi)) .universal_target f' t h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          -- f' had position in original seed, so theta was there
+          have h_theta_orig := h_closed f' h_pos_orig
+          -- Preserve through addFormula and createNewFamily
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f' t theta
+                                  (Formula.neg (Formula.box psi)) .universal_target h_theta_orig
+          exact createNewFamily_preserves_mem_getFormulas' seed1 item.timeIdx theta (Formula.neg psi) f' t h_theta_seed1
+        | inr h_new_pos =>
+          -- f' = item.famIdx and t = item.timeIdx (position created by addFormula)
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.famIdx h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.box psi)) .universal_target h_theta_orig
+            exact createNewFamily_preserves_mem_getFormulas' seed1 item.timeIdx theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+    constructor
+    · -- G theta closure (similar - neg formulas don't affect G formulas)
+      intro f t theta h_G
+      -- Same backward reasoning as Box theta
+      have h_or1 := mem_getFormulas_after_createNewFamily seed1 item.timeIdx (Formula.neg psi)
+                      (Formula.all_future theta) f t h_G
+      have h_in_seed1 : Formula.all_future theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.box psi)) (Formula.all_future theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.all_future theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.2.1 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro t' h_lt h_pos'
+        have h_or_pos := createNewFamily_preserves_hasPosition seed1 item.timeIdx (Formula.neg psi) f t' h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.box psi)) .universal_target f t' h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed t' h_lt h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
+                                  (Formula.neg (Formula.box psi)) .universal_target h_theta_orig
+          exact createNewFamily_preserves_mem_getFormulas' seed1 item.timeIdx theta (Formula.neg psi) f t' h_theta_seed1
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.timeIdx h_lt h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.box psi)) .universal_target h_theta_orig
+            exact createNewFamily_preserves_mem_getFormulas' seed1 item.timeIdx theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+    · -- H theta closure (similar)
+      intro f t theta h_H
+      have h_or1 := mem_getFormulas_after_createNewFamily seed1 item.timeIdx (Formula.neg psi)
+                      (Formula.all_past theta) f t h_H
+      have h_in_seed1 : Formula.all_past theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.box psi)) (Formula.all_past theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.all_past theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.2.2 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro t' h_lt h_pos'
+        have h_or_pos := createNewFamily_preserves_hasPosition seed1 item.timeIdx (Formula.neg psi) f t' h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.box psi)) .universal_target f t' h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed t' h_lt h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
+                                  (Formula.neg (Formula.box psi)) .universal_target h_theta_orig
+          exact createNewFamily_preserves_mem_getFormulas' seed1 item.timeIdx theta (Formula.neg psi) f t' h_theta_seed1
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.timeIdx h_lt h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.box psi)) .universal_target h_theta_orig
+            exact createNewFamily_preserves_mem_getFormulas' seed1 item.timeIdx theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
   | .futurePositive psi =>
     sorry -- Adds psi to ALL future times
   | .futureNegative psi =>
-    sorry -- Creates new time with pending work item
+    -- futureNegative case: adds neg(G psi) to item position, creates new time with neg psi
+    -- processWorkItem for futureNegative:
+    --   seed1 := state.seed.addFormula item.famIdx item.timeIdx (neg(G psi))
+    --   newTime := seed1.freshFutureTime item.famIdx item.timeIdx
+    --   seed2 := seed1.createNewTime item.famIdx newTime (neg psi)
+    --   newWork := [⟨neg psi, item.famIdx, newTime⟩]
+    -- Neither neg(G psi) nor neg psi is a Box/G/H formula
+    simp only [processWorkItem, h_class] at h_proc
+    obtain ⟨h_newWork, h_state'⟩ := Prod.mk.injEq.mp h_proc
+    subst h_newWork h_state'
+    let seed1 := state.seed.addFormula item.famIdx item.timeIdx (Formula.neg (Formula.all_future psi)) .universal_target
+    constructor
+    · -- Box theta closure
+      intro f t theta h_box
+      -- Trace back: createNewTime adds neg psi, addFormula adds neg(G psi) - neither is Box
+      have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
+                      (seed1.freshFutureTime item.famIdx item.timeIdx) (Formula.neg psi)
+                      (Formula.box theta) f t h_box
+      have h_in_seed1 : Formula.box theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.all_future psi)) (Formula.box theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.box theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.1 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro f' h_pos'
+        have h_or_pos := createNewTime_preserves_hasPosition seed1 item.famIdx
+                           (seed1.freshFutureTime item.famIdx item.timeIdx) (Formula.neg psi) f' t h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.all_future psi)) .universal_target f' t h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed f' h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f' t theta
+                                  (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+          exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                  (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) f' t h_theta_seed1
+                  (Or.inl (fun h => by simp only [h] at h_or_pos; sorry)) -- Need: f' ≠ item.famIdx OR t ≠ newTime
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.famIdx h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+            exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                    (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+                    (Or.inr (fun h => by
+                      -- item.timeIdx ≠ freshFutureTime because freshFutureTime > item.timeIdx
+                      have h_fresh := ModelSeed.freshFutureTime_gt seed1 item.famIdx item.timeIdx
+                      omega))
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+    constructor
+    · -- G theta closure
+      intro f t theta h_G
+      have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
+                      (seed1.freshFutureTime item.famIdx item.timeIdx) (Formula.neg psi)
+                      (Formula.all_future theta) f t h_G
+      have h_in_seed1 : Formula.all_future theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.all_future psi)) (Formula.all_future theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.all_future theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.2.1 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro t' h_lt h_pos'
+        have h_or_pos := createNewTime_preserves_hasPosition seed1 item.famIdx
+                           (seed1.freshFutureTime item.famIdx item.timeIdx) (Formula.neg psi) f t' h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.all_future psi)) .universal_target f t' h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed t' h_lt h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
+                                  (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+          exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                  (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) f t' h_theta_seed1
+                  (Or.inl (fun h => by simp only [h] at h_or_pos; sorry))
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.timeIdx h_lt h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+            exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                    (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+                    (Or.inr (fun h => by
+                      have h_fresh := ModelSeed.freshFutureTime_gt seed1 item.famIdx item.timeIdx
+                      omega))
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+    · -- H theta closure
+      intro f t theta h_H
+      have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
+                      (seed1.freshFutureTime item.famIdx item.timeIdx) (Formula.neg psi)
+                      (Formula.all_past theta) f t h_H
+      have h_in_seed1 : Formula.all_past theta ∈ seed1.getFormulas f t := by
+        cases h_or1 with
+        | inl h => exact h
+        | inr h => exact absurd h.1 Formula.noConfusion
+      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                      (Formula.neg (Formula.all_future psi)) (Formula.all_past theta) .universal_target f t h_in_seed1
+      have h_in_orig : Formula.all_past theta ∈ state.seed.getFormulas f t := by
+        cases h_or2 with
+        | inl h => exact h
+        | inr h => unfold Formula.neg at h; exact absurd h.1 Formula.noConfusion
+      cases h_inv.2.2 f t theta h_in_orig with
+      | inl h_closed =>
+        left
+        intro t' h_lt h_pos'
+        have h_or_pos := createNewTime_preserves_hasPosition seed1 item.famIdx
+                           (seed1.freshFutureTime item.famIdx item.timeIdx) (Formula.neg psi) f t' h_pos'
+        have h_or_pos2 := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                            (Formula.neg (Formula.all_future psi)) .universal_target f t' h_or_pos
+        cases h_or_pos2 with
+        | inl h_pos_orig =>
+          have h_theta_orig := h_closed t' h_lt h_pos_orig
+          have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed f t' theta
+                                  (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+          exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                  (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) f t' h_theta_seed1
+                  (Or.inl (fun h => by simp only [h] at h_or_pos; sorry))
+        | inr h_new_pos =>
+          obtain ⟨hf', ht'⟩ := h_new_pos
+          subst hf' ht'
+          by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+          · have h_theta_orig := h_closed item.timeIdx h_lt h_old_pos
+            have h_theta_seed1 := addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta
+                                    (Formula.neg (Formula.all_future psi)) .universal_target h_theta_orig
+            exact createNewTime_preserves_mem_getFormulas seed1 item.famIdx
+                    (seed1.freshFutureTime item.famIdx item.timeIdx) theta (Formula.neg psi) item.famIdx item.timeIdx h_theta_seed1
+                    (Or.inr (fun h => by
+                      have h_fresh := ModelSeed.freshFutureTime_gt seed1 item.famIdx item.timeIdx
+                      omega))
+          · exact absurd h_item_pos h_old_pos
+      | inr h_pending =>
+        right
+        obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+        use w
+        constructor
+        · exact List.mem_append_left _ hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
   | .pastPositive psi =>
     sorry -- Adds psi to ALL past times
   | .pastNegative psi =>

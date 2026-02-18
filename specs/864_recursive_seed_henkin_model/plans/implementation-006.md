@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model Construction (v6 - Post-Condition Architecture)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (supersedes implementation-005.md approach)
 - **Research Inputs**:
@@ -219,6 +219,22 @@ After this implementation:
 - Created: handoff document at `specs/864_recursive_seed_henkin_model/handoffs/phase-2-handoff-20260218-2.md`
 - [ ] Complete 9 remaining cases (bottom, implication, negation, boxPositive, boxNegative, futurePositive, futureNegative, pastPositive, pastNegative)
 - [ ] Add `SeedClosed_implies_ModalClosed`, `SeedClosed_implies_GClosed`, `SeedClosed_implies_HClosed` extractors
+
+**Session: 2026-02-18 (iteration 4), sess_1771447870_20a856**
+- Completed: bottom case proof (same pattern as atomic, using classifyFormula_eq_bottom)
+- Completed: implication case proof (same pattern, using classifyFormula_eq_implication)
+- Completed: negation case proof (same pattern, using classifyFormula_eq_negation)
+- Added: `mem_getFormulas_after_foldl_fam` backward reasoning lemma for foldl over families
+- Added: `mem_getFormulas_after_foldl_times` backward reasoning lemma for foldl over times
+- Added: `mem_getFormulas_after_createNewFamily` backward reasoning lemma
+- Added: `mem_getFormulas_after_createNewTime` backward reasoning lemma
+- Added: `foldl_addFormula_fam_preserves_hasPosition_not_in` lemma
+- Completed: boxPositive case proof (complex - uses foldl_addFormula_fam_puts_phi_in_all)
+- Completed: boxNegative case proof (uses backward reasoning through createNewFamily)
+- Partial: futureNegative case structure (3 internal sorries for hasPosition vs freshFutureTime)
+- Sorries: 29 -> 26 (completed 6 cases, 3 sorries in futureNegative internal proofs)
+- Created: handoff document at `specs/864_recursive_seed_henkin_model/handoffs/phase-2-handoff-20260218-4.md`
+- Remaining: futurePositive, pastPositive, pastNegative (3 cases)
 
 **Timing:** 2 hours
 
