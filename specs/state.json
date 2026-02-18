@@ -73,13 +73,21 @@
     {
       "project_number": 894,
       "project_name": "clean_linter_warnings_closure_lean",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "effort": "30 minutes",
       "description": "Clean up unused simp argument warnings in Theories/Bimodal/Metalogic/Decidability/Closure.lean at lines 316, 322, and 327. Apply suggested omit patterns to remove build noise.",
       "created": "2026-02-17T22:33:00Z",
-      "last_updated": "2026-02-17T22:33:00Z",
-      "session_id": "sess_1771373563_27f3c2"
+      "last_updated": "2026-02-18T02:17:23Z",
+      "session_id": "sess_1771380808_28a798",
+      "researched": "2026-02-18T02:17:23Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/894_clean_linter_warnings_closure_lean/reports/research-001.md",
+          "summary": "Analyzed 4 linter warnings in Closure.lean: 1 unused variable at line 99, 3 unused simp arguments at lines 304 and 316. All are straightforward fixes requiring argument removal."
+        }
+      ]
     },
     {
       "project_number": 891,
@@ -434,11 +442,11 @@
     {
       "project_number": 864,
       "project_name": "recursive_seed_henkin_model",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-18T02:09:51Z",
-      "session_id": "sess_1770843862_448d7f",
+      "last_updated": "2026-02-18T02:13:01Z",
+      "session_id": "sess_1771380760_4342d5",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
         {
