@@ -1,43 +1,19 @@
 {
-  "status": "partial",
-  "summary": "Iteration 8 (FINAL): Proved 4 Phase 5 helper lemmas (hasPosition_implies_in_familyIndices, mem_getFormulas_after_addFormula, foldl_addFormula_fam_puts_phi_in_all, foldl_addFormula_times_puts_phi_in_all). Proved already-processed branch in processWorklistAux_preserves_closure. Total sorries: 22 (down from 25). Build passes.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/864_recursive_seed_henkin_model/summaries/implementation-summary-20260217.md",
-      "type": "summary",
-      "summary": "Comprehensive implementation summary with Phase 1-3 complete, Phase 4-5 partial, iteration 8 progress"
-    },
-    {
-      "path": "specs/864_recursive_seed_henkin_model/plans/implementation-005.md",
       "type": "plan",
-      "summary": "Updated plan with Phase 5 progress tracking including iteration 8 session notes"
+      "path": "specs/864_recursive_seed_henkin_model/plans/implementation-006.md",
+      "summary": "6-phase post-condition architecture plan applying task 900 research findings"
     }
   ],
-  "partial_progress": {
-    "stage": "phase_5_partial",
-    "details": "Iteration 8 (FINAL): Proved all 4 Phase 5 helper lemmas and already-processed branch. Phase 5 sorries reduced from 8 to 3. Remaining: processWorkItem_preserves_closure (main proof uses proven helpers), processWorklistAux fuel=0 case (fuel sufficiency), processWorklistAux process case (application of main lemma).",
-    "phases_completed": 3,
-    "phases_total": 6,
-    "phase_4_sorries": 14,
-    "phase_5_sorries": 3,
-    "total_sorries": 22,
-    "lemmas_proven_this_iteration": [
-      "hasPosition_implies_in_familyIndices",
-      "mem_getFormulas_after_addFormula",
-      "foldl_addFormula_fam_puts_phi_in_all",
-      "foldl_addFormula_times_puts_phi_in_all",
-      "processWorklistAux_preserves_closure (already-processed branch Box/G/H cases)"
-    ]
-  },
+  "next_steps": "Run /implement 864 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771434699_fa2b5b",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1771442792_faaf08",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "iteration": 8
-  },
-  "completion_data": {
-    "completion_summary": "Iteration 8 (FINAL) completed 5 key proofs for Phase 5 closure properties. Proved hasPosition_implies_in_familyIndices, mem_getFormulas_after_addFormula (110-line proof), foldl_addFormula_fam_puts_phi_in_all, foldl_addFormula_times_puts_phi_in_all, and already-processed branch cases. Total sorries reduced from 25 to 22. Phase 5 infrastructure is now complete - remaining 3 sorries depend on processWorkItem_preserves_closure main proof which can use proven helpers."
-  },
-  "requires_user_review": false
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 10
+  }
 }
