@@ -249,6 +249,25 @@ After this implementation:
 - Remaining in processWorkItem_preserves_closure: futurePositive, pastPositive (2 cases)
 - Note: futurePositive/pastPositive require compound foldl helpers (adds both psi and G/H psi)
 
+**Session: 2026-02-18 (iteration 6), sess_1771453218_898bbc**
+- Added: 10 compound foldl helper lemmas for futurePositive/pastPositive cases:
+  - `foldl_compound_future_preserves_mem`, `foldl_compound_past_preserves_mem`
+  - `mem_getFormulas_after_foldl_compound_future`, `mem_getFormulas_after_foldl_compound_past`
+  - `foldl_compound_future_puts_psi_in_all`, `foldl_compound_future_puts_gpsi_in_all`
+  - `foldl_compound_past_puts_psi_in_all`, `foldl_compound_past_puts_hpsi_in_all`
+  - `foldl_compound_future_preserves_hasPosition`, `foldl_compound_past_preserves_hasPosition`
+  - `foldl_compound_future_hasPosition_backward`, `foldl_compound_past_hasPosition_backward`
+- Added: `mem_getFormulas_implies_hasPosition` helper lemma (line ~360)
+  - Proves: if phi is in getFormulas at (f, t), then hasPosition f t = true
+  - Enables deriving hasPosition from formula membership
+- Completed: futurePositive case proof (~350 lines, uses compound foldl helpers)
+- Completed: pastPositive case proof (~350 lines, uses compound foldl helpers)
+- **All 10/10 cases in processWorkItem_preserves_closure are now complete**
+- Sorries: 22 -> 20 (eliminated 2 sorries: futurePositive and pastPositive)
+- Remaining in Phase 2: `processWorklistAux_preserves_closure` (2 sorries at lines 11053, 11103)
+  - Line 11053: fuel=0 case (requires fuel sufficiency argument)
+  - Line 11103: process item case (needs `h_item_pos` prerequisite - requires invariant strengthening)
+
 **Timing:** 2 hours
 
 **Files to modify:**
