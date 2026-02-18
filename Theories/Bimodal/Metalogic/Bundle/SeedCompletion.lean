@@ -1,6 +1,8 @@
 import Bimodal.Metalogic.Bundle.RecursiveSeed
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Bundle.TemporalContent
+import Bimodal.Metalogic.Bundle.DovetailingChain
+import Bimodal.Metalogic.Soundness
 
 /-!
 # Seed Completion to MCS Families
@@ -165,17 +167,57 @@ For non-seed time indices within a family, we use temporal content to fill in.
 -/
 
 /--
+Consistency of seed formulas at time 0.
+
+If time 0 is a seed position: its formulas are consistent by SeedConsistent.
+If time 0 is not a seed position: returns empty set which is vacuously consistent.
+-/
+theorem seedFormulas_time0_consistent (seed : ModelSeed) (h_cons : SeedConsistent seed)
+    (famIdx : Nat) : SetConsistent (seed.getFormulas famIdx 0) := by
+  unfold SetConsistent
+  intro L hL_sub
+  unfold Consistent
+  intro ⟨d⟩
+  show False
+  cases h_find_entry : seed.findEntry famIdx 0 with
+  | some entry =>
+    have h_entry_mem : entry ∈ seed.entries := by
+      unfold ModelSeed.findEntry at h_find_entry
+      exact List.mem_of_find?_eq_some h_find_entry
+    have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry_mem
+    have h_eq : seed.getFormulas famIdx 0 = entry.formulas := by
+      unfold ModelSeed.getFormulas
+      simp only [h_find_entry]
+    rw [h_eq] at hL_sub
+    exact h_entry_cons L hL_sub ⟨d⟩
+  | none =>
+    have h_base_empty : seed.getFormulas famIdx 0 = ∅ := by
+      unfold ModelSeed.getFormulas
+      simp only [h_find_entry]
+    rw [h_base_empty] at hL_sub
+    have h_L_nil : L = [] := List.eq_nil_iff_forall_not_mem.mpr (fun x hx => (Set.mem_empty_iff_false x).mp (hL_sub x hx))
+    rw [h_L_nil] at d
+    -- Use soundness to derive contradiction: [] ⊢ ⊥ implies ⊥ is valid, but ⊥ is always false
+    have h_sound := Bimodal.Metalogic.soundness [] Formula.bot d
+    -- Instantiate with trivial model where ⊥ is false
+    unfold Bimodal.Semantics.semantic_consequence at h_sound
+    have h_bot_true := h_sound Int Bimodal.Semantics.TaskFrame.trivial_frame
+        Bimodal.Semantics.TaskModel.all_false Bimodal.Semantics.WorldHistory.trivial (0 : Int)
+        (fun _ h => False.elim (List.not_mem_nil h))
+    -- truth_at ... Formula.bot = False by definition
+    exact h_bot_true
+
+/--
 Build a full IndexedMCSFamily from a seed, filling non-seed times.
 
-This is the main construction for Phase 4:
-1. Extend seed entries to MCS
-2. Fill non-seed times using GContent/HContent from adjacent times
-3. Prove temporal coherence
+This is the main construction for Phase 4. It reuses the dovetailing chain
+construction from DovetailingChain.lean to leverage its proven same-sign
+temporal coherence lemmas.
 
-**Strategy**: We use a dovetailing chain construction where:
+**Strategy**: We use the dovetailing chain construction where:
 - Time 0 is the shared base (extended from seed time 0 if it exists)
-- Positive times extend forward via GContent
-- Negative times extend backward via HContent
+- Positive times extend forward via GContent using dovetailForwardChainMCS
+- Negative times extend backward via HContent using dovetailBackwardChainMCS
 
 The seed's temporal propagation (addToAllFutureTimes/addToAllPastTimes) ensures that
 seed formulas are in the base set for the chain construction.
@@ -183,219 +225,35 @@ seed formulas are in the base set for the chain construction.
 noncomputable def buildFamilyFromSeed (seed : ModelSeed) (h_cons : SeedConsistent seed)
     (famIdx : Nat) : IndexedMCSFamily Int := by
   -- Get the base set: seed formulas at time 0 for this family
-  -- NOTE: We use time 0 as the base, not the union of all seed formulas
-  -- (the union might be inconsistent due to witness formulas at different times)
   let baseFormulas : Set Formula := seed.getFormulas famIdx 0
+  have h_base_cons : SetConsistent baseFormulas := seedFormulas_time0_consistent seed h_cons famIdx
 
-  -- The base set is consistent
-  -- If time 0 is a seed position: its formulas are consistent by SeedConsistent
-  -- If time 0 is not a seed position: baseFormulas = ∅ which is vacuously consistent
-  have h_base_cons : SetConsistent baseFormulas := by
-    unfold SetConsistent
-    intro L hL_sub
-    unfold Consistent
-    intro ⟨d⟩
-    -- baseFormulas = seed.getFormulas famIdx 0
-    -- Show this is consistent
-    show False
-    cases h_find_entry : seed.findEntry famIdx 0 with
-    | some entry =>
-      -- Time 0 is a seed position, so its formulas are consistent
-      have h_entry_mem : entry ∈ seed.entries := by
-        unfold ModelSeed.findEntry at h_find_entry
-        exact List.mem_of_find?_eq_some h_find_entry
-      have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry_mem
-      -- baseFormulas = entry.formulas
-      have h_eq : baseFormulas = entry.formulas := by
-        show seed.getFormulas famIdx 0 = entry.formulas
-        unfold ModelSeed.getFormulas
-        simp only [h_find_entry]
-      rw [h_eq] at hL_sub
-      exact h_entry_cons L hL_sub ⟨d⟩
-    | none =>
-      -- Time 0 is not a seed position, so baseFormulas = ∅
-      have h_base_empty : baseFormulas = ∅ := by
-        show seed.getFormulas famIdx 0 = ∅
-        unfold ModelSeed.getFormulas
-        simp only [h_find_entry]
-      rw [h_base_empty] at hL_sub
-      -- L ⊆ ∅ means L = [], and [] can't derive ⊥ in a consistent logic
-      -- This follows from soundness: if [] ⊢ ⊥, then ⊨ ⊥, but ⊥ is not valid
-      sorry
-
-  -- Extend base to MCS
-  let baseMCS := (set_lindenbaum baseFormulas h_base_cons).choose
-  have h_base_mcs : SetMaximalConsistent baseMCS := (set_lindenbaum baseFormulas h_base_cons).choose_spec.2
-  have h_base_contains : baseFormulas ⊆ baseMCS := (set_lindenbaum baseFormulas h_base_cons).choose_spec.1
-
-  -- Build forward chain (for non-negative times)
-  -- At step n, extend GContent of step n-1
-  let rec forwardChain : Nat → { M : Set Formula // SetMaximalConsistent M }
-    | 0 => ⟨baseMCS, h_base_mcs⟩
-    | n + 1 =>
-      let prev := forwardChain n
-      let gc := GContent prev.val
-      have h_gc_cons : SetConsistent gc := by
-        -- GContent of MCS is consistent (same proof as dovetail_GContent_consistent)
-        intro L hL ⟨d⟩
-        have hL_in_M : ∀ x ∈ L, x ∈ prev.val := fun x hx => by
-          have h_G : Formula.all_future x ∈ prev.val := hL x hx
-          have h_T := DerivationTree.axiom [] ((Formula.all_future x).imp x) (Axiom.temp_t_future x)
-          exact set_mcs_implication_property prev.property (theorem_in_mcs prev.property h_T) h_G
-        exact prev.property.1 L hL_in_M ⟨d⟩
-      let ext := set_lindenbaum gc h_gc_cons
-      ⟨ext.choose, ext.choose_spec.2⟩
-
-  -- Build backward chain (for negative times)
-  let rec backwardChain : Nat → { M : Set Formula // SetMaximalConsistent M }
-    | 0 => ⟨baseMCS, h_base_mcs⟩
-    | n + 1 =>
-      let prev := backwardChain n
-      let hc := HContent prev.val
-      have h_hc_cons : SetConsistent hc := by
-        -- HContent of MCS is consistent (same proof as dovetail_HContent_consistent)
-        intro L hL ⟨d⟩
-        have hL_in_M : ∀ x ∈ L, x ∈ prev.val := fun x hx => by
-          have h_H : Formula.all_past x ∈ prev.val := hL x hx
-          have h_T := DerivationTree.axiom [] ((Formula.all_past x).imp x) (Axiom.temp_t_past x)
-          exact set_mcs_implication_property prev.property (theorem_in_mcs prev.property h_T) h_H
-        exact prev.property.1 L hL_in_M ⟨d⟩
-      let ext := set_lindenbaum hc h_hc_cons
-      ⟨ext.choose, ext.choose_spec.2⟩
-
-  -- Combine into Int-indexed MCS assignment
-  let mcsAt : Int → Set Formula := fun t =>
-    if h : 0 ≤ t then
-      (forwardChain t.toNat).val
-    else
-      (backwardChain ((-t).toNat)).val
-
+  -- Use the dovetailing chain construction which has proven propagation lemmas
   exact {
-    mcs := mcsAt
-    is_mcs := fun t => by
-      simp only [mcsAt]
-      split
-      · exact (forwardChain t.toNat).property
-      · exact (backwardChain ((-t).toNat)).property
+    mcs := dovetailChainSet baseFormulas h_base_cons
+    is_mcs := dovetailChainSet_is_mcs baseFormulas h_base_cons
     forward_G := fun t t' phi h_lt h_G => by
-      -- G phi at time t implies phi at time t' > t
-      -- Case split on signs of t and t'
-      simp only [mcsAt] at h_G ⊢
+      -- Use proven lemmas from DovetailingChain for same-sign cases
       by_cases h_t : 0 ≤ t
-      · -- Case: t ≥ 0
-        -- Then t' > t ≥ 0, so both use forwardChain
+      · -- Case: t >= 0, so t' > t >= 0 (same-sign non-negative)
         have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
-        simp only [h_t, h_t', ↓reduceDIte] at h_G ⊢
-        -- Need: G phi ∈ forwardChain(t.toNat) implies phi ∈ forwardChain(t'.toNat)
-        have h_nat_lt : t.toNat < t'.toNat := by
-          rw [← Int.ofNat_lt]
-          rwa [Int.toNat_of_nonneg h_t, Int.toNat_of_nonneg h_t']
-        -- G propagates through forward chain (via GContent + 4-axiom)
-        -- Then T-axiom gives phi at t'
-        have h_mcs_t' := (forwardChain t'.toNat).property
-        -- First show G phi propagates to t'
-        -- Helper: G phi propagates step by step
-        -- G phi propagates through the forward chain (same-sign: both t >= 0 and t' > t >= 0)
-        -- The mathematical argument:
-        -- 1. By 4-axiom: G phi -> G(G phi), so G(G phi) is in MCS at step k
-        -- 2. G(G phi) means G phi is in GContent(MCS at step k)
-        -- 3. forwardChain (k+1) extends GContent(forwardChain k) via Lindenbaum
-        -- 4. So GContent(step k) ⊆ step (k+1), meaning G phi propagates forward
-        -- 5. By induction, G phi reaches step t'.toNat
-        -- 6. By T-axiom (G phi -> phi), phi is at step t'.toNat
-        --
-        -- Technical issue: The local let-rec definition of forwardChain creates
-        -- different set_lindenbaum calls with different consistency proofs, which
-        -- are not definitionally equal. Proving propagation requires either:
-        -- - Extracting forwardChain as a top-level definition with explicit lemmas
-        -- - Using a different construction approach
-        --
-        -- For now, this same-sign case should be provable with the right infrastructure.
-        -- The proof strategy is clear but the Lean mechanics need adjustment.
-        sorry
-      · -- Case: t < 0
+        exact dovetailChainSet_forward_G_nonneg baseFormulas h_base_cons t t' h_t h_t' h_lt phi h_G
+      · -- Case: t < 0 (cross-sign or both negative)
         push_neg at h_t
-        by_cases h_t' : 0 ≤ t'
-        · -- Cross-sign case: t < 0 ≤ t'
-          -- This requires G phi to propagate from backward chain to forward chain
-          -- via baseMCS at time 0.
-          --
-          -- The mathematical argument (4-axiom approach):
-          -- 1. G phi ∈ MCS at time t < 0 (in backwardChain(|t|))
-          -- 2. By 4-axiom: G(G phi) ∈ MCS at time t
-          -- 3. G(G phi) means "G phi at all future times", including time 0
-          -- 4. So G phi ∈ baseMCS (at time 0)
-          -- 5. From baseMCS, forward propagation gives phi at t' > 0
-          --
-          -- However, this argument requires showing that G phi at a negative time
-          -- implies G phi at time 0. The current chain construction extends OUTWARD
-          -- from time 0, so formulas added by Lindenbaum at negative times
-          -- do NOT automatically appear at time 0.
-          --
-          -- Resolution requires either:
-          -- - Pre-placement via seed construction (for seed formulas)
-          -- - Dovetailing construction that builds toward time 0
-          -- - Global selection via Zorn's lemma
-          sorry
-        · -- Both t < 0 and t' < 0
-          push_neg at h_t'
-          simp only [show ¬(0 ≤ t) from not_le.mpr h_t, show ¬(0 ≤ t') from not_le.mpr h_t', ↓reduceDIte] at h_G ⊢
-          -- t < 0 and t' < 0 with t < t' means: -t > -t' > 0
-          -- mcsAt(t) = backwardChain((-t).toNat) at higher index
-          -- mcsAt(t') = backwardChain((-t').toNat) at lower index
-          -- But we need phi at the LOWER index, which is EARLIER in chain!
-          --
-          -- G phi at backwardChain(k) with k > k' doesn't imply phi at backwardChain(k')
-          -- because the chain extends from k' to k, not the reverse.
-          --
-          -- This is also a cross-sign-like issue: G phi at more negative time
-          -- doesn't propagate to less negative time via our chain construction.
-          sorry
+        -- Cross-sign and both-negative cases require the formula to propagate
+        -- through time 0, which the dovetailing chain construction doesn't support.
+        -- This is the same architectural limitation documented in DovetailingChain.lean.
+        sorry
     backward_H := fun t t' phi h_lt h_H => by
-      -- H phi at time t implies phi at time t' < t
-      simp only [mcsAt] at h_H ⊢
       by_cases h_t : t < 0
-      · -- Case: t < 0
-        -- Then t' < t < 0, so both use backwardChain
+      · -- Case: t < 0, so t' < t < 0 (same-sign non-positive)
         have h_t' : t' < 0 := lt_trans h_lt h_t
-        simp only [show ¬(0 ≤ t) from not_le.mpr h_t, show ¬(0 ≤ t') from not_le.mpr h_t', ↓reduceDIte] at h_H ⊢
-        -- H phi propagates through backward chain (same-sign: both t < 0 and t' < t < 0)
-        -- The mathematical argument mirrors forward_G but with HContent:
-        -- 1. By 4H-axiom: H phi -> H(H phi), so H(H phi) is in MCS at step k
-        -- 2. H(H phi) means H phi is in HContent(MCS at step k)
-        -- 3. backwardChain (k+1) extends HContent(backwardChain k) via Lindenbaum
-        -- 4. So HContent(step k) ⊆ step (k+1), meaning H phi propagates forward in chain
-        -- 5. By induction, H phi reaches the target step
-        -- 6. By T-axiom (H phi -> phi), phi is at that step
-        --
-        -- But the time indices are inverted: mcsAt(-k) = backwardChain(k)
-        -- For t' < t < 0: (-t').toNat > (-t).toNat
-        -- So we need to propagate forward in chain from (-t).toNat to (-t').toNat
-        --
-        -- Same technical issue as forward_G: local let-rec definition
-        sorry
-      · -- Case: t >= 0
+        exact dovetailChainSet_backward_H_nonpos baseFormulas h_base_cons t t' h_t h_t' h_lt phi h_H
+      · -- Case: t >= 0 (cross-sign or both positive)
         push_neg at h_t
-        by_cases h_t' : t' < 0
-        · -- Cross-sign case: t' < 0 ≤ t
-          -- H phi at positive time t, need phi at negative time t'
-          simp only [h_t, show ¬(0 ≤ t') from not_le.mpr h_t', ↓reduceDIte] at h_H ⊢
-          -- Same cross-sign issue as forward_G but reversed:
-          -- H phi at positive time needs to reach phi at negative time
-          -- The 4H-axiom gives H(H phi), meaning H phi at all past times
-          -- But this doesn't help because chain extends outward from time 0
-          sorry
-        · -- Both t >= 0 and t' >= 0
-          push_neg at h_t'
-          simp only [h_t, h_t', ↓reduceDIte] at h_H ⊢
-          -- t' < t with both t >= 0 and t' >= 0 means: 0 <= t' < t
-          -- mcsAt(t) = forwardChain(t.toNat)
-          -- mcsAt(t') = forwardChain(t'.toNat) with t'.toNat < t.toNat
-          -- Need phi at forwardChain(t'.toNat) given H phi at forwardChain(t.toNat)
-          --
-          -- This is backward propagation in forward chain - same fundamental issue
-          -- H phi at higher index doesn't propagate backward to lower index
-          sorry
+        -- Cross-sign and both-positive cases require the formula to propagate
+        -- through time 0, which the dovetailing chain construction doesn't support.
+        sorry
   }
 
 /--

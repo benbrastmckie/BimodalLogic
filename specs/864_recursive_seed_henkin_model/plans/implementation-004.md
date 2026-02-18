@@ -125,21 +125,23 @@ After 28+ implementation sessions:
 
 **Objective**: Complete Lindenbaum extension of seed entries to full MCS families.
 
-**Current state**: 10 sorries (unchanged from start)
+**Current state**: 5 sorries (reduced from 10)
 
-**Sorry Analysis (audited):**
-| Line | Theorem | Issue | Classification |
-|------|---------|-------|----------------|
-| 159 | modal_witness_includes_boxcontent | BoxContent propagation to witness | Infrastructure |
-| 224 | h_base_cons (in buildFamilyFromSeed) | Empty list soundness | Non-blocking (provable via soundness) |
-| 315 | forward_G (same-sign positive) | Chain propagation | **CRITICAL** - architectural issue |
-| 339 | forward_G (cross-sign) | Cross-sign propagation | **CRITICAL** - architectural issue |
-| 353 | forward_G (both negative) | Backward in backward chain | **CRITICAL** - architectural issue |
-| 376 | backward_H (same-sign negative) | Chain propagation | **CRITICAL** - architectural issue |
-| 387 | backward_H (cross-sign) | Cross-sign propagation | **CRITICAL** - architectural issue |
-| 398 | backward_H (both positive) | Backward in forward chain | **CRITICAL** - architectural issue |
-| 470 | buildFamilyFromSeed_cross_sign_seed | Cross-sign seed formula | Depends on temporal coherence |
-| 479 | buildFamilyFromSeed_contains_seed | Seed containment | Depends on temporal coherence |
+**Sorry Analysis (audited, updated session 31):**
+| Line | Theorem | Issue | Classification | Status |
+|------|---------|-------|----------------|--------|
+| 159 | modal_witness_includes_boxcontent | BoxContent propagation to witness | Infrastructure | OPEN |
+| 224 | h_base_cons (in buildFamilyFromSeed) | Empty list soundness | Non-blocking (provable via soundness) | **RESOLVED** |
+| 315 | forward_G (same-sign positive) | Chain propagation | CRITICAL | **RESOLVED** (uses dovetailChainSet) |
+| 339 | forward_G (cross-sign) | Cross-sign propagation | CRITICAL | **RESOLVED** (merged with neg case) |
+| 353 | forward_G (both negative) | Backward in backward chain | CRITICAL | **RESOLVED** (merged with neg case) |
+| 246 (new) | forward_G (t < 0 case) | Cross-sign or both-negative | CRITICAL | OPEN |
+| 376 | backward_H (same-sign negative) | Chain propagation | CRITICAL | **RESOLVED** (uses dovetailChainSet) |
+| 387 | backward_H (cross-sign) | Cross-sign propagation | CRITICAL | **RESOLVED** (merged with pos case) |
+| 398 | backward_H (both positive) | Backward in forward chain | CRITICAL | **RESOLVED** (merged with pos case) |
+| 256 (new) | backward_H (t >= 0 case) | Cross-sign or both-positive | CRITICAL | OPEN |
+| 470→328 | buildFamilyFromSeed_cross_sign_seed | Cross-sign seed formula | Depends on temporal coherence | OPEN |
+| 479→337 | buildFamilyFromSeed_contains_seed | Seed containment | Depends on base construction | OPEN |
 
 **Architectural Blocker Identified:**
 The `buildFamilyFromSeed` function builds MCS chains that extend OUTWARD from time 0:
@@ -186,6 +188,15 @@ This is the same cross-sign issue documented in DovetailingChain.lean (9 sorries
 - Audited: All 10 SeedCompletion.lean sorries categorized
 - Identified: Architectural blocker - chain direction vs propagation direction
 - Sorries: 10 → 10 (no change, all require architectural solution)
+- Build: Verified lake build succeeds
+
+**Session 31: 2026-02-17, sess_1771383160_c559b2**
+- Refactored: `buildFamilyFromSeed` to use `dovetailChainSet` from DovetailingChain.lean
+- Added: Import of DovetailingChain.lean and Soundness.lean
+- Added: `seedFormulas_time0_consistent` theorem (proven via soundness)
+- Resolved: 5 sorries via refactoring (same-sign cases now use proven dovetail lemmas)
+- Remaining: 5 sorries - 2 cross-sign architectural (246, 256), 3 seed-related (161, 328, 337)
+- Sorries: 10 → 5 (5 eliminated)
 - Build: Verified lake build succeeds
 
 ---
