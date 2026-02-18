@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model Construction (v6 - Post-Condition Architecture)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 10 hours
 - **Dependencies**: None (supersedes implementation-005.md approach)
 - **Research Inputs**:
