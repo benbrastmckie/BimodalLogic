@@ -1,17 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Identified that 'cut rule' refers to derivation composition via deduction theorem. The codebase has complete infrastructure (DeductionTheorem.lean). Requires building 6 subformula consistency lemmas using T-axioms and necessitation rules, then applying them to 22 processWorkItem sorries.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/900_prove_cut_rule_derivation_tree_manipulation/reports/research-001.md",
-      "summary": "Detailed analysis of cut rule meaning, proof strategies for consistency lemmas, and implementation recommendations"
+      "type": "plan",
+      "path": "specs/900_prove_cut_rule_derivation_tree_manipulation/plans/implementation-001.md",
+      "summary": "4-phase implementation plan resolving 22 sorries in RecursiveSeed.lean via deduction theorem composition"
     }
   ],
+  "next_steps": "Run /implement 900 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771435804_70ed56",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771436190_06ab22",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 6
   }
 }
