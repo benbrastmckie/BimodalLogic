@@ -1,7 +1,7 @@
 # Implementation Plan: Task #892
 
 - **Task**: 892 - Modify henkinStep to add negations when rejecting packages
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/892_modify_henkinstep_add_negations/reports/research-001.md
@@ -64,7 +64,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Prove neg_consistent_when_pkg_inconsistent [NOT STARTED]
+### Phase 1: Prove neg_consistent_when_pkg_inconsistent [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Establish the key lemma that if S is consistent and S ∪ temporalPackage(phi) is inconsistent, then S ∪ {neg phi} is consistent
@@ -83,6 +83,43 @@ After this implementation:
 **Verification**:
 - Lemma compiles without sorry
 - `lake build` passes
+
+**Progress:**
+
+**Session: 2026-02-17, sess_1771374357_3e4c3a** (no progress)
+- Attempted: Prove neg_consistent_when_pkg_inconsistent lemma
+- Result: BLOCKED - discovered fundamental mathematical issue with parent theorem
+- No changes committed
+
+**BLOCKER - MATHEMATICAL IMPOSSIBILITY DISCOVERED:**
+
+The theorem `maximal_tcs_is_mcs` (which this task aims to make provable) is FALSE.
+
+**Counterexample:**
+- base = {neg(psi)} (psi false now)
+- henkinLimit adds G(psi) (psi true at all future times) - this is consistent with neg(psi)
+- M maximal in TCS contains {neg(psi), G(psi)}
+- F(psi) not in M (its package includes psi which conflicts with neg(psi))
+- BUT: M union {F(psi)} = {neg(psi), G(psi), F(psi)} IS CONSISTENT
+  - Semantic model: psi false at time 0, psi true at times 1,2,3,...
+  - neg(psi) true at time 0 (psi false now) ✓
+  - G(psi) true at time 0 (psi true at ALL future times) ✓
+  - F(psi) true at time 0 (psi true at SOME future time) ✓
+- Therefore M is NOT maximal consistent (violates SetMaximalConsistent definition)
+
+**Why the proposed fix fails:**
+1. When F(psi) is enumerated, temporalPackage = {F(psi), psi}
+2. S union temporalPackage inconsistent (psi and neg(psi))
+3. S union {neg(F(psi))} also inconsistent (G(psi) -> F(psi) is a theorem)
+4. Neither option preserves consistency while adding F(psi) or its negation
+5. Even with a fallback to add just {F(psi)}, the limit loses temporal saturation (F(psi) present without psi)
+
+**Root cause:** Temporal saturation and maximal consistency are CONFLICTING requirements in some cases. The set {neg(psi), G(psi)} is temporally saturated (no F-formulas present), but adding F(psi) to make it "more complete" would require adding psi (for saturation), which conflicts with neg(psi).
+
+**Recommendation:** The entire approach needs revision. Options:
+1. Add hypothesis to maximal_tcs_is_mcs that rules out counterexample (e.g., require base to be "temporally coherent")
+2. Use different construction ensuring both saturation and MCS simultaneously
+3. Weaken temporalLindenbaumMCS to not claim MCS, only temporal saturation
 
 ---
 
