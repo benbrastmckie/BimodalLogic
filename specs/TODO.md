@@ -1,5 +1,5 @@
 ---
-next_project_number: 895
+next_project_number: 896
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 895. Update phase status markers during implementation
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-17
+
+**Description**: Modify the /implement workflow to update phase status markers at appropriate times. Currently, phase status remains [NOT STARTED] until after progress is made. Instead, update each phase to [IMPLEMENTING] before starting work on that phase, and then to [COMPLETE], [PARTIAL], or [BLOCKED] as appropriate after work on that phase concludes, before proceeding to the next phase or handing off to another subagent.
+
+---
 
 ### 894. Clean linter warnings in Closure.lean
 - **Effort**: 30 minutes
@@ -50,7 +60,7 @@ technical_debt:
 
 ### 892. Modify henkinStep to add negations when rejecting packages
 - **Effort**: 3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
