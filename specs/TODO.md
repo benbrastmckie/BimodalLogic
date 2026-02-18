@@ -34,11 +34,13 @@ technical_debt:
 
 ### 893. Fix missing Logos.lean root file
 - **Effort**: 5 minutes
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
+- **Planned**: 2026-02-18
 - **Research**: [research-001.md](specs/893_fix_missing_logos_lean_root_file/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/893_fix_missing_logos_lean_root_file/plans/implementation-001.md)
 
 **Description**: Fix the missing Theories/Logos.lean root file that breaks default lake build. Either create a stub file or update lakefile.lean to remove the Logos target. The lakefile defines Logos as default target but the root file does not exist.
 
@@ -46,7 +48,7 @@ technical_debt:
 
 ### 892. Modify henkinStep to add negations when rejecting packages
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
@@ -61,7 +63,7 @@ technical_debt:
 
 ### 891. Fix split-at tactic incompatibility in TemporalLindenbaum.lean
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17

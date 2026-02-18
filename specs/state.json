@@ -8,21 +8,27 @@
     {
       "project_number": 893,
       "project_name": "fix_missing_logos_lean_root_file",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "effort": "5 minutes",
       "description": "Fix the missing Theories/Logos.lean root file that breaks default lake build. Either create a stub file or update lakefile.lean to remove the Logos target. The lakefile defines Logos as default target but the root file does not exist.",
       "created": "2026-02-17T22:33:00Z",
-      "last_updated": "2026-02-18T00:25:00Z",
-      "session_id": "sess_1771374081_edab3d",
+      "last_updated": "2026-02-18T00:26:33Z",
+      "session_id": "sess_1771374316_15ef5d",
       "researched": "2026-02-18T00:25:00Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/893_fix_missing_logos_lean_root_file/reports/research-001.md",
           "summary": "Investigation of missing Logos.lean: lakefile expectations, git history showing file existed in commit 3c9dc688, recommended restoration from git history"
+        },
+        {
+          "path": "specs/893_fix_missing_logos_lean_root_file/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan: restore Logos.lean from git history"
         }
-      ]
+      ],
+      "planned": "2026-02-18T00:26:33Z"
     },
     {
       "project_number": 894,
@@ -38,14 +44,14 @@
     {
       "project_number": 891,
       "project_name": "fix_split_at_tactic_temporallindenbaum",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "1-2 hours",
       "description": "Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:24:03Z",
-      "session_id": "sess_1771374089_a229a9",
+      "last_updated": "2026-02-18T00:25:59Z",
+      "session_id": "sess_1771374336_9df87c",
       "researched": "2026-02-18T00:20:39Z",
       "artifacts": [
         {
@@ -59,19 +65,20 @@
           "summary": "4-phase implementation plan to fix 8 build errors in TemporalLindenbaum.lean for Lean 4.27.0-rc1 compatibility"
         }
       ],
-      "planned": "2026-02-18T00:24:03Z"
+      "planned": "2026-02-18T00:24:03Z",
+      "started": "2026-02-18T00:25:59Z"
     },
     {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "effort": "2-4 hours",
       "description": "Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:24:49Z",
-      "session_id": "sess_1771374136_953117",
+      "last_updated": "2026-02-18T00:26:23Z",
+      "session_id": "sess_1771374357_3e4c3a",
       "researched": "2026-02-18T00:19:42Z",
       "artifacts": [
         {
@@ -85,7 +92,8 @@
           "summary": "5-phase implementation plan to modify henkinStep and remove sorries from maximal_tcs_is_mcs"
         }
       ],
-      "planned": "2026-02-18T00:24:49Z"
+      "planned": "2026-02-18T00:24:49Z",
+      "started": "2026-02-18T00:26:23Z"
     },
     {
       "project_number": 890,
