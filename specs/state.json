@@ -6,6 +6,47 @@
   },
   "active_projects": [
     {
+      "project_number": 899,
+      "project_name": "define_identity_sentences_syntax_constitutive_foundation",
+      "status": "not_started",
+      "language": "latex",
+      "effort": "1 hour",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-17T00:00:00Z",
+      "description": "Add a careful definition of identity sentences in the syntax section of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex, near line 629 (before the Constitutive Consequence subsection). The definition should explain that identity sentences are the target of the constitutive foundation from which to build on in the dynamical foundation in the next chapter. Source: TODO: tag at line 629 of 02-ConstitutiveFoundation.tex."
+    },
+    {
+      "project_number": 898,
+      "project_name": "bilattice_structure_remarks_constitutive_foundation",
+      "status": "not_started",
+      "language": "latex",
+      "effort": "1.5 hours",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-17T00:00:00Z",
+      "description": "Two related bilattice improvements in /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 595: Draw on /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (line 801-2) to carefully define interlaced and distributive bilattices, adding a remark that every distributive bilattice is interlaced (cite Fitting1990 per line 806). (2) Line 609: Turn conjunction/disjunction-as-lub facts into their own remark with glb definitions and commentary on their meaning. Move remainder of current bilattice remark to just below the definition of interlaced, providing counterexamples from IdentityAboutness.tex. Source: TODO: tags at lines 595 and 609 of 02-ConstitutiveFoundation.tex."
+    },
+    {
+      "project_number": 897,
+      "project_name": "fix_tags_constitutive_foundation_latex",
+      "status": "not_started",
+      "language": "latex",
+      "effort": "2-3 hours",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-17T00:00:00Z",
+      "depends_on": [896],
+      "description": "Fix FIX: and NOTE: tags in /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex. Addresses 5 tags: (1) Line 479 (FIX:): Include a remark that the only propositions assigned to identity sentences are \\bot if false or \\neg\\bot if true (trivially false/true, requiring the null state). (2) Line 566 (FIX:): Include $\\equiv$ in the remark; define \\sem{\\metaA \\equiv \\metaB}; add \\forall, \\lambda, F(t_1,...,t_n) to show model+assignment provide a homomorphism from closed sentences to propositions; define \\interp{\\cdot}^\\assignment_\\model prior to this remark. (3) Line 568 (NOTE:): Rename \\sem to \\ext to indicate extension of a term; use \\interp{\\cdot}^\\assignment_\\model for semantic interpretation. (4) Line 582 (FIX:): Provide formal definition of the homomorphism from syntax to semantics. (5) Line 583 (FIX:): Replace vague 'directly mirrors' with correct language explaining what the embedding (homomorphism) amounts to. Depends on task 896 (learn-it) to first codify the notation convention."
+    },
+    {
+      "project_number": 896,
+      "project_name": "update_context_interp_notation_convention",
+      "status": "not_started",
+      "language": "meta",
+      "effort": "1 hour",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-17T00:00:00Z",
+      "description": "Update .claude/context/ files to document the notation convention for interpretation vs extension of terms in the Logos LaTeX project. NOTE: at line 568 of 02-ConstitutiveFoundation.tex states that \\interp{\\cdot}^\\assignment_\\model should be used for semantic interpretation (not \\sem{}^\\assignment_\\model which is for extension of terms), and \\sem should be renamed to \\ext to indicate extension of a term. Codify this notation decision in .claude/context/ so future work maintains consistency. Source: NOTE: tag at line 568 of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex."
+    },
+    {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
       "status": "blocked",
@@ -268,7 +309,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-18T04:56:52Z",
+      "last_updated": "2026-02-18T06:04:52Z",
       "session_id": "sess_1771390604_24ddef",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
@@ -731,7 +772,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 896,
+  "next_project_number": 900,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

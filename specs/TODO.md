@@ -1,16 +1,16 @@
 ---
-next_project_number: 896
+next_project_number: 900
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-18T02:45:00Z
 task_counts:
-  active: 9
+  active: 13
   completed: 613
   in_progress: 2
-  not_started: 4
+  not_started: 8
   abandoned: 29
-  total: 653
+  total: 657
 technical_debt:
   sorry_count: 203
   axiom_count: 20
@@ -21,6 +21,47 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 899. Define identity sentences in syntax section of ConstitutiveFoundation
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-17
+
+**Description**: Add a careful definition of identity sentences in the syntax section of `/home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex`, near line 629 (before the Constitutive Consequence subsection). The definition should explain that identity sentences are the target of the constitutive foundation from which to build on in the dynamical foundation in the next chapter. Source: `TODO:` tag at line 629 of `02-ConstitutiveFoundation.tex`.
+
+---
+
+### 898. Bilattice structure remarks in ConstitutiveFoundation
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-17
+
+**Description**: Two related bilattice improvements in `/home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex`: (1) **Line 595**: Draw on `IdentityAboutness.tex` (line 801-2) to carefully define interlaced and distributive bilattices, adding a remark that every distributive bilattice is interlaced (cite Fitting1990 per line 806). (2) **Line 609**: Turn the conjunction/disjunction-as-lub facts into their own remark with glb definitions and commentary. Move remainder of current bilattice remark to just below the new definition of interlaced, with counterexamples from `IdentityAboutness.tex`. Source: `TODO:` tags at lines 595 and 609.
+
+---
+
+### 897. Fix FIX:/NOTE: tags in ConstitutiveFoundation LaTeX
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-17
+- **Depends**: Task #896
+
+**Description**: Fix 5 `FIX:`/`NOTE:` tags in `/home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex`: (1) **Line 479**: Add remark that identity sentences receive only `\bot` (trivially false) or `\neg\bot` (trivially true), requiring nothing (null state) to make them true/false. (2) **Line 566**: Extend remark to include `\equiv`, define `\sem{\metaA \equiv \metaB}`, and add `\forall`, `\lambda`, `F(t_1,...,t_n)` to show model+assignment provide a homomorphism; define `\interp{\cdot}^\assignment_\model` prior to the remark. (3) **Line 568**: Rename `\sem` to `\ext` (extension of term); use `\interp{\cdot}^\assignment_\model` for semantic interpretation. (4) **Line 582**: Provide formal definition of the homomorphism from syntax to semantics. (5) **Line 583**: Replace vague 'directly mirrors' with correct language explaining the homomorphism embedding. Depends on task #896 to first codify the notation convention in context files.
+
+---
+
+### 896. Update context files for \interp vs \sem/\ext notation convention
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-17
+
+**Description**: Update `.claude/context/` files to document the notation convention for interpretation vs extension of terms in the Logos LaTeX project. `NOTE:` at line 568 of `02-ConstitutiveFoundation.tex` establishes that `\interp{\cdot}^\assignment_\model` should be used for semantic interpretation (not `\sem{}^\assignment_\model`, which is for extension of terms), and `\sem` should be renamed to `\ext`. Codify this notation decision in `.claude/context/` so future work maintains consistency. Source: `NOTE:` tag at line 568 of `/home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex`.
+
+---
 
 ### 892. Modify henkinStep to add negations when rejecting packages
 - **Effort**: 2 hours
