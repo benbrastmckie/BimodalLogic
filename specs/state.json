@@ -38,13 +38,13 @@
     {
       "project_number": 891,
       "project_name": "fix_split_at_tactic_temporallindenbaum",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "effort": "1-2 hours",
       "description": "Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:21:46Z",
+      "last_updated": "2026-02-18T00:24:03Z",
       "session_id": "sess_1771374089_a229a9",
       "researched": "2026-02-18T00:20:39Z",
       "artifacts": [
@@ -52,8 +52,14 @@
           "path": "specs/891_fix_split_at_tactic_temporallindenbaum/reports/research-001.md",
           "type": "research",
           "summary": "Identified 8 build errors in TemporalLindenbaum.lean: 3 split failures on have-wrapped match expressions, 2 multi-target split syntax errors, 1 instance synthesis failure, and 2 type errors"
+        },
+        {
+          "path": "specs/891_fix_split_at_tactic_temporallindenbaum/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan to fix 8 build errors in TemporalLindenbaum.lean for Lean 4.27.0-rc1 compatibility"
         }
-      ]
+      ],
+      "planned": "2026-02-18T00:24:03Z"
     },
     {
       "project_number": 892,

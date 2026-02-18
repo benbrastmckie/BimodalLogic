@@ -59,12 +59,14 @@ technical_debt:
 
 ### 891. Fix split-at tactic incompatibility in TemporalLindenbaum.lean
 - **Effort**: 1-2 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
+- **Planned**: 2026-02-17
 - **Parent**: Task #888
 - **Research**: [research-001.md](specs/891_fix_split_at_tactic_temporallindenbaum/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/891_fix_split_at_tactic_temporallindenbaum/plans/implementation-001.md)
 
 **Description**: Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.
 

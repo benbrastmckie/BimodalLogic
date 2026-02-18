@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/891_fix_split_at_tactic_temporallindenbaum/reports/research-001.md",
-      "summary": "Identified 8 build errors in TemporalLindenbaum.lean: 3 split failures on have-wrapped match expressions, 2 multi-target split syntax errors, 1 instance synthesis failure, and 2 type errors"
+      "type": "plan",
+      "path": "specs/891_fix_split_at_tactic_temporallindenbaum/plans/implementation-001.md",
+      "summary": "4-phase implementation plan to fix 8 build errors in TemporalLindenbaum.lean for Lean 4.27.0-rc1 compatibility"
     }
   ],
-  "next_steps": "Run /plan 891 to create implementation plan addressing all 8 build errors",
+  "next_steps": "Run /implement 891 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771373682_becbf0",
-    "agent_type": "lean-research-agent",
-    "duration_seconds": 420,
+    "session_id": "sess_1771374089_a229a9",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"],
-    "findings_count": 8
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.0
   }
 }
