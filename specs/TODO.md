@@ -1,19 +1,19 @@
 ---
-next_project_number: 893
+next_project_number: 895
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-17T22:15:38Z
+  last_assessed: 2026-02-17T22:33:00Z
 task_counts:
-  active: 13
+  active: 15
   completed: 607
   in_progress: 2
-  not_started: 5
+  not_started: 7
   abandoned: 29
-  total: 646
+  total: 648
 technical_debt:
-  sorry_count: 200
-  axiom_count: 20
+  sorry_count: 197
+  axiom_count: 6
   build_errors: 1
   status: manageable
 ---
@@ -22,9 +22,29 @@ technical_debt:
 
 ## Tasks
 
+### 894. Clean linter warnings in Closure.lean
+- **Effort**: 30 minutes
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-17
+
+**Description**: Clean up unused simp argument warnings in Theories/Bimodal/Metalogic/Decidability/Closure.lean at lines 316, 322, and 327. Apply suggested omit patterns to remove build noise.
+
+---
+
+### 893. Fix missing Logos.lean root file
+- **Effort**: 5 minutes
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-17
+
+**Description**: Fix the missing Theories/Logos.lean root file that breaks default lake build. Either create a stub file or update lakefile.lean to remove the Logos target. The lakefile defines Logos as default target but the root file does not exist.
+
+---
+
 ### 892. Modify henkinStep to add negations when rejecting packages
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Parent**: Task #888
@@ -35,7 +55,7 @@ technical_debt:
 
 ### 891. Fix split-at tactic incompatibility in TemporalLindenbaum.lean
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Parent**: Task #888

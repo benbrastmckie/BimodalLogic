@@ -6,26 +6,50 @@
   },
   "active_projects": [
     {
+      "project_number": 893,
+      "project_name": "fix_missing_logos_lean_root_file",
+      "status": "not_started",
+      "language": "lean",
+      "effort": "5 minutes",
+      "description": "Fix the missing Theories/Logos.lean root file that breaks default lake build. Either create a stub file or update lakefile.lean to remove the Logos target. The lakefile defines Logos as default target but the root file does not exist.",
+      "created": "2026-02-17T22:33:00Z",
+      "last_updated": "2026-02-17T22:33:00Z",
+      "session_id": "sess_1771373563_27f3c2"
+    },
+    {
+      "project_number": 894,
+      "project_name": "clean_linter_warnings_closure_lean",
+      "status": "not_started",
+      "language": "lean",
+      "effort": "30 minutes",
+      "description": "Clean up unused simp argument warnings in Theories/Bimodal/Metalogic/Decidability/Closure.lean at lines 316, 322, and 327. Apply suggested omit patterns to remove build noise.",
+      "created": "2026-02-17T22:33:00Z",
+      "last_updated": "2026-02-17T22:33:00Z",
+      "session_id": "sess_1771373563_27f3c2"
+    },
+    {
       "project_number": 891,
       "project_name": "fix_split_at_tactic_temporallindenbaum",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "effort": "1-2 hours",
       "description": "Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:13:53Z"
+      "last_updated": "2026-02-18T00:15:00Z",
+      "session_id": "sess_1771373682_becbf0"
     },
     {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "effort": "2-4 hours",
       "description": "Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:13:53Z"
+      "last_updated": "2026-02-18T00:15:39Z",
+      "session_id": "sess_1771373713_7aa16f"
     },
     {
       "project_number": 890,
@@ -759,7 +783,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 893,
+  "next_project_number": 895,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
