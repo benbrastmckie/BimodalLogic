@@ -40,11 +40,13 @@ technical_debt:
 
 ### 894. Clean linter warnings in Closure.lean
 - **Effort**: 30 minutes
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
+- **Planned**: 2026-02-18
 - **Research**: [research-001.md](specs/894_clean_linter_warnings_closure_lean/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/894_clean_linter_warnings_closure_lean/plans/implementation-001.md)
 
 **Description**: Clean up unused simp argument warnings in Theories/Bimodal/Metalogic/Decidability/Closure.lean at lines 316, 322, and 327. Apply suggested omit patterns to remove build noise.
 

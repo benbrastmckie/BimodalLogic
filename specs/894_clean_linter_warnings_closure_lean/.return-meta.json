@@ -1,22 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-17T12:00:00Z",
-  "completed_at": "2026-02-17T12:15:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/894_clean_linter_warnings_closure_lean/reports/research-001.md",
-      "summary": "Analyzed 4 linter warnings in Closure.lean: 1 unused variable at line 99, 3 unused simp arguments at lines 304 and 316. All are straightforward fixes requiring argument removal."
+      "type": "plan",
+      "path": "specs/894_clean_linter_warnings_closure_lean/plans/implementation-001.md",
+      "summary": "Single-phase plan to remove 4 unused simp arguments and variable bindings from Closure.lean"
     }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Research complete. Report written with concrete implementation recommendations."
-  },
+  "next_steps": "Run /implement 894 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771380808_28a798",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771381129_95535e",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 1,
+    "estimated_hours": 0.25
   }
 }

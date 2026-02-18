@@ -73,12 +73,12 @@
     {
       "project_number": 894,
       "project_name": "clean_linter_warnings_closure_lean",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "effort": "30 minutes",
       "description": "Clean up unused simp argument warnings in Theories/Bimodal/Metalogic/Decidability/Closure.lean at lines 316, 322, and 327. Apply suggested omit patterns to remove build noise.",
       "created": "2026-02-17T22:33:00Z",
-      "last_updated": "2026-02-18T02:19:06Z",
+      "last_updated": "2026-02-18T02:20:38Z",
       "session_id": "sess_1771381129_95535e",
       "researched": "2026-02-18T02:17:23Z",
       "artifacts": [
@@ -86,8 +86,14 @@
           "type": "research",
           "path": "specs/894_clean_linter_warnings_closure_lean/reports/research-001.md",
           "summary": "Analyzed 4 linter warnings in Closure.lean: 1 unused variable at line 99, 3 unused simp arguments at lines 304 and 316. All are straightforward fixes requiring argument removal."
+        },
+        {
+          "path": "specs/894_clean_linter_warnings_closure_lean/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Single-phase plan to remove 4 unused simp arguments and variable bindings from Closure.lean"
         }
-      ]
+      ],
+      "planned": "2026-02-18T02:20:38Z"
     },
     {
       "project_number": 891,
