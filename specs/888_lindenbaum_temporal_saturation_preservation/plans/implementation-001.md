@@ -1,7 +1,7 @@
 # Implementation Plan: Task #888
 
 - **Task**: 888 - Lindenbaum Temporal Saturation Preservation
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Effort**: 4 hours
 - **Dependencies**: None (builds on existing TemporalLindenbaum.lean infrastructure)
 - **Research Inputs**: specs/888_lindenbaum_temporal_saturation_preservation/reports/research-001.md
@@ -124,27 +124,35 @@ After this implementation:
 
 ---
 
-### Phase 3: Fix maximal_tcs_is_mcs Temporal Cases [IN PROGRESS]
+### Phase 3: Fix maximal_tcs_is_mcs Temporal Cases [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Resolve sorry at lines 655-656, 662 in `maximal_tcs_is_mcs`
 
-**Tasks**:
-- [ ] Analyze the temporal formula case: when phi = F(psi) and phi not in M
-- [ ] Prove: if M is maximal in TCS and insert F(psi) M is consistent, then psi in insert F(psi) M
-- [ ] Key argument: if psi not in M, then M union {F(psi), psi} can be temp-saturated
-- [ ] Use maximality to derive contradiction or membership
-- [ ] Apply symmetric argument for P(psi) case
+**Status**: BLOCKED - Two issues discovered:
 
-**Timing**: 1 hour
+1. **Build Errors**: The file does not compile in Lean 4.27.0-rc1 due to `split at` tactic incompatibility with how `temporalWitnessChain` unfolds (inserts `have φ := φ;` bindings).
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean` - Complete maximal_tcs_is_mcs proof
+2. **Mathematical Issue**: The lemma `maximal_tcs_is_mcs` appears unprovable as stated. The proof requires showing that if `insert F(ψ) M` is consistent, then `ψ ∈ M`. However, the Henkin construction only adds packages when consistent - it does NOT add negations when rejecting. This allows scenarios where M is maximal in TCS but `M ∪ {F(ψ)}` is consistent (even though `M ∪ {F(ψ), ψ}` is inconsistent), making M not an MCS.
 
-**Verification**:
-- Lines 655-656 and 662 no longer have sorry
-- `maximal_tcs_is_mcs` compiles cleanly
-- `lake build` succeeds with 0 sorries in TemporalLindenbaum.lean
+**Required Pre-work**:
+1. Create task to fix `split at` issues (convert to explicit `cases` patterns)
+2. Create task to modify `henkinStep` to add ¬φ when package is rejected
+
+**Tasks** (original - now obsolete):
+- [ ] ~~Analyze the temporal formula case: when phi = F(psi) and phi not in M~~
+- [ ] ~~Prove: if M is maximal in TCS and insert F(psi) M is consistent, then psi in insert F(psi) M~~
+- [ ] ~~Key argument: if psi not in M, then M union {F(psi), psi} can be temp-saturated~~
+- [ ] ~~Use maximality to derive contradiction or membership~~
+- [ ] ~~Apply symmetric argument for P(psi) case~~
+
+**Progress:**
+
+**Session: 2026-02-17, sess_1771371346_15f97f** (no progress)
+- Attempted: Direct proof of temporal formula case
+- Result: Discovered lemma may be mathematically false as stated
+- Recommendation: Modify henkinStep to add negations when rejecting packages
+- No changes committed
 
 ---
 
