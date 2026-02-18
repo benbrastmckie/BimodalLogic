@@ -323,14 +323,17 @@ The omega-step construction that builds a consistent, temporally-saturated set.
 
 attribute [local instance] Classical.propDecidable in
 /-- One step of the Henkin construction: add the temporal package if consistent,
-    otherwise add the negation if consistent, otherwise keep S unchanged.
-    This ensures that for each enumerated formula, either it or its negation
-    ends up in the limit (enabling negation completeness for the MCS proof). -/
+    otherwise add the negation's temporal package if consistent, otherwise keep S unchanged.
+    This ensures that for each enumerated formula, either it or its negation (with witnesses)
+    ends up in the limit (enabling negation completeness for the MCS proof).
+
+    Key insight: We must add temporalPackage(neg φ) rather than just {neg φ} to preserve
+    temporal saturation. For example, if neg φ = F(ψ), we need to add {F(ψ), ψ} not just {F(ψ)}. -/
 noncomputable def henkinStep (S : Set Formula) (φ : Formula) : Set Formula :=
   if SetConsistent (S ∪ temporalPackage φ) then
     S ∪ temporalPackage φ
-  else if SetConsistent (S ∪ {Formula.neg φ}) then
-    S ∪ {Formula.neg φ}
+  else if SetConsistent (S ∪ temporalPackage (Formula.neg φ)) then
+    S ∪ temporalPackage (Formula.neg φ)
   else
     S
 
@@ -479,19 +482,22 @@ lemma henkinLimit_forward_saturated (base : Set Formula)
       · -- package was rejected, check negation branch
         rename_i h_pkg_incons
         split at h_in_chain
-        · -- negation was added: S_n ∪ {neg φ}
+        · -- negation's package was added: S_n ∪ temporalPackage(neg φ)
           rename_i h_neg_cons
-          -- F(ψ) ∈ S_n ∪ {neg φ}
+          -- F(ψ) ∈ S_n ∪ temporalPackage(neg φ)
           rcases (Set.mem_union _ _ _).mp h_in_chain with h_old | h_singleton
           · exact ih h_old
-          · -- F(ψ) ∈ {neg φ}, meaning F(ψ) = neg φ
-            -- This case requires that ψ will be in the limit even though
-            -- F(ψ) was added as a negation rather than via a package.
-            -- When ψ is enumerated at step m = encode(ψ), either:
-            -- - temporalPackage(ψ) is consistent and ψ is added
-            -- - OR neg(ψ) is added (which would break forward saturation)
-            -- The detailed argument is complex. For now we use sorry.
-            sorry
+          · -- F(ψ) ∈ temporalPackage(neg φ)
+            -- By forward_witness_in_package, ψ ∈ temporalPackage(neg φ)
+            -- So ψ is added at this step along with F(ψ)
+            have h_ψ_in_pkg := forward_witness_in_package h_singleton
+            have : ψ ∈ henkinChain base (n + 1) := by
+              simp only [henkinChain]
+              simp only [*]
+              simp only [henkinStep]
+              simp only [*]
+              exact Set.mem_union_right _ h_ψ_in_pkg
+            exact henkinChain_subset_limit base (n + 1) this
         · -- negation was also rejected, keep S_n unchanged
           rename_i h_neg_incons
           exact ih h_in_chain
@@ -533,13 +539,20 @@ lemma henkinLimit_backward_saturated (base : Set Formula)
       · -- package was rejected, check negation branch
         rename_i h_pkg_incons
         split at h_in_chain
-        · -- negation was added: S_n ∪ {neg φ}
+        · -- negation's package was added: S_n ∪ temporalPackage(neg φ)
           rename_i h_neg_cons
           rcases (Set.mem_union _ _ _).mp h_in_chain with h_old | h_singleton
           · exact ih h_old
-          · -- P(ψ) ∈ {neg φ}, meaning P(ψ) = neg φ
-            -- Symmetric to forward case
-            sorry
+          · -- P(ψ) ∈ temporalPackage(neg φ)
+            -- By backward_witness_in_package, ψ ∈ temporalPackage(neg φ)
+            have h_ψ_in_pkg := backward_witness_in_package h_singleton
+            have : ψ ∈ henkinChain base (n + 1) := by
+              simp only [henkinChain]
+              simp only [*]
+              simp only [henkinStep]
+              simp only [*]
+              exact Set.mem_union_right _ h_ψ_in_pkg
+            exact henkinChain_subset_limit base (n + 1) this
         · -- negation was also rejected, keep S_n unchanged
           rename_i h_neg_incons
           exact ih h_in_chain
@@ -640,14 +653,11 @@ consistent supersets is in fact a maximal consistent set (MCS).
 /--
 A set maximal among temporally-saturated consistent supersets is MCS.
 
-The proof proceeds by showing that for any φ ∉ M, insert φ M is inconsistent.
-We use a case split on whether neg(φ) ∈ M:
-- If neg(φ) ∈ M: insert φ M contains both φ and neg(φ), hence inconsistent.
-- If neg(φ) ∉ M: we show insert φ M ∈ TCS, contradicting maximality.
-
-The key insight for the neg(φ) ∉ M case when φ = F(ψ) is:
-- If neg(F(ψ)) = G(neg(ψ)) ∉ M, and F(ψ) ∉ M, then insert F(ψ) M is forward saturated
-  because ψ must be in M (else M ∪ {ψ} would extend M in TCS).
+The proof proceeds by well-founded induction on formula complexity.
+For φ ∉ M, we show insert φ M is inconsistent:
+- If neg(φ) ∈ M: direct contradiction via set_consistent_not_both.
+- If neg(φ) ∉ M: we show insert φ M ∈ TCS when φ is non-temporal, or use IH
+  to show witnesses must be in M when φ is temporal.
 -/
 lemma maximal_tcs_is_mcs (base : Set Formula)
     (M : Set Formula)
@@ -661,7 +671,11 @@ lemma maximal_tcs_is_mcs (base : Set Formula)
   constructor
   · exact h_cons
   · -- For each φ ∉ M, show ¬SetConsistent (insert φ M)
-    intro φ hφ_not_mem h_cons_insert
+    -- We use well-founded induction on formula complexity
+    intro φ
+    induction φ using (measure Formula.complexity).wf.induction with
+    | h φ ih =>
+    intro hφ_not_mem h_cons_insert
     -- Case split: either neg(φ) ∈ M or neg(φ) ∉ M
     by_cases h_neg_in : φ.neg ∈ M
     · -- Case 1: neg(φ) ∈ M
@@ -671,60 +685,131 @@ lemma maximal_tcs_is_mcs (base : Set Formula)
       exact set_consistent_not_both h_cons_insert φ h_phi_in_insert h_neg_in_insert
     · -- Case 2: neg(φ) ∉ M
       -- Show insert φ M ∈ TCS, contradicting maximality
-      -- For temporal saturation, we need careful case analysis on φ
+
+      -- Helper: For any ψ where F(ψ) = φ, show ψ ∈ M using IH
+      have h_forward_witness_in_M : ∀ ψ : Formula, φ = Formula.some_future ψ → ψ ∈ M := by
+        intro ψ h_eq
+        -- If ψ ∉ M, we use IH to get contradiction
+        by_contra h_ψ_not_in_M
+        -- First show insert ψ M is consistent
+        -- Key insight: insert F(ψ) M is consistent by h_cons_insert
+        -- We need to show insert ψ M is also consistent
+        have h_complexity : ψ.complexity < φ.complexity := by
+          rw [h_eq]
+          simp only [Formula.some_future, Formula.neg, Formula.complexity]
+          omega
+        -- By IH on ψ: either ψ ∈ M or insert ψ M is inconsistent
+        -- We have ψ ∉ M, so insert ψ M is inconsistent
+        -- This means M ⊢ neg(ψ)
+        by_cases h_neg_ψ_in_M : ψ.neg ∈ M
+        · -- neg(ψ) ∈ M
+          -- We have F(ψ) = φ, so neg(φ) = neg(F(ψ)) = G(neg(ψ))
+          -- By T-axiom: G(neg(ψ)) → neg(ψ), so ⊢ neg(ψ) → neg(G(neg(ψ)))
+          -- Wait, we have neg(ψ) ∈ M and need G(neg(ψ)) ∉ M (which is h_neg_in rewritten)
+          -- Actually h_neg_in says neg(φ) ∉ M, where neg(φ) = G(neg(ψ))
+          -- So G(neg(ψ)) ∉ M but neg(ψ) ∈ M
+          -- This is consistent with M being a TCS (no rule forces G(X) ∈ M when X ∈ M)
+          -- But now we need to derive a contradiction from insert F(ψ) M being consistent
+          -- When neg(ψ) ∈ M and F(ψ) ∈ insert F(ψ) M:
+          -- From T-axiom on dual: F(ψ) → ψ is NOT valid (only G(ψ) → ψ is)
+          -- Actually the issue is: {F(ψ), neg(ψ)} is consistent!
+          -- F(ψ) means "ψ at some future time", neg(ψ) means "not ψ now"
+          -- These are compatible in irreflexive frames.
+          -- But our logic has reflexive frames (temp_t_future axiom), so...
+          -- Actually temp_t_future is G(ψ) → ψ, not F(ψ) → ψ
+          -- So {F(ψ), neg(ψ)} IS consistent even with reflexive frames
+          -- This means we can't derive a contradiction this way
+          -- We need a different approach: showing that insert F(ψ) M can be extended
+          -- to include ψ (since neg(ψ) ∈ M blocks this... hmm)
+          -- Actually if neg(ψ) ∈ M and F(ψ) ∈ insert F(ψ) M, the set is still forward
+          -- saturated because we need ψ ∈ insert F(ψ) M when F(ψ) ∈ insert F(ψ) M
+          -- But ψ ∉ M and ψ ≠ F(ψ), so ψ ∉ insert F(ψ) M unless...
+          -- This shows insert F(ψ) M is NOT forward saturated!
+          -- So insert F(ψ) M ∉ TCS
+          -- But this doesn't give us inconsistency, just failure of TCS membership
+          -- The contradiction with maximality comes from the construction:
+          -- We already have h_cons_insert saying insert φ M is consistent
+          -- We want to show insert φ M ∈ TCS
+          -- But if φ = F(ψ) and ψ ∉ M, insert φ M fails forward saturation
+          -- So the strategy fails. We need to reconsider...
+          -- The key is: this case (neg(ψ) ∈ M) should actually be impossible
+          -- because if neg(ψ) ∈ M and M is temporally saturated,
+          -- and we're claiming insert F(ψ) M is consistent...
+          -- Actually, {neg(ψ), F(ψ)} is consistent, so insert F(ψ) M being consistent
+          -- when neg(ψ) ∈ M is perfectly fine.
+          -- The issue is showing insert F(ψ) M is in TCS, which it's not (fails saturation).
+          -- So we cannot use the maximality argument for this case.
+          -- We need to abandon this proof strategy for temporal formulas.
+          -- Alternative: show insert F(ψ) M is INCONSISTENT directly.
+          -- Claim: insert F(ψ) (M) is inconsistent when neg(ψ) ∈ M
+          -- Hmm, but {F(ψ), neg(ψ)} IS consistent...
+          -- Unless there's something special about M.
+          -- Actually, the issue is that this proof approach is fundamentally broken
+          -- for the case where φ = F(ψ) and neg(ψ) ∈ M.
+          -- Let's punt and use sorry, documenting this as a hard blocker.
+          sorry
+        · -- neg(ψ) ∉ M
+          -- By IH: insert ψ M is inconsistent OR ψ ∈ M
+          -- We're assuming ψ ∉ M, so insert ψ M must be inconsistent (if IH applies)
+          -- But IH says: ψ ∉ M → ¬SetConsistent (insert ψ M)
+          -- So insert ψ M is inconsistent
+          -- This means there's L ⊆ M ∪ {ψ} with L ⊢ ⊥
+          -- By deduction theorem: some L' ⊆ M with L' ⊢ neg(ψ)
+          -- By MCS closure... wait, we don't have M is MCS yet
+          -- But we can use that if L' ⊢ neg(ψ) and L' ⊆ M, then
+          -- insert neg(ψ) M would be implied by M...
+          -- Actually this is getting circular.
+          -- Alternative: show insert ψ M ∈ TCS to get contradiction
+          by_cases h_cons_ψ : SetConsistent (insert ψ M)
+          · -- insert ψ M is consistent
+            -- Show insert ψ M ∈ TCS
+            -- For forward saturation: if F(χ) ∈ insert ψ M, we need χ ∈ insert ψ M
+            -- F(χ) ∈ insert ψ M means F(χ) = ψ or F(χ) ∈ M
+            -- If F(χ) ∈ M, then χ ∈ M ⊆ insert ψ M by h_fwd
+            -- If F(χ) = ψ, we need χ ∈ insert ψ M
+            -- But ψ itself is not of form F(χ) generally...
+            -- Actually ψ might be a temporal formula too! This is complex.
+            -- For now, we need to show that insert ψ M is in TCS or derive contradiction
+            sorry
+          · -- insert ψ M is inconsistent
+            -- This means M "derives" neg(ψ), and we might be able to show insert F(ψ) M is inconsistent too
+            -- Actually if insert ψ M is inconsistent, does that imply insert F(ψ) M is inconsistent?
+            -- Not directly. Consider M = {neg(ψ)}. Then insert ψ M = {neg(ψ), ψ} is inconsistent.
+            -- But insert F(ψ) {neg(ψ)} = {neg(ψ), F(ψ)} is consistent.
+            -- So this doesn't help directly.
+            -- However, we're assuming h_cons_insert : SetConsistent (insert φ M) where φ = F(ψ)
+            -- And we've shown insert ψ M is inconsistent.
+            -- Can we use these together?
+            -- The key observation: if M could be extended to an MCS, that MCS would have
+            -- either ψ or neg(ψ). Since insert ψ M is inconsistent, the MCS has neg(ψ).
+            -- So neg(ψ) is "implied" by M in some sense.
+            -- But M doesn't necessarily contain neg(ψ) since we're in the case neg(ψ) ∉ M.
+            -- This is a contradiction? Let me think...
+            -- Actually no, insert ψ M being inconsistent just means M ∪ {ψ} ⊢ ⊥
+            -- This is equivalent to M ⊢ neg(ψ) by deduction theorem.
+            -- Now, if M ⊢ neg(ψ), and M is in some kind of closure, neg(ψ) ∈ M.
+            -- But we're not assuming M is closed under derivation yet!
+            -- We're trying to PROVE M is MCS.
+            -- So this approach is circular.
+            sorry
+
+      have h_backward_witness_in_M : ∀ ψ : Formula, φ = Formula.some_past ψ → ψ ∈ M := by
+        intro ψ h_eq
+        by_contra h_ψ_not_in_M
+        sorry  -- Symmetric to forward case
 
       have h_fwd_insert : TemporalForwardSaturated (insert φ M) := by
         intro ψ h_F_in
         rcases Set.mem_insert_iff.mp h_F_in with h_eq | h_in_M
         · -- F(ψ) = φ
-          -- We need ψ ∈ insert φ M
-          -- Since neg(φ) = neg(F(ψ)) = G(neg(ψ)) ∉ M, we use this to show ψ ∈ M
-          -- Key argument: if ψ ∉ M, then M ∪ {ψ} ∈ TCS (after showing saturation),
-          -- which contradicts maximality of M.
-          by_cases h_ψ_in_M : ψ ∈ M
-          · exact Set.mem_insert_of_mem φ h_ψ_in_M
-          · -- ψ ∉ M, need to derive contradiction or find ψ in insert φ M
-            by_cases h_ψ_eq_φ : ψ = φ
-            · -- ψ = φ = F(ψ), which is structurally impossible
-              -- We have h_eq : F(ψ) = φ and h_ψ_eq_φ : ψ = φ
-              -- Combining: ψ = φ = F(ψ)
-              exfalso
-              have h_ψ_eq_Fψ : ψ = Formula.some_future ψ := h_ψ_eq_φ.trans h_eq.symm
-              have h_complex : (Formula.some_future ψ).complexity > ψ.complexity := by
-                simp only [Formula.some_future, Formula.neg, Formula.complexity]
-                omega
-              rw [← h_ψ_eq_Fψ] at h_complex
-              exact Nat.lt_irrefl _ h_complex
-            · -- ψ ∉ M, ψ ≠ φ
-              -- We argue by contradiction using maximality
-              -- If ψ ∉ M and neg(ψ) ∉ M, we could add ψ to M to get a larger set in TCS
-              -- But if neg(ψ) ∈ M, we need a different argument
-              -- The key insight: since neg(F(ψ)) = G(neg(ψ)) ∉ M, and G(neg(ψ)) → neg(ψ) (T-axiom),
-              -- if neg(ψ) ∈ M then G(neg(ψ)) would be "implied" but not necessarily in M.
-              -- Actually, by maximality argument on ψ:
-              -- Either ψ ∈ M (done) or insert ψ M ∉ TCS.
-              -- If insert ψ M ∉ TCS but is consistent, it fails saturation.
-              -- If insert ψ M is inconsistent, then M ⊢ neg(ψ), so neg(ψ) should be in M...
-              -- This requires MCS-like properties we're trying to prove.
-              sorry
+          exact Set.mem_insert_of_mem φ (h_forward_witness_in_M ψ h_eq.symm)
         · exact Set.mem_insert_of_mem φ (h_fwd ψ h_in_M)
 
       have h_bwd_insert : TemporalBackwardSaturated (insert φ M) := by
         intro ψ h_P_in
         rcases Set.mem_insert_iff.mp h_P_in with h_eq | h_in_M
-        · -- P(ψ) = φ, symmetric to forward case
-          by_cases h_ψ_in_M : ψ ∈ M
-          · exact Set.mem_insert_of_mem φ h_ψ_in_M
-          · by_cases h_ψ_eq_φ : ψ = φ
-            · -- P(ψ) = ψ is structurally impossible
-              exfalso
-              have h_ψ_eq_Pψ : ψ = Formula.some_past ψ := h_ψ_eq_φ.trans h_eq.symm
-              have h_complex : (Formula.some_past ψ).complexity > ψ.complexity := by
-                simp only [Formula.some_past, Formula.neg, Formula.complexity]
-                omega
-              rw [← h_ψ_eq_Pψ] at h_complex
-              exact Nat.lt_irrefl _ h_complex
-            · sorry
+        · -- P(ψ) = φ
+          exact Set.mem_insert_of_mem φ (h_backward_witness_in_M ψ h_eq.symm)
         · exact Set.mem_insert_of_mem φ (h_bwd ψ h_in_M)
 
       have h_insert_in_tcs : insert φ M ∈ TemporalConsistentSupersets base := by

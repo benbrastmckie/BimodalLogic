@@ -1,161 +1,146 @@
 # Implementation Summary: Task #892 - Modify henkinStep to Add Negations
 
-**Status**: PARTIAL - Implementation Attempt with New Discoveries
+**Status**: PARTIAL - Mathematical Obstruction Discovered (Hard Blocker)
 **Date**: 2026-02-17
 **Sessions**:
-- sess_1771374357_3e4c3a (earlier session - discovered counterexample)
-- sess_1771376322_b2285b (current session - implemented modification, found new issue)
+- sess_1771374357_3e4c3a (earlier session - discovered initial counterexample)
+- sess_1771376322_b2285b (middle session - implemented modification, found saturation issue)
+- sess_1771377751_c70928 (current session - fixed saturation, discovered fundamental obstruction)
 
 ## Executive Summary
 
-The current session (sess_1771376322_b2285b) implemented the henkinStep modification per plan v002, which claimed the earlier counterexample was invalid due to the T-axiom. The modification was successfully made, but a **new issue** was discovered: the modification breaks temporal saturation of henkinLimit.
+This session made significant progress on Task #892:
+
+1. **Fixed henkinStep saturation issue**: Modified `henkinStep` to add `temporalPackage(neg(φ))` instead of `{neg(φ)}`. This preserves temporal saturation when adding negations and fixed 2 sorries (lines 494, 542).
+
+2. **Discovered fundamental mathematical obstruction**: The theorem `maximal_tcs_is_mcs` appears to be mathematically FALSE as stated. A set can be maximal among temporally-saturated consistent sets without being a maximal consistent set. This is a **hard blocker** requiring user review.
 
 ---
 
-## Current Session (sess_1771376322_b2285b) - Implementation Attempt
+## Changes Made
 
-### Changes Made
+### 1. henkinStep Modified (Improved)
 
-1. **henkinStep Modified** - Added negation fallback:
 ```lean
-noncomputable def henkinStep (S : Set Formula) (φ : Formula) : Set Formula :=
-  if SetConsistent (S ∪ temporalPackage φ) then
-    S ∪ temporalPackage φ
-  else if SetConsistent (S ∪ {Formula.neg φ}) then
-    S ∪ {Formula.neg φ}
-  else
-    S
+-- BEFORE (middle session):
+else if SetConsistent (S ∪ {Formula.neg φ}) then
+  S ∪ {Formula.neg φ}
+
+-- AFTER (this session):
+else if SetConsistent (S ∪ temporalPackage (Formula.neg φ)) then
+  S ∪ temporalPackage (Formula.neg φ)
 ```
 
-2. **Supporting proofs updated**:
-   - `henkinStep_consistent` - handles nested if-then-else
-   - `henkinChain_mono` - handles new branch structure
+**Impact**: This ensures witnesses are included when adding negations, preserving temporal saturation of henkinLimit.
 
-3. **maximal_tcs_is_mcs restructured**:
-   - Case 1 (neg(φ) ∈ M): PROVEN via `set_consistent_not_both`
-   - Case 2 (neg(φ) ∉ M): PARTIAL - still has sorries
+### 2. Saturation Proofs Fixed
 
-### New Issue Discovered
+- `henkinLimit_forward_saturated` - No more sorries
+- `henkinLimit_backward_saturated` - No more sorries
 
-**The henkinStep modification breaks temporal saturation**:
-- When `neg(φ)` is added and `neg(φ) = F(ψ)` (i.e., φ = G(neg(ψ)))
-- We add F(ψ) without adding its witness ψ
-- henkinLimit loses forward saturation property
+The key insight: if `F(ψ) ∈ temporalPackage(neg(φ))`, then `ψ ∈ temporalPackage(neg(φ))` by `forward_witness_in_package`.
 
-This creates 2 new sorries in saturation proofs (lines 494, 542) in addition to the 2 remaining sorries in maximal_tcs_is_mcs (lines 709, 727).
+### 3. maximal_tcs_is_mcs Restructured
 
-### Current Sorry Count: 4
-
-1. Line 494: `henkinLimit_forward_saturated` - F(ψ) = neg(φ) case
-2. Line 542: `henkinLimit_backward_saturated` - P(ψ) = neg(φ) case
-3. Line 709: `maximal_tcs_is_mcs` - forward saturation, ψ ∉ M and ψ ≠ φ
-4. Line 727: `maximal_tcs_is_mcs` - backward saturation, symmetric
-
-### Build Status
-
-`lake build` succeeds with the 4 sorries noted above.
+- Added well-founded induction on formula complexity
+- Case 1 (neg(φ) ∈ M): PROVEN via `set_consistent_not_both`
+- Case 2 (neg(φ) ∉ M): BLOCKED by fundamental obstruction
 
 ---
 
-## Previous Session Analysis (Preserved Below)
+## Mathematical Obstruction Analysis
 
-## Discovery
+### The Core Problem
 
-### The Theorem Under Investigation
+When φ = F(ψ) (a forward temporal formula) and we want to show `insert φ M ∈ TCS`:
+- If ψ ∈ M: `insert F(ψ) M` is forward saturated, can use maximality contradiction
+- If ψ ∉ M: `insert F(ψ) M` is NOT forward saturated, cannot show it's in TCS
 
-```lean
-lemma maximal_tcs_is_mcs (base : Set Formula)
-    (M : Set Formula)
-    (h_in_tcs : M ∈ TemporalConsistentSupersets base)
-    (h_max : ∀ T ∈ TemporalConsistentSupersets base, M ⊆ T → T ⊆ M) :
-    SetMaximalConsistent M
-```
+In the second case, `insert F(ψ) M` might be:
+- Consistent (doesn't help - we need inconsistency for MCS)
+- NOT in TCS (doesn't contradict TCS maximality)
 
-### Counterexample
+This is NOT a proof gap - it reflects mathematical reality. A set can be:
+- Maximal in TCS (no temporally-saturated consistent superset)
+- But NOT an MCS (some formula can be consistently added, just not while preserving saturation)
 
-Let `base = {neg(psi)}` where `psi` is an atomic formula.
+### Why This Is Different From Earlier Issues
 
-1. **Henkin construction adds G(psi)**: The temporal package of `G(psi)` is just `{G(psi)}` (no temporal witnesses for G-formulas). The set `{neg(psi), G(psi)}` is consistent because:
-   - `neg(psi)` says "psi is false NOW"
-   - `G(psi)` says "psi is true at ALL FUTURE times"
-   - These are compatible: psi false now, psi true in all futures
+The earlier counterexample `{neg(psi), G(psi)}` was INVALID due to T-axiom (G(X) → X).
 
-2. **F(psi) cannot enter via normal means**:
-   - `temporalPackage(F(psi)) = {F(psi), psi}`
-   - `S ∪ {F(psi), psi}` is inconsistent (psi and neg(psi))
-   - `S ∪ {neg(F(psi))}` is also inconsistent (since `G(psi) → F(psi)` is a theorem)
+This new obstruction is different:
+- When neg(ψ) ∈ M and F(ψ) ∈ insert(F(ψ), M):
+- The set {F(ψ), neg(ψ)} IS consistent (F(ψ) talks about some future, neg(ψ) talks about now)
+- So insert F(ψ) M can be consistent without violating temporal saturation (since F(ψ)'s witness ψ is NOT in M but neg(ψ) IS)
 
-3. **M maximal in TCS**: Let `M ⊇ {neg(psi), G(psi)}` be maximal in TCS. Then `F(psi) ∉ M` (would break saturation or consistency).
+### Requires User Review
 
-4. **M is NOT maximal consistent**:
-   - `M ∪ {F(psi)} = {neg(psi), G(psi), F(psi), ...}` is CONSISTENT
-   - Semantic model: psi false at time 0, psi true at times 1, 2, 3, ...
-   - This satisfies neg(psi) (false now), G(psi) (true always future), F(psi) (true sometime future)
+This is a **hard blocker** because:
+1. The theorem as stated appears mathematically false
+2. Alternative proof strategies (complexity induction, T-axiom reasoning) all hit the same wall
+3. The fundamental tension between temporal saturation and MCS completeness cannot be resolved within the current framework
 
-Therefore, M is maximal in TCS but `insert F(psi) M` is consistent, violating the MCS condition.
+---
 
-## Why the Proposed Fix Cannot Work
+## Current Sorry Count: 4
 
-The task proposed modifying `henkinStep` to add `neg(phi)` when rejecting packages. This would ensure "negation completeness" where every formula or its negation is in the limit.
+All in `maximal_tcs_is_mcs`:
+1. Line 750: Forward witness case, neg(ψ) ∈ M
+2. Line 773: Forward witness case, neg(ψ) ∉ M, insert ψ M consistent
+3. Line 794: Forward witness case, neg(ψ) ∉ M, insert ψ M inconsistent
+4. Line 799: Backward witness case (symmetric)
 
-However, the counterexample shows a case where:
-1. Package `{F(psi), psi}` is inconsistent with S (due to neg(psi))
-2. Negation `neg(F(psi))` is ALSO inconsistent with S (due to G(psi) implying F(psi))
-3. Neither option can be consistently added
+---
 
-Even with a fallback to add just `{F(psi)}`:
-- F(psi) would enter the limit
-- psi would NOT be in the limit (its package inconsistent, its negation already present)
-- The limit would have F(psi) without psi, breaking temporal saturation
+## Build Status
 
-**Core Insight**: Temporal saturation and maximal consistency are CONFLICTING requirements in certain scenarios. The set `{neg(psi), G(psi)}` is temporally saturated (vacuously, since no F-formulas present) but adding F(psi) for completeness requires adding psi (for saturation), which conflicts with neg(psi).
+`lake build` succeeds with 4 sorries.
 
-## Impact on Related Tasks
-
-- **Task 888 Phase 3**: This task depends on maximal_tcs_is_mcs being provable. Since the theorem is false, task 888's approach needs revision.
-- **temporalLindenbaumMCS**: The main theorem claiming existence of temporally saturated MCS is compromised.
+---
 
 ## Recommendations
 
-### Option 1: Strengthen Hypotheses
-Add a hypothesis to `maximal_tcs_is_mcs` ruling out the counterexample. For example, require `base` to be "temporally coherent" - if `G(psi) ∈ base` closure, then `psi ∈ base` closure (or similar).
+### Option 1: RecursiveSeed Alternative (Recommended)
+Use the RecursiveSeed construction (Task 864/880) which pre-places ALL temporal witnesses BEFORE Lindenbaum extension. This bypasses the TCS/MCS tension by ensuring witnesses are always present.
 
-### Option 2: Alternative Construction
-Use a different construction that simultaneously ensures:
-- Temporal saturation
-- Negation completeness (hence MCS)
+### Option 2: Strengthen Hypotheses
+Add hypotheses to `maximal_tcs_is_mcs` that ensure the problematic cases cannot occur. For example, require that for every φ in the base, all witnesses are also present.
 
-This likely requires a more sophisticated enumeration that considers formula interactions.
+### Option 3: Different Construction
+Use a construction that builds MCS and temporal saturation simultaneously, rather than trying to prove one implies the other.
 
-### Option 3: Weaken Main Theorem
-Modify `temporalLindenbaumMCS` to claim only temporal saturation, not MCS. The MCS property might require additional axioms or a different approach.
+---
 
-### Option 4: Restrict Domain
-Prove the theorem only for specific base sets where the conflict cannot arise. Document the restriction clearly.
+## Files Modified
 
-## Files Examined
+- `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean`:
+  - henkinStep definition
+  - henkinLimit_forward_saturated proof
+  - henkinLimit_backward_saturated proof
+  - maximal_tcs_is_mcs proof structure
 
-- `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean` - Main file with henkinStep and maximal_tcs_is_mcs
-- `Theories/Bimodal/Metalogic/Core/MCSProperties.lean` - MCS definitions and properties
-- `Theories/Bimodal/Boneyard/Metalogic_v2/Core/MaximalConsistent.lean` - SetConsistent, SetMaximalConsistent definitions
-- `Theories/Bimodal/Theorems/Propositional.lean` - double_negation and related theorems
+---
 
-## Technical Details
+## Impact on Related Tasks
 
-### Relevant Definitions
+- **Task 888**: Depends on `maximal_tcs_is_mcs`. This hard blocker means task 888's Phase 3 approach needs revision.
+- **Task 881**: Transitively blocked via task 888.
 
-```lean
-def SetMaximalConsistent (S : Set Formula) : Prop :=
-  SetConsistent S ∧ ∀ φ : Formula, φ ∉ S → ¬SetConsistent (insert φ S)
+---
 
-def TemporalConsistentSupersets (S : Set Formula) : Set (Set Formula) :=
-  {T | S ⊆ T ∧ SetConsistent T ∧ TemporalForwardSaturated T ∧ TemporalBackwardSaturated T}
+## Technical Evidence
 
-def TemporalForwardSaturated (S : Set Formula) : Prop :=
-  ∀ ψ, Formula.some_future ψ ∈ S → ψ ∈ S
-```
+### Semantic Argument for Obstruction
 
-### Key Temporal Logic Facts Used
-- `G(psi) → F(psi)` is a valid theorem (always-future implies sometime-future)
-- `F(psi) = neg(G(neg(psi)))` (definitional)
-- `neg(psi)` at now is compatible with `G(psi)` (about future)
+Consider M with neg(ψ) ∈ M and F(ψ) ∉ M:
+- Semantic interpretation: at time t=0, ψ is false (neg(ψ) true), ψ is true at some future time (F(ψ) true when added)
+- This is semantically consistent (ψ false now, true later)
+- But insert F(ψ) M fails temporal saturation (F(ψ) present without ψ)
+- So insert F(ψ) M is consistent but not in TCS
+- M is maximal in TCS but not MCS
+
+### Key Lemma Names Verified
+- `set_consistent_not_both` (MCSProperties.lean)
+- `forward_witness_in_package` (TemporalLindenbaum.lean)
+- `backward_witness_in_package` (TemporalLindenbaum.lean)
+- `temporalPackage` (TemporalLindenbaum.lean)

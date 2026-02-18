@@ -24,7 +24,7 @@ technical_debt:
 
 ### 895. Update phase status markers during implementation
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
@@ -64,16 +64,16 @@ technical_debt:
 
 ### 892. Modify henkinStep to add negations when rejecting packages
 - **Effort**: 3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
 - **Planned**: 2026-02-18
 - **Parent**: Task #888
+- **Blocked**: Mathematical obstruction - theorem maximal_tcs_is_mcs is false as stated (temporal saturation and MCS completeness conflict)
 - **Research**: [research-002.md](specs/892_modify_henkinstep_add_negations/reports/research-002.md)
 - **Plan**: [implementation-002.md](specs/892_modify_henkinstep_add_negations/plans/implementation-002.md)
 - **Summary**: [implementation-summary-20260217.md](specs/892_modify_henkinstep_add_negations/summaries/implementation-summary-20260217.md)
-- **Note**: Plan v002 - UNBLOCKED via T-axiom insight from team research
 
 **Description**: Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.
 
