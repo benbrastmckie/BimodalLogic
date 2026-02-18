@@ -8,10 +8,19 @@
     {
       "project_number": 895,
       "project_name": "update_phase_status_markers_during_implementation",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-18T01:13:43Z",
-      "last_updated": "2026-02-18T01:13:43Z"
+      "last_updated": "2026-02-18T01:17:22Z",
+      "session_id": "sess_1771377267_3ff8bf",
+      "researched": "2026-02-18T01:17:22Z",
+      "artifacts": [
+        {
+          "path": "specs/895_update_phase_status_markers_during_implementation/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing current phase status marker handling and identifying modification points in implementation agents and skills"
+        }
+      ]
     },
     {
       "project_number": 893,
