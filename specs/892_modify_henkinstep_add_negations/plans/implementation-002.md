@@ -1,7 +1,7 @@
 # Implementation Plan: Task #892 (Version 002)
 
 - **Task**: 892 - Modify henkinStep to add negations when rejecting packages
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 3 hours (reduced from 4 - simpler approach)
 - **Dependencies**: None
 - **Research Inputs**:
@@ -77,51 +77,50 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Modify henkinStep with negation fallback [NOT STARTED]
+### Phase 1: Modify henkinStep with negation fallback [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Update henkinStep to add `neg(phi)` when package is inconsistent, and prove supporting lemma
 
 **Tasks**:
-- [ ] Add `neg_consistent_when_pkg_inconsistent` lemma (around line 320):
-  ```lean
-  lemma neg_consistent_when_pkg_inconsistent (S : Set Formula) (phi : Formula)
-      (hS : SetConsistent S)
-      (h_pkg : ¬SetConsistent (S ∪ temporalPackage phi)) :
-      SetConsistent (S ∪ {Formula.neg phi})
-  ```
-- [ ] Modify `henkinStep` definition at line 323:
-  ```lean
-  noncomputable def henkinStep (S : Set Formula) (phi : Formula) : Set Formula :=
-    if SetConsistent (S ∪ temporalPackage phi) then
-      S ∪ temporalPackage phi
-    else
-      S ∪ {Formula.neg phi}  -- NEW: add negation when rejecting
-  ```
-- [ ] Update `henkinStep_consistent` proof to handle new negation case
-- [ ] Verify compilation
+- [x] Modify `henkinStep` definition to add negation fallback (with additional else for consistency preservation)
+- [x] Update `henkinStep_consistent` proof to handle nested if-then-else
+- [x] Update `henkinChain_mono` proof for new branch structure
+- [x] Verify compilation
 
-**Timing**: 1.5 hours
+**Note**: The `neg_consistent_when_pkg_inconsistent` lemma was NOT added because it's not provable in general. Instead, henkinStep now has three branches: add package, add negation (if consistent), or keep S unchanged.
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean` - Lines 320-375
+**Progress:**
 
-**Verification**:
-- `henkinStep` compiles without error
-- `henkinStep_consistent` compiles without sorry
-- `lake build` passes for this file
+**Session: 2026-02-17, sess_1771376322_b2285b**
+- Added: Modified `henkinStep` with three-branch structure
+- Fixed: `henkinStep_consistent` for nested if
+- Fixed: `henkinChain_mono` for new branch
 
 ---
 
-### Phase 2: Verify saturation proofs [NOT STARTED]
+### Phase 2: Verify saturation proofs [PARTIAL]
 
 - **Dependencies:** Phase 1
 - **Goal:** Confirm downstream saturation proofs compile after henkinStep modification
 
 **Tasks**:
-- [ ] Check `henkinLimit_forward_saturated` compiles
-- [ ] Check `henkinLimit_backward_saturated` compiles
-- [ ] Fix any breakage (expected: none - negations don't affect temporal witness logic)
+- [x] Check `henkinLimit_forward_saturated` compiles - COMPILES WITH SORRY
+- [x] Check `henkinLimit_backward_saturated` compiles - COMPILES WITH SORRY
+- [ ] Fix breakage - **UNEXPECTED**: negations DO affect temporal witness logic!
+
+**ISSUE DISCOVERED**: When `neg(φ) = F(ψ)` (i.e., φ = G(neg(ψ))), adding neg(φ) adds a temporal formula without its witness ψ. This breaks forward/backward saturation.
+
+New sorries introduced:
+- Line 494: `henkinLimit_forward_saturated` - F(ψ) = neg(φ) case
+- Line 542: `henkinLimit_backward_saturated` - P(ψ) = neg(φ) case
+
+**Progress:**
+
+**Session: 2026-02-17, sess_1771376322_b2285b**
+- Attempted: Proving saturation for negation addition case
+- Result: Blocked - negation can introduce temporal formulas without witnesses
+- Sorries: 2 new sorries added (lines 494, 542)
 - [ ] Verify `henkinChain_consistent` still works
 
 **Timing**: 0.5 hours
@@ -135,42 +134,43 @@ After this implementation:
 
 ---
 
-### Phase 3: Prove maximal_tcs_is_mcs using T-axiom reasoning [NOT STARTED]
+### Phase 3: Prove maximal_tcs_is_mcs using T-axiom reasoning [PARTIAL]
 
 - **Dependencies:** Phase 2
 - **Goal:** Remove sorries at lines 649 and 656 using the T-axiom insight
 
-**Key Proof Strategy** (from research-002.md):
+**Implementation Approach** (revised from plan):
 
-For `phi = F(psi)` case (line 649):
-1. Case split: either `neg(F(psi)) ∈ M` or `neg(F(psi)) ∉ M`
-2. If `neg(F(psi)) = G(neg(psi)) ∈ M`:
-   - By T-axiom: `neg(psi) ∈ M`
-   - If we try to add `F(psi)`, temporal saturation requires `psi ∈ insert F(psi) M`
-   - But `psi ∉ M` (else both psi and neg(psi) in M → inconsistent)
-   - And `psi ≠ F(psi)`, so `psi ∉ insert F(psi) M`
-   - Therefore `insert F(psi) M ∉ TCS` (not temporally saturated)
-   - This contradicts assumption that `insert phi M ∈ TCS`
-3. If `neg(F(psi)) ∉ M`:
-   - Modified henkinStep ensures either formula or its negation is in limit
-   - Since `F(psi) ∉ M`, we must have `neg(F(psi)) ∈ M` → contradiction
+Restructured proof to use case split on `neg(φ) ∈ M`:
+- **Case 1 (neg(φ) ∈ M)**: COMPLETED - Direct contradiction via `set_consistent_not_both`
+- **Case 2 (neg(φ) ∉ M)**: PARTIAL - Need to show temporal saturation of insert φ M
 
-Symmetric argument for backward case (line 656).
+**Key Progress**:
+- [x] Implemented case split on `neg(φ) ∈ M`
+- [x] Proved Case 1 using `set_consistent_not_both`
+- [x] Proved structural impossibility cases (ψ = F(ψ) and ψ = P(ψ)) using complexity argument
+- [ ] Case 2 forward: ψ ∉ M and ψ ≠ φ case (line 709 sorry)
+- [ ] Case 2 backward: symmetric case (line 727 sorry)
 
-**Tasks**:
-- [ ] Add helper lemma: `henkinLimit_negation_complete` - every enumerated formula or its negation is in limit
-- [ ] Prove forward case (line 649) using strategy above
-- [ ] Prove backward case (line 656) using symmetric argument
-- [ ] Remove both sorries
+**ISSUE**: The plan's strategy assumed `henkinLimit_negation_complete` would give us neg(φ) ∈ M whenever φ ∉ M. But:
+1. Phase 2 showed henkinLimit may NOT be temporally saturated after modification
+2. Without temporal saturation, we can't start Zorn from henkinLimit
+3. Without Zorn from henkinLimit, M may not have negation completeness
 
-**Timing**: 1 hour
+**Progress:**
+
+**Session: 2026-02-17, sess_1771376322_b2285b**
+- Added: Case split proof structure for maximal_tcs_is_mcs
+- Completed: Case 1 (neg(φ) ∈ M) via set_consistent_not_both
+- Completed: Structural impossibility proofs using complexity
+- Sorries: 2 remaining (lines 709, 727) for Case 2 saturation proofs
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean` - Lines 625-666
+- `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean`
 
 **Verification**:
-- `maximal_tcs_is_mcs` compiles without sorry
-- `temporalLindenbaumMCS` compiles
+- File compiles with 4 total sorries
+- Original sorries at lines 649/656 replaced with new structure
 
 ---
 

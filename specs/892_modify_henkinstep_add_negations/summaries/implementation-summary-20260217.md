@@ -1,12 +1,63 @@
 # Implementation Summary: Task #892 - Modify henkinStep to Add Negations
 
-**Status**: BLOCKED - Mathematical Impossibility Discovered
+**Status**: PARTIAL - Implementation Attempt with New Discoveries
 **Date**: 2026-02-17
-**Session**: sess_1771374357_3e4c3a
+**Sessions**:
+- sess_1771374357_3e4c3a (earlier session - discovered counterexample)
+- sess_1771376322_b2285b (current session - implemented modification, found new issue)
 
 ## Executive Summary
 
-Implementation of task 892 was blocked during Phase 1 analysis when a fundamental mathematical flaw was discovered in the target theorem `maximal_tcs_is_mcs`. The theorem claims that a set maximal in TemporalConsistentSupersets (TCS) is a SetMaximalConsistent (MCS). This claim is **false**.
+The current session (sess_1771376322_b2285b) implemented the henkinStep modification per plan v002, which claimed the earlier counterexample was invalid due to the T-axiom. The modification was successfully made, but a **new issue** was discovered: the modification breaks temporal saturation of henkinLimit.
+
+---
+
+## Current Session (sess_1771376322_b2285b) - Implementation Attempt
+
+### Changes Made
+
+1. **henkinStep Modified** - Added negation fallback:
+```lean
+noncomputable def henkinStep (S : Set Formula) (φ : Formula) : Set Formula :=
+  if SetConsistent (S ∪ temporalPackage φ) then
+    S ∪ temporalPackage φ
+  else if SetConsistent (S ∪ {Formula.neg φ}) then
+    S ∪ {Formula.neg φ}
+  else
+    S
+```
+
+2. **Supporting proofs updated**:
+   - `henkinStep_consistent` - handles nested if-then-else
+   - `henkinChain_mono` - handles new branch structure
+
+3. **maximal_tcs_is_mcs restructured**:
+   - Case 1 (neg(φ) ∈ M): PROVEN via `set_consistent_not_both`
+   - Case 2 (neg(φ) ∉ M): PARTIAL - still has sorries
+
+### New Issue Discovered
+
+**The henkinStep modification breaks temporal saturation**:
+- When `neg(φ)` is added and `neg(φ) = F(ψ)` (i.e., φ = G(neg(ψ)))
+- We add F(ψ) without adding its witness ψ
+- henkinLimit loses forward saturation property
+
+This creates 2 new sorries in saturation proofs (lines 494, 542) in addition to the 2 remaining sorries in maximal_tcs_is_mcs (lines 709, 727).
+
+### Current Sorry Count: 4
+
+1. Line 494: `henkinLimit_forward_saturated` - F(ψ) = neg(φ) case
+2. Line 542: `henkinLimit_backward_saturated` - P(ψ) = neg(φ) case
+3. Line 709: `maximal_tcs_is_mcs` - forward saturation, ψ ∉ M and ψ ≠ φ
+4. Line 727: `maximal_tcs_is_mcs` - backward saturation, symmetric
+
+### Build Status
+
+`lake build` succeeds with the 4 sorries noted above.
+
+---
+
+## Previous Session Analysis (Preserved Below)
 
 ## Discovery
 

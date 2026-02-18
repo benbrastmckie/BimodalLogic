@@ -24,7 +24,7 @@ technical_debt:
 
 ### 895. Update phase status markers during implementation
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: meta
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18

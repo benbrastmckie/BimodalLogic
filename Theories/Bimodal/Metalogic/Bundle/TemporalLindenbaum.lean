@@ -322,9 +322,17 @@ The omega-step construction that builds a consistent, temporally-saturated set.
 -/
 
 attribute [local instance] Classical.propDecidable in
-/-- One step of the Henkin construction: add the temporal package if consistent -/
+/-- One step of the Henkin construction: add the temporal package if consistent,
+    otherwise add the negation if consistent, otherwise keep S unchanged.
+    This ensures that for each enumerated formula, either it or its negation
+    ends up in the limit (enabling negation completeness for the MCS proof). -/
 noncomputable def henkinStep (S : Set Formula) (φ : Formula) : Set Formula :=
-  if SetConsistent (S ∪ temporalPackage φ) then S ∪ temporalPackage φ else S
+  if SetConsistent (S ∪ temporalPackage φ) then
+    S ∪ temporalPackage φ
+  else if SetConsistent (S ∪ {Formula.neg φ}) then
+    S ∪ {Formula.neg φ}
+  else
+    S
 
 /-- The Henkin chain indexed by ℕ -/
 noncomputable def henkinChain (base : Set Formula) : ℕ → Set Formula
@@ -348,7 +356,10 @@ lemma henkinChain_mono (base : Set Formula) : ∀ n, henkinChain base n ⊆ henk
     simp only [henkinStep]
     split
     · exact Set.subset_union_left
-    · exact le_refl _
+    · -- package rejected, check negation branch
+      split
+      · exact Set.subset_union_left
+      · exact le_refl _
   · exact le_refl _
 
 /-- Monotonicity extended to arbitrary indices -/
@@ -374,8 +385,14 @@ lemma henkinStep_consistent (S : Set Formula) (φ : Formula) (h_cons : SetConsis
     SetConsistent (henkinStep S φ) := by
   simp only [henkinStep]
   split
-  · assumption
-  · exact h_cons
+  · -- Package is consistent
+    assumption
+  · -- Package is inconsistent, try negation
+    split
+    · -- Negation is consistent
+      assumption
+    · -- Neither package nor negation is consistent, keep S
+      exact h_cons
 
 /-- Each chain element is consistent -/
 lemma henkinChain_consistent (base : Set Formula) (h_base : SetConsistent base) :
@@ -459,8 +476,25 @@ lemma henkinLimit_forward_saturated (base : Set Formula)
             simp only [*]
             exact Set.mem_union_right _ h_ψ_in_pkg
           exact henkinChain_subset_limit base (n + 1) this
-      · -- package was rejected, so henkinChain base (n+1) = S_n
-        exact ih h_in_chain
+      · -- package was rejected, check negation branch
+        rename_i h_pkg_incons
+        split at h_in_chain
+        · -- negation was added: S_n ∪ {neg φ}
+          rename_i h_neg_cons
+          -- F(ψ) ∈ S_n ∪ {neg φ}
+          rcases (Set.mem_union _ _ _).mp h_in_chain with h_old | h_singleton
+          · exact ih h_old
+          · -- F(ψ) ∈ {neg φ}, meaning F(ψ) = neg φ
+            -- This case requires that ψ will be in the limit even though
+            -- F(ψ) was added as a negation rather than via a package.
+            -- When ψ is enumerated at step m = encode(ψ), either:
+            -- - temporalPackage(ψ) is consistent and ψ is added
+            -- - OR neg(ψ) is added (which would break forward saturation)
+            -- The detailed argument is complex. For now we use sorry.
+            sorry
+        · -- negation was also rejected, keep S_n unchanged
+          rename_i h_neg_incons
+          exact ih h_in_chain
     · -- decode n = none
       exact ih h_in_chain
 
@@ -496,7 +530,19 @@ lemma henkinLimit_backward_saturated (base : Set Formula)
             simp only [*]
             exact Set.mem_union_right _ h_ψ_in_pkg
           exact henkinChain_subset_limit base (n + 1) this
-      · exact ih h_in_chain
+      · -- package was rejected, check negation branch
+        rename_i h_pkg_incons
+        split at h_in_chain
+        · -- negation was added: S_n ∪ {neg φ}
+          rename_i h_neg_cons
+          rcases (Set.mem_union _ _ _).mp h_in_chain with h_old | h_singleton
+          · exact ih h_old
+          · -- P(ψ) ∈ {neg φ}, meaning P(ψ) = neg φ
+            -- Symmetric to forward case
+            sorry
+        · -- negation was also rejected, keep S_n unchanged
+          rename_i h_neg_incons
+          exact ih h_in_chain
     · exact ih h_in_chain
 
 /-!
@@ -595,10 +641,13 @@ consistent supersets is in fact a maximal consistent set (MCS).
 A set maximal among temporally-saturated consistent supersets is MCS.
 
 The proof proceeds by showing that for any φ ∉ M, insert φ M is inconsistent.
-For non-temporal formulas, insert φ M is still temporally saturated, so by
-maximality in TCS, it must be inconsistent. For temporal formulas F(ψ) or P(ψ),
-we use the fact that adding the formula with its witness either succeeds
-(contradicting maximality) or fails (showing inconsistency).
+We use a case split on whether neg(φ) ∈ M:
+- If neg(φ) ∈ M: insert φ M contains both φ and neg(φ), hence inconsistent.
+- If neg(φ) ∉ M: we show insert φ M ∈ TCS, contradicting maximality.
+
+The key insight for the neg(φ) ∉ M case when φ = F(ψ) is:
+- If neg(F(ψ)) = G(neg(ψ)) ∉ M, and F(ψ) ∉ M, then insert F(ψ) M is forward saturated
+  because ψ must be in M (else M ∪ {ψ} would extend M in TCS).
 -/
 lemma maximal_tcs_is_mcs (base : Set Formula)
     (M : Set Formula)
@@ -613,57 +662,77 @@ lemma maximal_tcs_is_mcs (base : Set Formula)
   · exact h_cons
   · -- For each φ ∉ M, show ¬SetConsistent (insert φ M)
     intro φ hφ_not_mem h_cons_insert
-    -- We'll show insert φ M ∈ TCS, contradicting maximality
-    -- The key is that insert φ M is temporally saturated
-    -- For this, we need: for all ψ, F(ψ) ∈ insert φ M → ψ ∈ insert φ M
-    -- Case 1: F(ψ) ∈ M → ψ ∈ M (by h_fwd) → ψ ∈ insert φ M
-    -- Case 2: F(ψ) = φ → need ψ ∈ insert φ M
-    --   Sub-case 2a: ψ = φ → trivially in insert φ M
-    --   Sub-case 2b: ψ ≠ φ → need ψ ∈ M
-    --     This is the hard case. We handle it by showing that if ψ ∉ M,
-    --     we can build a temporally-saturated consistent set containing both φ and ψ.
-    -- For the general case, we use sorry for the temporal formula case
-    -- and handle the non-temporal case directly.
+    -- Case split: either neg(φ) ∈ M or neg(φ) ∉ M
+    by_cases h_neg_in : φ.neg ∈ M
+    · -- Case 1: neg(φ) ∈ M
+      -- insert φ M contains both φ and neg(φ), hence inconsistent
+      have h_neg_in_insert : φ.neg ∈ insert φ M := Set.mem_insert_of_mem φ h_neg_in
+      have h_phi_in_insert : φ ∈ insert φ M := Set.mem_insert φ M
+      exact set_consistent_not_both h_cons_insert φ h_phi_in_insert h_neg_in_insert
+    · -- Case 2: neg(φ) ∉ M
+      -- Show insert φ M ∈ TCS, contradicting maximality
+      -- For temporal saturation, we need careful case analysis on φ
 
-    -- Check if insert φ M is temporally forward saturated
-    have h_fwd_insert : TemporalForwardSaturated (insert φ M) := by
-      intro ψ h_F_in
-      rcases Set.mem_insert_iff.mp h_F_in with h_eq | h_in_M
-      · -- F(ψ) = φ
-        -- φ = F(ψ), so φ ∉ M and we need ψ ∈ insert φ M
-        -- If ψ ∈ M, done. If ψ = φ, done.
-        -- Otherwise: ψ ∉ M and ψ ≠ φ.
-        -- In this case, we use the following argument:
-        -- Since M is maximal in TCS and M ∪ {φ} is consistent with φ = F(ψ),
-        -- ψ must be in M (otherwise we could extend M with {φ, ψ}).
-        -- More precisely: consider M ∪ {F(ψ), ψ}.
-        -- If this is consistent, it can be made temporally saturated
-        -- (since F(ψ) has its witness ψ, and M is already saturated).
-        -- That gives a strict extension of M in TCS, contradicting maximality.
-        -- So M ∪ {F(ψ), ψ} is inconsistent.
-        -- But M ∪ {F(ψ)} is consistent (= insert φ M by h_eq).
-        -- So the inconsistency comes from ψ: M ∪ {F(ψ)} ⊢ ¬ψ.
-        -- This makes M ∪ {F(ψ)} derive both F(ψ) and ¬ψ, which is fine in TL.
-        -- But we need insert φ M to be temp sat, requiring ψ ∈ insert φ M.
-        -- The resolution: either ψ ∈ M (done) or we reach contradiction.
-        sorry
-      · -- F(ψ) ∈ M, so ψ ∈ M by h_fwd
-        exact Set.mem_insert_of_mem φ (h_fwd ψ h_in_M)
+      have h_fwd_insert : TemporalForwardSaturated (insert φ M) := by
+        intro ψ h_F_in
+        rcases Set.mem_insert_iff.mp h_F_in with h_eq | h_in_M
+        · -- F(ψ) = φ
+          -- We need ψ ∈ insert φ M
+          -- Since neg(φ) = neg(F(ψ)) = G(neg(ψ)) ∉ M, we use this to show ψ ∈ M
+          -- Key argument: if ψ ∉ M, then M ∪ {ψ} ∈ TCS (after showing saturation),
+          -- which contradicts maximality of M.
+          by_cases h_ψ_in_M : ψ ∈ M
+          · exact Set.mem_insert_of_mem φ h_ψ_in_M
+          · -- ψ ∉ M, need to derive contradiction or find ψ in insert φ M
+            by_cases h_ψ_eq_φ : ψ = φ
+            · -- ψ = φ = F(ψ), which is structurally impossible
+              -- We have h_eq : F(ψ) = φ and h_ψ_eq_φ : ψ = φ
+              -- Combining: ψ = φ = F(ψ)
+              exfalso
+              have h_ψ_eq_Fψ : ψ = Formula.some_future ψ := h_ψ_eq_φ.trans h_eq.symm
+              have h_complex : (Formula.some_future ψ).complexity > ψ.complexity := by
+                simp only [Formula.some_future, Formula.neg, Formula.complexity]
+                omega
+              rw [← h_ψ_eq_Fψ] at h_complex
+              exact Nat.lt_irrefl _ h_complex
+            · -- ψ ∉ M, ψ ≠ φ
+              -- We argue by contradiction using maximality
+              -- If ψ ∉ M and neg(ψ) ∉ M, we could add ψ to M to get a larger set in TCS
+              -- But if neg(ψ) ∈ M, we need a different argument
+              -- The key insight: since neg(F(ψ)) = G(neg(ψ)) ∉ M, and G(neg(ψ)) → neg(ψ) (T-axiom),
+              -- if neg(ψ) ∈ M then G(neg(ψ)) would be "implied" but not necessarily in M.
+              -- Actually, by maximality argument on ψ:
+              -- Either ψ ∈ M (done) or insert ψ M ∉ TCS.
+              -- If insert ψ M ∉ TCS but is consistent, it fails saturation.
+              -- If insert ψ M is inconsistent, then M ⊢ neg(ψ), so neg(ψ) should be in M...
+              -- This requires MCS-like properties we're trying to prove.
+              sorry
+        · exact Set.mem_insert_of_mem φ (h_fwd ψ h_in_M)
 
-    have h_bwd_insert : TemporalBackwardSaturated (insert φ M) := by
-      intro ψ h_P_in
-      rcases Set.mem_insert_iff.mp h_P_in with h_eq | h_in_M
-      · sorry  -- Symmetric to forward case
-      · exact Set.mem_insert_of_mem φ (h_bwd ψ h_in_M)
+      have h_bwd_insert : TemporalBackwardSaturated (insert φ M) := by
+        intro ψ h_P_in
+        rcases Set.mem_insert_iff.mp h_P_in with h_eq | h_in_M
+        · -- P(ψ) = φ, symmetric to forward case
+          by_cases h_ψ_in_M : ψ ∈ M
+          · exact Set.mem_insert_of_mem φ h_ψ_in_M
+          · by_cases h_ψ_eq_φ : ψ = φ
+            · -- P(ψ) = ψ is structurally impossible
+              exfalso
+              have h_ψ_eq_Pψ : ψ = Formula.some_past ψ := h_ψ_eq_φ.trans h_eq.symm
+              have h_complex : (Formula.some_past ψ).complexity > ψ.complexity := by
+                simp only [Formula.some_past, Formula.neg, Formula.complexity]
+                omega
+              rw [← h_ψ_eq_Pψ] at h_complex
+              exact Nat.lt_irrefl _ h_complex
+            · sorry
+        · exact Set.mem_insert_of_mem φ (h_bwd ψ h_in_M)
 
-    -- Now insert φ M ∈ TCS
-    have h_insert_in_tcs : insert φ M ∈ TemporalConsistentSupersets base := by
-      exact ⟨Set.Subset.trans h_base_sub (Set.subset_insert φ M),
-             h_cons_insert, h_fwd_insert, h_bwd_insert⟩
-    -- But M ⊊ insert φ M, contradicting maximality
-    have h_le : M ⊆ insert φ M := Set.subset_insert φ M
-    have h_ge := h_max (insert φ M) h_insert_in_tcs h_le
-    exact hφ_not_mem (h_ge (Set.mem_insert φ M))
+      have h_insert_in_tcs : insert φ M ∈ TemporalConsistentSupersets base := by
+        exact ⟨Set.Subset.trans h_base_sub (Set.subset_insert φ M),
+               h_cons_insert, h_fwd_insert, h_bwd_insert⟩
+      have h_le : M ⊆ insert φ M := Set.subset_insert φ M
+      have h_ge := h_max (insert φ M) h_insert_in_tcs h_le
+      exact hφ_not_mem (h_ge (Set.mem_insert φ M))
 
 /-!
 ## Part 7: Main Theorem
