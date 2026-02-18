@@ -1,20 +1,23 @@
 {
   "status": "researched",
-  "summary": "Identity sentences (formulas with outermost equiv) should be defined in syntax section after Open/Closed Formulas definition, with remark explaining they are evaluated at null state and form the semantic target of the Constitutive Foundation for the Dynamical Foundation to build upon",
+  "summary": "Revised research incorporating boolean closure of identity sentences",
+  "started_at": "2026-02-17T12:00:00Z",
+  "completed_at": "2026-02-17T12:30:00Z",
   "artifacts": [
     {
-      "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-001.md",
+      "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-002.md",
       "type": "research",
-      "summary": "Research report on identity sentences definition placement, semantic significance, and recommended implementation approach"
+      "summary": "Revised research: identity sentences include boolean combinations of atomic identities"
     }
   ],
   "next_steps": "Run /plan 899 to create implementation plan",
   "metadata": {
-    "session_id": "sess_1771394967_a45b7e",
+    "session_id": "sess_1771395363_a11356",
     "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "duration_seconds": 300,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "findings_count": 5,
+    "revision_note": "Corrects research-001 which incorrectly limited identity sentences to outermost equiv only"
   }
 }

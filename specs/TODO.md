@@ -26,7 +26,7 @@ technical_debt:
 - **Effort**: 1 hour
 - **Status**: [RESEARCHED]
 - **Researched**: 2026-02-17
-- **Research**: [research-001.md](specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-001.md)
+- **Research**: [research-002.md](specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-002.md)
 - **Language**: latex
 - **Created**: 2026-02-17
 

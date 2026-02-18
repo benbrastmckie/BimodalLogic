@@ -12,15 +12,20 @@
       "language": "latex",
       "effort": "1 hour",
       "created": "2026-02-17T00:00:00Z",
-      "last_updated": "2026-02-18T06:12:40Z",
+      "last_updated": "2026-02-18T06:18:45Z",
       "description": "Add a careful definition of identity sentences in the syntax section of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex, near line 629 (before the Constitutive Consequence subsection). The definition should explain that identity sentences are the target of the constitutive foundation from which to build on in the dynamical foundation in the next chapter. Source: TODO: tag at line 629 of 02-ConstitutiveFoundation.tex.",
-      "session_id": "sess_1771394967_a45b7e",
-      "researched": "2026-02-18T06:12:40Z",
+      "session_id": "sess_1771395363_a11356",
+      "researched": "2026-02-18T06:18:45Z",
       "artifacts": [
         {
           "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-001.md",
           "type": "research",
           "summary": "Research report on identity sentences definition placement, semantic significance, and recommended implementation approach"
+        },
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-002.md",
+          "type": "research",
+          "summary": "Revised research: identity sentences include boolean combinations of atomic identities"
         }
       ]
     },
@@ -317,11 +322,11 @@
     {
       "project_number": 864,
       "project_name": "recursive_seed_henkin_model",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-18T06:15:00Z",
-      "session_id": "sess_1771395097_178a6a",
+      "last_updated": "2026-02-18T06:17:10Z",
+      "session_id": "sess_1771395402_e6313c",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
         {
