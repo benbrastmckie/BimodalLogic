@@ -1,5 +1,5 @@
 ---
-next_project_number: 891
+next_project_number: 893
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,28 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 892. Modify henkinStep to add negations when rejecting packages
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-17
+- **Parent**: Task #888
+
+**Description**: Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.
+
+---
+
+### 891. Fix split-at tactic incompatibility in TemporalLindenbaum.lean
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-17
+- **Parent**: Task #888
+
+**Description**: Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.
+
+---
 
 ### 890. Fix measure_wf build error in TemporalLindenbaum.lean
 - **Effort**: 5 minutes
