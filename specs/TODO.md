@@ -62,11 +62,13 @@ technical_debt:
 
 ### 896. Update context files for \interp vs \sem/\ext notation convention
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
+- **Planned**: 2026-02-17
 - **Research**: [research-001.md](specs/896_update_context_interp_notation_convention/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/896_update_context_interp_notation_convention/plans/implementation-001.md)
 
 **Description**: Update `.claude/context/` files to document the notation convention for interpretation vs extension of terms in the Logos LaTeX project. `NOTE:` at line 568 of `02-ConstitutiveFoundation.tex` establishes that `\interp{\cdot}^\assignment_\model` should be used for semantic interpretation (not `\sem{}^\assignment_\model`, which is for extension of terms), and `\sem` should be renamed to `\ext`. Codify this notation decision in `.claude/context/` so future work maintains consistency. Source: `NOTE:` tag at line 568 of `/home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex`.
 
