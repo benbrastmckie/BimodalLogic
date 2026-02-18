@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model Construction (v6 - Post-Condition Architecture)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10 hours
 - **Dependencies**: None (supersedes implementation-005.md approach)
 - **Research Inputs**:
@@ -142,17 +142,17 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Add Key Theorem [NOT STARTED]
+### Phase 1: Add Key Theorem [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add `insert_consistent_of_derivable_parent` and corollaries to RecursiveSeed.lean
 
 **Tasks**:
-- [ ] Add `insert_consistent_of_derivable_parent` theorem (from task 900 research)
-- [ ] Add `insert_psi_consistent_of_box_psi_in` corollary
-- [ ] Add `insert_psi_consistent_of_g_psi_in` corollary
-- [ ] Add `insert_psi_consistent_of_h_psi_in` corollary
-- [ ] Verify all compile with zero sorries
+- [x] Add `insert_consistent_of_derivable_parent` theorem (from task 900 research)
+- [x] Add `insert_psi_consistent_of_box_psi_in` corollary
+- [x] Add `insert_psi_consistent_of_g_psi_in` corollary
+- [x] Add `insert_psi_consistent_of_h_psi_in` corollary
+- [x] Verify all compile with zero sorries
 
 **Timing:** 1 hour
 
@@ -164,9 +164,17 @@ After this implementation:
 - `#check insert_consistent_of_derivable_parent` shows correct type
 - No sorries in new code
 
+**Progress:**
+
+**Session: 2026-02-18, sess_1771444424_210e88**
+- Verified: `insert_consistent_of_derivable_parent` already exists (from task 900)
+- Verified: All 3 corollaries (`insert_psi_consistent_of_box_psi_in`, `insert_psi_consistent_of_g_psi_in`, `insert_psi_consistent_of_h_psi_in`) exist
+- Verified: All compile with zero sorries
+- Sorries: 0 new (Phase 1 was pre-completed by task 900)
+
 ---
 
-### Phase 2: Complete Closure Proofs [NOT STARTED]
+### Phase 2: Complete Closure Proofs [IN PROGRESS]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove ModalClosed, GClosed, HClosed for buildSeedComplete output with zero sorries
@@ -179,6 +187,22 @@ After this implementation:
   - Fuel=0 case: handle termination
   - Process application case: chain through processWorkItem
 - [ ] Verify `buildSeedComplete_closed` compiles with zero sorries
+
+**Progress:**
+
+**Session: 2026-02-18, sess_1771444424_210e88**
+- Added: `addFormula_hasPosition_backward` helper lemma (line 6107)
+  - Proves: if new seed has position, either old seed had it or we added it
+  - Enables backward reasoning needed for closure proof
+- Added: `classifyFormula_eq_atomic` helper lemma (line 1229)
+  - Proves: if classifyFormula = atomic a, then phi = Formula.atom a
+  - Enables contradiction proofs when added formula is not Box/G/H
+- Documented: proof structure for `processWorkItem_preserves_closure` in comments (lines 8069-8093)
+  - Lists all required helper lemmas with line numbers
+  - Describes 10-case strategy
+- Identified potential issue: new position creation requires careful invariant handling
+- Created: handoff document at `specs/864_recursive_seed_henkin_model/handoffs/phase-2-handoff-20260218-1.md`
+- Sorries: 21 (unchanged - added 2 helper lemmas with 0 sorries)
 - [ ] Add `SeedClosed_implies_ModalClosed`, `SeedClosed_implies_GClosed`, `SeedClosed_implies_HClosed` extractors
 
 **Timing:** 2 hours

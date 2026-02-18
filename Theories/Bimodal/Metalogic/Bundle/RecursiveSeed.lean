@@ -1226,6 +1226,25 @@ example : classifyFormula ((Formula.atom "p").imp (Formula.atom "q")) =
 example : classifyFormula (Formula.neg (Formula.atom "p")) =
     FormulaClass.negation (Formula.atom "p") := rfl
 
+/-- Classification inversion: atomic classification implies atom formula. -/
+private theorem classifyFormula_eq_atomic (phi : Formula) (s : String)
+    (h : classifyFormula phi = FormulaClass.atomic s) : phi = Formula.atom s := by
+  cases phi with
+  | atom s' => simp only [classifyFormula, FormulaClass.atomic.injEq] at h; exact congrArg Formula.atom h
+  | bot => simp only [classifyFormula] at h
+  | box _ => simp only [classifyFormula] at h
+  | all_future _ => simp only [classifyFormula] at h
+  | all_past _ => simp only [classifyFormula] at h
+  | imp phi1 phi2 =>
+    cases phi2 with
+    | bot =>
+      cases phi1 with
+      | box _ => simp only [classifyFormula] at h
+      | all_future _ => simp only [classifyFormula] at h
+      | all_past _ => simp only [classifyFormula] at h
+      | _ => simp only [classifyFormula] at h
+    | _ => simp only [classifyFormula] at h
+
 /-!
 ## Phase 3: Seed Consistency Proof
 
@@ -6104,6 +6123,52 @@ private theorem addFormula_preserves_hasPosition (seed : ModelSeed) (famIdx : Na
     simp only [h_find]
     exact any_append_of_any _ _ _ h
 
+/-- addFormula backward: if new seed has position, either old did or we added it. -/
+private theorem addFormula_hasPosition_backward (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) (ty : SeedEntryType) (fam' : Nat) (time' : Int)
+    (h : (seed.addFormula famIdx timeIdx phi ty).hasPosition fam' time') :
+    seed.hasPosition fam' time' ∨ (fam' = famIdx ∧ time' = timeIdx) := by
+  unfold ModelSeed.hasPosition ModelSeed.addFormula at *
+  cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == famIdx && e.timeIdx == timeIdx) with
+  | some idx =>
+    simp only [h_find] at h
+    -- modify case: either the position exists in original entries or it's at idx
+    rw [List.any_eq_true] at h
+    obtain ⟨e, he_mem, he_pred⟩ := h
+    rw [List.mem_modify_iff] at he_mem
+    cases he_mem with
+    | inl h_other =>
+      left
+      rw [List.any_eq_true]
+      obtain ⟨j, hj, h_neq⟩ := h_other
+      -- hj : seed.entries[j]? = some e
+      have h_mem : e ∈ seed.entries := List.getElem?_mem hj
+      exact ⟨e, h_mem, he_pred⟩
+    | inr h_modified =>
+      obtain ⟨orig, h_orig, h_eq⟩ := h_modified
+      -- e is the modified entry at idx
+      have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+      have h_idx_lt : idx < seed.entries.length := h_spec.1
+      have h_pred : (seed.entries[idx].familyIdx == famIdx && seed.entries[idx].timeIdx == timeIdx) = true := h_spec.2.1
+      simp only [Bool.and_eq_true, beq_iff_eq] at he_pred h_pred
+      subst h_eq
+      simp only at he_pred
+      right
+      exact ⟨he_pred.1.symm.trans h_pred.1, he_pred.2.symm.trans h_pred.2⟩
+  | none =>
+    simp only [h_find] at h
+    -- append case: check if in original or in new singleton
+    rw [List.any_append, Bool.or_eq_true] at h
+    cases h with
+    | inl h_orig =>
+      left
+      unfold ModelSeed.hasPosition
+      exact h_orig
+    | inr h_new =>
+      right
+      simp only [List.any_cons, List.any_nil, Bool.or_false, Bool.and_eq_true, beq_iff_eq] at h_new
+      exact h_new
+
 /-- foldl with addFormula over family indices preserves hasPosition. -/
 private theorem foldl_addFormula_fam_preserves_hasPosition (phi : Formula) (ty : SeedEntryType)
     (timeIdx : Int) (fams : List Nat) (seed : ModelSeed) (fam' : Nat) (time' : Int)
@@ -8020,7 +8085,32 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
   -- Key insight for other cases (atomic, bottom, implication, negation):
   -- These don't introduce new Box/G/H formulas to the seed, so we can
   -- use the existing invariant.
-  sorry -- processWorkItem_preserves_closure: 10-case proof
+  --
+  -- PROOF STRUCTURE (10 cases on classifyFormula):
+  --
+  -- Simple cases (atomic, bottom, implication, negation):
+  --   - Use mem_getFormulas_after_addFormula to show Box/G/H must be from old seed
+  --   - Use addFormula_hasPosition_backward to reason about position changes
+  --   - Use classifyFormula_eq_atomic (etc.) to derive contradictions when added formula ≠ Box/G/H
+  --   - Key issue: when addFormula creates NEW position, closure invariant may need strengthening
+  --
+  -- Positive cases (boxPositive, futurePositive, pastPositive):
+  --   - Use foldl_addFormula_fam_puts_phi_in_all / foldl_addFormula_times_puts_phi_in_all
+  --   - Show that psi is added to ALL relevant positions, satisfying left disjunct of invariant
+  --
+  -- Negative cases (boxNegative, futureNegative, pastNegative):
+  --   - Show new work item is created and added to worklist
+  --   - Use right disjunct of invariant (pending work item exists)
+  --
+  -- Helper lemmas available:
+  --   - mem_getFormulas_after_addFormula (line 7861)
+  --   - addFormula_hasPosition_backward (line 6128)
+  --   - classifyFormula_eq_atomic (line 1245)
+  --   - foldl_addFormula_fam_puts_phi_in_all (line 7974)
+  --   - foldl_addFormula_times_puts_phi_in_all (line 8007)
+  --   - addFormula_preserves_mem_getFormulas_same (line 3515)
+  --
+  sorry -- processWorkItem_preserves_closure: 10-case proof with helper lemmas above
 
 /--
 processWorklistAux preserves closure invariant.
