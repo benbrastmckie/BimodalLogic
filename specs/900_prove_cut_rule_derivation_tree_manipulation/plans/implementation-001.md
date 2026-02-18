@@ -199,44 +199,52 @@ More complex - involves multiple addFormula calls and foldl over families/times.
 
 **Progress:**
 
-**Session: 2026-02-18, sess_1771436504_b7f48c**
+**Session: 2026-02-18, sess_1771436504_b7f48c (iteration 2)**
 - Added: `h_wf : SeedWellFormed` hypothesis to `processWorkItem_preserves_consistent`
 - Added: `h_in_seed : item.formula ∈ state.seed.getFormulas` hypothesis
 - Completed: 4 simple cases (atomic, bottom, implication, negation)
 - Refactored: `WorklistInvariant` to include well-formedness and formula presence
 
+**Session: 2026-02-18, sess_1771436504_b7f48c (iteration 3)**
+- Completed: `boxNegative` case using `createNewFamily_preserves_seedConsistent`
+- Completed: `futureNegative` case using `createNewTime_preserves_seedConsistent`
+- Completed: `pastNegative` case using `createNewTime_preserves_seedConsistent`
+- Remaining: 3 positive cases (`boxPositive`, `futurePositive`, `pastPositive`)
+- Sorries: 7/10 cases done, 3 remain (blocked on cross-family/time compatibility)
+
+**Technical Blocker**: The positive cases add formulas to ALL families/times. Proving compatibility requires showing that inserting `psi` to any family is safe, but `Box psi` (which could derive `psi` via T-axiom) is only in one family. This requires additional infrastructure (semantic compatibility or stronger invariant).
+
 **Verification**:
 - `lake build` succeeds (file compiles with sorries)
-- Simple cases (atomic, bottom, implication, negation) have no sorries
+- 7/10 cases completed, 3 remain as sorries
 
 ---
 
-### Phase 4: processWorkItem_newWork Consistency [NOT STARTED]
+### Phase 4: processWorkItem_newWork Consistency [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 2 (uses subformula consistency lemmas)
 - **Goal:** Complete all 6 cases in `processWorkItem_newWork_consistent`
 
 **Tasks**:
-- [ ] Prove `boxPositive` case: new work has formula `psi`, consistent by `box_inner_consistent`
-- [ ] Prove `boxNegative` case: new work has formula `neg psi`, consistent by `neg_box_neg_inner_consistent`
-- [ ] Prove `futurePositive` case: consistent by `all_future_inner_consistent`
-- [ ] Prove `futureNegative` case: consistent by `neg_future_neg_inner_consistent`
-- [ ] Prove `pastPositive` case: consistent by `all_past_inner_consistent`
-- [ ] Prove `pastNegative` case: consistent by `neg_past_neg_inner_consistent`
+- [x] Prove `boxPositive` case: new work has formula `psi`, consistent by `box_inner_consistent`
+- [x] Prove `boxNegative` case: new work has formula `neg psi`, consistent by `neg_box_neg_inner_consistent`
+- [x] Prove `futurePositive` case: consistent by `all_future_inner_consistent`
+- [x] Prove `futureNegative` case: consistent by `neg_future_neg_inner_consistent`
+- [x] Prove `pastPositive` case: consistent by `all_past_inner_consistent`
+- [x] Prove `pastNegative` case: consistent by `neg_past_neg_inner_consistent`
 
-**Key Challenge**: Need to extract that `classifyFormula item.formula = boxPositive psi` implies `item.formula = Box psi`. This may require:
-- Inspecting `classifyFormula` definition
-- Adding lemmas like `classifyFormula_boxPositive_eq`
+**Pattern used**: Extract formula identity from `h_class` via case analysis, apply subformula consistency lemma, extract work item formula from `hw`, conclude.
 
-**Timing**: 1.5 hours
+**Progress:**
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` (lines 7138-7170)
+**Session: 2026-02-18, sess_1771436504_b7f48c (iteration 3)**
+- Completed: All 6 cases
+- Sorries: 0 in this theorem
 
 **Verification**:
 - `lake build` succeeds
-- Lines 7138-7170 have no sorries
-- `processWorklistAux_preserves_invariant` compiles without sorry
+- All 6 cases have no sorries
+- `processWorklistAux_preserves_invariant` still has 3 sorries (dependent on Phase 3 positive cases)
 
 ---
 

@@ -7104,23 +7104,118 @@ theorem processWorkItem_preserves_consistent (item : WorkItem) (state : Worklist
   | .boxNegative psi =>
     -- neg(Box psi): add to current, create new family with neg psi
     simp only
-    -- The classification tells us item.formula = neg(Box psi)
-    -- Need: FormulaConsistent (neg psi)
-    sorry -- boxNegative case - uses createNewFamily_preserves_seedConsistent
+    -- Establish item.formula = neg(Box psi) from h_class
+    have h_eq : item.formula = psi.box.neg := by
+      cases item.formula with
+      | imp left right =>
+        cases left with
+        | box inner =>
+          cases right with
+          | bot =>
+            simp only [classifyFormula] at h_class
+            injection h_class with h
+            exact congrArg (fun x => Formula.imp (Formula.box x) Formula.bot) h.symm
+          | _ => simp only [classifyFormula] at h_class
+        | _ => simp only [classifyFormula] at h_class
+      | _ => simp only [classifyFormula] at h_class
+    -- neg psi is consistent since neg(Box psi) is consistent
+    have h_neg_psi_cons : FormulaConsistent psi.neg :=
+      neg_box_neg_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- Define intermediate seed
+    let seed1 := state.seed.addFormula item.famIdx item.timeIdx psi.box.neg .universal_target
+    -- seed1 is consistent
+    have h_seed1_cons : SeedConsistent seed1 := by
+      apply addFormula_seed_preserves_consistent _ _ _ _ _ h_cons (h_eq ▸ h_item_cons)
+      intro entry h_entry h_fam h_time
+      have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+      have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position
+        state.seed entry item.famIdx item.timeIdx h_wf h_entry h_fam h_time
+      have h_formula_in_entry : psi.box.neg ∈ entry.formulas := by
+        rw [← h_getFormulas_eq, ← h_eq]; exact h_in_seed
+      rw [Set.insert_eq_of_mem h_formula_in_entry]
+      exact h_entry_cons
+    -- Result is consistent by createNewFamily_preserves_seedConsistent
+    exact createNewFamily_preserves_seedConsistent seed1 item.timeIdx psi.neg h_seed1_cons h_neg_psi_cons
   | .futurePositive psi =>
     simp only
     sorry -- futurePositive case
   | .futureNegative psi =>
     -- neg(G psi): create new time with neg psi
     simp only
-    sorry -- futureNegative case - uses createNewTime_preserves_seedConsistent
+    -- Establish item.formula = neg(G psi) from h_class
+    have h_eq : item.formula = psi.all_future.neg := by
+      cases item.formula with
+      | imp left right =>
+        cases left with
+        | all_future inner =>
+          cases right with
+          | bot =>
+            simp only [classifyFormula] at h_class
+            injection h_class with h
+            exact congrArg (fun x => Formula.imp (Formula.all_future x) Formula.bot) h.symm
+          | _ => simp only [classifyFormula] at h_class
+        | _ => simp only [classifyFormula] at h_class
+      | _ => simp only [classifyFormula] at h_class
+    -- neg psi is consistent since neg(G psi) is consistent
+    have h_neg_psi_cons : FormulaConsistent psi.neg :=
+      neg_future_neg_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- Define intermediate seed
+    let seed1 := state.seed.addFormula item.famIdx item.timeIdx psi.all_future.neg .universal_target
+    -- seed1 is consistent
+    have h_seed1_cons : SeedConsistent seed1 := by
+      apply addFormula_seed_preserves_consistent _ _ _ _ _ h_cons (h_eq ▸ h_item_cons)
+      intro entry h_entry h_fam h_time
+      have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+      have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position
+        state.seed entry item.famIdx item.timeIdx h_wf h_entry h_fam h_time
+      have h_formula_in_entry : psi.all_future.neg ∈ entry.formulas := by
+        rw [← h_getFormulas_eq, ← h_eq]; exact h_in_seed
+      rw [Set.insert_eq_of_mem h_formula_in_entry]
+      exact h_entry_cons
+    -- newTime has no existing entry (fresh)
+    let newTime := seed1.freshFutureTime item.famIdx item.timeIdx
+    -- Result is consistent by createNewTime_preserves_seedConsistent
+    exact createNewTime_preserves_seedConsistent seed1 item.famIdx newTime psi.neg h_seed1_cons h_neg_psi_cons
   | .pastPositive psi =>
     simp only
     sorry -- pastPositive case
   | .pastNegative psi =>
     -- neg(H psi): create new time with neg psi
     simp only
-    sorry -- pastNegative case - uses createNewTime_preserves_seedConsistent
+    -- Establish item.formula = neg(H psi) from h_class
+    have h_eq : item.formula = psi.all_past.neg := by
+      cases item.formula with
+      | imp left right =>
+        cases left with
+        | all_past inner =>
+          cases right with
+          | bot =>
+            simp only [classifyFormula] at h_class
+            injection h_class with h
+            exact congrArg (fun x => Formula.imp (Formula.all_past x) Formula.bot) h.symm
+          | _ => simp only [classifyFormula] at h_class
+        | _ => simp only [classifyFormula] at h_class
+      | _ => simp only [classifyFormula] at h_class
+    -- neg psi is consistent since neg(H psi) is consistent
+    have h_neg_psi_cons : FormulaConsistent psi.neg :=
+      neg_past_neg_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- Define intermediate seed
+    let seed1 := state.seed.addFormula item.famIdx item.timeIdx psi.all_past.neg .universal_target
+    -- seed1 is consistent
+    have h_seed1_cons : SeedConsistent seed1 := by
+      apply addFormula_seed_preserves_consistent _ _ _ _ _ h_cons (h_eq ▸ h_item_cons)
+      intro entry h_entry h_fam h_time
+      have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+      have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position
+        state.seed entry item.famIdx item.timeIdx h_wf h_entry h_fam h_time
+      have h_formula_in_entry : psi.all_past.neg ∈ entry.formulas := by
+        rw [← h_getFormulas_eq, ← h_eq]; exact h_in_seed
+      rw [Set.insert_eq_of_mem h_formula_in_entry]
+      exact h_entry_cons
+    -- newTime has no existing entry (fresh)
+    let newTime := seed1.freshPastTime item.famIdx item.timeIdx
+    -- Result is consistent by createNewTime_preserves_seedConsistent
+    exact createNewTime_preserves_seedConsistent seed1 item.famIdx newTime psi.neg h_seed1_cons h_neg_psi_cons
 
 /--
 New work items from processWorkItem have formulas that are consistent
@@ -7151,18 +7246,138 @@ theorem processWorkItem_newWork_consistent (item : WorkItem) (state : WorklistSt
   | .boxPositive psi =>
     -- classifyFormula returns boxPositive psi implies item.formula = Box psi
     -- New work items have formula psi, which is consistent by box_inner_consistent
-    sorry -- Requires proving item.formula = Box psi from h_class
+    -- From h_class, item.formula = Box psi
+    have h_eq : item.formula = psi.box := by
+      cases item.formula with
+      | box inner => simp only [classifyFormula] at h_class; injection h_class with h; exact congrArg Formula.box h.symm
+      | _ => simp only [classifyFormula] at h_class
+    -- psi is consistent since Box psi is consistent
+    have h_psi_cons : FormulaConsistent psi := box_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- hw : w is in newWork, which maps psi to all families
+    simp only [h_class] at hw
+    have h_w_formula : w.formula = psi := by
+      simp only [List.mem_map] at hw
+      obtain ⟨f, _, h_eq_w⟩ := hw
+      simp only [WorkItem.mk.injEq] at h_eq_w
+      exact h_eq_w.1
+    rw [h_w_formula]
+    exact h_psi_cons
   | .boxNegative psi =>
     -- item.formula = neg(Box psi), new work has formula neg psi
-    sorry -- Requires proving neg psi consistent from neg(Box psi) consistent
+    -- From h_class, item.formula = neg(Box psi)
+    have h_eq : item.formula = psi.box.neg := by
+      cases item.formula with
+      | imp left right =>
+        cases left with
+        | box inner =>
+          cases right with
+          | bot =>
+            simp only [classifyFormula] at h_class
+            injection h_class with h
+            exact congrArg (fun x => Formula.imp (Formula.box x) Formula.bot) h.symm
+          | _ => simp only [classifyFormula] at h_class
+        | _ => simp only [classifyFormula] at h_class
+      | _ => simp only [classifyFormula] at h_class
+    -- neg psi is consistent since neg(Box psi) is consistent
+    have h_neg_psi_cons : FormulaConsistent psi.neg :=
+      neg_box_neg_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- hw : w is in newWork = [neg psi at new family]
+    simp only [h_class] at hw
+    simp only [List.mem_singleton] at hw
+    rw [hw]
+    exact h_neg_psi_cons
   | .futurePositive psi =>
-    sorry -- Similar to boxPositive
+    -- item.formula = G psi, new work items have formula psi
+    have h_eq : item.formula = psi.all_future := by
+      cases item.formula with
+      | all_future inner =>
+        simp only [classifyFormula] at h_class
+        injection h_class with h
+        exact congrArg Formula.all_future h.symm
+      | _ => simp only [classifyFormula] at h_class
+    -- psi is consistent since G psi is consistent
+    have h_psi_cons : FormulaConsistent psi := all_future_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- hw : w is in (psi at current) :: (psi at future times)
+    simp only [h_class] at hw
+    simp only [List.mem_cons, List.mem_map] at hw
+    cases hw with
+    | inl h_head =>
+      rw [h_head]
+      exact h_psi_cons
+    | inr h_tail =>
+      obtain ⟨t, _, h_eq_w⟩ := h_tail
+      simp only [WorkItem.mk.injEq] at h_eq_w
+      rw [h_eq_w.1]
+      exact h_psi_cons
   | .futureNegative psi =>
-    sorry -- Similar to boxNegative
+    -- item.formula = neg(G psi), new work has formula neg psi
+    have h_eq : item.formula = psi.all_future.neg := by
+      cases item.formula with
+      | imp left right =>
+        cases left with
+        | all_future inner =>
+          cases right with
+          | bot =>
+            simp only [classifyFormula] at h_class
+            injection h_class with h
+            exact congrArg (fun x => Formula.imp (Formula.all_future x) Formula.bot) h.symm
+          | _ => simp only [classifyFormula] at h_class
+        | _ => simp only [classifyFormula] at h_class
+      | _ => simp only [classifyFormula] at h_class
+    -- neg psi is consistent since neg(G psi) is consistent
+    have h_neg_psi_cons : FormulaConsistent psi.neg :=
+      neg_future_neg_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- hw : w is in newWork = [neg psi at new time]
+    simp only [h_class] at hw
+    simp only [List.mem_singleton] at hw
+    rw [hw]
+    exact h_neg_psi_cons
   | .pastPositive psi =>
-    sorry -- Similar to boxPositive
+    -- item.formula = H psi, new work items have formula psi
+    have h_eq : item.formula = psi.all_past := by
+      cases item.formula with
+      | all_past inner =>
+        simp only [classifyFormula] at h_class
+        injection h_class with h
+        exact congrArg Formula.all_past h.symm
+      | _ => simp only [classifyFormula] at h_class
+    -- psi is consistent since H psi is consistent
+    have h_psi_cons : FormulaConsistent psi := all_past_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- hw : w is in (psi at current) :: (psi at past times)
+    simp only [h_class] at hw
+    simp only [List.mem_cons, List.mem_map] at hw
+    cases hw with
+    | inl h_head =>
+      rw [h_head]
+      exact h_psi_cons
+    | inr h_tail =>
+      obtain ⟨t, _, h_eq_w⟩ := h_tail
+      simp only [WorkItem.mk.injEq] at h_eq_w
+      rw [h_eq_w.1]
+      exact h_psi_cons
   | .pastNegative psi =>
-    sorry -- Similar to boxNegative
+    -- item.formula = neg(H psi), new work has formula neg psi
+    have h_eq : item.formula = psi.all_past.neg := by
+      cases item.formula with
+      | imp left right =>
+        cases left with
+        | all_past inner =>
+          cases right with
+          | bot =>
+            simp only [classifyFormula] at h_class
+            injection h_class with h
+            exact congrArg (fun x => Formula.imp (Formula.all_past x) Formula.bot) h.symm
+          | _ => simp only [classifyFormula] at h_class
+        | _ => simp only [classifyFormula] at h_class
+      | _ => simp only [classifyFormula] at h_class
+    -- neg psi is consistent since neg(H psi) is consistent
+    have h_neg_psi_cons : FormulaConsistent psi.neg :=
+      neg_past_neg_inner_consistent psi (h_eq ▸ h_item_cons)
+    -- hw : w is in newWork = [neg psi at new time]
+    simp only [h_class] at hw
+    simp only [List.mem_singleton] at hw
+    rw [hw]
+    exact h_neg_psi_cons
 
 /--
 processWorklistAux preserves the worklist invariant.
@@ -7639,17 +7854,31 @@ For G psi: we add psi to ALL future times that exist
 For H psi: we add psi to ALL past times that exist
 -/
 theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistState)
-    (h_inv : WorklistClosureInvariant state) :
+    (h_inv : WorklistClosureInvariant state)
+    (h_item_not_proc : item ∉ state.processed) :
     let (newWork, state') := processWorkItem item state
     WorklistClosureInvariant {
       seed := state'.seed,
-      worklist := newWork ++ state.worklist.tail,
-      processed := state'.processed
+      worklist := state.worklist ++ newWork.filter (fun w => w ∉ state'.processed),
+      processed := Insert.insert item state'.processed
     } := by
-  -- Complex proof with 10 cases based on classifyFormula
-  -- Uses: mem_getFormulas_after_addFormula, hasPosition lemmas,
-  -- foldl_addFormula_fam_puts_phi_in_all, foldl_addFormula_times_puts_phi_in_all
-  sorry -- processWorkItem_preserves_closure main proof
+  -- The proof proceeds by case analysis on classifyFormula item.formula
+  -- For each case, we show the 3-part closure invariant is preserved:
+  -- (1) Box psi in seed → psi at all families OR pending work item
+  -- (2) G psi in seed → psi at all future times OR pending work item
+  -- (3) H psi in seed → psi at all past times OR pending work item
+  --
+  -- Key insight for positive cases (boxPositive, futurePositive, pastPositive):
+  -- The algorithm adds the inner formula to ALL relevant positions, so
+  -- the closure is immediately satisfied (left disjunct).
+  --
+  -- Key insight for negative cases (boxNegative, futureNegative, pastNegative):
+  -- A new work item is created, so the pending condition is satisfied (right disjunct).
+  --
+  -- Key insight for other cases (atomic, bottom, implication, negation):
+  -- These don't introduce new Box/G/H formulas to the seed, so we can
+  -- use the existing invariant.
+  sorry -- processWorkItem_preserves_closure: 10-case proof
 
 /--
 processWorklistAux preserves closure invariant.
