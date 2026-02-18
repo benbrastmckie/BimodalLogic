@@ -3,17 +3,17 @@ next_project_number: 896
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-17T22:33:00Z
+  last_assessed: 2026-02-18T02:45:00Z
 task_counts:
-  active: 15
-  completed: 607
+  active: 9
+  completed: 613
   in_progress: 2
-  not_started: 7
+  not_started: 4
   abandoned: 29
-  total: 648
+  total: 653
 technical_debt:
-  sorry_count: 197
-  axiom_count: 6
+  sorry_count: 203
+  axiom_count: 20
   build_errors: 0
   status: manageable
 ---
@@ -21,54 +21,6 @@ technical_debt:
 # TODO
 
 ## Tasks
-
-### 895. Update phase status markers during implementation
-- **Effort**: 2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-17
-- **Researched**: 2026-02-18
-- **Planned**: 2026-02-18
-- **Completed**: 2026-02-17
-- **Research**: [research-002.md](specs/895_update_phase_status_markers_during_implementation/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/895_update_phase_status_markers_during_implementation/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260217.md](specs/895_update_phase_status_markers_during_implementation/summaries/implementation-summary-20260217.md)
-
-**Description**: Modify the /implement workflow to update phase status markers at appropriate times. Currently, phase status remains [NOT STARTED] until after progress is made. Instead, update each phase to [IMPLEMENTING] before starting work on that phase, and then to [COMPLETE], [PARTIAL], or [BLOCKED] as appropriate after work on that phase concludes, before proceeding to the next phase or handing off to another subagent.
-
----
-
-### 894. Clean linter warnings in Closure.lean
-- **Effort**: 30 minutes
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-17
-- **Researched**: 2026-02-18
-- **Planned**: 2026-02-18
-- **Completed**: 2026-02-18
-- **Research**: [research-001.md](specs/894_clean_linter_warnings_closure_lean/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/894_clean_linter_warnings_closure_lean/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260218.md](specs/894_clean_linter_warnings_closure_lean/summaries/implementation-summary-20260218.md)
-
-**Description**: Clean up unused simp argument warnings in Theories/Bimodal/Metalogic/Decidability/Closure.lean at lines 316, 322, and 327. Apply suggested omit patterns to remove build noise.
-
----
-
-### 893. Fix missing Logos.lean root file
-- **Effort**: 5 minutes
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-17
-- **Researched**: 2026-02-18
-- **Planned**: 2026-02-18
-- **Completed**: 2026-02-18
-- **Research**: [research-001.md](specs/893_fix_missing_logos_lean_root_file/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/893_fix_missing_logos_lean_root_file/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260218.md](specs/893_fix_missing_logos_lean_root_file/summaries/implementation-summary-20260218.md)
-
-**Description**: Fix the missing Theories/Logos.lean root file that breaks default lake build. Either create a stub file or update lakefile.lean to remove the Logos target. The lakefile defines Logos as default target but the root file does not exist.
-
----
 
 ### 892. Modify henkinStep to add negations when rejecting packages
 - **Effort**: 2 hours
@@ -84,53 +36,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260217.md](specs/892_modify_henkinstep_add_negations/summaries/implementation-summary-20260217.md)
 
 **Description**: Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.
-
----
-
-### 891. Fix split-at tactic incompatibility in TemporalLindenbaum.lean
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-17
-- **Researched**: 2026-02-17
-- **Planned**: 2026-02-17
-- **Completed**: 2026-02-17
-- **Parent**: Task #888
-- **Research**: [research-001.md](specs/891_fix_split_at_tactic_temporallindenbaum/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/891_fix_split_at_tactic_temporallindenbaum/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260217.md](specs/891_fix_split_at_tactic_temporallindenbaum/summaries/implementation-summary-20260217.md)
-
-**Description**: Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.
-
----
-
-### 890. Fix measure_wf build error in TemporalLindenbaum.lean
-- **Effort**: 5 minutes
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-17
-- **Researched**: 2026-02-17
-- **Planned**: 2026-02-17
-- **Completed**: 2026-02-17
-- **Research**: [research-001.md](specs/890_fix_measure_wf_build_error_temporallindenbaum/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/890_fix_measure_wf_build_error_temporallindenbaum/plans/implementation-001.md)
-
-**Description**: Fix the Unknown identifier measure_wf build error in TemporalLindenbaum.lean at lines 220 and 263. This pre-existing error is blocking task 888 from completing. The identifier measure_wf is used for well-founded induction in helper lemmas. Likely a missing import or definition.
-
----
-
-### 889. Review artifact naming scheme for team workflow uniformity
-- **Effort**: 3 hours
-- **Status**: [COMPLETED]
-- **Researched**: 2026-02-17
-- **Planned**: 2026-02-17
-- **Completed**: 2026-02-17
-- **Language**: meta
-- **Research**: [research-001.md](specs/889_artifact_naming_scheme_review/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/889_artifact_naming_scheme_review/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260217.md](specs/889_artifact_naming_scheme_review/summaries/implementation-summary-20260217.md)
-
-**Description**: Review the artifact naming scheme used by the workflow command-skill-agent workflows in the .claude/ agent system to make sure there is a standard approach used both with and without the --team flag. For instance, `/research --team NNN` should create reports that have both the report number followed by the team member, and then call a team member to synthesize to create just a report with the appropriate number. Review all other cases where team members might create artifacts that don't indicate the research run, or planning run, etc., that they are associated with. The aim is uniformity of approach.
 
 ---
 

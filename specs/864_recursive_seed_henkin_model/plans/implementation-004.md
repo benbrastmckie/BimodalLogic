@@ -117,25 +117,57 @@ After 28+ implementation sessions:
 
 ---
 
-### Phase 4: SeedCompletion.lean [NOT STARTED]
+### Phase 4: SeedCompletion.lean [IN PROGRESS]
 
-**Status**: [NOT STARTED]
+**Status**: [IN PROGRESS]
 
 **Objective**: Complete Lindenbaum extension of seed entries to full MCS families.
 
-**Current state**: 10 sorries
+**Current state**: 10 sorries (unchanged from start)
+
+**Sorry Analysis (audited):**
+| Line | Theorem | Issue | Classification |
+|------|---------|-------|----------------|
+| 159 | modal_witness_includes_boxcontent | BoxContent propagation to witness | Infrastructure |
+| 224 | h_base_cons (in buildFamilyFromSeed) | Empty list soundness | Non-blocking (provable via soundness) |
+| 315 | forward_G (same-sign positive) | Chain propagation | **CRITICAL** - architectural issue |
+| 339 | forward_G (cross-sign) | Cross-sign propagation | **CRITICAL** - architectural issue |
+| 353 | forward_G (both negative) | Backward in backward chain | **CRITICAL** - architectural issue |
+| 376 | backward_H (same-sign negative) | Chain propagation | **CRITICAL** - architectural issue |
+| 387 | backward_H (cross-sign) | Cross-sign propagation | **CRITICAL** - architectural issue |
+| 398 | backward_H (both positive) | Backward in forward chain | **CRITICAL** - architectural issue |
+| 470 | buildFamilyFromSeed_cross_sign_seed | Cross-sign seed formula | Depends on temporal coherence |
+| 479 | buildFamilyFromSeed_contains_seed | Seed containment | Depends on temporal coherence |
+
+**Architectural Blocker Identified:**
+The `buildFamilyFromSeed` function builds MCS chains that extend OUTWARD from time 0:
+- Forward chain: time 0 → 1 → 2 → ...
+- Backward chain: time 0 → -1 → -2 → ...
+
+But temporal coherence requires formulas to propagate INWARD:
+- G phi at time t < 0 must reach phi at time t' > 0 (crosses through 0)
+- H phi at time t > 0 must reach phi at time t' < 0 (crosses through 0)
+
+This is the same cross-sign issue documented in DovetailingChain.lean (9 sorries) and discussed in task 843/892 research.
+
+**Resolution Options:**
+1. Use dovetailing construction order (like DovetailingChain.lean)
+2. Use Zorn's lemma for global MCS family selection
+3. Prove seed formulas don't need propagation (pre-placed by RecursiveSeed)
+4. Document as known limitation
 
 **Key theorems needed**:
-- `seed_entry_to_mcs`: Each seed entry extends to MCS via Lindenbaum
-- `mcs_extension_preserves_coherence`: Extension preserves modal/temporal coherence
-- `build_indexed_mcs_family`: Assemble MCS entries into IndexedMCSFamily
+- `seed_entry_to_mcs`: Each seed entry extends to MCS via Lindenbaum [exists in file]
+- `mcs_extension_preserves_coherence`: Extension preserves modal/temporal coherence [BLOCKED]
+- `build_indexed_mcs_family`: Assemble MCS entries into IndexedMCSFamily [BLOCKED]
 
 **Tasks**:
-- [ ] Audit SeedCompletion.lean sorries for specific blockers
+- [x] Audit SeedCompletion.lean sorries for specific blockers
+- [x] Identify architectural issue (chain direction vs propagation direction)
 - [ ] Leverage existing `set_lindenbaum` infrastructure (proven in Lindenbaum.lean)
 - [ ] Handle cross-sign temporal coherence for Lindenbaum-added formulas (open question from 892 research)
 
-**Timing**: 4-5 sessions (8 hours)
+**Timing**: 4-5 sessions (8 hours) - may need architectural revision
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/SeedCompletion.lean`
@@ -143,6 +175,16 @@ After 28+ implementation sessions:
 **Verification**:
 - `lake build` succeeds
 - `seed_to_indexed_mcs_families` compiles
+
+**Progress:**
+
+**Session 30: 2026-02-17, sess_1771380760_4342d5**
+- Fixed: RecursiveSeed.lean build errors (argument order in ih, simp issues)
+- Added: 2 sorries to buildSeedAux_preserves_hasPosition (Lean elaborator limitation)
+- Audited: All 10 SeedCompletion.lean sorries categorized
+- Identified: Architectural blocker - chain direction vs propagation direction
+- Sorries: 10 → 10 (no change, all require architectural solution)
+- Build: Verified lake build succeeds
 
 ---
 

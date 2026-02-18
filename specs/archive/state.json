@@ -14118,6 +14118,203 @@
       "completed": "2026-02-13T20:10:57Z",
       "completion_summary": "Completed RecursiveSeed temporal coherent family construction by adding needsPositiveHypotheses to correct namespace, re-applying seed4 propagation, weakening hypotheses with conditional pattern, and proving supporting lemmas with Nodup hypotheses. Build passes with 0 sorries.",
       "archived": "2026-02-17T22:06:16Z"
+    },
+    {
+      "project_number": 895,
+      "project_name": "update_phase_status_markers_during_implementation",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-18T01:13:43Z",
+      "last_updated": "2026-02-17T00:00:00Z",
+      "session_id": "sess_1771378740_5f4a9a",
+      "researched": "2026-02-18T01:17:22Z",
+      "artifacts": [
+        {
+          "path": "specs/895_update_phase_status_markers_during_implementation/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up investigation revealing documentation vs implementation gap for phase status updates"
+        },
+        {
+          "path": "specs/895_update_phase_status_markers_during_implementation/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 5-phase plan with concrete Edit tool examples for phase status updates (v002)"
+        },
+        {
+          "path": "specs/895_update_phase_status_markers_during_implementation/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Implementation summary with all 5 phases complete"
+        }
+      ],
+      "planned": "2026-02-18T01:37:58Z",
+      "started": "2026-02-18T01:39:22Z",
+      "completed": "2026-02-17T00:00:00Z",
+      "completion_summary": "Added concrete Edit tool examples for phase status updates to all 4 implementation agents (general, lean, latex, typst) and updated artifact-formats.md with a status decision tree documenting when to use [COMPLETED], [PARTIAL], or [BLOCKED].",
+      "claudemd_suggestions": "Updated 4 agent definitions in .claude/agents/ and .claude/context/project/lean4/agents/, updated artifact-formats.md in .claude/rules/",
+      "archived": "2026-02-18T02:39:07Z"
+    },
+    {
+      "project_number": 893,
+      "project_name": "fix_missing_logos_lean_root_file",
+      "status": "completed",
+      "language": "lean",
+      "effort": "5 minutes",
+      "description": "Fix the missing Theories/Logos.lean root file that breaks default lake build. Either create a stub file or update lakefile.lean to remove the Logos target. The lakefile defines Logos as default target but the root file does not exist.",
+      "created": "2026-02-17T22:33:00Z",
+      "last_updated": "2026-02-18T00:30:02Z",
+      "session_id": "sess_1771374492_2ac89c",
+      "researched": "2026-02-18T00:25:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/893_fix_missing_logos_lean_root_file/reports/research-001.md",
+          "summary": "Investigation of missing Logos.lean: lakefile expectations, git history showing file existed in commit 3c9dc688, recommended restoration from git history"
+        },
+        {
+          "path": "specs/893_fix_missing_logos_lean_root_file/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan: restore Logos.lean from git history"
+        },
+        {
+          "path": "specs/893_fix_missing_logos_lean_root_file/summaries/implementation-summary-20260218.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting file restoration and build verification"
+        }
+      ],
+      "planned": "2026-02-18T00:26:33Z",
+      "started": "2026-02-18T00:28:30Z",
+      "completed": "2026-02-18T00:30:02Z",
+      "completion_summary": "Restored Theories/Logos.lean from git history to fix default lake build. Both Logos and Bimodal targets now build successfully.",
+      "archived": "2026-02-18T02:39:07Z"
+    },
+    {
+      "project_number": 894,
+      "project_name": "clean_linter_warnings_closure_lean",
+      "status": "completed",
+      "language": "lean",
+      "effort": "30 minutes",
+      "description": "Clean up unused simp argument warnings in Theories/Bimodal/Metalogic/Decidability/Closure.lean at lines 316, 322, and 327. Apply suggested omit patterns to remove build noise.",
+      "created": "2026-02-17T22:33:00Z",
+      "last_updated": "2026-02-18T02:35:00Z",
+      "session_id": "sess_1771381924_d1724f",
+      "researched": "2026-02-18T02:17:23Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/894_clean_linter_warnings_closure_lean/reports/research-001.md",
+          "summary": "Analyzed 4 linter warnings in Closure.lean: 1 unused variable at line 99, 3 unused simp arguments at lines 304 and 316. All are straightforward fixes requiring argument removal."
+        },
+        {
+          "path": "specs/894_clean_linter_warnings_closure_lean/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "Single-phase plan to remove 4 unused simp arguments and variable bindings from Closure.lean"
+        },
+        {
+          "path": "specs/894_clean_linter_warnings_closure_lean/summaries/implementation-summary-20260218.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting 3 linter warning fixes in Closure.lean"
+        }
+      ],
+      "planned": "2026-02-18T02:20:38Z",
+      "started": "2026-02-18T02:32:20Z",
+      "completed": "2026-02-18T02:35:00Z",
+      "completion_summary": "Removed 3 linter warnings from Theories/Bimodal/Metalogic/Decidability/Closure.lean by eliminating unused simp arguments (hbot', hcontra') and an unused variable binding (h). Build verified clean.",
+      "archived": "2026-02-18T02:39:07Z"
+    },
+    {
+      "project_number": 891,
+      "project_name": "fix_split_at_tactic_temporallindenbaum",
+      "status": "completed",
+      "language": "lean",
+      "effort": "1-2 hours",
+      "description": "Fix the split-at tactic incompatibility in TemporalLindenbaum.lean for Lean 4.27.0-rc1. The temporalWitnessChain function unfolds with have-bindings that the split tactic cannot handle. Convert all split-at patterns to explicit cases patterns. This is blocking task 888 Phase 3.",
+      "parent_task": 888,
+      "created": "2026-02-18T00:13:53Z",
+      "last_updated": "2026-02-18T00:41:18Z",
+      "session_id": "sess_1771374336_9df87c",
+      "researched": "2026-02-18T00:20:39Z",
+      "artifacts": [
+        {
+          "path": "specs/891_fix_split_at_tactic_temporallindenbaum/reports/research-001.md",
+          "type": "research",
+          "summary": "Identified 8 build errors in TemporalLindenbaum.lean: 3 split failures on have-wrapped match expressions, 2 multi-target split syntax errors, 1 instance synthesis failure, and 2 type errors"
+        },
+        {
+          "path": "specs/891_fix_split_at_tactic_temporallindenbaum/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan to fix 8 build errors in TemporalLindenbaum.lean for Lean 4.27.0-rc1 compatibility"
+        },
+        {
+          "path": "specs/891_fix_split_at_tactic_temporallindenbaum/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting fixes for 8 Lean 4.27.0-rc1 tactic incompatibilities in TemporalLindenbaum.lean"
+        }
+      ],
+      "planned": "2026-02-18T00:24:03Z",
+      "started": "2026-02-18T00:25:59Z",
+      "completed": "2026-02-18T00:41:18Z",
+      "completion_summary": "Fixed 8 Lean 4.27.0-rc1 tactic incompatibilities in TemporalLindenbaum.lean: replaced unfold with rw to avoid have-wrappers, converted split-at-multi-target to separate operations using conv, added Classical.propDecidable for henkinStep, and updated List API usage. Build now succeeds with 0 errors.",
+      "archived": "2026-02-18T02:39:07Z"
+    },
+    {
+      "project_number": 890,
+      "project_name": "fix_measure_wf_build_error_temporallindenbaum",
+      "status": "completed",
+      "language": "lean",
+      "description": "Fix the Unknown identifier measure_wf build error in TemporalLindenbaum.lean at lines 220 and 263. This pre-existing error is blocking task 888 from completing. The identifier measure_wf is used for well-founded induction in helper lemmas. Likely a missing import or definition.",
+      "created": "2026-02-17T23:07:05Z",
+      "last_updated": "2026-02-17T23:34:05Z",
+      "session_id": "sess_1771370747_e93028",
+      "researched": "2026-02-17T23:18:38Z",
+      "artifacts": [
+        {
+          "path": "specs/890_fix_measure_wf_build_error_temporallindenbaum/reports/research-001.md",
+          "type": "research",
+          "summary": "Identified fix: replace measure_wf with measure (from Init.WF) and change alternative name from ind to h"
+        },
+        {
+          "path": "specs/890_fix_measure_wf_build_error_temporallindenbaum/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase plan for fixing measure_wf build error"
+        }
+      ],
+      "planned": "2026-02-17T23:24:12Z",
+      "started": "2026-02-17T23:26:08Z",
+      "completed": "2026-02-17T23:34:05Z",
+      "completion_summary": "Fixed measure_wf -> measure in TemporalLindenbaum.lean lines 220 and 263. Also renamed parameter h to h_mem to avoid conflict with induction alternative. The measure_wf error is resolved; other pre-existing build errors in the file remain.",
+      "archived": "2026-02-18T02:39:07Z"
+    },
+    {
+      "project_number": 889,
+      "project_name": "artifact_naming_scheme_review",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-17T22:37:17Z",
+      "last_updated": "2026-02-17T23:19:58Z",
+      "session_id": "sess_1771369613_a433e1",
+      "researched": "2026-02-17T22:49:20Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/889_artifact_naming_scheme_review/reports/research-001.md",
+          "summary": "Research report analyzing artifact naming inconsistencies between solo and team workflows, with uniform naming proposal"
+        },
+        {
+          "path": "specs/889_artifact_naming_scheme_review/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for uniform artifact naming scheme across team workflows"
+        },
+        {
+          "type": "summary",
+          "path": "specs/889_artifact_naming_scheme_review/summaries/implementation-summary-20260217.md",
+          "summary": "Implementation summary with all phase completions and verification results"
+        }
+      ],
+      "planned": "2026-02-17T23:04:44Z",
+      "started": "2026-02-17T23:07:13Z",
+      "completed": "2026-02-17T23:19:58Z",
+      "completion_summary": "Standardized artifact naming across team workflows by adding run-scoped prefixes to all intermediate artifacts (teammate findings, candidate plans, phase results, debug reports). Updated artifact-formats.md documentation and all three team skills.",
+      "claudemd_suggestions": "Added Team Artifacts section to artifact-formats.md, updated skill-team-research/plan/implement with run number calculation and paths, updated team-wave-helpers.md templates, updated team-metadata-extension.md examples",
+      "archived": "2026-02-18T02:39:07Z"
     }
   ]
 }
