@@ -8,12 +8,13 @@
     {
       "project_number": 899,
       "project_name": "define_identity_sentences_syntax_constitutive_foundation",
-      "status": "not_started",
+      "status": "researching",
       "language": "latex",
       "effort": "1 hour",
       "created": "2026-02-17T00:00:00Z",
-      "last_updated": "2026-02-17T00:00:00Z",
-      "description": "Add a careful definition of identity sentences in the syntax section of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex, near line 629 (before the Constitutive Consequence subsection). The definition should explain that identity sentences are the target of the constitutive foundation from which to build on in the dynamical foundation in the next chapter. Source: TODO: tag at line 629 of 02-ConstitutiveFoundation.tex."
+      "last_updated": "2026-02-18T06:09:45Z",
+      "description": "Add a careful definition of identity sentences in the syntax section of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex, near line 629 (before the Constitutive Consequence subsection). The definition should explain that identity sentences are the target of the constitutive foundation from which to build on in the dynamical foundation in the next chapter. Source: TODO: tag at line 629 of 02-ConstitutiveFoundation.tex.",
+      "session_id": "sess_1771394967_a45b7e"
     },
     {
       "project_number": 898,
@@ -33,7 +34,9 @@
       "effort": "2-3 hours",
       "created": "2026-02-17T00:00:00Z",
       "last_updated": "2026-02-17T00:00:00Z",
-      "depends_on": [896],
+      "depends_on": [
+        896
+      ],
       "description": "Fix FIX: and NOTE: tags in /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex. Addresses 5 tags: (1) Line 479 (FIX:): Include a remark that the only propositions assigned to identity sentences are \\bot if false or \\neg\\bot if true (trivially false/true, requiring the null state). (2) Line 566 (FIX:): Include $\\equiv$ in the remark; define \\sem{\\metaA \\equiv \\metaB}; add \\forall, \\lambda, F(t_1,...,t_n) to show model+assignment provide a homomorphism from closed sentences to propositions; define \\interp{\\cdot}^\\assignment_\\model prior to this remark. (3) Line 568 (NOTE:): Rename \\sem to \\ext to indicate extension of a term; use \\interp{\\cdot}^\\assignment_\\model for semantic interpretation. (4) Line 582 (FIX:): Provide formal definition of the homomorphism from syntax to semantics. (5) Line 583 (FIX:): Replace vague 'directly mirrors' with correct language explaining what the embedding (homomorphism) amounts to. Depends on task 896 (learn-it) to first codify the notation convention."
     },
     {
@@ -352,6 +355,11 @@
           "path": "specs/864_recursive_seed_henkin_model/reports/research-006.md",
           "type": "research",
           "summary": "Analysis of nested temporal unpacking gap in buildSeedAux with 4 proposed solution approaches"
+        },
+        {
+          "path": "specs/864_recursive_seed_henkin_model/reports/research-007.md",
+          "type": "research",
+          "summary": "Complete worklist algorithm design for seed construction with termination proof strategy, consistency invariants, closure properties, and cross-sign coherence resolution"
         }
       ],
       "planned": "2026-02-18T02:09:51Z",
