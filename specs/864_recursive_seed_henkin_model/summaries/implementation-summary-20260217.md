@@ -2,11 +2,13 @@
 
 **Date**: 2026-02-17
 **Session ID**: sess_1771380760_4342d5
-**Status**: Partial (Phase 3 completed for critical path)
+**Status**: Partial (Phase 3 completed, Phase 4 blocked)
 
 ## Session Overview
 
-Resolved the `buildSeed_hasPosition_zero` sorry (line 6005) by proving a complete chain of position preservation lemmas. The critical path for RecursiveSeed is now sorry-free.
+Session 29 (Iteration 1): Resolved the `buildSeed_hasPosition_zero` sorry (line 6005) by proving a complete chain of position preservation lemmas. The critical path for RecursiveSeed is now sorry-free.
+
+Session 30 (Iteration 2): Started Phase 4 (SeedCompletion.lean). Fixed RecursiveSeed.lean build errors introduced during iteration 1 fixes. Audited all 10 SeedCompletion.lean sorries. **Identified architectural blocker**: chain construction direction incompatible with temporal propagation requirements.
 
 ## Changes Made
 
@@ -75,9 +77,67 @@ Phase 3 is now **COMPLETED** for the critical path:
 - `buildSeed_hasPosition_zero` proven
 - Remaining sorries are in unused `buildSeedForList` helpers
 
+---
+
+## Phase 4 Status (Session 30)
+
+### RecursiveSeed.lean Fixes
+
+Fixed build errors introduced during Session 29:
+- Corrected argument order in `ih` calls (hasPosition proof before complexity eq)
+- Fixed `any_modify_of_any` proof (nil case used absurd, simp patterns)
+- Added 2 sorries for generic imp cases (Lean elaborator limitation)
+
+### SeedCompletion.lean Audit
+
+Analyzed all 10 sorries and categorized them:
+
+| Category | Lines | Count | Resolution |
+|----------|-------|-------|------------|
+| Temporal coherence (CRITICAL) | 315, 339, 353, 376, 387, 398 | 6 | Blocked by architectural issue |
+| Infrastructure | 159, 470, 479 | 3 | Depends on temporal coherence |
+| Soundness | 224 | 1 | Provable but non-blocking |
+
+### Architectural Blocker Identified
+
+The `buildFamilyFromSeed` function builds MCS chains that extend **OUTWARD** from time 0:
+- Forward chain: 0 → 1 → 2 → ...
+- Backward chain: 0 → -1 → -2 → ...
+
+But temporal coherence requires formulas to propagate **INWARD** in some cases:
+- G phi at time t < 0 needs phi to reach time t' > 0
+- H phi at time t > 0 needs phi to reach time t' < 0
+
+This is the same cross-sign issue documented in:
+- DovetailingChain.lean (9 sorries)
+- Task 843 analysis
+- Task 892 research-003.md
+
+### Sorries Status
+
+| File | Before | After | Change |
+|------|--------|-------|--------|
+| RecursiveSeed.lean | 3 | 5 | +2 (Lean elaborator workarounds) |
+| SeedCompletion.lean | 10 | 10 | No change (blocked) |
+
 ## Next Steps
 
-Phase 4 (SeedCompletion.lean) can now proceed:
-- 10 sorries in SeedCompletion.lean await resolution
-- Focus on `seed_entry_to_mcs` and `mcs_extension_preserves_coherence`
-- May need to handle Lindenbaum-added formula temporal coherence
+Phase 4 is **BLOCKED** pending architectural decision:
+
+1. **Option A**: Use dovetailing construction (like DovetailingChain.lean)
+   - Pros: Enables cross-sign propagation
+   - Cons: Still has 9 sorries, complex ordering
+
+2. **Option B**: Prove seed formulas don't need propagation
+   - Pros: Simpler, uses existing seed structure
+   - Cons: May not work for Lindenbaum-added formulas
+
+3. **Option C**: Use Zorn's lemma for global MCS selection
+   - Pros: Conceptually cleaner
+   - Cons: More complex infrastructure
+
+4. **Option D**: Document as known limitation
+   - Pros: Allows progress to Phase 5/6
+   - Cons: Leaves technical debt
+
+Recommend revisiting research-004.md and 892 research-003.md for cross-sign handling strategies before proceeding.

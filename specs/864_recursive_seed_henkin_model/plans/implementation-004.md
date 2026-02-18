@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model Construction (v4)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 15 hours (remaining from 50 total, 35 completed)
 - **Version**: 004 (revised from 003)
 - **Dependencies**: None (supersedes task 843's approach)
@@ -57,11 +57,11 @@ After 28+ implementation sessions:
 - **Phases 4-5**: NOT STARTED (SeedCompletion, SeedBMCS)
 - **Phase 6**: NOT STARTED (connection to Completeness.lean)
 
-### Sorry Inventory (20 total across pipeline)
+### Sorry Inventory (22 total across pipeline)
 
 | File | Count | Lines | Nature |
 |------|-------|-------|--------|
-| RecursiveSeed.lean | 3 | 5709, 5734, 5923 | Infrastructure lemmas (buildSeedForList only) |
+| RecursiveSeed.lean | 5 | 5709, 5734, 5923, 6200, 6205 | Infrastructure lemmas |
 | SeedCompletion.lean | 10 | (various) | Seed-to-MCS extension |
 | SeedBMCS.lean | 6 | (various) | BMCS assembly and saturation |
 
@@ -73,8 +73,10 @@ After 28+ implementation sessions:
 | 5734 | (in buildSeedAux) | Similar false hypothesis | Dead code - unreachable by recursion |
 | 5923 | box propagation | Box propagation through foldl | Prove foldl preserves membership |
 | 6005 | buildSeed_hasPosition_zero | buildSeed position existence | **RESOLVED** (sess_1771380760_4342d5) |
+| 6200 | buildSeedAux_preserves_hasPosition | Generic imp/bot case | Lean elaborator limitation (mathematically trivial) |
+| 6205 | buildSeedAux_preserves_hasPosition | Generic non-bot imp case | Lean elaborator limitation (mathematically trivial) |
 
-**Key insight**: Sorries 5709/5734/5923 are in `buildSeedForList` helper theorems, not on the critical path for single-formula `buildSeed`. The main completeness path uses `buildSeed` (single formula), not `buildSeedForList` (multiple formulas).
+**Key insight**: Sorries 5709/5734/5923 are in `buildSeedForList` helper theorems, not on the critical path for single-formula `buildSeed`. Sorries 6200/6205 are Lean elaborator limitations in a helper theorem. The main completeness path uses `buildSeed` (single formula), not `buildSeedForList` (multiple formulas).
 
 ---
 

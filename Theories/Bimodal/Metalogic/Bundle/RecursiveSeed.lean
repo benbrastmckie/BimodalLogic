@@ -6009,15 +6009,16 @@ private theorem any_modify_of_any {α : Type*} (l : List α) (idx : Nat) (f : α
     simp only [List.any_cons] at h ⊢
     cases idx with
     | zero =>
-      simp only [List.modify_cons, Nat.zero_eq]
-      cases h_p : p x with
-      | true => simp only [h_pres x h_p, Bool.true_or]
-      | false => simp only [h_p, Bool.false_or] at h ⊢; exact h
-    | succ n =>
       simp only [List.modify_cons]
+      simp only [ite_true, List.any_cons]
+      cases h_p : p x with
+      | true => simp [h_pres x h_p]
+      | false => simp only [h_p, Bool.false_or] at h ⊢; simp [h]
+    | succ n =>
+      simp only [List.modify_cons, List.any_cons]
       cases h_p : p x with
       | true => simp [h_p]
-      | false => simp only [h_p, Bool.false_or] at h ⊢; exact ih n h
+      | false => simp only [h_p, Bool.false_or] at h ⊢; simp [ih n h]
 
 /-- addFormula preserves hasPosition. -/
 private theorem addFormula_preserves_hasPosition (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
