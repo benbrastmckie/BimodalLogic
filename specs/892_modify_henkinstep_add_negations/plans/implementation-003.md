@@ -1,7 +1,7 @@
 # Implementation Plan: Task #892 (Version 003)
 
 - **Task**: 892 - Modify henkinStep to add negations when rejecting packages
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2 hours (reduced scope - strengthened hypothesis approach)
 - **Dependencies**: None
 - **Research Inputs**:
@@ -89,56 +89,74 @@ Then the obstruction cannot occur:
 
 ## Implementation Phases
 
-### Phase 1: Define witness closure predicate [NOT STARTED]
+### Phase 1: Define witness closure predicate [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Create `WitnessClosedSet` predicate
 
 **Tasks**:
-- [ ] Define `WitnessClosedSet (S : Set Formula)` predicate:
-  ```lean
-  def WitnessClosedSet (S : Set Formula) : Prop :=
-    (∀ ψ, Formula.some_future ψ ∈ S → ψ ∈ S) ∧
-    (∀ ψ, Formula.some_past ψ ∈ S → ψ ∈ S)
-  ```
-- [ ] Prove basic properties (subset preserved, union preserved if both closed)
-- [ ] Verify base sets in actual usage are witness-closed
+- [x] Define `WitnessClosedSet (S : Set Formula)` predicate
+- [x] Prove basic properties: `witnessClosedSet_empty`, `witnessClosedSet_implies_forward_saturated`, `witnessClosedSet_implies_backward_saturated`
+- [x] Verify base sets in actual usage are witness-closed: `witnessClosedSet_temporalClosure`
 
 **Timing**: 0.5 hours
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean`
 
+**Progress:**
+
+**Session: 2026-02-17, sess_1771378714_714c1e**
+- Added: `WitnessClosedSet` - predicate for witness closure
+- Added: `witnessClosedSet_empty` - empty set is witness-closed
+- Added: `witnessClosedSet_implies_forward_saturated` - implies forward saturation
+- Added: `witnessClosedSet_implies_backward_saturated` - implies backward saturation
+- Added: `witnessClosedSet_temporalClosure` - temporal closure is witness-closed
+
 ---
 
-### Phase 2: Create strengthened theorem [NOT STARTED]
+### Phase 2: Create strengthened theorem [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** State and prove `maximal_tcs_is_mcs_closed`
 
 **Tasks**:
-- [ ] State theorem with WitnessClosedSet hypothesis:
-  ```lean
-  lemma maximal_tcs_is_mcs_closed (base : Set Formula)
-      (h_witness_closed : WitnessClosedSet base)
-      (M : Set Formula)
-      (h_in_tcs : M ∈ TemporalConsistentSupersets base)
-      (h_max : ∀ T ∈ TemporalConsistentSupersets base, M ⊆ T → T ⊆ M) :
-      SetMaximalConsistent M
-  ```
-- [ ] Prove using existing v002 case structure plus hypothesis
-- [ ] Key case: when φ = F(ψ) and ψ ∉ M
-  - Use h_witness_closed to show F(ψ) not reachable from base
-  - Or show insert F(ψ) M inconsistent via different argument
+- [x] State theorem with WitnessClosedSet hypothesis (DONE)
+- [x] Add helper lemmas: `witnessClosedSet_temporalPackage`, `witnessClosedSet_union`, `henkinStep_witnessClosedSet`, `henkinChain_witnessClosedSet`, `henkinLimit_witnessClosedSet` (DONE)
+- [ ] Prove using existing v002 case structure plus hypothesis (BLOCKED)
+- [ ] Key case: when φ = F(ψ) and ψ ∉ M (BLOCKED - same obstruction as v002)
 
-**Timing**: 1 hour
+**Timing**: 1 hour (actual: exceeded)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/TemporalLindenbaum.lean`
 
+**Progress:**
+
+**Session: 2026-02-17, sess_1771378714_714c1e**
+- Added: `maximal_tcs_is_mcs_closed` statement with WitnessClosedSet hypothesis
+- Added: `witnessClosedSet_temporalPackage` - temporalPackage is witness-closed
+- Added: `witnessClosedSet_union` - union preserves witness closure
+- Added: `henkinStep_witnessClosedSet` - henkinStep preserves witness closure
+- Added: `henkinChain_witnessClosedSet` - chain preserves witness closure
+- Added: `henkinLimit_witnessClosedSet` - henkinLimit preserves witness closure
+- Discovered: WitnessClosedSet is equivalent to TemporalForwardSaturated ∧ TemporalBackwardSaturated
+- Discovered: The witness closure on base does NOT help for arbitrary formulas φ not reachable from base
+- Sorries: 4 -> 6 (2 new sorries in maximal_tcs_is_mcs_closed attempting same proof)
+- Result: BLOCKED - same mathematical obstruction as v002
+
+**Mathematical Analysis**:
+The obstruction is the same as v002: when φ = F(ψ), φ ∉ M, neg(φ) ∉ M, and insert φ M is consistent:
+1. We cannot show insert φ M ∈ TCS (fails forward saturation unless ψ ∈ M)
+2. We cannot show insert φ M is inconsistent ({F(ψ), neg(ψ)} is semantically consistent)
+3. The witness closure on base only helps for formulas reachable from base
+4. For MCS, we need to handle ALL formulas, including those not reachable from base
+
+The theorem `maximal_tcs_is_mcs` (and `maximal_tcs_is_mcs_closed`) appears to be mathematically FALSE as stated. A set can be maximal in TCS without being MCS.
+
 ---
 
-### Phase 3: Update temporalLindenbaumMCS [NOT STARTED]
+### Phase 3: Update temporalLindenbaumMCS [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Update main theorem to use strengthened lemma

@@ -66,16 +66,16 @@ technical_debt:
 
 ### 892. Modify henkinStep to add negations when rejecting packages
 - **Effort**: 2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-18
 - **Planned**: 2026-02-18
 - **Parent**: Task #888
+- **Blocked**: Theorem maximal_tcs_is_mcs unprovable (3 plan versions tried). Recommend RecursiveSeed (tasks 864/880).
 - **Research**: [research-002.md](specs/892_modify_henkinstep_add_negations/reports/research-002.md)
 - **Plan**: [implementation-003.md](specs/892_modify_henkinstep_add_negations/plans/implementation-003.md)
 - **Summary**: [implementation-summary-20260217.md](specs/892_modify_henkinstep_add_negations/summaries/implementation-summary-20260217.md)
-- **Note**: Plan v003 - Pivoted to strengthened hypothesis approach (WitnessClosedSet)
 
 **Description**: Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.
 

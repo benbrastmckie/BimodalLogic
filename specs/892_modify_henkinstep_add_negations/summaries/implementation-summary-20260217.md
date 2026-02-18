@@ -1,11 +1,12 @@
 # Implementation Summary: Task #892 - Modify henkinStep to Add Negations
 
-**Status**: PARTIAL - Mathematical Obstruction Discovered (Hard Blocker)
+**Status**: PARTIAL - Mathematical Obstruction Confirmed (Hard Blocker)
 **Date**: 2026-02-17
 **Sessions**:
-- sess_1771374357_3e4c3a (earlier session - discovered initial counterexample)
-- sess_1771376322_b2285b (middle session - implemented modification, found saturation issue)
-- sess_1771377751_c70928 (current session - fixed saturation, discovered fundamental obstruction)
+- sess_1771374357_3e4c3a (session 1 - discovered initial counterexample)
+- sess_1771376322_b2285b (session 2 - implemented modification, found saturation issue)
+- sess_1771377751_c70928 (session 3 - fixed saturation, discovered fundamental obstruction)
+- sess_1771378714_714c1e (session 4/v003 - attempted WitnessClosedSet approach, confirmed obstruction)
 
 ## Executive Summary
 
@@ -94,7 +95,7 @@ All in `maximal_tcs_is_mcs`:
 
 ## Build Status
 
-`lake build` succeeds with 4 sorries.
+`lake build` succeeds with 6 sorries (4 in maximal_tcs_is_mcs, 2 in maximal_tcs_is_mcs_closed).
 
 ---
 
@@ -144,3 +145,57 @@ Consider M with neg(ψ) ∈ M and F(ψ) ∉ M:
 - `forward_witness_in_package` (TemporalLindenbaum.lean)
 - `backward_witness_in_package` (TemporalLindenbaum.lean)
 - `temporalPackage` (TemporalLindenbaum.lean)
+
+---
+
+## Session 4 (v003 WitnessClosedSet Approach) - 2026-02-17
+
+### Hypothesis
+The v003 plan proposed adding a `WitnessClosedSet` hypothesis to `maximal_tcs_is_mcs` to prevent the problematic case where φ = F(ψ) and ψ ∉ M.
+
+### Changes Made
+
+1. **Defined `WitnessClosedSet` predicate**:
+   ```lean
+   def WitnessClosedSet (S : Set Formula) : Prop :=
+     (∀ ψ, Formula.some_future ψ ∈ S → ψ ∈ S) ∧
+     (∀ ψ, Formula.some_past ψ ∈ S → ψ ∈ S)
+   ```
+
+2. **Added preservation lemmas**:
+   - `witnessClosedSet_empty`
+   - `witnessClosedSet_temporalPackage`
+   - `witnessClosedSet_union`
+   - `henkinStep_witnessClosedSet`
+   - `henkinChain_witnessClosedSet`
+   - `henkinLimit_witnessClosedSet`
+   - `witnessClosedSet_temporalClosure`
+
+3. **Created `maximal_tcs_is_mcs_closed`** with WitnessClosedSet hypothesis (has 2 sorries)
+
+### Discovery: WitnessClosedSet Does NOT Help
+
+Analysis revealed that `WitnessClosedSet S` is equivalent to `TemporalForwardSaturated S ∧ TemporalBackwardSaturated S` (temporal saturation). This is NOT a stronger property - it's the same thing!
+
+The witness closure on the base set does not help because:
+1. For MCS, we need negation completeness for ALL formulas, not just those reachable from base
+2. When φ = F(ψ) is an arbitrary formula not reachable from base:
+   - The witness closure tells us nothing about whether ψ ∈ M
+   - The obstruction remains: insert φ M is consistent but fails temporal saturation
+
+### Current Sorry Count: 6
+
+- Lines 839, 862, 883, 888: in `maximal_tcs_is_mcs` (4 sorries, unchanged)
+- Lines 1023, 1026: in `maximal_tcs_is_mcs_closed` (2 new sorries)
+
+### Confirmed Obstruction
+
+The mathematical obstruction is fundamental and cannot be bypassed by strengthening hypotheses on the base set. The issue is that TCS maximality ≠ MCS for temporal formulas.
+
+### Revised Recommendations
+
+**Option 1 (RecursiveSeed)**: Still recommended. The RecursiveSeed construction from tasks 864/880 builds temporal witnesses into the construction from the start, bypassing the TCS/MCS gap.
+
+**Option 2 (Strengthen Hypotheses)**: REJECTED. The witness closure approach doesn't help because it's equivalent to temporal saturation, which M already has.
+
+**Option 3 (Different Construction)**: Consider a modified Lindenbaum construction that handles temporal formulas specially - when adding F(ψ) or neg(F(ψ)), always include the witness ψ in the package.
