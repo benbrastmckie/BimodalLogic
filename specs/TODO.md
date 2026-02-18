@@ -51,7 +51,7 @@ technical_debt:
 
 ### 897. Fix FIX:/NOTE: tags in ConstitutiveFoundation LaTeX
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: latex
 - **Created**: 2026-02-17
 - **Researched**: 2026-02-17
