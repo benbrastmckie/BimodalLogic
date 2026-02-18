@@ -32,6 +32,7 @@ technical_debt:
 - **Started**: 2026-02-18
 - **Research**: [research-001.md](specs/900_prove_cut_rule_derivation_tree_manipulation/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/900_prove_cut_rule_derivation_tree_manipulation/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260218.md](specs/900_prove_cut_rule_derivation_tree_manipulation/summaries/implementation-summary-20260218.md)
 
 **Description**: In order to complete phase 4 from /home/benjamin/Projects/ProofChecker/specs/864_recursive_seed_henkin_model/plans/implementation-005.md in the most mathematically correct manner, prove: the cut rule / derivation tree manipulation.
 
