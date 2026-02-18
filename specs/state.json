@@ -86,13 +86,13 @@
     {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "effort": "2-4 hours",
       "description": "Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:51:06Z",
+      "last_updated": "2026-02-18T00:57:48Z",
       "session_id": "sess_1771375251_9d55f5",
       "researched": "2026-02-18T00:51:06Z",
       "artifacts": [
@@ -100,11 +100,6 @@
           "type": "research",
           "path": "specs/892_modify_henkinstep_add_negations/reports/research-001.md",
           "summary": "Analysis of henkinStep modification to add negations when rejecting packages, enabling maximal_tcs_is_mcs proof"
-        },
-        {
-          "type": "plan",
-          "path": "specs/892_modify_henkinstep_add_negations/plans/implementation-001.md",
-          "summary": "5-phase implementation plan to modify henkinStep and remove sorries from maximal_tcs_is_mcs"
         },
         {
           "type": "summary",
@@ -115,11 +110,15 @@
           "type": "research",
           "path": "specs/892_modify_henkinstep_add_negations/reports/research-002.md",
           "summary": "Team research: Counterexample INVALID - T-axiom proof unblocks task 892"
+        },
+        {
+          "path": "specs/892_modify_henkinstep_add_negations/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised plan v002: UNBLOCKED - T-axiom proves counterexample invalid"
         }
       ],
-      "planned": "2026-02-18T00:24:49Z",
-      "started": "2026-02-18T00:26:23Z",
-      "blocked_reason": "Mathematical impossibility: maximal_tcs_is_mcs theorem is FALSE. Counterexample: M = {neg(psi), G(psi)} is maximal in TCS but M union {F(psi)} is consistent, so M is not MCS. The proposed henkinStep modification cannot fix this fundamental issue."
+      "planned": "2026-02-18T00:57:48Z",
+      "started": "2026-02-18T00:26:23Z"
     },
     {
       "project_number": 890,
