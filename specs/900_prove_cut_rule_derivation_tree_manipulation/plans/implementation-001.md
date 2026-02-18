@@ -69,7 +69,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Positive Subformula Consistency Lemmas [NOT STARTED]
+### Phase 1: Positive Subformula Consistency Lemmas [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Prove `box_inner_consistent`, `all_future_inner_consistent`, `all_past_inner_consistent`
@@ -116,7 +116,7 @@ theorem box_inner_consistent (psi : Formula) (h : FormulaConsistent (Formula.box
 
 ---
 
-### Phase 2: Negative Subformula Consistency Lemmas [NOT STARTED]
+### Phase 2: Negative Subformula Consistency Lemmas [COMPLETED]
 
 - **Dependencies:** Phase 1 (uses similar techniques)
 - **Goal:** Prove `neg_box_neg_inner_consistent`, `neg_future_neg_inner_consistent`, `neg_past_neg_inner_consistent`

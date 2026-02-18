@@ -2,6 +2,7 @@ import Bimodal.Syntax.Formula
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.Propositional
 import Mathlib.Data.Finset.Basic
 import Mathlib.Data.Set.Finite.Basic
 import Mathlib.Data.Multiset.DershowitzManna
@@ -6900,7 +6901,20 @@ theorem box_inner_consistent (psi : Formula) (h : FormulaConsistent (Formula.box
     FormulaConsistent psi := by
   -- T axiom gives us Box psi -> psi, so from Box psi we can derive psi
   -- If psi ⊢ ⊥, then combined with Box psi ⊢ psi, we get Box psi ⊢ ⊥
-  sorry -- Requires cut rule derivation
+  intro h_incons
+  apply h
+  obtain ⟨d, _⟩ := h_incons
+  have h_psi_bot : ⊢ psi.imp Formula.bot :=
+    Bimodal.Metalogic.Core.deduction_theorem [] psi Formula.bot d
+  have h_t : ⊢ (Formula.box psi).imp psi :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.modal_t psi)
+  have h_chain : ⊢ (Formula.box psi).imp Formula.bot :=
+    Bimodal.Theorems.Combinators.imp_trans h_t h_psi_bot
+  have d_box_bot : [Formula.box psi] ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens [Formula.box psi] _ _
+      (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_chain (List.nil_subset _))
+      (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp))
+  exact ⟨d_box_bot, trivial⟩
 
 /--
 Subformula consistency for G (all_future): If G psi is consistent, then psi is consistent.
@@ -6908,7 +6922,20 @@ This follows from the temporal T axiom (reflexivity): G psi -> psi.
 -/
 theorem all_future_inner_consistent (psi : Formula) (h : FormulaConsistent (Formula.all_future psi)) :
     FormulaConsistent psi := by
-  sorry -- Similar to box_inner_consistent using temp_t_g axiom
+  intro h_incons
+  apply h
+  obtain ⟨d, _⟩ := h_incons
+  have h_psi_bot : ⊢ psi.imp Formula.bot :=
+    Bimodal.Metalogic.Core.deduction_theorem [] psi Formula.bot d
+  have h_t : ⊢ (Formula.all_future psi).imp psi :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future psi)
+  have h_chain : ⊢ (Formula.all_future psi).imp Formula.bot :=
+    Bimodal.Theorems.Combinators.imp_trans h_t h_psi_bot
+  have d_g_bot : [Formula.all_future psi] ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens [Formula.all_future psi] _ _
+      (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_chain (List.nil_subset _))
+      (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp))
+  exact ⟨d_g_bot, trivial⟩
 
 /--
 Subformula consistency for H (all_past): If H psi is consistent, then psi is consistent.
@@ -6916,7 +6943,20 @@ This follows from the temporal T axiom (reflexivity): H psi -> psi.
 -/
 theorem all_past_inner_consistent (psi : Formula) (h : FormulaConsistent (Formula.all_past psi)) :
     FormulaConsistent psi := by
-  sorry -- Similar to box_inner_consistent using temp_t_h axiom
+  intro h_incons
+  apply h
+  obtain ⟨d, _⟩ := h_incons
+  have h_psi_bot : ⊢ psi.imp Formula.bot :=
+    Bimodal.Metalogic.Core.deduction_theorem [] psi Formula.bot d
+  have h_t : ⊢ (Formula.all_past psi).imp psi :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past psi)
+  have h_chain : ⊢ (Formula.all_past psi).imp Formula.bot :=
+    Bimodal.Theorems.Combinators.imp_trans h_t h_psi_bot
+  have d_h_bot : [Formula.all_past psi] ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens [Formula.all_past psi] _ _
+      (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_chain (List.nil_subset _))
+      (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp))
+  exact ⟨d_h_bot, trivial⟩
 
 /--
 If neg(Box psi) is consistent, then neg psi is consistent.
@@ -6928,21 +6968,57 @@ A theorem is consistent with anything, so neg(Box psi) would be inconsistent
 -/
 theorem neg_box_neg_inner_consistent (psi : Formula) (h : FormulaConsistent (Formula.neg (Formula.box psi))) :
     FormulaConsistent (Formula.neg psi) := by
-  sorry -- Requires careful derivation tree manipulation using necessitation
+  intro h_incons
+  apply h
+  obtain ⟨d, _⟩ := h_incons
+  have h_neg_neg_psi : ⊢ psi.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [] psi.neg Formula.bot d
+  have h_dne : ⊢ psi.neg.neg.imp psi := Bimodal.Theorems.Propositional.double_negation psi
+  have h_psi : ⊢ psi := Bimodal.ProofSystem.DerivationTree.modus_ponens [] psi.neg.neg psi h_dne h_neg_neg_psi
+  have h_box_psi : ⊢ Formula.box psi := Bimodal.ProofSystem.DerivationTree.necessitation psi h_psi
+  have d_neg_box_bot : [Formula.neg (Formula.box psi)] ⊢ Formula.bot :=
+    derives_bot_from_phi_neg_phi
+      (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_box_psi (List.nil_subset _))
+      (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp))
+  exact ⟨d_neg_box_bot, trivial⟩
 
 /--
 If neg(G psi) is consistent, then neg psi is consistent.
 -/
 theorem neg_future_neg_inner_consistent (psi : Formula) (h : FormulaConsistent (Formula.neg (Formula.all_future psi))) :
     FormulaConsistent (Formula.neg psi) := by
-  sorry -- Similar to neg_box_neg_inner_consistent using temporal necessitation
+  intro h_incons
+  apply h
+  obtain ⟨d, _⟩ := h_incons
+  have h_neg_neg_psi : ⊢ psi.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [] psi.neg Formula.bot d
+  have h_dne : ⊢ psi.neg.neg.imp psi := Bimodal.Theorems.Propositional.double_negation psi
+  have h_psi : ⊢ psi := Bimodal.ProofSystem.DerivationTree.modus_ponens [] psi.neg.neg psi h_dne h_neg_neg_psi
+  have h_g_psi : ⊢ Formula.all_future psi := Bimodal.ProofSystem.DerivationTree.temporal_necessitation psi h_psi
+  have d_neg_g_bot : [Formula.neg (Formula.all_future psi)] ⊢ Formula.bot :=
+    derives_bot_from_phi_neg_phi
+      (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_g_psi (List.nil_subset _))
+      (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp))
+  exact ⟨d_neg_g_bot, trivial⟩
 
 /--
 If neg(H psi) is consistent, then neg psi is consistent.
 -/
 theorem neg_past_neg_inner_consistent (psi : Formula) (h : FormulaConsistent (Formula.neg (Formula.all_past psi))) :
     FormulaConsistent (Formula.neg psi) := by
-  sorry -- Similar using temporal duality and necessitation
+  intro h_incons
+  apply h
+  obtain ⟨d, _⟩ := h_incons
+  have h_neg_neg_psi : ⊢ psi.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [] psi.neg Formula.bot d
+  have h_dne : ⊢ psi.neg.neg.imp psi := Bimodal.Theorems.Propositional.double_negation psi
+  have h_psi : ⊢ psi := Bimodal.ProofSystem.DerivationTree.modus_ponens [] psi.neg.neg psi h_dne h_neg_neg_psi
+  have h_h_psi : ⊢ Formula.all_past psi := Bimodal.Theorems.past_necessitation psi h_psi
+  have d_neg_h_bot : [Formula.neg (Formula.all_past psi)] ⊢ Formula.bot :=
+    derives_bot_from_phi_neg_phi
+      (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_h_psi (List.nil_subset _))
+      (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp))
+  exact ⟨d_neg_h_bot, trivial⟩
 
 /--
 processWorkItem preserves seed consistency when the processed formula is consistent.
