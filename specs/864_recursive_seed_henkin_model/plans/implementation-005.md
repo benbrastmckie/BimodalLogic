@@ -335,6 +335,33 @@ After this implementation:
 - Sorries: 6 in Phase 5 section
 - Key insight: Closure invariant tracks PARENT formulas in worklist, algorithm processes parent and adds inner to all relevant positions
 
+**Session: 2026-02-18, sess_1771434699_fa2b5b (iteration 6)**
+- Expanded: `processWorkItem_preserves_closure` with case analysis on classifyFormula (10 cases)
+- Completed: 4 basic cases (atomic, bottom, implication, negation) - no sorries
+- Added: Proof structure for 6 modal/temporal cases (12 documented sorries)
+- Completed: Already-processed case in `processWorklistAux_preserves_closure` (Box, G, H subproofs using contradiction)
+- Sorries: 14 in Phase 5 (was 6, expanded structure adds 8)
+- Key helper lemmas used: `addFormula_mem_getFormulas_of_ne_original`, `addFormula_hasPosition_of_original`, `addFormula_preserves_mem_getFormulas_same`
+
+**Session: 2026-02-18, sess_1771434699_fa2b5b (iteration 7)**
+- Added: `mem_getFormulas_after_addFormula` helper lemma (sorry - characterizes membership after addFormula)
+- Added: `foldl_addFormula_fam_puts_phi_in_all` helper lemma (sorry - foldl adds phi to each family)
+- Added: `foldl_addFormula_times_puts_phi_in_all` helper lemma (sorry - foldl adds phi to each time)
+- Added: `hasPosition_implies_in_familyIndices` helper lemma (sorry - hasPosition implies familyIndices membership)
+- Refactored: `processWorkItem_preserves_closure` simplified to single sorry (was 10-case expansion with multiple sorries)
+- Sorries: 8 in Phase 5 section (was 14, consolidated structure)
+- Note: Helper lemmas provide clear proof obligations for future iterations
+
+**Session: 2026-02-18, sess_1771434699_fa2b5b (iteration 8 - FINAL)**
+- Proved: `hasPosition_implies_in_familyIndices` - unfold definitions, obtain entry from any, apply mem_eraseDups + mem_map
+- Proved: `mem_getFormulas_after_addFormula` - 110-line proof covering same-position and different-position cases, using Set.mem_insert_iff, List.findIdx_modify_of_eq_false
+- Proved: `foldl_addFormula_fam_puts_phi_in_all` - nested induction on family list, uses addFormula_formula_in_getFormulas + addFormula_preserves_getFormulas_diff_fam
+- Proved: `foldl_addFormula_times_puts_phi_in_all` - similar pattern with time list induction
+- Proved: Already-processed branch in `processWorklistAux_preserves_closure` - used contradiction (h_proc contradicts h_eq.2.2.2)
+- Sorries: 3 in Phase 5 section (was 8, eliminated 5)
+- Remaining: processWorkItem_preserves_closure (main), fuel=0 case, process application
+- Total sorries in RecursiveSeed.lean: 22 (down from 25)
+
 ---
 
 ### Phase 6: Truth Lemma Connection [NOT STARTED]

@@ -7433,7 +7433,124 @@ private lemma mem_getFormulas_after_addFormula
     (seed : ModelSeed) (addF : Nat) (addT : Int) (psi phi : Formula) (ty : SeedEntryType)
     (f : Nat) (t : Int) (h_mem : phi ∈ (seed.addFormula addF addT psi ty).getFormulas f t) :
     phi ∈ seed.getFormulas f t ∨ (phi = psi ∧ f = addF ∧ t = addT) := by
-  sorry -- getFormulas membership characterization after addFormula
+  by_cases h_pos : f = addF ∧ t = addT
+  · obtain ⟨hf, ht⟩ := h_pos
+    subst hf ht
+    unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry at h_mem
+    cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) with
+    | none =>
+      simp only at h_mem
+      rw [List.find?_append] at h_mem
+      have h_none : seed.entries.find? (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) = none := by
+        rw [List.find?_eq_none]
+        intro x hx
+        exact List.findIdx?_eq_none_iff.mp h_find x hx
+      simp only [h_none, Option.none_or] at h_mem
+      simp only [List.find?_cons_of_pos, beq_self_eq_true, and_self, ↑decide, Bool.and_self] at h_mem
+      right; exact ⟨h_mem, rfl, rfl⟩
+    | some idx =>
+      simp only at h_mem
+      have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+      have h_idx_lt : idx < seed.entries.length := h_spec.1
+      have h_pred : (seed.entries[idx].familyIdx == addF ∧ seed.entries[idx].timeIdx == addT) = true := h_spec.2.1
+      set entry' := { seed.entries[idx] with formulas := insert psi seed.entries[idx].formulas } with h_entry'
+      have h_pres : (entry'.familyIdx == addF ∧ entry'.timeIdx == addT) = true := h_pred
+      have h_find_modified : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).find?
+          (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) = some entry' := by
+        rw [List.find?_eq_some_iff_getElem]
+        constructor
+        · exact h_pres
+        · have h_len : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).length =
+              seed.entries.length := List.length_modify _ _ _
+          use idx, (h_len ▸ h_idx_lt)
+          constructor
+          · rw [List.getElem_modify]; simp only [↑↓reduceIte, h_entry']
+          · intro j hj
+            rw [List.getElem_modify]
+            split
+            · omega
+            · have := h_spec.2.2 j hj
+              simp only [Bool.not_eq_true] at this
+              simp only [this, Bool.not_false]
+      rw [h_find_modified, h_entry'] at h_mem
+      have h_find_orig : seed.entries.find? (fun e => e.familyIdx == addF ∧ e.timeIdx == addT) = some seed.entries[idx] := by
+        rw [List.find?_eq_some_iff_getElem]
+        constructor
+        · exact h_pred
+        · use idx, h_idx_lt
+          constructor
+          · rfl
+          · intro j hj
+            have := h_spec.2.2 j hj
+            simp only [Bool.not_eq_true] at this
+            simp only [this, Bool.not_false]
+      -- h_mem : phi ∈ insert psi seed.entries[idx].formulas
+      -- This means phi = psi ∨ phi ∈ seed.entries[idx].formulas
+      cases Set.mem_insert_iff.mp h_mem with
+      | inl h_eq => right; exact ⟨h_eq, rfl, rfl⟩
+      | inr h_orig =>
+        left
+        unfold ModelSeed.getFormulas ModelSeed.findEntry
+        simp only [h_find_orig]
+        exact h_orig
+  · left
+    have h_diff : f ≠ addF ∨ t ≠ addT := by
+      push_neg at h_pos
+      by_contra h_neg
+      push_neg at h_neg
+      exact h_pos h_neg.1 h_neg.2
+    unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry at h_mem
+    let p := fun e : SeedEntry => e.familyIdx == f ∧ e.timeIdx == t
+    let p' := fun e : SeedEntry => e.familyIdx == addF ∧ e.timeIdx == addT
+    have h_pred_neq : ∀ (e : SeedEntry), (p e = true ∧ p' e = true) → False := by
+      intro e ⟨hp, hp'⟩
+      simp only [p, p', beq_iff_eq, Bool.and_eq_true] at hp hp'
+      rcases h_diff with h_fam | h_time
+      · exact h_fam (hp.1.symm.trans hp'.1)
+      · exact h_time (hp.2.symm.trans hp'.2)
+    cases h_find : seed.entries.findIdx? p' with
+    | none =>
+      simp only at h_mem
+      rw [List.find?_append] at h_mem
+      have h_new_pred : p { familyIdx := addF, timeIdx := addT, formulas := {psi}, entryType := ty } = false := by
+        simp only [p, Bool.and_eq_false_iff]
+        rcases h_diff with h_fam | h_time
+        · left; simp [beq_iff_eq]; exact h_fam
+        · right; simp [beq_iff_eq]; exact h_time
+      have h_find_new : [{ familyIdx := addF, timeIdx := addT, formulas := ({psi} : Set Formula), entryType := ty }].find? p = none := by
+        rw [List.find?_eq_none]
+        intro x hx
+        simp only [List.mem_singleton] at hx
+        subst hx
+        simp only [Bool.not_eq_true]
+        exact h_new_pred
+      rw [h_find_new, Option.or_none] at h_mem
+      unfold ModelSeed.getFormulas ModelSeed.findEntry
+      exact h_mem
+    | some idx =>
+      simp only at h_mem
+      have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+      have h_idx_lt : idx < seed.entries.length := h_spec.1
+      have h_pred_idx : p' seed.entries[idx] = true := h_spec.2.1
+      have h_p_idx_false : p seed.entries[idx] = false := by
+        by_contra h_p_true
+        push_neg at h_p_true
+        simp only [Bool.not_eq_false] at h_p_true
+        exact h_pred_neq seed.entries[idx] ⟨h_p_true, h_pred_idx⟩
+      -- The find? of modified list for p must equal find? of original for p
+      -- because modify only changes entry at idx, and p idx = false
+      have h_len : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).length =
+          seed.entries.length := List.length_modify _ _ _
+      have h_find_unchanged : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).find? p =
+          seed.entries.find? p := by
+        conv_rhs => rw [List.find?_eq_getElem?_find]
+        conv_lhs => rw [List.find?_eq_getElem?_find]
+        congr 1
+        rw [List.findIdx_modify_of_eq_false]
+        exact h_p_idx_false
+      rw [h_find_unchanged] at h_mem
+      unfold ModelSeed.getFormulas ModelSeed.findEntry
+      exact h_mem
 
 /--
 Helper: foldl addFormula over a list of family indices puts phi in each family's getFormulas.
@@ -7443,7 +7560,30 @@ private lemma foldl_addFormula_fam_puts_phi_in_all
     (phi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed)
     (f : Nat) (h_in : f ∈ fams) :
     phi ∈ (fams.foldl (fun s fam => s.addFormula fam t phi .universal_target) seed).getFormulas f t := by
-  sorry -- foldl over families adds phi to each
+  induction fams generalizing seed with
+  | nil => exact absurd h_in (List.not_mem_nil f)
+  | cons g gs ih =>
+    simp only [List.foldl_cons]
+    by_cases h_eq : f = g
+    · subst h_eq
+      -- After adding at f, show phi ∈ getFormulas f t
+      -- Then show foldl over rest preserves this
+      have h_added : phi ∈ (seed.addFormula f t phi .universal_target).getFormulas f t := addFormula_formula_in_getFormulas seed f t phi .universal_target
+      -- Use addFormula_preserves_mem_getFormulas_same iteratively through foldl
+      induction gs generalizing seed with
+      | nil => exact h_added
+      | cons h hs ihs =>
+        simp only [List.foldl_cons]
+        apply ihs (seed.addFormula f t phi .universal_target).addFormula h t phi .universal_target
+        by_cases h_eq' : f = h
+        · subst h_eq'; exact addFormula_formula_in_getFormulas _ f t phi .universal_target
+        · have h_diff : f ≠ h := h_eq'
+          rw [addFormula_preserves_getFormulas_diff_fam _ f h t phi .universal_target h_diff]
+          exact h_added
+    · apply ih
+      cases h_in with
+      | head => exact absurd rfl h_eq
+      | tail _ hgs => exact hgs
 
 /--
 Helper: foldl addFormula over times puts phi at each time.
@@ -7453,7 +7593,27 @@ private lemma foldl_addFormula_times_puts_phi_in_all
     (phi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
     (t : Int) (h_in : t ∈ times) :
     phi ∈ (times.foldl (fun s time => s.addFormula famIdx time phi .universal_target) seed).getFormulas famIdx t := by
-  sorry -- foldl over times adds phi to each
+  induction times generalizing seed with
+  | nil => exact absurd h_in (List.not_mem_nil t)
+  | cons s ss ih =>
+    simp only [List.foldl_cons]
+    by_cases h_eq : t = s
+    · subst h_eq
+      have h_added : phi ∈ (seed.addFormula famIdx t phi .universal_target).getFormulas famIdx t := addFormula_formula_in_getFormulas seed famIdx t phi .universal_target
+      induction ss generalizing seed with
+      | nil => exact h_added
+      | cons u us ihs =>
+        simp only [List.foldl_cons]
+        apply ihs (seed.addFormula famIdx t phi .universal_target).addFormula famIdx u phi .universal_target
+        by_cases h_eq' : t = u
+        · subst h_eq'; exact addFormula_formula_in_getFormulas _ famIdx t phi .universal_target
+        · have h_diff : t ≠ u := h_eq'
+          rw [addFormula_preserves_getFormulas_diff_time _ famIdx t u phi .universal_target h_diff]
+          exact h_added
+    · apply ih
+      cases h_in with
+      | head => exact absurd rfl h_eq
+      | tail _ hss => exact hss
 
 /--
 Helper: When hasPosition holds in seed, the family index is in familyIndices.
@@ -7526,12 +7686,29 @@ theorem processWorklistAux_preserves_closure (fuel : Nat) (state : WorklistState
             obtain ⟨w, hw, h_eq⟩ := h_pending
             rw [h_wl] at hw
             cases hw with
-            | head _ => left; sorry -- item already processed
+            | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
             | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
-        constructor <;> {
+        constructor
+        · -- G case (all_future)
           intro f t psi h_formula
-          sorry -- Similar pattern for G/H
-        }
+          cases h_inv.2.1 f t psi h_formula with
+          | inl h_closed => left; exact h_closed
+          | inr h_pending =>
+            obtain ⟨w, hw, h_eq⟩ := h_pending
+            rw [h_wl] at hw
+            cases hw with
+            | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
+            | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
+        · -- H case (all_past)
+          intro f t psi h_formula
+          cases h_inv.2.2 f t psi h_formula with
+          | inl h_closed => left; exact h_closed
+          | inr h_pending =>
+            obtain ⟨w, hw, h_eq⟩ := h_pending
+            rw [h_wl] at hw
+            cases hw with
+            | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
+            | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
       · -- Process the item
         simp only [h_proc, ↓reduceIte]
         apply ih
