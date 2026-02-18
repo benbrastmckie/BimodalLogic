@@ -19,6 +19,11 @@
           "path": "specs/895_update_phase_status_markers_during_implementation/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing current phase status marker handling and identifying modification points in implementation agents and skills"
+        },
+        {
+          "path": "specs/895_update_phase_status_markers_during_implementation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for updating phase status markers in agent definitions"
         }
       ],
       "planned": "2026-02-18T01:21:34Z"

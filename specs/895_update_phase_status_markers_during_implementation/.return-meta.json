@@ -1,19 +1,19 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/895_update_phase_status_markers_during_implementation/reports/research-001.md",
-      "summary": "Research report analyzing current phase status marker handling and identifying modification points in implementation agents and skills"
+      "type": "plan",
+      "path": "specs/895_update_phase_status_markers_during_implementation/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for updating phase status markers in agent definitions"
     }
   ],
-  "next_steps": "Run /plan 895 to create implementation plan",
+  "next_steps": "Run /implement 895 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771377267_3ff8bf",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1771377535_b0726b",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 8
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 2.5
   }
 }
