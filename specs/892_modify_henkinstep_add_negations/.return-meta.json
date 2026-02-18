@@ -1,21 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-17T12:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/892_modify_henkinstep_add_negations/reports/research-001.md",
-      "summary": "Analysis of henkinStep modification to add negations when rejecting packages, enabling maximal_tcs_is_mcs proof"
+      "type": "plan",
+      "path": "specs/892_modify_henkinstep_add_negations/plans/implementation-001.md",
+      "summary": "5-phase implementation plan to modify henkinStep and remove sorries from maximal_tcs_is_mcs"
     }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Research completed. Identified fix: modify henkinStep to add neg(phi) when temporalPackage(phi) is inconsistent."
-  },
+  "next_steps": "Run /implement 892 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771373713_7aa16f",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771374136_953117",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.0
   }
 }

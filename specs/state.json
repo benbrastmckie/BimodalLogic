@@ -64,13 +64,13 @@
     {
       "project_number": 892,
       "project_name": "modify_henkinstep_add_negations",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "effort": "2-4 hours",
       "description": "Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.",
       "parent_task": 888,
       "created": "2026-02-18T00:13:53Z",
-      "last_updated": "2026-02-18T00:22:30Z",
+      "last_updated": "2026-02-18T00:24:49Z",
       "session_id": "sess_1771374136_953117",
       "researched": "2026-02-18T00:19:42Z",
       "artifacts": [
@@ -78,8 +78,14 @@
           "type": "research",
           "path": "specs/892_modify_henkinstep_add_negations/reports/research-001.md",
           "summary": "Analysis of henkinStep modification to add negations when rejecting packages, enabling maximal_tcs_is_mcs proof"
+        },
+        {
+          "type": "plan",
+          "path": "specs/892_modify_henkinstep_add_negations/plans/implementation-001.md",
+          "summary": "5-phase implementation plan to modify henkinStep and remove sorries from maximal_tcs_is_mcs"
         }
-      ]
+      ],
+      "planned": "2026-02-18T00:24:49Z"
     },
     {
       "project_number": 890,
