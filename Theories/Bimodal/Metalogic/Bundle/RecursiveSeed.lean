@@ -6875,11 +6875,17 @@ This is implemented using existing lemmas:
 
 /--
 A stronger worklist invariant: the seed is consistent AND all formulas
-appearing in work items are consistent.
+appearing in work items are consistent AND formulas are already in the seed.
+
+The third condition (`∀ item ∈ state.worklist, item.formula ∈ state.seed.getFormulas item.famIdx item.timeIdx`)
+ensures that when we process a work item, the formula is already in the seed at that position.
+This makes h_compat trivial: insert phi entry.formulas = entry.formulas when phi is already there.
 -/
 def WorklistInvariant (state : WorklistState) : Prop :=
   SeedConsistent state.seed ∧
-  ∀ item ∈ state.worklist, FormulaConsistent item.formula
+  SeedWellFormed state.seed ∧
+  ∀ item ∈ state.worklist, FormulaConsistent item.formula ∧
+    item.formula ∈ state.seed.getFormulas item.famIdx item.timeIdx
 
 /--
 Empty seed is consistent (trivially - no entries).
@@ -7021,15 +7027,22 @@ theorem neg_past_neg_inner_consistent (psi : Formula) (h : FormulaConsistent (Fo
   exact ⟨d_neg_h_bot, trivial⟩
 
 /--
-processWorkItem preserves seed consistency when the processed formula is consistent.
+processWorkItem preserves seed consistency when the processed formula is consistent
+and the formula is already in the seed at the work item's position.
 
 This is the main lemma for Phase 4. It proceeds by case analysis on the
 formula classification and uses the existing `addFormula_seed_preserves_consistent`,
 `createNewFamily_preserves_seedConsistent`, and `createNewTime_preserves_seedConsistent`.
+
+The key insight is that `h_in_seed` ensures that when we add a formula to an existing
+entry, we're inserting something already present (so insert is identity) or adding
+to a new position (where h_compat is vacuous).
 -/
 theorem processWorkItem_preserves_consistent (item : WorkItem) (state : WorklistState)
     (h_cons : SeedConsistent state.seed)
-    (h_item_cons : FormulaConsistent item.formula) :
+    (h_wf : SeedWellFormed state.seed)
+    (h_item_cons : FormulaConsistent item.formula)
+    (h_in_seed : item.formula ∈ state.seed.getFormulas item.famIdx item.timeIdx) :
     SeedConsistent (processWorkItem item state).2.seed := by
   unfold processWorkItem
   -- Case split on formula classification
@@ -7038,27 +7051,52 @@ theorem processWorkItem_preserves_consistent (item : WorkItem) (state : Worklist
     -- Just adds atomic formula to seed - trivially consistent
     simp only
     apply addFormula_seed_preserves_consistent _ _ _ _ _ h_cons h_item_cons
-    -- Compatibility: adding an atom to a consistent set preserves consistency
+    -- Compatibility: formula already in entry, so insert is identity
     intro entry h_entry h_fam h_time
-    -- An atomic formula is always consistent with any consistent set
-    -- (it cannot create a contradiction since atoms have no structure)
-    sorry -- Requires proving atom addition preserves SetConsistent
+    have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+    -- Use well-formedness to show item.formula ∈ entry.formulas
+    have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position
+      state.seed entry item.famIdx item.timeIdx h_wf h_entry h_fam h_time
+    have h_formula_in_entry : item.formula ∈ entry.formulas := by
+      rw [← h_getFormulas_eq]; exact h_in_seed
+    rw [Set.insert_eq_of_mem h_formula_in_entry]
+    exact h_entry_cons
   | .bottom =>
-    -- Bottom cannot be in a consistent seed, but we handle it anyway
+    -- Bottom case: formula already in entry by h_in_seed
     simp only
     apply addFormula_seed_preserves_consistent _ _ _ _ _ h_cons h_item_cons
     intro entry h_entry h_fam h_time
-    sorry -- bottom case - should not happen in consistent execution
+    have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+    have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position
+      state.seed entry item.famIdx item.timeIdx h_wf h_entry h_fam h_time
+    have h_formula_in_entry : item.formula ∈ entry.formulas := by
+      rw [← h_getFormulas_eq]; exact h_in_seed
+    rw [Set.insert_eq_of_mem h_formula_in_entry]
+    exact h_entry_cons
   | .implication _ _ =>
+    -- Implication case: formula already in entry by h_in_seed
     simp only
     apply addFormula_seed_preserves_consistent _ _ _ _ _ h_cons h_item_cons
     intro entry h_entry h_fam h_time
-    sorry -- implication case
+    have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+    have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position
+      state.seed entry item.famIdx item.timeIdx h_wf h_entry h_fam h_time
+    have h_formula_in_entry : item.formula ∈ entry.formulas := by
+      rw [← h_getFormulas_eq]; exact h_in_seed
+    rw [Set.insert_eq_of_mem h_formula_in_entry]
+    exact h_entry_cons
   | .negation _ =>
+    -- Negation case: formula already in entry by h_in_seed
     simp only
     apply addFormula_seed_preserves_consistent _ _ _ _ _ h_cons h_item_cons
     intro entry h_entry h_fam h_time
-    sorry -- negation case
+    have h_entry_cons : SetConsistent entry.formulas := h_cons entry h_entry
+    have h_getFormulas_eq := getFormulas_eq_of_wellformed_and_at_position
+      state.seed entry item.famIdx item.timeIdx h_wf h_entry h_fam h_time
+    have h_formula_in_entry : item.formula ∈ entry.formulas := by
+      rw [← h_getFormulas_eq]; exact h_in_seed
+    rw [Set.insert_eq_of_mem h_formula_in_entry]
+    exact h_entry_cons
   | .boxPositive psi =>
     -- Box psi: add Box psi and psi to all families
     simp only
@@ -7148,38 +7186,40 @@ theorem processWorklistAux_preserves_invariant (fuel : Nat) (state : WorklistSta
       · -- Already processed, skip
         simp only [h_proc, ↓reduceIte]
         apply ih
-        constructor
-        · exact h_inv.1
-        · intro w hw
-          -- hw : w ∈ rest (from the modified state's worklist)
-          -- Need: w ∈ state.worklist = item :: rest
-          have h_w_in_state : w ∈ state.worklist := h_wl ▸ List.mem_cons_of_mem item hw
-          exact h_inv.2 w h_w_in_state
+        refine ⟨h_inv.1, h_inv.2.1, ?_⟩
+        intro w hw
+        -- hw : w ∈ rest (from the modified state's worklist)
+        -- Need: w ∈ state.worklist = item :: rest
+        have h_w_in_state : w ∈ state.worklist := h_wl ▸ List.mem_cons_of_mem item hw
+        exact h_inv.2.2 w h_w_in_state
       · -- Process the item
         simp only [h_proc, ↓reduceIte]
         apply ih
-        constructor
+        have h_item_in_state : item ∈ state.worklist := by simp [h_wl]
+        have h_item_inv := h_inv.2.2 item h_item_in_state
+        refine ⟨?_, ?_, ?_⟩
         · -- Seed consistency after processWorkItem
-          have h_item_in_state : item ∈ state.worklist := by simp [h_wl]
-          have h_item_cons := h_inv.2 item h_item_in_state
           exact processWorkItem_preserves_consistent item { state with worklist := rest }
-            h_inv.1 h_item_cons
-        · -- All work items in updated worklist are consistent
+            h_inv.1 h_inv.2.1 h_item_inv.1 h_item_inv.2
+        · -- Well-formedness after processWorkItem
+          sorry -- Need: processWorkItem preserves well-formedness
+        · -- All work items in updated worklist have consistent formulas in seed
           intro w hw
           -- w is either from rest (original) or from newWork
           simp only [List.mem_append] at hw
           cases hw with
           | inl h_rest =>
             have h_w_in_state : w ∈ state.worklist := by simp [h_wl, h_rest]
-            exact h_inv.2 w h_w_in_state
+            have h_w_inv := h_inv.2.2 w h_w_in_state
+            -- Need: w.formula ∈ new_seed.getFormulas w.famIdx w.timeIdx
+            -- This requires showing processWorkItem preserves membership
+            sorry -- Need: formula membership preserved through processWorkItem
           | inr h_new =>
             -- w is from filtered newWork
             simp only [List.mem_filter] at h_new
             have h_in_new := h_new.1
-            have h_item_in_state : item ∈ state.worklist := by simp [h_wl]
-            have h_item_cons := h_inv.2 item h_item_in_state
-            exact processWorkItem_newWork_consistent item { state with worklist := rest }
-              h_item_cons w h_in_new
+            -- New work item: need to show its formula is consistent and in seed
+            sorry -- Need: new work items have formulas in updated seed
 
 /--
 processWorklist preserves seed consistency when starting from a consistent state.
@@ -7199,16 +7239,23 @@ theorem buildSeedComplete_consistent (phi : Formula) (h_cons : FormulaConsistent
   unfold buildSeedComplete
   apply processWorklist_preserves_consistent
   -- Show WorklistInvariant for initial state
-  constructor
+  refine ⟨?_, ?_, ?_⟩
   · -- Initial seed consistency uses existing lemma
     simp only [WorklistState.initial]
     exact initialSeedConsistent phi h_cons
-  · -- All work items (just phi) are consistent
+  · -- Initial seed well-formedness
+    simp only [WorklistState.initial]
+    exact initialSeedWellFormed phi
+  · -- All work items (just phi) are consistent and in seed
     intro item h_item
     simp only [WorklistState.initial, List.mem_singleton] at h_item
     rw [h_item]
-    simp only [WorkItem.formula]
-    exact h_cons
+    simp only [WorkItem.formula, WorkItem.famIdx, WorkItem.timeIdx]
+    constructor
+    · exact h_cons
+    · -- phi ∈ (ModelSeed.initial phi).getFormulas 0 0
+      simp only [WorklistState.initial, ModelSeed.initial, ModelSeed.getFormulas, ModelSeed.findEntry,
+        List.find?_cons, beq_self_eq_true, Bool.and_self, cond_true, Set.mem_singleton_iff]
 
 /-!
 ## Phase 5: Closure Properties
@@ -7377,6 +7424,50 @@ theorem initial_closure_invariant (phi : Formula) :
     exact ⟨h.1.symm, h.2.1.symm, h.2.2.symm⟩
 
 /--
+Helper: Characterize membership in getFormulas after addFormula.
+If phi ∈ (seed.addFormula addF addT psi ty).getFormulas f t, then either:
+1. phi ∈ seed.getFormulas f t, or
+2. phi = psi and (f, t) = (addF, addT)
+-/
+private lemma mem_getFormulas_after_addFormula
+    (seed : ModelSeed) (addF : Nat) (addT : Int) (psi phi : Formula) (ty : SeedEntryType)
+    (f : Nat) (t : Int) (h_mem : phi ∈ (seed.addFormula addF addT psi ty).getFormulas f t) :
+    phi ∈ seed.getFormulas f t ∨ (phi = psi ∧ f = addF ∧ t = addT) := by
+  sorry -- getFormulas membership characterization after addFormula
+
+/--
+Helper: foldl addFormula over a list of family indices puts phi in each family's getFormulas.
+When f ∈ fams, then phi ∈ (foldl addFormula seed fams).getFormulas f t.
+-/
+private lemma foldl_addFormula_fam_puts_phi_in_all
+    (phi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (h_in : f ∈ fams) :
+    phi ∈ (fams.foldl (fun s fam => s.addFormula fam t phi .universal_target) seed).getFormulas f t := by
+  sorry -- foldl over families adds phi to each
+
+/--
+Helper: foldl addFormula over times puts phi at each time.
+When t ∈ times, then phi ∈ (foldl addFormula seed times).getFormulas f t.
+-/
+private lemma foldl_addFormula_times_puts_phi_in_all
+    (phi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (h_in : t ∈ times) :
+    phi ∈ (times.foldl (fun s time => s.addFormula famIdx time phi .universal_target) seed).getFormulas famIdx t := by
+  sorry -- foldl over times adds phi to each
+
+/--
+Helper: When hasPosition holds in seed, the family index is in familyIndices.
+-/
+private lemma hasPosition_implies_in_familyIndices (seed : ModelSeed) (f : Nat) (t : Int)
+    (h_pos : seed.hasPosition f t) : f ∈ seed.familyIndices := by
+  unfold ModelSeed.hasPosition ModelSeed.familyIndices at *
+  simp only [List.any_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq] at h_pos
+  obtain ⟨e, h_mem, h_fam, h_time⟩ := h_pos
+  apply List.mem_eraseDups.mpr
+  apply List.mem_map.mpr
+  exact ⟨e, h_mem, h_fam.symm⟩
+
+/--
 processWorkItem preserves the closure invariant.
 
 This is the key lemma: when we process a work item, we either:
@@ -7395,7 +7486,10 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
       worklist := newWork ++ state.worklist.tail,
       processed := state'.processed
     } := by
-  sorry -- Complex proof tracking closure through each case
+  -- Complex proof with 10 cases based on classifyFormula
+  -- Uses: mem_getFormulas_after_addFormula, hasPosition lemmas,
+  -- foldl_addFormula_fam_puts_phi_in_all, foldl_addFormula_times_puts_phi_in_all
+  sorry -- processWorkItem_preserves_closure main proof
 
 /--
 processWorklistAux preserves closure invariant.

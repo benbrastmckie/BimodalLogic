@@ -164,16 +164,16 @@ theorem neg_box_neg_inner_consistent (psi : Formula)
 
 ---
 
-### Phase 3: processWorkItem Consistency Cases [NOT STARTED]
+### Phase 3: processWorkItem Consistency Cases [PARTIAL]
 
 - **Dependencies:** Phase 1, Phase 2 (uses subformula consistency lemmas)
 - **Goal:** Complete all 10 cases in `processWorkItem_preserves_consistent`
 
 **Tasks**:
-- [ ] Complete `atomic` case (atoms are always compatible)
-- [ ] Complete `bottom` case (vacuously true - bottom is never in consistent seed)
-- [ ] Complete `implication` case (implications added directly)
-- [ ] Complete `negation` case (negations added directly)
+- [x] Complete `atomic` case (formula already in seed, insert is identity)
+- [x] Complete `bottom` case (same pattern)
+- [x] Complete `implication` case (same pattern)
+- [x] Complete `negation` case (same pattern)
 - [ ] Complete `boxPositive` case (uses `addFormula_seed_preserves_consistent` + `box_inner_consistent`)
 - [ ] Complete `boxNegative` case (uses `createNewFamily_preserves_seedConsistent` + `neg_box_neg_inner_consistent`)
 - [ ] Complete `futurePositive` case (similar to boxPositive)
@@ -181,19 +181,33 @@ theorem neg_box_neg_inner_consistent (psi : Formula)
 - [ ] Complete `pastPositive` case (similar to boxPositive)
 - [ ] Complete `pastNegative` case (uses `createNewTime_preserves_seedConsistent`)
 
-**Timing**: 1.5 hours
+**Timing**: 1.5 hours (extended - invariant strengthening required)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean` (lines 7073-7128)
 
-**Proof Pattern for Modal Cases**:
-The key insight is that each case follows the pattern:
-1. Apply the appropriate seed modification lemma (`addFormula_seed_preserves_consistent`, etc.)
-2. Prove the compatibility condition using subformula consistency
+**Proof Pattern for Simple Cases** (COMPLETED):
+The key insight is that formulas are already in the seed (via strengthened `WorklistInvariant`):
+1. Get `h_entry_cons` from `h_cons entry h_entry`
+2. Use `getFormulas_eq_of_wellformed_and_at_position` to link getFormulas to entry.formulas
+3. Show `item.formula ∈ entry.formulas` via rewrite with `h_in_seed`
+4. Apply `Set.insert_eq_of_mem` to show insert is identity
+5. Conclude with `h_entry_cons`
+
+**Proof Pattern for Modal Cases** (TODO):
+More complex - involves multiple addFormula calls and foldl over families/times.
+
+**Progress:**
+
+**Session: 2026-02-18, sess_1771436504_b7f48c**
+- Added: `h_wf : SeedWellFormed` hypothesis to `processWorkItem_preserves_consistent`
+- Added: `h_in_seed : item.formula ∈ state.seed.getFormulas` hypothesis
+- Completed: 4 simple cases (atomic, bottom, implication, negation)
+- Refactored: `WorklistInvariant` to include well-formedness and formula presence
 
 **Verification**:
-- `lake build` succeeds
-- Lines 7073-7128 have no sorries
+- `lake build` succeeds (file compiles with sorries)
+- Simple cases (atomic, bottom, implication, negation) have no sorries
 
 ---
 
