@@ -64,7 +64,50 @@ In bilateral semantics, propositions are ordered by TWO distinct orderings, each
 |---------|-------|--------|-------|
 | Assignment | `\assignment` | σ | Variable assignment |
 | Substitution | `\assignsub{v}{x}` | σ[v/x] | Assignment update |
-| Semantic brackets | `\sem{t}` | ⟦t⟧ | Term extension |
+| Semantic brackets | `\sem{t}` | ⟦t⟧ | Term extension (DEPRECATED: use `\ext{t}`) |
+
+### Semantic Functions: Extension vs Interpretation
+
+The Logos system distinguishes between two semantic functions that are often conflated in the literature. This distinction is crucial for stating the homomorphism from sentences to propositions.
+
+#### Extension (`\ext`)
+
+The **extension function** `\ext{t}^\sigma_M` gives the denotation (extension) of a term `t` relative to an assignment `\sigma` in model `M`. This applies to:
+
+- **Individual terms**: `\ext{t}^\sigma_M` returns a domain element
+- **Predicate terms**: `\ext{P}^\sigma_M` returns a set of tuples
+- **Function terms**: `\ext{f}^\sigma_M` returns a function
+
+| Concept | Macro | Output | Usage |
+|---------|-------|--------|-------|
+| Term extension | `\ext{t}` | ⟦t⟧ | Extension of term t |
+| Annotated extension | `\ext{t}^\sigma_M` | ⟦t⟧^σ_M | Extension relative to σ in M |
+
+**Note**: `\sem{t}` is deprecated in favor of `\ext{t}` to clarify that this function computes extensions (denotations), not interpretations.
+
+#### Interpretation (`\interp{\cdot}`)
+
+The **interpretation function** `\interp{\cdot}^\sigma_M` gives the semantic interpretation of a *sentence* (closed formula) as a bilateral proposition. This is the key homomorphism from the syntactic algebra of sentences to the semantic algebra of propositions.
+
+| Concept | Macro | Output | Usage |
+|---------|-------|--------|-------|
+| Sentence interpretation | `\interp{\phi}^\sigma_M` | I(φ)^σ_M | Interpretation of sentence φ |
+| Dot notation | `\interp{\cdot}` | I(·) | Interpretation as a map |
+
+**Important distinctions**:
+- `\interp{f}` (bare symbol, no `\cdot`) refers to the interpretation of a *specific non-logical symbol* `f` in the signature (e.g., `\interp{R}` for relation symbol R). This assigns sets/functions to symbols.
+- `\interp{\cdot}` (with `\cdot` placeholder) denotes the semantic interpretation *function* that maps sentences to propositions.
+
+**When to use which**:
+- Use `\ext{t}^\sigma_M` when computing what a term denotes (domain element, set, function)
+- Use `\interp{\phi}^\sigma_M` when computing the bilateral proposition expressed by a sentence
+- Use `\interp{f}` when referring to the interpretation of a specific symbol in the model
+- Use `\interp{\cdot}` when referring to the interpretation function as a map from sentences to propositions
+
+**Homomorphism property**: The key theorem is that `\interp{\cdot}^\sigma_M` is a homomorphism from the Boolean algebra of sentences to the bilateral algebra of propositions:
+- `\interp{\neg\phi} = \neg\interp{\phi}`
+- `\interp{\phi \land \psi} = \interp{\phi} \land \interp{\psi}`
+- etc.
 
 ### Temporal Order
 | Concept | Macro | Output | Usage |
