@@ -2,6 +2,290 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 901,
+      "project_name": "configure_subagent_model_routing",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-19T01:23:11Z",
+      "last_updated": "2026-02-19T01:34:57Z",
+      "session_id": "sess_1771464664_a5b4c9",
+      "researched": "2026-02-19T01:26:18Z",
+      "artifacts": [
+        {
+          "path": "specs/901_configure_subagent_model_routing/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on model routing configuration for subagents in team skills"
+        },
+        {
+          "path": "specs/901_configure_subagent_model_routing/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for configuring subagent model routing"
+        },
+        {
+          "path": "specs/901_configure_subagent_model_routing/summaries/implementation-summary-20260218.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all 5 phases completed"
+        }
+      ],
+      "planned": "2026-02-19T01:30:10Z",
+      "started": "2026-02-19T01:31:25Z",
+      "completed": "2026-02-19T01:34:57Z",
+      "completion_summary": "Configured model routing: Lean subagents use Opus 4.6, all others use Sonnet 4.6.",
+      "claudemd_suggestions": "Updated CLAUDE.md Team Skill Model Defaults table, team-wave-helpers.md, and 3 team skill files to change general default_model from inherit to sonnet",
+      "archived": "2026-02-19T01:51:31Z"
+    },
+    {
+      "project_number": 899,
+      "project_name": "define_identity_sentences_syntax_constitutive_foundation",
+      "status": "completed",
+      "language": "latex",
+      "effort": "1 hour",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-18T06:43:00Z",
+      "description": "Add a careful definition of identity sentences in the syntax section of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex, near line 629 (before the Constitutive Consequence subsection). The definition should explain that identity sentences are the target of the constitutive foundation from which to build on in the dynamical foundation in the next chapter. Source: TODO: tag at line 629 of 02-ConstitutiveFoundation.tex.",
+      "session_id": "sess_1771396705_99e3ac",
+      "researched": "2026-02-18T06:18:45Z",
+      "artifacts": [
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on identity sentences definition placement, semantic significance, and recommended implementation approach"
+        },
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-002.md",
+          "type": "research",
+          "summary": "Revised research: identity sentences include boolean combinations of atomic identities"
+        },
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for inductive identity sentences definition"
+        },
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Implementation summary with compilation results and change details"
+        }
+      ],
+      "planned": "2026-02-18T06:31:31Z",
+      "started": "2026-02-18T06:39:45Z",
+      "completed": "2026-02-18T06:43:00Z",
+      "completion_summary": "Added inductive definition of identity sentences to the Constitutive Foundation syntax section, defining them as the Boolean closure of atomic identity sentences (A equiv B). Updated Constitutive Consequence section to reference the new definition. Document compiles to 46-page PDF.",
+      "archived": "2026-02-19T01:51:31Z"
+    },
+    {
+      "project_number": 898,
+      "project_name": "bilattice_structure_remarks_constitutive_foundation",
+      "status": "completed",
+      "language": "latex",
+      "effort": "1.5 hours",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-18T17:42:11Z",
+      "description": "Two related bilattice improvements in /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 595: Draw on /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (line 801-2) to carefully define interlaced and distributive bilattices, adding a remark that every distributive bilattice is interlaced (cite Fitting1990 per line 806). (2) Line 609: Turn conjunction/disjunction-as-lub facts into their own remark with glb definitions and commentary on their meaning. Move remainder of current bilattice remark to just below the definition of interlaced, providing counterexamples from IdentityAboutness.tex. Source: TODO: tags at lines 595 and 609 of 02-ConstitutiveFoundation.tex.",
+      "session_id": "sess_1771436192_844b57",
+      "researched": "2026-02-18T17:29:09Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/898_bilattice_structure_remarks_constitutive_foundation/reports/research-001.md",
+          "summary": "Research report with bilattice definitions, Fitting1990 theorem, counterexamples, and LaTeX implementation recommendations"
+        },
+        {
+          "type": "plan",
+          "path": "specs/898_bilattice_structure_remarks_constitutive_foundation/plans/implementation-001.md",
+          "summary": "4-phase implementation plan covering bibliography update, formal definitions, lub/glb remark, and counterexample restructuring"
+        },
+        {
+          "type": "summary",
+          "path": "specs/898_bilattice_structure_remarks_constitutive_foundation/summaries/implementation-summary-20260218.md",
+          "summary": "Implementation summary with changes and verification results"
+        }
+      ],
+      "planned": "2026-02-18T17:34:22Z",
+      "started": "2026-02-18T17:36:53Z",
+      "completed": "2026-02-18T17:42:11Z",
+      "completion_summary": "Added formal definitions of interlaced and distributive bilattices to 02-ConstitutiveFoundation.tex with Fitting1990 citation, created new remark for LUB/GLB lattice operations, and restructured non-interlacing remark with counterexample model M_D demonstrating distributivity failure.",
+      "archived": "2026-02-19T01:51:31Z"
+    },
+    {
+      "project_number": 897,
+      "project_name": "fix_tags_constitutive_foundation_latex",
+      "status": "completed",
+      "language": "latex",
+      "effort": "2-3 hours",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-18T17:18:59Z",
+      "depends_on": [
+        896
+      ],
+      "description": "Fix FIX: and NOTE: tags in /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex. Addresses 5 tags: (1) Line 479 (FIX:): Include a remark that the only propositions assigned to identity sentences are \\bot if false or \\neg\\bot if true (trivially false/true, requiring the null state). (2) Line 566 (FIX:): Include $\\equiv$ in the remark; define \\sem{\\metaA \\equiv \\metaB}; add \\forall, \\lambda, F(t_1,...,t_n) to show model+assignment provide a homomorphism from closed sentences to propositions; define \\interp{\\cdot}^\\assignment_\\model prior to this remark. (3) Line 568 (NOTE:): Rename \\sem to \\ext to indicate extension of a term; use \\interp{\\cdot}^\\assignment_\\model for semantic interpretation. (4) Line 582 (FIX:): Provide formal definition of the homomorphism from syntax to semantics. (5) Line 583 (FIX:): Replace vague 'directly mirrors' with correct language explaining what the embedding (homomorphism) amounts to. Depends on task 896 (learn-it) to first codify the notation convention.",
+      "session_id": "sess_1771434746_5d1404",
+      "researched": "2026-02-18T07:04:27Z",
+      "artifacts": [
+        {
+          "path": "specs/897_fix_tags_constitutive_foundation_latex/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing 5 FIX:/NOTE: tags with detailed recommendations for each"
+        },
+        {
+          "path": "specs/897_fix_tags_constitutive_foundation_latex/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for fixing FIX:/NOTE: tags related to semantic notation and homomorphism formalization"
+        },
+        {
+          "path": "specs/897_fix_tags_constitutive_foundation_latex/summaries/implementation-summary-20260218.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes"
+        }
+      ],
+      "planned": "2026-02-18T17:10:31Z",
+      "started": "2026-02-18T17:12:40Z",
+      "completed": "2026-02-18T17:18:59Z",
+      "completion_summary": "Fixed 5 FIX:/NOTE: tags in ConstitutiveFoundation.tex by adding \\ext macro, defining sentence interpretation function with all clauses, adding remark on identity sentence triviality, and formalizing the homomorphism from sentences to propositions. Document compiles cleanly at 47 pages.",
+      "archived": "2026-02-19T01:51:31Z"
+    },
+    {
+      "project_number": 896,
+      "project_name": "update_context_interp_notation_convention",
+      "status": "completed",
+      "language": "meta",
+      "effort": "1 hour",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-18T06:58:01Z",
+      "description": "Update .claude/context/ files to document the notation convention for interpretation vs extension of terms in the Logos LaTeX project. NOTE: at line 568 of 02-ConstitutiveFoundation.tex states that \\interp{\\cdot}^\\assignment_\\model should be used for semantic interpretation (not \\sem{}^\\assignment_\\model which is for extension of terms), and \\sem should be renamed to \\ext to indicate extension of a term. Codify this notation decision in .claude/context/ so future work maintains consistency. Source: NOTE: tag at line 568 of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex.",
+      "session_id": "sess_1771397693_7d6f05",
+      "researched": "2026-02-18T06:48:53Z",
+      "artifacts": [
+        {
+          "path": "specs/896_update_context_interp_notation_convention/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting \\interp vs \\ext notation convention from Logos LaTeX project"
+        },
+        {
+          "path": "specs/896_update_context_interp_notation_convention/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase implementation plan for notation conventions documentation update"
+        },
+        {
+          "path": "specs/896_update_context_interp_notation_convention/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Implementation summary with phase log and changes made"
+        }
+      ],
+      "planned": "2026-02-18T06:53:37Z",
+      "started": "2026-02-18T06:55:09Z",
+      "completed": "2026-02-18T06:58:01Z",
+      "completion_summary": "Documented the LaTeX notation convention distinguishing term extension (\\ext) from sentence interpretation (\\interp{\\cdot}) in notation-conventions.md. Added comprehensive guidance on when to use each macro and the homomorphism property.",
+      "claudemd_suggestions": "Added 'Semantic Functions: Extension vs Interpretation' section to .claude/context/project/latex/standards/notation-conventions.md with extension/interpretation distinction",
+      "archived": "2026-02-19T01:51:31Z"
+    },
+    {
+      "project_number": 898,
+      "project_name": "bilattice_structure_remarks_constitutive_foundation",
+      "status": "completed",
+      "language": "latex",
+      "effort": "1.5 hours",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-18T17:42:11Z",
+      "description": "Two related bilattice improvements in /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex: (1) Line 595: Draw on /home/benjamin/Philosophy/Papers/IdentityAboutness/IdentityAboutness.tex (line 801-2) to carefully define interlaced and distributive bilattices, adding a remark that every distributive bilattice is interlaced (cite Fitting1990 per line 806). (2) Line 609: Turn conjunction/disjunction-as-lub facts into their own remark with glb definitions and commentary on their meaning. Move remainder of current bilattice remark to just below the definition of interlaced, providing counterexamples from IdentityAboutness.tex. Source: TODO: tags at lines 595 and 609 of 02-ConstitutiveFoundation.tex.",
+      "session_id": "sess_1771436192_844b57",
+      "researched": "2026-02-18T17:29:09Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/898_bilattice_structure_remarks_constitutive_foundation/reports/research-001.md",
+          "summary": "Research report with bilattice definitions, Fitting1990 theorem, counterexamples, and LaTeX implementation recommendations"
+        },
+        {
+          "type": "plan",
+          "path": "specs/898_bilattice_structure_remarks_constitutive_foundation/plans/implementation-001.md",
+          "summary": "4-phase implementation plan covering bibliography update, formal definitions, lub/glb remark, and counterexample restructuring"
+        },
+        {
+          "type": "summary",
+          "path": "specs/898_bilattice_structure_remarks_constitutive_foundation/summaries/implementation-summary-20260218.md",
+          "summary": "Implementation summary with changes and verification results"
+        }
+      ],
+      "planned": "2026-02-18T17:34:22Z",
+      "started": "2026-02-18T17:36:53Z",
+      "completed": "2026-02-18T17:42:11Z",
+      "completion_summary": "Added formal definitions of interlaced and distributive bilattices to 02-ConstitutiveFoundation.tex with Fitting1990 citation, created new remark for LUB/GLB lattice operations, and restructured non-interlacing remark with counterexample model M_D demonstrating distributivity failure.",
+      "archived": "2026-02-19T01:51:20Z"
+    },
+    {
+      "project_number": 899,
+      "project_name": "define_identity_sentences_syntax_constitutive_foundation",
+      "status": "completed",
+      "language": "latex",
+      "effort": "1 hour",
+      "created": "2026-02-17T00:00:00Z",
+      "last_updated": "2026-02-18T06:43:00Z",
+      "description": "Add a careful definition of identity sentences in the syntax section of /home/benjamin/Projects/Logos/Theory/latex/subfiles/02-ConstitutiveFoundation.tex, near line 629 (before the Constitutive Consequence subsection). The definition should explain that identity sentences are the target of the constitutive foundation from which to build on in the dynamical foundation in the next chapter. Source: TODO: tag at line 629 of 02-ConstitutiveFoundation.tex.",
+      "session_id": "sess_1771396705_99e3ac",
+      "researched": "2026-02-18T06:18:45Z",
+      "artifacts": [
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on identity sentences definition placement, semantic significance, and recommended implementation approach"
+        },
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/reports/research-002.md",
+          "type": "research",
+          "summary": "Revised research: identity sentences include boolean combinations of atomic identities"
+        },
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for inductive identity sentences definition"
+        },
+        {
+          "path": "specs/899_define_identity_sentences_syntax_constitutive_foundation/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Implementation summary with compilation results and change details"
+        }
+      ],
+      "planned": "2026-02-18T06:31:31Z",
+      "started": "2026-02-18T06:39:45Z",
+      "completed": "2026-02-18T06:43:00Z",
+      "completion_summary": "Added inductive definition of identity sentences to the Constitutive Foundation syntax section, defining them as the Boolean closure of atomic identity sentences (A equiv B). Updated Constitutive Consequence section to reference the new definition. Document compiles to 46-page PDF.",
+      "archived": "2026-02-19T01:51:20Z"
+    },
+    {
+      "project_number": 901,
+      "project_name": "configure_subagent_model_routing",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-19T01:23:11Z",
+      "last_updated": "2026-02-19T01:34:57Z",
+      "session_id": "sess_1771464664_a5b4c9",
+      "researched": "2026-02-19T01:26:18Z",
+      "artifacts": [
+        {
+          "path": "specs/901_configure_subagent_model_routing/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on model routing configuration for subagents in team skills"
+        },
+        {
+          "path": "specs/901_configure_subagent_model_routing/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for configuring subagent model routing"
+        },
+        {
+          "path": "specs/901_configure_subagent_model_routing/summaries/implementation-summary-20260218.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all 5 phases completed"
+        }
+      ],
+      "planned": "2026-02-19T01:30:10Z",
+      "started": "2026-02-19T01:31:25Z",
+      "completed": "2026-02-19T01:34:57Z",
+      "completion_summary": "Configured model routing: Lean subagents use Opus 4.6, all others use Sonnet 4.6.",
+      "claudemd_suggestions": "Updated CLAUDE.md Team Skill Model Defaults table, team-wave-helpers.md, and 3 team skill files to change general default_model from inherit to sonnet",
+      "archived": "2026-02-19T01:51:20Z"
+    },
+    {
       "project_number": 875,
       "project_name": "lean_specific_teammate_prompts",
       "status": "abandoned",
