@@ -23,13 +23,15 @@ technical_debt:
 ## Tasks
 
 ### 905. Clean up metalogic as prerequisite for task 903
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 2.5 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
 - **Researched**: 2026-02-19
+- **Planned**: 2026-02-19
 - **Research**: [research-001.md](specs/905_cleanup_metalogic_for_task_903/reports/research-001.md), [research-002.md](specs/905_cleanup_metalogic_for_task_903/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/905_cleanup_metalogic_for_task_903/plans/implementation-001.md)
 
 **Description**: Clean up the metalogic by moving anything not needed into Boneyard/ before implementing task 903's completeness proof restructuring plan.
 
