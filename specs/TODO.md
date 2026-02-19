@@ -49,14 +49,16 @@ technical_debt:
 
 ### 909. Phase 3: Update soundness proofs for task 906
 - **Effort**: 2.5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
 - **Researched**: 2026-02-19
+- **Planned**: 2026-02-19
 - **Parent**: 906
 - **Depends**: 908
 - **Research**: [research-001.md](specs/909_phase3_soundness_proofs/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/909_phase3_soundness_proofs/plans/implementation-001.md)
 
 **Description**: Thread Omega = Set.univ through SoundnessLemmas.lean (~35 theorems) and Soundness.lean. Update is_valid to use truth_at M Set.univ. For MF/TF proofs, discharge ShiftClosed with Set.univ_shift_closed.
 
