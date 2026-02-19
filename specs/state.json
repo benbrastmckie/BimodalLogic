@@ -8,10 +8,19 @@
     {
       "project_number": 913,
       "project_name": "todo_expanded_autocompletion",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-19T23:45:59Z",
-      "last_updated": "2026-02-19T23:45:59Z"
+      "last_updated": "2026-02-19T23:50:21Z",
+      "session_id": "sess_1771544824_dcc135",
+      "researched": "2026-02-19T23:50:21Z",
+      "artifacts": [
+        {
+          "path": "specs/913_todo_expanded_autocompletion/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting /todo command steps, expanded task schema, jq patterns, and proposed Step 2.7 algorithm"
+        }
+      ]
     },
     {
       "project_number": 912,
@@ -160,11 +169,11 @@
     {
       "project_number": 911,
       "project_name": "phase5_downstream_cleanup",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "parent_task": 906,
       "created": "2026-02-19T21:22:47Z",
-      "last_updated": "2026-02-19T23:42:29Z",
+      "last_updated": "2026-02-19T23:50:20Z",
       "session_id": "sess_1771544522_231840",
       "researched": "2026-02-19T23:36:37Z",
       "artifacts": [
@@ -180,7 +189,9 @@
         }
       ],
       "planned": "2026-02-19T23:40:00Z",
-      "started": "2026-02-19T23:42:29Z"
+      "started": "2026-02-19T23:42:29Z",
+      "completed": "2026-02-19T23:50:20Z",
+      "completion_summary": "Verified full compilation after Omega parameter changes (tasks 907-910) with 0 build errors. Cleaned up 136 unused simp argument warnings across SoundnessLemmas.lean (64) and Soundness.lean (72) by removing unnecessary Set.mem_univ and true_implies arguments."
     },
     {
       "project_number": 906,

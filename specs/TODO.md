@@ -24,9 +24,10 @@ technical_debt:
 
 ### 913. Enhance /todo command to auto-complete expanded tasks
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-19
+- **Research**: [research-001.md](specs/913_todo_expanded_autocompletion/reports/research-001.md)
 
 **Description**: Add Step 2.7 to the /todo command (between current Steps 2.6 and 3) that automatically completes expanded tasks when all subtasks are finished. The new step should: (1) Scan state.json for tasks with status = "expanded", (2) For each expanded task, retrieve its subtasks array, (3) Check if ALL subtasks have status "completed" or "abandoned", (4) If so, update the expanded task's status to "completed" in both state.json and TODO.md, (5) Add the newly-completed expanded task to the archivable tasks list. Also update Step 4 (dry-run output) and Step 7 (final output) to report auto-completed expanded tasks.
 

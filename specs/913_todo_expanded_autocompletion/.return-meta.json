@@ -1,26 +1,20 @@
 {
-  "status": "tasks_created",
-  "summary": "Created task 913: Enhance /todo command to auto-complete expanded tasks when all subtasks are completed or abandoned.",
+  "status": "researched",
+  "summary": "Analyzed /todo command structure, expanded task data model (status=expanded, subtasks array, parent_task reference), and identified safe jq patterns. Documented Step 2.7 algorithm for auto-completing expanded tasks when all subtasks finish.",
   "artifacts": [
     {
-      "type": "task_entry",
-      "path": "specs/TODO.md",
-      "summary": "Task #913 added to TODO.md"
-    },
-    {
-      "type": "task_entry",
-      "path": "specs/state.json",
-      "summary": "Task #913 added to state.json active_projects"
+      "type": "research",
+      "path": "specs/913_todo_expanded_autocompletion/reports/research-001.md",
+      "summary": "Research report documenting /todo command steps, expanded task schema, jq patterns, and proposed Step 2.7 algorithm"
     }
   ],
+  "next_steps": "Run /plan 913 to create implementation plan",
   "metadata": {
-    "session_id": "sess_1771544390_676279",
+    "session_id": "sess_1771544824_dcc135",
+    "agent_type": "general-research-agent",
     "duration_seconds": 180,
-    "agent_type": "meta-builder-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "meta", "skill-meta", "meta-builder-agent"],
-    "mode": "prompt",
-    "tasks_created": 1
-  },
-  "next_steps": "Run /research 913 to begin research on the task"
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 9
+  }
 }
