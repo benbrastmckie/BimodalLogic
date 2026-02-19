@@ -250,8 +250,10 @@ case "$language" in
     ;;
 esac
 
-# Prepare model preference line for prompts
+# Prepare model preference line for prompts (secondary guidance)
 # Opus 4.6 for Lean tasks, Sonnet 4.6 for all others
+# NOTE: Model is ENFORCED via TeammateTool `model` parameter (see Stage 6 and Stage 7 spawn sections)
+# The model_preference_line provides in-prompt guidance as a secondary signal
 model_preference_line="Model preference: Use Claude ${default_model^} 4.6 for this task."
 ```
 
@@ -272,6 +274,7 @@ For each wave of phases:
 **If wave has multiple independent phases**:
 - Spawn teammate per phase (up to team_size)
 - Use language-appropriate prompts (see Stage 5a)
+- **Pass `model` parameter**: Use `model: $default_model` to enforce model selection (opus for Lean, sonnet for others)
 - Wait for all to complete
 - Collect results and update plan statuses
 
@@ -367,6 +370,8 @@ When complete:
 ### Stage 7: Handle Implementation Errors
 
 When a phase fails (build error, test failure, etc.):
+
+**Spawn debugger with model parameter**: Pass `model: $default_model` to enforce model selection (opus for Lean debuggers, sonnet for others).
 
 #### For Lean Tasks (language == "lean")
 

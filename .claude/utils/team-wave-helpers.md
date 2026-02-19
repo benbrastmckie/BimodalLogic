@@ -19,13 +19,14 @@ run_num=$((run_num + 1))
 run_padded=$(printf "%03d" $run_num)
 ```
 
-Then spawn teammates with run-scoped output paths:
+Then spawn teammates with run-scoped output paths. **Pass the `model` parameter** to enforce model selection:
 
 ```
 # Research Wave Spawning (run {RRR})
 Wave 1 teammates:
 1. Primary Angle (required)
    - Name: "{Task}ResearcherA"
+   - Model: $default_model  # "opus" for Lean, "sonnet" for others
    - Prompt: "Research {task} focusing on implementation approaches.
      Challenge assumptions. Provide specific examples.
      Output to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md"
@@ -60,13 +61,14 @@ run_num=$((run_num + 1))
 run_padded=$(printf "%03d" $run_num)
 ```
 
-Then spawn teammates with run-scoped output paths:
+Then spawn teammates with run-scoped output paths. **Pass the `model` parameter** to enforce model selection:
 
 ```
 # Planning Wave Spawning (run {RRR})
 Wave 1 teammates:
 1. Plan Version A (required)
    - Name: "{Task}PlannerA"
+   - Model: $default_model  # "opus" for Lean, "sonnet" for others
    - Prompt: "Create a phased implementation plan for {task}.
      Focus on incremental delivery with verification at each phase.
      Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md"
@@ -93,13 +95,14 @@ Spawn teammates for parallel implementation. The run number comes from the plan 
 run_padded=$(echo "$plan_file" | grep -oP 'implementation-\K[0-9]{3}(?=\.md)')
 ```
 
-Then spawn teammates with run-scoped output paths:
+Then spawn teammates with run-scoped output paths. **Pass the `model` parameter** to enforce model selection:
 
 ```
 # Implementation Wave Spawning (run {RRR})
 For each independent phase group:
 1. Phase Implementer (per independent phase)
    - Name: "{Task}Phase{P}Impl"
+   - Model: $default_model  # "opus" for Lean, "sonnet" for others
    - Prompt: "Implement phase {P} of the plan for {task}.
      Follow the steps in the implementation plan.
      Update phase status markers as you complete.
@@ -107,6 +110,7 @@ For each independent phase group:
 
 2. Debugger (spawned on error)
    - Name: "{Task}Debugger"
+   - Model: $default_model  # "opus" for Lean, "sonnet" for others
    - Prompt: "Analyze the error in {task} implementation.
      Error: {error_details}
      Generate hypothesis and create debug report at:
@@ -355,11 +359,16 @@ language_config = {
   }
 }
 
-# Model Selection Rationale
+# Model Selection (ENFORCED via TeammateTool parameter)
 #
-# default_model specifies the preferred Claude model for teammates:
-# - "opus": Most capable model (Opus 4.6), recommended for complex theorem proving (Lean)
-# - "sonnet": Balanced model (Sonnet 4.6), good for document generation and system tasks
+# default_model specifies the Claude model for teammates:
+# - "opus": Most capable model (Opus 4.6), used for complex theorem proving (Lean)
+# - "sonnet": Balanced model (Sonnet 4.6), used for document generation and system tasks
+#
+# ENFORCEMENT:
+# - Pass `model: $default_model` when spawning teammates via TeammateTool
+# - The `model_preference_line` in prompts is secondary guidance only
+# - Model selection is now enforced at the tool level, not advisory
 #
 # Rationale:
 # - lean: Opus 4.6 provides superior mathematical reasoning for theorem proving

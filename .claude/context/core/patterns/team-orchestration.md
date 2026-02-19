@@ -86,9 +86,28 @@ Teammates claim tasks from shared list:
 Use TeammateTool to spawn teammates:
 - name: "ResearcherA" or "PlannerA"
 - prompt: Task-specific instructions
-- model: Same as lead (default)
+- model: ENFORCED model selection (see below)
 - task_list: Optional shared task list
 ```
+
+### Model Selection (Enforced)
+
+The `model` parameter MUST be passed to enforce model selection:
+- For Lean tasks: `model: "opus"` (Opus 4.6 for theorem proving)
+- For all other tasks: `model: "sonnet"` (Sonnet 4.6 for general work)
+
+```bash
+# Determine model based on task language
+case "$language" in
+  "lean") default_model="opus" ;;
+  *)      default_model="sonnet" ;;
+esac
+
+# Pass model when spawning
+# TeammateTool(name: "...", prompt: "...", model: $default_model)
+```
+
+The `model_preference_line` in prompts serves as secondary guidance only. The `model` parameter on TeammateTool is the enforced selection.
 
 ### Teammate Prompts
 

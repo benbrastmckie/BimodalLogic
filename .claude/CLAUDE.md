@@ -176,7 +176,7 @@ Configure lean-lsp in user scope (`~/.claude.json`) for subagent access. Run `.c
 | `meta` | Sonnet | System tasks well-handled by Sonnet |
 | `general` | Sonnet | Consistent model for all non-Lean tasks |
 
-Model preference is communicated via natural language in teammate prompts (advisory, not enforced).
+Model is enforced via TeammateTool `model` parameter. Prompt text provides secondary guidance.
 
 ## Rules References
 

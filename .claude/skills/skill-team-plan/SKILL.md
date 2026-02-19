@@ -189,8 +189,10 @@ case "$language" in
     ;;
 esac
 
-# Prepare model preference line for prompts
+# Prepare model preference line for prompts (secondary guidance)
 # Opus 4.6 for Lean tasks, Sonnet 4.6 for all others
+# NOTE: Model is ENFORCED via TeammateTool `model` parameter (see Stage 6 spawn section)
+# The model_preference_line provides in-prompt guidance as a secondary signal
 model_preference_line="Model preference: Use Claude ${default_model^} 4.6 for planning."
 ```
 
@@ -371,6 +373,12 @@ Do NOT create a full plan - focus on analysis that informs plan selection.
 ---
 
 **Spawn teammates using TeammateTool**.
+
+**IMPORTANT**: Pass the `model` parameter to enforce model selection:
+- For Lean tasks (`default_model="opus"`): Use `model: "opus"` to enforce Opus 4.6
+- For all other tasks (`default_model="sonnet"`): Use `model: "sonnet"` to enforce Sonnet 4.6
+
+The `model_preference_line` in prompts serves as secondary guidance only. The `model` parameter on TeammateTool is the enforced selection.
 
 ---
 
