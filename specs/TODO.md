@@ -60,11 +60,14 @@ technical_debt:
 
 ### 908. Phase 2: Update validity definitions for task 906
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-19
+- **Started**: 2026-02-19
+- **Researched**: 2026-02-19
 - **Parent**: 906
 - **Depends**: 907
+- **Research**: [research-001.md](specs/908_phase2_validity_definitions/reports/research-001.md)
 
 **Description**: Update valid and semantic_consequence to use Omega = Set.univ. Update satisfiable with existential Omega. Update all validity lemmas in Validity.lean.
 
