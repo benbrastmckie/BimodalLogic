@@ -34,11 +34,13 @@ technical_debt:
 
 ### 911. Phase 5: Downstream cleanup for task 906
 - **Effort**: 0.5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-19
+- **Researched**: 2026-02-19
 - **Parent**: 906
 - **Depends**: 910
+- **Research**: [research-001.md](specs/911_phase5_downstream_cleanup/reports/research-001.md)
 
 **Description**: Fix any remaining compilation errors in downstream files (FMP/SemanticCanonicalModel.lean, etc.) after Omega changes. Run lake build to verify full compilation.
 

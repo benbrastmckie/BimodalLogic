@@ -149,7 +149,14 @@
       "created": "2026-02-19T21:22:47Z",
       "last_updated": "2026-02-19T23:36:37Z",
       "session_id": "sess_1771543503_6a1f92",
-      "researched": "2026-02-19T23:36:37Z"
+      "researched": "2026-02-19T23:36:37Z",
+      "artifacts": [
+        {
+          "path": "specs/911_phase5_downstream_cleanup/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive audit of all downstream files after Omega parameter changes, with concrete cleanup checklist and Omega-mismatch analysis"
+        }
+      ]
     },
     {
       "project_number": 906,
