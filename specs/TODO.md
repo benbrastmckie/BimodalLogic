@@ -72,9 +72,10 @@ technical_debt:
 
 ### 907. Phase 1: Add Omega parameter to truth_at for task 906
 - **Effort**: 2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-19
+- **Started**: 2026-02-19
 - **Parent**: 906
 
 **Description**: Add Omega parameter to truth_at. Modify Box case to quantify over sigma in Omega. Define ShiftClosed predicate and prove Set.univ is shift-closed. Update time_shift_preserves_truth with Omega + ShiftClosed hypothesis.
@@ -180,57 +181,6 @@ technical_debt:
 **Description**: In order to complete phase 4 from /home/benjamin/Projects/ProofChecker/specs/864_recursive_seed_henkin_model/plans/implementation-005.md in the most mathematically correct manner, prove: the cut rule / derivation tree manipulation.
 
 ---
-
-### 892. Modify henkinStep to add negations when rejecting packages
-- **Effort**: 2 hours
-- **Status**: [BLOCKED]
-- **Language**: lean
-- **Created**: 2026-02-17
-- **Researched**: 2026-02-18
-- **Planned**: 2026-02-18
-- **Parent**: Task #888
-- **Blocked**: Mathematical obstruction confirmed. maximal_tcs_is_mcs is FALSE (TCS-maximality ≠ MCS). Recommend RecursiveSeed (task 864).
-- **Research**: [research-003.md](specs/892_modify_henkinstep_add_negations/reports/research-003.md) (synthesized)
-- **Plan**: [implementation-003.md](specs/892_modify_henkinstep_add_negations/plans/implementation-003.md)
-- **Summary**: [implementation-summary-20260217.md](specs/892_modify_henkinstep_add_negations/summaries/implementation-summary-20260217.md)
-
-**Description**: Modify henkinStep in TemporalLindenbaum.lean to add negations when rejecting packages. Currently henkinStep adds temporalPackage(phi) when consistent but does NOT add neg(phi) when rejecting. This allows scenarios where M is maximal in TCS but not an MCS. The fix enables maximal_tcs_is_mcs to become provable. This is blocking task 888 Phase 3.
-
----
-
-### 888. Research Lindenbaum temporal saturation preservation for witness families
-- **Effort**: 8-12 hours
-- **Status**: [BLOCKED]
-- **Planned**: 2026-02-17
-- **Started**: 2026-02-17
-- **Blocked**: Two blockers: (1) Build errors - split-at tactic incompatibility in Lean 4.27.0-rc1, (2) Mathematical - maximal_tcs_is_mcs is unprovable without modifying henkinStep to add negations
-- **Depends**: Task #890
-- **Plan**: [implementation-001.md](specs/888_lindenbaum_temporal_saturation_preservation/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260217.md](specs/888_lindenbaum_temporal_saturation_preservation/summaries/implementation-summary-20260217.md)
-- **Language**: lean
-- **Created**: 2026-02-17
-- **Researched**: 2026-02-17
-- **Parent**: Task #881
-- **Research**: [research-001.md](specs/888_lindenbaum_temporal_saturation_preservation/reports/research-001.md)
-
-**Description**: Research the mathematical gap blocking temporal coherence of witness families. Task 887's FinalConstruction.lean has sorries because regular Lindenbaum extension does NOT preserve temporal saturation - it can add F(psi) formulas without adding their witness psi. Research questions: (1) Can Lindenbaum preserve temporal saturation when seed contains sufficient temporal content ({psi} union M where M is temporally saturated)? (2) If not, can we use temporal-aware Lindenbaum that adds F(psi) and psi together? (3) Is there an alternative architectural approach that avoids this issue entirely? (4) Does the truth lemma actually require all families to be temporally coherent, or only eval_family? Output: Clear mathematical characterization of the gap, proof or disproof of preservation conditions, and recommended remediation path.
-
----
-
-### 882. Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination
-- **Effort**: 8 to 12 hours
-- **Status**: [BLOCKED]
-- **Language**: lean
-- **Parent**: Task #881
-- **Researched**: 2026-02-13
-- **Planned**: 2026-02-13
-- **Blocked**: Fundamental gaps in temporalLindenbaumMCS approach - single-MCS temporal saturation not achievable
-- **Research**: [research-001.md](specs/882_fix_temporallindenbaum_sorries/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/882_fix_temporallindenbaum_sorries/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260213.md](specs/882_fix_temporallindenbaum_sorries/summaries/implementation-summary-20260213.md)
-
-**Description**: Fix 5 sorries in TemporalLindenbaum.lean to unblock task 881 axiom elimination. Sorries: henkinLimit_forward_saturated base case (line 444), henkinLimit_backward_saturated base case (line 485), maximal_tcs_is_mcs F-formula case (line 655), maximal_tcs_is_mcs P-formula case (line 662), generic temporal_coherent_family_exists (line 636). These block the constructive proof of fully_saturated_bmcs_exists.
-
 ### 881. Construct modally saturated BMCS to eliminate fully_saturated_bmcs_exists axiom
 - **Effort**: 8-12 hours
 - **Status**: [BLOCKED]
