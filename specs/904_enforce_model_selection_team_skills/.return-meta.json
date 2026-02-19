@@ -1,0 +1,21 @@
+{
+  "status": "tasks_created",
+  "summary": "Created task 904: Enforce model selection in team skill teammate spawning. The fix adds explicit model: $default_model parameter to TeammateTool calls in all three team skills (skill-team-research, skill-team-plan, skill-team-implement), plus updates team-wave-helpers.md and team-orchestration.md documentation.",
+  "artifacts": [
+    {
+      "type": "task_entry",
+      "path": "specs/TODO.md",
+      "summary": "Task #904 added to TODO.md as [NOT STARTED] meta task"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1771520114_f561ae",
+    "duration_seconds": 120,
+    "agent_type": "meta-builder-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "meta", "skill-meta"],
+    "mode": "prompt",
+    "tasks_created": 1
+  },
+  "next_steps": "Run /plan 904 to create implementation plan, then /implement 904 to make the changes"
+}
