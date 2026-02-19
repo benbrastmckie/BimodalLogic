@@ -6,13 +6,21 @@
   },
   "active_projects": [
     {
+      "project_number": 913,
+      "project_name": "todo_expanded_autocompletion",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-19T23:45:59Z",
+      "last_updated": "2026-02-19T23:45:59Z"
+    },
+    {
       "project_number": 912,
       "project_name": "review_completeness_proof_metalogic_state",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-19T23:36:22Z",
-      "last_updated": "2026-02-19T23:41:52Z",
-      "session_id": "sess_1771544237_c4967f",
+      "last_updated": "2026-02-19T23:45:22Z",
+      "session_id": "sess_1771544708_98205d",
       "researched": "2026-02-19T23:41:52Z",
       "artifacts": [
         {
@@ -152,12 +160,12 @@
     {
       "project_number": 911,
       "project_name": "phase5_downstream_cleanup",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "parent_task": 906,
       "created": "2026-02-19T21:22:47Z",
-      "last_updated": "2026-02-19T23:40:00Z",
-      "session_id": "sess_1771544259_9b16f8",
+      "last_updated": "2026-02-19T23:42:29Z",
+      "session_id": "sess_1771544522_231840",
       "researched": "2026-02-19T23:36:37Z",
       "artifacts": [
         {
@@ -171,7 +179,8 @@
           "summary": "3-phase plan: build verification, optional simp cleanup (136 warnings), final validation"
         }
       ],
-      "planned": "2026-02-19T23:40:00Z"
+      "planned": "2026-02-19T23:40:00Z",
+      "started": "2026-02-19T23:42:29Z"
     },
     {
       "project_number": 906,
@@ -871,7 +880,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 913,
+  "next_project_number": 914,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

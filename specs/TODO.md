@@ -1,5 +1,5 @@
 ---
-next_project_number: 913
+next_project_number: 914
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,19 @@ technical_debt:
 
 ## Tasks
 
+### 913. Enhance /todo command to auto-complete expanded tasks
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-19
+
+**Description**: Add Step 2.7 to the /todo command (between current Steps 2.6 and 3) that automatically completes expanded tasks when all subtasks are finished. The new step should: (1) Scan state.json for tasks with status = "expanded", (2) For each expanded task, retrieve its subtasks array, (3) Check if ALL subtasks have status "completed" or "abandoned", (4) If so, update the expanded task's status to "completed" in both state.json and TODO.md, (5) Add the newly-completed expanded task to the archivable tasks list. Also update Step 4 (dry-run output) and Step 7 (final output) to report auto-completed expanded tasks.
+
+---
+
 ### 912. Review completeness proof and metalogic state after task 910
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Researched**: 2026-02-19
@@ -36,7 +46,7 @@ technical_debt:
 
 ### 911. Phase 5: Downstream cleanup for task 906
 - **Effort**: 1.0 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Researched**: 2026-02-19

@@ -1,0 +1,26 @@
+{
+  "status": "tasks_created",
+  "summary": "Created task 913: Enhance /todo command to auto-complete expanded tasks when all subtasks are completed or abandoned.",
+  "artifacts": [
+    {
+      "type": "task_entry",
+      "path": "specs/TODO.md",
+      "summary": "Task #913 added to TODO.md"
+    },
+    {
+      "type": "task_entry",
+      "path": "specs/state.json",
+      "summary": "Task #913 added to state.json active_projects"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1771544390_676279",
+    "duration_seconds": 180,
+    "agent_type": "meta-builder-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "meta", "skill-meta", "meta-builder-agent"],
+    "mode": "prompt",
+    "tasks_created": 1
+  },
+  "next_steps": "Run /research 913 to begin research on the task"
+}
