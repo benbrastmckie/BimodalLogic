@@ -1,21 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-19T00:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/908_phase2_validity_definitions/reports/research-001.md",
-      "summary": "Comprehensive analysis of all Validity.lean changes needed: 4 definitions (valid, semantic_consequence, satisfiable, formula_satisfiable) need Set.univ or existential Omega; 6 theorems need mechanical updates; 2 active downstream files (Soundness.lean, Representation.lean) will break and are handled in later phases"
+      "type": "plan",
+      "path": "specs/908_phase2_validity_definitions/plans/implementation-001.md",
+      "summary": "3-phase implementation plan for updating Validity.lean definitions and theorems with Omega parameter"
     }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research report written with line-by-line change analysis, proof strategy assessment, downstream impact analysis, and implementation ordering"
-  },
+  "next_steps": "Run /implement 908 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771539768_c0cee3",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771540390_84a0a4",
+    "agent_type": "planner-agent",
+    "duration_seconds": 45,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.0
   }
 }
