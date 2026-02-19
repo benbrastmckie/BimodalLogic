@@ -331,10 +331,10 @@
     {
       "project_number": 864,
       "project_name": "recursive_seed_henkin_model",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-19T06:04:41Z",
+      "last_updated": "2026-02-19T06:09:57Z",
       "session_id": "sess_1771480348_c2d01b",
       "researched": "2026-02-19T06:04:41Z",
       "artifacts": [
@@ -384,17 +384,17 @@
           "summary": "Meta-analysis of task 864 implementation history identifying build breakage, 22 sorries, 5 architectural blockers, and 5 path-forward options with effort estimates"
         },
         {
-          "path": "specs/864_recursive_seed_henkin_model/plans/implementation-007.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan: split RecursiveSeed.lean into 5 files, fix build errors, integrate into build graph, complete closure and consistency proofs"
-        },
-        {
           "path": "specs/864_recursive_seed_henkin_model/reports/research-009.md",
           "type": "research",
           "summary": "Comprehensive analysis of 77 build errors in Closure.lean categorized into 7 types with concrete remediation path and dependency ordering"
+        },
+        {
+          "path": "specs/864_recursive_seed_henkin_model/plans/implementation-008.md",
+          "type": "plan",
+          "summary": "v8 plan: Closure.lean 77 error remediation in 6 stages, informed by research-009 analysis"
         }
       ],
-      "planned": "2026-02-19T04:43:26Z",
+      "planned": "2026-02-19T06:09:57Z",
       "started": "2026-02-10T20:18:52Z"
     },
     {
