@@ -573,7 +573,7 @@ theorem ModelSeed.hasPosition_time_lt_freshFutureTime (seed : ModelSeed) (famIdx
     (List.filter (fun e => e.familyIdx == famIdx) seed.entries)
     currentTime SeedEntry.timeIdx e h_in_filtered
   -- So t = e.timeIdx ≤ maxTime, hence t < maxTime + 1
-  omega
+  simp only; omega
 
 /--
 If a position exists at (famIdx, t), then t > freshPastTime famIdx currentTime.
@@ -594,7 +594,7 @@ theorem ModelSeed.hasPosition_time_gt_freshPastTime (seed : ModelSeed) (famIdx :
     (List.filter (fun e => e.familyIdx == famIdx) seed.entries)
     currentTime SeedEntry.timeIdx e h_in_filtered
   -- So minTime ≤ t = e.timeIdx, hence minTime - 1 < t
-  omega
+  simp only; omega
 
 /--
 The recursive seed builder auxiliary function.
@@ -1288,57 +1288,57 @@ private theorem classifyFormula_eq_atomic (phi : Formula) (s : String)
     (h : classifyFormula phi = FormulaClass.atomic s) : phi = Formula.atom s := by
   cases phi with
   | atom s' => simp only [classifyFormula, FormulaClass.atomic.injEq] at h; exact congrArg Formula.atom h
-  | bot => simp only [classifyFormula] at h
-  | box _ => simp only [classifyFormula] at h
-  | all_future _ => simp only [classifyFormula] at h
-  | all_past _ => simp only [classifyFormula] at h
+  | bot => simp only [classifyFormula] at h; contradiction
+  | box _ => simp only [classifyFormula] at h; contradiction
+  | all_future _ => simp only [classifyFormula] at h; contradiction
+  | all_past _ => simp only [classifyFormula] at h; contradiction
   | imp phi1 phi2 =>
     cases phi2 with
     | bot =>
       cases phi1 with
-      | box _ => simp only [classifyFormula] at h
-      | all_future _ => simp only [classifyFormula] at h
-      | all_past _ => simp only [classifyFormula] at h
-      | _ => simp only [classifyFormula] at h
-    | _ => simp only [classifyFormula] at h
+      | box _ => simp only [classifyFormula] at h; contradiction
+      | all_future _ => simp only [classifyFormula] at h; contradiction
+      | all_past _ => simp only [classifyFormula] at h; contradiction
+      | _ => simp only [classifyFormula] at h; contradiction
+    | _ => simp only [classifyFormula] at h; contradiction
 
 /-- Classification inversion: bottom classification implies bot formula. -/
 private theorem classifyFormula_eq_bottom (phi : Formula)
     (h : classifyFormula phi = FormulaClass.bottom) : phi = Formula.bot := by
   cases phi with
-  | atom _ => simp only [classifyFormula] at h
+  | atom _ => simp only [classifyFormula] at h; contradiction
   | bot => rfl
-  | box _ => simp only [classifyFormula] at h
-  | all_future _ => simp only [classifyFormula] at h
-  | all_past _ => simp only [classifyFormula] at h
+  | box _ => simp only [classifyFormula] at h; contradiction
+  | all_future _ => simp only [classifyFormula] at h; contradiction
+  | all_past _ => simp only [classifyFormula] at h; contradiction
   | imp phi1 phi2 =>
     cases phi2 with
     | bot =>
       cases phi1 with
-      | box _ => simp only [classifyFormula] at h
-      | all_future _ => simp only [classifyFormula] at h
-      | all_past _ => simp only [classifyFormula] at h
-      | _ => simp only [classifyFormula] at h
-    | _ => simp only [classifyFormula] at h
+      | box _ => simp only [classifyFormula] at h; contradiction
+      | all_future _ => simp only [classifyFormula] at h; contradiction
+      | all_past _ => simp only [classifyFormula] at h; contradiction
+      | _ => simp only [classifyFormula] at h; contradiction
+    | _ => simp only [classifyFormula] at h; contradiction
 
 /-- Classification inversion: implication classification implies imp formula. -/
 private theorem classifyFormula_eq_implication (phi : Formula) (p1 p2 : Formula)
     (h : classifyFormula phi = FormulaClass.implication p1 p2) :
     phi = Formula.imp p1 p2 := by
   cases phi with
-  | atom _ => simp only [classifyFormula] at h
-  | bot => simp only [classifyFormula] at h
-  | box _ => simp only [classifyFormula] at h
-  | all_future _ => simp only [classifyFormula] at h
-  | all_past _ => simp only [classifyFormula] at h
+  | atom _ => simp only [classifyFormula] at h; contradiction
+  | bot => simp only [classifyFormula] at h; contradiction
+  | box _ => simp only [classifyFormula] at h; contradiction
+  | all_future _ => simp only [classifyFormula] at h; contradiction
+  | all_past _ => simp only [classifyFormula] at h; contradiction
   | imp phi1 phi2 =>
     cases phi2 with
     | bot =>
       cases phi1 with
-      | box _ => simp only [classifyFormula] at h
-      | all_future _ => simp only [classifyFormula] at h
-      | all_past _ => simp only [classifyFormula] at h
-      | _ => simp only [classifyFormula] at h
+      | box _ => simp only [classifyFormula] at h; contradiction
+      | all_future _ => simp only [classifyFormula] at h; contradiction
+      | all_past _ => simp only [classifyFormula] at h; contradiction
+      | _ => simp only [classifyFormula] at h; contradiction
     | _ =>
       simp only [classifyFormula, FormulaClass.implication.injEq] at h
       exact congrArg₂ Formula.imp h.1 h.2
@@ -1348,18 +1348,18 @@ private theorem classifyFormula_eq_negation (phi inner : Formula)
     (h : classifyFormula phi = FormulaClass.negation inner) :
     phi = Formula.neg inner := by
   cases phi with
-  | atom _ => simp only [classifyFormula] at h
-  | bot => simp only [classifyFormula] at h
-  | box _ => simp only [classifyFormula] at h
-  | all_future _ => simp only [classifyFormula] at h
-  | all_past _ => simp only [classifyFormula] at h
+  | atom _ => simp only [classifyFormula] at h; contradiction
+  | bot => simp only [classifyFormula] at h; contradiction
+  | box _ => simp only [classifyFormula] at h; contradiction
+  | all_future _ => simp only [classifyFormula] at h; contradiction
+  | all_past _ => simp only [classifyFormula] at h; contradiction
   | imp phi1 phi2 =>
     cases phi2 with
     | bot =>
       cases phi1 with
-      | box _ => simp only [classifyFormula] at h
-      | all_future _ => simp only [classifyFormula] at h
-      | all_past _ => simp only [classifyFormula] at h
+      | box _ => simp only [classifyFormula] at h; contradiction
+      | all_future _ => simp only [classifyFormula] at h; contradiction
+      | all_past _ => simp only [classifyFormula] at h; contradiction
       | atom s =>
         simp only [classifyFormula, FormulaClass.negation.injEq] at h
         rw [h]; rfl
@@ -1368,8 +1368,8 @@ private theorem classifyFormula_eq_negation (phi inner : Formula)
         rw [h]; rfl
       | bot =>
         simp only [classifyFormula, FormulaClass.negation.injEq] at h
-        rw [h]; rfl
-    | _ => simp only [classifyFormula] at h
+        rw [← h]; rfl
+    | _ => simp only [classifyFormula] at h; contradiction
 
 /-!
 ## Phase 3: Seed Consistency Proof
