@@ -24,7 +24,9 @@ technical_debt:
 
 ### 901. Configure lean subagents to use Opus 4.6 and other agents to use Sonnet 4.6
 - **Effort**: 1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Planned**: 2026-02-18
+- **Plan**: [implementation-001.md](specs/901_configure_subagent_model_routing/plans/implementation-001.md)
 - **Language**: meta
 - **Created**: 2026-02-18
 - **Researched**: 2026-02-18
