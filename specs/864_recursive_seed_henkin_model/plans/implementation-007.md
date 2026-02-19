@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model - File Split and Incremental Rebuild (v7)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 22 hours (realistic estimate)
 - **Dependencies**: None (supersedes implementation-006.md)
 - **Research Inputs**:
@@ -154,7 +154,7 @@ After full implementation:
 
 ## Implementation Phases
 
-### Phase 1: Create RecursiveSeed Directory and Core.lean [NOT STARTED]
+### Phase 1: Create RecursiveSeed Directory and Core.lean [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Extract data structures, ModelSeed operations, and formula classification into Core.lean
@@ -190,9 +190,16 @@ After full implementation:
 - All moved definitions are accessible
 - No sorries in Core.lean (pure definitions)
 
+**Progress:**
+
+**Session: 2026-02-18, sess_1771477072_486361**
+- Added: `Core.lean` (758 lines) with data structures, ModelSeed ops, classification, type definitions, closure definitions
+- Fixed: Made `classifyFormula_eq_atomic/bottom/implication/negation` non-private for cross-file access
+- Completed: Core.lean builds with 0 errors, only warnings
+
 ---
 
-### Phase 2: Create Builder.lean [NOT STARTED]
+### Phase 2: Create Builder.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Extract the original buildSeedAux recursive builder and its consistency proofs
@@ -248,7 +255,7 @@ After full implementation:
 
 ---
 
-### Phase 3: Create Worklist.lean, Consistency.lean, and Closure.lean [NOT STARTED]
+### Phase 3: Create Worklist.lean, Consistency.lean, and Closure.lean [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Extract worklist algorithm, consistency proofs, and closure proofs into separate files
@@ -312,7 +319,7 @@ After full implementation:
 
 ---
 
-### Phase 4: Fix Build Errors Across All Split Files [NOT STARTED]
+### Phase 4: Fix Build Errors Across All Split Files [PARTIAL]
 
 - **Dependencies:** Phase 1, Phase 2, Phase 3
 - **Goal:** Fix ~100 build errors so all 5 files compile successfully
@@ -377,7 +384,7 @@ After full implementation:
 
 ---
 
-### Phase 5: Create Barrel File and Integrate into Build Graph [NOT STARTED]
+### Phase 5: Create Barrel File and Integrate into Build Graph [PARTIAL]
 
 - **Dependencies:** Phase 4
 - **Goal:** Create re-export barrel file and add seed pipeline to the main build graph

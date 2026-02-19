@@ -201,3 +201,57 @@ To complete Phase 2, the Dershowitz-Manna termination proof at line 11635 needs:
 3. Use this to prove fuel sufficiency propagates
 
 Alternative: Restructure using well-founded recursion on multiset ordering instead of fuel.
+
+---
+
+## Session: sess_1771477072_486361 (2026-02-18 File Split)
+
+### Overview
+
+Split the monolithic 11,694-line `RecursiveSeed.lean` into 5 smaller files organized by responsibility (Option B from research-008.md). Fixed build errors in Core.lean and Builder.lean (both build successfully). Worklist, Consistency, and Closure have pre-existing build errors from the original file.
+
+### Files Created
+
+| File | Lines | Status | Description |
+|------|-------|--------|-------------|
+| `RecursiveSeed/Core.lean` | 758 | Builds (0 errors) | Data structures, ModelSeed ops, classification, type definitions |
+| `RecursiveSeed/Builder.lean` | 5,929 | Builds (0 errors, 4 sorry) | buildSeedAux, consistency infrastructure, membership preservation |
+| `RecursiveSeed/Worklist.lean` | 724 | 18 errors | WorkItem, processWorkItem, processWorklist, buildSeedComplete |
+| `RecursiveSeed/Consistency.lean` | 718 | 18 errors | WorklistInvariant, processWorkItem_preserves_consistent (6 sorry) |
+| `RecursiveSeed/Closure.lean` | 3,577 | 18 errors | WorklistClosureInvariant, processWorkItem_preserves_closure (1 sorry) |
+| `RecursiveSeed.lean` (barrel) | 12 | Re-exports all submodules | Backward compatibility with SeedCompletion.lean |
+
+### Build Errors Fixed
+
+- `List.getElem?_mem` -> `List.mem_of_getElem?` (API rename in Mathlib)
+- `Bool.or_eq_true_iff_left_or_right.mpr` -> `rw [Bool.or_eq_true]` (API rename)
+- `Finset.mem_singleton` -> `Set.mem_singleton_iff` with match destructuring (Set/Finset confusion)
+- `unfold ModelSeed.hasPosition` failure (removed unnecessary unfold)
+- Type mismatch in `addFormula_hasPosition_backward` (fixed `List.mem_modify_iff` destructuring)
+- `Bimodal.ProofSystem.DerivationTree.assumption` argument order swap
+- `exact <rfl, rfl>` -> `exact <trivial, trivial>` after simp rewrites goal to `True /\ True`
+
+### Cross-File Dependency Issue
+
+The original file had forward references: `processWorkItem_newWork_hasPosition` (Worklist section, line 7139) uses helper lemmas defined later in the Closure section (lines 8435+). Resolving this requires either moving the helpers to Worklist.lean or refactoring the proof.
+
+### Private -> Public Changes
+
+Made numerous private declarations public for cross-file access. See full list in plan progress section.
+
+### Phases Status
+
+| Phase | Status |
+|-------|--------|
+| 1: Create Core.lean | COMPLETED |
+| 2: Create Builder.lean | COMPLETED |
+| 3: Create Worklist/Consistency/Closure | COMPLETED |
+| 4: Fix Build Errors | PARTIAL (Core + Builder fixed) |
+| 5: Barrel File + Build Graph | PARTIAL (barrel created, build graph deferred) |
+
+### Next Steps
+
+1. Fix 18 errors in Worklist.lean (cross-file dependency + API renames)
+2. Fix cascading errors in Consistency.lean and Closure.lean
+3. Add `import Bimodal.Metalogic.Bundle.SeedBMCS` to Metalogic.lean
+4. Proceed to Phase 6 (proof completion)

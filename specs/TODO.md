@@ -169,7 +169,7 @@ technical_debt:
 
 ### 864. Implement recursive seed construction for Henkin model completeness
 - **Effort**: 36 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-05
 - **Researched**: 2026-02-19
