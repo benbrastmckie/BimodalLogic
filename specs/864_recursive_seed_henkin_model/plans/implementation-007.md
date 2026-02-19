@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model - File Split and Incremental Rebuild (v7)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 22 hours (realistic estimate)
 - **Dependencies**: None (supersedes implementation-006.md)
 - **Research Inputs**:
