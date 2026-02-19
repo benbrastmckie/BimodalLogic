@@ -21,6 +21,8 @@ This module defines semantic validity and consequence for TM formulas.
 ## Implementation Notes
 
 - Validity quantifies over all temporal types `D : Type*` with `LinearOrderedAddCommGroup D`
+- Validity and consequence use `Set.univ` as the Omega parameter (all histories admissible)
+- Satisfiability existentially quantifies over Omega with a membership constraint `τ ∈ Omega`
 - Semantic consequence: truth in all models where premises true
 - Used in soundness theorem: `Γ ⊢ φ → Γ ⊨ φ`
 - Temporal types include Int, Rat, Real, and custom bounded types
@@ -50,6 +52,9 @@ Formally: for every temporal type `D`, every task frame `F : TaskFrame D`,
 every model `M` over `F`, every world history `τ`, every time `t : D`,
 the formula is true at `(M, τ, t)`.
 
+Uses `Set.univ` as the Omega parameter (set of admissible histories), meaning all
+world histories are considered admissible for validity checking.
+
 **Paper Reference (lines 924, 2272-2273)**: Logical consequence quantifies over
 all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
 
@@ -61,7 +66,7 @@ Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 def valid (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (t : D),
-    truth_at M τ t φ
+    truth_at M Set.univ τ t φ
 
 /--
 Notation for validity: `⊨ φ` means `valid φ`.
@@ -83,8 +88,8 @@ Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) (M : TaskModel F)
     (τ : WorldHistory F) (t : D),
-    (∀ ψ ∈ Γ, truth_at M τ t ψ) →
-    truth_at M τ t φ
+    (∀ ψ ∈ Γ, truth_at M Set.univ τ t ψ) →
+    truth_at M Set.univ τ t φ
 
 /--
 Notation for semantic consequence: `Γ ⊨ φ`.
@@ -95,14 +100,19 @@ notation:50 Γ:50 " ⊨ " φ:50 => semantic_consequence Γ φ
 A context is satisfiable in temporal type `D` if there exists a model where all formulas
 in the context are true.
 
+Existentially quantifies over a set of admissible histories `Omega` and requires
+the witness history `τ ∈ Omega`. This ensures satisfiability witnesses are
+consistent with the Omega parameter in `truth_at`.
+
 This is the semantic notion of consistency relative to a temporal type.
 For absolute satisfiability (exists in some type), use `∃ D, satisfiable D Γ`.
 
 **Note**: Satisfiability quantifies over all times `t : D`, not just domain times.
 -/
 def satisfiable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (Γ : Context) : Prop :=
-  ∃ (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F) (t : D),
-    ∀ φ ∈ Γ, truth_at M τ t φ
+  ∃ (F : TaskFrame D) (M : TaskModel F) (Omega : Set (WorldHistory F))
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
+    ∀ φ ∈ Γ, truth_at M Omega τ t φ
 
 /--
 A context is absolutely satisfiable if it is satisfiable in some temporal type.
@@ -125,8 +135,9 @@ to the existence of finite models.
 -/
 def formula_satisfiable (φ : Formula) : Prop :=
   ∃ (D : Type) (_ : AddCommGroup D) (_ : LinearOrder D) (_ : IsOrderedAddMonoid D)
-    (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F) (t : D),
-    truth_at M τ t φ
+    (F : TaskFrame D) (M : TaskModel F) (Omega : Set (WorldHistory F))
+    (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
+    truth_at M Omega τ t φ
 
 namespace Validity
 
@@ -177,7 +188,7 @@ consequence in that type, see `unsatisfiable_implies_all_fixed`.
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
     (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ¬satisfiable D Γ) → (Γ ⊨ φ) :=
   fun h_unsat D _ _ _ F M τ t h_all =>
-    absurd ⟨F, M, τ, t, h_all⟩ (h_unsat D)
+    absurd ⟨F, M, Set.univ, τ, Set.mem_univ τ, t, h_all⟩ (h_unsat D)
 
 /--
 Unsatisfiable context in a fixed temporal type implies consequence in that type.
@@ -186,11 +197,11 @@ This is the type-specific version of explosion.
 theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {Γ : Context} {φ : Formula} :
     ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F)
-      (t : D), (∀ ψ ∈ Γ, truth_at M τ t ψ) → truth_at M τ t φ := by
+      (t : D), (∀ ψ ∈ Γ, truth_at M Set.univ τ t ψ) → truth_at M Set.univ τ t φ := by
   intro h_unsat F M τ t h_all
   exfalso
   apply h_unsat
-  exact ⟨F, M, τ, t, h_all⟩
+  exact ⟨F, M, Set.univ, τ, Set.mem_univ τ, t, h_all⟩
 
 end Validity
 
