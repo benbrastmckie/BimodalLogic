@@ -1,7 +1,7 @@
 # Implementation Plan: Recursive Seed Henkin Model - Closure.lean Error Remediation (v8)
 
 - **Task**: 864 - Recursive seed construction for Henkin model completeness
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours (focused on Closure.lean errors + remaining pipeline)
 - **Dependencies**: None (supersedes implementation-007.md)
 - **Research Inputs**:
