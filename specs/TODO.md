@@ -1,5 +1,5 @@
 ---
-next_project_number: 912
+next_project_number: 913
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 912. Review completeness proof and metalogic state after task 910
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+
+**Description**: Systematically review the state of the completeness proof by way of the representation theorem and the FMP in order to evaluate the state of the metalogic, what has been finished, what remains to be done, and what can be archived to the Bimodal/Boneyard/, and how best to refactor or reorganize the metalogic.
+
+---
 
 ### 911. Phase 5: Downstream cleanup for task 906
 - **Effort**: 0.5 hours
