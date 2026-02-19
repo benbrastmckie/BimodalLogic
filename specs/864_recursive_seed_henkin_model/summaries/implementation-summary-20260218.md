@@ -118,3 +118,86 @@ Possible resolutions:
 1. Show `item.formula` can't create a new position at time `t` when Box psi is at `(f, t)` (time mismatch)
 2. Use the invariant structure (pending work item exists) instead of closed case
 3. Strengthen the invariant to account for position creation
+
+---
+
+## Session: sess_1771467391_3cf5f8 (2026-02-18 Later)
+
+### Overview
+
+Restructured the fuel=0 termination approach in `processWorklistAux_preserves_closure`. The original sorry at line ~11398 (fuel=0 case) has been replaced with a properly structured `FuelSufficient` predicate and the termination sorry is now isolated in the process-item branch.
+
+### Changes Made
+
+1. **Added `FuelSufficient` predicate** (line 11389)
+   - Definition: `fuel >= totalPendingComplexity worklist processed`
+   - Based on complexity sum, not item count
+   - Properly captures the termination measure
+
+2. **Fixed fuel=0 case proof**
+   - When fuel=0 with FuelSufficient, totalPendingComplexity=0
+   - Implies filter is empty (since each complexity >= 1)
+   - Uses `Formula.complexity_pos` to derive contradiction for non-empty filter
+   - Uses `empty_worklist_closure` to conclude
+
+3. **Fixed "already processed" branch**
+   - Uses `totalPendingComplexity_of_in_processed` lemma
+   - If item in processed, totalPendingComplexity(item::rest) = totalPendingComplexity(rest)
+   - Fuel sufficiency propagates directly
+
+4. **Documented termination sorry** (line 11635)
+   - Moved from fuel=0 case to process-item branch
+   - Clearly isolated as Dershowitz-Manna multiset ordering proof
+   - Explained why sum-based termination fails (Box p at n families)
+
+5. **Added `buildSeedComplete_closed` fuel sufficiency proof**
+   - Initial fuel = (c^2 + 1) * 2 where c = phi.complexity
+   - Initial totalPendingComplexity = c
+   - Proven: 2c^2 + 2 >= c for all c >= 0
+
+### Key Insight
+
+Count-based termination (what I initially tried) doesn't work because processing one item can create multiple items. For example:
+- Box p has complexity 2
+- Processing it at n families creates n items of complexity 1
+- If n > 2, total complexity INCREASES
+
+The proper termination requires Dershowitz-Manna multiset ordering:
+- We remove one element of complexity c
+- We add elements each with complexity < c
+- This is a strict decrease in multiset ordering even if sum increases
+
+### Sorry Analysis
+
+**Before session**: 19 sorries
+**After session**: 19 sorries (unchanged)
+
+The termination sorry moved from fuel=0 case to process-item branch, but remains as 1 sorry in `processWorklistAux_preserves_closure`.
+
+### Files Modified
+
+- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean`
+  - Lines 11385-11399: Added `FuelSufficient` definition
+  - Lines 11407-11455: Updated fuel=0 case proof
+  - Lines 11522-11532: Updated "already processed" h_fuel proof
+  - Lines 11607-11635: Updated "process item" h_fuel (now sorry)
+  - Lines 11640-11668: Updated `buildSeedComplete_closed` with h_fuel proof
+
+### Verification
+
+- `lake build` succeeds (1000 jobs)
+- No new sorries introduced
+- Termination argument properly isolated
+
+### Next Steps for Successor
+
+To complete Phase 2, the Dershowitz-Manna termination proof at line 11635 needs:
+
+1. Define `pendingComplexityMultiset` ordering using Mathlib's `Multiset.lt`
+2. Prove: processing one item strictly decreases the multiset
+   - Remove item.complexity from multiset
+   - Add new item complexities (each < item.complexity)
+   - This is exactly DM ordering decrease
+3. Use this to prove fuel sufficiency propagates
+
+Alternative: Restructure using well-founded recursion on multiset ordering instead of fuel.
