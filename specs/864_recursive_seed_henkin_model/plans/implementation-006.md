@@ -200,7 +200,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Complete Closure Proofs [IN PROGRESS]
+### Phase 2: Complete Closure Proofs [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove ModalClosed, GClosed, HClosed for buildSeedComplete output with zero sorries
@@ -343,6 +343,21 @@ After this implementation:
 - Note: The sorry is now clearly isolated as a Dershowitz-Manna multiset termination proof
   - Location: line 11635 in `processWorklistAux_preserves_closure`
   - Required: prove totalPendingComplexity decreases under multiset ordering
+
+**Session: 2026-02-18 (iteration 4), sess_1771467391_3cf5f8**
+- **BLOCKER DISCOVERED**: RecursiveSeed.lean has ~100 pre-existing build errors
+  - Errors from library API compatibility changes
+  - File has not built successfully for multiple commits
+- Fixed: omega goal errors (added `simp only` prefix to simplify let bindings)
+- Fixed: Classification inversion lemmas (changed to use `contradiction` tactic)
+- Fixed: DerivationTree.assumption parameter order
+- Remaining ~100 errors include:
+  - `List.getElem?_mem` renamed
+  - `simp` pattern changes (Finset.mem_singleton vs Set.mem_singleton_iff)
+  - `hasPosition` unfold failures
+  - Various application type mismatches
+- Status: Build must be fixed before Phase 2/3 work can proceed
+- Sorries: Unknown (build fails before sorry counting)
 
 **Timing:** 2 hours
 
