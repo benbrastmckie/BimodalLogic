@@ -1,0 +1,17 @@
+{
+  "status": "researched",
+  "summary": "Identified 8 files (7,605 lines, 100 sorries) safe to move to Boneyard, confirmed 12 critical path files (6,371 lines) that must be kept, and deferred RecursiveSeed chain (12,564 lines) pending task 864.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/905_cleanup_metalogic_for_task_903/reports/research-001.md",
+      "summary": "Detailed analysis of which Metalogic files are needed vs. not needed for task 903, with import dependency graph, sorry/axiom counts, and specific Boneyard recommendations"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1771524978_12263e",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

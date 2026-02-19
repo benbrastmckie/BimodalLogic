@@ -8,10 +8,19 @@
     {
       "project_number": 905,
       "project_name": "cleanup_metalogic_for_task_903",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-19T18:13:54Z",
-      "last_updated": "2026-02-19T18:13:54Z"
+      "last_updated": "2026-02-19T18:21:28Z",
+      "session_id": "sess_1771524978_12263e",
+      "researched": "2026-02-19T18:21:28Z",
+      "artifacts": [
+        {
+          "path": "specs/905_cleanup_metalogic_for_task_903/reports/research-001.md",
+          "type": "research",
+          "summary": "Detailed analysis of which Metalogic files are needed vs. not needed for task 903, with import dependency graph, sorry/axiom counts, and specific Boneyard recommendations"
+        }
+      ]
     },
     {
       "project_number": 904,
