@@ -457,8 +457,8 @@ theorem processWorkItem_newWork_consistent (item : WorkItem) (state : WorklistSt
     -- hw : w is in newWork, which maps psi to all families
     simp only [processWorkItem, h_class, List.mem_map, WorkItem.mk.injEq] at hw
     have h_w_formula : w.formula = psi := by
-      obtain ⟨_, _, h_eq_w, _, _⟩ := hw
-      exact h_eq_w
+      obtain ⟨_, _, h_eq_w⟩ := hw
+      rw [← h_eq_w]
     rw [h_w_formula]
     exact h_psi_cons
   | .boxNegative psi =>
@@ -523,8 +523,8 @@ theorem processWorkItem_newWork_consistent (item : WorkItem) (state : WorklistSt
       rw [h_head]
       exact h_psi_cons
     | inr h_tail =>
-      obtain ⟨_, _, h_eq_w, _, _⟩ := h_tail
-      rw [h_eq_w]
+      obtain ⟨_, _, h_eq_w⟩ := h_tail
+      rw [← h_eq_w]
       exact h_psi_cons
   | .futureNegative psi =>
     -- item.formula = neg(G psi), new work has formula neg psi
@@ -587,8 +587,8 @@ theorem processWorkItem_newWork_consistent (item : WorkItem) (state : WorklistSt
       rw [h_head]
       exact h_psi_cons
     | inr h_tail =>
-      obtain ⟨_, _, h_eq_w, _, _⟩ := h_tail
-      rw [h_eq_w]
+      obtain ⟨_, _, h_eq_w⟩ := h_tail
+      rw [← h_eq_w]
       exact h_psi_cons
   | .pastNegative psi =>
     -- item.formula = neg(H psi), new work has formula neg psi

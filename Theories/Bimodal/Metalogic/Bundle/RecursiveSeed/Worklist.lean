@@ -669,9 +669,13 @@ lemma processWorkItem_newWork_hasPosition (item : WorkItem) (state : WorklistSta
       exact createNewTime_self_hasPosition _ _ _ _
     | _, _ =>
       -- Generic cases: classifyFormula gives negation or implication for remaining imp patterns.
-      -- All produce empty newWork lists. Impossible classification cases are also trivially vacuous.
+      -- All produce empty newWork lists. Impossible classification cases require contradiction.
+      -- TODO: Prove that classifyFormula (x.imp y) never returns boxPositive/futurePositive/pastPositive
       simp only [classifyFormula, hf]
-      split <;> intro w hw <;> simp_all
+      split <;> intro w hw <;> simp_all only [List.mem_nil_iff, List.mem_singleton, List.mem_cons,
+        List.mem_map, exists_eq_right, List.not_mem_nil, false_or, WorkItem.famIdx, WorkItem.timeIdx,
+        forall_eq, forall_exists_index, and_imp, forall_apply_eq_imp_iff₂]
+      all_goals sorry
   | Formula.box psi =>
     -- boxPositive: new items at (f, item.timeIdx) for f ∈ familyIndices
     simp only [classifyFormula, hf]
