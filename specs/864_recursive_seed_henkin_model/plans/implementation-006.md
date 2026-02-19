@@ -84,7 +84,30 @@ From research-002.md (task 900 team research):
 
 ## Sorry Characterization
 
-### Pre-existing Sorries
+### Current State (as of 2026-02-19, sess_1771453218_898bbc)
+
+**RecursiveSeed.lean**: 19 sorries total
+**SeedCompletion.lean**: 5 sorries total
+
+**DONE (eliminated since plan v006 start)**:
+- `processWorkItem_preserves_closure` — all 10 cases completed (was 1 sorry → 0)
+- `processWorklistAux_preserves_closure` sorry #2 — WorklistPosInvariant process-item case fixed
+
+**REMAINING in RecursiveSeed.lean**:
+- `processWorklistAux_preserves_closure` sorry #1 (fuel=0 termination, line ~11398) — **Phase 2 blocker**
+  - Needs: Dershowitz-Manna multiset ordering proof for `pendingComplexityMultiset` decrease
+- `processWorkItem_preserves_consistent` — 10+ sorries (boxPositive, futurePositive, pastPositive, modal/temporal cases) — **Phase 3 target**
+- `processWorkItem_newWork_consistent` — 6+ sorries — **Phase 3 target**
+- Helper consistency lemmas — several sorries — **Phase 3 target**
+
+**REMAINING in SeedCompletion.lean** (5 sorries, **Phase 5 target**):
+- Line 161: `modal_witness_includes_boxcontent`
+- Line 246: `forward_G` (cross-sign case)
+- Line 256: `backward_H` (cross-sign case)
+- Line 328: `buildFamilyFromSeed_cross_sign_seed`
+- Line 372: `buildFamilyFromSeed_contains_seed` (t!=0)
+
+### Pre-existing Sorries (original)
 
 **RecursiveSeed.lean** (22 sorries in Phase 4):
 - `processWorkItem_preserves_consistent` - 10 case sorries (boxPositive, futurePositive, pastPositive blocked)
@@ -104,10 +127,11 @@ From research-002.md (task 900 team research):
 
 ### Expected Resolution
 
-- **Phase 1**: Add `insert_consistent_of_derivable_parent` (0 new sorries)
-- **Phase 2**: Complete closure proofs (reduce 3 sorries to 0)
-- **Phase 3**: Derive consistency from closure (reduce 22 sorries to 0)
-- **Phase 4**: Connect to SeedCompletion (reduce 5 sorries to 0)
+- **Phase 1**: Add `insert_consistent_of_derivable_parent` (0 new sorries) — DONE
+- **Phase 2**: Complete closure proofs (reduce 3 sorries to 1 remaining)
+- **Phase 3**: Derive consistency from closure (reduce ~22 consistency sorries to 0)
+- **Phase 4**: Check temporal cases with existing lemmas
+- **Phase 5**: Connect to SeedCompletion (reduce 5 sorries to 0)
 
 ### New Sorries
 
@@ -180,13 +204,24 @@ After this implementation:
 - **Goal:** Prove ModalClosed, GClosed, HClosed for buildSeedComplete output with zero sorries
 
 **Tasks**:
-- [ ] Complete `processWorkItem_preserves_closure` (currently 1 sorry)
-  - Case analysis on classifyFormula for all 10 cases
-  - Use helper lemmas: `foldl_addFormula_fam_puts_phi_in_all`, `foldl_addFormula_times_puts_phi_in_all`
-- [ ] Complete `processWorklistAux_preserves_closure` (currently 2 sorries)
-  - Fuel=0 case: handle termination
-  - Process application case: chain through processWorkItem
-- [ ] Verify `buildSeedComplete_closed` compiles with zero sorries
+- [x] Complete `processWorkItem_preserves_closure` — ALL 10 CASES DONE
+  - [x] atomic, bottom, implication, negation cases (simple pattern)
+  - [x] boxPositive case (uses foldl_addFormula_fam_puts_phi_in_all)
+  - [x] boxNegative case (uses backward reasoning through createNewFamily)
+  - [x] futureNegative case (uses hasPosition_time_lt_freshFutureTime)
+  - [x] pastNegative case (uses hasPosition_time_gt_freshPastTime)
+  - [x] futurePositive case (~350 lines, uses compound foldl helpers)
+  - [x] pastPositive case (~350 lines, uses compound foldl helpers)
+- [x] Added `processWorkItem_preserves_hasPosition` (seed position monotonicity)
+- [x] Added SeedClosed extractors: `SeedClosed_implies_ModalClosed`, `SeedClosed_implies_GClosed`, `SeedClosed_implies_HClosed`
+- [x] Added `buildSeedComplete_modalClosed`, `buildSeedComplete_gClosed`, `buildSeedComplete_hClosed`
+- [ ] **BLOCKED**: Complete `processWorklistAux_preserves_closure` — 1 SORRY REMAINING
+  - [x] Process-item case (sorry #2): FIXED via WorklistPosInvariant + processWorkItem_preserves_hasPosition
+  - [ ] **Fuel=0 case (sorry #1, line ~11398)**: Requires Dershowitz-Manna multiset termination proof
+    - Blocked: `pendingComplexityMultiset` must decrease under DM ordering when processing one item
+    - Key lemma needed: new work items have complexity < parent (conceptually established but not formalized)
+    - DM multiset arithmetic proof is non-trivial (~2-3 hours additional work)
+- [ ] Verify `buildSeedComplete_closed` compiles with zero sorries (blocked on above)
 
 **Progress:**
 
@@ -303,7 +338,8 @@ After this implementation:
 
 ### Phase 3: Derive Consistency from Closure [NOT STARTED]
 
-- **Dependencies:** Phase 2
+- **Dependencies:** Phase 2 (currently blocked on fuel=0 termination sorry)
+- **Note:** Phase 2's 1 remaining sorry (Dershowitz-Manna proof) must be resolved first
 - **Goal:** Replace loop invariant consistency with post-condition derivation using closure properties
 
 **Tasks**:
