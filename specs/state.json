@@ -8,10 +8,19 @@
     {
       "project_number": 902,
       "project_name": "ensure_opus_4_6_for_lean_subagents",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-19T02:26:10Z",
-      "last_updated": "2026-02-19T02:26:10Z"
+      "last_updated": "2026-02-19T02:30:06Z",
+      "session_id": "sess_1771468039_7b26f0",
+      "researched": "2026-02-19T02:30:06Z",
+      "artifacts": [
+        {
+          "path": "specs/902_ensure_opus_4_6_for_lean_subagents/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report on model specification for Lean subagents via frontmatter"
+        }
+      ]
     },
     {
       "project_number": 900,

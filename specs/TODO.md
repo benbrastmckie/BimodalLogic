@@ -24,9 +24,11 @@ technical_debt:
 
 ### 902. Ensure Opus 4.6 model is specified for Lean subagents
 - **Effort**: 1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-18
+- **Researched**: 2026-02-19
+- **Research**: [research-001.md](specs/902_ensure_opus_4_6_for_lean_subagents/reports/research-001.md)
 
 **Description**: Ensure Opus 4.6 model is explicitly specified for Lean subagents in lean-implementation-agent.md and lean-research-agent.md to guarantee the most capable model is always used for theorem proving tasks.
 
