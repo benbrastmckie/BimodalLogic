@@ -23,10 +23,13 @@ technical_debt:
 ## Tasks
 
 ### 906. Modify semantic framework for Box over admissible histories with Omega closure
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 8 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-19
+- **Started**: 2026-02-19
+- **Planned**: 2026-02-19
+- **Plan**: [implementation-001.md](specs/906_box_admissible_histories_omega_closure/plans/implementation-001.md)
 
 **Description**: Draw on specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-004.md to modify the semantic framework so that Box quantifies over a designated set of admissible histories, matching the paper's specification exactly. It is important to define Omega as the closure of canonical histories under ALL time-shifts rather than attempt to make do with constant families, following Choice B rather than A.
 

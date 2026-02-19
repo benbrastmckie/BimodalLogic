@@ -8,10 +8,19 @@
     {
       "project_number": 906,
       "project_name": "box_admissible_histories_omega_closure",
-      "status": "not_started",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-19T20:40:35Z",
-      "last_updated": "2026-02-19T20:40:35Z"
+      "last_updated": "2026-02-19T20:44:57Z",
+      "session_id": "sess_1771533716_2ab03a",
+      "planned": "2026-02-19T20:44:57Z",
+      "artifacts": [
+        {
+          "path": "specs/906_box_admissible_histories_omega_closure/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan: add Omega to truth_at, update validity/soundness, fix canonical model with shift-closed Omega"
+        }
+      ]
     },
     {
       "project_number": 905,
