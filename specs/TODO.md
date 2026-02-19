@@ -35,15 +35,17 @@ technical_debt:
 ---
 
 ### 910. Phase 4: Canonical model reconstruction for task 906
-- **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 4.5 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
 - **Researched**: 2026-02-19
+- **Planned**: 2026-02-19
 - **Parent**: 906
 - **Depends**: 909
 - **Research**: [research-001.md](specs/910_phase4_canonical_model_reconstruction/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/910_phase4_canonical_model_reconstruction/plans/implementation-001.md)
 
 **Description**: Remove constant-family infrastructure. Generalize CanonicalWorldState. Redefine canonicalHistory with time-varying states. Define canonicalOmega (without shift-closure). Restate and reprove truth lemma with fam.mcs t. Fix Box forward case sorry (line 229). Update completeness theorems.
 
@@ -51,7 +53,7 @@ technical_debt:
 
 ### 909. Phase 3: Update soundness proofs for task 906
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
