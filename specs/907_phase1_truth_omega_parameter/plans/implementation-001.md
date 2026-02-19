@@ -343,12 +343,12 @@ theorem exists_shifted_history (M : TaskModel F) (Omega : Set (WorldHistory F))
 
 ## Testing & Validation
 
-- [ ] `lake build Bimodal.Semantics.Truth` succeeds
-- [ ] No new sorries introduced in Truth.lean
-- [ ] No new axioms introduced
-- [ ] ShiftClosed and Set.univ_shift_closed definitions present
-- [ ] All TimeShift lemmas have Omega parameter
-- [ ] time_shift_preserves_truth has ShiftClosed hypothesis
+- [x] `lake build Bimodal.Semantics.Truth` succeeds
+- [x] No new sorries introduced in Truth.lean
+- [x] No new axioms introduced
+- [x] ShiftClosed and Set.univ_shift_closed definitions present
+- [x] All TimeShift lemmas have Omega parameter
+- [x] time_shift_preserves_truth has ShiftClosed hypothesis
 
 ## Artifacts & Outputs
 
