@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 906,
+      "project_name": "box_admissible_histories_omega_closure",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-19T20:40:35Z",
+      "last_updated": "2026-02-19T20:40:35Z"
+    },
+    {
       "project_number": 905,
       "project_name": "cleanup_metalogic_for_task_903",
       "status": "completed",
@@ -937,7 +945,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 906,
+  "next_project_number": 907,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
