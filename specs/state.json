@@ -6,12 +6,57 @@
   },
   "active_projects": [
     {
+      "project_number": 907,
+      "project_name": "phase1_truth_omega_parameter",
+      "status": "not_started",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T21:22:47Z"
+    },
+    {
+      "project_number": 908,
+      "project_name": "phase2_validity_definitions",
+      "status": "not_started",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T21:22:47Z"
+    },
+    {
+      "project_number": 909,
+      "project_name": "phase3_soundness_proofs",
+      "status": "not_started",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T21:22:47Z"
+    },
+    {
+      "project_number": 910,
+      "project_name": "phase4_canonical_model_reconstruction",
+      "status": "not_started",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T21:22:47Z"
+    },
+    {
+      "project_number": 911,
+      "project_name": "phase5_downstream_cleanup",
+      "status": "not_started",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T21:22:47Z"
+    },
+    {
       "project_number": 906,
       "project_name": "box_admissible_histories_omega_closure",
-      "status": "planned",
+      "status": "expanded",
       "language": "lean",
       "created": "2026-02-19T20:40:35Z",
-      "last_updated": "2026-02-19T21:09:54Z",
+      "last_updated": "2026-02-19T21:22:47Z",
       "session_id": "sess_1771534672_922b37",
       "planned": "2026-02-19T21:09:54Z",
       "artifacts": [
@@ -26,7 +71,14 @@
           "summary": "5-phase revised plan: Set.univ for validity, unshifted canonicalOmega, remove constant-family infrastructure"
         }
       ],
-      "researched": "2026-02-19T21:04:56Z"
+      "researched": "2026-02-19T21:04:56Z",
+      "subtasks": [
+        907,
+        908,
+        909,
+        910,
+        911
+      ]
     },
     {
       "project_number": 905,
@@ -960,7 +1012,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 907,
+  "next_project_number": 912,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

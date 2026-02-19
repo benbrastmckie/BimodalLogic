@@ -1,5 +1,5 @@
 ---
-next_project_number: 907
+next_project_number: 912
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,15 +22,76 @@ technical_debt:
 
 ## Tasks
 
+### 911. Phase 5: Downstream cleanup for task 906
+- **Effort**: 0.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+- **Parent**: 906
+- **Depends**: 910
+
+**Description**: Fix any remaining compilation errors in downstream files (FMP/SemanticCanonicalModel.lean, etc.) after Omega changes. Run lake build to verify full compilation.
+
+---
+
+### 910. Phase 4: Canonical model reconstruction for task 906
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+- **Parent**: 906
+- **Depends**: 909
+
+**Description**: Remove constant-family infrastructure. Generalize CanonicalWorldState. Redefine canonicalHistory with time-varying states. Define canonicalOmega (without shift-closure). Restate and reprove truth lemma with fam.mcs t. Fix Box forward case sorry (line 229). Update completeness theorems.
+
+---
+
+### 909. Phase 3: Update soundness proofs for task 906
+- **Effort**: 2.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+- **Parent**: 906
+- **Depends**: 908
+
+**Description**: Thread Omega = Set.univ through SoundnessLemmas.lean (~35 theorems) and Soundness.lean. Update is_valid to use truth_at M Set.univ. For MF/TF proofs, discharge ShiftClosed with Set.univ_shift_closed.
+
+---
+
+### 908. Phase 2: Update validity definitions for task 906
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+- **Parent**: 906
+- **Depends**: 907
+
+**Description**: Update valid and semantic_consequence to use Omega = Set.univ. Update satisfiable with existential Omega. Update all validity lemmas in Validity.lean.
+
+---
+
+### 907. Phase 1: Add Omega parameter to truth_at for task 906
+- **Effort**: 2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+- **Parent**: 906
+
+**Description**: Add Omega parameter to truth_at. Modify Box case to quantify over sigma in Omega. Define ShiftClosed predicate and prove Set.univ is shift-closed. Update time_shift_preserves_truth with Omega + ShiftClosed hypothesis.
+
+---
+
 ### 906. Modify semantic framework for Box over admissible histories with Omega closure
 - **Effort**: 9 hours (revised from 8h based on research)
-- **Status**: [PLANNED]
+- **Status**: [EXPANDED]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
 - **Planned**: 2026-02-19
 - **Researched**: 2026-02-19
 - **Revised**: 2026-02-19
+- **Expanded**: 2026-02-19
+- **Subtasks**: 907, 908, 909, 910, 911
 - **Plan**: [implementation-002.md](specs/906_box_admissible_histories_omega_closure/plans/implementation-002.md) (v002 - revised after research-001)
 - **Research**: [research-001.md](specs/906_box_admissible_histories_omega_closure/reports/research-001.md)
 
