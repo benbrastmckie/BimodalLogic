@@ -34,8 +34,8 @@ temporal order), NOT just times in `dom(τ)`. This is a deliberate design choice
   matches paper's domain check at line 892 (atoms false outside domain)
 ✓ Bot: `False` matches paper's definition
 ✓ Imp: Standard material conditional matches paper
-✓ Box: `∀ (σ : WorldHistory F), truth_at M σ t φ`
-  matches paper's quantification over all histories
+✓ Box: `∀ (σ : WorldHistory F), σ ∈ Ω → truth_at M Ω σ t φ`
+  matches paper's quantification over σ ∈ Ω (admissible histories)
 ✓ Past: `∀ (s : D), s ≤ t → truth_at M τ s φ`
   uses reflexive ordering (includes present) for coherence
 ✓ Future: `∀ (s : D), t ≤ s → truth_at M τ s φ`
