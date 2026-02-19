@@ -72,11 +72,11 @@
     {
       "project_number": 909,
       "project_name": "phase3_soundness_proofs",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "parent_task": 906,
       "created": "2026-02-19T21:22:47Z",
-      "last_updated": "2026-02-19T23:03:17Z",
+      "last_updated": "2026-02-19T23:17:46Z",
       "session_id": "sess_1771542182_7ed3e4",
       "researched": "2026-02-19T22:46:43Z",
       "artifacts": [
@@ -89,9 +89,16 @@
           "path": "specs/909_phase3_soundness_proofs/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan for threading Omega=Set.univ through 58 soundness theorems"
+        },
+        {
+          "path": "specs/909_phase3_soundness_proofs/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary for Omega parameter threading through SoundnessLemmas.lean and Soundness.lean"
         }
       ],
-      "planned": "2026-02-19T22:52:53Z"
+      "planned": "2026-02-19T22:52:53Z",
+      "completed": "2026-02-19T23:17:46Z",
+      "completion_summary": "Threaded Omega = Set.univ through all ~55 soundness proofs in SoundnessLemmas.lean and Soundness.lean. Updated truth_at calls, time_shift_preserves_truth call sites, and simp lemma sets. Full project builds with zero errors and no new sorries or axioms."
     },
     {
       "project_number": 910,
