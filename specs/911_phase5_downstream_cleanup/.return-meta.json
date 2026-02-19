@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "summary": "No downstream files require changes for compilation after tasks 907-910. Build succeeds with 1000 jobs. FMP/SemanticCanonicalModel.lean compiles cleanly. Optional cleanup: 136 unused simp arg warnings in SoundnessLemmas.lean and Soundness.lean.",
+  "status": "planned",
+  "summary": "Created 3-phase implementation plan for downstream cleanup after Omega parameter changes. Research confirms build already succeeds; work is primarily verification and optional linter warning cleanup.",
   "artifacts": [
     {
-      "path": "specs/911_phase5_downstream_cleanup/reports/research-001.md",
-      "type": "research",
-      "summary": "Comprehensive audit of all downstream files after Omega parameter changes, with concrete cleanup checklist and Omega-mismatch analysis"
+      "path": "specs/911_phase5_downstream_cleanup/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "3-phase plan: build verification, optional simp cleanup (136 warnings), final validation"
     }
   ],
   "metadata": {
-    "session_id": "sess_1771543503_6a1f92",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771544259_9b16f8",
+    "agent_type": "planner-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.0
   }
 }

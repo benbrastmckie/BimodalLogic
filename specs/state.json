@@ -8,10 +8,11 @@
     {
       "project_number": 912,
       "project_name": "review_completeness_proof_metalogic_state",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-19T23:36:22Z",
-      "last_updated": "2026-02-19T23:36:22Z"
+      "last_updated": "2026-02-19T23:37:39Z",
+      "session_id": "sess_1771544237_c4967f"
     },
     {
       "project_number": 907,
@@ -143,20 +144,26 @@
     {
       "project_number": 911,
       "project_name": "phase5_downstream_cleanup",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "parent_task": 906,
       "created": "2026-02-19T21:22:47Z",
-      "last_updated": "2026-02-19T23:36:37Z",
-      "session_id": "sess_1771543503_6a1f92",
+      "last_updated": "2026-02-19T23:40:00Z",
+      "session_id": "sess_1771544259_9b16f8",
       "researched": "2026-02-19T23:36:37Z",
       "artifacts": [
         {
           "path": "specs/911_phase5_downstream_cleanup/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive audit of all downstream files after Omega parameter changes, with concrete cleanup checklist and Omega-mismatch analysis"
+        },
+        {
+          "path": "specs/911_phase5_downstream_cleanup/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: build verification, optional simp cleanup (136 warnings), final validation"
         }
-      ]
+      ],
+      "planned": "2026-02-19T23:40:00Z"
     },
     {
       "project_number": 906,
