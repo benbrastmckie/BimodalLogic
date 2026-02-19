@@ -3,17 +3,17 @@ next_project_number: 912
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-19T01:52:41Z
+  last_assessed: 2026-02-19T22:18:00Z
 task_counts:
-  active: 16
-  completed: 618
+  active: 12
+  completed: 622
   in_progress: 2
   not_started: 6
-  abandoned: 29
-  total: 665
+  abandoned: 32
+  total: 668
 technical_debt:
-  sorry_count: 205
-  axiom_count: 20
+  sorry_count: 122
+  axiom_count: 19
   build_errors: 0
   status: manageable
 ---
@@ -72,7 +72,7 @@ technical_debt:
 
 ### 907. Phase 1: Add Omega parameter to truth_at for task 906
 - **Effort**: 2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
@@ -99,72 +99,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/906_box_admissible_histories_omega_closure/reports/research-001.md)
 
 **Description**: Draw on specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-004.md to modify the semantic framework so that Box quantifies over a designated set of admissible histories, matching the paper's specification exactly. It is important to define Omega as the closure of canonical histories under ALL time-shifts rather than attempt to make do with constant families, following Choice B rather than A.
-
----
-
-### 905. Clean up metalogic as prerequisite for task 903
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Research**: [research-001.md](specs/905_cleanup_metalogic_for_task_903/reports/research-001.md), [research-002.md](specs/905_cleanup_metalogic_for_task_903/reports/research-002.md), [research-003.md](specs/905_cleanup_metalogic_for_task_903/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/905_cleanup_metalogic_for_task_903/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/905_cleanup_metalogic_for_task_903/summaries/implementation-summary-20260219.md)
-
-**Description**: Clean up the metalogic by moving anything not needed into Boneyard/ before implementing task 903's completeness proof restructuring plan.
-
----
-
-### 904. Enforce model selection in team skill teammate spawning
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Plan**: [implementation-001.md](specs/904_enforce_model_selection_team_skills/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/904_enforce_model_selection_team_skills/summaries/implementation-summary-20260219.md)
-
-**Description**: The three team skills (skill-team-research, skill-team-plan, skill-team-implement) currently set `default_model` correctly based on task language (opus for lean, sonnet for all others) but only pass it as advisory text in teammate prompts via `model_preference_line`. TeammateTool supports an explicit `model` parameter. The fix is to add `model: $default_model` when spawning teammates in each skill, ensuring Opus 4.6 is always used for Lean tasks and Sonnet 4.6 for all others. Files to change: `.claude/skills/skill-team-research/SKILL.md`, `.claude/skills/skill-team-plan/SKILL.md`, `.claude/skills/skill-team-implement/SKILL.md`, `.claude/utils/team-wave-helpers.md`, `.claude/context/core/patterns/team-orchestration.md`. Also remove or update the now-redundant `model_preference_line` advisory text since the model is enforced via the explicit parameter.
-
----
-
-### 903. Restructure completeness proof for Bimodal task semantics
-- **Effort**: 8 hours (reduced from 10h - cleanup done by task 905)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Revised**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Depends**: Task #905 (cleanup) - COMPLETED
-- **Research**: [research-001.md](specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-001.md), [research-002.md](specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/903_restructure_completeness_proof_bimodal_semantics/plans/implementation-002.md) (v002 - revised after task 905)
-- **Summary**: [implementation-summary-20260219.md](specs/903_restructure_completeness_proof_bimodal_semantics/summaries/implementation-summary-20260219.md)
-
-**Description**: The completeness proof should go as follows: you take some consistent sentence, construct a task frame, model, and contextual parameters from that consistent sentence that satisfies the definitions given in the semantics (not some new definitions), then show that the sentence is true when evaluated in that constructed model at the constructed contextual parameters. Whereas in a Kripke semantics, just the model and world need to be provided to evaluate a sentence, in the Bimodal task semantics, both a world history and time must be provided alongside the model in order to evaluate sentences. Thus a consistent sentence must be used to construct a purely syntactic frame, model over that frame, world history, and time at which to evaluate the original sentence. Carefully evaluate whether the current representation theorem follows this form, or where it diverges in order to create a plan to systematically restructure the proof accordingly, moving elements that are not needed (or go in the wrong direction) into the Bimodal/Boneyard/.
-
----
-
-### 902. Ensure Opus 4.6 model is specified for Lean subagents
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-18
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Research**: [research-001.md](specs/902_ensure_opus_4_6_for_lean_subagents/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/902_ensure_opus_4_6_for_lean_subagents/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260218.md](specs/902_ensure_opus_4_6_for_lean_subagents/summaries/implementation-summary-20260218.md)
-
-**Description**: Ensure Opus 4.6 model is explicitly specified for Lean subagents in lean-implementation-agent.md and lean-research-agent.md to guarantee the most capable model is always used for theorem proving tasks.
 
 ---
 
