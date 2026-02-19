@@ -72,15 +72,17 @@ technical_debt:
 
 ### 907. Phase 1: Add Omega parameter to truth_at for task 906
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
 - **Researched**: 2026-02-19
 - **Planned**: 2026-02-19
+- **Completed**: 2026-02-19
 - **Parent**: 906
 - **Research**: [research-001.md](specs/907_phase1_truth_omega_parameter/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/907_phase1_truth_omega_parameter/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260219.md](specs/907_phase1_truth_omega_parameter/summaries/implementation-summary-20260219.md)
 
 **Description**: Add Omega parameter to truth_at. Modify Box case to quantify over sigma in Omega. Define ShiftClosed predicate and prove Set.univ is shift-closed. Update time_shift_preserves_truth with Omega + ShiftClosed hypothesis.
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #907
 
 - **Task**: 907 - Phase 1: Add Omega parameter to truth_at
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None (Phase 1 of parent task 906)
 - **Research Inputs**: specs/907_phase1_truth_omega_parameter/reports/research-001.md
@@ -64,7 +64,7 @@ From research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Update truth_at Definition [NOT STARTED]
+### Phase 1: Update truth_at Definition [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add Omega parameter to `truth_at` and update Box case
@@ -104,7 +104,7 @@ Lines 109-114, update the cases:
 
 ---
 
-### Phase 2: Update Truth Namespace Lemmas [NOT STARTED]
+### Phase 2: Update Truth Namespace Lemmas [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add Omega parameter to all Truth namespace lemmas (lines 119-212)
@@ -142,7 +142,7 @@ For other lemmas, add `(Omega : Set (WorldHistory F))` parameter and update `tru
 
 ---
 
-### Phase 3: Add ShiftClosed Definition [NOT STARTED]
+### Phase 3: Add ShiftClosed Definition [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Define `ShiftClosed` predicate and prove `Set.univ_shift_closed`
@@ -177,7 +177,7 @@ theorem Set.univ_shift_closed : ShiftClosed (Set.univ : Set (WorldHistory F)) :=
 
 ---
 
-### Phase 4: Update truth_history_eq and truth_double_shift_cancel [NOT STARTED]
+### Phase 4: Update truth_history_eq and truth_double_shift_cancel [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Add Omega parameter to the first two TimeShift lemmas
@@ -221,7 +221,7 @@ Update all recursive IH calls within the proof to use `ih t` with Omega threadin
 
 ---
 
-### Phase 5: Update time_shift_preserves_truth [NOT STARTED]
+### Phase 5: Update time_shift_preserves_truth [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Add Omega and ShiftClosed parameters, update Box case proof
@@ -283,7 +283,7 @@ Box case forward direction (after line 355):
 
 ---
 
-### Phase 6: Update exists_shifted_history [NOT STARTED]
+### Phase 6: Update exists_shifted_history [COMPLETED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Add Omega and ShiftClosed parameters to final lemma
@@ -310,7 +310,7 @@ theorem exists_shifted_history (M : TaskModel F) (Omega : Set (WorldHistory F))
 
 ---
 
-### Phase 7: Final Verification and Cleanup [NOT STARTED]
+### Phase 7: Final Verification and Cleanup [COMPLETED]
 
 - **Dependencies:** Phase 6
 - **Goal:** Verify entire file compiles and no loose ends
@@ -327,6 +327,17 @@ theorem exists_shifted_history (M : TaskModel F) (Omega : Set (WorldHistory F))
 - `lake build Bimodal.Semantics.Truth` succeeds
 - No sorries in Truth.lean
 - `grep -n "sorry" Theories/Bimodal/Semantics/Truth.lean` returns nothing
+
+**Progress:**
+
+**Session: 2026-02-19, sess_1771539369_566e30**
+- Added: `Omega : Set (WorldHistory F)` parameter to `truth_at` definition
+- Added: `ShiftClosed` predicate and `Set.univ_shift_closed` theorem
+- Refactored: All Truth namespace lemmas to thread Omega parameter
+- Refactored: All TimeShift namespace lemmas to thread Omega parameter
+- Refactored: `time_shift_preserves_truth` Box case to use ShiftClosed for membership
+- Refactored: `exists_shifted_history` to thread Omega and ShiftClosed
+- Completed: `lake build Bimodal.Semantics.Truth` succeeds (669 jobs, 0 errors, 0 sorries)
 
 ---
 
