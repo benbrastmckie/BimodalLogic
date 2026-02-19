@@ -169,12 +169,12 @@ technical_debt:
 
 ### 864. Implement recursive seed construction for Henkin model completeness
 - **Effort**: 36 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-05
-- **Researched**: 2026-02-10
+- **Researched**: 2026-02-19
 - **Planned**: 2026-02-17
-- **Research**: [research-001.md](specs/864_recursive_seed_henkin_model/reports/research-001.md), [research-002.md](specs/864_recursive_seed_henkin_model/reports/research-002.md)
+- **Research**: [research-001.md](specs/864_recursive_seed_henkin_model/reports/research-001.md), [research-002.md](specs/864_recursive_seed_henkin_model/reports/research-002.md), [research-008.md](specs/864_recursive_seed_henkin_model/reports/research-008.md) (meta-analysis)
 - **Plan**: [implementation-004.md](specs/864_recursive_seed_henkin_model/plans/implementation-004.md) (v4), [implementation-003.md](specs/864_recursive_seed_henkin_model/plans/implementation-003.md) (v3)
 - **Summary**: [implementation-summary-20260217.md](specs/864_recursive_seed_henkin_model/summaries/implementation-summary-20260217.md)
 
