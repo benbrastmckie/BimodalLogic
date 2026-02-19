@@ -108,6 +108,11 @@
           "path": "specs/903_restructure_completeness_proof_bimodal_semantics/summaries/implementation-summary-20260219.md",
           "type": "summary",
           "summary": "Implementation summary documenting 5 phases completed, 2 sorries"
+        },
+        {
+          "path": "specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-003.md",
+          "type": "research",
+          "summary": "Analysis of two remaining sorries: box forward sorry is a genuine semantic gap (acceptable), BMCS existence sorry is constructively resolvable via temporally-saturated Lindenbaum + rescued SaturatedConstruction from Boneyard. Includes 4-phase implementation plan for sorry elimination (9-13h)."
         }
       ],
       "planned": "2026-02-19T19:14:07Z",
