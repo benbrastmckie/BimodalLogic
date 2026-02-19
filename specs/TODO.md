@@ -1,5 +1,5 @@
 ---
-next_project_number: 902
+next_project_number: 903
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 902. Ensure Opus 4.6 model is specified for Lean subagents
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-18
+
+**Description**: Ensure Opus 4.6 model is explicitly specified for Lean subagents in lean-implementation-agent.md and lean-research-agent.md to guarantee the most capable model is always used for theorem proving tasks.
+
+---
 
 ### 900. Prove cut rule and derivation tree manipulation for recursive seed Henkin model
 - **Effort**: 6 hours

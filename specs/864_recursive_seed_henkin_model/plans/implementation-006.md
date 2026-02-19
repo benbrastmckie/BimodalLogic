@@ -84,7 +84,7 @@ From research-002.md (task 900 team research):
 
 ## Sorry Characterization
 
-### Current State (as of 2026-02-19, sess_1771453218_898bbc)
+### Current State (as of 2026-02-18, sess_1771467391_3cf5f8)
 
 **RecursiveSeed.lean**: 19 sorries total
 **SeedCompletion.lean**: 5 sorries total
@@ -92,9 +92,11 @@ From research-002.md (task 900 team research):
 **DONE (eliminated since plan v006 start)**:
 - `processWorkItem_preserves_closure` — all 10 cases completed (was 1 sorry → 0)
 - `processWorklistAux_preserves_closure` sorry #2 — WorklistPosInvariant process-item case fixed
+- Fuel=0 case restructured using `FuelSufficient` predicate (complexity-based)
 
 **REMAINING in RecursiveSeed.lean**:
-- `processWorklistAux_preserves_closure` sorry #1 (fuel=0 termination, line ~11398) — **Phase 2 blocker**
+- `processWorklistAux_preserves_closure` termination sorry (line 11635) — **Phase 2 blocker**
+  - Moved from fuel=0 case to process-item branch
   - Needs: Dershowitz-Manna multiset ordering proof for `pendingComplexityMultiset` decrease
 - `processWorkItem_preserves_consistent` — 10+ sorries (boxPositive, futurePositive, pastPositive, modal/temporal cases) — **Phase 3 target**
 - `processWorkItem_newWork_consistent` — 6+ sorries — **Phase 3 target**
@@ -323,6 +325,24 @@ After this implementation:
     arithmetic needs to be formalized
 - Sorries: 20 -> 20 (sorry #2 removed from processWorklistAux, 0 net change due to counting)
   - Actually: processWorklistAux_preserves_closure now has 1 sorry (was 2), sorry count -1
+
+**Session: 2026-02-18 (iteration 3), sess_1771467391_3cf5f8**
+- Restructured: fuel=0 termination approach using `FuelSufficient` predicate
+  - Added: `FuelSufficient` definition based on `totalPendingComplexity` (not count-based)
+  - Fuel=0 case: Now properly handled when `totalPendingComplexity = 0` implies empty pending work
+  - "Already processed" branch: Preserves `FuelSufficient` using `totalPendingComplexity_of_in_processed`
+  - "Process item" branch: Has sorry for Dershowitz-Manna termination proof (line 11635)
+- Added: `buildSeedComplete_closed` fuel sufficiency proof
+  - Initial fuel = (c^2 + 1) * 2 where c = phi.complexity
+  - Initial totalPendingComplexity = c (one item in worklist)
+  - Proven: 2c^2 + 2 >= c for all c >= 0
+- Documented: Why count-based termination fails (Box p at n families creates n items)
+  - Requires multiset ordering, not sum comparison
+  - Sum of new complexities can exceed parent complexity
+- Sorries: 19 (unchanged - termination sorry moved from fuel=0 to process-item branch)
+- Note: The sorry is now clearly isolated as a Dershowitz-Manna multiset termination proof
+  - Location: line 11635 in `processWorklistAux_preserves_closure`
+  - Required: prove totalPendingComplexity decreases under multiset ordering
 
 **Timing:** 2 hours
 
