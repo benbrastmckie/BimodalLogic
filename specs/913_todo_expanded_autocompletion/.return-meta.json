@@ -1,20 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Analyzed /todo command structure, expanded task data model (status=expanded, subtasks array, parent_task reference), and identified safe jq patterns. Documented Step 2.7 algorithm for auto-completing expanded tasks when all subtasks finish.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/913_todo_expanded_autocompletion/reports/research-001.md",
-      "summary": "Research report documenting /todo command steps, expanded task schema, jq patterns, and proposed Step 2.7 algorithm"
+      "type": "plan",
+      "path": "specs/913_todo_expanded_autocompletion/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for todo expanded task auto-completion"
     }
   ],
-  "next_steps": "Run /plan 913 to create implementation plan",
+  "next_steps": "Run /implement 913 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771544824_dcc135",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1771545161_98eeb1",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 9
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2
   }
 }
