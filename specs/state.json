@@ -8,22 +8,22 @@
     {
       "project_number": 906,
       "project_name": "box_admissible_histories_omega_closure",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-19T20:40:35Z",
-      "last_updated": "2026-02-19T21:04:56Z",
+      "last_updated": "2026-02-19T21:09:54Z",
       "session_id": "sess_1771534672_922b37",
-      "planned": "2026-02-19T20:44:57Z",
+      "planned": "2026-02-19T21:09:54Z",
       "artifacts": [
-        {
-          "path": "specs/906_box_admissible_histories_omega_closure/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase plan: add Omega to truth_at, update validity/soundness, fix canonical model with shift-closed Omega"
-        },
         {
           "path": "specs/906_box_admissible_histories_omega_closure/reports/research-001.md",
           "type": "research",
           "summary": "Plan review identifying 7 weaknesses with actionable recommendations: use Set.univ for validity, define canonicalOmega without shift-closure, reorder phases"
+        },
+        {
+          "path": "specs/906_box_admissible_histories_omega_closure/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "5-phase revised plan: Set.univ for validity, unshifted canonicalOmega, remove constant-family infrastructure"
         }
       ],
       "researched": "2026-02-19T21:04:56Z"
