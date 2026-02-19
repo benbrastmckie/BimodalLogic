@@ -1,5 +1,5 @@
 ---
-next_project_number: 901
+next_project_number: 902
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 901. Configure lean subagents to use Opus 4.6 and other agents to use Sonnet 4.6
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-18
+
+**Description**: Configure lean subagents to use Opus 4.6, but all other agents should use Sonnet 4.6.
+
+---
 
 ### 900. Prove cut rule and derivation tree manipulation for recursive seed Henkin model
 - **Effort**: 6 hours

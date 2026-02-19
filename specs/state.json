@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 901,
+      "project_name": "configure_subagent_model_routing",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-19T01:23:11Z",
+      "last_updated": "2026-02-19T01:23:11Z"
+    },
+    {
       "project_number": 900,
       "project_name": "prove_cut_rule_derivation_tree_manipulation",
       "status": "implementing",
@@ -443,8 +451,8 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-18T19:54:09Z",
-      "session_id": "sess_1771444424_210e88",
+      "last_updated": "2026-02-18T22:20:54Z",
+      "session_id": "sess_1771453218_898bbc",
       "researched": "2026-02-05T01:30:31Z",
       "artifacts": [
         {
@@ -916,7 +924,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 901,
+  "next_project_number": 902,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
