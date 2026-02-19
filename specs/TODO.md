@@ -34,13 +34,12 @@ technical_debt:
 
 ---
 
-/research 910 "Draw on the /home/benjamin/Projects/ProofChecker/specs/906_box_admissible_histories_omega_closure/plans/implementation-002.md and the completion of task 907-9 to inform and improve research to streamline this task, studying all elements required to complete the task in full."      
-
 ### 910. Phase 4: Canonical model reconstruction for task 906
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-02-19
+- **Started**: 2026-02-19
 - **Parent**: 906
 - **Depends**: 909
 
@@ -50,12 +49,14 @@ technical_debt:
 
 ### 909. Phase 3: Update soundness proofs for task 906
 - **Effort**: 2.5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
+- **Researched**: 2026-02-19
 - **Parent**: 906
 - **Depends**: 908
+- **Research**: [research-001.md](specs/909_phase3_soundness_proofs/reports/research-001.md)
 
 **Description**: Thread Omega = Set.univ through SoundnessLemmas.lean (~35 theorems) and Soundness.lean. Update is_valid to use truth_at M Set.univ. For MF/TF proofs, discharge ShiftClosed with Set.univ_shift_closed.
 

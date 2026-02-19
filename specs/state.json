@@ -72,21 +72,30 @@
     {
       "project_number": 909,
       "project_name": "phase3_soundness_proofs",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "parent_task": 906,
       "created": "2026-02-19T21:22:47Z",
-      "last_updated": "2026-02-19T22:41:39Z",
-      "session_id": "sess_1771540857_703c31"
+      "last_updated": "2026-02-19T22:46:43Z",
+      "session_id": "sess_1771540857_703c31",
+      "researched": "2026-02-19T22:46:43Z",
+      "artifacts": [
+        {
+          "path": "specs/909_phase3_soundness_proofs/reports/research-001.md",
+          "type": "research",
+          "summary": "Complete analysis of 58 theorems in SoundnessLemmas.lean and Soundness.lean requiring mechanical Omega=Set.univ parameter threading, with 6 time_shift_preserves_truth call sites needing Set.univ_shift_closed discharge"
+        }
+      ]
     },
     {
       "project_number": 910,
       "project_name": "phase4_canonical_model_reconstruction",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "parent_task": 906,
       "created": "2026-02-19T21:22:47Z",
-      "last_updated": "2026-02-19T21:22:47Z"
+      "last_updated": "2026-02-19T22:43:23Z",
+      "session_id": "sess_1771540980_0e8665"
     },
     {
       "project_number": 911,
