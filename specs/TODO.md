@@ -1,5 +1,5 @@
 ---
-next_project_number: 903
+next_project_number: 904
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 903. Restructure completeness proof for Bimodal task semantics
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+
+**Description**: The completeness proof should go as follows: you take some consistent sentence, construct a task frame, model, and contextual parameters from that consistent sentence that satisfies the definitions given in the semantics (not some new definitions), then show that the sentence is true when evaluated in that constructed model at the constructed contextual parameters. Whereas in a Kripke semantics, just the model and world need to be provided to evaluate a sentence, in the Bimodal task semantics, both a world history and time must be provided alongside the model in order to evaluate sentences. Thus a consistent sentence must be used to construct a purely syntactic frame, model over that frame, world history, and time at which to evaluate the original sentence. Carefully evaluate whether the current representation theorem follows this form, or where it diverges in order to create a plan to systematically restructure the proof accordingly, moving elements that are not needed (or go in the wrong direction) into the Bimodal/Boneyard/.
+
+---
 
 ### 902. Ensure Opus 4.6 model is specified for Lean subagents
 - **Effort**: 1 hour
