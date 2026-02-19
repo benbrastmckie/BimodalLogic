@@ -11,14 +11,19 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-19T18:13:54Z",
-      "last_updated": "2026-02-19T18:21:28Z",
-      "session_id": "sess_1771524978_12263e",
-      "researched": "2026-02-19T18:21:28Z",
+      "last_updated": "2026-02-19T18:29:34Z",
+      "session_id": "sess_1771525489_574af7",
+      "researched": "2026-02-19T18:29:34Z",
       "artifacts": [
         {
           "path": "specs/905_cleanup_metalogic_for_task_903/reports/research-001.md",
           "type": "research",
           "summary": "Detailed analysis of which Metalogic files are needed vs. not needed for task 903, with import dependency graph, sorry/axiom counts, and specific Boneyard recommendations"
+        },
+        {
+          "path": "specs/905_cleanup_metalogic_for_task_903/reports/research-002.md",
+          "type": "research",
+          "summary": "Analysis of task 864 vs 903 relationship: independence confirmed, task 864 too large/risky to complete first, recommended ordering is 905->903->864"
         }
       ]
     },

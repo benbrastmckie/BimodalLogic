@@ -1,15 +1,20 @@
 {
   "status": "researched",
-  "summary": "Identified 8 files (7,605 lines, 100 sorries) safe to move to Boneyard, confirmed 12 critical path files (6,371 lines) that must be kept, and deferred RecursiveSeed chain (12,564 lines) pending task 864.",
+  "summary": "Task 864 (RecursiveSeed) is too large (15-26 hours, 30+ sessions, broken build) and architecturally independent from task 903 -- completing it first would delay progress with no benefit. Recommended order: cleanup (905), then task 903, then return to 864 later.",
   "artifacts": [
     {
       "type": "research",
       "path": "specs/905_cleanup_metalogic_for_task_903/reports/research-001.md",
       "summary": "Detailed analysis of which Metalogic files are needed vs. not needed for task 903, with import dependency graph, sorry/axiom counts, and specific Boneyard recommendations"
+    },
+    {
+      "type": "research",
+      "path": "specs/905_cleanup_metalogic_for_task_903/reports/research-002.md",
+      "summary": "Analysis of task 864 vs 903 relationship: independence confirmed, task 864 too large/risky to complete first, recommended ordering is 905->903->864"
     }
   ],
   "metadata": {
-    "session_id": "sess_1771524978_12263e",
+    "session_id": "sess_1771525489_574af7",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
