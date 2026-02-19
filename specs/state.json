@@ -8,10 +8,19 @@
     {
       "project_number": 901,
       "project_name": "configure_subagent_model_routing",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-19T01:23:11Z",
-      "last_updated": "2026-02-19T01:23:11Z"
+      "last_updated": "2026-02-19T01:26:18Z",
+      "session_id": "sess_1771464232_b7c829",
+      "researched": "2026-02-19T01:26:18Z",
+      "artifacts": [
+        {
+          "path": "specs/901_configure_subagent_model_routing/reports/research-001.md",
+          "type": "research",
+          "summary": "Research on model routing configuration for subagents in team skills"
+        }
+      ]
     },
     {
       "project_number": 900,
