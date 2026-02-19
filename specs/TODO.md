@@ -1,5 +1,5 @@
 ---
-next_project_number: 905
+next_project_number: 906
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 905. Clean up metalogic as prerequisite for task 903
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-19
+
+**Description**: Clean up the metalogic by moving anything not needed into Boneyard/ before implementing task 903's completeness proof restructuring plan.
+
+---
 
 ### 904. Enforce model selection in team skill teammate spawning
 - **Effort**: 1-2 hours
