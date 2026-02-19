@@ -273,16 +273,17 @@ private lemma foldl_addFormula_times_puts_phi_in_all
     by_cases h_eq : t = s
     · subst h_eq
       have h_added : phi ∈ (seed.addFormula famIdx t phi .universal_target).getFormulas famIdx t := addFormula_formula_in_getFormulas seed famIdx t phi .universal_target
-      induction ss generalizing seed with
-      | nil => exact h_added
-      | cons u us ihs =>
+      -- foldl preserves membership: each addFormula step preserves existing formulas
+      suffices ∀ (s : ModelSeed) (ts : List Int),
+          phi ∈ s.getFormulas famIdx t →
+          phi ∈ (ts.foldl (fun s time => s.addFormula famIdx time phi .universal_target) s).getFormulas famIdx t from
+        this _ ss h_added
+      intro s ts h_mem
+      induction ts generalizing s with
+      | nil => exact h_mem
+      | cons u us ihu =>
         simp only [List.foldl_cons]
-        apply ihs (seed.addFormula famIdx t phi .universal_target).addFormula famIdx u phi .universal_target
-        by_cases h_eq' : t = u
-        · subst h_eq'; exact addFormula_formula_in_getFormulas _ famIdx t phi .universal_target
-        · have h_diff : t ≠ u := h_eq'
-          rw [addFormula_preserves_getFormulas_diff_time _ famIdx t u phi .universal_target h_diff]
-          exact h_added
+        exact ihu _ (addFormula_preserves_mem_getFormulas s famIdx t phi phi famIdx u .universal_target h_mem)
     · apply ih
       cases h_in with
       | head => exact absurd rfl h_eq
@@ -371,93 +372,17 @@ private lemma foldl_addFormula_fam_preserves_hasPosition_not_in
     rw [ih (seed.addFormula g t psi .universal_target)]
     · -- Now show addFormula at g doesn't change hasPosition f t (since f ≠ g)
       have h_neq : f ≠ g := fun h => h_not_in (h ▸ .head _)
-      -- addFormula at (g, t) doesn't change hasPosition at (f, t) when f ≠ g
-      unfold ModelSeed.addFormula
-      cases h_find : seed.entries.findIdx? (fun e => e.familyIdx == g && e.timeIdx == t) with
-      | some idx =>
-        -- Modifying entry at idx doesn't change hasPosition for different family
-        -- The entry at idx has familyIdx = g (from h_find), but we're checking familyIdx = f ≠ g
-        simp only
-        unfold ModelSeed.hasPosition
-        have h_at_idx := List.findIdx?_eq_some_iff_getElem.mp h_find
-        obtain ⟨h_idx_lt, h_cond⟩ := h_at_idx
-        simp only [Bool.and_eq_true, beq_iff_eq] at h_cond
-        -- h_cond: entry at idx has familyIdx = g and timeIdx = t
-        -- Show List.any over modified list = List.any over original
-        simp only [List.any_eq_true, beq_iff_eq]
-        constructor
-        · intro ⟨e, h_mem, h_fam, h_time⟩
-          -- e is in the modified list
-          -- Either e is the modified entry, or e is unchanged
-          by_cases h_is_mod : e = (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas }))[idx]
-          · -- e is the modified entry - but that entry has familyIdx = g ≠ f
-            have h_mod_fam : e.familyIdx = g := by
-              rw [h_is_mod]
-              simp only [List.getElem_modify_self h_idx_lt]
-              exact h_cond.1
-            rw [h_mod_fam] at h_fam
-            exact absurd h_fam h_neq.symm
-          · -- e is an unchanged entry
-            have h_idx_bound := List.length_modify idx (fun e => { e with formulas := insert psi e.formulas }) seed.entries
-            rw [h_idx_bound] at h_mem
-            have h_mem_idx := List.mem_iff_getElem.mp h_mem
-            obtain ⟨i, h_i_lt, h_e_eq⟩ := h_mem_idx
-            rw [h_idx_bound] at h_i_lt
-            by_cases h_i_idx : i = idx
-            · -- This contradicts h_is_mod
-              subst h_i_idx
-              exact absurd h_e_eq h_is_mod
-            · -- e = original[i] where i ≠ idx
-              have h_orig : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas }))[i] = seed.entries[i] :=
-                List.getElem_modify_of_ne h_i_idx h_i_lt
-              rw [← h_e_eq, h_orig]
-              use seed.entries[i]
-              constructor
-              · exact List.getElem_mem h_i_lt
-              · rw [← h_e_eq, h_orig] at h_fam h_time
-                exact ⟨h_fam, h_time⟩
-        · intro ⟨e, h_mem, h_fam, h_time⟩
-          -- e is in the original list with familyIdx = f
-          have h_mem_idx := List.mem_iff_getElem.mp h_mem
-          obtain ⟨i, h_i_lt, h_e_eq⟩ := h_mem_idx
-          by_cases h_i_idx : i = idx
-          · -- If i = idx, then e has familyIdx = g (from h_cond), but we said familyIdx = f
-            subst h_i_idx
-            rw [← h_e_eq] at h_fam
-            rw [h_cond.1] at h_fam
-            exact absurd h_fam h_neq.symm
-          · -- i ≠ idx, so modified[i] = original[i] = e
-            have h_mod : (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas }))[i] = seed.entries[i] :=
-              List.getElem_modify_of_ne h_i_idx h_i_lt
-            use seed.entries[i]
-            have h_mod_lt : i < (seed.entries.modify idx (fun e => { e with formulas := insert psi e.formulas })).length := by
-              rw [List.length_modify]
-              exact h_i_lt
-            constructor
-            · rw [← h_mod]
-              exact List.getElem_mem h_mod_lt
-            · rw [← h_e_eq]
-              exact ⟨h_fam, h_time⟩
-      | none =>
-        -- Creating new entry at (g, t)
-        simp only
-        unfold ModelSeed.hasPosition
-        simp only [List.any_eq_true, Bool.and_eq_true, beq_iff_eq, decide_eq_true_eq]
-        constructor
-        · intro ⟨e, h_mem, h_fam, h_time⟩
-          rw [List.mem_append] at h_mem
-          cases h_mem with
-          | inl h_old => exact ⟨e, h_old, h_fam, h_time⟩
-          | inr h_new =>
-            simp only [List.mem_singleton] at h_new
-            rw [h_new] at h_fam
-            simp only at h_fam
-            exact absurd h_fam.symm h_neq
-        · intro ⟨e, h_mem, h_fam, h_time⟩
-          use e
-          constructor
-          · exact List.mem_append_left _ h_mem
-          · exact ⟨h_fam, h_time⟩
+      -- Use Bool.eq_iff_iff to convert Bool equality to Prop iff
+      rw [Bool.eq_iff_iff]
+      constructor
+      · -- Forward: addFormula backward
+        intro h_pos
+        have h_or := addFormula_hasPosition_backward seed g t psi .universal_target f t h_pos
+        cases h_or with
+        | inl h_old => exact h_old
+        | inr h_new => exact absurd h_new.1 h_neq
+      · -- Backward: addFormula preserves
+        exact addFormula_preserves_hasPosition seed g t psi .universal_target f t
     · exact fun h_in => h_not_in (List.mem_cons_of_mem g h_in)
 
 /--
@@ -532,10 +457,10 @@ private lemma mem_getFormulas_after_foldl_compound_future
         | inl h_old => exact Or.inl h_old
         | inr h_is_psi =>
           obtain ⟨h_eq, hf, ht⟩ := h_is_psi
-          exact Or.inr (Or.inl ⟨h_eq, .tail _ (ht ▸ hf ▸ .head _), hf⟩)
+          subst hf ht; exact Or.inr (Or.inl ⟨h_eq, .head _, rfl⟩)
       | inr h_is_gpsi =>
         obtain ⟨h_eq, hf, ht⟩ := h_is_gpsi
-        exact Or.inr (Or.inr ⟨h_eq, .tail _ (ht ▸ hf ▸ .head _), hf⟩)
+        subst hf ht; exact Or.inr (Or.inr ⟨h_eq, .head _, rfl⟩)
     | inr h_added =>
       cases h_added with
       | inl h_is_psi =>
@@ -577,10 +502,10 @@ private lemma mem_getFormulas_after_foldl_compound_past
         | inl h_old => exact Or.inl h_old
         | inr h_is_psi =>
           obtain ⟨h_eq, hf, ht⟩ := h_is_psi
-          exact Or.inr (Or.inl ⟨h_eq, .tail _ (ht ▸ hf ▸ .head _), hf⟩)
+          subst hf ht; exact Or.inr (Or.inl ⟨h_eq, .head _, rfl⟩)
       | inr h_is_hpsi =>
         obtain ⟨h_eq, hf, ht⟩ := h_is_hpsi
-        exact Or.inr (Or.inr ⟨h_eq, .tail _ (ht ▸ hf ▸ .head _), hf⟩)
+        subst hf ht; exact Or.inr (Or.inr ⟨h_eq, .head _, rfl⟩)
     | inr h_added =>
       cases h_added with
       | inl h_is_psi =>
@@ -671,10 +596,10 @@ private lemma foldl_compound_future_hasPosition_backward
         | inl h_old => exact Or.inl h_old
         | inr h_new =>
           obtain ⟨hf, ht⟩ := h_new
-          subst hf ht; exact Or.inr ⟨rfl, List.mem_cons_of_mem time (.head _)⟩
+          subst hf ht; exact Or.inr ⟨rfl, .head _⟩
       | inr h_new =>
         obtain ⟨hf, ht⟩ := h_new
-        subst hf ht; exact Or.inr ⟨rfl, List.mem_cons_of_mem time (.head _)⟩
+        subst hf ht; exact Or.inr ⟨rfl, .head _⟩
     | inr h_added =>
       obtain ⟨hf, h_in⟩ := h_added
       exact Or.inr ⟨hf, .tail _ h_in⟩
@@ -707,10 +632,10 @@ private lemma foldl_compound_past_hasPosition_backward
         | inl h_old => exact Or.inl h_old
         | inr h_new =>
           obtain ⟨hf, ht⟩ := h_new
-          subst hf ht; exact Or.inr ⟨rfl, List.mem_cons_of_mem time (.head _)⟩
+          subst hf ht; exact Or.inr ⟨rfl, .head _⟩
       | inr h_new =>
         obtain ⟨hf, ht⟩ := h_new
-        subst hf ht; exact Or.inr ⟨rfl, List.mem_cons_of_mem time (.head _)⟩
+        subst hf ht; exact Or.inr ⟨rfl, .head _⟩
     | inr h_added =>
       obtain ⟨hf, h_in⟩ := h_added
       exact Or.inr ⟨hf, .tail _ h_in⟩
@@ -804,7 +729,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f' t psi item.formula item.famIdx item.timeIdx .universal_target (h_closed f' h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf', ht'⟩ := h_new_pos
             subst hf' ht'
@@ -827,8 +752,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         -- Box psi = item.formula, but item.formula is atomic
         have h_atom := classifyFormula_eq_atomic item.formula a h_class
@@ -848,7 +777,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -862,8 +791,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_atom := classifyFormula_eq_atomic item.formula a h_class
         simp only [h_atom] at h_eq
@@ -881,7 +814,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -893,8 +826,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_atom := classifyFormula_eq_atomic item.formula a h_class
         simp only [h_atom] at h_eq
@@ -920,7 +857,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f' t psi item.formula item.famIdx item.timeIdx .universal_target (h_closed f' h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf', ht'⟩ := h_new_pos
             subst hf' ht'
@@ -932,8 +869,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         -- Box psi = item.formula, but item.formula is bot
         have h_bot := classifyFormula_eq_bottom item.formula h_class
@@ -953,7 +894,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -965,8 +906,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_bot := classifyFormula_eq_bottom item.formula h_class
         simp only [h_bot] at h_eq
@@ -984,7 +929,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -996,8 +941,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_bot := classifyFormula_eq_bottom item.formula h_class
         simp only [h_bot] at h_eq
@@ -1023,7 +972,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f' t psi item.formula item.famIdx item.timeIdx .universal_target (h_closed f' h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf', ht'⟩ := h_new_pos
             subst hf' ht'
@@ -1035,8 +984,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         -- Box psi = item.formula, but item.formula is an implication
         have h_imp := classifyFormula_eq_implication item.formula phi1 phi2 h_class
@@ -1056,7 +1009,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -1068,8 +1021,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_imp := classifyFormula_eq_implication item.formula phi1 phi2 h_class
         simp only [h_imp] at h_eq
@@ -1087,7 +1044,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -1099,8 +1056,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_imp := classifyFormula_eq_implication item.formula phi1 phi2 h_class
         simp only [h_imp] at h_eq
@@ -1126,7 +1087,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f' t h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f' t psi item.formula .universal_target (h_closed f' h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f' t psi item.formula item.famIdx item.timeIdx .universal_target (h_closed f' h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf', ht'⟩ := h_new_pos
             subst hf' ht'
@@ -1138,8 +1099,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         -- Box psi = item.formula, but item.formula is a negation
         have h_neg := classifyFormula_eq_negation item.formula phi h_class
@@ -1161,7 +1126,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -1173,8 +1138,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_neg := classifyFormula_eq_negation item.formula phi h_class
         simp only [h_neg] at h_eq
@@ -1193,7 +1162,7 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           have h_or_pos := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx item.formula .universal_target f t' h_pos'
           cases h_or_pos with
           | inl h_pos_old =>
-            exact addFormula_preserves_mem_getFormulas_same state.seed f t' psi item.formula .universal_target (h_closed t' h_lt h_pos_old)
+            exact addFormula_preserves_mem_getFormulas state.seed f t' psi item.formula item.famIdx item.timeIdx .universal_target (h_closed t' h_lt h_pos_old)
           | inr h_new_pos =>
             obtain ⟨hf, ht'⟩ := h_new_pos
             subst hf ht'
@@ -1205,8 +1174,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         have h_neg := classifyFormula_eq_negation item.formula phi h_class
         simp only [h_neg] at h_eq
@@ -1287,8 +1260,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         -- Box theta = Box psi (newly added formula)
         obtain ⟨h_formula_eq, hf, ht⟩ := h_eq
@@ -1419,8 +1396,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         -- G theta = Box psi - impossible
         obtain ⟨h_formula_eq, _, _⟩ := h_eq
@@ -1465,8 +1446,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
           obtain ⟨w, hw_in, hw_eq⟩ := h_pending
           use w
           constructor
-          · exact List.mem_append_left _ hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+          · exact hw_in
+          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
       | inr h_eq =>
         obtain ⟨h_formula_eq, _, _⟩ := h_eq
         exact absurd h_formula_eq Formula.noConfusion
@@ -1540,8 +1525,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     constructor
     · -- G theta closure (similar - neg formulas don't affect G formulas)
       intro f t theta h_G
@@ -1585,8 +1574,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     · -- H theta closure (similar)
       intro f t theta h_H
       have h_or1 := mem_getFormulas_after_createNewFamily seed1 item.timeIdx (Formula.neg psi)
@@ -1628,8 +1621,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
   | .futurePositive psi =>
     -- futurePositive case: adds G psi, psi to current; adds psi, G psi to ALL future times
     -- processWorkItem for futurePositive:
@@ -1781,8 +1778,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     constructor
     · -- G theta closure
       intro f t theta h_G
@@ -1878,8 +1879,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
             obtain ⟨w, hw_in, hw_eq⟩ := h_pending
             use w
             constructor
-            · exact List.mem_append_left _ hw_in
-            · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+            · exact hw_in
+            · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
         | inr h_is_gpsi =>
           -- G theta = G psi (newly added)
           obtain ⟨h_formula_eq, hf, ht⟩ := h_is_gpsi
@@ -2155,8 +2160,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
   | .futureNegative psi =>
     -- futureNegative case: adds neg(G psi) to item position, creates new time with neg psi
     -- processWorkItem for futureNegative:
@@ -2238,8 +2247,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     constructor
     · -- G theta closure
       intro f t theta h_G
@@ -2300,8 +2313,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     · -- H theta closure
       intro f t theta h_H
       have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
@@ -2361,8 +2378,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
   | .pastPositive psi =>
     -- pastPositive case: adds H psi, psi to current; adds psi, H psi to ALL past times
     -- processWorkItem for pastPositive:
@@ -2483,8 +2504,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     constructor
     · -- G theta closure
       intro f t theta h_G
@@ -2590,8 +2615,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     · -- H theta closure
       intro f t theta h_H
       have h_or := mem_getFormulas_after_foldl_compound_past psi (Formula.all_past theta) item.famIdx
@@ -2685,8 +2714,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
             obtain ⟨w, hw_in, hw_eq⟩ := h_pending
             use w
             constructor
-            · exact List.mem_append_left _ hw_in
-            · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+            · exact hw_in
+            · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
         | inr h_is_hpsi =>
           -- H theta = H psi (newly added)
           obtain ⟨h_formula_eq, hf, ht⟩ := h_is_hpsi
@@ -2896,8 +2929,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     constructor
     · -- G theta closure
       intro f t theta h_G
@@ -2958,8 +2995,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
     · -- H theta closure
       intro f t theta h_H
       have h_or1 := mem_getFormulas_after_createNewTime seed1 item.famIdx
@@ -3019,8 +3060,12 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         obtain ⟨w, hw_in, hw_eq⟩ := h_pending
         use w
         constructor
-        · exact List.mem_append_left _ hw_in
-        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
+        · exact hw_in
+        · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                    intro h_mem
+                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                    · simp_all [classifyFormula]
+                    · exact hw_eq.2.2.2 h_old⟩
 
 /--
 Position invariant for worklist states: all pending work items have valid positions in the seed.
