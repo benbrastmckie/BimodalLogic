@@ -1,7 +1,7 @@
 # Implementation Plan: Configure Subagent Model Routing
 
 - **Task**: 901 - configure_subagent_model_routing
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1 hour
 - **Dependencies**: None
 - **Research Inputs**: specs/901_configure_subagent_model_routing/reports/research-001.md
@@ -44,7 +44,7 @@ Research report (research-001.md) identified:
 
 ## Implementation Phases
 
-### Phase 1: Update Documentation [NOT STARTED]
+### Phase 1: Update Documentation [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Update CLAUDE.md Team Skill Model Defaults table
@@ -64,7 +64,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 2: Update Team Wave Helpers [NOT STARTED]
+### Phase 2: Update Team Wave Helpers [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Update reference configuration in team-wave-helpers.md
@@ -84,7 +84,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Update Team Research Skill [NOT STARTED]
+### Phase 3: Update Team Research Skill [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Update model routing in skill-team-research
@@ -104,7 +104,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 4: Update Team Plan Skill [NOT STARTED]
+### Phase 4: Update Team Plan Skill [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Update model routing in skill-team-plan
@@ -124,7 +124,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 5: Update Team Implement Skill [NOT STARTED]
+### Phase 5: Update Team Implement Skill [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Update model routing in skill-team-implement

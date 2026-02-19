@@ -268,6 +268,27 @@ After this implementation:
   - Line 11053: fuel=0 case (requires fuel sufficiency argument)
   - Line 11103: process item case (needs `h_item_pos` prerequisite - requires invariant strengthening)
 
+**Session: 2026-02-19 (iteration 2), sess_1771453218_898bbc**
+- Fixed: sorry #2 - `WorklistPosInvariant` for process-item case in `processWorklistAux_preserves_closure`
+  - Added: `processWorkItem_preserves_hasPosition` lemma (seed monotone under processWorkItem)
+    - Proves: existing positions are preserved through all 10 processWorkItem cases
+    - Uses: `addFormula_preserves_hasPosition`, `foldl_addFormula_fam_preserves_hasPosition`,
+             `createNewFamily_preserves_hasPosition`, `createNewTime_preserves_hasPosition`,
+             `foldl_compound_future_preserves_hasPosition`, `foldl_compound_past_preserves_hasPosition`
+  - Proof for `w ∈ rest`: uses `h_pos_inv` + `processWorkItem_preserves_hasPosition`
+  - Proof for `w ∈ filteredNew`: uses `processWorkItem_newWork_hasPosition`
+- Added: SeedClosed extractor lemmas
+  - `SeedClosed_implies_ModalClosed`, `SeedClosed_implies_GClosed`, `SeedClosed_implies_HClosed`
+  - `buildSeedComplete_modalClosed`, `buildSeedComplete_gClosed`, `buildSeedComplete_hClosed`
+- **Sorry #2 is now FIXED** - process-item h_pos_inv case in processWorklistAux_preserves_closure
+- Remaining: 1 sorry (fuel=0 case, line 11398) = termination proof needed
+  - Requires: Dershowitz-Manna multiset ordering proof (not done in this session)
+  - Mathematical content: `pendingComplexityMultiset` decreases under DM ordering when processing one item
+  - Key lemma needed: new work items have complexity < parent (established), but DM multiset
+    arithmetic needs to be formalized
+- Sorries: 20 -> 20 (sorry #2 removed from processWorklistAux, 0 net change due to counting)
+  - Actually: processWorklistAux_preserves_closure now has 1 sorry (was 2), sorry count -1
+
 **Timing:** 2 hours
 
 **Files to modify:**

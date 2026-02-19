@@ -333,7 +333,7 @@ language_config = {
   "general": {
     "research_agent": "general-research-agent",
     "implementation_agent": "general-implementation-agent",
-    "default_model": "inherit",
+    "default_model": "sonnet",
     "context_references": [],
     "blocked_tools": [],
     "research_tools": ["WebSearch", "WebFetch", "Read"],
@@ -358,15 +358,14 @@ language_config = {
 # Model Selection Rationale
 #
 # default_model specifies the preferred Claude model for teammates:
-# - "opus": Most capable model, recommended for complex theorem proving (Lean)
-# - "sonnet": Balanced model, good for document generation and system tasks
-# - "inherit": Use the lead agent's model (no override)
+# - "opus": Most capable model (Opus 4.6), recommended for complex theorem proving (Lean)
+# - "sonnet": Balanced model (Sonnet 4.6), good for document generation and system tasks
 #
 # Rationale:
-# - lean: Opus provides superior mathematical reasoning for theorem proving
-# - latex/typst: Sonnet handles document generation well, more cost-effective
-# - meta: Sonnet handles system configuration tasks efficiently
-# - general: Inherit allows flexibility, lead determines appropriate model
+# - lean: Opus 4.6 provides superior mathematical reasoning for theorem proving
+# - latex/typst: Sonnet 4.6 handles document generation well, more cost-effective
+# - meta: Sonnet 4.6 handles system configuration tasks efficiently
+# - general: Sonnet 4.6 for consistent model across all non-Lean tasks
 ```
 
 ### Lean Teammate Prompt Template (Research)

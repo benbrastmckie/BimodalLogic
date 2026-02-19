@@ -184,10 +184,10 @@ case "$language" in
     available_tools="WebSearch, WebFetch, Read, Grep, Glob"
     ;;
   *)
-    # Generic configuration - inherit lead's model
+    # Generic configuration - use Sonnet for all non-Lean tasks
     use_lean_prompts=false
     research_agent_pattern="general-research-agent"
-    default_model="inherit"
+    default_model="sonnet"
     context_refs=""
     blocked_tools=""
     available_tools="WebSearch, WebFetch, Read, Grep, Glob"
@@ -195,11 +195,8 @@ case "$language" in
 esac
 
 # Prepare model preference line for prompts
-if [ "$default_model" = "inherit" ]; then
-  model_preference_line=""
-else
-  model_preference_line="Model preference: Use Claude ${default_model^} for this analysis."
-fi
+# Opus 4.6 for Lean tasks, Sonnet 4.6 for all others
+model_preference_line="Model preference: Use Claude ${default_model^} 4.6 for this analysis."
 ```
 
 See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.

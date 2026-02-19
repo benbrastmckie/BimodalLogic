@@ -6360,6 +6360,36 @@ private theorem addFormula_hasPosition_backward (seed : ModelSeed) (famIdx : Nat
       simp only [List.any_cons, List.any_nil, Bool.or_false, Bool.and_eq_true, beq_iff_eq] at h_new
       exact h_new
 
+/-- addFormula creates the position it targets. -/
+private lemma addFormula_self_hasPosition (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) (ty : SeedEntryType) :
+    (seed.addFormula famIdx timeIdx phi ty).hasPosition famIdx timeIdx := by
+  exact ModelSeed.mem_getFormulas_implies_hasPosition _ famIdx timeIdx phi
+    (addFormula_formula_in_getFormulas seed famIdx timeIdx phi ty)
+
+/-- createNewFamily creates a position at (nextFamilyIdx, timeIdx). -/
+private lemma createNewFamily_self_hasPosition (seed : ModelSeed) (timeIdx : Int) (phi : Formula) :
+    (seed.createNewFamily timeIdx phi).1.hasPosition (seed.createNewFamily timeIdx phi).2 timeIdx := by
+  unfold ModelSeed.createNewFamily ModelSeed.hasPosition
+  simp only
+  rw [List.any_append]
+  apply Bool.or_eq_true_iff_left_or_right.mpr
+  right
+  simp only [List.any_cons, List.any_nil, Bool.or_false, Bool.and_eq_true, beq_iff_eq]
+  exact ⟨rfl, rfl⟩
+
+/-- createNewTime creates a position at (famIdx, timeIdx). -/
+private lemma createNewTime_self_hasPosition (seed : ModelSeed) (famIdx : Nat) (timeIdx : Int)
+    (phi : Formula) :
+    (seed.createNewTime famIdx timeIdx phi).hasPosition famIdx timeIdx := by
+  unfold ModelSeed.createNewTime ModelSeed.hasPosition
+  simp only
+  rw [List.any_append]
+  apply Bool.or_eq_true_iff_left_or_right.mpr
+  right
+  simp only [List.any_cons, List.any_nil, Bool.or_false, Bool.and_eq_true, beq_iff_eq]
+  exact ⟨rfl, rfl⟩
+
 /-- foldl with addFormula over family indices preserves hasPosition. -/
 private theorem foldl_addFormula_fam_preserves_hasPosition (phi : Formula) (ty : SeedEntryType)
     (timeIdx : Int) (fams : List Nat) (seed : ModelSeed) (fam' : Nat) (time' : Int)
@@ -7007,6 +7037,17 @@ private theorem processWorkItem_processed_eq (item : WorkItem) (state : Worklist
   unfold processWorkItem
   cases classifyFormula item.formula <;> simp [WorklistState.processed]
 
+/-- processWorkItem result is independent of state.worklist.
+    The seed, new work items, and processed set are determined only by state.seed,
+    item.famIdx, item.timeIdx, and item.formula. -/
+private lemma processWorkItem_indep_worklist (item : WorkItem) (state : WorklistState)
+    (wl : List WorkItem) :
+    (processWorkItem item { state with worklist := wl }).2.seed = (processWorkItem item state).2.seed ∧
+    (processWorkItem item { state with worklist := wl }).1 = (processWorkItem item state).1 ∧
+    (processWorkItem item { state with worklist := wl }).2.processed = (processWorkItem item state).2.processed := by
+  unfold processWorkItem
+  cases classifyFormula item.formula <;> simp [WorklistState.seed, WorklistState.processed]
+
 /-- Items produced by processWorkItem have strictly smaller complexity than the input. -/
 private theorem processWorkItem_newWork_complexity_lt (item : WorkItem) (state : WorklistState)
     (w : WorkItem) (hw : w ∈ (processWorkItem item state).1) :
@@ -7092,6 +7133,198 @@ private theorem processWorkItem_newWork_complexity_lt (item : WorkItem) (state :
     | Formula.all_past _, Formula.box _ => simp only [classifyFormula, hf] at hw; exact (List.not_mem_nil hw).elim
     | Formula.all_past _, Formula.all_future _ => simp only [classifyFormula, hf] at hw; exact (List.not_mem_nil hw).elim
     | Formula.all_past _, Formula.all_past _ => simp only [classifyFormula, hf] at hw; exact (List.not_mem_nil hw).elim
+
+/-- All work items produced by processWorkItem have valid positions in the new seed.
+    Key for maintaining WorklistPosInvariant through processing. -/
+private lemma processWorkItem_newWork_hasPosition (item : WorkItem) (state : WorklistState)
+    (h_item_pos : state.seed.hasPosition item.famIdx item.timeIdx) :
+    ∀ w ∈ (processWorkItem item state).1,
+      (processWorkItem item state).2.seed.hasPosition w.famIdx w.timeIdx := by
+  unfold processWorkItem
+  match hf : item.formula with
+  | Formula.atom s =>
+    -- newWork = [], vacuously true
+    simp only [classifyFormula, hf]
+    intro w hw; exact (List.not_mem_nil hw).elim
+  | Formula.bot =>
+    simp only [classifyFormula, hf]
+    intro w hw; exact (List.not_mem_nil hw).elim
+  | Formula.imp phi psi =>
+    match phi, psi with
+    | Formula.box inner, Formula.bot =>
+      -- boxNegative: new item at (newFamIdx, item.timeIdx)
+      simp only [classifyFormula, hf, Formula.neg, Formula.box]
+      intro w hw
+      simp only [List.mem_singleton] at hw
+      subst hw
+      simp only [WorkItem.famIdx, WorkItem.timeIdx]
+      exact createNewFamily_self_hasPosition _ _ _
+    | Formula.all_future inner, Formula.bot =>
+      -- futureNegative: new item at (item.famIdx, newTime)
+      simp only [classifyFormula, hf, Formula.neg, Formula.all_future]
+      intro w hw
+      simp only [List.mem_singleton] at hw
+      subst hw
+      simp only [WorkItem.famIdx, WorkItem.timeIdx]
+      exact createNewTime_self_hasPosition _ _ _ _
+    | Formula.all_past inner, Formula.bot =>
+      -- pastNegative: new item at (item.famIdx, newTime)
+      simp only [classifyFormula, hf, Formula.neg, Formula.all_past]
+      intro w hw
+      simp only [List.mem_singleton] at hw
+      subst hw
+      simp only [WorkItem.famIdx, WorkItem.timeIdx]
+      exact createNewTime_self_hasPosition _ _ _ _
+    | _, _ =>
+      -- Generic cases: newWork = [] or classifyFormula gives negation/implication
+      -- Most cases are negation or implication (no modal, no temporal)
+      -- Check all remaining sub-cases
+      simp only [classifyFormula, hf]
+      split
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+  | Formula.box psi =>
+    -- boxPositive: new items at (f, item.timeIdx) for f ∈ familyIndices
+    simp only [classifyFormula, hf]
+    intro w hw
+    simp only [List.mem_map] at hw
+    obtain ⟨f, hf_in, rfl⟩ := hw
+    simp only [WorkItem.famIdx, WorkItem.timeIdx]
+    -- seed2 = foldl (addFormula f item.timeIdx psi) seed1 familyIndices
+    -- where seed1 = state.seed.addFormula item.famIdx item.timeIdx (box psi)
+    -- f ∈ familyIndices of seed1
+    -- Need: seed2.hasPosition f item.timeIdx
+    exact foldl_addFormula_fam_self_hasPosition psi item.timeIdx
+      (state.seed.addFormula item.famIdx item.timeIdx (Formula.box psi) .universal_target).familyIndices
+      (state.seed.addFormula item.famIdx item.timeIdx (Formula.box psi) .universal_target)
+      f hf_in
+  | Formula.all_future psi =>
+    -- futurePositive: new items at (item.famIdx, item.timeIdx) and (item.famIdx, t) for t ∈ futureTimes
+    simp only [classifyFormula, hf]
+    intro w hw
+    simp only [List.mem_cons, List.mem_map] at hw
+    rcases hw with rfl | ⟨t, ht_in, rfl⟩
+    · -- w = ⟨psi, item.famIdx, item.timeIdx⟩
+      simp only [WorkItem.famIdx, WorkItem.timeIdx]
+      -- seed3 ⊇ seed2, and seed2.hasPosition item.famIdx item.timeIdx by addFormula_self_hasPosition
+      have h_seed2_pos : (state.seed.addFormula item.famIdx item.timeIdx (Formula.all_future psi) .universal_target).addFormula
+          item.famIdx item.timeIdx psi .universal_target |>.hasPosition item.famIdx item.timeIdx :=
+        addFormula_self_hasPosition _ _ _ _ _
+      -- seed3 preserves this position
+      apply foldl_compound_future_preserves_hasPosition
+      exact h_seed2_pos
+    · -- w = ⟨psi, item.famIdx, t⟩ for t ∈ futureTimes
+      simp only [WorkItem.famIdx, WorkItem.timeIdx]
+      -- t ∈ futureTimes, so after foldl, position (item.famIdx, t) exists
+      exact foldl_compound_future_self_hasPosition psi item.famIdx _ _ t ht_in
+  | Formula.all_past psi =>
+    -- pastPositive: similar to futurePositive
+    simp only [classifyFormula, hf]
+    intro w hw
+    simp only [List.mem_cons, List.mem_map] at hw
+    rcases hw with rfl | ⟨t, ht_in, rfl⟩
+    · -- w = ⟨psi, item.famIdx, item.timeIdx⟩
+      simp only [WorkItem.famIdx, WorkItem.timeIdx]
+      have h_seed2_pos : (state.seed.addFormula item.famIdx item.timeIdx (Formula.all_past psi) .universal_target).addFormula
+          item.famIdx item.timeIdx psi .universal_target |>.hasPosition item.famIdx item.timeIdx :=
+        addFormula_self_hasPosition _ _ _ _ _
+      apply foldl_compound_past_preserves_hasPosition
+      exact h_seed2_pos
+    · -- w = ⟨psi, item.famIdx, t⟩ for t ∈ pastTimes
+      simp only [WorkItem.famIdx, WorkItem.timeIdx]
+      exact foldl_compound_past_self_hasPosition psi item.famIdx _ _ t ht_in
+
+/-- processWorkItem is monotone on the seed: existing positions are preserved. -/
+private lemma processWorkItem_preserves_hasPosition (item : WorkItem) (state : WorklistState)
+    (fam' : Nat) (time' : Int)
+    (h : state.seed.hasPosition fam' time') :
+    (processWorkItem item state).2.seed.hasPosition fam' time' := by
+  unfold processWorkItem
+  match hf : item.formula with
+  | Formula.atom s =>
+    simp only [classifyFormula, hf]
+    exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+  | Formula.bot =>
+    simp only [classifyFormula, hf]
+    exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+  | Formula.box psi =>
+    simp only [classifyFormula, hf]
+    apply foldl_addFormula_fam_preserves_hasPosition
+    exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+  | Formula.all_future psi =>
+    simp only [classifyFormula, hf]
+    apply foldl_compound_future_preserves_hasPosition
+    apply addFormula_preserves_hasPosition
+    exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+  | Formula.all_past psi =>
+    simp only [classifyFormula, hf]
+    apply foldl_compound_past_preserves_hasPosition
+    apply addFormula_preserves_hasPosition
+    exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+  | Formula.imp phi psi =>
+    match phi, psi with
+    | Formula.box inner, Formula.bot =>
+      -- boxNegative: seed gets addFormula then createNewFamily
+      simp only [classifyFormula, hf, Formula.neg, Formula.box]
+      apply createNewFamily_preserves_hasPosition
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | Formula.all_future inner, Formula.bot =>
+      -- futureNegative: seed gets addFormula then createNewTime
+      simp only [classifyFormula, hf, Formula.neg, Formula.all_future]
+      apply createNewTime_preserves_hasPosition
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | Formula.all_past inner, Formula.bot =>
+      -- pastNegative: seed gets addFormula then createNewTime
+      simp only [classifyFormula, hf, Formula.neg, Formula.all_past]
+      apply createNewTime_preserves_hasPosition
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    -- Generic negation cases (psi = bot but phi is not box/all_future/all_past)
+    | Formula.atom s, Formula.bot =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | Formula.bot, Formula.bot =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | Formula.imp _ _, Formula.bot =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    -- Generic implication cases (psi ≠ bot)
+    | _, Formula.atom _ =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | _, Formula.imp _ _ =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | _, Formula.box _ =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | _, Formula.all_future _ =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
+    | _, Formula.all_past _ =>
+      simp only [classifyFormula, hf]
+      exact addFormula_preserves_hasPosition _ _ _ _ _ _ _ h
 
 /--
 Fuel-based worklist processor (auxiliary).
@@ -8198,6 +8431,17 @@ private lemma foldl_addFormula_fam_puts_phi_in_all
       | head => exact absurd rfl h_eq
       | tail _ hgs => exact hgs
 
+/-- foldl addFormula over families creates position (f, t) for each f ∈ fams. -/
+private lemma foldl_addFormula_fam_self_hasPosition
+    (phi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (hf : f ∈ fams) :
+    (fams.foldl (fun s fam => s.addFormula fam t phi .universal_target) seed).hasPosition f t :=
+  ModelSeed.mem_getFormulas_implies_hasPosition _ f t phi
+    (foldl_addFormula_fam_puts_phi_in_all phi t fams seed f hf)
+
+/-- If a position existed before foldl over fams, it still exists after. -/
+-- (Already exists as foldl_addFormula_fam_preserves_hasPosition, alias for convenience)
+
 /--
 Helper: foldl addFormula over times puts phi at each time.
 When t ∈ times, then phi ∈ (foldl addFormula seed times).getFormulas f t.
@@ -8287,6 +8531,14 @@ private lemma mem_getFormulas_after_foldl_times
     | inr h_eq =>
       obtain ⟨h_phi_eq, h_t_in⟩ := h_eq
       exact Or.inr ⟨h_phi_eq, List.mem_cons_of_mem s h_t_in⟩
+
+/-- foldl addFormula over times creates position (famIdx, t) for each t ∈ times. -/
+private lemma foldl_addFormula_times_self_hasPosition
+    (phi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (ht : t ∈ times) :
+    (times.foldl (fun s time => s.addFormula famIdx time phi .universal_target) seed).hasPosition famIdx t :=
+  ModelSeed.mem_getFormulas_implies_hasPosition _ famIdx t phi
+    (foldl_addFormula_times_puts_phi_in_all phi famIdx times seed t ht)
 
 /--
 Helper: foldl over addFormula at families in a list doesn't create positions for families outside the list.
@@ -8743,6 +8995,26 @@ private lemma foldl_compound_past_hasPosition_backward
     | inr h_added =>
       obtain ⟨hf, h_in⟩ := h_added
       exact Or.inr ⟨hf, List.mem_cons_of_mem time h_in⟩
+
+/-- Compound foldl (future) creates position (famIdx, t) for each t ∈ times. -/
+private lemma foldl_compound_future_self_hasPosition
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (ht : t ∈ times) :
+    (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_future psi) .universal_target) seed).hasPosition famIdx t :=
+  ModelSeed.mem_getFormulas_implies_hasPosition _ famIdx t psi
+    (foldl_compound_future_puts_psi_in_all psi famIdx times seed t ht)
+
+/-- Compound foldl (past) creates position (famIdx, t) for each t ∈ times. -/
+private lemma foldl_compound_past_self_hasPosition
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (ht : t ∈ times) :
+    (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_past psi) .universal_target) seed).hasPosition famIdx t :=
+  ModelSeed.mem_getFormulas_implies_hasPosition _ famIdx t psi
+    (foldl_compound_past_puts_psi_in_all psi famIdx times seed t ht)
 
 /--
 processWorkItem preserves the closure invariant.
@@ -11042,10 +11314,80 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
         · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, fun h_mem => hw_eq.2.2.2 (Set.mem_insert_of_mem item h_mem)⟩
 
 /--
+Position invariant for worklist states: all pending work items have valid positions in the seed.
+-/
+def WorklistPosInvariant (state : WorklistState) : Prop :=
+  ∀ w ∈ state.worklist, w ∉ state.processed → state.seed.hasPosition w.famIdx w.timeIdx
+
+/-- Initial worklist state satisfies the position invariant. -/
+lemma initial_pos_invariant (phi : Formula) :
+    WorklistPosInvariant (WorklistState.initial phi) := by
+  intro w hw hproc
+  simp only [WorklistState.initial] at hw hproc
+  simp only [List.mem_singleton] at hw
+  subst hw
+  simp only [WorklistState.initial, ModelSeed.hasPosition, ModelSeed.initial]
+  simp only [List.any_cons, List.any_nil, Bool.or_false, Bool.and_eq_true, beq_iff_eq]
+  exact ⟨rfl, rfl⟩
+
+/-- Dropping a head element that is in processed preserves WorklistClosureInvariant.
+    Since the invariant's right disjunct requires pending witnesses to be NOT in processed,
+    an item already in processed can never be a valid witness. -/
+private lemma WorklistClosureInvariant_drop_head_in_proc
+    (seed : ModelSeed) (item : WorkItem) (rest : List WorkItem) (proc : Finset WorkItem)
+    (h_in_proc : item ∈ proc)
+    (h_inv : WorklistClosureInvariant { seed := seed, worklist := item :: rest, processed := proc }) :
+    WorklistClosureInvariant { seed := seed, worklist := rest, processed := proc } := by
+  constructor
+  · -- Modal case
+    intro f t psi h_box
+    cases h_inv.1 f t psi h_box with
+    | inl h_closed => left; exact h_closed
+    | inr h_pending =>
+      obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+      -- w ∈ item :: rest and w ∉ proc
+      simp only [List.mem_cons] at hw_in
+      cases hw_in with
+      | inl h_eq =>
+        -- w = item, but item ∈ proc, contradicting w ∉ proc
+        subst h_eq
+        exact absurd h_in_proc hw_eq.2.2.2
+      | inr h_rest =>
+        right; exact ⟨w, h_rest, hw_eq⟩
+  constructor
+  · -- G case
+    intro f t psi h_G
+    cases h_inv.2.1 f t psi h_G with
+    | inl h_closed => left; exact h_closed
+    | inr h_pending =>
+      obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+      simp only [List.mem_cons] at hw_in
+      cases hw_in with
+      | inl h_eq =>
+        subst h_eq
+        exact absurd h_in_proc hw_eq.2.2.2
+      | inr h_rest =>
+        right; exact ⟨w, h_rest, hw_eq⟩
+  · -- H case
+    intro f t psi h_H
+    cases h_inv.2.2 f t psi h_H with
+    | inl h_closed => left; exact h_closed
+    | inr h_pending =>
+      obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+      simp only [List.mem_cons] at hw_in
+      cases hw_in with
+      | inl h_eq =>
+        subst h_eq
+        exact absurd h_in_proc hw_eq.2.2.2
+      | inr h_rest =>
+        right; exact ⟨w, h_rest, hw_eq⟩
+
+/--
 processWorklistAux preserves closure invariant.
 -/
 theorem processWorklistAux_preserves_closure (fuel : Nat) (state : WorklistState)
-    (h_inv : WorklistClosureInvariant state) :
+    (h_inv : WorklistClosureInvariant state)
+    (h_pos_inv : WorklistPosInvariant state) :
     SeedClosed (processWorklistAux fuel state) := by
   induction fuel generalizing state with
   | zero =>
@@ -11053,7 +11395,12 @@ theorem processWorklistAux_preserves_closure (fuel : Nat) (state : WorklistState
     -- This case shouldn't happen with correct fuel bound
     simp only [processWorklistAux]
     -- The seed might not satisfy closure, but we need to prove it
-    sorry -- Requires fuel sufficiency argument
+    sorry -- Requires fuel sufficiency argument: need termination proof that
+          -- worklist empties before fuel runs out.
+          -- The WorklistPosInvariant (h_pos_inv) is available but fuel=0 implies
+          -- processWorklistAux 0 state = state.seed which is not guaranteed closed
+          -- when state.worklist ≠ []. A full fix requires proving totalPendingComplexity
+          -- decreases at each step, establishing a correct fuel bound.
   | succ fuel' ih =>
     simp only [processWorklistAux]
     match h_wl : state.worklist with
@@ -11067,43 +11414,120 @@ theorem processWorklistAux_preserves_closure (fuel : Nat) (state : WorklistState
       · -- Already processed, just continue with rest
         simp only [h_proc, ↓reduceIte]
         apply ih
-        -- Need to prove closure invariant for state with rest as worklist
-        constructor
-        · intro f t psi h_box
-          cases h_inv.1 f t psi h_box with
-          | inl h_closed => left; exact h_closed
-          | inr h_pending =>
-            obtain ⟨w, hw, h_eq⟩ := h_pending
-            rw [h_wl] at hw
-            cases hw with
-            | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
-            | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
-        constructor
-        · -- G case (all_future)
-          intro f t psi h_formula
-          cases h_inv.2.1 f t psi h_formula with
-          | inl h_closed => left; exact h_closed
-          | inr h_pending =>
-            obtain ⟨w, hw, h_eq⟩ := h_pending
-            rw [h_wl] at hw
-            cases hw with
-            | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
-            | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
-        · -- H case (all_past)
-          intro f t psi h_formula
-          cases h_inv.2.2 f t psi h_formula with
-          | inl h_closed => left; exact h_closed
-          | inr h_pending =>
-            obtain ⟨w, hw, h_eq⟩ := h_pending
-            rw [h_wl] at hw
-            cases hw with
-            | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
-            | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
+        · -- case pos.h_inv: WorklistClosureInvariant for {state with worklist := rest}
+          constructor
+          · intro f t psi h_box
+            cases h_inv.1 f t psi h_box with
+            | inl h_closed => left; exact h_closed
+            | inr h_pending =>
+              obtain ⟨w, hw, h_eq⟩ := h_pending
+              rw [h_wl] at hw
+              cases hw with
+              | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
+              | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
+          constructor
+          · -- G case (all_future)
+            intro f t psi h_formula
+            cases h_inv.2.1 f t psi h_formula with
+            | inl h_closed => left; exact h_closed
+            | inr h_pending =>
+              obtain ⟨w, hw, h_eq⟩ := h_pending
+              rw [h_wl] at hw
+              cases hw with
+              | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
+              | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
+          · -- H case (all_past)
+            intro f t psi h_formula
+            cases h_inv.2.2 f t psi h_formula with
+            | inl h_closed => left; exact h_closed
+            | inr h_pending =>
+              obtain ⟨w, hw, h_eq⟩ := h_pending
+              rw [h_wl] at hw
+              cases hw with
+              | head h => exact absurd h_proc (h ▸ h_eq.2.2.2)
+              | tail _ hw' => right; exact ⟨w, hw', h_eq⟩
+        · -- case pos.h_pos_inv: WorklistPosInvariant for {state with worklist := rest}
+          -- rest ⊆ item :: rest = state.worklist, so derive from h_pos_inv
+          intro w hw hnot
+          apply h_pos_inv
+          · rw [h_wl]; exact List.mem_cons_of_mem item hw
+          · exact hnot
       · -- Process the item
         simp only [h_proc, ↓reduceIte]
         apply ih
-        -- processWorkItem preserves closure
-        sorry -- Use processWorkItem_preserves_closure
+        · -- case neg.h_inv: WorklistClosureInvariant for new state
+          -- Strategy: use processWorkItem_preserves_closure on state (with item :: rest),
+          -- then use indep lemma and drop-processed-head lemma
+          -- Step 1: Get h_item_pos from h_pos_inv
+          have h_item_pos : state.seed.hasPosition item.famIdx item.timeIdx := by
+            apply h_pos_inv
+            · rw [h_wl]; exact List.mem_cons_self item rest
+            · exact h_proc
+          -- Step 2: Apply processWorkItem_preserves_closure with full state (worklist = item :: rest)
+          have h_closure_big := processWorkItem_preserves_closure item state h_inv h_proc h_item_pos
+          -- Step 3: Simplify h_closure_big using h_wl
+          -- h_closure_big unfolds the match to give the invariant directly
+          simp only [h_wl] at h_closure_big
+          -- Step 4: Get independence from worklist - key: same seed, newWork, processed
+          obtain ⟨h_seed_eq, h_newwork_eq, h_proc_eq⟩ := processWorkItem_indep_worklist item state rest
+          -- Step 5: Apply drop-processed-head using independence equations
+          -- The goal uses processWorkItem item { state with worklist := rest }
+          -- h_closure_big uses processWorkItem item state
+          -- But they're equal componentwise by h_seed_eq, h_newwork_eq, h_proc_eq
+          have h_item_in_new_proc : item ∈ insert item state.processed :=
+            Finset.mem_insert_self _ _
+          -- Use drop_head_in_proc on a converted version
+          apply WorklistClosureInvariant_drop_head_in_proc
+            (processWorkItem item { state with worklist := rest }).2.seed
+            item _
+            (insert item (processWorkItem item { state with worklist := rest }).2.processed)
+          · -- item ∈ insert item ...
+            rw [← h_proc_eq] at h_item_in_new_proc
+            exact h_item_in_new_proc
+          · -- WorklistClosureInvariant with item :: rest ++ ...
+            convert h_closure_big using 1
+            simp only [h_seed_eq, h_newwork_eq, h_proc_eq, List.cons_append]
+        · -- case neg.h_pos_inv: WorklistPosInvariant for new state
+          -- Strategy:
+          -- (a) For w ∈ rest: old seed had position (by h_pos_inv), new seed preserves it
+          --     (by processWorkItem_preserves_hasPosition)
+          -- (b) For w ∈ filteredNew: new work items have positions in new seed
+          --     (by processWorkItem_newWork_hasPosition)
+          -- Abbreviate the processWorkItem application
+          set st' := { state with worklist := rest } with hst'_def
+          set result := processWorkItem item st' with hresult_def
+          -- Key facts about processed set
+          have h_proc_eq : result.2.processed = state.processed :=
+            processWorkItem_processed_eq item st'
+          -- Get item's position (needed for newWork positions)
+          have h_item_pos : st'.seed.hasPosition item.famIdx item.timeIdx := by
+            simp only [hst'_def, WorklistState.seed]
+            apply h_pos_inv
+            · rw [h_wl]; exact List.mem_cons_self item rest
+            · exact h_proc
+          -- Prove WorklistPosInvariant
+          intro w hw hnot_in_proc
+          simp only [List.mem_append, List.mem_filter, decide_eq_true_eq] at hw
+          rcases hw with hw_rest | ⟨hw_newwork, hw_not_in_proc⟩
+          · -- w ∈ rest
+            -- Step 1: w ∉ insert item state.processed
+            have h_w_not_proc : w ∉ state.processed := by
+              intro h_in_proc
+              apply hnot_in_proc
+              simp only [Finset.mem_insert]
+              right
+              rw [← h_proc_eq]
+              exact h_in_proc
+            -- Step 2: state.seed has position for w (since w ∈ rest ⊆ state.worklist)
+            have h_old_pos : state.seed.hasPosition w.famIdx w.timeIdx := by
+              apply h_pos_inv
+              · rw [h_wl]; exact List.mem_cons_of_mem item hw_rest
+              · exact h_w_not_proc
+            -- Step 3: New seed preserves this position
+            exact processWorkItem_preserves_hasPosition item st' _ _ h_old_pos
+          · -- w ∈ filteredNew ⊆ result.1 (new work items)
+            -- result.2.seed has position for all w ∈ result.1
+            exact processWorkItem_newWork_hasPosition item st' h_item_pos w hw_newwork
 
 /--
 buildSeedComplete produces a closed seed.
@@ -11112,6 +11536,34 @@ theorem buildSeedComplete_closed (phi : Formula) :
     SeedClosed (buildSeedComplete phi) := by
   unfold buildSeedComplete
   apply processWorklistAux_preserves_closure
-  exact initial_closure_invariant phi
+  · exact initial_closure_invariant phi
+  · exact initial_pos_invariant phi
+
+/-- SeedClosed implies ModalClosed (projection). -/
+theorem SeedClosed_implies_ModalClosed (seed : ModelSeed) (h : SeedClosed seed) :
+    ModalClosed seed := h.1
+
+/-- SeedClosed implies GClosed (projection). -/
+theorem SeedClosed_implies_GClosed (seed : ModelSeed) (h : SeedClosed seed) :
+    GClosed seed := h.2.1
+
+/-- SeedClosed implies HClosed (projection). -/
+theorem SeedClosed_implies_HClosed (seed : ModelSeed) (h : SeedClosed seed) :
+    HClosed seed := h.2.2
+
+/-- buildSeedComplete produces a modally closed seed. -/
+theorem buildSeedComplete_modalClosed (phi : Formula) :
+    ModalClosed (buildSeedComplete phi) :=
+  SeedClosed_implies_ModalClosed _ (buildSeedComplete_closed phi)
+
+/-- buildSeedComplete produces a G-closed seed. -/
+theorem buildSeedComplete_gClosed (phi : Formula) :
+    GClosed (buildSeedComplete phi) :=
+  SeedClosed_implies_GClosed _ (buildSeedComplete_closed phi)
+
+/-- buildSeedComplete produces an H-closed seed. -/
+theorem buildSeedComplete_hClosed (phi : Formula) :
+    HClosed (buildSeedComplete phi) :=
+  SeedClosed_implies_HClosed _ (buildSeedComplete_closed phi)
 
 end Bimodal.Metalogic.Bundle

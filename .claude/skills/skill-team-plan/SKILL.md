@@ -180,9 +180,9 @@ case "$language" in
     verification_command="File creation and consistency checks"
     ;;
   *)
-    # Generic configuration - inherit lead's model
+    # Generic configuration - use Sonnet for all non-Lean tasks
     use_lean_prompts=false
-    default_model="inherit"
+    default_model="sonnet"
     context_refs=""
     planning_guidance=""
     verification_command="Project-specific build/test"
@@ -190,11 +190,8 @@ case "$language" in
 esac
 
 # Prepare model preference line for prompts
-if [ "$default_model" = "inherit" ]; then
-  model_preference_line=""
-else
-  model_preference_line="Model preference: Use Claude ${default_model^} for planning."
-fi
+# Opus 4.6 for Lean tasks, Sonnet 4.6 for all others
+model_preference_line="Model preference: Use Claude ${default_model^} 4.6 for planning."
 ```
 
 See `.claude/utils/team-wave-helpers.md#language-routing-pattern` for full configuration lookup.
