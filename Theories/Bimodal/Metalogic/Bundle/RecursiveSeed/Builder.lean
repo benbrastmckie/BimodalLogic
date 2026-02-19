@@ -5926,4 +5926,106 @@ theorem seedToConstantMCS_contains_phi (phi : Formula) (h_phi_cons : FormulaCons
 -/
 
 
+/-- addFormula at a different family preserves getFormulas, regardless of time. -/
+lemma addFormula_preserves_getFormulas_diff_fam_general
+    (seed : ModelSeed) (f addF : Nat) (t addT : Int) (phi : Formula) (ty : SeedEntryType)
+    (h_diff : f ≠ addF) :
+    (seed.addFormula addF addT phi ty).getFormulas f t = seed.getFormulas f t := by
+  unfold ModelSeed.addFormula ModelSeed.getFormulas ModelSeed.findEntry
+  let p := fun e : SeedEntry => e.familyIdx == f && e.timeIdx == t
+  let p' := fun e : SeedEntry => e.familyIdx == addF && e.timeIdx == addT
+  have h_pred_neq : ∀ (e : SeedEntry), (p e = true ∧ p' e = true) → False := by
+    intro e ⟨hp, hp'⟩
+    simp only [p, p', beq_iff_eq, Bool.and_eq_true] at hp hp'
+    exact h_diff (hp.1.symm.trans hp'.1)
+  cases h_find : seed.entries.findIdx? p' with
+  | none =>
+    simp only
+    rw [List.find?_append]
+    have h_new_pred : p { familyIdx := addF, timeIdx := addT, formulas := {phi}, entryType := ty } = false := by
+      simp only [p, Bool.and_eq_false_iff]
+      left; simp only [beq_eq_false_iff_ne, ne_eq]; exact Ne.symm h_diff
+    have h_find_new : [{ familyIdx := addF, timeIdx := addT, formulas := ({phi} : Set Formula), entryType := ty }].find? p = none := by
+      rw [List.find?_eq_none]; intro x hx
+      simp only [List.mem_singleton] at hx; subst hx
+      simp only [Bool.not_eq_true]; exact h_new_pred
+    rw [h_find_new, Option.or_none]
+  | some idx =>
+    simp only
+    have h_spec := List.findIdx?_eq_some_iff_getElem.mp h_find
+    have h_idx_lt : idx < seed.entries.length := h_spec.1
+    have h_pred := h_spec.2.1
+    simp only [beq_iff_eq, Bool.and_eq_true, p'] at h_pred
+    have h_p_idx_false : p seed.entries[idx] = false := by
+      simp only [p, Bool.and_eq_false_iff, beq_eq_false_iff_ne, ne_eq]
+      left; intro h; exact h_diff (h.symm.trans h_pred.1)
+    cases h_find_orig : seed.entries.find? p with
+    | none =>
+      have h_find_mod : (seed.entries.modify idx (fun e => { e with formulas := insert phi e.formulas })).find? p = none := by
+        rw [List.find?_eq_none]
+        intro x hx
+        rw [List.mem_modify_iff] at hx
+        cases hx with
+        | inl h_unchanged =>
+          obtain ⟨j, hj, _⟩ := h_unchanged
+          have h_mem' := List.mem_of_getElem? hj
+          exact List.find?_eq_none.mp h_find_orig x h_mem'
+        | inr h_modified =>
+          obtain ⟨old, h_old, h_eq⟩ := h_modified
+          subst h_eq
+          simp only [Bool.not_eq_true]
+          show p { old with formulas := insert phi old.formulas } = false
+          have h_old_eq : old = seed.entries[idx] := by
+            have := (List.getElem?_eq_some_iff.mp h_old).2
+            exact this.symm
+          simp only [p, h_old_eq]; exact h_p_idx_false
+      rw [h_find_mod]
+    | some entry =>
+      have h_entry_pred := List.find?_some h_find_orig
+      have h_first := List.find?_eq_some_iff_getElem.mp h_find_orig
+      obtain ⟨i, hi_lt, hi_eq, h_before_i⟩ := h_first.2
+      have h_i_ne_idx : i ≠ idx := by
+        intro h_eq; have h_p_i : p seed.entries[i] = true := by rw [hi_eq]; exact h_entry_pred
+        have h_p_idx_eq : p seed.entries[idx] = true := h_eq ▸ h_p_i
+        rw [h_p_idx_eq] at h_p_idx_false; cases h_p_idx_false
+      have h_find_mod : (seed.entries.modify idx (fun e => { e with formulas := insert phi e.formulas })).find? p = some entry := by
+        rw [List.find?_eq_some_iff_getElem]
+        have h_len := List.length_modify (fun e : SeedEntry => { e with formulas := insert phi e.formulas }) seed.entries idx
+        constructor
+        · exact h_entry_pred
+        · use i, (h_len ▸ hi_lt)
+          constructor
+          · rw [List.getElem_modify]
+            split
+            · rename_i h_idx_eq_i; exfalso; exact h_i_ne_idx h_idx_eq_i.symm
+            · exact hi_eq
+          · intro k hk
+            rw [List.getElem_modify]
+            split
+            · rename_i h_k_eq_idx
+              simp only [Bool.not_eq_true']
+              -- k = idx, and p at idx is false; modifying formulas doesn't change familyIdx/timeIdx
+              have : p { seed.entries[k] with formulas := insert phi seed.entries[k].formulas } = p seed.entries[k] := by
+                simp only [p]
+              rw [this]
+              have : k = idx := h_k_eq_idx.symm
+              subst this
+              exact h_p_idx_false
+            · exact h_before_i k hk
+      rw [h_find_mod]
+
+/-- Cross-position membership preservation: addFormula at any position preserves membership at another. -/
+lemma addFormula_preserves_mem_getFormulas
+    (seed : ModelSeed) (f : Nat) (t : Int) (phi psi : Formula)
+    (addF : Nat) (addT : Int) (ty : SeedEntryType)
+    (h_mem : phi ∈ seed.getFormulas f t) :
+    phi ∈ (seed.addFormula addF addT psi ty).getFormulas f t := by
+  by_cases h_fam : f = addF
+  · subst h_fam
+    by_cases h_time : t = addT
+    · subst h_time
+      exact addFormula_preserves_mem_getFormulas_same seed f t phi psi ty h_mem
+    · rw [addFormula_preserves_getFormulas_diff_time seed f t addT psi ty h_time]; exact h_mem
+  · rw [addFormula_preserves_getFormulas_diff_fam_general seed f addF t addT psi ty h_fam]; exact h_mem
+
 end Bimodal.Metalogic.Bundle

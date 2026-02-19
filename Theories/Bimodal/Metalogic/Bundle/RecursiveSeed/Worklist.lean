@@ -454,6 +454,178 @@ theorem processWorkItem_newWork_complexity_lt (item : WorkItem) (state : Worklis
     | Formula.all_past _, Formula.all_future _ => simp only [classifyFormula, hf] at hw; exact (List.not_mem_nil hw).elim
     | Formula.all_past _, Formula.all_past _ => simp only [classifyFormula, hf] at hw; exact (List.not_mem_nil hw).elim
 
+/-! ### Foldl Helper Lemmas for hasPosition
+
+These lemmas were originally in Closure.lean but are needed by Worklist proofs.
+They establish that various foldl patterns over addFormula preserve or create positions.
+-/
+
+-- Note: addFormula_preserves_mem_getFormulas is now in Builder.lean
+
+/-- foldl addFormula over families preserves existing membership at any position. -/
+private lemma foldl_addFormula_fam_preserves_mem_any_pos
+    (phi psi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (qT : Int) (h_mem : psi ∈ seed.getFormulas f qT) :
+    psi ∈ (fams.foldl (fun s fam => s.addFormula fam t phi .universal_target) seed).getFormulas f qT := by
+  induction fams generalizing seed with
+  | nil => exact h_mem
+  | cons g gs ih =>
+    simp only [List.foldl_cons]
+    exact ih _ (addFormula_preserves_mem_getFormulas seed f qT psi phi g t .universal_target h_mem)
+
+/-- foldl addFormula over families puts phi at each family's getFormulas. -/
+lemma foldl_addFormula_fam_puts_phi_in_all
+    (phi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (h_in : f ∈ fams) :
+    phi ∈ (fams.foldl (fun s fam => s.addFormula fam t phi .universal_target) seed).getFormulas f t := by
+  induction fams generalizing seed with
+  | nil => exact absurd h_in (List.not_mem_nil)
+  | cons g gs ih =>
+    simp only [List.foldl_cons]
+    cases h_in with
+    | head =>
+      -- f = g: addFormula adds phi at (f, t), then foldl preserves it
+      have h_added := addFormula_formula_in_getFormulas seed f t phi .universal_target
+      exact foldl_addFormula_fam_preserves_mem_any_pos phi phi t gs _ f t h_added
+    | tail _ hgs =>
+      exact ih (seed.addFormula g t phi .universal_target) hgs
+
+/-- foldl addFormula over families creates position (f, t) for each f in fams. -/
+lemma foldl_addFormula_fam_self_hasPosition
+    (phi : Formula) (t : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (hf : f ∈ fams) :
+    (fams.foldl (fun s fam => s.addFormula fam t phi .universal_target) seed).hasPosition f t :=
+  ModelSeed.mem_getFormulas_implies_hasPosition _ f t phi
+    (foldl_addFormula_fam_puts_phi_in_all phi t fams seed f hf)
+
+/-- Compound foldl (adding both psi AND G psi at each time) preserves existing membership. -/
+lemma foldl_compound_future_preserves_mem
+    (psi phi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (f : Nat) (t : Int) (h_mem : phi ∈ seed.getFormulas f t) :
+    phi ∈ (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_future psi) .universal_target) seed).getFormulas f t := by
+  induction times generalizing seed with
+  | nil => exact h_mem
+  | cons time rest ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    have h1 := addFormula_preserves_mem_getFormulas seed f t phi psi famIdx time .universal_target h_mem
+    exact addFormula_preserves_mem_getFormulas _ f t phi (Formula.all_future psi) famIdx time .universal_target h1
+
+/-- Compound foldl (adding both psi AND H psi at each time) preserves existing membership. -/
+lemma foldl_compound_past_preserves_mem
+    (psi phi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (f : Nat) (t : Int) (h_mem : phi ∈ seed.getFormulas f t) :
+    phi ∈ (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_past psi) .universal_target) seed).getFormulas f t := by
+  induction times generalizing seed with
+  | nil => exact h_mem
+  | cons time rest ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    have h1 := addFormula_preserves_mem_getFormulas seed f t phi psi famIdx time .universal_target h_mem
+    exact addFormula_preserves_mem_getFormulas _ f t phi (Formula.all_past psi) famIdx time .universal_target h1
+
+/-- Compound foldl (future) puts psi at each time in the list. -/
+lemma foldl_compound_future_puts_psi_in_all
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (h_in : t ∈ times) :
+    psi ∈ (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_future psi) .universal_target) seed).getFormulas famIdx t := by
+  induction times generalizing seed with
+  | nil => exact absurd h_in (List.not_mem_nil)
+  | cons time rest ih =>
+    simp only [List.foldl_cons]
+    by_cases h_eq : t = time
+    · subst h_eq
+      have h_added : psi ∈ (seed.addFormula famIdx t psi .universal_target).getFormulas famIdx t :=
+        addFormula_formula_in_getFormulas seed famIdx t psi .universal_target
+      have h_after_gpsi : psi ∈ ((seed.addFormula famIdx t psi .universal_target).addFormula famIdx t
+          (Formula.all_future psi) .universal_target).getFormulas famIdx t :=
+        addFormula_preserves_mem_getFormulas_same _ famIdx t psi (Formula.all_future psi) .universal_target h_added
+      exact foldl_compound_future_preserves_mem psi psi famIdx rest _ famIdx t h_after_gpsi
+    · apply ih
+      cases h_in with
+      | head => exact absurd rfl h_eq
+      | tail _ h => exact h
+
+/-- Compound foldl (past) puts psi at each time in the list. -/
+lemma foldl_compound_past_puts_psi_in_all
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (h_in : t ∈ times) :
+    psi ∈ (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_past psi) .universal_target) seed).getFormulas famIdx t := by
+  induction times generalizing seed with
+  | nil => exact absurd h_in (List.not_mem_nil)
+  | cons time rest ih =>
+    simp only [List.foldl_cons]
+    by_cases h_eq : t = time
+    · subst h_eq
+      have h_added : psi ∈ (seed.addFormula famIdx t psi .universal_target).getFormulas famIdx t :=
+        addFormula_formula_in_getFormulas seed famIdx t psi .universal_target
+      have h_after_hpsi : psi ∈ ((seed.addFormula famIdx t psi .universal_target).addFormula famIdx t
+          (Formula.all_past psi) .universal_target).getFormulas famIdx t :=
+        addFormula_preserves_mem_getFormulas_same _ famIdx t psi (Formula.all_past psi) .universal_target h_added
+      exact foldl_compound_past_preserves_mem psi psi famIdx rest _ famIdx t h_after_hpsi
+    · apply ih
+      cases h_in with
+      | head => exact absurd rfl h_eq
+      | tail _ h => exact h
+
+/-- Compound foldl preserves hasPosition (future times version). -/
+lemma foldl_compound_future_preserves_hasPosition
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (f : Nat) (t : Int) (h_pos : seed.hasPosition f t) :
+    (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_future psi) .universal_target) seed).hasPosition f t := by
+  induction times generalizing seed with
+  | nil => exact h_pos
+  | cons time rest ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    have h1 := addFormula_preserves_hasPosition seed famIdx time psi .universal_target f t h_pos
+    exact addFormula_preserves_hasPosition _ famIdx time (Formula.all_future psi) .universal_target f t h1
+
+/-- Compound foldl preserves hasPosition (past times version). -/
+lemma foldl_compound_past_preserves_hasPosition
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (f : Nat) (t : Int) (h_pos : seed.hasPosition f t) :
+    (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_past psi) .universal_target) seed).hasPosition f t := by
+  induction times generalizing seed with
+  | nil => exact h_pos
+  | cons time rest ih =>
+    simp only [List.foldl_cons]
+    apply ih
+    have h1 := addFormula_preserves_hasPosition seed famIdx time psi .universal_target f t h_pos
+    exact addFormula_preserves_hasPosition _ famIdx time (Formula.all_past psi) .universal_target f t h1
+
+/-- Compound foldl (future) creates position (famIdx, t) for each t in times. -/
+lemma foldl_compound_future_self_hasPosition
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (ht : t ∈ times) :
+    (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_future psi) .universal_target) seed).hasPosition famIdx t :=
+  ModelSeed.mem_getFormulas_implies_hasPosition _ famIdx t psi
+    (foldl_compound_future_puts_psi_in_all psi famIdx times seed t ht)
+
+/-- Compound foldl (past) creates position (famIdx, t) for each t in times. -/
+lemma foldl_compound_past_self_hasPosition
+    (psi : Formula) (famIdx : Nat) (times : List Int) (seed : ModelSeed)
+    (t : Int) (ht : t ∈ times) :
+    (times.foldl (fun s time =>
+        let s' := s.addFormula famIdx time psi .universal_target
+        s'.addFormula famIdx time (Formula.all_past psi) .universal_target) seed).hasPosition famIdx t :=
+  ModelSeed.mem_getFormulas_implies_hasPosition _ famIdx t psi
+    (foldl_compound_past_puts_psi_in_all psi famIdx times seed t ht)
+
 /-- All work items produced by processWorkItem have valid positions in the new seed.
     Key for maintaining WorklistPosInvariant through processing. -/
 lemma processWorkItem_newWork_hasPosition (item : WorkItem) (state : WorklistState)
@@ -496,34 +668,10 @@ lemma processWorkItem_newWork_hasPosition (item : WorkItem) (state : WorklistSta
       simp only [WorkItem.famIdx, WorkItem.timeIdx]
       exact createNewTime_self_hasPosition _ _ _ _
     | _, _ =>
-      -- Generic cases: newWork = [] or classifyFormula gives negation/implication
-      -- Most cases are negation or implication (no modal, no temporal)
-      -- Check all remaining sub-cases
+      -- Generic cases: classifyFormula gives negation or implication for remaining imp patterns.
+      -- All produce empty newWork lists. Impossible classification cases are also trivially vacuous.
       simp only [classifyFormula, hf]
-      split
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
-      · intro w hw; simp only at hw; exact (List.not_mem_nil hw).elim
+      split <;> intro w hw <;> simp_all
   | Formula.box psi =>
     -- boxPositive: new items at (f, item.timeIdx) for f ∈ familyIndices
     simp only [classifyFormula, hf]
