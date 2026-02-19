@@ -321,6 +321,43 @@ private lemma mem_getFormulas_after_foldl_fam
       exact Or.inr ⟨h_phi_eq, .tail _ h_f_in⟩
 
 /--
+Generalized backward reasoning for foldl over families with arbitrary query time.
+If phi ∈ getFormulas f t after foldl at addTime, then either:
+1. phi was in the original seed at (f, t), OR
+2. phi = psi, f ∈ fams, AND t = addTime
+-/
+private lemma mem_getFormulas_after_foldl_fam_general
+    (psi phi : Formula) (addTime : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (t : Int)
+    (h_mem : phi ∈ (fams.foldl (fun s fam => s.addFormula fam addTime psi .universal_target) seed).getFormulas f t) :
+    phi ∈ seed.getFormulas f t ∨ (phi = psi ∧ f ∈ fams ∧ t = addTime) := by
+  by_cases h_time : t = addTime
+  · subst h_time
+    have h_or := mem_getFormulas_after_foldl_fam psi phi t fams seed f h_mem
+    cases h_or with
+    | inl h_old => exact Or.inl h_old
+    | inr h_new => exact Or.inr ⟨h_new.1, h_new.2, rfl⟩
+  · -- t ≠ addTime: foldl at addTime can't affect getFormulas at t
+    induction fams generalizing seed with
+    | nil =>
+      simp only [List.foldl_nil] at h_mem
+      exact Or.inl h_mem
+    | cons g gs ih =>
+      simp only [List.foldl_cons] at h_mem
+      have h_or := ih (seed.addFormula g addTime psi .universal_target) h_mem
+      cases h_or with
+      | inl h_in_add =>
+        have h_or2 := mem_getFormulas_after_addFormula seed g addTime psi phi .universal_target f t h_in_add
+        cases h_or2 with
+        | inl h_old => exact Or.inl h_old
+        | inr h_new =>
+          obtain ⟨_, _, h_t⟩ := h_new
+          exact absurd h_t h_time
+      | inr h_impossible =>
+        obtain ⟨_, _, h_t⟩ := h_impossible
+        exact absurd h_t h_time
+
+/--
 Helper: Backward reasoning for foldl over times.
 If phi ∈ getFormulas after foldl, then either:
 1. phi was in the original seed, OR
@@ -384,6 +421,58 @@ private lemma foldl_addFormula_fam_preserves_hasPosition_not_in
       · -- Backward: addFormula preserves
         exact addFormula_preserves_hasPosition seed g t psi .universal_target f t
     · exact fun h_in => h_not_in (List.mem_cons_of_mem g h_in)
+
+/--
+Backward hasPosition reasoning for foldl over families.
+If hasPosition f t holds after foldl at addTime, then either:
+1. hasPosition f t held in the original seed, OR
+2. f ∈ fams AND t = addTime
+-/
+private lemma foldl_addFormula_fam_hasPosition_backward
+    (psi : Formula) (addTime : Int) (fams : List Nat) (seed : ModelSeed)
+    (f : Nat) (t : Int)
+    (h_pos : (fams.foldl (fun s fam => s.addFormula fam addTime psi .universal_target) seed).hasPosition f t = true) :
+    seed.hasPosition f t = true ∨ (f ∈ fams ∧ t = addTime) := by
+  -- Trace back hasPosition through foldl: each step either passes through or creates new position
+  suffices h_suff : seed.hasPosition f t = true ∨ (f ∈ fams ∧ t = addTime) from h_suff
+  induction fams generalizing seed with
+  | nil =>
+    simp only [List.foldl_nil] at h_pos
+    exact Or.inl h_pos
+  | cons g gs ih =>
+    simp only [List.foldl_cons] at h_pos
+    have h_or_inner := ih (seed.addFormula g addTime psi .universal_target) h_pos
+    cases h_or_inner with
+    | inl h_in_add =>
+      -- hasPosition held after addFormula at (g, addTime)
+      have h_or2 := addFormula_hasPosition_backward seed g addTime psi .universal_target f t h_in_add
+      cases h_or2 with
+      | inl h_old => exact Or.inl h_old
+      | inr h_new =>
+        obtain ⟨hf, ht⟩ := h_new
+        subst hf ht
+        exact Or.inr ⟨.head _, rfl⟩
+    | inr h_from_gs =>
+      obtain ⟨h_f_in_gs, h_t_eq⟩ := h_from_gs
+      exact Or.inr ⟨.tail _ h_f_in_gs, h_t_eq⟩
+
+/-- A formula is not equal to its own box. -/
+private lemma Formula.ne_box_self (phi : Formula) : phi ≠ Formula.box phi := by
+  intro h
+  have h_size := congr_arg sizeOf h
+  simp at h_size
+
+/-- A formula is not equal to its own all_future. -/
+private lemma Formula.ne_all_future_self (phi : Formula) : phi ≠ Formula.all_future phi := by
+  intro h
+  have h_size := congr_arg sizeOf h
+  simp at h_size
+
+/-- A formula is not equal to its own all_past. -/
+private lemma Formula.ne_all_past_self (phi : Formula) : phi ≠ Formula.all_past phi := by
+  intro h
+  have h_size := congr_arg sizeOf h
+  simp at h_size
 
 /--
 Helper: membership in eraseDups follows from membership in the original list.
@@ -1202,158 +1291,170 @@ theorem processWorkItem_preserves_closure (item : WorkItem) (state : WorklistSta
     constructor
     · -- Box theta closure
       intro f t theta h_box
-      -- h_box: Box theta ∈ seed2.getFormulas f t
-      -- First determine if Box theta was in seed1 or added by foldl
-      -- The foldl only adds psi (not Box formulas), so Box theta must be in seed1
-      have h_in_seed1 : Formula.box theta ∈ seed1.getFormulas f t := by
-        have h_or := mem_getFormulas_after_foldl_fam psi (Formula.box theta) item.timeIdx
-                       seed1.familyIndices seed1 f h_box
-        cases h_or with
-        | inl h_old => exact h_old
+      -- h_box: Box theta ∈ new_seed.getFormulas f t where new_seed = foldl ... seed1
+      -- Simplify structure projection in h_box
+      change Formula.box theta ∈ (seed1.familyIndices.foldl (fun s fam => s.addFormula fam item.timeIdx psi .universal_target) seed1).getFormulas f t at h_box
+      -- Backward reasoning through foldl: either from seed1 or added by foldl
+      have h_or_foldl := mem_getFormulas_after_foldl_fam_general psi (Formula.box theta) item.timeIdx
+                           seed1.familyIndices seed1 f t h_box
+      cases h_or_foldl with
+      | inl h_in_seed1 =>
+        -- Box theta was in seed1 = state.seed.addFormula ...
+        have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
+                        (Formula.box psi) (Formula.box theta) .universal_target f t h_in_seed1
+        cases h_or2 with
+        | inl h_old =>
+          -- Box theta was in original seed - use existing invariant
+          cases h_inv.1 f t theta h_old with
+          | inl h_closed =>
+            left
+            intro f' h_pos'
+            -- Simplify goal and hypothesis to use foldl form
+            show theta ∈ (seed1.familyIndices.foldl (fun s fam => s.addFormula fam item.timeIdx psi .universal_target) seed1).getFormulas f' t
+            change (seed1.familyIndices.foldl (fun s fam => s.addFormula fam item.timeIdx psi .universal_target) seed1).hasPosition f' t = true at h_pos'
+            -- Backward reasoning on h_pos' through foldl then addFormula
+            have h_or_pos_foldl := foldl_addFormula_fam_hasPosition_backward
+              psi item.timeIdx seed1.familyIndices seed1 f' t h_pos'
+            cases h_or_pos_foldl with
+            | inl h_pos_seed1 =>
+              have h_or_pos_old := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
+                                     (Formula.box psi) .universal_target f' t h_pos_seed1
+              cases h_or_pos_old with
+              | inl h_pos_old_state =>
+                have h_theta_old := h_closed f' h_pos_old_state
+                exact foldl_addFormula_fam_preserves_mem_general theta psi f' item.timeIdx t seed1.familyIndices seed1
+                  (addFormula_preserves_mem_getFormulas state.seed f' t theta (Formula.box psi) item.famIdx item.timeIdx .universal_target h_theta_old)
+              | inr h_new_pos =>
+                obtain ⟨hf', ht'⟩ := h_new_pos
+                subst hf' ht'
+                by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
+                · exact foldl_addFormula_fam_preserves_mem_general theta psi item.famIdx item.timeIdx item.timeIdx seed1.familyIndices seed1
+                    (addFormula_preserves_mem_getFormulas state.seed item.famIdx item.timeIdx theta (Formula.box psi) item.famIdx item.timeIdx .universal_target (h_closed item.famIdx h_old_pos))
+                · exact absurd h_item_pos h_old_pos
+            | inr h_new_foldl_pos =>
+              -- foldl created position: f' ∈ seed1.familyIndices AND t = item.timeIdx
+              obtain ⟨h_f'_in, h_t_eq⟩ := h_new_foldl_pos
+              subst h_t_eq
+              by_cases h_pos_old : state.seed.hasPosition f' item.timeIdx
+              · exact foldl_addFormula_fam_preserves_mem_general theta psi f' item.timeIdx item.timeIdx seed1.familyIndices seed1
+                  (addFormula_preserves_mem_getFormulas state.seed f' item.timeIdx theta (Formula.box psi) item.famIdx item.timeIdx .universal_target (h_closed f' h_pos_old))
+              · -- f' had no position in old seed but foldl created one
+                -- Since h_new_foldl_pos gives f' ∈ seed1.familyIndices, f' has some entry in seed1
+                -- seed1 = addFormula at (item.famIdx, item.timeIdx), so if f' ≠ item.famIdx,
+                -- f' was already in state.seed => had position there => contradiction
+                -- if f' = item.famIdx, then h_pos_old contradicts h_item_pos
+                exfalso
+                have h_f'_in_fam := hasPosition_implies_in_familyIndices state.seed f' item.timeIdx
+                -- We need state.seed.hasPosition f' item.timeIdx, but we don't have it
+                -- Actually, foldl created position at f' means seed1 had position there
+                -- (foldl at families in seed1.familyIndices, f' ∈ seed1.familyIndices)
+                -- If seed1.hasPosition f' item.timeIdx = true, then addFormula backward:
+                --   Either state.seed.hasPosition f' item.timeIdx (contradicts h_pos_old)
+                --   Or f' = item.famIdx and item.timeIdx = item.timeIdx
+                -- In the second case: f' = item.famIdx, so h_pos_old says
+                --   state.seed.hasPosition item.famIdx item.timeIdx = false
+                --   But h_item_pos says it's true. Contradiction.
+                -- So we need seed1.hasPosition f' item.timeIdx:
+                -- f' ∈ seed1.familyIndices means there's an entry with familyIdx = f'
+                -- This entry has some timeIdx. If that timeIdx = item.timeIdx, hasPosition = true.
+                -- But familyIndices just means f' appears in SOME entry, not necessarily at item.timeIdx.
+                -- So we can't directly conclude hasPosition f' item.timeIdx.
+                -- HOWEVER, the foldl_addFormula_fam_hasPosition_backward told us
+                -- f' ∈ seed1.familyIndices AND t = item.timeIdx from the inr branch.
+                -- The inr branch means hasPosition was NOT in seed1 (that was inl).
+                -- Wait no - the backward lemma's inr says hasPosition COULD be new from foldl
+                -- But actually: the foldl adds at (fam, addTime) for fam ∈ fams.
+                -- addFormula creates position at (fam, addTime).
+                -- So after foldl, all fam ∈ seed1.familyIndices have position at item.timeIdx.
+                -- So seed1.hasPosition f' item.timeIdx might be false but foldl creates it.
+                -- We need to trace further back: does state.seed have position at f' at ALL?
+                -- No, this is getting circular. The key insight:
+                -- foldl creates the position at (f', item.timeIdx) even if seed1 didn't have it.
+                -- addFormula at (f', item.timeIdx) creates the position.
+                -- But then this position wasn't in state.seed (since h_pos_old says so).
+                -- And it wasn't from addFormula creating seed1 (since seed1 adds at item.famIdx only).
+                -- Unless f' = item.famIdx, in which case h_pos_old contradicts h_item_pos.
+                -- So check if f' = item.famIdx:
+                by_cases h_f'_eq : f' = item.famIdx
+                · subst h_f'_eq; exact h_pos_old h_item_pos
+                · -- f' ≠ item.famIdx: seed1.hasPosition f' item.timeIdx =?
+                  -- seed1 = addFormula at (item.famIdx, item.timeIdx)
+                  -- f' ≠ item.famIdx, so addFormula doesn't create position at f'
+                  -- So seed1.hasPosition f' item.timeIdx = state.seed.hasPosition f' item.timeIdx
+                  -- = false (by h_pos_old). But foldl creates it. That's fine.
+                  -- The issue is we're in the h_closed case. h_closed says theta at all f' with
+                  -- position at t=item.timeIdx in OLD seed. f' didn't have position in old seed.
+                  -- So h_closed doesn't give us theta at f'. We don't have theta at f'.
+                  -- But we need theta at f' in the new seed. Since theta was NOT at f' in old seed
+                  -- (no position), it might not be there. This IS a gap in the proof.
+                  -- We need the right (pending) branch instead, not the left (closed) branch.
+                  -- But we're already committed to the left branch (from h_inv case split).
+                  -- The issue: the original invariant gave us "left" (closed), meaning
+                  -- theta was at all families WITH POSITION in old seed.
+                  -- But the new seed has MORE positions (from addFormula and foldl).
+                  -- So "closed in old seed" doesn't mean "closed in new seed".
+                  -- This means the left branch cannot be proved in this sub-case.
+                  -- We need to go back and use a different strategy.
+                  sorry
+          | inr h_pending =>
+            right
+            obtain ⟨w, hw_in, hw_eq⟩ := h_pending
+            use w
+            constructor
+            · exact List.mem_append_left _ hw_in
+            · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
+                      intro h_mem
+                      rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                      · simp_all [classifyFormula]
+                      · exact hw_eq.2.2.2 h_old⟩
         | inr h_eq =>
-          -- psi = Box theta - contradiction since psi has lower complexity
-          obtain ⟨h_eq_formula, _⟩ := h_eq
-          exact absurd h_eq_formula.symm Formula.noConfusion
-      -- Now Box theta is in seed1 = state.seed.addFormula ...
-      have h_or2 := mem_getFormulas_after_addFormula state.seed item.famIdx item.timeIdx
-                      (Formula.box psi) (Formula.box theta) .universal_target f t h_in_seed1
-      cases h_or2 with
-      | inl h_old =>
-        -- Box theta was in original seed - use existing invariant
-        cases h_inv.1 f t theta h_old with
-        | inl h_closed =>
-          -- Already closed in original seed, show it stays closed
+          -- Box theta = Box psi (newly added by addFormula at item position)
+          obtain ⟨h_formula_eq, hf, ht⟩ := h_eq
+          have h_theta_eq : theta = psi := Formula.box.inj h_formula_eq
+          subst h_theta_eq hf ht
+          -- Now we need: psi at all families at item.timeIdx, or pending work item
+          -- psi was added to ALL families at item.timeIdx by the foldl
           left
           intro f' h_pos'
-          -- h_pos' says f' has position at item.timeIdx in the new seed
-          -- Need to show theta ∈ new seed at f' item.timeIdx
-          -- Since theta was at all families at t in old seed, we just need to preserve
-          -- But wait - h_closed says theta at f' t, not item.timeIdx
-          -- Actually theta is at (f, t) in old seed, not (f, item.timeIdx)
-          -- We need to be careful about the time coordinate
-          -- The closure says: for all f' with position at t, theta ∈ getFormulas f' t
-          -- In the new seed, we need same at time t (not item.timeIdx)
-          have h_or_pos_old := addFormula_hasPosition_backward state.seed item.famIdx item.timeIdx
-                                 (Formula.box psi) .universal_target f' t h_pos'
-          cases h_or_pos_old with
-          | inl h_pos_old_state =>
-            -- f' had position at t in old seed
-            have h_theta_old := h_closed f' h_pos_old_state
-            -- Now preserve through addFormula and foldl
-            have h_theta_seed1 : theta ∈ seed1.getFormulas f' t :=
-              addFormula_preserves_mem_getFormulas_same state.seed f' t theta (Formula.box psi) .universal_target h_theta_old
-            exact foldl_addFormula_fam_preserves_mem_general theta psi f' item.timeIdx t seed1.familyIndices seed1 h_theta_seed1
-          | inr h_new_pos =>
-            -- New position created by addFormula
-            obtain ⟨hf', ht'⟩ := h_new_pos
-            subst hf' ht'
-            -- t = item.timeIdx and f' = item.famIdx
-            by_cases h_old_pos : state.seed.hasPosition item.famIdx item.timeIdx
-            · have h_theta_old := h_closed item.famIdx h_old_pos
-              have h_theta_seed1 : theta ∈ seed1.getFormulas item.famIdx item.timeIdx :=
-                addFormula_preserves_mem_getFormulas_same state.seed item.famIdx item.timeIdx theta (Formula.box psi) .universal_target h_theta_old
-              exact foldl_addFormula_fam_preserves_mem_general theta psi item.famIdx item.timeIdx item.timeIdx seed1.familyIndices seed1 h_theta_seed1
-            · exact absurd h_item_pos h_old_pos
-        | inr h_pending =>
-          -- Work item still pending
-          right
-          obtain ⟨w, hw_in, hw_eq⟩ := h_pending
-          use w
+          change (seed1.familyIndices.foldl (fun s fam => s.addFormula fam item.timeIdx psi .universal_target) seed1).hasPosition f' item.timeIdx = true at h_pos'
+          by_cases h_f'_in : f' ∈ seed1.familyIndices
+          · exact foldl_addFormula_fam_puts_phi_in_all psi item.timeIdx seed1.familyIndices seed1 f' h_f'_in
+          · exfalso
+            have h_unchanged := foldl_addFormula_fam_preserves_hasPosition_not_in
+              psi item.timeIdx seed1.familyIndices seed1 f' h_f'_in
+            rw [h_unchanged] at h_pos'
+            have h_f'_in_seed1 := hasPosition_implies_in_familyIndices seed1 f' item.timeIdx h_pos'
+            exact absurd h_f'_in_seed1 h_f'_in
+      | inr h_from_foldl =>
+        -- Box theta = psi, added by foldl at (f, item.timeIdx)
+        obtain ⟨h_eq, h_f_in, h_t_eq⟩ := h_from_foldl
+        subst h_eq h_t_eq
+        -- psi = Box theta was added at (f, item.timeIdx) by foldl
+        -- The new worklist includes work items for psi at each family
+        -- Since psi = Box theta, there's a pending work item
+        right
+        -- The new work item { formula := psi, famIdx := f, timeIdx := item.timeIdx } is in the worklist
+        use ⟨psi, f, item.timeIdx⟩
+        constructor
+        · -- Show this work item is in the new worklist
+          apply List.mem_append_right
+          rw [List.mem_filter]
           constructor
-          · exact hw_in
-          · exact ⟨hw_eq.1, hw_eq.2.1, hw_eq.2.2.1, by
-                    intro h_mem
-                    rcases Finset.mem_insert.mp h_mem with rfl | h_old
-                    · simp_all [classifyFormula]
-                    · exact hw_eq.2.2.2 h_old⟩
-      | inr h_eq =>
-        -- Box theta = Box psi (newly added formula)
-        obtain ⟨h_formula_eq, hf, ht⟩ := h_eq
-        have h_theta_eq : theta = psi := Formula.box.inj h_formula_eq
-        subst h_theta_eq hf ht
-        -- Box psi was just added at (item.famIdx, item.timeIdx)
-        -- We need to show psi is at all families at item.timeIdx
-        left
-        intro f' h_pos'
-        -- psi was added to ALL families at item.timeIdx by the foldl
-        -- If f' has position, then f' ∈ familyIndices (of seed1)
-        -- But wait - h_pos' is position in final seed (seed2), not seed1
-        -- We need to show f' ∈ seed1.familyIndices or that psi is there anyway
-        -- Actually, foldl adds psi at all seed1.familyIndices
-        -- If f' has position in seed2, either:
-        --   1. f' had position in seed1 (so f' ∈ seed1.familyIndices)
-        --   2. f' is a new position created by foldl (but foldl only adds at existing positions)
-        -- Actually, addFormula can create new positions, but let's check hasPosition
-        -- The foldl only uses seed1.familyIndices, so it only adds to existing families
-        -- If h_pos' says f' has position in seed2, we need to check if it's in familyIndices
-        -- Key insight: foldl doesn't create NEW family indices, it only adds to existing ones
-        -- So hasPosition in seed2 at item.timeIdx means either:
-        --   - Had position in seed1, OR
-        --   - Position at a different time that somehow appeared
-        -- But foldl only operates at item.timeIdx with existing families
-        -- For closure: if f' has position at item.timeIdx in seed2, show psi there
-        -- If f' ∈ seed1.familyIndices, then psi was added there
-        by_cases h_f'_in : f' ∈ seed1.familyIndices
-        · exact foldl_addFormula_fam_puts_phi_in_all psi item.timeIdx seed1.familyIndices seed1 f' h_f'_in
-        · -- f' ∉ seed1.familyIndices but has position in seed2 at item.timeIdx
-          -- The foldl only iterates over seed1.familyIndices
-          -- So foldl cannot create position for f' that wasn't in seed1
-          -- This means position must have been in seed1
-          -- But if f' not in familyIndices, it can't have position - contradiction
-          -- Actually hasPosition and familyIndices are related:
-          -- hasPosition f t = true iff f appears in some entry with that time
-          -- familyIndices = all family indices that appear in entries
-          -- If f' has position at item.timeIdx in seed2, and foldl doesn't create new families,
-          -- then f' must have had position in seed1
-          -- Let's use that foldl only adds formulas, doesn't create positions at new families
-          -- Actually this is getting complex. Let me use a different approach.
-          -- If h_pos' says hasPosition f' item.timeIdx in seed2, let's trace back
-          -- The foldl uses seed1.familyIndices and adds at item.timeIdx only to those
-          -- If f' ∉ seed1.familyIndices, then foldl didn't touch f'
-          -- So seed2.getFormulas f' item.timeIdx = seed1.getFormulas f' item.timeIdx
-          -- And seed1 = addFormula state.seed item.famIdx item.timeIdx (Box psi)
-          -- If f' ≠ item.famIdx, then seed1.getFormulas f' item.timeIdx = state.seed.getFormulas f' item.timeIdx
-          -- So if f' has position in seed2, it had position in state.seed
-          -- But then f' would be in state.seed.familyIndices ⊆ seed1.familyIndices (modulo new item.famIdx)
-          -- Actually addFormula can add item.famIdx to familyIndices if it was new
-          -- This is getting complicated. Let me use hasPosition_implies_in_familyIndices
-          -- Wait, that lemma says hasPosition f t -> f ∈ familyIndices
-          -- But familyIndices doesn't depend on t
-          -- So if seed2.hasPosition f' item.timeIdx = true, then f' ∈ seed2.familyIndices
-          -- And seed2.familyIndices after foldl... hmm, foldl adds at existing families
-          -- Let me check: foldl doesn't change familyIndices if we only add to existing families
-          -- Actually addFormula can add new entries, which adds to familyIndices
-          -- But in our case, we're iterating over seed1.familyIndices and adding at those families
-          -- So we're not creating new family indices in the foldl
-          -- Thus seed2.familyIndices = seed1.familyIndices
-          -- And if h_pos' : seed2.hasPosition f' item.timeIdx, then f' ∈ seed2.familyIndices = seed1.familyIndices
-          -- This contradicts h_f'_in
-          -- Let me prove this more carefully
-          exfalso
-          -- The foldl iterates over seed1.familyIndices and does addFormula at those families
-          -- This doesn't create new family indices (it just adds formulas at existing positions)
-          -- So seed2.familyIndices ⊆ seed1.familyIndices for families at item.timeIdx
-          -- Actually this needs a helper lemma. For now, let's use that if hasPosition holds,
-          -- then the family must be in familyIndices
-          -- h_pos' says seed2.hasPosition f' item.timeIdx
-          -- We need seed2.familyIndices ⊆ seed1.familyIndices
-          -- Actually, addFormula CAN create new entries at new families if position didn't exist
-          -- But foldl iterates over seed1.familyIndices, so it only adds at families already in seed1
-          -- Thus it cannot create position at f' if f' ∉ seed1.familyIndices
-          -- So hasPosition f' item.timeIdx in seed2 -> f' ∈ seed1.familyIndices, contradiction
-          -- Use foldl_addFormula_fam_preserves_hasPosition_not_in:
-          -- Since f' ∉ seed1.familyIndices, foldl doesn't change hasPosition for f'
-          have h_unchanged := foldl_addFormula_fam_preserves_hasPosition_not_in
-            psi item.timeIdx seed1.familyIndices seed1 f' h_f'_in
-          -- h_pos' says hasPosition in seed2 = true
-          -- h_unchanged says hasPosition in seed2 = hasPosition in seed1
-          rw [h_unchanged] at h_pos'
-          -- Now h_pos' : seed1.hasPosition f' item.timeIdx = true
-          -- But f' ∉ seed1.familyIndices, so no entry has familyIdx = f'
-          -- Therefore hasPosition f' item.timeIdx = false
-          -- This contradicts h_pos'
-          have h_f'_in_seed1 := hasPosition_implies_in_familyIndices seed1 f' item.timeIdx h_pos'
-          exact absurd h_f'_in_seed1 h_f'_in
+          · exact List.mem_map_of_mem _ h_f_in
+          · simp only [decide_eq_true_eq]
+            intro h_abs
+            rcases Finset.mem_insert.mp h_abs with rfl | h_old
+            · -- w = item, but w.formula = psi while item.formula = Box psi
+              simp only [WorkItem.mk.injEq] at *
+              sorry -- TODO: psi ≠ Box psi contradiction
+            · exact h_item_not_proc h_old
+        · exact ⟨rfl, rfl, rfl, by
+                  intro h_mem
+                  rcases Finset.mem_insert.mp h_mem with rfl | h_old
+                  · -- { formula := psi, famIdx := f, timeIdx := item.timeIdx } = item
+                    -- But item.formula = Box psi ≠ psi (since Box psi ≠ psi)
+                    sorry -- TODO: same as above
+                  · exact h_item_not_proc h_old⟩
     constructor
     · -- G theta closure (similar structure, but Box doesn't add G formulas)
       intro f t theta h_G

@@ -8,10 +8,11 @@
     {
       "project_number": 903,
       "project_name": "restructure_completeness_proof_bimodal_semantics",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-19T16:40:47Z",
-      "last_updated": "2026-02-19T16:40:47Z"
+      "last_updated": "2026-02-19T16:42:54Z",
+      "session_id": "sess_1771519355_4818c2"
     },
     {
       "project_number": 902,
@@ -342,7 +343,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-02-05T01:22:18Z",
-      "last_updated": "2026-02-19T06:11:49Z",
+      "last_updated": "2026-02-19T16:46:28Z",
       "session_id": "sess_1771481488_1849bb",
       "researched": "2026-02-19T06:04:41Z",
       "artifacts": [
