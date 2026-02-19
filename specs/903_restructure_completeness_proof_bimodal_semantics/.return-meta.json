@@ -1,21 +1,18 @@
 {
-  "status": "partial",
-  "started_at": "2026-02-19T00:00:00Z",
+  "status": "researched",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-003.md",
-      "summary": "Analysis of two remaining sorries in Representation.lean: box forward sorry is a genuine semantic gap (cannot eliminate without changing definitions, does not affect completeness theorems); BMCS existence sorry is constructively resolvable via existing sorry-free SaturatedConstruction in Boneyard combined with a temporally-saturated Lindenbaum lemma"
+      "type": "report",
+      "path": "specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-004.md",
+      "summary": "Deep analysis of both sorries in Representation.lean with definitive solution: add admissible histories (Omega) to truth_at to match paper semantics"
     }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research report created with full analysis of both sorries, dependency graph, and 4-phase implementation plan for sorry elimination"
-  },
+  "next_steps": "Run /plan 903 to create implementation plan for the Omega semantic refactor (Phase 0: add Omega to truth_at, Phase 1: update soundness, Phase 2: fix canonical model)",
   "metadata": {
-    "session_id": "sess_1771531222_320d55",
+    "session_id": "sess_1771532244_314b6b",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings_count": 6
   }
 }

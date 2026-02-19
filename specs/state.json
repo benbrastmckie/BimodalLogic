@@ -113,6 +113,11 @@
           "path": "specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-003.md",
           "type": "research",
           "summary": "Analysis of two remaining sorries: box forward sorry is a genuine semantic gap (acceptable), BMCS existence sorry is constructively resolvable via temporally-saturated Lindenbaum + rescued SaturatedConstruction from Boneyard. Includes 4-phase implementation plan for sorry elimination (9-13h)."
+        },
+        {
+          "path": "specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-004.md",
+          "type": "research",
+          "summary": "Deep analysis identifying ROOT CAUSE: Box quantifies over ALL histories (Lean) vs admissible histories Omega (paper). SOLUTION: Add Omega parameter to truth_at. This fixes BOTH sorries simultaneously. Choice A (constant families + Omega) recommended. ~12 files, ~100 lemma signatures."
         }
       ],
       "planned": "2026-02-19T19:14:07Z",
