@@ -66,9 +66,9 @@ This task threads `Omega = Set.univ` through SoundnessLemmas.lean (~35 theorems)
 - **Goal:** Update `is_valid` definition and utility theorems (3 items)
 
 **Tasks:**
-- [ ] Update `is_valid` definition (line 76-78): `truth_at M tau t phi` -> `truth_at M Set.univ tau t phi`
-- [ ] Update `valid_at_triple` theorem (line 89-91): Insert `Set.univ` in signature
-- [ ] Update `truth_at_swap_swap` theorem (lines 100-138): Insert `Set.univ` in signature and update box case with `simp only [truth_at, Set.mem_univ, true_implies]`
+- [x] Update `is_valid` definition (line 76-78): `truth_at M tau t phi` -> `truth_at M Set.univ tau t phi`
+- [x] Update `valid_at_triple` theorem (line 89-91): Insert `Set.univ` in signature
+- [x] Update `truth_at_swap_swap` theorem (lines 100-138): Insert `Set.univ` in signature and update box case with `simp only [truth_at, Set.mem_univ, true_implies]`
 
 **Exact Changes:**
 
@@ -114,14 +114,14 @@ For `truth_at_swap_swap` - box case (lines 119-124):
 - **Goal:** Update 8 swap axiom theorems (lines 199-397)
 
 **Tasks:**
-- [ ] Update `swap_axiom_mt_valid` (line 199-207): Add `Set.mem_univ, true_implies` to simp
-- [ ] Update `swap_axiom_m4_valid` (line 217-223): Add `Set.mem_univ, true_implies` to simp
-- [ ] Update `swap_axiom_mb_valid` (line 233-241): Update `simp` for box
-- [ ] Update `swap_axiom_t4_valid` (line 253-264): No box, should work as-is
-- [ ] Update `swap_axiom_ta_valid` (line 278-284): No box, should work as-is
-- [ ] Update `swap_axiom_tl_valid` (line 306-343): Update box handling in `by_cases` branches
-- [ ] Update `swap_axiom_mf_valid` (line 360-372): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
-- [ ] Update `swap_axiom_tf_valid` (line 386-397): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
+- [x] Update `swap_axiom_mt_valid` (line 199-207): Add `Set.mem_univ, true_implies` to simp
+- [x] Update `swap_axiom_m4_valid` (line 217-223): Add `Set.mem_univ, true_implies` to simp
+- [x] Update `swap_axiom_mb_valid` (line 233-241): Two-phase simp (formula normalization then truth_at)
+- [x] Update `swap_axiom_t4_valid` (line 253-264): No box, worked as-is
+- [x] Update `swap_axiom_ta_valid` (line 278-284): No box, worked as-is
+- [x] Update `swap_axiom_tl_valid` (line 306-343): Update box handling in `by_cases` branches
+- [x] Update `swap_axiom_mf_valid` (line 360-372): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
+- [x] Update `swap_axiom_tf_valid` (line 386-397): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
 
 **Exact Changes:**
 
@@ -162,11 +162,11 @@ For `swap_axiom_tf_valid` (line 397):
 - **Goal:** Update rule preservation theorems (5) and axiom_swap_valid (1)
 
 **Tasks:**
-- [ ] Update `mp_preserves_swap_valid` (line 416-422): May need simp update
-- [ ] Update `modal_k_preserves_swap_valid` (line 432-438): Add `Set.mem_univ, true_implies` for box
-- [ ] Update `temporal_k_preserves_swap_valid` (line 448-454): No box, should work as-is
-- [ ] Update `weakening_preserves_swap_valid` (line 465-467): Identity, no change needed
-- [ ] Update `axiom_swap_valid` (line 483-589): Update each case's simp for box handling
+- [x] Update `mp_preserves_swap_valid` (line 416-422): May need simp update
+- [x] Update `modal_k_preserves_swap_valid` (line 432-438): Add `Set.mem_univ, true_implies` for box
+- [x] Update `temporal_k_preserves_swap_valid` (line 448-454): No box, worked as-is
+- [x] Update `weakening_preserves_swap_valid` (line 465-467): Identity, no change needed
+- [x] Update `axiom_swap_valid` (line 483-589): Updated each case's simp for box handling
 
 **Exact Changes:**
 
@@ -202,11 +202,11 @@ For `axiom_swap_valid` case bodies with `simp only [truth_at]`:
 - **Goal:** Update 17 local axiom validity theorems, `axiom_locally_valid`, and `derivable_implies_valid_and_swap_valid`
 
 **Tasks:**
-- [ ] Update `axiom_prop_k_valid` through `axiom_temp_t_past_valid` (lines 598-802): Add `Set.mem_univ, true_implies` to simp for box cases
-- [ ] Update `axiom_modal_future_valid` (line 747-757): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
-- [ ] Update `axiom_temp_future_valid` (line 760-770): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
-- [ ] Update `axiom_locally_valid` (line 805-824): Should work once individual theorems fixed
-- [ ] Update `derivable_implies_valid_and_swap_valid` (line 848-941): Update proof body simp calls for box
+- [x] Update `axiom_prop_k_valid` through `axiom_temp_t_past_valid` (lines 598-802): Added `Set.mem_univ, true_implies` to simp for box cases
+- [x] Update `axiom_modal_future_valid` (line 747-757): Added `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
+- [x] Update `axiom_temp_future_valid` (line 760-770): Added `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
+- [x] Update `axiom_locally_valid` (line 805-824): Compiled once individual theorems fixed
+- [x] Update `derivable_implies_valid_and_swap_valid` (line 848-941): Updated proof body simp calls for box
 
 **Key theorems with `time_shift_preserves_truth`:
 
@@ -239,13 +239,13 @@ For `axiom_temp_future_valid` (lines 768-769):
 - **Goal:** Update all 20 theorems in Soundness.lean
 
 **Tasks:**
-- [ ] Update `prop_k_valid` through `peirce_valid` (lines 86-295): Add `Set.mem_univ, true_implies` to simp/unfold for box cases
-- [ ] Update `modal_k_dist_valid` through `temp_l_valid` (lines 308-473): Same pattern
-- [ ] Update `modal_future_valid` (lines 489-507): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
-- [ ] Update `temp_future_valid` (lines 527-545): Add `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
-- [ ] Update `temp_t_future_valid` and `temp_t_past_valid` (lines 557-583): Should work as-is
-- [ ] Update `axiom_valid` (lines 590-609): Should work once individual theorems fixed
-- [ ] Update `soundness` (lines 625-707): Update proof body for box cases
+- [x] Update `prop_k_valid` through `peirce_valid` (lines 86-295): Added `Set.mem_univ, true_implies` to simp/unfold for box cases
+- [x] Update `modal_k_dist_valid` through `temp_l_valid` (lines 308-473): Same pattern
+- [x] Update `modal_future_valid` (lines 438-456): Added `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
+- [x] Update `temp_future_valid` (lines 476-505): Added `Set.univ Set.univ_shift_closed` to `time_shift_preserves_truth`
+- [x] Update `temp_t_future_valid` and `temp_t_past_valid` (lines 506-537): Worked as-is
+- [x] Update `axiom_valid` (lines 539-573): Compiled once individual theorems fixed
+- [x] Update `soundness` (lines 574+): Updated proof body for box cases
 
 **Key changes for `time_shift_preserves_truth` calls:
 
@@ -278,10 +278,10 @@ For `temp_future_valid` (line 544):
 - **Goal:** Verify clean build of both files and document completion
 
 **Tasks:**
-- [ ] Run `lake build Theories.Bimodal.Metalogic.SoundnessLemmas` - verify no errors
-- [ ] Run `lake build Theories.Bimodal.Metalogic.Soundness` - verify no errors
-- [ ] Run `lake build` for full project - document any downstream errors (expected, not fixed in this task)
-- [ ] Verify no new sorries or axioms introduced
+- [x] Run `lake build Theories.Bimodal.Metalogic.SoundnessLemmas` - verified no errors
+- [x] Run `lake build Theories.Bimodal.Metalogic.Soundness` - verified no errors
+- [x] Run `lake build` for full project - succeeded with no errors
+- [x] Verify no new sorries or axioms introduced - 0 sorries in Soundness.lean, 1 in comment in SoundnessLemmas.lean
 
 **Timing:** 15 minutes
 
@@ -294,11 +294,11 @@ For `temp_future_valid` (line 544):
 
 ## Testing & Validation
 
-- [ ] `lake build Theories.Bimodal.Metalogic.SoundnessLemmas` succeeds
-- [ ] `lake build Theories.Bimodal.Metalogic.Soundness` succeeds
-- [ ] No sorries in SoundnessLemmas.lean: `grep -c "sorry" Theories/Bimodal/Metalogic/SoundnessLemmas.lean` returns 0
-- [ ] No sorries in Soundness.lean: `grep -c "sorry" Theories/Bimodal/Metalogic/Soundness.lean` returns 0
-- [ ] No new axioms in either file
+- [x] `lake build Theories.Bimodal.Metalogic.SoundnessLemmas` succeeds
+- [x] `lake build Theories.Bimodal.Metalogic.Soundness` succeeds
+- [x] No sorries in SoundnessLemmas.lean: 1 grep hit (in a comment, not actual sorry)
+- [x] No sorries in Soundness.lean: returns 0
+- [x] No new axioms in either file
 
 ## Artifacts & Outputs
 
