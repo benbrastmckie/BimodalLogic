@@ -48,13 +48,13 @@ by construction, using the contrapositive argument:
 3. By saturation, exists witness family with neg phi in its MCS
 4. But phi is in ALL families, contradicting consistency
 
-The single-family construction uses `singleFamily_modal_backward_axiom` for modal_backward.
-This axiom is justified by the existence of the saturated canonical model (a metatheoretic
-fact from modal logic). The axiom captures what would be provable if we constructed a
-full multi-family saturated BMCS, which is left as future work.
+The single-family construction uses `sorry` for modal_backward, since single-family
+modal backward is not provable from first principles. The FALSE axiom
+`singleFamily_modal_backward_axiom` was removed in task 905.
 
-See `SaturatedConstruction.lean` for the infrastructure toward a truly axiom-free
-multi-family construction.
+Task 903 will restructure the completeness proof to eliminate the single-family
+construction. See `TemporalCoherentConstruction.lean` for the correct approach
+using `fully_saturated_bmcs_exists`.
 
 ## Technical Note: Temporal Coherence
 
@@ -185,50 +185,30 @@ This is acceptable because:
 -/
 
 -- ============================================================================
--- DEPRECATED: singleFamily_modal_backward_axiom
+-- NOTE: singleFamily_modal_backward_axiom has been REMOVED (task 905)
 -- ============================================================================
 
 /-!
-### singleFamily_modal_backward_axiom
+### singleFamily_modal_backward_axiom (REMOVED)
 
-**STATUS**: DEPRECATED - This axiom is mathematically FALSE but retained for
-backward compatibility. New code should use `fully_saturated_bmcs_exists` from
-`TemporalCoherentConstruction.lean` instead.
-
-**Why This Axiom Is FALSE**:
-
-The axiom claims: phi in fam.mcs t -> Box phi in fam.mcs t
-
-This fails for non-necessary formulas. For example:
-- phi = atom "p" (a propositional variable)
-- Box(atom "p") is neither provable nor refutable in TM logic
-- Some MCS contain Box(atom "p"), others contain neg(Box(atom "p"))
-
-The counterexample was discovered during plan v006 Phase 2 implementation.
-See research-016.md for the full analysis.
+The FALSE axiom `singleFamily_modal_backward_axiom` was removed in task 905.
+It claimed: phi in fam.mcs t -> Box phi in fam.mcs t, which is FALSE for
+non-necessary formulas.
 
 **REPLACEMENT**: Use `fully_saturated_bmcs_exists` from `TemporalCoherentConstruction.lean`
-instead, which asserts the existence of a modally saturated BMCS. Combined with
-`saturated_modal_backward`, this gives modal_backward for the constructed BMCS.
+instead, which asserts the existence of a modally saturated BMCS.
 
-**DEPRECATION PATH**:
-1. New code should use `construct_temporal_bmcs` (which uses correct axiom)
-2. This axiom will be removed in a future version
-3. The `singleFamilyBMCS` construction using this axiom is also deprecated
+See task 903 for the completeness proof restructuring that eliminates the need
+for single-family modal backward entirely.
 -/
-axiom singleFamily_modal_backward_axiom (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (fam : IndexedMCSFamily D) (phi : Formula) (t : D)
-    (h_phi_in : phi ∈ fam.mcs t) :
-    Formula.box phi ∈ fam.mcs t
 
 /--
 Build a BMCS from a single IndexedMCSFamily.
 
-**Note**: This uses `singleFamily_modal_backward_axiom` for modal_backward.
-The axiom is justified by the canonical model construction in modal logic.
-
-See the axiom documentation for the mathematical justification and potential
-future work to eliminate it via multi-family saturation.
+**DEPRECATED**: The `modal_backward` field uses sorry because the single-family
+approach cannot prove modal backward from first principles. Use
+`construct_temporal_bmcs` from `TemporalCoherentConstruction.lean` for new code,
+which uses the correct `fully_saturated_bmcs_exists` axiom instead.
 -/
 noncomputable def singleFamilyBMCS (fam : IndexedMCSFamily D) : BMCS D where
   families := {fam}
@@ -245,14 +225,11 @@ noncomputable def singleFamilyBMCS (fam : IndexedMCSFamily D) : BMCS D where
       ((Formula.box phi).imp phi) (Bimodal.ProofSystem.Axiom.modal_t phi)
     let h_T_in_mcs := theorem_in_mcs h_mcs h_T
     h_eq'' ▸ set_mcs_implication_property h_mcs h_T_in_mcs (h_eq' ▸ hBox)
-  modal_backward := fun fam' hfam' phi t h_all =>
-    -- fam' is in {fam}, so fam' = fam
-    have h_eq' : fam' = fam := Set.mem_singleton_iff.mp hfam'
-    -- h_all says: forall fam'' in {fam}, phi in fam''.mcs t
-    -- So phi in fam.mcs t
-    have h_phi_in : phi ∈ fam.mcs t := h_all fam (Set.mem_singleton fam)
-    -- Use the axiom to conclude Box phi in fam.mcs t
-    h_eq' ▸ singleFamily_modal_backward_axiom D fam phi t h_phi_in
+  modal_backward := fun _fam' _hfam' _phi _t _h_all =>
+    -- SORRY: Single-family modal backward is not provable from first principles.
+    -- The FALSE axiom singleFamily_modal_backward_axiom was removed in task 905.
+    -- Use fully_saturated_bmcs_exists from TemporalCoherentConstruction.lean instead.
+    sorry
   eval_family := fam
   eval_family_mem := Set.mem_singleton fam
 
@@ -311,7 +288,7 @@ all formulas in Gamma are in the evaluation family's MCS at time 0.
 4. Build single-family BMCS from that family
 
 **Sorries**:
-- modal_backward in singleFamilyBMCS (construction assumption)
+- modal_backward in singleFamilyBMCS (sorry - single-family approach cannot prove this)
 
 **Key Property** (proven below):
 - All formulas in Gamma are preserved in eval_family.mcs 0
@@ -393,37 +370,29 @@ theorem construct_bmcs_from_set_contains (S : Set Formula) (h_cons : SetConsiste
   exact lindenbaumMCS_set_extends S h_cons h_mem
 
 /-!
-## Summary of Axioms
+## Summary
 
-This module has ONE axiom (no sorries):
+This module has NO axioms and ONE sorry:
 
-1. **singleFamily_modal_backward_axiom**: States that phi in MCS implies Box phi in MCS.
-   The condition "phi in all families' MCS implies Box phi in MCS" is NOT
-   derivable for a single-family BMCS from first principles. However, it is
-   guaranteed by the canonical model construction from modal logic.
+- `modal_backward` in `singleFamilyBMCS` uses sorry (single-family modal backward
+  is not provable from first principles -- the removed axiom was FALSE).
 
-**Mathematical Justification**:
-The axiom is justified by the existence of a saturated canonical model (a metatheoretic
-fact from modal logic). In a properly saturated BMCS:
-- If phi is in all families but Box phi is not, then Diamond(neg phi) is in the MCS
-- By saturation, neg phi would appear in some witness family
-- But phi is in ALL families, contradicting consistency
-The single-family construction cannot be saturated, so we capture this fact as an axiom.
-
-**All Proofs are Complete**:
+**Proof Status**:
 - `construct_bmcs_contains_context` - Context preservation is proven
 - `construct_bmcs_from_set_contains` - Set preservation is proven
 - `constantIndexedMCSFamily` - All coherence conditions proven via T-axioms
 - `modal_forward` in singleFamilyBMCS - Proven via T-axiom
-- `modal_backward` in singleFamilyBMCS - Via singleFamily_modal_backward_axiom
-
-**Future Work**:
-The axiom could be eliminated by constructing a true multi-family saturated BMCS.
-See `SaturatedConstruction.lean` for the infrastructure toward this goal.
+- `modal_backward` in singleFamilyBMCS - sorry (task 903 will restructure completeness)
 
 **Key Theorems**:
 - `construct_bmcs_contains_context`: Original context is preserved in evaluation MCS
 - `construct_bmcs_from_set_contains`: Original set is preserved in evaluation MCS
+
+**Deprecation Note (task 905)**:
+The FALSE axiom `singleFamily_modal_backward_axiom` was removed. New code should
+use `construct_temporal_bmcs` from `TemporalCoherentConstruction.lean` which uses
+the correct `fully_saturated_bmcs_exists` axiom. Task 903 will restructure the
+completeness proof to eliminate the single-family construction entirely.
 -/
 
 end Bimodal.Metalogic.Bundle

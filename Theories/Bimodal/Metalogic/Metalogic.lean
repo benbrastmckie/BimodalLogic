@@ -30,7 +30,7 @@ All main theorems are proven without sorries.
 |------|------|-------|--------|-------------|
 | `Bundle/TruthLemma.lean` | ~383 | all_future backward | Documented | Omega-rule (infinitary) |
 | `Bundle/TruthLemma.lean` | ~395 | all_past backward | Documented | Omega-rule (infinitary) |
-| `Bundle/Construction.lean` | ~220 | modal_backward | Documented | Multi-family BMCS |
+| `Bundle/Construction.lean` | ~249 | modal_backward | sorry (FALSE axiom removed, task 905) | Multi-family BMCS |
 | `FMP/Closure.lean` | ~728 | diamond membership | Documented | Minor edge case |
 
 **Key Point**: These do NOT affect main theorems. Completeness uses only the FORWARD
