@@ -86,7 +86,7 @@ show (φ → χ). Given φ, we get ψ from second premise, then χ from first pr
 theorem prop_k_valid (φ ψ χ : Formula) :
     ⊨ ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h1 h2 h_phi
   exact h1 h_phi (h2 h_phi)
 
@@ -100,7 +100,7 @@ Proof: Assume φ and ψ, show φ. This is immediate from the first assumption.
 
 theorem prop_s_valid (φ ψ : Formula) : ⊨ (φ.imp (ψ.imp φ)) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_phi _
   exact h_phi
 
@@ -202,7 +202,7 @@ Since `⊥` can never be true, the implication `⊥ → φ` is vacuously valid.
 -/
 theorem ex_falso_valid (φ : Formula) : ⊨ (Formula.bot.imp φ) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_bot
   -- h_bot : truth_at M τ t Formula.bot
   -- But truth_at ... bot = False (by definition in Truth.lean)
@@ -230,7 +230,7 @@ two-valued task semantics used by Logos.
 -/
 theorem peirce_valid (φ ψ : Formula) : ⊨ (((φ.imp ψ).imp φ).imp φ) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_peirce
   -- Use classical reasoning: either φ is true or false
   by_cases h : truth_at M Set.univ τ t φ
@@ -239,7 +239,7 @@ theorem peirce_valid (φ ψ : Formula) : ⊨ (((φ.imp ψ).imp φ).imp φ) := by
   · -- Case 2: φ is false, derive contradiction
     -- If φ is false, then φ → ψ is true (false antecedent)
     have h_imp : truth_at M Set.univ τ t (φ.imp ψ) := by
-      simp only [truth_at, Set.mem_univ, true_implies]
+      simp only [truth_at]
       intro h_phi
       exfalso
       exact h h_phi
@@ -280,13 +280,12 @@ By modus ponens, ψ holds at s.
 theorem temp_k_dist_valid (φ ψ : Formula) :
     ⊨ ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_future_imp h_future_phi s hts
   -- h_future_imp : ∀ r, t < r → truth_at M τ r (φ.imp ψ)
   -- h_future_phi : ∀ r, t < r → truth_at M τ r φ
   have h_imp_at_s := h_future_imp s hts
   have h_phi_at_s := h_future_phi s hts
-  simp only [truth_at, Set.mem_univ, true_implies] at h_imp_at_s
   exact h_imp_at_s h_phi_at_s
 
 /--
@@ -301,7 +300,7 @@ Since r > s > t implies r > t, and Fφ says φ holds at all times > t, φ holds 
 
 theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_future
   -- h_future : ∀ s, t ≤ s → truth_at M τ s φ
   -- Goal: ∀ s, t ≤ s → (∀ r, s ≤ r → truth_at M τ r φ)
@@ -326,7 +325,7 @@ Since t < s and t is in domain (we're evaluating there), t is such an r.
 
 theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometime_past)) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_phi
   -- h_phi : truth_at M τ t φ
   -- Goal: ∀ s, t < s → truth_at M τ s φ.sometime_past
@@ -349,7 +348,7 @@ theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometim
   -- Then h t hts : truth_at M τ t φ → False
   -- And h t hts h_phi : False
 
-  simp only [Formula.sometime_past, Formula.some_past, Formula.neg, truth_at, Set.mem_univ, true_implies]
+  simp only [Formula.sometime_past, Formula.some_past, Formula.neg, truth_at]
   -- Goal: (∀ r, r < s → truth_at M τ r (φ.imp bot)) → False
   intro h_all_neg
   -- h_all_neg : ∀ r, r < s → truth_at M τ r (φ.imp bot)
@@ -358,7 +357,6 @@ theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometim
   -- h_neg_at_t : truth_at M τ t (φ.imp bot)
   -- = truth_at M τ t φ → truth_at M τ t bot
   -- = truth_at M τ t φ → False
-  simp only [truth_at, Set.mem_univ, true_implies] at h_neg_at_t
   exact h_neg_at_t h_phi
 
 /--
@@ -384,7 +382,7 @@ gives information about ALL times, not just future times.
 theorem temp_l_valid (φ : Formula) :
     ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_always
   -- h_always : truth_at M τ t φ.always
   -- Since always φ = past φ ∧ (φ ∧ future φ), we need to unfold
@@ -399,7 +397,7 @@ theorem temp_l_valid (φ : Formula) :
 
   -- Simplify h_always using conjunction encoding
   -- always φ = φ.all_past ∧ (φ ∧ φ.all_future) encoded as negated implications
-  simp only [Formula.always, Formula.and, Formula.neg, truth_at, Set.mem_univ, true_implies] at h_always
+  simp only [Formula.always, Formula.and, Formula.neg, truth_at] at h_always
 
   -- Extract using classical logic (conjunction encoded as ¬(P → ¬Q))
   have h1 :
@@ -505,7 +503,7 @@ where Future quantifies over "y ∈ D where x ≤ y" (inclusive of present).
 -/
 theorem temp_t_future_valid (φ : Formula) : ⊨ ((Formula.all_future φ).imp φ) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_future
   -- h_future : ∀ s, t ≤ s → truth_at M τ s φ
   -- Goal: truth_at M τ t φ
@@ -524,7 +522,7 @@ where Past quantifies over "y ∈ D where y ≤ x" (inclusive of present).
 -/
 theorem temp_t_past_valid (φ : Formula) : ⊨ ((Formula.all_past φ).imp φ) := by
   intro T _ _ _ F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_past
   -- h_past : ∀ s, s ≤ t → truth_at M τ s φ
   -- Goal: truth_at M τ t φ
@@ -593,7 +591,7 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     intro T _ _ _ F M τ t h_all
     have h_imp := ih_imp T F M τ t h_all
     have h_phi := ih_phi T F M τ t h_all
-    simp only [truth_at, Set.mem_univ, true_implies] at h_imp
+    simp only [truth_at] at h_imp
     exact h_imp h_phi
 
   | @necessitation φ' h_deriv ih =>
@@ -612,7 +610,7 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     -- IH: [] ⊨ φ' (φ' is valid)
     -- Goal: [] ⊨ Fφ' (Fφ' is valid)
     intro T _ _ _ F M τ t _
-    simp only [truth_at, Set.mem_univ, true_implies]
+    simp only [truth_at]
     -- Goal: ∀ s, t < s → truth_at M τ s φ'
     intro s hts
     -- Use IH: φ' is valid, so true at all models

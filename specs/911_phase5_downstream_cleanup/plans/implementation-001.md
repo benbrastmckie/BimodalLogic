@@ -1,7 +1,7 @@
 # Implementation Plan: Task #911
 
 - **Task**: 911 - Phase 5 Downstream Cleanup
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1 hour
 - **Dependencies**: Task 910 (Phase 4 - Canonical Model Reconstruction)
 - **Research Inputs**: specs/911_phase5_downstream_cleanup/reports/research-001.md
@@ -46,7 +46,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Build Verification [NOT STARTED]
+### Phase 1: Build Verification [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Confirm full compilation succeeds after Omega changes
@@ -67,9 +67,16 @@ Key findings from research-001.md:
 - Build output shows no errors for Theories/Bimodal/Metalogic/ files
 - Sorry count matches expected (2 in Representation.lean for Omega-mismatch)
 
+**Progress:**
+
+**Session: 2026-02-19, sess_1771544522_231840**
+- Completed: Full build verification (1000 jobs, 0 errors)
+- Completed: Sorry count verification (2 in Representation.lean, as expected)
+- Completed: FMP/SemanticCanonicalModel.lean confirmed sorry-free
+
 ---
 
-### Phase 2: Optional Linter Cleanup [NOT STARTED]
+### Phase 2: Optional Linter Cleanup [COMPLETED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Remove unused simp arguments to eliminate cosmetic warnings
@@ -93,9 +100,16 @@ Key findings from research-001.md:
 - Warning count reduced significantly (target: 0 unused simp arg warnings)
 - No proofs broken by cleanup
 
+**Progress:**
+
+**Session: 2026-02-19, sess_1771544522_231840**
+- Removed: unused `Set.mem_univ, true_implies` simp args from 16 lines in SoundnessLemmas.lean
+- Removed: unused `Set.mem_univ, true_implies` simp args from 18 lines in Soundness.lean (including 2 fully-unused simp calls)
+- Completed: 0 unused simp arg warnings in both files (was 64 + 72 = 136)
+
 ---
 
-### Phase 3: Final Validation [NOT STARTED]
+### Phase 3: Final Validation [COMPLETED]
 
 - **Dependencies**: Phase 2
 - **Goal**: Complete final build verification and documentation
@@ -114,6 +128,13 @@ Key findings from research-001.md:
 - `lake build` succeeds
 - No new sorries (only 2 expected in Representation.lean)
 - All Theories/Bimodal/Metalogic/ files compile cleanly
+
+**Progress:**
+
+**Session: 2026-02-19, sess_1771544522_231840**
+- Completed: Full `lake build` succeeds (1000 jobs, 0 errors)
+- Completed: No new sorries introduced (2 in Representation.lean, pre-existing from task 910)
+- Completed: All Metalogic files compile cleanly
 
 ---
 

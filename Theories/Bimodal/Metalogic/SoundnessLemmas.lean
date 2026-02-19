@@ -312,7 +312,7 @@ theorem swap_axiom_tl_valid (φ : Formula) :
   -- In semantics: if swap φ holds at all times, then at all s < t,
   --               there exists u > s where swap φ holds
   -- This is trivially valid: if swap φ holds everywhere, pick any u > s
-  simp only [Formula.swap_temporal, truth_at, Set.mem_univ, true_implies]
+  simp only [Formula.swap_temporal, truth_at]
   intro h_always s h_s_lt_t u h_s_lt_u
   -- h_always encodes: ¬(future(swap φ) → ¬(swap φ ∧ past(swap φ)))
   -- which is classically equivalent to: future(swap φ) ∧ swap φ ∧ past(swap φ)
@@ -488,7 +488,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
     -- After swap: (ψ.swap → (χ.swap → ρ.swap)) → ((ψ.swap → χ.swap) → (ψ.swap → ρ.swap))
     -- This is still prop_k applied to swapped subformulas
     intro F M τ t
-    simp only [Formula.swap_temporal, truth_at, Set.mem_univ, true_implies]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal is a propositional tautology: ((A → (B → C)) → ((A → B) → (A → C)))
     intro h_abc h_ab h_a
     exact h_abc h_a (h_ab h_a)
@@ -497,7 +497,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
     -- After swap: ψ.swap → (χ.swap → ψ.swap)
     -- This is still prop_s applied to swapped subformulas
     intro F M τ t
-    simp only [Formula.swap_temporal, truth_at, Set.mem_univ, true_implies]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal is a propositional tautology: A → (B → A)
     intro h_a _
     exact h_a
@@ -524,7 +524,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
     -- After swap: ⊥ → ψ.swap
     -- This is still ex_falso applied to swapped subformula (bot unchanged)
     intro F M τ t
-    simp only [Formula.swap_temporal, truth_at, Set.mem_univ, true_implies]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal: False → truth_at ... ψ.swap
     intro h_bot
     exfalso
@@ -534,7 +534,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
     -- After swap: ((ψ.swap → χ.swap) → ψ.swap) → ψ.swap
     -- This is still peirce applied to swapped subformulas
     intro F M τ t
-    simp only [Formula.swap_temporal, truth_at, Set.mem_univ, true_implies]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal: ((truth_at ... ψ.swap → truth_at ... χ.swap)
     --        → truth_at ... ψ.swap) → truth_at ... ψ.swap
     intro h_peirce
@@ -561,7 +561,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
     -- After swap: P(ψ.swap → χ.swap) → (Pψ.swap → Pχ.swap)
     -- This is the past version of temp_k_dist (swap exchanges F and P)
     intro F M τ t
-    simp only [Formula.swap_temporal, truth_at, Set.mem_univ, true_implies]
+    simp only [Formula.swap_temporal, truth_at]
     -- Goal: (∀ s, s < t → truth_at ... ψ.swap → truth_at ... χ.swap) →
     --       (∀ s, s < t → truth_at ... ψ.swap) → (∀ s, s < t → truth_at ... χ.swap)
     intro h_past_imp h_past_psi s hst
@@ -600,7 +600,7 @@ This is needed to prove the combined soundness+swap theorem without importing So
 private theorem axiom_prop_k_valid (φ ψ χ : Formula) :
     is_valid D ((φ.imp (ψ.imp χ)).imp ((φ.imp ψ).imp (φ.imp χ))) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h1 h2 h_phi
   exact h1 h_phi (h2 h_phi)
 
@@ -608,7 +608,7 @@ private theorem axiom_prop_k_valid (φ ψ χ : Formula) :
 private theorem axiom_prop_s_valid (φ ψ : Formula) :
     is_valid D (φ.imp (ψ.imp φ)) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_phi _
   exact h_phi
 
@@ -655,7 +655,7 @@ private theorem axiom_modal_5_collapse_valid (φ : Formula) :
 private theorem axiom_ex_falso_valid (φ : Formula) :
     is_valid D (Formula.bot.imp φ) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_bot
   exfalso
   exact h_bot
@@ -664,12 +664,12 @@ private theorem axiom_ex_falso_valid (φ : Formula) :
 private theorem axiom_peirce_valid (φ ψ : Formula) :
     is_valid D (((φ.imp ψ).imp φ).imp φ) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_peirce
   by_cases h : truth_at M Set.univ τ t φ
   · exact h
   · have h_imp : truth_at M Set.univ τ t (φ.imp ψ) := by
-      simp only [truth_at, Set.mem_univ, true_implies]
+      simp only [truth_at]
       intro h_phi
       exfalso
       exact h h_phi
@@ -689,7 +689,7 @@ private theorem axiom_modal_k_dist_valid (φ ψ : Formula) :
 private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
     is_valid D ((φ.imp ψ).all_future.imp (φ.all_future.imp ψ.all_future)) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_future_imp h_future_phi s hts
   have h_imp_at_s := h_future_imp s hts
   have h_phi_at_s := h_future_phi s hts
@@ -699,7 +699,7 @@ private theorem axiom_temp_k_dist_valid (φ ψ : Formula) :
 private theorem axiom_temp_4_valid (φ : Formula) :
     is_valid D ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_future s hts r hsr
   -- With reflexive semantics: h_future: ∀ r, t ≤ r → φ at r
   -- Need: φ at r given t ≤ s and s ≤ r
@@ -710,7 +710,7 @@ private theorem axiom_temp_4_valid (φ : Formula) :
 private theorem axiom_temp_a_valid (φ : Formula) :
     is_valid D (φ.imp (Formula.all_future φ.sometime_past)) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_phi s hts h_all_neg
   have h_neg_at_t := h_all_neg t hts
   exact h_neg_at_t h_phi
@@ -782,7 +782,7 @@ valid: if φ holds at all s ≥ t, then in particular φ holds at t (via `le_ref
 private theorem axiom_temp_t_future_valid (φ : Formula) :
     is_valid D ((Formula.all_future φ).imp φ) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_future
   -- h_future : ∀ s, t ≤ s → truth_at M τ s φ
   -- Goal: truth_at M τ t φ
@@ -798,7 +798,7 @@ valid: if φ holds at all s ≤ t, then in particular φ holds at t (via `le_ref
 private theorem axiom_temp_t_past_valid (φ : Formula) :
     is_valid D ((Formula.all_past φ).imp φ) := by
   intro F M τ t
-  simp only [truth_at, Set.mem_univ, true_implies]
+  simp only [truth_at]
   intro h_past
   -- h_past : ∀ s, s ≤ t → truth_at M τ s φ
   -- Goal: truth_at M τ t φ
