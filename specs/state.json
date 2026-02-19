@@ -8,30 +8,39 @@
     {
       "project_number": 904,
       "project_name": "enforce_model_selection_team_skills",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "effort": "1-2 hours",
       "description": "The three team skills (skill-team-research, skill-team-plan, skill-team-implement) currently set default_model correctly based on task language (opus for lean, sonnet for all others) but only pass it as advisory text in teammate prompts via model_preference_line. TeammateTool supports an explicit model parameter. The fix is to add model: $default_model when spawning teammates in each skill, ensuring Opus 4.6 is always used for Lean tasks and Sonnet 4.6 for all others. Files to change: .claude/skills/skill-team-research/SKILL.md, .claude/skills/skill-team-plan/SKILL.md, .claude/skills/skill-team-implement/SKILL.md, .claude/utils/team-wave-helpers.md, .claude/context/core/patterns/team-orchestration.md. Also remove or update the now-redundant model_preference_line advisory text and the model_preference_line variable since the model is enforced via the parameter.",
       "created": "2026-02-19T17:00:00Z",
-      "last_updated": "2026-02-19T17:28:03Z",
-      "session_id": "sess_1771521936_334409",
+      "last_updated": "2026-02-19T17:40:11Z",
+      "session_id": "sess_1771522464_0ad6b1",
       "planned": "2026-02-19T17:28:03Z",
       "artifacts": [
         {
           "path": "specs/904_enforce_model_selection_team_skills/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan to enforce model selection in team skills"
+        },
+        {
+          "path": "specs/904_enforce_model_selection_team_skills/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary with all 4 phases completed"
         }
-      ]
+      ],
+      "started": "2026-02-19T17:34:38Z",
+      "completed": "2026-02-19T17:40:11Z",
+      "completion_summary": "Enforced model selection in team skills by adding explicit model parameter to TeammateTool spawning. Opus 4.6 for Lean tasks, Sonnet 4.6 for all others. Updated 3 skill files and 3 documentation files.",
+      "claudemd_suggestions": "Updated skill-team-research, skill-team-plan, skill-team-implement SKILL.md files with model parameter instructions. Updated team-wave-helpers.md spawn examples and Language Routing section. Added Model Selection section to team-orchestration.md. Changed CLAUDE.md Team Skill Model Defaults footnote from advisory to enforced."
     },
     {
       "project_number": 903,
       "project_name": "restructure_completeness_proof_bimodal_semantics",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-02-19T16:40:47Z",
-      "last_updated": "2026-02-19T17:33:25Z",
-      "session_id": "sess_1771521737_72b7da",
+      "last_updated": "2026-02-19T17:37:21Z",
+      "session_id": "sess_1771522625_39bf81",
       "researched": "2026-02-19T17:33:25Z",
       "artifacts": [
         {

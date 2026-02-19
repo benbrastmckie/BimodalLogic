@@ -24,10 +24,13 @@ technical_debt:
 
 ### 904. Enforce model selection in team skill teammate spawning
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Created**: 2026-02-19
+- **Started**: 2026-02-19
+- **Completed**: 2026-02-19
 - **Plan**: [implementation-001.md](specs/904_enforce_model_selection_team_skills/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260219.md](specs/904_enforce_model_selection_team_skills/summaries/implementation-summary-20260219.md)
 
 **Description**: The three team skills (skill-team-research, skill-team-plan, skill-team-implement) currently set `default_model` correctly based on task language (opus for lean, sonnet for all others) but only pass it as advisory text in teammate prompts via `model_preference_line`. TeammateTool supports an explicit `model` parameter. The fix is to add `model: $default_model` when spawning teammates in each skill, ensuring Opus 4.6 is always used for Lean tasks and Sonnet 4.6 for all others. Files to change: `.claude/skills/skill-team-research/SKILL.md`, `.claude/skills/skill-team-plan/SKILL.md`, `.claude/skills/skill-team-implement/SKILL.md`, `.claude/utils/team-wave-helpers.md`, `.claude/context/core/patterns/team-orchestration.md`. Also remove or update the now-redundant `model_preference_line` advisory text since the model is enforced via the explicit parameter.
 
@@ -35,7 +38,7 @@ technical_debt:
 
 ### 903. Restructure completeness proof for Bimodal task semantics
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Started**: 2026-02-19
