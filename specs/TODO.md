@@ -3,16 +3,16 @@ next_project_number: 914
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-19T22:18:00Z
+  last_assessed: 2026-02-20T00:15:00Z
 task_counts:
-  active: 12
-  completed: 622
-  in_progress: 2
-  not_started: 6
+  active: 14
+  completed: 635
+  in_progress: 3
+  not_started: 1
   abandoned: 32
-  total: 668
+  total: 681
 technical_debt:
-  sorry_count: 122
+  sorry_count: 123
   axiom_count: 19
   build_errors: 0
   status: manageable
@@ -21,20 +21,6 @@ technical_debt:
 # TODO
 
 ## Tasks
-
-### 913. Enhance /todo command to auto-complete expanded tasks
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Research**: [research-001.md](specs/913_todo_expanded_autocompletion/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/913_todo_expanded_autocompletion/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/913_todo_expanded_autocompletion/summaries/implementation-summary-20260219.md)
-
-**Description**: Add Step 2.7 to the /todo command (between current Steps 2.6 and 3) that automatically completes expanded tasks when all subtasks are finished. The new step should: (1) Scan state.json for tasks with status = "expanded", (2) For each expanded task, retrieve its subtasks array, (3) Check if ALL subtasks have status "completed" or "abandoned", (4) If so, update the expanded task's status to "completed" in both state.json and TODO.md, (5) Add the newly-completed expanded task to the archivable tasks list. Also update Step 4 (dry-run output) and Step 7 (final output) to report auto-completed expanded tasks.
-
----
 
 ### 912. Review completeness proof and metalogic state after task 910
 - **Effort**: 10-14 hours
@@ -47,117 +33,6 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md)
 
 **Description**: Systematically review the state of the completeness proof by way of the representation theorem and the FMP in order to evaluate the state of the metalogic, what has been finished, what remains to be done, and what can be archived to the Bimodal/Boneyard/, and how best to refactor or reorganize the metalogic.
-
----
-
-### 911. Phase 5: Downstream cleanup for task 906
-- **Effort**: 1.0 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Parent**: 906
-- **Depends**: 910
-- **Research**: [research-001.md](specs/911_phase5_downstream_cleanup/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/911_phase5_downstream_cleanup/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/911_phase5_downstream_cleanup/summaries/implementation-summary-20260219.md)
-
-**Description**: Fix any remaining compilation errors in downstream files (FMP/SemanticCanonicalModel.lean, etc.) after Omega changes. Run lake build to verify full compilation.
-
----
-
-### 910. Phase 4: Canonical model reconstruction for task 906
-- **Effort**: 4.5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Parent**: 906
-- **Depends**: 909
-- **Research**: [research-001.md](specs/910_phase4_canonical_model_reconstruction/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/910_phase4_canonical_model_reconstruction/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/910_phase4_canonical_model_reconstruction/summaries/implementation-summary-20260219.md)
-
-**Description**: Remove constant-family infrastructure. Generalize CanonicalWorldState. Redefine canonicalHistory with time-varying states. Define canonicalOmega (without shift-closure). Restate and reprove truth lemma with fam.mcs t. Fix Box forward case sorry (line 229). Update completeness theorems.
-
----
-
-### 909. Phase 3: Update soundness proofs for task 906
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Parent**: 906
-- **Depends**: 908
-- **Research**: [research-001.md](specs/909_phase3_soundness_proofs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/909_phase3_soundness_proofs/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/909_phase3_soundness_proofs/summaries/implementation-summary-20260219.md)
-
-**Description**: Thread Omega = Set.univ through SoundnessLemmas.lean (~35 theorems) and Soundness.lean. Update is_valid to use truth_at M Set.univ. For MF/TF proofs, discharge ShiftClosed with Set.univ_shift_closed.
-
----
-
-### 908. Phase 2: Update validity definitions for task 906
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Parent**: 906
-- **Depends**: 907
-- **Research**: [research-001.md](specs/908_phase2_validity_definitions/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/908_phase2_validity_definitions/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/908_phase2_validity_definitions/summaries/implementation-summary-20260219.md)
-
-**Description**: Update valid and semantic_consequence to use Omega = Set.univ. Update satisfiable with existential Omega. Update all validity lemmas in Validity.lean.
-
----
-
-### 907. Phase 1: Add Omega parameter to truth_at for task 906
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Completed**: 2026-02-19
-- **Parent**: 906
-- **Research**: [research-001.md](specs/907_phase1_truth_omega_parameter/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/907_phase1_truth_omega_parameter/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260219.md](specs/907_phase1_truth_omega_parameter/summaries/implementation-summary-20260219.md)
-
-**Description**: Add Omega parameter to truth_at. Modify Box case to quantify over sigma in Omega. Define ShiftClosed predicate and prove Set.univ is shift-closed. Update time_shift_preserves_truth with Omega + ShiftClosed hypothesis.
-
----
-
-### 906. Modify semantic framework for Box over admissible histories with Omega closure
-- **Effort**: 9 hours (revised from 8h based on research)
-- **Status**: [EXPANDED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Started**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Revised**: 2026-02-19
-- **Expanded**: 2026-02-19
-- **Subtasks**: 907, 908, 909, 910, 911
-- **Plan**: [implementation-002.md](specs/906_box_admissible_histories_omega_closure/plans/implementation-002.md) (v002 - revised after research-001)
-- **Research**: [research-001.md](specs/906_box_admissible_histories_omega_closure/reports/research-001.md)
-
-**Description**: Draw on specs/903_restructure_completeness_proof_bimodal_semantics/reports/research-004.md to modify the semantic framework so that Box quantifies over a designated set of admissible histories, matching the paper's specification exactly. It is important to define Omega as the closure of canonical histories under ALL time-shifts rather than attempt to make do with constant families, following Choice B rather than A.
 
 ---
 

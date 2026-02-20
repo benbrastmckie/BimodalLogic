@@ -14873,6 +14873,237 @@
       "completion_summary": "Standardized artifact naming across team workflows by adding run-scoped prefixes to all intermediate artifacts (teammate findings, candidate plans, phase results, debug reports). Updated artifact-formats.md documentation and all three team skills.",
       "claudemd_suggestions": "Added Team Artifacts section to artifact-formats.md, updated skill-team-research/plan/implement with run number calculation and paths, updated team-wave-helpers.md templates, updated team-metadata-extension.md examples",
       "archived": "2026-02-18T02:39:07Z"
+    },
+    {
+      "project_number": 913,
+      "project_name": "todo_expanded_autocompletion",
+      "status": "completed",
+      "language": "meta",
+      "created": "2026-02-19T23:45:59Z",
+      "last_updated": "2026-02-20T00:08:47Z",
+      "session_id": "sess_1771545863_89c883",
+      "researched": "2026-02-19T23:50:21Z",
+      "artifacts": [
+        {
+          "path": "specs/913_todo_expanded_autocompletion/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report documenting /todo command steps, expanded task schema, jq patterns, and proposed Step 2.7 algorithm"
+        },
+        {
+          "path": "specs/913_todo_expanded_autocompletion/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for todo expanded task auto-completion"
+        },
+        {
+          "path": "specs/913_todo_expanded_autocompletion/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
+        }
+      ],
+      "planned": "2026-02-19T23:54:54Z",
+      "started": "2026-02-20T00:04:42Z",
+      "completed": "2026-02-20T00:08:47Z",
+      "completion_summary": "Added automatic completion of expanded tasks to /todo command. Step 2.7 detects expanded tasks with all subtasks in terminal status and transitions them to completed. Updated output sections and Notes documentation.",
+      "claudemd_suggestions": "Updated .claude/commands/todo.md with Step 2.7, dry-run output, final output, and Notes documentation for auto-completion of expanded tasks",
+      "archived": "2026-02-20T00:12:02Z"
+    },
+    {
+      "project_number": 907,
+      "project_name": "phase1_truth_omega_parameter",
+      "status": "completed",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T22:23:17Z",
+      "session_id": "sess_1771539369_566e30",
+      "researched": "2026-02-19T21:36:37Z",
+      "artifacts": [
+        {
+          "path": "specs/907_phase1_truth_omega_parameter/reports/research-001.md",
+          "type": "research",
+          "summary": "Detailed analysis of truth_at Omega parameter changes in Truth.lean with verified code snippets, implementation order, and downstream impact assessment"
+        },
+        {
+          "path": "specs/907_phase1_truth_omega_parameter/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase plan covering truth_at definition change, Truth namespace updates, ShiftClosed definition, TimeShift lemma updates"
+        },
+        {
+          "path": "specs/907_phase1_truth_omega_parameter/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary for adding Omega parameter to truth_at and defining ShiftClosed"
+        }
+      ],
+      "planned": "2026-02-19T21:41:57Z",
+      "started": "2026-02-19T22:16:34Z",
+      "completed": "2026-02-19T22:23:17Z",
+      "completion_summary": "Added Omega parameter to truth_at definition, defined ShiftClosed predicate with Set.univ_shift_closed proof, updated all Truth and TimeShift namespace lemmas. Box case of time_shift_preserves_truth rewritten to use ShiftClosed for membership proofs. All proofs complete, no sorries.",
+      "archived": "2026-02-20T00:12:02Z"
+    },
+    {
+      "project_number": 908,
+      "project_name": "phase2_validity_definitions",
+      "status": "completed",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T22:41:32Z",
+      "session_id": "sess_1771540603_60919c",
+      "researched": "2026-02-19T22:28:22Z",
+      "artifacts": [
+        {
+          "path": "specs/908_phase2_validity_definitions/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of all Validity.lean changes needed: 4 definitions need Set.univ or existential Omega; 6 theorems need mechanical updates; 2 downstream files will break (handled in later phases)"
+        },
+        {
+          "path": "specs/908_phase2_validity_definitions/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for updating Validity.lean definitions and theorems with Omega parameter"
+        },
+        {
+          "path": "specs/908_phase2_validity_definitions/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary for Validity.lean Omega parameter updates"
+        }
+      ],
+      "planned": "2026-02-19T22:35:47Z",
+      "started": "2026-02-19T22:37:14Z",
+      "completed": "2026-02-19T22:41:32Z",
+      "completion_summary": "Updated Validity.lean with Omega parameter: valid/semantic_consequence use Set.univ, satisfiable/formula_satisfiable use existential Omega with membership constraint. All 6 theorems updated and build verified.",
+      "archived": "2026-02-20T00:12:02Z"
+    },
+    {
+      "project_number": 909,
+      "project_name": "phase3_soundness_proofs",
+      "status": "completed",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T23:17:46Z",
+      "session_id": "sess_1771542182_7ed3e4",
+      "researched": "2026-02-19T22:46:43Z",
+      "artifacts": [
+        {
+          "path": "specs/909_phase3_soundness_proofs/reports/research-001.md",
+          "type": "research",
+          "summary": "Complete analysis of 58 theorems in SoundnessLemmas.lean and Soundness.lean requiring mechanical Omega=Set.univ parameter threading, with 6 time_shift_preserves_truth call sites needing Set.univ_shift_closed discharge"
+        },
+        {
+          "path": "specs/909_phase3_soundness_proofs/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for threading Omega=Set.univ through 58 soundness theorems"
+        },
+        {
+          "path": "specs/909_phase3_soundness_proofs/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary for Omega parameter threading through SoundnessLemmas.lean and Soundness.lean"
+        }
+      ],
+      "planned": "2026-02-19T22:52:53Z",
+      "completed": "2026-02-19T23:17:46Z",
+      "completion_summary": "Threaded Omega = Set.univ through all ~55 soundness proofs in SoundnessLemmas.lean and Soundness.lean. Updated truth_at calls, time_shift_preserves_truth call sites, and simp lemma sets. Full project builds with zero errors and no new sorries or axioms.",
+      "archived": "2026-02-20T00:12:02Z"
+    },
+    {
+      "project_number": 910,
+      "project_name": "phase4_canonical_model_reconstruction",
+      "status": "completed",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T23:32:39Z",
+      "session_id": "sess_1771543349_9bd3bd",
+      "researched": "2026-02-19T22:54:49Z",
+      "artifacts": [
+        {
+          "path": "specs/910_phase4_canonical_model_reconstruction/reports/research-001.md",
+          "type": "research",
+          "summary": "Detailed analysis of all 7 code changes for canonical model reconstruction, including element-by-element proof sketches, Omega-mismatch issue analysis, and implementation ordering"
+        },
+        {
+          "path": "specs/910_phase4_canonical_model_reconstruction/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan for canonical model reconstruction with time-indexed truth lemma and canonicalOmega"
+        },
+        {
+          "path": "specs/910_phase4_canonical_model_reconstruction/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes, sorry analysis, and verification results"
+        }
+      ],
+      "planned": "2026-02-19T23:07:10Z",
+      "started": "2026-02-19T23:22:58Z",
+      "completed": "2026-02-19T23:32:39Z",
+      "completion_summary": "Reconstructed Representation.lean with time-varying canonical model (fam.mcs t), canonicalOmega, and sorry-free truth lemma. Eliminated constant-family infrastructure and Box forward sorry. Two Omega-mismatch sorries in completeness theorems require follow-up Validity.lean changes.",
+      "archived": "2026-02-20T00:12:02Z"
+    },
+    {
+      "project_number": 911,
+      "project_name": "phase5_downstream_cleanup",
+      "status": "completed",
+      "language": "lean",
+      "parent_task": 906,
+      "created": "2026-02-19T21:22:47Z",
+      "last_updated": "2026-02-19T23:50:20Z",
+      "session_id": "sess_1771544522_231840",
+      "researched": "2026-02-19T23:36:37Z",
+      "artifacts": [
+        {
+          "path": "specs/911_phase5_downstream_cleanup/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive audit of all downstream files after Omega parameter changes, with concrete cleanup checklist and Omega-mismatch analysis"
+        },
+        {
+          "path": "specs/911_phase5_downstream_cleanup/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase plan: build verification, optional simp cleanup (136 warnings), final validation"
+        },
+        {
+          "path": "specs/911_phase5_downstream_cleanup/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary for task 911: build verification and simp cleanup"
+        }
+      ],
+      "planned": "2026-02-19T23:40:00Z",
+      "started": "2026-02-19T23:42:29Z",
+      "completed": "2026-02-19T23:50:20Z",
+      "completion_summary": "Verified full compilation after Omega parameter changes (tasks 907-910) with 0 build errors. Cleaned up 136 unused simp argument warnings across SoundnessLemmas.lean (64) and Soundness.lean (72) by removing unnecessary Set.mem_univ and true_implies arguments.",
+      "archived": "2026-02-20T00:12:02Z"
+    },
+    {
+      "project_number": 906,
+      "project_name": "box_admissible_histories_omega_closure",
+      "status": "completed",
+      "language": "lean",
+      "created": "2026-02-19T20:40:35Z",
+      "last_updated": "2026-02-20T00:15:00Z",
+      "session_id": "sess_1771534672_922b37",
+      "planned": "2026-02-19T21:09:54Z",
+      "artifacts": [
+        {
+          "path": "specs/906_box_admissible_histories_omega_closure/reports/research-001.md",
+          "type": "research",
+          "summary": "Plan review identifying 7 weaknesses with actionable recommendations: use Set.univ for validity, define canonicalOmega without shift-closure, reorder phases"
+        },
+        {
+          "path": "specs/906_box_admissible_histories_omega_closure/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "5-phase revised plan: Set.univ for validity, unshifted canonicalOmega, remove constant-family infrastructure"
+        }
+      ],
+      "researched": "2026-02-19T21:04:56Z",
+      "subtasks": [
+        907,
+        908,
+        909,
+        910,
+        911
+      ],
+      "completed": "2026-02-20T00:15:00Z",
+      "completion_summary": "Expanded task auto-completed: 5 subtasks completed, 0 subtasks abandoned. Modified semantic framework so Box quantifies over designated set of admissible histories (Omega) matching the paper's specification. Tasks 907-911 implemented Omega parameter changes across truth_at, validity definitions, soundness proofs, and canonical model reconstruction.",
+      "auto_completed": true,
+      "archived": "2026-02-20T00:12:02Z"
     }
   ]
 }

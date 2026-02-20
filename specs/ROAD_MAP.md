@@ -19,6 +19,29 @@
 Updated by /todo command during task archival.
 -->
 
+### 2026-02-19
+
+- **Task 906**: Modified semantic framework so Box quantifies over designated set of admissible histories (Omega) matching the paper's specification. Expanded into 5 subtasks (907-911) that implemented Omega parameter changes across truth_at, validity definitions, soundness proofs, and canonical model reconstruction.
+  - *References*: [plan](specs/archive/906_box_admissible_histories_omega_closure/plans/implementation-002.md)
+
+- **Task 907**: Added Omega parameter to truth_at definition, defined ShiftClosed predicate with Set.univ_shift_closed proof, updated all Truth and TimeShift namespace lemmas.
+  - *References*: [summary](specs/archive/907_phase1_truth_omega_parameter/summaries/implementation-summary-20260219.md)
+
+- **Task 908**: Updated Validity.lean with Omega parameter: valid/semantic_consequence use Set.univ, satisfiable/formula_satisfiable use existential Omega.
+  - *References*: [summary](specs/archive/908_phase2_validity_definitions/summaries/implementation-summary-20260219.md)
+
+- **Task 909**: Threaded Omega = Set.univ through all ~55 soundness proofs in SoundnessLemmas.lean and Soundness.lean.
+  - *References*: [summary](specs/archive/909_phase3_soundness_proofs/summaries/implementation-summary-20260219.md)
+
+- **Task 910**: Reconstructed Representation.lean with time-varying canonical model (fam.mcs t), canonicalOmega, and sorry-free truth lemma.
+  - *References*: [summary](specs/archive/910_phase4_canonical_model_reconstruction/summaries/implementation-summary-20260219.md)
+
+- **Task 911**: Verified full compilation after Omega parameter changes with 0 build errors. Cleaned up 136 unused simp argument warnings.
+  - *References*: [summary](specs/archive/911_phase5_downstream_cleanup/summaries/implementation-summary-20260219.md)
+
+- **Task 913**: Added automatic completion of expanded tasks to /todo command. Step 2.7 detects expanded tasks with all subtasks in terminal status.
+  - *References*: [summary](specs/archive/913_todo_expanded_autocompletion/summaries/implementation-summary-20260219.md)
+
 ### 2026-02-11
 
 - **Task 869**: Implemented team mode for wave-based multi-agent coordination. Added --team flag to /research, /plan, /implement commands. Created skill-team-research, skill-team-plan, and skill-team-implement skills with synthesis and debug support.
