@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P witness obligation tracking to close DovetailingChain sorries
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 8 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md
@@ -73,56 +73,46 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Unified Chain Data Structure [NOT STARTED]
+### Phase 1-2: GContent/HContent Duality (Sorries 1-2) [COMPLETED]
 
 - **Dependencies:** None
-- **Goal:** Define the unified interleaved chain data structure that builds MCSes in dovetailing order with neighbor lookup capability
+- **Goal:** Prove cross-sign propagation for `forward_G` and `backward_H` using duality lemmas
 
-**Tasks**:
-- [ ] Define `UnifiedChainTable : Nat -> (Int x { M : Set Formula // SetMaximalConsistent M })` mapping step index to (time, MCS) pairs
-- [ ] Implement `lookupMCSByTime : (step : Nat) -> (t : Int) -> (h : dovetailRank t < step) -> Set Formula` for neighbor lookup
-- [ ] Prove `lookupMCSByTime_is_mcs`: the looked-up set is maximal consistent
-- [ ] Define `unifiedChainSeed : (step : Nat) -> Set Formula` computing GContent/HContent from neighbor
-- [ ] Prove `unifiedChainSeed_consistent`: seed is consistent using `dovetail_GContent_consistent` or `dovetail_HContent_consistent`
+**Approach (revised from original plan):**
+Instead of building a unified chain, we prove that the existing split chains have implicit cross-sign propagation via GContent/HContent duality: if `GContent(M) ⊆ M'` (by construction), then `HContent(M') ⊆ M` (by duality). This allows G to propagate backward toward M_0 and H to propagate forward toward M_0, enabling cross-sign bridging through the shared base.
 
-**Timing**: 1.5 hours
+**Tasks completed**:
+- [x] Prove `past_temp_a`: derived φ → H(F(φ)) from temp_a via temporal duality
+- [x] Prove `GContent_subset_implies_HContent_reverse`: if GContent(M) ⊆ M', then HContent(M') ⊆ M
+- [x] Prove `HContent_subset_implies_GContent_reverse`: symmetric duality lemma
+- [x] Prove `dovetailBackwardChainMCS_GContent_reverse`: G propagates toward 0 in backward chain
+- [x] Prove `dovetailForwardChainMCS_HContent_reverse`: H propagates toward 0 in forward chain
+- [x] Prove `dovetailBackwardChain_forward_G`: forward_G within backward chain (toward 0)
+- [x] Prove `dovetailForwardChain_backward_H`: backward_H within forward chain (toward 0)
+- [x] Prove `dovetailChainSet_forward_G_neg`: cross-sign forward_G for negative t
+- [x] Prove `dovetailChainSet_backward_H_nonneg`: cross-sign backward_H for non-negative t
+- [x] Update `buildDovetailingChainFamily.forward_G` and `backward_H` to use new lemmas
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - Add new definitions after existing chain definitions
+**Timing**: ~1.5 hours (faster than planned due to elegant duality approach)
 
-**Verification**:
-- All new definitions compile without sorry
-- `lake build Bimodal.Metalogic.Bundle.DovetailingChain` succeeds
-
----
-
-### Phase 2: Cross-Sign Propagation (Sorries 1-2) [NOT STARTED]
-
-- **Dependencies:** Phase 1
-- **Goal:** Build the unified chain and prove `forward_G` and `backward_H` for all time pairs, eliminating cross-sign sorries
-
-**Tasks**:
-- [ ] Define `buildUnifiedChain : (base : Set Formula) -> (h_cons : SetConsistent base) -> Nat -> { M : Set Formula // SetMaximalConsistent M }` using recursive construction
-- [ ] Prove `buildUnifiedChain_time`: step n produces MCS at time `dovetailIndex n`
-- [ ] Prove `buildUnifiedChain_extends_neighbor`: MCS extends GContent or HContent of neighbor
-- [ ] Prove `unified_forward_G`: G phi in M_t implies phi in M_{t'} for all t < t'
-  - Use induction on step difference via `dovetailRank`
-  - Cross-sign case: neighbor exists by `dovetail_neighbor_constructed`, GContent propagates through shared construction
-- [ ] Prove `unified_backward_H`: H phi in M_t implies phi in M_{t'} for all t' < t
-  - Symmetric to forward_G using HContent propagation
-- [ ] Replace `dovetailChainSet` implementation to use unified chain
-- [ ] Update `buildDovetailingChainFamily.forward_G` proof to use `unified_forward_G`
-- [ ] Update `buildDovetailingChainFamily.backward_H` proof to use `unified_backward_H`
-
-**Timing**: 2.5 hours
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - Replace chain construction
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - Added duality lemmas and cross-sign proofs
 
 **Verification**:
-- Sorries at lines 606 and 617 eliminated
-- `lake build Bimodal.Metalogic.Bundle.DovetailingChain` succeeds
-- `forward_G` and `backward_H` fields in `buildDovetailingChainFamily` compile without sorry
+- [x] Sorries at lines 606 and 617 eliminated (cross-sign propagation)
+- [x] `lake build Bimodal.Metalogic.Bundle.DovetailingChain` succeeds
+- [x] `forward_G` and `backward_H` fields fully proven without sorry
+
+**Progress:**
+
+**Session: 2026-02-20, sess_1771618766_cea3b9**
+- Added: `past_temp_a` - derived past analog of temp_a axiom
+- Added: `GContent_subset_implies_HContent_reverse`, `HContent_subset_implies_GContent_reverse` - duality lemmas
+- Added: `dovetailBackwardChainMCS_GContent_reverse`, `dovetailForwardChainMCS_HContent_reverse` - cross-chain propagation
+- Added: `dovetailBackwardChain_forward_G`, `dovetailForwardChain_backward_H` - single-chain cross-sign
+- Added: `dovetailChainSet_forward_G_neg`, `dovetailChainSet_backward_H_nonneg` - Int-indexed cross-sign
+- Fixed: `buildDovetailingChainFamily` forward_G and backward_H proofs
+- Sorries: 4 -> 2 (2 eliminated: cross-sign forward_G and backward_H)
 
 ---
 

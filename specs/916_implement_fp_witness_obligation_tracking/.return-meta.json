@@ -1,20 +1,22 @@
 {
-  "status": "planned",
+  "status": "partial",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-001.md",
-      "summary": "4-phase implementation plan to close 4 sorries via unified interleaved chain with F/P witness scheduling"
+      "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
+      "type": "summary",
+      "summary": "Partial implementation: closed 2/4 sorries via GContent/HContent duality approach, F/P witness scheduling remains"
     }
   ],
-  "next_steps": "Run /implement 916 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771618381_0c9124",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 8
+    "phases_completed": 2,
+    "phases_total": 4,
+    "session_id": "sess_1771618766_cea3b9"
+  },
+  "partial_progress": {
+    "phases_completed": 2,
+    "next_phase": 3,
+    "sorries_closed": 2,
+    "sorries_remaining": 2,
+    "key_achievement": "Cross-sign propagation via GContent/HContent duality"
   }
 }

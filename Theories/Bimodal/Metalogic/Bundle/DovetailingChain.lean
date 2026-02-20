@@ -5,6 +5,7 @@ import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.Combinators
 
 /-!
 # Dovetailing Temporal Chain Construction
@@ -478,6 +479,123 @@ lemma dovetailBackwardChainMCS_HContent_extends (base : Set Formula) (h_base_con
     (dovetail_HContent_consistent _ (dovetailBackwardChainMCS_is_mcs base h_base_cons n)))).1 h_phi
 
 /-!
+## GContent/HContent Duality Lemmas
+
+Key insight: if GContent(M) ⊆ M' for MCSes M and M', then HContent(M') ⊆ M.
+This uses axiom temp_a (φ → G(P(φ))) and its dual φ → H(F(φ)).
+
+These lemmas enable cross-sign propagation: the backward chain has implicit
+GContent propagation (toward 0), and the forward chain has implicit HContent
+propagation (toward 0).
+-/
+
+/-- Past analog of axiom temp_a: ⊢ φ → H(F(φ)).
+Derived from temp_a via temporal duality. -/
+noncomputable def past_temp_a (psi : Formula) :
+    [] ⊢ psi.imp psi.some_future.all_past := by
+  have h_ta := DerivationTree.axiom [] _ (Axiom.temp_a psi.swap_past_future)
+  have h_dual := DerivationTree.temporal_duality _ h_ta
+  have h_eq : (psi.swap_past_future.imp psi.swap_past_future.sometime_past.all_future).swap_past_future
+    = psi.imp psi.some_future.all_past := by
+    simp [Formula.swap_temporal, Formula.neg, Formula.sometime_past, Formula.some_past,
+          Formula.some_future, Formula.swap_past_future, Formula.swap_past_future_involution]
+  rw [h_eq] at h_dual; exact h_dual
+
+/-- If GContent(M) ⊆ M', then HContent(M') ⊆ M.
+Uses temp_a: φ → G(P(φ)). -/
+theorem GContent_subset_implies_HContent_reverse
+    (M M' : Set Formula) (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_GC : GContent M ⊆ M') :
+    HContent M' ⊆ M := by
+  intro phi h_H_phi_in_M'
+  by_contra h_not_phi
+  have h_neg_phi : Formula.neg phi ∈ M := by
+    rcases set_mcs_negation_complete h_mcs phi with h | h
+    · exact absurd h h_not_phi
+    · exact h
+  have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.all_future (Formula.neg phi).sometime_past) :=
+    DerivationTree.axiom [] _ (Axiom.temp_a (Formula.neg phi))
+  have h_G_P_neg : Formula.all_future (Formula.neg phi).sometime_past ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
+  have h_P_neg_M' : (Formula.neg phi).sometime_past ∈ M' := h_GC h_G_P_neg
+  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
+  have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).all_past :=
+    Bimodal.Theorems.past_necessitation _ h_dni
+  have h_pk : [] ⊢ (phi.imp phi.neg.neg).all_past.imp (phi.all_past.imp phi.neg.neg.all_past) :=
+    Bimodal.Theorems.past_k_dist phi phi.neg.neg
+  have h_H_imp : [] ⊢ phi.all_past.imp phi.neg.neg.all_past :=
+    DerivationTree.modus_ponens [] _ _ h_pk h_H_dni
+  have h_H_nn : phi.neg.neg.all_past ∈ M' :=
+    set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_H_imp) h_H_phi_in_M'
+  have h_eq : (Formula.neg phi).sometime_past = Formula.neg (phi.neg.neg.all_past) := rfl
+  rw [h_eq] at h_P_neg_M'
+  exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_past) h_H_nn h_P_neg_M'
+
+/-- If HContent(M) ⊆ M', then GContent(M') ⊆ M.
+Uses past_temp_a: φ → H(F(φ)). -/
+theorem HContent_subset_implies_GContent_reverse
+    (M M' : Set Formula) (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_HC : HContent M ⊆ M') :
+    GContent M' ⊆ M := by
+  intro phi h_G_phi_in_M'
+  have h_G_phi : Formula.all_future phi ∈ M' := h_G_phi_in_M'
+  by_contra h_not_phi
+  have h_neg_phi : Formula.neg phi ∈ M := by
+    rcases set_mcs_negation_complete h_mcs phi with h | h
+    · exact absurd h h_not_phi
+    · exact h
+  have h_pta : [] ⊢ (Formula.neg phi).imp (Formula.neg phi).some_future.all_past :=
+    past_temp_a (Formula.neg phi)
+  have h_H_F_neg : (Formula.neg phi).some_future.all_past ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_pta) h_neg_phi
+  have h_F_neg_M' : (Formula.neg phi).some_future ∈ M' := h_HC h_H_F_neg
+  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
+  have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).all_future :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_fk : [] ⊢ (phi.imp phi.neg.neg).all_future.imp (phi.all_future.imp phi.neg.neg.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist phi phi.neg.neg)
+  have h_G_imp : [] ⊢ phi.all_future.imp phi.neg.neg.all_future :=
+    DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
+  have h_G_nn : phi.neg.neg.all_future ∈ M' :=
+    set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_G_imp) h_G_phi
+  have h_eq : (Formula.neg phi).some_future = Formula.neg (phi.neg.neg.all_future) := rfl
+  rw [h_eq] at h_F_neg_M'
+  exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_future) h_G_nn h_F_neg_M'
+
+/-!
+## Cross-Chain Content Propagation
+
+The backward chain has implicit GContent propagation toward index 0,
+and the forward chain has implicit HContent propagation toward index 0.
+-/
+
+/-- GContent of backward chain propagates toward 0 (decreasing index).
+Since HContent(M_n) ⊆ M_{n+1} by construction, GContent(M_{n+1}) ⊆ M_n by duality. -/
+lemma dovetailBackwardChainMCS_GContent_reverse (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    GContent (dovetailBackwardChainMCS base h_base_cons (n + 1)).val ⊆
+      (dovetailBackwardChainMCS base h_base_cons n).val :=
+  HContent_subset_implies_GContent_reverse
+    (dovetailBackwardChainMCS base h_base_cons n).val
+    (dovetailBackwardChainMCS base h_base_cons (n + 1)).val
+    (dovetailBackwardChainMCS_is_mcs base h_base_cons n)
+    (dovetailBackwardChainMCS_is_mcs base h_base_cons (n + 1))
+    (dovetailBackwardChainMCS_HContent_extends base h_base_cons n)
+
+/-- HContent of forward chain propagates toward 0 (decreasing index).
+Since GContent(M_n) ⊆ M_{n+1} by construction, HContent(M_{n+1}) ⊆ M_n by duality. -/
+lemma dovetailForwardChainMCS_HContent_reverse (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    HContent (dovetailForwardChainMCS base h_base_cons (n + 1)).val ⊆
+      (dovetailForwardChainMCS base h_base_cons n).val :=
+  GContent_subset_implies_HContent_reverse
+    (dovetailForwardChainMCS base h_base_cons n).val
+    (dovetailForwardChainMCS base h_base_cons (n + 1)).val
+    (dovetailForwardChainMCS_is_mcs base h_base_cons n)
+    (dovetailForwardChainMCS_is_mcs base h_base_cons (n + 1))
+    (dovetailForwardChainMCS_GContent_extends base h_base_cons n)
+
+/-!
 ## Forward G Coherence (Nat-indexed forward chain)
 -/
 
@@ -536,6 +654,80 @@ lemma dovetailBackwardChain_backward_H (base : Set Formula) (h_base_cons : SetCo
   exact set_mcs_implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_T) h_H_n
 
 /-!
+## Backward Chain Forward G Coherence (toward 0)
+
+By GContent/HContent duality, the backward chain also has GContent propagation
+toward index 0. This enables cross-sign forward_G.
+-/
+
+/-- G propagates toward 0 in the backward chain (decreasing index). -/
+lemma dovetailBackwardChain_G_propagates_reverse (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (dovetailBackwardChainMCS base h_base_cons (n + 1)).val) :
+    Formula.all_future phi ∈ (dovetailBackwardChainMCS base h_base_cons n).val := by
+  have h_mcs_n1 := dovetailBackwardChainMCS_is_mcs base h_base_cons (n + 1)
+  have h_GG := set_mcs_all_future_all_future h_mcs_n1 h_G
+  exact dovetailBackwardChainMCS_GContent_reverse base h_base_cons n h_GG
+
+/-- G propagates toward 0: from index n to index m (m ≤ n) in the backward chain. -/
+lemma dovetailBackwardChain_G_propagates_reverse_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (dovetailBackwardChainMCS base h_base_cons n).val) :
+    Formula.all_future phi ∈ (dovetailBackwardChainMCS base h_base_cons m).val := by
+  induction h_le with
+  | refl => exact h_G
+  | step h_le ih =>
+    have := dovetailBackwardChain_G_propagates_reverse base h_base_cons _ phi h_G
+    exact ih this
+
+/-- forward_G in the backward chain: G phi in M_n implies phi in M_m for m < n. -/
+lemma dovetailBackwardChain_forward_G (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (dovetailBackwardChainMCS base h_base_cons n).val) :
+    phi ∈ (dovetailBackwardChainMCS base h_base_cons m).val := by
+  have h_G_m := dovetailBackwardChain_G_propagates_reverse_le base h_base_cons m n (Nat.le_of_lt h_lt) phi h_G
+  have h_mcs_m := dovetailBackwardChainMCS_is_mcs base h_base_cons m
+  have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
+  exact set_mcs_implication_property h_mcs_m (theorem_in_mcs h_mcs_m h_T) h_G_m
+
+/-!
+## Forward Chain Backward H Coherence (toward 0)
+
+By GContent/HContent duality, the forward chain also has HContent propagation
+toward index 0. This enables cross-sign backward_H.
+-/
+
+/-- H propagates toward 0 in the forward chain (decreasing index). -/
+lemma dovetailForwardChain_H_propagates_reverse (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (dovetailForwardChainMCS base h_base_cons (n + 1)).val) :
+    Formula.all_past phi ∈ (dovetailForwardChainMCS base h_base_cons n).val := by
+  have h_mcs_n1 := dovetailForwardChainMCS_is_mcs base h_base_cons (n + 1)
+  have h_HH := set_mcs_all_past_all_past h_mcs_n1 h_H
+  exact dovetailForwardChainMCS_HContent_reverse base h_base_cons n h_HH
+
+/-- H propagates toward 0: from index n to index m (m ≤ n) in the forward chain. -/
+lemma dovetailForwardChain_H_propagates_reverse_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (dovetailForwardChainMCS base h_base_cons n).val) :
+    Formula.all_past phi ∈ (dovetailForwardChainMCS base h_base_cons m).val := by
+  induction h_le with
+  | refl => exact h_H
+  | step h_le ih =>
+    have := dovetailForwardChain_H_propagates_reverse base h_base_cons _ phi h_H
+    exact ih this
+
+/-- backward_H in the forward chain: H phi in M_n implies phi in M_m for m < n. -/
+lemma dovetailForwardChain_backward_H (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (dovetailForwardChainMCS base h_base_cons n).val) :
+    phi ∈ (dovetailForwardChainMCS base h_base_cons m).val := by
+  have h_H_m := dovetailForwardChain_H_propagates_reverse_le base h_base_cons m n (Nat.le_of_lt h_lt) phi h_H
+  have h_mcs_m := dovetailForwardChainMCS_is_mcs base h_base_cons m
+  have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+  exact set_mcs_implication_property h_mcs_m (theorem_in_mcs h_mcs_m h_T) h_H_m
+
+/-!
 ## Int-indexed Coherence Proofs
 -/
 
@@ -565,25 +757,121 @@ lemma dovetailChainSet_backward_H_nonpos (base : Set Formula) (h_base_cons : Set
   exact dovetailBackwardChain_backward_H base h_base_cons (-t - 1).toNat (-t' - 1).toNat h_idx_lt phi h_H
 
 /-!
+## Cross-Sign Coherence
+
+forward_G for negative t (G phi in M_t where t < 0, need phi in M_{t'} where t' > t):
+- Case t' < 0: both negative, use backward chain's forward_G (toward 0)
+- Case t' = 0: backward chain forward_G to get phi in M_0 (shared base)
+- Case t' > 0: bridge through M_0, then forward chain forward_G
+
+backward_H for non-negative t (H phi in M_t where t >= 0, need phi in M_{t'} where t' < t):
+- Case t' >= 0: both non-negative, use forward chain's backward_H (toward 0)
+- Case t' < 0: bridge through M_0, then backward chain backward_H
+-/
+
+/-- forward_G for negative source: G phi in M_t (t < 0) implies phi in M_{t'} (t' > t). -/
+lemma dovetailChainSet_forward_G_neg (base : Set Formula) (h_base_cons : SetConsistent base)
+    (t t' : Int) (h_t_neg : t < 0) (h_lt : t < t')
+    (phi : Formula) (h_G : Formula.all_future phi ∈ dovetailChainSet base h_base_cons t) :
+    phi ∈ dovetailChainSet base h_base_cons t' := by
+  have h_t_not_nn : ¬(0 ≤ t) := not_le.mpr h_t_neg
+  -- G phi in backward chain at index (-t - 1)
+  simp only [dovetailChainSet, h_t_not_nn, ↓reduceDIte] at h_G
+  -- Step 1: Propagate G phi through backward chain to index 0 (= M_0)
+  -- backward chain index: t maps to (-t-1).toNat
+  -- M_0 is at backward chain index 0
+  -- Need: G phi propagates from index (-t-1).toNat to index 0
+  have h_G_at_0 : Formula.all_future phi ∈ (dovetailBackwardChainMCS base h_base_cons 0).val := by
+    exact dovetailBackwardChain_G_propagates_reverse_le base h_base_cons 0 (-t - 1).toNat
+      (Nat.zero_le _) phi h_G
+  -- backward chain 0 = forward chain 0 = shared base
+  have h_chain_eq : (dovetailBackwardChainMCS base h_base_cons 0).val =
+      (dovetailForwardChainMCS base h_base_cons 0).val := chains_share_base base h_base_cons
+  -- G phi at forward chain 0
+  have h_G_fwd_0 : Formula.all_future phi ∈ (dovetailForwardChainMCS base h_base_cons 0).val := by
+    rw [← h_chain_eq]; exact h_G_at_0
+  -- Now branch on t'
+  by_cases h_t'_nn : 0 ≤ t'
+  · -- Case t' >= 0: use forward chain
+    simp only [dovetailChainSet, h_t'_nn, ↓reduceDIte]
+    by_cases h_t'_zero : t' = 0
+    · -- t' = 0: apply T-axiom
+      subst h_t'_zero
+      have h_mcs := dovetailForwardChainMCS_is_mcs base h_base_cons 0
+      have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
+      exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G_fwd_0
+    · -- t' > 0: forward chain propagation
+      have h_lt_nat : 0 < t'.toNat := by omega
+      exact dovetailForwardChain_forward_G base h_base_cons 0 t'.toNat h_lt_nat phi h_G_fwd_0
+  · -- Case t' < 0: both negative, use backward chain forward_G
+    push_neg at h_t'_nn
+    have h_t'_not_nn : ¬(0 ≤ t') := not_le.mpr h_t'_nn
+    simp only [dovetailChainSet, h_t'_not_nn, ↓reduceDIte]
+    have h_idx_lt : (-t' - 1).toNat < (-t - 1).toNat := by
+      rw [← Int.ofNat_lt]
+      rw [Int.toNat_of_nonneg (by omega), Int.toNat_of_nonneg (by omega)]
+      omega
+    exact dovetailBackwardChain_forward_G base h_base_cons (-t' - 1).toNat (-t - 1).toNat h_idx_lt phi h_G
+
+/-- backward_H for non-negative source: H phi in M_t (t >= 0) implies phi in M_{t'} (t' < t). -/
+lemma dovetailChainSet_backward_H_nonneg (base : Set Formula) (h_base_cons : SetConsistent base)
+    (t t' : Int) (h_t_nn : 0 ≤ t) (h_lt : t' < t)
+    (phi : Formula) (h_H : Formula.all_past phi ∈ dovetailChainSet base h_base_cons t) :
+    phi ∈ dovetailChainSet base h_base_cons t' := by
+  simp only [dovetailChainSet, h_t_nn, ↓reduceDIte] at h_H
+  -- H phi in forward chain at index t.toNat
+  -- Step 1: Propagate H phi through forward chain to index 0
+  have h_H_at_0 : Formula.all_past phi ∈ (dovetailForwardChainMCS base h_base_cons 0).val := by
+    exact dovetailForwardChain_H_propagates_reverse_le base h_base_cons 0 t.toNat
+      (Nat.zero_le _) phi h_H
+  -- forward chain 0 = backward chain 0
+  have h_chain_eq : (dovetailForwardChainMCS base h_base_cons 0).val =
+      (dovetailBackwardChainMCS base h_base_cons 0).val := (chains_share_base base h_base_cons).symm
+  have h_H_bwd_0 : Formula.all_past phi ∈ (dovetailBackwardChainMCS base h_base_cons 0).val := by
+    rw [← h_chain_eq]; exact h_H_at_0
+  by_cases h_t'_neg : t' < 0
+  · -- Case t' < 0: use backward chain
+    have h_t'_not_nn : ¬(0 ≤ t') := not_le.mpr h_t'_neg
+    simp only [dovetailChainSet, h_t'_not_nn, ↓reduceDIte]
+    by_cases h_t'_m1 : t' = -1
+    · -- t' = -1, backward index 0
+      subst h_t'_m1; simp
+      have h_mcs := dovetailBackwardChainMCS_is_mcs base h_base_cons 0
+      have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+      exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H_bwd_0
+    · -- t' < -1, backward index > 0
+      have h_lt_nat : 0 < (-t' - 1).toNat := by omega
+      exact dovetailBackwardChain_backward_H base h_base_cons 0 (-t' - 1).toNat h_lt_nat phi h_H_bwd_0
+  · -- Case t' >= 0: both non-negative, use forward chain backward_H
+    push_neg at h_t'_neg
+    simp only [dovetailChainSet, h_t'_neg, ↓reduceDIte]
+    have h_lt_nat : t'.toNat < t.toNat := by
+      rw [← Int.ofNat_lt]
+      rwa [Int.toNat_of_nonneg h_t'_neg, Int.toNat_of_nonneg h_t_nn]
+    exact dovetailForwardChain_backward_H base h_base_cons t'.toNat t.toNat h_lt_nat phi h_H
+
+/-!
 ## Dovetailing Chain Family Construction
 
-Build the `BFMCS Int` from the chain, with proven same-sign coherence
-and sorry for cross-sign cases and F/P witnesses.
+Build the `BFMCS Int` from the chain, with all forward_G and backward_H fully proven.
 -/
 
 /--
 Build the dovetailing chain family from a consistent context.
 
-**Proven**:
-- forward_G for non-negative pairs (0 <= t < t')
-- backward_H for non-positive pairs (t' < t <= 0)
+**Proven** (all 4 BFMCS fields):
+- forward_G: G phi in M_t implies phi in M_{t'} for all t < t' (fully proven)
+- backward_H: H phi in M_t implies phi in M_{t'} for all t' < t (fully proven)
 - Context preservation at time 0
 
-**Sorry debt** (4):
-- forward_G when t < 0 (cross-sign)
-- backward_H when t >= 0 (cross-sign)
+**Sorry debt** (2):
 - forward_F (witness construction)
 - backward_P (witness construction)
+
+Cross-sign propagation is proven using the GContent/HContent duality lemmas:
+if GContent(M) ⊆ M', then HContent(M') ⊆ M (and vice versa).
+This enables G to propagate through the backward chain toward M_0, then
+through the forward chain to positive times (and symmetrically for H).
 -/
 noncomputable def buildDovetailingChainFamily (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     BFMCS Int where
@@ -602,8 +890,7 @@ noncomputable def buildDovetailingChainFamily (Gamma : List Formula) (h_cons : C
     · have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
       exact dovetailChainSet_forward_G_nonneg base h_base_cons t t' h_t h_t' h_lt phi h_G'
     · push_neg at h_t
-      -- Cross-sign: t < 0, requires global argument not available in chain construction
-      sorry
+      exact dovetailChainSet_forward_G_neg base h_base_cons t t' h_t h_lt phi h_G'
   backward_H := fun t t' phi h_lt h_H => by
     let base := contextAsSet Gamma
     let h_base_cons := list_consistent_to_set_consistent h_cons
@@ -613,8 +900,7 @@ noncomputable def buildDovetailingChainFamily (Gamma : List Formula) (h_cons : C
     · have h_t' : t' < 0 := lt_trans h_lt h_t
       exact dovetailChainSet_backward_H_nonpos base h_base_cons t t' h_t h_t' h_lt phi h_H'
     · push_neg at h_t
-      -- Cross-sign: t >= 0, requires global argument not available in chain construction
-      sorry
+      exact dovetailChainSet_backward_H_nonneg base h_base_cons t t' h_t h_lt phi h_H'
 
 /-- The dovetailing chain family preserves the context at time 0. -/
 lemma buildDovetailingChainFamily_preserves_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
