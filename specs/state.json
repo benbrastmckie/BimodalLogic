@@ -442,10 +442,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-20T22:43:15Z",
+      "last_updated": "2026-02-20T22:59:57Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -461,13 +461,17 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
           "type": "summary",
           "summary": "Partial implementation: 2/4 sorries closed via GContent/HContent duality. Remaining 2 sorries blocked by F-formula persistence problem."
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md",
+          "type": "research",
+          "summary": "Detailed analysis of Option A (constructive Lindenbaum). G-derivability independence fails. Joint F-witness consistency fails. Viable sub-chain approach identified (omega^2 construction, 30-40h estimate)."
         }
       ],
-      "session_id": "sess_1771626129_c718ce",
-      "researched": "2026-02-20T20:11:48Z",
+      "session_id": "sess_1771627760_1009ab",
+      "researched": "2026-02-20T22:59:57Z",
       "planned": "2026-02-20T20:17:08Z",
-      "started": "2026-02-20T20:19:56Z",
-      "blocked_reason": "F-formula persistence problem: Non-deterministic Lindenbaum can kill F-obligations by adding G(neg psi). Resolution requires constructive Lindenbaum (15-20 hours). See plan Phase 3 for 6 attempted approaches."
+      "started": "2026-02-20T20:19:56Z"
     }
   ],
   "completed_projects": [
