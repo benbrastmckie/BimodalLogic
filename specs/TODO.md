@@ -5,11 +5,11 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-20T00:15:00Z
 task_counts:
-  active: 14
+  active: 10
   completed: 635
-  in_progress: 3
+  in_progress: 0
   not_started: 1
-  abandoned: 32
+  abandoned: 36
   total: 681
 technical_debt:
   sorry_count: 123
@@ -44,9 +44,10 @@ technical_debt:
 
 ### 914. Rename IndexedMCSFamily to BFMCS across codebase
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-20
+- **Research**: [research-001.md](specs/914_rename_indexedmcsfamily_to_bfmcs/reports/research-001.md)
 
 **Description**: Rename `IndexedMCSFamily` to `BFMCS` (Bundled Family of Maximal Consistent Sets) across 420 occurrences in 38 files to make the two-level ontological structure explicit. Rename `IndexedMCSFamily.lean` to `BFMCS.lean`, update all imports, and add doc comments explaining the BFMCS ontology.
 
@@ -68,21 +69,6 @@ technical_debt:
 
 ---
 
-### 900. Prove cut rule and derivation tree manipulation for recursive seed Henkin model
-- **Effort**: 6 hours
-- **Status**: [IMPLEMENTING]
-- **Language**: lean
-- **Created**: 2026-02-18
-- **Researched**: 2026-02-18
-- **Planned**: 2026-02-18
-- **Started**: 2026-02-18
-- **Research**: [research-002.md](specs/900_prove_cut_rule_derivation_tree_manipulation/reports/research-002.md)
-- **Plan**: [implementation-002.md](specs/900_prove_cut_rule_derivation_tree_manipulation/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260218.md](specs/900_prove_cut_rule_derivation_tree_manipulation/summaries/implementation-summary-20260218.md)
-
-**Description**: In order to complete phase 4 from /home/benjamin/Projects/ProofChecker/specs/864_recursive_seed_henkin_model/plans/implementation-005.md in the most mathematically correct manner, prove: the cut rule / derivation tree manipulation.
-
----
 ### 881. Construct modally saturated BMCS to eliminate fully_saturated_bmcs_exists axiom
 - **Effort**: 8-12 hours
 - **Status**: [BLOCKED]
@@ -97,21 +83,6 @@ technical_debt:
 - **Summary**: [implementation-summary-20260217.md](specs/881_modally_saturated_bmcs_construction/summaries/implementation-summary-20260217.md) (Phase 3 escalation)
 
 **Description**: Replace the `fully_saturated_bmcs_exists` axiom in TemporalCoherentConstruction.lean with a constructive proof, achieving fully axiom-free completeness. The axiom currently requires: (1) context preservation, (2) temporal coherence, and (3) modal saturation. Tasks 870/880 have proven temporal coherence via ZornFamily/DovetailingChain, but modal saturation remains. Modal saturation requires that every Diamond formula in a family's MCS has a witness family in the bundle where the inner formula holds. The construction must enumerate all Diamond formulas (neg(Box(neg psi))) and extend the family set to include witnesses. Key approaches: (a) Extend ZornFamily with modal witness enumeration using Zorn's lemma on families satisfying both temporal coherence AND modal saturation conditions, (b) Extend DovetailingChain to interleave modal witness creation with temporal witness creation, or (c) Post-process a temporally coherent family by iteratively adding modal witnesses until saturated. Critical challenge: Proving termination/well-foundedness when adding infinitely many witness families. Success eliminates the final axiom blocker for sorry-free completeness, connecting proven temporal infrastructure (RecursiveSeed, ZornFamily) to the representation theorem. See ModalSaturation.lean for is_modally_saturated definition, Completeness.lean for usage, and DovetailingChain.lean/ZornFamily.lean for temporal coherence infrastructure to extend.
-
-### 870. Zorn-based family selection for temporal coherence
-- **Effort**: TBD
-- **Status**: [IMPLEMENTING]
-- **Language**: lean
-- **Created**: 2026-02-11
-- **Researched**: 2026-02-11
-- **Planned**: 2026-02-12
-- **Started**: 2026-02-11
-- **Research**: [research-001.md](specs/870_zorn_family_temporal_coherence/reports/research-001.md), [research-002.md](specs/870_zorn_family_temporal_coherence/reports/research-002.md), [research-003.md](specs/870_zorn_family_temporal_coherence/reports/research-003.md), [research-004.md](specs/870_zorn_family_temporal_coherence/reports/research-004.md), [research-005.md](specs/870_zorn_family_temporal_coherence/reports/research-005.md), [research-006.md](specs/870_zorn_family_temporal_coherence/reports/research-006.md)
-- **Plan**: [implementation-004.md](specs/870_zorn_family_temporal_coherence/plans/implementation-004.md)
-- **Summaries**: [implementation-summary-20260211.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260211.md), [implementation-summary-20260212.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212.md), [implementation-summary-20260212-v003.md](specs/870_zorn_family_temporal_coherence/summaries/implementation-summary-20260212-v003.md)
-- **Implementation**: [ZornFamily.lean](Theories/Bimodal/Metalogic/Bundle/ZornFamily.lean)
-
-**Description**: Use Zorn's lemma to construct IndexedMCSFamily with guaranteed cross-sign temporal coherence (forward_G, backward_H). This bypasses task 864's chain construction limitations where G phi at time t<0 cannot reach time t'>0 because chains extend away from time 0. Key approach: Define partial order on candidate families satisfying coherence properties, apply Zorn to obtain maximal element. See task 864 session 28-30 analysis for cross-sign challenge details, TemporalLindenbaum.lean for single-MCS Zorn infrastructure, DovetailingChain.lean:606,617 for blocked cross-sign cases. Critical: Ensure termination of Zorn argument, prove maximal family is actually an IndexedMCSFamily, handle witness enumeration for F/P formulas. Success eliminates DovetailingChain sorries at lines 606,617,633,640.
 
 ### 868. Reinstate lean-lsp MCP tools after GitHub issue resolution
 - **Effort**: 1 hour
@@ -145,40 +116,6 @@ technical_debt:
 - **Research**: [research-001.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md), [research-002.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-002.md), [research-003.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-003.md), [research-004.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-004.md), [research-005.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-005.md)
 
 **Description**: Research and construct a canonical task frame (world-states, task relation, durations) for the Bimodal logic representation theorem. Define a two-place task relation w ⇒ u where: (1) φ ∈ u whenever □G φ ∈ w; (2) φ ∈ w whenever □H φ ∈ u; with witness conditions (GW) and (HW). World histories are functions τ from a totally ordered commutative group of durations to MCSs respecting the task relation. Key challenges: constructing durations from syntax, building a proper three-place task relation matching the semantics, and possibly using the two-place task relation to construct a topology (closeness via possible nearness in time) with durations abstracted as equivalence classes. The construction should culminate in a seed built from a consistent sentence of arbitrary complexity, with the canonical model satisfying the TruthLemma as the guiding North Star.
-
-### 864. Implement recursive seed construction for Henkin model completeness
-- **Effort**: 12 hours
-- **Status**: [IMPLEMENTING]
-- **Language**: lean
-- **Created**: 2026-02-05
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Started**: 2026-02-19
-- **Research**: [research-001.md](specs/864_recursive_seed_henkin_model/reports/research-001.md), [research-002.md](specs/864_recursive_seed_henkin_model/reports/research-002.md), [research-008.md](specs/864_recursive_seed_henkin_model/reports/research-008.md) (meta-analysis), [research-009.md](specs/864_recursive_seed_henkin_model/reports/research-009.md) (Closure.lean errors)
-- **Plan**: [implementation-008.md](specs/864_recursive_seed_henkin_model/plans/implementation-008.md) (v8: Closure.lean error remediation)
-- **Summary**: [implementation-summary-20260217.md](specs/864_recursive_seed_henkin_model/summaries/implementation-summary-20260217.md)
-
-**Description**: Improving on task 843 and the various attempts tried there, develop a new strategy which proceeds by taking a consistent formula and using its recursive structure to define a seed which consists of a bundle of indexed families of MCSs. The idea is to start with a singleton CS indexed at 0 for the consistent sentence we start with. If the main operator is a Box, then every CS must include its argument. If the main operator is a negated Box, then some indexed family must have a CS indexed by the present time that includes the negation of its argument. If the main operator is H, then every CS indexed by a present and past time in the family must include the argument. If the main operator is a negated H, then some CS indexed by the present or past time in the family must include the negation of the argument. Similarly for G, but for the future. Negated modal operators require new indexed families to be created, and negated tense operators require new CSs at new indexes to be created. Boolean operators unpack in the usual way. This returns some indexed families with some CSs based on the logical form of the initial sentence. This is then completed to provide an appropriate Henkin model.
-
-### 843. Remove singleFamily_modal_backward_axiom after Zorn lemma is proven
-- **Effort**: 50-65 hours (revised v008)
-- **Status**: [PARTIAL]
-- **Language**: lean
-- **Created**: 2026-02-03
-- **Updated**: 2026-02-12
-- **Researched**: 2026-02-05
-- **Planned**: 2026-02-10
-- **Completed**: 2026-02-12 (Phase 4 only)
-- **Depends**: Task 856
-- **Related**: Task 856, Task 857, Task 864
-- **Research**: [research-001.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-001.md) through [research-018.md](specs/843_remove_singleFamily_modal_backward_axiom/reports/research-018.md)
-- **Plan**: [implementation-008.md](specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-008.md)
-
-**Description**: Make Bimodal/Metalogic/ axiom-free and sorry-free for publication-ready completeness. Eliminate 2 completeness-chain axioms (singleFamily_modal_backward_axiom, temporally_saturated_mcs_exists) via temporal Lindenbaum construction and multi-family saturated BMCS. Delete 4 legacy eval_bmcs_truth_lemma sorries.
-
-**Completion Note**: Phase 4 completed successfully - FALSE axiom (singleFamily_modal_backward_axiom) replaced with CORRECT axiom (fully_saturated_bmcs_exists). Remaining phases superseded by task 864's recursive seed approach.
-
----
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
