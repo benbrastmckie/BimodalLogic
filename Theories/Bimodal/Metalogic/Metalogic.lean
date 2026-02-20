@@ -24,17 +24,19 @@ All main theorems are proven without sorries.
 
 ## Sorry Status
 
-**Active sorries in Metalogic/**: 4 (all in helper lemmas, documented as failures with alternatives)
+**Active sorries in Metalogic/**: 9 total
 
-| File | Line | Sorry | Status | Alternative |
-|------|------|-------|--------|-------------|
-| `Bundle/TruthLemma.lean` | ~383 | all_future backward | Documented | Omega-rule (infinitary) |
-| `Bundle/TruthLemma.lean` | ~395 | all_past backward | Documented | Omega-rule (infinitary) |
-| `Bundle/Construction.lean` | ~249 | modal_backward | sorry (FALSE axiom removed, task 905) | Multi-family BMCS |
-| `FMP/Closure.lean` | ~728 | diamond membership | Documented | Minor edge case |
+| File | Count | Description |
+|------|-------|-------------|
+| `Representation.lean` | 2 | Omega-mismatch (lines 401, 435) |
+| `Bundle/Construction.lean` | 1 | modal_backward (line 197) |
+| `Bundle/TemporalCoherentConstruction.lean` | 2 | temporal_coherent_family_exists, fully_saturated_bmcs_exists_int |
+| `Bundle/DovetailingChain.lean` | 4 | cross-sign propagation and F/P witnesses |
 
-**Key Point**: These do NOT affect main theorems. Completeness uses only the FORWARD
-direction of the truth lemma, which is fully proven.
+**Key Point**: Main completeness theorems (bmcs_weak_completeness, bmcs_strong_completeness)
+are SORRY-FREE. Sorries are in auxiliary constructions and the standard-validity bridge.
+
+**Archived sorries (task 912)**: 29 removed (25 RecursiveSeed/Seed*, 4 EvalBMCS truth lemma).
 
 ## Module Structure
 

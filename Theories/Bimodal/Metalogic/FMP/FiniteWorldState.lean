@@ -78,12 +78,12 @@ def FiniteTruthAssignment (phi : Formula) : Type :=
 Local consistency for a truth assignment.
 This ensures the assignment respects propositional logic and modal axioms.
 
-NOTE: Temporal reflexivity (H phi -> phi, G phi -> phi) is intentionally NOT included
-because TM logic uses strict temporal semantics where these axioms are not valid.
-The temporal operators quantify over strictly less/greater times:
-- `all_past φ` holds iff φ holds at all s < t (excluding t)
-- `all_future φ` holds iff φ holds at all s > t (excluding t)
-See `Semantics/Truth.lean:109-110` for the semantic definitions.
+NOTE: Temporal reflexivity (H phi -> phi, G phi -> phi) IS included in TM logic
+because as of Task #658, temporal operators use reflexive semantics (≤ instead of <):
+- `all_past φ` holds iff φ holds at all s ≤ t (including t)
+- `all_future φ` holds iff φ holds at all s ≥ t (including t)
+See `Semantics/Truth.lean:118-119` for the semantic definitions.
+The T-axioms (temp_t_past, temp_t_future) are valid under reflexive semantics.
 -/
 def IsLocallyConsistent (phi : Formula) (v : FiniteTruthAssignment phi) : Prop :=
   -- Bot is false

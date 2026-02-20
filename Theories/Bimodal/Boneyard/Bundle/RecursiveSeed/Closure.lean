@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.RecursiveSeed.Worklist
+import Bimodal.Boneyard.Bundle.RecursiveSeed.Worklist
 import Mathlib.Data.Multiset.DershowitzManna
 
 /-!

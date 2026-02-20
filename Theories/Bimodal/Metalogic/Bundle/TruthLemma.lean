@@ -31,11 +31,6 @@ TemporalCoherentConstruction.lean via the construction that provides temporally
 coherent BMCS. This axiom asserts the existence of temporally saturated MCS,
 which is a standard result from Henkin-style completeness proofs.
 
-### EvalBMCS (Legacy)
-
-The `eval_bmcs_truth_lemma` retains sorries in the box and temporal cases.
-These are structural limitations of EvalBMCS vs full BMCS.
-
 ## Main Result
 
 ```
@@ -495,157 +490,25 @@ construction in TemporalCoherentConstruction.lean. That construction depends on
 the `temporally_saturated_mcs_exists` axiom, which asserts the existence of
 temporally saturated MCS (standard Henkin construction result).
 
-### Remaining Sorries
+### EvalBMCS (Archived)
 
-The EvalBMCS truth lemma below still has sorries in the box and temporal cases.
-These are structural limitations of EvalBMCS vs full BMCS and are not related
-to the temporal saturation issue.
+The EvalBMCS truth lemma was removed in task 912 (4 sorries eliminated).
+Use `bmcs_truth_lemma` for the full truth lemma.
 -/
 
 /-!
-## EvalBMCS Truth Lemma
+## EvalBMCS Truth Lemma (ARCHIVED)
 
-The EvalBMCS truth lemma connects MCS membership to semantic truth for the
-EvalBMCS structure.
+The `eval_bmcs_truth_lemma` and `eval_bmcs_eval_truth` were removed in task 912.
+They had 4 sorries due to structural limitations of EvalBMCS (no full modal coherence).
 
-**Key Difference from BMCS**:
-- EvalBMCS only guarantees modal coherence at the eval_family
-- `modal_forward_eval`: Box phi in eval -> phi in all families
-- `modal_backward_eval`: phi in all families -> Box phi in eval
+The full BMCS approach (above) resolves all cases completely. Use `bmcs_truth_lemma` instead.
 
-**Structural Limitation**:
-For the full truth lemma IFF, we need membership <-> truth at ALL families (not just eval).
-The box forward case requires membership -> truth at non-eval families.
-The box backward case requires truth -> membership at non-eval families.
-
-EvalBMCS only has modal coherence at eval_family, so the box case has sorries.
-These are structural limitations of EvalBMCS vs full BMCS. The full BMCS approach
-(above) resolves the box case completely.
-
-The temporal backward cases also have sorries (same as the BMCS truth lemma).
+**Previous sorry locations** (for reference):
+- Box forward: membership -> truth at non-eval families (EvalBMCS limitation)
+- Box backward: truth -> membership at non-eval families (EvalBMCS limitation)
+- all_future backward: temporal saturation needed
+- all_past backward: temporal saturation needed
 -/
-
-/--
-**EvalBMCS Truth Lemma at eval_family**: For an EvalBMCS, formula membership
-in the eval_family's MCS relates to truth at the eval_family.
-
-**Note**: The box case has sorries because EvalBMCS lacks full modal coherence.
-These sorries prevent using this for a full completeness proof.
-The original BMCS approach should be used instead.
-
-**Sorry Status**:
-- Box forward: Sorry (needs membership→truth at non-eval families)
-- Box backward: Sorry (needs truth→membership at non-eval families)
-- Temporal backward: Sorry (same as original, needs temporal saturation)
--/
-theorem eval_bmcs_truth_lemma (B : EvalBMCS D) (t : D) (φ : Formula) :
-    φ ∈ B.eval_family.mcs t ↔ eval_bmcs_truth_at B.families B.eval_family t φ := by
-  induction φ generalizing t with
-  | atom p =>
-    simp only [eval_bmcs_truth_at]
-  | bot =>
-    simp only [eval_bmcs_truth_at]
-    constructor
-    · intro h_bot
-      have h_cons := (B.eval_family.is_mcs t).1
-      have h_deriv : Bimodal.ProofSystem.DerivationTree [Formula.bot] Formula.bot :=
-        Bimodal.ProofSystem.DerivationTree.assumption [Formula.bot] Formula.bot (by simp)
-      exact h_cons [Formula.bot] (fun ψ hψ => by simp at hψ; rw [hψ]; exact h_bot) ⟨h_deriv⟩
-    · intro h_false
-      exact False.elim h_false
-  | imp ψ χ ih_ψ ih_χ =>
-    simp only [eval_bmcs_truth_at]
-    have h_mcs := B.eval_family.is_mcs t
-    constructor
-    · -- Forward: (ψ → χ) ∈ MCS → (truth ψ → truth χ)
-      intro h_imp h_ψ_true
-      have h_ψ_mcs : ψ ∈ B.eval_family.mcs t := (ih_ψ t).mpr h_ψ_true
-      have h_χ_mcs : χ ∈ B.eval_family.mcs t := set_mcs_implication_property h_mcs h_imp h_ψ_mcs
-      exact (ih_χ t).mp h_χ_mcs
-    · -- Backward: (truth ψ → truth χ) → (ψ → χ) ∈ MCS
-      intro h_truth_imp
-      rcases set_mcs_negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
-      · exact h_imp
-      · exfalso
-        have h_ψ_mcs : ψ ∈ B.eval_family.mcs t := by
-          have h_taut := neg_imp_implies_antecedent ψ χ
-          exact set_mcs_closed_under_derivation h_mcs [(ψ.imp χ).neg]
-            (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        have h_neg_χ_mcs : χ.neg ∈ B.eval_family.mcs t := by
-          have h_taut := neg_imp_implies_neg_consequent ψ χ
-          exact set_mcs_closed_under_derivation h_mcs [(ψ.imp χ).neg]
-            (by simp [h_neg_imp])
-            (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
-              (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
-              (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
-        have h_ψ_true : eval_bmcs_truth_at B.families B.eval_family t ψ := (ih_ψ t).mp h_ψ_mcs
-        have h_χ_true : eval_bmcs_truth_at B.families B.eval_family t χ := h_truth_imp h_ψ_true
-        have h_χ_mcs : χ ∈ B.eval_family.mcs t := (ih_χ t).mpr h_χ_true
-        exact set_consistent_not_both (B.eval_family.is_mcs t).1 χ h_χ_mcs h_neg_χ_mcs
-  | box ψ ih =>
-    -- BOX CASE: EvalBMCS only has modal coherence at eval_family.
-    -- The forward direction needs membership→truth at ALL families.
-    -- The backward direction needs truth→membership at ALL families.
-    -- Both require the full IFF at non-eval families, which we don't have.
-    -- Mark with sorries - this is a fundamental limitation of EvalBMCS.
-    simp only [eval_bmcs_truth_at]
-    constructor
-    · -- Forward: □ψ ∈ eval.mcs t → ∀ fam' ∈ families, truth ψ at fam'
-      intro h_box fam' h_fam'
-      -- By modal_forward_eval: ψ ∈ fam'.mcs t
-      have h_ψ_mcs : ψ ∈ fam'.mcs t := B.modal_forward_eval ψ t h_box fam' h_fam'
-      -- Need: ψ ∈ fam'.mcs t → truth ψ at fam'
-      -- This requires membership→truth at fam', which needs the full truth lemma at fam'.
-      -- For non-eval families, we don't have this.
-      -- Sorry - EvalBMCS limitation
-      sorry
-    · -- Backward: (∀ fam' ∈ families, truth ψ at fam') → □ψ ∈ eval.mcs t
-      intro h_all
-      -- Need: truth ψ at fam' → ψ ∈ fam'.mcs t for all fam'
-      -- Then use modal_backward_eval
-      -- This requires truth→membership at all families.
-      -- Sorry - EvalBMCS limitation
-      sorry
-  | all_future ψ ih =>
-    simp only [eval_bmcs_truth_at]
-    constructor
-    · -- Forward: G ψ ∈ eval.mcs t → ∀ s ≥ t, truth ψ at s
-      intro h_G s hts
-      have h_ψ_mcs : ψ ∈ B.eval_family.mcs s :=
-        mcs_all_future_implies_phi_at_future B.eval_family t s ψ hts h_G
-      exact (ih s).mp h_ψ_mcs
-    · -- Backward: (∀ s ≥ t, truth ψ at s) → G ψ ∈ eval.mcs t
-      -- SORRY: Same as BMCS truth lemma -- requires temporal saturation.
-      -- Gap: `temporal_eval_saturated_bundle_exists` (TemporalCoherentConstruction.lean).
-      -- Resolution: Task 857.
-      intro _h_all
-      sorry
-  | all_past ψ ih =>
-    simp only [eval_bmcs_truth_at]
-    constructor
-    · -- Forward: H ψ ∈ eval.mcs t → ∀ s ≤ t, truth ψ at s
-      intro h_H s hst
-      have h_ψ_mcs : ψ ∈ B.eval_family.mcs s :=
-        mcs_all_past_implies_phi_at_past B.eval_family t s ψ hst h_H
-      exact (ih s).mp h_ψ_mcs
-    · -- Backward: (∀ s ≤ t, truth ψ at s) → H ψ ∈ eval.mcs t
-      -- SORRY: Same as BMCS truth lemma -- requires temporal saturation.
-      -- Gap: `temporal_eval_saturated_bundle_exists` (TemporalCoherentConstruction.lean).
-      -- Resolution: Task 857.
-      intro _h_all
-      sorry
-
-/--
-If φ is in the eval_family's MCS at time 0, then φ is true there (EvalBMCS version).
-
-**Note**: Due to sorries in the box case of eval_bmcs_truth_lemma, this theorem
-also inherits those limitations.
--/
-theorem eval_bmcs_eval_truth (B : EvalBMCS D) (φ : Formula) (h : φ ∈ B.eval_family.mcs 0) :
-    eval_bmcs_truth_at B.families B.eval_family 0 φ :=
-  (eval_bmcs_truth_lemma B 0 φ).mp h
 
 end Bimodal.Metalogic.Bundle

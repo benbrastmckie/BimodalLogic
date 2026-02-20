@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.SeedCompletion
+import Bimodal.Boneyard.Bundle.SeedCompletion
 import Bimodal.Metalogic.Bundle.BMCS
 
 /-!

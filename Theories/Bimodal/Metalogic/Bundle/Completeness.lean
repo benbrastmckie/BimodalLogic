@@ -59,7 +59,7 @@ into semantic satisfiability.
 
 ## Dependencies
 
-- `Construction.lean`: `construct_bmcs`, `construct_bmcs_contains_context`
+- `Construction.lean`: `ContextConsistent`, `lindenbaumMCS`
 - `TruthLemma.lean`: `bmcs_truth_lemma`, `bmcs_eval_truth`
 - `BMCSTruth.lean`: `bmcs_truth_at`, `bmcs_valid`
 - `BMCS.lean`: BMCS structure and modal coherence
@@ -468,9 +468,9 @@ The main `bmcs_truth_lemma` in TruthLemma.lean is fully sorry-free (Task 857).
 
 - **TemporalCoherentConstruction.lean**: `temporal_coherent_family_exists` (sorry-backed theorem)
 - **DovetailingChain.lean**: 4 sorries for cross-sign propagation and F/P witnesses
-- **TruthLemma.lean**: 4 sorries in `eval_bmcs_truth_lemma` (EvalBMCS structural limitations)
-
 These sorries are for auxiliary constructions, not the main completeness chain.
+
+Note: The `eval_bmcs_truth_lemma` (which had 4 sorries) was archived in task 912.
 -/
 
 end Bimodal.Metalogic.Bundle

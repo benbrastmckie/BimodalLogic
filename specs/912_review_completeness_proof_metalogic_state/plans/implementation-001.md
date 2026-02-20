@@ -3,7 +3,7 @@
 - **Task**: 912 - review_completeness_proof_metalogic_state
 - **Version**: 001
 - **Created**: 2026-02-19
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10-14 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/912_review_completeness_proof_metalogic_state/reports/research-001.md, specs/912_review_completeness_proof_metalogic_state/reports/research-002.md
@@ -287,7 +287,7 @@ directly (as discussed in Section 5 above). Soundness is unaffected.
 
 ## Implementation Phases
 
-### Phase 1: Codebase Audit, Archival, and Documentation Fixes [NOT STARTED]
+### Phase 1: Codebase Audit, Archival, and Documentation Fixes [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Reduce the active sorry count by archiving dead code and fix stale documentation.
@@ -326,9 +326,20 @@ directly (as discussed in Section 5 above). Soundness is unaffected.
 - Sorry count decreases by approximately 34 (from ~47 to ~13 in the active codebase)
 - No sorry or axiom is introduced that was not previously present
 
+**Progress:**
+
+**Session: 2026-02-20, sess_1771546642_46a7c4**
+- Removed: RecursiveSeed/ (5 files), SeedCompletion.lean, SeedBMCS.lean, RecursiveSeed.lean -> Boneyard/Bundle/
+- Removed: `eval_bmcs_truth_lemma` and `eval_bmcs_eval_truth` from TruthLemma.lean (4 sorries)
+- Removed: `construct_bmcs`, `construct_bmcs_from_set` and helpers from Construction.lean (dead code)
+- Fixed: Stale documentation in FMP/FiniteWorldState.lean (strict -> reflexive semantics)
+- Fixed: Stale sorry count in Metalogic.lean (updated to accurate 9 active sorries)
+- Completed: All Phase 1 objectives
+- Sorries: 38 -> 9 in active Metalogic/ (29 eliminated by archival)
+
 ---
 
-### Phase 2: Mathematical Investigation of the Omega-Mismatch [NOT STARTED]
+### Phase 2: Mathematical Investigation of the Omega-Mismatch [COMPLETED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Precisely characterize what is needed to discharge the two `sorry` placeholders
@@ -369,9 +380,23 @@ directly (as discussed in Section 5 above). Soundness is unaffected.
 - A written proof sketch (even if using sorry stubs) that can be implemented in Phase 3
 - `lake build` still succeeds (no new sorries introduced in production code)
 
+**Progress:**
+
+**Session: 2026-02-20, sess_1771546642_46a7c4**
+- Completed: Full investigation of all three approaches to Omega-mismatch
+- Finding 1: Coverage lemma NOT provable from is_modally_saturated (modal saturation
+  provides diamond witnesses, not coverage of all MCSes)
+- Finding 2: Truth lemma with Set.univ NOT directly provable (box case requires IH at
+  arbitrary histories, not just canonical ones)
+- Finding 3: Omega-parametric validity BREAKS soundness for MF/TF axioms (need ShiftClosed)
+- Conclusion: Omega-mismatch is a genuine gap requiring either (a) Validity.lean changes
+  with ShiftClosed condition, or (b) coverage + state-determination, or (c) alternative approach
+- Added: ANALYSIS comment block to Representation.lean documenting findings
+- No changes committed (investigation only)
+
 ---
 
-### Phase 3: Prove the Locality/Coverage Property [NOT STARTED]
+### Phase 3: Prove the Locality/Coverage Property [BLOCKED]
 
 - **Dependencies**: Phase 2
 - **Goal**: Prove the key mathematical lemma identified in Phase 2 that bridges the
@@ -417,7 +442,7 @@ history's state sequence is a valid family (all MCS families are in the bundle b
 
 ---
 
-### Phase 4: Discharge the Representation Sorry Placeholders [NOT STARTED]
+### Phase 4: Discharge the Representation Sorry Placeholders [BLOCKED]
 
 - **Dependencies**: Phase 3
 - **Goal**: Replace the two `sorry` placeholders in `Representation.lean` with actual proofs
@@ -465,7 +490,7 @@ witness can be stated with Omega = Set.univ directly.
 
 ---
 
-### Phase 5: Final Verification and Documentation [NOT STARTED]
+### Phase 5: Final Verification and Documentation [COMPLETED]
 
 - **Dependencies**: Phase 4
 - **Goal**: Verify the full codebase builds cleanly, update sorry counts, and document
@@ -500,6 +525,18 @@ witness can be stated with Omega = Set.univ directly.
 - `lake build` exits with status 0
 - Sorry count is approximately 13 or fewer in active code (down from ~47 before this task)
 - All principal completeness theorems are documented with their exact proof status
+
+**Progress:**
+
+**Session: 2026-02-20, sess_1771546642_46a7c4**
+- Completed: Build verification (lake build succeeds, 1000 jobs)
+- Completed: Sorry count audit: 9 in active Metalogic/ (down from 38 before task 912)
+- Completed: Axiom count audit: 2 active axioms (fully_saturated_bmcs_exists [deprecated], saturated_extension_exists)
+- Completed: Updated Metalogic.lean sorry table with accurate counts
+- Completed: Updated Representation.lean with Phase 2 analysis findings
+- Completed: Updated Completeness.lean cross-references
+- Completed: Implementation summary written
+- Sorries: 38 -> 9 in active Metalogic/ (29 eliminated total)
 
 ---
 

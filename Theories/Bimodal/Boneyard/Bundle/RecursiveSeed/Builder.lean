@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.RecursiveSeed.Core
+import Bimodal.Boneyard.Bundle.RecursiveSeed.Core
 
 /-!
 # RecursiveSeed Builder

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.RecursiveSeed
+import Bimodal.Boneyard.Bundle.RecursiveSeed
 import Bimodal.Metalogic.Bundle.IndexedMCSFamily
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.DovetailingChain

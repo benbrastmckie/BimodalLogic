@@ -53,8 +53,16 @@ Key design choices:
 
 ## Sorry Characterization
 
-Inherited sorry from `fully_saturated_bmcs_exists_int` in TemporalCoherentConstruction.lean.
-No new sorries introduced in this module.
+This module has 2 sorries at the Omega-mismatch boundary (lines ~417, ~449).
+These are NOT inherited from upstream; they represent a genuine semantic gap between
+the BMCS truth (using canonicalOmega) and the standard validity (using Set.univ).
+
+Task 912 Phase 2 investigated three approaches and found all blocked:
+1. Coverage lemma unprovable from is_modally_saturated
+2. Truth lemma with Set.univ unprovable (IH only at canonical histories)
+3. Omega-parametric validity breaks MF/TF soundness (needs ShiftClosed)
+
+The most promising resolution is approach (A): add ShiftClosed to validity definition.
 
 ## Main Results
 
@@ -367,20 +375,36 @@ then it is derivable from the empty context.
 3. So φ is not valid in that model
 4. Contradiction with valid φ
 
-**Note on Omega-mismatch**: `valid` uses `Set.univ` as Omega, while `satisfiable`
-provides a specific `canonicalOmega`. The proof works because:
-- satisfiable gives us truth_at M (canonicalOmega B) τ t φ.neg
-- truth_at for neg (= imp bot) only needs the truth of φ at (M, τ, t)
-- valid gives truth_at M Set.univ τ t φ, but we need truth_at M (canonicalOmega B) τ t φ
-- For the contradiction, we need matching Omega values
+**Omega-mismatch analysis (Task 912)**:
 
-Resolution: We use sorry for the Omega-mismatch. This requires either:
-(a) Changing valid to quantify over Omega, or
-(b) Proving truth monotonicity: truth_at M Omega1 τ t φ → Omega1 ⊆ Omega2 → truth_at M Omega2 τ t φ
-    (which fails for imp due to contravariance in the box case)
-See specs/910_phase4_canonical_model_reconstruction/reports/research-001.md for analysis.
+`valid` uses `Set.univ` as Omega, while `satisfiable` provides `canonicalOmega B`.
+The contradiction requires matching Omega values, which we cannot achieve because:
 
-TODO: Resolve Omega-mismatch via coordinated Validity.lean changes (follow-up task).
+1. **Truth monotonicity fails**: truth_at is neither monotone nor anti-monotone in Omega
+   because box quantifies over Omega (anti-monotone) while appearing under imp (contravariant).
+
+2. **Coverage lemma unprovable**: is_modally_saturated (from fully_saturated_bmcs_exists_int)
+   provides diamond witnesses, NOT coverage of all MCSes. The canonical frame's WorldState
+   type `{ S : Set Formula // SetMaximalConsistent S }` includes ALL MCSes, but families
+   only contain specific ones. So canonicalOmega B =/= Set.univ.
+
+3. **Truth lemma with Set.univ unprovable**: The box case of canonical_truth_lemma_all
+   requires IH at canonical histories (σ ∈ canonicalOmega). Extending to Set.univ would
+   require IH at arbitrary histories, which the induction structure doesn't provide.
+
+4. **Omega-parametric validity breaks soundness**: Making valid quantify over all Omega
+   (not just Set.univ) would break soundness for MF (Box phi -> G phi) and TF axioms,
+   which use Set.univ_shift_closed. Arbitrary Omega is not shift-closed.
+
+**Resolution paths** (ranked by feasibility):
+- (A) Add ShiftClosed Omega as condition to valid/semantic_consequence, prove soundness
+      still works, prove canonicalOmega is shift-closed (or use Set.univ in representation)
+- (B) Prove truth equivalence for canonical model: truth_at M Omega1 σ t φ ↔ truth_at M Omega2 σ t φ
+      when both Omega contain all states reachable from σ (requires coverage + state-determination)
+- (C) Leave sorry and document as known gap requiring Validity.lean redesign
+
+See specs/910_phase4_canonical_model_reconstruction/reports/research-001.md for initial analysis.
+See specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md Phase 2 for full investigation.
 -/
 theorem standard_weak_completeness (φ : Formula) (h_valid : valid φ) :
     Nonempty (DerivationTree [] φ) := by
@@ -411,9 +435,7 @@ semantics), then φ is derivable from Γ.
 4. Therefore φ is not a semantic consequence of Γ
 5. Contradiction
 
-See standard_weak_completeness for Omega-mismatch discussion.
-
-TODO: Resolve Omega-mismatch via coordinated Validity.lean changes (follow-up task).
+See standard_weak_completeness for Omega-mismatch analysis (Task 912).
 -/
 theorem standard_strong_completeness (Γ : List Formula) (φ : Formula)
     (h_conseq : semantic_consequence Γ φ) :

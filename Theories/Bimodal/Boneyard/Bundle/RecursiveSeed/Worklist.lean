@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.RecursiveSeed.Builder
+import Bimodal.Boneyard.Bundle.RecursiveSeed.Builder
 
 /-!
 # RecursiveSeed Worklist Algorithm
