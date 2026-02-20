@@ -1,5 +1,5 @@
 ---
-next_project_number: 914
+next_project_number: 917
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,36 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
+- **Effort**: 12-20 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-20
+
+**Description**: Close the 4 remaining sorries in `DovetailingChain.lean` by implementing F/P witness obligation tracking in the chain construction and resolving the cross-sign propagation gap. Phase 1 unifies the split forward/backward half-chains into a single interleaved dovetailing chain (closes cross-sign forward_G and backward_H sorries). Phase 2 adds F/P witness scheduling via Cantor-pairing enumeration of all (time, formula) obligations (closes forward_F and backward_P sorries). See description.md for full proof strategy and key lemmas.
+
+---
+
+### 915. Document BFMCS proof architecture and remaining lacunae
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-20
+
+**Description**: Write comprehensive documentation explaining the two-level bundling ontology (BFMCS = temporal family, BMCS = modal bundle of families), the propagation requirements as construction constraints, why G-content propagates automatically while F-obligations require explicit witness tracking, the consistency argument via `temporal_witness_seed_consistent`, and precisely where the 4 remaining sorries in DovetailingChain.lean are and what closes them.
+
+---
+
+### 914. Rename IndexedMCSFamily to BFMCS across codebase
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-20
+
+**Description**: Rename `IndexedMCSFamily` to `BFMCS` (Bundled Family of Maximal Consistent Sets) across 420 occurrences in 38 files to make the two-level ontological structure explicit. Rename `IndexedMCSFamily.lean` to `BFMCS.lean`, update all imports, and add doc comments explaining the BFMCS ontology.
+
+---
 
 ### 912. Review completeness proof and metalogic state after task 910
 - **Effort**: 18-27 hours (revised)
