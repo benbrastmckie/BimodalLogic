@@ -107,19 +107,19 @@ def canonicalModel (B : BMCS Int) : TaskModel (canonicalFrame B) where
   valuation := fun w p => Formula.atom p ∈ w.val
 
 /-- Construct a CanonicalWorldState from a family at time t. -/
-def mkCanonicalWorldState (B : BMCS Int) (fam : IndexedMCSFamily Int) (t : Int) :
+def mkCanonicalWorldState (B : BMCS Int) (fam : BFMCS Int) (t : Int) :
     CanonicalWorldState B :=
   ⟨fam.mcs t, fam.is_mcs t⟩
 
 /-- The canonical world history for a family, with time-varying states. -/
-def canonicalHistory (B : BMCS Int) (fam : IndexedMCSFamily Int) (_hfam : fam ∈ B.families) :
+def canonicalHistory (B : BMCS Int) (fam : BFMCS Int) (_hfam : fam ∈ B.families) :
     WorldHistory (canonicalFrame B) where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => mkCanonicalWorldState B fam t
   respects_task := fun _ _ _ _ _ => trivial
 
-theorem canonicalHistory_states_val (B : BMCS Int) (fam : IndexedMCSFamily Int)
+theorem canonicalHistory_states_val (B : BMCS Int) (fam : BFMCS Int)
     (hfam : fam ∈ B.families) (t : Int)
     (ht : (canonicalHistory B fam hfam).domain t) :
     ((canonicalHistory B fam hfam).states t ht).val = fam.mcs t := rfl
@@ -136,10 +136,10 @@ soundness (time_shift_preserves_truth), not for completeness.
 
 /-- The set of canonical histories: one for each family in the BMCS. -/
 def canonicalOmega (B : BMCS Int) : Set (WorldHistory (canonicalFrame B)) :=
-  { sigma | ∃ (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families), sigma = canonicalHistory B fam hfam }
+  { sigma | ∃ (fam : BFMCS Int) (hfam : fam ∈ B.families), sigma = canonicalHistory B fam hfam }
 
 /-- Every canonical history is in canonicalOmega. -/
-theorem canonicalHistory_mem_canonicalOmega (B : BMCS Int) (fam : IndexedMCSFamily Int)
+theorem canonicalHistory_mem_canonicalOmega (B : BMCS Int) (fam : BFMCS Int)
     (hfam : fam ∈ B.families) :
     canonicalHistory B fam hfam ∈ canonicalOmega B :=
   ⟨fam, hfam, rfl⟩
@@ -155,12 +155,12 @@ the ShiftClosed condition required by `valid`.
 
 /-- The shift-closed canonical Omega: all time-shifts of canonical histories. -/
 def shiftClosedCanonicalOmega (B : BMCS Int) : Set (WorldHistory (canonicalFrame B)) :=
-  { σ | ∃ (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) (delta : Int),
+  { σ | ∃ (fam : BFMCS Int) (hfam : fam ∈ B.families) (delta : Int),
     σ = WorldHistory.time_shift (canonicalHistory B fam hfam) delta }
 
 /-- Time-shift of canonical histories composes: shifting by delta then delta' equals shifting by delta + delta'. -/
 private theorem time_shift_canonicalHistory_compose (B : BMCS Int)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families)
+    (fam : BFMCS Int) (hfam : fam ∈ B.families)
     (delta delta' : Int) :
     WorldHistory.time_shift (WorldHistory.time_shift (canonicalHistory B fam hfam) delta) delta' =
     WorldHistory.time_shift (canonicalHistory B fam hfam) (delta + delta') := by
@@ -171,7 +171,7 @@ private theorem time_shift_canonicalHistory_compose (B : BMCS Int)
 
 /-- A canonical history equals its time-shift by 0. -/
 private theorem canonicalHistory_eq_time_shift_zero (B : BMCS Int)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) :
+    (fam : BFMCS Int) (hfam : fam ∈ B.families) :
     canonicalHistory B fam hfam = WorldHistory.time_shift (canonicalHistory B fam hfam) 0 := by
   simp only [WorldHistory.time_shift, canonicalHistory]
   congr 1; funext t ht; simp only [mkCanonicalWorldState]
@@ -226,7 +226,7 @@ The proof uses:
 3. forward_G and backward_H to extract Box phi at specific times
 -/
 theorem box_persistent
-    (fam : IndexedMCSFamily Int)
+    (fam : BFMCS Int)
     (φ : Formula) (t s : Int)
     (h_box : Formula.box φ ∈ fam.mcs t) :
     Formula.box φ ∈ fam.mcs s := by
@@ -268,7 +268,7 @@ The statement quantifies over all families so that the box case IH is strong eno
 -/
 theorem canonical_truth_lemma_all (B : BMCS Int)
     (h_tc : B.temporally_coherent) (φ : Formula)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) (t : Int) :
+    (fam : BFMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔ truth_at (canonicalModel B) (canonicalOmega B) (canonicalHistory B fam hfam) t φ := by
   revert fam hfam t
   induction φ with
@@ -407,7 +407,7 @@ theorem canonical_truth_lemma_all (B : BMCS Int)
 /-- Convenience wrapper: truth lemma for a specific family. -/
 theorem canonical_truth_lemma (B : BMCS Int)
     (h_tc : B.temporally_coherent)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families)
+    (fam : BFMCS Int) (hfam : fam ∈ B.families)
     (t : Int) (φ : Formula) :
     φ ∈ fam.mcs t ↔ truth_at (canonicalModel B) (canonicalOmega B) (canonicalHistory B fam hfam) t φ :=
   canonical_truth_lemma_all B h_tc φ fam hfam t
@@ -432,7 +432,7 @@ via `time_shift_preserves_truth`.
 -/
 theorem shifted_truth_lemma (B : BMCS Int)
     (h_tc : B.temporally_coherent) (φ : Formula)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) (t : Int) :
+    (fam : BFMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔
     truth_at (canonicalModel B) (shiftClosedCanonicalOmega B) (canonicalHistory B fam hfam) t φ := by
   revert fam hfam t

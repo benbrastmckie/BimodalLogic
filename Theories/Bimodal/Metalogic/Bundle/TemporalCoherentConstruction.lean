@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.CoherentConstruction
@@ -188,13 +188,13 @@ lemma mcs_double_neg_elim {M : Set Formula} (h_mcs : SetMaximalConsistent M)
 The backward lemmas are proven directly using contraposition and MCS properties,
 without requiring the full GContent/TemporalWitnessSeed infrastructure.
 
-The key insight is that for IndexedMCSFamily, the forward_F property (exists s > t
+The key insight is that for BFMCS, the forward_F property (exists s > t
 with psi in fam.mcs s when F psi in fam.mcs t) can be proven via MCS maximality
 and existing forward_G/backward_H properties.
 -/
 
 /--
-TemporalCoherentFamily: An IndexedMCSFamily with temporal forward coherence properties.
+TemporalCoherentFamily: An BFMCS with temporal forward coherence properties.
 
 The key properties are:
 - `forward_F`: If F φ ∈ fam.mcs t, then exists s > t with φ ∈ fam.mcs s
@@ -203,7 +203,7 @@ The key properties are:
 These are the existential duals of forward_G and backward_H.
 -/
 structure TemporalCoherentFamily (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] extends IndexedMCSFamily D where
+    [IsOrderedAddMonoid D] extends BFMCS D where
   /-- Forward F coherence: F φ at t implies witness at some s > t -/
   forward_F : ∀ t : D, ∀ φ : Formula,
     Formula.some_future φ ∈ mcs t → ∃ s : D, t < s ∧ φ ∈ mcs s
@@ -330,7 +330,7 @@ def TemporallySaturated (M : Set Formula) : Prop :=
   TemporalForwardSaturated M ∧ TemporalBackwardSaturated M
 
 /--
-TemporalEvalSaturatedBundle: A constant IndexedMCSFamily with temporally saturated MCS.
+TemporalEvalSaturatedBundle: A constant BFMCS with temporally saturated MCS.
 
 This structure provides:
 1. A constant family (same MCS M at all times)
@@ -349,10 +349,10 @@ structure TemporalEvalSaturatedBundle (D : Type*) [AddCommGroup D] [LinearOrder 
   backward_saturated : TemporalBackwardSaturated baseMCS
 
 /--
-Convert a TemporalEvalSaturatedBundle to a constant IndexedMCSFamily.
+Convert a TemporalEvalSaturatedBundle to a constant BFMCS.
 -/
-noncomputable def TemporalEvalSaturatedBundle.toIndexedMCSFamily
-    (B : TemporalEvalSaturatedBundle D) : IndexedMCSFamily D where
+noncomputable def TemporalEvalSaturatedBundle.toBFMCS
+    (B : TemporalEvalSaturatedBundle D) : BFMCS D where
   mcs _ := B.baseMCS
   is_mcs _ := B.is_mcs
   forward_G := fun _ _ phi _ h_G => by
@@ -365,11 +365,11 @@ noncomputable def TemporalEvalSaturatedBundle.toIndexedMCSFamily
     exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_H
 
 /--
-The toIndexedMCSFamily conversion produces a constant family.
+The toBFMCS conversion produces a constant family.
 -/
-lemma TemporalEvalSaturatedBundle.toIndexedMCSFamily_constant
+lemma TemporalEvalSaturatedBundle.toBFMCS_constant
     (B : TemporalEvalSaturatedBundle D) :
-    IsConstantFamily B.toIndexedMCSFamily :=
+    IsConstantFamily B.toBFMCS :=
   ⟨B.baseMCS, fun _ => rfl⟩
 
 variable [Nontrivial D]
@@ -409,7 +409,7 @@ Convert a TemporalEvalSaturatedBundle to a TemporalCoherentFamily.
 -/
 noncomputable def TemporalEvalSaturatedBundle.toTemporalCoherentFamily
     (B : TemporalEvalSaturatedBundle D) : TemporalCoherentFamily D where
-  toIndexedMCSFamily := B.toIndexedMCSFamily
+  toBFMCS := B.toBFMCS
   forward_F := fun t psi h_F => by
     have h_psi : psi ∈ B.baseMCS := B.forward_saturated psi h_F
     obtain ⟨s, hs⟩ := exists_gt_in_ordered_group (D := D) t
@@ -595,7 +595,7 @@ sorries require witness enumeration which is not yet implemented.
 -/
 theorem temporal_coherent_family_exists_Int
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (fam : IndexedMCSFamily Int),
+    ∃ (fam : BFMCS Int),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : Int, t < s ∧ φ ∈ fam.mcs s) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : Int, s < t ∧ φ ∈ fam.mcs s) :=
@@ -629,7 +629,7 @@ This avoids the cross-sign propagation problem that blocked DovetailingChain, bu
 theorem temporal_coherent_family_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D]
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (fam : IndexedMCSFamily D),
+    ∃ (fam : BFMCS D),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
       (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
       (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s) := by

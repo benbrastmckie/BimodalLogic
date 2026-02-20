@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -81,7 +81,7 @@ This avoids the problematic quantification over ALL possible MCS families.
 -/
 structure BMCS where
   /-- The collection of indexed MCS families forming the bundle -/
-  families : Set (IndexedMCSFamily D)
+  families : Set (BFMCS D)
 
   /-- The bundle is non-empty -/
   nonempty : families.Nonempty
@@ -107,7 +107,7 @@ structure BMCS where
 
       This is the family containing the original consistent context Gamma.
   -/
-  eval_family : IndexedMCSFamily D
+  eval_family : BFMCS D
 
   /-- The evaluation family is in the bundle -/
   eval_family_mem : eval_family ∈ families
@@ -130,7 +130,7 @@ Reflexivity: Box phi in MCS implies phi in MCS (from T axiom closure of MCS).
 This is the key insight: modal_forward gives us reflexivity "for free"
 because the quantification includes the original family.
 -/
-theorem bmcs_reflexivity (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+theorem bmcs_reflexivity (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box φ ∈ fam.mcs t) : φ ∈ fam.mcs t :=
   B.modal_forward fam hfam φ t h fam hfam
 
@@ -156,7 +156,7 @@ Actually, transitivity in S5 says: Box phi -> Box Box phi (4 axiom).
 For our purposes, we prove the more useful direction:
 If Box (Box phi) in MCS, then Box phi in MCS.
 -/
-theorem bmcs_transitivity (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+theorem bmcs_transitivity (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box (Formula.box φ) ∈ fam.mcs t) :
     Formula.box φ ∈ fam.mcs t :=
   bmcs_reflexivity B fam hfam (Formula.box φ) t h
@@ -166,16 +166,16 @@ theorem bmcs_transitivity (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam �
 -/
 
 /-- Get the MCS of a family at a specific time -/
-def BMCS.mcs_at (B : BMCS D) (fam : IndexedMCSFamily D) (t : D) : Set Formula :=
+def BMCS.mcs_at (B : BMCS D) (fam : BFMCS D) (t : D) : Set Formula :=
   fam.mcs t
 
 /-- The MCS at any family and time is maximal consistent -/
-lemma BMCS.is_mcs (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families) (t : D) :
+lemma BMCS.is_mcs (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families) (t : D) :
     SetMaximalConsistent (fam.mcs t) :=
   fam.is_mcs t
 
 /-- The MCS at any family and time is consistent -/
-lemma BMCS.consistent (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families) (t : D) :
+lemma BMCS.consistent (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families) (t : D) :
     SetConsistent (fam.mcs t) :=
   (fam.is_mcs t).1
 
@@ -203,7 +203,7 @@ there exists fam' in families where phi in fam'.mcs t.
 
 This requires careful reasoning with negation completeness of MCS.
 -/
-theorem bmcs_diamond_witness (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+theorem bmcs_diamond_witness (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D)
     (h_diamond : Formula.neg (Formula.box (Formula.neg φ)) ∈ fam.mcs t) :
     ∃ fam' ∈ B.families, φ ∈ fam'.mcs t := by
@@ -245,7 +245,7 @@ lemma BMCS.box_from_universal (B : BMCS D) (φ : Formula) (t : D)
 /--
 If Box phi is in some family at time t, then phi is in all families at time t.
 -/
-lemma BMCS.phi_from_box (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+lemma BMCS.phi_from_box (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box φ ∈ fam.mcs t) :
     ∀ fam' ∈ B.families, φ ∈ fam'.mcs t :=
   B.modal_forward fam hfam φ t h
@@ -253,7 +253,7 @@ lemma BMCS.phi_from_box (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ 
 /--
 Box phi in MCS iff phi in all families' MCSes (the key bidirectional lemma).
 -/
-theorem BMCS.box_iff_universal (B : BMCS D) (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+theorem BMCS.box_iff_universal (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) :
     Formula.box φ ∈ fam.mcs t ↔ ∀ fam' ∈ B.families, φ ∈ fam'.mcs t := by
   constructor

@@ -262,7 +262,7 @@ BMCS semantic consequence: φ is a consequence of Γ if whenever Γ is satisfied
 -/
 def bmcs_consequence (Γ : List Formula) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D],
-  ∀ (B : BMCS D) (fam : IndexedMCSFamily D) (_ : fam ∈ B.families) (t : D),
+  ∀ (B : BMCS D) (fam : BFMCS D) (_ : fam ∈ B.families) (t : D),
   (∀ γ ∈ Γ, bmcs_truth_at B fam t γ) → bmcs_truth_at B fam t φ
 
 /--
@@ -271,7 +271,7 @@ Int-specific BMCS consequence: φ is a consequence of Γ over Int-BMCS.
 We use this to avoid universe issues with the fully polymorphic `bmcs_consequence`.
 -/
 def bmcs_consequence_Int (Γ : List Formula) (φ : Formula) : Prop :=
-  ∀ (B : BMCS Int) (fam : IndexedMCSFamily Int) (_ : fam ∈ B.families) (t : Int),
+  ∀ (B : BMCS Int) (fam : BFMCS Int) (_ : fam ∈ B.families) (t : Int),
   (∀ γ ∈ Γ, bmcs_truth_at B fam t γ) → bmcs_truth_at B fam t φ
 
 /--

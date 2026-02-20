@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
@@ -11,7 +11,7 @@ import Bimodal.Syntax.Formula
 This module provides primitive building blocks for BMCS construction:
 - `ContextConsistent`: Consistency predicate for list contexts
 - `contextAsSet` / `list_consistent_to_set_consistent`: Bridge from list to set consistency
-- `constantIndexedMCSFamily`: A family assigning the same MCS at every time (T-axiom coherence)
+- `constantBFMCS`: A family assigning the same MCS at every time (T-axiom coherence)
 - `singleFamilyBMCS`: Single-family BMCS wrapper (1 sorry in modal_backward)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
 
@@ -72,14 +72,14 @@ lemma list_consistent_to_set_consistent {Gamma : List Formula}
   exact ⟨Bimodal.ProofSystem.DerivationTree.weakening L Gamma Formula.bot d hL⟩
 
 /-!
-## Stage 2: Building IndexedMCSFamily from MCS
+## Stage 2: Building BFMCS from MCS
 
-We create a constant IndexedMCSFamily where the same MCS is used at every time point.
+We create a constant BFMCS where the same MCS is used at every time point.
 This satisfies all temporal coherence conditions trivially.
 -/
 
 /--
-Build a constant IndexedMCSFamily from a single MCS.
+Build a constant BFMCS from a single MCS.
 
 The family assigns the same MCS to every time point. All temporal coherence
 conditions hold trivially because the MCS is the same at all times.
@@ -88,8 +88,8 @@ conditions hold trivially because the MCS is the same at all times.
 - forward_G: G phi at t and t < t' implies phi at t' - by T-axiom (G phi -> phi)
 - backward_H: H phi at t and t' < t implies phi at t' - by T-axiom (H phi -> phi)
 -/
-noncomputable def constantIndexedMCSFamily (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    IndexedMCSFamily D where
+noncomputable def constantBFMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    BFMCS D where
   mcs := fun _ => M
   is_mcs := fun _ => h_mcs
   forward_G := fun t t' phi _ hG =>
@@ -110,8 +110,8 @@ noncomputable def constantIndexedMCSFamily (M : Set Formula) (h_mcs : SetMaximal
 /--
 The MCS at any time in a constant family is the original MCS.
 -/
-lemma constantIndexedMCSFamily_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsistent M) (t : D) :
-    (constantIndexedMCSFamily M h_mcs (D := D)).mcs t = M := rfl
+lemma constantBFMCS_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsistent M) (t : D) :
+    (constantBFMCS M h_mcs (D := D)).mcs t = M := rfl
 
 /-!
 ## Stage 3: Constructing BMCS
@@ -168,14 +168,14 @@ for single-family modal backward entirely.
 -/
 
 /--
-Build a BMCS from a single IndexedMCSFamily.
+Build a BMCS from a single BFMCS.
 
 **DEPRECATED**: The `modal_backward` field uses sorry because the single-family
 approach cannot prove modal backward from first principles. Use
 `construct_temporal_bmcs` from `TemporalCoherentConstruction.lean` for new code,
 which uses the correct `fully_saturated_bmcs_exists` axiom instead.
 -/
-noncomputable def singleFamilyBMCS (fam : IndexedMCSFamily D) : BMCS D where
+noncomputable def singleFamilyBMCS (fam : BFMCS D) : BMCS D where
   families := {fam}
   nonempty := ⟨fam, Set.mem_singleton fam⟩
   modal_forward := fun fam' hfam' phi t hBox fam'' hfam'' =>
@@ -201,7 +201,7 @@ noncomputable def singleFamilyBMCS (fam : IndexedMCSFamily D) : BMCS D where
 /--
 The evaluation family of a single-family BMCS is the original family.
 -/
-lemma singleFamilyBMCS_eval_family_eq (fam : IndexedMCSFamily D) :
+lemma singleFamilyBMCS_eval_family_eq (fam : BFMCS D) :
     (singleFamilyBMCS fam (D := D)).eval_family = fam := rfl
 
 /-!
@@ -269,7 +269,7 @@ lemma lindenbaumMCS_set_is_mcs (S : Set Formula) (h_cons : SetConsistent S) :
 This module provides:
 - `ContextConsistent`: Consistency predicate for list contexts
 - `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge
-- `constantIndexedMCSFamily`: Constant-time MCS family (temporal coherence via T-axioms)
+- `constantBFMCS`: Constant-time MCS family (temporal coherence via T-axioms)
 - `singleFamilyBMCS`: Single-family BMCS construction (1 sorry in modal_backward)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
 

@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -9,13 +9,13 @@ import Bimodal.Theorems.GeneralizedNecessitation
 /-!
 # Dovetailing Temporal Chain Construction
 
-This module builds an `IndexedMCSFamily Int` with temporal coherence properties,
+This module builds an `BFMCS Int` with temporal coherence properties,
 proving `temporal_coherent_family_exists` as a THEOREM (replacing the axiom in
 `TemporalCoherentConstruction.lean`).
 
 ## Construction Overview
 
-Given a consistent context Gamma, we build an `IndexedMCSFamily Int` using an
+Given a consistent context Gamma, we build an `BFMCS Int` using an
 interleaved dovetailing construction that enables cross-sign temporal propagation:
 
 ### Construction Order (Dovetailing)
@@ -567,7 +567,7 @@ lemma dovetailChainSet_backward_H_nonpos (base : Set Formula) (h_base_cons : Set
 /-!
 ## Dovetailing Chain Family Construction
 
-Build the `IndexedMCSFamily Int` from the chain, with proven same-sign coherence
+Build the `BFMCS Int` from the chain, with proven same-sign coherence
 and sorry for cross-sign cases and F/P witnesses.
 -/
 
@@ -586,7 +586,7 @@ Build the dovetailing chain family from a consistent context.
 - backward_P (witness construction)
 -/
 noncomputable def buildDovetailingChainFamily (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    IndexedMCSFamily Int where
+    BFMCS Int where
   mcs := fun t =>
     let base := contextAsSet Gamma
     let h_base_cons := list_consistent_to_set_consistent h_cons
@@ -654,7 +654,7 @@ honest about incompleteness.
 -/
 theorem temporal_coherent_family_exists_theorem
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (fam : IndexedMCSFamily Int),
+    ∃ (fam : BFMCS Int),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : Int, t < s ∧ φ ∈ fam.mcs s) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : Int, s < t ∧ φ ∈ fam.mcs s) := by

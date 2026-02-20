@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BMCSTruth
-import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Bundle.CoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -35,7 +35,7 @@ which is a standard result from Henkin-style completeness proofs.
 
 ```
 theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
-    (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+    (fam : BFMCS D) (hfam : fam ∈ B.families)
     (t : D) (φ : Formula) :
     φ ∈ fam.mcs t ↔ bmcs_truth_at B fam t φ
 ```
@@ -86,7 +86,7 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 ## Helper Lemmas for Temporal Forward Direction
 
 These lemmas handle the forward direction (MCS membership → truth) for temporal cases.
-The forward direction uses the existing coherence conditions in IndexedMCSFamily.
+The forward direction uses the existing coherence conditions in BFMCS.
 -/
 
 /--
@@ -98,7 +98,7 @@ If `G φ ∈ fam.mcs t`, then for all `s ≥ t`, we have `φ ∈ fam.mcs s`.
 - For `s = t`: Use temporal T axiom (`G φ → φ`) via MCS closure
 - For `s > t`: Use `forward_G` coherence condition
 -/
-lemma mcs_all_future_implies_phi_at_future (fam : IndexedMCSFamily D) (t s : D) (φ : Formula)
+lemma mcs_all_future_implies_phi_at_future (fam : BFMCS D) (t s : D) (φ : Formula)
     (hts : t ≤ s) (hG : Formula.all_future φ ∈ fam.mcs t) : φ ∈ fam.mcs s := by
   rcases hts.lt_or_eq with h_lt | h_eq
   · -- s > t: use forward_G
@@ -121,7 +121,7 @@ If `H φ ∈ fam.mcs t`, then for all `s ≤ t`, we have `φ ∈ fam.mcs s`.
 - For `s = t`: Use temporal T axiom (`H φ → φ`) via MCS closure
 - For `s < t`: Use `backward_H` coherence condition
 -/
-lemma mcs_all_past_implies_phi_at_past (fam : IndexedMCSFamily D) (t s : D) (φ : Formula)
+lemma mcs_all_past_implies_phi_at_past (fam : BFMCS D) (t s : D) (φ : Formula)
     (hst : s ≤ t) (hH : Formula.all_past φ ∈ fam.mcs t) : φ ∈ fam.mcs s := by
   rcases hst.lt_or_eq with h_lt | h_eq
   · -- s < t: use backward_H
@@ -140,7 +140,7 @@ lemma mcs_all_past_implies_phi_at_past (fam : IndexedMCSFamily D) (t s : D) (φ 
 
 The backward direction (truth at all times -> MCS membership) for the temporal
 operators G and H requires structural properties (temporal_backward_G/H) on
-IndexedMCSFamily. Once Task 857 adds these properties, the proofs use MCS
+BFMCS. Once Task 857 adds these properties, the proofs use MCS
 maximality by contraposition - the same pattern as modal_backward in BMCS.
 
 The sorries in backward cases block this file from publication. See the module
@@ -284,7 +284,7 @@ via the `temporally_coherent` hypothesis on the BMCS.
 (via the construction that provides `temporally_coherent` BMCS).
 -/
 theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
-    (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+    (fam : BFMCS D) (hfam : fam ∈ B.families)
     (t : D) (φ : Formula) :
     φ ∈ fam.mcs t ↔ bmcs_truth_at B fam t φ := by
   induction φ generalizing fam t with
@@ -387,7 +387,7 @@ theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily D := {
-        toIndexedMCSFamily := fam
+        toBFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
@@ -412,7 +412,7 @@ theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily D := {
-        toIndexedMCSFamily := fam
+        toBFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
@@ -451,7 +451,7 @@ Box membership is equivalent to universal truth over bundle families.
 This is a direct corollary combining the truth lemma with box semantics.
 -/
 theorem bmcs_box_iff_all_true (B : BMCS D) (h_tc : B.temporally_coherent)
-    (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families)
+    (fam : BFMCS D) (hfam : fam ∈ B.families)
     (t : D) (φ : Formula) :
     Formula.box φ ∈ fam.mcs t ↔ ∀ fam' ∈ B.families, bmcs_truth_at B fam' t φ := by
   rw [bmcs_truth_lemma B h_tc fam hfam t (Formula.box φ)]
@@ -460,7 +460,7 @@ theorem bmcs_box_iff_all_true (B : BMCS D) (h_tc : B.temporally_coherent)
 /--
 Truth of □φ at any family is the same (family-independent).
 -/
-theorem bmcs_box_truth_unique (B : BMCS D) (fam1 fam2 : IndexedMCSFamily D)
+theorem bmcs_box_truth_unique (B : BMCS D) (fam1 fam2 : BFMCS D)
     (_ : fam1 ∈ B.families) (_ : fam2 ∈ B.families) (t : D) (φ : Formula) :
     bmcs_truth_at B fam1 t (Formula.box φ) ↔ bmcs_truth_at B fam2 t (Formula.box φ) := by
   simp only [bmcs_truth_at]

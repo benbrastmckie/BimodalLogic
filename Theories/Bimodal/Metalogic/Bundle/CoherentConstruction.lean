@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -38,7 +38,7 @@ The Coherent Witness Chain approach constructs witnesses that are coherent BY DE
 
 The key theorem `diamond_boxcontent_consistent` is proven for **constant families**
 (where `fam.mcs t = fam.mcs s` for all t, s). This is exactly what we have in practice:
-the base family is always constructed via `constantIndexedMCSFamily`.
+the base family is always constructed via `constantBFMCS`.
 
 For non-constant families, BoxContent (spanning all times) may include formulas
 whose boxes exist at different times, making the time-coherence argument fail.
@@ -106,7 +106,7 @@ in the family's MCS at any time.
 This captures "what the family believes is necessary". For a witness to be
 coherent with this family, the witness must contain all of BoxContent.
 -/
-def BoxContent (fam : IndexedMCSFamily D) : Set Formula :=
+def BoxContent (fam : BFMCS D) : Set Formula :=
   {chi | ∃ t : D, Formula.box chi ∈ fam.mcs t}
 
 /--
@@ -114,13 +114,13 @@ BoxContent at a specific time: the set of all chi where Box chi is in fam.mcs t.
 
 This is a time-restricted version used for some proofs.
 -/
-def BoxContentAt (fam : IndexedMCSFamily D) (t : D) : Set Formula :=
+def BoxContentAt (fam : BFMCS D) (t : D) : Set Formula :=
   {chi | Formula.box chi ∈ fam.mcs t}
 
 /--
 BoxContentAt is a subset of BoxContent.
 -/
-lemma BoxContentAt_subset_BoxContent (fam : IndexedMCSFamily D) (t : D) :
+lemma BoxContentAt_subset_BoxContent (fam : BFMCS D) (t : D) :
     BoxContentAt fam t ⊆ BoxContent fam := by
   intro chi h_at
   exact ⟨t, h_at⟩
@@ -128,7 +128,7 @@ lemma BoxContentAt_subset_BoxContent (fam : IndexedMCSFamily D) (t : D) :
 /--
 If Box chi is in the family's MCS at time t, then chi is in BoxContent.
 -/
-lemma box_mem_implies_boxcontent (fam : IndexedMCSFamily D) (chi : Formula) (t : D)
+lemma box_mem_implies_boxcontent (fam : BFMCS D) (chi : Formula) (t : D)
     (h : Formula.box chi ∈ fam.mcs t) : chi ∈ BoxContent fam :=
   ⟨t, h⟩
 
@@ -139,27 +139,27 @@ The seed is {psi} ∪ BoxContent(base). This ensures:
 1. The witness contains psi (witnessing the Diamond)
 2. The witness contains all chi where Box chi is in base (ensuring coherence)
 -/
-def WitnessSeed (base : IndexedMCSFamily D) (psi : Formula) : Set Formula :=
+def WitnessSeed (base : BFMCS D) (psi : Formula) : Set Formula :=
   {psi} ∪ BoxContent base
 
 /--
 psi is in its own WitnessSeed.
 -/
-lemma psi_mem_WitnessSeed (base : IndexedMCSFamily D) (psi : Formula) :
+lemma psi_mem_WitnessSeed (base : BFMCS D) (psi : Formula) :
     psi ∈ WitnessSeed base psi :=
   Set.mem_union_left _ (Set.mem_singleton psi)
 
 /--
 BoxContent is a subset of WitnessSeed.
 -/
-lemma BoxContent_subset_WitnessSeed (base : IndexedMCSFamily D) (psi : Formula) :
+lemma BoxContent_subset_WitnessSeed (base : BFMCS D) (psi : Formula) :
     BoxContent base ⊆ WitnessSeed base psi :=
   Set.subset_union_right
 
 /--
 If Box chi is in base.mcs at any time, then chi is in WitnessSeed.
 -/
-lemma box_in_base_implies_WitnessSeed (base : IndexedMCSFamily D) (psi chi : Formula) (t : D)
+lemma box_in_base_implies_WitnessSeed (base : BFMCS D) (psi chi : Formula) (t : D)
     (h : Formula.box chi ∈ base.mcs t) : chi ∈ WitnessSeed base psi :=
   BoxContent_subset_WitnessSeed base psi (box_mem_implies_boxcontent base chi t h)
 
@@ -181,9 +181,9 @@ This structure captures a witness family that:
 The coherence property is crucial: it ensures that when we build a bundle
 from a base and its witnesses, box-coherence holds BY CONSTRUCTION.
 -/
-structure CoherentWitness (base : IndexedMCSFamily D) where
+structure CoherentWitness (base : BFMCS D) where
   /-- The witness family -/
-  family : IndexedMCSFamily D
+  family : BFMCS D
   /-- The formula being witnessed (inner formula of Diamond) -/
   witnessed : Formula
   /-- The witness contains the witnessed formula at all times -/
@@ -196,7 +196,7 @@ A CoherentWitness's family contains chi at time t if Box chi is in base at any t
 
 This is the key coherence property that makes box-coherence work.
 -/
-lemma CoherentWitness.coherent_with_base (base : IndexedMCSFamily D)
+lemma CoherentWitness.coherent_with_base (base : BFMCS D)
     (w : CoherentWitness base) (chi : Formula) (s t : D)
     (h_box : Formula.box chi ∈ base.mcs s) : chi ∈ w.family.mcs t :=
   w.contains_boxcontent chi ⟨s, h_box⟩ t
@@ -211,13 +211,13 @@ For a constant family (where `fam.mcs t = fam.mcs s` for all t, s), we have
 /--
 A family is constant if its MCS is the same at all times.
 -/
-def IsConstantFamily (fam : IndexedMCSFamily D) : Prop :=
+def IsConstantFamily (fam : BFMCS D) : Prop :=
   ∃ M : Set Formula, ∀ t : D, fam.mcs t = M
 
 /--
 For a constant family, BoxContent equals BoxContentAt for any time.
 -/
-lemma constant_family_BoxContent_eq (fam : IndexedMCSFamily D)
+lemma constant_family_BoxContent_eq (fam : BFMCS D)
     (h_const : IsConstantFamily fam) (t : D) :
     BoxContent fam = BoxContentAt fam t := by
   rcases h_const with ⟨M, hM⟩
@@ -246,7 +246,7 @@ also appear at time t, so the K-distribution argument works at time t.
 **Technical Gap**: The full proof requires K-distribution chain formalization.
 The proof sketch is complete; see research-002.md for details.
 -/
-theorem diamond_boxcontent_consistent_constant (base : IndexedMCSFamily D)
+theorem diamond_boxcontent_consistent_constant (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi : Formula) (t : D)
     (h_diamond : diamondFormula psi ∈ base.mcs t) :
     SetConsistent (WitnessSeed base psi) := by
@@ -351,7 +351,7 @@ This combines:
 2. Lindenbaum extension to MCS
 3. Constant family construction
 -/
-noncomputable def constructCoherentWitness (base : IndexedMCSFamily D)
+noncomputable def constructCoherentWitness (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi : Formula) (t : D)
     (h_diamond : diamondFormula psi ∈ base.mcs t) : CoherentWitness base :=
   let h_seed_cons := diamond_boxcontent_consistent_constant base h_const psi t h_diamond
@@ -371,7 +371,7 @@ noncomputable def constructCoherentWitness (base : IndexedMCSFamily D)
 /--
 The constructed witness contains psi at all times.
 -/
-lemma constructCoherentWitness_contains_psi (base : IndexedMCSFamily D)
+lemma constructCoherentWitness_contains_psi (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi : Formula) (t s : D)
     (h_diamond : diamondFormula psi ∈ base.mcs t) :
     psi ∈ (constructCoherentWitness base h_const psi t h_diamond).family.mcs s :=
@@ -380,7 +380,7 @@ lemma constructCoherentWitness_contains_psi (base : IndexedMCSFamily D)
 /--
 The constructed witness is coherent with the base family.
 -/
-lemma constructCoherentWitness_coherent (base : IndexedMCSFamily D)
+lemma constructCoherentWitness_coherent (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi chi : Formula) (t s r : D)
     (h_diamond : diamondFormula psi ∈ base.mcs t)
     (h_box : Formula.box chi ∈ base.mcs s) :
@@ -401,14 +401,14 @@ in any family's MCS at any time.
 This generalizes BoxContent from a single family to a set of families.
 For a CoherentBundle, every family must contain this entire set.
 -/
-def UnionBoxContent (families : Set (IndexedMCSFamily D)) : Set Formula :=
+def UnionBoxContent (families : Set (BFMCS D)) : Set Formula :=
   {chi | ∃ fam ∈ families, chi ∈ BoxContent fam}
 
 /--
 BoxContent of a single family is a subset of UnionBoxContent.
 -/
-lemma BoxContent_subset_UnionBoxContent (families : Set (IndexedMCSFamily D))
-    (fam : IndexedMCSFamily D) (h_mem : fam ∈ families) :
+lemma BoxContent_subset_UnionBoxContent (families : Set (BFMCS D))
+    (fam : BFMCS D) (h_mem : fam ∈ families) :
     BoxContent fam ⊆ UnionBoxContent families := by
   intro chi h_chi
   exact ⟨fam, h_mem, h_chi⟩
@@ -416,7 +416,7 @@ lemma BoxContent_subset_UnionBoxContent (families : Set (IndexedMCSFamily D))
 /--
 UnionBoxContent is monotone: adding families only increases the union.
 -/
-lemma UnionBoxContent_monotone (families1 families2 : Set (IndexedMCSFamily D))
+lemma UnionBoxContent_monotone (families1 families2 : Set (BFMCS D))
     (h_sub : families1 ⊆ families2) :
     UnionBoxContent families1 ⊆ UnionBoxContent families2 := by
   intro chi ⟨fam, h_fam_mem, h_chi⟩
@@ -428,7 +428,7 @@ MutuallyCoherent predicate: all families contain the entire UnionBoxContent at a
 This is the key invariant for CoherentBundle. It ensures that box-coherence holds
 between ALL families, not just between a witness and its base.
 -/
-def MutuallyCoherent (families : Set (IndexedMCSFamily D)) : Prop :=
+def MutuallyCoherent (families : Set (BFMCS D)) : Prop :=
   ∀ fam ∈ families, ∀ chi ∈ UnionBoxContent families, ∀ t : D, chi ∈ fam.mcs t
 
 /--
@@ -437,8 +437,8 @@ A singleton set containing a constant family is trivially mutually coherent.
 This is because the UnionBoxContent equals BoxContent of that single family,
 and by the T-axiom, every chi in BoxContent is in the family's MCS.
 -/
-lemma MutuallyCoherent_singleton (fam : IndexedMCSFamily D) (h_const : IsConstantFamily fam) :
-    MutuallyCoherent ({fam} : Set (IndexedMCSFamily D)) := by
+lemma MutuallyCoherent_singleton (fam : BFMCS D) (h_const : IsConstantFamily fam) :
+    MutuallyCoherent ({fam} : Set (BFMCS D)) := by
   intro fam' h_fam'_mem chi h_chi_in_union t
   -- fam' must be fam
   simp only [Set.mem_singleton_iff] at h_fam'_mem
@@ -479,7 +479,7 @@ Mathematical definition:
   ∀ chi, (∃ fam ∈ families, ∃ t, Box chi ∈ fam.mcs t) →
          (∀ fam' ∈ families, ∀ t', Box chi ∈ fam'.mcs t')
 -/
-def BoxEquivalent (families : Set (IndexedMCSFamily D)) : Prop :=
+def BoxEquivalent (families : Set (BFMCS D)) : Prop :=
   ∀ chi : Formula, (∃ fam ∈ families, ∃ t : D, Formula.box chi ∈ fam.mcs t) →
          (∀ fam' ∈ families, ∀ t' : D, Formula.box chi ∈ fam'.mcs t')
 
@@ -489,7 +489,7 @@ BoxEquivalent implies MutuallyCoherent (the converse is not true).
 If Box chi is in all families at all times, then by the T-axiom (Box chi → chi),
 chi is in all families at all times.
 -/
-lemma BoxEquivalent_implies_MutuallyCoherent (families : Set (IndexedMCSFamily D))
+lemma BoxEquivalent_implies_MutuallyCoherent (families : Set (BFMCS D))
     (all_constant : ∀ fam ∈ families, IsConstantFamily fam)
     (h_box_eq : BoxEquivalent families) : MutuallyCoherent families := by
   intro fam h_fam chi h_chi_union t
@@ -510,8 +510,8 @@ A singleton set containing a constant family trivially satisfies BoxEquivalent.
 Since there's only one family, the condition becomes: if Box chi is in fam.mcs s,
 then Box chi is in fam.mcs t for all t. This holds by constancy.
 -/
-lemma BoxEquivalent_singleton (fam : IndexedMCSFamily D) (h_const : IsConstantFamily fam) :
-    BoxEquivalent ({fam} : Set (IndexedMCSFamily D)) := by
+lemma BoxEquivalent_singleton (fam : BFMCS D) (h_const : IsConstantFamily fam) :
+    BoxEquivalent ({fam} : Set (BFMCS D)) := by
   intro chi ⟨fam', h_fam'_mem, s, h_box_s⟩ fam'' h_fam''_mem t
   -- fam' = fam and fam'' = fam
   simp only [Set.mem_singleton_iff] at h_fam'_mem h_fam''_mem
@@ -529,7 +529,7 @@ All constant families with the same base MCS are box-equivalent.
 If all families in the set have the same underlying MCS M, then any Box chi in one
 family is in M, hence in all families.
 -/
-lemma constant_same_mcs_BoxEquivalent (families : Set (IndexedMCSFamily D))
+lemma constant_same_mcs_BoxEquivalent (families : Set (BFMCS D))
     (M : Set Formula)
     (all_same : ∀ fam ∈ families, ∀ t : D, fam.mcs t = M) :
     BoxEquivalent families := by
@@ -558,13 +558,13 @@ This structure enables axiom-free BMCS construction when combined with saturatio
 -/
 structure CoherentBundle (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
   /-- The set of families in the bundle -/
-  families : Set (IndexedMCSFamily D)
+  families : Set (BFMCS D)
   /-- All families are constant (time-independent) -/
   all_constant : ∀ fam ∈ families, IsConstantFamily fam
   /-- The bundle is nonempty -/
   nonempty : families.Nonempty
   /-- The designated evaluation family -/
-  eval_family : IndexedMCSFamily D
+  eval_family : BFMCS D
   /-- The evaluation family is in the bundle -/
   eval_family_mem : eval_family ∈ families
   /-- All families contain UnionBoxContent at all times -/
@@ -600,9 +600,9 @@ If Box chi is in any family at any time, then chi is in all families at all time
 This is the key coherence property that follows from MutuallyCoherent.
 -/
 lemma CoherentBundle.chi_in_all_families (B : CoherentBundle D)
-    (chi : Formula) (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families)
+    (chi : Formula) (fam : BFMCS D) (h_fam : fam ∈ B.families)
     (s : D) (h_box : Formula.box chi ∈ fam.mcs s)
-    (fam' : IndexedMCSFamily D) (h_fam' : fam' ∈ B.families) (t : D) :
+    (fam' : BFMCS D) (h_fam' : fam' ∈ B.families) (t : D) :
     chi ∈ fam'.mcs t := by
   -- chi is in UnionBoxContent B.families
   have h_chi_in_union : chi ∈ UnionBoxContent B.families := by
@@ -617,7 +617,7 @@ Since all families in a CoherentBundle are constant, their BoxContent is well-de
 and independent of time.
 -/
 lemma CoherentBundle.box_content_at_any_time (B : CoherentBundle D)
-    (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families)
+    (fam : BFMCS D) (h_fam : fam ∈ B.families)
     (t s : D) : BoxContentAt fam t = BoxContentAt fam s := by
   rcases B.all_constant fam h_fam with ⟨M, hM⟩
   ext chi
@@ -630,7 +630,7 @@ then Box chi is NOT necessarily in other families (that's forward direction).
 However, chi IS in all families due to mutual coherence.
 -/
 lemma CoherentBundle.families_box_coherent (B : CoherentBundle D)
-    (chi : Formula) (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families)
+    (chi : Formula) (fam : BFMCS D) (h_fam : fam ∈ B.families)
     (t : D) (h_box : Formula.box chi ∈ fam.mcs t) :
     ∀ fam' ∈ B.families, ∀ s : D, chi ∈ fam'.mcs s :=
   fun fam' h_fam' s => B.chi_in_all_families chi fam h_fam t h_box fam' h_fam' s
@@ -641,7 +641,7 @@ Every family in a CoherentBundle contains the entire UnionBoxContent at all time
 This is an immediate consequence of MutuallyCoherent.
 -/
 lemma CoherentBundle.member_contains_union_boxcontent (B : CoherentBundle D)
-    (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families) (t : D) :
+    (fam : BFMCS D) (h_fam : fam ∈ B.families) (t : D) :
     UnionBoxContent B.families ⊆ fam.mcs t := by
   intro chi h_chi
   exact B.mutually_coherent fam h_fam chi h_chi t
@@ -722,10 +722,10 @@ Build a singleton CoherentBundle from a constant base family.
 -/
 
 /--
-A constant family built from constantIndexedMCSFamily is indeed constant.
+A constant family built from constantBFMCS is indeed constant.
 -/
-lemma constantIndexedMCSFamily_is_constant (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    IsConstantFamily (constantIndexedMCSFamily M h_mcs (D := D)) :=
+lemma constantBFMCS_is_constant (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    IsConstantFamily (constantBFMCS M h_mcs (D := D)) :=
   ⟨M, fun _ => rfl⟩
 
 /--
@@ -741,7 +741,7 @@ Construct an initial CoherentBundle from a constant base family.
 The bundle has a single family (singleton set). Since there's only one family,
 mutual coherence is trivially satisfied via the T-axiom.
 -/
-noncomputable def initialCoherentBundle (base : IndexedMCSFamily D)
+noncomputable def initialCoherentBundle (base : BFMCS D)
     (h_const : IsConstantFamily base) : CoherentBundle D where
   families := {base}
   all_constant := fun fam h_mem => by
@@ -756,21 +756,21 @@ noncomputable def initialCoherentBundle (base : IndexedMCSFamily D)
 /--
 The initial bundle contains exactly the base family.
 -/
-lemma initialCoherentBundle_families_eq (base : IndexedMCSFamily D)
+lemma initialCoherentBundle_families_eq (base : BFMCS D)
     (h_const : IsConstantFamily base) :
     (initialCoherentBundle base h_const).families = {base} := rfl
 
 /--
 The evaluation family of the initial bundle is the base family.
 -/
-lemma initialCoherentBundle_eval_family_eq (base : IndexedMCSFamily D)
+lemma initialCoherentBundle_eval_family_eq (base : BFMCS D)
     (h_const : IsConstantFamily base) :
     (initialCoherentBundle base h_const).eval_family = base := rfl
 
 /--
 All families in the initial bundle are constant.
 -/
-lemma initialCoherentBundle_all_constant (base : IndexedMCSFamily D)
+lemma initialCoherentBundle_all_constant (base : BFMCS D)
     (h_const : IsConstantFamily base) :
     ∀ fam ∈ (initialCoherentBundle base h_const).families, IsConstantFamily fam :=
   (initialCoherentBundle base h_const).all_constant
@@ -781,7 +781,7 @@ The initial bundle satisfies BoxEquivalent.
 This follows directly from BoxEquivalent_singleton since the initial bundle
 is a singleton set containing just the base family.
 -/
-lemma initialCoherentBundle_box_equivalent (base : IndexedMCSFamily D)
+lemma initialCoherentBundle_box_equivalent (base : BFMCS D)
     (h_const : IsConstantFamily base) :
     BoxEquivalent (initialCoherentBundle base h_const).families := by
   rw [initialCoherentBundle_families_eq]
@@ -797,8 +797,8 @@ so the existing `diamond_boxcontent_consistent_constant` theorem applies directl
 /--
 For a singleton bundle, UnionBoxContent equals BoxContent of the single family.
 -/
-lemma UnionBoxContent_singleton (fam : IndexedMCSFamily D) :
-    UnionBoxContent ({fam} : Set (IndexedMCSFamily D)) = BoxContent fam := by
+lemma UnionBoxContent_singleton (fam : BFMCS D) :
+    UnionBoxContent ({fam} : Set (BFMCS D)) = BoxContent fam := by
   ext chi
   constructor
   · intro ⟨fam', h_mem, h_chi⟩
@@ -817,7 +817,7 @@ def UnionWitnessSeed (B : CoherentBundle D) (psi : Formula) : Set Formula :=
 /--
 For a singleton bundle, the UnionWitnessSeed equals the single-family WitnessSeed.
 -/
-lemma UnionWitnessSeed_singleton (base : IndexedMCSFamily D)
+lemma UnionWitnessSeed_singleton (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi : Formula) :
     UnionWitnessSeed (initialCoherentBundle base h_const) psi = WitnessSeed base psi := by
   unfold UnionWitnessSeed
@@ -828,7 +828,7 @@ lemma UnionWitnessSeed_singleton (base : IndexedMCSFamily D)
 For a singleton bundle, the consistency of UnionWitnessSeed follows from
 the existing diamond_boxcontent_consistent_constant theorem.
 -/
-theorem diamond_unionboxcontent_consistent_singleton (base : IndexedMCSFamily D)
+theorem diamond_unionboxcontent_consistent_singleton (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi : Formula) (t : D)
     (h_diamond : diamondFormula psi ∈ base.mcs t) :
     SetConsistent (UnionWitnessSeed (initialCoherentBundle base h_const) psi) := by
@@ -886,7 +886,7 @@ Construct a saturated CoherentBundle from a consistent context.
 
 **Construction**:
 1. Extend the context to an MCS via Lindenbaum
-2. Build a constant IndexedMCSFamily from the MCS
+2. Build a constant BFMCS from the MCS
 3. Create an initial singleton CoherentBundle
 4. Apply the saturation axiom to get a saturated extension
 
@@ -898,9 +898,9 @@ noncomputable def constructCoherentBundleFromContext
   -- Step 1: Extend Gamma to an MCS
   let M := lindenbaumMCS Gamma h_cons
   let h_mcs := lindenbaumMCS_is_mcs Gamma h_cons
-  -- Step 2: Build constant IndexedMCSFamily
-  let base := constantIndexedMCSFamily M h_mcs (D := D)
-  let h_const := constantIndexedMCSFamily_is_constant M h_mcs
+  -- Step 2: Build constant BFMCS
+  let base := constantBFMCS M h_mcs (D := D)
+  let h_const := constantBFMCS_is_constant M h_mcs
   -- Step 3: Create initial singleton bundle
   let B₀ := initialCoherentBundle base h_const
   -- Step 4: Get saturated extension (axiom guarantees eval_family is preserved)
@@ -913,8 +913,8 @@ lemma constructCoherentBundleFromContext_isSaturated
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     (constructCoherentBundleFromContext Gamma h_cons (D := D)).isSaturated :=
   (getSaturatedBundle (initialCoherentBundle
-    (constantIndexedMCSFamily (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons))
-    (constantIndexedMCSFamily_is_constant (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons)))).property.1
+    (constantBFMCS (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons))
+    (constantBFMCS_is_constant (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons)))).property.1
 
 /--
 The bundle's eval_family equals the initial base family.
@@ -922,13 +922,13 @@ The bundle's eval_family equals the initial base family.
 lemma constructCoherentBundleFromContext_eval_family
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     (constructCoherentBundleFromContext Gamma h_cons (D := D)).eval_family =
-      constantIndexedMCSFamily (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons) := by
+      constantBFMCS (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons) := by
   unfold constructCoherentBundleFromContext getSaturatedBundle
   simp only
   exact (Classical.choose_spec (saturated_extension_exists D
     (initialCoherentBundle
-      (constantIndexedMCSFamily (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons))
-      (constantIndexedMCSFamily_is_constant (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons))))).2.1
+      (constantBFMCS (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons))
+      (constantBFMCS_is_constant (lindenbaumMCS Gamma h_cons) (lindenbaumMCS_is_mcs Gamma h_cons))))).2.1
 
 /--
 Convert a consistent context to an axiom-free BMCS.
@@ -950,10 +950,10 @@ theorem construct_coherent_bmcs_contains_context
   -- Unfold to get to the eval_family
   unfold construct_coherent_bmcs
   simp only [CoherentBundle.toBMCS_eval_family]
-  -- The eval_family of the constructed bundle equals constantIndexedMCSFamily ...
+  -- The eval_family of the constructed bundle equals constantBFMCS ...
   rw [constructCoherentBundleFromContext_eval_family]
   -- That family's MCS at any time is lindenbaumMCS Gamma h_cons
-  rw [constantIndexedMCSFamily_mcs_eq]
+  rw [constantBFMCS_mcs_eq]
   -- gamma ∈ Gamma implies gamma ∈ contextAsSet Gamma ⊆ lindenbaumMCS Gamma h_cons
   exact lindenbaumMCS_extends Gamma h_cons h_mem
 
@@ -1029,15 +1029,15 @@ This is weaker than MutuallyCoherent (which requires all families to contain
 UnionBoxContent of ALL families). EvalCoherent only cares about the eval_family's
 BoxContent, which is fixed and doesn't change when adding witnesses.
 -/
-def EvalCoherent (families : Set (IndexedMCSFamily D)) (eval_fam : IndexedMCSFamily D)
+def EvalCoherent (families : Set (BFMCS D)) (eval_fam : BFMCS D)
     (h_eval_mem : eval_fam ∈ families) : Prop :=
   ∀ fam ∈ families, ∀ chi ∈ BoxContent eval_fam, ∀ t : D, chi ∈ fam.mcs t
 
 /--
 Singleton bundles are trivially EvalCoherent.
 -/
-lemma EvalCoherent_singleton (fam : IndexedMCSFamily D) (h_const : IsConstantFamily fam) :
-    EvalCoherent ({fam} : Set (IndexedMCSFamily D)) fam (Set.mem_singleton fam) := by
+lemma EvalCoherent_singleton (fam : BFMCS D) (h_const : IsConstantFamily fam) :
+    EvalCoherent ({fam} : Set (BFMCS D)) fam (Set.mem_singleton fam) := by
   intro fam' h_fam' chi h_chi t
   simp only [Set.mem_singleton_iff] at h_fam'
   rw [h_fam']
@@ -1058,7 +1058,7 @@ EvalSaturated predicate: Every neg(Box phi) in eval_family has a witness with ne
 This is saturation restricted to the eval_family, which is sufficient for completeness
 since we only evaluate formulas at the eval_family in the canonical model.
 -/
-def EvalSaturated (families : Set (IndexedMCSFamily D)) (eval_fam : IndexedMCSFamily D)
+def EvalSaturated (families : Set (BFMCS D)) (eval_fam : BFMCS D)
     (h_eval_mem : eval_fam ∈ families) : Prop :=
   ∀ phi : Formula, ∀ t : D,
     Formula.neg (Formula.box phi) ∈ eval_fam.mcs t →
@@ -1075,11 +1075,11 @@ This is exactly what's needed for the truth lemma at the eval_family.
 -/
 structure EvalBMCS (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
   /-- The set of families in the model -/
-  families : Set (IndexedMCSFamily D)
+  families : Set (BFMCS D)
   /-- The model is nonempty -/
   nonempty : families.Nonempty
   /-- The evaluation family -/
-  eval_family : IndexedMCSFamily D
+  eval_family : BFMCS D
   /-- The evaluation family is in the model -/
   eval_family_mem : eval_family ∈ families
   /-- Forward direction from eval_family: Box phi in eval implies phi in all -/
@@ -1099,13 +1099,13 @@ This is sufficient for constructing an EvalBMCS when combined with EvalSaturatio
 structure EvalCoherentBundle (D : Type*) [AddCommGroup D] [LinearOrder D]
     [IsOrderedAddMonoid D] where
   /-- The set of families in the bundle -/
-  families : Set (IndexedMCSFamily D)
+  families : Set (BFMCS D)
   /-- All families are constant (time-independent) -/
   all_constant : ∀ fam ∈ families, IsConstantFamily fam
   /-- The bundle is nonempty -/
   nonempty : families.Nonempty
   /-- The designated evaluation family -/
-  eval_family : IndexedMCSFamily D
+  eval_family : BFMCS D
   /-- The evaluation family is constant -/
   eval_constant : IsConstantFamily eval_family
   /-- The evaluation family is in the bundle -/
@@ -1148,7 +1148,7 @@ noncomputable def EvalCoherentBundle.toEvalBMCS (B : EvalCoherentBundle D)
 /--
 Construct an initial EvalCoherentBundle from a single constant family.
 -/
-noncomputable def initialEvalCoherentBundle (base : IndexedMCSFamily D)
+noncomputable def initialEvalCoherentBundle (base : BFMCS D)
     (h_const : IsConstantFamily base) : EvalCoherentBundle D where
   families := {base}
   all_constant := fun fam h_mem => by
@@ -1167,7 +1167,7 @@ When we construct a witness for Diamond psi using constructCoherentWitness,
 the witness family contains BoxContent(base). This means adding it to a bundle
 preserves EvalCoherent when base is the eval_family.
 -/
-lemma constructCoherentWitness_eval_coherent (base : IndexedMCSFamily D)
+lemma constructCoherentWitness_eval_coherent (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi : Formula) (t : D)
     (h_diamond : diamondFormula psi ∈ base.mcs t) :
     ∀ chi ∈ BoxContent base, ∀ s : D,
@@ -1177,7 +1177,7 @@ lemma constructCoherentWitness_eval_coherent (base : IndexedMCSFamily D)
 /--
 The witness family from constructCoherentWitness is constant.
 -/
-lemma constructCoherentWitness_is_constant (base : IndexedMCSFamily D)
+lemma constructCoherentWitness_is_constant (base : BFMCS D)
     (h_const : IsConstantFamily base) (psi : Formula) (t : D)
     (h_diamond : diamondFormula psi ∈ base.mcs t) :
     IsConstantFamily (constructCoherentWitness base h_const psi t h_diamond).family := by
@@ -1330,7 +1330,7 @@ Existing witnesses are preserved when adding more witnesses.
 -/
 lemma EvalCoherentBundle.addWitness_preserves_witness (B : EvalCoherentBundle D)
     (psi : Formula) (t : D) (h_diamond : diamondFormula psi ∈ B.eval_family.mcs t)
-    (fam : IndexedMCSFamily D) (h_fam : fam ∈ B.families) :
+    (fam : BFMCS D) (h_fam : fam ∈ B.families) :
     fam ∈ (B.addWitness psi t h_diamond).families :=
   Set.mem_union_left _ h_fam
 
@@ -1410,8 +1410,8 @@ theorem eval_saturated_bundle_exists (Gamma : List Formula) (h_cons : ContextCon
   let M := lindenbaumMCS Gamma h_cons
   let h_mcs := lindenbaumMCS_is_mcs Gamma h_cons
   -- Step 2: Create constant family
-  let base : IndexedMCSFamily D := constantIndexedMCSFamily M h_mcs
-  let h_const : IsConstantFamily base := constantIndexedMCSFamily_is_constant M h_mcs
+  let base : BFMCS D := constantBFMCS M h_mcs
+  let h_const : IsConstantFamily base := constantBFMCS_is_constant M h_mcs
   -- Step 3: Create initial EvalCoherentBundle (singleton bundle with just base)
   let B₀ := initialEvalCoherentBundle base h_const
 
@@ -1450,11 +1450,11 @@ theorem eval_saturated_bundle_exists (Gamma : List Formula) (h_cons : ContextCon
   -- we use neg_box_to_diamond_neg to convert neg(Box phi) to diamondFormula (neg phi).
 
   -- Define the saturated bundle as base plus all possible coherent witnesses
-  let allWitnesses : Set (IndexedMCSFamily D) :=
+  let allWitnesses : Set (BFMCS D) :=
     { W | ∃ psi : Formula, ∃ t : D, ∃ h_diamond : diamondFormula psi ∈ base.mcs t,
           W = (constructCoherentWitness base h_const psi t h_diamond).family }
 
-  let saturatedFamilies : Set (IndexedMCSFamily D) := {base} ∪ allWitnesses
+  let saturatedFamilies : Set (BFMCS D) := {base} ∪ allWitnesses
 
   -- Build the EvalCoherentBundle
   have h_all_const : ∀ fam ∈ saturatedFamilies, IsConstantFamily fam := by
@@ -1509,8 +1509,8 @@ theorem eval_saturated_bundle_exists (Gamma : List Formula) (h_cons : ContextCon
 
   -- Property 1: Gamma ⊆ eval_family.mcs 0
   · intro gamma h_mem
-    -- base = constantIndexedMCSFamily M h_mcs, so base.mcs 0 = M
-    rw [constantIndexedMCSFamily_mcs_eq]
+    -- base = constantBFMCS M h_mcs, so base.mcs 0 = M
+    rw [constantBFMCS_mcs_eq]
     exact lindenbaumMCS_extends Gamma h_cons h_mem
 
   -- Property 2: EvalSaturated
@@ -1579,7 +1579,7 @@ theorem construct_eval_bmcs_contains_context
   -- Unfold definitions
   unfold construct_eval_bmcs
   simp only [EvalCoherentBundle.toEvalBMCS]
-  -- The eval_family is constantIndexedMCSFamily M h_mcs where M extends Gamma
+  -- The eval_family is constantBFMCS M h_mcs where M extends Gamma
   -- The spec gives us that gamma ∈ eval_family.mcs 0
   have h_spec := Classical.choose_spec (eval_saturated_bundle_exists Gamma h_cons (D := D))
   exact h_spec.1 gamma h_mem

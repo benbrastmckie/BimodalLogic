@@ -4,11 +4,11 @@ import Bimodal.Syntax.Formula
 import Mathlib.Algebra.Order.Group.Defs
 
 /-!
-# Indexed MCS Family for Bundle Completeness
+# BFMCS: Bundled Family of Maximal Consistent Sets
 
-This module defines the `IndexedMCSFamily` structure that assigns a maximal consistent
-set (MCS) to each time point in D, with temporal coherence conditions ensuring
-proper formula propagation.
+This module defines the `BFMCS` (Bundled Family of Maximal Consistent Sets) structure
+that assigns a maximal consistent set (MCS) to each time point in D, with temporal
+coherence conditions ensuring proper formula propagation.
 
 ## Overview
 
@@ -23,7 +23,7 @@ MCS connected to adjacent times via temporal coherence conditions.
 
 ## Main Definitions
 
-- `IndexedMCSFamily D`: Structure pairing each time `t : D` with an MCS, plus coherence
+- `BFMCS D`: Structure pairing each time `t : D` with an MCS, plus coherence
 - `forward_G`: G formulas at t propagate to all future t' > t
 - `backward_H`: H formulas at t propagate to all past t' < t
 
@@ -40,7 +40,7 @@ removed because:
 ## References
 
 - Research report: specs/812_canonical_model_completeness/reports/research-007.md
-- Original: Bimodal.Boneyard.Metalogic_v5.Representation.IndexedMCSFamily
+- Original: Bimodal.Boneyard.Metalogic_v5.Representation.BFMCS
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -49,7 +49,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
 /-!
-## Indexed MCS Family Structure
+## BFMCS Structure
 -/
 
 variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
@@ -77,7 +77,7 @@ removed because the TruthLemma does not use them. The temporal backward properti
 are instead proven via contraposition using `forward_F`/`backward_P` from
 `TemporalCoherentFamily` in TemporalCoherentConstruction.lean.
 -/
-structure IndexedMCSFamily where
+structure BFMCS where
   /-- The MCS assignment: each time t gets an MCS -/
   mcs : D -> Set Formula
   /-- Each assigned set is maximal consistent -/
@@ -104,16 +104,16 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 -/
 
 /-- Get the MCS at a specific time -/
-def IndexedMCSFamily.at (family : IndexedMCSFamily D) (t : D) : Set Formula :=
+def BFMCS.at (family : BFMCS D) (t : D) : Set Formula :=
   family.mcs t
 
 /-- The MCS at any time is consistent -/
-lemma IndexedMCSFamily.consistent (family : IndexedMCSFamily D) (t : D) :
+lemma BFMCS.consistent (family : BFMCS D) (t : D) :
     SetConsistent (family.mcs t) :=
   (family.is_mcs t).1
 
 /-- The MCS at any time is maximal (cannot be consistently extended) -/
-lemma IndexedMCSFamily.maximal (family : IndexedMCSFamily D) (t : D) :
+lemma BFMCS.maximal (family : BFMCS D) (t : D) :
     forall phi : Formula, phi ∉ family.mcs t -> ¬SetConsistent (insert phi (family.mcs t)) :=
   (family.is_mcs t).2
 
@@ -128,7 +128,7 @@ G phi propagates transitively through future times.
 
 If `G phi ∈ mcs(t)` and `t < t' < t''`, then `phi ∈ mcs(t')` and `phi ∈ mcs(t'')`.
 -/
-lemma IndexedMCSFamily.forward_G_chain (family : IndexedMCSFamily D)
+lemma BFMCS.forward_G_chain (family : BFMCS D)
     {t t' : D} (htt' : t < t') (phi : Formula) (hG : Formula.all_future phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.forward_G t t' phi htt' hG
@@ -138,7 +138,7 @@ H phi propagates transitively through past times.
 
 If `H phi ∈ mcs(t)` and `t'' < t' < t`, then `phi ∈ mcs(t')` and `phi ∈ mcs(t'')`.
 -/
-lemma IndexedMCSFamily.backward_H_chain (family : IndexedMCSFamily D)
+lemma BFMCS.backward_H_chain (family : BFMCS D)
     {t t' : D} (ht't : t' < t) (phi : Formula) (hH : Formula.all_past phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.backward_H t t' phi ht't hH
@@ -151,7 +151,7 @@ If `G(G phi) ∈ mcs(t)` and `t < t'`, then `G phi ∈ mcs(t')`.
 This uses the Temporal 4 axiom `G phi -> GG phi` in the contrapositive direction:
 From `GG phi ∈ mcs(t)`, we have `G phi` will be at all strictly future times.
 -/
-lemma IndexedMCSFamily.GG_to_G (family : IndexedMCSFamily D)
+lemma BFMCS.GG_to_G (family : BFMCS D)
     {t t' : D} (htt' : t < t') (phi : Formula)
     (hGG : Formula.all_future (Formula.all_future phi) ∈ family.mcs t) :
     Formula.all_future phi ∈ family.mcs t' :=
@@ -162,7 +162,7 @@ HH phi implies H phi propagation (using Temporal 4 dual for H).
 
 If `H(H phi) ∈ mcs(t)` and `t' < t`, then `H phi ∈ mcs(t')`.
 -/
-lemma IndexedMCSFamily.HH_to_H (family : IndexedMCSFamily D)
+lemma BFMCS.HH_to_H (family : BFMCS D)
     {t t' : D} (ht't : t' < t) (phi : Formula)
     (hHH : Formula.all_past (Formula.all_past phi) ∈ family.mcs t) :
     Formula.all_past phi ∈ family.mcs t' :=
@@ -177,7 +177,7 @@ Theorems (provable formulas) are in every MCS of the family.
 /--
 Theorems are in every MCS of the family.
 -/
-lemma IndexedMCSFamily.theorem_mem (family : IndexedMCSFamily D)
+lemma BFMCS.theorem_mem (family : BFMCS D)
     (t : D) (phi : Formula) (h_deriv : Bimodal.ProofSystem.DerivationTree [] phi) :
     phi ∈ family.mcs t :=
   theorem_in_mcs (family.is_mcs t) h_deriv
@@ -194,7 +194,7 @@ phi is in the MCS at t'.
 
 This is just a restatement of forward_G for clarity in task relation proofs.
 -/
-lemma IndexedMCSFamily.G_implies_future_phi (family : IndexedMCSFamily D)
+lemma BFMCS.G_implies_future_phi (family : BFMCS D)
     {t t' : D} (hlt : t < t') {phi : Formula} (hG : Formula.all_future phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.forward_G t t' phi hlt hG
@@ -205,7 +205,7 @@ phi is in the MCS at t'.
 
 This is just a restatement of backward_H for clarity in task relation proofs.
 -/
-lemma IndexedMCSFamily.H_implies_past_phi (family : IndexedMCSFamily D)
+lemma BFMCS.H_implies_past_phi (family : BFMCS D)
     {t t' : D} (hlt : t' < t) {phi : Formula} (hH : Formula.all_past phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.backward_H t t' phi hlt hH

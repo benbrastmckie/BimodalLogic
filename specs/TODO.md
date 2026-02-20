@@ -44,11 +44,12 @@ technical_debt:
 
 ### 914. Rename IndexedMCSFamily to BFMCS across codebase
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-20
 - **Research**: [research-001.md](specs/914_rename_indexedmcsfamily_to_bfmcs/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/914_rename_indexedmcsfamily_to_bfmcs/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260220.md](specs/914_rename_indexedmcsfamily_to_bfmcs/summaries/implementation-summary-20260220.md)
 
 **Description**: Rename `IndexedMCSFamily` to `BFMCS` (Bundled Family of Maximal Consistent Sets) across 420 occurrences in 38 files to make the two-level ontological structure explicit. Rename `IndexedMCSFamily.lean` to `BFMCS.lean`, update all imports, and add doc comments explaining the BFMCS ontology.
 

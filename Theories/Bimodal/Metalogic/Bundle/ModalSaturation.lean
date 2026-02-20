@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.IndexedMCSFamily
+import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -80,7 +80,7 @@ Specifically: needs_modal_witness B fam t psi means:
 - Diamond psi is in fam.mcs t
 - There is no family fam' in B.families where psi is in fam'.mcs t
 -/
-def needs_modal_witness (B : BMCS D) (fam : IndexedMCSFamily D) (t : D) (psi : Formula) : Prop :=
+def needs_modal_witness (B : BMCS D) (fam : BFMCS D) (t : D) (psi : Formula) : Prop :=
   diamondFormula psi ∈ fam.mcs t ∧ ∀ fam' ∈ B.families, psi ∉ fam'.mcs t
 
 /--
@@ -244,11 +244,11 @@ lemma extendToMCS_is_mcs (psi : Formula) (h_cons : SetConsistent {psi}) :
 /--
 Construct a constant witness family from an MCS.
 
-Given an MCS M, we build an IndexedMCSFamily that assigns M to every time point.
-This is similar to constantIndexedMCSFamily from Construction.lean.
+Given an MCS M, we build an BFMCS that assigns M to every time point.
+This is similar to constantBFMCS from Construction.lean.
 -/
 noncomputable def constantWitnessFamily (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    IndexedMCSFamily D where
+    BFMCS D where
   mcs := fun _ => M
   is_mcs := fun _ => h_mcs
   forward_G := fun t t' phi _ hG =>
@@ -271,11 +271,11 @@ lemma constantWitnessFamily_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsiste
 /--
 Construct a witness family for a formula.
 
-Given that {psi} is consistent, this constructs a new IndexedMCSFamily
+Given that {psi} is consistent, this constructs a new BFMCS
 where psi is in the MCS at all times.
 -/
 noncomputable def constructWitnessFamily (psi : Formula) (h_cons : SetConsistent {psi}) :
-    IndexedMCSFamily D :=
+    BFMCS D :=
   let M := extendToMCS psi h_cons
   let h_mcs := extendToMCS_is_mcs psi h_cons
   constantWitnessFamily M h_mcs
@@ -406,7 +406,7 @@ if phi is in ALL families' MCS at time t, then Box phi is in fam.mcs t.
 5. But phi is in ALL families including fam' - contradiction with consistency
 -/
 theorem saturated_modal_backward (B : BMCS D) (h_sat : is_modally_saturated B)
-    (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families) (phi : Formula) (t : D)
+    (fam : BFMCS D) (hfam : fam ∈ B.families) (phi : Formula) (t : D)
     (h_all : ∀ fam' ∈ B.families, phi ∈ fam'.mcs t) :
     Formula.box phi ∈ fam.mcs t := by
   -- By contradiction
@@ -467,7 +467,7 @@ structure SaturatedBMCS (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedA
 A saturated BMCS satisfies modal_backward.
 -/
 theorem SaturatedBMCS.modal_backward (S : SaturatedBMCS D)
-    (fam : IndexedMCSFamily D) (hfam : fam ∈ S.bmcs.families) (phi : Formula) (t : D)
+    (fam : BFMCS D) (hfam : fam ∈ S.bmcs.families) (phi : Formula) (t : D)
     (h_all : ∀ fam' ∈ S.bmcs.families, phi ∈ fam'.mcs t) :
     Formula.box phi ∈ fam.mcs t :=
   saturated_modal_backward S.bmcs S.saturated fam hfam phi t h_all

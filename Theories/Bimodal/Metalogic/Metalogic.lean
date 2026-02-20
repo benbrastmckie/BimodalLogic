@@ -55,7 +55,7 @@ Metalogic/
 │   └── MCSProperties.lean      # MCS closure under derivation
 │
 ├── Bundle/                  # BMCS Completeness (primary completeness result)
-│   ├── IndexedMCSFamily.lean   # Temporal MCS families
+│   ├── BFMCS.lean               # BFMCS: Bundled Family of MCS
 │   ├── BMCS.lean               # Bundle structure
 │   ├── BMCSTruth.lean          # Truth with bundled box
 │   ├── TruthLemma.lean         # KEY: sorry-free forward direction
