@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916 (Version 002)
 
 - **Task**: 916 - Implement F/P witness obligation tracking to close DovetailingChain sorries
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 35 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md
@@ -70,7 +70,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Inner Chain Construction Infrastructure [NOT STARTED]
+### Phase 1: Inner Chain Construction Infrastructure [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Define the witness-accumulating inner chain that builds a consistent set containing all F-witnesses at a given time
@@ -104,6 +104,18 @@ M_t = final MCS containing all needed witnesses
 - `buildInnerChain` compiles with no sorry
 - `buildInnerChain_consistent` proven
 - `lake build Bimodal.Metalogic.Bundle.DovetailingChain` succeeds
+
+**Progress:**
+
+**Session: 2026-02-20, sess_1771630142_572e90** (no progress)
+- Attempted: Inner chain construction with GContent-based stepping and F-witness accumulation
+- Result: Mathematical obstruction identified. Three independent failure modes:
+  1. Combined seed `{psi} union FPreservingSeed(M)` can be inconsistent (counterexample: psi = G(neg chi) with F(chi) in M)
+  2. F-formula persistence through Zorn-based Lindenbaum is unprovable (Lindenbaum can add G(neg psi) at any step)
+  3. Inner chain witnesses don't accumulate through GContent-based stepping (psi_k in MCS_{k+1} but not in MCS_{k+2})
+- Also proved: FPreservingSeed(M) = GContent(M) union {F-formulas in M} is consistent (subset of M) and preserves all F-obligations, but cannot be combined with witness formulas
+- No changes committed
+- Handoff: `specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-1-handoff-20260220.md`
 
 ---
 
