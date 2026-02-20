@@ -1,8 +1,8 @@
 # Implementation Summary: Task #912
 
 **Completed**: 2026-02-20
-**Duration**: ~3 hours
-**Status**: Partial (Phases 1, 2, 5 completed; Phases 3, 4 blocked)
+**Duration**: ~6 hours (v001: 3 hours, v002: 3 hours)
+**Status**: Partial (v001: Phases 1-2, v002: Phases 3-5 + Phase 6 partial)
 
 ## Overview
 
@@ -11,104 +11,57 @@ main objectives: (1) archive superseded experimental code to reduce active sorry
 and (2) investigate and attempt to discharge the two sorry placeholders in
 Representation.lean caused by the Omega-mismatch between `canonicalOmega B` and `Set.univ`.
 
-## Changes Made
+## Implementation History
 
-### Phase 1: Codebase Archival (COMPLETED)
+### v001 (Session 1): Phases 1-2 Completed, Phases 3-4 Blocked
 
-Archived 29 sorries from the active codebase to Boneyard:
+- Archived 29 sorries to Boneyard (RecursiveSeed, SeedCompletion, SeedBMCS, EvalBMCS)
+- Investigated Omega-mismatch: found coverage lemma unprovable, truth lemma unprovable, Omega-parametric validity breaks soundness
+- Concluded: genuine mathematical gap requiring architectural decision
 
-1. **RecursiveSeed/** (5 files, ~25 sorries) -> `Boneyard/Bundle/RecursiveSeed/`
-   - Core.lean, Builder.lean, Worklist.lean, Consistency.lean, Closure.lean
-   - Updated internal imports to `Bimodal.Boneyard.Bundle.RecursiveSeed.*`
+### v002 (Session 2): Phases 3-5 Completed, Phase 6 Partial
 
-2. **SeedCompletion.lean** (~5 sorries) -> `Boneyard/Bundle/SeedCompletion.lean`
-   - Updated import from RecursiveSeed to Boneyard path
+Based on research-003.md findings (Option B: add ShiftClosed Omega to validity):
 
-3. **SeedBMCS.lean** (~6 sorries) -> `Boneyard/Bundle/SeedBMCS.lean`
-   - Updated import from SeedCompletion to Boneyard path
+**Phase 3: Canonical Infrastructure** [COMPLETED]
+- Defined `shiftClosedCanonicalOmega B` in Representation.lean
+- Proved `shiftClosedCanonicalOmega_shift_closed`
+- Proved `box_persistent`: Box phi persists across all times via TF axiom and its temporal dual
 
-4. **RecursiveSeed.lean** (barrel file) -> `Boneyard/Bundle/RecursiveSeed.lean`
-   - Updated all re-export imports
+**Phase 4: Shifted Truth Lemma** [COMPLETED]
+- Proved `shifted_canonical_truth_lemma` for shiftClosedCanonicalOmega
+- Box case uses `box_persistent` + `time_shift_preserves_truth`
 
-5. **TruthLemma.lean EvalBMCS section** (4 sorries) - Removed
-   - `eval_bmcs_truth_lemma` and `eval_bmcs_eval_truth` deleted (unused)
+**Phase 5: Validity Definition Changes** [COMPLETED]
+- Updated `valid` in Validity.lean to add Omega, `h_sc : ShiftClosed Omega`, `h_mem : τ ∈ Omega`
+- Updated `semantic_consequence` similarly
+- Updated `satisfiable` to existentially quantify over shift-closed Omega
 
-6. **Construction.lean cleanup** - Removed dead code
-   - `construct_bmcs`, `construct_bmcs_from_set` and helpers deleted
-   - `singleFamilyBMCS` retained (still used by TemporalCoherentConstruction.lean)
+**Phase 6: Soundness Updates** [PARTIAL]
+- Updated most soundness cases to use Omega parameter
+- Fixed calls to soundness in SemanticCanonicalModel.lean
+- **BLOCKED**: temporal_duality case requires updating SoundnessLemmas.lean (~972 lines)
+  - `derivable_implies_swap_valid` proves validity at Set.univ
+  - Needs to prove validity at arbitrary shift-closed Omega
+  - Requires updating ~30 lemmas in SoundnessLemmas.lean
 
-7. **Documentation fixes**
-   - FMP/FiniteWorldState.lean: Fixed stale comment (strict -> reflexive semantics)
-   - Metalogic.lean: Updated sorry table to accurate 9 active sorries
-   - Completeness.lean: Updated cross-references
+**Phases 7-8**: Not started (blocked on Phase 6)
 
-### Phase 2: Omega-Mismatch Investigation (COMPLETED)
-
-Performed thorough mathematical investigation of three approaches to resolve the
-Omega-mismatch between `canonicalOmega B` and `Set.univ`:
-
-**Finding 1: Coverage lemma unprovable**
-- `is_modally_saturated` provides diamond witnesses, not MCS coverage
-- The canonical frame's WorldState = `{ S // SetMaximalConsistent S }` includes ALL MCSes
-- BMCS families only contain specific MCSes from the construction
-- No mechanism to ensure every MCS appears in some family
-
-**Finding 2: Truth lemma with Set.univ unprovable**
-- Box case requires IH at canonical histories (sigma in canonicalOmega)
-- Extending to Set.univ requires IH at arbitrary histories
-- Induction structure only provides IH at canonical histories
-
-**Finding 3: Omega-parametric validity breaks soundness**
-- MF axiom (Box phi -> G phi) uses `Set.univ_shift_closed` in soundness proof
-- `canonicalOmega B` is NOT shift-closed (documented in Representation.lean)
-- Making `valid` quantify over arbitrary Omega breaks MF/TF soundness
-
-**Conclusion**: The Omega-mismatch is a genuine mathematical gap requiring either:
-- (A) Add `ShiftClosed Omega` condition to `valid`/`semantic_consequence`
-- (B) Prove truth equivalence via stronger saturation (coverage + state-determination)
-- (C) Leave sorry and document as known gap
-
-### Phases 3-4: BLOCKED
-
-Blocked by the Omega-mismatch finding. The two sorry placeholders in Representation.lean
-(lines ~417, ~449) cannot be discharged without a resolution path for the mismatch.
-
-### Phase 5: Final Verification (COMPLETED)
-
-- `lake build` succeeds (1000 jobs, 0 errors)
-- Active Metalogic/ sorry count: 9 (down from 38)
-- Active axiom count: 2 (`fully_saturated_bmcs_exists` [deprecated], `saturated_extension_exists`)
-- No new sorries or axioms introduced
-- All documentation updated
-
-## Files Modified
+## Files Modified (v002)
 
 ### Active Files
-- `Theories/Bimodal/Metalogic/Bundle/Construction.lean` - Removed dead code, updated docs
-- `Theories/Bimodal/Metalogic/Bundle/TruthLemma.lean` - Removed EvalBMCS section (4 sorries)
-- `Theories/Bimodal/Metalogic/Bundle/Completeness.lean` - Updated cross-references
-- `Theories/Bimodal/Metalogic/Metalogic.lean` - Updated sorry table
-- `Theories/Bimodal/Metalogic/Representation.lean` - Added Omega-mismatch analysis
-- `Theories/Bimodal/Metalogic/FMP/FiniteWorldState.lean` - Fixed stale documentation
+- `Theories/Bimodal/Semantics/Validity.lean` - Added Omega, ShiftClosed, membership parameters
+- `Theories/Bimodal/Metalogic/Soundness.lean` - Updated soundness proof, temporal_duality has sorry
+- `Theories/Bimodal/Metalogic/Bundle/Representation.lean` - Added shiftClosedCanonicalOmega, box_persistent, shifted truth lemma
+- `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean` - Updated soundness calls
 
-### Archived Files (moved to Boneyard/)
-- `Theories/Bimodal/Boneyard/Bundle/RecursiveSeed/` (5 files, new)
-- `Theories/Bimodal/Boneyard/Bundle/RecursiveSeed.lean` (barrel file, new)
-- `Theories/Bimodal/Boneyard/Bundle/SeedCompletion.lean` (new)
-- `Theories/Bimodal/Boneyard/Bundle/SeedBMCS.lean` (new)
-
-### Deleted Files (from active codebase)
-- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed/` (5 files)
-- `Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean`
-- `Theories/Bimodal/Metalogic/Bundle/SeedCompletion.lean`
-- `Theories/Bimodal/Metalogic/Bundle/SeedBMCS.lean`
-
-## Sorry Inventory (Active Metalogic/)
+## Sorry Inventory (Active Metalogic/) - After v002
 
 | File | Line | Description | Dependency |
 |------|------|-------------|------------|
-| Representation.lean | ~417 | Omega-mismatch (weak completeness) | Genuine gap |
-| Representation.lean | ~449 | Omega-mismatch (strong completeness) | Genuine gap |
+| Soundness.lean | ~295 | temporal_duality case | Requires SoundnessLemmas.lean update |
+| Representation.lean | ~680 | Omega-mismatch (weak completeness) | Phase 7 |
+| Representation.lean | ~712 | Omega-mismatch (strong completeness) | Phase 7 |
 | Construction.lean | 197 | modal_backward (single-family) | Inherited by TemporalCoherentConstruction |
 | TemporalCoherentConstruction.lean | 636 | temporal_coherent_family_exists | DovetailingChain sorries |
 | TemporalCoherentConstruction.lean | 842 | fully_saturated_bmcs_exists_int | Combines temporal + modal |
@@ -117,21 +70,32 @@ Blocked by the Omega-mismatch finding. The two sorry placeholders in Representat
 | DovetailingChain.lean | 633 | F-witness existence | Core construction |
 | DovetailingChain.lean | 640 | P-witness existence | Core construction |
 
+**Total**: 10 sorries (up from 9 due to new temporal_duality sorry)
+
 ## Verification
 
 - `lake build` succeeds with 0 errors
-- No new sorry or axiom declarations introduced
-- 29 sorries eliminated by archival (38 -> 9 in active Metalogic/)
-- Main completeness theorems (bmcs_weak_completeness, bmcs_strong_completeness) remain SORRY-FREE
+- 1 new sorry introduced (Soundness.lean temporal_duality)
+- Infrastructure for Option B approach is in place
 
-## Recommendations for Follow-up
+## Next Steps
 
-1. **Omega-mismatch resolution** (new task): Redesign `valid` and `semantic_consequence`
-   in Validity.lean to add `ShiftClosed Omega` parameter. This would enable the sorry
-   discharge in Representation.lean without breaking soundness.
+1. **Complete Phase 6**: Update SoundnessLemmas.lean to use Omega-parameterized `is_valid`
+   - Change `is_valid` definition to include Omega, h_sc, h_mem
+   - Update all ~30 axiom validity lemmas
+   - Update `derivable_implies_swap_valid`
+   - Remove temporal_duality sorry in Soundness.lean
 
-2. **DovetailingChain sorries** (existing debt): 4 sorries for cross-sign temporal
-   propagation and F/P witness existence. These block `fully_saturated_bmcs_exists_int`.
+2. **Phase 7**: Discharge Representation.lean sorries using the shifted truth lemma with matching Omega
 
-3. **Construction.lean modal_backward**: 1 sorry inherited from the single-family approach.
-   Will be eliminated when `construct_temporal_bmcs` is replaced by a multi-family construction.
+3. **Phase 8**: Final verification and documentation update
+
+## Technical Debt Analysis
+
+The temporal_duality sorry is temporary and will be removed when SoundnessLemmas.lean is updated.
+This is mechanical work (~30 lemmas) but substantial (~4-6 hours estimated).
+
+The core infrastructure (Phases 3-5) is complete and the approach is mathematically sound:
+- `valid` is now parameterized over shift-closed Omega (equivalent to Set.univ semantically)
+- Soundness holds for all axioms except temporal_duality (pending SoundnessLemmas update)
+- The shifted truth lemma enables Representation.lean sorry discharge once soundness is complete

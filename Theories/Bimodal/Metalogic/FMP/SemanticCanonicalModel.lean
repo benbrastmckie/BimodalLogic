@@ -297,7 +297,8 @@ theorem neg_set_consistent_of_not_provable (phi : Formula)
     obtain ⟨d⟩ := h_incons
     have h_sem_cons := soundness [] Formula.bot d
     have h_bot_true := h_sem_cons Int TaskFrame.trivial_frame
-        (TaskModel.all_false) (WorldHistory.trivial) (0 : Int)
+        (TaskModel.all_false) Set.univ Set.univ_shift_closed
+        (WorldHistory.trivial) (Set.mem_univ _) (0 : Int)
         (fun ψ hψ => (List.not_mem_nil hψ).elim)
     simp only [truth_at] at h_bot_true
   · obtain ⟨d⟩ := h_incons
@@ -323,7 +324,8 @@ theorem phi_consistent_of_not_refutable (φ : Formula) (h_not_refutable : ¬None
     obtain ⟨d⟩ := h_incons
     have h_sem_cons := soundness [] Formula.bot d
     have h_bot_true := h_sem_cons Int TaskFrame.trivial_frame
-        (TaskModel.all_false) (WorldHistory.trivial) (0 : Int)
+        (TaskModel.all_false) Set.univ Set.univ_shift_closed
+        (WorldHistory.trivial) (Set.mem_univ _) (0 : Int)
         (fun ψ hψ => (List.not_mem_nil hψ).elim)
     simp only [truth_at] at h_bot_true
   · obtain ⟨d⟩ := h_incons

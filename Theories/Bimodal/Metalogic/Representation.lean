@@ -147,6 +147,112 @@ theorem canonicalHistory_mem_canonicalOmega (B : BMCS Int) (fam : IndexedMCSFami
   ⟨fam, hfam, rfl⟩
 
 /-!
+## Shift-Closed Canonical Omega
+
+The shift-closed enlargement of canonicalOmega. This set contains all canonical
+histories AND all their time-shifts, making it shift-closed by construction.
+This is needed so that the completeness proof can provide an Omega satisfying
+the ShiftClosed condition required by `valid`.
+-/
+
+/-- The shift-closed canonical Omega: all time-shifts of canonical histories. -/
+def shiftClosedCanonicalOmega (B : BMCS Int) : Set (WorldHistory (canonicalFrame B)) :=
+  { σ | ∃ (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) (delta : Int),
+    σ = WorldHistory.time_shift (canonicalHistory B fam hfam) delta }
+
+/-- Time-shift of canonical histories composes: shifting by delta then delta' equals shifting by delta + delta'. -/
+private theorem time_shift_canonicalHistory_compose (B : BMCS Int)
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families)
+    (delta delta' : Int) :
+    WorldHistory.time_shift (WorldHistory.time_shift (canonicalHistory B fam hfam) delta) delta' =
+    WorldHistory.time_shift (canonicalHistory B fam hfam) (delta + delta') := by
+  simp only [WorldHistory.time_shift, canonicalHistory]
+  congr 1; funext t ht; simp only [mkCanonicalWorldState]
+  have h_eq : t + delta' + delta = t + (delta + delta') := by omega
+  congr 1; exact congrArg fam.mcs h_eq
+
+/-- A canonical history equals its time-shift by 0. -/
+private theorem canonicalHistory_eq_time_shift_zero (B : BMCS Int)
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) :
+    canonicalHistory B fam hfam = WorldHistory.time_shift (canonicalHistory B fam hfam) 0 := by
+  simp only [WorldHistory.time_shift, canonicalHistory]
+  congr 1; funext t ht; simp only [mkCanonicalWorldState]
+  have h_eq : t = t + 0 := by omega
+  congr 1; exact congrArg fam.mcs h_eq
+
+/-- shiftClosedCanonicalOmega is shift-closed. -/
+theorem shiftClosedCanonicalOmega_is_shift_closed (B : BMCS Int) :
+    ShiftClosed (shiftClosedCanonicalOmega B) := by
+  intro σ h_mem Δ'
+  obtain ⟨fam, hfam, delta, h_eq⟩ := h_mem
+  refine ⟨fam, hfam, delta + Δ', ?_⟩
+  subst h_eq
+  exact time_shift_canonicalHistory_compose B fam hfam delta Δ'
+
+/-- Every canonical history is in the shift-closed canonical Omega (take delta = 0). -/
+theorem canonicalOmega_subset_shiftClosed (B : BMCS Int) :
+    canonicalOmega B ⊆ shiftClosedCanonicalOmega B := by
+  intro σ h_mem
+  obtain ⟨fam, hfam, h_eq⟩ := h_mem
+  refine ⟨fam, hfam, 0, ?_⟩
+  subst h_eq
+  exact canonicalHistory_eq_time_shift_zero B fam hfam
+
+/-!
+## Box Persistence
+
+The key lemma for the shifted truth lemma: Box phi at any time t implies
+Box phi at ALL times, using the TF axiom and its temporal dual.
+-/
+
+/-- Past analog of TF axiom: Box phi -> H(Box phi), derived via temporal duality.
+TF is `(Box phi).imp (Box phi).all_future`. Applying temporal duality to
+TF for `swap_past_future phi` yields `(Box phi).imp (Box phi).all_past`. -/
+private def past_tf_deriv (φ : Formula) :
+    Bimodal.ProofSystem.DerivationTree [] ((Formula.box φ).imp (Formula.box φ).all_past) := by
+  have h_tf_swap := Bimodal.ProofSystem.DerivationTree.axiom [] _
+    (Bimodal.ProofSystem.Axiom.temp_future (Formula.swap_past_future φ))
+  have h_dual := Bimodal.ProofSystem.DerivationTree.temporal_duality _ h_tf_swap
+  have h_eq : Formula.swap_past_future ((Formula.box (Formula.swap_past_future φ)).imp
+      (Formula.box (Formula.swap_past_future φ)).all_future) =
+    (Formula.box φ).imp (Formula.box φ).all_past := by
+    simp [Formula.swap_past_future, Formula.swap_temporal]
+  rw [h_eq] at h_dual
+  exact h_dual
+
+/-- Box phi at time t implies Box phi at all times s, for any family in a BMCS.
+
+The proof uses:
+1. TF axiom: Box phi -> G(Box phi) -- so Box phi persists to all future times
+2. Temporal dual of TF: Box phi -> H(Box phi) -- so Box phi persists to all past times
+3. forward_G and backward_H to extract Box phi at specific times
+-/
+theorem box_persistent
+    (fam : IndexedMCSFamily Int)
+    (φ : Formula) (t s : Int)
+    (h_box : Formula.box φ ∈ fam.mcs t) :
+    Formula.box φ ∈ fam.mcs s := by
+  -- Step 1: G(Box phi) ∈ fam.mcs t via TF axiom
+  have h_tf : (Formula.box φ).imp (Formula.box φ).all_future ∈ fam.mcs t :=
+    theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
+      (Bimodal.ProofSystem.Axiom.temp_future φ))
+  have h_G_box : (Formula.box φ).all_future ∈ fam.mcs t :=
+    set_mcs_implication_property (fam.is_mcs t) h_tf h_box
+  -- Step 2: H(Box phi) ∈ fam.mcs t via past-TF
+  have h_past_tf : (Formula.box φ).imp (Formula.box φ).all_past ∈ fam.mcs t :=
+    theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
+  have h_H_box : (Formula.box φ).all_past ∈ fam.mcs t :=
+    set_mcs_implication_property (fam.is_mcs t) h_past_tf h_box
+  -- Step 3: Case split on s vs t
+  rcases le_or_gt t s with h_le | h_lt
+  · -- s ≥ t: use T-axiom for s = t, forward_G for s > t
+    rcases eq_or_lt_of_le h_le with h_eq | h_lt
+    · rw [← h_eq]; exact h_box
+    · exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
+  · -- s < t: use backward_H
+    exact fam.backward_H t s (Formula.box φ) h_lt h_H_box
+
+/-!
 ## Truth Lemma
 
 The truth lemma is proven for ALL families simultaneously via structural induction
@@ -307,6 +413,155 @@ theorem canonical_truth_lemma (B : BMCS Int)
     (t : Int) (φ : Formula) :
     φ ∈ fam.mcs t ↔ truth_at (canonicalModel B) (canonicalOmega B) (canonicalHistory B fam hfam) t φ :=
   canonical_truth_lemma_all B h_tc φ fam hfam t
+
+/-!
+## Shifted Truth Lemma
+
+The truth lemma extended to `shiftClosedCanonicalOmega`. This is the key result
+enabling the completeness proof: it relates MCS membership to truth in the canonical
+model with a shift-closed set of histories.
+
+The proof follows the same structure as `canonical_truth_lemma_all` but handles
+the box case differently, using `box_persistent` and `time_shift_preserves_truth`
+to handle shifted canonical histories.
+-/
+
+/--
+Shifted truth lemma: MCS membership iff truth at the canonical model with
+shift-closed canonical Omega. The box forward case uses `box_persistent` to
+show that Box phi persists to all times, enabling truth at shifted histories
+via `time_shift_preserves_truth`.
+-/
+theorem shifted_truth_lemma (B : BMCS Int)
+    (h_tc : B.temporally_coherent) (φ : Formula)
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) (t : Int) :
+    φ ∈ fam.mcs t ↔
+    truth_at (canonicalModel B) (shiftClosedCanonicalOmega B) (canonicalHistory B fam hfam) t φ := by
+  revert fam hfam t
+  induction φ with
+  | atom p =>
+    intro fam hfam t
+    -- Identical to canonical_truth_lemma_all (atom case is Omega-independent)
+    constructor
+    · intro h_mem
+      exact ⟨trivial, h_mem⟩
+    · intro ⟨_, h_val⟩
+      exact h_val
+  | bot =>
+    intro fam hfam t
+    simp only [truth_at]
+    constructor
+    · intro h_mem
+      exfalso
+      apply (fam.is_mcs t).1 [Formula.bot] (by intro x hx; simp at hx; rw [hx]; exact h_mem)
+      exact ⟨DerivationTree.assumption [Formula.bot] Formula.bot (by simp)⟩
+    · intro h; exact h.elim
+  | imp ψ χ ih_ψ ih_χ =>
+    intro fam hfam t
+    simp only [truth_at]
+    constructor
+    · intro h_imp h_ψ_true
+      have h_ψ_mem := (ih_ψ fam hfam t).mpr h_ψ_true
+      exact (ih_χ fam hfam t).mp (set_mcs_implication_property (fam.is_mcs t) h_imp h_ψ_mem)
+    · intro h_truth_imp
+      have h_mcs := fam.is_mcs t
+      rcases set_mcs_negation_complete h_mcs ψ with h_ψ_in | h_neg_ψ_in
+      · have h_χ_mem := (ih_χ fam hfam t).mpr (h_truth_imp ((ih_ψ fam hfam t).mp h_ψ_in))
+        exact set_mcs_implication_property h_mcs
+          (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.prop_s χ ψ))) h_χ_mem
+      · exact set_mcs_implication_property h_mcs
+          (theorem_in_mcs h_mcs (Bimodal.Theorems.Propositional.efq_neg ψ χ)) h_neg_ψ_in
+  | box ψ ih =>
+    intro fam hfam t
+    constructor
+    · -- Forward: Box ψ ∈ fam.mcs t → ∀ σ ∈ shiftClosedCanonicalOmega B, truth_at ... σ t ψ
+      intro h_box σ h_σ_mem
+      -- σ ∈ shiftClosedCanonicalOmega B means σ = time_shift (canonicalHistory B fam' hfam') delta
+      obtain ⟨fam', hfam', delta, h_σ_eq⟩ := h_σ_mem
+      -- By box_persistent: Box ψ ∈ fam.mcs (t + delta)
+      have h_box_shifted : Formula.box ψ ∈ fam.mcs (t + delta) :=
+        box_persistent fam ψ t (t + delta) h_box
+      -- By modal_forward: ψ ∈ fam'.mcs (t + delta)
+      have h_ψ_fam' : ψ ∈ fam'.mcs (t + delta) :=
+        B.modal_forward fam hfam ψ (t + delta) h_box_shifted fam' hfam'
+      -- By IH at (fam', hfam', t + delta): truth_at ... (canonicalHistory B fam' hfam') (t + delta) ψ
+      have h_truth_canon := (ih fam' hfam' (t + delta)).mp h_ψ_fam'
+      -- By time_shift_preserves_truth with shift-closed Omega:
+      -- truth_at ... (time_shift (canonicalHistory ...) delta) t ψ ↔ truth_at ... (canonicalHistory ...) (t + delta) ψ
+      have h_preserve := TimeShift.time_shift_preserves_truth
+        (canonicalModel B) (shiftClosedCanonicalOmega B)
+        (shiftClosedCanonicalOmega_is_shift_closed B) (canonicalHistory B fam' hfam')
+        t (t + delta) ψ
+      -- time_shift_preserves_truth: truth_at ... (time_shift σ (y - x)) x φ ↔ truth_at ... σ y φ
+      -- With x = t, y = t + delta: truth_at ... (time_shift σ ((t+delta) - t)) t ψ ↔ truth_at ... σ (t+delta) ψ
+      -- (t+delta) - t = delta, so: truth_at ... (time_shift σ delta) t ψ ↔ truth_at ... σ (t+delta) ψ
+      have h_delta : (t + delta) - t = delta := by omega
+      rw [h_σ_eq]
+      rw [WorldHistory.time_shift_congr (canonicalHistory B fam' hfam') ((t + delta) - t) delta h_delta] at h_preserve
+      exact h_preserve.mpr h_truth_canon
+    · -- Backward: (∀ σ ∈ shiftClosedCanonicalOmega B, truth_at ... σ t ψ) → Box ψ ∈ fam.mcs t
+      intro h_all_σ
+      -- Only use canonical histories (delta = 0 case)
+      have h_all_fam : ∀ fam' ∈ B.families, ψ ∈ fam'.mcs t := by
+        intro fam' hfam'
+        have h_mem := canonicalOmega_subset_shiftClosed B (canonicalHistory_mem_canonicalOmega B fam' hfam')
+        exact (ih fam' hfam' t).mpr (h_all_σ (canonicalHistory B fam' hfam') h_mem)
+      exact B.modal_backward fam hfam ψ t h_all_fam
+  | all_future ψ ih =>
+    intro fam hfam t
+    -- Identical to canonical_truth_lemma_all (temporal cases are Omega-independent)
+    constructor
+    · intro h_G s h_le
+      rcases eq_or_lt_of_le h_le with h_eq | h_lt
+      · rw [← h_eq]
+        have h_mcs := fam.is_mcs t
+        have h_T : [] ⊢ (Formula.all_future ψ).imp ψ :=
+          DerivationTree.axiom [] _ (Axiom.temp_t_future ψ)
+        have h_ψ_mem : ψ ∈ fam.mcs t :=
+          set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G
+        exact (ih fam hfam t).mp h_ψ_mem
+      · have h_ψ_s : ψ ∈ fam.mcs s := fam.forward_G t s ψ h_lt h_G
+        exact (ih fam hfam s).mp h_ψ_s
+    · intro h_all_s
+      have h_mcs := fam.is_mcs t
+      by_contra h_not_G
+      have h_neg_G : Formula.neg (Formula.all_future ψ) ∈ fam.mcs t := by
+        rcases set_mcs_negation_complete h_mcs (Formula.all_future ψ) with h | h
+        · exact absurd h h_not_G
+        · exact h
+      have h_F_neg : Formula.some_future (Formula.neg ψ) ∈ fam.mcs t :=
+        neg_all_future_to_some_future_neg (fam.mcs t) h_mcs ψ h_neg_G
+      have h_tc_fam := h_tc fam hfam
+      obtain ⟨s, h_lt, h_neg_ψ_s⟩ := h_tc_fam.1 t (Formula.neg ψ) h_F_neg
+      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s (le_of_lt h_lt))
+      exact set_consistent_not_both (fam.is_mcs s).1 ψ h_ψ_s h_neg_ψ_s
+  | all_past ψ ih =>
+    intro fam hfam t
+    constructor
+    · intro h_H s h_le
+      rcases eq_or_lt_of_le h_le with h_eq | h_lt
+      · have h_mcs := fam.is_mcs t
+        have h_T : [] ⊢ (Formula.all_past ψ).imp ψ :=
+          DerivationTree.axiom [] _ (Axiom.temp_t_past ψ)
+        have h_ψ_mem : ψ ∈ fam.mcs t :=
+          set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H
+        have h_ψ_s : ψ ∈ fam.mcs s := h_eq ▸ h_ψ_mem
+        exact (ih fam hfam s).mp h_ψ_s
+      · have h_ψ_s : ψ ∈ fam.mcs s := fam.backward_H t s ψ h_lt h_H
+        exact (ih fam hfam s).mp h_ψ_s
+    · intro h_all_s
+      have h_mcs := fam.is_mcs t
+      by_contra h_not_H
+      have h_neg_H : Formula.neg (Formula.all_past ψ) ∈ fam.mcs t := by
+        rcases set_mcs_negation_complete h_mcs (Formula.all_past ψ) with h | h
+        · exact absurd h h_not_H
+        · exact h
+      have h_P_neg : Formula.some_past (Formula.neg ψ) ∈ fam.mcs t :=
+        neg_all_past_to_some_past_neg (fam.mcs t) h_mcs ψ h_neg_H
+      have h_tc_fam := h_tc fam hfam
+      obtain ⟨s, h_lt, h_neg_ψ_s⟩ := h_tc_fam.2 t (Formula.neg ψ) h_P_neg
+      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s (le_of_lt h_lt))
+      exact set_consistent_not_both (fam.is_mcs s).1 ψ h_ψ_s h_neg_ψ_s
 
 /-!
 ## Standard Completeness Theorems

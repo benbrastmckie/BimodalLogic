@@ -8,8 +8,8 @@ This module defines semantic validity and consequence for TM formulas.
 
 ## Main Definitions
 
-- `valid`: A formula is valid if true in all models (quantifies over all temporal types)
-- `semantic_consequence`: Semantic consequence relation (quantifies over all temporal types)
+- `valid`: A formula is valid if true in all models with shift-closed Omega
+- `semantic_consequence`: Semantic consequence relation (with shift-closed Omega)
 - `satisfiable`: A context is satisfiable if consistent (exists some temporal type)
 - Notation: `⊨ φ` for validity, `Γ ⊨ φ` for semantic consequence
 
@@ -21,7 +21,9 @@ This module defines semantic validity and consequence for TM formulas.
 ## Implementation Notes
 
 - Validity quantifies over all temporal types `D : Type*` with `LinearOrderedAddCommGroup D`
-- Validity and consequence use `Set.univ` as the Omega parameter (all histories admissible)
+- Validity and consequence quantify over all shift-closed Omega and histories in Omega
+- This parameterization is equivalent to using `Set.univ` (since `Set.univ` is shift-closed)
+  but enables completeness proofs to provide a matching Omega
 - Satisfiability existentially quantifies over Omega with a membership constraint `τ ∈ Omega`
 - Semantic consequence: truth in all models where premises true
 - Used in soundness theorem: `Γ ⊢ φ → Γ ⊨ φ`
@@ -31,7 +33,8 @@ This module defines semantic validity and consequence for TM formulas.
 
 JPL paper §app:TaskSemantics defines validity as truth at all task frames with totally ordered
 abelian group D = ⟨D, +, ≤⟩. Our polymorphic quantification over `LinearOrderedAddCommGroup D`
-captures this exactly.
+captures this exactly. The ShiftClosed Omega condition ensures time-shift invariance holds,
+which is implicit in the paper's use of the full universe of histories.
 
 ## References
 
@@ -45,28 +48,31 @@ namespace Bimodal.Semantics
 open Bimodal.Syntax
 
 /--
-A formula is valid if it is true in all models at all times in all histories,
-for every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
+A formula is valid if it is true in all models at all times in all histories within
+any shift-closed set of histories, for every temporal type `D` satisfying
+`LinearOrderedAddCommGroup`.
 
 Formally: for every temporal type `D`, every task frame `F : TaskFrame D`,
-every model `M` over `F`, every world history `τ`, every time `t : D`,
-the formula is true at `(M, τ, t)`.
+every model `M` over `F`, every shift-closed set `Omega` of histories,
+every history `τ ∈ Omega`, and every time `t : D`,
+the formula is true at `(M, Omega, τ, t)`.
 
-Uses `Set.univ` as the Omega parameter (set of admissible histories), meaning all
-world histories are considered admissible for validity checking.
+The `ShiftClosed Omega` condition ensures that time-shift invariance properties
+hold, which is required for soundness of the MF and TF axioms. This condition
+is equivalent to the standard definition using `Set.univ` (since `Set.univ` is
+trivially shift-closed and `τ ∈ Set.univ` holds for all `τ`), but enables
+completeness proofs to provide a matching Omega.
 
 **Paper Reference (lines 924, 2272-2273)**: Logical consequence quantifies over
 all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
-
-This matches the JPL paper's definition where validity is relative to all
-possible time groups D = ⟨D, +, ≤⟩.
 
 Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def valid (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (t : D),
-    truth_at M Set.univ τ t φ
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    truth_at M Omega τ t φ
 
 /--
 Notation for validity: `⊨ φ` means `valid φ`.
@@ -77,8 +83,8 @@ notation:50 "⊨ " φ:50 => valid φ
 Semantic consequence: `Γ ⊨ φ` means φ is true in all models where all of `Γ` are true,
 for every temporal type `D` satisfying `LinearOrderedAddCommGroup`.
 
-Formally: for every temporal type `D`, for every model-history-time where all formulas
-in `Γ` are true, formula `φ` is also true.
+Formally: for every temporal type `D`, for every model-history-time with shift-closed Omega
+where all formulas in `Γ` are true, formula `φ` is also true.
 
 **Paper Reference (lines 924, 2272-2273)**: Logical consequence quantifies over
 all `x ∈ D` (all times in the temporal order), not just times in dom(τ).
@@ -87,9 +93,10 @@ Note: Uses `Type` (not `Type*`) to avoid universe level issues in proofs.
 -/
 def semantic_consequence (Γ : Context) (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (F : TaskFrame D) (M : TaskModel F)
-    (τ : WorldHistory F) (t : D),
-    (∀ ψ ∈ Γ, truth_at M Set.univ τ t ψ) →
-    truth_at M Set.univ τ t φ
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) →
+    truth_at M Omega τ t φ
 
 /--
 Notation for semantic consequence: `Γ ⊨ φ`.
@@ -130,7 +137,7 @@ some model, some world history, and some time where the formula evaluates to tru
 **Usage**: Used in the Finite Model Property to connect formula satisfiability
 to the existence of finite models.
 
-**Relationship to Context Satisfiability**: 
+**Relationship to Context Satisfiability**:
 `formula_satisfiable φ ↔ satisfiable Int [φ]` (for Int time, but holds for any D)
 -/
 def formula_satisfiable (φ : Formula) : Prop :=
@@ -147,18 +154,18 @@ Valid formulas are semantic consequences of empty context.
 theorem valid_iff_empty_consequence (φ : Formula) :
     (⊨ φ) ↔ ([] ⊨ φ) := by
   constructor
-  · intro h D _ _ _ F M τ t _
-    exact h D F M τ t
-  · intro h D _ _ _ F M τ t
-    exact h D F M τ t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
+  · intro h D _ _ _ F M Omega h_sc τ h_mem t _
+    exact h D F M Omega h_sc τ h_mem t
+  · intro h D _ _ _ F M Omega h_sc τ h_mem t
+    exact h D F M Omega h_sc τ h_mem t (by intro ψ hψ; exact absurd hψ List.not_mem_nil)
 
 /--
 Semantic consequence is monotonic: adding premises preserves consequences.
 -/
 theorem consequence_monotone {Γ Δ : Context} {φ : Formula} :
     Γ ⊆ Δ → (Γ ⊨ φ) → (Δ ⊨ φ) := by
-  intro h_sub h_cons D _ _ _ F M τ t h_delta
-  apply h_cons D F M τ t
+  intro h_sub h_cons D _ _ _ F M Omega h_sc τ h_mem t h_delta
+  apply h_cons D F M Omega h_sc τ h_mem t
   intro ψ hψ
   exact h_delta ψ (h_sub hψ)
 
@@ -167,14 +174,14 @@ If a formula is valid, it is a semantic consequence of any context.
 -/
 theorem valid_consequence (φ : Formula) (Γ : Context) :
     (⊨ φ) → (Γ ⊨ φ) :=
-  fun h D _ _ _ F M τ t _ => h D F M τ t
+  fun h D _ _ _ F M Omega h_sc τ h_mem t _ => h D F M Omega h_sc τ h_mem t
 
 /--
 Context with all formulas true implies each formula individually true.
 -/
 theorem consequence_of_member {Γ : Context} {φ : Formula} :
     φ ∈ Γ → (Γ ⊨ φ) := by
-  intro h _ _ _ _ F M τ t h_all
+  intro h _ _ _ _ F M Omega h_sc τ h_mem t h_all
   exact h_all φ h
 
 /--
@@ -187,8 +194,8 @@ consequence in that type, see `unsatisfiable_implies_all_fixed`.
 -/
 theorem unsatisfiable_implies_all {Γ : Context} {φ : Formula} :
     (∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D], ¬satisfiable D Γ) → (Γ ⊨ φ) :=
-  fun h_unsat D _ _ _ F M τ t h_all =>
-    absurd ⟨F, M, Set.univ, τ, Set.mem_univ τ, t, h_all⟩ (h_unsat D)
+  fun h_unsat D _ _ _ F M Omega _h_sc τ h_mem t h_all =>
+    absurd ⟨F, M, Omega, τ, h_mem, t, h_all⟩ (h_unsat D)
 
 /--
 Unsatisfiable context in a fixed temporal type implies consequence in that type.
@@ -196,12 +203,14 @@ This is the type-specific version of explosion.
 -/
 theorem unsatisfiable_implies_all_fixed {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     {Γ : Context} {φ : Formula} :
-    ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F) (τ : WorldHistory F)
-      (t : D), (∀ ψ ∈ Γ, truth_at M Set.univ τ t ψ) → truth_at M Set.univ τ t φ := by
-  intro h_unsat F M τ t h_all
+    ¬satisfiable D Γ → ∀ (F : TaskFrame D) (M : TaskModel F)
+      (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+      (τ : WorldHistory F) (h_mem : τ ∈ Omega)
+      (t : D), (∀ ψ ∈ Γ, truth_at M Omega τ t ψ) → truth_at M Omega τ t φ := by
+  intro h_unsat F M Omega _h_sc τ h_mem t h_all
   exfalso
   apply h_unsat
-  exact ⟨F, M, Set.univ, τ, Set.mem_univ τ, t, h_all⟩
+  exact ⟨F, M, Omega, τ, h_mem, t, h_all⟩
 
 end Validity
 
