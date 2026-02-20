@@ -129,6 +129,127 @@ Collect misplaced directories:
 
 Store count for later reporting.
 
+### 2.7. Auto-Complete Expanded Tasks
+
+Scan for expanded tasks where all subtasks have reached terminal status (completed or abandoned). These parent tasks should transition to completed status.
+
+**CRITICAL**: This step must execute BEFORE Step 3 (Prepare Archive List) so auto-completed tasks are included in the archivable list.
+
+```bash
+# Initialize tracking for auto-completed expanded tasks
+auto_completed_expanded=()
+
+# Get expanded tasks from state.json
+expanded_tasks=$(jq -c '.active_projects[] | select(.status == "expanded")' specs/state.json)
+
+for task_json in $expanded_tasks; do
+  project_num=$(echo "$task_json" | jq -r '.project_number')
+  project_name=$(echo "$task_json" | jq -r '.project_name')
+
+  # Get subtasks array (handle missing field gracefully)
+  subtasks=$(echo "$task_json" | jq -r '.subtasks[]?' 2>/dev/null)
+
+  if [ -z "$subtasks" ]; then
+    # No subtasks field or empty - skip this task
+    echo "Note: Expanded task ${project_num} has no subtasks array, skipping"
+    continue
+  fi
+
+  # Check all subtasks for terminal status
+  all_terminal=true
+  completed_count=0
+  abandoned_count=0
+  total_count=0
+
+  for subtask_num in $subtasks; do
+    ((total_count++))
+
+    # Look up subtask status in state.json
+    # Use "| not" pattern for Issue #1132 safety
+    subtask_status=$(jq -r --arg n "$subtask_num" \
+      '.active_projects[] | select(.project_number == ($n | tonumber)) | .status' \
+      specs/state.json 2>/dev/null)
+
+    # If not in active_projects, check archive (treated as completed)
+    if [ -z "$subtask_status" ]; then
+      subtask_in_archive=$(jq -r --arg n "$subtask_num" \
+        '.completed_projects[] | select(.project_number == ($n | tonumber)) | .status' \
+        specs/archive/state.json 2>/dev/null)
+
+      if [ -n "$subtask_in_archive" ]; then
+        # Subtask is archived - count as completed
+        ((completed_count++))
+      else
+        # Subtask not found anywhere - treat as completed (may have been manually deleted)
+        ((completed_count++))
+        echo "Note: Subtask ${subtask_num} not found in state files, treating as completed"
+      fi
+      continue
+    fi
+
+    # Check if subtask status is terminal
+    case "$subtask_status" in
+      completed)
+        ((completed_count++))
+        ;;
+      abandoned)
+        ((abandoned_count++))
+        ;;
+      *)
+        # Non-terminal status - parent cannot be auto-completed
+        all_terminal=false
+        break
+        ;;
+    esac
+  done
+
+  # If all subtasks are terminal, auto-complete the parent
+  if [ "$all_terminal" = true ] && [ "$total_count" -gt 0 ]; then
+    echo "Auto-completing expanded task ${project_num}: all ${total_count} subtasks finished (${completed_count} completed, ${abandoned_count} abandoned)"
+
+    # Generate completion_summary
+    completion_summary="Expanded task auto-completed: ${completed_count} subtasks completed"
+    if [ "$abandoned_count" -gt 0 ]; then
+      completion_summary+=", ${abandoned_count} subtasks abandoned"
+    fi
+
+    # Update state.json: change status to completed, add completion_summary
+    jq --arg num "$project_num" \
+       --arg summary "$completion_summary" \
+       --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+       '(.active_projects[] | select(.project_number == ($num | tonumber))) |= (
+         .status = "completed" |
+         .completion_summary = $summary |
+         .last_updated = $ts |
+         .auto_completed = true
+       )' specs/state.json > specs/state.json.tmp && mv specs/state.json.tmp specs/state.json
+
+    # Update TODO.md: change [EXPANDED] to [COMPLETED] and add Completed date
+    # Find the task entry and update its status marker
+    old_status_line="- **Status**: [EXPANDED]"
+    new_status_line="- **Status**: [COMPLETED]"
+    completed_date=$(date +%Y-%m-%d)
+
+    # Use Edit tool pattern: find task section and update status
+    # Note: This is pseudo-code for the actual Edit operation
+    # The task header pattern is: "### {N}. {title}"
+    # We need to find this header and update the Status line within it
+
+    # Track for output reporting
+    auto_completed_expanded+=("${project_num}:${project_name}:${completed_count}:${abandoned_count}:${total_count}")
+  fi
+done
+
+# Count for reporting
+auto_completed_count=${#auto_completed_expanded[@]}
+```
+
+Track auto-completed tasks:
+- `auto_completed_expanded[]` - Array of `project_num:project_name:completed:abandoned:total` tuples
+- `auto_completed_count` - Count of auto-completed expanded tasks
+
+**Note**: Auto-completed tasks will be picked up by Step 3 (Prepare Archive List) since their status is now "completed".
+
 ### 3. Prepare Archive List
 
 For each archivable task, collect:
@@ -358,6 +479,10 @@ Misplaced directories in specs/ (tracked in archive/, will be moved): {N}
 - {N8}_{SLUG8}/
 - {N9}_{SLUG9}/
 
+Auto-completed expanded tasks: {N}
+- #{N10}: {title} (all {X} subtasks finished: {Y} completed, {Z} abandoned)
+- #{N11}: {title} (all {X} subtasks finished: {Y} completed, {Z} abandoned)
+
 Roadmap updates (from completion summaries):
 
 Task #{N1} ({project_name}):
@@ -424,6 +549,8 @@ Total misplaced: {N}
 
 Run without --dry-run to archive.
 ```
+
+If no auto-completed expanded tasks were found (from Step 2.7), omit the "Auto-completed expanded tasks" section.
 
 If no roadmap matches were found (from Step 3.5), omit the "Roadmap updates" section.
 
@@ -1147,6 +1274,10 @@ Misplaced directories moved: {N}
 - {N8}_{SLUG8}/ (already tracked in archive/state.json)
 - {N9}_{SLUG9}/ (already tracked in archive/state.json)
 
+Auto-completed expanded tasks: {N}
+- #{N10}: {title} ({Y} completed, {Z} abandoned)
+- #{N11}: {title} ({Y} completed, {Z} abandoned)
+
 Roadmap updated: {N} items
 - Marked complete: {N}
   - {item text} (line {N})
@@ -1189,6 +1320,9 @@ If no orphans were tracked (either none found or user skipped):
 
 If no misplaced directories were moved (either none found or user skipped):
 - Omit the "Misplaced directories moved" section
+
+If no auto-completed expanded tasks were found (from Step 2.7):
+- Omit the "Auto-completed expanded tasks" section
 
 If no roadmap items were updated (no matches found in Step 3.5):
 - Omit the "Roadmap updated" section
@@ -1389,6 +1523,45 @@ Active tasks: {N} | Repository health: {status}
 - Tasks can be recovered with `/task --recover N`
 - Archive is append-only (for audit trail)
 - Run periodically to keep TODO.md and specs/ manageable
+
+### Auto-Completion of Expanded Tasks
+
+**Overview**:
+When tasks are expanded into subtasks via `/task --expand N`, the parent task enters `[EXPANDED]` status. Step 2.7 automatically completes these parent tasks when all their subtasks reach terminal status.
+
+**Trigger Conditions**:
+Auto-completion triggers when ALL subtasks of an expanded task are in terminal status:
+- `completed` - Subtask was successfully implemented
+- `abandoned` - Subtask was abandoned via `/task --abandon`
+
+**Handling of Missing Subtasks**:
+If a subtask listed in the `subtasks[]` array is not found in either state.json or archive/state.json, it is treated as completed. This handles cases where:
+- Subtask was manually deleted
+- Subtask was archived in a previous session
+- State file was manually edited
+
+**Auto-Generated Completion Summary**:
+When auto-completing, a `completion_summary` is generated in the format:
+```
+"Expanded task auto-completed: {N} subtasks completed, {M} subtasks abandoned"
+```
+
+**State Updates**:
+1. **state.json**: Parent task status changes from `"expanded"` to `"completed"`, adds `completion_summary` and sets `auto_completed: true`
+2. **TODO.md**: Status marker changes from `[EXPANDED]` to `[COMPLETED]`, adds Completed date
+
+**Integration with Archival**:
+Auto-completed tasks become eligible for archival in Step 3 (Prepare Archive List). They appear in both dry-run and final output with subtask breakdown.
+
+**Example**:
+Task 906 was expanded into subtasks 907-911. When all five subtasks reach terminal status (e.g., 4 completed, 1 abandoned), Task 906 is auto-completed with:
+```json
+{
+  "status": "completed",
+  "completion_summary": "Expanded task auto-completed: 4 subtasks completed, 1 subtasks abandoned",
+  "auto_completed": true
+}
+```
 
 ### Orphan Tracking
 

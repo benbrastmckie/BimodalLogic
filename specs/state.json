@@ -8,11 +8,11 @@
     {
       "project_number": 913,
       "project_name": "todo_expanded_autocompletion",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "created": "2026-02-19T23:45:59Z",
-      "last_updated": "2026-02-19T23:54:54Z",
-      "session_id": "sess_1771545161_98eeb1",
+      "last_updated": "2026-02-20T00:08:47Z",
+      "session_id": "sess_1771545863_89c883",
       "researched": "2026-02-19T23:50:21Z",
       "artifacts": [
         {
@@ -24,18 +24,27 @@
           "path": "specs/913_todo_expanded_autocompletion/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for todo expanded task auto-completion"
+        },
+        {
+          "path": "specs/913_todo_expanded_autocompletion/summaries/implementation-summary-20260219.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
-      "planned": "2026-02-19T23:54:54Z"
+      "planned": "2026-02-19T23:54:54Z",
+      "started": "2026-02-20T00:04:42Z",
+      "completed": "2026-02-20T00:08:47Z",
+      "completion_summary": "Added automatic completion of expanded tasks to /todo command. Step 2.7 detects expanded tasks with all subtasks in terminal status and transitions them to completed. Updated output sections and Notes documentation.",
+      "claudemd_suggestions": "Updated .claude/commands/todo.md with Step 2.7, dry-run output, final output, and Notes documentation for auto-completion of expanded tasks"
     },
     {
       "project_number": 912,
       "project_name": "review_completeness_proof_metalogic_state",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-02-19T23:36:22Z",
-      "last_updated": "2026-02-19T23:50:57Z",
-      "session_id": "sess_1771544708_98205d",
+      "last_updated": "2026-02-20T00:03:51Z",
+      "session_id": "sess_1771545810_9eb306",
       "researched": "2026-02-19T23:41:52Z",
       "artifacts": [
         {
