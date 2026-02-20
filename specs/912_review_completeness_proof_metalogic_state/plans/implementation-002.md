@@ -3,7 +3,7 @@
 - **Task**: 912 - review_completeness_proof_metalogic_state
 - **Version**: 002
 - **Created**: 2026-02-20
-- **Status**: [PARTIAL]
+- **Status**: [COMPLETED]
 - **Effort**: 18-27 hours (revised from 10-14)
 - **Dependencies**: None
 - **Research Inputs**: research-001.md, research-002.md, research-003.md
@@ -203,7 +203,7 @@ validity), all blocked. Led to research-003.md which identified Option B.
 
 ---
 
-### Phase 6: Soundness Updates [PARTIAL]
+### Phase 6: Soundness Updates [COMPLETED]
 
 - **Dependencies**: Phase 5
 - **Goal**: Update soundness proofs to use `ShiftClosed Omega` hypothesis
@@ -232,9 +232,18 @@ validity), all blocked. Led to research-003.md which identified Option B.
 
 **Timing**: 3-4 hours
 
+**Progress:**
+
+**Session: 2026-02-19, sess_1771554958_f03547**
+- Refactored: `SoundnessLemmas.lean` - parameterized local `is_valid` over `Omega` and `ShiftClosed Omega`
+- Refactored: All ~30 lemmas in SoundnessLemmas.lean updated to thread Omega/h_sc/h_mem
+- Fixed: `temporal_duality` sorry in `Soundness.lean` - now uses Omega-parameterized `derivable_implies_swap_valid`
+- Completed: Phase 6 objectives (soundness sorry discharged)
+- Sorries: 1 -> 0 (in Soundness.lean)
+
 ---
 
-### Phase 7: Representation Sorry Discharge [NOT STARTED]
+### Phase 7: Representation Sorry Discharge [COMPLETED]
 
 - **Dependencies**: Phases 4, 5, 6
 - **Goal**: Discharge the two sorry placeholders in Representation.lean
@@ -269,9 +278,19 @@ theorem standard_weak_completeness (phi : Formula) (h_valid : valid phi) :
 
 **Timing**: 2-3 hours
 
+**Progress:**
+
+**Session: 2026-02-19, sess_1771554958_f03547**
+- Refactored: `standard_representation` to use `shiftClosedCanonicalOmega B` and `shifted_truth_lemma`
+- Refactored: `standard_context_representation` similarly
+- Completed: `standard_weak_completeness` sorry discharged via Omega-parameterized `valid`
+- Completed: `standard_strong_completeness` sorry discharged via Omega-parameterized `semantic_consequence`
+- Refactored: Module docstring updated (sorry characterization section replaced with resolution)
+- Sorries: 2 -> 0 (in Representation.lean proper; upstream sorries from BMCS construction remain)
+
 ---
 
-### Phase 8: Final Verification and Documentation [NOT STARTED]
+### Phase 8: Final Verification and Documentation [COMPLETED]
 
 - **Dependencies**: Phase 7
 - **Goal**: Verify full codebase, update documentation, update state
@@ -294,6 +313,15 @@ theorem standard_weak_completeness (phi : Formula) (h_valid : valid phi) :
 - Soundness theorem is sorry-free
 
 **Timing**: 1-2 hours
+
+**Progress:**
+
+**Session: 2026-02-19, sess_1771554958_f03547**
+- Completed: Full `lake build` succeeds with zero errors (1001 jobs)
+- Completed: Sorry count verified: 7 in Metalogic/ (down from 10, 3 discharged)
+- Completed: Metalogic.lean sorry table updated, Representation.lean docstring updated
+- Added: `Bimodal.Metalogic.Representation` import in Metalogic.lean
+- Completed: Implementation summary written
 
 ---
 

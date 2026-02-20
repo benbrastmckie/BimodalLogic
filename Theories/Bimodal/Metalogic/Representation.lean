@@ -51,18 +51,16 @@ Key design choices:
   for some fam', so IH applies directly
 - No constant-family assumption needed
 
-## Sorry Characterization
+## Omega Parameterization (Task 912)
 
-This module has 2 sorries at the Omega-mismatch boundary (lines ~417, ~449).
-These are NOT inherited from upstream; they represent a genuine semantic gap between
-the BMCS truth (using canonicalOmega) and the standard validity (using Set.univ).
+The previous Omega-mismatch sorries were resolved by parameterizing `valid` and
+`semantic_consequence` over shift-closed Omega (Option B from research-003.md).
+The key constructions:
+- `shiftClosedCanonicalOmega B`: Shift-closed enlargement of `canonicalOmega B`
+- `shifted_truth_lemma`: Truth lemma for the enlarged set (uses `box_persistent`)
+- Completeness proofs instantiate `valid` at `shiftClosedCanonicalOmega B`
 
-Task 912 Phase 2 investigated three approaches and found all blocked:
-1. Coverage lemma unprovable from is_modally_saturated
-2. Truth lemma with Set.univ unprovable (IH only at canonical histories)
-3. Omega-parametric validity breaks MF/TF soundness (needs ShiftClosed)
-
-The most promising resolution is approach (A): add ShiftClosed to validity definition.
+This module's remaining sorries are inherited from upstream (`construct_saturated_bmcs_int`).
 
 ## Main Results
 
@@ -94,7 +92,7 @@ WorldState is generalized to any MCS (not restricted to constant families).
 -/
 
 /-- Restricted world state type: any MCS. -/
-def CanonicalWorldState (B : BMCS Int) : Type :=
+def CanonicalWorldState (_B : BMCS Int) : Type :=
   { S : Set Formula // SetMaximalConsistent S }
 
 /-- The canonical task frame with restricted WorldState. -/
@@ -114,7 +112,7 @@ def mkCanonicalWorldState (B : BMCS Int) (fam : IndexedMCSFamily Int) (t : Int) 
   ⟨fam.mcs t, fam.is_mcs t⟩
 
 /-- The canonical world history for a family, with time-varying states. -/
-def canonicalHistory (B : BMCS Int) (fam : IndexedMCSFamily Int) (hfam : fam ∈ B.families) :
+def canonicalHistory (B : BMCS Int) (fam : IndexedMCSFamily Int) (_hfam : fam ∈ B.families) :
     WorldHistory (canonicalFrame B) where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => trivial
@@ -575,14 +573,15 @@ via `construct_saturated_bmcs_int`.
 
 /--
 **Standard Representation Theorem**: If `φ` is consistent (i.e., `[φ]` has no derivation
-of ⊥), then `φ` is satisfiable in the standard semantics with temporal type `Int`.
+of ⊥), then `φ` is satisfiable in the standard semantics with temporal type `Int`,
+using a shift-closed Omega.
 
 This is the core existential statement: consistent formulas have standard models.
 
 **Proof Strategy**:
 1. Get a fully saturated BMCS B from `construct_saturated_bmcs_int`
 2. φ ∈ B.eval_family.mcs 0 by construction
-3. By truth lemma: truth_at (canonicalModel B) (canonicalOmega B) (canonicalHistory B eval_family) 0 φ
+3. By shifted truth lemma: truth_at M (shiftClosedCanonicalOmega B) (canonicalHistory ...) 0 φ
 4. Package as satisfiable: ∃ F M Omega τ t, τ ∈ Omega ∧ truth_at M Omega τ t φ
 -/
 theorem standard_representation (φ : Formula) (h_cons : ContextConsistent [φ]) :
@@ -593,12 +592,15 @@ theorem standard_representation (φ : Formula) (h_cons : ContextConsistent [φ])
   have h_tc := construct_saturated_bmcs_int_temporally_coherent [φ] h_cons
   -- φ ∈ B.eval_family.mcs 0
   have h_in_mcs : φ ∈ B.eval_family.mcs 0 := h_contains φ (by simp)
-  -- By truth lemma: truth_at at canonical model
-  have h_truth := (canonical_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 φ).mp h_in_mcs
+  -- By shifted truth lemma: truth_at at canonical model with shift-closed Omega
+  have h_truth := (shifted_truth_lemma B h_tc φ B.eval_family B.eval_family_mem 0).mp h_in_mcs
+  -- canonical history is in shiftClosedCanonicalOmega (via canonicalOmega_subset_shiftClosed)
+  have h_mem_sc := canonicalOmega_subset_shiftClosed B
+    (canonicalHistory_mem_canonicalOmega B B.eval_family B.eval_family_mem)
   -- Package as satisfiable
-  exact ⟨canonicalFrame B, canonicalModel B, canonicalOmega B,
+  exact ⟨canonicalFrame B, canonicalModel B, shiftClosedCanonicalOmega B,
     canonicalHistory B B.eval_family B.eval_family_mem,
-    canonicalHistory_mem_canonicalOmega B B.eval_family B.eval_family_mem, 0,
+    h_mem_sc, 0,
     fun ψ h_mem => by
       simp at h_mem
       rw [h_mem]
@@ -606,19 +608,21 @@ theorem standard_representation (φ : Formula) (h_cons : ContextConsistent [φ])
 
 /--
 **Standard Context Representation**: If a context Γ is consistent, then all formulas
-in Γ are satisfiable simultaneously in the standard semantics.
+in Γ are satisfiable simultaneously in the standard semantics, with a shift-closed Omega.
 -/
 theorem standard_context_representation (Γ : List Formula) (h_cons : ContextConsistent Γ) :
     satisfiable Int Γ := by
   let B := construct_saturated_bmcs_int Γ h_cons
   have h_contains := construct_saturated_bmcs_int_contains_context Γ h_cons
   have h_tc := construct_saturated_bmcs_int_temporally_coherent Γ h_cons
-  exact ⟨canonicalFrame B, canonicalModel B, canonicalOmega B,
+  have h_mem_sc := canonicalOmega_subset_shiftClosed B
+    (canonicalHistory_mem_canonicalOmega B B.eval_family B.eval_family_mem)
+  exact ⟨canonicalFrame B, canonicalModel B, shiftClosedCanonicalOmega B,
     canonicalHistory B B.eval_family B.eval_family_mem,
-    canonicalHistory_mem_canonicalOmega B B.eval_family B.eval_family_mem, 0,
+    h_mem_sc, 0,
     fun γ h_mem => by
       have h_in_mcs := h_contains γ h_mem
-      exact (canonical_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 γ).mp h_in_mcs⟩
+      exact (shifted_truth_lemma B h_tc γ B.eval_family B.eval_family_mem 0).mp h_in_mcs⟩
 
 /--
 **Standard Weak Completeness**: If a formula is valid (true in all standard models),
@@ -626,40 +630,16 @@ then it is derivable from the empty context.
 
 **Proof Strategy** (by contraposition):
 1. If ⊬ φ, then [¬φ] is consistent
-2. By standard_representation, ¬φ is satisfiable in some standard model
-3. So φ is not valid in that model
-4. Contradiction with valid φ
+2. Construct a fully saturated BMCS B for [¬φ]
+3. By shifted truth lemma: ¬φ is true at (canonicalModel B, shiftClosedCanonicalOmega B, ...)
+4. By validity: φ is true at the SAME (model, Omega, history, time) since Omega is shift-closed
+5. Contradiction: both φ and ¬φ true at the same point
 
-**Omega-mismatch analysis (Task 912)**:
-
-`valid` uses `Set.univ` as Omega, while `satisfiable` provides `canonicalOmega B`.
-The contradiction requires matching Omega values, which we cannot achieve because:
-
-1. **Truth monotonicity fails**: truth_at is neither monotone nor anti-monotone in Omega
-   because box quantifies over Omega (anti-monotone) while appearing under imp (contravariant).
-
-2. **Coverage lemma unprovable**: is_modally_saturated (from fully_saturated_bmcs_exists_int)
-   provides diamond witnesses, NOT coverage of all MCSes. The canonical frame's WorldState
-   type `{ S : Set Formula // SetMaximalConsistent S }` includes ALL MCSes, but families
-   only contain specific ones. So canonicalOmega B =/= Set.univ.
-
-3. **Truth lemma with Set.univ unprovable**: The box case of canonical_truth_lemma_all
-   requires IH at canonical histories (σ ∈ canonicalOmega). Extending to Set.univ would
-   require IH at arbitrary histories, which the induction structure doesn't provide.
-
-4. **Omega-parametric validity breaks soundness**: Making valid quantify over all Omega
-   (not just Set.univ) would break soundness for MF (Box phi -> G phi) and TF axioms,
-   which use Set.univ_shift_closed. Arbitrary Omega is not shift-closed.
-
-**Resolution paths** (ranked by feasibility):
-- (A) Add ShiftClosed Omega as condition to valid/semantic_consequence, prove soundness
-      still works, prove canonicalOmega is shift-closed (or use Set.univ in representation)
-- (B) Prove truth equivalence for canonical model: truth_at M Omega1 σ t φ ↔ truth_at M Omega2 σ t φ
-      when both Omega contain all states reachable from σ (requires coverage + state-determination)
-- (C) Leave sorry and document as known gap requiring Validity.lean redesign
-
-See specs/910_phase4_canonical_model_reconstruction/reports/research-001.md for initial analysis.
-See specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md Phase 2 for full investigation.
+**Resolution of Omega-mismatch (Task 912)**:
+The previous sorry existed because `valid` used `Set.univ` while `satisfiable` provided
+`canonicalOmega B`. With Omega-parameterized validity (quantifying over all shift-closed Omega),
+we can instantiate `valid` at `shiftClosedCanonicalOmega B` which IS shift-closed, resolving
+the mismatch.
 -/
 theorem standard_weak_completeness (φ : Formula) (h_valid : valid φ) :
     Nonempty (DerivationTree [] φ) := by
@@ -667,17 +647,26 @@ theorem standard_weak_completeness (φ : Formula) (h_valid : valid φ) :
   -- [φ.neg] is consistent
   have h_neg_cons : ContextConsistent [φ.neg] :=
     Bimodal.Metalogic.Bundle.not_derivable_implies_neg_consistent φ h_not_deriv
-  -- ¬φ is satisfiable: ∃ F M Omega τ t, τ ∈ Omega ∧ truth_at M Omega τ t φ.neg
-  obtain ⟨F, M, Omega, τ, _h_mem, t, h_all_true⟩ := standard_representation φ.neg h_neg_cons
-  have h_neg_true : truth_at M Omega τ t φ.neg := h_all_true φ.neg (by simp)
-  -- truth_at φ.neg at Omega = (truth_at φ at Omega → False)
-  -- So φ is false at (M, Omega, τ, t)
-  have h_phi_false : ¬truth_at M Omega τ t φ := h_neg_true
-  -- But valid φ says φ is true everywhere with Set.univ as Omega
-  -- We need truth_at M Omega τ t φ, but valid gives truth_at M Set.univ τ t φ
-  -- TODO: Omega-mismatch - valid uses Set.univ, satisfiable uses canonicalOmega
-  -- For now, use sorry pending Validity.lean coordination
-  sorry
+  -- Construct BMCS directly (avoid going through satisfiable, which loses ShiftClosed info)
+  let B := construct_saturated_bmcs_int [φ.neg] h_neg_cons
+  have h_contains := construct_saturated_bmcs_int_contains_context [φ.neg] h_neg_cons
+  have h_tc := construct_saturated_bmcs_int_temporally_coherent [φ.neg] h_neg_cons
+  -- φ.neg ∈ B.eval_family.mcs 0
+  have h_neg_in_mcs : φ.neg ∈ B.eval_family.mcs 0 := h_contains φ.neg (by simp)
+  -- By shifted truth lemma: truth_at ... φ.neg at shift-closed canonical Omega
+  have h_neg_truth := (shifted_truth_lemma B h_tc φ.neg B.eval_family B.eval_family_mem 0).mp h_neg_in_mcs
+  -- φ.neg being true means φ is false
+  have h_phi_false : ¬truth_at (canonicalModel B) (shiftClosedCanonicalOmega B)
+      (canonicalHistory B B.eval_family B.eval_family_mem) 0 φ := h_neg_truth
+  -- But valid φ says φ is true at ALL shift-closed Omega, including shiftClosedCanonicalOmega B
+  have h_sc := shiftClosedCanonicalOmega_is_shift_closed B
+  have h_mem := canonicalOmega_subset_shiftClosed B
+    (canonicalHistory_mem_canonicalOmega B B.eval_family B.eval_family_mem)
+  have h_phi_true := h_valid Int (canonicalFrame B) (canonicalModel B)
+    (shiftClosedCanonicalOmega B) h_sc
+    (canonicalHistory B B.eval_family B.eval_family_mem) h_mem 0
+  -- Contradiction
+  exact h_phi_false h_phi_true
 
 /--
 **Standard Strong Completeness**: If φ is a semantic consequence of Γ (in the standard
@@ -685,12 +674,14 @@ semantics), then φ is derivable from Γ.
 
 **Proof Strategy** (by contraposition):
 1. If Γ ⊬ φ, then Γ ++ [¬φ] is consistent
-2. By standard_context_representation, Γ ++ [¬φ] is simultaneously satisfiable
-3. So Γ is satisfied but φ is false in some standard model
-4. Therefore φ is not a semantic consequence of Γ
-5. Contradiction
+2. Construct BMCS directly for Γ ++ [¬φ]
+3. By shifted truth lemma: all of Γ are true and ¬φ is true at shift-closed Omega
+4. By semantic consequence: φ must be true at the SAME (model, Omega, history, time)
+5. Contradiction: both φ and ¬φ true
 
-See standard_weak_completeness for Omega-mismatch analysis (Task 912).
+**Resolution of Omega-mismatch (Task 912)**:
+With Omega-parameterized semantic_consequence, we can instantiate at
+`shiftClosedCanonicalOmega B` directly.
 -/
 theorem standard_strong_completeness (Γ : List Formula) (φ : Formula)
     (h_conseq : semantic_consequence Γ φ) :
@@ -699,16 +690,31 @@ theorem standard_strong_completeness (Γ : List Formula) (φ : Formula)
   -- Γ ++ [φ.neg] is consistent
   have h_ext_cons : ContextConsistent (Γ ++ [φ.neg]) :=
     Bimodal.Metalogic.Bundle.context_not_derivable_implies_extended_consistent Γ φ h_not_deriv
-  -- All of Γ ++ [¬φ] satisfiable simultaneously
-  obtain ⟨F, M, Omega, τ, _h_mem, t, h_all_true⟩ := standard_context_representation (Γ ++ [φ.neg]) h_ext_cons
-  -- ¬φ is true
-  have h_neg_true : truth_at M Omega τ t φ.neg := h_all_true φ.neg (by simp)
-  have h_phi_false : ¬truth_at M Omega τ t φ := h_neg_true
-  -- All of Γ are true
-  have h_gamma_true : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ := fun ψ h_mem =>
-    h_all_true ψ (List.mem_append.mpr (Or.inl h_mem))
-  -- By semantic consequence: φ is true (but with Set.univ as Omega)
-  -- TODO: Omega-mismatch - semantic_consequence uses Set.univ, satisfiable uses canonicalOmega
-  sorry
+  -- Construct BMCS directly (avoid going through satisfiable, which loses ShiftClosed info)
+  let B := construct_saturated_bmcs_int (Γ ++ [φ.neg]) h_ext_cons
+  have h_contains := construct_saturated_bmcs_int_contains_context (Γ ++ [φ.neg]) h_ext_cons
+  have h_tc := construct_saturated_bmcs_int_temporally_coherent (Γ ++ [φ.neg]) h_ext_cons
+  -- ¬φ ∈ B.eval_family.mcs 0
+  have h_neg_in_mcs : φ.neg ∈ B.eval_family.mcs 0 := h_contains φ.neg (by simp)
+  -- By shifted truth lemma: truth_at ... φ.neg
+  have h_neg_truth := (shifted_truth_lemma B h_tc φ.neg B.eval_family B.eval_family_mem 0).mp h_neg_in_mcs
+  have h_phi_false : ¬truth_at (canonicalModel B) (shiftClosedCanonicalOmega B)
+      (canonicalHistory B B.eval_family B.eval_family_mem) 0 φ := h_neg_truth
+  -- All of Γ are in B.eval_family.mcs 0
+  have h_gamma_true : ∀ ψ ∈ Γ, truth_at (canonicalModel B) (shiftClosedCanonicalOmega B)
+      (canonicalHistory B B.eval_family B.eval_family_mem) 0 ψ := by
+    intro ψ h_mem
+    have h_in_mcs := h_contains ψ (List.mem_append.mpr (Or.inl h_mem))
+    exact (shifted_truth_lemma B h_tc ψ B.eval_family B.eval_family_mem 0).mp h_in_mcs
+  -- By semantic consequence at shiftClosedCanonicalOmega: φ must be true
+  have h_sc := shiftClosedCanonicalOmega_is_shift_closed B
+  have h_mem := canonicalOmega_subset_shiftClosed B
+    (canonicalHistory_mem_canonicalOmega B B.eval_family B.eval_family_mem)
+  have h_phi_true := h_conseq Int (canonicalFrame B) (canonicalModel B)
+    (shiftClosedCanonicalOmega B) h_sc
+    (canonicalHistory B B.eval_family B.eval_family_mem) h_mem 0
+    h_gamma_true
+  -- Contradiction
+  exact h_phi_false h_phi_true
 
 end Bimodal.Metalogic.Representation

@@ -286,13 +286,11 @@ theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) :=
     exact ih T F M Omega h_sc τ h_mem s (fun _ h => False.elim (List.not_mem_nil h))
 
   | @temporal_duality φ' h_deriv_phi _ =>
-    intro T _ _ _ F M Omega _h_sc τ _h_mem t _
-    -- TODO (Task 912 Phase 6): This case requires SoundnessLemmas.lean to be updated to use
-    -- Omega-parameterized validity. Currently derivable_implies_swap_valid proves validity
-    -- at Set.univ, but we need validity at arbitrary shift-closed Omega. The fix requires
-    -- updating all ~30 lemmas in SoundnessLemmas.lean to carry ShiftClosed Omega hypothesis.
+    intro T _ _ _ F M Omega h_sc τ h_mem t _
+    -- SoundnessLemmas.derivable_implies_swap_valid now quantifies over all shift-closed Omega,
+    -- so we can directly instantiate at the given Omega.
     have h_swap_valid := @SoundnessLemmas.derivable_implies_swap_valid T _ _ _ _ h_deriv_phi
-    sorry -- h_swap_valid F M τ t gives truth_at M Set.univ, need truth_at M Omega
+    exact h_swap_valid F M Omega h_sc τ h_mem t
 
   | @weakening Γ' Δ' φ' _ h_sub ih =>
     intro T _ _ _ F M Omega h_sc τ h_mem t h_all

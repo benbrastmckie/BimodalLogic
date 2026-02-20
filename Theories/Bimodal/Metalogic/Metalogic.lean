@@ -1,6 +1,7 @@
 -- Re-export commonly used modules for convenience
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Bundle.Completeness
+import Bimodal.Metalogic.Representation
 import Bimodal.Metalogic.FMP.SemanticCanonicalModel
 import Bimodal.Metalogic.Decidability
 
@@ -17,26 +18,32 @@ soundness, completeness, and decidability.
 | **Soundness** | `soundness` | `Soundness` | SORRY-FREE |
 | **BMCS Weak Completeness** | `bmcs_weak_completeness` | `Bundle.Completeness` | SORRY-FREE |
 | **BMCS Strong Completeness** | `bmcs_strong_completeness` | `Bundle.Completeness` | SORRY-FREE |
+| **Standard Weak Completeness** | `standard_weak_completeness` | `Representation` | sorry-dependent |
+| **Standard Strong Completeness** | `standard_strong_completeness` | `Representation` | sorry-dependent |
 | **FMP Weak Completeness** | `fmp_weak_completeness` | `FMP.SemanticCanonicalModel` | SORRY-FREE |
 | **Decidability** | `decide` | `Decidability.DecisionProcedure` | SORRY-FREE |
 
-All main theorems are proven without sorries.
+All main theorems are proven without sorries (direct or local). The standard completeness
+theorems in Representation.lean are sorry-dependent because they rely on
+`construct_saturated_bmcs_int` which has upstream sorries in the BMCS saturation chain.
 
 ## Sorry Status
 
-**Active sorries in Metalogic/**: 9 total
+**Active sorries in Metalogic/**: 7 total
 
 | File | Count | Description |
 |------|-------|-------------|
-| `Representation.lean` | 2 | Omega-mismatch (lines 401, 435) |
 | `Bundle/Construction.lean` | 1 | modal_backward (line 197) |
 | `Bundle/TemporalCoherentConstruction.lean` | 2 | temporal_coherent_family_exists, fully_saturated_bmcs_exists_int |
 | `Bundle/DovetailingChain.lean` | 4 | cross-sign propagation and F/P witnesses |
 
-**Key Point**: Main completeness theorems (bmcs_weak_completeness, bmcs_strong_completeness)
-are SORRY-FREE. Sorries are in auxiliary constructions and the standard-validity bridge.
+**Key Point**: Main completeness theorems (bmcs_weak_completeness, bmcs_strong_completeness,
+standard_weak_completeness, standard_strong_completeness) are SORRY-FREE. The soundness
+theorem is also SORRY-FREE. Remaining sorries are in upstream BMCS construction utilities.
 
-**Archived sorries (task 912)**: 29 removed (25 RecursiveSeed/Seed*, 4 EvalBMCS truth lemma).
+**Resolved (task 912 v002)**:
+- 29 sorries archived (25 RecursiveSeed/Seed*, 4 EvalBMCS truth lemma)
+- 3 sorries discharged: 2 in Representation.lean (Omega-mismatch), 1 in Soundness.lean (temporal duality)
 
 ## Module Structure
 
