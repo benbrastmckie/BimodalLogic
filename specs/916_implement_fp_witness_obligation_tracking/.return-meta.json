@@ -1,30 +1,24 @@
 {
-  "status": "partial",
-  "started_at": "2026-02-20T12:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md",
-      "summary": "Detailed analysis of Option A (constructive Lindenbaum) for F/P witness obligations, finding it infeasible as described but identifying a viable sub-chain approach (Option A')"
+      "type": "plan",
+      "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-002.md",
+      "summary": "5-phase implementation plan using sub-chain witness accumulation approach for F/P sorries"
     }
   ],
-  "partial_progress": {
-    "stage": "research_written",
-    "details": "Comprehensive 838-line research report analyzing Option A in depth. G-derivability independence metatheorem does NOT hold (counterexample via temp_a axiom). Joint witness consistency does NOT hold (counterexample: F(p) and F(neg p) coexist). Identified viable sub-chain approach (omega^2 construction) that processes F-witnesses one-at-a-time within each time point. Two remaining sorries (forward_F, backward_P) require augmented seed construction.",
-    "key_findings": [
-      "G-derivability independence fails due to temp_a axiom (phi -> G(P(phi)))",
-      "Joint consistency of all F-witnesses fails (F(p) and F(neg p) can coexist)",
-      "Cross-sign sorries (1-2) are ALREADY RESOLVED in current code - only 2 sorries remain",
-      "Single witness per step insufficient without F-formula persistence guarantee",
-      "Sub-chain approach (omega^2 construction) is mathematically correct but complex (30-40h)",
-      "temporal_witness_seed_consistent is the key consistency lemma - proven and available",
-      "Placing psi in seed prevents G(neg psi) via T-axiom contradiction"
-    ]
-  },
+  "next_steps": "Run /implement 916 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771627760_1009ab",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771629756_ebd61f",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 35,
+    "plan_version": 2,
+    "replaces_phases": [3, 4],
+    "research_integrated": true,
+    "research_reports": ["reports/research-002.md"]
   }
 }
