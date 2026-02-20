@@ -24,10 +24,11 @@ technical_debt:
 
 ### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
 - **Effort**: 12-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-20
 - **Research**: [research-001.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/916_implement_fp_witness_obligation_tracking/plans/implementation-001.md)
 
 **Description**: Close the 4 remaining sorries in `DovetailingChain.lean` by implementing F/P witness obligation tracking in the chain construction and resolving the cross-sign propagation gap. Phase 1 unifies the split forward/backward half-chains into a single interleaved dovetailing chain (closes cross-sign forward_G and backward_H sorries). Phase 2 adds F/P witness scheduling via Cantor-pairing enumeration of all (time, formula) obligations (closes forward_F and backward_P sorries). See description.md for full proof strategy and key lemmas.
 

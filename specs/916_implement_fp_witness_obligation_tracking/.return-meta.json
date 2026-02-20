@@ -1,17 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Identified all 4 sorries in DovetailingChain.lean with precise goal states. Sorries 1-2 (cross-sign forward_G/backward_H) are caused by the split forward/backward half-chain architecture that shares only M_0 and cannot propagate G/H content across the sign boundary. Sorries 3-4 (forward_F/backward_P) require F/P witness scheduling because Lindenbaum can add F/P formulas without placing witnesses. The fix requires a unified interleaved chain construction (using the existing dovetailIndex/dovetailRank bijection) with Cantor-pairing enumeration of (time, formula) obligation pairs. Key consistency lemmas (temporal_witness_seed_consistent, past_temporal_witness_seed_consistent) are already proven.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
-      "summary": "Detailed analysis of 4 sorries in DovetailingChain.lean with precise goal states, architecture analysis of the split half-chain problem, F/P witness obligation tracking strategy using Cantor pairing, inventory of 15 supporting lemmas, and implementation recommendations for unified interleaved chain construction"
+      "type": "plan",
+      "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-001.md",
+      "summary": "4-phase implementation plan to close 4 sorries via unified interleaved chain with F/P witness scheduling"
     }
   ],
+  "next_steps": "Run /implement 916 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771617861_fa580b",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771618381_0c9124",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 8
   }
 }
