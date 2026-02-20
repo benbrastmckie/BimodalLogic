@@ -23,15 +23,14 @@ technical_debt:
 ## Tasks
 
 ### 912. Review completeness proof and metalogic state after task 910
-- **Effort**: 10-14 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 18-27 hours (revised)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-19
 - **Researched**: 2026-02-19
-- **Planned**: 2026-02-19
-- **Started**: 2026-02-20
+- **Planned**: 2026-02-20
 - **Research**: [research-001.md](specs/912_review_completeness_proof_metalogic_state/reports/research-001.md), [research-002.md](specs/912_review_completeness_proof_metalogic_state/reports/research-002.md), [research-003.md](specs/912_review_completeness_proof_metalogic_state/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/912_review_completeness_proof_metalogic_state/plans/implementation-002.md) (v2: ShiftClosed Omega approach)
 - **Summary**: [implementation-summary-20260220.md](specs/912_review_completeness_proof_metalogic_state/summaries/implementation-summary-20260220.md)
 
 **Description**: Systematically review the state of the completeness proof by way of the representation theorem and the FMP in order to evaluate the state of the metalogic, what has been finished, what remains to be done, and what can be archived to the Bimodal/Boneyard/, and how best to refactor or reorganize the metalogic.

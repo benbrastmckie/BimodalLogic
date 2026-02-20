@@ -8,10 +8,10 @@
     {
       "project_number": 912,
       "project_name": "review_completeness_proof_metalogic_state",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-19T23:36:22Z",
-      "last_updated": "2026-02-20T00:17:50Z",
+      "last_updated": "2026-02-20T00:52:59Z",
       "session_id": "sess_1771546642_46a7c4",
       "researched": "2026-02-19T23:41:52Z",
       "artifacts": [
@@ -26,11 +26,6 @@
           "summary": "Detailed analysis of semantic discrepancies between FMP, BMCS, and standard TaskFrame completeness: identifies Omega-mismatch as blocking issue, documents stale FMP documentation, and recommends resolution path"
         },
         {
-          "path": "specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase plan to archive dead code, investigate the Omega-mismatch, prove the state-determination/coverage property for the canonical model, and discharge the two sorry placeholders in Representation.lean without weakening the validity definition"
-        },
-        {
           "path": "specs/912_review_completeness_proof_metalogic_state/summaries/implementation-summary-20260220.md",
           "type": "summary",
           "summary": "Implementation summary documenting Phase 1 archival (29 sorries eliminated), Phase 2 Omega-mismatch investigation (all approaches blocked), and Phase 5 verification"
@@ -39,9 +34,14 @@
           "path": "specs/912_review_completeness_proof_metalogic_state/reports/research-003.md",
           "type": "research",
           "summary": "Analysis of shift-closed canonical Omega approach: requires ShiftClosed in valid definition; box_persistent lemma as key enabler; 18-27 hour implementation estimate"
+        },
+        {
+          "path": "specs/912_review_completeness_proof_metalogic_state/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "8-phase revised plan using ShiftClosed Omega approach: box_persistent + shifted truth lemma to discharge Representation.lean sorries"
         }
       ],
-      "planned": "2026-02-20T00:09:50Z",
+      "planned": "2026-02-20T00:52:59Z",
       "started": "2026-02-20T00:17:50Z"
     },
     {
