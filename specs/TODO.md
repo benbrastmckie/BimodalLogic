@@ -34,10 +34,11 @@ technical_debt:
 
 ### 915. Document BFMCS proof architecture and remaining lacunae
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Created**: 2026-02-20
 - **Research**: [research-001.md](specs/915_document_bfmcs_proof_architecture/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/915_document_bfmcs_proof_architecture/plans/implementation-001.md)
 
 **Description**: Write comprehensive documentation explaining the two-level bundling ontology (BFMCS = temporal family, BMCS = modal bundle of families), the propagation requirements as construction constraints, why G-content propagates automatically while F-obligations require explicit witness tracking, the consistency argument via `temporal_witness_seed_consistent`, and precisely where the 4 remaining sorries in DovetailingChain.lean are and what closes them.
 

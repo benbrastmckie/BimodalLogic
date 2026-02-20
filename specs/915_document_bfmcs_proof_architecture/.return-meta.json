@@ -1,18 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/915_document_bfmcs_proof_architecture/reports/research-001.md",
-      "summary": "Comprehensive analysis of BFMCS/BMCS two-level bundling architecture, propagation mechanics, consistency arguments, and 4 sorries in DovetailingChain.lean"
+      "type": "plan",
+      "path": "specs/915_document_bfmcs_proof_architecture/plans/implementation-001.md",
+      "summary": "6-phase plan for documenting BFMCS proof architecture and 4 remaining sorries"
     }
   ],
-  "next_steps": "Run /plan 915 to create implementation plan for documentation",
+  "next_steps": "Run /implement 915 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771615229_678654",
-    "agent_type": "general-research-agent",
+    "session_id": "sess_1771617032_435a6b",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 6,
+    "estimated_hours": 3
   }
 }

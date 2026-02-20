@@ -405,19 +405,25 @@
     {
       "project_number": 915,
       "project_name": "document_bfmcs_proof_architecture",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-20T19:25:46Z",
+      "last_updated": "2026-02-20T19:53:26Z",
       "artifacts": [
         {
           "path": "specs/915_document_bfmcs_proof_architecture/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of BFMCS/BMCS two-level bundling architecture, propagation mechanics, consistency arguments, and 4 sorries in DovetailingChain.lean"
+        },
+        {
+          "path": "specs/915_document_bfmcs_proof_architecture/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase plan for documenting BFMCS proof architecture and 4 remaining sorries"
         }
       ],
-      "session_id": "sess_1771615229_678654",
-      "researched": "2026-02-20T19:25:46Z"
+      "session_id": "sess_1771617032_435a6b",
+      "researched": "2026-02-20T19:25:46Z",
+      "planned": "2026-02-20T19:53:26Z"
     },
     {
       "project_number": 916,
