@@ -1,16 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/912_review_completeness_proof_metalogic_state/reports/research-002.md",
-      "type": "research",
-      "summary": "Detailed analysis of semantic discrepancies between FMP, BMCS, and standard TaskFrame completeness: identifies Omega-mismatch as blocking issue, documents stale FMP documentation, and recommends resolution path"
+      "type": "plan",
+      "path": "specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md",
+      "summary": "5-phase plan to archive dead code, investigate the Omega-mismatch, prove the state-determination/coverage property for the canonical model, and discharge the two sorry placeholders in Representation.lean without weakening the validity definition"
     }
   ],
+  "next_steps": "Run /implement 912 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771544708_98205d",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771545810_9eb306",
+    "agent_type": "planner-agent",
+    "duration_seconds": 420,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": "10-14 hours"
   }
 }

@@ -40,10 +40,10 @@
     {
       "project_number": 912,
       "project_name": "review_completeness_proof_metalogic_state",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-19T23:36:22Z",
-      "last_updated": "2026-02-20T00:03:51Z",
+      "last_updated": "2026-02-20T00:09:50Z",
       "session_id": "sess_1771545810_9eb306",
       "researched": "2026-02-19T23:41:52Z",
       "artifacts": [
@@ -56,8 +56,14 @@
           "path": "specs/912_review_completeness_proof_metalogic_state/reports/research-002.md",
           "type": "research",
           "summary": "Detailed analysis of semantic discrepancies between FMP, BMCS, and standard TaskFrame completeness: identifies Omega-mismatch as blocking issue, documents stale FMP documentation, and recommends resolution path"
+        },
+        {
+          "path": "specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase plan to archive dead code, investigate the Omega-mismatch, prove the state-determination/coverage property for the canonical model, and discharge the two sorry placeholders in Representation.lean without weakening the validity definition"
         }
-      ]
+      ],
+      "planned": "2026-02-20T00:09:50Z"
     },
     {
       "project_number": 907,
