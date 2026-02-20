@@ -30,7 +30,7 @@ technical_debt:
 - **Researched**: 2026-02-19
 - **Planned**: 2026-02-19
 - **Started**: 2026-02-20
-- **Research**: [research-001.md](specs/912_review_completeness_proof_metalogic_state/reports/research-001.md), [research-002.md](specs/912_review_completeness_proof_metalogic_state/reports/research-002.md)
+- **Research**: [research-001.md](specs/912_review_completeness_proof_metalogic_state/reports/research-001.md), [research-002.md](specs/912_review_completeness_proof_metalogic_state/reports/research-002.md), [research-003.md](specs/912_review_completeness_proof_metalogic_state/reports/research-003.md)
 - **Plan**: [implementation-001.md](specs/912_review_completeness_proof_metalogic_state/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260220.md](specs/912_review_completeness_proof_metalogic_state/summaries/implementation-summary-20260220.md)
 

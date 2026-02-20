@@ -34,6 +34,11 @@
           "path": "specs/912_review_completeness_proof_metalogic_state/summaries/implementation-summary-20260220.md",
           "type": "summary",
           "summary": "Implementation summary documenting Phase 1 archival (29 sorries eliminated), Phase 2 Omega-mismatch investigation (all approaches blocked), and Phase 5 verification"
+        },
+        {
+          "path": "specs/912_review_completeness_proof_metalogic_state/reports/research-003.md",
+          "type": "research",
+          "summary": "Analysis of shift-closed canonical Omega approach: requires ShiftClosed in valid definition; box_persistent lemma as key enabler; 18-27 hour implementation estimate"
         }
       ],
       "planned": "2026-02-20T00:09:50Z",
