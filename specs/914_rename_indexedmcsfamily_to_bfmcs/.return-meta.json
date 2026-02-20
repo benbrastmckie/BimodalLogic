@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/914_rename_indexedmcsfamily_to_bfmcs/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for renaming IndexedMCSFamily to BFMCS across 12 active Lean files"
+    }
+  ],
+  "next_steps": "Run /implement 914 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1771614495_44d139",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 5,
+    "estimated_hours": 2
+  }
+}

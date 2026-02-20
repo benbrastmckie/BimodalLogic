@@ -374,19 +374,25 @@
     {
       "project_number": 914,
       "project_name": "rename_indexedmcsfamily_to_bfmcs",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-20T19:01:05Z",
+      "last_updated": "2026-02-20T19:10:49Z",
       "artifacts": [
         {
           "path": "specs/914_rename_indexedmcsfamily_to_bfmcs/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of IndexedMCSFamily structure, 402 Lean occurrences across 32 files, import dependency graph, BFMCS naming rationale, and safe rename strategy"
+        },
+        {
+          "path": "specs/914_rename_indexedmcsfamily_to_bfmcs/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for renaming IndexedMCSFamily to BFMCS across 12 active Lean files"
         }
       ],
-      "session_id": "sess_1771613794_ec1f2f",
-      "researched": "2026-02-20T19:01:05Z"
+      "session_id": "sess_1771614495_44d139",
+      "researched": "2026-02-20T19:01:05Z",
+      "planned": "2026-02-20T19:10:49Z"
     },
     {
       "project_number": 915,
