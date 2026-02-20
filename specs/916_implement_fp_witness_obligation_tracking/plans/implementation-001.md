@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P witness obligation tracking to close DovetailingChain sorries
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Effort**: 8 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md
@@ -116,7 +116,7 @@ Instead of building a unified chain, we prove that the existing split chains hav
 
 ---
 
-### Phase 3: F/P Witness Scheduling (Sorries 3-4) [NOT STARTED]
+### Phase 3: F/P Witness Scheduling (Sorries 3-4) [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Add F/P witness formula scheduling via Cantor-pairing enumeration, eliminating forward_F and backward_P sorries
@@ -142,19 +142,61 @@ Instead of building a unified chain, we prove that the existing split chains hav
 - [ ] Update `buildDovetailingChainFamily_forward_F` to use `unified_forward_F`
 - [ ] Update `buildDovetailingChainFamily_backward_P` to use `unified_backward_P`
 
-**Timing**: 2.5 hours
+**Timing**: 2.5 hours (original estimate; blocked due to fundamental difficulty)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - Add witness enumeration, augment seed
 
 **Verification**:
-- Sorries at lines 633 and 640 eliminated
+- Sorries at lines 919 and 926 eliminated
 - `lake build Bimodal.Metalogic.Bundle.DovetailingChain` succeeds
 - `buildDovetailingChainFamily_forward_F` and `buildDovetailingChainFamily_backward_P` compile without sorry
 
+**Progress:**
+
+**Session: 2026-02-20, sess_1771626129_c718ce** (no progress on code; deep analysis completed)
+- Attempted: Multiple approaches to close forward_F and backward_P sorries
+- Result: BLOCKED - all approaches encounter a fundamental F-formula persistence problem
+
+**Detailed Analysis of Blocker:**
+
+The core problem: `F(psi) in M_t` does NOT guarantee `F(psi) in M_{t+1}` (F-formulas do not auto-propagate via GContent since `F(psi) -> G(F(psi))` is NOT derivable). Since the Lindenbaum extension is non-deterministic (via Zorn/Classical.choice), `G(neg psi)` can enter `M_{t+1}` even when `F(psi) in M_t`, permanently killing the F-obligation.
+
+**Approaches Investigated:**
+
+1. **Simple formula enumeration (one witness per step)**: At step n+1, add decode(n) to seed if F(decode(n)) in M_n. FAILS because F(psi) may vanish before psi's enumeration step k = encode(psi).
+
+2. **Cantor pairing on (time, formula)**: Enumerate (s, psi) pairs, check F(psi) in M_s. FAILS because seed consistency requires F(psi) in M_{t-1} (immediate predecessor), not in M_s.
+
+3. **Multi-witness seed (all F-witnesses at once)**: Add ALL {psi | F(psi) in M_n} to seed. FAILS because F(p) and F(neg p) can both be in M_n, but {p, neg p} is inconsistent.
+
+4. **F-formula propagation in seed**: Include {F(chi) | F(chi) in M_n} in the seed for M_{n+1}. FGSeed(M) subset M is consistent. BUT adding a witness psi_n to FGSeed may be inconsistent: if G(psi_n -> G(neg chi)) in M_n, then {psi_n} union FGSeed(M_n) derives G(neg chi), contradicting F(chi).
+
+5. **Prove persistence by contradiction**: Assume psi not in any M_s for s > m. Try to derive G(neg psi) in M_m from "neg psi at all future times". This is the temporal_backward_G property, which REQUIRES forward_F (circular).
+
+6. **Subset-of-M argument**: FGSeed(M) = GContent(M) union {F(chi) | F(chi) in M} is subset of M, hence consistent. Adding one witness psi_n (via TemporalWitnessSeed) plus F-formulas may be inconsistent due to conditional G-formulas in GContent.
+
+**Key Proven Facts:**
+- `GContent(M) union {F(psi)}` IS consistent when F(psi) in M (since GContent(M) union {F(psi)} subset M)
+- `{psi} union GContent(M)` IS consistent when F(psi) in M (`temporal_witness_seed_consistent`)
+- `{psi} union GContent(M) union {F(chi)}` may be INCONSISTENT (counterexample: G(psi -> G(neg chi)) in M)
+- Multi-witness `{psi_1,...,psi_k} union GContent(M)` may be INCONSISTENT (counterexample: F(p) and F(neg p) both in M)
+
+**Resolution Paths (for future implementation):**
+
+A. **Constructive formula-by-formula Lindenbaum**: Define Lindenbaum that processes formulas in a fixed order, ensuring F(chi) is processed BEFORE G(neg chi). With a metatheorem that non-G context formulas don't affect G-derivability, this guarantees F-persistence. ESTIMATED EFFORT: 15-20 hours (new Lindenbaum + metatheorem).
+
+B. **Modified chain with priority witness scheduling**: At each step, resolve the OLDEST unresolved F-obligation. Use a constructive Lindenbaum to ensure no other F-obligations are killed. ESTIMATED EFFORT: 12-15 hours (requires path A infrastructure).
+
+C. **Direct semantic argument**: Build a model directly from MCS properties without explicit chain construction. Use compactness or ultrafilter arguments. ESTIMATED EFFORT: 20+ hours (requires significant new infrastructure).
+
+D. **Accept sorry debt**: Leave forward_F and backward_P as sorries. The temporal_coherent_family_exists_theorem is still a THEOREM (not axiom), just sorry-backed. The completeness proof flows through. EFFORT: 0 hours (status quo).
+
+**Recommendation**: Path A is the most promising. The key new lemma needed is a "G-derivability independence" metatheorem: `{non-G-formulas} union GContent(M) |- G(alpha)` iff `GContent(M) |- G(alpha)`. This can likely be proven by induction on the derivation tree. Once this is established, the formula-by-formula Lindenbaum gives full control over F-persistence, and the proof of forward_F follows the standard textbook argument.
+
 ---
 
-### Phase 4: Final Integration and Cleanup [NOT STARTED]
+### Phase 4: Final Integration and Cleanup [BLOCKED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Verify all sorries eliminated, clean up deprecated code, verify downstream theorems compile
