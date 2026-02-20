@@ -1,7 +1,7 @@
 # Implementation Plan: Task #915
 
 - **Task**: 915 - Document BFMCS proof architecture and remaining lacunae
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3 hours
 - **Dependencies**: Task 914 (BFMCS rename) - completed
 - **Research Inputs**: specs/915_document_bfmcs_proof_architecture/reports/research-001.md
