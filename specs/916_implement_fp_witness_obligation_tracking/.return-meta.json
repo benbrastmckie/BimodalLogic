@@ -1,17 +1,17 @@
 {
   "status": "partial",
-  "started_at": "2026-02-20T00:00:00Z",
+  "started_at": "2026-02-20T12:00:00Z",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
-      "summary": "Phase 1 of plan v003 completed: omega^2 witness chain structure with 22 definitions/lemmas"
+      "summary": "Phases 1-2 of plan v003 completed: omega^2 witness chain structure with 40 definitions/lemmas"
     }
   ],
   "partial_progress": {
-    "stage": "phase_1_completed",
-    "details": "Phase 1 (Define Omega^2 Chain Structure) completed. Added witnessForwardChainMCS, witnessBackwardChainMCS, formula enumeration, and 15 supporting lemmas. All compile without sorry. Next: Phase 2 (inner chain properties).",
-    "phases_completed": 1,
+    "stage": "phase_2_completed",
+    "details": "Phase 2 (Inner Chain Properties) completed. Added 18 sorry-free lemmas including coverage_of_le (the key Phase 3 dependency). All compile via lake build. Remaining: Phase 3 (coverage argument/forward_F), Phase 4 (BFMCS integration), Phase 5 (backward_P).",
+    "phases_completed": 2,
     "phases_total": 5,
     "handoff_path": null
   },
@@ -19,9 +19,11 @@
     "session_id": "sess_1771634621_f7a06b",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 2,
+    "phases_total": 5
   },
   "completion_data": {
-    "completion_summary": "Completed Phase 1 of omega^2 witness chain construction for task 916. Defined witnessForwardChainMCS and witnessBackwardChainMCS (flat omega-indexed witness chains), formula enumeration via Encodable, forward_temporal_witness_seed_consistent, and 15 supporting lemmas for GContent extension, witness placement, and G/H coherence. All definitions compile without sorry. The 2 existing forward_F/backward_P sorries remain for Phase 3/5."
+    "completion_summary": "Completed Phase 2 of omega^2 witness chain properties for task 916. Proved 18 sorry-free lemmas including GContent/HContent multi-step monotonicity, F/P-formula dichotomy, G(neg)/H(neg) persistence and contrapositive, and the critical coverage_of_le lemma (if F(psi) alive at step n with encodeFormula(psi) <= n, then psi enters at encodeFormula(psi)+1). Phase 1 added 22 definitions/lemmas; combined total is 40 definitions/lemmas, all sorry-free. The 2 existing forward_F/backward_P sorries remain for Phase 3/5."
   }
 }

@@ -115,17 +115,20 @@ After this implementation:
 
 ---
 
-### Phase 2: Prove Inner Chain Properties [NOT STARTED]
+### Phase 2: Prove Inner Chain Properties [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Establish key lemmas about the inner chain behavior
 
 **Tasks**:
-- [ ] Prove `innerChain_witness_in`: witnessed formula psi enters the MCS at inner step k+1
-- [ ] Prove `innerChain_F_persists`: F(psi) persists when psi is witnessed
-  - Key insight: After adding psi to seed, F(psi) remains in MCS via GContent extension
-- [ ] Prove `innerChain_monotone_GContent`: GContent is monotone through inner chain
-- [ ] Prove `innerChain_extends_base`: each inner MCS extends the base GContent
+- [x] Prove `witnessForwardChain_coverage` / `witnessBackwardChain_coverage`: witnessed formula psi enters MCS at encoding step + 1
+- [x] Prove F-persistence and dichotomy lemmas: `witnessForwardChain_F_dichotomy`, `witnessForwardChain_F_persists_if_not_killed`, `witnessForwardChain_F_implies_G_neg_absent`
+  - Key insight: F(psi) persists unless G(neg(psi)) enters; once G(neg(psi)) enters, it persists forever (4-axiom + GContent). Contrapositive: if F(psi) ∈ chain(n), then G(neg(psi)) was absent at ALL steps m ≤ n.
+- [x] Prove `witnessForwardChainMCS_GContent_extends_le` / `witnessBackwardChainMCS_HContent_extends_le`: GContent/HContent monotone through multiple steps
+- [x] Prove `witnessForwardChainMCS_extends_base_GContent` / `witnessBackwardChainMCS_extends_base_HContent`: each chain step extends base GContent/HContent
+- [x] Prove `witnessForwardChain_coverage_of_le` / `witnessBackwardChain_coverage_of_le`: KEY LEMMA - if F(psi) ∈ chain(n) and encodeFormula(psi) ≤ n, then psi ∈ chain(encodeFormula(psi)+1)
+
+**Design Note**: The plan originally specified `innerChain_F_persists` as a lemma showing F(psi) unconditionally persists. Analysis revealed `F(psi) → G(F(psi))` is NOT derivable in TM logic, so unconditional F-persistence is not provable. Instead, we proved the stronger `coverage_of_le` lemma which combines the contrapositive of G-persistence with the coverage argument: if F(psi) is still alive at step n, it MUST have been alive at all earlier steps (including the encoding index), so the witness fires. This is strictly more useful than unconditional F-persistence for Phase 3.
 
 **Timing**: 8-12 hours
 
@@ -133,8 +136,24 @@ After this implementation:
 - `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - add lemmas
 
 **Verification**:
-- All lemmas compile without sorry
-- `innerChain_F_persists` is the critical milestone - must complete before Phase 3
+- All 18 new lemmas compile without sorry (verified via `lake build`)
+- `witnessForwardChain_coverage_of_le` is the critical milestone for Phase 3
+
+**Progress:**
+
+**Session: 2026-02-20, sess_1771634621_f7a06b**
+- Added: `witnessForwardChainMCS_GContent_extends_le` - multi-step GContent monotonicity (forward)
+- Added: `witnessBackwardChainMCS_HContent_extends_le` - multi-step HContent monotonicity (backward)
+- Added: `witnessForwardChain_coverage` + `witnessBackwardChain_coverage` - encoding-step coverage
+- Added: `witnessForwardChainMCS_extends_base_GContent` + `witnessBackwardChainMCS_extends_base_HContent` - base extension
+- Added: `witnessForwardChain_F_dichotomy` + `witnessBackwardChain_P_dichotomy` - F/P dichotomy via MCS completeness
+- Added: `witnessForwardChain_G_neg_persists` + `witnessBackwardChain_H_neg_persists` - G(neg)/H(neg) persistence
+- Added: `witnessForwardChain_F_persists_if_not_killed` + `witnessBackwardChain_P_persists_if_not_killed` - conditional F/P persistence
+- Added: `witnessForwardChain_F_persists` + `witnessBackwardChain_P_persists` - F/P persistence with initial condition
+- Added: `witnessForwardChain_F_implies_G_neg_absent` + `witnessBackwardChain_P_implies_H_neg_absent` - contrapositive of G/H persistence
+- Added: `witnessForwardChain_coverage_of_le` + `witnessBackwardChain_coverage_of_le` - coverage with persistence (KEY lemma)
+- Completed: Phase 2 objectives (18 lemmas, all sorry-free)
+- Sorries: 2 -> 2 (0 eliminated, 0 introduced - existing forward_F/backward_P sorries remain for Phase 3/5)
 
 ---
 

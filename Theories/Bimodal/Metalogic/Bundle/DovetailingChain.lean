@@ -1306,6 +1306,240 @@ lemma witnessForwardChainMCS_HContent_reverse (base : Set Formula) (h_base_cons 
     (witnessForwardChainMCS_is_mcs base h_base_cons (n + 1))
     (witnessForwardChainMCS_GContent_extends base h_base_cons n)
 
+/-! ### Inner Chain Properties (Phase 2)
+
+Properties of the witness chains needed for the coverage argument (Phase 3).
+These relate GContent monotonicity, base extension, and formula coverage. -/
+
+/-- GContent is monotone through multiple steps of the forward witness chain.
+If `m ≤ n`, then `GContent(chain(m)) ⊆ chain(n)`. This follows from
+single-step GContent extension composed with the T-axiom. -/
+lemma witnessForwardChainMCS_GContent_extends_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) :
+    GContent (witnessForwardChainMCS base h_base_cons m).val ⊆
+      (witnessForwardChainMCS base h_base_cons n).val := by
+  intro phi h_phi
+  -- phi ∈ GContent(chain(m)) means G(phi) ∈ chain(m)
+  -- By forward_G for the witness chain, phi ∈ chain(n) for n > m
+  -- But we need n ≥ m, so handle the equal case separately
+  rcases Nat.eq_or_lt_of_le h_le with h_eq | h_lt
+  · subst h_eq
+    -- GContent(chain(m)) ⊆ chain(m) by T-axiom
+    have h_mcs := witnessForwardChainMCS_is_mcs base h_base_cons m
+    have h_G_phi : Formula.all_future phi ∈ (witnessForwardChainMCS base h_base_cons m).val := h_phi
+    have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
+    exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G_phi
+  · exact witnessForwardChain_forward_G base h_base_cons m n h_lt phi h_phi
+
+/-- HContent is monotone through multiple steps of the backward witness chain. -/
+lemma witnessBackwardChainMCS_HContent_extends_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) :
+    HContent (witnessBackwardChainMCS base h_base_cons m).val ⊆
+      (witnessBackwardChainMCS base h_base_cons n).val := by
+  intro phi h_phi
+  rcases Nat.eq_or_lt_of_le h_le with h_eq | h_lt
+  · subst h_eq
+    have h_mcs := witnessBackwardChainMCS_is_mcs base h_base_cons m
+    have h_H_phi : Formula.all_past phi ∈ (witnessBackwardChainMCS base h_base_cons m).val := h_phi
+    have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+    exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H_phi
+  · exact witnessBackwardChain_backward_H base h_base_cons m n h_lt phi h_phi
+
+/-- Coverage property for the forward witness chain: if `F(psi)` is present
+at the encoding index of `psi`, then `psi` enters the chain at the next step.
+
+This is the key coverage lemma: it combines witness placement with encoding
+surjectivity. For any formula `psi`, `encodeFormula psi` is the step at
+which the chain checks for `F(psi)`. If `F(psi)` is present at that step,
+`psi` is guaranteed to appear at step `encodeFormula psi + 1`. -/
+lemma witnessForwardChain_coverage (base : Set Formula) (h_base_cons : SetConsistent base)
+    (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons (encodeFormula psi)).val) :
+    psi ∈ (witnessForwardChainMCS base h_base_cons (encodeFormula psi + 1)).val :=
+  witnessForwardChain_witness_placed base h_base_cons (encodeFormula psi) psi
+    (decodeFormula_encodeFormula psi) h_F
+
+/-- Coverage property for the backward witness chain. -/
+lemma witnessBackwardChain_coverage (base : Set Formula) (h_base_cons : SetConsistent base)
+    (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons (encodeFormula psi)).val) :
+    psi ∈ (witnessBackwardChainMCS base h_base_cons (encodeFormula psi + 1)).val :=
+  witnessBackwardChain_witness_placed base h_base_cons (encodeFormula psi) psi
+    (decodeFormula_encodeFormula psi) h_P
+
+/-- The forward witness chain at any step extends GContent of the base set's
+Lindenbaum extension. That is, GContent(chain(0)) ⊆ chain(n) for all n.
+
+This is an "extends base" property: the GContent of the initial MCS
+propagates through all subsequent chain elements. -/
+lemma witnessForwardChainMCS_extends_base_GContent (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    GContent (witnessForwardChainMCS base h_base_cons 0).val ⊆
+      (witnessForwardChainMCS base h_base_cons n).val :=
+  witnessForwardChainMCS_GContent_extends_le base h_base_cons 0 n (Nat.zero_le n)
+
+/-- The backward witness chain at any step extends HContent of the base set's
+Lindenbaum extension. -/
+lemma witnessBackwardChainMCS_extends_base_HContent (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    HContent (witnessBackwardChainMCS base h_base_cons 0).val ⊆
+      (witnessBackwardChainMCS base h_base_cons n).val :=
+  witnessBackwardChainMCS_HContent_extends_le base h_base_cons 0 n (Nat.zero_le n)
+
+/-- F-formula dichotomy in the forward witness chain: for any formula psi,
+at any step n, either F(psi) is in the chain or its negation G(neg(psi)) is.
+
+This follows from the fact that each chain element is an MCS, and
+`F(psi) = neg(G(neg(psi)))`, so exactly one must hold. -/
+lemma witnessForwardChain_F_dichotomy (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula) :
+    Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons n).val ∨
+    Formula.all_future (Formula.neg psi) ∈ (witnessForwardChainMCS base h_base_cons n).val := by
+  have h_mcs := witnessForwardChainMCS_is_mcs base h_base_cons n
+  -- F(psi) = neg(G(neg(psi))), so by MCS negation completeness one must hold
+  rcases set_mcs_negation_complete h_mcs (Formula.all_future (Formula.neg psi)) with h_G | h_neg_G
+  · exact Or.inr h_G
+  · -- neg(G(neg(psi))) = F(psi) ∈ chain(n)
+    exact Or.inl h_neg_G
+
+/-- P-formula dichotomy in the backward witness chain. -/
+lemma witnessBackwardChain_P_dichotomy (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula) :
+    Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons n).val ∨
+    Formula.all_past (Formula.neg psi) ∈ (witnessBackwardChainMCS base h_base_cons n).val := by
+  have h_mcs := witnessBackwardChainMCS_is_mcs base h_base_cons n
+  rcases set_mcs_negation_complete h_mcs (Formula.all_past (Formula.neg psi)) with h_H | h_neg_H
+  · exact Or.inr h_H
+  · exact Or.inl h_neg_H
+
+/-- If G(neg(psi)) enters the forward witness chain at step m,
+it persists to all later steps. This is because G-formulas propagate
+forward via the 4-axiom and GContent extension. -/
+lemma witnessForwardChain_G_neg_persists (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (psi : Formula)
+    (h_G : Formula.all_future (Formula.neg psi) ∈ (witnessForwardChainMCS base h_base_cons m).val) :
+    Formula.all_future (Formula.neg psi) ∈ (witnessForwardChainMCS base h_base_cons n).val :=
+  witnessForwardChain_G_propagates_le base h_base_cons m n h_le (Formula.neg psi) h_G
+
+/-- If H(neg(psi)) enters the backward witness chain at step m,
+it persists to all later steps. -/
+lemma witnessBackwardChain_H_neg_persists (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (psi : Formula)
+    (h_H : Formula.all_past (Formula.neg psi) ∈ (witnessBackwardChainMCS base h_base_cons m).val) :
+    Formula.all_past (Formula.neg psi) ∈ (witnessBackwardChainMCS base h_base_cons n).val :=
+  witnessBackwardChain_H_propagates_le base h_base_cons m n h_le (Formula.neg psi) h_H
+
+/-- Key persistence lemma: If F(psi) is present at step 0 and G(neg(psi))
+is NOT present at step n, then F(psi) is still present at step n.
+
+This is the contrapositive of: if F(psi) dies (G(neg(psi)) enters),
+G(neg(psi)) persists forever. So if G(neg(psi)) is absent at step n,
+F(psi) must still be present. -/
+lemma witnessForwardChain_F_persists_if_not_killed (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (h_not_G : Formula.all_future (Formula.neg psi) ∉ (witnessForwardChainMCS base h_base_cons n).val) :
+    Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons n).val := by
+  rcases witnessForwardChain_F_dichotomy base h_base_cons n psi with h_F | h_G
+  · exact h_F
+  · exact absurd h_G h_not_G
+
+/-- Key persistence lemma for backward chain. -/
+lemma witnessBackwardChain_P_persists_if_not_killed (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (h_not_H : Formula.all_past (Formula.neg psi) ∉ (witnessBackwardChainMCS base h_base_cons n).val) :
+    Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons n).val := by
+  rcases witnessBackwardChain_P_dichotomy base h_base_cons n psi with h_P | h_H
+  · exact h_P
+  · exact absurd h_H h_not_H
+
+/-- Forward F-persistence through chain: if F(psi) is at step 0 and
+persists to step n (i.e., G(neg(psi)) never enters through step n),
+then F(psi) is at step n.
+
+Equivalent formulation: if F(psi) ∈ chain(0) and G(neg(psi)) ∉ chain(n),
+then F(psi) ∈ chain(n). The hypothesis G(neg(psi)) ∉ chain(n) is sufficient
+because if G(neg(psi)) entered at any step m ≤ n, it would persist to n
+(by `witnessForwardChain_G_neg_persists`). -/
+lemma witnessForwardChain_F_persists (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (_h_F_0 : Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons 0).val)
+    (h_not_killed : Formula.all_future (Formula.neg psi) ∉ (witnessForwardChainMCS base h_base_cons n).val) :
+    Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons n).val :=
+  witnessForwardChain_F_persists_if_not_killed base h_base_cons n psi h_not_killed
+
+/-- Backward P-persistence through chain. -/
+lemma witnessBackwardChain_P_persists (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (_h_P_0 : Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons 0).val)
+    (h_not_killed : Formula.all_past (Formula.neg psi) ∉ (witnessBackwardChainMCS base h_base_cons n).val) :
+    Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons n).val :=
+  witnessBackwardChain_P_persists_if_not_killed base h_base_cons n psi h_not_killed
+
+/-- Contrapositive of G-persistence: if F(psi) is present at step n,
+then G(neg(psi)) was absent at all steps m ≤ n.
+
+This is crucial for the coverage argument: if F(psi) ∈ chain(n) and
+k = encodeFormula(psi) with k ≤ n, then G(neg(psi)) ∉ chain(k),
+so F(psi) ∈ chain(k) and the witness fires. -/
+lemma witnessForwardChain_F_implies_G_neg_absent (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons n).val) :
+    Formula.all_future (Formula.neg psi) ∉ (witnessForwardChainMCS base h_base_cons m).val := by
+  intro h_G
+  -- If G(neg(psi)) ∈ chain(m), it persists to chain(n)
+  have h_G_n := witnessForwardChain_G_neg_persists base h_base_cons m n h_le psi h_G
+  -- But F(psi) ∈ chain(n) and G(neg(psi)) ∈ chain(n) contradicts MCS consistency
+  have h_mcs := witnessForwardChainMCS_is_mcs base h_base_cons n
+  have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+  rw [h_F_eq] at h_F
+  exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg psi)) h_G_n h_F
+
+/-- Contrapositive for backward chain. -/
+lemma witnessBackwardChain_P_implies_H_neg_absent (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons n).val) :
+    Formula.all_past (Formula.neg psi) ∉ (witnessBackwardChainMCS base h_base_cons m).val := by
+  intro h_H
+  have h_H_n := witnessBackwardChain_H_neg_persists base h_base_cons m n h_le psi h_H
+  have h_mcs := witnessBackwardChainMCS_is_mcs base h_base_cons n
+  have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
+  rw [h_P_eq] at h_P
+  exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg psi)) h_H_n h_P
+
+/-- Coverage with persistence: if F(psi) is present at step n and n ≥ encodeFormula psi,
+then psi is in the chain at step encodeFormula psi + 1.
+
+This is the main coverage theorem for Phase 3: it handles the case where the
+encoding index is at or before the current position. Since F(psi) ∈ chain(n)
+implies G(neg(psi)) was never present at any earlier step (including encodeFormula psi),
+F(psi) must be present at encodeFormula psi, so the witness fires. -/
+lemma witnessForwardChain_coverage_of_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons n).val)
+    (h_le : encodeFormula psi ≤ n) :
+    psi ∈ (witnessForwardChainMCS base h_base_cons (encodeFormula psi + 1)).val := by
+  -- F(psi) ∈ chain(n) and encodeFormula psi ≤ n
+  -- By contrapositive, G(neg(psi)) ∉ chain(encodeFormula psi)
+  have h_G_absent := witnessForwardChain_F_implies_G_neg_absent base h_base_cons
+    (encodeFormula psi) n h_le psi h_F
+  -- So F(psi) ∈ chain(encodeFormula psi)
+  have h_F_at_k := witnessForwardChain_F_persists_if_not_killed base h_base_cons
+    (encodeFormula psi) psi h_G_absent
+  -- And witness fires
+  exact witnessForwardChain_coverage base h_base_cons psi h_F_at_k
+
+/-- Coverage with persistence for backward chain. -/
+lemma witnessBackwardChain_coverage_of_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons n).val)
+    (h_le : encodeFormula psi ≤ n) :
+    psi ∈ (witnessBackwardChainMCS base h_base_cons (encodeFormula psi + 1)).val := by
+  have h_H_absent := witnessBackwardChain_P_implies_H_neg_absent base h_base_cons
+    (encodeFormula psi) n h_le psi h_P
+  have h_P_at_k := witnessBackwardChain_P_persists_if_not_killed base h_base_cons
+    (encodeFormula psi) psi h_H_absent
+  exact witnessBackwardChain_coverage base h_base_cons psi h_P_at_k
+
 /-!
 ## Dovetailing Chain Family Construction
 
