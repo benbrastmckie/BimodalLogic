@@ -124,6 +124,7 @@ The plan originally specified `innerChain_F_persists` as unconditional F-persist
 | 3 | v003 | PARTIAL | Coverage argument blocked by flat chain limitation |
 | 4 | v003 | NOT STARTED | BFMCS integration |
 | 5 | v003 | NOT STARTED | Backward_P (symmetric) |
+| 1 | v004 | BLOCKED | Generalized witness seed consistency (lemma is false) |
 
 ## Plan v003 Phase 3: Coverage Argument (PARTIAL)
 
@@ -149,3 +150,36 @@ Full analysis in `specs/916_implement_fp_witness_obligation_tracking/handoffs/ph
 ### Conclusion
 
 Closing forward_F requires a fundamentally different chain construction than the flat enumeration approach adopted in Phase 1. The plan v003 needs revision to incorporate the full omega^2 inner chain structure originally recommended by the research (approach D with inner construction).
+
+## Plan v004 Phase 1: Generalized Witness Seed Consistency (BLOCKED)
+
+### Session: sess_1771647336_8d3c43
+
+### Mathematical Obstruction
+
+Plan v004 Phase 1 required proving `generalized_forward_temporal_witness_seed_consistent`:
+
+> If M, N are MCSes, `GContent(M) subset N`, and `F(psi) in M`, then `{psi} union GContent(N)` is consistent.
+
+Independent analysis confirmed this lemma is **mathematically false**:
+
+1. `F(psi) in M` means `G(neg(psi)) not in M`, so `neg(psi) not in GContent(M)`.
+2. But `GContent(M) subset N` does NOT prevent `G(neg(psi)) in N`. Lindenbaum extension of `GContent(M)` can add `G(neg(psi))` when it is consistent with `GContent(M)`.
+3. If `G(neg(psi)) in N`, then `neg(psi) in GContent(N)` (by definition of GContent).
+4. Then `{psi, neg(psi)} subset {psi} union GContent(N)`, which is trivially inconsistent.
+
+The proof attempt follows the same structure as `forward_temporal_witness_seed_consistent` but breaks at the critical step: the inconsistency hypothesis gives `G(neg(psi)) in N`, but this cannot be connected back to M to obtain a contradiction with `F(psi) in M`.
+
+Research-004 Section 3.3 independently reached the same conclusion (line 611): "The generalized lemma does NOT hold as stated."
+
+### Impact
+
+This blocks ALL subsequent phases of plan v004 (Phases 2-5), since the omega^2 inner chain construction depends on this lemma for inner chain step consistency.
+
+### Deeper Issue
+
+Research-004 (Section 4.6) further demonstrates that the deeper obstruction -- Lindenbaum's opacity allowing `G(neg(psi))` to kill `F(psi)` at any step -- affects ALL chain-based constructions, including the omega^2 inner chain.
+
+### No Code Changes
+
+No Lean files were modified in this session.

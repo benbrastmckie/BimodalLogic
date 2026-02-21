@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 35 hours (optimistic: 28h, pessimistic: 45h)
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-004.md (Phase 3 obstruction analysis)
@@ -96,7 +96,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Generalized Witness Seed Consistency [NOT STARTED]
+### Phase 1: Generalized Witness Seed Consistency [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Prove the key lemma enabling F-check against outer MCS while placing witness in inner chain
@@ -121,6 +121,16 @@ After this implementation:
 - `lake build` succeeds
 - Lemma type-checks with no sorry
 - Test: apply lemma to a simple case to verify it's usable
+
+**Progress:**
+
+**Session: 2026-02-20, sess_1771647336_8d3c43** (no progress - hard blocker)
+- Attempted: Prove `generalized_forward_temporal_witness_seed_consistent`
+- Result: **Lemma is mathematically false.** Independent analysis confirmed research-004 Section 3.3 finding (line 611).
+- Counterexample construction: Given MCS M with `F(psi) in M` and `GContent(M) subset N`, the MCS N (built by Lindenbaum extension of GContent(M)) can contain `G(neg(psi))`. Then `neg(psi) in GContent(N)`, making `{psi} union GContent(N)` trivially inconsistent (contains both psi and neg(psi)). The key issue: `F(psi) in M` only prevents `G(neg(psi)) in M`, not `G(neg(psi)) in N`.
+- This blocks ALL subsequent phases (2-5) since the omega^2 construction depends on this lemma.
+- Research-004 itself identifies this at Section 3.3: "The generalized lemma does NOT hold as stated."
+- No changes committed.
 
 ---
 
