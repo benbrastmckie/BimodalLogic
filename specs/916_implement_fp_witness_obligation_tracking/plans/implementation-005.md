@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12 hours (investigative + contingent)
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-007.md (team research - proof technique)
@@ -86,7 +86,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Prove Base Structural Facts [NOT STARTED]
+### Phase 1: Prove Base Structural Facts [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Establish the foundational derivation-theoretic lemmas that block Routes 1 and 3
@@ -117,9 +117,21 @@ After this implementation:
 - All lemmas type-check without sorry
 - `#print axioms` shows only standard axioms for each lemma
 
+**Progress:**
+
+**Session: 2026-02-21, sess_1771702017_68f2f6**
+- Added: `GContent_derives_neg_implies_G_neg_mem` - G-lifting for GContent derivations
+- Added: `FContent_blocks_GContent_derives_neg` - F(alpha) in MCS blocks GContent deriving neg(alpha)
+- Added: `F_in_MCS_implies_G_neg_not_theorem` - F(alpha) in MCS implies G(neg(alpha)) not a theorem
+- Added: `P_in_MCS_implies_H_neg_not_theorem` - past symmetric version
+- Added: `HContent_derives_neg_implies_H_neg_mem` - past analog of G-lifting
+- Added: `PContent_blocks_HContent_derives_neg` - past analog of FContent blocking
+- Completed: All Phase 1 objectives (6 lemmas proven, 0 sorry, standard axioms only)
+- Verified: `forward_temporal_witness_seed_consistent` still holds
+
 ---
 
-### Phase 2: Prove FContent Independence (temp_a Analysis) [NOT STARTED]
+### Phase 2: Prove FContent Independence (temp_a Analysis) [BLOCKED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Prove that F-formulas in FContent(M) cannot combine with GContent(M) to derive G(neg(alpha)) for any F(alpha) in M
@@ -153,9 +165,29 @@ After this implementation:
 - All lemmas type-check without sorry
 - Key lemma `FContent_adds_no_G_derivation_power` proven
 
+**Progress:**
+
+**Session: 2026-02-21, sess_1771702017_68f2f6** (no progress - conjecture refuted)
+- Attempted: Prove FContent independence - that F-formulas cannot combine with GContent to derive neg(psi)
+- Result: **COUNTEREXAMPLE FOUND** - the FPreservingSeed conjecture is FALSE
+- Counterexample:
+  - Integer time model: q false at time 0, q true at time 1, r true only at time 0
+  - At time 0: F(q) holds, neg(q) holds, F(r) holds
+  - G(F(r) -> neg(q)) holds at time 0 (vacuously true at all future times since F(r) fails after time 0)
+  - So (F(r) -> neg(q)) is in GContent(M) and F(r) is in FContent(M)
+  - The seed {q} union GContent(M) union FContent(M) derives bot:
+    1. F(r) from FContent (hypothesis)
+    2. (F(r) -> neg(q)) from GContent (hypothesis)
+    3. neg(q) by modus ponens (1,2)
+    4. q from seed (hypothesis)
+    5. bot from (3,4)
+  - But {q} union GContent(M) is consistent (proven by forward_temporal_witness_seed_consistent)
+- The conjecture fails because FContent formulas can interact with GContent implications to derive neg(psi), even though GContent alone cannot
+- No changes committed
+
 ---
 
-### Phase 3: Assemble F-Preserving Seed Consistency Proof [NOT STARTED]
+### Phase 3: Assemble F-Preserving Seed Consistency Proof [BLOCKED]
 
 - **Dependencies**: Phase 2
 - **Goal**: Prove the conjecture: {psi} union GContent(M) union FContent(M) is consistent when F(psi) in M
@@ -191,9 +223,17 @@ After this implementation:
 - `FPreservingSeed_consistent` type-checks without sorry (or documents exact blocker)
 - Proof uses only structural derivation arguments (no semantic appeal)
 
+**Progress:**
+
+**Session: 2026-02-21, sess_1771702017_68f2f6** (no progress - blocked by Phase 2 counterexample)
+- Result: FPreservingSeed conjecture is FALSE (counterexample in Phase 2 progress)
+- The derivation surgery approach cannot work because the extended seed IS inconsistent in general
+- Step 12 gap in research-007 Section 5.2 is unfillable because the gap reflects genuine mathematical falsity
+- No changes committed
+
 ---
 
-### Phase 4: Implement F-Preserving Chain Seed [NOT STARTED]
+### Phase 4: Implement F-Preserving Chain Seed [BLOCKED]
 
 - **Dependencies**: Phase 3 (conjecture must be proven)
 - **Goal**: Define the F-preserving seed and prove basic properties
@@ -235,7 +275,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Prove forward_F and backward_P [NOT STARTED]
+### Phase 5: Prove forward_F and backward_P [BLOCKED]
 
 - **Dependencies**: Phase 4
 - **Goal**: Close the two remaining sorries using F-preserving seed construction
@@ -274,7 +314,7 @@ After this implementation:
 
 ---
 
-### Phase 6: Integration and Documentation [NOT STARTED]
+### Phase 6: Integration and Documentation [COMPLETED]
 
 - **Dependencies**: Phase 5 (success) OR Phase 3 (failure)
 - **Goal**: Verify integration or document sorry debt
@@ -309,6 +349,13 @@ After this implementation:
 - Full `lake build` succeeds
 - Summary document created
 - Task status updated appropriately
+
+**Progress:**
+
+**Session: 2026-02-21, sess_1771702017_68f2f6**
+- Completed: Documentation of FPreservingSeed counterexample
+- Added: Implementation summary (summaries/implementation-summary-20260221.md)
+- Completed: Phase 6 (failure path)
 
 ---
 

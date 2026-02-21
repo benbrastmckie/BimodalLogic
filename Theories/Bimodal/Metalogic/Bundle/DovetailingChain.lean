@@ -1553,6 +1553,139 @@ lemma witnessBackwardChain_coverage_of_le (base : Set Formula) (h_base_cons : Se
   exact witnessBackwardChain_coverage base h_base_cons psi h_P_at_k
 
 /-!
+## Derivation-Theoretic Structural Lemmas (Task 916, Phase 1)
+
+Base structural facts about the relationship between GContent derivations,
+G-formulas, and F-formulas in MCS. These block Routes 1 and 3 in the
+derivation surgery approach for F-preserving seed consistency.
+
+### Key Results
+
+- `GContent_derives_neg_implies_G_neg_mem`: G-lifting for GContent derivations
+- `FContent_blocks_GContent_derives_neg`: F(alpha) in MCS blocks GContent deriving neg(alpha)
+- `F_in_MCS_implies_G_neg_not_theorem`: F(alpha) in MCS implies G(neg(alpha)) is not a theorem
+-/
+
+/--
+If GContent(M) derives neg(alpha) (via some finite list L subset GContent(M)),
+then G(neg(alpha)) is in M.
+
+**Proof**: By G-lifting (generalized_temporal_k). Since each element chi of L
+is in GContent(M), we have G(chi) in M. Applying generalized_temporal_k lifts
+the derivation L ⊢ neg(alpha) to G(L) ⊢ G(neg(alpha)). Since all G(chi) in M,
+by MCS closure under derivation, G(neg(alpha)) in M.
+-/
+theorem GContent_derives_neg_implies_G_neg_mem
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (alpha : Formula)
+    (L : List Formula) (hL_sub : ∀ chi ∈ L, chi ∈ GContent M)
+    (h_deriv : L ⊢ Formula.neg alpha) :
+    Formula.all_future (Formula.neg alpha) ∈ M := by
+  -- G-lift the derivation: L ⊢ neg(alpha) becomes G(L) ⊢ G(neg(alpha))
+  have d_G : (Context.map Formula.all_future L) ⊢ Formula.all_future (Formula.neg alpha) :=
+    Bimodal.Theorems.generalized_temporal_k L (Formula.neg alpha) h_deriv
+  -- All elements of G(L) are in M: if chi in L, then chi in GContent(M), so G(chi) in M
+  have h_G_in_M : ∀ phi ∈ Context.map Formula.all_future L, phi ∈ M := by
+    intro phi h_mem
+    rw [Context.mem_map_iff] at h_mem
+    rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
+    rw [← h_eq]
+    exact hL_sub chi h_chi_in
+  -- By MCS closure
+  exact set_mcs_closed_under_derivation h_mcs (Context.map Formula.all_future L) h_G_in_M d_G
+
+/--
+If F(alpha) is in an MCS M, then GContent(M) does not derive neg(alpha).
+
+**Proof**: Contrapositive of `GContent_derives_neg_implies_G_neg_mem`.
+If GContent(M) derives neg(alpha), then G(neg(alpha)) in M. But
+F(alpha) = neg(G(neg(alpha))) is also in M, contradicting MCS consistency.
+-/
+theorem FContent_blocks_GContent_derives_neg
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (alpha : Formula) (h_F : Formula.some_future alpha ∈ M) :
+    ¬∃ (L : List Formula), (∀ chi ∈ L, chi ∈ GContent M) ∧ Nonempty (L ⊢ Formula.neg alpha) := by
+  intro ⟨L, hL_sub, ⟨h_deriv⟩⟩
+  -- By GContent_derives_neg_implies_G_neg_mem, G(neg(alpha)) in M
+  have h_G_neg := GContent_derives_neg_implies_G_neg_mem M h_mcs alpha L hL_sub h_deriv
+  -- But F(alpha) = neg(G(neg(alpha))) is also in M
+  have h_F_eq : Formula.some_future alpha = Formula.neg (Formula.all_future (Formula.neg alpha)) := rfl
+  rw [h_F_eq] at h_F
+  exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg alpha)) h_G_neg h_F
+
+/--
+If F(alpha) is in some MCS M, then G(neg(alpha)) is not a theorem
+(i.e., not derivable from empty context).
+
+**Proof**: If G(neg(alpha)) were a theorem, it would be in every MCS
+(by `theorem_in_mcs`). But F(alpha) = neg(G(neg(alpha))) is also in M,
+contradicting MCS consistency.
+
+This blocks Route 3 (theorem route) in the derivation surgery argument.
+-/
+theorem F_in_MCS_implies_G_neg_not_theorem
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (alpha : Formula) (h_F : Formula.some_future alpha ∈ M) :
+    ¬Nonempty ([] ⊢ Formula.all_future (Formula.neg alpha)) := by
+  intro ⟨h_thm⟩
+  -- If G(neg(alpha)) is a theorem, it's in M
+  have h_G_neg_in_M : Formula.all_future (Formula.neg alpha) ∈ M :=
+    theorem_in_mcs h_mcs h_thm
+  -- But F(alpha) = neg(G(neg(alpha))) is also in M
+  have h_F_eq : Formula.some_future alpha = Formula.neg (Formula.all_future (Formula.neg alpha)) := rfl
+  rw [h_F_eq] at h_F
+  exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg alpha)) h_G_neg_in_M h_F
+
+/--
+Symmetric version for past: If P(alpha) is in some MCS M, then H(neg(alpha))
+is not a theorem.
+-/
+theorem P_in_MCS_implies_H_neg_not_theorem
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (alpha : Formula) (h_P : Formula.some_past alpha ∈ M) :
+    ¬Nonempty ([] ⊢ Formula.all_past (Formula.neg alpha)) := by
+  intro ⟨h_thm⟩
+  have h_H_neg_in_M : Formula.all_past (Formula.neg alpha) ∈ M :=
+    theorem_in_mcs h_mcs h_thm
+  have h_P_eq : Formula.some_past alpha = Formula.neg (Formula.all_past (Formula.neg alpha)) := rfl
+  rw [h_P_eq] at h_P
+  exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg alpha)) h_H_neg_in_M h_P
+
+/--
+If HContent(M) derives neg(alpha) via some finite list L subset HContent(M),
+then H(neg(alpha)) is in M. Past analog of `GContent_derives_neg_implies_G_neg_mem`.
+-/
+theorem HContent_derives_neg_implies_H_neg_mem
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (alpha : Formula)
+    (L : List Formula) (hL_sub : ∀ chi ∈ L, chi ∈ HContent M)
+    (h_deriv : L ⊢ Formula.neg alpha) :
+    Formula.all_past (Formula.neg alpha) ∈ M := by
+  have d_H : (Context.map Formula.all_past L) ⊢ Formula.all_past (Formula.neg alpha) :=
+    Bimodal.Theorems.generalized_past_k L (Formula.neg alpha) h_deriv
+  have h_H_in_M : ∀ phi ∈ Context.map Formula.all_past L, phi ∈ M := by
+    intro phi h_mem
+    rw [Context.mem_map_iff] at h_mem
+    rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
+    rw [← h_eq]
+    exact hL_sub chi h_chi_in
+  exact set_mcs_closed_under_derivation h_mcs (Context.map Formula.all_past L) h_H_in_M d_H
+
+/--
+If P(alpha) is in an MCS M, then HContent(M) does not derive neg(alpha).
+Past analog of `FContent_blocks_GContent_derives_neg`.
+-/
+theorem PContent_blocks_HContent_derives_neg
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (alpha : Formula) (h_P : Formula.some_past alpha ∈ M) :
+    ¬∃ (L : List Formula), (∀ chi ∈ L, chi ∈ HContent M) ∧ Nonempty (L ⊢ Formula.neg alpha) := by
+  intro ⟨L, hL_sub, ⟨h_deriv⟩⟩
+  have h_H_neg := HContent_derives_neg_implies_H_neg_mem M h_mcs alpha L hL_sub h_deriv
+  have h_P_eq : Formula.some_past alpha = Formula.neg (Formula.all_past (Formula.neg alpha)) := rfl
+  rw [h_P_eq] at h_P
+  exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg alpha)) h_H_neg h_P
+
+/-!
 ## Dovetailing Chain Family Construction
 
 Build the `BFMCS Int` from the chain, with all forward_G and backward_H fully proven.
