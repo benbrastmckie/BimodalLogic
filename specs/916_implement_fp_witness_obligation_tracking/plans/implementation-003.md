@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 45 hours (optimistic: 33h, pessimistic: 58h)
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md (team synthesis)

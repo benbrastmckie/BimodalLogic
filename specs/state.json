@@ -453,11 +453,6 @@
           "summary": "Detailed analysis of 4 sorries in DovetailingChain.lean with precise goal states, architecture analysis of the split half-chain problem, F/P witness obligation tracking strategy using Cantor pairing, inventory of 15 supporting lemmas, and implementation recommendations for unified interleaved chain construction"
         },
         {
-          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
-          "type": "summary",
-          "summary": "Partial implementation: 2/4 sorries closed via GContent/HContent duality. Remaining 2 sorries blocked by F-formula persistence problem."
-        },
-        {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md",
           "type": "research",
           "summary": "Detailed analysis of Option A (constructive Lindenbaum). G-derivability independence fails. Joint F-witness consistency fails. Viable sub-chain approach identified (omega^2 construction, 30-40h estimate)."
@@ -476,6 +471,16 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-003.md",
           "type": "plan",
           "summary": "5-phase implementation plan for F/P witness obligation tracking using Omega^2 Inner Construction"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
+          "type": "summary",
+          "summary": "Phases 1-2 complete, Phase 3 partial: merged witness chain, identified flat chain mathematical obstruction"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-handoff-20260220.md",
+          "type": "handoff",
+          "summary": "Mathematical analysis: flat chain insufficient for forward_F, omega^2 inner chain needed"
         }
       ],
       "session_id": "sess_1771634621_f7a06b",
