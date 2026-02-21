@@ -1,11 +1,11 @@
 {
   "status": "researched",
-  "session_id": "sess_1771709010_515267",
+  "session_id": "sess_1771713181_5174b1",
   "artifacts": [
     {
-      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-009.md",
+      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-010.md",
       "type": "research",
-      "summary": "Canonical model approach is incompatible with task semantics architecture; identified AliveF seed preservation as novel promising approach that resolves both sub-problems from research-008"
+      "summary": "Evaluates constraint-based family construction and normal form reduction approaches; identifies 'deferred concretization' (a mosaic-method variant producing Int-embeddable witness graphs) as the most viable path for closing forward_F/backward_P sorries"
     }
   ]
 }
