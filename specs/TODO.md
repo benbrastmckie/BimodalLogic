@@ -24,7 +24,7 @@ technical_debt:
 
 ### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
 - **Effort**: 33-58 hours (revised based on team research)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-20
 - **Research**: [research-001.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md), [research-002.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md), [research-003.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md) (Team Research v3)
