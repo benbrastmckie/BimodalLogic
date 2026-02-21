@@ -442,10 +442,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-21T04:15:57Z",
+      "last_updated": "2026-02-21T05:03:24Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -486,10 +486,15 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
           "type": "summary",
           "summary": "Updated with v004 Phase 1 blocker: generalized witness seed consistency is mathematically false"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md",
+          "type": "research",
+          "summary": "Synthesized analysis of 3 teammate findings on forward_F/backward_P obstruction: Lindenbaum opacity is root cause; F-preserving seed consistency conjecture is the key open question; recommends time-boxed investigation (8-12h) then fallback to sorry debt acceptance"
         }
       ],
-      "session_id": "sess_1771647336_8d3c43",
-      "researched": "2026-02-21T02:01:22Z",
+      "session_id": "sess_1771648618_9e1a4a",
+      "researched": "2026-02-21T05:03:24Z",
       "planned": "2026-02-21T03:46:39Z",
       "started": "2026-02-20T20:19:56Z"
     }

@@ -24,10 +24,10 @@ technical_debt:
 
 ### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
 - **Effort**: 30-45 hours (revised based on research-004)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-20
-- **Research**: [research-001.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md), [research-002.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md), [research-003.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md) (Team Research v3), [research-004.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-004.md) (Obstruction Analysis)
+- **Research**: [research-001.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md), [research-002.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md), [research-003.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md) (Team Research v3), [research-004.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-004.md) (Obstruction Analysis), [research-005.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md) (Synthesis)
 - **Plan**: [implementation-004.md](specs/916_implement_fp_witness_obligation_tracking/plans/implementation-004.md) (Omega^2 Directed Limit)
 - **Summary**: [implementation-summary-20260220.md](specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md) (2/4 sorries closed)
 
