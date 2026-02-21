@@ -12,6 +12,8 @@
 
 ### 1.1 The Logic and Its Semantics
 
+<!-- FIX: the future and past operators are not strict, but rather include the present. This should be how it is in the semantics. -->
+
 The project formalizes TM logic -- a bimodal temporal logic with strict future and strict past operators over a linearly ordered time domain. The temporal operators are:
 
 | Operator | Lean Name | Semantics (strict) |
@@ -83,6 +85,8 @@ The original task started with 4 sorries and has reduced to 2.
 All three teammates converged on the same root cause: **Lindenbaum opacity**. The `set_lindenbaum` function uses Zorn's lemma (via `Classical.choose`) to extend a consistent seed S to an MCS. The resulting MCS is a pure existence claim with NO information about which formulas it contains beyond S.
 
 Here is the precise failure mechanism, reconstructed from Teammate A's analysis (Section 2.2) and confirmed by Teammates B and C:
+
+IDEA: I suspect it would be easier to not worry about F at all, but instead to worry about G phi and neg(G phi) and perhaps G neg phi, though the latter should be covered by the first
 
 1. `F(psi) in chain(n)`. Since `F(psi) = neg(G(neg(psi)))`, we have `G(neg(psi)) NOT in chain(n)`.
 

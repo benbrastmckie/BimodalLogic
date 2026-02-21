@@ -1,21 +1,21 @@
 {
   "status": "researched",
-  "started_at": "2026-02-20T00:00:00Z",
+  "started_at": "2026-02-20T12:00:00Z",
   "artifacts": [
     {
-      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md",
+      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-006.md",
       "type": "research",
-      "summary": "Synthesized analysis of 3 teammate findings on forward_F/backward_P obstruction: Lindenbaum opacity is root cause; F-preserving seed consistency conjecture is the key open question; recommends time-boxed investigation (8-12h) then fallback to sorry debt acceptance"
+      "summary": "Comprehensive enumeration of all temporal connection constraints between consecutive MCSs; confirms user's 4 constraints hold; identifies FIX tag (reflexive operators); proves no additional constraints resolve forward_F/backward_P obstruction; analyzes F-preserving seed conjecture proof obstacle (G-lifting fails)"
     }
   ],
   "partial_progress": {
     "stage": "research_complete",
-    "details": "Synthesis report written (428 lines). Consolidates all 3 teammate findings into ground-up problem characterization, evaluates 5 alternative paths, recommends F-preserving seed investigation (time-boxed) with sorry debt fallback.",
-    "findings_count": 9,
-    "key_finding": "The F-preserving seed consistency conjecture -- whether {psi} union GContent(M) union {F(chi) : F(chi) in M} is consistent -- is the single mathematical question whose resolution determines whether the sorries can be closed or must be documented as proof debt."
+    "details": "Research report written (393 lines). Enumerated 10 constraints (6 proven, 2 derivable, 1 construction-based, 1 confirmed non-constraint). Verified all 4 user-listed constraints. Confirmed FIX tag: operators are reflexive not strict. Analyzed IDEA tag: G/neg(G) reframing valid but same obstacle. F-preserving seed conjecture remains open at 55% confidence.",
+    "findings_count": 8,
+    "key_finding": "All four user-listed temporal connection constraints are verified. The constraint enumeration is exhaustive for TM logic. No additional constraints resolve the forward_F/backward_P obstruction. The F-preserving seed conjecture's proof obstacle is specifically that G-lifting cannot handle neg(G(theta)) formulas in the seed -- a semantic argument (model construction) may succeed where the syntactic approach fails."
   },
   "metadata": {
-    "session_id": "sess_1771649873_14ce1d",
+    "session_id": "sess_1771652760_ebcf25",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]

@@ -445,7 +445,7 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-21T05:03:24Z",
+      "last_updated": "2026-02-21T05:56:01Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -491,10 +491,15 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md",
           "type": "research",
           "summary": "Synthesized analysis of 3 teammate findings on forward_F/backward_P obstruction: Lindenbaum opacity is root cause; F-preserving seed consistency conjecture is the key open question; recommends time-boxed investigation (8-12h) then fallback to sorry debt acceptance"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-006.md",
+          "type": "research",
+          "summary": "Comprehensive enumeration of all temporal connection constraints between consecutive MCSs; confirms user's 4 constraints hold; identifies FIX tag (reflexive operators); proves no additional constraints resolve forward_F/backward_P obstruction; analyzes F-preserving seed conjecture proof obstacle (G-lifting fails)"
         }
       ],
-      "session_id": "sess_1771648618_9e1a4a",
-      "researched": "2026-02-21T05:03:24Z",
+      "session_id": "sess_1771652760_ebcf25",
+      "researched": "2026-02-21T05:56:01Z",
       "planned": "2026-02-21T03:46:39Z",
       "started": "2026-02-20T20:19:56Z"
     }
