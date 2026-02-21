@@ -24,11 +24,11 @@ technical_debt:
 
 ### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
 - **Effort**: 30-45 hours (revised based on research-004)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-20
 - **Research**: [research-001.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md), [research-002.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md), [research-003.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md) (Team Research v3), [research-004.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-004.md) (Obstruction Analysis), [research-005.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md) (Synthesis), [research-006.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-006.md) (Constraints), [research-007.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-007.md) (Proof Technique)
-- **Plan**: [implementation-004.md](specs/916_implement_fp_witness_obligation_tracking/plans/implementation-004.md) (Omega^2 Directed Limit)
+- **Plan**: [implementation-005.md](specs/916_implement_fp_witness_obligation_tracking/plans/implementation-005.md) (Derivation Surgery)
 - **Summary**: [implementation-summary-20260220.md](specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md) (2/4 sorries closed)
 
 **Description**: Close the 4 remaining sorries in `DovetailingChain.lean` by implementing F/P witness obligation tracking in the chain construction and resolving the cross-sign propagation gap. Phase 1 unifies the split forward/backward half-chains into a single interleaved dovetailing chain (closes cross-sign forward_G and backward_H sorries). Phase 2 adds F/P witness scheduling via Cantor-pairing enumeration of all (time, formula) obligations (closes forward_F and backward_P sorries). See description.md for full proof strategy and key lemmas.

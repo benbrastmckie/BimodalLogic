@@ -1,23 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-20T12:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-006.md",
-      "type": "research",
-      "summary": "Comprehensive enumeration of all temporal connection constraints between consecutive MCSs; confirms user's 4 constraints hold; identifies FIX tag (reflexive operators); proves no additional constraints resolve forward_F/backward_P obstruction; analyzes F-preserving seed conjecture proof obstacle (G-lifting fails)"
+      "type": "plan",
+      "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-005.md",
+      "summary": "6-phase derivation surgery plan for F-preserving seed consistency and forward_F/backward_P sorry elimination"
     }
   ],
-  "partial_progress": {
-    "stage": "research_complete",
-    "details": "Research report written (393 lines). Enumerated 10 constraints (6 proven, 2 derivable, 1 construction-based, 1 confirmed non-constraint). Verified all 4 user-listed constraints. Confirmed FIX tag: operators are reflexive not strict. Analyzed IDEA tag: G/neg(G) reframing valid but same obstacle. F-preserving seed conjecture remains open at 55% confidence.",
-    "findings_count": 8,
-    "key_finding": "All four user-listed temporal connection constraints are verified. The constraint enumeration is exhaustive for TM logic. No additional constraints resolve the forward_F/backward_P obstruction. The F-preserving seed conjecture's proof obstacle is specifically that G-lifting cannot handle neg(G(theta)) formulas in the seed -- a semantic argument (model construction) may succeed where the syntactic approach fails."
-  },
+  "next_steps": "Run /implement 916 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771652760_ebcf25",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "session_id": "sess_1771671680_4a1a9e",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "/plan", "skill-planner"],
+    "phase_count": 6,
+    "estimated_hours": 12
   }
 }
