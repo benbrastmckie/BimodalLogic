@@ -25,6 +25,8 @@ forall t : Int, forall phi : Formula,
     exists s < t, phi in (buildDovetailingChainFamily Gamma h_cons).mcs s
 ```
 
+<!-- FIX: this is incorrect. They should say, find a present OR future (past) time where the sub-formula holds. Find where this wrong perception is coming from and fix it everywhere (perhaps comments?).  -->
+
 These are **existential** statements: given an F-formula (or P-formula) at a time t, find a STRICTLY future (or past) time where the sub-formula holds. Backward_P is symmetric to forward_F, so this report focuses on forward_F.
 
 ### 1.2 What Has Already Been Proven

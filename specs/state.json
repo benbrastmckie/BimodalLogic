@@ -453,7 +453,7 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-21T20:04:06Z",
+      "last_updated": "2026-02-21T21:31:18Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -514,10 +514,15 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-008.md",
           "type": "research",
           "summary": "Root cause analysis identifying two independent obstacles (F-persistence and past-encoding gap) and reviewing 6 candidate solutions, recommending sorry debt acceptance or canonical model refactoring"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-009.md",
+          "type": "research",
+          "summary": "Canonical model approach is incompatible with task semantics architecture; identified AliveF seed preservation as novel promising approach that resolves both sub-problems from research-008"
         }
       ],
-      "session_id": "sess_1771703435_e72148",
-      "researched": "2026-02-21T20:04:06Z",
+      "session_id": "sess_1771709010_515267",
+      "researched": "2026-02-21T21:31:18Z",
       "planned": "2026-02-21T11:05:35Z",
       "started": "2026-02-20T20:19:56Z"
     }
