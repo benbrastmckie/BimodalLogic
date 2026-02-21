@@ -468,11 +468,6 @@
           "summary": "Team research (3 teammates): Consensus on Augmented Dovetailing with Omega^2 Inner Construction as the most mathematically elegant approach (33-58h estimate)"
         },
         {
-          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
-          "type": "summary",
-          "summary": "Phases 1-2 complete, Phase 3 partial: merged witness chain, identified flat chain mathematical obstruction"
-        },
-        {
           "path": "specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-handoff-20260220.md",
           "type": "handoff",
           "summary": "Mathematical analysis: flat chain insufficient for forward_F, omega^2 inner chain needed"
@@ -486,6 +481,11 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-004.md",
           "type": "plan",
           "summary": "5-phase omega^2 directed limit implementation plan for forward_F and backward_P sorries"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
+          "type": "summary",
+          "summary": "Updated with v004 Phase 1 blocker: generalized witness seed consistency is mathematically false"
         }
       ],
       "session_id": "sess_1771647336_8d3c43",
