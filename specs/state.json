@@ -442,10 +442,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-21T00:15:35Z",
+      "last_updated": "2026-02-21T00:37:22Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -463,11 +463,6 @@
           "summary": "Detailed analysis of Option A (constructive Lindenbaum). G-derivability independence fails. Joint F-witness consistency fails. Viable sub-chain approach identified (omega^2 construction, 30-40h estimate)."
         },
         {
-          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan using sub-chain witness accumulation approach for F/P sorries (35h)"
-        },
-        {
           "path": "specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-1-handoff-20260220.md",
           "type": "handoff",
           "summary": "Detailed analysis of mathematical obstruction with 4 viable alternative approaches"
@@ -476,11 +471,16 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md",
           "type": "research",
           "summary": "Team research (3 teammates): Consensus on Augmented Dovetailing with Omega^2 Inner Construction as the most mathematically elegant approach (33-58h estimate)"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for F/P witness obligation tracking using Omega^2 Inner Construction"
         }
       ],
-      "session_id": "sess_1771632343_b3dd65",
+      "session_id": "sess_1771634004_931e2e",
       "researched": "2026-02-21T00:15:35Z",
-      "planned": "2026-02-20T23:26:02Z",
+      "planned": "2026-02-21T00:37:22Z",
       "started": "2026-02-20T20:19:56Z"
     }
   ],
