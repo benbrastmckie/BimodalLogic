@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 45 hours (optimistic: 33h, pessimistic: 58h)
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md (team synthesis)
@@ -68,29 +68,50 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Define Omega^2 Chain Structure [NOT STARTED]
+### Phase 1: Define Omega^2 Chain Structure [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Create the inner chain and outer chain definitions that enable witness placement in seeds
 
 **Tasks**:
-- [ ] Define `innerChainMCS` - inner chain at each time point t
-  - Base case: `innerChainMCS t 0 = Lindenbaum(GContent(outerChain (t-1)))`
-  - Inductive: `innerChainMCS t (k+1)` uses `{psi_k} ∪ GContent(innerChainMCS t k)` if `F(psi_k) ∈ innerChainMCS t k`
-- [ ] Define `outerChain` - takes limit of inner chain at each time via Zorn
-- [ ] Prove `innerChainMCS_consistent`: each inner MCS is consistent
-- [ ] Set up formula enumeration using `Encodable.ofCountable`
-- [ ] Define the index bijection using `Nat.pairEquiv` for omega^2 indexing
+- [x] Define `witnessForwardChainMCS` - forward witness chain processing one F-formula per step
+  - Step 0: Lindenbaum(base)
+  - Step n+1: if decodeFormula(n) = some psi and F(psi) in chain(n), extend {psi} union GContent(chain(n)); else extend GContent(chain(n))
+- [x] Define `witnessBackwardChainMCS` - symmetric backward witness chain for P-formulas
+- [x] Prove consistency: `witnessForwardChainMCS_is_mcs` and `witnessBackwardChainMCS_is_mcs`
+- [x] Set up formula enumeration using `Encodable.ofCountable` (`formulaEncodable`, `decodeFormula`, `encodeFormula`)
+- [x] Prove `decodeFormula_encodeFormula` - surjectivity of the encoding
+- [x] Prove GContent/HContent extension lemmas
+- [x] Prove witness placement lemmas (key property for coverage argument)
+- [x] Prove forward_G and backward_H coherence for witness chains
+- [x] Prove cross-direction duality (GContent reverse, HContent reverse)
+- [x] Define `ForwardTemporalWitnessSeed` and prove `forward_temporal_witness_seed_consistent` (to avoid circular import with TemporalCoherentConstruction.lean)
+
+**Design Note**: The plan originally specified an `innerChainMCS`/`outerChain` two-level structure with Zorn limits. After analysis, a simpler flat omega-indexed chain (`witnessForwardChainMCS`) was adopted instead. Each step processes one formula via the Encodable enumeration, witnessing it if the F-obligation is present. This avoids the mutual recursion between inner and outer chains and the limit construction complexity. The `Nat.pairEquiv` bijection for omega^2 indexing was not needed since the flat chain naturally processes all formulas via the encoding surjectivity.
 
 **Timing**: 10-15 hours
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - add inner chain definitions
+- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - add witness chain definitions
 
 **Verification**:
-- `lake build` succeeds
-- New definitions type-check
-- `#check innerChainMCS` shows expected type signature
+- `lake build` succeeds (verified)
+- New definitions type-check (verified)
+- All 22 new lemmas/definitions compile without sorry
+
+**Progress:**
+
+**Session: 2026-02-20, sess_1771634621_f7a06b**
+- Added: `formulaEncodable` - Encodable instance for Formula
+- Added: `decodeFormula`, `encodeFormula` - formula enumeration functions
+- Added: `decodeFormula_encodeFormula` - encoding surjectivity
+- Added: `ForwardTemporalWitnessSeed` - forward analog of PastTemporalWitnessSeed
+- Added: `forward_temporal_witness_seed_consistent` - consistency of forward witness seed
+- Added: `witnessForwardChainMCS` - forward witness chain construction
+- Added: `witnessBackwardChainMCS` - backward witness chain construction
+- Added: 15 supporting lemmas (MCS, extension, witness placement, G/H coherence, duality)
+- Completed: Phase 1 objectives (all definitions and basic properties)
+- Sorries: 2 -> 2 (0 eliminated, 0 introduced - existing forward_F/backward_P sorries remain for Phase 3/5)
 
 ---
 

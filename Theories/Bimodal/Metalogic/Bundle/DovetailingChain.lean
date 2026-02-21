@@ -6,6 +6,7 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 import Bimodal.Theorems.GeneralizedNecessitation
 import Bimodal.Theorems.Combinators
+import Mathlib.Logic.Encodable.Basic
 
 /-!
 # Dovetailing Temporal Chain Construction
@@ -275,7 +276,7 @@ lemma dovetail_HContent_consistent (M : Set Formula) (h_mcs : SetMaximalConsiste
 /-!
 ## Past Temporal Witness Seed
 
-The past analog of `TemporalWitnessSeed`: {psi} union HContent(M).
+The past analog of the forward temporal witness seed: {psi} union HContent(M).
 Used for backward P-witness construction.
 -/
 
@@ -351,6 +352,110 @@ theorem past_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaxi
       · have h_H_chi : Formula.all_past chi ∈ M := h_hcontent
         have h_T := DerivationTree.axiom [] ((Formula.all_past chi).imp chi) (Axiom.temp_t_past chi)
         exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H_chi
+    exact h_mcs.1 L h_L_in_M ⟨d⟩
+
+/-!
+## Forward Temporal Witness Seed
+
+The forward analog of `PastTemporalWitnessSeed`: {psi} ∪ GContent(M).
+Used for forward F-witness construction.
+
+Note: This is also defined in `TemporalCoherentConstruction.lean` as `TemporalWitnessSeed`.
+We duplicate the definition and proof here to avoid a circular import
+(TemporalCoherentConstruction imports DovetailingChain).
+-/
+
+/-- ForwardTemporalWitnessSeed for F(psi): {psi} union GContent(M). -/
+def ForwardTemporalWitnessSeed (M : Set Formula) (psi : Formula) : Set Formula :=
+  {psi} ∪ GContent M
+
+/-- psi is in its own ForwardTemporalWitnessSeed. -/
+lemma psi_mem_ForwardTemporalWitnessSeed (M : Set Formula) (psi : Formula) :
+    psi ∈ ForwardTemporalWitnessSeed M psi :=
+  Set.mem_union_left _ (Set.mem_singleton psi)
+
+/-- GContent is a subset of ForwardTemporalWitnessSeed. -/
+lemma GContent_subset_ForwardTemporalWitnessSeed (M : Set Formula) (psi : Formula) :
+    GContent M ⊆ ForwardTemporalWitnessSeed M psi :=
+  Set.subset_union_right
+
+/--
+Forward temporal witness seed consistency: If F(psi) is in an MCS M, then
+{psi} union GContent(M) is consistent.
+
+This is the forward analog of `past_temporal_witness_seed_consistent`.
+The proof mirrors the past version, using G and F instead of H and P.
+
+**Proof Strategy**:
+Suppose {psi} ∪ GContent(M) is inconsistent.
+Then there exist chi₁, ..., chi_n in GContent(M) such that {psi, chi₁, ..., chi_n} ⊢ ⊥.
+By deduction: {chi₁, ..., chi_n} ⊢ ¬psi.
+By temporal K-distribution: G{chi₁, ..., chi_n} ⊢ G(¬psi).
+Since G chi_i ∈ M for all i, by MCS closure: G(¬psi) ∈ M.
+But F(psi) = ¬G(¬psi) ∈ M by hypothesis.
+Contradiction.
+-/
+theorem forward_temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
+    SetConsistent (ForwardTemporalWitnessSeed M psi) := by
+  intro L hL_sub ⟨d⟩
+
+  by_cases h_psi_in : psi ∈ L
+  · -- Case: psi ∈ L
+    let L_filt := L.filter (fun y => decide (y ≠ psi))
+    have h_perm := cons_filter_neq_perm h_psi_in
+    have d_reord : DerivationTree (psi :: L_filt) Formula.bot :=
+      derivation_exchange d (fun x => (h_perm x).symm)
+
+    have d_neg : L_filt ⊢ Formula.neg psi :=
+      deduction_theorem L_filt psi Formula.bot d_reord
+
+    -- Get G chi ∈ M for each chi ∈ L_filt from GContent
+    have h_G_filt_in_M : ∀ chi ∈ L_filt, Formula.all_future chi ∈ M := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L := h_and.1
+      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_seed := hL_sub chi h_in_L
+      simp only [ForwardTemporalWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gcontent
+      · exact absurd h_eq h_ne
+      · exact h_gcontent
+
+    -- Apply generalized temporal K (G distributes over derivation)
+    have d_G_neg : (Context.map Formula.all_future L_filt) ⊢ Formula.all_future (Formula.neg psi) :=
+      Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg psi) d_neg
+
+    -- All formulas in G(L_filt) are in M
+    have h_G_context_in_M : ∀ phi ∈ Context.map Formula.all_future L_filt, phi ∈ M := by
+      intro phi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
+      rw [← h_eq]
+      exact h_G_filt_in_M chi h_chi_in
+
+    -- By MCS closure under derivation, G(neg psi) ∈ M
+    have h_G_neg_in_M : Formula.all_future (Formula.neg psi) ∈ M :=
+      set_mcs_closed_under_derivation h_mcs (Context.map Formula.all_future L_filt)
+        h_G_context_in_M d_G_neg
+
+    -- Contradiction - F psi = neg(G(neg psi)) is also in M
+    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+    rw [h_F_eq] at h_F
+    exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg psi)) h_G_neg_in_M h_F
+
+  · -- Case: psi ∉ L, so L ⊆ GContent M ⊆ M
+    have h_L_in_M : ∀ chi ∈ L, chi ∈ M := by
+      intro chi h_mem
+      have h_in_seed := hL_sub chi h_mem
+      simp only [ForwardTemporalWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gcontent
+      · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
+      · -- chi ∈ GContent means G chi ∈ M, and by T-axiom chi ∈ M
+        have h_G_chi : Formula.all_future chi ∈ M := h_gcontent
+        have h_T := DerivationTree.axiom [] ((Formula.all_future chi).imp chi) (Axiom.temp_t_future chi)
+        exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G_chi
+
     exact h_mcs.1 L h_L_in_M ⟨d⟩
 
 /-!
@@ -849,6 +954,357 @@ lemma dovetailChainSet_backward_H_nonneg (base : Set Formula) (h_base_cons : Set
       rw [← Int.ofNat_lt]
       rwa [Int.toNat_of_nonneg h_t'_neg, Int.toNat_of_nonneg h_t_nn]
     exact dovetailForwardChain_backward_H base h_base_cons t'.toNat t.toNat h_lt_nat phi h_H
+
+/-!
+## Omega^2 Witness Chain Construction
+
+The key construction for proving forward_F and backward_P.
+
+At each Nat-indexed step n in the chain, we attempt to witness the n-th formula
+(under the Encodable enumeration of Formula). If `F(psi_n) ∈ chain(n)`, we extend
+`{psi_n} ∪ GContent(chain(n))` via Lindenbaum; otherwise we extend `GContent(chain(n))`.
+
+### Formula Enumeration
+
+Since `Formula` derives `Countable`, we obtain an `Encodable` instance via
+`Encodable.ofCountable`. This provides:
+- `decodeFormula k : Option Formula` - decode natural number k to a formula
+- `encodeFormula phi : Nat` - encode a formula to a natural number
+- `decodeFormula (encodeFormula phi) = some phi` - surjectivity
+
+### Witness Chain Architecture
+
+**Forward witness chain** (`witnessForwardChainMCS`):
+- Step 0: Lindenbaum extension of the base set
+- Step n+1: If `decodeFormula n = some psi` and `F(psi) ∈ chain(n)`:
+  extend `{psi} ∪ GContent(chain(n))` (guaranteed consistent by
+  `forward_temporal_witness_seed_consistent`)
+  Otherwise: extend `GContent(chain(n))`
+
+**Backward witness chain** (`witnessBackwardChainMCS`):
+- Symmetric construction using `HContent` and `PastTemporalWitnessSeed`
+
+### Key Properties
+
+1. **GContent extension**: `GContent(chain(n)) ⊆ chain(n+1)` always holds,
+   ensuring forward_G for the witness chain
+2. **Witness placement**: When `F(psi) ∈ chain(n)` and `decode n = some psi`,
+   then `psi ∈ chain(n+1)` (placed in the seed)
+3. **Coverage**: Every formula psi has `decodeFormula (encodeFormula psi) = some psi`,
+   so psi is processed at step `encodeFormula psi`. If `F(psi)` is still in the
+   chain at that step, the witness is placed.
+
+### Task 916 References
+
+- Research: specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md
+- Plan: specs/916_implement_fp_witness_obligation_tracking/plans/implementation-003.md
+- Core lemma: `forward_temporal_witness_seed_consistent` (defined in this file)
+-/
+
+/-! ### Formula Enumeration -/
+
+-- Classical decidability is needed for set membership checks in witness chain definitions
+attribute [local instance] Classical.propDecidable
+
+/-- Encodable instance for Formula, derived from the Countable instance. -/
+noncomputable instance formulaEncodable : Encodable Formula := Encodable.ofCountable Formula
+
+/-- Decode a natural number to a formula (if it's in the range of the encoding).
+Returns `none` for natural numbers not corresponding to any formula. -/
+noncomputable def decodeFormula (k : Nat) : Option Formula :=
+  @Encodable.decode Formula formulaEncodable k
+
+/-- Encode a formula to a natural number. -/
+noncomputable def encodeFormula (phi : Formula) : Nat :=
+  @Encodable.encode Formula formulaEncodable phi
+
+/-- Surjectivity of formula encoding: decoding the encoding of a formula
+recovers the original formula. -/
+lemma decodeFormula_encodeFormula (psi : Formula) :
+    decodeFormula (encodeFormula psi) = some psi := by
+  simp only [decodeFormula, encodeFormula]
+  exact Encodable.encodek psi
+
+/-! ### Forward Witness Chain -/
+
+/--
+Forward witness chain with temporal witness placement.
+
+At each step n+1, processes the n-th formula under the Encodable enumeration.
+If `F(psi_n) ∈ chain(n)`, the new MCS extends `{psi_n} ∪ GContent(chain(n))`
+(consistent by `forward_temporal_witness_seed_consistent`). Otherwise, extends
+`GContent(chain(n))`.
+
+In either case, `GContent(chain(n)) ⊆ chain(n+1)`, ensuring forward_G.
+
+**Key property**: When `F(psi)` appears in `chain(encodeFormula psi)`,
+the witness `psi` is placed in `chain(encodeFormula psi + 1)`.
+-/
+noncomputable def witnessForwardChainMCS (base : Set Formula) (h_base_cons : SetConsistent base) :
+    Nat → { M : Set Formula // SetMaximalConsistent M }
+  | 0 =>
+    let h := set_lindenbaum base h_base_cons
+    ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+  | n + 1 =>
+    let prev := witnessForwardChainMCS base h_base_cons n
+    match decodeFormula n with
+    | none =>
+      let h_gc := dovetail_GContent_consistent prev.val prev.property
+      let h := set_lindenbaum (GContent prev.val) h_gc
+      ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+    | some psi =>
+      if h_F : Formula.some_future psi ∈ prev.val then
+        let h_seed := forward_temporal_witness_seed_consistent prev.val prev.property psi h_F
+        let h := set_lindenbaum (ForwardTemporalWitnessSeed prev.val psi) h_seed
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+      else
+        let h_gc := dovetail_GContent_consistent prev.val prev.property
+        let h := set_lindenbaum (GContent prev.val) h_gc
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+
+/-! ### Backward Witness Chain -/
+
+/--
+Backward witness chain with past temporal witness placement.
+
+Symmetric to `witnessForwardChainMCS`, using `HContent` instead of `GContent`
+and `PastTemporalWitnessSeed` instead of `ForwardTemporalWitnessSeed`.
+
+At each step n+1, if `P(psi_n) ∈ chain(n)`, extends
+`{psi_n} ∪ HContent(chain(n))` (consistent by
+`past_temporal_witness_seed_consistent`).
+-/
+noncomputable def witnessBackwardChainMCS (base : Set Formula) (h_base_cons : SetConsistent base) :
+    Nat → { M : Set Formula // SetMaximalConsistent M }
+  | 0 =>
+    let h := set_lindenbaum base h_base_cons
+    ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+  | n + 1 =>
+    let prev := witnessBackwardChainMCS base h_base_cons n
+    match decodeFormula n with
+    | none =>
+      let h_hc := dovetail_HContent_consistent prev.val prev.property
+      let h := set_lindenbaum (HContent prev.val) h_hc
+      ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+    | some psi =>
+      if h_P : Formula.some_past psi ∈ prev.val then
+        let h_seed := past_temporal_witness_seed_consistent prev.val prev.property psi h_P
+        let h := set_lindenbaum (PastTemporalWitnessSeed prev.val psi) h_seed
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+      else
+        let h_hc := dovetail_HContent_consistent prev.val prev.property
+        let h := set_lindenbaum (HContent prev.val) h_hc
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+
+/-! ### Basic Witness Chain Properties -/
+
+/-- Every element of the forward witness chain is an MCS. -/
+lemma witnessForwardChainMCS_is_mcs (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    SetMaximalConsistent (witnessForwardChainMCS base h_base_cons n).val :=
+  (witnessForwardChainMCS base h_base_cons n).property
+
+/-- Every element of the backward witness chain is an MCS. -/
+lemma witnessBackwardChainMCS_is_mcs (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    SetMaximalConsistent (witnessBackwardChainMCS base h_base_cons n).val :=
+  (witnessBackwardChainMCS base h_base_cons n).property
+
+/-- The forward witness chain at step 0 extends the base set. -/
+lemma witnessForwardChainMCS_zero_extends (base : Set Formula) (h_base_cons : SetConsistent base) :
+    base ⊆ (witnessForwardChainMCS base h_base_cons 0).val := by
+  simp only [witnessForwardChainMCS]
+  exact (Classical.choose_spec (set_lindenbaum base h_base_cons)).1
+
+/-- The backward witness chain at step 0 extends the base set. -/
+lemma witnessBackwardChainMCS_zero_extends (base : Set Formula) (h_base_cons : SetConsistent base) :
+    base ⊆ (witnessBackwardChainMCS base h_base_cons 0).val := by
+  simp only [witnessBackwardChainMCS]
+  exact (Classical.choose_spec (set_lindenbaum base h_base_cons)).1
+
+/-! ### GContent/HContent Extension -/
+
+/-- GContent of each forward witness chain element extends to the next.
+This ensures forward_G holds for the witness chain. -/
+lemma witnessForwardChainMCS_GContent_extends (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    GContent (witnessForwardChainMCS base h_base_cons n).val ⊆
+      (witnessForwardChainMCS base h_base_cons (n + 1)).val := by
+  intro phi h_phi
+  simp only [witnessForwardChainMCS]
+  cases h_dec : decodeFormula n with
+  | none =>
+    simp only [h_dec]
+    exact (Classical.choose_spec (set_lindenbaum (GContent (witnessForwardChainMCS base h_base_cons n).val)
+      (dovetail_GContent_consistent _ (witnessForwardChainMCS base h_base_cons n).property))).1 h_phi
+  | some psi =>
+    simp only [h_dec]
+    split_ifs with h_F
+    · -- F(psi) ∈ prev: seed = {psi} ∪ GContent(prev), GContent(prev) ⊆ seed ⊆ extension
+      have h_in_seed : phi ∈ ForwardTemporalWitnessSeed (witnessForwardChainMCS base h_base_cons n).val psi :=
+        GContent_subset_ForwardTemporalWitnessSeed _ _ h_phi
+      exact (Classical.choose_spec (set_lindenbaum
+        (ForwardTemporalWitnessSeed (witnessForwardChainMCS base h_base_cons n).val psi)
+        (forward_temporal_witness_seed_consistent _ (witnessForwardChainMCS base h_base_cons n).property psi h_F))).1 h_in_seed
+    · -- F(psi) ∉ prev: just extend GContent
+      exact (Classical.choose_spec (set_lindenbaum (GContent (witnessForwardChainMCS base h_base_cons n).val)
+        (dovetail_GContent_consistent _ (witnessForwardChainMCS base h_base_cons n).property))).1 h_phi
+
+/-- HContent of each backward witness chain element extends to the next.
+This ensures backward_H holds for the witness chain. -/
+lemma witnessBackwardChainMCS_HContent_extends (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    HContent (witnessBackwardChainMCS base h_base_cons n).val ⊆
+      (witnessBackwardChainMCS base h_base_cons (n + 1)).val := by
+  intro phi h_phi
+  simp only [witnessBackwardChainMCS]
+  cases h_dec : decodeFormula n with
+  | none =>
+    simp only [h_dec]
+    exact (Classical.choose_spec (set_lindenbaum (HContent (witnessBackwardChainMCS base h_base_cons n).val)
+      (dovetail_HContent_consistent _ (witnessBackwardChainMCS base h_base_cons n).property))).1 h_phi
+  | some psi =>
+    simp only [] -- Instantiate the match on decodeFormula
+    split_ifs with h_P
+    · -- P(psi) ∈ prev: seed includes HContent
+      have h_in_seed : phi ∈ PastTemporalWitnessSeed (witnessBackwardChainMCS base h_base_cons n).val psi :=
+        HContent_subset_PastTemporalWitnessSeed _ _ h_phi
+      exact (Classical.choose_spec (set_lindenbaum
+        (PastTemporalWitnessSeed (witnessBackwardChainMCS base h_base_cons n).val psi)
+        (past_temporal_witness_seed_consistent _ (witnessBackwardChainMCS base h_base_cons n).property psi h_P))).1 h_in_seed
+    · -- P(psi) ∉ prev: just extend HContent
+      exact (Classical.choose_spec (set_lindenbaum (HContent (witnessBackwardChainMCS base h_base_cons n).val)
+        (dovetail_HContent_consistent _ (witnessBackwardChainMCS base h_base_cons n).property))).1 h_phi
+
+/-! ### Witness Placement -/
+
+/-- Forward witness placement: if `decodeFormula n = some psi` and
+`F(psi) ∈ chain(n)`, then `psi ∈ chain(n+1)`.
+
+This is the key property: when the n-th formula in the enumeration has its
+F-obligation present in the chain at step n, the witness is placed in the
+seed and therefore appears in the next MCS. -/
+lemma witnessForwardChain_witness_placed (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (h_dec : decodeFormula n = some psi)
+    (h_F : Formula.some_future psi ∈ (witnessForwardChainMCS base h_base_cons n).val) :
+    psi ∈ (witnessForwardChainMCS base h_base_cons (n + 1)).val := by
+  simp only [witnessForwardChainMCS]
+  simp only [h_dec]
+  simp only [h_F, ↓reduceDIte]
+  have h_in_seed : psi ∈ ForwardTemporalWitnessSeed (witnessForwardChainMCS base h_base_cons n).val psi :=
+    psi_mem_ForwardTemporalWitnessSeed _ _
+  exact (Classical.choose_spec (set_lindenbaum
+    (ForwardTemporalWitnessSeed (witnessForwardChainMCS base h_base_cons n).val psi)
+    (forward_temporal_witness_seed_consistent _ (witnessForwardChainMCS base h_base_cons n).property psi h_F))).1 h_in_seed
+
+/-- Backward witness placement: if `decodeFormula n = some psi` and
+`P(psi) ∈ chain(n)`, then `psi ∈ chain(n+1)`. -/
+lemma witnessBackwardChain_witness_placed (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (psi : Formula)
+    (h_dec : decodeFormula n = some psi)
+    (h_P : Formula.some_past psi ∈ (witnessBackwardChainMCS base h_base_cons n).val) :
+    psi ∈ (witnessBackwardChainMCS base h_base_cons (n + 1)).val := by
+  simp only [witnessBackwardChainMCS]
+  simp only [h_dec]
+  simp only [h_P, ↓reduceDIte]
+  have h_in_seed : psi ∈ PastTemporalWitnessSeed (witnessBackwardChainMCS base h_base_cons n).val psi :=
+    psi_mem_PastTemporalWitnessSeed _ _
+  exact (Classical.choose_spec (set_lindenbaum
+    (PastTemporalWitnessSeed (witnessBackwardChainMCS base h_base_cons n).val psi)
+    (past_temporal_witness_seed_consistent _ (witnessBackwardChainMCS base h_base_cons n).property psi h_P))).1 h_in_seed
+
+/-! ### Forward G Coherence for Witness Chain -/
+
+/-- G propagates forward through the witness chain.
+Since GContent(chain(n)) ⊆ chain(n+1), the 4-axiom G(phi) → G(G(phi))
+ensures G(phi) ∈ chain(n) → G(phi) ∈ chain(n+1). -/
+lemma witnessForwardChain_G_propagates (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (witnessForwardChainMCS base h_base_cons n).val) :
+    Formula.all_future phi ∈ (witnessForwardChainMCS base h_base_cons (n + 1)).val := by
+  have h_mcs_n := witnessForwardChainMCS_is_mcs base h_base_cons n
+  have h_GG := set_mcs_all_future_all_future h_mcs_n h_G
+  exact witnessForwardChainMCS_GContent_extends base h_base_cons n h_GG
+
+/-- G propagates through multiple steps of the witness chain. -/
+lemma witnessForwardChain_G_propagates_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (witnessForwardChainMCS base h_base_cons m).val) :
+    Formula.all_future phi ∈ (witnessForwardChainMCS base h_base_cons n).val := by
+  induction h_le with
+  | refl => exact h_G
+  | step _ ih => exact witnessForwardChain_G_propagates base h_base_cons _ phi ih
+
+/-- forward_G for the witness chain: G(phi) at step m implies phi at step n for n > m. -/
+lemma witnessForwardChain_forward_G (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (witnessForwardChainMCS base h_base_cons m).val) :
+    phi ∈ (witnessForwardChainMCS base h_base_cons n).val := by
+  have h_G_n := witnessForwardChain_G_propagates_le base h_base_cons m n (Nat.le_of_lt h_lt) phi h_G
+  have h_mcs_n := witnessForwardChainMCS_is_mcs base h_base_cons n
+  have h_T := DerivationTree.axiom [] ((Formula.all_future phi).imp phi) (Axiom.temp_t_future phi)
+  exact set_mcs_implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_T) h_G_n
+
+/-! ### Backward H Coherence for Witness Chain -/
+
+/-- H propagates forward through the backward witness chain. -/
+lemma witnessBackwardChain_H_propagates (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (witnessBackwardChainMCS base h_base_cons n).val) :
+    Formula.all_past phi ∈ (witnessBackwardChainMCS base h_base_cons (n + 1)).val := by
+  have h_mcs_n := witnessBackwardChainMCS_is_mcs base h_base_cons n
+  have h_HH := set_mcs_all_past_all_past h_mcs_n h_H
+  exact witnessBackwardChainMCS_HContent_extends base h_base_cons n h_HH
+
+/-- H propagates through multiple steps of the backward witness chain. -/
+lemma witnessBackwardChain_H_propagates_le (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (witnessBackwardChainMCS base h_base_cons m).val) :
+    Formula.all_past phi ∈ (witnessBackwardChainMCS base h_base_cons n).val := by
+  induction h_le with
+  | refl => exact h_H
+  | step _ ih => exact witnessBackwardChain_H_propagates base h_base_cons _ phi ih
+
+/-- backward_H for the backward witness chain: H(phi) at step m implies phi at step n for n > m. -/
+lemma witnessBackwardChain_backward_H (base : Set Formula) (h_base_cons : SetConsistent base)
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (witnessBackwardChainMCS base h_base_cons m).val) :
+    phi ∈ (witnessBackwardChainMCS base h_base_cons n).val := by
+  have h_H_n := witnessBackwardChain_H_propagates_le base h_base_cons m n (Nat.le_of_lt h_lt) phi h_H
+  have h_mcs_n := witnessBackwardChainMCS_is_mcs base h_base_cons n
+  have h_T := DerivationTree.axiom [] ((Formula.all_past phi).imp phi) (Axiom.temp_t_past phi)
+  exact set_mcs_implication_property h_mcs_n (theorem_in_mcs h_mcs_n h_T) h_H_n
+
+/-! ### Cross-Direction Duality for Witness Chains
+
+By GContent/HContent duality (proven above), the backward witness chain also has
+GContent propagation toward index 0, and the forward witness chain has HContent
+propagation toward index 0. -/
+
+/-- GContent of backward witness chain propagates toward 0 (decreasing index). -/
+lemma witnessBackwardChainMCS_GContent_reverse (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    GContent (witnessBackwardChainMCS base h_base_cons (n + 1)).val ⊆
+      (witnessBackwardChainMCS base h_base_cons n).val :=
+  HContent_subset_implies_GContent_reverse
+    (witnessBackwardChainMCS base h_base_cons n).val
+    (witnessBackwardChainMCS base h_base_cons (n + 1)).val
+    (witnessBackwardChainMCS_is_mcs base h_base_cons n)
+    (witnessBackwardChainMCS_is_mcs base h_base_cons (n + 1))
+    (witnessBackwardChainMCS_HContent_extends base h_base_cons n)
+
+/-- HContent of forward witness chain propagates toward 0 (decreasing index). -/
+lemma witnessForwardChainMCS_HContent_reverse (base : Set Formula) (h_base_cons : SetConsistent base)
+    (n : Nat) :
+    HContent (witnessForwardChainMCS base h_base_cons (n + 1)).val ⊆
+      (witnessForwardChainMCS base h_base_cons n).val :=
+  GContent_subset_implies_HContent_reverse
+    (witnessForwardChainMCS base h_base_cons n).val
+    (witnessForwardChainMCS base h_base_cons (n + 1)).val
+    (witnessForwardChainMCS_is_mcs base h_base_cons n)
+    (witnessForwardChainMCS_is_mcs base h_base_cons (n + 1))
+    (witnessForwardChainMCS_GContent_extends base h_base_cons n)
 
 /-!
 ## Dovetailing Chain Family Construction
