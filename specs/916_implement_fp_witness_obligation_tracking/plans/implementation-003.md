@@ -157,7 +157,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Prove Coverage Argument (forward_F) [NOT STARTED]
+### Phase 3: Prove Coverage Argument (forward_F) [PARTIAL]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove that every F(psi) in M_t has psi witnessed at some s > t
@@ -180,6 +180,21 @@ After this implementation:
 - Line 919 sorry eliminated
 - `lake build` succeeds
 - `#print axioms buildDovetailingChainFamily_forward_F` shows no axioms beyond standard
+
+**Progress:**
+
+**Session: 2026-02-20, sess_1771634621_f7a06b** (partial)
+- Refactored: `dovetailForwardChainMCS` to include witness placement (matches `witnessForwardChainMCS` body)
+- Refactored: `dovetailBackwardChainMCS` to include witness placement (matches `witnessBackwardChainMCS` body)
+- Refactored: `witnessForwardChainMCS`/`witnessBackwardChainMCS` as aliases for dovetail chains
+- Moved: formula enumeration definitions before chain definitions (required for witness placement)
+- Fixed: all proofs that unfold chain definitions (GContent_extends, HContent_extends, witness_placed, zero_extends)
+- Verified: `lake build` succeeds with same 2 sorries as before
+- Attempted: Direct proof of forward_F using coverage_of_le
+- Result: BLOCKED - flat chain construction is mathematically insufficient for forward_F
+- Analysis: The flat chain processes each formula exactly once (at step encodeFormula(psi)+1). When encodeFormula(psi) < t, psi is placed at a step before t and does not persist. When encodeFormula(psi) > t, F(psi) may not persist to step encodeFormula(psi) because G(neg(psi)) can enter via GContent at any intermediate step.
+- Handoff: specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-handoff-20260220.md
+- Sorries: 2 -> 2 (0 eliminated)
 
 ---
 

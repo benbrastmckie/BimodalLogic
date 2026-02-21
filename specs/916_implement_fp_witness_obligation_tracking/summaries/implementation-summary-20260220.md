@@ -1,8 +1,8 @@
 # Implementation Summary: Task #916
 
 **Date**: 2026-02-20
-**Sessions**: sess_1771618766_cea3b9 (plan v002, phases 1-2), sess_1771626129_c718ce (plan v002, phase 3 blocked), sess_1771634621_f7a06b (plan v003, phases 1-2)
-**Status**: Partial (plan v003 Phases 1-2 complete)
+**Sessions**: sess_1771618766_cea3b9 (plan v002, phases 1-2), sess_1771626129_c718ce (plan v002, phase 3 blocked), sess_1771634621_f7a06b (plan v003, phases 1-2, phase 3 partial)
+**Status**: Partial (plan v003 Phases 1-2 complete, Phase 3 partial - mathematical obstruction in flat chain)
 
 ## Overview
 
@@ -121,6 +121,31 @@ The plan originally specified `innerChain_F_persists` as unconditional F-persist
 | 3 | v002 | BLOCKED | F-persistence problem (led to plan v003) |
 | 1 | v003 | COMPLETED | Omega^2 witness chain structure (22 defs/lemmas) |
 | 2 | v003 | COMPLETED | Inner chain properties (18 lemmas, all sorry-free) |
-| 3 | v003 | NOT STARTED | Coverage argument (forward_F) |
+| 3 | v003 | PARTIAL | Coverage argument blocked by flat chain limitation |
 | 4 | v003 | NOT STARTED | BFMCS integration |
 | 5 | v003 | NOT STARTED | Backward_P (symmetric) |
+
+## Plan v003 Phase 3: Coverage Argument (PARTIAL)
+
+### Changes Made
+
+1. **Merged witness chain into dovetail chain**: `dovetailForwardChainMCS` now includes witness placement (matches `witnessForwardChainMCS` body). Similarly for backward chain.
+2. **Made witness chains aliases**: `witnessForwardChainMCS` and `witnessBackwardChainMCS` are now aliases for the dovetail chains.
+3. **Moved formula enumeration**: Definitions moved before chain definitions (required for witness placement in chain body).
+4. **Fixed all proofs**: All proofs that unfold chain definitions updated to handle the new match/if structure.
+
+### Mathematical Obstruction Identified
+
+The flat chain construction (processing one formula per step via Encodable enumeration) is **insufficient** for forward_F:
+
+- Each formula psi is processed exactly once, at step `encodeFormula(psi) + 1`.
+- When `encodeFormula(psi) < t`: psi enters at step `encodeFormula(psi) + 1 <= t`, before the current time. psi does NOT persist through the chain (not in GContent). No s > t has psi.
+- When `encodeFormula(psi) > t`: F(psi) may not persist from t to encodeFormula(psi). `G(G(neg(psi)))` and `F(psi)` can coexist in the same MCS (since `G(G(phi)) -> G(phi)` is NOT valid in temporal logic with strict future), allowing `G(neg(psi))` to enter via GContent at the next step.
+
+### Handoff
+
+Full analysis in `specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-handoff-20260220.md`.
+
+### Conclusion
+
+Closing forward_F requires a fundamentally different chain construction than the flat enumeration approach adopted in Phase 1. The plan v003 needs revision to incorporate the full omega^2 inner chain structure originally recommended by the research (approach D with inner construction).

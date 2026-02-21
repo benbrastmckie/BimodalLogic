@@ -1,20 +1,35 @@
 {
   "status": "partial",
-  "started_at": "2026-02-20T12:00:00Z",
+  "started_at": "2026-02-20T00:00:00Z",
+  "requires_user_review": true,
+  "review_reason": "Flat chain construction is mathematically insufficient for forward_F. The forward_F property requires psi to appear AFTER time t, but the flat chain places psi at a fixed step (encodeFormula(psi)+1) which may be before t. F(psi) does not persist through the chain because G(G(neg(psi))) can coexist with F(psi) in the same MCS, allowing G(neg(psi)) to enter via GContent. The plan v003 needs revision to use the omega^2 inner chain construction originally recommended by the research.",
   "artifacts": [
     {
       "type": "summary",
       "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260220.md",
-      "summary": "Phases 1-2 of plan v003 completed: omega^2 witness chain structure with 40 definitions/lemmas"
+      "summary": "Phases 1-2 of plan v003 completed plus Phase 3 partial: merged witness chain into dovetail chain, identified flat chain obstruction"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean",
+      "summary": "Dovetail chains now include witness placement, formula enumeration moved before chain defs, 40+ lemmas proven sorry-free"
     }
   ],
   "partial_progress": {
-    "stage": "phase_2_completed",
-    "details": "Phase 2 (Inner Chain Properties) completed. Added 18 sorry-free lemmas including coverage_of_le (the key Phase 3 dependency). All compile via lake build. Remaining: Phase 3 (coverage argument/forward_F), Phase 4 (BFMCS integration), Phase 5 (backward_P).",
+    "stage": "phase_3_partial",
+    "details": "Phase 3 (forward_F coverage argument) is PARTIAL. Merged witness chain into dovetail chain definitions, fixed all proofs. Discovered that the flat chain construction is mathematically insufficient for forward_F: psi is placed at a fixed step that may be before t, and F(psi) does not persist through the chain. Plan v003 needs revision to use omega^2 inner chain construction.",
     "phases_completed": 2,
     "phases_total": 5,
-    "handoff_path": null
+    "handoff_path": "specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-handoff-20260220.md"
   },
+  "errors": [
+    {
+      "type": "strategy_failed",
+      "message": "Flat chain construction insufficient for forward_F. The flat chain processes each formula once (at step encodeFormula(psi)+1). When this step is before t, psi is placed too early and does not persist. When this step is after t, F(psi) may not persist to that step. G(G(neg(psi))) and F(psi) can coexist in an MCS, allowing G(neg(psi)) to enter via GContent at any step.",
+      "recoverable": false,
+      "recommendation": "Revise plan v003 to use omega^2 inner chain construction. At each outer step, build an inner chain that processes ALL formulas, ensuring every F-obligation is eventually witnessed. This matches the textbook approach (Goldblatt 1992, Blackburn et al. 2001) and the original research recommendation."
+    }
+  ],
   "metadata": {
     "session_id": "sess_1771634621_f7a06b",
     "agent_type": "lean-implementation-agent",
@@ -24,6 +39,6 @@
     "phases_total": 5
   },
   "completion_data": {
-    "completion_summary": "Completed Phase 2 of omega^2 witness chain properties for task 916. Proved 18 sorry-free lemmas including GContent/HContent multi-step monotonicity, F/P-formula dichotomy, G(neg)/H(neg) persistence and contrapositive, and the critical coverage_of_le lemma (if F(psi) alive at step n with encodeFormula(psi) <= n, then psi enters at encodeFormula(psi)+1). Phase 1 added 22 definitions/lemmas; combined total is 40 definitions/lemmas, all sorry-free. The 2 existing forward_F/backward_P sorries remain for Phase 3/5."
+    "completion_summary": "Phase 3 partial: merged witness chain construction into dovetail chain definitions and fixed all downstream proofs. Identified fundamental mathematical obstruction in the flat chain approach: forward_F cannot be proved because psi is placed at a fixed step that may precede t, and F(psi) does not persist through GContent extensions. Plan needs revision to use omega^2 inner chain construction."
   }
 }
