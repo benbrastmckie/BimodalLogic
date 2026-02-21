@@ -22,6 +22,16 @@ technical_debt:
 
 ## Tasks
 
+### 917. Fix forward_F/backward_P temporal witness strictness in DovetailingChain and comments
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-21
+
+**Description**: The description of `forward_F` and `backward_P` in `DovetailingChain.lean` and related comments/documentation incorrectly characterizes them as requiring a STRICTLY future (or past) witness. They should instead say "present OR future" (and "present OR past"), i.e., the witness time `s` satisfies `t ≤ s` rather than `t < s`. Source: `specs/916_implement_fp_witness_obligation_tracking/reports/research-008.md:28`. Find where this wrong perception is propagated (comments, docstrings, research reports) and fix it everywhere.
+
+---
+
 ### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
 - **Effort**: 30-45 hours (revised based on research-004)
 - **Status**: [RESEARCHED]
