@@ -442,10 +442,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-21T19:27:22Z",
+      "last_updated": "2026-02-21T20:04:06Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -501,10 +501,15 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260221.md",
           "type": "summary",
           "summary": "Phase 1 completed (6 lemmas), Phases 2-5 blocked: FPreservingSeed conjecture refuted by counterexample"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-008.md",
+          "type": "research",
+          "summary": "Root cause analysis identifying two independent obstacles (F-persistence and past-encoding gap) and reviewing 6 candidate solutions, recommending sorry debt acceptance or canonical model refactoring"
         }
       ],
-      "session_id": "sess_1771702017_68f2f6",
-      "researched": "2026-02-21T06:10:59Z",
+      "session_id": "sess_1771703435_e72148",
+      "researched": "2026-02-21T20:04:06Z",
       "planned": "2026-02-21T11:05:35Z",
       "started": "2026-02-20T20:19:56Z"
     }
