@@ -1,5 +1,5 @@
 ---
-next_project_number: 917
+next_project_number: 921
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,58 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 920. Refactor point-located state definition to use possibility predicate (06-Spatial.tex)
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-21
+- **Source**: `/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex:17`
+
+**Description**: Systematic refactor of the point-located state definition in `06-Spatial.tex`. The TODO at line 17 states: the author has changed their mind and wants to define a point-located state `a` to be any state where `\distop{a}{0}{a}` is **possible** (using the possibility predicate defined in chapter 02), rather than merely exists as a metric state. This is a semantic distinction: `\distop{a}{0}{a} \in P` rather than `\distop{a}{0}{a} \in S`. The refactor should be applied systematically throughout the chapter — updating the definition at line 18 (and the `\locp{}` definition at line 71), all other uses of the point-located concept, and adjusting any downstream remarks or axioms that rely on the current formulation. Remove the `% TODO:` tag after completing the refactor.
+
+---
+
+### 919. Fix FIX:/NOTE: tagged issues in 06-Spatial.tex
+- **Effort**: 1.5 hours
+- **Status**: [NOT STARTED]
+- **Language**: latex
+- **Created**: 2026-02-21
+- **Dependencies**: [918]
+- **Source**: `/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex`
+
+**Description**: Address all FIX: and NOTE: tagged items in `06-Spatial.tex` (removing the tags on completion):
+
+1. **Line 32 (NOTE)**: The definition `\begin{definition}[Distance Order]` renders its label `[Distance Order]` redundantly because the defined term appears in italics. Per the LaTeX context conventions updated in task 918, remove the bracket label from this definition title (and all similar definitions in this file) so it reads `\begin{definition}\label{def:distance-order}` without the `[Distance Order]` argument. Apply this fix to all definitions in the file that exhibit this pattern.
+
+2. **Line 37 (NOTE)**: Replace `()` with `\tuple{}` in lines 38–39 and for all mathematical structures throughout the file that use `()` instead of `\tuple{}`. E.g., `$(Q, \leq)$` → `$\tuple{Q, \leq}$`, `$(Q, +, 0)$` → `$\tuple{Q, +, 0}$`.
+
+3. **Line 73 (FIX)**: The definition at line 74 (`A state is \emph{located} if \distop{a}{0}{a} \in P`) needs to come **before** the `\locp{}` definition, and should include a brief motivating description for why we care about located states before introducing their collection.
+
+4. **Line 77 (FIX)**: Remove the remark block at lines 78–82 (`Located states are point-like...`) as it is redundant with the definition above.
+
+5. **Line 165 (NOTE)**: Use type theory notation `m, n : S` consistently throughout instead of `m, n \in S` where it is just as easy to do so. Update line 167 specifically (`Given two states $m, n \in S$` → `Given two states $m, n : S$`) and all other instances in the file.
+
+---
+
+### 918. Update LaTeX context conventions from NOTE: tags in 06-Spatial.tex
+- **Effort**: 1 hour
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-21
+- **Source**: `/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex`
+
+**Description**: Update the appropriate `.claude/context/` files (LaTeX implementation context, style conventions, or similar) to capture three recurring conventions flagged by NOTE: tags in `06-Spatial.tex`, so that future LaTeX implementation agents do not reproduce these issues:
+
+1. **Definition title redundancy** (line 32): When a `\begin{definition}[Label]` environment has a bracket label, the defined term appears in italics making `[Label]` visually redundant. The convention should be to **omit the bracket label** from `\begin{definition}` (keeping only the `\label{}` for cross-referencing) so the term is introduced naturally in the body.
+
+2. **`\tuple{}` vs `()` for structures** (line 37): Mathematical structures (ordered pairs, tuples) should always use `\tuple{}` macro rather than bare parentheses `()`.
+
+3. **Type theory notation** (line 165): When introducing states or elements that are typed, prefer `:` notation (`m, n : S`) over set membership `\in` notation (`m, n \in S`) where both are equally readable, for consistency with the type-theoretic foundations of the project.
+
+Update whichever context or style guide files are appropriate (e.g., `.claude/context/project/latex/` or similar), creating them if they do not exist.
+
+---
 
 ### 917. Fix forward_F/backward_P temporal witness strictness in DovetailingChain and comments
 - **Effort**: 1-2 hours

@@ -6,6 +6,34 @@
   },
   "active_projects": [
     {
+      "project_number": 920,
+      "project_name": "refactor_point_located_state_using_possibility_predicate",
+      "status": "not_started",
+      "language": "latex",
+      "created": "2026-02-21T00:00:00Z",
+      "last_updated": "2026-02-21T00:00:00Z",
+      "source_file": "/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex"
+    },
+    {
+      "project_number": 919,
+      "project_name": "fix_tagged_issues_in_06_spatial_tex",
+      "status": "not_started",
+      "language": "latex",
+      "created": "2026-02-21T00:00:00Z",
+      "last_updated": "2026-02-21T00:00:00Z",
+      "dependencies": [918],
+      "source_file": "/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex"
+    },
+    {
+      "project_number": 918,
+      "project_name": "update_latex_context_conventions_from_06_spatial_notes",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-21T00:00:00Z",
+      "last_updated": "2026-02-21T00:00:00Z",
+      "source_file": "/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex"
+    },
+    {
       "project_number": 917,
       "project_name": "fix_forward_f_backward_p_temporal_witness_strictness",
       "status": "not_started",
@@ -544,7 +572,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 918,
+  "next_project_number": 921,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
