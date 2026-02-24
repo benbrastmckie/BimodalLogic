@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-24T12:00:00Z",
+  "artifacts": [
+    {
+      "path": "specs/923_formalize_frame_correspondence_linearity/reports/research-001.md",
+      "type": "research",
+      "summary": "Deep analysis of frame correspondence for linearity axiom; identifies Case 3 infinite regress as fundamental difficulty with reflexive temporal operators; recommends G-enriched linearity trick or strict-future translation approach"
+    }
+  ],
+  "partial_progress": {
+    "stage": "report_written",
+    "details": "Research report completed with 15 sections analyzing proof strategies, circularity issues, and 3 recommended approaches"
+  },
+  "metadata": {
+    "session_id": "sess_1771965504_cfd6e2",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
