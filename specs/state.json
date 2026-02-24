@@ -8,12 +8,12 @@
     {
       "project_number": 923,
       "project_name": "formalize_frame_correspondence_linearity",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "description": "Formalize the frame correspondence theorem to show that the linearity axiom characterizes linear frames. This theorem proves: if the linearity axiom schema F(p) AND F(q) -> F(p AND q) OR F(p AND F(q)) OR F(F(p) AND q) is valid on a Kripke frame, then the frame's accessibility relation is linear. Required to complete task 922's Phase 3 blocker (canonical_reachable_linear theorem).",
       "created": "2026-02-24T20:32:06Z",
-      "last_updated": "2026-02-24T20:53:48Z",
-      "session_id": "sess_1771966223_97f886",
+      "last_updated": "2026-02-24T21:15:43Z",
+      "session_id": "sess_1771966977_fa35b6",
       "researched": "2026-02-24T20:48:45Z",
       "artifacts": [
         {
@@ -25,9 +25,17 @@
           "path": "specs/923_formalize_frame_correspondence_linearity/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for proving frame correspondence theorem with G-enriched linearity strategy"
+        },
+        {
+          "path": "specs/923_formalize_frame_correspondence_linearity/summaries/implementation-summary-20260224.md",
+          "type": "summary",
+          "summary": "Implementation summary for canonical_reachable_linear proof using compound-formula linearity trick"
         }
       ],
-      "planned": "2026-02-24T20:53:48Z"
+      "planned": "2026-02-24T20:53:48Z",
+      "started": "2026-02-24T21:03:17Z",
+      "completed": "2026-02-24T21:15:43Z",
+      "completion_summary": "Proved canonical_reachable_linear theorem (0 sorries) using compound-formula linearity trick with dual non-comparability witnesses. Unblocks task 922 Phase 3."
     },
     {
       "project_number": 922,

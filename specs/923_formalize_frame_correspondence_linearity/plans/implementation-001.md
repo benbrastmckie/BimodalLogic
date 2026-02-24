@@ -1,7 +1,7 @@
 # Implementation Plan: Task #923 - Formalize Frame Correspondence for Linearity Axiom
 
 - **Task**: 923 - formalize_frame_correspondence_linearity
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/923_formalize_frame_correspondence_linearity/reports/research-001.md
@@ -64,7 +64,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Helper Lemmas for G-Enriched Proof [NOT STARTED]
+### Phase 1: Helper Lemmas for G-Enriched Proof [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Establish auxiliary lemmas needed for the main proof
@@ -86,7 +86,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Main Proof - Cases 1 and 2 [NOT STARTED]
+### Phase 2: Main Proof - Cases 1 and 2 [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove Cases 1 and 2 of the linearity application with phi = G(alpha), psi = neg(alpha)
@@ -111,7 +111,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Main Proof - Case 3 Resolution [NOT STARTED]
+### Phase 3: Main Proof - Case 3 Resolution [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Close Case 3 or document why it cannot be closed
@@ -135,7 +135,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Verification and Documentation [NOT STARTED]
+### Phase 4: Verification and Documentation [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Verify build, document results, update theorem docstrings
@@ -156,6 +156,22 @@ After this implementation:
 - `lake build` succeeds
 - Theorem docstring accurately reflects proof status
 - Implementation summary created
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771966977_fa35b6**
+- Completed: All 4 phases in a single session
+- Added: Complete proof of `canonical_reachable_linear` (0 sorries)
+- Refactored: Theorem docstring updated with actual proof strategy
+- Sorries: 1 -> 0 (1 eliminated)
+- Key insight: Compound-formula linearity trick using BOTH non-comparability witnesses
+  simultaneously (G(alpha) AND neg(beta) / G(beta) AND neg(alpha)), ensuring G-propagation
+  through CanonicalR contradicts the neg-formula in Cases 2 and 3.
+- No helper lemmas needed: existing infrastructure (mcs_F_linearity, canonical_forward_F,
+  canonical_F_of_mem_successor, canonical_forward_G, set_mcs_conjunction_intro/elim,
+  set_consistent_not_both) was sufficient.
+
+---
 
 ## Testing & Validation
 

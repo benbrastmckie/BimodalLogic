@@ -248,36 +248,34 @@ Linearity of CanonicalR on R-successors of a common root.
 If M sees both M1 and M2 (CanonicalR M M1 and CanonicalR M M2), then
 M1 and M2 are comparable: either CanonicalR M1 M2 or CanonicalR M2 M1 or M1 = M2.
 
-**Status**: Sorry-backed. This is the key remaining blocker for the Canonical Quotient approach.
+**Proof Strategy**: Compound-formula linearity with cross-propagation.
 
-**Proof Approach (partially verified)**:
-Given NOT CanonicalR M1 M2, witnessed by alpha (G(alpha) in M1, alpha not in M2):
-1. For phi with G(phi) in M2 and G(phi) not in M: F(G(alpha)) and F(G(phi)) are in M.
-2. Apply temp_linearity to G(alpha) and G(phi). All three cases produce witness W with
-   both G(alpha) and G(phi) at W (Cases 2,3 reduce to Case 1 via temp_4 propagation).
-3. At W: G(alpha AND phi) holds (by K-distribution on G). By canonical_F_of_mem_successor,
-   F(G(alpha AND phi)) in M.
-4. F(G(alpha AND phi)) and F(neg phi) in M. Apply temp_linearity to G(alpha AND phi) and neg phi.
-   - Case 1 (F(G(alpha AND phi) AND neg phi)): G(alpha AND phi) gives phi by T-axiom,
-     contradicting neg phi at same world. IMPOSSIBLE.
-   - Case 2 (F(G(alpha AND phi) AND F(neg phi))): G(alpha AND phi) propagates to the
-     witness for F(neg phi), giving phi there. But neg phi is also there. IMPOSSIBLE.
-   - Case 3 (F(F(G(alpha AND phi)) AND neg phi)): neg phi at W2, G(alpha AND phi) at
-     later W3. This case is NOT directly impossible and requires a secondary argument
-     (possibly repeated linearity applications or a frame correspondence argument).
+Assume NOT(CanonicalR M1 M2) and NOT(CanonicalR M2 M1). Extract witnesses:
+- alpha: G(alpha) in M1, neg(alpha) in M2 (from NOT CanonicalR M1 M2)
+- beta: G(beta) in M2, neg(beta) in M1 (from NOT CanonicalR M2 M1)
 
-**Blocker Analysis**: Case 3 of the secondary linearity application produces a configuration
-where neg phi is at an earlier time than the start of "alpha AND phi always." The standard
-textbook proof of canonical frame linearity likely uses a frame correspondence argument
-(showing that if the linearity axiom is valid on a frame, the frame must be linear) rather
-than the syntactic approach attempted here. Formalizing the frame correspondence argument
-requires proving that the linearity axiom CHARACTERIZES linear frames, which is a separate
-theorem involving arbitrary valuations.
+Construct compound formulas:
+- phi_c = G(alpha) AND neg(beta) (in M1, hence F(phi_c) in M)
+- psi_c = G(beta) AND neg(alpha) (in M2, hence F(psi_c) in M)
+
+Apply `mcs_F_linearity` with phi_c and psi_c. All three cases yield contradiction:
+
+**Case 1**: F(phi_c AND psi_c) -- world has G(alpha) and neg(alpha), so alpha (by T)
+and neg(alpha) at same world. Contradiction.
+
+**Case 2**: F(phi_c AND F(psi_c)) -- outer world has G(alpha), inner world has neg(alpha).
+G(alpha) propagates via CanonicalR to inner world, giving alpha AND neg(alpha). Contradiction.
+
+**Case 3**: F(F(phi_c) AND psi_c) -- outer world has G(beta), inner world has neg(beta).
+G(beta) propagates via CanonicalR to inner world, giving beta AND neg(beta). Contradiction.
+
+The key insight is using BOTH non-comparability witnesses simultaneously in compound
+formulas, ensuring that in Cases 2 and 3, the G-formula from one component propagates
+through CanonicalR to contradict the neg-formula from the other component.
 
 **References**:
 - Goldblatt 1992, Logics of Time and Computation (canonical frame linearity)
-- Blackburn, de Rijke, Venema 2001, Modal Logic (frame correspondence)
-- Task 922 research-001.md (Approach A: Canonical Quotient)
+- Task 922 research-001.md, Task 923 research-001.md
 -/
 theorem canonical_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs : SetMaximalConsistent M)
@@ -285,6 +283,116 @@ theorem canonical_reachable_linear (M M1 M2 : Set Formula)
     (h_mcs2 : SetMaximalConsistent M2)
     (h_R1 : CanonicalR M M1) (h_R2 : CanonicalR M M2) :
     CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
-  sorry
+  -- By classical case analysis: either CanonicalR M1 M2 holds, or it doesn't.
+  by_cases h_12 : CanonicalR M1 M2
+  · exact Or.inl h_12
+  · -- NOT(CanonicalR M1 M2): there exists alpha with G(alpha) in M1 and alpha not in M2.
+    -- We show CanonicalR M2 M1 by contradiction.
+    right
+    by_contra h_neg
+    push_neg at h_neg
+    obtain ⟨h_not_21, h_neq⟩ := h_neg
+    -- NOT(CanonicalR M1 M2): GContent M1 ⊄ M2
+    -- Unfold: exists alpha, G(alpha) in M1 and alpha not in M2
+    have h_not_sub_12 : ¬(GContent M1 ⊆ M2) := h_12
+    rw [Set.not_subset] at h_not_sub_12
+    obtain ⟨alpha, h_alpha_G1, h_alpha_not2⟩ := h_not_sub_12
+    -- alpha in GContent(M1) means G(alpha) in M1
+    have h_G_alpha_M1 : Formula.all_future alpha ∈ M1 := h_alpha_G1
+    -- alpha not in M2, so neg(alpha) in M2 (MCS negation completeness)
+    have h_neg_alpha_M2 : Formula.neg alpha ∈ M2 := by
+      rcases set_mcs_negation_complete h_mcs2 alpha with h | h
+      · exact absurd h h_alpha_not2
+      · exact h
+    -- NOT(CanonicalR M2 M1): GContent M2 ⊄ M1
+    have h_not_sub_21 : ¬(GContent M2 ⊆ M1) := h_not_21
+    rw [Set.not_subset] at h_not_sub_21
+    obtain ⟨beta, h_beta_G2, h_beta_not1⟩ := h_not_sub_21
+    -- G(beta) in M2
+    have h_G_beta_M2 : Formula.all_future beta ∈ M2 := h_beta_G2
+    -- neg(beta) in M1
+    have h_neg_beta_M1 : Formula.neg beta ∈ M1 := by
+      rcases set_mcs_negation_complete h_mcs1 beta with h | h
+      · exact absurd h h_beta_not1
+      · exact h
+    -- Construct compound formulas for linearity application:
+    -- phi_compound = G(alpha) AND neg(beta) (both in M1)
+    -- psi_compound = G(beta) AND neg(alpha) (both in M2)
+    have h_conj_M1 : Formula.and (Formula.all_future alpha) (Formula.neg beta) ∈ M1 :=
+      Bimodal.Metalogic.set_mcs_conjunction_intro h_mcs1 h_G_alpha_M1 h_neg_beta_M1
+    have h_conj_M2 : Formula.and (Formula.all_future beta) (Formula.neg alpha) ∈ M2 :=
+      Bimodal.Metalogic.set_mcs_conjunction_intro h_mcs2 h_G_beta_M2 h_neg_alpha_M2
+    -- F(phi_compound) in M and F(psi_compound) in M (by canonical_F_of_mem_successor)
+    have h_F_conj1 : Formula.some_future (Formula.and (Formula.all_future alpha) (Formula.neg beta)) ∈ M :=
+      canonical_F_of_mem_successor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
+    have h_F_conj2 : Formula.some_future (Formula.and (Formula.all_future beta) (Formula.neg alpha)) ∈ M :=
+      canonical_F_of_mem_successor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
+    -- Apply linearity with these compound formulas
+    have h_lin := mcs_F_linearity M h_mcs
+      (Formula.and (Formula.all_future alpha) (Formula.neg beta))
+      (Formula.and (Formula.all_future beta) (Formula.neg alpha))
+      h_F_conj1 h_F_conj2
+    -- All three cases yield contradiction
+    rcases h_lin with h_case1 | h_case2 | h_case3
+    · -- Case 1: F(phi_compound AND psi_compound)
+      -- The conjunction contains G(alpha), neg(beta), G(beta), neg(alpha)
+      -- G(alpha) -> alpha by T, combined with neg(alpha) gives contradiction
+      obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case1
+      have h_big_conj := Bimodal.Metalogic.set_mcs_conjunction_elim h_W_mcs h_W_mem
+      have h_left := h_big_conj.1  -- G(alpha) AND neg(beta) in W
+      have h_right := h_big_conj.2  -- G(beta) AND neg(alpha) in W
+      have h_left_parts := Bimodal.Metalogic.set_mcs_conjunction_elim h_W_mcs h_left
+      have h_right_parts := Bimodal.Metalogic.set_mcs_conjunction_elim h_W_mcs h_right
+      -- G(alpha) in W => alpha in W by T-axiom
+      have h_alpha_W : alpha ∈ W := by
+        have h_T : [] ⊢ (Formula.all_future alpha).imp alpha :=
+          Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future alpha)
+        exact set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_left_parts.1
+      -- neg(alpha) in W
+      have h_neg_alpha_W := h_right_parts.2
+      -- Contradiction
+      exact set_consistent_not_both h_W_mcs.1 alpha h_alpha_W h_neg_alpha_W
+    · -- Case 2: F(phi_compound AND F(psi_compound))
+      -- Witness W has G(alpha) AND neg(beta), and F(G(beta) AND neg(alpha))
+      -- The F-witness W' has G(beta) AND neg(alpha)
+      -- G(alpha) in W propagates to W' via CanonicalR, giving alpha in W'
+      -- But neg(alpha) in W' -> contradiction
+      obtain ⟨W, h_W_mcs, h_R_MW, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case2
+      have h_outer := Bimodal.Metalogic.set_mcs_conjunction_elim h_W_mcs h_W_mem
+      have h_phi_in_W := h_outer.1  -- G(alpha) AND neg(beta) in W
+      have h_F_psi_W := h_outer.2   -- F(G(beta) AND neg(alpha)) in W
+      -- Extract G(alpha) from the conjunction
+      have h_phi_parts := Bimodal.Metalogic.set_mcs_conjunction_elim h_W_mcs h_phi_in_W
+      have h_G_alpha_W := h_phi_parts.1  -- G(alpha) in W
+      -- Get witness W' for F(psi_compound) in W
+      obtain ⟨W', h_W'_mcs, h_R_WW', h_psi_W'⟩ := canonical_forward_F W h_W_mcs _ h_F_psi_W
+      -- Extract neg(alpha) from psi_compound in W'
+      have h_psi_parts := Bimodal.Metalogic.set_mcs_conjunction_elim h_W'_mcs h_psi_W'
+      have h_neg_alpha_W' := h_psi_parts.2  -- neg(alpha) in W'
+      -- G(alpha) in W and CanonicalR W W' gives alpha in W'
+      have h_alpha_W' : alpha ∈ W' := canonical_forward_G W W' h_R_WW' alpha h_G_alpha_W
+      -- Contradiction
+      exact set_consistent_not_both h_W'_mcs.1 alpha h_alpha_W' h_neg_alpha_W'
+    · -- Case 3: F(F(phi_compound) AND psi_compound)
+      -- Witness W has F(G(alpha) AND neg(beta)), and G(beta) AND neg(alpha)
+      -- The F-witness W' has G(alpha) AND neg(beta)
+      -- G(beta) in W propagates to W' via CanonicalR, giving beta in W'
+      -- But neg(beta) in W' -> contradiction
+      obtain ⟨W, h_W_mcs, h_R_MW, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case3
+      have h_outer := Bimodal.Metalogic.set_mcs_conjunction_elim h_W_mcs h_W_mem
+      have h_F_phi_W := h_outer.1   -- F(G(alpha) AND neg(beta)) in W
+      have h_psi_in_W := h_outer.2  -- G(beta) AND neg(alpha) in W
+      -- Extract G(beta) from the conjunction
+      have h_psi_parts := Bimodal.Metalogic.set_mcs_conjunction_elim h_W_mcs h_psi_in_W
+      have h_G_beta_W := h_psi_parts.1  -- G(beta) in W
+      -- Get witness W' for F(phi_compound) in W
+      obtain ⟨W', h_W'_mcs, h_R_WW', h_phi_W'⟩ := canonical_forward_F W h_W_mcs _ h_F_phi_W
+      -- Extract neg(beta) from phi_compound in W'
+      have h_phi_parts := Bimodal.Metalogic.set_mcs_conjunction_elim h_W'_mcs h_phi_W'
+      have h_neg_beta_W' := h_phi_parts.2  -- neg(beta) in W'
+      -- G(beta) in W and CanonicalR W W' gives beta in W'
+      have h_beta_W' : beta ∈ W' := canonical_forward_G W W' h_R_WW' beta h_G_beta_W
+      -- Contradiction
+      exact set_consistent_not_both h_W'_mcs.1 beta h_beta_W' h_neg_beta_W'
 
 end Bimodal.Metalogic.Bundle
