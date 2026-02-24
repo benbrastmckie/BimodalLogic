@@ -99,3 +99,53 @@ The resolution requires the full canonical quotient:
 
 4. **Integration**: Wire the new construction into `temporal_coherent_family_exists_Int`
    and verify completeness theorem still works.
+
+---
+
+## Phase 3 Progress (Iteration 3)
+
+**Session**: sess_1771969092_eaf615
+**Plan**: implementation-002.md
+**Status**: PARTIAL
+
+### Changes Made
+
+Created the CanonicalReachable infrastructure module with zero sorries.
+
+**New File**: `Theories/Bimodal/Metalogic/Bundle/CanonicalReachable.lean`
+- `CanonicalReachable` structure with `world`, `is_mcs`, `reachable` fields
+- `CanonicalReachable.root` - root MCS is in the reachable fragment
+- `CanonicalReachable.ext` - extensional equality
+- `CanonicalReachable.successor` - successors of reachable elements are reachable
+- `canonical_reachable_comparable` - total preorder on reachable fragment
+- `canonical_forward_F_strict` - strict future successors via non-saturated F-witness
+- `canonical_backward_P_strict` - strict past predecessors via non-saturated P-witness
+- `gcontent_eq_of_mutual_R` - GContent equality for mutual CanonicalR
+- `canonical_F_neg_from_not_G` - G(phi) absent implies F(neg(phi))
+- `canonical_F_from_not_G_neg` - G(neg(phi)) absent implies F(phi)
+- `canonical_G_or_F_neg` - either G(phi) or F(neg(phi)) in any MCS
+- `forward_G_at_future`, `forward_F_via_G` - BFMCS forward_G helpers
+- `conj_neg_derives_bot` - phi AND neg(phi) derives bot
+- `F_conj_neg_not_in_mcs` - F(phi AND neg(phi)) not in any MCS
+
+All proofs sorry-free. Build succeeds (705/705 jobs).
+
+### Blocker Identified
+
+**CanonicalR antisymmetry**: The CanonicalR relation is reflexive, transitive,
+and connected (total preorder) but NOT proven antisymmetric. Two distinct MCSes
+can potentially be mutually CanonicalR-related (same GContent, different non-G formulas).
+
+This blocks constructing a `LinearOrder` instance on `CanonicalReachable`, which is
+prerequisite for `orderIsoIntOfLinearSuccPredArch`.
+
+### Resolution Paths
+
+1. **Prove antisymmetry** via temp_linearity (partial case analysis in handoff)
+2. **Quotient** by mutual CanonicalR to get true linear order
+3. **Bypass OrderIso** and build BFMCS Int directly
+
+### Handoff
+
+Detailed handoff at:
+`specs/922_strategy_study_fp_witness_completeness_blockers/handoffs/phase-3-handoff-20260224T215519.md`

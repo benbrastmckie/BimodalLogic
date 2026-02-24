@@ -3,7 +3,7 @@
 - **Task**: 922 - strategy_study_fp_witness_completeness_blockers
 - **Version**: 002
 - **Created**: 2026-02-24
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 16-24 hours (remaining: Phases 3-5)
 - **Dependencies**: Task 923 (canonical_reachable_linear, COMPLETED 2026-02-24)
 - **Research Inputs**: research-001.md, research-002.md, research-003.md (post-blocker analysis)
@@ -110,7 +110,7 @@ This plan implements the **Canonical Quotient** approach for proving bimodal com
 
 ---
 
-### Phase 3: Int Embedding via OrderIso [NOT STARTED]
+### Phase 3: Int Embedding via OrderIso [PARTIAL]
 
 - **Dependencies:** Phase 1, Phase 2, Task 923 (canonical_reachable_linear)
 - **Goal:** Define the reachable canonical fragment as a type and construct OrderIso to Int.
@@ -126,7 +126,7 @@ The Mathlib theorem `orderIsoIntOfLinearSuccPredArch` provides an `OrderIso` bet
 - `Nonempty` - root MCS
 
 **Tasks**:
-1. [ ] Define `CanonicalReachable M_0` as a subtype of `Set Formula` for MCSes reachable from root M_0
+1. [x] Define `CanonicalReachable M_0` as a subtype of `Set Formula` for MCSes reachable from root M_0
 2. [ ] Define `CanonicalReachableOrder` with CanonicalR-induced ordering
 3. [ ] Prove `LinearOrder CanonicalReachable` (from canonical_reachable_linear)
 4. [ ] Prove `Countable CanonicalReachable` (Formula is Countable, MCS determined by theory)
@@ -142,6 +142,11 @@ The Mathlib theorem `orderIsoIntOfLinearSuccPredArch` provides an `OrderIso` bet
 9. [ ] Apply `orderIsoIntOfLinearSuccPredArch` to obtain `canonicalOrderIso : CanonicalReachable M_0 ≃o Int`
 10. [ ] Define `canonicalMCS : Int -> Set Formula` via `canonicalOrderIso.symm`
 
+**BLOCKER IDENTIFIED**: The CanonicalR relation is a total PREORDER (reflexive, transitive,
+connected), NOT a total ORDER. Antisymmetry (CanonicalR M1 M2 ∧ CanonicalR M2 M1 → M1 = M2)
+is unproven and may require quotienting by the mutual-CanonicalR equivalence. This blocks
+tasks 2-9 which assume a LinearOrder. See handoff for detailed analysis.
+
 **Files to create/modify**:
 - `Theories/Bimodal/Metalogic/Bundle/CanonicalReachable.lean` (new) - subtype definition
 - `Theories/Bimodal/Metalogic/Bundle/CanonicalEmbedding.lean` - add OrderIso construction
@@ -150,6 +155,24 @@ The Mathlib theorem `orderIsoIntOfLinearSuccPredArch` provides an `OrderIso` bet
 - `canonicalOrderIso` constructed without sorry
 - `canonicalMCS` function defined
 - `lake build` succeeds
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771969092_eaf615**
+- Added: `CanonicalReachable` structure with `world`, `is_mcs`, `reachable` fields
+- Added: `CanonicalReachable.root` - root MCS is in the reachable fragment
+- Added: `CanonicalReachable.ext` - extensional equality
+- Added: `canonical_reachable_comparable` - any two elements are CanonicalR-comparable
+- Added: `canonical_forward_F_strict` - F(phi) with phi absent gives distinct successor
+- Added: `canonical_backward_P_strict` - P(phi) with phi absent gives distinct predecessor
+- Added: `gcontent_eq_of_mutual_R` - mutually CanonicalR MCSes share GContent
+- Added: `canonical_F_neg_from_not_G`, `canonical_F_from_not_G_neg`, `canonical_G_or_F_neg` - temporal duality helpers
+- Added: `forward_G_at_future`, `forward_F_via_G` - BFMCS forward_G helpers
+- Added: `CanonicalReachable.successor` - successors of reachable elements are reachable
+- Added: `conj_neg_derives_bot` - phi ∧ neg(phi) derives bot
+- Added: `F_conj_neg_not_in_mcs` - F(phi ∧ neg(phi)) not in any MCS
+- Completed: CanonicalReachable.lean builds with zero sorries, zero errors
+- Identified: CanonicalR antisymmetry blocker prevents LinearOrder instance
 
 ---
 
