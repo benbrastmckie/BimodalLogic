@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 922,
+      "project_name": "strategy_study_fp_witness_completeness_blockers",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-24T17:33:56Z",
+      "last_updated": "2026-02-24T17:33:56Z",
+      "session_id": "sess_1771954424_0d8aa1",
+      "artifacts": [],
+      "description": "Comprehensive strategy study synthesizing 16 research reports and 12 plan versions of failed attempts to close forward_F/backward_P in DovetailingChain.lean. The study must diagnose why all bottom-up chain constructions fail (Lindenbaum opacity theorem), evaluate the canonical model approach as the theoretically sound alternative, and produce an actionable implementation roadmap. Key questions: (1) Does the existing codebase have the axioms/lemmas needed for the canonical approach? (2) Can the canonical model be made to produce an Int-indexed BFMCS without rebuilding the entire completeness proof? (3) What is the minimal new infrastructure needed? (4) Is sorry debt acceptance more cost-effective at this point? The study should culminate in a clear recommendation with confidence estimate."
+    },
+    {
       "project_number": 921,
       "project_name": "enforce_zero_proof_debt_policy_for_lean_task_completion",
       "status": "not_started",
@@ -598,7 +609,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 922,
+  "next_project_number": 923,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

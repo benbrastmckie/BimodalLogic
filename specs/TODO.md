@@ -1,5 +1,5 @@
 ---
-next_project_number: 922
+next_project_number: 923
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 922. Strategy study: identify viable path for forward_F/backward_P completeness
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-24
+
+**Description**: Comprehensive strategy study synthesizing 16 research reports and 12 plan versions of failed attempts to close `forward_F` and `backward_P` in `DovetailingChain.lean`. All bottom-up chain constructions (linear chains, enriched chains, omega-squared chains) have been proven to share the same fundamental obstruction: Lindenbaum extensions are nonconstructive and can introduce G(neg(psi)) at any step, permanently killing F(psi). The study must: (1) Formally characterize the "Lindenbaum opacity theorem" as a barrier that blocks all bottom-up approaches regardless of nesting depth or scheduling strategy, referencing the counterexample from plan v012 Phase 3 blocker analysis (`specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-blocker-analysis-20260224.md`); (2) Evaluate the canonical model approach (worlds = all MCSes, R = GContent-inclusion, forward_F from step lemma, linearity from temp_a axiom, embed into Int via countability) — audit the existing codebase for relevant axioms, lemmas, and MCS infrastructure already present; (3) Identify precisely what new infrastructure the canonical model approach requires and estimate effort with confidence; (4) Evaluate sorry debt acceptance as an alternative — what downstream theorems depend on forward_F/backward_P, what is the total transitive sorry count, and what is the cost of never closing these; (5) Compare at least three approaches (canonical model, bulldozing, sorry debt) with risk-adjusted effort estimates and produce a ranked recommendation. Key files to study: `DovetailingChain.lean` (lines 1380-1800, the existing forward chain infrastructure), `WitnessGraph.lean` (0-sorry file with `witnessSeed_consistent`), `TemporalContent.lean` (GContent/HContent definitions and new monotonicity lemmas), all files in `specs/916_implement_fp_witness_obligation_tracking/` (16 research reports + 12 plans + handoffs).
+
+---
 
 ### 921. Enforce zero-proof-debt policy for Lean task completion
 - **Effort**: 2.5 hours
