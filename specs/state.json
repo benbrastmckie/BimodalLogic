@@ -459,10 +459,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-24T16:39:02Z",
+      "last_updated": "2026-02-24T16:47:03Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -563,11 +563,16 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-016.md",
           "type": "research",
           "summary": "Team research (3 teammates): Witness-graph-guided definitively blocked; omega-squared immediate processing is only viable path"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-012.md",
+          "type": "plan",
+          "summary": "v12: Omega-squared immediate processing - 5 phases (24-48h), replaces blocked witness-graph-guided approach"
         }
       ],
       "session_id": "sess_1771950504_bb5173",
       "researched": "2026-02-24T16:39:02Z",
-      "planned": "2026-02-24T15:05:31Z",
+      "planned": "2026-02-24T16:47:03Z",
       "started": "2026-02-24T05:57:18Z"
     }
   ],
