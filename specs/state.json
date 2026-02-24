@@ -450,10 +450,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-24T02:25:27Z",
+      "last_updated": "2026-02-24T03:29:31Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -529,9 +529,14 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-007.md",
           "type": "plan",
           "summary": "Revised 6-phase plan with restructured Phase 3 (4 sub-phases) and simplified Phases 4-6 (28-44h remaining)"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-012.md",
+          "type": "research",
+          "summary": "Progress review: WitnessGraph.lean has 48 build errors (invisible to full build) from context-exhausted agent; committed version has 5 sorries; working copy approach is mathematically sound but needs mechanical error fixes"
         }
       ],
-      "session_id": "sess_1771899483_ae9fe0",
+      "session_id": "sess_1771900002_09f22f",
       "researched": "2026-02-21T22:44:48Z",
       "planned": "2026-02-24T02:25:27Z",
       "started": "2026-02-20T20:19:56Z"
