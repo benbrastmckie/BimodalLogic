@@ -1,75 +1,83 @@
-# Implementation Summary: Task #916 - Phase 3A Partial
+# Implementation Summary: Task #916 - Phases 3B and 5A
 
 **Date**: 2026-02-24
-**Sessions**: sess_1771904039_b1889e, sess_1771905472_29ec70
-**Status**: PARTIAL
+**Sessions**: sess_1771904039_b1889e, sess_1771905472_29ec70, sess_1771945665_c15254
+**Status**: PARTIAL (Phases 3B and 5A completed, Phase 5B in progress)
 
 ## Overview
 
-Phase 3A (Fix 48 Build Errors) is partially complete. WitnessGraph.lean has been substantially modified with 841 lines of proof code added, eliminating all sorries. Errors reduced from 48 → 33 → 8.
+Phases 3B (Fix Build Errors) and 5A (Cross-Sign Sorries) completed. WitnessGraph.lean now builds cleanly with 0 errors and 2 remaining sorries (forward_F and backward_P). Phase 5B (Forward_F) analysis completed; mathematical obstacle documented.
 
 ## File State
 
-| Metric | Committed | After Session 1 | After Session 2 |
-|--------|-----------|-----------------|-----------------|
-| Lines | 1,578 | 2,359 | 2,419 |
-| Sorries | 5 | 0 | 0 |
-| Build errors | 0 | 33 | **8** |
+| Metric | Before Session | After Session |
+|--------|---------------|---------------|
+| Build errors | 4 | **0** |
+| Sorries | 4 | **2** |
+| Lines | ~3100 | ~3380 |
 
-## Work Completed
+## Work Completed (Current Session: sess_1771945665_c15254)
 
-### Session 1 (sess_1771904039_b1889e)
-- Declaration ordering fixes
-- Syntax fixes (`cases h :=` patterns)
-- BEq conversion fixes
-- Reduced 48 → 33 errors
+### Phase 3B: Fix Build Errors [COMPLETED]
 
-### Session 2 (sess_1771905472_29ec70)
-- Fixed `split at h_j ⊢` syntax (replaced with `split; split at h_j`)
-- Fixed BEq/DecidableEq issues
-- Fixed various type mismatches
-- Reduced 33 → 8 errors
+1. **`set_mcs_neg_or` (2 errors)**: Replaced with existing `set_mcs_negation_complete` from MCSProperties.lean
+2. **`GContent_subset_implies_HContent_reverse` (2 errors)**: Duplicated from DovetailingChain.lean with dependencies (`past_temp_a'`, `HContent_subset_implies_GContent_reverse`)
+3. **`enrichedBackwardChain_GContent_reverse` type mismatch**: Fixed to use `HContent_subset_implies_GContent_reverse` (correct duality direction)
 
-## Remaining Errors (8 total)
+### Phase 5A: Cross-Sign Sorries [COMPLETED]
 
-| Line | Error Type | Description |
-|------|------------|-------------|
-| 1700 | simp no progress | h_ps_eq dependent rewrite |
-| 1816 | Type mismatch | In backward witness proof |
-| 1980-1981 | rewrite failed | Pattern not found in proof |
-| 2135 | placeholder | `head` argument synthesis |
-| 2260 | split failed | Can't find if/match in goal |
-| 2386 | split failed | Can't find if/match in goal |
+Proved `enrichedChainBFMCS.forward_G` and `enrichedChainBFMCS.backward_H` with 11 new lemmas:
 
-### Key Blocking Issues
+**Core infrastructure (7 lemmas):**
+- `enriched_chains_share_base` - chains share rootMCS at index 0
+- `enrichedBackwardChain_G_propagates_reverse[_le]` - G toward 0 in backward chain
+- `enrichedBackwardChain_forward_G` - forward_G within backward chain
+- `enrichedForwardChain_H_propagates_reverse[_le]` - H toward 0 in forward chain
+- `enrichedForwardChain_backward_H` - backward_H within forward chain
 
-1. **Dependent type rewriting**: `rw [h_ps_eq]` fails with "motive is not type correct" due to index bounds depending on the term being rewritten
-2. **Split tactic limitations**: After `unfold processStep`, the match is nested inside subscript operations, making `split` unable to find it
-3. **simp not powerful enough**: `simp only [h_ps_eq, ...]` doesn't progress on dependent indexed access
+**Int-level case-split (4 lemmas):**
+- `enrichedChainSet_forward_G_nonneg` / `_neg` - forward_G cases
+- `enrichedChainSet_backward_H_nonpos` / `_nonneg` - backward_H cases
 
-## Recommendations
+### Phase 5B: Forward_F Analysis [IN PROGRESS]
 
-### Option A: Complete Dependent Type Fixes (2-4h)
-Use `conv` or `subst` patterns to handle the dependent rewrites:
-```lean
--- Instead of: rw [h_ps_eq]
--- Try: subst h_ps_eq
--- Or: conv in (processStep ...).nodes[_] => rw [h_ps_eq]
+Mathematical analysis confirmed the enriched chain CANNOT prove forward_F:
+- F(phi) -> G(F(phi)) is NOT provable in TM logic
+- F-formulas don't persist through GContent seeds
+- The witness graph proves F-witnesses exist locally but needs new embedding into BFMCS
+
+Two viable approaches documented in handoff:
+1. Omega-squared construction (20-30h, high confidence)
+2. Witness-graph-guided chain (15-25h, medium confidence)
+
+## Remaining Sorries
+
+| Location | Formula | Status |
+|----------|---------|--------|
+| Line 3025 | `enrichedForwardChain_forward_F` | SORRY - requires new construction |
+| Line 3033 | `enrichedBackwardChain_backward_P` | SORRY - symmetric to forward_F |
+
+## Verification
+
 ```
-
-### Option B: Use sorry temporarily (1h)
-Insert `sorry` in the 4 problematic proofs to verify overall structure, then address them individually.
-
-### Option C: Revert and Incremental (6-10h)
-Start fresh with the committed version and apply changes one proof at a time.
+lake build Bimodal.Metalogic.Bundle.WitnessGraph
+# Build completed successfully (0 errors, 2 sorry warnings)
+```
 
 ## Files Modified
 
-- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` - 841 lines added (8 errors)
+- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` - Fixed errors, added ~280 lines of proof code
+
+## Artifacts
+
+- Handoff: `specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-5B-handoff-20260224.md`
+- Progress: `specs/916_implement_fp_witness_obligation_tracking/progress/phase-5B-progress.json`
 
 ## Phase Status
 
-- Phase 3A: [PARTIAL] - 8 errors remaining
-- Phase 4: [NOT STARTED]
-- Phase 5: [NOT STARTED]
-- Phase 6: [NOT STARTED]
+- Phase 3B: [COMPLETED] - 0 build errors
+- Phase 5A: [COMPLETED] - forward_G and backward_H proven
+- Phase 5B: [IN PROGRESS] - Analysis done, implementation pending
+- Phase 5C: [NOT STARTED] - Depends on 5B
+- Phase 6: [NOT STARTED] - Integration
+- Phase 7: [NOT STARTED] - Documentation

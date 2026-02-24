@@ -2953,7 +2953,7 @@ lemma enrichedForwardChain_F_dichotomy
   by_cases h : Formula.all_future (Formula.neg psi) ∈ (enrichedForwardChain rootMCS n).val
   · exact Or.inr h
   · left
-    have h_neg := set_mcs_neg_or h_mcs (Formula.all_future (Formula.neg psi))
+    have h_neg := set_mcs_negation_complete h_mcs (Formula.all_future (Formula.neg psi))
     rcases h_neg with h_in | h_neg_in
     · exact absurd h_in h
     · rw [h_F_def]; exact h_neg_in
@@ -2982,7 +2982,7 @@ lemma enrichedBackwardChain_P_dichotomy
   by_cases h : Formula.all_past (Formula.neg psi) ∈ (enrichedBackwardChain rootMCS n).val
   · exact Or.inr h
   · left; rw [h_P_def]
-    exact (set_mcs_neg_or h_mcs (Formula.all_past (Formula.neg psi))).resolve_left h
+    exact (set_mcs_negation_complete h_mcs (Formula.all_past (Formula.neg psi))).resolve_left h
 
 /-- If P(psi) is in backward chain(n) then H(neg psi) absent at all steps m <= n. -/
 lemma enrichedBackwardChain_P_implies_H_neg_absent
@@ -3064,13 +3064,89 @@ lemma enrichedChainSet_is_mcs
   · exact enrichedForwardChain_is_mcs rootMCS t.toNat
   · exact enrichedBackwardChain_is_mcs rootMCS ((-t - 1).toNat)
 
+/-- Past analog of axiom temp_a: ⊢ φ → H(F(φ)).
+Derived from temp_a via temporal duality.
+Duplicated from DovetailingChain.lean to avoid circular import dependency. -/
+noncomputable def past_temp_a' (psi : Formula) :
+    [] ⊢ psi.imp psi.some_future.all_past := by
+  have h_ta := DerivationTree.axiom [] _ (Axiom.temp_a psi.swap_past_future)
+  have h_dual := DerivationTree.temporal_duality _ h_ta
+  have h_eq : (psi.swap_past_future.imp psi.swap_past_future.sometime_past.all_future).swap_past_future
+    = psi.imp psi.some_future.all_past := by
+    simp [Formula.swap_temporal, Formula.neg, Formula.sometime_past, Formula.some_past,
+          Formula.some_future, Formula.swap_past_future, Formula.swap_past_future_involution]
+  rw [h_eq] at h_dual; exact h_dual
+
+/-- If HContent(M) ⊆ M', then GContent(M') ⊆ M.
+Uses past_temp_a: φ → H(F(φ)).
+Duplicated from DovetailingChain.lean to avoid circular import dependency. -/
+theorem HContent_subset_implies_GContent_reverse
+    (M M' : Set Formula) (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_HC : HContent M ⊆ M') :
+    GContent M' ⊆ M := by
+  intro phi h_G_phi_in_M'
+  have h_G_phi : Formula.all_future phi ∈ M' := h_G_phi_in_M'
+  by_contra h_not_phi
+  have h_neg_phi : Formula.neg phi ∈ M := by
+    rcases set_mcs_negation_complete h_mcs phi with h | h
+    · exact absurd h h_not_phi
+    · exact h
+  have h_pta : [] ⊢ (Formula.neg phi).imp (Formula.neg phi).some_future.all_past :=
+    past_temp_a' (Formula.neg phi)
+  have h_H_F_neg : (Formula.neg phi).some_future.all_past ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_pta) h_neg_phi
+  have h_F_neg_M' : (Formula.neg phi).some_future ∈ M' := h_HC h_H_F_neg
+  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
+  have h_G_dni : [] ⊢ (phi.imp phi.neg.neg).all_future :=
+    DerivationTree.temporal_necessitation _ h_dni
+  have h_fk : [] ⊢ (phi.imp phi.neg.neg).all_future.imp (phi.all_future.imp phi.neg.neg.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist phi phi.neg.neg)
+  have h_G_imp : [] ⊢ phi.all_future.imp phi.neg.neg.all_future :=
+    DerivationTree.modus_ponens [] _ _ h_fk h_G_dni
+  have h_G_nn : phi.neg.neg.all_future ∈ M' :=
+    set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_G_imp) h_G_phi
+  have h_eq : (Formula.neg phi).some_future = Formula.neg (phi.neg.neg.all_future) := rfl
+  rw [h_eq] at h_F_neg_M'
+  exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_future) h_G_nn h_F_neg_M'
+
+/-- If GContent(M) ⊆ M', then HContent(M') ⊆ M.
+Uses temp_a: φ → G(P(φ)).
+Duplicated from DovetailingChain.lean to avoid circular import dependency. -/
+theorem GContent_subset_implies_HContent_reverse
+    (M M' : Set Formula) (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_GC : GContent M ⊆ M') :
+    HContent M' ⊆ M := by
+  intro phi h_H_phi_in_M'
+  by_contra h_not_phi
+  have h_neg_phi : Formula.neg phi ∈ M := by
+    rcases set_mcs_negation_complete h_mcs phi with h | h
+    · exact absurd h h_not_phi
+    · exact h
+  have h_ta : [] ⊢ (Formula.neg phi).imp (Formula.all_future (Formula.neg phi).sometime_past) :=
+    DerivationTree.axiom [] _ (Axiom.temp_a (Formula.neg phi))
+  have h_G_P_neg : Formula.all_future (Formula.neg phi).sometime_past ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_ta) h_neg_phi
+  have h_P_neg_M' : (Formula.neg phi).sometime_past ∈ M' := h_GC h_G_P_neg
+  have h_dni : [] ⊢ phi.imp phi.neg.neg := Bimodal.Theorems.Combinators.dni phi
+  have h_H_dni : [] ⊢ (phi.imp phi.neg.neg).all_past :=
+    Bimodal.Theorems.past_necessitation _ h_dni
+  have h_pk : [] ⊢ (phi.imp phi.neg.neg).all_past.imp (phi.all_past.imp phi.neg.neg.all_past) :=
+    Bimodal.Theorems.past_k_dist phi phi.neg.neg
+  have h_H_imp : [] ⊢ phi.all_past.imp phi.neg.neg.all_past :=
+    DerivationTree.modus_ponens [] _ _ h_pk h_H_dni
+  have h_H_nn : phi.neg.neg.all_past ∈ M' :=
+    set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_H_imp) h_H_phi_in_M'
+  have h_eq : (Formula.neg phi).sometime_past = Formula.neg (phi.neg.neg.all_past) := rfl
+  rw [h_eq] at h_P_neg_M'
+  exact set_consistent_not_both h_mcs'.1 (phi.neg.neg.all_past) h_H_nn h_P_neg_M'
+
 /-- GContent extends through the backward chain (needed for cross-sign G propagation). -/
 lemma enrichedBackwardChain_GContent_reverse
     (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (n : Nat) :
     GContent (enrichedBackwardChain rootMCS (n + 1)).val ⊆
       (enrichedBackwardChain rootMCS n).val := by
   have h_hc := enrichedBackwardChain_HContent_extends rootMCS n
-  exact GContent_subset_implies_HContent_reverse
+  exact HContent_subset_implies_GContent_reverse
     (enrichedBackwardChain rootMCS n).val
     (enrichedBackwardChain rootMCS (n + 1)).val
     (enrichedBackwardChain_is_mcs rootMCS n)
@@ -3090,24 +3166,212 @@ lemma enrichedForwardChain_HContent_reverse
     (enrichedForwardChain_is_mcs rootMCS (n + 1))
     h_gc
 
+/-!
+### Cross-Sign Coherence Infrastructure
+
+G propagation toward 0 in the backward chain (for cross-sign forward_G),
+H propagation toward 0 in the forward chain (for cross-sign backward_H),
+and the shared base lemma.
+-/
+
+/-- Forward and backward enriched chains share the same MCS at index 0. -/
+lemma enriched_chains_share_base
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) :
+    (enrichedForwardChain rootMCS 0).val = (enrichedBackwardChain rootMCS 0).val := rfl
+
+/-- G propagates toward 0 in the backward chain (decreasing index). -/
+lemma enrichedBackwardChain_G_propagates_reverse
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (enrichedBackwardChain rootMCS (n + 1)).val) :
+    Formula.all_future phi ∈ (enrichedBackwardChain rootMCS n).val := by
+  have h_mcs_n1 := enrichedBackwardChain_is_mcs rootMCS (n + 1)
+  have h_GG := set_mcs_all_future_all_future h_mcs_n1 h_G
+  exact enrichedBackwardChain_GContent_reverse rootMCS n h_GG
+
+/-- G propagates toward 0: from index n to index m (m ≤ n) in the backward chain. -/
+lemma enrichedBackwardChain_G_propagates_reverse_le
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (enrichedBackwardChain rootMCS n).val) :
+    Formula.all_future phi ∈ (enrichedBackwardChain rootMCS m).val := by
+  induction h_le with
+  | refl => exact h_G
+  | step h_le ih =>
+    have := enrichedBackwardChain_G_propagates_reverse rootMCS _ phi h_G
+    exact ih this
+
+/-- forward_G within the backward chain: G(phi) at index n implies phi at index m for m < n. -/
+lemma enrichedBackwardChain_forward_G
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (enrichedBackwardChain rootMCS n).val) :
+    phi ∈ (enrichedBackwardChain rootMCS m).val := by
+  have h_G_m := enrichedBackwardChain_G_propagates_reverse_le rootMCS m n (Nat.le_of_lt h_lt) phi h_G
+  exact mcs_G_implies_self (enrichedBackwardChain_is_mcs rootMCS m) phi h_G_m
+
+/-- H propagates toward 0 in the forward chain (decreasing index). -/
+lemma enrichedForwardChain_H_propagates_reverse
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (enrichedForwardChain rootMCS (n + 1)).val) :
+    Formula.all_past phi ∈ (enrichedForwardChain rootMCS n).val := by
+  have h_mcs_n1 := enrichedForwardChain_is_mcs rootMCS (n + 1)
+  have h_HH := set_mcs_all_past_all_past h_mcs_n1 h_H
+  exact enrichedForwardChain_HContent_reverse rootMCS n h_HH
+
+/-- H propagates toward 0: from index n to index m (m ≤ n) in the forward chain. -/
+lemma enrichedForwardChain_H_propagates_reverse_le
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (enrichedForwardChain rootMCS n).val) :
+    Formula.all_past phi ∈ (enrichedForwardChain rootMCS m).val := by
+  induction h_le with
+  | refl => exact h_H
+  | step h_le ih =>
+    have := enrichedForwardChain_H_propagates_reverse rootMCS _ phi h_H
+    exact ih this
+
+/-- backward_H within the forward chain: H(phi) at index n implies phi at index m for m < n. -/
+lemma enrichedForwardChain_backward_H
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (enrichedForwardChain rootMCS n).val) :
+    phi ∈ (enrichedForwardChain rootMCS m).val := by
+  have h_H_m := enrichedForwardChain_H_propagates_reverse_le rootMCS m n (Nat.le_of_lt h_lt) phi h_H
+  exact mcs_H_implies_self (enrichedForwardChain_is_mcs rootMCS m) phi h_H_m
+
+/-!
+### Int-Level forward_G and backward_H
+
+Case-split on the sign of the Int index to dispatch to the appropriate chain lemma.
+-/
+
+/-- forward_G for non-negative Int indices (both in forward chain). -/
+lemma enrichedChainSet_forward_G_nonneg
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (t t' : Int) (h_t_nn : 0 ≤ t) (h_t'_nn : 0 ≤ t') (h_lt : t < t')
+    (phi : Formula) (h_G : Formula.all_future phi ∈ enrichedChainSet rootMCS t) :
+    phi ∈ enrichedChainSet rootMCS t' := by
+  simp only [enrichedChainSet, h_t_nn, h_t'_nn, ↓reduceDIte] at h_G ⊢
+  have h_lt_nat : t.toNat < t'.toNat := by
+    rw [← Int.ofNat_lt]
+    rwa [Int.toNat_of_nonneg h_t_nn, Int.toNat_of_nonneg h_t'_nn]
+  exact enrichedForwardChain_forward_G rootMCS t.toNat t'.toNat h_lt_nat phi h_G
+
+/-- forward_G for negative source: G(phi) in M_t (t < 0) implies phi in M_{t'} (t' > t). -/
+lemma enrichedChainSet_forward_G_neg
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (t t' : Int) (h_t_neg : t < 0) (h_lt : t < t')
+    (phi : Formula) (h_G : Formula.all_future phi ∈ enrichedChainSet rootMCS t) :
+    phi ∈ enrichedChainSet rootMCS t' := by
+  have h_t_not_nn : ¬(0 ≤ t) := not_le.mpr h_t_neg
+  simp only [enrichedChainSet, h_t_not_nn, ↓reduceDIte] at h_G
+  -- G(phi) in backward chain at index (-t-1).toNat
+  -- Step 1: Propagate G(phi) through backward chain to index 0 (= root)
+  have h_G_at_0 : Formula.all_future phi ∈ (enrichedBackwardChain rootMCS 0).val :=
+    enrichedBackwardChain_G_propagates_reverse_le rootMCS 0 (-t - 1).toNat
+      (Nat.zero_le _) phi h_G
+  -- backward chain 0 = forward chain 0 = rootMCS
+  have h_chain_eq := enriched_chains_share_base rootMCS
+  have h_G_fwd_0 : Formula.all_future phi ∈ (enrichedForwardChain rootMCS 0).val := by
+    rw [h_chain_eq]; exact h_G_at_0
+  -- Branch on t'
+  by_cases h_t'_nn : 0 ≤ t'
+  · -- Case t' >= 0: use forward chain
+    simp only [enrichedChainSet, h_t'_nn, ↓reduceDIte]
+    by_cases h_t'_zero : t' = 0
+    · -- t' = 0: apply T-axiom
+      subst h_t'_zero
+      exact mcs_G_implies_self (enrichedForwardChain_is_mcs rootMCS 0) phi h_G_fwd_0
+    · -- t' > 0: forward chain propagation
+      have h_lt_nat : 0 < t'.toNat := by omega
+      exact enrichedForwardChain_forward_G rootMCS 0 t'.toNat h_lt_nat phi h_G_fwd_0
+  · -- Case t' < 0: both negative, backward chain forward_G
+    push_neg at h_t'_nn
+    have h_t'_not_nn : ¬(0 ≤ t') := not_le.mpr h_t'_nn
+    simp only [enrichedChainSet, h_t'_not_nn, ↓reduceDIte]
+    have h_idx_lt : (-t' - 1).toNat < (-t - 1).toNat := by
+      rw [← Int.ofNat_lt]
+      rw [Int.toNat_of_nonneg (by omega), Int.toNat_of_nonneg (by omega)]
+      omega
+    exact enrichedBackwardChain_forward_G rootMCS (-t' - 1).toNat (-t - 1).toNat h_idx_lt phi h_G
+
+/-- backward_H for non-positive Int indices (both in backward chain). -/
+lemma enrichedChainSet_backward_H_nonpos
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (t t' : Int) (h_t_neg : t < 0) (h_t'_neg : t' < 0) (h_lt : t' < t)
+    (phi : Formula) (h_H : Formula.all_past phi ∈ enrichedChainSet rootMCS t) :
+    phi ∈ enrichedChainSet rootMCS t' := by
+  have h_t_not_nn : ¬(0 ≤ t) := not_le.mpr h_t_neg
+  have h_t'_not_nn : ¬(0 ≤ t') := not_le.mpr h_t'_neg
+  simp only [enrichedChainSet, h_t_not_nn, h_t'_not_nn, ↓reduceDIte] at h_H ⊢
+  have h_idx_lt : (-t - 1).toNat < (-t' - 1).toNat := by
+    rw [← Int.ofNat_lt]
+    rw [Int.toNat_of_nonneg (by omega), Int.toNat_of_nonneg (by omega)]
+    omega
+  exact enrichedBackwardChain_backward_H rootMCS (-t - 1).toNat (-t' - 1).toNat h_idx_lt phi h_H
+
+/-- backward_H for non-negative source: H(phi) in M_t (t >= 0) implies phi in M_{t'} (t' < t). -/
+lemma enrichedChainSet_backward_H_nonneg
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (t t' : Int) (h_t_nn : 0 ≤ t) (h_lt : t' < t)
+    (phi : Formula) (h_H : Formula.all_past phi ∈ enrichedChainSet rootMCS t) :
+    phi ∈ enrichedChainSet rootMCS t' := by
+  simp only [enrichedChainSet, h_t_nn, ↓reduceDIte] at h_H
+  -- H(phi) in forward chain at index t.toNat
+  -- Step 1: Propagate H(phi) through forward chain to index 0
+  have h_H_at_0 : Formula.all_past phi ∈ (enrichedForwardChain rootMCS 0).val :=
+    enrichedForwardChain_H_propagates_reverse_le rootMCS 0 t.toNat (Nat.zero_le _) phi h_H
+  -- forward chain 0 = backward chain 0
+  have h_chain_eq := (enriched_chains_share_base rootMCS).symm
+  have h_H_bwd_0 : Formula.all_past phi ∈ (enrichedBackwardChain rootMCS 0).val := by
+    rw [h_chain_eq]; exact h_H_at_0
+  by_cases h_t'_neg : t' < 0
+  · -- Case t' < 0: use backward chain
+    have h_t'_not_nn : ¬(0 ≤ t') := not_le.mpr h_t'_neg
+    simp only [enrichedChainSet, h_t'_not_nn, ↓reduceDIte]
+    by_cases h_t'_idx_zero : (-t' - 1).toNat = 0
+    · -- t' = -1: apply T-axiom at backward chain index 0
+      rw [show (-t' - 1).toNat = 0 from h_t'_idx_zero]
+      exact mcs_H_implies_self (enrichedBackwardChain_is_mcs rootMCS 0) phi h_H_bwd_0
+    · -- t' < -1: backward chain propagation
+      have h_lt_nat : 0 < (-t' - 1).toNat := Nat.pos_of_ne_zero h_t'_idx_zero
+      exact enrichedBackwardChain_backward_H rootMCS 0 (-t' - 1).toNat h_lt_nat phi h_H_bwd_0
+  · -- Case t' >= 0: both non-negative, use forward chain backward_H
+    push_neg at h_t'_neg
+    simp only [enrichedChainSet, h_t'_neg, ↓reduceDIte]
+    have h_lt_nat : t'.toNat < t.toNat := by
+      rw [← Int.ofNat_lt]
+      rwa [Int.toNat_of_nonneg h_t'_neg, Int.toNat_of_nonneg h_t_nn]
+    exact enrichedForwardChain_backward_H rootMCS t'.toNat t.toNat h_lt_nat phi h_H
+
 /-- The enriched BFMCS Int from a root MCS.
 
 Maps non-negative integers to the enriched forward chain and negative integers
 to the enriched backward chain. Both chains share the root MCS at time 0.
 
 Properties:
-- forward_G: proven via GContent extension through forward chain
-- backward_H: proven via HContent extension through backward chain
-- forward_F: sorry (requires omega-squared construction)
-- backward_P: sorry (requires omega-squared construction)
+- forward_G: proven via cross-sign G propagation infrastructure
+- backward_H: proven via cross-sign H propagation infrastructure
+- forward_F: sorry (requires witness graph bridge)
+- backward_P: sorry (requires witness graph bridge)
 -/
 noncomputable def enrichedChainBFMCS
     (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : BFMCS Int where
   mcs t := enrichedChainSet rootMCS t
   is_mcs t := enrichedChainSet_is_mcs rootMCS t
   forward_G := fun t t' phi h_lt h_G => by
-    sorry -- Cross-sign G propagation (same pattern as DovetailingChain)
+    by_cases h_t : 0 ≤ t
+    · have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
+      exact enrichedChainSet_forward_G_nonneg rootMCS t t' h_t h_t' h_lt phi h_G
+    · push_neg at h_t
+      exact enrichedChainSet_forward_G_neg rootMCS t t' h_t h_lt phi h_G
   backward_H := fun t t' phi h_lt h_H => by
-    sorry -- Cross-sign H propagation (same pattern as DovetailingChain)
+    by_cases h_t : t < 0
+    · have h_t' : t' < 0 := lt_trans h_lt h_t
+      exact enrichedChainSet_backward_H_nonpos rootMCS t t' h_t h_t' h_lt phi h_H
+    · push_neg at h_t
+      exact enrichedChainSet_backward_H_nonneg rootMCS t t' h_t h_lt phi h_H
 
 end Bimodal.Metalogic.Bundle

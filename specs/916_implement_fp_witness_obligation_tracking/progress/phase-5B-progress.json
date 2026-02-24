@@ -1,0 +1,52 @@
+{
+  "phase": "5B",
+  "phase_name": "Prove Forward_F via Witness Graph Bridge",
+  "status": "in_progress",
+  "current_objective": "Design non-constant BFMCS using witness graph",
+  "objectives": [
+    {
+      "name": "Analyze mathematical approach",
+      "status": "done",
+      "notes": "Deep analysis completed. The enriched chain approach CANNOT prove forward_F because F-formulas don't persist through GContent seeds. The witness graph proves F-witnesses exist locally but cannot directly serve as an Int-indexed BFMCS because GContent doesn't propagate between non-adjacent nodes."
+    },
+    {
+      "name": "Design non-constant BFMCS",
+      "status": "pending",
+      "notes": "Need omega-squared construction or witness-graph-guided embedding that preserves both forward_G (GContent coherence) and forward_F (witness placement)."
+    },
+    {
+      "name": "Implement construction",
+      "status": "pending"
+    },
+    {
+      "name": "Prove forward_F",
+      "status": "pending"
+    }
+  ],
+  "approaches_tried": [
+    {
+      "approach": "Direct enriched chain forward_F",
+      "result": "Blocked. F(psi) at chain(0) does not guarantee F(psi) at chain(n) for the step n where psi's encoding fires. G(neg psi) can enter the chain at step 1 via Lindenbaum non-constructivity, killing F(psi) permanently.",
+      "evidence": "Mathematical analysis confirms F(phi) -> G(F(phi)) is NOT provable in TM logic. The F-dichotomy lemma (enrichedForwardChain_F_dichotomy) shows at each step either F(psi) or G(neg psi) is present, but we cannot control which."
+    },
+    {
+      "approach": "Direct witness graph node-as-Int embedding",
+      "result": "Blocked for forward_G. The witness graph is a DAG, not a chain. GContent only propagates along edges. For non-adjacent nodes i < j with no path between them, G(phi) at i does not guarantee phi at j.",
+      "evidence": "The witness graph edges are local (source -> witness). There's no guaranteed path between arbitrary pairs of nodes."
+    }
+  ],
+  "viable_approaches": [
+    {
+      "approach": "Omega-squared construction",
+      "description": "At each outer step n, build an inner chain that processes ALL F-formulas present at step n. The inner chain uses the standard dovetail construction. This ensures every F-formula gets witnessed because the inner chain processes ALL formulas at a step where the F-formula is known to be present.",
+      "estimated_effort": "20-30 hours",
+      "confidence": "HIGH (standard textbook technique)"
+    },
+    {
+      "approach": "Witness-graph-guided linear chain",
+      "description": "Build a linear chain from the root, but at each step, choose the next MCS to be the witness graph's next node (following a linearization of the DAG). Fill gaps with GContent extensions. This preserves forward_G (GContent coherence at every step) while using the witness graph's F-witness guarantees.",
+      "estimated_effort": "15-25 hours",
+      "confidence": "MEDIUM (novel combination, may have unforeseen issues)"
+    }
+  ]
+}

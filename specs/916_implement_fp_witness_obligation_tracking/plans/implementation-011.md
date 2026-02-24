@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 55-75 hours
 - **Dependencies**: None
 - **Research Inputs**: research-001 through research-014 (14 reports)
@@ -60,7 +60,7 @@ WitnessGraph.lean exists with:
 
 ## Implementation Phases
 
-### Phase 3B: Fix Remaining Build Errors [NOT STARTED]
+### Phase 3B: Fix Remaining Build Errors [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Make WitnessGraph.lean build with 0 errors
@@ -117,11 +117,21 @@ lake build Bimodal.Metalogic.Bundle.WitnessGraph
 **Exit Criteria:**
 - [x] All unknown identifier errors resolved
 - [x] `lake build` succeeds for WitnessGraph.lean
-- [ ] Document which approach used for each fix
+- [x] Document which approach used for each fix
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771945665_c15254**
+- Fixed: `set_mcs_neg_or` (lines 2956, 2985) by replacing with existing `set_mcs_negation_complete`
+- Added: `past_temp_a'` - duplicated from DovetailingChain.lean to avoid circular import
+- Added: `HContent_subset_implies_GContent_reverse` - duplicated from DovetailingChain.lean
+- Added: `GContent_subset_implies_HContent_reverse` - duplicated from DovetailingChain.lean
+- Fixed: `enrichedBackwardChain_GContent_reverse` - was calling wrong duality lemma (GContent→HContent instead of HContent→GContent)
+- Build: 0 errors, 4 sorries remaining (forward_F, backward_P, forward_G, backward_H)
 
 ---
 
-### Phase 5A: Resolve Cross-Sign Sorries [NOT STARTED]
+### Phase 5A: Resolve Cross-Sign Sorries [COMPLETED]
 
 - **Dependencies**: Phase 3B
 - **Goal**: Close forward_G and backward_H sorries
@@ -163,13 +173,30 @@ theorem witnessGraphBFMCS_backward_H : ...backward_H... := by
 - forward_G and backward_H sorries eliminated
 
 **Exit Criteria:**
-- [ ] `enrichedChainBFMCS.forward_G` proven (0 sorries)
-- [ ] `enrichedChainBFMCS.backward_H` proven (0 sorries)
-- [ ] 2 sorries remaining (forward_F, backward_P)
+- [x] `enrichedChainBFMCS.forward_G` proven (0 sorries)
+- [x] `enrichedChainBFMCS.backward_H` proven (0 sorries)
+- [x] 2 sorries remaining (forward_F, backward_P)
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771945665_c15254**
+- Added: `enriched_chains_share_base` - forward/backward chains share rootMCS at index 0
+- Added: `enrichedBackwardChain_G_propagates_reverse` - G propagates toward 0 in backward chain
+- Added: `enrichedBackwardChain_G_propagates_reverse_le` - G propagates from n to m (m <= n) in backward
+- Added: `enrichedBackwardChain_forward_G` - forward_G within backward chain
+- Added: `enrichedForwardChain_H_propagates_reverse` - H propagates toward 0 in forward chain
+- Added: `enrichedForwardChain_H_propagates_reverse_le` - H propagates from n to m (m <= n) in forward
+- Added: `enrichedForwardChain_backward_H` - backward_H within forward chain
+- Added: `enrichedChainSet_forward_G_nonneg` - forward_G for non-negative Int indices
+- Added: `enrichedChainSet_forward_G_neg` - forward_G for negative source (cross-sign)
+- Added: `enrichedChainSet_backward_H_nonpos` - backward_H for non-positive Int indices
+- Added: `enrichedChainSet_backward_H_nonneg` - backward_H for non-negative source (cross-sign)
+- Completed: `enrichedChainBFMCS.forward_G` and `backward_H` fully proven
+- Sorries: 4 -> 2 (2 eliminated: forward_G and backward_H in enrichedChainBFMCS)
 
 ---
 
-### Phase 5B: Prove Forward_F via Witness Graph Bridge [NOT STARTED]
+### Phase 5B: Prove Forward_F via Witness Graph Bridge [IN PROGRESS]
 
 - **Dependencies**: Phase 5A
 - **Goal**: Close forward_F sorry using witness graph as oracle
@@ -251,6 +278,16 @@ The core coverage argument uses enumeration:
 - [ ] Coverage argument proven
 - [ ] `witnessGraphBFMCS_forward_F` proven (0 sorries)
 - [ ] 1 sorry remaining (backward_P)
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771945665_c15254**
+- Attempted: Analysis of enriched chain forward_F proof
+- Result: Mathematically impossible. F-formulas don't persist through GContent seeds (F(phi)->G(F(phi)) not provable in TM). G(neg psi) can enter chain via non-constructive Lindenbaum, killing F(psi).
+- Attempted: Direct witness graph node-as-Int embedding
+- Result: Fails forward_G. Witness graph is DAG; GContent only propagates along edges, not between arbitrary nodes.
+- Identified two viable approaches: (1) omega-squared construction (20-30h), (2) witness-graph-guided chain (15-25h)
+- Handoff written: `specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-5B-handoff-20260224.md`
 
 ---
 
