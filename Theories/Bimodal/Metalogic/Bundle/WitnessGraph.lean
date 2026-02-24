@@ -1694,10 +1694,15 @@ private lemma forward_witness_of_isWitnessed
             rw [h_ps_eq]; simp [WitnessGraph.addFutureWitness, List.length_append]
           -- The processStep result equals addFutureWitness, so use the latter's properties
           simp only [buildWitnessGraph, WitnessGraph.nodeAt]
-          -- Show the node at g.nodes.length in processStep = node at g.nodes.length in addFutureWitness
-          -- The goal is psi' ∈ (processStep g m).nodes[g.nodes.length].mcs
-          -- We know processStep g m = g.addFutureWitness ... and the new node contains psi'
-          simp only [h_ps_eq, WitnessGraph.addFutureWitness, List.getElem_append_right (Nat.le_refl _),
+          -- Transport through struct equality to field equality
+          have h_nodes_eq := congrArg WitnessGraph.nodes h_ps_eq
+          have h_eq : ∀ (h1 : g.nodes.length < (processStep g m).nodes.length)
+              (h2 : g.nodes.length < (g.addFutureWitness nIdx h_nIdx psi' h_F').nodes.length),
+              (processStep g m).nodes[g.nodes.length]'h1 =
+              (g.addFutureWitness nIdx h_nIdx psi' h_F').nodes[g.nodes.length]'h2 := by
+            intro h1 h2; simp [h_nodes_eq]
+          rw [h_eq h_bound (by simp [WitnessGraph.addFutureWitness, List.length_append])]
+          simp only [WitnessGraph.addFutureWitness, List.getElem_append_right (Nat.le_refl _),
             Nat.sub_self, List.getElem_cons_zero]
           exact h_mem
       · -- processStep = addPastWitness: doesn't change .future isWitnessed
@@ -1813,7 +1818,7 @@ private lemma backward_witness_of_isWitnessed
               (h2 : g.nodes.length < (g.addPastWitness nIdx h_nIdx psi' h_P').nodes.length),
               (processStep g m).nodes[g.nodes.length]'h1 =
               (g.addPastWitness nIdx h_nIdx psi' h_P').nodes[g.nodes.length]'h2 := by
-            intro h1 h2; congr 1; exact h_ps_eq
+            intro h1 h2; have := congrArg WitnessGraph.nodes h_ps_eq; simp [this]
           rw [h_eq h_bound (by simp [WitnessGraph.addPastWitness, List.length_append])]
           simp only [WitnessGraph.addPastWitness, List.getElem_append_right (Nat.le_refl _),
             Nat.sub_self, List.getElem_cons_zero]
@@ -1976,29 +1981,20 @@ theorem witnessGraph_backward_P_local (rootMCS : { S : Set Formula // SetMaximal
           unfold processStep
           simp only [h_unpair, show i < g_n.nodes.length from h_i_at_n, dite_true]
           have h_decode := decodeFormulaWG_encodeFormulaWG psi
-          split
-          · rename_i h_none; rw [h_decode] at h_none; exact absurd h_none nofun
-          · rename_i psi_1 h_some; rw [h_decode] at h_some; cases h_some
-            simp only [dite_true, ite_false, Bool.false_eq_true]
-            split
-            · -- F(psi) in MCS: take the addFutureWitness branch
-              split
-              · -- F witnessed: contradiction with h_F_wit_false
-                rename_i h_F_wit_true
-                rw [h_F_wit_false] at h_F_wit_true
-                exact absurd h_F_wit_true (by decide)
-              · -- F not witnessed: addFutureWitness
-                simp only [WitnessGraph.isWitnessed, WitnessGraph.addFutureWitness]
-                rw [List.zipIdx_append, List.any_append, Bool.or_eq_true]
-                right
-                simp only [List.zipIdx_cons, List.zipIdx_nil, List.any_cons, List.any_nil, Bool.or_false,
-                  Bool.and_eq_true, Option.isSome_iff_exists]
-                refine ⟨⟨beq_self_eq_true i, ?_⟩, ⟨g_n.nodes.length, by simp⟩⟩
-                simp only [BEq.beq]
-                exact beq_self_eq_true psi
-            · -- F(psi) not in MCS: contradiction with h_F_at_n
-              rename_i h_not_F
-              exact absurd h_F_at_n h_not_F
+          -- Rewrite decode BEFORE split to collapse the match
+          simp only [h_decode]
+          -- Collapse the nested ifs using known facts
+          simp only [h_i_at_n, dite_true, h_F_at_n]
+          rw [h_F_wit_false]; simp
+          -- We're now in the addFutureWitness branch directly
+          simp only [WitnessGraph.isWitnessed, WitnessGraph.addFutureWitness]
+          rw [List.zipIdx_append, List.any_append, Bool.or_eq_true]
+          right
+          simp only [List.zipIdx_cons, List.zipIdx_nil, List.any_cons, List.any_nil, Bool.or_false,
+            Bool.and_eq_true, Option.isSome_iff_exists]
+          refine ⟨⟨beq_self_eq_true i, ?_⟩, ⟨g_n.nodes.length, ?_⟩⟩
+          · change (psi == psi) = true; exact beq_self_eq_true psi
+          · simp [Nat.zero_add, show g_n = buildWitnessGraph rootMCS n from rfl]
         -- F is witnessed at n'' (monotone from n+1 ≤ n'' since n'' ≥ n+2)
         have h_F_wit_at_n'' : (buildWitnessGraph rootMCS n'').isWitnessed i (.future psi) = true :=
           buildWitnessGraph_isWitnessed_monotone rootMCS (n + 1) n'' (by omega) i
@@ -2132,11 +2128,11 @@ private lemma processStep_new_edge_nodes_gt (g : WitnessGraph) (n : Nat)
   · -- g unchanged: contradicts h_new (no new edge)
     rcases h_new with ⟨src, _, h_edges⟩ | ⟨src, _, h_edges⟩
     · rw [h_unchanged] at h_edges
-      have : g.edges.length = (g.edges ++ [_]).length := by rw [h_edges]
-      simp [List.length_append] at this
+      have := congrArg List.length h_edges
+      simp at this
     · rw [h_unchanged] at h_edges
-      have : g.edges.length = (g.edges ++ [_]).length := by rw [h_edges]
-      simp [List.length_append] at this
+      have := congrArg List.length h_edges
+      simp at this
   · -- addFutureWitness: nodes.length = g.nodes.length + 1
     rw [h_ps_eq]; simp [WitnessGraph.addFutureWitness]
   · -- addPastWitness: nodes.length = g.nodes.length + 1
@@ -2251,48 +2247,38 @@ theorem witnessGraph_GContent_propagates (rootMCS : { S : Set Formula // SetMaxi
         have h_eq_src := getElem?_eq_implies_getElem_eq _ _ i h_src h_i h_stable_src.symm
         simp only [WitnessGraph.nodeAt] at h_eq_src ⊢
         rw [← h_eq_src]
-        -- processStep created a fresh forward witness with GContent propagation
-        -- Use processStep_creates_fresh_future_witness or unfold directly
-        -- The new node at g.nodes.length has MCS extending GContent(source)
-        -- We need to connect the processStep result to the addFutureWitness properties
-        -- Let's unfold processStep to extract the GContent property
-        unfold processStep at h_j ⊢
-        split; split at h_j  -- first unpair
-        split; split at h_j  -- second unpair
-        split; split at h_j  -- if nodeIdx < length
-        · rename_i h_node
-          split; split at h_j  -- match decode
-          · -- none: contradicts h_eq (would not add new edge)
-            simp at h_eq
-          · rename_i psi
-            split; split at h_j  -- if F(psi)
-            · rename_i h_F
-              split; split at h_j  -- if witnessed
-              · simp at h_eq  -- contradicts new edge being added
-              · -- addFutureWitness branch
-                -- h_eq tells us: addFutureWitness edges = g.edges ++ [(nodeIdx, g.nodes.length, .forward)]
-                -- And we're looking at src = nodeIdx, dst = g.nodes.length
-                simp only [WitnessGraph.addFutureWitness] at h_eq h_j ⊢
-                -- Extract that source node matches
-                have h_src_match : (Nat.unpair (Nat.unpair n).2).1 = src := by
-                  have := List.append_cancel_left h_eq
-                  simp at this; exact this.1
-                simp only [WitnessGraph.nodeAt, List.getElem_append_right (Nat.le_refl _),
-                  Nat.sub_self, List.getElem_cons_zero]
-                rw [← h_src_match] at h_src
-                conv_lhs => rw [show (g.nodes ++ [_])[src] = g.nodes[src] from by
-                  rw [List.getElem_append_left h_src]]
-                rw [h_src_match]
-                exact addFutureWitness_GContent_extends g _ h_node _ h_F
-            · split; split at h_j  -- if P(psi)
-              · split; split at h_j  -- if witnessed
-                · simp at h_eq
-                · -- addPastWitness: backward edge, contradicts forward in h_eq
-                  simp only [WitnessGraph.addPastWitness] at h_eq
-                  have := List.append_cancel_left h_eq
-                  simp at this
-              · simp at h_eq
-        · simp at h_eq
+        -- Use processStep_outcome to avoid unfold processStep
+        have h_out := processStep_outcome g n
+        rcases h_out with h_unchanged | ⟨nIdx, h_nIdx, psi, h_F, h_ps_eq⟩ |
+            ⟨nIdx, h_nIdx, psi, h_P, h_ps_eq⟩
+        · -- unchanged: contradicts h_eq (no new edges)
+          rw [h_unchanged] at h_eq
+          have := congrArg List.length h_eq; simp at this
+        · -- addFutureWitness: forward edge added
+          have h_nodes_eq := congrArg WitnessGraph.nodes h_ps_eq
+          have h_edges_eq := congrArg WitnessGraph.edges h_ps_eq
+          simp only [WitnessGraph.addFutureWitness] at h_edges_eq
+          rw [h_edges_eq] at h_eq
+          have h_src_eq : nIdx = i := by
+            have h_cancel := List.append_cancel_left h_eq
+            simp [List.cons.injEq, WitnessEdge.mk.injEq] at h_cancel
+            exact h_cancel
+          subst h_src_eq
+          -- Transport the node at j = g.nodes.length through struct equality
+          have h_j_eq : ∀ (h1 : g.nodes.length < (processStep g n).nodes.length)
+              (h2 : g.nodes.length < (g.addFutureWitness nIdx h_nIdx psi h_F).nodes.length),
+              (processStep g n).nodes[g.nodes.length]'h1 =
+              (g.addFutureWitness nIdx h_nIdx psi h_F).nodes[g.nodes.length]'h2 := by
+            intro h1 h2; simp [h_nodes_eq]
+          rw [h_j_eq h_j (by simp [WitnessGraph.addFutureWitness])]
+          simp only [WitnessGraph.addFutureWitness, List.getElem_append_right (Nat.le_refl _),
+            Nat.sub_self, List.getElem_cons_zero]
+          exact addFutureWitness_GContent_extends g nIdx h_nIdx psi h_F
+        · -- addPastWitness: backward edge, contradicts forward edge in h_eq
+          have h_edges_eq := congrArg WitnessGraph.edges h_ps_eq
+          simp only [WitnessGraph.addPastWitness] at h_edges_eq
+          rw [h_edges_eq] at h_eq
+          have := List.append_cancel_left h_eq; simp at this
     · -- Case: processStep added a backward edge - impossible for forward edge
       -- After simp, the new backward edge is eliminated (forward ≠ backward)
       -- so h_edge is already just the old edge membership
@@ -2381,39 +2367,36 @@ theorem witnessGraph_HContent_propagates (rootMCS : { S : Set Formula // SetMaxi
         have h_eq_src := getElem?_eq_implies_getElem_eq _ _ i h_src h_i h_stable_src.symm
         simp only [WitnessGraph.nodeAt] at h_eq_src ⊢
         rw [← h_eq_src]
-        -- Unfold processStep to get to the addPastWitness branch
-        unfold processStep at h_j ⊢
-        split; split at h_j
-        split; split at h_j
-        split; split at h_j
-        · rename_i h_node
-          split; split at h_j
-          · simp at h_eq
-          · rename_i psi
-            split; split at h_j
-            · split; split at h_j
-              · simp at h_eq
-              · -- addFutureWitness: forward edge, contradicts backward in h_eq
-                simp only [WitnessGraph.addFutureWitness] at h_eq
-                have := List.append_cancel_left h_eq
-                simp at this
-            · split; split at h_j
-              · rename_i h_P
-                split; split at h_j
-                · simp at h_eq
-                · -- addPastWitness branch
-                  simp only [WitnessGraph.addPastWitness] at h_eq h_j ⊢
-                  have h_src_match : (Nat.unpair (Nat.unpair n).2).1 = src := by
-                    have := List.append_cancel_left h_eq
-                    simp at this; exact this.1
-                  simp only [WitnessGraph.nodeAt, List.getElem_append_right (Nat.le_refl _),
-                    Nat.sub_self, List.getElem_cons_zero]
-                  rw [← h_src_match] at h_src
-                  conv_lhs => rw [show (g.nodes ++ [_])[src] = g.nodes[src] from by
-                    rw [List.getElem_append_left h_src]]
-                  rw [h_src_match]
-                  exact addPastWitness_HContent_extends g _ h_node _ h_P
-              · simp at h_eq
-        · simp at h_eq
+        -- Use processStep_outcome to avoid unfold processStep
+        have h_out := processStep_outcome g n
+        rcases h_out with h_unchanged | ⟨nIdx, h_nIdx, psi, h_F, h_ps_eq⟩ |
+            ⟨nIdx, h_nIdx, psi, h_P, h_ps_eq⟩
+        · -- unchanged: contradicts h_eq (no new edges)
+          rw [h_unchanged] at h_eq
+          have := congrArg List.length h_eq; simp at this
+        · -- addFutureWitness: forward edge, contradicts backward in h_eq
+          have h_edges_eq := congrArg WitnessGraph.edges h_ps_eq
+          simp only [WitnessGraph.addFutureWitness] at h_edges_eq
+          rw [h_edges_eq] at h_eq
+          have := List.append_cancel_left h_eq; simp at this
+        · -- addPastWitness: backward edge added
+          have h_nodes_eq := congrArg WitnessGraph.nodes h_ps_eq
+          have h_edges_eq := congrArg WitnessGraph.edges h_ps_eq
+          simp only [WitnessGraph.addPastWitness] at h_edges_eq
+          rw [h_edges_eq] at h_eq
+          have h_src_eq : nIdx = i := by
+            have h_cancel := List.append_cancel_left h_eq
+            simp [List.cons.injEq, WitnessEdge.mk.injEq] at h_cancel
+            exact h_cancel
+          subst h_src_eq
+          have h_j_eq : ∀ (h1 : g.nodes.length < (processStep g n).nodes.length)
+              (h2 : g.nodes.length < (g.addPastWitness nIdx h_nIdx psi h_P).nodes.length),
+              (processStep g n).nodes[g.nodes.length]'h1 =
+              (g.addPastWitness nIdx h_nIdx psi h_P).nodes[g.nodes.length]'h2 := by
+            intro h1 h2; simp [h_nodes_eq]
+          rw [h_j_eq h_j (by simp [WitnessGraph.addPastWitness])]
+          simp only [WitnessGraph.addPastWitness, List.getElem_append_right (Nat.le_refl _),
+            Nat.sub_self, List.getElem_cons_zero]
+          exact addPastWitness_HContent_extends g nIdx h_nIdx psi h_P
 
 end Bimodal.Metalogic.Bundle

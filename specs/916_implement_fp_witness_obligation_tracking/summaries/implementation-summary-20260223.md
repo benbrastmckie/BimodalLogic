@@ -137,3 +137,50 @@ Continue Phase 3:
 - Fix omega arithmetic issues (likely need explicit Nat.sub_le lemmas)
 - Complete 7 remaining sorries
 - Verify build passes
+
+---
+
+## Phase 3A: Fix 8 Build Errors [COMPLETED]
+
+**Session**: 2026-02-23, sess_1771912616_e1d1af
+**Status**: COMPLETED
+
+### Changes Made
+
+Fixed all 8 remaining build errors in WitnessGraph.lean using `congrArg`-based dependent rewrite patterns per research-013.md (Option A). The file now compiles with 0 errors and 0 sorries.
+
+### Errors Fixed
+
+| Error | Location | Root Cause | Fix |
+|-------|----------|------------|-----|
+| Placeholder synthesis | Line 2135 | `[_]` in list literal | `congrArg List.length h_edges; simp` |
+| Type mismatch | Line 1816 | `congr 1` decomposes indexed access wrong | `congrArg WitnessGraph.nodes h_ps_eq; simp` |
+| simp no progress | Line 1700 | Can't rewrite through dependent bound | Extract `.nodes` equality, transport index with helper |
+| rewrite failed | Lines 1980-1981 | `split` picks wrong expression | Rewrite decode BEFORE split: `simp only [h_decode]` |
+| split failed (GContent) | Line 2260 | `match Nat.unpair` not splittable | `processStep_outcome` + `congrArg edges/nodes` |
+| split failed (HContent) | Line 2386 | Same as 2260, symmetric | Same pattern as 2260 |
+
+### Key Technical Patterns
+
+1. **`congrArg WitnessGraph.nodes/edges h_ps_eq`** - Extract field equality from struct equality
+2. **Decode before split** - `simp only [h_decode]` collapses `match decodeFormulaWG` before `split`
+3. **`processStep_outcome` over `unfold processStep`** - Avoids `split` on `match Nat.unpair`
+4. **`change (psi == psi) = true; exact beq_self_eq_true psi`** - Handle `ObligationType` BEq
+
+### Files Modified
+
+- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` (now ~2402 lines, 0 sorries, 0 errors)
+
+### Verification
+
+- `lake build Bimodal.Metalogic.Bundle.WitnessGraph` succeeds (0 errors)
+- 0 sorries in WitnessGraph.lean
+- `end Bimodal.Metalogic.Bundle` present at file end (line 2402)
+- No new axioms
+
+### Next Steps
+
+Phases 4-6 remain:
+- Phase 4: Int Embedding (3-5 hours)
+- Phase 5: Global Temporal Coherence (3-5 hours)
+- Phase 6: Integration with DovetailingChain.lean (2-4 hours)

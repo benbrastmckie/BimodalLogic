@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8-14 hours (revised from 12-20)
 - **Dependencies**: None
 - **Research Inputs**: research-013.md (8 error fix analysis with Option A recommendation)
@@ -52,7 +52,7 @@ This plan revises implementation-008 based on research-013's detailed analysis o
 
 ## Implementation Phases
 
-### Phase 3A: Fix 8 Build Errors [NOT STARTED]
+### Phase 3A: Fix 8 Build Errors [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Make WitnessGraph.lean build cleanly with 0 errors, 0 sorries
@@ -138,9 +138,25 @@ lake build Bimodal.Metalogic.Bundle.WitnessGraph
 ```
 
 **Exit criteria**:
-- [ ] `lake build Bimodal.Metalogic.Bundle.WitnessGraph` succeeds
-- [ ] 0 sorries in WitnessGraph.lean
-- [ ] `end Bimodal.Metalogic.Bundle` present at file end
+- [x] `lake build Bimodal.Metalogic.Bundle.WitnessGraph` succeeds
+- [x] 0 sorries in WitnessGraph.lean
+- [x] `end Bimodal.Metalogic.Bundle` present at file end
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771904039_b1889e**
+- Reduced errors from 48 to 33, then to 8
+- Key fixes: Declaration ordering, syntax fixes, dependent elimination
+- Remaining: 8 specific errors documented in research-013
+
+**Session: 2026-02-23, sess_1771912616_e1d1af**
+- Fixed: Line 2135 placeholder synthesis - replaced `[_]` with `congrArg List.length h_edges`
+- Fixed: Line 1816 type mismatch - replaced `congr 1` with `congrArg WitnessGraph.nodes h_ps_eq; simp`
+- Fixed: Line 1700 simp no progress - extracted `.nodes` equality via `congrArg`, then transported index
+- Fixed: Lines 1980-1981 split targeting - rewrote decode BEFORE split with `simp only [h_decode]`
+- Fixed: Lines 2260/2386 split failure - replaced `unfold processStep; split` with `processStep_outcome` + `congrArg`
+- Completed: Phase 3A (all 8 errors fixed)
+- Build errors: 8 -> 0
 
 ---
 
