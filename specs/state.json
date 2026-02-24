@@ -450,10 +450,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-24T14:49:30Z",
+      "last_updated": "2026-02-24T14:54:20Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -531,11 +531,6 @@
           "summary": "Options analysis for fixing 8 build errors - recommends Option A (dependent rewrite patterns, 2.5-3.5h)"
         },
         {
-          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-009.md",
-          "type": "plan",
-          "summary": "v9: Fix 8 build errors using congrArg dependent rewrite patterns (Option A)"
-        },
-        {
           "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260223.md",
           "type": "summary",
           "summary": "Phases 3A-4 complete (0 errors), Phase 5 blocked: enriched chain construction with 4 sorries for forward_F/backward_P (omega-squared obstruction)"
@@ -544,11 +539,16 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-014.md",
           "type": "research",
           "summary": "Team research synthesis (3 teammates): WitnessGraph is only viable path; 40-50% cumulative success probability; 55-75h expected effort vs 2-3h for sorry debt acceptance; time-box recommendation"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-010.md",
+          "type": "plan",
+          "summary": "v10: Decision point plan - Option A (WitnessGraph 55-75h, 40-50% success) vs Option B (sorry debt 2-3h, recommended)"
         }
       ],
       "session_id": "sess_1771912616_e1d1af",
       "researched": "2026-02-21T22:44:48Z",
-      "planned": "2026-02-24T05:53:42Z",
+      "planned": "2026-02-24T14:54:20Z",
       "started": "2026-02-24T05:57:18Z"
     }
   ],
