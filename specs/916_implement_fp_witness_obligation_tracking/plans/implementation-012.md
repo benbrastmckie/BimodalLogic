@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 24-48 hours
 - **Dependencies**: None
 - **Research Inputs**: research-001 through research-016 (16 reports)
@@ -65,7 +65,7 @@ The final BFMCS maps Int to the diagonal: `mcs(i) = M_{i,omega}` (limit of inner
 
 ## Implementation Phases
 
-### Phase 1: Documentation Cleanup [NOT STARTED]
+### Phase 1: Documentation Cleanup [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Fix misleading comments that confuse future agents
@@ -98,15 +98,23 @@ The final BFMCS maps Int to the diagonal: `mcs(i) = M_{i,omega}` (limit of inner
 - `lake build` still succeeds
 
 **Exit Criteria:**
-- [ ] DovetailingChain.lean docstring updated
-- [ ] GContent warning added
-- [ ] BFMCS "DO NOT TRY" list added
-- [ ] WitnessGraph.lean misleading comments fixed
-- [ ] TemporalCoherentConstruction.lean updated
+- [x] DovetailingChain.lean docstring updated
+- [x] GContent warning added
+- [x] BFMCS "DO NOT TRY" list added
+- [x] WitnessGraph.lean misleading comments fixed
+- [x] TemporalCoherentConstruction.lean updated
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771951923_ee9d53**
+- Added: GContent/HContent F-formula stripping warnings in TemporalContent.lean
+- Fixed: Misleading "Phase 5/6" comment in WitnessGraph.lean
+- Added: DO NOT TRY list with 6 blocked approaches in DovetailingChain.lean
+- Fixed: forward_F/backward_P status markers in TemporalCoherentConstruction.lean
 
 ---
 
-### Phase 2: GContent Infrastructure [NOT STARTED]
+### Phase 2: GContent Infrastructure [COMPLETED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Prove GContent monotonicity and path propagation lemmas
@@ -150,15 +158,24 @@ lemma GContent_path_propagates (chain : Nat -> Set Formula)
 - No new sorries in GContent lemmas
 
 **Exit Criteria:**
-- [ ] `GContent_mono` proven (0 sorries)
-- [ ] `GContent_path_propagates` proven (0 sorries)
-- [ ] `HContent_mono` proven (0 sorries)
-- [ ] `HContent_path_propagates` proven (0 sorries)
-- [ ] `lake build` succeeds
+- [x] `GContent_mono` proven (0 sorries)
+- [x] `GContent_path_propagates` proven (0 sorries)
+- [x] `HContent_mono` proven (0 sorries)
+- [x] `HContent_path_propagates` proven (0 sorries)
+- [x] `lake build` succeeds
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771951923_ee9d53**
+- Added: `GContent_mono` - GContent monotonicity via 4-axiom (set_mcs_all_future_all_future)
+- Added: `HContent_mono` - HContent monotonicity via past 4-axiom (set_mcs_all_past_all_past)
+- Added: `GContent_path_propagates` - Multi-step GContent propagation by induction
+- Added: `HContent_path_propagates` - Multi-step HContent propagation by induction
+- Sorries: 0 new (all 4 lemmas fully proven)
 
 ---
 
-### Phase 3: Omega-Squared Construction [NOT STARTED]
+### Phase 3: Omega-Squared Construction [BLOCKED]
 
 - **Dependencies**: Phase 2
 - **Goal**: Define and prove the omega-squared BFMCS construction

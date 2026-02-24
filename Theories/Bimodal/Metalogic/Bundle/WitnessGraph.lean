@@ -2532,10 +2532,18 @@ theorem witnessGraphBFMCS_edge_ordering_compatible
   exact Int.ofNat_lt.mpr h_acyclic
 
 /-!
-### Witness Graph Properties for Phase 5/6
+### Witness Graph Properties
 
-These lemmas connect the witness graph's local properties to the BFMCS,
-enabling Phase 5 to prove forward_F and backward_P.
+These lemmas connect the witness graph's local properties to the BFMCS.
+
+**Note**: The witness graph proves LOCAL witness existence (for any single F/P
+obligation, a consistent witness MCS can be constructed). However, integrating
+these local witnesses into a GLOBAL BFMCS with ALL four temporal coherence
+properties (forward_G, backward_H, forward_F, backward_P) simultaneously requires
+a non-linear construction such as omega-squared. The witness graph alone does NOT
+suffice to close the forward_F/backward_P sorries in DovetailingChain.lean because
+its constant-family BFMCS only has universal G/H propagation, not existential F/P
+witness properties. See Task 916 research reports 015-016 for detailed analysis.
 -/
 
 /-- Key bridge lemma: The root MCS equals the BFMCS's MCS at time 0.

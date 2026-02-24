@@ -558,10 +558,14 @@ using a dovetailing chain construction:
 
 This construction produces a NON-CONSTANT family (different MCS at different times)
 that satisfies:
-- forward_G: G phi in M_t -> phi in M_s for s > t (by GContent seed inclusion)
-- backward_H: H phi in M_t -> phi in M_s for s < t (by HContent seed inclusion)
-- forward_F: F phi in M_t -> exists s > t, phi in M_s (by dovetailing enumeration)
-- backward_P: P phi in M_t -> exists s < t, phi in M_s (by dovetailing enumeration)
+- forward_G: G phi in M_t -> phi in M_s for s > t (by GContent seed inclusion) [PROVEN]
+- backward_H: H phi in M_t -> phi in M_s for s < t (by HContent seed inclusion) [PROVEN]
+- forward_F: F phi in M_t -> exists s > t, phi in M_s [SORRY - requires omega-squared]
+- backward_P: P phi in M_t -> exists s < t, phi in M_s [SORRY - requires omega-squared]
+
+Note: forward_F and backward_P are NOT proven by the linear dovetailing chain because
+F-formulas do not persist through GContent seeds. The plan to resolve them uses an
+omega-squared construction (see Task 916 plan v012 and OmegaSquaredChain.lean).
 
 The key consistency lemma `temporal_witness_seed_consistent` (proven above) ensures
 that `{psi} union GContent(M)` is consistent whenever `F(psi) in M`, providing the

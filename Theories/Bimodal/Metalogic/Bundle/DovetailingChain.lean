@@ -276,6 +276,79 @@ lemma dovetail_HContent_consistent (M : Set Formula) (h_mcs : SetMaximalConsiste
   exact h_mcs.1 L hL_in_M ⟨d⟩
 
 /-!
+## GContent and HContent Monotonicity
+
+These lemmas establish that GContent propagates along chains where each step
+includes GContent of the previous step. The key ingredient is the 4-axiom:
+G(phi) -> G(G(phi)), which ensures G(phi) is in GContent(M) whenever phi is.
+-/
+
+/--
+GContent monotonicity: if GContent(M) ⊆ M', then GContent(M) ⊆ GContent(M').
+
+**Proof**: Let phi ∈ GContent(M). Then G(phi) ∈ M.
+By the 4-axiom (set_mcs_all_future_all_future): G(G(phi)) ∈ M.
+So G(phi) ∈ GContent(M).
+By hypothesis GContent(M) ⊆ M': G(phi) ∈ M'.
+By definition of GContent: phi ∈ GContent(M').
+-/
+lemma GContent_mono (M M' : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (h_sub : GContent M ⊆ M') : GContent M ⊆ GContent M' := by
+  intro phi h_phi
+  -- phi ∈ GContent(M) means G(phi) ∈ M
+  have h_G_phi : Formula.all_future phi ∈ M := h_phi
+  -- By 4-axiom: G(G(phi)) ∈ M
+  have h_GG_phi : Formula.all_future (Formula.all_future phi) ∈ M :=
+    set_mcs_all_future_all_future h_mcs h_G_phi
+  -- So G(phi) ∈ GContent(M)
+  have h_G_phi_in_GContent : Formula.all_future phi ∈ GContent M := h_GG_phi
+  -- By hypothesis: G(phi) ∈ M'
+  exact h_sub h_G_phi_in_GContent
+
+/--
+HContent monotonicity: if HContent(M) ⊆ M', then HContent(M) ⊆ HContent(M').
+
+Symmetric to GContent_mono, using the past 4-axiom (set_mcs_all_past_all_past).
+-/
+lemma HContent_mono (M M' : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (h_sub : HContent M ⊆ M') : HContent M ⊆ HContent M' := by
+  intro phi h_phi
+  have h_H_phi : Formula.all_past phi ∈ M := h_phi
+  have h_HH_phi : Formula.all_past (Formula.all_past phi) ∈ M :=
+    set_mcs_all_past_all_past h_mcs h_H_phi
+  have h_H_phi_in_HContent : Formula.all_past phi ∈ HContent M := h_HH_phi
+  exact h_sub h_H_phi_in_HContent
+
+/--
+GContent propagates along chains where each step includes GContent of the previous step.
+
+If chain(0), chain(1), ... are MCSes with GContent(chain(n)) ⊆ chain(n+1) for all n,
+then GContent(chain(m)) ⊆ chain(n) for all m < n.
+-/
+lemma GContent_path_propagates (chain : Nat → Set Formula)
+    (h_mcs : ∀ n, SetMaximalConsistent (chain n))
+    (h_seed : ∀ n, GContent (chain n) ⊆ chain (n + 1)) :
+    ∀ m n, m < n → GContent (chain m) ⊆ chain n := by
+  intro m n hmn
+  induction hmn with
+  | refl => exact h_seed m
+  | step hmk ih => exact fun phi h => h_seed _ (GContent_mono _ _ (h_mcs m) ih h)
+
+/--
+HContent propagates along chains where each step includes HContent of the previous step.
+
+Symmetric to GContent_path_propagates.
+-/
+lemma HContent_path_propagates (chain : Nat → Set Formula)
+    (h_mcs : ∀ n, SetMaximalConsistent (chain n))
+    (h_seed : ∀ n, HContent (chain n) ⊆ chain (n + 1)) :
+    ∀ m n, m < n → HContent (chain m) ⊆ chain n := by
+  intro m n hmn
+  induction hmn with
+  | refl => exact h_seed m
+  | step hmk ih => exact fun phi h => h_seed _ (HContent_mono _ _ (h_mcs m) ih h)
+
+/-!
 ## Past Temporal Witness Seed
 
 The past analog of the forward temporal witness seed: {psi} union HContent(M).
@@ -1757,9 +1830,22 @@ lemma buildDovetailingChainFamily_preserves_context (Gamma : List Formula) (h_co
 
 **Sorry debt**: This cannot be proven for the linear chain construction because F-formulas
 do not persist through GContent seeds. The Lindenbaum extension at any step can introduce
-G(neg(psi)), killing F(psi). Resolution requires a non-linear BFMCS construction such as
-omega-squared or witness-graph-guided chain. See WitnessGraph.lean for proven LOCAL witness
-existence (witnessGraph_forward_F_local), and Task 916 analysis for the fundamental blocker. -/
+G(neg(psi)), killing F(psi). Resolution requires a non-linear BFMCS construction.
+
+## DO NOT TRY (Blocked approaches - Task 916 research reports 001-016)
+
+- **Enriched linear chain**: F-formulas don't persist through GContent seeds (v011 analysis)
+- **Witness-graph-guided chain**: DAG has LOCAL GContent propagation, not universal (research-016)
+- **Constant family oracle**: F(psi) in M doesn't imply psi in M (Phase 6 analysis)
+- **Two-timeline embedding**: Nodes reachable by both directions conflict (research-016 Teammate A)
+- **Tree unraveling**: Destroys inverse relation for past operators (research-016 Teammate B)
+- **Mosaic method**: 80-120h effort, no infrastructure (research-016 Teammate C)
+
+## RESOLUTION PATH
+
+Use omega-squared construction (OmegaSquaredChain.lean) which processes F-obligations
+IMMEDIATELY when they appear, before Lindenbaum extension can introduce G(neg(psi)).
+See Task 916 plan v012. -/
 lemma buildDovetailingChainFamily_forward_F (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∀ t : Int, ∀ φ : Formula,
       Formula.some_future φ ∈ (buildDovetailingChainFamily Gamma h_cons).mcs t →
