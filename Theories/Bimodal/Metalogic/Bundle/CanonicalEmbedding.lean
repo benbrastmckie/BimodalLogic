@@ -172,4 +172,119 @@ lemma mcs_F_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     · exact Or.inr (Or.inl h2)
     · exact Or.inr (Or.inr h3)
 
+/-!
+## Canonical Existence Lemma (Reverse Direction)
+
+If phi is in an R-successor of M, then F(phi) must be in M.
+This is the canonical model analog of the modal existence lemma.
+-/
+
+/--
+Canonical existence lemma: if CanonicalR M M' and phi in M', then F(phi) in M.
+
+**Proof by contraposition**: if F(phi) not in M, then G(neg phi) in M (by MCS
+completeness and the fact that neg(F(phi)) = G(neg phi) up to double negation).
+Then neg phi in M' (by CanonicalR propagation). But phi in M' -- contradiction.
+-/
+lemma canonical_F_of_mem_successor (M M' : Set Formula)
+    (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_R : CanonicalR M M') (phi : Formula) (h_phi : phi ∈ M') :
+    Formula.some_future phi ∈ M := by
+  -- By contradiction: suppose F(phi) ∉ M
+  by_contra h_not_F
+  -- Then neg(F(phi)) ∈ M by MCS completeness
+  have h_neg_F : Formula.neg (Formula.some_future phi) ∈ M := by
+    rcases set_mcs_negation_complete h_mcs (Formula.some_future phi) with h | h
+    · exact absurd h h_not_F
+    · exact h
+  -- neg(F(phi)) = neg(neg(G(neg(phi)))) since F(phi) = neg(G(neg(phi)))
+  -- So G(neg(phi)) ∈ M (by double negation elimination in MCS)
+  -- F(phi) = some_future phi = (phi.neg.all_future).neg
+  -- neg(F(phi)) = neg((phi.neg.all_future).neg) = phi.neg.all_future (up to double neg)
+  -- Actually: neg(some_future phi) = neg(neg(all_future(neg phi))) which is
+  -- just all_future(neg phi) after MCS double negation elimination.
+  have h_neg_F_eq : Formula.neg (Formula.some_future phi) =
+    Formula.neg (Formula.neg (Formula.all_future (Formula.neg phi))) := rfl
+  rw [h_neg_F_eq] at h_neg_F
+  have h_G_neg : Formula.all_future (Formula.neg phi) ∈ M :=
+    Bimodal.Metalogic.Bundle.mcs_double_neg_elim h_mcs _ h_neg_F
+  -- By CanonicalR M M': neg(phi) ∈ M' (since all_future(neg phi) ∈ M means neg phi ∈ GContent M ⊆ M')
+  have h_neg_phi : Formula.neg phi ∈ M' := h_R h_G_neg
+  -- Contradiction: phi and neg(phi) both in M'
+  exact set_consistent_not_both h_mcs'.1 phi h_phi h_neg_phi
+
+/--
+Canonical existence lemma (past version): if CanonicalR_past M M' and phi in M',
+then P(phi) in M.
+-/
+lemma canonical_P_of_mem_past_successor (M M' : Set Formula)
+    (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_R : CanonicalR_past M M') (phi : Formula) (h_phi : phi ∈ M') :
+    Formula.some_past phi ∈ M := by
+  by_contra h_not_P
+  have h_neg_P : Formula.neg (Formula.some_past phi) ∈ M := by
+    rcases set_mcs_negation_complete h_mcs (Formula.some_past phi) with h | h
+    · exact absurd h h_not_P
+    · exact h
+  have h_neg_P_eq : Formula.neg (Formula.some_past phi) =
+    Formula.neg (Formula.neg (Formula.all_past (Formula.neg phi))) := rfl
+  rw [h_neg_P_eq] at h_neg_P
+  have h_H_neg : Formula.all_past (Formula.neg phi) ∈ M :=
+    Bimodal.Metalogic.Bundle.mcs_double_neg_elim h_mcs _ h_neg_P
+  have h_neg_phi : Formula.neg phi ∈ M' := h_R h_H_neg
+  exact set_consistent_not_both h_mcs'.1 phi h_phi h_neg_phi
+
+/-!
+## Linearity of the Canonical Frame
+
+The temp_linearity axiom ensures that the canonical frame's reachable fragment
+is linearly ordered. This is the key structural property needed for embedding
+into Int.
+-/
+
+/--
+Linearity of CanonicalR on R-successors of a common root.
+
+If M sees both M1 and M2 (CanonicalR M M1 and CanonicalR M M2), then
+M1 and M2 are comparable: either CanonicalR M1 M2 or CanonicalR M2 M1 or M1 = M2.
+
+**Status**: Sorry-backed. This is the key remaining blocker for the Canonical Quotient approach.
+
+**Proof Approach (partially verified)**:
+Given NOT CanonicalR M1 M2, witnessed by alpha (G(alpha) in M1, alpha not in M2):
+1. For phi with G(phi) in M2 and G(phi) not in M: F(G(alpha)) and F(G(phi)) are in M.
+2. Apply temp_linearity to G(alpha) and G(phi). All three cases produce witness W with
+   both G(alpha) and G(phi) at W (Cases 2,3 reduce to Case 1 via temp_4 propagation).
+3. At W: G(alpha AND phi) holds (by K-distribution on G). By canonical_F_of_mem_successor,
+   F(G(alpha AND phi)) in M.
+4. F(G(alpha AND phi)) and F(neg phi) in M. Apply temp_linearity to G(alpha AND phi) and neg phi.
+   - Case 1 (F(G(alpha AND phi) AND neg phi)): G(alpha AND phi) gives phi by T-axiom,
+     contradicting neg phi at same world. IMPOSSIBLE.
+   - Case 2 (F(G(alpha AND phi) AND F(neg phi))): G(alpha AND phi) propagates to the
+     witness for F(neg phi), giving phi there. But neg phi is also there. IMPOSSIBLE.
+   - Case 3 (F(F(G(alpha AND phi)) AND neg phi)): neg phi at W2, G(alpha AND phi) at
+     later W3. This case is NOT directly impossible and requires a secondary argument
+     (possibly repeated linearity applications or a frame correspondence argument).
+
+**Blocker Analysis**: Case 3 of the secondary linearity application produces a configuration
+where neg phi is at an earlier time than the start of "alpha AND phi always." The standard
+textbook proof of canonical frame linearity likely uses a frame correspondence argument
+(showing that if the linearity axiom is valid on a frame, the frame must be linear) rather
+than the syntactic approach attempted here. Formalizing the frame correspondence argument
+requires proving that the linearity axiom CHARACTERIZES linear frames, which is a separate
+theorem involving arbitrary valuations.
+
+**References**:
+- Goldblatt 1992, Logics of Time and Computation (canonical frame linearity)
+- Blackburn, de Rijke, Venema 2001, Modal Logic (frame correspondence)
+- Task 922 research-001.md (Approach A: Canonical Quotient)
+-/
+theorem canonical_reachable_linear (M M1 M2 : Set Formula)
+    (h_mcs : SetMaximalConsistent M)
+    (h_mcs1 : SetMaximalConsistent M1)
+    (h_mcs2 : SetMaximalConsistent M2)
+    (h_R1 : CanonicalR M M1) (h_R2 : CanonicalR M M2) :
+    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
+  sorry
+
 end Bimodal.Metalogic.Bundle

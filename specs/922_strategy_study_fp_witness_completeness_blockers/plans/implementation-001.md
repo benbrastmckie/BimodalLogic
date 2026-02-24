@@ -153,7 +153,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Linearity and Embedding [PARTIAL]
+### Phase 3: Linearity and Embedding [BLOCKED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Prove the reachable canonical fragment is linearly ordered and embed into Int.
@@ -186,6 +186,19 @@ After this implementation:
 - Added: `mcs_F_linearity` - decompose F-obligations using temp_linearity in MCS
 - Analysis: F-persistence through GContent seeds is IMPOSSIBLE (confirmed by counterexample analysis). The temp_linearity axiom constrains semantic models but does NOT prevent Lindenbaum from introducing G(neg(psi)), killing F(psi). The correct resolution requires the full canonical quotient: build canonical model (where forward_F is trivial), prove linearity of reachable fragment, and embed into Int. This Int embedding is the remaining hard step - Int is discrete, so countable linear orders don't trivially embed.
 - Status: PARTIAL - derived lemmas proven (0 sorries), but linearity of reachable fragment and Int embedding remain. The canonical frame infrastructure from Phase 2 provides the mathematical foundation.
+
+**Session: 2026-02-24, sess_1771960688_9a2e76 (iteration 3)**
+- Added: `canonical_F_of_mem_successor` - canonical existence lemma: if phi in M' and CanonicalR M M', then F(phi) in M (0 sorries)
+- Added: `canonical_P_of_mem_past_successor` - past version of canonical existence lemma (0 sorries)
+- Added: `canonical_reachable_linear` - linearity theorem statement (sorry-backed)
+- Analysis: Extensive exploration of linearity proof approaches:
+  - Direct substitution (alpha, phi) in temp_linearity: all 3 cases produce witnesses but cannot relate them to M1/M2 without the linearity theorem itself (circular)
+  - G(alpha), G(phi) substitution: all 3 cases reduce to finding W with G(alpha) AND G(phi), but W's R-relationship to M1/M2 is unknown
+  - G(alpha AND phi), neg(phi) substitution: Cases 1-2 of secondary linearity are impossible (phi AND neg(phi) at same world). Case 3 (F(F(G(alpha AND phi)) AND neg(phi))) is NOT directly impossible - neg(phi) at earlier time, G(alpha AND phi) at later time is consistent
+  - Self-perpetuating (alpha AND G(alpha)), neg(alpha) substitution: Cases 1-2 impossible (alpha AND neg(alpha)). Case 3 requires G(neg(alpha)) at witness, which is not guaranteed
+- Blocker: The linearity proof appears to require a FRAME CORRESPONDENCE argument rather than a purely syntactic approach. The standard textbook proof likely shows: "if linearity axiom is valid on frame F, then F is linear" using arbitrary valuations over the frame. The syntactic approach (working within individual MCSes) reaches a circularity: proving comparability of M1 and M2 requires proving comparability of auxiliary witnesses, ad infinitum.
+- Recommendation: Consider formalizing the frame correspondence theorem (linearity axiom characterizes linear frames) as a separate lemma, or use an alternative approach to build BFMCS Int that bypasses the full linearity theorem.
+- Status: BLOCKED on linearity proof (canonical_reachable_linear)
 
 ---
 
