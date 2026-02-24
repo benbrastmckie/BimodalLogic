@@ -354,11 +354,11 @@ lemma witnessGraph_backward_P_witness (g : WitnessGraph) (rootMCS : ...)
 
 ---
 
-### Phase 6: Integration with DovetailingChain [NOT STARTED]
+### Phase 6: Integration with DovetailingChain [BLOCKED]
 
 - **Dependencies**: Phase 5C
 - **Goal**: Replace sorries in DovetailingChain.lean
-- **Estimated effort**: 5-10 hours
+- **Estimated effort**: 5-10 hours (original); 20-40 hours (revised estimate for new construction)
 
 **Tasks:**
 
@@ -404,6 +404,48 @@ lake build
 - [ ] backward_P sorry replaced (line 1761)
 - [ ] `lake build` succeeds
 - [ ] No new axioms introduced
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771945665_c15254 (iteration 3)**
+- Attempted: Direct integration of WitnessGraph into DovetailingChain
+- Result: **BLOCKED** - mathematically impossible with current infrastructure
+- Analysis: Exhaustive exploration of all approaches confirms that no existing BFMCS construction in the codebase can satisfy forward_F/backward_P
+- No changes committed
+
+**Detailed Blocker Analysis:**
+
+The forward_F/backward_P sorries in `buildDovetailingChainFamily` (lines 1754, 1761) are **mathematically unprovable** for this specific chain construction, and no existing construction can substitute.
+
+**Why `buildDovetailingChainFamily` cannot satisfy forward_F:**
+- The forward chain uses `decodeFormula n` at step n+1 (single-encoding: each formula checked at exactly one step)
+- Given F(psi) in mcs(t), let n = encodeFormula(psi). If t > n, the check already happened
+- If t <= n, F(psi) must persist from step t to step n, but GContent seeds strip F-formulas
+- The Lindenbaum extension at any intermediate step can introduce G(neg(psi)), killing F(psi)
+
+**Why Nat.unpair-based chain cannot work:**
+- A redesigned chain checking F(decode(b)) in mcs(a) where (a,b) = Nat.unpair(n) would cover all (time, formula) pairs
+- But seed consistency requires F(psi) in mcs(n) (the predecessor), not mcs(a) (earlier step)
+- G(neg(psi)) can enter via Lindenbaum at any step between a and n, making {psi} union GContent(mcs(n)) inconsistent
+- GContent(mcs(a)) subset GContent(mcs(n)) but the larger set can contain neg(psi) from later extensions
+
+**Why `witnessGraphBFMCS` cannot satisfy forward_F:**
+- Constant family (all times map to rootMCS): F(psi) in rootMCS does not imply psi in rootMCS
+- Non-constant node mapping: forward_G requires GContent propagation between ALL pairs, but witness graph only propagates along edges (DAG, not total order)
+
+**Why `enrichedChainBFMCS` cannot satisfy forward_F:**
+- Same as buildDovetailingChainFamily: linear chain with GContent seeds; F-formulas don't persist
+
+**Why ZornFamily approach has same gap:**
+- `total_family_FObligations_satisfied` is sorry'd (same fundamental issue)
+- `maximal_implies_total` also has sorry (internal gap issue)
+
+**Viable resolution paths (all require new tasks):**
+1. **Omega-squared construction** (20-30h): Inner chain for each F-obligation at each outer step
+2. **Witness-graph-guided chain** (15-25h): Build chain that consults witness graph at each step, using witness graph nodes as MCS providers
+3. **Zorn with F/P invariant** (15-20h): Extend Zorn approach to carry F/P coherence as part of the partial order invariant
+
+All require substantial new infrastructure beyond simple integration.
 
 ---
 

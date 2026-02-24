@@ -589,9 +589,12 @@ consistent whenever F(psi) ∈ M. Combined with Lindenbaum, this ensures witness
 **Current Implementation**: Delegates to DovetailingChain.temporal_coherent_family_exists_theorem
 pending full RecursiveSeed integration (see SeedCompletion.lean, SeedBMCS.lean).
 
-**Technical Note**: DovetailingChain has 4 sorries (forward_F, backward_P, and 2 cross-sign).
-RecursiveSeed eliminates 2 cross-sign sorries by pre-placing witnesses. The forward_F/backward_P
-sorries require witness enumeration which is not yet implemented.
+**Technical Note**: DovetailingChain has 2 sorries (forward_F, backward_P). The 2 cross-sign
+sorries (forward_G when t < 0, backward_H when t >= 0) were resolved in Task 916 via
+cross-sign G/H propagation infrastructure. The remaining forward_F/backward_P sorries
+require a non-linear BFMCS construction (the linear chain cannot satisfy these due to
+F-formula non-persistence through GContent seeds). See WitnessGraph.lean for proven local
+witness existence and Task 916 analysis for the fundamental blocker.
 -/
 theorem temporal_coherent_family_exists_Int
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :

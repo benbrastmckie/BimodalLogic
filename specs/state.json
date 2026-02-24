@@ -540,11 +540,6 @@
           "summary": "Options analysis for fixing 8 build errors - recommends Option A (dependent rewrite patterns, 2.5-3.5h)"
         },
         {
-          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260223.md",
-          "type": "summary",
-          "summary": "Phases 3A-4 complete (0 errors), Phase 5 blocked: enriched chain construction with 4 sorries for forward_F/backward_P (omega-squared obstruction)"
-        },
-        {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-014.md",
           "type": "research",
           "summary": "Team research synthesis (3 teammates): WitnessGraph is only viable path; 40-50% cumulative success probability; 55-75h expected effort vs 2-3h for sorry debt acceptance; time-box recommendation"
@@ -553,6 +548,11 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-011.md",
           "type": "plan",
           "summary": "v11: Full WitnessGraph commitment - 6 phases (41-68h), no sorry debt option"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260224.md",
+          "type": "summary",
+          "summary": "Implementation summary covering Phases 3B-6: WitnessGraph 0 sorries, Phase 6 BLOCKED analysis"
         }
       ],
       "session_id": "sess_1771945665_c15254",

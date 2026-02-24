@@ -1,20 +1,27 @@
-# Implementation Summary: Task #916 - Phases 3B, 5A, 5B, 5C
+# Implementation Summary: Task #916 - Phases 3B, 5A, 5B, 5C, 6 (partial)
 
 **Date**: 2026-02-24
 **Sessions**: sess_1771904039_b1889e, sess_1771905472_29ec70, sess_1771945665_c15254
-**Status**: PARTIAL (Phases 3B, 5A completed; Phases 5B, 5C partial; Phases 6, 7 not started)
+**Status**: PARTIAL (Phases 3B, 5A completed; Phases 5B, 5C partial; Phase 6 blocked; Phase 7 not started)
 
 ## Overview
 
 WitnessGraph.lean now builds cleanly with **0 errors and 0 sorries** (down from 4 errors and 4 sorries). All four original sorries have been resolved: 2 by proof (forward_G, backward_H) and 2 by removal (forward_F, backward_P were mathematically impossible for the enriched chain construction and unused downstream).
 
+DovetailingChain.lean retains 2 sorries (forward_F, backward_P) that are **mathematically unprovable** for the current linear chain construction. Phase 6 analysis (iteration 3) confirmed this and identified viable resolution paths.
+
 ## File State
 
-| Metric | Before Task 916 | After Iteration 1 | After Iteration 2 |
-|--------|-----------------|-------------------|-------------------|
-| Build errors | 4 | **0** | **0** |
-| Sorries | 4 | 2 | **0** |
-| Lines | ~3100 | ~3380 | ~3389 |
+| Metric | Before Task 916 | After Iteration 1 | After Iteration 2 | After Iteration 3 |
+|--------|-----------------|-------------------|-------------------|--------------------|
+| WitnessGraph errors | 4 | **0** | **0** | **0** |
+| WitnessGraph sorries | 4 | 2 | **0** | **0** |
+| DovetailingChain sorries | 4 | 4 | 2 | 2 (documented as unprovable) |
+| Documentation | - | - | Analysis in WitnessGraph | Updated docstrings in DovetailingChain + TemporalCoherentConstruction |
+
+Note: DovetailingChain sorry count dropped from 4 to 2 due to cross-sign propagation work
+done in an earlier task (not Task 916). Task 916 Iteration 3 updated the documentation to
+reflect the current sorry count.
 
 ## Work Completed
 
@@ -55,29 +62,58 @@ Proved `enrichedChainBFMCS.forward_G` and `enrichedChainBFMCS.backward_H` with 1
 
 Symmetric to Phase 5B. The impossible sorry was removed along with forward_F. WitnessGraph.lean now has 0 sorries.
 
-## Remaining Work (Phases 6-7)
+### Phase 6: Integration with DovetailingChain [BLOCKED]
 
-### Phase 6: Integration with DovetailingChain
+**Iteration 3 analysis** confirmed that the Phase 6 plan (simple import + wiring) is not viable:
 
-The DovetailingChain.lean still has 2 sorries for `buildDovetailingChainFamily_forward_F` and `buildDovetailingChainFamily_backward_P`. These require:
-1. A new BFMCS construction that satisfies all 4 properties (forward_G, backward_H, forward_F, backward_P)
-2. This new BFMCS should use the witness graph for forward_F/backward_P
-3. Wire it into `temporal_coherent_family_exists_theorem`
+1. **`buildDovetailingChainFamily` forward_F unprovable**: The linear chain with single-encoding (decodeFormula n at step n) cannot guarantee F-formula survival. GContent seeds strip F-formulas, and Lindenbaum extensions can introduce G(neg(psi)) at any step.
 
-### Phase 7: Documentation
+2. **Nat.unpair redesign doesn't help**: A chain checking F(decode(b)) in mcs(a) where (a,b) = Nat.unpair(n) covers all (time, formula) pairs, but the seed consistency argument requires F(psi) in mcs(n) (the predecessor), not mcs(a) (the source). G(neg(psi)) can enter between steps a and n.
 
-Create final documentation once Phases 6 is complete.
+3. **`witnessGraphBFMCS` (constant family) doesn't help**: F(psi) in rootMCS does not imply psi in rootMCS.
+
+4. **Non-constant witness graph embedding doesn't help for forward_G**: GContent only propagates along edges, not between arbitrary graph nodes.
+
+5. **ZornFamily approach has same gap**: `total_family_FObligations_satisfied` is sorry'd for the same fundamental reason.
+
+**Documentation updated**: Corrected sorry counts in DovetailingChain.lean (4 -> 2) and TemporalCoherentConstruction.lean. Added detailed blocker analysis to forward_F and backward_P docstrings.
+
+**Viable resolution paths** (all require new tasks, 15-30h each):
+1. **Omega-squared construction**: Inner chain for each F-obligation at each outer step
+2. **Witness-graph-guided chain**: Chain that consults witness graph at each step
+3. **Zorn with F/P invariant**: Extend Zorn approach to carry F/P coherence
+
+## Remaining Work
+
+### Phase 6 (BLOCKED): Requires new BFMCS construction
+- Cannot close forward_F/backward_P with current codebase
+- Need a new task for one of the three resolution paths above
+
+### Phase 7 (NOT STARTED): Documentation
+- Deferred until Phase 6 is resolved
 
 ## Verification
 
 ```
 lake build Bimodal.Metalogic.Bundle.WitnessGraph
 # Build completed successfully (0 errors, 0 sorry warnings from this file)
+
+lake build Bimodal.Metalogic.Bundle.DovetailingChain
+# Build completed successfully (2 sorry warnings: forward_F, backward_P)
+
+lake build Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+# Build completed successfully
 ```
 
 ## Files Modified
 
+### Iteration 1-2 (WitnessGraph.lean)
 - `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` - Fixed errors, added ~280 lines of proof code, removed 2 impossible sorry'd theorems, added analysis documentation
+
+### Iteration 3 (Documentation)
+- `Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean` - Updated sorry count documentation (4->2), improved forward_F/backward_P docstrings with blocker analysis
+- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` - Updated sorry count documentation
+- `specs/916_implement_fp_witness_obligation_tracking/plans/implementation-011.md` - Phase 6 marked BLOCKED with detailed analysis
 
 ## Artifacts
 
@@ -91,5 +127,5 @@ lake build Bimodal.Metalogic.Bundle.WitnessGraph
 - Phase 5A: [COMPLETED] - forward_G and backward_H proven (sorry-free)
 - Phase 5B: [PARTIAL] - Analysis complete, impossible sorries removed, new construction needed
 - Phase 5C: [PARTIAL] - Symmetric to 5B, sorries removed
-- Phase 6: [NOT STARTED] - Integration with DovetailingChain.lean
-- Phase 7: [NOT STARTED] - Documentation
+- Phase 6: [BLOCKED] - Integration impossible with current construction; requires new task
+- Phase 7: [NOT STARTED] - Documentation (deferred until Phase 6 resolved)

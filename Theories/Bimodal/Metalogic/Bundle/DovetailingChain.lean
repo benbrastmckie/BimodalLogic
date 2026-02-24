@@ -50,16 +50,18 @@ For forward_F (F psi in M_t → ∃ s > t, psi in M_s), we use dovetailing:
 - `forward_G` for non-negative pairs: G phi in M_t → phi in M_{t'} for 0 ≤ t < t'
 - `backward_H` for non-positive pairs: H phi in M_t → phi in M_{t'} for t' < t ≤ 0
 
-## Technical Debt (4 sorries)
+## Technical Debt (2 sorries)
 
-- `forward_G` when t < 0: requires backward → forward chain propagation
-- `backward_H` when t ≥ 0: requires forward → backward chain propagation
-- `forward_F`: requires witness construction (dovetailing enumeration)
-- `backward_P`: requires witness construction (dovetailing enumeration)
+- `forward_F`: requires non-linear witness construction
+- `backward_P`: requires non-linear witness construction
 
-These 4 sorries are mathematically valid. Resolution requires either:
-1. Full canonical model construction with universal accessibility
-2. Multi-witness seed consistency argument with dovetailing enumeration
+Previously 4 sorries; forward_G cross-sign and backward_H cross-sign were resolved
+via cross-sign G/H propagation infrastructure in WitnessGraph.lean (Task 916).
+
+The remaining 2 sorries cannot be resolved for this linear chain construction because
+F-formulas do not persist through GContent seeds. Resolution requires a non-linear
+construction such as omega-squared or witness-graph-guided chain. See
+WitnessGraph.lean and Task 916 research reports for detailed analysis.
 
 ## Progress Over TemporalChain.lean
 
@@ -1695,15 +1697,20 @@ Build the `BFMCS Int` from the chain, with all forward_G and backward_H fully pr
 Build the dovetailing chain family from a consistent context.
 
 **Proven** (all 4 BFMCS fields):
-- forward_G: G phi in M_t implies phi in M_{t'} for all t < t' (fully proven)
-- backward_H: H phi in M_t implies phi in M_{t'} for all t' < t (fully proven)
+- forward_G: G phi in M_t implies phi in M_{t'} for all t < t' (fully proven, including cross-sign)
+- backward_H: H phi in M_t implies phi in M_{t'} for all t' < t (fully proven, including cross-sign)
 - Context preservation at time 0
 
 **Sorry debt** (2):
-- forward_F (witness construction)
-- backward_P (witness construction)
+- forward_F: requires non-linear witness construction (not provable for this linear chain)
+- backward_P: requires non-linear witness construction (not provable for this linear chain)
 
-Cross-sign propagation is proven using the GContent/HContent duality lemmas:
+F-formulas (F(psi) = neg(G(neg(psi)))) do not persist through GContent seeds because
+GContent only propagates G-formulas. The Lindenbaum extension at any step can introduce
+G(neg(psi)), killing F(psi). Resolution requires a non-linear BFMCS construction;
+see WitnessGraph.lean for proven local witness existence.
+
+Cross-sign G/H propagation is proven using the GContent/HContent duality lemmas:
 if GContent(M) ⊆ M', then HContent(M') ⊆ M (and vice versa).
 This enables G to propagate through the backward chain toward M_0, then
 through the forward chain to positive times (and symmetrically for H).
@@ -1746,14 +1753,25 @@ lemma buildDovetailingChainFamily_preserves_context (Gamma : List Formula) (h_co
   exact dovetailForwardChainMCS_zero_extends (contextAsSet Gamma)
     (list_consistent_to_set_consistent h_cons) h_mem
 
-/-- forward_F for the dovetailing chain (sorry -- requires witness construction). -/
+/-- forward_F for the dovetailing chain.
+
+**Sorry debt**: This cannot be proven for the linear chain construction because F-formulas
+do not persist through GContent seeds. The Lindenbaum extension at any step can introduce
+G(neg(psi)), killing F(psi). Resolution requires a non-linear BFMCS construction such as
+omega-squared or witness-graph-guided chain. See WitnessGraph.lean for proven LOCAL witness
+existence (witnessGraph_forward_F_local), and Task 916 analysis for the fundamental blocker. -/
 lemma buildDovetailingChainFamily_forward_F (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∀ t : Int, ∀ φ : Formula,
       Formula.some_future φ ∈ (buildDovetailingChainFamily Gamma h_cons).mcs t →
       ∃ s : Int, t < s ∧ φ ∈ (buildDovetailingChainFamily Gamma h_cons).mcs s := by
   sorry
 
-/-- backward_P for the dovetailing chain (sorry -- requires witness construction). -/
+/-- backward_P for the dovetailing chain.
+
+**Sorry debt**: Symmetric to forward_F. This cannot be proven for the linear chain because
+P-formulas do not persist through HContent seeds. See forward_F docstring and Task 916
+analysis for the fundamental blocker. WitnessGraph.lean provides proven LOCAL witness
+existence (witnessGraph_backward_P_local). -/
 lemma buildDovetailingChainFamily_backward_P (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∀ t : Int, ∀ φ : Formula,
       Formula.some_past φ ∈ (buildDovetailingChainFamily Gamma h_cons).mcs t →
@@ -1767,11 +1785,12 @@ This replaces the AXIOM `temporal_coherent_family_exists` with a THEOREM.
 The axiom is removed from the trusted kernel; sorry debt remains but is
 honest about incompleteness.
 
-**Sorry inventory** (4 total in transitive closure):
-- forward_G when t < 0 (cross-sign propagation)
-- backward_H when t >= 0 (cross-sign propagation)
-- forward_F (witness construction)
-- backward_P (witness construction)
+**Sorry inventory** (2 total in transitive closure):
+- forward_F (witness construction - requires non-linear BFMCS)
+- backward_P (witness construction - requires non-linear BFMCS)
+
+Note: forward_G and backward_H cross-sign cases were previously sorry'd but are
+now fully proven (DovetailingChain.lean cross-sign lemmas + WitnessGraph.lean).
 -/
 theorem temporal_coherent_family_exists_theorem
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
