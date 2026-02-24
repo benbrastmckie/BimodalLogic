@@ -65,11 +65,20 @@ From research-012:
 
 ## Implementation Phases
 
-### Phase 3A: Fix 48 Build Errors [NOT STARTED]
+### Phase 3A: Fix 48 Build Errors [PARTIAL]
 
 - **Dependencies**: None
 - **Goal**: Make WitnessGraph.lean build cleanly with 0 errors, 0 sorries
 - **Estimated effort**: 4-6 hours
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771904039_b1889e**
+- Attempted: Fix all 48 errors systematically
+- Result: Reduced to 33 errors; 0 sorries remain
+- Key fixes: Declaration ordering, syntax fixes, dependent elimination
+- Remaining: BEq conversion issues, scope issues, simp failures
+- Sorries: 5 -> 0 (syntactically eliminated, but proofs have errors)
 
 **Priority order for fixes:**
 

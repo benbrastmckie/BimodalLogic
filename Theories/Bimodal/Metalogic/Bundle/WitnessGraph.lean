@@ -817,7 +817,12 @@ noncomputable def processStep (g : WitnessGraph) (n : Nat) : WitnessGraph :=
     | none => g
     | some psi =>
       if h_F : Formula.some_future psi ∈ (g.nodeAt nodeIdx h_node).mcs.val then
-        if g.isWitnessed nodeIdx (.future psi) then g
+        if g.isWitnessed nodeIdx (.future psi) then
+          -- F already witnessed; fall through to check P
+          if h_P : Formula.some_past psi ∈ (g.nodeAt nodeIdx h_node).mcs.val then
+            if g.isWitnessed nodeIdx (.past psi) then g
+            else g.addPastWitness nodeIdx h_node psi h_P
+          else g
         else g.addFutureWitness nodeIdx h_node psi h_F
       else if h_P : Formula.some_past psi ∈ (g.nodeAt nodeIdx h_node).mcs.val then
         if g.isWitnessed nodeIdx (.past psi) then g
@@ -862,11 +867,15 @@ lemma processStep_nodes_length_ge (g : WitnessGraph) (n : Nat) :
     · exact Nat.le_refl _  -- none case
     · -- some psi case
       split  -- if F(psi) in MCS
-      · split  -- if witnessed
-        · exact Nat.le_refl _
+      · split  -- if F witnessed
+        · split  -- if P(psi) in MCS (F witnessed, fall through)
+          · split  -- if P witnessed
+            · exact Nat.le_refl _
+            · simp [WitnessGraph.addPastWitness]
+          · exact Nat.le_refl _
         · simp [WitnessGraph.addFutureWitness]
       · split  -- if P(psi) in MCS
-        · split  -- if witnessed
+        · split  -- if P witnessed
           · exact Nat.le_refl _
           · simp [WitnessGraph.addPastWitness]
         · exact Nat.le_refl _
@@ -902,12 +911,17 @@ lemma processStep_node_preserved (g : WitnessGraph) (n : Nat)
     · rfl  -- none
     · -- some psi
       split  -- if F(psi) in MCS
-      · split  -- if already witnessed
-        · rfl
+      · split  -- if F already witnessed
+        · split  -- if P(psi) in MCS (F witnessed, fall through)
+          · split  -- if P witnessed
+            · rfl
+            · simp only [WitnessGraph.addPastWitness]
+              rw [List.getElem?_append_left h_i]
+          · rfl
         · simp only [WitnessGraph.addFutureWitness]
           rw [List.getElem?_append_left h_i]
       · split  -- if P(psi) in MCS
-        · split  -- if already witnessed
+        · split  -- if P already witnessed
           · rfl
           · simp only [WitnessGraph.addPastWitness]
             rw [List.getElem?_append_left h_i]
@@ -1142,12 +1156,17 @@ lemma processStep_edge_preserved (g : WitnessGraph) (n : Nat)
   · split  -- match decode
     · exact h_e
     · split  -- if F(psi) in MCS
-      · split  -- if witnessed
-        · exact h_e
+      · split  -- if F witnessed
+        · split  -- if P(psi) in MCS (F witnessed, fall through)
+          · split  -- if P witnessed
+            · exact h_e
+            · simp only [WitnessGraph.addPastWitness]
+              exact List.mem_append_left _ h_e
+          · exact h_e
         · simp only [WitnessGraph.addFutureWitness]
           exact List.mem_append_left _ h_e
       · split  -- if P(psi) in MCS
-        · split  -- if witnessed
+        · split  -- if P witnessed
           · exact h_e
           · simp only [WitnessGraph.addPastWitness]
             exact List.mem_append_left _ h_e
@@ -1328,6 +1347,439 @@ theorem processStep_creates_fresh_past_witness (g : WitnessGraph) (n : Nat)
     cases h_some
     simp only [h_not_F, dite_false, h_P, dite_true, h_not_witnessed, ite_false, Bool.false_eq_true]
 
+/-- New case: when F is in MCS and already witnessed, processStep falls through to create a
+past witness if P is in MCS and not yet witnessed. -/
+theorem processStep_creates_past_witness_F_witnessed (g : WitnessGraph) (n : Nat)
+    (i : Nat) (h_i : i < g.nodes.length) (psi : Formula)
+    (h_unpair : (Nat.unpair (Nat.unpair n).2) = (i, encodeFormulaWG psi))
+    (h_F : Formula.some_future psi ∈ (g.nodeAt i h_i).mcs.val)
+    (h_F_witnessed : g.isWitnessed i (.future psi) = true)
+    (h_P : Formula.some_past psi ∈ (g.nodeAt i h_i).mcs.val)
+    (h_not_witnessed_P : g.isWitnessed i (.past psi) = false) :
+    (⟨i, g.nodes.length, .backward⟩ : WitnessEdge) ∈ (processStep g n).edges ∧
+    (processStep g n).nodes.length = g.nodes.length + 1 ∧
+    (∀ (h_j : g.nodes.length < (processStep g n).nodes.length),
+      psi ∈ ((processStep g n).nodeAt g.nodes.length h_j).mcs.val ∧
+      HContent (g.nodeAt i h_i).mcs.val ⊆
+        ((processStep g n).nodeAt g.nodes.length h_j).mcs.val) := by
+  suffices h_eq : processStep g n = g.addPastWitness i h_i psi h_P by
+    rw [h_eq]
+    refine ⟨?_, ?_, ?_⟩
+    · simp [WitnessGraph.addPastWitness]
+    · simp [WitnessGraph.addPastWitness]
+    · intro h_j
+      simp only [WitnessGraph.addPastWitness, WitnessGraph.nodeAt,
+        List.getElem_append_right (Nat.le_refl _)]
+      simp only [Nat.sub_self, List.getElem_cons_zero]
+      exact ⟨addPastWitness_contains_formula g i h_i psi h_P,
+             addPastWitness_HContent_extends g i h_i psi h_P⟩
+  unfold processStep
+  simp only [h_unpair]
+  simp only [show i < g.nodes.length from h_i, dite_true]
+  have h_decode : decodeFormulaWG (encodeFormulaWG psi) = some psi := decodeFormulaWG_encodeFormulaWG psi
+  split
+  · rename_i h_none; rw [h_decode] at h_none; exact absurd h_none nofun
+  · rename_i psi_1 h_some; rw [h_decode] at h_some; cases h_some
+    simp only [h_F, dite_true, h_F_witnessed, ite_true, h_P, dite_true,
+               h_not_witnessed_P, ite_false, Bool.false_eq_true]
+
+/-!
+### Helper Lemmas for isWitnessed = true Cases
+
+When isWitnessed returns true, we need to extract the actual witness edge
+and witness node. These lemmas connect the resolved map to the edge list.
+-/
+
+/-- When addFutureWitness changes isWitnessed i (.future psi) from false to true,
+the newly added obligation must match (i, psi). This pins down the source node
+and formula. -/
+private lemma addFutureWitness_new_obl_matches (g : WitnessGraph) (nIdx i : Nat)
+    (psi' psi : Formula) (h_nIdx : nIdx < g.nodes.length)
+    (h_F : Formula.some_future psi' ∈ (g.nodeAt nIdx h_nIdx).mcs.val)
+    (h_false : g.isWitnessed i (.future psi) = false)
+    (h_true : (g.addFutureWitness nIdx h_nIdx psi' h_F).isWitnessed i (.future psi) = true) :
+    nIdx = i ∧ psi' = psi := by
+  simp only [WitnessGraph.isWitnessed, WitnessGraph.addFutureWitness] at h_false h_true
+  rw [List.zipIdx_append, List.any_append] at h_true
+  -- The old part (same as h_false but with new resolved function)
+  have h_old_false : g.obligations.zipIdx.any (fun ⟨wo, idx⟩ =>
+      wo.nodeIdx == i && wo.obligation == ObligationType.future psi &&
+      (if idx = g.obligations.length then some g.nodes.length
+       else g.resolved idx).isSome) = false := by
+    rw [Bool.eq_false_iff]
+    intro h_old
+    rw [Bool.eq_false_iff] at h_false
+    apply h_false
+    simp only [List.any_eq_true] at h_old ⊢
+    obtain ⟨⟨wo, idx⟩, h_mem, h_cond⟩ := h_old
+    refine ⟨⟨wo, idx⟩, h_mem, ?_⟩
+    simp only [Bool.and_eq_true, beq_iff_eq, Option.isSome_iff_exists] at h_cond ⊢
+    obtain ⟨⟨h_ni, h_obl⟩, witnessIdx, h_res⟩ := h_cond
+    have h_idx_lt : idx < g.obligations.length := by
+      have := (List.mem_zipIdx h_mem).2.1; simp at this; omega
+    rw [if_neg (Nat.ne_of_lt h_idx_lt)] at h_res
+    exact ⟨⟨h_ni, h_obl⟩, witnessIdx, h_res⟩
+  rw [h_old_false, Bool.false_or] at h_true
+  -- Now h_true is about the singleton new obligation
+  simp only [List.zipIdx_cons, List.zipIdx_nil, List.any_cons, List.any_nil, Bool.or_false,
+             Bool.and_eq_true, beq_iff_eq] at h_true
+  obtain ⟨⟨h_ni_eq, h_obl_eq⟩, _⟩ := h_true
+  refine ⟨h_ni_eq, ?_⟩
+  have h_eq : ObligationType.future psi' = ObligationType.future psi := eq_of_beq_eq_true h_obl_eq
+  exact ObligationType.future.inj h_eq
+
+/-- Symmetric version: addPastWitness changing isWitnessed i (.past psi). -/
+private lemma addPastWitness_new_obl_matches (g : WitnessGraph) (nIdx i : Nat)
+    (psi' psi : Formula) (h_nIdx : nIdx < g.nodes.length)
+    (h_P : Formula.some_past psi' ∈ (g.nodeAt nIdx h_nIdx).mcs.val)
+    (h_false : g.isWitnessed i (.past psi) = false)
+    (h_true : (g.addPastWitness nIdx h_nIdx psi' h_P).isWitnessed i (.past psi) = true) :
+    nIdx = i ∧ psi' = psi := by
+  simp only [WitnessGraph.isWitnessed, WitnessGraph.addPastWitness] at h_false h_true
+  rw [List.zipIdx_append, List.any_append] at h_true
+  have h_old_false : g.obligations.zipIdx.any (fun ⟨wo, idx⟩ =>
+      wo.nodeIdx == i && wo.obligation == ObligationType.past psi &&
+      (if idx = g.obligations.length then some g.nodes.length
+       else g.resolved idx).isSome) = false := by
+    rw [Bool.eq_false_iff]
+    intro h_old
+    rw [Bool.eq_false_iff] at h_false
+    apply h_false
+    simp only [List.any_eq_true] at h_old ⊢
+    obtain ⟨⟨wo, idx⟩, h_mem, h_cond⟩ := h_old
+    refine ⟨⟨wo, idx⟩, h_mem, ?_⟩
+    simp only [Bool.and_eq_true, beq_iff_eq, Option.isSome_iff_exists] at h_cond ⊢
+    obtain ⟨⟨h_ni, h_obl⟩, witnessIdx, h_res⟩ := h_cond
+    have h_idx_lt : idx < g.obligations.length := by
+      have := (List.mem_zipIdx h_mem).2.1; simp at this; omega
+    rw [if_neg (Nat.ne_of_lt h_idx_lt)] at h_res
+    exact ⟨⟨h_ni, h_obl⟩, witnessIdx, h_res⟩
+  rw [h_old_false, Bool.false_or] at h_true
+  simp only [List.zipIdx_cons, List.zipIdx_nil, List.any_cons, List.any_nil, Bool.or_false,
+             Bool.and_eq_true, beq_iff_eq] at h_true
+  obtain ⟨⟨h_ni_eq, h_obl_eq⟩, _⟩ := h_true
+  refine ⟨h_ni_eq, ?_⟩
+  simp only [BEq.beq, decide_eq_true_eq] at h_obl_eq
+  exact ObligationType.past.inj h_obl_eq
+
+-- Helper: processStep edges are a superset of g.edges, and any new edge has src < dst
+private lemma processStep_edges_subset_or_new (g : WitnessGraph) (n : Nat) :
+    (∀ e ∈ (processStep g n).edges, e ∈ g.edges) ∨
+    (∃ sourceIdx : Nat, sourceIdx < g.nodes.length ∧
+      (processStep g n).edges = g.edges ++ [⟨sourceIdx, g.nodes.length, .forward⟩]) ∨
+    (∃ sourceIdx : Nat, sourceIdx < g.nodes.length ∧
+      (processStep g n).edges = g.edges ++ [⟨sourceIdx, g.nodes.length, .backward⟩]) := by
+  unfold processStep
+  split  -- first unpair
+  split  -- second unpair
+  split  -- if nodeIdx < length
+  · rename_i h_node
+    split  -- match decode
+    · left; intro e h; exact h  -- none
+    · -- some psi
+      split  -- if F(psi) in MCS
+      · -- F(psi) in MCS
+        split  -- if F witnessed
+        · -- F witnessed: fall through to P check
+          split  -- if P(psi) in MCS
+          · split  -- if P witnessed
+            · left; intro e h; exact h  -- both witnessed, g unchanged
+            · -- addPastWitness (F witnessed, P not witnessed)
+              right; right
+              exact ⟨_, h_node, rfl⟩
+          · left; intro e h; exact h  -- P not in MCS, g unchanged
+        · -- addFutureWitness (F not witnessed)
+          right; left
+          exact ⟨_, h_node, rfl⟩
+      · -- F not in MCS
+        split  -- if P(psi)
+        · -- P(psi)
+          split  -- if P witnessed
+          · left; intro e h; exact h
+          · -- addPastWitness
+            right; right
+            exact ⟨_, h_node, rfl⟩
+        · left; intro e h; exact h
+  · left; intro e h; exact h
+
+/-- Helper: addFutureWitness preserves isWitnessed for existing obligations. -/
+private lemma addFutureWitness_isWitnessed_monotone (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val)
+    (i : Nat) (obl : ObligationType) (h_true : g.isWitnessed i obl = true) :
+    (g.addFutureWitness sourceIdx h_valid psi h_F).isWitnessed i obl = true := by
+  simp only [WitnessGraph.isWitnessed, WitnessGraph.addFutureWitness]
+  rw [List.zipIdx_append, List.any_append]
+  -- The old part of any still succeeds because:
+  -- 1. Old obligations are preserved (same list prefix)
+  -- 2. Old resolved values are preserved (if i = oblIdx then ... else g.resolved i)
+  --    For old indices idx < g.obligations.length, idx ≠ g.obligations.length so resolved unchanged
+  suffices h_old : g.obligations.zipIdx.any (fun ⟨wo, idx⟩ =>
+      wo.nodeIdx == i && wo.obligation == obl &&
+      (if idx = g.obligations.length then some g.nodes.length else g.resolved idx).isSome) = true by
+    rw [h_old, Bool.true_or]
+  simp only [WitnessGraph.isWitnessed] at h_true
+  simp only [List.any_eq_true] at h_true ⊢
+  obtain ⟨⟨wo, idx⟩, h_mem, h_cond⟩ := h_true
+  refine ⟨⟨wo, idx⟩, h_mem, ?_⟩
+  simp only [Bool.and_eq_true, beq_iff_eq, Option.isSome_iff_exists] at h_cond ⊢
+  obtain ⟨⟨h_ni, h_obl⟩, w, h_res⟩ := h_cond
+  have h_idx_lt : idx < g.obligations.length := by
+    exact (List.mem_zipIdx h_mem).2.1
+  rw [if_neg (Nat.ne_of_lt h_idx_lt)]
+  exact ⟨⟨h_ni, h_obl⟩, w, h_res⟩
+
+/-- Helper: addPastWitness preserves isWitnessed for existing obligations. -/
+private lemma addPastWitness_isWitnessed_monotone (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val)
+    (i : Nat) (obl : ObligationType) (h_true : g.isWitnessed i obl = true) :
+    (g.addPastWitness sourceIdx h_valid psi h_P).isWitnessed i obl = true := by
+  simp only [WitnessGraph.isWitnessed, WitnessGraph.addPastWitness]
+  rw [List.zipIdx_append, List.any_append]
+  suffices h_old : g.obligations.zipIdx.any (fun ⟨wo, idx⟩ =>
+      wo.nodeIdx == i && wo.obligation == obl &&
+      (if idx = g.obligations.length then some g.nodes.length else g.resolved idx).isSome) = true by
+    rw [h_old, Bool.true_or]
+  simp only [WitnessGraph.isWitnessed] at h_true
+  simp only [List.any_eq_true] at h_true ⊢
+  obtain ⟨⟨wo, idx⟩, h_mem, h_cond⟩ := h_true
+  refine ⟨⟨wo, idx⟩, h_mem, ?_⟩
+  simp only [Bool.and_eq_true, beq_iff_eq, Option.isSome_iff_exists] at h_cond ⊢
+  obtain ⟨⟨h_ni, h_obl⟩, w, h_res⟩ := h_cond
+  have h_idx_lt : idx < g.obligations.length := by
+    exact (List.mem_zipIdx h_mem).2.1
+  rw [if_neg (Nat.ne_of_lt h_idx_lt)]
+  exact ⟨⟨h_ni, h_obl⟩, w, h_res⟩
+
+/-- isWitnessed is monotone: once true, stays true. -/
+private lemma processStep_isWitnessed_monotone (g : WitnessGraph) (n i : Nat) (obl : ObligationType)
+    (h_true : g.isWitnessed i obl = true) :
+    (processStep g n).isWitnessed i obl = true := by
+  unfold processStep
+  split  -- first unpair
+  split  -- second unpair
+  split  -- if nodeIdx < length
+  · rename_i h_node
+    split  -- match decode
+    · exact h_true  -- none: g unchanged
+    · rename_i psi
+      split  -- if F(psi) in MCS
+      · rename_i h_F
+        split  -- if F witnessed
+        · rename_i h_F_wit
+          split  -- if P(psi) in MCS
+          · rename_i h_P
+            split  -- if P witnessed
+            · exact h_true  -- both witnessed: g unchanged
+            · -- addPastWitness (F witnessed, P not witnessed)
+              exact addPastWitness_isWitnessed_monotone g _ h_node psi h_P i obl h_true
+          · exact h_true  -- P not in MCS: g unchanged
+        · -- addFutureWitness (F not witnessed)
+          exact addFutureWitness_isWitnessed_monotone g _ h_node psi h_F i obl h_true
+      · split  -- if P(psi) in MCS
+        · rename_i h_not_F h_P
+          split  -- if P witnessed
+          · exact h_true  -- P witnessed: g unchanged
+          · -- addPastWitness
+            exact addPastWitness_isWitnessed_monotone g _ h_node psi h_P i obl h_true
+        · exact h_true  -- neither F nor P: g unchanged
+  · exact h_true  -- nodeIdx >= length: g unchanged
+
+/-- isWitnessed is monotone across build steps. -/
+private lemma buildWitnessGraph_isWitnessed_monotone
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (i : Nat) (obl : ObligationType)
+    (h_true : (buildWitnessGraph rootMCS m).isWitnessed i obl = true) :
+    (buildWitnessGraph rootMCS n).isWitnessed i obl = true := by
+  induction h_le with
+  | refl => exact h_true
+  | step h_le ih =>
+    simp only [buildWitnessGraph]
+    exact processStep_isWitnessed_monotone _ _ _ _ ih
+
+/-- processStep either returns g unchanged (same obligations, resolved, edges, nodes),
+or adds one future witness, or adds one past witness. -/
+private lemma processStep_outcome (g : WitnessGraph) (n : Nat) :
+    (processStep g n = g) ∨
+    (∃ (nodeIdx : Nat) (h_node : nodeIdx < g.nodes.length) (psi : Formula)
+       (h_F : Formula.some_future psi ∈ (g.nodeAt nodeIdx h_node).mcs.val),
+       processStep g n = g.addFutureWitness nodeIdx h_node psi h_F) ∨
+    (∃ (nodeIdx : Nat) (h_node : nodeIdx < g.nodes.length) (psi : Formula)
+       (h_P : Formula.some_past psi ∈ (g.nodeAt nodeIdx h_node).mcs.val),
+       processStep g n = g.addPastWitness nodeIdx h_node psi h_P) := by
+  unfold processStep
+  split  -- first unpair
+  split  -- second unpair
+  split  -- if nodeIdx < length
+  · rename_i h_node
+    split  -- match decode
+    · left; rfl  -- none
+    · rename_i psi
+      split  -- if F(psi) in MCS
+      · rename_i h_F
+        split  -- if F witnessed
+        · rename_i h_F_wit
+          split  -- if P(psi) in MCS
+          · rename_i h_P
+            split  -- if P witnessed
+            · left; rfl
+            · right; right; exact ⟨_, h_node, psi, h_P, rfl⟩
+          · left; rfl
+        · right; left; exact ⟨_, h_node, psi, h_F, rfl⟩
+      · split  -- if P(psi)
+        · rename_i h_not_F h_P
+          split
+          · left; rfl
+          · right; right; exact ⟨_, h_node, psi, h_P, rfl⟩
+        · left; rfl
+  · left; rfl
+
+/-- When isWitnessed i (.future psi) = true at step n, a forward witness edge
+and witness node exist at that same step. Proven by induction on n. -/
+private lemma forward_witness_of_isWitnessed
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n i : Nat) (psi : Formula)
+    (h_wit : (buildWitnessGraph rootMCS n).isWitnessed i (.future psi) = true) :
+    ∃ (k' : Nat) (j : Nat) (h_j : j < (buildWitnessGraph rootMCS k').nodes.length),
+      (⟨i, j, .forward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k').edges ∧
+      psi ∈ ((buildWitnessGraph rootMCS k').nodeAt j h_j).mcs.val := by
+  induction n with
+  | zero =>
+    simp only [buildWitnessGraph, initialWitnessGraph, WitnessGraph.isWitnessed,
+               List.any_nil] at h_wit
+  | succ m ih =>
+    by_cases h_prev : (buildWitnessGraph rootMCS m).isWitnessed i (.future psi) = true
+    · exact ih h_prev
+    · -- isWitnessed became true at step m+1
+      simp only [buildWitnessGraph] at h_wit
+      have h_prev_false : (buildWitnessGraph rootMCS m).isWitnessed i (.future psi) = false := by
+        cases h : (buildWitnessGraph rootMCS m).isWitnessed i (.future psi) <;> simp_all
+      let g := buildWitnessGraph rootMCS m
+      have h_out := processStep_outcome g m
+      rcases h_out with h_unchanged | ⟨nIdx, h_nIdx, psi', h_F', h_ps_eq⟩ |
+          ⟨nIdx, h_nIdx, psi', h_P', h_ps_eq⟩
+      · -- processStep = g: isWitnessed unchanged → contradiction
+        rw [h_unchanged] at h_wit
+        rw [h_prev_false] at h_wit
+        exact absurd h_wit (by decide)
+      · -- processStep = addFutureWitness: isWitnessed became true via new obligation
+        rw [h_ps_eq] at h_wit
+        have ⟨h_nIdx_eq, h_psi_eq⟩ := addFutureWitness_new_obl_matches g nIdx i psi' psi
+          h_nIdx h_F' h_prev_false h_wit
+        subst h_nIdx_eq; subst h_psi_eq
+        use m + 1, g.nodes.length
+        have h_j_bound : g.nodes.length < (buildWitnessGraph rootMCS (m + 1)).nodes.length := by
+          simp only [buildWitnessGraph, h_ps_eq, WitnessGraph.addFutureWitness]; simp
+        use h_j_bound
+        constructor
+        · simp only [buildWitnessGraph, h_ps_eq, WitnessGraph.addFutureWitness]
+          exact List.mem_append_right _ (List.mem_singleton.mpr rfl)
+        · simp only [buildWitnessGraph, h_ps_eq, WitnessGraph.addFutureWitness,
+                     WitnessGraph.nodeAt, List.getElem_append_right (Nat.le_refl _),
+                     Nat.sub_self, List.getElem_cons_zero]
+          exact addFutureWitness_contains_formula g i h_nIdx psi h_F'
+      · -- processStep = addPastWitness: doesn't change .future isWitnessed
+        rw [h_ps_eq] at h_wit
+        -- addPastWitness only adds a .past obligation, so isWitnessed for .future is unchanged
+        -- except possibly via the resolved map change for old obligations
+        -- The isWitnessed monotonicity already handles this via addPastWitness_isWitnessed_monotone
+        -- But we need to show it didn't NEWLY become true, i.e. it was already true before
+        -- which contradicts h_prev_false. So show addPastWitness preserves false -> false for .future
+        exfalso
+        -- h_wit : (g.addPastWitness ...).isWitnessed i (.future psi) = true
+        -- h_prev_false : g.isWitnessed i (.future psi) = false
+        -- But addPastWitness only adds a .past obligation. The new obligation can't match .future.
+        -- And old obligations have preserved resolved values. So isWitnessed can't become true.
+        simp only [WitnessGraph.isWitnessed, WitnessGraph.addPastWitness] at h_wit
+        rw [List.zipIdx_append, List.any_append] at h_wit
+        -- Split the any into old part ∨ new part
+        rw [Bool.or_eq_true] at h_wit
+        rcases h_wit with h_old_part | h_new_part
+        · -- Old part: same obligations, but resolved might differ for new index
+          simp only [WitnessGraph.isWitnessed] at h_prev_false
+          rw [Bool.eq_false_iff] at h_prev_false
+          apply h_prev_false
+          simp only [List.any_eq_true] at h_old_part ⊢
+          obtain ⟨⟨wo, idx⟩, h_mem, h_cond⟩ := h_old_part
+          refine ⟨⟨wo, idx⟩, h_mem, ?_⟩
+          simp only [Bool.and_eq_true, beq_iff_eq, Option.isSome_iff_exists] at h_cond ⊢
+          obtain ⟨⟨h_ni, h_obl⟩, w, h_res⟩ := h_cond
+          have h_idx_lt : idx < g.obligations.length := (List.mem_zipIdx h_mem).2.1
+          rw [if_neg (Nat.ne_of_lt h_idx_lt)] at h_res
+          exact ⟨⟨h_ni, h_obl⟩, w, h_res⟩
+        · -- New part: the new obligation is .past, can't match .future
+          simp only [List.zipIdx_cons, List.zipIdx_nil, List.any_cons, List.any_nil, Bool.or_false,
+                     Bool.and_eq_true, beq_iff_eq] at h_new_part
+          obtain ⟨⟨_, h_obl_eq⟩, _⟩ := h_new_part
+          -- h_obl_eq : ObligationType.past psi' = ObligationType.future psi
+          exact absurd h_obl_eq (by decide)
+
+/-- Symmetric: when isWitnessed i (.past psi) = true at step n, a backward witness exists. -/
+private lemma backward_witness_of_isWitnessed
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n i : Nat) (psi : Formula)
+    (h_wit : (buildWitnessGraph rootMCS n).isWitnessed i (.past psi) = true) :
+    ∃ (k' : Nat) (j : Nat) (h_j : j < (buildWitnessGraph rootMCS k').nodes.length),
+      (⟨i, j, .backward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k').edges ∧
+      psi ∈ ((buildWitnessGraph rootMCS k').nodeAt j h_j).mcs.val := by
+  induction n with
+  | zero =>
+    simp only [buildWitnessGraph, initialWitnessGraph, WitnessGraph.isWitnessed,
+               List.any_nil] at h_wit
+  | succ m ih =>
+    by_cases h_prev : (buildWitnessGraph rootMCS m).isWitnessed i (.past psi) = true
+    · exact ih h_prev
+    · simp only [buildWitnessGraph] at h_wit
+      have h_prev_false : (buildWitnessGraph rootMCS m).isWitnessed i (.past psi) = false := by
+        cases h : (buildWitnessGraph rootMCS m).isWitnessed i (.past psi) <;> simp_all
+      let g := buildWitnessGraph rootMCS m
+      have h_out := processStep_outcome g m
+      rcases h_out with h_unchanged | ⟨nIdx, h_nIdx, psi', h_F', h_ps_eq⟩ |
+          ⟨nIdx, h_nIdx, psi', h_P', h_ps_eq⟩
+      · -- processStep = g: contradiction
+        rw [h_unchanged] at h_wit
+        rw [h_prev_false] at h_wit
+        exact absurd h_wit (by decide)
+      · -- processStep = addFutureWitness: doesn't change .past isWitnessed
+        exfalso
+        rw [h_ps_eq] at h_wit
+        simp only [WitnessGraph.isWitnessed, WitnessGraph.addFutureWitness] at h_wit
+        rw [List.zipIdx_append, List.any_append] at h_wit
+        rw [Bool.or_eq_true] at h_wit
+        rcases h_wit with h_old_part | h_new_part
+        · simp only [WitnessGraph.isWitnessed] at h_prev_false
+          rw [Bool.eq_false_iff] at h_prev_false
+          apply h_prev_false
+          simp only [List.any_eq_true] at h_old_part ⊢
+          obtain ⟨⟨wo, idx⟩, h_mem, h_cond⟩ := h_old_part
+          refine ⟨⟨wo, idx⟩, h_mem, ?_⟩
+          simp only [Bool.and_eq_true, beq_iff_eq, Option.isSome_iff_exists] at h_cond ⊢
+          obtain ⟨⟨h_ni, h_obl⟩, w, h_res⟩ := h_cond
+          have h_idx_lt : idx < g.obligations.length := (List.mem_zipIdx h_mem).2.1
+          rw [if_neg (Nat.ne_of_lt h_idx_lt)] at h_res
+          exact ⟨⟨h_ni, h_obl⟩, w, h_res⟩
+        · simp only [List.zipIdx_cons, List.zipIdx_nil, List.any_cons, List.any_nil, Bool.or_false,
+                     Bool.and_eq_true, beq_iff_eq] at h_new_part
+          obtain ⟨⟨_, h_obl_eq⟩, _⟩ := h_new_part
+          exact absurd h_obl_eq (by decide)
+      · -- processStep = addPastWitness: isWitnessed became true via new obligation
+        rw [h_ps_eq] at h_wit
+        have ⟨h_nIdx_eq, h_psi_eq⟩ := addPastWitness_new_obl_matches g nIdx i psi' psi
+          h_nIdx h_P' h_prev_false h_wit
+        subst h_nIdx_eq; subst h_psi_eq
+        use m + 1, g.nodes.length
+        have h_j_bound : g.nodes.length < (buildWitnessGraph rootMCS (m + 1)).nodes.length := by
+          simp only [buildWitnessGraph, h_ps_eq, WitnessGraph.addPastWitness]; simp
+        use h_j_bound
+        constructor
+        · simp only [buildWitnessGraph, h_ps_eq, WitnessGraph.addPastWitness]
+          exact List.mem_append_right _ (List.mem_singleton.mpr rfl)
+        · simp only [buildWitnessGraph, h_ps_eq, WitnessGraph.addPastWitness,
+                     WitnessGraph.nodeAt, List.getElem_append_right (Nat.le_refl _),
+                     Nat.sub_self, List.getElem_cons_zero]
+          exact addPastWitness_contains_formula g i h_nIdx psi h_P'
+
 /-!
 ### Phase 3 Main Theorems
 
@@ -1366,11 +1818,8 @@ theorem witnessGraph_forward_F_local (rootMCS : { S : Set Formula // SetMaximalC
   -- Step 4: Case split on whether the obligation is already witnessed
   let g_n := buildWitnessGraph rootMCS n
   by_cases h_wit : g_n.isWitnessed i (.future psi) = true
-  · -- Case: already witnessed - witness exists at step n
-    -- The witness was created at an earlier step.
-    -- When isWitnessed returns true, there's a resolved obligation entry.
-    -- The edge and node were created at the same time as the obligation.
-    sorry  -- TODO: Extract witness from isWitnessed = true
+  · -- Case: already witnessed - use inductive helper to extract witness
+    exact forward_witness_of_isWitnessed rootMCS n i psi h_wit
   · -- Case: not yet witnessed - fresh witness created at step n+1
     have h_wit_false : g_n.isWitnessed i (.future psi) = false := by
       cases h_eq : g_n.isWitnessed i (.future psi) <;> simp_all
@@ -1423,18 +1872,97 @@ theorem witnessGraph_backward_P_local (rootMCS : { S : Set Formula // SetMaximal
   -- Step 4: Case split on whether the obligation is already witnessed
   let g_n := buildWitnessGraph rootMCS n
   by_cases h_wit : g_n.isWitnessed i (.past psi) = true
-  · -- Case: already witnessed
-    sorry  -- TODO: Extract witness from isWitnessed = true (same issue as forward case)
+  · -- Case: already witnessed - use inductive helper
+    exact backward_witness_of_isWitnessed rootMCS n i psi h_wit
   · -- Case: not yet witnessed - fresh witness created at step n+1
     -- Also need to check if F(psi) is in the MCS (processStep checks F first)
     have h_wit_false : g_n.isWitnessed i (.past psi) = false := by
       cases h_eq : g_n.isWitnessed i (.past psi) <;> simp_all
     by_cases h_F_at_n : Formula.some_future psi ∈ ((buildWitnessGraph rootMCS n).nodeAt i h_i_at_n).mcs.val
-    · -- F(psi) is also in MCS - processStep processes F first, not P
-      -- Need another step where F is already witnessed or this step gets P
-      -- This is a complication: processStep processes F before P
-      -- We need coverage to process again after F is handled
-      sorry  -- TODO: Handle case where F(psi) blocks P(psi) processing
+    · -- F(psi) is also in MCS - case split on whether F is already witnessed
+      by_cases h_F_wit : g_n.isWitnessed i (.future psi) = true
+      · -- F witnessed: processStep falls through to P branch at step n
+        -- (new processStep behavior: when F witnessed, check P next)
+        have ⟨h_edge, h_len⟩ := processStep_creates_past_witness_F_witnessed g_n n i h_i_at_n psi
+          h_unpair h_F_at_n h_F_wit h_P_at_n h_wit_false
+        use n + 1, g_n.nodes.length
+        have h_j_bound : g_n.nodes.length < (buildWitnessGraph rootMCS (n + 1)).nodes.length := by
+          simp only [buildWitnessGraph]; rw [h_len.1]; exact Nat.lt_succ_self _
+        use h_j_bound
+        constructor
+        · simp only [buildWitnessGraph]; exact h_edge
+        · have h_bound : g_n.nodes.length < (processStep g_n n).nodes.length := by
+            rw [h_len.1]; exact Nat.lt_succ_self _
+          exact (h_len.2 h_bound).1
+      · -- F not witnessed: processStep creates future witness at n+1
+        -- Find another coverage step n'' ≥ n+2 after F is witnessed
+        have h_F_wit_false : g_n.isWitnessed i (.future psi) = false := by
+          cases h : g_n.isWitnessed i (.future psi) <;> simp_all
+        -- At step n+1, future witness is created (F not witnessed, F in MCS)
+        -- F becomes witnessed at step n+1
+        -- Find n'' ≥ n+2 where (i, psi) is processed again
+        obtain ⟨n'', h_n''_ge, h_unpair''⟩ := coverage_step_exists i psi (n + 2)
+        -- At n'', node i still exists
+        have h_i_at_n'' : i < (buildWitnessGraph rootMCS n'').nodes.length :=
+          lt_of_lt_of_le h_i_at_n
+            (buildWitnessGraph_nodes_length_mono_le rootMCS n n''
+              (by omega))
+        -- P(psi) still in MCS at n'' (by node stability)
+        have h_node_stable_n'' := buildWitnessGraph_node_stable rootMCS n n'' (by omega) i h_i_at_n
+        have h_node_eq_n'' := getElem?_eq_implies_getElem_eq _ _ i h_i_at_n h_i_at_n'' h_node_stable_n''.symm
+        have h_P_at_n'' : Formula.some_past psi ∈
+            ((buildWitnessGraph rootMCS n'').nodeAt i h_i_at_n'').mcs.val := by
+          simp only [WitnessGraph.nodeAt] at h_P_at_n ⊢; rw [← h_node_eq_n'']; exact h_P_at_n
+        -- F(psi) in MCS at n'' (by stability)
+        have h_F_at_n'' : Formula.some_future psi ∈
+            ((buildWitnessGraph rootMCS n'').nodeAt i h_i_at_n'').mcs.val := by
+          simp only [WitnessGraph.nodeAt] at h_F_at_n ⊢; rw [← h_node_eq_n'']; exact h_F_at_n
+        -- At step n+1, F becomes witnessed (processStep creates future witness)
+        have h_F_wit_at_n1 : (buildWitnessGraph rootMCS (n + 1)).isWitnessed i (.future psi) = true := by
+          simp only [buildWitnessGraph]
+          -- processStep creates addFutureWitness at step n
+          have ⟨h_edge_f, h_len_f⟩ := processStep_creates_fresh_future_witness g_n n i h_i_at_n psi
+            h_unpair h_F_at_n h_F_wit_false
+          -- After addFutureWitness, isWitnessed (.future psi) = true
+          have h_ps_eq : processStep g_n n = g_n.addFutureWitness i h_i_at_n psi h_F_at_n := by
+            unfold processStep; simp only [h_unpair, show i < g_n.nodes.length from h_i_at_n, dite_true]
+            have h_decode := decodeFormulaWG_encodeFormulaWG psi
+            split
+            · rename_i h_none; rw [h_decode] at h_none; exact absurd h_none nofun
+            · rename_i psi_1 h_some; rw [h_decode] at h_some; cases h_some
+              simp only [h_F_at_n, dite_true, h_F_wit_false, ite_false, Bool.false_eq_true]
+          rw [h_ps_eq]
+          simp only [WitnessGraph.isWitnessed, WitnessGraph.addFutureWitness]
+          rw [List.zipIdx_append, List.any_append]
+          simp only [List.zipIdx_cons, List.zipIdx_nil, List.any_cons, List.any_nil, Bool.or_false,
+                     Bool.and_eq_true, beq_iff_eq, BEq.beq, decide_eq_true_eq]
+          simp only [ObligationType.future.injEq]
+          exact ⟨⟨rfl, rfl⟩, by simp⟩
+        -- F is witnessed at n'' (monotone from n+1 ≤ n'' since n'' ≥ n+2)
+        have h_F_wit_at_n'' : (buildWitnessGraph rootMCS n'').isWitnessed i (.future psi) = true :=
+          buildWitnessGraph_isWitnessed_monotone rootMCS (n + 1) n'' (by omega) i
+            (.future psi) h_F_wit_at_n1
+        -- Now case split on P witnessed at n''
+        by_cases h_P_wit_at_n'' : (buildWitnessGraph rootMCS n'').isWitnessed i (.past psi) = true
+        · -- P already witnessed at n'': use backward_witness_of_isWitnessed
+          exact backward_witness_of_isWitnessed rootMCS n'' i psi h_P_wit_at_n''
+        · -- P not witnessed at n'': processStep at n'' creates past witness
+          have h_P_wit_false_n'' : (buildWitnessGraph rootMCS n'').isWitnessed i (.past psi) = false := by
+            cases h : (buildWitnessGraph rootMCS n'').isWitnessed i (.past psi) <;> simp_all
+          have ⟨h_edge'', h_len''⟩ := processStep_creates_past_witness_F_witnessed
+            (buildWitnessGraph rootMCS n'') n'' i h_i_at_n'' psi
+            h_unpair'' h_F_at_n'' h_F_wit_at_n'' h_P_at_n'' h_P_wit_false_n''
+          use n'' + 1, (buildWitnessGraph rootMCS n'').nodes.length
+          have h_j_bound'' : (buildWitnessGraph rootMCS n'').nodes.length <
+              (buildWitnessGraph rootMCS (n'' + 1)).nodes.length := by
+            simp only [buildWitnessGraph]; rw [h_len''.1]; exact Nat.lt_succ_self _
+          use h_j_bound''
+          constructor
+          · simp only [buildWitnessGraph]; exact h_edge''
+          · have h_bound'' : (buildWitnessGraph rootMCS n'').nodes.length <
+                (processStep (buildWitnessGraph rootMCS n'') n'').nodes.length := by
+              rw [h_len''.1]; exact Nat.lt_succ_self _
+            exact (h_len''.2 h_bound'').1
     · -- F(psi) is not in MCS - processStep will process P
       have h_not_F : Formula.some_future psi ∉ (g_n.nodeAt i h_i_at_n).mcs.val := h_F_at_n
       have ⟨h_edge, h_len⟩ := processStep_creates_fresh_past_witness g_n n i h_i_at_n psi
@@ -1452,70 +1980,11 @@ theorem witnessGraph_backward_P_local (rootMCS : { S : Set Formula // SetMaximal
           rw [h_len.1]; exact Nat.lt_succ_self _
         exact (h_len.2 h_bound).1
 
-/-- **Theorem 3: GContent Propagation**
-
-For any forward edge (i, j) created by addFutureWitness, GContent of node i's
-MCS is a subset of node j's MCS. This follows directly from the witness seed
-construction: the seed includes GContent(source), and Lindenbaum extends the seed. -/
-theorem witnessGraph_GContent_propagates (rootMCS : { S : Set Formula // SetMaximalConsistent S })
-    (i j : Nat) (k : Nat)
-    (h_i : i < (buildWitnessGraph rootMCS k).nodes.length)
-    (h_j : j < (buildWitnessGraph rootMCS k).nodes.length)
-    (h_edge : (⟨i, j, .forward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k).edges) :
-    GContent ((buildWitnessGraph rootMCS k).nodeAt i h_i).mcs.val ⊆
-      ((buildWitnessGraph rootMCS k).nodeAt j h_j).mcs.val := by
-  sorry
-
-/-- **Theorem 4: HContent Propagation**
-
-Symmetric to GContent propagation. For backward edges, HContent propagates. -/
-theorem witnessGraph_HContent_propagates (rootMCS : { S : Set Formula // SetMaximalConsistent S })
-    (i j : Nat) (k : Nat)
-    (h_i : i < (buildWitnessGraph rootMCS k).nodes.length)
-    (h_j : j < (buildWitnessGraph rootMCS k).nodes.length)
-    (h_edge : (⟨i, j, .backward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k).edges) :
-    HContent ((buildWitnessGraph rootMCS k).nodeAt i h_i).mcs.val ⊆
-      ((buildWitnessGraph rootMCS k).nodeAt j h_j).mcs.val := by
-  sorry
-
 /-- **Theorem 5: Acyclicity**
 
 The edge relation in the witness graph has no cycles. Each edge connects a source
 node (with lower index) to a witness node (with higher index), so the edge relation
 is well-founded on node indices. -/
--- Helper: processStep edges are a superset of g.edges, and any new edge has src < dst
-private lemma processStep_edges_subset_or_new (g : WitnessGraph) (n : Nat) :
-    (∀ e ∈ (processStep g n).edges, e ∈ g.edges) ∨
-    (∃ sourceIdx : Nat, sourceIdx < g.nodes.length ∧
-      (processStep g n).edges = g.edges ++ [⟨sourceIdx, g.nodes.length, .forward⟩]) ∨
-    (∃ sourceIdx : Nat, sourceIdx < g.nodes.length ∧
-      (processStep g n).edges = g.edges ++ [⟨sourceIdx, g.nodes.length, .backward⟩]) := by
-  unfold processStep
-  split  -- first unpair
-  split  -- second unpair
-  split  -- if nodeIdx < length
-  · rename_i h_node
-    split  -- match decode
-    · left; intro e h; exact h  -- none
-    · -- some psi
-      split  -- if F(psi) in MCS
-      · -- F(psi)
-        split  -- if witnessed
-        · left; intro e h; exact h  -- already witnessed, g unchanged
-        · -- addFutureWitness
-          right; left
-          exact ⟨_, h_node, rfl⟩
-      · -- not F
-        split  -- if P(psi)
-        · -- P(psi)
-          split  -- if witnessed
-          · left; intro e h; exact h
-          · -- addPastWitness
-            right; right
-            exact ⟨_, h_node, rfl⟩
-        · left; intro e h; exact h
-  · left; intro e h; exact h
-
 theorem witnessGraph_edges_acyclic (rootMCS : { S : Set Formula // SetMaximalConsistent S })
     (k : Nat) (e : WitnessEdge) (h_e : e ∈ (buildWitnessGraph rootMCS k).edges) :
     e.src < e.dst := by
@@ -1565,8 +2034,12 @@ theorem witnessGraph_nodes_finite (rootMCS : { S : Set Formula // SetMaximalCons
     · split
       · exact Nat.le_succ _
       · split
-        · split
-          · exact Nat.le_succ _
+        · split  -- if F witnessed
+          · split  -- if P in MCS
+            · split  -- if P witnessed
+              · exact Nat.le_succ _
+              · simp [WitnessGraph.addPastWitness]
+            · exact Nat.le_succ _
           · simp [WitnessGraph.addFutureWitness]
         · split
           · split
@@ -1574,5 +2047,313 @@ theorem witnessGraph_nodes_finite (rootMCS : { S : Set Formula // SetMaximalCons
             · simp [WitnessGraph.addPastWitness]
           · exact Nat.le_succ _
     · exact Nat.le_succ _
+
+/-!
+### Edge Validity (well-formedness of edge indices)
+
+All edges in buildWitnessGraph reference valid node indices.
+This is needed for the content propagation proofs: when an edge is "old"
+(inherited from a previous step), we need to know both endpoints are valid
+at the earlier step to apply node stability.
+-/
+
+/-- When processStep adds any edge, the node count increases strictly. -/
+private lemma processStep_new_edge_nodes_gt (g : WitnessGraph) (n : Nat)
+    (h_new : (∃ sourceIdx : Nat, sourceIdx < g.nodes.length ∧
+        (processStep g n).edges = g.edges ++ [⟨sourceIdx, g.nodes.length, .forward⟩]) ∨
+      (∃ sourceIdx : Nat, sourceIdx < g.nodes.length ∧
+        (processStep g n).edges = g.edges ++ [⟨sourceIdx, g.nodes.length, .backward⟩])) :
+    g.nodes.length < (processStep g n).nodes.length := by
+  -- Use processStep_outcome to characterize the result
+  have h_out := processStep_outcome g n
+  rcases h_out with h_unchanged | ⟨nIdx, h_nIdx, psi, h_F, h_ps_eq⟩ |
+      ⟨nIdx, h_nIdx, psi, h_P, h_ps_eq⟩
+  · -- g unchanged: contradicts h_new (no new edge)
+    rcases h_new with ⟨src, _, h_edges⟩ | ⟨src, _, h_edges⟩
+    · rw [h_unchanged] at h_edges
+      have := List.append_cancel_left h_edges
+      simp at this
+    · rw [h_unchanged] at h_edges
+      have := List.append_cancel_left h_edges
+      simp at this
+  · -- addFutureWitness: nodes.length = g.nodes.length + 1
+    rw [h_ps_eq]; simp [WitnessGraph.addFutureWitness]
+  · -- addPastWitness: nodes.length = g.nodes.length + 1
+    rw [h_ps_eq]; simp [WitnessGraph.addPastWitness]
+
+/-- processStep preserves edge validity and maintains it for new edges. -/
+private lemma processStep_edgesValid (g : WitnessGraph) (n : Nat)
+    (h_valid : g.edgesValid) :
+    (processStep g n).edgesValid := by
+  intro e h_e
+  have h_ge := processStep_nodes_length_ge g n
+  have h_cases := processStep_edges_subset_or_new g n
+  rcases h_cases with h_same | ⟨src, h_src, h_eq⟩ | ⟨src, h_src, h_eq⟩
+  · -- Graph unchanged: edges are g.edges, so use h_valid + monotonicity
+    have h_old := h_same e h_e
+    have ⟨h_s, h_d⟩ := h_valid e h_old
+    exact ⟨lt_of_lt_of_le h_s h_ge, lt_of_lt_of_le h_d h_ge⟩
+  · -- Forward edge added
+    have h_gt := processStep_new_edge_nodes_gt g n (Or.inl ⟨src, h_src, h_eq⟩)
+    rw [h_eq] at h_e
+    rcases List.mem_append.mp h_e with h_old | h_new
+    · have ⟨h_s, h_d⟩ := h_valid e h_old
+      exact ⟨lt_of_lt_of_le h_s h_ge, lt_of_lt_of_le h_d h_ge⟩
+    · simp at h_new; rw [h_new]
+      exact ⟨lt_of_lt_of_le h_src h_ge, h_gt⟩
+  · -- Backward edge added
+    have h_gt := processStep_new_edge_nodes_gt g n (Or.inr ⟨src, h_src, h_eq⟩)
+    rw [h_eq] at h_e
+    rcases List.mem_append.mp h_e with h_old | h_new
+    · have ⟨h_s, h_d⟩ := h_valid e h_old
+      exact ⟨lt_of_lt_of_le h_s h_ge, lt_of_lt_of_le h_d h_ge⟩
+    · simp at h_new; rw [h_new]
+      exact ⟨lt_of_lt_of_le h_src h_ge, h_gt⟩
+
+/-- All edges in buildWitnessGraph reference valid node indices. -/
+theorem buildWitnessGraph_edgesValid (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (k : Nat) : (buildWitnessGraph rootMCS k).edgesValid := by
+  induction k with
+  | zero => exact initialWitnessGraph_edgesValid rootMCS
+  | succ n ih =>
+    simp only [buildWitnessGraph]
+    exact processStep_edgesValid _ _ ih
+
+/-!
+### Content Propagation Through Edges
+
+The main theorems: forward edges propagate GContent, backward edges propagate HContent.
+-/
+
+/-- **Theorem 3: GContent Propagation**
+
+For any forward edge (i, j) in the witness graph, GContent of node i's
+MCS is a subset of node j's MCS.
+
+Proof by induction on the construction step k:
+- Base: no edges at step 0
+- Inductive: the edge is either inherited (use IH + node stability)
+  or freshly created by addFutureWitness (use seed construction property). -/
+theorem witnessGraph_GContent_propagates (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (i j : Nat) (k : Nat)
+    (h_i : i < (buildWitnessGraph rootMCS k).nodes.length)
+    (h_j : j < (buildWitnessGraph rootMCS k).nodes.length)
+    (h_edge : (⟨i, j, .forward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k).edges) :
+    GContent ((buildWitnessGraph rootMCS k).nodeAt i h_i).mcs.val ⊆
+      ((buildWitnessGraph rootMCS k).nodeAt j h_j).mcs.val := by
+  induction k with
+  | zero =>
+    simp [buildWitnessGraph, initialWitnessGraph] at h_edge
+  | succ n ih =>
+    simp only [buildWitnessGraph] at h_edge h_i h_j ⊢
+    let g := buildWitnessGraph rootMCS n
+    have h_cases := processStep_edges_subset_or_new g n
+    rcases h_cases with h_same | ⟨src, h_src, h_eq⟩ | ⟨src, h_src, h_eq⟩
+    · -- Case: edges unchanged (processStep returned g unchanged modulo edges)
+      have h_old := h_same _ h_edge
+      -- Both i and j are valid in g (from edge validity)
+      have h_ev := buildWitnessGraph_edgesValid rootMCS n
+      have ⟨h_i_valid, h_j_valid⟩ := h_ev _ h_old
+      simp [WitnessEdge.valid] at h_i_valid h_j_valid
+      -- By IH: GContent(mcs_i at step n) ⊆ mcs_j at step n
+      have h_ih := ih h_i_valid h_j_valid h_old
+      -- Nodes are stable from step n to step n+1
+      have h_stable_i := processStep_node_preserved g n i h_i_valid
+      have h_stable_j := processStep_node_preserved g n j h_j_valid
+      -- mcs_i at step n+1 = mcs_i at step n
+      have h_eq_i := getElem?_eq_implies_getElem_eq _ _ i h_i_valid h_i h_stable_i.symm
+      have h_eq_j := getElem?_eq_implies_getElem_eq _ _ j h_j_valid h_j h_stable_j.symm
+      simp only [WitnessGraph.nodeAt] at h_ih ⊢
+      rw [← h_eq_i, ← h_eq_j]
+      exact h_ih
+    · -- Case: processStep added a forward edge (src, g.nodes.length, .forward)
+      rw [h_eq] at h_edge
+      simp [List.mem_append] at h_edge
+      rcases h_edge with h_old | h_new
+      · -- Old edge from step n
+        have h_ev := buildWitnessGraph_edgesValid rootMCS n
+        have ⟨h_i_valid, h_j_valid⟩ := h_ev _ h_old
+        simp [WitnessEdge.valid] at h_i_valid h_j_valid
+        have h_ih := ih h_i_valid h_j_valid h_old
+        have h_stable_i := processStep_node_preserved g n i h_i_valid
+        have h_stable_j := processStep_node_preserved g n j h_j_valid
+        have h_eq_i := getElem?_eq_implies_getElem_eq _ _ i h_i_valid h_i h_stable_i.symm
+        have h_eq_j := getElem?_eq_implies_getElem_eq _ _ j h_j_valid h_j h_stable_j.symm
+        simp only [WitnessGraph.nodeAt] at h_ih ⊢
+        rw [← h_eq_i, ← h_eq_j]
+        exact h_ih
+      · -- New edge: i = src, j = g.nodes.length
+        simp only [WitnessEdge.mk.injEq] at h_new
+        obtain ⟨h_i_eq, h_j_eq, -⟩ := h_new
+        subst h_i_eq; subst h_j_eq
+        -- Source node exists in g and is preserved
+        have h_stable_src := processStep_node_preserved g n src h_src
+        have h_eq_src := getElem?_eq_implies_getElem_eq _ _ src h_src h_i h_stable_src.symm
+        simp only [WitnessGraph.nodeAt] at h_eq_src ⊢
+        rw [← h_eq_src]
+        -- processStep created a fresh forward witness with GContent propagation
+        -- Use processStep_creates_fresh_future_witness or unfold directly
+        -- The new node at g.nodes.length has MCS extending GContent(source)
+        -- We need to connect the processStep result to the addFutureWitness properties
+        -- Let's unfold processStep to extract the GContent property
+        unfold processStep at h_j ⊢
+        split at h_j ⊢  -- first unpair
+        split at h_j ⊢  -- second unpair
+        split at h_j ⊢  -- if nodeIdx < length
+        · rename_i h_node
+          split at h_j ⊢  -- match decode
+          · -- none: contradicts h_eq (would not add new edge)
+            simp at h_eq
+          · rename_i psi
+            split at h_j ⊢  -- if F(psi)
+            · rename_i h_F
+              split at h_j ⊢  -- if witnessed
+              · simp at h_eq  -- contradicts new edge being added
+              · -- addFutureWitness branch
+                -- h_eq tells us: addFutureWitness edges = g.edges ++ [(nodeIdx, g.nodes.length, .forward)]
+                -- And we're looking at src = nodeIdx, dst = g.nodes.length
+                simp only [WitnessGraph.addFutureWitness] at h_eq h_j ⊢
+                -- Extract that source node matches
+                have h_src_match : (Nat.unpair (Nat.unpair n).2).1 = src := by
+                  have := List.append_cancel_left h_eq
+                  simp at this; exact this.1
+                simp only [WitnessGraph.nodeAt, List.getElem_append_right (Nat.le_refl _),
+                  Nat.sub_self, List.getElem_cons_zero]
+                rw [← h_src_match] at h_src
+                conv_lhs => rw [show (g.nodes ++ [_])[src] = g.nodes[src] from by
+                  rw [List.getElem_append_left h_src]]
+                rw [h_src_match]
+                exact addFutureWitness_GContent_extends g _ h_node _ h_F
+            · split at h_j ⊢  -- if P(psi)
+              · split at h_j ⊢  -- if witnessed
+                · simp at h_eq
+                · -- addPastWitness: backward edge, contradicts forward in h_eq
+                  simp only [WitnessGraph.addPastWitness] at h_eq
+                  have := List.append_cancel_left h_eq
+                  simp at this
+              · simp at h_eq
+        · simp at h_eq
+    · -- Case: processStep added a backward edge - impossible for forward edge
+      -- After simp, the new backward edge is eliminated (forward ≠ backward)
+      -- so h_edge is already just the old edge membership
+      rw [h_eq] at h_edge
+      simp [List.mem_append, WitnessEdge.mk.injEq] at h_edge
+      -- h_edge now is: ⟨i, j, .forward⟩ ∈ g.edges (backward case eliminated)
+      have h_ev := buildWitnessGraph_edgesValid rootMCS n
+      have ⟨h_i_valid, h_j_valid⟩ := h_ev _ h_edge
+      simp [WitnessEdge.valid] at h_i_valid h_j_valid
+      have h_ih := ih h_i_valid h_j_valid h_edge
+      have h_stable_i := processStep_node_preserved g n i h_i_valid
+      have h_stable_j := processStep_node_preserved g n j h_j_valid
+      have h_eq_i := getElem?_eq_implies_getElem_eq _ _ i h_i_valid h_i h_stable_i.symm
+      have h_eq_j := getElem?_eq_implies_getElem_eq _ _ j h_j_valid h_j h_stable_j.symm
+      simp only [WitnessGraph.nodeAt] at h_ih ⊢
+      rw [← h_eq_i, ← h_eq_j]
+      exact h_ih
+
+/-- **Theorem 4: HContent Propagation**
+
+For any backward edge (i, j) in the witness graph, HContent of node i's
+MCS is a subset of node j's MCS. Symmetric to GContent propagation. -/
+theorem witnessGraph_HContent_propagates (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (i j : Nat) (k : Nat)
+    (h_i : i < (buildWitnessGraph rootMCS k).nodes.length)
+    (h_j : j < (buildWitnessGraph rootMCS k).nodes.length)
+    (h_edge : (⟨i, j, .backward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k).edges) :
+    HContent ((buildWitnessGraph rootMCS k).nodeAt i h_i).mcs.val ⊆
+      ((buildWitnessGraph rootMCS k).nodeAt j h_j).mcs.val := by
+  induction k with
+  | zero =>
+    simp [buildWitnessGraph, initialWitnessGraph] at h_edge
+  | succ n ih =>
+    simp only [buildWitnessGraph] at h_edge h_i h_j ⊢
+    let g := buildWitnessGraph rootMCS n
+    have h_cases := processStep_edges_subset_or_new g n
+    rcases h_cases with h_same | ⟨src, h_src, h_eq⟩ | ⟨src, h_src, h_eq⟩
+    · -- Case: edges unchanged
+      have h_old := h_same _ h_edge
+      have h_ev := buildWitnessGraph_edgesValid rootMCS n
+      have ⟨h_i_valid, h_j_valid⟩ := h_ev _ h_old
+      simp [WitnessEdge.valid] at h_i_valid h_j_valid
+      have h_ih := ih h_i_valid h_j_valid h_old
+      have h_stable_i := processStep_node_preserved g n i h_i_valid
+      have h_stable_j := processStep_node_preserved g n j h_j_valid
+      have h_eq_i := getElem?_eq_implies_getElem_eq _ _ i h_i_valid h_i h_stable_i.symm
+      have h_eq_j := getElem?_eq_implies_getElem_eq _ _ j h_j_valid h_j h_stable_j.symm
+      simp only [WitnessGraph.nodeAt] at h_ih ⊢
+      rw [← h_eq_i, ← h_eq_j]
+      exact h_ih
+    · -- Case: processStep added a forward edge - backward edge can't match
+      -- After simp, the new forward edge is eliminated (backward ≠ forward)
+      rw [h_eq] at h_edge
+      simp [List.mem_append, WitnessEdge.mk.injEq] at h_edge
+      have h_ev := buildWitnessGraph_edgesValid rootMCS n
+      have ⟨h_i_valid, h_j_valid⟩ := h_ev _ h_edge
+      simp [WitnessEdge.valid] at h_i_valid h_j_valid
+      have h_ih := ih h_i_valid h_j_valid h_edge
+      have h_stable_i := processStep_node_preserved g n i h_i_valid
+      have h_stable_j := processStep_node_preserved g n j h_j_valid
+      have h_eq_i := getElem?_eq_implies_getElem_eq _ _ i h_i_valid h_i h_stable_i.symm
+      have h_eq_j := getElem?_eq_implies_getElem_eq _ _ j h_j_valid h_j h_stable_j.symm
+      simp only [WitnessGraph.nodeAt] at h_ih ⊢
+      rw [← h_eq_i, ← h_eq_j]
+      exact h_ih
+    · -- Case: processStep added a backward edge
+      rw [h_eq] at h_edge
+      simp [List.mem_append] at h_edge
+      rcases h_edge with h_old | h_new
+      · -- Old edge
+        have h_ev := buildWitnessGraph_edgesValid rootMCS n
+        have ⟨h_i_valid, h_j_valid⟩ := h_ev _ h_old
+        simp [WitnessEdge.valid] at h_i_valid h_j_valid
+        have h_ih := ih h_i_valid h_j_valid h_old
+        have h_stable_i := processStep_node_preserved g n i h_i_valid
+        have h_stable_j := processStep_node_preserved g n j h_j_valid
+        have h_eq_i := getElem?_eq_implies_getElem_eq _ _ i h_i_valid h_i h_stable_i.symm
+        have h_eq_j := getElem?_eq_implies_getElem_eq _ _ j h_j_valid h_j h_stable_j.symm
+        simp only [WitnessGraph.nodeAt] at h_ih ⊢
+        rw [← h_eq_i, ← h_eq_j]
+        exact h_ih
+      · -- New edge: i = src, j = g.nodes.length
+        obtain ⟨h_i_eq, h_j_eq⟩ := h_new
+        subst h_i_eq; subst h_j_eq
+        have h_stable_src := processStep_node_preserved g n src h_src
+        have h_eq_src := getElem?_eq_implies_getElem_eq _ _ src h_src h_i h_stable_src.symm
+        simp only [WitnessGraph.nodeAt] at h_eq_src ⊢
+        rw [← h_eq_src]
+        -- Unfold processStep to get to the addPastWitness branch
+        unfold processStep at h_j ⊢
+        split at h_j ⊢
+        split at h_j ⊢
+        split at h_j ⊢
+        · rename_i h_node
+          split at h_j ⊢
+          · simp at h_eq
+          · rename_i psi
+            split at h_j ⊢
+            · split at h_j ⊢
+              · simp at h_eq
+              · -- addFutureWitness: forward edge, contradicts backward in h_eq
+                simp only [WitnessGraph.addFutureWitness] at h_eq
+                have := List.append_cancel_left h_eq
+                simp at this
+            · split at h_j ⊢
+              · rename_i h_P
+                split at h_j ⊢
+                · simp at h_eq
+                · -- addPastWitness branch
+                  simp only [WitnessGraph.addPastWitness] at h_eq h_j ⊢
+                  have h_src_match : (Nat.unpair (Nat.unpair n).2).1 = src := by
+                    have := List.append_cancel_left h_eq
+                    simp at this; exact this.1
+                  simp only [WitnessGraph.nodeAt, List.getElem_append_right (Nat.le_refl _),
+                    Nat.sub_self, List.getElem_cons_zero]
+                  rw [← h_src_match] at h_src
+                  conv_lhs => rw [show (g.nodes ++ [_])[src] = g.nodes[src] from by
+                    rw [List.getElem_append_left h_src]]
+                  rw [h_src_match]
+                  exact addPastWitness_HContent_extends g _ h_node _ h_P
+              · simp at h_eq
+        · simp at h_eq
 
 end Bimodal.Metalogic.Bundle
