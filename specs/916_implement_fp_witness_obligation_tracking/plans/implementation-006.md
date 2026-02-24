@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 60-90 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/916_implement_fp_witness_obligation_tracking/reports/research-010.md (deferred concretization approach)
@@ -86,7 +86,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Define Witness Graph Structure [NOT STARTED]
+### Phase 1: Define Witness Graph Structure [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Define the core data structures for the witness graph with ordering constraints
@@ -131,6 +131,22 @@ After this implementation:
 - `lake build` succeeds
 - All definitions type-check
 - No sorries introduced
+
+**Progress:**
+
+**Session: 2026-02-23, sess_1771892810_8cdc73**
+- Added: `ObligationType` inductive type (future/past obligation classification)
+- Added: `WitnessObligation` structure (node index + obligation type)
+- Added: `WitnessNode` structure (MCS subtype + source tracking)
+- Added: `EdgeDirection` and `WitnessEdge` types for temporal ordering edges
+- Added: `WitnessGraph` structure (nodes, edges, obligations, resolved map)
+- Added: `WitnessGraph.WellFormed` structure with 4 invariants (nonempty, edges_valid, obligations_valid, resolved_valid)
+- Added: `witnessSeed` definition and `witnessSeed_consistent` theorem (duplicated from DovetailingChain to avoid circular imports)
+- Added: `witnessSeed_future_consistent` and `witnessSeed_past_consistent` (full proofs, ~50 lines each)
+- Added: `initialWitnessGraph` with well-formedness proof
+- Added: `WitnessGraph.addWitness` with preservation lemmas (length, nonempty, node preservation, new node access, resolved map)
+- Completed: All Phase 1 objectives
+- Sorries: 0 introduced
 
 ---
 
