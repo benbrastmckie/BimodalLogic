@@ -450,10 +450,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-24T03:29:31Z",
+      "last_updated": "2026-02-24T03:32:47Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -526,19 +526,19 @@
           "summary": "Implementation progress review and path forward analysis for WitnessGraph.lean Phase 3 sorries and Phases 4-6"
         },
         {
-          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-007.md",
-          "type": "plan",
-          "summary": "Revised 6-phase plan with restructured Phase 3 (4 sub-phases) and simplified Phases 4-6 (28-44h remaining)"
-        },
-        {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-012.md",
           "type": "research",
           "summary": "Progress review: WitnessGraph.lean has 48 build errors (invisible to full build) from context-exhausted agent; committed version has 5 sorries; working copy approach is mathematically sound but needs mechanical error fixes"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-008.md",
+          "type": "plan",
+          "summary": "v8: Fix 48 build errors in working copy, simplified 4-phase approach (12-20h)"
         }
       ],
       "session_id": "sess_1771900002_09f22f",
       "researched": "2026-02-21T22:44:48Z",
-      "planned": "2026-02-24T02:25:27Z",
+      "planned": "2026-02-24T03:32:47Z",
       "started": "2026-02-20T20:19:56Z"
     }
   ],

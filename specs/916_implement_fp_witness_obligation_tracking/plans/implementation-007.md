@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 28-44 hours (revised from 60-90)
 - **Dependencies**: None
 - **Research Inputs**: research-010.md (deferred concretization), research-011.md (progress review)
@@ -72,7 +72,7 @@ This plan revises implementation-006 based on progress review (research-011). Ph
 
 ---
 
-### Phase 3: Complete Witness Graph Properties [PARTIAL]
+### Phase 3: Complete Witness Graph Properties [IN PROGRESS]
 
 - **Dependencies**: Phases 1-2
 - **Goal**: Close 5 remaining sorries in property proofs
