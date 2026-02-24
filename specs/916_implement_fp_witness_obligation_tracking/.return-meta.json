@@ -1,11 +1,21 @@
 {
-  "status": "researched",
-  "session_id": "sess_1771713181_5174b1",
+  "status": "planned",
+  "summary": "6-phase implementation plan for Deferred Concretization approach to close forward_F and backward_P sorries via witness graph construction",
   "artifacts": [
     {
-      "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-010.md",
-      "type": "research",
-      "summary": "Evaluates constraint-based family construction and normal form reduction approaches; identifies 'deferred concretization' (a mosaic-method variant producing Int-embeddable witness graphs) as the most viable path for closing forward_F/backward_P sorries"
+      "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-006.md",
+      "type": "plan",
+      "summary": "6-phase plan: witness graph structure, construction, properties, Int embedding, global coherence, integration"
     }
-  ]
+  ],
+  "next_steps": "Run /implement 916 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1771892413_946d71",
+    "agent_type": "planner-agent",
+    "duration_seconds": 300,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": "60-90"
+  }
 }

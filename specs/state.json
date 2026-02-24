@@ -6,34 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 920,
-      "project_name": "refactor_point_located_state_using_possibility_predicate",
-      "status": "not_started",
-      "language": "latex",
-      "created": "2026-02-21T00:00:00Z",
-      "last_updated": "2026-02-21T00:00:00Z",
-      "source_file": "/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex"
-    },
-    {
-      "project_number": 919,
-      "project_name": "fix_tagged_issues_in_06_spatial_tex",
-      "status": "not_started",
-      "language": "latex",
-      "created": "2026-02-21T00:00:00Z",
-      "last_updated": "2026-02-21T00:00:00Z",
-      "dependencies": [918],
-      "source_file": "/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex"
-    },
-    {
-      "project_number": 918,
-      "project_name": "update_latex_context_conventions_from_06_spatial_notes",
-      "status": "not_started",
-      "language": "meta",
-      "created": "2026-02-21T00:00:00Z",
-      "last_updated": "2026-02-21T00:00:00Z",
-      "source_file": "/home/benjamin/Projects/Logos/Theory/latex/subfiles/06-Spatial.tex"
-    },
-    {
       "project_number": 917,
       "project_name": "fix_forward_f_backward_p_temporal_witness_strictness",
       "status": "not_started",
@@ -478,10 +450,10 @@
     {
       "project_number": 916,
       "project_name": "implement_fp_witness_obligation_tracking",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-20T08:48:38Z",
-      "last_updated": "2026-02-21T22:44:48Z",
+      "last_updated": "2026-02-24T00:24:49Z",
       "artifacts": [
         {
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
@@ -552,11 +524,16 @@
           "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-010.md",
           "type": "research",
           "summary": "Evaluates constraint-based family construction and normal form reduction approaches; identifies deferred concretization (mosaic-method variant producing Int-embeddable witness graphs) as the most viable path for closing forward_F/backward_P sorries"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-006.md",
+          "type": "plan",
+          "summary": "6-phase plan: witness graph structure, construction, properties, Int embedding, global coherence, integration"
         }
       ],
-      "session_id": "sess_1771713181_5174b1",
+      "session_id": "sess_1771892413_946d71",
       "researched": "2026-02-21T22:44:48Z",
-      "planned": "2026-02-21T11:05:35Z",
+      "planned": "2026-02-24T00:24:49Z",
       "started": "2026-02-20T20:19:56Z"
     }
   ],
@@ -581,9 +558,9 @@
     }
   ],
   "task_counts": {
-    "active": 13,
-    "not_started": 12,
-    "total": 336
+    "active": 10,
+    "not_started": 10,
+    "total": 333
   },
   "repository_health": {
     "last_assessed": "2026-02-20T00:15:00Z",
