@@ -239,7 +239,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Prove Witness Graph Properties [NOT STARTED]
+### Phase 3: Prove Witness Graph Properties [PARTIAL]
 
 - **Dependencies**: Phase 2
 - **Goal**: Prove that the witness graph satisfies F/P witness existence and G/H propagation

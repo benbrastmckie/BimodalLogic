@@ -103,11 +103,37 @@ fresh Lindenbaum extensions.
 - 0 sorries introduced
 - 0 axioms introduced
 
-## Next Steps
+---
 
-Phase 3: Prove Witness Graph Properties
-- Prove `witnessGraph_forward_F_local` (local witness existence for F-obligations)
-- Prove `witnessGraph_backward_P_local` (local witness existence for P-obligations)
-- Prove `witnessGraph_GContent_propagates` (G-content through forward edges)
-- Prove `witnessGraph_acyclic` (no cycles in edge relation)
-- Prove `witnessGraph_countable` (countable node set)
+## Phase 3: Prove Witness Graph Properties [IN PROGRESS]
+
+**Session**: 2026-02-23, sess_1771895035_2fab82
+**Status**: Phase 3 PARTIAL (context exhaustion)
+
+### Progress Made
+
+Added ~315 lines of property proof infrastructure. Key proofs started:
+
+| Proof Started | Status |
+|--------------|--------|
+| `forward_F_witness_exists` | Partial - structure in place |
+| `backward_P_witness_exists` | Partial - mirrors forward |
+| `GContent_propagates_through_forward` | In progress |
+| `node_monotonicity_lemmas` | Multiple helper lemmas added |
+
+### Current Blockers
+
+1. **Build errors**: Omega arithmetic issues with Nat subtraction comparisons
+2. **7 sorries**: Remaining proof obligations need completion
+3. **Context exhaustion**: Agent hit context limits before finishing
+
+### Files Modified
+
+- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` (now ~1503 lines)
+
+### Next Steps
+
+Continue Phase 3:
+- Fix omega arithmetic issues (likely need explicit Nat.sub_le lemmas)
+- Complete 7 remaining sorries
+- Verify build passes
