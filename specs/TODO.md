@@ -28,7 +28,28 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-02-24
 
-**Description**: Comprehensive strategy study synthesizing 16 research reports and 12 plan versions of failed attempts to close `forward_F` and `backward_P` in `DovetailingChain.lean`. All bottom-up chain constructions (linear chains, enriched chains, omega-squared chains) have been proven to share the same fundamental obstruction: Lindenbaum extensions are nonconstructive and can introduce G(neg(psi)) at any step, permanently killing F(psi). The study must: (1) Formally characterize the "Lindenbaum opacity theorem" as a barrier that blocks all bottom-up approaches regardless of nesting depth or scheduling strategy, referencing the counterexample from plan v012 Phase 3 blocker analysis (`specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-blocker-analysis-20260224.md`); (2) Evaluate the canonical model approach (worlds = all MCSes, R = GContent-inclusion, forward_F from step lemma, linearity from temp_a axiom, embed into Int via countability) — audit the existing codebase for relevant axioms, lemmas, and MCS infrastructure already present; (3) Identify precisely what new infrastructure the canonical model approach requires and estimate effort with confidence; (4) Evaluate sorry debt acceptance as an alternative — what downstream theorems depend on forward_F/backward_P, what is the total transitive sorry count, and what is the cost of never closing these; (5) Compare at least three approaches (canonical model, bulldozing, sorry debt) with risk-adjusted effort estimates and produce a ranked recommendation. Key files to study: `DovetailingChain.lean` (lines 1380-1800, the existing forward chain infrastructure), `WitnessGraph.lean` (0-sorry file with `witnessSeed_consistent`), `TemporalContent.lean` (GContent/HContent definitions and new monotonicity lemmas), all files in `specs/916_implement_fp_witness_obligation_tracking/` (16 research reports + 12 plans + handoffs).
+**Description**: Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. **CONSTRAINT: Sorry debt is NEVER acceptable** — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.
+
+The study should focus on LEARNING FROM FAILURES to inspire creative solutions:
+
+**Pattern Analysis of Failed Approaches:**
+- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?
+- Is the "Lindenbaum opacity" a fundamental barrier, or does it reveal a hidden assumption we can drop?
+- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?
+
+**Creative Reframing Questions:**
+- What if the problem is not "prove forward_F for a chain" but "find a structure that makes forward_F trivially true"?
+- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar "witness existence under opacity" problems?
+- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?
+- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?
+
+**Mandatory Outputs:**
+1. A "lessons learned" document identifying the precise mathematical property that all failed approaches lacked
+2. At least 3 genuinely novel approach ideas that do NOT fit the "bottom-up chain construction" pattern
+3. For each novel approach: a preliminary feasibility assessment with confidence level
+4. A ranked recommendation with clear decision criteria
+
+Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.
 
 ---
 
