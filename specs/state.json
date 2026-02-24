@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 921,
+      "project_name": "enforce_zero_proof_debt_policy_for_lean_task_completion",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-24T00:00:00Z",
+      "last_updated": "2026-02-24T00:00:00Z",
+      "description": "Update all Lean-related agents, skills, policy documents, and plan formats to enforce a strict zero-proof-debt completion gate: NO sorry may remain in a completed Lean task, NO new axioms may be introduced, and proof debt acceptance (e.g. Option B style sorry deferral) is forbidden. Covers proof-debt-policy.md, lean-implementation-agent.md, lean-research-agent.md, planner-agent.md, plan-format.md, and skill-lean-implementation SKILL.md."
+    },
+    {
       "project_number": 917,
       "project_name": "fix_forward_f_backward_p_temporal_witness_strictness",
       "status": "not_started",
@@ -564,7 +573,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 921,
+  "next_project_number": 922,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
