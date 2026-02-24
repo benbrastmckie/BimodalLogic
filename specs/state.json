@@ -40,17 +40,12 @@
     {
       "project_number": 922,
       "project_name": "strategy_study_fp_witness_completeness_blockers",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-24T17:33:56Z",
-      "last_updated": "2026-02-24T21:32:49Z",
+      "last_updated": "2026-02-24T21:35:15Z",
       "session_id": "sess_1771968240_caa5d9",
       "artifacts": [
-        {
-          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase Canonical Quotient implementation plan for bimodal completeness with fail-fast linearity validation"
-        },
         {
           "path": "specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224.md",
           "type": "summary",
@@ -60,11 +55,16 @@
           "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-003.md",
           "type": "research",
           "summary": "Post-blocker analysis confirming canonical_reachable_linear resolves Phase 3 blocker; identifies OrderIso Int path via orderIsoIntOfLinearSuccPredArch as the definitive approach, with strict-future-witness problem analysis and NoMaxOrder/NoMinOrder as key prerequisite risks."
+        },
+        {
+          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "v2 Canonical Quotient plan: Phases 1-2 complete, Phase 3 unblocked via OrderIso approach using orderIsoIntOfLinearSuccPredArch"
         }
       ],
       "description": "Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. CONSTRAINT: Sorry debt is NEVER acceptable — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.\n\nThe study should focus on LEARNING FROM FAILURES to inspire creative solutions:\n\n**Pattern Analysis of Failed Approaches:**\n- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?\n- Is the \"Lindenbaum opacity\" a fundamental barrier, or does it reveal a hidden assumption we can drop?\n- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?\n\n**Creative Reframing Questions:**\n- What if the problem is not \"prove forward_F for a chain\" but \"find a structure that makes forward_F trivially true\"?\n- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar \"witness existence under opacity\" problems?\n- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?\n- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?\n\n**Mandatory Outputs:**\n1. A \"lessons learned\" document identifying the precise mathematical property that all failed approaches lacked\n2. At least 3 genuinely novel approach ideas that do NOT fit the \"bottom-up chain construction\" pattern\n3. For each novel approach: a preliminary feasibility assessment with confidence level\n4. A ranked recommendation with clear decision criteria\n\nKey artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.",
       "researched": "2026-02-24T21:32:49Z",
-      "planned": "2026-02-24T18:22:21Z",
+      "planned": "2026-02-24T21:35:15Z",
       "started": "2026-02-24T19:18:29Z"
     },
     {
