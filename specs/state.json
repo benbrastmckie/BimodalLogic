@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 923,
+      "project_name": "formalize_frame_correspondence_linearity",
+      "status": "not_started",
+      "language": "lean",
+      "description": "Formalize the frame correspondence theorem to show that the linearity axiom characterizes linear frames. This theorem proves: if the linearity axiom schema F(p) AND F(q) -> F(p AND q) OR F(p AND F(q)) OR F(F(p) AND q) is valid on a Kripke frame, then the frame's accessibility relation is linear. Required to complete task 922's Phase 3 blocker (canonical_reachable_linear theorem).",
+      "created": "2026-02-24T20:32:06Z",
+      "last_updated": "2026-02-24T20:32:06Z"
+    },
+    {
       "project_number": 922,
       "project_name": "strategy_study_fp_witness_completeness_blockers",
       "status": "blocked",
@@ -628,7 +637,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 923,
+  "next_project_number": 924,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
