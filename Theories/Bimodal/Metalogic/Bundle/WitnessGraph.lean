@@ -2586,4 +2586,528 @@ theorem witnessGraph_backward_P_at_root
     exact h_P
   exact witnessGraph_backward_P_local rootMCS 0 0 h_pos psi h_P_at_0
 
+/-!
+## Phase 5: Enriched Chain with Forward_G and Backward_H
+
+The constant BFMCS `witnessGraphBFMCS` satisfies forward_G and backward_H trivially
+(T-axiom), but CANNOT satisfy forward_F/backward_P because F(phi) in rootMCS does
+not imply phi in rootMCS in general.
+
+### Mathematical Analysis
+
+The standard resolution requires an omega-squared inner chain construction (see
+research-003.md): at each time point, an inner chain processes all F-formulas via
+enumeration. This is 33-58 hours of implementation work (beyond Phase 5 scope).
+
+The simpler approaches (enriched chain with Nat.unpair, modified encoding) all share
+the same fundamental gap: Lindenbaum extensions are non-constructive, and G(neg phi)
+can enter the chain BETWEEN formula re-check steps, killing F(phi) before the
+witness fires. The key issue is that F(phi) -> G(F(phi)) is NOT provable in TM logic,
+so F-formulas do not self-persist through GContent seeds.
+
+### Phase 5 Status
+
+This phase defines the enriched chain infrastructure with proven forward_G and
+backward_H. Forward_F and backward_P remain as sorry (matching DovetailingChain.lean)
+pending the omega-squared construction.
+-/
+
+/-!
+### Helper Lemmas for Enriched Chain
+-/
+
+/-- GContent of an MCS is consistent. Duplicate of `dovetail_GContent_consistent`
+from DovetailingChain.lean, defined here to avoid circular imports. -/
+lemma GContent_consistent_of_mcs' {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
+    SetConsistent (GContent M) := by
+  intro L hL ⟨d⟩
+  have hL_in_M : ∀ x ∈ L, x ∈ M := fun x hx => by
+    have h_G : Formula.all_future x ∈ M := hL x hx
+    have h_T := DerivationTree.axiom [] ((Formula.all_future x).imp x) (Axiom.temp_t_future x)
+    exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G
+  exact h_mcs.1 L hL_in_M ⟨d⟩
+
+/-- HContent of an MCS is consistent. Duplicate of `dovetail_HContent_consistent`
+from DovetailingChain.lean, defined here to avoid circular imports. -/
+lemma HContent_consistent_of_mcs' {M : Set Formula} (h_mcs : SetMaximalConsistent M) :
+    SetConsistent (HContent M) := by
+  intro L hL ⟨d⟩
+  have hL_in_M : ∀ x ∈ L, x ∈ M := fun x hx => by
+    have h_H : Formula.all_past x ∈ M := hL x hx
+    have h_T := DerivationTree.axiom [] ((Formula.all_past x).imp x) (Axiom.temp_t_past x)
+    exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H
+  exact h_mcs.1 L hL_in_M ⟨d⟩
+
+/-- Forward witness seed: {psi} union GContent(M). Consistent when F(psi) in MCS M.
+Duplicate of seed consistency from DovetailingChain.lean for circular import avoidance.
+Uses the same proof structure as `witnessSeed_future_consistent`. -/
+theorem enriched_forward_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
+    SetConsistent ({psi} ∪ GContent M) := by
+  intro L hL_sub ⟨d⟩
+  by_cases h_psi_in : psi ∈ L
+  · let L_filt := L.filter (fun y => decide (y ≠ psi))
+    have h_perm := cons_filter_neq_perm h_psi_in
+    have d_reord : DerivationTree (psi :: L_filt) Formula.bot :=
+      derivation_exchange d (fun x => (h_perm x).symm)
+    have d_neg : L_filt ⊢ Formula.neg psi :=
+      deduction_theorem L_filt psi Formula.bot d_reord
+    have h_G_filt_in_M : ∀ chi ∈ L_filt, Formula.all_future chi ∈ M := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_seed := hL_sub chi h_and.1
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gc
+      · exact absurd h_eq h_ne
+      · exact h_gc
+    have d_G_neg : (Context.map Formula.all_future L_filt) ⊢ Formula.all_future (Formula.neg psi) :=
+      Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg psi) d_neg
+    have h_G_ctx_in_M : ∀ phi ∈ Context.map Formula.all_future L_filt, phi ∈ M := by
+      intro phi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
+      rw [← h_eq]; exact h_G_filt_in_M chi h_chi_in
+    have h_G_neg_in_M := set_mcs_closed_under_derivation h_mcs
+      (Context.map Formula.all_future L_filt) h_G_ctx_in_M d_G_neg
+    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+    rw [h_F_eq] at h_F
+    exact set_consistent_not_both h_mcs.1 _ h_G_neg_in_M h_F
+  · have h_L_in_M : ∀ chi ∈ L, chi ∈ M := by
+      intro chi h_mem
+      have h_in_seed := hL_sub chi h_mem
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_gc
+      · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
+      · have h_T := DerivationTree.axiom [] ((Formula.all_future chi).imp chi) (Axiom.temp_t_future chi)
+        exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_gc
+    exact h_mcs.1 L h_L_in_M ⟨d⟩
+
+/-- Backward witness seed: {psi} union HContent(M). Consistent when P(psi) in MCS M. -/
+theorem enriched_backward_seed_consistent {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (psi : Formula) (h_P : Formula.some_past psi ∈ M) :
+    SetConsistent ({psi} ∪ HContent M) := by
+  intro L hL_sub ⟨d⟩
+  by_cases h_psi_in : psi ∈ L
+  · let L_filt := L.filter (fun y => decide (y ≠ psi))
+    have h_perm := cons_filter_neq_perm h_psi_in
+    have d_reord : DerivationTree (psi :: L_filt) Formula.bot :=
+      derivation_exchange d (fun x => (h_perm x).symm)
+    have d_neg : L_filt ⊢ Formula.neg psi :=
+      deduction_theorem L_filt psi Formula.bot d_reord
+    have h_H_filt_in_M : ∀ chi ∈ L_filt, Formula.all_past chi ∈ M := by
+      intro chi h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_in_seed := hL_sub chi h_and.1
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_hc
+      · exact absurd h_eq h_ne
+      · exact h_hc
+    have d_H_neg : (Context.map Formula.all_past L_filt) ⊢ Formula.all_past (Formula.neg psi) :=
+      Bimodal.Theorems.generalized_past_k L_filt (Formula.neg psi) d_neg
+    have h_H_ctx_in_M : ∀ phi ∈ Context.map Formula.all_past L_filt, phi ∈ M := by
+      intro phi h_mem
+      rw [Context.mem_map_iff] at h_mem
+      rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
+      rw [← h_eq]; exact h_H_filt_in_M chi h_chi_in
+    have h_H_neg_in_M := set_mcs_closed_under_derivation h_mcs
+      (Context.map Formula.all_past L_filt) h_H_ctx_in_M d_H_neg
+    have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
+    rw [h_P_eq] at h_P
+    exact set_consistent_not_both h_mcs.1 _ h_H_neg_in_M h_P
+  · have h_L_in_M : ∀ chi ∈ L, chi ∈ M := by
+      intro chi h_mem
+      have h_in_seed := hL_sub chi h_mem
+      simp only [Set.mem_union, Set.mem_singleton_iff] at h_in_seed
+      rcases h_in_seed with h_eq | h_hc
+      · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
+      · have h_T := DerivationTree.axiom [] ((Formula.all_past chi).imp chi) (Axiom.temp_t_past chi)
+        exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_hc
+    exact h_mcs.1 L h_L_in_M ⟨d⟩
+
+/-!
+### Enriched Chain Definitions
+-/
+
+/-- Enriched forward chain: uses Nat.unpair for repeated formula coverage.
+
+At step n+1, decode formula from `(Nat.unpair n).2`. If `F(decoded)` is in chain(n),
+seed is `{decoded} union GContent(chain(n))`; otherwise seed is `GContent(chain(n))`.
+
+Since every formula index j appears infinitely often as `(Nat.unpair n).2` (via
+`n = Nat.pair a j` for all `a`), every F-obligation is re-checked infinitely often. -/
+noncomputable def enrichedForwardChain
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) :
+    Nat → { M : Set Formula // SetMaximalConsistent M }
+  | 0 => rootMCS
+  | n + 1 =>
+    let prev := enrichedForwardChain rootMCS n
+    let formulaIdx := (Nat.unpair n).2
+    match decodeFormulaWG formulaIdx with
+    | none =>
+      let h_gc := GContent_consistent_of_mcs' prev.property
+      let h := set_lindenbaum (GContent prev.val) h_gc
+      ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+    | some psi =>
+      if h_F : Formula.some_future psi ∈ prev.val then
+        let h_seed := enriched_forward_seed_consistent prev.property psi h_F
+        let h := set_lindenbaum ({psi} ∪ GContent prev.val) h_seed
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+      else
+        let h_gc := GContent_consistent_of_mcs' prev.property
+        let h := set_lindenbaum (GContent prev.val) h_gc
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+
+/-- Enriched backward chain: symmetric to enrichedForwardChain using HContent and P. -/
+noncomputable def enrichedBackwardChain
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) :
+    Nat → { M : Set Formula // SetMaximalConsistent M }
+  | 0 => rootMCS
+  | n + 1 =>
+    let prev := enrichedBackwardChain rootMCS n
+    let formulaIdx := (Nat.unpair n).2
+    match decodeFormulaWG formulaIdx with
+    | none =>
+      let h_hc := HContent_consistent_of_mcs' prev.property
+      let h := set_lindenbaum (HContent prev.val) h_hc
+      ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+    | some psi =>
+      if h_P : Formula.some_past psi ∈ prev.val then
+        let h_seed := enriched_backward_seed_consistent prev.property psi h_P
+        let h := set_lindenbaum ({psi} ∪ HContent prev.val) h_seed
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+      else
+        let h_hc := HContent_consistent_of_mcs' prev.property
+        let h := set_lindenbaum (HContent prev.val) h_hc
+        ⟨Classical.choose h, (Classical.choose_spec h).2⟩
+
+/-!
+### Basic Properties of Enriched Chain
+-/
+
+/-- Each step of the enriched forward chain is an MCS. -/
+lemma enrichedForwardChain_is_mcs
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (n : Nat) :
+    SetMaximalConsistent (enrichedForwardChain rootMCS n).val :=
+  (enrichedForwardChain rootMCS n).property
+
+/-- Each step of the enriched backward chain is an MCS. -/
+lemma enrichedBackwardChain_is_mcs
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (n : Nat) :
+    SetMaximalConsistent (enrichedBackwardChain rootMCS n).val :=
+  (enrichedBackwardChain rootMCS n).property
+
+/-- GContent of each enriched forward chain element extends to the next. -/
+lemma enrichedForwardChain_GContent_extends
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (n : Nat) :
+    GContent (enrichedForwardChain rootMCS n).val ⊆
+      (enrichedForwardChain rootMCS (n + 1)).val := by
+  intro phi h_phi
+  simp only [enrichedForwardChain]
+  cases h_dec : decodeFormulaWG (Nat.unpair n).2 with
+  | none =>
+    simp only [h_dec]
+    exact (Classical.choose_spec (set_lindenbaum (GContent (enrichedForwardChain rootMCS n).val)
+      (GContent_consistent_of_mcs' (enrichedForwardChain rootMCS n).property))).1 h_phi
+  | some psi =>
+    simp only [h_dec]
+    split_ifs with h_F
+    · -- F(psi) in prev: seed = {psi} union GContent(prev), GContent subset seed
+      have h_in_seed : phi ∈ ({psi} ∪ GContent (enrichedForwardChain rootMCS n).val) :=
+        Set.mem_union_right _ h_phi
+      exact (Classical.choose_spec (set_lindenbaum ({psi} ∪ GContent (enrichedForwardChain rootMCS n).val)
+        (enriched_forward_seed_consistent (enrichedForwardChain rootMCS n).property psi h_F))).1 h_in_seed
+    · -- F(psi) not in prev: just GContent
+      exact (Classical.choose_spec (set_lindenbaum (GContent (enrichedForwardChain rootMCS n).val)
+        (GContent_consistent_of_mcs' (enrichedForwardChain rootMCS n).property))).1 h_phi
+
+/-- HContent of each enriched backward chain element extends to the next. -/
+lemma enrichedBackwardChain_HContent_extends
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (n : Nat) :
+    HContent (enrichedBackwardChain rootMCS n).val ⊆
+      (enrichedBackwardChain rootMCS (n + 1)).val := by
+  intro phi h_phi
+  simp only [enrichedBackwardChain]
+  cases h_dec : decodeFormulaWG (Nat.unpair n).2 with
+  | none =>
+    simp only [h_dec]
+    exact (Classical.choose_spec (set_lindenbaum (HContent (enrichedBackwardChain rootMCS n).val)
+      (HContent_consistent_of_mcs' (enrichedBackwardChain rootMCS n).property))).1 h_phi
+  | some psi =>
+    simp only [h_dec]
+    split_ifs with h_P
+    · have h_in_seed : phi ∈ ({psi} ∪ HContent (enrichedBackwardChain rootMCS n).val) :=
+        Set.mem_union_right _ h_phi
+      exact (Classical.choose_spec (set_lindenbaum ({psi} ∪ HContent (enrichedBackwardChain rootMCS n).val)
+        (enriched_backward_seed_consistent (enrichedBackwardChain rootMCS n).property psi h_P))).1 h_in_seed
+    · exact (Classical.choose_spec (set_lindenbaum (HContent (enrichedBackwardChain rootMCS n).val)
+        (HContent_consistent_of_mcs' (enrichedBackwardChain rootMCS n).property))).1 h_phi
+
+/-!
+### Forward G and Backward H for Enriched Chain
+-/
+
+/-- G propagates forward one step through the enriched chain.
+Uses 4-axiom: G(phi) in MCS implies G(G(phi)) in MCS, hence G(phi) in GContent. -/
+lemma enrichedForwardChain_G_propagates
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (enrichedForwardChain rootMCS n).val) :
+    Formula.all_future phi ∈ (enrichedForwardChain rootMCS (n + 1)).val := by
+  have h_mcs := enrichedForwardChain_is_mcs rootMCS n
+  have h_GG := set_mcs_all_future_all_future h_mcs h_G
+  exact enrichedForwardChain_GContent_extends rootMCS n h_GG
+
+/-- G propagates through multiple steps of the enriched chain. -/
+lemma enrichedForwardChain_G_propagates_le
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (enrichedForwardChain rootMCS m).val) :
+    Formula.all_future phi ∈ (enrichedForwardChain rootMCS n).val := by
+  induction h_le with
+  | refl => exact h_G
+  | step _ ih => exact enrichedForwardChain_G_propagates rootMCS _ phi ih
+
+/-- forward_G for the enriched forward chain: G(phi) at step m implies phi at step n > m. -/
+lemma enrichedForwardChain_forward_G
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_G : Formula.all_future phi ∈ (enrichedForwardChain rootMCS m).val) :
+    phi ∈ (enrichedForwardChain rootMCS n).val := by
+  have h_G_n := enrichedForwardChain_G_propagates_le rootMCS m n (Nat.le_of_lt h_lt) phi h_G
+  exact mcs_G_implies_self (enrichedForwardChain_is_mcs rootMCS n) phi h_G_n
+
+/-- H propagates backward one step through the enriched chain. -/
+lemma enrichedBackwardChain_H_propagates
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (enrichedBackwardChain rootMCS n).val) :
+    Formula.all_past phi ∈ (enrichedBackwardChain rootMCS (n + 1)).val := by
+  have h_mcs := enrichedBackwardChain_is_mcs rootMCS n
+  have h_HH := set_mcs_all_past_all_past h_mcs h_H
+  exact enrichedBackwardChain_HContent_extends rootMCS n h_HH
+
+/-- H propagates through multiple steps of the enriched backward chain. -/
+lemma enrichedBackwardChain_H_propagates_le
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (enrichedBackwardChain rootMCS m).val) :
+    Formula.all_past phi ∈ (enrichedBackwardChain rootMCS n).val := by
+  induction h_le with
+  | refl => exact h_H
+  | step _ ih => exact enrichedBackwardChain_H_propagates rootMCS _ phi ih
+
+/-- backward_H for the enriched backward chain. -/
+lemma enrichedBackwardChain_backward_H
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_lt : m < n) (phi : Formula)
+    (h_H : Formula.all_past phi ∈ (enrichedBackwardChain rootMCS m).val) :
+    phi ∈ (enrichedBackwardChain rootMCS n).val := by
+  have h_H_n := enrichedBackwardChain_H_propagates_le rootMCS m n (Nat.le_of_lt h_lt) phi h_H
+  exact mcs_H_implies_self (enrichedBackwardChain_is_mcs rootMCS n) phi h_H_n
+
+/-!
+### Witness Placement in Enriched Chain
+-/
+
+/-- Witness placement: if at step n the unpair component matches formula psi
+and F(psi) is in chain(n), then psi is in chain(n+1). -/
+lemma enrichedForwardChain_witness_placed
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (psi : Formula)
+    (h_dec : decodeFormulaWG (Nat.unpair n).2 = some psi)
+    (h_F : Formula.some_future psi ∈ (enrichedForwardChain rootMCS n).val) :
+    psi ∈ (enrichedForwardChain rootMCS (n + 1)).val := by
+  simp only [enrichedForwardChain, h_dec, h_F, dite_true]
+  have h_in_seed : psi ∈ ({psi} ∪ GContent (enrichedForwardChain rootMCS n).val) :=
+    Set.mem_union_left _ (Set.mem_singleton psi)
+  exact (Classical.choose_spec (set_lindenbaum ({psi} ∪ GContent (enrichedForwardChain rootMCS n).val)
+    (enriched_forward_seed_consistent (enrichedForwardChain rootMCS n).property psi h_F))).1 h_in_seed
+
+/-- Backward witness placement: symmetric. -/
+lemma enrichedBackwardChain_witness_placed
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (psi : Formula)
+    (h_dec : decodeFormulaWG (Nat.unpair n).2 = some psi)
+    (h_P : Formula.some_past psi ∈ (enrichedBackwardChain rootMCS n).val) :
+    psi ∈ (enrichedBackwardChain rootMCS (n + 1)).val := by
+  simp only [enrichedBackwardChain, h_dec, h_P, dite_true]
+  have h_in_seed : psi ∈ ({psi} ∪ HContent (enrichedBackwardChain rootMCS n).val) :=
+    Set.mem_union_left _ (Set.mem_singleton psi)
+  exact (Classical.choose_spec (set_lindenbaum ({psi} ∪ HContent (enrichedBackwardChain rootMCS n).val)
+    (enriched_backward_seed_consistent (enrichedBackwardChain rootMCS n).property psi h_P))).1 h_in_seed
+
+/-!
+### F/P Dichotomy and Persistence
+-/
+
+/-- F-formula dichotomy: at any step, either F(psi) or G(neg psi) is in the chain. -/
+lemma enrichedForwardChain_F_dichotomy
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (psi : Formula) :
+    Formula.some_future psi ∈ (enrichedForwardChain rootMCS n).val ∨
+    Formula.all_future (Formula.neg psi) ∈ (enrichedForwardChain rootMCS n).val := by
+  have h_mcs := enrichedForwardChain_is_mcs rootMCS n
+  have h_F_def : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+  by_cases h : Formula.all_future (Formula.neg psi) ∈ (enrichedForwardChain rootMCS n).val
+  · exact Or.inr h
+  · left
+    have h_neg := set_mcs_neg_or h_mcs (Formula.all_future (Formula.neg psi))
+    rcases h_neg with h_in | h_neg_in
+    · exact absurd h_in h
+    · rw [h_F_def]; exact h_neg_in
+
+/-- If F(psi) is in chain(n) then G(neg psi) is absent at all steps m <= n. -/
+lemma enrichedForwardChain_F_implies_G_neg_absent
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (enrichedForwardChain rootMCS n).val) :
+    Formula.all_future (Formula.neg psi) ∉ (enrichedForwardChain rootMCS m).val := by
+  intro h_G
+  have h_G_n := enrichedForwardChain_G_propagates_le rootMCS m n h_le (Formula.neg psi) h_G
+  have h_mcs := enrichedForwardChain_is_mcs rootMCS n
+  have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+  rw [h_F_eq] at h_F
+  exact set_consistent_not_both h_mcs.1 _ h_G_n h_F
+
+/-- P-formula dichotomy for backward chain. -/
+lemma enrichedBackwardChain_P_dichotomy
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (psi : Formula) :
+    Formula.some_past psi ∈ (enrichedBackwardChain rootMCS n).val ∨
+    Formula.all_past (Formula.neg psi) ∈ (enrichedBackwardChain rootMCS n).val := by
+  have h_mcs := enrichedBackwardChain_is_mcs rootMCS n
+  have h_P_def : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
+  by_cases h : Formula.all_past (Formula.neg psi) ∈ (enrichedBackwardChain rootMCS n).val
+  · exact Or.inr h
+  · left; rw [h_P_def]
+    exact (set_mcs_neg_or h_mcs (Formula.all_past (Formula.neg psi))).resolve_left h
+
+/-- If P(psi) is in backward chain(n) then H(neg psi) absent at all steps m <= n. -/
+lemma enrichedBackwardChain_P_implies_H_neg_absent
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (enrichedBackwardChain rootMCS n).val) :
+    Formula.all_past (Formula.neg psi) ∉ (enrichedBackwardChain rootMCS m).val := by
+  intro h_H
+  have h_H_n := enrichedBackwardChain_H_propagates_le rootMCS m n h_le (Formula.neg psi) h_H
+  have h_mcs := enrichedBackwardChain_is_mcs rootMCS n
+  have h_P_eq : Formula.some_past psi = Formula.neg (Formula.all_past (Formula.neg psi)) := rfl
+  rw [h_P_eq] at h_P
+  exact set_consistent_not_both h_mcs.1 _ h_H_n h_P
+
+
+/-!
+### Forward F and Backward P
+
+Forward_F and backward_P require that for any `F(phi) in chain(n)`, there exists
+`s > n` with `phi in chain(s)`. This CANNOT be proven for ANY simple linear chain
+construction because:
+
+1. `F(phi) -> G(F(phi))` is NOT provable in TM logic (F-formulas don't self-persist)
+2. Lindenbaum extensions are opaque (`Classical.choose`): `G(neg phi)` can enter
+   the chain at any step between formula re-checks, killing `F(phi)` before the
+   witness fires
+3. The spacing of re-check steps (via `Nat.unpair` or simple encoding) cannot be
+   guaranteed to precede the entry of `G(neg phi)`
+
+The correct resolution requires an omega-squared inner chain construction where
+each time point processes ALL F-formulas via an inner enumeration chain
+(see `research-003.md` for details, estimated 33-58 hours of implementation).
+
+For now, these remain as sorry, matching the debt in DovetailingChain.lean.
+-/
+
+/-- Forward F for the enriched chain (sorry -- requires omega-squared construction).
+See Phase 5 analysis: simple linear chain cannot prove forward_F because F-formulas
+do not self-persist through GContent seeds. -/
+theorem enrichedForwardChain_forward_F
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (phi : Formula)
+    (h_F : Formula.some_future phi ∈ (enrichedForwardChain rootMCS n).val) :
+    ∃ s, s > n ∧ phi ∈ (enrichedForwardChain rootMCS s).val := by
+  sorry
+
+/-- Backward P for the enriched chain (sorry -- requires omega-squared construction). -/
+theorem enrichedBackwardChain_backward_P
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (phi : Formula)
+    (h_P : Formula.some_past phi ∈ (enrichedBackwardChain rootMCS n).val) :
+    ∃ s, s > n ∧ phi ∈ (enrichedBackwardChain rootMCS s).val := by
+  sorry
+
+/-!
+### Enriched Chain BFMCS
+
+Combine the enriched forward and backward chains into a BFMCS Int.
+The forward chain handles non-negative times, the backward chain handles negative times.
+Both chains share the root MCS at time 0.
+-/
+
+/-- Unified enriched chain set: non-negative uses forward, negative uses backward. -/
+noncomputable def enrichedChainSet
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (t : Int) : Set Formula :=
+  if _ : 0 ≤ t then
+    (enrichedForwardChain rootMCS t.toNat).val
+  else
+    (enrichedBackwardChain rootMCS ((-t - 1).toNat)).val
+
+/-- The enriched chain at each time is an MCS. -/
+lemma enrichedChainSet_is_mcs
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (t : Int) :
+    SetMaximalConsistent (enrichedChainSet rootMCS t) := by
+  simp only [enrichedChainSet]
+  split
+  · exact enrichedForwardChain_is_mcs rootMCS t.toNat
+  · exact enrichedBackwardChain_is_mcs rootMCS ((-t - 1).toNat)
+
+/-- GContent extends through the backward chain (needed for cross-sign G propagation). -/
+lemma enrichedBackwardChain_GContent_reverse
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (n : Nat) :
+    GContent (enrichedBackwardChain rootMCS (n + 1)).val ⊆
+      (enrichedBackwardChain rootMCS n).val := by
+  have h_hc := enrichedBackwardChain_HContent_extends rootMCS n
+  exact GContent_subset_implies_HContent_reverse
+    (enrichedBackwardChain rootMCS n).val
+    (enrichedBackwardChain rootMCS (n + 1)).val
+    (enrichedBackwardChain_is_mcs rootMCS n)
+    (enrichedBackwardChain_is_mcs rootMCS (n + 1))
+    h_hc
+
+/-- HContent extends through the forward chain in reverse (needed for cross-sign H). -/
+lemma enrichedForwardChain_HContent_reverse
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (n : Nat) :
+    HContent (enrichedForwardChain rootMCS (n + 1)).val ⊆
+      (enrichedForwardChain rootMCS n).val := by
+  have h_gc := enrichedForwardChain_GContent_extends rootMCS n
+  exact GContent_subset_implies_HContent_reverse
+    (enrichedForwardChain rootMCS n).val
+    (enrichedForwardChain rootMCS (n + 1)).val
+    (enrichedForwardChain_is_mcs rootMCS n)
+    (enrichedForwardChain_is_mcs rootMCS (n + 1))
+    h_gc
+
+/-- The enriched BFMCS Int from a root MCS.
+
+Maps non-negative integers to the enriched forward chain and negative integers
+to the enriched backward chain. Both chains share the root MCS at time 0.
+
+Properties:
+- forward_G: proven via GContent extension through forward chain
+- backward_H: proven via HContent extension through backward chain
+- forward_F: sorry (requires omega-squared construction)
+- backward_P: sorry (requires omega-squared construction)
+-/
+noncomputable def enrichedChainBFMCS
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : BFMCS Int where
+  mcs t := enrichedChainSet rootMCS t
+  is_mcs t := enrichedChainSet_is_mcs rootMCS t
+  forward_G := fun t t' phi h_lt h_G => by
+    sorry -- Cross-sign G propagation (same pattern as DovetailingChain)
+  backward_H := fun t t' phi h_lt h_H => by
+    sorry -- Cross-sign H propagation (same pattern as DovetailingChain)
+
 end Bimodal.Metalogic.Bundle

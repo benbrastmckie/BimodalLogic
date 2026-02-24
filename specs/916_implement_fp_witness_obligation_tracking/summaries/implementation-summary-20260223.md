@@ -244,3 +244,53 @@ Phase 5 needs to prove forward_F and backward_P. Options:
 1. Use constant family + witness graph bridge (requires showing psi in rootMCS whenever F(psi) in rootMCS, which is false in general)
 2. Build a non-constant BFMCS (GContent chain with witness placement)
 3. Use Zorn's lemma approach (GHCoherentPartialFamily from ZornFamily.lean)
+
+---
+
+## Phase 5: Global Temporal Coherence [BLOCKED]
+
+**Session**: 2026-02-23/24, sess_1771912616_e1d1af
+**Status**: BLOCKED (Mathematical obstruction)
+
+### Progress Made
+
+Added ~524 lines implementing an "enriched chain" construction that attempts to extend the constant family with forward/backward chains carrying F/P witness obligations.
+
+### Definitions Added
+
+| Name | Purpose |
+|------|---------|
+| `enrichedForwardChain` | Forward chain from rootMCS with witness placement |
+| `enrichedBackwardChain` | Backward chain from rootMCS with witness placement |
+| `enrichedChainSet` | Combined chain mapping Int → Set Formula |
+| `enrichedChainSet_is_mcs` | MCS property for combined chain |
+| `enrichedForwardChain_GContent_extends` | GContent propagation forward |
+| `enrichedBackwardChain_HContent_extends` | HContent propagation backward |
+| `enrichedChainBFMCS` | BFMCS Int from enriched chains |
+
+### Mathematical Obstruction
+
+Forward_F and backward_P require **omega-squared construction** as documented in research reports 3-10:
+
+1. **Problem**: The flat chain construction (linear time ℤ) cannot satisfy forward_F witness obligations because:
+   - Each time step processes one (node, formula) pair via Nat.unpair
+   - An F(psi) obligation at time t needs a witness at time s > t where psi holds
+   - But the witness must also satisfy all G-content from times [t, s)
+   - This creates nested obligations requiring omega² construction
+
+2. **Same as DovetailingChain.lean**: The 4 sorries in the new code mirror the same obstruction:
+   - `enrichedChainBFMCS.forward_F`: sorry
+   - `enrichedChainBFMCS.backward_P`: sorry
+   - `enrichedChainBFMCS.forward_G`: sorry (cross-sign propagation)
+   - `enrichedChainBFMCS.backward_H`: sorry (cross-sign propagation)
+
+### Files Modified
+
+- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` (now ~3113 lines, 4 sorries)
+
+### Next Steps
+
+This is the same fundamental obstruction identified in research reports 3-10. Options:
+1. **Accept sorry debt**: These sorries match DovetailingChain.lean - the witness graph infrastructure is complete but the temporal coherence properties require omega² construction
+2. **Omega² research**: Invest 30-40 hours in implementing the inner chain construction
+3. **Alternative approach**: Investigate if ZornFamily.lean's GHCoherentPartialFamily can be extended

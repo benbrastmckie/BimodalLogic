@@ -1,7 +1,7 @@
 # Implementation Plan: Task #916
 
 - **Task**: 916 - Implement F/P Witness Obligation Tracking
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 8-14 hours (revised from 12-20)
 - **Dependencies**: None
 - **Research Inputs**: research-013.md (8 error fix analysis with Option A recommendation)
@@ -203,28 +203,29 @@ witnesses in the graph. Phase 5 will connect these to the BFMCS.
 
 ---
 
-### Phase 5: Global Temporal Coherence [NOT STARTED]
+### Phase 5: Global Temporal Coherence [BLOCKED]
 
 - **Dependencies**: Phase 4
 - **Goal**: Prove all 4 temporal coherence properties for BFMCS
-- **Estimated effort**: 3-5 hours
+- **Estimated effort**: 3-5 hours (BLOCKED - requires omega² construction)
 
-**Key insight**: These become near-corollaries of Phase 3A properties combined with Phase 4 embedding.
+**Mathematical Obstruction**: Forward_F and backward_P require omega-squared construction (documented in research reports 3-10). The flat chain construction cannot satisfy witness obligations because nested obligations require inner chains at each time step.
+
+**Progress (sess_1771912616_e1d1af)**:
+- Added ~524 lines implementing enriched chain construction
+- Defined enrichedForwardChain, enrichedBackwardChain, enrichedChainBFMCS
+- 4 sorries remain: forward_F, backward_P, forward_G, backward_H (cross-sign)
+- Same obstruction as DovetailingChain.lean sorries
 
 **Tasks**:
-- [ ] Prove `witnessGraphBFMCS_forward_G`:
-  - If G(phi) ∈ mcs(t) and t < s, then phi ∈ mcs(s)
-  - Uses: GContent propagation + embedding
-- [ ] Prove `witnessGraphBFMCS_backward_H`:
-  - Symmetric to forward_G
-- [ ] Prove `witnessGraphBFMCS_forward_F`:
-  - If F(phi) ∈ mcs(t), then ∃s > t with phi ∈ mcs(s)
-  - Uses: `witnessGraph_forward_F_local` + embedding
-- [ ] Prove `witnessGraphBFMCS_backward_P`:
-  - Symmetric to forward_F
+- [x] Attempted enriched chain approach (blocked)
+- [ ] Prove `witnessGraphBFMCS_forward_G` - sorry (cross-sign propagation)
+- [ ] Prove `witnessGraphBFMCS_backward_H` - sorry (cross-sign propagation)
+- [ ] Prove `witnessGraphBFMCS_forward_F` - sorry (omega² required)
+- [ ] Prove `witnessGraphBFMCS_backward_P` - sorry (omega² required)
 
 **Verification**:
-- All 4 theorems proven without sorry
+- NOT MET: 4 sorries in WitnessGraph.lean
 
 ---
 

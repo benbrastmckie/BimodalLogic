@@ -34,7 +34,7 @@ technical_debt:
 
 ### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
 - **Effort**: 8-14 hours (revised per implementation-009)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-20
 - **Research**: [research-001.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md), [research-002.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md), [research-003.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md) (Team Research v3), [research-004.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-004.md) (Obstruction Analysis), [research-005.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md) (Synthesis), [research-006.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-006.md) (Constraints), [research-007.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-007.md) (Proof Technique), [research-008.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-008.md) (Root Cause), [research-009.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-009.md) (Canonical Model vs AliveF), [research-010.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-010.md) (Constraint-Based / Deferred Concretization), [research-011.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-011.md) (Progress Review), [research-012.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-012.md) (Error Analysis), [research-013.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-013.md) (Option A Fix Patterns)

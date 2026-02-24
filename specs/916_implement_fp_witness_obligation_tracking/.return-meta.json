@@ -1,7 +1,7 @@
 {
   "status": "partial",
   "started_at": "2026-02-23T22:00:00Z",
-  "completed_at": "2026-02-23T23:30:00Z",
+  "completed_at": "2026-02-24T01:00:00Z",
   "artifacts": [
     {
       "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-013.md",
@@ -11,17 +11,18 @@
     {
       "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260223.md",
       "type": "summary",
-      "summary": "Phases 3A and 4 completed: WitnessGraph.lean builds with 0 errors, 0 sorries (2589 lines). Phase 4 defines constant BFMCS Int with T-axiom forward_G/backward_H plus witness graph bridge lemmas."
+      "summary": "Phases 3A-4 complete (0 errors), Phase 5 partial: enriched chain construction with 4 sorries for forward_F/backward_P (omega-squared obstruction)"
     }
   ],
   "partial_progress": {
-    "stage": "phase_4_completed",
-    "details": "Phase 4 complete: defined witnessGraphBFMCS (constant family with T-axiom forward_G/backward_H), witness graph bridge lemmas for F/P at root, edge ordering compatibility. Design revision: direct node-index mapping fails for forward_G with backward edges. Phases 5-6 remain.",
+    "stage": "phase_5_blocked",
+    "details": "Phase 5 hit fundamental mathematical obstruction: forward_F and backward_P require omega-squared construction (documented in research reports 3-10). Enriched chain construction added (~524 lines) but has 4 sorries. Same obstruction as DovetailingChain.lean.",
     "phases_completed": 4,
     "phases_total": 6
   },
+  "requires_user_review": true,
   "completion_data": {
-    "completion_summary": "Phase 4: Defined constant BFMCS Int from witness graph root MCS with T-axiom forward_G/backward_H. Added bridge lemmas connecting witness graph F/P properties to BFMCS. Revised design from direct node-index mapping (fails for forward_G with backward edges) to constant family approach. WitnessGraph.lean: 2589 lines, 0 sorries, 0 errors.",
+    "completion_summary": "Phases 3A-4 complete. Phase 5 blocked: forward_F/backward_P require omega-squared construction (same obstruction as DovetailingChain.lean sorries). WitnessGraph.lean: 3113 lines, 4 sorries.",
     "roadmap_items": []
   },
   "metadata": {
