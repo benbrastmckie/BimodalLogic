@@ -275,6 +275,22 @@ After this implementation:
 - Graph acyclicity proven
 - No sorries in Phase 3 lemmas
 
+**Progress:**
+
+**Session: 2026-02-23, sess_1771896905_ed3886**
+- Fixed: implicit argument synthesis errors in `processStep_creates_fresh_future_witness` and `processStep_creates_fresh_past_witness` by replacing raw `Classical.choose_spec (set_lindenbaum _ _)` calls with pre-built helper lemmas `addFutureWitness_contains_formula`, `addFutureWitness_GContent_extends`, `addPastWitness_contains_formula`, `addPastWitness_HContent_extends`
+- Fixed: omega failure in `witnessGraph_forward_F_local` by extracting `h_len.1` before arithmetic, using `Nat.lt_succ_self`
+- Completed: `processStep_creates_fresh_future_witness` sufficiency proof (processStep = addFutureWitness) via unfold/split on match + dite simplification
+- Completed: `processStep_creates_fresh_past_witness` sufficiency proof (symmetric)
+- Completed: `witnessGraph_forward_F_local` not-yet-witnessed branch (psi in witness MCS)
+- Added: `witnessGraph_backward_P_local` partial proof (not-yet-witnessed, F-not-in-MCS branch complete)
+- Build: succeeds (0 errors). Remaining 5 sorries in 4 theorems:
+  - `witnessGraph_forward_F_local`: 1 sorry (isWitnessed=true case)
+  - `witnessGraph_backward_P_local`: 2 sorries (isWitnessed=true case, F-blocks-P case)
+  - `witnessGraph_GContent_propagates`: 1 sorry (full theorem)
+  - `witnessGraph_HContent_propagates`: 1 sorry (full theorem)
+- Sorries: 7 -> 5 (2 eliminated, net reduction accounting for new structural sorries)
+
 ---
 
 ### Phase 4: Implement Int Embedding [NOT STARTED]

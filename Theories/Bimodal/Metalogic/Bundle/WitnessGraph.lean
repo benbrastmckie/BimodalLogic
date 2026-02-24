@@ -1266,12 +1266,27 @@ theorem processStep_creates_fresh_future_witness (g : WitnessGraph) (n : Nat)
       simp only [WitnessGraph.addFutureWitness, WitnessGraph.nodeAt,
         List.getElem_append_right (Nat.le_refl _)]
       simp only [Nat.sub_self, List.getElem_cons_zero]
-      exact ⟨(Classical.choose_spec (set_lindenbaum _ _)).1 (formula_mem_witnessSeed _ _),
-             fun _ h_phi => (Classical.choose_spec (set_lindenbaum _ _)).1
-               (GContent_subset_witnessSeed_future _ psi h_phi)⟩
+      exact ⟨addFutureWitness_contains_formula g i h_i psi h_F,
+             addFutureWitness_GContent_extends g i h_i psi h_F⟩
   -- Now prove processStep g n = g.addFutureWitness i h_i psi h_F
-  -- This requires carefully tracking the double-unpair match
-  sorry
+  -- Unfold processStep and track through double-unpair match
+  unfold processStep
+  -- After unfolding, the let-destructuring gives us (_, pairIdx) = Nat.unpair n
+  -- and (nodeIdx, formulaIdx) = Nat.unpair pairIdx
+  -- We need h_unpair to determine that nodeIdx = i and formulaIdx = encodeFormulaWG psi
+  simp only [h_unpair]
+  simp only [show i < g.nodes.length from h_i, dite_true]
+  have h_decode : decodeFormulaWG (encodeFormulaWG psi) = some psi := decodeFormulaWG_encodeFormulaWG psi
+  split
+  · -- case none: contradicts h_decode
+    rename_i h_none
+    rw [h_decode] at h_none
+    exact absurd h_none nofun
+  · -- case some psi_1:
+    rename_i psi_1 h_some
+    rw [h_decode] at h_some
+    cases h_some
+    simp only [h_F, dite_true, h_not_witnessed, ite_false, Bool.false_eq_true]
 
 /-- Symmetric version for past witnesses. -/
 theorem processStep_creates_fresh_past_witness (g : WitnessGraph) (n : Nat)
@@ -1295,10 +1310,23 @@ theorem processStep_creates_fresh_past_witness (g : WitnessGraph) (n : Nat)
       simp only [WitnessGraph.addPastWitness, WitnessGraph.nodeAt,
         List.getElem_append_right (Nat.le_refl _)]
       simp only [Nat.sub_self, List.getElem_cons_zero]
-      exact ⟨(Classical.choose_spec (set_lindenbaum _ _)).1 (formula_mem_witnessSeed _ _),
-             fun _ h_phi => (Classical.choose_spec (set_lindenbaum _ _)).1
-               (HContent_subset_witnessSeed_past _ psi h_phi)⟩
-  sorry
+      exact ⟨addPastWitness_contains_formula g i h_i psi h_P,
+             addPastWitness_HContent_extends g i h_i psi h_P⟩
+  -- Now prove processStep g n = g.addPastWitness i h_i psi h_P
+  unfold processStep
+  simp only [h_unpair]
+  simp only [show i < g.nodes.length from h_i, dite_true]
+  have h_decode : decodeFormulaWG (encodeFormulaWG psi) = some psi := decodeFormulaWG_encodeFormulaWG psi
+  split
+  · -- case none: contradicts h_decode
+    rename_i h_none
+    rw [h_decode] at h_none
+    exact absurd h_none nofun
+  · -- case some psi_1:
+    rename_i psi_1 h_some
+    rw [h_decode] at h_some
+    cases h_some
+    simp only [h_not_F, dite_false, h_P, dite_true, h_not_witnessed, ite_false, Bool.false_eq_true]
 
 /-!
 ### Phase 3 Main Theorems
@@ -1351,7 +1379,9 @@ theorem witnessGraph_forward_F_local (rootMCS : { S : Set Formula // SetMaximalC
     -- The witness node is at index g_n.nodes.length, in graph at step n+1
     use n + 1, g_n.nodes.length
     have h_j_bound : g_n.nodes.length < (buildWitnessGraph rootMCS (n + 1)).nodes.length := by
-      simp only [buildWitnessGraph]; omega
+      simp only [buildWitnessGraph]
+      rw [h_len.1]
+      exact Nat.lt_succ_self _
     use h_j_bound
     constructor
     · -- Edge exists at step n+1
@@ -1362,7 +1392,9 @@ theorem witnessGraph_forward_F_local (rootMCS : { S : Set Formula // SetMaximalC
       -- We need to show psi is in the witness node at step n+1
       -- processStep g_n n = g_n.addFutureWitness i h_i_at_n psi h_F_at_n
       -- The witness node at g_n.nodes.length has MCS extending {psi} union GContent
-      sorry  -- TODO: Show psi in witness MCS
+      have h_bound : g_n.nodes.length < (processStep g_n n).nodes.length := by
+        rw [h_len.1]; exact Nat.lt_succ_self _
+      exact (h_len.2 h_bound).1
 
 /-- **Theorem 2: Backward P Local Witness Existence**
 
@@ -1375,7 +1407,50 @@ theorem witnessGraph_backward_P_local (rootMCS : { S : Set Formula // SetMaximal
     ∃ (k' : Nat) (j : Nat) (h_j : j < (buildWitnessGraph rootMCS k').nodes.length),
       (⟨i, j, .backward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k').edges ∧
       psi ∈ ((buildWitnessGraph rootMCS k').nodeAt j h_j).mcs.val := by
-  sorry
+  -- Step 1: Find a step n >= k where the pair (i, encodeFormulaWG psi) is processed
+  obtain ⟨n, h_n_ge_k, h_unpair⟩ := coverage_step_exists i psi k
+  -- Step 2: Node i exists at step n (by monotonicity from step k)
+  have h_i_at_n : i < (buildWitnessGraph rootMCS n).nodes.length :=
+    lt_of_lt_of_le h_i (buildWitnessGraph_nodes_length_mono_le rootMCS k n h_n_ge_k)
+  -- Step 3: P(psi) is in node i's MCS at step n (same MCS by stability)
+  have h_node_stable := buildWitnessGraph_node_stable rootMCS k n h_n_ge_k i h_i
+  have h_node_eq := getElem?_eq_implies_getElem_eq _ _ i h_i h_i_at_n h_node_stable.symm
+  have h_P_at_n : Formula.some_past psi ∈
+      ((buildWitnessGraph rootMCS n).nodeAt i h_i_at_n).mcs.val := by
+    simp only [WitnessGraph.nodeAt] at h_P ⊢
+    rw [← h_node_eq]
+    exact h_P
+  -- Step 4: Case split on whether the obligation is already witnessed
+  let g_n := buildWitnessGraph rootMCS n
+  by_cases h_wit : g_n.isWitnessed i (.past psi) = true
+  · -- Case: already witnessed
+    sorry  -- TODO: Extract witness from isWitnessed = true (same issue as forward case)
+  · -- Case: not yet witnessed - fresh witness created at step n+1
+    -- Also need to check if F(psi) is in the MCS (processStep checks F first)
+    have h_wit_false : g_n.isWitnessed i (.past psi) = false := by
+      cases h_eq : g_n.isWitnessed i (.past psi) <;> simp_all
+    by_cases h_F_at_n : Formula.some_future psi ∈ ((buildWitnessGraph rootMCS n).nodeAt i h_i_at_n).mcs.val
+    · -- F(psi) is also in MCS - processStep processes F first, not P
+      -- Need another step where F is already witnessed or this step gets P
+      -- This is a complication: processStep processes F before P
+      -- We need coverage to process again after F is handled
+      sorry  -- TODO: Handle case where F(psi) blocks P(psi) processing
+    · -- F(psi) is not in MCS - processStep will process P
+      have h_not_F : Formula.some_future psi ∉ (g_n.nodeAt i h_i_at_n).mcs.val := h_F_at_n
+      have ⟨h_edge, h_len⟩ := processStep_creates_fresh_past_witness g_n n i h_i_at_n psi
+        h_unpair h_not_F h_P_at_n h_wit_false
+      use n + 1, g_n.nodes.length
+      have h_j_bound : g_n.nodes.length < (buildWitnessGraph rootMCS (n + 1)).nodes.length := by
+        simp only [buildWitnessGraph]
+        rw [h_len.1]
+        exact Nat.lt_succ_self _
+      use h_j_bound
+      constructor
+      · simp only [buildWitnessGraph]
+        exact h_edge
+      · have h_bound : g_n.nodes.length < (processStep g_n n).nodes.length := by
+          rw [h_len.1]; exact Nat.lt_succ_self _
+        exact (h_len.2 h_bound).1
 
 /-- **Theorem 3: GContent Propagation**
 
