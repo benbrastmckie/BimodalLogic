@@ -24,11 +24,13 @@ technical_debt:
 
 ### 922. Strategy study: identify viable path for forward_F/backward_P completeness
 - **Effort**: 8-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Research**: [research-002.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260224.md](specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224.md)
+- **Blocked on**: canonical_reachable_linear theorem (linearity proof requires frame correspondence approach)
 
 **Description**: Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. **CONSTRAINT: Sorry debt is NEVER acceptable** — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.
 

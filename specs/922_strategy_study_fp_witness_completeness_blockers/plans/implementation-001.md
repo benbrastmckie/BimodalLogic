@@ -1,7 +1,7 @@
 # Implementation Plan: Task #922 - Canonical Quotient Completeness Proof
 
 - **Task**: 922 - strategy_study_fp_witness_completeness_blockers
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Effort**: 24-36 hours
 - **Dependencies**: Task 916 (partial infrastructure in DovetailingChain.lean, WitnessGraph.lean)
 - **Research Inputs**: specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-001.md, research-002.md
