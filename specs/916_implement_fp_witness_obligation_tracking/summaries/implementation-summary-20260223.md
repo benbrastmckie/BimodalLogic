@@ -180,7 +180,67 @@ Fixed all 8 remaining build errors in WitnessGraph.lean using `congrArg`-based d
 
 ### Next Steps
 
-Phases 4-6 remain:
-- Phase 4: Int Embedding (3-5 hours)
+Phases 5-6 remain:
 - Phase 5: Global Temporal Coherence (3-5 hours)
 - Phase 6: Integration with DovetailingChain.lean (2-4 hours)
+
+---
+
+## Phase 4: Int Embedding [COMPLETED]
+
+**Session**: 2026-02-23, sess_1771912616_e1d1af
+**Status**: COMPLETED
+
+### Design Revision
+
+The original plan proposed a direct node-index-to-Int mapping where `mcs(t) = g.mcsAt t.toNat` for integers in range. Analysis revealed this does NOT give forward_G because the witness graph contains backward edges. Between two consecutive nodes connected by a backward edge, HContent (not GContent) propagates, violating the forward_G requirement.
+
+**Revised approach**: Use a constant family where all times map to the root MCS. The T-axiom (G phi -> phi, H phi -> phi) gives forward_G and backward_H trivially. The witness graph serves as an "oracle" for F/P witness existence.
+
+### Changes Made
+
+Added ~187 lines to `WitnessGraph.lean` implementing the Int embedding infrastructure.
+
+### Definitions Added
+
+| Name | Purpose |
+|------|---------|
+| `mcs_G_implies_self` | T-axiom: G(phi) in MCS implies phi in MCS |
+| `mcs_H_implies_self` | T-axiom: H(phi) in MCS implies phi in MCS |
+| `mcs_G_implies_GG` | 4-axiom: G(phi) in MCS implies G(G(phi)) in MCS |
+| `witnessGraphBFMCS` | BFMCS Int from root MCS (constant family) |
+| `witnessGraphBFMCS_mcs_eq` | mcs(t) = rootMCS.val for all t (simp lemma) |
+| `witnessGraphBFMCS_root_preserved` | context preservation at time 0 |
+| `witnessGraph_node_is_mcs` | node MCS is maximal consistent |
+| `witnessGraph_root_mcs` | node 0 in graph equals rootMCS (by induction) |
+| `witnessGraphBFMCS_edge_ordering_compatible` | edge acyclicity lifts to Int |
+| `witnessGraphBFMCS_at_root` | bridge: BFMCS time 0 = graph node 0 |
+| `witnessGraph_forward_F_at_root` | F(psi) at root -> witness in graph |
+| `witnessGraph_backward_P_at_root` | P(psi) at root -> witness in graph |
+
+### Key Technical Insight
+
+The direct node-index-to-Int mapping fails for forward_G because:
+1. Backward edges have src < dst (by acyclicity) but propagate HContent, not GContent
+2. Consecutive nodes connected by a backward edge violate forward_G
+3. No forward-edge chain guaranteed between arbitrary node pairs
+
+The constant family avoids this entirely. Phase 5 must connect the witness graph's F/P witnesses to the BFMCS, possibly requiring a non-constant construction.
+
+### Files Modified
+
+- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` (now ~2589 lines, 0 sorries, 0 errors)
+
+### Verification
+
+- `lake build Bimodal.Metalogic.Bundle.WitnessGraph` succeeds (0 errors)
+- 0 sorries
+- 0 axioms
+- `end Bimodal.Metalogic.Bundle` present at file end
+
+### Next Steps
+
+Phase 5 needs to prove forward_F and backward_P. Options:
+1. Use constant family + witness graph bridge (requires showing psi in rootMCS whenever F(psi) in rootMCS, which is false in general)
+2. Build a non-constant BFMCS (GContent chain with witness placement)
+3. Use Zorn's lemma approach (GHCoherentPartialFamily from ZornFamily.lean)

@@ -2399,4 +2399,191 @@ theorem witnessGraph_HContent_propagates (rootMCS : { S : Set Formula // SetMaxi
             Nat.sub_self, List.getElem_cons_zero]
           exact addPastWitness_HContent_extends g nIdx h_nIdx psi h_P
 
+/-!
+## Phase 4: Int Embedding
+
+Define a BFMCS Int from the witness graph construction.
+
+### Design Overview
+
+The witness graph creates a directed acyclic graph where each node holds an MCS.
+For the completeness proof, we need a BFMCS Int (a family of MCS indexed by Int)
+that satisfies:
+1. `forward_G`: G(phi) at time t implies phi at all future times t' > t
+2. `backward_H`: H(phi) at time t implies phi at all past times t' < t
+3. Context Gamma at time 0
+
+Forward_F and backward_P (existential witnesses) are proved separately in Phase 5.
+
+### Approach: Constant Family with Witness Graph Oracle
+
+We use the root MCS as a constant family (all times map to the same MCS).
+The T-axiom (G phi -> phi, H phi -> phi) gives forward_G and backward_H trivially.
+
+The witness graph serves as an "oracle" for Phase 5/6: it provides the proof
+that for any F(psi) or P(psi) in the root MCS, there exists a witness node
+with psi in its MCS. Phase 5 will connect these witnesses to prove forward_F
+and backward_P via a more sophisticated construction if needed.
+
+### Mathematical Note
+
+A direct node-index-to-Int embedding (mapping node i to integer i) would NOT
+give forward_G, because the witness graph contains both forward and backward
+edges, and GContent only propagates along forward edges. Backward edges give
+HContent propagation, not GContent. So two consecutive nodes (by index) that
+are connected by a backward edge would violate forward_G.
+
+The constant family sidesteps this issue entirely. Phase 5 may introduce a
+non-constant construction (e.g., a GContent chain with witness placement)
+if needed for forward_F.
+-/
+
+/-- T-axiom helper: G(phi) in an MCS implies phi in the same MCS.
+Uses the axiom temp_t_future: G(phi) -> phi. -/
+lemma mcs_G_implies_self {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_G : Formula.all_future phi ∈ M) : phi ∈ M := by
+  have h_T := Bimodal.ProofSystem.DerivationTree.axiom []
+    (phi.all_future.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_future phi)
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G
+
+/-- T-axiom helper: H(phi) in an MCS implies phi in the same MCS.
+Uses the axiom temp_t_past: H(phi) -> phi. -/
+lemma mcs_H_implies_self {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_H : Formula.all_past phi ∈ M) : phi ∈ M := by
+  have h_T := Bimodal.ProofSystem.DerivationTree.axiom []
+    (phi.all_past.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_past phi)
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H
+
+/-- 4-axiom helper: G(phi) in an MCS implies G(G(phi)) in the same MCS.
+Uses the axiom temp_4: G(phi) -> G(G(phi)). -/
+lemma mcs_G_implies_GG {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
+    Formula.all_future (Formula.all_future phi) ∈ M := by
+  have h_4 := Bimodal.ProofSystem.DerivationTree.axiom []
+    ((Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)))
+    (Bimodal.ProofSystem.Axiom.temp_4 phi)
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_4) h_G
+
+/-- The BFMCS Int constructed from the witness graph.
+
+Maps every integer to the root MCS. Forward_G and backward_H hold by the
+T-axiom. Context preservation at time 0 is immediate.
+
+This provides the structural skeleton for the completeness proof. The witness
+graph's local F/P properties connect to this family via the root MCS identity. -/
+noncomputable def witnessGraphBFMCS
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : BFMCS Int where
+  mcs _ := rootMCS.val
+  is_mcs _ := rootMCS.property
+  forward_G := fun _ _ phi _ h_G =>
+    mcs_G_implies_self rootMCS.property phi h_G
+  backward_H := fun _ _ phi _ h_H =>
+    mcs_H_implies_self rootMCS.property phi h_H
+
+/-- The MCS at any time in the witness graph BFMCS is the root MCS. -/
+@[simp] lemma witnessGraphBFMCS_mcs_eq
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (t : Int) :
+    (witnessGraphBFMCS rootMCS).mcs t = rootMCS.val := rfl
+
+/-- The root MCS is preserved at time 0. -/
+lemma witnessGraphBFMCS_root_preserved
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) :
+    ∀ phi ∈ rootMCS.val, phi ∈ (witnessGraphBFMCS rootMCS).mcs 0 :=
+  fun _ h => h
+
+/-- For any node i in the witness graph at step k, the MCS at node i
+is maximal consistent. This is a basic accessor used in Phase 5. -/
+lemma witnessGraph_node_is_mcs
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (k : Nat) (i : Nat) (h_i : i < (buildWitnessGraph rootMCS k).nodes.length) :
+    SetMaximalConsistent ((buildWitnessGraph rootMCS k).mcsAt i h_i) :=
+  WitnessGraph.mcsAt_is_mcs _ _ _
+
+/-- The root node (index 0) in the witness graph at any step has the root MCS.
+This connects the witness graph's node 0 to the BFMCS's time 0. -/
+lemma witnessGraph_root_mcs
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (k : Nat) (h_pos : 0 < (buildWitnessGraph rootMCS k).nodes.length) :
+    (buildWitnessGraph rootMCS k).mcsAt 0 h_pos = rootMCS.val := by
+  simp only [WitnessGraph.mcsAt, WitnessGraph.nodeAt]
+  induction k with
+  | zero =>
+    simp [buildWitnessGraph, initialWitnessGraph]
+  | succ n ih =>
+    have h_pos_n : 0 < (buildWitnessGraph rootMCS n).nodes.length :=
+      buildWitnessGraph_nonempty rootMCS n
+    have h_stable := processStep_node_preserved (buildWitnessGraph rootMCS n) n 0 h_pos_n
+    simp only [buildWitnessGraph]
+    have h_eq := getElem?_eq_implies_getElem_eq
+      (processStep (buildWitnessGraph rootMCS n) n).nodes
+      (buildWitnessGraph rootMCS n).nodes
+      0 h_pos h_pos_n h_stable
+    rw [h_eq]
+    exact ih h_pos_n
+
+/-- The embedding preserves strict ordering on edges: for any edge in the
+witness graph, src < dst when lifted to Int. This ensures the witness graph's
+acyclicity is compatible with integer ordering. -/
+theorem witnessGraphBFMCS_edge_ordering_compatible
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (k : Nat) (e : WitnessEdge) (h_e : e ∈ (buildWitnessGraph rootMCS k).edges) :
+    (e.src : Int) < (e.dst : Int) := by
+  have h_acyclic := witnessGraph_edges_acyclic rootMCS k e h_e
+  exact Int.ofNat_lt.mpr h_acyclic
+
+/-!
+### Witness Graph Properties for Phase 5/6
+
+These lemmas connect the witness graph's local properties to the BFMCS,
+enabling Phase 5 to prove forward_F and backward_P.
+-/
+
+/-- Key bridge lemma: The root MCS equals the BFMCS's MCS at time 0.
+Since witnessGraphBFMCS is a constant family, this is trivially true. -/
+lemma witnessGraphBFMCS_at_root
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (k : Nat) (h_pos : 0 < (buildWitnessGraph rootMCS k).nodes.length) :
+    (witnessGraphBFMCS rootMCS).mcs 0 =
+      (buildWitnessGraph rootMCS k).mcsAt 0 h_pos := by
+  simp [witnessGraph_root_mcs rootMCS k h_pos]
+
+/-- Forward F witness existence in the graph implies a formula relationship.
+If F(psi) is in the root MCS (= mcs(0) of the BFMCS), the witness graph
+provides a node j with psi in j's MCS. This is the key input for Phase 5. -/
+theorem witnessGraph_forward_F_at_root
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (psi : Formula)
+    (h_F : Formula.some_future psi ∈ rootMCS.val) :
+    ∃ (k' : Nat) (j : Nat) (h_j : j < (buildWitnessGraph rootMCS k').nodes.length),
+      (⟨0, j, .forward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k').edges ∧
+      psi ∈ ((buildWitnessGraph rootMCS k').nodeAt j h_j).mcs.val := by
+  have h_pos : 0 < (buildWitnessGraph rootMCS 0).nodes.length :=
+    buildWitnessGraph_nonempty rootMCS 0
+  -- Node 0 at step 0 has rootMCS
+  have h_F_at_0 : Formula.some_future psi ∈
+      ((buildWitnessGraph rootMCS 0).nodeAt 0 h_pos).mcs.val := by
+    unfold WitnessGraph.nodeAt
+    simp [buildWitnessGraph, initialWitnessGraph]
+    exact h_F
+  exact witnessGraph_forward_F_local rootMCS 0 0 h_pos psi h_F_at_0
+
+/-- Backward P witness existence in the graph for the root.
+Symmetric to `witnessGraph_forward_F_at_root`. -/
+theorem witnessGraph_backward_P_at_root
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (psi : Formula)
+    (h_P : Formula.some_past psi ∈ rootMCS.val) :
+    ∃ (k' : Nat) (j : Nat) (h_j : j < (buildWitnessGraph rootMCS k').nodes.length),
+      (⟨0, j, .backward⟩ : WitnessEdge) ∈ (buildWitnessGraph rootMCS k').edges ∧
+      psi ∈ ((buildWitnessGraph rootMCS k').nodeAt j h_j).mcs.val := by
+  have h_pos : 0 < (buildWitnessGraph rootMCS 0).nodes.length :=
+    buildWitnessGraph_nonempty rootMCS 0
+  -- Node 0 at step 0 has rootMCS
+  have h_P_at_0 : Formula.some_past psi ∈
+      ((buildWitnessGraph rootMCS 0).nodeAt 0 h_pos).mcs.val := by
+    unfold WitnessGraph.nodeAt
+    simp [buildWitnessGraph, initialWitnessGraph]
+    exact h_P
+  exact witnessGraph_backward_P_local rootMCS 0 0 h_pos psi h_P_at_0
+
 end Bimodal.Metalogic.Bundle

@@ -1,7 +1,7 @@
 {
   "status": "partial",
-  "started_at": "2026-02-23T18:00:00Z",
-  "completed_at": "2026-02-23T19:30:00Z",
+  "started_at": "2026-02-23T22:00:00Z",
+  "completed_at": "2026-02-23T23:30:00Z",
   "artifacts": [
     {
       "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-013.md",
@@ -11,17 +11,17 @@
     {
       "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260223.md",
       "type": "summary",
-      "summary": "Phase 3A completed: fixed all 8 build errors in WitnessGraph.lean with 0 sorries, 0 errors"
+      "summary": "Phases 3A and 4 completed: WitnessGraph.lean builds with 0 errors, 0 sorries (2589 lines). Phase 4 defines constant BFMCS Int with T-axiom forward_G/backward_H plus witness graph bridge lemmas."
     }
   ],
   "partial_progress": {
-    "stage": "phase_3A_completed",
-    "details": "Phase 3A complete: WitnessGraph.lean builds with 0 errors, 0 sorries. Phases 4-6 remain (Int embedding, temporal coherence, DovetailingChain integration).",
-    "phases_completed": 3,
+    "stage": "phase_4_completed",
+    "details": "Phase 4 complete: defined witnessGraphBFMCS (constant family with T-axiom forward_G/backward_H), witness graph bridge lemmas for F/P at root, edge ordering compatibility. Design revision: direct node-index mapping fails for forward_G with backward edges. Phases 5-6 remain.",
+    "phases_completed": 4,
     "phases_total": 6
   },
   "completion_data": {
-    "completion_summary": "Phase 3A: Fixed all 8 build errors in WitnessGraph.lean using congrArg-based dependent rewrite patterns. File now compiles with 0 errors and 0 sorries (2402 lines). Key patterns: processStep_outcome over unfold, congrArg for field extraction, decode before split.",
+    "completion_summary": "Phase 4: Defined constant BFMCS Int from witness graph root MCS with T-axiom forward_G/backward_H. Added bridge lemmas connecting witness graph F/P properties to BFMCS. Revised design from direct node-index mapping (fails for forward_G with backward edges) to constant family approach. WitnessGraph.lean: 2589 lines, 0 sorries, 0 errors.",
     "roadmap_items": []
   },
   "metadata": {
