@@ -1,75 +1,75 @@
 # Implementation Summary: Task #916 - Phase 3A Partial
 
 **Date**: 2026-02-24
-**Session**: sess_1771904039_b1889e
+**Sessions**: sess_1771904039_b1889e, sess_1771905472_29ec70
 **Status**: PARTIAL
 
 ## Overview
 
-Phase 3A (Fix 48 Build Errors) is partially complete. The working copy of WitnessGraph.lean has been substantially modified with 781 lines of proof code added, eliminating all sorries but introducing 33 build errors that need resolution.
+Phase 3A (Fix 48 Build Errors) is partially complete. WitnessGraph.lean has been substantially modified with 841 lines of proof code added, eliminating all sorries. Errors reduced from 48 → 33 → 8.
 
 ## File State
 
-| Metric | Committed | Working Copy |
-|--------|-----------|--------------|
-| Lines | 1,578 | 2,359 |
-| Sorries | 5 | 0 |
-| Build errors | 0 | 33 |
+| Metric | Committed | After Session 1 | After Session 2 |
+|--------|-----------|-----------------|-----------------|
+| Lines | 1,578 | 2,359 | 2,419 |
+| Sorries | 5 | 0 | 0 |
+| Build errors | 0 | 33 | **8** |
 
 ## Work Completed
 
-1. **Declaration ordering**: Moved `processStep_edges_subset_or_new` before its first use
-2. **Syntax fixes**: Fixed many `cases h :=` patterns, dependent elimination issues
-3. **Proof attempts**: All 5 original sorries have proof attempts (no sorry keyword remains)
+### Session 1 (sess_1771904039_b1889e)
+- Declaration ordering fixes
+- Syntax fixes (`cases h :=` patterns)
+- BEq conversion fixes
+- Reduced 48 → 33 errors
 
-## Remaining Errors (33 total)
+### Session 2 (sess_1771905472_29ec70)
+- Fixed `split at h_j ⊢` syntax (replaced with `split; split at h_j`)
+- Fixed BEq/DecidableEq issues
+- Fixed various type mismatches
+- Reduced 33 → 8 errors
 
-### By Category
+## Remaining Errors (8 total)
 
-| Category | Count | Example Lines |
-|----------|-------|---------------|
-| Application type mismatch | ~10 | 1463, 1576, 1579, 1585, 1627, 1629, 1634, 2074, 2077 |
-| Type mismatch | ~8 | 1528, 1551, 1677, 1708, 1759, 1777 |
-| Unknown identifier | ~6 | 1428 (eq_of_beq_eq_true), 1681 (i, psi), 1781 (i, psi), 2320-2321 (src) |
-| simp made no progress | ~4 | 1673, 1773, 1939, 2186 |
-| unsolved goals | ~3 | 1648, 1727, 1932 |
-| Free variable error | ~2 | 1716, 1765 |
+| Line | Error Type | Description |
+|------|------------|-------------|
+| 1700 | simp no progress | h_ps_eq dependent rewrite |
+| 1816 | Type mismatch | In backward witness proof |
+| 1980-1981 | rewrite failed | Pattern not found in proof |
+| 2135 | placeholder | `head` argument synthesis |
+| 2260 | split failed | Can't find if/match in goal |
+| 2386 | split failed | Can't find if/match in goal |
 
-### Key Issues
+### Key Blocking Issues
 
-1. **BEq/DecidableEq conversion**: Several proofs use `eq_of_beq_eq_true` which isn't in scope
-2. **Scope issues**: Variables `src`, `i`, `psi` out of scope in some branches
-3. **simp failures**: Some simp calls on WitnessEdge.mk.injEq not making progress
-4. **Type mismatches**: Various projection and application errors
+1. **Dependent type rewriting**: `rw [h_ps_eq]` fails with "motive is not type correct" due to index bounds depending on the term being rewritten
+2. **Split tactic limitations**: After `unfold processStep`, the match is nested inside subscript operations, making `split` unable to find it
+3. **simp not powerful enough**: `simp only [h_ps_eq, ...]` doesn't progress on dependent indexed access
 
 ## Recommendations
 
-### Option A: Continue Fixing (Recommended)
-The mathematical approach is sound. Fix remaining 33 errors systematically:
-1. Import or define `eq_of_beq_eq_true` lemma
-2. Fix scope issues by passing variables through case splits
-3. Replace failing simp calls with explicit tactics
-4. Estimated: 2-4 additional hours
+### Option A: Complete Dependent Type Fixes (2-4h)
+Use `conv` or `subst` patterns to handle the dependent rewrites:
+```lean
+-- Instead of: rw [h_ps_eq]
+-- Try: subst h_ps_eq
+-- Or: conv in (processStep ...).nodes[_] => rw [h_ps_eq]
+```
 
-### Option B: Revert and Incremental
-If Option A proves too complex:
-1. `git checkout HEAD -- Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean`
-2. Apply changes incrementally, building after each logical unit
-3. Follow plan v008 sub-phases in order
-4. Estimated: 6-10 hours
+### Option B: Use sorry temporarily (1h)
+Insert `sorry` in the 4 problematic proofs to verify overall structure, then address them individually.
+
+### Option C: Revert and Incremental (6-10h)
+Start fresh with the committed version and apply changes one proof at a time.
 
 ## Files Modified
 
-- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` - 781 lines added (33 errors)
-
-## Next Steps
-
-1. Resume `/implement 916` to continue fixing errors
-2. Or use Option B if errors prove too intertwined
+- `Theories/Bimodal/Metalogic/Bundle/WitnessGraph.lean` - 841 lines added (8 errors)
 
 ## Phase Status
 
-- Phase 3A: [PARTIAL] - 33 errors remaining
+- Phase 3A: [PARTIAL] - 8 errors remaining
 - Phase 4: [NOT STARTED]
 - Phase 5: [NOT STARTED]
 - Phase 6: [NOT STARTED]
