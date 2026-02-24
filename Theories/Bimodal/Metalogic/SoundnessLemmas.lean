@@ -503,6 +503,52 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
     simp only [Formula.swap_temporal, truth_at]
     intro h_future
     exact h_future t (le_refl t)
+  | temp_linearity ψ χ =>
+    -- The swap of the future-linearity axiom is the past-linearity axiom
+    -- P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)
+    -- The proof is symmetric to the future version, using le_total on D
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_future,
+               Formula.some_past, Formula.neg, truth_at]
+    intro h_conj
+    -- Extract P(phi) and P(psi) witnesses using classical logic
+    have h_P_phi : (∀ s, s ≤ t → truth_at M Omega τ s ψ.swap_temporal → False) → False :=
+      Classical.byContradiction (fun h_not =>
+        h_conj (fun h1 _ => h_not (fun h_all => h1 (fun s hs h_phi => h_all s hs h_phi))))
+    have h_P_psi : (∀ s, s ≤ t → truth_at M Omega τ s χ.swap_temporal → False) → False :=
+      Classical.byContradiction (fun h_not =>
+        h_conj (fun _ h2 => h_not (fun h_all => h2 (fun s hs h_psi => h_all s hs h_psi))))
+    -- Extract existential witnesses
+    have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s ψ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_P_phi (fun s hs h_phi => h_no s hs h_phi)
+    have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, s ≤ t ∧ truth_at M Omega τ s χ.swap_temporal := by
+      by_contra h_no; push_neg at h_no
+      exact h_P_psi (fun s hs h_psi => h_no s hs h_psi)
+    rcases le_total s1 s2 with h_le | h_le
+    · -- s1 ≤ s2: psi.swap at s1, chi.swap at s2
+      -- P(psi.swap ∧ P(chi.swap)) witness at s1: psi.swap at s1, P(chi.swap) at s1 via s2? NO: s2 ≥ s1
+      -- Actually: P(P(psi.swap) ∧ chi.swap) witness at s2: P(psi.swap) at s2 via s1 (s1 ≤ s2), chi at s2
+      -- So provide third disjunct
+      intro _h_not_simul
+      intro _h_not_middle
+      intro h_not_last
+      apply h_not_last s2 hs2t
+      intro h_imp
+      apply h_imp
+      · intro h_no_past_phi
+        exact h_no_past_phi s1 h_le h_phi_s1
+      · exact h_psi_s2
+    · -- s2 ≤ s1: chi.swap at s2, psi.swap at s1
+      -- P(psi.swap ∧ P(chi.swap)) witness at s1: psi.swap at s1, P(chi.swap) at s1 via s2 (s2 ≤ s1)
+      -- So provide second disjunct
+      intro _h_not_simul
+      intro h_not_middle
+      exfalso
+      apply h_not_middle
+      intro h_all_neg_second
+      exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_P_psi =>
+        h_neg_P_psi s2 h_le h_psi_s2))
 
 /-! ## Axiom Validity (Local)
 
@@ -689,6 +735,87 @@ private theorem axiom_temp_t_past_valid (φ : Formula) :
   intro h_past
   exact h_past t (le_refl t)
 
+/-- Temporal linearity axiom is locally valid.
+
+`F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`
+
+The proof uses linearity of D (the `le_total` from `LinearOrder`). Given witnesses
+s1 ≥ t for φ and s2 ≥ t for ψ, either s1 ≤ s2 (take r = s1, giving F(φ ∧ F(ψ)))
+or s2 ≤ s1 (take r = s2, giving F(F(φ) ∧ ψ)).
+-/
+private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
+    is_valid D (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
+      (Formula.or (Formula.some_future (Formula.and φ ψ))
+        (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
+          (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
+  intro h_conj
+  -- Extract both F-witnesses using classical logic
+  have ⟨h_F_phi, h_F_psi⟩ := and_of_not_imp_not h_conj
+  -- Extract existential witnesses
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_F_psi (fun s hs h_psi => h_no s hs h_psi)
+  -- Goal is: ¬F(φ∧ψ) → (¬F(φ∧F(ψ)) → F(F(φ)∧ψ))
+  -- Which is: ¬first → ¬second → third (in ¬¬ encoding)
+  -- By linearity, provide the appropriate disjunct
+  rcases le_total s1 s2 with h_le | h_le
+  · -- s1 ≤ s2: provide second disjunct F(φ ∧ F(ψ))
+    -- The second disjunct is doubly negated: ((... → False) → False)
+    intro _  -- discard ¬first
+    intro h_neg_second  -- h_neg_second : (∀ s, ...) → False  (negated F(φ∧F(ψ)))
+    -- We have h_neg_second is actually: ((∀ s, t ≤ s → ¬¬(φ at s ∧ F(ψ) at s)) → ⊥) → ⊥
+    -- i.e., it says F(φ∧F(ψ)) is actually TRUE, so ¬F(φ∧F(ψ)) is False.
+    -- Wait, the structure is (¬B → ⊥) i.e., ¬¬B. We need to show ⊥ from ¬¬B → C.
+    -- Actually the goal after intro _ and intro h_neg_second is:
+    -- (∀ s, t ≤ s → ¬¬(F(φ)∧ψ at s)) → ⊥
+    -- So we need to prove the third disjunct. But we wanted the second!
+    -- Let me reconsider the or encoding.
+    -- A ∨ (B ∨ C) = (A→⊥) → ((B→⊥) → C)
+    -- After intro _h_not_A, intro _h_not_B, goal is C.
+    -- We wanted B, not C! So we should NOT intro _h_not_B; instead, we should prove B.
+    -- But B itself is doubly negated...
+    -- Actually: (¬A → ¬B → C) → ⊥ when we have ¬A and B.
+    -- We need to show the FULL disjunction. We do that by providing B.
+    -- The disjunction goal is: (¬A → (¬B → C)) and we intro ¬A, giving (¬B → C).
+    -- If we have B, we can do: by_contra h_neg_B; apply B to get a value, then C, contradiction.
+    -- Actually, ¬B → C means: "either B or C". If we have evidence for B, we need to derive ⊥.
+    -- Hmm, let me think again...
+    -- The goal after intro _h_not_A is: ((¬B → ⊥) → ⊥) → (∀s, ...) → ⊥
+    -- which is: ¬¬B → ¬C → ⊥ = ¬¬B → ¬C → ⊥
+    -- So we intro the ¬¬B part... no, we need to provide the function.
+    -- Actually the or encoding is: (A → ⊥) → B, so A ∨ B = (A → ⊥) → B.
+    -- And B ∨ C = (B → ⊥) → C.
+    -- So the full goal A ∨ (B ∨ C) = (A → ⊥) → ((B → ⊥) → C).
+    -- After intro h_not_A, goal is (B → ⊥) → C.
+    -- To prove B, we need to show ⊥ from the assumption (B → ⊥).
+    -- So we intro h_not_B and show ⊥ using B and h_not_B.
+    -- But how do we show B? B = F(φ∧F(ψ)) = ¬∀s, ¬¬(¬(φ∧F(ψ)))
+    -- This is getting very deep. Let me just introduce everything and derive ⊥ directly.
+    -- After introducing all 3 negations, goal is ⊥, and we have witnesses.
+    -- For s1 ≤ s2 case: F(φ∧F(ψ)) at t with witness s1 (phi at s1, F(psi) at s1 via s2)
+    -- h_neg_second : F(φ∧F(ψ)) → ⊥ (where F(φ∧F(ψ)) is ¬∀s ≥ t, ¬(φ at s ∧ F(ψ) at s))
+    -- Actually h_neg_second has type ((...) → False) → False which is ¬¬B.
+    -- Hmm, I'm confusing myself. Let me just look at the actual goal type.
+    -- From lean_goal output, after intro _h_not_simul, the goal should be the rest.
+    -- Let me write a simpler proof using tauto or classical reasoning.
+    -- Actually, let me try a completely different approach: use `by_contra` and work with negations.
+    exfalso
+    apply h_neg_second
+    intro h_all_neg_second
+    exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_F_psi =>
+      h_neg_F_psi s2 h_le h_psi_s2))
+  · -- s2 ≤ s1: provide third disjunct F(F(φ) ∧ ψ)
+    intro _  -- discard ¬first
+    intro _  -- discard ¬second
+    intro h_all_neg_third
+    exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
+      (fun h_neg_F_phi => h_neg_F_phi s1 h_le h_phi_s1) h_psi_s2)
+
 /-- All axioms are locally valid. -/
 private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ := by
   intro h_axiom
@@ -710,6 +837,7 @@ private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ 
   | temp_t_past ψ => exact axiom_temp_t_past_valid ψ
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
+  | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
 
 /-! ## Combined Theorem: Derivable Implies Valid AND Swap Valid
 

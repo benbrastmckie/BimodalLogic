@@ -8,9 +8,9 @@ This module defines the 15 axiom schemata for bimodal logic TM (Tense and Modali
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 16 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
+- 17 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
   `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
-  `temp_t_future`, `temp_t_past`, `modal_future`, `temp_future`
+  `temp_t_future`, `temp_t_past`, `modal_future`, `temp_future`, `temp_linearity`
 
 ## Axiom Schemata
 
@@ -287,6 +287,37 @@ inductive Axiom : Formula → Type where
   Necessary truths will always be necessary.
   -/
   | temp_future (φ : Formula) : Axiom ((Formula.box φ).imp (Formula.all_future (Formula.box φ)))
+
+  /--
+  Temporal Linearity axiom: `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)`
+  (future-directedness / linear time).
+
+  If two formulas both hold at some future time, then either they coincide, or
+  one precedes the other. This axiom characterizes linear temporal order and is
+  sound for the intended linear integer time semantics.
+
+  Semantically: given witnesses s1 ≥ t for φ and s2 ≥ t for ψ, either s1 = s2
+  (first disjunct), s1 ≤ s2 (second disjunct), or s2 ≤ s1 (third disjunct).
+  This trichotomy holds because D is linearly ordered.
+
+  **Technical Debt (Task 922)**: This axiom extends the TM system to enforce
+  linearity of the temporal order. It is sound for linear integer time (the
+  intended semantics) but was not part of the original axiom set. It is required
+  for the canonical quotient completeness proof because the original TM axioms
+  do not derive linearity -- a branching-time frame satisfying all other TM axioms
+  exists as a counterexample. Remediation: derive from existing axioms if possible,
+  or document as a permanent axiom of TM.
+
+  **References**:
+  - Goldblatt 1992, *Logics of Time and Computation* (Kt.Li axiomatization)
+  - Blackburn, de Rijke, Venema 2001, *Modal Logic* (frame correspondence)
+  - Task 922 research-001.md, research-002.md (linearity analysis)
+  -/
+  | temp_linearity (φ ψ : Formula) :
+      Axiom (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
+        (Formula.or (Formula.some_future (Formula.and φ ψ))
+          (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
+            (Formula.some_future (Formula.and (Formula.some_future φ) ψ)))))
   deriving Repr
 
 end Bimodal.ProofSystem

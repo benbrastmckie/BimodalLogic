@@ -1,7 +1,7 @@
 # Implementation Plan: Task #922 - Canonical Quotient Completeness Proof
 
 - **Task**: 922 - strategy_study_fp_witness_completeness_blockers
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 24-36 hours
 - **Dependencies**: Task 916 (partial infrastructure in DovetailingChain.lean, WitnessGraph.lean)
 - **Research Inputs**: specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-001.md, research-002.md
@@ -75,7 +75,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Linearity Validation (Fail-Fast) [NOT STARTED]
+### Phase 1: Linearity Validation (Fail-Fast) [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Determine whether the linearity schema is derivable from TM axioms. This is the highest-risk step and MUST be resolved before proceeding.
@@ -98,9 +98,21 @@ After this implementation:
 - Or: `temp_linearity` axiom added with soundness argument documented
 - Decision documented in plan Progress subsection
 
+**Progress:**
+
+**Session: 2026-02-24, sess_1771960688_9a2e76**
+- Added: `temp_linearity` axiom constructor to `Axiom` inductive type in `Axioms.lean`
+- Added: `axiom_temp_linearity_valid` soundness proof in `SoundnessLemmas.lean` (local validity)
+- Added: `temp_linearity_valid` soundness proof in `Soundness.lean` (global validity)
+- Added: `axiom_swap_valid` case for `temp_linearity` in `SoundnessLemmas.lean` (past version via swap)
+- Added: `LinearityDerivedFacts.lean` with non-derivability analysis and counterexample documentation
+- Completed: Phase 1 fail-fast validation - linearity NOT derivable from existing TM axioms (3-point branching counterexample). Fallback path taken: added linearity axiom to TM (sound for linear integer time)
+- Decision: Proceed with Canonical Quotient approach using the new linearity axiom
+- Axioms: 16 -> 17 (temp_linearity added, sound for linear time, technical debt requiring documentation)
+
 ---
 
-### Phase 2: Canonical Frame Definition [NOT STARTED]
+### Phase 2: Canonical Frame Definition [IN PROGRESS]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define the canonical frame structure and prove forward_F/backward_P are trivial.

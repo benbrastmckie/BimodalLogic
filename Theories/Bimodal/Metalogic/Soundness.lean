@@ -228,6 +228,48 @@ theorem temp_t_past_valid (φ : Formula) : ⊨ ((Formula.all_past φ).imp φ) :=
   intro h_past
   exact h_past t (le_refl t)
 
+/-- Temporal linearity axiom validity:
+`F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)` is valid.
+
+Uses linearity of D (LinearOrder instance).
+-/
+theorem temp_linearity_valid (φ ψ : Formula) :
+    ⊨ (Formula.and (Formula.some_future φ) (Formula.some_future ψ) |>.imp
+      (Formula.or (Formula.some_future (Formula.and φ ψ))
+        (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
+          (Formula.some_future (Formula.and (Formula.some_future φ) ψ))))) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
+  intro h_conj
+  -- Extract F(phi) and F(psi) witnesses
+  have h_F_phi : (∀ (s : T), t ≤ s → truth_at M Omega τ s φ → False) → False :=
+    Classical.byContradiction (fun h_not =>
+      h_conj (fun h1 _ => h_not (fun h_all => h1 (fun s hs h_phi => h_all s hs h_phi))))
+  have h_F_psi : (∀ (s : T), t ≤ s → truth_at M Omega τ s ψ → False) → False :=
+    Classical.byContradiction (fun h_not =>
+      h_conj (fun _ h2 => h_not (fun h_all => h2 (fun s hs h_psi => h_all s hs h_psi))))
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
+    by_contra h_no; push_neg at h_no
+    exact h_F_psi (fun s hs h_psi => h_no s hs h_psi)
+  rcases le_total s1 s2 with h_le | h_le
+  · -- s1 ≤ s2: provide second disjunct F(φ ∧ F(ψ))
+    intro _
+    intro h_neg_second
+    exfalso
+    apply h_neg_second
+    intro h_all_neg_second
+    exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_F_psi =>
+      h_neg_F_psi s2 h_le h_psi_s2))
+  · -- s2 ≤ s1: provide third disjunct F(F(φ) ∧ ψ)
+    intro _
+    intro _
+    intro h_all_neg_third
+    exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
+      (fun h_neg_F_phi => h_neg_F_phi s1 h_le h_phi_s1) h_psi_s2)
+
 /-- All TM axioms are valid. -/
 theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   intro h_axiom
@@ -249,6 +291,7 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | temp_t_past ψ => exact temp_t_past_valid ψ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
+  | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
 
 /--
 Soundness theorem: Derivability implies semantic validity.
