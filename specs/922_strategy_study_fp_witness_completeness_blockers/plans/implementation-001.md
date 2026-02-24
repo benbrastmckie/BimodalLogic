@@ -112,7 +112,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Canonical Frame Definition [IN PROGRESS]
+### Phase 2: Canonical Frame Definition [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define the canonical frame structure and prove forward_F/backward_P are trivial.
@@ -136,9 +136,24 @@ After this implementation:
 - No sorries in `CanonicalFrame.lean`
 - `lake build` succeeds
 
+**Progress:**
+
+**Session: 2026-02-24, sess_1771960688_9a2e76 (iteration 2)**
+- Added: `CanonicalFrame.lean` with canonical frame definitions and proofs
+- Added: `CanonicalR` (future relation via GContent subset inclusion)
+- Added: `CanonicalR_past` (past relation via HContent subset inclusion)
+- Added: `canonical_forward_G` - trivial by GContent definition
+- Added: `canonical_backward_H` - trivial by HContent definition
+- Added: `canonical_forward_F` - uses `forward_temporal_witness_seed_consistent` + `set_lindenbaum`
+- Added: `canonical_backward_P` - uses `past_temporal_witness_seed_consistent` + `set_lindenbaum`
+- Added: `canonicalR_reflexive` - via T-axiom (temp_t_future)
+- Added: `canonicalR_past_reflexive` - via T-axiom (temp_t_past)
+- Added: `canonicalR_transitive` - via Temporal 4 axiom (temp_4)
+- Completed: All 4 temporal properties proven, zero sorries, build succeeds
+
 ---
 
-### Phase 3: Linearity and Embedding [NOT STARTED]
+### Phase 3: Linearity and Embedding [PARTIAL]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Prove the reachable canonical fragment is linearly ordered and embed into Int.
@@ -160,6 +175,17 @@ After this implementation:
 - `canonical_order_linear` lemma proven
 - `canonical_embedding : CanonicalFragment root ↪o Int` constructed
 - No sorries in `CanonicalEmbedding.lean`
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771960688_9a2e76 (iteration 2)**
+- Added: `CanonicalEmbedding.lean` with derived lemmas for BFMCS construction
+- Added: `F_implies_G_P_F` - G(P(F(psi))) in M when F(psi) in M (via temp_a)
+- Added: `F_implies_P_F_in_GContent` - P(F(psi)) propagates through GContent seeds
+- Added: `P_implies_G_P_P` - G(P(P(psi))) in M when P(psi) in M (via temp_a)
+- Added: `mcs_F_linearity` - decompose F-obligations using temp_linearity in MCS
+- Analysis: F-persistence through GContent seeds is IMPOSSIBLE (confirmed by counterexample analysis). The temp_linearity axiom constrains semantic models but does NOT prevent Lindenbaum from introducing G(neg(psi)), killing F(psi). The correct resolution requires the full canonical quotient: build canonical model (where forward_F is trivial), prove linearity of reachable fragment, and embed into Int. This Int embedding is the remaining hard step - Int is discrete, so countable linear orders don't trivially embed.
+- Status: PARTIAL - derived lemmas proven (0 sorries), but linearity of reachable fragment and Int embedding remain. The canonical frame infrastructure from Phase 2 provides the mathematical foundation.
 
 ---
 
