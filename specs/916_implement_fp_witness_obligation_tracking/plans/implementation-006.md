@@ -150,7 +150,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Implement Witness Graph Construction [NOT STARTED]
+### Phase 2: Implement Witness Graph Construction [COMPLETED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Build the witness graph by processing F/P obligations one at a time
@@ -212,6 +212,30 @@ After this implementation:
 - `lake build` succeeds
 - `processObligation_preserves_structure` proven without sorry
 - Graph construction terminates (via obligation enumeration)
+
+**Progress:**
+
+**Session: 2026-02-23, sess_1771893934_40c616**
+- Added: `formulaEncodableWG`, `decodeFormulaWG`, `encodeFormulaWG` - Formula enumeration for witness graph
+- Added: `WitnessGraph.isWitnessed` - Check if obligation already has witness
+- Added: `WitnessGraph.addFutureWitness` - Create witness node for F(psi) obligation
+- Added: `WitnessGraph.addPastWitness` - Create witness node for P(psi) obligation
+- Added: `processStep` - Core construction step using Nat.unpair to enumerate (node, formula) pairs
+- Added: `buildWitnessGraph` - Iterates processStep from initial graph
+- Added: `processStep_nodes_length_ge` - processStep monotonicity
+- Added: `processStep_node_preserved` - processStep preserves existing nodes
+- Added: `buildWitnessGraph_nonempty` - graph always has root
+- Added: `buildWitnessGraph_nodes_length_mono`, `_mono_le` - monotone node count
+- Added: `buildWitnessGraph_root_preserved` - root stability
+- Added: `buildWitnessGraph_node_preserved`, `_node_stable` - node stability across steps
+- Added: `lindenbaum_extends_seed`, `lindenbaum_is_mcs` - Lindenbaum helper lemmas
+- Added: `addFutureWitness_witness_seed_extends`, `addFutureWitness_contains_formula` - Future witness MCS contains psi
+- Added: `addPastWitness_witness_seed_extends`, `addPastWitness_contains_formula` - Past witness MCS contains psi
+- Added: `addFutureWitness_GContent_extends` - GContent propagation through future witness edges
+- Added: `addPastWitness_HContent_extends` - HContent propagation through past witness edges
+- Added: `coverage_step_exists` - Coverage: every (node, formula) pair is eventually processed
+- Completed: All Phase 2 objectives
+- Sorries: 0 introduced
 
 ---
 

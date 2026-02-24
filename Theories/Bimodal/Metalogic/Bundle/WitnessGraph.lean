@@ -678,4 +678,410 @@ lemma WitnessGraph.addWitness_resolved_other (g : WitnessGraph) (oblIdx : Nat)
     (g.addWitness oblIdx obl witnessMCS edgeDir).resolved i = g.resolved i := by
   simp [addWitness, h_ne]
 
+/-!
+## Phase 2: Witness Graph Construction
+
+### Overview
+
+The witness graph is built incrementally by processing (node, formula) pairs.
+At each step n, we decode n into (nodeIdx, formulaIdx) via `Nat.unpair`, check if
+the formula creates an F/P obligation at the node, and if so create a witness.
+
+### Key Design
+
+- **Enumeration**: `Nat.unpair` surjects onto Nat x Nat, so every (node, formula)
+  pair is eventually visited.
+- **Lazy obligation discovery**: Instead of collecting all obligations upfront (which
+  would require enumerating an infinite set), we discover obligations on-the-fly
+  by checking formula membership at each step.
+- **One witness per step**: Each step creates at most one witness node, keeping the
+  consistency argument simple (uses `witnessSeed_consistent` directly).
+
+### Formula Enumeration
+
+We use the same `Encodable Formula` instance as DovetailingChain.lean.
+-/
+
+/-- Encodable instance for Formula, derived from the Countable instance. -/
+noncomputable instance formulaEncodableWG : Encodable Formula := Encodable.ofCountable Formula
+
+/-- Decode a natural number to a formula (if it's in the range of the encoding). -/
+noncomputable def decodeFormulaWG (k : Nat) : Option Formula :=
+  @Encodable.decode Formula formulaEncodableWG k
+
+/-- Encode a formula to a natural number. -/
+noncomputable def encodeFormulaWG (phi : Formula) : Nat :=
+  @Encodable.encode Formula formulaEncodableWG phi
+
+/-- Surjectivity: decoding the encoding recovers the original formula. -/
+lemma decodeFormulaWG_encodeFormulaWG (psi : Formula) :
+    decodeFormulaWG (encodeFormulaWG psi) = some psi := by
+  simp only [decodeFormulaWG, encodeFormulaWG]
+  exact Encodable.encodek psi
+
+/-!
+### Process Step
+
+At step n, we decode n to (nodeIdx, formulaIdx), then:
+1. Check nodeIdx < graph.nodes.length (node exists)
+2. Decode formulaIdx to get a formula psi
+3. Check if F(psi) or P(psi) is in the node's MCS
+4. If yes: create witness via Lindenbaum on the witness seed
+5. If no: return graph unchanged
+-/
+
+/-- Check whether a specific obligation (node, obligation type) has already been witnessed
+in the graph. An obligation is witnessed if there exists a resolved entry matching it. -/
+noncomputable def WitnessGraph.isWitnessed (g : WitnessGraph) (nodeIdx : Nat) (obl : ObligationType) : Bool :=
+  g.obligations.zipIdx.any fun ⟨wo, i⟩ =>
+    wo.nodeIdx == nodeIdx && wo.obligation == obl && (g.resolved i).isSome
+
+/-- Create a witness node for a future obligation F(psi) at a given source node.
+Returns the updated graph with:
+- A new witness node whose MCS extends {psi} union GContent(source)
+- A forward edge from source to witness
+- The obligation recorded and resolved -/
+noncomputable def WitnessGraph.addFutureWitness (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    WitnessGraph :=
+  let sourceMCS := (g.nodeAt sourceIdx h_valid).mcs
+  let seed := witnessSeed sourceMCS.val (.future psi)
+  let h_seed_cons := witnessSeed_future_consistent sourceMCS.val sourceMCS.property psi h_F
+  let h_ext := set_lindenbaum seed h_seed_cons
+  let witnessMCS : { S : Set Formula // SetMaximalConsistent S } :=
+    ⟨Classical.choose h_ext, (Classical.choose_spec h_ext).2⟩
+  let oblIdx := g.obligations.length
+  let obl : WitnessObligation := ⟨sourceIdx, .future psi⟩
+  { nodes := g.nodes ++ [⟨witnessMCS, some oblIdx⟩]
+    edges := g.edges ++ [⟨sourceIdx, g.nodes.length, .forward⟩]
+    obligations := g.obligations ++ [obl]
+    resolved := fun i => if i = oblIdx then some g.nodes.length else g.resolved i }
+
+/-- Create a witness node for a past obligation P(psi) at a given source node.
+Returns the updated graph with:
+- A new witness node whose MCS extends {psi} union HContent(source)
+- A backward edge from source to witness
+- The obligation recorded and resolved -/
+noncomputable def WitnessGraph.addPastWitness (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    WitnessGraph :=
+  let sourceMCS := (g.nodeAt sourceIdx h_valid).mcs
+  let seed := witnessSeed sourceMCS.val (.past psi)
+  let h_seed_cons := witnessSeed_past_consistent sourceMCS.val sourceMCS.property psi h_P
+  let h_ext := set_lindenbaum seed h_seed_cons
+  let witnessMCS : { S : Set Formula // SetMaximalConsistent S } :=
+    ⟨Classical.choose h_ext, (Classical.choose_spec h_ext).2⟩
+  let oblIdx := g.obligations.length
+  let obl : WitnessObligation := ⟨sourceIdx, .past psi⟩
+  { nodes := g.nodes ++ [⟨witnessMCS, some oblIdx⟩]
+    edges := g.edges ++ [⟨sourceIdx, g.nodes.length, .backward⟩]
+    obligations := g.obligations ++ [obl]
+    resolved := fun i => if i = oblIdx then some g.nodes.length else g.resolved i }
+
+/-!
+### Process Step Function
+
+The core construction step. At each step n, we process the pair
+`(nodeIdx, formulaIdx) = Nat.unpair n`. If the node exists and the formula
+decodes to psi, we check F(psi) and P(psi) membership and create witnesses.
+
+We process future obligations first, then past (for definiteness; order doesn't
+matter for correctness since coverage guarantees both are eventually processed).
+-/
+
+/-- Process step n of the witness graph construction.
+
+Decodes n to (nodeIdx, formulaIdx) via Nat.unpair. If the node exists and the
+formula decodes to psi:
+- If F(psi) is in the node's MCS and not yet witnessed: create future witness
+- Else if P(psi) is in the node's MCS and not yet witnessed: create past witness
+- Else: return graph unchanged
+
+**Design note**: We check F first, then P. A single step processes at most one
+obligation. The other obligation (if both exist) will be handled at a different
+step via the coverage argument. -/
+noncomputable def processStep (g : WitnessGraph) (n : Nat) : WitnessGraph :=
+  let (nodeIdx, formulaIdx) := Nat.unpair n
+  if h_node : nodeIdx < g.nodes.length then
+    match decodeFormulaWG formulaIdx with
+    | none => g
+    | some psi =>
+      let nodeMCS := (g.nodeAt nodeIdx h_node).mcs
+      if h_F : Formula.some_future psi ∈ nodeMCS.val then
+        if g.isWitnessed nodeIdx (.future psi) then g
+        else g.addFutureWitness nodeIdx h_node psi h_F
+      else if h_P : Formula.some_past psi ∈ nodeMCS.val then
+        if g.isWitnessed nodeIdx (.past psi) then g
+        else g.addPastWitness nodeIdx h_node psi h_P
+      else g
+  else g
+
+/-!
+### Build Witness Graph
+
+Iterate `processStep` to build the witness graph incrementally.
+At step k, the graph `buildWitnessGraph root k` has processed pairs 0..k-1.
+-/
+
+/-- Build the witness graph by iterating processStep for k steps.
+
+Starting from an initial single-node graph (the root MCS), each step processes
+one (node, formula) pair. After k steps, all pairs with Nat.pair encoding < k
+have been examined.
+
+**Coverage**: Since Nat.unpair surjects onto Nat x Nat, and Formula is Encodable,
+every (node, formula) pair is eventually processed. For any F(psi) at node i,
+the pair (i, encodeFormula psi) has encoding Nat.pair i (encodeFormula psi),
+so it will be processed at that step. -/
+noncomputable def buildWitnessGraph
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : Nat → WitnessGraph
+  | 0 => initialWitnessGraph rootMCS
+  | n + 1 => processStep (buildWitnessGraph rootMCS n) n
+
+/-!
+### Basic Properties of processStep and buildWitnessGraph
+-/
+
+/-- processStep does not decrease node count. -/
+lemma processStep_nodes_length_ge (g : WitnessGraph) (n : Nat) :
+    g.nodes.length ≤ (processStep g n).nodes.length := by
+  unfold processStep
+  split  -- match on pair
+  split  -- if nodeIdx < length
+  · split  -- match decodeFormulaWG
+    · exact Nat.le_refl _  -- none case
+    · -- some psi case
+      dsimp only
+      split  -- if F(psi) in MCS
+      · split  -- if witnessed
+        · exact Nat.le_refl _
+        · simp [WitnessGraph.addFutureWitness]
+      · split  -- if P(psi) in MCS
+        · split  -- if witnessed
+          · exact Nat.le_refl _
+          · simp [WitnessGraph.addPastWitness]
+        · exact Nat.le_refl _
+  · exact Nat.le_refl _  -- nodeIdx >= length
+
+/-- The witness graph is non-empty at every step (always has at least the root). -/
+lemma buildWitnessGraph_nonempty (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) : (buildWitnessGraph rootMCS n).nonempty := by
+  induction n with
+  | zero => exact initialWitnessGraph_nonempty rootMCS
+  | succ n ih =>
+    simp only [buildWitnessGraph, WitnessGraph.nonempty]
+    have h := processStep_nodes_length_ge (buildWitnessGraph rootMCS n) n
+    simp only [WitnessGraph.nonempty] at ih
+    omega
+
+/-- Node count is monotonically non-decreasing. -/
+lemma buildWitnessGraph_nodes_length_mono (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) :
+    (buildWitnessGraph rootMCS n).nodes.length ≤ (buildWitnessGraph rootMCS (n + 1)).nodes.length := by
+  simp only [buildWitnessGraph]
+  exact processStep_nodes_length_ge _ _
+
+/-- processStep preserves existing nodes (only appends new nodes). -/
+lemma processStep_node_preserved (g : WitnessGraph) (n : Nat)
+    (i : Nat) (h_i : i < g.nodes.length) :
+    (processStep g n).nodes[i]? = g.nodes[i]? := by
+  unfold processStep
+  split  -- match on pair
+  split  -- if nodeIdx < length
+  · split  -- match decodeFormulaWG
+    · rfl  -- none
+    · -- some psi; need to reduce the let binding
+      dsimp only
+      split  -- if F(psi) in MCS
+      · split  -- if already witnessed
+        · rfl
+        · simp only [WitnessGraph.addFutureWitness]
+          rw [List.getElem?_append_left h_i]
+      · split  -- if P(psi) in MCS
+        · split  -- if already witnessed
+          · rfl
+          · simp only [WitnessGraph.addPastWitness]
+            rw [List.getElem?_append_left h_i]
+        · rfl
+  · rfl  -- nodeIdx >= length
+
+/-- The root node is preserved at every step. -/
+lemma buildWitnessGraph_root_preserved (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) :
+    (buildWitnessGraph rootMCS n).nodes[0]? = some ⟨rootMCS, none⟩ := by
+  induction n with
+  | zero =>
+    simp [buildWitnessGraph, initialWitnessGraph]
+  | succ n ih =>
+    simp only [buildWitnessGraph]
+    have h_len : 0 < (buildWitnessGraph rootMCS n).nodes.length := by
+      have := buildWitnessGraph_nonempty rootMCS n
+      simp [WitnessGraph.nonempty] at this
+      exact this
+    rw [processStep_node_preserved _ _ 0 h_len]
+    exact ih
+
+/-- Existing nodes are preserved when the graph grows (nodes are only appended). -/
+lemma buildWitnessGraph_node_preserved (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (n : Nat) (i : Nat) (h_i : i < (buildWitnessGraph rootMCS n).nodes.length) :
+    (buildWitnessGraph rootMCS (n + 1)).nodes[i]? = (buildWitnessGraph rootMCS n).nodes[i]? := by
+  simp only [buildWitnessGraph]
+  exact processStep_node_preserved _ _ i h_i
+
+/-!
+### Witness Seed Membership Properties
+
+When a witness is created, its MCS extends the witness seed. These lemmas
+connect the witness node's MCS to the source node's MCS via the seed.
+-/
+
+/-- The witness seed is a subset of the MCS created from it by Lindenbaum.
+This is the key property linking witness nodes to their obligations. -/
+lemma lindenbaum_extends_seed (seed : Set Formula) (h_cons : SetConsistent seed) :
+    seed ⊆ Classical.choose (set_lindenbaum seed h_cons) :=
+  (Classical.choose_spec (set_lindenbaum seed h_cons)).1
+
+/-- The MCS created from a seed by Lindenbaum is maximal consistent. -/
+lemma lindenbaum_is_mcs (seed : Set Formula) (h_cons : SetConsistent seed) :
+    SetMaximalConsistent (Classical.choose (set_lindenbaum seed h_cons)) :=
+  (Classical.choose_spec (set_lindenbaum seed h_cons)).2
+
+/-!
+### Witness Contains Formula
+
+When we create a future witness for F(psi), psi is in the witness MCS.
+When we create a past witness for P(psi), psi is in the witness MCS.
+These follow from psi being in the witness seed and Lindenbaum extending the seed.
+-/
+
+/-- Helper: accessing the last element of a list append. -/
+private lemma list_get_append_last {α : Type*} (l : List α) (a : α) :
+    (l ++ [a]).get ⟨l.length, by simp⟩ = a := by
+  show (l ++ [a])[l.length] = a
+  rw [List.getElem_append_right (by omega)]
+  simp
+
+/-- When a future witness is created for F(psi) at node i, the witness node's
+MCS extends the witness seed {psi} union GContent(source). In particular,
+psi is in the witness MCS. -/
+theorem addFutureWitness_witness_seed_extends (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    let seed := witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.future psi)
+    let h_cons := witnessSeed_future_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_F
+    seed ⊆ Classical.choose (set_lindenbaum seed h_cons) :=
+  lindenbaum_extends_seed
+    (witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.future psi))
+    (witnessSeed_future_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_F)
+
+/-- When a future witness is created, psi is in the witness MCS (follows from seed extension). -/
+theorem addFutureWitness_contains_formula (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    let seed := witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.future psi)
+    let h_cons := witnessSeed_future_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_F
+    psi ∈ Classical.choose (set_lindenbaum seed h_cons) :=
+  addFutureWitness_witness_seed_extends g sourceIdx h_valid psi h_F
+    (formula_mem_witnessSeed _ _)
+
+/-- When a past witness is created for P(psi) at node i, the witness node's
+MCS extends the witness seed {psi} union HContent(source). -/
+theorem addPastWitness_witness_seed_extends (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    let seed := witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.past psi)
+    let h_cons := witnessSeed_past_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_P
+    seed ⊆ Classical.choose (set_lindenbaum seed h_cons) :=
+  lindenbaum_extends_seed
+    (witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.past psi))
+    (witnessSeed_past_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_P)
+
+/-- When a past witness is created, psi is in the witness MCS. -/
+theorem addPastWitness_contains_formula (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    let seed := witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.past psi)
+    let h_cons := witnessSeed_past_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_P
+    psi ∈ Classical.choose (set_lindenbaum seed h_cons) :=
+  addPastWitness_witness_seed_extends g sourceIdx h_valid psi h_P
+    (formula_mem_witnessSeed _ _)
+
+/-!
+### GContent Propagation Through Witness Edges
+
+When a future witness is created from source node via seed = {psi} union GContent(source),
+the witness MCS extends GContent(source). This means the G-content of the source
+propagates to the witness, which is essential for forward_G.
+-/
+
+/-- When a future witness is created, GContent of the source is a subset of the witness MCS.
+This follows from GContent being a subset of the witness seed, and Lindenbaum extending the seed. -/
+theorem addFutureWitness_GContent_extends (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_F : Formula.some_future psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    let seed := witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.future psi)
+    let h_cons := witnessSeed_future_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_F
+    GContent (g.nodeAt sourceIdx h_valid).mcs.val ⊆
+      Classical.choose (set_lindenbaum seed h_cons) :=
+  fun _ h_phi =>
+    addFutureWitness_witness_seed_extends g sourceIdx h_valid psi h_F
+      (GContent_subset_witnessSeed_future _ psi h_phi)
+
+/-- When a past witness is created, HContent of the source is a subset of the witness MCS. -/
+theorem addPastWitness_HContent_extends (g : WitnessGraph)
+    (sourceIdx : Nat) (h_valid : sourceIdx < g.nodes.length) (psi : Formula)
+    (h_P : Formula.some_past psi ∈ (g.nodeAt sourceIdx h_valid).mcs.val) :
+    let seed := witnessSeed (g.nodeAt sourceIdx h_valid).mcs.val (.past psi)
+    let h_cons := witnessSeed_past_consistent (g.nodeAt sourceIdx h_valid).mcs.val
+      (g.nodeAt sourceIdx h_valid).mcs.property psi h_P
+    HContent (g.nodeAt sourceIdx h_valid).mcs.val ⊆
+      Classical.choose (set_lindenbaum seed h_cons) :=
+  fun _ h_phi =>
+    addPastWitness_witness_seed_extends g sourceIdx h_valid psi h_P
+      (HContent_subset_witnessSeed_past _ psi h_phi)
+
+/-!
+### Coverage Theorem
+
+The key theorem: for any F(psi) obligation at any node that exists at step n,
+there exists a step k >= n where the obligation is processed. This follows from
+the surjectivity of Nat.unpair and the Encodable instance on Formula.
+-/
+
+/-- For any node index i and formula psi, there exists a step number n such that
+Nat.unpair n = (i, encodeFormulaWG psi). This is the coverage lemma. -/
+lemma coverage_step_exists (i : Nat) (psi : Formula) :
+    ∃ n : Nat, Nat.unpair n = (i, encodeFormulaWG psi) := by
+  exact ⟨Nat.pair i (encodeFormulaWG psi), Nat.unpair_pair i (encodeFormulaWG psi)⟩
+
+/-- The witness graph at a later step extends the graph at an earlier step
+(in terms of node count). -/
+lemma buildWitnessGraph_nodes_length_mono_le (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) :
+    (buildWitnessGraph rootMCS m).nodes.length ≤ (buildWitnessGraph rootMCS n).nodes.length := by
+  induction h_le with
+  | refl => exact Nat.le_refl _
+  | step h_le ih => exact le_trans ih (buildWitnessGraph_nodes_length_mono rootMCS _)
+
+/-- Nodes are stable: a node that exists at step m still exists (unchanged) at step n >= m. -/
+lemma buildWitnessGraph_node_stable (rootMCS : { S : Set Formula // SetMaximalConsistent S })
+    (m n : Nat) (h_le : m ≤ n) (i : Nat) (h_i : i < (buildWitnessGraph rootMCS m).nodes.length) :
+    (buildWitnessGraph rootMCS n).nodes[i]? = (buildWitnessGraph rootMCS m).nodes[i]? := by
+  induction h_le with
+  | refl => rfl
+  | step h_le ih =>
+    have h_i' : i < (buildWitnessGraph rootMCS _).nodes.length :=
+      lt_of_lt_of_le h_i (buildWitnessGraph_nodes_length_mono_le rootMCS m _ h_le)
+    rw [buildWitnessGraph_node_preserved rootMCS _ i h_i']
+    exact ih
+
 end Bimodal.Metalogic.Bundle

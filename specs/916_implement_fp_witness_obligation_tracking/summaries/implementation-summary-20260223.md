@@ -59,10 +59,55 @@ the core data structures for the "Deferred Concretization" approach to close the
 - No axioms introduced
 - No regressions in existing code
 
+---
+
+## Phase 2: Implement Witness Graph Construction
+
+**Session**: 2026-02-23, sess_1771893934_40c616
+**Status**: Phase 2 COMPLETED
+
+### Changes Made
+
+Added ~400 lines to `WitnessGraph.lean` implementing the core witness graph construction
+machinery. The approach uses lazy (node, formula) pair enumeration via `Nat.unpair` and
+`Encodable Formula` to process F/P obligations one at a time, creating witness nodes via
+fresh Lindenbaum extensions.
+
+### Key Definitions
+
+| Name | Purpose |
+|------|---------|
+| `processStep` | Core step: decode Nat.unpair n to (nodeIdx, formulaIdx), check membership, create witness |
+| `buildWitnessGraph` | Iterate processStep from initial single-node graph |
+| `addFutureWitness` | Create witness node for F(psi) via Lindenbaum({psi} union GContent) |
+| `addPastWitness` | Create witness node for P(psi) via Lindenbaum({psi} union HContent) |
+| `isWitnessed` | Check if obligation already resolved |
+
+### Key Theorems
+
+| Name | Statement |
+|------|-----------|
+| `addFutureWitness_contains_formula` | psi in witness MCS when F(psi) is source obligation |
+| `addPastWitness_contains_formula` | psi in witness MCS when P(psi) is source obligation |
+| `addFutureWitness_GContent_extends` | GContent(source) subset of future witness MCS |
+| `addPastWitness_HContent_extends` | HContent(source) subset of past witness MCS |
+| `coverage_step_exists` | Every (node, formula) pair eventually processed |
+| `processStep_nodes_length_ge` | processStep monotonicity |
+| `processStep_node_preserved` | Existing nodes unchanged by processStep |
+| `buildWitnessGraph_node_stable` | Nodes stable across multiple steps |
+| `buildWitnessGraph_root_preserved` | Root node preserved at all steps |
+
+### Verification
+
+- `lake build` succeeds (1001 jobs)
+- 0 sorries introduced
+- 0 axioms introduced
+
 ## Next Steps
 
-Phase 2: Implement Witness Graph Construction
-- Define `initialGraph` from consistent context
-- Define `collectObligations` using Formula Encodable instance
-- Define `processObligation` to create witness nodes
-- Prove `processObligation_preserves_structure`
+Phase 3: Prove Witness Graph Properties
+- Prove `witnessGraph_forward_F_local` (local witness existence for F-obligations)
+- Prove `witnessGraph_backward_P_local` (local witness existence for P-obligations)
+- Prove `witnessGraph_GContent_propagates` (G-content through forward edges)
+- Prove `witnessGraph_acyclic` (no cycles in edge relation)
+- Prove `witnessGraph_countable` (countable node set)
