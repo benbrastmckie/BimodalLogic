@@ -24,10 +24,11 @@ technical_debt:
 
 ### 923. Formalize frame correspondence theorem for linearity axiom
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Research**: [research-001.md](specs/923_formalize_frame_correspondence_linearity/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/923_formalize_frame_correspondence_linearity/plans/implementation-001.md)
 
 **Description**: Formalize the frame correspondence theorem to show that the linearity axiom characterizes linear frames. This theorem proves: if the linearity axiom schema F(p) AND F(q) -> F(p AND q) OR F(p AND F(q)) OR F(F(p) AND q) is valid on a Kripke frame, then the frame's accessibility relation is linear. Required to complete task 922's Phase 3 blocker (canonical_reachable_linear theorem).
 

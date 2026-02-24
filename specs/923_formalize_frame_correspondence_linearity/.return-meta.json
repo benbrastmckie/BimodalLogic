@@ -1,21 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-24T12:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/923_formalize_frame_correspondence_linearity/reports/research-001.md",
-      "type": "research",
-      "summary": "Deep analysis of frame correspondence for linearity axiom; identifies Case 3 infinite regress as fundamental difficulty with reflexive temporal operators; recommends G-enriched linearity trick or strict-future translation approach"
+      "type": "plan",
+      "path": "specs/923_formalize_frame_correspondence_linearity/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for proving frame correspondence theorem with G-enriched linearity strategy"
     }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research report completed with 15 sections analyzing proof strategies, circularity issues, and 3 recommended approaches"
-  },
+  "next_steps": "Run /implement 923 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771965504_cfd6e2",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771966223_97f886",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 4,
+    "estimated_hours": 4
   }
 }
