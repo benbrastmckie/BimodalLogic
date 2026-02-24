@@ -2589,27 +2589,32 @@ theorem witnessGraph_backward_P_at_root
 /-!
 ## Phase 5: Enriched Chain with Forward_G and Backward_H
 
-The constant BFMCS `witnessGraphBFMCS` satisfies forward_G and backward_H trivially
-(T-axiom), but CANNOT satisfy forward_F/backward_P because F(phi) in rootMCS does
-not imply phi in rootMCS in general.
+### Status: forward_G and backward_H fully proven (sorry-free)
 
-### Mathematical Analysis
+The enriched chain construction provides a BFMCS Int with proven forward_G and
+backward_H properties. The enriched forward chain extends via GContent seeds
+(with witness placement for F-formulas via Nat.unpair enumeration), and the
+enriched backward chain extends via HContent seeds (symmetric).
 
-The standard resolution requires an omega-squared inner chain construction (see
-research-003.md): at each time point, an inner chain processes all F-formulas via
-enumeration. This is 33-58 hours of implementation work (beyond Phase 5 scope).
+Cross-sign coherence (G propagation from negative to non-negative times, and
+H propagation from non-negative to negative times) is handled by propagating
+through the shared root MCS at index 0.
 
-The simpler approaches (enriched chain with Nat.unpair, modified encoding) all share
-the same fundamental gap: Lindenbaum extensions are non-constructive, and G(neg phi)
-can enter the chain BETWEEN formula re-check steps, killing F(phi) before the
-witness fires. The key issue is that F(phi) -> G(F(phi)) is NOT provable in TM logic,
-so F-formulas do not self-persist through GContent seeds.
+### Forward_F and backward_P
 
-### Phase 5 Status
+These properties CANNOT be proven for any linear chain construction
+(see detailed analysis in the "Forward F and Backward P: Analysis" section below).
+The forward_F/backward_P obligations remain in DovetailingChain.lean and require
+a non-linear construction (witness graph or omega-squared chain).
 
-This phase defines the enriched chain infrastructure with proven forward_G and
-backward_H. Forward_F and backward_P remain as sorry (matching DovetailingChain.lean)
-pending the omega-squared construction.
+### Phase 5 Architecture
+
+The enriched chain builds on the witness graph's local properties:
+- `enrichedForwardChain_witness_placed`: places phi at step n+1 when F(phi)
+  is in chain(n) and the formula matches the Nat.unpair encoding
+- `enrichedForwardChain_F_dichotomy`: at any step, either F(psi) or G(neg psi)
+- `enrichedForwardChain_F_implies_G_neg_absent`: F(psi) at n implies G(neg psi)
+  absent at all m <= n
 -/
 
 /-!
@@ -2999,11 +3004,11 @@ lemma enrichedBackwardChain_P_implies_H_neg_absent
 
 
 /-!
-### Forward F and Backward P
+### Forward F and Backward P: Analysis
 
 Forward_F and backward_P require that for any `F(phi) in chain(n)`, there exists
-`s > n` with `phi in chain(s)`. This CANNOT be proven for ANY simple linear chain
-construction because:
+`s > n` with `phi in chain(s)`. These properties CANNOT be proven for the enriched
+linear chain construction because:
 
 1. `F(phi) -> G(F(phi))` is NOT provable in TM logic (F-formulas don't self-persist)
 2. Lindenbaum extensions are opaque (`Classical.choose`): `G(neg phi)` can enter
@@ -3012,30 +3017,34 @@ construction because:
 3. The spacing of re-check steps (via `Nat.unpair` or simple encoding) cannot be
    guaranteed to precede the entry of `G(neg phi)`
 
-The correct resolution requires an omega-squared inner chain construction where
-each time point processes ALL F-formulas via an inner enumeration chain
-(see `research-003.md` for details, estimated 33-58 hours of implementation).
+**Detailed Analysis (Task 916, Phase 5B)**:
 
-For now, these remain as sorry, matching the debt in DovetailingChain.lean.
+The fundamental issue is that F-formulas do not propagate through GContent seeds.
+The GContent seed `{phi : G(phi) in M}` only carries G-stripped formulas. Since
+`F(psi) = neg(G(neg psi))`, the formula `F(psi)` is NOT in GContent form and
+does NOT persist through GContent-based Lindenbaum extensions.
+
+At each step n of the enriched chain:
+- chain(n+1) is a Lindenbaum extension of either `{psi'} union GContent(chain(n))`
+  or `GContent(chain(n))`
+- The Lindenbaum extension can include `G(neg phi)`, which eliminates `F(phi)`
+- Once `G(neg phi)` enters (at any step), it persists forever via the 4-axiom
+  (`G(x) -> G(G(x))`)
+
+**Consequence**: The theorems `enrichedForwardChain_forward_F` and
+`enrichedBackwardChain_backward_P` are mathematically unprovable for this
+chain construction. They have been removed (previously sorry'd but unused).
+
+**Forward path**: The correct resolution requires a non-linear construction.
+The witness graph already provides local F/P witness existence
+(`witnessGraph_forward_F_local`, `witnessGraph_backward_P_local`).
+A future task should build a BFMCS that uses the witness graph structure
+to satisfy forward_F and backward_P. See research-003 and research-010.
+
+**Note**: The `enrichedChainBFMCS` below provides a proven BFMCS with
+`forward_G` and `backward_H`. Forward_F and backward_P remain as open problems
+for the BFMCS construction, tracked in DovetailingChain.lean.
 -/
-
-/-- Forward F for the enriched chain (sorry -- requires omega-squared construction).
-See Phase 5 analysis: simple linear chain cannot prove forward_F because F-formulas
-do not self-persist through GContent seeds. -/
-theorem enrichedForwardChain_forward_F
-    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
-    (n : Nat) (phi : Formula)
-    (h_F : Formula.some_future phi ∈ (enrichedForwardChain rootMCS n).val) :
-    ∃ s, s > n ∧ phi ∈ (enrichedForwardChain rootMCS s).val := by
-  sorry
-
-/-- Backward P for the enriched chain (sorry -- requires omega-squared construction). -/
-theorem enrichedBackwardChain_backward_P
-    (rootMCS : { S : Set Formula // SetMaximalConsistent S })
-    (n : Nat) (phi : Formula)
-    (h_P : Formula.some_past phi ∈ (enrichedBackwardChain rootMCS n).val) :
-    ∃ s, s > n ∧ phi ∈ (enrichedBackwardChain rootMCS s).val := by
-  sorry
 
 /-!
 ### Enriched Chain BFMCS
@@ -3351,11 +3360,14 @@ lemma enrichedChainSet_backward_H_nonneg
 Maps non-negative integers to the enriched forward chain and negative integers
 to the enriched backward chain. Both chains share the root MCS at time 0.
 
-Properties:
+**Proven properties** (sorry-free):
 - forward_G: proven via cross-sign G propagation infrastructure
 - backward_H: proven via cross-sign H propagation infrastructure
-- forward_F: sorry (requires witness graph bridge)
-- backward_P: sorry (requires witness graph bridge)
+
+**Note**: forward_F and backward_P cannot be proven for this linear chain
+construction (see analysis above). These properties require a non-linear
+construction using the witness graph. See DovetailingChain.lean for the
+downstream integration point.
 -/
 noncomputable def enrichedChainBFMCS
     (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : BFMCS Int where
