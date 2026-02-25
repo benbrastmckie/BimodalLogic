@@ -1,17 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Investigated why LinearOrder and AddCommGroup are unused in completeness chain: LinearOrder is only needed for soundness (le_total for linearity axiom), AddCommGroup is only needed for time_shift in soundness. The completeness chain correctly abstracts these away. The canonical model uses trivial task_rel, which is standard practice. The forward_F/backward_P blocker is fundamentally caused by forcing the canonical model (a preorder of MCSes) into a linear ordering (via Antisymmetrization quotient), losing individual formula membership. The recommended resolution is generalizing BFMCS from LinearOrder to Preorder and using CanonicalReachable directly as the domain.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-008.md",
-      "type": "research",
-      "summary": "Deep investigation of unused LinearOrder/AddCommGroup, frame construction gap between semantics and completeness, and why the Preorder generalization eliminates the forward_F/backward_P blocker"
+      "type": "plan",
+      "path": "specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-005.md",
+      "summary": "4-phase implementation plan for Preorder generalization approach to forward_F/backward_P completeness"
     }
   ],
+  "next_steps": "Run /implement 922 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771985428_baae33",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1771986167_3f5615",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": "6-10"
   }
 }
