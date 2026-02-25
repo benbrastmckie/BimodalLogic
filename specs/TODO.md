@@ -38,11 +38,11 @@ technical_debt:
 
 ### 922. Strategy study: identify viable path for forward_F/backward_P completeness
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Started**: 2026-02-24
-- **Research**: [research-005.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-005.md)
+- **Research**: [research-006.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-006.md)
 - **Plan**: [implementation-004.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-004.md)
 - **Summary**: [implementation-summary-20260224.md](specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224.md)
 
@@ -73,9 +73,10 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ### 921. Enforce zero-proof-debt policy for Lean task completion
 - **Effort**: 2.5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Created**: 2026-02-24
+- **Started**: 2026-02-25
 - **Research**: [research-001.md](specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/plans/implementation-001.md)
 

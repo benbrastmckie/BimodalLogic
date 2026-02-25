@@ -40,10 +40,10 @@
     {
       "project_number": 922,
       "project_name": "strategy_study_fp_witness_completeness_blockers",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-24T17:33:56Z",
-      "last_updated": "2026-02-25T00:42:10Z",
+      "last_updated": "2026-02-25T00:48:14Z",
       "session_id": "sess_1771980095_933d07",
       "artifacts": [
         {
@@ -52,30 +52,30 @@
           "summary": "Phase 3 partial implementation summary"
         },
         {
-          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-005.md",
-          "type": "research",
-          "summary": "Phase B blocker analysis: discovered that TruthLemma only needs reflexive forward_F (s >= t), eliminating the strict-future-witness problem. Also confirmed AddCommGroup constraint is vestigial."
-        },
-        {
           "path": "specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-004.md",
           "type": "plan",
           "summary": "4-phase implementation plan (v4) based on research-005 breakthrough: weaken forward_F to reflexive, drop AddCommGroup, build BFMCS on canonical frame"
+        },
+        {
+          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-006.md",
+          "type": "research",
+          "summary": "Full TruthLemma audit confirming plan v4 validity: forward_F/backward_P used ONLY in backward direction of G/H cases"
         }
       ],
       "description": "Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. CONSTRAINT: Sorry debt is NEVER acceptable — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.\n\nThe study should focus on LEARNING FROM FAILURES to inspire creative solutions:\n\n**Pattern Analysis of Failed Approaches:**\n- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?\n- Is the \"Lindenbaum opacity\" a fundamental barrier, or does it reveal a hidden assumption we can drop?\n- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?\n\n**Creative Reframing Questions:**\n- What if the problem is not \"prove forward_F for a chain\" but \"find a structure that makes forward_F trivially true\"?\n- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar \"witness existence under opacity\" problems?\n- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?\n- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?\n\n**Mandatory Outputs:**\n1. A \"lessons learned\" document identifying the precise mathematical property that all failed approaches lacked\n2. At least 3 genuinely novel approach ideas that do NOT fit the \"bottom-up chain construction\" pattern\n3. For each novel approach: a preliminary feasibility assessment with confidence level\n4. A ranked recommendation with clear decision criteria\n\nKey artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.",
-      "researched": "2026-02-24T23:22:27Z",
+      "researched": "2026-02-25T00:48:14Z",
       "planned": "2026-02-25T00:28:15Z",
       "started": "2026-02-24T19:18:29Z"
     },
     {
       "project_number": 921,
       "project_name": "enforce_zero_proof_debt_policy_for_lean_task_completion",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "created": "2026-02-24T00:00:00Z",
-      "last_updated": "2026-02-25T00:42:06Z",
+      "last_updated": "2026-02-25T00:45:55Z",
       "description": "Update all Lean-related agents, skills, policy documents, and plan formats to enforce a strict zero-proof-debt completion gate: NO sorry may remain in a completed Lean task, NO new axioms may be introduced, and proof debt acceptance (e.g. Option B style sorry deferral) is forbidden. Covers proof-debt-policy.md, lean-implementation-agent.md, lean-research-agent.md, planner-agent.md, plan-format.md, and skill-lean-implementation SKILL.md.",
-      "session_id": "sess_1771979888_2dd4c4",
+      "session_id": "sess_1771980315_7bc399",
       "researched": "2026-02-25T00:31:11Z",
       "artifacts": [
         {
@@ -89,7 +89,8 @@
           "summary": "5-phase implementation plan for zero-proof-debt policy enforcement"
         }
       ],
-      "planned": "2026-02-25T00:42:06Z"
+      "planned": "2026-02-25T00:42:06Z",
+      "started": "2026-02-25T00:45:55Z"
     },
     {
       "project_number": 917,
