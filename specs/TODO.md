@@ -24,10 +24,11 @@ technical_debt:
 
 ### 924. Prove fully_saturated_bmcs_exists combining modal saturation with temporal coherence
 - **Effort**: 8-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Blocked by**: Task 922
+- **Research**: [research-001.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/reports/research-001.md)
 
 **Description**: Prove `fully_saturated_bmcs_exists`: combining modal saturation with temporal coherence in a single BMCS construction.
 
