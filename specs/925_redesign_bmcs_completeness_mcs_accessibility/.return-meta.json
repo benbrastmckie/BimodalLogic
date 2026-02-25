@@ -1,62 +1,30 @@
 {
   "status": "researched",
-  "summary": "Team research round 2 completed: corrected BoxG/BoxH constraints analyzed, C2 gap identified as critical obstruction",
+  "summary": "Research round 3: Restructured truth-predicate semantic faithfulness analysis - modification is safe because it only affects metalogic tool (bmcs_truth_at), not theory semantics (truth_at)",
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-002.md",
-      "summary": "Synthesized research from 2 teammates on corrected constraints and construction approaches"
+      "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-003.md",
+      "summary": "Restructured truth-predicate semantic faithfulness analysis - two distinct truth predicates identified, restructuring is safe refactoring of completeness proof technique"
     }
   ],
-  "team_execution": {
-    "enabled": true,
-    "wave_count": 1,
-    "teammates_spawned": 2,
-    "teammates_completed": 2,
-    "teammates_failed": 0,
-    "token_usage_multiplier": 5.0,
-    "degraded_to_single": false
-  },
-  "teammate_results": [
-    {
-      "id": "a",
-      "angle": "Canonical frame construction with BoxG/BoxH constraints",
-      "status": "completed",
-      "confidence": "moderate",
-      "key_contribution": "BoxGContent subset GContent (weaker), C2 gap identification, reflexivity proof, generalized BoxG K, decomposition insight"
-    },
-    {
-      "id": "b",
-      "angle": "Seed-based unraveling with corrected constraints",
-      "status": "completed",
-      "confidence": "high",
-      "key_contribution": "Confirmed BoxGContent weaker, structural temporal-modal conflict, constraint (3) requires F-witness in witness family"
-    }
-  ],
-  "synthesis": {
-    "conflicts_found": 1,
-    "conflicts_resolved": 0,
-    "gaps_identified": 1,
-    "wave_2_triggered": false
-  },
   "key_findings": [
-    "BoxGContent subset GContent strictly (WEAKER, not stronger) - via T-axioms",
-    "Accessibility relation IS reflexive (nullity satisfied)",
-    "Accessibility relation is NOT transitive (but compositionality via histories suffices)",
-    "C3 seed consistency IS provable via generalized BoxG K theorem",
-    "CRITICAL GAP: C2 (backward constraint) NOT automatically satisfied by forward Lindenbaum",
-    "BoxG decomposes into Box composed with G - existing two-layer architecture may be correct",
-    "TruthLemma for ALL families requires forward_F in ALL families including witnesses"
+    "Two distinct truth predicates: truth_at (Theory.lean - semantics) vs bmcs_truth_at (BMCSTruth.lean - metalogic tool)",
+    "Restructured truth predicate only modifies bmcs_truth_at, NOT theory semantics",
+    "Box case becomes trivial with restructured definition - uses BMCS.box_iff_universal directly",
+    "Temporal cases (G/H) still require forward_F/backward_P for witness families - not resolved",
+    "No change to representation theorem mapping or theory semantics",
+    "Semantic faithfulness is preserved because completeness is existential (need ONE model)"
   ],
   "recommendations": [
-    "Investigate Path D: non-constant witness families as histories through CanonicalMCS",
-    "Address C2 gap via joint bidirectional construction or separate forward/backward relations",
-    "Do NOT use BoxGContent seeds (weaker than GContent)",
-    "Do NOT restrict TruthLemma to eval family (user confirmed this is wrong)"
+    "Proceed with restructured truth predicate for Box case (HIGH CONFIDENCE)",
+    "Acknowledge temporal case (G/H) remains open for witness families",
+    "Add documentation distinguishing truth_at (theory) from bmcs_truth_at (metalogic)",
+    "Investigate Path D (non-constant witness families) for G/H temporal cases"
   ],
   "metadata": {
-    "session_id": "sess_1772038114_e76353",
-    "agent_type": "skill-team-research",
-    "round": 2
+    "session_id": "sess_1772038454_51b1d5",
+    "agent_type": "lean-research-agent",
+    "round": 3
   }
 }
