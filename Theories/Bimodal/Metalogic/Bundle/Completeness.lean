@@ -76,7 +76,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
-variable {D : Type*} [LinearOrder D] [Zero D]
+variable {D : Type*} [Preorder D] [Zero D]
 
 /-!
 ## Representation Theorem
@@ -261,7 +261,7 @@ Derivability: `Γ ⊢ φ` (there exists a derivation tree)
 BMCS semantic consequence: φ is a consequence of Γ if whenever Γ is satisfied, φ is satisfied.
 -/
 def bmcs_consequence (Γ : List Formula) (φ : Formula) : Prop :=
-  ∀ (D : Type) [LinearOrder D] [Zero D],
+  ∀ (D : Type) [Preorder D] [Zero D],
   ∀ (B : BMCS D) (fam : BFMCS D) (_ : fam ∈ B.families) (t : D),
   (∀ γ ∈ Γ, bmcs_truth_at B fam t γ) → bmcs_truth_at B fam t φ
 

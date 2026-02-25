@@ -44,7 +44,7 @@ namespace Bimodal.Metalogic.Bundle
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
-variable {D : Type*} [LinearOrder D]
+variable {D : Type*} [Preorder D]
 
 /-!
 ## Stage 1: Extending Context to MCS
@@ -85,8 +85,8 @@ The family assigns the same MCS to every time point. All temporal coherence
 conditions hold trivially because the MCS is the same at all times.
 
 **Key Property**: For this family:
-- forward_G: G phi at t and t < t' implies phi at t' - by T-axiom (G phi -> phi)
-- backward_H: H phi at t and t' < t implies phi at t' - by T-axiom (H phi -> phi)
+- forward_G: G phi at t and t ≤ t' implies phi at t' - by T-axiom (G phi -> phi)
+- backward_H: H phi at t and t' ≤ t implies phi at t' - by T-axiom (H phi -> phi)
 -/
 noncomputable def constantBFMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     BFMCS D where

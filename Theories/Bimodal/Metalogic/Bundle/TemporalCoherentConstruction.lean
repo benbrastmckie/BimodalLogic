@@ -53,7 +53,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
-variable {D : Type*} [LinearOrder D] [Zero D]
+variable {D : Type*} [Preorder D] [Zero D]
 
 /-!
 ## Phase 1: Temporal Duality Infrastructure
@@ -203,7 +203,7 @@ The key properties are:
 These are the existential duals of forward_G and backward_H.
 Task 922: Weakened from strict (s > t, s < t) to reflexive (s ≥ t, s ≤ t).
 -/
-structure TemporalCoherentFamily (D : Type*) [LinearOrder D] [Zero D] extends BFMCS D where
+structure TemporalCoherentFamily (D : Type*) [Preorder D] [Zero D] extends BFMCS D where
   /-- Forward F coherence: F φ at t implies witness at some s ≥ t (reflexive) -/
   forward_F : ∀ t : D, ∀ φ : Formula,
     Formula.some_future φ ∈ mcs t → ∃ s : D, t ≤ s ∧ φ ∈ mcs s
@@ -337,7 +337,7 @@ This structure provides:
 2. M is temporally saturated (F psi -> psi and P psi -> psi in M)
 3. The family therefore satisfies forward_F and backward_P
 -/
-structure TemporalEvalSaturatedBundle (D : Type*) [LinearOrder D] where
+structure TemporalEvalSaturatedBundle (D : Type*) [Preorder D] where
   /-- The underlying MCS -/
   baseMCS : Set Formula
   /-- The MCS is maximal consistent -/
@@ -604,7 +604,7 @@ This avoids the cross-sign propagation problem that blocked DovetailingChain, bu
 1. Generalizing RecursiveSeed to generic D (major refactor of seed time indices)
 2. Implementing witness enumeration for Lindenbaum-added F/P formulas
 -/
-theorem temporal_coherent_family_exists (D : Type*) [LinearOrder D] [Zero D]
+theorem temporal_coherent_family_exists (D : Type*) [Preorder D] [Zero D]
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∃ (fam : BFMCS D),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
@@ -752,7 +752,7 @@ for Int-indexed BMCS (the only case used in completeness proofs). The Int-specia
 version will be proven constructively using DovetailingChain + modal saturation.
 -/
 @[deprecated "Use fully_saturated_bmcs_exists_int for Int case (Task 881)"]
-axiom fully_saturated_bmcs_exists (D : Type*) [LinearOrder D] [Zero D]
+axiom fully_saturated_bmcs_exists (D : Type*) [Preorder D] [Zero D]
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∃ (B : BMCS D),
       (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧

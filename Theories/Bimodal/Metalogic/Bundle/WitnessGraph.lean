@@ -3381,17 +3381,23 @@ noncomputable def enrichedChainBFMCS
     (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : BFMCS Int where
   mcs t := enrichedChainSet rootMCS t
   is_mcs t := enrichedChainSet_is_mcs rootMCS t
-  forward_G := fun t t' phi h_lt h_G => by
-    by_cases h_t : 0 ≤ t
-    · have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
-      exact enrichedChainSet_forward_G_nonneg rootMCS t t' h_t h_t' h_lt phi h_G
-    · push_neg at h_t
-      exact enrichedChainSet_forward_G_neg rootMCS t t' h_t h_lt phi h_G
-  backward_H := fun t t' phi h_lt h_H => by
-    by_cases h_t : t < 0
-    · have h_t' : t' < 0 := lt_trans h_lt h_t
-      exact enrichedChainSet_backward_H_nonpos rootMCS t t' h_t h_t' h_lt phi h_H
-    · push_neg at h_t
-      exact enrichedChainSet_backward_H_nonneg rootMCS t t' h_t h_lt phi h_H
+  forward_G := fun t t' phi h_le h_G => by
+    rcases h_le.lt_or_eq with h_lt | h_eq
+    · by_cases h_t : 0 ≤ t
+      · have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
+        exact enrichedChainSet_forward_G_nonneg rootMCS t t' h_t h_t' h_lt phi h_G
+      · push_neg at h_t
+        exact enrichedChainSet_forward_G_neg rootMCS t t' h_t h_lt phi h_G
+    · subst h_eq
+      exact mcs_G_implies_self (enrichedChainSet_is_mcs rootMCS t) phi h_G
+  backward_H := fun t t' phi h_le h_H => by
+    rcases h_le.lt_or_eq with h_lt | h_eq
+    · by_cases h_t : t < 0
+      · have h_t' : t' < 0 := lt_trans h_lt h_t
+        exact enrichedChainSet_backward_H_nonpos rootMCS t t' h_t h_t' h_lt phi h_H
+      · push_neg at h_t
+        exact enrichedChainSet_backward_H_nonneg rootMCS t t' h_t h_lt phi h_H
+    · subst h_eq
+      exact mcs_H_implies_self (enrichedChainSet_is_mcs rootMCS t') phi h_H
 
 end Bimodal.Metalogic.Bundle

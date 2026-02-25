@@ -80,7 +80,7 @@ namespace Bimodal.Metalogic.Bundle
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
-variable {D : Type*} [LinearOrder D] [Zero D]
+variable {D : Type*} [Preorder D] [Zero D]
 
 /-!
 ## Helper Lemmas for Temporal Forward Direction
@@ -94,46 +94,22 @@ Helper: MCS all_future membership implies truth at all future times.
 
 If `G φ ∈ fam.mcs t`, then for all `s ≥ t`, we have `φ ∈ fam.mcs s`.
 
-**Proof Strategy**:
-- For `s = t`: Use temporal T axiom (`G φ → φ`) via MCS closure
-- For `s > t`: Use `forward_G` coherence condition
+Uses the reflexive `forward_G` coherence condition directly.
 -/
 lemma mcs_all_future_implies_phi_at_future (fam : BFMCS D) (t s : D) (φ : Formula)
-    (hts : t ≤ s) (hG : Formula.all_future φ ∈ fam.mcs t) : φ ∈ fam.mcs s := by
-  rcases hts.lt_or_eq with h_lt | h_eq
-  · -- s > t: use forward_G
-    exact fam.forward_G t s φ h_lt hG
-  · -- s = t: use T axiom (G φ → φ)
-    subst h_eq
-    have h_mcs := fam.is_mcs t
-    have h_t_axiom : [] ⊢ (Formula.all_future φ).imp φ :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future φ)
-    have h_t_in_mcs : (Formula.all_future φ).imp φ ∈ fam.mcs t :=
-      theorem_in_mcs h_mcs h_t_axiom
-    exact set_mcs_implication_property h_mcs h_t_in_mcs hG
+    (hts : t ≤ s) (hG : Formula.all_future φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
+  fam.forward_G t s φ hts hG
 
 /--
 Helper: MCS all_past membership implies truth at all past times.
 
 If `H φ ∈ fam.mcs t`, then for all `s ≤ t`, we have `φ ∈ fam.mcs s`.
 
-**Proof Strategy**:
-- For `s = t`: Use temporal T axiom (`H φ → φ`) via MCS closure
-- For `s < t`: Use `backward_H` coherence condition
+Uses the reflexive `backward_H` coherence condition directly.
 -/
 lemma mcs_all_past_implies_phi_at_past (fam : BFMCS D) (t s : D) (φ : Formula)
-    (hst : s ≤ t) (hH : Formula.all_past φ ∈ fam.mcs t) : φ ∈ fam.mcs s := by
-  rcases hst.lt_or_eq with h_lt | h_eq
-  · -- s < t: use backward_H
-    exact fam.backward_H t s φ h_lt hH
-  · -- s = t: use T axiom (H φ → φ)
-    subst h_eq
-    have h_mcs := fam.is_mcs s
-    have h_t_axiom : [] ⊢ (Formula.all_past φ).imp φ :=
-      Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past φ)
-    have h_t_in_mcs : (Formula.all_past φ).imp φ ∈ fam.mcs s :=
-      theorem_in_mcs h_mcs h_t_axiom
-    exact set_mcs_implication_property h_mcs h_t_in_mcs hH
+    (hst : s ≤ t) (hH : Formula.all_past φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
+  fam.backward_H t s φ hst hH
 
 /-!
 ## Note: Backward Direction for Temporal Operators

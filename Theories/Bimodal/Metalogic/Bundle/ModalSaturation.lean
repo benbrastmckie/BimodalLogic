@@ -46,7 +46,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
-variable {D : Type*} [LinearOrder D]
+variable {D : Type*} [Preorder D]
 
 /-!
 ## Phase 1: Saturation Predicate and Supporting Infrastructure
@@ -457,7 +457,7 @@ A saturated BMCS is a BMCS together with a proof that it is modally saturated.
 
 This structure is useful because we can derive modal_backward from saturation.
 -/
-structure SaturatedBMCS (D : Type*) [LinearOrder D] where
+structure SaturatedBMCS (D : Type*) [Preorder D] where
   /-- The underlying BMCS -/
   bmcs : BMCS D
   /-- Proof of modal saturation -/

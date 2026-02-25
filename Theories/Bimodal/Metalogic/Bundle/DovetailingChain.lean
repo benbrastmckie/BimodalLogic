@@ -1770,8 +1770,8 @@ Build the `BFMCS Int` from the chain, with all forward_G and backward_H fully pr
 Build the dovetailing chain family from a consistent context.
 
 **Proven** (all 4 BFMCS fields):
-- forward_G: G phi in M_t implies phi in M_{t'} for all t < t' (fully proven, including cross-sign)
-- backward_H: H phi in M_t implies phi in M_{t'} for all t' < t (fully proven, including cross-sign)
+- forward_G: G phi in M_t implies phi in M_{t'} for all t ≤ t' (fully proven, including cross-sign)
+- backward_H: H phi in M_t implies phi in M_{t'} for all t' ≤ t (fully proven, including cross-sign)
 - Context preservation at time 0
 
 **Sorry debt** (2):
@@ -1796,26 +1796,42 @@ noncomputable def buildDovetailingChainFamily (Gamma : List Formula) (h_cons : C
     dovetailChainSet base h_base_cons t
   is_mcs := fun t =>
     dovetailChainSet_is_mcs (contextAsSet Gamma) (list_consistent_to_set_consistent h_cons) t
-  forward_G := fun t t' phi h_lt h_G => by
+  forward_G := fun t t' phi h_le h_G => by
     let base := contextAsSet Gamma
     let h_base_cons := list_consistent_to_set_consistent h_cons
     show phi ∈ dovetailChainSet base h_base_cons t'
     have h_G' : Formula.all_future phi ∈ dovetailChainSet base h_base_cons t := h_G
-    by_cases h_t : 0 ≤ t
-    · have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
-      exact dovetailChainSet_forward_G_nonneg base h_base_cons t t' h_t h_t' h_lt phi h_G'
-    · push_neg at h_t
-      exact dovetailChainSet_forward_G_neg base h_base_cons t t' h_t h_lt phi h_G'
-  backward_H := fun t t' phi h_lt h_H => by
+    rcases h_le.lt_or_eq with h_lt | h_eq
+    · -- Strict case: t < t'
+      by_cases h_t : 0 ≤ t
+      · have h_t' : 0 ≤ t' := le_of_lt (lt_of_le_of_lt h_t h_lt)
+        exact dovetailChainSet_forward_G_nonneg base h_base_cons t t' h_t h_t' h_lt phi h_G'
+      · push_neg at h_t
+        exact dovetailChainSet_forward_G_neg base h_base_cons t t' h_t h_lt phi h_G'
+    · -- Equal case: t = t', use T-axiom
+      subst h_eq
+      have h_mcs := dovetailChainSet_is_mcs base h_base_cons t
+      have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
+        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future phi)
+      exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G'
+  backward_H := fun t t' phi h_le h_H => by
     let base := contextAsSet Gamma
     let h_base_cons := list_consistent_to_set_consistent h_cons
     show phi ∈ dovetailChainSet base h_base_cons t'
     have h_H' : Formula.all_past phi ∈ dovetailChainSet base h_base_cons t := h_H
-    by_cases h_t : t < 0
-    · have h_t' : t' < 0 := lt_trans h_lt h_t
-      exact dovetailChainSet_backward_H_nonpos base h_base_cons t t' h_t h_t' h_lt phi h_H'
-    · push_neg at h_t
-      exact dovetailChainSet_backward_H_nonneg base h_base_cons t t' h_t h_lt phi h_H'
+    rcases h_le.lt_or_eq with h_lt | h_eq
+    · -- Strict case: t' < t
+      by_cases h_t : t < 0
+      · have h_t' : t' < 0 := lt_trans h_lt h_t
+        exact dovetailChainSet_backward_H_nonpos base h_base_cons t t' h_t h_t' h_lt phi h_H'
+      · push_neg at h_t
+        exact dovetailChainSet_backward_H_nonneg base h_base_cons t t' h_t h_lt phi h_H'
+    · -- Equal case: t' = t, use T-axiom
+      subst h_eq
+      have h_mcs := dovetailChainSet_is_mcs base h_base_cons t'
+      have h_T : [] ⊢ (Formula.all_past phi).imp phi :=
+        Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past phi)
+      exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H'
 
 /-- The dovetailing chain family preserves the context at time 0. -/
 lemma buildDovetailingChainFamily_preserves_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :

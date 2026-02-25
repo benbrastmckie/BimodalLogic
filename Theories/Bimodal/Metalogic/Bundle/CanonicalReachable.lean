@@ -210,7 +210,7 @@ If G(phi) ∈ mcs(t), then phi is at all strictly future times (restated from BF
 theorem forward_G_at_future (fam : BFMCS Int) (t : Int) (phi : Formula)
     (h_G : Formula.all_future phi ∈ fam.mcs t) :
     ∀ s : Int, t < s → phi ∈ fam.mcs s :=
-  fun s h_lt => fam.forward_G t s phi h_lt h_G
+  fun s h_lt => fam.forward_G t s phi (le_of_lt h_lt) h_G
 
 /--
 If phi ∈ mcs(t) and G(phi) ∈ mcs(t), then phi is at all times s > t.

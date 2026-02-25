@@ -243,12 +243,10 @@ theorem box_persistent
     set_mcs_implication_property (fam.is_mcs t) h_past_tf h_box
   -- Step 3: Case split on s vs t
   rcases le_or_gt t s with h_le | h_lt
-  · -- s ≥ t: use T-axiom for s = t, forward_G for s > t
-    rcases eq_or_lt_of_le h_le with h_eq | h_lt
-    · rw [← h_eq]; exact h_box
-    · exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
+  · -- s ≥ t: use forward_G (now handles ≤ directly)
+    exact fam.forward_G t s (Formula.box φ) h_le h_G_box
   · -- s < t: use backward_H
-    exact fam.backward_H t s (Formula.box φ) h_lt h_H_box
+    exact fam.backward_H t s (Formula.box φ) (le_of_lt h_lt) h_H_box
 
 /-!
 ## Truth Lemma
@@ -334,19 +332,9 @@ theorem canonical_truth_lemma_all (B : BMCS Int)
     constructor
     · -- Forward: G ψ ∈ fam.mcs t → ∀ s ≥ t, truth_at M Omega τ s ψ
       intro h_G s h_le
-      -- Case split: s = t or s > t
-      rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · -- s = t: G ψ ∈ fam.mcs t, by T-axiom (G ψ → ψ): ψ ∈ fam.mcs t
-        rw [← h_eq]
-        have h_mcs := fam.is_mcs t
-        have h_T : [] ⊢ (Formula.all_future ψ).imp ψ :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_future ψ)
-        have h_ψ_mem : ψ ∈ fam.mcs t :=
-          set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G
-        exact (ih fam hfam t).mp h_ψ_mem
-      · -- s > t: G ψ ∈ fam.mcs t, by forward_G: ψ ∈ fam.mcs s
-        have h_ψ_s : ψ ∈ fam.mcs s := fam.forward_G t s ψ h_lt h_G
-        exact (ih fam hfam s).mp h_ψ_s
+      -- forward_G now handles ≤ directly
+      have h_ψ_s : ψ ∈ fam.mcs s := fam.forward_G t s ψ h_le h_G
+      exact (ih fam hfam s).mp h_ψ_s
     · -- Backward: (∀ s ≥ t, truth_at M Omega τ s ψ) → G ψ ∈ fam.mcs t
       intro h_all_s
       -- By IH backward at each s: truth_at → ψ ∈ fam.mcs s
@@ -373,18 +361,9 @@ theorem canonical_truth_lemma_all (B : BMCS Int)
     constructor
     · -- Forward: H ψ ∈ fam.mcs t → ∀ s ≤ t, truth_at M Omega τ s ψ
       intro h_H s h_le
-      rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · -- s = t: by T-axiom, using h_eq : s = t
-        have h_mcs := fam.is_mcs t
-        have h_T : [] ⊢ (Formula.all_past ψ).imp ψ :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_past ψ)
-        have h_ψ_mem : ψ ∈ fam.mcs t :=
-          set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H
-        have h_ψ_s : ψ ∈ fam.mcs s := h_eq ▸ h_ψ_mem
-        exact (ih fam hfam s).mp h_ψ_s
-      · -- s < t: by backward_H
-        have h_ψ_s : ψ ∈ fam.mcs s := fam.backward_H t s ψ h_lt h_H
-        exact (ih fam hfam s).mp h_ψ_s
+      -- backward_H now handles ≤ directly
+      have h_ψ_s : ψ ∈ fam.mcs s := fam.backward_H t s ψ h_le h_H
+      exact (ih fam hfam s).mp h_ψ_s
     · -- Backward: (∀ s ≤ t, truth_at M Omega τ s ψ) → H ψ ∈ fam.mcs t
       intro h_all_s
       have h_mcs := fam.is_mcs t
@@ -510,16 +489,9 @@ theorem shifted_truth_lemma (B : BMCS Int)
     -- Identical to canonical_truth_lemma_all (temporal cases are Omega-independent)
     constructor
     · intro h_G s h_le
-      rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · rw [← h_eq]
-        have h_mcs := fam.is_mcs t
-        have h_T : [] ⊢ (Formula.all_future ψ).imp ψ :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_future ψ)
-        have h_ψ_mem : ψ ∈ fam.mcs t :=
-          set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G
-        exact (ih fam hfam t).mp h_ψ_mem
-      · have h_ψ_s : ψ ∈ fam.mcs s := fam.forward_G t s ψ h_lt h_G
-        exact (ih fam hfam s).mp h_ψ_s
+      -- forward_G now handles ≤ directly
+      have h_ψ_s : ψ ∈ fam.mcs s := fam.forward_G t s ψ h_le h_G
+      exact (ih fam hfam s).mp h_ψ_s
     · intro h_all_s
       have h_mcs := fam.is_mcs t
       by_contra h_not_G
@@ -537,16 +509,9 @@ theorem shifted_truth_lemma (B : BMCS Int)
     intro fam hfam t
     constructor
     · intro h_H s h_le
-      rcases eq_or_lt_of_le h_le with h_eq | h_lt
-      · have h_mcs := fam.is_mcs t
-        have h_T : [] ⊢ (Formula.all_past ψ).imp ψ :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_past ψ)
-        have h_ψ_mem : ψ ∈ fam.mcs t :=
-          set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H
-        have h_ψ_s : ψ ∈ fam.mcs s := h_eq ▸ h_ψ_mem
-        exact (ih fam hfam s).mp h_ψ_s
-      · have h_ψ_s : ψ ∈ fam.mcs s := fam.backward_H t s ψ h_lt h_H
-        exact (ih fam hfam s).mp h_ψ_s
+      -- backward_H now handles ≤ directly
+      have h_ψ_s : ψ ∈ fam.mcs s := fam.backward_H t s ψ h_le h_H
+      exact (ih fam hfam s).mp h_ψ_s
     · intro h_all_s
       have h_mcs := fam.is_mcs t
       by_contra h_not_H

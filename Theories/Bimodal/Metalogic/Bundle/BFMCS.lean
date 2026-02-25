@@ -23,8 +23,8 @@ MCS connected to adjacent times via temporal coherence conditions.
 ## Main Definitions
 
 - `BFMCS D`: Structure pairing each time `t : D` with an MCS, plus coherence
-- `forward_G`: G formulas at t propagate to all future t' > t
-- `backward_H`: H formulas at t propagate to all past t' < t
+- `forward_G`: G formulas at t propagate to all future t' >= t
+- `backward_H`: H formulas at t propagate to all past t' <= t
 
 ## Design Note (Task 843)
 
@@ -51,7 +51,7 @@ open Bimodal.Metalogic.Core
 ## BFMCS Structure
 -/
 
-variable (D : Type*) [LinearOrder D]
+variable (D : Type*) [Preorder D]
 
 /--
 A family of maximal consistent sets indexed by time, with temporal coherence.
@@ -62,13 +62,13 @@ A family of maximal consistent sets indexed by time, with temporal coherence.
 **Fields**:
 - `mcs`: Function assigning an MCS to each time point
 - `is_mcs`: Proof that each assigned set is maximal consistent
-- `forward_G`: G formulas propagate to strictly future times
-- `backward_H`: H formulas propagate to strictly past times
+- `forward_G`: G formulas propagate to future times (reflexive)
+- `backward_H`: H formulas propagate to past times (reflexive)
 
 **Key Properties**:
-- The coherence conditions use STRICT inequalities (< not <=)
-- This matches TM's temporal operator semantics
-- The T-axiom is used for reflexivity within a single MCS
+- The coherence conditions use REFLEXIVE inequalities (<= not <)
+- This matches TM's temporal operator semantics with T-axioms
+- Reflexivity enables Preorder generalization (Task 922)
 
 **Design Note (Task 843)**:
 The structure previously included `forward_H` and `backward_G` fields. These were
@@ -82,21 +82,21 @@ structure BFMCS where
   /-- Each assigned set is maximal consistent -/
   is_mcs : forall t, SetMaximalConsistent (mcs t)
   /--
-  Forward G coherence: G phi at time t implies phi at all strictly future times.
+  Forward G coherence: G phi at time t implies phi at all future times t' >= t.
 
   Semantic justification: If `G phi` means "phi at all future times",
-  and `G phi` is in the MCS at t, then phi must be in the MCS at any t' > t.
+  and `G phi` is in the MCS at t, then phi must be in the MCS at any t' >= t.
   -/
-  forward_G : forall t t' phi, t < t' -> Formula.all_future phi ∈ mcs t -> phi ∈ mcs t'
+  forward_G : forall t t' phi, t ≤ t' -> Formula.all_future phi ∈ mcs t -> phi ∈ mcs t'
   /--
-  Backward H coherence: H phi at time t implies phi at all strictly past times.
+  Backward H coherence: H phi at time t implies phi at all past times t' ≤ t.
 
   Semantic justification: If `H phi` means "phi at all past times",
-  and `H phi` is in the MCS at t, then phi must be in the MCS at any t' < t.
+  and `H phi` is in the MCS at t, then phi must be in the MCS at any t' ≤ t.
   -/
-  backward_H : forall t t' phi, t' < t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
+  backward_H : forall t t' phi, t' ≤ t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
 
-variable {D : Type*} [LinearOrder D]
+variable {D : Type*} [Preorder D]
 
 /-!
 ## Basic Accessors
@@ -123,35 +123,35 @@ These lemmas follow from the basic coherence conditions and are useful for proof
 -/
 
 /--
-G phi propagates transitively through future times.
+G phi propagates to future times.
 
-If `G phi ∈ mcs(t)` and `t < t' < t''`, then `phi ∈ mcs(t')` and `phi ∈ mcs(t'')`.
+If `G phi ∈ mcs(t)` and `t ≤ t'`, then `phi ∈ mcs(t')`.
 -/
 lemma BFMCS.forward_G_chain (family : BFMCS D)
-    {t t' : D} (htt' : t < t') (phi : Formula) (hG : Formula.all_future phi ∈ family.mcs t) :
+    {t t' : D} (htt' : t ≤ t') (phi : Formula) (hG : Formula.all_future phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.forward_G t t' phi htt' hG
 
 /--
-H phi propagates transitively through past times.
+H phi propagates to past times.
 
-If `H phi ∈ mcs(t)` and `t'' < t' < t`, then `phi ∈ mcs(t')` and `phi ∈ mcs(t'')`.
+If `H phi ∈ mcs(t)` and `t' ≤ t`, then `phi ∈ mcs(t')`.
 -/
 lemma BFMCS.backward_H_chain (family : BFMCS D)
-    {t t' : D} (ht't : t' < t) (phi : Formula) (hH : Formula.all_past phi ∈ family.mcs t) :
+    {t t' : D} (ht't : t' ≤ t) (phi : Formula) (hH : Formula.all_past phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.backward_H t t' phi ht't hH
 
 /--
 GG phi implies G phi propagation (using Temporal 4 axiom).
 
-If `G(G phi) ∈ mcs(t)` and `t < t'`, then `G phi ∈ mcs(t')`.
+If `G(G phi) ∈ mcs(t)` and `t ≤ t'`, then `G phi ∈ mcs(t')`.
 
 This uses the Temporal 4 axiom `G phi -> GG phi` in the contrapositive direction:
-From `GG phi ∈ mcs(t)`, we have `G phi` will be at all strictly future times.
+From `GG phi ∈ mcs(t)`, we have `G phi` will be at all future times.
 -/
 lemma BFMCS.GG_to_G (family : BFMCS D)
-    {t t' : D} (htt' : t < t') (phi : Formula)
+    {t t' : D} (htt' : t ≤ t') (phi : Formula)
     (hGG : Formula.all_future (Formula.all_future phi) ∈ family.mcs t) :
     Formula.all_future phi ∈ family.mcs t' :=
   family.forward_G t t' (Formula.all_future phi) htt' hGG
@@ -159,10 +159,10 @@ lemma BFMCS.GG_to_G (family : BFMCS D)
 /--
 HH phi implies H phi propagation (using Temporal 4 dual for H).
 
-If `H(H phi) ∈ mcs(t)` and `t' < t`, then `H phi ∈ mcs(t')`.
+If `H(H phi) ∈ mcs(t)` and `t' ≤ t`, then `H phi ∈ mcs(t')`.
 -/
 lemma BFMCS.HH_to_H (family : BFMCS D)
-    {t t' : D} (ht't : t' < t) (phi : Formula)
+    {t t' : D} (ht't : t' ≤ t) (phi : Formula)
     (hHH : Formula.all_past (Formula.all_past phi) ∈ family.mcs t) :
     Formula.all_past phi ∈ family.mcs t' :=
   family.backward_H t t' (Formula.all_past phi) ht't hHH
@@ -188,25 +188,25 @@ These lemmas will be used when proving the canonical task relation properties.
 -/
 
 /--
-If G phi is in the MCS at time t, then for any strictly future time t' > t,
+If G phi is in the MCS at time t, then for any future time t' >= t,
 phi is in the MCS at t'.
 
 This is just a restatement of forward_G for clarity in task relation proofs.
 -/
 lemma BFMCS.G_implies_future_phi (family : BFMCS D)
-    {t t' : D} (hlt : t < t') {phi : Formula} (hG : Formula.all_future phi ∈ family.mcs t) :
+    {t t' : D} (hle : t ≤ t') {phi : Formula} (hG : Formula.all_future phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
-  family.forward_G t t' phi hlt hG
+  family.forward_G t t' phi hle hG
 
 /--
-If H phi is in the MCS at time t, then for any strictly past time t' < t,
+If H phi is in the MCS at time t, then for any past time t' <= t,
 phi is in the MCS at t'.
 
 This is just a restatement of backward_H for clarity in task relation proofs.
 -/
 lemma BFMCS.H_implies_past_phi (family : BFMCS D)
-    {t t' : D} (hlt : t' < t) {phi : Formula} (hH : Formula.all_past phi ∈ family.mcs t) :
+    {t t' : D} (hle : t' ≤ t) {phi : Formula} (hH : Formula.all_past phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
-  family.backward_H t t' phi hlt hH
+  family.backward_H t t' phi hle hH
 
 end Bimodal.Metalogic.Bundle

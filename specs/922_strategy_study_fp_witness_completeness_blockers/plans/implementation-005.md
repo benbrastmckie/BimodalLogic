@@ -3,7 +3,7 @@
 - **Task**: 922 - strategy_study_fp_witness_completeness_blockers
 - **Version**: 005
 - **Created**: 2026-02-24
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6-10 hours
 - **Dependencies**: None
 - **Research Inputs**: research-008.md (Preorder generalization confirmed as correct path)
@@ -108,7 +108,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase A: Weaken forward_G/backward_H to Reflexive [NOT STARTED]
+### Phase A: Weaken forward_G/backward_H to Reflexive [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Change BFMCS forward_G/backward_H from strict `<` to reflexive `<=`
@@ -140,7 +140,7 @@ After this implementation:
 
 ---
 
-### Phase B: Generalize BFMCS from LinearOrder to Preorder [NOT STARTED]
+### Phase B: Generalize BFMCS from LinearOrder to Preorder [COMPLETED]
 
 - **Dependencies:** Phase A
 - **Goal:** Change BFMCS type constraint from `[LinearOrder D]` to `[Preorder D]`
@@ -181,7 +181,7 @@ After this implementation:
 
 ---
 
-### Phase C: Build BFMCS on CanonicalReachable [NOT STARTED]
+### Phase C: Build BFMCS on CanonicalReachable [IN PROGRESS]
 
 - **Dependencies:** Phase B
 - **Goal:** Construct BFMCS over CanonicalReachable with trivial forward_F/backward_P proofs

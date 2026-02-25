@@ -51,7 +51,7 @@ namespace Bimodal.Metalogic.Bundle
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
-variable {D : Type*} [LinearOrder D]
+variable {D : Type*} [Preorder D]
 
 /-!
 ## BMCS Truth Definition
@@ -106,7 +106,7 @@ This is the semantic notion for the Henkin-style completeness proof.
 Completeness states: `bmcs_valid φ ↔ Derivable [] φ`
 -/
 def bmcs_valid (φ : Formula) : Prop :=
-  ∀ (D : Type) [LinearOrder D],
+  ∀ (D : Type) [Preorder D],
   ∀ (B : BMCS D), ∀ fam ∈ B.families, ∀ t : D, bmcs_truth_at B fam t φ
 
 /--
