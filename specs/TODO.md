@@ -23,10 +23,11 @@ technical_debt:
 ## Tasks
 
 ### 926. Audit agent system for context efficiency and reduce startup bloat
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-25
+- **Research**: [research-001.md](specs/926_audit_agent_system_context_efficiency/reports/research-001.md)
 
 **Description**: Context usage is 20% immediately when starting a new Claude Code session. Review agent system complexity and identify opportunities to reduce context bloat following 2026 best practices.
 
