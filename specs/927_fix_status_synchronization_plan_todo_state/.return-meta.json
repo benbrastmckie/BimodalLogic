@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/927_fix_status_synchronization_plan_todo_state/reports/research-001.md",
-      "summary": "Root cause analysis showing plan file status updates exist in skill code but are not reliably executed; recommends centralized helper function and validation gate"
+      "type": "plan",
+      "path": "specs/927_fix_status_synchronization_plan_todo_state/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for three-file status synchronization fix"
     }
   ],
-  "next_steps": "Run /plan 927 to create implementation plan",
+  "next_steps": "Run /implement 927 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772055860_fdc55b",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 720,
+    "session_id": "sess_1772063771_98d4b6",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 3.5
   }
 }

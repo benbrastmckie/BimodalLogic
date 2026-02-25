@@ -8,19 +8,39 @@
     {
       "project_number": 927,
       "project_name": "fix_status_synchronization_plan_todo_state",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-02-25T21:41:07Z",
-      "last_updated": "2026-02-25T23:54:28Z",
-      "session_id": "sess_1772055860_fdc55b",
+      "last_updated": "2026-02-25T15:57:30Z",
+      "session_id": "sess_1772063771_98d4b6",
       "researched": "2026-02-25T23:54:28Z",
       "artifacts": [
         {
           "path": "specs/927_fix_status_synchronization_plan_todo_state/reports/research-001.md",
           "type": "research",
           "summary": "Root cause analysis showing plan file status updates exist in skill code but are not reliably executed; recommends centralized helper function and validation gate"
+        },
+        {
+          "path": "specs/927_fix_status_synchronization_plan_todo_state/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for three-file status synchronization fix"
         }
-      ]
+      ],
+      "planned": "2026-02-25T15:57:30Z",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 3.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-25"
+          }
+        ]
+      }
     },
     {
       "project_number": 926,
