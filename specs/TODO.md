@@ -28,7 +28,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-02-25
 - **Supersedes**: Tasks 916, 922, 924
-- **Research**: [research-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-001.md)
+- **Research**: [research-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-001.md), [research-002.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-002.md)
 
 **Description**: Tasks 924, 922, and 916 have hit major issues requiring architectural redesign.
 

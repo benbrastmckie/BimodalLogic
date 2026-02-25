@@ -8,16 +8,21 @@
     {
       "project_number": 925,
       "project_name": "redesign_bmcs_completeness_mcs_accessibility",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-25T16:00:03Z",
-      "last_updated": "2026-02-25T16:23:03Z",
+      "last_updated": "2026-02-25T16:58:00Z",
       "description": "Tasks 924, 922, and 916 have hit major issues. Problematic ideas to remove:\n\n1. Standard witness families are CONSTANT (same MCS at every time) - needs systematic fix to admit families with different MCSs at different times\n2. Truth lemma assumed only needed for eval family - hits dead end for complex formulas\n3. Taking all MCSs to form a single canonical family does not work\n\nThe correct path:\n1. Define MCSs as world states\n2. Define four-constraint accessibility relation: one MCS related to another iff whenever Box G phi is in the left MCS, then phi is in the right MCS\n3. Define families as functions Int -> MCS where each MCS sees the next MCS or is seen by the previous MCS (using the accessibility relation)\n4. This constructs a bundle of families resembling world histories\n5. Prove every consistent sentence belongs to an MCS at time 0 in some family\n6. Establish TruthLemma: sentence belongs to MCS in family iff sentence is true when evaluated at that family at the corresponding integer\n\nThis construction is the core of the representation theorem. It may be hard to find but once found will be obviously correct and relatively easy to verify.",
       "artifacts": [
         {
           "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-001.md",
           "type": "research",
           "summary": "Team research: restructured truth predicate + CanonicalMCS domain is recommended path (2 teammates)"
+        },
+        {
+          "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-002.md",
+          "type": "research",
+          "summary": "Team research round 2: corrected BoxG/BoxH constraints, C2 gap identified (2 teammates)"
         }
       ],
       "supersedes": [
@@ -25,7 +30,7 @@
         922,
         924
       ],
-      "session_id": "sess_1772036130_17753b",
+      "session_id": "sess_1772038454_51b1d5",
       "researched": "2026-02-25T16:23:03Z"
     },
     {

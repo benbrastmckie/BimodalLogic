@@ -1,11 +1,11 @@
 {
   "status": "researched",
-  "summary": "Team research completed: restructured truth predicate + CanonicalMCS domain is the recommended path for sorry-free BMCS completeness",
+  "summary": "Team research round 2 completed: corrected BoxG/BoxH constraints analyzed, C2 gap identified as critical obstruction",
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-001.md",
-      "summary": "Synthesized research from 2 teammates analyzing accessibility relation constraints and construction strategies"
+      "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-002.md",
+      "summary": "Synthesized research from 2 teammates on corrected constraints and construction approaches"
     }
   ],
   "team_execution": {
@@ -20,40 +20,43 @@
   "teammate_results": [
     {
       "id": "a",
-      "angle": "Accessibility relation constraints analysis",
+      "angle": "Canonical frame construction with BoxG/BoxH constraints",
       "status": "completed",
-      "confidence": "moderate-high",
-      "key_contribution": "Four-constraint identification, unified seed proposal, sorry inventory"
+      "confidence": "moderate",
+      "key_contribution": "BoxGContent subset GContent (weaker), C2 gap identification, reflexivity proof, generalized BoxG K, decomposition insight"
     },
     {
       "id": "b",
-      "angle": "Construction strategy comparison",
+      "angle": "Seed-based unraveling with corrected constraints",
       "status": "completed",
       "confidence": "high",
-      "key_contribution": "Big Seed counterexample citation, restructured truth predicate breakthrough, infrastructure inventory"
+      "key_contribution": "Confirmed BoxGContent weaker, structural temporal-modal conflict, constraint (3) requires F-witness in witness family"
     }
   ],
   "synthesis": {
     "conflicts_found": 1,
-    "conflicts_resolved": 1,
-    "gaps_identified": 0,
+    "conflicts_resolved": 0,
+    "gaps_identified": 1,
     "wave_2_triggered": false
   },
   "key_findings": [
-    "Constant witness families mathematically cannot satisfy forward_F/backward_P - proven impossible",
-    "DovetailingChain forward_F/backward_P are UNPROVABLE due to Big Seed counterexample",
-    "CanonicalMCS domain provides sorry-free temporal infrastructure",
-    "BREAKTHROUGH: Restructured truth predicate (Box case uses syntactic membership instead of recursive truth) eliminates need for temporal coherence in witness families",
-    "All required infrastructure is already sorry-free; only targeted changes needed"
+    "BoxGContent subset GContent strictly (WEAKER, not stronger) - via T-axioms",
+    "Accessibility relation IS reflexive (nullity satisfied)",
+    "Accessibility relation is NOT transitive (but compositionality via histories suffices)",
+    "C3 seed consistency IS provable via generalized BoxG K theorem",
+    "CRITICAL GAP: C2 (backward constraint) NOT automatically satisfied by forward Lindenbaum",
+    "BoxG decomposes into Box composed with G - existing two-layer architecture may be correct",
+    "TruthLemma for ALL families requires forward_F in ALL families including witnesses"
   ],
   "recommendations": [
-    "Restructure bmcs_truth_at Box case to use syntactic membership",
-    "Re-prove TruthLemma Box case using existing BMCS.box_iff_universal lemma",
-    "Build BMCS over CanonicalMCS using CoherentBundle for modal saturation",
-    "Update Completeness.lean entry point from Int to CanonicalMCS"
+    "Investigate Path D: non-constant witness families as histories through CanonicalMCS",
+    "Address C2 gap via joint bidirectional construction or separate forward/backward relations",
+    "Do NOT use BoxGContent seeds (weaker than GContent)",
+    "Do NOT restrict TruthLemma to eval family (user confirmed this is wrong)"
   ],
   "metadata": {
-    "session_id": "sess_1772036130_17753b",
-    "agent_type": "skill-team-research"
+    "session_id": "sess_1772038114_e76353",
+    "agent_type": "skill-team-research",
+    "round": 2
   }
 }
