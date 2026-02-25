@@ -38,11 +38,11 @@ technical_debt:
 
 ### 922. Strategy study: identify viable path for forward_F/backward_P completeness
 - **Effort**: 8-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Started**: 2026-02-24
-- **Research**: [research-006.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-006.md)
+- **Research**: [research-007.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-007.md)
 - **Plan**: [implementation-004.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-004.md)
 - **Summary**: [implementation-summary-20260225.md](specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260225.md)
 
