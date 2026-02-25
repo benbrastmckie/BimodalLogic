@@ -1,19 +1,25 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
       "type": "report",
       "path": "specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/reports/research-001.md",
       "summary": "Research report analyzing 6 target files for zero-proof-debt policy enforcement gaps"
+    },
+    {
+      "type": "plan",
+      "path": "specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for zero-proof-debt policy enforcement"
     }
   ],
-  "next_steps": "Run /plan 921 to create implementation plan",
+  "next_steps": "Run /implement 921 to execute the plan",
   "metadata": {
-    "session_id": "sess_1771979218_e80b72",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1771979888_2dd4c4",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 2.5
   }
 }
