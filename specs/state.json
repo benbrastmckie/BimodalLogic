@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 927,
+      "project_name": "fix_status_synchronization_plan_todo_state",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-25T21:41:07Z",
+      "last_updated": "2026-02-25T21:41:07Z"
+    },
+    {
       "project_number": 926,
       "project_name": "audit_agent_system_context_efficiency",
       "status": "completed",
@@ -793,7 +801,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 927,
+  "next_project_number": 928,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 927
+next_project_number: 928
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 927. Fix status synchronization between plan files, TODO.md, and state.json
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Fix status synchronization to ensure plan file status (line 4), TODO.md status, and state.json status all update together. Currently the plan file status sometimes doesn't get updated while the other two are correctly updated.
+
+---
 
 ### 926. Audit agent system for context efficiency and reduce startup bloat
 - **Effort**: 4-6 hours
