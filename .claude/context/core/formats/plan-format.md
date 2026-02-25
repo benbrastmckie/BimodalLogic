@@ -159,8 +159,16 @@ See `artifact-formats.md` for full Progress Subsection documentation.
 **Required Elements**:
 - **Pre-existing Sorries**: Sorries in scope that this implementation addresses
 - **Expected Resolution**: Which sorries will be resolved and how
-- **New Sorries**: Any sorries introduced (should be rare and justified)
-- **Remaining Debt**: Sorries that will remain after implementation, with remediation timeline
+- **New Sorries**: NEVER introduce new sorries - this is STRICTLY FORBIDDEN (see below)
+- **Remaining Debt**: Only pre-existing sorries not in scope; any in-scope sorries MUST be resolved
+
+**CRITICAL: Zero-Debt Completion Gate**
+
+For any Lean task to be marked `[COMPLETED]`:
+- Zero new sorries may be introduced
+- All in-scope sorries must be resolved
+- If a proof cannot be completed, mark phase `[BLOCKED]` with `requires_user_review: true`
+- DO NOT plan for "temporary sorries" or "sorry deferral"
 
 **Framing Rules**:
 
@@ -190,7 +198,10 @@ ALWAYS use these phrases (they acknowledge temporary technical debt):
 - Phase 3 resolves line 78 sorry via truth preservation lemma
 
 ### New Sorries
-- None expected. If proof complexity requires temporary sorry, will document with remediation timeline.
+- None. NEVER introduce new sorries. If proof cannot be completed:
+  - Mark phase [BLOCKED] with requires_user_review: true
+  - User decides: revise plan, split task, or change approach
+  - DO NOT use sorry and mark task complete
 
 ### Remaining Debt
 After this implementation:
@@ -296,6 +307,14 @@ After this implementation:
 ...
 
 ## Testing & Validation
+
+### For Lean Tasks (Required)
+- [ ] `lake build` passes with no errors
+- [ ] `grep -rn "\bsorry\b" <modified files>` returns empty (zero-debt gate)
+- [ ] `grep -n "^axiom " <modified files>` shows no new axioms
+- [ ] All proofs verified with `lean_goal` showing "no goals"
+
+### General
 - [ ] ...
 
 ## Artifacts & Outputs

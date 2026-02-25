@@ -1,7 +1,7 @@
 # Implementation Plan: Task #921
 
 - **Task**: 921 - Enforce Zero Proof Debt Policy for Lean Task Completion
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/reports/research-001.md
@@ -49,16 +49,16 @@ Research-001 analyzed 6 target files and identified these key gaps:
 
 ## Implementation Phases
 
-### Phase 1: Update Policy Foundation [NOT STARTED]
+### Phase 1: Update Policy Foundation [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Establish the zero-debt completion gate rule in the canonical policy document
 
 **Tasks**:
-- [ ] Add "Completion Gates" section to proof-debt-policy.md stating zero-debt requirement
-- [ ] Add "Forbidden Patterns" section explicitly banning Option B style sorry deferral
-- [ ] Clarify that Path D (Axiom Disclosure) applies only to existing axioms at publication, not task implementation
-- [ ] Review and update any conflicting language in existing sections
+- [x] Add "Completion Gates" section to proof-debt-policy.md stating zero-debt requirement
+- [x] Add "Forbidden Patterns" section explicitly banning Option B style sorry deferral
+- [x] Clarify that Path D (Axiom Disclosure) applies only to existing axioms at publication, not task implementation
+- [x] Review and update any conflicting language in existing sections
 
 **Timing**: 30 minutes
 
@@ -70,19 +70,26 @@ Research-001 analyzed 6 target files and identified these key gaps:
 - Policy document has "Forbidden Patterns" section with Option B prohibition
 - No conflicting language remains suggesting sorries are acceptable
 
+**Progress:**
+
+**Session: 2026-02-24, sess_1771980315_7bc399**
+- Added: `Completion Gates` section with zero-debt requirement, enforcement points table, soft vs hard blocker criteria
+- Added: `Forbidden Patterns` section with explicit Option B sorry deferral prohibition and new axiom prohibition
+- Fixed: Path D (Axiom Disclosure) clarified to apply only to publication decisions on pre-existing axioms, not task implementation
+
 ---
 
-### Phase 2: Update Lean Implementation Agent [NOT STARTED]
+### Phase 2: Update Lean Implementation Agent [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add verification requirements to the agent that executes Lean implementations
 
 **Tasks**:
-- [ ] Add "Zero-Debt Completion Gate" section with explicit verification steps
-- [ ] Add sorry detection to hard blocker criteria (requires_user_review: true)
-- [ ] Update MUST DO: "Verify zero sorries in modified files before returning implemented status"
-- [ ] Update MUST NOT: "Return implemented status if any sorry remains in modified files"
-- [ ] Add verification commands: `grep -r "sorry" <modified files>`
+- [x] Add "Zero-Debt Completion Gate" section with explicit verification steps
+- [x] Add sorry detection to hard blocker criteria (requires_user_review: true)
+- [x] Update MUST DO: "Verify zero sorries in modified files before returning implemented status"
+- [x] Update MUST NOT: "Return implemented status if any sorry remains in modified files"
+- [x] Add verification commands: `grep -r "sorry" <modified files>`
 
 **Timing**: 30 minutes
 
@@ -94,19 +101,27 @@ Research-001 analyzed 6 target files and identified these key gaps:
 - Sorry in output triggers hard blocker status
 - MUST DO/MUST NOT lists include zero-debt requirements
 
+**Progress:**
+
+**Session: 2026-02-24, sess_1771980315_7bc399**
+- Added: `Zero-Debt Completion Gate (MANDATORY)` section with verification steps and sorry detection commands
+- Added: `sorry_remains` and `new_axiom_required` to hard blocker table
+- Added: MUST DO items 18-19 for zero-debt verification
+- Added: MUST NOT items 18-20 prohibiting implemented status with sorries, new axioms, or Option B deferral
+
 ---
 
-### Phase 3: Update Research and Planning Agents [NOT STARTED]
+### Phase 3: Update Research and Planning Agents [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Ensure upstream agents do not recommend or plan sorry deferral patterns
 
 **Tasks**:
-- [ ] Add "Research Constraints for Lean Tasks" section to lean-research-agent.md
-- [ ] Update lean-research-agent.md MUST NOT to include "Recommend sorry deferral patterns (Option B style)"
-- [ ] Add "Lean Task Planning Constraints" section to planner-agent.md
-- [ ] Require verification phase in Lean plans that confirms zero sorries
-- [ ] Prohibit phases that intentionally introduce sorries for later resolution
+- [x] Add "Research Constraints for Lean Tasks" section to lean-research-agent.md
+- [x] Update lean-research-agent.md MUST NOT to include "Recommend sorry deferral patterns (Option B style)"
+- [x] Add "Lean Task Planning Constraints" section to planner-agent.md
+- [x] Require verification phase in Lean plans that confirms zero sorries
+- [x] Prohibit phases that intentionally introduce sorries for later resolution
 
 **Timing**: 30 minutes
 
@@ -119,19 +134,28 @@ Research-001 analyzed 6 target files and identified these key gaps:
 - Planner agent requires verification phase in Lean plans
 - No "placeholder sorry" phases allowed in plans
 
+**Progress:**
+
+**Session: 2026-02-24, sess_1771980315_7bc399**
+- Added: `Research Constraints for Lean Tasks` section to lean-research-agent.md with forbidden recommendations and required approach
+- Added: MUST NOT items 14-16 to lean-research-agent.md prohibiting sorry deferral recommendations
+- Added: `Lean Task Planning Constraints` section (Stage 4a) to planner-agent.md with forbidden/required patterns
+- Added: MUST DO items 11-13 to planner-agent.md for Lean task planning
+- Added: MUST NOT items 12-14 to planner-agent.md prohibiting planned sorries
+
 ---
 
-### Phase 4: Update Plan Format and Skill [NOT STARTED]
+### Phase 4: Update Plan Format and Skill [COMPLETED]
 
 - **Dependencies:** Phase 2, Phase 3
 - **Goal:** Update template formats and add skill-level enforcement gate
 
 **Tasks**:
-- [ ] Update "New Sorries" subsection in plan-format.md: "NEVER introduce sorries. If proof gap exists, mark phase [BLOCKED]"
-- [ ] Add Lean-specific Testing & Validation items to plan-format.md
-- [ ] Add Stage 6b: Zero-Debt Verification to skill-lean-implementation/SKILL.md
-- [ ] Update Stage 7 to only proceed if zero-debt verification passes
-- [ ] Add rejection logic: if sorry found, set status to "partial" with requires_user_review
+- [x] Update "New Sorries" subsection in plan-format.md: "NEVER introduce sorries. If proof gap exists, mark phase [BLOCKED]"
+- [x] Add Lean-specific Testing & Validation items to plan-format.md
+- [x] Add Stage 6b: Zero-Debt Verification to skill-lean-implementation/SKILL.md
+- [x] Update Stage 7 to only proceed if zero-debt verification passes
+- [x] Add rejection logic: if sorry found, set status to "partial" with requires_user_review
 
 **Timing**: 45 minutes
 
@@ -144,18 +168,27 @@ Research-001 analyzed 6 target files and identified these key gaps:
 - Skill has explicit zero-debt verification before status update
 - Skill rejects "implemented" status when sorries detected
 
+**Progress:**
+
+**Session: 2026-02-24, sess_1771980315_7bc399**
+- Fixed: Sorry Characterization section in plan-format.md now states NEVER introduce new sorries
+- Added: Lean-specific Testing & Validation items (zero-debt check, axiom check, build verification)
+- Added: Stage 6b Zero-Debt Verification Gate to skill-lean-implementation/SKILL.md with sorry/axiom/build checks
+- Fixed: Stage 7 header clarified to only proceed if Stage 6b passed
+- Added: Rejection logic in Stage 6b that overrides "implemented" to "partial" with requires_user_review on gate failure
+
 ---
 
-### Phase 5: Documentation and Consistency Check [NOT STARTED]
+### Phase 5: Documentation and Consistency Check [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Verify all changes are consistent and update any cross-references
 
 **Tasks**:
-- [ ] Review all modified files for consistency in terminology
-- [ ] Verify CLAUDE.md Proof Debt Policy reference is still accurate
-- [ ] Check that error-handling.md doesn't conflict with new blocked status guidance
-- [ ] Create summary of changes for completion_summary
+- [x] Review all modified files for consistency in terminology
+- [x] Verify CLAUDE.md Proof Debt Policy reference is still accurate
+- [x] Check that error-handling.md doesn't conflict with new blocked status guidance
+- [x] Create summary of changes for completion_summary
 
 **Timing**: 15 minutes
 
@@ -166,6 +199,14 @@ Research-001 analyzed 6 target files and identified these key gaps:
 - All 6 target files updated consistently
 - No terminology conflicts
 - Cross-references remain valid
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771980315_7bc399**
+- Completed: Consistency verification across all 6 modified files
+- Completed: CLAUDE.md reference to proof-debt-policy.md confirmed valid
+- Completed: error-handling.md checked for conflicts (none found)
+- Added: implementation-summary-20260224.md with full change documentation
 
 ## Testing & Validation
 

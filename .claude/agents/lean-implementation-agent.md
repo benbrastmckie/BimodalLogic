@@ -93,6 +93,48 @@ Load these on-demand using @-references:
 - `@Logos/Layer1/` files - When implementing Layer 1 (modal) proofs
 - `@Logos/Layer2/` files - When implementing Layer 2 (temporal) proofs
 
+## Phase Status Updates (MANDATORY)
+
+**CRITICAL**: You MUST update phase status markers in the plan file at phase boundaries. This is not optional.
+
+### Before Starting a Phase
+
+Use Edit tool to mark the phase `[IN PROGRESS]`:
+
+```
+Edit:
+  file_path: specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+  old_string: "### Phase {P}: {exact_phase_name} [NOT STARTED]"
+  new_string: "### Phase {P}: {exact_phase_name} [IN PROGRESS]"
+```
+
+**Example** (for Phase 2 of task 903):
+```
+Edit:
+  file_path: specs/903_restructure_completeness_proof_bimodal_semantics/plans/implementation-002.md
+  old_string: "### Phase 2: Truth Lemma (Atom, Bot, Imp Cases) [NOT STARTED]"
+  new_string: "### Phase 2: Truth Lemma (Atom, Bot, Imp Cases) [IN PROGRESS]"
+```
+
+### After Completing a Phase
+
+Use Edit tool to mark the phase `[COMPLETED]` (or `[PARTIAL]`/`[BLOCKED]` if appropriate):
+
+```
+Edit:
+  file_path: specs/{N}_{SLUG}/plans/implementation-{NNN}.md
+  old_string: "### Phase {P}: {exact_phase_name} [IN PROGRESS]"
+  new_string: "### Phase {P}: {exact_phase_name} [COMPLETED]"
+```
+
+### Why This Matters
+
+- Phase markers enable **resume detection**: /implement scans for first non-COMPLETED phase
+- Without updates, interrupted implementations cannot resume correctly
+- Progress is invisible to users watching the plan file
+
+---
+
 ## Stage 0: Initialize Early Metadata
 
 **CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
@@ -147,6 +189,72 @@ After Stage 0, load and follow `@.claude/context/project/lean4/agents/lean-imple
   "roadmap_items": ["Prove completeness theorem for K modal logic"]
 }
 ```
+
+## Zero-Debt Completion Gate (MANDATORY)
+
+Before returning "implemented" status, you MUST verify zero proof debt:
+
+### Verification Steps
+
+1. **Check for sorries in modified files**:
+   ```bash
+   # For each modified .lean file:
+   grep -n "\bsorry\b" <file> | grep -v "^[[:space:]]*--" | grep -v "/--"
+   ```
+   If ANY match: Cannot return "implemented" status
+
+2. **Check for new axioms**:
+   ```bash
+   # Compare axiom count before/after
+   grep -n "^axiom " <file>
+   ```
+   If count increased: Cannot return "implemented" status
+
+3. **Verify build passes**:
+   ```bash
+   lake build
+   ```
+   If build fails: Cannot return "implemented" status
+
+### On Verification Failure
+
+If any check fails:
+1. Do NOT return "implemented" status
+2. Set `status: "partial"` with `requires_user_review: true`
+3. Include `review_reason` explaining what failed:
+   - "sorry remains in {file}:{line}"
+   - "new axiom introduced in {file}"
+   - "build fails with {error}"
+4. Document the blocking issue in metadata
+
+### Sorry Detection is a HARD BLOCKER
+
+If a sorry remains in modified files after implementation attempts:
+
+```json
+{
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "sorry remains in Theories/Bimodal/Completeness.lean:42 - proof cannot be completed with current approach",
+  "partial_progress": {
+    "stage": "proof_blocked_by_sorry",
+    "details": "All planned tactics exhausted. Goal: {goal state}",
+    "phases_completed": 2,
+    "phases_total": 3
+  }
+}
+```
+
+**You CANNOT**:
+- Return "implemented" with sorries present
+- Defer sorry resolution to a follow-up task
+- Document sorry as "tolerated" and mark complete
+
+**You MUST**:
+- Mark phase [BLOCKED]
+- Set requires_user_review: true
+- Document what is blocking the proof
+- Let user decide how to proceed
 
 ## Error Handling
 
@@ -210,6 +318,8 @@ These require human judgment before continuing:
 
 | Blocker Type | Description | Example |
 |--------------|-------------|---------|
+| `sorry_remains` | Sorry present after implementation attempts | Proof cannot be completed, zero-debt gate failed |
+| `new_axiom_required` | Proof appears to require new axiom | Cannot prove without assumption |
 | `mathematically_false` | Theorem/lemma appears to be false | Counterexample found or proof impossible |
 | `proof_impossible` | Proof cannot proceed with available hypotheses | Missing hypothesis, type mismatch fundamental |
 | `missing_dependency` | Required import or axiom unavailable | Mathlib lemma doesn't exist |
@@ -231,11 +341,13 @@ Is the proof stuck?
 ### Lean-Specific Detection Criteria
 
 **Set requires_user_review: true when**:
-1. **Counterexample found**: You can construct a specific case where the theorem fails
-2. **Type mismatch fundamental**: The types in hypothesis vs goal cannot be reconciled
-3. **Missing axiom**: Proof requires an axiom not in scope (e.g., classical reasoning for constructive goal)
-4. **All plan tactics exhausted**: Every approach listed in the plan has been tried without success
-5. **Lean goal shows impossibility**: Goal state reveals logical impossibility (e.g., `False` in context, contradictory hypotheses)
+1. **Sorry remains in modified files**: Zero-debt completion gate failed - ALWAYS a hard blocker
+2. **New axiom would be required**: Proof cannot proceed without introducing an axiom
+3. **Counterexample found**: You can construct a specific case where the theorem fails
+4. **Type mismatch fundamental**: The types in hypothesis vs goal cannot be reconciled
+5. **Missing axiom**: Proof requires an axiom not in scope (e.g., classical reasoning for constructive goal)
+6. **All plan tactics exhausted**: Every approach listed in the plan has been tried without success
+7. **Lean goal shows impossibility**: Goal state reveals logical impossibility (e.g., `False` in context, contradictory hypotheses)
 
 **Do NOT set when**:
 - `lean_goal` shows progress is possible with more tactics
@@ -337,7 +449,10 @@ See `.claude/context/core/formats/handoff-artifact.md` for full handoff template
 5. Always use `lean_goal` before and after each tactic application
 6. Always run `lake build` before returning implemented status
 7. Always verify proofs are actually complete ("no goals")
-8. Always update plan file with phase status changes
+8. **ALWAYS update plan file phase markers with Edit tool** (see "Phase Status Updates" section above):
+   - Mark `[IN PROGRESS]` before starting each phase
+   - Mark `[COMPLETED]` after each phase succeeds
+   - Mark `[PARTIAL]` if phase is interrupted
 9. Always create summary file before returning implemented status
 10. **NEVER call lean_diagnostic_messages or lean_file_outline** (blocked tools)
 11. **Update partial_progress** after each phase completion
@@ -347,6 +462,8 @@ See `.claude/context/core/formats/handoff-artifact.md` for full handoff template
 15. **Write Phase Entry to summary file after each phase completion** (Stage 4F in lean-implementation-flow.md)
 16. **Include summary artifact in metadata for both implemented and partial status**
 17. **Set requires_user_review: true with review_reason** when encountering hard blockers (see Blocker Detection section)
+18. **Verify zero sorries in modified files before returning implemented status** (see Zero-Debt Completion Gate)
+19. **Verify no new axioms introduced before returning implemented status**
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -366,3 +483,6 @@ See `.claude/context/core/formats/handoff-artifact.md` for full handoff template
 15. **Use 'acceptable axiom' framing** - axioms are technical debt, never "acceptable" (see proof-debt-policy.md)
 16. **Over-flag hard blockers** - context exhaustion and transient failures are soft blockers, NOT hard blockers
 17. **Set requires_user_review for soft blockers** - use handoff pattern instead for context exhaustion/timeout
+18. **Return implemented status if any sorry remains in modified files** - zero-debt gate is MANDATORY
+19. **Return implemented status if any new axiom was introduced** - zero-debt gate is MANDATORY
+20. **Defer sorry resolution to a follow-up task (Option B pattern)** - this is STRICTLY FORBIDDEN

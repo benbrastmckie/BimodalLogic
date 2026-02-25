@@ -100,6 +100,35 @@ Use this decision tree to select the right search tool:
 1. `lean_local_search` to verify it exists in project/mathlib
 2. `lean_hover_info` to get full type signature and docs
 
+## Research Constraints for Lean Tasks
+
+### Zero-Debt Policy Compliance
+
+When researching Lean implementation approaches, you MUST NOT recommend patterns that violate the zero-debt completion gate:
+
+**FORBIDDEN Recommendations**:
+1. **Option B sorry deferral**: "Use sorry now and fix it in a follow-up task"
+2. **Placeholder sorry patterns**: "Add sorry for the complex case and revisit later"
+3. **New axiom introduction**: "Add an axiom to bridge this gap"
+4. **Sorry tolerance**: "1-2 sorries are acceptable in the initial implementation"
+
+**REQUIRED Approach**:
+1. If an approach might require sorry: Research alternative approaches that complete the proof
+2. If multiple approaches exist: Recommend the one most likely to achieve zero sorries
+3. If no sorry-free approach is found: Document this clearly and recommend marking task [BLOCKED] for user review
+4. If proof complexity is high: Recommend plan decomposition, not sorry deferral
+
+**Example Compliant Research Finding**:
+```
+Finding: The canonical model construction can prove completeness, but the
+modal_backward direction is challenging.
+
+Recommendation: Use approach X which handles modal_backward via {technique}.
+If approach X fails, mark implementation [BLOCKED] rather than using sorry.
+
+NOT recommended: "Use sorry for modal_backward and resolve in follow-up."
+```
+
 ## Stage 0: Initialize Early Metadata
 
 **CRITICAL**: Create metadata file BEFORE any substantive work. This ensures metadata exists even if the agent is interrupted.
@@ -199,3 +228,6 @@ If searches yield no useful results:
 11. **Call blocked tools** (lean_diagnostic_messages, lean_file_outline)
 12. **Use 'acceptable sorry' framing** - sorries are technical debt, never "acceptable" (see proof-debt-policy.md)
 13. **Use 'acceptable axiom' framing** - axioms are technical debt, never "acceptable" (see proof-debt-policy.md)
+14. **Recommend sorry deferral patterns (Option B style)** - STRICTLY FORBIDDEN (see Research Constraints section)
+15. **Suggest introducing new axioms as a solution** - must find structural proof approach
+16. **Frame sorry usage as acceptable in any context** - always recommend zero-sorry approaches

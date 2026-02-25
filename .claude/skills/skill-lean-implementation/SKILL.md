@@ -340,9 +340,82 @@ Each re-invocation includes in delegation context:
 
 ---
 
+### Stage 6b: Zero-Debt Verification Gate (MANDATORY)
+
+**CRITICAL**: Before proceeding to status update, verify the zero-debt completion gate.
+
+If status from metadata is "implemented":
+
+```bash
+# Step 1: Get list of modified Lean files from summary or git
+modified_files=$(git diff --name-only HEAD~1 | grep "\.lean$" || true)
+
+# Step 2: Check for sorries in modified files
+sorry_count=0
+for file in $modified_files; do
+    if [ -f "$file" ]; then
+        # Count sorries (excluding comments)
+        count=$(grep -c "\bsorry\b" "$file" 2>/dev/null | grep -v "^[[:space:]]*--" | grep -v "/--" || echo 0)
+        sorry_count=$((sorry_count + count))
+    fi
+done
+
+# Step 3: Check for new axioms (compare before/after)
+axiom_check_failed=false
+for file in $modified_files; do
+    if [ -f "$file" ]; then
+        current_axioms=$(grep -c "^axiom " "$file" 2>/dev/null || echo 0)
+        # Compare with pre-implementation count (from plan or git)
+        # If increased, verification fails
+    fi
+done
+
+# Step 4: Verify build passes
+if ! lake build 2>/dev/null; then
+    build_failed=true
+fi
+```
+
+**On Verification Failure**:
+
+If any check fails, the skill MUST NOT proceed with "completed" status:
+
+```bash
+if [ "$sorry_count" -gt 0 ] || [ "$axiom_check_failed" = true ] || [ "$build_failed" = true ]; then
+    echo "Zero-debt gate FAILED"
+
+    # Override status to partial with user review required
+    status="partial"
+    requires_review=true
+
+    if [ "$sorry_count" -gt 0 ]; then
+        review_reason="Zero-debt gate failed: $sorry_count sorries remain in modified files"
+    elif [ "$axiom_check_failed" = true ]; then
+        review_reason="Zero-debt gate failed: new axiom introduced"
+    else
+        review_reason="Zero-debt gate failed: build does not pass"
+    fi
+
+    # Update metadata file with rejection
+    jq --arg reason "$review_reason" \
+      '. + {status: "partial", requires_user_review: true, review_reason: $reason}' \
+      "$metadata_file" > /tmp/meta.json && mv /tmp/meta.json "$metadata_file"
+fi
+```
+
+**Stage 6b Guarantees**:
+- Even if agent returns "implemented", skill verifies independently
+- No task can reach [COMPLETED] status with sorries present
+- Defense in depth: agent checks + skill checks
+
+---
+
 ### Stage 7: Update Task Status (Postflight)
 
-**If status is "implemented"**:
+**IMPORTANT**: This stage only runs with "implemented" status if Stage 6b verification passed.
+If Stage 6b rejected the status, the metadata file now shows "partial" with `requires_user_review: true`.
+
+**If status is "implemented"** (verified by Stage 6b):
 
 Update state.json to "completed" and add completion_data fields:
 ```bash

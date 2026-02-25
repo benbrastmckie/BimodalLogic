@@ -13,6 +13,91 @@ Both represent unverified mathematical claims that propagate transitively throug
 - Sorry/axiom registry: `docs/project-info/SORRY_REGISTRY.md`
 - Boneyard documentation: `Theories/Bimodal/Boneyard/README.md`
 
+## Completion Gates
+
+### Zero-Debt Completion Requirement (MANDATORY)
+
+**For any Lean task to be marked `[COMPLETED]`:**
+1. **Zero sorries** in modified/created files - NO exceptions
+2. **No new axioms** introduced - NO exceptions
+3. **Build passes** with `lake build` - NO exceptions
+
+**This is a HARD REQUIREMENT, not a guideline.** If a proof cannot be completed:
+- Do NOT introduce sorry and mark task completed
+- Do NOT defer sorry resolution to a follow-up task
+- Mark the phase `[BLOCKED]` with `requires_user_review: true`
+- Document what is blocking progress
+- User must decide how to proceed (revise approach, split task, etc.)
+
+### Enforcement Points
+
+| Level | What | How |
+|-------|------|-----|
+| Policy | This document | States the rule |
+| Research Agent | lean-research-agent | Cannot recommend sorry deferral |
+| Planner Agent | planner-agent | Cannot plan phases that introduce sorries |
+| Implementation Agent | lean-implementation-agent | Verifies zero sorries before returning "implemented" |
+| Skill Postflight | skill-lean-implementation | Validates zero-debt before status update |
+
+### Soft vs Hard Blockers for Zero-Debt
+
+**Hard Blocker (requires_user_review: true)**:
+- Proof cannot be completed with current approach
+- Theorem may be false or needs different formulation
+- Missing prerequisite lemma not in scope
+
+**NOT a Blocker (continue or handoff)**:
+- Context exhaustion (write handoff, successor continues)
+- Timeout (mark [PARTIAL], next /implement resumes)
+- MCP tool transient failure (retry, continue)
+
+## Forbidden Patterns
+
+### Option B Style Sorry Deferral: STRICTLY FORBIDDEN
+
+**What it is**: Introducing a sorry with the intent to fix it in a later task or follow-up.
+
+**Examples of FORBIDDEN patterns**:
+```lean
+-- FORBIDDEN: "We'll fix this sorry in task 999"
+sorry  -- TODO: complete in follow-up task
+
+-- FORBIDDEN: "Temporary sorry, tracked in SORRY_REGISTRY.md"
+sorry  -- tracked, will resolve later
+
+-- FORBIDDEN: Phase 2 plan says "add sorry for complex case"
+sorry  -- complexity deferred to Phase 4
+```
+
+**Why forbidden**:
+- Violates the completion gate - task cannot be marked [COMPLETED]
+- Creates hidden dependencies between tasks
+- Encourages sorry accumulation
+- Masks proof difficulty until too late
+
+**What to do instead**:
+1. If proof is stuck: Mark phase `[BLOCKED]`, set `requires_user_review: true`
+2. If approach is wrong: Recommend plan revision via `/revise`
+3. If scope is too large: Recommend task expansion via `/task --expand`
+
+### New Axiom Introduction: STRICTLY FORBIDDEN
+
+**What it is**: Adding a new `axiom` declaration during implementation.
+
+**Examples of FORBIDDEN patterns**:
+```lean
+-- FORBIDDEN: New axiom to skip proof
+axiom my_assumption : ∀ x, P x
+
+-- FORBIDDEN: Axiom as workaround
+axiom construction_exists : ∃ s, IsValid s
+```
+
+**What to do instead**:
+- Find structural proof approach
+- If impossible, mark phase `[BLOCKED]` with explanation
+- User decides: different approach, split task, or acknowledge limitation
+
 ## Philosophy
 
 Sorries and axioms are **mathematical debt**, fundamentally different from technical debt:
@@ -228,15 +313,23 @@ Archive fundamentally flawed code with documentation.
 
 **Requirements**: Document in Boneyard README why the approach failed.
 
-### Path D: Axiom Disclosure (Publication Only)
-For publication when axiom cannot be eliminated, explicitly disclose as assumption.
+### Path D: Axiom Disclosure (Publication Only - NOT for Task Implementation)
+For publication when PRE-EXISTING axiom cannot be eliminated, explicitly disclose as assumption.
 
-**When to use**:
+**CRITICAL DISTINCTION**: This path is for **publication decisions** on existing axioms, NOT for task implementation. During task implementation:
+- You CANNOT introduce new axioms and then "disclose" them
+- You CANNOT mark a task [COMPLETED] with new axioms
+- You MUST mark [BLOCKED] if proof requires an axiom you cannot prove
+
+**When Path D applies (publication context only)**:
+- Axiom existed BEFORE this task
 - Axiom represents genuine mathematical assumption (e.g., Choice)
 - Full elimination not feasible within paper scope
 - Assumption is standard in the field
 
 **Requirements**: Document axiom in publication, explain why it cannot be proven.
+
+**NOT valid usage**: "I'll add an axiom and use Path D" - this violates zero-debt completion gate.
 
 ## Discovery Protocol
 

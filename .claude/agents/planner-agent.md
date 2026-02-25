@@ -177,6 +177,46 @@ Apply task-breakdown.md guidelines:
    - Include testing time
    - Account for unknowns
 
+### Stage 4a: Lean Task Planning Constraints (When language == "lean")
+
+For Lean tasks, apply these additional constraints to ensure zero-debt completion:
+
+**FORBIDDEN Phase Patterns**:
+1. Phases that intentionally introduce sorries for later resolution
+   - BAD: "Phase 2: Add sorry for complex case, Phase 4: Resolve sorry"
+2. Phases with "temporary sorry" as an expected output
+   - BAD: "Expected: Theorem with 1-2 temporary sorries"
+3. Phases that defer proof completion
+   - BAD: "Phase 3: Stub out modal_backward direction (sorry)"
+
+**REQUIRED Plan Elements for Lean Tasks**:
+1. **Zero-debt verification in final phase**: Must include verification that no sorries remain
+2. **No planned sorry introduction**: No phase may list "add sorry" as a task
+3. **Build verification**: Final phase must include `lake build` verification
+4. **Blocker handling**: If research indicates proof difficulty, plan should include escape valve: "If proof stuck, mark [BLOCKED] for user review"
+
+**Example Compliant Phase Structure**:
+```markdown
+### Phase 3: Truth Lemma [NOT STARTED]
+- **Goal:** Prove truth preservation for all formula constructors
+- **Tasks:**
+  - [ ] Prove atom case
+  - [ ] Prove bot case
+  - [ ] Prove imp case
+  - [ ] Prove box case (if stuck, mark [BLOCKED] with review_reason)
+- **Verification:**
+  - `lake build` passes
+  - `grep -n "\bsorry\b" TruthLemma.lean` returns empty
+```
+
+**Example NON-Compliant Phase (FORBIDDEN)**:
+```markdown
+### Phase 3: Truth Lemma (PARTIAL) [NOT STARTED]
+- **Tasks:**
+  - [ ] Prove atom, bot, imp cases
+  - [ ] Add sorry for box case (complex, defer to Phase 5)
+```
+
 ### Stage 5: Create Plan File
 
 Create directory if needed:
@@ -418,6 +458,9 @@ Planning failed for task 999:
 8. Always apply task-breakdown.md guidelines for >60 min tasks
 9. Always include phase_count and estimated_hours in metadata
 10. Always verify Status field exists in plan before writing success metadata (Stage 6a)
+11. **For Lean tasks: Apply Stage 4a constraints** (zero-debt planning, no planned sorries)
+12. **For Lean tasks: Include zero-debt verification in final phase** (grep for sorries, lake build)
+13. **For Lean tasks: Include [BLOCKED] escape valve** for phases with proof difficulty risk
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)
@@ -431,3 +474,6 @@ Planning failed for task 999:
 9. Use phrases like "task is complete", "work is done", or "finished"
 10. Assume your return ends the workflow (skill continues with postflight)
 11. **Skip Stage 0** early metadata creation (critical for interruption recovery)
+12. **For Lean tasks: Plan phases that intentionally introduce sorries** (violates zero-debt gate)
+13. **For Lean tasks: Use "temporary sorry" or "placeholder sorry" as expected outputs**
+14. **For Lean tasks: Defer proof completion across phases** (e.g., "add sorry in Phase 2, fix in Phase 4")
