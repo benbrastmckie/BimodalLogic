@@ -8,10 +8,19 @@
     {
       "project_number": 927,
       "project_name": "fix_status_synchronization_plan_todo_state",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-02-25T21:41:07Z",
-      "last_updated": "2026-02-25T21:41:07Z"
+      "last_updated": "2026-02-25T23:54:28Z",
+      "session_id": "sess_1772055860_fdc55b",
+      "researched": "2026-02-25T23:54:28Z",
+      "artifacts": [
+        {
+          "path": "specs/927_fix_status_synchronization_plan_todo_state/reports/research-001.md",
+          "type": "research",
+          "summary": "Root cause analysis showing plan file status updates exist in skill code but are not reliably executed; recommends centralized helper function and validation gate"
+        }
+      ]
     },
     {
       "project_number": 926,

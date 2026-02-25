@@ -24,8 +24,9 @@ technical_debt:
 
 ### 927. Fix status synchronization between plan files, TODO.md, and state.json
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
+- **Research**: [research-001.md](specs/927_fix_status_synchronization_plan_todo_state/reports/research-001.md)
 
 **Description**: Fix status synchronization to ensure plan file status (line 4), TODO.md status, and state.json status all update together. Currently the plan file status sometimes doesn't get updated while the other two are correctly updated.
 
