@@ -1,0 +1,23 @@
+{
+  "phase": "A",
+  "phase_name": "Quotient Construction for LinearOrder",
+  "status": "done",
+  "current_objective": "completed",
+  "objectives": [
+    {"name": "Preorder instance", "status": "done"},
+    {"name": "IsTotal instance", "status": "done"},
+    {"name": "DecidableRel instances", "status": "done"},
+    {"name": "CanonicalQuotient definition", "status": "done"},
+    {"name": "LinearOrder verification", "status": "done"},
+    {"name": "Nonempty instance", "status": "done"},
+    {"name": "Representative correspondence", "status": "done"},
+    {"name": "Equivalence class properties", "status": "done"},
+    {"name": "Successor lifting", "status": "done"}
+  ],
+  "approaches_tried": [],
+  "sorries_delta": {
+    "before": 0,
+    "after": 0,
+    "eliminated": 0
+  }
+}

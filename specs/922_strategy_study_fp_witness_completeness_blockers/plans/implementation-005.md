@@ -181,7 +181,7 @@ After this implementation:
 
 ---
 
-### Phase C: Build BFMCS on CanonicalReachable [IN PROGRESS]
+### Phase C: Build BFMCS on CanonicalReachable [COMPLETED]
 
 - **Dependencies:** Phase B
 - **Goal:** Construct BFMCS over CanonicalReachable with trivial forward_F/backward_P proofs
@@ -234,6 +234,20 @@ With the Preorder approach:
 - s.world = W directly (by construction)
 - phi in W means phi in s.world = mcs(s)
 - No mismatch possible
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771986476_9eef44**
+- Completed: forward_F and backward_P proofs on `CanonicalMCS` domain (all MCSes)
+- Added: `CanonicalMCS` type (abbrev for `{ M : Set Formula // SetMaximalConsistent M }`)
+- Added: `Preorder CanonicalMCS` instance via CanonicalR (reflexive, transitive)
+- Added: `canonicalMCSBFMCS` - the primary BFMCS construction on all MCSes
+- Added: `canonicalMCS_forward_F` - sorry-free forward F proof
+- Added: `canonicalMCS_backward_P` - sorry-free backward P proof (was the main blocker)
+- Refactored: CanonicalReachable constructions preserved as legacy compatibility layer
+- Removed: sorry at backward_P (line 482 of original file)
+- Fixed: Architectural issue where CanonicalReachable (future-only reachable) domain could not support backward_P because past witnesses are not future-reachable. Solution: use ALL MCSes as domain instead of just the reachable fragment.
+- Sorries: 1 -> 0 (1 eliminated)
 
 ---
 
