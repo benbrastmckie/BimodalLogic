@@ -44,7 +44,7 @@ namespace Bimodal.Metalogic.Bundle
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [LinearOrder D]
 
 /-!
 ## Stage 1: Extending Context to MCS

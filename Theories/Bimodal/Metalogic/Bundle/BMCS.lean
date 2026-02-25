@@ -48,7 +48,7 @@ open Bimodal.Metalogic.Core
 ## BMCS Structure Definition
 -/
 
-variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable (D : Type*) [LinearOrder D]
 
 /--
 A Bundle of Maximal Consistent Sets (BMCS) is a collection of indexed MCS families
@@ -112,7 +112,7 @@ structure BMCS where
   /-- The evaluation family is in the bundle -/
   eval_family_mem : eval_family ∈ families
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [LinearOrder D]
 
 /-!
 ## S5 Properties from Modal Coherence

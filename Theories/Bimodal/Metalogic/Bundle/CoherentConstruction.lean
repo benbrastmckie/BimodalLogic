@@ -93,7 +93,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [LinearOrder D] [Zero D]
 
 /-!
 ## Phase 1: BoxContent and WitnessSeed Definitions
@@ -556,7 +556,7 @@ A CoherentBundle satisfies:
 
 This structure enables axiom-free BMCS construction when combined with saturation.
 -/
-structure CoherentBundle (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
+structure CoherentBundle (D : Type*) [LinearOrder D] [Zero D] where
   /-- The set of families in the bundle -/
   families : Set (BFMCS D)
   /-- All families are constant (time-independent) -/
@@ -868,8 +868,8 @@ the relationship between BoxContent in different families.
 **Future Work**: Eliminate this axiom by completing the Zorn's lemma proof with
 the multi-family consistency lemma.
 -/
-axiom saturated_extension_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (B : CoherentBundle D) :
+axiom saturated_extension_exists (D : Type*) [LinearOrder D] [Zero D]
+    (B : CoherentBundle D) :
     ∃ B' : CoherentBundle D, B.families ⊆ B'.families ∧
       B'.eval_family = B.eval_family ∧ B'.isSaturated
 
@@ -1073,7 +1073,7 @@ The key properties are:
 
 This is exactly what's needed for the truth lemma at the eval_family.
 -/
-structure EvalBMCS (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] where
+structure EvalBMCS (D : Type*) [LinearOrder D] [Zero D] where
   /-- The set of families in the model -/
   families : Set (BFMCS D)
   /-- The model is nonempty -/
@@ -1096,8 +1096,7 @@ EvalCoherentBundle: A collection of families that are EvalCoherent.
 
 This is sufficient for constructing an EvalBMCS when combined with EvalSaturation.
 -/
-structure EvalCoherentBundle (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] where
+structure EvalCoherentBundle (D : Type*) [LinearOrder D] [Zero D] where
   /-- The set of families in the bundle -/
   families : Set (BFMCS D)
   /-- All families are constant (time-independent) -/

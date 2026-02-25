@@ -362,9 +362,9 @@ theorem canonical_truth_lemma_all (B : BMCS Int)
         neg_all_future_to_some_future_neg (fam.mcs t) h_mcs ψ h_neg_G
       -- By temporal coherence (forward_F): ∃ s > t with neg ψ ∈ fam.mcs s
       have h_tc_fam := h_tc fam hfam
-      obtain ⟨s, h_lt, h_neg_ψ_s⟩ := h_tc_fam.1 t (Formula.neg ψ) h_F_neg
+      obtain ⟨s, h_le, h_neg_ψ_s⟩ := h_tc_fam.1 t (Formula.neg ψ) h_F_neg
       -- By IH at s: truth_at → ψ ∈ fam.mcs s
-      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s (le_of_lt h_lt))
+      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s h_le)
       -- Contradiction: ψ and neg ψ both in fam.mcs s
       exact set_consistent_not_both (fam.is_mcs s).1 ψ h_ψ_s h_neg_ψ_s
   | all_past ψ ih =>
@@ -396,11 +396,11 @@ theorem canonical_truth_lemma_all (B : BMCS Int)
       -- neg(H ψ) implies P(neg ψ) ∈ fam.mcs t
       have h_P_neg : Formula.some_past (Formula.neg ψ) ∈ fam.mcs t :=
         neg_all_past_to_some_past_neg (fam.mcs t) h_mcs ψ h_neg_H
-      -- By temporal coherence (backward_P): ∃ s < t with neg ψ ∈ fam.mcs s
+      -- By temporal coherence (backward_P): ∃ s ≤ t with neg ψ ∈ fam.mcs s
       have h_tc_fam := h_tc fam hfam
-      obtain ⟨s, h_lt, h_neg_ψ_s⟩ := h_tc_fam.2 t (Formula.neg ψ) h_P_neg
+      obtain ⟨s, h_le, h_neg_ψ_s⟩ := h_tc_fam.2 t (Formula.neg ψ) h_P_neg
       -- By IH at s: truth_at → ψ ∈ fam.mcs s
-      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s (le_of_lt h_lt))
+      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s h_le)
       -- Contradiction: ψ and neg ψ both in fam.mcs s
       exact set_consistent_not_both (fam.is_mcs s).1 ψ h_ψ_s h_neg_ψ_s
 
@@ -530,8 +530,8 @@ theorem shifted_truth_lemma (B : BMCS Int)
       have h_F_neg : Formula.some_future (Formula.neg ψ) ∈ fam.mcs t :=
         neg_all_future_to_some_future_neg (fam.mcs t) h_mcs ψ h_neg_G
       have h_tc_fam := h_tc fam hfam
-      obtain ⟨s, h_lt, h_neg_ψ_s⟩ := h_tc_fam.1 t (Formula.neg ψ) h_F_neg
-      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s (le_of_lt h_lt))
+      obtain ⟨s, h_le, h_neg_ψ_s⟩ := h_tc_fam.1 t (Formula.neg ψ) h_F_neg
+      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s h_le)
       exact set_consistent_not_both (fam.is_mcs s).1 ψ h_ψ_s h_neg_ψ_s
   | all_past ψ ih =>
     intro fam hfam t
@@ -557,8 +557,8 @@ theorem shifted_truth_lemma (B : BMCS Int)
       have h_P_neg : Formula.some_past (Formula.neg ψ) ∈ fam.mcs t :=
         neg_all_past_to_some_past_neg (fam.mcs t) h_mcs ψ h_neg_H
       have h_tc_fam := h_tc fam hfam
-      obtain ⟨s, h_lt, h_neg_ψ_s⟩ := h_tc_fam.2 t (Formula.neg ψ) h_P_neg
-      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s (le_of_lt h_lt))
+      obtain ⟨s, h_le, h_neg_ψ_s⟩ := h_tc_fam.2 t (Formula.neg ψ) h_P_neg
+      have h_ψ_s : ψ ∈ fam.mcs s := (ih fam hfam s).mpr (h_all_s s h_le)
       exact set_consistent_not_both (fam.is_mcs s).1 ψ h_ψ_s h_neg_ψ_s
 
 /-!

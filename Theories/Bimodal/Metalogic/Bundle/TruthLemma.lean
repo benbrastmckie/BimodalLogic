@@ -80,7 +80,7 @@ namespace Bimodal.Metalogic.Bundle
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [LinearOrder D] [Zero D]
 
 /-!
 ## Helper Lemmas for Temporal Forward Direction

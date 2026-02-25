@@ -53,7 +53,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [LinearOrder D] [Zero D]
 
 /-!
 ## Phase 1: Temporal Duality Infrastructure
@@ -197,19 +197,19 @@ and existing forward_G/backward_H properties.
 TemporalCoherentFamily: An BFMCS with temporal forward coherence properties.
 
 The key properties are:
-- `forward_F`: If F φ ∈ fam.mcs t, then exists s > t with φ ∈ fam.mcs s
-- `backward_P`: If P φ ∈ fam.mcs t, then exists s < t with φ ∈ fam.mcs s
+- `forward_F`: If F φ ∈ fam.mcs t, then exists s ≥ t with φ ∈ fam.mcs s
+- `backward_P`: If P φ ∈ fam.mcs t, then exists s ≤ t with φ ∈ fam.mcs s
 
 These are the existential duals of forward_G and backward_H.
+Task 922: Weakened from strict (s > t, s < t) to reflexive (s ≥ t, s ≤ t).
 -/
-structure TemporalCoherentFamily (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] extends BFMCS D where
-  /-- Forward F coherence: F φ at t implies witness at some s > t -/
+structure TemporalCoherentFamily (D : Type*) [LinearOrder D] [Zero D] extends BFMCS D where
+  /-- Forward F coherence: F φ at t implies witness at some s ≥ t (reflexive) -/
   forward_F : ∀ t : D, ∀ φ : Formula,
-    Formula.some_future φ ∈ mcs t → ∃ s : D, t < s ∧ φ ∈ mcs s
-  /-- Backward P coherence: P φ at t implies witness at some s < t -/
+    Formula.some_future φ ∈ mcs t → ∃ s : D, t ≤ s ∧ φ ∈ mcs s
+  /-- Backward P coherence: P φ at t implies witness at some s ≤ t (reflexive) -/
   backward_P : ∀ t : D, ∀ φ : Formula,
-    Formula.some_past φ ∈ mcs t → ∃ s : D, s < t ∧ φ ∈ mcs s
+    Formula.some_past φ ∈ mcs t → ∃ s : D, s ≤ t ∧ φ ∈ mcs s
 
 /--
 Temporal backward G lemma: If φ ∈ fam.mcs s for all s ≥ t, then G φ ∈ fam.mcs t.
@@ -218,7 +218,7 @@ Temporal backward G lemma: If φ ∈ fam.mcs s for all s ≥ t, then G φ ∈ fa
 1. Assume G φ ∉ fam.mcs t
 2. By MCS maximality: neg(G φ) ∈ fam.mcs t
 3. By neg_all_future_to_some_future_neg: F(neg φ) ∈ fam.mcs t
-4. By forward_F: exists s > t with neg φ ∈ fam.mcs s
+4. By forward_F: exists s ≥ t with neg φ ∈ fam.mcs s
 5. By hypothesis h_all: φ ∈ fam.mcs s (since s ≥ t)
 6. Contradiction: fam.mcs s contains both φ and neg φ
 -/
@@ -239,11 +239,11 @@ theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_future_to_some_future_neg (fam.mcs t) h_mcs φ h_neg_G
 
-  -- By forward_F: exists s > t with neg φ ∈ fam.mcs s
-  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
+  -- By forward_F: exists s ≥ t with neg φ ∈ fam.mcs s
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
 
-  -- By h_all: φ ∈ fam.mcs s (since s ≥ t, and s > t implies s ≥ t)
-  have h_phi_s : φ ∈ fam.mcs s := h_all s (le_of_lt h_lt)
+  -- By h_all: φ ∈ fam.mcs s (since s ≥ t)
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
 
   -- Contradiction: fam.mcs s contains both φ and neg φ
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
@@ -255,7 +255,7 @@ Temporal backward H lemma: If φ ∈ fam.mcs s for all s ≤ t, then H φ ∈ fa
 1. Assume H φ ∉ fam.mcs t
 2. By MCS maximality: neg(H φ) ∈ fam.mcs t
 3. By neg_all_past_to_some_past_neg: P(neg φ) ∈ fam.mcs t
-4. By backward_P: exists s < t with neg φ ∈ fam.mcs s
+4. By backward_P: exists s ≤ t with neg φ ∈ fam.mcs s
 5. By hypothesis h_all: φ ∈ fam.mcs s (since s ≤ t)
 6. Contradiction: fam.mcs s contains both φ and neg φ
 -/
@@ -276,11 +276,11 @@ theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_past_to_some_past_neg (fam.mcs t) h_mcs φ h_neg_H
 
-  -- By backward_P: exists s < t with neg φ ∈ fam.mcs s
-  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
+  -- By backward_P: exists s ≤ t with neg φ ∈ fam.mcs s
+  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
 
-  -- By h_all: φ ∈ fam.mcs s (since s ≤ t, and s < t implies s ≤ t)
-  have h_phi_s : φ ∈ fam.mcs s := h_all s (le_of_lt h_lt)
+  -- By h_all: φ ∈ fam.mcs s (since s ≤ t)
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
 
   -- Contradiction: fam.mcs s contains both φ and neg φ
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
@@ -297,8 +297,8 @@ via the contraposition argument (temporal_backward_G and temporal_backward_H).
 -/
 def BMCS.temporally_coherent (B : BMCS D) : Prop :=
   ∀ fam ∈ B.families,
-    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
-    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
+    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
+    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
 
 /-!
 ## Phase 1: Temporal Saturation Structures (Task 857 v002)
@@ -337,8 +337,7 @@ This structure provides:
 2. M is temporally saturated (F psi -> psi and P psi -> psi in M)
 3. The family therefore satisfies forward_F and backward_P
 -/
-structure TemporalEvalSaturatedBundle (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] where
+structure TemporalEvalSaturatedBundle (D : Type*) [LinearOrder D] where
   /-- The underlying MCS -/
   baseMCS : Set Formula
   /-- The MCS is maximal consistent -/
@@ -372,52 +371,21 @@ lemma TemporalEvalSaturatedBundle.toBFMCS_constant
     IsConstantFamily B.toBFMCS :=
   ⟨B.baseMCS, fun _ => rfl⟩
 
-variable [Nontrivial D]
-
-/--
-In an ordered additive group, for any t there exists s > t.
--/
-lemma exists_gt_in_ordered_group (t : D) : ∃ s : D, t < s := by
-  obtain ⟨a, b, hab⟩ := Nontrivial.exists_pair_ne (α := D)
-  rcases lt_trichotomy a b with h_lt | h_eq | h_gt
-  · use t + (b - a)
-    have h_pos : (0 : D) < b - a := sub_pos.mpr h_lt
-    have h1 : t + 0 < t + (b - a) := add_lt_add_right h_pos t
-    rw [add_zero] at h1
-    exact h1
-  · exact absurd h_eq hab
-  · use t + (a - b)
-    have h_pos : (0 : D) < a - b := sub_pos.mpr h_gt
-    have h1 : t + 0 < t + (a - b) := add_lt_add_right h_pos t
-    rw [add_zero] at h1
-    exact h1
-
-/--
-In an ordered additive group, for any t there exists s < t.
--/
-lemma exists_lt_in_ordered_group (t : D) : ∃ s : D, s < t := by
-  obtain ⟨s, hs⟩ := exists_gt_in_ordered_group (D := D) (-t)
-  use -s
-  have h : -s < -(-t) := neg_lt_neg hs
-  simp only [neg_neg] at h
-  exact h
-
 /--
 Convert a TemporalEvalSaturatedBundle to a TemporalCoherentFamily.
 
-**Requires** [Nontrivial D] to ensure the existence of witness times.
+With reflexive forward_F/backward_P (Task 922), this no longer requires [Nontrivial D]
+since we can use the same time point t as the witness (t ≤ t).
 -/
 noncomputable def TemporalEvalSaturatedBundle.toTemporalCoherentFamily
     (B : TemporalEvalSaturatedBundle D) : TemporalCoherentFamily D where
   toBFMCS := B.toBFMCS
   forward_F := fun t psi h_F => by
     have h_psi : psi ∈ B.baseMCS := B.forward_saturated psi h_F
-    obtain ⟨s, hs⟩ := exists_gt_in_ordered_group (D := D) t
-    exact ⟨s, hs, h_psi⟩
+    exact ⟨t, le_refl t, h_psi⟩
   backward_P := fun t psi h_P => by
     have h_psi : psi ∈ B.baseMCS := B.backward_saturated psi h_P
-    obtain ⟨s, hs⟩ := exists_lt_in_ordered_group (D := D) t
-    exact ⟨s, hs, h_psi⟩
+    exact ⟨t, le_refl t, h_psi⟩
 
 /-!
 ## Phase 2: Temporal Saturation Construction
@@ -604,9 +572,12 @@ theorem temporal_coherent_family_exists_Int
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∃ (fam : BFMCS Int),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
-      (∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : Int, t < s ∧ φ ∈ fam.mcs s) ∧
-      (∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : Int, s < t ∧ φ ∈ fam.mcs s) :=
-  temporal_coherent_family_exists_theorem Gamma h_cons
+      (∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : Int, t ≤ s ∧ φ ∈ fam.mcs s) ∧
+      (∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : Int, s ≤ t ∧ φ ∈ fam.mcs s) := by
+  obtain ⟨fam, h_ctx, h_fwd, h_bwd⟩ := temporal_coherent_family_exists_theorem Gamma h_cons
+  exact ⟨fam, h_ctx,
+    fun t φ h => let ⟨s, h_lt, h_mem⟩ := h_fwd t φ h; ⟨s, le_of_lt h_lt, h_mem⟩,
+    fun t φ h => let ⟨s, h_lt, h_mem⟩ := h_bwd t φ h; ⟨s, le_of_lt h_lt, h_mem⟩⟩
 
 /--
 Temporal coherent family existence - generic version.
@@ -633,13 +604,12 @@ This avoids the cross-sign propagation problem that blocked DovetailingChain, bu
 1. Generalizing RecursiveSeed to generic D (major refactor of seed time indices)
 2. Implementing witness enumeration for Lindenbaum-added F/P formulas
 -/
-theorem temporal_coherent_family_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D]
+theorem temporal_coherent_family_exists (D : Type*) [LinearOrder D] [Zero D]
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∃ (fam : BFMCS D),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
-      (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
-      (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s) := by
+      (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
+      (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s) := by
   sorry
 
 /-!
@@ -782,8 +752,8 @@ for Int-indexed BMCS (the only case used in completeness proofs). The Int-specia
 version will be proven constructively using DovetailingChain + modal saturation.
 -/
 @[deprecated "Use fully_saturated_bmcs_exists_int for Int case (Task 881)"]
-axiom fully_saturated_bmcs_exists (D : Type*) [AddCommGroup D] [LinearOrder D]
-    [IsOrderedAddMonoid D] (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+axiom fully_saturated_bmcs_exists (D : Type*) [LinearOrder D] [Zero D]
+    (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∃ (B : BMCS D),
       (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
       B.temporally_coherent ∧

@@ -3,7 +3,7 @@
 - **Task**: 922 - strategy_study_fp_witness_completeness_blockers
 - **Version**: 004
 - **Created**: 2026-02-24
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10-17 hours total
 - **Dependencies**: None (Phase A from v3 provides optional infrastructure but is not required)
 - **Research Inputs**: research-005.md (breakthrough finding: reflexive forward_F suffices)
@@ -110,7 +110,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Weaken forward_F/backward_P to Reflexive [NOT STARTED]
+### Phase 1: Weaken forward_F/backward_P to Reflexive [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Change temporal witness requirements from strict (t < s) to reflexive (t <= s)
@@ -145,7 +145,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Drop AddCommGroup Constraint [NOT STARTED]
+### Phase 2: Drop AddCommGroup Constraint [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Remove vestigial AddCommGroup and IsOrderedAddMonoid constraints from BFMCS/BMCS chain
@@ -196,7 +196,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Build BFMCS on Canonical Frame [NOT STARTED]
+### Phase 3: Build BFMCS on Canonical Frame [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Construct BFMCS over CanonicalReachable with trivial temporal property proofs
@@ -262,7 +262,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Wire into Completeness Chain [NOT STARTED]
+### Phase 4: Wire into Completeness Chain [PARTIAL]
 
 - **Dependencies:** Phase 3
 - **Goal:** Replace `fully_saturated_bmcs_exists_int` sorry and verify completeness theorem
@@ -307,6 +307,27 @@ After this implementation:
 - `Completeness.lean` compiles with zero errors
 - `lake build` succeeds with zero errors
 - `lean_verify` on completeness theorem shows clean axiom dependencies
+
+**Progress:**
+
+**Session: 2026-02-25, sess_1771982735_7f2a5f**
+- Added: Zero instance for CanonicalQuotient (using root as zero element)
+- Added: `canonicalBFMCS_forward_F` (sorry-backed due to quotient representative mismatch)
+- Added: `canonicalBFMCS_backward_P` (sorry-backed due to quotient representative mismatch)
+- Documented blocker in CanonicalBFMCS.lean
+- **BLOCKED**: Quotient representative mismatch prevents forward_F/backward_P proofs
+
+**Blocker Analysis**:
+The fundamental issue is that `canonical_forward_F` gives a witness W where phi ∈ W,
+but when W is mapped to CanonicalQuotient, the representative s.repr might differ from W.
+Since only G-formulas propagate between mutually CanonicalR-related MCSes (via GContent),
+individual formulas like phi don't automatically transfer to the representative.
+
+**Resolution Options**:
+1. **Work with CanonicalReachable directly**: Requires generalizing BFMCS from LinearOrder to Preorder
+2. **Avoid quotient**: Use a different construction (e.g., DovetailingChain) for forward_F/backward_P
+3. **Prove quotient triviality**: Show representative equals original (unlikely for general case)
+4. **Hybrid approach**: Use canonicalBFMCS for forward_G/backward_H, separate construction for F/P
 
 ---
 

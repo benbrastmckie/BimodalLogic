@@ -1,7 +1,6 @@
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
-import Mathlib.Algebra.Order.Group.Defs
 
 /-!
 # BFMCS: Bundled Family of Maximal Consistent Sets
@@ -52,7 +51,7 @@ open Bimodal.Metalogic.Core
 ## BFMCS Structure
 -/
 
-variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable (D : Type*) [LinearOrder D]
 
 /--
 A family of maximal consistent sets indexed by time, with temporal coherence.
@@ -97,7 +96,7 @@ structure BFMCS where
   -/
   backward_H : forall t t' phi, t' < t -> Formula.all_past phi ∈ mcs t -> phi ∈ mcs t'
 
-variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+variable {D : Type*} [LinearOrder D]
 
 /-!
 ## Basic Accessors
