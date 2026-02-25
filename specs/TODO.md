@@ -28,7 +28,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Blocked by**: Task 922
-- **Research**: [research-003.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/reports/research-003.md)
+- **Research**: [research-004.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/reports/research-004.md)
 - **Plan**: [implementation-001.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260224.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/summaries/implementation-summary-20260224.md)
 
