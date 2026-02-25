@@ -6,12 +6,20 @@
   },
   "active_projects": [
     {
+      "project_number": 926,
+      "project_name": "audit_agent_system_context_efficiency",
+      "status": "not_started",
+      "language": "meta",
+      "created": "2026-02-25T21:06:49Z",
+      "last_updated": "2026-02-25T21:06:49Z"
+    },
+    {
       "project_number": 925,
       "project_name": "redesign_bmcs_completeness_mcs_accessibility",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-25T16:00:03Z",
-      "last_updated": "2026-02-25T18:49:19Z",
+      "last_updated": "2026-02-25T21:04:22Z",
       "description": "Tasks 924, 922, and 916 have hit major issues. Problematic ideas to remove:\n\n1. Standard witness families are CONSTANT (same MCS at every time) - needs systematic fix to admit families with different MCSs at different times\n2. Truth lemma assumed only needed for eval family - hits dead end for complex formulas\n3. Taking all MCSs to form a single canonical family does not work\n\nThe correct path:\n1. Define MCSs as world states\n2. Define four-constraint accessibility relation: one MCS related to another iff whenever Box G phi is in the left MCS, then phi is in the right MCS\n3. Define families as functions Int -> MCS where each MCS sees the next MCS or is seen by the previous MCS (using the accessibility relation)\n4. This constructs a bundle of families resembling world histories\n5. Prove every consistent sentence belongs to an MCS at time 0 in some family\n6. Establish TruthLemma: sentence belongs to MCS in family iff sentence is true when evaluated at that family at the corresponding integer\n\nThis construction is the core of the representation theorem. It may be hard to find but once found will be obviously correct and relatively easy to verify.",
       "artifacts": [
         {
@@ -45,9 +53,10 @@
         922,
         924
       ],
-      "session_id": "sess_1772045091_524183",
+      "session_id": "sess_1772053424_e51adb",
       "researched": "2026-02-25T17:01:54Z",
-      "planned": "2026-02-25T18:49:19Z"
+      "planned": "2026-02-25T18:49:19Z",
+      "started": "2026-02-25T21:04:22Z"
     },
     {
       "project_number": 923,
@@ -761,7 +770,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 926,
+  "next_project_number": 927,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

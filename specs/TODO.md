@@ -1,5 +1,5 @@
 ---
-next_project_number: 924
+next_project_number: 927
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,19 @@ technical_debt:
 
 ## Tasks
 
+### 926. Audit agent system for context efficiency and reduce startup bloat
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Created**: 2026-02-25
+
+**Description**: Context usage is 20% immediately when starting a new Claude Code session. Review agent system complexity and identify opportunities to reduce context bloat following 2026 best practices.
+
+---
+
 ### 925. Redesign BMCS completeness construction using MCS accessibility relation
 - **Effort**: 12-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-02-25
 - **Supersedes**: Tasks 916, 922, 924
