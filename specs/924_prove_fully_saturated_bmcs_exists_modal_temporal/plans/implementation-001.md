@@ -1,7 +1,7 @@
 # Implementation Plan: Task #924
 
 - **Task**: 924 - prove_fully_saturated_bmcs_exists_modal_temporal
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 10-14 hours
 - **Dependencies**: Task 922 (complete - Preorder generalization providing sorry-free forward_F/backward_P for CanonicalMCS)
 - **Research Inputs**: specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/reports/research-002.md
@@ -78,18 +78,18 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Constant-Family Truth Analysis [NOT STARTED]
+### Phase 1: Constant-Family Truth Analysis [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Determine exactly when the truth lemma backward direction is needed at constant families and whether the completeness proof avoids those cases.
 
 **Tasks**:
-- [ ] Analyze TruthLemma.lean Box case: trace when IH is applied to witness families
-- [ ] Identify if G/H formulas ever appear at witness family evaluation points
-- [ ] Document the "truth lemma call graph" showing which cases invoke which
-- [ ] Prove or disprove: completeness proof only evaluates atom/imp/box at witness families
+- [x] Analyze TruthLemma.lean Box case: trace when IH is applied to witness families
+- [x] Identify if G/H formulas ever appear at witness family evaluation points
+- [x] Document the "truth lemma call graph" showing which cases invoke which
+- [x] Prove or disprove: completeness proof only evaluates atom/imp/box at witness families
 
-**Timing**: 2-3 hours
+**Timing**: 2-3 hours (actual: ~2 hours)
 
 **Files to read**:
 - `Theories/Bimodal/Metalogic/Bundle/TruthLemma.lean` - truth lemma structure
@@ -97,11 +97,49 @@ After this implementation:
 
 **Verification**:
 - Written analysis document with truth lemma call graph
-- Clear determination: either "constant families safe" or "need alternative approach"
+- Clear determination: **"need alternative approach"** -- constant witness families are FUNDAMENTALLY INCOMPATIBLE with the truth lemma
+
+**Result: CONSTANT FAMILIES ARE UNSAFE -- APPROACH MUST CHANGE**
+
+The truth lemma is a SIMULTANEOUS IFF induction where both directions are mutually dependent:
+
+1. IMP forward at family fam uses IH BACKWARD on subformula psi at the SAME family fam
+2. BOX forward at eval family uses IH FORWARD at ALL families (including witness families)
+3. BOX backward at eval family uses IH BACKWARD at ALL families (including witness families)
+4. G backward at any family uses forward_F (temporal coherence) at that family
+
+The dependency chain: Completeness.lean uses truth lemma FORWARD at eval. Forward Imp
+uses backward on subformulas at same family. Box forward uses forward at ALL families.
+Therefore, even the forward direction at eval transitively requires backward direction
+at witness families through the Box->Imp chain. And backward G at constant families
+requires `phi in M -> G(phi) in M`, which is FALSE in general.
+
+**Call graph summary**:
+```
+bmcs_truth_lemma forward @ eval
+  -> imp forward @ eval: uses IH backward @ eval (OK - eval is temporally coherent)
+  -> box forward @ eval: uses modal_forward + IH forward @ witness_fam
+      -> imp forward @ witness_fam: uses IH backward @ witness_fam
+          -> G backward @ witness_fam: NEEDS forward_F at witness_fam
+              -> For constant fam_M: requires phi in M -> G(phi) in M  [FALSE]
+```
+
+**Conclusion**: The plan's Phases 2-5 (two-tier BMCS with constant witness families)
+CANNOT work because constant families fundamentally cannot satisfy the truth lemma
+for temporal operators. This is a mathematical obstruction, not a technical gap.
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771998675_4fe0d3**
+- Completed: Truth lemma call graph analysis
+- Result: Constant witness families are fundamentally incompatible with truth lemma backward G/H
+- The IMP case creates a cross-dependency where forward requires backward at same family
+- Through BOX, this propagates to require backward at ALL families including witnesses
+- Backward G at constant family requires phi in M -> G(phi) in M, which is FALSE
 
 ---
 
-### Phase 2: BoxContent-Equivalence BMCS Foundation [NOT STARTED]
+### Phase 2: BoxContent-Equivalence BMCS Foundation [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Build the BMCS infrastructure for BoxContent equivalence class approach
@@ -125,7 +163,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Two-Tier BMCS Construction [NOT STARTED]
+### Phase 3: Two-Tier BMCS Construction [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Construct the combined BMCS with temporal eval family + modal witness families
@@ -155,7 +193,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Restricted Truth Lemma for Two-Tier [NOT STARTED]
+### Phase 4: Restricted Truth Lemma for Two-Tier [BLOCKED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove truth lemma works for the two-tier construction
@@ -179,7 +217,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Complete fully_saturated_bmcs_exists_int [NOT STARTED]
+### Phase 5: Complete fully_saturated_bmcs_exists_int [BLOCKED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Eliminate the sorry in `fully_saturated_bmcs_exists_int`
