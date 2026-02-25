@@ -3,7 +3,7 @@
 - **Task**: 922 - strategy_study_fp_witness_completeness_blockers
 - **Version**: 005
 - **Created**: 2026-02-24
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 6-10 hours
 - **Dependencies**: None
 - **Research Inputs**: research-008.md (Preorder generalization confirmed as correct path)
