@@ -38,12 +38,12 @@ technical_debt:
 
 ### 922. Strategy study: identify viable path for forward_F/backward_P completeness
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Started**: 2026-02-24
 - **Research**: [research-005.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-005.md)
-- **Plan**: [implementation-003.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-003.md)
+- **Plan**: [implementation-004.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-004.md)
 - **Summary**: [implementation-summary-20260224.md](specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224.md)
 
 **Description**: Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. **CONSTRAINT: Sorry debt is NEVER acceptable** — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.
@@ -73,7 +73,7 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ### 921. Enforce zero-proof-debt policy for Lean task completion
 - **Effort**: 2.5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-24
 
