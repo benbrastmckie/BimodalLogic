@@ -22,6 +22,31 @@ technical_debt:
 
 ## Tasks
 
+### 924. Prove fully_saturated_bmcs_exists combining modal saturation with temporal coherence
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-24
+- **Blocked by**: Task 922
+
+**Description**: Prove `fully_saturated_bmcs_exists`: combining modal saturation with temporal coherence in a single BMCS construction.
+
+This is the final blocker for the completeness chain. The current sorry in `TemporalCoherentConstruction.lean` (`fully_saturated_bmcs_exists_int`) requires:
+1. Modal saturation: every consistent formula set can be extended to a fully saturated MCS (Lindenbaum via modal witnesses)
+2. Temporal coherence: the resulting family satisfies forward_G and backward_H
+3. Both simultaneously: modal saturation adds constant witness families, which must themselves be temporally coherent
+
+The tension: modal saturation uses Lindenbaum extension which does NOT preserve temporal saturation (where F(psi) -> psi). The current approach proves temporal coherence and modal saturation separately but cannot combine them.
+
+Context: Task 922 proved forward_F and backward_P sorry-free using the Preorder/all-MCS approach. This task addresses the remaining sorry: constructing a fully saturated BMCS that satisfies ALL four conditions simultaneously with a root MCS witnessing a given consistent formula.
+
+Key files:
+- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` - contains `fully_saturated_bmcs_exists_int` sorry
+- `Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean` - modal saturation tools
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalBFMCS.lean` - new all-MCS BFMCS construction from task 922
+
+---
+
 ### 923. Formalize frame correspondence theorem for linearity axiom
 - **Effort**: 4-8 hours
 - **Status**: [COMPLETED]
@@ -42,6 +67,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Started**: 2026-02-24
+- **Blocks**: Task 924
 - **Research**: [research-008.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-008.md)
 - **Plan**: [implementation-005.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-005.md)
 - **Summary**: [implementation-summary-20260224c.md](specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224c.md)
