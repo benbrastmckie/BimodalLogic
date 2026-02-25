@@ -1,7 +1,7 @@
 # Implementation Plan: Task #925
 
 - **Task**: 925 - Redesign BMCS completeness construction using MCS accessibility relation
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 24 hours
 - **Dependencies**: None (supersedes Tasks 924, 922, 916)
 - **Research Inputs**: specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-004.md
@@ -99,7 +99,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Terminology Refactoring (BFMCS -> FMCS) [NOT STARTED]
+### Phase 1: Terminology Refactoring (BFMCS -> FMCS) [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Rename BFMCS to FMCS throughout codebase. Keep BMCS as bundle name. Ensure no confusion with old naming.
@@ -131,6 +131,14 @@ After this implementation:
 - `lake build` passes
 - `grep -rn "BFMCS" Theories/Bimodal/Metalogic/Bundle/` shows only compatibility layer
 - All tests pass
+
+**Progress:**
+
+**Session: 2026-02-25, sess_1772053424_e51adb**
+- Added: `FMCS.lean` with `abbrev FMCS := BFMCS` type alias
+- Refactored: `BFMCS.lean` docstrings to clarify FMCS/BFMCS/BMCS terminology
+- Refactored: `BMCS.lean` docstrings to clarify terminology
+- Completed: Phase 1 - FMCS alias approach avoids `extends`/`toBFMCS` breakage across 20+ files
 
 ---
 
@@ -204,7 +212,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Chain-Based FMCS Infrastructure [NOT STARTED]
+### Phase 4: Chain-Based FMCS Infrastructure [IN PROGRESS]
 
 - **Dependencies:** Phase 1, Phase 3
 - **Goal:** Define chain-based FMCS using Mathlib's Flag structure. Prove forward_G, backward_H automatic from CanonicalR.

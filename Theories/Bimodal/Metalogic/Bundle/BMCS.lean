@@ -6,9 +6,14 @@ import Bimodal.Syntax.Formula
 /-!
 # Bundle of Maximal Consistent Sets (BMCS)
 
-A BMCS is a bundle of indexed MCS families with modal coherence conditions.
-This enables a Henkin-style completeness proof where box quantifies over
-bundled histories rather than all histories.
+A BMCS is a bundle of indexed MCS families (FMCS/BFMCS instances) with modal
+coherence conditions. This enables a Henkin-style completeness proof where box
+quantifies over bundled histories rather than all histories.
+
+## Terminology (Task 925)
+
+- **FMCS** (= BFMCS): A SINGLE time-indexed family of MCS
+- **BMCS**: A BUNDLE (set) of FMCS families with modal coherence
 
 ## Key Insight
 

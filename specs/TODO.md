@@ -24,7 +24,7 @@ technical_debt:
 
 ### 926. Audit agent system for context efficiency and reduce startup bloat
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Created**: 2026-02-25
 

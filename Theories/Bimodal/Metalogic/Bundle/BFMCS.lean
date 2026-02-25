@@ -3,22 +3,29 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 
 /-!
-# BFMCS: Bundled Family of Maximal Consistent Sets
+# BFMCS: Family of Maximal Consistent Sets
 
-This module defines the `BFMCS` (Bundled Family of Maximal Consistent Sets) structure
+This module defines the `BFMCS` (Family of Maximal Consistent Sets) structure
 that assigns a maximal consistent set (MCS) to each time point in D, with temporal
 coherence conditions ensuring proper formula propagation.
 
+## Terminology (Task 925)
+
+- **FMCS** / **BFMCS**: A SINGLE time-indexed family of MCS. The preferred name
+  is `FMCS` (see `FMCS.lean`); `BFMCS` is retained for backward compatibility.
+- **BMCS**: A BUNDLE (set) of families with modal coherence.
+
+The "B" in "BFMCS" historically stood for "Bundled" in the Lean4 sense (bundling
+data with proofs), NOT for collecting multiple families. To avoid confusion, new
+code should prefer the `FMCS` alias defined in `FMCS.lean`.
+
 ## Overview
 
-This is a streamlined version for the Bundle completeness proof, extracted from
-the Boneyard infrastructure to avoid broken import dependencies.
+Build a family of MCS indexed by time, where each time point has its own
+MCS connected to adjacent times via temporal coherence conditions.
 
 **Design Evolution**: TM logic uses REFLEXIVE temporal operators with T-axioms
 (`G phi -> phi`, `H phi -> phi`) to enable coherence proofs.
-
-**Solution**: Build a family of MCS indexed by time, where each time point has its own
-MCS connected to adjacent times via temporal coherence conditions.
 
 ## Main Definitions
 
@@ -57,7 +64,7 @@ variable (D : Type*) [Preorder D]
 A family of maximal consistent sets indexed by time, with temporal coherence.
 
 **Type Parameters**:
-- `D`: Duration/time type with ordered additive group structure
+- `D`: Duration/time type with preorder structure
 
 **Fields**:
 - `mcs`: Function assigning an MCS to each time point
@@ -70,11 +77,9 @@ A family of maximal consistent sets indexed by time, with temporal coherence.
 - This matches TM's temporal operator semantics with T-axioms
 - Reflexivity enables Preorder generalization (Task 922)
 
-**Design Note (Task 843)**:
-The structure previously included `forward_H` and `backward_G` fields. These were
-removed because the TruthLemma does not use them. The temporal backward properties
-are instead proven via contraposition using `forward_F`/`backward_P` from
-`TemporalCoherentFamily` in TemporalCoherentConstruction.lean.
+**Terminology (Task 925)**:
+- BFMCS = FMCS = Family of MCS (single family)
+- BMCS = Bundle of MCS (collection of families)
 -/
 structure BFMCS where
   /-- The MCS assignment: each time t gets an MCS -/
@@ -146,9 +151,6 @@ lemma BFMCS.backward_H_chain (family : BFMCS D)
 GG phi implies G phi propagation (using Temporal 4 axiom).
 
 If `G(G phi) ∈ mcs(t)` and `t ≤ t'`, then `G phi ∈ mcs(t')`.
-
-This uses the Temporal 4 axiom `G phi -> GG phi` in the contrapositive direction:
-From `GG phi ∈ mcs(t)`, we have `G phi` will be at all future times.
 -/
 lemma BFMCS.GG_to_G (family : BFMCS D)
     {t t' : D} (htt' : t ≤ t') (phi : Formula)
@@ -190,8 +192,6 @@ These lemmas will be used when proving the canonical task relation properties.
 /--
 If G phi is in the MCS at time t, then for any future time t' >= t,
 phi is in the MCS at t'.
-
-This is just a restatement of forward_G for clarity in task relation proofs.
 -/
 lemma BFMCS.G_implies_future_phi (family : BFMCS D)
     {t t' : D} (hle : t ≤ t') {phi : Formula} (hG : Formula.all_future phi ∈ family.mcs t) :
@@ -201,8 +201,6 @@ lemma BFMCS.G_implies_future_phi (family : BFMCS D)
 /--
 If H phi is in the MCS at time t, then for any past time t' <= t,
 phi is in the MCS at t'.
-
-This is just a restatement of backward_H for clarity in task relation proofs.
 -/
 lemma BFMCS.H_implies_past_phi (family : BFMCS D)
     {t t' : D} (hle : t' ≤ t) {phi : Formula} (hH : Formula.all_past phi ∈ family.mcs t) :
