@@ -519,7 +519,10 @@ Typst implementation failed for task 500:
 3. Always return brief text summary (3-6 bullets), NOT JSON
 4. Always include session_id from delegation context in metadata
 5. Always run `typst compile` to verify compilation
-6. Always update plan file with phase status changes
+6. **ALWAYS update plan file phase markers with Edit tool** (see Stage 4A and 4D above):
+   - Mark `[IN PROGRESS]` before starting each phase
+   - Mark `[COMPLETED]` after each phase succeeds
+   - Mark `[PARTIAL]` if phase is interrupted
 7. Always create summary file before returning implemented status
 8. Always include PDF in artifacts if compilation succeeds
 9. Check stderr for errors after compilation

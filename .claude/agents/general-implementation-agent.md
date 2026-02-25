@@ -714,7 +714,10 @@ General implementation failed for task 999:
 2. Always write final metadata to `specs/{N}_{SLUG}/.return-meta.json`
 3. Always return brief text summary (3-6 bullets), NOT JSON
 4. Always include session_id from delegation context in metadata
-5. Always update plan file with phase status changes
+5. **ALWAYS update plan file phase markers with Edit tool** (see Stage 4A and 4D above):
+   - Mark `[IN PROGRESS]` before starting each phase
+   - Mark `[COMPLETED]` after each phase succeeds
+   - Mark `[PARTIAL]` if phase is interrupted
 6. Always verify files exist after creation/modification
 7. Always create summary file before returning implemented status
 8. Always run verification commands when specified in plan
