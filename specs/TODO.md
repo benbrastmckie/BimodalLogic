@@ -42,7 +42,7 @@ technical_debt:
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Started**: 2026-02-24
-- **Research**: [research-007.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-007.md)
+- **Research**: [research-008.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-008.md)
 - **Plan**: [implementation-004.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-004.md)
 - **Summary**: [implementation-summary-20260225.md](specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260225.md)
 

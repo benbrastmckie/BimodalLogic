@@ -1,26 +1,17 @@
 {
   "status": "researched",
-  "summary": "Blocker analysis complete. Quotient representative mismatch is fundamental to Antisymmetrization approach -- phi membership cannot propagate between equivalent representatives (only G-formulas do via GContent). Recommended resolution: Option 1 (generalize BFMCS from LinearOrder to Preorder, use CanonicalReachable directly). LinearOrder is never used in proofs (only type constraints). Changing forward_G/backward_H from strict (<) to reflexive (<=) enables working with CanonicalReachable's natural Preorder, eliminating the quotient entirely and making forward_F/backward_P trivially provable.",
+  "summary": "Investigated why LinearOrder and AddCommGroup are unused in completeness chain: LinearOrder is only needed for soundness (le_total for linearity axiom), AddCommGroup is only needed for time_shift in soundness. The completeness chain correctly abstracts these away. The canonical model uses trivial task_rel, which is standard practice. The forward_F/backward_P blocker is fundamentally caused by forcing the canonical model (a preorder of MCSes) into a linear ordering (via Antisymmetrization quotient), losing individual formula membership. The recommended resolution is generalizing BFMCS from LinearOrder to Preorder and using CanonicalReachable directly as the domain.",
   "artifacts": [
     {
-      "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-007.md",
+      "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-008.md",
       "type": "research",
-      "summary": "Blocker analysis and resolution path evaluation: quotient representative mismatch, LinearOrder usage audit, four options evaluated, Option 1 (Preorder generalization) recommended"
+      "summary": "Deep investigation of unused LinearOrder/AddCommGroup, frame construction gap between semantics and completeness, and why the Preorder generalization eliminates the forward_F/backward_P blocker"
     }
   ],
   "metadata": {
-    "session_id": "sess_1771984521_651081",
+    "session_id": "sess_1771985428_baae33",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "key_findings": {
-      "blocker_cause": "Antisymmetrization quotient representative loses individual formula membership (only GContent preserved)",
-      "linear_order_used_in_proofs": false,
-      "recommended_option": "Option 1: Generalize BFMCS to Preorder, work with CanonicalReachable directly",
-      "rejected_options": ["Option 2: Hybrid construction (mathematically incoherent)", "Option 3: OrderIso to Int (blocker persists)", "Option 4b: Freeze witness (impossible)"],
-      "enabling_change": "Change BFMCS.forward_G from t < t' to t <= t' and backward_H similarly",
-      "files_requiring_signature_changes": 12,
-      "risk_level": "low-medium"
-    }
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }
