@@ -212,7 +212,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Chain-Based FMCS Infrastructure [IN PROGRESS]
+### Phase 4: Chain-Based FMCS Infrastructure [PARTIAL]
 
 - **Dependencies:** Phase 1, Phase 3
 - **Goal:** Define chain-based FMCS using Mathlib's Flag structure. Prove forward_G, backward_H automatic from CanonicalR.
