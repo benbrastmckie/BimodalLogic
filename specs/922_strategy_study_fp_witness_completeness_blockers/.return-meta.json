@@ -1,27 +1,27 @@
 {
   "status": "partial",
-  "started_at": "2026-02-24T12:00:00Z",
-  "completed_at": "2026-02-24T13:00:00Z",
+  "started_at": "2026-02-24T18:00:00Z",
+  "completed_at": "2026-02-24T19:30:00Z",
   "artifacts": [
     {
       "type": "implementation",
       "path": "Theories/Bimodal/Metalogic/Bundle/CanonicalBFMCS.lean",
-      "summary": "All-MCS BFMCS construction with sorry-free forward_F and backward_P proofs"
+      "summary": "All-MCS BFMCS construction with sorry-free forward_F, backward_P, and temporal_coherent_family_exists_CanonicalMCS"
     },
     {
       "type": "summary",
-      "path": "specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224b.md",
-      "summary": "Phase C completion summary documenting the all-MCS approach"
+      "path": "specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224c.md",
+      "summary": "Phase D partial completion: fixed CanonicalMCS type, proved temporal coherent family existence, documented remaining blocker"
     }
   ],
   "partial_progress": {
-    "stage": "phase_c_completed",
-    "details": "Phases A-C complete. Phase D (wire into completeness chain) not started. backward_P sorry eliminated by switching from CanonicalReachable to all-MCS domain.",
+    "stage": "phase_d_partial",
+    "details": "Phases A-C complete. Phase D partially complete: fixed pre-existing build errors in CanonicalBFMCS.lean (LE instance diamond), proved temporal_coherent_family_exists_CanonicalMCS (sorry-free). The fully_saturated_bmcs_exists_int sorry CANNOT be eliminated by the Preorder approach - it requires combining temporal coherence with modal saturation, which is a fundamentally different problem.",
     "phases_completed": 3,
     "phases_total": 4
   },
   "completion_data": {
-    "completion_summary": "Eliminated backward_P sorry in CanonicalBFMCS.lean by replacing CanonicalReachable (future-only) domain with all-MCS domain. The CanonicalMCS type uses all maximal consistent sets with CanonicalR Preorder, making both forward_F and backward_P trivially provable. Phase D (wiring into completeness chain) remains.",
+    "completion_summary": "Implemented Preorder generalization for BFMCS (Phases A-C complete). Changed CanonicalMCS from Subtype abbrev to structure to fix LE instance diamond. Proved temporal_coherent_family_exists_CanonicalMCS (sorry-free). The fully_saturated_bmcs_exists_int sorry remains because it requires modal saturation + temporal coherence combination, not F/P witness construction.",
     "roadmap_items": ["Prove completeness theorem for bimodal temporal logic"]
   },
   "metadata": {

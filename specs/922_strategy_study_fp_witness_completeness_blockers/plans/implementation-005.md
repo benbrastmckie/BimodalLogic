@@ -251,7 +251,7 @@ With the Preorder approach:
 
 ---
 
-### Phase D: Wire into Completeness Chain [NOT STARTED]
+### Phase D: Wire into Completeness Chain [PARTIAL]
 
 - **Dependencies:** Phase C
 - **Goal:** Connect CanonicalReachable BFMCS to TruthLemma and eliminate `fully_saturated_bmcs_exists_int` sorry
@@ -291,6 +291,17 @@ With the Preorder approach:
 - Representation.lean compiles with zero errors
 - `lake build` succeeds with zero errors
 - `lean_verify Completeness.lean strong_completeness` shows clean axiom dependencies
+
+**Progress:**
+
+**Session: 2026-02-24, sess_1771986476_9eef44**
+- Fixed: `CanonicalMCS` type from `abbrev` (Subtype) to `structure` - resolves LE instance diamond conflict that caused pre-existing build errors
+- Added: `temporal_coherent_family_exists_CanonicalMCS` - sorry-free proof of temporal coherent family existence for CanonicalMCS domain
+- Fixed: `canonicalMCSBFMCS_root_contains` to use explicit root element instead of `0` literal
+- Analyzed: `fully_saturated_bmcs_exists_int` sorry - CANNOT be eliminated by Preorder approach; requires combining temporal coherence with modal saturation (fundamentally different problem from F/P witnesses)
+- Analyzed: Representation.lean uses `TaskFrame Int` (needs `AddCommGroup`, `LinearOrder`, `IsOrderedAddMonoid`) - cannot use `CanonicalMCS` as domain for standard completeness
+- Result: Phase D goals 1-2 (wiring, build verification) achieved; goal 3 (eliminate sorry) NOT achievable with current approach; goal 4 (Representation) moot since domain must remain Int
+- Build: `lake build` passes (1001 jobs, 0 errors)
 
 ---
 
