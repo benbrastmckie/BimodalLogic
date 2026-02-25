@@ -6,275 +6,42 @@ paths: .claude/**/*
 
 ## Error Categories
 
-### Operational Errors
-Errors during command execution:
-- `delegation_hang` - Subagent not responding
-- `timeout` - Operation exceeded time limit
-- `validation_failed` - Input validation failure
-
-### State Errors
-Errors in state management:
-- `status_sync_failure` - TODO.md/state.json desync
-- `file_not_found` - Expected file missing
-- `parse_error` - JSON/YAML parse failure
-
-### External Errors
-Errors from external systems:
-- `git_commit_failure` - Git operation failed
-- `build_error` - Lean/lake build failed
-- `tool_unavailable` - MCP tool not responding
-- `mcp_abort_error` - MCP tool aborted or timed out (error code -32001)
-- `delegation_interrupted` - Agent interrupted before completion (metadata shows in_progress)
-- `jq_parse_failure` - jq command parse error (often due to Issue #1132)
-
-### Team Mode Errors
-Errors specific to multi-agent team execution:
-- `team_creation_failed` - Unable to spawn teammates (Teams feature unavailable)
-- `teammate_timeout` - Teammate did not complete within timeout period
-- `teammate_failure` - Teammate returned error status
-- `synthesis_failed` - Lead unable to synthesize teammate results
-- `wave_timeout` - Entire wave did not complete within timeout
-- `debug_cycle_exhausted` - Max debug cycles reached without resolution
-
-### Team Mode Expected Events (NOT Errors)
-These are normal events that have recovery patterns, not failures:
-- `context_exhaustion_handoff` - Teammate approaching context limit, wrote handoff for successor
+| Category | Examples |
+|----------|----------|
+| Operational | `delegation_hang`, `timeout`, `validation_failed` |
+| State | `status_sync_failure`, `file_not_found`, `parse_error` |
+| External | `git_commit_failure`, `build_error`, `tool_unavailable`, `mcp_abort_error` |
+| Team Mode | `team_creation_failed`, `teammate_timeout`, `synthesis_failed` |
 
 ## Error Response Pattern
 
-When an error occurs:
-
-### 1. Log the Error
-Record in errors.json:
-```json
-{
-  "id": "err_{timestamp}",
-  "timestamp": "ISO_DATE",
-  "type": "error_type",
-  "severity": "critical|high|medium|low",
-  "message": "Error description",
-  "context": {
-    "session_id": "sess_1736700000_abc123",
-    "command": "/implement",
-    "task": 259,
-    "phase": 2,
-    "checkpoint": "GATE_OUT"
-  },
-  "trajectory": {
-    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
-    "failed_at_depth": 3
-  },
-  "recovery": {
-    "suggested_action": "Run /implement 259 to resume from phase 2",
-    "auto_recoverable": true
-  },
-  "fix_status": "unfixed"
-}
-```
-
-### Session-Aware Error Aggregation
-
-Errors with the same session_id belong to the same operation. Use session_id to:
-- Link related errors in multi-step operations
-- Identify recurring patterns across operations
-- Enable trajectory reconstruction for debugging
-
-### 2. Preserve Progress
-- Never lose completed work
-- Keep partial results
-- Mark phases as [PARTIAL] not failed
-
-### 3. Enable Resume
-- Store resume point information
-- Next invocation continues from failure point
-
-### 4. Report Clearly
-Return structured error:
-```json
-{
-  "status": "failed|partial",
-  "error": {
-    "type": "error_type",
-    "message": "What happened",
-    "recovery": "How to fix"
-  },
-  "progress": {
-    "completed": ["phase1", "phase2"],
-    "failed_at": "phase3"
-  }
-}
-```
+1. **Log**: Record in errors.json with session_id and context
+2. **Preserve**: Keep completed work, mark phases [PARTIAL] not failed
+3. **Enable Resume**: Store resume point, next invocation continues
+4. **Report**: Return structured error with recovery suggestion
 
 ## Severity Levels
 
-| Severity | Description | Response |
-|----------|-------------|----------|
-| critical | System unusable | Stop, alert, require manual fix |
-| high | Feature broken | Log, attempt recovery |
-| medium | Degraded function | Log, continue with workaround |
-| low | Minor issue | Log, ignore |
+| Severity | Response |
+|----------|----------|
+| critical | Stop, alert, require manual fix |
+| high | Log, attempt recovery |
+| medium | Log, continue with workaround |
+| low | Log, ignore |
 
-## Recovery Strategies
+## Quick Recovery Reference
 
-### Timeout Recovery
-```
-1. Save partial progress
-2. Mark current phase [PARTIAL]
-3. Git commit progress
-4. Next /implement resumes
-```
-
-### State Sync Recovery
-```
-1. Read both files
-2. Use git blame for latest
-3. Sync to latest version
-4. Log resolution
-```
-
-### Build Error Recovery
-```
-1. Capture error output
-2. Log to errors.json
-3. Keep source unchanged
-4. Report error with context
-```
-
-### jq Parse Failure Recovery
-```
-1. Capture jq error output (INVALID_CHARACTER, syntax error)
-2. Log to errors.json with original command
-3. Retry using "| not" pattern from jq-escaping-workarounds.md
-4. If retry succeeds, log recovery
-```
-
-**Note**: jq failures are often caused by Claude Code Issue #1132 variants:
-- **Pipe injection**: `|` in quoted strings triggers `< /dev/null` injection
-- **`!=` escaping**: The `!=` operator gets escaped as `\!=`
-
-**Solution**: Use `select(.type == "X" | not)` instead of `select(.type != "X")`.
-See `.claude/context/core/patterns/jq-escaping-workarounds.md` for full documentation.
-
-### MCP Abort Error Recovery
-```
-1. Log the error with tool name and context
-2. Retry once after 5-second delay
-3. Try alternative tool if available (see mcp-tool-recovery.md)
-4. Write partial status to metadata file with partial_progress
-5. Continue with available information or return partial
-```
-
-**Note**: MCP AbortError -32001 is often caused by resource contention from multiple concurrent
-lean-lsp-mcp instances. See `.claude/context/core/patterns/mcp-tool-recovery.md` for recovery
-patterns and `.claude/context/project/lean4/operations/multi-instance-optimization.md` for
-prevention strategies.
-
-### Delegation Interrupted Recovery
-```
-1. Check metadata file for status="in_progress"
-2. Extract partial_progress to determine resume point
-3. Keep task status unchanged (still "researching" or "implementing")
-4. Log error with partial_progress context
-5. Display guidance: "Run command again to resume"
-```
-
-**Note**: Delegation interrupted occurs when an agent is terminated (by timeout, MCP error, or
-Claude Code abort) before writing final metadata. The early-metadata-pattern.md ensures
-metadata exists for recovery.
-
-### Team Mode Recovery
-
-When team mode errors occur:
-
-```
-Team Creation Failed:
-1. Log warning: "Team mode unavailable, falling back to single agent"
-2. Invoke standard single-agent skill (skill-researcher, skill-planner, etc.)
-3. Mark degraded_to_single: true in metadata
-4. Continue with single-agent result
-```
-
-```
-Teammate Timeout:
-1. Continue with available teammate results
-2. Note timeout in synthesis
-3. Mark result as partial if critical teammate missing
-4. Log which teammate timed out
-```
-
-```
-Synthesis Failed:
-1. Preserve raw teammate findings
-2. Mark status as partial
-3. Provide teammate result files to user
-4. Log synthesis failure reason
-```
-
-```
-Debug Cycle Exhausted:
-1. Mark phase as [PARTIAL] in plan
-2. Preserve all debug reports
-3. Return partial with debug history
-4. Suggest manual intervention
-```
-
-### Context Exhaustion Recovery
-
-Context exhaustion is **expected** for complex phases, not a bug. Teammates have finite context windows and cannot use /compact during execution.
-
-**Context exhaustion is NOT an error**. It is a normal part of complex work that should be handled gracefully through handoffs.
-
-**Recovery Pattern** (Successor Teammate):
-```
-1. Teammate detects approaching context limit (~80% usage)
-2. Teammate writes handoff artifact:
-   - specs/{N}_{SLUG}/handoffs/phase-{P}-handoff-{TIMESTAMP}.md
-3. Teammate updates progress file:
-   - specs/{N}_{SLUG}/progress/phase-{P}-progress.json
-4. Teammate returns `partial` status with `handoff_path` in metadata
-5. Lead spawns **successor teammate** (NOT single-agent fallback)
-6. Successor reads minimal handoff context (Immediate Next Action + Current State)
-7. Successor continues from handoff
-8. Successor can chain further handoffs if needed
-```
-
-**Metadata format for context exhaustion**:
-```json
-{
-  "status": "partial",
-  "partial_progress": {
-    "stage": "context_exhaustion_handoff",
-    "details": "Approaching context limit. Handoff written with current state.",
-    "handoff_path": "specs/{N}_{SLUG}/handoffs/phase-{P}-handoff-{TIMESTAMP}.md",
-    "phases_completed": 2,
-    "phases_total": 4
-  }
-}
-```
-
-**Important**: Do NOT have lead agent complete the work. Spawn a successor teammate to:
-- Maintain parallelism (other phases can continue)
-- Preserve context isolation
-- Enable handoff chains for very long phases
-
-**Successor Prompt Minimal Context**:
-```
-Quick Start (read ONLY this first):
-- Immediate Next Action: {from handoff}
-- Current State: {from handoff}
-
-If stuck, read full handoff at: {handoff_path}
-```
-
-See `.claude/context/core/formats/handoff-artifact.md` for handoff document schema.
-See `.claude/utils/team-wave-helpers.md#successor-teammate-pattern` for successor templates.
+| Error | Recovery |
+|-------|----------|
+| Timeout | Save progress, mark [PARTIAL], commit, resume next /implement |
+| State sync | Read both files, git blame for latest, sync |
+| jq parse | Use `select(.type == "X" | not)` pattern |
+| MCP abort | Retry once, try alternative tool, continue with partial |
+| Team creation failed | Fall back to single agent |
+| Context exhaustion | Write handoff, spawn successor teammate |
 
 ## Non-Blocking Errors
 
-These should not stop execution:
-- Git commit failures
-- Metric collection failures
-- Non-critical logging failures
-- Team mode degradation (falls back gracefully)
+Log and continue: Git commit failures, metric collection, non-critical logging, team mode degradation.
 
-Log and continue, report at end.
+Full procedures: @.claude/context/core/reference/error-recovery-procedures.md

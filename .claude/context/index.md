@@ -62,6 +62,25 @@
 
 ---
 
+## Core Reference (core/reference/)
+
+**Extracted reference content** - Load on-demand for detailed specifications
+
+- **command-reference.md** (~90 lines) - Full command table with usage and lifecycle
+- **skill-agent-mapping.md** (~80 lines) - Skill-to-agent mapping and language routing
+- **state-json-schema.md** (~120 lines) - Complete state.json schema with examples
+- **artifact-templates.md** (~150 lines) - Full artifact templates for research/plan/summary
+- **error-recovery-procedures.md** (~200 lines) - Detailed error recovery procedures
+
+**When to Load**:
+- Load command-reference.md when implementing new commands
+- Load skill-agent-mapping.md when routing or adding skills
+- Load state-json-schema.md when working with state.json structure
+- Load artifact-templates.md when creating artifacts
+- Load error-recovery-procedures.md when debugging errors
+
+---
+
 ## Core Standards (core/standards/)
 
 **Consolidated files** - Load for delegation, return format, validation

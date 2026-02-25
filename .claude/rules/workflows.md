@@ -6,219 +6,50 @@ paths: .claude/**/*
 
 ## Command Lifecycle
 
-Every command follows this pattern:
+Every command follows: **Preflight** -> **Execute** -> **Postflight**
 
-### 1. Preflight
-Before starting work:
-- Parse and validate arguments
-- Check task exists and status allows operation
-- Update status to "in progress" variant
-- Log session start
-
-### 2. Execute
-Perform the actual work:
-- Route to appropriate skill by language
-- Execute steps/phases
-- Track progress
-- Handle errors gracefully
-
-### 3. Postflight
-After completing work:
-- Update status to completed variant
-- Create artifacts
-- Git commit changes
-- Return results
+1. **Preflight**: Parse args, validate task, update status to "in progress", log session
+2. **Execute**: Route by language, execute steps, track progress, handle errors
+3. **Postflight**: Update status, create artifacts, git commit, return results
 
 ## Research Workflow
 
-```
-/research N [focus]
-    │
-    ▼
-┌─────────────────┐
-│ Validate task   │
-│ exists, status  │
-│ allows research │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Update status   │
-│ [RESEARCHING]   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Route by lang   │
-│ lean→lean-lsp   │
-│ other→web/code  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Create report   │
-│ research-NNN.md │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Update status   │
-│ [RESEARCHED]    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Git commit      │
-└─────────────────┘
-```
+`/research N [focus]`
+1. Validate task exists, status allows research
+2. Update status `[RESEARCHING]`
+3. Route by language (lean -> lean-lsp, other -> web/code)
+4. Create report `research-{NNN}.md`
+5. Update status `[RESEARCHED]`
+6. Git commit
 
 ## Planning Workflow
 
-```
-/plan N
-    │
-    ▼
-┌─────────────────┐
-│ Load research   │
-│ and task desc   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Update status   │
-│ [PLANNING]      │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Create phases   │
-│ with steps      │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Write plan file │
-│ impl-NNN.md     │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Update status   │
-│ [PLANNED]       │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Git commit      │
-└─────────────────┘
-```
+`/plan N`
+1. Load research and task description
+2. Update status `[PLANNING]`
+3. Create phases with steps
+4. Write plan `implementation-{NNN}.md`
+5. Update status `[PLANNED]`
+6. Git commit
 
 ## Implementation Workflow
 
-```
-/implement N
-    │
-    ▼
-┌─────────────────┐
-│ Load plan,      │
-│ find resume pt  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Update status   │
-│ [IMPLEMENTING]  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ For each phase: │
-│ ┌─────────────┐ │
-│ │ Mark IN     │ │
-│ │ PROGRESS    │ │
-│ ├─────────────┤ │
-│ │ Execute     │ │
-│ │ steps       │ │
-│ ├─────────────┤ │
-│ │ Mark        │ │
-│ │ COMPLETED   │ │
-│ ├─────────────┤ │
-│ │ Git commit  │ │
-│ │ phase       │ │
-│ └─────────────┘ │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Create summary  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Update status   │
-│ [COMPLETED]     │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Final commit    │
-└─────────────────┘
-```
+`/implement N`
+1. Load plan, find resume point
+2. Update status `[IMPLEMENTING]`
+3. For each phase: Mark IN PROGRESS -> Execute steps -> Mark COMPLETED -> Git commit
+4. Create summary
+5. Update status `[COMPLETED]`
+6. Final commit
 
 ## Resume Pattern
 
-For interrupted implementations:
-
-```
-/implement N (resumed)
-    │
-    ▼
-┌─────────────────┐
-│ Load plan       │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Scan phases:    │
-│ [COMPLETED] → ✓ │
-│ [PARTIAL] → ◀── │ Resume here
-│ [NOT STARTED]   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Continue from   │
-│ resume point    │
-└─────────────────┘
-```
+Scan phases: `[COMPLETED]` -> skip, `[PARTIAL]`/`[IN PROGRESS]` -> resume, `[NOT STARTED]` -> start
 
 ## Error Recovery
 
-```
 On error during phase:
-    │
-    ▼
-┌─────────────────┐
-│ Keep phase      │
-│ [IN PROGRESS]   │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Log error       │
-│ to errors.json  │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Commit partial  │
-│ progress        │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│ Return partial  │
-│ with resume     │
-│ info            │
-└─────────────────┘
-```
+1. Keep phase `[IN PROGRESS]`
+2. Log to errors.json
+3. Commit partial progress
+4. Return partial with resume info
