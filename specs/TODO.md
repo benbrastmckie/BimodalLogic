@@ -73,9 +73,10 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ### 921. Enforce zero-proof-debt policy for Lean task completion
 - **Effort**: 2.5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Created**: 2026-02-24
+- **Research**: [research-001.md](specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/reports/research-001.md)
 
 **Description**: Update all Lean-related agents, skills, policy documents, and plan formats to enforce a strict zero-proof-debt completion gate. The policy must make crystal clear: (1) NO sorry may remain in a completed Lean task - all sorries must be closed before a task is marked [COMPLETED]; (2) NO new axioms may ever be introduced; (3) proof debt acceptance (e.g. "Option B" sorry deferral as in task 916 research-014) is FORBIDDEN under any circumstances. Components to update: (Phase 1) `proof-debt-policy.md` - add explicit Completion Gate section stating sorries must be resolved before task completion, clarify axioms are never acceptable even for internal work; (Phase 2) `lean-implementation-agent.md` - add MUST DO zero-sorry verification before returning implemented status, add MUST NOT returning implemented status with remaining sorries, add completion gate check in build verification stage; (Phase 3) `lean-research-agent.md` - add requirement to flag tasks that propose sorry debt acceptance as FORBIDDEN, clarify Option B style deferral is not a valid recommendation; `planner-agent.md` - add Lean-specific requirement that final plan phase must include sorry elimination verification; (Phase 4) `plan-format.md` - update Sorry Characterization to require zero-sorry target in "New Sorries" section, update Axiom Characterization to forbid new axioms; `skill-lean-implementation/SKILL.md` - add sorry count verification before accepting implemented status from subagent.
 
