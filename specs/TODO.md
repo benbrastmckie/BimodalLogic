@@ -22,6 +22,32 @@ technical_debt:
 
 ## Tasks
 
+### 925. Redesign BMCS completeness construction using MCS accessibility relation
+- **Effort**: 12-20 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-02-25
+- **Supersedes**: Tasks 916, 922, 924
+
+**Description**: Tasks 924, 922, and 916 have hit major issues requiring architectural redesign.
+
+**Problems to remove**:
+1. Standard witness families are CONSTANT (same MCS at every time) - needs fix to admit non-constant families
+2. Truth lemma assumed only needed for eval family - hits dead end for complex formulas
+3. Taking all MCSs to form a single canonical family does not work
+
+**Correct path**:
+1. Define MCSs as world states
+2. Define four-constraint accessibility relation: MCS1 related to MCS2 iff whenever `Box G phi` in MCS1, then `phi` in MCS2
+3. Define families as functions `Int -> MCS` where each MCS sees the next (or is seen by previous) via accessibility
+4. This constructs a bundle of families resembling world histories
+5. Prove every consistent sentence belongs to an MCS at time 0 in some family
+6. Establish TruthLemma: sentence in MCS in family iff sentence true when evaluated at that family at corresponding integer
+
+This construction is the core of the representation theorem.
+
+---
+
 ### 924. Prove fully_saturated_bmcs_exists combining modal saturation with temporal coherence
 - **Effort**: 8-16 hours
 - **Status**: [RESEARCHED]
