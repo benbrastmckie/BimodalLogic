@@ -24,11 +24,12 @@ technical_debt:
 
 ### 925. Redesign BMCS completeness construction using MCS accessibility relation
 - **Effort**: 12-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-02-25
 - **Supersedes**: Tasks 916, 922, 924
 - **Research**: [research-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-001.md), [research-002.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-002.md), [research-003.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-003.md), [research-004.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-004.md)
+- **Plan**: [implementation-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/plans/implementation-001.md)
 
 **Description**: Tasks 924, 922, and 916 have hit major issues requiring architectural redesign.
 
@@ -51,7 +52,7 @@ This construction is the core of the representation theorem.
 
 ### 924. Prove fully_saturated_bmcs_exists combining modal saturation with temporal coherence
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-02-24
 - **Blocked by**: Task 922
@@ -233,7 +234,7 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ### 619. Migrate skills to native context:fork isolation
 - **Effort**: 3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Researched**: 2026-02-17
 - **Language**: meta
 - **Created**: 2026-01-19
@@ -257,7 +258,7 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: general
 - **Created**: 2026-02-01
 - **Researched**: 2026-02-01
@@ -269,7 +270,7 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Parent**: Task 381
 - **Subtasks**: 398, 399
@@ -304,7 +305,7 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ### 685. Derive world-history and Barcan theorems
 - **Effort**: 8-10 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
  **Created**: 2026-01-26
  **Source**: Theories/Logos/latex/subfiles/03-DynamicsFoundation.tex (2 grouped TODO items)

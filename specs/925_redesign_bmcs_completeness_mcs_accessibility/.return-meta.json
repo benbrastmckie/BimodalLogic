@@ -1,30 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Research round 3: Restructured truth-predicate semantic faithfulness analysis - modification is safe because it only affects metalogic tool (bmcs_truth_at), not theory semantics (truth_at)",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-003.md",
-      "summary": "Restructured truth-predicate semantic faithfulness analysis - two distinct truth predicates identified, restructuring is safe refactoring of completeness proof technique"
+      "type": "plan",
+      "path": "specs/925_redesign_bmcs_completeness_mcs_accessibility/plans/implementation-001.md",
+      "summary": "10-phase implementation plan for chain-based BMCS completeness redesign"
     }
   ],
-  "key_findings": [
-    "Two distinct truth predicates: truth_at (Theory.lean - semantics) vs bmcs_truth_at (BMCSTruth.lean - metalogic tool)",
-    "Restructured truth predicate only modifies bmcs_truth_at, NOT theory semantics",
-    "Box case becomes trivial with restructured definition - uses BMCS.box_iff_universal directly",
-    "Temporal cases (G/H) still require forward_F/backward_P for witness families - not resolved",
-    "No change to representation theorem mapping or theory semantics",
-    "Semantic faithfulness is preserved because completeness is existential (need ONE model)"
-  ],
-  "recommendations": [
-    "Proceed with restructured truth predicate for Box case (HIGH CONFIDENCE)",
-    "Acknowledge temporal case (G/H) remains open for witness families",
-    "Add documentation distinguishing truth_at (theory) from bmcs_truth_at (metalogic)",
-    "Investigate Path D (non-constant witness families) for G/H temporal cases"
-  ],
+  "next_steps": "Run /implement 925 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772038454_51b1d5",
-    "agent_type": "lean-research-agent",
-    "round": 3
+    "session_id": "sess_1772045091_524183",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 24
   }
 }
