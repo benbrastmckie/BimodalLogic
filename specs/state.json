@@ -54,13 +54,13 @@
     {
       "project_number": 936,
       "project_name": "port_specialized_research_agents_skills",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "description": "Port specialized research agents and skills from Theory repository. Agents: logic-research-agent.md (modal/temporal/mereology/topology), math-research-agent.md (algebra/lattice/order/category theory), latex-research-agent.md (LaTeX documentation). Skills: skill-logic-research/, skill-math-research/, skill-latex-research/. Each skill uses thin-wrapper postflight pattern delegating to corresponding agent. Update skill-agent-mapping.md.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T19:38:59Z",
+      "last_updated": "2026-02-26T19:41:23Z",
       "effort": "4-6 hours",
-      "session_id": "sess_1740567600_rv936",
+      "session_id": "sess_1740567600_i936",
       "researched": "2026-02-26T18:51:05Z",
       "artifacts": [
         {
@@ -74,20 +74,22 @@
           "summary": "4-phase plan with Mathlib lookup MCP tools for math/logic agents"
         }
       ],
-      "planned": "2026-02-26T19:38:59Z"
+      "planned": "2026-02-26T19:38:59Z",
+      "started": "2026-02-26T19:41:23Z"
     },
     {
       "project_number": 935,
       "project_name": "audit_roadmap_current_state_section",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "description": "Review and update '## Current State: What's Been Accomplished' section and following content in specs/ROAD_MAP.md. Audit for accuracy, clarity, and conciseness to provide clear guidance for theory development. Ensure all claims match current codebase state.",
       "created": "2026-02-26T18:41:33Z",
-      "last_updated": "2026-02-26T19:35:46Z",
+      "last_updated": "2026-02-26T20:15:00Z",
       "session_id": "sess_1772134530_b965c7",
       "researched": "2026-02-26T18:51:26Z",
       "planned": "2026-02-26T19:33:20Z",
-      "started": "2026-02-26T19:35:46Z"
+      "started": "2026-02-26T19:35:46Z",
+      "completed": "2026-02-26T20:15:00Z"
     },
     {
       "project_number": 934,

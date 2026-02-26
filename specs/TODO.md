@@ -62,7 +62,7 @@ technical_debt:
 
 ### 936. Port specialized research agents and skills
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Research**: [research-001.md](specs/936_port_specialized_research_agents_skills/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/936_port_specialized_research_agents_skills/plans/implementation-002.md)
@@ -73,10 +73,12 @@ technical_debt:
 
 ### 935. Audit ROAD_MAP.md Current State section for accuracy
 - **Effort**: 2-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: meta
+- **Completed**: 2026-02-26
 - **Research**: [research-001.md](specs/935_audit_roadmap_current_state_section/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/935_audit_roadmap_current_state_section/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260226.md](specs/935_audit_roadmap_current_state_section/summaries/implementation-summary-20260226.md)
 
 **Description**: Review and update '## Current State: What's Been Accomplished' section and following content in specs/ROAD_MAP.md. Audit for accuracy, clarity, and conciseness to provide clear guidance for theory development. Ensure all claims match current codebase state.
 
