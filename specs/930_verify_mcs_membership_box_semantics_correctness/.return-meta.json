@@ -3,17 +3,12 @@
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md",
-      "summary": "MCS-membership box semantics is mathematically sound; not a cheat. The two truth predicates differ structurally but yield equivalent completeness results via the soundness chain. Bridge theorem to formally unify them is achievable."
-    },
-    {
-      "type": "research",
-      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-002.md",
-      "summary": "Removal plan for bmcs_valid_mcs: 3 defs + 11 theorems to delete from ChainBundleBFMCS.lean (lines 350-691). All _mcs code is self-contained with zero external dependents. Keep CanonicalBC construction (lines 1-349). Standard completeness chain retains sorry in fully_saturated_bfmcs_exists_int."
+      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-003.md",
+      "summary": "Detailed analysis of fundamental obstruction using standard validity: ShiftClosed Omega fails because constant witness families are not temporally coherent. Resolution requires making all witness families non-constant and temporally coherent via mini-dovetailing-chains."
     }
   ],
   "metadata": {
-    "session_id": "sess_1772070540_7d6e78",
+    "session_id": "sess_1772071313_1dd4a0",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
