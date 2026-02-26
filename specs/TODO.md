@@ -24,9 +24,9 @@ technical_debt:
 
 ### 932. Remove constant witness family approach from metalogic
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/932_remove_constant_witness_family_metalogic/reports/research-001.md), [research-002.md](specs/932_remove_constant_witness_family_metalogic/reports/research-002.md)
+- **Research**: [research-001.md](specs/932_remove_constant_witness_family_metalogic/reports/research-001.md), [research-002.md](specs/932_remove_constant_witness_family_metalogic/reports/research-002.md), [research-003.md](specs/932_remove_constant_witness_family_metalogic/reports/research-003.md)
 
 **Description**: Remove all elements of the metalogic that use a constant witness family approach for modal saturation. Research report 930/research-007.md incorrectly documented that modal saturation creates witness families where "a constant witness family maps every time point to the SAME MCS W containing psi." This approach is fundamentally flawed and must be extracted without gutting independent proofs. Clean up misleading comments and add Boneyard comments explicitly banning constant family approaches.
 
