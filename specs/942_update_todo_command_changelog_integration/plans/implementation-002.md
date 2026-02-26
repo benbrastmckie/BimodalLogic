@@ -42,7 +42,7 @@ Minimal cleanup task to finalize the /todo command's changelog integration. Task
 
 ## Implementation Phases
 
-### Phase 1: Clean Up References [NOT STARTED]
+### Phase 1: Clean Up References [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Remove obsolete references and add schema link
@@ -63,6 +63,16 @@ Minimal cleanup task to finalize the /todo command's changelog integration. Task
 **Verification**:
 - No "Task 941" references remain
 - Schema reference present
+
+**Progress:**
+
+**Session: 2026-02-26, sess_1772140034_48ed52**
+- Fixed: line 563 - "Run Task 941..." -> "Create the file to enable..."
+- Fixed: line 1071 - "(requires Task 941)" -> "(see changelog-format.md)"
+- Fixed: line 1334 - same update
+- Fixed: line 1705 - "Task 941 must be implemented first" -> "File must exist..."
+- Added: Schema reference after Entry Format section
+- Verified: `grep -c "Task 941"` returns 0
 
 ## Testing & Validation
 

@@ -560,7 +560,7 @@ If CLAUDE.md suggestions exist, the "Note: Interactive selection..." line is alw
 
 If CHANGE_LOG.md doesn't exist, omit the "Changelog updates" section and show:
 ```
-Note: specs/CHANGE_LOG.md not found. Run Task 941 to create the changelog file.
+Note: specs/CHANGE_LOG.md not found. Create the file to enable changelog tracking.
 ```
 
 If no completed tasks are being archived (only abandoned), omit the "Changelog updates" section.
@@ -1068,7 +1068,7 @@ Track for output:
 ```bash
 # Verify CHANGE_LOG.md exists
 if [ ! -f specs/CHANGE_LOG.md ]; then
-  echo "Note: specs/CHANGE_LOG.md not found (requires Task 941)"
+  echo "Note: specs/CHANGE_LOG.md not found (see changelog-format.md)"
   echo "Skipping changelog updates"
   changelog_skipped=true
 else
@@ -1331,7 +1331,7 @@ If no changelog entries were added (changelog_skipped=true or no completed tasks
 - Omit the "Changelog updated" section
 
 If CHANGE_LOG.md was missing:
-- Show note: "Note: specs/CHANGE_LOG.md not found (requires Task 941)"
+- Show note: "Note: specs/CHANGE_LOG.md not found (see changelog-format.md)"
 
 If no CLAUDE.md suggestions were collected (no meta tasks or all had "none" action):
 - Omit the "CLAUDE.md suggestions applied/failed/skipped" sections
@@ -1702,7 +1702,7 @@ If an Edit operation fails (section not found, text mismatch), the failure is lo
 Step 5.8 automatically updates specs/CHANGE_LOG.md when archiving completed tasks.
 
 **Prerequisites**:
-- Task 941 must be implemented first (creates the CHANGE_LOG.md file)
+- File must exist (see changelog-format.md)
 - Only completed tasks are added (abandoned tasks are NOT included in Changelog)
 
 **Entry Format**:
@@ -1711,6 +1711,8 @@ Step 5.8 automatically updates specs/CHANGE_LOG.md when archiving completed task
 
 - **Task {N}**: {completion_summary} [(details)](path/to/summary)
 ```
+
+**Schema Reference**: See `.claude/context/core/formats/changelog-format.md` for full specification.
 
 **Behavior**:
 1. Groups completed tasks by their completion date (YYYY-MM-DD)
