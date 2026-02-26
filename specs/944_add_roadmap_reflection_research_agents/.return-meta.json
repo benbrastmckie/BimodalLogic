@@ -1,19 +1,21 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "session_id": "sess_1772141545_p4x7",
+  "completed_at": "2026-02-26T12:30:00Z",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/944_add_roadmap_reflection_research_agents/reports/research-001.md",
-      "summary": "Research report analyzing agent structure, ROAD_MAP.md sections, and Stage 2.5 implementation approach"
+      "path": "specs/944_add_roadmap_reflection_research_agents/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "5-phase implementation plan for adding ROAD_MAP.md reflection to research agents"
     }
   ],
-  "next_steps": "Run /plan 944 to create implementation plan",
+  "next_steps": "Run /implement 944 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772140963_r8k2",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1772141545_p4x7",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 2.5
   }
 }

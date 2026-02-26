@@ -106,24 +106,44 @@
     {
       "project_number": 944,
       "project_name": "add_roadmap_reflection_research_agents",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "description": "Add ROAD_MAP.md reflection to lean-research-agent, logic-research-agent, and math-research-agent. Add Stage 2.5 to load Dead Ends and Strategies sections. Check for relevant pitfalls before recommending approaches. Document reflection pattern for future agents.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T21:35:00Z",
-      "effort": "2-3 hours",
+      "last_updated": "2026-02-26T21:45:00Z",
+      "effort": "2.5 hours",
       "dependencies": [
         941
       ],
-      "session_id": "sess_1772140963_r8k2",
+      "session_id": "sess_1772141545_p4x7",
       "researched": "2026-02-26T21:35:00Z",
+      "planned": "2026-02-26T21:45:00Z",
       "artifacts": [
         {
           "path": "specs/944_add_roadmap_reflection_research_agents/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing agent structure, ROAD_MAP.md sections, and Stage 2.5 implementation approach"
+        },
+        {
+          "path": "specs/944_add_roadmap_reflection_research_agents/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for adding ROAD_MAP.md reflection to research agents"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 2.5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-26"
+          }
+        ]
+      }
     },
     {
       "project_number": 940,
