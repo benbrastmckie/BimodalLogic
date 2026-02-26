@@ -24,9 +24,10 @@ technical_debt:
 
 ### 944. Add ROAD_MAP.md reflection to research agents
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Dependencies**: Task #941
+- **Research**: [specs/944_add_roadmap_reflection_research_agents/reports/research-001.md]
 
 **Description**: Add ROAD_MAP.md reflection to lean-research-agent, logic-research-agent, and math-research-agent. Add Stage 2.5 to load Dead Ends and Strategies sections. Check for relevant pitfalls before recommending approaches. Document reflection pattern for future agents.
 
