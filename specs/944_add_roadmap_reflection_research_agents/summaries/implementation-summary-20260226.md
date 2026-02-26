@@ -15,8 +15,16 @@
 **Summary**:
 Created roadmap-reflection-pattern.md documenting the pattern for adding ROAD_MAP.md reflection to research agents. Includes purpose, when to apply, pattern steps, example check, report section template, and integration checklist.
 
+### Phase 2: Add Stage 2.5 to lean-research-flow.md [COMPLETED]
+
+**Files Modified**:
+- `.claude/context/project/lean4/agents/lean-research-flow.md` - Inserted Stage 2.5 between Stage 2 and Stage 3
+
+**Summary**:
+Added Stage 2.5: ROAD_MAP.md Reflection section to lean-research-flow.md. Includes procedure for loading ROAD_MAP.md sections, extracting keywords, scanning Dead Ends and Strategies, and applying pitfall filter with example check.
+
 ## Cumulative Statistics
 
-- **Phases Completed**: 1 / 5
+- **Phases Completed**: 2 / 5
 - **Files Created**: 1
-- **Files Modified**: 0
+- **Files Modified**: 1

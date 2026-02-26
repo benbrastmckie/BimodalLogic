@@ -44,6 +44,60 @@ Based on task description and focus:
 
 ---
 
+## Stage 2.5: ROAD_MAP.md Reflection
+
+Before executing searches, consult ROAD_MAP.md for relevant strategic context to avoid recommending approaches documented as dead ends.
+
+**Reference**: `@.claude/context/core/patterns/roadmap-reflection-pattern.md`
+
+### Procedure
+
+1. **Load** `@specs/ROAD_MAP.md` (Strategies and Dead Ends sections):
+   - Strategies (lines 23-147): Active and concluded strategic approaches
+   - Dead Ends (lines 293-520): Documented failed approaches with lessons
+
+2. **Extract keywords** from task description:
+   - Modal logic: "single-family", "modal_backward", "MCS-membership", "constant witness"
+   - Temporal logic: "single-history", "FDSM", "cross-origin", "CanonicalReachable"
+   - Proof strategy: "decidability", "tableau", "IndexedMCSFamily"
+
+3. **Scan Dead Ends** for matching approaches:
+   - Search for keywords from task description
+   - Identify any previously tried approaches
+   - Note lessons learned and "Superseded By" alternatives
+
+4. **Scan Strategies** for relevant active/concluded approaches:
+   - Check which strategies apply to the domain
+   - Note any ongoing experiments (ACTIVE status)
+   - Apply lessons from concluded strategies
+
+5. **Apply pitfall filter**:
+   - If task recommends an approach documented in Dead Ends:
+     - Note the failure reason
+     - Check "Superseded By" for alternative
+     - Flag in research report Risks section
+   - If task aligns with an active strategy:
+     - Reference the strategy in recommendations
+     - Check for relevant outcomes/references
+
+### Example Check
+
+```
+Task: "Prove modal completeness using single MCS family"
+
+Dead End Scan:
+  Match Found: "Single-Family BFMCS modal_backward" (BLOCKED)
+  Lesson: "Multi-family bundles are essential for modal completeness without T-axiom"
+  Superseded By: "Multi-family BFMCS with modal saturation"
+
+Action:
+  - DO NOT recommend single-family approach
+  - Recommend multi-family approach from "Superseded By"
+  - Include lesson in report Risks section
+```
+
+---
+
 ## Stage 3: Execute Primary Searches
 
 Execute searches based on strategy:
