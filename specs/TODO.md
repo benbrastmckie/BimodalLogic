@@ -24,7 +24,7 @@ technical_debt:
 
 ### 932. Remove constant witness family approach from metalogic
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 
 **Description**: Remove all elements of the metalogic that use a constant witness family approach for modal saturation. Research report 930/research-007.md incorrectly documented that modal saturation creates witness families where "a constant witness family maps every time point to the SAME MCS W containing psi." This approach is fundamentally flawed and must be extracted without gutting independent proofs. Clean up misleading comments and add Boneyard comments explicitly banning constant family approaches.
@@ -33,9 +33,10 @@ technical_debt:
 
 ### 931. Remove bmcs_truth_lemma_mcs and non-standard validity definitions from Metalogic
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/plans/implementation-001.md)
 
 **Description**: Remove `bmcs_truth_lemma_mcs` and all definitions that depart from standard validity semantics (as defined in `Bimodal.Semantics.Validity`). Move all infected proofs to Boneyard with comments banning such approaches that depart from the standard `truth_at`/`valid` definitions. No trace of non-standard validity should remain in the Metalogic module.
 
