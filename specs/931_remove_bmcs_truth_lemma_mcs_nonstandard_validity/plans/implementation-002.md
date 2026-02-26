@@ -68,7 +68,7 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Pre-flight Verification [NOT STARTED]
+### Phase 1: Pre-flight Verification [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Confirm current build state and exact line numbers
@@ -93,7 +93,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Create Boneyard File [NOT STARTED]
+### Phase 2: Create Boneyard File [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Archive non-standard code with ban notice
@@ -118,7 +118,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3A: Remove _mcs code from ChainBundleBFMCS.lean [NOT STARTED]
+### Phase 3A: Remove _mcs code from ChainBundleBFMCS.lean [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Delete non-standard _mcs code from active codebase
@@ -141,7 +141,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3B: Remove eval_bmcs_* code from BFMCSTruth.lean [NOT STARTED]
+### Phase 3B: Remove eval_bmcs_* code from BFMCSTruth.lean [COMPLETED]
 
 - **Dependencies:** Phase 3A
 - **Goal:** Delete dead eval_bmcs_* code from active codebase
@@ -163,7 +163,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Update Documentation [NOT STARTED]
+### Phase 4: Update Documentation [COMPLETED]
 
 - **Dependencies:** Phase 3B
 - **Goal:** Remove references to deleted definitions from docstrings
@@ -187,7 +187,7 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 5: Final Verification [NOT STARTED]
+### Phase 5: Final Verification [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Confirm complete removal and clean build
@@ -237,3 +237,12 @@ If removal causes unexpected build failures:
 4. Revise plan to handle the dependency
 
 The Boneyard file can be deleted if the removal is rolled back, as it's purely archival.
+
+## Progress
+
+**Session: 2026-02-25, sess_1740496000_i931**
+- Removed: 14 `_mcs` symbols from `ChainBundleBFMCS.lean` (lines 350-691, 341 lines)
+- Removed: 8 `eval_bmcs_*` symbols from `BFMCSTruth.lean` (lines 334-477, 143 lines)
+- Added: `Boneyard/Bundle/MCSMembershipCompleteness.lean` with archived code and ban notices
+- Refactored: Module docstring in `ChainBundleBFMCS.lean` to reflect reduced scope
+- Sorries: 0 introduced, 0 remaining in modified files

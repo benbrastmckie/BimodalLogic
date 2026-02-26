@@ -8,20 +8,20 @@
     {
       "project_number": 932,
       "project_name": "remove_constant_witness_family_metalogic",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-26T05:47:26Z",
-      "last_updated": "2026-02-26T06:00:40Z",
-      "session_id": "sess_1772085342_149f9e",
+      "last_updated": "2026-02-26T06:06:43Z",
+      "session_id": "sess_1772085983_d77d88",
       "researched": "2026-02-26T06:00:40Z"
     },
     {
       "project_number": 931,
       "project_name": "remove_bmcs_truth_lemma_mcs_nonstandard_validity",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "created": "2026-02-26T05:39:46Z",
-      "last_updated": "2026-02-26T05:56:26Z",
+      "last_updated": "2026-02-26T06:07:27Z",
       "description": "Remove bmcs_truth_lemma_mcs and all definitions that depart from standard validity semantics. Move infected proofs to Boneyard with comments banning such approaches. No trace of non-standard validity should remain in Metalogic.",
       "session_id": "sess_1740496000_i931",
       "researched": "2026-02-26T05:47:45Z",
@@ -38,7 +38,9 @@
         }
       ],
       "planned": "2026-02-26T05:54:23Z",
-      "started": "2026-02-26T05:56:26Z"
+      "started": "2026-02-26T05:56:26Z",
+      "completed": "2026-02-26T06:07:27Z",
+      "completion_summary": "Removed 14 non-standard _mcs symbols from ChainBundleBFMCS.lean and 8 dead eval_bmcs_* symbols from BFMCSTruth.lean. All code archived to Boneyard/Bundle/MCSMembershipCompleteness.lean with ban notices. Build passes with zero new sorries or axioms."
     },
     {
       "project_number": 930,
