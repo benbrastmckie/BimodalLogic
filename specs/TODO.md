@@ -33,8 +33,9 @@ technical_debt:
 ---
 
 ### 943. Update /review command for dual-file maintenance
-- **Effort**: 2-3 hours
-- **Status**: [PLANNING]
+- **Effort**: 1 hour
+- **Status**: [PLANNED]
+- **Plan**: [specs/943_update_review_command_dual_file_maintenance/plans/implementation-001.md]
 - **Language**: meta
 - **Dependencies**: Task #941
 - **Research**: [specs/943_update_review_command_dual_file_maintenance/reports/research-001.md]
