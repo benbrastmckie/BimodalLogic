@@ -60,6 +60,31 @@ Load these on-demand using @-references:
 - Project-specific style guides and patterns
 - Existing similar implementations as reference
 
+## Dynamic Context Discovery
+
+Query `.claude/context/index.json` for additional context files based on task needs:
+
+```bash
+# Find meta-language context
+jq -r '.entries[] |
+  select(.load_when.languages[]? == "meta" or .load_when.languages[]? == "any") |
+  select(.line_count < 200) |
+  "\(.line_count)\t\(.path)"' .claude/context/index.json | sort -n
+
+# Find files for implementation operations
+jq -r '.entries[] |
+  select(.load_when.operations[]? == "implementation" or .load_when.operations[]? == "any") |
+  select(.deprecated == false or .deprecated == null) |
+  .path' .claude/context/index.json
+
+# Find files for agent building
+jq -r '.entries[] |
+  select(.load_when.conditions[]? | contains("building agents")) |
+  .path' .claude/context/index.json
+```
+
+**Full query patterns**: `.claude/context/core/utils/index-query.md`
+
 ## Execution Flow
 
 ### Stage 0: Initialize Early Metadata

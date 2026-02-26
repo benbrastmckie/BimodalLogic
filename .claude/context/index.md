@@ -1,8 +1,29 @@
 # Context Index - Lazy-Loading Quick Map
 
 **Created**: 2025-12-23
-**Updated**: 2026-01-28 (Task 702 - Added Typst context section)
+**Updated**: 2026-02-26 (Task 937 - Added machine-readable index.json)
 **Purpose**: Quick reference map for on-demand context loading following checkpoint-based execution
+
+---
+
+## Machine-Readable Index
+
+For programmatic context discovery, use `.claude/context/index.json`:
+
+```bash
+# Find context by agent type
+jq -r '.entries[] | select(.load_when.agents[]? == "lean-research-agent") | .path' .claude/context/index.json
+
+# Find context by language
+jq -r '.entries[] | select(.load_when.languages[]? == "lean") | .path' .claude/context/index.json
+
+# Find files under line budget
+jq -r '.entries[] | select(.line_count < 200) | "\(.line_count)\t\(.path)"' .claude/context/index.json | sort -n
+```
+
+**Full query patterns**: `.claude/context/core/utils/index-query.md`
+**Regenerate index**: `.claude/scripts/generate-context-index.sh`
+**Validate index**: `.claude/scripts/validate-context-index.sh`
 
 ---
 

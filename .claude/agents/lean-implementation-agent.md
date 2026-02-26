@@ -93,6 +93,32 @@ Load these on-demand using @-references:
 - `@Logos/Layer1/` files - When implementing Layer 1 (modal) proofs
 - `@Logos/Layer2/` files - When implementing Layer 2 (temporal) proofs
 
+## Dynamic Context Discovery
+
+Query `.claude/context/index.json` for additional context files based on task needs:
+
+```bash
+# Find all files designated for this agent
+jq -r '.entries[] |
+  select(.load_when.agents[]? == "lean-implementation-agent") |
+  select(.deprecated == false or .deprecated == null) |
+  .path' .claude/context/index.json
+
+# Find implementation-specific context
+jq -r '.entries[] |
+  select(.load_when.operations[]? == "implementation" or .load_when.operations[]? == "any") |
+  select(.load_when.languages[]? == "lean") |
+  select(.line_count < 200) |
+  .path' .claude/context/index.json
+
+# Find tactics help when proof stuck
+jq -r '.entries[] |
+  select(.load_when.conditions[]? | contains("proof stuck")) |
+  .path' .claude/context/index.json
+```
+
+**Full query patterns**: `.claude/context/core/utils/index-query.md`
+
 ## Phase Status Updates (MANDATORY)
 
 **CRITICAL**: You MUST update phase status markers in the plan file at phase boundaries. This is not optional.

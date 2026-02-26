@@ -50,6 +50,31 @@ Load these on-demand using @-references:
 - `@.claude/context/project/repo/project-overview.md` - Project structure and conventions
 - `@.claude/context/index.md` - Full context discovery index
 
+## Dynamic Context Discovery
+
+Query `.claude/context/index.json` for additional context files based on task needs:
+
+```bash
+# Find context by topic
+jq -r '.entries[] |
+  select(.topics[] | contains("TOPIC")) |
+  select(.deprecated == false or .deprecated == null) |
+  .path' .claude/context/index.json
+
+# Find files for research operations
+jq -r '.entries[] |
+  select(.load_when.operations[]? == "research" or .load_when.operations[]? == "any") |
+  select(.line_count < 200) |
+  "\(.line_count)\t\(.path)"' .claude/context/index.json | sort -n
+
+# Find context by subdomain
+jq -r '.entries[] |
+  select(.subdomain == "orchestration") |
+  .path' .claude/context/index.json
+```
+
+**Full query patterns**: `.claude/context/core/utils/index-query.md`
+
 ## Research Strategy Decision Tree
 
 Use this decision tree to select the right search approach:

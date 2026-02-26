@@ -54,8 +54,22 @@ See @.claude/context/core/reference/skill-agent-mapping.md
 - state-management.md (specs/**) | git-workflow.md | lean4.md (**/*.lean)
 - error-handling.md (.claude/**) | artifact-formats.md (specs/**) | workflows.md (.claude/**)
 
-## Context (load as needed)
+## Context Discovery
 
+**Machine-readable index**: `.claude/context/index.json` - Query with jq for dynamic context loading
+**Human-readable index**: `.claude/context/index.md` - Browse available context files
+**Query patterns**: `.claude/context/core/utils/index-query.md` - jq query examples
+
+Common queries:
+```bash
+# Find context by agent
+jq -r '.entries[] | select(.load_when.agents[]? == "AGENT") | .path' .claude/context/index.json
+
+# Find context by language (lean, meta, latex, etc.)
+jq -r '.entries[] | select(.load_when.languages[]? == "LANGUAGE") | .path' .claude/context/index.json
+```
+
+**Frequently used context** (load as needed):
 - @.claude/context/project/lean4/tools/mcp-tools-guide.md
 - @.claude/context/project/lean4/patterns/tactic-patterns.md
 - @.claude/context/project/logic/domain/kripke-semantics-overview.md

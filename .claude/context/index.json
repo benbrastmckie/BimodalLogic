@@ -1,0 +1,3878 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://proofchecker.org/schemas/context-index.json",
+  "title": "Context Index Schema",
+  "description": "Machine-readable catalog of .claude/context files enabling automated discovery, optimized loading, and validation of context resources",
+  "type": "object",
+  "required": [
+    "version",
+    "generated_at",
+    "file_count",
+    "entries"
+  ],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Schema version (SemVer 2.0.0)"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO8601 timestamp when index was last generated"
+    },
+    "file_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Total number of indexed context files"
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/entry"
+      },
+      "description": "Array of context file entries"
+    }
+  },
+  "definitions": {
+    "entry": {
+      "type": "object",
+      "required": [
+        "path",
+        "domain",
+        "subdomain",
+        "topics",
+        "summary",
+        "load_when"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^[a-zA-Z0-9/_.-]+\\.(md|json|yaml)$",
+          "description": "Relative path from .claude/context/ (e.g., 'core/patterns/anti-stop-patterns.md')"
+        },
+        "domain": {
+          "type": "string",
+          "enum": [
+            "core",
+            "project"
+          ],
+          "description": "Top-level domain: 'core' for system orchestration, 'project' for domain-specific"
+        },
+        "subdomain": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "description": "Second-level category (e.g., 'orchestration', 'lean4', 'logic', 'patterns')"
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 50,
+          "description": "Third-level category when applicable (e.g., 'tools', 'domain', 'agents')"
+        },
+        "topics": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+          },
+          "minItems": 1,
+          "maxItems": 5,
+          "uniqueItems": true,
+          "description": "Primary topics covered (1-5 items for semantic matching)"
+        },
+        "keywords": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 30
+          },
+          "maxItems": 10,
+          "uniqueItems": true,
+          "description": "Search keywords for discovery (optional, max 10)"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 20,
+          "maxLength": 200,
+          "description": "Brief description of file contents (20-200 characters)"
+        },
+        "load_when": {
+          "$ref": "#/definitions/load_conditions",
+          "description": "Conditions under which this file should be loaded"
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Approximate line count for context budgeting"
+        },
+        "deprecated": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this file is deprecated (default: false)"
+        },
+        "replaces": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-zA-Z0-9/_.-]+\\.(md|json|yaml)$"
+          },
+          "uniqueItems": true,
+          "description": "Paths of files this entry replaces (for migration tracking)"
+        }
+      }
+    },
+    "load_conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "languages": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "lean",
+              "logic",
+              "math",
+              "latex",
+              "typst",
+              "meta",
+              "general",
+              "any"
+            ]
+          },
+          "uniqueItems": true,
+          "description": "Task languages that should load this file ('any' matches all languages)"
+        },
+        "operations": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "research",
+              "planning",
+              "implementation",
+              "review",
+              "any"
+            ]
+          },
+          "uniqueItems": true,
+          "description": "Operation types that should load this file ('any' matches all operations)"
+        },
+        "tiers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "orchestrator",
+              "command",
+              "agent",
+              "any"
+            ]
+          },
+          "uniqueItems": true,
+          "description": "Context tiers that should load this file ('any' matches all tiers)"
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*-agent$"
+          },
+          "uniqueItems": true,
+          "description": "Specific agents that should load this file (e.g., 'lean-research-agent')"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 100
+          },
+          "maxItems": 5,
+          "description": "Free-form conditions (e.g., 'when proof stuck', 'when creating new agents')"
+        }
+      },
+      "description": "Multi-dimensional loading conditions for context selection"
+    }
+  },
+  "version": "1.0.0",
+  "generated_at": "2026-02-26T20:26:37Z",
+  "file_count": 149,
+  "entries": [
+    {
+      "path": "core/architecture/component-checklist.md",
+      "domain": "core",
+      "subdomain": "architecture",
+      "topics": [
+        "architecture",
+        "component",
+        "checklist"
+      ],
+      "summary": "Component Creation Checklist",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator"
+        ]
+      },
+      "line_count": 363
+    },
+    {
+      "path": "core/architecture/generation-guidelines.md",
+      "domain": "core",
+      "subdomain": "architecture",
+      "topics": [
+        "architecture",
+        "generation",
+        "guidelines"
+      ],
+      "summary": "Component Generation Guidelines",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator"
+        ]
+      },
+      "line_count": 454
+    },
+    {
+      "path": "core/architecture/system-overview.md",
+      "domain": "core",
+      "subdomain": "architecture",
+      "topics": [
+        "architecture",
+        "system",
+        "overview"
+      ],
+      "summary": "System Architecture Overview",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator"
+        ]
+      },
+      "line_count": 490
+    },
+    {
+      "path": "core/checkpoints/checkpoint-commit.md",
+      "domain": "core",
+      "subdomain": "checkpoints",
+      "topics": [
+        "checkpoints",
+        "checkpoint",
+        "commit"
+      ],
+      "summary": "Checkpoint: COMMIT (Finalization)",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 125
+    },
+    {
+      "path": "core/checkpoints/checkpoint-gate-in.md",
+      "domain": "core",
+      "subdomain": "checkpoints",
+      "topics": [
+        "checkpoints",
+        "checkpoint",
+        "gate",
+        "in"
+      ],
+      "summary": "Checkpoint: GATE IN (Preflight)",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 84
+    },
+    {
+      "path": "core/checkpoints/checkpoint-gate-out.md",
+      "domain": "core",
+      "subdomain": "checkpoints",
+      "topics": [
+        "checkpoints",
+        "checkpoint",
+        "gate",
+        "out"
+      ],
+      "summary": "Checkpoint: GATE OUT (Postflight)",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 101
+    },
+    {
+      "path": "core/checkpoints/README.md",
+      "domain": "core",
+      "subdomain": "checkpoints",
+      "topics": [
+        "checkpoints",
+        "README"
+      ],
+      "summary": "Checkpoint-Based Execution Model",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 100
+    },
+    {
+      "path": "core/formats/command-output.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "command",
+        "output"
+      ],
+      "summary": "Command Output Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 221
+    },
+    {
+      "path": "core/formats/command-structure.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "command",
+        "structure"
+      ],
+      "summary": "Command File Structure: Commands as Agents with Workflows",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 964
+    },
+    {
+      "path": "core/formats/debug-report-format.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "debug",
+        "report",
+        "format"
+      ],
+      "summary": "Schema for debug reports generated during team implementation debugging cycles.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 200
+    },
+    {
+      "path": "core/formats/frontmatter.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "frontmatter"
+      ],
+      "summary": "Subagent YAML Frontmatter Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 705
+    },
+    {
+      "path": "core/formats/handoff-artifact.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "handoff",
+        "artifact"
+      ],
+      "summary": "Handoff Artifact Schema",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 197
+    },
+    {
+      "path": "core/formats/metadata-quick-ref.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "metadata",
+        "quick",
+        "ref"
+      ],
+      "summary": "Metadata Quick Reference",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 130
+    },
+    {
+      "path": "core/formats/plan-format.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "plan",
+        "format"
+      ],
+      "summary": "Plan Artifact Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 326
+    },
+    {
+      "path": "core/formats/progress-file.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "progress",
+        "file"
+      ],
+      "summary": "Progress File Schema",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 251
+    },
+    {
+      "path": "core/formats/report-format.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "report",
+        "format"
+      ],
+      "summary": "Report Artifact Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 188
+    },
+    {
+      "path": "core/formats/return-metadata-file.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "return",
+        "metadata",
+        "file"
+      ],
+      "summary": "Return Metadata File Schema",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 670
+    },
+    {
+      "path": "core/formats/roadmap-format.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "roadmap",
+        "format"
+      ],
+      "summary": "Roadmap Format Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 65
+    },
+    {
+      "path": "core/formats/subagent-return.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "subagent",
+        "return"
+      ],
+      "summary": "Subagent Return Format Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 323
+    },
+    {
+      "path": "core/formats/summary-format.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "summary",
+        "format"
+      ],
+      "summary": "Summary Artifact Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 229
+    },
+    {
+      "path": "core/formats/team-metadata-extension.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "team",
+        "metadata",
+        "extension"
+      ],
+      "summary": "Team Metadata Extension",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 158
+    },
+    {
+      "path": "core/orchestration/architecture.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "architecture"
+      ],
+      "summary": "ProofChecker Architecture: Three-Layer Delegation Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 757
+    },
+    {
+      "path": "core/orchestration/orchestration-core.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "core"
+      ],
+      "summary": "This document defines the core orchestration patterns for ProofChecker's command-skill-agent architecture:",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 248
+    },
+    {
+      "path": "core/orchestration/orchestration-reference.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "reference"
+      ],
+      "summary": "Orchestration Reference",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 309
+    },
+    {
+      "path": "core/orchestration/orchestration-validation.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "validation"
+      ],
+      "summary": "Orchestration Validation",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 233
+    },
+    {
+      "path": "core/orchestration/postflight-pattern.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "postflight",
+        "pattern"
+      ],
+      "summary": "All workflow commands (`/research`, `/plan`, `/revise`, `/implement`) MUST execute postflight in Stage 3.5 after validating subagent returns in Stage 3.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 336
+    },
+    {
+      "path": "core/orchestration/preflight-pattern.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "preflight",
+        "pattern"
+      ],
+      "summary": "All workflow commands (`/research`, `/plan`, `/revise`, `/implement`) MUST execute preflight in Stage 1.5 before delegating work to subagents.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 217
+    },
+    {
+      "path": "core/orchestration/state-management.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "state",
+        "management"
+      ],
+      "summary": "State Management Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 337
+    },
+    {
+      "path": "core/patterns/anti-stop-patterns.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "anti",
+        "stop"
+      ],
+      "summary": "Anti-Stop Patterns for Claude Code Agent Systems",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "conditions": [
+          "when building agents",
+          "when creating skills"
+        ]
+      },
+      "line_count": 174
+    },
+    {
+      "path": "core/patterns/blocked-mcp-tools.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "blocked",
+        "mcp",
+        "tools"
+      ],
+      "summary": "Blocked MCP Tools Reference",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ],
+        "conditions": [
+          "when using Lean MCP tools"
+        ]
+      },
+      "line_count": 65
+    },
+    {
+      "path": "core/patterns/checkpoint-execution.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "checkpoint",
+        "execution"
+      ],
+      "summary": "Checkpoint Execution Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 256
+    },
+    {
+      "path": "core/patterns/early-metadata-pattern.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "early",
+        "metadata",
+        "pattern"
+      ],
+      "summary": "Early Metadata Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "conditions": [
+          "when building agents"
+        ]
+      },
+      "line_count": 261
+    },
+    {
+      "path": "core/patterns/file-metadata-exchange.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "file",
+        "metadata",
+        "exchange"
+      ],
+      "summary": "File-Based Metadata Exchange Patterns",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 305
+    },
+    {
+      "path": "core/patterns/inline-status-update.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "inline",
+        "status",
+        "update"
+      ],
+      "summary": "Inline Status Update Patterns",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 234
+    },
+    {
+      "path": "core/patterns/jq-escaping-workarounds.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "jq",
+        "escaping",
+        "workarounds"
+      ],
+      "summary": "jq Escaping Workarounds",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 262
+    },
+    {
+      "path": "core/patterns/mcp-tool-recovery.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "mcp",
+        "tool",
+        "recovery"
+      ],
+      "summary": "MCP Tool Recovery Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 213
+    },
+    {
+      "path": "core/patterns/metadata-file-return.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "metadata",
+        "file",
+        "return"
+      ],
+      "summary": "Metadata File Return Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 147
+    },
+    {
+      "path": "core/patterns/postflight-control.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "postflight",
+        "control"
+      ],
+      "summary": "Postflight Control Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 265
+    },
+    {
+      "path": "core/patterns/roadmap-update.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "roadmap",
+        "update"
+      ],
+      "summary": "Roadmap Update Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 100
+    },
+    {
+      "path": "core/patterns/skill-lifecycle.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "skill",
+        "lifecycle"
+      ],
+      "summary": "Self-Contained Skill Lifecycle Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 156
+    },
+    {
+      "path": "core/patterns/team-orchestration.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "team",
+        "orchestration"
+      ],
+      "summary": "Team Orchestration Patterns",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "conditions": [
+          "when using teams",
+          "when spawning teammates"
+        ]
+      },
+      "line_count": 225
+    },
+    {
+      "path": "core/patterns/thin-wrapper-skill.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "thin",
+        "wrapper",
+        "skill"
+      ],
+      "summary": "Thin Wrapper Skill Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 176
+    },
+    {
+      "path": "core/reference/artifact-templates.md",
+      "domain": "core",
+      "subdomain": "reference",
+      "topics": [
+        "reference",
+        "artifact",
+        "templates"
+      ],
+      "summary": "Full templates for research reports, implementation plans, and summaries.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command",
+          "agent"
+        ]
+      },
+      "line_count": 160
+    },
+    {
+      "path": "core/reference/command-reference.md",
+      "domain": "core",
+      "subdomain": "reference",
+      "topics": [
+        "reference",
+        "command"
+      ],
+      "summary": "Full reference for all available commands. For quick overview, see CLAUDE.md.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command",
+          "agent"
+        ]
+      },
+      "line_count": 83
+    },
+    {
+      "path": "core/reference/error-recovery-procedures.md",
+      "domain": "core",
+      "subdomain": "reference",
+      "topics": [
+        "reference",
+        "error",
+        "recovery",
+        "procedures"
+      ],
+      "summary": "Error Recovery Procedures",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command",
+          "agent"
+        ]
+      },
+      "line_count": 213
+    },
+    {
+      "path": "core/reference/skill-agent-mapping.md",
+      "domain": "core",
+      "subdomain": "reference",
+      "topics": [
+        "reference",
+        "skill",
+        "agent",
+        "mapping"
+      ],
+      "summary": "Skill-to-Agent Mapping",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command",
+          "agent"
+        ]
+      },
+      "line_count": 81
+    },
+    {
+      "path": "core/reference/state-json-schema.md",
+      "domain": "core",
+      "subdomain": "reference",
+      "topics": [
+        "reference",
+        "state",
+        "json",
+        "schema"
+      ],
+      "summary": "Complete schema reference for state.json. For quick overview, see CLAUDE.md.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command",
+          "agent"
+        ]
+      },
+      "line_count": 141
+    },
+    {
+      "path": "core/routing.md",
+      "domain": "core",
+      "subdomain": "routing.md",
+      "topics": [
+        "routing"
+      ],
+      "summary": "Command Routing Context",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 35
+    },
+    {
+      "path": "core/schemas/subagent-frontmatter.yaml",
+      "domain": "core",
+      "subdomain": "schemas",
+      "topics": [
+        "schemas",
+        "subagent",
+        "frontmatter.yaml"
+      ],
+      "summary": "Subagent YAML Frontmatter Template",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 198
+    },
+    {
+      "path": "core/standards/analysis-framework.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "analysis",
+        "framework"
+      ],
+      "summary": "<!-- Context: standards/analysis | Priority: high | Version: 2.0 | Updated: 2025-01-21 -->",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 152
+    },
+    {
+      "path": "core/standards/ci-workflow.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "ci",
+        "workflow"
+      ],
+      "summary": "CI Workflow Standards",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 142
+    },
+    {
+      "path": "core/standards/code-patterns.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "code",
+        "patterns"
+      ],
+      "summary": "<!-- Context: standards/code | Priority: critical | Version: 2.0 | Updated: 2025-01-21 -->",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 377
+    },
+    {
+      "path": "core/standards/documentation.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "documentation"
+      ],
+      "summary": "Documentation Standards",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 315
+    },
+    {
+      "path": "core/standards/documentation-standards.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "documentation"
+      ],
+      "summary": "Documentation Standards",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 241
+    },
+    {
+      "path": "core/standards/error-handling.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "error",
+        "handling"
+      ],
+      "summary": "Error Handling Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 1056
+    },
+    {
+      "path": "core/standards/git-integration.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "git",
+        "integration"
+      ],
+      "summary": "Git Integration Standards",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 212
+    },
+    {
+      "path": "core/standards/git-safety.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "git",
+        "safety"
+      ],
+      "summary": "ProofChecker uses **git as the primary safety mechanism** for all risky operations.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 572
+    },
+    {
+      "path": "core/standards/git-staging-scope.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "git",
+        "staging",
+        "scope"
+      ],
+      "summary": "Git Staging Scope Guide",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 258
+    },
+    {
+      "path": "core/standards/status-markers.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "status",
+        "markers"
+      ],
+      "summary": "Status Markers Convention",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 373
+    },
+    {
+      "path": "core/standards/task-management.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "task",
+        "management"
+      ],
+      "summary": "Standards for creating, formatting, and managing tasks within the .opencode system. These standards ensure consistency across specs/TODO.md, IMPLEMENTATION_STATUS.md, and state tracking.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 376
+    },
+    {
+      "path": "core/standards/testing.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "testing"
+      ],
+      "summary": "<!-- Context: standards/tests | Priority: critical | Version: 2.0 | Updated: 2025-01-21 -->",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 127
+    },
+    {
+      "path": "core/standards/xml-structure.md",
+      "domain": "core",
+      "subdomain": "standards",
+      "topics": [
+        "standards",
+        "xml",
+        "structure"
+      ],
+      "summary": "XML Pattern Guide for Agent Prompts",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 709
+    },
+    {
+      "path": "core/templates/agent-template.md",
+      "domain": "core",
+      "subdomain": "templates",
+      "topics": [
+        "templates",
+        "agent",
+        "template"
+      ],
+      "summary": "Agent Templates for System Generation",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 334
+    },
+    {
+      "path": "core/templates/command-template.md",
+      "domain": "core",
+      "subdomain": "templates",
+      "topics": [
+        "templates",
+        "command",
+        "template"
+      ],
+      "summary": "Command Template (Checkpoint-Based)",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 136
+    },
+    {
+      "path": "core/templates/delegation-context.md",
+      "domain": "core",
+      "subdomain": "templates",
+      "topics": [
+        "templates",
+        "delegation",
+        "context"
+      ],
+      "summary": "Delegation Context Template",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 82
+    },
+    {
+      "path": "core/templates/orchestrator-template.md",
+      "domain": "core",
+      "subdomain": "templates",
+      "topics": [
+        "templates",
+        "orchestrator",
+        "template"
+      ],
+      "summary": "Orchestrator Agent Template",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 273
+    },
+    {
+      "path": "core/templates/subagent-template.md",
+      "domain": "core",
+      "subdomain": "templates",
+      "topics": [
+        "templates",
+        "subagent",
+        "template"
+      ],
+      "summary": "This template is used to generate specialized subagent files.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 223
+    },
+    {
+      "path": "core/templates/thin-wrapper-skill.md",
+      "domain": "core",
+      "subdomain": "templates",
+      "topics": [
+        "templates",
+        "thin",
+        "wrapper",
+        "skill"
+      ],
+      "summary": "Thin Wrapper Skill Template",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 273
+    },
+    {
+      "path": "core/troubleshooting/workflow-interruptions.md",
+      "domain": "core",
+      "subdomain": "troubleshooting",
+      "topics": [
+        "troubleshooting",
+        "workflow",
+        "interruptions"
+      ],
+      "summary": "Workflow Interruption Troubleshooting Guide",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command",
+          "agent"
+        ],
+        "conditions": [
+          "when workflow fails",
+          "when agent hangs"
+        ]
+      },
+      "line_count": 342
+    },
+    {
+      "path": "core/utils/index-query.md",
+      "domain": "core",
+      "subdomain": "utils",
+      "topics": [
+        "utils",
+        "index",
+        "query"
+      ],
+      "summary": "How to programmatically query the context index using jq.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ],
+        "conditions": [
+          "when querying context index"
+        ]
+      },
+      "line_count": 389
+    },
+    {
+      "path": "core/validation.md",
+      "domain": "core",
+      "subdomain": "validation.md",
+      "topics": [
+        "validation"
+      ],
+      "summary": "Skill Validation Context",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 46
+    },
+    {
+      "path": "core/workflows/command-lifecycle.md",
+      "domain": "core",
+      "subdomain": "workflows",
+      "topics": [
+        "workflows",
+        "command",
+        "lifecycle"
+      ],
+      "summary": "Command Lifecycle and Two-Phase Status Update Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 452
+    },
+    {
+      "path": "core/workflows/preflight-postflight.md",
+      "domain": "core",
+      "subdomain": "workflows",
+      "topics": [
+        "workflows",
+        "preflight",
+        "postflight"
+      ],
+      "summary": "Preflight/Postflight Workflow Standards",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 589
+    },
+    {
+      "path": "core/workflows/review-process.md",
+      "domain": "core",
+      "subdomain": "workflows",
+      "topics": [
+        "workflows",
+        "review",
+        "process"
+      ],
+      "summary": "Repository Review Workflow",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 164
+    },
+    {
+      "path": "core/workflows/status-transitions.md",
+      "domain": "core",
+      "subdomain": "workflows",
+      "topics": [
+        "workflows",
+        "status",
+        "transitions"
+      ],
+      "summary": "> **DEPRECATED** (2026-01-19): This file is redundant. Use these instead:",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 86,
+      "deprecated": true
+    },
+    {
+      "path": "core/workflows/task-breakdown.md",
+      "domain": "core",
+      "subdomain": "workflows",
+      "topics": [
+        "workflows",
+        "task",
+        "breakdown"
+      ],
+      "summary": "Task Breakdown Guidelines",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "command"
+        ]
+      },
+      "line_count": 270
+    },
+    {
+      "path": "index.md",
+      "domain": "core",
+      "subdomain": "root",
+      "topics": [
+        ".",
+        "index"
+      ],
+      "summary": "Context Index - Lazy-Loading Quick Map",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 634
+    },
+    {
+      "path": "project/hooks/wezterm-integration.md",
+      "domain": "project",
+      "subdomain": "hooks",
+      "topics": [
+        "hooks",
+        "wezterm",
+        "integration"
+      ],
+      "summary": "WezTerm Tab Integration",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 166
+    },
+    {
+      "path": "project/latex/patterns/cross-references.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "patterns",
+      "topics": [
+        "patterns",
+        "cross",
+        "references"
+      ],
+      "summary": "Cross-Reference Patterns",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 240
+    },
+    {
+      "path": "project/latex/patterns/theorem-environments.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "patterns",
+      "topics": [
+        "patterns",
+        "theorem",
+        "environments"
+      ],
+      "summary": "Theorem Environment Patterns",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 215
+    },
+    {
+      "path": "project/latex/README.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "topics": [
+        "latex",
+        "README"
+      ],
+      "summary": "LaTeX Context README",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 46
+    },
+    {
+      "path": "project/latex/standards/document-structure.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "document",
+        "structure"
+      ],
+      "summary": "Document Structure Standards",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 183
+    },
+    {
+      "path": "project/latex/standards/latex-style-guide.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "latex",
+        "style",
+        "guide"
+      ],
+      "summary": "Context file for latex-style-guide.md",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 262
+    },
+    {
+      "path": "project/latex/standards/notation-conventions.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "notation",
+        "conventions"
+      ],
+      "summary": "Notation Conventions",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 238
+    },
+    {
+      "path": "project/latex/templates/subfile-template.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "templates",
+      "topics": [
+        "templates",
+        "subfile",
+        "template"
+      ],
+      "summary": "Context file for subfile-template.md",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 164
+    },
+    {
+      "path": "project/latex/tools/compilation-guide.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "tools",
+      "topics": [
+        "tools",
+        "compilation",
+        "guide"
+      ],
+      "summary": "LaTeX Compilation Guide",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 209
+    },
+    {
+      "path": "project/lean4/agents/lean-implementation-flow.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "agents",
+      "topics": [
+        "agents",
+        "lean",
+        "implementation",
+        "flow"
+      ],
+      "summary": "Lean Implementation Execution Flow",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 597
+    },
+    {
+      "path": "project/lean4/agents/lean-research-flow.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "agents",
+      "topics": [
+        "agents",
+        "lean",
+        "research",
+        "flow"
+      ],
+      "summary": "Lean Research Execution Flow",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 331
+    },
+    {
+      "path": "project/lean4/domain/dependent-types.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "dependent",
+        "types"
+      ],
+      "summary": "Dependent Type Theory in LEAN 4",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 368
+    },
+    {
+      "path": "project/lean4/domain/key-mathematical-concepts.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "key",
+        "mathematical",
+        "concepts"
+      ],
+      "summary": "Key Mathematical Concepts in LEAN 4",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 37
+    },
+    {
+      "path": "project/lean4/domain/lean4-syntax.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "lean4",
+        "syntax"
+      ],
+      "summary": "This file covers advanced LEAN 4 syntax relevant to expert users, focusing on metaprogramming, tactics, and custom notation.",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 229
+    },
+    {
+      "path": "project/lean4/domain/mathlib-overview.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "mathlib",
+        "overview"
+      ],
+      "summary": "`mathlib` is the main community-driven library of formalized mathematics for LEAN 4. It is a vast and rapidly growing collection of definitions, theorems, and tactics.",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 214
+    },
+    {
+      "path": "project/lean4/operations/multi-instance-optimization.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "operations",
+      "topics": [
+        "operations",
+        "multi",
+        "instance",
+        "optimization"
+      ],
+      "summary": "Multi-Instance Lean-LSP Optimization Guide",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "implementation"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 178
+    },
+    {
+      "path": "project/lean4/patterns/tactic-patterns.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "patterns",
+      "topics": [
+        "patterns",
+        "tactic"
+      ],
+      "summary": "LEAN 4 Tactic Development Patterns - Quick Reference",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "implementation"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-implementation-agent"
+        ],
+        "conditions": [
+          "when developing proofs",
+          "when proof stuck"
+        ]
+      },
+      "line_count": 517
+    },
+    {
+      "path": "project/lean4/processes/end-to-end-proof-workflow.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "processes",
+      "topics": [
+        "processes",
+        "end",
+        "to",
+        "proof",
+        "workflow"
+      ],
+      "summary": "End-to-End Proof Workflow",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 43
+    },
+    {
+      "path": "project/lean4/processes/project-structure-best-practices.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "processes",
+      "topics": [
+        "processes",
+        "project",
+        "structure",
+        "best",
+        "practices"
+      ],
+      "summary": "LEAN 4 Project Structure Best Practices",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 38
+    },
+    {
+      "path": "project/lean4/README.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "topics": [
+        "lean4",
+        "README"
+      ],
+      "summary": "Lean4 Context README",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 22
+    },
+    {
+      "path": "project/lean4/standards/lean4-style-guide.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "lean4",
+        "style",
+        "guide"
+      ],
+      "summary": "This file defines the coding conventions for LEAN 4 to ensure consistency and readability.",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 265
+    },
+    {
+      "path": "project/lean4/standards/proof-conventions-lean.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "proof",
+        "conventions",
+        "lean"
+      ],
+      "summary": "Lean 4 Proof Conventions (Overlay)",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 53
+    },
+    {
+      "path": "project/lean4/standards/proof-conventions.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "proof",
+        "conventions"
+      ],
+      "summary": "Moved: Lean 4 Proof Conventions",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 9
+    },
+    {
+      "path": "project/lean4/standards/proof-debt-policy.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "proof",
+        "debt",
+        "policy"
+      ],
+      "summary": "This file formalizes the project's approach to **proof debt** in Lean 4 proofs. Proof debt encompasses:",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 425
+    },
+    {
+      "path": "project/lean4/standards/proof-readability-criteria.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "proof",
+        "readability",
+        "criteria"
+      ],
+      "summary": "Proof Readability Criteria",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 47
+    },
+    {
+      "path": "project/lean4/templates/definition-template.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "templates",
+      "topics": [
+        "templates",
+        "definition",
+        "template"
+      ],
+      "summary": "This template provides a structure for defining new mathematical objects in LEAN 4.",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 25
+    },
+    {
+      "path": "project/lean4/templates/new-file-template.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "templates",
+      "topics": [
+        "templates",
+        "new",
+        "file",
+        "template"
+      ],
+      "summary": "This template provides a basic structure for new LEAN 4 files.",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 37
+    },
+    {
+      "path": "project/lean4/templates/proof-structure-templates.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "templates",
+      "topics": [
+        "templates",
+        "proof",
+        "structure"
+      ],
+      "summary": "Proof Structure Templates",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 40
+    },
+    {
+      "path": "project/lean4/tools/aesop-integration.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "tools",
+      "topics": [
+        "tools",
+        "aesop",
+        "integration"
+      ],
+      "summary": "Aesop Integration Guide",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 476
+    },
+    {
+      "path": "project/lean4/tools/leansearch-api.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "tools",
+      "topics": [
+        "tools",
+        "leansearch",
+        "api"
+      ],
+      "summary": "LeanSearch API Integration Guide",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 491
+    },
+    {
+      "path": "project/lean4/tools/loogle-api.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "tools",
+      "topics": [
+        "tools",
+        "loogle",
+        "api"
+      ],
+      "summary": "Loogle CLI API Documentation",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 570
+    },
+    {
+      "path": "project/lean4/tools/lsp-integration.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "tools",
+      "topics": [
+        "tools",
+        "lsp",
+        "integration"
+      ],
+      "summary": "LSP Integration Guide",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 450
+    },
+    {
+      "path": "project/lean4/tools/mcp-tools-guide.md",
+      "domain": "project",
+      "subdomain": "lean4",
+      "category": "tools",
+      "topics": [
+        "tools",
+        "mcp",
+        "guide"
+      ],
+      "summary": "MCP Tools Guide for Lean 4 Development",
+      "load_when": {
+        "languages": [
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 378
+    },
+    {
+      "path": "project/logic/domain/kripke-semantics-overview.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "kripke",
+        "semantics",
+        "overview"
+      ],
+      "summary": "Kripke Semantics Overview",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 60
+    },
+    {
+      "path": "project/logic/domain/metalogic-concepts.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "metalogic",
+        "concepts"
+      ],
+      "summary": "Soundness and Completeness for Bimodal Logic",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 313
+    },
+    {
+      "path": "project/logic/domain/proof-theory-concepts.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "proof",
+        "theory",
+        "concepts"
+      ],
+      "summary": "Proof Theory Concepts",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 280
+    },
+    {
+      "path": "project/logic/domain/task-semantics.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "task",
+        "semantics"
+      ],
+      "summary": "Task Semantics for Bimodal Temporal Logic (TM)",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 417
+    },
+    {
+      "path": "project/logic/processes/modal-proof-strategies.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "processes",
+      "topics": [
+        "processes",
+        "modal",
+        "proof",
+        "strategies"
+      ],
+      "summary": "Modal Proof Strategies (S5 Modal Logic)",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ],
+        "conditions": [
+          "when proving modal theorems"
+        ]
+      },
+      "line_count": 413
+    },
+    {
+      "path": "project/logic/processes/proof-construction.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "processes",
+      "topics": [
+        "processes",
+        "proof",
+        "construction"
+      ],
+      "summary": "Proof Construction Workflow",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 582
+    },
+    {
+      "path": "project/logic/processes/temporal-proof-strategies.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "processes",
+      "topics": [
+        "processes",
+        "temporal",
+        "proof",
+        "strategies"
+      ],
+      "summary": "Temporal Proof Strategies (Linear Temporal Logic)",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ],
+        "conditions": [
+          "when proving temporal theorems"
+        ]
+      },
+      "line_count": 472
+    },
+    {
+      "path": "project/logic/processes/verification-workflow.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "processes",
+      "topics": [
+        "processes",
+        "verification",
+        "workflow"
+      ],
+      "summary": "Proof Verification Workflow",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 582
+    },
+    {
+      "path": "project/logic/README.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "topics": [
+        "logic",
+        "README"
+      ],
+      "summary": "Logic Context README",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 36
+    },
+    {
+      "path": "project/logic/standards/naming-conventions.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "naming",
+        "conventions"
+      ],
+      "summary": "Modal Logic Naming Conventions",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 498
+    },
+    {
+      "path": "project/logic/standards/notation-standards.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "notation"
+      ],
+      "summary": "Modal Logic Notation Standards",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 405
+    },
+    {
+      "path": "project/logic/standards/proof-conventions.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "proof",
+        "conventions"
+      ],
+      "summary": "Modal Logic Proof Conventions",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 537
+    },
+    {
+      "path": "project/math/algebra/groups-and-monoids.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "algebra",
+      "topics": [
+        "algebra",
+        "groups",
+        "and",
+        "monoids"
+      ],
+      "summary": "Groups and Monoids in LEAN 4",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 216
+    },
+    {
+      "path": "project/math/algebra/rings-and-fields.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "algebra",
+      "topics": [
+        "algebra",
+        "rings",
+        "and",
+        "fields"
+      ],
+      "summary": "Rings and Fields in LEAN 4",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 305
+    },
+    {
+      "path": "project/math/lattice-theory/lattices.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "lattice-theory",
+      "topics": [
+        "lattice-theory",
+        "lattices"
+      ],
+      "summary": "Lattices are ordered structures where any two elements have a least upper bound (join) and greatest lower bound (meet). Mathlib4 provides comprehensive lattice theory support.",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 301
+    },
+    {
+      "path": "project/math/order-theory/partial-orders.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "order-theory",
+      "topics": [
+        "order-theory",
+        "partial",
+        "orders"
+      ],
+      "summary": "Partial Orders in LEAN 4",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 328
+    },
+    {
+      "path": "project/math/README.md",
+      "domain": "project",
+      "subdomain": "math",
+      "topics": [
+        "math",
+        "README"
+      ],
+      "summary": "Math Context Directory",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 28
+    },
+    {
+      "path": "project/math/topology/topological-spaces.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "topology",
+      "topics": [
+        "topology",
+        "topological",
+        "spaces"
+      ],
+      "summary": "Topological Spaces in LEAN 4",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 333
+    },
+    {
+      "path": "project/meta/architecture-principles.md",
+      "domain": "project",
+      "subdomain": "meta",
+      "topics": [
+        "meta",
+        "architecture",
+        "principles"
+      ],
+      "summary": "Architecture Principles for Meta-Generated Systems",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 270
+    },
+    {
+      "path": "project/meta/context-revision-guide.md",
+      "domain": "project",
+      "subdomain": "meta",
+      "topics": [
+        "meta",
+        "context",
+        "revision",
+        "guide"
+      ],
+      "summary": "Context File Revision Guide for Meta Agents",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 323
+    },
+    {
+      "path": "project/meta/domain-patterns.md",
+      "domain": "project",
+      "subdomain": "meta",
+      "topics": [
+        "meta",
+        "domain",
+        "patterns"
+      ],
+      "summary": "Domain Patterns for System Generation",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 258
+    },
+    {
+      "path": "project/meta/interview-patterns.md",
+      "domain": "project",
+      "subdomain": "meta",
+      "topics": [
+        "meta",
+        "interview",
+        "patterns"
+      ],
+      "summary": "Interview Patterns for Meta-Programming",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 224
+    },
+    {
+      "path": "project/meta/meta-guide.md",
+      "domain": "project",
+      "subdomain": "meta",
+      "topics": [
+        "meta",
+        "guide"
+      ],
+      "summary": "Meta-System Builder Guide",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 462
+    },
+    {
+      "path": "project/meta/standards-checklist.md",
+      "domain": "project",
+      "subdomain": "meta",
+      "topics": [
+        "meta",
+        "standards",
+        "checklist"
+      ],
+      "summary": "Standards Checklist for Meta-Generated Artifacts",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 379
+    },
+    {
+      "path": "project/physics/dynamical-systems/dynamical-systems.md",
+      "domain": "project",
+      "subdomain": "physics",
+      "category": "dynamical-systems",
+      "topics": [
+        "dynamical-systems",
+        "dynamical",
+        "systems"
+      ],
+      "summary": "Dynamical Systems in LEAN 4",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 386
+    },
+    {
+      "path": "project/processes/implementation-workflow.md",
+      "domain": "project",
+      "subdomain": "processes",
+      "topics": [
+        "processes",
+        "implementation",
+        "workflow"
+      ],
+      "summary": "Implementation Workflow",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 574
+    },
+    {
+      "path": "project/processes/planning-workflow.md",
+      "domain": "project",
+      "subdomain": "processes",
+      "topics": [
+        "processes",
+        "planning",
+        "workflow"
+      ],
+      "summary": "This document describes the complete planning workflow executed by the planner subagent. It covers plan creation, research integration, and plan revision.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 540
+    },
+    {
+      "path": "project/processes/research-workflow.md",
+      "domain": "project",
+      "subdomain": "processes",
+      "topics": [
+        "processes",
+        "research",
+        "workflow"
+      ],
+      "summary": "This document describes the complete research workflow executed by the researcher subagent. It covers language-based routing, research execution, and report creation.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 638
+    },
+    {
+      "path": "project/repo/project-overview.md",
+      "domain": "project",
+      "subdomain": "repo",
+      "topics": [
+        "repo",
+        "project",
+        "overview"
+      ],
+      "summary": "Logos Project Context",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 216
+    },
+    {
+      "path": "project/repo/self-healing-implementation-details.md",
+      "domain": "project",
+      "subdomain": "repo",
+      "topics": [
+        "repo",
+        "self",
+        "healing",
+        "implementation",
+        "details"
+      ],
+      "summary": "Self-Healing Implementation Details",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 599
+    },
+    {
+      "path": "project/typst/patterns/cross-references.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "patterns",
+      "topics": [
+        "patterns",
+        "cross",
+        "references"
+      ],
+      "summary": "Add labels with angle brackets after any element:",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 231
+    },
+    {
+      "path": "project/typst/patterns/theorem-environments.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "patterns",
+      "topics": [
+        "patterns",
+        "theorem",
+        "environments"
+      ],
+      "summary": "Theorem Environments",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 273
+    },
+    {
+      "path": "project/typst/README.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "topics": [
+        "typst",
+        "README"
+      ],
+      "summary": "Typst is a modern typesetting system used in this project for technical documentation, primarily for the Bimodal logic reference manual at `Theories/Bimodal/typst/`.",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 78
+    },
+    {
+      "path": "project/typst/standards/document-structure.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "document",
+        "structure"
+      ],
+      "summary": "Context file for document-structure.md",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 290
+    },
+    {
+      "path": "project/typst/standards/notation-conventions.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "notation",
+        "conventions"
+      ],
+      "summary": "Notation Conventions",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 229
+    },
+    {
+      "path": "project/typst/standards/typst-style-guide.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "typst",
+        "style",
+        "guide"
+      ],
+      "summary": "Place package imports at the top of the main document:",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 239
+    },
+    {
+      "path": "project/typst/templates/chapter-template.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "templates",
+      "topics": [
+        "templates",
+        "chapter",
+        "template"
+      ],
+      "summary": "Copy and modify this template when creating new chapters:",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 223
+    },
+    {
+      "path": "project/typst/tools/compilation-guide.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "tools",
+      "topics": [
+        "tools",
+        "compilation",
+        "guide"
+      ],
+      "summary": "Typst uses single-pass compilation, which is simpler than LaTeX's multi-pass approach. No bibliography preprocessing or multiple runs are needed.",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 292
+    },
+    {
+      "path": "README.md",
+      "domain": "core",
+      "subdomain": "root",
+      "topics": [
+        ".",
+        "README"
+      ],
+      "summary": "Context Organization",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 240
+    }
+  ]
+}

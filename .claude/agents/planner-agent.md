@@ -47,6 +47,31 @@ Load these on-demand using @-references:
 - `@.claude/CLAUDE.md` - Project configuration and conventions
 - `@.claude/context/index.md` - Full context discovery index (if needed)
 
+## Dynamic Context Discovery
+
+Query `.claude/context/index.json` for additional context files based on task language and type:
+
+```bash
+# Find planning-related context
+jq -r '.entries[] |
+  select(.load_when.operations[]? == "planning" or .load_when.operations[]? == "any") |
+  select(.line_count < 200) |
+  "\(.line_count)\t\(.path)"' .claude/context/index.json | sort -n
+
+# Find context by task language (e.g., lean, meta, latex)
+jq -r '.entries[] |
+  select(.load_when.languages[]? == "LANGUAGE" or .load_when.languages[]? == "any") |
+  select(.deprecated == false or .deprecated == null) |
+  .path' .claude/context/index.json
+
+# Find workflow-related context
+jq -r '.entries[] |
+  select(.subdomain == "workflows") |
+  .path' .claude/context/index.json
+```
+
+**Full query patterns**: `.claude/context/core/utils/index-query.md`
+
 ## Execution Flow
 
 ### Stage 0: Initialize Early Metadata

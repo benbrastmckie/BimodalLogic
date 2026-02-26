@@ -85,6 +85,31 @@ Load these on-demand using @-references:
 **Load When Creating Report**:
 - `@.claude/context/core/formats/report-format.md` - Research report structure
 
+## Dynamic Context Discovery
+
+Query `.claude/context/index.json` for additional context files based on task needs:
+
+```bash
+# Find all files designated for this agent
+jq -r '.entries[] |
+  select(.load_when.agents[]? == "lean-research-agent") |
+  select(.deprecated == false or .deprecated == null) |
+  .path' .claude/context/index.json
+
+# Find Lean-specific context under line budget
+jq -r '.entries[] |
+  select(.load_when.languages[]? == "lean" or .load_when.languages[]? == "any") |
+  select(.line_count < 200) |
+  "\(.line_count)\t\(.path)"' .claude/context/index.json | sort -n
+
+# Find files for stuck proof situations
+jq -r '.entries[] |
+  select(.load_when.conditions[]? | contains("proof stuck")) |
+  .path' .claude/context/index.json
+```
+
+**Full query patterns**: `.claude/context/core/utils/index-query.md`
+
 ## Search Decision Tree
 
 Use this decision tree to select the right search tool:
