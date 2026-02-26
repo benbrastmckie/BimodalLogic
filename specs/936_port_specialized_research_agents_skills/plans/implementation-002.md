@@ -82,7 +82,14 @@ The following MCP tools will be added to `logic-research-agent` and `math-resear
 
 ## Implementation Phases
 
-### Phase 1: Port Research Agents [NOT STARTED]
+### Phase 1: Port Research Agents [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-26, sess_1740567600_i936**
+- Added: `logic-research-agent.md` - Logic domain research agent with Mathlib lookup tools
+- Added: `math-research-agent.md` - Math domain research agent with Mathlib lookup tools
+- Added: `latex-research-agent.md` - LaTeX documentation research agent (no MCP tools)
 
 - **Dependencies:** None
 - **Goal:** Create three research agent files adapted for ProofChecker
@@ -124,7 +131,14 @@ The following MCP tools will be added to `logic-research-agent` and `math-resear
 
 ---
 
-### Phase 2: Port Research Skills [NOT STARTED]
+### Phase 2: Port Research Skills [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-26, sess_1740567600_i936**
+- Added: `skill-logic-research/SKILL.md` - Logic research skill with thin-wrapper pattern
+- Added: `skill-math-research/SKILL.md` - Math research skill with thin-wrapper pattern
+- Added: `skill-latex-research/SKILL.md` - LaTeX research skill with thin-wrapper pattern
 
 - **Dependencies:** Phase 1
 - **Goal:** Create three skill directories with thin-wrapper postflight pattern
@@ -159,7 +173,16 @@ The following MCP tools will be added to `logic-research-agent` and `math-resear
 
 ---
 
-### Phase 3: Update Skill-Agent Mappings [NOT STARTED]
+### Phase 3: Update Skill-Agent Mappings [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-26, sess_1740567600_i936**
+- Added: skill-logic-research, skill-math-research, skill-latex-research to Core Mappings table
+- Added: logic, math language routing to Language Routing table
+- Updated: latex language to use skill-latex-research for research
+- Added: logic, math to Team Skill Model Defaults (Opus model)
+- Added: Mathlib Lookup Tool Availability section documenting MCP tool access
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Register new skills and agents in mapping documentation
@@ -192,7 +215,16 @@ The following MCP tools will be added to `logic-research-agent` and `math-resear
 
 ---
 
-### Phase 4: Verify Context and Test [NOT STARTED]
+### Phase 4: Verify Context and Test [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-26, sess_1740567600_i936**
+- Verified: logic and latex context directories have README.md
+- Added: `math/README.md` (was missing)
+- Verified: All skill YAML frontmatter is valid
+- Verified: All agent references resolve correctly
+- Verified: MCP lean_leansearch tool is accessible and working
 
 - **Dependencies:** Phase 3
 - **Goal:** Verify context directories and test skill invocation

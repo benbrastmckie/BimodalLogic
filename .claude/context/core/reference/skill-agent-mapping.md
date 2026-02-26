@@ -8,6 +8,9 @@ Reference for skill delegation and language-based routing.
 |-------|-------|---------|
 | skill-lean-research | lean-research-agent | Lean 4/Mathlib research |
 | skill-lean-implementation | lean-implementation-agent | Lean proof implementation |
+| skill-logic-research | logic-research-agent | Modal logic/Kripke semantics research (with Mathlib lookup) |
+| skill-math-research | math-research-agent | Mathematical foundations research (with Mathlib lookup) |
+| skill-latex-research | latex-research-agent | LaTeX documentation research |
 | skill-researcher | general-research-agent | General web/codebase research |
 | skill-planner | planner-agent | Implementation plan creation |
 | skill-implementer | general-implementation-agent | General file implementation |
@@ -29,7 +32,9 @@ Commands route to skills based on task language:
 | Language | Research Skill | Implementation Skill |
 |----------|---------------|---------------------|
 | `lean` | skill-lean-research | skill-lean-implementation |
-| `latex` | skill-researcher | skill-latex-implementation |
+| `logic` | skill-logic-research | skill-implementer |
+| `math` | skill-math-research | skill-implementer |
+| `latex` | skill-latex-research | skill-latex-implementation |
 | `typst` | skill-researcher | skill-typst-implementation |
 | `general` | skill-researcher | skill-implementer |
 | `meta` | skill-researcher | skill-implementer |
@@ -47,12 +52,26 @@ Team skills route teammates to language-appropriate agents and models:
 | Language | Default Model | Rationale |
 |----------|---------------|-----------|
 | `lean` | Opus | Complex theorem proving benefits from most capable model |
+| `logic` | Opus | Mathematical logic research benefits from most capable model |
+| `math` | Opus | Mathematical foundations research benefits from most capable model |
 | `latex` | Sonnet | Document generation well-handled by Sonnet |
 | `typst` | Sonnet | Similar to LaTeX |
 | `meta` | Sonnet | System tasks well-handled by Sonnet |
 | `general` | Sonnet | Consistent model for all non-Lean tasks |
 
 Model is enforced via TeammateTool `model` parameter. Prompt text provides secondary guidance.
+
+## Mathlib Lookup Tool Availability
+
+The following research agents have access to Mathlib lookup MCP tools for theorem discovery:
+
+| Agent | Lookup Tools | Rate Limits |
+|-------|--------------|-------------|
+| logic-research-agent | lean_leansearch, lean_loogle, lean_leanfinder, lean_local_search | 3/30s, 3/30s, 10/30s, none |
+| math-research-agent | lean_leansearch, lean_loogle, lean_leanfinder, lean_local_search | 3/30s, 3/30s, 10/30s, none |
+| lean-research-agent | Full lean-lsp toolset | varies |
+
+**Note**: Logic and math research agents have lookup-only access. They cannot use implementation tools (lean_goal, lean_code_actions, lean_multi_attempt, etc.). LaTeX research agent does not have Mathlib lookup tools.
 
 ## Direct Execution Skills
 
