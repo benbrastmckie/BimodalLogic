@@ -34,7 +34,7 @@ technical_debt:
 
 ### 943. Update /review command for dual-file maintenance
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Dependencies**: Task #941
 
@@ -66,8 +66,9 @@ technical_debt:
 
 ### 940. Port /lean version management command
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
+- **Research**: [research-001.md](specs/940_port_lean_version_management_command/reports/research-001.md)
 
 **Description**: Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.
 
