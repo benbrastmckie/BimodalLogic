@@ -11,7 +11,7 @@
       "status": "planned",
       "language": "lean",
       "created": "2026-02-26T05:47:26Z",
-      "last_updated": "2026-02-26T06:47:40Z",
+      "last_updated": "2026-02-26T06:53:11Z",
       "session_id": "sess_1772088264_707197",
       "researched": "2026-02-25T12:00:00Z",
       "artifacts": [
@@ -24,9 +24,14 @@
           "path": "specs/932_remove_constant_witness_family_metalogic/reports/research-004.md",
           "type": "research",
           "summary": "Comprehensive cleanup scan of Metalogic module identifying ~8,400 removable lines: WitnessGraph.lean (3,403 lines), ChainBundleBFMCS.lean (338 lines), RecursiveSeed backup (4,393 lines), deprecated axioms/constructions, and constant witness family duplicates."
+        },
+        {
+          "path": "specs/932_remove_constant_witness_family_metalogic/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "6-phase plan to archive ~8,400 lines of constant witness family code to Boneyard"
         }
       ],
-      "planned": "2026-02-26T06:47:40Z"
+      "planned": "2026-02-26T06:53:11Z"
     },
     {
       "project_number": 931,
