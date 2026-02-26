@@ -8,12 +8,12 @@
     {
       "project_number": 930,
       "project_name": "verify_mcs_membership_box_semantics_correctness",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-26T01:27:35Z",
-      "last_updated": "2026-02-25T12:30:00Z",
+      "last_updated": "2026-02-26T03:17:17Z",
       "session_id": "sess_1740493200_r930",
-      "researched": "2026-02-25T12:30:00Z",
+      "researched": "2026-02-26T03:17:17Z",
       "artifacts": [
         {
           "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md",

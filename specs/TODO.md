@@ -24,7 +24,7 @@ technical_debt:
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Started**: 2026-02-25
 - **Research**: [research-001.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md), [research-002.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-002.md), [research-003.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-003.md), [research-004.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-004.md), [research-005.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-005.md)
