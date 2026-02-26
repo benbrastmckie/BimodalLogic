@@ -1,5 +1,5 @@
 ---
-next_project_number: 930
+next_project_number: 931
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -66,12 +66,13 @@ technical_debt:
 
 ### 928. Refactor metalogic terminology (BMCS->BFMCS, FMCS, MCS) and archive to Boneyard
 - **Effort**: 11 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-25
-- **Started**: 2026-02-25
+- **Completed**: 2026-02-25
 - **Research**: [research-001.md](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260225.md](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/summaries/implementation-summary-20260225.md)
 
 **Description**: Refactor metalogic terminology: (1) Rename BMCS to BFMCS throughout to clarify it is a Bundle of FMCSs, (2) Ensure FMCS indicates a Family of MCSs, (3) Use MCS appropriately and uniformly, (4) Correct Phase 6 goal in /home/benjamin/Projects/ProofChecker/specs/925_redesign_bmcs_completeness_mcs_accessibility/plans/implementation-001.md to establish BFMCS closed under timeshift (not FMCS), (5) Complete Phase 2 Boneyard cleanup (skipped in task 925), (6) Archive old/unused content to Boneyard/, (7) Improve naming conventions systematically across metalogic.
 
