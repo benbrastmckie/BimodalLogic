@@ -10,6 +10,7 @@ Mathematical foundations context for the ProofChecker project.
 | `lattice-theory/` | Lattice structures, complete lattices, quantales |
 | `order-theory/` | Partial orders, well-founded relations |
 | `topology/` | Topological structures, metric spaces |
+| `foundations/` | Foundational mathematics (dependent type theory) |
 
 ## Loading Pattern
 

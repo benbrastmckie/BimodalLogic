@@ -24,7 +24,7 @@ In all logic documentation, use **"sentence letter"** instead of "propositional 
 ## Canonical Files
 - Standards: `standards/proof-conventions.md`, `standards/notation-standards.md`, `standards/naming-conventions.md`
 - Processes: `processes/modal-proof-strategies.md`, `processes/temporal-proof-strategies.md`, `processes/proof-construction.md`, `processes/verification-workflow.md`
-- Domain: `domain/kripke-semantics-overview.md`, `domain/metalogic-concepts.md`, `domain/proof-theory-concepts.md`, `domain/task-semantics.md`
+- Domain: `domain/kripke-semantics-overview.md`, `domain/metalogic-concepts.md`, `domain/proof-theory-concepts.md`, `domain/task-semantics.md`, `domain/topological-foundations-domain.md`
 
 ## Lean Overlay Boundaries
 - Use this directory for logic principles and notation.
