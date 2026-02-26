@@ -11,19 +11,19 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-26T05:47:26Z",
-      "last_updated": "2026-02-26T05:53:28Z",
-      "session_id": "sess_1772084922_a68d00",
-      "researched": "2026-02-26T05:53:28Z"
+      "last_updated": "2026-02-26T06:00:40Z",
+      "session_id": "sess_1772085342_149f9e",
+      "researched": "2026-02-26T06:00:40Z"
     },
     {
       "project_number": 931,
       "project_name": "remove_bmcs_truth_lemma_mcs_nonstandard_validity",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-26T05:39:46Z",
-      "last_updated": "2026-02-26T05:54:23Z",
+      "last_updated": "2026-02-26T05:56:26Z",
       "description": "Remove bmcs_truth_lemma_mcs and all definitions that depart from standard validity semantics. Move infected proofs to Boneyard with comments banning such approaches. No trace of non-standard validity should remain in Metalogic.",
-      "session_id": "sess_1740495000_p931",
+      "session_id": "sess_1740496000_i931",
       "researched": "2026-02-26T05:47:45Z",
       "artifacts": [
         {
@@ -37,7 +37,8 @@
           "summary": "6-phase plan (v2): removes _mcs from ChainBundleBFMCS.lean AND eval_bmcs_* from BFMCSTruth.lean"
         }
       ],
-      "planned": "2026-02-26T05:54:23Z"
+      "planned": "2026-02-26T05:54:23Z",
+      "started": "2026-02-26T05:56:26Z"
     },
     {
       "project_number": 930,

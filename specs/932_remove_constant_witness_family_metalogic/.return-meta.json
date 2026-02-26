@@ -1,15 +1,14 @@
 {
   "status": "researched",
-  "session_id": "sess_1772084922_a68d00",
+  "session_id": "sess_1772085342_149f9e",
   "artifacts": [
     {
-      "path": "specs/932_remove_constant_witness_family_metalogic/reports/research-001.md",
+      "path": "specs/932_remove_constant_witness_family_metalogic/reports/research-002.md",
       "type": "research",
-      "summary": "Mapped all constant witness family constructions in Metalogic (3 defs, zero non-Boneyard consumers), documented 6-phase removal strategy with dependency analysis and risk assessment"
+      "summary": "Documents CanonicalBC construction architecture, explains why MCS-membership box semantics is incorrect, identifies entire ChainBundleBFMCS.lean for removal, maps cascade impact on Completeness.lean/Representation.lean"
     }
   ],
   "metadata": {
-    "session_id": "sess_1772084922_a68d00",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
