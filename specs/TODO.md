@@ -34,9 +34,10 @@ technical_debt:
 
 ### 943. Update /review command for dual-file maintenance
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Dependencies**: Task #941
+- **Research**: [specs/943_update_review_command_dual_file_maintenance/reports/research-001.md]
 
 **Description**: Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.
 
