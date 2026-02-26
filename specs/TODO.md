@@ -24,8 +24,10 @@ technical_debt:
 
 ### 933. Research alternative canonical model constructions
 - **Effort**: 8-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Started**: 2026-02-25
+- **Research**: [research-001.md](specs/933_research_alternative_canonical_construction/reports/research-001.md)
 
 **Description**: Research alternative canonical model constructions that avoid the F-formula persistence problem in DovetailingChain. Explore: (1) tree unraveling approach, (2) quotient construction, (3) omega-squared enumeration, (4) direct Int-indexed construction without dovetailing. Goal: find construction that achieves both temporal coherence AND modal saturation for D = Int.
 
