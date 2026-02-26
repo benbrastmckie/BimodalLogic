@@ -1,0 +1,31 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-26T12:00:00Z",
+  "completed_at": "2026-02-26T12:30:00Z",
+  "summary": "Analyzed changelog structure in ROAD_MAP.md, identified /todo command as primary updater, documented format gaps, and created implementation recommendations for extraction",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/941_extract_changelog_create_format_docs/reports/research-001.md",
+      "summary": "Research report with changelog structure analysis, 5 files requiring updates, and prioritized implementation recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 941 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1772137134_147503",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 1800,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 8,
+    "files_to_update": [
+      ".claude/commands/todo.md",
+      ".claude/context/core/formats/roadmap-format.md",
+      "specs/ROAD_MAP.md"
+    ],
+    "files_to_create": [
+      "specs/CHANGE_LOG.md",
+      ".claude/context/core/formats/changelog-format.md"
+    ]
+  }
+}

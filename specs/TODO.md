@@ -54,8 +54,9 @@ technical_debt:
 
 ### 941. Extract Changelog to CHANGE_LOG.md and create format documentation
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
+- **Research**: [specs/941_extract_changelog_create_format_docs/reports/research-001.md]
 
 **Description**: Extract Changelog section from ROAD_MAP.md to new CHANGE_LOG.md file. Create changelog-format.md context documentation. Update roadmap-format.md to note changelog moved. Establish separation: CHANGE_LOG.md records history, ROAD_MAP.md guides future development.
 

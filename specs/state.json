@@ -8,12 +8,13 @@
     {
       "project_number": 941,
       "project_name": "extract_changelog_create_format_docs",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "description": "Extract Changelog section from ROAD_MAP.md to new CHANGE_LOG.md file. Create changelog-format.md context documentation. Update roadmap-format.md to note changelog moved. Establish separation: CHANGE_LOG.md records history, ROAD_MAP.md guides future development.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T21:00:00Z",
-      "effort": "1-2 hours"
+      "last_updated": "2026-02-26T21:30:00Z",
+      "effort": "1-2 hours",
+      "session_id": "sess_1772137134_147503"
     },
     {
       "project_number": 942,
