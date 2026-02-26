@@ -54,7 +54,7 @@ technical_debt:
 
 ### 941. Extract Changelog to CHANGE_LOG.md and create format documentation
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Plan**: [specs/941_extract_changelog_create_format_docs/plans/implementation-001.md]
 - **Language**: meta
 - **Research**: [specs/941_extract_changelog_create_format_docs/reports/research-001.md]
@@ -94,10 +94,12 @@ technical_debt:
 
 ### 937. Upgrade context system with index.json
 - **Effort**: 2-3 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: meta
+- **Completed**: 2026-02-26
 - **Research**: [research-001.md](specs/937_upgrade_context_system_index_json/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/937_upgrade_context_system_index_json/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260226.md](specs/937_upgrade_context_system_index_json/summaries/implementation-summary-20260226.md)
 
 **Description**: Upgrade context system with index.json from Theory repository. Create: (1) index.json schema with load_when conditions (languages, operations, tiers, agents), (2) entries for all existing context files with topics, keywords, summaries, line_count, (3) generation/validation script, (4) update agent files to use dynamic context discovery via jq queries instead of static lists.
 
