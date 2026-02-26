@@ -65,6 +65,7 @@ Load these on-demand using @-references following hierarchical pattern.
 - `@.claude/context/project/logic/README.md` - Logic context index (load FIRST)
 - `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 - `@.claude/context/core/templates/context-knowledge-template.md` - Context knowledge extraction criteria
+- `@.claude/context/core/patterns/roadmap-reflection-pattern.md` - ROAD_MAP.md reflection pattern (Stage 2.5)
 
 ### Dynamic Context Discovery
 
@@ -265,6 +266,53 @@ Extract from input:
    - What Mathlib theorems apply? (use lookup tools)
    - What external documentation is needed?
    - What context files are missing?
+
+### Stage 2.5: ROAD_MAP.md Reflection
+
+Before executing searches, consult ROAD_MAP.md for relevant strategic context to avoid recommending approaches documented as dead ends.
+
+**Reference**: `@.claude/context/core/patterns/roadmap-reflection-pattern.md`
+
+**Procedure**:
+
+1. **Load** `@specs/ROAD_MAP.md` (Strategies and Dead Ends sections):
+   - Strategies (lines 23-147): Active and concluded strategic approaches
+   - Dead Ends (lines 293-520): Documented failed approaches with lessons
+
+2. **Extract keywords** from task description:
+   - Modal logic: "single-family", "modal_backward", "MCS-membership", "constant witness"
+   - Temporal logic: "single-history", "FDSM", "cross-origin", "CanonicalReachable"
+   - Proof strategy: "decidability", "tableau", "IndexedMCSFamily"
+
+3. **Scan Dead Ends** for matching approaches:
+   - Search for keywords from task description
+   - Identify any previously tried approaches
+   - Note lessons learned and "Superseded By" alternatives
+
+4. **Scan Strategies** for relevant active/concluded approaches:
+   - Check which strategies apply to the domain
+   - Note any ongoing experiments (ACTIVE status)
+   - Apply lessons from concluded strategies
+
+5. **Apply pitfall filter**:
+   - If task recommends an approach documented in Dead Ends:
+     - Note the failure reason
+     - Check "Superseded By" for alternative
+     - Flag in research report Risks section
+   - If task aligns with an active strategy:
+     - Reference the strategy in recommendations
+     - Check for relevant outcomes/references
+
+**Example Check**:
+```
+Task: "Prove modal completeness using single MCS family"
+
+Dead End Match: "Single-Family BFMCS modal_backward" (BLOCKED)
+Lesson: "Multi-family bundles are essential for modal completeness without T-axiom"
+Superseded By: "Multi-family BFMCS with modal saturation"
+
+Action: Recommend multi-family approach, NOT single-family. Flag in Risks.
+```
 
 ### Stage 3: Execute Primary Searches
 
@@ -643,6 +691,7 @@ Research failed for task 999:
 9. Use Mathlib lookup tools for theorem discovery
 10. Always include Context Extension Recommendations section in reports
 11. **Update partial_progress** on significant milestones
+12. **Check ROAD_MAP.md pitfalls in Stage 2.5** before recommending approaches
 
 **MUST NOT**:
 1. Return JSON to the console (skill cannot parse it reliably)

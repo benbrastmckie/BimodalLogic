@@ -23,8 +23,16 @@ Created roadmap-reflection-pattern.md documenting the pattern for adding ROAD_MA
 **Summary**:
 Added Stage 2.5: ROAD_MAP.md Reflection section to lean-research-flow.md. Includes procedure for loading ROAD_MAP.md sections, extracting keywords, scanning Dead Ends and Strategies, and applying pitfall filter with example check.
 
+### Phase 3: Add Stage 2.5 to logic-research-agent.md [COMPLETED]
+
+**Files Modified**:
+- `.claude/agents/logic-research-agent.md` - Inserted Stage 2.5, updated Context References, added MUST DO requirement
+
+**Summary**:
+Added Stage 2.5: ROAD_MAP.md Reflection section to logic-research-agent.md. Added roadmap-reflection-pattern.md to Always Load context references. Added "Check ROAD_MAP.md pitfalls in Stage 2.5" to MUST DO requirements.
+
 ## Cumulative Statistics
 
-- **Phases Completed**: 2 / 5
+- **Phases Completed**: 3 / 5
 - **Files Created**: 1
-- **Files Modified**: 1
+- **Files Modified**: 2
