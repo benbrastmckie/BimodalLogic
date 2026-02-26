@@ -558,9 +558,9 @@ If no CLAUDE.md suggestions were found (from Step 3.6), omit the "CLAUDE.md sugg
 
 If CLAUDE.md suggestions exist, the "Note: Interactive selection..." line is always shown in dry-run.
 
-If Changelog section doesn't exist in ROAD_MAP.md, omit the "Changelog updates" section and show:
+If CHANGE_LOG.md doesn't exist, omit the "Changelog updates" section and show:
 ```
-Note: Changelog section not found in ROAD_MAP.md. Run Task 833 to add the section structure.
+Note: specs/CHANGE_LOG.md not found. Run Task 941 to create the changelog file.
 ```
 
 If no completed tasks are being archived (only abandoned), omit the "Changelog updates" section.
@@ -1062,13 +1062,13 @@ Track for output:
 
 ### 5.8. Update Changelog Section
 
-**Condition**: At least one completed task is being archived AND Changelog section exists in ROAD_MAP.md
+**Condition**: At least one completed task is being archived AND CHANGE_LOG.md exists
 
 **Step 5.8.1: Check prerequisites**:
 ```bash
-# Verify Changelog section exists
-if ! grep -q "^## Changelog" specs/ROAD_MAP.md; then
-  echo "Note: Changelog section not found in ROAD_MAP.md (requires Task 833)"
+# Verify CHANGE_LOG.md exists
+if [ ! -f specs/CHANGE_LOG.md ]; then
+  echo "Note: specs/CHANGE_LOG.md not found (requires Task 941)"
   echo "Skipping changelog updates"
   changelog_skipped=true
 else
@@ -1128,7 +1128,7 @@ if [ "$changelog_skipped" != "true" ]; then
 fi
 ```
 
-**Step 5.8.3: Update ROAD_MAP.md for each date**:
+**Step 5.8.3: Update CHANGE_LOG.md for each date**:
 ```bash
 changelog_entries_added=0
 changelog_dates_created=0
@@ -1143,7 +1143,7 @@ if [ "$changelog_skipped" != "true" ]; then
 
     # Check if date header exists
     date_header="### ${date}"
-    if grep -q "^${date_header}$" specs/ROAD_MAP.md; then
+    if grep -q "^${date_header}$" specs/CHANGE_LOG.md; then
       # Append after existing date header
       # Use Edit tool: find the date header line and the empty line after it
       # Insert entries between the header and existing content
@@ -1162,7 +1162,7 @@ if [ "$changelog_skipped" != "true" ]; then
       # Insert before that, or after ## Changelog if no older dates
 
       # Get existing date headers
-      existing_dates=$(grep -o "^### [0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}$" specs/ROAD_MAP.md | sed 's/^### //' | sort -r)
+      existing_dates=$(grep -o "^### [0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}$" specs/CHANGE_LOG.md | sed 's/^### //' | sort -r)
 
       insert_before=""
       for existing_date in $existing_dates; do
@@ -1330,8 +1330,8 @@ If no roadmap items were updated (no matches found in Step 3.5):
 If no changelog entries were added (changelog_skipped=true or no completed tasks):
 - Omit the "Changelog updated" section
 
-If changelog section was missing from ROAD_MAP.md:
-- Show note: "Note: Changelog section not found in ROAD_MAP.md (requires Task 833)"
+If CHANGE_LOG.md was missing:
+- Show note: "Note: specs/CHANGE_LOG.md not found (requires Task 941)"
 
 If no CLAUDE.md suggestions were collected (no meta tasks or all had "none" action):
 - Omit the "CLAUDE.md suggestions applied/failed/skipped" sections
@@ -1699,10 +1699,10 @@ If an Edit operation fails (section not found, text mismatch), the failure is lo
 ### Changelog Updates
 
 **Overview**:
-Step 5.8 automatically updates the ROAD_MAP.md Changelog section when archiving completed tasks.
+Step 5.8 automatically updates specs/CHANGE_LOG.md when archiving completed tasks.
 
 **Prerequisites**:
-- Task 833 must be implemented first (creates the Changelog section structure)
+- Task 941 must be implemented first (creates the CHANGE_LOG.md file)
 - Only completed tasks are added (abandoned tasks are NOT included in Changelog)
 
 **Entry Format**:
@@ -1719,7 +1719,7 @@ Step 5.8 automatically updates the ROAD_MAP.md Changelog section when archiving 
 4. Optionally includes a link to the implementation summary if it exists
 
 **Graceful Degradation**:
-- If Changelog section is missing from ROAD_MAP.md, Step 5.8 is skipped with a note
+- If specs/CHANGE_LOG.md is missing, Step 5.8 is skipped with a note
 - If no completed tasks are being archived, Step 5.8 is a no-op
 
 **Date Extraction**:

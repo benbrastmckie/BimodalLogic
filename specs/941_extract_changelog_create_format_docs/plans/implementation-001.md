@@ -106,17 +106,17 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update References and Commands [NOT STARTED]
+### Phase 3: Update References and Commands [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Update all files to reference new changelog location
 
 **Tasks**:
-- [ ] Update `.claude/commands/todo.md` Step 5.8 to target `specs/CHANGE_LOG.md`
-- [ ] Update grep pattern from `"^## Changelog"` to match CHANGE_LOG.md header
-- [ ] Update `roadmap-format.md` to add Related section noting changelog moved
-- [ ] Replace ROAD_MAP.md Changelog section with reference to CHANGE_LOG.md
-- [ ] Search for other hardcoded ROAD_MAP.md changelog references
+- [x] Update `.claude/commands/todo.md` Step 5.8 to target `specs/CHANGE_LOG.md`
+- [x] Update grep pattern from `"^## Changelog"` to match CHANGE_LOG.md header
+- [x] Update `roadmap-format.md` to add Related section noting changelog moved
+- [x] Replace ROAD_MAP.md Changelog section with reference to CHANGE_LOG.md
+- [x] Search for other hardcoded ROAD_MAP.md changelog references
 
 **Timing**: 30 minutes
 
@@ -130,6 +130,15 @@ Key findings from research-001.md:
 - ROAD_MAP.md contains pointer to CHANGE_LOG.md
 - roadmap-format.md notes separation
 - No orphan references to ROAD_MAP.md changelog section
+
+**Progress:**
+
+**Session: 2026-02-26, sess_1772137708_a5283f**
+- Fixed: `.claude/commands/todo.md` Step 5.8 - changed file path checks and edit targets from ROAD_MAP.md to CHANGE_LOG.md
+- Fixed: `.claude/commands/todo.md` documentation sections - updated prerequisite and degradation notes
+- Added: `.claude/context/core/formats/roadmap-format.md` - changelog separation note with cross-reference
+- Fixed: `specs/ROAD_MAP.md` - replaced ~115-line changelog section with 7-line reference block
+- Verified: No blocking orphan references found (remaining are historical in archived reports)
 
 ## Testing & Validation
 

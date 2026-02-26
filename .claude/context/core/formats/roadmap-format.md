@@ -63,3 +63,15 @@ Example:
 ## Related
 
 - @.claude/context/core/patterns/roadmap-update.md - Update process
+- @.claude/context/core/formats/changelog-format.md - Changelog moved to specs/CHANGE_LOG.md (Task 941)
+
+---
+
+## Note: Changelog Separation
+
+As of Task 941, the Changelog section has been moved from ROAD_MAP.md to a dedicated `specs/CHANGE_LOG.md` file. This establishes clear separation:
+
+- **ROAD_MAP.md**: Strategic direction (Strategies, Ambitions, Dead Ends)
+- **CHANGE_LOG.md**: Historical record of completed work
+
+The `/todo` command now updates `specs/CHANGE_LOG.md` instead of the roadmap.

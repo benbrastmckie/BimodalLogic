@@ -1,8 +1,9 @@
 # Implementation Summary: Task #941
 
 **Task**: extract_changelog_create_format_docs
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Started**: 2026-02-26
+**Completed**: 2026-02-26
 **Language**: meta
 
 ---
@@ -33,19 +34,33 @@
 - Included full and minimal entry examples
 - Referenced /todo command Step 5.8 as update mechanism
 
+### Phase 3: Update References and Commands [COMPLETED]
+
+**Outcome**: Updated all files to reference new changelog location
+
+**Files Modified**:
+- `.claude/commands/todo.md` - Updated Step 5.8 to target specs/CHANGE_LOG.md
+- `.claude/context/core/formats/roadmap-format.md` - Added note about changelog separation
+- `specs/ROAD_MAP.md` - Replaced ~115-line changelog section with reference block
+
+**Key Decisions**:
+- Changed file existence check from grep pattern to file existence check
+- Added cross-reference in roadmap-format.md Related section
+- Used concise reference block in ROAD_MAP.md explaining separation rationale
+
 ---
 
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 2 |
+| Phases Completed | 3 |
 | Phases Total | 3 |
 | Files Created | 2 |
-| Files Modified | 0 |
+| Files Modified | 3 |
 
 ---
 
 ## Notes
 
-Phase 1 extracts content. Phase 2 creates format documentation. Phase 3 updates references.
+This task establishes clean separation between historical records (CHANGE_LOG.md) and strategic direction (ROAD_MAP.md). The /todo command now automatically updates the standalone changelog file.
