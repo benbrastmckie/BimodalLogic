@@ -21,7 +21,7 @@
       "status": "planned",
       "language": "lean",
       "created": "2026-02-26T05:39:46Z",
-      "last_updated": "2026-02-26T05:52:11Z",
+      "last_updated": "2026-02-26T05:54:23Z",
       "description": "Remove bmcs_truth_lemma_mcs and all definitions that depart from standard validity semantics. Move infected proofs to Boneyard with comments banning such approaches. No trace of non-standard validity should remain in Metalogic.",
       "session_id": "sess_1740495000_p931",
       "researched": "2026-02-26T05:47:45Z",
@@ -32,12 +32,12 @@
           "summary": "14 non-standard symbols in ChainBundleBFMCS.lean lines 350-691. Zero external dependents. Safe to delete and move to Boneyard. Keep lines 1-349 (CanonicalBC construction)."
         },
         {
-          "path": "specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/plans/implementation-001.md",
+          "path": "specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/plans/implementation-002.md",
           "type": "plan",
-          "summary": "5-phase implementation plan for removing non-standard MCS-membership validity definitions"
+          "summary": "6-phase plan (v2): removes _mcs from ChainBundleBFMCS.lean AND eval_bmcs_* from BFMCSTruth.lean"
         }
       ],
-      "planned": "2026-02-26T05:52:11Z"
+      "planned": "2026-02-26T05:54:23Z"
     },
     {
       "project_number": 930,

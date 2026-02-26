@@ -37,7 +37,7 @@ technical_debt:
 - **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/plans/implementation-002.md)
 
 **Description**: Remove `bmcs_truth_lemma_mcs` and all definitions that depart from standard validity semantics (as defined in `Bimodal.Semantics.Validity`). Move all infected proofs to Boneyard with comments banning such approaches that depart from the standard `truth_at`/`valid` definitions. No trace of non-standard validity should remain in the Metalogic module.
 
