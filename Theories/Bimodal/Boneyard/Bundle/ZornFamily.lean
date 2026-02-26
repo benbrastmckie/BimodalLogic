@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent

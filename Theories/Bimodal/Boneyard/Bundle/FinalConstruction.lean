@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.SaturatedConstruction
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
@@ -10,15 +10,15 @@ import Bimodal.Syntax.Formula
 import Mathlib.Order.Zorn
 
 /-!
-# Final Construction: Fully Saturated Temporally Coherent BMCS
+# Final Construction: Fully Saturated Temporally Coherent BFMCS
 
-This module proves `fully_saturated_bmcs_exists_int` constructively by combining:
-1. Modal saturation from SaturatedConstruction.lean (`constructSaturatedBMCS`)
+This module proves `fully_saturated_bfmcs_exists_int` constructively by combining:
+1. Modal saturation from SaturatedConstruction.lean (`constructSaturatedBFMCS`)
 2. Temporal coherence from DovetailingChain.lean (`temporal_coherent_family_exists_Int`)
 
 ## Key Challenge
 
-The challenge is ensuring that ALL families in the BMCS are temporally coherent:
+The challenge is ensuring that ALL families in the BFMCS are temporally coherent:
 - The initial family from DovetailingChain is temporally coherent (has forward_F and backward_P)
 - Witness families added during modal saturation are CONSTANT families
 - For constant families to be temporally coherent, their MCS must be temporally saturated
@@ -43,13 +43,13 @@ Lindenbaum extension cannot add new F/P witnesses that don't already exist in th
 
 1. Prove `lindenbaum_preserves_temporal_saturation`
 2. Build temporally saturated witness construction
-3. Prove `fully_saturated_bmcs_exists_int` constructively
+3. Prove `fully_saturated_bfmcs_exists_int` constructively
 4. Integration and documentation
 
 ## References
 
-- Task 887 plan: specs/887_create_finalconstruction_prove_fully_saturated_bmcs/plans/implementation-001.md
-- Research: specs/887_create_finalconstruction_prove_fully_saturated_bmcs/reports/research-001.md
+- Task 887 plan: specs/887_create_finalconstruction_prove_fully_saturated_bfmcs/plans/implementation-001.md
+- Research: specs/887_create_finalconstruction_prove_fully_saturated_bfmcs/reports/research-001.md
 - Modal saturation: SaturatedConstruction.lean (sorry-free `exists_fullySaturated_extension`)
 - Temporal coherence: DovetailingChain.lean, TemporalCoherentConstruction.lean
 -/
@@ -279,7 +279,7 @@ temporal Lindenbaum with its sorries), we take a direct approach:
 
 1. Get a temporally coherent family from DovetailingChain
 2. Build modal saturation on top of it
-3. Document that the resulting BMCS has:
+3. Document that the resulting BFMCS has:
    - Temporally coherent eval_family (from DovetailingChain)
    - Modal saturation (from exists_fullySaturated_extension)
    - Temporal coherence for constant witness families IFF their MCS is temporally saturated
@@ -287,14 +287,14 @@ temporal Lindenbaum with its sorries), we take a direct approach:
 The key insight from the research: we don't need ALL families to be temporally
 coherent - we need the CONSTRUCTION to produce temporally coherent results.
 
-Actually, looking at BMCS.temporally_coherent, it requires ALL families to satisfy
+Actually, looking at BFMCS.temporally_coherent, it requires ALL families to satisfy
 forward_F and backward_P. So we do need all families to be temporally coherent.
 
 Given this constraint, and the fact that making witness families temporally coherent
 requires the unproven temporal Lindenbaum, we have two options:
 
 Option A: Accept a sorry for the temporal coherence of witness families
-Option B: Use the polymorphic axiom `fully_saturated_bmcs_exists` directly
+Option B: Use the polymorphic axiom `fully_saturated_bfmcs_exists` directly
 
 The plan suggests Option A (sorry-backed theorem over axiom). Let me implement that.
 -/
@@ -352,7 +352,7 @@ lemma constant_family_temp_sat_backward_P (fam : IndexedMCSFamily Int)
 /-!
 ## Phase 3: Main Theorem
 
-Prove `fully_saturated_bmcs_exists_int` by combining:
+Prove `fully_saturated_bfmcs_exists_int` by combining:
 1. Temporal coherent initial family from DovetailingChain
 2. Modal saturation via exists_fullySaturated_extension
 3. Temporal coherence via constant_family_temporally_saturated_is_coherent
@@ -380,7 +380,7 @@ lemma modal_saturation_creates_constant_families :
   sorry
 
 /--
-**Main Theorem**: Constructive proof of fully_saturated_bmcs_exists_int.
+**Main Theorem**: Constructive proof of fully_saturated_bfmcs_exists_int.
 
 This combines:
 1. Temporal coherent initial family from DovetailingChain
@@ -393,7 +393,7 @@ This sorry depends on either:
 - Or proving that regular Lindenbaum preserves temporal saturation under specific conditions
 
 **Progress over axiom**:
-- The polymorphic `fully_saturated_bmcs_exists` is an AXIOM (in trusted kernel)
+- The polymorphic `fully_saturated_bfmcs_exists` is an AXIOM (in trusted kernel)
 - This theorem is a THEOREM with sorry (not in trusted kernel)
 - The modal saturation part (`exists_fullySaturated_extension`) is sorry-free
 - Only temporal coherence of witness families has sorry
@@ -402,9 +402,9 @@ This sorry depends on either:
 coherent. The challenge is that modal saturation adds CONSTANT families, which need
 temporally saturated MCS to be temporally coherent.
 -/
-theorem fully_saturated_bmcs_exists_int_constructive
+theorem fully_saturated_bfmcs_exists_int_constructive
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (B : BMCS Int),
+    ∃ (B : BFMCS Int),
       (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
       B.temporally_coherent ∧
       is_modally_saturated B := by
@@ -441,10 +441,10 @@ The idea:
 But this still has the fundamental issue: constant families need temporally saturated
 MCS for temporal coherence, and Lindenbaum doesn't preserve this.
 
-Let me try yet another approach: use the AXIOM fully_saturated_bmcs_exists as a
+Let me try yet another approach: use the AXIOM fully_saturated_bfmcs_exists as a
 stepping stone, then work on eliminating it.
 
-Actually, looking at the task goal again: we want to PROVE fully_saturated_bmcs_exists_int
+Actually, looking at the task goal again: we want to PROVE fully_saturated_bfmcs_exists_int
 (which is currently a sorry-backed theorem in TemporalCoherentConstruction.lean).
 
 The most honest approach given the current infrastructure:
@@ -455,7 +455,7 @@ The most honest approach given the current infrastructure:
 -/
 
 /--
-**MAIN RESULT**: Constructive proof of fully_saturated_bmcs_exists_int.
+**MAIN RESULT**: Constructive proof of fully_saturated_bfmcs_exists_int.
 
 This theorem replaces the sorry-backed theorem in TemporalCoherentConstruction.lean
 with a more structured approach that isolates the remaining proof gap.
@@ -476,9 +476,9 @@ with a more structured approach that isolates the remaining proof gap.
 3. Prove that the resulting witness families have temporally saturated MCS
 4. Complete this proof without sorry
 -/
-theorem fully_saturated_bmcs_exists_int_final
+theorem fully_saturated_bfmcs_exists_int_final
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (B : BMCS Int),
+    ∃ (B : BFMCS Int),
       (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
       B.temporally_coherent ∧
       is_modally_saturated B := by
@@ -487,26 +487,26 @@ theorem fully_saturated_bmcs_exists_int_final
   -- 1. Extend Gamma to an MCS M_0 via Lindenbaum
   -- 2. Build a constant family from M_0 (for modal saturation base)
   -- 3. Apply exists_fullySaturated_extension to get modal saturation
-  -- 4. The result is a BMCS with:
+  -- 4. The result is a BFMCS with:
   --    - Context preserved at eval_family.mcs 0
   --    - Modal saturation (proven without sorry)
   --    - Temporal coherence (requires sorry - see documentation above)
   --
-  -- Step 1-3: Build modally saturated BMCS using constant initial family
+  -- Step 1-3: Build modally saturated BFMCS using constant initial family
   let M_0 := lindenbaumMCS Gamma h_cons
   let h_mcs_0 := lindenbaumMCS_is_mcs Gamma h_cons
   let init_fam : IndexedMCSFamily Int := constantIndexedMCSFamily M_0 h_mcs_0
   let h_const : init_fam.isConstant := constantIndexedMCSFamily_isConstant M_0 h_mcs_0
 
-  -- Build modally saturated BMCS
-  let B := constructSaturatedBMCS Formula.bot init_fam h_const
+  -- Build modally saturated BFMCS
+  let B := constructSaturatedBFMCS Formula.bot init_fam h_const
 
   use B
 
   constructor
   · -- Context preservation
     intro gamma h_mem
-    have h_eval := constructSaturatedBMCS_eval_family Formula.bot init_fam h_const
+    have h_eval := constructSaturatedBFMCS_eval_family Formula.bot init_fam h_const
     rw [h_eval]
     -- The eval family is init_fam = constantIndexedMCSFamily M_0 h_mcs_0
     -- init_fam.mcs 0 = M_0 = lindenbaumMCS Gamma h_cons
@@ -516,7 +516,7 @@ theorem fully_saturated_bmcs_exists_int_final
 
   constructor
   · -- Temporal coherence (sorry - requires temporally saturated witness families)
-    -- This is the key gap: constructSaturatedBMCS builds constant families via Lindenbaum,
+    -- This is the key gap: constructSaturatedBFMCS builds constant families via Lindenbaum,
     -- but Lindenbaum doesn't preserve temporal saturation without the temporal-aware variant.
     --
     -- Remediation: Use temporal Lindenbaum for witness construction in exists_fullySaturated_extension
@@ -525,12 +525,12 @@ theorem fully_saturated_bmcs_exists_int_final
   · -- Modal saturation (proven via exists_fullySaturated_extension)
     -- is_modally_saturated B says: ∀ fam ∈ B.families, ∀ t : D, ∀ psi : Formula, ...
     intro fam h_fam t psi h_diamond
-    -- The saturated BMCS has isFullySaturated by construction
-    -- Extract the saturation property from constructSaturatedBMCS
+    -- The saturated BFMCS has isFullySaturated by construction
+    -- Extract the saturation property from constructSaturatedBFMCS
     have h_all_const := initialFamilyCollection_allConstant Formula.bot init_fam h_const
     have h_sat := (initialFamilyCollection Formula.bot init_fam).saturate_isFullySaturated h_all_const
     -- h_sat has type FamilyCollection.isFullySaturated
-    -- B = constructSaturatedBMCS ... = saturated.toBMCS ...
+    -- B = constructSaturatedBFMCS ... = saturated.toBMCS ...
     -- B.families = saturated.families
     -- h_fam : fam ∈ B.families = fam ∈ saturated.families
     -- So h_sat psi fam h_fam t h_diamond gives us the witness
@@ -544,7 +544,7 @@ The construction above provides:
 2. A sorry-backed proof of temporal coherence
 3. Clear documentation of the proof gap and remediation path
 
-This is progress over the existing `fully_saturated_bmcs_exists_int` because:
+This is progress over the existing `fully_saturated_bfmcs_exists_int` because:
 - The modal saturation part is now constructive (via exists_fullySaturated_extension)
 - The sorry is isolated to temporal coherence of witness families
 - The remediation path is clearly documented
@@ -556,12 +556,12 @@ This is progress over the existing `fully_saturated_bmcs_exists_int` because:
 **Sorries**: 4-5 (depending on accounting)
 1. `lindenbaum_may_not_preserve_temporal_saturation` - documentation theorem
 2. `modal_saturation_creates_constant_families` - straightforward fact about construction
-3. `fully_saturated_bmcs_exists_int_constructive` - main construction sorry
-4. `fully_saturated_bmcs_exists_int_final` temporal coherence - main gap
+3. `fully_saturated_bfmcs_exists_int_constructive` - main construction sorry
+4. `fully_saturated_bfmcs_exists_int_final` temporal coherence - main gap
 
 **Axioms**: 0
 - This module does not introduce any new axioms
-- It reduces dependence on the polymorphic `fully_saturated_bmcs_exists` axiom
+- It reduces dependence on the polymorphic `fully_saturated_bfmcs_exists` axiom
 
 **Progress**:
 - Modal saturation is proven constructively (via SaturatedConstruction.lean)

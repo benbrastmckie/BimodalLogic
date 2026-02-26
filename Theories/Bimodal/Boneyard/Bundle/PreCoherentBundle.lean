@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -288,7 +288,7 @@ def AllPreCoherentFamilies (S : Set Formula) : Set (IndexedMCSFamily D) :=
   { f | PreCoherent f S }
 
 /-!
-## Phase 5-7: Box Coherence, Saturation, and BMCS Interface
+## Phase 5-7: Box Coherence, Saturation, and BFMCS Interface
 
 These phases require careful reasoning about modal agreement across families.
 The fundamental challenge is that AllPreCoherentFamilies may contain families
@@ -354,14 +354,14 @@ The saturation itself is NOT the blocking issue - we CAN construct witness famil
 containing psi. The problem is that:
 1. These witness families will be pre-coherent with respect to S
 2. But they will NOT be box-coherent with the original families
-3. And box-coherence is required for the BMCS modal_forward property
+3. And box-coherence is required for the BFMCS modal_forward property
 
 **What This Sorry Represents**:
 This sorry could potentially be eliminated by constructing S-bounded witness families.
 However, doing so would be pointless because:
 - The witnesses would join AllPreCoherentFamilies
 - But AllPreCoherentFamilies lacks box_coherence (proven impossible above)
-- So the resulting bundle would not be a valid BMCS
+- So the resulting bundle would not be a valid BFMCS
 
 The blocking issue is box_coherence, not saturation. This sorry is left to clearly
 mark that the entire approach is blocked, not just this specific proof.
@@ -383,14 +383,14 @@ Count sorries and verify construction integrity.
 -/
 
 /--
-Main construction: from consistent context to BMCS.
+Main construction: from consistent context to BFMCS.
 
 Uses the single-family construction with axiom as fallback, since the
 full pre-coherent construction has mathematical gaps.
 -/
 noncomputable def construct_precoherent_bmcs
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    BMCS D :=
+    BFMCS D :=
   construct_bmcs Gamma h_cons
 
 /--

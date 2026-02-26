@@ -1,4 +1,3 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
@@ -6,14 +5,14 @@ import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Propositional
 
 /-!
-# Modal Saturation for BMCS
+# Modal Saturation for BFMCS
 
-This module implements modal saturation for Bundle of Maximal Consistent Sets (BMCS),
+This module implements modal saturation for Bundle of Maximal Consistent Sets (BFMCS),
 enabling the elimination of the `modal_backward` sorry in Construction.lean.
 
 ## Overview
 
-A **modally saturated** BMCS satisfies the property that every Diamond formula that
+A **modally saturated** BFMCS satisfies the property that every Diamond formula that
 is true in some family has a witness family where the inner formula is true. This
 enables proving `modal_backward` by contraposition:
 
@@ -24,15 +23,15 @@ enables proving `modal_backward` by contraposition:
 
 ## Main Definitions
 
-- `is_modally_saturated`: Predicate for modal saturation of a BMCS
-- `saturated_modal_backward`: Proves modal_backward for saturated BMCS
-- `SaturatedBMCS`: A BMCS bundled with saturation proof
+- `is_modally_saturated`: Predicate for modal saturation of a BFMCS
+- `saturated_modal_backward`: Proves modal_backward for saturated BFMCS
+- `SaturatedBFMCS`: A BFMCS bundled with saturation proof
 
 ## Design Notes
 
 The key insight is that modal saturation is a SUFFICIENT condition for modal_backward.
-Rather than constructing a saturated BMCS from scratch, we define the saturation
-predicate and prove that any BMCS satisfying it has the modal_backward property.
+Rather than constructing a saturated BFMCS from scratch, we define the saturation
+predicate and prove that any BFMCS satisfying it has the modal_backward property.
 
 ## References
 
@@ -58,7 +57,7 @@ Diamond formula: neg (Box (neg phi)).
 This is the modal possibility operator: Diamond phi means "possibly phi",
 i.e., there exists an accessible world where phi holds.
 
-In our BMCS construction, Diamond phi in fam.mcs t means there should exist
+In our BFMCS construction, Diamond phi in fam.mcs t means there should exist
 a family fam' where phi is in fam'.mcs t.
 -/
 def diamondFormula (phi : Formula) : Formula := phi.diamond
@@ -74,32 +73,32 @@ def asDiamond : Formula → Option Formula
 
 /--
 A Diamond formula in a family's MCS needs a witness if no other family
-in the BMCS contains the inner formula in its MCS at that time.
+in the BFMCS contains the inner formula in its MCS at that time.
 
 Specifically: needs_modal_witness B fam t psi means:
 - Diamond psi is in fam.mcs t
 - There is no family fam' in B.families where psi is in fam'.mcs t
 -/
-def needs_modal_witness (B : BMCS D) (fam : BFMCS D) (t : D) (psi : Formula) : Prop :=
+def needs_modal_witness (B : BFMCS D) (fam : FMCS D) (t : D) (psi : Formula) : Prop :=
   diamondFormula psi ∈ fam.mcs t ∧ ∀ fam' ∈ B.families, psi ∉ fam'.mcs t
 
 /--
-A BMCS is modally saturated if every Diamond formula that is true in some
+A BFMCS is modally saturated if every Diamond formula that is true in some
 family's MCS has a witness family in the bundle.
 
 Formally: for every family fam, time t, and formula psi,
 if Diamond psi is in fam.mcs t, then there exists fam' in families
 where psi is in fam'.mcs t.
 -/
-def is_modally_saturated (B : BMCS D) : Prop :=
+def is_modally_saturated (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families, ∀ t : D, ∀ psi : Formula,
     diamondFormula psi ∈ fam.mcs t → ∃ fam' ∈ B.families, psi ∈ fam'.mcs t
 
 /--
-Alternative formulation: a BMCS is modally saturated iff no Diamond formula
+Alternative formulation: a BFMCS is modally saturated iff no Diamond formula
 needs a witness.
 -/
-theorem is_modally_saturated_iff_no_needs_witness (B : BMCS D) :
+theorem is_modally_saturated_iff_no_needs_witness (B : BFMCS D) :
     is_modally_saturated B ↔ ∀ fam ∈ B.families, ∀ t : D, ∀ psi : Formula,
       ¬needs_modal_witness B fam t psi := by
   constructor
@@ -244,11 +243,11 @@ lemma extendToMCS_is_mcs (psi : Formula) (h_cons : SetConsistent {psi}) :
 /--
 Construct a constant witness family from an MCS.
 
-Given an MCS M, we build an BFMCS that assigns M to every time point.
+Given an MCS M, we build an FMCS that assigns M to every time point.
 This is similar to constantBFMCS from Construction.lean.
 -/
 noncomputable def constantWitnessFamily (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    BFMCS D where
+    FMCS D where
   mcs := fun _ => M
   is_mcs := fun _ => h_mcs
   forward_G := fun t t' phi _ hG =>
@@ -271,11 +270,11 @@ lemma constantWitnessFamily_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsiste
 /--
 Construct a witness family for a formula.
 
-Given that {psi} is consistent, this constructs a new BFMCS
+Given that {psi} is consistent, this constructs a new FMCS
 where psi is in the MCS at all times.
 -/
 noncomputable def constructWitnessFamily (psi : Formula) (h_cons : SetConsistent {psi}) :
-    BFMCS D :=
+    FMCS D :=
   let M := extendToMCS psi h_cons
   let h_mcs := extendToMCS_is_mcs psi h_cons
   constantWitnessFamily M h_mcs
@@ -388,14 +387,14 @@ lemma mcs_contrapositive {S : Set Formula} (h_mcs : SetMaximalConsistent S)
 /-!
 ## Phase 4: Modal Backward from Saturation
 
-The key theorem: if a BMCS is modally saturated, then modal_backward holds.
+The key theorem: if a BFMCS is modally saturated, then modal_backward holds.
 This is proven by contraposition using MCS negation completeness.
 -/
 
 /--
-**Key Theorem**: Modal backward holds for saturated BMCS.
+**Key Theorem**: Modal backward holds for saturated BFMCS.
 
-If a BMCS is modally saturated, then for any family fam, time t, and formula phi:
+If a BFMCS is modally saturated, then for any family fam, time t, and formula phi:
 if phi is in ALL families' MCS at time t, then Box phi is in fam.mcs t.
 
 **Proof by Contraposition**:
@@ -405,8 +404,8 @@ if phi is in ALL families' MCS at time t, then Box phi is in fam.mcs t.
 4. By modal saturation: exists fam' where neg phi is in fam'.mcs t
 5. But phi is in ALL families including fam' - contradiction with consistency
 -/
-theorem saturated_modal_backward (B : BMCS D) (h_sat : is_modally_saturated B)
-    (fam : BFMCS D) (hfam : fam ∈ B.families) (phi : Formula) (t : D)
+theorem saturated_modal_backward (B : BFMCS D) (h_sat : is_modally_saturated B)
+    (fam : FMCS D) (hfam : fam ∈ B.families) (phi : Formula) (t : D)
     (h_all : ∀ fam' ∈ B.families, phi ∈ fam'.mcs t) :
     Formula.box phi ∈ fam.mcs t := by
   -- By contradiction
@@ -447,30 +446,30 @@ theorem saturated_modal_backward (B : BMCS D) (h_sat : is_modally_saturated B)
   exact set_consistent_not_both (fam'.is_mcs t).1 phi h_phi_in h_neg_phi_in
 
 /-!
-## Phase 5: Saturated BMCS Structure
+## Phase 5: Saturated BFMCS Structure
 
-A SaturatedBMCS bundles a BMCS with proof of saturation and the derived modal_backward.
+A SaturatedBFMCS bundles a BFMCS with proof of saturation and the derived modal_backward.
 -/
 
 /--
-A saturated BMCS is a BMCS together with a proof that it is modally saturated.
+A saturated BFMCS is a BFMCS together with a proof that it is modally saturated.
 
 This structure is useful because we can derive modal_backward from saturation.
 -/
-structure SaturatedBMCS (D : Type*) [Preorder D] where
-  /-- The underlying BMCS -/
-  bmcs : BMCS D
+structure SaturatedBFMCS (D : Type*) [Preorder D] where
+  /-- The underlying BFMCS -/
+  bfmcs : BFMCS D
   /-- Proof of modal saturation -/
-  saturated : is_modally_saturated bmcs
+  saturated : is_modally_saturated bfmcs
 
 /--
-A saturated BMCS satisfies modal_backward.
+A saturated BFMCS satisfies modal_backward.
 -/
-theorem SaturatedBMCS.modal_backward (S : SaturatedBMCS D)
-    (fam : BFMCS D) (hfam : fam ∈ S.bmcs.families) (phi : Formula) (t : D)
-    (h_all : ∀ fam' ∈ S.bmcs.families, phi ∈ fam'.mcs t) :
+theorem SaturatedBFMCS.modal_backward (S : SaturatedBFMCS D)
+    (fam : FMCS D) (hfam : fam ∈ S.bfmcs.families) (phi : Formula) (t : D)
+    (h_all : ∀ fam' ∈ S.bfmcs.families, phi ∈ fam'.mcs t) :
     Formula.box phi ∈ fam.mcs t :=
-  saturated_modal_backward S.bmcs S.saturated fam hfam phi t h_all
+  saturated_modal_backward S.bfmcs S.saturated fam hfam phi t h_all
 
 /-!
 ## Axiom 5 (Negative Introspection) Derivation

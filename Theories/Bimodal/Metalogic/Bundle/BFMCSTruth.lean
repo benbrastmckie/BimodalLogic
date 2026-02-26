@@ -1,20 +1,19 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 
 /-!
-# BMCS Truth Definition
+# BFMCS Truth Definition
 
-This module defines truth evaluation within a Bundle of Maximal Consistent Sets (BMCS),
+This module defines truth evaluation within a Bundle of Maximal Consistent Sets (BFMCS),
 using Henkin-style semantics where box quantifies over bundled histories only.
 
 ## Key Insight
 
 The crucial change from standard Kripke semantics is in the box case:
 - **Standard**: `box φ` is true iff φ is true at ALL accessible worlds
-- **BMCS**: `box φ` is true iff φ is true at ALL families IN THE BUNDLE
+- **BFMCS**: `box φ` is true iff φ is true at ALL families IN THE BUNDLE
 
 This restriction makes the truth lemma provable (the box case goes through)
 while NOT weakening the completeness result. This is analogous to Henkin
@@ -23,7 +22,7 @@ semantics for higher-order logic.
 ## Main Definitions
 
 - `bmcs_truth_at`: Truth of a formula at a specific family and time
-- `bmcs_valid`: A formula is valid iff true at all families, times in all BMCS
+- `bmcs_valid`: A formula is valid iff true at all families, times in all BFMCS
 
 ## Main Results
 
@@ -35,7 +34,7 @@ semantics for higher-order logic.
 ## Why This Doesn't Weaken Completeness
 
 Completeness is an **existential** statement: If Γ is consistent, then there
-exists a model satisfying Γ. The BMCS construction provides exactly ONE such
+exists a model satisfying Γ. The BFMCS construction provides exactly ONE such
 model. We don't need to characterize ALL models - just ONE satisfying model.
 
 This is standard practice in mathematical logic (cf. Henkin models for HOL).
@@ -54,19 +53,19 @@ open Bimodal.Metalogic.Core
 variable {D : Type*} [Preorder D]
 
 /-!
-## BMCS Truth Definition
+## BFMCS Truth Definition
 
-The key definition is `bmcs_truth_at`, which evaluates formulas in a BMCS.
+The key definition is `bmcs_truth_at`, which evaluates formulas in a BFMCS.
 
 **Critical Design Decision**: The box case quantifies ONLY over families in the bundle,
 not over all possible MCS families. This makes the truth lemma provable.
 -/
 
 /--
-Truth of a formula at a specific family and time within a BMCS.
+Truth of a formula at a specific family and time within a BFMCS.
 
 **Parameters**:
-- `B`: The BMCS providing the bundle of families
+- `B`: The BFMCS providing the bundle of families
 - `fam`: The specific family at which we evaluate
 - `t`: The time point at which we evaluate
 - `φ`: The formula to evaluate
@@ -85,7 +84,7 @@ We use NON-STRICT inequalities (≤, ≥) for temporal operators because the
 proof system includes the T axioms (G φ → φ, H φ → φ), which require
 reflexivity (the current time is both past and future of itself).
 -/
-def bmcs_truth_at (B : BMCS D) (fam : BFMCS D) (t : D) : Formula → Prop
+def bmcs_truth_at (B : BFMCS D) (fam : FMCS D) (t : D) : Formula → Prop
   | Formula.atom p => Formula.atom p ∈ fam.mcs t
   | Formula.bot => False
   | Formula.imp φ ψ => bmcs_truth_at B fam t φ → bmcs_truth_at B fam t ψ
@@ -94,31 +93,31 @@ def bmcs_truth_at (B : BMCS D) (fam : BFMCS D) (t : D) : Formula → Prop
   | Formula.all_future φ => ∀ s, t ≤ s → bmcs_truth_at B fam s φ
 
 /-!
-## BMCS Validity
+## BFMCS Validity
 
-A formula is BMCS-valid if it's true at all families, times, and bundles.
+A formula is BFMCS-valid if it's true at all families, times, and bundles.
 -/
 
 /--
-BMCS validity: a formula is valid iff true everywhere in every BMCS.
+BFMCS validity: a formula is valid iff true everywhere in every BFMCS.
 
 This is the semantic notion for the Henkin-style completeness proof.
 Completeness states: `bmcs_valid φ ↔ Derivable [] φ`
 -/
 def bmcs_valid (φ : Formula) : Prop :=
   ∀ (D : Type) [Preorder D],
-  ∀ (B : BMCS D), ∀ fam ∈ B.families, ∀ t : D, bmcs_truth_at B fam t φ
+  ∀ (B : BFMCS D), ∀ fam ∈ B.families, ∀ t : D, bmcs_truth_at B fam t φ
 
 /--
-BMCS satisfiability: a formula is satisfiable in a BMCS at some family and time.
+BFMCS satisfiability: a formula is satisfiable in a BFMCS at some family and time.
 -/
-def bmcs_satisfiable_at (B : BMCS D) (φ : Formula) : Prop :=
+def bmcs_satisfiable_at (B : BFMCS D) (φ : Formula) : Prop :=
   ∃ fam ∈ B.families, ∃ t : D, bmcs_truth_at B fam t φ
 
 /--
-Context is satisfied in a BMCS at a given family and time.
+Context is satisfied in a BFMCS at a given family and time.
 -/
-def bmcs_satisfies_context (B : BMCS D) (fam : BFMCS D) (t : D)
+def bmcs_satisfies_context (B : BFMCS D) (fam : FMCS D) (t : D)
     (Γ : List Formula) : Prop :=
   ∀ γ ∈ Γ, bmcs_truth_at B fam t γ
 
@@ -133,7 +132,7 @@ Truth of negation: `¬φ` is true iff `φ` is false.
 
 Since `neg φ = φ → ⊥`, we have `bmcs_truth_at B fam t (neg φ) = (bmcs_truth_at B fam t φ → False)`.
 -/
-theorem bmcs_truth_neg (B : BMCS D) (fam : BFMCS D) (t : D) (φ : Formula) :
+theorem bmcs_truth_neg (B : BFMCS D) (fam : FMCS D) (t : D) (φ : Formula) :
     bmcs_truth_at B fam t (Formula.neg φ) ↔ ¬bmcs_truth_at B fam t φ := by
   unfold Formula.neg
   simp only [bmcs_truth_at]
@@ -143,7 +142,7 @@ Truth of conjunction: `φ ∧ ψ` is true iff both `φ` and `ψ` are true.
 
 Since `and φ ψ = ¬(φ → ¬ψ)`, we need to unfold the definition.
 -/
-theorem bmcs_truth_and (B : BMCS D) (fam : BFMCS D) (t : D) (φ ψ : Formula) :
+theorem bmcs_truth_and (B : BFMCS D) (fam : FMCS D) (t : D) (φ ψ : Formula) :
     bmcs_truth_at B fam t (Formula.and φ ψ) ↔
     bmcs_truth_at B fam t φ ∧ bmcs_truth_at B fam t ψ := by
   unfold Formula.and Formula.neg
@@ -172,7 +171,7 @@ Truth of disjunction: `φ ∨ ψ` is true iff `φ` or `ψ` is true.
 
 Since `or φ ψ = ¬φ → ψ`, the truth condition is classical disjunction.
 -/
-theorem bmcs_truth_or (B : BMCS D) (fam : BFMCS D) (t : D) (φ ψ : Formula) :
+theorem bmcs_truth_or (B : BFMCS D) (fam : FMCS D) (t : D) (φ ψ : Formula) :
     bmcs_truth_at B fam t (Formula.or φ ψ) ↔
     bmcs_truth_at B fam t φ ∨ bmcs_truth_at B fam t ψ := by
   unfold Formula.or Formula.neg
@@ -192,7 +191,7 @@ Truth of diamond (possibility): `◇φ` is true iff `φ` is true at some family.
 
 Since `diamond φ = ¬□¬φ`, this holds iff there exists a family where φ is true.
 -/
-theorem bmcs_truth_diamond (B : BMCS D) (fam : BFMCS D) (t : D) (φ : Formula) :
+theorem bmcs_truth_diamond (B : BFMCS D) (fam : FMCS D) (t : D) (φ : Formula) :
     bmcs_truth_at B fam t (Formula.diamond φ) ↔
     ∃ fam' ∈ B.families, bmcs_truth_at B fam' t φ := by
   unfold Formula.diamond Formula.neg
@@ -217,13 +216,13 @@ These lemmas show how truth behaves under various operations.
 /--
 Truth at the evaluation family: shorthand for truth at B.eval_family.
 -/
-def bmcs_truth_eval (B : BMCS D) (t : D) (φ : Formula) : Prop :=
+def bmcs_truth_eval (B : BFMCS D) (t : D) (φ : Formula) : Prop :=
   bmcs_truth_at B B.eval_family t φ
 
 /--
 If φ is true at all families, then φ is true at the evaluation family.
 -/
-lemma bmcs_truth_eval_of_all (B : BMCS D) (t : D) (φ : Formula)
+lemma bmcs_truth_eval_of_all (B : BFMCS D) (t : D) (φ : Formula)
     (h : ∀ fam ∈ B.families, bmcs_truth_at B fam t φ) :
     bmcs_truth_eval B t φ :=
   h B.eval_family B.eval_family_mem
@@ -231,7 +230,7 @@ lemma bmcs_truth_eval_of_all (B : BMCS D) (t : D) (φ : Formula)
 /-!
 ## Box Properties
 
-The box operator has special properties due to the BMCS structure.
+The box operator has special properties due to the BFMCS structure.
 -/
 
 /--
@@ -240,8 +239,8 @@ Box truth is independent of which family we evaluate at.
 Since box quantifies over ALL families in the bundle, the result
 doesn't depend on which specific family we're at.
 -/
-theorem bmcs_truth_box_family_independent (B : BMCS D)
-    (fam1 fam2 : BFMCS D) (_ : fam1 ∈ B.families) (_ : fam2 ∈ B.families)
+theorem bmcs_truth_box_family_independent (B : BFMCS D)
+    (fam1 fam2 : FMCS D) (_ : fam1 ∈ B.families) (_ : fam2 ∈ B.families)
     (t : D) (φ : Formula) :
     bmcs_truth_at B fam1 t (Formula.box φ) ↔ bmcs_truth_at B fam2 t (Formula.box φ) := by
   -- Both are (∀ fam' ∈ B.families, bmcs_truth_at B fam' t φ)
@@ -250,7 +249,7 @@ theorem bmcs_truth_box_family_independent (B : BMCS D)
 /--
 Box implies the formula at the same family (reflexivity / T axiom).
 -/
-theorem bmcs_truth_box_reflexive (B : BMCS D) (fam : BFMCS D)
+theorem bmcs_truth_box_reflexive (B : BFMCS D) (fam : FMCS D)
     (hfam : fam ∈ B.families) (t : D) (φ : Formula)
     (h : bmcs_truth_at B fam t (Formula.box φ)) :
     bmcs_truth_at B fam t φ := by
@@ -260,9 +259,9 @@ theorem bmcs_truth_box_reflexive (B : BMCS D) (fam : BFMCS D)
 /--
 Box-box implies box (transitivity / 4 axiom).
 
-In BMCS, □□φ and □φ have the same truth condition (universal over bundle).
+In BFMCS, □□φ and □φ have the same truth condition (universal over bundle).
 -/
-theorem bmcs_truth_box_transitive (B : BMCS D) (fam : BFMCS D)
+theorem bmcs_truth_box_transitive (B : BFMCS D) (fam : FMCS D)
     (_ : fam ∈ B.families) (t : D) (φ : Formula)
     (h : bmcs_truth_at B fam t (Formula.box (Formula.box φ))) :
     bmcs_truth_at B fam t (Formula.box φ) := by
@@ -273,7 +272,7 @@ theorem bmcs_truth_box_transitive (B : BMCS D) (fam : BFMCS D)
 /--
 Necessitation: if φ is true everywhere, then □φ is true everywhere.
 -/
-theorem bmcs_truth_necessitation (B : BMCS D) (fam : BFMCS D)
+theorem bmcs_truth_necessitation (B : BFMCS D) (fam : FMCS D)
     (t : D) (φ : Formula)
     (h : ∀ fam' ∈ B.families, bmcs_truth_at B fam' t φ) :
     bmcs_truth_at B fam t (Formula.box φ) := by
@@ -291,7 +290,7 @@ G (all_future) is reflexive: G φ → φ.
 
 This follows because t ≤ t, so the current time is included in "all future".
 -/
-theorem bmcs_truth_all_future_reflexive (B : BMCS D) (fam : BFMCS D)
+theorem bmcs_truth_all_future_reflexive (B : BFMCS D) (fam : FMCS D)
     (t : D) (φ : Formula)
     (h : bmcs_truth_at B fam t (Formula.all_future φ)) :
     bmcs_truth_at B fam t φ := by
@@ -303,7 +302,7 @@ H (all_past) is reflexive: H φ → φ.
 
 This follows because t ≤ t, so the current time is included in "all past".
 -/
-theorem bmcs_truth_all_past_reflexive (B : BMCS D) (fam : BFMCS D)
+theorem bmcs_truth_all_past_reflexive (B : BFMCS D) (fam : FMCS D)
     (t : D) (φ : Formula)
     (h : bmcs_truth_at B fam t (Formula.all_past φ)) :
     bmcs_truth_at B fam t φ := by
@@ -313,7 +312,7 @@ theorem bmcs_truth_all_past_reflexive (B : BMCS D) (fam : BFMCS D)
 /--
 G is transitive: G φ → GG φ.
 -/
-theorem bmcs_truth_all_future_transitive (B : BMCS D) (fam : BFMCS D)
+theorem bmcs_truth_all_future_transitive (B : BFMCS D) (fam : FMCS D)
     (t : D) (φ : Formula)
     (h : bmcs_truth_at B fam t (Formula.all_future φ)) :
     bmcs_truth_at B fam t (Formula.all_future (Formula.all_future φ)) := by
@@ -324,7 +323,7 @@ theorem bmcs_truth_all_future_transitive (B : BMCS D) (fam : BFMCS D)
 /--
 H is transitive: H φ → HH φ.
 -/
-theorem bmcs_truth_all_past_transitive (B : BMCS D) (fam : BFMCS D)
+theorem bmcs_truth_all_past_transitive (B : BFMCS D) (fam : FMCS D)
     (t : D) (φ : Formula)
     (h : bmcs_truth_at B fam t (Formula.all_past φ)) :
     bmcs_truth_at B fam t (Formula.all_past (Formula.all_past φ)) := by
@@ -333,9 +332,9 @@ theorem bmcs_truth_all_past_transitive (B : BMCS D) (fam : BFMCS D)
   exact h u (le_trans hus hst)
 
 /-!
-## EvalBMCS Truth Definition
+## EvalBFMCS Truth Definition
 
-The EvalBMCS structure from CoherentConstruction.lean provides a weaker but sufficient
+The EvalBFMCS structure from CoherentConstruction.lean provides a weaker but sufficient
 structure for completeness proofs. It guarantees:
 - `modal_forward_eval`: Box phi in eval_family → phi in all families
 - `modal_backward_eval`: phi in all families → Box phi in eval_family
@@ -343,24 +342,24 @@ structure for completeness proofs. It guarantees:
 This suffices for the truth lemma when evaluating at the eval_family.
 -/
 
--- Import EvalBMCS from CoherentConstruction
--- Note: We define truth for EvalBMCS by reusing the same recursive definition
+-- Import EvalBFMCS from CoherentConstruction
+-- Note: We define truth for EvalBFMCS by reusing the same recursive definition
 -- but the modal coherence properties are different.
 
 /--
-Truth of a formula at a specific family and time within an EvalBMCS.
+Truth of a formula at a specific family and time within an EvalBFMCS.
 
 **Parameters**:
-- `B`: The EvalBMCS providing the bundle of families
+- `B`: The EvalBFMCS providing the bundle of families
 - `fam`: The specific family at which we evaluate
 - `t`: The time point at which we evaluate
 - `φ`: The formula to evaluate
 
 This mirrors `bmcs_truth_at` exactly - the semantic definition is the same.
-The difference is in the structure (EvalBMCS vs BMCS) and what coherence properties hold.
+The difference is in the structure (EvalBFMCS vs BFMCS) and what coherence properties hold.
 -/
-def eval_bmcs_truth_at (families : Set (BFMCS D))
-    (fam : BFMCS D) (t : D) : Formula → Prop
+def eval_bmcs_truth_at (families : Set (FMCS D))
+    (fam : FMCS D) (t : D) : Formula → Prop
   | Formula.atom p => Formula.atom p ∈ fam.mcs t
   | Formula.bot => False
   | Formula.imp φ ψ => eval_bmcs_truth_at families fam t φ → eval_bmcs_truth_at families fam t ψ
@@ -369,33 +368,33 @@ def eval_bmcs_truth_at (families : Set (BFMCS D))
   | Formula.all_future φ => ∀ s, t ≤ s → eval_bmcs_truth_at families fam s φ
 
 /--
-Context is satisfied in an EvalBMCS at a given family and time.
+Context is satisfied in an EvalBFMCS at a given family and time.
 -/
-def eval_bmcs_satisfies_context (families : Set (BFMCS D))
-    (fam : BFMCS D) (t : D) (Γ : List Formula) : Prop :=
+def eval_bmcs_satisfies_context (families : Set (FMCS D))
+    (fam : FMCS D) (t : D) (Γ : List Formula) : Prop :=
   ∀ γ ∈ Γ, eval_bmcs_truth_at families fam t γ
 
 /-!
-## EvalBMCS Truth Properties
+## EvalBFMCS Truth Properties
 
-These lemmas mirror the BMCS truth properties but for the EvalBMCS structure.
+These lemmas mirror the BFMCS truth properties but for the EvalBFMCS structure.
 -/
 
 /--
-Truth of negation in EvalBMCS: `¬φ` is true iff `φ` is false.
+Truth of negation in EvalBFMCS: `¬φ` is true iff `φ` is false.
 -/
-theorem eval_bmcs_truth_neg (families : Set (BFMCS D))
-    (fam : BFMCS D) (t : D) (φ : Formula) :
+theorem eval_bmcs_truth_neg (families : Set (FMCS D))
+    (fam : FMCS D) (t : D) (φ : Formula) :
     eval_bmcs_truth_at families fam t (Formula.neg φ) ↔
     ¬eval_bmcs_truth_at families fam t φ := by
   unfold Formula.neg
   simp only [eval_bmcs_truth_at]
 
 /--
-Truth of conjunction in EvalBMCS: `φ ∧ ψ` is true iff both `φ` and `ψ` are true.
+Truth of conjunction in EvalBFMCS: `φ ∧ ψ` is true iff both `φ` and `ψ` are true.
 -/
-theorem eval_bmcs_truth_and (families : Set (BFMCS D))
-    (fam : BFMCS D) (t : D) (φ ψ : Formula) :
+theorem eval_bmcs_truth_and (families : Set (FMCS D))
+    (fam : FMCS D) (t : D) (φ ψ : Formula) :
     eval_bmcs_truth_at families fam t (Formula.and φ ψ) ↔
     eval_bmcs_truth_at families fam t φ ∧ eval_bmcs_truth_at families fam t ψ := by
   unfold Formula.and Formula.neg
@@ -418,10 +417,10 @@ theorem eval_bmcs_truth_and (families : Set (BFMCS D))
     exact h_imp hφ hψ
 
 /--
-Truth of disjunction in EvalBMCS: `φ ∨ ψ` is true iff `φ` or `ψ` is true.
+Truth of disjunction in EvalBFMCS: `φ ∨ ψ` is true iff `φ` or `ψ` is true.
 -/
-theorem eval_bmcs_truth_or (families : Set (BFMCS D))
-    (fam : BFMCS D) (t : D) (φ ψ : Formula) :
+theorem eval_bmcs_truth_or (families : Set (FMCS D))
+    (fam : FMCS D) (t : D) (φ ψ : Formula) :
     eval_bmcs_truth_at families fam t (Formula.or φ ψ) ↔
     eval_bmcs_truth_at families fam t φ ∨ eval_bmcs_truth_at families fam t ψ := by
   unfold Formula.or Formula.neg
@@ -437,10 +436,10 @@ theorem eval_bmcs_truth_or (families : Set (BFMCS D))
     | inr hψ => exact hψ
 
 /--
-Truth of diamond (possibility) in EvalBMCS: `◇φ` is true iff `φ` is true at some family.
+Truth of diamond (possibility) in EvalBFMCS: `◇φ` is true iff `φ` is true at some family.
 -/
-theorem eval_bmcs_truth_diamond (families : Set (BFMCS D))
-    (fam : BFMCS D) (t : D) (φ : Formula) :
+theorem eval_bmcs_truth_diamond (families : Set (FMCS D))
+    (fam : FMCS D) (t : D) (φ : Formula) :
     eval_bmcs_truth_at families fam t (Formula.diamond φ) ↔
     ∃ fam' ∈ families, eval_bmcs_truth_at families fam' t φ := by
   unfold Formula.diamond Formula.neg
@@ -456,20 +455,20 @@ theorem eval_bmcs_truth_diamond (families : Set (BFMCS D))
     exact h_all fam' hfam' hφ
 
 /--
-Box truth is independent of which family we evaluate at in EvalBMCS.
+Box truth is independent of which family we evaluate at in EvalBFMCS.
 -/
-theorem eval_bmcs_truth_box_family_independent (families : Set (BFMCS D))
-    (fam1 fam2 : BFMCS D) (_ : fam1 ∈ families) (_ : fam2 ∈ families)
+theorem eval_bmcs_truth_box_family_independent (families : Set (FMCS D))
+    (fam1 fam2 : FMCS D) (_ : fam1 ∈ families) (_ : fam2 ∈ families)
     (t : D) (φ : Formula) :
     eval_bmcs_truth_at families fam1 t (Formula.box φ) ↔
     eval_bmcs_truth_at families fam2 t (Formula.box φ) := by
   constructor <;> (intro h; exact h)
 
 /--
-Box implies the formula at the same family (reflexivity / T axiom) in EvalBMCS.
+Box implies the formula at the same family (reflexivity / T axiom) in EvalBFMCS.
 -/
-theorem eval_bmcs_truth_box_reflexive (families : Set (BFMCS D))
-    (fam : BFMCS D) (hfam : fam ∈ families) (t : D) (φ : Formula)
+theorem eval_bmcs_truth_box_reflexive (families : Set (FMCS D))
+    (fam : FMCS D) (hfam : fam ∈ families) (t : D) (φ : Formula)
     (h : eval_bmcs_truth_at families fam t (Formula.box φ)) :
     eval_bmcs_truth_at families fam t φ := by
   simp only [eval_bmcs_truth_at] at h

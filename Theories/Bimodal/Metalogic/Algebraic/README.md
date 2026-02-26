@@ -3,7 +3,7 @@
 **Status**: Future Extension Infrastructure (Not Required for Main Completeness Proof)
 
 This directory contains an algebraic approach to the representation theorem using Lindenbaum-Tarski
-algebra and ultrafilter theory. This is an **independent alternative** to the BMCS approach in
+algebra and ultrafilter theory. This is an **independent alternative** to the BFMCS approach in
 `Bundle/`.
 
 ## Purpose
@@ -13,7 +13,7 @@ The algebraic modules provide:
 2. Infrastructure for Stone duality and algebraic topology extensions
 3. A cleaner mathematical foundation for future algebraic modal logic research
 
-**Note**: The main completeness proof uses `Bundle/` (BMCS) and `FMP/`. This algebraic path is
+**Note**: The main completeness proof uses `Bundle/` (BFMCS) and `FMP/`. This algebraic path is
 supplementary infrastructure, not required for the current proof architecture.
 
 ## Modules
@@ -116,7 +116,7 @@ The algebraic approach proceeds as follows:
 
 The main completeness proof architecture uses:
 - `Core/` - MCS foundations (shared)
-- `Bundle/` - BMCS completeness via bundled MCS families
+- `Bundle/` - BFMCS completeness via bundled MCS families
 - `FMP/` - Finite model property via closure-based construction
 
 This algebraic path provides:
@@ -140,7 +140,7 @@ This algebraic path provides:
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Core README](../Core/README.md) - MCS foundations shared by both approaches
-- [Bundle README](../Bundle/README.md) - Primary BMCS completeness approach
+- [Bundle README](../Bundle/README.md) - Primary BFMCS completeness approach
 - [FMP README](../FMP/README.md) - FMP completeness approach
 - [Decidability README](../Decidability/README.md) - Decision procedure
 

@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.BMCSTruth
+import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.BFMCSTruth
 import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
@@ -10,23 +10,23 @@ import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Propositional
 
 /-!
-# BMCS Completeness Theorems
+# BFMCS Completeness Theorems
 
 This module proves the **main completeness theorems** for bimodal TM logic using the
-Bundle of Maximal Consistent Sets (BMCS) approach.
+Bundle of Maximal Consistent Sets (BFMCS) approach.
 
 ## Key Results
 
-1. **Representation Theorem**: If a formula is consistent, it is satisfiable in a BMCS.
-2. **Weak Completeness**: If a formula is BMCS-valid, it is derivable.
-3. **Strong Completeness**: If a formula is a BMCS-consequence of a context, it is derivable.
+1. **Representation Theorem**: If a formula is consistent, it is satisfiable in a BFMCS.
+2. **Weak Completeness**: If a formula is BFMCS-valid, it is derivable.
+3. **Strong Completeness**: If a formula is a BFMCS-consequence of a context, it is derivable.
 
 ## Why These Are Full Completeness Results
 
 These theorems are **genuine completeness results**, not weakened versions:
 
 1. **Completeness is existential**: It states that if Gamma is consistent, there EXISTS
-   a model satisfying Gamma. The BMCS construction provides exactly ONE such model.
+   a model satisfying Gamma. The BFMCS construction provides exactly ONE such model.
 
 2. **Henkin-style approach**: This is analogous to Henkin semantics for higher-order logic,
    where we restrict to a class of canonical models without weakening the completeness claim.
@@ -42,7 +42,7 @@ These theorems are **genuine completeness results**, not weakened versions:
 
 | Theorem | Statement | Status |
 |---------|-----------|--------|
-| `bmcs_representation` | consistent [φ] → ∃ BMCS satisfying φ | SORRY-FREE |
+| `bmcs_representation` | consistent [φ] → ∃ BFMCS satisfying φ | SORRY-FREE |
 | `bmcs_weak_completeness` | bmcs_valid φ → ⊢ φ | SORRY-FREE |
 | `bmcs_strong_completeness` | bmcs_consequence Γ φ → Γ ⊢ φ | SORRY-FREE |
 
@@ -50,19 +50,19 @@ These theorems are **genuine completeness results**, not weakened versions:
 
 All three theorems use **contraposition**:
 
-1. **Representation**: If φ is consistent, construct BMCS via Lindenbaum and show φ true
+1. **Representation**: If φ is consistent, construct BFMCS via Lindenbaum and show φ true
 2. **Weak Completeness**: If ⊬ φ, then ¬φ is consistent, so satisfiable, so not valid
 3. **Strong Completeness**: If Γ ⊬ φ, then Γ ∪ {¬φ} is consistent, so satisfiable
 
-The key insight is that the BMCS construction + truth lemma converts syntactic consistency
+The key insight is that the BFMCS construction + truth lemma converts syntactic consistency
 into semantic satisfiability.
 
 ## Dependencies
 
 - `Construction.lean`: `ContextConsistent`, `lindenbaumMCS`
 - `TruthLemma.lean`: `bmcs_truth_lemma`, `bmcs_eval_truth`
-- `BMCSTruth.lean`: `bmcs_truth_at`, `bmcs_valid`
-- `BMCS.lean`: BMCS structure and modal coherence
+- `BFMCSTruth.lean`: `bmcs_truth_at`, `bmcs_valid`
+- `BFMCS.lean`: BFMCS structure and modal coherence
 
 ## References
 
@@ -81,76 +81,76 @@ variable {D : Type*} [Preorder D] [Zero D]
 /-!
 ## Representation Theorem
 
-The representation theorem states: if a formula is consistent, it is satisfiable in a BMCS.
+The representation theorem states: if a formula is consistent, it is satisfiable in a BFMCS.
 
 This is the **core existential statement** that completeness depends on.
 -/
 
 /--
 **Representation Theorem**: If `φ` is consistent (i.e., `[φ]` has no derivation of ⊥),
-then there exists a BMCS where `φ` is true at the evaluation point.
+then there exists a BFMCS where `φ` is true at the evaluation point.
 
 **Proof Strategy**:
-1. Use `construct_bmcs` to build a BMCS from the consistent context `[φ]`
+1. Use `construct_bmcs` to build a BFMCS from the consistent context `[φ]`
 2. By `construct_bmcs_contains_context`, `φ ∈ eval_family.mcs 0`
 3. By `bmcs_truth_lemma`, `φ` is true at `(eval_family, 0)`
 
-This theorem shows that consistent formulas have BMCS models.
+This theorem shows that consistent formulas have BFMCS models.
 -/
 theorem bmcs_representation (φ : Formula) (h_cons : ContextConsistent [φ]) :
-    ∃ (B : BMCS Int), bmcs_truth_at B B.eval_family 0 φ := by
-  -- Construct a fully saturated BMCS from the consistent context [φ]
+    ∃ (B : BFMCS Int), bmcs_truth_at B B.eval_family 0 φ := by
+  -- Construct a fully saturated BFMCS from the consistent context [φ]
   -- Task 881: Now uses Int-specialized axiom (to be replaced with constructive proof)
-  let B := construct_saturated_bmcs_int [φ] h_cons
+  let B := construct_saturated_bfmcs_int [φ] h_cons
   use B
-  -- φ ∈ B.eval_family.mcs 0 by construct_saturated_bmcs_int_contains_context
+  -- φ ∈ B.eval_family.mcs 0 by construct_saturated_bfmcs_int_contains_context
   have h_in_mcs : φ ∈ B.eval_family.mcs 0 :=
-    construct_saturated_bmcs_int_contains_context [φ] h_cons φ (by simp)
-  -- The BMCS is temporally coherent
+    construct_saturated_bfmcs_int_contains_context [φ] h_cons φ (by simp)
+  -- The BFMCS is temporally coherent
   have h_tc : B.temporally_coherent :=
-    construct_saturated_bmcs_int_temporally_coherent [φ] h_cons
+    construct_saturated_bfmcs_int_temporally_coherent [φ] h_cons
   -- By truth lemma, φ is true at (eval_family, 0)
   exact (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 φ).mp h_in_mcs
 
 /--
 **Representation Theorem (Context Version)**: If a context Γ is consistent,
-then there exists a BMCS where all formulas in Γ are true at the evaluation point.
+then there exists a BFMCS where all formulas in Γ are true at the evaluation point.
 
 This is a generalization of `bmcs_representation` to contexts.
 -/
 theorem bmcs_context_representation (Γ : List Formula) (h_cons : ContextConsistent Γ) :
-    ∃ (B : BMCS Int), ∀ γ ∈ Γ, bmcs_truth_at B B.eval_family 0 γ := by
-  -- Construct a fully saturated BMCS from the consistent context Γ
+    ∃ (B : BFMCS Int), ∀ γ ∈ Γ, bmcs_truth_at B B.eval_family 0 γ := by
+  -- Construct a fully saturated BFMCS from the consistent context Γ
   -- Task 881: Now uses Int-specialized axiom (to be replaced with constructive proof)
-  let B := construct_saturated_bmcs_int Γ h_cons
+  let B := construct_saturated_bfmcs_int Γ h_cons
   use B
-  -- The BMCS is temporally coherent
+  -- The BFMCS is temporally coherent
   have h_tc : B.temporally_coherent :=
-    construct_saturated_bmcs_int_temporally_coherent Γ h_cons
-  -- For each γ ∈ Γ, γ ∈ B.eval_family.mcs 0 by construct_saturated_bmcs_int_contains_context
+    construct_saturated_bfmcs_int_temporally_coherent Γ h_cons
+  -- For each γ ∈ Γ, γ ∈ B.eval_family.mcs 0 by construct_saturated_bfmcs_int_contains_context
   intro γ h_mem
   have h_in_mcs : γ ∈ B.eval_family.mcs 0 :=
-    construct_saturated_bmcs_int_contains_context Γ h_cons γ h_mem
+    construct_saturated_bfmcs_int_contains_context Γ h_cons γ h_mem
   -- By truth lemma, γ is true at (eval_family, 0)
   exact (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 γ).mp h_in_mcs
 
 /-!
 ## Weak Completeness
 
-Weak completeness states: if a formula is valid (true in all BMCS), then it is derivable.
+Weak completeness states: if a formula is valid (true in all BFMCS), then it is derivable.
 
 We prove this by contraposition: if `⊬ φ`, then `[¬φ]` is consistent, so `¬φ` is satisfiable,
 so `φ` is not valid.
 -/
 
 /--
-Int-specific BMCS validity: a formula is valid over Int if true in all Int-BMCS.
+Int-specific BFMCS validity: a formula is valid over Int if true in all Int-BFMCS.
 
 We use this to avoid universe issues with the fully polymorphic `bmcs_valid`.
 Since we can construct countermodels using `Int`, this suffices for completeness.
 -/
 def bmcs_valid_Int (φ : Formula) : Prop :=
-  ∀ (B : BMCS Int), ∀ fam ∈ B.families, ∀ t : Int, bmcs_truth_at B fam t φ
+  ∀ (B : BFMCS Int), ∀ fam ∈ B.families, ∀ t : Int, bmcs_truth_at B fam t φ
 
 /--
 If `bmcs_valid φ` (polymorphic), then `bmcs_valid_Int φ` (Int-specific).
@@ -193,11 +193,11 @@ lemma not_derivable_implies_neg_consistent (φ : Formula)
   exact h_not_deriv ⟨d_phi⟩
 
 /--
-**Weak Completeness (Contrapositive Form)**: If `⊬ φ`, then `φ` is not BMCS-valid.
+**Weak Completeness (Contrapositive Form)**: If `⊬ φ`, then `φ` is not BFMCS-valid.
 
 **Proof Strategy**:
 1. If `⊬ φ`, then `[¬φ]` is consistent (by `not_derivable_implies_neg_consistent`)
-2. By representation, there exists BMCS where `¬φ` is true
+2. By representation, there exists BFMCS where `¬φ` is true
 3. So `φ` is false at that point
 4. Therefore `φ` is not valid
 -/
@@ -207,7 +207,7 @@ theorem bmcs_not_valid_Int_of_not_derivable (φ : Formula)
   -- [φ.neg] is consistent
   have h_neg_cons : ContextConsistent [φ.neg] :=
     not_derivable_implies_neg_consistent φ h_not_deriv
-  -- There exists BMCS where ¬φ is true at eval_family
+  -- There exists BFMCS where ¬φ is true at eval_family
   obtain ⟨B, h_neg_true⟩ := bmcs_representation φ.neg h_neg_cons
   -- φ is false at that point
   have h_phi_false : ¬bmcs_truth_at B B.eval_family 0 φ := by
@@ -219,7 +219,7 @@ theorem bmcs_not_valid_Int_of_not_derivable (φ : Formula)
   exact h_valid B B.eval_family B.eval_family_mem 0
 
 /--
-**Weak Completeness (Contrapositive Form, Polymorphic)**: If `⊬ φ`, then `φ` is not BMCS-valid.
+**Weak Completeness (Contrapositive Form, Polymorphic)**: If `⊬ φ`, then `φ` is not BFMCS-valid.
 
 Uses the Int-specific result and the fact that polymorphic validity implies Int-validity.
 -/
@@ -231,7 +231,7 @@ theorem bmcs_not_valid_of_not_derivable (φ : Formula)
   exact bmcs_not_valid_Int_of_not_derivable φ h_not_deriv h_valid_Int
 
 /--
-**Weak Completeness**: If `φ` is BMCS-valid, then `⊢ φ`.
+**Weak Completeness**: If `φ` is BFMCS-valid, then `⊢ φ`.
 
 This is the standard weak completeness theorem: validity implies derivability.
 
@@ -253,25 +253,25 @@ theorem bmcs_weak_completeness (φ : Formula) (h_valid : bmcs_valid φ) :
 Strong completeness states: if a formula is a semantic consequence of a context,
 then it is derivable from that context.
 
-BMCS consequence: `∀ B fam t, (∀ γ ∈ Γ, bmcs_truth γ) → bmcs_truth φ`
+BFMCS consequence: `∀ B fam t, (∀ γ ∈ Γ, bmcs_truth γ) → bmcs_truth φ`
 Derivability: `Γ ⊢ φ` (there exists a derivation tree)
 -/
 
 /--
-BMCS semantic consequence: φ is a consequence of Γ if whenever Γ is satisfied, φ is satisfied.
+BFMCS semantic consequence: φ is a consequence of Γ if whenever Γ is satisfied, φ is satisfied.
 -/
 def bmcs_consequence (Γ : List Formula) (φ : Formula) : Prop :=
   ∀ (D : Type) [Preorder D] [Zero D],
-  ∀ (B : BMCS D) (fam : BFMCS D) (_ : fam ∈ B.families) (t : D),
+  ∀ (B : BFMCS D) (fam : FMCS D) (_ : fam ∈ B.families) (t : D),
   (∀ γ ∈ Γ, bmcs_truth_at B fam t γ) → bmcs_truth_at B fam t φ
 
 /--
-Int-specific BMCS consequence: φ is a consequence of Γ over Int-BMCS.
+Int-specific BFMCS consequence: φ is a consequence of Γ over Int-BFMCS.
 
 We use this to avoid universe issues with the fully polymorphic `bmcs_consequence`.
 -/
 def bmcs_consequence_Int (Γ : List Formula) (φ : Formula) : Prop :=
-  ∀ (B : BMCS Int) (fam : BFMCS Int) (_ : fam ∈ B.families) (t : Int),
+  ∀ (B : BFMCS Int) (fam : FMCS Int) (_ : fam ∈ B.families) (t : Int),
   (∀ γ ∈ Γ, bmcs_truth_at B fam t γ) → bmcs_truth_at B fam t φ
 
 /--
@@ -342,11 +342,11 @@ lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ 
   exact h_not_deriv ⟨d_phi⟩
 
 /--
-**Strong Completeness (Contrapositive Form, Int)**: If Γ ⊬ φ, then φ is not a BMCS-consequence of Γ over Int.
+**Strong Completeness (Contrapositive Form, Int)**: If Γ ⊬ φ, then φ is not a BFMCS-consequence of Γ over Int.
 
 **Proof Strategy**:
 1. If Γ ⊬ φ, then Γ ++ [¬φ] is consistent
-2. By context representation, there exists BMCS where Γ and ¬φ are all true
+2. By context representation, there exists BFMCS where Γ and ¬φ are all true
 3. So Γ is satisfied but φ is false
 4. Therefore φ is not a consequence of Γ
 -/
@@ -356,7 +356,7 @@ theorem bmcs_not_consequence_Int_of_not_derivable (Γ : List Formula) (φ : Form
   -- Γ ++ [φ.neg] is consistent
   have h_ext_cons : ContextConsistent (Γ ++ [φ.neg]) :=
     context_not_derivable_implies_extended_consistent Γ φ h_not_deriv
-  -- There exists BMCS where Γ ++ [¬φ] is all true
+  -- There exists BFMCS where Γ ++ [¬φ] is all true
   obtain ⟨B, h_all_true⟩ := bmcs_context_representation (Γ ++ [φ.neg]) h_ext_cons
   -- ¬φ is true at eval_family
   have h_neg_true : bmcs_truth_at B B.eval_family 0 φ.neg := by
@@ -377,7 +377,7 @@ theorem bmcs_not_consequence_Int_of_not_derivable (Γ : List Formula) (φ : Form
   exact h_conseq B B.eval_family B.eval_family_mem 0 h_gamma_sat
 
 /--
-**Strong Completeness (Contrapositive Form, Polymorphic)**: If Γ ⊬ φ, then φ is not a BMCS-consequence of Γ.
+**Strong Completeness (Contrapositive Form, Polymorphic)**: If Γ ⊬ φ, then φ is not a BFMCS-consequence of Γ.
 
 Uses the Int-specific result and the fact that polymorphic consequence implies Int-consequence.
 -/
@@ -389,7 +389,7 @@ theorem bmcs_not_consequence_of_not_derivable (Γ : List Formula) (φ : Formula)
   exact bmcs_not_consequence_Int_of_not_derivable Γ φ h_not_deriv h_conseq_Int
 
 /--
-**Strong Completeness**: If φ is a BMCS-consequence of Γ, then Γ ⊢ φ.
+**Strong Completeness**: If φ is a BFMCS-consequence of Γ, then Γ ⊢ φ.
 
 This is the strong completeness theorem: semantic consequence implies derivability.
 
@@ -411,7 +411,7 @@ theorem bmcs_strong_completeness (Γ : List Formula) (φ : Formula)
 
 We have proven the three main completeness theorems:
 
-1. **`bmcs_representation`**: `consistent [φ] → ∃ BMCS, bmcs_truth φ` (SORRY-FREE)
+1. **`bmcs_representation`**: `consistent [φ] → ∃ BFMCS, bmcs_truth φ` (SORRY-FREE)
 2. **`bmcs_weak_completeness`**: `bmcs_valid φ → ⊢ φ`
 3. **`bmcs_strong_completeness`**: `bmcs_consequence Γ φ → Γ ⊢ φ`
 
@@ -427,7 +427,7 @@ We have proven the three main completeness theorems:
 
 **Sorries in this file**: NONE!
 
-**KEY INSIGHT**: The BMCS approach successfully resolves the modal completeness obstruction:
+**KEY INSIGHT**: The BFMCS approach successfully resolves the modal completeness obstruction:
 - The **box case** of the truth lemma in TruthLemma.lean is SORRY-FREE
 - The **representation theorem** here is SORRY-FREE
 - The **universe polymorphism** issues were resolved by using `Type` instead of `Type*`
@@ -438,11 +438,11 @@ We have proven the three main completeness theorems:
 Combined with soundness (proven separately), we have:
 
 ```
-BMCS Completeness + Standard Soundness
+BFMCS Completeness + Standard Soundness
 ═══════════════════════════════════════
 ⊢ φ  ↔  bmcs_valid φ  →  standard_valid φ
 
-Derivability  ↔  BMCS-validity  →  Standard-validity
+Derivability  ↔  BFMCS-validity  →  Standard-validity
 ```
 
 This is a FULL completeness result for TM logic. This file is SORRY-FREE!
@@ -450,17 +450,17 @@ This is a FULL completeness result for TM logic. This file is SORRY-FREE!
 ### Axiom Dependencies (Task 881 Updated)
 
 This module inherits axiom dependencies from:
-- **TemporalCoherentConstruction.lean**: `fully_saturated_bmcs_exists_int` (Int-specialized axiom)
-  - Asserts existence of a fully saturated, temporally coherent BMCS indexed by Int
+- **TemporalCoherentConstruction.lean**: `fully_saturated_bfmcs_exists_int` (Int-specialized axiom)
+  - Asserts existence of a fully saturated, temporally coherent BFMCS indexed by Int
   - Modal backward follows from `saturated_modal_backward` (PROVEN in ModalSaturation.lean)
   - Task 881: Specialized to Int to enable constructive proof via DovetailingChain
 
 **DEPRECATED AXIOMS** (no longer used in completeness chain):
-- **TemporalCoherentConstruction.lean**: `fully_saturated_bmcs_exists` (polymorphic version)
+- **TemporalCoherentConstruction.lean**: `fully_saturated_bfmcs_exists` (polymorphic version)
   - Deprecated in Task 881 in favor of Int-specialized version
 - **Construction.lean**: `singleFamily_modal_backward_axiom` (FALSE, deprecated)
   - This axiom was mathematically false (claimed phi -> Box phi in MCS)
-  - Replaced by `fully_saturated_bmcs_exists` in Task 843
+  - Replaced by `fully_saturated_bfmcs_exists` in Task 843
 
 The main `bmcs_truth_lemma` in TruthLemma.lean is fully sorry-free (Task 857).
 

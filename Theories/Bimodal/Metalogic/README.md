@@ -8,7 +8,7 @@ completeness, decidability, and the finite model property.
 The metalogic proves the fundamental metatheoretic results for TM bimodal logic:
 
 1. **Soundness**: Every derivable formula is semantically valid
-2. **Completeness**: Every valid formula is derivable (via BMCS and FMP approaches)
+2. **Completeness**: Every valid formula is derivable (via BFMCS and FMP approaches)
 3. **Finite Model Property**: Satisfiable formulas have finite models
 4. **Decidability**: Tableau-based decision procedure with proof extraction
 5. **Algebraic**: Alternative approach via Lindenbaum quotient and ultrafilter-MCS bijection
@@ -21,7 +21,7 @@ theorem soundness : (Gamma |- phi) -> (Gamma |= phi)
 ```
 All 15 TM axioms and 7 derivation rules preserve validity.
 
-### BMCS Completeness (`Bundle/`)
+### BFMCS Completeness (`Bundle/`)
 ```lean
 theorem bmcs_weak_completeness : bmcs_valid phi -> |- phi
 theorem bmcs_strong_completeness : bmcs_consequence Gamma phi -> Gamma |- phi
@@ -60,10 +60,10 @@ Metalogic/
 │   ├── DeductionTheorem.lean
 │   └── MCSProperties.lean
 │
-├── Bundle/                # BMCS completeness (primary approach)
-│   ├── IndexedMCSFamily.lean
-│   ├── BMCS.lean
-│   ├── BMCSTruth.lean
+├── Bundle/                # BFMCS completeness (primary approach)
+│   ├── FMCS.lean
+│   ├── BFMCS.lean
+│   ├── BFMCSTruth.lean
 │   ├── TruthLemma.lean
 │   ├── ModalSaturation.lean
 │   ├── Construction.lean
@@ -114,7 +114,7 @@ This flowchart shows how modules depend on each other. Arrows point from depende
            v                             v                             v
 ┌────────────────────┐      ┌─────────────────────┐       ┌────────────────────┐
 │   Soundness.lean   │      │ Bundle/Completeness │       │ FMP/Semantic       │
-│ (Soundness theorem)│      │  (BMCS completeness)│       │ CanonicalModel     │
+│ (Soundness theorem)│      │  (BFMCS completeness)│       │ CanonicalModel     │
 └────────────────────┘      └─────────────────────┘       └────────────────────┘
            │                             │                             │
            v                             │                             │
@@ -130,7 +130,7 @@ This flowchart shows how modules depend on each other. Arrows point from depende
                                 └─────────────────────────────────────────┘
 ```
 
-### Bundle/ Dependencies (BMCS Completeness)
+### Bundle/ Dependencies (BFMCS Completeness)
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -142,18 +142,18 @@ This flowchart shows how modules depend on each other. Arrows point from depende
            │                             │                             │
            v                             v                             v
 ┌────────────────────┐      ┌─────────────────────┐       ┌────────────────────┐
-│  Construction.lean │      │   TruthLemma.lean   │       │    BMCSTruth.lean  │
-│ (BMCS construction)│      │  (MCS <-> truth)    │       │   (truth defn)     │
+│  Construction.lean │      │   TruthLemma.lean   │       │    BFMCSTruth.lean  │
+│ (BFMCS construction)│      │  (MCS <-> truth)    │       │   (truth defn)     │
 └────────────────────┘      └─────────────────────┘       └────────────────────┘
            │                             │                             │
            │                             v                             │
            │                 ┌─────────────────────┐                   │
-           │                 │    BMCSTruth.lean   │<──────────────────┘
+           │                 │    BFMCSTruth.lean   │<──────────────────┘
            │                 └─────────────────────┘
            │                             │
            v                             v
 ┌────────────────────┐      ┌─────────────────────┐
-│ IndexedMCSFamily   │      │      BMCS.lean      │
+│ FMCS   │      │      BFMCS.lean      │
 │ (temporal families)│      │ (bundle structure)  │
 └────────────────────┘      └─────────────────────┘
            │                             │
@@ -286,7 +286,7 @@ This flowchart shows how modules depend on each other. Arrows point from depende
         │                                │                                │
 ┌───────┴───────┐              ┌─────────┴─────────┐            ┌─────────┴─────────┐
 │   Bundle/     │              │      FMP/         │            │   Algebraic/      │
-│ (BMCS appr)   │              │ (FMP approach)    │            │ (Algebraic appr)  │
+│ (BFMCS appr)   │              │ (FMP approach)    │            │ (Algebraic appr)  │
 └───────────────┘              └───────────────────┘            └───────────────────┘
 
 ┌───────────────────────────────────────────────────────────────────────────────────┐
@@ -300,7 +300,7 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 | Directory | Purpose | Status | README |
 |-----------|---------|--------|--------|
 | [Core/](Core/README.md) | MCS theory, Lindenbaum's lemma | Sorry-free | Yes |
-| [Bundle/](Bundle/README.md) | BMCS completeness | Sorry-free (main theorems) | Yes |
+| [Bundle/](Bundle/README.md) | BFMCS completeness | Sorry-free (main theorems) | Yes |
 | [FMP/](FMP/README.md) | Finite model property | Sorry-free | Yes |
 | [Decidability/](Decidability/README.md) | Tableau decision procedure | Sorry-free | Yes |
 | [Algebraic/](Algebraic/README.md) | Algebraic approach | Sorry-free | Yes |
@@ -321,7 +321,7 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 
 **Key Point**: These do NOT affect main theorems. All main completeness, soundness, and
 decidability theorems are sorry-free. The `SaturatedConstruction.lean` file is work-in-progress
-infrastructure for future multi-family BMCS construction.
+infrastructure for future multi-family BFMCS construction.
 
 **Verification command**:
 ```bash
@@ -330,7 +330,7 @@ grep -c "^[[:space:]]*sorry\$\|[[:space:]]sorry\$\|:= sorry\$" Theories/Bimodal/
 
 ### Recommended Theorems
 
-For BMCS completeness (Henkin-style):
+For BFMCS completeness (Henkin-style):
 ```lean
 import Bimodal.Metalogic.Bundle.Completeness
 -- bmcs_weak_completeness, bmcs_strong_completeness

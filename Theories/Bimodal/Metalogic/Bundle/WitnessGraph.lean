@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -2402,12 +2402,12 @@ theorem witnessGraph_HContent_propagates (rootMCS : { S : Set Formula // SetMaxi
 /-!
 ## Phase 4: Int Embedding
 
-Define a BFMCS Int from the witness graph construction.
+Define a FMCS Int from the witness graph construction.
 
 ### Design Overview
 
 The witness graph creates a directed acyclic graph where each node holds an MCS.
-For the completeness proof, we need a BFMCS Int (a family of MCS indexed by Int)
+For the completeness proof, we need a FMCS Int (a family of MCS indexed by Int)
 that satisfies:
 1. `forward_G`: G(phi) at time t implies phi at all future times t' > t
 2. `backward_H`: H(phi) at time t implies phi at all past times t' < t
@@ -2464,7 +2464,7 @@ lemma mcs_G_implies_GG {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     (Bimodal.ProofSystem.Axiom.temp_4 phi)
   exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_4) h_G
 
-/-- The BFMCS Int constructed from the witness graph.
+/-- The FMCS Int constructed from the witness graph.
 
 Maps every integer to the root MCS. Forward_G and backward_H hold by the
 T-axiom. Context preservation at time 0 is immediate.
@@ -2472,7 +2472,7 @@ T-axiom. Context preservation at time 0 is immediate.
 This provides the structural skeleton for the completeness proof. The witness
 graph's local F/P properties connect to this family via the root MCS identity. -/
 noncomputable def witnessGraphBFMCS
-    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : BFMCS Int where
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : FMCS Int where
   mcs _ := rootMCS.val
   is_mcs _ := rootMCS.property
   forward_G := fun _ _ phi _ h_G =>
@@ -2480,7 +2480,7 @@ noncomputable def witnessGraphBFMCS
   backward_H := fun _ _ phi _ h_H =>
     mcs_H_implies_self rootMCS.property phi h_H
 
-/-- The MCS at any time in the witness graph BFMCS is the root MCS. -/
+/-- The MCS at any time in the witness graph FMCS is the root MCS. -/
 @[simp] lemma witnessGraphBFMCS_mcs_eq
     (rootMCS : { S : Set Formula // SetMaximalConsistent S }) (t : Int) :
     (witnessGraphBFMCS rootMCS).mcs t = rootMCS.val := rfl
@@ -2500,7 +2500,7 @@ lemma witnessGraph_node_is_mcs
   WitnessGraph.mcsAt_is_mcs _ _ _
 
 /-- The root node (index 0) in the witness graph at any step has the root MCS.
-This connects the witness graph's node 0 to the BFMCS's time 0. -/
+This connects the witness graph's node 0 to the FMCS's time 0. -/
 lemma witnessGraph_root_mcs
     (rootMCS : { S : Set Formula // SetMaximalConsistent S })
     (k : Nat) (h_pos : 0 < (buildWitnessGraph rootMCS k).nodes.length) :
@@ -2534,19 +2534,19 @@ theorem witnessGraphBFMCS_edge_ordering_compatible
 /-!
 ### Witness Graph Properties
 
-These lemmas connect the witness graph's local properties to the BFMCS.
+These lemmas connect the witness graph's local properties to the FMCS.
 
 **Note**: The witness graph proves LOCAL witness existence (for any single F/P
 obligation, a consistent witness MCS can be constructed). However, integrating
-these local witnesses into a GLOBAL BFMCS with ALL four temporal coherence
+these local witnesses into a GLOBAL FMCS with ALL four temporal coherence
 properties (forward_G, backward_H, forward_F, backward_P) simultaneously requires
 a non-linear construction such as omega-squared. The witness graph alone does NOT
 suffice to close the forward_F/backward_P sorries in DovetailingChain.lean because
-its constant-family BFMCS only has universal G/H propagation, not existential F/P
+its constant-family FMCS only has universal G/H propagation, not existential F/P
 witness properties. See Task 916 research reports 015-016 for detailed analysis.
 -/
 
-/-- Key bridge lemma: The root MCS equals the BFMCS's MCS at time 0.
+/-- Key bridge lemma: The root MCS equals the FMCS's MCS at time 0.
 Since witnessGraphBFMCS is a constant family, this is trivially true. -/
 lemma witnessGraphBFMCS_at_root
     (rootMCS : { S : Set Formula // SetMaximalConsistent S })
@@ -2556,7 +2556,7 @@ lemma witnessGraphBFMCS_at_root
   simp [witnessGraph_root_mcs rootMCS k h_pos]
 
 /-- Forward F witness existence in the graph implies a formula relationship.
-If F(psi) is in the root MCS (= mcs(0) of the BFMCS), the witness graph
+If F(psi) is in the root MCS (= mcs(0) of the FMCS), the witness graph
 provides a node j with psi in j's MCS. This is the key input for Phase 5. -/
 theorem witnessGraph_forward_F_at_root
     (rootMCS : { S : Set Formula // SetMaximalConsistent S })
@@ -2599,7 +2599,7 @@ theorem witnessGraph_backward_P_at_root
 
 ### Status: forward_G and backward_H fully proven (sorry-free)
 
-The enriched chain construction provides a BFMCS Int with proven forward_G and
+The enriched chain construction provides a FMCS Int with proven forward_G and
 backward_H properties. The enriched forward chain extends via GContent seeds
 (with witness placement for F-formulas via Nat.unpair enumeration), and the
 enriched backward chain extends via HContent seeds (symmetric).
@@ -3046,18 +3046,18 @@ chain construction. They have been removed (previously sorry'd but unused).
 **Forward path**: The correct resolution requires a non-linear construction.
 The witness graph already provides local F/P witness existence
 (`witnessGraph_forward_F_local`, `witnessGraph_backward_P_local`).
-A future task should build a BFMCS that uses the witness graph structure
+A future task should build a FMCS that uses the witness graph structure
 to satisfy forward_F and backward_P. See research-003 and research-010.
 
-**Note**: The `enrichedChainBFMCS` below provides a proven BFMCS with
+**Note**: The `enrichedChainBFMCS` below provides a proven FMCS with
 `forward_G` and `backward_H`. Forward_F and backward_P remain as open problems
-for the BFMCS construction, tracked in DovetailingChain.lean.
+for the FMCS construction, tracked in DovetailingChain.lean.
 -/
 
 /-!
-### Enriched Chain BFMCS
+### Enriched Chain FMCS
 
-Combine the enriched forward and backward chains into a BFMCS Int.
+Combine the enriched forward and backward chains into a FMCS Int.
 The forward chain handles non-negative times, the backward chain handles negative times.
 Both chains share the root MCS at time 0.
 -/
@@ -3363,7 +3363,7 @@ lemma enrichedChainSet_backward_H_nonneg
       rwa [Int.toNat_of_nonneg h_t'_neg, Int.toNat_of_nonneg h_t_nn]
     exact enrichedForwardChain_backward_H rootMCS t'.toNat t.toNat h_lt_nat phi h_H
 
-/-- The enriched BFMCS Int from a root MCS.
+/-- The enriched FMCS Int from a root MCS.
 
 Maps non-negative integers to the enriched forward chain and negative integers
 to the enriched backward chain. Both chains share the root MCS at time 0.
@@ -3378,7 +3378,7 @@ construction using the witness graph. See DovetailingChain.lean for the
 downstream integration point.
 -/
 noncomputable def enrichedChainBFMCS
-    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : BFMCS Int where
+    (rootMCS : { S : Set Formula // SetMaximalConsistent S }) : FMCS Int where
   mcs t := enrichedChainSet rootMCS t
   is_mcs t := enrichedChainSet_is_mcs rootMCS t
   forward_G := fun t t' phi h_le h_G => by

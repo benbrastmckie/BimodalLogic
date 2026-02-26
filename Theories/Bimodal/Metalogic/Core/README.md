@@ -7,7 +7,7 @@ deduction theorem, which underpin all canonical model constructions in the metal
 
 ## Overview
 
-The Core modules provide essential infrastructure shared by both the `Bundle/` (BMCS) and
+The Core modules provide essential infrastructure shared by both the `Bundle/` (BFMCS) and
 `Algebraic/` approaches:
 - **Maximal Consistent Sets (MCS)**: Sets that are consistent and cannot be extended
 - **Lindenbaum's Lemma**: Extending consistent sets to MCS using Zorn's lemma
@@ -134,7 +134,7 @@ The deduction theorem for Hilbert systems requires careful handling:
 ### Relationship to Other Modules
 
 The Core modules are prerequisites for:
-- `Bundle/` - BMCS completeness uses MCS extension and truth lemma
+- `Bundle/` - BFMCS completeness uses MCS extension and truth lemma
 - `Algebraic/UltrafilterMCS.lean` - Uses MCS definitions for ultrafilter correspondence
 - `FMP/` - Uses consistency and Lindenbaum's lemma for finite model construction
 
@@ -146,7 +146,7 @@ The Core modules are prerequisites for:
 ## Related Documentation
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
-- [Bundle README](../Bundle/README.md) - BMCS completeness (uses Core)
+- [Bundle README](../Bundle/README.md) - BFMCS completeness (uses Core)
 - [Algebraic README](../Algebraic/README.md) - Algebraic approach (uses Core)
 - [FMP README](../FMP/README.md) - Finite model property (uses Core)
 

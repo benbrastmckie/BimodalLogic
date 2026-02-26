@@ -11,7 +11,7 @@ import Mathlib.Order.Antisymmetrization
 # Canonical Quotient Construction
 
 This module constructs the Antisymmetrization quotient of the canonical reachable fragment,
-obtaining a LinearOrder suitable for BFMCS Int construction.
+obtaining a LinearOrder suitable for FMCS Int construction.
 
 ## Overview
 

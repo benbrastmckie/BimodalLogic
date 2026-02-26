@@ -1,4 +1,3 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -6,24 +5,24 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 
 /-!
-# BMCS Construction Primitives
+# BFMCS Construction Primitives
 
-This module provides primitive building blocks for BMCS construction:
+This module provides primitive building blocks for BFMCS construction:
 - `ContextConsistent`: Consistency predicate for list contexts
 - `contextAsSet` / `list_consistent_to_set_consistent`: Bridge from list to set consistency
 - `constantBFMCS`: A family assigning the same MCS at every time (T-axiom coherence)
-- `singleFamilyBMCS`: Single-family BMCS wrapper (1 sorry in modal_backward)
+- `singleFamilyBFMCS`: Single-family BFMCS wrapper (1 sorry in modal_backward)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
 
 ## Design Note: Single-Family Modal Backward
 
 The `modal_backward` condition requires: if phi is in ALL families' MCS, then Box phi
-is in each family's MCS. For a single-family BMCS, this becomes: phi in MCS implies
+is in each family's MCS. For a single-family BFMCS, this becomes: phi in MCS implies
 Box phi in MCS, which is NOT valid in general modal logic.
 
-A **modally saturated** BMCS (see `ModalSaturation.lean`) satisfies modal_backward
-by construction. The `fully_saturated_bmcs_exists_int` axiom in
-`TemporalCoherentConstruction.lean` provides a correct multi-family BMCS that does
+A **modally saturated** BFMCS (see `ModalSaturation.lean`) satisfies modal_backward
+by construction. The `fully_saturated_bfmcs_exists_int` axiom in
+`TemporalCoherentConstruction.lean` provides a correct multi-family BFMCS that does
 not need the single-family modal backward sorry.
 
 ## History
@@ -31,7 +30,7 @@ not need the single-family modal backward sorry.
 - Task 812: Original single-family construction with FALSE `singleFamily_modal_backward_axiom`
 - Task 905: Removed FALSE axiom, replaced with sorry
 - Task 912: Removed dead code (`construct_bmcs`, `construct_bmcs_from_set`), kept
-  `singleFamilyBMCS` because `construct_temporal_bmcs` still depends on it
+  `singleFamilyBFMCS` because `construct_temporal_bfmcs` still depends on it
 
 ## References
 
@@ -72,14 +71,14 @@ lemma list_consistent_to_set_consistent {Gamma : List Formula}
   exact ⟨Bimodal.ProofSystem.DerivationTree.weakening L Gamma Formula.bot d hL⟩
 
 /-!
-## Stage 2: Building BFMCS from MCS
+## Stage 2: Building FMCS from MCS
 
-We create a constant BFMCS where the same MCS is used at every time point.
+We create a constant FMCS where the same MCS is used at every time point.
 This satisfies all temporal coherence conditions trivially.
 -/
 
 /--
-Build a constant BFMCS from a single MCS.
+Build a constant FMCS from a single MCS.
 
 The family assigns the same MCS to every time point. All temporal coherence
 conditions hold trivially because the MCS is the same at all times.
@@ -89,7 +88,7 @@ conditions hold trivially because the MCS is the same at all times.
 - backward_H: H phi at t and t' ≤ t implies phi at t' - by T-axiom (H phi -> phi)
 -/
 noncomputable def constantBFMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    BFMCS D where
+    FMCS D where
   mcs := fun _ => M
   is_mcs := fun _ => h_mcs
   forward_G := fun t t' phi _ hG =>
@@ -114,13 +113,13 @@ lemma constantBFMCS_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsistent M) (t
     (constantBFMCS M h_mcs (D := D)).mcs t = M := rfl
 
 /-!
-## Stage 3: Constructing BMCS
+## Stage 3: Constructing BFMCS
 
-Build a BMCS with a single family. Modal coherence conditions become:
+Build a BFMCS with a single family. Modal coherence conditions become:
 - modal_forward: Box phi in M implies phi in M (T-axiom)
 - modal_backward: phi in M implies Box phi in M (only if phi in ALL families, but we have one)
 
-For a single-family BMCS:
+For a single-family BFMCS:
 - modal_forward is just the T-axiom
 - modal_backward requires: if phi in M (the only family), then Box phi in M
   This does NOT generally hold! We need to prove this specially.
@@ -139,10 +138,10 @@ This is NOT a theorem in general modal logic! In S5 we have Box phi <-> phi for 
 truths, but not for arbitrary phi.
 
 **Resolution**: We strengthen the construction requirement. For completeness, we need
-a BMCS where the original context Gamma is preserved. The modal_backward condition
+a BFMCS where the original context Gamma is preserved. The modal_backward condition
 is PART OF THE CONSTRUCTION SPECIFICATION, not something we prove from first principles.
 
-For single-family BMCS, we accept modal_backward via an axiom (justified by canonical model theory).
+For single-family BFMCS, we accept modal_backward via an axiom (justified by canonical model theory).
 This is acceptable because:
 1. The TRUTH LEMMA is the critical result, and it uses modal_forward/backward as hypotheses
 2. A proper multi-family construction would satisfy these automatically
@@ -160,22 +159,22 @@ The FALSE axiom `singleFamily_modal_backward_axiom` was removed in task 905.
 It claimed: phi in fam.mcs t -> Box phi in fam.mcs t, which is FALSE for
 non-necessary formulas.
 
-**REPLACEMENT**: Use `fully_saturated_bmcs_exists` from `TemporalCoherentConstruction.lean`
-instead, which asserts the existence of a modally saturated BMCS.
+**REPLACEMENT**: Use `fully_saturated_bfmcs_exists` from `TemporalCoherentConstruction.lean`
+instead, which asserts the existence of a modally saturated BFMCS.
 
 See task 903 for the completeness proof restructuring that eliminates the need
 for single-family modal backward entirely.
 -/
 
 /--
-Build a BMCS from a single BFMCS.
+Build a BFMCS from a single FMCS.
 
 **DEPRECATED**: The `modal_backward` field uses sorry because the single-family
 approach cannot prove modal backward from first principles. Use
-`construct_temporal_bmcs` from `TemporalCoherentConstruction.lean` for new code,
-which uses the correct `fully_saturated_bmcs_exists` axiom instead.
+`construct_temporal_bfmcs` from `TemporalCoherentConstruction.lean` for new code,
+which uses the correct `fully_saturated_bfmcs_exists` axiom instead.
 -/
-noncomputable def singleFamilyBMCS (fam : BFMCS D) : BMCS D where
+noncomputable def singleFamilyBFMCS (fam : FMCS D) : BFMCS D where
   families := {fam}
   nonempty := ⟨fam, Set.mem_singleton fam⟩
   modal_forward := fun fam' hfam' phi t hBox fam'' hfam'' =>
@@ -193,16 +192,16 @@ noncomputable def singleFamilyBMCS (fam : BFMCS D) : BMCS D where
   modal_backward := fun _fam' _hfam' _phi _t _h_all =>
     -- SORRY: Single-family modal backward is not provable from first principles.
     -- The FALSE axiom singleFamily_modal_backward_axiom was removed in task 905.
-    -- Use fully_saturated_bmcs_exists from TemporalCoherentConstruction.lean instead.
+    -- Use fully_saturated_bfmcs_exists from TemporalCoherentConstruction.lean instead.
     sorry
   eval_family := fam
   eval_family_mem := Set.mem_singleton fam
 
 /--
-The evaluation family of a single-family BMCS is the original family.
+The evaluation family of a single-family BFMCS is the original family.
 -/
-lemma singleFamilyBMCS_eval_family_eq (fam : BFMCS D) :
-    (singleFamilyBMCS fam (D := D)).eval_family = fam := rfl
+lemma singleFamilyBFMCS_eval_family_eq (fam : FMCS D) :
+    (singleFamilyBFMCS fam (D := D)).eval_family = fam := rfl
 
 /-!
 ## Core Definitions
@@ -270,20 +269,20 @@ This module provides:
 - `ContextConsistent`: Consistency predicate for list contexts
 - `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge
 - `constantBFMCS`: Constant-time MCS family (temporal coherence via T-axioms)
-- `singleFamilyBMCS`: Single-family BMCS construction (1 sorry in modal_backward)
+- `singleFamilyBFMCS`: Single-family BFMCS construction (1 sorry in modal_backward)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
 
-**Sorry Status**: ONE sorry (`modal_backward` in `singleFamilyBMCS`).
+**Sorry Status**: ONE sorry (`modal_backward` in `singleFamilyBFMCS`).
 Single-family modal backward (phi in MCS -> Box phi in MCS) is not provable from
-first principles. This sorry is inherited by `construct_temporal_bmcs` in
-`TemporalCoherentConstruction.lean`. The `fully_saturated_bmcs_exists_int` axiom
+first principles. This sorry is inherited by `construct_temporal_bfmcs` in
+`TemporalCoherentConstruction.lean`. The `fully_saturated_bfmcs_exists_int` axiom
 provides a correct alternative that replaces this sorry for the completeness chain.
 
 **Deprecation Note (tasks 905, 912)**:
 The `construct_bmcs` and `construct_bmcs_from_set` functions were removed in task 912
-as they are superseded by `construct_saturated_bmcs_int` from
-`TemporalCoherentConstruction.lean`. The `singleFamilyBMCS` definition is retained
-because `construct_temporal_bmcs` still depends on it.
+as they are superseded by `construct_saturated_bfmcs_int` from
+`TemporalCoherentConstruction.lean`. The `singleFamilyBFMCS` definition is retained
+because `construct_temporal_bfmcs` still depends on it.
 -/
 
 end Bimodal.Metalogic.Bundle

@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Bundle.CanonicalFrame
-import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Bundle.Construction
@@ -10,10 +10,10 @@ import Bimodal.Syntax.Formula
 import Bimodal.ProofSystem.Axioms
 
 /-!
-# Canonical Embedding: Derived Properties for BFMCS Construction
+# Canonical Embedding: Derived Properties for FMCS Construction
 
 This module provides derived lemmas from the canonical frame (CanonicalFrame.lean)
-that support the construction of BFMCS Int for bimodal completeness.
+that support the construction of FMCS Int for bimodal completeness.
 
 ## Key Results
 
@@ -31,7 +31,7 @@ past time, which is valuable for linearity-based arguments.
 
 The canonical frame (CanonicalFrame.lean) proves forward_F and backward_P
 trivially for the abstract canonical model. The challenge is embedding this
-into a `BFMCS Int` (indexed by integers, not abstract MCS worlds).
+into a `FMCS Int` (indexed by integers, not abstract MCS worlds).
 
 The temp_linearity axiom (Phase 1) ensures the canonical frame's reachable
 fragment is linearly ordered. Combined with the derived properties in this
@@ -40,7 +40,7 @@ module, a future implementation can:
 1. Build a linearly ordered reachable fragment from any root MCS
 2. Embed it into Int (using `Order.embedding_from_countable_to_dense` for Q,
    then transferring to Int via the discreteness of the fragment)
-3. Construct BFMCS Int with sorry-free forward_F/backward_P
+3. Construct FMCS Int with sorry-free forward_F/backward_P
 
 ## Technical Analysis: Why Forward_F is Hard for Int Chains
 

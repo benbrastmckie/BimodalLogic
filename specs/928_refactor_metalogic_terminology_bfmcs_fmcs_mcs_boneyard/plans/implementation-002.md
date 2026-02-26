@@ -120,7 +120,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: BFMCS -> FMCS Rename in Core Definition Files [NOT STARTED]
+### Phase 1: BFMCS -> FMCS Rename in Core Definition Files [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Rename the `structure BFMCS` to `structure FMCS` in its definition file and update the core files that define or directly extend BFMCS.
@@ -149,7 +149,7 @@ After this implementation:
 
 ---
 
-### Phase 2: BFMCS -> FMCS Rename in All Usage Sites [NOT STARTED]
+### Phase 2: BFMCS -> FMCS Rename in All Usage Sites [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Complete the terminology rename across all 264 BFMCS occurrences in 20 active Metalogic files.
@@ -193,7 +193,7 @@ After this implementation:
 
 ---
 
-### Phase 3: BMCS -> BFMCS Rename (Bundle Terminology) [NOT STARTED]
+### Phase 3: BMCS -> BFMCS Rename (Bundle Terminology) [COMPLETED]
 
 - **Dependencies:** Phase 2 (BFMCS name now free)
 - **Goal:** Rename `BMCS` to `BFMCS` across all 360 occurrences in 20 files, completing the terminology refactoring per the original task intent.
@@ -239,7 +239,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Boneyard Cleanup - Move CoherentConstruction.lean [NOT STARTED]
+### Phase 4: Boneyard Cleanup - Move CoherentConstruction.lean [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Complete the task 925 Phase 2 cleanup by moving CoherentConstruction.lean and its constant-family infrastructure to Boneyard/Bundle/.
@@ -267,7 +267,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Boneyard Cleanup - Constant Family Definitions [NOT STARTED]
+### Phase 5: Boneyard Cleanup - Constant Family Definitions [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Move constant-family definitions from active code to Boneyard.
@@ -291,7 +291,7 @@ After this implementation:
 
 ---
 
-### Phase 6: Code Cleanup and Import Hygiene [NOT STARTED]
+### Phase 6: Code Cleanup and Import Hygiene [COMPLETED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Remove the CanonicalWorldState duplicate, clean up import chains, remove stale TODOs.
@@ -315,7 +315,7 @@ After this implementation:
 
 ---
 
-### Phase 7: Documentation Update [NOT STARTED]
+### Phase 7: Documentation Update [COMPLETED]
 
 - **Dependencies:** Phase 6
 - **Goal:** Update all stale documentation to reflect the new terminology and correct sorry counts.

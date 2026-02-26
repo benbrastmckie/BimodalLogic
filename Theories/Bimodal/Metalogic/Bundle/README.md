@@ -1,6 +1,6 @@
 # Bundle Completeness for TM Bimodal Logic
 
-This directory implements the **Bundle of Maximal Consistent Sets (BMCS)** approach for
+This directory implements the **Bundle of Maximal Consistent Sets (BFMCS)** approach for
 proving completeness of TM bimodal logic. This is a Henkin-style completeness proof that
 resolves the modal completeness obstruction present in traditional canonical model approaches.
 
@@ -10,7 +10,7 @@ Completeness is an **existential** statement:
 
 > If Gamma is consistent, then there EXISTS a model satisfying Gamma.
 
-The BMCS approach constructs exactly ONE such satisfying model by:
+The BFMCS approach constructs exactly ONE such satisfying model by:
 1. Bundling together related maximal consistent sets (MCSes)
 2. Restricting box quantification to families within the bundle
 3. Using modal coherence conditions to ensure the truth lemma is provable
@@ -19,19 +19,19 @@ The BMCS approach constructs exactly ONE such satisfying model by:
 - Henkin semantics for higher-order logic
 - Standard practice in mathematical logic
 
-The completeness theorem states that derivability and BMCS-validity coincide. Combined with
+The completeness theorem states that derivability and BFMCS-validity coincide. Combined with
 soundness (derivability implies standard-validity), we get a full characterization.
 
 ## Architecture
 
 ```
 Bundle/
-  IndexedMCSFamily.lean      # Temporal MCS families with coherence
-  BMCS.lean                  # Bundle structure with modal coherence
-  BMCSTruth.lean             # Truth definition with bundled box
-  TruthLemma.lean            # KEY: MCS membership <-> BMCS truth
+  FMCS.lean      # Temporal MCS families with coherence
+  BFMCS.lean                  # Bundle structure with modal coherence
+  BFMCSTruth.lean             # Truth definition with bundled box
+  TruthLemma.lean            # KEY: MCS membership <-> BFMCS truth
   ModalSaturation.lean       # Modal saturation for multi-family construction
-  Construction.lean          # Building BMCS from consistent context
+  Construction.lean          # Building BFMCS from consistent context
   SaturatedConstruction.lean # WIP: Multi-family saturation construction
   Completeness.lean          # Main completeness theorems
   README.md                  # This file
@@ -59,12 +59,12 @@ Bundle/
 
 **Key Point**: These do NOT affect main completeness theorems because completeness uses only
 the FORWARD direction of the truth lemma, which is fully proven. The `SaturatedConstruction.lean`
-is work-in-progress infrastructure for future multi-family BMCS construction.
+is work-in-progress infrastructure for future multi-family BFMCS construction.
 
 **Key Achievement**: The **box case** of the truth lemma is **SORRY-FREE**. This was the
 fundamental obstruction that blocked traditional completeness proofs.
 
-## Why BMCS Works
+## Why BFMCS Works
 
 ### The Box Case Problem
 
@@ -77,12 +77,12 @@ MCS membership:     Can only witness phi at bundled/constructed families
 
 The quantification over "all worlds" cannot be matched by MCS membership.
 
-### The BMCS Solution
+### The BFMCS Solution
 
-BMCS restricts box quantification to bundled families:
+BFMCS restricts box quantification to bundled families:
 
 ```lean
-def bmcs_truth_at (B : BMCS D) (fam : IndexedMCSFamily D) (t : D) : Formula -> Prop
+def bmcs_truth_at (B : BFMCS D) (fam : FMCS D) (t : D) : Formula -> Prop
   | Formula.box phi => forall fam' in B.families, bmcs_truth_at B fam' t phi
   ...
 ```
@@ -109,18 +109,18 @@ Both directions are provable!
 
 ## Relationship to Standard Semantics
 
-BMCS completeness + standard soundness gives the full picture:
+BFMCS completeness + standard soundness gives the full picture:
 
 ```
-Derivability <-> BMCS-validity -> Standard-validity
+Derivability <-> BFMCS-validity -> Standard-validity
 
-               |-- BMCS completeness --|   |-- soundness --|
+               |-- BFMCS completeness --|   |-- soundness --|
 ```
 
-- **BMCS completeness**: `deriv phi <-> bmcs_valid phi` (this module)
+- **BFMCS completeness**: `deriv phi <-> bmcs_valid phi` (this module)
 - **Standard soundness**: `deriv phi -> standard_valid phi` (Metalogic/Soundness.lean)
 
-Any derivable formula is valid in all models (standard or BMCS).
+Any derivable formula is valid in all models (standard or BFMCS).
 
 ## Usage
 
@@ -130,19 +130,19 @@ Any derivable formula is valid in all models (standard or BMCS).
 import Bimodal.Metalogic.Bundle.Completeness
 
 -- Main theorems available:
--- bmcs_representation : consistent [phi] -> exists BMCS where phi true
+-- bmcs_representation : consistent [phi] -> exists BFMCS where phi true
 -- bmcs_weak_completeness : bmcs_valid phi -> derivable phi
 -- bmcs_strong_completeness : bmcs_consequence Gamma phi -> Gamma |- phi
 ```
 
-### Import for BMCS Infrastructure
+### Import for BFMCS Infrastructure
 
 ```lean
-import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.BMCSTruth
+import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.BFMCSTruth
 import Bimodal.Metalogic.Bundle.TruthLemma
 
--- For working with BMCS structures directly
+-- For working with BFMCS structures directly
 ```
 
 ## References
@@ -161,10 +161,10 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 
 ## Future Work
 
-1. **Eliminate temporal sorries**: Add temporal_backward_G/H properties to IndexedMCSFamily (Task 857)
+1. **Eliminate temporal sorries**: Add temporal_backward_G/H properties to FMCS (Task 857)
 2. **Prove classical tautologies**: Derive DNE and related lemmas from the proof system
-3. **Multi-family saturation**: Generalize singleFamilyBMCS to full multi-family construction
-4. **Compactness via BMCS**: Potentially restore infinitary strong completeness using BMCS
+3. **Multi-family saturation**: Generalize singleFamilyBFMCS to full multi-family construction
+4. **Compactness via BFMCS**: Potentially restore infinitary strong completeness using BFMCS
 
 ---
 

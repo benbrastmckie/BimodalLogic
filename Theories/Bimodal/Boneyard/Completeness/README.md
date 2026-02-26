@@ -7,7 +7,7 @@
 ## Summary
 
 This module was the "standard" completeness approach that depended on now-archived
-infrastructure (FMP bridge, FDSM). With the successful BMCS completeness from
+infrastructure (FMP bridge, FDSM). With the successful BFMCS completeness from
 Task 812, this module became obsolete.
 
 ## Why Archived
@@ -15,7 +15,7 @@ Task 812, this module became obsolete.
 1. **Broken import**: The module root imported `FiniteStrongCompleteness` which
    was previously archived/moved but the import was never updated.
 
-2. **Superseded by BMCS**: Bundle/Completeness.lean provides sorry-free
+2. **Superseded by BFMCS**: Bundle/Completeness.lean provides sorry-free
    completeness theorems (`bmcs_weak_completeness`, `bmcs_strong_completeness`).
 
 3. **No unique content**: The MCS properties in the parent `Completeness.lean`
@@ -24,7 +24,7 @@ Task 812, this module became obsolete.
 ## Replacement Approach
 
 For completeness proofs, use:
-- `Bimodal.Metalogic.Bundle.Completeness` - BMCS completeness (sorry-free)
+- `Bimodal.Metalogic.Bundle.Completeness` - BFMCS completeness (sorry-free)
 - `Bimodal.Metalogic.FMP.SemanticCanonicalModel` - FMP completeness (sorry-free)
 
 ## Files Archived
@@ -36,5 +36,5 @@ For completeness proofs, use:
 
 ## References
 
-- BMCS completeness: `Bimodal/Metalogic/Bundle/Completeness.lean`
+- BFMCS completeness: `Bimodal/Metalogic/Bundle/Completeness.lean`
 - FMP completeness: `Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean`

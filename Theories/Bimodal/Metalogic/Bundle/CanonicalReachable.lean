@@ -201,13 +201,13 @@ theorem canonical_G_or_F_neg (M : Set Formula) (h_mcs : SetMaximalConsistent M)
 ## Forward_G Propagation Helpers
 
 Lemmas about how G-formulas propagate through CanonicalR transitions,
-and how this interacts with the BFMCS forward_G property.
+and how this interacts with the FMCS forward_G property.
 -/
 
 /--
-If G(phi) ∈ mcs(t), then phi is at all strictly future times (restated from BFMCS).
+If G(phi) ∈ mcs(t), then phi is at all strictly future times (restated from FMCS).
 -/
-theorem forward_G_at_future (fam : BFMCS Int) (t : Int) (phi : Formula)
+theorem forward_G_at_future (fam : FMCS Int) (t : Int) (phi : Formula)
     (h_G : Formula.all_future phi ∈ fam.mcs t) :
     ∀ s : Int, t < s → phi ∈ fam.mcs s :=
   fun s h_lt => fam.forward_G t s phi (le_of_lt h_lt) h_G
@@ -216,7 +216,7 @@ theorem forward_G_at_future (fam : BFMCS Int) (t : Int) (phi : Formula)
 If phi ∈ mcs(t) and G(phi) ∈ mcs(t), then phi is at all times s > t.
 This is the "persistent" case where phi propagates via G.
 -/
-theorem forward_F_via_G (fam : BFMCS Int) (t : Int) (phi : Formula)
+theorem forward_F_via_G (fam : FMCS Int) (t : Int) (phi : Formula)
     (_h_phi : phi ∈ fam.mcs t) (h_G : Formula.all_future phi ∈ fam.mcs t) :
     ∃ s : Int, t < s ∧ phi ∈ fam.mcs s :=
   ⟨t + 1, by omega, fam.forward_G t (t + 1) phi (by omega) h_G⟩

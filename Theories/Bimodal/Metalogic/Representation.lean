@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.BMCSTruth
+import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.BFMCSTruth
 import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.Completeness
@@ -14,21 +14,21 @@ import Bimodal.Syntax.Context
 import Bimodal.Theorems.Propositional
 
 /-!
-# Standard Representation and Completeness via BMCS
+# Standard Representation and Completeness via BFMCS
 
-This module bridges the gap between the BMCS (Bundle of Maximal Consistent Sets)
+This module bridges the gap between the BFMCS (Bundle of Maximal Consistent Sets)
 completeness results and the standard semantic definitions from `Semantics/`.
 
 ## Overview
 
-The existing BMCS completeness chain proves completeness with respect to `bmcs_truth_at`,
+The existing BFMCS completeness chain proves completeness with respect to `bmcs_truth_at`,
 a Henkin-style truth predicate that quantifies box over bundle families. This module
-constructs a standard `TaskFrame`, `TaskModel`, and `WorldHistory` from a BMCS, then
+constructs a standard `TaskFrame`, `TaskModel`, and `WorldHistory` from a BFMCS, then
 proves a truth lemma connecting MCS membership to the standard `truth_at` predicate.
 
 ## Key Construction (Task 910 Reconstruction)
 
-Given a consistent context and a fully saturated BMCS `B`:
+Given a consistent context and a fully saturated BFMCS `B`:
 - **canonicalFrame B**: A `TaskFrame Int` with `WorldState` restricted to bundle MCS
   at any time, `task_rel = fun _ _ _ => True` (trivial task relation)
 - **canonicalModel B**: A `TaskModel` with `valuation w p = (Formula.atom p ∈ w.val)`
@@ -60,7 +60,7 @@ The key constructions:
 - `shifted_truth_lemma`: Truth lemma for the enlarged set (uses `box_persistent`)
 - Completeness proofs instantiate `valid` at `shiftClosedCanonicalOmega B`
 
-This module's remaining sorries are inherited from upstream (`construct_saturated_bmcs_int`).
+This module's remaining sorries are inherited from upstream (`construct_saturated_bfmcs_int`).
 
 ## Main Results
 
@@ -87,39 +87,39 @@ open Bimodal.ProofSystem
 /-!
 ## Canonical Definitions
 
-The canonical frame, model, and histories are constructed from a BMCS.
+The canonical frame, model, and histories are constructed from a BFMCS.
 WorldState is generalized to any MCS (not restricted to constant families).
 -/
 
 /-- Restricted world state type: any MCS. -/
-def CanonicalWorldState (_B : BMCS Int) : Type :=
+def CanonicalWorldState (_B : BFMCS Int) : Type :=
   { S : Set Formula // SetMaximalConsistent S }
 
 /-- The canonical task frame with restricted WorldState. -/
-def canonicalFrame (B : BMCS Int) : TaskFrame Int where
+def canonicalFrame (B : BFMCS Int) : TaskFrame Int where
   WorldState := CanonicalWorldState B
   task_rel := fun _ _ _ => True
   nullity := fun _ => trivial
   compositionality := fun _ _ _ _ _ _ _ => trivial
 
 /-- The canonical task model. -/
-def canonicalModel (B : BMCS Int) : TaskModel (canonicalFrame B) where
+def canonicalModel (B : BFMCS Int) : TaskModel (canonicalFrame B) where
   valuation := fun w p => Formula.atom p ∈ w.val
 
 /-- Construct a CanonicalWorldState from a family at time t. -/
-def mkCanonicalWorldState (B : BMCS Int) (fam : BFMCS Int) (t : Int) :
+def mkCanonicalWorldState (B : BFMCS Int) (fam : FMCS Int) (t : Int) :
     CanonicalWorldState B :=
   ⟨fam.mcs t, fam.is_mcs t⟩
 
 /-- The canonical world history for a family, with time-varying states. -/
-def canonicalHistory (B : BMCS Int) (fam : BFMCS Int) (_hfam : fam ∈ B.families) :
+def canonicalHistory (B : BFMCS Int) (fam : FMCS Int) (_hfam : fam ∈ B.families) :
     WorldHistory (canonicalFrame B) where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => trivial
   states := fun t _ => mkCanonicalWorldState B fam t
   respects_task := fun _ _ _ _ _ => trivial
 
-theorem canonicalHistory_states_val (B : BMCS Int) (fam : BFMCS Int)
+theorem canonicalHistory_states_val (B : BFMCS Int) (fam : FMCS Int)
     (hfam : fam ∈ B.families) (t : Int)
     (ht : (canonicalHistory B fam hfam).domain t) :
     ((canonicalHistory B fam hfam).states t ht).val = fam.mcs t := rfl
@@ -134,12 +134,12 @@ NOTE: canonicalOmega is NOT shift-closed. Shift-closure is only needed for
 soundness (time_shift_preserves_truth), not for completeness.
 -/
 
-/-- The set of canonical histories: one for each family in the BMCS. -/
-def canonicalOmega (B : BMCS Int) : Set (WorldHistory (canonicalFrame B)) :=
-  { sigma | ∃ (fam : BFMCS Int) (hfam : fam ∈ B.families), sigma = canonicalHistory B fam hfam }
+/-- The set of canonical histories: one for each family in the BFMCS. -/
+def canonicalOmega (B : BFMCS Int) : Set (WorldHistory (canonicalFrame B)) :=
+  { sigma | ∃ (fam : FMCS Int) (hfam : fam ∈ B.families), sigma = canonicalHistory B fam hfam }
 
 /-- Every canonical history is in canonicalOmega. -/
-theorem canonicalHistory_mem_canonicalOmega (B : BMCS Int) (fam : BFMCS Int)
+theorem canonicalHistory_mem_canonicalOmega (B : BFMCS Int) (fam : FMCS Int)
     (hfam : fam ∈ B.families) :
     canonicalHistory B fam hfam ∈ canonicalOmega B :=
   ⟨fam, hfam, rfl⟩
@@ -154,13 +154,13 @@ the ShiftClosed condition required by `valid`.
 -/
 
 /-- The shift-closed canonical Omega: all time-shifts of canonical histories. -/
-def shiftClosedCanonicalOmega (B : BMCS Int) : Set (WorldHistory (canonicalFrame B)) :=
-  { σ | ∃ (fam : BFMCS Int) (hfam : fam ∈ B.families) (delta : Int),
+def shiftClosedCanonicalOmega (B : BFMCS Int) : Set (WorldHistory (canonicalFrame B)) :=
+  { σ | ∃ (fam : FMCS Int) (hfam : fam ∈ B.families) (delta : Int),
     σ = WorldHistory.time_shift (canonicalHistory B fam hfam) delta }
 
 /-- Time-shift of canonical histories composes: shifting by delta then delta' equals shifting by delta + delta'. -/
-private theorem time_shift_canonicalHistory_compose (B : BMCS Int)
-    (fam : BFMCS Int) (hfam : fam ∈ B.families)
+private theorem time_shift_canonicalHistory_compose (B : BFMCS Int)
+    (fam : FMCS Int) (hfam : fam ∈ B.families)
     (delta delta' : Int) :
     WorldHistory.time_shift (WorldHistory.time_shift (canonicalHistory B fam hfam) delta) delta' =
     WorldHistory.time_shift (canonicalHistory B fam hfam) (delta + delta') := by
@@ -170,8 +170,8 @@ private theorem time_shift_canonicalHistory_compose (B : BMCS Int)
   congr 1; exact congrArg fam.mcs h_eq
 
 /-- A canonical history equals its time-shift by 0. -/
-private theorem canonicalHistory_eq_time_shift_zero (B : BMCS Int)
-    (fam : BFMCS Int) (hfam : fam ∈ B.families) :
+private theorem canonicalHistory_eq_time_shift_zero (B : BFMCS Int)
+    (fam : FMCS Int) (hfam : fam ∈ B.families) :
     canonicalHistory B fam hfam = WorldHistory.time_shift (canonicalHistory B fam hfam) 0 := by
   simp only [WorldHistory.time_shift, canonicalHistory]
   congr 1; funext t ht; simp only [mkCanonicalWorldState]
@@ -179,7 +179,7 @@ private theorem canonicalHistory_eq_time_shift_zero (B : BMCS Int)
   congr 1; exact congrArg fam.mcs h_eq
 
 /-- shiftClosedCanonicalOmega is shift-closed. -/
-theorem shiftClosedCanonicalOmega_is_shift_closed (B : BMCS Int) :
+theorem shiftClosedCanonicalOmega_is_shift_closed (B : BFMCS Int) :
     ShiftClosed (shiftClosedCanonicalOmega B) := by
   intro σ h_mem Δ'
   obtain ⟨fam, hfam, delta, h_eq⟩ := h_mem
@@ -188,7 +188,7 @@ theorem shiftClosedCanonicalOmega_is_shift_closed (B : BMCS Int) :
   exact time_shift_canonicalHistory_compose B fam hfam delta Δ'
 
 /-- Every canonical history is in the shift-closed canonical Omega (take delta = 0). -/
-theorem canonicalOmega_subset_shiftClosed (B : BMCS Int) :
+theorem canonicalOmega_subset_shiftClosed (B : BFMCS Int) :
     canonicalOmega B ⊆ shiftClosedCanonicalOmega B := by
   intro σ h_mem
   obtain ⟨fam, hfam, h_eq⟩ := h_mem
@@ -218,7 +218,7 @@ private def past_tf_deriv (φ : Formula) :
   rw [h_eq] at h_dual
   exact h_dual
 
-/-- Box phi at time t implies Box phi at all times s, for any family in a BMCS.
+/-- Box phi at time t implies Box phi at all times s, for any family in a BFMCS.
 
 The proof uses:
 1. TF axiom: Box phi -> G(Box phi) -- so Box phi persists to all future times
@@ -226,7 +226,7 @@ The proof uses:
 3. forward_G and backward_H to extract Box phi at specific times
 -/
 theorem box_persistent
-    (fam : BFMCS Int)
+    (fam : FMCS Int)
     (φ : Formula) (t s : Int)
     (h_box : Formula.box φ ∈ fam.mcs t) :
     Formula.box φ ∈ fam.mcs s := by
@@ -259,14 +259,14 @@ quantifies over `canonicalOmega B` instead of all histories.
 -/
 
 /--
-The canonical truth lemma: For all families in the BMCS, MCS membership at `fam.mcs t`
+The canonical truth lemma: For all families in the BFMCS, MCS membership at `fam.mcs t`
 is equivalent to standard `truth_at` in the canonical model with `canonicalOmega`.
 
 The statement quantifies over all families so that the box case IH is strong enough.
 -/
-theorem canonical_truth_lemma_all (B : BMCS Int)
+theorem canonical_truth_lemma_all (B : BFMCS Int)
     (h_tc : B.temporally_coherent) (φ : Formula)
-    (fam : BFMCS Int) (hfam : fam ∈ B.families) (t : Int) :
+    (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔ truth_at (canonicalModel B) (canonicalOmega B) (canonicalHistory B fam hfam) t φ := by
   revert fam hfam t
   induction φ with
@@ -384,9 +384,9 @@ theorem canonical_truth_lemma_all (B : BMCS Int)
       exact set_consistent_not_both (fam.is_mcs s).1 ψ h_ψ_s h_neg_ψ_s
 
 /-- Convenience wrapper: truth lemma for a specific family. -/
-theorem canonical_truth_lemma (B : BMCS Int)
+theorem canonical_truth_lemma (B : BFMCS Int)
     (h_tc : B.temporally_coherent)
-    (fam : BFMCS Int) (hfam : fam ∈ B.families)
+    (fam : FMCS Int) (hfam : fam ∈ B.families)
     (t : Int) (φ : Formula) :
     φ ∈ fam.mcs t ↔ truth_at (canonicalModel B) (canonicalOmega B) (canonicalHistory B fam hfam) t φ :=
   canonical_truth_lemma_all B h_tc φ fam hfam t
@@ -409,9 +409,9 @@ shift-closed canonical Omega. The box forward case uses `box_persistent` to
 show that Box phi persists to all times, enabling truth at shifted histories
 via `time_shift_preserves_truth`.
 -/
-theorem shifted_truth_lemma (B : BMCS Int)
+theorem shifted_truth_lemma (B : BFMCS Int)
     (h_tc : B.temporally_coherent) (φ : Formula)
-    (fam : BFMCS Int) (hfam : fam ∈ B.families) (t : Int) :
+    (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int) :
     φ ∈ fam.mcs t ↔
     truth_at (canonicalModel B) (shiftClosedCanonicalOmega B) (canonicalHistory B fam hfam) t φ := by
   revert fam hfam t
@@ -529,11 +529,11 @@ theorem shifted_truth_lemma (B : BMCS Int)
 /-!
 ## Standard Completeness Theorems
 
-These theorems connect the BMCS completeness results to the standard semantic definitions
+These theorems connect the BFMCS completeness results to the standard semantic definitions
 from `Semantics/Validity.lean`.
 
-**Sorry dependency**: All theorems inherit the sorry from `fully_saturated_bmcs_exists_int`
-via `construct_saturated_bmcs_int`.
+**Sorry dependency**: All theorems inherit the sorry from `fully_saturated_bfmcs_exists_int`
+via `construct_saturated_bfmcs_int`.
 -/
 
 /--
@@ -544,17 +544,17 @@ using a shift-closed Omega.
 This is the core existential statement: consistent formulas have standard models.
 
 **Proof Strategy**:
-1. Get a fully saturated BMCS B from `construct_saturated_bmcs_int`
+1. Get a fully saturated BFMCS B from `construct_saturated_bfmcs_int`
 2. φ ∈ B.eval_family.mcs 0 by construction
 3. By shifted truth lemma: truth_at M (shiftClosedCanonicalOmega B) (canonicalHistory ...) 0 φ
 4. Package as satisfiable: ∃ F M Omega τ t, τ ∈ Omega ∧ truth_at M Omega τ t φ
 -/
 theorem standard_representation (φ : Formula) (h_cons : ContextConsistent [φ]) :
     satisfiable Int [φ] := by
-  -- Get fully saturated BMCS
-  let B := construct_saturated_bmcs_int [φ] h_cons
-  have h_contains := construct_saturated_bmcs_int_contains_context [φ] h_cons
-  have h_tc := construct_saturated_bmcs_int_temporally_coherent [φ] h_cons
+  -- Get fully saturated BFMCS
+  let B := construct_saturated_bfmcs_int [φ] h_cons
+  have h_contains := construct_saturated_bfmcs_int_contains_context [φ] h_cons
+  have h_tc := construct_saturated_bfmcs_int_temporally_coherent [φ] h_cons
   -- φ ∈ B.eval_family.mcs 0
   have h_in_mcs : φ ∈ B.eval_family.mcs 0 := h_contains φ (by simp)
   -- By shifted truth lemma: truth_at at canonical model with shift-closed Omega
@@ -577,9 +577,9 @@ in Γ are satisfiable simultaneously in the standard semantics, with a shift-clo
 -/
 theorem standard_context_representation (Γ : List Formula) (h_cons : ContextConsistent Γ) :
     satisfiable Int Γ := by
-  let B := construct_saturated_bmcs_int Γ h_cons
-  have h_contains := construct_saturated_bmcs_int_contains_context Γ h_cons
-  have h_tc := construct_saturated_bmcs_int_temporally_coherent Γ h_cons
+  let B := construct_saturated_bfmcs_int Γ h_cons
+  have h_contains := construct_saturated_bfmcs_int_contains_context Γ h_cons
+  have h_tc := construct_saturated_bfmcs_int_temporally_coherent Γ h_cons
   have h_mem_sc := canonicalOmega_subset_shiftClosed B
     (canonicalHistory_mem_canonicalOmega B B.eval_family B.eval_family_mem)
   exact ⟨canonicalFrame B, canonicalModel B, shiftClosedCanonicalOmega B,
@@ -595,7 +595,7 @@ then it is derivable from the empty context.
 
 **Proof Strategy** (by contraposition):
 1. If ⊬ φ, then [¬φ] is consistent
-2. Construct a fully saturated BMCS B for [¬φ]
+2. Construct a fully saturated BFMCS B for [¬φ]
 3. By shifted truth lemma: ¬φ is true at (canonicalModel B, shiftClosedCanonicalOmega B, ...)
 4. By validity: φ is true at the SAME (model, Omega, history, time) since Omega is shift-closed
 5. Contradiction: both φ and ¬φ true at the same point
@@ -612,10 +612,10 @@ theorem standard_weak_completeness (φ : Formula) (h_valid : valid φ) :
   -- [φ.neg] is consistent
   have h_neg_cons : ContextConsistent [φ.neg] :=
     Bimodal.Metalogic.Bundle.not_derivable_implies_neg_consistent φ h_not_deriv
-  -- Construct BMCS directly (avoid going through satisfiable, which loses ShiftClosed info)
-  let B := construct_saturated_bmcs_int [φ.neg] h_neg_cons
-  have h_contains := construct_saturated_bmcs_int_contains_context [φ.neg] h_neg_cons
-  have h_tc := construct_saturated_bmcs_int_temporally_coherent [φ.neg] h_neg_cons
+  -- Construct BFMCS directly (avoid going through satisfiable, which loses ShiftClosed info)
+  let B := construct_saturated_bfmcs_int [φ.neg] h_neg_cons
+  have h_contains := construct_saturated_bfmcs_int_contains_context [φ.neg] h_neg_cons
+  have h_tc := construct_saturated_bfmcs_int_temporally_coherent [φ.neg] h_neg_cons
   -- φ.neg ∈ B.eval_family.mcs 0
   have h_neg_in_mcs : φ.neg ∈ B.eval_family.mcs 0 := h_contains φ.neg (by simp)
   -- By shifted truth lemma: truth_at ... φ.neg at shift-closed canonical Omega
@@ -639,7 +639,7 @@ semantics), then φ is derivable from Γ.
 
 **Proof Strategy** (by contraposition):
 1. If Γ ⊬ φ, then Γ ++ [¬φ] is consistent
-2. Construct BMCS directly for Γ ++ [¬φ]
+2. Construct BFMCS directly for Γ ++ [¬φ]
 3. By shifted truth lemma: all of Γ are true and ¬φ is true at shift-closed Omega
 4. By semantic consequence: φ must be true at the SAME (model, Omega, history, time)
 5. Contradiction: both φ and ¬φ true
@@ -655,10 +655,10 @@ theorem standard_strong_completeness (Γ : List Formula) (φ : Formula)
   -- Γ ++ [φ.neg] is consistent
   have h_ext_cons : ContextConsistent (Γ ++ [φ.neg]) :=
     Bimodal.Metalogic.Bundle.context_not_derivable_implies_extended_consistent Γ φ h_not_deriv
-  -- Construct BMCS directly (avoid going through satisfiable, which loses ShiftClosed info)
-  let B := construct_saturated_bmcs_int (Γ ++ [φ.neg]) h_ext_cons
-  have h_contains := construct_saturated_bmcs_int_contains_context (Γ ++ [φ.neg]) h_ext_cons
-  have h_tc := construct_saturated_bmcs_int_temporally_coherent (Γ ++ [φ.neg]) h_ext_cons
+  -- Construct BFMCS directly (avoid going through satisfiable, which loses ShiftClosed info)
+  let B := construct_saturated_bfmcs_int (Γ ++ [φ.neg]) h_ext_cons
+  have h_contains := construct_saturated_bfmcs_int_contains_context (Γ ++ [φ.neg]) h_ext_cons
+  have h_tc := construct_saturated_bfmcs_int_temporally_coherent (Γ ++ [φ.neg]) h_ext_cons
   -- ¬φ ∈ B.eval_family.mcs 0
   have h_neg_in_mcs : φ.neg ∈ B.eval_family.mcs 0 := h_contains φ.neg (by simp)
   -- By shifted truth lemma: truth_at ... φ.neg

@@ -1,5 +1,5 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
@@ -13,9 +13,9 @@ import Mathlib.Data.Finset.Card
 import Mathlib.Order.Zorn
 
 /-!
-# Saturated BMCS Construction
+# Saturated BFMCS Construction
 
-This module implements a closure-based saturation approach for BMCS construction,
+This module implements a closure-based saturation approach for BFMCS construction,
 providing the foundation for eliminating the `modal_backward` sorry in Construction.lean.
 
 ## Key Insight
@@ -36,7 +36,7 @@ for formulas in the subformula closure. This is:
 
 - `closure_saturation_suffices_for_modal_backward`: Shows that closure-restricted
   saturation implies modal_backward for closure formulas
-- `constructSaturatedBMCSForClosure`: Builds a BMCS that is saturated for a given formula's closure
+- `constructSaturatedBFMCSForClosure`: Builds a BFMCS that is saturated for a given formula's closure
 - Integration with existing completeness machinery
 
 ## References
@@ -61,25 +61,25 @@ Saturation restricted to formulas in the subformula closure.
 -/
 
 /--
-A BMCS is saturated for a closure if every Diamond formula from the closure
+A BFMCS is saturated for a closure if every Diamond formula from the closure
 that appears in some family has a witness family.
 
 This is weaker than full modal saturation (is_modally_saturated) but sufficient
 for proving completeness for formulas within the closure.
 -/
-def is_saturated_for_closure (B : BMCS D) (phi : Formula) : Prop :=
+def is_saturated_for_closure (B : BFMCS D) (phi : Formula) : Prop :=
   ∀ psi, psi ∈ subformulaClosure phi → ∀ fam ∈ B.families, ∀ t : D,
     diamondFormula psi ∈ fam.mcs t → ∃ fam' ∈ B.families, psi ∈ fam'.mcs t
 
 /--
-A BMCS bundled with closure saturation proof.
+A BFMCS bundled with closure saturation proof.
 -/
-structure ClosureSaturatedBMCS (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+structure ClosureSaturatedBFMCS (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
     (phi : Formula) where
-  /-- The underlying BMCS -/
-  bmcs : BMCS D
+  /-- The underlying BFMCS -/
+  bfmcs : BFMCS D
   /-- Proof of saturation for the closure -/
-  saturated_for_closure : is_saturated_for_closure bmcs phi
+  saturated_for_closure : is_saturated_for_closure bfmcs phi
 
 /-!
 ## Modal Backward for Closure Formulas
@@ -88,7 +88,7 @@ The key theorem: closure saturation implies modal_backward for closure formulas.
 -/
 
 /--
-If a BMCS is saturated for a closure, then modal_backward holds for formulas in that closure.
+If a BFMCS is saturated for a closure, then modal_backward holds for formulas in that closure.
 
 **Proof by Contraposition**:
 1. Assume psi is in all families but Box psi is NOT in fam.mcs t (for psi in closure)
@@ -100,7 +100,7 @@ Note: This only works when neg psi is also in the closure. For the completeness 
 this is guaranteed because the closure is closed under negation for subformulas.
 -/
 theorem closure_saturation_implies_modal_backward_for_closure
-    (B : BMCS D) (phi : Formula) (h_sat : is_saturated_for_closure B phi)
+    (B : BFMCS D) (phi : Formula) (h_sat : is_saturated_for_closure B phi)
     (psi : Formula) (h_psi_sub : psi ∈ subformulaClosure phi)
     (h_neg_psi_sub : Formula.neg psi ∈ subformulaClosure phi)
     (fam : IndexedMCSFamily D) (hfam : fam ∈ B.families) (t : D)
@@ -145,7 +145,7 @@ theorem closure_saturation_implies_modal_backward_for_closure
 ## Single Family Construction with Axiom
 
 For the immediate goal of eliminating the modal_backward sorry, we note that
-a single-family BMCS CAN satisfy modal_backward if we accept an axiom stating
+a single-family BFMCS CAN satisfy modal_backward if we accept an axiom stating
 that consistent formulas can always be witnessed.
 
 This is mathematically sound because:
@@ -160,11 +160,11 @@ and reused here.
 -/
 
 /--
-Construct a BMCS from a single family using the axiom for modal_backward.
+Construct a BFMCS from a single family using the axiom for modal_backward.
 
 This eliminates the sorry from Construction.lean by accepting the axiom above.
 -/
-noncomputable def singleFamilyBMCS_withAxiom (fam : IndexedMCSFamily D) : BMCS D where
+noncomputable def singleFamilyBFMCS_withAxiom (fam : IndexedMCSFamily D) : BFMCS D where
   families := {fam}
   nonempty := ⟨fam, Set.mem_singleton fam⟩
   modal_forward := fun fam' hfam' phi t hBox fam'' hfam'' =>
@@ -186,23 +186,23 @@ noncomputable def singleFamilyBMCS_withAxiom (fam : IndexedMCSFamily D) : BMCS D
 /-!
 ## Integration with Existing Construction
 
-Provide the saturated BMCS construction that integrates with completeness.
+Provide the saturated BFMCS construction that integrates with completeness.
 -/
 
 /--
-Construct a BMCS from a consistent context using the axiom-based approach.
+Construct a BFMCS from a consistent context using the axiom-based approach.
 
 This is the replacement for `construct_bmcs` that eliminates the modal_backward sorry.
 -/
 noncomputable def construct_bmcs_axiom (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    BMCS D :=
+    BFMCS D :=
   let M := lindenbaumMCS Gamma h_cons
   let h_mcs := lindenbaumMCS_is_mcs Gamma h_cons
   let fam := constantIndexedMCSFamily M h_mcs (D := D)
-  singleFamilyBMCS_withAxiom fam
+  singleFamilyBFMCS_withAxiom fam
 
 /--
-The axiom-based BMCS construction preserves the context.
+The axiom-based BFMCS construction preserves the context.
 -/
 theorem construct_bmcs_axiom_contains_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
     ∀ gamma ∈ Gamma, gamma ∈ (construct_bmcs_axiom Gamma h_cons (D := D)).eval_family.mcs 0 := by
@@ -266,7 +266,7 @@ theorem FamilyCollection.isFullySaturated_implies_isSaturated {phi : Formula}
   exact h_full psi fam hfam t h_diamond
 
 /--
-Convert a fully saturated FamilyCollection to a BMCS.
+Convert a fully saturated FamilyCollection to a BFMCS.
 
 The modal_forward property uses the box_coherence field.
 The modal_backward property uses full saturation via the contraposition argument
@@ -276,7 +276,7 @@ from `saturated_modal_backward`.
 saturation is not sufficient for proving `modal_backward` for all formulas.
 -/
 noncomputable def FamilyCollection.toBMCS {phi : Formula} (C : FamilyCollection D phi)
-    (h_sat : C.isFullySaturated) : BMCS D where
+    (h_sat : C.isFullySaturated) : BFMCS D where
   families := C.families
   nonempty := C.nonempty
   modal_forward := fun fam hfam psi t h_box fam' hfam' =>
@@ -284,7 +284,7 @@ noncomputable def FamilyCollection.toBMCS {phi : Formula} (C : FamilyCollection 
     C.box_coherence fam hfam psi t h_box fam' hfam'
   modal_backward := fun fam hfam psi t h_all => by
     -- Direct proof via contraposition, same logic as saturated_modal_backward
-    -- but without needing a BMCS wrapper
+    -- but without needing a BFMCS wrapper
 
     -- By contradiction
     by_contra h_not_box
@@ -1160,45 +1160,45 @@ theorem FamilyCollection.saturate_isFullySaturated {phi : Formula} (C : FamilyCo
   (Classical.choose_spec (C.exists_fullySaturated_extension h_const)).2.2
 
 /-!
-## Complete Multi-Family BMCS Construction
+## Complete Multi-Family BFMCS Construction
 
-Using the saturation infrastructure, we can now construct a BMCS from any
+Using the saturation infrastructure, we can now construct a BFMCS from any
 initial family that is proven to be modally coherent, without relying on axioms.
 -/
 
 /--
-Construct a fully saturated BMCS from an initial family.
+Construct a fully saturated BFMCS from an initial family.
 Requires the input family to be constant.
 
 This combines:
 1. Initial family collection from a single family
 2. Non-constructive saturation to achieve isFullySaturated
-3. Conversion to BMCS via FamilyCollection.toBMCS
+3. Conversion to BFMCS via FamilyCollection.toBMCS
 -/
-noncomputable def constructSaturatedBMCS (phi : Formula) (fam : IndexedMCSFamily D)
-    (h_const : fam.isConstant) : BMCS D :=
+noncomputable def constructSaturatedBFMCS (phi : Formula) (fam : IndexedMCSFamily D)
+    (h_const : fam.isConstant) : BFMCS D :=
   let initial := initialFamilyCollection phi fam
   let h_all_const := initialFamilyCollection_allConstant phi fam h_const
   let saturated := initial.saturate h_all_const
   saturated.toBMCS (initial.saturate_isFullySaturated h_all_const)
 
 /--
-The saturated BMCS contains the original family.
+The saturated BFMCS contains the original family.
 -/
-theorem constructSaturatedBMCS_contains_family (phi : Formula) (fam : IndexedMCSFamily D)
+theorem constructSaturatedBFMCS_contains_family (phi : Formula) (fam : IndexedMCSFamily D)
     (h_const : fam.isConstant) :
-    fam ∈ (constructSaturatedBMCS phi fam h_const (D := D)).families := by
-  unfold constructSaturatedBMCS
+    fam ∈ (constructSaturatedBFMCS phi fam h_const (D := D)).families := by
+  unfold constructSaturatedBFMCS
   have h_init : fam ∈ (initialFamilyCollection phi fam).families := initialFamilyCollection_contains_family phi fam
   have h_all_const := initialFamilyCollection_allConstant phi fam h_const
   exact (initialFamilyCollection phi fam).saturate_extends h_all_const h_init
 
 /--
-The saturated BMCS has the original family as its evaluation family.
+The saturated BFMCS has the original family as its evaluation family.
 -/
-theorem constructSaturatedBMCS_eval_family (phi : Formula) (fam : IndexedMCSFamily D)
+theorem constructSaturatedBFMCS_eval_family (phi : Formula) (fam : IndexedMCSFamily D)
     (h_const : fam.isConstant) :
-    (constructSaturatedBMCS phi fam h_const (D := D)).eval_family = fam := by
+    (constructSaturatedBFMCS phi fam h_const (D := D)).eval_family = fam := by
   -- The eval_family of toBMCS is the same as the FamilyCollection's eval_family
   -- saturate preserves eval_family
   -- initialFamilyCollection's eval_family is fam
@@ -1206,7 +1206,7 @@ theorem constructSaturatedBMCS_eval_family (phi : Formula) (fam : IndexedMCSFami
   have h1 := (initialFamilyCollection phi fam).saturate_eval_family h_all_const
   have h2 : (initialFamilyCollection phi fam).eval_family = fam := rfl
   -- Unfold and use transitivity
-  calc (constructSaturatedBMCS phi fam h_const (D := D)).eval_family
+  calc (constructSaturatedBFMCS phi fam h_const (D := D)).eval_family
       = ((initialFamilyCollection phi fam).saturate h_all_const).eval_family := rfl
     _ = (initialFamilyCollection phi fam).eval_family := h1
     _ = fam := h2
@@ -1218,20 +1218,20 @@ This construction can replace the axiom-based approach for completeness proofs.
 -/
 
 /--
-Construct a BMCS from a consistent context using the saturation-based approach.
+Construct a BFMCS from a consistent context using the saturation-based approach.
 
 This replaces `construct_bmcs_axiom` with a provably saturated construction.
 -/
 noncomputable def construct_bmcs_saturated (Gamma : List Formula) (h_cons : ContextConsistent Gamma)
-    (phi : Formula) : BMCS D :=
+    (phi : Formula) : BFMCS D :=
   let M := lindenbaumMCS Gamma h_cons
   let h_mcs := lindenbaumMCS_is_mcs Gamma h_cons
   let fam := constantIndexedMCSFamily M h_mcs (D := D)
   let h_const := constantIndexedMCSFamily_isConstant M h_mcs (D := D)
-  constructSaturatedBMCS phi fam h_const
+  constructSaturatedBFMCS phi fam h_const
 
 /--
-The saturation-based BMCS construction preserves the context.
+The saturation-based BFMCS construction preserves the context.
 -/
 theorem construct_bmcs_saturated_contains_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma)
     (phi : Formula) :
@@ -1243,7 +1243,7 @@ theorem construct_bmcs_saturated_contains_context (Gamma : List Formula) (h_cons
   have h_eval : (construct_bmcs_saturated Gamma h_cons phi (D := D)).eval_family =
                 constantIndexedMCSFamily M h_mcs := by
     unfold construct_bmcs_saturated
-    exact constructSaturatedBMCS_eval_family phi (constantIndexedMCSFamily M h_mcs (D := D)) h_const
+    exact constructSaturatedBFMCS_eval_family phi (constantIndexedMCSFamily M h_mcs (D := D)) h_const
   rw [h_eval]
   simp only [constantIndexedMCSFamily_mcs_eq]
   have h_in_set : gamma ∈ contextAsSet Gamma := h_mem
@@ -1318,9 +1318,9 @@ lemma constant_family_temporally_saturated_is_coherent
    constant_family_temporal_backward_saturated_implies_backward_P fam h_const h_bwd_sat⟩
 
 /-!
-## Constructive Fully Saturated BMCS
+## Constructive Fully Saturated BFMCS
 
-This section provides a constructive replacement for the `fully_saturated_bmcs_exists` axiom
+This section provides a constructive replacement for the `fully_saturated_bfmcs_exists` axiom
 from TemporalCoherentConstruction.lean.
 
 **Approach**:
@@ -1336,7 +1336,7 @@ which currently has sorries. See the detailed analysis in the theorem documentat
 -/
 
 /--
-Constructive theorem replacing `fully_saturated_bmcs_exists` axiom.
+Constructive theorem replacing `fully_saturated_bfmcs_exists` axiom.
 
 **Current Status**: This theorem depends on TemporalLindenbaum.lean sorries being fixed.
 Specifically, witness families built during modal saturation need to be temporally
@@ -1345,7 +1345,7 @@ regular `set_lindenbaum`.
 
 **Why modal saturation families need temporal coherence**:
 The truth lemma (TruthLemma.lean) is proven by structural induction on formulas.
-In the box case, it recurses on ALL families in the BMCS, not just the eval_family.
+In the box case, it recurses on ALL families in the BFMCS, not just the eval_family.
 When the recursion hits a temporal formula (G or H), it uses temporal_backward_G/H
 which requires forward_F and backward_P for that specific family.
 
@@ -1356,8 +1356,8 @@ witness families. This can be eliminated by:
 
 See Phase 4 handoff for detailed implementation strategy.
 -/
-theorem fully_saturated_bmcs_exists_constructive (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (B : BMCS D),
+theorem fully_saturated_bfmcs_exists_constructive (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
+    ∃ (B : BFMCS D),
       (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
       B.temporally_coherent ∧
       is_modally_saturated B := by
@@ -1371,7 +1371,7 @@ theorem fully_saturated_bmcs_exists_constructive (Gamma : List Formula) (h_cons 
 
 This module provides approaches to the modal_backward challenge:
 
-1. **Axiom-based approach** (`singleFamilyBMCS_withAxiom`):
+1. **Axiom-based approach** (`singleFamilyBFMCS_withAxiom`):
    - Simple and direct, uses `singleFamily_modal_backward_axiom`
    - Justified by canonical model metatheory
    - Recommended for immediate use when axiom is acceptable
@@ -1380,14 +1380,14 @@ This module provides approaches to the modal_backward challenge:
    - Works for closure formulas only
    - Not sufficient for general modal_backward (requires full saturation)
 
-3. **Fully-saturated approach** (`constructSaturatedBMCS`):
+3. **Fully-saturated approach** (`constructSaturatedBFMCS`):
    - Uses non-constructive saturation via Zorn's lemma
    - Achieves `isFullySaturated` which implies modal_backward for ALL formulas
    - Main theorem `exists_fullySaturated_extension` is **SORRY-FREE** (Task 881 Phase 2)
    - This provides modal saturation for all formulas
 
-4. **Constructive axiom replacement** (`fully_saturated_bmcs_exists_constructive`):
-   - Aims to replace the `fully_saturated_bmcs_exists` axiom from TemporalCoherentConstruction.lean
+4. **Constructive axiom replacement** (`fully_saturated_bfmcs_exists_constructive`):
+   - Aims to replace the `fully_saturated_bfmcs_exists` axiom from TemporalCoherentConstruction.lean
    - Combines modal saturation from `exists_fullySaturated_extension` with temporal coherence
    - **Current sorry**: Temporal coherence for witness families requires TemporalLindenbaum.lean sorries to be fixed
 
@@ -1395,7 +1395,7 @@ This module provides approaches to the modal_backward challenge:
 - Phase 1 COMPLETE: Derived axiom 5 (negative introspection)
 - Phase 2 COMPLETE: Fixed all 3 sorries in `exists_fullySaturated_extension`
 - Phase 3 COMPLETE: Investigated temporal coherence requirements for truth lemma
-- Phase 4 PARTIAL: Created `fully_saturated_bmcs_exists_constructive` with documented sorry
+- Phase 4 PARTIAL: Created `fully_saturated_bfmcs_exists_constructive` with documented sorry
   - The sorry depends on TemporalLindenbaum.lean sorries being fixed
   - Specifically: witness families need to be temporally saturated
 
@@ -1407,7 +1407,7 @@ construction.
 **Remaining Work**:
 1. Fix sorries in TemporalLindenbaum.lean (henkinLimit_forward_saturated base case)
 2. Modify witness construction to use temporal Lindenbaum
-3. Complete the proof of `fully_saturated_bmcs_exists_constructive`
+3. Complete the proof of `fully_saturated_bfmcs_exists_constructive`
 4. Remove the axiom from TemporalCoherentConstruction.lean
 -/
 

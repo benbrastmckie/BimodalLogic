@@ -1,13 +1,13 @@
 import Bimodal.Metalogic.Bundle.CanonicalQuotient
 import Bimodal.Metalogic.Bundle.CanonicalFrame
-import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.DovetailingChain
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 
 /-!
-# Canonical BFMCS Construction (All-MCS Approach)
+# Canonical FMCS Construction (All-MCS Approach)
 
-This module constructs a BFMCS over ALL maximal consistent sets using the Preorder
+This module constructs a FMCS over ALL maximal consistent sets using the Preorder
 approach from Task 922 v5. The original plan used CanonicalReachable (future-reachable
 fragment), but backward_P requires past witnesses which are NOT in the future-reachable
 fragment. The solution uses ALL MCSes as the domain, making both forward_F and backward_P
@@ -15,7 +15,7 @@ trivial.
 
 ## Overview
 
-Given a root MCS `M₀`, we construct a BFMCS where:
+Given a root MCS `M₀`, we construct a FMCS where:
 - The domain is `CanonicalMCS` (all maximal consistent sets, with CanonicalR Preorder)
 - Each element `w` maps directly to `w.world` (the MCS itself)
 - `forward_G` follows from `canonical_forward_G` and the Preorder definition
@@ -40,12 +40,12 @@ The all-MCS approach sidesteps this entirely:
 
 ## Compatibility
 
-The BFMCS and TemporalCoherentFamily only require `[Preorder D]`, not totality.
+The FMCS and TemporalCoherentFamily only require `[Preorder D]`, not totality.
 The completeness chain (TruthLemma, Completeness) does NOT use totality, IsTotal,
 or LinearOrder. So using the non-total CanonicalR Preorder on all MCSes is sound.
 
 The CanonicalReachable construction and its totality (IsTotal) are preserved for
-backward compatibility but are not used by the primary BFMCS construction.
+backward compatibility but are not used by the primary FMCS construction.
 
 ## References
 
@@ -69,7 +69,7 @@ forward and backward witnesses are always in the domain.
 -/
 
 /--
-A maximal consistent set, used as a domain element for the canonical BFMCS.
+A maximal consistent set, used as a domain element for the canonical FMCS.
 
 This is a structure (not an abbrev for Subtype) to avoid diamond instance conflicts:
 `Set Formula` has `LE` (subset), so `Subtype (Set Formula)` would inherit `Subtype.instLE`
@@ -89,7 +89,7 @@ Preorder on CanonicalMCS via CanonicalR.
 
 This is reflexive (by T-axiom: G(phi) → phi) and transitive (by Temp 4: G(phi) → G(G(phi))).
 Note: this Preorder is NOT total in general. Totality only holds within the reachable
-fragment from a fixed root (see CanonicalQuotient.lean). But the BFMCS infrastructure
+fragment from a fixed root (see CanonicalQuotient.lean). But the FMCS infrastructure
 only requires Preorder, not totality.
 -/
 noncomputable instance : Preorder CanonicalMCS where
@@ -98,14 +98,14 @@ noncomputable instance : Preorder CanonicalMCS where
   le_trans a b c hab hbc := canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc
 
 /-!
-## The Canonical BFMCS on All MCSes
+## The Canonical FMCS on All MCSes
 
-Construct a BFMCS over CanonicalMCS where each element maps directly
+Construct a FMCS over CanonicalMCS where each element maps directly
 to its underlying MCS.
 -/
 
 /--
-The MCS assignment for the canonical BFMCS: each element maps to its underlying set.
+The MCS assignment for the canonical FMCS: each element maps to its underlying set.
 
 This is the identity mapping - each CanonicalMCS element IS its MCS.
 -/
@@ -148,14 +148,14 @@ theorem canonicalMCS_backward_H
   exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
 /--
-The canonical BFMCS on all MCSes: a family of MCS indexed by CanonicalMCS.
+The canonical FMCS on all MCSes: a family of MCS indexed by CanonicalMCS.
 
-This construction satisfies all BFMCS requirements:
+This construction satisfies all FMCS requirements:
 - Each element maps to its own MCS (identity mapping)
 - Forward G coherence via CanonicalR
 - Backward H coherence via GContent/HContent duality
 -/
-noncomputable def canonicalMCSBFMCS : BFMCS CanonicalMCS where
+noncomputable def canonicalMCSBFMCS : FMCS CanonicalMCS where
   mcs := canonicalMCS_mcs
   is_mcs := canonicalMCS_is_mcs
   forward_G := fun w₁ w₂ phi h_le h_G =>
@@ -225,7 +225,7 @@ theorem canonicalMCS_backward_P
   exact ⟨s, h_R, h_phi_W⟩
 
 /--
-The canonical BFMCS preserves the root context.
+The canonical FMCS preserves the root context.
 
 Note: We reference the root MCS directly rather than using `0` because
 the Zero instance requires explicit binding of `M₀` and `h_mcs₀`.
@@ -251,7 +251,7 @@ The proof:
 /--
 Temporal coherent family existence for CanonicalMCS - SORRY-FREE.
 
-Given a consistent context Gamma, there exists a `BFMCS CanonicalMCS` and a
+Given a consistent context Gamma, there exists a `FMCS CanonicalMCS` and a
 root element such that:
 1. All formulas of Gamma are in the family's MCS at the root
 2. Forward_F holds (F phi at t implies witness at s >= t)
@@ -266,7 +266,7 @@ the Zero instance for CanonicalMCS depends on implicit variables in scope.
 -/
 theorem temporal_coherent_family_exists_CanonicalMCS
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (fam : BFMCS CanonicalMCS) (root : CanonicalMCS),
+    ∃ (fam : FMCS CanonicalMCS) (root : CanonicalMCS),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs root) ∧
       (∀ t : CanonicalMCS, ∀ φ : Formula,
         Formula.some_future φ ∈ fam.mcs t → ∃ s : CanonicalMCS, t ≤ s ∧ φ ∈ fam.mcs s) ∧
@@ -285,7 +285,7 @@ theorem temporal_coherent_family_exists_CanonicalMCS
     fun t φ h_P => canonicalMCS_backward_P t φ h_P⟩
 
 /-!
-## Legacy CanonicalReachable BFMCS (Preserved for Compatibility)
+## Legacy CanonicalReachable FMCS (Preserved for Compatibility)
 
 The following constructions use CanonicalReachable as the domain. They are preserved
 for backward compatibility with files that reference them, but the primary construction
@@ -297,7 +297,7 @@ reachable MCSes are not necessarily future-reachable. See module docstring for d
 -/
 
 /--
-The MCS assignment for the CanonicalReachable BFMCS: each reachable element maps to its world.
+The MCS assignment for the CanonicalReachable FMCS: each reachable element maps to its world.
 (Legacy - use canonicalMCS_mcs instead)
 -/
 def canonicalReachableBFMCS_mcs (w : CanonicalReachable M₀ h_mcs₀) : Set Formula :=
@@ -334,10 +334,10 @@ theorem canonicalReachableBFMCS_backward_H
   exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
 /--
-The canonical BFMCS on CanonicalReachable.
+The canonical FMCS on CanonicalReachable.
 (Legacy - use canonicalMCSBFMCS instead)
 -/
-noncomputable def canonicalReachableBFMCS : BFMCS (CanonicalReachable M₀ h_mcs₀) where
+noncomputable def canonicalReachableBFMCS : FMCS (CanonicalReachable M₀ h_mcs₀) where
   mcs := canonicalReachableBFMCS_mcs
   is_mcs := canonicalReachableBFMCS_is_mcs
   forward_G := fun w₁ w₂ phi h_le h_G =>
@@ -367,7 +367,7 @@ theorem canonicalReachableBFMCS_forward_F
   exact ⟨s, h_R, h_phi_W⟩
 
 /--
-CanonicalReachable BFMCS preserves root context.
+CanonicalReachable FMCS preserves root context.
 (Legacy - use canonicalMCSBFMCS_root_contains instead)
 -/
 theorem canonicalReachableBFMCS_root_contains (phi : Formula) (h_mem : phi ∈ M₀) :
@@ -383,7 +383,7 @@ consumers are updated.
 -/
 
 /--
-The MCS assignment for the canonical BFMCS: each quotient element maps to
+The MCS assignment for the canonical FMCS: each quotient element maps to
 the world of its representative. (Legacy - use canonicalMCS_mcs instead)
 -/
 noncomputable def canonicalBFMCS_mcs (q : CanonicalQuotient M₀ h_mcs₀) : Set Formula :=

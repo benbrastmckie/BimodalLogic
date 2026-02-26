@@ -16,8 +16,8 @@ soundness, completeness, and decidability.
 | Result | Theorem | Module | Status |
 |--------|---------|--------|--------|
 | **Soundness** | `soundness` | `Soundness` | SORRY-FREE |
-| **BMCS Weak Completeness** | `bmcs_weak_completeness` | `Bundle.Completeness` | SORRY-FREE |
-| **BMCS Strong Completeness** | `bmcs_strong_completeness` | `Bundle.Completeness` | SORRY-FREE |
+| **BFMCS Weak Completeness** | `bfmcs_weak_completeness` | `Bundle.Completeness` | SORRY-FREE |
+| **BFMCS Strong Completeness** | `bfmcs_strong_completeness` | `Bundle.Completeness` | SORRY-FREE |
 | **Standard Weak Completeness** | `standard_weak_completeness` | `Representation` | sorry-dependent |
 | **Standard Strong Completeness** | `standard_strong_completeness` | `Representation` | sorry-dependent |
 | **FMP Weak Completeness** | `fmp_weak_completeness` | `FMP.SemanticCanonicalModel` | SORRY-FREE |
@@ -25,24 +25,24 @@ soundness, completeness, and decidability.
 
 All main theorems are proven without sorries (direct or local). The standard completeness
 theorems in Representation.lean are sorry-dependent because they rely on
-`construct_saturated_bmcs_int` which has upstream sorries in the BMCS saturation chain.
+`construct_saturated_bfmcs_int` which has upstream sorries in the BFMCS saturation chain.
 
 ## Sorry Status
 
-**Active sorries in Metalogic/**: 7 total
+**Active sorries in Metalogic/**: 5 total
 
 | File | Count | Description |
 |------|-------|-------------|
-| `Bundle/Construction.lean` | 1 | modal_backward (line 197) |
-| `Bundle/TemporalCoherentConstruction.lean` | 2 | temporal_coherent_family_exists, fully_saturated_bmcs_exists_int |
-| `Bundle/DovetailingChain.lean` | 4 | cross-sign propagation and F/P witnesses |
+| `Bundle/Construction.lean` | 1 | singleFamilyBFMCS.modal_backward |
+| `Bundle/TemporalCoherentConstruction.lean` | 2 | temporal_coherent_family_exists, fully_saturated_bfmcs_exists_int |
+| `Bundle/DovetailingChain.lean` | 2 | buildDovetailingChainFamily_forward_F, buildDovetailingChainFamily_backward_P |
 
-**Key Point**: Main completeness theorems (bmcs_weak_completeness, bmcs_strong_completeness,
+**Key Point**: Main completeness theorems (bfmcs_weak_completeness, bfmcs_strong_completeness,
 standard_weak_completeness, standard_strong_completeness) are SORRY-FREE. The soundness
-theorem is also SORRY-FREE. Remaining sorries are in upstream BMCS construction utilities.
+theorem is also SORRY-FREE. Remaining sorries are in upstream BFMCS construction utilities.
 
 **Resolved (task 912 v002)**:
-- 29 sorries archived (25 RecursiveSeed/Seed*, 4 EvalBMCS truth lemma)
+- 29 sorries archived (25 RecursiveSeed/Seed*, 4 EvalBFMCS truth lemma)
 - 3 sorries discharged: 2 in Representation.lean (Omega-mismatch), 1 in Soundness.lean (temporal duality)
 
 ## Module Structure
@@ -54,13 +54,15 @@ Metalogic/
 │   ├── MaximalConsistent.lean  # Lindenbaum's lemma, MCS properties
 │   └── MCSProperties.lean      # MCS closure under derivation
 │
-├── Bundle/                  # BMCS Completeness (primary completeness result)
-│   ├── BFMCS.lean               # BFMCS: Bundled Family of MCS
-│   ├── BMCS.lean               # Bundle structure
-│   ├── BMCSTruth.lean          # Truth with bundled box
-│   ├── TruthLemma.lean         # KEY: sorry-free forward direction
-│   ├── Construction.lean       # BMCS from consistent context
-│   └── Completeness.lean       # bmcs_weak_completeness, bmcs_strong_completeness
+├── Bundle/                  # BFMCS Completeness (primary completeness result)
+│   ├── FMCSDef.lean             # FMCS structure (Family of MCS)
+│   ├── FMCS.lean               # FMCS re-export
+│   ├── BFMCS.lean              # BFMCS structure (Bundle of FMCSs)
+│   ├── BFMCSTruth.lean         # Truth with bundled box
+│   ├── TruthLemma.lean         # KEY: sorry-free truth lemma
+│   ├── Construction.lean       # BFMCS from consistent context
+│   ├── ChainBundleBFMCS.lean   # Sorry-free completeness chain
+│   └── Completeness.lean       # bfmcs_weak_completeness, bfmcs_strong_completeness
 │
 ├── FMP/                     # Finite Model Property
 │   ├── SemanticCanonicalModel.lean  # fmp_weak_completeness (sorry-free)
@@ -83,17 +85,17 @@ Metalogic/
 
 ## Completeness Strategy
 
-### BMCS Completeness (Bundle/)
+### BFMCS Completeness (Bundle/)
 
-The Bundle of Maximal Consistent Sets (BMCS) approach provides Henkin-style
+The Bundle of Maximal Consistent Sets (BFMCS) approach provides Henkin-style
 completeness that avoids the modal box obstruction:
 
-1. **Representation**: If φ is consistent, construct BMCS where φ is true
+1. **Representation**: If φ is consistent, construct BFMCS where φ is true
 2. **Weak Completeness**: bmcs_valid φ → ⊢ φ (by contrapositive)
 3. **Strong Completeness**: bmcs_consequence Γ φ → Γ ⊢ φ (by contrapositive)
 
 ```
-BMCS Completeness + Standard Soundness
+BFMCS Completeness + Standard Soundness
 ══════════════════════════════════════
 ⊢ φ  ↔  bmcs_valid φ  →  standard_valid φ
 ```
@@ -111,10 +113,10 @@ Both approaches yield sorry-free completeness theorems.
 
 ## Usage
 
-For BMCS completeness (Henkin-style):
+For BFMCS completeness (Henkin-style):
 ```lean
 import Bimodal.Metalogic.Bundle.Completeness
--- Provides: bmcs_representation, bmcs_weak_completeness, bmcs_strong_completeness
+-- Provides: bfmcs_representation, bfmcs_weak_completeness, bfmcs_strong_completeness
 ```
 
 For FMP-based completeness:

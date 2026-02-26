@@ -1,7 +1,7 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
-import Bimodal.Metalogic.Bundle.CoherentConstruction
+import Bimodal.Boneyard.Bundle.CoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -38,7 +38,7 @@ The WeakCoherentBundle approach resolves this by:
 - `BoxClosure`: Set of formulas chi where Box chi is in ALL core families at all times
 - `WeakCoherentBundle`: Structure with core/witness separation
 - `WeakWitnessSeed`: The seed `{psi} ∪ BoxClosure(core)` for witness construction
-- `WeakBMCS`: BMCS with relaxed modal_forward (only from eval_family)
+- `WeakBMCS`: BFMCS with relaxed modal_forward (only from eval_family)
 
 ## References
 
@@ -867,7 +867,7 @@ prove conversion from saturated WeakCoherentBundle.
 -/
 
 /--
-WeakBMCS: A weakened version of BMCS where modal_forward only holds from eval_family.
+WeakBMCS: A weakened version of BFMCS where modal_forward only holds from eval_family.
 
 This relaxation is sufficient for the completeness theorem because:
 1. We evaluate formulas starting from eval_family
@@ -965,7 +965,7 @@ lemma WeakCoherentBundle.toWeakBMCS_families (B : WeakCoherentBundle D)
 ## Phase 4 Summary
 
 Phase 4 provides:
-1. `WeakBMCS`: Weakened BMCS structure with modal_forward only from eval_family
+1. `WeakBMCS`: Weakened BFMCS structure with modal_forward only from eval_family
 2. `WeakCoherentBundle.toWeakBMCS`: Conversion from saturated bundle
 
 Technical gap: The `modal_backward` proof requires saturation for all families,

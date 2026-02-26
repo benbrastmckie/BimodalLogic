@@ -1,7 +1,5 @@
-import Bimodal.Metalogic.Bundle.BMCS
 import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Bundle.FMCS
-import Bimodal.Metalogic.Bundle.CanonicalBFMCS
+import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.ChainFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
@@ -10,12 +8,12 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Theorems.Propositional
 
 /-!
-# Chain-Bundle BMCS Construction and Sorry-Free Completeness (Task 925)
+# Chain-Bundle BFMCS Construction and Sorry-Free Completeness (Task 925)
 
-This module constructs a fully saturated BMCS and proves weak and strong
+This module constructs a fully saturated BFMCS and proves weak and strong
 completeness theorems WITHOUT any sorry or custom axioms. This provides
 a PARALLEL completeness chain that supersedes the original chain through
-`fully_saturated_bmcs_exists_int` (which has a sorry).
+`fully_saturated_bfmcs_exists_int` (which has a sorry).
 
 ## Key Innovation: MCS-Membership Box Semantics
 
@@ -39,7 +37,7 @@ Families:
 
 - `MCSBoxContent_eq_of_CanonicalR`: BoxContent preserved along CanonicalR
 - `bmcs_truth_lemma_mcs`: Truth lemma with per-family temporal coherence
-- `fully_saturated_bmcs_exists_CanonicalBC`: Sorry-free BMCS construction
+- `fully_saturated_bfmcs_exists_CanonicalBC`: Sorry-free BFMCS construction
 - `bmcs_representation_mcs`: Sorry-free representation theorem
 - `bmcs_weak_completeness_mcs`: Sorry-free weak completeness
 - `bmcs_strong_completeness_mcs`: Sorry-free strong completeness
@@ -160,7 +158,7 @@ noncomputable instance (BC : Set Formula) : Preorder (CanonicalBC BC) where
 /--
 The eval family: maps each CanonicalBC element to its own MCS.
 -/
-noncomputable def canonicalBCBFMCS (BC : Set Formula) : BFMCS (CanonicalBC BC) where
+noncomputable def canonicalBCBFMCS (BC : Set Formula) : FMCS (CanonicalBC BC) where
   mcs := fun w => w.world
   is_mcs := fun w => w.is_mcs
   forward_G := fun w₁ w₂ phi h_le h_G =>
@@ -208,7 +206,7 @@ A constant witness family on CanonicalBC.
 -/
 noncomputable def constantBCFamily (BC : Set Formula) (N : Set Formula)
     (h_mcs : SetMaximalConsistent N) (_ : MCSBoxContent N = BC) :
-    BFMCS (CanonicalBC BC) where
+    FMCS (CanonicalBC BC) where
   mcs := fun _ => N
   is_mcs := fun _ => h_mcs
   forward_G := fun _ _ phi _ h_G => by
@@ -221,13 +219,13 @@ noncomputable def constantBCFamily (BC : Set Formula) (N : Set Formula)
     exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H
 
 /-!
-## Chain-Bundle BMCS Construction
+## Chain-Bundle BFMCS Construction
 -/
 
 /--
 The chain-bundle families: eval family plus constant families for modal saturation.
 -/
-noncomputable def chainBundleFamilies (BC : Set Formula) : Set (BFMCS (CanonicalBC BC)) :=
+noncomputable def chainBundleFamilies (BC : Set Formula) : Set (FMCS (CanonicalBC BC)) :=
   {canonicalBCBFMCS BC} ∪
   { fam | ∃ (N : Set Formula) (h_mcs : SetMaximalConsistent N)
       (h_bc : MCSBoxContent N = BC), fam = constantBCFamily BC N h_mcs h_bc }
@@ -245,7 +243,7 @@ lemma constantFamily_mem (BC : Set Formula) (N : Set Formula)
 Every family in the bundle has BoxContent = BC at every time point.
 -/
 theorem chainBundle_boxcontent_eq (BC : Set Formula)
-    (fam : BFMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
+    (fam : FMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
     (t : CanonicalBC BC) :
     MCSBoxContent (fam.mcs t) = BC := by
   rcases hfam with h_eval | h_const
@@ -256,9 +254,9 @@ theorem chainBundle_boxcontent_eq (BC : Set Formula)
 Modal forward for chain-bundle.
 -/
 theorem chainBundle_modal_forward (BC : Set Formula)
-    (fam : BFMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
+    (fam : FMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
     (φ : Formula) (t : CanonicalBC BC) (h_box : Formula.box φ ∈ fam.mcs t)
-    (fam' : BFMCS (CanonicalBC BC)) (hfam' : fam' ∈ chainBundleFamilies BC) :
+    (fam' : FMCS (CanonicalBC BC)) (hfam' : fam' ∈ chainBundleFamilies BC) :
     φ ∈ fam'.mcs t := by
   -- Box phi ∈ fam.mcs t → Box(Box phi) ∈ fam.mcs t (axiom 4)
   -- → Box phi ∈ BoxContent(fam.mcs t) = BC = BoxContent(fam'.mcs t)
@@ -289,7 +287,7 @@ theorem chainBundle_modal_forward (BC : Set Formula)
 Modal saturation for chain-bundle.
 -/
 theorem chainBundle_modally_saturated (BC : Set Formula)
-    (fam : BFMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
+    (fam : FMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
     (t : CanonicalBC BC) (psi : Formula)
     (h_diamond : diamondFormula psi ∈ fam.mcs t) :
     ∃ fam' ∈ chainBundleFamilies BC, psi ∈ fam'.mcs t := by
@@ -311,7 +309,7 @@ theorem chainBundle_modally_saturated (BC : Set Formula)
 Modal backward for chain-bundle (from saturation).
 -/
 theorem chainBundle_modal_backward (BC : Set Formula)
-    (fam : BFMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
+    (fam : FMCS (CanonicalBC BC)) (hfam : fam ∈ chainBundleFamilies BC)
     (φ : Formula) (t : CanonicalBC BC)
     (h_all : ∀ fam' ∈ chainBundleFamilies BC, φ ∈ fam'.mcs t) :
     Formula.box φ ∈ fam.mcs t := by
@@ -331,13 +329,13 @@ theorem chainBundle_modal_backward (BC : Set Formula)
   exact set_consistent_not_both (fam'.is_mcs t).1 φ (h_all fam' hfam') h_neg_phi
 
 /-!
-## The Chain-Bundle BMCS
+## The Chain-Bundle BFMCS
 -/
 
 /--
-The chain-bundle BMCS.
+The chain-bundle BFMCS.
 -/
-noncomputable def chainBundleBMCS (BC : Set Formula) : BMCS (CanonicalBC BC) where
+noncomputable def chainBundleBFMCS (BC : Set Formula) : BFMCS (CanonicalBC BC) where
   families := chainBundleFamilies BC
   nonempty := ⟨canonicalBCBFMCS BC, evalFamily_mem BC⟩
   modal_forward := chainBundle_modal_forward BC
@@ -345,8 +343,8 @@ noncomputable def chainBundleBMCS (BC : Set Formula) : BMCS (CanonicalBC BC) whe
   eval_family := canonicalBCBFMCS BC
   eval_family_mem := evalFamily_mem BC
 
-theorem chainBundleBMCS_modally_saturated (BC : Set Formula) :
-    is_modally_saturated (chainBundleBMCS BC) :=
+theorem chainBundleBFMCS_modally_saturated (BC : Set Formula) :
+    is_modally_saturated (chainBundleBFMCS BC) :=
   chainBundle_modally_saturated BC
 
 /-!
@@ -354,9 +352,9 @@ theorem chainBundleBMCS_modally_saturated (BC : Set Formula) :
 -/
 
 /--
-Modified BMCS truth: Box uses MCS membership instead of recursive truth.
+Modified BFMCS truth: Box uses MCS membership instead of recursive truth.
 -/
-def bmcs_truth_at_mcs {D : Type*} [Preorder D] (B : BMCS D) (fam : BFMCS D) (t : D) :
+def bmcs_truth_at_mcs {D : Type*} [Preorder D] (B : BFMCS D) (fam : FMCS D) (t : D) :
     Formula → Prop
   | Formula.atom p => Formula.atom p ∈ fam.mcs t
   | Formula.bot => False
@@ -369,7 +367,7 @@ def bmcs_truth_at_mcs {D : Type*} [Preorder D] (B : BMCS D) (fam : BFMCS D) (t :
 Negation truth for modified semantics.
 -/
 theorem bmcs_truth_mcs_neg {D : Type*} [Preorder D]
-    (B : BMCS D) (fam : BFMCS D) (t : D) (φ : Formula) :
+    (B : BFMCS D) (fam : FMCS D) (t : D) (φ : Formula) :
     bmcs_truth_at_mcs B fam t (Formula.neg φ) ↔ ¬bmcs_truth_at_mcs B fam t φ := by
   unfold Formula.neg; simp only [bmcs_truth_at_mcs]
 
@@ -382,8 +380,8 @@ variable {D : Type*} [Preorder D] [Zero D]
 /--
 Modified truth lemma: requires temporal coherence ONLY for the evaluated family.
 -/
-theorem bmcs_truth_lemma_mcs (B : BMCS D)
-    (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem bmcs_truth_lemma_mcs (B : BFMCS D)
+    (fam : FMCS D) (hfam : fam ∈ B.families)
     (h_forward_F : ∀ t : D, ∀ φ : Formula,
       Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s)
     (h_backward_P : ∀ t : D, ∀ φ : Formula,
@@ -429,7 +427,7 @@ theorem bmcs_truth_lemma_mcs (B : BMCS D)
       exact (ih s).mp (fam.forward_G t s ψ hts h_G)
     · intro h_all
       let tcf : TemporalCoherentFamily D := {
-        toBFMCS := fam
+        toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
@@ -441,23 +439,23 @@ theorem bmcs_truth_lemma_mcs (B : BMCS D)
       exact (ih s).mp (fam.backward_H t s ψ hst h_H)
     · intro h_all
       let tcf : TemporalCoherentFamily D := {
-        toBFMCS := fam
+        toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
       exact temporal_backward_H tcf t ψ (fun s hst => (ih s).mpr (h_all s hst))
 
 /-!
-## Fully Saturated BMCS Existence
+## Fully Saturated BFMCS Existence
 -/
 
 /--
-For any consistent context, there exists a fully saturated BMCS
+For any consistent context, there exists a fully saturated BFMCS
 over CanonicalBC with all required properties.
 -/
-theorem fully_saturated_bmcs_exists_CanonicalBC
+theorem fully_saturated_bfmcs_exists_CanonicalBC
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (BC : Set Formula) (B : BMCS (CanonicalBC BC))
+    ∃ (BC : Set Formula) (B : BFMCS (CanonicalBC BC))
       (root : CanonicalBC BC),
       (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs root) ∧
       (∀ t : CanonicalBC BC, ∀ φ : Formula,
@@ -472,36 +470,36 @@ theorem fully_saturated_bmcs_exists_CanonicalBC
   have h_extends := lindenbaumMCS_extends Gamma h_cons
   let BC := MCSBoxContent M0
   let root : CanonicalBC BC := ⟨M0, h_mcs0, rfl⟩
-  refine ⟨BC, chainBundleBMCS BC, root, ?_, ?_, ?_, ?_⟩
+  refine ⟨BC, chainBundleBFMCS BC, root, ?_, ?_, ?_, ?_⟩
   · intro gamma h_mem
     exact h_extends (by simp [contextAsSet]; exact h_mem)
   · exact canonicalBC_forward_F BC
   · exact canonicalBC_backward_P BC
-  · exact chainBundleBMCS_modally_saturated BC
+  · exact chainBundleBFMCS_modally_saturated BC
 
 /--
-Representation theorem: consistent formula has a satisfying BMCS.
+Representation theorem: consistent formula has a satisfying BFMCS.
 -/
 theorem bmcs_representation_mcs (φ : Formula) (h_cons : ContextConsistent [φ]) :
-    ∃ (BC : Set Formula) (B : BMCS (CanonicalBC BC))
+    ∃ (BC : Set Formula) (B : BFMCS (CanonicalBC BC))
       (root : CanonicalBC BC),
       bmcs_truth_at_mcs B B.eval_family root φ := by
   obtain ⟨BC, B, root, h_ctx, h_fwd, h_bwd, _⟩ :=
-    fully_saturated_bmcs_exists_CanonicalBC [φ] h_cons
+    fully_saturated_bfmcs_exists_CanonicalBC [φ] h_cons
   haveI : Zero (CanonicalBC BC) := ⟨root⟩
   exact ⟨BC, B, root,
     (bmcs_truth_lemma_mcs B B.eval_family B.eval_family_mem h_fwd h_bwd root φ).mp
       (h_ctx φ (by simp))⟩
 
 /--
-Context representation: consistent context has a satisfying BMCS.
+Context representation: consistent context has a satisfying BFMCS.
 -/
 theorem bmcs_context_representation_mcs (Γ : List Formula) (h_cons : ContextConsistent Γ) :
-    ∃ (BC : Set Formula) (B : BMCS (CanonicalBC BC))
+    ∃ (BC : Set Formula) (B : BFMCS (CanonicalBC BC))
       (root : CanonicalBC BC),
       ∀ γ ∈ Γ, bmcs_truth_at_mcs B B.eval_family root γ := by
   obtain ⟨BC, B, root, h_ctx, h_fwd, h_bwd, _⟩ :=
-    fully_saturated_bmcs_exists_CanonicalBC Γ h_cons
+    fully_saturated_bfmcs_exists_CanonicalBC Γ h_cons
   haveI : Zero (CanonicalBC BC) := ⟨root⟩
   exact ⟨BC, B, root, fun γ h_mem =>
     (bmcs_truth_lemma_mcs B B.eval_family B.eval_family_mem h_fwd h_bwd root γ).mp
@@ -511,14 +509,14 @@ theorem bmcs_context_representation_mcs (Γ : List Formula) (h_cons : ContextCon
 ## Completeness Theorems Using Modified Truth (Task 925 Phase 7)
 
 These theorems prove weak and strong completeness using the `bmcs_truth_at_mcs`
-semantics with the CanonicalBC-based BMCS construction. This completeness chain
-is entirely sorry-free, unlike the original chain through `fully_saturated_bmcs_exists_int`.
+semantics with the CanonicalBC-based BFMCS construction. This completeness chain
+is entirely sorry-free, unlike the original chain through `fully_saturated_bfmcs_exists_int`.
 
 ### Key Difference from Completeness.lean
 
 The original completeness chain (Completeness.lean) uses `bmcs_truth_at` with recursive
-truth for Box, which requires temporal coherence of ALL families in the BMCS. This led
-to the `fully_saturated_bmcs_exists_int` sorry (constant witness families are not
+truth for Box, which requires temporal coherence of ALL families in the BFMCS. This led
+to the `fully_saturated_bfmcs_exists_int` sorry (constant witness families are not
 temporally coherent).
 
 The new chain uses `bmcs_truth_at_mcs` where Box is defined by MCS membership:
@@ -529,12 +527,12 @@ which IS temporally coherent because it maps each CanonicalBC element to its own
 -/
 
 /--
-Validity using modified truth: a formula is valid iff true in every BMCS
+Validity using modified truth: a formula is valid iff true in every BFMCS
 for every family and time point.
 -/
 def bmcs_valid_mcs (φ : Formula) : Prop :=
-  ∀ (BC : Set Formula) (B : BMCS (CanonicalBC BC))
-    (fam : BFMCS (CanonicalBC BC)) (_ : fam ∈ B.families)
+  ∀ (BC : Set Formula) (B : BFMCS (CanonicalBC BC))
+    (fam : FMCS (CanonicalBC BC)) (_ : fam ∈ B.families)
     (t : CanonicalBC BC), bmcs_truth_at_mcs B fam t φ
 
 /--
@@ -542,8 +540,8 @@ Consequence using modified truth: φ is a consequence of Γ if whenever
 Γ is satisfied, φ is also satisfied.
 -/
 def bmcs_consequence_mcs (Γ : List Formula) (φ : Formula) : Prop :=
-  ∀ (BC : Set Formula) (B : BMCS (CanonicalBC BC))
-    (fam : BFMCS (CanonicalBC BC)) (_ : fam ∈ B.families)
+  ∀ (BC : Set Formula) (B : BFMCS (CanonicalBC BC))
+    (fam : FMCS (CanonicalBC BC)) (_ : fam ∈ B.families)
     (t : CanonicalBC BC),
     (∀ γ ∈ Γ, bmcs_truth_at_mcs B fam t γ) → bmcs_truth_at_mcs B fam t φ
 
@@ -578,7 +576,7 @@ under modified truth semantics.
 
 **Proof Strategy**:
 1. If `⊬ φ`, then `[¬φ]` is consistent
-2. By `bmcs_representation_mcs`, there exists a BMCS where `¬φ` is true
+2. By `bmcs_representation_mcs`, there exists a BFMCS where `¬φ` is true
 3. So `φ` is false at that point
 4. Therefore `φ` is not valid
 -/
@@ -665,9 +663,9 @@ theorem bmcs_strong_completeness_mcs (Γ : List Formula) (φ : Formula)
 
 This module provides a COMPLETELY sorry-free completeness chain:
 
-1. **chainBundleBMCS**: Sorry-free BMCS over CanonicalBC
+1. **chainBundleBFMCS**: Sorry-free BFMCS over CanonicalBC
 2. **bmcs_truth_lemma_mcs**: Sorry-free truth lemma (per-family temporal coherence)
-3. **fully_saturated_bmcs_exists_CanonicalBC**: Sorry-free existence
+3. **fully_saturated_bfmcs_exists_CanonicalBC**: Sorry-free existence
 4. **bmcs_representation_mcs**: Sorry-free representation
 5. **bmcs_weak_completeness_mcs**: Sorry-free weak completeness
 6. **bmcs_strong_completeness_mcs**: Sorry-free strong completeness
@@ -675,7 +673,7 @@ This module provides a COMPLETELY sorry-free completeness chain:
 ### What This Means
 
 The original completeness chain (Completeness.lean) has a sorry via
-`fully_saturated_bmcs_exists_int`. This new chain eliminates that sorry by:
+`fully_saturated_bfmcs_exists_int`. This new chain eliminates that sorry by:
 - Using `CanonicalBC` as the domain instead of `Int`
 - Using modified truth `bmcs_truth_at_mcs` (Box by MCS membership)
 - Only requiring temporal coherence of the eval family

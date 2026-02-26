@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -11,13 +11,13 @@ import Mathlib.Logic.Encodable.Basic
 /-!
 # Dovetailing Temporal Chain Construction
 
-This module builds an `BFMCS Int` with temporal coherence properties,
+This module builds an `FMCS Int` with temporal coherence properties,
 proving `temporal_coherent_family_exists` as a THEOREM (replacing the axiom in
 `TemporalCoherentConstruction.lean`).
 
 ## Construction Overview
 
-Given a consistent context Gamma, we build an `BFMCS Int` using an
+Given a consistent context Gamma, we build an `FMCS Int` using an
 interleaved dovetailing construction that enables cross-sign temporal propagation:
 
 ### Construction Order (Dovetailing)
@@ -1763,13 +1763,13 @@ theorem PContent_blocks_HContent_derives_neg
 /-!
 ## Dovetailing Chain Family Construction
 
-Build the `BFMCS Int` from the chain, with all forward_G and backward_H fully proven.
+Build the `FMCS Int` from the chain, with all forward_G and backward_H fully proven.
 -/
 
 /--
 Build the dovetailing chain family from a consistent context.
 
-**Proven** (all 4 BFMCS fields):
+**Proven** (all 4 FMCS fields):
 - forward_G: G phi in M_t implies phi in M_{t'} for all t ≤ t' (fully proven, including cross-sign)
 - backward_H: H phi in M_t implies phi in M_{t'} for all t' ≤ t (fully proven, including cross-sign)
 - Context preservation at time 0
@@ -1780,7 +1780,7 @@ Build the dovetailing chain family from a consistent context.
 
 F-formulas (F(psi) = neg(G(neg(psi)))) do not persist through GContent seeds because
 GContent only propagates G-formulas. The Lindenbaum extension at any step can introduce
-G(neg(psi)), killing F(psi). Resolution requires a non-linear BFMCS construction;
+G(neg(psi)), killing F(psi). Resolution requires a non-linear FMCS construction;
 see WitnessGraph.lean for proven local witness existence.
 
 Cross-sign G/H propagation is proven using the GContent/HContent duality lemmas:
@@ -1789,7 +1789,7 @@ This enables G to propagate through the backward chain toward M_0, then
 through the forward chain to positive times (and symmetrically for H).
 -/
 noncomputable def buildDovetailingChainFamily (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    BFMCS Int where
+    FMCS Int where
   mcs := fun t =>
     let base := contextAsSet Gamma
     let h_base_cons := list_consistent_to_set_consistent h_cons
@@ -1846,7 +1846,7 @@ lemma buildDovetailingChainFamily_preserves_context (Gamma : List Formula) (h_co
 
 **Sorry debt**: This cannot be proven for the linear chain construction because F-formulas
 do not persist through GContent seeds. The Lindenbaum extension at any step can introduce
-G(neg(psi)), killing F(psi). Resolution requires a non-linear BFMCS construction.
+G(neg(psi)), killing F(psi). Resolution requires a non-linear FMCS construction.
 
 ## DO NOT TRY (Blocked approaches - Task 916 research reports 001-016)
 
@@ -1888,15 +1888,15 @@ The axiom is removed from the trusted kernel; sorry debt remains but is
 honest about incompleteness.
 
 **Sorry inventory** (2 total in transitive closure):
-- forward_F (witness construction - requires non-linear BFMCS)
-- backward_P (witness construction - requires non-linear BFMCS)
+- forward_F (witness construction - requires non-linear FMCS)
+- backward_P (witness construction - requires non-linear FMCS)
 
 Note: forward_G and backward_H cross-sign cases were previously sorry'd but are
 now fully proven (DovetailingChain.lean cross-sign lemmas + WitnessGraph.lean).
 -/
 theorem temporal_coherent_family_exists_theorem
     (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (fam : BFMCS Int),
+    ∃ (fam : FMCS Int),
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : Int, t < s ∧ φ ∈ fam.mcs s) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : Int, s < t ∧ φ ∈ fam.mcs s) := by

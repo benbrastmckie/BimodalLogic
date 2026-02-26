@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.CanonicalBFMCS
+import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
@@ -10,7 +10,7 @@ import Mathlib.Order.Zorn
 /-!
 # BoxContent Infrastructure and Modal Witness Seeds (Task 925)
 
-This module provides foundational lemmas for constructing modally saturated BMCS
+This module provides foundational lemmas for constructing modally saturated BFMCS
 with temporal coherence. The key results are:
 
 1. **BoxContent definitions and properties** (MCSBoxContent, BoxGContent)
@@ -21,7 +21,7 @@ with temporal coherence. The key results are:
 4. **BoxContent propagation**: BoxContent(M) ⊆ BoxContent(M') when CanonicalR M M'
 
 These results are prerequisites for any approach to constructing a fully saturated
-BMCS (chain-based, embedding-based, or direct CanonicalMCS-based).
+BFMCS (chain-based, embedding-based, or direct CanonicalMCS-based).
 
 ## Key Theorem: modal_witness_seed_consistent
 
@@ -601,10 +601,10 @@ theorem chainFMCS_backward_H (flag : Flag CanonicalMCS)
   exact canonical_backward_H w₁.val.world w₂.val.world h_R_past phi h_H
 
 /--
-The chain-based FMCS construction: an FMCS (= BFMCS) over the domain of a
+The chain-based FMCS construction: an FMCS (= FMCS) over the domain of a
 maximal chain (Flag) in CanonicalMCS.
 
-This family satisfies all BFMCS requirements:
+This family satisfies all FMCS requirements:
 - Each element maps to its own MCS (identity mapping)
 - Forward G coherence via CanonicalR
 - Backward H coherence via GContent/HContent duality
@@ -657,7 +657,7 @@ If `F phi ∈ mcs(w)` for some element `w` of the chain, then there exists a
 CanonicalMCS element `s` with `w.val ≤ s` and `phi ∈ s.world`.
 
 The witness `s` may NOT be in the same flag/chain -- this is expected and handled
-at the BMCS bundle level (Phase 7).
+at the BFMCS bundle level (Phase 7).
 -/
 theorem chainFMCS_forward_F_in_CanonicalMCS (flag : Flag CanonicalMCS)
     (w : ChainFMCSDomain flag) (phi : Formula)
@@ -673,7 +673,7 @@ If `P phi ∈ mcs(w)` for some element `w` of the chain, then there exists a
 CanonicalMCS element `s` with `s ≤ w.val` and `phi ∈ s.world`.
 
 The witness `s` may NOT be in the same flag/chain -- this is expected and handled
-at the BMCS bundle level (Phase 7).
+at the BFMCS bundle level (Phase 7).
 -/
 theorem chainFMCS_backward_P_in_CanonicalMCS (flag : Flag CanonicalMCS)
     (w : ChainFMCSDomain flag) (phi : Formula)

@@ -624,26 +624,6 @@ theorem set_mcs_modal_saturation_forward {S : Set Formula} {φ : Formula}
   -- Forward direction: Use box closure (Modal T axiom)
   set_mcs_box_closure h_mcs h_box
 
-/-!
-## Canonical Frame
-
-The canonical frame is constructed from maximal consistent sets.
--/
-
-/--
-Canonical world states are set-based maximal consistent sets.
-
-**Representation**: Type synonym for `{S : Set Formula // SetMaximalConsistent S}`
-
-**Justification**: Each maximal consistent set represents a "possible world"
-describing one complete, consistent way the universe could be. Using `Set Formula`
-instead of `List Formula` is essential because maximal consistent sets are typically
-infinite, while lists are finite. The set-based `set_lindenbaum` theorem (proven
-using Zorn's lemma) ensures every consistent set can be extended to a maximal one.
-
-**Note**: The list-based `Context` representation cannot capture true maximal
-consistency because lists are inherently finite.
--/
-def CanonicalWorldState : Type := {S : Set Formula // SetMaximalConsistent S}
+-- CanonicalWorldState was removed in Task 928 Phase 6 (duplicate of CanonicalMCS in CanonicalFMCS.lean)
 
 end Bimodal.Metalogic

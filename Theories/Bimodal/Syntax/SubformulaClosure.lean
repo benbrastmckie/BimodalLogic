@@ -4,10 +4,10 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Data.List.Basic
 
 /-!
-# Subformula Closure for Multi-Family BMCS Construction
+# Subformula Closure for Multi-Family BFMCS Construction
 
 This module provides the subformula closure infrastructure needed for the
-multi-family BMCS construction that eliminates the modal_backward sorry.
+multi-family BFMCS construction that eliminates the modal_backward sorry.
 
 ## Overview
 
@@ -32,7 +32,7 @@ enables termination of the iterative saturation process.
 
 This module bridges the existing `Bimodal.Syntax.Subformulas` (List-based)
 and `Bimodal.Metalogic.FMP.Closure` (Finset-based for FMP) with the specific
-needs of the multi-family BMCS construction.
+needs of the multi-family BFMCS construction.
 
 ## References
 
@@ -211,7 +211,7 @@ Filter the closure for Diamond formulas that need witnesses in saturation.
 /--
 Filter subformula closure for Diamond formulas.
 
-These are the formulas that need witnesses during BMCS saturation.
+These are the formulas that need witnesses during BFMCS saturation.
 Since the closure is finite, this set is also finite, enabling
 termination of the saturation process.
 -/

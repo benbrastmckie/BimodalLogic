@@ -312,8 +312,8 @@ The FDSM construction uses bounded time, which makes:
 - `modal_saturated` in `fdsm_from_closure_mcs`: Single-history simplification
 - Technical MCS lemmas for closure membership
 
-**Comparison with BMCS Approach**:
-| Issue | BMCS | FDSM |
+**Comparison with BFMCS Approach**:
+| Issue | BFMCS | FDSM |
 |-------|------|------|
 | modal_backward | Requires multi-family saturation (sorry) | Single history trivializes |
 | temporal backward | Omega-rule limitation (sorry) | Finite time domain (provable) |

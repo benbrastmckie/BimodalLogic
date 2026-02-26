@@ -1,8 +1,6 @@
-import Bimodal.Metalogic.Bundle.BMCS
-import Bimodal.Metalogic.Bundle.BMCSTruth
 import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.BFMCSTruth
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
-import Bimodal.Metalogic.Bundle.CoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.DeductionTheorem
@@ -10,32 +8,32 @@ import Bimodal.Syntax.Formula
 import Bimodal.Theorems.Propositional
 
 /-!
-# BMCS Truth Lemma
+# BFMCS Truth Lemma
 
-This module proves the **key theorem** of the BMCS completeness approach:
-the truth lemma connecting MCS membership to BMCS truth.
+This module proves the **key theorem** of the BFMCS completeness approach:
+the truth lemma connecting MCS membership to BFMCS truth.
 
 ## Proof Status
 
-The main `bmcs_truth_lemma` is fully proven for temporally coherent BMCS.
+The main `bmcs_truth_lemma` is fully proven for temporally coherent BFMCS.
 All cases (atom, bot, imp, box, all_future, all_past) are sorry-free.
 
 The temporal backward cases (G, H) use the `temporally_coherent` hypothesis
-on the BMCS, which provides `forward_F` and `backward_P` properties needed
+on the BFMCS, which provides `forward_F` and `backward_P` properties needed
 for the contraposition argument via `temporal_backward_G` and `temporal_backward_H`.
 
 ### Axiom Dependency
 
 The truth lemma inherits the `temporally_saturated_mcs_exists` axiom from
 TemporalCoherentConstruction.lean via the construction that provides temporally
-coherent BMCS. This axiom asserts the existence of temporally saturated MCS,
+coherent BFMCS. This axiom asserts the existence of temporally saturated MCS,
 which is a standard result from Henkin-style completeness proofs.
 
 ## Main Result
 
 ```
-theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
-    (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem bmcs_truth_lemma (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (φ : Formula) :
     φ ∈ fam.mcs t ↔ bmcs_truth_at B fam t φ
 ```
@@ -50,7 +48,7 @@ All six cases of the truth lemma are proven without sorry:
 - **G (all_future)**: Forward via forward_G; backward via temporal_backward_G
 - **H (all_past)**: Forward via backward_H; backward via temporal_backward_H
 
-The temporal backward cases use the `temporally_coherent` hypothesis on the BMCS,
+The temporal backward cases use the `temporally_coherent` hypothesis on the BFMCS,
 which provides `forward_F` and `backward_P` for the contraposition argument
 (via `temporal_backward_G` and `temporal_backward_H` from TemporalCoherentConstruction.lean).
 
@@ -86,7 +84,7 @@ variable {D : Type*} [Preorder D] [Zero D]
 ## Helper Lemmas for Temporal Forward Direction
 
 These lemmas handle the forward direction (MCS membership → truth) for temporal cases.
-The forward direction uses the existing coherence conditions in BFMCS.
+The forward direction uses the existing coherence conditions in FMCS.
 -/
 
 /--
@@ -96,7 +94,7 @@ If `G φ ∈ fam.mcs t`, then for all `s ≥ t`, we have `φ ∈ fam.mcs s`.
 
 Uses the reflexive `forward_G` coherence condition directly.
 -/
-lemma mcs_all_future_implies_phi_at_future (fam : BFMCS D) (t s : D) (φ : Formula)
+lemma mcs_all_future_implies_phi_at_future (fam : FMCS D) (t s : D) (φ : Formula)
     (hts : t ≤ s) (hG : Formula.all_future φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
   fam.forward_G t s φ hts hG
 
@@ -107,7 +105,7 @@ If `H φ ∈ fam.mcs t`, then for all `s ≤ t`, we have `φ ∈ fam.mcs s`.
 
 Uses the reflexive `backward_H` coherence condition directly.
 -/
-lemma mcs_all_past_implies_phi_at_past (fam : BFMCS D) (t s : D) (φ : Formula)
+lemma mcs_all_past_implies_phi_at_past (fam : FMCS D) (t s : D) (φ : Formula)
     (hst : s ≤ t) (hH : Formula.all_past φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
   fam.backward_H t s φ hst hH
 
@@ -116,8 +114,8 @@ lemma mcs_all_past_implies_phi_at_past (fam : BFMCS D) (t s : D) (φ : Formula)
 
 The backward direction (truth at all times -> MCS membership) for the temporal
 operators G and H requires structural properties (temporal_backward_G/H) on
-BFMCS. Once Task 857 adds these properties, the proofs use MCS
-maximality by contraposition - the same pattern as modal_backward in BMCS.
+FMCS. Once Task 857 adds these properties, the proofs use MCS
+maximality by contraposition - the same pattern as modal_backward in BFMCS.
 
 The sorries in backward cases block this file from publication. See the module
 docstring "Path to Resolution" for the mathematical path to eliminating them.
@@ -234,15 +232,15 @@ noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
 /-!
 ## Main Truth Lemma
 
-The truth lemma is the key result connecting MCS membership to BMCS truth.
+The truth lemma is the key result connecting MCS membership to BFMCS truth.
 It is proven by structural induction on the formula.
 -/
 
 /--
-**BMCS Truth Lemma**: For any family in a temporally coherent BMCS, formula membership
-in the MCS corresponds exactly to truth in the BMCS.
+**BFMCS Truth Lemma**: For any family in a temporally coherent BFMCS, formula membership
+in the MCS corresponds exactly to truth in the BFMCS.
 
-This is THE KEY THEOREM of the BMCS completeness approach.
+This is THE KEY THEOREM of the BFMCS completeness approach.
 
 **Cases**:
 - **Atom**: Trivial (definition)
@@ -252,15 +250,15 @@ This is THE KEY THEOREM of the BMCS completeness approach.
 - **G (all_future)**: Uses `forward_G` coherence (forward); temporal_backward_G (backward)
 - **H (all_past)**: Uses `backward_H` coherence (forward); temporal_backward_H (backward)
 
-**Key Achievement**: ALL cases are proven. The BOX case uses the BMCS approach,
+**Key Achievement**: ALL cases are proven. The BOX case uses the BFMCS approach,
 the temporal cases use the `temporal_backward_G` and `temporal_backward_H` theorems
-via the `temporally_coherent` hypothesis on the BMCS.
+via the `temporally_coherent` hypothesis on the BFMCS.
 
 **Axiom dependency**: Inherits `temporally_saturated_mcs_exists` from TemporalCoherentConstruction.lean
-(via the construction that provides `temporally_coherent` BMCS).
+(via the construction that provides `temporally_coherent` BFMCS).
 -/
-theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
-    (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem bmcs_truth_lemma (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (φ : Formula) :
     φ ∈ fam.mcs t ↔ bmcs_truth_at B fam t φ := by
   induction φ generalizing fam t with
@@ -325,7 +323,7 @@ theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
     BOX CASE: THE KEY TO THE ENTIRE APPROACH - FULLY PROVEN WITHOUT SORRY
 
     This is the case that was blocking traditional completeness proofs.
-    The BMCS approach makes it work by:
+    The BFMCS approach makes it work by:
     1. Truth of □ψ is defined as: ψ true at ALL families in the bundle
     2. MCS has □ψ iff ψ is in ALL families' MCSes (by modal coherence)
     3. These two conditions match exactly!
@@ -363,7 +361,7 @@ theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily D := {
-        toBFMCS := fam
+        toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
@@ -388,7 +386,7 @@ theorem bmcs_truth_lemma (B : BMCS D) (h_tc : B.temporally_coherent)
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily D := {
-        toBFMCS := fam
+        toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
@@ -409,7 +407,7 @@ for the completeness proof.
 /--
 If φ is in the MCS at the evaluation family and time 0, then φ is true there.
 -/
-theorem bmcs_eval_truth (B : BMCS D) (h_tc : B.temporally_coherent)
+theorem bmcs_eval_truth (B : BFMCS D) (h_tc : B.temporally_coherent)
     (φ : Formula) (h : φ ∈ B.eval_family.mcs 0) :
     bmcs_truth_at B B.eval_family 0 φ :=
   (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 φ).mp h
@@ -417,7 +415,7 @@ theorem bmcs_eval_truth (B : BMCS D) (h_tc : B.temporally_coherent)
 /--
 If φ is true at the evaluation family and time 0, then φ is in the MCS there.
 -/
-theorem bmcs_eval_mcs (B : BMCS D) (h_tc : B.temporally_coherent)
+theorem bmcs_eval_mcs (B : BFMCS D) (h_tc : B.temporally_coherent)
     (φ : Formula) (h : bmcs_truth_at B B.eval_family 0 φ) :
     φ ∈ B.eval_family.mcs 0 :=
   (bmcs_truth_lemma B h_tc B.eval_family B.eval_family_mem 0 φ).mpr h
@@ -426,8 +424,8 @@ theorem bmcs_eval_mcs (B : BMCS D) (h_tc : B.temporally_coherent)
 Box membership is equivalent to universal truth over bundle families.
 This is a direct corollary combining the truth lemma with box semantics.
 -/
-theorem bmcs_box_iff_all_true (B : BMCS D) (h_tc : B.temporally_coherent)
-    (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem bmcs_box_iff_all_true (B : BFMCS D) (h_tc : B.temporally_coherent)
+    (fam : FMCS D) (hfam : fam ∈ B.families)
     (t : D) (φ : Formula) :
     Formula.box φ ∈ fam.mcs t ↔ ∀ fam' ∈ B.families, bmcs_truth_at B fam' t φ := by
   rw [bmcs_truth_lemma B h_tc fam hfam t (Formula.box φ)]
@@ -436,7 +434,7 @@ theorem bmcs_box_iff_all_true (B : BMCS D) (h_tc : B.temporally_coherent)
 /--
 Truth of □φ at any family is the same (family-independent).
 -/
-theorem bmcs_box_truth_unique (B : BMCS D) (fam1 fam2 : BFMCS D)
+theorem bmcs_box_truth_unique (B : BFMCS D) (fam1 fam2 : FMCS D)
     (_ : fam1 ∈ B.families) (_ : fam2 ∈ B.families) (t : D) (φ : Formula) :
     bmcs_truth_at B fam1 t (Formula.box φ) ↔ bmcs_truth_at B fam2 t (Formula.box φ) := by
   simp only [bmcs_truth_at]
@@ -444,7 +442,7 @@ theorem bmcs_box_truth_unique (B : BMCS D) (fam1 fam2 : BFMCS D)
 /-!
 ## Summary of Proof Status
 
-### ALL Cases Proven (for temporally coherent BMCS):
+### ALL Cases Proven (for temporally coherent BFMCS):
 - **Atom**: Trivial by definition
 - **Bot**: By MCS consistency
 - **Imp**: By MCS modus ponens and negation completeness (note: forward uses backward on subformulas)
@@ -455,7 +453,7 @@ theorem bmcs_box_truth_unique (B : BMCS D) (fam1 fam2 : BFMCS D)
 ### Key Achievement
 
 ALL cases of the truth lemma are now proven (no sorry in bmcs_truth_lemma).
-- The BOX case uses the BMCS approach with modal_forward and modal_backward.
+- The BOX case uses the BFMCS approach with modal_forward and modal_backward.
 - The TEMPORAL cases use the temporally_coherent hypothesis, which provides
   forward_F and backward_P for the contraposition argument.
 
@@ -466,23 +464,23 @@ construction in TemporalCoherentConstruction.lean. That construction depends on
 the `temporally_saturated_mcs_exists` axiom, which asserts the existence of
 temporally saturated MCS (standard Henkin construction result).
 
-### EvalBMCS (Archived)
+### EvalBFMCS (Archived)
 
-The EvalBMCS truth lemma was removed in task 912 (4 sorries eliminated).
+The EvalBFMCS truth lemma was removed in task 912 (4 sorries eliminated).
 Use `bmcs_truth_lemma` for the full truth lemma.
 -/
 
 /-!
-## EvalBMCS Truth Lemma (ARCHIVED)
+## EvalBFMCS Truth Lemma (ARCHIVED)
 
 The `eval_bmcs_truth_lemma` and `eval_bmcs_eval_truth` were removed in task 912.
-They had 4 sorries due to structural limitations of EvalBMCS (no full modal coherence).
+They had 4 sorries due to structural limitations of EvalBFMCS (no full modal coherence).
 
-The full BMCS approach (above) resolves all cases completely. Use `bmcs_truth_lemma` instead.
+The full BFMCS approach (above) resolves all cases completely. Use `bmcs_truth_lemma` instead.
 
 **Previous sorry locations** (for reference):
-- Box forward: membership -> truth at non-eval families (EvalBMCS limitation)
-- Box backward: truth -> membership at non-eval families (EvalBMCS limitation)
+- Box forward: membership -> truth at non-eval families (EvalBFMCS limitation)
+- Box backward: truth -> membership at non-eval families (EvalBFMCS limitation)
 - all_future backward: temporal saturation needed
 - all_past backward: temporal saturation needed
 -/

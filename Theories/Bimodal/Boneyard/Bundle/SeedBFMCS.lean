@@ -1,10 +1,10 @@
 import Bimodal.Boneyard.Bundle.SeedCompletion
-import Bimodal.Metalogic.Bundle.BMCS
+import Bimodal.Metalogic.Bundle.BFMCS
 
 /-!
-# Seed-Based BMCS Construction
+# Seed-Based BFMCS Construction
 
-This module constructs a BMCS from recursive seed construction, resolving
+This module constructs a BFMCS from recursive seed construction, resolving
 task 843's Phase 1 blockage.
 
 ## Task 843 Blockage (DovetailingChain.lean)
@@ -26,7 +26,7 @@ The 4 sorries in DovetailingChain.lean are no longer on the critical path.
 
 ## Main Definitions
 
-- `buildSeedBMCS`: Main construction entry point
+- `buildSeedBFMCS`: Main construction entry point
 - `seedBMCS_modal_forward`: Box phi implies phi in all families
 - `seedBMCS_modal_backward`: phi in all families implies Box phi
 - `seedBMCS_temporally_coherent`: G/H propagation works
@@ -43,25 +43,25 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
 /-!
-## Seed-Based BMCS Construction
+## Seed-Based BFMCS Construction
 
-Build a BMCS from a consistent formula using seed construction.
+Build a BFMCS from a consistent formula using seed construction.
 -/
 
 /--
-Build a BMCS from a consistent formula using seed construction.
+Build a BFMCS from a consistent formula using seed construction.
 
 This is the main construction entry point:
 1. Build seed from formula using buildSeed
 2. Extend seed entries to MCS families using buildFamilyFromSeed
-3. Collect families into a BMCS with modal coherence
+3. Collect families into a BFMCS with modal coherence
 
-The resulting BMCS:
+The resulting BFMCS:
 - Has at least one family (family 0)
 - Satisfies modal_forward and modal_backward
 - Is temporally coherent (forward_G, backward_H in each family)
 -/
-noncomputable def buildSeedBMCS (phi : Formula) (h_cons : FormulaConsistent phi) : BMCS Int := by
+noncomputable def buildSeedBFMCS (phi : Formula) (h_cons : FormulaConsistent phi) : BFMCS Int := by
   -- Build the seed
   let seed := buildSeed phi
   -- Need to show seed is consistent
@@ -71,7 +71,7 @@ noncomputable def buildSeedBMCS (phi : Formula) (h_cons : FormulaConsistent phi)
   -- The evaluation family is family 0
   let eval_family := buildFamilyFromSeed seed h_seed_cons 0
 
-  -- Construct the BMCS
+  -- Construct the BFMCS
   exact {
     families := { fam | ∃ idx ∈ seed.familyIndices, fam = buildFamilyFromSeed seed h_seed_cons idx }
     nonempty := by
@@ -102,37 +102,37 @@ noncomputable def buildSeedBMCS (phi : Formula) (h_cons : FormulaConsistent phi)
   }
 
 /--
-The seed-based BMCS is nonempty.
+The seed-based BFMCS is nonempty.
 -/
 theorem seedBMCS_nonempty (phi : Formula) (h_cons : FormulaConsistent phi) :
-    (buildSeedBMCS phi h_cons).families.Nonempty :=
-  (buildSeedBMCS phi h_cons).nonempty
+    (buildSeedBFMCS phi h_cons).families.Nonempty :=
+  (buildSeedBFMCS phi h_cons).nonempty
 
 /--
 Modal forward coherence: Box phi in any family implies phi in all families.
 -/
 theorem seedBMCS_modal_forward (phi : Formula) (h_cons : FormulaConsistent phi)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBMCS phi h_cons).families)
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBFMCS phi h_cons).families)
     (psi : Formula) (t : Int) (h_box : Formula.box psi ∈ fam.mcs t)
-    (fam' : IndexedMCSFamily Int) (hfam' : fam' ∈ (buildSeedBMCS phi h_cons).families) :
+    (fam' : IndexedMCSFamily Int) (hfam' : fam' ∈ (buildSeedBFMCS phi h_cons).families) :
     psi ∈ fam'.mcs t :=
-  (buildSeedBMCS phi h_cons).modal_forward fam hfam psi t h_box fam' hfam'
+  (buildSeedBFMCS phi h_cons).modal_forward fam hfam psi t h_box fam' hfam'
 
 /--
 Modal backward coherence: phi in all families implies Box phi in each family.
 -/
 theorem seedBMCS_modal_backward (phi : Formula) (h_cons : FormulaConsistent phi)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBMCS phi h_cons).families)
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBFMCS phi h_cons).families)
     (psi : Formula) (t : Int)
-    (h_all : ∀ fam' ∈ (buildSeedBMCS phi h_cons).families, psi ∈ fam'.mcs t) :
+    (h_all : ∀ fam' ∈ (buildSeedBFMCS phi h_cons).families, psi ∈ fam'.mcs t) :
     Formula.box psi ∈ fam.mcs t :=
-  (buildSeedBMCS phi h_cons).modal_backward fam hfam psi t h_all
+  (buildSeedBFMCS phi h_cons).modal_backward fam hfam psi t h_all
 
 /--
 Temporal forward coherence: G phi propagates to future times.
 -/
 theorem seedBMCS_forward_G (phi : Formula) (h_cons : FormulaConsistent phi)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBMCS phi h_cons).families)
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBFMCS phi h_cons).families)
     (psi : Formula) (t t' : Int) (h_lt : t < t')
     (h_G : Formula.all_future psi ∈ fam.mcs t) :
     psi ∈ fam.mcs t' :=
@@ -142,45 +142,45 @@ theorem seedBMCS_forward_G (phi : Formula) (h_cons : FormulaConsistent phi)
 Temporal backward coherence: H phi propagates to past times.
 -/
 theorem seedBMCS_backward_H (phi : Formula) (h_cons : FormulaConsistent phi)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBMCS phi h_cons).families)
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBFMCS phi h_cons).families)
     (psi : Formula) (t t' : Int) (h_lt : t' < t)
     (h_H : Formula.all_past psi ∈ fam.mcs t) :
     psi ∈ fam.mcs t' :=
   fam.backward_H t t' psi h_lt h_H
 
 /--
-The seed-based BMCS is temporally coherent.
+The seed-based BFMCS is temporally coherent.
 
-Each family in the BMCS satisfies forward_G and backward_H.
+Each family in the BFMCS satisfies forward_G and backward_H.
 This is guaranteed by the IndexedMCSFamily structure.
 -/
 theorem seedBMCS_temporally_coherent (phi : Formula) (h_cons : FormulaConsistent phi)
-    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBMCS phi h_cons).families) :
+    (fam : IndexedMCSFamily Int) (hfam : fam ∈ (buildSeedBFMCS phi h_cons).families) :
     (∀ t t' psi, t < t' → Formula.all_future psi ∈ fam.mcs t → psi ∈ fam.mcs t') ∧
     (∀ t t' psi, t' < t → Formula.all_past psi ∈ fam.mcs t → psi ∈ fam.mcs t') :=
   ⟨fam.forward_G, fam.backward_H⟩
 
 /-!
-## Context-Based BMCS Construction
+## Context-Based BFMCS Construction
 
 Wrapper for Completeness.lean compatibility.
 -/
 
 /--
-Build a BMCS containing a consistent context Gamma.
+Build a BFMCS containing a consistent context Gamma.
 
 This is the entry point for Completeness.lean, matching the signature
 expected by the completeness theorems.
 -/
 noncomputable def construct_seed_bmcs (Gamma : List Formula) (h_cons : SetConsistent (Gamma.toFinset : Set Formula)) :
-    BMCS Int := by
+    BFMCS Int := by
   -- Convert context to a single conjunction formula
   -- Or use Lindenbaum on the context directly
   -- For now, we use a sorry since this is infrastructure
   sorry
 
 /--
-The constructed BMCS contains the context at time 0 of the evaluation family.
+The constructed BFMCS contains the context at time 0 of the evaluation family.
 -/
 theorem construct_seed_bmcs_contains_context (Gamma : List Formula)
     (h_cons : SetConsistent (Gamma.toFinset : Set Formula)) :
@@ -188,7 +188,7 @@ theorem construct_seed_bmcs_contains_context (Gamma : List Formula)
   sorry
 
 /--
-The constructed BMCS is temporally coherent.
+The constructed BFMCS is temporally coherent.
 -/
 theorem construct_seed_bmcs_temporally_coherent (Gamma : List Formula)
     (h_cons : SetConsistent (Gamma.toFinset : Set Formula))
@@ -233,7 +233,7 @@ Track the axioms that this construction targets for elimination.
 
 /--
 The FALSE axiom singleFamily_modal_backward_axiom is no longer needed.
-Multi-family BMCS construction with seed-based modal witnesses provides modal_backward.
+Multi-family BFMCS construction with seed-based modal witnesses provides modal_backward.
 -/
 theorem no_single_family_axiom_needed : True := trivial
 

@@ -39,9 +39,9 @@ Without explicit time bounds, the construction cannot guarantee finite depth.
 
 **Fix Attempt**: Required major restructuring to add time bounds to the construction.
 
-## Alternative: BMCS Approach
+## Alternative: BFMCS Approach
 
-Task 812 successfully implemented completeness via the BMCS (Bundle of Maximal
+Task 812 successfully implemented completeness via the BFMCS (Bundle of Maximal
 Consistent Sets) approach, which:
 - Avoids multi-history complexity
 - Has sorry-free box case in truth lemma
@@ -62,5 +62,5 @@ See: `Bimodal/Metalogic/Bundle/Completeness.lean`
 ## References
 
 - Task 826 research: `specs/826_fdsm_completeness_saturated_construction/reports/`
-- BMCS completeness: `Bimodal/Metalogic/Bundle/Completeness.lean`
+- BFMCS completeness: `Bimodal/Metalogic/Bundle/Completeness.lean`
 - FMP completeness: `Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean`

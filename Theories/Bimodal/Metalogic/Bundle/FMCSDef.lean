@@ -3,21 +3,17 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 
 /-!
-# BFMCS: Family of Maximal Consistent Sets
+# FMCS: Family of Maximal Consistent Sets
 
-This module defines the `BFMCS` (Family of Maximal Consistent Sets) structure
+This module defines the `FMCS` (Family of Maximal Consistent Sets) structure
 that assigns a maximal consistent set (MCS) to each time point in D, with temporal
 coherence conditions ensuring proper formula propagation.
 
-## Terminology (Task 925)
+## Terminology (Task 928)
 
-- **FMCS** / **BFMCS**: A SINGLE time-indexed family of MCS. The preferred name
-  is `FMCS` (see `FMCS.lean`); `BFMCS` is retained for backward compatibility.
-- **BMCS**: A BUNDLE (set) of families with modal coherence.
-
-The "B" in "BFMCS" historically stood for "Bundled" in the Lean4 sense (bundling
-data with proofs), NOT for collecting multiple families. To avoid confusion, new
-code should prefer the `FMCS` alias defined in `FMCS.lean`.
+- **FMCS**: A SINGLE time-indexed family of MCS (Family of MCS)
+- **BFMCS**: A BUNDLE (set) of FMCS families with modal coherence
+- **MCS**: A single maximal consistent set
 
 ## Overview
 
@@ -29,7 +25,7 @@ MCS connected to adjacent times via temporal coherence conditions.
 
 ## Main Definitions
 
-- `BFMCS D`: Structure pairing each time `t : D` with an MCS, plus coherence
+- `FMCS D`: Structure pairing each time `t : D` with an MCS, plus coherence
 - `forward_G`: G formulas at t propagate to all future t' >= t
 - `backward_H`: H formulas at t propagate to all past t' <= t
 
@@ -46,7 +42,7 @@ removed because:
 ## References
 
 - Research report: specs/812_canonical_model_completeness/reports/research-007.md
-- Original: Bimodal.Boneyard.Metalogic_v5.Representation.BFMCS
+- Original: Bimodal.Boneyard.Metalogic_v5.Representation.FMCS
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -55,7 +51,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
 /-!
-## BFMCS Structure
+## FMCS Structure
 -/
 
 variable (D : Type*) [Preorder D]
@@ -77,11 +73,11 @@ A family of maximal consistent sets indexed by time, with temporal coherence.
 - This matches TM's temporal operator semantics with T-axioms
 - Reflexivity enables Preorder generalization (Task 922)
 
-**Terminology (Task 925)**:
-- BFMCS = FMCS = Family of MCS (single family)
-- BMCS = Bundle of MCS (collection of families)
+**Terminology (Task 928)**:
+- FMCS = Family of MCS (single family)
+- BFMCS = Bundle of FMCSs (collection of families)
 -/
-structure BFMCS where
+structure FMCS where
   /-- The MCS assignment: each time t gets an MCS -/
   mcs : D -> Set Formula
   /-- Each assigned set is maximal consistent -/
@@ -108,16 +104,16 @@ variable {D : Type*} [Preorder D]
 -/
 
 /-- Get the MCS at a specific time -/
-def BFMCS.at (family : BFMCS D) (t : D) : Set Formula :=
+def FMCS.at (family : FMCS D) (t : D) : Set Formula :=
   family.mcs t
 
 /-- The MCS at any time is consistent -/
-lemma BFMCS.consistent (family : BFMCS D) (t : D) :
+lemma FMCS.consistent (family : FMCS D) (t : D) :
     SetConsistent (family.mcs t) :=
   (family.is_mcs t).1
 
 /-- The MCS at any time is maximal (cannot be consistently extended) -/
-lemma BFMCS.maximal (family : BFMCS D) (t : D) :
+lemma FMCS.maximal (family : FMCS D) (t : D) :
     forall phi : Formula, phi ∉ family.mcs t -> ¬SetConsistent (insert phi (family.mcs t)) :=
   (family.is_mcs t).2
 
@@ -132,7 +128,7 @@ G phi propagates to future times.
 
 If `G phi ∈ mcs(t)` and `t ≤ t'`, then `phi ∈ mcs(t')`.
 -/
-lemma BFMCS.forward_G_chain (family : BFMCS D)
+lemma FMCS.forward_G_chain (family : FMCS D)
     {t t' : D} (htt' : t ≤ t') (phi : Formula) (hG : Formula.all_future phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.forward_G t t' phi htt' hG
@@ -142,7 +138,7 @@ H phi propagates to past times.
 
 If `H phi ∈ mcs(t)` and `t' ≤ t`, then `phi ∈ mcs(t')`.
 -/
-lemma BFMCS.backward_H_chain (family : BFMCS D)
+lemma FMCS.backward_H_chain (family : FMCS D)
     {t t' : D} (ht't : t' ≤ t) (phi : Formula) (hH : Formula.all_past phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.backward_H t t' phi ht't hH
@@ -152,7 +148,7 @@ GG phi implies G phi propagation (using Temporal 4 axiom).
 
 If `G(G phi) ∈ mcs(t)` and `t ≤ t'`, then `G phi ∈ mcs(t')`.
 -/
-lemma BFMCS.GG_to_G (family : BFMCS D)
+lemma FMCS.GG_to_G (family : FMCS D)
     {t t' : D} (htt' : t ≤ t') (phi : Formula)
     (hGG : Formula.all_future (Formula.all_future phi) ∈ family.mcs t) :
     Formula.all_future phi ∈ family.mcs t' :=
@@ -163,7 +159,7 @@ HH phi implies H phi propagation (using Temporal 4 dual for H).
 
 If `H(H phi) ∈ mcs(t)` and `t' ≤ t`, then `H phi ∈ mcs(t')`.
 -/
-lemma BFMCS.HH_to_H (family : BFMCS D)
+lemma FMCS.HH_to_H (family : FMCS D)
     {t t' : D} (ht't : t' ≤ t) (phi : Formula)
     (hHH : Formula.all_past (Formula.all_past phi) ∈ family.mcs t) :
     Formula.all_past phi ∈ family.mcs t' :=
@@ -178,7 +174,7 @@ Theorems (provable formulas) are in every MCS of the family.
 /--
 Theorems are in every MCS of the family.
 -/
-lemma BFMCS.theorem_mem (family : BFMCS D)
+lemma FMCS.theorem_mem (family : FMCS D)
     (t : D) (phi : Formula) (h_deriv : Bimodal.ProofSystem.DerivationTree [] phi) :
     phi ∈ family.mcs t :=
   theorem_in_mcs (family.is_mcs t) h_deriv
@@ -193,7 +189,7 @@ These lemmas will be used when proving the canonical task relation properties.
 If G phi is in the MCS at time t, then for any future time t' >= t,
 phi is in the MCS at t'.
 -/
-lemma BFMCS.G_implies_future_phi (family : BFMCS D)
+lemma FMCS.G_implies_future_phi (family : FMCS D)
     {t t' : D} (hle : t ≤ t') {phi : Formula} (hG : Formula.all_future phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.forward_G t t' phi hle hG
@@ -202,9 +198,22 @@ lemma BFMCS.G_implies_future_phi (family : BFMCS D)
 If H phi is in the MCS at time t, then for any past time t' <= t,
 phi is in the MCS at t'.
 -/
-lemma BFMCS.H_implies_past_phi (family : BFMCS D)
+lemma FMCS.H_implies_past_phi (family : FMCS D)
     {t t' : D} (hle : t' ≤ t) {phi : Formula} (hH : Formula.all_past phi ∈ family.mcs t) :
     phi ∈ family.mcs t' :=
   family.backward_H t t' phi hle hH
+
+/-!
+## Constant Family Property
+
+A family is constant if its MCS is the same at all times.
+-/
+
+/--
+A family is constant if all time points map to the same MCS.
+This property is used in the temporal evaluation construction.
+-/
+def IsConstantFamily (fam : FMCS D) : Prop :=
+  ∃ M : Set Formula, ∀ t : D, fam.mcs t = M
 
 end Bimodal.Metalogic.Bundle

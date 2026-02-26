@@ -109,7 +109,7 @@ theorem semanticWorldState_card_bound (phi : Formula) :
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Core README](../Core/README.md) - MCS foundations (dependency)
-- [Bundle README](../Bundle/README.md) - BMCS completeness approach (alternative)
+- [Bundle README](../Bundle/README.md) - BFMCS completeness approach (alternative)
 - [Decidability README](../Decidability/README.md) - Decision procedure using FMP insights
 - [Soundness README](../Soundness/README.md) - Soundness theorem (dependency)
 

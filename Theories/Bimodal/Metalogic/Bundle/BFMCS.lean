@@ -1,24 +1,25 @@
-import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
 
 /-!
-# Bundle of Maximal Consistent Sets (BMCS)
+# Bundle of Maximal Consistent Sets (BFMCS)
 
-A BMCS is a bundle of indexed MCS families (FMCS/BFMCS instances) with modal
+A BFMCS is a bundle of indexed MCS families (FMCS instances) with modal
 coherence conditions. This enables a Henkin-style completeness proof where box
 quantifies over bundled histories rather than all histories.
 
-## Terminology (Task 925)
+## Terminology (Task 928)
 
-- **FMCS** (= BFMCS): A SINGLE time-indexed family of MCS
-- **BMCS**: A BUNDLE (set) of FMCS families with modal coherence
+- **MCS**: A single maximal consistent set
+- **FMCS**: A SINGLE time-indexed family of MCS (Family of MCS)
+- **BFMCS**: A BUNDLE (set) of FMCS families with modal coherence
 
 ## Key Insight
 
 Completeness is an **existential** statement: If Gamma is consistent, then
-there exists a model where Gamma is satisfiable. The BMCS construction provides
+there exists a model where Gamma is satisfiable. The BFMCS construction provides
 exactly ONE such satisfying model. This is standard practice (cf. Henkin semantics
 for higher-order logic) and does NOT weaken the completeness result.
 
@@ -50,13 +51,13 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 
 /-!
-## BMCS Structure Definition
+## BFMCS Structure Definition
 -/
 
 variable (D : Type*) [Preorder D]
 
 /--
-A Bundle of Maximal Consistent Sets (BMCS) is a collection of indexed MCS families
+A Bundle of Maximal Consistent Sets (BFMCS) is a collection of indexed MCS families
 with modal coherence conditions that enable a provable truth lemma.
 
 **Type Parameters**:
@@ -84,9 +85,9 @@ The truth lemma for Box phi becomes:
 
 This avoids the problematic quantification over ALL possible MCS families.
 -/
-structure BMCS where
+structure BFMCS where
   /-- The collection of indexed MCS families forming the bundle -/
-  families : Set (BFMCS D)
+  families : Set (FMCS D)
 
   /-- The bundle is non-empty -/
   nonempty : families.Nonempty
@@ -112,7 +113,7 @@ structure BMCS where
 
       This is the family containing the original consistent context Gamma.
   -/
-  eval_family : BFMCS D
+  eval_family : FMCS D
 
   /-- The evaluation family is in the bundle -/
   eval_family_mem : eval_family ∈ families
@@ -135,7 +136,7 @@ Reflexivity: Box phi in MCS implies phi in MCS (from T axiom closure of MCS).
 This is the key insight: modal_forward gives us reflexivity "for free"
 because the quantification includes the original family.
 -/
-theorem bmcs_reflexivity (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem bmcs_reflexivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box φ ∈ fam.mcs t) : φ ∈ fam.mcs t :=
   B.modal_forward fam hfam φ t h fam hfam
 
@@ -143,7 +144,7 @@ theorem bmcs_reflexivity (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families
 Symmetry is implicit: all families in the bundle see each other equally.
 
 In standard S5 semantics, symmetry means: if w R w', then w' R w.
-In BMCS, the accessibility relation between families is universal within the bundle,
+In BFMCS, the accessibility relation between families is universal within the bundle,
 so symmetry holds trivially: for any fam, fam' in families, they "see" each other.
 
 We don't need an explicit theorem since the universal quantification in modal_forward
@@ -161,7 +162,7 @@ Actually, transitivity in S5 says: Box phi -> Box Box phi (4 axiom).
 For our purposes, we prove the more useful direction:
 If Box (Box phi) in MCS, then Box phi in MCS.
 -/
-theorem bmcs_transitivity (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem bmcs_transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box (Formula.box φ) ∈ fam.mcs t) :
     Formula.box φ ∈ fam.mcs t :=
   bmcs_reflexivity B fam hfam (Formula.box φ) t h
@@ -171,16 +172,16 @@ theorem bmcs_transitivity (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.familie
 -/
 
 /-- Get the MCS of a family at a specific time -/
-def BMCS.mcs_at (B : BMCS D) (fam : BFMCS D) (t : D) : Set Formula :=
+def BFMCS.mcs_at (B : BFMCS D) (fam : FMCS D) (t : D) : Set Formula :=
   fam.mcs t
 
 /-- The MCS at any family and time is maximal consistent -/
-lemma BMCS.is_mcs (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families) (t : D) :
+lemma BFMCS.is_mcs (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
     SetMaximalConsistent (fam.mcs t) :=
   fam.is_mcs t
 
 /-- The MCS at any family and time is consistent -/
-lemma BMCS.consistent (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families) (t : D) :
+lemma BFMCS.consistent (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
     SetConsistent (fam.mcs t) :=
   (fam.is_mcs t).1
 
@@ -196,9 +197,9 @@ Diamond coherence: neg (Box phi) in MCS implies there exists a family where neg 
 
 **Proof Strategy**:
 Since neg (Box phi) means "not necessarily phi", there must be some family
-where phi fails. By BMCS construction, this family is in the bundle.
+where phi fails. By BFMCS construction, this family is in the bundle.
 
-Actually, in BMCS with universal accessibility:
+Actually, in BFMCS with universal accessibility:
 - Diamond phi true means: exists family where phi true
 - neg (Box neg phi) true means: not (forall families, neg phi true)
                               = exists family where neg phi false = phi true
@@ -208,7 +209,7 @@ there exists fam' in families where phi in fam'.mcs t.
 
 This requires careful reasoning with negation completeness of MCS.
 -/
-theorem bmcs_diamond_witness (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem bmcs_diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D)
     (h_diamond : Formula.neg (Formula.box (Formula.neg φ)) ∈ fam.mcs t) :
     ∃ fam' ∈ B.families, φ ∈ fam'.mcs t := by
@@ -241,7 +242,7 @@ theorem bmcs_diamond_witness (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.fami
 /--
 If phi is in all families at time t, then Box phi is in all families at time t.
 -/
-lemma BMCS.box_from_universal (B : BMCS D) (φ : Formula) (t : D)
+lemma BFMCS.box_from_universal (B : BFMCS D) (φ : Formula) (t : D)
     (h : ∀ fam ∈ B.families, φ ∈ fam.mcs t) :
     ∀ fam ∈ B.families, Formula.box φ ∈ fam.mcs t := by
   intro fam hfam
@@ -250,7 +251,7 @@ lemma BMCS.box_from_universal (B : BMCS D) (φ : Formula) (t : D)
 /--
 If Box phi is in some family at time t, then phi is in all families at time t.
 -/
-lemma BMCS.phi_from_box (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
+lemma BFMCS.phi_from_box (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box φ ∈ fam.mcs t) :
     ∀ fam' ∈ B.families, φ ∈ fam'.mcs t :=
   B.modal_forward fam hfam φ t h
@@ -258,7 +259,7 @@ lemma BMCS.phi_from_box (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
 /--
 Box phi in MCS iff phi in all families' MCSes (the key bidirectional lemma).
 -/
-theorem BMCS.box_iff_universal (B : BMCS D) (fam : BFMCS D) (hfam : fam ∈ B.families)
+theorem BFMCS.box_iff_universal (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) :
     Formula.box φ ∈ fam.mcs t ↔ ∀ fam' ∈ B.families, φ ∈ fam'.mcs t := by
   constructor

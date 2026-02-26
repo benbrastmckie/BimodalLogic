@@ -7,7 +7,7 @@
 The Representation approach was archived because it contained 30 sorries across its files:
 - TruthLemma.lean: 4 sorries (Box cases + temporal backward cases)
 - CoherentConstruction.lean: 12 sorries (extension consistency proofs)
-- IndexedMCSFamily.lean: 4 sorries (coherence verification)
+- FMCS.lean: 4 sorries (coherence verification)
 - TaskRelation.lean: 5 sorries (MCS equality arguments)
 - CanonicalWorld.lean: 2 sorries (set-based MCS properties)
 - CanonicalHistory.lean: 2 sorries (T-axiom application)
@@ -25,7 +25,7 @@ Including:
 - CanonicalWorld.lean
 - CanonicalHistory.lean
 - TaskRelation.lean
-- IndexedMCSFamily.lean
+- FMCS.lean
 - CoherentConstruction.lean
 - TruthLemma.lean
 - TruthLemmaForward.lean
@@ -68,7 +68,7 @@ approach is now canonical.
 ## Related Documentation
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
-- [Bundle README](../Bundle/README.md) - Current BMCS completeness approach
+- [Bundle README](../Bundle/README.md) - Current BFMCS completeness approach
 - [FMP README](../FMP/README.md) - Current FMP completeness approach
 
 ---

@@ -5,16 +5,16 @@ import Mathlib.Data.Finset.Basic
 import Mathlib.Order.Zorn
 
 /-!
-# Restricted MCS Construction for Multi-Family BMCS
+# Restricted MCS Construction for Multi-Family BFMCS
 
 This module provides Maximal Consistent Set construction restricted to a finite
-subformula closure. This is essential for the multi-family BMCS construction
+subformula closure. This is essential for the multi-family BFMCS construction
 because it ensures termination of the saturation process.
 
 ## Overview
 
 The key insight is that standard Lindenbaum's lemma produces MCS that may contain
-arbitrary formulas. For BMCS saturation to terminate, we need MCS restricted to
+arbitrary formulas. For BFMCS saturation to terminate, we need MCS restricted to
 the subformula closure of the target formula.
 
 ## Main Definitions
@@ -34,7 +34,7 @@ the subformula closure of the target formula.
 
 This construction differs from `FMP.Closure` in that:
 1. It works with the Syntax.SubformulaClosure infrastructure
-2. It's designed to integrate with the Bundle BMCS construction
+2. It's designed to integrate with the Bundle BFMCS construction
 3. It uses Finset operations for termination reasoning
 
 ## References
@@ -300,7 +300,7 @@ Restricted Lindenbaum's Lemma: Every closure-restricted consistent set can be
 extended to a closure-restricted maximal consistent set.
 
 **Key Insight**: Since closureWithNeg phi is finite (it's a Finset), the extension
-process terminates. This is the critical property that enables BMCS saturation
+process terminates. This is the critical property that enables BFMCS saturation
 to terminate.
 
 **Proof Strategy**:
@@ -397,7 +397,7 @@ theorem restricted_mcs_exists_containing (phi psi : Formula)
 If phi is consistent (not derivable from empty context), then we can construct
 a RestrictedMCS containing phi.
 
-This is the key entry point for BMCS construction.
+This is the key entry point for BFMCS construction.
 -/
 theorem restricted_mcs_from_formula (phi : Formula)
     (h_cons : ¬Nonempty (DerivationTree [] phi.neg)) :
