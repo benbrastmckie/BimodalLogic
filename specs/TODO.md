@@ -85,9 +85,10 @@ technical_debt:
 
 ### 938. Port missing logic/math context files
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Dependencies**: Task #937
+- **Research**: [research-001.md](specs/938_port_logic_math_context_files/reports/research-001.md)
 
 **Description**: Port missing logic and math context files from Theory repository (~15 documents). Logic domain: bilateral-propositions.md, bilateral-semantics.md, counterfactual-semantics.md, lattice-theory-concepts.md, mereology-foundations.md, spatial-domain.md, topological-foundations-domain.md. Math: category-theory/ (6 files), foundations/dependent-type-theory.md, lattice-theory/bilattice-theory.md, topology/scott-topology.md, order-theory/monoidal-posets.md. Update README.md files for each domain.
 
