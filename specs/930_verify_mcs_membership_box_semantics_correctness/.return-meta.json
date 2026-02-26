@@ -3,12 +3,16 @@
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-004.md",
-      "summary": "Deep analysis of canonical frame and world history definitions for bridging BFMCS and standard semantics"
+      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-005.md",
+      "summary": "Deep analysis of how to model times D for bridging BFMCS completeness to standard validity"
     }
   ],
+  "partial_progress": {
+    "stage": "research_complete",
+    "details": "Analyzed three approaches to modeling D; identified structural mismatch between CanonicalBC (Preorder) and standard validity (LinearOrderedAddCommGroup); recommended BFMCS soundness as short-term path"
+  },
   "metadata": {
-    "session_id": "sess_1772072616_82b54d",
+    "session_id": "sess_1740493200_r930",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
