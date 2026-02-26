@@ -93,13 +93,10 @@ jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
 
 **Update TODO.md**: Use Edit tool to change status marker from `[PLANNED]` to `[IMPLEMENTING]`.
 
-**Update plan file** (if exists): Update the Status field in plan metadata:
+**Update plan file** (if exists): Use centralized helper to update the Status field:
 ```bash
-# Find latest plan file
-plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
-if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
-    sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [IMPLEMENTING]/" "$plan_file"
-fi
+# Call centralized helper script
+.claude/scripts/update-plan-status.sh "$task_number" "$project_name" "IMPLEMENTING"
 ```
 
 ---
@@ -445,12 +442,10 @@ fi
 
 Update TODO.md: Change status marker from `[IMPLEMENTING]` to `[COMPLETED]`.
 
-**Update plan file** (if exists): Update the Status field to `[COMPLETED]`:
+**Update plan file** (if exists): Use centralized helper to update the Status field:
 ```bash
-plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
-if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
-    sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [COMPLETED]/" "$plan_file"
-fi
+# Call centralized helper script
+.claude/scripts/update-plan-status.sh "$task_number" "$project_name" "COMPLETED"
 ```
 
 **If status is "partial"**:
@@ -458,12 +453,10 @@ fi
 Keep status as "implementing" but update resume point.
 TODO.md stays as `[IMPLEMENTING]`.
 
-**Update plan file** (if exists): Update the Status field to `[PARTIAL]`:
+**Update plan file** (if exists): Use centralized helper to update the Status field:
 ```bash
-plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
-if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
-    sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [PARTIAL]/" "$plan_file"
-fi
+# Call centralized helper script
+.claude/scripts/update-plan-status.sh "$task_number" "$project_name" "PARTIAL"
 ```
 
 ---

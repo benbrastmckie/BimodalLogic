@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # postflight-plan.sh - Planning postflight with correct jq pattern
 #
 # Usage: ./postflight-plan.sh TASK_NUMBER ARTIFACT_PATH [ARTIFACT_SUMMARY]
@@ -6,9 +6,16 @@
 # This script updates state.json after plan creation using the
 # two-step jq pattern to avoid Issue #1132 (Claude Code Bash tool escaping bug).
 #
-# See: .claude/context/core/patterns/jq-escaping-workarounds.md
+# Three-file synchronization: Updates state.json, then calls update-plan-status.sh
+# to keep plan file in sync.
+#
+# See:
+#   - .claude/context/core/patterns/jq-escaping-workarounds.md
+#   - .claude/scripts/update-plan-status.sh
 
 set -e
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [ $# -lt 2 ]; then
     echo "Usage: $0 TASK_NUMBER ARTIFACT_PATH [ARTIFACT_SUMMARY]"
@@ -66,4 +73,27 @@ jq --arg path "$artifact_path" \
   "$state_file" > /tmp/state.json && mv /tmp/state.json "$state_file"
 
 echo "  Artifact linked: $artifact_path"
+
+# Step 4: Update plan file status (three-file synchronization)
+# Extract project_name from state.json for plan file lookup
+project_name=$(jq -r --argjson num "$task_number" \
+  '.active_projects[] | select(.project_number == $num) | .project_name // ""' \
+  "$state_file")
+
+# Map state.json status to plan file marker
+# When plan is created, the plan file status should be PLANNED
+plan_status="PLANNED"
+
+# Call the centralized helper
+if [ -f "$SCRIPT_DIR/update-plan-status.sh" ]; then
+    plan_result=$("$SCRIPT_DIR/update-plan-status.sh" "$task_number" "$project_name" "$plan_status" 2>&1)
+    if [ -n "$plan_result" ]; then
+        echo "  Plan file updated: $plan_result"
+    else
+        echo "  Plan file: no update needed (not found or already at status)"
+    fi
+else
+    echo "  Warning: update-plan-status.sh not found, skipping plan file update"
+fi
+
 echo "Done."
