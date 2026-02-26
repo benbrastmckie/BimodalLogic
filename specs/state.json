@@ -6,6 +6,62 @@
   },
   "active_projects": [
     {
+      "project_number": 940,
+      "project_name": "port_lean_version_management_command",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.",
+      "created": "2026-02-26T19:00:00Z",
+      "last_updated": "2026-02-26T19:00:00Z",
+      "effort": "1-2 hours"
+    },
+    {
+      "project_number": 939,
+      "project_name": "upgrade_research_command_domain_routing",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.",
+      "created": "2026-02-26T19:00:00Z",
+      "last_updated": "2026-02-26T19:00:00Z",
+      "effort": "1-2 hours",
+      "dependencies": [
+        936
+      ]
+    },
+    {
+      "project_number": 938,
+      "project_name": "port_logic_math_context_files",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Port missing logic and math context files from Theory repository (~15 documents). Logic domain: bilateral-propositions.md, bilateral-semantics.md, counterfactual-semantics.md, lattice-theory-concepts.md, mereology-foundations.md, spatial-domain.md, topological-foundations-domain.md. Math: category-theory/ (6 files), foundations/dependent-type-theory.md, lattice-theory/bilattice-theory.md, topology/scott-topology.md, order-theory/monoidal-posets.md. Update README.md files for each domain.",
+      "created": "2026-02-26T19:00:00Z",
+      "last_updated": "2026-02-26T19:00:00Z",
+      "effort": "3-4 hours",
+      "dependencies": [
+        937
+      ]
+    },
+    {
+      "project_number": 937,
+      "project_name": "upgrade_context_system_index_json",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Upgrade context system with index.json from Theory repository. Create: (1) index.json schema with load_when conditions (languages, operations, tiers, agents), (2) entries for all existing context files with topics, keywords, summaries, line_count, (3) generation/validation script, (4) update agent files to use dynamic context discovery via jq queries instead of static lists.",
+      "created": "2026-02-26T19:00:00Z",
+      "last_updated": "2026-02-26T19:00:00Z",
+      "effort": "2-3 hours"
+    },
+    {
+      "project_number": 936,
+      "project_name": "port_specialized_research_agents_skills",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Port specialized research agents and skills from Theory repository. Agents: logic-research-agent.md (modal/temporal/mereology/topology), math-research-agent.md (algebra/lattice/order/category theory), latex-research-agent.md (LaTeX documentation). Skills: skill-logic-research/, skill-math-research/, skill-latex-research/. Each skill uses thin-wrapper postflight pattern delegating to corresponding agent. Update skill-agent-mapping.md.",
+      "created": "2026-02-26T19:00:00Z",
+      "last_updated": "2026-02-26T19:00:00Z",
+      "effort": "4-6 hours"
+    },
+    {
       "project_number": 935,
       "project_name": "audit_roadmap_current_state_section",
       "status": "not_started",
@@ -1054,7 +1110,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 936,
+  "next_project_number": 941,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

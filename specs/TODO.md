@@ -1,16 +1,16 @@
 ---
-next_project_number: 936
+next_project_number: 941
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-20T00:15:00Z
 task_counts:
-  active: 10
+  active: 15
   completed: 635
   in_progress: 0
-  not_started: 1
+  not_started: 6
   abandoned: 36
-  total: 681
+  total: 686
 technical_debt:
   sorry_count: 123
   axiom_count: 19
@@ -21,6 +21,53 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 940. Port /lean version management command
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.
+
+---
+
+### 939. Upgrade /research command with domain routing
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Dependencies**: Task #936
+
+**Description**: Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.
+
+---
+
+### 938. Port missing logic/math context files
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Dependencies**: Task #937
+
+**Description**: Port missing logic and math context files from Theory repository (~15 documents). Logic domain: bilateral-propositions.md, bilateral-semantics.md, counterfactual-semantics.md, lattice-theory-concepts.md, mereology-foundations.md, spatial-domain.md, topological-foundations-domain.md. Math: category-theory/ (6 files), foundations/dependent-type-theory.md, lattice-theory/bilattice-theory.md, topology/scott-topology.md, order-theory/monoidal-posets.md. Update README.md files for each domain.
+
+---
+
+### 937. Upgrade context system with index.json
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Upgrade context system with index.json from Theory repository. Create: (1) index.json schema with load_when conditions (languages, operations, tiers, agents), (2) entries for all existing context files with topics, keywords, summaries, line_count, (3) generation/validation script, (4) update agent files to use dynamic context discovery via jq queries instead of static lists.
+
+---
+
+### 936. Port specialized research agents and skills
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Port specialized research agents and skills from Theory repository. Agents: logic-research-agent.md (modal/temporal/mereology/topology), math-research-agent.md (algebra/lattice/order/category theory), latex-research-agent.md (LaTeX documentation). Skills: skill-logic-research/, skill-math-research/, skill-latex-research/. Each skill uses thin-wrapper postflight pattern delegating to corresponding agent. Update skill-agent-mapping.md.
+
+---
 
 ### 935. Audit ROAD_MAP.md Current State section for accuracy
 - **Effort**: 2-4 hours
