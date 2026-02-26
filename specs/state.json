@@ -35,16 +35,23 @@
     {
       "project_number": 942,
       "project_name": "update_todo_command_changelog_integration",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "description": "Update /todo command to write changelog entries to specs/CHANGE_LOG.md instead of inline ROAD_MAP.md section. Update Step 5.8 changelog update logic, existence checks, and git commit messages. Preserve backward compatibility notes.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T20:40:25Z",
+      "last_updated": "2026-02-26T21:45:00Z",
       "effort": "2-3 hours",
       "dependencies": [
         941
       ],
-      "session_id": "sess_1772138410_39c0db"
+      "session_id": "sess_1772138410_39c0db",
+      "artifacts": [
+        {
+          "path": "specs/942_update_todo_command_changelog_integration/reports/research-001.md",
+          "type": "research",
+          "summary": "Gap analysis showing minimal remaining work after Task 941 migration"
+        }
+      ]
     },
     {
       "project_number": 943,
