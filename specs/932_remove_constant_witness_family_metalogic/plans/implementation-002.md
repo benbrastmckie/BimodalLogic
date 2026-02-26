@@ -1,7 +1,7 @@
 # Implementation Plan: Remove Constant Witness Family from Metalogic (v2)
 
 - **Task**: 932 - remove_constant_witness_family_metalogic
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3-4 hours
 - **Dependencies**: None
 - **Research Inputs**:
@@ -95,7 +95,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Create Boneyard Directory and Archive Entire Files [NOT STARTED]
+### Phase 1: Create Boneyard Directory and Archive Entire Files [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Create versioned Boneyard directory and move entire dead files with warning headers
@@ -154,7 +154,7 @@ is consistent but violates F(psi)->psi required for temporal saturation.
 
 ---
 
-### Phase 2: Archive Constant Witness Family Code from ModalSaturation.lean [NOT STARTED]
+### Phase 2: Archive Constant Witness Family Code from ModalSaturation.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Extract constant witness family definitions to Boneyard, leave warning comment in place
@@ -197,7 +197,7 @@ See specs/932_*/reports/ for detailed analysis.
 
 ---
 
-### Phase 3: Archive singleFamilyBFMCS from Construction.lean [NOT STARTED]
+### Phase 3: Archive singleFamilyBFMCS from Construction.lean [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Archive singleFamilyBFMCS (deprecated, sorry-backed, unused) to Boneyard
@@ -222,7 +222,7 @@ See specs/932_*/reports/ for detailed analysis.
 
 ---
 
-### Phase 4: Archive Deprecated Code from TemporalCoherentConstruction.lean [NOT STARTED]
+### Phase 4: Archive Deprecated Code from TemporalCoherentConstruction.lean [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Archive deprecated axiom, dead generic-D theorem, and abandoned temporal saturation infrastructure
@@ -265,7 +265,7 @@ See specs/932_*/reports/ for detailed analysis.
 
 ---
 
-### Phase 5: Archive ModalWitnessSeed from ChainFMCS.lean (Conditional) [NOT STARTED]
+### Phase 5: Archive ModalWitnessSeed from ChainFMCS.lean (Conditional) [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Archive ModalWitnessSeed infrastructure if no longer needed after ChainBundleBFMCS archival
@@ -289,7 +289,7 @@ See specs/932_*/reports/ for detailed analysis.
 
 ---
 
-### Phase 6: Final Verification and Documentation [NOT STARTED]
+### Phase 6: Final Verification and Documentation [COMPLETED]
 
 - **Dependencies:** Phase 4 (Phase 5 is conditional)
 - **Goal:** Verify all changes, document archived constructions, ensure sorry-free code unchanged
@@ -377,3 +377,19 @@ If any phase causes build failure:
 5. If a definition is still used, keep it in active code
 
 The entire task operates on code with zero external consumers (verified by research-004). Archiving to Boneyard preserves all content for reference while removing it from the active build.
+
+## Progress
+
+**Session: 2026-02-25, sess_1772088857_e3a080f2**
+- Removed: `WitnessGraph.lean` (3,403 lines) archived to Boneyard
+- Removed: `ChainBundleBFMCS.lean` (338 lines) archived to Boneyard
+- Removed: `RecursiveSeed.lean.backup-v004` (~4,300 lines) deleted
+- Removed: `constantWitnessFamily` and related defs from ModalSaturation.lean
+- Removed: `singleFamilyBFMCS` from Construction.lean (sorry eliminated)
+- Removed: `TemporalEvalSaturatedBundle`, temporal saturation predicates from TemporalCoherentConstruction.lean
+- Removed: `fully_saturated_bfmcs_exists` AXIOM (polymorphic, deprecated) from trusted kernel
+- Removed: `construct_temporal_bfmcs`, `construct_saturated_bfmcs` (polymorphic dead code)
+- Removed: `temporal_coherent_family_exists` (generic D, sorry)
+- Added: Boneyard/Metalogic_v7/README.md with banned patterns and archive index
+- Sorries: 5 -> 3 (2 archived: singleFamilyBFMCS.modal_backward, temporal_coherent_family_exists)
+- Axioms: 1 -> 0 (fully_saturated_bfmcs_exists polymorphic axiom archived)

@@ -29,17 +29,21 @@ theorems in Representation.lean are sorry-dependent because they rely on
 
 ## Sorry Status
 
-**Active sorries in Metalogic/**: 5 total
+**Active sorries in Metalogic/**: 3 total
 
 | File | Count | Description |
 |------|-------|-------------|
-| `Bundle/Construction.lean` | 1 | singleFamilyBFMCS.modal_backward |
-| `Bundle/TemporalCoherentConstruction.lean` | 2 | temporal_coherent_family_exists, fully_saturated_bfmcs_exists_int |
+| `Bundle/TemporalCoherentConstruction.lean` | 1 | fully_saturated_bfmcs_exists_int |
 | `Bundle/DovetailingChain.lean` | 2 | buildDovetailingChainFamily_forward_F, buildDovetailingChainFamily_backward_P |
 
 **Key Point**: Main completeness theorems (bfmcs_weak_completeness, bfmcs_strong_completeness,
 standard_weak_completeness, standard_strong_completeness) are SORRY-FREE. The soundness
 theorem is also SORRY-FREE. Remaining sorries are in upstream BFMCS construction utilities.
+
+**Resolved (task 932)**:
+- Archived singleFamilyBFMCS.modal_backward sorry (Construction.lean) to Boneyard
+- Archived temporal_coherent_family_exists sorry (generic D) to Boneyard
+- Removed fully_saturated_bfmcs_exists AXIOM (deprecated polymorphic) from trusted kernel
 
 **Resolved (task 912 v002)**:
 - 29 sorries archived (25 RecursiveSeed/Seed*, 4 EvalBFMCS truth lemma)
@@ -61,7 +65,6 @@ Metalogic/
 │   ├── BFMCSTruth.lean         # Truth with bundled box
 │   ├── TruthLemma.lean         # KEY: sorry-free truth lemma
 │   ├── Construction.lean       # BFMCS from consistent context
-│   ├── ChainBundleBFMCS.lean   # Sorry-free completeness chain
 │   └── Completeness.lean       # bfmcs_weak_completeness, bfmcs_strong_completeness
 │
 ├── FMP/                     # Finite Model Property

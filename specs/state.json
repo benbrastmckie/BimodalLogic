@@ -8,11 +8,11 @@
     {
       "project_number": 932,
       "project_name": "remove_constant_witness_family_metalogic",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "created": "2026-02-26T05:47:26Z",
-      "last_updated": "2026-02-26T06:53:11Z",
-      "session_id": "sess_1772088264_707197",
+      "last_updated": "2026-02-26T08:00:00Z",
+      "session_id": "sess_1772088857_e3a080f2",
       "researched": "2026-02-25T12:00:00Z",
       "artifacts": [
         {
@@ -29,9 +29,16 @@
           "path": "specs/932_remove_constant_witness_family_metalogic/plans/implementation-002.md",
           "type": "plan",
           "summary": "6-phase plan to archive ~8,400 lines of constant witness family code to Boneyard"
+        },
+        {
+          "path": "specs/932_remove_constant_witness_family_metalogic/summaries/implementation-summary-20260225.md",
+          "type": "summary",
+          "summary": "Archived ~8,580 lines of constant witness family code to Boneyard. Removed deprecated polymorphic axiom from trusted kernel. Reduced active sorries from 5 to 3."
         }
       ],
-      "planned": "2026-02-26T06:53:11Z"
+      "planned": "2026-02-26T06:53:11Z",
+      "started": "2026-02-26T06:54:35Z",
+      "completed": "2026-02-26T08:00:00Z"
     },
     {
       "project_number": 931,

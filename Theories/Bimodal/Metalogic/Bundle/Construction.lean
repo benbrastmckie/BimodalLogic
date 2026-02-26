@@ -11,26 +11,14 @@ This module provides primitive building blocks for BFMCS construction:
 - `ContextConsistent`: Consistency predicate for list contexts
 - `contextAsSet` / `list_consistent_to_set_consistent`: Bridge from list to set consistency
 - `constantBFMCS`: A family assigning the same MCS at every time (T-axiom coherence)
-- `singleFamilyBFMCS`: Single-family BFMCS wrapper (1 sorry in modal_backward)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
-
-## Design Note: Single-Family Modal Backward
-
-The `modal_backward` condition requires: if phi is in ALL families' MCS, then Box phi
-is in each family's MCS. For a single-family BFMCS, this becomes: phi in MCS implies
-Box phi in MCS, which is NOT valid in general modal logic.
-
-A **modally saturated** BFMCS (see `ModalSaturation.lean`) satisfies modal_backward
-by construction. The `fully_saturated_bfmcs_exists_int` axiom in
-`TemporalCoherentConstruction.lean` provides a correct multi-family BFMCS that does
-not need the single-family modal backward sorry.
 
 ## History
 
-- Task 812: Original single-family construction with FALSE `singleFamily_modal_backward_axiom`
-- Task 905: Removed FALSE axiom, replaced with sorry
-- Task 912: Removed dead code (`construct_bmcs`, `construct_bmcs_from_set`), kept
-  `singleFamilyBFMCS` because `construct_temporal_bfmcs` still depends on it
+- Task 812: Original single-family construction
+- Task 905: Removed FALSE axiom singleFamily_modal_backward_axiom
+- Task 912: Removed dead code (`construct_bmcs`, `construct_bmcs_from_set`)
+- Task 932: Archived `singleFamilyBFMCS` to Boneyard (sorry-backed, deprecated)
 
 ## References
 
@@ -113,95 +101,23 @@ lemma constantBFMCS_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsistent M) (t
     (constantBFMCS M h_mcs (D := D)).mcs t = M := rfl
 
 /-!
-## Stage 3: Constructing BFMCS
+## REMOVED: singleFamilyBFMCS (Task 932)
 
-Build a BFMCS with a single family. Modal coherence conditions become:
-- modal_forward: Box phi in M implies phi in M (T-axiom)
-- modal_backward: phi in M implies Box phi in M (only if phi in ALL families, but we have one)
+The following were archived to Boneyard/Metalogic_v7/Bundle/SingleFamilyBFMCS.lean:
+- singleFamilyBFMCS (sorry in modal_backward)
+- singleFamilyBFMCS_eval_family_eq
+- singleFamily_modal_backward_axiom (already removed in task 905)
 
-For a single-family BFMCS:
-- modal_forward is just the T-axiom
-- modal_backward requires: if phi in M (the only family), then Box phi in M
-  This does NOT generally hold! We need to prove this specially.
+WHY: Single-family modal backward (phi in MCS -> Box phi in MCS) is NOT provable
+from first principles and the FALSE axiom was already removed. The sorry-backed
+definition was only used by construct_temporal_bfmcs (also archived).
 
-**Key Insight**: For modal_backward to work with one family, we use MCS maximality:
-If phi is in M and Box phi is not in M, then by maximality neg (Box phi) is in M.
-But neg (Box phi) = Diamond (neg phi), which should imply neg phi is consistent with M.
-However, if neg phi is in M then we get phi and neg phi both in M, contradiction.
+The active completeness chain uses construct_saturated_bfmcs_int from
+TemporalCoherentConstruction.lean, which uses multi-family modal saturation.
 
-Actually, the modal_backward condition is:
-  forall fam in families, forall phi t, (forall fam' in families, phi in fam'.mcs t) -> Box phi in fam.mcs t
-
-With ONE family, this becomes: phi in M -> Box phi in M
-
-This is NOT a theorem in general modal logic! In S5 we have Box phi <-> phi for necessary
-truths, but not for arbitrary phi.
-
-**Resolution**: We strengthen the construction requirement. For completeness, we need
-a BFMCS where the original context Gamma is preserved. The modal_backward condition
-is PART OF THE CONSTRUCTION SPECIFICATION, not something we prove from first principles.
-
-For single-family BFMCS, we accept modal_backward via an axiom (justified by canonical model theory).
-This is acceptable because:
-1. The TRUTH LEMMA is the critical result, and it uses modal_forward/backward as hypotheses
-2. A proper multi-family construction would satisfy these automatically
-3. Single-family is a simplification for the existence proof
+DO NOT reintroduce single-family BFMCS constructions.
+See specs/932_*/reports/ for analysis.
 -/
-
--- ============================================================================
--- NOTE: singleFamily_modal_backward_axiom has been REMOVED (task 905)
--- ============================================================================
-
-/-!
-### singleFamily_modal_backward_axiom (REMOVED)
-
-The FALSE axiom `singleFamily_modal_backward_axiom` was removed in task 905.
-It claimed: phi in fam.mcs t -> Box phi in fam.mcs t, which is FALSE for
-non-necessary formulas.
-
-**REPLACEMENT**: Use `fully_saturated_bfmcs_exists` from `TemporalCoherentConstruction.lean`
-instead, which asserts the existence of a modally saturated BFMCS.
-
-See task 903 for the completeness proof restructuring that eliminates the need
-for single-family modal backward entirely.
--/
-
-/--
-Build a BFMCS from a single FMCS.
-
-**DEPRECATED**: The `modal_backward` field uses sorry because the single-family
-approach cannot prove modal backward from first principles. Use
-`construct_temporal_bfmcs` from `TemporalCoherentConstruction.lean` for new code,
-which uses the correct `fully_saturated_bfmcs_exists` axiom instead.
--/
-noncomputable def singleFamilyBFMCS (fam : FMCS D) : BFMCS D where
-  families := {fam}
-  nonempty := ⟨fam, Set.mem_singleton fam⟩
-  modal_forward := fun fam' hfam' phi t hBox fam'' hfam'' =>
-    -- fam' and fam'' are both in {fam}, so both equal fam
-    have h_eq' : fam' = fam := Set.mem_singleton_iff.mp hfam'
-    have h_eq'' : fam'' = fam := Set.mem_singleton_iff.mp hfam''
-    -- Need: phi in fam''.mcs t = phi in fam.mcs t
-    -- Have: Box phi in fam'.mcs t = Box phi in fam.mcs t
-    -- Use T-axiom: Box phi -> phi
-    let h_mcs := fam.is_mcs t
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      ((Formula.box phi).imp phi) (Bimodal.ProofSystem.Axiom.modal_t phi)
-    let h_T_in_mcs := theorem_in_mcs h_mcs h_T
-    h_eq'' ▸ set_mcs_implication_property h_mcs h_T_in_mcs (h_eq' ▸ hBox)
-  modal_backward := fun _fam' _hfam' _phi _t _h_all =>
-    -- SORRY: Single-family modal backward is not provable from first principles.
-    -- The FALSE axiom singleFamily_modal_backward_axiom was removed in task 905.
-    -- Use fully_saturated_bfmcs_exists from TemporalCoherentConstruction.lean instead.
-    sorry
-  eval_family := fam
-  eval_family_mem := Set.mem_singleton fam
-
-/--
-The evaluation family of a single-family BFMCS is the original family.
--/
-lemma singleFamilyBFMCS_eval_family_eq (fam : FMCS D) :
-    (singleFamilyBFMCS fam (D := D)).eval_family = fam := rfl
 
 /-!
 ## Core Definitions
@@ -269,20 +185,15 @@ This module provides:
 - `ContextConsistent`: Consistency predicate for list contexts
 - `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge
 - `constantBFMCS`: Constant-time MCS family (temporal coherence via T-axioms)
-- `singleFamilyBFMCS`: Single-family BFMCS construction (1 sorry in modal_backward)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
 
-**Sorry Status**: ONE sorry (`modal_backward` in `singleFamilyBFMCS`).
-Single-family modal backward (phi in MCS -> Box phi in MCS) is not provable from
-first principles. This sorry is inherited by `construct_temporal_bfmcs` in
-`TemporalCoherentConstruction.lean`. The `fully_saturated_bfmcs_exists_int` axiom
-provides a correct alternative that replaces this sorry for the completeness chain.
+**Sorry Status**: ZERO sorries in this module.
+(singleFamilyBFMCS with its sorry was archived to Boneyard in task 932.)
 
-**Deprecation Note (tasks 905, 912)**:
-The `construct_bmcs` and `construct_bmcs_from_set` functions were removed in task 912
-as they are superseded by `construct_saturated_bfmcs_int` from
-`TemporalCoherentConstruction.lean`. The `singleFamilyBFMCS` definition is retained
-because `construct_temporal_bfmcs` still depends on it.
+**History (tasks 905, 912, 932)**:
+- Task 905: Removed FALSE axiom singleFamily_modal_backward_axiom
+- Task 912: Removed dead code (construct_bmcs, construct_bmcs_from_set)
+- Task 932: Archived singleFamilyBFMCS to Boneyard (sorry-backed, deprecated)
 -/
 
 end Bimodal.Metalogic.Bundle

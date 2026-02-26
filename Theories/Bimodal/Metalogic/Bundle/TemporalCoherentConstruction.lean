@@ -299,91 +299,19 @@ def BFMCS.temporally_coherent (B : BFMCS D) : Prop :=
     (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
 
 /-!
-## Phase 1: Temporal Saturation Structures (Task 857 v002)
+## REMOVED: Temporal Saturation Structures (Task 932)
 
-Following the EvalCoherentBundle pattern from CoherentConstruction.lean, we define
-analogous structures for temporal saturation.
+The following were archived to Boneyard/Metalogic_v7/Bundle/TemporalSaturationBundle.lean:
+- TemporalForwardSaturated, TemporalBackwardSaturated, TemporallySaturated predicates
+- TemporalEvalSaturatedBundle structure and all methods (toFMCS, toFMCS_constant, toTemporalCoherentFamily)
+
+WHY: The temporal saturation predicate (F(psi)->psi within a single MCS) is
+fundamentally impossible for consistent sets like {F(psi), neg(psi)}.
+The TemporalEvalSaturatedBundle was never instantiated in active code.
+
+DO NOT reintroduce temporal saturation of single MCS.
+See specs/932_*/reports/ for counterexample analysis.
 -/
-
--- GContent and HContent are imported from TemporalContent.lean
-
-/--
-TemporalForwardSaturated: Every F(psi) in the MCS has its witness (psi also in the MCS).
-
-For a constant family, this means F(psi) -> psi within the MCS.
--/
-def TemporalForwardSaturated (M : Set Formula) : Prop :=
-  ∀ psi : Formula, Formula.some_future psi ∈ M → psi ∈ M
-
-/--
-TemporalBackwardSaturated: Every P(psi) in the MCS has its witness (psi also in the MCS).
--/
-def TemporalBackwardSaturated (M : Set Formula) : Prop :=
-  ∀ psi : Formula, Formula.some_past psi ∈ M → psi ∈ M
-
-/--
-TemporallySaturated: Both forward and backward temporal saturation hold.
--/
-def TemporallySaturated (M : Set Formula) : Prop :=
-  TemporalForwardSaturated M ∧ TemporalBackwardSaturated M
-
-/--
-TemporalEvalSaturatedBundle: A constant FMCS with temporally saturated MCS.
-
-This structure provides:
-1. A constant family (same MCS M at all times)
-2. M is temporally saturated (F psi -> psi and P psi -> psi in M)
-3. The family therefore satisfies forward_F and backward_P
--/
-structure TemporalEvalSaturatedBundle (D : Type*) [Preorder D] where
-  /-- The underlying MCS -/
-  baseMCS : Set Formula
-  /-- The MCS is maximal consistent -/
-  is_mcs : SetMaximalConsistent baseMCS
-  /-- Forward temporal saturation -/
-  forward_saturated : TemporalForwardSaturated baseMCS
-  /-- Backward temporal saturation -/
-  backward_saturated : TemporalBackwardSaturated baseMCS
-
-/--
-Convert a TemporalEvalSaturatedBundle to a constant FMCS.
--/
-noncomputable def TemporalEvalSaturatedBundle.toFMCS
-    (B : TemporalEvalSaturatedBundle D) : FMCS D where
-  mcs _ := B.baseMCS
-  is_mcs _ := B.is_mcs
-  forward_G := fun _ _ phi _ h_G => by
-    have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
-      DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
-    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_G
-  backward_H := fun _ _ phi _ h_H => by
-    have h_T : [] ⊢ (Formula.all_past phi).imp phi :=
-      DerivationTree.axiom [] _ (Axiom.temp_t_past phi)
-    exact set_mcs_implication_property B.is_mcs (theorem_in_mcs B.is_mcs h_T) h_H
-
-/--
-The toFMCS conversion produces a constant family.
--/
-lemma TemporalEvalSaturatedBundle.toFMCS_constant
-    (B : TemporalEvalSaturatedBundle D) :
-    IsConstantFamily B.toFMCS :=
-  ⟨B.baseMCS, fun _ => rfl⟩
-
-/--
-Convert a TemporalEvalSaturatedBundle to a TemporalCoherentFamily.
-
-With reflexive forward_F/backward_P (Task 922), this no longer requires [Nontrivial D]
-since we can use the same time point t as the witness (t ≤ t).
--/
-noncomputable def TemporalEvalSaturatedBundle.toTemporalCoherentFamily
-    (B : TemporalEvalSaturatedBundle D) : TemporalCoherentFamily D where
-  toFMCS := B.toFMCS
-  forward_F := fun t psi h_F => by
-    have h_psi : psi ∈ B.baseMCS := B.forward_saturated psi h_F
-    exact ⟨t, le_refl t, h_psi⟩
-  backward_P := fun t psi h_P => by
-    have h_psi : psi ∈ B.baseMCS := B.backward_saturated psi h_P
-    exact ⟨t, le_refl t, h_psi⟩
 
 /-!
 ## Phase 2: Temporal Saturation Construction
@@ -577,185 +505,40 @@ theorem temporal_coherent_family_exists_Int
     fun t φ h => let ⟨s, h_lt, h_mem⟩ := h_fwd t φ h; ⟨s, le_of_lt h_lt, h_mem⟩,
     fun t φ h => let ⟨s, h_lt, h_mem⟩ := h_bwd t φ h; ⟨s, le_of_lt h_lt, h_mem⟩⟩
 
-/--
-Temporal coherent family existence - generic version.
+/-!
+## REMOVED: Generic temporal_coherent_family_exists (Task 932)
 
-**Note**: Only `D = Int` is ever instantiated downstream (in Completeness.lean).
-For Int, use `temporal_coherent_family_exists_Int` which delegates to DovetailingChain.
+The generic D version (sorry-backed) was archived to
+Boneyard/Metalogic_v7/Bundle/TemporalSaturationBundle.lean.
 
-This generic version remains sorry'd because:
-1. RecursiveSeed.lean uses Int specifically (timeIdx : Int in SeedEntry)
-2. DovetailingChain.lean uses Int specifically (dovetailIndex : Nat → Int)
-3. Type-level dispatch isn't supported in Lean (no runtime `D = Int` check)
-4. No other instantiation is used in practice
-
-**RecursiveSeed Approach (Task 864)**:
-The RecursiveSeed construction pre-places temporal witnesses during seed building:
-- When processing `neg(G psi)`, creates a witness at `freshFutureTime` containing `neg psi`
-- When processing `neg(H psi)`, creates a witness at `freshPastTime` containing `neg psi`
-
-This avoids the cross-sign propagation problem that blocked DovetailingChain, but:
-- Witnesses are only pre-placed for F/P formulas IN THE STARTING FORMULA
-- Lindenbaum-added F/P formulas still require witness construction via enumeration
-
-**Technical debt**: Full proof requires either:
-1. Generalizing RecursiveSeed to generic D (major refactor of seed time indices)
-2. Implementing witness enumeration for Lindenbaum-added F/P formulas
+Only D = Int is instantiated downstream. Use temporal_coherent_family_exists_Int below.
 -/
-theorem temporal_coherent_family_exists (D : Type*) [Preorder D] [Zero D]
-    (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (fam : FMCS D),
-      (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
-      (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
-      (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s) := by
-  sorry
 
 /-!
-## Temporally Coherent BFMCS Construction
+## REMOVED: construct_temporal_bfmcs (Task 932)
 
-We construct a BFMCS that is temporally coherent, meaning all families satisfy
-forward_F and backward_P. This enables the truth lemma to be proven without sorry
-for all cases including temporal backward (G and H).
+The polymorphic construct_temporal_bfmcs and related theorems were archived to
+Boneyard/Metalogic_v7/Bundle/TemporalSaturationBundle.lean.
 
-The construction uses `temporal_coherent_family_exists` to obtain a
-TemporalCoherentFamily, then wraps it in a single-family BFMCS.
+These used singleFamilyBFMCS (also archived) and the generic temporal_coherent_family_exists.
+Only the Int-specialized construct_saturated_bfmcs_int is active.
+
+DO NOT reintroduce these. See specs/932_*/reports/ for analysis.
 -/
-
-/--
-Construct a temporally coherent BFMCS from a consistent context.
-
-The construction:
-1. Obtain a temporally coherent family extending Gamma (via axiom)
-2. Wrap the family in a single-family BFMCS
-
-**Axiom dependencies**:
-- `temporal_coherent_family_exists` (temporal coherent family existence -- CORRECT, to be proven)
-- `singleFamily_modal_backward_axiom` (modal backward for single-family BFMCS)
--/
-noncomputable def construct_temporal_bfmcs (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    BFMCS D :=
-  -- Get temporally coherent family
-  let fam := (temporal_coherent_family_exists D Gamma h_cons).choose
-  -- Build single-family BFMCS
-  singleFamilyBFMCS fam
-
-/--
-The eval family of the constructed BFMCS is the family from temporal_coherent_family_exists.
--/
-lemma construct_temporal_bfmcs_eval_eq (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    (construct_temporal_bfmcs Gamma h_cons (D := D)).eval_family =
-      (temporal_coherent_family_exists D Gamma h_cons).choose :=
-  rfl
-
-/--
-The constructed BFMCS preserves the original context.
--/
-theorem construct_temporal_bfmcs_contains_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∀ gamma ∈ Gamma, gamma ∈ (construct_temporal_bfmcs Gamma h_cons (D := D)).eval_family.mcs 0 := by
-  intro gamma h_mem
-  -- The eval family is the chosen family from the axiom
-  rw [construct_temporal_bfmcs_eval_eq]
-  -- The family extends Gamma at time 0
-  exact (temporal_coherent_family_exists D Gamma h_cons).choose_spec.1 gamma h_mem
-
-/--
-The constructed BFMCS is temporally coherent.
-
-**Key Property**: The family from `temporal_coherent_family_exists` directly provides
-forward_F and backward_P properties. Since the BFMCS has a single family, temporal
-coherence holds trivially.
--/
-theorem construct_temporal_bfmcs_temporally_coherent (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    (construct_temporal_bfmcs Gamma h_cons (D := D)).temporally_coherent := by
-  -- Unfold temporally_coherent: need forward_F and backward_P for all families
-  intro fam hfam
-  -- The BFMCS has a single family
-  simp only [construct_temporal_bfmcs, singleFamilyBFMCS] at hfam
-  have h_eq := Set.mem_singleton_iff.mp hfam
-  subst h_eq
-  -- Get the forward_F and backward_P from the axiom
-  have h_spec := (temporal_coherent_family_exists D Gamma h_cons).choose_spec
-  exact ⟨h_spec.2.1, h_spec.2.2⟩
 
 /-!
-## Fully Saturated BFMCS Axiom (Task 843 Phase 4)
+## REMOVED: Deprecated Polymorphic Axiom fully_saturated_bfmcs_exists (Task 932)
 
-This axiom replaces the mathematically FALSE `singleFamily_modal_backward_axiom`
-(which claimed phi in MCS -> Box phi in MCS).
+The polymorphic AXIOM fully_saturated_bfmcs_exists has been archived to
+Boneyard/Metalogic_v7/Bundle/TemporalSaturationBundle.lean.
 
-The new axiom is mathematically CORRECT: it asserts the existence of a fully
-saturated BFMCS, which is guaranteed by standard canonical model theory for
-S5 modal logic + temporal logic.
+WHY: This was in the trusted kernel (axiom) and only the Int case is ever
+instantiated. The Int case uses a sorry-backed THEOREM instead, which is
+strictly better (explicit incompleteness, verified structure).
 
-### Why the Old Axiom Was FALSE
-
-The old axiom `singleFamily_modal_backward_axiom` claimed:
-  forall phi t, phi in fam.mcs t -> Box phi in fam.mcs t
-
-This is FALSE because:
-- For phi = atom "p", Box(atom "p") is neither provable nor refutable
-- Some MCS contain Box(atom "p"), others contain neg(Box(atom "p"))
-- A single MCS does NOT satisfy phi -> Box phi for arbitrary phi
-
-The counterexample was discovered during plan v006 Phase 2 implementation.
-See research-016.md for the full analysis.
-
-### Why the New Axiom Is CORRECT
-
-The new axiom asserts: for any consistent context, there exists a BFMCS that is
-(a) temporally coherent, (b) modally saturated, and (c) contains the context.
-
-This is TRUE by the standard canonical model construction:
-1. Build the canonical model with ALL MCS as worlds
-2. Define accessibility via BoxContent inclusion
-3. S5 axioms (T, 4, B, 5-collapse) make accessibility an equivalence relation
-4. The equivalence relation is universal (single equivalence class)
-5. Universal accessibility gives modal_forward
-6. Modal saturation (exists witness for every Diamond) gives modal_backward
-   via the PROVEN `saturated_modal_backward` theorem (ModalSaturation.lean)
-
-### References
-
-- Research report: specs/843_remove_singleFamily_modal_backward_axiom/reports/research-016.md
-- Proof of saturated_modal_backward: Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean
-- Implementation plan: specs/843_remove_singleFamily_modal_backward_axiom/plans/implementation-007.md
+DO NOT reintroduce polymorphic axioms. Use fully_saturated_bfmcs_exists_int below.
+See specs/932_*/reports/ for analysis.
 -/
-
-/--
-Axiom: For any consistent context, there exists a fully saturated temporally coherent BFMCS.
-
-**Mathematical Justification**:
-This is guaranteed by the standard canonical model construction for S5 modal logic
-combined with temporal logic:
-
-1. **Modal saturation**: The canonical model includes witness families for every
-   Diamond formula, ensuring `is_modally_saturated` holds.
-
-2. **Temporal coherence**: The dovetailing chain construction ensures `forward_F`
-   and `backward_P` hold for temporal operators.
-
-3. **Context preservation**: Lindenbaum extension preserves the original context
-   at the evaluation family's MCS at time 0.
-
-Combined with `saturated_modal_backward` (PROVEN in ModalSaturation.lean), this
-gives a complete BFMCS construction that does NOT rely on the FALSE single-family
-axiom.
-
-**This axiom will be proven in a future phase** using the full canonical model
-construction infrastructure (BoxContent accessibility symmetry, universal
-accessibility, etc.). See implementation plan v007 Phase 5.
-
-**Task 881 Update**: This axiom is DEPRECATED. Use `fully_saturated_bfmcs_exists_int`
-for Int-indexed BFMCS (the only case used in completeness proofs). The Int-specialized
-version will be proven constructively using DovetailingChain + modal saturation.
--/
-@[deprecated "Use fully_saturated_bfmcs_exists_int for Int case (Task 881)"]
-axiom fully_saturated_bfmcs_exists (D : Type*) [Preorder D] [Zero D]
-    (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∃ (B : BFMCS D),
-      (∀ gamma ∈ Gamma, gamma ∈ B.eval_family.mcs 0) ∧
-      B.temporally_coherent ∧
-      is_modally_saturated B
 
 /-!
 ## Int-Specialized Fully Saturated BFMCS (Task 881)
@@ -817,55 +600,17 @@ theorem fully_saturated_bfmcs_exists_int (Gamma : List Formula) (h_cons : Contex
   sorry
 
 /-!
-## Fully Saturated BFMCS Construction
+## REMOVED: Polymorphic construct_saturated_bfmcs (Task 932)
 
-This construction uses the CORRECT `fully_saturated_bfmcs_exists` axiom instead of
-the FALSE `singleFamily_modal_backward_axiom`.
+The polymorphic construct_saturated_bfmcs and related theorems were archived to
+Boneyard/Metalogic_v7/Bundle/TemporalSaturationBundle.lean.
 
-The key insight is that modal saturation + the PROVEN `saturated_modal_backward`
-theorem gives modal_backward without requiring the false single-family axiom.
+These used the deprecated polymorphic fully_saturated_bfmcs_exists AXIOM.
+Only the Int-specialized versions below are active.
+
+DO NOT reintroduce polymorphic versions -- only D = Int is instantiated downstream.
+See specs/932_*/reports/ for detailed analysis.
 -/
-
-/--
-Construct a fully saturated BFMCS from a consistent context.
-
-**Key Properties**:
-- Context is preserved at eval_family.mcs 0
-- Temporally coherent (forward_F and backward_P hold)
-- Modally saturated (every Diamond has a witness)
-- modal_backward holds via `saturated_modal_backward` theorem
-
-**Axiom dependencies**:
-- `fully_saturated_bfmcs_exists` (CORRECT axiom)
-
-**Does NOT use**:
-- `singleFamily_modal_backward_axiom` (FALSE axiom, deprecated)
--/
-noncomputable def construct_saturated_bfmcs (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    BFMCS D :=
-  (fully_saturated_bfmcs_exists D Gamma h_cons).choose
-
-/--
-The constructed saturated BFMCS preserves the original context.
--/
-theorem construct_saturated_bfmcs_contains_context (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    ∀ gamma ∈ Gamma, gamma ∈ (construct_saturated_bfmcs Gamma h_cons (D := D)).eval_family.mcs 0 := by
-  intro gamma h_mem
-  exact (fully_saturated_bfmcs_exists D Gamma h_cons).choose_spec.1 gamma h_mem
-
-/--
-The constructed saturated BFMCS is temporally coherent.
--/
-theorem construct_saturated_bfmcs_temporally_coherent (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    (construct_saturated_bfmcs Gamma h_cons (D := D)).temporally_coherent :=
-  (fully_saturated_bfmcs_exists D Gamma h_cons).choose_spec.2.1
-
-/--
-The constructed saturated BFMCS is modally saturated.
--/
-theorem construct_saturated_bfmcs_is_modally_saturated (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    is_modally_saturated (construct_saturated_bfmcs Gamma h_cons (D := D)) :=
-  (fully_saturated_bfmcs_exists D Gamma h_cons).choose_spec.2.2
 
 /-!
 ## Int-Specialized BFMCS Construction (Task 881)

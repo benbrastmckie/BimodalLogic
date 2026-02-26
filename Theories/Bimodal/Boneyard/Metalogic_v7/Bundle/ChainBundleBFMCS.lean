@@ -1,3 +1,33 @@
+/-!
+# BONEYARD: Archived from active Metalogic module (Task 932, 2026-02-25)
+
+## WHY THIS IS HERE
+This file was moved to Boneyard because it implements a fundamentally flawed approach.
+
+## THE FLAWED APPROACH
+The constant witness family pattern (mapping all time points to the SAME MCS) cannot satisfy
+temporal coherence requirements (forward_F, backward_P). Counterexample: {F(psi), neg(psi)}
+is consistent but violates F(psi)->psi required for temporal saturation.
+
+## DO NOT RESURRECT
+- Do NOT copy code from this file back into active Metalogic
+- Do NOT use constant witness families for Int-indexed BFMCS constructions
+- Do NOT use MCS-membership box semantics (bmcs_truth_at_mcs pattern)
+
+## WHAT WENT WRONG
+ChainBundleBFMCS.lean constructs a chain-bundle BFMCS on CanonicalBC (MCSes with fixed
+BoxContent) using constant witness families for modal saturation. While the modal saturation
+proofs are correct, the file is dead code: no other module imports it, and the CanonicalBC
+domain approach was superseded by the Int-indexed chain construction in
+TemporalCoherentConstruction.lean.
+
+## SEE ALSO
+- specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-007.md
+- specs/932_remove_constant_witness_family_metalogic/reports/ (research-001 through research-004)
+-/
+
+-- Original file contents below (compile errors expected due to broken imports)
+
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.ChainFMCS

@@ -210,82 +210,23 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
     exact h_mcs.1 [Formula.bot] h_sub ⟨h_deriv⟩
 
 /-!
-## Phase 2: Witness Family Construction
+## REMOVED: Constant Witness Family Definitions (Task 932)
 
-We construct witness families for Diamond formulas that need witnesses.
-The key insight is that if Diamond psi is in an MCS, then psi is consistent
-and can be extended to an MCS via Lindenbaum's lemma.
+The following definitions were archived to Boneyard/Metalogic_v7/Bundle/ConstantWitnessFamily_ModalSaturation.lean:
+- extendToMCS, extendToMCS_contains, extendToMCS_is_mcs
+- constantWitnessFamily
+- constantWitnessFamily_mcs_eq
+- constructWitnessFamily
+- constructWitnessFamily_contains
+
+WHY: The constant witness family approach (mapping all times to the same MCS)
+is fundamentally flawed. Constant families cannot satisfy forward_F/backward_P
+because temporal saturation (F(psi)->psi within a single MCS) is impossible.
+Counterexample: {F(psi), neg(psi)} is consistent but violates F(psi)->psi.
+
+DO NOT reintroduce constant witness families for modal saturation.
+See specs/932_*/reports/ for detailed analysis.
 -/
-
-/--
-Extend a consistent singleton to an MCS using Lindenbaum's lemma.
-
-Given that {psi} is consistent, we can extend it to a maximal consistent set.
--/
-noncomputable def extendToMCS (psi : Formula) (h_cons : SetConsistent {psi}) :
-    Set Formula :=
-  Classical.choose (set_lindenbaum {psi} h_cons)
-
-/--
-The extended MCS contains psi.
--/
-lemma extendToMCS_contains (psi : Formula) (h_cons : SetConsistent {psi}) :
-    psi ∈ extendToMCS psi h_cons :=
-  (Classical.choose_spec (set_lindenbaum {psi} h_cons)).1 (Set.mem_singleton psi)
-
-/--
-The extended set is a maximal consistent set.
--/
-lemma extendToMCS_is_mcs (psi : Formula) (h_cons : SetConsistent {psi}) :
-    SetMaximalConsistent (extendToMCS psi h_cons) :=
-  (Classical.choose_spec (set_lindenbaum {psi} h_cons)).2
-
-/--
-Construct a constant witness family from an MCS.
-
-Given an MCS M, we build an FMCS that assigns M to every time point.
-This is similar to constantBFMCS from Construction.lean.
--/
-noncomputable def constantWitnessFamily (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    FMCS D where
-  mcs := fun _ => M
-  is_mcs := fun _ => h_mcs
-  forward_G := fun t t' phi _ hG =>
-    let h_T := DerivationTree.axiom []
-      (phi.all_future.imp phi) (Axiom.temp_t_future phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hG
-  backward_H := fun t t' phi _ hH =>
-    let h_T := DerivationTree.axiom []
-      (phi.all_past.imp phi) (Axiom.temp_t_past phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hH
-
-/--
-The MCS at any time in a constant witness family is the original MCS.
--/
-lemma constantWitnessFamily_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsistent M) (t : D) :
-    (constantWitnessFamily M h_mcs (D := D)).mcs t = M := rfl
-
-/--
-Construct a witness family for a formula.
-
-Given that {psi} is consistent, this constructs a new FMCS
-where psi is in the MCS at all times.
--/
-noncomputable def constructWitnessFamily (psi : Formula) (h_cons : SetConsistent {psi}) :
-    FMCS D :=
-  let M := extendToMCS psi h_cons
-  let h_mcs := extendToMCS_is_mcs psi h_cons
-  constantWitnessFamily M h_mcs
-
-/--
-The witness family contains psi in its MCS at all times.
--/
-lemma constructWitnessFamily_contains (psi : Formula) (h_cons : SetConsistent {psi}) (t : D) :
-    psi ∈ (constructWitnessFamily psi h_cons (D := D)).mcs t := by
-  simp only [constructWitnessFamily, constantWitnessFamily_mcs_eq]
-  exact extendToMCS_contains psi h_cons
 
 /-!
 ## Phase 3: Helper Lemmas for Modal Backward Proof
