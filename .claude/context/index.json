@@ -202,7 +202,7 @@
   },
   "version": "1.0.0",
   "generated_at": "2026-02-26T20:26:37Z",
-  "file_count": 151,
+  "file_count": 152,
   "entries": [
     {
       "path": "core/architecture/component-checklist.md",
@@ -1058,6 +1058,37 @@
         ]
       },
       "line_count": 213
+    },
+    {
+      "path": "core/patterns/roadmap-reflection-pattern.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "roadmap",
+        "reflection",
+        "research"
+      ],
+      "summary": "ROAD_MAP.md Reflection Pattern for Research Agents",
+      "load_when": {
+        "languages": [
+          "lean",
+          "logic",
+          "math"
+        ],
+        "operations": [
+          "research"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "logic-research-agent",
+          "math-research-agent"
+        ]
+      },
+      "line_count": 143
     },
     {
       "path": "core/patterns/metadata-file-return.md",

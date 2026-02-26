@@ -187,6 +187,18 @@ Create directory and write report.
 ## Recommendations
 1. {Prioritized recommendations}
 
+## ROAD_MAP.md Reflection
+
+### Pitfalls Checked
+| Dead End | Relevance | Impact on Recommendations |
+|----------|-----------|--------------------------|
+| {dead_end_name} | Low/Medium/High | {how it affects recommended approach} |
+
+### Strategy Alignment
+| Strategy | Status | Relevance |
+|----------|--------|-----------|
+| {strategy_name} | ACTIVE/CONCLUDED | {how research aligns with strategy} |
+
 ## Risks & Mitigations
 - {Potential issues and solutions}
 
