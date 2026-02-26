@@ -1,0 +1,18 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/936_port_specialized_research_agents_skills/reports/research-001.md",
+      "summary": "Research report analyzing Theory agent/skill architecture with 8 implementation steps"
+    }
+  ],
+  "next_steps": "Run /plan 936 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1740567600_r936",
+    "agent_type": "general-research-agent",
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 6
+  }
+}
