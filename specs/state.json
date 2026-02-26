@@ -55,6 +55,11 @@
           "path": "specs/942_update_todo_command_changelog_integration/plans/implementation-002.md",
           "type": "plan",
           "summary": "Simplified 1-phase plan (clean-break, no backward compat)"
+        },
+        {
+          "path": "specs/942_update_todo_command_changelog_integration/summaries/implementation-summary-20260226.md",
+          "type": "summary",
+          "summary": "Implementation summary with verification results"
         }
       ],
       "planned": "2026-02-26T20:58:34Z",
