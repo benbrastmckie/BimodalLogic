@@ -22,6 +22,46 @@ technical_debt:
 
 ## Tasks
 
+### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Task 925 proved completeness using a modified truth predicate (`bmcs_truth_at_mcs`) in which the box case is defined by MCS-membership rather than recursive Kripke truth. Specifically:
+
+- **Standard truth** (`bmcs_truth_at`, BFMCSTruth.lean:91): `□φ TRUE at (fam, t) := ∀ fam' ∈ B.families, bmcs_truth_at B fam' t φ`
+- **MCS-membership truth** (`bmcs_truth_at_mcs`, ChainBundleBFMCS.lean:362): `□φ TRUE at (fam, t) := ∀ fam' ∈ B.families, φ ∈ fam'.mcs t`
+
+This distinction matters because the completeness theorem (`bmcs_weak_completeness_mcs`) quantifies over validity under `bmcs_truth_at_mcs`, while the soundness theorem (`soundness` in Soundness.lean) quantifies over validity under `truth_at` (the intended Kripke semantics from `Bimodal.Semantics.Validity`). If the two truth predicates are not equivalent on BFMCS structures, soundness and completeness address different notions of validity and do not combine into a full correctness result.
+
+**Research questions**:
+
+1. **Equivalence question**: Is `bmcs_truth_at_mcs B fam t φ ↔ bmcs_truth_at B fam t φ` provable for all formulas φ, all BFMCS B, all fam ∈ B.families, and all t? This reduces (by structural induction) to: does `bmcs_truth_at B fam' t φ ↔ φ ∈ fam'.mcs t` hold for all fam' in a BFMCS, which is exactly the STANDARD truth lemma. The standard truth lemma was the obstacle that motivated MCS-membership semantics in the first place (it requires temporal coherence of all families in the bundle). So the question is whether the canonical BFMCS constructed in `chainBundleBFMCS` does in fact satisfy the standard truth lemma.
+
+2. **Validity equivalence question**: Is `bmcs_valid_mcs φ ↔ bmcs_valid φ` (equivalently, `bmcs_valid_mcs φ ↔ (⊨ φ)`)? This would require every BFMCS model where φ fails under standard truth also witnesses failure under MCS-membership truth, and vice versa. These are different model classes so this is non-trivial.
+
+3. **Semantic alignment question**: Does `bmcs_valid_mcs` correctly capture the intended notion of validity for bimodal temporal logic TM, as defined in `Bimodal.Semantics.Validity` (using `truth_at`)? Without an equivalence proof, the completeness theorem is relative to a potentially non-standard class of models.
+
+4. **Soundness alignment question**: Is `bmcs_valid_mcs φ → ⊨ φ` provable? If so, together with completeness (`bmcs_valid_mcs φ → ⊢ φ`) and soundness (`⊢ φ → ⊨ φ`), this would give full soundness and completeness with respect to the intended semantics (though only via MCS-membership as an intermediate).
+
+**Key files to study**:
+- `Theories/Bimodal/Metalogic/Bundle/ChainBundleBFMCS.lean` — `bmcs_truth_at_mcs`, `bmcs_truth_lemma_mcs`, `bmcs_valid_mcs`, `bmcs_weak_completeness_mcs`
+- `Theories/Bimodal/Metalogic/Bundle/BFMCSTruth.lean` — `bmcs_truth_at`, `bmcs_valid`, standard truth lemma (if any)
+- `Theories/Bimodal/Metalogic/Soundness.lean` — `soundness` using `⊨` from `Bimodal.Semantics.Validity`
+- `Theories/Bimodal/Semantics/Validity.lean` — `truth_at`, `valid`, `⊨` notation
+
+**Expected outcomes** (one of):
+
+A. **Equivalence holds**: Prove `bmcs_truth_at_mcs B fam t φ ↔ bmcs_truth_at B fam t φ` for all saturated BFMCS (or at least for `chainBundleBFMCS`). If provable, state and prove `bmcs_valid_mcs_iff_valid : bmcs_valid_mcs φ ↔ (⊨ φ)` and update the completeness theorem to use `bmcs_valid` (the standard notion), making the result directly connect to soundness.
+
+B. **Equivalence not provable in general, but holds for chainBundleBFMCS**: Show that `chainBundleBFMCS` specifically satisfies the standard truth lemma (because the chain construction gives enough temporal coherence), prove `bmcs_truth_at_mcs ↔ bmcs_truth_at` for that specific model, and derive the full completeness theorem `⊨ φ → ⊢ φ` by going through `chainBundleBFMCS`.
+
+C. **Genuine gap**: If neither equivalence holds, determine whether MCS-membership semantics defines a valid but different logical system, and either (i) revise `ChainBundleBFMCS.lean` to use a construction that supports the standard truth lemma, or (ii) revise the statement of completeness to be explicit that it is with respect to MCS-membership models (with appropriate justification that this is still the intended logic).
+
+**Constraints**: No new axioms or sorries may be introduced to paper over the gap. If outcome A or B holds, the result must be fully proved in Lean. If outcome C, the gap must be clearly documented and a plan for resolution created.
+
+---
+
 ### 929. Prepare metalogic for publication
 - **Effort**: 16-24 hours
 - **Status**: [NOT STARTED]
