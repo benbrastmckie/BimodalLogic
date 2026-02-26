@@ -38,7 +38,8 @@
       ],
       "planned": "2026-02-26T06:53:11Z",
       "started": "2026-02-26T06:54:35Z",
-      "completed": "2026-02-26T08:00:00Z"
+      "completed": "2026-02-26T08:00:00Z",
+      "completion_summary": "Archived ~8,580 lines of constant witness family and related dead code to Boneyard/Metalogic_v7/. Removed deprecated polymorphic AXIOM from trusted kernel. Reduced active sorries from 5 to 3. Build passes with no regressions. FMP, Soundness, Decidability remain sorry-free."
     },
     {
       "project_number": 931,
