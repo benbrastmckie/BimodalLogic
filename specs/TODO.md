@@ -1,16 +1,16 @@
 ---
-next_project_number: 941
+next_project_number: 945
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-20T00:15:00Z
 task_counts:
-  active: 15
+  active: 19
   completed: 635
   in_progress: 0
-  not_started: 6
+  not_started: 10
   abandoned: 36
-  total: 686
+  total: 690
 technical_debt:
   sorry_count: 123
   axiom_count: 19
@@ -21,6 +21,45 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 944. Add ROAD_MAP.md reflection to research agents
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Dependencies**: Task #941
+
+**Description**: Add ROAD_MAP.md reflection to lean-research-agent, logic-research-agent, and math-research-agent. Add Stage 2.5 to load Dead Ends and Strategies sections. Check for relevant pitfalls before recommending approaches. Document reflection pattern for future agents.
+
+---
+
+### 943. Update /review command for dual-file maintenance
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Dependencies**: Task #941
+
+**Description**: Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.
+
+---
+
+### 942. Update /todo command for CHANGE_LOG.md integration
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Dependencies**: Task #941
+
+**Description**: Update /todo command to write changelog entries to specs/CHANGE_LOG.md instead of inline ROAD_MAP.md section. Update Step 5.8 changelog update logic, existence checks, and git commit messages. Preserve backward compatibility notes.
+
+---
+
+### 941. Extract Changelog to CHANGE_LOG.md and create format documentation
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Extract Changelog section from ROAD_MAP.md to new CHANGE_LOG.md file. Create changelog-format.md context documentation. Update roadmap-format.md to note changelog moved. Establish separation: CHANGE_LOG.md records history, ROAD_MAP.md guides future development.
+
+---
 
 ### 940. Port /lean version management command
 - **Effort**: 1-2 hours
@@ -53,7 +92,7 @@ technical_debt:
 
 ### 937. Upgrade context system with index.json
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Research**: [research-001.md](specs/937_upgrade_context_system_index_json/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/937_upgrade_context_system_index_json/plans/implementation-001.md)

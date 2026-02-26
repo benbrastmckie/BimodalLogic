@@ -6,6 +6,55 @@
   },
   "active_projects": [
     {
+      "project_number": 941,
+      "project_name": "extract_changelog_create_format_docs",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Extract Changelog section from ROAD_MAP.md to new CHANGE_LOG.md file. Create changelog-format.md context documentation. Update roadmap-format.md to note changelog moved. Establish separation: CHANGE_LOG.md records history, ROAD_MAP.md guides future development.",
+      "created": "2026-02-26T21:00:00Z",
+      "last_updated": "2026-02-26T21:00:00Z",
+      "effort": "1-2 hours"
+    },
+    {
+      "project_number": 942,
+      "project_name": "update_todo_command_changelog_integration",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Update /todo command to write changelog entries to specs/CHANGE_LOG.md instead of inline ROAD_MAP.md section. Update Step 5.8 changelog update logic, existence checks, and git commit messages. Preserve backward compatibility notes.",
+      "created": "2026-02-26T21:00:00Z",
+      "last_updated": "2026-02-26T21:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        941
+      ]
+    },
+    {
+      "project_number": 943,
+      "project_name": "update_review_command_dual_file_maintenance",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.",
+      "created": "2026-02-26T21:00:00Z",
+      "last_updated": "2026-02-26T21:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        941
+      ]
+    },
+    {
+      "project_number": 944,
+      "project_name": "add_roadmap_reflection_research_agents",
+      "status": "not_started",
+      "language": "meta",
+      "description": "Add ROAD_MAP.md reflection to lean-research-agent, logic-research-agent, and math-research-agent. Add Stage 2.5 to load Dead Ends and Strategies sections. Check for relevant pitfalls before recommending approaches. Document reflection pattern for future agents.",
+      "created": "2026-02-26T21:00:00Z",
+      "last_updated": "2026-02-26T21:00:00Z",
+      "effort": "2-3 hours",
+      "dependencies": [
+        941
+      ]
+    },
+    {
       "project_number": 940,
       "project_name": "port_lean_version_management_command",
       "status": "not_started",
@@ -44,13 +93,13 @@
     {
       "project_number": 937,
       "project_name": "upgrade_context_system_index_json",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "description": "Upgrade context system with index.json from Theory repository. Create: (1) index.json schema with load_when conditions (languages, operations, tiers, agents), (2) entries for all existing context files with topics, keywords, summaries, line_count, (3) generation/validation script, (4) update agent files to use dynamic context discovery via jq queries instead of static lists.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:10:46Z",
+      "last_updated": "2026-02-26T20:16:55Z",
       "effort": "2-3 hours",
-      "session_id": "sess_1740570000_p937",
+      "session_id": "sess_1740570000_i937",
       "researched": "2026-02-26T20:02:53Z",
       "artifacts": [
         {
@@ -64,7 +113,8 @@
           "summary": "5-phase implementation plan for context system index.json upgrade"
         }
       ],
-      "planned": "2026-02-26T20:10:46Z"
+      "planned": "2026-02-26T20:10:46Z",
+      "started": "2026-02-26T20:16:55Z"
     },
     {
       "project_number": 936,
@@ -1154,7 +1204,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 941,
+  "next_project_number": 945,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
