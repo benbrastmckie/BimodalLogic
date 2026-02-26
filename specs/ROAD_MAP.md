@@ -1,7 +1,7 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-02-03
-**Status**: Completeness Hierarchy Complete (Weak/Finite Strong/Infinitary Strong), Compactness Sorry-Free, Active Refinement Phase
+**Last Updated**: 2026-02-26
+**Status**: FMP Completeness Sorry-Free, Bundle Completeness (3 sorries in Int-indexed construction), Boneyard Cleanup Complete
 
 > **Content Boundaries**: ROADMAP = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
 > Each entry should include *Rationale* (why) and *References* (learn more).
@@ -18,6 +18,24 @@
 
 Updated by /todo command during task archival.
 -->
+
+### 2026-02-26
+
+- **Task 933**: Archived CanonicalReachable/CanonicalQuotient/CanonicalEmbedding stack to Boneyard. These files represent an intermediate approach superseded by the all-MCS approach. Also removed dead `bmcs_truth_eval` code from BFMCSTruth.lean. Net ~1135 lines removed from active code.
+  - *Rationale*: CanonicalReachable backward_P is blocked because past witnesses are not future-reachable. All-MCS approach handles this correctly.
+  - *References*: [summary](specs/933_research_alternative_canonical_construction/summaries/implementation-summary-20260226.md)
+
+- **Task 932**: Removed constant witness family approach from metalogic. Archived ~8,580 lines to Boneyard/Metalogic_v7/. Removed deprecated polymorphic AXIOM from trusted kernel. Reduced active sorries from 5 to 3.
+  - *Rationale*: Constant families cannot satisfy forward_F/backward_P obligations. Time-varying families required.
+  - *References*: [summary](specs/932_remove_constant_witness_family_metalogic/summaries/implementation-summary-20260225.md)
+
+- **Task 931**: Removed non-standard `_mcs` validity definitions from ChainBundleBFMCS.lean. Archived 14 symbols to Boneyard/Bundle/MCSMembershipCompleteness.lean.
+  - *Rationale*: Non-standard box semantics (MCS membership instead of recursive truth) conflates two different notions of validity.
+  - *References*: [summary](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/summaries/implementation-summary-20260225.md)
+
+- **Task 928**: Refactored terminology (BFMCS → FMCS, BMCS → BFMCS) across 624+ occurrences. Moved CoherentConstruction.lean to Boneyard.
+  - *Rationale*: Clearer naming conventions aligning with "family" (temporal) vs "bundle" (modal) distinction.
+  - *References*: [summary](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/summaries/implementation-summary-20260225.md)
 
 ### 2026-02-19
 
@@ -358,9 +376,10 @@ Complete the algebraic approach using Boolean algebra with modal operators, prov
 **Success Criteria**:
 - [x] Critical path sorry-free (representation theorem)
 - [x] Compactness sorry-free
-- [ ] Sorry count below 200 (currently ~295)
-- [ ] No blocking sorries on main theorem paths
-- [ ] Documented sorry debt policy enforced
+- [x] FMP completeness sorry-free
+- [x] No blocking sorries on main theorem paths (FMP path is clear)
+- [x] Documented sorry debt policy enforced
+- [ ] Bundle completeness sorry-free (3 sorries remain in DovetailingChain/TemporalCoherentConstruction)
 
 **Description**:
 Systematically reduce sorries in the Metalogic module through proof completion, alternative constructions, or explicit documentation as intentional gaps.
@@ -499,6 +518,106 @@ Proof complexity: proving coherence after construction required complex reasonin
 When proofs are hard, consider whether the definition can be restructured to make properties hold by construction rather than by proof.
 
 **Superseded By**: CoherentConstruction module with two-chain design
+
+---
+
+### Dead End: CanonicalReachable/CanonicalQuotient Stack
+
+**Status**: SUPERSEDED
+**Tried**: 2026-01-15 to 2026-02-26
+**Related Tasks**: Task 922, 923, 933
+
+*Rationale*: Attempted to build Int-indexed temporal domain via quotient of future-reachable MCS subset.
+
+**What We Tried**:
+Built CanonicalReachable (future-reachable MCS from origin), CanonicalQuotient (Antisymmetrization for LinearOrder), and CanonicalEmbedding (infrastructure for Int embedding).
+
+**Why It Failed**:
+backward_P witnesses are not necessarily future-reachable from the origin MCS. Past witnesses exist in CanonicalMCS but may not be in the future-reachable subset, making temporal coherence impossible.
+
+**Evidence**:
+- [Boneyard/Bundle/CanonicalQuotientApproach/](Theories/Bimodal/Boneyard/Bundle/CanonicalQuotientApproach/) - Archived implementation
+- [Task 933 research](specs/933_research_alternative_canonical_construction/reports/research-001.md) - Analysis
+
+**Lesson**:
+Future-reachability is insufficient for temporal completeness. Must use all MCS or accept non-Int domain.
+
+**Superseded By**: canonicalMCSBFMCS (all-MCS approach) with sorry-free forward_F/backward_P
+
+---
+
+### Dead End: MCS-Membership Semantics for Box
+
+**Status**: ABANDONED
+**Tried**: 2026-02-20 to 2026-02-25
+**Related Tasks**: Task 925, 931
+
+*Rationale*: Attempted alternative box semantics where Box phi holds iff phi is in all accessible MCS (membership test rather than recursive truth).
+
+**What We Tried**:
+Defined `bmcs_truth_at_mcs` where box case checks MCS membership directly instead of recursive `bmcs_truth_at`. Proved completeness relative to this modified semantics.
+
+**Why It Failed**:
+The two semantics (`bmcs_truth_at` vs `bmcs_truth_at_mcs`) are not equivalent. Completeness relative to MCS-membership semantics doesn't imply completeness relative to standard Kripke truth, creating a gap between soundness and completeness.
+
+**Evidence**:
+- [Boneyard/Bundle/MCSMembershipCompleteness.lean](Theories/Bimodal/Boneyard/Bundle/MCSMembershipCompleteness.lean) - Archived implementation
+- [Task 931 summary](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/summaries/implementation-summary-20260225.md)
+
+**Lesson**:
+Completeness must use the same validity notion as soundness. Non-standard semantics create equivalence gaps.
+
+**Superseded By**: Standard recursive `bmcs_truth_at` definition
+
+---
+
+### Dead End: Constant Witness Family Approach
+
+**Status**: ABANDONED
+**Tried**: 2026-01-20 to 2026-02-25
+**Related Tasks**: Task 932
+
+*Rationale*: Attempted modal saturation using constant witness families (same MCS at all time points).
+
+**What We Tried**:
+For Diamond(psi) obligations, created witness families where `fam.mcs(t) = W` for all t, where W is the witness MCS containing psi.
+
+**Why It Failed**:
+Constant families cannot satisfy forward_F or backward_P. An F-obligation F(psi) requires psi to hold at some future time, but a constant family has the same MCS at all times - there's no "future" where psi can be placed without it already being present everywhere.
+
+**Evidence**:
+- [Boneyard/Metalogic_v7/Bundle/ConstantWitnessFamily_ModalSaturation.lean](Theories/Bimodal/Boneyard/Metalogic_v7/Bundle/) - Archived
+- [Task 932 summary](specs/932_remove_constant_witness_family_metalogic/summaries/implementation-summary-20260225.md)
+
+**Lesson**:
+Temporal saturation requires time-varying families. Witnesses must be placed at specific times, not everywhere.
+
+**Superseded By**: DovetailingChain (time-varying family construction)
+
+---
+
+### Dead End: Single-Family BFMCS modal_backward
+
+**Status**: BLOCKED
+**Tried**: 2026-01-25 to 2026-02-25
+**Related Tasks**: Task 905, 928
+
+*Rationale*: Attempted to prove modal_backward for single-family BFMCS (bundles containing only one temporal family).
+
+**What We Tried**:
+For a single-family bundle, modal_backward reduces to: "if phi holds in the single family's MCS, then Box(phi) holds". This is `phi ∈ MCS → Box(phi) ∈ MCS`.
+
+**Why It Failed**:
+This is equivalent to the T-axiom `phi → Box(phi)`, which TM logic does not have. Without T, we cannot derive Box(phi) from phi alone. The modal_backward condition requires MULTIPLE families to witness the universal quantification.
+
+**Evidence**:
+- [Task 905 research](specs/archive/) - Proof of impossibility
+- [Boneyard/Metalogic_v7/Bundle/](Theories/Bimodal/Boneyard/Metalogic_v7/Bundle/) - Single-family attempts
+
+**Lesson**:
+Multi-family bundles are essential for modal completeness without T-axiom. Single-family simplification is a dead end.
+
+**Superseded By**: Multi-family BFMCS with modal saturation
 
 ---
 
