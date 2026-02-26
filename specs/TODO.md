@@ -65,7 +65,7 @@ technical_debt:
 - **Status**: [PLANNED]
 - **Language**: meta
 - **Research**: [research-001.md](specs/936_port_specialized_research_agents_skills/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/936_port_specialized_research_agents_skills/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/936_port_specialized_research_agents_skills/plans/implementation-002.md)
 
 **Description**: Port specialized research agents and skills from Theory repository. Agents: logic-research-agent.md (modal/temporal/mereology/topology), math-research-agent.md (algebra/lattice/order/category theory), latex-research-agent.md (LaTeX documentation). Skills: skill-logic-research/, skill-math-research/, skill-latex-research/. Each skill uses thin-wrapper postflight pattern delegating to corresponding agent. Update skill-agent-mapping.md.
 
@@ -73,7 +73,7 @@ technical_debt:
 
 ### 935. Audit ROAD_MAP.md Current State section for accuracy
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Research**: [research-001.md](specs/935_audit_roadmap_current_state_section/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/935_audit_roadmap_current_state_section/plans/implementation-001.md)
