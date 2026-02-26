@@ -3,12 +3,12 @@
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-003.md",
-      "summary": "Detailed analysis of fundamental obstruction using standard validity: ShiftClosed Omega fails because constant witness families are not temporally coherent. Resolution requires making all witness families non-constant and temporally coherent via mini-dovetailing-chains."
+      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-004.md",
+      "summary": "Deep analysis of canonical frame and world history definitions for bridging BFMCS and standard semantics"
     }
   ],
   "metadata": {
-    "session_id": "sess_1772071313_1dd4a0",
+    "session_id": "sess_1772072616_82b54d",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
