@@ -177,7 +177,7 @@ After this implementation:
 
 ---
 
-### Phase 3: BoxGContent/BoxHContent Definitions [NOT STARTED]
+### Phase 3: BoxGContent/BoxHContent Definitions [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define BoxGContent and BoxHContent as the correct step relation for inter-history propagation.
@@ -210,9 +210,19 @@ After this implementation:
 - `lake build` passes
 - Hierarchy proven: BoxContentAt ⊆ BoxGContent ⊆ GContent
 
+**Progress:**
+
+**Session: 2026-02-25, sess_1772055300_a2175f**
+- Added: `BoxGContent` definition and `MCSBoxContent_subset_BoxGContent`, `BoxGContent_subset_GContent` (in Phase 4 iteration)
+- Added: `BoxHContent` definition with `MCSBoxContent_subset_BoxHContent`, `BoxHContent_subset_HContent`
+- Added: `BoxGRelation` definition with `CanonicalR_implies_BoxGRelation`
+- Added: `boxcontent_hierarchy` combining all inclusion lemmas
+- All in `ChainFMCS.lean` (consolidated with Phase 4 infrastructure)
+- `boxg_witness_seed_consistent` deferred: `modal_witness_seed_consistent` covers the Diamond case which is the one needed for completeness
+
 ---
 
-### Phase 4: Chain-Based FMCS Infrastructure [PARTIAL]
+### Phase 4: Chain-Based FMCS Infrastructure [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 3
 - **Goal:** Define chain-based FMCS using Mathlib's Flag structure. Prove forward_G, backward_H automatic from CanonicalR.
@@ -242,9 +252,29 @@ After this implementation:
 - `chainFMCS_forward_G` and `chainFMCS_backward_H` compile without sorry
 - Zorn existence lemma compiles
 
+**Progress:**
+
+**Session: 2026-02-25, sess_1772053424_e51adb**
+- Added: BoxContent infrastructure (`MCSBoxContent`, `BoxGContent`, hierarchy lemmas)
+- Added: `modal_witness_seed_consistent` - key theorem for Diamond witness construction
+- Added: `diamond_in_GContent`, `diamond_persistent_forward` - forward Diamond persistence
+- Attempted: `diamond_persistent_backward` - stuck on Box->H derivation path
+
+**Session: 2026-02-25, sess_1772055300_a2175f**
+- Fixed: `diamond_persistent_backward` using `box_to_past` (Box phi -> H phi) from Perpetuity.Helpers
+- Fixed: Import conflict with CoherentConstruction.BoxContentAt by renaming to `MCSBoxContent`
+- Added: `ChainFMCSDomain` - Flag-based domain type for chain FMCS
+- Added: `chainFMCS` - FMCS construction over maximal chain (Flag) in CanonicalMCS
+- Added: `chainFMCS_forward_G`, `chainFMCS_backward_H` - temporal coherence proofs
+- Added: `chainFMCS_pairwise_comparable` - total order within chain
+- Added: `canonicalMCS_in_some_flag` - Zorn existence (every MCS in some Flag)
+- Added: `chainFMCS_forward_F_in_CanonicalMCS`, `chainFMCS_backward_P_in_CanonicalMCS` - F/P witnesses
+- Added: Diamond persistence and BoxContent propagation within chains
+- Completed: Phase 4 - all chain FMCS infrastructure sorry-free, lake build passes
+
 ---
 
-### Phase 5: Forward_F and Backward_P for Chain Families [NOT STARTED]
+### Phase 5: Forward_F and Backward_P for Chain Families [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Prove forward_F and backward_P existential witnesses for chain-based FMCS. Witnesses may be in CanonicalMCS but not necessarily same chain.
@@ -268,9 +298,17 @@ After this implementation:
 - `chainFMCS_forward_F` and `chainFMCS_backward_P` compile without sorry
 - `lake build` passes
 
+**Progress:**
+
+**Session: 2026-02-25, sess_1772055300_a2175f**
+- Completed in Phase 4: `chainFMCS_forward_F_in_CanonicalMCS` and `chainFMCS_backward_P_in_CanonicalMCS` proven sorry-free
+- Documents that F/P witnesses may cross chain boundaries (handled by BMCS bundle in Phase 7)
+- TemporalCoherentChainFMCS not created: single chain cannot provide in-domain F/P witnesses; this is correctly handled at the BMCS bundle level using CanonicalMCS domain
+- Phase 5 complete: all core F/P lemmas proven
+
 ---
 
-### Phase 6: Timeshift Closure for Chain Families [NOT STARTED]
+### Phase 6: Timeshift Closure for Chain Families [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Show that maximal chains (Flags) are closed under timeshift operation. Define timeshift and prove coherence preservation.
@@ -291,6 +329,14 @@ After this implementation:
 **Verification**:
 - Timeshift lemmas compile (or documented why N/A)
 - `lake build` passes
+
+**Progress:**
+
+**Session: 2026-02-25, sess_1772055300_a2175f**
+- Analysis: Timeshift closure is NOT applicable to Flag-based families
+- Reason: Flags (maximal chains) in CanonicalMCS are constructed by Zorn's lemma and have no closure guarantees under CanonicalR steps. A CanonicalR-successor of a chain element is a CanonicalMCS element but may NOT be in the same Flag.
+- Impact: None on completeness. Temporal coherence within chains is handled by forward_G/backward_H (proven). Cross-chain witnesses are handled by the BMCS bundle (Phase 7).
+- Phase 6 documented as N/A for Flag-based approach.
 
 ---
 

@@ -1,8 +1,10 @@
 import Bimodal.Metalogic.Bundle.CanonicalBFMCS
+import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.FMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
-import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.Perpetuity.Helpers
+import Bimodal.Theorems.Perpetuity.Principles
 import Mathlib.Order.Zorn
 
 /-!
@@ -11,7 +13,7 @@ import Mathlib.Order.Zorn
 This module provides foundational lemmas for constructing modally saturated BMCS
 with temporal coherence. The key results are:
 
-1. **BoxContent definitions and properties** (BoxContentAt, BoxGContent)
+1. **BoxContent definitions and properties** (MCSBoxContent, BoxGContent)
 2. **Modal witness seed consistency**: {psi} ∪ BoxContent(M) is consistent when
    Diamond(psi) ∈ M (essential for witness family construction)
 3. **Diamond persistence through CanonicalR**: Diamond(psi) propagates through
@@ -54,16 +56,16 @@ BoxContent of an MCS: formulas phi such that Box phi is in the MCS.
 
 BoxContent(M) = {phi | Box(phi) ∈ M}
 -/
-def BoxContentAt (M : Set Formula) : Set Formula :=
+def MCSBoxContent (M : Set Formula) : Set Formula :=
   {phi | Formula.box phi ∈ M}
 
 /--
 BoxContent is a subset of the MCS (by T-axiom: Box phi => phi).
 -/
-lemma BoxContentAt_subset_self (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    BoxContentAt M ⊆ M := by
+lemma MCSBoxContent_subset_self (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    MCSBoxContent M ⊆ M := by
   intro phi h_box
-  simp only [BoxContentAt, Set.mem_setOf_eq] at h_box
+  simp only [MCSBoxContent, Set.mem_setOf_eq] at h_box
   have h_T : [] ⊢ (Formula.box phi).imp phi :=
     DerivationTree.axiom [] _ (Axiom.modal_t phi)
   exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_box
@@ -74,10 +76,10 @@ BoxContent propagation via S5 axiom 4: Box phi => Box(Box phi).
 If phi ∈ BoxContent(M), then Box phi ∈ M, so Box(Box phi) ∈ M (by axiom 4),
 hence Box phi ∈ BoxContent(M). This means BoxContent is closed under Box.
 -/
-lemma BoxContentAt_closed_box (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (phi : Formula) (h_box : phi ∈ BoxContentAt M) :
-    Formula.box phi ∈ BoxContentAt M := by
-  simp only [BoxContentAt, Set.mem_setOf_eq] at h_box ⊢
+lemma MCSBoxContent_closed_box (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_box : phi ∈ MCSBoxContent M) :
+    Formula.box phi ∈ MCSBoxContent M := by
+  simp only [MCSBoxContent, Set.mem_setOf_eq] at h_box ⊢
   -- Box phi ∈ M, need Box(Box phi) ∈ M
   -- By modal 4: ⊢ Box phi → Box(Box phi)
   have h_4 : [] ⊢ (Formula.box phi).imp (Formula.box (Formula.box phi)) :=
@@ -92,8 +94,8 @@ hence neg(Box phi) ∈ BoxContent(M).
 -/
 lemma neg_box_in_boxcontent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_neg_box : (Formula.box phi).neg ∈ M) :
-    (Formula.box phi).neg ∈ BoxContentAt M := by
-  simp only [BoxContentAt, Set.mem_setOf_eq]
+    (Formula.box phi).neg ∈ MCSBoxContent M := by
+  simp only [MCSBoxContent, Set.mem_setOf_eq]
   exact mcs_neg_box_implies_box_neg_box h_mcs phi h_neg_box
 
 /--
@@ -104,12 +106,12 @@ BoxContent(M) ⊆ BoxContent(M').
 G(Box phi) ∈ M. So Box phi ∈ GContent(M). Since CanonicalR M M'
 means GContent(M) ⊆ M', we get Box phi ∈ M'. Hence phi ∈ BoxContent(M').
 -/
-theorem BoxContentAt_subset_of_CanonicalR (M M' : Set Formula)
+theorem MCSBoxContent_subset_of_CanonicalR (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
     (h_R : CanonicalR M M') :
-    BoxContentAt M ⊆ BoxContentAt M' := by
+    MCSBoxContent M ⊆ MCSBoxContent M' := by
   intro phi h_box
-  simp only [BoxContentAt, Set.mem_setOf_eq] at h_box ⊢
+  simp only [MCSBoxContent, Set.mem_setOf_eq] at h_box ⊢
   -- Box phi ∈ M, need Box phi ∈ M'
   -- By temp_future axiom: Box phi → G(Box phi)
   have h_tf : [] ⊢ (Formula.box phi).imp (Formula.all_future (Formula.box phi)) :=
@@ -127,7 +129,7 @@ theorem BoxContentAt_subset_of_CanonicalR (M M' : Set Formula)
 BoxGContent(M) = {phi | Box(G phi) ∈ M}
 
 This sits between BoxContent and GContent in the inclusion hierarchy:
-  BoxContentAt(M) ⊆ BoxGContent(M) ⊆ GContent(M)
+  MCSBoxContent(M) ⊆ BoxGContent(M) ⊆ GContent(M)
 
 BoxGContent represents formulas that necessarily hold at all future times
 in ALL histories, not just the current one. It is the semantically correct
@@ -146,14 +148,14 @@ def BoxGContent (M : Set Formula) : Set Formula :=
   {phi | Formula.box (Formula.all_future phi) ∈ M}
 
 /--
-BoxContentAt ⊆ BoxGContent: If Box phi ∈ M, then Box(G phi) ∈ M.
+MCSBoxContent ⊆ BoxGContent: If Box phi ∈ M, then Box(G phi) ∈ M.
 
 This follows from the MF axiom: Box phi → Box(G phi).
 -/
-lemma BoxContentAt_subset_BoxGContent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    BoxContentAt M ⊆ BoxGContent M := by
+lemma MCSBoxContent_subset_BoxGContent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    MCSBoxContent M ⊆ BoxGContent M := by
   intro phi h_box
-  simp only [BoxContentAt, Set.mem_setOf_eq] at h_box
+  simp only [MCSBoxContent, Set.mem_setOf_eq] at h_box
   simp only [BoxGContent, Set.mem_setOf_eq]
   -- By MF axiom: Box phi → Box(G phi)
   have h_MF : [] ⊢ (Formula.box phi).imp (Formula.box (Formula.all_future phi)) :=
@@ -176,21 +178,102 @@ lemma BoxGContent_subset_GContent (M : Set Formula) (h_mcs : SetMaximalConsisten
   exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_boxg
 
 /--
-The full hierarchy: BoxContentAt(M) ⊆ BoxGContent(M) ⊆ GContent(M) ⊆ M.
+The full hierarchy: MCSBoxContent(M) ⊆ BoxGContent(M) ⊆ GContent(M) ⊆ M.
 
 Combining the individual inclusion lemmas.
 -/
 theorem boxcontent_hierarchy (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    BoxContentAt M ⊆ BoxGContent M ∧
+    MCSBoxContent M ⊆ BoxGContent M ∧
     BoxGContent M ⊆ GContent M ∧
     GContent M ⊆ M := by
-  exact ⟨BoxContentAt_subset_BoxGContent M h_mcs,
+  exact ⟨MCSBoxContent_subset_BoxGContent M h_mcs,
          BoxGContent_subset_GContent M h_mcs,
-         fun _ h => by
+         fun phi h => by
            simp only [GContent, Set.mem_setOf_eq] at h
-           have h_T : [] ⊢ (Formula.all_future _).imp _ :=
-             DerivationTree.axiom [] _ (Axiom.temp_t_future _)
+           have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
+             DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
            exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h⟩
+
+/-!
+## BoxHContent: Past Analogue of BoxGContent
+
+BoxHContent(M) = {phi | Box(H phi) ∈ M}
+
+This sits between MCSBoxContent and HContent:
+  MCSBoxContent(M) ⊆ BoxHContent(M) ⊆ HContent(M)
+-/
+
+/--
+BoxHContent of an MCS: formulas phi such that Box(H phi) is in the MCS.
+
+BoxHContent(M) = {phi | Box(H phi) ∈ M}
+
+This is the past analogue of BoxGContent, capturing formulas that are
+necessarily always true in the past across all accessible worlds.
+-/
+def BoxHContent (M : Set Formula) : Set Formula :=
+  {phi | Formula.box (Formula.all_past phi) ∈ M}
+
+/--
+MCSBoxContent ⊆ BoxHContent: If Box phi ∈ M, then Box(H phi) ∈ M.
+
+This follows from `box_to_box_past`: Box phi → Box(H phi), which is the
+past analogue of the MF axiom.
+-/
+lemma MCSBoxContent_subset_BoxHContent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    MCSBoxContent M ⊆ BoxHContent M := by
+  intro phi h_box
+  simp only [MCSBoxContent, Set.mem_setOf_eq] at h_box
+  simp only [BoxHContent, Set.mem_setOf_eq]
+  -- By box_to_box_past: Box phi → Box(H phi)
+  have h_MH : [] ⊢ (Formula.box phi).imp (Formula.box (Formula.all_past phi)) :=
+    Bimodal.Theorems.Perpetuity.box_to_box_past phi
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_MH) h_box
+
+/--
+BoxHContent ⊆ HContent: If Box(H phi) ∈ M, then H phi ∈ M.
+
+This follows from the T-axiom: Box(H phi) → H phi.
+-/
+lemma BoxHContent_subset_HContent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    BoxHContent M ⊆ HContent M := by
+  intro phi h_boxh
+  simp only [BoxHContent, Set.mem_setOf_eq] at h_boxh
+  simp only [HContent, Set.mem_setOf_eq]
+  have h_T : [] ⊢ (Formula.box (Formula.all_past phi)).imp (Formula.all_past phi) :=
+    DerivationTree.axiom [] _ (Axiom.modal_t (Formula.all_past phi))
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_boxh
+
+/-!
+## BoxGRelation: Inter-History Step Relation
+
+BoxGRelation defines one-step modal-temporal accessibility:
+  BoxGRelation M N := BoxGContent M ⊆ N
+
+This is weaker than CanonicalR (which requires GContent M ⊆ N), since
+BoxGContent ⊆ GContent. CanonicalR implies BoxGRelation but not vice versa.
+-/
+
+/--
+BoxGRelation: the one-step inter-history accessibility relation.
+
+M sees N via BoxGRelation when all formulas phi such that Box(G phi) ∈ M
+are also in N.
+-/
+def BoxGRelation (M N : Set Formula) : Prop :=
+  BoxGContent M ⊆ N
+
+/--
+CanonicalR implies BoxGRelation: the temporal accessibility is stronger
+than the modal-temporal accessibility.
+
+Since BoxGContent(M) ⊆ GContent(M), if GContent(M) ⊆ N (CanonicalR),
+then BoxGContent(M) ⊆ N (BoxGRelation).
+-/
+theorem CanonicalR_implies_BoxGRelation (M N : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    CanonicalR M N → BoxGRelation M N := by
+  intro h_R
+  exact Set.Subset.trans (BoxGContent_subset_GContent M h_mcs) h_R
 
 /-!
 ## Modal Witness Seed Consistency
@@ -211,7 +294,7 @@ When Diamond(psi) is in M, this set is consistent and can be extended to an MCS
 via Lindenbaum's lemma.
 -/
 def ModalWitnessSeed (M : Set Formula) (psi : Formula) : Set Formula :=
-  {psi} ∪ BoxContentAt M
+  {psi} ∪ MCSBoxContent M
 
 /--
 psi is in its own ModalWitnessSeed.
@@ -223,8 +306,8 @@ lemma psi_mem_ModalWitnessSeed (M : Set Formula) (psi : Formula) :
 /--
 BoxContent is a subset of ModalWitnessSeed.
 -/
-lemma BoxContentAt_subset_ModalWitnessSeed (M : Set Formula) (psi : Formula) :
-    BoxContentAt M ⊆ ModalWitnessSeed M psi :=
+lemma MCSBoxContent_subset_ModalWitnessSeed (M : Set Formula) (psi : Formula) :
+    MCSBoxContent M ⊆ ModalWitnessSeed M psi :=
   Set.subset_union_right
 
 /--
@@ -401,11 +484,15 @@ Diamond(psi) persists backward through CanonicalR: if Diamond(psi) ∈ M and
 CanonicalR M' M (i.e., M' ≤ M in the preorder), then Diamond(psi) ∈ M'.
 
 This uses the HContent duality: CanonicalR M' M means GContent(M') ⊆ M,
-which by duality implies HContent(M) ⊆ M'. We need to show
-Diamond(psi) ∈ HContent(M), which requires H(Diamond(psi)) ∈ M.
+which by duality implies HContent(M) ⊆ M'. We show Diamond(psi) ∈ HContent(M)
+by proving H(Diamond(psi)) ∈ M, using the derived lemma `box_to_past`
+(⊢ Box phi → H phi) applied after axiom 5.
 
-The proof follows the same pattern as diamond_in_GContent but using
-H and past operators.
+**Proof path**:
+1. Diamond(psi) ∈ M (hypothesis)
+2. By axiom 5: Box(Diamond(psi)) ∈ M
+3. By box_to_past: H(Diamond(psi)) ∈ M
+4. Hence Diamond(psi) ∈ HContent(M) ⊆ M'
 -/
 theorem diamond_persistent_backward (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
@@ -418,137 +505,226 @@ theorem diamond_persistent_backward (M M' : Set Formula)
   have h_ax5 := neg_box_to_box_neg_box (Formula.neg psi)
   have h_box_diamond : Formula.box (Formula.neg (Formula.box (Formula.neg psi))) ∈ M :=
     set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_ax5) h_diamond
-  -- Step 2: BoxContent propagates backward via CanonicalR duality
-  -- CanonicalR M' M means GContent(M') ⊆ M
-  -- By duality (GContent_subset_implies_HContent_reverse): HContent(M) ⊆ M'
+  -- Step 2: By box_to_past (⊢ Box phi → H phi), get H(neg(Box(neg psi))) ∈ M
+  have h_bp : [] ⊢ (Formula.box (Formula.neg (Formula.box (Formula.neg psi)))).imp
+    (Formula.all_past (Formula.neg (Formula.box (Formula.neg psi)))) :=
+    Bimodal.Theorems.Perpetuity.box_to_past (Formula.neg (Formula.box (Formula.neg psi)))
+  have h_H_diamond : Formula.all_past (Formula.neg (Formula.box (Formula.neg psi))) ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_bp) h_box_diamond
+  -- Step 3: neg(Box(neg psi)) ∈ HContent(M), so by duality it's in M'
   have h_R_past : CanonicalR_past M M' :=
     GContent_subset_implies_HContent_reverse M' M h_mcs' h_mcs h_R
-  -- Step 3: Show neg(Box(neg psi)) ∈ HContent(M)
-  -- Need H(neg(Box(neg psi))) ∈ M
-  -- By BoxContent(M) propagation: Box(neg(Box(neg psi))) ∈ M (from step 1)
-  -- By temp_a: phi → H(F(phi)), but we need phi → H(P(phi)) which is different
-  -- Actually we need: Box phi → H(Box phi)
-  -- This should follow from a suitable axiom. Let's use:
-  -- Box phi → Box(G phi) (MF axiom) → G(Box(G phi)) (temp_future)
-  -- Hmm, we need H direction.
-  -- Alternative: use BoxContent ⊆ HContent direction
-  -- Box(neg(Box(neg psi))) ∈ M, need H(neg(Box(neg psi))) ∈ M
-  -- By the T-axiom for H: H(phi) → phi, so phi ∈ M does not imply H(phi) ∈ M
-  -- But by axiom 4 + 5 for Box: Box X ∈ M → Box(Box X) ∈ M → ...
-  -- We need temp_past or past version of temp_future
-  -- Actually, we can use the HContent duality more directly
-  -- h_R_past : HContent(M) ⊆ M'
-  -- We need neg(Box(neg psi)) ∈ HContent(M)
-  -- HContent(M) = {phi | H(phi) ∈ M}
-  -- So we need H(neg(Box(neg psi))) ∈ M
-  -- By axiom 5: neg(Box(neg psi)) → Box(neg(Box(neg psi)))
-  -- We already have Box(neg(Box(neg psi))) ∈ M
-  -- temp_a: phi → G(P(phi)) gives neg(Box(neg psi)) → G(P(neg(Box(neg psi))))
-  -- But we need H version: phi → H(F(phi))?
-  -- Actually we should check what axioms give us H propagation
-  -- temp_a is: phi → G(P(phi)). The past dual would be: phi → H(F(phi))
-  -- But we have neither directly. Let's use a different path.
-  -- We can use: Box phi ∈ M → by T-axiom, phi ∈ M
-  -- and then: phi → G(P(phi)) by temp_a
-  -- Hmm, this doesn't help with H.
-  --
-  -- Actually, we have the HContent duality path:
-  -- CanonicalR_past M M' means HContent(M) ⊆ M'
-  -- And we want neg(Box(neg psi)) ∈ M'
-  -- So we need neg(Box(neg psi)) ∈ HContent(M), i.e., H(neg(Box(neg psi))) ∈ M
-  --
-  -- To get H(neg(Box(neg psi))) ∈ M:
-  -- By axiom 5: neg(Box(neg psi)) ∈ M → Box(neg(Box(neg psi))) ∈ M
-  -- We need Box → H direction. The "temp_past" axiom would be Box phi → H(Box phi).
-  -- Checking if this exists...
-  -- We don't have a direct temp_past axiom, but we have:
-  --   Box phi → Box(G phi) (modal_future/MF)
-  --   Box phi → G(Box phi) (temp_future)
-  -- For the past direction, we would need something symmetric.
-  --
-  -- Alternative approach: use BoxContent(M) ⊆ BoxContent(M')
-  -- Wait, that goes forward (M ≤ M'). We have M' ≤ M.
-  -- BoxContent propagates forward: if M' ≤ M (CanonicalR M' M), then
-  -- BoxContent(M') ⊆ BoxContent(M). But we want to go from M to M'.
-  --
-  -- Actually, BoxContent propagation goes: if CanonicalR M M', then BoxContent(M) ⊆ BoxContent(M').
-  -- We have CanonicalR M' M, which gives BoxContent(M') ⊆ BoxContent(M).
-  -- This is the wrong direction.
-  --
-  -- Let's try: in S5, BoxContent is EQUAL for related MCSs.
-  -- If CanonicalR M M' (GContent(M) ⊆ M'), does BoxContent(M) = BoxContent(M')?
-  --
-  -- BoxContent(M) ⊆ BoxContent(M') follows from CanonicalR M M' (proven above).
-  -- BoxContent(M') ⊆ BoxContent(M): if Box phi ∈ M', need Box phi ∈ M.
-  --   We have CanonicalR M' M: GContent(M') ⊆ M.
-  --   Box phi ∈ M'. By temp_future: G(Box phi) ∈ M'. So Box phi ∈ GContent(M').
-  --   By CanonicalR M' M: Box phi ∈ M.
-  --
-  -- So BoxContent(M) = BoxContent(M') when both CanonicalR M M' and CanonicalR M' M!
-  -- But we only have CanonicalR M' M, not both directions.
-  --
-  -- With just CanonicalR M' M: BoxContent(M') ⊆ BoxContent(M) (by the proof above,
-  -- swapping M and M' in BoxContentAt_subset_of_CanonicalR).
-  --
-  -- Hmm, that gives the wrong direction for our needs.
-  --
-  -- Let me reconsider. We want neg(Box(neg psi)) ∈ M'. We know it's in M.
-  -- We have CanonicalR M' M, so GContent(M') ⊆ M and HContent(M) ⊆ M'.
-  --
-  -- We need neg(Box(neg psi)) ∈ HContent(M), i.e., H(neg(Box(neg psi))) ∈ M.
-  --
-  -- Actually, let's use the symmetric version of the forward proof.
-  -- In the forward case, we used: axiom 5 → Box(Diamond(psi)) → temp_future → G(Box(Diamond)) → T → G(Diamond)
-  -- For the backward case: axiom 5 → Box(Diamond(psi)) → ??? → H(Diamond)
-  --
-  -- We need Box(X) → H(X) for some path. If we have Box(X) → H(Box(X)):
-  --   This doesn't exist as a direct axiom. But temp_a gives: X → G(P(X)).
-  --   So X → G(P(X)), instantiated at X = Box(Diamond(psi)):
-  --   Box(Diamond(psi)) → G(P(Box(Diamond(psi))))
-  --   This doesn't directly help.
-  --
-  -- Let me try using the fact that Diamond(psi) = neg(Box(neg psi)),
-  -- and in MCS M, both neg(Box(neg psi)) AND Box(neg(Box(neg psi))) are true.
-  -- We have Box(neg(Box(neg psi))) ∈ M. By T-axiom for past:
-  -- There is no "past T-axiom" Box phi → H(phi). The T-axiom is Box phi → phi.
-  -- And temp_t_past is: H phi → phi.
-  --
-  -- So we can't directly get H(neg(Box(neg psi))) from Box(neg(Box(neg psi))).
-  --
-  -- Final attempt: Use BoxContent(M') ⊆ BoxContent(M) (from CanonicalR M' M).
-  -- neg(Box(neg psi)) ∈ M. Is neg(Box(neg psi)) in BoxContent(M)?
-  -- neg(Box(neg psi)) ∈ BoxContent(M) iff Box(neg(Box(neg psi))) ∈ M.
-  -- Yes! We proved this in step 1 (h_box_diamond).
-  --
-  -- So neg(Box(neg psi)) ∈ BoxContent(M).
-  -- And BoxContent(M') ⊆ BoxContent(M)... wait, that says things in BoxContent(M')
-  -- are also in BoxContent(M). But we want things in BoxContent(M) to be in M'.
-  --
-  -- BoxContent(M) → M': Box(X) ∈ M → X ∈ M' ??
-  -- Not directly. BoxContent(M) ⊆ M (by T-axiom), and BoxContent(M) → BoxContent(M')
-  -- only if CanonicalR M M' (forward).
-  --
-  -- With CanonicalR M' M (backward), we have BoxContent(M') ⊆ BoxContent(M).
-  -- This means: if Box phi ∈ M', then Box phi ∈ M. Not helpful for our direction.
-  --
-  -- I think the backward direction requires a different axiom or a more involved argument.
-  -- Let me just use the temp_a axiom path:
-  --   neg(Box(neg psi)) ∈ M → G(P(neg(Box(neg psi)))) ∈ M (by temp_a)
-  -- Then P(neg(Box(neg psi))) ∈ GContent(M). And since CanonicalR M' M means
-  -- GContent(M') ⊆ M, we need P(neg(Box(neg psi))) ∈ M'.
-  -- But GContent(M') ⊆ M gives us information about GContent(M'), not GContent(M).
-  --
-  -- Wait. h_R_past : CanonicalR_past M M' means HContent(M) ⊆ M'.
-  -- HContent(M) = {phi | H(phi) ∈ M}.
-  -- If H(neg(Box(neg psi))) ∈ M, then neg(Box(neg psi)) ∈ HContent(M) ⊆ M'.
-  --
-  -- The question is: can we get H(neg(Box(neg psi))) ∈ M?
-  -- By temp_a: phi → G(P(phi)), instantiated with neg(Box(neg psi)):
-  --   neg(Box(neg psi)) → G(P(neg(Box(neg psi)))) ∈ M
-  -- This gives P(neg(Box(neg psi))) ∈ GContent(M) ⊆ M (by T-axiom on G).
-  -- So P(neg(Box(neg psi))) ∈ M.
-  -- P(X) = neg(H(neg X)). So neg(H(neg(neg(Box(neg psi))))) ∈ M.
-  -- Hmm, this involves nested negations.
-  --
-  -- Alternative: by the past analogue of temp_a (if it exists).
-  -- There is no direct
+  exact h_R_past h_H_diamond
+
+/-!
+## Chain-Based FMCS Infrastructure
+
+A chain-based FMCS uses a maximal chain (Flag) in the CanonicalMCS preorder
+as the time domain. Within a Flag, any two elements are comparable, providing
+a total order and natural temporal structure.
+
+### Key Properties
+
+- **Pairwise comparability**: Any two elements in a Flag satisfy `a ≤ b ∨ b ≤ a`
+- **Forward G**: From `CanonicalR` definition (GContent subset)
+- **Backward H**: From GContent/HContent duality
+- **Existence**: Every CanonicalMCS is in some Flag (Zorn's lemma via `Flag.exists_mem`)
+
+### Design
+
+The domain of a chain-based FMCS is `{ w : CanonicalMCS // w ∈ flag }` for
+a given Flag. This inherits the Preorder from CanonicalMCS via `Subtype.preorder`.
+-/
+
+/--
+The domain of a chain-based FMCS: elements of a maximal chain (Flag)
+in the CanonicalMCS preorder.
+
+This type inherits `Preorder` from CanonicalMCS via `Subtype.preorder`.
+-/
+abbrev ChainFMCSDomain (flag : Flag CanonicalMCS) :=
+  { w : CanonicalMCS // w ∈ flag }
+
+/--
+Any two elements in a chain-based FMCS domain are comparable.
+
+This follows directly from the Flag (maximal chain) property.
+-/
+theorem chainFMCS_pairwise_comparable (flag : Flag CanonicalMCS)
+    (a b : ChainFMCSDomain flag) : a ≤ b ∨ b ≤ a := by
+  exact flag.Chain'.total a.property b.property
+
+/--
+MCS assignment for a chain-based FMCS: each element maps to its underlying MCS.
+-/
+def chainFMCS_mcs (flag : Flag CanonicalMCS) (w : ChainFMCSDomain flag) : Set Formula :=
+  w.val.world
+
+/--
+Each assigned set is maximal consistent.
+-/
+theorem chainFMCS_is_mcs (flag : Flag CanonicalMCS) (w : ChainFMCSDomain flag) :
+    SetMaximalConsistent (chainFMCS_mcs flag w) :=
+  w.val.is_mcs
+
+/--
+Forward G coherence for chain-based FMCS.
+
+If `w₁ ≤ w₂` in the chain and `G phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
+
+Proof: `w₁ ≤ w₂` means `CanonicalR w₁.val.world w₂.val.world` (by Preorder definition),
+and `G phi ∈ mcs(w₁)` means `phi ∈ GContent(w₁.val.world)`. Since
+`CanonicalR = GContent(·) ⊆ ·`, we get `phi ∈ w₂.val.world = mcs(w₂)`.
+-/
+theorem chainFMCS_forward_G (flag : Flag CanonicalMCS)
+    (w₁ w₂ : ChainFMCSDomain flag) (phi : Formula)
+    (h_le : w₁ ≤ w₂) (h_G : Formula.all_future phi ∈ chainFMCS_mcs flag w₁) :
+    phi ∈ chainFMCS_mcs flag w₂ :=
+  canonical_forward_G w₁.val.world w₂.val.world h_le phi h_G
+
+/--
+Backward H coherence for chain-based FMCS.
+
+If `w₂ ≤ w₁` in the chain and `H phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
+
+Proof: By GContent/HContent duality, `CanonicalR w₂.val.world w₁.val.world`
+implies `HContent(w₁.val.world) ⊆ w₂.val.world`. Since `H phi ∈ mcs(w₁)`
+means `phi ∈ HContent(w₁.val.world)`, we get `phi ∈ w₂.val.world = mcs(w₂)`.
+-/
+theorem chainFMCS_backward_H (flag : Flag CanonicalMCS)
+    (w₁ w₂ : ChainFMCSDomain flag) (phi : Formula)
+    (h_le : w₂ ≤ w₁) (h_H : Formula.all_past phi ∈ chainFMCS_mcs flag w₁) :
+    phi ∈ chainFMCS_mcs flag w₂ := by
+  have h_R_past : CanonicalR_past w₁.val.world w₂.val.world :=
+    GContent_subset_implies_HContent_reverse w₂.val.world w₁.val.world
+      w₂.val.is_mcs w₁.val.is_mcs h_le
+  exact canonical_backward_H w₁.val.world w₂.val.world h_R_past phi h_H
+
+/--
+The chain-based FMCS construction: an FMCS (= BFMCS) over the domain of a
+maximal chain (Flag) in CanonicalMCS.
+
+This family satisfies all BFMCS requirements:
+- Each element maps to its own MCS (identity mapping)
+- Forward G coherence via CanonicalR
+- Backward H coherence via GContent/HContent duality
+
+Within this chain, any two elements are comparable (`chainFMCS_pairwise_comparable`),
+so the temporal order is total.
+-/
+noncomputable def chainFMCS (flag : Flag CanonicalMCS) : FMCS (ChainFMCSDomain flag) where
+  mcs := chainFMCS_mcs flag
+  is_mcs := chainFMCS_is_mcs flag
+  forward_G := fun w₁ w₂ phi h_le h_G =>
+    chainFMCS_forward_G flag w₁ w₂ phi h_le h_G
+  backward_H := fun w₁ w₂ phi h_le h_H =>
+    chainFMCS_backward_H flag w₁ w₂ phi h_le h_H
+
+/-!
+## Existence: Every CanonicalMCS Element is in Some Flag
+
+By Zorn's lemma (via Mathlib's `Flag.exists_mem`), every element of CanonicalMCS
+is contained in some maximal chain (Flag). This means that for every MCS, there
+exists a chain-based FMCS whose domain contains that MCS.
+-/
+
+/--
+Every CanonicalMCS element is in some Flag (maximal chain).
+
+This is a direct application of `Flag.exists_mem` from Mathlib, which uses Zorn's lemma.
+-/
+theorem canonicalMCS_in_some_flag (w : CanonicalMCS) :
+    ∃ flag : Flag CanonicalMCS, w ∈ flag :=
+  Flag.exists_mem w
+
+/--
+For any CanonicalMCS element, there exists a chain-based FMCS and a domain element
+such that the element's MCS is assigned to that domain element.
+
+This combines `Flag.exists_mem` (Zorn) with the `chainFMCS` construction.
+-/
+theorem chainFMCS_exists_for_mcs (w : CanonicalMCS) :
+    ∃ (flag : Flag CanonicalMCS) (d : ChainFMCSDomain flag),
+      (chainFMCS flag).mcs d = w.world := by
+  obtain ⟨flag, h_mem⟩ := canonicalMCS_in_some_flag w
+  exact ⟨flag, ⟨w, h_mem⟩, rfl⟩
+
+/--
+Within a chain-based FMCS, forward F witnesses exist in CanonicalMCS
+(but not necessarily in the same chain).
+
+If `F phi ∈ mcs(w)` for some element `w` of the chain, then there exists a
+CanonicalMCS element `s` with `w.val ≤ s` and `phi ∈ s.world`.
+
+The witness `s` may NOT be in the same flag/chain -- this is expected and handled
+at the BMCS bundle level (Phase 7).
+-/
+theorem chainFMCS_forward_F_in_CanonicalMCS (flag : Flag CanonicalMCS)
+    (w : ChainFMCSDomain flag) (phi : Formula)
+    (h_F : Formula.some_future phi ∈ chainFMCS_mcs flag w) :
+    ∃ s : CanonicalMCS, w.val ≤ s ∧ phi ∈ s.world :=
+  canonicalMCS_forward_F w.val phi h_F
+
+/--
+Within a chain-based FMCS, backward P witnesses exist in CanonicalMCS
+(but not necessarily in the same chain).
+
+If `P phi ∈ mcs(w)` for some element `w` of the chain, then there exists a
+CanonicalMCS element `s` with `s ≤ w.val` and `phi ∈ s.world`.
+
+The witness `s` may NOT be in the same flag/chain -- this is expected and handled
+at the BMCS bundle level (Phase 7).
+-/
+theorem chainFMCS_backward_P_in_CanonicalMCS (flag : Flag CanonicalMCS)
+    (w : ChainFMCSDomain flag) (phi : Formula)
+    (h_P : Formula.some_past phi ∈ chainFMCS_mcs flag w) :
+    ∃ s : CanonicalMCS, s ≤ w.val ∧ phi ∈ s.world :=
+  canonicalMCS_backward_P w.val phi h_P
+
+/--
+BoxContent propagation within a chain: if `w₁ ≤ w₂` in the chain,
+then `MCSBoxContent(mcs(w₁)) ⊆ MCSBoxContent(mcs(w₂))`.
+
+This follows from `MCSBoxContent_subset_of_CanonicalR`.
+-/
+theorem chainFMCS_boxcontent_propagation (flag : Flag CanonicalMCS)
+    (w₁ w₂ : ChainFMCSDomain flag)
+    (h_le : w₁ ≤ w₂) :
+    MCSBoxContent (chainFMCS_mcs flag w₁) ⊆ MCSBoxContent (chainFMCS_mcs flag w₂) :=
+  MCSBoxContent_subset_of_CanonicalR w₁.val.world w₂.val.world
+    w₁.val.is_mcs w₂.val.is_mcs h_le
+
+/--
+Diamond persistence within a chain: Diamond(psi) is preserved along the chain
+in both directions.
+
+Forward: if `Diamond(psi) ∈ mcs(w₁)` and `w₁ ≤ w₂`, then `Diamond(psi) ∈ mcs(w₂)`.
+Backward: if `Diamond(psi) ∈ mcs(w₂)` and `w₁ ≤ w₂`, then `Diamond(psi) ∈ mcs(w₁)`.
+-/
+theorem chainFMCS_diamond_persistent_forward (flag : Flag CanonicalMCS)
+    (w₁ w₂ : ChainFMCSDomain flag)
+    (h_le : w₁ ≤ w₂) (psi : Formula)
+    (h_diamond : diamondFormula psi ∈ chainFMCS_mcs flag w₁) :
+    diamondFormula psi ∈ chainFMCS_mcs flag w₂ :=
+  diamond_persistent_forward w₁.val.world w₂.val.world
+    w₁.val.is_mcs w₂.val.is_mcs h_le psi h_diamond
+
+theorem chainFMCS_diamond_persistent_backward (flag : Flag CanonicalMCS)
+    (w₁ w₂ : ChainFMCSDomain flag)
+    (h_le : w₁ ≤ w₂) (psi : Formula)
+    (h_diamond : diamondFormula psi ∈ chainFMCS_mcs flag w₂) :
+    diamondFormula psi ∈ chainFMCS_mcs flag w₁ :=
+  diamond_persistent_backward w₂.val.world w₁.val.world
+    w₂.val.is_mcs w₁.val.is_mcs h_le psi h_diamond
+
+/--
+Modal witness seed consistency within a chain: if Diamond(psi) is in the MCS
+of some chain element, then {psi} ∪ BoxContent(mcs(w)) is consistent.
+-/
+theorem chainFMCS_modal_witness_seed_consistent (flag : Flag CanonicalMCS)
+    (w : ChainFMCSDomain flag) (psi : Formula)
+    (h_diamond : diamondFormula psi ∈ chainFMCS_mcs flag w) :
+    SetConsistent (ModalWitnessSeed (chainFMCS_mcs flag w) psi) :=
+  modal_witness_seed_consistent w.val.world w.val.is_mcs psi h_diamond
+
+end Bimodal.Metalogic.Bundle
