@@ -8,13 +8,21 @@
     {
       "project_number": 941,
       "project_name": "extract_changelog_create_format_docs",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "description": "Extract Changelog section from ROAD_MAP.md to new CHANGE_LOG.md file. Create changelog-format.md context documentation. Update roadmap-format.md to note changelog moved. Establish separation: CHANGE_LOG.md records history, ROAD_MAP.md guides future development.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T21:30:00Z",
+      "last_updated": "2026-02-26T20:27:32Z",
       "effort": "1-2 hours",
-      "session_id": "sess_1772137134_147503"
+      "session_id": "sess_1772137527_3146e7",
+      "planned": "2026-02-26T20:27:32Z",
+      "artifacts": [
+        {
+          "path": "specs/941_extract_changelog_create_format_docs/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for extracting changelog and creating format documentation"
+        }
+      ]
     },
     {
       "project_number": 942,

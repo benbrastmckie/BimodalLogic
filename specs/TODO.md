@@ -54,7 +54,8 @@ technical_debt:
 
 ### 941. Extract Changelog to CHANGE_LOG.md and create format documentation
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Plan**: [specs/941_extract_changelog_create_format_docs/plans/implementation-001.md]
 - **Language**: meta
 - **Research**: [specs/941_extract_changelog_create_format_docs/reports/research-001.md]
 
