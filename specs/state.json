@@ -11,9 +11,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-26T01:27:35Z",
-      "last_updated": "2026-02-26T03:17:17Z",
-      "session_id": "sess_1740493200_r930",
-      "researched": "2026-02-26T03:17:17Z",
+      "last_updated": "2026-02-26T03:33:56Z",
+      "session_id": "sess_1740493500_r930b",
+      "researched": "2026-02-26T03:33:56Z",
       "artifacts": [
         {
           "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md",
@@ -34,6 +34,11 @@
           "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-005.md",
           "type": "research",
           "summary": "Deep analysis of how to model times D: identifies structural mismatch between CanonicalBC (Preorder) and standard validity (LinearOrderedAddCommGroup); recommends BFMCS soundness as bridge path"
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-006.md",
+          "type": "research",
+          "summary": "Parametric D strategy: Int is correct choice. Chain B (Representation.lean) already uses D=Int. Sole blocker is 2 sorries in DovetailingChain.lean for forward_F/backward_P witnesses."
         }
       ]
     },
