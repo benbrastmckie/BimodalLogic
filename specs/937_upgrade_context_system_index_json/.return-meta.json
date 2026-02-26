@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-26T12:00:00Z",
+  "completed_at": "2026-02-26T12:30:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/937_upgrade_context_system_index_json/reports/research-001.md",
+      "summary": "Research report with complete index.json schema, example entries, and implementation approach"
+    }
+  ],
+  "next_steps": "Run /plan 937 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1740570000_r937",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 1800,
+    "delegation_depth": 2,
+    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
+    "findings_count": 8
+  }
+}
