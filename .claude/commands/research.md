@@ -1,7 +1,7 @@
 ---
 description: Research a task and create reports
 allowed-tools: Skill, Bash(jq:*), Bash(git:*), Read, Edit
-argument-hint: TASK_NUMBER [FOCUS] [--team [--team-size N]]
+argument-hint: TASK_NUMBER [FOCUS] [--lean|--logic|--math|--latex|--typst] [--team [--team-size N]]
 model: claude-opus-4-5-20251101
 ---
 
@@ -18,8 +18,15 @@ Conduct research for a task by delegating to the appropriate research skill/suba
 
 | Flag | Description | Default |
 |------|-------------|---------|
+| `--lean` | Force routing to `skill-lean-research` | (auto) |
+| `--logic` | Force routing to `skill-logic-research` | (auto) |
+| `--math` | Force routing to `skill-math-research` | (auto) |
+| `--latex` | Force routing to `skill-latex-research` | (auto) |
+| `--typst` | Force routing to `skill-researcher` | (auto) |
 | `--team` | Enable multi-agent parallel research with multiple teammates | false |
 | `--team-size N` | Number of teammates to spawn (2-4) | 2 |
+
+**Domain Override Flags**: The `--lean`, `--logic`, `--math`, `--latex`, and `--typst` flags override automatic language-based routing. Use when the task language does not match the research domain needed. Only one domain flag may be specified at a time; if multiple are given, the first match wins.
 
 When `--team` is specified, research is delegated to `skill-team-research` which spawns multiple research agents working in parallel on different aspects of the task. Each teammate produces a research report, and the lead synthesizes findings into a final comprehensive report.
 
@@ -48,26 +55,61 @@ When `--team` is specified, research is delegated to `skill-team-research` which
 
 **ABORT** if any validation fails.
 
-**On GATE IN success**: Task validated. **IMMEDIATELY CONTINUE** to STAGE 2 below.
+**On GATE IN success**: Task validated. **IMMEDIATELY CONTINUE** to STAGE 1.5 below.
+
+### STAGE 1.5: PARSE DOMAIN FLAGS
+
+**Parse arguments to determine domain override and focus prompt.**
+
+1. **Extract Domain Override**
+   Check remaining args (after task number) for domain flags:
+   - `--lean` → `domain_override = "lean"`
+   - `--logic` → `domain_override = "logic"`
+   - `--math` → `domain_override = "math"`
+   - `--latex` → `domain_override = "latex"`
+   - `--typst` → `domain_override = "typst"`
+
+   If no domain flag found: `domain_override = null`
+
+   If multiple domain flags: Use first match (warn user in output).
+
+2. **Extract Focus Prompt**
+   Remove all recognized flags from remaining args:
+   - Remove `--lean`, `--logic`, `--math`, `--latex`, `--typst`
+   - Remove `--team`, `--team-size N`
+
+   Remaining text is `focus_prompt`.
+
+3. **Determine Effective Domain**
+   ```
+   effective_domain = domain_override ?? task_language
+   ```
+
+   Where `task_language` comes from `task_data.language` in state.json.
+
+**On STAGE 1.5 success**: Domain determined. **IMMEDIATELY CONTINUE** to STAGE 2 below.
 
 ### STAGE 2: DELEGATE
 
-**EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
+**EXECUTE NOW**: After STAGE 1.5, immediately invoke the Skill tool.
 
-**Language-Based Routing**:
+**Domain-Based Routing** (use `effective_domain` from STAGE 1.5):
 
-| Language | Skill to Invoke |
-|----------|-----------------|
+| Effective Domain | Skill to Invoke |
+|------------------|-----------------|
 | `lean` | `skill-lean-research` |
-| `general`, `meta`, `markdown`, `latex` | `skill-researcher` |
+| `logic` | `skill-logic-research` |
+| `math` | `skill-math-research` |
+| `latex` | `skill-latex-research` |
+| `typst`, `general`, `meta`, `markdown` | `skill-researcher` |
 
 **Invoke the Skill tool NOW** with:
 ```
 skill: "{skill-name from table above}"
-args: "task_number={N} focus={focus_prompt} session_id={session_id}"
+args: "task_number={N} focus={focus_prompt} session_id={session_id} domain_override={domain_override}"
 ```
 
-The skill will spawn the appropriate agent to conduct research and create a report.
+The `domain_override` parameter is passed to the skill so it can include the override context in its report. The skill will spawn the appropriate agent to conduct research and create a report.
 
 **On DELEGATE success**: Research complete. **IMMEDIATELY CONTINUE** to CHECKPOINT 2 below.
 

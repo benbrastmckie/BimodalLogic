@@ -12,6 +12,11 @@ Full reference for all available commands. For quick overview, see CLAUDE.md.
 | `/task` | `/task --sync` | Synchronize TODO.md and state.json |
 | `/task` | `/task --abandon N` | Abandon a task |
 | `/research` | `/research N [focus]` | Research task, route by language |
+| `/research` | `/research N --lean` | Force Lean research (skill-lean-research) |
+| `/research` | `/research N --logic` | Force logic research (skill-logic-research) |
+| `/research` | `/research N --math` | Force math research (skill-math-research) |
+| `/research` | `/research N --latex` | Force LaTeX research (skill-latex-research) |
+| `/research` | `/research N --typst` | Force Typst research (skill-researcher) |
 | `/research` | `/research N --team` | Research with multiple agents |
 | `/research` | `/research N --team --team-size M` | Research with M agents |
 | `/plan` | `/plan N` | Create implementation plan |

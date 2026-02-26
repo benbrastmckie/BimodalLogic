@@ -35,16 +35,16 @@
     {
       "project_number": 942,
       "project_name": "update_todo_command_changelog_integration",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "description": "Update /todo command to write changelog entries to specs/CHANGE_LOG.md. Remove obsolete Task 941 references, add schema reference. Clean-break approach (no backward compatibility notes).",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T20:58:34Z",
+      "last_updated": "2026-02-26T21:07:38Z",
       "effort": "0.25 hours",
       "dependencies": [
         941
       ],
-      "session_id": "sess_1772138733_054027",
+      "session_id": "sess_1772140034_48ed52",
       "artifacts": [
         {
           "path": "specs/942_update_todo_command_changelog_integration/reports/research-001.md",
@@ -57,21 +57,22 @@
           "summary": "Simplified 1-phase plan (clean-break, no backward compat)"
         }
       ],
-      "planned": "2026-02-26T20:58:34Z"
+      "planned": "2026-02-26T20:58:34Z",
+      "started": "2026-02-26T21:07:38Z"
     },
     {
       "project_number": 943,
       "project_name": "update_review_command_dual_file_maintenance",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "description": "Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T21:00:00Z",
+      "last_updated": "2026-02-26T21:07:06Z",
       "effort": "1 hour",
       "dependencies": [
         941
       ],
-      "session_id": "sess_1772139396_889",
+      "session_id": "sess_1772139996_4617",
       "researched": "2026-02-26T20:43:40Z",
       "artifacts": [
         {
@@ -85,7 +86,8 @@
           "summary": "2-phase implementation plan for dual file maintenance in /review command"
         }
       ],
-      "planned": "2026-02-26T21:00:00Z"
+      "planned": "2026-02-26T21:00:00Z",
+      "started": "2026-02-26T21:07:06Z"
     },
     {
       "project_number": 944,
@@ -103,13 +105,13 @@
     {
       "project_number": 940,
       "project_name": "port_lean_version_management_command",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "description": "Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:58:43Z",
+      "last_updated": "2026-02-26T21:06:12Z",
       "effort": "1-2 hours",
-      "session_id": "sess_1740593000_p940",
+      "session_id": "sess_1740594000_i940",
       "researched": "2026-02-26T20:41:20Z",
       "artifacts": [
         {
@@ -123,21 +125,22 @@
           "summary": "6-phase implementation plan for /lean command with check, upgrade, rollback, and dry-run modes"
         }
       ],
-      "planned": "2026-02-26T20:58:43Z"
+      "planned": "2026-02-26T20:58:43Z",
+      "started": "2026-02-26T21:06:12Z"
     },
     {
       "project_number": 939,
       "project_name": "upgrade_research_command_domain_routing",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "description": "Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:58:51Z",
+      "last_updated": "2026-02-26T21:08:44Z",
       "effort": "1-2 hours",
       "dependencies": [
         936
       ],
-      "session_id": "sess_1772139374_2dd2",
+      "session_id": "sess_1772139906_405b",
       "researched": "2026-02-26T20:40:39Z",
       "artifacts": [
         {
@@ -149,23 +152,32 @@
           "path": "specs/939_upgrade_research_command_domain_routing/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan for /research domain routing upgrade (Phase 6 deferred)"
+        },
+        {
+          "path": "specs/939_upgrade_research_command_domain_routing/summaries/implementation-summary-20260226.md",
+          "type": "summary",
+          "summary": "Implementation summary with all phase details"
         }
       ],
-      "planned": "2026-02-26T20:58:51Z"
+      "planned": "2026-02-26T20:58:51Z",
+      "started": "2026-02-26T21:05:31Z",
+      "completed": "2026-02-26T21:08:44Z",
+      "completion_summary": "Added 5 domain override flags to /research command enabling explicit routing to lean, logic, math, latex, and typst research skills. Fixed outdated routing table and documented in command-reference.md.",
+      "claudemd_suggestions": "Updated research.md (argument-hint, Options, STAGE 1.5, STAGE 2), routing.md (added logic/math/typst), command-reference.md (flag documentation)"
     },
     {
       "project_number": 938,
       "project_name": "port_logic_math_context_files",
-      "status": "planned",
+      "status": "implementing",
       "language": "meta",
       "description": "Port missing logic and math context files from Theory repository (~15 documents). Logic domain: bilateral-propositions.md, bilateral-semantics.md, counterfactual-semantics.md, lattice-theory-concepts.md, mereology-foundations.md, spatial-domain.md, topological-foundations-domain.md. Math: category-theory/ (6 files), foundations/dependent-type-theory.md, lattice-theory/bilattice-theory.md, topology/scott-topology.md, order-theory/monoidal-posets.md. Update README.md files for each domain.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:48:36Z",
+      "last_updated": "2026-02-26T21:04:49Z",
       "effort": "3-4 hours",
       "dependencies": [
         937
       ],
-      "session_id": "sess_1772138900_671b9f",
+      "session_id": "sess_1772139871_f5a593",
       "researched": "2026-02-26T21:30:00Z",
       "planned": "2026-02-26T12:49:00Z",
       "artifacts": [
@@ -193,7 +205,8 @@
             "integrated_date": "2026-02-26"
           }
         ]
-      }
+      },
+      "started": "2026-02-26T21:04:49Z"
     },
     {
       "project_number": 937,

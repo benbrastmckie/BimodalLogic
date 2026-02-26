@@ -34,7 +34,7 @@ technical_debt:
 
 ### 943. Update /review command for dual-file maintenance
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Plan**: [specs/943_update_review_command_dual_file_maintenance/plans/implementation-001.md]
 - **Language**: meta
 - **Dependencies**: Task #941
@@ -46,7 +46,7 @@ technical_debt:
 
 ### 942. Update /todo command for CHANGE_LOG.md integration
 - **Effort**: 0.25 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Plan**: [specs/942_update_todo_command_changelog_integration/plans/implementation-002.md]
 - **Language**: meta
 - **Dependencies**: Task #941
@@ -70,7 +70,7 @@ technical_debt:
 
 ### 940. Port /lean version management command
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Plan**: [implementation-001.md](specs/940_port_lean_version_management_command/plans/implementation-001.md)
 - **Research**: [research-001.md](specs/940_port_lean_version_management_command/reports/research-001.md)
@@ -81,11 +81,12 @@ technical_debt:
 
 ### 939. Upgrade /research command with domain routing
 - **Effort**: 1-2 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Dependencies**: Task #936
 - **Research**: [research-001.md](specs/939_upgrade_research_command_domain_routing/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/939_upgrade_research_command_domain_routing/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260226.md](specs/939_upgrade_research_command_domain_routing/summaries/implementation-summary-20260226.md)
 
 **Description**: Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.
 
@@ -93,7 +94,7 @@ technical_debt:
 
 ### 938. Port missing logic/math context files
 - **Effort**: 0.5 hours (scope reduced)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: meta
 - **Dependencies**: Task #937
 - **Research**: [research-001.md](specs/938_port_logic_math_context_files/reports/research-001.md)

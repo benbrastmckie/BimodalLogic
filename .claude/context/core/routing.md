@@ -7,7 +7,10 @@ Token budget: ~200 tokens
 | Language | Research Skill | Implementation Skill |
 |----------|---------------|---------------------|
 | lean | skill-lean-research | skill-lean-implementation |
-| latex | skill-researcher | skill-latex-implementation |
+| logic | skill-logic-research | skill-implementer |
+| math | skill-math-research | skill-implementer |
+| latex | skill-latex-research | skill-latex-implementation |
+| typst | skill-researcher | skill-typst-implementation |
 | general | skill-researcher | skill-implementer |
 | meta | skill-researcher | skill-implementer |
 | markdown | skill-researcher | skill-implementer |

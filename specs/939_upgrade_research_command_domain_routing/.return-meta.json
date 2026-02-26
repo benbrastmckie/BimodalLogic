@@ -1,20 +1,39 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Upgraded /research command with domain override flags (--lean, --logic, --math, --latex, --typst). Fixed routing table to match skill-agent-mapping reference. Added STAGE 1.5 for flag parsing and effective_domain determination. Updated command-reference.md with flag documentation.",
   "artifacts": [
     {
-      "path": "specs/939_upgrade_research_command_domain_routing/plans/implementation-001.md",
-      "type": "plan",
-      "summary": "6-phase implementation plan for /research domain routing upgrade (Phase 6 deferred)"
+      "type": "implementation",
+      "path": ".claude/commands/research.md",
+      "summary": "Added domain flags, STAGE 1.5 parsing, updated routing table"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/core/routing.md",
+      "summary": "Added logic, math, typst routing entries"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/context/core/reference/command-reference.md",
+      "summary": "Added domain flag documentation"
+    },
+    {
+      "type": "summary",
+      "path": "specs/939_upgrade_research_command_domain_routing/summaries/implementation-summary-20260226.md",
+      "summary": "Implementation summary with all phase details"
     }
   ],
-  "next_steps": "Run /implement 939 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Added 5 domain override flags to /research command enabling explicit routing to lean, logic, math, latex, and typst research skills. Fixed outdated routing table and documented in command-reference.md.",
+    "claudemd_suggestions": "Updated research.md (argument-hint, Options, STAGE 1.5, STAGE 2), routing.md (added logic/math/typst), command-reference.md (flag documentation)"
+  },
   "metadata": {
-    "session_id": "sess_1772139374_2dd2",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1772139906_405b",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 2.5,
-    "deferred_phases": ["Phase 6: Context Knowledge Task"]
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 6
+  },
+  "next_steps": "Review implementation. Phase 6 (Context Knowledge Task) is deferred until context-knowledge-template.md is created."
 }

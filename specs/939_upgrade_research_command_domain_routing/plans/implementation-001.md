@@ -45,7 +45,7 @@ Integrated findings from `reports/research-001.md`:
 
 ## Implementation Phases
 
-### Phase 1: Update Routing Table [NOT STARTED]
+### Phase 1: Update Routing Table [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Fix the outdated routing table in `/research` command to match skill-agent-mapping reference
@@ -72,7 +72,7 @@ Integrated findings from `reports/research-001.md`:
 
 ---
 
-### Phase 2: Add Domain Override Flags [NOT STARTED]
+### Phase 2: Add Domain Override Flags [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add `--lean`, `--logic`, `--math`, `--latex`, `--typst` flags to Options section
@@ -95,7 +95,7 @@ Integrated findings from `reports/research-001.md`:
 
 ---
 
-### Phase 3: Add Flag Parsing Logic [NOT STARTED]
+### Phase 3: Add Flag Parsing Logic [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Add STAGE 1.5 to parse domain flags and determine effective_domain
@@ -119,7 +119,7 @@ Integrated findings from `reports/research-001.md`:
 
 ---
 
-### Phase 4: Update STAGE 2 for Effective Domain [NOT STARTED]
+### Phase 4: Update STAGE 2 for Effective Domain [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Update STAGE 2 to route based on effective_domain instead of task language
@@ -142,7 +142,7 @@ Integrated findings from `reports/research-001.md`:
 
 ---
 
-### Phase 5: Update Command Reference [NOT STARTED]
+### Phase 5: Update Command Reference [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Document new flags in command-reference.md
