@@ -1,19 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/939_upgrade_research_command_domain_routing/reports/research-001.md",
-      "type": "research",
-      "summary": "Research report analyzing current routing, existing skills, and implementation plan for domain override flags"
+      "path": "specs/939_upgrade_research_command_domain_routing/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "6-phase implementation plan for /research domain routing upgrade (Phase 6 deferred)"
     }
   ],
-  "next_steps": "Run /plan 939 to create implementation plan",
+  "next_steps": "Run /implement 939 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772138212_48fc",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1772139374_2dd2",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 2.5,
+    "deferred_phases": ["Phase 6: Context Knowledge Task"]
   }
 }

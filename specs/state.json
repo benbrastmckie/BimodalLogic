@@ -37,10 +37,10 @@
       "project_name": "update_todo_command_changelog_integration",
       "status": "planned",
       "language": "meta",
-      "description": "Update /todo command to write changelog entries to specs/CHANGE_LOG.md instead of inline ROAD_MAP.md section. Update Step 5.8 changelog update logic, existence checks, and git commit messages. Preserve backward compatibility notes.",
+      "description": "Update /todo command to write changelog entries to specs/CHANGE_LOG.md. Remove obsolete Task 941 references, add schema reference. Clean-break approach (no backward compatibility notes).",
       "created": "2026-02-26T21:00:00Z",
       "last_updated": "2026-02-26T20:58:34Z",
-      "effort": "2-3 hours",
+      "effort": "0.25 hours",
       "dependencies": [
         941
       ],
@@ -62,12 +62,12 @@
     {
       "project_number": 943,
       "project_name": "update_review_command_dual_file_maintenance",
-      "status": "planning",
+      "status": "planned",
       "language": "meta",
       "description": "Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T20:56:49Z",
-      "effort": "2-3 hours",
+      "last_updated": "2026-02-26T21:00:00Z",
+      "effort": "1 hour",
       "dependencies": [
         941
       ],
@@ -78,8 +78,14 @@
           "path": "specs/943_update_review_command_dual_file_maintenance/reports/research-001.md",
           "type": "research",
           "summary": "Research report with analysis of /review command, modification points, and implementation recommendations"
+        },
+        {
+          "path": "specs/943_update_review_command_dual_file_maintenance/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "2-phase implementation plan for dual file maintenance in /review command"
         }
-      ]
+      ],
+      "planned": "2026-02-26T21:00:00Z"
     },
     {
       "project_number": 944,
