@@ -11,11 +11,11 @@
       "status": "planned",
       "language": "lean",
       "created": "2026-02-26T00:38:11Z",
-      "last_updated": "2026-02-26T01:10:00Z",
+      "last_updated": "2026-02-26T01:07:11Z",
       "description": "Refactor metalogic terminology: (1) Rename BMCS to BFMCS throughout to clarify it is a Bundle of FMCSs, (2) Ensure FMCS indicates a Family of MCSs, (3) Use MCS appropriately and uniformly, (4) Correct Phase 6 goal to establish BFMCS closed under timeshift (not FMCS), (5) Complete Phase 2 Boneyard cleanup (skipped in task 925), (6) Archive old/unused content to Boneyard/, (7) Improve naming conventions systematically across metalogic.",
       "session_id": "sess_1740528100_p928",
       "researched": "2026-02-26T00:47:52Z",
-      "planned": "2026-02-26T01:10:00Z",
+      "planned": "2026-02-26T01:07:11Z",
       "artifacts": [
         {
           "path": "specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/reports/research-001.md",
@@ -23,9 +23,9 @@
           "summary": "Terminology analysis, task 925 review, sorry/axiom audit, Boneyard candidates"
         },
         {
-          "path": "specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/plans/implementation-001.md",
+          "path": "specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/plans/implementation-002.md",
           "type": "plan",
-          "summary": "6-phase plan for BFMCS->FMCS rename, Boneyard cleanup, and documentation update"
+          "summary": "7-phase plan with BFMCS->FMCS then BMCS->BFMCS rename (v2)"
         }
       ],
       "plan_metadata": {
