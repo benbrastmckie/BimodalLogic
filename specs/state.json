@@ -11,9 +11,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-26T01:27:35Z",
-      "last_updated": "2026-02-26T03:33:56Z",
-      "session_id": "sess_1740493500_r930b",
-      "researched": "2026-02-26T03:33:56Z",
+      "last_updated": "2026-02-26T05:36:40Z",
+      "session_id": "sess_1740494000_r930c",
+      "researched": "2026-02-26T05:36:40Z",
       "artifacts": [
         {
           "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md",
@@ -39,6 +39,11 @@
           "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-006.md",
           "type": "research",
           "summary": "Parametric D strategy: Int is correct choice. Chain B (Representation.lean) already uses D=Int. Sole blocker is 2 sorries in DovetailingChain.lean for forward_F/backward_P witnesses."
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-007.md",
+          "type": "research",
+          "summary": "Root cause: constant witness families cannot have temporal coherence. CanonicalBC works because F-witness MCS IS a new time point. Recommended: weaken temporal coherence to eval-family only, then tackle DovetailingChain sorries via omega-squared construction."
         }
       ]
     },
