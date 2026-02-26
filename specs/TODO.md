@@ -72,8 +72,9 @@ technical_debt:
 
 ### 935. Audit ROAD_MAP.md Current State section for accuracy
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
+- **Research**: [research-001.md](specs/935_audit_roadmap_current_state_section/reports/research-001.md)
 
 **Description**: Review and update '## Current State: What's Been Accomplished' section and following content in specs/ROAD_MAP.md. Audit for accuracy, clarity, and conciseness to provide clear guidance for theory development. Ensure all claims match current codebase state.
 
