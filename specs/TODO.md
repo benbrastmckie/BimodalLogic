@@ -53,9 +53,10 @@ technical_debt:
 
 ### 937. Upgrade context system with index.json
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Research**: [research-001.md](specs/937_upgrade_context_system_index_json/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/937_upgrade_context_system_index_json/plans/implementation-001.md)
 
 **Description**: Upgrade context system with index.json from Theory repository. Create: (1) index.json schema with load_when conditions (languages, operations, tiers, agents), (2) entries for all existing context files with topics, keywords, summaries, line_count, (3) generation/validation script, (4) update agent files to use dynamic context discovery via jq queries instead of static lists.
 

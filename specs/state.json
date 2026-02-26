@@ -44,21 +44,27 @@
     {
       "project_number": 937,
       "project_name": "upgrade_context_system_index_json",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "description": "Upgrade context system with index.json from Theory repository. Create: (1) index.json schema with load_when conditions (languages, operations, tiers, agents), (2) entries for all existing context files with topics, keywords, summaries, line_count, (3) generation/validation script, (4) update agent files to use dynamic context discovery via jq queries instead of static lists.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:02:53Z",
+      "last_updated": "2026-02-26T20:10:46Z",
       "effort": "2-3 hours",
-      "session_id": "sess_1740570000_r937",
+      "session_id": "sess_1740570000_p937",
       "researched": "2026-02-26T20:02:53Z",
       "artifacts": [
         {
           "path": "specs/937_upgrade_context_system_index_json/reports/research-001.md",
           "type": "report",
           "summary": "Research report with complete index.json schema, example entries, and implementation approach"
+        },
+        {
+          "path": "specs/937_upgrade_context_system_index_json/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for context system index.json upgrade"
         }
-      ]
+      ],
+      "planned": "2026-02-26T20:10:46Z"
     },
     {
       "project_number": 936,
