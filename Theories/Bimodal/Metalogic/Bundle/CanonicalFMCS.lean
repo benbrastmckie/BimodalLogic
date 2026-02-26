@@ -1,4 +1,3 @@
-import Bimodal.Metalogic.Bundle.CanonicalQuotient
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.DovetailingChain
@@ -44,14 +43,13 @@ The FMCS and TemporalCoherentFamily only require `[Preorder D]`, not totality.
 The completeness chain (TruthLemma, Completeness) does NOT use totality, IsTotal,
 or LinearOrder. So using the non-total CanonicalR Preorder on all MCSes is sound.
 
-The CanonicalReachable construction and its totality (IsTotal) are preserved for
-backward compatibility but are not used by the primary FMCS construction.
+The CanonicalReachable/CanonicalQuotient constructions and their totality (IsTotal)
+have been archived to Boneyard (task 933) as they are not used by any active code.
 
 ## References
 
 - Task 922 plan v5: Preorder generalization approach
 - Task 922 research-008: Confirmed Preorder approach as correct path
-- CanonicalQuotient.lean: Preorder instance on CanonicalReachable (not used here)
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -283,117 +281,5 @@ theorem temporal_coherent_family_exists_CanonicalMCS
     fun gamma h_mem => h_extends (by simp [contextAsSet]; exact h_mem),
     fun t φ h_F => canonicalMCS_forward_F t φ h_F,
     fun t φ h_P => canonicalMCS_backward_P t φ h_P⟩
-
-/-!
-## Legacy CanonicalReachable FMCS (Preserved for Compatibility)
-
-The following constructions use CanonicalReachable as the domain. They are preserved
-for backward compatibility with files that reference them, but the primary construction
-above (canonicalMCSBFMCS) should be preferred because it supports both forward_F AND
-backward_P without sorry.
-
-NOTE: The CanonicalReachable backward_P is BLOCKED because past witnesses of future-
-reachable MCSes are not necessarily future-reachable. See module docstring for details.
--/
-
-/--
-The MCS assignment for the CanonicalReachable FMCS: each reachable element maps to its world.
-(Legacy - use canonicalMCS_mcs instead)
--/
-def canonicalReachableBFMCS_mcs (w : CanonicalReachable M₀ h_mcs₀) : Set Formula :=
-  w.world
-
-/--
-Each assigned set is maximal consistent.
-(Legacy - use canonicalMCS_is_mcs instead)
--/
-theorem canonicalReachableBFMCS_is_mcs (w : CanonicalReachable M₀ h_mcs₀) :
-    SetMaximalConsistent (canonicalReachableBFMCS_mcs w) :=
-  w.is_mcs
-
-/--
-Forward G coherence on CanonicalReachable.
-(Legacy - use canonicalMCS_forward_G instead)
--/
-theorem canonicalReachableBFMCS_forward_G
-    (w₁ w₂ : CanonicalReachable M₀ h_mcs₀) (phi : Formula)
-    (h_le : w₁ ≤ w₂) (h_G : Formula.all_future phi ∈ canonicalReachableBFMCS_mcs w₁) :
-    phi ∈ canonicalReachableBFMCS_mcs w₂ :=
-  canonical_forward_G w₁.world w₂.world h_le phi h_G
-
-/--
-Backward H coherence on CanonicalReachable.
-(Legacy - use canonicalMCS_backward_H instead)
--/
-theorem canonicalReachableBFMCS_backward_H
-    (w₁ w₂ : CanonicalReachable M₀ h_mcs₀) (phi : Formula)
-    (h_le : w₂ ≤ w₁) (h_H : Formula.all_past phi ∈ canonicalReachableBFMCS_mcs w₁) :
-    phi ∈ canonicalReachableBFMCS_mcs w₂ := by
-  have h_R_past : CanonicalR_past w₁.world w₂.world :=
-    GContent_subset_implies_HContent_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_le
-  exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
-
-/--
-The canonical FMCS on CanonicalReachable.
-(Legacy - use canonicalMCSBFMCS instead)
--/
-noncomputable def canonicalReachableBFMCS : FMCS (CanonicalReachable M₀ h_mcs₀) where
-  mcs := canonicalReachableBFMCS_mcs
-  is_mcs := canonicalReachableBFMCS_is_mcs
-  forward_G := fun w₁ w₂ phi h_le h_G =>
-    canonicalReachableBFMCS_forward_G w₁ w₂ phi h_le h_G
-  backward_H := fun w₁ w₂ phi h_le h_H =>
-    canonicalReachableBFMCS_backward_H w₁ w₂ phi h_le h_H
-
-/--
-Zero instance for CanonicalReachable using the root element.
-(Legacy - use CanonicalMCS.instZero instead)
--/
-noncomputable instance CanonicalReachable.instZero : Zero (CanonicalReachable M₀ h_mcs₀) where
-  zero := CanonicalReachable.root
-
-/--
-Forward F coherence on CanonicalReachable.
-(Legacy - use canonicalMCS_forward_F instead)
--/
-theorem canonicalReachableBFMCS_forward_F
-    (w : CanonicalReachable M₀ h_mcs₀) (phi : Formula)
-    (h_F : Formula.some_future phi ∈ canonicalReachableBFMCS_mcs w) :
-    ∃ s : CanonicalReachable M₀ h_mcs₀, w ≤ s ∧ phi ∈ canonicalReachableBFMCS_mcs s := by
-  obtain ⟨W, h_W_mcs, h_R, h_phi_W⟩ := canonical_forward_F w.world w.is_mcs phi h_F
-  have h_W_reachable : CanonicalR M₀ W :=
-    canonicalR_transitive M₀ w.world W h_mcs₀ w.reachable h_R
-  let s : CanonicalReachable M₀ h_mcs₀ := ⟨W, h_W_mcs, h_W_reachable⟩
-  exact ⟨s, h_R, h_phi_W⟩
-
-/--
-CanonicalReachable FMCS preserves root context.
-(Legacy - use canonicalMCSBFMCS_root_contains instead)
--/
-theorem canonicalReachableBFMCS_root_contains (phi : Formula) (h_mem : phi ∈ M₀) :
-    phi ∈ canonicalReachableBFMCS.mcs (0 : CanonicalReachable M₀ h_mcs₀) :=
-  h_mem
-
-/-!
-## Legacy Quotient-Based Definitions (Preserved for Compatibility)
-
-The following definitions from the quotient-based approach are preserved
-for files that still reference them. They will be removed once all downstream
-consumers are updated.
--/
-
-/--
-The MCS assignment for the canonical FMCS: each quotient element maps to
-the world of its representative. (Legacy - use canonicalMCS_mcs instead)
--/
-noncomputable def canonicalBFMCS_mcs (q : CanonicalQuotient M₀ h_mcs₀) : Set Formula :=
-  q.repr.world
-
-/--
-Zero instance for CanonicalQuotient using the root element.
-This is needed for TemporalCoherentFamily which requires `[Zero D]`.
--/
-noncomputable instance CanonicalQuotient.instZero : Zero (CanonicalQuotient M₀ h_mcs₀) where
-  zero := CanonicalQuotient.root
 
 end Bimodal.Metalogic.Bundle

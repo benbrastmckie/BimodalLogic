@@ -1,3 +1,20 @@
+/-!
+# BONEYARD - ARCHIVED
+
+**WARNING**: This file has been archived to the Boneyard. Do not use in new code.
+
+**Reason**: Superseded by all-MCS approach (canonicalMCSBFMCS). The Antisymmetrization
+quotient construction was infrastructure for the CanonicalReachable approach, which is
+blocked because backward_P past witnesses are not future-reachable.
+
+**Archived from**: Theories/Bimodal/Metalogic/Bundle/CanonicalQuotient.lean
+**Date**: 2026-02-26
+**Task**: 933
+
+**Alternative**: Use `canonicalMCSBFMCS` from `Bimodal.Metalogic.Bundle.CanonicalFMCS` instead.
+-/
+
+-- Original imports (may not compile from Boneyard location)
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.CanonicalEmbedding
 import Bimodal.Metalogic.Bundle.CanonicalReachable

@@ -1,19 +1,28 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-02-26T12:00:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/933_research_alternative_canonical_construction/plans/implementation-001.md",
-      "summary": "6-phase cleanup plan to archive CanonicalReachable/CanonicalQuotient/CanonicalEmbedding stack to Boneyard and remove dead code"
+      "path": "specs/933_research_alternative_canonical_construction/summaries/implementation-summary-20260226.md",
+      "type": "summary",
+      "summary": "Implementation summary for Boneyard archival of CanonicalReachable/CanonicalQuotient/CanonicalEmbedding stack and dead code removal"
     }
   ],
-  "next_steps": "Run /implement 933 to execute the plan",
+  "partial_progress": {
+    "stage": "verification_passed",
+    "details": "All 6 phases completed. lake build passes. No sorries, no axioms, no regressions.",
+    "phases_completed": 6,
+    "phases_total": 6
+  },
   "metadata": {
-    "session_id": "sess_1772093015_92b020",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1772093296_67ca46",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 2.5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 6,
+    "phases_total": 6
+  },
+  "completion_data": {
+    "completion_summary": "Archived CanonicalReachable/CanonicalQuotient/CanonicalEmbedding stack to Boneyard and removed dead code from BFMCSTruth.lean. Net ~1135 lines removed from active codebase."
   }
 }

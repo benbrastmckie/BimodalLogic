@@ -208,26 +208,6 @@ theorem bmcs_truth_diamond (B : BFMCS D) (fam : FMCS D) (t : D) (φ : Formula) :
     exact h_all fam' hfam' hφ
 
 /-!
-## Monotonicity Properties
-
-These lemmas show how truth behaves under various operations.
--/
-
-/--
-Truth at the evaluation family: shorthand for truth at B.eval_family.
--/
-def bmcs_truth_eval (B : BFMCS D) (t : D) (φ : Formula) : Prop :=
-  bmcs_truth_at B B.eval_family t φ
-
-/--
-If φ is true at all families, then φ is true at the evaluation family.
--/
-lemma bmcs_truth_eval_of_all (B : BFMCS D) (t : D) (φ : Formula)
-    (h : ∀ fam ∈ B.families, bmcs_truth_at B fam t φ) :
-    bmcs_truth_eval B t φ :=
-  h B.eval_family B.eval_family_mem
-
-/-!
 ## Box Properties
 
 The box operator has special properties due to the BFMCS structure.

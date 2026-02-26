@@ -1,7 +1,7 @@
 # Implementation Plan: Task 933 - Archive Boneyard Candidates
 
 - **Task**: 933 - research_alternative_canonical_construction
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2-3 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/933_research_alternative_canonical_construction/reports/research-001.md
@@ -59,7 +59,7 @@ After this implementation, the existing 3 sorries in DovetailingChain.lean and T
 
 ## Implementation Phases
 
-### Phase 1: Archive CanonicalReachable.lean [NOT STARTED]
+### Phase 1: Archive CanonicalReachable.lean [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Move CanonicalReachable.lean to Boneyard with appropriate warning header
@@ -84,7 +84,7 @@ After this implementation, the existing 3 sorries in DovetailingChain.lean and T
 
 ---
 
-### Phase 2: Archive CanonicalQuotient.lean [NOT STARTED]
+### Phase 2: Archive CanonicalQuotient.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Move CanonicalQuotient.lean to Boneyard with appropriate warning header
@@ -108,7 +108,7 @@ After this implementation, the existing 3 sorries in DovetailingChain.lean and T
 
 ---
 
-### Phase 3: Archive CanonicalEmbedding.lean [NOT STARTED]
+### Phase 3: Archive CanonicalEmbedding.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Move CanonicalEmbedding.lean to Boneyard with appropriate warning header
@@ -132,7 +132,7 @@ After this implementation, the existing 3 sorries in DovetailingChain.lean and T
 
 ---
 
-### Phase 4: Archive Legacy Section of CanonicalFMCS.lean [NOT STARTED]
+### Phase 4: Archive Legacy Section of CanonicalFMCS.lean [COMPLETED]
 
 - **Dependencies:** Phase 2, Phase 3
 - **Goal:** Extract and archive legacy definitions (lines 297-398) from CanonicalFMCS.lean
@@ -158,7 +158,7 @@ After this implementation, the existing 3 sorries in DovetailingChain.lean and T
 
 ---
 
-### Phase 5: Remove Dead Code from BFMCSTruth.lean [NOT STARTED]
+### Phase 5: Remove Dead Code from BFMCSTruth.lean [COMPLETED]
 
 - **Dependencies:** None (can run in parallel with Phases 1-4)
 - **Goal:** Remove unused `bmcs_truth_eval` and `bmcs_truth_eval_of_all` definitions
@@ -181,7 +181,7 @@ After this implementation, the existing 3 sorries in DovetailingChain.lean and T
 
 ---
 
-### Phase 6: Final Verification [NOT STARTED]
+### Phase 6: Final Verification [COMPLETED]
 
 - **Dependencies:** Phase 4, Phase 5
 - **Goal:** Verify all changes are correct and complete

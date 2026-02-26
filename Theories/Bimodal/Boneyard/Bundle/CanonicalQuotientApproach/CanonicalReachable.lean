@@ -1,3 +1,19 @@
+/-!
+# BONEYARD - ARCHIVED
+
+**WARNING**: This file has been archived to the Boneyard. Do not use in new code.
+
+**Reason**: CanonicalReachable backward_P is blocked; the future-reachable fragment
+does not contain past witnesses. Superseded by all-MCS approach (canonicalMCSBFMCS).
+
+**Archived from**: Theories/Bimodal/Metalogic/Bundle/CanonicalReachable.lean
+**Date**: 2026-02-26
+**Task**: 933
+
+**Alternative**: Use `canonicalMCSBFMCS` from `Bimodal.Metalogic.Bundle.CanonicalFMCS` instead.
+-/
+
+-- Original imports (may not compile from Boneyard location)
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.CanonicalEmbedding
 import Bimodal.Metalogic.Bundle.TemporalContent
@@ -248,64 +264,19 @@ Helper lemmas establishing that certain compound formulas cannot be in any MCS.
 -/
 noncomputable def conj_neg_derives_bot (phi : Formula) :
     [Formula.and phi (Formula.neg phi)] ⊢ Formula.bot := by
-  -- and phi (phi.neg) = neg(phi.imp (phi.neg.neg)) = (phi.imp (phi.neg).neg).imp bot
-  -- We need to extract phi and neg(phi) from the conjunction
-  -- phi.and (phi.neg) = (phi.imp (phi.neg).neg).neg = (phi.imp ((phi.imp bot).imp bot)).imp bot
-  -- This is: neg(phi → neg(neg(phi)))
-  -- From this we need to derive bot.
-  -- By assumption: and(phi, neg(phi)) ∈ context
   have h_conj : [Formula.and phi (Formula.neg phi)] ⊢ Formula.and phi (Formula.neg phi) :=
     DerivationTree.assumption _ _ (by simp)
-  -- and(phi, neg(phi)) = neg(phi → neg(neg(phi)))
-  -- In propositional logic, phi ∧ neg(phi) → bot is derivable.
-  -- phi ∧ neg(phi) = neg(phi.imp (phi.neg.neg))
-  -- So our assumption is (phi.imp (phi.neg.neg)).imp bot = neg(phi.imp ((phi.imp bot).imp bot))
-  -- Actually Formula.and phi (phi.neg) = (phi.imp (phi.neg).neg).neg
-  -- = (phi.imp ((phi.imp bot).imp bot)).imp bot
-  -- From this: it's in the context. We need to get phi and neg(phi) separately.
-  -- Use the standard derivation: from neg(phi → neg(neg(phi))), derive phi and neg(phi).
-  -- Actually, let me use Bimodal.Metalogic.set_mcs_conjunction_elim style reasoning.
-  -- But that's for MCS, not for derivation.
-  -- We need: [a ∧ b] ⊢ a and [a ∧ b] ⊢ b.
-  -- a ∧ b = neg(a → neg(b))
-  -- From neg(a → neg(b)), we can derive a:
-  --   Suppose neg(a). Then a → neg(b) (by ex falso from a and neg(a)).
-  --   But neg(a → neg(b)). Contradiction.
-  -- This requires the conjunction elimination derivations.
-  -- Let me use a simpler approach: derive bot from conj directly.
-  -- neg(phi → neg(neg(phi))):
-  -- If phi → neg(neg(phi)) then combined with our assumption neg(phi → neg(neg(phi))) we get bot.
-  -- phi → neg(neg(phi)) is derivable (intro double negation).
-  -- So: derives (phi.imp (phi.neg.neg)) from empty context (double neg intro).
   have h_dni : [] ⊢ phi.imp (Formula.neg phi).neg := by
-    -- phi → neg(neg(phi)) i.e. phi → ((phi → bot) → bot)
-    -- This is provable: assume phi and (phi → bot), derive bot by modus ponens.
-    -- So phi → ((phi → bot) → bot) i.e. phi → neg(neg(phi)).
-    -- Use prop_k and prop_s to build this, or use the Combinators/Propositional theorems.
-    -- Actually: phi.neg.neg = (phi.imp bot).imp bot
-    -- We want: phi → (phi.imp bot).imp bot
-    -- By deduction theorem twice: from [phi, phi.imp bot] derive bot.
-    -- Build [phi.imp bot, phi] ⊢ bot via modus ponens
     have h_bot : [phi.imp Formula.bot, phi] ⊢ Formula.bot := by
       have h_phi := DerivationTree.assumption [phi.imp Formula.bot, phi] phi
         (List.mem_cons.mpr (Or.inr (List.mem_cons.mpr (Or.inl rfl))))
       have h_neg := DerivationTree.assumption [phi.imp Formula.bot, phi] (phi.imp Formula.bot)
         (List.mem_cons.mpr (Or.inl rfl))
       exact DerivationTree.modus_ponens _ _ _ h_neg h_phi
-    -- Deduction theorem: [phi] ⊢ (phi → bot) → bot
     have h_ded1 := Bimodal.Metalogic.Core.deduction_theorem [phi] (phi.imp Formula.bot) Formula.bot h_bot
-    -- Deduction theorem: [] ⊢ phi → ((phi → bot) → bot)
     exact Bimodal.Metalogic.Core.deduction_theorem [] phi ((phi.imp Formula.bot).imp Formula.bot) h_ded1
-  -- Weaken h_dni to our context
   have h_dni_ctx : [Formula.and phi (Formula.neg phi)] ⊢ phi.imp (Formula.neg phi).neg :=
     DerivationTree.weakening [] _ _ h_dni (by intro; simp)
-  -- Now: Formula.and phi (phi.neg) = (phi.imp (phi.neg).neg).neg
-  -- So h_conj : context ⊢ (phi.imp (phi.neg).neg).neg
-  -- And h_dni_ctx : context ⊢ phi.imp (phi.neg).neg
-  -- Modus ponens of h_conj (which is neg of h_dni_ctx's conclusion) on h_dni_ctx:
-  -- h_conj has type (phi.imp (phi.neg).neg).imp bot
-  -- h_dni_ctx has type phi.imp (phi.neg).neg
-  -- MP gives bot.
   exact DerivationTree.modus_ponens _ _ _ h_conj h_dni_ctx
 
 /--
