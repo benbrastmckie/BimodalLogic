@@ -1,5 +1,5 @@
 ---
-next_project_number: 933
+next_project_number: 934
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 933. Research alternative canonical model constructions
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Research alternative canonical model constructions that avoid the F-formula persistence problem in DovetailingChain. Explore: (1) tree unraveling approach, (2) quotient construction, (3) omega-squared enumeration, (4) direct Int-indexed construction without dovetailing. Goal: find construction that achieves both temporal coherence AND modal saturation for D = Int.
+
+---
 
 ### 932. Remove constant witness family approach from metalogic
 - **Effort**: 4-8 hours

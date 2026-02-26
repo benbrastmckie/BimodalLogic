@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 933,
+      "project_name": "research_alternative_canonical_construction",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-26T07:43:59Z",
+      "last_updated": "2026-02-26T07:43:59Z",
+      "description": "Research alternative canonical model constructions that avoid the F-formula persistence problem in DovetailingChain. Explore: (1) tree unraveling approach, (2) quotient construction, (3) omega-squared enumeration, (4) direct Int-indexed construction without dovetailing. Goal: find construction that achieves both temporal coherence AND modal saturation for D = Int or another LinearOrderedAddCommGroup."
+    },
+    {
       "project_number": 932,
       "project_name": "remove_constant_witness_family_metalogic",
       "status": "completed",
@@ -998,7 +1007,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 933,
+  "next_project_number": 934,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
