@@ -39,7 +39,7 @@
       "language": "meta",
       "description": "Update /todo command to write changelog entries to specs/CHANGE_LOG.md instead of inline ROAD_MAP.md section. Update Step 5.8 changelog update logic, existence checks, and git commit messages. Preserve backward compatibility notes.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T20:47:56Z",
+      "last_updated": "2026-02-26T20:58:34Z",
       "effort": "2-3 hours",
       "dependencies": [
         941
@@ -52,26 +52,26 @@
           "summary": "Gap analysis showing minimal remaining work after Task 941 migration"
         },
         {
-          "path": "specs/942_update_todo_command_changelog_integration/plans/implementation-001.md",
+          "path": "specs/942_update_todo_command_changelog_integration/plans/implementation-002.md",
           "type": "plan",
-          "summary": "1-phase minimal cleanup plan for /todo changelog integration"
+          "summary": "Simplified 1-phase plan (clean-break, no backward compat)"
         }
       ],
-      "planned": "2026-02-26T20:47:56Z"
+      "planned": "2026-02-26T20:58:34Z"
     },
     {
       "project_number": 943,
       "project_name": "update_review_command_dual_file_maintenance",
-      "status": "researched",
+      "status": "planning",
       "language": "meta",
       "description": "Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T20:43:40Z",
+      "last_updated": "2026-02-26T20:56:49Z",
       "effort": "2-3 hours",
       "dependencies": [
         941
       ],
-      "session_id": "sess_1772138447_18727",
+      "session_id": "sess_1772139396_889",
       "researched": "2026-02-26T20:43:40Z",
       "artifacts": [
         {
@@ -97,43 +97,55 @@
     {
       "project_number": 940,
       "project_name": "port_lean_version_management_command",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "description": "Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:41:20Z",
+      "last_updated": "2026-02-26T20:58:43Z",
       "effort": "1-2 hours",
-      "session_id": "sess_1740592000_r940",
+      "session_id": "sess_1740593000_p940",
       "researched": "2026-02-26T20:41:20Z",
       "artifacts": [
         {
           "path": "specs/940_port_lean_version_management_command/reports/research-001.md",
           "type": "research",
           "summary": "Architecture recommendation for /lean command: 4 modes (check/upgrade/rollback/dry-run), direct execution skill pattern, AskUserQuestion for interactive upgrades, git-based backup strategy"
+        },
+        {
+          "path": "specs/940_port_lean_version_management_command/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for /lean command with check, upgrade, rollback, and dry-run modes"
         }
-      ]
+      ],
+      "planned": "2026-02-26T20:58:43Z"
     },
     {
       "project_number": 939,
       "project_name": "upgrade_research_command_domain_routing",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "description": "Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:40:39Z",
+      "last_updated": "2026-02-26T20:58:51Z",
       "effort": "1-2 hours",
       "dependencies": [
         936
       ],
-      "session_id": "sess_1772138212_48fc",
+      "session_id": "sess_1772139374_2dd2",
       "researched": "2026-02-26T20:40:39Z",
       "artifacts": [
         {
           "path": "specs/939_upgrade_research_command_domain_routing/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing current routing, existing skills, and implementation plan for domain override flags"
+        },
+        {
+          "path": "specs/939_upgrade_research_command_domain_routing/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for /research domain routing upgrade (Phase 6 deferred)"
         }
-      ]
+      ],
+      "planned": "2026-02-26T20:58:51Z"
     },
     {
       "project_number": 938,

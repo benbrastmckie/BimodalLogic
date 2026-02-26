@@ -34,7 +34,7 @@ technical_debt:
 
 ### 943. Update /review command for dual-file maintenance
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: meta
 - **Dependencies**: Task #941
 - **Research**: [specs/943_update_review_command_dual_file_maintenance/reports/research-001.md]
@@ -44,14 +44,14 @@ technical_debt:
 ---
 
 ### 942. Update /todo command for CHANGE_LOG.md integration
-- **Effort**: 2-3 hours
+- **Effort**: 0.25 hours
 - **Status**: [PLANNED]
-- **Plan**: [specs/942_update_todo_command_changelog_integration/plans/implementation-001.md]
+- **Plan**: [specs/942_update_todo_command_changelog_integration/plans/implementation-002.md]
 - **Language**: meta
 - **Dependencies**: Task #941
 - **Research**: [specs/942_update_todo_command_changelog_integration/reports/research-001.md]
 
-**Description**: Update /todo command to write changelog entries to specs/CHANGE_LOG.md instead of inline ROAD_MAP.md section. Update Step 5.8 changelog update logic, existence checks, and git commit messages. Preserve backward compatibility notes.
+**Description**: Update /todo command to write changelog entries to specs/CHANGE_LOG.md. Remove obsolete Task 941 references, add schema reference. Clean-break approach (no backward compatibility notes).
 
 ---
 
@@ -69,8 +69,9 @@ technical_debt:
 
 ### 940. Port /lean version management command
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
+- **Plan**: [implementation-001.md](specs/940_port_lean_version_management_command/plans/implementation-001.md)
 - **Research**: [research-001.md](specs/940_port_lean_version_management_command/reports/research-001.md)
 
 **Description**: Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.
@@ -79,7 +80,7 @@ technical_debt:
 
 ### 939. Upgrade /research command with domain routing
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: meta
 - **Dependencies**: Task #936
 - **Research**: [research-001.md](specs/939_upgrade_research_command_domain_routing/reports/research-001.md)
