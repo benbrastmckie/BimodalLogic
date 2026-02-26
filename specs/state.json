@@ -8,11 +8,12 @@
     {
       "project_number": 932,
       "project_name": "remove_constant_witness_family_metalogic",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-26T05:47:26Z",
-      "last_updated": "2026-02-26T05:48:59Z",
-      "session_id": "sess_1772084922_a68d00"
+      "last_updated": "2026-02-26T05:53:28Z",
+      "session_id": "sess_1772084922_a68d00",
+      "researched": "2026-02-26T05:53:28Z"
     },
     {
       "project_number": 931,
