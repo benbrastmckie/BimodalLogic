@@ -1,7 +1,7 @@
 # Implementation Plan: Port Lean Version Management Command
 
 - **Task**: 940 - port_lean_version_management_command
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4.5 hours
 - **Dependencies**: /lake command (existing)
 - **Research Inputs**: specs/940_port_lean_version_management_command/reports/research-001.md
@@ -49,7 +49,7 @@ Integrated findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Core Infrastructure [NOT STARTED]
+### Phase 1: Core Infrastructure [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Create command file and skill skeleton with argument parsing
@@ -73,7 +73,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 2: Check Mode [NOT STARTED]
+### Phase 2: Check Mode [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Implement status display showing current versions and available updates
@@ -97,7 +97,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 3: Upgrade Mode with AskUserQuestion [NOT STARTED]
+### Phase 3: Upgrade Mode with AskUserQuestion [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Implement interactive upgrade with user confirmation and backup
@@ -126,7 +126,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 4: Rollback Mode [NOT STARTED]
+### Phase 4: Rollback Mode [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Implement version rollback from backup
@@ -152,7 +152,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 5: Dry-Run Mode [NOT STARTED]
+### Phase 5: Dry-Run Mode [COMPLETED]
 
 - **Dependencies:** Phase 2, Phase 3
 - **Goal:** Implement preview of upgrade changes without applying
@@ -176,7 +176,7 @@ Integrated findings from research-001.md:
 
 ---
 
-### Phase 6: Testing and Documentation [NOT STARTED]
+### Phase 6: Testing and Documentation [COMPLETED]
 
 - **Dependencies:** Phase 4, Phase 5
 - **Goal:** Verify all modes work correctly and document usage

@@ -19,7 +19,7 @@ Artifacts: `specs/{N}_{SLUG}/reports/`, `plans/`, `summaries/`
 
 ## Commands
 
-`/task`, `/research`, `/plan`, `/implement`, `/revise`, `/review`, `/todo`, `/errors`, `/meta`, `/learn`, `/lake`, `/refresh`
+`/task`, `/research`, `/plan`, `/implement`, `/revise`, `/review`, `/todo`, `/errors`, `/meta`, `/learn`, `/lake`, `/lean`, `/refresh`
 
 Full reference: @.claude/context/core/reference/command-reference.md
 

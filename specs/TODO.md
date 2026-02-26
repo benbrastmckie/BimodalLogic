@@ -46,8 +46,9 @@ technical_debt:
 
 ### 942. Update /todo command for CHANGE_LOG.md integration
 - **Effort**: 0.25 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Plan**: [specs/942_update_todo_command_changelog_integration/plans/implementation-002.md]
+- **Summary**: [specs/942_update_todo_command_changelog_integration/summaries/implementation-summary-20260226.md]
 - **Language**: meta
 - **Dependencies**: Task #941
 - **Research**: [specs/942_update_todo_command_changelog_integration/reports/research-001.md]
@@ -70,10 +71,11 @@ technical_debt:
 
 ### 940. Port /lean version management command
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Plan**: [implementation-001.md](specs/940_port_lean_version_management_command/plans/implementation-001.md)
 - **Research**: [research-001.md](specs/940_port_lean_version_management_command/reports/research-001.md)
+- **Summary**: [implementation-summary-20260226.md](specs/940_port_lean_version_management_command/summaries/implementation-summary-20260226.md)
 
 **Description**: Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.
 

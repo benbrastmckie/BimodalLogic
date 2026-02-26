@@ -1,20 +1,34 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Created /lean command with skill-lean-version for Lean toolchain and Mathlib version management. Provides 4 modes: check (status display), upgrade (interactive with AskUserQuestion and backup), rollback (restore from backup), and dry-run (preview changes). Complements existing /lake command.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/940_port_lean_version_management_command/plans/implementation-001.md",
-      "summary": "6-phase implementation plan for /lean command with check, upgrade, rollback, and dry-run modes"
+      "type": "implementation",
+      "path": ".claude/commands/lean.md",
+      "summary": "Command entry point with syntax, options, mode routing, and examples"
+    },
+    {
+      "type": "implementation",
+      "path": ".claude/skills/skill-lean-version/SKILL.md",
+      "summary": "Direct execution skill with check, upgrade, rollback, and dry-run modes"
+    },
+    {
+      "type": "summary",
+      "path": "specs/940_port_lean_version_management_command/summaries/implementation-summary-20260226.md",
+      "summary": "Implementation summary with phase log and verification checklist"
     }
   ],
-  "next_steps": "Run /implement 940 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Created /lean command with skill-lean-version for Lean toolchain and Mathlib version management. Command provides check, upgrade, rollback, and dry-run modes with backup support and AskUserQuestion for interactive confirmation.",
+    "claudemd_suggestions": "Added /lean to command list in CLAUDE.md, created .claude/commands/lean.md and .claude/skills/skill-lean-version/SKILL.md"
+  },
   "metadata": {
-    "session_id": "sess_1740593000_p940",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1740594000_i940",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 4.5
-  }
+    "delegation_path": ["orchestrator", "implement", "skill-implementer", "general-implementation-agent"],
+    "phases_completed": 6,
+    "phases_total": 6
+  },
+  "next_steps": "Test /lean command with check mode on current project"
 }
