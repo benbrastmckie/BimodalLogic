@@ -165,9 +165,11 @@ The architecture places canonical model construction as the foundation, with FMP
 - Clear dependency hierarchy: Core < Representation < Completeness < Compactness
 
 **References**:
-- [Bimodal/Metalogic/Representation/](Theories/Bimodal/Metalogic/Representation/) - Core implementation
+- [Representation.lean](Theories/Bimodal/Metalogic/Representation.lean) - Current BFMCS-based entry point
 - [Task 654 research](specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) - Approach analysis
-- [Bundle/Representation.lean](Theories/Bimodal/Metalogic/Representation/UniversalCanonicalModel.lean) - Main theorem
+- [Boneyard archive](Theories/Bimodal/Boneyard/Metalogic_v5/Representation/) - Archived original files
+
+*Note*: Sorry-free completeness is now via the FMP approach (`FMP/SemanticCanonicalModel.lean`), not the archived Representation module.
 
 ---
 
@@ -175,29 +177,29 @@ The architecture places canonical model construction as the foundation, with FMP
 
 **Status**: ACTIVE
 **Started**: 2025-12-15
-**Hypothesis**: Using a family of MCS indexed by time (mcs : D -> Set Formula) with temporal coherence conditions matches irreflexive G/H semantics without requiring T-axioms.
+**Hypothesis**: Using a family of MCS indexed by time (mcs : D -> Set Formula) with temporal coherence conditions matches REFLEXIVE G/H semantics with T-axioms (Gφ → φ, Hφ → φ) enabling coherence proofs.
 
-*Rationale*: TM's G/H operators are irreflexive (strictly future/past, excluding present). A family-based approach naturally captures this structure, with each time point having its own MCS connected via temporal coherence conditions.
+*Rationale*: TM's G/H operators use REFLEXIVE semantics (present + future/past, inclusive). A family-based approach captures this structure, with each time point having its own MCS connected via temporal coherence conditions (using ≤, not <).
 
 **Approach**:
-Design uses a family of MCS indexed by time, where coherence conditions (forward_G, backward_H, forward_H, backward_G) connect time points. These conditions match the irreflexive semantics without requiring T-axioms.
+Design uses a family of MCS indexed by time, where coherence conditions (forward_G, backward_H, forward_H, backward_G) connect time points. These conditions use reflexive inequalities (≤); T-axioms are valid and used in coherence proofs.
 
 **Outcomes**:
-- Representation theorem proven without T-axiom dependency
+- Representation theorem proven with T-axiom validity via reflexivity
 - Task relation (canonical_history_family_respects) proven
 - Truth lemma for temporal operators proven
 - Documented gaps in backward truth lemma cases (non-blocking)
 
 **References**:
-- [IndexedMCSFamily.lean](Theories/Bimodal/Metalogic/Representation/IndexedMCSFamily.lean) - Core structure
-- [CanonicalHistory.lean](Theories/Bimodal/Metalogic/Representation/CanonicalHistory.lean) - Task relation proof
-- [TruthLemma.lean](Theories/Bimodal/Metalogic/Representation/TruthLemma.lean) - Truth lemma
+- [FMCSDef.lean](Theories/Bimodal/Metalogic/Bundle/FMCSDef.lean) - Current FMCS structure (reflexive ≤ coherence)
+- [TruthLemma.lean](Theories/Bimodal/Metalogic/Bundle/TruthLemma.lean) - Current truth lemma
+- [Boneyard/IndexedMCSFamily.lean](Theories/Bimodal/Boneyard/Metalogic_v5/Representation/IndexedMCSFamily.lean) - Archived original (strict <)
 
 ---
 
 ### Strategy: CoherentConstruction Two-Chain Design
 
-**Status**: ACTIVE
+**Status**: SUPERSEDED
 **Started**: 2026-01-10
 **Hypothesis**: A two-chain design (forward chain for times > 0, backward chain for times < 0) from a central origin simplifies coherence proofs by making coherence conditions definitional.
 
@@ -215,9 +217,9 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 - Cross-origin gaps documented as non-blocking
 
 **References**:
-- [CoherentConstruction.lean](Theories/Bimodal/Metalogic/Representation/CoherentConstruction.lean) - Implementation
-- [Task 814 research](specs/archive/814_sorry_reduction_coherentconstruction_cases_2_3/reports/) - Analysis
-- [Phase 4 overview](specs/ROAD_MAP.md#phase-4-architecture-optimization-high-priority) - Architecture context
+- [Boneyard/CoherentConstruction.lean](Theories/Bimodal/Boneyard/Metalogic_v5/Representation/CoherentConstruction.lean) - Archived two-chain implementation
+- [DovetailingChain.lean](Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean) - Current replacement (dovetailing approach)
+- [Task 808 research](specs/archive/808_audit_coherentconstruction_taskrelation_sorries/) - Analysis
 
 ---
 
@@ -435,7 +437,7 @@ Built comprehensive decidability infrastructure in Boneyard/Metalogic_v2/Decidab
 The parametric FMP approach (semantic_weak_completeness) provides a cleaner path to practical completeness without the full decidability machinery. The Boneyard approach required maintaining complex tableau state and rule application tracking.
 
 **Evidence**:
-- [Boneyard/Metalogic_v2/Decidability/](Theories/Boneyard/Metalogic_v2/Decidability/) - Archived implementation
+- [Boneyard/Metalogic_v2/Decidability/](Theories/Bimodal/Boneyard/Metalogic_v2/Decidability/) - Archived implementation
 - [Decidability tables in roadmap](specs/ROAD_MAP.md#decidability-infrastructure-boneyard) - Status documentation
 
 **Lesson**:
@@ -460,7 +462,7 @@ Constructed FDSM (Finite Deterministic State Machine) models from closure of a f
 Modal trivialization: with a single history, Box psi becomes equivalent to psi because there's only one "future" path to evaluate. The irreflexive G/H semantics requires multiple possible futures/pasts.
 
 **Evidence**:
-- [Task 825 research-002.md](specs/archive/825_fdsm_construction/reports/research-002.md) - Analysis of trivialization
+- [Task 825 research](specs/archive/825_fdsm_multi_history_modal_saturation/reports/research-001.md) - Analysis of trivialization
 - Archived fdsm_from_closure_mcs attempt
 
 **Lesson**:
@@ -474,7 +476,7 @@ Multi-history saturation is required for non-trivial modalities in TM logic. Sin
 
 **Status**: BLOCKED
 **Tried**: 2026-01-15 to 2026-01-20
-**Related Tasks**: Task 814
+**Related Tasks**: Task 808
 
 *Rationale*: Attempted to prove coherence across different MCS origins (e.g., showing G-persistence from t<0 to t>0) for completeness of the CoherentConstruction approach.
 
@@ -485,8 +487,8 @@ Proved Cases 1 and 4 of coherence conditions (same-side of origin). Attempted Ca
 Cases 2 and 3 are not on the critical path for completeness. The representation theorem and completeness proofs only require coherence for times on the same side of the origin.
 
 **Evidence**:
-- [CoherentConstruction.lean](Theories/Bimodal/Metalogic/Representation/CoherentConstruction.lean) - Documented sorries for Cases 2,3
-- [Task 814 research](specs/archive/814_sorry_reduction_coherentconstruction_cases_2_3/reports/) - Analysis
+- [Boneyard/CoherentConstruction.lean](Theories/Bimodal/Boneyard/Bundle/CoherentConstruction.lean) - Documented sorries for Cases 2,3
+- [Task 808 research](specs/archive/808_audit_coherentconstruction_taskrelation_sorries/) - Analysis
 
 **Lesson**:
 Focus effort on what's actually blocking main results. Not all mathematical completeness is necessary for practical theorem proving.
@@ -512,7 +514,7 @@ Proof complexity: proving coherence after construction required complex reasonin
 **Evidence**:
 - Git history of IndexedMCSFamily.lean
 - [Task 753 research](specs/archive/753_prove_coherentconstruction_sorries/reports/) - Sigma-type refactoring analysis
-- [Task 814 research](specs/archive/814_sorry_reduction_coherentconstruction_cases_2_3/reports/) - Two-chain design benefits
+- [Task 808 research](specs/archive/808_audit_coherentconstruction_taskrelation_sorries/) - Two-chain design benefits
 
 **Lesson**:
 When proofs are hard, consider whether the definition can be restructured to make properties hold by construction rather than by proof.
@@ -608,7 +610,7 @@ Temporal saturation requires time-varying families. Witnesses must be placed at 
 For a single-family bundle, modal_backward reduces to: "if phi holds in the single family's MCS, then Box(phi) holds". This is `phi ∈ MCS → Box(phi) ∈ MCS`.
 
 **Why It Failed**:
-This is equivalent to the T-axiom `phi → Box(phi)`, which TM logic does not have. Without T, we cannot derive Box(phi) from phi alone. The modal_backward condition requires MULTIPLE families to witness the universal quantification.
+This requires `phi → Box(phi)` (the converse of the T-axiom `Box(phi) → phi`), which TM logic does not have. Without this principle, we cannot derive Box(phi) from phi alone. The modal_backward condition requires MULTIPLE families to witness the universal quantification.
 
 **Evidence**:
 - [Task 905 research](specs/archive/) - Proof of impossibility
