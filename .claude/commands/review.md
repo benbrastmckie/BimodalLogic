@@ -172,6 +172,107 @@ Variables set for later sections:
 - `review_focus_paths` - List of suggested file paths to prioritize in review
 - `active_strategies` - List of ACTIVE strategy names for quick reference
 
+### 1.7. Load Changelog Context (Historical Record)
+
+**Purpose**: Load recent entries from CHANGE_LOG.md to provide historical context for the review and enable duplicate detection when updating the changelog after review.
+
+**Context**: Load @.claude/context/core/formats/changelog-format.md for entry schema.
+
+Parse `specs/CHANGE_LOG.md` to extract recent entries:
+
+#### 1.7.1. Parse Changelog Entries (30-Day Window)
+
+Extract entries from the last 30 days:
+
+```bash
+# Read CHANGE_LOG.md if it exists
+if [ -f specs/CHANGE_LOG.md ]; then
+  changelog_content=$(cat specs/CHANGE_LOG.md)
+else
+  changelog_content=""
+fi
+```
+
+Parse date headers and task entries within the 30-day window:
+
+```
+# Calculate cutoff date (30 days ago)
+cutoff_date = today - 30 days
+
+For each "### YYYY-MM-DD" date header in changelog:
+  entry_date = parse date from header
+  if entry_date >= cutoff_date:
+    For each "- **Task {N}**:" line under this date header:
+      task_number = extract N
+      summary = text after "**Task {N}**:"
+      rationale = text after "*Rationale*:" if present
+      references = links after "*References*:" if present
+      add to recent_entries list
+      add N to recent_task_numbers set
+    date_range.earliest = min(date_range.earliest, entry_date)
+    date_range.latest = max(date_range.latest, entry_date)
+```
+
+Build `changelog_context` structure:
+```json
+{
+  "changelog_context": {
+    "recent_entries": [
+      {
+        "date": "2026-02-26",
+        "task_number": 933,
+        "summary": "Archived CanonicalReachable/CanonicalQuotient stack to Boneyard.",
+        "rationale": "CanonicalReachable backward_P is blocked.",
+        "has_references": true
+      }
+    ],
+    "entry_count": 5,
+    "date_range": {
+      "earliest": "2026-02-01",
+      "latest": "2026-02-26"
+    },
+    "loaded_successfully": true
+  }
+}
+```
+
+Build `recent_task_numbers` set for duplicate detection in Section 6.6:
+```
+recent_task_numbers = {933, 934, 935, ...}
+```
+
+#### 1.7.2. Fallback Behavior
+
+If `specs/CHANGE_LOG.md` is missing or empty:
+
+```bash
+# Check if file exists and has entries
+if [ ! -f specs/CHANGE_LOG.md ] || [ ! -s specs/CHANGE_LOG.md ]; then
+  echo "INFO: CHANGE_LOG.md not found or empty - changelog context unavailable"
+  echo "INFO: Review will proceed without changelog context"
+  echo "INFO: Run /todo to generate changelog from completed tasks"
+fi
+```
+
+Set fallback context:
+```json
+{
+  "changelog_context": {
+    "recent_entries": [],
+    "entry_count": 0,
+    "date_range": null,
+    "loaded_successfully": false,
+    "fallback_reason": "file_missing_or_empty"
+  }
+}
+```
+
+Set `recent_task_numbers = {}` (empty set).
+
+Variables set for later sections:
+- `changelog_context` - Full context object for use in Section 4 (report) and Section 6.6 (update)
+- `recent_task_numbers` - Set of task numbers already in changelog (for duplicate detection in 6.6)
+
 ### 2. Gather Context
 
 **For Lean files (.lean):**
@@ -409,6 +510,22 @@ Write to `specs/reviews/review-{DATE}.md`:
 
 {If roadmap_context.loaded_successfully is false:}
 *Strategies and Ambitions sections not yet populated in ROAD_MAP.md. Run Task 833 or manually add content to enable strategic context.*
+
+---
+
+## Changelog Context
+
+{If changelog_context.loaded_successfully is true:}
+- Recent entries (last 30 days): {changelog_context.entry_count}
+- Date range: {changelog_context.date_range.earliest} to {changelog_context.date_range.latest}
+
+{If changelog_context.entry_count > 0:}
+### Recent Completed Work
+{For each entry in changelog_context.recent_entries:}
+- **Task {entry.task_number}** ({entry.date}): {entry.summary}
+
+{If changelog_context.loaded_successfully is false:}
+*CHANGE_LOG.md not found or empty. Historical context unavailable. Run /todo to populate.*
 
 ---
 
@@ -1102,9 +1219,150 @@ After all revision operations, build summary for Section 4 report:
 }
 ```
 
+### 6.6. Update CHANGE_LOG.md Based on Review Findings
+
+**Purpose**: Record significant review findings in CHANGE_LOG.md as a historical event. This ensures the changelog captures major review milestones alongside task completions.
+
+**Context**: Load @.claude/context/core/formats/changelog-format.md for entry schema.
+
+**Precondition**: `changelog_context` from Section 1.7 must exist. Both success and failure states are handled below.
+
+#### 6.6.1. Determine Entry Worthiness
+
+Not every review warrants a changelog entry. Apply worthiness criteria:
+
+**Create a changelog entry if ANY of:**
+- Review found Critical severity issues
+- Review found High severity issues
+- Review resulted in ROAD_MAP.md changes (strategies_updated > 0 OR ambitions_approved > 0)
+- Review created tasks (tasks_created > 0)
+- Review scope is "all" (full codebase review)
+
+**Skip changelog entry if ALL of:**
+- No Critical or High issues found
+- No ROAD_MAP.md changes made
+- No tasks created
+- Scope is a specific file or directory (not "all")
+
+```
+entry_worthy = (
+  critical_issues > 0 OR
+  high_issues > 0 OR
+  strategies_updated > 0 OR
+  ambitions_approved > 0 OR
+  tasks_created > 0 OR
+  scope == "all"
+)
+```
+
+**If not entry_worthy**: Set `changelog_updated = false`, skip to Section 7.
+
+#### 6.6.2. Compose Changelog Entry
+
+Build the entry following changelog-format.md schema:
+
+```
+today = current date in YYYY-MM-DD format
+scope_text = scope argument (e.g., "all", "Theories/Bimodal/", "file.lean")
+
+# Compose summary line
+summary = "Reviewed {scope_text}."
+if critical_issues > 0: summary += " {critical_issues} critical issue(s) found."
+if high_issues > 0: summary += " {high_issues} high issue(s) found."
+if tasks_created > 0: summary += " {tasks_created} task(s) created."
+if strategies_updated > 0 OR ambitions_approved > 0:
+  summary += " ROAD_MAP.md updated ({strategies_updated} strategies, {ambitions_approved} ambitions)."
+
+# Build rationale
+rationale_parts = []
+if critical_issues > 0: add "Critical: {critical issue titles}"
+if high_issues > 0: add "High: {high issue titles, up to 3}"
+if roadmap_revisions.roadmap_modified: add "Roadmap revised: {strategy/ambition names}"
+
+rationale = rationale_parts joined with "; " (omit if empty)
+```
+
+Format the entry:
+```markdown
+- **Review {DATE}**: {summary}
+  - *Rationale*: {rationale}
+  - *References*: [review report](specs/reviews/review-{DATE}.md)
+```
+
+**Note**: Review entries use "**Review {DATE}**" format (not "**Task {N}**") to distinguish them from task completion entries.
+
+#### 6.6.3. Insert Entry into CHANGE_LOG.md
+
+Insert entry following the date-header pattern from changelog-format.md:
+
+**Step 1: Check if today's date header exists:**
+```bash
+if grep -q "^### {today}$" specs/CHANGE_LOG.md; then
+  date_header_exists = true
+else
+  date_header_exists = false
+fi
+```
+
+**Step 2a: If today's date header exists, append entry under it:**
+```
+# Find the line after "### {today}" and insert entry
+old_string: "### {today}\n\n"
+new_string: "### {today}\n\n- **Review {today}**: {summary}\n  ...\n\n"
+```
+
+Or if entries already exist under today's header:
+```
+old_string: "### {today}\n\n- **Task {N}**"
+new_string: "### {today}\n\n- **Review {today}**: {summary}\n  ...\n\n- **Task {N}**"
+```
+
+**Step 2b: If no today's date header, insert new header at top of Changelog section:**
+```
+old_string: "## Changelog\n\n<!-- Schema comment -->\n\n"
+new_string: "## Changelog\n\n<!-- Schema comment -->\n\n### {today}\n\n- **Review {today}**: {summary}\n  - *Rationale*: {rationale}\n  - *References*: [review report](specs/reviews/review-{DATE}.md)\n\n"
+```
+
+If the schema comment line doesn't match exactly, use:
+```
+old_string: "## Changelog\n\n"
+new_string: "## Changelog\n\n### {today}\n\n- **Review {today}**: {summary}\n  - *Rationale*: {rationale}\n  - *References*: [review report](specs/reviews/review-{DATE}.md)\n\n"
+```
+
+**Safety rules:**
+- Only insert if `changelog_context.loaded_successfully` is true OR file exists (even if empty)
+- Create CHANGE_LOG.md if it doesn't exist (initialize with header and new entry)
+- Preserve all existing content and formatting
+
+#### 6.6.4. Track Changes
+
+Set variables for use in Step 7 commit and Step 8 output:
+
+```json
+{
+  "changelog_updated": true,
+  "changelog_entry": {
+    "date": "2026-02-26",
+    "summary": "Reviewed all. 2 high issue(s) found. 3 task(s) created.",
+    "entry_worthy": true
+  }
+}
+```
+
+If entry was skipped (not entry_worthy):
+```json
+{
+  "changelog_updated": false,
+  "changelog_entry": {
+    "entry_worthy": false,
+    "skip_reason": "No critical/high issues, no roadmap changes, no tasks created"
+  }
+}
+```
+
 ### 7. Git Commit
 
-Commit review report, state files, task state, and any roadmap changes:
+Commit review report, state files, task state, roadmap changes, and changelog updates:
 
 ```bash
 # Add review artifacts
@@ -1113,6 +1371,11 @@ git add specs/reviews/review-{DATE}.md specs/reviews/state.json
 # Add roadmap if modified
 if git diff --name-only | grep -q "specs/ROAD_MAP.md"; then
   git add specs/ROAD_MAP.md
+fi
+
+# Add changelog if modified
+if git diff --name-only | grep -q "specs/CHANGE_LOG.md"; then
+  git add specs/CHANGE_LOG.md
 fi
 
 # Add task state if tasks were created
@@ -1127,6 +1390,7 @@ Roadmap: {annotations_made} items annotated
 Strategies: {strategies_updated} updated
 Ambitions: {ambitions_approved} added ({ambitions_proposed} proposed)
 Tasks: {tasks_created} created ({grouped_count} grouped, {individual_count} individual)
+Changelog: {if changelog_updated then "entry added" else "no entry (below threshold)"}
 
 Session: {session_id}
 
@@ -1135,7 +1399,7 @@ EOF
 )"
 ```
 
-This ensures review report, state tracking, task state, roadmap updates, and strategy/ambition changes are committed together.
+This ensures review report, state tracking, task state, roadmap updates, strategy/ambition changes, and changelog entries are committed together.
 
 ### 8. Output
 
@@ -1170,6 +1434,16 @@ Roadmap Revisions:
 
 {If not roadmap_context.loaded_successfully:}
 Roadmap Context: Strategies/Ambitions sections not populated (see Task 833)
+
+{If changelog_updated:}
+Changelog: Entry added to specs/CHANGE_LOG.md
+- Review {DATE}: {changelog_entry.summary}
+
+{If not changelog_updated and entry_worthy:}
+Changelog: Update attempted but failed (check CHANGE_LOG.md)
+
+{If not changelog_updated and not entry_worthy:}
+Changelog: No entry added ({changelog_entry.skip_reason})
 
 {If tasks created via interactive selection}
 Tasks Created: {N} total
