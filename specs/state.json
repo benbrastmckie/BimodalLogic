@@ -138,24 +138,44 @@
     {
       "project_number": 938,
       "project_name": "port_logic_math_context_files",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "description": "Port missing logic and math context files from Theory repository (~15 documents). Logic domain: bilateral-propositions.md, bilateral-semantics.md, counterfactual-semantics.md, lattice-theory-concepts.md, mereology-foundations.md, spatial-domain.md, topological-foundations-domain.md. Math: category-theory/ (6 files), foundations/dependent-type-theory.md, lattice-theory/bilattice-theory.md, topology/scott-topology.md, order-theory/monoidal-posets.md. Update README.md files for each domain.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T21:30:00Z",
+      "last_updated": "2026-02-26T20:48:36Z",
       "effort": "3-4 hours",
       "dependencies": [
         937
       ],
-      "session_id": "sess_1772138188_0fbf2b",
+      "session_id": "sess_1772138900_671b9f",
       "researched": "2026-02-26T21:30:00Z",
+      "planned": "2026-02-26T12:49:00Z",
       "artifacts": [
         {
           "path": "specs/938_port_logic_math_context_files/reports/research-001.md",
           "type": "report",
           "summary": "Research report identifying 15 new files and 2 updated files to port from Theory repository"
+        },
+        {
+          "path": "specs/938_port_logic_math_context_files/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "3-phase implementation plan for porting 2 context files (reduced scope)"
         }
-      ]
+      ],
+      "plan_metadata": {
+        "phases": 3,
+        "total_effort_hours": 0.5,
+        "complexity": "simple",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-26"
+          }
+        ]
+      }
     },
     {
       "project_number": 937,
