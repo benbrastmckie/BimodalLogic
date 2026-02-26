@@ -1,5 +1,5 @@
 ---
-next_project_number: 935
+next_project_number: 936
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 935. Audit ROAD_MAP.md Current State section for accuracy
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Review and update '## Current State: What's Been Accomplished' section and following content in specs/ROAD_MAP.md. Audit for accuracy, clarity, and conciseness to provide clear guidance for theory development. Ensure all claims match current codebase state.
+
+---
 
 ### 934. Audit and update ROAD_MAP.md Strategies and Dead Ends sections for accuracy
 - **Effort**: 2-4 hours
