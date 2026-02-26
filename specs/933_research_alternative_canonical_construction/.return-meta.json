@@ -1,21 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-25T12:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/933_research_alternative_canonical_construction/reports/research-001.md",
-      "type": "research",
-      "summary": "Comprehensive analysis of Boneyard candidates, sorry inventory, and 7 alternative canonical model constructions for resolving the F-formula persistence problem"
+      "type": "plan",
+      "path": "specs/933_research_alternative_canonical_construction/plans/implementation-001.md",
+      "summary": "6-phase cleanup plan to archive CanonicalReachable/CanonicalQuotient/CanonicalEmbedding stack to Boneyard and remove dead code"
     }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Full research report completed covering all 4 research objectives"
-  },
+  "next_steps": "Run /implement 933 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772092346_98019a",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1772093015_92b020",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 2.5
   }
 }
