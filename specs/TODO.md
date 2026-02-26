@@ -1,5 +1,5 @@
 ---
-next_project_number: 931
+next_project_number: 932
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 931. Remove bmcs_truth_lemma_mcs and non-standard validity definitions from Metalogic
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Remove `bmcs_truth_lemma_mcs` and all definitions that depart from standard validity semantics (as defined in `Bimodal.Semantics.Validity`). Move all infected proofs to Boneyard with comments banning such approaches that depart from the standard `truth_at`/`valid` definitions. No trace of non-standard validity should remain in the Metalogic module.
+
+---
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours
