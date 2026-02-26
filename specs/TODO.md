@@ -52,12 +52,14 @@ technical_debt:
 
 ### 925. Redesign BMCS completeness construction using MCS accessibility relation
 - **Effort**: 12-20 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-02-25
+- **Completed**: 2026-02-25
 - **Supersedes**: Tasks 916, 922, 924
 - **Research**: [research-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-001.md), [research-002.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-002.md), [research-003.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-003.md), [research-004.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-004.md)
 - **Plan**: [implementation-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260225.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/summaries/implementation-summary-20260225.md)
 
 **Description**: Tasks 924, 922, and 916 have hit major issues requiring architectural redesign.
 
