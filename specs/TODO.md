@@ -1,5 +1,5 @@
 ---
-next_project_number: 934
+next_project_number: 935
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 934. Audit and update ROAD_MAP.md Strategies and Dead Ends sections for accuracy
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Audit and update ROAD_MAP.md Strategies and Dead Ends sections for accuracy. The sections contain outdated information: (1) Strategy "Indexed MCS Family Approach" incorrectly states G/H operators are irreflexive and T-axioms not required - semantics changed to reflexive (≤) in Task 658, T-axioms now trivially valid. (2) Coherence conditions listed as using strict < instead of ≤. (3) Dead Ends needs verification of entries for tasks 928-933. Systematically read every entry against actual code, correct inaccuracies, remove historical distractions.
+
+---
 
 ### 933. Research alternative canonical model constructions
 - **Effort**: 8-16 hours
