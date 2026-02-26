@@ -45,7 +45,8 @@ technical_debt:
 
 ### 942. Update /todo command for CHANGE_LOG.md integration
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Plan**: [specs/942_update_todo_command_changelog_integration/plans/implementation-001.md]
 - **Language**: meta
 - **Dependencies**: Task #941
 - **Research**: [specs/942_update_todo_command_changelog_integration/reports/research-001.md]
