@@ -49,15 +49,16 @@
     {
       "project_number": 943,
       "project_name": "update_review_command_dual_file_maintenance",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "description": "Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T21:00:00Z",
+      "last_updated": "2026-02-26T20:41:02Z",
       "effort": "2-3 hours",
       "dependencies": [
         941
-      ]
+      ],
+      "session_id": "sess_1772138447_18727"
     },
     {
       "project_number": 944,
@@ -86,16 +87,24 @@
     {
       "project_number": 939,
       "project_name": "upgrade_research_command_domain_routing",
-      "status": "researching",
+      "status": "researched",
       "language": "meta",
       "description": "Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T20:37:18Z",
+      "last_updated": "2026-02-26T20:40:39Z",
       "effort": "1-2 hours",
       "dependencies": [
         936
       ],
-      "session_id": "sess_1772138212_48fc"
+      "session_id": "sess_1772138212_48fc",
+      "researched": "2026-02-26T20:40:39Z",
+      "artifacts": [
+        {
+          "path": "specs/939_upgrade_research_command_domain_routing/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing current routing, existing skills, and implementation plan for domain override flags"
+        }
+      ]
     },
     {
       "project_number": 938,

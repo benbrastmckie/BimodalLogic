@@ -44,7 +44,7 @@ technical_debt:
 
 ### 942. Update /todo command for CHANGE_LOG.md integration
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Dependencies**: Task #941
 
@@ -75,9 +75,10 @@ technical_debt:
 
 ### 939. Upgrade /research command with domain routing
 - **Effort**: 1-2 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: meta
 - **Dependencies**: Task #936
+- **Research**: [research-001.md](specs/939_upgrade_research_command_domain_routing/reports/research-001.md)
 
 **Description**: Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.
 
