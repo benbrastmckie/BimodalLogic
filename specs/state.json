@@ -8,11 +8,11 @@
     {
       "project_number": 941,
       "project_name": "extract_changelog_create_format_docs",
-      "status": "implementing",
+      "status": "completed",
       "language": "meta",
       "description": "Extract Changelog section from ROAD_MAP.md to new CHANGE_LOG.md file. Create changelog-format.md context documentation. Update roadmap-format.md to note changelog moved. Establish separation: CHANGE_LOG.md records history, ROAD_MAP.md guides future development.",
       "created": "2026-02-26T21:00:00Z",
-      "last_updated": "2026-02-26T20:28:50Z",
+      "last_updated": "2026-02-26T21:15:00Z",
       "effort": "1-2 hours",
       "session_id": "sess_1772137708_a5283f",
       "planned": "2026-02-26T20:27:32Z",
@@ -21,9 +21,16 @@
           "path": "specs/941_extract_changelog_create_format_docs/plans/implementation-001.md",
           "type": "plan",
           "summary": "3-phase implementation plan for extracting changelog and creating format documentation"
+        },
+        {
+          "path": "specs/941_extract_changelog_create_format_docs/summaries/implementation-summary-20260226.md",
+          "type": "summary",
+          "summary": "Implementation summary with all 3 phases completed"
         }
       ],
-      "started": "2026-02-26T20:28:50Z"
+      "started": "2026-02-26T20:28:50Z",
+      "completed": "2026-02-26T21:15:00Z",
+      "completion_summary": "Extracted changelog to dedicated file, created format documentation, and updated all references to establish clear separation between historical records (CHANGE_LOG.md) and strategic direction (ROAD_MAP.md)."
     },
     {
       "project_number": 942,
@@ -67,38 +74,41 @@
     {
       "project_number": 940,
       "project_name": "port_lean_version_management_command",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "description": "Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T19:00:00Z",
-      "effort": "1-2 hours"
+      "last_updated": "2026-02-26T20:37:34Z",
+      "effort": "1-2 hours",
+      "session_id": "sess_1740592000_r940"
     },
     {
       "project_number": 939,
       "project_name": "upgrade_research_command_domain_routing",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "description": "Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T19:00:00Z",
+      "last_updated": "2026-02-26T20:37:18Z",
       "effort": "1-2 hours",
       "dependencies": [
         936
-      ]
+      ],
+      "session_id": "sess_1772138212_48fc"
     },
     {
       "project_number": 938,
       "project_name": "port_logic_math_context_files",
-      "status": "not_started",
+      "status": "researching",
       "language": "meta",
       "description": "Port missing logic and math context files from Theory repository (~15 documents). Logic domain: bilateral-propositions.md, bilateral-semantics.md, counterfactual-semantics.md, lattice-theory-concepts.md, mereology-foundations.md, spatial-domain.md, topological-foundations-domain.md. Math: category-theory/ (6 files), foundations/dependent-type-theory.md, lattice-theory/bilattice-theory.md, topology/scott-topology.md, order-theory/monoidal-posets.md. Update README.md files for each domain.",
       "created": "2026-02-26T19:00:00Z",
-      "last_updated": "2026-02-26T19:00:00Z",
+      "last_updated": "2026-02-26T20:36:57Z",
       "effort": "3-4 hours",
       "dependencies": [
         937
-      ]
+      ],
+      "session_id": "sess_1772138188_0fbf2b"
     },
     {
       "project_number": 937,

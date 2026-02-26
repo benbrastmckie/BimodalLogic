@@ -54,8 +54,9 @@ technical_debt:
 
 ### 941. Extract Changelog to CHANGE_LOG.md and create format documentation
 - **Effort**: 1-2 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Plan**: [specs/941_extract_changelog_create_format_docs/plans/implementation-001.md]
+- **Summary**: [specs/941_extract_changelog_create_format_docs/summaries/implementation-summary-20260226.md]
 - **Language**: meta
 - **Research**: [specs/941_extract_changelog_create_format_docs/reports/research-001.md]
 
@@ -65,7 +66,7 @@ technical_debt:
 
 ### 940. Port /lean version management command
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 
 **Description**: Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.
@@ -74,7 +75,7 @@ technical_debt:
 
 ### 939. Upgrade /research command with domain routing
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Dependencies**: Task #936
 
@@ -84,7 +85,7 @@ technical_debt:
 
 ### 938. Port missing logic/math context files
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: meta
 - **Dependencies**: Task #937
 
