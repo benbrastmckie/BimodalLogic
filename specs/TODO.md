@@ -24,8 +24,10 @@ technical_debt:
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Started**: 2026-02-25
+- **Research**: [research-001.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md)
 
 **Description**: Task 925 proved completeness using a modified truth predicate (`bmcs_truth_at_mcs`) in which the box case is defined by MCS-membership rather than recursive Kripke truth. Specifically:
 

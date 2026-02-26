@@ -8,10 +8,19 @@
     {
       "project_number": 930,
       "project_name": "verify_mcs_membership_box_semantics_correctness",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-26T01:27:35Z",
-      "last_updated": "2026-02-26T01:27:35Z"
+      "last_updated": "2026-02-26T02:15:00Z",
+      "session_id": "sess_1772069841_090fdf",
+      "researched": "2026-02-26T02:15:00Z",
+      "artifacts": [
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md",
+          "type": "research",
+          "summary": "MCS-membership box semantics is mathematically sound; not a cheat. Two truth predicates differ structurally but yield equivalent completeness results via soundness chain."
+        }
+      ]
     },
     {
       "project_number": 929,
