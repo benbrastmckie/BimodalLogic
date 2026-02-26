@@ -202,7 +202,7 @@
   },
   "version": "1.0.0",
   "generated_at": "2026-02-26T20:26:37Z",
-  "file_count": 149,
+  "file_count": 151,
   "entries": [
     {
       "path": "core/architecture/component-checklist.md",
@@ -2990,6 +2990,36 @@
       "line_count": 417
     },
     {
+      "path": "project/logic/domain/topological-foundations-domain.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "topology",
+        "scott",
+        "metric",
+        "spatial"
+      ],
+      "summary": "Topological foundations for spatial chapter: Scott topology, spatially complete regions, and metric topology generation",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 342
+    },
+    {
       "path": "project/logic/processes/modal-proof-strategies.md",
       "domain": "project",
       "subdomain": "logic",
@@ -3374,6 +3404,35 @@
         ]
       },
       "line_count": 333
+    },
+    {
+      "path": "project/math/foundations/dependent-type-theory.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "foundations",
+      "topics": [
+        "type-theory",
+        "dependent-types",
+        "foundations"
+      ],
+      "summary": "Foundational dependent type theory as a mathematical framework for constructive mathematics and proof assistants",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 226
     },
     {
       "path": "project/meta/architecture-principles.md",

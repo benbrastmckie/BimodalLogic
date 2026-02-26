@@ -86,7 +86,7 @@ Research report `research-001.md` identified all source files and copy commands.
 
 ---
 
-### Phase 3: Update index.json [NOT STARTED]
+### Phase 3: Update index.json [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Add new files to the context index for discoverability
