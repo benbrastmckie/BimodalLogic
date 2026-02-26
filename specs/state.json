@@ -16,12 +16,20 @@
     {
       "project_number": 931,
       "project_name": "remove_bmcs_truth_lemma_mcs_nonstandard_validity",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-26T05:39:46Z",
-      "last_updated": "2026-02-26T05:43:21Z",
+      "last_updated": "2026-02-26T05:47:45Z",
       "description": "Remove bmcs_truth_lemma_mcs and all definitions that depart from standard validity semantics. Move infected proofs to Boneyard with comments banning such approaches. No trace of non-standard validity should remain in Metalogic.",
-      "session_id": "sess_1740494500_r931"
+      "session_id": "sess_1740494500_r931",
+      "researched": "2026-02-26T05:47:45Z",
+      "artifacts": [
+        {
+          "path": "specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/reports/research-001.md",
+          "type": "research",
+          "summary": "14 non-standard symbols in ChainBundleBFMCS.lean lines 350-691. Zero external dependents. Safe to delete and move to Boneyard. Keep lines 1-349 (CanonicalBC construction)."
+        }
+      ]
     },
     {
       "project_number": 930,
