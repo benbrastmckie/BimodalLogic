@@ -8,13 +8,13 @@
     {
       "project_number": 945,
       "project_name": "canonical_model_construction_design",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T22:42:26Z",
-      "session_id": "sess_1772231793_57aa29",
+      "last_updated": "2026-02-27T22:47:27Z",
+      "session_id": "sess_1772232256_f9c53c",
       "researched": "2026-02-27T22:42:26Z",
-      "planned": "2026-02-27T21:00:00Z",
+      "planned": "2026-02-27T22:47:27Z",
       "plan_metadata": {
         "phases": 5,
         "total_effort_hours": 14,
@@ -56,11 +56,6 @@
           "summary": "Deep analysis of canonical model construction: times vs states distinction, maximal chains as histories, role of linearity axiom, dovetailing over CanonicalMCS to avoid GContent corruption, multi-family bundle via separate chains for diamond witnesses"
         },
         {
-          "path": "specs/945_canonical_model_construction_design/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for canonical model construction using CanonicalMCS-indexed chains"
-        },
-        {
           "path": "specs/945_canonical_model_construction_design/reports/research-004.md",
           "type": "research",
           "summary": "Antisymmetrization analysis: CanonicalMCS cannot serve as BFMCS time domain for modal saturation; recommends omega-squared dovetailing over Int"
@@ -79,6 +74,11 @@
           "path": "specs/945_canonical_model_construction_design/reports/research-006.md",
           "type": "research",
           "summary": "Direct canonical TruthLemma design without bmcs_truth_at intermediate, proving the BFMCS truth layer is structurally redundant"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for direct canonical TruthLemma (supersedes v1)"
         }
       ]
     },

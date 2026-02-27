@@ -1,23 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/945_canonical_model_construction_design/reports/research-006.md",
-      "summary": "Direct canonical TruthLemma design without bmcs_truth_at intermediate, proving the BFMCS truth layer is structurally redundant"
+      "type": "plan",
+      "path": "specs/945_canonical_model_construction_design/plans/implementation-002.md",
+      "summary": "6-phase implementation plan for direct canonical TruthLemma (supersedes v1)"
     }
   ],
-  "next_steps": "Run /plan 945 to create implementation plan for direct TruthLemma",
+  "next_steps": "Run /implement 945 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772231793_57aa29",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 5400,
+    "session_id": "sess_1772232256_f9c53c",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 7,
-    "context_files_loaded": ["README.md"],
-    "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": "6-8"
   }
 }
