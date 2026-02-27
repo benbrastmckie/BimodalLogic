@@ -1,20 +1,34 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Proved canonical_truth_lemma (sorry-free) connecting MCS membership to standard truth_at. Defined CanonicalTaskFrame, CanonicalTaskModel, to_history, CanonicalOmega. All 6 inductive cases proven. Compositionality of task_rel has 4 sorries in cross-sign cases (separate definition, orthogonal to TruthLemma per research-006).",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/945_canonical_model_construction_design/plans/implementation-002.md",
-      "summary": "6-phase implementation plan for direct canonical TruthLemma (supersedes v1)"
+      "path": "Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean",
+      "type": "lean_source",
+      "summary": "Canonical construction with direct TruthLemma (~450 lines)"
+    },
+    {
+      "path": "specs/945_canonical_model_construction_design/summaries/implementation-summary-20260227.md",
+      "type": "summary",
+      "summary": "Implementation summary with phase details and sorry analysis"
     }
   ],
-  "next_steps": "Run /implement 945 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772232256_f9c53c",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1772232588_3f1799f7",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": "6-8"
-  }
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 6,
+    "phases_total": 6,
+    "sorries_in_truth_lemma": 0,
+    "sorries_in_compositionality": 4,
+    "sorries_total_in_file": 4,
+    "new_axioms": 0
+  },
+  "completion_data": {
+    "completion_summary": "Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at evaluation, eliminating the bmcs_truth_at intermediate. All 6 inductive cases (atom, bot, imp, box, all_future, all_past) proven sorry-free. Compositionality of canonical task relation has 4 deferred sorries in cross-sign cases (orthogonal to TruthLemma).",
+    "roadmap_items": ["Design canonical model construction for TruthLemma"]
+  },
+  "requires_user_review": true,
+  "review_reason": "4 sorries remain in canonical_task_rel_compositionality (cross-sign cases). These are in a SEPARATE definition orthogonal to the TruthLemma -- task_rel does not appear in truth_at. The main theorem canonical_truth_lemma is sorry-free. Plan Phase 1 explicitly authorized compositionality sorry. User should decide: (a) accept as-is (compositionality is separate concern), (b) create follow-up task for cross-sign compositionality."
 }

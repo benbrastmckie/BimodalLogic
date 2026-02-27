@@ -1,5 +1,5 @@
 ---
-next_project_number: 946
+next_project_number: 947
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,10 +22,28 @@ technical_debt:
 
 ## Tasks
 
+### 946. Prove canonical_task_rel_compositionality cross-sign cases
+- **Effort**: Medium (4-6 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Parent**: Task 945
+
+**Description**: Prove the 4 remaining sorries in `canonical_task_rel_compositionality` (Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean). These are cross-sign duration cases where x and y have opposite signs. The cases are:
+1. x >= 0, y < 0, x + y >= 0: forward GContent case
+2. x < 0, y >= 0, x + y >= 0: forward GContent case
+3. x > 0, y <= 0, x + y <= 0: backward HContent case
+4. x < 0 (implied), y > 0, x + y <= 0: backward HContent case
+
+These proofs likely require modal-temporal interaction axioms (MF, TF). This work is orthogonal to the TruthLemma - task_rel does not appear in truth_at.
+
+---
+
 ### 945. Design canonical model construction for TruthLemma
 - **Effort**: Large (6-8 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
+- **Completed**: 2026-02-27
+- **Summary**: Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at. All 6 inductive cases sorry-free. 4 deferred sorries in compositionality (orthogonal to TruthLemma).
 - **Research**: [research-001.md](specs/945_canonical_model_construction_design/reports/research-001.md)
 - **Research**: [research-002.md](specs/945_canonical_model_construction_design/reports/research-002.md)
 - **Research**: [research-003.md](specs/945_canonical_model_construction_design/reports/research-003.md)
@@ -33,6 +51,7 @@ technical_debt:
 - **Research**: [research-005.md](specs/945_canonical_model_construction_design/reports/research-005.md)
 - **Research**: [research-006.md](specs/945_canonical_model_construction_design/reports/research-006.md)
 - **Plan**: [implementation-002.md](specs/945_canonical_model_construction_design/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260227.md](specs/945_canonical_model_construction_design/summaries/implementation-summary-20260227.md)
 
 **Description**: Take careful stock of the metalogic in order to identify what remains to finishing the representation theorem in order to design and implement a fully adequate syntactic construction by which to define a canonical model that satisfies the TruthLemma. The hard work should go into thinking carefully about how the construction should go since, once the right construction is found, establishing the TruthLemma will be easy. Don't move until you see it; it is better to think deeply to find the right construction than to go down the wrong rabbit hole.
 

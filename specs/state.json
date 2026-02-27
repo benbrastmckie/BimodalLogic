@@ -8,11 +8,11 @@
     {
       "project_number": 945,
       "project_name": "canonical_model_construction_design",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T22:47:27Z",
-      "session_id": "sess_1772232256_f9c53c",
+      "last_updated": "2026-02-27T23:04:09Z",
+      "session_id": "sess_1772232588_3f1799f7",
       "researched": "2026-02-27T22:42:26Z",
       "planned": "2026-02-27T22:47:27Z",
       "plan_metadata": {
@@ -79,8 +79,16 @@
           "path": "specs/945_canonical_model_construction_design/plans/implementation-002.md",
           "type": "plan",
           "summary": "6-phase implementation plan for direct canonical TruthLemma (supersedes v1)"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/summaries/implementation-summary-20260227.md",
+          "type": "summary",
+          "summary": "Implementation summary with phase details and sorry analysis"
         }
-      ]
+      ],
+      "started": "2026-02-27T22:50:05Z",
+      "completed": "2026-02-27T23:04:09Z",
+      "completion_summary": "Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at evaluation, eliminating the bmcs_truth_at intermediate. All 6 inductive cases (atom, bot, imp, box, all_future, all_past) proven sorry-free. Compositionality of canonical task relation has 4 deferred sorries in cross-sign cases (orthogonal to TruthLemma)."
     },
     {
       "project_number": 930,
@@ -661,6 +669,15 @@
       "researched": "2026-02-25T07:19:02Z",
       "planned": "2026-02-25T05:48:38Z",
       "started": "2026-02-25T05:51:52Z"
+    },
+    {
+      "project_number": 946,
+      "project_name": "canonical_task_rel_compositionality",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-27T23:04:47Z",
+      "last_updated": "2026-02-27T23:04:47Z",
+      "artifacts": []
     }
   ],
   "completed_projects": [
@@ -675,7 +692,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 946,
+  "next_project_number": 947,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
