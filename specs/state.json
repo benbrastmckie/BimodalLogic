@@ -11,9 +11,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T21:53:52Z",
-      "session_id": "sess_1772228589_b7cd48",
-      "researched": "2026-02-27T21:53:52Z",
+      "last_updated": "2026-02-27T22:42:26Z",
+      "session_id": "sess_1772231793_57aa29",
+      "researched": "2026-02-27T22:42:26Z",
       "planned": "2026-02-27T21:00:00Z",
       "plan_metadata": {
         "phases": 5,
@@ -74,6 +74,11 @@
           "path": "specs/945_canonical_model_construction_design/reports/research-005.md",
           "type": "research",
           "summary": "First-principles canonical construction: step-by-step timeline with D=Z, bridge theorem connecting BFMCS truth to TaskFrame truth, canonical TaskFrame with MCS as world-states"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-006.md",
+          "type": "research",
+          "summary": "Direct canonical TruthLemma design without bmcs_truth_at intermediate, proving the BFMCS truth layer is structurally redundant"
         }
       ]
     },

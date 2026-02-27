@@ -3,21 +3,21 @@
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/945_canonical_model_construction_design/reports/research-005.md",
-      "summary": "First-principles canonical construction: step-by-step timeline with D=Z, bridge theorem connecting BFMCS truth to TaskFrame truth, canonical TaskFrame with MCS as world-states"
+      "path": "specs/945_canonical_model_construction_design/reports/research-006.md",
+      "summary": "Direct canonical TruthLemma design without bmcs_truth_at intermediate, proving the BFMCS truth layer is structurally redundant"
     }
   ],
-  "next_steps": "Run /plan 945 to create implementation plan based on research-005 findings",
+  "next_steps": "Run /plan 945 to create implementation plan for direct TruthLemma",
   "metadata": {
-    "session_id": "sess_1772228589_b7cd48",
+    "session_id": "sess_1772231793_57aa29",
     "agent_type": "logic-research-agent",
-    "duration_seconds": 900,
+    "duration_seconds": 5400,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 12,
-    "context_files_loaded": ["README.md", "kripke-semantics-overview.md"],
+    "findings_count": 7,
+    "context_files_loaded": ["README.md"],
     "mathlib_lookups_performed": 0,
     "context_extension_tasks": [],
-    "context_candidates_count": 3
+    "context_candidates_count": 1
   }
 }
