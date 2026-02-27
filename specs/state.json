@@ -11,9 +11,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T21:33:03Z",
-      "session_id": "sess_1772227000_0b9d2f",
-      "researched": "2026-02-27T21:33:03Z",
+      "last_updated": "2026-02-27T21:53:52Z",
+      "session_id": "sess_1772228589_b7cd48",
+      "researched": "2026-02-27T21:53:52Z",
       "planned": "2026-02-27T21:00:00Z",
       "plan_metadata": {
         "phases": 5,
@@ -69,6 +69,11 @@
           "path": "specs/945_canonical_model_construction_design/reports/research-004.md",
           "type": "research",
           "summary": "Antisymmetrization approach analyzed end-to-end: T_C is correct as time domain conceptually but CanonicalMCS cannot serve as BFMCS time domain for modal saturation; correct path is omega-squared dovetailing over Int using CanonicalMCS for witness existence"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-005.md",
+          "type": "research",
+          "summary": "First-principles canonical construction: step-by-step timeline with D=Z, bridge theorem connecting BFMCS truth to TaskFrame truth, canonical TaskFrame with MCS as world-states"
         }
       ]
     },

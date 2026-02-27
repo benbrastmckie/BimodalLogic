@@ -30,6 +30,7 @@ technical_debt:
 - **Research**: [research-002.md](specs/945_canonical_model_construction_design/reports/research-002.md)
 - **Research**: [research-003.md](specs/945_canonical_model_construction_design/reports/research-003.md)
 - **Research**: [research-004.md](specs/945_canonical_model_construction_design/reports/research-004.md)
+- **Research**: [research-005.md](specs/945_canonical_model_construction_design/reports/research-005.md)
 - **Plan**: [implementation-001.md](specs/945_canonical_model_construction_design/plans/implementation-001.md)
 
 **Description**: Take careful stock of the metalogic in order to identify what remains to finishing the representation theorem in order to design and implement a fully adequate syntactic construction by which to define a canonical model that satisfies the TruthLemma. The hard work should go into thinking carefully about how the construction should go since, once the right construction is found, establishing the TruthLemma will be easy. Don't move until you see it; it is better to think deeply to find the right construction than to go down the wrong rabbit hole.
