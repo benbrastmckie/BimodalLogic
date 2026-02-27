@@ -3,16 +3,16 @@ next_project_number: 945
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-20T00:15:00Z
+  last_assessed: 2026-02-27T02:51:23Z
 task_counts:
-  active: 19
-  completed: 635
-  in_progress: 0
-  not_started: 10
+  active: 15
+  completed: 658
+  in_progress: 1
+  not_started: 3
   abandoned: 36
-  total: 690
+  total: 713
 technical_debt:
-  sorry_count: 123
+  sorry_count: 80
   axiom_count: 19
   build_errors: 0
   status: manageable
@@ -21,187 +21,6 @@ technical_debt:
 # TODO
 
 ## Tasks
-
-### 944. Add ROAD_MAP.md reflection to research agents
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Dependencies**: Task #941
-- **Research**: [specs/944_add_roadmap_reflection_research_agents/reports/research-001.md]
-- **Plan**: [specs/944_add_roadmap_reflection_research_agents/plans/implementation-001.md]
-- **Summary**: [specs/944_add_roadmap_reflection_research_agents/summaries/implementation-summary-20260226.md]
-
-**Description**: Add ROAD_MAP.md reflection to lean-research-agent, logic-research-agent, and math-research-agent. Add Stage 2.5 to load Dead Ends and Strategies sections. Check for relevant pitfalls before recommending approaches. Document reflection pattern for future agents.
-
----
-
-### 943. Update /review command for dual-file maintenance
-- **Effort**: 1 hour
-- **Status**: [COMPLETED]
-- **Plan**: [specs/943_update_review_command_dual_file_maintenance/plans/implementation-001.md]
-- **Summary**: [specs/943_update_review_command_dual_file_maintenance/summaries/implementation-summary-20260226.md]
-- **Language**: meta
-- **Dependencies**: Task #941
-- **Research**: [specs/943_update_review_command_dual_file_maintenance/reports/research-001.md]
-
-**Description**: Update /review command to maintain both ROAD_MAP.md and CHANGE_LOG.md. Load CHANGE_LOG.md for historical context. Add Step 6.6 for CHANGE_LOG.md updates. ROAD_MAP.md focuses on forward strategy; CHANGE_LOG.md captures historical events.
-
----
-
-### 942. Update /todo command for CHANGE_LOG.md integration
-- **Effort**: 0.25 hours
-- **Status**: [COMPLETED]
-- **Plan**: [specs/942_update_todo_command_changelog_integration/plans/implementation-002.md]
-- **Summary**: [specs/942_update_todo_command_changelog_integration/summaries/implementation-summary-20260226.md]
-- **Language**: meta
-- **Dependencies**: Task #941
-- **Research**: [specs/942_update_todo_command_changelog_integration/reports/research-001.md]
-
-**Description**: Update /todo command to write changelog entries to specs/CHANGE_LOG.md. Remove obsolete Task 941 references, add schema reference. Clean-break approach (no backward compatibility notes).
-
----
-
-### 941. Extract Changelog to CHANGE_LOG.md and create format documentation
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Plan**: [specs/941_extract_changelog_create_format_docs/plans/implementation-001.md]
-- **Summary**: [specs/941_extract_changelog_create_format_docs/summaries/implementation-summary-20260226.md]
-- **Language**: meta
-- **Research**: [specs/941_extract_changelog_create_format_docs/reports/research-001.md]
-
-**Description**: Extract Changelog section from ROAD_MAP.md to new CHANGE_LOG.md file. Create changelog-format.md context documentation. Update roadmap-format.md to note changelog moved. Establish separation: CHANGE_LOG.md records history, ROAD_MAP.md guides future development.
-
----
-
-### 940. Port /lean version management command
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Plan**: [implementation-001.md](specs/940_port_lean_version_management_command/plans/implementation-001.md)
-- **Research**: [research-001.md](specs/940_port_lean_version_management_command/reports/research-001.md)
-- **Summary**: [implementation-summary-20260226.md](specs/940_port_lean_version_management_command/summaries/implementation-summary-20260226.md)
-
-**Description**: Port /lean command from Theory repository for Lean toolchain and Mathlib version management. Includes: (1) skill-lean-version with check/upgrade/rollback/dry-run modes, (2) /lean command with AskUserQuestion for interactive upgrades, (3) backup and recovery support, (4) Mathlib cache management integration. Complements existing /lake command.
-
----
-
-### 939. Upgrade /research command with domain routing
-- **Effort**: 1-2 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Dependencies**: Task #936
-- **Research**: [research-001.md](specs/939_upgrade_research_command_domain_routing/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/939_upgrade_research_command_domain_routing/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260226.md](specs/939_upgrade_research_command_domain_routing/summaries/implementation-summary-20260226.md)
-
-**Description**: Upgrade /research command with domain override flags from Theory repository. Add: (1) --lean, --logic, --math, --latex, --typst flags for explicit domain routing, (2) argument parsing logic for flags + focus prompt, (3) routing table updates for new skills, (4) Context Knowledge Task prompt after research for accumulating domain-general findings.
-
----
-
-### 938. Port missing logic/math context files
-- **Effort**: 0.5 hours (scope reduced)
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Completed**: 2026-02-26
-- **Dependencies**: Task #937
-- **Research**: [research-001.md](specs/938_port_logic_math_context_files/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/938_port_logic_math_context_files/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260226.md](specs/938_port_logic_math_context_files/summaries/implementation-summary-20260226.md)
-
-**Description**: Port 2 context files from Theory repository (scope reduced from original 15).
-
----
-
-### 937. Upgrade context system with index.json
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Completed**: 2026-02-26
-- **Research**: [research-001.md](specs/937_upgrade_context_system_index_json/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/937_upgrade_context_system_index_json/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260226.md](specs/937_upgrade_context_system_index_json/summaries/implementation-summary-20260226.md)
-
-**Description**: Upgrade context system with index.json from Theory repository. Create: (1) index.json schema with load_when conditions (languages, operations, tiers, agents), (2) entries for all existing context files with topics, keywords, summaries, line_count, (3) generation/validation script, (4) update agent files to use dynamic context discovery via jq queries instead of static lists.
-
----
-
-### 936. Port specialized research agents and skills
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Completed**: 2026-02-26
-- **Research**: [research-001.md](specs/936_port_specialized_research_agents_skills/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/936_port_specialized_research_agents_skills/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260226.md](specs/936_port_specialized_research_agents_skills/summaries/implementation-summary-20260226.md)
-
-**Description**: Port specialized research agents and skills from Theory repository. Agents: logic-research-agent.md (modal/temporal/mereology/topology), math-research-agent.md (algebra/lattice/order/category theory), latex-research-agent.md (LaTeX documentation). Skills: skill-logic-research/, skill-math-research/, skill-latex-research/. Each skill uses thin-wrapper postflight pattern delegating to corresponding agent. Update skill-agent-mapping.md.
-
----
-
-### 935. Audit ROAD_MAP.md Current State section for accuracy
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Completed**: 2026-02-26
-- **Research**: [research-001.md](specs/935_audit_roadmap_current_state_section/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/935_audit_roadmap_current_state_section/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260226.md](specs/935_audit_roadmap_current_state_section/summaries/implementation-summary-20260226.md)
-
-**Description**: Review and update '## Current State: What's Been Accomplished' section and following content in specs/ROAD_MAP.md. Audit for accuracy, clarity, and conciseness to provide clear guidance for theory development. Ensure all claims match current codebase state.
-
----
-
-### 934. Audit and update ROAD_MAP.md Strategies and Dead Ends sections for accuracy
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Completed**: 2026-02-26
-- **Research**: [research-001.md](specs/934_audit_roadmap_strategies_dead_ends_accuracy/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/934_audit_roadmap_strategies_dead_ends_accuracy/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260226.md](specs/934_audit_roadmap_strategies_dead_ends_accuracy/summaries/implementation-summary-20260226.md)
-
-**Description**: Audit and update ROAD_MAP.md Strategies and Dead Ends sections for accuracy. The sections contain outdated information: (1) Strategy "Indexed MCS Family Approach" incorrectly states G/H operators are irreflexive and T-axioms not required - semantics changed to reflexive (≤) in Task 658, T-axioms now trivially valid. (2) Coherence conditions listed as using strict < instead of ≤. (3) Dead Ends needs verification of entries for tasks 928-933. Systematically read every entry against actual code, correct inaccuracies, remove historical distractions.
-
----
-
-### 933. Research alternative canonical model constructions
-- **Effort**: 8-16 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Completed**: 2026-02-26
-- **Research**: [research-001.md](specs/933_research_alternative_canonical_construction/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/933_research_alternative_canonical_construction/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260226.md](specs/933_research_alternative_canonical_construction/summaries/implementation-summary-20260226.md)
-
-**Description**: Research alternative canonical model constructions that avoid the F-formula persistence problem in DovetailingChain. Explore: (1) tree unraveling approach, (2) quotient construction, (3) omega-squared enumeration, (4) direct Int-indexed construction without dovetailing. Goal: find construction that achieves both temporal coherence AND modal saturation for D = Int.
-
----
-
-### 932. Remove constant witness family approach from metalogic
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Completed**: 2026-02-25
-- **Research**: [research-001.md](specs/932_remove_constant_witness_family_metalogic/reports/research-001.md), [research-002.md](specs/932_remove_constant_witness_family_metalogic/reports/research-002.md), [research-003.md](specs/932_remove_constant_witness_family_metalogic/reports/research-003.md), [research-004.md](specs/932_remove_constant_witness_family_metalogic/reports/research-004.md)
-- **Plan**: [implementation-002.md](specs/932_remove_constant_witness_family_metalogic/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260225.md](specs/932_remove_constant_witness_family_metalogic/summaries/implementation-summary-20260225.md)
-
-**Description**: Remove all elements of the metalogic that use a constant witness family approach for modal saturation. Research report 930/research-007.md incorrectly documented that modal saturation creates witness families where "a constant witness family maps every time point to the SAME MCS W containing psi." This approach is fundamentally flawed and must be extracted without gutting independent proofs. Clean up misleading comments and add Boneyard comments explicitly banning constant family approaches.
-
----
-
-### 931. Remove bmcs_truth_lemma_mcs and non-standard validity definitions from Metalogic
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Completed**: 2026-02-25
-- **Research**: [research-001.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260225.md](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/summaries/implementation-summary-20260225.md)
-
-**Description**: Remove `bmcs_truth_lemma_mcs` and all definitions that depart from standard validity semantics (as defined in `Bimodal.Semantics.Validity`). Move all infected proofs to Boneyard with comments banning such approaches that depart from the standard `truth_at`/`valid` definitions. No trace of non-standard validity should remain in the Metalogic module.
-
----
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours
@@ -287,78 +106,6 @@ C. **Genuine gap**: If neither equivalence holds, determine whether MCS-membersh
 
 ---
 
-### 928. Refactor metalogic terminology (BMCS->BFMCS, FMCS, MCS) and archive to Boneyard
-- **Effort**: 11 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-25
-- **Completed**: 2026-02-25
-- **Research**: [research-001.md](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260225.md](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/summaries/implementation-summary-20260225.md)
-
-**Description**: Refactor metalogic terminology: (1) Rename BMCS to BFMCS throughout to clarify it is a Bundle of FMCSs, (2) Ensure FMCS indicates a Family of MCSs, (3) Use MCS appropriately and uniformly, (4) Correct Phase 6 goal in /home/benjamin/Projects/ProofChecker/specs/925_redesign_bmcs_completeness_mcs_accessibility/plans/implementation-001.md to establish BFMCS closed under timeshift (not FMCS), (5) Complete Phase 2 Boneyard cleanup (skipped in task 925), (6) Archive old/unused content to Boneyard/, (7) Improve naming conventions systematically across metalogic.
-
----
-
-### 927. Fix status synchronization between plan files, TODO.md, and state.json
-- **Effort**: 3.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-25
-- **Completed**: 2026-02-25
-- **Research**: [research-001.md](specs/927_fix_status_synchronization_plan_todo_state/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/927_fix_status_synchronization_plan_todo_state/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260225.md](specs/927_fix_status_synchronization_plan_todo_state/summaries/implementation-summary-20260225.md)
-
-**Description**: Fix status synchronization to ensure plan file status (line 4), TODO.md status, and state.json status all update together. Currently the plan file status sometimes doesn't get updated while the other two are correctly updated.
-
----
-
-### 926. Audit agent system for context efficiency and reduce startup bloat
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-25
-- **Completed**: 2026-02-25
-- **Research**: [research-001.md](specs/926_audit_agent_system_context_efficiency/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/926_audit_agent_system_context_efficiency/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260225.md](specs/926_audit_agent_system_context_efficiency/summaries/implementation-summary-20260225.md)
-
-**Description**: Context usage is 20% immediately when starting a new Claude Code session. Review agent system complexity and identify opportunities to reduce context bloat following 2026 best practices.
-
----
-
-### 925. Redesign BMCS completeness construction using MCS accessibility relation
-- **Effort**: 12-20 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-25
-- **Completed**: 2026-02-25
-- **Supersedes**: Tasks 916, 922, 924
-- **Research**: [research-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-001.md), [research-002.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-002.md), [research-003.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-003.md), [research-004.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/reports/research-004.md)
-- **Plan**: [implementation-001.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260225.md](specs/925_redesign_bmcs_completeness_mcs_accessibility/summaries/implementation-summary-20260225.md)
-
-**Description**: Tasks 924, 922, and 916 have hit major issues requiring architectural redesign.
-
-**Problems to remove**:
-1. Standard witness families are CONSTANT (same MCS at every time) - needs fix to admit non-constant families
-2. Truth lemma assumed only needed for eval family - hits dead end for complex formulas
-3. Taking all MCSs to form a single canonical family does not work
-
-**Correct path**:
-1. Define MCSs as world states
-2. Define four-constraint accessibility relation: MCS1 related to MCS2 iff whenever `Box G phi` in MCS1, then `phi` in MCS2
-3. Define families as functions `Int -> MCS` where each MCS sees the next (or is seen by previous) via accessibility
-4. This constructs a bundle of families resembling world histories
-5. Prove every consistent sentence belongs to an MCS at time 0 in some family
-6. Establish TruthLemma: sentence in MCS in family iff sentence true when evaluated at that family at corresponding integer
-
-This construction is the core of the representation theorem.
-
----
-
 ### 924. Prove fully_saturated_bmcs_exists combining modal saturation with temporal coherence
 - **Effort**: 8-16 hours
 - **Status**: [PLANNING]
@@ -384,20 +131,6 @@ Key files:
 - `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` - contains `fully_saturated_bmcs_exists_int` sorry
 - `Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean` - modal saturation tools
 - `Theories/Bimodal/Metalogic/Bundle/CanonicalBFMCS.lean` - new all-MCS BFMCS construction from task 922
-
----
-
-### 923. Formalize frame correspondence theorem for linearity axiom
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-24
-- **Completed**: 2026-02-24
-- **Research**: [research-001.md](specs/923_formalize_frame_correspondence_linearity/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/923_formalize_frame_correspondence_linearity/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260224.md](specs/923_formalize_frame_correspondence_linearity/summaries/implementation-summary-20260224.md)
-
-**Description**: Formalize the frame correspondence theorem to show that the linearity axiom characterizes linear frames. This theorem proves: if the linearity axiom schema F(p) AND F(q) -> F(p AND q) OR F(p AND F(q)) OR F(F(p) AND q) is valid on a Kripke frame, then the frame's accessibility relation is linear. Required to complete task 922's Phase 3 blocker (canonical_reachable_linear theorem).
 
 ---
 
@@ -437,21 +170,6 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ---
 
-### 921. Enforce zero-proof-debt policy for Lean task completion
-- **Effort**: 2.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-24
-- **Started**: 2026-02-25
-- **Completed**: 2026-02-25
-- **Research**: [research-001.md](specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260224.md](specs/921_enforce_zero_proof_debt_policy_for_lean_task_completion/summaries/implementation-summary-20260224.md)
-
-**Description**: Update all Lean-related agents, skills, policy documents, and plan formats to enforce a strict zero-proof-debt completion gate. The policy must make crystal clear: (1) NO sorry may remain in a completed Lean task - all sorries must be closed before a task is marked [COMPLETED]; (2) NO new axioms may ever be introduced; (3) proof debt acceptance (e.g. "Option B" sorry deferral as in task 916 research-014) is FORBIDDEN under any circumstances. Components to update: (Phase 1) `proof-debt-policy.md` - add explicit Completion Gate section stating sorries must be resolved before task completion, clarify axioms are never acceptable even for internal work; (Phase 2) `lean-implementation-agent.md` - add MUST DO zero-sorry verification before returning implemented status, add MUST NOT returning implemented status with remaining sorries, add completion gate check in build verification stage; (Phase 3) `lean-research-agent.md` - add requirement to flag tasks that propose sorry debt acceptance as FORBIDDEN, clarify Option B style deferral is not a valid recommendation; `planner-agent.md` - add Lean-specific requirement that final plan phase must include sorry elimination verification; (Phase 4) `plan-format.md` - update Sorry Characterization to require zero-sorry target in "New Sorries" section, update Axiom Characterization to forbid new axioms; `skill-lean-implementation/SKILL.md` - add sorry count verification before accepting implemented status from subagent.
-
----
-
 ### 917. Fix forward_F/backward_P temporal witness strictness in DovetailingChain and comments
 - **Effort**: 1-2 hours
 - **Status**: [NOT STARTED]
@@ -472,48 +190,6 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 - **Summary**: [implementation-summary-20260221.md](specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260221.md) (FPreservingSeed counterexample)
 
 **Description**: Close the 4 remaining sorries in `DovetailingChain.lean` by implementing F/P witness obligation tracking in the chain construction and resolving the cross-sign propagation gap. Phase 1 unifies the split forward/backward half-chains into a single interleaved dovetailing chain (closes cross-sign forward_G and backward_H sorries). Phase 2 adds F/P witness scheduling via Cantor-pairing enumeration of all (time, formula) obligations (closes forward_F and backward_P sorries). See description.md for full proof strategy and key lemmas.
-
----
-
-### 915. Document BFMCS proof architecture and remaining lacunae
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Created**: 2026-02-20
-- **Research**: [research-001.md](specs/915_document_bfmcs_proof_architecture/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/915_document_bfmcs_proof_architecture/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260220.md](specs/915_document_bfmcs_proof_architecture/summaries/implementation-summary-20260220.md)
-
-**Description**: Write comprehensive documentation explaining the two-level bundling ontology (BFMCS = temporal family, BMCS = modal bundle of families), the propagation requirements as construction constraints, why G-content propagates automatically while F-obligations require explicit witness tracking, the consistency argument via `temporal_witness_seed_consistent`, and precisely where the 4 remaining sorries in DovetailingChain.lean are and what closes them.
-
----
-
-### 914. Rename IndexedMCSFamily to BFMCS across codebase
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-20
-- **Research**: [research-001.md](specs/914_rename_indexedmcsfamily_to_bfmcs/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/914_rename_indexedmcsfamily_to_bfmcs/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260220.md](specs/914_rename_indexedmcsfamily_to_bfmcs/summaries/implementation-summary-20260220.md)
-
-**Description**: Rename `IndexedMCSFamily` to `BFMCS` (Bundled Family of Maximal Consistent Sets) across 420 occurrences in 38 files to make the two-level ontological structure explicit. Rename `IndexedMCSFamily.lean` to `BFMCS.lean`, update all imports, and add doc comments explaining the BFMCS ontology.
-
----
-
-### 912. Review completeness proof and metalogic state after task 910
-- **Effort**: 18-27 hours (revised)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Created**: 2026-02-19
-- **Researched**: 2026-02-19
-- **Planned**: 2026-02-20
-- **Completed**: 2026-02-19
-- **Research**: [research-001.md](specs/912_review_completeness_proof_metalogic_state/reports/research-001.md), [research-002.md](specs/912_review_completeness_proof_metalogic_state/reports/research-002.md), [research-003.md](specs/912_review_completeness_proof_metalogic_state/reports/research-003.md)
-- **Plan**: [implementation-002.md](specs/912_review_completeness_proof_metalogic_state/plans/implementation-002.md) (v2: ShiftClosed Omega approach)
-- **Summary**: [implementation-summary-20260219.md](specs/912_review_completeness_proof_metalogic_state/summaries/implementation-summary-20260219.md)
-
-**Description**: Systematically review the state of the completeness proof by way of the representation theorem and the FMP in order to evaluate the state of the metalogic, what has been finished, what remains to be done, and what can be archived to the Bimodal/Boneyard/, and how best to refactor or reorganize the metalogic.
 
 ---
 

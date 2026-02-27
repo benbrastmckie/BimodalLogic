@@ -1,0 +1,33 @@
+{
+  "status": "tasks_created",
+  "summary": "Created 4 tasks for CHANGE_LOG.md separation and ROAD_MAP.md reflection: (1) Extract changelog to separate file with format documentation, (2) Update /todo command for CHANGE_LOG.md integration, (3) Update /review command for dual-file maintenance, (4) Add ROAD_MAP.md reflection to research agents. Tasks 942-944 depend on task 941.",
+  "artifacts": [
+    {
+      "type": "task_entry",
+      "path": "specs/TODO.md",
+      "summary": "Tasks #941-944 added to TODO.md"
+    },
+    {
+      "type": "state_update",
+      "path": "specs/state.json",
+      "summary": "4 new tasks added to active_projects, next_project_number updated to 945"
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1740614400_meta01",
+    "duration_seconds": 420,
+    "agent_type": "meta-builder-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "meta", "skill-meta"],
+    "mode": "prompt",
+    "tasks_created": 4,
+    "task_numbers": [941, 942, 943, 944],
+    "dependency_graph": {
+      "941": [],
+      "942": [941],
+      "943": [941],
+      "944": [941]
+    }
+  },
+  "next_steps": "Run /research 941 to begin research on the changelog extraction task. Tasks 942-944 depend on 941 and should be worked on after 941 is completed."
+}

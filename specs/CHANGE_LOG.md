@@ -21,19 +21,88 @@ Updated by /todo command during task archival.
 
 - **Task 933**: Archived CanonicalReachable/CanonicalQuotient/CanonicalEmbedding stack to Boneyard. These files represent an intermediate approach superseded by the all-MCS approach. Also removed dead `bmcs_truth_eval` code from BFMCSTruth.lean. Net ~1135 lines removed from active code.
   - *Rationale*: CanonicalReachable backward_P is blocked because past witnesses are not future-reachable. All-MCS approach handles this correctly.
-  - *References*: [summary](specs/933_research_alternative_canonical_construction/summaries/implementation-summary-20260226.md)
+  - *References*: [summary](specs/archive/933_research_alternative_canonical_construction/summaries/implementation-summary-20260226.md)
 
 - **Task 932**: Removed constant witness family approach from metalogic. Archived ~8,580 lines to Boneyard/Metalogic_v7/. Removed deprecated polymorphic AXIOM from trusted kernel. Reduced active sorries from 5 to 3.
   - *Rationale*: Constant families cannot satisfy forward_F/backward_P obligations. Time-varying families required.
-  - *References*: [summary](specs/932_remove_constant_witness_family_metalogic/summaries/implementation-summary-20260225.md)
+  - *References*: [summary](specs/archive/932_remove_constant_witness_family_metalogic/summaries/implementation-summary-20260225.md)
 
 - **Task 931**: Removed non-standard `_mcs` validity definitions from ChainBundleBFMCS.lean. Archived 14 symbols to Boneyard/Bundle/MCSMembershipCompleteness.lean.
   - *Rationale*: Non-standard box semantics (MCS membership instead of recursive truth) conflates two different notions of validity.
-  - *References*: [summary](specs/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/summaries/implementation-summary-20260225.md)
+  - *References*: [summary](specs/archive/931_remove_bmcs_truth_lemma_mcs_nonstandard_validity/summaries/implementation-summary-20260225.md)
 
 - **Task 928**: Refactored terminology (BFMCS -> FMCS, BMCS -> BFMCS) across 624+ occurrences. Moved CoherentConstruction.lean to Boneyard.
   - *Rationale*: Clearer naming conventions aligning with "family" (temporal) vs "bundle" (modal) distinction.
-  - *References*: [summary](specs/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/summaries/implementation-summary-20260225.md)
+  - *References*: [summary](specs/archive/928_refactor_metalogic_terminology_bfmcs_fmcs_mcs_boneyard/summaries/implementation-summary-20260225.md)
+
+- **Task 925**: Proved sorry-free weak and strong completeness theorems for bimodal TM logic using chain-bundle BMCS construction over CanonicalBC domain with modified truth semantics. All theorems depend only on standard Lean axioms.
+  - *Rationale*: Key innovation: Box case uses MCS membership directly, requiring temporal coherence only for the evaluated family.
+  - *References*: [summary](specs/archive/925_redesign_bmcs_completeness_mcs_accessibility/summaries/)
+
+- **Task 944**: Added Stage 2.5 ROAD_MAP.md reflection to 3 research agents (lean, logic, math) with pattern documentation, context references, and report template sections.
+  - *References*: [summary](specs/archive/944_add_roadmap_reflection_research_agents/summaries/implementation-summary-20260226.md)
+
+- **Task 943**: Added Step 1.7 (load CHANGE_LOG.md) and Step 6.6 (update CHANGE_LOG.md) to /review command.
+  - *References*: [summary](specs/archive/943_update_review_command_dual_file_maintenance/summaries/implementation-summary-20260226.md)
+
+- **Task 942**: Removed obsolete Task 941 references from /todo command, completing clean-break migration.
+  - *References*: [summary](specs/archive/942_update_todo_command_changelog_integration/summaries/implementation-summary-20260226.md)
+
+- **Task 941**: Extracted changelog to dedicated CHANGE_LOG.md file, created format documentation.
+  - *Rationale*: Establish clear separation between historical records (CHANGE_LOG.md) and strategic direction (ROAD_MAP.md).
+  - *References*: [summary](specs/archive/941_extract_changelog_create_format_docs/summaries/implementation-summary-20260226.md)
+
+- **Task 940**: Created /lean command with skill-lean-version for Lean toolchain and Mathlib version management.
+  - *References*: [summary](specs/archive/940_port_lean_version_management_command/summaries/)
+
+- **Task 939**: Added 5 domain override flags to /research command (--lean, --logic, --math, --latex, --typst).
+  - *References*: [summary](specs/archive/939_upgrade_research_command_domain_routing/summaries/)
+
+- **Task 938**: Ported 2 context files (topological-foundations-domain.md, dependent-type-theory.md) from Theory repository.
+  - *References*: [summary](specs/archive/938_port_logic_math_context_files/summaries/)
+
+- **Task 937**: Created index.json with 149 context file entries, generation/validation scripts, and index-query.md documentation.
+  - *References*: [summary](specs/archive/937_upgrade_context_system_index_json/summaries/)
+
+- **Task 936**: Created 3 specialized research agents (logic, math, latex) with corresponding skills and Mathlib lookup MCP tools.
+  - *References*: [summary](specs/archive/936_port_specialized_research_agents_skills/summaries/)
+
+- **Task 935**: Audited ROAD_MAP.md Current State section for accuracy.
+  - *References*: [summary](specs/archive/935_audit_roadmap_current_state_section/summaries/)
+
+- **Task 934**: Audited ROAD_MAP.md Strategies and Dead Ends sections, correcting 3 strategies and 5 dead ends.
+  - *References*: [summary](specs/archive/934_audit_roadmap_strategies_dead_ends_accuracy/summaries/)
+
+- **Task 927**: Fixed status synchronization between plan, TODO, and state files.
+  - *References*: [summary](specs/archive/927_fix_status_synchronization_plan_todo_state/summaries/)
+
+### 2026-02-25
+
+- **Task 926**: Reduced startup context from ~25,000 to ~6,000 tokens by extracting reference content to lazy-loaded files, slimming CLAUDE.md (66%), and trimming rules files (71%).
+  - *Rationale*: Context efficiency optimization for faster agent startup.
+  - *References*: [summary](specs/archive/926_audit_agent_system_context_efficiency/summaries/)
+
+- **Task 921**: Enforced zero-proof-debt completion gate for Lean tasks across 6 files.
+  - *Rationale*: Added Completion Gates and Forbidden Patterns to policy with verification steps in agents.
+  - *References*: [summary](specs/archive/921_enforce_zero_proof_debt_policy_for_lean_task_completion/summaries/)
+
+### 2026-02-24
+
+- **Task 923**: Proved canonical_reachable_linear theorem (0 sorries) using compound-formula linearity trick with dual non-comparability witnesses.
+  - *Rationale*: Unblocks task 922 Phase 3.
+  - *References*: [summary](specs/archive/923_formalize_frame_correspondence_linearity/summaries/)
+
+### 2026-02-20
+
+- **Task 915**: Created docs/bfmcs-architecture.md documenting the TM logic completeness proof architecture.
+  - *References*: [summary](specs/archive/915_document_bfmcs_proof_architecture/summaries/)
+
+- **Task 914**: Renamed IndexedMCSFamily to BFMCS across 12 active Lean files and 9 Boneyard import paths.
+  - *Rationale*: Clearer naming for Bundled Family of Maximal Consistent Sets.
+  - *References*: [summary](specs/archive/914_rename_indexedmcsfamily_to_bfmcs/summaries/)
+
+- **Task 912**: Discharged 3 sorries by Omega-parameterizing is_valid definition over shift-closed Omega sets. Reduced sorries from 10 to 7.
+  - *References*: [summary](specs/archive/912_review_completeness_proof_metalogic_state/summaries/)
 
 ### 2026-02-19
 
