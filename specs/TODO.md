@@ -24,7 +24,7 @@ technical_debt:
 
 ### 945. Design canonical model construction for TruthLemma
 - **Effort**: Large (12-16 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/945_canonical_model_construction_design/reports/research-001.md)
 - **Research**: [research-002.md](specs/945_canonical_model_construction_design/reports/research-002.md)
