@@ -8,11 +8,11 @@
     {
       "project_number": 945,
       "project_name": "canonical_model_construction_design",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T21:00:00Z",
-      "session_id": "sess_1772225291_670814",
+      "last_updated": "2026-02-27T22:00:00Z",
+      "session_id": "sess_1772227000_0b9d2f",
       "researched": "2026-02-27T20:43:07Z",
       "planned": "2026-02-27T21:00:00Z",
       "plan_metadata": {
@@ -59,6 +59,11 @@
           "path": "specs/945_canonical_model_construction_design/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for canonical model construction using CanonicalMCS-indexed chains"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-004.md",
+          "type": "research",
+          "summary": "Antisymmetrization analysis: CanonicalMCS cannot serve as BFMCS time domain for modal saturation; recommends omega-squared dovetailing over Int"
         }
       ]
     },
@@ -142,7 +147,7 @@
           "summary": "Post-FMP-completeness reassessment. Key finding: FMP strong completeness via big conjunction trick is the path to zero-sorry (2-4h, 90%+ success). BFMCS modal saturation remains blocked over all domains."
         }
       ],
-      "description": "Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. CONSTRAINT: Sorry debt is NEVER acceptable — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.\n\nThe study should focus on LEARNING FROM FAILURES to inspire creative solutions:\n\n**Pattern Analysis of Failed Approaches:**\n- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?\n- Is the \"Lindenbaum opacity\" a fundamental barrier, or does it reveal a hidden assumption we can drop?\n- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?\n\n**Creative Reframing Questions:**\n- What if the problem is not \"prove forward_F for a chain\" but \"find a structure that makes forward_F trivially true\"?\n- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar \"witness existence under opacity\" problems?\n- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?\n- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?\n\n**Mandatory Outputs:**\n1. A \"lessons learned\" document identifying the precise mathematical property that all failed approaches lacked\n2. At least 3 genuinely novel approach ideas that do NOT fit the \"bottom-up chain construction\" pattern\n3. For each novel approach: a preliminary feasibility assessment with confidence level\n4. A ranked recommendation with clear decision criteria\n\nKey artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.",
+      "description": "Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. CONSTRAINT: Sorry debt is NEVER acceptable \u2014 the study must find a path to zero sorries, not evaluate sorry acceptance as an option.\n\nThe study should focus on LEARNING FROM FAILURES to inspire creative solutions:\n\n**Pattern Analysis of Failed Approaches:**\n- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?\n- Is the \"Lindenbaum opacity\" a fundamental barrier, or does it reveal a hidden assumption we can drop?\n- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?\n\n**Creative Reframing Questions:**\n- What if the problem is not \"prove forward_F for a chain\" but \"find a structure that makes forward_F trivially true\"?\n- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar \"witness existence under opacity\" problems?\n- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?\n- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?\n\n**Mandatory Outputs:**\n1. A \"lessons learned\" document identifying the precise mathematical property that all failed approaches lacked\n2. At least 3 genuinely novel approach ideas that do NOT fit the \"bottom-up chain construction\" pattern\n3. For each novel approach: a preliminary feasibility assessment with confidence level\n4. A ranked recommendation with clear decision criteria\n\nKey artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.",
       "researched": "2026-02-27T05:44:51Z",
       "planned": "2026-02-25T02:26:51Z",
       "started": "2026-02-24T19:18:29Z",
