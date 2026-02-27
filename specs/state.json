@@ -8,10 +8,19 @@
     {
       "project_number": 947,
       "project_name": "bimodal_logic_opensource_documentation",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "created": "2026-02-27T23:38:36Z",
-      "last_updated": "2026-02-27T23:38:36Z"
+      "last_updated": "2026-02-27T23:42:58Z",
+      "session_id": "sess_1772235571_90dff8",
+      "researched": "2026-02-27T23:42:58Z",
+      "artifacts": [
+        {
+          "path": "specs/947_bimodal_logic_opensource_documentation/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Bimodal vs Logos components, documentation structure, and open-core licensing strategy"
+        }
+      ]
     },
     {
       "project_number": 945,
