@@ -7,7 +7,7 @@ repository_health:
 task_counts:
   active: 16
   completed: 658
-  in_progress: 1
+  in_progress: 2
   not_started: 3
   abandoned: 36
   total: 713
@@ -23,10 +23,11 @@ technical_debt:
 ## Tasks
 
 ### 945. Design canonical model construction for TruthLemma
-- **Effort**: TBD
+- **Effort**: Large
 - **Status**: [RESEARCHED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/945_canonical_model_construction_design/reports/research-001.md)
+- **Research**: [research-002.md](specs/945_canonical_model_construction_design/reports/research-002.md)
 
 **Description**: Take careful stock of the metalogic in order to identify what remains to finishing the representation theorem in order to design and implement a fully adequate syntactic construction by which to define a canonical model that satisfies the TruthLemma. The hard work should go into thinking carefully about how the construction should go since, once the right construction is found, establishing the TruthLemma will be easy. Don't move until you see it; it is better to think deeply to find the right construction than to go down the wrong rabbit hole.
 

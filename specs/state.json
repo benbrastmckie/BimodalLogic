@@ -11,9 +11,21 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T16:57:21Z",
-      "session_id": "sess_1772210334_244576",
-      "researched": "2026-02-27T16:57:21Z"
+      "last_updated": "2026-02-27T21:00:00Z",
+      "session_id": "sess_1772215256_9be306",
+      "researched": "2026-02-27T21:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-001.md",
+          "type": "research",
+          "summary": "Initial research: identified FMP bypass approach (rejected by user)"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-002.md",
+          "type": "research",
+          "summary": "Intensive study of BFMCS construction: bottom-up and top-down approaches analyzed, CanonicalMCS domain identified as best foundation, depth-stratified construction recommended"
+        }
+      ]
     },
     {
       "project_number": 930,
