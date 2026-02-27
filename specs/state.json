@@ -673,11 +673,19 @@
     {
       "project_number": 946,
       "project_name": "canonical_task_rel_compositionality",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-27T23:04:47Z",
-      "last_updated": "2026-02-27T23:04:47Z",
-      "artifacts": []
+      "last_updated": "2026-02-27T23:16:25Z",
+      "artifacts": [
+        {
+          "path": "specs/946_canonical_task_rel_compositionality/reports/research-001.md",
+          "type": "research",
+          "summary": "Root cause identified: canonical_task_rel too weak for cross-sign compositionality. Solution: strengthen definition to unconditionally require both GContent and HContent conditions."
+        }
+      ],
+      "session_id": "sess_1772233618_3f486d57",
+      "researched": "2026-02-27T23:16:25Z"
     }
   ],
   "completed_projects": [

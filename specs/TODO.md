@@ -24,7 +24,8 @@ technical_debt:
 
 ### 946. Prove canonical_task_rel_compositionality cross-sign cases
 - **Effort**: Medium (4-6 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [research-001.md](specs/946_canonical_task_rel_compositionality/reports/research-001.md)
 - **Language**: lean
 - **Parent**: Task 945
 
