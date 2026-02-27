@@ -11,9 +11,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T21:00:00Z",
-      "session_id": "sess_1772215256_9be306",
-      "researched": "2026-02-27T21:00:00Z",
+      "last_updated": "2026-02-27T20:43:07Z",
+      "session_id": "sess_1772224352_69f3d0",
+      "researched": "2026-02-27T20:43:07Z",
       "artifacts": [
         {
           "path": "specs/945_canonical_model_construction_design/reports/research-001.md",
@@ -24,6 +24,11 @@
           "path": "specs/945_canonical_model_construction_design/reports/research-002.md",
           "type": "research",
           "summary": "Intensive study of BFMCS construction: bottom-up and top-down approaches analyzed, CanonicalMCS domain identified as best foundation, depth-stratified construction recommended"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-003.md",
+          "type": "research",
+          "summary": "Deep analysis of canonical model construction: times vs states distinction, maximal chains as histories, role of linearity axiom, dovetailing over CanonicalMCS to avoid GContent corruption, multi-family bundle via separate chains for diamond witnesses"
         }
       ]
     },
