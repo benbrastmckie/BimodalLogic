@@ -8,10 +8,12 @@
     {
       "project_number": 945,
       "project_name": "canonical_model_construction_design",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T16:37:34Z"
+      "last_updated": "2026-02-27T16:57:21Z",
+      "session_id": "sess_1772210334_244576",
+      "researched": "2026-02-27T16:57:21Z"
     },
     {
       "project_number": 930,
