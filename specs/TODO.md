@@ -1,16 +1,16 @@
 ---
-next_project_number: 947
+next_project_number: 948
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-27T02:51:23Z
 task_counts:
-  active: 16
+  active: 17
   completed: 658
   in_progress: 2
-  not_started: 3
+  not_started: 4
   abandoned: 36
-  total: 713
+  total: 714
 technical_debt:
   sorry_count: 80
   axiom_count: 19
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 947. Revise documentation for bimodal logic opensource release
+- **Effort**: Medium
+- **Status**: [NOT STARTED]
+- **Language**: general
+
+**Description**: Revise README.md and project documentation to present bimodal logic as the opensource foundational core (GNU license) while keeping Logos private, positioning bimodal logic as the base that Logos elaborates with additional operators.
+
+---
 
 ### 946. Prove canonical_task_rel_compositionality cross-sign cases
 - **Effort**: Medium (4-6 hours)
