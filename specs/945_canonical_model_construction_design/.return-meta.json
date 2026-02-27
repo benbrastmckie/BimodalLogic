@@ -1,24 +1,30 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-27T00:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/945_canonical_model_construction_design/reports/research-003.md",
-      "summary": "Deep analysis of canonical model construction: times vs states distinction, maximal chains as histories, role of linearity axiom, dovetailing over CanonicalMCS to avoid GContent corruption, multi-family bundle via separate chains for diamond witnesses"
+      "type": "plan",
+      "path": "specs/945_canonical_model_construction_design/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for canonical model construction using CanonicalMCS-indexed chains"
     }
   ],
-  "next_steps": "Run /plan 945 to create implementation plan for the chain-based BFMCS construction",
+  "next_steps": "Run /implement 945 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772224352_69f3d0",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 900,
+    "session_id": "sess_1772225291_670814",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 13,
-    "context_files_loaded": [],
-    "mathlib_lookups_performed": 4,
-    "context_extension_tasks": [],
-    "context_candidates_count": 2
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": "12-16",
+    "research_integrated": [
+      "specs/945_canonical_model_construction_design/reports/research-001.md",
+      "specs/945_canonical_model_construction_design/reports/research-002.md",
+      "specs/945_canonical_model_construction_design/reports/research-003.md"
+    ],
+    "key_files": [
+      "Theories/Bimodal/Metalogic/Bundle/CanonicalChain.lean",
+      "Theories/Bimodal/Metalogic/Bundle/CanonicalBFMCS.lean",
+      "Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean"
+    ],
+    "blocking_sorry": "fully_saturated_bfmcs_exists_int (TemporalCoherentConstruction.lean:600)"
   }
 }

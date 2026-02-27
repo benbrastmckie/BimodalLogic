@@ -8,12 +8,37 @@
     {
       "project_number": 945,
       "project_name": "canonical_model_construction_design",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-27T16:37:34Z",
-      "last_updated": "2026-02-27T20:43:07Z",
-      "session_id": "sess_1772224352_69f3d0",
+      "last_updated": "2026-02-27T21:00:00Z",
+      "session_id": "sess_1772225291_670814",
       "researched": "2026-02-27T20:43:07Z",
+      "planned": "2026-02-27T21:00:00Z",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 14,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-27"
+          },
+          {
+            "path": "reports/research-002.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-27"
+          },
+          {
+            "path": "reports/research-003.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-27"
+          }
+        ]
+      },
       "artifacts": [
         {
           "path": "specs/945_canonical_model_construction_design/reports/research-001.md",
@@ -29,6 +54,11 @@
           "path": "specs/945_canonical_model_construction_design/reports/research-003.md",
           "type": "research",
           "summary": "Deep analysis of canonical model construction: times vs states distinction, maximal chains as histories, role of linearity axiom, dovetailing over CanonicalMCS to avoid GContent corruption, multi-family bundle via separate chains for diamond witnesses"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for canonical model construction using CanonicalMCS-indexed chains"
         }
       ]
     },
