@@ -1,7 +1,7 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-02-26
-**Status**: FMP Completeness Sorry-Free, Bundle Completeness (3 sorries in Int-indexed construction), Boneyard Cleanup Complete
+**Last Updated**: 2026-02-27
+**Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness SORRY-DEPENDENT (3 upstream sorries), Non-standard completeness archived (Task 948)
 
 > **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
 > Each entry should include *Rationale* (why) and *References* (learn more).
@@ -53,7 +53,7 @@ The architecture places canonical model construction as the foundation, with FMP
 - [Task 654 research](specs/archive/654_research_purely_syntactic_representation_theorem/reports/research-003.md) - Approach analysis
 - [Boneyard archive](Theories/Bimodal/Boneyard/Metalogic_v5/Representation/) - Archived original files
 
-*Note*: Sorry-free completeness is now via the FMP approach (`FMP/SemanticCanonicalModel.lean`), not the archived Representation module.
+*Note*: Standard completeness is now via `Representation.lean` using BFMCS infrastructure. The FMP approach was archived to Boneyard/Metalogic_v8 (Task 948) due to non-standard validity definition.
 
 ---
 
@@ -165,10 +165,10 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 *Rationale*: Core use case for the codebase - verified modal logic proofs that can be cited in academic work and used as a reference implementation.
 
 **Success Criteria**:
-- [x] Representation theorem sorry-free
-- [x] Completeness hierarchy (weak/finite strong/infinitary) proven
-- [x] Compactness sorry-free
-- [ ] Soundness proven (currently axiomatized)
+- [x] Soundness proven *(Completed: Task 909+, 2026-02-19)*
+- [x] Decidability proven *(Completed: DecisionProcedure.lean, sorry-free)*
+- [x] Canonical truth lemma proven *(Completed: Task 945, 2026-02-27)*
+- [ ] Standard completeness sorry-free (3 sorries in upstream BFMCS construction)
 - [ ] Full documentation with tutorials
 - [ ] Paper draft or technical report
 
@@ -260,20 +260,23 @@ Complete the algebraic approach using Boolean algebra with modal operators, prov
 *Rationale*: Reduce sorry count to achieve production-quality proofs. A low sorry count indicates a mature, trustworthy formalization and enables confident use in verification.
 
 **Success Criteria**:
-- [x] Critical path sorry-free (representation theorem)
-- [x] Compactness sorry-free
-- [x] FMP completeness sorry-free
-- [x] No blocking sorries on main theorem paths (FMP path is clear)
+- [x] Soundness sorry-free *(Completed: 2026-02-19)*
+- [x] Decidability sorry-free *(Completed: DecisionProcedure.lean)*
+- [x] Canonical truth lemma sorry-free *(Completed: Task 945, 2026-02-27)*
 - [x] Documented sorry debt policy enforced
-- [ ] Bundle completeness sorry-free (3 sorries remain in DovetailingChain/TemporalCoherentConstruction)
+- [ ] Standard completeness sorry-free (3 sorries remain: fully_saturated_bfmcs_exists_int + 2 DovetailingChain)
+- [ ] ~~FMP completeness sorry-free~~ *(Archived: Task 948, non-standard validity)*
+- [ ] ~~BFMCS completeness sorry-free~~ *(Archived: Task 948, non-standard validity)*
 
 **Description**:
 Systematically reduce sorries in the Metalogic module through proof completion, alternative constructions, or explicit documentation as intentional gaps.
 
+**Note**: Task 948 archived the FMP and BFMCS completeness theorems because they used non-standard validity definitions (`bmcs_valid`, `fmp_valid`) not proven equivalent to the standard `valid` definition. The current focus is proving standard completeness via Representation.lean.
+
 **Related Phases**: Phase 1 (Proof Quality), Phase 5 (Managing Sorries)
 **References**:
 - [proof-debt-policy.md](.claude/context/project/lean4/standards/proof-debt-policy.md) - Proof debt management (sorries + axioms)
-- [Task 758](specs/TODO.md) - Sorry audit task
+- [Task 948 summary](specs/948_archive_nonstandard_completeness_theorems/summaries/) - Archival rationale
 - [Phase 1 goals](specs/ROAD_MAP.md#phase-1-proof-quality-and-organization-high-priority) - Economy tasks
 
 ---
@@ -507,6 +510,37 @@ Multi-family bundles are essential for modal completeness without T-axiom. Singl
 
 ---
 
+### Dead End: Non-Standard Validity Completeness (BFMCS/FMP)
+
+**Status**: SUPERSEDED
+**Tried**: 2025-12-01 to 2026-02-27
+**Related Tasks**: Task 948, 930, 931
+
+*Rationale*: Pursued completeness theorems using custom validity definitions (`bmcs_valid`, `fmp_valid`) that were structurally convenient but semantically non-standard.
+
+**What We Tried**:
+1. **BFMCS Completeness**: Proved `bmcs_valid φ → ⊢ φ` where `bmcs_valid` quantifies box over BFMCS bundle families rather than over all admissible histories. This was sorry-free.
+2. **FMP Completeness**: Proved `fmp_valid φ → ⊢ φ` using formula-specific finite quotient structures with bounded cardinality. This was sorry-free and axiom-free.
+
+**Why It Failed**:
+Both `bmcs_valid` and `fmp_valid` are definitionally different from the standard `valid` in `Semantics/Validity.lean` which quantifies over arbitrary TaskFrame models. The equivalences `bmcs_valid φ ↔ valid φ` and `fmp_valid φ ↔ valid φ` were never proven. Therefore:
+- Soundness proves `⊢ φ → valid φ` (standard validity)
+- Completeness proved `bmcs_valid φ → ⊢ φ` or `fmp_valid φ → ⊢ φ` (non-standard validity)
+- Without equivalence proof, these don't combine into `valid φ ↔ ⊢ φ`
+
+**Evidence**:
+- [Boneyard/Metalogic_v8/Bundle/Completeness.lean](Theories/Bimodal/Boneyard/Metalogic_v8/Bundle/Completeness.lean) - Archived BFMCS completeness
+- [Boneyard/Metalogic_v8/FMP/](Theories/Bimodal/Boneyard/Metalogic_v8/FMP/) - Archived FMP infrastructure
+- [Task 948 research](specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md) - Archival analysis
+- [Task 930 research](specs/930_verify_mcs_membership_box_semantics_correctness/reports/) - Validity equivalence investigation
+
+**Lesson**:
+Completeness must use the same validity notion as soundness. Custom validity definitions that simplify the proof but aren't proven equivalent to the standard semantics create a soundness-completeness gap.
+
+**Superseded By**: Standard completeness via Representation.lean using `valid` from `Semantics/Validity.lean`
+
+---
+
 ## Overview
 
 This roadmap outlines the current state of the ProofChecker project and charts the path forward for:
@@ -519,75 +553,67 @@ This roadmap outlines the current state of the ProofChecker project and charts t
 
 ## Current State: What's Been Accomplished
 
-*Last audited: 2026-02-26*
+*Last audited: 2026-02-27*
 
-### Current Architecture: BFMCS + FMP Completeness
+### Current Architecture: Standard Completeness via BFMCS Infrastructure
 
-The active metalogic is in `Theories/Bimodal/Metalogic/`. Two **sorry-free** completeness approaches are available:
+The active metalogic is in `Theories/Bimodal/Metalogic/`. After Task 948 (2026-02-27), the architecture focuses on **standard completeness** using the `valid` definition from `Semantics/Validity.lean`.
 
-#### 1. BFMCS Completeness (Bundle/Completeness.lean)
+#### Primary Results
 
-**Status**: SORRY-FREE for main theorems. 3 sorries in Int-indexed construction infrastructure.
+| Result | Theorem | Module | Status |
+|--------|---------|--------|--------|
+| **Soundness** | `soundness` | Soundness.lean | **SORRY-FREE** |
+| **Decidability** | `decide` | Decidability/DecisionProcedure.lean | **SORRY-FREE** |
+| **Canonical Truth Lemma** | `canonical_truth_lemma` | Bundle/CanonicalConstruction.lean | **SORRY-FREE** |
+| **Standard Weak Completeness** | `standard_weak_completeness` | Representation.lean | sorry-dependent |
+| **Standard Strong Completeness** | `standard_strong_completeness` | Representation.lean | sorry-dependent |
 
-The **Bundle of Families of Maximal Consistent Sets (BFMCS)** approach is a Henkin-style completeness proof that resolves the modal completeness obstruction present in traditional canonical model approaches.
-
-| Theorem | Status | Location |
-|---------|--------|----------|
-| `bmcs_truth_lemma` | **SORRY-FREE** | Bundle/TruthLemma.lean |
-| `bmcs_representation` | **SORRY-FREE** | Bundle/Completeness.lean |
-| `bmcs_weak_completeness` | **SORRY-FREE** | Bundle/Completeness.lean |
-| `bmcs_strong_completeness` | **SORRY-FREE** | Bundle/Completeness.lean |
-
-**Key Achievement**: The **box case** of the truth lemma is sorry-free. This was the fundamental obstruction that blocked traditional completeness proofs. BFMCS works by restricting box quantification to bundled families with modal coherence conditions.
+**Key Achievement (Task 945)**: The `canonical_truth_lemma` is sorry-free, connecting MCS membership directly to the standard `truth_at` predicate. This is the core TruthLemma connecting the syntactic world (MCS) to the semantic world (Kripke truth).
 
 **Import for use**:
 ```lean
-import Bimodal.Metalogic.Bundle.Completeness
--- bmcs_weak_completeness, bmcs_strong_completeness
+import Bimodal.Metalogic.Representation
+-- standard_weak_completeness, standard_strong_completeness (sorry-dependent)
+
+import Bimodal.Metalogic.Soundness
+-- soundness (sorry-free)
+
+import Bimodal.Metalogic.Decidability
+-- decide, isValid, isSatisfiable (sorry-free)
 ```
 
-See [Bundle/README.md](Theories/Bimodal/Metalogic/Bundle/README.md) for full documentation.
+#### Archived Results (Task 948)
 
-#### 2. FMP Completeness (FMP/SemanticCanonicalModel.lean)
+The following were archived to `Boneyard/Metalogic_v8/` because they used non-standard validity definitions not proven equivalent to `valid`:
 
-**Status**: SORRY-FREE and AXIOM-FREE (publication ready)
+| Result | Original Location | Archive Location | Reason |
+|--------|------------------|------------------|--------|
+| BFMCS Completeness | Bundle/Completeness.lean | Boneyard/Metalogic_v8/Bundle/ | `bmcs_valid` ≠ `valid` |
+| FMP Completeness | FMP/SemanticCanonicalModel.lean | Boneyard/Metalogic_v8/FMP/ | `fmp_valid` ≠ `valid` |
 
-The **Finite Model Property** approach establishes that satisfiable formulas have finite models with bounded size (`2^closureSize`).
-
-| Theorem | Status | Location |
-|---------|--------|----------|
-| `fmp_weak_completeness` | **SORRY-FREE** | FMP/SemanticCanonicalModel.lean |
-| `semanticWorldState_card_bound` | **SORRY-FREE** | FMP/SemanticCanonicalModel.lean |
-
-**Import for use**:
-```lean
-import Bimodal.Metalogic.FMP.SemanticCanonicalModel
--- fmp_weak_completeness
-```
-
-See [FMP/README.md](Theories/Bimodal/Metalogic/FMP/README.md) for full documentation.
-
-#### Soundness (Metalogic/Soundness.lean)
-
-| Theorem | Status | Location |
-|---------|--------|----------|
-| `soundness` | **SORRY-FREE** | Metalogic/Soundness.lean |
-
-All 15 TM axioms and 7 derivation rules proven to preserve validity.
+See Dead Ends section: "Non-Standard Validity Completeness (BFMCS/FMP)" for full analysis.
 
 ---
 
 ### Sorry Debt Status
 
-**Current State** (as of 2026-02-26): **3 sorries** in active Metalogic/ (excluding Boneyard)
+**Current State** (as of 2026-02-27): **3 sorries** in active Metalogic/ (excluding Boneyard)
 
 | File | Count | Description |
 |------|-------|-------------|
-| Bundle/TemporalCoherentConstruction.lean:600 | 1 | Combines temporal + modal saturation for Int-indexed families |
-| Bundle/DovetailingChain.lean:1869 | 1 | Cross-sign propagation (forward_H) |
-| Bundle/DovetailingChain.lean:1881 | 1 | Cross-sign propagation (backward_G) |
+| Bundle/TemporalCoherentConstruction.lean:600 | 1 | `fully_saturated_bfmcs_exists_int` - combines temporal + modal saturation |
+| Bundle/DovetailingChain.lean:1869 | 1 | `buildDovetailingChainFamily_forward_F` - F-witness placement |
+| Bundle/DovetailingChain.lean:1881 | 1 | `buildDovetailingChainFamily_backward_P` - P-witness placement |
 
-**Why these don't block completeness**: These sorries are in the Int-indexed family construction infrastructure. The main completeness theorems (`bmcs_weak_completeness`, `fmp_weak_completeness`) are **fully sorry-free** and do not depend on this Int-specific code.
+**Impact on Standard Completeness**: These sorries are in the upstream BFMCS construction chain (`construct_saturated_bfmcs_int`). Standard completeness theorems (`standard_weak_completeness`, `standard_strong_completeness`) inherit this sorry dependency.
+
+**What IS sorry-free**:
+- Soundness (`soundness`)
+- Decidability (`decide`)
+- Canonical truth lemma (`canonical_truth_lemma`)
+- BFMCS truth lemma (`bmcs_truth_lemma`)
+- All temporal/modal MCS properties
 
 **Verification command**:
 ```bash
@@ -600,34 +626,37 @@ grep -rn "^\s*sorry$" Theories/Bimodal/Metalogic --include="*.lean" | grep -v Bo
 
 ```
 Metalogic/
-├── Soundness.lean            # soundness theorem (sorry-free)
+├── Soundness.lean            # soundness theorem (SORRY-FREE)
 ├── SoundnessLemmas.lean      # supporting lemmas
-├── Representation.lean       # top-level representation exports
+├── Representation.lean       # standard completeness (sorry-dependent)
+├── Completeness.lean         # MCS modal properties
 │
-├── Core/                     # Foundational MCS theory (sorry-free)
+├── Core/                     # Foundational MCS theory (SORRY-FREE)
 │   ├── MaximalConsistent.lean
 │   ├── DeductionTheorem.lean
 │   └── MCSProperties.lean
 │
-├── Bundle/                   # BFMCS completeness (primary approach)
+├── Bundle/                   # BFMCS infrastructure
 │   ├── FMCS.lean             # Temporal MCS families
 │   ├── BFMCS.lean            # Bundle with modal coherence
-│   ├── TruthLemma.lean       # MCS <-> truth (sorry-free)
-│   └── Completeness.lean     # Main theorems (sorry-free)
+│   ├── TruthLemma.lean       # bmcs_truth_lemma (SORRY-FREE)
+│   ├── CanonicalConstruction.lean  # canonical_truth_lemma (SORRY-FREE)
+│   ├── CanonicalFMCS.lean    # D=CanonicalMCS families (SORRY-FREE)
+│   ├── Construction.lean     # BFMCS construction utilities
+│   ├── TemporalCoherentConstruction.lean  # 1 sorry
+│   └── DovetailingChain.lean # 2 sorries
 │
-├── FMP/                      # Finite Model Property (sorry-free)
-│   ├── Closure.lean          # Subformula closure
-│   ├── BoundedTime.lean      # Finite time domain
-│   └── SemanticCanonicalModel.lean  # fmp_weak_completeness
+├── Decidability/             # Tableau decision procedure (SORRY-FREE)
+│   ├── DecisionProcedure.lean
+│   ├── Correctness.lean
+│   └── ...
 │
-├── Decidability/             # Tableau decision procedure (sorry-free)
-│   └── DecisionProcedure.lean
-│
-├── Algebraic/                # Alternative algebraic approach
+├── Algebraic/                # Alternative algebraic approach (PAUSED)
 │   └── AlgebraicRepresentation.lean
 │
-├── Representation/           # [ARCHIVED] README only
-└── Compactness/              # [ARCHIVED] README only
+└── [ARCHIVED to Boneyard/Metalogic_v8/]
+    ├── Bundle/Completeness.lean  # bmcs completeness (non-standard)
+    └── FMP/                      # fmp completeness (non-standard)
 ```
 
 ---
@@ -668,7 +697,22 @@ The compactness theorem depended on `InfinitaryStrongCompleteness` which used th
 - `compactness_iff`: Bidirectional equivalence
 - `compactness_entailment`: Semantic consequence has finite witness
 
-**Alternative**: For sorry-free completeness, use `fmp_weak_completeness` or `bmcs_weak_completeness`. Note that FMP does not provide infinitary completeness or compactness.
+**Alternative**: For standard completeness, use `standard_weak_completeness` or `standard_strong_completeness` in `Representation.lean` (sorry-dependent on upstream BFMCS construction). The archived `fmp_weak_completeness` and `bmcs_weak_completeness` used non-standard validity definitions.
+
+#### Metalogic_v8: Non-Standard Completeness (ARCHIVED)
+
+**Status**: ARCHIVED to `Theories/Bimodal/Boneyard/Metalogic_v8/` (Task 948, 2026-02-27)
+
+The BFMCS and FMP completeness theorems were archived because they used non-standard validity definitions (`bmcs_valid`, `fmp_valid`) not proven equivalent to the standard `valid` from `Semantics/Validity.lean`.
+
+**Archive location**: `Theories/Bimodal/Boneyard/Metalogic_v8/`
+
+Files archived:
+- `Bundle/Completeness.lean` - `bmcs_weak_completeness`, `bmcs_strong_completeness`
+- `FMP/SemanticCanonicalModel.lean` - `fmp_weak_completeness`
+- `FMP/Closure.lean`, `FMP/FiniteWorldState.lean`, `FMP/BoundedTime.lean` - FMP infrastructure
+
+See Dead Ends: "Non-Standard Validity Completeness (BFMCS/FMP)" for full analysis.
 
 #### Decidability (Boneyard)
 
@@ -687,7 +731,7 @@ See [Theories/Bimodal/Boneyard/README.md](Theories/Bimodal/Boneyard/README.md) f
 **Tasks**:
 - [x] Audit `Theories/Bimodal/Metalogic/` for sorries *(3 sorries as of 2026-02-26, see Current State section)*
 - [x] Categorize by difficulty and dependency *(all in Int-indexed construction, not on critical path)*
-- [x] Prioritize which sorries block main theorem path *(0 on critical path - main completeness theorems are sorry-free)*
+- [x] Prioritize which sorries block main theorem path *(3 sorries affect standard completeness; soundness/decidability are sorry-free)*
 
 ### 0.2 Port from Boneyard
 
@@ -707,9 +751,9 @@ See [Theories/Bimodal/Boneyard/README.md](Theories/Bimodal/Boneyard/README.md) f
 
 **Resolution**:
 - **Boneyard/Metalogic_v2/Decidability/**: DEPRECATED. Code preserved for historical reference.
-- **New approach**: Parametric FMP infrastructure in `Metalogic/FMP/` provides finite model construction.
-- **Practical impact**: `semantic_weak_completeness` provides sorry-free completeness without full decidability proof.
-- **Future option**: Full decidability via FMP path (Task 755) remains available if needed.
+- **Active decidability**: `Metalogic/Decidability/DecisionProcedure.lean` provides tableau-based decision procedure (SORRY-FREE).
+- **Note**: The FMP infrastructure that was in `Metalogic/FMP/` has been archived to Boneyard/Metalogic_v8 (Task 948) due to non-standard validity definitions.
+- **Current focus**: Standard completeness via `Representation.lean` using BFMCS infrastructure.
 
 ### 0.4 Document Inventory
 

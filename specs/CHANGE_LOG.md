@@ -29,6 +29,10 @@ Updated by /todo command during task archival.
 
 ### 2026-02-27
 
+- **Review 2026-02-27**: Revised ROAD_MAP.md to reflect post-Task-948 metalogic state. 5 critical issues fixed: updated Current State section, fixed Ambitions checkboxes, added Dead End for non-standard validity, updated Module Architecture.
+  - *Rationale*: Task 948 archived non-standard completeness but roadmap still claimed them as primary paths. Major discrepancies between documentation and code.
+  - *References*: [review report](specs/reviews/review-20260227-metalogic-roadmap.md)
+
 - **Task 946**: Eliminated all 4 sorries in canonical_task_rel_compositionality by strengthening to unconditional GContent/HContent and proving via canonicalR_transitive.
   - *Rationale*: Complete the canonical model construction with sorry-free compositionality proofs.
   - *References*: [summary](specs/archive/946_canonical_task_rel_compositionality/summaries/implementation-summary-20260227.md)
