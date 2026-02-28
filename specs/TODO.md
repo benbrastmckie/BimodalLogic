@@ -24,10 +24,13 @@ technical_debt:
 
 ### 947. Revise documentation for bimodal logic opensource release
 - **Effort**: Medium
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: general
+- **Completed**: 2026-02-28
+- **Summary**: Revised documentation to establish Bimodal as the complete, production-ready implementation with verified soundness/completeness proofs, positioning Logos as research roadmap.
 - **Research**: [research-001.md](specs/947_bimodal_logic_opensource_documentation/reports/research-001.md)
 - **Plan**: [implementation-002.md](specs/947_bimodal_logic_opensource_documentation/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260227.md](specs/947_bimodal_logic_opensource_documentation/summaries/implementation-summary-20260227.md)
 
 **Description**: Revise README.md and project documentation to present bimodal logic as the opensource foundational core (GNU license) while keeping Logos private, positioning bimodal logic as the base that Logos elaborates with additional operators.
 
