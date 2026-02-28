@@ -1,7 +1,7 @@
 # Implementation Plan: Task #951 (Revision 2)
 
 - **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 40-60 hours
 - **Version**: 2 (supersedes implementation-001.md)
 - **Dependencies**: CanonicalFMCS.lean, Boneyard CanonicalReachable infrastructure
@@ -89,28 +89,41 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 
 ## Implementation Phases
 
-### Phase A: Resurrect and Adapt CanonicalReachable Infrastructure [NOT STARTED]
+### Phase A: Resurrect and Adapt CanonicalReachable Infrastructure [COMPLETED]
 
 - **Dependencies**: None (uses Boneyard code)
 - **Goal**: Adapt CanonicalReachable from Boneyard for bidirectional reachability
 
 **Tasks**:
-- [ ] Review `Boneyard/Metalogic/Bundle/CanonicalQuotientApproach/CanonicalReachable.lean`
-- [ ] Create `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean`
-- [ ] Define `BidirectionalReachable M₀` as reflexive-transitive-symmetric closure of CanonicalR from M₀
-- [ ] Prove `root_in_bidirectional`: M₀ ∈ BidirectionalReachable M₀
-- [ ] Prove `forward_reachable_closed`: if W ∈ BidirectionalReachable M₀ and CanonicalR W W', then W' ∈ BidirectionalReachable M₀
-- [ ] Prove `backward_reachable_closed`: if W ∈ BidirectionalReachable M₀ and CanonicalR W' W, then W' ∈ BidirectionalReachable M₀
-- [ ] Import and verify compatibility with CanonicalFMCS.lean
+- [x] Review `Boneyard/Metalogic/Bundle/CanonicalQuotientApproach/CanonicalReachable.lean`
+- [x] Create `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean`
+- [x] Define `BidirectionalReachable M₀` as reflexive-transitive-symmetric closure of CanonicalR from M₀
+- [x] Prove `root_in_bidirectional`: M₀ ∈ BidirectionalReachable M₀ (via `BidirectionalReachable.refl`)
+- [x] Prove `forward_reachable_closed`: via `BidirectionalFragment.forward_closed`
+- [x] Prove `backward_reachable_closed`: via `BidirectionalFragment.backward_closed`
+- [x] Import and verify compatibility with CanonicalFMCS.lean
+- [x] Prove `forward_F_stays_in_fragment`: F-witnesses stay in fragment
+- [x] Prove `backward_P_stays_in_fragment`: P-witnesses stay in fragment
 
 **Timing**: 6-10 hours
 
 **Files to create/modify**:
-- `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - new file
+- `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - new file (257 lines)
 
 **Verification**:
-- `lake build Bimodal.Metalogic.Bundle.BidirectionalReachable` passes
-- No sorries in new file
+- [x] `lake build Bimodal.Metalogic.Bundle.BidirectionalReachable` passes
+- [x] No sorries in new file
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772246447_439fa1e5**
+- Added: `BidirectionalEdge` inductive type for one-step edges in either direction
+- Added: `BidirectionalReachable` inductive type for reflexive-transitive-symmetric closure
+- Added: `BidirectionalFragment` structure for MCSes reachable from root
+- Added: `forward_closed`, `backward_closed` closure lemmas
+- Added: `forward_F_stays_in_fragment`, `backward_P_stays_in_fragment` key theorems
+- Added: `toCanonicalMCS` conversion and `Preorder` instance
+- Verified: All proofs compile without sorry or axiom
 
 ---
 
