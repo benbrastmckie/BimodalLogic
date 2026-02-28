@@ -3,142 +3,24 @@ next_project_number: 949
 repository_health:
   overall_score: 90
   production_readiness: improved
-  last_assessed: 2026-02-27T02:51:23Z
+  last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 17
-  completed: 658
-  in_progress: 2
+  active: 15
+  completed: 662
+  in_progress: 0
   not_started: 4
   abandoned: 36
-  total: 714
+  total: 713
 technical_debt:
-  sorry_count: 76
+  sorry_count: 73
   axiom_count: 19
   build_errors: 0
-  status: manageable
+  status: good
 ---
 
 # TODO
 
 ## Tasks
-
-### 948. Archive non-standard completeness theorems to Boneyard
-- **Effort**: Medium (2-4 hours)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Completed**: 2026-02-28
-- **Summary**: Archived BFMCS Completeness and FMP Completeness theorems (5 files) to Boneyard/Metalogic_v8 because they use non-standard validity definitions. Relocated 3 shared utilities to Construction.lean. Full build passes with no regressions.
-- **Research**: [research-001.md](specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/948_archive_nonstandard_completeness_theorems/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260228.md](specs/948_archive_nonstandard_completeness_theorems/summaries/implementation-summary-20260228.md)
-
-**Description**: Archive BFMCS Completeness and FMP Completeness theorems and infrastructure to the Boneyard because they use non-standard validity definitions that are not proven equivalent to the standard `valid` definition in `Semantics/Validity.lean`.
-
-**Problem Analysis**:
-
-1. **BFMCS Completeness** (`bmcs_weak_completeness`, `bmcs_strong_completeness` in `Bundle/Completeness.lean`):
-   - Proves `bmcs_valid φ → ⊢ φ` where `bmcs_valid` uses `bmcs_truth_at`
-   - `bmcs_truth_at` has non-standard box semantics: box quantifies only over bundle families in B.families, NOT over all histories in a shift-closed Omega
-   - This is definitionally different from standard `valid` which quantifies over all TaskFrame models
-   - The equivalence `bmcs_valid φ ↔ valid φ` is unproven (Task 930 is researching this)
-
-2. **FMP Completeness** (`fmp_weak_completeness` in `FMP/SemanticCanonicalModel.lean`):
-   - Proves `(∀ w : SemanticWorldState phi, semantic_truth_at_v2 phi w origin phi) → ⊢ phi`
-   - Uses `semantic_truth_at_v2` on `SemanticWorldState phi` (formula-specific finite quotient structure)
-   - NOT using standard `valid` which quantifies over arbitrary TaskFrame D models
-
-**Downstream Impact**: Neither theorem has any downstream uses (verified by grep). They are pure leaf nodes.
-
-**Work Required**:
-
-Phase 1: Relocate utilities from `Bundle/Completeness.lean` to `Bundle/Construction.lean`:
-- `ContextDerivable` (used by Representation.lean)
-- `context_not_derivable_implies_extended_consistent` (used by Representation.lean)
-- `not_derivable_implies_neg_consistent` (used by Representation.lean)
-- Update imports in Representation.lean accordingly
-
-Phase 2: Archive `Bundle/Completeness.lean` to `Boneyard/Metalogic_v8/Bundle/Completeness.lean`:
-- Move entire file with explanatory header about why archived
-- Remove import from `Metalogic.lean`
-
-Phase 3: Archive FMP directory to `Boneyard/Metalogic_v8/FMP/`:
-- Move `FMP/SemanticCanonicalModel.lean`
-- Move `FMP/FiniteWorldState.lean`
-- Move `FMP/BoundedTime.lean`
-- Move `FMP/Closure.lean`
-- Remove FMP imports from `Metalogic.lean`
-
-Phase 4: Update `Metalogic.lean` module docstring:
-- Remove claims about BFMCS and FMP completeness being "main results"
-- Update the results table to reflect only standard completeness (sorry-dependent) and soundness
-- Document that non-standard completeness proofs were archived with rationale
-
-Phase 5: Verify build and update sorry/axiom counts:
-- Run `lake build` to ensure no broken imports
-- Update TODO.md technical debt metrics
-
-**Key Files**:
-- `Theories/Bimodal/Metalogic/Bundle/Completeness.lean` (archive after Phase 1)
-- `Theories/Bimodal/Metalogic/Bundle/Construction.lean` (receives utilities)
-- `Theories/Bimodal/Metalogic/FMP/` (entire directory archived)
-- `Theories/Bimodal/Metalogic/Metalogic.lean` (update imports and docstrings)
-- `Theories/Bimodal/Metalogic/Representation.lean` (update imports)
-
----
-
-### 947. Revise documentation for bimodal logic opensource release
-- **Effort**: Medium
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Completed**: 2026-02-28
-- **Summary**: Revised documentation to establish Bimodal as the complete, production-ready implementation with verified soundness/completeness proofs, positioning Logos as research roadmap.
-- **Research**: [research-001.md](specs/947_bimodal_logic_opensource_documentation/reports/research-001.md)
-- **Plan**: [implementation-002.md](specs/947_bimodal_logic_opensource_documentation/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260227.md](specs/947_bimodal_logic_opensource_documentation/summaries/implementation-summary-20260227.md)
-
-**Description**: Revise README.md and project documentation to present bimodal logic as the opensource foundational core (GNU license) while keeping Logos private, positioning bimodal logic as the base that Logos elaborates with additional operators.
-
----
-
-### 946. Prove canonical_task_rel_compositionality cross-sign cases
-- **Effort**: Medium (4-6 hours)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Completed**: 2026-02-27
-- **Summary**: Eliminated all 4 sorries by strengthening canonical_task_rel to unconditional GContent/HContent and proving compositionality via canonicalR_transitive and HContent_chain_transitive.
-- **Research**: [research-001.md](specs/946_canonical_task_rel_compositionality/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/946_canonical_task_rel_compositionality/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260227.md](specs/946_canonical_task_rel_compositionality/summaries/implementation-summary-20260227.md)
-- **Parent**: Task 945
-
-**Description**: Prove the 4 remaining sorries in `canonical_task_rel_compositionality` (Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean). These are cross-sign duration cases where x and y have opposite signs. The cases are:
-1. x >= 0, y < 0, x + y >= 0: forward GContent case
-2. x < 0, y >= 0, x + y >= 0: forward GContent case
-3. x > 0, y <= 0, x + y <= 0: backward HContent case
-4. x < 0 (implied), y > 0, x + y <= 0: backward HContent case
-
-These proofs likely require modal-temporal interaction axioms (MF, TF). This work is orthogonal to the TruthLemma - task_rel does not appear in truth_at.
-
----
-
-### 945. Design canonical model construction for TruthLemma
-- **Effort**: Large (6-8 hours)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Completed**: 2026-02-27
-- **Summary**: Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at. All 6 inductive cases sorry-free. 4 deferred sorries in compositionality (orthogonal to TruthLemma).
-- **Research**: [research-001.md](specs/945_canonical_model_construction_design/reports/research-001.md)
-- **Research**: [research-002.md](specs/945_canonical_model_construction_design/reports/research-002.md)
-- **Research**: [research-003.md](specs/945_canonical_model_construction_design/reports/research-003.md)
-- **Research**: [research-004.md](specs/945_canonical_model_construction_design/reports/research-004.md)
-- **Research**: [research-005.md](specs/945_canonical_model_construction_design/reports/research-005.md)
-- **Research**: [research-006.md](specs/945_canonical_model_construction_design/reports/research-006.md)
-- **Plan**: [implementation-002.md](specs/945_canonical_model_construction_design/plans/implementation-002.md)
-- **Summary**: [implementation-summary-20260227.md](specs/945_canonical_model_construction_design/summaries/implementation-summary-20260227.md)
-
-**Description**: Take careful stock of the metalogic in order to identify what remains to finishing the representation theorem in order to design and implement a fully adequate syntactic construction by which to define a canonical model that satisfies the TruthLemma. The hard work should go into thinking carefully about how the construction should go since, once the right construction is found, establishing the TruthLemma will be easy. Don't move until you see it; it is better to think deeply to find the right construction than to go down the wrong rabbit hole.
-
----
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours

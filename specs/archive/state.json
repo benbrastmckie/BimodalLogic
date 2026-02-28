@@ -858,6 +858,6971 @@
       "detected_artifacts": [
         "reports/"
       ]
+    },
+    {
+      "project_number": 948,
+      "project_name": "archive_nonstandard_completeness_theorems",
+      "status": "completed",
+      "language": "lean",
+      "created": "2026-02-28T00:21:59Z",
+      "last_updated": "2026-02-28T00:51:00Z",
+      "session_id": "sess_1772239264_5509b1a7",
+      "started": "2026-02-28T00:28:13Z",
+      "researched": "2026-02-28T00:31:42Z",
+      "artifacts": [
+        {
+          "path": "specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Bundle/Completeness.lean and FMP/ directory for archival to Boneyard/Metalogic_v8"
+        },
+        {
+          "path": "specs/948_archive_nonstandard_completeness_theorems/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for archiving non-standard completeness theorems"
+        },
+        {
+          "path": "specs/948_archive_nonstandard_completeness_theorems/summaries/implementation-summary-20260228.md",
+          "type": "summary",
+          "summary": "Implementation summary for archival of non-standard completeness theorems"
+        }
+      ],
+      "planned": "2026-02-28T00:36:21Z",
+      "completed": "2026-02-28T00:51:00Z",
+      "completion_summary": "Archived BFMCS Completeness and FMP Completeness theorems (5 files) to Boneyard/Metalogic_v8 because they use non-standard validity definitions. Relocated 3 shared utilities to Construction.lean. Full build passes with no regressions.",
+      "archived": "2026-02-28T01:01:09Z"
+    },
+    {
+      "project_number": 947,
+      "project_name": "bimodal_logic_opensource_documentation",
+      "status": "completed",
+      "language": "general",
+      "created": "2026-02-27T23:38:36Z",
+      "last_updated": "2026-02-28T00:13:21Z",
+      "session_id": "sess_1772237237_27523c",
+      "researched": "2026-02-27T23:42:58Z",
+      "artifacts": [
+        {
+          "path": "specs/947_bimodal_logic_opensource_documentation/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of Bimodal vs Logos components, documentation structure, and open-core licensing strategy"
+        },
+        {
+          "path": "specs/947_bimodal_logic_opensource_documentation/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "5-phase minimal-change plan: minor README edits, comprehensive docs revision for Bimodal focus"
+        },
+        {
+          "path": "specs/947_bimodal_logic_opensource_documentation/summaries/implementation-summary-20260227.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all 5 phases of documentation updates"
+        }
+      ],
+      "planned": "2026-02-28T00:05:56Z",
+      "started": "2026-02-28T00:07:33Z",
+      "completed": "2026-02-28T00:13:21Z",
+      "completion_summary": "Revised documentation to establish Bimodal as the complete, production-ready implementation with verified soundness/completeness proofs, positioning Logos as research roadmap.",
+      "archived": "2026-02-28T01:01:09Z"
+    },
+    {
+      "project_number": 946,
+      "project_name": "canonical_task_rel_compositionality",
+      "status": "completed",
+      "language": "lean",
+      "created": "2026-02-27T23:04:47Z",
+      "last_updated": "2026-02-28T00:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/946_canonical_task_rel_compositionality/reports/research-001.md",
+          "type": "research",
+          "summary": "Root cause identified: canonical_task_rel too weak for cross-sign compositionality. Solution: strengthen definition to unconditionally require both GContent and HContent conditions."
+        },
+        {
+          "path": "specs/946_canonical_task_rel_compositionality/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for canonical_task_rel_compositionality cross-sign sorries"
+        },
+        {
+          "path": "specs/946_canonical_task_rel_compositionality/summaries/implementation-summary-20260227.md",
+          "type": "summary",
+          "summary": "Eliminated all 4 sorries by strengthening canonical_task_rel to unconditional GContent/HContent and proving compositionality via transitivity"
+        }
+      ],
+      "session_id": "sess_1772236750_43e88bd2",
+      "researched": "2026-02-27T23:16:25Z",
+      "planned": "2026-02-27T23:29:04Z",
+      "started": "2026-02-27T23:59:30Z",
+      "completed": "2026-02-28T00:30:00Z",
+      "completion_summary": "Eliminated all 4 sorries in canonical_task_rel_compositionality by strengthening the definition to unconditional GContent/HContent inclusion and proving compositionality via canonicalR_transitive and HContent_chain_transitive.",
+      "archived": "2026-02-28T01:01:09Z"
+    },
+    {
+      "project_number": 945,
+      "project_name": "canonical_model_construction_design",
+      "status": "completed",
+      "language": "lean",
+      "created": "2026-02-27T16:37:34Z",
+      "last_updated": "2026-02-27T23:04:09Z",
+      "session_id": "sess_1772232588_3f1799f7",
+      "researched": "2026-02-27T22:42:26Z",
+      "planned": "2026-02-27T22:47:27Z",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 14,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/research-001.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-27"
+          },
+          {
+            "path": "reports/research-002.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-27"
+          },
+          {
+            "path": "reports/research-003.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-02-27"
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-001.md",
+          "type": "research",
+          "summary": "Initial research: identified FMP bypass approach (rejected by user)"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-002.md",
+          "type": "research",
+          "summary": "Intensive study of BFMCS construction: bottom-up and top-down approaches analyzed, CanonicalMCS domain identified as best foundation, depth-stratified construction recommended"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-003.md",
+          "type": "research",
+          "summary": "Deep analysis of canonical model construction: times vs states distinction, maximal chains as histories, role of linearity axiom, dovetailing over CanonicalMCS to avoid GContent corruption, multi-family bundle via separate chains for diamond witnesses"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-004.md",
+          "type": "research",
+          "summary": "Antisymmetrization analysis: CanonicalMCS cannot serve as BFMCS time domain for modal saturation; recommends omega-squared dovetailing over Int"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-004.md",
+          "type": "research",
+          "summary": "Antisymmetrization approach analyzed end-to-end: T_C is correct as time domain conceptually but CanonicalMCS cannot serve as BFMCS time domain for modal saturation; correct path is omega-squared dovetailing over Int using CanonicalMCS for witness existence"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-005.md",
+          "type": "research",
+          "summary": "First-principles canonical construction: step-by-step timeline with D=Z, bridge theorem connecting BFMCS truth to TaskFrame truth, canonical TaskFrame with MCS as world-states"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/reports/research-006.md",
+          "type": "research",
+          "summary": "Direct canonical TruthLemma design without bmcs_truth_at intermediate, proving the BFMCS truth layer is structurally redundant"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for direct canonical TruthLemma (supersedes v1)"
+        },
+        {
+          "path": "specs/945_canonical_model_construction_design/summaries/implementation-summary-20260227.md",
+          "type": "summary",
+          "summary": "Implementation summary with phase details and sorry analysis"
+        }
+      ],
+      "started": "2026-02-27T22:50:05Z",
+      "completed": "2026-02-27T23:04:09Z",
+      "completion_summary": "Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at evaluation, eliminating the bmcs_truth_at intermediate. All 6 inductive cases (atom, bot, imp, box, all_future, all_past) proven sorry-free. Compositionality sorries resolved in task 946.",
+      "archived": "2026-02-28T01:01:09Z"
+    },
+    {
+      "project_number": 132,
+      "project_name": "prove_lindenbaum_maximal_consistency_lemma_in_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 133,
+      "project_name": "build_canonical_model_constructors_in_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 170,
+      "project_name": "improve_maintenance_report_system_and_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 173,
+      "project_name": "integration_tests",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 175,
+      "project_name": "establish_ci_cd_pipeline_with_automated_testing_and_linting",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 176,
+      "project_name": "enhance_proof_search_with_domain_specific_heuristics_and_caching",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 178,
+      "project_name": "complete_advanced_tutorial_sections_with_hands_on_exercises",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 179,
+      "project_name": "implement_performance_benchmarks_for_proof_search_and_derivation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 180,
+      "project_name": "add_test_coverage_metrics_and_reporting",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 184,
+      "project_name": "truth_lean_build_error",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 189,
+      "project_name": "research_divide_flag",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 190,
+      "project_name": "improve_maintenance_md_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 193,
+      "project_name": "prove_is_valid_swap_involution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 196,
+      "project_name": "complete_opencode_refactor",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 198,
+      "project_name": "command_argument_fix",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 202,
+      "project_name": "fix_verbose_artifact_output",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 209,
+      "project_name": "research_lean4_involution_techniques",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 211,
+      "project_name": "standardize_command_lifecycle_procedures",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 212,
+      "project_name": "research_lean_lsp_mcp_usage",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 213,
+      "project_name": "resolve_is_valid_swap_involution_blocker",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 214,
+      "project_name": "orchestrator_improvements",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 215,
+      "project_name": "fix_todo_task_removal",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 216,
+      "project_name": "improve_task_tracking_updates",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 218,
+      "project_name": "fix_lean_lsp_mcp_integration",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 219,
+      "project_name": "restructure_module_hierarchy",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 225,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 227,
+      "project_name": "fix_systematic_status_sync_manager_failures",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 228,
+      "project_name": "fix_orchestrator_routing_to_invoke_commands_instead_of_bypassing_to_subagents_directly",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 229,
+      "project_name": "review_and_optimize_orchestrator_command_integration_for_context_efficiency",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 230,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 231,
+      "project_name": "fix_systematic_command_stage_7_postflight_execution_failures",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 233,
+      "project_name": "research_and_fix_systematic_command_execution_failures_causing_incomplete_todomd_updates",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 234,
+      "project_name": "systematically_improve_commands_to_protect_context_window_and_eliminate_confirmation_prompts",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 235,
+      "project_name": "find_and_fix_root_cause_of_todo_command_not_archiving_completed_tasks",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 257,
+      "project_name": "completeness_proofs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 260,
+      "project_name": "investigate_claude_code_cli_argument_mechanism",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 261,
+      "project_name": "decidability",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 263,
+      "project_name": "refactor_context_lean",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 264,
+      "project_name": "test_and_document_argument_passing",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 279,
+      "project_name": "systematically_fix_metadata_lookup_to_use_state_json_instead_of_todo_md",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 284,
+      "project_name": "todo_auto_commit",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 291,
+      "project_name": "fix_lean_research_agent_delegate_status_updates",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 308,
+      "project_name": "final_cleanup_and_comprehensive_testing",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 314,
+      "project_name": "standardize_todo_md_task_entry_format_and_artifact_ordering",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 315,
+      "project_name": "research_and_resolve_axiom_prop_vs_type_blocker_for_proof_term_construction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 316,
+      "project_name": "implement_tactic_integration_for_modal_search_tactic_phase_2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 317,
+      "project_name": "bfs_variant_phase3",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 318,
+      "project_name": "implement_advanced_heuristics_for_proof_search_performance_phase_4",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 319,
+      "project_name": "expand_testing_for_proof_search_automation_phase_5",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 323,
+      "project_name": "fix_todo_command_to_run_markdown_formatter_after_completion",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 325,
+      "project_name": "create___recover_flag_for_task_command_to_unarchive_projects",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 326,
+      "project_name": "create___divide_flag_for_task_command_with_task_division_capability",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 328,
+      "project_name": "fix_task_command_to_only_create_task_entries_and_never_implement_directly",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 330,
+      "project_name": "create___sync_flag_for_task_command_to_synchronize_todo_md_and_state_json",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 332,
+      "project_name": "design_and_implement_comprehensive_task_command_enhancements",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 333,
+      "project_name": "fix_workflow_command_todomd_statejson_synchronization_failures",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 334,
+      "project_name": "latex_documentation_structure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 335,
+      "project_name": "refactor_errors_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 338,
+      "project_name": "update_task_command_to_use_status_sync_manager_directly",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 339,
+      "project_name": "remove_deprecated_task_creator_subagent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 340,
+      "project_name": "add_validation_gates_to_all_command_files",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 341,
+      "project_name": "create_deprecation_policy_and_migration_guide",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 342,
+      "project_name": "research_orchestrator_command_file_workflow_execution_mechanism",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 347,
+      "project_name": "logos_layer_documentation_revision",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 348,
+      "project_name": "jq_based_state_lookup_for_commands",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 349,
+      "project_name": "fix_recursive_semantics_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 350,
+      "project_name": "fix_recursive_semantics_tags",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 351,
+      "project_name": "review_skill_context_loading",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 352,
+      "project_name": "rename_logos_core_to_bimodal",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 353,
+      "project_name": "move_logostest_core_to_bimodaltest",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 354,
+      "project_name": "refactor_archive_directory",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 355,
+      "project_name": "fix_bimodal_build_errors",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 356,
+      "project_name": "bimodal_directory_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 357,
+      "project_name": "fix_modals5_noncomputable_cascade",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 358,
+      "project_name": "fix_completenesstest_import_error",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 359,
+      "project_name": "complete_temporal_duality_soundness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 360,
+      "project_name": "create_mvp_status_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 361,
+      "project_name": "create_installation_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 362,
+      "project_name": "move_latex_to_logos",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 363,
+      "project_name": "create_bimodal_latex_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 364,
+      "project_name": "update_sorry_registry_paths",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 365,
+      "project_name": "complete_bimodaltest_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 367,
+      "project_name": "complete_example_proofs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 368,
+      "project_name": "documentation_directory_reorganization",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 369,
+      "project_name": "solve_modal_5_blocking_dependency",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 370,
+      "project_name": "fix_bimodal_latex_compilation_errors",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 371,
+      "project_name": "refactor_latex_reference_manual_titles",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 372,
+      "project_name": "create_logos_documentation_and_refactor_root",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 373,
+      "project_name": "create_shared_latex_assets_directory",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 374,
+      "project_name": "refactor_project_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 375,
+      "project_name": "integrate_latexmkrc_project_config",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 376,
+      "project_name": "refactor_repo_for_theorylib_multi_theory_structure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 377,
+      "project_name": "refactor_logos_theory_recursive_semantics",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 378,
+      "project_name": "refactor_documentation_structure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 379,
+      "project_name": "fix_logosreference_latex_warnings",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 380,
+      "project_name": "document_latex_standards",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 381,
+      "project_name": "add_causal_semantics_infrastructure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 382,
+      "project_name": "create_spatial_subtheory_stub",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 383,
+      "project_name": "rename_core_to_explanatory",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 384,
+      "project_name": "fix_latex_package_path_warnings",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 385,
+      "project_name": "refactor_meta_command_task_creation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 386,
+      "project_name": "fix_command_artifact_linking_in_todo_md",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 387,
+      "project_name": "standardize_research_file_names",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 388,
+      "project_name": "fix_todo_command_directory_archiving",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 389,
+      "project_name": "standardize_nnn_number_format",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 390,
+      "project_name": "research_logos_original_archive_removal",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 391,
+      "project_name": "enforce_directory_naming_convention",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 392,
+      "project_name": "enhance_todo_command_orphan_tracking",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 393,
+      "project_name": "remove_incorrect_causal_operator_definition",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 394,
+      "project_name": "null",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 395,
+      "project_name": "create_bimodal_troubleshooting_and_exercise_solutions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 396,
+      "project_name": "fix_latex_build_missing_style_files",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 397,
+      "project_name": "enhance_revise_to_update_description_when_no_plan_exists",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 400,
+      "project_name": "investigate_explanatory_truth_build_performance",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 401,
+      "project_name": "add_expanded_status_for_parent_tasks",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 402,
+      "project_name": "rename_divide_flag_to_expand",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 403,
+      "project_name": "enforce_directory_naming_convention",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 404,
+      "project_name": "enhance_todo_to_archive_orphaned_specs_directories",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 405,
+      "project_name": "document_latex_one_line_per_sentence_convention",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 406,
+      "project_name": "enforce_convention_bimodal_reference_tex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 407,
+      "project_name": "enforce_convention_logos_reference_tex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 408,
+      "project_name": "define_proofchecker_latex_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 409,
+      "project_name": "convert_workflow_skills_to_forked_subagent_pattern",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 410,
+      "project_name": "remove_eager_context_loading_from_skill_frontmatter",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 411,
+      "project_name": "create_lean_research_agent_subagent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 412,
+      "project_name": "create_general_research_agent_subagent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 413,
+      "project_name": "create_implementation_agent_subagents",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 414,
+      "project_name": "create_planner_agent_subagent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 415,
+      "project_name": "fix_latex_sentence_line_breaks",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 416,
+      "project_name": "quick_performance_fixes_explanatory_truth",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 417,
+      "project_name": "split_typeclass_constraints_explanatory",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 418,
+      "project_name": "cache_typeclass_instances_explanatory",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 419,
+      "project_name": "refactor_mutual_recursion_semantics",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 420,
+      "project_name": "upgrade_mathlib_version",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 421,
+      "project_name": "lookup_formal_term_definitions_revise_research",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 422,
+      "project_name": "complete_introduction_todos",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 423,
+      "project_name": "ci_skip_by_default_trigger_via_commit_message",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 424,
+      "project_name": "complete_todos_01_syntax_tex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 425,
+      "project_name": "update_command_files_to_delegate_to_skill_subagent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 426,
+      "project_name": "covariantclass_vs_isorderedaddmonoid_comparison",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 427,
+      "project_name": "document_command_skill_subagent_framework",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 428,
+      "project_name": "complete_todos_bimodal_syntax_latex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 429,
+      "project_name": "extend_command_skill_agent_integration_to_meta",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 430,
+      "project_name": "refactor_documentation_general_framework",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 431,
+      "project_name": "wezterm_tab_color_notification",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 432,
+      "project_name": "fix_artifact_linking_in_todo_and_state",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 433,
+      "project_name": "refine_readme_title_and_bimodal_section",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 434,
+      "project_name": "refactor_readme_for_investors_and_researchers",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 435,
+      "project_name": "module_aggregator_standard_bimodal",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 436,
+      "project_name": "update_license_to_modelchecker_standard",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 437,
+      "project_name": "improve_readme_consistency_with_recursive_semantics",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 438,
+      "project_name": "refactor_bimodal_readme",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 439,
+      "project_name": "address_todo_note_tags_semantics_tex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 440,
+      "project_name": "revise_logos_readme",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 442,
+      "project_name": "research_skill_execution_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 443,
+      "project_name": "fix_session_id_and_agent_system_robustness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 444,
+      "project_name": "formula_countability_set_list_bridge",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 445,
+      "project_name": "maximal_consistent_set_properties",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 446,
+      "project_name": "agnostic_duration_construction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 447,
+      "project_name": "canonical_frame_model_construction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 448,
+      "project_name": "build_canonical_history",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 449,
+      "project_name": "truth_lemma",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 450,
+      "project_name": "completeness_theorems",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 451,
+      "project_name": "add_reflection_extension_to_logos_layer_extensions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 452,
+      "project_name": "use_d_notation_for_duration_group",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 453,
+      "project_name": "add_ability_free_choice_modal_extension",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 454,
+      "project_name": "fix_temporal_quantification_to_match_paper",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 455,
+      "project_name": "readme_extension_layer_descriptions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 456,
+      "project_name": "address_todos_in_bimodal_semantics_latex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 457,
+      "project_name": "document_top_project_outcomes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 458,
+      "project_name": "extend_canonical_history_full_domain",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 459,
+      "project_name": "update_bimodal_latex_metalogic_theorems_notes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 460,
+      "project_name": "cosmos_institute_substack_essay",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 461,
+      "project_name": "expand_bimodal_theory_readme_section",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 462,
+      "project_name": "fix_workflow_command_delegation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 463,
+      "project_name": "meta_context_loading_improvements",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 464,
+      "project_name": "research_coherence_alternatives_strategy_a",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 465,
+      "project_name": "cosmos_essay_latex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 466,
+      "project_name": "reflection_extension_logosreference",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 467,
+      "project_name": "review_task_462_changes_fix_root_cause",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 468,
+      "project_name": "remove_or_refactor_the_existing_infinite_canonical_model_code_in_completeness.lean",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 470,
+      "project_name": "finite_model_computational_optimization",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 472,
+      "project_name": "lindenbaum_extension_finite_closures",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 473,
+      "project_name": "fix_compositionality_gaps_task_458",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 474,
+      "project_name": "fix_skill_return_status_field",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 475,
+      "project_name": "create_skill_document_converter_thin_wrapper",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 478,
+      "project_name": "revise_ecosystem_view_section",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 479,
+      "project_name": "fix_tikz_extension_dependencies_diagram",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 480,
+      "project_name": "investigate_workflow_delegation_early_stop",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 481,
+      "project_name": "finite_history_from_state",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 482,
+      "project_name": "history_gluing_lemma",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 483,
+      "project_name": "investigate_latex_aux_file_corruption_errors",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 484,
+      "project_name": "sync_tikz_diagram_operators_with_glossary",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 485,
+      "project_name": "tikz_light_cone_diagram_for_tm_motivation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 486,
+      "project_name": "add_abilities_box_to_tikz_diagram",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 487,
+      "project_name": "create_bimodal_boneyard_for_deprecated_code",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 488,
+      "project_name": "fill_remaining_bridge_lemmas",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 489,
+      "project_name": "formal_fmp_theorem_packaging",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 490,
+      "project_name": "complete_decidability_procedure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 492,
+      "project_name": "update_bimodalreference_tex_metalogical_results",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 493,
+      "project_name": "sync_tikz_glossary_readme_descriptions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 494,
+      "project_name": "bimodal_demo_presentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 496,
+      "project_name": "finite_canonical_model_lemma",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 497,
+      "project_name": "time_arithmetic_case_analysis",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 498,
+      "project_name": "verify_bridge_lemma_infrastructure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 499,
+      "project_name": "review_metalogical_theorem_strategies",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 500,
+      "project_name": "lean-lsp-mcp-unavailable",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 502,
+      "project_name": "complete_representation_theorem",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 503,
+      "project_name": "latex_dependent_type_conventions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 504,
+      "project_name": "aristotle_integration",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 505,
+      "project_name": "bimodal_metalogic_restructuring",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 506,
+      "project_name": "codebase_review",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 510,
+      "project_name": "mereological_constraints",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 511,
+      "project_name": "resolve_26_sorry_placeholders_in_completeness.lean",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 512,
+      "project_name": "fix_build_error_in_representationtheorems_lean",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 513,
+      "project_name": "address_tm_auto_proof_reconstruction_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 514,
+      "project_name": "expand_test_coverage_for_metalogic_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 515,
+      "project_name": "missing_section_descriptions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 516,
+      "project_name": "task_sync",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 517,
+      "project_name": "fix_research_command_summary_files",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 518,
+      "project_name": "fix_parameter_mapping_errors_between_workflow_commands_and_status-sync_manager",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 519,
+      "project_name": "add_missing_stage_7_validation_in_workflow_commands",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 520,
+      "project_name": "fix_silent_failures_when_status-sync_manager_fails",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 521,
+      "project_name": "fix_task_512_inconsistent_status",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 522,
+      "project_name": "improve_status-sync_manager_error_messages",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 523,
+      "project_name": "bimodal_cleanup",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 529,
+      "project_name": "unify_workflow_commands_single_execution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 530,
+      "project_name": "add_continuation_guards_to_commands",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 534,
+      "project_name": "research_claude_code_model_selection",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 535,
+      "project_name": "refactor_heavy_lifting_agents_to_sonnet",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 536,
+      "project_name": "refactor_dispatch_skills_to_haiku",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 537,
+      "project_name": "identify_opus_only_components",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 538,
+      "project_name": "update_model_tier_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 539,
+      "project_name": "test_validate_model_tiering",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 540,
+      "project_name": "finish_metalogic_refactor_cleanup",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 541,
+      "project_name": "progressive_disclosure_refactor",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 542,
+      "project_name": "fix_canonical_model_foundation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 543,
+      "project_name": "establish_truth_lemma_and_representation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 544,
+      "project_name": "connect_fmp_bridge",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 545,
+      "project_name": "complete_applications_module",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 546,
+      "project_name": "documentation_update",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 547,
+      "project_name": "improve_fmp_full_theorem",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 548,
+      "project_name": "fix_skill_to_agent_delegation_pattern",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 549,
+      "project_name": "research_intelligent_model_routing_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 552,
+      "project_name": "test_validate_model_tiering_changes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 553,
+      "project_name": "document_final_model_tier_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 554,
+      "project_name": "bimodal_metalogic_v2_reorganize",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 555,
+      "project_name": "convert_skill_status_sync_to_forked_pattern",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 556,
+      "project_name": "complete_metalogic_v2_implementation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 557,
+      "project_name": "mcs_property_completion",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 558,
+      "project_name": "semantic_satisfiability_bridge",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 559,
+      "project_name": "strong_completeness_helpers",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 560,
+      "project_name": "axiom_elimination",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 561,
+      "project_name": "cleanup_and_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 562,
+      "project_name": "agent_system_refactor_report",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 563,
+      "project_name": "investigate_empty_directory_creation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 564,
+      "project_name": "memory_issues_status_sync_agent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 565,
+      "project_name": "investigate_workflow_interruption_issue",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 566,
+      "project_name": "complete_semantic_embedding_for_completeness_proof",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 567,
+      "project_name": "separate_deprecated_code_from_finitecanonicalmodel",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 568,
+      "project_name": "create_metalogic_v2_test_suite",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 569,
+      "project_name": "analyze_proof_strategy_alternatives",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 570,
+      "project_name": "analyze_compound_formula_proof_requirements",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 571,
+      "project_name": "complete_mcs_infrastructure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 574,
+      "project_name": "restructure_main_weak_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 575,
+      "project_name": "implement_closure_with_neg_infrastructure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 576,
+      "project_name": "prove_mcs_negation_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 577,
+      "project_name": "prove_compound_formula_bridge_cases",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 585,
+      "project_name": "add_session_cleanup_to_agents",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 586,
+      "project_name": "prove_mcs_contains_or_neg_metalogic_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 588,
+      "project_name": "complete_truth_lemma_metalogic_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 589,
+      "project_name": "complete_representation_theorem_metalogic_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 590,
+      "project_name": "eliminate_axiom_context_provability",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 591,
+      "project_name": "find_fix_double_forking",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 592,
+      "project_name": "update_metalogic_v2_readme_proof_status",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 593,
+      "project_name": "complete_consistent_iff_consistent_basic_lean",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 594,
+      "project_name": "fix_progress_interruptions_agent_system",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 595,
+      "project_name": "remove_maintenance_dir_fix_review_state",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 596,
+      "project_name": "constructive_finite_model_bounds",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 597,
+      "project_name": "reprove_main_provable_iff_valid_metalogic_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 598,
+      "project_name": "remove_deprecated_helpers_contextprovability",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 599,
+      "project_name": "troubleshoot_jq_escaping_agent_system",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 600,
+      "project_name": "fix_subagent_metadata_passing",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 601,
+      "project_name": "design_task_review_logic_validation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 602,
+      "project_name": "implement_review_mode_task_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 603,
+      "project_name": "add_completion_verification_logic",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": []
+    },
+    {
+      "project_number": 604,
+      "project_name": "migrate_fmp_to_semanticcanonicalmodel_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 605,
+      "project_name": "sync_plan_metadata_status_with_task_status",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 606,
+      "project_name": "fix_metalogic_v2_readme_accuracy",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 607,
+      "project_name": "port_decidability_to_metalogic_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 608,
+      "project_name": "restructure_completeness_via_representation_theorem",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 609,
+      "project_name": "document_command_skill_agent_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 610,
+      "project_name": "complete_truth_bridge_strategy_b",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 611,
+      "project_name": "context_optimization_and_loading_patterns",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 612,
+      "project_name": "improve_system_overview_docs_with_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 613,
+      "project_name": "revise_metalogic_v2_readme_architecture_diagram",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 614,
+      "project_name": "refactor_cleanup_to_refresh_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 615,
+      "project_name": "fix_closure_mcs_neg_complete_double_negation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 616,
+      "project_name": "remove_false_semantic_task_rel_compositionality",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 617,
+      "project_name": "fix_closure_mcs_implies_locally_consistent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 618,
+      "project_name": "move_metalogic_to_boneyard_make_v2_independent",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 619,
+      "project_name": "agent_system_architecture_upgrade",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 620,
+      "project_name": "refine_metalogic_v2_proofs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 621,
+      "project_name": "analyze_plan_errors_improve_agent_execution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 622,
+      "project_name": "prove_applyRule_decreases_complexity",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 623,
+      "project_name": "build_fmp_tableau_connection_infrastructure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 624,
+      "project_name": "prove_tableau_complete",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 625,
+      "project_name": "prove_decide_complete",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 626,
+      "project_name": "review_remove_unnecessary_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 627,
+      "project_name": "prove_valid_implies_semantic_truth_at_v2_bridge",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 628,
+      "project_name": "prove_semantic_truth_implies_truth_at_upward_bridge",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 629,
+      "project_name": "document_bimodal_metalogic_proofs_latex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 630,
+      "project_name": "build_taskmodel_extraction_from_saturated_branches",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 631,
+      "project_name": "prove_evalformula_implies_satisfiable",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 632,
+      "project_name": "integrate_roadmap_review_into_review_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 633,
+      "project_name": "fix_agent_return_format_consistency",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 634,
+      "project_name": "fix_sorry_main_provable_iff_valid_v2",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 635,
+      "project_name": "extend_refresh_command_claude_project_cleanup",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 636,
+      "project_name": "fix_sorries_temporalproofstrategies_examples",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 637,
+      "project_name": "fix_roadmap_checkboxes_not_updated",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 638,
+      "project_name": "add_roadmap_update_to_todo_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 639,
+      "project_name": "improve_review_roadmap_matching",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 640,
+      "project_name": "improve_refresh_command_for_claude_directory_cleanup",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 641,
+      "project_name": "improve_todo_command_roadmap_update",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 642,
+      "project_name": "meta_tasks_update_claudemd_not_roadmap",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 643,
+      "project_name": "implement_learn_command_tag_extraction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 644,
+      "project_name": "redesign_learn_interactive_task_selection",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 645,
+      "project_name": "improve_todo_command_interactive_claudemd",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 646,
+      "project_name": "fix_metalogic_latex_formatting_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 647,
+      "project_name": "update_context_latex_theorem_naming_standards",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 648,
+      "project_name": "research_canonical_frame_temporal_order_generalization",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 649,
+      "project_name": "improve_learn_note_tag_dependency_handling",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 650,
+      "project_name": "implement_completion_summary_claudemd_suggestions_fields",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 651,
+      "project_name": "simplify_learn_note_tag_workflow",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 652,
+      "project_name": "improve_learn_todo_grouping_by_topic",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 653,
+      "project_name": "improve_metalogic_infrastructure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 654,
+      "project_name": "research_purely_syntactic_representation_theorem",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 655,
+      "project_name": "fix_jq_errors_in_agent_system",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 656,
+      "project_name": "complete_truth_lemma_forward_direction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 657,
+      "project_name": "prove_seed_consistency_temporal_k_distribution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 658,
+      "project_name": "prove_indexed_family_coherence_conditions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 659,
+      "project_name": "prove_negation_completeness_lemmas",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 660,
+      "project_name": "prove_parametric_completeness_theorems",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 661,
+      "project_name": "create_documentation_standards_file",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 662,
+      "project_name": "consolidate_update_docs_readme",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 663,
+      "project_name": "archive_stale_research_fix_plan_documents",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 665,
+      "project_name": "update_guides_templates_to_follow_new_standards",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 666,
+      "project_name": "revise_lean_source_code_logos_theory_definitions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 667,
+      "project_name": "fix_specs_path_references",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 668,
+      "project_name": "create_specs_path_migration_script",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 669,
+      "project_name": "test_task_creation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 670,
+      "project_name": "test_task_creation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 671,
+      "project_name": "combine_dynamics_foundation_latex_files",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 672,
+      "project_name": "implement_agent_system_upgrade_plan",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 673,
+      "project_name": "lean_opencode_overhaul",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 674,
+      "project_name": "systematic_command_skill_agent_architecture_improvement",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 675,
+      "project_name": "enforce_skill_postflight_checkpoint_pattern",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 676,
+      "project_name": "investigate_skill_registration_integrate_task_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 677,
+      "project_name": "study_preflight_postflight_patterns_for_improvements",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 678,
+      "project_name": "fix_constitutive_foundation_latex_definitions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 679,
+      "project_name": "identityaboutness_research_for_semantic_explanations",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 680,
+      "project_name": "unify_todo_review_roadmap_matching",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 681,
+      "project_name": "redesign_construct_indexed_family_coherent_approach",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 682,
+      "project_name": "fix_dynamics_foundation_latex_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 683,
+      "project_name": "update_context_from_dynamics_foundation_notes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 684,
+      "project_name": "revise_semantics_and_notation_conventions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 686,
+      "project_name": "fix_agent_interruption_mcp_abort_errors",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 688,
+      "project_name": "add_zombie_cleanup_timeout_protection_lean_skill",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 689,
+      "project_name": "update_context_from_constitutive_foundation_notes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 690,
+      "project_name": "fix_constitutive_foundation_latex_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 691,
+      "project_name": "improve_lean_lsp_mcp_agent_integration",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 692,
+      "project_name": "port_bimodal_latex_to_typst",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 693,
+      "project_name": "implement_generalized_past_k_theorem",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 694,
+      "project_name": "configure_nvim_typst_bindings",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 695,
+      "project_name": "review_boneyard_completeness_remove_misleading_material",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 697,
+      "project_name": "fix_universalcanonicalmodel_compilation_error",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 698,
+      "project_name": "fix_roadmap_content_and_style_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 699,
+      "project_name": "update_context_files_from_roadmap_notes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 700,
+      "project_name": "research_algebraic_representation_theorem_proof",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 701,
+      "project_name": "fix_lean_lsp_mcp_hanging",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 702,
+      "project_name": "update_context_files_from_bimodal_typst_notes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 703,
+      "project_name": "fix_bimodal_typst_formatting_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 704,
+      "project_name": "create_typst_agent_and_skill",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 705,
+      "project_name": "fix_bimodal_introduction_typst_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 706,
+      "project_name": "update_context_files_from_bimodal_syntax_terminology_note",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 707,
+      "project_name": "replace_propositional_atom_with_sentence_letter_in_bimodal",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 708,
+      "project_name": "fix_bimodal_semantics_typst_formatting_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 709,
+      "project_name": "research_professional_typst_templates_for_bimodal_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 710,
+      "project_name": "refactor_lean_skills_direct_execution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 711,
+      "project_name": "test_context_fork_for_direct_execution_skills",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 712,
+      "project_name": "create_lean_research_command_with_context_fork",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 713,
+      "project_name": "create_lean_build_repair_skill_and_command",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 714,
+      "project_name": "refine_typst_styling_for_journal_aesthetic",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 715,
+      "project_name": "fix_lake_command_execution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 716,
+      "project_name": "fix_soundnesslemmas_type_mismatches",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 717,
+      "project_name": "enhance_lake_create_tasks_for_unfixable_errors",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 718,
+      "project_name": "investigate_lean_lsp_mcp_hanging",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 719,
+      "project_name": "lake_task_redundancy_check",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 720,
+      "project_name": "avoid_hanging_lean_mcp_calls",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 721,
+      "project_name": "prevent_mcp_tool_hanging_multi_layer_defense",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 722,
+      "project_name": "remove_bimodal_definition_redundancies",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 723,
+      "project_name": "update_claude_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 724,
+      "project_name": "investigate_revise_command_errors_design_solution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 725,
+      "project_name": "update_docs_readme_and_rename_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 726,
+      "project_name": "move_essential_mcs_lemmas_to_core",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 727,
+      "project_name": "consolidate_set_lindenbaum",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 728,
+      "project_name": "create_user_guide_command_workflows",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 729,
+      "project_name": "prevent_blocked_mcp_tool_calls_in_agents",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 730,
+      "project_name": "investigate_reflexive_semantics_motivation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 731,
+      "project_name": "clean_bimodal_documentation_remove_historical_comments",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 732,
+      "project_name": "complete_630_phase4_truth_lemma_proof",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 733,
+      "project_name": "ultraproduct_based_compactness_proof",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 735,
+      "project_name": "complete_task700_phase5_ultrafilter_mcs_correspondence",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 736,
+      "project_name": "complete_task700_phase6_algebraic_representation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 737,
+      "project_name": "fix_unused_simp_arguments_temporalproofstrategies",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 738,
+      "project_name": "port_fmp_to_parametric_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 739,
+      "project_name": "update_report_format_with_project_context_section",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 740,
+      "project_name": "update_skill_lean_research_to_generate_project_context",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 741,
+      "project_name": "witness_extraction_architecture_for_backward_truth_lemma",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 742,
+      "project_name": "restore_lean_research_agent_thin_wrapper",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 743,
+      "project_name": "restore_lean_implementation_agent_thin_wrapper",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 744,
+      "project_name": "update_documentation_lean_agent_architecture",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 745,
+      "project_name": "move_backward_truth_lemma_to_boneyard",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 746,
+      "project_name": "improve_bimodal_metalogic_source_comments",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 747,
+      "project_name": "create_bimodal_metalogic_readme_hierarchy",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 748,
+      "project_name": "revise_roadmap_for_metalogic_progress",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 749,
+      "project_name": "establish_sorry_free_completeness_via_semantic_weak_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 750,
+      "project_name": "refactor_forward_truth_lemma_remove_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 751,
+      "project_name": "enhance_review_with_grouped_interactive_task_proposals",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 752,
+      "project_name": "refactor_temporary_file_handling_in_agent_system",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 753,
+      "project_name": "prove_sorries_in_coherentconstruction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 755,
+      "project_name": "implement_option_c_forward_truth_lemma",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 756,
+      "project_name": "enhance_task_command_with_description_improvement",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 757,
+      "project_name": "fix_task_state_sync_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 758,
+      "project_name": "audit_and_reduce_metalogic_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 759,
+      "project_name": "update_todo_md_sorry_metrics",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 760,
+      "project_name": "determine_sorry_disposition_archive_vs_complete",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 761,
+      "project_name": "tts_stt_integration_for_claude_code_and_neovim",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 762,
+      "project_name": "fix_planner_agent_enforce_status_field",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 763,
+      "project_name": "add_plan_status_updates_skill_lean_implementation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 764,
+      "project_name": "improve_metalogic_structure_and_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 765,
+      "project_name": "exclude_boneyard_examples_from_sorry_count",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 766,
+      "project_name": "improve_metalogic_documentation_ordering",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 768,
+      "project_name": "neovim_ctrl_backslash_stt_toggle_claude_code",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 769,
+      "project_name": "address_remaining_sorries_bimodal_metalogic",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 770,
+      "project_name": "fix_claude_code_neovim_sidebar_30s_delay",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 771,
+      "project_name": "improve_typst_formatting_ams_journal_style",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 772,
+      "project_name": "refactor_metalogic_sorry_free_archive_sorried_proofs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 773,
+      "project_name": "update_metalogic_typst_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 774,
+      "project_name": "restore_representation_theorem_as_under_development",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 775,
+      "project_name": "fix_wezterm_tab_coloring_with_claude_code_hooks",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 776,
+      "project_name": "refactor_metalogic_to_zero_sorry",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 777,
+      "project_name": "complete_weak_completeness_sorry",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 778,
+      "project_name": "remove_priority_system_from_task_workflow",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 779,
+      "project_name": "archive_weak_completeness_for_sorry_free_metalogic",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 780,
+      "project_name": "improve_bimodal_metalogic_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 781,
+      "project_name": "refactor_metalogic_zero_sorry_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 782,
+      "project_name": "revert_bimodal_metalogic_archival_refactor",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 783,
+      "project_name": "compare_branches_identify_restorable_elements",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 784,
+      "project_name": "export_claude_directory_to_markdown",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 785,
+      "project_name": "fix_deduction_theorem_warnings",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 786,
+      "project_name": "migrate_efq_to_efq_neg",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 787,
+      "project_name": "review_metalogic_progress",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 788,
+      "project_name": "wezterm_tab_coloring_on_claude_completion",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 789,
+      "project_name": "wezterm_tab_title_project_and_task_number",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 790,
+      "project_name": "neovim_wezterm_osc7_tab_title",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 791,
+      "project_name": "wezterm_task_number_from_claude_commands",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 792,
+      "project_name": "document_wezterm_tab_integration",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 794,
+      "project_name": "sorry_free_completeness_theorems",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 795,
+      "project_name": "wezterm_tab_project_number_persistence",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 796,
+      "project_name": "complete_remaining_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 797,
+      "project_name": "extract_representation_dependencies",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 798,
+      "project_name": "refactor_completeness_lean",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 799,
+      "project_name": "complete_decidability_proofs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 800,
+      "project_name": "fix_fmp_semantic_canonical_model_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 801,
+      "project_name": "document_soundness_temp_t_axiom_validity",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 802,
+      "project_name": "wezterm_task_number_clearing_neovim_exit",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 803,
+      "project_name": "prove_g_bot_h_bot_conditions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 804,
+      "project_name": "refactor_weak_completeness_direct_construction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 805,
+      "project_name": "investigate_universalcanonicalmodel_remaining_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 806,
+      "project_name": "archive_deprecated_representation_constructions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 807,
+      "project_name": "remove_unused_representation_theorem_call",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 808,
+      "project_name": "audit_coherentconstruction_taskrelation_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 809,
+      "project_name": "audit_truthlemma_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 810,
+      "project_name": "strategic_review_representation_vs_semantic_paths",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 811,
+      "project_name": "swap_wezterm_tab_styling",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 812,
+      "project_name": "canonical_model_completeness",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 813,
+      "project_name": "resolve_remaining_bmcs_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 814,
+      "project_name": "classical_propositional_completeness_infrastructure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 815,
+      "project_name": "bmcs_universe_polymorphism_resolution",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 816,
+      "project_name": "bmcs_temporal_modal_coherence_strengthening",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 818,
+      "project_name": "refactor_bimodal_metalogic_modules",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 819,
+      "project_name": "create_sorry_debt_policy_context_file",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 820,
+      "project_name": "add_sorry_debt_policy_references",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 821,
+      "project_name": "fix_constitutive_foundation_latex_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 822,
+      "project_name": "improve_syntax_term_algebra_structure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 823,
+      "project_name": "update_context_verum_falsum_notation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 824,
+      "project_name": "fix_constitutive_foundation_remaining_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 825,
+      "project_name": "fdsm_multi_history_modal_saturation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 826,
+      "project_name": "fdsm_completeness_saturated_construction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 827,
+      "project_name": "complete_multi_family_bmcs_construction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 828,
+      "project_name": "fmp_approach_truthlemma_backward",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 829,
+      "project_name": "remove_metalogic_backwards_compatible_aliases",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 830,
+      "project_name": "standardize_metalogic_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 831,
+      "project_name": "strengthen_sorry_debt_policy_language",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 832,
+      "project_name": "update_artifact_formats_agent_sorry_guidance",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 833,
+      "project_name": "enhance_roadmap_structure_changelog_strategies_ambitions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 834,
+      "project_name": "enhance_todo_command_changelog_task_suggestions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 835,
+      "project_name": "enhance_review_command_roadmap_integration_revision",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 836,
+      "project_name": "improve_metalogic_readme_documentation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 837,
+      "project_name": "resolve_proofsearch_blockers",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 839,
+      "project_name": "clean_linter_warnings",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 840,
+      "project_name": "refactor_truthlemma_forward_backward_publication",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 841,
+      "project_name": "remove_axiom_complete_multi_family_saturation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 842,
+      "project_name": "formalize_zorn_lemma_exists_fullySaturated_extension",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 843,
+      "project_name": "remove_singleFamily_modal_backward_axiom",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 844,
+      "project_name": "redesign_metalogic_precoherent_bundle_construction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 845,
+      "project_name": "update_context_files_from_latex_notes",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 846,
+      "project_name": "fix_latex_constitutive_foundation_tags",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 847,
+      "project_name": "restructure_constitutive_semantics_section",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 848,
+      "project_name": "add_conceptual_engineering_section_to_introduction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 849,
+      "project_name": "add_contextual_parameters_section_to_dynamics",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 850,
+      "project_name": "scalable_oversight_section",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 851,
+      "project_name": "define_coherentbundle_structure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 852,
+      "project_name": "implement_coherentbundle_tobmcs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 853,
+      "project_name": "construct_coherentbundle_from_context",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 854,
+      "project_name": "bimodal_metalogic_audit_and_cleanup",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 855,
+      "project_name": "complete_truthlemma_backward_directions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 856,
+      "project_name": "implement_multifamily_saturated_bmcs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 857,
+      "project_name": "add_temporal_backward_properties",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 858,
+      "project_name": "remove_omega_rule_misleading_comments",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 859,
+      "project_name": "establish_axiom_debt_policy",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 860,
+      "project_name": "propagate_axiom_policy_to_agents_rules",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 861,
+      "project_name": "reorganize_logos_introduction_latex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 862,
+      "project_name": "divide_truthlemma_forward_backward",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 863,
+      "project_name": "improve_introduction_latex_formatting_content",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 864,
+      "project_name": "recursive_seed_henkin_model",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 866,
+      "project_name": "consolidate_latex_files",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 867,
+      "project_name": "check_lean_lsp_mcp_github_issues",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 869,
+      "project_name": "claude_teams_wave_coordination",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 870,
+      "project_name": "zorn_family_temporal_coherence",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 871,
+      "project_name": "safer_git_staging_concurrent_agents",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 872,
+      "project_name": "language_aware_teammate_routing_team_skills",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 873,
+      "project_name": "teammate_configuration_model_selection",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 874,
+      "project_name": "document_team_flag_command_files",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 875,
+      "project_name": "lean_specific_teammate_prompts",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/"
+      ]
+    },
+    {
+      "project_number": 876,
+      "project_name": "add_phase_dependency_field_plan_format_standards",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 877,
+      "project_name": "update_planner_agent_generate_phase_dependencies",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 878,
+      "project_name": "update_skill_team_implement_use_structured_dependencies",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 879,
+      "project_name": "team_mode_context_limit_failures",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 880,
+      "project_name": "augmented_extension_seed_approach",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 882,
+      "project_name": "fix_temporallindenbaum_sorries",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 883,
+      "project_name": "phase_progress_tracking_in_plan_files",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 884,
+      "project_name": "incremental_summary_updates_per_phase",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 885,
+      "project_name": "blocker_detection_user_review_triggers",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 886,
+      "project_name": "continuous_subagent_handoff_loop",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 887,
+      "project_name": "create_finalconstruction_prove_fully_saturated_bmcs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 888,
+      "project_name": "lindenbaum_temporal_saturation_preservation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 889,
+      "project_name": "artifact_naming_scheme_review",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 890,
+      "project_name": "fix_measure_wf_build_error_temporallindenbaum",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 891,
+      "project_name": "fix_split_at_tactic_temporallindenbaum",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 892,
+      "project_name": "modify_henkinstep_add_negations",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 893,
+      "project_name": "fix_missing_logos_lean_root_file",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 894,
+      "project_name": "clean_linter_warnings_closure_lean",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 895,
+      "project_name": "update_phase_status_markers_during_implementation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 896,
+      "project_name": "update_context_interp_notation_convention",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 897,
+      "project_name": "fix_tags_constitutive_foundation_latex",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 898,
+      "project_name": "bilattice_structure_remarks_constitutive_foundation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 899,
+      "project_name": "define_identity_sentences_syntax_constitutive_foundation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 900,
+      "project_name": "prove_cut_rule_derivation_tree_manipulation",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 901,
+      "project_name": "configure_subagent_model_routing",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 902,
+      "project_name": "ensure_opus_4_6_for_lean_subagents",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 903,
+      "project_name": "restructure_completeness_proof_bimodal_semantics",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 904,
+      "project_name": "enforce_model_selection_team_skills",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 905,
+      "project_name": "cleanup_metalogic_for_task_903",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 906,
+      "project_name": "box_admissible_histories_omega_closure",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/"
+      ]
+    },
+    {
+      "project_number": 907,
+      "project_name": "phase1_truth_omega_parameter",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 908,
+      "project_name": "phase2_validity_definitions",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 909,
+      "project_name": "phase3_soundness_proofs",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 910,
+      "project_name": "phase4_canonical_model_reconstruction",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 911,
+      "project_name": "phase5_downstream_cleanup",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
+    },
+    {
+      "project_number": 913,
+      "project_name": "todo_expanded_autocompletion",
+      "status": "orphan_archived",
+      "archived": "2026-02-28T01:01:27Z",
+      "source": "orphan_recovery",
+      "detected_artifacts": [
+        "reports/",
+        "plans/",
+        "summaries/"
+      ]
     }
   ]
 }

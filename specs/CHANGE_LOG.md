@@ -17,6 +17,26 @@
 Updated by /todo command during task archival.
 -->
 
+### 2026-02-28
+
+- **Task 948**: Archived BFMCS Completeness and FMP Completeness theorems (5 files) to Boneyard/Metalogic_v8. Relocated 3 shared utilities to Construction.lean.
+  - *Rationale*: These theorems use non-standard validity definitions not proven equivalent to standard `valid` from Semantics/Validity.lean.
+  - *References*: [summary](specs/archive/948_archive_nonstandard_completeness_theorems/summaries/implementation-summary-20260228.md)
+
+- **Task 947**: Revised documentation to establish Bimodal as the complete, production-ready implementation with verified soundness/completeness proofs, positioning Logos as research roadmap.
+  - *Rationale*: Prepare bimodal logic for opensource release as foundational core.
+  - *References*: [summary](specs/archive/947_bimodal_logic_opensource_documentation/summaries/implementation-summary-20260227.md)
+
+### 2026-02-27
+
+- **Task 946**: Eliminated all 4 sorries in canonical_task_rel_compositionality by strengthening to unconditional GContent/HContent and proving via canonicalR_transitive.
+  - *Rationale*: Complete the canonical model construction with sorry-free compositionality proofs.
+  - *References*: [summary](specs/archive/946_canonical_task_rel_compositionality/summaries/implementation-summary-20260227.md)
+
+- **Task 945**: Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at. All 6 inductive cases sorry-free.
+  - *Rationale*: Establish TruthLemma for canonical model without intermediate bmcs_truth_at predicates.
+  - *References*: [summary](specs/archive/945_canonical_model_construction_design/summaries/implementation-summary-20260227.md)
+
 ### 2026-02-26
 
 - **Task 933**: Archived CanonicalReachable/CanonicalQuotient/CanonicalEmbedding stack to Boneyard. These files represent an intermediate approach superseded by the all-MCS approach. Also removed dead `bmcs_truth_eval` code from BFMCSTruth.lean. Net ~1135 lines removed from active code.
