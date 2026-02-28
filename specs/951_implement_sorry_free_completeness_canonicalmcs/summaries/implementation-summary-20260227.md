@@ -2,8 +2,78 @@
 
 **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
 **Date**: 2026-02-27
-**Session**: sess_1740672300_i951
-**Status**: Partial (Phases 1-2 completed, Phase 3 BLOCKED)
+**Sessions**: sess_1740672300_i951 (plan v001), sess_1772246447_439fa1e5 (plan v002)
+**Status**: Partial - Plan v002 Phases A, C completed; Phase B in progress
+
+---
+
+## Plan v002: Bidirectional Reachable Fragment Approach
+
+Following the root cause analysis (research-003.md), plan v002 supersedes the chain approach
+with the Bidirectional Reachable Fragment approach.
+
+### Phase A: Bidirectional Reachable Fragment Infrastructure [COMPLETED]
+
+Created `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` (450+ lines):
+
+**Types Defined**:
+- `BidirectionalEdge M₁ M₂` - one-step edge in either CanonicalR direction
+- `BidirectionalReachable M₀ M` - reflexive-transitive-symmetric closure from M₀
+- `BidirectionalFragment M₀ h_mcs₀` - subtype of reachable MCSes
+
+**Key Theorems (all sorry-free)**:
+- `BidirectionalReachable.refl` - root is reachable
+- `BidirectionalFragment.forward_closed` - CanonicalR forward closure
+- `BidirectionalFragment.backward_closed` - CanonicalR backward closure
+- `forward_F_stays_in_fragment` - F-witnesses remain in fragment
+- `backward_P_stays_in_fragment` - P-witnesses remain in fragment
+- `toCanonicalMCS` - conversion to CanonicalMCS element
+- `Preorder` instance on fragment
+
+### Phase B: Linearity Proof [IN PROGRESS]
+
+Added linearity infrastructure to BidirectionalReachable.lean:
+
+**Completed (sorry-free)**:
+- `mcs_F_linearity` - temp_linearity axiom application within MCS context
+- `canonical_F_of_mem_successor` - F-introduction from CanonicalR successor
+- `canonical_forward_reachable_linear` - totality for forward-reachable elements
+
+**Remaining**:
+- Extend linearity to full bidirectional reachability
+- Prove `bidirectional_totally_ordered`
+
+### Phase C: F/P Fragment Closure [COMPLETED]
+
+Completed during Phase A work:
+- `forward_F_stays_in_fragment`
+- `backward_P_stays_in_fragment`
+
+### Phases D-H [NOT STARTED]
+
+- Phase D: Antisymmetrization and countability
+- Phase E: Embedding into Int
+- Phase F: FMCS Int via pullback
+- Phase G: BFMCS and modal saturation
+- Phase H: Truth lemma and completeness
+
+### Verification (Plan v002)
+
+- `lake build` passes (703 jobs, no new errors)
+- All new proofs in BidirectionalReachable.lean are sorry-free
+- No new axioms introduced
+
+### Commits (Plan v002)
+
+1. `b02e38ac` - task 951 phase A: bidirectional reachable fragment infrastructure
+2. `647e6e53` - task 951 phase B: linearity infrastructure (partial)
+
+---
+
+## Plan v001: Z-Indexed Chain Approach (BLOCKED)
+
+The original chain approach is documented below. Phases 1-2 completed, Phase 3 BLOCKED
+due to F-formula non-persistence through GContent seeds.
 
 ## Phase 1: Infrastructure - Z-Indexed Chain Type and Basic Properties [COMPLETED]
 
