@@ -13,8 +13,8 @@
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-02-28T20:34:52Z",
-      "session_id": "sess_1772310457_34e8db",
+      "last_updated": "2026-02-28T20:49:37Z",
+      "session_id": "sess_1772311409_0734df",
       "researched": "2026-02-28T01:43:15Z",
       "planned": "2026-02-28T02:39:32Z",
       "artifacts": [
@@ -42,6 +42,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-005.md",
           "type": "research",
           "summary": "Recursive unpacking analysis. Recommends Rat embedding via Mathlib Order.embedding_from_countable_to_dense (12-18 hours) over Int embedding (22-33 hours). BidirectionalFragment IS the constructed time domain."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-006.md",
+          "type": "research",
+          "summary": "Bundle automorphism analysis. Finding: fragment automorphism approach NOT viable - BidirectionalFragment has trivial automorphism group, no natural AddCommGroup on quotient. MF/TF soundness requires AddCommGroup. Rat embedding from research-005 remains recommended."
         }
       ],
       "started": "2026-02-28T01:53:54Z"
