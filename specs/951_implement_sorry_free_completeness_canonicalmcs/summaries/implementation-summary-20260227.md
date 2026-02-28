@@ -3,7 +3,7 @@
 **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
 **Date**: 2026-02-27
 **Session**: sess_1740672300_i951
-**Status**: Partial (Phases 1-2 of 7 completed)
+**Status**: Partial (Phases 1-2 completed, Phase 3 BLOCKED)
 
 ## Phase 1: Infrastructure - Z-Indexed Chain Type and Basic Properties [COMPLETED]
 
@@ -91,9 +91,51 @@ Extended `Theories/Bimodal/Metalogic/Bundle/CanonicalChain.lean` (now ~860 lines
 - No warnings in CanonicalChain.lean
 - `lean_goal` shows "no goals" for all new theorems
 
-### What Comes Next (Phase 3)
+## Phase 3: Forward F via Dovetailed Chain [BLOCKED]
 
-Phase 3 will prove forward_F for the enriched chain:
-- Prove that for any `F(phi) in chain(t)`, either phi is already witnessed or the obligation persists until it is processed
-- This is the critical proof step that was sorry'd in DovetailingChain
-- The enriched chain with current-position witness placement provides the infrastructure
+### Blocker Analysis
+
+Phase 3 attempted to prove forward_F for the enriched chain construction. After detailed analysis, this phase is BLOCKED by a fundamental mathematical obstacle: **F-formula non-persistence through GContent seeds**.
+
+**The problem**: `F(phi) in chain(t)` does NOT imply `F(phi) in chain(k)` for `k > t`. The GContent propagation between chain elements only preserves G-formulas (universal: `G(psi)`), not F-formulas (existential: `F(phi) = neg(G(neg(phi)))`). At any step, the Lindenbaum extension can introduce `G(neg(phi))`, which kills `F(phi)`.
+
+**Why this blocks forward_F**: The enriched chain's witness placement (`enrichedForwardStep_witness_placed`) only works when `F(phi)` is alive at the step where `phi` is decoded (step `encodeFormula phi`). For `F(phi)` at position `t`, there is no guarantee that `F(phi)` survives from position `t` to position `encodeFormula phi`. Since `decodeFormula` maps each natural number to at most one formula, phi has exactly ONE chance to be witnessed (at step `encodeFormula phi`). If `F(phi)` is dead at that step, forward_F fails.
+
+**Why this is fundamental (not fixable by tactics/lemmas)**:
+1. GContent(M) = {phi | G(phi) in M}. F(phi) = neg(G(neg(phi))) is NOT a G-formula.
+2. The linearity axiom constrains F-witness ORDERING but does NOT prevent Lindenbaum from making choices that kill F-obligations (confirmed in Boneyard/CanonicalEmbedding.lean lines 67-78).
+3. This is the SAME blocker that defeated 12+ prior attempts in DovetailingChain.lean (documented in DovetailingChain.lean lines 1778-1784).
+4. The enriched chain has the SAME structural limitation as DovetailingChain: it IS a linear chain with GContent propagation.
+
+**Confirmed non-starters**:
+- Using the diagonal enumeration `decodePosFormula(k) = (pos, phi)` to check F(phi) at the origin position: requires `F(phi) in chain(k)` for seed consistency, which is the same problem.
+- Using seed `{phi} ∪ GContent(chain(pos))` instead of `{phi} ∪ GContent(chain(k))`: consistent but does NOT give `CanonicalR chain(k) chain(k+1)`.
+- GContent monotonicity helps propagate GContent forward but does NOT propagate F-formulas.
+
+### Resolution Path
+
+The correct approach (confirmed by Boneyard/CanonicalEmbedding.lean analysis) is the **canonical quotient / embedding approach**:
+
+1. `canonicalMCS_forward_F` already provides sorry-free forward_F over CanonicalMCS (trivially, since the witness MCS is in the domain by construction).
+2. `canonical_reachable_linear` (in Boneyard) proves that the reachable fragment of CanonicalMCS from any root is linearly ordered.
+3. Embed the linearly-ordered reachable fragment into Int via Mathlib's `orderIsoIntOfLinearSuccPredArch` or `Order.embedding_from_countable_to_dense`.
+4. Pull back the FMCS to get `FMCS Int` with forward_F.
+
+This avoids the F-persistence problem entirely by NOT using a chain construction for forward_F.
+
+### What Was Preserved
+
+Phases 1-2 infrastructure is still valid and useful:
+- `CanonicalChain` structure and `toFMCS` conversion provide forward_G and backward_H
+- The enriched chain construction with witness placement may still serve as a building block
+- The diagonal enumeration infrastructure is reusable
+- All 856 lines of CanonicalChain.lean are sorry-free and build cleanly
+
+### Recommendation
+
+The plan (Phases 3-7) should be **revised** to use the canonical quotient / embedding approach rather than the linear chain construction. Key steps:
+1. Resurrect `CanonicalEmbedding.lean` infrastructure from Boneyard (proven: `canonical_reachable_linear`, `mcs_F_linearity`, `canonical_F_of_mem_successor`)
+2. Define the reachable fragment type with `Countable`, `LinearOrder`, `SuccOrder`, `PredOrder`
+3. Use Mathlib embedding to map into Int
+4. Construct `TemporalCoherentFamily Int` from the embedding
+5. Combine with modal saturation for `fully_saturated_bfmcs_exists_int`

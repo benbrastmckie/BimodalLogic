@@ -15,7 +15,7 @@
     }
   ],
   "completion_data": {
-    "completion_summary": "Phase 2 completed: Added Obligation type, omega-squared diagonal enumeration (Nat.unpair + decodeFormula), enriched forward/backward chain constructions with witness formula placement, and full Z-indexed enriched chain assembly. All theorems sorry-free, build passes.",
+    "completion_summary": "Phase 3 BLOCKED: F-formula non-persistence through GContent seeds is a fundamental mathematical obstacle that prevents proving forward_F for any linear chain construction (same blocker as DovetailingChain's 12+ failed attempts). The enriched chain from Phase 2 works for witness placement when F(phi) is alive at the decoding step, but cannot guarantee F-persistence across steps. Resolution requires the canonical quotient / embedding approach (build forward_F at CanonicalMCS level where it is trivial, then embed into Int), NOT a linear chain construction.",
     "roadmap_items": []
   },
   "metadata": {
@@ -29,8 +29,17 @@
   "partial_progress": {
     "phases_completed": 2,
     "current_phase": 3,
-    "stage": "ready_for_next_phase",
-    "details": "Phase 2 (Dovetailing Enumeration) completed. Enriched chain construction with witness placement proven sorry-free. Ready for Phase 3 (Forward F proof)."
+    "stage": "proof_impossible",
+    "details": "Phase 3 (Forward F) BLOCKED by fundamental mathematical obstacle: F-formula non-persistence through GContent seeds in linear chain constructions. This is identical to the well-documented DovetailingChain blocker (12+ prior failed attempts). The enriched chain from Phase 2 has the same structural limitation. Resolution requires abandoning the linear chain approach for forward_F and using the canonical quotient / embedding approach instead."
   },
-  "requires_user_review": false
+  "requires_user_review": true,
+  "review_reason": "Phase 3 forward_F proof is impossible for the current enriched chain construction. F-formulas (F(phi) = neg(G(neg(phi)))) do not persist through GContent seeds because Lindenbaum extensions can introduce G(neg(phi)), killing F(phi). This is the same fundamental blocker that defeated 12+ prior attempts in DovetailingChain.lean. The linearity axiom does NOT fix persistence (confirmed in Boneyard/CanonicalEmbedding.lean). The plan's assumption that 'the enriched chain construction in Phase 2 already places witnesses' is only partially correct - witnesses are placed when F(phi) is alive at the decoding step, but there is no guarantee F(phi) survives from position t to position encodeFormula(phi). Resolution path: use canonical quotient / embedding approach (CanonicalMCS-level forward_F is trivially sorry-free via canonicalMCS_forward_F, then embed the linearly-ordered reachable fragment into Int). This requires revising the plan (Phases 3-7) to use the embedding approach rather than the linear chain construction.",
+  "errors": [
+    {
+      "type": "proof_impossible",
+      "message": "forward_F for linear chain is unprovable due to F-formula non-persistence through GContent seeds. This is a well-documented fundamental limitation (DovetailingChain.lean, Boneyard/CanonicalEmbedding.lean).",
+      "recoverable": false,
+      "recommendation": "Revise plan to use canonical quotient / embedding approach: (1) Resurrect CanonicalEmbedding.lean infrastructure from Boneyard, (2) Build TemporalCoherentFamily over CanonicalMCS (already done in CanonicalFMCS.lean), (3) Embed linearly-ordered reachable fragment into Int via Mathlib's orderIsoIntOfLinearSuccPredArch or Order.embedding_from_countable_to_dense, (4) Pull back the FMCS to get FMCS Int with forward_F."
+    }
+  ]
 }

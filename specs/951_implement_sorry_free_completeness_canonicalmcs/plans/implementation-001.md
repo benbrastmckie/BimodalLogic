@@ -120,7 +120,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Dovetailing Enumeration and Obligation Processing [NOT STARTED]
+### Phase 2: Dovetailing Enumeration and Obligation Processing [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Implement omega-squared enumeration of F/P obligations and the processing logic
@@ -143,9 +143,25 @@ After this implementation:
 - No sorries in enumeration and processing logic
 - `lean_goal` confirms obligation tracking is complete
 
+**Progress:**
+
+**Session: 2026-02-27, sess_1740672300_i951**
+- Added: `Obligation` inductive type with `ForwardF` and `BackwardP` constructors
+- Added: `decodePosFormula` / `encodePosFormula` - omega-squared encoding of (position, formula) pairs via `Nat.unpair`
+- Added: `diagonalForwardObligation` / `diagonalBackwardObligation` - diagonal enumeration functions
+- Added: `diagonalForwardObligation_surjective` / `diagonalBackwardObligation_surjective` - surjectivity proofs
+- Added: `enrichedForwardStep` - forward chain with witness formula placement from `decodeFormula`
+- Added: `enrichedForwardStep_ordered` - CanonicalR ordering proof for enriched forward chain
+- Added: `enrichedForwardStep_witness_placed` - witness placement proof (F(phi) alive at step k implies phi at k+1)
+- Added: `enrichedBackwardStep` - backward chain with P-witness formula placement
+- Added: `enrichedBackwardStep_ordered` / `enrichedBackwardStep_HContent_inclusion` - ordering proofs
+- Added: `enrichedBackwardStep_witness_placed` - backward witness placement proof
+- Added: `buildEnrichedCanonicalChain` - full Z-indexed enriched chain with ordering invariant
+- Completed: Phase 2 verified with `lake build` (0 sorries, 0 new axioms, no warnings in CanonicalChain.lean)
+
 ---
 
-### Phase 3: Forward F via Dovetailed Chain [NOT STARTED]
+### Phase 3: Forward F via Dovetailed Chain [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove forward_F for the dovetailed chain construction
@@ -168,6 +184,21 @@ After this implementation:
 - `grep -rn "\bsorry\b" CanonicalChain.lean` returns empty
 - `lean_goal` shows "no goals" for forward_F theorem
 - If proof stuck: mark [BLOCKED] with `requires_user_review: true` and document obstacle
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1740672300_i951 (iteration 3)**
+- Attempted: Detailed analysis of forward_F provability for enriched chain construction
+- BLOCKED: F-formula non-persistence through GContent seeds is a fundamental mathematical obstacle
+- Analysis: `F(phi) in chain(t)` does NOT imply `F(phi) in chain(k)` for k > t, because:
+  - GContent propagation only preserves G-formulas (universal), not F-formulas (existential)
+  - Lindenbaum extension at step k can introduce `G(neg phi)`, killing `F(phi)`
+  - The linearity axiom does NOT fix persistence (confirmed in Boneyard/CanonicalEmbedding.lean lines 67-78)
+- Confirmed: This is the SAME fundamental blocker as DovetailingChain.lean's 2 sorries (12+ prior failed attempts)
+- Root cause: The enriched chain IS a linear chain with GContent propagation, identical in structure to DovetailingChain
+- The enriched chain's `enrichedForwardStep_witness_placed` only works when `F(phi)` is alive at the step where phi is decoded, but there is no guarantee F(phi) survives from position t to position `encodeFormula phi`
+- Resolution path: Canonical quotient / embedding approach (task 922 Phase 3+), NOT a linear chain construction. This avoids F-persistence entirely by building forward_F at the CanonicalMCS level (where it is trivial via `canonicalMCS_forward_F`) and embedding into Int.
+- Key references: Boneyard/Metalogic/Bundle/CanonicalQuotientApproach/CanonicalEmbedding.lean (proven infrastructure: `canonical_reachable_linear`, `mcs_F_linearity`, `canonical_F_of_mem_successor`)
 
 ---
 
