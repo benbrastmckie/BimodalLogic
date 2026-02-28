@@ -13,10 +13,10 @@
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-02-27T12:10:00Z",
-      "session_id": "sess_1740672200_p951",
+      "last_updated": "2026-02-28T02:39:32Z",
+      "session_id": "sess_1740672500_rev951",
       "researched": "2026-02-28T01:43:15Z",
-      "planned": "2026-02-27T12:10:00Z",
+      "planned": "2026-02-28T02:39:32Z",
       "artifacts": [
         {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md",
@@ -29,11 +29,12 @@
           "summary": "Antisymmetrization approach: Z-indexed chain through CanonicalMCS via incremental dovetailing. Each F/P witness is independent Lindenbaum MCS. 35-60 hours, 55-70% success probability."
         },
         {
-          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-001.md",
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-002.md",
           "type": "plan",
-          "summary": "7-phase implementation plan for sorry-free completeness via antisymmetrization/dovetailing over CanonicalMCS"
+          "summary": "8-phase Bidirectional Reachable Fragment approach (supersedes v001 chain approach)"
         }
-      ]
+      ],
+      "started": "2026-02-28T01:53:54Z"
     },
     {
       "project_number": 950,

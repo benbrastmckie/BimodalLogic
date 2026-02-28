@@ -23,28 +23,28 @@ technical_debt:
 ## Tasks
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
-- **Effort**: 35-60 hours
+- **Effort**: 40-60 hours
 - **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
-- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md)
-- **Plan**: [implementation-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md), [research-003.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-003.md)
+- **Plan**: [implementation-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-002.md) (v2)
 
-**Description**: Implement standard completeness theorem using CanonicalFMCS.lean infrastructure:
-1. Create Representation module using CanonicalMCS domain
-2. Prove TruthLemma connecting CanonicalMCS membership to truth_at
-3. Bridge to standard validity (prove semantic equivalence)
-4. Update exports in Metalogic.lean
+**Description**: Implement standard completeness theorem using Bidirectional Reachable Fragment approach:
+1. Define bidirectional reachable fragment from root MCS
+2. Prove fragment is linearly ordered via linearity axiom
+3. Embed into Int via Antisymmetrization
+4. Pull back FMCS structure to get `FMCS Int` with forward_F/backward_P
+5. Build BFMCS with modal saturation
+6. Prove truth lemma and completeness
 
-Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-free using the all-MCS approach. This task adapts the completeness proof to use this infrastructure instead of the sorry-backed DovetailingChain approach.
-
-**Research finding (antisymmetrization)**: Construct Z-indexed chain through CanonicalMCS via incremental dovetailing. Each F/P witness is an independent Lindenbaum MCS added to the chain. The Antisymmetrization quotient yields a LinearOrder time structure. Central risk: proving witnesses from different chain elements are mutually comparable. Estimated 35-60 hours, 55-70% success probability.
+**Plan v2 approach** (supersedes chain-based v1): Use Bidirectional Reachable Fragment. F/P are trivially sorry-free at CanonicalMCS level; embed linearly-ordered fragment into Int; pull back structure. Avoids F-formula non-persistence problem that blocked chain approach.
 
 **Key files**:
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean` - source of sorry-free temporal coherence
-- `Theories/Bimodal/Metalogic/Representation.lean` - target for refactoring
-- `Theories/Bimodal/Semantics/Validity.lean` - standard validity definitions
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean` - source of sorry-free forward_F/backward_P
+- `Boneyard/Metalogic/Bundle/CanonicalQuotientApproach/` - infrastructure to resurrect
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalChain.lean` - Phase 1-2 infrastructure (857 lines)
 
 ---
 
