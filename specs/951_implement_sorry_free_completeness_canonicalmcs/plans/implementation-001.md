@@ -83,7 +83,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Infrastructure - Z-Indexed Chain Type and Basic Properties [NOT STARTED]
+### Phase 1: Infrastructure - Z-Indexed Chain Type and Basic Properties [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Define the core data structure for a Z-indexed chain through CanonicalMCS with basic ordering properties
@@ -105,6 +105,18 @@ After this implementation:
 - `lake build Bimodal.Metalogic.Bundle.CanonicalChain` passes
 - No sorries in new file
 - `lean_goal` shows "no goals" for all theorems
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1740672300_i951**
+- Added: `CanonicalChain` structure - Z-indexed chain through CanonicalMCS with ordering invariant
+- Added: `forwardChainStep` / `backwardChainStep` - recursive chain construction from root MCS
+- Added: `buildCanonicalChain` - combines forward/backward into full Z-indexed chain
+- Added: `CanonicalChain.monotone` - chain is monotone under CanonicalR for s <= t
+- Added: `CanonicalChain.toFMCS` - converts chain to FMCS Int with forward_G/backward_H
+- Added: `chain_ordered_forward` / `chain_ordered_backward` - explicit ordering lemmas
+- Added: `toFMCS_preserves_context` - root context preservation
+- Completed: Phase 1 verified with `lake build` (0 sorries, 0 new axioms, no warnings)
 
 ---
 
