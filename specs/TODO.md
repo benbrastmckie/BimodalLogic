@@ -1,5 +1,5 @@
 ---
-next_project_number: 950
+next_project_number: 951
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 950. Move Bimodal Boneyard contents to Metalogic Boneyard
+- **Effort**: Small
+- **Status**: [NOT STARTED]
+- **Language**: general
+
+**Description**: Move the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Boneyard/ contents into /home/benjamin/Projects/ProofChecker/Boneyard/Metalogic/ as appropriate.
+
+---
 
 ### 949. Update Demo.lean for current bimodal logic state
 - **Effort**: Small

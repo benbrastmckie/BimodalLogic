@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 950,
+      "project_name": "move_bimodal_boneyard_contents",
+      "status": "not_started",
+      "language": "general",
+      "created": "2026-02-28T01:17:14Z",
+      "last_updated": "2026-02-28T01:17:14Z"
+    },
+    {
       "project_number": 949,
       "project_name": "update_demo_lean_bimodal_logic",
       "status": "not_started",
@@ -606,7 +614,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 950,
+  "next_project_number": 951,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
