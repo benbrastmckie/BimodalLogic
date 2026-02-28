@@ -23,12 +23,13 @@ technical_debt:
 ## Tasks
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
-- **Effort**: 11-20 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 35-60 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
 - **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md)
+- **Plan**: [implementation-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-001.md)
 
 **Description**: Implement standard completeness theorem using CanonicalFMCS.lean infrastructure:
 1. Create Representation module using CanonicalMCS domain
