@@ -1,14 +1,14 @@
 ---
-next_project_number: 949
+next_project_number: 950
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 15
+  active: 16
   completed: 662
   in_progress: 0
-  not_started: 4
+  not_started: 5
   abandoned: 36
   total: 713
 technical_debt:
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 949. Update Demo.lean for current bimodal logic state
+- **Effort**: Small
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Update Theories/Bimodal/Examples/Demo.lean given the current state of the bimodal logic. The demo file should reflect the current API and showcase the working features of the bimodal logic implementation.
+
+---
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours
