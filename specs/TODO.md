@@ -1,5 +1,5 @@
 ---
-next_project_number: 951
+next_project_number: 952
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,31 @@ technical_debt:
 
 ## Tasks
 
+### 951. Implement sorry-free completeness via CanonicalMCS domain
+- **Effort**: 11-20 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 922 (research), Task 930 (analysis)
+
+**Description**: Implement standard completeness theorem using CanonicalFMCS.lean infrastructure:
+1. Create Representation module using CanonicalMCS domain
+2. Prove TruthLemma connecting CanonicalMCS membership to truth_at
+3. Bridge to standard validity (prove semantic equivalence)
+4. Update exports in Metalogic.lean
+
+Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-free using the all-MCS approach. This task adapts the completeness proof to use this infrastructure instead of the sorry-backed DovetailingChain approach.
+
+**Key files**:
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean` - source of sorry-free temporal coherence
+- `Theories/Bimodal/Metalogic/Representation.lean` - target for refactoring
+- `Theories/Bimodal/Semantics/Validity.lean` - standard validity definitions
+
+---
+
 ### 950. Move Bimodal Boneyard contents to Metalogic Boneyard
 - **Effort**: Small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 
 **Description**: Move the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Boneyard/ contents into /home/benjamin/Projects/ProofChecker/Boneyard/Metalogic/ as appropriate.
