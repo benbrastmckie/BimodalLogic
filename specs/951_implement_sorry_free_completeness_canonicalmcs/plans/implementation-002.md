@@ -261,7 +261,7 @@ Int conversion, a countable sub-fragment can be built iteratively.
 
 ---
 
-### Phase E: Embedding into Int [IN PROGRESS]
+### Phase E: Embedding into Int [BLOCKED]
 
 - **Dependencies**: Phase D
 - **Goal**: Build FMCS Int from fragment-level FMCS via order-preserving embedding
@@ -299,6 +299,19 @@ DovetailingChain approach.
 - `lake build` passes
 - Order embedding verified
 - No sorries in FMCS Int construction
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772247674_resume (iteration 3)**
+- Analyzed: F-persistence problem in depth -- confirmed as fundamental mathematical obstacle
+- Analyzed: 7 approaches to convert fragment-level FMCS to FMCS Int
+- Rejected: Simple chain, round-robin, omega-squared, F-preserving seed, direct embedding, Zorn on chains
+- Identified: Two remaining viable approaches (controlled Lindenbaum, architecture change)
+- Blocker: F(phi) = neg(G(neg(phi))) is NOT in GContent(M), so Lindenbaum can freely kill it
+- Blocker: Once G(neg(phi)) enters via Lindenbaum, it propagates forward forever (temp_4)
+- Blocker: This is the SAME blocker as DovetailingChain.lean (2 sorries)
+- Status: Phase marked [BLOCKED] - requires mathematical innovation or architecture change
+- Handoff: phase-E-handoff-20260227-v2.md written with detailed analysis
 
 ---
 
