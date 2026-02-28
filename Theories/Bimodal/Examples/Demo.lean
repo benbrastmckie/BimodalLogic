@@ -1,10 +1,10 @@
 import Bimodal.Theorems.Perpetuity
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
-import Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness
-import Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem
-import Bimodal.Boneyard.Metalogic_v2.Representation.SemanticCanonicalModel
-import Bimodal.Boneyard.Metalogic_v2.Decidability.DecisionProcedure
+import Bimodal.Metalogic.Soundness
+import Bimodal.Metalogic.Core.DeductionTheorem
+import Bimodal.Metalogic.Representation
+import Bimodal.Metalogic.Decidability
 
 /-!
 # Bimodal TM Logic - Demo Presentation
@@ -45,10 +45,22 @@ open Bimodal.Syntax.Formula (swap_temporal_involution)
 open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic.Core
-open Bimodal.Metalogic_v2.Soundness
-open Bimodal.Metalogic_v2.Representation (semantic_weak_completeness main_provable_iff_valid_v2)
-open Bimodal.Metalogic_v2.Decidability
+open Bimodal.Metalogic
+open Bimodal.Metalogic.Representation (standard_weak_completeness standard_strong_completeness)
+open Bimodal.Metalogic.Decidability
 open Bimodal.Theorems.Perpetuity
+
+/-- Main provability-validity equivalence theorem.
+
+Combines soundness and completeness to show derivability equals validity.
+-/
+theorem main_provable_iff_valid (φ : Formula) : Nonempty (⊢ φ) ↔ valid φ := by
+  constructor
+  · intro ⟨h_deriv⟩
+    intro D _ _ _ F M Omega h_sc τ h_mem t
+    exact soundness [] φ h_deriv D F M Omega h_sc τ h_mem t (by simp)
+  · intro h_valid
+    exact standard_weak_completeness φ h_valid
 
 /-!
 ## Section 1: Quick Tour
@@ -143,21 +155,21 @@ Uses well-founded recursion on derivation structure. -/
 
 /-! **Weak Completeness**: Valid formulas are derivable.
 
-`semantic_weak_completeness φ : (∀ w, ...) → (⊢ φ)`
+`standard_weak_completeness φ : (∀ w, ...) → (⊢ φ)`
 
 Uses semantic canonical model with finite world states. -/
-#check @semantic_weak_completeness  -- validity → derivability
+#check @standard_weak_completeness  -- validity → derivability
 
 /-! **Main Theorem**: Derivability equals validity.
 
-`main_provable_iff_valid_v2 φ : Nonempty (⊢ φ) ↔ valid φ`
+`main_provable_iff_valid φ : Nonempty (⊢ φ) ↔ valid φ`
 
 The fundamental bi-conditional connecting syntax and semantics.
 
 **Note**: The soundness direction (provable → valid) is fully proven.
 The completeness direction (valid → provable) contains a sorry; for
-sorry-free completeness, use `semantic_weak_completeness` above. -/
-#check @main_provable_iff_valid_v2  -- ⊢ φ ↔ ⊨ φ
+sorry-free completeness, use `standard_weak_completeness` above. -/
+#check @main_provable_iff_valid  -- ⊢ φ ↔ ⊨ φ
 
 /-!
 ### 1.3 Decision Procedure
@@ -172,10 +184,10 @@ either a proof or a countermodel.
 - `valid proof` = formula is valid with proof term
 - `invalid counter` = formula is invalid with countermodel
 - `timeout` = resources exhausted -/
-#check @Metalogic_v2.Decidability.decide  -- Formula → DecisionResult
+#check @Decidability.decide  -- Formula → DecisionResult
 
 /-! **Convenience functions** for common queries -/
-#check @isValidFormula       -- Formula → Bool
+#check @isValid       -- Formula → Bool
 #check @isSatisfiable -- Formula → Bool
 #check @isTautology   -- Formula → Bool
 
@@ -422,7 +434,7 @@ This is the crowning achievement of the formalization:
 - **Soundness**: If φ is provable, it's true in all models
 - **Completeness**: If φ is true in all models, it's provable -/
 example (φ : Formula) : Nonempty (⊢ φ) ↔ valid φ :=
-  main_provable_iff_valid_v2 φ
+  main_provable_iff_valid φ
 
 end Applications
 

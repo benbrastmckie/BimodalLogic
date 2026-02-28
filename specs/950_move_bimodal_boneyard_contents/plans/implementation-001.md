@@ -47,7 +47,16 @@ Key findings from research-001.md:
 
 ## Implementation Phases
 
-### Phase 1: Preparation and Conflict Analysis [NOT STARTED]
+### Phase 1: Preparation and Conflict Analysis [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772242169_f601ef**
+- Created: `Boneyard/Metalogic/` target directory
+- Analyzed: Metalogic_v4 conflict - no file collisions, safe to merge
+  - Source has: Completeness/MonolithicCompleteness.lean, Representation/TruthLemmaBackward.lean
+  - Target has: Completeness/{FiniteCanonicalModel,README}, Representation/{TemporalCompleteness,UniversalCanonicalModel}, FMP/{5 files}
+- Documented: 5 active imports (Demo.lean: 4, MaximalConsistent.lean: 1)
 
 - **Dependencies:** None
 - **Goal:** Prepare target structure and analyze Metalogic_v4 conflict
@@ -69,7 +78,16 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 2: Move Contents [NOT STARTED]
+### Phase 2: Move Contents [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772242169_f601ef**
+- Moved: 15 directories/files from Theories/Bimodal/Boneyard/ to Boneyard/Metalogic/
+- Merged: Metalogic_v4 (2 files) into existing Boneyard/Metalogic_v4/
+- Verified: 110 Lean files in Boneyard/Metalogic/, 9 in Boneyard/Metalogic_v4/
+- Verified: 14 README.md files preserved
+- Removed: Theories/Bimodal/Boneyard/ source directory
 
 - **Dependencies:** Phase 1
 - **Goal:** Move all source Boneyard contents to target location
@@ -93,7 +111,19 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 3: Update Imports [NOT STARTED]
+### Phase 3: Update Imports [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772242169_f601ef**
+- Updated: Demo.lean - 4 Boneyard imports replaced with active module imports
+  - `Bimodal.Boneyard.Metalogic_v2.Soundness.Soundness` -> `Bimodal.Metalogic.Soundness`
+  - `Bimodal.Boneyard.Metalogic_v2.Core.DeductionTheorem` -> `Bimodal.Metalogic.Core.DeductionTheorem`
+  - `Bimodal.Boneyard.Metalogic_v2.Representation.SemanticCanonicalModel` -> `Bimodal.Metalogic.Representation`
+  - `Bimodal.Boneyard.Metalogic_v2.Decidability.DecisionProcedure` -> `Bimodal.Metalogic.Decidability`
+- Updated: Demo.lean open statements to use active namespaces
+- Added: `main_provable_iff_valid` theorem to Demo.lean (combines soundness + completeness)
+- Consolidated: MaximalConsistent.lean - replaced Boneyard re-export with 480-line self-contained MCS theory
 
 - **Dependencies:** Phase 2
 - **Goal:** Fix imports in active files that referenced old Boneyard paths
@@ -116,7 +146,17 @@ Key findings from research-001.md:
 
 ---
 
-### Phase 4: Build Verification and Cleanup [NOT STARTED]
+### Phase 4: Build Verification and Cleanup [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772242169_f601ef**
+- Verified: `lake build` passes (739 jobs)
+- Verified: `lake build Bimodal.Examples.Demo` passes (721 jobs)
+- Fixed: Demo.lean `main_provable_iff_valid` type mismatch (argument order)
+- Fixed: Demo.lean `isValidFormula` -> `isValid` (renamed function)
+- Verified: No Boneyard imports remain in Theories/
+- Note: Documentation references to old paths exist in historical .md files (follow-up task)
 
 - **Dependencies:** Phase 3
 - **Goal:** Verify build passes and finalize

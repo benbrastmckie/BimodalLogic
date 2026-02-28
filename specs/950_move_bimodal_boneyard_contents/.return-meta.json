@@ -1,19 +1,38 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Moved 112 Lean files from Theories/Bimodal/Boneyard to Boneyard/Metalogic. Updated Demo.lean imports to use active modules. Consolidated MaximalConsistent.lean with 480-line self-contained MCS theory. Build passes successfully.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/950_move_bimodal_boneyard_contents/plans/implementation-001.md",
-      "summary": "4-phase implementation plan for moving 112 Lean files from Theories/Bimodal/Boneyard to Boneyard/Metalogic"
+      "type": "implementation",
+      "path": "Boneyard/Metalogic/",
+      "summary": "New archive location for deprecated metalogic code (110 files)"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Examples/Demo.lean",
+      "summary": "Updated imports from Boneyard to active modules"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/Core/MaximalConsistent.lean",
+      "summary": "Self-contained MCS theory replacing Boneyard re-export"
+    },
+    {
+      "type": "summary",
+      "path": "specs/950_move_bimodal_boneyard_contents/summaries/implementation-summary-20260227.md",
+      "summary": "Implementation summary with verification results"
     }
   ],
-  "next_steps": "Run /implement 950 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Moved 112 Lean files from Theories/Bimodal/Boneyard to Boneyard/Metalogic, updated Demo.lean and MaximalConsistent.lean imports, consolidated MCS theory into active code."
+  },
   "metadata": {
-    "session_id": "sess_1772241818_79f373",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1772242169_f601ef",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 1.5
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Review implementation. Consider follow-up task to update historical documentation references."
 }
