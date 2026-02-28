@@ -8,19 +8,25 @@
     {
       "project_number": 947,
       "project_name": "bimodal_logic_opensource_documentation",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "created": "2026-02-27T23:38:36Z",
-      "last_updated": "2026-02-27T23:42:58Z",
-      "session_id": "sess_1772235571_90dff8",
+      "last_updated": "2026-02-28T00:01:29Z",
+      "session_id": "sess_1772236705_f1fe19",
       "researched": "2026-02-27T23:42:58Z",
       "artifacts": [
         {
           "path": "specs/947_bimodal_logic_opensource_documentation/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Bimodal vs Logos components, documentation structure, and open-core licensing strategy"
+        },
+        {
+          "path": "specs/947_bimodal_logic_opensource_documentation/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase documentation restructuring plan for Bimodal opensource presentation"
         }
-      ]
+      ],
+      "planned": "2026-02-28T00:01:29Z"
     },
     {
       "project_number": 945,
@@ -690,10 +696,10 @@
     {
       "project_number": 946,
       "project_name": "canonical_task_rel_compositionality",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-02-27T23:04:47Z",
-      "last_updated": "2026-02-27T23:29:04Z",
+      "last_updated": "2026-02-27T23:59:30Z",
       "artifacts": [
         {
           "path": "specs/946_canonical_task_rel_compositionality/reports/research-001.md",
@@ -706,9 +712,10 @@
           "summary": "5-phase implementation plan for canonical_task_rel_compositionality cross-sign sorries"
         }
       ],
-      "session_id": "sess_1772234777_674c97a",
+      "session_id": "sess_1772236750_43e88bd2",
       "researched": "2026-02-27T23:16:25Z",
-      "planned": "2026-02-27T23:29:04Z"
+      "planned": "2026-02-27T23:29:04Z",
+      "started": "2026-02-27T23:59:30Z"
     }
   ],
   "completed_projects": [

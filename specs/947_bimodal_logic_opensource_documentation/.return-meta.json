@@ -1,21 +1,20 @@
 {
-  "status": "researched",
-  "session_id": "sess_1772235571_90dff8",
+  "status": "planned",
+  "session_id": "sess_1772236705_f1fe19",
   "artifacts": [
     {
-      "path": "specs/947_bimodal_logic_opensource_documentation/reports/research-001.md",
-      "type": "research",
-      "summary": "Comprehensive analysis of Bimodal vs Logos components, documentation structure, and open-core licensing strategy"
+      "path": "specs/947_bimodal_logic_opensource_documentation/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "5-phase documentation restructuring plan for Bimodal opensource presentation"
     }
   ],
-  "next_steps": "Run /plan 947 to create implementation plan for documentation revision",
-  "summary": "Research complete: Bimodal is fully implemented and ready as opensource core; Logos extensions exist only as stubs; documentation needs restructuring to present Bimodal as primary product",
   "metadata": {
-    "session_id": "sess_1772235571_90dff8",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 300,
+    "session_id": "sess_1772236705_f1fe19",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 6
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4
+  },
+  "summary": "Created 5-phase plan to restructure documentation presenting Bimodal as opensource core"
 }

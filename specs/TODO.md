@@ -24,9 +24,10 @@ technical_debt:
 
 ### 947. Revise documentation for bimodal logic opensource release
 - **Effort**: Medium
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: general
 - **Research**: [research-001.md](specs/947_bimodal_logic_opensource_documentation/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/947_bimodal_logic_opensource_documentation/plans/implementation-001.md)
 
 **Description**: Revise README.md and project documentation to present bimodal logic as the opensource foundational core (GNU license) while keeping Logos private, positioning bimodal logic as the base that Logos elaborates with additional operators.
 
@@ -34,7 +35,7 @@ technical_debt:
 
 ### 946. Prove canonical_task_rel_compositionality cross-sign cases
 - **Effort**: Medium (4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**: [research-001.md](specs/946_canonical_task_rel_compositionality/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/946_canonical_task_rel_compositionality/plans/implementation-001.md)
 - **Language**: lean
