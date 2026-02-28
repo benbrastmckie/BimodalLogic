@@ -24,10 +24,11 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 11-20 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
+- **Research**: [specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md]
 
 **Description**: Implement standard completeness theorem using CanonicalFMCS.lean infrastructure:
 1. Create Representation module using CanonicalMCS domain
@@ -36,6 +37,8 @@ technical_debt:
 4. Update exports in Metalogic.lean
 
 Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-free using the all-MCS approach. This task adapts the completeness proof to use this infrastructure instead of the sorry-backed DovetailingChain approach.
+
+**Research finding**: Fundamental obstacle identified -- standard `valid` requires `LinearOrderedAddCommGroup` time type, but CanonicalMCS only has `Preorder` structure. Primary recommended path: verify soundness for Preorder time, then define `valid_preorder` alongside `valid`. Fallback: resolve DovetailingChain forward_F/backward_P sorries directly.
 
 **Key files**:
 - `Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean` - source of sorry-free temporal coherence
@@ -46,7 +49,7 @@ Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-fr
 
 ### 950. Move Bimodal Boneyard contents to Metalogic Boneyard
 - **Effort**: Small
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: general
 - **Research**: [research-001.md](specs/950_move_bimodal_boneyard_contents/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/950_move_bimodal_boneyard_contents/plans/implementation-001.md)

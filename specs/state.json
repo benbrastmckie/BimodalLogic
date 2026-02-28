@@ -8,23 +8,33 @@
     {
       "project_number": 951,
       "project_name": "implement_sorry_free_completeness_canonicalmcs",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-02-28T01:21:00Z"
+      "last_updated": "2026-02-27T01:00:00Z",
+      "session_id": "sess_1740672000_r951",
+      "researched": "2026-02-27T01:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis identifying fundamental obstacle: standard valid requires LinearOrderedAddCommGroup time, CanonicalMCS is only Preorder. Recommends verifying soundness for Preorder time as primary path, with DovetailingChain sorry resolution as fallback."
+        }
+      ]
     },
     {
       "project_number": 950,
       "project_name": "move_bimodal_boneyard_contents",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "created": "2026-02-28T01:17:14Z",
-      "last_updated": "2026-02-28T01:25:57Z",
-      "session_id": "sess_1772241818_79f373",
+      "last_updated": "2026-02-28T01:29:51Z",
+      "session_id": "sess_1772242169_f601ef",
       "researched": "2026-02-28T01:21:21Z",
-      "planned": "2026-02-28T01:25:57Z"
+      "planned": "2026-02-28T01:25:57Z",
+      "started": "2026-02-28T01:29:51Z"
     },
     {
       "project_number": 949,
