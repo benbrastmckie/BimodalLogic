@@ -1,21 +1,22 @@
 {
-  "status": "planned",
-  "summary": "5-phase plan to archive BFMCS and FMP completeness theorems to Boneyard/Metalogic_v8",
+  "status": "implemented",
+  "summary": "Archived BFMCS Completeness and FMP infrastructure to Boneyard/Metalogic_v8. Relocated shared utilities to Construction.lean. Full build passes.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/948_archive_nonstandard_completeness_theorems/plans/implementation-001.md",
-      "summary": "5-phase implementation plan for archiving non-standard completeness theorems"
+      "path": "specs/948_archive_nonstandard_completeness_theorems/summaries/implementation-summary-20260228.md",
+      "type": "summary",
+      "summary": "Implementation summary for archival of non-standard completeness theorems"
     }
   ],
-  "next_steps": "Run /implement 948 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772238825_f171c28f",
-    "agent_type": "planner-agent",
-    "duration_seconds": 120,
+    "session_id": "sess_1772239264_5509b1a7",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 2.5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "completion_data": {
+    "completion_summary": "Archived BFMCS Completeness and FMP Completeness theorems (5 files) to Boneyard/Metalogic_v8 because they use non-standard validity definitions. Relocated 3 shared utilities to Construction.lean. Full build passes with no regressions."
   }
 }

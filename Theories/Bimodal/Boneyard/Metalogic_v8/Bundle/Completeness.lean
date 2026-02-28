@@ -1,16 +1,19 @@
-import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Bundle.BFMCSTruth
-import Bimodal.Metalogic.Bundle.TruthLemma
-import Bimodal.Metalogic.Bundle.Construction
-import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
-import Bimodal.Metalogic.Core.MaximalConsistent
-import Bimodal.Metalogic.Core.MCSProperties
-import Bimodal.Metalogic.Core.DeductionTheorem
-import Bimodal.Syntax.Formula
-import Bimodal.Theorems.Propositional
-
 /-!
-# BFMCS Completeness Theorems
+# ARCHIVED: BFMCS Completeness Theorems
+
+**Original location**: `Theories/Bimodal/Metalogic/Bundle/Completeness.lean`
+**Archived**: 2026-02-28 (Task 948)
+**Reason**: Uses non-standard validity definitions (`bmcs_valid`/`bmcs_consequence`) not proven
+  equivalent to standard `valid` from Semantics/Validity.lean. The standard completeness
+  theorems are now in `Representation.lean` using the standard `valid` definition.
+
+**Shared utilities relocated**: `ContextDerivable`, `not_derivable_implies_neg_consistent`,
+  and `context_not_derivable_implies_extended_consistent` were moved to `Construction.lean`
+  in Task 948 since they are still used by the active `Representation.lean`.
+
+---
+
+# BFMCS Completeness Theorems (Original Module Docstring)
 
 This module proves the **main completeness theorems** for bimodal TM logic using the
 Bundle of Maximal Consistent Sets (BFMCS) approach.
@@ -70,10 +73,22 @@ into semantic satisfiability.
 - Implementation plan: specs/812_canonical_model_completeness/plans/implementation-003.md
 -/
 
-namespace Bimodal.Metalogic.Bundle
+import Bimodal.Metalogic.Bundle.BFMCS
+import Bimodal.Metalogic.Bundle.BFMCSTruth
+import Bimodal.Metalogic.Bundle.TruthLemma
+import Bimodal.Metalogic.Bundle.Construction
+import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+import Bimodal.Metalogic.Core.MaximalConsistent
+import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Core.DeductionTheorem
+import Bimodal.Syntax.Formula
+import Bimodal.Theorems.Propositional
+
+namespace Bimodal.Boneyard.Metalogic_v8.Bundle
 
 open Bimodal.Syntax
 open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Bundle
 open Bimodal.ProofSystem
 
 variable {D : Type*} [Preorder D] [Zero D]
@@ -473,4 +488,4 @@ These sorries are for auxiliary constructions, not the main completeness chain.
 Note: The `eval_bmcs_truth_lemma` (which had 4 sorries) was archived in task 912.
 -/
 
-end Bimodal.Metalogic.Bundle
+end Bimodal.Boneyard.Metalogic_v8.Bundle

@@ -24,10 +24,13 @@ technical_debt:
 
 ### 948. Archive non-standard completeness theorems to Boneyard
 - **Effort**: Medium (2-4 hours)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
+- **Completed**: 2026-02-28
+- **Summary**: Archived BFMCS Completeness and FMP Completeness theorems (5 files) to Boneyard/Metalogic_v8 because they use non-standard validity definitions. Relocated 3 shared utilities to Construction.lean. Full build passes with no regressions.
 - **Research**: [research-001.md](specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/948_archive_nonstandard_completeness_theorems/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260228.md](specs/948_archive_nonstandard_completeness_theorems/summaries/implementation-summary-20260228.md)
 
 **Description**: Archive BFMCS Completeness and FMP Completeness theorems and infrastructure to the Boneyard because they use non-standard validity definitions that are not proven equivalent to the standard `valid` definition in `Semantics/Validity.lean`.
 

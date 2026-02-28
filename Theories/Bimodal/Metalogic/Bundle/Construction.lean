@@ -2,7 +2,9 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Syntax.Formula
+import Bimodal.Theorems.Propositional
 
 /-!
 # BFMCS Construction Primitives
@@ -179,10 +181,101 @@ lemma lindenbaumMCS_set_is_mcs (S : Set Formula) (h_cons : SetConsistent S) :
   (Classical.choose_spec (set_lindenbaum S h_cons)).2
 
 /-!
+## Context Derivability Utilities
+
+These definitions and lemmas support the completeness chain. They were originally
+in `Completeness.lean` and relocated here in Task 948 to allow `Representation.lean`
+to avoid importing the archived `Completeness.lean`.
+-/
+
+/--
+Context derivability: there exists a derivation of φ from Γ.
+-/
+def ContextDerivable (Γ : List Formula) (φ : Formula) : Prop :=
+  Nonempty (Bimodal.ProofSystem.DerivationTree Γ φ)
+
+/--
+Helper: If `⊬ φ` (not derivable from empty context), then `[φ.neg]` is consistent.
+
+**Proof Strategy**:
+Suppose `[φ.neg]` is inconsistent, i.e., `[φ.neg] ⊢ ⊥`.
+By deduction theorem, `⊢ φ.neg → ⊥`, i.e., `⊢ ¬¬φ`.
+By double negation elimination (classically derivable), `⊢ φ`.
+Contradiction with `⊬ φ`.
+-/
+lemma not_derivable_implies_neg_consistent (φ : Formula)
+    (h_not_deriv : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
+    ContextConsistent [φ.neg] := by
+  -- Suppose [φ.neg] is inconsistent
+  intro ⟨d_bot⟩
+  -- By deduction theorem: ⊢ φ.neg → ⊥ = ⊢ ¬¬φ
+  have d_neg_neg : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg) :=
+    Bimodal.Metalogic.Core.deduction_theorem [] φ.neg Formula.bot d_bot
+  -- Get double negation elimination: ⊢ ¬¬φ → φ
+  have h_dne : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg.imp φ) :=
+    Bimodal.Theorems.Propositional.double_negation φ
+  -- Apply modus ponens to get ⊢ φ
+  have d_phi : Bimodal.ProofSystem.DerivationTree [] φ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens [] φ.neg.neg φ h_dne d_neg_neg
+  -- Contradiction with h_not_deriv
+  exact h_not_deriv ⟨d_phi⟩
+
+/--
+Helper: If Γ ⊬ φ, then Γ ∪ {¬φ} (as a list) is consistent.
+
+**Proof Strategy**:
+Suppose Γ ++ [φ.neg] ⊢ ⊥.
+By deduction theorem repeatedly, we get:
+  ⊢ γ₁ → γ₂ → ... → γₙ → ¬φ → ⊥
+  = ⊢ γ₁ → ... → ¬¬φ
+Combined with Γ ⊢ γᵢ (assumption), we can derive ¬¬φ from Γ.
+By DNE, Γ ⊢ φ.
+Contradiction.
+-/
+lemma context_not_derivable_implies_extended_consistent (Γ : List Formula) (φ : Formula)
+    (h_not_deriv : ¬ContextDerivable Γ φ) :
+    ContextConsistent (Γ ++ [φ.neg]) := by
+  -- Suppose Γ ++ [φ.neg] ⊢ ⊥
+  intro ⟨d_bot⟩
+
+  -- Step 1: Reorder context using weakening
+  -- Γ ++ [φ.neg] and (φ.neg :: Γ) have the same elements, just in different order
+  -- Since Γ ++ [φ.neg] ⊆ (φ.neg :: Γ), we can weaken
+  have h_subset : Γ ++ [φ.neg] ⊆ φ.neg :: Γ := by
+    intro x hx
+    simp at hx ⊢
+    tauto
+
+  have d_bot_reordered : (φ.neg :: Γ) ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.weakening (Γ ++ [φ.neg]) (φ.neg :: Γ) Formula.bot d_bot h_subset
+
+  -- Step 2: Apply deduction theorem to get Γ ⊢ φ.neg → ⊥ = Γ ⊢ ¬¬φ
+  have d_neg_neg : Γ ⊢ φ.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem Γ φ.neg Formula.bot d_bot_reordered
+
+  -- Step 3: Get double negation elimination: ⊢ ¬¬φ → φ
+  have h_dne : Bimodal.ProofSystem.DerivationTree [] (φ.neg.neg.imp φ) :=
+    Bimodal.Theorems.Propositional.double_negation φ
+
+  -- Weaken to Γ
+  have h_dne_ctx : Γ ⊢ φ.neg.neg.imp φ :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] Γ (φ.neg.neg.imp φ) h_dne (by intro; simp)
+
+  -- Step 4: Apply modus ponens to get Γ ⊢ φ
+  have d_phi : Γ ⊢ φ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens Γ φ.neg.neg φ h_dne_ctx d_neg_neg
+
+  -- Contradiction with h_not_deriv
+  exact h_not_deriv ⟨d_phi⟩
+
+/-!
 ## Summary
 
 This module provides:
 - `ContextConsistent`: Consistency predicate for list contexts
+- `ContextDerivable`: Context derivability predicate (Task 948)
+- `not_derivable_implies_neg_consistent`: Non-derivability implies neg consistency (Task 948)
+- `context_not_derivable_implies_extended_consistent`: Context extension consistency (Task 948)
 - `contextAsSet`, `list_consistent_to_set_consistent`: Set-based consistency bridge
 - `constantBFMCS`: Constant-time MCS family (temporal coherence via T-axioms)
 - `lindenbaumMCS` / `lindenbaumMCS_set`: Lindenbaum's lemma helpers
@@ -190,10 +283,11 @@ This module provides:
 **Sorry Status**: ZERO sorries in this module.
 (singleFamilyBFMCS with its sorry was archived to Boneyard in task 932.)
 
-**History (tasks 905, 912, 932)**:
+**History (tasks 905, 912, 932, 948)**:
 - Task 905: Removed FALSE axiom singleFamily_modal_backward_axiom
 - Task 912: Removed dead code (construct_bmcs, construct_bmcs_from_set)
 - Task 932: Archived singleFamilyBFMCS to Boneyard (sorry-backed, deprecated)
+- Task 948: Relocated ContextDerivable and consistency lemmas from Completeness.lean
 -/
 
 end Bimodal.Metalogic.Bundle

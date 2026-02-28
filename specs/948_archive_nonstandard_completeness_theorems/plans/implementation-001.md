@@ -1,7 +1,7 @@
 # Implementation Plan: Archive Non-Standard Completeness Theorems
 
 - **Task**: 948 - archive_nonstandard_completeness_theorems
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md
@@ -60,7 +60,7 @@ Integrated from `reports/research-001.md`:
 
 ## Implementation Phases
 
-### Phase 1: Relocate Shared Utilities [NOT STARTED]
+### Phase 1: Relocate Shared Utilities [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Move three shared utility declarations from `Completeness.lean` to `Construction.lean` so `Representation.lean` can remove its Completeness import
@@ -85,7 +85,7 @@ Integrated from `reports/research-001.md`:
 
 ---
 
-### Phase 2: Archive Bundle/Completeness.lean [NOT STARTED]
+### Phase 2: Archive Bundle/Completeness.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Move Completeness.lean to Boneyard with proper archive header
@@ -109,7 +109,7 @@ Integrated from `reports/research-001.md`:
 
 ---
 
-### Phase 3: Archive FMP Directory [NOT STARTED]
+### Phase 3: Archive FMP Directory [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Move all four FMP files to Boneyard
@@ -139,7 +139,7 @@ Integrated from `reports/research-001.md`:
 
 ---
 
-### Phase 4: Update Imports and Documentation [NOT STARTED]
+### Phase 4: Update Imports and Documentation [COMPLETED]
 
 - **Dependencies:** Phase 2, Phase 3
 - **Goal:** Update Metalogic.lean hub and create archive documentation
@@ -163,7 +163,7 @@ Integrated from `reports/research-001.md`:
 
 ---
 
-### Phase 5: Verify Full Build [NOT STARTED]
+### Phase 5: Verify Full Build [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Ensure full project builds and no regressions

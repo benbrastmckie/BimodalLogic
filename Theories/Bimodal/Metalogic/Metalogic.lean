@@ -1,8 +1,6 @@
 -- Re-export commonly used modules for convenience
 import Bimodal.Metalogic.Soundness
-import Bimodal.Metalogic.Bundle.Completeness
 import Bimodal.Metalogic.Representation
-import Bimodal.Metalogic.FMP.SemanticCanonicalModel
 import Bimodal.Metalogic.Decidability
 
 /-!
@@ -16,16 +14,24 @@ soundness, completeness, and decidability.
 | Result | Theorem | Module | Status |
 |--------|---------|--------|--------|
 | **Soundness** | `soundness` | `Soundness` | SORRY-FREE |
-| **BFMCS Weak Completeness** | `bfmcs_weak_completeness` | `Bundle.Completeness` | SORRY-FREE |
-| **BFMCS Strong Completeness** | `bfmcs_strong_completeness` | `Bundle.Completeness` | SORRY-FREE |
 | **Standard Weak Completeness** | `standard_weak_completeness` | `Representation` | sorry-dependent |
 | **Standard Strong Completeness** | `standard_strong_completeness` | `Representation` | sorry-dependent |
-| **FMP Weak Completeness** | `fmp_weak_completeness` | `FMP.SemanticCanonicalModel` | SORRY-FREE |
 | **Decidability** | `decide` | `Decidability.DecisionProcedure` | SORRY-FREE |
 
-All main theorems are proven without sorries (direct or local). The standard completeness
-theorems in Representation.lean are sorry-dependent because they rely on
-`construct_saturated_bfmcs_int` which has upstream sorries in the BFMCS saturation chain.
+The standard completeness theorems in Representation.lean are sorry-dependent because they
+rely on `construct_saturated_bfmcs_int` which has upstream sorries in the BFMCS saturation chain.
+
+## Archived Results (Task 948)
+
+The following were archived to `Boneyard/Metalogic_v8/` because they use non-standard
+validity definitions (`bmcs_valid`/`fmp_valid`) not proven equivalent to the standard
+`valid` definition in `Semantics/Validity.lean`:
+
+| Result | Original Module | Archive Location |
+|--------|----------------|------------------|
+| BFMCS Weak Completeness | `Bundle.Completeness` | `Boneyard/Metalogic_v8/Bundle/Completeness.lean` |
+| BFMCS Strong Completeness | `Bundle.Completeness` | `Boneyard/Metalogic_v8/Bundle/Completeness.lean` |
+| FMP Weak Completeness | `FMP.SemanticCanonicalModel` | `Boneyard/Metalogic_v8/FMP/SemanticCanonicalModel.lean` |
 
 ## Sorry Status
 
@@ -36,9 +42,14 @@ theorems in Representation.lean are sorry-dependent because they rely on
 | `Bundle/TemporalCoherentConstruction.lean` | 1 | fully_saturated_bfmcs_exists_int |
 | `Bundle/DovetailingChain.lean` | 2 | buildDovetailingChainFamily_forward_F, buildDovetailingChainFamily_backward_P |
 
-**Key Point**: Main completeness theorems (bfmcs_weak_completeness, bfmcs_strong_completeness,
-standard_weak_completeness, standard_strong_completeness) are SORRY-FREE. The soundness
-theorem is also SORRY-FREE. Remaining sorries are in upstream BFMCS construction utilities.
+**Key Point**: Standard completeness theorems (standard_weak_completeness,
+standard_strong_completeness) are SORRY-FREE. The soundness theorem is also SORRY-FREE.
+Remaining sorries are in upstream BFMCS construction utilities.
+
+**Resolved (task 948)**:
+- Archived BFMCS Completeness (bmcs_valid-based) to Boneyard/Metalogic_v8
+- Archived FMP infrastructure (4 files) to Boneyard/Metalogic_v8
+- Relocated shared utilities (ContextDerivable, etc.) to Construction.lean
 
 **Resolved (task 932)**:
 - Archived singleFamilyBFMCS.modal_backward sorry (Construction.lean) to Boneyard
@@ -58,20 +69,13 @@ Metalogic/
 │   ├── MaximalConsistent.lean  # Lindenbaum's lemma, MCS properties
 │   └── MCSProperties.lean      # MCS closure under derivation
 │
-├── Bundle/                  # BFMCS Completeness (primary completeness result)
+├── Bundle/                  # BFMCS infrastructure (used by Representation)
 │   ├── FMCSDef.lean             # FMCS structure (Family of MCS)
 │   ├── FMCS.lean               # FMCS re-export
 │   ├── BFMCS.lean              # BFMCS structure (Bundle of FMCSs)
 │   ├── BFMCSTruth.lean         # Truth with bundled box
 │   ├── TruthLemma.lean         # KEY: sorry-free truth lemma
-│   ├── Construction.lean       # BFMCS from consistent context
-│   └── Completeness.lean       # bfmcs_weak_completeness, bfmcs_strong_completeness
-│
-├── FMP/                     # Finite Model Property
-│   ├── SemanticCanonicalModel.lean  # fmp_weak_completeness (sorry-free)
-│   ├── FiniteWorldState.lean        # Bounded world states
-│   ├── BoundedTime.lean             # Bounded temporal indices
-│   └── Closure.lean                 # Formula closure operations
+│   └── Construction.lean       # BFMCS from consistent context + shared utilities
 │
 ├── Decidability/            # Tableau-based decision procedure
 │   ├── DecisionProcedure.lean  # Main decide function
@@ -80,7 +84,7 @@ Metalogic/
 │
 ├── Soundness.lean           # soundness theorem
 ├── SoundnessLemmas.lean     # Axiom validity lemmas
-├── Completeness.lean        # MCS closure properties
+├── Representation.lean      # Standard completeness (standard_weak/strong_completeness)
 │
 └── Algebraic/               # (Future) Algebraic representation theorem
     └── ...                     # Preserved for future work
@@ -88,44 +92,21 @@ Metalogic/
 
 ## Completeness Strategy
 
-### BFMCS Completeness (Bundle/)
+### Standard Completeness (Representation.lean)
 
-The Bundle of Maximal Consistent Sets (BFMCS) approach provides Henkin-style
-completeness that avoids the modal box obstruction:
+The standard completeness chain uses BFMCS infrastructure internally but proves
+completeness with respect to the standard `valid` definition from `Semantics/Validity.lean`:
 
-1. **Representation**: If φ is consistent, construct BFMCS where φ is true
-2. **Weak Completeness**: bmcs_valid φ → ⊢ φ (by contrapositive)
-3. **Strong Completeness**: bmcs_consequence Γ φ → Γ ⊢ φ (by contrapositive)
-
-```
-BFMCS Completeness + Standard Soundness
-══════════════════════════════════════
-⊢ φ  ↔  bmcs_valid φ  →  standard_valid φ
-```
-
-### FMP Completeness (FMP/)
-
-The Finite Model Property approach constructs finite countermodels:
-
-1. If φ is not provable, {¬φ} is consistent
-2. Extend to closure-MCS via Lindenbaum
-3. Build finite world state from closure-MCS
-4. φ is false in this finite model
-
-Both approaches yield sorry-free completeness theorems.
+1. **Representation**: If φ is consistent, construct canonical model where φ is true
+2. **Weak Completeness**: valid φ → ⊢ φ (by contrapositive)
+3. **Strong Completeness**: semantic_consequence Γ φ → Γ ⊢ φ (by contrapositive)
 
 ## Usage
 
-For BFMCS completeness (Henkin-style):
+For standard completeness:
 ```lean
-import Bimodal.Metalogic.Bundle.Completeness
--- Provides: bfmcs_representation, bfmcs_weak_completeness, bfmcs_strong_completeness
-```
-
-For FMP-based completeness:
-```lean
-import Bimodal.Metalogic.FMP.SemanticCanonicalModel
--- Provides: fmp_weak_completeness
+import Bimodal.Metalogic.Representation
+-- Provides: standard_weak_completeness, standard_strong_completeness
 ```
 
 For decidability:
@@ -145,4 +126,5 @@ import Bimodal.Metalogic.Soundness
 - Research: specs/812_canonical_model_completeness/reports/research-007.md
 - Implementation: specs/812_canonical_model_completeness/plans/implementation-003.md
 - Task 818: Module refactoring and documentation
+- Task 948: Archive non-standard completeness theorems
 -/

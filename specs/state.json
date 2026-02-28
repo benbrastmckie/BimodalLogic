@@ -8,11 +8,11 @@
     {
       "project_number": 948,
       "project_name": "archive_nonstandard_completeness_theorems",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "created": "2026-02-28T00:21:59Z",
-      "last_updated": "2026-02-28T00:36:21Z",
-      "session_id": "sess_1772238825_f171c28f",
+      "last_updated": "2026-02-28T00:51:00Z",
+      "session_id": "sess_1772239264_5509b1a7",
       "started": "2026-02-28T00:28:13Z",
       "researched": "2026-02-28T00:31:42Z",
       "artifacts": [
@@ -25,9 +25,16 @@
           "path": "specs/948_archive_nonstandard_completeness_theorems/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for archiving non-standard completeness theorems"
+        },
+        {
+          "path": "specs/948_archive_nonstandard_completeness_theorems/summaries/implementation-summary-20260228.md",
+          "type": "summary",
+          "summary": "Implementation summary for archival of non-standard completeness theorems"
         }
       ],
-      "planned": "2026-02-28T00:36:21Z"
+      "planned": "2026-02-28T00:36:21Z",
+      "completed": "2026-02-28T00:51:00Z",
+      "completion_summary": "Archived BFMCS Completeness and FMP Completeness theorems (5 files) to Boneyard/Metalogic_v8 because they use non-standard validity definitions. Relocated 3 shared utilities to Construction.lean. Full build passes with no regressions."
     },
     {
       "project_number": 947,

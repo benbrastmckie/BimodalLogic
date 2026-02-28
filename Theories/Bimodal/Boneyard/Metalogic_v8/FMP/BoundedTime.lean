@@ -1,3 +1,14 @@
+/-!
+# ARCHIVED: BoundedTime
+
+**Original location**: `Theories/Bimodal/Metalogic/FMP/BoundedTime.lean`
+**Archived**: 2026-02-28 (Task 948)
+**Reason**: Part of FMP infrastructure using non-standard validity definitions not proven
+  equivalent to standard `valid` from Semantics/Validity.lean
+
+This file is preserved for reference. Boneyard files may not build.
+-/
+
 import Mathlib.Algebra.Group.Basic
 import Mathlib.Algebra.Order.Group.Basic
 import Mathlib.Data.Fin.Basic

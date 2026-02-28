@@ -1,3 +1,14 @@
+/-!
+# ARCHIVED: SemanticCanonicalModel
+
+**Original location**: `Theories/Bimodal/Metalogic/FMP/SemanticCanonicalModel.lean`
+**Archived**: 2026-02-28 (Task 948)
+**Reason**: Part of FMP infrastructure using non-standard validity definitions not proven
+  equivalent to standard `valid` from Semantics/Validity.lean
+
+This file is preserved for reference. Boneyard files may not build.
+-/
+
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.FMP.FiniteWorldState

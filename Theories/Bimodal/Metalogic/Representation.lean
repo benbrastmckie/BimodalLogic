@@ -2,7 +2,6 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.BFMCSTruth
 import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Metalogic.Bundle.Construction
-import Bimodal.Metalogic.Bundle.Completeness
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
