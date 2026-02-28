@@ -27,7 +27,7 @@ technical_debt:
 - **Status**: [PLANNED]
 - **Language**: general
 - **Research**: [research-001.md](specs/947_bimodal_logic_opensource_documentation/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/947_bimodal_logic_opensource_documentation/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/947_bimodal_logic_opensource_documentation/plans/implementation-002.md)
 
 **Description**: Revise README.md and project documentation to present bimodal logic as the opensource foundational core (GNU license) while keeping Logos private, positioning bimodal logic as the base that Logos elaborates with additional operators.
 
