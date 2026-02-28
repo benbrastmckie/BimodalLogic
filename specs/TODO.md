@@ -1,5 +1,5 @@
 ---
-next_project_number: 948
+next_project_number: 949
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,65 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 948. Archive non-standard completeness theorems to Boneyard
+- **Effort**: Medium (2-4 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Archive BFMCS Completeness and FMP Completeness theorems and infrastructure to the Boneyard because they use non-standard validity definitions that are not proven equivalent to the standard `valid` definition in `Semantics/Validity.lean`.
+
+**Problem Analysis**:
+
+1. **BFMCS Completeness** (`bmcs_weak_completeness`, `bmcs_strong_completeness` in `Bundle/Completeness.lean`):
+   - Proves `bmcs_valid φ → ⊢ φ` where `bmcs_valid` uses `bmcs_truth_at`
+   - `bmcs_truth_at` has non-standard box semantics: box quantifies only over bundle families in B.families, NOT over all histories in a shift-closed Omega
+   - This is definitionally different from standard `valid` which quantifies over all TaskFrame models
+   - The equivalence `bmcs_valid φ ↔ valid φ` is unproven (Task 930 is researching this)
+
+2. **FMP Completeness** (`fmp_weak_completeness` in `FMP/SemanticCanonicalModel.lean`):
+   - Proves `(∀ w : SemanticWorldState phi, semantic_truth_at_v2 phi w origin phi) → ⊢ phi`
+   - Uses `semantic_truth_at_v2` on `SemanticWorldState phi` (formula-specific finite quotient structure)
+   - NOT using standard `valid` which quantifies over arbitrary TaskFrame D models
+
+**Downstream Impact**: Neither theorem has any downstream uses (verified by grep). They are pure leaf nodes.
+
+**Work Required**:
+
+Phase 1: Relocate utilities from `Bundle/Completeness.lean` to `Bundle/Construction.lean`:
+- `ContextDerivable` (used by Representation.lean)
+- `context_not_derivable_implies_extended_consistent` (used by Representation.lean)
+- `not_derivable_implies_neg_consistent` (used by Representation.lean)
+- Update imports in Representation.lean accordingly
+
+Phase 2: Archive `Bundle/Completeness.lean` to `Boneyard/Metalogic_v8/Bundle/Completeness.lean`:
+- Move entire file with explanatory header about why archived
+- Remove import from `Metalogic.lean`
+
+Phase 3: Archive FMP directory to `Boneyard/Metalogic_v8/FMP/`:
+- Move `FMP/SemanticCanonicalModel.lean`
+- Move `FMP/FiniteWorldState.lean`
+- Move `FMP/BoundedTime.lean`
+- Move `FMP/Closure.lean`
+- Remove FMP imports from `Metalogic.lean`
+
+Phase 4: Update `Metalogic.lean` module docstring:
+- Remove claims about BFMCS and FMP completeness being "main results"
+- Update the results table to reflect only standard completeness (sorry-dependent) and soundness
+- Document that non-standard completeness proofs were archived with rationale
+
+Phase 5: Verify build and update sorry/axiom counts:
+- Run `lake build` to ensure no broken imports
+- Update TODO.md technical debt metrics
+
+**Key Files**:
+- `Theories/Bimodal/Metalogic/Bundle/Completeness.lean` (archive after Phase 1)
+- `Theories/Bimodal/Metalogic/Bundle/Construction.lean` (receives utilities)
+- `Theories/Bimodal/Metalogic/FMP/` (entire directory archived)
+- `Theories/Bimodal/Metalogic/Metalogic.lean` (update imports and docstrings)
+- `Theories/Bimodal/Metalogic/Representation.lean` (update imports)
+
+---
 
 ### 947. Revise documentation for bimodal logic opensource release
 - **Effort**: Medium

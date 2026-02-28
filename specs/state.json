@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 948,
+      "project_name": "archive_nonstandard_completeness_theorems",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-02-28T00:21:59Z",
+      "last_updated": "2026-02-28T00:21:59Z"
+    },
+    {
       "project_number": 947,
       "project_name": "bimodal_logic_opensource_documentation",
       "status": "completed",
@@ -745,7 +753,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 948,
+  "next_project_number": 949,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
