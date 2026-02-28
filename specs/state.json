@@ -8,11 +8,11 @@
     {
       "project_number": 948,
       "project_name": "archive_nonstandard_completeness_theorems",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-28T00:21:59Z",
-      "last_updated": "2026-02-28T00:31:42Z",
-      "session_id": "sess_1772238476_1f35cf58",
+      "last_updated": "2026-02-28T00:36:21Z",
+      "session_id": "sess_1772238825_f171c28f",
       "started": "2026-02-28T00:28:13Z",
       "researched": "2026-02-28T00:31:42Z",
       "artifacts": [
@@ -20,8 +20,14 @@
           "path": "specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of Bundle/Completeness.lean and FMP/ directory for archival to Boneyard/Metalogic_v8"
+        },
+        {
+          "path": "specs/948_archive_nonstandard_completeness_theorems/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for archiving non-standard completeness theorems"
         }
-      ]
+      ],
+      "planned": "2026-02-28T00:36:21Z"
     },
     {
       "project_number": 947,

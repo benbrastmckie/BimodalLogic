@@ -1,21 +1,21 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-27T00:00:00Z",
+  "status": "planned",
+  "summary": "5-phase plan to archive BFMCS and FMP completeness theorems to Boneyard/Metalogic_v8",
   "artifacts": [
     {
-      "path": "specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md",
-      "type": "research",
-      "summary": "Comprehensive analysis of Bundle/Completeness.lean and FMP/ directory for archival to Boneyard/Metalogic_v8"
+      "type": "plan",
+      "path": "specs/948_archive_nonstandard_completeness_theorems/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for archiving non-standard completeness theorems"
     }
   ],
-  "partial_progress": {
-    "stage": "researched",
-    "details": "All five research questions answered; implementation plan documented"
-  },
+  "next_steps": "Run /implement 948 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772238476_1f35cf58",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1772238825_f171c28f",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 2.5
   }
 }
