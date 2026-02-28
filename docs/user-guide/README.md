@@ -8,12 +8,14 @@ Project-wide user documentation for integrating ProofChecker with external tools
 
 ## Theory-Specific Guides
 
-Most user documentation is theory-specific. See:
+The primary working system is **Bimodal**, which has complete soundness and completeness proofs.
 
-| Theory | Quick Start | Additional Guides |
-|--------|-------------|-------------------|
-| **Bimodal** | [Quick Start](../../Bimodal/docs/user-guide/QUICKSTART.md) | [Tutorial](../../Bimodal/docs/user-guide/TUTORIAL.md), [Examples](../../Bimodal/docs/user-guide/EXAMPLES.md), [Proof Patterns](../../Bimodal/docs/user-guide/PROOF_PATTERNS.md) |
-| **Logos** | [Quick Start](../../Logos/docs/user-guide/QUICKSTART.md) | [Methodology](../../Logos/docs/user-guide/METHODOLOGY.md), [Current Status](../../Logos/docs/user-guide/CURRENT_STATUS.md) |
+| Theory | Status | Quick Start | Additional Guides |
+|--------|--------|-------------|-------------------|
+| **Bimodal** | Complete | [Quick Start](../../Bimodal/docs/user-guide/QUICKSTART.md) | [Tutorial](../../Bimodal/docs/user-guide/TUTORIAL.md), [Examples](../../Bimodal/docs/user-guide/EXAMPLES.md), [Proof Patterns](../../Bimodal/docs/user-guide/PROOF_PATTERNS.md) |
+| **Logos** | Research | [Quick Start](../../Logos/docs/user-guide/QUICKSTART.md) | [Methodology](../../Logos/docs/user-guide/METHODOLOGY.md), [Current Status](../../Logos/docs/user-guide/CURRENT_STATUS.md) |
+
+**Recommendation**: Start with Bimodal for a production-ready modal-temporal logic implementation.
 
 ## Project-Wide Integration
 
@@ -42,12 +44,17 @@ This directory contains integration guides applicable across all theories:
 
 ## Getting Started
 
-For tutorials and examples, see theory-specific UserGuide directories:
-- **Bimodal**: [Tutorial](../../Bimodal/docs/user-guide/TUTORIAL.md), [Examples](../../Bimodal/docs/user-guide/EXAMPLES.md)
-- **Logos**: [Quick Start](../../Logos/docs/user-guide/QUICKSTART.md)
+**Start with Bimodal** - the complete, verified implementation:
 
-For advanced tactic development, see:
-- **Bimodal**: [Tactic Development](../../Bimodal/docs/user-guide/TACTIC_DEVELOPMENT.md)
+1. [Bimodal Quick Start](../../Bimodal/docs/user-guide/QUICKSTART.md) - Get started with proofs
+2. [Bimodal Tutorial](../../Bimodal/docs/user-guide/TUTORIAL.md) - Step-by-step introduction
+3. [Bimodal Examples](../../Bimodal/docs/user-guide/EXAMPLES.md) - Worked examples
+
+For advanced tactic development:
+- [Tactic Development](../../Bimodal/docs/user-guide/TACTIC_DEVELOPMENT.md) - Custom tactics for Bimodal
+
+**Logos** (research roadmap) extends Bimodal with hyperintensional semantics:
+- [Logos Quick Start](../../Logos/docs/user-guide/QUICKSTART.md) - Research preview
 
 ## Related Documentation
 

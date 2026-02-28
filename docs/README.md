@@ -7,33 +7,35 @@ Project-wide documentation hub for the ProofChecker formal verification project.
 
 ## Framework Overview
 
-ProofChecker implements formal logic theories in Lean 4 with shared infrastructure for syntax, proof systems, semantics, and metalogic. The project's primary focus is **Logos**, a hyperintensional logic supporting layered extensions for explanatory, epistemic, and normative reasoning.
+ProofChecker implements formal logic theories in Lean 4 with shared infrastructure for syntax, proof systems, semantics, and metalogic.
 
-**Bimodal** provides a complete intensional logic (TM bimodal) that serves as an excellent starting point for newcomers and a comparison baseline demonstrating what purely intensional semantics can and cannot express.
+**Bimodal** is the production-ready implementation providing a complete propositional intensional logic (TM bimodal) with fully verified soundness and completeness proofs. This is the primary working system available for use.
+
+**Logos** represents the research roadmap extending Bimodal to a second-order hyperintensional logic with layered extensions for explanatory, epistemic, and normative reasoning.
 
 The contrast between theories illuminates the power of hyperintensional semantics for distinguishing necessarily equivalent propositions.
 
-**Getting Started**: Newcomers may find it helpful to start with Bimodal to understand modal-temporal reasoning, then explore Logos's hyperintensional extensions for more expressive capabilities.
+**Getting Started**: Start with Bimodal, the complete and verified implementation. The Logos extensions represent future research directions.
 
 ## Theory-Specific Documentation
 
 For documentation specific to each logic theory, see:
 
-| Theory | Description | Documentation |
-|--------|-------------|---------------|
-| **Logos** (primary) | Second-order hyperintensional logic | [Logos/docs/](../Logos/docs/) |
-| **Bimodal** | Propositional intensional logic (complete) | [Bimodal/docs/](../Bimodal/docs/) |
+| Theory | Status | Description | Documentation |
+|--------|--------|-------------|---------------|
+| **Bimodal** | Complete | Propositional intensional logic with soundness/completeness proofs | [Bimodal/docs/](../Bimodal/docs/) |
+| **Logos** | Research | Second-order hyperintensional logic (roadmap) | [Logos/docs/](../Logos/docs/) |
 
 ### Quick Access by Need
 
-| Need | Bimodal | Logos |
-|------|---------|-------|
+| Need | Bimodal (Complete) | Logos (Research) |
+|------|-------------------|------------------|
 | Quick start | [Quick Start](../Bimodal/docs/user-guide/QUICKSTART.md) | [Quick Start](../Logos/docs/user-guide/QUICKSTART.md) |
 | Axiom reference | [Axioms](../Bimodal/docs/reference/AXIOM_REFERENCE.md) | [Axioms](../Logos/docs/reference/AXIOM_REFERENCE.md) |
 | Implementation status | [Status](../Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md) | [Status](../Logos/docs/project-info/IMPLEMENTATION_STATUS.md) |
 | Known limitations | [Limitations](../Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) | [Limitations](../Logos/docs/project-info/KNOWN_LIMITATIONS.md) |
 
-**Theory comparison**: [research/bimodal-logic.md](research/bimodal-logic.md) - Bimodal Logic and comparison with Logos
+**Theory comparison**: [research/bimodal-logic.md](research/bimodal-logic.md) - Bimodal (implemented) vs Logos (research roadmap)
 
 ## Project-Wide Documentation
 
@@ -199,19 +201,17 @@ Architectural Decision Records (ADRs):
 
 **Start with**:
 1. [Project README](../README.md) - Project overview and motivations
-2. [Bimodal Logic](research/bimodal-logic.md) - Bimodal vs Logos differences
-3. Theory-specific documentation:
-   - Bimodal: [Architecture](../Bimodal/docs/user-guide/ARCHITECTURE.md)
-   - Logos: [Methodology](../Logos/docs/user-guide/METHODOLOGY.md)
+2. [Bimodal Architecture](../Bimodal/docs/user-guide/ARCHITECTURE.md) - The complete, verified system
+3. [Bimodal vs Logos](research/bimodal-logic.md) - Comparison and research roadmap
+4. (Research) [Logos Methodology](../Logos/docs/user-guide/METHODOLOGY.md) - Future extensions
 
 ### I want to write proofs
 
-**Start with**:
-1. Theory quick start:
-   - Bimodal: [Quick Start](../Bimodal/docs/user-guide/QUICKSTART.md)
-   - Logos: [Quick Start](../Logos/docs/user-guide/QUICKSTART.md)
-2. [LEAN Style Guide](Development/LEAN_STYLE_GUIDE.md) - Coding conventions
-3. Theory-specific tutorials and examples in theory UserGuide/ directories
+**Start with Bimodal** (complete implementation):
+1. [Bimodal Quick Start](../Bimodal/docs/user-guide/QUICKSTART.md) - Get started
+2. [Bimodal Tutorial](../Bimodal/docs/user-guide/TUTORIAL.md) - Step-by-step guide
+3. [LEAN Style Guide](Development/LEAN_STYLE_GUIDE.md) - Coding conventions
+4. [Bimodal Examples](../Bimodal/docs/user-guide/EXAMPLES.md) - Worked examples
 
 ### I want to integrate with external tools
 

@@ -1,6 +1,10 @@
-# Contributing to Logos
+# Contributing to ProofChecker
 
-Thank you for your interest in contributing to Logos! This document provides guidelines for contributing to the project.
+Thank you for your interest in contributing to ProofChecker! This document provides guidelines for contributing to the project.
+
+**Current Focus**: The primary development focus is on **Bimodal**, the complete and verified propositional modal-temporal logic. Bimodal has full soundness and completeness proofs and serves as the production-ready foundation. Contributions to enhance Bimodal's automation, documentation, and tooling are especially welcome.
+
+**Logos** represents the research roadmap extending Bimodal to hyperintensional semantics. Research contributions to Logos are also welcome, with the understanding that this is experimental work.
 
 ## 1. Getting Started
 
@@ -46,12 +50,12 @@ lake lint
 
 ### Test-Driven Development (TDD)
 
-Logos requires TDD for all new features:
+ProofChecker requires TDD for all new features:
 
 #### 1. RED: Write a Failing Test
 
 ```lean
--- LogosTest/ProofSystem/NewFeatureTest.lean
+-- BimodalTest/ProofSystem/NewFeatureTest.lean
 
 /-- Test new theorem is provable -/
 example : ⊢ my_new_theorem := by
@@ -61,7 +65,7 @@ example : ⊢ my_new_theorem := by
 #### 2. GREEN: Implement Minimal Code
 
 ```lean
--- Logos/Theorems/NewTheorem.lean
+-- Bimodal/Theorems/NewTheorem.lean
 
 /-- New theorem: description -/
 theorem my_new_theorem : ⊢ ... := by

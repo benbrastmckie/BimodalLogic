@@ -1,6 +1,6 @@
 # Bimodal
 
-Core library for TM bimodal logic (Tense and Modality) with task semantics.
+**Production-ready** core library for TM bimodal logic (Tense and Modality) with task semantics and **complete soundness and completeness proofs**.
 
 ## Reference Document
 
@@ -33,17 +33,18 @@ Run `lake build Bimodal.Examples.Demo` to verify the demo compiles.
 
 ## About Bimodal Logic
 
-Bimodal is a **propositional intensional logic** implementing TM (Tense and Modality).
+Bimodal is a **complete propositional intensional logic** implementing TM (Tense and Modality) with verified metalogic.
 
 | Aspect | Description |
 |--------|-------------|
 | **Type** | Propositional intensional logic |
+| **Status** | Production-ready with soundness/completeness proofs |
 | **Semantic primitives** | World-states in a Kripke-style framework |
 | **Interpretation** | Sentence letters are interpreted by sets of world-states |
 | **Logical level** | Propositional (zeroth-order) |
 
-For comparison with the planned Logos hyperintensional logic (second-order with state
-primitives), see [bimodal-logic.md](../../docs/research/bimodal-logic.md).
+For comparison with the Logos hyperintensional extensions (second-order with state
+primitives, research roadmap), see [bimodal-logic.md](../../docs/research/bimodal-logic.md).
 
 ## Syntax Quick Reference
 
@@ -241,14 +242,18 @@ The Bimodal library follows a layered architecture:
 
 ## Implementation Status
 
+Bimodal is **production-ready** with complete metalogic verification.
+
 | Layer | Component | Status |
 |-------|-----------|--------|
 | 0 | Syntax | Complete |
-| 1 | ProofSystem | Complete |
-| 2 | Semantics | Complete |
-| 3 | Metalogic | Complete (Soundness, Completeness, Deduction, Decidability) |
+| 1 | ProofSystem | Complete (14 axioms, 7 rules) |
+| 2 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
+| 3 | Metalogic | **Complete** (Soundness, Completeness, Deduction, Decidability) |
 | 4 | Theorems | Complete (P1-P6 perpetuity principles) |
 | 5 | Automation | Partial |
+
+**Key Results**: Soundness theorem, completeness theorem, deduction theorem, and decidability are all fully proven.
 
 For detailed status, see [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md). For known limitations, see [Known Limitations](docs/project-info/KNOWN_LIMITATIONS.md).
 

@@ -4,9 +4,16 @@ Project-wide research documents applicable to all theories in ProofChecker.
 
 **Audience**: Researchers, architects, contributors interested in design decisions
 
+## Implementation Status
+
+| Theory | Status | Description |
+|--------|--------|-------------|
+| **Bimodal** | Complete | Production-ready with soundness/completeness proofs |
+| **Logos** | Research | Hyperintensional extensions (roadmap) |
+
 > **Theory-Specific Research**: For research specific to each logic theory, see:
-> - [Logos/docs/research/](../../Theories/Logos/docs/research/) - Logos semantic architecture
-> - [Bimodal/docs/research/](../../Theories/Bimodal/docs/research/) - Proof search automation
+> - [Bimodal/docs/research/](../../Theories/Bimodal/docs/research/) - Proof search automation (complete implementation)
+> - [Logos/docs/research/](../../Theories/Logos/docs/research/) - Logos semantic architecture (research roadmap)
 
 ## Project-Wide Research
 
@@ -15,10 +22,10 @@ Project-wide research documents applicable to all theories in ProofChecker.
 #### bimodal-logic.md
 
 Authoritative presentation of Bimodal, a complete propositional intensional logic combining S5 modal
-and linear temporal operators. Includes comprehensive operator and axiom coverage, perpetuity principles,
-and a comparison section with Logos highlighting hyperintensional advantages.
+and linear temporal operators with **verified soundness and completeness proofs**. Includes comprehensive
+operator and axiom coverage, perpetuity principles, and a comparison section with Logos research roadmap.
 
-**Status**: Complete
+**Status**: Complete (production-ready implementation)
 **Related**: [Bimodal README](../../Theories/Bimodal/README.md), [Logos README](../../Theories/Logos/README.md)
 
 ---

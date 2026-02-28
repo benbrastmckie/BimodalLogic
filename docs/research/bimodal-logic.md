@@ -4,11 +4,11 @@ This document provides the authoritative presentation of Bimodal, a complete pro
 
 ## Overview
 
-The ProofChecker project contains two distinct logical theories developed in parallel:
+The ProofChecker project contains two distinct logical theories:
 
-1. **Logos** (primary): A second-order hyperintensional logic that extends beyond possible worlds semantics. This is the primary research direction with layered extensions for explanatory, epistemic, and normative reasoning.
+1. **Bimodal** (production-ready): A propositional intensional logic implementing TM (Tense and Modality) with Kripke-style semantics and **fully verified soundness and completeness proofs**. This is the complete, working implementation.
 
-2. **Bimodal** (comparison baseline): A propositional intensional logic implementing TM (Tense and Modality) with Kripke-style semantics. Bimodal serves as an excellent starting point for understanding modal-temporal reasoning and as a comparison baseline demonstrating the boundaries of purely intensional semantics.
+2. **Logos** (research roadmap): A second-order hyperintensional logic that extends beyond possible worlds semantics. This represents the research direction with layered extensions for explanatory, epistemic, and normative reasoning.
 
 ---
 
@@ -80,11 +80,15 @@ Six theorems connecting modal and temporal operators:
 
 ### Implementation Status
 
-- **Syntax**: Complete (Formula, Context, derived operators)
-- **Proof System**: Complete (14 axiom schemata, 7 inference rules)
-- **Semantics**: Complete (TaskFrame, TaskModel, Truth, Validity)
-- **Metalogic**: Partial (Soundness proven, Completeness infrastructure only)
-- **Automation**: Partial (Core tactics working)
+| Component | Status | Details |
+|-----------|--------|---------|
+| **Syntax** | Complete | Formula, Context, derived operators |
+| **Proof System** | Complete | 14 axiom schemata, 7 inference rules |
+| **Semantics** | Complete | TaskFrame, TaskModel, Truth, Validity |
+| **Metalogic** | **Complete** | Soundness, Completeness, Deduction theorem |
+| **Automation** | Partial | Core tactics working |
+
+**Key Result**: Bimodal has fully verified soundness and completeness proofs, establishing it as a production-ready implementation.
 
 **Implementation location**: [Theories/Bimodal/README.md](../../Theories/Bimodal/README.md)
 

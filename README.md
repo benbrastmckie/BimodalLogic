@@ -4,6 +4,8 @@
 
 The project also includes the **Bimodal** theory, a fragment of independent interest providing a complete bimodal logic for reasoning about past and future contingency. While the Bimodal theory serves as a methodological testbed for Logos development, it captures fundamental relationships between time and possibility in its own right. See [Bimodal Theory](#bimodal-theory) for details.
 
+**Note**: The Bimodal theory is fully implemented with complete soundness and completeness proofs, serving as the production-ready foundation. The extended Logos operators described below represent the research roadmap.
+
 **Specifications**: [Bimodal](Theories/Bimodal/latex/BimodalReference.pdf)
 
 **Demo**: [Bimodal](Theories/Bimodal/Examples/Demo.lean)
@@ -23,7 +25,7 @@ The Logos theory is an extensible formal language equipped with an axiomatic pro
                                       ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
 │                            Dynamical Foundation                                 │
-│                  (modal, temporal, counterfactual, causal)                      │
+│           (first-order, modal, temporal, counterfactual, causal)                │
 └─────────────────────────────────────┬───────────────────────────────────────────┘
                                       │
      ┌──────────────┬─────────────────┼────────────────┬──────────────┐
@@ -169,7 +171,7 @@ The Logos architecture enables domain-specific operator combinations, demonstrat
 
 ## Bimodal Theory
 
-The project includes the **Bimodal** theory, a complete propositional intensional logic combining S5 modal and linear temporal operators. Bimodal captures a fundamental philosophical insight: the deep relationship between time and possibility. The present opens onto multiple possible futures (world-histories) that share a common past. This relationship is formalized through the **perpetuity principles** (P1-P6), which establish that what is necessary is perpetual and what occurs is possible.
+The project includes the **Bimodal** theory, a complete propositional intensional logic combining S5 modal and linear temporal operators with fully verified soundness and completeness proofs. Bimodal captures a fundamental philosophical insight: the deep relationship between time and possibility. The present opens onto multiple possible futures (world-histories) that share a common past. This relationship is formalized through the **perpetuity principles** (P1-P6), which establish that what is necessary is perpetual and what occurs is possible.
 
 Bimodal provides a well-motivated purely intensional target for developing the formal methodology—axiomatic proof system, recursive semantics, and metalogic—that is then extended to Logos. By validating the methodology at a simpler complexity level (propositional, intensional, world-states as primitives), we gain confidence before scaling to the hyperintensional complexity of Logos (second-order, fine-grained states with parthood, layered extensions).
 
