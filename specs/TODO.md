@@ -24,11 +24,11 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 11-20 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
-- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md)
+- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md)
 
 **Description**: Implement standard completeness theorem using CanonicalFMCS.lean infrastructure:
 1. Create Representation module using CanonicalMCS domain
@@ -38,7 +38,7 @@ technical_debt:
 
 Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-free using the all-MCS approach. This task adapts the completeness proof to use this infrastructure instead of the sorry-backed DovetailingChain approach.
 
-**Research finding**: Fundamental obstacle identified -- standard `valid` requires `LinearOrderedAddCommGroup` time type, but CanonicalMCS only has `Preorder` structure. Primary recommended path: verify soundness for Preorder time, then define `valid_preorder` alongside `valid`. Fallback: resolve DovetailingChain forward_F/backward_P sorries directly.
+**Research finding (antisymmetrization)**: Construct Z-indexed chain through CanonicalMCS via incremental dovetailing. Each F/P witness is an independent Lindenbaum MCS added to the chain. The Antisymmetrization quotient yields a LinearOrder time structure. Central risk: proving witnesses from different chain elements are mutually comparable. Estimated 35-60 hours, 55-70% success probability.
 
 **Key files**:
 - `Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean` - source of sorry-free temporal coherence

@@ -8,14 +8,14 @@
     {
       "project_number": 951,
       "project_name": "implement_sorry_free_completeness_canonicalmcs",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-02-28T01:38:00Z",
+      "last_updated": "2026-02-28T01:43:15Z",
       "session_id": "sess_1740672100_r951b",
-      "researched": "2026-02-27T01:00:00Z",
+      "researched": "2026-02-28T01:43:15Z",
       "artifacts": [
         {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md",
