@@ -24,8 +24,9 @@ technical_debt:
 
 ### 948. Archive non-standard completeness theorems to Boneyard
 - **Effort**: Medium (2-4 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/948_archive_nonstandard_completeness_theorems/reports/research-001.md)
 
 **Description**: Archive BFMCS Completeness and FMP Completeness theorems and infrastructure to the Boneyard because they use non-standard validity definitions that are not proven equivalent to the standard `valid` definition in `Semantics/Validity.lean`.
 
