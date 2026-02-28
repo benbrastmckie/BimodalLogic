@@ -1,7 +1,7 @@
 # Implementation Plan: Prove canonical_task_rel_compositionality Cross-Sign Cases
 
 - **Task**: 946 - Prove canonical_task_rel_compositionality cross-sign cases
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/946_canonical_task_rel_compositionality/reports/research-001.md
@@ -72,7 +72,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Add HContent_chain_transitive Helper [NOT STARTED]
+### Phase 1: Add HContent_chain_transitive Helper [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add the backward transitivity helper lemma needed for compositionality
@@ -107,7 +107,7 @@ theorem HContent_chain_transitive (M N V : Set Formula)
 
 ---
 
-### Phase 2: Strengthen canonical_task_rel Definition [NOT STARTED]
+### Phase 2: Strengthen canonical_task_rel Definition [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Remove sign-conditioning from definition to enable compositionality
@@ -135,7 +135,7 @@ def canonical_task_rel (M : CanonicalWorldState) (d : Int) (N : CanonicalWorldSt
 
 ---
 
-### Phase 3: Rewrite Compositionality Proof [NOT STARTED]
+### Phase 3: Rewrite Compositionality Proof [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Replace case-analysis proof with uniform two-line transitivity argument
@@ -172,7 +172,7 @@ theorem canonical_task_rel_compositionality
 
 ---
 
-### Phase 4: Update to_history Backward Case [NOT STARTED]
+### Phase 4: Update to_history Backward Case [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Update respects_task proof to use fam.backward_H for general s <= t
@@ -194,7 +194,7 @@ theorem canonical_task_rel_compositionality
 
 ---
 
-### Phase 5: Verify Build and Zero-Debt [NOT STARTED]
+### Phase 5: Verify Build and Zero-Debt [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 2, Phase 3, Phase 4
 - **Goal:** Confirm full build passes with zero new sorries
@@ -255,3 +255,13 @@ If HContent_chain_transitive proof is blocked:
 If to_history breaks:
 - Check FMCS.backward_H signature matches expectation
 - Verify s <= t constraint is available at proof site
+
+## Progress
+
+**Session: 2026-02-27, sess_1772236750_43e88bd2**
+- Added: `HContent_chain_transitive` - backward transitivity lemma in CanonicalFrame.lean
+- Fixed: `canonical_task_rel` definition - strengthened from sign-conditioned to unconditional
+- Fixed: `canonical_task_rel_nullity` - simplified proof for unconditional definition
+- Completed: `canonical_task_rel_compositionality` - replaced 110-line case-analysis with 2-line transitivity proof
+- Fixed: `to_history` respects_task backward case - use `fam.backward_H` instead of reflexivity via `le_antisymm`
+- Sorries: 4 -> 0 (4 eliminated)

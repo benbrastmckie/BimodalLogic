@@ -69,37 +69,37 @@ def CanonicalWorldState : Type :=
 Canonical task relation between world states.
 
 `canonical_task_rel M d N` holds iff:
-- d >= 0 implies GContent(M.val) subset N.val (forward coherence)
-- d <= 0 implies HContent(N.val) subset M.val (backward coherence)
+- GContent(M.val) ⊆ N.val (forward coherence)
+- HContent(N.val) ⊆ M.val (backward coherence)
 
-This captures the temporal accessibility conditions from the canonical frame.
+Both conditions are required unconditionally (regardless of the sign of d).
+This strengthened definition enables compositionality via uniform transitivity
+arguments using `canonicalR_transitive` and `HContent_chain_transitive`.
+
+The duration parameter `d` is present for TaskFrame compatibility but does not
+affect the relation -- temporal content inclusion is sufficient.
 -/
-def canonical_task_rel (M : CanonicalWorldState) (d : Int) (N : CanonicalWorldState) : Prop :=
-  (d ≥ 0 → GContent M.val ⊆ N.val) ∧
-  (d ≤ 0 → HContent N.val ⊆ M.val)
+def canonical_task_rel (M : CanonicalWorldState) (_d : Int) (N : CanonicalWorldState) : Prop :=
+  GContent M.val ⊆ N.val ∧ HContent N.val ⊆ M.val
 
 /--
 Nullity: canonical_task_rel M 0 M holds for any MCS M.
 
-When d = 0, both conditions require:
-- GContent(M) subset M: by T-axiom G(phi) -> phi (canonicalR_reflexive)
-- HContent(M) subset M: by T-axiom H(phi) -> phi (canonicalR_past_reflexive)
+Both conditions hold by T-axioms:
+- GContent(M) ⊆ M: by T-axiom G(phi) -> phi (canonicalR_reflexive)
+- HContent(M) ⊆ M: by T-axiom H(phi) -> phi (canonicalR_past_reflexive)
 -/
 theorem canonical_task_rel_nullity (M : CanonicalWorldState) :
     canonical_task_rel M 0 M := by
-  constructor
-  · intro _
-    exact canonicalR_reflexive M.val M.property
-  · intro _
-    exact canonicalR_past_reflexive M.val M.property
+  exact ⟨canonicalR_reflexive M.val M.property, canonicalR_past_reflexive M.val M.property⟩
 
 /--
 Compositionality: if canonical_task_rel M x N and canonical_task_rel N y V,
 then canonical_task_rel M (x + y) V.
 
-This requires detailed case analysis on the signs of x, y, and x+y.
-The proof uses transitivity of CanonicalR (temporal 4 axiom) for the
-same-sign cases.
+With the unconditional definition, this is a uniform two-line transitivity argument:
+- Forward (GContent): `canonicalR_transitive` via Temporal 4 (G phi -> GG phi)
+- Backward (HContent): `HContent_chain_transitive` via Temporal 4 past (H phi -> HH phi)
 
 Note: task_rel does NOT appear in truth_at, so this proof is orthogonal
 to the TruthLemma. It is needed only for well-typedness of the TaskFrame.
@@ -111,112 +111,19 @@ theorem canonical_task_rel_compositionality
   obtain ⟨hMN_fwd, hMN_bwd⟩ := hMN
   obtain ⟨hNV_fwd, hNV_bwd⟩ := hNV
   constructor
-  · -- x + y >= 0 implies GContent(M) subset V
-    intro h_sum_ge
-    -- We need to show GContent(M.val) ⊆ V.val
-    -- Case analysis on signs of x and y
-    by_cases hx : x ≥ 0
-    · -- x >= 0: GContent(M) subset N by hMN_fwd
-      have hMN_R : CanonicalR M.val N.val := hMN_fwd hx
-      by_cases hy : y ≥ 0
-      · -- y >= 0: GContent(N) subset V by hNV_fwd
-        have hNV_R : CanonicalR N.val V.val := hNV_fwd hy
-        -- By transitivity: CanonicalR M N and CanonicalR N V implies CanonicalR M V
-        exact canonicalR_transitive M.val N.val V.val M.property hMN_R hNV_R
-      · -- y < 0, x >= 0, x + y >= 0
-        -- From y < 0: HContent(V) subset N by hNV_bwd
-        push_neg at hy
-        have hNV_bwd_R : HContent V.val ⊆ N.val := hNV_bwd (le_of_lt hy)
-        -- We have GContent(M) ⊆ N and need GContent(M) ⊆ V
-        -- For phi in GContent(M): G phi in M
-        -- By temporal 4: G(G phi) in M, so G phi in GContent(M) ⊆ N
-        -- So G phi in N. By T-axiom: phi in N.
-        -- But we need phi in V, not just N.
-        -- The issue: we need G phi in N to get phi in V via GContent(N) ⊆ V?
-        -- But we don't have GContent(N) ⊆ V directly (y < 0).
-        -- Actually, we have GContent(M) ⊆ N. So for phi in GContent(M):
-        --   G phi in M -> G(G phi) in M (by temporal 4) -> G phi in N (GContent(M) ⊆ N)
-        -- So GContent(M) ⊆ GContent(N)? No, that's: phi in GContent(M) -> phi in GContent(N)
-        -- phi in GContent(M) means G(phi) in M. GContent(M) ⊆ N means G(phi) in N? No.
-        -- GContent(M) ⊆ N means: for all psi, G(psi) in M -> psi in N.
-        -- So phi in GContent(M) means G(phi) in M, and GContent(M) ⊆ N gives phi in N.
-        -- We need phi in V.
-        -- From G(phi) in M and temporal 4: G(G(phi)) in M, so G(phi) in N.
-        -- Now G(phi) in N: by T-axiom on N, phi in N. But that's what we already know.
-        -- We need a different approach for cross-sign.
-        -- Use the fact that x + y >= 0 and x >= 0: so x >= -y > 0.
-        -- GContent(M) ⊆ N: phi in GContent(M) means G phi in M, gives phi in N.
-        -- From G phi in M and T4: GG phi in M, so G phi in GContent(M) ⊆ N, so G phi in N.
-        -- So for phi in GContent(M), G phi in N.
-        -- Now from HContent(V) ⊆ N and G phi in N... this doesn't directly help.
-        -- This cross-sign case requires interaction axioms (MF, TF etc.).
-        -- For now, we use a sorry for this case only.
-        -- Per plan: compositionality is orthogonal to the TruthLemma.
-        sorry
-    · -- x < 0
-      push_neg at hx
-      -- x < 0 and x + y >= 0, so y > 0, and y >= -x > 0
-      have hy_pos : y ≥ 0 := by omega
-      have hNV_R : CanonicalR N.val V.val := hNV_fwd hy_pos
-      -- HContent(N) ⊆ M from hMN_bwd (x < 0 -> x <= 0)
-      have hMN_bwd_R : HContent N.val ⊆ M.val := hMN_bwd (le_of_lt hx)
-      -- Cross-sign case: HContent(N) ⊆ M and GContent(N) ⊆ V
-      -- Need: GContent(M) ⊆ V
-      -- This requires interaction axioms. Sorry for now.
-      sorry
-  · -- x + y <= 0 implies HContent(V) subset M
-    intro h_sum_le
-    by_cases hy : y ≤ 0
-    · have hNV_bwd_R : HContent V.val ⊆ N.val := hNV_bwd hy
-      by_cases hx : x ≤ 0
-      · have hMN_bwd_R : HContent N.val ⊆ M.val := hMN_bwd hx
-        -- Both x <= 0 and y <= 0: HContent(V) ⊆ N and HContent(N) ⊆ M
-        -- Need: HContent(V) ⊆ M
-        -- For phi in HContent(V): H phi in V, so phi in N (by HContent(V) ⊆ N)
-        -- By temporal 4 for H: H(H phi) in V -> H phi in N? No, that's GContent direction.
-        -- Actually: phi in HContent(V) means H phi in V.val
-        -- HContent(V) ⊆ N means: H phi in V -> phi in N
-        -- We need phi in M. From HContent(N) ⊆ M: H phi in N -> phi in M.
-        -- But we have phi in N, not H phi in N.
-        -- From H phi in V and temporal 4 for H: H(H phi) in V (by H4)
-        -- So H phi in HContent(V) ⊆ N, so H phi in N.
-        -- Then from HContent(N) ⊆ M: phi in M. Done!
-        intro phi h_H_phi
-        -- h_H_phi : phi in HContent(V), i.e. H phi in V.val
-        -- By temporal 4 for H: H(H phi) in V
-        have h_mcs_V := V.property
-        have h_H4 : [] ⊢ (Formula.all_past phi).imp (Formula.all_past (Formula.all_past phi)) :=
-          temp_4_past phi
-        have h_HH_in_V : Formula.all_past (Formula.all_past phi) ∈ V.val :=
-          set_mcs_implication_property h_mcs_V (theorem_in_mcs h_mcs_V h_H4) h_H_phi
-        -- So H phi in HContent(V)
-        have h_Hphi_in_HContent : Formula.all_past phi ∈ HContent V.val := h_HH_in_V
-        -- HContent(V) ⊆ N, so H phi in N
-        have h_Hphi_in_N : Formula.all_past phi ∈ N.val := hNV_bwd_R h_Hphi_in_HContent
-        -- H phi in HContent(N)
-        have h_phi_in_HContent_N : phi ∈ HContent N.val := h_Hphi_in_N
-        -- HContent(N) ⊆ M, so phi in M
-        exact hMN_bwd_R h_phi_in_HContent_N
-      · -- x > 0, y <= 0, x + y <= 0
-        push_neg at hx
-        -- Cross-sign case. Sorry for now.
-        sorry
-    · -- y > 0, x + y <= 0, so x < 0
-      push_neg at hy
-      have hx_neg : x ≤ 0 := by omega
-      have hMN_bwd_R : HContent N.val ⊆ M.val := hMN_bwd hx_neg
-      -- Cross-sign case. Sorry for now.
-      sorry
+  · -- GContent(M) ⊆ V via canonicalR_transitive
+    exact canonicalR_transitive M.val N.val V.val M.property hMN_fwd hNV_fwd
+  · -- HContent(V) ⊆ M via HContent_chain_transitive
+    exact HContent_chain_transitive M.val N.val V.val V.property hNV_bwd hMN_bwd
 
 /--
 The canonical task frame for the direct TruthLemma.
 
 WorldState = CanonicalWorldState (subtype of MCS)
-task_rel = canonical_task_rel (GContent/HContent coherence)
+task_rel = canonical_task_rel (GContent/HContent coherence, unconditional)
 D = Int
 
-Note: compositionality has sorries for cross-sign cases.
-These are orthogonal to the TruthLemma (task_rel does not appear in truth_at).
+Nullity via T-axioms (reflexivity), compositionality via Temporal 4 (transitivity).
 -/
 def CanonicalTaskFrame : TaskFrame Int where
   WorldState := CanonicalWorldState
@@ -249,19 +156,14 @@ def to_history (fam : FMCS Int) : WorldHistory CanonicalTaskFrame where
   respects_task := by
     intro s t hs ht hst
     -- Need: canonical_task_rel (fam.mcs s, is_mcs s) (t - s) (fam.mcs t, is_mcs t)
+    -- i.e., GContent(fam.mcs s) ⊆ fam.mcs t ∧ HContent(fam.mcs t) ⊆ fam.mcs s
     constructor
-    · -- t - s >= 0 implies GContent(fam.mcs s) subset fam.mcs t
-      intro h_ge phi h_G_phi
-      -- h_G_phi : phi in GContent(fam.mcs s), i.e., G phi in fam.mcs s
-      -- By forward_G with s <= t: phi in fam.mcs t
+    · -- GContent(fam.mcs s) ⊆ fam.mcs t via forward_G with s ≤ t
+      intro phi h_G_phi
       exact fam.forward_G s t phi hst h_G_phi
-    · -- t - s <= 0 implies HContent(fam.mcs t) subset fam.mcs s
-      intro h_le
-      -- t - s <= 0 combined with s <= t means s = t
-      have heq : s = t := le_antisymm hst (by omega)
-      subst heq
-      -- HContent(fam.mcs s) subset fam.mcs s: reflexivity via T-axiom
-      exact canonicalR_past_reflexive (fam.mcs s) (fam.is_mcs s)
+    · -- HContent(fam.mcs t) ⊆ fam.mcs s via backward_H with s ≤ t
+      intro phi h_H_phi
+      exact fam.backward_H t s phi hst h_H_phi
 
 /--
 The canonical Omega: the set of world-histories from bundle families.

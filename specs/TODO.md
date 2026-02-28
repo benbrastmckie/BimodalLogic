@@ -12,7 +12,7 @@ task_counts:
   abandoned: 36
   total: 714
 technical_debt:
-  sorry_count: 80
+  sorry_count: 76
   axiom_count: 19
   build_errors: 0
   status: manageable
@@ -35,10 +35,13 @@ technical_debt:
 
 ### 946. Prove canonical_task_rel_compositionality cross-sign cases
 - **Effort**: Medium (4-6 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Language**: lean
+- **Completed**: 2026-02-27
+- **Summary**: Eliminated all 4 sorries by strengthening canonical_task_rel to unconditional GContent/HContent and proving compositionality via canonicalR_transitive and HContent_chain_transitive.
 - **Research**: [research-001.md](specs/946_canonical_task_rel_compositionality/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/946_canonical_task_rel_compositionality/plans/implementation-001.md)
-- **Language**: lean
+- **Summary**: [implementation-summary-20260227.md](specs/946_canonical_task_rel_compositionality/summaries/implementation-summary-20260227.md)
 - **Parent**: Task 945
 
 **Description**: Prove the 4 remaining sorries in `canonical_task_rel_compositionality` (Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean). These are cross-sign duration cases where x and y have opposite signs. The cases are:

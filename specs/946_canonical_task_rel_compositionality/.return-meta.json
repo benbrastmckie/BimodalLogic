@@ -1,20 +1,30 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-02-27T00:00:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/946_canonical_task_rel_compositionality/plans/implementation-001.md",
-      "summary": "5-phase implementation plan for canonical_task_rel_compositionality cross-sign sorries"
+      "path": "specs/946_canonical_task_rel_compositionality/summaries/implementation-summary-20260227.md",
+      "type": "summary",
+      "summary": "Implementation summary for task 946: eliminated 4 sorries in canonical_task_rel_compositionality"
     }
   ],
-  "next_steps": "Run /implement 946 to execute the plan",
+  "partial_progress": {
+    "stage": "verified",
+    "details": "All 5 phases completed. 4 sorries eliminated. lake build passes.",
+    "phases_completed": 5,
+    "phases_total": 5
+  },
   "metadata": {
-    "session_id": "sess_1772234777_674c97a",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1772236750_43e88bd2",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 1.5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 5,
+    "phases_total": 5
+  },
+  "requires_user_review": false,
+  "completion_data": {
+    "completion_summary": "Eliminated all 4 sorries in canonical_task_rel_compositionality by strengthening the definition to unconditional GContent/HContent inclusion and proving compositionality via canonicalR_transitive and HContent_chain_transitive.",
+    "roadmap_items": []
   }
 }

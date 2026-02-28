@@ -230,4 +230,29 @@ theorem canonicalR_transitive (M M' M'' : Set Formula)
   -- phi ∈ GContent M', and GContent M' ⊆ M'' by h_R2
   exact h_R2 h_G_in_M'
 
+/--
+HContent chain transitivity: If `HContent V ⊆ N` and `HContent N ⊆ M`, then `HContent V ⊆ M`.
+
+This is the backward (past) analogue of `canonicalR_transitive`.
+The proof uses the Temporal 4 axiom for the past direction: `H phi → H(H phi)`.
+
+Given `phi ∈ HContent V` (i.e., `H phi ∈ V`):
+1. By `temp_4_past`: `H(H phi) ∈ V`
+2. So `H phi ∈ HContent V ⊆ N`
+3. So `phi ∈ HContent N ⊆ M`
+-/
+theorem HContent_chain_transitive (M N V : Set Formula)
+    (h_mcs_V : SetMaximalConsistent V)
+    (hNV : HContent V ⊆ N) (hMN : HContent N ⊆ M) :
+    HContent V ⊆ M := by
+  intro phi h_H_phi
+  -- h_H_phi : phi ∈ HContent V, i.e., H phi ∈ V
+  -- By Temporal 4 for H: H phi → H(H phi), so H(H phi) ∈ V
+  have h_H4 := temp_4_past phi
+  have h_HH_in_V := set_mcs_implication_property h_mcs_V (theorem_in_mcs h_mcs_V h_H4) h_H_phi
+  -- H phi ∈ HContent V, and HContent V ⊆ N, so H phi ∈ N
+  have h_Hphi_in_N := hNV h_HH_in_V
+  -- phi ∈ HContent N, and HContent N ⊆ M, so phi ∈ M
+  exact hMN h_Hphi_in_N
+
 end Bimodal.Metalogic.Bundle

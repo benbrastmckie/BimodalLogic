@@ -111,7 +111,7 @@
       ],
       "started": "2026-02-27T22:50:05Z",
       "completed": "2026-02-27T23:04:09Z",
-      "completion_summary": "Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at evaluation, eliminating the bmcs_truth_at intermediate. All 6 inductive cases (atom, bot, imp, box, all_future, all_past) proven sorry-free. Compositionality of canonical task relation has 4 deferred sorries in cross-sign cases (orthogonal to TruthLemma)."
+      "completion_summary": "Proved direct canonical_truth_lemma connecting MCS membership to standard truth_at evaluation, eliminating the bmcs_truth_at intermediate. All 6 inductive cases (atom, bot, imp, box, all_future, all_past) proven sorry-free. Compositionality sorries resolved in task 946."
     },
     {
       "project_number": 930,
@@ -696,10 +696,10 @@
     {
       "project_number": 946,
       "project_name": "canonical_task_rel_compositionality",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "created": "2026-02-27T23:04:47Z",
-      "last_updated": "2026-02-27T23:59:30Z",
+      "last_updated": "2026-02-28T00:30:00Z",
       "artifacts": [
         {
           "path": "specs/946_canonical_task_rel_compositionality/reports/research-001.md",
@@ -710,12 +710,19 @@
           "path": "specs/946_canonical_task_rel_compositionality/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for canonical_task_rel_compositionality cross-sign sorries"
+        },
+        {
+          "path": "specs/946_canonical_task_rel_compositionality/summaries/implementation-summary-20260227.md",
+          "type": "summary",
+          "summary": "Eliminated all 4 sorries by strengthening canonical_task_rel to unconditional GContent/HContent and proving compositionality via transitivity"
         }
       ],
       "session_id": "sess_1772236750_43e88bd2",
       "researched": "2026-02-27T23:16:25Z",
       "planned": "2026-02-27T23:29:04Z",
-      "started": "2026-02-27T23:59:30Z"
+      "started": "2026-02-27T23:59:30Z",
+      "completed": "2026-02-28T00:30:00Z",
+      "completion_summary": "Eliminated all 4 sorries in canonical_task_rel_compositionality by strengthening the definition to unconditional GContent/HContent inclusion and proving compositionality via canonicalR_transitive and HContent_chain_transitive."
     }
   ],
   "completed_projects": [
@@ -745,7 +752,7 @@
   },
   "repository_health": {
     "last_assessed": "2026-02-27T02:52:44Z",
-    "sorry_count": 80,
+    "sorry_count": 76,
     "axiom_count": 19,
     "build_errors": 0,
     "status": "manageable"
