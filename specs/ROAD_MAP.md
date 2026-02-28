@@ -3,20 +3,8 @@
 **Last Updated**: 2026-02-26
 **Status**: FMP Completeness Sorry-Free, Bundle Completeness (3 sorries in Int-indexed construction), Boneyard Cleanup Complete
 
-> **Content Boundaries**: ROADMAP = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
+> **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
 > Each entry should include *Rationale* (why) and *References* (learn more).
-
----
-
-## Changelog
-
-> **Moved**: Historical changelog entries have been moved to [specs/CHANGE_LOG.md](CHANGE_LOG.md).
->
-> This separation establishes:
-> - **ROAD_MAP.md**: Strategic direction (Strategies, Ambitions, Dead Ends)
-> - **CHANGE_LOG.md**: Historical record of completed work
->
-> The `/todo` command now updates `specs/CHANGE_LOG.md` automatically during task archival.
 
 ---
 
