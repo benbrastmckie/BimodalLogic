@@ -46,8 +46,9 @@ Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-fr
 
 ### 950. Move Bimodal Boneyard contents to Metalogic Boneyard
 - **Effort**: Small
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: general
+- **Research**: [research-001.md](specs/950_move_bimodal_boneyard_contents/reports/research-001.md)
 
 **Description**: Move the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Boneyard/ contents into /home/benjamin/Projects/ProofChecker/Boneyard/Metalogic/ as appropriate.
 

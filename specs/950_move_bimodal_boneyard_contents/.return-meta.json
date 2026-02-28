@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-02-27T10:00:00Z",
+  "completed_at": "2026-02-27T10:30:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/950_move_bimodal_boneyard_contents/reports/research-001.md",
+      "summary": "Research report with inventory of 112 Lean files, dependency analysis, and move recommendations"
+    }
+  ],
+  "next_steps": "Run /plan 950 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1772241495_d5cf15",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 300,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 5
+  }
+}
