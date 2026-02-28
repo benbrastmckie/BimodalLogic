@@ -24,11 +24,11 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 40-60 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
-- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md), [research-003.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-003.md)
+- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md), [research-003.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-003.md), [research-008.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-008.md) (team)
 - **Plan**: [implementation-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-002.md) (v2)
 
 **Description**: Implement standard completeness theorem using Bidirectional Reachable Fragment approach:
