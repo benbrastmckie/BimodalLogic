@@ -46,7 +46,7 @@ Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-fr
 
 ### 950. Move Bimodal Boneyard contents to Metalogic Boneyard
 - **Effort**: Small
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: general
 - **Research**: [research-001.md](specs/950_move_bimodal_boneyard_contents/reports/research-001.md)
 
@@ -147,34 +147,6 @@ C. **Genuine gap**: If neither equivalence holds, determine whether MCS-membersh
 
 ---
 
-### 924. Prove fully_saturated_bmcs_exists combining modal saturation with temporal coherence
-- **Effort**: 8-16 hours
-- **Status**: [PLANNING]
-- **Language**: lean
-- **Created**: 2026-02-24
-- **Blocked by**: Task 922
-- **Research**: [research-005.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/reports/research-005.md)
-- **Plan**: [implementation-001.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260224.md](specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/summaries/implementation-summary-20260224.md)
-
-**Description**: Prove `fully_saturated_bmcs_exists`: combining modal saturation with temporal coherence in a single BMCS construction.
-
-This is the final blocker for the completeness chain. The current sorry in `TemporalCoherentConstruction.lean` (`fully_saturated_bmcs_exists_int`) requires:
-1. Modal saturation: every consistent formula set can be extended to a fully saturated MCS (Lindenbaum via modal witnesses)
-2. Temporal coherence: the resulting family satisfies forward_G and backward_H
-3. Both simultaneously: modal saturation adds constant witness families, which must themselves be temporally coherent
-
-The tension: modal saturation uses Lindenbaum extension which does NOT preserve temporal saturation (where F(psi) -> psi). The current approach proves temporal coherence and modal saturation separately but cannot combine them.
-
-Context: Task 922 proved forward_F and backward_P sorry-free using the Preorder/all-MCS approach. This task addresses the remaining sorry: constructing a fully saturated BMCS that satisfies ALL four conditions simultaneously with a root MCS witnessing a given consistent formula.
-
-Key files:
-- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean` - contains `fully_saturated_bmcs_exists_int` sorry
-- `Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean` - modal saturation tools
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalBFMCS.lean` - new all-MCS BFMCS construction from task 922
-
----
-
 ### 922. Strategy study: identify viable path for forward_F/backward_P completeness
 - **Effort**: 8-16 hours
 - **Status**: [RESEARCHED]
@@ -211,44 +183,6 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 
 ---
 
-### 917. Fix forward_F/backward_P temporal witness strictness in DovetailingChain and comments
-- **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
-- **Language**: lean
-- **Created**: 2026-02-21
-
-**Description**: The description of `forward_F` and `backward_P` in `DovetailingChain.lean` and related comments/documentation incorrectly characterizes them as requiring a STRICTLY future (or past) witness. They should instead say "present OR future" (and "present OR past"), i.e., the witness time `s` satisfies `t ≤ s` rather than `t < s`. Source: `specs/916_implement_fp_witness_obligation_tracking/reports/research-008.md:28`. Find where this wrong perception is propagated (comments, docstrings, research reports) and fix it everywhere.
-
----
-
-### 916. Implement F/P witness obligation tracking to close DovetailingChain sorries
-- **Effort**: 24-48 hours (Omega-squared immediate processing)
-- **Status**: [PARTIAL]
-- **Language**: lean
-- **Created**: 2026-02-20
-- **Research**: [research-001.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md), [research-002.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md), [research-003.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md) (Team Research v3), [research-004.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-004.md) (Obstruction Analysis), [research-005.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md) (Synthesis), [research-006.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-006.md) (Constraints), [research-007.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-007.md) (Proof Technique), [research-008.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-008.md) (Root Cause), [research-009.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-009.md) (Canonical Model vs AliveF), [research-010.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-010.md) (Constraint-Based / Deferred Concretization), [research-011.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-011.md) (Progress Review), [research-012.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-012.md) (Error Analysis), [research-013.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-013.md) (Option A Fix Patterns), [research-014.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-014.md) (Path Forward Synthesis), [research-015.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-015.md) (Team Research - Omega-squared), [research-016.md](specs/916_implement_fp_witness_obligation_tracking/reports/research-016.md) (Team Research - Witness-graph blocked)
-- **Plan**: [implementation-012.md](specs/916_implement_fp_witness_obligation_tracking/plans/implementation-012.md) (v12: Omega-squared immediate processing - 5 phases)
-- **Summary**: [implementation-summary-20260221.md](specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260221.md) (FPreservingSeed counterexample)
-
-**Description**: Close the 4 remaining sorries in `DovetailingChain.lean` by implementing F/P witness obligation tracking in the chain construction and resolving the cross-sign propagation gap. Phase 1 unifies the split forward/backward half-chains into a single interleaved dovetailing chain (closes cross-sign forward_G and backward_H sorries). Phase 2 adds F/P witness scheduling via Cantor-pairing enumeration of all (time, formula) obligations (closes forward_F and backward_P sorries). See description.md for full proof strategy and key lemmas.
-
----
-
-### 881. Construct modally saturated BMCS to eliminate fully_saturated_bmcs_exists axiom
-- **Effort**: 8-12 hours
-- **Status**: [BLOCKED]
-- **Language**: lean
-- **Created**: 2026-02-13
-- **Researched**: 2026-02-16
-- **Planned**: 2026-02-17
-- **Blocked**: Task 887 completed with sorries. Temporal coherence of witness families requires temporal-aware Lindenbaum. See task 888.
-- **Dependencies**: Task 888 (research required)
-- **Research**: [research-011.md](specs/881_modally_saturated_bmcs_construction/reports/research-011.md) (Implementation review, remaining work after task 887), [research-010.md](specs/881_modally_saturated_bmcs_construction/reports/research-010.md) (Team v10: Option D)
-- **Plan**: [implementation-007.md](specs/881_modally_saturated_bmcs_construction/plans/implementation-007.md) (v7: No technical debt; Options A/C/D decision tree)
-- **Summary**: [implementation-summary-20260217.md](specs/881_modally_saturated_bmcs_construction/summaries/implementation-summary-20260217.md) (Phase 3 escalation)
-
-**Description**: Replace the `fully_saturated_bmcs_exists` axiom in TemporalCoherentConstruction.lean with a constructive proof, achieving fully axiom-free completeness. The axiom currently requires: (1) context preservation, (2) temporal coherence, and (3) modal saturation. Tasks 870/880 have proven temporal coherence via ZornFamily/DovetailingChain, but modal saturation remains. Modal saturation requires that every Diamond formula in a family's MCS has a witness family in the bundle where the inner formula holds. The construction must enumerate all Diamond formulas (neg(Box(neg psi))) and extend the family set to include witnesses. Key approaches: (a) Extend ZornFamily with modal witness enumeration using Zorn's lemma on families satisfying both temporal coherence AND modal saturation conditions, (b) Extend DovetailingChain to interleave modal witness creation with temporal witness creation, or (c) Post-process a temporally coherent family by iteratively adding modal witnesses until saturated. Critical challenge: Proving termination/well-foundedness when adding infinitely many witness families. Success eliminates the final axiom blocker for sorry-free completeness, connecting proven temporal infrastructure (RecursiveSeed, ZornFamily) to the representation theorem. See ModalSaturation.lean for is_modally_saturated definition, Completeness.lean for usage, and DovetailingChain.lean/ZornFamily.lean for temporal coherence infrastructure to extend.
-
 ### 868. Reinstate lean-lsp MCP tools after GitHub issue resolution
 - **Effort**: 1 hour
 - **Status**: [BLOCKED]
@@ -271,16 +205,6 @@ Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (a
 - **Plan**: [implementation-002.md](specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
-
-### 865. Construct canonical task frame for Bimodal completeness
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
-- **Language**: lean
-- **Created**: 2026-02-05
-- **Researched**: 2026-02-10
-- **Research**: [research-001.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md), [research-002.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-002.md), [research-003.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-003.md), [research-004.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-004.md), [research-005.md](specs/865_canonical_task_frame_bimodal_completeness/reports/research-005.md)
-
-**Description**: Research and construct a canonical task frame (world-states, task relation, durations) for the Bimodal logic representation theorem. Define a two-place task relation w ⇒ u where: (1) φ ∈ u whenever □G φ ∈ w; (2) φ ∈ w whenever □H φ ∈ u; with witness conditions (GW) and (HW). World histories are functions τ from a totally ordered commutative group of durations to MCSs respecting the task relation. Key challenges: constructing durations from syntax, building a proper three-place task relation matching the semantics, and possibly using the two-place task relation to construct a topology (closeness via possible nearness in time) with durations abstracted as equivalence classes. The construction should culminate in a seed built from a consistent sentence of arbitrary complexity, with the canonical model satisfying the TruthLemma as the guiding North Star.
 
 ### 793. Fix Claude Code neovim sidebar black screen delay
 - **Effort**: S

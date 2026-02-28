@@ -1,21 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-02-27T10:00:00Z",
-  "completed_at": "2026-02-27T10:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/950_move_bimodal_boneyard_contents/reports/research-001.md",
-      "summary": "Research report with inventory of 112 Lean files, dependency analysis, and move recommendations"
+      "type": "plan",
+      "path": "specs/950_move_bimodal_boneyard_contents/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for moving 112 Lean files from Theories/Bimodal/Boneyard to Boneyard/Metalogic"
     }
   ],
-  "next_steps": "Run /plan 950 to create implementation plan",
+  "next_steps": "Run /implement 950 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772241495_d5cf15",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 300,
+    "session_id": "sess_1772241818_79f373",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 5
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1.5
   }
 }

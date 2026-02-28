@@ -2,6 +2,345 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 924,
+      "project_name": "prove_fully_saturated_bmcs_exists_modal_temporal",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-25T03:23:51Z",
+      "last_updated": "2026-02-25T07:19:02Z",
+      "artifacts": [
+        {
+          "path": "specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for eliminating fully_saturated_bmcs_exists_int sorry via two-tier BMCS construction"
+        },
+        {
+          "path": "specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/summaries/implementation-summary-20260224.md",
+          "type": "summary",
+          "summary": "Phase 1 analysis completed: constant witness families are mathematically incompatible with truth lemma temporal backward. All plan phases blocked."
+        },
+        {
+          "path": "specs/924_prove_fully_saturated_bmcs_exists_modal_temporal/reports/research-005.md",
+          "type": "research",
+          "summary": "Deep dive Path A: NOT VIABLE (BigSeed inconsistency). New path: restructured truth predicate + CanonicalMCS domain eliminates all completeness-chain sorries."
+        }
+      ],
+      "description": "Prove fully_saturated_bmcs_exists: combining modal saturation with temporal coherence in a single BMCS construction.\n\nThis is the final blocker for the completeness chain. The current sorry in TemporalCoherentConstruction.lean (fully_saturated_bmcs_exists_int) requires:\n1. Modal saturation: every consistent formula set can be extended to a fully saturated MCS (Lindenbaum via modal witnesses)\n2. Temporal coherence: the resulting family satisfies forward_G and backward_H\n3. Both simultaneously: modal saturation adds constant witness families, which must themselves be temporally coherent\n\nThe tension: modal saturation uses Lindenbaum extension which does NOT preserve temporal saturation (where F(psi) -> psi). The current approach proves temporal coherence and modal saturation separately but cannot combine them.\n\nContext: Task 922 proved forward_F and backward_P sorry-free using the Preorder/all-MCS approach. This task addresses the remaining sorry: constructing a fully saturated BMCS that satisfies ALL four conditions simultaneously (forward_G, backward_H, forward_F, backward_P) with a root MCS witnessing a given consistent formula.\n\nKey files:\n- Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean - contains fully_saturated_bmcs_exists_int sorry\n- Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean - modal saturation tools\n- Theories/Bimodal/Metalogic/Bundle/CanonicalBFMCS.lean - new all-MCS BFMCS construction from task 922\n\nDependency: Requires task 922 to be complete (Preorder generalization providing sorry-free forward_F/backward_P).",
+      "session_id": "sess_1772003399_19f31e",
+      "researched": "2026-02-25T07:19:02Z",
+      "planned": "2026-02-25T05:48:38Z",
+      "started": "2026-02-25T05:51:52Z",
+      "abandoned": "2026-02-28T01:24:16Z",
+      "abandoned_reason": "Superseded by CanonicalFMCS approach (Task 951)"
+    },
+    {
+      "project_number": 917,
+      "project_name": "fix_forward_f_backward_p_temporal_witness_strictness",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-21T00:00:00Z",
+      "last_updated": "2026-02-21T00:00:00Z",
+      "abandoned": "2026-02-28T01:24:16Z",
+      "abandoned_reason": "Superseded by CanonicalFMCS approach (Task 951)"
+    },
+    {
+      "project_number": 916,
+      "project_name": "implement_fp_witness_obligation_tracking",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-20T08:48:38Z",
+      "last_updated": "2026-02-24T17:17:18Z",
+      "artifacts": [
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-001.md",
+          "type": "research",
+          "summary": "Detailed analysis of 4 sorries in DovetailingChain.lean with precise goal states, architecture analysis of the split half-chain problem, F/P witness obligation tracking strategy using Cantor pairing, inventory of 15 supporting lemmas, and implementation recommendations for unified interleaved chain construction"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-002.md",
+          "type": "research",
+          "summary": "Detailed analysis of Option A (constructive Lindenbaum). G-derivability independence fails. Joint F-witness consistency fails. Viable sub-chain approach identified (omega^2 construction, 30-40h estimate)."
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-1-handoff-20260220.md",
+          "type": "handoff",
+          "summary": "Detailed analysis of mathematical obstruction with 4 viable alternative approaches"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-003.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): Consensus on Augmented Dovetailing with Omega^2 Inner Construction as the most mathematically elegant approach (33-58h estimate)"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-handoff-20260220.md",
+          "type": "handoff",
+          "summary": "Mathematical analysis: flat chain insufficient for forward_F, omega^2 inner chain needed"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-004.md",
+          "type": "research",
+          "summary": "Deep analysis of Phase 3 mathematical obstruction. Proves flat chain is insufficient for forward_F. Evaluates omega^2 alternatives and recommends inner chain with directed limit construction."
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-005.md",
+          "type": "research",
+          "summary": "Synthesized analysis of 3 teammate findings on forward_F/backward_P obstruction: Lindenbaum opacity is root cause; F-preserving seed consistency conjecture is the key open question; recommends time-boxed investigation (8-12h) then fallback to sorry debt acceptance"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-006.md",
+          "type": "research",
+          "summary": "Comprehensive enumeration of all temporal connection constraints between consecutive MCSs; confirms user's 4 constraints hold; identifies FIX tag (reflexive operators); proves no additional constraints resolve forward_F/backward_P obstruction; analyzes F-preserving seed conjecture proof obstacle (G-lifting fails)"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-007.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): semantic approach proven circular; derivation surgery identified as correct proof path; F-preserving seed conjecture confidence raised to 65%; Routes 1 and 3 definitively blocked"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-008.md",
+          "type": "research",
+          "summary": "Root cause analysis identifying two independent obstacles (F-persistence and past-encoding gap) and reviewing 6 candidate solutions, recommending sorry debt acceptance or canonical model refactoring"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-009.md",
+          "type": "research",
+          "summary": "Canonical model approach is incompatible with task semantics architecture; identified AliveF seed preservation as novel promising approach that resolves both sub-problems from research-008"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-010.md",
+          "type": "research",
+          "summary": "Evaluates constraint-based family construction and normal form reduction approaches; identifies deferred concretization (mosaic-method variant producing Int-embeddable witness graphs) as the most viable path for closing forward_F/backward_P sorries"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-011.md",
+          "type": "research",
+          "summary": "Implementation progress review and path forward analysis for WitnessGraph.lean Phase 3 sorries and Phases 4-6"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-012.md",
+          "type": "research",
+          "summary": "Progress review: WitnessGraph.lean has 48 build errors (invisible to full build) from context-exhausted agent; committed version has 5 sorries; working copy approach is mathematically sound but needs mechanical error fixes"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-013.md",
+          "type": "research",
+          "summary": "Options analysis for fixing 8 build errors - recommends Option A (dependent rewrite patterns, 2.5-3.5h)"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-014.md",
+          "type": "research",
+          "summary": "Team research synthesis (3 teammates): WitnessGraph is only viable path; 40-50% cumulative success probability; 55-75h expected effort vs 2-3h for sorry debt acceptance; time-box recommendation"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-011.md",
+          "type": "plan",
+          "summary": "v11: Full WitnessGraph commitment - 6 phases (41-68h), no sorry debt option"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260224.md",
+          "type": "summary",
+          "summary": "Implementation summary covering Phases 3B-6: WitnessGraph 0 sorries, Phase 6 BLOCKED analysis"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-015.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): Omega-squared immediate processing is only viable approach; comprehensive documentation cleanup identified"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/reports/research-016.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): Witness-graph-guided definitively blocked; omega-squared immediate processing is only viable path"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/plans/implementation-012.md",
+          "type": "plan",
+          "summary": "v12: Omega-squared immediate processing - 5 phases (24-48h), replaces blocked witness-graph-guided approach"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/summaries/implementation-summary-20260224-v012.md",
+          "type": "summary",
+          "summary": "v012 iteration: Phases 1-2 completed, Phase 3 BLOCKED (F-persistence gap in omega-squared)"
+        },
+        {
+          "path": "specs/916_implement_fp_witness_obligation_tracking/handoffs/phase-3-blocker-analysis-20260224.md",
+          "type": "handoff",
+          "summary": "Mathematical blocker analysis: omega-squared has same F-persistence gap as all chain constructions"
+        }
+      ],
+      "session_id": "sess_1771951923_ee9d53",
+      "researched": "2026-02-24T16:39:02Z",
+      "planned": "2026-02-24T16:47:03Z",
+      "started": "2026-02-24T05:57:18Z",
+      "abandoned": "2026-02-28T01:24:16Z",
+      "abandoned_reason": "Superseded by CanonicalFMCS approach (Task 951)"
+    },
+    {
+      "project_number": 881,
+      "project_name": "modally_saturated_bmcs_construction",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-13T20:28:06Z",
+      "last_updated": "2026-02-17T20:00:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-001.md",
+          "summary": "Team research: S5 axiom 5 breakthrough resolves 3 sorries in SaturatedConstruction via BoxContent invariance"
+        },
+        {
+          "type": "research",
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-002.md",
+          "summary": "Two-tier vs single-pass analysis - recommends unified Zorn approach over two-tier"
+        },
+        {
+          "type": "research",
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-003.md",
+          "summary": "Final analysis: Fix existing 3 sorries with S5 BoxContent invariance (supersedes unified Zorn recommendation)"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-2-handoff-20260213.md",
+          "type": "handoff",
+          "summary": "Phase 2 handoff: 2 of 3 sorries fixed, remaining work documented"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-4-handoff-20260213.md",
+          "type": "handoff",
+          "summary": "Phase 4 handoff: Strategy for temporal Lindenbaum integration"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-4-handoff-20260213.md",
+          "type": "handoff",
+          "summary": "Phase 4 handoff: temporal Lindenbaum integration strategy"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-004.md",
+          "type": "research",
+          "summary": "Team research v3: comprehensive path forward analysis after task 882 failure"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-005.md",
+          "type": "research",
+          "summary": "Analysis confirming Int specialization is safe for completeness proof - no density axioms in logic system, soundness covers all frames"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-006.md",
+          "type": "research",
+          "summary": "Analyzes blocking issue between modal saturation and temporal coherence, recommends truth lemma restructuring as primary path forward"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-007.md",
+          "type": "research",
+          "summary": "Team research v4: constant families are design choice, zero-compromise path requires dovetailing per-witness"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-008.md",
+          "type": "research",
+          "summary": "Semantic alignment analysis confirming the codebase uses history-based semantics throughout, with product frame referring only to BMCS internal structure"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/progress/phase-1-progress.json",
+          "type": "progress",
+          "summary": "Detailed analysis of why Phase 1 is blocked - architecture limitation in DovetailingChain"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-009.md",
+          "type": "research",
+          "summary": "Team research v5: RecursiveSeed recommended as sorry-free path forward for modal saturation"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
+          "type": "implementation",
+          "summary": "Added multi-formula seed builder section (lines 4716-4922)"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/handoffs/phase-1-handoff-20260213-v2.md",
+          "type": "handoff",
+          "summary": "Phase 1 partial: added membership preservation lemmas, key blocker is addFormula_preserves_mem_diff_position"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/RecursiveSeed.lean",
+          "type": "implementation",
+          "summary": "Added addFormula_preserves_mem_diff_position proof (lines 4729-4820)"
+        },
+        {
+          "type": "research",
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-010.md",
+          "summary": "Team research v10: Option D (FamilyCollection architecture) recommended for sorry-free path"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/reports/research-011.md",
+          "type": "research",
+          "summary": "Review of recent implementation attempts, circular import analysis, and remaining work assessment after task 887"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "v7: No technical debt; integrated Options A/C/D decision tree; coordinate with task 887"
+        },
+        {
+          "path": "specs/881_modally_saturated_bmcs_construction/summaries/implementation-summary-20260217.md",
+          "type": "summary",
+          "summary": "Phase 3 escalation summary documenting the mathematical gap and research task creation"
+        }
+      ],
+      "session_id": "sess_1771352728_47dca3",
+      "researched": "2026-02-17T06:17:21Z",
+      "planned": "2026-02-17T18:18:31Z",
+      "started": "2026-02-13T21:26:53Z",
+      "blocked_reason": "Task 887 completed with sorries. Temporal coherence of witness families requires temporal-aware Lindenbaum construction. See task 888 for mathematical gap research.",
+      "abandoned": "2026-02-28T01:24:16Z",
+      "abandoned_reason": "Superseded by CanonicalFMCS approach (Task 951)"
+    },
+    {
+      "project_number": 865,
+      "project_name": "canonical_task_frame_bimodal_completeness",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-05T17:27:11Z",
+      "last_updated": "2026-02-11T23:13:42Z",
+      "session_id": "sess_1770848279_3706e5",
+      "researched": "2026-02-11T22:22:47Z",
+      "artifacts": [
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-001.md",
+          "type": "research",
+          "summary": "624-line report covering codebase semantics inventory, two-place task relation analysis, duration construction strategies, three-place task relation from two-place, canonical task frame per-family construction, seed-to-model pipeline, canonical TruthLemma case analysis, literature review, and phased implementation strategy."
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-002.md",
+          "type": "research",
+          "summary": "Follow-up research on compositionality of the canonical task relation via family composition, showing the 4-axiom enables cross-boundary temporal coherence"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-003.md",
+          "type": "research",
+          "summary": "Detailed analysis of canonical tasks as composable parametric duration-indexed functions, accessibility relation between MCSs, the offset problem in the box case of the TruthLemma, and its resolution via MF/TF axioms. 1027 lines."
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-004.md",
+          "type": "research",
+          "summary": "932-line comparison of two canonical frame constructions: trajectory-based vs family-based, with full mathematical definitions, TruthLemma case analysis, formalization estimates, and recommendation for Construction B2 (family-indexed)"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-005.md",
+          "type": "research",
+          "summary": "Analysis of Phase 1 blockage (actually task 843's issue), task 864 seed construction applicability, and debt-free paths for temporal coherence construction"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-006.md",
+          "type": "research",
+          "summary": "Comparative analysis: task 865 challenges illuminated by task 864 progress, showing shared cross-sign blockage and single-path invariant solution"
+        },
+        {
+          "path": "specs/865_canonical_task_frame_bimodal_completeness/reports/research-007.md",
+          "type": "research",
+          "summary": "Impact analysis of task 870 (Zorn-based family construction) on task 865, recommending task 870 as primary upstream dependency"
+        }
+      ],
+      "abandoned": "2026-02-28T01:24:16Z",
+      "abandoned_reason": "Superseded by CanonicalFMCS approach (Task 951)"
+    },
+    {
       "project_number": 941,
       "project_name": "extract_changelog_create_format_docs",
       "status": "completed",
