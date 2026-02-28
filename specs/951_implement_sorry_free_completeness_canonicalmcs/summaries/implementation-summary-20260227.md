@@ -2,8 +2,8 @@
 
 **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
 **Date**: 2026-02-27
-**Sessions**: sess_1740672300_i951 (plan v001), sess_1772246447_439fa1e5 (plan v002)
-**Status**: Partial - Plan v002 Phases A, C completed; Phase B in progress
+**Sessions**: sess_1740672300_i951 (plan v001), sess_1772246447_439fa1e5 (plan v002), sess_1772247674_resume (Phase B completion)
+**Status**: Partial - Plan v002 Phases A, B, C completed; Phases D-H not started
 
 ---
 
@@ -30,18 +30,30 @@ Created `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` (450+ li
 - `toCanonicalMCS` - conversion to CanonicalMCS element
 - `Preorder` instance on fragment
 
-### Phase B: Linearity Proof [IN PROGRESS]
+### Phase B: Linearity Proof [COMPLETED]
 
-Added linearity infrastructure to BidirectionalReachable.lean:
+Added linearity infrastructure and bidirectional totality to BidirectionalReachable.lean:
 
-**Completed (sorry-free)**:
+**Forward Linearity (sess_1772246447_439fa1e5)**:
 - `mcs_F_linearity` - temp_linearity axiom application within MCS context
 - `canonical_F_of_mem_successor` - F-introduction from CanonicalR successor
 - `canonical_forward_reachable_linear` - totality for forward-reachable elements
 
-**Remaining**:
-- Extend linearity to full bidirectional reachability
-- Prove `bidirectional_totally_ordered`
+**Backward Linearity + Bidirectional Totality (sess_1772247674_resume)**:
+- Refactored `BidirectionalReachable` to carry MCS proofs at every intermediate step
+- `mcs_P_linearity` - past linearity via temporal duality from `temp_linearity` axiom
+- `canonical_P_of_mem_predecessor` - P-introduction from CanonicalR predecessor
+- `canonical_backward_reachable_linear` - totality for backward-reachable elements
+- `comparable_step_forward` / `comparable_step_backward` - transitivity helpers
+- `comparable_with_reachable` - core induction lemma for bidirectional totality
+- `comparable_with_root` - root comparability
+- `bidirectional_totally_ordered` - full bidirectional totality (THE main Phase B theorem)
+
+**Mathematical Insight**: The backward linearity proof uses the duality between
+`GContent ⊆` and `HContent ⊆` (via `HContent_subset_implies_GContent_reverse`
+and `GContent_subset_implies_HContent_reverse`) to reformulate non-comparability
+in terms of H-content witnesses, then applies past linearity derived from
+`temp_linearity` via `temporal_duality`.
 
 ### Phase C: F/P Fragment Closure [COMPLETED]
 
@@ -59,14 +71,17 @@ Completed during Phase A work:
 
 ### Verification (Plan v002)
 
-- `lake build` passes (703 jobs, no new errors)
-- All new proofs in BidirectionalReachable.lean are sorry-free
+- `lake build` passes (739 jobs, full project, no new errors)
+- All new proofs in BidirectionalReachable.lean are sorry-free (758 lines total)
 - No new axioms introduced
+- `lean_goal` shows "no goals" for all key theorems
+- `bidirectional_totally_ordered` fully proven
 
 ### Commits (Plan v002)
 
 1. `b02e38ac` - task 951 phase A: bidirectional reachable fragment infrastructure
 2. `647e6e53` - task 951 phase B: linearity infrastructure (partial)
+3. (pending) - task 951 phase B: complete bidirectional totality
 
 ---
 

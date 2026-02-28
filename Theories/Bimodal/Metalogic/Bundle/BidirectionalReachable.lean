@@ -72,29 +72,37 @@ theorem BidirectionalEdge.symm {M₁ M₂ : Set Formula}
 -/
 
 /--
-`BidirectionalReachable M₀ M` holds when `M` can be reached from `M₀` by a finite
-sequence of bidirectional edges. This is the reflexive-transitive-symmetric closure
-of CanonicalR from `M₀`.
+`BidirectionalReachable M₀ h₀ M h` holds when `M` can be reached from `M₀` by a finite
+sequence of bidirectional edges, where all intermediate points are maximal consistent sets.
+This is the reflexive-transitive-symmetric closure of CanonicalR from `M₀`, enriched
+with MCS proofs at every step.
+
+The MCS tracking is essential for the totality proof (Phase B), where linearity lemmas
+require MCS properties of intermediate points during induction.
 -/
-inductive BidirectionalReachable (M₀ : Set Formula) : Set Formula → Prop where
-  | refl : BidirectionalReachable M₀ M₀
-  | step {M₁ M₂ : Set Formula} : BidirectionalReachable M₀ M₁ →
-      BidirectionalEdge M₁ M₂ → BidirectionalReachable M₀ M₂
+inductive BidirectionalReachable (M₀ : Set Formula) (h₀ : SetMaximalConsistent M₀) :
+    (M : Set Formula) → SetMaximalConsistent M → Prop where
+  | refl : BidirectionalReachable M₀ h₀ M₀ h₀
+  | step {M₁ M₂ : Set Formula} {h₁ : SetMaximalConsistent M₁} {h₂ : SetMaximalConsistent M₂} :
+      BidirectionalReachable M₀ h₀ M₁ h₁ →
+      BidirectionalEdge M₁ M₂ → BidirectionalReachable M₀ h₀ M₂ h₂
 
 /--
 Alternative constructor: reach by taking a backward step.
 -/
 theorem BidirectionalReachable.step_backward {M₀ M₁ M₂ : Set Formula}
-    (h_reach : BidirectionalReachable M₀ M₁) (h_R : CanonicalR M₂ M₁) :
-    BidirectionalReachable M₀ M₂ :=
+    {h₀ : SetMaximalConsistent M₀} {h₁ : SetMaximalConsistent M₁} {h₂ : SetMaximalConsistent M₂}
+    (h_reach : BidirectionalReachable M₀ h₀ M₁ h₁) (h_R : CanonicalR M₂ M₁) :
+    BidirectionalReachable M₀ h₀ M₂ h₂ :=
   BidirectionalReachable.step h_reach (BidirectionalEdge.backward h_R)
 
 /--
 Alternative constructor: reach by taking a forward step.
 -/
 theorem BidirectionalReachable.step_forward {M₀ M₁ M₂ : Set Formula}
-    (h_reach : BidirectionalReachable M₀ M₁) (h_R : CanonicalR M₁ M₂) :
-    BidirectionalReachable M₀ M₂ :=
+    {h₀ : SetMaximalConsistent M₀} {h₁ : SetMaximalConsistent M₁} {h₂ : SetMaximalConsistent M₂}
+    (h_reach : BidirectionalReachable M₀ h₀ M₁ h₁) (h_R : CanonicalR M₁ M₂) :
+    BidirectionalReachable M₀ h₀ M₂ h₂ :=
   BidirectionalReachable.step h_reach (BidirectionalEdge.forward h_R)
 
 /-!
@@ -112,15 +120,18 @@ structure BidirectionalFragment (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsi
   world : Set Formula
   /-- The world is a maximal consistent set -/
   is_mcs : SetMaximalConsistent world
-  /-- The world is bidirectionally reachable from M₀ -/
-  reachable : BidirectionalReachable M₀ world
+  /-- The world is bidirectionally reachable from M₀ (with MCS proofs at each step) -/
+  reachable : BidirectionalReachable M₀ h_mcs₀ world is_mcs
 
 /--
 Extensional equality for bidirectional fragment elements.
+Two fragment elements are equal if their underlying worlds are equal.
 -/
 theorem BidirectionalFragment.ext {a b : BidirectionalFragment M₀ h_mcs₀}
     (h : a.world = b.world) : a = b := by
-  cases a; cases b; simp only [mk.injEq]; exact h
+  cases a; cases b
+  simp only [mk.injEq] at *
+  exact h
 
 /--
 The root `M₀` is in the bidirectional fragment (reflexivity).
@@ -426,6 +437,308 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
       exact set_consistent_not_both h_W'_mcs.1 beta h_beta_W' h_neg_beta_W'
 
 /-!
+## Phase B (continued): Past Linearity and Backward Reachable Linearity
+
+The temp_linearity axiom (future direction) was used to prove `canonical_forward_reachable_linear`.
+We now derive the past-direction analog via temporal duality, then prove backward linearity,
+and finally combine them for full bidirectional totality.
+-/
+
+/--
+Past linearity in MCS: If `P(phi) ∈ M` and `P(psi) ∈ M`, then one of three disjuncts holds:
+1. `P(phi ∧ psi) ∈ M`
+2. `P(phi ∧ P(psi)) ∈ M`
+3. `P(P(phi) ∧ psi) ∈ M`
+
+This is derived from temp_linearity via the temporal duality rule.
+-/
+lemma mcs_P_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi psi : Formula)
+    (h_Pphi : Formula.some_past phi ∈ M)
+    (h_Ppsi : Formula.some_past psi ∈ M) :
+    Formula.some_past (Formula.and phi psi) ∈ M ∨
+    Formula.some_past (Formula.and phi (Formula.some_past psi)) ∈ M ∨
+    Formula.some_past (Formula.and (Formula.some_past phi) psi) ∈ M := by
+  -- Derive past linearity axiom from future linearity via temporal duality
+  -- temp_linearity gives: ⊢ F(φ') ∧ F(ψ') → F(φ' ∧ ψ') ∨ F(φ' ∧ F(ψ')) ∨ F(F(φ') ∧ ψ')
+  -- Apply temporal_duality with φ' = swap_temporal(phi), ψ' = swap_temporal(psi)
+  -- This gives: ⊢ P(phi) ∧ P(psi) → P(phi ∧ psi) ∨ P(phi ∧ P(psi)) ∨ P(P(phi) ∧ psi)
+  have h_lin_future := DerivationTree.axiom []
+    (Formula.and (Formula.some_future phi.swap_temporal) (Formula.some_future psi.swap_temporal) |>.imp
+      (Formula.or (Formula.some_future (Formula.and phi.swap_temporal psi.swap_temporal))
+        (Formula.or (Formula.some_future (Formula.and phi.swap_temporal (Formula.some_future psi.swap_temporal)))
+          (Formula.some_future (Formula.and (Formula.some_future phi.swap_temporal) psi.swap_temporal)))))
+    (Axiom.temp_linearity phi.swap_temporal psi.swap_temporal)
+  have h_dual := DerivationTree.temporal_duality _ h_lin_future
+  -- After swap_temporal, F becomes P, and swap_temporal(swap_temporal(x)) = x
+  simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.imp, Formula.neg,
+    Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
+    Formula.swap_temporal_involution] at h_dual
+  -- h_dual now has the right type for past linearity
+  -- P(phi) ∧ P(psi) ∈ M
+  have h_conj : Formula.and (Formula.some_past phi) (Formula.some_past psi) ∈ M :=
+    set_mcs_conjunction_intro h_mcs h_Pphi h_Ppsi
+  -- Apply past linearity axiom via MCS closure
+  have h_disj := set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_dual) h_conj
+  -- Extract disjuncts
+  rcases set_mcs_disjunction_elim h_mcs h_disj with h1 | h23
+  · exact Or.inl h1
+  · rcases set_mcs_disjunction_elim h_mcs h23 with h2 | h3
+    · exact Or.inr (Or.inl h2)
+    · exact Or.inr (Or.inr h3)
+
+/--
+If `phi ∈ M'` and `CanonicalR M' M`, then `P(phi) ∈ M`.
+
+This is the P-introduction rule: if phi holds in a past-accessible MCS
+(i.e., a predecessor via CanonicalR), then P(phi) holds in the current MCS.
+
+**Proof**: By duality, CanonicalR M' M implies HContent(M) ⊆ M'.
+Then the proof mirrors canonical_F_of_mem_successor but using H/P instead of G/F.
+
+We show ¬P(phi) ∈ M leads to contradiction.
+P(phi) = ¬H(¬phi), so ¬P(phi) = ¬¬H(¬phi). By double negation elimination,
+this gives H(¬phi) ∈ M. Since HContent(M) ⊆ M', we get ¬phi ∈ M'.
+But phi ∈ M' by hypothesis, contradicting MCS consistency.
+-/
+lemma canonical_P_of_mem_predecessor (M M' : Set Formula)
+    (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
+    (h_R : CanonicalR M' M) (phi : Formula) (h_phi : phi ∈ M') :
+    Formula.some_past phi ∈ M := by
+  -- CanonicalR M' M means GContent(M') ⊆ M. By duality: HContent(M) ⊆ M'.
+  have h_R_past : CanonicalR_past M M' :=
+    GContent_subset_implies_HContent_reverse M' M h_mcs' h_mcs h_R
+  -- By MCS negation completeness, either P(phi) ∈ M or ¬P(phi) ∈ M
+  by_contra h_not_P
+  -- Since P(phi) ∉ M, we have ¬P(phi) ∈ M
+  have h_neg_P : Formula.neg (Formula.some_past phi) ∈ M := by
+    rcases set_mcs_negation_complete h_mcs (Formula.some_past phi) with h | h
+    · exact absurd h h_not_P
+    · exact h
+  -- ¬P(phi) = ¬(¬H(¬phi)) = ¬¬H(¬phi). By double negation elimination: H(¬phi) ∈ M
+  have h_neg_P_eq : Formula.neg (Formula.some_past phi) =
+      Formula.neg (Formula.neg (Formula.all_past (Formula.neg phi))) := rfl
+  rw [h_neg_P_eq] at h_neg_P
+  have h_H_neg : Formula.all_past (Formula.neg phi) ∈ M :=
+    mcs_double_neg_elim h_mcs _ h_neg_P
+  -- By CanonicalR_past M M' (= HContent(M) ⊆ M') and H(¬phi) ∈ M, we have ¬phi ∈ M'
+  have h_neg_phi_M' : Formula.neg phi ∈ M' := h_R_past h_H_neg
+  -- Contradiction: phi and ¬phi both in MCS M'
+  exact set_consistent_not_both h_mcs'.1 phi h_phi h_neg_phi_M'
+
+/--
+Linearity of backward-reachable elements: If M₁ and M₂ are both CanonicalR-predecessors
+of M (i.e., CanonicalR M₁ M and CanonicalR M₂ M), then M₁ and M₂ are CanonicalR-comparable.
+
+This is the backward (past) analog of `canonical_forward_reachable_linear`.
+
+**Proof**: By contradiction using mcs_P_linearity on compound formulas with H operators.
+We use the duality: ¬(CanonicalR M₁ M₂) ↔ ¬(HContent(M₂) ⊆ M₁) via the
+GContent/HContent duality for MCSes.
+-/
+theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
+    (h_mcs : SetMaximalConsistent M)
+    (h_mcs1 : SetMaximalConsistent M1)
+    (h_mcs2 : SetMaximalConsistent M2)
+    (h_R1 : CanonicalR M1 M) (h_R2 : CanonicalR M2 M) :
+    CanonicalR M1 M2 ∨ CanonicalR M2 M1 ∨ M1 = M2 := by
+  by_cases h_12 : CanonicalR M1 M2
+  · exact Or.inl h_12
+  · right
+    by_contra h_neg
+    push_neg at h_neg
+    obtain ⟨h_not_21, h_neq⟩ := h_neg
+    -- Use duality: ¬(CanonicalR M1 M2) ↔ ¬(HContent(M2) ⊆ M1)
+    -- CanonicalR M1 M2 = GContent(M1) ⊆ M2
+    -- By duality (for MCSes): GContent(M1) ⊆ M2 ↔ HContent(M2) ⊆ M1
+    -- NOT(CanonicalR M1 M2): ∃ alpha, H(alpha) ∈ M2, alpha ∉ M1
+    have h_not_H21 : ¬(HContent M2 ⊆ M1) := by
+      intro h_HC
+      exact h_12 (HContent_subset_implies_GContent_reverse M2 M1 h_mcs2 h_mcs1 h_HC)
+    rw [Set.not_subset] at h_not_H21
+    obtain ⟨alpha, h_H_alpha_M2, h_alpha_not1⟩ := h_not_H21
+    have h_Halpha_M2 : Formula.all_past alpha ∈ M2 := h_H_alpha_M2
+    have h_neg_alpha_M1 : Formula.neg alpha ∈ M1 := by
+      rcases set_mcs_negation_complete h_mcs1 alpha with h | h
+      · exact absurd h h_alpha_not1
+      · exact h
+    -- NOT(CanonicalR M2 M1): ∃ beta, H(beta) ∈ M1, beta ∉ M2
+    have h_not_H12 : ¬(HContent M1 ⊆ M2) := by
+      intro h_HC
+      exact h_not_21 (HContent_subset_implies_GContent_reverse M1 M2 h_mcs1 h_mcs2 h_HC)
+    rw [Set.not_subset] at h_not_H12
+    obtain ⟨beta, h_H_beta_M1, h_beta_not2⟩ := h_not_H12
+    have h_Hbeta_M1 : Formula.all_past beta ∈ M1 := h_H_beta_M1
+    have h_neg_beta_M2 : Formula.neg beta ∈ M2 := by
+      rcases set_mcs_negation_complete h_mcs2 beta with h | h
+      · exact absurd h h_beta_not2
+      · exact h
+    -- Construct compound formulas in M1 and M2
+    have h_conj_M1 : Formula.and (Formula.all_past beta) (Formula.neg alpha) ∈ M1 :=
+      set_mcs_conjunction_intro h_mcs1 h_Hbeta_M1 h_neg_alpha_M1
+    have h_conj_M2 : Formula.and (Formula.all_past alpha) (Formula.neg beta) ∈ M2 :=
+      set_mcs_conjunction_intro h_mcs2 h_Halpha_M2 h_neg_beta_M2
+    -- P-pullback to M: Since CanonicalR M1 M, phi ∈ M1 → P(phi) ∈ M
+    have h_P_conj1 : Formula.some_past (Formula.and (Formula.all_past beta) (Formula.neg alpha)) ∈ M :=
+      canonical_P_of_mem_predecessor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
+    have h_P_conj2 : Formula.some_past (Formula.and (Formula.all_past alpha) (Formula.neg beta)) ∈ M :=
+      canonical_P_of_mem_predecessor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
+    -- Apply past linearity
+    have h_lin := mcs_P_linearity M h_mcs
+      (Formula.and (Formula.all_past beta) (Formula.neg alpha))
+      (Formula.and (Formula.all_past alpha) (Formula.neg beta))
+      h_P_conj1 h_P_conj2
+    -- All three cases yield contradiction
+    rcases h_lin with h_case1 | h_case2 | h_case3
+    · -- Case 1: P(conj1 ∧ conj2) ∈ M
+      -- Witness W with both conjunctions. H(beta) ∈ W, by T-axiom beta ∈ W.
+      -- Also ¬beta ∈ W. Contradiction.
+      obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case1
+      have h_big_conj := set_mcs_conjunction_elim h_W_mcs h_W_mem
+      have h_left := h_big_conj.1
+      have h_right := h_big_conj.2
+      have h_left_parts := set_mcs_conjunction_elim h_W_mcs h_left
+      have h_right_parts := set_mcs_conjunction_elim h_W_mcs h_right
+      have h_beta_W : beta ∈ W := by
+        have h_T : [] ⊢ (Formula.all_past beta).imp beta :=
+          DerivationTree.axiom [] _ (Axiom.temp_t_past beta)
+        exact set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_left_parts.1
+      have h_neg_beta_W := h_right_parts.2
+      exact set_consistent_not_both h_W_mcs.1 beta h_beta_W h_neg_beta_W
+    · -- Case 2: P(conj1 ∧ P(conj2)) ∈ M
+      -- Witness W with conj1 ∈ W and P(conj2) ∈ W.
+      -- H(beta) ∈ W.
+      -- P(conj2) gives W' with CanonicalR_past W W', so CanonicalR W' W by duality.
+      -- (H(alpha) ∧ ¬beta) ∈ W'. But H(beta) ∈ W and HContent(W) ⊆ W', so beta ∈ W'.
+      -- Also ¬beta ∈ W'. Contradiction.
+      obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case2
+      have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
+      have h_conj1_in_W := h_outer.1
+      have h_P_conj2_W := h_outer.2
+      have h_conj1_parts := set_mcs_conjunction_elim h_W_mcs h_conj1_in_W
+      have h_H_beta_W := h_conj1_parts.1
+      obtain ⟨W', h_W'_mcs, h_R_past_WW', h_conj2_W'⟩ := canonical_backward_P W h_W_mcs _ h_P_conj2_W
+      have h_conj2_parts := set_mcs_conjunction_elim h_W'_mcs h_conj2_W'
+      have h_neg_beta_W' := h_conj2_parts.2
+      -- H(beta) ∈ W and CanonicalR_past W W' gives beta ∈ W'
+      have h_beta_W' : beta ∈ W' := canonical_backward_H W W' h_R_past_WW' beta h_H_beta_W
+      exact set_consistent_not_both h_W'_mcs.1 beta h_beta_W' h_neg_beta_W'
+    · -- Case 3: P(P(conj1) ∧ conj2) ∈ M
+      -- Symmetric to Case 2 with alpha/beta swapped.
+      obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case3
+      have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
+      have h_P_conj1_W := h_outer.1
+      have h_conj2_in_W := h_outer.2
+      have h_conj2_parts := set_mcs_conjunction_elim h_W_mcs h_conj2_in_W
+      have h_H_alpha_W := h_conj2_parts.1
+      obtain ⟨W', h_W'_mcs, h_R_past_WW', h_conj1_W'⟩ := canonical_backward_P W h_W_mcs _ h_P_conj1_W
+      have h_conj1_parts := set_mcs_conjunction_elim h_W'_mcs h_conj1_W'
+      have h_neg_alpha_W' := h_conj1_parts.2
+      have h_alpha_W' : alpha ∈ W' := canonical_backward_H W W' h_R_past_WW' alpha h_H_alpha_W
+      exact set_consistent_not_both h_W'_mcs.1 alpha h_alpha_W' h_neg_alpha_W'
+
+/-!
+## Bidirectional Totality
+
+The main theorem: all elements of the bidirectional fragment are CanonicalR-comparable.
+
+Since `BidirectionalReachable` now carries MCS proofs at every intermediate step,
+we can induct directly and use the linearity lemmas (which require MCS properties).
+-/
+
+/--
+Transitivity step for comparability with a forward CanonicalR edge.
+
+If W₁ is comparable with W₂, and CanonicalR W₂ W₃, then W₁ is comparable with W₃.
+-/
+private lemma comparable_step_forward
+    (W₁ W₂ W₃ : Set Formula)
+    (h_mcs1 : SetMaximalConsistent W₁)
+    (h_mcs2 : SetMaximalConsistent W₂)
+    (h_mcs3 : SetMaximalConsistent W₃)
+    (h_comp : CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂)
+    (h_R23 : CanonicalR W₂ W₃) :
+    CanonicalR W₁ W₃ ∨ CanonicalR W₃ W₁ ∨ W₁ = W₃ := by
+  rcases h_comp with h_12 | h_21 | h_eq
+  · exact Or.inl (canonicalR_transitive W₁ W₂ W₃ h_mcs1 h_12 h_R23)
+  · exact canonical_forward_reachable_linear W₂ W₁ W₃ h_mcs2 h_mcs1 h_mcs3 h_21 h_R23
+  · subst h_eq; exact Or.inl h_R23
+
+/--
+Transitivity step for comparability with a backward CanonicalR edge.
+
+If W₁ is comparable with W₂, and CanonicalR W₃ W₂ (backward edge), then W₁ is comparable with W₃.
+-/
+private lemma comparable_step_backward
+    (W₁ W₂ W₃ : Set Formula)
+    (h_mcs1 : SetMaximalConsistent W₁)
+    (h_mcs2 : SetMaximalConsistent W₂)
+    (h_mcs3 : SetMaximalConsistent W₃)
+    (h_comp : CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂)
+    (h_R32 : CanonicalR W₃ W₂) :
+    CanonicalR W₁ W₃ ∨ CanonicalR W₃ W₁ ∨ W₁ = W₃ := by
+  rcases h_comp with h_12 | h_21 | h_eq
+  · exact canonical_backward_reachable_linear W₂ W₁ W₃ h_mcs2 h_mcs1 h_mcs3 h_12 h_R32
+  · exact Or.inr (Or.inl (canonicalR_transitive W₃ W₂ W₁ h_mcs3 h_R32 h_21))
+  · subst h_eq; exact Or.inr (Or.inl h_R32)
+
+/--
+Core induction lemma: any MCS W₁ that is comparable with M₀ is comparable
+with any MCS W₂ that is bidirectionally reachable from M₀.
+
+This is the key inductive step for bidirectional totality. We induct on
+`BidirectionalReachable M₀ h₀ W₂ h₂`, which carries MCS proofs at every
+intermediate step, enabling the use of linearity lemmas.
+-/
+private theorem comparable_with_reachable
+    {M₀ : Set Formula} {h₀ : SetMaximalConsistent M₀}
+    (W₁ : Set Formula) (h_mcs1 : SetMaximalConsistent W₁)
+    (h_comp_root : CanonicalR W₁ M₀ ∨ CanonicalR M₀ W₁ ∨ W₁ = M₀)
+    (W₂ : Set Formula) (h₂ : SetMaximalConsistent W₂)
+    (h_reach : BidirectionalReachable M₀ h₀ W₂ h₂) :
+    CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂ := by
+  induction h_reach with
+  | refl => exact h_comp_root
+  | @step M₁ M₂ h_mcs_M1 h_mcs_M2 h_reach' h_edge ih =>
+    cases h_edge with
+    | forward h_R =>
+      exact comparable_step_forward W₁ M₁ M₂ h_mcs1 h_mcs_M1 h_mcs_M2 ih h_R
+    | backward h_R =>
+      exact comparable_step_backward W₁ M₁ M₂ h_mcs1 h_mcs_M1 h_mcs_M2 ih h_R
+
+/--
+Every element of the bidirectional fragment is comparable with the root M₀.
+-/
+theorem comparable_with_root
+    (a : BidirectionalFragment M₀ h_mcs₀) :
+    CanonicalR M₀ a.world ∨ CanonicalR a.world M₀ ∨ M₀ = a.world := by
+  exact comparable_with_reachable M₀ h_mcs₀ (Or.inr (Or.inr rfl)) a.world a.is_mcs a.reachable
+
+/--
+Bidirectional totality: any two elements of the bidirectional fragment are CanonicalR-comparable.
+
+∀ a b ∈ BidirectionalFragment M₀, CanonicalR a.world b.world ∨ CanonicalR b.world a.world ∨ a.world = b.world
+
+**Proof**: In two steps:
+1. Show `a.world` is comparable with `M₀` (via `comparable_with_root`)
+2. Show `a.world` is comparable with `b.world` (via `comparable_with_reachable`,
+   using the comparability from step 1 as the base)
+-/
+theorem bidirectional_totally_ordered
+    (a b : BidirectionalFragment M₀ h_mcs₀) :
+    CanonicalR a.world b.world ∨ CanonicalR b.world a.world ∨ a.world = b.world := by
+  -- Step 1: a.world is comparable with M₀
+  have h_a_comp := comparable_with_root a
+  -- Flip to get M₀ comparable with a.world in the right form
+  have h_comp_root : CanonicalR a.world M₀ ∨ CanonicalR M₀ a.world ∨ a.world = M₀ := by
+    rcases h_a_comp with h1 | h2 | h3
+    · exact Or.inr (Or.inl h1)
+    · exact Or.inl h2
+    · exact Or.inr (Or.inr h3.symm)
+  -- Step 2: a.world is comparable with b.world
+  exact comparable_with_reachable a.world a.is_mcs h_comp_root b.world b.is_mcs b.reachable
+
+/-!
 ## Summary
 
 This module establishes:
@@ -436,10 +749,10 @@ This module establishes:
 5. `backward_P_stays_in_fragment`: P-witnesses are in the fragment
 6. `mcs_F_linearity`: Linearity axiom application in MCS context
 7. `canonical_forward_reachable_linear`: Totality for forward-reachable elements
-
-Next steps (remaining Phase B):
-- Extend `canonical_forward_reachable_linear` to bidirectional reachability
-- Prove `bidirectional_totally_ordered` for the full fragment
+8. `mcs_P_linearity`: Past linearity axiom application in MCS context
+9. `canonical_P_of_mem_predecessor`: P-introduction from predecessor MCS
+10. `canonical_backward_reachable_linear`: Totality for backward-reachable elements
+11. `bidirectional_totally_ordered`: Full bidirectional totality
 -/
 
 end Bimodal.Metalogic.Bundle

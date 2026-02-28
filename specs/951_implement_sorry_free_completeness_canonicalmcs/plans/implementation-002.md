@@ -127,7 +127,7 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 
 ---
 
-### Phase B: Prove Linearity of Bidirectional Fragment [IN PROGRESS]
+### Phase B: Prove Linearity of Bidirectional Fragment [COMPLETED]
 
 - **Dependencies**: Phase A
 - **Goal**: Prove any two elements in BidirectionalReachable M₀ are CanonicalR-comparable
@@ -138,10 +138,10 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 - [x] Adapt `canonical_reachable_linear` from Boneyard -> `canonical_forward_reachable_linear`
 - [x] Add `mcs_F_linearity`: linearity axiom application within MCS context
 - [x] Add `canonical_F_of_mem_successor`: F-introduction from CanonicalR successor
-- [ ] Define `bidirectional_path` type: sequence of CanonicalR or CanonicalR⁻¹ edges from M₀
-- [ ] Prove path confluence: any two paths from M₀ to different endpoints share a common comparison point
-- [ ] Prove `bidirectional_totally_ordered`: ∀ W₁ W₂ ∈ BidirectionalReachable M₀, CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂
-- [ ] Use `temp_linearity` axiom to establish ordering at each path junction
+- [x] Define `bidirectional_path` type: MCS-enriched BidirectionalReachable carries MCS proofs (restructured approach)
+- [x] Prove path confluence: via `comparable_step_forward` and `comparable_step_backward` helper lemmas
+- [x] Prove `bidirectional_totally_ordered`: ∀ W₁ W₂ ∈ BidirectionalReachable M₀, CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂
+- [x] Use `temp_linearity` axiom (future AND past via temporal duality) to establish ordering at each path junction
 
 **Timing**: 10-15 hours (hardest phase, ~4 hours completed)
 
@@ -150,8 +150,8 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 
 **Verification**:
 - [x] `lake build` passes
-- [ ] `bidirectional_totally_ordered` proven without sorry
-- [ ] `lean_goal` shows "no goals"
+- [x] `bidirectional_totally_ordered` proven without sorry
+- [x] `lean_goal` shows "no goals"
 
 **Progress:**
 
@@ -162,6 +162,17 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 - Imported: TemporalCoherentConstruction for `mcs_double_neg_elim`
 - Verified: All proofs compile without sorry
 - Remaining: Extend linearity to full bidirectional reachability
+
+**Session: 2026-02-27, sess_1772247674_resume**
+- Refactored: `BidirectionalReachable` to carry MCS proofs at every intermediate step
+- Added: `mcs_P_linearity` - past linearity via temporal duality (42 lines)
+- Added: `canonical_P_of_mem_predecessor` - P-introduction from predecessor MCS (24 lines)
+- Added: `canonical_backward_reachable_linear` - totality for backward-reachable elements (100 lines)
+- Added: `comparable_step_forward` and `comparable_step_backward` - helper transitivity lemmas
+- Added: `comparable_with_reachable` - core induction lemma for bidirectional totality
+- Added: `comparable_with_root` - root comparability
+- Added: `bidirectional_totally_ordered` - full bidirectional totality (12 lines)
+- Verified: All proofs compile without sorry, `lean_goal` shows "no goals"
 
 ---
 
