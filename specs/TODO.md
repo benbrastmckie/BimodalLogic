@@ -24,11 +24,11 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 11-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
-- **Research**: [specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md]
+- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md)
 
 **Description**: Implement standard completeness theorem using CanonicalFMCS.lean infrastructure:
 1. Create Representation module using CanonicalMCS domain
@@ -49,12 +49,15 @@ Key insight: CanonicalFMCS.lean already proves forward_F and backward_P sorry-fr
 
 ### 950. Move Bimodal Boneyard contents to Metalogic Boneyard
 - **Effort**: Small
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: general
 - **Research**: [research-001.md](specs/950_move_bimodal_boneyard_contents/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/950_move_bimodal_boneyard_contents/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260227.md](specs/950_move_bimodal_boneyard_contents/summaries/implementation-summary-20260227.md)
 
 **Description**: Move the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Boneyard/ contents into /home/benjamin/Projects/ProofChecker/Boneyard/Metalogic/ as appropriate.
+
+**Completed**: Moved 112 Lean files to Boneyard/Metalogic/, updated Demo.lean and MaximalConsistent.lean imports to use active modules, consolidated MCS theory.
 
 ---
 

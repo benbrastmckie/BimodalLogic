@@ -8,13 +8,13 @@
     {
       "project_number": 951,
       "project_name": "implement_sorry_free_completeness_canonicalmcs",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-02-27T01:00:00Z",
-      "session_id": "sess_1740672000_r951",
+      "last_updated": "2026-02-28T01:38:00Z",
+      "session_id": "sess_1740672100_r951b",
       "researched": "2026-02-27T01:00:00Z",
       "artifacts": [
         {
@@ -27,14 +27,32 @@
     {
       "project_number": 950,
       "project_name": "move_bimodal_boneyard_contents",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "created": "2026-02-28T01:17:14Z",
-      "last_updated": "2026-02-28T01:29:51Z",
+      "last_updated": "2026-02-28T02:00:00Z",
       "session_id": "sess_1772242169_f601ef",
       "researched": "2026-02-28T01:21:21Z",
       "planned": "2026-02-28T01:25:57Z",
-      "started": "2026-02-28T01:29:51Z"
+      "started": "2026-02-28T01:29:51Z",
+      "completed": "2026-02-28T02:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/950_move_bimodal_boneyard_contents/reports/research-001.md",
+          "type": "research",
+          "summary": "Analyzed 112 Lean files in source Boneyard, identified 2 active imports requiring updates"
+        },
+        {
+          "path": "specs/950_move_bimodal_boneyard_contents/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase plan: preparation, move contents, update imports, build verification"
+        },
+        {
+          "path": "specs/950_move_bimodal_boneyard_contents/summaries/implementation-summary-20260227.md",
+          "type": "summary",
+          "summary": "Moved 112 files to Boneyard/Metalogic, updated Demo.lean and MaximalConsistent.lean imports"
+        }
+      ]
     },
     {
       "project_number": 949,
