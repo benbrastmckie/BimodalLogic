@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Completeness
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+import Mathlib.Order.Antisymmetrization
 
 /-!
 # Bidirectional Reachable Fragment
@@ -739,6 +740,77 @@ theorem bidirectional_totally_ordered
   exact comparable_with_reachable a.world a.is_mcs h_comp_root b.world b.is_mcs b.reachable
 
 /-!
+## Phase D: Totality, Antisymmetrization, and Linear Order
+
+The bidirectional fragment has a total preorder (from `bidirectional_totally_ordered`).
+We derive the `IsTotal` instance and define the Antisymmetrization quotient, which
+gives us a `LinearOrder` (PartialOrder + totality).
+-/
+
+/--
+The preorder on BidirectionalFragment is total: for any two elements, one is ≤ the other.
+
+This follows from `bidirectional_totally_ordered` and the fact that equal worlds
+give equal fragment elements (BidirectionalFragment.ext).
+-/
+theorem fragment_le_total
+    (a b : BidirectionalFragment M₀ h_mcs₀) : a ≤ b ∨ b ≤ a := by
+  rcases bidirectional_totally_ordered a b with h | h | h
+  · exact Or.inl h
+  · exact Or.inr h
+  · have := BidirectionalFragment.ext h
+    subst this
+    exact Or.inl (le_refl a)
+
+/--
+The preorder on BidirectionalFragment is total.
+-/
+noncomputable instance : IsTotal (BidirectionalFragment M₀ h_mcs₀) (· ≤ ·) where
+  total := fragment_le_total
+
+/--
+The Antisymmetrization quotient of the bidirectional fragment by the preorder.
+
+Two fragment elements are identified if they are ≤-equivalent (CanonicalR in both directions).
+This quotient has a canonical `PartialOrder` from Mathlib's `Antisymmetrization`.
+-/
+abbrev BidirectionalQuotient (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀) :=
+  Antisymmetrization (BidirectionalFragment M₀ h_mcs₀) (· ≤ ·)
+
+/--
+The BidirectionalQuotient has a LinearOrder: it inherits PartialOrder from
+Antisymmetrization and totality from the fragment's total preorder.
+-/
+noncomputable instance instLinearOrderBidirectionalQuotient :
+    LinearOrder (BidirectionalQuotient M₀ h_mcs₀) where
+  le_total := by
+    intro a b
+    induction a using Quotient.ind with
+    | _ a =>
+      induction b using Quotient.ind with
+      | _ b =>
+        show a ≤ b ∨ b ≤ a
+        exact fragment_le_total a b
+  toDecidableLE := Classical.decRel _
+
+/--
+Map a fragment element to its equivalence class in the quotient.
+-/
+def BidirectionalFragment.toQuotient (a : BidirectionalFragment M₀ h_mcs₀) :
+    BidirectionalQuotient M₀ h_mcs₀ :=
+  toAntisymmetrization (· ≤ ·) a
+
+/--
+The quotient map preserves the order.
+-/
+theorem BidirectionalFragment.toQuotient_le
+    (a b : BidirectionalFragment M₀ h_mcs₀) :
+    a.toQuotient ≤ b.toQuotient ↔ a ≤ b := by
+  constructor
+  · intro h; exact h
+  · intro h; exact h
+
+/-!
 ## Summary
 
 This module establishes:
@@ -753,6 +825,8 @@ This module establishes:
 9. `canonical_P_of_mem_predecessor`: P-introduction from predecessor MCS
 10. `canonical_backward_reachable_linear`: Totality for backward-reachable elements
 11. `bidirectional_totally_ordered`: Full bidirectional totality
+12. `fragment_le_total`: Totality of preorder on fragment
+13. `BidirectionalQuotient`: Antisymmetrization quotient with LinearOrder
 -/
 
 end Bimodal.Metalogic.Bundle

@@ -204,48 +204,101 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 
 ---
 
-### Phase D: Antisymmetrization and Countability [NOT STARTED]
+### Phase D: Antisymmetrization, Linear Order, and Fragment FMCS [COMPLETED]
 
 - **Dependencies**: Phase B
-- **Goal**: Create LinearOrder quotient and prove countability
+- **Goal**: Create LinearOrder quotient and fragment-level FMCS with sorry-free F/P
 
 **Tasks**:
-- [ ] Import Mathlib `Antisymmetrization` API
-- [ ] Define `BidirectionalQuotient M₀` = Antisymmetrization (BidirectionalReachable M₀) CanonicalR
-- [ ] Prove `quotient_linear_order`: BidirectionalQuotient has LinearOrder instance
-- [ ] Prove `fragment_countable`: BidirectionalReachable M₀ is countable (generated from countable formula set)
-- [ ] Prove `quotient_countable`: BidirectionalQuotient is countable
+- [x] Import Mathlib `Antisymmetrization` API
+- [x] Prove `fragment_le_total`: total preorder on BidirectionalFragment
+- [x] Define `BidirectionalQuotient M₀` = Antisymmetrization (BidirectionalFragment M₀) (· ≤ ·)
+- [x] Prove `instLinearOrderBidirectionalQuotient`: LinearOrder instance
+- [x] Define `fragmentFMCS`: FMCS on BidirectionalFragment (sorry-free)
+- [x] Prove `fragmentFMCS_forward_F`: forward_F at fragment level (sorry-free!)
+- [x] Prove `fragmentFMCS_backward_P`: backward_P at fragment level (sorry-free!)
+- [x] Prove `fragmentFMCS_temporally_coherent`: temporal coherence at fragment level
+- [x] Prove `witness_seed_consistent`: key lemma for Int chain construction
+- [x] Define BoxContent, BoxWitnessSeed, diamondWitnessMCS infrastructure
+- [x] Prove `box_witness_seed_consistent`: Diamond witness consistency
+- [-] Prove `fragment_countable`: DEFERRED (fragment may be uncountable in general)
+- [-] Prove `quotient_countable`: DEFERRED (depends on countability)
 
 **Timing**: 6-8 hours
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - extend
+**Note on countability**: The BidirectionalFragment may be uncountable since each
+CanonicalR step has uncountably many possible successor MCSes (via Lindenbaum).
+The countability is not needed for the fragment-level FMCS construction. For the
+Int conversion, a countable sub-fragment can be built iteratively.
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - extended with LinearOrder
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalCompleteness.lean` - rewritten with fragmentFMCS
 
 **Verification**:
-- `lake build` passes
-- LinearOrder and Countable instances verified
+- [x] `lake build` passes
+- [x] LinearOrder instance verified
+- [x] No sorries in modified files
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772247674_resume (iteration 2)**
+- Added: `fragment_le_total` - totality of preorder on BidirectionalFragment
+- Added: `IsTotal` instance for BidirectionalFragment
+- Added: `BidirectionalQuotient` type alias (Antisymmetrization)
+- Added: `instLinearOrderBidirectionalQuotient` - LinearOrder instance
+- Added: `BidirectionalFragment.toQuotient` and `toQuotient_le`
+- Added: `fragmentFMCS` - FMCS on BidirectionalFragment (sorry-free, 12 lines)
+- Added: `fragmentFMCS_forward_F` - forward_F at fragment level (sorry-free, 4 lines)
+- Added: `fragmentFMCS_backward_P` - backward_P at fragment level (sorry-free, 5 lines)
+- Added: `fragmentFMCS_temporally_coherent` - temporal coherence (sorry-free)
+- Added: `witness_seed_consistent` - key lemma for Int chain construction (8 lines)
+- Added: BoxContent, BoxWitnessSeed, diamondWitnessMCS infrastructure (copied from iteration 1)
+- Added: `box_witness_seed_consistent` - Diamond witness consistency (sorry-free, 28 lines)
+- Verified: All proofs compile without sorry, `lake build` passes (705 jobs)
+- Key insight: fragmentFMCS resolves the F-persistence problem at the BidirectionalFragment level.
+  Converting to FMCS Int remains the main challenge for subsequent phases.
 
 ---
 
-### Phase E: Embedding into Int [NOT STARTED]
+### Phase E: Embedding into Int [IN PROGRESS]
 
 - **Dependencies**: Phase D
-- **Goal**: Embed countable linear order into Int
+- **Goal**: Build FMCS Int from fragment-level FMCS via order-preserving embedding
+
+**Revised approach**: Instead of embedding the quotient into Int, build a countable
+sub-fragment closed under F/P witnesses and embed that into Int. The fragment-level
+FMCS has sorry-free forward_F/backward_P; the challenge is transferring these to Int.
 
 **Tasks**:
-- [ ] Use Mathlib `Order.embedding_from_countable_to_dense` or direct construction
-- [ ] Define `embedIntoInt : BidirectionalQuotient M₀ ↪o Int` (order embedding)
-- [ ] Prove embedding is order-preserving: q₁ ≤ q₂ → embedIntoInt q₁ ≤ embedIntoInt q₂
-- [ ] Define inverse image: `preimage : Int → Option (BidirectionalQuotient M₀)`
+- [x] Define `fragmentGSucc`: GContent successor in the fragment
+- [x] Prove `fragmentGSucc_le`: successor is ≥ predecessor
+- [x] Define `fragmentFSucc`: enriched successor with F-witness placement
+- [x] Prove `fragmentFSucc_contains_witness`: successor contains witness formula
+- [x] Prove `fragmentFSucc_le`: enriched successor is ≥ predecessor
+- [x] Prove `enriched_seed_consistent_from_F`: KEY lemma resolving F-persistence
+- [x] Prove `enriched_seed_consistent_from_P`: backward analog
+- [ ] Define `FPClosure`: countable sub-fragment closed under F/P witnesses
+- [ ] Prove `FPClosure` is countable
+- [ ] Prove `FPClosure` is linearly ordered
+- [ ] Define order-preserving embedding `FPClosure → Int`
+- [ ] Define `pullback_fmcs : FMCS Int` via the embedding
+- [ ] Prove `pullback_fmcs` has forward_G, backward_H, forward_F, backward_P
 
-**Timing**: 6-8 hours
+**Key mathematical insight**: `enriched_seed_consistent_from_F` shows that when
+`F(φ) ∈ w.world` for a fragment element `w`, the seed `{φ} ∪ GContent(w.world)`
+is consistent. This resolves the fundamental F-persistence blocker from the
+DovetailingChain approach.
 
-**Files to create**:
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalEmbedding.lean` - new file (or extend BidirectionalReachable)
+**Timing**: 6-8 hours (revised: 10-15 hours for full FPClosure + embedding)
+
+**Files to modify**:
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalCompleteness.lean` - extend
 
 **Verification**:
 - `lake build` passes
 - Order embedding verified
+- No sorries in FMCS Int construction
 
 ---
 

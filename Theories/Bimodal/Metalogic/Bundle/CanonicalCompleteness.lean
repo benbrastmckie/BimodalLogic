@@ -3,41 +3,37 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+import Bimodal.Metalogic.Bundle.BidirectionalReachable
 
 /-!
 # Canonical Completeness: Sorry-Free BFMCS Construction
 
-This module constructs a sorry-free fully saturated `BFMCS Int` by:
-1. Using `canonicalMCSBFMCS` (FMCS over all MCS, sorry-free forward_F/backward_P)
-2. Building each family as a Z-indexed chain from a root MCS
-3. Using the canonical frame's linearity for ordering
-4. Proving modal saturation with temporally coherent witness families
+This module constructs a sorry-free fully saturated `BFMCS Int` by using the
+**Bidirectional Reachable Fragment** approach from BidirectionalReachable.lean.
+
+## Strategy
+
+1. Define `fragmentFMCS`: an `FMCS (BidirectionalFragment M₀ h_mcs₀)` where each
+   fragment element maps to its own world. This FMCS has sorry-free forward_F and
+   backward_P (from fragment closure properties).
+
+2. Build an order-preserving chain `Int → BidirectionalFragment M₀ h_mcs₀` that
+   visits all necessary F/P witnesses, then pull back `fragmentFMCS` along this chain.
+
+3. Construct BFMCS Int with modal saturation using witness families, each built
+   from a BidirectionalFragment rooted at the witness MCS.
 
 ## Key Insight
 
-The CanonicalMCS approach gives us sorry-free forward_F and backward_P at the
-abstract (Preorder CanonicalMCS) level. To get FMCS Int, we build a Z-indexed
-chain from each root MCS using GContent/HContent seeds. The key observation is
-that for each root MCS, the forward chain (using GContent seeds) and backward
-chain (using HContent seeds) produce an FMCS Int where:
-- forward_G and backward_H hold by chain construction
-- forward_F and backward_P are obtained by transferring from CanonicalMCS level
-
-## Strategy for fully_saturated_bfmcs_exists_int
-
-We prove `fully_saturated_bfmcs_exists_int` by constructing:
-1. An eval family (FMCS Int) from the root MCS with forward_F and backward_P
-2. For each diamond witness obligation, a witness family (also FMCS Int) with F/P
-3. Modal saturation and temporal coherence for ALL families
-
-The key innovation: witness families are NOT constant. Each witness family is built
-using the same CanonicalMCS-level construction (canonicalMCSBFMCS provides F/P),
-embedded into Int via a chain.
+The BidirectionalFragment approach resolves the F-persistence problem because:
+- Forward_F and backward_P are proven at the fragment level (Phase A/C)
+- The fragment is totally ordered (Phase B)
+- Witness seeds are consistent because fragment elements witness consistency
 
 ## References
 
+- BidirectionalReachable.lean: fragment infrastructure, totality, F/P closure
 - CanonicalFMCS.lean: canonicalMCS_forward_F, canonicalMCS_backward_P (sorry-free)
-- DovetailingChain.lean: chain construction infrastructure
 - Task 951 plan v2: Bidirectional Reachable Fragment approach
 -/
 
@@ -47,447 +43,383 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
-/-!
-## Phase A: Chain-Based FMCS Int from Root MCS
-
-Given a root MCS M₀, construct an FMCS Int where:
-- mcs(0) = M₀
-- mcs(n+1) = Lindenbaum(GContent(mcs(n))) for n ≥ 0
-- mcs(-n-1) = Lindenbaum(HContent(mcs(-n))) for n ≥ 0
-
-The key properties:
-- forward_G: if G(phi) in mcs(t) and t ≤ s, then phi in mcs(s) [by GContent seed]
-- backward_H: if H(phi) in mcs(t) and s ≤ t, then phi in mcs(s) [by HContent seed]
-- forward_F: if F(phi) in mcs(t), exists s ≥ t with phi in mcs(s) [FROM CanonicalMCS level]
-- backward_P: if P(phi) in mcs(t), exists s ≤ t with phi in mcs(s) [FROM CanonicalMCS level]
-
-The forward_F/backward_P transfer works because:
-1. Each mcs(t) IS an MCS (a CanonicalMCS element)
-2. canonicalMCS_forward_F gives a witness MCS W with CanonicalR mcs(t) W
-3. W may not be in the chain, but we only need EXISTENCE of s with phi in mcs(s)
-4. We use the linearity of CanonicalR on reachable elements to find s
-
-HOWEVER: The transfer from CanonicalMCS to Int is the hard part. W is an MCS
-that may not correspond to any integer position in the chain. The chain only
-contains Lindenbaum extensions of GContent/HContent seeds, not arbitrary MCS.
-
-This is exactly the F-persistence problem identified in research-003.md.
-
-## Alternative: Direct CanonicalMCS-level BFMCS
-
-Instead of embedding into Int, we observe that the completeness proof chain in
-Representation.lean needs BFMCS Int specifically. But the proof structure suggests
-an alternative: prove fully_saturated_bfmcs_exists_int by using the existing
-DovetailingChain for the FMCS Int structure (which already has forward_G, backward_H)
-and proving forward_F/backward_P via a novel argument that uses the CanonicalMCS
-level as an intermediary.
-
-The argument: each mcs(t) in the DovetailingChain corresponds to a CanonicalMCS
-element. When F(phi) in mcs(t), canonicalMCS_forward_F gives witness W with
-CanonicalR mcs(t) W and phi in W. By canonical_reachable_linear, W is comparable
-with all chain elements reachable from mcs(0). We need to show there exists an
-integer s ≥ t with phi in mcs(s).
-
-This requires: the chain "visits" enough MCS elements to include a witness for
-every F-obligation. This is NOT guaranteed by a simple GContent chain.
-
-## Pragmatic Approach: Prove fully_saturated_bfmcs_exists_int Directly
-
-Given the complexity of the embedding approach, we take a more direct route:
-construct the BFMCS Int by combining:
-1. The DovetailingChain for the FMCS Int structure
-2. Modal saturation via Zorn's lemma (adding witness families)
-3. For temporal coherence of witness families: use CanonicalMCS-level forward_F/backward_P
-   transferred to Int via the chain construction for each witness
-
-Each witness family gets its OWN chain (not a constant family), ensuring F/P hold.
--/
+variable {M₀ : Set Formula} {h_mcs₀ : SetMaximalConsistent M₀}
 
 /-!
-## CanonicalMCS-Level Modal Saturation
+## Phase D/E: FMCS on BidirectionalFragment
 
-We build modal saturation at the CanonicalMCS level first, then transfer to Int.
-At the CanonicalMCS level, witness families are trivial: every MCS is in the domain.
+The fragment FMCS maps each element to its own world. Forward_G and backward_H
+follow from CanonicalR properties. Forward_F and backward_P follow from
+the fragment's closure properties (forward_F_stays_in_fragment, backward_P_stays_in_fragment).
+
+This gives us a COMPLETE sorry-free FMCS at the BidirectionalFragment level.
+The remaining challenge is converting to FMCS Int.
 -/
 
 /--
-At the CanonicalMCS level, the diamond witness for psi in an MCS M is simply
-the MCS obtained by extending {psi} ∪ BoxContent(M) via Lindenbaum.
+FMCS over the BidirectionalFragment: each element maps to its own world.
 
-BoxContent(M) = {phi | Box(phi) ∈ M} is the set of formulas that are necessarily
-true at M.
+This is analogous to `canonicalMCSBFMCS` but restricted to the bidirectional fragment.
+The key advantage is that forward_F and backward_P hold trivially from the
+fragment's closure properties.
+
+**Properties (all sorry-free)**:
+- `forward_G`: from CanonicalR = GContent subset
+- `backward_H`: from HContent/GContent duality
+- `forward_F`: from `forward_F_stays_in_fragment`
+- `backward_P`: from `backward_P_stays_in_fragment`
+-/
+noncomputable def fragmentFMCS :
+    FMCS (BidirectionalFragment M₀ h_mcs₀) where
+  mcs := fun w => w.world
+  is_mcs := fun w => w.is_mcs
+  forward_G := fun w₁ w₂ _ h_le h_G =>
+    -- CanonicalR w₁.world w₂.world means GContent(w₁) ⊆ w₂, so G(φ) ∈ w₁ → φ ∈ w₂
+    h_le h_G
+  backward_H := fun w₁ w₂ _ h_le h_H =>
+    -- CanonicalR w₂.world w₁.world → HContent(w₁) ⊆ w₂ (by duality)
+    (GContent_subset_implies_HContent_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_le) h_H
+
+/--
+Forward_F for fragmentFMCS: if `F(φ) ∈ w.world`, there exists `s ≥ w` in the
+fragment with `φ ∈ s.world`.
+
+This is the key property that was blocked for the DovetailingChain but is
+trivial for the BidirectionalFragment approach.
+-/
+theorem fragmentFMCS_forward_F
+    (w : BidirectionalFragment M₀ h_mcs₀) (φ : Formula)
+    (h_F : Formula.some_future φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs w) :
+    ∃ s : BidirectionalFragment M₀ h_mcs₀,
+      w ≤ s ∧ φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs s := by
+  obtain ⟨s, h_R, h_phi⟩ := forward_F_stays_in_fragment w φ h_F
+  exact ⟨s, h_R, h_phi⟩
+
+/--
+Backward_P for fragmentFMCS: if `P(φ) ∈ w.world`, there exists `s ≤ w` in the
+fragment with `φ ∈ s.world`.
+
+This is the past-direction analog, equally trivial at the fragment level.
+-/
+theorem fragmentFMCS_backward_P
+    (w : BidirectionalFragment M₀ h_mcs₀) (φ : Formula)
+    (h_P : Formula.some_past φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs w) :
+    ∃ s : BidirectionalFragment M₀ h_mcs₀,
+      s ≤ w ∧ φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs s := by
+  obtain ⟨s, h_R_past, h_phi⟩ := backward_P_stays_in_fragment w φ h_P
+  have h_R : CanonicalR s.world w.world :=
+    HContent_subset_implies_GContent_reverse w.world s.world w.is_mcs s.is_mcs h_R_past
+  exact ⟨s, h_R, h_phi⟩
+
+/--
+The fragmentFMCS is temporally coherent: all F/P obligations have witnesses in the fragment.
+-/
+theorem fragmentFMCS_temporally_coherent :
+    (∀ w : BidirectionalFragment M₀ h_mcs₀, ∀ φ : Formula,
+      Formula.some_future φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs w →
+      ∃ s, w ≤ s ∧ φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs s) ∧
+    (∀ w : BidirectionalFragment M₀ h_mcs₀, ∀ φ : Formula,
+      Formula.some_past φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs w →
+      ∃ s, s ≤ w ∧ φ ∈ (fragmentFMCS (h_mcs₀ := h_mcs₀)).mcs s) :=
+  ⟨fragmentFMCS_forward_F, fragmentFMCS_backward_P⟩
+
+/-!
+## Witness Seed Consistency
+
+This crucial lemma enables the Int-chain construction. When a witness `W` exists
+in the fragment with `CanonicalR M W` and `φ ∈ W`, the seed `{φ} ∪ GContent(M)`
+is consistent. This is because `W` contains both `φ` and `GContent(M)`.
+-/
+
+/--
+If `CanonicalR M W` and `φ ∈ W`, then `{φ} ∪ GContent(M)` is consistent.
+
+**Proof**: Every formula in the seed is in `W` (an MCS):
+- `φ ∈ W` by hypothesis
+- `GContent(M) ⊆ W` by `CanonicalR M W`
+Since `W` is consistent, any finite subset derives only derivable conclusions.
+-/
+theorem witness_seed_consistent (M W : Set Formula)
+    (h_mcs_W : SetMaximalConsistent W)
+    (h_R : CanonicalR M W)
+    (φ : Formula) (h_phi : φ ∈ W) :
+    SetConsistent ({φ} ∪ GContent M) := by
+  intro L hL_sub ⟨d⟩
+  have h_L_in_W : ∀ x ∈ L, x ∈ W := by
+    intro x hx
+    have := hL_sub x hx
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with rfl | h_gc
+    · exact h_phi
+    · exact h_R h_gc
+  exact h_mcs_W.1 L h_L_in_W ⟨d⟩
+
+/-!
+## Phase E: Enriched Chain Construction (Fragment → Int)
+
+The fragment-level FMCS has all properties sorry-free, but we need FMCS Int.
+To convert, we build an order-preserving chain `Int → Fragment` that visits
+all necessary F/P witnesses.
+
+### Key Lemma: Enriched Seed Consistency
+
+When `F(φ) ∈ w.world` for a fragment element `w`, the enriched seed
+`{φ} ∪ GContent(w.world)` is consistent. This is because
+`forward_F_stays_in_fragment` gives a witness `W` with `CanonicalR w W`
+and `φ ∈ W`, so `W ⊇ {φ} ∪ GContent(w.world)` and `W` is consistent.
+
+This resolves the F-persistence problem that blocked the DovetailingChain.
+-/
+
+/--
+GContent of a fragment element is consistent.
+Follows from GContent(M) ⊆ M (by T-axiom) and M is consistent.
+-/
+lemma GContent_consistent_of_fragment
+    (w : BidirectionalFragment M₀ h_mcs₀) :
+    SetConsistent (GContent w.world) := by
+  intro L hL_sub ⟨d⟩
+  have h_L_in_M : ∀ x ∈ L, x ∈ w.world := by
+    intro x hx
+    have h_gc := hL_sub x hx
+    have h_T := DerivationTree.axiom [] ((Formula.all_future x).imp x) (Axiom.temp_t_future x)
+    exact set_mcs_implication_property w.is_mcs (theorem_in_mcs w.is_mcs h_T) h_gc
+  exact w.is_mcs.1 L h_L_in_M ⟨d⟩
+
+/--
+When `F(φ) ∈ w.world`, the enriched seed `{φ} ∪ GContent(w.world)` is consistent.
+
+This is the KEY lemma that resolves the F-persistence problem.
+The BidirectionalFragment's closure property (`forward_F_stays_in_fragment`)
+provides a witness MCS `W` with `CanonicalR w W` and `φ ∈ W`. Since `W` contains
+both `φ` and `GContent(w.world)`, the seed is consistent.
+-/
+theorem enriched_seed_consistent_from_F
+    (w : BidirectionalFragment M₀ h_mcs₀)
+    (φ : Formula) (h_F : Formula.some_future φ ∈ w.world) :
+    SetConsistent ({φ} ∪ GContent w.world) := by
+  obtain ⟨s, h_R, h_phi⟩ := forward_F_stays_in_fragment w φ h_F
+  exact witness_seed_consistent w.world s.world s.is_mcs h_R φ h_phi
+
+/--
+HContent of a fragment element is consistent.
+Follows from HContent(M) ⊆ M (by T-axiom for past) and M is consistent.
+-/
+lemma HContent_consistent_of_fragment
+    (w : BidirectionalFragment M₀ h_mcs₀) :
+    SetConsistent (HContent w.world) := by
+  intro L hL_sub ⟨d⟩
+  have h_L_in_M : ∀ x ∈ L, x ∈ w.world := by
+    intro x hx
+    have h_hc := hL_sub x hx
+    have h_T := DerivationTree.axiom [] ((Formula.all_past x).imp x) (Axiom.temp_t_past x)
+    exact set_mcs_implication_property w.is_mcs (theorem_in_mcs w.is_mcs h_T) h_hc
+  exact w.is_mcs.1 L h_L_in_M ⟨d⟩
+
+/--
+When `P(φ) ∈ w.world`, the enriched seed `{φ} ∪ HContent(w.world)` is consistent.
+
+This is the backward analog of `enriched_seed_consistent_from_F`.
+-/
+theorem enriched_seed_consistent_from_P
+    (w : BidirectionalFragment M₀ h_mcs₀)
+    (φ : Formula) (h_P : Formula.some_past φ ∈ w.world) :
+    SetConsistent ({φ} ∪ HContent w.world) := by
+  obtain ⟨s, h_R_past, h_phi⟩ := backward_P_stays_in_fragment w φ h_P
+  -- s has CanonicalR_past w.world s.world (HContent(w) ⊆ s) and φ ∈ s.world
+  -- So {φ} ∪ HContent(w.world) ⊆ s.world (consistent)
+  intro L hL_sub ⟨d⟩
+  have h_L_in_s : ∀ x ∈ L, x ∈ s.world := by
+    intro x hx
+    have := hL_sub x hx
+    simp only [Set.mem_union, Set.mem_singleton_iff] at this
+    rcases this with rfl | h_hc
+    · exact h_phi
+    · exact h_R_past h_hc
+  exact s.is_mcs.1 L h_L_in_s ⟨d⟩
+
+/--
+Build a GContent-successor in the fragment.
+Given `w` in the fragment, produce `w'` with `CanonicalR w w'` and `w'` in the fragment.
+-/
+noncomputable def fragmentGSucc (w : BidirectionalFragment M₀ h_mcs₀) :
+    BidirectionalFragment M₀ h_mcs₀ :=
+  w.forward_closed
+    (lindenbaumMCS_set (GContent w.world) (GContent_consistent_of_fragment w))
+    (lindenbaumMCS_set_is_mcs _ (GContent_consistent_of_fragment w))
+    (fun _ h_G => lindenbaumMCS_set_extends _ (GContent_consistent_of_fragment w) h_G)
+
+/--
+`fragmentGSucc w ≥ w` in the preorder.
+-/
+lemma fragmentGSucc_le (w : BidirectionalFragment M₀ h_mcs₀) :
+    w ≤ fragmentGSucc w := by
+  show CanonicalR w.world (fragmentGSucc w).world
+  intro φ h_G
+  exact lindenbaumMCS_set_extends _ (GContent_consistent_of_fragment w) h_G
+
+/--
+Build an enriched successor in the fragment that contains a witness formula.
+Given `w` in the fragment and `F(φ) ∈ w.world`, produce `w'` with
+`CanonicalR w w'`, `φ ∈ w'`, and `w'` in the fragment.
+-/
+noncomputable def fragmentFSucc
+    (w : BidirectionalFragment M₀ h_mcs₀)
+    (φ : Formula) (h_F : Formula.some_future φ ∈ w.world) :
+    BidirectionalFragment M₀ h_mcs₀ :=
+  w.forward_closed
+    (lindenbaumMCS_set ({φ} ∪ GContent w.world) (enriched_seed_consistent_from_F w φ h_F))
+    (lindenbaumMCS_set_is_mcs _ (enriched_seed_consistent_from_F w φ h_F))
+    (fun _ h_G => lindenbaumMCS_set_extends _ (enriched_seed_consistent_from_F w φ h_F)
+      (Set.mem_union_right _ h_G))
+
+/--
+The enriched successor contains the witness formula.
+-/
+lemma fragmentFSucc_contains_witness
+    (w : BidirectionalFragment M₀ h_mcs₀)
+    (φ : Formula) (h_F : Formula.some_future φ ∈ w.world) :
+    φ ∈ (fragmentFSucc w φ h_F).world := by
+  show φ ∈ (lindenbaumMCS_set ({φ} ∪ GContent w.world)
+    (enriched_seed_consistent_from_F w φ h_F))
+  exact lindenbaumMCS_set_extends _ (enriched_seed_consistent_from_F w φ h_F)
+    (Set.mem_union_left _ (Set.mem_singleton φ))
+
+/--
+The enriched successor is ≥ w.
+-/
+lemma fragmentFSucc_le
+    (w : BidirectionalFragment M₀ h_mcs₀)
+    (φ : Formula) (h_F : Formula.some_future φ ∈ w.world) :
+    w ≤ fragmentFSucc w φ h_F := by
+  show CanonicalR w.world (fragmentFSucc w φ h_F).world
+  intro ψ h_G
+  exact lindenbaumMCS_set_extends _ (enriched_seed_consistent_from_F w φ h_F)
+    (Set.mem_union_right _ h_G)
+
+/-!
+## BoxContent and Diamond Witness Infrastructure
+
+These definitions support modal saturation: constructing witness families for
+Diamond obligations.
+-/
+
+/--
+BoxContent(M) = {φ | Box(φ) ∈ M}: the set of formulas necessarily true at M.
 -/
 def BoxContent (M : Set Formula) : Set Formula :=
-  {phi | Formula.box phi ∈ M}
+  {φ | Formula.box φ ∈ M}
 
 /--
-BoxWitnessSeed for Diamond(psi): {psi} ∪ BoxContent(M).
+BoxWitnessSeed for Diamond(ψ): {ψ} ∪ BoxContent(M).
 -/
-def BoxWitnessSeed (M : Set Formula) (psi : Formula) : Set Formula :=
-  {psi} ∪ BoxContent M
+def BoxWitnessSeed (M : Set Formula) (ψ : Formula) : Set Formula :=
+  {ψ} ∪ BoxContent M
 
 /--
-psi is in its own BoxWitnessSeed.
+ψ is in its own BoxWitnessSeed.
 -/
-lemma psi_mem_BoxWitnessSeed (M : Set Formula) (psi : Formula) :
-    psi ∈ BoxWitnessSeed M psi :=
-  Set.mem_union_left _ (Set.mem_singleton psi)
+lemma psi_mem_BoxWitnessSeed (M : Set Formula) (ψ : Formula) :
+    ψ ∈ BoxWitnessSeed M ψ :=
+  Set.mem_union_left _ (Set.mem_singleton ψ)
 
 /--
 BoxContent is a subset of BoxWitnessSeed.
 -/
-lemma BoxContent_subset_BoxWitnessSeed (M : Set Formula) (psi : Formula) :
-    BoxContent M ⊆ BoxWitnessSeed M psi :=
+lemma BoxContent_subset_BoxWitnessSeed (M : Set Formula) (ψ : Formula) :
+    BoxContent M ⊆ BoxWitnessSeed M ψ :=
   Set.subset_union_right
 
 /--
-BoxWitnessSeed consistency: If Diamond(psi) ∈ MCS M, then {psi} ∪ BoxContent(M) is consistent.
+BoxWitnessSeed consistency: If Diamond(ψ) ∈ MCS M, then {ψ} ∪ BoxContent(M) is consistent.
 
 **Proof Strategy**:
-Suppose {psi} ∪ BoxContent(M) is inconsistent.
-Then there exist phi₁, ..., phi_n in BoxContent(M) such that {psi, phi₁, ..., phi_n} ⊢ ⊥.
-By deduction: {phi₁, ..., phi_n} ⊢ ¬psi.
-By modal necessitation and K distribution: Box(phi₁), ..., Box(phi_n) ⊢ Box(¬psi).
-Since Box(phi_i) ∈ M for all i, by MCS closure: Box(¬psi) ∈ M.
-But Diamond(psi) = ¬Box(¬psi) ∈ M by hypothesis.
-Contradiction.
+Suppose {ψ} ∪ BoxContent(M) is inconsistent.
+Then there exist φ₁, ..., φ_n in BoxContent(M) with {ψ, φ₁, ..., φ_n} ⊢ ⊥.
+By deduction: {φ₁, ..., φ_n} ⊢ ¬ψ.
+By generalized modal K: Box(φ₁), ..., Box(φ_n) ⊢ Box(¬ψ).
+Since Box(φ_i) ∈ M, by MCS closure: Box(¬ψ) ∈ M.
+But Diamond(ψ) = ¬Box(¬ψ) ∈ M, contradiction.
 -/
 theorem box_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ M) :
-    SetConsistent (BoxWitnessSeed M psi) := by
+    (ψ : Formula) (h_diamond : diamondFormula ψ ∈ M) :
+    SetConsistent (BoxWitnessSeed M ψ) := by
   intro L hL_sub ⟨d⟩
-  by_cases h_psi_in : psi ∈ L
-  · -- Case: psi ∈ L
-    let L_filt := L.filter (fun y => decide (y ≠ psi))
+  by_cases h_psi_in : ψ ∈ L
+  · let L_filt := L.filter (fun y => decide (y ≠ ψ))
     have h_perm := cons_filter_neq_perm h_psi_in
-    have d_reord : DerivationTree (psi :: L_filt) Formula.bot :=
+    have d_reord : DerivationTree (ψ :: L_filt) Formula.bot :=
       derivation_exchange d (fun x => (h_perm x).symm)
-    have d_neg : L_filt ⊢ Formula.neg psi :=
-      deduction_theorem L_filt psi Formula.bot d_reord
-    -- Get Box(chi) ∈ M for each chi ∈ L_filt from BoxContent
+    have d_neg : L_filt ⊢ Formula.neg ψ :=
+      deduction_theorem L_filt ψ Formula.bot d_reord
     have h_Box_filt_in_M : ∀ chi ∈ L_filt, Formula.box chi ∈ M := by
       intro chi h_mem
       have h_and := List.mem_filter.mp h_mem
       have h_in_L := h_and.1
-      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
+      have h_ne : chi ≠ ψ := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
       have h_in_seed := hL_sub chi h_in_L
       simp only [BoxWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
       rcases h_in_seed with h_eq | h_boxcontent
       · exact absurd h_eq h_ne
       · exact h_boxcontent
-    -- Apply generalized modal K (Box distributes over derivation)
-    have d_Box_neg : (Context.map Formula.box L_filt) ⊢ Formula.box (Formula.neg psi) :=
-      Bimodal.Theorems.generalized_modal_k L_filt (Formula.neg psi) d_neg
-    -- All formulas in Box(L_filt) are in M
+    have d_Box_neg : (Context.map Formula.box L_filt) ⊢ Formula.box (Formula.neg ψ) :=
+      Bimodal.Theorems.generalized_modal_k L_filt (Formula.neg ψ) d_neg
     have h_Box_context_in_M : ∀ phi ∈ Context.map Formula.box L_filt, phi ∈ M := by
       intro phi h_mem
       rw [Context.mem_map_iff] at h_mem
       rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
       rw [← h_eq]
       exact h_Box_filt_in_M chi h_chi_in
-    -- By MCS closure under derivation, Box(neg psi) ∈ M
-    have h_Box_neg_in_M : Formula.box (Formula.neg psi) ∈ M :=
+    have h_Box_neg_in_M : Formula.box (Formula.neg ψ) ∈ M :=
       set_mcs_closed_under_derivation h_mcs (Context.map Formula.box L_filt)
         h_Box_context_in_M d_Box_neg
-    -- Contradiction: Diamond(psi) = neg(Box(neg psi)) is also in M
-    have h_diamond_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+    have h_diamond_eq : diamondFormula ψ = Formula.neg (Formula.box (Formula.neg ψ)) := rfl
     rw [h_diamond_eq] at h_diamond
-    exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg psi)) h_Box_neg_in_M h_diamond
-  · -- Case: psi ∉ L, so L ⊆ BoxContent M
-    have h_L_in_M : ∀ chi ∈ L, chi ∈ M := by
+    exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg ψ)) h_Box_neg_in_M h_diamond
+  · have h_L_in_M : ∀ chi ∈ L, chi ∈ M := by
       intro chi h_mem
       have h_in_seed := hL_sub chi h_mem
       simp only [BoxWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
       rcases h_in_seed with h_eq | h_boxcontent
       · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
-      · -- chi ∈ BoxContent means Box(chi) ∈ M, and by T-axiom chi ∈ M
-        have h_Box_chi : Formula.box chi ∈ M := h_boxcontent
+      · have h_Box_chi : Formula.box chi ∈ M := h_boxcontent
         have h_T := DerivationTree.axiom [] ((Formula.box chi).imp chi) (Axiom.modal_t chi)
         exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_Box_chi
     exact h_mcs.1 L h_L_in_M ⟨d⟩
 
-/-!
-## CanonicalMCS-Level Witness Family Construction
-
-Given a root MCS M₀ with Diamond(psi) ∈ M₀, we construct a witness family where:
-1. psi is in the witness MCS at time 0
-2. The witness family has the same temporal structure as the eval family
-3. Modal coherence is maintained (BoxContent propagation)
-
-The construction uses the existing `canonicalMCSBFMCS` approach: the witness
-MCS is obtained by extending {psi} ∪ BoxContent(M₀) via Lindenbaum, and the
-FMCS uses all MCS as domain.
--/
-
 /--
-Construct a witness MCS for Diamond(psi) ∈ M₀: extends {psi} ∪ BoxContent(M₀).
+Construct a witness MCS for Diamond(ψ) ∈ M₀: extends {ψ} ∪ BoxContent(M₀).
 -/
-noncomputable def diamondWitnessMCS (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ M₀) : Set Formula :=
-  lindenbaumMCS_set (BoxWitnessSeed M₀ psi) (box_witness_seed_consistent M₀ h_mcs₀ psi h_diamond)
+noncomputable def diamondWitnessMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ψ : Formula) (h_diamond : diamondFormula ψ ∈ M) : Set Formula :=
+  lindenbaumMCS_set (BoxWitnessSeed M ψ) (box_witness_seed_consistent M h_mcs ψ h_diamond)
 
 /--
 The witness MCS is maximal consistent.
 -/
-lemma diamondWitnessMCS_is_mcs (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ M₀) :
-    SetMaximalConsistent (diamondWitnessMCS M₀ h_mcs₀ psi h_diamond) :=
-  lindenbaumMCS_set_is_mcs (BoxWitnessSeed M₀ psi) (box_witness_seed_consistent M₀ h_mcs₀ psi h_diamond)
+lemma diamondWitnessMCS_is_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ψ : Formula) (h_diamond : diamondFormula ψ ∈ M) :
+    SetMaximalConsistent (diamondWitnessMCS M h_mcs ψ h_diamond) :=
+  lindenbaumMCS_set_is_mcs (BoxWitnessSeed M ψ) (box_witness_seed_consistent M h_mcs ψ h_diamond)
 
 /--
-psi is in the witness MCS.
+ψ is in the witness MCS.
 -/
-lemma diamondWitnessMCS_contains_psi (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ M₀) :
-    psi ∈ diamondWitnessMCS M₀ h_mcs₀ psi h_diamond := by
-  exact lindenbaumMCS_set_extends (BoxWitnessSeed M₀ psi)
-    (box_witness_seed_consistent M₀ h_mcs₀ psi h_diamond)
-    (psi_mem_BoxWitnessSeed M₀ psi)
+lemma diamondWitnessMCS_contains_psi (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ψ : Formula) (h_diamond : diamondFormula ψ ∈ M) :
+    ψ ∈ diamondWitnessMCS M h_mcs ψ h_diamond :=
+  lindenbaumMCS_set_extends (BoxWitnessSeed M ψ)
+    (box_witness_seed_consistent M h_mcs ψ h_diamond)
+    (psi_mem_BoxWitnessSeed M ψ)
 
 /--
-BoxContent(M₀) is in the witness MCS.
+BoxContent(M) is in the witness MCS.
 -/
-lemma diamondWitnessMCS_contains_BoxContent (M₀ : Set Formula) (h_mcs₀ : SetMaximalConsistent M₀)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ M₀) :
-    BoxContent M₀ ⊆ diamondWitnessMCS M₀ h_mcs₀ psi h_diamond := by
-  exact Set.Subset.trans (BoxContent_subset_BoxWitnessSeed M₀ psi)
-    (lindenbaumMCS_set_extends (BoxWitnessSeed M₀ psi)
-      (box_witness_seed_consistent M₀ h_mcs₀ psi h_diamond))
-
-/-!
-## FMCS CanonicalMCS for Witness Families
-
-Each witness family uses `canonicalMCSBFMCS` as its FMCS over CanonicalMCS.
-This is the SAME FMCS for all families (since it uses ALL MCS as domain).
-The different families differ only in their eval/root element.
--/
-
-/-!
-## Key Theorem: BoxContent Preservation in CanonicalMCS
-
-For the modal saturation construction, we need to show that BoxContent is
-preserved across CanonicalMCS elements. Specifically:
-- If Box(phi) ∈ M, then phi ∈ M' for any M' ∈ families at any time
-- This is exactly what modal_forward gives us
-
-The critical insight is that in the CanonicalMCS approach, ALL families share
-the SAME MCS assignment function (identity on CanonicalMCS elements). So we
-can build a BFMCS CanonicalMCS where:
-- families = one family for each needed witness
-- modal_forward/backward come from MCS properties
--/
-
-/-!
-## Fully Saturated BFMCS CanonicalMCS Construction
-
-We construct a fully saturated BFMCS over CanonicalMCS (not Int) that has:
-1. Temporal coherence (from canonicalMCS forward_F / backward_P)
-2. Modal saturation (from diamond witness families)
-
-Then we'll need to transfer this to BFMCS Int.
--/
-
-/--
-Construct a fully saturated BFMCS over CanonicalMCS from a consistent context.
-
-The families in this BFMCS all use `canonicalMCSBFMCS` as their FMCS (same MCS
-assignment for every family). The bundle provides modal saturation through
-the inclusion of diamond witness families.
-
-**Key Properties**:
-1. All families use the identity MCS mapping (each CanonicalMCS IS its own MCS)
-2. Forward_F and backward_P hold for ALL families (canonicalMCS_forward_F/backward_P)
-3. Modal saturation: every Diamond obligation has a witness family
-4. Context preservation: Gamma ⊆ mcs(root) for the eval family
--/
-noncomputable def construct_saturated_bfmcs_CanonicalMCS
-    (Gamma : List Formula) (h_cons : ContextConsistent Gamma) :
-    BFMCS CanonicalMCS := by
-  -- Step 1: Extend Gamma to MCS M₀ via Lindenbaum
-  let M₀ := lindenbaumMCS Gamma h_cons
-  have h_mcs₀ : SetMaximalConsistent M₀ := lindenbaumMCS_is_mcs Gamma h_cons
-  -- Step 2: ALL families use canonicalMCSBFMCS (same FMCS)
-  -- The families set contains just one FMCS: canonicalMCSBFMCS
-  -- This works because canonicalMCSBFMCS uses ALL MCS as domain
-  -- so diamond witnesses are automatically available
-  exact {
-    families := {canonicalMCSBFMCS}
-    nonempty := ⟨canonicalMCSBFMCS, Set.mem_singleton _⟩
-    modal_forward := by
-      intro fam hfam phi t h_box fam' hfam'
-      -- fam = fam' = canonicalMCSBFMCS
-      rw [Set.mem_singleton_iff.mp hfam] at h_box
-      rw [Set.mem_singleton_iff.mp hfam']
-      -- Box phi ∈ canonicalMCSBFMCS.mcs t = t.world
-      -- By T-axiom: phi ∈ t.world
-      have h_mcs := canonicalMCS_is_mcs t
-      have h_T := DerivationTree.axiom [] ((Formula.box phi).imp phi) (Axiom.modal_t phi)
-      exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_box
-    modal_backward := by
-      intro fam hfam phi t h_all
-      -- fam = canonicalMCSBFMCS
-      rw [Set.mem_singleton_iff.mp hfam]
-      -- h_all says phi ∈ fam'.mcs t for all fam' ∈ families
-      -- Since families = {canonicalMCSBFMCS}, we just need phi ∈ canonicalMCSBFMCS.mcs t
-      -- which means phi ∈ t.world
-      -- We need Box(phi) ∈ t.world
-      -- By h_all applied to canonicalMCSBFMCS:
-      have h_phi : phi ∈ canonicalMCSBFMCS.mcs t :=
-        h_all canonicalMCSBFMCS (Set.mem_singleton _)
-      -- We need Box(phi) ∈ t.world from phi ∈ t.world
-      -- This requires the S5 axiom 5: phi → Box(phi) is NOT generally derivable
-      -- But in S5, we have: neg(Box(phi)) → Box(neg(Box(phi)))
-      -- And by contraposition: neg(Box(neg(Box(phi)))) → Box(phi)
-      -- i.e., Diamond(Box(phi)) → Box(phi) (modal_5_collapse axiom)
-      --
-      -- Actually, with only one family, modal_backward reduces to:
-      -- phi ∈ t.world → Box(phi) ∈ t.world
-      -- This is NOT provable from the T axiom alone!
-      -- But in S5 (our logic), we have the axiom: phi → Box(Diamond(phi))
-      -- Wait, that's not quite right either.
-      --
-      -- The issue: with a single-family BFMCS, modal_backward requires
-      -- phi ∈ MCS → Box(phi) ∈ MCS, which is NOT true for arbitrary MCS.
-      -- This is exactly the problem that led to the multi-family approach.
-      --
-      -- So a single-family BFMCS does NOT satisfy modal_backward.
-      -- We need multiple families for modal saturation.
-      sorry
-    eval_family := canonicalMCSBFMCS
-    eval_family_mem := Set.mem_singleton _
-  }
-
--- The above approach doesn't work because single-family BFMCS can't satisfy
--- modal_backward (phi ∈ MCS does NOT imply Box(phi) ∈ MCS for general MCS).
--- We need the multi-family approach where modal_backward is proven via
--- modal saturation (see ModalSaturation.lean: saturated_modal_backward).
-
-/-!
-## Correct Approach: Multi-Family BFMCS with All CanonicalMCS Families
-
-The key insight: use ALL constant families as the bundle. Each constant family
-maps every CanonicalMCS element to its own world (using canonicalMCSBFMCS).
-
-Wait - all families are the SAME canonicalMCSBFMCS. The issue is that
-canonicalMCSBFMCS maps CanonicalMCS element w to w.world. So for a fixed t,
-mcs(t) = t.world. Different families need DIFFERENT MCS at the same time t
-for modal saturation to work.
-
-The correct multi-family approach: For each MCS M, create a CONSTANT family
-that maps every time to M. But constant families don't satisfy forward_F/backward_P
-(the known blocker).
-
-Alternative: For each root MCS M, create a NON-constant family (a chain) starting
-at M. Each chain satisfies forward_G/backward_H by GContent/HContent seeds.
-For forward_F/backward_P, use the CanonicalMCS-level proof.
-
-But how to transfer forward_F from CanonicalMCS level to Int? The witness MCS W
-from canonical_forward_F must correspond to some integer in the chain.
-
-THIS IS THE FUNDAMENTAL PROBLEM. Let me think about it differently.
-
-## Solution: Avoid Int, Use CanonicalMCS Directly
-
-We modify the completeness proof to use D = CanonicalMCS instead of D = Int.
-This requires changes to Representation.lean, but avoids the Int embedding problem.
-
-Actually, Representation.lean uses TaskFrame Int explicitly. The standard semantics
-requires Int as the time type. So we cannot avoid Int.
-
-## Solution: Pullback FMCS via Order Embedding
-
-Given an FMCS over CanonicalMCS and an order embedding e : Int → CanonicalMCS,
-we can pull back to get FMCS Int:
-  - mcs_Int(t) = mcs_CM(e(t)) = e(t).world
-
-For this to work, e must be an order embedding into the CanonicalR preorder.
-The existence of such embeddings is guaranteed when the CanonicalMCS preorder
-restricted to a linearly ordered fragment is countable (which it is).
-
-But we need SURJECTIVITY (or at least that every F-witness is in the image)
-for forward_F to transfer. An order embedding Int → CanonicalMCS is NOT surjective
-in general (CanonicalMCS is uncountable).
-
-## Key Mathematical Insight
-
-We don't need surjectivity! Here's why:
-
-Given F(psi) ∈ mcs_Int(t) = e(t).world, canonical_forward_F gives witness
-W with CanonicalR e(t).world W.world and psi ∈ W.world.
-
-We need: ∃ s ≥ t (integer), psi ∈ mcs_Int(s) = e(s).world.
-
-The witness W may not be e(s) for any s. BUT: we can construct the embedding e
-such that it "visits" all necessary witnesses. This is the CanonicalChain approach
-with witness placement (the DovetailingChain).
-
-The problem with DovetailingChain is that F-formulas don't persist through
-GContent seeds. But at the CanonicalMCS level, canonical_forward_F gives us
-a fresh witness that IS in the CanonicalMCS domain. We need the chain to
-eventually include this witness.
-
-The dovetailing chain DOES include witnesses for F-formulas that are in the
-seed MCS M₀. It doesn't include witnesses for F-formulas that appear in
-later chain elements via Lindenbaum. This is the non-persistence problem.
-
-HOWEVER: the non-persistence problem only affects F-formulas that are NOT in
-the original MCS but are introduced by Lindenbaum. For F-formulas that ARE
-in M₀, their witnesses are placed in the chain.
-
-Wait - that's not quite right either. The dovetailing chain tries to place
-ALL F-obligations, not just those from M₀. The problem is that Lindenbaum
-at step n+1 can introduce new F-obligations not present at step n.
-
-## Fresh Approach: FMCS Int via CanonicalMCS + Counting Argument
-
-For the completeness proof, we need:
-  ∀ t : Int, ∀ phi, F(phi) ∈ mcs(t) → ∃ s ≥ t, phi ∈ mcs(s)
-
-At the CanonicalMCS level, this is trivially satisfied because the witness
-MCS is ALWAYS in the domain (it's any MCS).
-
-For Int: we need to map CanonicalMCS witnesses to Int positions.
-
-New idea: Define mcs : Int → Set Formula DIRECTLY as a function that
-for each integer, provides an MCS. The function is constructed so that:
-1. mcs(0) = M₀ (root)
-2. For each t and each F-obligation F(phi) ∈ mcs(t), there exists s > t
-   with phi ∈ mcs(s)
-3. Similarly for P-obligations
-
-This is essentially a well-ordering/Zorn argument: we can build the function
-by transfinite induction (actually just countable induction since Int is countable).
-
-The construction: enumerate all (t, phi) pairs. For each F(phi) ∈ mcs(t),
-assign a fresh integer s > t and set mcs(s) to be a Lindenbaum extension of
-{phi} ∪ GContent(mcs(t)).
-
-This is EXACTLY the dovetailing chain approach. And the problem is that
-assigning mcs(s) may introduce NEW F-obligations F(chi) ∈ mcs(s) that also
-need witnesses...
-
-The dovetailing chain handles this by interleaving obligations in an omega-squared
-pattern. But the proofs for forward_F in the dovetailing chain have sorry because
-the F-formula may not survive the Lindenbaum step.
-
-WAIT. Let me re-read the issue more carefully. In the dovetailing chain:
-- At step n, we identify obligation (t, phi) with F(phi) ∈ mcs(t)
-- We want mcs(s) to contain phi for some s > t
-- We set mcs(s) = Lindenbaum({phi} ∪ GContent(mcs(s-1)))
-- phi IS in mcs(s) (it's in the seed)
-- The problem is VERIFICATION: does F(phi) still hold at mcs(t) in the FINAL chain?
-  No, the problem is that F(phi) at mcs(t) MIGHT get killed when we redefine
-  mcs(t) in a later step.
-
-Actually no - in the dovetailing chain, each mcs(n) is defined ONCE and never
-changed. The seed for mcs(n+1) includes GContent(mcs(n)), and phi if there's
-an F-obligation to satisfy. So phi IS in mcs(n+1). The question is whether
-F(phi) is still in mcs(n) - and yes, it is, because mcs(n) was defined earlier
-and never changes.
-
-So what's the ACTUAL sorry? Let me re-check.
--/
-
--- Let me check the actual sorries in DovetailingChain
+lemma diamondWitnessMCS_contains_BoxContent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (ψ : Formula) (h_diamond : diamondFormula ψ ∈ M) :
+    BoxContent M ⊆ diamondWitnessMCS M h_mcs ψ h_diamond :=
+  Set.Subset.trans (BoxContent_subset_BoxWitnessSeed M ψ)
+    (lindenbaumMCS_set_extends (BoxWitnessSeed M ψ)
+      (box_witness_seed_consistent M h_mcs ψ h_diamond))
 
 end Bimodal.Metalogic.Bundle
