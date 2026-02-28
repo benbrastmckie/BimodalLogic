@@ -3,7 +3,7 @@
 **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
 **Date**: 2026-02-27
 **Session**: sess_1740672300_i951
-**Status**: Partial (Phase 1 of 7 completed)
+**Status**: Partial (Phases 1-2 of 7 completed)
 
 ## Phase 1: Infrastructure - Z-Indexed Chain Type and Basic Properties [COMPLETED]
 
@@ -45,10 +45,55 @@ Created `Theories/Bimodal/Metalogic/Bundle/CanonicalChain.lean` (new module, ~45
 - `lean_goal` shows "no goals" for all theorems
 - No warnings in the new file
 
-### What Comes Next (Phase 2)
+## Phase 2: Dovetailing Enumeration and Obligation Processing [COMPLETED]
 
-Phase 2 will add the dovetailing enumeration of F/P obligations:
-- Define `Obligation` type for F-witnesses and P-witnesses
-- Define diagonal enumeration over (time, formula) pairs
-- Modify the chain construction to inject witness formulas into seeds
-- Prove that every obligation is eventually witnessed
+### What Was Built
+
+Extended `Theories/Bimodal/Metalogic/Bundle/CanonicalChain.lean` (now ~860 lines) with:
+
+**Obligation Type:**
+- `Obligation`: Inductive type with `ForwardF (t : Int) (phi : Formula)` and `BackwardP (t : Int) (phi : Formula)` constructors
+- `Obligation.time`, `Obligation.formula`: Accessors
+
+**Diagonal Enumeration (omega-squared):**
+- `decodePosFormula`: Maps `Nat` to `Option (Nat x Formula)` via `Nat.unpair` and `decodeFormula`
+- `encodePosFormula`: Inverse direction via `Nat.pair` and `encodeFormula`
+- `decodePosFormula_encodePosFormula`: Round-trip surjectivity proof
+- `diagonalForwardObligation` / `diagonalBackwardObligation`: Map `Nat` to forward/backward obligations
+- `diagonalForwardObligation_surjective` / `diagonalBackwardObligation_surjective`: Every obligation eventually enumerated
+
+**Enriched Chain Construction:**
+- `enrichedForwardStep root n`: Forward chain where at step n+1, if `decodeFormula(n) = some phi` and `F(phi) in chain(n)`, phi is included in the Lindenbaum seed via `ForwardTemporalWitnessSeed`
+- `enrichedBackwardStep root n`: Symmetric backward chain using `PastTemporalWitnessSeed`
+- `buildEnrichedChainFn` / `buildEnrichedCanonicalChain`: Full Z-indexed enriched chain
+
+**Key Theorems (all sorry-free):**
+- `enrichedForwardStep_ordered`: CanonicalR ordering preserved at each enriched forward step
+- `enrichedForwardStep_witness_placed`: If F(phi) alive at step k and phi decoded at k, then phi in chain(k+1)
+- `enrichedBackwardStep_ordered`: CanonicalR ordering for backward enriched steps (via HContent/GContent duality)
+- `enrichedBackwardStep_witness_placed`: Symmetric backward witness placement
+- `enrichedBackwardStep_HContent_inclusion`: HContent inclusion for backward enriched steps
+- `buildEnrichedChainFn_ordered`: Consecutive ordering for the full enriched chain
+
+### Design Decisions
+
+1. **Per-step enumeration (not omega-squared at chain level)**: The enriched chain processes obligations at the CURRENT position (`F(phi) in chain(k)`) rather than from earlier positions. This is consistent with the DovetailingChain approach and avoids the GContent-corruption problem (where an F-obligation from an earlier position may not survive to a later one). The omega-squared enumeration infrastructure is provided for Phases 3-4 to argue about coverage.
+
+2. **Enriched chain as separate construction**: Rather than modifying the Phase 1 conservative chain, the enriched chain is a separate construction (`enrichedForwardStep` vs `forwardChainStep`). Both are available. The enriched chain is what will be used for forward_F/backward_P proofs.
+
+3. **`processObligation` adapted**: The plan specified `processObligation : CanonicalChain -> Obligation -> CanonicalChain`. Since a CanonicalChain is total (defined on all of Int), "extending" it doesn't apply directly. Instead, obligations are processed inline at each enriched chain step.
+
+### Verification
+
+- `lake build` passes (full project, 739 jobs)
+- No sorries in CanonicalChain.lean
+- No new axioms
+- No warnings in CanonicalChain.lean
+- `lean_goal` shows "no goals" for all new theorems
+
+### What Comes Next (Phase 3)
+
+Phase 3 will prove forward_F for the enriched chain:
+- Prove that for any `F(phi) in chain(t)`, either phi is already witnessed or the obligation persists until it is processed
+- This is the critical proof step that was sorry'd in DovetailingChain
+- The enriched chain with current-position witness placement provides the infrastructure

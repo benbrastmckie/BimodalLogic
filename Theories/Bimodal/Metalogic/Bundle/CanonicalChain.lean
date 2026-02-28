@@ -442,4 +442,415 @@ theorem CanonicalChain.toFMCS_preserves_context
   rw [h_root]
   exact h_extends (by simp [contextAsSet]; exact h_mem)
 
+/-!
+## Phase 2: Dovetailing Enumeration and Obligation Processing
+
+This section implements:
+1. **Obligation type**: Represents F/P temporal witness requirements
+2. **Diagonal enumeration**: Omega-squared enumeration of (position, formula) pairs
+   via `Nat.unpair` and `decodeFormula`, ensuring surjectivity
+3. **Enriched chain construction**: Forward/backward chain steps that include witness
+   formulas in the Lindenbaum seed when the corresponding F/P obligation is alive
+   at the CURRENT position
+4. **Ordering proofs**: CanonicalR ordering preserved by enriched steps
+5. **Witness placement**: When F(phi)/P(phi) is alive and phi is decoded, it appears
+   in the next chain element
+
+### Design Note
+
+The enriched chain processes obligations at the CURRENT position (step k checks
+`F(phi) in chain(k)`), matching the DovetailingChain approach. The diagonal
+enumeration provides the machinery for Phases 3-4 to argue that every obligation
+from every position is eventually processed. The forward_F/backward_P proofs
+themselves are deferred to Phases 3-4.
+-/
+
+-- Classical decidability for set membership checks
+attribute [local instance] Classical.propDecidable
+
+/-!
+### Obligation Type
+-/
+
+/--
+An obligation represents an F or P temporal witness requirement.
+
+- `ForwardF t phi`: The formula F(phi) is in the chain at position t; need witness at s > t
+- `BackwardP t phi`: The formula P(phi) is in the chain at position t; need witness at s < t
+-/
+inductive Obligation where
+  | ForwardF (t : Int) (phi : Formula) : Obligation
+  | BackwardP (t : Int) (phi : Formula) : Obligation
+  deriving DecidableEq
+
+/-- Extract the time position from an obligation. -/
+def Obligation.time : Obligation → Int
+  | ForwardF t _ => t
+  | BackwardP t _ => t
+
+/-- Extract the formula from an obligation. -/
+def Obligation.formula : Obligation → Formula
+  | ForwardF _ phi => phi
+  | BackwardP _ phi => phi
+
+/-!
+### Diagonal Enumeration
+
+We enumerate (Nat, Formula) pairs using Nat.unpair and decodeFormula.
+This gives an omega-squared enumeration where every (position, formula) pair
+is eventually reached.
+-/
+
+/--
+Decode a natural number to a (position, formula) pair.
+
+Uses Nat.unpair to split k into (position_index, formula_index),
+then decodes the formula_index to a formula.
+
+Returns `none` if the formula_index doesn't correspond to a valid formula.
+-/
+noncomputable def decodePosFormula (k : Nat) : Option (Nat × Formula) :=
+  let (pos, phi_idx) := Nat.unpair k
+  match decodeFormula phi_idx with
+  | none => none
+  | some phi => some (pos, phi)
+
+/--
+Encode a (position, formula) pair to a natural number.
+-/
+noncomputable def encodePosFormula (pos : Nat) (phi : Formula) : Nat :=
+  Nat.pair pos (encodeFormula phi)
+
+/--
+Surjectivity: decoding the encoding of (pos, phi) recovers the pair.
+-/
+theorem decodePosFormula_encodePosFormula (pos : Nat) (phi : Formula) :
+    decodePosFormula (encodePosFormula pos phi) = some (pos, phi) := by
+  simp only [decodePosFormula, encodePosFormula, Nat.unpair_pair]
+  simp only [decodeFormula_encodeFormula]
+
+/--
+Diagonal enumeration of forward obligations.
+
+Maps each natural number k to an obligation `ForwardF pos phi` if
+Nat.unpair(k) = (pos, phi_idx) and decodeFormula(phi_idx) = some phi.
+
+Returns `none` if the formula index is out of range.
+-/
+noncomputable def diagonalForwardObligation (k : Nat) : Option Obligation :=
+  match decodePosFormula k with
+  | none => none
+  | some (pos, phi) => some (Obligation.ForwardF pos phi)
+
+/--
+Diagonal enumeration of backward obligations.
+-/
+noncomputable def diagonalBackwardObligation (k : Nat) : Option Obligation :=
+  match decodePosFormula k with
+  | none => none
+  | some (pos, phi) => some (Obligation.BackwardP pos phi)
+
+/--
+Every forward obligation is eventually enumerated.
+
+For any position t and formula phi, there exists k such that
+diagonalForwardObligation(k) = some (ForwardF t phi).
+-/
+theorem diagonalForwardObligation_surjective (t : Nat) (phi : Formula) :
+    ∃ k : Nat, diagonalForwardObligation k = some (Obligation.ForwardF t phi) := by
+  use encodePosFormula t phi
+  simp only [diagonalForwardObligation, decodePosFormula_encodePosFormula]
+
+/--
+Every backward obligation is eventually enumerated.
+-/
+theorem diagonalBackwardObligation_surjective (t : Nat) (phi : Formula) :
+    ∃ k : Nat, diagonalBackwardObligation k = some (Obligation.BackwardP t phi) := by
+  use encodePosFormula t phi
+  simp only [diagonalBackwardObligation, decodePosFormula_encodePosFormula]
+
+/-!
+### Enriched Forward Chain Step
+
+An enriched forward chain step that optionally includes a witness formula
+in the Lindenbaum seed. When the witness formula phi satisfies
+F(phi) ∈ current MCS, the seed is {phi} ∪ GContent(current), ensuring
+phi ends up in the next chain element.
+
+This matches the DovetailingChain construction but built on CanonicalChain
+infrastructure. The actual forward_F/backward_P proofs will be in Phases 3-4.
+-/
+
+/--
+Build an enriched forward chain from a root MCS with witness formula selection.
+
+At step n+1:
+- Decode n to a formula phi via decodeFormula
+- If F(phi) ∈ chain(n), use seed {phi} ∪ GContent(chain(n))
+- Otherwise, use seed GContent(chain(n))
+
+This ensures that for every formula phi, if F(phi) is alive at the step
+where phi is decoded, phi gets placed in the next chain element.
+-/
+noncomputable def enrichedForwardStep (root : CanonicalMCS) : Nat → CanonicalMCS
+  | 0 => root
+  | n + 1 =>
+    let prev := enrichedForwardStep root n
+    match decodeFormula n with
+    | none =>
+      -- No valid formula at this index: conservative step
+      have h_cons : SetConsistent (GContent prev.world) := by
+        intro finset h_subset ⟨h_deriv⟩
+        have h_sub_M : GContent prev.world ⊆ prev.world :=
+          canonicalR_reflexive prev.world prev.is_mcs
+        exact prev.is_mcs.1 finset (fun phi h_mem => h_sub_M (h_subset phi h_mem)) ⟨h_deriv⟩
+      { world := lindenbaumMCS_set (GContent prev.world) h_cons,
+        is_mcs := lindenbaumMCS_set_is_mcs (GContent prev.world) h_cons }
+    | some phi =>
+      if h_F : Formula.some_future phi ∈ prev.world then
+        -- F(phi) alive at current position: use enriched seed
+        have h_cons : SetConsistent (ForwardTemporalWitnessSeed prev.world phi) :=
+          forward_temporal_witness_seed_consistent prev.world prev.is_mcs phi h_F
+        { world := lindenbaumMCS_set (ForwardTemporalWitnessSeed prev.world phi) h_cons,
+          is_mcs := lindenbaumMCS_set_is_mcs (ForwardTemporalWitnessSeed prev.world phi) h_cons }
+      else
+        -- F(phi) not alive: conservative step
+        have h_cons : SetConsistent (GContent prev.world) := by
+          intro finset h_subset ⟨h_deriv⟩
+          have h_sub_M : GContent prev.world ⊆ prev.world :=
+            canonicalR_reflexive prev.world prev.is_mcs
+          exact prev.is_mcs.1 finset (fun phi h_mem => h_sub_M (h_subset phi h_mem)) ⟨h_deriv⟩
+        { world := lindenbaumMCS_set (GContent prev.world) h_cons,
+          is_mcs := lindenbaumMCS_set_is_mcs (GContent prev.world) h_cons }
+
+/--
+The enriched forward chain preserves CanonicalR ordering.
+
+CanonicalR (enrichedForwardStep root n).world (enrichedForwardStep root (n+1)).world
+holds because in all cases, GContent(chain(n)) is included in the seed, and
+the Lindenbaum extension of the seed contains the seed.
+-/
+theorem enrichedForwardStep_ordered (root : CanonicalMCS) (n : Nat) :
+    CanonicalR (enrichedForwardStep root n).world (enrichedForwardStep root (n + 1)).world := by
+  show GContent (enrichedForwardStep root n).world ⊆ (enrichedForwardStep root (n + 1)).world
+  simp only [enrichedForwardStep]
+  split
+  · -- decodeFormula n = none: new = Lindenbaum(GContent(prev))
+    dsimp only []
+    apply lindenbaumMCS_set_extends
+  · -- decodeFormula n = some phi
+    rename_i phi _
+    split
+    · -- F(phi) alive: new = Lindenbaum({phi} ∪ GContent(prev))
+      dsimp only []
+      intro psi h_psi
+      apply lindenbaumMCS_set_extends
+      exact GContent_subset_ForwardTemporalWitnessSeed (enrichedForwardStep root n).world phi h_psi
+    · -- F(phi) not alive: new = Lindenbaum(GContent(prev))
+      dsimp only []
+      apply lindenbaumMCS_set_extends
+
+/--
+Enriched forward chain witness placement: if decodeFormula(n) = some phi and
+F(phi) ∈ chain(n), then phi ∈ chain(n+1).
+-/
+theorem enrichedForwardStep_witness_placed (root : CanonicalMCS) (n : Nat)
+    (phi : Formula) (h_decode : decodeFormula n = some phi)
+    (h_F : Formula.some_future phi ∈ (enrichedForwardStep root n).world) :
+    phi ∈ (enrichedForwardStep root (n + 1)).world := by
+  simp only [enrichedForwardStep, h_decode]
+  simp only [h_F, ↓reduceDIte]
+  exact lindenbaumMCS_set_extends
+    (ForwardTemporalWitnessSeed (enrichedForwardStep root n).world phi) _
+    (psi_mem_ForwardTemporalWitnessSeed (enrichedForwardStep root n).world phi)
+
+/-!
+### Enriched Backward Chain Step
+
+Symmetric to the forward chain, using HContent seeds and P-obligations.
+-/
+
+/--
+Build an enriched backward chain from a root MCS with witness formula selection.
+
+At step n+1:
+- Decode n to a formula phi via decodeFormula
+- If P(phi) ∈ chain(n), use seed {phi} ∪ HContent(chain(n))
+- Otherwise, use seed HContent(chain(n))
+-/
+noncomputable def enrichedBackwardStep (root : CanonicalMCS) : Nat → CanonicalMCS
+  | 0 => root
+  | n + 1 =>
+    let prev := enrichedBackwardStep root n
+    match decodeFormula n with
+    | none =>
+      have h_cons : SetConsistent (HContent prev.world) := by
+        intro finset h_subset ⟨h_deriv⟩
+        have h_sub_M : HContent prev.world ⊆ prev.world :=
+          canonicalR_past_reflexive prev.world prev.is_mcs
+        exact prev.is_mcs.1 finset (fun phi h_mem => h_sub_M (h_subset phi h_mem)) ⟨h_deriv⟩
+      { world := lindenbaumMCS_set (HContent prev.world) h_cons,
+        is_mcs := lindenbaumMCS_set_is_mcs (HContent prev.world) h_cons }
+    | some phi =>
+      if h_P : Formula.some_past phi ∈ prev.world then
+        have h_cons : SetConsistent (PastTemporalWitnessSeed prev.world phi) :=
+          past_temporal_witness_seed_consistent prev.world prev.is_mcs phi h_P
+        { world := lindenbaumMCS_set (PastTemporalWitnessSeed prev.world phi) h_cons,
+          is_mcs := lindenbaumMCS_set_is_mcs (PastTemporalWitnessSeed prev.world phi) h_cons }
+      else
+        have h_cons : SetConsistent (HContent prev.world) := by
+          intro finset h_subset ⟨h_deriv⟩
+          have h_sub_M : HContent prev.world ⊆ prev.world :=
+            canonicalR_past_reflexive prev.world prev.is_mcs
+          exact prev.is_mcs.1 finset (fun phi h_mem => h_sub_M (h_subset phi h_mem)) ⟨h_deriv⟩
+        { world := lindenbaumMCS_set (HContent prev.world) h_cons,
+          is_mcs := lindenbaumMCS_set_is_mcs (HContent prev.world) h_cons }
+
+/--
+The enriched backward chain has HContent inclusion:
+HContent(chain(n)) ⊆ chain(n+1).
+-/
+theorem enrichedBackwardStep_HContent_inclusion (root : CanonicalMCS) (n : Nat) :
+    HContent (enrichedBackwardStep root n).world ⊆ (enrichedBackwardStep root (n + 1)).world := by
+  simp only [enrichedBackwardStep]
+  split
+  · dsimp only []
+    apply lindenbaumMCS_set_extends
+  · rename_i phi _
+    split
+    · dsimp only []
+      intro psi h_psi
+      apply lindenbaumMCS_set_extends
+      exact HContent_subset_PastTemporalWitnessSeed (enrichedBackwardStep root n).world phi h_psi
+    · dsimp only []
+      apply lindenbaumMCS_set_extends
+
+/--
+The enriched backward chain preserves CanonicalR in the correct direction:
+CanonicalR (enrichedBackwardStep root (n+1)).world (enrichedBackwardStep root n).world.
+
+This follows from HContent/GContent duality, same as the conservative chain.
+-/
+theorem enrichedBackwardStep_ordered (root : CanonicalMCS) (n : Nat) :
+    CanonicalR (enrichedBackwardStep root (n + 1)).world (enrichedBackwardStep root n).world := by
+  exact HContent_subset_implies_GContent_reverse
+    (enrichedBackwardStep root n).world
+    (enrichedBackwardStep root (n + 1)).world
+    (enrichedBackwardStep root n).is_mcs
+    (enrichedBackwardStep root (n + 1)).is_mcs
+    (enrichedBackwardStep_HContent_inclusion root n)
+
+/--
+Enriched backward chain witness placement: if decodeFormula(n) = some phi and
+P(phi) ∈ chain(n), then phi ∈ chain(n+1).
+-/
+theorem enrichedBackwardStep_witness_placed (root : CanonicalMCS) (n : Nat)
+    (phi : Formula) (h_decode : decodeFormula n = some phi)
+    (h_P : Formula.some_past phi ∈ (enrichedBackwardStep root n).world) :
+    phi ∈ (enrichedBackwardStep root (n + 1)).world := by
+  simp only [enrichedBackwardStep, h_decode]
+  simp only [h_P, ↓reduceDIte]
+  exact lindenbaumMCS_set_extends
+    (PastTemporalWitnessSeed (enrichedBackwardStep root n).world phi) _
+    (psi_mem_PastTemporalWitnessSeed (enrichedBackwardStep root n).world phi)
+
+/-!
+### Building a Full Enriched Chain
+
+Combine enriched forward and backward chains into a full Z-indexed CanonicalChain.
+-/
+
+/--
+Combine enriched forward and backward chain steps into a full Z-indexed chain.
+
+- For n >= 0: use enrichedForwardStep root n
+- For n < 0: use enrichedBackwardStep root (-n)
+-/
+noncomputable def buildEnrichedChainFn (root : CanonicalMCS) (n : Int) : CanonicalMCS :=
+  if n ≥ 0 then
+    enrichedForwardStep root n.toNat
+  else
+    enrichedBackwardStep root (-n).toNat
+
+/--
+The enriched chain function at 0 returns the root.
+-/
+theorem buildEnrichedChainFn_zero (root : CanonicalMCS) :
+    buildEnrichedChainFn root 0 = root := by
+  simp [buildEnrichedChainFn, enrichedForwardStep]
+
+/--
+The enriched chain function at non-negative n uses enrichedForwardStep.
+-/
+theorem buildEnrichedChainFn_nonneg (root : CanonicalMCS) (n : Int) (h : n ≥ 0) :
+    buildEnrichedChainFn root n = enrichedForwardStep root n.toNat := by
+  simp [buildEnrichedChainFn, h]
+
+/--
+The enriched chain function at negative n uses enrichedBackwardStep.
+-/
+theorem buildEnrichedChainFn_neg (root : CanonicalMCS) (n : Int) (h : n < 0) :
+    buildEnrichedChainFn root n = enrichedBackwardStep root (-n).toNat := by
+  simp [buildEnrichedChainFn, show ¬(n ≥ 0) from by omega]
+
+/--
+Key ordering lemma for the enriched chain: consecutive elements are CanonicalR-related.
+
+Same structure as buildChainFn_ordered but using enriched chain steps.
+-/
+theorem buildEnrichedChainFn_ordered (root : CanonicalMCS) (n : Int) :
+    CanonicalR (buildEnrichedChainFn root n).world (buildEnrichedChainFn root (n + 1)).world := by
+  by_cases h0 : n ≥ 0
+  · -- Case 1: n >= 0
+    have h1 : n + 1 ≥ 0 := by omega
+    rw [buildEnrichedChainFn_nonneg root n h0, buildEnrichedChainFn_nonneg root (n + 1) h1]
+    have : (n + 1).toNat = n.toNat + 1 := by omega
+    rw [this]
+    exact enrichedForwardStep_ordered root n.toNat
+  · push_neg at h0
+    by_cases h1 : n = -1
+    · subst h1
+      show CanonicalR (buildEnrichedChainFn root (-1)).world (buildEnrichedChainFn root 0).world
+      rw [buildEnrichedChainFn_neg root (-1) (by omega), buildEnrichedChainFn_zero root]
+      simp
+      exact enrichedBackwardStep_ordered root 0
+    · have hn : n < -1 := by omega
+      have hn1 : n + 1 < 0 := by omega
+      rw [buildEnrichedChainFn_neg root n (by omega), buildEnrichedChainFn_neg root (n + 1) hn1]
+      have h_eq : (-n).toNat = (-(n + 1)).toNat + 1 := by omega
+      rw [h_eq]
+      exact enrichedBackwardStep_ordered root (-(n + 1)).toNat
+
+/--
+Build a complete enriched CanonicalChain from a root MCS.
+
+This combines the enriched forward and backward chain step constructions into
+a single CanonicalChain structure with the ordering invariant proven.
+The enriched chain includes witness formula placement for F/P obligations.
+-/
+noncomputable def buildEnrichedCanonicalChain (root : CanonicalMCS) : CanonicalChain where
+  chain := buildEnrichedChainFn root
+  ordered := buildEnrichedChainFn_ordered root
+
+/--
+The enriched chain preserves the root: chain(0) = root.
+-/
+theorem buildEnrichedCanonicalChain_root (root : CanonicalMCS) :
+    (buildEnrichedCanonicalChain root).chain 0 = root := by
+  simp [buildEnrichedCanonicalChain, buildEnrichedChainFn_zero]
+
+/--
+Enriched chain at non-negative positions uses enrichedForwardStep.
+-/
+theorem buildEnrichedCanonicalChain_nonneg (root : CanonicalMCS) (n : Nat) :
+    (buildEnrichedCanonicalChain root).chain (↑n) = enrichedForwardStep root n := by
+  simp [buildEnrichedCanonicalChain, buildEnrichedChainFn_nonneg root (↑n) (by omega)]
+
+/--
+Enriched chain at negative positions uses enrichedBackwardStep.
+-/
+theorem buildEnrichedCanonicalChain_neg (root : CanonicalMCS) (n : Nat) (h : n > 0) :
+    (buildEnrichedCanonicalChain root).chain (-(↑n)) = enrichedBackwardStep root n := by
+  simp [buildEnrichedCanonicalChain, buildEnrichedChainFn_neg root (-(↑n)) (by omega)]
+
 end Bimodal.Metalogic.Bundle
