@@ -127,7 +127,7 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 
 ---
 
-### Phase B: Prove Linearity of Bidirectional Fragment [NOT STARTED]
+### Phase B: Prove Linearity of Bidirectional Fragment [IN PROGRESS]
 
 - **Dependencies**: Phase A
 - **Goal**: Prove any two elements in BidirectionalReachable M₀ are CanonicalR-comparable
@@ -135,42 +135,61 @@ This avoids the F-persistence problem entirely by not relying on chain construct
 **Key Insight**: The linearity axiom ensures that elements reachable from a common ancestor are comparable. For bidirectional reachability, we need to show that mixed forward/backward paths still yield comparable endpoints.
 
 **Tasks**:
-- [ ] Adapt `canonical_reachable_linear` from Boneyard (lines 290-383 in CanonicalEmbedding.lean)
+- [x] Adapt `canonical_reachable_linear` from Boneyard -> `canonical_forward_reachable_linear`
+- [x] Add `mcs_F_linearity`: linearity axiom application within MCS context
+- [x] Add `canonical_F_of_mem_successor`: F-introduction from CanonicalR successor
 - [ ] Define `bidirectional_path` type: sequence of CanonicalR or CanonicalR⁻¹ edges from M₀
 - [ ] Prove path confluence: any two paths from M₀ to different endpoints share a common comparison point
 - [ ] Prove `bidirectional_totally_ordered`: ∀ W₁ W₂ ∈ BidirectionalReachable M₀, CanonicalR W₁ W₂ ∨ CanonicalR W₂ W₁ ∨ W₁ = W₂
 - [ ] Use `temp_linearity` axiom to establish ordering at each path junction
 
-**Timing**: 10-15 hours (hardest phase)
+**Timing**: 10-15 hours (hardest phase, ~4 hours completed)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - extend
 
 **Verification**:
-- `lake build` passes
-- `bidirectional_totally_ordered` proven without sorry
-- `lean_goal` shows "no goals"
+- [x] `lake build` passes
+- [ ] `bidirectional_totally_ordered` proven without sorry
+- [ ] `lean_goal` shows "no goals"
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772246447_439fa1e5**
+- Added: `mcs_F_linearity` - applies temp_linearity axiom within MCS
+- Added: `canonical_F_of_mem_successor` - F-introduction from successor MCS
+- Added: `canonical_forward_reachable_linear` - totality for forward-reachable elements (95 lines)
+- Imported: TemporalCoherentConstruction for `mcs_double_neg_elim`
+- Verified: All proofs compile without sorry
+- Remaining: Extend linearity to full bidirectional reachability
 
 ---
 
-### Phase C: Forward_F and Backward_P within Fragment [NOT STARTED]
+### Phase C: Forward_F and Backward_P within Fragment [COMPLETED]
 
 - **Dependencies**: Phase A
 - **Goal**: Prove F/P witnesses stay within the bidirectional fragment
 
 **Tasks**:
-- [ ] Prove `forward_F_in_fragment`: if W ∈ BidirectionalReachable M₀ and F(φ) ∈ W, then the witness W' from `canonical_forward_F` is also in BidirectionalReachable M₀
-- [ ] Prove `backward_P_in_fragment`: if W ∈ BidirectionalReachable M₀ and P(φ) ∈ W, then the witness W' from `canonical_backward_P` is also in BidirectionalReachable M₀
-- [ ] These follow from closure properties in Phase A + witness existence in CanonicalFMCS.lean
+- [x] Prove `forward_F_in_fragment`: via `forward_F_stays_in_fragment` in Phase A
+- [x] Prove `backward_P_in_fragment`: via `backward_P_stays_in_fragment` in Phase A
+- [x] These follow from closure properties in Phase A + witness existence in CanonicalFMCS.lean
 
-**Timing**: 4-6 hours
+**Timing**: Completed in Phase A
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - extend
+- `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - completed in Phase A
 
 **Verification**:
-- `lake build` passes
-- No sorries in F/P fragment closure proofs
+- [x] `lake build` passes
+- [x] No sorries in F/P fragment closure proofs
+
+**Progress:**
+
+**Session: 2026-02-27, sess_1772246447_439fa1e5**
+- Completed: `forward_F_stays_in_fragment` proven in Phase A
+- Completed: `backward_P_stays_in_fragment` proven in Phase A
+- Note: These were implemented during Phase A infrastructure work
 
 ---
 
