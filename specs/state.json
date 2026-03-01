@@ -8,15 +8,15 @@
     {
       "project_number": 951,
       "project_name": "implement_sorry_free_completeness_canonicalmcs",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-03-01T19:43:40Z",
-      "session_id": "sess_1772393649_2f5bb0",
+      "last_updated": "2026-03-01T19:51:30Z",
+      "session_id": "sess_1772394417_e45ad4",
       "researched": "2026-03-01T19:43:40Z",
-      "planned": "2026-02-28T02:39:32Z",
+      "planned": "2026-03-01T19:51:30Z",
       "artifacts": [
         {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md",
@@ -27,11 +27,6 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md",
           "type": "research",
           "summary": "Antisymmetrization approach: Z-indexed chain through CanonicalMCS via incremental dovetailing. Each F/P witness is independent Lindenbaum MCS. 35-60 hours, 55-70% success probability."
-        },
-        {
-          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "8-phase Bidirectional Reachable Fragment approach (supersedes v001 chain approach)"
         },
         {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-004.md",
@@ -87,6 +82,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-014.md",
           "type": "research",
           "summary": "Definitive sorry-free completeness construction: BidirectionalFragment IS the canonical domain (proven LinearOrder), fragmentFMCS is sorry-free, compose Int enumeration with fragment FMCS to sidestep F-persistence. Key obligation: SuccOrder coverness on BidirectionalQuotient."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for sorry-free completeness via OrderIso approach"
         }
       ],
       "started": "2026-02-28T01:53:54Z"

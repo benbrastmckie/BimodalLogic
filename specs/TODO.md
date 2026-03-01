@@ -24,12 +24,12 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 40-60 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
 - **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md), [research-003.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-003.md), [research-008.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-008.md) (team), [research-009.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-009.md), [research-010.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-010.md), [research-011.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-011.md), [research-012.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-012.md) (team), [research-013.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-013.md), [research-014.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-014.md) (definitive)
-- **Plan**: [implementation-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-002.md) (v2)
+- **Plan**: [implementation-003.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-003.md) (v3)
 
 **Description**: Implement standard completeness theorem using Bidirectional Reachable Fragment approach:
 1. Define bidirectional reachable fragment from root MCS
