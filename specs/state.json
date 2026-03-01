@@ -8,13 +8,13 @@
     {
       "project_number": 951,
       "project_name": "implement_sorry_free_completeness_canonicalmcs",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-03-01T19:53:02Z",
-      "session_id": "sess_1772394758_e9c6eb",
+      "last_updated": "2026-03-01T22:30:00Z",
+      "session_id": "sess_1772398890_30630",
       "researched": "2026-03-01T19:43:40Z",
       "planned": "2026-03-01T19:51:30Z",
       "artifacts": [
@@ -97,6 +97,16 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/summaries/implementation-summary-20260301.md",
           "type": "summary",
           "summary": "Phase 1 partial: 14 lemmas added (quotientSucc/Pred, GContent/HContent equivalence, mcs_has_F/P_top). SuccOrder coverness blocked. Plan revision needed."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-015.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): Root-cause analysis of Phase 1 blockers. Architectural mismatch confirmed. Two-phase completeness (BFMCS Preorder + transfer to TaskFrame) recommended."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-016.md",
+          "type": "research",
+          "summary": "Deep math research: Single elegant architecture via trivial task frame trick. AddCommGroup not needed for completeness. BFMCS falsification transfers to standard valid via trivial task_rel. Frame correspondence becomes corollary, not prerequisite."
         }
       ],
       "started": "2026-02-28T01:53:54Z"
