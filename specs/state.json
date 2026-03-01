@@ -13,9 +13,9 @@
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-03-01T22:30:00Z",
-      "session_id": "sess_1772398890_30630",
-      "researched": "2026-03-01T19:43:40Z",
+      "last_updated": "2026-03-01T21:30:07Z",
+      "session_id": "sess_1772400073_9480",
+      "researched": "2026-03-01T21:30:07Z",
       "planned": "2026-03-01T19:51:30Z",
       "artifacts": [
         {
@@ -107,6 +107,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-016.md",
           "type": "research",
           "summary": "Deep math research: Single elegant architecture via trivial task frame trick. AddCommGroup not needed for completeness. BFMCS falsification transfers to standard valid via trivial task_rel. Frame correspondence becomes corollary, not prerequisite."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-017.md",
+          "type": "research",
+          "summary": "Minimal TaskFrame parametrization: two-level hierarchy (TemporalFrame [LinearOrder D] extends to TaskFrame [AddCommGroup D]). Trivial task frame embedding theorem. Frame correspondence: discreteness axiom <-> SuccOrder <-> Int, density axiom <-> DenselyOrdered <-> Rat."
         }
       ],
       "started": "2026-02-28T01:53:54Z"
