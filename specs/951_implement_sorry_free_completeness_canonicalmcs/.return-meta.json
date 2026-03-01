@@ -1,23 +1,53 @@
 {
   "status": "researched",
+  "summary": "Team research completed with 3 teammates",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-011.md",
-      "summary": "Deep analysis of constructing the canonical frame from pure syntax, showing durations emerge as equivalence classes of MCSes under GContent agreement (Antisymmetrization of BidirectionalFragment), with AddCommGroup derived via Successor Algebra approach (orderIsoIntOfLinearSuccPredArch + Equiv.addCommGroup)"
+      "type": "research",
+      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-012.md",
+      "summary": "Synthesized team research: G/H symmetry via duality bridges, Preorder vs AddCommGroup two-layer architecture, disconnected chains resolved by BidirectionalFragment"
     }
   ],
-  "next_steps": "Run /plan 951 to create implementation plan for syntactic duration construction",
+  "team_execution": {
+    "enabled": true,
+    "wave_count": 1,
+    "teammates_spawned": 3,
+    "teammates_completed": 3,
+    "teammates_failed": 0,
+    "token_usage_multiplier": 5.0,
+    "degraded_to_single": false
+  },
+  "teammate_results": [
+    {
+      "id": "teammate-a",
+      "angle": "G/H Symmetry",
+      "status": "completed",
+      "confidence": "high",
+      "artifact": "research-012-teammate-a-findings.md"
+    },
+    {
+      "id": "teammate-b",
+      "angle": "Preorder vs AddCommGroup",
+      "status": "completed",
+      "confidence": "high",
+      "artifact": "research-012-teammate-b-findings.md"
+    },
+    {
+      "id": "teammate-c",
+      "angle": "Disconnected Chains",
+      "status": "completed",
+      "confidence": "high",
+      "artifact": "research-012-teammate-c-findings.md"
+    }
+  ],
+  "synthesis": {
+    "conflicts_found": 2,
+    "conflicts_resolved": 2,
+    "gaps_identified": 1,
+    "wave_2_triggered": false
+  },
   "metadata": {
-    "session_id": "sess_1772340782_d4be07",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 600,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": [],
-    "mathlib_lookups_performed": 6,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1
+    "session_id": "sess_1772389542_5caef0",
+    "agent_type": "skill-team-research"
   }
 }
