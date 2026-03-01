@@ -129,7 +129,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: SuccOrder on BidirectionalQuotient [IN PROGRESS]
+### Phase 1: SuccOrder on BidirectionalQuotient [PARTIAL]
 
 - **Dependencies**: None (builds on existing infrastructure)
 - **Goal**: Define and prove `SuccOrder` instance on `BidirectionalQuotient`
@@ -185,10 +185,31 @@ SuccOrder requires:
 **Timing**: 8-10 hours
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` - extend with SuccOrder
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalCompleteness.lean` - SuccOrder infrastructure
 
 **Verification**:
-- `lake build Bimodal.Metalogic.Bundle.BidirectionalReachable` passes
+- `lake build Bimodal.Metalogic.Bundle.CanonicalCompleteness` passes
+
+**Progress:**
+
+**Session: 2026-03-01, sess_1772394758_e9c6eb (Iteration 2)**
+- Fixed: Build errors from iteration 1 (circular dependency between BidirectionalReachable and CanonicalCompleteness)
+- Removed: Broken code from BidirectionalReachable.lean (lines 814+) that referenced CanonicalCompleteness definitions
+- Added: `GContent_idempotent_in_mcs` - temporal 4-axiom for G in MCS context
+- Added: `HContent_idempotent_in_mcs` - temporal 4-axiom for H in MCS context
+- Added: `GContent_eq_of_preorder_equiv` - GContent equality under preorder equivalence
+- Added: `HContent_eq_of_preorder_equiv` - HContent equality under preorder equivalence
+- Added: `fragmentGSucc_eq_of_preorder_equiv` - GSucc respects equivalence
+- Added: `fragmentHPred`, `fragmentHPred_le` - HContent predecessor and its ordering
+- Added: `fragmentHPred_eq_of_preorder_equiv` - HPred respects equivalence
+- Added: `quotientSucc`, `quotientSucc_le` - well-defined successor on quotient
+- Added: `quotientPred`, `quotientPred_le` - well-defined predecessor on quotient
+- Added: `mcs_has_F_top`, `mcs_has_P_top` - F/P temporal witnesses in every MCS
+- Attempted: SuccOrder coverness (`succ_le_of_lt`) - BLOCKED (see handoff)
+- Attempted: `NoMaxOrder` - BLOCKED (reflexive semantics allows single-point quotient)
+- Sorries: 3 -> 3 (0 eliminated, 0 introduced)
+- Status: Tasks 1.1-1.3 and all prerequisites COMPLETED. Tasks 1.4 (coverness) and 1.5 (assembly) BLOCKED.
+- Blocker: Mathematical impossibility of coverness proof (see handoff document)
 - `SuccOrder` instance verified
 - No sorries in new code
 

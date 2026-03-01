@@ -4,6 +4,7 @@ import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Bundle.BidirectionalReachable
+import Mathlib.Order.SuccPred.LinearLocallyFinite
 
 /-!
 # Canonical Completeness: Sorry-Free BFMCS Construction
@@ -421,5 +422,245 @@ lemma diamondWitnessMCS_contains_BoxContent (M : Set Formula) (h_mcs : SetMaxima
   Set.Subset.trans (BoxContent_subset_BoxWitnessSeed M ψ)
     (lindenbaumMCS_set_extends (BoxWitnessSeed M ψ)
       (box_witness_seed_consistent M h_mcs ψ h_diamond))
+
+/-!
+## GContent/HContent Equality for Preorder-Equivalent Elements
+
+If `a ≤ b` and `b ≤ a` (i.e., `CanonicalR` in both directions), then
+`GContent(a.world) = GContent(b.world)` and `HContent(a.world) = HContent(b.world)`.
+This follows from the temporal 4-axiom: `G(phi) → G(G(phi))` (and its past analog).
+
+This equality is crucial for well-definedness of successor/predecessor operations
+on the antisymmetrization quotient.
+-/
+
+/--
+If `G(phi) ∈ M` for an MCS `M`, then `G(G(phi)) ∈ M`.
+This is the temporal 4-axiom applied within an MCS context.
+-/
+lemma GContent_idempotent_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_G : Formula.all_future phi ∈ M) :
+    Formula.all_future (Formula.all_future phi) ∈ M := by
+  have h_4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_4) h_G
+
+/--
+If `H(phi) ∈ M` for an MCS `M`, then `H(H(phi)) ∈ M`.
+This is the past temporal 4-axiom applied within an MCS context.
+-/
+lemma HContent_idempotent_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
+    Formula.all_past (Formula.all_past phi) ∈ M := by
+  have h_4_future : [] ⊢ (Formula.all_future phi.swap_temporal).imp
+      (Formula.all_future (Formula.all_future phi.swap_temporal)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 phi.swap_temporal)
+  have h_4_past := DerivationTree.temporal_duality _ h_4_future
+  simp only [Formula.swap_temporal, Formula.all_future, Formula.all_past,
+    Formula.imp, Formula.neg, Formula.swap_temporal_involution] at h_4_past
+  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_4_past) h_H
+
+/--
+If two fragment elements are preorder-equivalent (`a ≤ b` and `b ≤ a`),
+then they have the same GContent.
+
+This is crucial for well-definedness of `succ` on the quotient:
+`fragmentGSucc` is defined as `Lindenbaum(GContent(w.world))`, so equal
+GContent means equal successors.
+-/
+theorem GContent_eq_of_preorder_equiv
+    (a b : BidirectionalFragment M₀ h_mcs₀)
+    (h_ab : a ≤ b) (h_ba : b ≤ a) :
+    GContent a.world = GContent b.world := by
+  ext phi
+  constructor
+  · intro h_G_a
+    have h_GG : Formula.all_future (Formula.all_future phi) ∈ a.world :=
+      GContent_idempotent_in_mcs a.world a.is_mcs phi h_G_a
+    exact h_ab h_GG
+  · intro h_G_b
+    have h_GG : Formula.all_future (Formula.all_future phi) ∈ b.world :=
+      GContent_idempotent_in_mcs b.world b.is_mcs phi h_G_b
+    exact h_ba h_GG
+
+/--
+If two fragment elements are preorder-equivalent, they have the same HContent.
+-/
+theorem HContent_eq_of_preorder_equiv
+    (a b : BidirectionalFragment M₀ h_mcs₀)
+    (h_ab : a ≤ b) (h_ba : b ≤ a) :
+    HContent a.world = HContent b.world := by
+  ext phi
+  constructor
+  · intro h_H_a
+    have h_HH := HContent_idempotent_in_mcs a.world a.is_mcs phi h_H_a
+    have h_dual : HContent a.world ⊆ b.world :=
+      GContent_subset_implies_HContent_reverse b.world a.world b.is_mcs a.is_mcs h_ba
+    exact h_dual h_HH
+  · intro h_H_b
+    have h_HH := HContent_idempotent_in_mcs b.world b.is_mcs phi h_H_b
+    have h_dual : HContent b.world ⊆ a.world :=
+      GContent_subset_implies_HContent_reverse a.world b.world a.is_mcs b.is_mcs h_ab
+    exact h_dual h_HH
+
+/--
+If two fragment elements are preorder-equivalent, `fragmentGSucc` produces the same result.
+This follows from `GContent_eq_of_preorder_equiv` and the fact that `lindenbaumMCS_set`
+depends only on the set argument (not the consistency proof, by proof irrelevance).
+-/
+theorem fragmentGSucc_eq_of_preorder_equiv
+    (a b : BidirectionalFragment M₀ h_mcs₀)
+    (h_ab : a ≤ b) (h_ba : b ≤ a) :
+    fragmentGSucc a = fragmentGSucc b := by
+  have h_gc_eq := GContent_eq_of_preorder_equiv a b h_ab h_ba
+  apply BidirectionalFragment.ext
+  -- (fragmentGSucc w).world = lindenbaumMCS_set (GContent w.world) _ by definition
+  simp only [fragmentGSucc, BidirectionalFragment.forward_closed]
+  congr 1
+
+/-!
+## HContent Predecessor in the Fragment
+
+The backward analog of `fragmentGSucc`: given `w` in the fragment, produce
+a predecessor `w'` with `CanonicalR w'.world w.world` (i.e., HContent(w) ⊆ w').
+-/
+
+/--
+Build an HContent-predecessor in the fragment.
+Given `w` in the fragment, produce `w'` with `CanonicalR w'.world w.world`
+and `w'` in the fragment.
+-/
+noncomputable def fragmentHPred (w : BidirectionalFragment M₀ h_mcs₀) :
+    BidirectionalFragment M₀ h_mcs₀ :=
+  w.backward_closed
+    (lindenbaumMCS_set (HContent w.world) (HContent_consistent_of_fragment w))
+    (lindenbaumMCS_set_is_mcs _ (HContent_consistent_of_fragment w))
+    (HContent_subset_implies_GContent_reverse w.world
+      (lindenbaumMCS_set (HContent w.world) (HContent_consistent_of_fragment w))
+      w.is_mcs
+      (lindenbaumMCS_set_is_mcs _ (HContent_consistent_of_fragment w))
+      (fun _ h_H => lindenbaumMCS_set_extends _ (HContent_consistent_of_fragment w) h_H))
+
+/--
+`fragmentHPred w ≤ w` in the preorder (i.e., CanonicalR (fragmentHPred w).world w.world).
+-/
+lemma fragmentHPred_le (w : BidirectionalFragment M₀ h_mcs₀) :
+    fragmentHPred w ≤ w := by
+  show CanonicalR (fragmentHPred w).world w.world
+  exact HContent_subset_implies_GContent_reverse w.world
+    (lindenbaumMCS_set (HContent w.world) (HContent_consistent_of_fragment w))
+    w.is_mcs
+    (lindenbaumMCS_set_is_mcs _ (HContent_consistent_of_fragment w))
+    (fun _ h_H => lindenbaumMCS_set_extends _ (HContent_consistent_of_fragment w) h_H)
+
+/--
+If two fragment elements are preorder-equivalent, `fragmentHPred` produces the same result.
+-/
+theorem fragmentHPred_eq_of_preorder_equiv
+    (a b : BidirectionalFragment M₀ h_mcs₀)
+    (h_ab : a ≤ b) (h_ba : b ≤ a) :
+    fragmentHPred a = fragmentHPred b := by
+  have h_hc_eq := HContent_eq_of_preorder_equiv a b h_ab h_ba
+  apply BidirectionalFragment.ext
+  simp only [fragmentHPred, BidirectionalFragment.backward_closed]
+  congr 1
+
+/-!
+## Quotient Successor and Predecessor
+
+The successor/predecessor operations on the quotient, well-defined because
+`fragmentGSucc` and `fragmentHPred` respect the preorder equivalence.
+-/
+
+/--
+Successor function on the quotient, well-defined by `fragmentGSucc_eq_of_preorder_equiv`.
+-/
+noncomputable def quotientSucc :
+    BidirectionalQuotient M₀ h_mcs₀ → BidirectionalQuotient M₀ h_mcs₀ :=
+  Quotient.map (fun w => fragmentGSucc w) (by
+    intro a b ⟨h_ab, h_ba⟩
+    have h_eq := fragmentGSucc_eq_of_preorder_equiv a b h_ab h_ba
+    exact ⟨le_of_eq h_eq, le_of_eq h_eq.symm⟩)
+
+/--
+`q ≤ quotientSucc q` for all `q`.
+-/
+theorem quotientSucc_le (q : BidirectionalQuotient M₀ h_mcs₀) :
+    q ≤ quotientSucc q := by
+  induction q using Quotient.ind with
+  | _ w => exact fragmentGSucc_le w
+
+/--
+Predecessor function on the quotient, well-defined by `fragmentHPred_eq_of_preorder_equiv`.
+-/
+noncomputable def quotientPred :
+    BidirectionalQuotient M₀ h_mcs₀ → BidirectionalQuotient M₀ h_mcs₀ :=
+  Quotient.map (fun w => fragmentHPred w) (by
+    intro a b ⟨h_ab, h_ba⟩
+    have h_eq := fragmentHPred_eq_of_preorder_equiv a b h_ab h_ba
+    exact ⟨le_of_eq h_eq, le_of_eq h_eq.symm⟩)
+
+/--
+`quotientPred q ≤ q` for all `q`.
+-/
+theorem quotientPred_le (q : BidirectionalQuotient M₀ h_mcs₀) :
+    quotientPred q ≤ q := by
+  induction q using Quotient.ind with
+  | _ w => exact fragmentHPred_le w
+
+/-!
+## F(top) and P(top) in Every MCS
+
+Every MCS contains `F(neg bot)` and `P(neg bot)`, ensuring the existence of
+forward and backward temporal witnesses.
+-/
+
+/--
+`F(neg bot) ∈ M` for any MCS `M`.
+
+Since `G(bot) → bot` by the T-axiom, contrapositive gives `neg bot → neg(G(bot))`.
+Since `neg bot ∈ M` (it is a theorem), we get `neg(G(bot)) ∈ M`.
+Then `F(neg bot) = neg(G(neg(neg bot)))` follows by `G_dne_theorem` applied contrapositively.
+-/
+lemma mcs_has_F_top (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    Formula.some_future (Formula.neg Formula.bot) ∈ M := by
+  -- Step 1: G(bot) → bot by T-axiom
+  have h_T : [] ⊢ (Formula.all_future Formula.bot).imp Formula.bot :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
+  -- Step 2: Contrapositive: neg bot → neg(G(bot))
+  have h_contra : [] ⊢ (Formula.neg Formula.bot).imp (Formula.neg (Formula.all_future Formula.bot)) :=
+    Bimodal.Theorems.Propositional.contraposition h_T
+  -- Step 3: neg bot ∈ M (it is a theorem: bot → bot)
+  have h_neg_bot : Formula.neg Formula.bot ∈ M := by
+    have h_thm : [] ⊢ Formula.neg Formula.bot :=
+      DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+    exact theorem_in_mcs h_mcs h_thm
+  -- Step 4: neg(G(bot)) ∈ M
+  have h_neg_G_bot : Formula.neg (Formula.all_future Formula.bot) ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_contra) h_neg_bot
+  -- Step 5: G_dne_theorem: G(neg(neg bot)) → G(bot), contrapositive: neg(G(bot)) → neg(G(neg(neg bot)))
+  -- F(neg bot) = neg(G(neg(neg(neg bot)))) ... but need to match definition
+  show Formula.neg (Formula.neg (Formula.neg Formula.bot)).all_future ∈ M
+  have h_G_dne := G_dne_theorem Formula.bot
+  exact mcs_contrapositive h_mcs h_G_dne h_neg_G_bot
+
+/--
+`P(neg bot) ∈ M` for any MCS `M`. Past analog of `mcs_has_F_top`.
+-/
+lemma mcs_has_P_top (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    Formula.some_past (Formula.neg Formula.bot) ∈ M := by
+  have h_T : [] ⊢ (Formula.all_past Formula.bot).imp Formula.bot :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
+  have h_contra : [] ⊢ (Formula.neg Formula.bot).imp (Formula.neg (Formula.all_past Formula.bot)) :=
+    Bimodal.Theorems.Propositional.contraposition h_T
+  have h_neg_bot : Formula.neg Formula.bot ∈ M := by
+    have h_thm : [] ⊢ Formula.neg Formula.bot :=
+      DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
+    exact theorem_in_mcs h_mcs h_thm
+  have h_neg_H_bot : Formula.neg (Formula.all_past Formula.bot) ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_contra) h_neg_bot
+  show Formula.neg (Formula.neg (Formula.neg Formula.bot)).all_past ∈ M
+  have h_H_dne := H_dne_theorem Formula.bot
+  exact mcs_contrapositive h_mcs h_H_dne h_neg_H_bot
 
 end Bimodal.Metalogic.Bundle
