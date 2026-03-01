@@ -13,9 +13,9 @@
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-02-28T22:41:23Z",
-      "session_id": "sess_1772318011_5deb2e",
-      "researched": "2026-02-28T22:41:23Z",
+      "last_updated": "2026-03-01T00:43:41Z",
+      "session_id": "sess_1740700800_m951",
+      "researched": "2026-03-01T00:43:41Z",
       "planned": "2026-02-28T02:39:32Z",
       "artifacts": [
         {
@@ -57,6 +57,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-008.md",
           "type": "research",
           "summary": "Team research (2 teammates): MCS subsets as times + history functions. Finding: BidirectionalFragment IS the temporal structure, FMCS IS the history function. Enriched chain omega-squared diagonal fix is the primary path. 3 sorries identified with resolution paths."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-009.md",
+          "type": "research",
+          "summary": "Deep analysis of time-shift groups, torsor constructions, and frame-first completeness; confirms embedding into Int via enriched chain as the narrowest path to sorry-free completeness"
         }
       ],
       "started": "2026-02-28T01:53:54Z"
