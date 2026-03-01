@@ -1,7 +1,7 @@
 # Implementation Plan: Task #951 (Revision 3)
 
 - **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25-35 hours
 - **Version**: 3 (supersedes implementation-001.md and implementation-002.md)
 - **Dependencies**: BidirectionalReachable.lean (LinearOrder proven), CanonicalCompleteness.lean (fragmentFMCS with sorry-free F/P)
@@ -129,7 +129,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: SuccOrder on BidirectionalQuotient [NOT STARTED]
+### Phase 1: SuccOrder on BidirectionalQuotient [IN PROGRESS]
 
 - **Dependencies**: None (builds on existing infrastructure)
 - **Goal**: Define and prove `SuccOrder` instance on `BidirectionalQuotient`
