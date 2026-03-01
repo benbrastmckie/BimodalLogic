@@ -122,6 +122,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-018.md",
           "type": "research",
           "summary": "Non-trivial task_rel from pure syntax. Chain-based construction: task_rel w d u := exists chain position i with chain(i)=w and chain(i+d)=u. Requires chain injectivity. D=Int acceptable but BidirectionalQuotient lacks AddCommGroup. Key risk: chain stalling (quotientSucc fixed point). Trivial task_rel approach BANNED."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "Grothendieck construction: D=Z via formal differences of quotient elements. task_rel w d u := quotientSuccIter w d = u. 6 phases: quotientSuccIter foundation, TaskFrame, WorldHistory, FMCS transfer, completeness, extensibility verification. 30-45 hours."
         }
       ],
       "started": "2026-02-28T01:53:54Z"
