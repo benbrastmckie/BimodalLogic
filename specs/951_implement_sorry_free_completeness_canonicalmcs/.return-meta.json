@@ -1,53 +1,17 @@
 {
   "status": "researched",
-  "summary": "Team research completed with 3 teammates",
+  "session_id": "sess_1772391573_ddf0c3",
   "artifacts": [
     {
+      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-013.md",
       "type": "research",
-      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-012.md",
-      "summary": "Synthesized team research: G/H symmetry via duality bridges, Preorder vs AddCommGroup two-layer architecture, disconnected chains resolved by BidirectionalFragment"
+      "summary": "Analysis of AddCommGroup construction on D without discreteness/density assumptions. Proves no neutral group exists (Archimedean dichotomy), canonical model is inherently discrete, D=Int is correct for completeness."
     }
   ],
-  "team_execution": {
-    "enabled": true,
-    "wave_count": 1,
-    "teammates_spawned": 3,
-    "teammates_completed": 3,
-    "teammates_failed": 0,
-    "token_usage_multiplier": 5.0,
-    "degraded_to_single": false
-  },
-  "teammate_results": [
-    {
-      "id": "teammate-a",
-      "angle": "G/H Symmetry",
-      "status": "completed",
-      "confidence": "high",
-      "artifact": "research-012-teammate-a-findings.md"
-    },
-    {
-      "id": "teammate-b",
-      "angle": "Preorder vs AddCommGroup",
-      "status": "completed",
-      "confidence": "high",
-      "artifact": "research-012-teammate-b-findings.md"
-    },
-    {
-      "id": "teammate-c",
-      "angle": "Disconnected Chains",
-      "status": "completed",
-      "confidence": "high",
-      "artifact": "research-012-teammate-c-findings.md"
-    }
-  ],
-  "synthesis": {
-    "conflicts_found": 2,
-    "conflicts_resolved": 2,
-    "gaps_identified": 1,
-    "wave_2_triggered": false
-  },
   "metadata": {
-    "session_id": "sess_1772389542_5caef0",
-    "agent_type": "skill-team-research"
+    "session_id": "sess_1772391573_ddf0c3",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
   }
 }

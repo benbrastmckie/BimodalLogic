@@ -13,9 +13,9 @@
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-03-01T18:31:22Z",
-      "session_id": "sess_1772389542_5caef0",
-      "researched": "2026-03-01T18:31:22Z",
+      "last_updated": "2026-03-01T19:08:03Z",
+      "session_id": "sess_1772391573_ddf0c3",
+      "researched": "2026-03-01T19:08:03Z",
       "planned": "2026-02-28T02:39:32Z",
       "artifacts": [
         {
@@ -77,6 +77,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-012.md",
           "type": "research",
           "summary": "Team research (3 teammates): G/H symmetry confirmed via duality bridges, Preorder vs AddCommGroup two-layer architecture mapped, disconnected chains resolved by BidirectionalFragment. Full syntactic D construction outlined."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-013.md",
+          "type": "research",
+          "summary": "Analysis of AddCommGroup construction on D without discreteness/density assumptions. Proves no neutral group exists (Archimedean dichotomy), canonical model is inherently discrete, D=Int is correct for completeness."
         }
       ],
       "started": "2026-02-28T01:53:54Z"
