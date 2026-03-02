@@ -42,7 +42,7 @@
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-03-02T06:24:42Z",
+      "last_updated": "2026-03-02T17:15:25Z",
       "blocker": "Phase 1 Task 1.1 (quotientSucc_pred_inverse) is mathematically impossible. G(phi)->H(phi) is semantically invalid. Plan v4 needs revision to chain-based task_rel approach.",
       "session_id": "sess_1772431881_00276f",
       "researched": "2026-03-02T06:24:42Z",
@@ -172,6 +172,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-021.md",
           "type": "research",
           "summary": "Team research 021 (3 Opus teammates): maps ideals, catalogs 20 reports, identifies 5 critical gaps and 4 alternative paths. Key findings: transfer theorem unverified, fragment density uninvestigated, trivial task_rel is mathematically natural, two-layer refactor is architecturally correct."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-021-teammate-d-findings.md",
+          "type": "research",
+          "summary": "Teammate D (follow-on): answered all 5 gating questions from source. Confirmed: transfer theorem already proven (canonical_truth_lemma_all), ShiftClosed already resolved, fragment is discrete (D=Q blocked), all families need TC (not just eval), trivial task_rel is correct. Root cause: DovetailingChain forward_F/backward_P sorries."
         }
       ],
       "started": "2026-02-28T01:53:54Z"
