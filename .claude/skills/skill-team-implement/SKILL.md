@@ -331,7 +331,7 @@ When complete:
 1. Verify proof state shows "no goals"
 2. Run lake build
 3. Mark phase [COMPLETED] in plan file
-4. Write results to: specs/{N}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md
+4. Write results to: specs/{NNN}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md
 5. Return brief summary of changes made
 ```
 
@@ -361,7 +361,7 @@ Verification:
 
 When complete:
 1. Mark phase as [COMPLETED] in plan file
-2. Write results to: specs/{N}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md
+2. Write results to: specs/{NNN}_{SLUG}/phases/impl-{RRR}-phase-{P}-results.md
 3. Return brief summary of changes made
 ```
 
@@ -405,7 +405,7 @@ Generate:
 2. Analysis of the error
 3. Proposed fix with specific tactic suggestions
 
-Output to: specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
+Output to: specs/{NNN}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
 ```
 
 ---
@@ -431,7 +431,7 @@ Generate:
 2. Analysis of the error
 3. Proposed fix
 
-Output to: specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
+Output to: specs/{NNN}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
 ```
 
 ---
@@ -451,7 +451,7 @@ Output to: specs/{N}_{SLUG}/debug/impl-{RRR}-debug-{DDD}-hypothesis.md
 For each debug cycle, create reports with run-scoped names:
 
 ```
-specs/{N}_{SLUG}/debug/
+specs/{NNN}_{SLUG}/debug/
 ├── impl-001-debug-001-hypothesis.md   # Initial hypothesis (run 001, debug cycle 001)
 ├── impl-001-debug-001-analysis.md     # Detailed analysis
 ├── impl-001-debug-001-resolution.md   # How resolved (or not)
@@ -608,7 +608,7 @@ Team implementation completed for task {N}:
 - Parallelized waves 2 and 4 ({parallel_phases} phases each)
 - {debug_cycles} debug cycles for error resolution
 - All verification criteria passed
-- Summary at specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md
+- Summary at specs/{NNN}_{SLUG}/summaries/implementation-summary-{DATE}.md
 - Status updated to [COMPLETED]
 ```
 

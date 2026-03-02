@@ -242,7 +242,7 @@ Create a phased implementation plan focusing on:
 ## Verification
 Each phase must include: "Run lake build and verify no errors"
 
-Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md
+Output to: specs/{NNN}_{SLUG}/plans/plan-{RRR}-candidate-a.md
 ```
 
 **Teammate B - Plan Version B (Lean)**:
@@ -273,7 +273,7 @@ Create a plan that differs from a typical phased approach. Consider:
 ## Verification
 Each phase must include: "Run lake build and verify no errors"
 
-Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-b.md
+Output to: specs/{NNN}_{SLUG}/plans/plan-{RRR}-candidate-b.md
 ```
 
 **Teammate C - Risk/Dependency Analysis (Lean, if team_size >= 3)**:
@@ -297,7 +297,7 @@ Focus on:
 - Mathlib version or import risks
 - sorry remediation strategies
 
-Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-risk-analysis.md
+Output to: specs/{NNN}_{SLUG}/plans/plan-{RRR}-risk-analysis.md
 
 Do NOT create a full plan - focus on analysis that informs plan selection.
 ```
@@ -322,7 +322,7 @@ Create a phased implementation plan focusing on:
 - Clear success criteria for each phase
 - Realistic effort estimates
 
-Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md
+Output to: specs/{NNN}_{SLUG}/plans/plan-{RRR}-candidate-a.md
 
 Use standard plan format with phases, each containing:
 - Objectives
@@ -345,7 +345,7 @@ Create a plan that differs from a typical phased approach. Consider:
 - Alternative ordering of work
 - Different trade-offs (e.g., speed vs safety, simplicity vs completeness)
 
-Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-b.md
+Output to: specs/{NNN}_{SLUG}/plans/plan-{RRR}-candidate-b.md
 
 Clearly document what trade-offs this alternative makes.
 ```
@@ -365,7 +365,7 @@ Focus on:
 - Points where the implementation could fail
 - Fallback strategies for high-risk phases
 
-Output to: specs/{N}_{SLUG}/plans/plan-{RRR}-risk-analysis.md
+Output to: specs/{NNN}_{SLUG}/plans/plan-{RRR}-risk-analysis.md
 
 Do NOT create a full plan - focus on analysis that informs plan selection.
 ```
@@ -427,7 +427,7 @@ Create best-of-breed plan by:
 4. Add trade-off documentation section
 5. Document why this synthesis was chosen
 
-Write to: `specs/{N}_{SLUG}/plans/implementation-001.md`
+Write to: `specs/{NNN}_{SLUG}/plans/implementation-001.md`
 
 ```markdown
 # Implementation Plan: Task #{N}
@@ -483,7 +483,7 @@ Update task status to "planned":
   "artifacts": [
     {
       "type": "plan",
-      "path": "specs/{N}_{SLUG}/plans/implementation-{RRR}.md",
+      "path": "specs/{NNN}_{SLUG}/plans/implementation-{RRR}.md",
       "summary": "Best-of-breed plan from {team_size} candidates (run {RRR})"
     }
   ],
@@ -498,13 +498,13 @@ Update task status to "planned":
       "name": "PlannerA",
       "angle": "Phased incremental approach",
       "status": "completed",
-      "artifact_path": "specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-a.md"
+      "artifact_path": "specs/{NNN}_{SLUG}/plans/plan-{RRR}-candidate-a.md"
     },
     {
       "name": "PlannerB",
       "angle": "Alternative structure",
       "status": "completed",
-      "artifact_path": "specs/{N}_{SLUG}/plans/plan-{RRR}-candidate-b.md"
+      "artifact_path": "specs/{NNN}_{SLUG}/plans/plan-{RRR}-candidate-b.md"
     }
   ],
   "synthesis": {
@@ -548,7 +548,7 @@ Team planning completed for task {N}:
 - Candidate A: Phased incremental (6 phases)
 - Candidate B: Alternative ordering (4 phases)
 - Trade-off analysis completed
-- Synthesized best-of-breed plan at specs/{N}_{SLUG}/plans/implementation-001.md
+- Synthesized best-of-breed plan at specs/{NNN}_{SLUG}/plans/implementation-001.md
 - Status updated to [PLANNED]
 ```
 

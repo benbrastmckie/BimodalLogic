@@ -124,7 +124,7 @@ Prepare delegation context for the subagent:
     "language": "logic"
   },
   "focus_prompt": "{optional focus}",
-  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
+  "metadata_file_path": "specs/{NNN}_{SLUG}/.return-meta.json"
 }
 ```
 
@@ -151,8 +151,8 @@ The subagent will:
 - Use Mathlib lookup tools (lean_leansearch, lean_loogle, lean_leanfinder, lean_local_search)
 - Execute web research for mathematical logic literature
 - Analyze findings and synthesize recommendations
-- Create research report in `specs/{N}_{SLUG}/reports/`
-- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Create research report in `specs/{NNN}_{SLUG}/reports/`
+- Write metadata to `specs/{NNN}_{SLUG}/.return-meta.json`
 - Return a brief text summary (NOT JSON)
 
 ---
@@ -269,7 +269,7 @@ Research completed for task {N}:
 - Found existing patterns in Lean modules and documentation
 - Loaded domain context for modal logic and Kripke semantics
 - Used Mathlib lookup tools to discover relevant theorems
-- Created report at specs/{N}_{SLUG}/reports/research-{NNN}.md
+- Created report at specs/{NNN}_{SLUG}/reports/research-{NNN}.md
 - Status updated to [RESEARCHED]
 - Changes committed
 ```

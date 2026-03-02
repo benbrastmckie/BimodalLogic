@@ -123,7 +123,7 @@ Prepare delegation context for the subagent:
     "language": "latex"
   },
   "focus_prompt": "{optional focus}",
-  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json"
+  "metadata_file_path": "specs/{NNN}_{SLUG}/.return-meta.json"
 }
 ```
 
@@ -149,8 +149,8 @@ The subagent will:
 - Search codebase (LaTeX files, style files) for existing patterns
 - Execute web research for LaTeX documentation and best practices
 - Analyze findings and synthesize recommendations
-- Create research report in `specs/{N}_{SLUG}/reports/`
-- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Create research report in `specs/{NNN}_{SLUG}/reports/`
+- Write metadata to `specs/{NNN}_{SLUG}/.return-meta.json`
 - Return a brief text summary (NOT JSON)
 
 ---
@@ -266,7 +266,7 @@ Return a brief text summary (NOT JSON). Example:
 Research completed for task {N}:
 - Found existing patterns in LaTeX files and style files
 - Loaded domain context for document structure and theorem environments
-- Created report at specs/{N}_{SLUG}/reports/research-{NNN}.md
+- Created report at specs/{NNN}_{SLUG}/reports/research-{NNN}.md
 - Status updated to [RESEARCHED]
 - Changes committed
 ```

@@ -588,7 +588,7 @@ fi
 
 For each file group, create an error report artifact:
 
-**Path**: `specs/{N}_{SLUG}/reports/error-report-{DATE}.md`
+**Path**: `specs/{NNN}_{SLUG}/reports/error-report-{DATE}.md`
 
 **Template**:
 ```markdown

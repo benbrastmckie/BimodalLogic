@@ -135,8 +135,8 @@ Prepare delegation context for the subagent:
     "description": "{description}",
     "language": "{language}"
   },
-  "plan_path": "specs/{N}_{SLUG}/plans/implementation-{NNN}.md",
-  "metadata_file_path": "specs/{N}_{SLUG}/.return-meta.json",
+  "plan_path": "specs/{NNN}_{SLUG}/plans/implementation-{NNN}.md",
+  "metadata_file_path": "specs/{NNN}_{SLUG}/.return-meta.json",
   "iteration": 1,
   "resume_phase": null,
   "handoff_path": null
@@ -171,7 +171,7 @@ The subagent will:
 - Execute phases sequentially
 - Create/modify files as needed
 - Create implementation summary
-- Write metadata to `specs/{N}_{SLUG}/.return-meta.json`
+- Write metadata to `specs/{NNN}_{SLUG}/.return-meta.json`
 - Return a brief text summary (NOT JSON)
 
 ---
@@ -506,7 +506,7 @@ Return a brief text summary (NOT JSON). Example:
 Implementation completed for task {N}:
 - All {phases_total} phases executed successfully
 - Key changes: {summary of changes}
-- Created summary at specs/{N}_{SLUG}/summaries/implementation-summary-{DATE}.md
+- Created summary at specs/{NNN}_{SLUG}/summaries/implementation-summary-{DATE}.md
 - Status updated to [COMPLETED]
 - Changes committed
 ```

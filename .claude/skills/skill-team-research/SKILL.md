@@ -250,7 +250,7 @@ Focus on: Implementation approaches and Mathlib patterns for this task.
 Challenge assumptions. Verify lemma existence with lean_local_search.
 Consider {focus_prompt} if provided.
 
-Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md
+Output your findings to: specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md
 
 Format: Markdown with sections for Key Findings, Recommended Approach,
 Evidence (including lemma names verified via lean_local_search), Confidence Level
@@ -265,7 +265,7 @@ Look for existing lemmas/theorems we could adapt.
 Do NOT duplicate Teammate A's primary focus.
 Verify all lemma names with lean_local_search.
 
-Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md
+Output your findings to: specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md
 ```
 
 **Teammate C - Risk Analysis (Lean, if team_size >= 3)**:
@@ -277,7 +277,7 @@ Identify where proof strategies could fail.
 Note any suspicious axioms or sorry placeholders in related code.
 Check for Mathlib version compatibility issues.
 
-Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-c-findings.md
+Output your findings to: specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-c-findings.md
 ```
 
 **Teammate D - Devil's Advocate (Lean, if team_size >= 4)**:
@@ -291,7 +291,7 @@ Question complexity assumptions.
 
 Wait for other teammates to complete, then analyze their outputs.
 
-Output your findings to: specs/{N}_{SLUG}/reports/research-{RRR}-teammate-d-findings.md
+Output your findings to: specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-d-findings.md
 ```
 
 ---
@@ -311,7 +311,7 @@ Challenge assumptions and provide specific examples.
 Consider {focus_prompt} if provided.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md
+specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-a-findings.md
 
 Format: Markdown with clear sections for:
 - Key Findings
@@ -329,7 +329,7 @@ Look for existing solutions we could adapt.
 Do NOT duplicate Teammate A's focus on primary approaches.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md
+specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-b-findings.md
 
 Format: Same as Teammate A
 ```
@@ -343,7 +343,7 @@ Identify what could go wrong with proposed approaches.
 Consider integration challenges and dependencies.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/research-{RRR}-teammate-c-findings.md
+specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-c-findings.md
 
 Format: Same as Teammate A
 ```
@@ -359,7 +359,7 @@ Question assumptions and identify blind spots.
 Wait for other teammates to complete, then analyze their outputs.
 
 Output your findings to:
-specs/{N}_{SLUG}/reports/research-{RRR}-teammate-d-findings.md
+specs/{NNN}_{SLUG}/reports/research-{RRR}-teammate-d-findings.md
 
 Format: Same as Teammate A
 ```
@@ -486,7 +486,7 @@ Write synthesized report:
 {Sources cited by teammates}
 ```
 
-Output to: `specs/{N}_{SLUG}/reports/research-{RRR}.md` (where `{RRR}` is `$run_padded`)
+Output to: `specs/{NNN}_{SLUG}/reports/research-{RRR}.md` (where `{RRR}` is `$run_padded`)
 
 ---
 
@@ -529,7 +529,7 @@ Write team execution metadata:
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/{N}_{SLUG}/reports/research-{RRR}.md",
+      "path": "specs/{NNN}_{SLUG}/reports/research-{RRR}.md",
       "summary": "Synthesized research from {team_size} teammates (run {RRR})"
     }
   ],
@@ -601,7 +601,7 @@ Team research completed for task {N}:
 - Teammate A: Primary approach findings (high confidence)
 - Teammate B: Alternative patterns identified (medium confidence)
 - {N} conflicts found and resolved
-- Synthesized report at specs/{N}_{SLUG}/reports/research-001.md
+- Synthesized report at specs/{NNN}_{SLUG}/reports/research-001.md
 - Status updated to [RESEARCHED]
 ```
 

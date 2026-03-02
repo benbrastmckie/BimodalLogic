@@ -9,7 +9,7 @@ allowed-tools: Bash, Edit, Read
 Direct execution skill for atomic status synchronization across **three files**:
 1. `specs/state.json` - Machine-readable state (source of truth)
 2. `specs/TODO.md` - User-facing task list
-3. `specs/{N}_{SLUG}/plans/implementation-{NNN}.md` - Plan file Status field (line 4)
+3. `specs/{NNN}_{SLUG}/plans/implementation-{NNN}.md` - Plan file Status field (line 4)
 
 This skill executes inline without spawning a subagent, avoiding memory issues.
 
