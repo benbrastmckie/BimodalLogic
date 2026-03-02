@@ -1,25 +1,17 @@
 {
   "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "The research identifies a core mathematical obstruction: any duration-sensitive non-trivial task_rel requires quotientSucc/quotientPred to be mutual inverses, which requires the semantically invalid G(phi)->H(phi). Two options presented: (A) direction-insensitive CanonicalR-based task_rel (non-trivial but ignores duration d), or (B) mark implementation BLOCKED pending resolution of the inverse property. User decision needed on which option to pursue.",
-  "started_at": "2026-03-01T14:00:00Z",
-  "completed_at": "2026-03-01T16:00:00Z",
-  "summary": "Research-019 identifies the core obstruction to constructing D from syntax: any compositionality-satisfying task_rel on BidirectionalQuotient requires quotientSucc_pred_inverse (blocked by invalid G(phi)->H(phi)). Recommends D=Int with CanonicalR-based task_rel. Finds orderIsoIntOfLinearSuccPredArch in Mathlib but its prerequisites (SuccOrder) are blocked by coverness.",
+  "started_at": "2026-03-01T12:00:00Z",
   "artifacts": [
-    {
-      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-019.md",
-      "type": "report",
-      "summary": "Comprehensive analysis of D construction strategies. Key findings: (1) No intrinsic AddCommGroup on BidirectionalQuotient, (2) SuccOrder blocked by coverness, (3) AddTorsor blocked by inverse property, (4) Direction-insensitive CanonicalR task_rel is strongest achievable non-trivial option"
-    }
+    "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-020.md"
   ],
+  "partial_progress": {
+    "stage": "report_written",
+    "details": "Research on parametric completeness over arbitrary D. Key finding: parametric completeness requires [Nontrivial D] and [Archimedean D] hypotheses (D={0} counterexample). Transfer via zsmul embedding and step-function truth preservation."
+  },
   "metadata": {
-    "session_id": "sess_1772411656_ccae68",
+    "session_id": "sess_1772413135_d5ccc8",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
-  },
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research-019 report written (569 lines). Core finding: duration-sensitive non-trivial task_rel is mathematically blocked. Recommends direction-insensitive CanonicalR-based task_rel with D=Int."
   }
 }
