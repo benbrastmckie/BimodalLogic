@@ -1,7 +1,7 @@
 # Implementation Plan: Task #951 (Revision 6)
 
 - **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 20-30 hours
 - **Version**: 6 (supersedes implementation-001.md through -005.md)
 - **Dependencies**: BidirectionalReachable.lean (sorry-free fragment infrastructure), CanonicalCompleteness.lean (fragmentFMCS sorry-free)
@@ -124,7 +124,7 @@ After implementation:
 
 ## Implementation Phases
 
-### Phase 1: truth_at Requirements Investigation [NOT STARTED]
+### Phase 1: truth_at Requirements Investigation [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Determine exactly what algebraic structure `truth_at` requires
@@ -148,9 +148,30 @@ After implementation:
 - Clear documentation of truth_at's algebraic requirements
 - Decision on Phase 2+ approach (direct vs embedding)
 
+**Progress:**
+
+**Session: 2026-03-02, sess_1740934800_951impl**
+- Completed: All 6 tasks (1.1-1.6) - full analysis of type class requirements
+- Finding (Task 1.1): `truth_at` requires `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`
+- Finding (Task 1.2): `WorldHistory` requires same - `time_shift` uses `z + Delta`, `-Delta`, `neg_add_cancel`
+- Finding (Task 1.3): `TaskFrame.task_rel` uses `0` (nullity), `x + y` (compositionality), `t - s` (respects_task)
+- Finding (Task 1.4): AddCommGroup IS deeply essential, NOT incidental:
+  - `time_shift_preserves_truth` uses `y - x`, `neg_sub`, `add_sub_cancel_left`
+  - `valid` definition quantifies over all D with `AddCommGroup + LinearOrder + IsOrderedAddMonoid`
+  - `satisfiable` definition requires same constraints
+  - ShiftClosed uses `WorldHistory.time_shift` which requires `z + Delta`
+- Decision (Task 1.6): AddCommGroup IS essential. Cannot define truth_at on BidirectionalFragment.
+  - **Approach**: Prove `fully_saturated_bfmcs_exists_int` sorry-free
+  - The existing `standard_weak_completeness` is ALREADY sorry-free modulo this one sorry
+  - Strategy: Build BFMCS Int with temporally coherent families using fragment-level infrastructure
+  - Fragment -> Int mapping: enumerate countable linear order into Int (Phase 5)
+  - OR: construct FMCS Int directly using fragmentFMCS as guide
+  - Key insight: `fragmentFMCS` is sorry-free for forward_F/backward_P
+  - Remaining challenge: convert FMCS Fragment -> FMCS Int with modal saturation
+
 ---
 
-### Phase 2: Fragment-Level BFMCS Construction [NOT STARTED]
+### Phase 2: Fragment-Level BFMCS Construction [IN PROGRESS]
 
 - **Dependencies:** Phase 1
 - **Goal:** Construct `BFMCS (BidirectionalFragment M0 h_mcs0)` with sorry-free temporal coherence

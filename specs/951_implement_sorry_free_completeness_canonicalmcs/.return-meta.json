@@ -1,18 +1,15 @@
 {
-  "status": "researched",
-  "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-022.md",
-      "summary": "Deep analysis of histories-first approach: R-order properties, Flag infrastructure, fragment-level completeness strategy, and concrete path to zero sorries"
-    }
-  ],
-  "next_steps": "Review research-022 findings. Key decision: attempt Fragment-level completeness (avoids DovetailingChain entirely) vs. enriched chain embedding (uses existing BFMCS Int path). Check whether truth_at requires AddCommGroup or just Preorder.",
+  "status": "partial",
+  "summary": "Phase 1 completed (AddCommGroup IS essential), Phase 2 in progress with FragmentCompleteness.lean (457 lines, 4 sorries remaining)",
+  "artifacts": [],
   "metadata": {
-    "session_id": "sess_1772479234_vskogn",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "findings_count": 9
+    "phases_completed": 1,
+    "phases_total": 6,
+    "session_id": "sess_1740934800_951impl"
+  },
+  "requires_user_review": false,
+  "partial_progress": {
+    "last_phase": 2,
+    "resume_point": "Phase 2: Complete buildFragmentChain_monotone, fragmentChainFMCS_forward_F, fragmentChainFMCS_backward_P, and fragment_fully_saturated_bfmcs_exists_int sorries"
   }
 }
