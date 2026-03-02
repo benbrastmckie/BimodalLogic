@@ -1,24 +1,19 @@
 {
-  "status": "researched",
-  "summary": "Deep analysis of alternative encoding strategies for F-persistence. Found that pre-saturation of all witnesses simultaneously fails (multi-witness seed inconsistency counterexample), bounded chain jumps are impossible (Lindenbaum non-determinism), and saturation-first collapses to constant families (dead end). Recommended: fragment-level completeness with order-theoretic SuccOrder for Int embedding.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-023.md",
-      "type": "research",
-      "summary": "12-part research report analyzing 5 strategies for resolving F-persistence obstacle, with counterexamples, Mathlib lookups, and concrete recommendations"
+      "type": "plan",
+      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-007.md",
+      "summary": "5-phase focused plan for F-preserving seed consistency conjecture proof"
     }
   ],
-  "next_steps": "Run /plan 951 to create implementation plan v7 based on fragment-level completeness approach",
+  "next_steps": "Run /implement 951 to execute the plan",
   "metadata": {
-    "session_id": "sess_1740935400_951res",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 600,
+    "session_id": "sess_1772487695_5f11",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 12,
-    "context_files_loaded": ["kripke-semantics-overview.md (via codebase grep)", "ROAD_MAP.md (Dead Ends section)"],
-    "mathlib_lookups_performed": 4,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": "8-15"
   }
 }

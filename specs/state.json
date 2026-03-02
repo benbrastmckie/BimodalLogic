@@ -37,16 +37,16 @@
     {
       "project_number": 951,
       "project_name": "implement_sorry_free_completeness_canonicalmcs",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-03-02T21:23:13Z",
+      "last_updated": "2026-03-02T21:46:36Z",
       "blocker": "Plans v3/v4 abandoned (mathematically impossible). v5 uses fragment-based approach.",
-      "session_id": "sess_1740936000_951team",
+      "session_id": "sess_1772487695_5f11",
       "researched": "2026-03-02T21:23:13Z",
-      "planned": "2026-03-02T17:57:52Z",
+      "planned": "2026-03-02T21:46:36Z",
       "artifacts": [
         {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md",
@@ -164,19 +164,9 @@
           "summary": "Teammate D (follow-on): answered all 5 gating questions from source. Confirmed: transfer theorem already proven (canonical_truth_lemma_all), ShiftClosed already resolved, fragment is discrete (D=Q blocked), all families need TC (not just eval), trivial task_rel is correct. Root cause: DovetailingChain forward_F/backward_P sorries."
         },
         {
-          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-005.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan for sorry-free completeness via fragment-based approach"
-        },
-        {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-022.md",
           "type": "research",
           "summary": "Deep analysis of histories-first approach: R-order properties, Flag infrastructure, fragment-level completeness strategy, and concrete path to zero sorries"
-        },
-        {
-          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "6-phase histories-first implementation plan using BidirectionalFragment as canonical history"
         },
         {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-023.md",
@@ -187,6 +177,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-024.md",
           "type": "research",
           "summary": "Team research: F-formula preserving chain analysis (2 teammates)"
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "5-phase focused plan for F-preserving seed consistency conjecture proof"
         }
       ],
       "started": "2026-02-28T01:53:54Z"
