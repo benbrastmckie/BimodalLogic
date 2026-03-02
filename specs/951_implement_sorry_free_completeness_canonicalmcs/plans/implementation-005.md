@@ -1,7 +1,7 @@
 # Implementation Plan: Task #951 (Revision 5)
 
 - **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 35-50 hours
 - **Version**: 5 (supersedes implementation-001.md through -004.md)
 - **Dependencies**: BidirectionalReachable.lean (sorry-free fragment infrastructure), CanonicalCompleteness.lean (fragmentFMCS sorry-free)
@@ -129,7 +129,7 @@ After implementation:
 
 ## Implementation Phases
 
-### Phase 1: Fragment Infrastructure Verification [NOT STARTED]
+### Phase 1: Fragment Infrastructure Verification [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Verify all required fragment-level infrastructure is sorry-free and correctly typed
@@ -156,10 +156,11 @@ After implementation:
 
 ---
 
-### Phase 2: Fragment-Level BFMCS with Temporal Coherence [NOT STARTED]
+### Phase 2: Fragment-Level BFMCS with Temporal Coherence [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Construct `BFMCS (BidirectionalFragment M0 h_mcs0)` with temporally coherent eval_family
+- **Blocker:** witnessAt-based witness families don't satisfy forward_G. The witness MCSes at different points are unrelated by CanonicalR, so G(phi) ∈ witness(w₁) doesn't imply phi ∈ witness(w₂). Need alternative approach to non-constant witness families.
 
 **Tasks:**
 - [ ] **Task 2.1:** Define `fragmentBFMCS_eval_family` wrapping `fragmentFMCS` as the evaluation family
