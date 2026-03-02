@@ -1,5 +1,5 @@
 ---
-next_project_number: 952
+next_project_number: 953
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 952. Sync Theory/.claude/ improvements into ProofChecker/.claude/
+- **Effort**: 3 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Sync Theory/.claude/ improvements into ProofChecker/.claude/. Bring in: typst-research skill+agent, /merge command, zero-padding ({NNN}) in paths and artifact templates, all domain content (category theory, bilateral semantics, mereology, bilattice-theory, monoidal-posets, scott-topology, etc.), logos-macros.md, extra orchestration files (delegation.md, orchestrator.md, routing.md, sessions.md, subagent-validation.md, validation.md), context-knowledge-template.md, README.md files in context/project/ subdirectories, extra typst patterns+standards, extra latex checklist items, tts-stt-integration.md, wezterm-integration.md in docs/guides/, opencode-conventions.md. PRESERVE: context/core/reference/ delegation, model: opus on agents, targeted file-by-file git staging, multi-agent team skills, condensed CLAUDE.md with @-references, all ProofChecker-specific patterns. IGNORE: output/ directory.
+
+---
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 40-60 hours
