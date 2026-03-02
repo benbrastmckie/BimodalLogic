@@ -37,16 +37,16 @@
     {
       "project_number": 951,
       "project_name": "implement_sorry_free_completeness_canonicalmcs",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Implement sorry-free completeness via CanonicalMCS domain. Use CanonicalFMCS.lean infrastructure (sorry-free forward_F/backward_P) to prove standard completeness theorem.",
       "created": "2026-02-28T01:21:00Z",
-      "last_updated": "2026-03-02T17:15:25Z",
-      "blocker": "Phase 1 Task 1.1 (quotientSucc_pred_inverse) is mathematically impossible. G(phi)->H(phi) is semantically invalid. Plan v4 needs revision to chain-based task_rel approach.",
-      "session_id": "sess_1772431881_00276f",
+      "last_updated": "2026-03-02T17:57:52Z",
+      "blocker": "Plans v3/v4 abandoned (mathematically impossible). v5 uses fragment-based approach.",
+      "session_id": "sess_1772473922_jqktdk",
       "researched": "2026-03-02T06:24:42Z",
-      "planned": "2026-03-01T23:30:00Z",
+      "planned": "2026-03-02T17:57:52Z",
       "artifacts": [
         {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md",
@@ -114,16 +114,6 @@
           "summary": "Definitive sorry-free completeness construction: BidirectionalFragment IS the canonical domain (proven LinearOrder), fragmentFMCS is sorry-free, compose Int enumeration with fragment FMCS to sidestep F-persistence. Key obligation: SuccOrder coverness on BidirectionalQuotient."
         },
         {
-          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for sorry-free completeness via OrderIso approach"
-        },
-        {
-          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan using Grothendieck construction for sorry-free completeness"
-        },
-        {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/handoffs/phase-1-handoff-20260301.md",
           "type": "handoff",
           "summary": "SuccOrder approach blocked: coverness unprovable (Lindenbaum adds G-formulas), NoMaxOrder fails (reflexive semantics). 14 lemmas added. Recommends Option A (generalize TaskFrame) or Option B (direct chain with fragmentFSucc)."
@@ -154,11 +144,6 @@
           "summary": "Non-trivial task_rel from pure syntax. Chain-based construction: task_rel w d u := exists chain position i with chain(i)=w and chain(i+d)=u. Requires chain injectivity. D=Int acceptable but BidirectionalQuotient lacks AddCommGroup. Key risk: chain stalling (quotientSucc fixed point). Trivial task_rel approach BANNED."
         },
         {
-          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "Grothendieck construction: D=Z via formal differences of quotient elements. task_rel w d u := quotientSuccIter w d = u. 6 phases: quotientSuccIter foundation, TaskFrame, WorldHistory, FMCS transfer, completeness, extensibility verification. 30-45 hours."
-        },
-        {
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/summaries/phase1-blocker-analysis-20260301.md",
           "type": "summary",
           "summary": "Phase 1 blocker: quotientSucc/quotientPred inverse is mathematically impossible. G(phi)->H(phi) semantically invalid (countermodel: 3-point linear order). Recommends chain-based task_rel approach from research-018 Section 8."
@@ -177,6 +162,11 @@
           "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-021-teammate-d-findings.md",
           "type": "research",
           "summary": "Teammate D (follow-on): answered all 5 gating questions from source. Confirmed: transfer theorem already proven (canonical_truth_lemma_all), ShiftClosed already resolved, fragment is discrete (D=Q blocked), all families need TC (not just eval), trivial task_rel is correct. Root cause: DovetailingChain forward_F/backward_P sorries."
+        },
+        {
+          "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for sorry-free completeness via fragment-based approach"
         }
       ],
       "started": "2026-02-28T01:53:54Z"

@@ -1,17 +1,20 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-01T12:00:00Z",
+  "status": "planned",
   "artifacts": [
-    "specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-020.md"
+    {
+      "type": "plan",
+      "path": "specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-005.md",
+      "summary": "8-phase implementation plan for sorry-free completeness via fragment-based approach"
+    }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research on parametric completeness over arbitrary D. Key finding: parametric completeness requires [Nontrivial D] and [Archimedean D] hypotheses (D={0} counterexample). Transfer via zsmul embedding and step-function truth preservation."
-  },
+  "next_steps": "Run /implement 951 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772413135_d5ccc8",
-    "agent_type": "lean-research-agent",
-    "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "session_id": "sess_1772473922_jqktdk",
+    "agent_type": "planner-agent",
+    "duration_seconds": 300,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 42.5
   }
 }
