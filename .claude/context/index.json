@@ -201,8 +201,8 @@
     }
   },
   "version": "1.0.0",
-  "generated_at": "2026-02-26T20:26:37Z",
-  "file_count": 152,
+  "generated_at": "2026-03-02T01:49:48Z",
+  "file_count": 186,
   "entries": [
     {
       "path": "core/architecture/component-checklist.md",
@@ -365,6 +365,29 @@
         ]
       },
       "line_count": 100
+    },
+    {
+      "path": "core/formats/changelog-format.md",
+      "domain": "core",
+      "subdomain": "formats",
+      "topics": [
+        "formats",
+        "changelog",
+        "format"
+      ],
+      "summary": "Changelog Format Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 133
     },
     {
       "path": "core/formats/command-output.md",
@@ -619,7 +642,7 @@
           "agent"
         ]
       },
-      "line_count": 65
+      "line_count": 77
     },
     {
       "path": "core/formats/subagent-return.md",
@@ -715,6 +738,29 @@
       "line_count": 757
     },
     {
+      "path": "core/orchestration/delegation.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "delegation"
+      ],
+      "summary": "> **DEPRECATED** (2026-01-19): This file has been consolidated into:",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 859
+    },
+    {
       "path": "core/orchestration/orchestration-core.md",
       "domain": "core",
       "subdomain": "orchestration",
@@ -784,6 +830,29 @@
       "line_count": 233
     },
     {
+      "path": "core/orchestration/orchestrator.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "orchestrator"
+      ],
+      "summary": "> **DEPRECATED** (2026-01-19): This file has been consolidated into:",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 876
+    },
+    {
       "path": "core/orchestration/postflight-pattern.md",
       "domain": "core",
       "subdomain": "orchestration",
@@ -832,6 +901,52 @@
       "line_count": 217
     },
     {
+      "path": "core/orchestration/routing.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "routing"
+      ],
+      "summary": "Routing Guide - Lightweight Command Routing Context",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 775
+    },
+    {
+      "path": "core/orchestration/sessions.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "sessions"
+      ],
+      "summary": "<!-- Context: workflows/sessions | Priority: medium | Version: 2.0 | Updated: 2025-01-21 -->",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 166
+    },
+    {
       "path": "core/orchestration/state-management.md",
       "domain": "core",
       "subdomain": "orchestration",
@@ -856,6 +971,53 @@
       "line_count": 337
     },
     {
+      "path": "core/orchestration/subagent-validation.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "subagent",
+        "validation"
+      ],
+      "summary": "Subagent Return Validation",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 313
+    },
+    {
+      "path": "core/orchestration/validation.md",
+      "domain": "core",
+      "subdomain": "orchestration",
+      "topics": [
+        "orchestration",
+        "validation"
+      ],
+      "summary": "> **DEPRECATED** (2026-01-19): This file has been consolidated into:",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 699
+    },
+    {
       "path": "core/patterns/anti-stop-patterns.md",
       "domain": "core",
       "subdomain": "patterns",
@@ -874,10 +1036,6 @@
         ],
         "tiers": [
           "agent"
-        ],
-        "conditions": [
-          "when building agents",
-          "when creating skills"
         ]
       },
       "line_count": 174
@@ -906,9 +1064,6 @@
         "agents": [
           "lean-research-agent",
           "lean-implementation-agent"
-        ],
-        "conditions": [
-          "when using Lean MCP tools"
         ]
       },
       "line_count": 65
@@ -956,9 +1111,6 @@
         ],
         "tiers": [
           "agent"
-        ],
-        "conditions": [
-          "when building agents"
         ]
       },
       "line_count": 261
@@ -1060,37 +1212,6 @@
       "line_count": 213
     },
     {
-      "path": "core/patterns/roadmap-reflection-pattern.md",
-      "domain": "core",
-      "subdomain": "patterns",
-      "topics": [
-        "patterns",
-        "roadmap",
-        "reflection",
-        "research"
-      ],
-      "summary": "ROAD_MAP.md Reflection Pattern for Research Agents",
-      "load_when": {
-        "languages": [
-          "lean",
-          "logic",
-          "math"
-        ],
-        "operations": [
-          "research"
-        ],
-        "tiers": [
-          "agent"
-        ],
-        "agents": [
-          "lean-research-agent",
-          "logic-research-agent",
-          "math-research-agent"
-        ]
-      },
-      "line_count": 143
-    },
-    {
       "path": "core/patterns/metadata-file-return.md",
       "domain": "core",
       "subdomain": "patterns",
@@ -1136,6 +1257,30 @@
         ]
       },
       "line_count": 265
+    },
+    {
+      "path": "core/patterns/roadmap-reflection-pattern.md",
+      "domain": "core",
+      "subdomain": "patterns",
+      "topics": [
+        "patterns",
+        "roadmap",
+        "reflection",
+        "pattern"
+      ],
+      "summary": "ROAD_MAP.md Reflection Pattern",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 142
     },
     {
       "path": "core/patterns/roadmap-update.md",
@@ -1202,10 +1347,6 @@
         ],
         "tiers": [
           "agent"
-        ],
-        "conditions": [
-          "when using teams",
-          "when spawning teammates"
         ]
       },
       "line_count": 225
@@ -1281,7 +1422,7 @@
           "agent"
         ]
       },
-      "line_count": 83
+      "line_count": 88
     },
     {
       "path": "core/reference/error-recovery-procedures.md",
@@ -1380,7 +1521,7 @@
           "command"
         ]
       },
-      "line_count": 35
+      "line_count": 38
     },
     {
       "path": "core/schemas/subagent-frontmatter.yaml",
@@ -1750,6 +1891,30 @@
       "line_count": 136
     },
     {
+      "path": "core/templates/context-knowledge-template.md",
+      "domain": "core",
+      "subdomain": "templates",
+      "topics": [
+        "templates",
+        "context",
+        "knowledge",
+        "template"
+      ],
+      "summary": "Context Knowledge Extraction Template",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 200
+    },
+    {
       "path": "core/templates/delegation-context.md",
       "domain": "core",
       "subdomain": "templates",
@@ -1865,8 +2030,7 @@
           "agent"
         ],
         "conditions": [
-          "when workflow fails",
-          "when agent hangs"
+          "when diagnosing issues"
         ]
       },
       "line_count": 342
@@ -1890,9 +2054,6 @@
         ],
         "tiers": [
           "command"
-        ],
-        "conditions": [
-          "when querying context index"
         ]
       },
       "line_count": 389
@@ -2008,8 +2169,7 @@
           "command"
         ]
       },
-      "line_count": 86,
-      "deprecated": true
+      "line_count": 86
     },
     {
       "path": "core/workflows/task-breakdown.md",
@@ -2200,6 +2360,30 @@
       "line_count": 262
     },
     {
+      "path": "project/latex/standards/logos-macros.md",
+      "domain": "project",
+      "subdomain": "latex",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "logos",
+        "macros"
+      ],
+      "summary": "Logos Macro Conventions",
+      "load_when": {
+        "languages": [
+          "latex"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 117
+    },
+    {
       "path": "project/latex/standards/notation-conventions.md",
       "domain": "project",
       "subdomain": "latex",
@@ -2321,7 +2505,7 @@
           "command"
         ]
       },
-      "line_count": 331
+      "line_count": 397
     },
     {
       "path": "project/lean4/domain/dependent-types.md",
@@ -2483,10 +2667,6 @@
         ],
         "agents": [
           "lean-implementation-agent"
-        ],
-        "conditions": [
-          "when developing proofs",
-          "when proof stuck"
         ]
       },
       "line_count": 517
@@ -2903,6 +3083,93 @@
       "line_count": 378
     },
     {
+      "path": "project/logic/domain/bilateral-propositions.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "bilateral",
+        "propositions"
+      ],
+      "summary": "Bilateral Propositions",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 219
+    },
+    {
+      "path": "project/logic/domain/bilateral-semantics.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "bilateral",
+        "semantics"
+      ],
+      "summary": "Bilateral Truthmaker Semantics",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 297
+    },
+    {
+      "path": "project/logic/domain/counterfactual-semantics.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "counterfactual",
+        "semantics"
+      ],
+      "summary": "Counterfactual Semantics",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 239
+    },
+    {
       "path": "project/logic/domain/kripke-semantics-overview.md",
       "domain": "project",
       "subdomain": "logic",
@@ -2931,6 +3198,65 @@
         ]
       },
       "line_count": 60
+    },
+    {
+      "path": "project/logic/domain/lattice-theory-concepts.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "lattice",
+        "theory",
+        "concepts"
+      ],
+      "summary": "Lattice Theory Concepts for Spatial Reasoning",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 325
+    },
+    {
+      "path": "project/logic/domain/mereology-foundations.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "mereology",
+        "foundations"
+      ],
+      "summary": "Mereology Foundations",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 216
     },
     {
       "path": "project/logic/domain/metalogic-concepts.md",
@@ -2992,6 +3318,34 @@
       "line_count": 280
     },
     {
+      "path": "project/logic/domain/spatial-domain.md",
+      "domain": "project",
+      "subdomain": "logic",
+      "category": "domain",
+      "topics": [
+        "domain",
+        "spatial"
+      ],
+      "summary": "Spatial Domain Context",
+      "load_when": {
+        "languages": [
+          "logic",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ],
+        "agents": [
+          "lean-research-agent",
+          "lean-implementation-agent"
+        ]
+      },
+      "line_count": 301
+    },
+    {
       "path": "project/logic/domain/task-semantics.md",
       "domain": "project",
       "subdomain": "logic",
@@ -3026,12 +3380,11 @@
       "subdomain": "logic",
       "category": "domain",
       "topics": [
-        "topology",
-        "scott",
-        "metric",
-        "spatial"
+        "domain",
+        "topological",
+        "foundations"
       ],
-      "summary": "Topological foundations for spatial chapter: Scott topology, spatially complete regions, and metric topology generation",
+      "summary": "Topological Foundations Domain",
       "load_when": {
         "languages": [
           "logic",
@@ -3076,9 +3429,6 @@
         "agents": [
           "lean-research-agent",
           "lean-implementation-agent"
-        ],
-        "conditions": [
-          "when proving modal theorems"
         ]
       },
       "line_count": 413
@@ -3138,9 +3488,6 @@
         "agents": [
           "lean-research-agent",
           "lean-implementation-agent"
-        ],
-        "conditions": [
-          "when proving temporal theorems"
         ]
       },
       "line_count": 472
@@ -3340,6 +3687,206 @@
       "line_count": 305
     },
     {
+      "path": "project/math/category-theory/basics.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "category-theory",
+      "topics": [
+        "category-theory",
+        "basics"
+      ],
+      "summary": "Category Theory Basics",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 277
+    },
+    {
+      "path": "project/math/category-theory/cauchy-completion.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "category-theory",
+      "topics": [
+        "category-theory",
+        "cauchy",
+        "completion"
+      ],
+      "summary": "For metric spaces, Cauchy completion adds limit points of Cauchy sequences.",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 127
+    },
+    {
+      "path": "project/math/category-theory/enriched-categories.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "category-theory",
+      "topics": [
+        "category-theory",
+        "enriched",
+        "categories"
+      ],
+      "summary": "An **enriched category** generalizes ordinary categories by replacing hom-sets with hom-objects in a monoidal category V. This abstraction captures algebraic, topological, and metric structures uni...",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 91
+    },
+    {
+      "path": "project/math/category-theory/lawvere-metric-spaces.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "category-theory",
+      "topics": [
+        "category-theory",
+        "lawvere",
+        "metric",
+        "spaces"
+      ],
+      "summary": "Lawvere Metric Spaces",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 124
+    },
+    {
+      "path": "project/math/category-theory/monoidal-categories.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "category-theory",
+      "topics": [
+        "category-theory",
+        "monoidal",
+        "categories"
+      ],
+      "summary": "> **Scope**: Monoidal categories serving as the enriching category for V-enriched categories. Covers tensor products, unit objects, coherence, and symmetry.",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 259
+    },
+    {
+      "path": "project/math/category-theory/profunctors.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "category-theory",
+      "topics": [
+        "category-theory",
+        "profunctors"
+      ],
+      "summary": "The same concept appears under different names in the literature:",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 149
+    },
+    {
+      "path": "project/math/foundations/dependent-type-theory.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "foundations",
+      "topics": [
+        "foundations",
+        "dependent",
+        "type",
+        "theory"
+      ],
+      "summary": "Dependent Type Theory",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 226
+    },
+    {
+      "path": "project/math/lattice-theory/bilattice-theory.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "lattice-theory",
+      "topics": [
+        "lattice-theory",
+        "bilattice",
+        "theory"
+      ],
+      "summary": "> **Scope**: Algebraic foundations of bilattice theory relevant to propositional identity in Logos constitutive semantics.",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 320
+    },
+    {
       "path": "project/math/lattice-theory/lattices.md",
       "domain": "project",
       "subdomain": "math",
@@ -3362,6 +3909,31 @@
         ]
       },
       "line_count": 301
+    },
+    {
+      "path": "project/math/order-theory/monoidal-posets.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "order-theory",
+      "topics": [
+        "order-theory",
+        "monoidal",
+        "posets"
+      ],
+      "summary": "A **monoidal poset** provides the minimal structure needed to enrich categories over a poset: a poset with a compatible monoid operation. This structure underlies metric spaces, cost structures, an...",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 194
     },
     {
       "path": "project/math/order-theory/partial-orders.md",
@@ -3409,7 +3981,31 @@
           "agent"
         ]
       },
-      "line_count": 28
+      "line_count": 29
+    },
+    {
+      "path": "project/math/topology/scott-topology.md",
+      "domain": "project",
+      "subdomain": "math",
+      "category": "topology",
+      "topics": [
+        "topology",
+        "scott"
+      ],
+      "summary": "Scott topology is a fundamental construction in domain theory that connects order theory and topology. Named after Dana Scott, who developed it in the 1970s for denotational semantics of programmin...",
+      "load_when": {
+        "languages": [
+          "math",
+          "lean"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 242
     },
     {
       "path": "project/math/topology/topological-spaces.md",
@@ -3435,35 +4031,6 @@
         ]
       },
       "line_count": 333
-    },
-    {
-      "path": "project/math/foundations/dependent-type-theory.md",
-      "domain": "project",
-      "subdomain": "math",
-      "category": "foundations",
-      "topics": [
-        "type-theory",
-        "dependent-types",
-        "foundations"
-      ],
-      "summary": "Foundational dependent type theory as a mathematical framework for constructive mathematics and proof assistants",
-      "load_when": {
-        "languages": [
-          "math",
-          "lean"
-        ],
-        "operations": [
-          "any"
-        ],
-        "tiers": [
-          "agent"
-        ],
-        "agents": [
-          "lean-research-agent",
-          "lean-implementation-agent"
-        ]
-      },
-      "line_count": 226
     },
     {
       "path": "project/meta/architecture-principles.md",
@@ -3586,6 +4153,29 @@
       "line_count": 462
     },
     {
+      "path": "project/meta/README.md",
+      "domain": "project",
+      "subdomain": "meta",
+      "topics": [
+        "meta",
+        "README"
+      ],
+      "summary": "System-building context for creating and modifying agents, commands, and workflows in the ProofChecker task management system. Use these files when extending the `.claude/` infrastructure or learni...",
+      "load_when": {
+        "languages": [
+          "meta"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "orchestrator",
+          "command"
+        ]
+      },
+      "line_count": 30
+    },
+    {
       "path": "project/meta/standards-checklist.md",
       "domain": "project",
       "subdomain": "meta",
@@ -3610,6 +4200,28 @@
       "line_count": 379
     },
     {
+      "path": "project/opencode/opencode-conventions.md",
+      "domain": "project",
+      "subdomain": "opencode",
+      "topics": [
+        "opencode",
+        "conventions"
+      ],
+      "summary": "OpenCode Conventions Standard",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 471
+    },
+    {
       "path": "project/physics/dynamical-systems/dynamical-systems.md",
       "domain": "project",
       "subdomain": "physics",
@@ -3632,6 +4244,28 @@
         ]
       },
       "line_count": 386
+    },
+    {
+      "path": "project/physics/README.md",
+      "domain": "project",
+      "subdomain": "physics",
+      "topics": [
+        "physics",
+        "README"
+      ],
+      "summary": "Physics Context README",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 38
     },
     {
       "path": "project/processes/implementation-workflow.md",
@@ -3680,6 +4314,28 @@
       "line_count": 540
     },
     {
+      "path": "project/processes/README.md",
+      "domain": "project",
+      "subdomain": "processes",
+      "topics": [
+        "processes",
+        "README"
+      ],
+      "summary": "Processes Context README",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 28
+    },
+    {
       "path": "project/processes/research-workflow.md",
       "domain": "project",
       "subdomain": "processes",
@@ -3703,6 +4359,27 @@
       "line_count": 638
     },
     {
+      "path": "project/README.md",
+      "domain": "project",
+      "subdomain": "README.md",
+      "topics": [
+        "README"
+      ],
+      "summary": "Project Context README",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 52
+    },
+    {
       "path": "project/repo/project-overview.md",
       "domain": "project",
       "subdomain": "repo",
@@ -3724,6 +4401,28 @@
         ]
       },
       "line_count": 216
+    },
+    {
+      "path": "project/repo/README.md",
+      "domain": "project",
+      "subdomain": "repo",
+      "topics": [
+        "repo",
+        "README"
+      ],
+      "summary": "Repository-level documentation describing the Logos project structure, purpose, and architecture. Use these files to understand the overall codebase organization and technical decisions.",
+      "load_when": {
+        "languages": [
+          "any"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 26
     },
     {
       "path": "project/repo/self-healing-implementation-details.md",
@@ -3773,6 +4472,54 @@
         ]
       },
       "line_count": 231
+    },
+    {
+      "path": "project/typst/patterns/fletcher-diagrams.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "patterns",
+      "topics": [
+        "patterns",
+        "fletcher",
+        "diagrams"
+      ],
+      "summary": "Fletcher Diagram Patterns",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 360
+    },
+    {
+      "path": "project/typst/patterns/rule-environments.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "patterns",
+      "topics": [
+        "patterns",
+        "rule",
+        "environments"
+      ],
+      "summary": "Custom Typst environments for presenting typing rules and inference rules consistently.",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 137
     },
     {
       "path": "project/typst/patterns/theorem-environments.md",
@@ -3845,6 +4592,31 @@
       "line_count": 290
     },
     {
+      "path": "project/typst/standards/dtt-foundation-standard.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "dtt",
+        "foundation",
+        "standard"
+      ],
+      "summary": "DTT Foundation Standard for the Logos Appendix",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 261
+    },
+    {
       "path": "project/typst/standards/notation-conventions.md",
       "domain": "project",
       "subdomain": "typst",
@@ -3867,6 +4639,29 @@
         ]
       },
       "line_count": 229
+    },
+    {
+      "path": "project/typst/standards/textbook-standards.md",
+      "domain": "project",
+      "subdomain": "typst",
+      "category": "standards",
+      "topics": [
+        "standards",
+        "textbook"
+      ],
+      "summary": "The Logos Appendix is a companion textbook providing mathematical background for readers of the Logos Manual. These standards ensure consistency, rigor, and accessibility across all 9 chapters.",
+      "load_when": {
+        "languages": [
+          "typst"
+        ],
+        "operations": [
+          "any"
+        ],
+        "tiers": [
+          "agent"
+        ]
+      },
+      "line_count": 232
     },
     {
       "path": "project/typst/standards/typst-style-guide.md",
