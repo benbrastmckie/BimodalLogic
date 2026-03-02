@@ -73,6 +73,7 @@ Load these on-demand using @-references:
 
 **Always Load**:
 - `@.claude/context/project/lean4/tools/mcp-tools-guide.md` - Full MCP tool reference
+- `@.claude/context/core/formats/return-metadata-file.md` - Metadata file schema
 - `@.claude/context/project/lean4/standards/proof-debt-policy.md` - Sorry remediation policy (REQUIRED for correct characterization)
 
 **Load After Stage 0**:

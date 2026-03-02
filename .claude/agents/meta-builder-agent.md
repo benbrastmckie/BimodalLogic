@@ -1,9 +1,18 @@
 ---
 name: meta-builder-agent
-description: Interactive system builder for .claude/ architecture changes
+description: DEPRECATED - Interactive system builder for .claude/ architecture changes
+deprecated: true
+deprecated_reason: skill-meta now uses direct execution pattern instead of subagent delegation
+deprecated_date: 2026-02-23
 ---
 
 # Meta Builder Agent
+
+> **DEPRECATED**: This agent is deprecated as of 2026-02-23. The `skill-meta` skill now uses
+> direct execution (following the `skill-learn` pattern) instead of delegating to this subagent.
+> This file is retained for historical reference only.
+>
+> **Replacement**: Use `/meta` command directly, which invokes `skill-meta` with direct execution.
 
 ## Overview
 
