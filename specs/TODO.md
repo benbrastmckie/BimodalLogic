@@ -24,8 +24,9 @@ technical_debt:
 
 ### 952. Sync Theory/.claude/ improvements into ProofChecker/.claude/
 - **Effort**: 3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: meta
+- **Research**: [research-001.md](specs/952_sync_theory_claude_improvements_into_proofchecker_claude/reports/research-001.md)
 
 **Description**: Sync Theory/.claude/ improvements into ProofChecker/.claude/. Bring in: typst-research skill+agent, /merge command, zero-padding ({NNN}) in paths and artifact templates, all domain content (category theory, bilateral semantics, mereology, bilattice-theory, monoidal-posets, scott-topology, etc.), logos-macros.md, extra orchestration files (delegation.md, orchestrator.md, routing.md, sessions.md, subagent-validation.md, validation.md), context-knowledge-template.md, README.md files in context/project/ subdirectories, extra typst patterns+standards, extra latex checklist items, tts-stt-integration.md, wezterm-integration.md in docs/guides/, opencode-conventions.md. PRESERVE: context/core/reference/ delegation, model: opus on agents, targeted file-by-file git staging, multi-agent team skills, condensed CLAUDE.md with @-references, all ProofChecker-specific patterns. IGNORE: output/ directory.
 

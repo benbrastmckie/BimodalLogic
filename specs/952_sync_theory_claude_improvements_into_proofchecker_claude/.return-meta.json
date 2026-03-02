@@ -1,0 +1,24 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-01T00:00:00Z",
+  "completed_at": "2026-03-01T00:15:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/952_sync_theory_claude_improvements_into_proofchecker_claude/reports/research-001.md",
+      "summary": "Comprehensive sync analysis: 39 files to bring in, 32 files to preserve, merge strategy with conflict avoidance rules"
+    }
+  ],
+  "next_steps": "Run /plan 952 to create implementation plan with phased sync approach",
+  "metadata": {
+    "session_id": "sess_1772415021_470e63",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 900,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 8,
+    "files_to_sync": 39,
+    "files_to_preserve": 32,
+    "files_in_both": 190
+  }
+}

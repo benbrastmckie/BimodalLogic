@@ -8,10 +8,17 @@
     {
       "project_number": 952,
       "project_name": "sync_theory_claude_improvements_into_proofchecker_claude",
-      "status": "not_started",
+      "status": "researched",
       "language": "meta",
       "created": "2026-03-02T01:25:30Z",
-      "last_updated": "2026-03-02T01:25:30Z"
+      "last_updated": "2026-03-01T00:15:00Z",
+      "session_id": "sess_1772415021_470e63",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/952_sync_theory_claude_improvements_into_proofchecker_claude/reports/research-001.md"
+        }
+      ]
     },
     {
       "project_number": 951,
