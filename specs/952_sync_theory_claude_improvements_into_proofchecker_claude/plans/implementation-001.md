@@ -1,7 +1,7 @@
 # Implementation Plan: Sync Theory/.claude Improvements into ProofChecker/.claude
 
 - **Task**: 952 - sync_theory_claude_improvements_into_proofchecker_claude
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 3.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/952_sync_theory_claude_improvements_into_proofchecker_claude/reports/research-001.md
