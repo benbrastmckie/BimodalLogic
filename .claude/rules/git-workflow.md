@@ -24,7 +24,15 @@ Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
 | Complete phase | `task {N} phase {P}: {phase_name}` |
 | Complete implementation | `task {N}: complete implementation` |
 | Revise plan | `task {N}: revise plan (v{V})` |
+
+## System Operations
+
+| Operation | Commit Message |
+|-----------|----------------|
 | Archive tasks | `todo: archive {N} completed tasks` |
+| Error fixes | `errors: create fix plan for {N} errors (task {M})` |
+| Review | `review: {summary}` |
+| State sync | `sync: reconcile TODO.md and state.json` |
 
 ## Session ID
 
