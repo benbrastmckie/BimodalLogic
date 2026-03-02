@@ -38,14 +38,14 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 20-30 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
 - **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md), [research-003.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-003.md), [research-008.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-008.md) (team), [research-009.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-009.md), [research-010.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-010.md), [research-011.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-011.md), [research-012.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-012.md) (team), [research-013.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-013.md), [research-014.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-014.md), [research-015.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-015.md) (team), [research-016.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-016.md) (architecture redesign), [research-018.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-018.md) (non-trivial task_rel from pure syntax), [research-019.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-019.md) (D construction obstruction analysis), [research-021.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-021.md) (team 4-agent — ideals map, catalog, gap analysis, all 5 gating questions answered), [research-022.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-022.md) (histories-first approach, R-order analysis, Flag infrastructure), [research-023.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-023.md) (deep analysis of alternative encoding strategies for F-persistence), [research-024.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-024.md) (team: F-preserving seed consistency analysis)
 - **Plan**: [implementation-007.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-007.md) (v7 - F-preserving seed consistency conjecture proof, 5 phases)
-- **Previous Blockers**: Plans v1-v5 SUPERSEDED. v6 uses histories-first approach from research-022.
-- **Summary**: [implementation-summary-20260301.md](specs/951_implement_sorry_free_completeness_canonicalmcs/summaries/implementation-summary-20260301.md)
+- **Previous Blockers**: Plans v1-v6 SUPERSEDED. v7 BLOCKED: F-preserving seed conjecture proven false.
+- **Summary**: [implementation-summary-20260302.md](specs/951_implement_sorry_free_completeness_canonicalmcs/summaries/implementation-summary-20260302.md) (v7 blocked: counterexample found)
 
 **Description**: Implement standard completeness theorem using Bidirectional Reachable Fragment approach:
 1. Define bidirectional reachable fragment from root MCS

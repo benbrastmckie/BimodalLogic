@@ -1,7 +1,7 @@
 # Implementation Plan: Task #951 (Revision 7)
 
 - **Task**: 951 - Implement sorry-free completeness via CanonicalMCS domain
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 8-15 hours
 - **Version**: 7 (focused revision targeting F-preserving seed consistency)
 - **Dependencies**: BidirectionalReachable.lean (sorry-free fragment infrastructure), CanonicalCompleteness.lean (fragmentFMCS sorry-free), FragmentCompleteness.lean (F/P persistence lemmas)
@@ -106,7 +106,7 @@ After implementation:
 
 ## Implementation Phases
 
-### Phase 1: Analyze Existing Seed Consistency Infrastructure [NOT STARTED]
+### Phase 1: Analyze Existing Seed Consistency Infrastructure [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Understand the existing `enriched_seed_consistent_from_F` lemma and identify gaps to F-preserving seed
@@ -131,9 +131,18 @@ After implementation:
 - Identification of the exact gap to prove
 - Assessment of proof difficulty (syntactic vs semantic approach)
 
+**Progress:**
+
+**Session: 2026-03-02, sess_1772488424_a009**
+- Completed: Full analysis of `enriched_seed_consistent_from_F` proof structure
+- Completed: Gap identification: existing proof gives `{phi} ∪ GContent(w.world)` consistent using a witness MCS s with CanonicalR w.world s.world and phi in s.world; extending to `{phi} ∪ FContent(w.world) ∪ GContent(w.world)` requires FContent(w.world) to also be in the witness MCS
+- Completed: Assessment: `FContent(w.world) ⊆ w.world` (trivially), `GContent(w.world) ⊆ w.world` (via T-axiom)
+- Completed: Identified that single-witness approach fails because Lindenbaum extension can non-deterministically exclude F-formulas
+- **CRITICAL FINDING**: Discovered COUNTEREXAMPLE to the conjecture (see Phase 2 notes)
+
 ---
 
-### Phase 2: Prove F-Preserving Seed Consistency Conjecture [NOT STARTED]
+### Phase 2: Prove F-Preserving Seed Consistency Conjecture [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove that `{phi} ∪ {F(psi) | F(psi) ∈ w.world} ∪ GContent(w.world)` is consistent when `F(phi) ∈ w.world`
@@ -177,6 +186,39 @@ If all three approaches (syntactic, semantic, reduction) fail:
 - Document which approaches were tried and why they failed
 - Include any counterexample or structural obstacle found
 - User chooses: revise conjecture, try Priority 2 (embedding), or Priority 3 (fragment completeness)
+
+**Progress:**
+
+**Session: 2026-03-02, sess_1772488424_a009**
+- **BLOCKED**: Conjecture is PROVABLY FALSE -- counterexample found
+- Attempted: Single-witness approach (find MCS containing entire seed) -- fails because Lindenbaum extension can non-deterministically exclude F-formulas
+- Attempted: Finite-subset compactness approach (show every finite L is consistent) -- fails because witness for phi may be beyond witnesses for other F-formulas
+- Attempted: Syntactic approach (analyze what derivations can produce from F-formulas) -- led to discovery of counterexample
+- Attempted: Semantic approach (find model satisfying all seed formulas) -- fails for same structural reason
+
+**Counterexample (DEFINITIVE):**
+
+Choose any `psi'` with `F(psi') in w.world`. Set `phi = G(neg psi')`. Then:
+
+1. `F(phi) = F(G(neg psi'))` can coexist with `F(psi')` in w.world.
+   Model witness: linear time {0,1,2,...}. At time 0: psi' false, F(psi') true (witness: time 1).
+   At time 1: psi' true. At time 2+: psi' false, G(neg psi') true at time 2. So F(G(neg psi')) holds at time 0.
+
+2. The seed is `{G(neg psi')} U FContent(w.world) U GContent(w.world)`.
+   Since `F(psi') in FContent(w.world)` and `F(psi') = neg(G(neg psi'))`, the seed contains
+   both `G(neg psi')` and `neg(G(neg psi'))` -- a complementary pair.
+
+3. `{A, neg A} derives bot` trivially. The seed is INCONSISTENT.
+
+**Why this kills the approach:**
+- The counterexample is structural: ANY F-formula F(psi') in w.world creates a potential phi = G(neg psi') where the seed is inconsistent
+- The issue is that FContent(w.world) may contain neg(phi) when phi has the form G(neg psi')
+- Excluding the problematic F(psi') means losing that obligation -- defeats the purpose of F-preserving
+
+**Implications:**
+- Priority 1 (F-preserving seed) is DEAD -- conjecture provably false
+- Priority 2 (Fragment-to-Int embedding) remains viable (20-35 hours, medium-high risk)
+- Priority 3 (Fragment-level completeness as milestone) remains viable (5-10 hours, low risk)
 
 ---
 
