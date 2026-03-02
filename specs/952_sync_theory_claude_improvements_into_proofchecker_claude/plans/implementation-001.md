@@ -114,7 +114,7 @@ Research report (research-001.md) identified:
 
 ---
 
-### Phase 3: Copy Skills, Agents, and Commands [NOT STARTED]
+### Phase 3: Copy Skills, Agents, and Commands [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add typst-research skill/agent and /merge command
