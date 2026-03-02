@@ -171,7 +171,7 @@ After implementation:
 
 ---
 
-### Phase 2: Fragment-Level BFMCS Construction [IN PROGRESS]
+### Phase 2: Fragment-Level BFMCS Construction [PARTIAL]
 
 - **Dependencies:** Phase 1
 - **Goal:** Construct `BFMCS (BidirectionalFragment M0 h_mcs0)` with sorry-free temporal coherence
@@ -193,6 +193,23 @@ After implementation:
 - `lake build` passes
 - `grep -n "\bsorry\b" FragmentCompleteness.lean` returns empty
 - All proofs verified with `lean_goal` showing "no goals"
+
+**Progress:**
+
+**Session: 2026-03-02, sess_1740934800_951impl (iteration 2)**
+- Completed: Rewrote FragmentCompleteness.lean with cleaner chain construction
+- Added: `F_persistence_in_fragment` - key lemma for F-formula persistence (sorry-free)
+- Added: `P_persistence_in_fragment` - symmetric P-formula persistence (sorry-free)
+- Added: `forwardChainFC` / `backwardChainFC` - separated chain definitions (cleaner than let rec)
+- Added: `forwardChainFC_monotone` / `backwardChainFC_antimonotone` - chain monotonicity (sorry-free)
+- Completed: `buildFragmentChain_monotone` - full chain monotonicity (sorry-free, was sorry)
+- Added: `fragmentChainStepBackward_contains_witness` - backward witness placement (sorry-free)
+- Sorries: 4 -> 2 (eliminated `buildFragmentChain_monotone` and `fragment_fully_saturated_bfmcs_exists_int`)
+- Remaining: `fragmentChainFMCS_forward_F` and `fragmentChainFMCS_backward_P` - HARD BLOCKED
+- Hard blocker: F-persistence through chain steps fails when Lindenbaum extension "jumps past"
+  the fragment witness. See "Mathematical Analysis: The F-Persistence Obstacle" in file.
+- Finding: The F-persistence problem is NOT a Lean tactic issue but a genuine mathematical obstacle
+  with the dovetailing chain approach to proving forward_F for Int-indexed families.
 
 ---
 
