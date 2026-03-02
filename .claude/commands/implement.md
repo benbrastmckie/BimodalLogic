@@ -129,13 +129,36 @@ Phase 2 in progress -> context limit approaching
 
 **EXECUTE NOW**: After CHECKPOINT 1 passes, immediately invoke the Skill tool.
 
-**Language-Based Routing**:
+**Team Mode Override**: If `--team` flag is present, route to `skill-team-implement` regardless of language. Pass `team_size` if specified.
+
+**Language-Based Routing** (when `--team` is NOT specified):
 
 | Language | Skill to Invoke |
 |----------|-----------------|
 | `lean` | `skill-lean-implementation` |
 | `latex` | `skill-latex-implementation` |
+| `logic` | See Logic Language Routing below |
 | `general`, `meta`, `markdown` | `skill-implementer` |
+
+#### Logic Language Routing
+
+The `logic` language type routes implementation based on the `target_language` field set during research:
+
+1. **Lookup target_language** from state.json:
+   ```bash
+   target=$(jq -r --arg num "$task_number" \
+     '.active_projects[] | select(.project_number == ($num | tonumber)) | .target_language // "general"' \
+     specs/state.json)
+   ```
+
+2. **Route by target_language**:
+   | target_language | Skill to Invoke |
+   |-----------------|-----------------|
+   | `lean` | `skill-lean-implementation` |
+   | `latex` | `skill-latex-implementation` |
+   | `general` (default) | `skill-implementer` |
+
+3. **Semantic distinction**: `logic` = conceptual domain (theorems, proof strategies, frame properties); `lean`/`latex` = implementation formats. Research defines *what* to prove; target_language determines *how* to implement it.
 
 **Invoke the Skill tool NOW** with:
 ```
@@ -164,7 +187,23 @@ The skill will spawn the appropriate agent which executes plan phases sequential
    **If result.status == "partial":**
    Confirm status is still "implementing", resume point noted.
 
-4. **Populate Completion Summary (if implemented)**
+4. **Update Plan File Status**
+   Update the plan file Status field based on result status.
+   This is a fallback for cases where skill postflight does not execute.
+
+   ```bash
+   # Find latest plan file
+   plan_file=$(ls -1 "specs/${task_number}_${project_name}/plans/implementation-"*.md 2>/dev/null | sort -V | tail -1)
+   if [ -n "$plan_file" ] && [ -f "$plan_file" ]; then
+       if [ "$result_status" = "implemented" ]; then
+           sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [COMPLETED]/" "$plan_file"
+       elif [ "$result_status" = "partial" ]; then
+           sed -i "s/^\- \*\*Status\*\*: \[.*\]$/- **Status**: [PARTIAL]/" "$plan_file"
+       fi
+   fi
+   ```
+
+5. **Populate Completion Summary (if implemented)**
 
    **Only when result.status == "implemented":**
 

@@ -47,8 +47,8 @@ When $ARGUMENTS contains a description (no flags):
    ```
 
 2. **Parse description** from $ARGUMENTS:
-   - Remove any trailing flags (--effort, --language)
-   - Extract optional: effort, language
+   - Remove any trailing flags (--effort, --language, --target)
+   - Extract optional: effort, language, target
 
 3. **Improve description** (transform raw input into well-structured task description):
 
@@ -106,10 +106,20 @@ When $ARGUMENTS contains a description (no flags):
    - **Add**: test, tests, spec, feature, support, capability
    - **Implement**: (default for unrecognized patterns)
 
-4. **Detect language** from keywords:
+4. **Detect language** from keywords (check in order, first match wins):
+   - "modal logic", "frame semantics", "Kripke", "mereology", "proof theory", "soundness theorem", "completeness theorem", "axiom system", "canonical model" → logic
+   - "quantale", "profunctor", "bimodule", "enriched category", "V-category", "Q-category", "Cauchy completion", "Lawvere", "inf-convolution", "residuation", "complete lattice", "Heyting algebra", "distributive lattice", "semilattice", "Scott topology", "domain theory", "spatial profile", "partial order", "Galois connection", "monotone function" → math
    - "lean", "theorem", "proof", "lemma", "Mathlib" → lean
+   - "latex", "typeset", "formatting", ".tex", "equation", "bibliography", "pdflatex", "chapter", "section" → latex
    - "meta", "agent", "command", "skill" → meta
+   - **Signal keywords** (require evaluation): "join", "meet", "sup", "inf", "lattice", "order", "topology", "algebra" — if present without above matches, evaluate description to determine if primarily mathematical (→ math) or implementation-focused (→ general/lean)
    - Otherwise → general
+
+   **Classification Guide**:
+   - **math**: Abstract mathematical structures — category theory, order/lattice theory, topology, algebra (e.g., "Define quantale homomorphisms", "Prove Galois connection properties")
+   - **logic**: Proof systems and semantics — modal/temporal logic, mereology, logical consequence (e.g., "Prove soundness theorem", "Define Kripke frame")
+   - **lean**: Lean 4 implementation — Mathlib, tactics, proofs (e.g., "Prove lemma in Lean", "Add simp lemmas")
+   - Boundary: "Complete lattice theory" → math (structure); "Prove lattice lemma in Lean" → lean (implementation)
 
 5. **Create slug** from description:
    - Lowercase, replace spaces with underscores
@@ -117,6 +127,8 @@ When $ARGUMENTS contains a description (no flags):
    - Max 50 characters
 
 6. **Update state.json** (via jq):
+
+   **Without --target flag:**
    ```bash
    jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
      '.next_project_number = {NEW_NUMBER} |
@@ -131,6 +143,33 @@ When $ARGUMENTS contains a description (no flags):
      specs/state.json > /tmp/state.json && \
      mv /tmp/state.json specs/state.json
    ```
+
+   **With --target flag (include target_language):**
+   ```bash
+   jq --arg ts "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+     --arg target "$target_language" \
+     '.next_project_number = {NEW_NUMBER} |
+      .active_projects = [{
+        "project_number": {N},
+        "project_name": "slug",
+        "status": "not_started",
+        "language": "detected",
+        "target_language": $target,
+        "created": $ts,
+        "last_updated": $ts
+      }] + .active_projects' \
+     specs/state.json > /tmp/state.json && \
+     mv /tmp/state.json specs/state.json
+   ```
+
+   **Warning for non-logic tasks with --target:**
+   If `--target` is provided but language is NOT `logic`, output:
+   ```
+   Note: --target is primarily for 'logic' language tasks.
+   The value will be stored but only affects routing for logic tasks.
+   ```
+
+   **Valid target values:** lean, latex, general (default if omitted)
 
 7. **Update TODO.md** (TWO parts - frontmatter AND entry):
 
