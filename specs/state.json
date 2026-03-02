@@ -8,12 +8,14 @@
     {
       "project_number": 952,
       "project_name": "sync_theory_claude_improvements_into_proofchecker_claude",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "created": "2026-03-02T01:25:30Z",
-      "last_updated": "2026-03-02T01:50:00Z",
-      "session_id": "sess_1772415549_403f30",
+      "last_updated": "2026-03-02T02:15:00Z",
+      "session_id": "sess_1772415808_e4d045",
       "planned": "2026-03-02T01:50:00Z",
+      "started": "2026-03-02T01:43:43Z",
+      "completed": "2026-03-02T02:15:00Z",
       "artifacts": [
         {
           "type": "research",
@@ -24,6 +26,11 @@
           "type": "plan",
           "path": "specs/952_sync_theory_claude_improvements_into_proofchecker_claude/plans/implementation-001.md",
           "summary": "7-phase implementation plan for syncing 39 files with zero-padding pattern update"
+        },
+        {
+          "type": "summary",
+          "path": "specs/952_sync_theory_claude_improvements_into_proofchecker_claude/summaries/implementation-summary-20260301.md",
+          "summary": "Synced 40 files including domain content, typst-research skill, /merge command, and documentation guides"
         }
       ]
     },
