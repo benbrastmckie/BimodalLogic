@@ -8,15 +8,22 @@
     {
       "project_number": 952,
       "project_name": "sync_theory_claude_improvements_into_proofchecker_claude",
-      "status": "researched",
+      "status": "planned",
       "language": "meta",
       "created": "2026-03-02T01:25:30Z",
-      "last_updated": "2026-03-01T00:15:00Z",
-      "session_id": "sess_1772415021_470e63",
+      "last_updated": "2026-03-02T01:50:00Z",
+      "session_id": "sess_1772415549_403f30",
+      "planned": "2026-03-02T01:50:00Z",
       "artifacts": [
         {
           "type": "research",
-          "path": "specs/952_sync_theory_claude_improvements_into_proofchecker_claude/reports/research-001.md"
+          "path": "specs/952_sync_theory_claude_improvements_into_proofchecker_claude/reports/research-001.md",
+          "summary": "Identified 39 files to sync from Theory, 32 to preserve in ProofChecker"
+        },
+        {
+          "type": "plan",
+          "path": "specs/952_sync_theory_claude_improvements_into_proofchecker_claude/plans/implementation-001.md",
+          "summary": "7-phase implementation plan for syncing 39 files with zero-padding pattern update"
         }
       ]
     },
