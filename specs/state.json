@@ -6,6 +6,42 @@
   },
   "active_projects": [
     {
+      "project_number": 954,
+      "project_name": "refactor_representation_theorem_general_duration",
+      "status": "researched",
+      "language": "lean",
+      "priority": "high",
+      "description": "Refactor representation theorem to avoid hardcoded Int. Construct D purely from syntax as a totally ordered abelian group via BidirectionalQuotient + Successor Algebra + orderIsoIntOfLinearSuccPredArch. Compatible with density axiom extension.",
+      "created": "2026-03-03T00:00:00Z",
+      "last_updated": "2026-03-03T00:00:00Z",
+      "researched": "2026-03-03T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/954_refactor_representation_theorem_general_duration/reports/research-001.md",
+          "summary": "Comprehensive analysis of syntactic D construction pipeline: Fragment → Quotient → SuccOrder → OrderIso Z → Transfer AddCommGroup. 5-step construction from pure syntax, parameterizable by temporal theories for density extension."
+        }
+      ]
+    },
+    {
+      "project_number": 953,
+      "project_name": "refactor_proof_system_to_bilateral",
+      "status": "researched",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with dual judgments: acceptance (Γ ⊢⁺ φ) and rejection (Γ ⊢⁻ φ). Parallel implementation with equivalence bridge.",
+      "created": "2026-03-03T00:00:00Z",
+      "last_updated": "2026-03-03T00:00:00Z",
+      "researched": "2026-03-03T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/953_refactor_proof_system_to_bilateral/reports/research-001.md",
+          "summary": "Detailed bilateral system design: BilateralDeriv type with acceptance/rejection rules, equivalence bridge to unilateral system, impact analysis on all downstream modules. Recommends parallel implementation preserving existing system."
+        }
+      ]
+    },
+    {
       "project_number": 952,
       "project_name": "sync_theory_claude_improvements_into_proofchecker_claude",
       "status": "completed",
@@ -493,7 +529,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 953,
+  "next_project_number": 955,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -502,9 +538,9 @@
     }
   ],
   "task_counts": {
-    "active": 10,
+    "active": 12,
     "not_started": 10,
-    "total": 333
+    "total": 335
   },
   "repository_health": {
     "last_assessed": "2026-02-27T02:52:44Z",

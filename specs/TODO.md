@@ -1,16 +1,16 @@
 ---
-next_project_number: 953
+next_project_number: 955
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 16
+  active: 18
   completed: 662
   in_progress: 0
-  not_started: 5
+  not_started: 7
   abandoned: 36
-  total: 713
+  total: 715
 technical_debt:
   sorry_count: 73
   axiom_count: 19
@@ -21,6 +21,35 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 954. Refactor representation theorem to avoid hardcoded Int for general duration type
+- **Effort**: 45-75 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 951 (completeness infrastructure), Task 922 (strategy study)
+- **Research**: [research-001.md](specs/954_refactor_representation_theorem_general_duration/reports/research-001.md)
+
+**Description**: Refactor the representation theorem so that the duration type D is constructed purely from syntax — shown to be a totally ordered abelian group — rather than hardcoding D = Int. The construction builds D as the Antisymmetrization of the BidirectionalFragment (a linear order quotient of reachable MCSes), then derives AddCommGroup via successor/predecessor structure and Mathlib's `orderIsoIntOfLinearSuccPredArch`. The refactored construction should be fully general and compatible with an extension that includes a density axiom, parameterized by a "temporal theory" type: base logic yields D ≅ Z, density extension yields D ≅ Q.
+
+**Key construction pipeline**: Fragment → Quotient → SuccOrder/PredOrder → OrderIso to Z → Transfer AddCommGroup → TaskFrame D → FMCS D → BFMCS D → Truth lemma → Completeness.
+
+**Hardcoding points to eliminate**: (1) `CanonicalTaskFrame : TaskFrame Int` in CanonicalConstruction.lean, (2) `canonicalFrame : BFMCS Int → TaskFrame Int` in CanonicalCompleteness.lean, (3) `standard_representation : satisfiable Int [φ]` in Representation.lean.
+
+---
+
+### 953. Refactor proof system to bilateral system
+- **Effort**: 55-90 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Priority**: medium
+- **Research**: [research-001.md](specs/953_refactor_proof_system_to_bilateral/reports/research-001.md)
+
+**Description**: Refactor the TM proof system from a unilateral system (single judgment `Γ ⊢ φ`) to a bilateral system with dual judgments: acceptance (`Γ ⊢⁺ φ`) and rejection (`Γ ⊢⁻ φ`). The bilateral system makes the dual roles of assertion and denial explicit, with rules governing how acceptance and rejection interact across all connectives and operators. Key design: keep Formula type unchanged (Option A), add BilateralDeriv alongside existing DerivationTree with a proven equivalence bridge. Several current axioms (ex_falso, peirce, modal_t, temp_t_future, temp_t_past) become structural rules in the bilateral system. The existing signed formula infrastructure in the decidability module provides the blueprint.
+
+**Implementation approach**: Parallel bilateral system with equivalence bridge — not a replacement. Phase 1: bilateral infrastructure (BilateralContext, BilateralDeriv). Phase 2: prove equivalence with unilateral system. Phase 3: bilateral metalogic (MCS, FMCS, completeness). Phase 4: bilateral decidability integration.
+
+---
 
 ### 952. Sync Theory/.claude/ improvements into ProofChecker/.claude/
 - **Effort**: 3.5 hours
