@@ -8,13 +8,13 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-06T23:38:08Z",
-      "researched": "2026-03-06T22:30:42Z",
+      "last_updated": "2026-03-06T23:56:10Z",
+      "researched": "2026-03-06T23:56:10Z",
       "artifacts": [
         {
           "type": "research",
@@ -50,9 +50,14 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260306.md",
           "type": "summary",
           "summary": "Detailed implementation summary with blockers and recommendations"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md",
+          "type": "research",
+          "summary": "Blocker analysis for homogeneity/freeness/Holder with 5 alternative approaches. Recommends Option D (axiomatic abstraction via HomogeneousTimeline typeclass)."
         }
       ],
-      "session_id": "sess_1772906400_f1a2b3",
+      "session_id": "sess_1772910000_c3d4e5",
       "planned": "2026-03-06T22:51:05Z",
       "started": "2026-03-06T23:09:39Z"
     },
