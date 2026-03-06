@@ -1,5 +1,5 @@
 ---
-next_project_number: 956
+next_project_number: 957
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,36 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 956. Construct D as translation group from syntax
+- **Effort**: 30-50 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma)
+- **Supersedes**: Task 954 (hardcoded Int refactor), Task 955 (CanonicalR task_rel)
+- **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md)
+
+**Description**: Construct the temporal duration group D entirely from pure syntax as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, without assuming Int or defining a successor function. The construction proceeds:
+
+1. **Origin**: Extend consistent set Γ₀ to MCS w₀ via Lindenbaum — this is the designated origin
+2. **Timeline**: Build linear order T of MCSs reachable from w₀ via the existence lemma (if Fψ ∈ w, there exists w' > w with ψ ∈ w'; similarly for P). Temporal axioms force T to be a connected linear order without endpoints
+3. **Translation group**: Define D = Aut⁺(T) = {f : T → T | f is order-preserving bijection}. Group operation is composition, identity is id, inverse is f⁻¹
+4. **Origin bijection**: eval₀ : D → T defined by eval₀(d) = d(w₀). This is a bijection because D acts freely and transitively on T (homogeneity of T from temporal axioms + rigidity of order-automorphisms)
+5. **Ordered group**: Pull back order from T to D: d₁ < d₂ iff d₁(w₀) < d₂(w₀). Makes D a linearly ordered abelian group
+6. **task_rel = group action**: task_rel(d)(w) = d(w). This IS the group action — not an artificial map
+7. **Canonical model**: M = (T, <, D, task_rel, V) where V(p) = {w : p ∈ w}
+8. **Truth lemma**: M, w ⊨ φ ↔ φ ∈ w by structural induction
+9. **Completeness**: If ⊬ φ, extend {¬φ} to MCS w₀, build canonical model, w₀ ⊭ φ
+
+**Key advantages over previous approaches**:
+- No dovetailing chain or F-persistence problem (existence lemma provides witnesses directly)
+- No SuccOrder/PredOrder or orderIsoIntOfLinearSuccPredArch needed
+- No hardcoded D = Int — D emerges as whatever translation group the axioms produce
+- task_rel is the group action itself, not a separately-defined bridge
+- For discrete time axioms, D ≅ ℤ as a theorem; for dense time, D ≅ ℚ as a theorem
+
+---
 
 ### 955. Implement D and task_rel from pure syntax
 - **Effort**: 25-40 hours
