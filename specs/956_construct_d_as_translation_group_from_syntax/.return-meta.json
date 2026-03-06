@@ -1,12 +1,15 @@
 {
-  "status": "researched",
-  "artifacts": [{
-    "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md",
-    "type": "research",
-    "summary": "Archival analysis (3 files for Boneyard) and antisymmetry proof (CanonicalR is NOT antisymmetric; codebase uses Antisymmetrization quotient)"
-  }],
+  "status": "partial",
+  "started_at": "2026-03-06T12:00:00Z",
+  "artifacts": [
+    "specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md"
+  ],
+  "partial_progress": {
+    "stage": "research_written",
+    "details": "Deep analysis of eval_0 bijection proof strategy. Identified critical gap: freeness fails for general linear orders (Q counterexample). Discreteness of T is the key open question."
+  },
   "metadata": {
-    "session_id": "sess_1772899500_b7c4d8",
+    "session_id": "sess_1772899800_c8d5e9",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
