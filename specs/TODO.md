@@ -24,13 +24,14 @@ technical_debt:
 
 ### 956. Construct D as translation group from syntax
 - **Effort**: 30-50 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma)
 - **Supersedes**: Task 954 (hardcoded Int refactor), Task 955 (CanonicalR task_rel)
 - **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md), [research-002.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md), [research-003.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md), [research-004.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md), [research-005.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md)
 - **Plan**: [implementation-001.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260306.md](specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260306.md)
 
 **Description**: Construct the temporal duration group D entirely from pure syntax as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, without assuming Int or defining a successor function. The construction proceeds:
 

@@ -1,7 +1,7 @@
 # Implementation Plan: Construct D as Translation Group from Syntax
 
 - **Task**: 956 - construct_d_as_translation_group_from_syntax
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 12 hours
 - **Dependencies**: None (builds on existing BidirectionalFragment infrastructure)
 - **Research Inputs**: specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md
@@ -73,7 +73,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Archive Int-Hardcoded Files and Setup [NOT STARTED]
+### Phase 1: Archive Int-Hardcoded Files and Setup [PARTIAL]
 
 - **Dependencies:** None
 - **Goal:** Move obsolete Int-hardcoded files to Boneyard and create new file structure
@@ -102,7 +102,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Define TranslationDiff Quotient Type [NOT STARTED]
+### Phase 2: Define TranslationDiff Quotient Type [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define D as formal differences `T × T / ~` with group structure
@@ -136,7 +136,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Establish AddTorsor Structure [NOT STARTED]
+### Phase 3: Establish AddTorsor Structure [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove T is an AddTorsor for TranslationDiff T, enabling the group action
@@ -169,7 +169,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Linear Order on TranslationDiff [NOT STARTED]
+### Phase 4: Linear Order on TranslationDiff [BLOCKED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Pull back linear order from T to TranslationDiff T via origin evaluation
@@ -204,7 +204,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Canonical TaskFrame with Group Action [NOT STARTED]
+### Phase 5: Canonical TaskFrame with Group Action [PARTIAL]
 
 - **Dependencies:** Phase 4
 - **Goal:** Define TaskFrame using TranslationDiff T with task_rel = group action
@@ -238,7 +238,7 @@ After this implementation:
 
 ---
 
-### Phase 6: Integration and Verification [NOT STARTED]
+### Phase 6: Integration and Verification [BLOCKED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Integrate new construction with existing completeness infrastructure, verify zero-debt
