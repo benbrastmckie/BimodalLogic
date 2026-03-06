@@ -1,27 +1,30 @@
 {
-  "status": "report_ready",
-  "started_at": "2026-03-06T12:00:00Z",
+  "status": "planned",
   "artifacts": [
-    "specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md"
+    {
+      "type": "plan",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for constructing D as translation group from syntax using torsor-based approach"
+    }
   ],
-  "partial_progress": {
-    "stage": "research_findings_ready",
-    "details": "Comprehensive torsor analysis, Mathlib assessment, archival candidates, and viable approach identified"
-  },
-  "findings_summary": {
-    "torsor_viability": "Viable. AddTorsor, Group (alpha equivo alpha), LinearOrder.lift all available in Mathlib.",
-    "recommended_approach": "Strategy C: FMCS-based torsor construction. Avoids explicit Aut+(T) homogeneity proof.",
-    "key_risk": "Homogeneity proof (transitivity of automorphism action) is the hardest step.",
-    "archival_candidates": ["DovetailingChain.lean", "CanonicalChain.lean", "CanonicalConstruction.lean"],
-    "no_code_to_archive_for": ["orderIsoIntOfLinearSuccPredArch", "SuccOrder", "PredOrder"],
-    "generality_preserved": true,
-    "compatible_with_discrete": true,
-    "compatible_with_dense": true
-  },
+  "next_steps": "Run /implement 956 to execute the plan",
   "metadata": {
-    "session_id": "sess_1772900100_d9e6fa",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1772900400_e0f7gb",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 12,
+    "research_integrated": true,
+    "strategy": "Strategy C (FMCS-based torsor construction)",
+    "key_deliverables": [
+      "TranslationDiff T quotient type with AddCommGroup",
+      "AddTorsor (TranslationDiff T) T structure",
+      "LinearOrder on TranslationDiff T via origin evaluation",
+      "CanonicalTaskFrameTorsor with task_rel = group action",
+      "Archive of Int-hardcoded files to Boneyard"
+    ],
+    "zero_debt_verified": true
   }
 }
