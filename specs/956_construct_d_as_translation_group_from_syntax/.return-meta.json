@@ -1,8 +1,14 @@
 {
   "status": "researched",
   "artifacts": [{
-    "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md",
+    "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md",
     "type": "research",
-    "summary": "Detailed 11-step codebase audit: Steps 1-2 complete (Lindenbaum, existence lemma), Step 3 partial (antisymmetry gap), Steps 4-7 not started (translation group core), Steps 8-11 proven with trivial task_rel and 1 upstream sorry; recommends factored approach"
-  }]
+    "summary": "Archival analysis (3 files for Boneyard) and antisymmetry proof (CanonicalR is NOT antisymmetric; codebase uses Antisymmetrization quotient)"
+  }],
+  "metadata": {
+    "session_id": "sess_1772899500_b7c4d8",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
 }
