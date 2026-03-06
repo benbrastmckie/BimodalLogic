@@ -6,6 +6,25 @@
   },
   "active_projects": [
     {
+      "project_number": 955,
+      "project_name": "implement_d_and_task_rel_from_pure_syntax",
+      "status": "planned",
+      "language": "lean",
+      "priority": "high",
+      "description": "Construct D and non-trivial task_rel from pure syntax. Replace trivial task_rel with CanonicalR-based definition. 6 phases: canonical TaskFrame, CanonicalR properties, WorldHistory, truth lemma, D justification, integration.",
+      "created": "2026-03-06T00:00:00Z",
+      "last_updated": "2026-03-06T00:00:00Z",
+      "session_id": "sess_1772822140_51132d",
+      "planned": "2026-03-06T00:00:00Z",
+      "artifacts": [
+        {
+          "type": "plan",
+          "path": "specs/955_implement_d_and_task_rel_from_pure_syntax/plans/implementation-001.md",
+          "summary": "6-phase plan: canonical TaskFrame with CanonicalR task_rel, CanonicalR properties, WorldHistory, truth lemma, D justification, integration. Comprehensive analysis of 7 approaches."
+        }
+      ]
+    },
+    {
       "project_number": 954,
       "project_name": "refactor_representation_theorem_general_duration",
       "status": "researched",
@@ -529,7 +548,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 955,
+  "next_project_number": 956,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

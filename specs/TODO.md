@@ -1,5 +1,5 @@
 ---
-next_project_number: 955
+next_project_number: 956
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,18 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 955. Implement D and task_rel from pure syntax
+- **Effort**: 25-40 hours
+- **Status**: [PLANNED]
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 951 (BFMCS infrastructure), Task 954 (general duration refactor)
+- **Plan**: [implementation-001.md](specs/955_implement_d_and_task_rel_from_pure_syntax/plans/implementation-001.md)
+
+**Description**: Construct the temporal duration group D and a non-trivial task_rel entirely from syntactic proof-theoretic data. Replace the trivial `task_rel := fun _ _ _ => True` in Representation.lean with `task_rel := fun w _d u => CanonicalR w.val u.val`, where CanonicalR is derived from GContent/HContent inclusion on maximal consistent sets. Nullity from T-axiom (Gφ → φ), compositionality from 4-axiom (Gφ → GGφ). D = Int justified as satisfiability witness (not universal model). Comprehensive analysis of 7 approaches (direct quotient, Grothendieck, orderIsoInt, torsor, chain-based, sign-based, CanonicalR) with proofs of impossibility for 6 of them. Plan covers 6 phases: canonical TaskFrame definition, CanonicalR property verification, WorldHistory construction, truth lemma compatibility, D construction justification, and full integration.
+
+---
 
 ### 954. Refactor representation theorem to avoid hardcoded Int for general duration type
 - **Effort**: 45-75 hours
