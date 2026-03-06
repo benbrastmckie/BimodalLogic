@@ -109,7 +109,7 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 20-30 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)
