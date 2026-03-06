@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/954_refactor_representation_theorem_general_duration/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for refactoring representation theorem to use syntactically constructed duration type"
+    }
+  ],
+  "next_steps": "Run /implement 954 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1772957156_a3f2b7",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 5,
+    "estimated_hours": 50
+  }
+}

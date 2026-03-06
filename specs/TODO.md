@@ -36,11 +36,12 @@ technical_debt:
 
 ### 954. Refactor representation theorem to avoid hardcoded Int for general duration type
 - **Effort**: 45-75 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 951 (completeness infrastructure), Task 922 (strategy study)
 - **Research**: [research-001.md](specs/954_refactor_representation_theorem_general_duration/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/954_refactor_representation_theorem_general_duration/plans/implementation-001.md)
 
 **Description**: Refactor the representation theorem so that the duration type D is constructed purely from syntax — shown to be a totally ordered abelian group — rather than hardcoding D = Int. The construction builds D as the Antisymmetrization of the BidirectionalFragment (a linear order quotient of reachable MCSes), then derives AddCommGroup via successor/predecessor structure and Mathlib's `orderIsoIntOfLinearSuccPredArch`. The refactored construction should be fully general and compatible with an extension that includes a density axiom, parameterized by a "temporal theory" type: base logic yields D ≅ Z, density extension yields D ≅ Q.
 

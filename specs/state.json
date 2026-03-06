@@ -27,20 +27,27 @@
     {
       "project_number": 954,
       "project_name": "refactor_representation_theorem_general_duration",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Refactor representation theorem to avoid hardcoded Int. Construct D purely from syntax as a totally ordered abelian group via BidirectionalQuotient + Successor Algebra + orderIsoIntOfLinearSuccPredArch. Compatible with density axiom extension.",
       "created": "2026-03-03T00:00:00Z",
-      "last_updated": "2026-03-03T00:00:00Z",
+      "last_updated": "2026-03-06T19:03:43Z",
       "researched": "2026-03-03T00:00:00Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/954_refactor_representation_theorem_general_duration/reports/research-001.md",
           "summary": "Comprehensive analysis of syntactic D construction pipeline: Fragment → Quotient → SuccOrder → OrderIso Z → Transfer AddCommGroup. 5-step construction from pure syntax, parameterizable by temporal theories for density extension."
+        },
+        {
+          "path": "specs/954_refactor_representation_theorem_general_duration/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for refactoring representation theorem to use syntactically constructed duration type"
         }
-      ]
+      ],
+      "session_id": "sess_1772957156_a3f2b7",
+      "planned": "2026-03-06T19:03:43Z"
     },
     {
       "project_number": 953,
