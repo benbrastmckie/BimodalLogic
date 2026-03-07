@@ -13,7 +13,7 @@
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-07T21:41:39Z",
+      "last_updated": "2026-03-07T22:02:01Z",
       "researched": "2026-03-07T21:41:39Z",
       "artifacts": [
         {
@@ -65,9 +65,14 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md",
           "type": "research",
           "summary": "Analysis of JPL paper app:auto_existence and lem:history-time-shift-preservation for homogeneity. Finding: paper uses D=Z/Q directly, time-shift is translation in D. Three paths: discreteness axioms, axiomatic abstraction, or back-and-forth."
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md",
+          "type": "research",
+          "summary": "Rigorous back-and-forth analysis: homogeneity cannot be proven from existing construction (Lindenbaum non-determinism). Must be designed in. Paths: discreteness axioms (DP/DF → T≅Z) or controlled Lindenbaum construction."
         }
       ],
-      "session_id": "sess_1773093600_a8b9c0",
+      "session_id": "sess_1773094800_b9c0d1",
       "planned": "2026-03-06T22:51:05Z",
       "started": "2026-03-06T23:09:39Z"
     },
