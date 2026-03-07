@@ -1,23 +1,25 @@
 {
   "status": "researched",
-  "started_at": "2026-03-06T12:00:00Z",
-  "completed_at": "2026-03-07T13:30:00Z",
+  "started_at": "2026-03-07T14:00:00Z",
+  "completed_at": "2026-03-07T14:45:00Z",
   "artifacts": [
     {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md",
-      "type": "research",
-      "summary": "Analysis of JPL paper app:auto_existence and lem:history-time-shift-preservation for homogeneity. Finding: paper uses D=Z/Q directly, time-shift is translation in D (not automorphism of T). Three paths forward: discreteness axioms, axiomatic abstraction, or back-and-forth."
-    },
-    {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md",
-      "type": "research",
-      "summary": "Rigorous back-and-forth analysis for homogeneity. Finding: homogeneity CANNOT be proven from existing construction due to Lindenbaum non-determinism. Must be DESIGNED into construction. Two paths: discreteness axioms (DP/DF → T≅Z, 100-200 lines) or controlled Lindenbaum (200-400 lines)."
+      "type": "report",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md",
+      "summary": "Analysis of homogeneity without discreteness/density. Key finding: mathematically impossible for countable linear orders -- only Z (discrete) and Q (dense) have transitive automorphism groups. Recommends discreteness axioms DP/DF as simplest path."
     }
   ],
+  "next_steps": "Run /plan 956 to create implementation plan for discreteness axiom integration",
   "metadata": {
-    "session_id": "sess_1773094800_b9c0d1",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1772922052_dcd9b8",
+    "agent_type": "logic-research-agent",
+    "duration_seconds": 2700,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "research", "skill-logic-research"],
+    "findings_count": 4,
+    "context_files_loaded": ["research-009.md", "ROAD_MAP.md"],
+    "mathlib_lookups_performed": 4,
+    "context_extension_tasks": [],
+    "context_candidates_count": 2
   }
 }

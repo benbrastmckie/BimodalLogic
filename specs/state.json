@@ -8,12 +8,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-07T22:02:01Z",
+      "last_updated": "2026-03-07T22:21:23Z",
       "researched": "2026-03-07T21:41:39Z",
       "artifacts": [
         {
@@ -70,9 +70,14 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md",
           "type": "research",
           "summary": "Rigorous back-and-forth analysis: homogeneity cannot be proven from existing construction (Lindenbaum non-determinism). Must be designed in. Paths: discreteness axioms (DP/DF → T≅Z) or controlled Lindenbaum construction."
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md",
+          "type": "research",
+          "summary": "Homogeneity without discreteness/density is mathematically impossible for countable linear orders. Only Z (discrete) and Q (dense) have transitive automorphism groups. Recommends discreteness axioms DP/DF as simplest path."
         }
       ],
-      "session_id": "sess_1773094800_b9c0d1",
+      "session_id": "sess_1772922052_dcd9b8",
       "planned": "2026-03-06T22:51:05Z",
       "started": "2026-03-06T23:09:39Z"
     },

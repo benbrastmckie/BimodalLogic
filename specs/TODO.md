@@ -24,12 +24,12 @@ technical_debt:
 
 ### 956. Construct D as translation group from syntax
 - **Effort**: 30-50 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma)
 - **Supersedes**: Task 954 (hardcoded Int refactor), Task 955 (CanonicalR task_rel)
-- **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md), [research-002.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md), [research-003.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md), [research-004.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md), [research-005.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md), [research-006.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md), [research-007.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md), [research-008.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md), [research-009.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md)
+- **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md), [research-002.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md), [research-003.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md), [research-004.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md), [research-005.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md), [research-006.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md), [research-007.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md), [research-008.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md), [research-009.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md), [research-010.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md)
 - **Plan**: [implementation-001.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260306.md](specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260306.md)
 
