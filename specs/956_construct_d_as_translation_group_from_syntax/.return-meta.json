@@ -1,14 +1,19 @@
 {
   "status": "researched",
+  "started_at": "2026-03-06T00:00:00Z",
   "artifacts": [
     {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md",
       "type": "research",
-      "summary": "Blocker analysis for homogeneity/freeness/Holder with 5 alternative approaches. Recommends Option D (axiomatic abstraction via HomogeneousTimeline typeclass)."
+      "summary": "JPL paper appendix analysis: paper uses D=Z directly, not automorphism group. Three blockers (freeness, Holder, homogeneity) are irrelevant. Task 956 should be revised to follow paper's simpler approach."
     }
   ],
+  "partial_progress": {
+    "stage": "report_written",
+    "details": "Research report research-007.md written with findings from JPL paper and metalogic.tex appendix"
+  },
   "metadata": {
-    "session_id": "sess_1772910000_c3d4e5",
+    "session_id": "sess_1772912000_a1b2c3",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
