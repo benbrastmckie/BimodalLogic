@@ -13,8 +13,8 @@
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-07T00:17:24Z",
-      "researched": "2026-03-07T00:17:24Z",
+      "last_updated": "2026-03-07T21:41:39Z",
+      "researched": "2026-03-07T21:41:39Z",
       "artifacts": [
         {
           "type": "research",
@@ -60,9 +60,14 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md",
           "type": "research",
           "summary": "JPL paper appendix analysis: paper uses D=Z directly, not automorphism group. Three blockers (freeness, Holder, homogeneity) are irrelevant. Task 956 should be revised to follow paper's simpler approach."
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md",
+          "type": "research",
+          "summary": "Analysis of JPL paper app:auto_existence and lem:history-time-shift-preservation for homogeneity. Finding: paper uses D=Z/Q directly, time-shift is translation in D. Three paths: discreteness axioms, axiomatic abstraction, or back-and-forth."
         }
       ],
-      "session_id": "sess_1772912000_a1b2c3",
+      "session_id": "sess_1773093600_a8b9c0",
       "planned": "2026-03-06T22:51:05Z",
       "started": "2026-03-06T23:09:39Z"
     },

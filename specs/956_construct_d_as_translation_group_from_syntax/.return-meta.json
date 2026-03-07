@@ -1,19 +1,16 @@
 {
   "status": "researched",
-  "started_at": "2026-03-06T00:00:00Z",
+  "started_at": "2026-03-06T12:00:00Z",
+  "completed_at": "2026-03-07T12:30:00Z",
   "artifacts": [
     {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md",
       "type": "research",
-      "summary": "JPL paper appendix analysis: paper uses D=Z directly, not automorphism group. Three blockers (freeness, Holder, homogeneity) are irrelevant. Task 956 should be revised to follow paper's simpler approach."
+      "summary": "Analysis of JPL paper app:auto_existence and lem:history-time-shift-preservation for homogeneity. Finding: paper uses D=Z/Q directly, time-shift is translation in D (not automorphism of T). Three paths forward: discreteness axioms, axiomatic abstraction, or back-and-forth."
     }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research report research-007.md written with findings from JPL paper and metalogic.tex appendix"
-  },
   "metadata": {
-    "session_id": "sess_1772912000_a1b2c3",
+    "session_id": "sess_1773093600_a8b9c0",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
