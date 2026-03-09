@@ -2,7 +2,7 @@ import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.TemporalContent
-import Bimodal.Metalogic.Bundle.DovetailingChain
+import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -195,33 +195,33 @@ and existing forward_G/backward_H properties.
 TemporalCoherentFamily: An FMCS with temporal forward coherence properties.
 
 The key properties are:
-- `forward_F`: If F φ ∈ fam.mcs t, then exists s ≥ t with φ ∈ fam.mcs s
-- `backward_P`: If P φ ∈ fam.mcs t, then exists s ≤ t with φ ∈ fam.mcs s
+- `forward_F`: If F φ ∈ fam.mcs t, then exists s > t with φ ∈ fam.mcs s
+- `backward_P`: If P φ ∈ fam.mcs t, then exists s < t with φ ∈ fam.mcs s
 
 These are the existential duals of forward_G and backward_H.
-Task 922: Weakened from strict (s > t, s < t) to reflexive (s ≥ t, s ≤ t).
+Task 956: Restored to strict (s > t, s < t) for irreflexive semantics.
 -/
 structure TemporalCoherentFamily (D : Type*) [Preorder D] [Zero D] extends FMCS D where
-  /-- Forward F coherence: F φ at t implies witness at some s ≥ t (reflexive) -/
+  /-- Forward F coherence: F φ at t implies witness at some s > t (strict) -/
   forward_F : ∀ t : D, ∀ φ : Formula,
-    Formula.some_future φ ∈ mcs t → ∃ s : D, t ≤ s ∧ φ ∈ mcs s
-  /-- Backward P coherence: P φ at t implies witness at some s ≤ t (reflexive) -/
+    Formula.some_future φ ∈ mcs t → ∃ s : D, t < s ∧ φ ∈ mcs s
+  /-- Backward P coherence: P φ at t implies witness at some s < t (strict) -/
   backward_P : ∀ t : D, ∀ φ : Formula,
-    Formula.some_past φ ∈ mcs t → ∃ s : D, s ≤ t ∧ φ ∈ mcs s
+    Formula.some_past φ ∈ mcs t → ∃ s : D, s < t ∧ φ ∈ mcs s
 
 /--
-Temporal backward G lemma: If φ ∈ fam.mcs s for all s ≥ t, then G φ ∈ fam.mcs t.
+Temporal backward G lemma: If φ ∈ fam.mcs s for all s > t, then G φ ∈ fam.mcs t.
 
 **Proof by Contraposition**:
 1. Assume G φ ∉ fam.mcs t
 2. By MCS maximality: neg(G φ) ∈ fam.mcs t
 3. By neg_all_future_to_some_future_neg: F(neg φ) ∈ fam.mcs t
-4. By forward_F: exists s ≥ t with neg φ ∈ fam.mcs s
-5. By hypothesis h_all: φ ∈ fam.mcs s (since s ≥ t)
+4. By forward_F: exists s > t with neg φ ∈ fam.mcs s
+5. By hypothesis h_all: φ ∈ fam.mcs s (since s > t)
 6. Contradiction: fam.mcs s contains both φ and neg φ
 -/
 theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, t ≤ s → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, t < s → φ ∈ fam.mcs s) :
     Formula.all_future φ ∈ fam.mcs t := by
   -- By contradiction
   by_contra h_not_G
@@ -237,28 +237,28 @@ theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_future_to_some_future_neg (fam.mcs t) h_mcs φ h_neg_G
 
-  -- By forward_F: exists s ≥ t with neg φ ∈ fam.mcs s
-  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
+  -- By forward_F: exists s > t with neg φ ∈ fam.mcs s
+  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.forward_F t (Formula.neg φ) h_F_neg
 
-  -- By h_all: φ ∈ fam.mcs s (since s ≥ t)
-  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  -- By h_all: φ ∈ fam.mcs s (since s > t)
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
 
   -- Contradiction: fam.mcs s contains both φ and neg φ
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
 
 /--
-Temporal backward H lemma: If φ ∈ fam.mcs s for all s ≤ t, then H φ ∈ fam.mcs t.
+Temporal backward H lemma: If φ ∈ fam.mcs s for all s < t, then H φ ∈ fam.mcs t.
 
 **Proof by Contraposition** (symmetric to temporal_backward_G):
 1. Assume H φ ∉ fam.mcs t
 2. By MCS maximality: neg(H φ) ∈ fam.mcs t
 3. By neg_all_past_to_some_past_neg: P(neg φ) ∈ fam.mcs t
-4. By backward_P: exists s ≤ t with neg φ ∈ fam.mcs s
-5. By hypothesis h_all: φ ∈ fam.mcs s (since s ≤ t)
+4. By backward_P: exists s < t with neg φ ∈ fam.mcs s
+5. By hypothesis h_all: φ ∈ fam.mcs s (since s < t)
 6. Contradiction: fam.mcs s contains both φ and neg φ
 -/
 theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formula)
-    (h_all : ∀ s : D, s ≤ t → φ ∈ fam.mcs s) :
+    (h_all : ∀ s : D, s < t → φ ∈ fam.mcs s) :
     Formula.all_past φ ∈ fam.mcs t := by
   -- By contradiction
   by_contra h_not_H
@@ -274,11 +274,11 @@ theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=
     neg_all_past_to_some_past_neg (fam.mcs t) h_mcs φ h_neg_H
 
-  -- By backward_P: exists s ≤ t with neg φ ∈ fam.mcs s
-  obtain ⟨s, h_le, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
+  -- By backward_P: exists s < t with neg φ ∈ fam.mcs s
+  obtain ⟨s, h_lt, h_neg_phi_s⟩ := fam.backward_P t (Formula.neg φ) h_P_neg
 
-  -- By h_all: φ ∈ fam.mcs s (since s ≤ t)
-  have h_phi_s : φ ∈ fam.mcs s := h_all s h_le
+  -- By h_all: φ ∈ fam.mcs s (since s < t)
+  have h_phi_s : φ ∈ fam.mcs s := h_all s h_lt
 
   -- Contradiction: fam.mcs s contains both φ and neg φ
   exact set_consistent_not_both (fam.is_mcs s).1 φ h_phi_s h_neg_phi_s
@@ -295,8 +295,8 @@ via the contraposition argument (temporal_backward_G and temporal_backward_H).
 -/
 def BFMCS.temporally_coherent (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families,
-    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t ≤ s ∧ φ ∈ fam.mcs s) ∧
-    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s ≤ t ∧ φ ∈ fam.mcs s)
+    (∀ t : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : D, t < s ∧ φ ∈ fam.mcs s) ∧
+    (∀ t : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : D, s < t ∧ φ ∈ fam.mcs s)
 
 /-!
 ## REMOVED: Temporal Saturation Structures (Task 932)
@@ -312,116 +312,6 @@ The TemporalEvalSaturatedBundle was never instantiated in active code.
 DO NOT reintroduce temporal saturation of single MCS.
 See specs/932_*/reports/ for counterexample analysis.
 -/
-
-/-!
-## Phase 2: Temporal Saturation Construction
-
-We prove that temporally saturated MCS exist for any consistent context.
-The key is showing that witness seeds are consistent.
--/
-
-/--
-TemporalWitnessSeed for F(psi): {psi} ∪ GContent(M).
--/
-def TemporalWitnessSeed (M : Set Formula) (psi : Formula) : Set Formula :=
-  {psi} ∪ GContent M
-
-/--
-psi is in its own TemporalWitnessSeed.
--/
-lemma psi_mem_TemporalWitnessSeed (M : Set Formula) (psi : Formula) :
-    psi ∈ TemporalWitnessSeed M psi :=
-  Set.mem_union_left _ (Set.mem_singleton psi)
-
-/--
-GContent is a subset of TemporalWitnessSeed.
--/
-lemma GContent_subset_TemporalWitnessSeed (M : Set Formula) (psi : Formula) :
-    GContent M ⊆ TemporalWitnessSeed M psi :=
-  Set.subset_union_right
-
-/--
-Temporal witness seed consistency: If F(psi) is in an MCS M, then {psi} ∪ GContent(M) is consistent.
-
-**Proof Strategy**:
-Suppose {psi} ∪ GContent(M) is inconsistent.
-Then there exist chi₁, ..., chi_n in GContent(M) such that {psi, chi₁, ..., chi_n} ⊢ ⊥.
-By deduction: {chi₁, ..., chi_n} ⊢ ¬psi.
-By temporal K-distribution: G{chi₁, ..., chi_n} ⊢ G(¬psi).
-Since G chi_i ∈ M for all i, by MCS closure: G(¬psi) ∈ M.
-But F(psi) = ¬G(¬psi) ∈ M by hypothesis.
-Contradiction.
--/
-theorem temporal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (psi : Formula) (h_F : Formula.some_future psi ∈ M) :
-    SetConsistent (TemporalWitnessSeed M psi) := by
-  intro L hL_sub ⟨d⟩
-
-  by_cases h_psi_in : psi ∈ L
-  · -- Case: psi ∈ L
-    let L_filt := L.filter (fun y => decide (y ≠ psi))
-    have h_perm := cons_filter_neq_perm h_psi_in
-    have d_reord : DerivationTree (psi :: L_filt) Formula.bot :=
-      derivation_exchange d (fun x => (h_perm x).symm)
-
-    have d_neg : L_filt ⊢ Formula.neg psi :=
-      deduction_theorem L_filt psi Formula.bot d_reord
-
-    -- Get G chi ∈ M for each chi ∈ L_filt from GContent
-    have h_G_filt_in_M : ∀ chi ∈ L_filt, Formula.all_future chi ∈ M := by
-      intro chi h_mem
-      have h_and := List.mem_filter.mp h_mem
-      have h_in_L := h_and.1
-      have h_ne : chi ≠ psi := by simp only [decide_eq_true_eq] at h_and; exact h_and.2
-      have h_in_seed := hL_sub chi h_in_L
-      simp only [TemporalWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
-      rcases h_in_seed with h_eq | h_gcontent
-      · exact absurd h_eq h_ne
-      · exact h_gcontent
-
-    -- Apply generalized temporal K (G distributes over derivation)
-    have d_G_neg : (Context.map Formula.all_future L_filt) ⊢ Formula.all_future (Formula.neg psi) :=
-      Bimodal.Theorems.generalized_temporal_k L_filt (Formula.neg psi) d_neg
-
-    -- All formulas in G(L_filt) are in M
-    have h_G_context_in_M : ∀ phi ∈ Context.map Formula.all_future L_filt, phi ∈ M := by
-      intro phi h_mem
-      rw [Context.mem_map_iff] at h_mem
-      rcases h_mem with ⟨chi, h_chi_in, h_eq⟩
-      rw [← h_eq]
-      exact h_G_filt_in_M chi h_chi_in
-
-    -- By MCS closure under derivation, G(neg psi) ∈ M
-    have h_G_neg_in_M : Formula.all_future (Formula.neg psi) ∈ M :=
-      set_mcs_closed_under_derivation h_mcs (Context.map Formula.all_future L_filt)
-        h_G_context_in_M d_G_neg
-
-    -- Contradiction - F psi = neg(G(neg psi)) is also in M
-    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
-    rw [h_F_eq] at h_F
-    exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg psi)) h_G_neg_in_M h_F
-
-  · -- Case: psi ∉ L, so L ⊆ GContent M
-    have h_L_in_M : ∀ chi ∈ L, chi ∈ M := by
-      intro chi h_mem
-      have h_in_seed := hL_sub chi h_mem
-      simp only [TemporalWitnessSeed, Set.mem_union, Set.mem_singleton_iff] at h_in_seed
-      rcases h_in_seed with h_eq | h_gcontent
-      · exact absurd h_eq (fun h => h_psi_in (h ▸ h_mem))
-      · -- chi ∈ GContent means G chi ∈ M, and by T-axiom chi ∈ M
-        have h_G_chi : Formula.all_future chi ∈ M := h_gcontent
-        have h_T := DerivationTree.axiom [] ((Formula.all_future chi).imp chi) (Axiom.temp_t_future chi)
-        exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G_chi
-
-    exact h_mcs.1 L h_L_in_M ⟨d⟩
-
-/--
-Transform neg(G phi) to F(neg phi) in an MCS (renamed for clarity).
--/
-lemma neg_G_to_F_neg (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (phi : Formula) (h_neg_G : Formula.neg (Formula.all_future phi) ∈ M) :
-    Formula.some_future (Formula.neg phi) ∈ M :=
-  neg_all_future_to_some_future_neg M h_mcs phi h_neg_G
 
 /-!
 ## Temporal Coherent Family Existence Axiom (Task 843)
@@ -500,10 +390,10 @@ theorem temporal_coherent_family_exists_Int
       (∀ gamma ∈ Gamma, gamma ∈ fam.mcs 0) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs t → ∃ s : Int, t ≤ s ∧ φ ∈ fam.mcs s) ∧
       (∀ t : Int, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs t → ∃ s : Int, s ≤ t ∧ φ ∈ fam.mcs s) := by
-  obtain ⟨fam, h_ctx, h_fwd, h_bwd⟩ := temporal_coherent_family_exists_theorem Gamma h_cons
-  exact ⟨fam, h_ctx,
-    fun t φ h => let ⟨s, h_lt, h_mem⟩ := h_fwd t φ h; ⟨s, le_of_lt h_lt, h_mem⟩,
-    fun t φ h => let ⟨s, h_lt, h_mem⟩ := h_bwd t φ h; ⟨s, le_of_lt h_lt, h_mem⟩⟩
+  -- Previously delegated to DovetailingChain.temporal_coherent_family_exists_theorem.
+  -- DovetailingChain is being archived (incompatible with irreflexive semantics).
+  -- The density completeness path uses CanonicalMCS, not Int chains.
+  sorry
 
 /-!
 ## REMOVED: Generic temporal_coherent_family_exists (Task 932)

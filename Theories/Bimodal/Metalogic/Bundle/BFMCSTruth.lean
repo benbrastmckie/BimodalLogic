@@ -76,21 +76,20 @@ Truth of a formula at a specific family and time within a BFMCS.
 - `imp φ ψ`: True iff φ true implies ψ true (classical implication)
 - `box φ`: True iff φ is true at ALL families in the bundle at time t
   (THIS IS THE KEY CHANGE - only quantifies over bundle families)
-- `all_past φ`: True iff φ is true at all past times s ≤ t
-- `all_future φ`: True iff φ is true at all future times s ≥ t
+- `all_past φ`: True iff φ is true at all strictly past times s < t
+- `all_future φ`: True iff φ is true at all strictly future times s > t
 
-**Note on Temporal Semantics**:
-We use NON-STRICT inequalities (≤, ≥) for temporal operators because the
-proof system includes the T axioms (G φ → φ, H φ → φ), which require
-reflexivity (the current time is both past and future of itself).
+**Note on Temporal Semantics (Task 956)**:
+We use STRICT inequalities (<, >) for temporal operators because we use
+irreflexive temporal semantics (no T-axioms G φ → φ, H φ → φ).
 -/
 def bmcs_truth_at (B : BFMCS D) (fam : FMCS D) (t : D) : Formula → Prop
   | Formula.atom p => Formula.atom p ∈ fam.mcs t
   | Formula.bot => False
   | Formula.imp φ ψ => bmcs_truth_at B fam t φ → bmcs_truth_at B fam t ψ
   | Formula.box φ => ∀ fam' ∈ B.families, bmcs_truth_at B fam' t φ
-  | Formula.all_past φ => ∀ s, s ≤ t → bmcs_truth_at B fam s φ
-  | Formula.all_future φ => ∀ s, t ≤ s → bmcs_truth_at B fam s φ
+  | Formula.all_past φ => ∀ s, s < t → bmcs_truth_at B fam s φ
+  | Formula.all_future φ => ∀ s, t < s → bmcs_truth_at B fam s φ
 
 /-!
 ## BFMCS Validity
@@ -262,32 +261,9 @@ theorem bmcs_truth_necessitation (B : BFMCS D) (fam : FMCS D)
 /-!
 ## Temporal Properties
 
-The temporal operators have standard behavior with non-strict inequalities.
+The temporal operators use strict inequalities with irreflexive semantics.
+G φ and H φ are NOT reflexive (no T-axiom).
 -/
-
-/--
-G (all_future) is reflexive: G φ → φ.
-
-This follows because t ≤ t, so the current time is included in "all future".
--/
-theorem bmcs_truth_all_future_reflexive (B : BFMCS D) (fam : FMCS D)
-    (t : D) (φ : Formula)
-    (h : bmcs_truth_at B fam t (Formula.all_future φ)) :
-    bmcs_truth_at B fam t φ := by
-  simp only [bmcs_truth_at] at h
-  exact h t (le_refl t)
-
-/--
-H (all_past) is reflexive: H φ → φ.
-
-This follows because t ≤ t, so the current time is included in "all past".
--/
-theorem bmcs_truth_all_past_reflexive (B : BFMCS D) (fam : FMCS D)
-    (t : D) (φ : Formula)
-    (h : bmcs_truth_at B fam t (Formula.all_past φ)) :
-    bmcs_truth_at B fam t φ := by
-  simp only [bmcs_truth_at] at h
-  exact h t (le_refl t)
 
 /--
 G is transitive: G φ → GG φ.
@@ -298,7 +274,7 @@ theorem bmcs_truth_all_future_transitive (B : BFMCS D) (fam : FMCS D)
     bmcs_truth_at B fam t (Formula.all_future (Formula.all_future φ)) := by
   simp only [bmcs_truth_at] at h ⊢
   intro s hts u hsu
-  exact h u (le_trans hts hsu)
+  exact h u (lt_trans hts hsu)
 
 /--
 H is transitive: H φ → HH φ.
@@ -309,6 +285,6 @@ theorem bmcs_truth_all_past_transitive (B : BFMCS D) (fam : FMCS D)
     bmcs_truth_at B fam t (Formula.all_past (Formula.all_past φ)) := by
   simp only [bmcs_truth_at] at h ⊢
   intro s hst u hus
-  exact h u (le_trans hus hst)
+  exact h u (lt_trans hus hst)
 
 end Bimodal.Metalogic.Bundle

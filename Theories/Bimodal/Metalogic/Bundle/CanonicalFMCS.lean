@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.FMCSDef
-import Bimodal.Metalogic.Bundle.DovetailingChain
+import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 
 /-!
@@ -81,19 +81,45 @@ structure CanonicalMCS where
   is_mcs : SetMaximalConsistent world
 
 /--
-Preorder on CanonicalMCS via CanonicalR.
+Preorder on CanonicalMCS via the reflexive closure of CanonicalR.
 
-`a ≤ b` iff `CanonicalR a.world b.world` iff `GContent(a.world) ⊆ b.world`.
+`a ≤ b` iff `a = b ∨ CanonicalR a.world b.world`.
 
-This is reflexive (by T-axiom: G(phi) → phi) and transitive (by Temp 4: G(phi) → G(G(phi))).
-Note: this Preorder is NOT total in general. Totality only holds within the reachable
-fragment from a fixed root (see CanonicalQuotient.lean). But the FMCS infrastructure
-only requires Preorder, not totality.
+With irreflexive semantics, CanonicalR is NOT reflexive (no T-axiom). The reflexive
+closure gives a proper Preorder. The strict order `<` derived from this Preorder
+implies `CanonicalR`, which is what FMCS coherence conditions need.
+
+Note: this Preorder is NOT total in general.
 -/
 noncomputable instance : Preorder CanonicalMCS where
-  le a b := CanonicalR a.world b.world
-  le_refl a := canonicalR_reflexive a.world a.is_mcs
-  le_trans a b c hab hbc := canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc
+  le a b := a = b ∨ CanonicalR a.world b.world
+  le_refl a := Or.inl rfl
+  le_trans a b c hab hbc := by
+    rcases hab with rfl | hab
+    · exact hbc
+    · rcases hbc with rfl | hbc
+      · exact Or.inr hab
+      · exact Or.inr (canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc)
+
+/--
+CanonicalR implies ≤: If `CanonicalR a.world b.world` then `a ≤ b`.
+Convenience lemma for converting strict canonical relation to Preorder.
+-/
+theorem CanonicalMCS.le_of_canonicalR (a b : CanonicalMCS) (h : CanonicalR a.world b.world) :
+    a ≤ b :=
+  Or.inr h
+
+/--
+If `a < b` in the Preorder on CanonicalMCS, then `CanonicalR a.world b.world`.
+
+The strict order from the reflexive closure Preorder implies the underlying CanonicalR.
+-/
+theorem CanonicalMCS.canonicalR_of_lt (a b : CanonicalMCS) (h : a < b) :
+    CanonicalR a.world b.world := by
+  rcases h.1 with rfl | h_R
+  · -- Case a = b: contradicts a < a (irreflexivity of <)
+    exact absurd (Or.inl rfl : a ≤ a) h.2
+  · exact h_R
 
 /-!
 ## The Canonical FMCS on All MCSes
@@ -118,31 +144,32 @@ theorem canonicalMCS_is_mcs (w : CanonicalMCS) :
   w.is_mcs
 
 /--
-Forward G coherence: if `w₁ ≤ w₂` and `G phi ∈ mcs w₁`, then `phi ∈ mcs w₂`.
+Forward G coherence: if `w₁ < w₂` and `G phi ∈ mcs w₁`, then `phi ∈ mcs w₂`.
 
-Proof: `w₁ ≤ w₂` means `CanonicalR w₁.world w₂.world` (by Preorder definition).
+Proof: `w₁ < w₂` implies `CanonicalR w₁.world w₂.world` (by Preorder definition).
 Apply `canonical_forward_G`.
 -/
 theorem canonicalMCS_forward_G
     (w₁ w₂ : CanonicalMCS) (phi : Formula)
-    (h_le : w₁ ≤ w₂) (h_G : Formula.all_future phi ∈ canonicalMCS_mcs w₁) :
+    (h_lt : w₁ < w₂) (h_G : Formula.all_future phi ∈ canonicalMCS_mcs w₁) :
     phi ∈ canonicalMCS_mcs w₂ :=
-  canonical_forward_G w₁.world w₂.world h_le phi h_G
+  canonical_forward_G w₁.world w₂.world (CanonicalMCS.canonicalR_of_lt w₁ w₂ h_lt) phi h_G
 
 /--
-Backward H coherence: if `w₂ ≤ w₁` and `H phi ∈ mcs w₁`, then `phi ∈ mcs w₂`.
+Backward H coherence: if `w₂ < w₁` and `H phi ∈ mcs w₁`, then `phi ∈ mcs w₂`.
 
 Proof (using GContent/HContent duality):
-1. `w₂ ≤ w₁` means `CanonicalR w₂.world w₁.world`
+1. `w₂ < w₁` implies `CanonicalR w₂.world w₁.world`
 2. By duality: `HContent(w₁.world) ⊆ w₂.world`
 3. Apply `canonical_backward_H`
 -/
 theorem canonicalMCS_backward_H
     (w₁ w₂ : CanonicalMCS) (phi : Formula)
-    (h_le : w₂ ≤ w₁) (h_H : Formula.all_past phi ∈ canonicalMCS_mcs w₁) :
+    (h_lt : w₂ < w₁) (h_H : Formula.all_past phi ∈ canonicalMCS_mcs w₁) :
     phi ∈ canonicalMCS_mcs w₂ := by
+  have h_R : CanonicalR w₂.world w₁.world := CanonicalMCS.canonicalR_of_lt w₂ w₁ h_lt
   have h_R_past : CanonicalR_past w₁.world w₂.world :=
-    GContent_subset_implies_HContent_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_le
+    GContent_subset_implies_HContent_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_R
   exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
 /--
@@ -156,10 +183,10 @@ This construction satisfies all FMCS requirements:
 noncomputable def canonicalMCSBFMCS : FMCS CanonicalMCS where
   mcs := canonicalMCS_mcs
   is_mcs := canonicalMCS_is_mcs
-  forward_G := fun w₁ w₂ phi h_le h_G =>
-    canonicalMCS_forward_G w₁ w₂ phi h_le h_G
-  backward_H := fun w₁ w₂ phi h_le h_H =>
-    canonicalMCS_backward_H w₁ w₂ phi h_le h_H
+  forward_G := fun w₁ w₂ phi h_lt h_G =>
+    canonicalMCS_forward_G w₁ w₂ phi h_lt h_G
+  backward_H := fun w₁ w₂ phi h_lt h_H =>
+    canonicalMCS_backward_H w₁ w₂ phi h_lt h_H
 
 /-!
 ## Zero Instance for CanonicalMCS
@@ -197,7 +224,7 @@ theorem canonicalMCS_forward_F
     ∃ s : CanonicalMCS, w ≤ s ∧ phi ∈ canonicalMCS_mcs s := by
   obtain ⟨W, h_W_mcs, h_R, h_phi_W⟩ := canonical_forward_F w.world w.is_mcs phi h_F
   let s : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
-  exact ⟨s, h_R, h_phi_W⟩
+  exact ⟨s, CanonicalMCS.le_of_canonicalR w s h_R, h_phi_W⟩
 
 /--
 Backward P coherence: if `P phi ∈ mcs w`, then there exists `s ≤ w` with `phi ∈ mcs s`.
@@ -220,7 +247,7 @@ theorem canonicalMCS_backward_P
   -- This follows from HContent_subset_implies_GContent_reverse applied to h_R_past
   have h_R : CanonicalR W w.world :=
     HContent_subset_implies_GContent_reverse w.world W w.is_mcs h_W_mcs h_R_past
-  exact ⟨s, h_R, h_phi_W⟩
+  exact ⟨s, CanonicalMCS.le_of_canonicalR s w h_R, h_phi_W⟩
 
 /--
 The canonical FMCS preserves the root context.

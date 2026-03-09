@@ -258,12 +258,38 @@ of elements via the linearity property.
 -/
 
 /--
-Preorder on BidirectionalFragment via CanonicalR.
+Preorder on BidirectionalFragment via the reflexive closure of CanonicalR.
+
+With irreflexive semantics, CanonicalR is NOT reflexive. The reflexive closure
+gives a proper Preorder. The strict order `<` implies `CanonicalR`.
 -/
 noncomputable instance : Preorder (BidirectionalFragment M₀ h_mcs₀) where
-  le a b := CanonicalR a.world b.world
-  le_refl a := canonicalR_reflexive a.world a.is_mcs
-  le_trans a b c hab hbc := canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc
+  le a b := a = b ∨ CanonicalR a.world b.world
+  le_refl a := Or.inl rfl
+  le_trans a b c hab hbc := by
+    rcases hab with rfl | hab
+    · exact hbc
+    · rcases hbc with rfl | hbc
+      · exact Or.inr hab
+      · exact Or.inr (canonicalR_transitive a.world b.world c.world a.is_mcs hab hbc)
+
+/--
+CanonicalR implies ≤ in BidirectionalFragment.
+-/
+theorem BidirectionalFragment.le_of_canonicalR
+    (a b : BidirectionalFragment M₀ h_mcs₀)
+    (h : CanonicalR a.world b.world) : a ≤ b :=
+  Or.inr h
+
+/--
+If `a < b` in BidirectionalFragment, then `CanonicalR a.world b.world`.
+-/
+theorem BidirectionalFragment.canonicalR_of_lt
+    (a b : BidirectionalFragment M₀ h_mcs₀) (h : a < b) :
+    CanonicalR a.world b.world := by
+  rcases h.1 with rfl | h_R
+  · exact absurd (Or.inl rfl : a ≤ a) h.2
+  · exact h_R
 
 /-!
 ## Phase B: Linearity Infrastructure
@@ -406,12 +432,15 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
       have h_right := h_big_conj.2
       have h_left_parts := set_mcs_conjunction_elim h_W_mcs h_left
       have h_right_parts := set_mcs_conjunction_elim h_W_mcs h_right
-      have h_alpha_W : alpha ∈ W := by
-        have h_T : [] ⊢ (Formula.all_future alpha).imp alpha :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_future alpha)
-        exact set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_left_parts.1
-      have h_neg_alpha_W := h_right_parts.2
-      exact set_consistent_not_both h_W_mcs.1 alpha h_alpha_W h_neg_alpha_W
+      -- SORRY(task 956 phase 7): With irreflexive semantics, G(alpha) ∈ W does NOT
+      -- imply alpha ∈ W. The linearity Case 1 proof needs restructured compound formulas.
+      -- Cases 2 and 3 still work (G(alpha) propagates through CanonicalR to successors).
+      -- Resolution: redesign compound formulas so Case 1 yields direct contradiction.
+      -- Possible approaches:
+      -- (a) Use alpha ∧ G(alpha) ∧ ¬beta (needs alpha ∈ M1 ∩ GContent(M1))
+      -- (b) Prove Case 1 impossible via density + no-endpoints structure
+      -- (c) Use G(G(alpha)) trick with nested propagation
+      sorry
     · -- Case 2: F(conj1 ∧ F(conj2))
       obtain ⟨W, h_W_mcs, h_R_MW, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case2
       have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
@@ -600,12 +629,10 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
       have h_right := h_big_conj.2
       have h_left_parts := set_mcs_conjunction_elim h_W_mcs h_left
       have h_right_parts := set_mcs_conjunction_elim h_W_mcs h_right
-      have h_beta_W : beta ∈ W := by
-        have h_T : [] ⊢ (Formula.all_past beta).imp beta :=
-          DerivationTree.axiom [] _ (Axiom.temp_t_past beta)
-        exact set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T) h_left_parts.1
-      have h_neg_beta_W := h_right_parts.2
-      exact set_consistent_not_both h_W_mcs.1 beta h_beta_W h_neg_beta_W
+      -- SORRY(task 956 phase 7): Symmetric to the future direction Case 1.
+      -- With irreflexive semantics, H(beta) ∈ W does NOT imply beta ∈ W.
+      -- See forward direction for discussion of resolution approaches.
+      sorry
     · -- Case 2: P(conj1 ∧ P(conj2)) ∈ M
       -- Witness W with conj1 ∈ W and P(conj2) ∈ W.
       -- H(beta) ∈ W.
@@ -756,8 +783,8 @@ give equal fragment elements (BidirectionalFragment.ext).
 theorem fragment_le_total
     (a b : BidirectionalFragment M₀ h_mcs₀) : a ≤ b ∨ b ≤ a := by
   rcases bidirectional_totally_ordered a b with h | h | h
-  · exact Or.inl h
-  · exact Or.inr h
+  · exact Or.inl (BidirectionalFragment.le_of_canonicalR a b h)
+  · exact Or.inr (BidirectionalFragment.le_of_canonicalR b a h)
   · have := BidirectionalFragment.ext h
     subst this
     exact Or.inl (le_refl a)

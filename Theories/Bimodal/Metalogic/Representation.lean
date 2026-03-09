@@ -240,12 +240,15 @@ theorem box_persistent
     theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
   have h_H_box : (Formula.box φ).all_past ∈ fam.mcs t :=
     set_mcs_implication_property (fam.is_mcs t) h_past_tf h_box
-  -- Step 3: Case split on s vs t
-  rcases le_or_gt t s with h_le | h_lt
-  · -- s ≥ t: use forward_G (now handles ≤ directly)
-    exact fam.forward_G t s (Formula.box φ) h_le h_G_box
-  · -- s < t: use backward_H
-    exact fam.backward_H t s (Formula.box φ) (le_of_lt h_lt) h_H_box
+  -- Step 3: Case split on s vs t (three cases for irreflexive semantics)
+  rcases lt_trichotomy t s with h_lt | h_eq | h_gt
+  · -- s > t: use forward_G (strict)
+    exact fam.forward_G t s (Formula.box φ) h_lt h_G_box
+  · -- s = t: trivial from h_box
+    rw [← h_eq]
+    exact h_box
+  · -- s < t: use backward_H (strict)
+    exact fam.backward_H t s (Formula.box φ) h_gt h_H_box
 
 /-!
 ## Truth Lemma

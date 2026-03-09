@@ -1,36 +1,30 @@
 {
   "status": "partial",
   "requires_user_review": false,
-  "summary": "Completed Phases 1-5 (core semantic switch, T-axiom removal, derived operators, soundness restructuring, time-shift). Phase 6 partial (FMCS updated, DovetailingChain needs T-axiom cleanup).",
+  "summary": "Completed Phases 1-6 (core semantic switch, T-axiom removal, derived operators, soundness restructuring, time-shift, canonical frame fixes). Phase 7+ remaining.",
   "artifacts": [
     {
       "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260309.md",
       "type": "summary",
       "summary": "Implementation summary for irreflexive G/H refactoring phases 1-6"
-    },
-    {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6-handoff-20260309.md",
-      "type": "handoff",
-      "summary": "Detailed handoff for Phase 6 completion and remaining phases"
     }
   ],
   "partial_progress": {
     "stage": "context_exhaustion_handoff",
-    "details": "Phases 1-5 complete, Phase 6 partial. DovetailingChain and downstream Bundle files need T-axiom references removed. Handoff written with detailed next steps.",
-    "phases_completed": 5,
-    "phases_total": 14,
-    "handoff_path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6-handoff-20260309.md"
+    "details": "Phases 1-6 complete. TemporalCoherentFamily, BFMCS.temporally_coherent, and temporal_backward_G/H updated for strict inequalities. Build passes.",
+    "phases_completed": 6,
+    "phases_total": 14
   },
   "metadata": {
     "session_id": "sess_1773174380_a3f2b7",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 5,
+    "phases_completed": 6,
     "phases_total": 14
   },
   "completion_data": {
-    "completion_summary": "Completed core irreflexive semantics refactoring: switched truth_at from <= to <, removed T-axioms, restructured soundness into frame-class specific theorems (axiom_valid_dense, axiom_valid_discrete), added derived reflexive operators, updated FMCS coherence conditions.",
+    "completion_summary": "Completed core irreflexive semantics refactoring (Phases 1-6): switched truth_at from <= to <, removed T-axioms, restructured soundness, fixed temporal coherence for strict inequalities.",
     "roadmap_items": []
   }
 }

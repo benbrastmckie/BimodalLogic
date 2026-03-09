@@ -88,18 +88,23 @@ theorem strict_lt_has_distinguishing_formula
     (h_le : CanonicalR a.world b.world)
     (h_not_le : ¬CanonicalR b.world a.world) :
     ∃ ψ : Formula, Formula.some_future ψ ∈ a.world ∧ ψ ∈ b.world ∧ ψ ∉ a.world := by
-  -- ¬CanonicalR b.world a.world means ¬(GContent b.world ⊆ a.world)
-  -- So ∃ chi ∈ GContent b.world with chi ∉ a.world
-  rw [CanonicalR, GContent] at h_not_le
-  rw [Set.not_subset] at h_not_le
-  obtain ⟨chi, h_G_chi_b, h_chi_not_a⟩ := h_not_le
-  -- chi ∈ { phi | all_future phi ∈ b.world }, so all_future chi ∈ b.world
-  simp only [Set.mem_setOf_eq] at h_G_chi_b
-  -- By T-axiom (temp_t_future): G(chi) → chi, so chi ∈ b.world
-  have h_chi_b : chi ∈ b.world := by
-    have h_T := theorem_in_mcs b.is_mcs
-      (DerivationTree.axiom [] _ (Axiom.temp_t_future chi))
-    exact set_mcs_implication_property b.is_mcs h_T h_G_chi_b
+  -- Since CanonicalR a b and ¬CanonicalR b a, a.world ≠ b.world.
+  have h_neq : a.world ≠ b.world := by
+    intro h_eq; exact h_not_le (h_eq ▸ h_le)
+  -- Two different MCS: exists chi ∈ b.world \ a.world (by MCS maximality).
+  have h_not_sub : ¬(b.world ⊆ a.world) := by
+    intro h_sub
+    have h_eq := Set.Subset.antisymm h_sub (by
+      intro x hx
+      by_contra h_not
+      have h_neg : Formula.neg x ∈ b.world := by
+        rcases set_mcs_negation_complete b.is_mcs x with h | h
+        · exact absurd (h_sub h) h_not
+        · exact h
+      exact set_consistent_not_both a.is_mcs.1 x hx (h_sub h_neg))
+    exact h_neq h_eq.symm
+  rw [Set.not_subset] at h_not_sub
+  obtain ⟨chi, h_chi_b, h_chi_not_a⟩ := h_not_sub
   -- F(chi) ∈ a.world: if G(¬chi) ∈ a.world, then ¬chi ∈ b.world by CanonicalR, contradiction
   have h_F_chi : Formula.some_future chi ∈ a.world := by
     by_contra h_not_F
