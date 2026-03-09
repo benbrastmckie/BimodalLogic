@@ -1,0 +1,36 @@
+{
+  "phase": 2,
+  "name": "Remove T-Axioms",
+  "status": "partial",
+  "current_objective": "fix_soundness_lemmas",
+  "objectives": [
+    {
+      "id": "remove_t_axiom_constructors",
+      "description": "Remove temp_t_future and temp_t_past from Axiom type",
+      "status": "done"
+    },
+    {
+      "id": "add_frame_class_predicates",
+      "description": "Add Axiom.isBase, isDenseCompatible, isDiscreteCompatible",
+      "status": "done"
+    },
+    {
+      "id": "fix_soundness_lemmas",
+      "description": "Update SoundnessLemmas.lean to remove T-axiom cases",
+      "status": "not_started"
+    },
+    {
+      "id": "fix_soundness",
+      "description": "Update Soundness.lean - remove T-axiom validity proofs, split axiom_valid by frame class",
+      "status": "not_started"
+    }
+  ],
+  "approaches_tried": [
+    {
+      "approach": "Keep axiom_valid returning universal validity",
+      "result": "Failed - density and discreteness are not universally valid with irreflexive semantics",
+      "reason": "density needs DenselyOrdered, discreteness needs SuccOrder"
+    }
+  ],
+  "build_status": "Axioms.lean builds, SoundnessLemmas.lean and Soundness.lean fail"
+}
