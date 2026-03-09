@@ -4,6 +4,7 @@ import Bimodal.Theorems.ModalS5
 import Bimodal.Theorems.ModalS4
 import Bimodal.Theorems.Perpetuity
 import Bimodal.Theorems.GeneralizedNecessitation
+import Bimodal.Theorems.Discreteness
 
 /-!
 # Bimodal.Theorems - Key Theorems
@@ -20,6 +21,7 @@ properties to perpetuity principles connecting modal and temporal operators.
 - `ModalS4`: S4 nested modality theorems (diamond_box_conj, box_diamond_box distributions)
 - `Perpetuity`: Perpetuity principles P1-P6 connecting modal and temporal operators
 - `GeneralizedNecessitation`: Generalized modal and temporal K rules (derived theorems)
+- `Discreteness`: DP (backward discreteness) derived from DF via temporal_duality
 
 ## Status
 
