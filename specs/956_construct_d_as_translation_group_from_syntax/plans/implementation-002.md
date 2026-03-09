@@ -1,7 +1,7 @@
 # Implementation Plan: Layered Representation Theorem Architecture
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 12 hours
 - **Dependencies**: None (builds on existing infrastructure)
 - **Research Inputs**: research-013.md (layered architecture, Archimedean dichotomy), research-014.md (parametric completeness, fragment-first architecture)
@@ -69,7 +69,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Restricted Validity Definitions [NOT STARTED]
+### Phase 1: Restricted Validity Definitions [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Define `valid_dense` and `valid_discrete` in Validity.lean
@@ -91,7 +91,7 @@ After this implementation:
 
 ---
 
-### Phase 2: DN and DF Axiom Definitions [NOT STARTED]
+### Phase 2: DN and DF Axiom Definitions [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add density (DN) and forward discreteness (DF) axioms to Axioms.lean

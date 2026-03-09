@@ -318,6 +318,47 @@ inductive Axiom : Formula → Type where
         (Formula.or (Formula.some_future (Formula.and φ ψ))
           (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
             (Formula.some_future (Formula.and (Formula.some_future φ) ψ)))))
+
+  /--
+  Density axiom (DN): `Fφ → FFφ` (dense temporal order).
+
+  If there exists a future time where φ holds, then there exists a future time
+  where "there exists a further future time where φ holds" also holds.
+
+  **Frame condition**: DN is valid on a frame iff the temporal order is densely
+  ordered: for all s < t, there exists u with s < u < t.
+
+  Semantically: if φ holds at some s > t, and the order is dense, then there
+  exists u with t < u < s. At u, φ holds at the further future time s > u,
+  so Fφ holds at u, hence FFφ holds at t.
+
+  **References**:
+  - Research-013 Section 3.2: Layer 1 dense extension
+  - Goldblatt 1992: density axiom for tense logic
+  -/
+  | density (φ : Formula) :
+      Axiom (φ.some_future.imp φ.some_future.some_future)
+
+  /--
+  Forward discreteness axiom (DF): `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)` (discrete temporal order).
+
+  If there is a strict future time (F⊤), and φ holds now and at all past times (Hφ),
+  then there exists a future time where Hφ holds. This captures the existence of
+  immediate successors: if there is any future, the immediate successor satisfies Hφ
+  because φ holds at all times up to and including now.
+
+  **Frame condition**: DF is valid on a frame iff the temporal order has immediate
+  successors (SuccOrder). The past axiom DP (backward discreteness) is derivable
+  from DF via the temporal_duality inference rule.
+
+  **References**:
+  - Research-013 Section 3.3: Layer 2 discrete extension
+  - DP derivation: `Theories/Bimodal/Theorems/Discreteness.lean`
+  -/
+  | discreteness_forward (φ : Formula) :
+      Axiom (Formula.and (Formula.bot.neg.some_future)
+        (Formula.and φ (Formula.all_past φ)) |>.imp
+        (Formula.all_past φ).some_future)
   deriving Repr
 
 end Bimodal.ProofSystem

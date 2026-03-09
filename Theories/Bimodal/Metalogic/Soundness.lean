@@ -270,6 +270,31 @@ theorem temp_linearity_valid (φ ψ : Formula) :
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
       (fun h_neg_F_phi => h_neg_F_phi s1 h_le h_phi_s1) h_psi_s2)
 
+/-- Density axiom (DN) is valid: `⊨ Fφ → FFφ`.
+With reflexive semantics, some_future includes the present,
+so Fφ → FFφ holds trivially by taking the same witness. -/
+theorem density_valid (φ : Formula) : ⊨ (φ.some_future.imp φ.some_future.some_future) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  intro h_F_phi h_GnFphi
+  exact h_GnFphi t (le_refl t) h_F_phi
+
+/-- Forward discreteness axiom (DF) is valid: `⊨ (F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
+With reflexive semantics, Hφ at t and φ at t gives F(Hφ) at t
+by taking the witness u = t. -/
+theorem discreteness_forward_valid (φ : Formula) :
+    ⊨ (Formula.and (Formula.bot.neg.some_future)
+      (Formula.and φ (Formula.all_past φ)) |>.imp
+      (Formula.all_past φ).some_future) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
+  intro h_conj h_G_not_H
+  apply h_conj
+  intro _h_F_top h_phi_and_H
+  apply h_phi_and_H
+  intro _h_phi h_H
+  exact h_G_not_H t (le_refl t) h_H
+
 /-- All TM axioms are valid. -/
 theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   intro h_axiom
@@ -292,6 +317,8 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
   | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
+  | density ψ => exact density_valid ψ
+  | discreteness_forward ψ => exact discreteness_forward_valid ψ
 
 /--
 Soundness theorem: Derivability implies semantic validity.

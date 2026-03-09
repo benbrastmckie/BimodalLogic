@@ -549,6 +549,25 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) : is_valid D φ.swap_past
       intro h_all_neg_second
       exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_P_psi =>
         h_neg_P_psi s2 h_le h_psi_s2))
+  | density ψ =>
+    -- swap(Fφ → FFφ) = Pφ → PPφ (with reflexive ≤)
+    -- If ∃ s ≤ t with φ at s, take u = s: u ≤ t and ∃ v ≤ u with φ at v (take v = u)
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.some_future, Formula.some_past, Formula.neg, truth_at]
+    intro h_P_phi h_HnPphi
+    exact h_HnPphi t (le_refl t) h_P_phi
+  | discreteness_forward ψ =>
+    -- swap(DF) = (P⊤ ∧ φ ∧ Gφ) → P(Gφ) (with reflexive ≤)
+    -- If Gφ at t (∀ s ≥ t, φ at s), then P(Gφ) at t: take u = t, Gφ at t
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_future,
+               Formula.some_past, Formula.neg, truth_at]
+    intro h_conj h_H_not_G
+    apply h_conj
+    intro _h_P_top h_phi_and_G
+    apply h_phi_and_G
+    intro _h_phi h_G
+    exact h_H_not_G t (le_refl t) h_G
 
 /-! ## Axiom Validity (Local)
 
@@ -816,6 +835,49 @@ private theorem axiom_temp_linearity_valid (φ ψ : Formula) :
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
       (fun h_neg_F_phi => h_neg_F_phi s1 h_le h_phi_s1) h_psi_s2)
 
+/-- Density axiom (DN) is valid: `⊨ Fφ → FFφ`.
+With reflexive temporal semantics (≤), if ∃ s ≥ t with φ at s,
+then take u = s: u ≥ t and ∃ v ≥ u with φ at v (take v = u). -/
+private theorem axiom_density_valid (φ : Formula) :
+    is_valid D (φ.some_future.imp φ.some_future.some_future) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  -- Goal: (¬G(¬φ)) → ¬G(¬(¬G(¬φ)))
+  -- i.e., Fφ → FFφ
+  intro h_F_phi h_GnFphi
+  -- h_F_phi : (∀ s, t ≤ s → truth_at ... s φ → False) → False  (i.e., ¬¬∃s≥t, φ at s)
+  -- h_GnFphi : ∀ u, t ≤ u → ¬(Fφ at u) → False    -- wait, that's wrong
+  -- Actually: h_GnFphi : ∀ u, t ≤ u → ((∀ v, u ≤ v → truth ... v φ → False) → False) → False
+  -- i.e., ∀ u ≥ t, ¬¬(∀ v ≥ u, ¬φ at v) = ∀ u ≥ t, ¬(Fφ at u) = G(¬Fφ) at t
+  -- We need: False (since h_F_phi says Fφ at t, and h_GnFphi says ¬Fφ at t via u=t)
+  exact h_GnFphi t (le_refl t) h_F_phi
+
+/-- Forward discreteness axiom (DF) is valid: `⊨ (F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
+With reflexive temporal semantics (≤), Hφ at t means ∀ s ≤ t, φ at s.
+F(Hφ) at t means ∃ u ≥ t with Hφ at u. Take u = t. -/
+private theorem axiom_discreteness_forward_valid (φ : Formula) :
+    is_valid D (Formula.and (Formula.bot.neg.some_future)
+      (Formula.and φ (Formula.all_past φ)) |>.imp
+      (Formula.all_past φ).some_future) := by
+  intro F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
+  -- Goal is: ((F⊤ ∧ φ ∧ Hφ) → ⊥) → ⊥ → F(Hφ)
+  -- Which in the negation encoding is a function.
+  -- The encoded conjunction (F⊤ ∧ (φ ∧ Hφ)) → F(Hφ)
+  -- Assumption gives us ¬(F⊤ → ¬(φ ∧ Hφ)) which is F⊤ ∧ (φ ∧ Hφ).
+  intro h_conj h_G_not_H
+  -- h_conj : ((∀ s ≥ t, ⊥ → ⊥) → (truth φ → (∀ s ≤ t, truth φ) → ⊥) → ⊥) → ⊥
+  -- h_G_not_H : ∀ u ≥ t, (∀ s ≤ u, truth φ) → ⊥
+  -- From h_G_not_H at u = t: need (∀ s ≤ t, truth φ) → ⊥
+  -- From h_conj we can extract φ at t and Hφ at t.
+  apply h_conj
+  intro _h_F_top h_phi_and_H
+  apply h_phi_and_H
+  intro _h_phi h_H
+  -- h_H : ∀ s ≤ t, truth φ at s
+  -- h_G_not_H at u = t says: (∀ s ≤ t, truth φ at s) → ⊥
+  exact h_G_not_H t (le_refl t) h_H
+
 /-- All axioms are locally valid. -/
 private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ := by
   intro h_axiom
@@ -838,6 +900,8 @@ private theorem axiom_locally_valid {φ : Formula} : Axiom φ → is_valid D φ 
   | modal_future ψ => exact axiom_modal_future_valid ψ
   | temp_future ψ => exact axiom_temp_future_valid ψ
   | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
+  | density ψ => exact axiom_density_valid ψ
+  | discreteness_forward ψ => exact axiom_discreteness_forward_valid ψ
 
 /-! ## Combined Theorem: Derivable Implies Valid AND Swap Valid
 
