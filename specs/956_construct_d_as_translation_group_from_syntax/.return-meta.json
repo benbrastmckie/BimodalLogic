@@ -3,19 +3,19 @@
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-012.md",
-      "summary": "Corrects research-011 error: density path IS viable because D = (Q,+) (not Aut+(Q)) acts freely and transitively on Q. Analyzes algebraic completeness (orthogonal to D-construction), axiom-free approach (impossible for D), Holder's theorem (bypassed by direct D definition). Recommends density path (DN axiom, D = Q) as primary, with 115-185 lines effort and lower risk than discreteness path."
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-013.md",
+      "summary": "Layered representation theorem architecture: base (parametric D), dense (TM+DN, D=Q), discrete (TM+DP/DF, D=Z). Archimedean dichotomy from Mathlib. Non-Archimedean counterexample (Z^2)."
     }
   ],
-  "next_steps": "Run /plan 956 to create implementation plan for the density path",
+  "next_steps": "Run /plan 956 to create implementation plan for layered architecture",
   "metadata": {
-    "session_id": "sess_1773102000_b3f4d2",
+    "session_id": "sess_1773188000_c4e5f3",
     "agent_type": "logic-research-agent",
-    "duration_seconds": 300,
+    "duration_seconds": 180,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "logic-research-agent"],
     "findings_count": 6,
-    "context_files_loaded": ["README.md", "kripke-semantics-overview.md"],
+    "context_files_loaded": ["README.md", "research-011.md", "research-012.md", "ROAD_MAP.md"],
     "mathlib_lookups_performed": 7,
     "context_extension_tasks": [],
     "context_candidates_count": 3
