@@ -1,7 +1,7 @@
 # Implementation Plan: Irreflexive G/H Refactoring + Dense Completeness
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 25-35 hours
 - **Dependencies**: None
 - **Research Inputs**: research-016.md (irreflexive feasibility), research-015.md (Phase 6 blocker analysis)
