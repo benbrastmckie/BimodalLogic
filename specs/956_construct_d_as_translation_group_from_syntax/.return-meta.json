@@ -1,22 +1,31 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "summary": "10-phase implementation plan for layered representation theorem architecture: base parametric layer (existing), dense layer (TM+DN, D=Q), discrete layer (TM+DF, D=Z as extension). Primary deliverable is dense completeness via fragment-first architecture bypassing Int-chain obstacle.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-014.md",
-      "summary": "Research on Archimedean axiom (not expressible), parametric base completeness (yes, fragment-first), and extensible layered architecture (core lemma + DN/DF extensions)"
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-002.md",
+      "type": "plan",
+      "summary": "10-phase plan covering: restricted validity definitions, DN/DF axioms, DP derivation, soundness proofs, DenselyOrdered on quotient, Cantor's theorem application, dense completeness theorem"
     }
   ],
-  "next_steps": "Run /plan 956 to create implementation plan for fragment-first completeness architecture",
+  "next_steps": "Run /implement 956 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773190000_d5e6f7",
-    "agent_type": "logic-research-agent",
+    "session_id": "sess_1773071525_plan956",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 8,
-    "context_files_loaded": ["kripke-semantics-overview.md", "metalogic-concepts.md"],
-    "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 3
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": 12,
+    "research_integrated": ["research-013.md", "research-014.md"],
+    "key_deliverables": [
+      "valid_dense and valid_discrete definitions",
+      "DN (density) and DF (discreteness) axioms",
+      "DP derived from DF via temporal_duality",
+      "DenselyOrdered proof on BidirectionalQuotient from DN",
+      "Quotient isomorphic to Q via Cantor's theorem",
+      "dense_completeness theorem for TM+DN"
+    ],
+    "bypassed_obstacles": ["Int-chain forward_F/backward_P sorries"],
+    "deferred_work": ["Discrete path (TM+DF) completeness requires Archimedeanness proof"]
   }
 }

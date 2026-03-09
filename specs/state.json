@@ -8,12 +8,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "researching",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-09T18:00:00Z",
+      "last_updated": "2026-03-09T15:56:24Z",
       "researched": "2026-03-09T02:34:24Z",
       "artifacts": [
         {
@@ -40,11 +40,6 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md",
           "type": "research",
           "summary": "Torsor approach viable via Strategy C (FMCS-based). AddTorsor in Mathlib. Generality preserved for discrete/dense extensions. Archival: DovetailingChain, CanonicalChain, CanonicalConstruction."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for constructing D as translation group from syntax using torsor-based approach"
         },
         {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260306.md",
@@ -100,10 +95,15 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-014.md",
           "type": "research",
           "summary": "Archimedean axiom (not expressible in temporal logic), parametric base completeness (fragment-first architecture), extensible layered architecture (core lemma + DN/DF extensions)"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "10-phase plan covering: restricted validity definitions, DN/DF axioms, DP derivation, soundness proofs, DenselyOrdered on quotient, Cantor theorem application, dense completeness theorem"
         }
       ],
-      "session_id": "sess_1773190000_d5e6f7",
-      "planned": "2026-03-06T22:51:05Z",
+      "session_id": "sess_1773071525_plan956",
+      "planned": "2026-03-09T15:56:24Z",
       "started": "2026-03-06T23:09:39Z"
     },
     {
