@@ -180,7 +180,7 @@ After this implementation:
 
 ---
 
-### Phase 6: DenselyOrdered on BidirectionalQuotient from DN [PARTIAL]
+### Phase 6: DenselyOrdered on BidirectionalQuotient from DN [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove the canonical quotient is densely ordered when DN is an axiom
