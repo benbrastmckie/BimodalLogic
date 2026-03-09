@@ -72,7 +72,7 @@ Irreflexive G/H refactoring completed. Semantics use strict `<`, T-axioms remove
 
 ---
 
-### Phase 8a: Prove Countable BidirectionalQuotient [NOT STARTED]
+### Phase 8a: Prove Countable BidirectionalQuotient [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Establish countability for direct Q-embedding option
