@@ -1,15 +1,15 @@
 {
   "status": "partial",
-  "started_at": "2026-03-09T00:00:00Z",
+  "started_at": "2026-03-09T12:00:00Z",
   "artifacts": [
-    "specs/956_construct_d_as_translation_group_from_syntax/reports/research-015.md"
+    "specs/956_construct_d_as_translation_group_from_syntax/reports/research-016.md"
   ],
   "partial_progress": {
-    "stage": "research_findings_ready",
-    "details": "Analyzed 5 approaches to Phase 6 DenselyOrdered blocker. Quotient transfer is trivial (Mathlib). T-axiom obstructs direct combined-seed. One-sided constructions can be combined to get c2 < c1 via totality. Full two-sided strictness remains partially open."
+    "stage": "research_report_written",
+    "details": "Comprehensive feasibility analysis of irreflexive G/H switch. Report covers all files, blockers, Phase 6 impact, and refactoring strategy. Recommendation: switch to irreflexive."
   },
   "metadata": {
-    "session_id": "sess_1773075593_2955b1",
+    "session_id": "sess_1773077039_15cd4a",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
