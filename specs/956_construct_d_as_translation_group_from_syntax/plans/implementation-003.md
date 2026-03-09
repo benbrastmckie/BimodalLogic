@@ -1,7 +1,7 @@
 # Implementation Plan: Irreflexive G/H Refactoring + Dense Completeness
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 25-35 hours
 - **Dependencies**: None
 - **Research Inputs**: research-016.md (irreflexive feasibility), research-015.md (Phase 6 blocker analysis)
@@ -59,7 +59,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ## Implementation Phases
 
-### Phase 1: Core Semantic Switch [NOT STARTED]
+### Phase 1: Core Semantic Switch [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Change `truth_at` from `<=` to `<` for temporal operators
@@ -82,7 +82,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ---
 
-### Phase 2: Remove T-Axioms [NOT STARTED]
+### Phase 2: Remove T-Axioms [PARTIAL]
 
 - **Dependencies:** Phase 1
 - **Goal:** Remove reflexivity axioms that are no longer valid

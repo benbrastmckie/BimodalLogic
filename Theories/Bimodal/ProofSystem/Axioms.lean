@@ -8,9 +8,9 @@ This module defines the 15 axiom schemata for bimodal logic TM (Tense and Modali
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 17 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
+- 15 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
   `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
-  `temp_t_future`, `temp_t_past`, `modal_future`, `temp_future`, `temp_linearity`
+  `modal_future`, `temp_future`, `temp_linearity`
 
 ## Axiom Schemata
 
@@ -36,9 +36,6 @@ The TM logic includes:
 - **T4** (Temporal 4): `Gφ → GGφ` - future of future is future (transitivity)
 - **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
 - **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
-- **TT-G** (Temporal T Future): `Gφ → φ` - what is always future is true now (reflexivity)
-- **TT-H** (Temporal T Past): `Hφ → φ` - what has always been is true now (reflexivity)
-
 ### Modal-Temporal Interaction Axioms
 - **MF** (Modal-Future): `□φ → □Fφ` - necessary truths remain necessary in future
 - **TF** (Temporal-Future): `□φ → F□φ` - necessary truths were/will-be necessary
@@ -249,32 +246,6 @@ inductive Axiom : Formula → Type where
   | temp_l (φ : Formula) : Axiom (φ.always.imp (Formula.all_future (Formula.all_past φ)))
 
   /--
-  Temporal T axiom for future: `Gφ → φ` (temporal reflexivity).
-
-  If something will always be true (from now on), it is true now.
-  This makes G reflexive: G includes the present moment.
-  Semantically: if φ holds at all times s ≥ t, then φ holds at t.
-
-  This axiom, together with `temp_t_past`, enables the coherence proofs
-  for the canonical model construction by providing a local constraint
-  connecting Gφ to φ within a single MCS.
-  -/
-  | temp_t_future (φ : Formula) : Axiom ((Formula.all_future φ).imp φ)
-
-  /--
-  Temporal T axiom for past: `Hφ → φ` (temporal reflexivity).
-
-  If something has always been true (until now), it is true now.
-  This makes H reflexive: H includes the present moment.
-  Semantically: if φ holds at all times s ≤ t, then φ holds at t.
-
-  This axiom, together with `temp_t_future`, enables the coherence proofs
-  for the canonical model construction by providing a local constraint
-  connecting Hφ to φ within a single MCS.
-  -/
-  | temp_t_past (φ : Formula) : Axiom ((Formula.all_past φ).imp φ)
-
-  /--
   Modal-Future axiom: `□φ → □Fφ` (modal-future interaction).
 
   Necessary truths remain necessary in the future.
@@ -360,5 +331,30 @@ inductive Axiom : Formula → Type where
         (Formula.and φ (Formula.all_past φ)) |>.imp
         (Formula.all_past φ).some_future)
   deriving Repr
+
+/--
+An axiom is dense-compatible if it is valid on all densely ordered frames.
+This excludes `discreteness_forward` which requires SuccOrder.
+-/
+def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
+  | Axiom.discreteness_forward _ => False
+  | _ => True
+
+/--
+An axiom is discrete-compatible if it is valid on all discrete frames.
+This excludes `density` which requires DenselyOrdered.
+-/
+def Axiom.isDiscreteCompatible {φ : Formula} : Axiom φ → Prop
+  | Axiom.density _ => False
+  | _ => True
+
+/--
+An axiom is a base axiom if it is valid on all linear orders (no frame conditions).
+This excludes both `density` and `discreteness_forward`.
+-/
+def Axiom.isBase {φ : Formula} : Axiom φ → Prop
+  | Axiom.density _ => False
+  | Axiom.discreteness_forward _ => False
+  | _ => True
 
 end Bimodal.ProofSystem
