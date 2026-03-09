@@ -127,19 +127,25 @@ Then prove: `TM + DN ⊢ φ ↔ valid_dense φ`
 
 **Concrete instantiation** (optional): When D is additionally Archimedean and countable, D is isomorphic to Q (a subgroup of Q, to be precise). In the canonical model construction with DN, the timeline T is countable, dense, and without endpoints, so T is isomorphic to Q by Cantor's theorem (`Order.iso_of_countable_dense`), and D can be taken as Q.
 
-### 3.3 Layer 2: Discrete Extension (TM + DP + DF)
+### 3.3 Layer 2: Discrete Extension (TM + DF)
 
-Adding the discreteness axioms:
-- DP: `(P top ∧ φ ∧ Gφ) → PGφ` (backward discreteness)
+Adding a single discreteness axiom:
 - DF: `(F top ∧ φ ∧ Hφ) → FHφ` (forward discreteness)
 
-**Frame condition**: DP/DF are valid on a frame iff the temporal order has immediate successors and predecessors (SuccOrder, PredOrder).
+**DP is derivable from DF via temporal_duality**: The TM proof system includes the `temporal_duality` inference rule (Derivation.lean): if `⊢ φ` then `⊢ swap_past_future(φ)`, where `swap_past_future` swaps `all_future ↔ all_past` (i.e., G ↔ H, F ↔ P) throughout. Applying this to DF instantiated at `swap χ`:
+
+1. DF at `swap χ`: `⊢ (F top ∧ swap χ ∧ H(swap χ)) → FH(swap χ)`
+2. Apply `temporal_duality`: `⊢ (P top ∧ χ ∧ Gχ) → PGχ` = **DP** ✓
+
+So only DF needs to be stated as an axiom; DP is then a theorem of TM + DF.
+
+**Frame condition**: DF is valid on a frame iff the temporal order has immediate successors (SuccOrder); once DP is derived, predecessors (PredOrder) follow.
 
 **What this gives**:
-- Soundness: DP/DF are sound for all frames where D has SuccOrder and PredOrder
-- Completeness: TM + DP + DF is complete for the class of task frames with discrete D
+- Soundness: DF is sound for all frames where D has SuccOrder
+- Completeness: TM + DF is complete for the class of task frames with discrete D
 
-**Concrete instantiation**: When D is additionally Archimedean, D is isomorphic to Z by `discrete_iff_not_denselyOrdered` (DP/DF rule out density, so the Archimedean dichotomy forces Z). In the canonical model, Archimedeanness follows from the bidirectional reachability construction (every MCS is reached in finitely many canonical-R steps from the origin).
+**Concrete instantiation**: When D is additionally Archimedean, D is isomorphic to Z by `discrete_iff_not_denselyOrdered` (DF rules out density, so the Archimedean dichotomy forces Z). In the canonical model, Archimedeanness follows from the bidirectional reachability construction (every MCS is reached in finitely many canonical-R steps from the origin).
 
 ### 3.4 Architecture Summary
 
@@ -151,9 +157,10 @@ Layer 1 (TM + DN):   valid_dense φ ↔ ⊢_{TM+DN} φ
                       Quantifies over dense D only
                       Concrete: D = Q (when Archimedean + countable)
 
-Layer 2 (TM + DP/DF): valid_discrete φ ↔ ⊢_{TM+DP+DF} φ
+Layer 2 (TM + DF):    valid_discrete φ ↔ ⊢_{TM+DF} φ
                        Quantifies over discrete D only
                        Concrete: D = Z (when Archimedean)
+                       Note: DP is derived from DF via temporal_duality rule
 ```
 
 Each layer is a proper extension of the previous one:
@@ -267,17 +274,18 @@ Prove that the canonical model with DN produces a dense timeline, then apply Can
 
 **Effort**: 115-185 lines (from research-012 estimate).
 
-### 5.5 Phase 5: Discrete Completeness (Canonical Model with DP/DF)
+### 5.5 Phase 5: Discrete Completeness (Canonical Model with DF)
 
-Similar but using DP/DF and the Z isomorphism.
+Using DF alone (DP is derived via temporal_duality) and the Z isomorphism.
 
-1. Prove `SuccOrder` and `PredOrder` on the canonical timeline from DP/DF
-2. Prove `IsSuccArchimedean` from the bidirectional reachability construction
-3. Apply `orderIsoIntOfLinearSuccPredArch` to get T isomorphic to Z
-4. Set D = Z, transfer AddTorsor
-5. Prove completeness: `valid_discrete φ → TM+DP+DF ⊢ φ`
+1. Add DF axiom; derive DP via `temporal_duality` (one-line derivation)
+2. Prove `SuccOrder` on the canonical timeline from DF; `PredOrder` from DP
+3. Prove `IsSuccArchimedean` from the bidirectional reachability construction
+4. Apply `orderIsoIntOfLinearSuccPredArch` to get T isomorphic to Z
+5. Set D = Z, transfer AddTorsor
+6. Prove completeness: `valid_discrete φ → TM+DF ⊢ φ`
 
-**Effort**: 150-300 lines.
+**Effort**: 150-300 lines (DP derivation is trivial; the Archimedeanness proof remains the key risk).
 
 ### 5.6 Phase 6: The Archimedean Dichotomy Bridge
 
@@ -441,7 +449,7 @@ This shows the existing DovetailingChain infrastructure is the discrete speciali
 
 | File | Section to Add/Modify | Content to Add | Priority | Create Task? |
 |------|----------------------|----------------|----------|--------------|
-| `kripke-semantics-overview.md` | Temporal Frame Classes | DN/DP/DF axioms, dense vs discrete frame conditions, Archimedean requirement | Medium | No |
+| `kripke-semantics-overview.md` | Temporal Frame Classes | DN and DF axioms (DP derived), dense vs discrete frame conditions, Archimedean requirement, temporal_duality rule | Medium | No |
 | `metalogic-concepts.md` | Completeness | Layered completeness (base, dense, discrete), parametric vs concrete | Medium | No |
 
 ### Summary
@@ -457,13 +465,15 @@ This shows the existing DovetailingChain infrastructure is the discrete speciali
 
 1. **The dense/discrete dichotomy requires Archimedeanness.** Non-Archimedean groups (Z^2, etc.) are counterexamples. The Mathlib theorem `discrete_or_denselyOrdered` explicitly requires `[Archimedean G]`.
 
-2. **The representation theorem should be layered, not monolithic.** Base layer (TM, all D) is already implemented. Dense layer (TM+DN) and discrete layer (TM+DP/DF) extend it.
+2. **The representation theorem should be layered, not monolithic.** Base layer (TM, all D) is already implemented. Dense layer (TM+DN) and discrete layer (TM+DF) extend it.
 
 3. **The existing parametric validity IS the base layer.** No new "abstract D construction" is needed for the base. The validity definition already quantifies over all D.
 
 4. **The density path does NOT require Archimedeanness for the T-to-Q isomorphism.** Cantor's theorem needs only countability + density + no endpoints. This is a significant advantage over the discrete path.
 
-5. **The discrete path DOES require Archimedeanness.** DP/DF give SuccOrder/PredOrder, but Archimedeanness is needed to apply `orderIsoIntOfLinearSuccPredArch`. Archimedeanness must be proven from the canonical model construction.
+5. **The discrete path DOES require Archimedeanness.** DF gives SuccOrder (and DP is derived via temporal_duality to give PredOrder), but Archimedeanness is needed to apply `orderIsoIntOfLinearSuccPredArch`. Archimedeanness must be proven from the canonical model construction.
+
+6b. **DP is derivable from DF via temporal_duality.** The TM proof system has a `temporal_duality` inference rule (Derivation.lean): from `⊢ φ`, derive `⊢ swap_past_future(φ)`. Applying this to DF instantiated at `swap χ` immediately gives DP for all χ. Only DF needs to be added as an axiom.
 
 6. **D should NOT be constructed from TM alone as a specific group.** At the base layer, D is universally quantified. Concrete D is only needed at the extension layers.
 
@@ -538,6 +548,8 @@ This shows the existing DovetailingChain infrastructure is the discrete speciali
 - **Key referenced files**:
   - `Theories/Bimodal/Semantics/Validity.lean` -- Parametric validity (base layer)
   - `Theories/Bimodal/ProofSystem/Axioms.lean` -- Current axiom system
+  - `Theories/Bimodal/ProofSystem/Derivation.lean` -- temporal_duality rule (line 136)
+  - `Theories/Bimodal/Theorems/GeneralizedNecessitation.lean` -- past_k_dist, past_necessitation derived via temporal_duality
   - `Theories/Bimodal/Metalogic/Bundle/TranslationGroup.lean` -- Current D construction
   - `Theories/Bimodal/Semantics/TaskFrame.lean` -- TaskFrame structure
 
@@ -545,7 +557,7 @@ This shows the existing DovetailingChain infrastructure is the discrete speciali
 
 ## 15. Next Steps
 
-1. **Decision**: Accept layered architecture (base parametric + dense DN + discrete DP/DF)
+1. **Decision**: Accept layered architecture (base parametric + dense DN + discrete DF, where DP is derived)
 2. **Phase 1**: Define `valid_dense` and `valid_discrete` in Validity.lean
 3. **Phase 2**: Add DN axiom to Axioms.lean, prove soundness for `valid_dense`
 4. **Phase 3**: Prove DenselyOrdered on canonical timeline from DN
