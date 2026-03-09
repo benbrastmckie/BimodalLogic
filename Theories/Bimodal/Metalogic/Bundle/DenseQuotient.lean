@@ -201,7 +201,36 @@ theorem goldblatt_seed_consistent
   -- L ⊢ ⊥ contradicts b being consistent
   exact b.is_mcs.1 L hL_in_b ⟨d⟩
 
-/-! ## Part 6: DenselyOrdered Instance -/
+/-! ## Part 6: Helper for returning quotient intermediate -/
+
+/-- Helper: given a < c and c < b in the preorder, return c as quotient intermediate. -/
+private theorem quotient_intermediate
+    (a c b : BidirectionalFragment M₀ h_mcs₀)
+    (h_R_ac : CanonicalR a.world c.world)
+    (h_not_R_ca : ¬CanonicalR c.world a.world)
+    (h_c_ne_a : c.world ≠ a.world)
+    (h_R_cb : CanonicalR c.world b.world)
+    (h_not_R_bc : ¬CanonicalR b.world c.world)
+    (h_c_ne_b : c.world ≠ b.world) :
+    ∃ q, toAntisymmetrization (· ≤ ·) a < q ∧ q < toAntisymmetrization (· ≤ ·) b := by
+  use c.toQuotient
+  constructor
+  · -- [a] < [c]
+    constructor
+    · exact Or.inr h_R_ac
+    · intro h_le
+      rcases h_le with rfl | h_R
+      · exact h_not_R_ca h_R_ac
+      · exact h_not_R_ca h_R
+  · -- [c] < [b]
+    constructor
+    · exact Or.inr h_R_cb
+    · intro h_le
+      rcases h_le with h_eq | h_R
+      · exact h_c_ne_b (BidirectionalFragment.ext (congrArg _ h_eq) ▸ rfl)
+      · exact h_not_R_bc h_R
+
+/-! ## Part 7: DenselyOrdered Instance -/
 
 noncomputable instance instDenselyOrderedBidirectionalQuotient :
     DenselyOrdered (BidirectionalQuotient M₀ h_mcs₀) where
@@ -225,115 +254,101 @@ noncomputable instance instDenselyOrderedBidirectionalQuotient :
           intro h_eq; exact h_not_R_ba (h_eq ▸ h_R_ab)
         -- Case split: GContent(b) ⊆ b or not
         by_cases h_R_bb : GContent b.world ⊆ b.world
-        · -- Case B: GContent(b) ⊆ b (b is "reflexive")
-          -- Goldblatt seed: GContent(a) ∪ HContent(b) is consistent
-          have h_seed_cons := goldblatt_seed_consistent a b h_R_ab h_R_bb
-          -- Extend to MCS via Lindenbaum
-          obtain ⟨c_world, h_extends, h_c_mcs⟩ :=
-            set_lindenbaum (GContent a.world ∪ HContent b.world) h_seed_cons
-          -- c has GContent(a) and HContent(b)
-          have h_GCa_c : GContent a.world ⊆ c_world :=
-            Set.Subset.trans Set.subset_union_left h_extends
-          have h_HCb_c : HContent b.world ⊆ c_world :=
-            Set.Subset.trans Set.subset_union_right h_extends
-          -- CanonicalR a c (GContent(a) ⊆ c)
-          have h_R_ac : CanonicalR a.world c_world := h_GCa_c
-          -- CanonicalR c b: from HContent(b) ⊆ c, by duality GContent(c) ⊆ b
-          have h_R_cb : CanonicalR c_world b.world :=
-            HContent_subset_implies_GContent_reverse b.world c_world b.is_mcs h_c_mcs h_HCb_c
-          -- c is in the bidirectional fragment (reachable from a)
-          -- Need to build BidirectionalFragment element
-          -- a is in fragment, CanonicalR a c gives c in fragment
-          let c_frag := a.forward_closed c_world h_c_mcs h_R_ac
-          -- Now show a < c < b in the quotient
-          -- c ≠ a: exists formula in c \ a or a \ c
-          -- c ≠ b: exists formula in c \ b or b \ c
-          -- From NOT(CanonicalR b a): exists α with G(α) ∈ b, α ∉ a
+        · -- Case B: GContent(b) ⊆ b (CanonicalR b b)
+          -- Use two-step forward_F with σ = G(α) ∧ α where G(α) ∈ b, α ∈ b, α ∉ a
           rw [Set.not_subset] at h_not_R_ba
           obtain ⟨α, h_Gα_b, h_α_not_a⟩ := h_not_R_ba
-          -- α ∈ GContent(b) ⊆ b (by h_R_bb). So α ∈ b.
           have h_α_in_b : α ∈ b.world := h_R_bb h_Gα_b
-          -- α ∈ c: from G(α) ∈ b, by temp_4 G(G(α)) ∈ b, so G(α) ∈ GContent(b).
-          -- GContent(b) ⊆ b (h_R_bb). G(α) ∈ b. Then α ∈ GContent(b) ⊆ c? No.
-          -- α ∈ GContent(b) means G(α) ∈ b. GContent(b) ⊆ b means α ∈ b.
-          -- We need α ∈ c. CanonicalR c b means GContent(c) ⊆ b. Doesn't give α ∈ c.
-          -- CanonicalR a c means GContent(a) ⊆ c. If G(α) ∈ a: α ∈ GContent(a) ⊆ c.
-          -- If G(α) ∉ a: α might not be in c.
-          -- For NOT(CanonicalR c a): Need something in GContent(c) \ a.
-          -- GContent(c) ⊆ b (from CanonicalR c b). Elements of GContent(c) are in b.
-          -- If GContent(c) ⊆ a: then CanonicalR c a. Combined with CanonicalR a c: a ~ c.
-          -- So if NOT(CanonicalR c a): [a] < [c].
-          -- For NOT(CanonicalR b c): Need something in GContent(b) \ c.
-          -- GContent(b) ⊆ b (h_R_bb). If GContent(b) ⊆ c: CanonicalR b c.
-          -- Combined with CanonicalR c b: b ~ c.
-          -- So if NOT(CanonicalR b c): [c] < [b].
-          --
-          -- Key: c was built to satisfy GContent(a) ⊆ c AND HContent(b) ⊆ c.
-          -- There's no guarantee c differs from a or b in the quotient.
-          -- If c = a (as worlds): then GContent(a) ⊆ a and HContent(b) ⊆ a.
-          --   HContent(b) ⊆ a and CanonicalR a b: by duality GContent(a) ⊆ b (yes) and HContent(b) ⊆ a.
-          --   Then GContent_subset_implies_HContent_reverse on a and a: HContent(a) ⊆ a... always true for MCS? No.
-          -- If c = b (as worlds): GContent(a) ⊆ b (yes from CanonicalR a b) and HContent(b) ⊆ b (h_Rpast_bb).
-          --   So c could be b.
-          -- Need to show c ≠ a and c ≠ b.
-          -- From h_neq_ab: a ≠ b. If c = a AND c = b: a = b. Contradiction.
-          -- But c could equal a or b individually.
-          --
-          -- This approach doesn't easily give c ≠ a and c ≠ b.
-          -- I need to add a distinguishing formula to the seed.
-          --
-          -- Enriched seed: GContent(a) ∪ HContent(b) ∪ {neg(α)} where α ∈ b \ a.
-          -- neg(α) ∉ b (α ∈ b). So c has neg(α), hence c ≠ b.
-          -- neg(α) ∈ a (α ∉ a). So adding it doesn't break consistency if the
-          -- original seed is a subset of b... but neg(α) ∉ b, so the enriched
-          -- seed is NOT a subset of b. Need to prove consistency differently.
-          --
-          -- Enriched seed consistency: GContent(a) ∪ HContent(b) ∪ {neg(α)}.
-          -- GContent(a) ∪ HContent(b) ⊆ b (shown). neg(α) ∉ b. So the enriched
-          -- seed is not a subset of b.
-          -- But: GContent(a) ∪ {neg(α)} ⊆ a? GContent(a) ⊆ a? Only with T-axiom.
-          -- So enriched seed might not be subset of any single MCS.
-          --
-          -- Need direct consistency proof. Use forward_temporal_witness_seed approach:
-          -- Need F(neg(α)) ∈ a? neg(α) ∈ a. F(neg(α)) = neg(G(neg(neg(α)))). Hmm.
-          -- Actually: α ∉ a means neg(α) ∈ a. α ∈ b and CanonicalR a b.
-          -- By canonical_F_of_mem_successor: F(α) ∈ a (α ∈ b, α ∉ a, CanonicalR a b).
-          -- F(α) = neg(G(neg(α))), so G(neg(α)) ∉ a.
-          -- This means neg(α) ∉ GContent(a).
-          -- So adding neg(α) to GContent(a) doesn't create α/neg(α) conflict.
-          -- And HContent(b): does neg(α) conflict with HContent(b)?
-          -- neg(α) and H(phi) for phi ∈ HContent(b)... no direct conflict.
-          -- The enriched seed GContent(a) ∪ HContent(b) ∪ {neg(α)}: is it consistent?
-          -- It's a subset of... a ∪ b extended somehow? Not directly.
-          -- Use the fact that GContent(a) ∪ HContent(b) ⊆ b and b is consistent.
-          -- Adding neg(α) to a consistent-subset-of-b: neg(α) ∉ b.
-          -- If b ∪ {neg(α)} is inconsistent: b ⊢ α (which is true since α ∈ b).
-          -- So b ∪ {neg(α)} IS inconsistent! Adding neg(α) to anything that derives α breaks consistency.
-          -- Does GContent(a) ∪ HContent(b) derive α? If GContent(a) ∪ HContent(b) ⊆ b and α ∈ b:
-          -- The derivation could use formulas outside the seed.
-          -- But the seed itself might not derive α. The question is whether
-          -- some finite L ⊆ GContent(a) ∪ HContent(b) with L, neg(α) ⊢ ⊥, i.e., L ⊢ α.
-          --
-          -- If no such L exists: the enriched seed is consistent. GREAT.
-          -- If such L exists: the enriched seed is inconsistent. BAD.
-          --
-          -- Can we guarantee no such L exists? From the Goldblatt seed being a subset of b,
-          -- any L ⊆ GContent(a) ∪ HContent(b) with L ⊢ α would give α derivable from
-          -- elements of b. Since b is consistent and contains all of L and also neg(α)... wait.
-          -- b contains L (since L ⊆ seed ⊆ b) and b contains α. So b ⊢ α trivially.
-          -- But that doesn't mean L ⊢ α (L might not contain α).
-          --
-          -- The question is syntactic: does L ⊢ α for some finite L ⊆ seed?
-          -- α = the formula we extracted. α could be ANY formula in GContent(b) \ a.
-          -- For a SPECIFIC choice of α, maybe L doesn't derive it.
-          -- But in general, we can't guarantee this.
-          --
-          -- THIS APPROACH IS STUCK. Let me try a completely different method.
-          --
-          -- NEW APPROACH: Don't use Goldblatt seed at all. Instead use the
-          -- two-step forward_F with linearity, and prove the intermediate
-          -- must be strictly between using a careful analysis.
-          sorry
+          -- σ = G(α) ∧ α
+          let σ := Formula.and (Formula.all_future α) α
+          -- σ ∈ b
+          have h_σ_in_b : σ ∈ b.world :=
+            set_mcs_conjunction_intro b.is_mcs h_Gα_b h_α_in_b
+          -- F(σ) ∈ a (F-introduction from σ ∈ b, CanonicalR a b)
+          have h_F_σ : σ.some_future ∈ a.world :=
+            canonical_F_of_mem_successor a.world b.world a.is_mcs b.is_mcs h_R_ab σ h_σ_in_b
+          -- By DN: F(F(σ)) ∈ a
+          have h_FF_σ : σ.some_future.some_future ∈ a.world :=
+            density_gives_FF a.world a.is_mcs σ h_F_σ
+          -- Step 1: c with CanonicalR a c and F(σ) ∈ c
+          obtain ⟨c, h_R_ac, h_Fσ_c⟩ := forward_F_stays_in_fragment a σ.some_future h_FF_σ
+          -- Step 2: d with CanonicalR c d and σ ∈ d
+          obtain ⟨d, h_R_cd, h_σ_d⟩ := forward_F_stays_in_fragment c σ h_Fσ_c
+          -- σ ∈ d: G(α) ∈ d and α ∈ d
+          have h_Gα_d := (set_mcs_conjunction_elim d.is_mcs h_σ_d).1
+          have h_α_d := (set_mcs_conjunction_elim d.is_mcs h_σ_d).2
+          -- CanonicalR a d by transitivity
+          have h_R_ad : CanonicalR a.world d.world :=
+            canonicalR_transitive a.world c.world d.world a.is_mcs h_R_ac h_R_cd
+          -- NOT(CanonicalR d a): G(α) ∈ d, temp_4 → G(G(α)) ∈ d → G(α) ∈ GContent(d)
+          -- If CanonicalR d a: α ∈ GContent(d) ⊆ a. But α ∉ a!
+          have h_not_R_da : ¬CanonicalR d.world a.world := by
+            intro h_R
+            have h_T4 : [] ⊢ (Formula.all_future α).imp (Formula.all_future (Formula.all_future α)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 α)
+            have h_GGα_d := set_mcs_implication_property d.is_mcs (theorem_in_mcs d.is_mcs h_T4) h_Gα_d
+            -- α ∈ GContent(d) ⊆ a
+            have h_α_a : α ∈ a.world := h_R h_GGα_d
+            exact h_α_not_a h_α_a
+          -- By linearity: d comparable with b
+          rcases bidirectional_totally_ordered d b with h_R_db | h_R_bd | h_eq_db
+          · -- CanonicalR d b: a < d ≤ b
+            -- Return d as intermediate
+            use d.toQuotient
+            constructor
+            · -- [a] < [d]
+              constructor
+              · exact Or.inr h_R_ad
+              · intro h_le; rcases h_le with rfl | h_R
+                · exact h_not_R_da h_R_ad
+                · exact h_not_R_da h_R
+            · -- [d] < [b]: need NOT(b ≤ d)
+              -- If CanonicalR b d: GContent(b) ⊆ d, combined with CanonicalR d b:
+              -- d equiv b, and a < d means a < b which we have.
+              -- But also [d] = [b] means we need the d ≠ b part.
+              -- d.world ≠ b.world: if d.world = b.world then d = b (ext).
+              -- Then CanonicalR d b = CanonicalR b b, which holds (Case B).
+              -- And CanonicalR b d = CanonicalR b b, which holds. So d equiv b.
+              -- But α ∈ d and α ∉ a: consistent. Need to check.
+              -- Actually if d.world = b.world: d = b, [d] = [b]. No strict [d] < [b].
+              -- In this sub-case, use c instead (fall through below).
+              -- For now: check if b ≤ d leads to contradiction or not.
+              constructor
+              · exact Or.inr h_R_db
+              · intro h_le; rcases h_le with rfl | h_R
+                · -- d = b: we need an intermediate. But d = b means [d] = [b].
+                  -- NOT(CanonicalR d a) still holds. a < d = b. No intermediate from d.
+                  -- However, this branch (rfl) means d = b the LEAN TERM, not d.world = b.world.
+                  -- Since we matched on equality of fragment elements, d = b definitionally.
+                  -- Then h_R_ad = h_R_ab. And we need to find intermediate.
+                  -- This case should not happen because we're in the CanonicalR d b branch.
+                  -- If d = b, then CanonicalR d b = CanonicalR b b which holds in Case B.
+                  -- But then NOT(b ≤ d) fails since b ≤ b trivially.
+                  -- We're supposed to show NOT(b ≤ d), and this rfl case means b = d, so b ≤ d.
+                  -- This means the whole [d] < [b] goal fails. Contradiction.
+                  -- This means d = b as fragment elements AND CanonicalR d b.
+                  -- But this is fine: d ≤ b is trivial. The issue is that [d] = [b] means no strict.
+                  -- Wait: `rfl` here means d = b as terms. This would mean d.toQuotient = b.toQuotient.
+                  -- So we need [a] < [d] ∧ [d] < [b] where [d] = [b]. But [d] < [b] means [d] ≠ [b],
+                  -- contradiction. So this rfl case is impossible in a valid proof?
+                  -- Actually, rfl means d = b : BidirectionalFragment. Then h_R_db : CanonicalR b.world b.world.
+                  -- This holds in Case B. And the goal is ¬(b ≤ d), i.e., ¬(b ≤ b), which is false.
+                  -- So this branch is where the proof breaks. We need to handle d = b separately.
+                  -- Let me use c instead.
+                  -- For now, we'll handle this in a refactored version.
+                  exact h_not_R_da h_R_ad
+                · -- CanonicalR b d: need contradiction
+                  -- If CanonicalR d b AND CanonicalR b d: d equiv b.
+                  -- Use c as intermediate instead.
+                  -- For the current branch, this means [d] = [b].
+                  -- We claimed [d] < [b], which is false. So this proof path fails.
+                  -- However, we can try to show NOT(CanonicalR b d).
+                  -- In Case B, this is hard. Let's skip for now and refactor.
+                  sorry
+          · -- CanonicalR b d: b ≤ d. Use c as intermediate.
+            sorry
+          · -- d.world = b.world: d = b. Use c as intermediate.
+            sorry
         · -- Case A: GContent(b) ⊄ b. Exists ψ with G(ψ) ∈ b, ψ ∉ b.
           rw [Set.not_subset] at h_R_bb
           obtain ⟨ψ, h_Gψ_b, h_ψ_not_b⟩ := h_R_bb
@@ -351,12 +366,12 @@ noncomputable instance instDenselyOrderedBidirectionalQuotient :
           -- By DN: F(F(σ)) ∈ a
           have h_FF_σ : σ.some_future.some_future ∈ a.world :=
             density_gives_FF a.world a.is_mcs σ h_F_σ
-          -- Get c with CanonicalR a c and F(σ) ∈ c
-          obtain ⟨c, h_R_ac, h_Fσ_c⟩ := forward_F_stays_in_fragment a σ h_FF_σ
+          -- Step 1: c with CanonicalR a c and F(σ) ∈ c
+          obtain ⟨c, h_R_ac, h_Fσ_c⟩ := forward_F_stays_in_fragment a σ.some_future h_FF_σ
           -- c.world ≠ b.world (F(σ) ∈ c, F(σ) ∉ b)
           have h_c_ne_b : c.world ≠ b.world := by
             intro h_eq; rw [h_eq] at h_Fσ_c; exact h_F_σ_not_b h_Fσ_c
-          -- Get d with CanonicalR c d and σ ∈ d
+          -- Step 2: d with CanonicalR c d and σ ∈ d
           obtain ⟨d, h_R_cd, h_σ_d⟩ := forward_F_stays_in_fragment c σ h_Fσ_c
           -- σ ∈ d: G(ψ) ∈ d and ¬ψ ∈ d
           have h_Gψ_d := (set_mcs_conjunction_elim d.is_mcs h_σ_d).1
@@ -364,212 +379,322 @@ noncomputable instance instDenselyOrderedBidirectionalQuotient :
           -- CanonicalR a d by transitivity
           have h_R_ad : CanonicalR a.world d.world :=
             canonicalR_transitive a.world c.world d.world a.is_mcs h_R_ac h_R_cd
-          -- NOT(CanonicalR d a): ψ ∈ GContent(d) (from G(ψ) ∈ d), ψ ∉ a
-          -- Wait: ψ ∉ a needs justification. ψ might be in a.
-          -- We know G(ψ) ∉ a (h_Gψ_not_a). But ψ might be in a.
-          -- If CanonicalR d a: GContent(d) ⊆ a. ψ ∈ GContent(d) means G(ψ) ∈ d.
-          -- GContent(d) ⊆ a means: for all phi, G(phi) ∈ d → phi ∈ a.
-          -- So ψ ∈ a. That's possible (ψ could be in a).
-          -- BUT: G(ψ) ∈ d and CanonicalR d a would give ψ ∈ a.
-          -- And from ψ ∈ a and CanonicalR a c and CanonicalR c d, by temp_4:
-          -- No, ψ ∈ a doesn't propagate forward without G(ψ) ∈ a.
-          -- Actually: CanonicalR d a means GContent(d) ⊆ a. G(ψ) ∈ d, so
-          -- ψ ∈ GContent(d) ⊆ a. ψ ∈ a.
-          -- Now by temp_4: G(ψ) → G(G(ψ)). G(ψ) ∈ d → G(G(ψ)) ∈ d → G(ψ) ∈ GContent(d) ⊆ a.
-          -- G(ψ) ∈ a. But h_Gψ_not_a says G(ψ) ∉ a. CONTRADICTION!
+          -- NOT(CanonicalR d a): G(ψ) ∈ d, by temp_4 G(G(ψ)) ∈ d,
+          -- so G(ψ) ∈ GContent(d). If CanonicalR d a: G(ψ) ∈ a. Contradiction!
           have h_not_R_da : ¬CanonicalR d.world a.world := by
             intro h_R
-            -- G(ψ) ∈ d, temp_4 gives G(G(ψ)) ∈ d, so G(ψ) ∈ GContent(d)
             have h_T4 : [] ⊢ (Formula.all_future ψ).imp (Formula.all_future (Formula.all_future ψ)) :=
               DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
             have h_GGψ_d := set_mcs_implication_property d.is_mcs (theorem_in_mcs d.is_mcs h_T4) h_Gψ_d
-            -- G(ψ) ∈ GContent(d) ⊆ a
             have h_Gψ_a : Formula.all_future ψ ∈ a.world := h_R h_GGψ_d
             exact h_Gψ_not_a h_Gψ_a
-          -- NOT(CanonicalR b d): if CanonicalR b d, G(ψ) ∈ b gives ψ ∈ GContent(b) ⊆ d.
-          -- Wait: CanonicalR b d means GContent(b) ⊆ d. G(ψ) ∈ b, so ψ ∈ GContent(b) ⊆ d.
-          -- ψ ∈ d. But ¬ψ ∈ d. Contradiction!
+          -- NOT(CanonicalR b d): If CanonicalR b d, ψ ∈ GContent(b) ⊆ d, but ¬ψ ∈ d.
           have h_not_R_bd : ¬CanonicalR b.world d.world := by
             intro h_R
             have h_ψ_d : ψ ∈ d.world := h_R h_Gψ_b
             exact set_consistent_not_both d.is_mcs.1 ψ h_ψ_d h_negψ_d
+          -- CanonicalR c b: CanonicalR c d and if d.world = b.world → CanonicalR c b;
+          -- otherwise CanonicalR d b from linearity gives CanonicalR c b by transitivity.
           -- By linearity: d comparable with b
-          have h_comp := bidirectional_totally_ordered d b
-          -- NOT(CanonicalR b d) and d.world ≠ b.world possibilities:
-          -- From h_comp: CanonicalR d b ∨ CanonicalR b d ∨ d.world = b.world
-          -- CanonicalR b d: ruled out (h_not_R_bd)
-          -- d.world = b.world: if so, then CanonicalR b d = CanonicalR b b.
-          --   We're in Case A where GContent(b) ⊄ b, so CanonicalR b b fails.
-          --   Actually no: d.world = b.world means d = b as fragment elements.
-          --   CanonicalR b d would be CanonicalR b b = GContent(b) ⊆ b.
-          --   In Case A: GContent(b) ⊄ b. So CanonicalR b b fails.
-          --   So CanonicalR b d fails. Consistent with h_not_R_bd.
-          --   But d.world = b.world also means ¬ψ ∈ b (from d).
-          --   And ψ ∉ b (h_ψ_not_b). neg(ψ) ∈ b by MCS? ψ ∉ b → neg(ψ) ∈ b.
-          --   And ¬ψ ∈ d = b. ¬ψ = Formula.neg ψ. So Formula.neg ψ ∈ b. Fine.
-          --   But also: σ ∈ d, and d = b. σ = G(ψ) ∧ ¬ψ ∈ b.
-          --   G(ψ) ∈ b (yes) and ¬ψ ∈ b (yes, ψ ∉ b). So σ ∈ b. Fine.
-          --   F(σ) ∈ c. c ≠ b. CanonicalR c d = CanonicalR c b.
-          --   So CanonicalR a c and CanonicalR c b.
-          --   a < c (NOT CanonicalR c a needs separate proof).
-          --   c < b (c ≠ b, and need NOT CanonicalR b c).
-          --   For c < b: NOT(CanonicalR b c)?
-          --   If CanonicalR b c: GContent(b) ⊆ c. ψ ∈ GContent(b) → ψ ∈ c.
-          --   Is ¬ψ ∈ c? Not guaranteed (c only has F(σ) and GContent(a)).
-          --   Hmm, can't directly show NOT(CanonicalR b c) when d = b.
-          --
-          -- Actually, let me handle d ≠ b first (the easy case), then d = b.
-          rcases h_comp with h_R_db | h_R_bd_again | h_eq_db
-          · -- CanonicalR d b: a < d < b
-            -- d.world ≠ a.world (if equal, CanonicalR d a since CanonicalR a d... wait, not directly)
-            -- NOT(CanonicalR d a) shown above. CanonicalR a d shown.
-            -- So a ≤ d and NOT d ≤ a. Hence [a] < [d].
-            -- CanonicalR d b. NOT(CanonicalR b d) shown.
-            -- d ≠ b: if d.world = b.world then CanonicalR b d = CanonicalR b b.
-            --   In Case A: CanonicalR b b fails. Contradiction with d.world = b.world
-            --   giving CanonicalR d b = CanonicalR b b... wait no.
-            --   d.world = b.world means d = b as fragment. CanonicalR d b = CanonicalR b b
-            --   which fails in Case A. So CanonicalR d b fails. But we assumed h_R_db!
-            --   Contradiction. So d.world ≠ b.world in this branch.
-            -- So d ≠ b (fragment) and d ≤ b.
-            -- [d] ≤ [b] and NOT [b] ≤ [d]. So [d] < [b].
-            -- Return d as the intermediate point.
+          rcases bidirectional_totally_ordered d b with h_R_db | h_R_bd_again | h_eq_db
+          · -- CanonicalR d b: return d as intermediate (a < d < b)
             use d.toQuotient
             constructor
             · -- [a] < [d]
-              show toAntisymmetrization (· ≤ ·) a < toAntisymmetrization (· ≤ ·) d
               constructor
-              · show a ≤ d
-                exact Or.inr h_R_ad
-              · show ¬(d ≤ a)
-                intro h_le
-                rcases h_le with rfl | h_R
-                · -- d = a: CanonicalR a d is CanonicalR a a. And NOT CanonicalR d a.
-                  -- But d = a means CanonicalR d a = CanonicalR a a. So we'd need
-                  -- NOT CanonicalR a a, but also CanonicalR a d = CanonicalR a a holds.
-                  -- This means CanonicalR a a AND NOT CanonicalR a a. Contradiction.
-                  exact h_not_R_da h_R_ad
+              · exact Or.inr h_R_ad
+              · intro h_le; rcases h_le with rfl | h_R
+                · exact h_not_R_da h_R_ad
                 · exact h_not_R_da h_R
             · -- [d] < [b]
-              show toAntisymmetrization (· ≤ ·) d < toAntisymmetrization (· ≤ ·) b
               constructor
-              · show d ≤ b
-                exact Or.inr h_R_db
-              · show ¬(b ≤ d)
-                intro h_le
-                rcases h_le with rfl | h_R
+              · exact Or.inr h_R_db
+              · intro h_le; rcases h_le with rfl | h_R
                 · exact h_not_R_da h_R_ad
                 · exact h_not_R_bd h_R
           · -- CanonicalR b d: contradicts h_not_R_bd
             exact absurd h_R_bd_again h_not_R_bd
-          · -- d.world = b.world
-            -- d = b as fragment elements
+          · -- d.world = b.world: use c as intermediate (a < c < b)
             have h_d_eq_b : d = b := BidirectionalFragment.ext h_eq_db
-            -- Then CanonicalR c d = CanonicalR c b
             rw [h_d_eq_b] at h_R_cd
-            -- c ≠ b (h_c_ne_b). CanonicalR a c. CanonicalR c b.
-            -- Need: [a] < [c] < [b]
-            -- For [a] < [c]: need NOT(CanonicalR c a).
-            -- c has F(σ) = F(G(ψ) ∧ ¬ψ). GContent(a) ⊆ c.
+            -- CanonicalR c b (from CanonicalR c d with d = b)
+            -- NOT(CanonicalR c a): If CanonicalR c a, GContent(c) ⊆ a.
+            -- From CanonicalR c b: GContent(c) ⊆ b.
+            -- If CanonicalR b c: G(ψ) ∈ b → by temp_4 G(G(ψ)) ∈ b → G(ψ) ∈ GContent(b) ⊆ c
+            -- → G(ψ) ∈ c. And by temp_4 on c: G(G(ψ)) ∈ c → G(ψ) ∈ GContent(c) ⊆ a.
+            -- G(ψ) ∈ a. Contradiction with h_Gψ_not_a.
+            -- So if CanonicalR c a AND CanonicalR c b:
+            -- Need G(ψ) ∈ c. G(ψ) ∉ c follows from: if G(ψ) ∈ c then
+            -- ψ ∈ GContent(c) ⊆ b. ψ ∉ b. Contradiction!
+            -- So G(ψ) ∉ c. Can we still show NOT(CanonicalR c a)?
+            -- Use: if CanonicalR c a, GContent(c) ⊆ a. From CanonicalR a c
+            -- (GContent(a) ⊆ c): GContent(a) ⊆ GContent(c) (by temp_4).
+            -- GContent(a) ⊆ GContent(c) ⊆ a. GContent(a) ⊆ a. CanonicalR a a.
+            -- F(σ) ∈ c. σ.some_future ∈ c. By temp_a: G(P(σ.some_future)) ∈ c.
+            -- P(σ.some_future) ∈ GContent(c) ⊆ a. Not contradictory.
+            -- Different approach: from CanonicalR c a and CanonicalR a c (equiv):
+            -- c equiv a. Then CanonicalR c b means CanonicalR a b (through equiv).
+            -- This is just our starting assumption. [c] = [a] < [b]. No intermediate.
+            -- BUT: we also know G(ψ) ∉ c (since G(ψ) ∈ c → ψ ∈ GContent(c) ⊆ b,
+            -- contradiction with ψ ∉ b).
+            -- And: if CanonicalR c a: GContent(c) ⊆ a. F(σ).some_future ∈ c (h_Fσ_c
+            -- is actually σ.some_future ∈ c, i.e., F(σ) ∈ c). Hmm wait, let me check
+            -- what h_Fσ_c actually is.
+            -- h_Fσ_c comes from forward_F_stays_in_fragment a σ.some_future h_FF_σ
+            -- which gives σ.some_future ∈ c, i.e., F(σ) ∈ c.
+            -- So c has F(σ) = F(G(ψ) ∧ ¬ψ) ∈ c.
+            -- From temp_a on F(σ): G(P(F(σ))) ∈ c. P(F(σ)) ∈ GContent(c).
+            -- If CanonicalR c a: P(F(σ)) ∈ a.
+            -- From temp_a on F(σ) in a (h_F_σ): G(P(F(σ))) ∈ a.
+            -- P(F(σ)) ∈ GContent(a) ⊆ c. Not contradictory.
+            -- Let me try a completely different approach for NOT(CanonicalR c a).
+            -- Key observation: G(ψ) ∉ c (shown above). And G(ψ) ∈ b.
+            -- CanonicalR c b: GContent(c) ⊆ b. This is fine.
+            -- CanonicalR b c would give GContent(b) ⊆ c. G(ψ) ∈ GContent(b) (by temp_4
+            -- on G(ψ) ∈ b: G(G(ψ)) ∈ b so G(ψ) ∈ GContent(b)). Then G(ψ) ∈ c.
+            -- But G(ψ) ∉ c! So NOT(CanonicalR b c).
+            have h_Gψ_not_c : Formula.all_future ψ ∉ c.world := by
+              intro h_Gψ_c
+              -- G(ψ) ∈ c → ψ ∈ GContent(c) ⊆ b → ψ ∈ b. Contradiction.
+              exact h_ψ_not_b (h_R_cd h_Gψ_c)
+            have h_not_R_bc : ¬CanonicalR b.world c.world := by
+              intro h_R
+              have h_T4 : [] ⊢ (Formula.all_future ψ).imp (Formula.all_future (Formula.all_future ψ)) :=
+                DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+              have h_GGψ_b := set_mcs_implication_property b.is_mcs (theorem_in_mcs b.is_mcs h_T4) h_Gψ_b
+              exact h_Gψ_not_c (h_R h_GGψ_b)
+            -- NOT(CanonicalR c a): If CanonicalR c a, combined with CanonicalR c b:
+            -- GContent(c) ⊆ a AND GContent(c) ⊆ b.
+            -- From CanonicalR a c and CanonicalR c a: c equiv a.
+            -- CanonicalR c b: then CanonicalR a b (through c equiv a). Fine.
+            -- Now: c.world ≠ a.world? Maybe, maybe not.
+            -- Alternative argument for NOT(CanonicalR c a):
             -- If CanonicalR c a: GContent(c) ⊆ a.
-            -- From temp_a: F(σ) ∈ c → G(P(F(σ))) ∈ c. P(F(σ)) ∈ GContent(c) ⊆ a.
-            -- P(F(σ)) ∈ a. This is not contradictory.
-            -- We need another argument for NOT(CanonicalR c a).
-            -- Key: CanonicalR c b (shown). If also CanonicalR c a:
-            --   GContent(c) ⊆ a AND GContent(c) ⊆ b.
-            --   From CanonicalR a c (GContent(a) ⊆ c) and CanonicalR c a (GContent(c) ⊆ a):
-            --   c ~ a in quotient. [c] = [a]. Then [a] < [b] but no intermediate via c.
-            -- I need to show [c] ≠ [a], i.e., NOT(CanonicalR c a).
-            -- Use the same temp_4 trick as for d:
-            -- F(σ) ∈ c. From F(σ), get d' with CanonicalR c d' and σ ∈ d'.
-            -- We already did this: d' = d = b (in this sub-case).
-            -- σ ∈ d = b. G(ψ) ∈ b (yes). ¬ψ ∈ b (yes).
-            -- This doesn't help for c vs a.
+            -- CanonicalR c b: GContent(c) ⊆ b (h_R_cd since d = b).
+            -- F(σ) ∈ c (h_Fσ_c). From F(σ) we get witnesses.
+            -- Claim: from CanonicalR c a and CanonicalR a c: [c] = [a].
+            -- And from CanonicalR c b and NOT(CanonicalR b c): [c] < [b].
+            -- So [a] = [c] < [b]. This is a < b, our assumption. No new intermediate.
+            -- But we also have h_c_ne_b: c ≠ b (as worlds).
+            -- So [c] < [b] with c.world ≠ b.world. [c] ≠ [b].
+            -- And [c] = [a]? If so: [a] < [b] with no intermediate from c.
+            -- We need NOT([c] = [a]), i.e., NOT(CanonicalR c a).
+            -- From the fragment_intermediate_from_FF on a with σ.some_future:
+            -- The intermediate c was built by forward_F on a.
+            -- c extends {σ.some_future} ∪ GContent(a) (forward seed).
+            -- If CanonicalR c a: GContent(c) ⊆ a.
+            -- From GContent(a) ⊆ c and temp_4: GContent(a) ⊆ GContent(c) ⊆ a.
+            -- So CanonicalR a a. And CanonicalR c a.
+            -- From CanonicalR a a and CanonicalR a b: by temp_4 the GContent propagates.
+            -- We have G(ψ) ∈ b and G(ψ) ∉ a.
+            -- If CanonicalR a a: GContent(a) ⊆ a.
+            -- G(ψ) ∉ a. So ψ ∉ GContent(a) (since ψ ∈ GContent(a) means G(ψ) ∈ a).
+            -- Wait, that's the wrong direction. ψ ∈ GContent(a) means G(ψ) ∈ a.
+            -- G(ψ) ∉ a means ψ ∉ GContent(a)... no. GContent(a) = {φ | G(φ) ∈ a}.
+            -- So ψ ∈ GContent(a) iff G(ψ) ∈ a. G(ψ) ∉ a iff ψ ∉ GContent(a). OK.
+            -- But we need the CONTRADICTION, not just observations.
+            -- From CanonicalR a a: GContent(a) ⊆ a. For each φ with G(φ) ∈ a: φ ∈ a.
+            -- G(ψ) ∉ a. So ψ ∉ GContent(a). But ψ might still be in a.
+            -- In fact ψ might be in a (ψ is just some formula with G(ψ) ∈ b, ψ ∉ b).
+            -- Let me try: from F(σ) ∈ c and CanonicalR c a: F(σ) ∈ c. Is F(σ) ∈ a?
+            -- F(σ) ∈ a is h_F_σ. Yes, F(σ) ∈ a. So having F(σ) ∈ c doesn't contradict
+            -- c equiv a.
+            -- I need to show c has something that a doesn't. The forward seed gives
+            -- σ.some_future ∈ c (F(σ) ∈ c). F(σ) ∈ a too. So this doesn't help.
+            -- But the Lindenbaum extension might add more to c than just the seed.
+            -- We can't control what's added.
+            -- STUCK on NOT(CanonicalR c a) in the d = b sub-case of Case A.
+            -- Let me try the ALTERNATIVE approach: use Lindenbaum directly with
+            -- seed {σ} ∪ GContent(a). Then σ ∈ c directly.
+            -- From σ ∈ c: G(ψ) ∈ c. But we showed G(ψ) ∉ c. CONTRADICTION!
+            -- Wait: G(ψ) ∉ c comes from CanonicalR c b. But do we have CanonicalR c b?
+            -- We have it from h_R_cd with d = b. And h_R_cd came from
+            -- forward_F_stays_in_fragment c σ h_Fσ_c. But this was the SECOND step,
+            -- not the first. The c from step 1 does NOT have σ ∈ c, it has F(σ) ∈ c.
+            -- So the approach needs restructuring.
             --
-            -- Let me try: c has GContent(a) (from seed). And possibly more.
-            -- What if I show GContent(b) ⊄ c?
-            -- ψ ∈ GContent(b) (G(ψ) ∈ b). If ψ ∈ c: then ψ ∈ c but ψ ∉ b?
-            -- Wait, ψ ∉ b. And ψ might or might not be in c.
-            -- CanonicalR c b means GContent(c) ⊆ b. If G(ψ) ∈ c: ψ ∈ GContent(c) ⊆ b.
-            -- But ψ ∉ b! So G(ψ) ∉ c.
-            -- G(ψ) ∉ c. And G(ψ) ∈ b. So G(ψ) ∈ b \ c. c ≠ b. Consistent with h_c_ne_b.
-            --
-            -- For NOT(CanonicalR c a): If CanonicalR c a, GContent(c) ⊆ a.
-            -- Combined with CanonicalR c b: GContent(c) ⊆ a ∩ b.
-            -- And CanonicalR a c: GContent(a) ⊆ c.
-            -- temp_4 gives GContent(a) ⊆ GContent(c).
-            -- So GContent(a) ⊆ GContent(c) ⊆ a. GContent(a) ⊆ a. GContent(c) ⊆ a.
-            --
-            -- We need to derive a contradiction. What is in GContent(c) that's NOT in a?
-            -- From F(σ) ∈ c and temp_a: G(P(F(σ))) ∈ c. P(F(σ)) ∈ GContent(c) ⊆ a.
-            -- P(F(σ)) ∈ a. No contradiction.
-            --
-            -- From F(σ) ∈ c: F(σ) = neg(G(neg(σ))). So G(neg(σ)) ∉ c.
-            -- neg(σ) = neg(G(ψ) ∧ ¬ψ). Hmm.
-            --
-            -- I'm stuck on showing NOT(CanonicalR c a) in the d = b sub-case.
-            -- This is a genuine difficulty of the approach.
-            -- Let me try using the enriched compound formula approach.
-            -- Instead of just F(F(σ)), use F(F(σ ∧ neg(something))).
-            --
-            -- ALTERNATIVE: Don't use forward_F for the first step.
-            -- Instead, use Lindenbaum directly on seed {σ} ∪ GContent(a).
+            -- CORRECT APPROACH: Build intermediate via Lindenbaum with seed {σ} ∪ GContent(a).
             -- σ = G(ψ) ∧ ¬ψ. F(σ) ∈ a. By forward_temporal_witness_seed_consistent:
-            -- {σ} ∪ GContent(a) is consistent. Lindenbaum gives c with σ ∈ c and GContent(a) ⊆ c.
-            -- σ ∈ c: G(ψ) ∈ c and ¬ψ ∈ c.
-            -- NOT(CanonicalR c a): G(ψ) ∈ c → ψ ∈ GContent(c). If CanonicalR c a: ψ ∈ a.
-            --   By temp_4: G(G(ψ)) ∈ c, so G(ψ) ∈ GContent(c) ⊆ a. G(ψ) ∈ a.
-            --   But h_Gψ_not_a: G(ψ) ∉ a. Contradiction!
-            -- So NOT(CanonicalR c a)! GREAT!
+            -- {σ} ∪ GContent(a) is consistent.
+            -- Lindenbaum gives c' with σ ∈ c' and GContent(a) ⊆ c'.
+            -- σ ∈ c': G(ψ) ∈ c' and ¬ψ ∈ c'.
+            -- CanonicalR a c' (GContent(a) ⊆ c').
+            -- NOT(CanonicalR c' a): G(ψ) ∈ c' → by temp_4: G(G(ψ)) ∈ c' →
+            --   G(ψ) ∈ GContent(c'). If CanonicalR c' a: G(ψ) ∈ a. Contradiction!
+            -- For CanonicalR c' b: need separate argument. Use linearity.
+            -- NOT(CanonicalR b c'): If CanonicalR b c': GContent(b) ⊆ c'.
+            --   ψ ∈ GContent(b) (G(ψ) ∈ b) → ψ ∈ c'. But ¬ψ ∈ c'. Contradiction!
+            -- By linearity: c' comparable with b. NOT(CanonicalR b c').
+            -- So: CanonicalR c' b ∨ c'.world = b.world.
+            -- c'.world ≠ b.world: σ ∈ c'. σ ∈ b? G(ψ) ∈ b and ψ ∉ b → ¬ψ ∈ b.
+            --   So σ = G(ψ) ∧ ¬ψ ∈ b. Seed ⊆ b. c' could be b.
+            --   If c' = b: NOT(CanonicalR b c') = NOT(CanonicalR b b) = NOT(GContent(b) ⊆ b).
+            --   In Case A: TRUE. So NOT(CanonicalR b c'). And c'.world = b.world means
+            --   CanonicalR c' b = CanonicalR b b fails (Case A). And CanonicalR b c' fails.
+            --   c' NOT comparable with b? But linearity says they are.
+            --   c'.world = b.world → c' = b (ext). CanonicalR c' b = CanonicalR b b fails.
+            --   CanonicalR b c' = CanonicalR b b fails. And c' = b means c'.world = b.world.
+            --   Linearity gives CanonicalR c' b ∨ CanonicalR b c' ∨ c'.world = b.world.
+            --   All three fail! But linearity is a theorem. c' IS in the fragment (from a).
+            --   So the three-way disjunction must hold. If c'.world = b.world: c' = b.
+            --   CanonicalR c' b = CanonicalR b b = GContent(b) ⊆ b. In Case A: FALSE.
+            --   CanonicalR b c' = same. FALSE. c'.world = b.world: TRUE.
+            --   But the disjunction says at least one holds. c'.world = b.world holds.
+            --   So c' = b.
+            --   Then NOT(CanonicalR c' a) gives NOT(CanonicalR b a). Which is our assumption.
+            --   [c'] = [b] and [a] < [c']. Just a < b again. No intermediate.
             --
-            -- NOT(CanonicalR b c): If CanonicalR b c: GContent(b) ⊆ c. ψ ∈ GContent(b) ⊆ c.
-            --   But ¬ψ ∈ c. ψ and ¬ψ in MCS c. Contradiction!
-            -- So NOT(CanonicalR b c)!
+            -- HOWEVER: if c' = b (from Lindenbaum), we have [c'] = [b].
+            -- And [a] < [c'] = [b]. We still need intermediate.
+            -- In this case: the seed {σ} ∪ GContent(a) ⊆ b, and Lindenbaum returns b.
+            -- To prevent this: add F(σ) to the seed. F(σ) ∉ b.
+            -- Need: {σ, F(σ)} ∪ GContent(a) is consistent.
+            -- This is the key claim. Let me prove it.
+            -- σ = G(ψ) ∧ ¬ψ. F(σ) ∈ a. F(F(σ)) ∈ a (DN).
+            -- Claim: {σ, F(σ)} ∪ GContent(a) is consistent.
+            -- Proof: Suppose L ⊆ {σ, F(σ)} ∪ GContent(a) with L ⊢ ⊥.
+            -- L_G = L ∩ GContent(a). L' = L \ GContent(a) ⊆ {σ, F(σ)}.
+            -- Case L' = ∅: L ⊆ GContent(a). By gen temporal K: G(⊥) ∈ a.
+            --   Then G(¬σ) ∈ a (from ⊢ ⊥ → ¬σ). F(σ) = ¬G(¬σ) ∈ a. Contradiction.
+            -- Case σ ∈ L', F(σ) ∉ L': L_G ∪ {σ} ⊢ ⊥. L_G ⊢ ¬σ.
+            --   Gen temporal K: G(L_G) ⊢ G(¬σ). G(¬σ) ∈ a. F(σ) ∈ a. Contradiction.
+            -- Case σ ∉ L', F(σ) ∈ L': L_G ∪ {F(σ)} ⊢ ⊥. L_G ⊢ ¬F(σ) = ¬¬G(¬σ).
+            --   Gen temporal K: G(L_G) ⊢ G(¬¬G(¬σ)). G(¬¬G(¬σ)) ∈ a.
+            --   By CanonicalR a b: ¬¬G(¬σ) ∈ b. By MCS double neg: G(¬σ) ∈ b.
+            --   ¬σ ∈ b? No, G(¬σ) ∈ b means ¬σ at all strict successors of b.
+            --   F(σ) ∈ a. And G(¬¬G(¬σ)) ∈ a.
+            --   CanonicalR a any_c: ¬¬G(¬σ) ∈ c. G(¬σ) ∈ c (double neg in MCS).
+            --   But F(σ) ∈ c? Not necessarily.
+            --   Back to a: G(¬¬G(¬σ)) ∈ a. By CanonicalR a b: ¬¬G(¬σ) ∈ b.
+            --   By MCS: G(¬σ) ∈ b. And F(σ) ∈ a = ¬G(¬σ) ∈ a.
+            --   G(¬σ) ∈ b and ¬G(¬σ) ∈ a. In different MCSes. No contradiction.
+            --   STUCK.
+            -- Case σ ∈ L' and F(σ) ∈ L': L_G ∪ {σ, F(σ)} ⊢ ⊥.
+            --   By deduction on σ: L_G ∪ {F(σ)} ⊢ ¬σ.
+            --   By deduction on F(σ): L_G ⊢ ¬σ ∨ ¬F(σ) (not exactly...).
+            --   Actually: L_G ∪ {σ, F(σ)} ⊢ ⊥. Deduction on F(σ):
+            --   L_G ∪ {σ} ⊢ ¬F(σ). Gen temporal K on L_G: G(L_G) ⊢ G(stuff)...
+            --   But σ is not in GContent(a), so can't apply gen temporal K to whole thing.
+            --   COMPLEX.
             --
-            -- c ≠ b: σ ∈ c. σ ∈ b? G(ψ) ∈ b and ¬ψ ∈ b (ψ ∉ b). So σ ∈ b.
-            --   And GContent(a) ⊆ b. So seed ⊆ b. Lindenbaum COULD return b!
-            --   F(σ) ∉ b (h_F_σ_not_b). F(σ) ∈ a. F(σ) might or might not be in c.
-            --   c = Lindenbaum({σ} ∪ GContent(a)). Seed ⊆ b. So c could be b.
-            --   If c = b: σ ∈ c = b (true). GContent(a) ⊆ b (true). Fine.
-            --   But we showed NOT(CanonicalR c a) and NOT(CanonicalR b c).
-            --   If c = b: NOT(CanonicalR b c) = NOT(CanonicalR b b).
-            --   In Case A: GContent(b) ⊄ b. So CanonicalR b b fails. Consistent!
-            --   So c = b is possible. Then [c] = [b] and [a] < [c] = [b].
-            --   No intermediate.
+            -- The consistency proof for {σ, F(σ)} ∪ GContent(a) is non-trivial.
+            -- Let me try the approach: get c' via Lindenbaum of {σ} ∪ GContent(a),
+            -- and if c' = b, get c'' via Lindenbaum of {F(σ)} ∪ GContent(a),
+            -- and c'' ≠ b (since F(σ) ∉ b but seed ⊄ b... wait, F(σ) ∈ a means
+            -- F(F(σ)) ∈ a by DN, so {F(σ)} ∪ GContent(a) is the forward seed for
+            -- ψ = F(σ), which is consistent). c'' has F(σ) ∈ c'' and GContent(a) ⊆ c''.
+            -- c''.world ≠ b.world: F(σ) ∈ c'', F(σ) ∉ b.
+            -- But NOT(CanonicalR c'' a)? F(σ) ∈ c''. If CanonicalR c'' a: GContent(c'') ⊆ a.
+            -- temp_a: F(σ) → G(P(F(σ))). P(F(σ)) ∈ GContent(c'') ⊆ a. Not contradictory.
+            -- Need G-formula argument. G(ψ) might not be in c''.
+            -- We know: from CanonicalR c'' a and CanonicalR a c'' (GContent(a) ⊆ c''):
+            -- equiv. GContent(a) ⊆ GContent(c'') ⊆ a. CanonicalR a a.
+            -- G(ψ) ∉ a (h_Gψ_not_a). And G(ψ) ∈ b.
+            -- If CanonicalR a a: GContent(a) ⊆ a. G(ψ) ∉ GContent(a) (otherwise
+            -- G(G(ψ)) ∈ a → by CanonicalR a a: G(ψ) ∈ a. Contradiction.)
+            -- So ψ ∉ GContent(a). But ψ might be in a.
+            -- This doesn't give a contradiction for c'' equiv a.
+            -- STILL STUCK on the d = b sub-case of Case A.
             --
-            -- HOWEVER: we proved [a] < [c] (NOT CanonicalR c a). And if c = b, [c] = [b].
-            -- So [a] < [b]. That's just our starting assumption. No progress.
+            -- Wait, I realize the issue. In Case A, the d = b sub-case means:
+            -- d (with σ ∈ d) has d.world = b.world. σ ∈ b. G(ψ) ∈ b and ¬ψ ∈ b.
+            -- This is consistent (Case A: ψ ∉ b, so ¬ψ ∈ b, and G(ψ) ∈ b).
+            -- The two-step approach gave c with F(σ) ∈ c and d with σ ∈ d = b.
+            -- c ≠ b. c has CanonicalR a c and CanonicalR c b (= CanonicalR c d, d = b).
+            -- G(ψ) ∉ c (shown: if G(ψ) ∈ c, then ψ ∈ GContent(c) ⊆ b, contradiction
+            -- since ψ ∉ b). So G(ψ) ∉ c.
+            -- NOT(CanonicalR b c): if GContent(b) ⊆ c, then G(ψ) ∈ GContent(b)
+            -- (by temp_4 on G(ψ) ∈ b) → G(ψ) ∈ c. Contradiction.
+            -- So NOT(CanonicalR b c). ✓
+            -- For NOT(CanonicalR c a): the c from forward_F_stays_in_fragment
+            -- has F(σ) ∈ c and GContent(a) ⊆ c.
+            -- KEY: If CanonicalR c a: GContent(c) ⊆ a. From CanonicalR c b (h_R_cd
+            -- with d=b): G(ψ) ∉ c. But temp_a on any formula φ ∈ c gives G(P(φ)) ∈ c.
+            -- P(φ) ∈ GContent(c) ⊆ a. All these P(φ) are in a.
+            -- We can also use: from CanonicalR c a and CanonicalR a c:
+            -- [c] = [a]. CanonicalR c b: [a] = [c] ≤ [b]. NOT(CanonicalR b c):
+            -- NOT([b] ≤ [c]). So [c] < [b]. [a] = [c] < [b]. No intermediate.
+            -- But this is just a < b again! We need to PROVE [c] ≠ [a].
+            -- i.e., prove NOT(CanonicalR c a).
             --
-            -- To prevent c = b: add F(σ) to the seed!
-            -- Seed: {σ, F(σ)} ∪ GContent(a). F(σ) ∉ b. So c ≠ b.
-            -- Consistency of this seed: {σ, F(σ)} ∪ GContent(a).
-            -- {σ} ∪ GContent(a) is consistent (F(σ) ∈ a, forward seed).
-            -- Adding F(σ): need to show {σ, F(σ)} ∪ GContent(a) consistent.
-            -- If inconsistent: exists L with L, F(σ), σ ⊢ ⊥ (possibly with GContent elements).
-            -- CLAIM: {σ, F(σ)} ∪ GContent(a) is consistent because it's a subset
-            -- of any MCS extending {σ} ∪ GContent(a) that also contains F(σ).
-            -- From F(F(σ)) ∈ a: {F(σ)} ∪ GContent(a) is consistent.
-            -- And {σ} ∪ GContent(a) is consistent (F(σ) ∈ a).
-            -- But the UNION might not be consistent.
+            -- The problem: with the forward_F approach, c only has F(σ) and GContent(a).
+            -- F(σ) ∈ a too (h_F_σ). So c and a share the same seed content.
+            -- There's no formula in c guaranteed to be NOT in a.
+            -- The Lindenbaum extension might add formulas to c that are not in a,
+            -- but we can't prove which ones.
             --
-            -- If the union is inconsistent: {σ} ∪ GContent(a) ⊢ ¬F(σ) = G(¬σ).
-            -- From σ in the set: σ ⊢ G(ψ) (conj elim). From G(ψ) ∈ seed and
-            -- GContent(a) elements: gen temporal K on GContent part gives
-            -- G(stuff), combined with σ gives... complicated.
+            -- RESOLUTION: Use the direct Lindenbaum with seed {σ} ∪ GContent(a) instead.
+            -- Then c has σ ∈ c, which gives G(ψ) ∈ c.
+            -- And NOT(CanonicalR c a) follows from G(ψ)/temp_4.
+            -- But c might = b. To handle c = b:
+            -- NOT(CanonicalR b c) = NOT(CanonicalR b b) = NOT(GContent(b) ⊆ b) = TRUE (Case A).
+            -- So [c] ≠ [b]? Not necessarily: [c] = [b] requires CanonicalR c b AND CanonicalR b c.
+            -- CanonicalR b c: FALSE (Case A). So [c] ≠ [b]. So [c] < [b] (since NOT(CanonicalR b c)
+            -- and by linearity CanonicalR c b or CanonicalR b c or c = b).
+            -- If c.world = b.world: c = b (ext). CanonicalR c b = CanonicalR b b.
+            -- In Case A: GContent(b) ⊄ b. So CanonicalR c b fails.
+            -- And CanonicalR b c = CanonicalR b b fails. c.world = b.world.
+            -- Linearity says one must hold. But none do? Then c.world = b.world is the match.
+            -- But c.world ≠ b.world is required for [c] < [b].
+            -- Hmm. If c.world = b.world: both CanonicalR c b and CanonicalR b c fail.
+            -- In the Preorder: c ≤ b iff c = b ∨ CanonicalR c b.
+            -- If c = b (as fragment elements): c ≤ b. b ≤ c. [c] = [b].
+            -- [a] < [c] = [b]. No intermediate from c.
+            -- This scenario requires the seed {σ} ∪ GContent(a) ⊆ b, and
+            -- Lindenbaum returning b itself.
+            -- In that case: σ ∈ b (shown: G(ψ) ∈ b, ¬ψ ∈ b). GContent(a) ⊆ b.
+            -- So seed ⊆ b. Lindenbaum CAN return b.
             --
-            -- Actually: {σ} ∪ GContent(a) ⊢ G(¬σ) means: from σ and GContent(a)
-            -- formulas, derive G(¬σ). σ = G(ψ) ∧ ¬ψ. ¬σ = ¬(G(ψ) ∧ ¬ψ).
-            -- From σ alone we can derive G(ψ) and ¬ψ.
-            -- G(¬σ) means: at all strictly future MCS, ¬σ holds.
-            -- Is this derivable from σ and GContent(a)?
-            -- G(ψ) ∈ seed. By temp_4: G(G(ψ)) derivable? G(ψ) is in the seed but
-            -- not as a G-formula of something in GContent(a).
-            -- Actually σ is NOT in GContent(a). σ is a separate element.
-            -- So gen temporal K applies only to GContent(a) part.
-            -- From GContent(a) part: L ⊆ GContent(a). gen temporal K: G(L) ⊢ G(phi).
-            -- G(L) elements are in a. So G(phi) ∈ a.
-            -- Combined with σ: what can we derive?
-            -- This is too abstract. Let me just try it in Lean.
+            -- So the direct Lindenbaum approach also fails when c = b in Case A.
+            -- The two-step approach and the direct Lindenbaum both have the same issue.
+            --
+            -- FINAL RESOLUTION: In the d = b sub-case of Case A, the TWO-STEP approach
+            -- gave c with F(σ) ∈ c and d = b. We can't prove NOT(CanonicalR c a) from
+            -- F(σ) alone. BUT we can build a THIRD intermediate using the direct
+            -- Lindenbaum on {σ} ∪ GContent(c). Since F(σ) ∈ c, this seed is consistent.
+            -- The extension e has σ ∈ e and GContent(c) ⊆ e. CanonicalR c e.
+            -- σ ∈ e: G(ψ) ∈ e.
+            -- NOT(CanonicalR e a): G(ψ) + temp_4 → G(ψ) ∈ GContent(e).
+            --   If CanonicalR e a: G(ψ) ∈ a. Contradiction.
+            -- NOT(CanonicalR b e): ψ + ¬ψ argument.
+            -- CanonicalR a e (transitivity a → c → e).
+            -- By linearity: e comparable with b.
+            -- CanonicalR e b ∨ CanonicalR b e ∨ e.world = b.world.
+            -- NOT(CanonicalR b e). So: CanonicalR e b ∨ e = b.
+            -- If e = b: the same issue. But then we have a chain a ≤ c ≤ e = b.
+            -- And NOT(CanonicalR e a) gives a < e = b. Still no intermediate.
+            -- For c: CanonicalR c e. NOT(CanonicalR e c)? If so: c < e = b.
+            -- And a ≤ c. If a < c: a < c < b. DONE!
+            -- NOT(CanonicalR e c): If CanonicalR e c: GContent(e) ⊆ c.
+            -- G(ψ) ∈ e → by temp_4 G(G(ψ)) ∈ e → G(ψ) ∈ GContent(e) ⊆ c.
+            -- G(ψ) ∈ c. But G(ψ) ∉ c (h_Gψ_not_c)! Contradiction!
+            -- So NOT(CanonicalR e c). ✓
+            -- Combined with CanonicalR c e: c < e.
+            -- And if e = b: c < b. ✓
+            -- And CanonicalR a c: a ≤ c. If a < c: a < c < b. DONE!
+            -- a < c: NOT(CanonicalR c a)?
+            -- c has F(σ) ∈ c and GContent(a) ⊆ c (from step 1).
+            -- If CanonicalR c a: equiv to a. And c < e = b.
+            -- a < b (assumption). c < b. a ≤ c ≤ b. a < c or a = c.
+            -- If a = c: a = c < e = b. Then a < b with a = c. So c = a.
+            -- If c = a (as worlds): F(σ) ∈ a (yes, h_F_σ). Fine.
+            -- And CanonicalR c e means CanonicalR a e. And e = b.
+            -- CanonicalR a b. Our assumption. Consistent.
+            -- Then a = c < e = b. a < b. c = a. Return e = b? No, [e] = [b].
+            -- Hmm. So if c = a AND e = b: we're back to a < b with no intermediate.
+            -- Can c = a AND e = b both hold? c = a: CanonicalR a a. e = b: seed ⊆ b.
+            -- Seed = {σ} ∪ GContent(c) = {σ} ∪ GContent(a) (since c = a).
+            -- σ ∈ b (shown). GContent(a) ⊆ b (CanonicalR a b). So seed ⊆ b.
+            -- e = Lindenbaum(seed) could be b. Consistent.
+            -- So c = a AND e = b is possible.
+            -- DOUBLE STUCK.
+            --
+            -- OK, the real issue is that forward_F approaches keep giving us
+            -- intermediates that collapse to a or b.
+            -- The mathematical truth is that an intermediate MUST exist (DN guarantees it).
+            -- The issue is the PROOF STRATEGY.
+            -- After extensive analysis, this case appears to be a hard blocker.
+            -- Mark as sorry and document.
             sorry
 
 end Bimodal.Metalogic.Bundle.DenseQuotient
