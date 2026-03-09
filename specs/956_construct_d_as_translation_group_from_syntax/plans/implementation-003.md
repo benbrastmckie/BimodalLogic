@@ -206,7 +206,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ---
 
-### Phase 7: Fix Bidirectional Fragment [NOT STARTED]
+### Phase 7: Fix Bidirectional Fragment [COMPLETED]
 
 - **Dependencies:** Phase 6
 - **Goal:** Adapt BidirectionalReachable for irreflexive canonical relation

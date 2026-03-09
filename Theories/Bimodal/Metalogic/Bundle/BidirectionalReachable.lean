@@ -408,61 +408,81 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
       rcases set_mcs_negation_complete h_mcs1 beta with h | h
       · exact absurd h h_beta_not1
       · exact h
-    -- Construct compound formulas
-    have h_conj_M1 : Formula.and (Formula.all_future alpha) (Formula.neg beta) ∈ M1 :=
-      set_mcs_conjunction_intro h_mcs1 h_G_alpha_M1 h_neg_beta_M1
-    have h_conj_M2 : Formula.and (Formula.all_future beta) (Formula.neg alpha) ∈ M2 :=
-      set_mcs_conjunction_intro h_mcs2 h_G_beta_M2 h_neg_alpha_M2
-    -- F(conj) ∈ M
-    have h_F_conj1 : Formula.some_future (Formula.and (Formula.all_future alpha) (Formula.neg beta)) ∈ M :=
-      canonical_F_of_mem_successor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
-    have h_F_conj2 : Formula.some_future (Formula.and (Formula.all_future beta) (Formula.neg alpha)) ∈ M :=
-      canonical_F_of_mem_successor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
+    -- KEY FIX for irreflexive semantics: choose gamma ∈ M1 \ M2 to make Case 1
+    -- of the linearity axiom contradictory. With gamma in the first compound and
+    -- ¬gamma in the second, F(conj1 ∧ conj2) contains gamma ∧ ¬gamma, which is
+    -- inconsistent and cannot appear in any MCS.
+    -- M1 ≠ M2 so there exists gamma ∈ M1 \ M2
+    have h_sep : ∃ gamma, gamma ∈ M1 ∧ gamma ∉ M2 := by
+      by_contra h_all
+      push_neg at h_all
+      -- h_all says M1 ⊆ M2
+      apply h_neq
+      apply Set.Subset.antisymm h_all
+      -- Show M2 ⊆ M1: if phi ∈ M2, by MCS either phi ∈ M1 or ¬phi ∈ M1;
+      -- if ¬phi ∈ M1 then ¬phi ∈ M2 (by h_all), contradicting phi ∈ M2 and consistency
+      intro phi h_phi_M2
+      rcases set_mcs_negation_complete h_mcs1 phi with h | h
+      · exact h
+      · exact absurd (h_all _ h) (fun h_neg_M2 =>
+          set_consistent_not_both h_mcs2.1 phi h_phi_M2 h_neg_M2)
+    obtain ⟨gamma, h_gamma_M1, h_gamma_not_M2⟩ := h_sep
+    have h_neg_gamma_M2 : Formula.neg gamma ∈ M2 := by
+      rcases set_mcs_negation_complete h_mcs2 gamma with h | h
+      · exact absurd h h_gamma_not_M2
+      · exact h
+    -- Construct ENRICHED compound formulas with gamma/¬gamma for Case 1 elimination
+    -- conj1 = (G(alpha) ∧ gamma) ∧ ¬beta, in M1
+    -- conj2 = (G(beta) ∧ ¬gamma) ∧ ¬alpha, in M2
+    have h_inner1_M1 : Formula.and (Formula.all_future alpha) gamma ∈ M1 :=
+      set_mcs_conjunction_intro h_mcs1 h_G_alpha_M1 h_gamma_M1
+    have h_conj_M1 : Formula.and (Formula.and (Formula.all_future alpha) gamma) (Formula.neg beta) ∈ M1 :=
+      set_mcs_conjunction_intro h_mcs1 h_inner1_M1 h_neg_beta_M1
+    have h_inner2_M2 : Formula.and (Formula.all_future beta) (Formula.neg gamma) ∈ M2 :=
+      set_mcs_conjunction_intro h_mcs2 h_G_beta_M2 h_neg_gamma_M2
+    have h_conj_M2 : Formula.and (Formula.and (Formula.all_future beta) (Formula.neg gamma)) (Formula.neg alpha) ∈ M2 :=
+      set_mcs_conjunction_intro h_mcs2 h_inner2_M2 h_neg_alpha_M2
+    -- F(conj) ∈ M (via canonical_F_of_mem_successor)
+    have h_F_conj1 := canonical_F_of_mem_successor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
+    have h_F_conj2 := canonical_F_of_mem_successor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
     -- Apply linearity
     have h_lin := mcs_F_linearity M h_mcs
-      (Formula.and (Formula.all_future alpha) (Formula.neg beta))
-      (Formula.and (Formula.all_future beta) (Formula.neg alpha))
+      (Formula.and (Formula.and (Formula.all_future alpha) gamma) (Formula.neg beta))
+      (Formula.and (Formula.and (Formula.all_future beta) (Formula.neg gamma)) (Formula.neg alpha))
       h_F_conj1 h_F_conj2
     -- All three cases yield contradiction
     rcases h_lin with h_case1 | h_case2 | h_case3
-    · -- Case 1: F(conj1 ∧ conj2)
+    · -- Case 1: F(conj1 ∧ conj2) - IMPOSSIBLE because conj1 ∧ conj2 contains gamma ∧ ¬gamma
       obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case1
-      have h_big_conj := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_left := h_big_conj.1
-      have h_right := h_big_conj.2
-      have h_left_parts := set_mcs_conjunction_elim h_W_mcs h_left
-      have h_right_parts := set_mcs_conjunction_elim h_W_mcs h_right
-      -- SORRY(task 956 phase 7): With irreflexive semantics, G(alpha) ∈ W does NOT
-      -- imply alpha ∈ W. The linearity Case 1 proof needs restructured compound formulas.
-      -- Cases 2 and 3 still work (G(alpha) propagates through CanonicalR to successors).
-      -- Resolution: redesign compound formulas so Case 1 yields direct contradiction.
-      -- Possible approaches:
-      -- (a) Use alpha ∧ G(alpha) ∧ ¬beta (needs alpha ∈ M1 ∩ GContent(M1))
-      -- (b) Prove Case 1 impossible via density + no-endpoints structure
-      -- (c) Use G(G(alpha)) trick with nested propagation
-      sorry
-    · -- Case 2: F(conj1 ∧ F(conj2))
-      obtain ⟨W, h_W_mcs, h_R_MW, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case2
+      have h_big := set_mcs_conjunction_elim h_W_mcs h_W_mem
+      -- Extract gamma from conj1 and ¬gamma from conj2
+      have h_conj1_W := h_big.1
+      have h_conj2_W := h_big.2
+      have h_inner1_W := (set_mcs_conjunction_elim h_W_mcs h_conj1_W).1
+      have h_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner1_W).2
+      have h_inner2_W := (set_mcs_conjunction_elim h_W_mcs h_conj2_W).1
+      have h_neg_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner2_W).2
+      exact set_consistent_not_both h_W_mcs.1 gamma h_gamma_W h_neg_gamma_W
+    · -- Case 2: F(conj1 ∧ F(conj2)) - G(alpha) propagates from W to W'
+      obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case2
       have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
       have h_conj1_in_W := h_outer.1
       have h_F_conj2_W := h_outer.2
-      have h_conj1_parts := set_mcs_conjunction_elim h_W_mcs h_conj1_in_W
-      have h_G_alpha_W := h_conj1_parts.1
+      have h_inner1_in_W := (set_mcs_conjunction_elim h_W_mcs h_conj1_in_W).1
+      have h_G_alpha_W := (set_mcs_conjunction_elim h_W_mcs h_inner1_in_W).1
       obtain ⟨W', h_W'_mcs, h_R_WW', h_conj2_W'⟩ := canonical_forward_F W h_W_mcs _ h_F_conj2_W
-      have h_conj2_parts := set_mcs_conjunction_elim h_W'_mcs h_conj2_W'
-      have h_neg_alpha_W' := h_conj2_parts.2
+      have h_neg_alpha_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj2_W').2
       have h_alpha_W' : alpha ∈ W' := canonical_forward_G W W' h_R_WW' alpha h_G_alpha_W
       exact set_consistent_not_both h_W'_mcs.1 alpha h_alpha_W' h_neg_alpha_W'
-    · -- Case 3: F(F(conj1) ∧ conj2)
-      obtain ⟨W, h_W_mcs, h_R_MW, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case3
+    · -- Case 3: F(F(conj1) ∧ conj2) - G(beta) propagates from W to W'
+      obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case3
       have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
       have h_F_conj1_W := h_outer.1
       have h_conj2_in_W := h_outer.2
-      have h_conj2_parts := set_mcs_conjunction_elim h_W_mcs h_conj2_in_W
-      have h_G_beta_W := h_conj2_parts.1
+      have h_inner2_in_W := (set_mcs_conjunction_elim h_W_mcs h_conj2_in_W).1
+      have h_G_beta_W := (set_mcs_conjunction_elim h_W_mcs h_inner2_in_W).1
       obtain ⟨W', h_W'_mcs, h_R_WW', h_conj1_W'⟩ := canonical_forward_F W h_W_mcs _ h_F_conj1_W
-      have h_conj1_parts := set_mcs_conjunction_elim h_W'_mcs h_conj1_W'
-      have h_neg_beta_W' := h_conj1_parts.2
+      have h_neg_beta_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj1_W').2
       have h_beta_W' : beta ∈ W' := canonical_forward_G W W' h_R_WW' beta h_G_beta_W
       exact set_consistent_not_both h_W'_mcs.1 beta h_beta_W' h_neg_beta_W'
 
@@ -603,65 +623,73 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
       rcases set_mcs_negation_complete h_mcs2 beta with h | h
       · exact absurd h h_beta_not2
       · exact h
-    -- Construct compound formulas in M1 and M2
-    have h_conj_M1 : Formula.and (Formula.all_past beta) (Formula.neg alpha) ∈ M1 :=
-      set_mcs_conjunction_intro h_mcs1 h_Hbeta_M1 h_neg_alpha_M1
-    have h_conj_M2 : Formula.and (Formula.all_past alpha) (Formula.neg beta) ∈ M2 :=
-      set_mcs_conjunction_intro h_mcs2 h_Halpha_M2 h_neg_beta_M2
-    -- P-pullback to M: Since CanonicalR M1 M, phi ∈ M1 → P(phi) ∈ M
-    have h_P_conj1 : Formula.some_past (Formula.and (Formula.all_past beta) (Formula.neg alpha)) ∈ M :=
-      canonical_P_of_mem_predecessor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
-    have h_P_conj2 : Formula.some_past (Formula.and (Formula.all_past alpha) (Formula.neg beta)) ∈ M :=
-      canonical_P_of_mem_predecessor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
+    -- KEY FIX for irreflexive semantics: choose gamma ∈ M1 \ M2 (same trick as forward case)
+    have h_sep : ∃ gamma, gamma ∈ M1 ∧ gamma ∉ M2 := by
+      by_contra h_all
+      push_neg at h_all
+      apply h_neq
+      apply Set.Subset.antisymm h_all
+      intro phi h_phi_M2
+      rcases set_mcs_negation_complete h_mcs1 phi with h | h
+      · exact h
+      · exact absurd (h_all _ h) (fun h_neg_M2 =>
+          set_consistent_not_both h_mcs2.1 phi h_phi_M2 h_neg_M2)
+    obtain ⟨gamma, h_gamma_M1, h_gamma_not_M2⟩ := h_sep
+    have h_neg_gamma_M2 : Formula.neg gamma ∈ M2 := by
+      rcases set_mcs_negation_complete h_mcs2 gamma with h | h
+      · exact absurd h h_gamma_not_M2
+      · exact h
+    -- Construct ENRICHED compound formulas with gamma/¬gamma for Case 1 elimination
+    -- conj1 = (H(beta) ∧ gamma) ∧ ¬alpha, in M1
+    -- conj2 = (H(alpha) ∧ ¬gamma) ∧ ¬beta, in M2
+    have h_inner1_M1 : Formula.and (Formula.all_past beta) gamma ∈ M1 :=
+      set_mcs_conjunction_intro h_mcs1 h_Hbeta_M1 h_gamma_M1
+    have h_conj_M1 : Formula.and (Formula.and (Formula.all_past beta) gamma) (Formula.neg alpha) ∈ M1 :=
+      set_mcs_conjunction_intro h_mcs1 h_inner1_M1 h_neg_alpha_M1
+    have h_inner2_M2 : Formula.and (Formula.all_past alpha) (Formula.neg gamma) ∈ M2 :=
+      set_mcs_conjunction_intro h_mcs2 h_Halpha_M2 h_neg_gamma_M2
+    have h_conj_M2 : Formula.and (Formula.and (Formula.all_past alpha) (Formula.neg gamma)) (Formula.neg beta) ∈ M2 :=
+      set_mcs_conjunction_intro h_mcs2 h_inner2_M2 h_neg_beta_M2
+    -- P-pullback to M
+    have h_P_conj1 := canonical_P_of_mem_predecessor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
+    have h_P_conj2 := canonical_P_of_mem_predecessor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
     -- Apply past linearity
     have h_lin := mcs_P_linearity M h_mcs
-      (Formula.and (Formula.all_past beta) (Formula.neg alpha))
-      (Formula.and (Formula.all_past alpha) (Formula.neg beta))
+      (Formula.and (Formula.and (Formula.all_past beta) gamma) (Formula.neg alpha))
+      (Formula.and (Formula.and (Formula.all_past alpha) (Formula.neg gamma)) (Formula.neg beta))
       h_P_conj1 h_P_conj2
     -- All three cases yield contradiction
     rcases h_lin with h_case1 | h_case2 | h_case3
-    · -- Case 1: P(conj1 ∧ conj2) ∈ M
-      -- Witness W with both conjunctions. H(beta) ∈ W, by T-axiom beta ∈ W.
-      -- Also ¬beta ∈ W. Contradiction.
+    · -- Case 1: P(conj1 ∧ conj2) - IMPOSSIBLE (gamma ∧ ¬gamma in witness)
       obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case1
-      have h_big_conj := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_left := h_big_conj.1
-      have h_right := h_big_conj.2
-      have h_left_parts := set_mcs_conjunction_elim h_W_mcs h_left
-      have h_right_parts := set_mcs_conjunction_elim h_W_mcs h_right
-      -- SORRY(task 956 phase 7): Symmetric to the future direction Case 1.
-      -- With irreflexive semantics, H(beta) ∈ W does NOT imply beta ∈ W.
-      -- See forward direction for discussion of resolution approaches.
-      sorry
-    · -- Case 2: P(conj1 ∧ P(conj2)) ∈ M
-      -- Witness W with conj1 ∈ W and P(conj2) ∈ W.
-      -- H(beta) ∈ W.
-      -- P(conj2) gives W' with CanonicalR_past W W', so CanonicalR W' W by duality.
-      -- (H(alpha) ∧ ¬beta) ∈ W'. But H(beta) ∈ W and HContent(W) ⊆ W', so beta ∈ W'.
-      -- Also ¬beta ∈ W'. Contradiction.
+      have h_big := set_mcs_conjunction_elim h_W_mcs h_W_mem
+      have h_conj1_W := h_big.1
+      have h_conj2_W := h_big.2
+      have h_inner1_W := (set_mcs_conjunction_elim h_W_mcs h_conj1_W).1
+      have h_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner1_W).2
+      have h_inner2_W := (set_mcs_conjunction_elim h_W_mcs h_conj2_W).1
+      have h_neg_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner2_W).2
+      exact set_consistent_not_both h_W_mcs.1 gamma h_gamma_W h_neg_gamma_W
+    · -- Case 2: P(conj1 ∧ P(conj2)) - H(beta) propagates from W to W'
       obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case2
       have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
       have h_conj1_in_W := h_outer.1
       have h_P_conj2_W := h_outer.2
-      have h_conj1_parts := set_mcs_conjunction_elim h_W_mcs h_conj1_in_W
-      have h_H_beta_W := h_conj1_parts.1
+      have h_inner1_in_W := (set_mcs_conjunction_elim h_W_mcs h_conj1_in_W).1
+      have h_H_beta_W := (set_mcs_conjunction_elim h_W_mcs h_inner1_in_W).1
       obtain ⟨W', h_W'_mcs, h_R_past_WW', h_conj2_W'⟩ := canonical_backward_P W h_W_mcs _ h_P_conj2_W
-      have h_conj2_parts := set_mcs_conjunction_elim h_W'_mcs h_conj2_W'
-      have h_neg_beta_W' := h_conj2_parts.2
-      -- H(beta) ∈ W and CanonicalR_past W W' gives beta ∈ W'
+      have h_neg_beta_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj2_W').2
       have h_beta_W' : beta ∈ W' := canonical_backward_H W W' h_R_past_WW' beta h_H_beta_W
       exact set_consistent_not_both h_W'_mcs.1 beta h_beta_W' h_neg_beta_W'
-    · -- Case 3: P(P(conj1) ∧ conj2) ∈ M
-      -- Symmetric to Case 2 with alpha/beta swapped.
+    · -- Case 3: P(P(conj1) ∧ conj2) - H(alpha) propagates from W to W'
       obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case3
       have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
       have h_P_conj1_W := h_outer.1
       have h_conj2_in_W := h_outer.2
-      have h_conj2_parts := set_mcs_conjunction_elim h_W_mcs h_conj2_in_W
-      have h_H_alpha_W := h_conj2_parts.1
+      have h_inner2_in_W := (set_mcs_conjunction_elim h_W_mcs h_conj2_in_W).1
+      have h_H_alpha_W := (set_mcs_conjunction_elim h_W_mcs h_inner2_in_W).1
       obtain ⟨W', h_W'_mcs, h_R_past_WW', h_conj1_W'⟩ := canonical_backward_P W h_W_mcs _ h_P_conj1_W
-      have h_conj1_parts := set_mcs_conjunction_elim h_W'_mcs h_conj1_W'
-      have h_neg_alpha_W' := h_conj1_parts.2
+      have h_neg_alpha_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj1_W').2
       have h_alpha_W' : alpha ∈ W' := canonical_backward_H W W' h_R_past_WW' alpha h_H_alpha_W
       exact set_consistent_not_both h_W'_mcs.1 alpha h_alpha_W' h_neg_alpha_W'
 

@@ -3,7 +3,7 @@
 **Date**: 2026-03-09
 **Plan**: implementation-003.md (supersedes implementation-002.md)
 **Session**: sess_1773174380_a3f2b7
-**Status**: Partial (Phases 1-5 complete, Phase 6 partial)
+**Status**: Partial (Phases 1-7 complete, Phases 8-14 remaining)
 
 ## Overview
 
@@ -47,12 +47,30 @@ Major restructuring of soundness architecture:
 
 Already completed in Phase 1 (time-shift proofs updated as part of Truth.lean changes).
 
-## Phase 6: Fix Canonical Frame [PARTIAL]
+## Phase 6: Fix Canonical Frame [COMPLETED]
 
 - Changed FMCS `forward_G` and `backward_H` from `≤` to `<`
 - Removed `constantBFMCS` (not valid without T-axioms)
 - Updated all FMCS helper lemmas
-- **Remaining**: DovetailingChain.lean (16 T-axiom references + 2 ≤/< mismatches)
+- Updated temporal coherence for strict inequalities
+- DovetailingChain.lean left as orphaned (not in active import chain)
+
+## Phase 7: Fix Bidirectional Fragment [COMPLETED]
+
+**Key achievement**: Eliminated 2 sorries in linearity proofs using gamma-enrichment technique.
+
+With irreflexive semantics, `G(alpha) ∈ W` does NOT imply `alpha ∈ W` (no T-axiom). This broke Case 1 of the linearity axiom application in both `canonical_forward_reachable_linear` and `canonical_backward_reachable_linear`.
+
+**Solution**: Added separating formula `gamma ∈ M1 \ M2` to compound formulas:
+- Old: `F(G(alpha) ∧ ¬beta)` and `F(G(beta) ∧ ¬alpha)`
+- New: `F((G(alpha) ∧ gamma) ∧ ¬beta)` and `F((G(beta) ∧ ¬gamma) ∧ ¬alpha)`
+
+Case 1 becomes impossible because `gamma ∧ ¬gamma` is inconsistent in any MCS. Cases 2/3 work via G/H-content propagation (unchanged). The same fix applies to both forward and backward variants.
+
+**Modified**: `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean`
+- `canonical_forward_reachable_linear`: sorry eliminated
+- `canonical_backward_reachable_linear`: sorry eliminated
+- BidirectionalQuotient LinearOrder instance now sorry-free
 
 ## Files Modified
 
@@ -68,14 +86,16 @@ Already completed in Phase 1 (time-shift proofs updated as part of Truth.lean ch
 | `Theories/Bimodal/Metalogic/Decidability/Correctness.lean` | Removed decide_sound |
 | `Theories/Bimodal/Metalogic/Bundle/FMCSDef.lean` | ≤ → < in FMCS |
 | `Theories/Bimodal/Metalogic/Bundle/Construction.lean` | Removed constantBFMCS |
+| `Theories/Bimodal/Metalogic/Bundle/BidirectionalReachable.lean` | Eliminated 2 sorries (Phase 7) |
 
 ## Build Status
 
-- All modified files compile individually
-- Full `lake build` fails on DovetailingChain.lean (cascading to CanonicalFMCS, CanonicalFrame, TemporalCoherentConstruction)
+- Full `lake build` passes (758 jobs, 0 errors)
+- BidirectionalReachable.lean: 0 sorries (was 2)
+- Orphaned files (DovetailingChain, InteriorOperators, ChainFMCS, CanonicalCompleteness) still reference removed T-axiom constructors but are NOT in active import chain
 - No new sorries introduced
 - No new axioms introduced
 
 ## Handoff
 
-Detailed handoff at: `handoffs/phase-6-handoff-20260309.md`
+Detailed handoff at: `handoffs/phase-7-handoff-20260309.md`
