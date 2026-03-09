@@ -1,23 +1,21 @@
 {
   "status": "researched",
-  "started_at": "2026-03-07T14:00:00Z",
-  "completed_at": "2026-03-07T14:45:00Z",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md",
-      "summary": "Analysis of homogeneity without discreteness/density. Key finding: mathematically impossible for countable linear orders -- only Z (discrete) and Q (dense) have transitive automorphism groups. Recommends discreteness axioms DP/DF as simplest path."
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-011.md",
+      "summary": "Corrects research-010 classification error; Morel's theorem shows many transitive orders beyond Z/Q; DP/DF axioms are necessary (not merely convenient) for abelian Aut+(T); Archimedeanness must be proven from construction"
     }
   ],
-  "next_steps": "Run /plan 956 to create implementation plan for discreteness axiom integration",
+  "next_steps": "Run /plan 956 to create implementation plan incorporating DP/DF axioms + Archimedeanness proof",
   "metadata": {
-    "session_id": "sess_1772922052_dcd9b8",
+    "session_id": "sess_1773100800_a8f2c1",
     "agent_type": "logic-research-agent",
-    "duration_seconds": 2700,
+    "duration_seconds": 300,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-logic-research"],
-    "findings_count": 4,
-    "context_files_loaded": ["research-009.md", "ROAD_MAP.md"],
+    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "findings_count": 7,
+    "context_files_loaded": ["kripke-semantics-overview.md", "modal-proof-strategies.md"],
     "mathlib_lookups_performed": 4,
     "context_extension_tasks": [],
     "context_candidates_count": 2
