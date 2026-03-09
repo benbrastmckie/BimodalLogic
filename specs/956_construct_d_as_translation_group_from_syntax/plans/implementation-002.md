@@ -113,7 +113,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Derive DP from DF via temporal_duality [NOT STARTED]
+### Phase 3: Derive DP from DF via temporal_duality [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove DP is derivable from DF using the temporal_duality inference rule
@@ -136,7 +136,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Soundness of DN for valid_dense [NOT STARTED]
+### Phase 4: Soundness of DN for valid_dense [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Prove DN is sound for the dense validity notion
@@ -158,7 +158,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Soundness of DF for valid_discrete [NOT STARTED]
+### Phase 5: Soundness of DF for valid_discrete [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Prove DF is sound for the discrete validity notion
