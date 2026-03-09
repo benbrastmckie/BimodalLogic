@@ -319,6 +319,24 @@ is trivially valid: if φ holds at ALL times, then at any future time z,
 def always (φ : Formula) : Formula := φ.all_past.and (φ.and φ.all_future)
 
 /--
+Derived reflexive future operator (G'φ := φ ∧ Gφ, "now and always in the future").
+
+With irreflexive semantics (G uses strict <), this derived operator recovers
+the reflexive universal future quantifier: G'φ holds iff φ holds at t AND at
+all s > t. This is useful when the reflexive reading is needed.
+-/
+def weak_future (φ : Formula) : Formula := φ.and φ.all_future
+
+/--
+Derived reflexive past operator (H'φ := φ ∧ Hφ, "now and always in the past").
+
+With irreflexive semantics (H uses strict <), this derived operator recovers
+the reflexive universal past quantifier: H'φ holds iff φ holds at t AND at
+all s < t. This is useful when the reflexive reading is needed.
+-/
+def weak_past (φ : Formula) : Formula := φ.and φ.all_past
+
+/--
 Temporal 'sometimes' operator (▽φ, "at some time" - φ holds at some time).
 
 Following JPL paper §sec:Appendix definition:

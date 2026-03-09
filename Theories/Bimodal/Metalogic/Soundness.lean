@@ -32,15 +32,17 @@ task semantic models. The MF and TF axioms use time-shift invariance
 - `temp_l_valid`: TL axiom is valid (uses always definition)
 - `modal_future_valid`: MF axiom is valid (via time-shift invariance)
 - `temp_future_valid`: TF axiom is valid (via time-shift invariance)
-- `soundness`: Derivability implies semantic validity (`Γ ⊢ φ → Γ ⊨ φ`)
+- `axiom_base_valid`: Base axioms are universally valid
+- `axiom_valid_dense`: Dense-compatible axioms are valid on dense frames
+- `axiom_valid_discrete`: Discrete-compatible axioms are valid on discrete frames
 
 ## Implementation Notes
 
 **Completed Proofs**:
-- 14/14 axiom validity lemmas: prop_k, prop_s, ex_falso, peirce, MT, M4, MB, M5_collapse,
-  MK_dist, TK_dist, T4, TA, TL, MF, TF
-- 7/7 soundness cases: axiom, assumption, modus_ponens, necessitation, temporal_necessitation,
-  temporal_duality, weakening
+- Base axiom validity lemmas: prop_k, prop_s, ex_falso, peirce, MT, M4, MB, M5_collapse,
+  MK_dist, TK_dist, T4, TA, TL, MF, TF, linearity (universally valid)
+- Frame-class axiom validity: density (valid_dense), discreteness_forward (valid_discrete)
+- axiom_base_valid, axiom_valid_dense, axiom_valid_discrete (combined validators)
 
 **Key Techniques**:
 - Time-shift invariance (MF, TF): Uses `WorldHistory.time_shift` and
@@ -166,7 +168,7 @@ theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.al
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_future s hts r hsr
-  exact h_future r (le_trans hts hsr)
+  exact h_future r (lt_trans hts hsr)
 
 /-- Temporal A axiom is valid: `⊨ φ → F(sometime_past φ)`. -/
 theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometime_past)) := by
@@ -185,18 +187,18 @@ theorem temp_l_valid (φ : Formula) :
   intro h_always s _hts r _hrs
   simp only [Formula.always, Formula.and, Formula.neg, truth_at] at h_always
   have h1 :
-    (∀ (u : T), u ≤ t → truth_at M Omega τ u φ) ∧
+    (∀ (u : T), u < t → truth_at M Omega τ u φ) ∧
     ((truth_at M Omega τ t φ →
-      (∀ (v : T), t ≤ v → truth_at M Omega τ v φ) → False) → False) :=
+      (∀ (v : T), t < v → truth_at M Omega τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : T), t ≤ v → truth_at M Omega τ v φ) :=
+  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : T), t < v → truth_at M Omega τ v φ) :=
     and_of_not_imp_not h_middle
-  obtain ⟨_h_now, h_future⟩ := h2
-  by_cases h_le : r ≤ t
-  · exact h_past r h_le
-  · push_neg at h_le
-    exact h_future r (le_of_lt h_le)
+  obtain ⟨h_now, h_future⟩ := h2
+  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
+  · exact h_past r h_lt
+  · rw [h_eq]; exact h_now
+  · exact h_future r h_gt
 
 /-- MF axiom validity: `□φ → □(Fφ)` is valid. Uses ShiftClosed Omega for time-shift invariance. -/
 theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).box)) := by
@@ -214,20 +216,6 @@ theorem temp_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.box).all_futur
   have h_phi_at_shifted := h_box_phi (WorldHistory.time_shift σ (s - t)) (h_sc σ h_σ_mem (s - t))
   exact (TimeShift.time_shift_preserves_truth M Omega h_sc σ t s φ).mp h_phi_at_shifted
 
-/-- Temporal T axiom for future: `Gφ → φ` is valid. -/
-theorem temp_t_future_valid (φ : Formula) : ⊨ ((Formula.all_future φ).imp φ) := by
-  intro T _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [truth_at]
-  intro h_future
-  exact h_future t (le_refl t)
-
-/-- Temporal T axiom for past: `Hφ → φ` is valid. -/
-theorem temp_t_past_valid (φ : Formula) : ⊨ ((Formula.all_past φ).imp φ) := by
-  intro T _ _ _ F M Omega _h_sc τ _h_mem t
-  simp only [truth_at]
-  intro h_past
-  exact h_past t (le_refl t)
-
 /-- Temporal linearity axiom validity:
 `F(φ) ∧ F(ψ) → F(φ ∧ ψ) ∨ F(φ ∧ F(ψ)) ∨ F(F(φ) ∧ ψ)` is valid.
 
@@ -242,63 +230,100 @@ theorem temp_linearity_valid (φ ψ : Formula) :
   simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj
   -- Extract F(phi) and F(psi) witnesses
-  have h_F_phi : (∀ (s : T), t ≤ s → truth_at M Omega τ s φ → False) → False :=
+  have h_F_phi : (∀ (s : T), t < s → truth_at M Omega τ s φ → False) → False :=
     Classical.byContradiction (fun h_not =>
       h_conj (fun h1 _ => h_not (fun h_all => h1 (fun s hs h_phi => h_all s hs h_phi))))
-  have h_F_psi : (∀ (s : T), t ≤ s → truth_at M Omega τ s ψ → False) → False :=
+  have h_F_psi : (∀ (s : T), t < s → truth_at M Omega τ s ψ → False) → False :=
     Classical.byContradiction (fun h_not =>
       h_conj (fun _ h2 => h_not (fun h_all => h2 (fun s hs h_psi => h_all s hs h_psi))))
-  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ := by
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
     by_contra h_no; push_neg at h_no
     exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
-  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
     by_contra h_no; push_neg at h_no
     exact h_F_psi (fun s hs h_psi => h_no s hs h_psi)
-  rcases le_total s1 s2 with h_le | h_le
-  · -- s1 ≤ s2: provide second disjunct F(φ ∧ F(ψ))
+  rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
+  · -- s1 < s2: provide second disjunct F(φ ∧ F(ψ))
     intro _
     intro h_neg_second
     exfalso
     apply h_neg_second
     intro h_all_neg_second
     exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_F_psi =>
-      h_neg_F_psi s2 h_le h_psi_s2))
-  · -- s2 ≤ s1: provide third disjunct F(F(φ) ∧ ψ)
+      h_neg_F_psi s2 h_lt h_psi_s2))
+  · -- s1 = s2: provide first disjunct F(φ ∧ ψ)
+    subst h_eq
+    intro h_neg_first
+    exfalso
+    apply h_neg_first
+    intro h_all_neg_first
+    exact h_all_neg_first s1 hs1t (fun h_imp => h_imp h_phi_s1 h_psi_s2)
+  · -- s2 < s1: provide third disjunct F(F(φ) ∧ ψ)
     intro _
     intro _
     intro h_all_neg_third
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
-      (fun h_neg_F_phi => h_neg_F_phi s1 h_le h_phi_s1) h_psi_s2)
+      (fun h_neg_F_phi => h_neg_F_phi s1 h_gt h_phi_s1) h_psi_s2)
 
-/-- Density axiom (DN) is valid: `⊨ Fφ → FFφ`.
-With reflexive semantics, some_future includes the present,
-so Fφ → FFφ holds trivially by taking the same witness. -/
-theorem density_valid (φ : Formula) : ⊨ (φ.some_future.imp φ.some_future.some_future) := by
-  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+/-- Density axiom (DN) is valid on dense orders: `⊨_dense Fφ → FFφ`.
+With irreflexive semantics, Fφ means ∃ s > t with φ(s). Using DenselyOrdered,
+given witness s > t, we get u with t < u < s. Then Fφ holds at u (via s), so FFφ at t. -/
+theorem density_valid (φ : Formula) : valid_dense (φ.some_future.imp φ.some_future.some_future) := by
+  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro h_F_phi h_GnFphi
-  exact h_GnFphi t (le_refl t) h_F_phi
+  -- h_F_phi : ¬∀ s > t, ¬φ(s), i.e., ∃ s > t, φ(s)
+  -- h_GnFphi : ∀ u > t, ¬(¬∀ v > u, ¬φ(v)), i.e., ∀ u > t, ∀ v > u, ¬φ(v)
+  -- Extract witness s > t with φ(s)
+  have ⟨s, hts, h_phi_s⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+    by_contra h_no; push_neg at h_no
+    exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
+  -- Use density to find u with t < u < s
+  obtain ⟨u, htu, hus⟩ := DenselyOrdered.dense t s hts
+  -- h_GnFphi at u says: ∀ v > u, ¬φ(v). But φ(s) and u < s. Contradiction.
+  exact h_GnFphi u htu (fun h_all_neg => h_all_neg s hus h_phi_s)
 
-/-- Forward discreteness axiom (DF) is valid: `⊨ (F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
-With reflexive semantics, Hφ at t and φ at t gives F(Hφ) at t
-by taking the witness u = t. -/
+/-- Forward discreteness axiom (DF) is valid on discrete orders: `⊨_discrete (F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
+With irreflexive semantics and SuccOrder, given F⊤ (∃ s > t), φ at t, and Hφ at t (∀ r < t, φ(r)),
+we take u = Order.succ t. Then Hφ at u means ∀ r < succ(t), φ(r), which holds because
+r < succ(t) implies r ≤ t, and either r < t (by Hφ) or r = t (by φ at t). -/
 theorem discreteness_forward_valid (φ : Formula) :
-    ⊨ (Formula.and (Formula.bot.neg.some_future)
+    valid_discrete (Formula.and (Formula.bot.neg.some_future)
       (Formula.and φ (Formula.all_past φ)) |>.imp
       (Formula.all_past φ).some_future) := by
-  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj h_G_not_H
-  apply h_conj
-  intro _h_F_top h_phi_and_H
-  apply h_phi_and_H
-  intro _h_phi h_H
-  exact h_G_not_H t (le_refl t) h_H
+  -- h_conj encodes (F⊤ → (φ → Hφ → ⊥) → ⊥) → ⊥, from which we extract three parts.
+  -- But the negation encoding means we work contrapositively.
+  -- We need: h_G_not_H applied at u = Order.succ t.
+  -- First show t is not maximal from h_conj (which encodes F⊤).
+  have h_not_max : ¬IsMax t := by
+    intro h_max
+    apply h_conj
+    intro h_F_top _
+    apply h_F_top
+    intro s hts
+    exact absurd hts (not_lt.mpr (h_max (le_of_lt hts)))
+  -- Take u = Order.succ t
+  have h_lt_succ : t < Order.succ t := Order.lt_succ_of_not_isMax h_not_max
+  -- h_G_not_H at Order.succ t: need to show (∀ r < succ t, φ(r)) → False is False
+  apply h_G_not_H (Order.succ t) h_lt_succ
+  -- Goal: ∀ r < succ(t), φ(r)
+  intro r h_r_lt_succ
+  have h_r_le_t : r ≤ t := Order.le_of_lt_succ h_r_lt_succ
+  -- Extract φ at t and Hφ at t from h_conj
+  have ⟨_, h_phi_and_H⟩ := and_of_not_imp_not h_conj
+  have ⟨h_phi, h_H⟩ := and_of_not_imp_not h_phi_and_H
+  rcases eq_or_lt_of_le h_r_le_t with h_eq | h_lt
+  · rw [h_eq]; exact h_phi
+  · exact h_H r h_lt
 
-/-- All TM axioms are valid. -/
-theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
-  intro h_axiom
-  cases h_axiom with
+/-- All base TM axioms (excluding density and discreteness) are universally valid.
+With irreflexive semantics, density requires DenselyOrdered and discreteness requires SuccOrder,
+so they are handled separately by `density_valid` and `discreteness_forward_valid`. -/
+theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨ φ := by
+  cases h with
   | prop_k φ ψ χ => exact prop_k_valid φ ψ χ
   | prop_s φ ψ => exact prop_s_valid φ ψ
   | modal_t ψ => exact modal_t_valid ψ
@@ -312,60 +337,57 @@ theorem axiom_valid {φ : Formula} : Axiom φ → ⊨ φ := by
   | temp_4 ψ => exact temp_4_valid ψ
   | temp_a ψ => exact temp_a_valid ψ
   | temp_l ψ => exact temp_l_valid ψ
-  | temp_t_future ψ => exact temp_t_future_valid ψ
-  | temp_t_past ψ => exact temp_t_past_valid ψ
   | modal_future ψ => exact modal_future_valid ψ
   | temp_future ψ => exact temp_future_valid ψ
   | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
+  | density _ => exact absurd h_base id
+  | discreteness_forward _ => exact absurd h_base id
+
+/-- All dense-compatible axioms are valid on densely ordered frames.
+This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom. -/
+theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompatible) : valid_dense φ := by
+  cases h with
+  | prop_k φ ψ χ => exact Validity.valid_implies_valid_dense (prop_k_valid φ ψ χ)
+  | prop_s φ ψ => exact Validity.valid_implies_valid_dense (prop_s_valid φ ψ)
+  | modal_t ψ => exact Validity.valid_implies_valid_dense (modal_t_valid ψ)
+  | modal_4 ψ => exact Validity.valid_implies_valid_dense (modal_4_valid ψ)
+  | modal_b ψ => exact Validity.valid_implies_valid_dense (modal_b_valid ψ)
+  | modal_5_collapse ψ => exact Validity.valid_implies_valid_dense (modal_5_collapse_valid ψ)
+  | ex_falso ψ => exact Validity.valid_implies_valid_dense (ex_falso_valid ψ)
+  | peirce φ ψ => exact Validity.valid_implies_valid_dense (peirce_valid φ ψ)
+  | modal_k_dist φ ψ => exact Validity.valid_implies_valid_dense (modal_k_dist_valid φ ψ)
+  | temp_k_dist φ ψ => exact Validity.valid_implies_valid_dense (temp_k_dist_valid φ ψ)
+  | temp_4 ψ => exact Validity.valid_implies_valid_dense (temp_4_valid ψ)
+  | temp_a ψ => exact Validity.valid_implies_valid_dense (temp_a_valid ψ)
+  | temp_l ψ => exact Validity.valid_implies_valid_dense (temp_l_valid ψ)
+  | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
+  | temp_future ψ => exact Validity.valid_implies_valid_dense (temp_future_valid ψ)
+  | temp_linearity φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_valid φ ψ)
   | density ψ => exact density_valid ψ
+  | discreteness_forward _ => exact absurd h_dc id
+
+/-- All discrete-compatible axioms are valid on discrete frames.
+This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness. -/
+theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteCompatible) :
+    valid_discrete φ := by
+  cases h with
+  | prop_k φ ψ χ => exact Validity.valid_implies_valid_discrete (prop_k_valid φ ψ χ)
+  | prop_s φ ψ => exact Validity.valid_implies_valid_discrete (prop_s_valid φ ψ)
+  | modal_t ψ => exact Validity.valid_implies_valid_discrete (modal_t_valid ψ)
+  | modal_4 ψ => exact Validity.valid_implies_valid_discrete (modal_4_valid ψ)
+  | modal_b ψ => exact Validity.valid_implies_valid_discrete (modal_b_valid ψ)
+  | modal_5_collapse ψ => exact Validity.valid_implies_valid_discrete (modal_5_collapse_valid ψ)
+  | ex_falso ψ => exact Validity.valid_implies_valid_discrete (ex_falso_valid ψ)
+  | peirce φ ψ => exact Validity.valid_implies_valid_discrete (peirce_valid φ ψ)
+  | modal_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (modal_k_dist_valid φ ψ)
+  | temp_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (temp_k_dist_valid φ ψ)
+  | temp_4 ψ => exact Validity.valid_implies_valid_discrete (temp_4_valid ψ)
+  | temp_a ψ => exact Validity.valid_implies_valid_discrete (temp_a_valid ψ)
+  | temp_l ψ => exact Validity.valid_implies_valid_discrete (temp_l_valid ψ)
+  | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
+  | temp_future ψ => exact Validity.valid_implies_valid_discrete (temp_future_valid ψ)
+  | temp_linearity φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_valid φ ψ)
+  | density _ => exact absurd h_dc id
   | discreteness_forward ψ => exact discreteness_forward_valid ψ
-
-/--
-Soundness theorem: Derivability implies semantic validity.
-
-If `Γ ⊢ φ` (φ is derivable from context Γ), then `Γ ⊨ φ` (φ is a semantic consequence of Γ).
--/
-theorem soundness (Γ : Context) (φ : Formula) : (Γ ⊢ φ) → (Γ ⊨ φ) := by
-  intro h_deriv
-  induction h_deriv with
-  | «axiom» Γ' φ' h_ax =>
-    intro T _ _ _ F M Omega h_sc τ h_mem t _
-    exact axiom_valid h_ax T F M Omega h_sc τ h_mem t
-
-  | @assumption Γ' φ' h_mem =>
-    intro T _ _ _ F M Omega _h_sc τ _h_tau_mem t h_all
-    exact h_all φ' h_mem
-
-  | @modus_ponens Γ' φ' ψ' _ _ ih_imp ih_phi =>
-    intro T _ _ _ F M Omega h_sc τ h_mem t h_all
-    have h_imp := ih_imp T F M Omega h_sc τ h_mem t h_all
-    have h_phi := ih_phi T F M Omega h_sc τ h_mem t h_all
-    simp only [truth_at] at h_imp
-    exact h_imp h_phi
-
-  | @necessitation φ' _h_deriv ih =>
-    intro T _ _ _ F M Omega h_sc τ _h_mem t _
-    simp only [truth_at]
-    intro σ h_σ_mem
-    exact ih T F M Omega h_sc σ h_σ_mem t (fun _ h => False.elim (List.not_mem_nil h))
-
-  | @temporal_necessitation φ' _h_deriv ih =>
-    intro T _ _ _ F M Omega h_sc τ h_mem t _
-    simp only [truth_at]
-    intro s _hts
-    exact ih T F M Omega h_sc τ h_mem s (fun _ h => False.elim (List.not_mem_nil h))
-
-  | @temporal_duality φ' h_deriv_phi _ =>
-    intro T _ _ _ F M Omega h_sc τ h_mem t _
-    -- SoundnessLemmas.derivable_implies_swap_valid now quantifies over all shift-closed Omega,
-    -- so we can directly instantiate at the given Omega.
-    have h_swap_valid := @SoundnessLemmas.derivable_implies_swap_valid T _ _ _ _ h_deriv_phi
-    exact h_swap_valid F M Omega h_sc τ h_mem t
-
-  | @weakening Γ' Δ' φ' _ h_sub ih =>
-    intro T _ _ _ F M Omega h_sc τ h_mem t h_all
-    apply ih T F M Omega h_sc τ h_mem t
-    intro ψ h_mem_ψ
-    exact h_all ψ (h_sub h_mem_ψ)
 
 end Bimodal.Metalogic

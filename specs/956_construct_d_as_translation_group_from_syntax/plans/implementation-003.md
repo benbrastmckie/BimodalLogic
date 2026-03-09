@@ -82,7 +82,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ---
 
-### Phase 2: Remove T-Axioms [PARTIAL]
+### Phase 2: Remove T-Axioms [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Remove reflexivity axioms that are no longer valid
@@ -106,7 +106,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ---
 
-### Phase 3: Add Derived Reflexive Operators [NOT STARTED]
+### Phase 3: Add Derived Reflexive Operators [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define G'/H' as derived operators for convenience
@@ -130,7 +130,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ---
 
-### Phase 4: Fix Soundness Proofs [NOT STARTED]
+### Phase 4: Fix Soundness Proofs [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Adapt all soundness proofs for irreflexive semantics
@@ -160,7 +160,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ---
 
-### Phase 5: Fix Time-Shift Preservation [NOT STARTED]
+### Phase 5: Fix Time-Shift Preservation [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Adapt time-shift lemmas for strict inequalities
@@ -182,7 +182,7 @@ This plan implements a **complete refactoring from reflexive to irreflexive temp
 
 ---
 
-### Phase 6: Fix Canonical Frame [NOT STARTED]
+### Phase 6: Fix Canonical Frame [PARTIAL]
 
 - **Dependencies:** Phase 4
 - **Goal:** Remove reflexivity theorems from canonical model construction
