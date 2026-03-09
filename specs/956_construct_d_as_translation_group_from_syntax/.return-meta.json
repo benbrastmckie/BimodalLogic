@@ -1,20 +1,20 @@
 {
   "status": "researched",
   "started_at": "2026-03-09T00:00:00Z",
-  "summary": "Strategic reassessment identified 6 viable strategies. Recommended Strategy E: abandon automorphism group approach, set D=Q (rationals) directly, build Q-indexed canonical histories using DN axiom + Lindenbaum, define TaskFrame Q from histories. This bypasses all current blockers (countability FALSE, density 4 sorries, Holder/freeness/homogeneity deferred). Q has full Mathlib infrastructure. Estimated 15-25 hours. Archive DenseQuotient.lean and TranslationGroup.lean.",
+  "summary": "Analyzed the 'D from syntax' philosophical constraint. The TranslationGroup construction already satisfies the from-syntax requirement -- blockers are mathematical (density, countability, Holder), not philosophical. The layered extension approach (TM -> TM+DN -> TM+DP/DF) is conceptually sound but faces the same density blocker. Recommended Strategy K-Relational: prove completeness for relational frames first (standard canonical model, fully from syntax), then use Cantor's theorem to DISCOVER the Q-isomorphism rather than importing Q. This preserves from-syntax spirit while making the group structure canonical. Critical open question: whether density at the MCS/preorder level (not quotient level) avoids the Lindenbaum collapse that causes the 4 sorries in DenseQuotient.lean.",
   "artifacts": [
     {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-019.md",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-020.md",
       "type": "research",
-      "summary": "Comprehensive strategic reassessment: analyzes root causes of 3 blockers, evaluates 6 strategies (A-F), recommends Strategy E (D=Q fragment-based construction), details Mathlib infrastructure available, outlines Q-indexed canonical history construction, provides concrete next steps"
+      "summary": "D From Syntax analysis: philosophical constraints, layered extension feasibility, 5 alternative strategies (G-K), recommendation for Strategy K-Relational (relational frame completeness + Cantor characterization)"
     }
   ],
   "partial_progress": {
     "stage": "report_written",
-    "details": "Research report research-019.md written with full strategic analysis"
+    "details": "Research-020 written (590 lines). Analyzes from-syntax requirement, evaluates layered extension, recommends K-Relational approach."
   },
   "metadata": {
-    "session_id": "sess_1773097577_9a8176",
+    "session_id": "sess_1773098823_aeae1c",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
