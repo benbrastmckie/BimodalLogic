@@ -22,12 +22,33 @@ technical_debt:
 
 ## Tasks
 
-### 956. Construct D as translation group from syntax
-- **Effort**: 30-50 hours
-- **Status**: [RESEARCHED]
+### 957. Density frame condition under irreflexive temporal semantics
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
 - **Language**: lean
 - **Priority**: high
-- **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma)
+- **Dependencies**: Task 956 context (StagedConstruction infrastructure, axiom system)
+- **Unblocks**: Task 956 (Phase 5: staged_timeline_densely_ordered)
+
+**Description**: Prove the density frame condition for the canonical model under irreflexive semantics from temporal axioms alone, without importing any external dense linear order (Q or otherwise).
+
+The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT CanonicalR M' M, there exists W with CanonicalR M W AND CanonicalR W M'.
+
+**Two sub-cases** (based on separating formula delta where G(delta) ∈ M' and delta ∉ M):
+- **Case A** (G(delta) ∉ M): Intermediate W = Lindenbaum(GContent(M) ∪ {¬delta}) appears to work — ¬CanonicalR(M', W) follows directly from G(delta) ∈ M' and ¬delta ∈ W without T-axiom. Needs formal verification.
+- **Case B** (G(delta) ∈ M, delta ∉ M): Obvious seed is inconsistent (delta ∈ GContent(M) conflicts with ¬delta). Investigate whether axioms force a Case A formula to always exist, or provide an alternative construction.
+
+**Key constraint**: Must derive density from the axioms (temp_linearity, density F(φ)→F(F(φ)), seriality). Importing Q or any dense linear order is FORBIDDEN.
+
+---
+
+### 956. Construct D as translation group from syntax
+- **Effort**: 30-50 hours
+- **Status**: [BLOCKED]
+- **Blocked by**: Task 957 (density frame condition under irreflexive semantics)
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma), Task 957 (density frame condition)
 - **Supersedes**: Task 954 (hardcoded Int refactor), Task 955 (CanonicalR task_rel)
 - **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md), [research-002.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md), [research-003.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md), [research-004.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md), [research-005.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md), [research-006.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md), [research-007.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md), [research-008.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md), [research-009.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md), [research-010.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md), [research-011.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-011.md), [research-012.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-012.md), [research-013.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-013.md), [research-014.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-014.md), [research-015.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-015.md), [research-016.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-016.md), [research-017.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-017.md), [research-018.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-018.md), [research-019.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-019.md), [research-020.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-020.md), [research-021.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-021.md), [research-022.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-022.md), [research-031.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-031.md), [research-032.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-032.md), [research-033.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-033.md), [research-034.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md)
 - **Plan**: [implementation-014.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md)

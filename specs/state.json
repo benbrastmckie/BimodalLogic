@@ -8,12 +8,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "researched",
+      "status": "blocked",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T20:34:22Z",
+      "last_updated": "2026-03-10T21:00:16Z",
       "researched": "2026-03-10T20:34:22Z",
       "artifacts": [
         {
@@ -41,7 +41,7 @@
       "planned": "2026-03-10T18:31:59Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": 5,
-      "blocked_reason": "Phase 5 density proof blocked: staged_timeline_densely_ordered requires proving canonical model density frame condition under irreflexive semantics - fundamentally hard. 4/5 Cantor prerequisites proven."
+      "blocked_reason": "Depends on task 957: density frame condition under irreflexive semantics must be proven from axioms alone before Phase 5 can proceed"
     },
     {
       "project_number": 955,
@@ -572,6 +572,17 @@
           "summary": "Comprehensive architecture analysis with Feb 2026 best practices comparison and 7 prioritized upgrade recommendations"
         }
       ]
+    },
+    {
+      "project_number": 957,
+      "project_name": "density_frame_condition_irreflexive_temporal",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "description": "Prove the canonical model density frame condition under irreflexive semantics from temporal axioms alone, without importing any external dense linear order. The condition: for all MCS M, M prime with CanonicalR M M_prime and NOT CanonicalR M_prime M, there exists W with CanonicalR M W AND CanonicalR W M_prime. This is the blocker for task 956 Phase 5 (staged_timeline_densely_ordered). Two sub-cases: Case A (G(delta) not in M) has a direct proof via seed GContent(M) union {neg delta}; Case B (G(delta) in M, delta not in M) remains open - investigate whether axioms force a Case A reduction or provide an alternative intermediate construction. Key constraint: must derive density purely from temporal axioms (linearity, density F(phi)->F(F(phi)), seriality); importing Q or any external dense linear order is FORBIDDEN as it violates the D-from-syntax requirement of task 956.",
+      "created": "2026-03-10T21:00:07Z",
+      "last_updated": "2026-03-10T21:00:07Z",
+      "artifacts": []
     }
   ],
   "completed_projects": [
