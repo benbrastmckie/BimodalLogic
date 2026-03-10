@@ -24,7 +24,7 @@ technical_debt:
 
 ### 957. Density frame condition under irreflexive temporal semantics
 - **Effort**: 8-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-001.md)
 - **Language**: lean

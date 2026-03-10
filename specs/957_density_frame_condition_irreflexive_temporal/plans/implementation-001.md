@@ -1,7 +1,7 @@
 # Implementation Plan: Task #957 - Density Frame Condition Under Irreflexive Temporal Semantics
 
 - **Task**: 957 - density_frame_condition_irreflexive_temporal
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4 hours
 - **Dependencies**: Task 956 Phase 5 (BLOCKED, this task unblocks it)
 - **Research Inputs**: specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md
@@ -66,7 +66,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Case A Backward Direction Lemma [NOT STARTED]
+### Phase 1: Case A Backward Direction Lemma [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Prove that in Case A, temporal linearity gives CanonicalR(W, M')
@@ -88,7 +88,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Sub-case 2 Handling (delta not in M') [NOT STARTED]
+### Phase 2: Sub-case 2 Handling (delta not in M') [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Handle the edge case where delta not in M' using density seed
@@ -110,7 +110,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Main Density Frame Condition Theorem [NOT STARTED]
+### Phase 3: Main Density Frame Condition Theorem [BLOCKED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Prove the main density frame condition theorem
@@ -134,7 +134,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Integration and Verification [NOT STARTED]
+### Phase 4: Integration and Verification [BLOCKED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Verify zero-debt completion and prepare for task 956 integration
@@ -156,6 +156,19 @@ After this implementation:
 - `grep -rn "\bsorry\b" Theories/Bimodal/Metalogic/StagedConstruction/SeparationLemma.lean` returns empty (zero-debt gate)
 - `grep -n "^axiom " Theories/Bimodal/Metalogic/StagedConstruction/SeparationLemma.lean` shows no new axioms
 - All proofs verified with `lean_goal` showing "no goals"
+
+## Progress
+
+**Session: 2026-03-10, sess_1773178117_4b10f6**
+- Added: `density_frame_condition_caseA` - double-density trick proves intermediate exists when G(delta) not in M (Case A). Handles both sub-case 1 (delta in M') and sub-case 2 (delta not in M') uniformly.
+- Added: `caseB_G_neg_not_in_M` - helper proving G(neg(delta)) not in M when G(delta) in M under CanonicalR(M, M')
+- Added: `density_frame_condition` - main theorem with sorry in Case B branch only
+- Completed: Phase 1 (Case A backward direction via double-density trick, not the sub-case-1-only approach from the plan)
+- Completed: Phase 2 (sub-case 2 handled by double-density trick uniformly with sub-case 1)
+- Blocked: Phase 3 (Case B: G(delta) in M for all distinguishing formulas - Lindenbaum GContent Control Problem prevents backward CanonicalR)
+- Blocked: Phase 4 (depends on Phase 3)
+- Sorries: 1 (Case B branch of density_frame_condition)
+- Build: `lake build` passes with sorry warning only
 
 ## Testing & Validation
 
