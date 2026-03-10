@@ -1,23 +1,17 @@
 {
-  "status": "researched",
+  "status": "partial",
+  "started_at": "2026-03-10T00:00:00Z",
   "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md",
-      "summary": "Research report analyzing Gabbay IRR rule, selective Lindenbaum feasibility, and bulldozing technique for density Case B under irreflexive semantics"
-    }
+    "specs/957_density_frame_condition_irreflexive_temporal/reports/research-004.md"
   ],
-  "next_steps": "Run /plan 957 to create implementation plan based on recommended approach (IRR rule or lex product)",
+  "partial_progress": {
+    "stage": "research_report_written",
+    "details": "Research-004 produced: IRR soundness analysis, formalization plan, code change inventory, effort estimate. Key finding: IRR is sound on irreflexive frames via product frame construction, but implementation requires ~330-360 lines including truth independence lemma, frame enrichment, and downstream updates to 5 pattern-match sites."
+  },
   "metadata": {
-    "session_id": "sess_1773182337_651721",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 1800,
+    "session_id": "sess_1773184377_188770",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 8,
-    "context_files_loaded": [],
-    "mathlib_lookups_performed": 3,
-    "context_extension_tasks": [],
-    "context_candidates_count": 3
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }

@@ -581,7 +581,7 @@
       "priority": "high",
       "description": "Prove the canonical model density frame condition under irreflexive semantics from temporal axioms alone, without importing any external dense linear order. The condition: for all MCS M, M prime with CanonicalR M M_prime and NOT CanonicalR M_prime M, there exists W with CanonicalR M W AND CanonicalR W M_prime. This is the blocker for task 956 Phase 5 (staged_timeline_densely_ordered). Two sub-cases: Case A (G(delta) not in M) has a direct proof via seed GContent(M) union {neg delta}; Case B (G(delta) in M, delta not in M) remains open - investigate whether axioms force a Case A reduction or provide an alternative intermediate construction. Key constraint: must derive density purely from temporal axioms (linearity, density F(phi)->F(F(phi)), seriality); importing Q or any external dense linear order is FORBIDDEN as it violates the D-from-syntax requirement of task 956.",
       "created": "2026-03-10T21:00:07Z",
-      "last_updated": "2026-03-10T22:59:56Z",
+      "last_updated": "2026-03-10T23:24:47Z",
       "artifacts": [
         {
           "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md",
@@ -607,10 +607,15 @@
           "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md",
           "type": "research",
           "summary": "Research report analyzing Gabbay IRR rule, selective Lindenbaum feasibility, and bulldozing technique for density Case B"
+        },
+        {
+          "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-004.md",
+          "type": "research",
+          "summary": "IRR soundness analysis: product frame construction enables soundness proof, ~330-360 lines implementation with 5-phase plan"
         }
       ],
-      "session_id": "sess_1773182337_651721",
-      "researched": "2026-03-10T22:59:56Z",
+      "session_id": "sess_1773184377_188770",
+      "researched": "2026-03-10T23:24:47Z",
       "planned": "2026-03-10T22:14:06Z",
       "started": "2026-03-10T22:16:15Z",
       "resume_phase": 2
