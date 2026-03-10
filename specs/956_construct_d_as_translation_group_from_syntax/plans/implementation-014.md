@@ -240,7 +240,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Staged Construction Execution (Even/Odd Stages) [NOT STARTED]
+### Phase 4: Staged Construction Execution (Even/Odd Stages) [PARTIAL]
 
 - **Dependencies:** Phase 3
 - **Goal:** Implement the even/odd stage alternation that builds the dense timeline
@@ -267,6 +267,26 @@ After this implementation:
 - `lake build` passes
 - `grep -n "\bsorry\b" StagedExecution.lean` returns empty
 - Stage execution produces growing timeline with F/P witnesses and density
+
+**Progress:**
+
+**Session: 2026-03-10, sess_1773167912_6e3489 (iteration 2)**
+- Added: `mcs_F_linearity` - F-linearity in MCS from temp_linearity axiom
+- Added: `canonical_F_of_mem_successor` - F(phi) derivation from successor membership
+- Added: `canonical_P_of_mem_predecessor` - P(phi) derivation from predecessor membership
+- Added: `mcs_P_linearity` - P-linearity via temporal duality
+- Added: `canonical_forward_reachable_linear` - forward-reachable MCS comparability (gamma enrichment trick for Case 1)
+- Added: `canonical_backward_reachable_linear` - backward-reachable MCS comparability
+- Added: `comparability_step_forward` / `comparability_step_backward` - inductive comparability steps
+- Added: `stagedPoint_le_of_mcs_comparable` - bridge from MCS comparability to StagedPoint ordering
+- Added: `rootPoint`, `stage0` - initial stage definitions
+- Added: `processForwardObligation` / `processBackwardObligation` - witness creation with properties
+- Added: `forwardWitness_comparable_with` / `backwardWitness_comparable_with` - witness comparability
+- Added: `density_intermediate_exists` - density axiom wrapper for StagedPoints
+- Added: `forward_witness_comparable_with_root` / `backward_witness_comparable_with_root` - root comparability propagation
+- Remaining: Full even/odd stage iteration functions, recursive `staged_timeline` construction, monotonicity proof
+- Sorries: 0 (zero-debt)
+- Build: `lake build` passes (758 jobs)
 
 ---
 

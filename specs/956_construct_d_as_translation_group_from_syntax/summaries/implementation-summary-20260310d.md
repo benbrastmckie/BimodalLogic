@@ -104,11 +104,40 @@
 
 ---
 
+### Phase 4: Staged Construction Execution (Even/Odd Stages) [PARTIAL]
+
+**Session**: 2026-03-10, sess_1773167912_6e3489 (iteration 2)
+**Duration**: ~60 minutes
+
+**Changes Made**:
+- Proved `mcs_F_linearity` and `mcs_P_linearity` (F/P linearity in MCS from temp_linearity axiom and its temporal dual)
+- Proved `canonical_F_of_mem_successor` and `canonical_P_of_mem_predecessor` (F/P introduction from successor/predecessor MCS membership)
+- Proved `canonical_forward_reachable_linear` (key theorem: two forward-reachable MCSs are CanonicalR-comparable; uses gamma enrichment trick for Case 1 elimination under irreflexive semantics)
+- Proved `canonical_backward_reachable_linear` (backward analog using past linearity and HContent duality)
+- Proved `comparability_step_forward` and `comparability_step_backward` (inductive comparability step lemmas)
+- Proved `stagedPoint_le_of_mcs_comparable` (bridge from MCS-level to StagedPoint-level ordering)
+- Defined `rootPoint`, `stage0`, `processForwardObligation`, `processBackwardObligation`
+- Proved `forwardWitness_comparable_with`, `backwardWitness_comparable_with` (witness comparability with existing points)
+- Proved `forward_witness_comparable_with_root`, `backward_witness_comparable_with_root` (root comparability propagation)
+- Defined `density_intermediate_exists` (density axiom wrapper for StagedPoints)
+- NOT yet: full even/odd stage iteration, recursive staged_timeline construction, monotonicity proof
+
+**Files Created**:
+- `Theories/Bimodal/Metalogic/StagedConstruction/StagedExecution.lean` - Linearity infrastructure and stage building blocks
+
+**Verification**:
+- Lake build: Success (758 jobs, 0 new warnings in StagedExecution)
+- Sorries: 0
+- Axioms: 0
+- Phase status: PARTIAL (linearity infrastructure complete, iteration functions pending)
+
+---
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 4 of 9 |
+| Phases Completed | 4 of 9 (Phase 4 partial) |
 | Files Modified | 1 |
-| Files Created | 3 |
+| Files Created | 4 |
 | Overall Status | In Progress |

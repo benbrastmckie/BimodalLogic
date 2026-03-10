@@ -24,7 +24,7 @@ technical_debt:
 
 ### 956. Construct D as translation group from syntax
 - **Effort**: 30-50 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Blocked**: NoMaxOrder on ConstructiveQuotient is mathematically false for generic M_0 (G-complete MCSs make quotient a singleton). All pure-syntax paths (A/B/C) exhausted. User must decide: (1) accept Path D bulldozing with Q, (2) add non-G-complete hypothesis, (3) enriched M_0 construction, or (4) abandon approach.
 - **Language**: lean
 - **Priority**: high
