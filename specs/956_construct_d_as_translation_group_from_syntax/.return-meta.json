@@ -1,14 +1,19 @@
 {
   "status": "researched",
+  "started_at": "2026-03-09T00:00:00Z",
   "artifacts": [
     {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-026.md",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-027.md",
       "type": "research",
-      "summary": "Analysis of reflexive G/H consequences: would NOT solve truth lemma backward direction, causes severe collateral damage (density axiom trivializes, temp_4 redundant, seriality wasted). Recommendation: do not switch."
+      "summary": "Multi-MCS histories unnecessary; BFMCS truth lemma already provides point-wise truth; completeness via BFMCS (Option C) bypasses product domain truth lemma; remaining blocker is fully_saturated_bfmcs_exists_int sorry"
     }
   ],
+  "partial_progress": {
+    "stage": "research_complete",
+    "details": "All three focus questions analyzed; recommendation provided"
+  },
   "metadata": {
-    "session_id": "sess_1773116400_8307",
+    "session_id": "sess_1773116954_13125",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
