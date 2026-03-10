@@ -45,9 +45,26 @@
 - Lake build: Success (full build passes)
 - Sorries: 0 -> 0 (no new sorries)
 
+### Phase 3: Truth Independence Lemma [COMPLETED]
+
+**Session**: 2026-03-10, sess_1773185499_957imp
+**Duration**: ~15 minutes
+
+**Changes Made**:
+- Created `Theories/Bimodal/Metalogic/IRRSoundness.lean`
+- Proved `truth_independent_of_valuation_change`: if two models agree on all atoms in phi, then phi has the same truth value under both models
+- Proof by structural induction on phi (6 cases: atom, bot, imp, box, all_past, all_future)
+
+**Files Created**:
+- `Theories/Bimodal/Metalogic/IRRSoundness.lean` - truth independence lemma (~80 lines)
+
+**Verification**:
+- Lake build: Success
+- Sorries: 0 -> 0 (no new sorries)
+
 ## Cumulative Statistics
 
-- Phases completed: 2/5
+- Phases completed: 3/5
 - Total sorries introduced: 0
 - Total sorries removed: 0
 - Build status: Passing
