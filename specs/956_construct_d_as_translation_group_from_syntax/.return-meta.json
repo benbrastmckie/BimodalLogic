@@ -1,19 +1,17 @@
 {
   "status": "researched",
   "started_at": "2026-03-09T00:00:00Z",
-  "artifacts": [
-    {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-022.md",
-      "type": "research",
-      "summary": "Restricting Aut+(T) to translation subgroup does not bypass homogeneity obstacle; K-Relational remains optimal path with 1 hard step vs 3"
-    }
-  ],
+  "artifacts": [{
+    "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-023.md",
+    "type": "research",
+    "summary": "Complete pipeline from syntax to representation theorem via K-Relational: task_rel d w u := e(u)-e(w)=d where e:T->Q is Cantor iso; single blocker is density proof (4 sorries)"
+  }],
   "partial_progress": {
-    "stage": "researched",
-    "details": "Analyzed homogeneous automorphism subgroups, compared with K-Relational, concluded restriction approach relocates but does not dissolve obstacles"
+    "stage": "report_written",
+    "details": "512-line research report covering 10-stage pipeline, non-trivial task_rel definition, obstacle analysis"
   },
   "metadata": {
-    "session_id": "sess_1741536000_r956hom",
+    "session_id": "sess_1741536100_r956rep",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
