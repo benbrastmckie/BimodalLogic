@@ -24,7 +24,7 @@ technical_debt:
 
 ### 956. Construct D as translation group from syntax
 - **Effort**: 30-50 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma)

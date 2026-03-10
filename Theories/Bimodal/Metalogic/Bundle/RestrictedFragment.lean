@@ -416,8 +416,8 @@ private theorem no_max_helper_irrefl
     (h_R : CanonicalR a.world s.world)
     (h_not_refl : ¬(GContent a.world ⊆ a.world))
     : ¬(s ≤ a) := by
-  rw [Set.not_subset] at h_not_refl
-  obtain ⟨ψ, h_Gψ_a, h_ψ_not_a⟩ := h_not_refl
+  have h_exists := Set.not_subset.mp h_not_refl
+  obtain ⟨ψ, h_Gψ_a, h_ψ_not_a⟩ := h_exists
   have h_T4 : [] ⊢ (Formula.all_future ψ).imp (Formula.all_future (Formula.all_future ψ)) :=
     DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
   have h_GGψ_a : Formula.all_future (Formula.all_future ψ) ∈ a.world :=
@@ -449,12 +449,14 @@ noncomputable instance instNoMaxOrderRestrictedQuotient :
     intro q
     induction q using Quotient.ind with
     | _ a =>
-      have h_F := mcs_has_F_top a.world a.is_mcs
+      -- seriality_future axiom gives F(¬⊥) ∈ a.world
+      have h_F : Formula.some_future (Formula.neg Formula.bot) ∈ a.world :=
+        theorem_in_mcs a.is_mcs (DerivationTree.axiom [] _ Axiom.seriality_future)
       obtain ⟨s, h_R_as, _⟩ := forward_F_stays_in_restricted_fragment a _ h_F
       by_cases h_refl : GContent a.world ⊆ a.world
       · -- BLOCKED: reflexive case (GContent(a) ⊆ a)
         -- When GContent(a) ⊆ a, the F-witness may be equivalent to a in the quotient.
-        -- Needs bulldozing construction or step-by-step enumeration to resolve.
+        -- Needs bulldozing construction (v007 product domain) to resolve.
         sorry
       · exact ⟨s.toQuotient,
           (toAntisymmetrization_lt_toAntisymmetrization_iff).mpr
@@ -477,8 +479,8 @@ private theorem no_min_helper_irrefl
     (h_Rpast : CanonicalR_past a.world s.world)
     (h_not_refl : ¬(HContent a.world ⊆ a.world))
     : s ≤ a ∧ ¬(a ≤ s) := by
-  rw [Set.not_subset] at h_not_refl
-  obtain ⟨ψ, h_Hψ_a, h_ψ_not_a⟩ := h_not_refl
+  have h_exists := Set.not_subset.mp h_not_refl
+  obtain ⟨ψ, h_Hψ_a, h_ψ_not_a⟩ := h_exists
   -- H(ψ) ∈ a means ψ ∈ HContent(a) means H(ψ) ∈ a.world
   -- By temp_4_past: H(H(ψ)) ∈ a, so H(ψ) ∈ HContent(a) ⊆ s
   have h_HHψ_a : (Formula.all_past ψ).all_past ∈ a.world :=
@@ -512,10 +514,13 @@ noncomputable instance instNoMinOrderRestrictedQuotient :
     intro q
     induction q using Quotient.ind with
     | _ a =>
-      have h_P := mcs_has_P_top a.world a.is_mcs
+      -- seriality_past axiom gives P(¬⊥) ∈ a.world
+      have h_P : Formula.some_past (Formula.neg Formula.bot) ∈ a.world :=
+        theorem_in_mcs a.is_mcs (DerivationTree.axiom [] _ Axiom.seriality_past)
       obtain ⟨s, h_Rpast_as, _⟩ := backward_P_stays_in_restricted_fragment a _ h_P
       by_cases h_refl : HContent a.world ⊆ a.world
       · -- BLOCKED: reflexive case (HContent(a) ⊆ a)
+        -- Needs bulldozing construction (v007 product domain) to resolve.
         sorry
       · -- Irreflexive case: predecessor s is strictly less
         obtain ⟨h_le, h_not_le⟩ := no_min_helper_irrefl a s h_Rpast_as h_refl
