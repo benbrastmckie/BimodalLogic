@@ -8,12 +8,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T04:50:09Z",
+      "last_updated": "2026-03-10T04:53:29Z",
       "researched": "2026-03-10T02:59:57Z",
       "artifacts": [
         {
@@ -107,11 +107,6 @@
           "summary": "Phase 8 blocker analysis: Hybrid B+C recommended. Approach B (double-seed density proof) or Approach C (direct Q-embedding bypassing DenselyOrdered). Countable BQ proof needed regardless."
         },
         {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "14-phase plan: hybrid B+C approach (double-seed + Countable) to resolve Phase 8 blocker"
-        },
-        {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-018.md",
           "type": "research",
           "summary": "Phase 8a countability blocker analysis - proves Countable BidirectionalQuotient is mathematically false, with 5 alternatives"
@@ -142,29 +137,14 @@
           "summary": "Complete pipeline from syntax to representation theorem via K-Relational: task_rel d w u := e(u)-e(w)=d where e:T->Q is Cantor iso; single blocker is density proof"
         },
         {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-005.md",
-          "type": "plan",
-          "summary": "11-phase K-Relational implementation: Cantor characterization discovers Q from syntax with non-trivial task_rel d w u := e(u)-e(w)=d"
-        },
-        {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-024.md",
           "type": "research",
           "summary": "Option 2 (seriality axioms F(neg bot)/P(neg bot)) recommended: sound, standard, minimal, preserves irreflexive architecture"
         },
         {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "Revised K-Relational plan: Phase 0 adds seriality axioms, unblocks Phase 5"
-        },
-        {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-025.md",
           "type": "research",
           "summary": "G-closed MCS blocker analysis: genuine problem, recommends product domain (RestrictedQuotient x Q) bulldozing"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-007.md",
-          "type": "plan",
-          "summary": "Product domain (RestrictedQuotient x Q) construction with 8 phases"
         },
         {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260309e.md",
@@ -185,10 +165,15 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-028.md",
           "type": "research",
           "summary": "Constructing fully adequate FMCS using truth_at directly; identifies Boneyard archival candidates; resolves architecture via RestrictedFragment FMCS approach"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-008.md",
+          "type": "plan",
+          "summary": "Canonical truth lemma pipeline: archive bmcs_truth_at, resolve fragmentChainFMCS forward_F/backward_P, complete fully_saturated_bfmcs_exists_int"
         }
       ],
       "session_id": "sess_1773117868_29907",
-      "planned": "2026-03-10T03:02:26Z",
+      "planned": "2026-03-10T04:53:29Z",
       "started": "2026-03-10T03:25:46Z",
       "resume_phase": 5
     },
