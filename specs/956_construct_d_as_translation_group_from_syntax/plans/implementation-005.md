@@ -88,7 +88,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Verify Existing Infrastructure [NOT STARTED]
+### Phase 1: Verify Existing Infrastructure [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Confirm Stages 1-3 are complete and sorry-free
@@ -111,7 +111,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Define Restricted Countable Fragment [NOT STARTED]
+### Phase 2: Define Restricted Countable Fragment [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define countable sub-fragment via specific Lindenbaum witnesses
@@ -159,7 +159,7 @@ inductive WitnessReachable (M0 : Set Formula) (h0 : SetMaximalConsistent M0) :
 
 ---
 
-### Phase 3: Prove Totality on Restricted Fragment [NOT STARTED]
+### Phase 3: Prove Totality on Restricted Fragment [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove LinearOrder on RestrictedFragment (not just Preorder)
@@ -228,7 +228,7 @@ If both options fail after reasonable effort (>4 hours), mark phase [BLOCKED]:
 
 ---
 
-### Phase 5: Prove No Endpoints [NOT STARTED]
+### Phase 5: Prove No Endpoints [PARTIAL]
 
 - **Dependencies:** Phase 3 (can run in parallel with Phase 4)
 - **Goal:** Prove `NoMinOrder` and `NoMaxOrder` for RestrictedQuotient
