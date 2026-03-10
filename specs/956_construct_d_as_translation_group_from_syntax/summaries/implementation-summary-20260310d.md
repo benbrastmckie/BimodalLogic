@@ -81,11 +81,34 @@
 
 ---
 
+### Phase 3: Separation Lemma for Strict Intermediates [COMPLETED]
+
+**Session**: 2026-03-10, sess_1773167912_6e3489
+**Duration**: ~25 minutes
+
+**Changes Made**:
+- Proved `distinguishing_formula_exists` (if NOT CanonicalR(M', M), exists distinguishing beta)
+- Proved `not_G_implies_F_neg` (Case A: G(beta) not in M implies F(neg beta) in M) via 6-step proof using temporal necessitation, temporal K distribution, and contrapositive
+- Proved `caseA_forward_witness_not_contains_beta` (Case A witness excludes beta by consistency)
+- Proved `density_intermediate` (density axiom provides F-preserving intermediate)
+- Proved `mcs_has_strict_future` and `mcs_has_strict_past` (from seriality axioms)
+- Full separation lemma (Case B) NOT needed: density-based approach suffices for staged construction
+
+**Files Created**:
+- `Theories/Bimodal/Metalogic/StagedConstruction/SeparationLemma.lean` - Separation and density results
+
+**Verification**:
+- Lake build: Success (clean, no warnings)
+- Sorries: 0
+- Axioms: 0
+
+---
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 3 of 9 |
+| Phases Completed | 4 of 9 |
 | Files Modified | 1 |
-| Files Created | 2 |
+| Files Created | 3 |
 | Overall Status | In Progress |

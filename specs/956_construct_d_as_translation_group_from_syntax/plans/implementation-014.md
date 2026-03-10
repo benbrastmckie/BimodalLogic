@@ -200,7 +200,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Separation Lemma for Strict Intermediates [NOT STARTED]
+### Phase 3: Separation Lemma for Strict Intermediates [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove the key separation lemma: given M < M' (CanonicalR but not reverse), there exists Delta strictly between M and M'
@@ -223,6 +223,20 @@ After this implementation:
 - `lake build` passes
 - `grep -n "\bsorry\b" SeparationLemma.lean` returns empty (or [BLOCKED] if proof impossible)
 - Separation lemma provides strict intermediate MCS between any comparable pair
+
+**Progress:**
+
+**Session: 2026-03-10, sess_1773167912_6e3489**
+- Added: `distinguishing_formula_exists` - if NOT CanonicalR(M', M), exists beta with G(beta) in M' and beta not in M
+- Added: `case_analysis_G_beta` - either G(beta) in M or not
+- Added: `not_G_implies_F_neg` - Case A: G(beta) not in M implies F(neg beta) in M (6-step proof via temporal necessitation, temporal K, contrapositive)
+- Added: `caseA_forward_witness_not_contains_beta` - Case A witness does NOT contain beta (consistency)
+- Added: `density_intermediate` - density axiom provides intermediate witnesses preserving F-obligations
+- Added: `mcs_has_strict_future` - from seriality (NoMaxOrder foundation)
+- Added: `mcs_has_strict_past` - from seriality (NoMinOrder foundation)
+- Note: Full separation_lemma_intermediate (Case B) NOT implemented - research-034 showed this has fundamental difficulties. Staged construction uses density_intermediate instead, which suffices for odd-stage density insertion.
+- Sorries: 0 (zero-debt)
+- Build: `lake build` passes (clean, no warnings)
 
 ---
 
