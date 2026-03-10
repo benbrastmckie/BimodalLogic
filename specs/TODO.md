@@ -24,9 +24,10 @@ technical_debt:
 
 ### 957. Density frame condition under irreflexive temporal semantics
 - **Effort**: 8-16 hours
-- **Status**: [IMPLEMENTING]
-- **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md)
+- **Status**: [RESEARCHED]
+- **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md), [research-002.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260310.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310.md)
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 956 context (StagedConstruction infrastructure, axiom system)

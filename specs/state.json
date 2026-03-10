@@ -576,12 +576,12 @@
     {
       "project_number": 957,
       "project_name": "density_frame_condition_irreflexive_temporal",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove the canonical model density frame condition under irreflexive semantics from temporal axioms alone, without importing any external dense linear order. The condition: for all MCS M, M prime with CanonicalR M M_prime and NOT CanonicalR M_prime M, there exists W with CanonicalR M W AND CanonicalR W M_prime. This is the blocker for task 956 Phase 5 (staged_timeline_densely_ordered). Two sub-cases: Case A (G(delta) not in M) has a direct proof via seed GContent(M) union {neg delta}; Case B (G(delta) in M, delta not in M) remains open - investigate whether axioms force a Case A reduction or provide an alternative intermediate construction. Key constraint: must derive density purely from temporal axioms (linearity, density F(phi)->F(F(phi)), seriality); importing Q or any external dense linear order is FORBIDDEN as it violates the D-from-syntax requirement of task 956.",
       "created": "2026-03-10T21:00:07Z",
-      "last_updated": "2026-03-10T21:51:59Z",
+      "last_updated": "2026-03-10T21:56:38Z",
       "artifacts": [
         {
           "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md",
@@ -594,17 +594,22 @@
           "summary": "4-phase implementation plan for density frame condition using Case A + temporal linearity strategy"
         },
         {
+          "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md",
+          "type": "research",
+          "summary": "Second research: Case A disproved (seed inconsistent in Case B), recommends Option C (staged construction Case A guarantee)"
+        },
+        {
           "path": "specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310.md",
           "type": "summary",
           "summary": "Phase 1-2 complete: Case A double-density trick proven; Case B blocked"
         }
       ],
-      "session_id": "sess_1773178117_4b10f6",
+      "session_id": "sess_1773179728_412218",
       "researched": "2026-03-10T21:21:00Z",
       "planned": "2026-03-10T21:26:54Z",
       "started": "2026-03-10T21:28:56Z",
       "resume_phase": 3,
-      "blocked_reason": "Phase 3 blocked: Case B (G(delta) in M for all distinguishing formulas) has sorry. The double-density trick works for Case A but Case B encounters Lindenbaum GContent Control Problem."
+      "blocked_reason": "Phase 3 blocked: Case B (G(delta) in M for all distinguishing formulas) has sorry. Research-002 proved Case A formulas do NOT always exist and recommends Option C (staged construction Case A guarantee). Needs revised plan."
     }
   ],
   "completed_projects": [
