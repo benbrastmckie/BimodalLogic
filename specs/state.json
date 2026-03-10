@@ -8,13 +8,13 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T02:43:23Z",
-      "researched": "2026-03-10T01:52:16Z",
+      "last_updated": "2026-03-10T02:59:57Z",
+      "researched": "2026-03-10T02:59:57Z",
       "artifacts": [
         {
           "type": "research",
@@ -165,6 +165,11 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-006.md",
           "type": "plan",
           "summary": "Revised K-Relational plan: Phase 0 adds seriality axioms, unblocks Phase 5"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-025.md",
+          "type": "research",
+          "summary": "G-closed MCS blocker analysis: genuine problem, recommends product domain (RestrictedQuotient x Q) bulldozing"
         }
       ],
       "session_id": "sess_1741536600_i956v6",
