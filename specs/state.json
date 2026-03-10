@@ -576,12 +576,12 @@
     {
       "project_number": 957,
       "project_name": "density_frame_condition_irreflexive_temporal",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove the canonical model density frame condition under irreflexive semantics from temporal axioms alone, without importing any external dense linear order. The condition: for all MCS M, M prime with CanonicalR M M_prime and NOT CanonicalR M_prime M, there exists W with CanonicalR M W AND CanonicalR W M_prime. This is the blocker for task 956 Phase 5 (staged_timeline_densely_ordered). Two sub-cases: Case A (G(delta) not in M) has a direct proof via seed GContent(M) union {neg delta}; Case B (G(delta) in M, delta not in M) remains open - investigate whether axioms force a Case A reduction or provide an alternative intermediate construction. Key constraint: must derive density purely from temporal axioms (linearity, density F(phi)->F(F(phi)), seriality); importing Q or any external dense linear order is FORBIDDEN as it violates the D-from-syntax requirement of task 956.",
       "created": "2026-03-10T21:00:07Z",
-      "last_updated": "2026-03-10T22:35:02Z",
+      "last_updated": "2026-03-10T22:59:56Z",
       "artifacts": [
         {
           "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md",
@@ -602,14 +602,18 @@
           "path": "specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310b.md",
           "type": "summary",
           "summary": "Option C failure analysis: staged Case A guarantee not provable due to GContent forcing obstruction"
+        },
+        {
+          "path": "specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md",
+          "type": "research",
+          "summary": "Research report analyzing Gabbay IRR rule, selective Lindenbaum feasibility, and bulldozing technique for density Case B"
         }
       ],
-      "session_id": "sess_1773180949_938468",
-      "researched": "2026-03-10T21:21:00Z",
+      "session_id": "sess_1773182337_651721",
+      "researched": "2026-03-10T22:59:56Z",
       "planned": "2026-03-10T22:14:06Z",
       "started": "2026-03-10T22:16:15Z",
-      "resume_phase": 2,
-      "blocked_reason": "Phase 2 blocked: Option C (staged Case A guarantee) is not provable. Mathematical obstruction: staged construction uses Lindenbaum extensions with no control over G-formulas, allowing Case B pairs. The GContent forcing problem under irreflexive semantics prevents constructing density intermediates. Requires user decision on alternative approaches."
+      "resume_phase": 2
     }
   ],
   "completed_projects": [

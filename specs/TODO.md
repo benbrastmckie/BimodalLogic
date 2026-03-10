@@ -24,8 +24,8 @@ technical_debt:
 
 ### 957. Density frame condition under irreflexive temporal semantics
 - **Effort**: 8-16 hours
-- **Status**: [IMPLEMENTING]
-- **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md), [research-002.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md)
+- **Status**: [RESEARCHED]
+- **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md), [research-002.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md), [research-003.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md) (IRR rule + selective Lindenbaum)
 - **Plan**: [implementation-002.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-002.md) (v2: Option C - staged Case A guarantee)
 - **Summary**: [implementation-summary-20260310.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310.md), [implementation-summary-20260310b.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310b.md) (Option C failure)
 - **Language**: lean
