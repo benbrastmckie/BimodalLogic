@@ -159,7 +159,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Forward/Backward Witness Seed Lemmas [NOT STARTED]
+### Phase 2: Forward/Backward Witness Seed Lemmas [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Verify and expose existing witness seed consistency lemmas from WitnessSeed.lean
@@ -181,6 +181,22 @@ After this implementation:
 - `lake build` passes
 - `grep -n "\bsorry\b" WitnessSeedWrapper.lean` returns empty
 - Forward and backward witness seed lemmas available
+
+**Progress:**
+
+**Session: 2026-03-10, sess_1773167912_6e3489**
+- Verified: `forward_temporal_witness_seed_consistent` exists in WitnessSeed.lean (handles F(psi))
+- Verified: `past_temporal_witness_seed_consistent` exists in WitnessSeed.lean (handles P(psi))
+- Added: `executeForwardStep`, `executeBackwardStep` replicated from ConstructiveFragment (avoids broken import)
+- Added: `executeForwardStep_canonicalR`, `executeBackwardStep_canonicalR`, `executeBackwardStep_canonicalR_past`
+- Added: `executeForwardStep_mcs`, `executeBackwardStep_mcs`
+- Added: `executeForwardStep_contains_phi`, `executeBackwardStep_contains_phi`
+- Added: `forwardWitnessPoint`, `backwardWitnessPoint` (StagedPoint wrappers with stage annotations)
+- Added: `stagedPoint_has_seriality_future`, `stagedPoint_has_seriality_past`
+- Added: `density_witness_exists` (from density axiom)
+- Note: `executeForwardStep_strict` / `executeBackwardStep_strict` NOT provable in general (same blocker as ConstructiveQuotient, see research-034). Staged construction ensures strictness via overall construction, not individual steps.
+- Sorries: 0 (zero-debt)
+- Build: `lake build` passes
 
 ---
 
