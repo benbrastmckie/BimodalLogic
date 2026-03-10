@@ -1,7 +1,7 @@
 # Implementation Plan: Purely Syntactic D Construction
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15-25 hours
 - **Dependencies**: None
 - **Research Inputs**: research-029.md (goal decomposition), research-020/021/023 (K-Relational strategy)
@@ -68,7 +68,7 @@ D is "Q" only because the axioms FORCE T to have that structure. Change the axio
 
 ## Implementation Phases
 
-### Phase 0: ROAD_MAP.md Updates [NOT STARTED]
+### Phase 0: ROAD_MAP.md Updates [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Document the strict "no Int/Rat imports" constraint and archive decisions
@@ -98,7 +98,7 @@ D is "Q" only because the axioms FORCE T to have that structure. Change the axio
 
 ---
 
-### Phase 1: Comprehensive Boneyard Archival [NOT STARTED]
+### Phase 1: Comprehensive Boneyard Archival [COMPLETED]
 
 - **Dependencies**: Phase 0
 - **Goal**: Archive ALL approaches that use Int, Rat, or trivial task_rel
@@ -130,7 +130,7 @@ D is "Q" only because the axioms FORCE T to have that structure. Change the axio
 
 ---
 
-### Phase 2: Relational Frame Infrastructure [NOT STARTED]
+### Phase 2: Relational Frame Infrastructure [IN PROGRESS]
 
 - **Dependencies**: Phase 1
 - **Goal**: Establish relational completeness WITHOUT TaskFrame

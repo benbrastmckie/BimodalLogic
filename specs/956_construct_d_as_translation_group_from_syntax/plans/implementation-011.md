@@ -1,7 +1,7 @@
 # Implementation Plan: D Construction from Canonical Timeline
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 12-18 hours
 - **Dependencies**: None
 - **Research Inputs**: research-029.md (goal decomposition), research-020/021/023 (strategy analysis)
@@ -72,7 +72,7 @@ Task 956 explored multiple approaches over 28 research reports. This revision co
 
 ## Implementation Phases
 
-### Phase 0: ROAD_MAP.md Corrections [NOT STARTED]
+### Phase 0: ROAD_MAP.md Corrections [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Correct the K-Relational strategy description; remove relational completeness framing
@@ -101,7 +101,7 @@ Task 956 explored multiple approaches over 28 research reports. This revision co
 
 ---
 
-### Phase 1: Boneyard Archival (if needed) [NOT STARTED]
+### Phase 1: Boneyard Archival (if needed) [COMPLETED]
 
 - **Dependencies**: Phase 0
 - **Goal**: Archive Int/Rat-dependent approaches
@@ -124,7 +124,7 @@ Task 956 explored multiple approaches over 28 research reports. This revision co
 
 ---
 
-### Phase 2: Canonical Timeline Properties [NOT STARTED]
+### Phase 2: Canonical Timeline Properties [BLOCKED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Prove canonical timeline T has properties required for Cantor

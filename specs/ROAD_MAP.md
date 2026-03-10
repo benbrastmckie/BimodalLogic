@@ -1,7 +1,7 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-02-27
-**Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness SORRY-DEPENDENT (3 upstream sorries), Non-standard completeness archived (Task 948)
+**Last Updated**: 2026-03-09
+**Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness IN PROGRESS (pure syntax constraint, D Construction from Canonical Timeline strategy)
 
 > **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
 > Each entry should include *Rationale* (why) and *References* (learn more).
@@ -134,6 +134,92 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 
 ---
 
+### Strategy: D Construction from Canonical Timeline
+
+**Status**: ACTIVE
+**Started**: 2026-03-09
+**Hypothesis**: D can be constructed purely from the canonical timeline's order-theoretic properties (countable, dense, no endpoints) via Cantor's theorem, without importing Int or Rat.
+
+*Rationale*: All prior approaches imported D (as Int or Rat) from outside the logic. The task's original intent requires D to EMERGE from the temporal axioms. This strategy achieves this: show the canonical timeline is a countable dense linear order without endpoints (from seriality + density axioms), apply Cantor's theorem to discover D as the isomorphic copy of Q, then define task_rel as actual displacement in this structure.
+
+**CRITICAL CONSTRAINT**: Importing Int or Rat as the duration domain D is STRICTLY FORBIDDEN. D must be discovered from the canonical timeline's order-theoretic properties, not imported. This constraint ensures the formalization faithfully represents the paper's intent: the algebraic structure of D is a CONSEQUENCE of the temporal axioms, not an external assumption.
+
+**Approach**:
+1. Canonical timeline properties: countable, dense, no endpoints (from axioms)
+2. Cantor isomorphism: T ≅ Q (discovered, not imported)
+3. D emerges as (Q, +) from the isomorphism
+4. task_rel(d)(w) = e⁻¹(e(w) + d) where e : T → Q
+5. TaskFrame from syntax, truth lemma, completeness
+
+**Outcomes**:
+- (in progress)
+
+**References**:
+- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-011.md) - Implementation plan (v011)
+- [research-020](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Strategy analysis
+- [research-021/023](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Strategy refinements
+
+---
+
+## Architectural Decisions
+
+### Decision: D Must Emerge from Syntax
+
+**Date**: 2026-03-09
+**Context**: Task 956 explored 28+ research reports and multiple implementation attempts (D=Int, D=Rat, product domains, translation groups). All approaches that import D from outside the logic fail to capture the paper's intent.
+
+**Decision**: Importing `Int` or `Rat` as the duration domain D is STRICTLY FORBIDDEN. D must emerge from the temporal axioms via the canonical timeline construction and Cantor's theorem.
+
+**Consequences**:
+- All Int/Rat-dependent completeness approaches archived to Boneyard
+- The K-Relational strategy is the ONLY acceptable path forward
+- Density of D emerges from density axioms (DN); discreteness would emerge from discreteness axioms (DP/DF)
+- task_rel must be the actual displacement in the canonical timeline, not trivial (`fun _ _ _ => True`)
+
+---
+
+### Decision: Irreflexive G/H Semantics
+
+**Date**: 2026-03-09
+**Context**: The original reflexive semantics (G/H quantify over ≤) created obstructions for density proofs. Irreflexive semantics (G/H quantify over <) aligns with the density proof architecture.
+
+**Decision**: Temporal operators G (all_future) and H (all_past) use irreflexive semantics (strict < ordering).
+
+**Consequences**:
+- T-axioms (Gφ → φ, Hφ → φ) are NOT valid (by design)
+- Density proofs proceed naturally: between any w₁ < w₂, density axiom forces intermediate w
+- Seriality axioms F(¬⊥) and P(¬⊥) derive NoMaxOrder/NoMinOrder for the canonical timeline
+
+---
+
+### Decision: Seriality Axioms for No-Endpoint Properties
+
+**Date**: 2026-03-09
+**Context**: The canonical timeline needs NoMaxOrder and NoMinOrder for Cantor's theorem. These must come from the axiom system, not be assumed.
+
+**Decision**: Seriality axioms F(¬⊥) (every world has a strict future) and P(¬⊥) (every world has a strict past) are used to derive NoMaxOrder and NoMinOrder for the canonical timeline.
+
+**Consequences**:
+- NoMaxOrder: from F(¬⊥) and existence lemma
+- NoMinOrder: from P(¬⊥) and existence lemma
+- These are standard axioms in temporal logic literature
+
+---
+
+### Decision: D Construction via Cantor Isomorphism
+
+**Date**: 2026-03-09
+**Context**: The canonical timeline of MCSs has order-theoretic properties forced by the temporal axioms. Cantor's theorem uniquely identifies countable dense linear orders without endpoints with Q.
+
+**Decision**: Construct D by proving canonical timeline properties (countable, dense, no endpoints) from axioms, then applying Cantor's theorem to discover D = (Q, +).
+
+**Consequences**:
+- D emerges from syntax: no Int/Rat imports
+- D construction is modular: change axioms → change D (e.g., density axioms → Q, discreteness axioms → Z)
+- task_rel is actual displacement, not trivial
+
+---
+
 ## Ambitions
 
 <!-- Schema: Big picture goals
@@ -156,6 +242,31 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 
 ---
 -->
+
+### Ambition: Syntactically-Derived Duration Domain
+
+**Priority**: HIGH
+**Timeframe**: SHORT-TERM
+
+*Rationale*: The duration domain D is the algebraic backbone of task semantics. Importing D (as Int, Rat, etc.) from outside the logic undermines the formalization's claim that temporal structure emerges from axioms. D-from-syntax is the PRIMARY path to sorry-free completeness.
+
+**Success Criteria**:
+- [ ] Canonical timeline shown countable, dense, no endpoints (from axioms)
+- [ ] Cantor isomorphism T ≅ Q constructed
+- [ ] D emerges as (Q, +) via Cantor
+- [ ] task_rel defined as actual displacement (non-trivial)
+- [ ] TaskFrame from syntax, truth lemma, completeness all sorry-free
+- [ ] No Int or Rat imports in completeness chain (except via Cantor discovery)
+
+**Description**:
+Construct D as the group that naturally emerges from the canonical timeline's order-theoretic properties. The temporal axioms (seriality, density) force the canonical timeline to be a countable dense linear order without endpoints; Cantor's theorem then identifies it with Q. D is (Q, +) - not imported, but discovered. This is the ONLY acceptable path for standard completeness.
+
+**Related Phases**: Phase 0 (Core Proofs), D Construction Strategy
+**References**:
+- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-011.md) - Implementation (v011)
+- [D Construction strategy](#strategy-d-construction-from-canonical-timeline) - Strategy entry
+
+---
 
 ### Ambition: Publication-Ready Metalogic
 
@@ -264,14 +375,15 @@ Complete the algebraic approach using Boolean algebra with modal operators, prov
 - [x] Decidability sorry-free *(Completed: DecisionProcedure.lean)*
 - [x] Canonical truth lemma sorry-free *(Completed: Task 945, 2026-02-27)*
 - [x] Documented sorry debt policy enforced
-- [ ] Standard completeness sorry-free (3 sorries remain: fully_saturated_bfmcs_exists_int + 2 DovetailingChain)
+- [ ] Standard completeness sorry-free via D-from-syntax (K-Relational strategy, Task 956)
+- [ ] ~~Standard completeness via Int-indexed BFMCS~~ *(Abandoned: D=Int violates pure syntax constraint)*
 - [ ] ~~FMP completeness sorry-free~~ *(Archived: Task 948, non-standard validity)*
 - [ ] ~~BFMCS completeness sorry-free~~ *(Archived: Task 948, non-standard validity)*
 
 **Description**:
 Systematically reduce sorries in the Metalogic module through proof completion, alternative constructions, or explicit documentation as intentional gaps.
 
-**Note**: Task 948 archived the FMP and BFMCS completeness theorems because they used non-standard validity definitions (`bmcs_valid`, `fmp_valid`) not proven equivalent to the standard `valid` definition. The current focus is proving standard completeness via Representation.lean.
+**Note**: The ONLY acceptable path to sorry-free standard completeness is via the D Construction strategy (Task 956): canonical timeline properties → Cantor isomorphism → D from syntax → TaskFrame completeness. All Int/Rat import approaches are FORBIDDEN. See Architectural Decision: "D Must Emerge from Syntax".
 
 **Related Phases**: Phase 1 (Proof Quality), Phase 5 (Managing Sorries)
 **References**:
@@ -308,6 +420,161 @@ Systematically reduce sorries in the Metalogic module through proof completion, 
 
 ---
 -->
+
+### Dead End: All Int/Rat Import Approaches
+
+**Status**: ABANDONED
+**Tried**: 2025-12-01 to 2026-03-09
+**Related Tasks**: Task 956 (v001-v009), Task 910, Task 903
+
+*Rationale*: Multiple attempts to use D=Int or D=Rat as the duration domain for standard completeness.
+
+**What We Tried**:
+1. **D=Int canonical construction** (CanonicalConstruction.lean): FMCS Int families with temporal coherence
+2. **D=Int dovetailing chain** (DovetailingChain.lean): Int-indexed chain construction
+3. **D=Rat product domain** (TemporalDomain.lean): Product domain with Rat
+4. **D=Int via CanonicalChain** (CanonicalChain.lean): Converting canonical chains to FMCS Int
+5. **Goal A (v008/v009)**: Accepting D=Int as "acceptable" and deferring pure syntax to "Goal B"
+
+**Why It Failed**:
+Importing D from outside the logic violates the task's fundamental requirement. The duration domain D must EMERGE from the temporal axioms. Using D=Int/Rat:
+- Makes task_rel trivial (fun _ _ _ => True), defeating the purpose of task semantics
+- Does not demonstrate that D's algebraic structure is a consequence of the axioms
+- Is explicitly FORBIDDEN by the project constraint
+
+**Evidence**:
+- [Boneyard/Task956_IntRat/](Theories/Bimodal/Boneyard/Task956_IntRat/) - Archived Int/Rat approaches
+- [Task 956 research reports](specs/956_construct_d_as_translation_group_from_syntax/reports/) - 28+ research iterations
+- [implementation-010.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-010.md) - Final plan rejecting all Int/Rat approaches
+
+**Lesson**:
+When the specification says D must emerge from syntax, importing D from outside is not a shortcut - it is a violation. Structure must be discovered, not assumed.
+
+**Superseded By**: K-Relational strategy with Cantor isomorphism
+
+---
+
+### Dead End: Product Domain Temporal Trivialization
+
+**Status**: ABANDONED
+**Tried**: 2026-02-15 to 2026-03-01
+**Related Tasks**: Task 956
+
+*Rationale*: Attempted to construct temporal domain as a product of Rat with MCS space.
+
+**What We Tried**:
+Used `TemporalDomain.lean` with `import Mathlib.Algebra.Order.Ring.Rat` to construct a product domain pairing rational time indices with MCS witnesses.
+
+**Why It Failed**:
+The product domain approach trivializes temporal structure: the Rat component is imported, not derived from axioms. This violates the pure syntax constraint. Additionally, the product structure makes task_rel trivially definable without capturing actual temporal displacement.
+
+**Evidence**:
+- [Boneyard/Task956_IntRat/TemporalDomain.lean](Theories/Bimodal/Boneyard/Task956_IntRat/TemporalDomain.lean) - Archived
+
+**Lesson**:
+Product domains with imported temporal types don't satisfy "D from syntax" even if the MCS component is syntactic.
+
+**Superseded By**: K-Relational strategy
+
+---
+
+### Dead End: TranslationGroup Holder's Theorem Chain
+
+**Status**: ABANDONED
+**Tried**: 2026-02-20 to 2026-03-05
+**Related Tasks**: Task 956
+
+*Rationale*: Attempted to construct D as the translation group of the canonical timeline via Holder's theorem (every Archimedean ordered group embeds in R).
+
+**What We Tried**:
+Built `TranslationGroup.lean` defining D as order-preserving automorphisms of the canonical timeline. Attempted to use Holder's theorem to embed D into the reals, then restrict to rationals.
+
+**Why It Failed**:
+The Holder's theorem chain requires proving the Archimedean property for the translation group, which is non-trivial. The chain of dependencies (translations → Archimedean → Holder → embedding → D) is long and fragile. The Cantor isomorphism approach is more direct.
+
+**Evidence**:
+- [Boneyard/Task956_IntRat/TranslationGroup.lean](Theories/Bimodal/Boneyard/Task956_IntRat/TranslationGroup.lean) - Archived
+
+**Lesson**:
+When a direct characterization exists (Cantor), avoid indirect chains through heavy abstract algebra.
+
+**Superseded By**: K-Relational strategy with direct Cantor isomorphism
+
+---
+
+### Dead End: Fragment Chain F-Persistence
+
+**Status**: ABANDONED
+**Tried**: 2026-02-10 to 2026-02-25
+**Related Tasks**: Task 956
+
+*Rationale*: Attempted completeness via fragment chains with F-persistence (forward temporal witness placement).
+
+**What We Tried**:
+`FragmentCompleteness.lean` built FMCS Int from bidirectional fragment chains with F-witness placement at specific integer indices.
+
+**Why It Failed**:
+The approach uses D=Int (forbidden). Additionally, F-persistence proofs required complex reasoning about witness placement ordering that remained sorry-dependent.
+
+**Evidence**:
+- [Boneyard/Task956_IntRat/FragmentCompleteness.lean](Theories/Bimodal/Boneyard/Task956_IntRat/FragmentCompleteness.lean) - Archived
+
+**Lesson**:
+Int-indexed fragment chains inherit the D=Int prohibition. Witness placement complexity suggests the approach is fundamentally harder than necessary.
+
+**Superseded By**: K-Relational strategy
+
+---
+
+### Dead End: Reflexive G/H Semantics Switch
+
+**Status**: ABANDONED
+**Tried**: 2025-12-01 to 2026-03-09
+**Related Tasks**: Task 956
+
+*Rationale*: The original semantics used reflexive G/H (quantifying over ≤), which validates T-axioms (Gφ → φ, Hφ → φ). This created obstructions for density proofs.
+
+**What We Tried**:
+Used reflexive temporal semantics where G (all_future) quantifies over t' ≥ t and H (all_past) over t' ≤ t. This makes the T-axiom valid by design but creates problems for the density proof architecture.
+
+**Why It Failed**:
+Reflexive semantics makes density proofs harder: between w₁ ≤ w₂, there may be no STRICTLY intermediate point when w₁ = w₂. The density axiom DN requires strict ordering to force intermediate MCS existence. Irreflexive semantics (strict <) aligns naturally with the density proof structure.
+
+**Evidence**:
+- [Truth.lean](Theories/Bimodal/Semantics/Truth.lean) - Updated to irreflexive semantics
+- [Task 956 research](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Analysis of T-axiom obstruction
+
+**Lesson**:
+The choice of reflexive vs irreflexive semantics has profound consequences for proof architecture. Match semantics to the proof strategy, not to convenience.
+
+**Superseded By**: Irreflexive G/H semantics (current)
+
+---
+
+### Dead End: Relational Completeness Detour
+
+**Status**: ABANDONED
+**Tried**: 2026-03-09 (plan v010)
+**Related Tasks**: Task 956
+
+*Rationale*: Plan v010 framed the K-Relational strategy as requiring relational completeness (validity over relational frames <W, R>) as a first step before constructing D. This was a misdirection.
+
+**What We Tried**:
+Plan v010 Phase 2 aimed to "establish relational completeness WITHOUT TaskFrame" - proving that the TM axiom system is complete for relational Kripke frames before introducing D or task_rel.
+
+**Why It Failed**:
+Relational completeness is IRRELEVANT to the actual goal. The goal is to BUILD D with the right properties, not to prove validity over relational frames. The existing BFMCS/FMCS infrastructure already provides the canonical timeline T (MCSs connected by CanonicalR). What remains is to prove T's order-theoretic properties and apply Cantor's theorem - no relational completeness theorem needed.
+
+**Evidence**:
+- [implementation-010.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-010.md) - Plan with incorrect relational completeness phase
+- [implementation-011.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-011.md) - Corrected plan (direct D construction)
+
+**Lesson**:
+Distinguish between proving completeness for a frame class (relational completeness) and constructing the algebraic structure that emerges from axioms (D construction). These are separate mathematical goals.
+
+**Superseded By**: Direct D construction via canonical timeline properties + Cantor isomorphism
+
+---
 
 ### Dead End: Boneyard Decidability Infrastructure
 
