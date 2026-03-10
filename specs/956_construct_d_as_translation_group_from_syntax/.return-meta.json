@@ -1,20 +1,46 @@
 {
-  "status": "planned",
+  "status": "partial",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md",
-      "summary": "9-phase implementation plan for staged construction approach (18 hours estimated)"
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/StagedConstruction/StagedTimeline.lean",
+      "summary": "Core staged timeline types, ordering, monotonicity, union"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/StagedConstruction/WitnessSeedWrapper.lean",
+      "summary": "Forward/backward witness construction and CanonicalR properties"
+    },
+    {
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/StagedConstruction/SeparationLemma.lean",
+      "summary": "Distinguishing formulas, Case A separation, density intermediates"
+    },
+    {
+      "type": "summary",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310d.md",
+      "summary": "Incremental implementation summary with phases 0-3"
+    },
+    {
+      "type": "handoff",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-4-handoff-20260310T1800Z.md",
+      "summary": "Context exhaustion handoff for Phase 4"
     }
   ],
-  "next_steps": "Run /implement 956 to execute the plan",
+  "partial_progress": {
+    "stage": "context_exhaustion_handoff",
+    "details": "Phases 0-3 completed (ROAD_MAP update, StagedTimeline infrastructure, witness seed wrappers, separation lemma). Approaching context limit. Phase 4 (staged execution) is next.",
+    "phases_completed": 4,
+    "phases_total": 9,
+    "handoff_path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-4-handoff-20260310T1800Z.md"
+  },
+  "next_steps": "Run /implement 956 to resume from Phase 4 (staged execution)",
   "metadata": {
-    "session_id": "sess_1773167269_0889bf",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1773167912_6e3489",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner"],
-    "phase_count": 9,
-    "estimated_hours": 18
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 9
   }
 }
