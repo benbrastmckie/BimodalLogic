@@ -8,12 +8,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T00:45:56Z",
+      "last_updated": "2026-03-10T00:50:57Z",
       "researched": "2026-03-10T00:45:56Z",
       "artifacts": [
         {
@@ -145,10 +145,15 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-023.md",
           "type": "research",
           "summary": "Complete pipeline from syntax to representation theorem via K-Relational: task_rel d w u := e(u)-e(w)=d where e:T->Q is Cantor iso; single blocker is density proof"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "11-phase K-Relational implementation: Cantor characterization discovers Q from syntax with non-trivial task_rel d w u := e(u)-e(w)=d"
         }
       ],
-      "session_id": "sess_1741536100_r956rep",
-      "planned": "2026-03-09T22:46:28Z",
+      "session_id": "sess_1741536200_p956plan",
+      "planned": "2026-03-10T00:50:57Z",
       "started": "2026-03-09T15:58:52Z",
       "resume_phase": 8
     },

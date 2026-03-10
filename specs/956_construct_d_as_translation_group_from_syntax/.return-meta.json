@@ -1,19 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-09T00:00:00Z",
-  "artifacts": [{
-    "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-023.md",
-    "type": "research",
-    "summary": "Complete pipeline from syntax to representation theorem via K-Relational: task_rel d w u := e(u)-e(w)=d where e:T->Q is Cantor iso; single blocker is density proof (4 sorries)"
-  }],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "512-line research report covering 10-stage pipeline, non-trivial task_rel definition, obstacle analysis"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-005.md",
+      "summary": "11-phase K-Relational implementation plan: Cantor characterization discovers Q from syntax with non-trivial task_rel"
+    }
+  ],
+  "next_steps": "Run /implement 956 to execute the plan",
   "metadata": {
-    "session_id": "sess_1741536100_r956rep",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1741536200_p956plan",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 11,
+    "estimated_hours": 20.0
   }
 }
