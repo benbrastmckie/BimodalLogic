@@ -1,7 +1,7 @@
 # Implementation Plan: D Construction from Canonical Timeline (v012)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 14-20 hours
 - **Dependencies**: None
 - **Research Inputs**: research-030.md (blocker analysis + revised strategy), research-023 (complete pipeline)
@@ -97,7 +97,7 @@ Completed in v011. Int/Rat approaches archived to `Theories/Bimodal/Boneyard/Tas
 
 ---
 
-### Phase 2B: Constructive Countable Fragment [NOT STARTED]
+### Phase 2B: Constructive Countable Fragment [BLOCKED]
 
 - **Dependencies**: None
 - **Goal**: Build a countable sub-fragment via inductive enumeration

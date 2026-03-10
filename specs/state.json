@@ -8,12 +8,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T15:59:31Z",
+      "last_updated": "2026-03-10T16:01:30Z",
       "researched": "2026-03-10T15:52:51Z",
       "artifacts": [
         {
@@ -167,11 +167,6 @@
           "summary": "Team research: original D-from-syntax goal lost; plan v008 is regression to D=Int; three goals separated (A:completeness, B:D-from-syntax, C:task_rel); ROAD_MAP.md update plan proposed"
         },
         {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260309f.md",
-          "type": "summary",
-          "summary": "Phase 0-1 complete, Phase 2 blocked: canonical timeline uncountable, Cantor theorem inapplicable"
-        },
-        {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-030.md",
           "type": "research",
           "summary": "Team research: blocker analysis + revised strategy (countable fragment + density attack)"
@@ -180,11 +175,16 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-012.md",
           "type": "plan",
           "summary": "v012: Constructive countable fragment + density attack. Resolves v011 countability blocker."
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310b.md",
+          "type": "summary",
+          "summary": "Phase 2B blocked: NoMaxOrder/NoMinOrder on ConstructiveQuotient hit G-complete MCS blocker"
         }
       ],
-      "session_id": "sess_1773157540_022872",
+      "session_id": "sess_1741624800_a3f2c9",
       "planned": "2026-03-10T15:59:31Z",
-      "started": "2026-03-10T03:25:46Z",
+      "started": "2026-03-10T16:01:30Z",
       "resume_phase": 5
     },
     {
