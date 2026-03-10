@@ -240,7 +240,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Staged Construction Execution (Even/Odd Stages) [PARTIAL]
+### Phase 4: Staged Construction Execution (Even/Odd Stages) [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Implement the even/odd stage alternation that builds the dense timeline
@@ -287,6 +287,25 @@ After this implementation:
 - Remaining: Full even/odd stage iteration functions, recursive `staged_timeline` construction, monotonicity proof
 - Sorries: 0 (zero-debt)
 - Build: `lake build` passes (758 jobs)
+
+**Session: 2026-03-10, sess_1773167912_6e3489 (iteration 3)**
+- Added: `densityWitnessMCS`, `densityWitnessMCS_spec`, `densityWitnessPoint`, `densityWitnessPoint_canonicalR` - density witness infrastructure using Classical.choose
+- Added: `witnessesForPoint` - collects forward/backward witnesses for one point and formula
+- Added: `processFormula` - processes one formula across all current points using Finset.biUnion
+- Added: `evenStage` - processes k-th formula obligations
+- Added: `densityWitnessForPoint` - creates density witness for one point
+- Added: `processDensity` - density insertion for one formula across all points
+- Added: `oddStage` - density insertion for k-th formula
+- Added: `stagedBuild` - recursive construction alternating even/odd stages
+- Added: `evenStage_monotone`, `oddStage_monotone`, `stagedBuild_monotone` - monotonicity proofs
+- Added: `stagedBuild_all_comparable_with_root` - all points comparable with root (key inductive proof)
+- Added: `stagedBuild_linear` - linearity of staged build at every stage (via root comparability)
+- Added: `rootPoint_in_stagedBuild_0` - root membership in stage 0
+- Added: `buildStagedTimeline` - wraps staged build as StagedTimeline structure
+- Added: import `Mathlib.Data.Finset.Union` for `Finset.biUnion`
+- Completed: All Phase 4 objectives (even/odd iteration, recursive construction, monotonicity, linearity, StagedTimeline wrapping)
+- Sorries: 0 (zero-debt)
+- Build: `lake build` passes (765 jobs, clean)
 
 ---
 

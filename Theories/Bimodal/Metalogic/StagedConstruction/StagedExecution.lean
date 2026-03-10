@@ -2,6 +2,7 @@ import Bimodal.Metalogic.StagedConstruction.SeparationLemma
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Completeness
 import Bimodal.ProofSystem.LinearityDerivedFacts
+import Mathlib.Data.Finset.Union
 
 /-!
 # Staged Construction Execution
@@ -634,5 +635,342 @@ theorem backward_witness_comparable_with_root
     (processBackwardObligation p phi h_P stage).mcs
     root_mcs_proof p.is_mcs (processBackwardObligation p phi h_P stage).is_mcs
     h_p_comp_root (processBackwardObligation_canonicalR p phi h_P stage)
+
+/-!
+## Even Stage: Process Formula Obligations
+
+The even stage processes a single formula phi (identified by the formula enumeration
+index) across all current points. For each point p:
+- If F(phi) ∈ p.mcs, add a forward witness
+- If P(phi) ∈ p.mcs, add a backward witness
+
+This is implemented as a fold over the current Finset.
+-/
+
+/--
+Collect the forward/backward witnesses for a single point p and formula phi.
+Returns a (possibly empty) Finset of new StagedPoints.
+-/
+noncomputable def witnessesForPoint
+    (p : StagedPoint) (phi : Formula) (stage : Stage) : Finset StagedPoint :=
+  let fwd : Finset StagedPoint :=
+    if h : Formula.some_future phi ∈ p.mcs then
+      {processForwardObligation p phi h stage}
+    else ∅
+  let bwd : Finset StagedPoint :=
+    if h : Formula.some_past phi ∈ p.mcs then
+      {processBackwardObligation p phi h stage}
+    else ∅
+  fwd ∪ bwd
+
+/--
+Process a single formula across all points in the current Finset.
+Returns the union of the current set with all new witnesses.
+-/
+noncomputable def processFormula
+    (current : Finset StagedPoint) (phi : Formula) (stage : Stage) : Finset StagedPoint :=
+  current ∪ current.biUnion (fun p => witnessesForPoint p phi stage)
+
+/--
+The even stage for index k: process the k-th formula (if it exists).
+If decodeFormulaStaged k = none, the stage is a no-op.
+-/
+noncomputable def evenStage
+    (current : Finset StagedPoint) (k : Nat) (stage : Stage) : Finset StagedPoint :=
+  match decodeFormulaStaged k with
+  | none => current
+  | some phi => processFormula current phi stage
+
+/-!
+## Odd Stage: Density Insertion
+
+The odd stage inserts density intermediates. For each point p in the current set
+with F(phi) ∈ p.mcs (for the k-th formula), we add a density witness W with
+CanonicalR(p, W) and F(phi) ∈ W. This ensures that between p and any eventual
+phi-witness, there will be an intermediate.
+
+Rather than finding "successive pairs" (which requires sorting), we use the density
+axiom to add intermediate points. For the k-th formula phi, for each point p with
+F(phi) ∈ p.mcs, we use density_intermediate to get a witness W between p and the
+phi-witness.
+-/
+
+/--
+Extract the density witness MCS for a point with F(phi) obligation.
+-/
+noncomputable def densityWitnessMCS
+    (p : StagedPoint) (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs) : Set Formula :=
+  Classical.choose (density_intermediate_exists p phi h_F)
+
+theorem densityWitnessMCS_spec
+    (p : StagedPoint) (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs) :
+    SetMaximalConsistent (densityWitnessMCS p phi h_F) ∧
+    CanonicalR p.mcs (densityWitnessMCS p phi h_F) ∧
+    Formula.some_future phi ∈ (densityWitnessMCS p phi h_F) :=
+  Classical.choose_spec (density_intermediate_exists p phi h_F)
+
+/--
+Create a density witness StagedPoint.
+-/
+noncomputable def densityWitnessPoint
+    (p : StagedPoint) (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs)
+    (stage : Stage) : StagedPoint where
+  mcs := densityWitnessMCS p phi h_F
+  is_mcs := (densityWitnessMCS_spec p phi h_F).1
+  introduced_at := stage
+
+theorem densityWitnessPoint_canonicalR
+    (p : StagedPoint) (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs)
+    (stage : Stage) :
+    CanonicalR p.mcs (densityWitnessPoint p phi h_F stage).mcs :=
+  (densityWitnessMCS_spec p phi h_F).2.1
+
+/--
+Density witnesses for a single point and formula: if F(phi) ∈ p.mcs,
+create a density intermediate witness.
+-/
+noncomputable def densityWitnessForPoint
+    (p : StagedPoint) (phi : Formula) (stage : Stage) : Finset StagedPoint :=
+  if h : Formula.some_future phi ∈ p.mcs then
+    {densityWitnessPoint p phi h stage}
+  else ∅
+
+/--
+Process density for a formula across all current points.
+-/
+noncomputable def processDensity
+    (current : Finset StagedPoint) (phi : Formula) (stage : Stage) : Finset StagedPoint :=
+  current ∪ current.biUnion (fun p => densityWitnessForPoint p phi stage)
+
+/--
+The odd stage for index k: add density intermediates for the k-th formula.
+-/
+noncomputable def oddStage
+    (current : Finset StagedPoint) (k : Nat) (stage : Stage) : Finset StagedPoint :=
+  match decodeFormulaStaged k with
+  | none => current
+  | some phi => processDensity current phi stage
+
+/-!
+## Recursive Staged Build
+
+The staged build alternates even and odd stages:
+- Stage 0: Initial root point
+- Stage 2k+1: Even stage (process formula k)
+- Stage 2k+2: Odd stage (density for formula k)
+
+This ensures every formula is eventually processed and density intermediates
+are eventually inserted for every obligation.
+-/
+
+/--
+The recursive staged build. Produces the accumulated Finset at each stage.
+- Stage 0: Just the root
+- Stage 2k+1 (odd): Process formula k (add F/P witnesses)
+- Stage 2k+2 (even in Nat, but "odd stage" in construction): Add density intermediates for formula k
+-/
+noncomputable def stagedBuild : Nat → Finset StagedPoint
+  | 0 => stage0 root_mcs root_mcs_proof
+  | n + 1 =>
+    let prev := stagedBuild n
+    if n % 2 = 0 then
+      -- n is even, so n+1 is odd: process formula obligations for formula (n/2)
+      evenStage prev (n / 2) (n + 1)
+    else
+      -- n is odd, so n+1 is even: density insertion for formula ((n-1)/2)
+      oddStage prev (n / 2) (n + 1)
+
+/-!
+## Monotonicity of Staged Build
+
+Each stage is a superset of the previous stage.
+-/
+
+theorem evenStage_monotone (current : Finset StagedPoint) (k : Nat) (stage : Stage) :
+    current ⊆ evenStage current k stage := by
+  unfold evenStage
+  match decodeFormulaStaged k with
+  | none => exact Finset.Subset.refl _
+  | some _ => exact Finset.subset_union_left
+
+theorem oddStage_monotone (current : Finset StagedPoint) (k : Nat) (stage : Stage) :
+    current ⊆ oddStage current k stage := by
+  unfold oddStage
+  match decodeFormulaStaged k with
+  | none => exact Finset.Subset.refl _
+  | some _ => exact Finset.subset_union_left
+
+theorem stagedBuild_monotone (n : Nat) :
+    stagedBuild root_mcs root_mcs_proof n ⊆
+    stagedBuild root_mcs root_mcs_proof (n + 1) := by
+  show stagedBuild root_mcs root_mcs_proof n ⊆
+    (if n % 2 = 0 then
+      evenStage (stagedBuild root_mcs root_mcs_proof n) (n / 2) (n + 1)
+    else
+      oddStage (stagedBuild root_mcs root_mcs_proof n) (n / 2) (n + 1))
+  split
+  · exact evenStage_monotone _ _ _
+  · exact oddStage_monotone _ _ _
+
+/-!
+## Linearity of Staged Build
+
+Every stage of the staged build is linearly ordered. The key insight is that
+every new witness added is comparable with all existing points (because it's
+CanonicalR-reachable from an existing point, and all existing points are
+mutually comparable by induction).
+
+We prove this by induction on the stage, using the comparability lemmas from
+the linearity infrastructure above.
+-/
+
+/-- All points in the staged build are MCS-comparable with the root. -/
+theorem stagedBuild_all_comparable_with_root (n : Nat)
+    (p : StagedPoint) (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
+    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+    CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    (rootPoint root_mcs root_mcs_proof).mcs = p.mcs := by
+  induction n generalizing p with
+  | zero =>
+    simp only [stagedBuild, stage0, Finset.mem_singleton] at hp
+    rw [hp]
+    exact root_comparable_self root_mcs root_mcs_proof
+  | succ n ih =>
+    by_cases h_prev : p ∈ stagedBuild root_mcs root_mcs_proof n
+    · exact ih p h_prev
+    · -- p was added at stage n+1
+      simp only [stagedBuild] at hp
+      split at hp
+      · -- evenStage
+        rename_i h_even
+        unfold evenStage at hp
+        split at hp
+        · -- decodeFormulaStaged returns none, so no new points
+          exact ih p hp
+        · -- decodeFormulaStaged returns some phi
+          rename_i phi _h_decode
+          unfold processFormula at hp
+          rw [Finset.mem_union] at hp
+          rcases hp with h_old | h_new
+          · exact ih p h_old
+          · rw [Finset.mem_biUnion] at h_new
+            obtain ⟨q, hq_mem, hp_wit⟩ := h_new
+            have h_q_comp := ih q hq_mem
+            unfold witnessesForPoint at hp_wit
+            rw [Finset.mem_union] at hp_wit
+            rcases hp_wit with h_fwd | h_bwd
+            · -- forward witness
+              split at h_fwd
+              · rename_i h_F
+                rw [Finset.mem_singleton] at h_fwd
+                rw [h_fwd]
+                exact forward_witness_comparable_with_root root_mcs root_mcs_proof q phi h_F (n + 1) h_q_comp
+              · exact absurd h_fwd (Finset.notMem_empty _)
+            · -- backward witness
+              split at h_bwd
+              · rename_i h_P
+                rw [Finset.mem_singleton] at h_bwd
+                rw [h_bwd]
+                exact backward_witness_comparable_with_root root_mcs root_mcs_proof q phi h_P (n + 1) h_q_comp
+              · exact absurd h_bwd (Finset.notMem_empty _)
+      · -- oddStage
+        rename_i h_odd
+        unfold oddStage at hp
+        split at hp
+        · exact ih p hp
+        · rename_i phi _h_decode
+          unfold processDensity at hp
+          rw [Finset.mem_union] at hp
+          rcases hp with h_old | h_new
+          · exact ih p h_old
+          · rw [Finset.mem_biUnion] at h_new
+            obtain ⟨q, hq_mem, hp_density⟩ := h_new
+            have h_q_comp := ih q hq_mem
+            unfold densityWitnessForPoint at hp_density
+            split at hp_density
+            · rename_i h_F
+              rw [Finset.mem_singleton] at hp_density
+              rw [hp_density]
+              -- Now goal is about densityWitnessPoint q phi h_F (n+1)
+              -- It has CanonicalR q.mcs (densityWitnessPoint ...).mcs
+              have h_R := densityWitnessPoint_canonicalR q phi h_F (n + 1)
+              exact comparability_step_forward
+                (rootPoint root_mcs root_mcs_proof).mcs q.mcs
+                (densityWitnessPoint q phi h_F (n + 1)).mcs
+                root_mcs_proof q.is_mcs (densityWitnessPoint q phi h_F (n + 1)).is_mcs
+                h_q_comp h_R
+            · exact absurd hp_density (Finset.notMem_empty _)
+
+/-- The staged build is linearly ordered at every stage. -/
+theorem stagedBuild_linear (n : Nat) :
+    IsLinearlyOrdered (stagedBuild root_mcs root_mcs_proof n) := by
+  intro a ha b hb
+  have h_a_comp := stagedBuild_all_comparable_with_root root_mcs root_mcs_proof n a ha
+  have h_b_comp := stagedBuild_all_comparable_with_root root_mcs root_mcs_proof n b hb
+  -- Both a and b are comparable with root, so they are comparable with each other
+  -- via the linearity of forward/backward reachability
+  rcases h_a_comp with h_aR | h_Ra | h_aeq
+  · rcases h_b_comp with h_bR | h_Rb | h_beq
+    · -- Both are forward from root: use canonical_forward_reachable_linear
+      have := canonical_forward_reachable_linear
+        (rootPoint root_mcs root_mcs_proof).mcs a.mcs b.mcs
+        root_mcs_proof a.is_mcs b.is_mcs h_aR h_bR
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · -- a forward from root, b backward from root
+      have := comparability_step_backward a.mcs
+        (rootPoint root_mcs root_mcs_proof).mcs b.mcs
+        a.is_mcs root_mcs_proof b.is_mcs
+        (Or.inr (Or.inl h_aR)) h_Rb
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · -- h_beq : root.mcs = b.mcs, h_aR : CanonicalR root.mcs a.mcs
+      -- After rewriting: CanonicalR b.mcs a.mcs, so b ≤ a
+      exact Or.inr (Or.inr (h_beq ▸ h_aR))
+  · rcases h_b_comp with h_bR | h_Rb | h_beq
+    · -- a backward from root, b forward from root
+      have := comparability_step_forward a.mcs
+        (rootPoint root_mcs root_mcs_proof).mcs b.mcs
+        a.is_mcs root_mcs_proof b.is_mcs
+        (Or.inl h_Ra) h_bR
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · -- Both backward from root: use canonical_backward_reachable_linear
+      have := canonical_backward_reachable_linear
+        (rootPoint root_mcs root_mcs_proof).mcs a.mcs b.mcs
+        root_mcs_proof a.is_mcs b.is_mcs h_Ra h_Rb
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · -- h_beq : root.mcs = b.mcs, h_Ra : CanonicalR a.mcs root.mcs
+      -- After rewriting: CanonicalR a.mcs b.mcs, so a ≤ b
+      exact Or.inl (Or.inr (h_beq ▸ h_Ra))
+  · rcases h_b_comp with h_bR | h_Rb | h_beq
+    · -- h_aeq : root.mcs = a.mcs, h_bR : CanonicalR root.mcs b.mcs
+      -- Need: a.le b ∨ b.le a, i.e., (a.mcs = b.mcs ∨ CanonicalR a.mcs b.mcs) ∨ ...
+      exact Or.inl (Or.inr (h_aeq ▸ h_bR))
+    · -- h_aeq : root.mcs = a.mcs, h_Rb : CanonicalR b.mcs root.mcs
+      exact Or.inr (Or.inr (h_aeq ▸ h_Rb))
+    · -- h_aeq : root.mcs = a.mcs, h_beq : root.mcs = b.mcs
+      exact Or.inl (Or.inl (h_aeq.symm.trans h_beq))
+
+/-- The root is in stage 0 of the build. -/
+theorem rootPoint_in_stagedBuild_0 :
+    rootPoint root_mcs root_mcs_proof ∈ stagedBuild root_mcs root_mcs_proof 0 := by
+  simp [stagedBuild, stage0]
+
+/-!
+## Wrapping as StagedTimeline
+
+Combine the staged build with its monotonicity and linearity proofs to
+construct a StagedTimeline.
+-/
+
+/--
+The full staged timeline, constructed from a root MCS by alternating
+even/odd stages. This is the main output of the staged construction.
+-/
+noncomputable def buildStagedTimeline : StagedTimeline where
+  root := rootPoint root_mcs root_mcs_proof
+  root_stage := rfl
+  at_stage := stagedBuild root_mcs root_mcs_proof
+  root_in_stage_0 := rootPoint_in_stagedBuild_0 root_mcs root_mcs_proof
+  monotone := stagedBuild_monotone root_mcs root_mcs_proof
+  linear_at_stage := stagedBuild_linear root_mcs root_mcs_proof
 
 end Bimodal.Metalogic.StagedConstruction
