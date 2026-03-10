@@ -194,7 +194,7 @@ The soundness proof needs `NoMaxOrder D` and `NoMinOrder D` constraints, which f
 
 ---
 
-### Phase 5: Prove No Endpoints [NOT STARTED] (NOW UNBLOCKED)
+### Phase 5: Prove No Endpoints [BLOCKED]
 
 - **Dependencies:** Phase 0 (seriality axioms), Phase 3
 - **Goal:** Prove `NoMinOrder` and `NoMaxOrder` for RestrictedQuotient
@@ -233,6 +233,30 @@ lemma mcs_has_F_top (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
 **Verification:**
 - `NoMinOrder RestrictedQuotient` and `NoMaxOrder RestrictedQuotient` instances
 - `grep -n "\bsorry\b" RestrictedFragment.lean` returns empty for Phase 5 lemmas
+
+**Progress:**
+
+**Session: 2026-03-09, sess_1741536600_i956v6 (iteration 2)**
+- Added: `no_max_helper_irrefl` - proves strict separation when GContent(a) is NOT a subset of a.world (irreflexive case). Uses temp_4 + CanonicalR duality.
+- Added: `no_min_helper_irrefl` - symmetric past-direction helper using temp_4_past + HContent duality.
+- Completed: NoMaxOrder irreflexive branch (GContent(a) ⊄ a.world)
+- Completed: NoMinOrder irreflexive branch (HContent(a) ⊄ a.world)
+- BLOCKED: NoMaxOrder reflexive case (GContent(a) ⊆ a.world)
+- BLOCKED: NoMinOrder reflexive case (HContent(a) ⊆ a.world)
+- Sorries: 2 remain (one per instance, both in reflexive case)
+
+**Blocker Analysis:**
+When `GContent(M) = M` (an MCS where phi in M iff G(phi) in M), the canonical
+F-witness for F(neg bot) returns M itself (the Lindenbaum seed {neg bot} ∪ GContent(M) = M,
+and M is already maximal). The restricted fragment becomes a singleton, making NoMaxOrder
+false for that root. This MCS is syntactically consistent with all axioms (seriality, density,
+linearity, etc.) but semantically unsatisfiable in irreflexive frames.
+
+**Resolution options:**
+1. Bulldozing construction: Unravel the canonical model to eliminate reflexive points
+2. Step-by-step (omega) construction: Build the fragment by explicit enumeration ensuring strict successors
+3. Conditional NoMaxOrder: Add hypothesis that root is not G-closed (may suffice for completeness)
+4. Different quotient: Use a quotient that inherently produces strict ordering
 
 ---
 

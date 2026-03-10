@@ -403,34 +403,123 @@ This gives strict successors and predecessors via canonical witnesses.
 -/
 
 /--
+Helper: If `CanonicalR a.world s.world` and `GContent(a) ⊄ a.world`,
+then `s` is strictly greater than `a` in the preorder (not just `≤`).
+
+When `GContent(a) ⊄ a.world`, there exists `ψ` with `G(ψ) ∈ a.world` and `ψ ∉ a.world`.
+By temp_4, `G(G(ψ)) ∈ a.world`, so `G(ψ) ∈ s.world` (via CanonicalR).
+If `CanonicalR s a`, then `ψ ∈ a.world` (from `G(ψ) ∈ GContent(s) ⊆ a`), contradiction.
+If `s = a`, then `CanonicalR a a` means `GContent(a) ⊆ a`, contradicting hypothesis.
+-/
+private theorem no_max_helper_irrefl
+    (a s : RestrictedFragment M₀ h_mcs₀)
+    (h_R : CanonicalR a.world s.world)
+    (h_not_refl : ¬(GContent a.world ⊆ a.world))
+    : ¬(s ≤ a) := by
+  rw [Set.not_subset] at h_not_refl
+  obtain ⟨ψ, h_Gψ_a, h_ψ_not_a⟩ := h_not_refl
+  have h_T4 : [] ⊢ (Formula.all_future ψ).imp (Formula.all_future (Formula.all_future ψ)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+  have h_GGψ_a : Formula.all_future (Formula.all_future ψ) ∈ a.world :=
+    set_mcs_implication_property a.is_mcs (theorem_in_mcs a.is_mcs h_T4) h_Gψ_a
+  have h_Gψ_s : Formula.all_future ψ ∈ s.world := h_R h_GGψ_a
+  intro h_le
+  rcases h_le with rfl | h_R_sa
+  · exact h_not_refl h_R
+  · exact h_ψ_not_a (h_R_sa h_Gψ_s)
+
+/--
 NoMaxOrder on RestrictedQuotient: every element has a strict successor.
 
-**Proof approach**: Uses `mcs_has_F_top` (from CanonicalCompleteness.lean) to get
-`F(¬⊥) ∈ M` for any MCS M, giving a CanonicalR-successor. The strict separation
-at the quotient level requires showing the successor is in a different equivalence
-class, which uses the temp_a axiom and enriched formulas.
+**Status**: BLOCKED. The irreflexive case (GContent(a) ⊄ a) is proven via
+`no_max_helper_irrefl`. The reflexive case (GContent(a) ⊆ a) is an open problem:
+when an MCS is G-closed, its canonical F-witnesses may return the same MCS,
+producing a singleton quotient where NoMaxOrder fails.
 
-**Status**: Proof skeleton with sorry in the reflexive case. The non-reflexive case
-(where CanonicalR is one-directional) is handled. The reflexive case (where the
-witness is in the same equivalence class) needs the enriched formula technique
-from DenseQuotient or an alternative argument.
+**Analysis**: An MCS with `GContent(M) = M` (phi ∈ M ↔ G(phi) ∈ M) is
+syntactically consistent with all axioms (seriality, density, linearity, etc.)
+but semantically unsatisfiable in irreflexive frames (vacuous truth of G at
+a maximum point conflicts with seriality F(neg bot)). The canonical model
+construction needs a BULLDOZING step or step-by-step construction to eliminate
+such reflexive points and guarantee strict successors.
 -/
 noncomputable instance instNoMaxOrderRestrictedQuotient :
     NoMaxOrder (RestrictedQuotient M₀ h_mcs₀) where
   exists_gt := by
     intro q
     induction q using Quotient.ind with
-    | _ a => sorry  -- Requires mcs_has_F_top + strict separation argument
+    | _ a =>
+      have h_F := mcs_has_F_top a.world a.is_mcs
+      obtain ⟨s, h_R_as, _⟩ := forward_F_stays_in_restricted_fragment a _ h_F
+      by_cases h_refl : GContent a.world ⊆ a.world
+      · -- BLOCKED: reflexive case (GContent(a) ⊆ a)
+        -- When GContent(a) ⊆ a, the F-witness may be equivalent to a in the quotient.
+        -- Needs bulldozing construction or step-by-step enumeration to resolve.
+        sorry
+      · exact ⟨s.toQuotient,
+          (toAntisymmetrization_lt_toAntisymmetrization_iff).mpr
+            ⟨Or.inr h_R_as, no_max_helper_irrefl a s h_R_as h_refl⟩⟩
+
+/--
+Past-direction helper: If `CanonicalR_past a.world s.world` and `HContent(a) ⊄ a.world`,
+then `a` is strictly greater than `s` in the preorder.
+
+When `HContent(a) ⊄ a.world`, there exists `ψ` with `H(ψ) ∈ a.world` and `ψ ∉ a.world`.
+By temp_4_past, `H(H(ψ)) ∈ a.world`, so `H(ψ) ∈ HContent(a) ⊆ s.world`.
+By duality (CanonicalR_past a s implies CanonicalR via HContent_subset_implies_GContent_reverse):
+`GContent(s) ⊆ a`. So `s ≤ a`.
+If `a = s`: `CanonicalR_past a a` means `HContent(a) ⊆ a`, contradicting hypothesis.
+If `CanonicalR a s` (GContent(a) ⊆ s): by GContent_subset_implies_HContent_reverse,
+`HContent(s) ⊆ a`. H(ψ) ∈ s gives `ψ ∈ HContent(s) ⊆ a`, contradicting `ψ ∉ a`.
+-/
+private theorem no_min_helper_irrefl
+    (a s : RestrictedFragment M₀ h_mcs₀)
+    (h_Rpast : CanonicalR_past a.world s.world)
+    (h_not_refl : ¬(HContent a.world ⊆ a.world))
+    : s ≤ a ∧ ¬(a ≤ s) := by
+  rw [Set.not_subset] at h_not_refl
+  obtain ⟨ψ, h_Hψ_a, h_ψ_not_a⟩ := h_not_refl
+  -- H(ψ) ∈ a means ψ ∈ HContent(a) means H(ψ) ∈ a.world
+  -- By temp_4_past: H(H(ψ)) ∈ a, so H(ψ) ∈ HContent(a) ⊆ s
+  have h_HHψ_a : (Formula.all_past ψ).all_past ∈ a.world :=
+    set_mcs_all_past_all_past a.is_mcs h_Hψ_a
+  have h_Hψ_s : Formula.all_past ψ ∈ s.world := h_Rpast h_HHψ_a
+  -- By duality: CanonicalR_past a s gives CanonicalR s a (GContent(s) ⊆ a)
+  have h_R_sa : CanonicalR s.world a.world :=
+    HContent_subset_implies_GContent_reverse a.world s.world a.is_mcs s.is_mcs h_Rpast
+  constructor
+  · -- s ≤ a
+    exact Or.inr h_R_sa
+  · -- ¬(a ≤ s)
+    intro h_le
+    rcases h_le with rfl | h_R_as
+    · -- a = s: HContent(a) ⊆ a contradicts h_not_refl
+      exact h_not_refl h_Rpast
+    · -- CanonicalR a s (GContent(a) ⊆ s):
+      -- By GContent_subset_implies_HContent_reverse: HContent(s) ⊆ a
+      have h_Hcont_s_sub_a : HContent s.world ⊆ a.world :=
+        GContent_subset_implies_HContent_reverse a.world s.world a.is_mcs s.is_mcs h_R_as
+      -- H(ψ) ∈ s gives ψ ∈ HContent(s) ⊆ a
+      exact h_ψ_not_a (h_Hcont_s_sub_a h_Hψ_s)
 
 /--
 NoMinOrder on RestrictedQuotient: every element has a strict predecessor.
-Symmetric to NoMaxOrder using `mcs_has_P_top`.
+Symmetric to NoMaxOrder. Same blocker applies for H-closed MCSes.
 -/
 noncomputable instance instNoMinOrderRestrictedQuotient :
     NoMinOrder (RestrictedQuotient M₀ h_mcs₀) where
   exists_lt := by
     intro q
     induction q using Quotient.ind with
-    | _ a => sorry  -- Requires mcs_has_P_top + strict separation argument
+    | _ a =>
+      have h_P := mcs_has_P_top a.world a.is_mcs
+      obtain ⟨s, h_Rpast_as, _⟩ := backward_P_stays_in_restricted_fragment a _ h_P
+      by_cases h_refl : HContent a.world ⊆ a.world
+      · -- BLOCKED: reflexive case (HContent(a) ⊆ a)
+        sorry
+      · -- Irreflexive case: predecessor s is strictly less
+        obtain ⟨h_le, h_not_le⟩ := no_min_helper_irrefl a s h_Rpast_as h_refl
+        exact ⟨s.toQuotient,
+          (toAntisymmetrization_lt_toAntisymmetrization_iff).mpr ⟨h_le, h_not_le⟩⟩
 
 end Bimodal.Metalogic.Bundle
