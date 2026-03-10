@@ -13,7 +13,7 @@
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T05:21:16Z",
+      "last_updated": "2026-03-10T05:41:08Z",
       "researched": "2026-03-10T02:59:57Z",
       "artifacts": [
         {
@@ -172,13 +172,13 @@
           "summary": "Team research: original D-from-syntax goal lost; plan v008 is regression to D=Int; three goals separated (A:completeness, B:D-from-syntax, C:task_rel); ROAD_MAP.md update plan proposed"
         },
         {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-010.md",
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-011.md",
           "type": "plan",
-          "summary": "8-phase purely syntactic D construction: ROAD_MAP.md + Boneyard archival + relational frames + Cantor iso + D from syntax + non-trivial task_rel"
+          "summary": "7-phase D construction: ROAD_MAP corrections + canonical timeline + Cantor iso + D from syntax + TaskFrame + completeness. Removes relational completeness phase as irrelevant."
         }
       ],
-      "session_id": "sess_1773119979_1340b3",
-      "planned": "2026-03-10T05:21:16Z",
+      "session_id": "sess_1773120396_8e6dac",
+      "planned": "2026-03-10T05:41:08Z",
       "started": "2026-03-10T03:25:46Z",
       "resume_phase": 5
     },
