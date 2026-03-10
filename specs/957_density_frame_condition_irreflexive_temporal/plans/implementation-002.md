@@ -1,7 +1,7 @@
 # Implementation Plan: Task #957 - Density Frame Condition Under Irreflexive Temporal Semantics (v2)
 
 - **Task**: 957 - density_frame_condition_irreflexive_temporal
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: Task 956 Phase 5 (BLOCKED, this task unblocks it)
 - **Research Inputs**: research-001.md (original), research-002.md (Case B analysis)
@@ -77,7 +77,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Analyze Staged Construction [NOT STARTED]
+### Phase 1: Analyze Staged Construction [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Understand how the staged construction creates MCS pairs and identify Case A guarantee
@@ -101,7 +101,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Prove Staged Case A Lemma [NOT STARTED]
+### Phase 2: Prove Staged Case A Lemma [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove that staged construction pairs always have Case A distinguishing formulas
@@ -177,6 +177,52 @@ After this implementation:
 - New approach: Option C (staged construction Case A guarantee)
 - Abandons attempt to resolve general Case B
 - Uses existing `density_frame_condition_caseA` via staged path
+
+**Session: 2026-03-10, sess_1773180949_938468**
+
+Phase 1 COMPLETED - Exhaustive analysis of Option C viability:
+
+- Analyzed: StagedExecution.lean (976 lines) - odd/even stage structure, density witness insertion
+- Analyzed: WitnessSeedWrapper.lean (241 lines) - forward/backward witness seeds, density_witness_exists
+- Analyzed: SeparationLemma.lean (227 lines) - distinguishing_formula_exists, not_G_implies_F_neg
+- Analyzed: CantorPrereqs.lean (423 lines) - encoding sufficiency, NoMaxOrder/NoMinOrder
+- Analyzed: StagedTimeline.lean (255 lines) - StagedPoint ordering, union type
+
+Key findings from analysis:
+
+1. **Option C (staged Case A guarantee) is NOT provable.** The staged construction uses
+   standard Lindenbaum extensions (via Zorn's lemma / classical choice) which give no
+   control over which G-formulas appear in the extension. A forward witness W from parent p
+   can contain G(delta) for arbitrary formulas delta, including ones where G(delta) is also
+   in p (making it Case B). The counterexample from research-002 Finding 1 applies equally
+   to staged construction pairs.
+
+2. **The core obstruction**: For CanonicalR(M, W) AND CanonicalR(W, M'), the seed GContent(M)
+   forces G-formulas into W. These G-formulas contribute to GContent(W). If GContent(M)
+   contains G(psi) (i.e., G(G(psi)) in M) and psi is NOT in M' (possible under irreflexive
+   semantics where G(psi) in M' does not imply psi in M'), then GContent(W) contains psi
+   but M' does not, so CanonicalR(W, M') fails.
+
+3. **Controlled Lindenbaum (Option B simplified) also fails**: Attempting to prevent G(psi)
+   with psi not in M' from entering W is inconsistent with the seed when G(psi) is already
+   in GContent(M). The seed GContent(M) can contain G(psi) elements whose stripped versions
+   psi are not in M' (because G(G(psi)) in M and G(psi) in M' but psi not in M' is
+   consistent under irreflexive semantics).
+
+4. **The density frame condition Case B appears to require the Gabbay IRR rule or equivalent
+   infinite axiom schemas** (as identified by Di Maio/Zanardo 1998, research-002 Finding 19).
+   The current axiom system (temp_a, temp_4, density, temp_linearity, seriality) is
+   insufficient for proving the general density frame condition under irreflexive semantics.
+
+5. **Alternative paths forward**:
+   a. Use `density_frame_condition` with the sorry (accept debt in staged construction)
+   b. Add the Gabbay IRR rule to the proof system
+   c. Use lexicographic product T x Q for density (forbidden per task description)
+   d. Full selective Lindenbaum with enumeration control (400-600 lines, high complexity)
+   e. Prove density frame condition is UNNECESSARY for the D-from-syntax construction
+      by using a different Cantor application that doesn't require DenselyOrdered
+
+Phase 2 BLOCKED - Option C is not provable, mathematical obstruction confirmed
 
 ## Testing & Validation
 
