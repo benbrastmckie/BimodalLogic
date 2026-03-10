@@ -228,7 +228,7 @@ If both options fail after reasonable effort (>4 hours), mark phase [BLOCKED]:
 
 ---
 
-### Phase 5: Prove No Endpoints [PARTIAL]
+### Phase 5: Prove No Endpoints [BLOCKED]
 
 - **Dependencies:** Phase 3 (can run in parallel with Phase 4)
 - **Goal:** Prove `NoMinOrder` and `NoMaxOrder` for RestrictedQuotient
