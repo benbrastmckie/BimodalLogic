@@ -8,23 +8,18 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T18:19:58Z",
+      "last_updated": "2026-03-10T18:31:59Z",
       "researched": "2026-03-10T18:19:58Z",
       "artifacts": [
         {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310b.md",
           "type": "summary",
           "summary": "Phase 2B blocked: NoMaxOrder/NoMinOrder on ConstructiveQuotient hit G-complete MCS blocker"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-013.md",
-          "type": "plan",
-          "summary": "6-phase plan using Path A (Enriched Seed) as primary. Phase 2B BLOCKED: NoMaxOrder false for generic M_0."
         },
         {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310c.md",
@@ -35,10 +30,15 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md",
           "type": "research",
           "summary": "Research report: enriched M_0 construction is insufficient; recommends step-by-step staged construction or Path D bulldozing"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md",
+          "type": "plan",
+          "summary": "9-phase implementation plan for staged construction approach (18 hours estimated)"
         }
       ],
-      "session_id": "sess_1773166017_d8a043",
-      "planned": "2026-03-10T17:39:52Z",
+      "session_id": "sess_1773167269_0889bf",
+      "planned": "2026-03-10T18:31:59Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": "2B",
       "blocked_reason": "NoMaxOrder (ConstructiveQuotient M_0 h_mcs_0) is mathematically false for generic M_0. G-complete MCSs make the quotient a singleton. All pure-syntax paths (A/B/C) exhausted. User must decide: Path D bulldozing, add hypothesis, or restructure."

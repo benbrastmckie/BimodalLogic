@@ -1,23 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md",
-      "summary": "Research report: enriched M_0 construction is insufficient; recommends step-by-step staged construction or Path D bulldozing"
+      "type": "plan",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md",
+      "summary": "9-phase implementation plan for staged construction approach (18 hours estimated)"
     }
   ],
-  "next_steps": "Run /plan 956 to create revised implementation plan incorporating step-by-step construction or Path D bulldozing",
+  "next_steps": "Run /implement 956 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773166017_d8a043",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 5400,
+    "session_id": "sess_1773167269_0889bf",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-logic-research"],
-    "findings_count": 15,
-    "context_files_loaded": ["kripke-semantics-overview.md", "ROAD_MAP.md"],
-    "mathlib_lookups_performed": 3,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1
+    "delegation_path": ["orchestrator", "plan", "skill-planner"],
+    "phase_count": 9,
+    "estimated_hours": 18
   }
 }
