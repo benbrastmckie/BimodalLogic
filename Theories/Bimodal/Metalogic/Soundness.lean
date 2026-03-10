@@ -269,7 +269,7 @@ theorem temp_linearity_valid (φ ψ : Formula) :
 With irreflexive semantics, Fφ means ∃ s > t with φ(s). Using DenselyOrdered,
 given witness s > t, we get u with t < u < s. Then Fφ holds at u (via s), so FFφ at t. -/
 theorem density_valid (φ : Formula) : valid_dense (φ.some_future.imp φ.some_future.some_future) := by
-  intro T _ _ _ _ F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro h_F_phi h_GnFphi
   -- h_F_phi : ¬∀ s > t, ¬φ(s), i.e., ∃ s > t, φ(s)
@@ -291,7 +291,7 @@ theorem discreteness_forward_valid (φ : Formula) :
     valid_discrete (Formula.and (Formula.bot.neg.some_future)
       (Formula.and φ (Formula.all_past φ)) |>.imp
       (Formula.all_past φ).some_future) := by
-  intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj h_G_not_H
   -- h_conj encodes (F⊤ → (φ → Hφ → ⊥) → ⊥) → ⊥, from which we extract three parts.
@@ -319,9 +319,44 @@ theorem discreteness_forward_valid (φ : Formula) :
   · rw [h_eq]; exact h_phi
   · exact h_H r h_lt
 
-/-- All base TM axioms (excluding density and discreteness) are universally valid.
-With irreflexive semantics, density requires DenselyOrdered and discreteness requires SuccOrder,
-so they are handled separately by `density_valid` and `discreteness_forward_valid`. -/
+/-- Future seriality axiom is valid on dense orders: `⊨_dense F(¬⊥)`.
+Requires `Nontrivial D` (via `valid_dense`) to ensure there exist distinct elements,
+from which `NoMaxOrder` follows using the group structure. -/
+theorem seriality_future_valid : valid_dense (Formula.some_future (Formula.neg Formula.bot)) := by
+  intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_future, Formula.neg, truth_at]
+  intro h_all_neg
+  -- From Nontrivial + AddCommGroup + LinearOrder + IsOrderedAddMonoid, derive NoMaxOrder
+  have : NoMaxOrder T := by
+    constructor; intro a
+    obtain ⟨b, hb⟩ := exists_ne a
+    rcases lt_trichotomy a b with h | h | h
+    · exact ⟨b, h⟩
+    · exact absurd h (Ne.symm hb)
+    · exact ⟨a + (a - b), lt_add_of_pos_right a (sub_pos.mpr h)⟩
+  obtain ⟨s, hts⟩ := exists_gt t
+  exact h_all_neg s hts id
+
+/-- Past seriality axiom is valid on dense orders: `⊨_dense P(¬⊥)`.
+Requires `Nontrivial D` (via `valid_dense`) to ensure there exist distinct elements,
+from which `NoMinOrder` follows using the group structure. -/
+theorem seriality_past_valid : valid_dense (Formula.some_past (Formula.neg Formula.bot)) := by
+  intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [Formula.some_past, Formula.neg, truth_at]
+  intro h_all_neg
+  have : NoMinOrder T := by
+    constructor; intro a
+    obtain ⟨b, hb⟩ := exists_ne a
+    rcases lt_trichotomy a b with h | h | h
+    · exact ⟨a + (a - b), add_lt_of_neg_right a (sub_neg.mpr h)⟩
+    · exact absurd h (Ne.symm hb)
+    · exact ⟨b, h⟩
+  obtain ⟨s, hts⟩ := exists_lt t
+  exact h_all_neg s hts id
+
+/-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
+With irreflexive semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
+and seriality requires Nontrivial, so they are handled separately. -/
 theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨ φ := by
   cases h with
   | prop_k φ ψ χ => exact prop_k_valid φ ψ χ
@@ -342,6 +377,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | temp_linearity φ ψ => exact temp_linearity_valid φ ψ
   | density _ => exact absurd h_base id
   | discreteness_forward _ => exact absurd h_base id
+  | seriality_future => exact absurd h_base id
+  | seriality_past => exact absurd h_base id
 
 /-- All dense-compatible axioms are valid on densely ordered frames.
 This covers all base axioms (universally valid, hence valid on dense frames) plus the density axiom. -/
@@ -365,6 +402,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_dense (temp_linearity_valid φ ψ)
   | density ψ => exact density_valid ψ
   | discreteness_forward _ => exact absurd h_dc id
+  | seriality_future => exact seriality_future_valid
+  | seriality_past => exact seriality_past_valid
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness. -/
@@ -389,5 +428,31 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | temp_linearity φ ψ => exact Validity.valid_implies_valid_discrete (temp_linearity_valid φ ψ)
   | density _ => exact absurd h_dc id
   | discreteness_forward ψ => exact discreteness_forward_valid ψ
+  | seriality_future =>
+    intro T _ _ _ _ _ _ F M Omega _h_sc τ _h_mem t
+    simp only [Formula.some_future, Formula.neg, truth_at]
+    intro h_all_neg
+    have : NoMaxOrder T := by
+      constructor; intro a
+      obtain ⟨b, hb⟩ := exists_ne a
+      rcases lt_trichotomy a b with h | h | h
+      · exact ⟨b, h⟩
+      · exact absurd h (Ne.symm hb)
+      · exact ⟨a + (a - b), lt_add_of_pos_right a (sub_pos.mpr h)⟩
+    obtain ⟨s, hts⟩ := exists_gt t
+    exact h_all_neg s hts id
+  | seriality_past =>
+    intro T _ _ _ _ _ _ F M Omega _h_sc τ _h_mem t
+    simp only [Formula.some_past, Formula.neg, truth_at]
+    intro h_all_neg
+    have : NoMinOrder T := by
+      constructor; intro a
+      obtain ⟨b, hb⟩ := exists_ne a
+      rcases lt_trichotomy a b with h | h | h
+      · exact ⟨a + (a - b), add_lt_of_neg_right a (sub_neg.mpr h)⟩
+      · exact absurd h (Ne.symm hb)
+      · exact ⟨b, h⟩
+    obtain ⟨s, hts⟩ := exists_lt t
+    exact h_all_neg s hts id
 
 end Bimodal.Metalogic

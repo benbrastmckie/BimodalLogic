@@ -445,7 +445,7 @@ The proof handles each axiom case:
 - **modal_future (MF), temp_future (TF)**: Use `time_shift_preserves_truth` to bridge times
 -/
 
-theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D]
+theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontrivial D]
     (h_dc : h.isDenseCompatible) : is_valid D φ.swap_past_future := by
   cases h with
   | prop_k ψ χ ρ =>
@@ -568,6 +568,34 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D]
   | discreteness_forward _ =>
     -- discreteness_forward is not dense-compatible, eliminated by h_dc
     exact absurd h_dc id
+  | seriality_future =>
+    -- swap(F(¬⊥)) = P(¬⊥), need NoMinOrder from Nontrivial
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.some_past, Formula.some_future, Formula.neg, truth_at]
+    intro h_all_neg
+    have : NoMinOrder D := by
+      constructor; intro a
+      obtain ⟨b, hb⟩ := exists_ne a
+      rcases lt_trichotomy a b with h | h | h
+      · exact ⟨a + (a - b), add_lt_of_neg_right a (sub_neg.mpr h)⟩
+      · exact absurd h (Ne.symm hb)
+      · exact ⟨b, h⟩
+    obtain ⟨s, hts⟩ := exists_lt t
+    exact h_all_neg s hts id
+  | seriality_past =>
+    -- swap(P(¬⊥)) = F(¬⊥), need NoMaxOrder from Nontrivial
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.swap_temporal, Formula.some_future, Formula.some_past, Formula.neg, truth_at]
+    intro h_all_neg
+    have : NoMaxOrder D := by
+      constructor; intro a
+      obtain ⟨b, hb⟩ := exists_ne a
+      rcases lt_trichotomy a b with h | h | h
+      · exact ⟨b, h⟩
+      · exact absurd h (Ne.symm hb)
+      · exact ⟨a + (a - b), lt_add_of_pos_right a (sub_pos.mpr h)⟩
+    obtain ⟨s, hts⟩ := exists_gt t
+    exact h_all_neg s hts id
 
 /-! ## Axiom Validity (Local)
 
@@ -790,7 +818,7 @@ private theorem axiom_density_valid [DenselyOrdered D] (φ : Formula) :
   exact h_GnFphi u htu (fun h_all_neg => h_all_neg s hus h_phi_s)
 
 /-- All dense-compatible axioms are locally valid on dense orders. -/
-private theorem axiom_locally_valid [DenselyOrdered D] {φ : Formula} (h : Axiom φ)
+private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Formula} (h : Axiom φ)
     (h_dc : h.isDenseCompatible) : is_valid D φ := by
   cases h with
   | prop_k φ ψ χ => exact axiom_prop_k_valid φ ψ χ
@@ -811,5 +839,31 @@ private theorem axiom_locally_valid [DenselyOrdered D] {φ : Formula} (h : Axiom
   | temp_linearity φ ψ => exact axiom_temp_linearity_valid φ ψ
   | density ψ => exact axiom_density_valid ψ
   | discreteness_forward _ => exact absurd h_dc id
+  | seriality_future =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.some_future, Formula.neg, truth_at]
+    intro h_all_neg
+    have : NoMaxOrder D := by
+      constructor; intro a
+      obtain ⟨b, hb⟩ := exists_ne a
+      rcases lt_trichotomy a b with h | h | h
+      · exact ⟨b, h⟩
+      · exact absurd h (Ne.symm hb)
+      · exact ⟨a + (a - b), lt_add_of_pos_right a (sub_pos.mpr h)⟩
+    obtain ⟨s, hts⟩ := exists_gt t
+    exact h_all_neg s hts id
+  | seriality_past =>
+    intro F M Omega _h_sc τ _h_mem t
+    simp only [Formula.some_past, Formula.neg, truth_at]
+    intro h_all_neg
+    have : NoMinOrder D := by
+      constructor; intro a
+      obtain ⟨b, hb⟩ := exists_ne a
+      rcases lt_trichotomy a b with h | h | h
+      · exact ⟨a + (a - b), add_lt_of_neg_right a (sub_neg.mpr h)⟩
+      · exact absurd h (Ne.symm hb)
+      · exact ⟨b, h⟩
+    obtain ⟨s, hts⟩ := exists_lt t
+    exact h_all_neg s hts id
 
 end Bimodal.Metalogic.SoundnessLemmas

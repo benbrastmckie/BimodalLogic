@@ -158,6 +158,7 @@ frame condition for the density axiom DN: `F(phi) -> F(F(phi))`.
 -/
 def valid_dense (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
+    [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
     (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
@@ -175,6 +176,7 @@ capturing the frame condition for the discreteness axioms DF/DP.
 -/
 def valid_discrete (φ : Formula) : Prop :=
   ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
+    [Nontrivial D]
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
     (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
@@ -186,14 +188,14 @@ namespace Validity
 Validity implies validity over dense orders: every valid formula is valid_dense.
 -/
 theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : valid_dense φ := by
-  intro D _ _ _ _ F M Omega h_sc τ h_mem t
+  intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
   exact h D F M Omega h_sc τ h_mem t
 
 /--
 Validity implies validity over discrete orders: every valid formula is valid_discrete.
 -/
 theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : valid_discrete φ :=
-  fun D _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
+  fun D _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
 
 /--
 Valid formulas are semantic consequences of empty context.

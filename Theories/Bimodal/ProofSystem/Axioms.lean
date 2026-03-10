@@ -330,6 +330,40 @@ inductive Axiom : Formula → Type where
       Axiom (Formula.and (Formula.bot.neg.some_future)
         (Formula.and φ (Formula.all_past φ)) |>.imp
         (Formula.all_past φ).some_future)
+
+  /--
+  Seriality axiom (future): `F(¬⊥)` (there exists a future time).
+
+  Every time has a strict successor. This is the standard temporal logic
+  axiom for "no maximum element" in the temporal order. Equivalent to
+  `NoMaxOrder D` on the frame.
+
+  Semantically: at any time t, there exists s > t. The formula `¬⊥` is
+  always true, so `F(¬⊥)` means "there exists a future time" which is
+  precisely the seriality/no-max condition.
+
+  **References**:
+  - Goldblatt 1992, *Logics of Time and Computation* (seriality axiom)
+  - Research-024: seriality vs T-axioms analysis
+  -/
+  | seriality_future : Axiom (Formula.some_future (Formula.neg Formula.bot))
+
+  /--
+  Seriality axiom (past): `P(¬⊥)` (there exists a past time).
+
+  Every time has a strict predecessor. This is the standard temporal logic
+  axiom for "no minimum element" in the temporal order. Equivalent to
+  `NoMinOrder D` on the frame.
+
+  Semantically: at any time t, there exists s < t. The formula `¬⊥` is
+  always true, so `P(¬⊥)` means "there exists a past time" which is
+  precisely the seriality/no-min condition.
+
+  **References**:
+  - Goldblatt 1992, *Logics of Time and Computation* (seriality axiom)
+  - Research-024: seriality vs T-axioms analysis
+  -/
+  | seriality_past : Axiom (Formula.some_past (Formula.neg Formula.bot))
   deriving Repr
 
 /--
@@ -355,6 +389,8 @@ This excludes both `density` and `discreteness_forward`.
 def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.density _ => False
   | Axiom.discreteness_forward _ => False
+  | Axiom.seriality_future => False
+  | Axiom.seriality_past => False
   | _ => True
 
 end Bimodal.ProofSystem

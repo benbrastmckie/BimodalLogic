@@ -174,18 +174,24 @@ This resolves the F-persistence problem that blocked the DovetailingChain.
 
 /--
 GContent of a fragment element is consistent.
-Follows from GContent(M) ⊆ M (by T-axiom) and M is consistent.
+By seriality, `F(¬⊥) ∈ w.world` (it's an axiom), so by `forward_F_stays_in_fragment`
+there exists a successor `s` with `CanonicalR w s` and `¬⊥ ∈ s`. Since `CanonicalR w s`
+means `GContent(w) ⊆ s.world`, and `s` is an MCS (hence consistent), `GContent(w)` is consistent.
 -/
 lemma GContent_consistent_of_fragment
     (w : BidirectionalFragment M₀ h_mcs₀) :
     SetConsistent (GContent w.world) := by
+  -- seriality_future is an axiom: F(¬⊥) ∈ w.world
+  have h_serial := theorem_in_mcs w.is_mcs
+    (DerivationTree.axiom [] _ Axiom.seriality_future)
+  -- Get successor s with CanonicalR w s
+  obtain ⟨s, h_R, _⟩ := forward_F_stays_in_fragment w _ h_serial
+  -- GContent(w) ⊆ s.world by definition of CanonicalR
   intro L hL_sub ⟨d⟩
-  have h_L_in_M : ∀ x ∈ L, x ∈ w.world := by
+  have h_L_in_s : ∀ x ∈ L, x ∈ s.world := by
     intro x hx
-    have h_gc := hL_sub x hx
-    have h_T := DerivationTree.axiom [] ((Formula.all_future x).imp x) (Axiom.temp_t_future x)
-    exact set_mcs_implication_property w.is_mcs (theorem_in_mcs w.is_mcs h_T) h_gc
-  exact w.is_mcs.1 L h_L_in_M ⟨d⟩
+    exact h_R (hL_sub x hx)
+  exact s.is_mcs.1 L h_L_in_s ⟨d⟩
 
 /--
 When `F(φ) ∈ w.world`, the enriched seed `{φ} ∪ GContent(w.world)` is consistent.
@@ -204,18 +210,25 @@ theorem enriched_seed_consistent_from_F
 
 /--
 HContent of a fragment element is consistent.
-Follows from HContent(M) ⊆ M (by T-axiom for past) and M is consistent.
+By seriality, `P(¬⊥) ∈ w.world` (it's an axiom), so by `backward_P_stays_in_fragment`
+there exists a predecessor `s` with `CanonicalR_past w s` and `¬⊥ ∈ s`. Since
+`CanonicalR_past w s` means `HContent(w) ⊆ s.world`, and `s` is an MCS (hence consistent),
+`HContent(w)` is consistent.
 -/
 lemma HContent_consistent_of_fragment
     (w : BidirectionalFragment M₀ h_mcs₀) :
     SetConsistent (HContent w.world) := by
+  -- seriality_past is an axiom: P(¬⊥) ∈ w.world
+  have h_serial := theorem_in_mcs w.is_mcs
+    (DerivationTree.axiom [] _ Axiom.seriality_past)
+  -- Get predecessor s with CanonicalR_past w s
+  obtain ⟨s, h_R_past, _⟩ := backward_P_stays_in_fragment w _ h_serial
+  -- HContent(w) ⊆ s.world by definition of CanonicalR_past
   intro L hL_sub ⟨d⟩
-  have h_L_in_M : ∀ x ∈ L, x ∈ w.world := by
+  have h_L_in_s : ∀ x ∈ L, x ∈ s.world := by
     intro x hx
-    have h_hc := hL_sub x hx
-    have h_T := DerivationTree.axiom [] ((Formula.all_past x).imp x) (Axiom.temp_t_past x)
-    exact set_mcs_implication_property w.is_mcs (theorem_in_mcs w.is_mcs h_T) h_hc
-  exact w.is_mcs.1 L h_L_in_M ⟨d⟩
+    exact h_R_past (hL_sub x hx)
+  exact s.is_mcs.1 L h_L_in_s ⟨d⟩
 
 /--
 When `P(φ) ∈ w.world`, the enriched seed `{φ} ∪ HContent(w.world)` is consistent.
@@ -618,49 +631,21 @@ forward and backward temporal witnesses.
 /--
 `F(neg bot) ∈ M` for any MCS `M`.
 
-Since `G(bot) → bot` by the T-axiom, contrapositive gives `neg bot → neg(G(bot))`.
-Since `neg bot ∈ M` (it is a theorem), we get `neg(G(bot)) ∈ M`.
-Then `F(neg bot) = neg(G(neg(neg bot)))` follows by `G_dne_theorem` applied contrapositively.
+The seriality axiom `seriality_future` is `F(¬⊥)`. Since every axiom is a theorem,
+and every theorem is in every MCS, `F(¬⊥) ∈ M`.
 -/
 lemma mcs_has_F_top (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    Formula.some_future (Formula.neg Formula.bot) ∈ M := by
-  -- Step 1: G(bot) → bot by T-axiom
-  have h_T : [] ⊢ (Formula.all_future Formula.bot).imp Formula.bot :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot)
-  -- Step 2: Contrapositive: neg bot → neg(G(bot))
-  have h_contra : [] ⊢ (Formula.neg Formula.bot).imp (Formula.neg (Formula.all_future Formula.bot)) :=
-    Bimodal.Theorems.Propositional.contraposition h_T
-  -- Step 3: neg bot ∈ M (it is a theorem: bot → bot)
-  have h_neg_bot : Formula.neg Formula.bot ∈ M := by
-    have h_thm : [] ⊢ Formula.neg Formula.bot :=
-      DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
-    exact theorem_in_mcs h_mcs h_thm
-  -- Step 4: neg(G(bot)) ∈ M
-  have h_neg_G_bot : Formula.neg (Formula.all_future Formula.bot) ∈ M :=
-    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_contra) h_neg_bot
-  -- Step 5: G_dne_theorem: G(neg(neg bot)) → G(bot), contrapositive: neg(G(bot)) → neg(G(neg(neg bot)))
-  -- F(neg bot) = neg(G(neg(neg(neg bot)))) ... but need to match definition
-  show Formula.neg (Formula.neg (Formula.neg Formula.bot)).all_future ∈ M
-  have h_G_dne := G_dne_theorem Formula.bot
-  exact mcs_contrapositive h_mcs h_G_dne h_neg_G_bot
+    Formula.some_future (Formula.neg Formula.bot) ∈ M :=
+  theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.seriality_future)
 
 /--
 `P(neg bot) ∈ M` for any MCS `M`. Past analog of `mcs_has_F_top`.
+
+The seriality axiom `seriality_past` is `P(¬⊥)`. Since every axiom is a theorem,
+and every theorem is in every MCS, `P(¬⊥) ∈ M`.
 -/
 lemma mcs_has_P_top (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    Formula.some_past (Formula.neg Formula.bot) ∈ M := by
-  have h_T : [] ⊢ (Formula.all_past Formula.bot).imp Formula.bot :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot)
-  have h_contra : [] ⊢ (Formula.neg Formula.bot).imp (Formula.neg (Formula.all_past Formula.bot)) :=
-    Bimodal.Theorems.Propositional.contraposition h_T
-  have h_neg_bot : Formula.neg Formula.bot ∈ M := by
-    have h_thm : [] ⊢ Formula.neg Formula.bot :=
-      DerivationTree.axiom [] _ (Axiom.ex_falso Formula.bot)
-    exact theorem_in_mcs h_mcs h_thm
-  have h_neg_H_bot : Formula.neg (Formula.all_past Formula.bot) ∈ M :=
-    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_contra) h_neg_bot
-  show Formula.neg (Formula.neg (Formula.neg Formula.bot)).all_past ∈ M
-  have h_H_dne := H_dne_theorem Formula.bot
-  exact mcs_contrapositive h_mcs h_H_dne h_neg_H_bot
+    Formula.some_past (Formula.neg Formula.bot) ∈ M :=
+  theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.seriality_past)
 
 end Bimodal.Metalogic.Bundle
