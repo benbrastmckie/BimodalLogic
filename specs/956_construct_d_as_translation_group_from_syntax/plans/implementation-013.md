@@ -1,7 +1,7 @@
 # Implementation Plan: D Construction from Canonical Timeline (v013)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10-14 hours
 - **Dependencies**: None
 - **Research Inputs**: research-033.md (Path A analysis), research-030 through research-032 (blocker analysis)
@@ -91,7 +91,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 2B: Enriched Seed Construction (PATH A) [NOT STARTED]
+### Phase 2B: Enriched Seed Construction (PATH A) [BLOCKED]
 
 - **Dependencies**: None
 - **Goal**: Construct enriched forward/backward seeds that break reverse CanonicalR
@@ -156,6 +156,61 @@ Let `chi` be ANY non-theorem with `neg(chi) in M`. Then:
 2. Attempt Path B (Aut+(T)) - 1 hour
 3. Attempt Path C (Pruned Fragment) - 1 hour
 4. If all fail: mark [BLOCKED] with requires_user_review: true
+
+**Progress:**
+
+**Session: 2026-03-10, sess_1773164719_a5b7c9**
+
+All three pure-syntax paths (A/B/C) from v013 were analyzed. None can resolve
+the NoMaxOrder/NoMinOrder sorries. The statement is false for generic M_0.
+
+**Path A (Enriched Seed) Analysis:**
+
+The enriched seed `{phi, G(psi)} union GContent(M)` where `psi not in M` has
+the right structure: if consistent, the Lindenbaum extension W contains G(psi),
+hence psi in GContent(W), and since psi not in M, NOT CanonicalR W M holds.
+
+Under irreflexive semantics, G(psi) and neg(psi) are NOT contradictory (G uses
+strict future), so the seed is NOT trivially inconsistent. However, the
+consistency proof requires handling the case where only G(psi) (not phi) appears
+in the finite inconsistent subset L:
+
+  From L' ⊆ GContent(M) and L' ∪ {G(psi)} |- bot, by deduction and
+  generalized G-K: G(neg(G(psi))) in M. For contradiction, we need
+  F(G(psi)) in M (i.e., neg(G(neg(G(psi)))) in M). But F(G(psi)) for
+  contingent psi cannot be derived from the axiom system.
+
+  The density axiom gives F(chi) -> F(F(chi)) but not F(G(chi)).
+  No axiom combination produces F(G(psi)) for non-theorem psi.
+
+**Key Finding: G-Complete MCSs Make NoMaxOrder FALSE**
+
+A G-complete MCS M satisfies phi in M iff G(phi) in M for all phi.
+For such M:
+- GContent(M) = M, so any forward seed {phi} ∪ GContent(M) = {phi} ∪ M = M
+  (since F(phi) in M implies phi in M by G-completeness)
+- Lindenbaum of M is M itself
+- ConstructiveQuotient from M is a singleton {[M]}
+- Singleton violates NoMaxOrder
+
+G-complete MCSs are consistent with ALL axioms (seriality, density, linearity,
+temp_4, temp_a). See research-033 Appendix C for explicit model construction.
+
+The temp_a trick (phi in W -> G(P(phi)) in W) also fails for G-complete M
+because G-completeness implies H-completeness (via GContent duality), so
+P(phi) in M iff phi in M, which means P(phi) is in M whenever F(phi) in M.
+
+**Path B (Aut+(T))**: Uncountable and inherits T's problems (research-033).
+
+**Path C (Pruned Fragment)**: Cannot guarantee M_0 is non-G-complete.
+
+**Decision**: All paths blocked. Marked [BLOCKED] with requires_user_review.
+
+**Possible Resolutions (for user review):**
+1. Accept Path D (bulldozing): D = ConstructiveQuotient x Q, violates "no Q import"
+2. Add hypothesis to NoMaxOrder: require M_0 not G-complete, restructure completeness
+3. Construct M_0 from enriched seed {neg phi_0, F(G(neg phi_0))} to guarantee non-G-completeness
+4. Abandon ConstructiveQuotient approach entirely
 
 ---
 
