@@ -495,6 +495,32 @@ def needsPositiveHypotheses : Formula → Bool
 @[simp] lemma needsPositiveHypotheses_imp (p q : Formula) :
     (Formula.imp p q).needsPositiveHypotheses = false := rfl
 
+/-!
+### Propositional Atoms
+
+The set of propositional atoms (variable names) occurring in a formula.
+Used for freshness conditions in the IRR (Irreflexivity) rule.
+-/
+
+/-- The set of propositional atoms appearing in a formula. -/
+def atoms : Formula → Finset String
+  | atom s => {s}
+  | bot => ∅
+  | imp φ ψ => φ.atoms ∪ ψ.atoms
+  | box φ => φ.atoms
+  | all_past φ => φ.atoms
+  | all_future φ => φ.atoms
+
+/-- swap_temporal preserves atoms: swapping past/future does not change which atoms appear. -/
+theorem atoms_swap_temporal (φ : Formula) : φ.swap_temporal.atoms = φ.atoms := by
+  induction φ with
+  | atom _ => rfl
+  | bot => rfl
+  | imp _ _ ih1 ih2 => simp [swap_temporal, atoms, ih1, ih2]
+  | box _ ih => simp [swap_temporal, atoms, ih]
+  | all_past _ ih => simp [swap_temporal, atoms, ih]
+  | all_future _ ih => simp [swap_temporal, atoms, ih]
+
 end Formula
 
 end Bimodal.Syntax

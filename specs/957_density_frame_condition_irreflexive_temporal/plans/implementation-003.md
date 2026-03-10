@@ -1,7 +1,7 @@
 # Implementation Plan: Task #957 - Density Frame Condition via IRR Rule (v3)
 
 - **Task**: 957 - density_frame_condition_irreflexive_temporal
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6-8 hours
 - **Dependencies**: Task 956 Phase 5 (BLOCKED, this task unblocks it)
 - **Research Inputs**: research-004.md (IRR soundness analysis), research-003.md (Case B analysis), research-002.md (Case B obstruction)
@@ -82,7 +82,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Formula.atoms Function [NOT STARTED]
+### Phase 1: Formula.atoms Function [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add function to compute the set of propositional atoms appearing in a formula
