@@ -1,6 +1,6 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-03-09
+**Last Updated**: 2026-03-10
 **Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness IN PROGRESS (pure syntax constraint, D Construction from Canonical Timeline strategy)
 
 > **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
@@ -155,9 +155,10 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 - (in progress)
 
 **References**:
-- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-011.md) - Implementation plan (v011)
+- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md) - Implementation plan (v014, staged construction)
 - [research-020](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Strategy analysis
 - [research-021/023](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Strategy refinements
+- [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md) - ConstructiveQuotient blocker, staged construction justification
 
 ---
 
@@ -263,7 +264,7 @@ Construct D as the group that naturally emerges from the canonical timeline's or
 
 **Related Phases**: Phase 0 (Core Proofs), D Construction Strategy
 **References**:
-- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-011.md) - Implementation (v011)
+- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md) - Implementation (v014, staged construction)
 - [D Construction strategy](#strategy-d-construction-from-canonical-timeline) - Strategy entry
 
 ---
@@ -805,6 +806,38 @@ Both `bmcs_valid` and `fmp_valid` are definitionally different from the standard
 Completeness must use the same validity notion as soundness. Custom validity definitions that simplify the proof but aren't proven equivalent to the standard semantics create a soundness-completeness gap.
 
 **Superseded By**: Standard completeness via Representation.lean using `valid` from `Semantics/Validity.lean`
+
+---
+
+### Dead End: Product Domain Bulldozing (Path D)
+
+**Status**: ABANDONED
+**Tried**: 2026-03-09 to 2026-03-10
+**Related Tasks**: Task 956
+
+*Rationale*: After the ConstructiveQuotient approach was blocked by G-completeness (research-034), a tempting fallback was to define D as a product ConstructiveQuotient x Q, effectively importing Q as the temporal component and using ConstructiveQuotient only for MCS indexing.
+
+**What We Tried**:
+Considered defining D = ConstructiveQuotient x Q, where Q provides the dense linear order structure and ConstructiveQuotient provides the MCS connection. This would sidestep the Cantor prerequisites (NoMaxOrder, NoMinOrder, DenselyOrdered) that were blocked on the quotient by importing them from Q directly.
+
+**Why It Failed**:
+This approach violates the "D from syntax" constraint in two fundamental ways:
+
+1. **Imports Q externally**: The entire point of Task 956 is that D must EMERGE from the temporal axioms. Importing Q as a component of D defeats this purpose - the dense linear order structure comes from the import, not from the axioms. This is the same prohibition as D=Int or D=Rat approaches (see "All Int/Rat Import Approaches" dead end).
+
+2. **Misses the mathematical point**: In the temporal logic literature (Burgess, Venema, Goldblatt), D's algebraic structure is a CONSEQUENCE of the axiom system. Seriality axioms force no endpoints; density axioms force density; countability comes from the omega-indexed construction. The product domain approach bulldozes in the structure that should be discovered, making the formalization mathematically unenlightening even if technically sound.
+
+Additionally, the ConstructiveQuotient component itself was blocked: research-034 established that the ConstructiveQuotient cannot prove G-completeness (the quotient of G-complete MCSs is not necessarily G-complete), making the quotient unsuitable even as an MCS-indexing component.
+
+**Evidence**:
+- [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md) - ConstructiveQuotient G-completeness blocker analysis
+- [implementation-013](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-013.md) - Plan that was superseded
+- [Architectural Decision: D Must Emerge from Syntax](#decision-d-must-emerge-from-syntax) - Governing constraint
+
+**Lesson**:
+When a construction requires discovering structure from axioms, bolting on that structure from outside (even paired with syntactic components) is not a valid shortcut. The structure must emerge from the proof, not be assumed.
+
+**Superseded By**: Staged construction approach (Burgess/Venema/Goldblatt technique) via plan v014
 
 ---
 

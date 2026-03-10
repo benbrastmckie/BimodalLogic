@@ -86,7 +86,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 0: ROAD_MAP.md Update - Prohibit Path D [NOT STARTED]
+### Phase 0: ROAD_MAP.md Update - Prohibit Path D [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Add Path D (D = ConstructiveQuotient x Q) to Dead Ends section with explanation that it is circular and misses the point of the construction
@@ -107,9 +107,18 @@ After this implementation:
 - ROAD_MAP.md contains explicit prohibition of Path D
 - No guidance suggests Path D as acceptable fallback
 
+**Progress:**
+
+**Session: 2026-03-10, sess_1773167912_6e3489**
+- Added: Dead End entry "Product Domain Bulldozing (Path D)" to ROAD_MAP.md
+- Updated: Strategy "D Construction from Canonical Timeline" references to v014 plan
+- Updated: Ambition "Syntactically-Derived Duration Domain" reference to v014 plan
+- Updated: ROAD_MAP.md "Last Updated" date to 2026-03-10
+- Completed: All 5 Phase 0 tasks verified
+
 ---
 
-### Phase 1: Staged Construction Infrastructure [NOT STARTED]
+### Phase 1: Staged Construction Infrastructure [COMPLETED]
 
 - **Dependencies:** Phase 0
 - **Goal:** Define StagedTimeline type and stage indexing infrastructure
@@ -132,6 +141,21 @@ After this implementation:
 - `lake build` passes
 - `grep -n "\bsorry\b" StagedTimeline.lean` returns empty
 - Stage predicates and StagedPoint type well-formed
+
+**Progress:**
+
+**Session: 2026-03-10, sess_1773167912_6e3489**
+- Added: `StagedPoint` structure (MCS + stage index + MCS proof)
+- Added: `StagedPoint.lt`, `StagedPoint.le`, `StagedPoint.equiv` ordering definitions
+- Added: `StagedPoint.le_refl`, `StagedPoint.le_trans` proofs
+- Added: `StagedTimeline` structure with root, monotonicity, linearity fields
+- Added: `StagedTimeline.union`, `at_stage_subset_union`, `root_in_union`
+- Added: `StagedTimeline.monotone_forward`, `monotone_le`, `union_linearly_ordered`
+- Added: `StagedTimeline.union_nonempty`
+- Added: `Stage.isEven`, `Stage.isOdd` with Decidable instances
+- Added: `IsLinearlyOrdered` predicate for Finsets of StagedPoints
+- Sorries: 0 (zero-debt)
+- Build: `lake build` passes (758 jobs)
 
 ---
 
