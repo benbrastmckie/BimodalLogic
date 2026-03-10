@@ -1,23 +1,19 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-033.md",
-      "summary": "Research report analyzing 6 alternative paths for avoiding Q import while maintaining irreflexive semantics; recommends bulldozing with Cantor justification as primary path"
+      "type": "plan",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-013.md",
+      "summary": "6-phase implementation plan for D construction using Path A (Enriched Seed) as primary approach"
     }
   ],
-  "next_steps": "Run /plan 956 to revise implementation plan incorporating Path D (bulldozing with Cantor justification) or explore Path A (enriched seed, 1-2 hours) first",
+  "next_steps": "Run /implement 956 to execute the plan",
   "metadata": {
-    "session_id": "sess_1741625700_d9f6a4",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 5400,
+    "session_id": "sess_1741626000_e0g7h5",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 7,
-    "context_files_loaded": ["ROAD_MAP.md", "research-030.md", "research-031.md", "research-032.md", "implementation-012.md", "implementation-summary-20260310b.md"],
-    "mathlib_lookups_performed": 7,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 14
   }
 }
