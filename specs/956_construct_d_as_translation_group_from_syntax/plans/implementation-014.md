@@ -309,7 +309,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Cantor Prerequisites Verification [IN PROGRESS]
+### Phase 5: Cantor Prerequisites Verification [BLOCKED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Prove the staged timeline T satisfies Cantor prerequisites
@@ -332,9 +332,22 @@ After this implementation:
 - `grep -n "\bsorry\b" CantorPrereqs.lean` returns empty
 - All Cantor prerequisites proven for staged timeline
 
+**Progress:**
+
+**Session: 2026-03-10, sess_1773172424_4845b0**
+- Fixed: `staged_has_past` sorry replaced with complete proof (mirror of staged_has_future using past-versions: encoding_sufficiency_past, iterated_past_in_mcs, backward_witness_at_stage)
+- Added: `staged_timeline_nonempty` - delegates to StagedTimeline.union_nonempty
+- Added: `staged_timeline_has_future` - lifts staged_has_future to union level
+- Added: `staged_timeline_has_past` - lifts staged_has_past to union level
+- Added: `staged_timeline_countable` - union of omega-indexed Finsets is countable (via Set.Countable.mono + Set.countable_iUnion)
+- Added: import Mathlib.Data.Set.Countable for countability infrastructure
+- Sorries: 0 (zero-debt)
+- Build: `lake build` passes (769 jobs)
+- BLOCKED: `staged_timeline_densely_ordered` NOT proven - density frame condition at MCS level requires controlling GContent of Lindenbaum witnesses, which is fundamentally hard under irreflexive semantics (same blocker as DenseQuotient.lean in Boneyard, research-034 Finding 8-11). The density axiom F(phi)->F(F(phi)) gives intermediate witnesses with CanonicalR M W and F(phi) in W, but proving CanonicalR W M' (the "other direction") requires controlling which G-formulas end up in the Lindenbaum extension, which is not achievable. Phases 6-8 depend on density and are therefore also blocked.
+
 ---
 
-### Phase 6: Cantor Isomorphism Application [NOT STARTED]
+### Phase 6: Cantor Isomorphism Application [BLOCKED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Apply Cantor's theorem to establish T isomorphic to Q
@@ -360,7 +373,7 @@ After this implementation:
 
 ---
 
-### Phase 7: D and task_rel from Cantor [NOT STARTED]
+### Phase 7: D and task_rel from Cantor [BLOCKED]
 
 - **Dependencies:** Phase 6
 - **Goal:** Define D as (Q, +) and task_rel as actual displacement
@@ -388,7 +401,7 @@ After this implementation:
 
 ---
 
-### Phase 8: TaskFrame + Completeness [NOT STARTED]
+### Phase 8: TaskFrame + Completeness [BLOCKED]
 
 - **Dependencies:** Phase 7
 - **Goal:** Construct TaskFrame from staged timeline and prove completeness

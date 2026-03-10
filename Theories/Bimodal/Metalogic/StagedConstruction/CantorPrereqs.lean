@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.StagedConstruction.StagedExecution
+import Mathlib.Data.Set.Countable
 
 /-!
 # Cantor Prerequisites for the Staged Timeline
@@ -355,31 +356,68 @@ theorem staged_has_past
     ∃ q : StagedPoint, q ∈ (buildStagedTimeline root_mcs root_mcs_proof).union ∧
       CanonicalR q.mcs p.mcs := by
   have h_serial := stagedPoint_has_seriality_past p
-  -- P(¬⊥) ∈ p.mcs. Use iterated past density: P^m(¬⊥) ∈ p.mcs for all m.
-  -- By symmetric argument to staged_has_future, find encoding large enough.
-  -- The P-obligations are processed at even stages (witnessesForPoint checks both F and P).
-  -- Iterated past density: P(phi) -> P(P(phi)) from density_past.
-  -- However, Axiom.density only covers F(phi) -> F(F(phi)).
-  -- The past density P(phi) -> P(P(phi)) follows by temporal duality.
-  -- For the staged construction: at evenStage, we process both F(phi) and P(phi) obligations.
-  -- So we need a formula phi with P(phi) ∈ p.mcs whose encoding k has 2k ≥ n.
-  -- Iterate: from P(¬⊥) ∈ p.mcs, derive P(P(¬⊥)) via past density, etc.
-  -- Then iteratedPast m (P(¬⊥)) gives infinitely many P-obligations.
-  --
-  -- The same encoding sufficiency argument applies: for any N, there exists m
-  -- with encode(iteratedPast m (P(¬⊥))) ≥ N.
-  --
-  -- Since the backwards case is structurally symmetric but requires past density
-  -- derivation (via temporal duality), let me handle it.
-  --
-  -- Past density: P(phi) → P(P(phi))
-  -- Proof: density axiom gives ⊢ F(phi) → F(F(phi))
-  --        temporal_duality gives ⊢ P(phi) → P(P(phi))
-  -- But temporal_duality applies swap_temporal to the whole formula.
-  -- swap_temporal(F(phi) → F(F(phi))) should give P(phi^t) → P(P(phi^t))
-  -- where phi^t = swap_temporal(phi).
-  -- For phi = ¬⊥, swap_temporal(¬⊥) = ¬⊥ (since ¬⊥ has no temporal operators).
-  -- So we get P(¬⊥) → P(P(¬⊥)).
-  sorry
+  -- Mirror of staged_has_future using past-versions of each lemma.
+  obtain ⟨m, hm⟩ := encoding_sufficiency_past ((n + 1) / 2)
+  set phi_m := iteratedPast m (Formula.some_past (Formula.neg Formula.bot)) with phi_m_def
+  set k := @Encodable.encode Formula formulaEncodableStaged phi_m with k_def
+  have h_2k_ge_n : n ≤ 2 * k := by
+    have : 2 * ((n + 1) / 2) ≥ n := by omega
+    omega
+  have h_P_phi_m : Formula.some_past phi_m ∈ p.mcs :=
+    iterated_past_in_mcs p.mcs p.is_mcs (Formula.neg Formula.bot) h_serial (m + 1)
+  have h_decode : decodeFormulaStaged k = some phi_m :=
+    @Encodable.encodek Formula formulaEncodableStaged phi_m
+  obtain ⟨q, hq_mem, hq_R⟩ := backward_witness_at_stage root_mcs root_mcs_proof
+    p phi_m k h_decode h_P_phi_m n h_2k_ge_n hp
+  exact ⟨q, ⟨2 * k + 1, hq_mem⟩, hq_R⟩
+
+/-!
+## Nonemptiness
+-/
+
+/-- The staged timeline union is nonempty (it contains the root). -/
+theorem staged_timeline_nonempty :
+    Set.Nonempty (buildStagedTimeline root_mcs root_mcs_proof).union :=
+  (buildStagedTimeline root_mcs root_mcs_proof).union_nonempty
+
+/-!
+## NoMaxOrder and NoMinOrder (union-level)
+
+Every point in the union has a strict successor and predecessor.
+-/
+
+/-- Every point in the timeline union has a CanonicalR-successor in the union. -/
+theorem staged_timeline_has_future
+    (p : StagedPoint) (hp : p ∈ (buildStagedTimeline root_mcs root_mcs_proof).union) :
+    ∃ q : StagedPoint, q ∈ (buildStagedTimeline root_mcs root_mcs_proof).union ∧
+      CanonicalR p.mcs q.mcs := by
+  obtain ⟨n, hn⟩ := hp
+  exact staged_has_future root_mcs root_mcs_proof p n hn
+
+/-- Every point in the timeline union has a CanonicalR-predecessor in the union. -/
+theorem staged_timeline_has_past
+    (p : StagedPoint) (hp : p ∈ (buildStagedTimeline root_mcs root_mcs_proof).union) :
+    ∃ q : StagedPoint, q ∈ (buildStagedTimeline root_mcs root_mcs_proof).union ∧
+      CanonicalR q.mcs p.mcs := by
+  obtain ⟨n, hn⟩ := hp
+  exact staged_has_past root_mcs root_mcs_proof p n hn
+
+/-!
+## Countability
+
+The staged timeline is countable because it is the union of omega-indexed
+finite sets (each stagedBuild n is a Finset).
+-/
+
+/-- The staged timeline union is countable: it is the countable union
+    of finite sets (one per stage). -/
+theorem staged_timeline_countable :
+    Set.Countable (buildStagedTimeline root_mcs root_mcs_proof).union := by
+  -- The union is { p | ∃ n, p ∈ at_stage n } = ⋃ n, ↑(at_stage n)
+  apply Set.Countable.mono (s₂ := ⋃ n : Nat, ↑(stagedBuild root_mcs root_mcs_proof n))
+  · intro p hp
+    obtain ⟨n, hn⟩ := hp
+    exact Set.mem_iUnion.mpr ⟨n, hn⟩
+  · exact Set.countable_iUnion (fun n => Set.Finite.countable (Finset.finite_toSet _))
 
 end Bimodal.Metalogic.StagedConstruction
