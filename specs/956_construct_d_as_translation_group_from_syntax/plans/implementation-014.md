@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Staged Construction
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 18 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md
@@ -309,7 +309,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Cantor Prerequisites Verification [NOT STARTED]
+### Phase 5: Cantor Prerequisites Verification [IN PROGRESS]
 
 - **Dependencies:** Phase 4
 - **Goal:** Prove the staged timeline T satisfies Cantor prerequisites

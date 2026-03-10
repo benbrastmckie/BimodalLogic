@@ -17,16 +17,6 @@
       "researched": "2026-03-10T18:19:58Z",
       "artifacts": [
         {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310b.md",
-          "type": "summary",
-          "summary": "Phase 2B blocked: NoMaxOrder/NoMinOrder on ConstructiveQuotient hit G-complete MCS blocker"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310c.md",
-          "type": "summary",
-          "summary": "Phase 2B blocked: NoMaxOrder false for generic M_0 due to G-complete MCSs. All pure-syntax paths exhausted."
-        },
-        {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md",
           "type": "research",
           "summary": "Research report: enriched M_0 construction is insufficient; recommends step-by-step staged construction or Path D bulldozing"
@@ -35,12 +25,17 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md",
           "type": "plan",
           "summary": "9-phase implementation plan for staged construction approach (18 hours estimated)"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310d.md",
+          "type": "summary",
+          "summary": "Phases 0-3 complete, Phase 4 partial (linearity infrastructure)"
         }
       ],
       "session_id": "sess_1773167912_6e3489",
       "planned": "2026-03-10T18:31:59Z",
       "started": "2026-03-10T16:01:30Z",
-      "resume_phase": "2B",
+      "resume_phase": 4,
       "blocked_reason": "NoMaxOrder (ConstructiveQuotient M_0 h_mcs_0) is mathematically false for generic M_0. G-complete MCSs make the quotient a singleton. All pure-syntax paths (A/B/C) exhausted. User must decide: Path D bulldozing, add hypothesis, or restructure."
     },
     {

@@ -104,32 +104,36 @@
 
 ---
 
-### Phase 4: Staged Construction Execution (Even/Odd Stages) [PARTIAL]
+### Phase 4: Staged Construction Execution (Even/Odd Stages) [COMPLETED]
 
-**Session**: 2026-03-10, sess_1773167912_6e3489 (iteration 2)
-**Duration**: ~60 minutes
+**Session**: 2026-03-10, sess_1773167912_6e3489 (iterations 2-3)
+**Duration**: ~90 minutes total
 
-**Changes Made**:
+**Changes Made (iteration 2)**:
 - Proved `mcs_F_linearity` and `mcs_P_linearity` (F/P linearity in MCS from temp_linearity axiom and its temporal dual)
-- Proved `canonical_F_of_mem_successor` and `canonical_P_of_mem_predecessor` (F/P introduction from successor/predecessor MCS membership)
 - Proved `canonical_forward_reachable_linear` (key theorem: two forward-reachable MCSs are CanonicalR-comparable; uses gamma enrichment trick for Case 1 elimination under irreflexive semantics)
 - Proved `canonical_backward_reachable_linear` (backward analog using past linearity and HContent duality)
 - Proved `comparability_step_forward` and `comparability_step_backward` (inductive comparability step lemmas)
-- Proved `stagedPoint_le_of_mcs_comparable` (bridge from MCS-level to StagedPoint-level ordering)
 - Defined `rootPoint`, `stage0`, `processForwardObligation`, `processBackwardObligation`
-- Proved `forwardWitness_comparable_with`, `backwardWitness_comparable_with` (witness comparability with existing points)
-- Proved `forward_witness_comparable_with_root`, `backward_witness_comparable_with_root` (root comparability propagation)
-- Defined `density_intermediate_exists` (density axiom wrapper for StagedPoints)
-- NOT yet: full even/odd stage iteration, recursive staged_timeline construction, monotonicity proof
+- Proved witness comparability and root comparability propagation lemmas
 
-**Files Created**:
-- `Theories/Bimodal/Metalogic/StagedConstruction/StagedExecution.lean` - Linearity infrastructure and stage building blocks
+**Changes Made (iteration 3)**:
+- Added density witness infrastructure: `densityWitnessMCS`, `densityWitnessPoint`, `densityWitnessPoint_canonicalR`
+- Defined `witnessesForPoint`, `processFormula`, `evenStage` for formula obligation processing
+- Defined `densityWitnessForPoint`, `processDensity`, `oddStage` for density insertion
+- Defined `stagedBuild` recursive construction alternating even/odd stages
+- Proved `evenStage_monotone`, `oddStage_monotone`, `stagedBuild_monotone`
+- Proved `stagedBuild_all_comparable_with_root` (key inductive proof: all points comparable with root)
+- Proved `stagedBuild_linear` (linearity at every stage via root comparability)
+- Defined `buildStagedTimeline` wrapping staged build as StagedTimeline structure
+
+**Files Modified**:
+- `Theories/Bimodal/Metalogic/StagedConstruction/StagedExecution.lean` - Complete staged construction
 
 **Verification**:
-- Lake build: Success (758 jobs, 0 new warnings in StagedExecution)
+- Lake build: Success (765 jobs, clean)
 - Sorries: 0
 - Axioms: 0
-- Phase status: PARTIAL (linearity infrastructure complete, iteration functions pending)
 
 ---
 
@@ -137,7 +141,7 @@
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 4 of 9 (Phase 4 partial) |
+| Phases Completed | 5 of 9 (Phases 0-4 complete) |
 | Files Modified | 1 |
 | Files Created | 4 |
 | Overall Status | In Progress |
