@@ -105,7 +105,7 @@ After this implementation:
 
 ---
 
-### Phase 2: DerivationTree.irr Constructor + Downstream Updates [NOT STARTED]
+### Phase 2: DerivationTree.irr Constructor + Downstream Updates [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add IRR as a meta-rule in the proof system

@@ -256,6 +256,11 @@ private noncomputable def deduction_with_mem (Γ' : Context) (A φ : Formula)
       -- But hA : A ∈ [] is false
       simp at hA
 
+  | DerivationTree.irr q ψ h_fresh h_deriv =>
+      -- IRR has type: DerivationTree [] ψ
+      -- So Γ' = [] and hA : A ∈ [] is false
+      simp at hA
+
   | DerivationTree.weakening Γ'' _ ψ h1 h2 =>
       -- Γ'' ⊢ ψ with Γ'' ⊆ Γ'
       -- Classical case analysis: either A ∈ Γ'' or A ∉ Γ''

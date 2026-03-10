@@ -137,6 +137,23 @@ inductive DerivationTree : Context → Formula → Type where
       (d : DerivationTree [] φ) : DerivationTree [] φ.swap_past_future
 
   /--
+  Gabbay Irreflexivity Rule (IRR): if a formula is derivable under the
+  assumption that a fresh proposition p holds now and never held before,
+  then the formula is a theorem.
+
+  From `⊢ (p ∧ H(¬p)) → φ` where `p ∉ φ.atoms`, infer `⊢ φ`.
+
+  This rule is sound on irreflexive frames because at any time t in an
+  irreflexive order, we can always find a valuation making p true only at t.
+  -/
+  | irr (p : String) (φ : Formula)
+      (h_fresh : p ∉ φ.atoms)
+      (d : DerivationTree []
+        ((Formula.and (Formula.atom p)
+          (Formula.all_past (Formula.neg (Formula.atom p)))).imp φ)) :
+      DerivationTree [] φ
+
+  /--
   Weakening rule: Adding unused assumptions.
 
   If `Γ ⊢ φ` and `Γ ⊆ Δ`, then `Δ ⊢ φ`.
@@ -180,6 +197,7 @@ def height {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Nat
   | .necessitation _ d => 1 + d.height
   | .temporal_necessitation _ d => 1 + d.height
   | .temporal_duality _ d => 1 + d.height
+  | .irr _ _ _ d => 1 + d.height
   | .weakening _ _ _ d _ => 1 + d.height
 
 /-! ## Height Properties -/
