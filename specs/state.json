@@ -8,169 +8,14 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-10T16:01:30Z",
-      "researched": "2026-03-10T15:52:51Z",
+      "last_updated": "2026-03-10T16:58:59Z",
+      "researched": "2026-03-10T16:58:59Z",
       "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md",
-          "summary": "Complete construction of D as translation group Aut+(T) from pure syntax. 11-step pipeline from consistent set through truth lemma to completeness. Detailed analysis of torsor structure, homogeneity, freeness, abelianness. Supersedes chain-based and hardcoded-Int approaches."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md",
-          "type": "research",
-          "summary": "Detailed 11-step codebase audit: Steps 1-2 complete (Lindenbaum, existence lemma), Step 3 partial (antisymmetry gap), Steps 4-7 not started (translation group core), Steps 8-11 proven with trivial task_rel and 1 upstream sorry; recommends factored approach"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md",
-          "type": "research",
-          "summary": "Archival analysis (3 files for Boneyard) and antisymmetry proof (CanonicalR is NOT antisymmetric; codebase uses Antisymmetrization quotient)"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md",
-          "type": "research",
-          "summary": "eval_0 bijection proof strategy: transitivity via homogeneity OK, but freeness FAILS for dense orders (Q counterexample). Discreteness of T is key open question."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md",
-          "type": "research",
-          "summary": "Torsor approach viable via Strategy C (FMCS-based). AddTorsor in Mathlib. Generality preserved for discrete/dense extensions. Archival: DovetailingChain, CanonicalChain, CanonicalConstruction."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md",
-          "type": "research",
-          "summary": "Blocker analysis for homogeneity/freeness/Holder with 5 alternative approaches. Recommends Option D (axiomatic abstraction via HomogeneousTimeline typeclass)."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md",
-          "type": "research",
-          "summary": "JPL paper appendix analysis: paper uses D=Z directly, not automorphism group. Three blockers (freeness, Holder, homogeneity) are irrelevant. Task 956 should be revised to follow paper's simpler approach."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md",
-          "type": "research",
-          "summary": "Analysis of JPL paper app:auto_existence and lem:history-time-shift-preservation for homogeneity. Finding: paper uses D=Z/Q directly, time-shift is translation in D. Three paths: discreteness axioms, axiomatic abstraction, or back-and-forth."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md",
-          "type": "research",
-          "summary": "Rigorous back-and-forth analysis: homogeneity cannot be proven from existing construction (Lindenbaum non-determinism). Must be designed in. Paths: discreteness axioms (DP/DF → T≅Z) or controlled Lindenbaum construction."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md",
-          "type": "research",
-          "summary": "Homogeneity without discreteness/density is mathematically impossible for countable linear orders. Only Z (discrete) and Q (dense) have transitive automorphism groups. Recommends discreteness axioms DP/DF as simplest path."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-011.md",
-          "type": "research",
-          "summary": "Corrects research-010: Morel classification shows many transitive orders beyond Z/Q. DP/DF axioms are necessary (not merely convenient). Archimedeanness must be proven separately. Density path (Q) is not viable for torsor."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-011.md",
-          "type": "research",
-          "summary": "Corrects research-010 classification error; Morel theorem shows many transitive orders beyond Z/Q; DP/DF axioms are necessary (not merely convenient) for abelian Aut+(T); Archimedeanness must be proven from construction"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-012.md",
-          "type": "research",
-          "summary": "Corrects research-011: density path IS viable (D=(Q,+) not Aut+(Q)). Algebraic completeness is orthogonal to D-construction. Density path (DN axiom, D=Q) recommended: 115-185 lines, lower risk than discreteness. Holder's theorem bypassed by direct D definition."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-013.md",
-          "type": "research",
-          "summary": "Layered representation theorem architecture: Archimedean dichotomy (Mathlib), base parametric D (already done), dense extension (TM+DN, D=Q), discrete extension (TM+DP/DF, D=Z). Non-Archimedean counterexample Z^2."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-014.md",
-          "type": "research",
-          "summary": "Archimedean axiom (not expressible in temporal logic), parametric base completeness (fragment-first architecture), extensible layered architecture (core lemma + DN/DF extensions)"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-015.md",
-          "type": "research",
-          "summary": "Phase 6 blocker analysis: Adjacency Contradiction is recommended path to DenselyOrdered from DN"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-016.md",
-          "type": "research",
-          "summary": "Irreflexive G/H feasibility analysis: No blockers found. Recommend switching to resolve Phase 6 blocker."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-017.md",
-          "type": "research",
-          "summary": "Phase 8 blocker analysis: Hybrid B+C recommended. Approach B (double-seed density proof) or Approach C (direct Q-embedding bypassing DenselyOrdered). Countable BQ proof needed regardless."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-018.md",
-          "type": "research",
-          "summary": "Phase 8a countability blocker analysis - proves Countable BidirectionalQuotient is mathematically false, with 5 alternatives"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-019.md",
-          "type": "research",
-          "summary": "Strategic reassessment: analyzes 3 blockers, evaluates 6 strategies, recommends Strategy E (D=Q direct construction) bypassing all current blockers"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-020.md",
-          "type": "research",
-          "summary": "D From Syntax analysis: philosophical constraints, layered extension, Strategy K-Relational recommendation (relational frame completeness + Cantor characterization)"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-021.md",
-          "type": "research",
-          "summary": "Team research (3 agents): Holder/freeness for Aut+(T) is blocked, formal displacements reduce to TranslationGroup, TM bimodal structure is orthogonal to D. Recommends Strategy K-Relational."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-022.md",
-          "type": "research",
-          "summary": "Restricting Aut+(T) to translation subgroup does not bypass homogeneity obstacle; K-Relational remains optimal path with 1 hard step vs 3"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-023.md",
-          "type": "research",
-          "summary": "Complete pipeline from syntax to representation theorem via K-Relational: task_rel d w u := e(u)-e(w)=d where e:T->Q is Cantor iso; single blocker is density proof"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-024.md",
-          "type": "research",
-          "summary": "Option 2 (seriality axioms F(neg bot)/P(neg bot)) recommended: sound, standard, minimal, preserves irreflexive architecture"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-025.md",
-          "type": "research",
-          "summary": "G-closed MCS blocker analysis: genuine problem, recommends product domain (RestrictedQuotient x Q) bulldozing"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-026.md",
-          "type": "research",
-          "summary": "Analysis of reflexive G/H consequences: would NOT solve truth lemma backward direction, causes severe collateral damage (density axiom trivializes, temp_4 redundant, seriality wasted). Recommendation: do not switch."
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-027.md",
-          "type": "research",
-          "summary": "Multi-MCS histories unnecessary; BFMCS truth lemma already provides point-wise truth; completeness via BFMCS (Option C) bypasses product domain truth lemma; remaining blocker is fully_saturated_bfmcs_exists_int sorry"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-028.md",
-          "type": "research",
-          "summary": "Constructing fully adequate FMCS using truth_at directly; identifies Boneyard archival candidates; resolves architecture via RestrictedFragment FMCS approach"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-029.md",
-          "type": "research",
-          "summary": "Team research: original D-from-syntax goal lost; plan v008 is regression to D=Int; three goals separated (A:completeness, B:D-from-syntax, C:task_rel); ROAD_MAP.md update plan proposed"
-        },
-        {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-030.md",
-          "type": "research",
-          "summary": "Team research: blocker analysis + revised strategy (countable fragment + density attack)"
-        },
         {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-012.md",
           "type": "plan",
@@ -180,9 +25,14 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310b.md",
           "type": "summary",
           "summary": "Phase 2B blocked: NoMaxOrder/NoMinOrder on ConstructiveQuotient hit G-complete MCS blocker"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-031.md",
+          "type": "research",
+          "summary": "Reflexive semantics overhaul analysis: NOT RECOMMENDED. Density axiom becomes trivially true. NoMaxOrder blocker persists. Product/bulldozing (D=Q×Quotient) remains best path."
         }
       ],
-      "session_id": "sess_1741624800_a3f2c9",
+      "session_id": "sess_1741625100_b7d4e2",
       "planned": "2026-03-10T15:59:31Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": 5
