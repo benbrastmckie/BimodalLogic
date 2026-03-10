@@ -170,7 +170,7 @@ After this implementation:
 
 ---
 
-### Phase 4: IRR Soundness (Product Frame Construction) [NOT STARTED]
+### Phase 4: IRR Soundness (Product Frame Construction) [IN PROGRESS]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove IRR is sound on irreflexive dense linear orders
