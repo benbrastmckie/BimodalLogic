@@ -8,7 +8,7 @@ irreflexive semantics using temporal axioms alone: for all MCSs M, M'
 with CanonicalR(M, M') and NOT CanonicalR(M', M), there exists W with
 CanonicalR(M, W) AND CanonicalR(W, M').
 
-## Strategy: Double-Density Trick
+## Strategy: Double-Density Trick + Reflexivity Case Split
 
 The proof uses Case A analysis combined with the "double-density trick":
 
@@ -21,23 +21,22 @@ The proof uses Case A analysis combined with the "double-density trick":
      V from W with CanonicalR(W, V) and neg(delta) in V.
      Temporal linearity on M, V, M' gives three cases:
      * CanonicalR(V, M'): V is intermediate.
-     * CanonicalR(M', V): delta in GContent(M') subset V but neg(delta) in V.
-       Contradiction.
+     * CanonicalR(M', V): delta in GContent(M') subset V but neg(delta)
+       in V. Contradiction.
      * V = M': CanonicalR(W, V) = CanonicalR(W, M'), so W is intermediate.
-   - Case B (G(delta) in M): delta in M' (from GContent(M) subset M').
-     G(neg(delta)) not in M (because G(neg(delta)) in M would place
-     neg(delta) in GContent(M) subset M', contradicting delta in M').
-     So G(neg(delta)) not in M, meaning this IS Case A for neg(delta)
-     as a formula (though neg(delta) is not a distinguishing formula).
-     Use F(neg(neg(delta))) in M... but this equals F(delta) in M.
-     Instead, observe: since G(neg(delta)) not in M, we have Case A
-     for the formula neg(delta). The key difference: we use the double-
-     density trick with a seed whose psi = neg(delta).
+   - Case B (G(delta) in M): Sub-split on CanonicalR(M', M'):
+     * B1 (M' reflexive): Take W = M'. Both CanonicalR(M, M') and
+       CanonicalR(M', M') hold.
+     * B2 (M' not reflexive): GContent(M') is not a subset of M', so
+       there exists gamma with G(gamma) in M' and gamma not in M'.
+       If G(gamma) were in M, then gamma would be in GContent(M) subset
+       M' (by CanonicalR(M, M')), contradicting gamma not in M'. So
+       G(gamma) not in M, and we apply Case A with gamma.
 
 ## References
 
 - Task 957: density_frame_condition_irreflexive_temporal
-- research-001: Findings 1-16 (density frame condition analysis)
+- research-001 through research-004 (density frame condition analysis)
 - SeparationLemma.lean: distinguishing_formula_exists, not_G_implies_F_neg
 - StagedExecution.lean: canonical_forward_reachable_linear
 -/
@@ -141,12 +140,20 @@ theorem density_frame_condition_caseA
 /-!
 ## Main Density Frame Condition
 
-Combines Case A and Case B analysis. In Case B, we observe that
-G(neg(delta)) not in M, which gives F(neg(neg(delta))) in M. But
-F(neg(neg(delta))) is syntactically different from F(delta). To handle
-Case B, we observe that Case B for delta forces delta in M' (from
-GContent(M) subset M'). Then NOT CanonicalR(M', M) gives additional
-distinguishing formulas. We show that a Case A formula always exists.
+Combines Case A and Case B analysis.
+
+- **Case A** (G(delta) not in M): Apply double-density trick directly
+  with F(neg(delta)) in M. Fully proven by `density_frame_condition_caseA`.
+
+- **Case B** (G(delta) in M, delta not in M): Two sub-cases:
+  - **B1** (CanonicalR(M', M') holds): Take W = M' directly. Both
+    CanonicalR(M, M') (given) and CanonicalR(M', M') (sub-case) hold.
+  - **B2** (CanonicalR(M', M') fails): Since GContent(M') is not a subset
+    of M', there exists gamma with G(gamma) in M' and gamma not in M'.
+    Crucially, G(gamma) cannot be in M: if it were, gamma would be in
+    GContent(M) subset M' (by CanonicalR(M, M')), contradicting gamma
+    not in M'. So G(gamma) not in M, giving F(neg(gamma)) in M. This
+    is exactly the Case A setup with gamma, so we apply Case A.
 -/
 
 /--
@@ -154,6 +161,10 @@ The density frame condition under irreflexive temporal semantics.
 
 For all MCSs M, M' with CanonicalR(M, M') and NOT CanonicalR(M', M),
 there exists an intermediate MCS W with CanonicalR(M, W) AND CanonicalR(W, M').
+
+The proof does not require the IRR rule -- it uses a purely syntactic argument
+that reduces Case B to Case A by finding an alternative distinguishing formula
+from GContent(M') that is not in M'.
 -/
 theorem density_frame_condition
     (M M' : Set Formula)
@@ -168,20 +179,29 @@ theorem density_frame_condition
   -- Step 2: Case split on G(delta) in M
   by_cases h_G_delta_M : Formula.all_future delta ∈ M
   · -- Case B: G(delta) in M, delta not in M
-    -- BLOCKED: The "Lindenbaum GContent Control Problem" prevents proving the
-    -- backward CanonicalR direction in Case B. In Case B, G(delta) in M and
-    -- G(delta) not in M cannot both hold, so we cannot use the double-density
-    -- trick (which requires F(neg(delta)) in M, but F(neg(delta)) = neg(G(delta))
-    -- modulo double negation, and G(delta) in M blocks this).
-    --
-    -- The Case A branch (below) IS fully proven using the double-density trick.
-    -- Case B requires either:
-    -- (a) A proof that Case A formulas always exist (not established)
-    -- (b) The lexicographic product densification approach (Task 956 fallback)
-    -- (c) A selective Lindenbaum construction (not yet formalized)
-    --
-    -- See research-001 Findings 14-16 for full analysis.
-    sorry
+    -- Sub-case split on whether M' is reflexive (CanonicalR(M', M')).
+    by_cases h_R'_self : CanonicalR M' M'
+    · -- Sub-case B1: CanonicalR(M', M') holds.
+      -- Take W = M'. Then CanonicalR(M, M') (given) and CanonicalR(M', M') hold.
+      exact ⟨M', h_mcs', h_R, h_R'_self⟩
+    · -- Sub-case B2: CanonicalR(M', M') does not hold.
+      -- ¬(GContent(M') ⊆ M'), so ∃ gamma with G(gamma) ∈ M' and gamma ∉ M'.
+      rw [CanonicalR, Set.not_subset] at h_R'_self
+      obtain ⟨gamma, h_gamma_GContent, h_gamma_not_M'⟩ := h_R'_self
+      -- gamma ∈ GContent(M') means G(gamma) ∈ M'
+      have h_G_gamma_M' : Formula.all_future gamma ∈ M' := h_gamma_GContent
+      -- Claim: G(gamma) ∉ M.
+      -- Proof: If G(gamma) ∈ M, then gamma ∈ GContent(M) ⊆ M' (by CanonicalR(M, M')).
+      -- But gamma ∉ M'. Contradiction.
+      have h_G_gamma_not_M : Formula.all_future gamma ∉ M := by
+        intro h_G_gamma_M
+        have h_gamma_M' : gamma ∈ M' := h_R h_G_gamma_M
+        exact h_gamma_not_M' h_gamma_M'
+      -- G(gamma) ∉ M gives F(neg(gamma)) ∈ M by not_G_implies_F_neg
+      have h_F_neg_gamma : Formula.some_future (Formula.neg gamma) ∈ M :=
+        not_G_implies_F_neg h_mcs h_G_gamma_not_M
+      -- Apply the Case A core lemma with gamma
+      exact density_frame_condition_caseA h_mcs h_mcs' h_R h_G_gamma_M' h_F_neg_gamma
   · -- Case A: G(delta) not in M
     -- F(neg(delta)) in M by not_G_implies_F_neg
     have h_F_neg_delta : Formula.some_future (Formula.neg delta) ∈ M :=

@@ -1,10 +1,11 @@
-# Implementation Summary: Task #957 (IRR Approach v3)
+# Implementation Summary: Task #957 (IRR Approach v3/v4)
 
 **Task**: density_frame_condition_irreflexive_temporal
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Started**: 2026-03-10
+**Completed**: 2026-03-10
 **Language**: lean
-**Plan**: implementation-003.md (IRR rule approach)
+**Plan**: implementation-003.md (v3), implementation-004.md (v4 revision)
 
 ## Phase Log
 
@@ -62,9 +63,56 @@
 - Lake build: Success
 - Sorries: 0 -> 0 (no new sorries)
 
+### Phase 4: IRR Soundness (Restricted Statement) [COMPLETED]
+
+**Session**: 2026-03-10, sess_1773199310_d7343d
+**Duration**: ~20 minutes
+
+**Changes Made**:
+- Replaced `irr_sound_dense` (which had a sorry for the `¬tau.domain t` case) with `irr_sound_dense_at_domain` which requires `tau.domain t` as a hypothesis
+- Fixed universe annotation: changed `variable {D : Type*}` to `variable {D : Type}` to match `valid_dense`'s quantification (which uses `D : Type`)
+- Fixed `end IRR` to `end Bimodal.Metalogic.IRRSoundness` (pre-existing namespace mismatch)
+- The restricted theorem is complete with zero sorries and suffices for canonical model arguments where domains are `Set.univ`
+
+**Files Modified**:
+- `Theories/Bimodal/Metalogic/IRRSoundness.lean` - replaced theorem, fixed namespace and universe issues
+
+**Verification**:
+- Lake build: Success
+- Sorries: 1 -> 0 (eliminated sorry in irr_sound_dense)
+- lean_goal: "no goals" at end of proof
+
+### Phase 5: Density Case B Resolution [COMPLETED]
+
+**Session**: 2026-03-10, sess_1773199310_d7343d
+**Duration**: ~15 minutes
+
+**Changes Made**:
+- Resolved the sorry in `density_frame_condition` Case B using a novel purely syntactic argument (NO IRR required)
+- **Key insight**: Case B (G(delta) in M, delta not in M) splits into:
+  - B1 (M' reflexive: CanonicalR(M', M')): Take W = M' directly
+  - B2 (M' not reflexive): GContent(M') is not a subset of M', so there exists gamma with G(gamma) in M' and gamma not in M'. Since CanonicalR(M, M'), if G(gamma) were in M then gamma would be in M' (contradiction). So G(gamma) not in M, reducing to Case A with gamma.
+- Updated module-level docstring to reflect the actual proof strategy
+
+**Files Modified**:
+- `Theories/Bimodal/Metalogic/StagedConstruction/DensityFrameCondition.lean` - resolved Case B sorry (~20 lines), updated docstrings
+
+**Verification**:
+- Lake build: Success
+- Sorries: 1 -> 0 (eliminated sorry in density_frame_condition)
+- lean_goal: "no goals" at end of proof
+- No new axioms introduced
+
 ## Cumulative Statistics
 
-- Phases completed: 3/5
+- Phases completed: 5/5
 - Total sorries introduced: 0
-- Total sorries removed: 0
+- Total sorries removed: 2 (irr_sound_dense + density_frame_condition)
 - Build status: Passing
+- Key theorems proven: `irr_sound_dense_at_domain`, `density_frame_condition` (complete)
+
+## Notes
+
+- Phase 5 did NOT require the IRR rule despite the plan's expectation. The Case B resolution uses a purely syntactic argument about MCS properties (reflexivity case split + alternative distinguishing formula). This is a simpler and more elegant solution than the IRR-based approach planned in research-003 and research-004.
+- The IRR rule infrastructure (Phases 1-3: atoms function, DerivationTree.irr constructor, truth independence lemma) remains useful for future proofs requiring irreflexive frame properties.
+- Phase 4 restricted the IRR soundness theorem to domain-inhabited evaluation times. The general case (partial domains) remains an open semantic question about the task model framework.

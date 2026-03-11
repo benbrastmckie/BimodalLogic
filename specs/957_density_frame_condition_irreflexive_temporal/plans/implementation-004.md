@@ -1,7 +1,7 @@
 # Implementation Plan: Task #957 - Density Frame Condition via IRR Rule (v4)
 
 - **Task**: 957 - density_frame_condition_irreflexive_temporal
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3-4 hours (remaining)
 - **Dependencies**: Task 956 Phase 5 (BLOCKED, this task unblocks it)
 - **Research Inputs**: research-004.md (IRR soundness analysis), research-003.md (Case B analysis)
@@ -68,7 +68,7 @@ See implementation-003.md and summary-20260310c.md.
 
 ---
 
-### Phase 4: IRR Soundness (Restricted Statement) [IN PROGRESS -> REVISION NEEDED]
+### Phase 4: IRR Soundness (Restricted Statement) [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove IRR is sound on dense irreflexive linear orders (for domain-inhabited times)
@@ -130,7 +130,7 @@ For the density proof, either approach works. **Recommend the restricted stateme
 
 ---
 
-### Phase 5: Use IRR to Resolve Density Case B [NOT STARTED]
+### Phase 5: Use IRR to Resolve Density Case B [COMPLETED]
 
 - **Dependencies:** Phase 2 (IRR in proof system), Phase 4 (for soundness if needed)
 - **Goal:** Resolve the sorry in `density_frame_condition` using IRR
