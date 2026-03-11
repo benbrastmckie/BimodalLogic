@@ -1,53 +1,23 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-11T00:00:00Z",
-  "requires_user_review": true,
-  "review_reason": "Mathematical gap in conservative extension proof strategy: the final contradiction step (getting neg(atom(q)) into M'_ext when atom(q) is already in M'_ext) has no clear resolution. Multiple approaches analyzed in detail. The gap is mathematical, not implementational. Phases 1-2 complete (ExtFormula, ExtDerivation), Phase 3 blocked.",
+  "status": "researched",
   "artifacts": [
     {
-      "type": "lean_file",
-      "path": "Theories/Bimodal/Metalogic/ConservativeExtension/ExtFormula.lean",
-      "description": "Extended formula type with ExtAtom = String + Unit, embedding functions, freshness lemma"
-    },
-    {
-      "type": "lean_file",
-      "path": "Theories/Bimodal/Metalogic/ConservativeExtension/ExtDerivation.lean",
-      "description": "Extended proof system with IRR taking ExtAtom, embedding of base derivations"
-    },
-    {
-      "type": "handoff",
-      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md",
-      "description": "Detailed handoff with mathematical gap analysis and approaches tried"
-    },
-    {
-      "type": "summary",
-      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311.md",
-      "description": "Implementation summary covering phases 1-2 completed, phase 3 blocked"
+      "type": "report",
+      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-006.md",
+      "summary": "Research report analyzing the Phase 3 mathematical gap in the irreflexivity proof, with 3 viable approaches ranked by effort, risk, and correctness"
     }
   ],
-  "partial_progress": {
-    "stage": "proof_blocked_by_sorry",
-    "details": "Phases 1-2 complete (ExtFormula infrastructure + ExtDerivation proof system). Phase 3 blocked: the conservative extension approach resolves the first sorry (GContent subset M') but the final contradiction step has an unresolved mathematical gap. The gap is that neg(atom(q)) cannot enter M'_ext when atom(q) is already there from the naming set, and neg(atom(q)) is not in embed '' M.",
-    "phases_completed": 2,
-    "phases_total": 6,
-    "handoff_path": "specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md"
-  },
-  "completion_data": {
-    "completion_summary": "Implemented conservative extension infrastructure (ExtFormula, ExtDerivation) for the irreflexivity proof. The embedding preserves derivability and the fresh atom Sum.inr() is provably absent from all embedded formulas. The main irreflexivity theorem remains blocked due to a mathematical gap in the final contradiction step of the conservative extension approach.",
-    "roadmap_items": []
-  },
-  "errors": [
-    {
-      "type": "proof_impossible",
-      "message": "Conservative extension approach has mathematical gap at final contradiction step: neg(atom(q)) cannot be placed in M'_ext when atom(q) is already there. Multiple alternative approaches analyzed (duality, substitution, direct proof-theoretic) without resolution.",
-      "recoverable": false,
-      "recommendation": "Consider alternative proof strategies: (1) semantic soundness meta-argument (if CanonicalR(M,M) then canonical model has reflexive point, contradicting IRR soundness), (2) proof-theoretic approach deriving F-theorem contradiction from GContent(M) subset M, (3) revised plan using different naming set construction"
-    }
-  ],
+  "next_steps": "Run /plan 958 to create implementation plan selecting from the 3 approaches",
   "metadata": {
-    "session_id": "sess_1773261837_4c54d0",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773263530_9a4602",
+    "agent_type": "logic-research-agent",
+    "duration_seconds": 900,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "findings_count": 8,
+    "context_files_loaded": ["kripke-semantics-overview.md"],
+    "mathlib_lookups_performed": 2,
+    "context_extension_tasks": [],
+    "context_candidates_count": 2
   }
 }
