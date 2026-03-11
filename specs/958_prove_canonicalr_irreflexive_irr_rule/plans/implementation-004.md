@@ -1,7 +1,7 @@
 # Implementation Plan: Task #958 - Path A: Direct F Proof (Substitute-and-Derive)
 
 - **Task**: 958 - prove_canonicalr_irreflexive_irr_rule
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 3-4 hours
 - **Dependencies**: None (builds on existing Phases 1-3 infrastructure)
 - **Research Inputs**: specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-007.md
@@ -75,7 +75,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: CanonicalR Closure Lemmas [NOT STARTED]
+### Phase 1: CanonicalR Closure Lemmas [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Formalize the syntactic consequences of CanonicalR(M, M) to support formula search
@@ -105,7 +105,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Systematic Formula Search [NOT STARTED]
+### Phase 2: Systematic Formula Search [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Search for formula psi such that `derives psi` and `neg(psi) in M` under CanonicalR(M, M)
@@ -175,7 +175,7 @@ Based on research-007.md analysis, the following formula classes should be exami
 
 ---
 
-### Phase 3: Direct Contradiction Proof (if psi found) [NOT STARTED]
+### Phase 3: Direct Contradiction Proof (if psi found) [BLOCKED]
 
 - **Dependencies:** Phase 2 (successful)
 - **Goal:** Complete the irreflexivity proof using the discovered formula psi
@@ -216,7 +216,7 @@ Based on research-007.md analysis, the following formula classes should be exami
 
 ---
 
-### Phase 4: Integration or Pivot [NOT STARTED]
+### Phase 4: Integration or Pivot [COMPLETED]
 
 - **Dependencies:** Phase 2 or Phase 3
 - **Goal:** Either integrate the successful proof OR document failure and recommend Path B
@@ -325,3 +325,18 @@ Plan artifact:
    - This resolves GContent transfer gap completely
    - Requires F+-MCS infrastructure OR the M'_F restriction technique
    - Estimated: 3-4 additional hours
+
+**Progress:**
+
+**Session: 2026-03-11, sess_1773270655_5d33ca**
+- Added: `canonicalR_closure_temp_a` - phi in M implies P(phi) in M under CanonicalR(M,M)
+- Added: `canonicalR_closure_temp_4` - G(phi) in M implies G(G(phi)) in M
+- Added: `canonicalR_G_propagates` - phi in M implies G(P(phi)) in M (from temp_a)
+- Added: `canonicalR_H_neg_exclusion` - atom(p) in M implies H(neg(atom(p))) not-in M
+- Added: `canonicalR_neg_G_from_not_mem` - G(phi) not-in M implies neg(G(phi)) in M
+- Completed: Phase 1 (5 closure lemmas, sorry-free, build passes)
+- Completed: Phase 2 analysis (no formula psi exists -- proved impossible)
+- Completed: Phase 4 Branch B (failure documented, Path B plan created)
+- Sorries: 2 -> 2 (pre-existing, not addressed by Path A)
+- Created: `DirectIrreflexivity.lean` (~300 lines, sorry-free)
+- Created: `implementation-005.md` (Path B plan skeleton)
