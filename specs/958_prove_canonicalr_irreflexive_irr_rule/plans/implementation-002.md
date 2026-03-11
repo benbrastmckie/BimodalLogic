@@ -1,7 +1,7 @@
 # Implementation Plan: Task #958 - Conservative Extension Approach
 
 - **Task**: 958 - prove_canonicalr_irreflexive_irr_rule
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 6-8 hours
 - **Dependencies**: None (builds on existing MCS and IRR infrastructure)
 - **Research Inputs**: specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-005.md
@@ -74,7 +74,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: ExtFormula Infrastructure [NOT STARTED]
+### Phase 1: ExtFormula Infrastructure [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Define extended formula type with `ExtAtom := String + Unit` and embedding functions
@@ -114,7 +114,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Extended Proof System [NOT STARTED]
+### Phase 2: Extended Proof System [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define extended axiom and derivation types with embedding preservation
@@ -141,7 +141,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Extended MCS and Naming Set Consistency [NOT STARTED]
+### Phase 3: Extended MCS and Naming Set Consistency [BLOCKED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Define extended MCS, prove naming set with embedded M is consistent

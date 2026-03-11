@@ -24,11 +24,14 @@ technical_debt:
 
 ### 958. Prove CanonicalR irreflexivity via IRR rule
 - **Effort**: 3-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Blocks**: Task 956 (Phase 6: Cantor Isomorphism Application)
 - **Research**: [research-001.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md)
+- **Plan**: [implementation-002.md](specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-002.md)
+- **Summary**: [implementation-summary-20260311.md](specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311.md) (phases 1-2 of 6)
+- **Handoff**: [phase-3-handoff-20260311.md](specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md) (Phase 3 blocked)
 
 **Description**: Prove `¬CanonicalR M M` for any MCS M. This unblocks Task 956 Phase 6 by providing the irreflexivity needed for NoMaxOrder, NoMinOrder, and DenselyOrdered on the `TimelineQuot` antisymmetrized quotient. Once proven, `Order.iso_of_countable_dense` applies and the Cantor isomorphism to Q is established.
 

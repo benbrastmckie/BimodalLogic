@@ -642,12 +642,12 @@
     {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
       "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-11T20:42:51Z",
+      "last_updated": "2026-03-11T21:08:57Z",
       "researched": "2026-03-11T20:16:25Z",
       "artifacts": [
         {
@@ -679,14 +679,25 @@
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-002.md",
           "type": "plan",
           "summary": "6-phase Conservative Extension implementation plan (~650 lines)"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311.md",
+          "type": "summary",
+          "summary": "Phases 1-2 completed (ExtFormula, ExtDerivation), Phase 3 blocked by mathematical gap"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md",
+          "type": "handoff",
+          "summary": "Phase 3 blocker analysis with mathematical gap details"
         }
       ],
       "blocks": [
         956
       ],
-      "session_id": "sess_1773261565_6a4777ff",
+      "session_id": "sess_1773261837_4c54d0",
       "planned": "2026-03-11T20:42:51Z",
-      "started": "2026-03-11T18:02:01Z"
+      "started": "2026-03-11T18:02:01Z",
+      "resume_phase": 3
     }
   ],
   "completed_projects": [
