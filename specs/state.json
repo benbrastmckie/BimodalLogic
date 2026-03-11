@@ -642,13 +642,13 @@
     {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
       "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-11T23:26:30Z",
-      "researched": "2026-03-11T22:51:07Z",
+      "last_updated": "2026-03-11T23:45:23Z",
+      "researched": "2026-03-11T23:45:23Z",
       "artifacts": [
         {
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md",
@@ -699,12 +699,17 @@
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311c.md",
           "type": "summary",
           "summary": "Path A impossibility proof + closure lemmas (phases 1-2 of 4), requires Path B pivot"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-008.md",
+          "type": "research",
+          "summary": "Definitive analysis of irreflexivity blocker: naming argument proven unfixable for String atoms, bulldozing/product frame recommended as elegant resolution"
         }
       ],
       "blocks": [
         956
       ],
-      "session_id": "sess_1773270655_5d33ca",
+      "session_id": "sess_1773271820_1f07b4",
       "planned": "2026-03-11T23:08:08Z",
       "started": "2026-03-11T23:11:17Z",
       "resume_phase": 3

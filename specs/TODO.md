@@ -24,11 +24,11 @@ technical_debt:
 
 ### 958. Prove CanonicalR irreflexivity via IRR rule
 - **Effort**: 3-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
 - **Blocks**: Task 956 (Phase 6: Cantor Isomorphism Application)
-- **Research**: [research-001.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md), [research-006.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-006.md), [research-007.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-007.md) (Phase 4 blocker resolution)
+- **Research**: [research-007.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-007.md), [research-008.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-008.md) (bulldozing/product frame recommended)
 - **Plan**: [implementation-004.md](specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-004.md) (v4: Path A direct F proof)
 - **Summary**: [implementation-summary-20260311c.md](specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311c.md) (Path A proven impossible, pivot to Path B needed)
 - **Handoff**: [phase-3-handoff-20260311.md](specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md) (Phase 3 blocked)
