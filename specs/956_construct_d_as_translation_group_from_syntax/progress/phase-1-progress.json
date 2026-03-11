@@ -1,0 +1,25 @@
+{
+  "phase": 1,
+  "name": "Core Semantic Switch",
+  "status": "done",
+  "current_objective": null,
+  "objectives": [
+    {
+      "id": "truth_at_switch",
+      "description": "Change truth_at from <= to < for temporal operators",
+      "status": "done"
+    },
+    {
+      "id": "time_shift_proofs",
+      "description": "Update time-shift preservation proofs for strict inequalities",
+      "status": "done"
+    },
+    {
+      "id": "docstrings",
+      "description": "Update docstrings to reflect irreflexive semantics",
+      "status": "done"
+    }
+  ],
+  "approaches_tried": [],
+  "build_status": "lake build Bimodal.Semantics.Truth passes"
+}

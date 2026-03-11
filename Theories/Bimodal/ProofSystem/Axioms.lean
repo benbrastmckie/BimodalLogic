@@ -8,9 +8,9 @@ This module defines the 15 axiom schemata for bimodal logic TM (Tense and Modali
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 17 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
+- 15 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
   `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
-  `temp_t_future`, `temp_t_past`, `modal_future`, `temp_future`, `temp_linearity`
+  `modal_future`, `temp_future`, `temp_linearity`
 
 ## Axiom Schemata
 
@@ -36,9 +36,6 @@ The TM logic includes:
 - **T4** (Temporal 4): `Gφ → GGφ` - future of future is future (transitivity)
 - **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
 - **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
-- **TT-G** (Temporal T Future): `Gφ → φ` - what is always future is true now (reflexivity)
-- **TT-H** (Temporal T Past): `Hφ → φ` - what has always been is true now (reflexivity)
-
 ### Modal-Temporal Interaction Axioms
 - **MF** (Modal-Future): `□φ → □Fφ` - necessary truths remain necessary in future
 - **TF** (Temporal-Future): `□φ → F□φ` - necessary truths were/will-be necessary
@@ -249,32 +246,6 @@ inductive Axiom : Formula → Type where
   | temp_l (φ : Formula) : Axiom (φ.always.imp (Formula.all_future (Formula.all_past φ)))
 
   /--
-  Temporal T axiom for future: `Gφ → φ` (temporal reflexivity).
-
-  If something will always be true (from now on), it is true now.
-  This makes G reflexive: G includes the present moment.
-  Semantically: if φ holds at all times s ≥ t, then φ holds at t.
-
-  This axiom, together with `temp_t_past`, enables the coherence proofs
-  for the canonical model construction by providing a local constraint
-  connecting Gφ to φ within a single MCS.
-  -/
-  | temp_t_future (φ : Formula) : Axiom ((Formula.all_future φ).imp φ)
-
-  /--
-  Temporal T axiom for past: `Hφ → φ` (temporal reflexivity).
-
-  If something has always been true (until now), it is true now.
-  This makes H reflexive: H includes the present moment.
-  Semantically: if φ holds at all times s ≤ t, then φ holds at t.
-
-  This axiom, together with `temp_t_future`, enables the coherence proofs
-  for the canonical model construction by providing a local constraint
-  connecting Hφ to φ within a single MCS.
-  -/
-  | temp_t_past (φ : Formula) : Axiom ((Formula.all_past φ).imp φ)
-
-  /--
   Modal-Future axiom: `□φ → □Fφ` (modal-future interaction).
 
   Necessary truths remain necessary in the future.
@@ -318,6 +289,108 @@ inductive Axiom : Formula → Type where
         (Formula.or (Formula.some_future (Formula.and φ ψ))
           (Formula.or (Formula.some_future (Formula.and φ (Formula.some_future ψ)))
             (Formula.some_future (Formula.and (Formula.some_future φ) ψ)))))
+
+  /--
+  Density axiom (DN): `Fφ → FFφ` (dense temporal order).
+
+  If there exists a future time where φ holds, then there exists a future time
+  where "there exists a further future time where φ holds" also holds.
+
+  **Frame condition**: DN is valid on a frame iff the temporal order is densely
+  ordered: for all s < t, there exists u with s < u < t.
+
+  Semantically: if φ holds at some s > t, and the order is dense, then there
+  exists u with t < u < s. At u, φ holds at the further future time s > u,
+  so Fφ holds at u, hence FFφ holds at t.
+
+  **References**:
+  - Research-013 Section 3.2: Layer 1 dense extension
+  - Goldblatt 1992: density axiom for tense logic
+  -/
+  | density (φ : Formula) :
+      Axiom (φ.some_future.imp φ.some_future.some_future)
+
+  /--
+  Forward discreteness axiom (DF): `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)` (discrete temporal order).
+
+  If there is a strict future time (F⊤), and φ holds now and at all past times (Hφ),
+  then there exists a future time where Hφ holds. This captures the existence of
+  immediate successors: if there is any future, the immediate successor satisfies Hφ
+  because φ holds at all times up to and including now.
+
+  **Frame condition**: DF is valid on a frame iff the temporal order has immediate
+  successors (SuccOrder). The past axiom DP (backward discreteness) is derivable
+  from DF via the temporal_duality inference rule.
+
+  **References**:
+  - Research-013 Section 3.3: Layer 2 discrete extension
+  - DP derivation: `Theories/Bimodal/Theorems/Discreteness.lean`
+  -/
+  | discreteness_forward (φ : Formula) :
+      Axiom (Formula.and (Formula.bot.neg.some_future)
+        (Formula.and φ (Formula.all_past φ)) |>.imp
+        (Formula.all_past φ).some_future)
+
+  /--
+  Seriality axiom (future): `F(¬⊥)` (there exists a future time).
+
+  Every time has a strict successor. This is the standard temporal logic
+  axiom for "no maximum element" in the temporal order. Equivalent to
+  `NoMaxOrder D` on the frame.
+
+  Semantically: at any time t, there exists s > t. The formula `¬⊥` is
+  always true, so `F(¬⊥)` means "there exists a future time" which is
+  precisely the seriality/no-max condition.
+
+  **References**:
+  - Goldblatt 1992, *Logics of Time and Computation* (seriality axiom)
+  - Research-024: seriality vs T-axioms analysis
+  -/
+  | seriality_future : Axiom (Formula.some_future (Formula.neg Formula.bot))
+
+  /--
+  Seriality axiom (past): `P(¬⊥)` (there exists a past time).
+
+  Every time has a strict predecessor. This is the standard temporal logic
+  axiom for "no minimum element" in the temporal order. Equivalent to
+  `NoMinOrder D` on the frame.
+
+  Semantically: at any time t, there exists s < t. The formula `¬⊥` is
+  always true, so `P(¬⊥)` means "there exists a past time" which is
+  precisely the seriality/no-min condition.
+
+  **References**:
+  - Goldblatt 1992, *Logics of Time and Computation* (seriality axiom)
+  - Research-024: seriality vs T-axioms analysis
+  -/
+  | seriality_past : Axiom (Formula.some_past (Formula.neg Formula.bot))
   deriving Repr
+
+/--
+An axiom is dense-compatible if it is valid on all densely ordered frames.
+This excludes `discreteness_forward` which requires SuccOrder.
+-/
+def Axiom.isDenseCompatible {φ : Formula} : Axiom φ → Prop
+  | Axiom.discreteness_forward _ => False
+  | _ => True
+
+/--
+An axiom is discrete-compatible if it is valid on all discrete frames.
+This excludes `density` which requires DenselyOrdered.
+-/
+def Axiom.isDiscreteCompatible {φ : Formula} : Axiom φ → Prop
+  | Axiom.density _ => False
+  | _ => True
+
+/--
+An axiom is a base axiom if it is valid on all linear orders (no frame conditions).
+This excludes both `density` and `discreteness_forward`.
+-/
+def Axiom.isBase {φ : Formula} : Axiom φ → Prop
+  | Axiom.density _ => False
+  | Axiom.discreteness_forward _ => False
+  | Axiom.seriality_future => False
+  | Axiom.seriality_past => False
+  | _ => True
 
 end Bimodal.ProofSystem

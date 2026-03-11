@@ -147,6 +147,7 @@ def usedFormulas {Γ : Context} {φ : Formula} : DerivationTree Γ φ → List F
   | DerivationTree.necessitation _ d => usedFormulas d
   | DerivationTree.temporal_necessitation _ d => usedFormulas d
   | DerivationTree.temporal_duality _ d => usedFormulas d
+  | DerivationTree.irr _ _ _ d => usedFormulas d
   | DerivationTree.weakening _ _ _ d _ => usedFormulas d
 
 /--
@@ -178,6 +179,11 @@ lemma usedFormulas_subset {Γ : Context} {φ : Formula}
     have := ih ψ hψ
     exact (List.not_mem_nil this).elim
   | temporal_duality _ d ih =>
+    simp only [usedFormulas]
+    intro ψ hψ
+    have := ih ψ hψ
+    exact (List.not_mem_nil this).elim
+  | irr _ _ _ d ih =>
     simp only [usedFormulas]
     intro ψ hψ
     have := ih ψ hψ

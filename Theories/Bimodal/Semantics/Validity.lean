@@ -1,5 +1,6 @@
 import Bimodal.Semantics.Truth
 import Bimodal.Syntax.Context
+import Mathlib.Order.SuccPred.Basic
 
 /-!
 # Validity - Semantic Validity and Consequence
@@ -146,7 +147,55 @@ def formula_satisfiable (φ : Formula) : Prop :=
     (τ : WorldHistory F) (_ : τ ∈ Omega) (t : D),
     truth_at M Omega τ t φ
 
+/--
+A formula is valid over dense temporal orders if it is true in all models where D is
+densely ordered, for all shift-closed Omega, all histories in Omega, and all times.
+
+This restricts `valid` to temporal types with `DenselyOrdered D`, capturing the
+frame condition for the density axiom DN: `F(phi) -> F(F(phi))`.
+
+**Notation**: `⊨_dense φ`
+-/
+def valid_dense (φ : Formula) : Prop :=
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [DenselyOrdered D]
+    [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    truth_at M Omega τ t φ
+
+/--
+A formula is valid over discrete temporal orders if it is true in all models where D
+has successor and predecessor structure, for all shift-closed Omega, all histories
+in Omega, and all times.
+
+This restricts `valid` to temporal types with `SuccOrder D` and `PredOrder D`,
+capturing the frame condition for the discreteness axioms DF/DP.
+
+**Notation**: `⊨_discrete φ`
+-/
+def valid_discrete (φ : Formula) : Prop :=
+  ∀ (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] [SuccOrder D] [PredOrder D]
+    [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D),
+    truth_at M Omega τ t φ
+
 namespace Validity
+
+/--
+Validity implies validity over dense orders: every valid formula is valid_dense.
+-/
+theorem valid_implies_valid_dense {φ : Formula} (h : valid φ) : valid_dense φ := by
+  intro D _ _ _ _ _ F M Omega h_sc τ h_mem t
+  exact h D F M Omega h_sc τ h_mem t
+
+/--
+Validity implies validity over discrete orders: every valid formula is valid_discrete.
+-/
+theorem valid_implies_valid_discrete {φ : Formula} (h : valid φ) : valid_discrete φ :=
+  fun D _ _ _ _ _ _ F M Omega h_sc τ h_mem t => h D F M Omega h_sc τ h_mem t
 
 /--
 Valid formulas are semantic consequences of empty context.

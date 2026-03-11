@@ -67,40 +67,17 @@ We create a constant FMCS where the same MCS is used at every time point.
 This satisfies all temporal coherence conditions trivially.
 -/
 
-/--
-Build a constant FMCS from a single MCS.
+/-!
+## REMOVED: constantBFMCS (Task 956)
 
-The family assigns the same MCS to every time point. All temporal coherence
-conditions hold trivially because the MCS is the same at all times.
+With irreflexive semantics, a constant family `t ↦ M` no longer satisfies `forward_G`:
+- `forward_G` requires: `Gφ ∈ M` and `t < t'` implies `φ ∈ M`
+- Without the T-axiom (`Gφ → φ`), this cannot be proven for a constant family
+- The constant family was only meaningful with reflexive semantics where `Gφ → φ` held
 
-**Key Property**: For this family:
-- forward_G: G phi at t and t ≤ t' implies phi at t' - by T-axiom (G phi -> phi)
-- backward_H: H phi at t and t' ≤ t implies phi at t' - by T-axiom (H phi -> phi)
+The correct construction for irreflexive semantics uses non-constant families where
+the MCS at different times are related by the canonical temporal relation.
 -/
-noncomputable def constantBFMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    FMCS D where
-  mcs := fun _ => M
-  is_mcs := fun _ => h_mcs
-  forward_G := fun t t' phi _ hG =>
-    -- G phi in M and t < t' - need phi in M
-    -- Use T-axiom: G phi -> phi
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_future.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_future phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hG
-  backward_H := fun t t' phi _ hH =>
-    -- H phi in M and t' < t - need phi in M
-    -- Use T-axiom: H phi -> phi
-    let h_T := Bimodal.ProofSystem.DerivationTree.axiom []
-      (phi.all_past.imp phi) (Bimodal.ProofSystem.Axiom.temp_t_past phi)
-    let h_T_in_M := theorem_in_mcs h_mcs h_T
-    set_mcs_implication_property h_mcs h_T_in_M hH
-
-/--
-The MCS at any time in a constant family is the original MCS.
--/
-lemma constantBFMCS_mcs_eq (M : Set Formula) (h_mcs : SetMaximalConsistent M) (t : D) :
-    (constantBFMCS M h_mcs (D := D)).mcs t = M := rfl
 
 /-!
 ## REMOVED: singleFamilyBFMCS (Task 932)

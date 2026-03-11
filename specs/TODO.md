@@ -1,5 +1,5 @@
 ---
-next_project_number: 956
+next_project_number: 959
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,81 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 958. Prove CanonicalR irreflexivity via IRR rule
+- **Effort**: 3-6 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Priority**: high
+- **Blocks**: Task 956 (Phase 6: Cantor Isomorphism Application)
+- **Research**: [research-001.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md)
+
+**Description**: Prove `¬CanonicalR M M` for any MCS M. This unblocks Task 956 Phase 6 by providing the irreflexivity needed for NoMaxOrder, NoMinOrder, and DenselyOrdered on the `TimelineQuot` antisymmetrized quotient. Once proven, `Order.iso_of_countable_dense` applies and the Cantor isomorphism to Q is established.
+
+**Key files**:
+- Target: `Theories/Bimodal/Metalogic/Canonical/CanonicalR.lean` (or new file)
+- Uses: `DerivationTree.irr` (IRR rule from task 957)
+- Unblocks: `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean` (has sorry stubs)
+
+---
+
+### 957. Density frame condition under irreflexive temporal semantics
+- **Effort**: 8-16 hours
+- **Status**: [COMPLETED]
+- **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md), [research-002.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md), [research-003.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md) (IRR rule + selective Lindenbaum), [research-004.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-004.md) (IRR soundness)
+- **Plan**: [implementation-004.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-004.md) (v4: restrict IRR soundness to domain-inhabited times)
+- **Summary**: [implementation-summary-20260310c.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310c.md) (complete: all 5 phases)
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 956 context (StagedConstruction infrastructure, axiom system)
+- **Unblocks**: Task 956 (Phase 5: staged_timeline_densely_ordered)
+
+**Description**: Prove the density frame condition for the canonical model under irreflexive semantics from temporal axioms alone, without importing any external dense linear order (Q or otherwise).
+
+The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT CanonicalR M' M, there exists W with CanonicalR M W AND CanonicalR W M'.
+
+**Two sub-cases** (based on separating formula delta where G(delta) ∈ M' and delta ∉ M):
+- **Case A** (G(delta) ∉ M): Intermediate W = Lindenbaum(GContent(M) ∪ {¬delta}) appears to work — ¬CanonicalR(M', W) follows directly from G(delta) ∈ M' and ¬delta ∈ W without T-axiom. Needs formal verification.
+- **Case B** (G(delta) ∈ M, delta ∉ M): Obvious seed is inconsistent (delta ∈ GContent(M) conflicts with ¬delta). Investigate whether axioms force a Case A formula to always exist, or provide an alternative construction.
+
+**Key constraint**: Must derive density from the axioms (temp_linearity, density F(φ)→F(F(φ)), seriality). Importing Q or any dense linear order is FORBIDDEN.
+
+---
+
+### 956. Construct D as translation group from syntax
+- **Effort**: 30-50 hours
+- **Status**: [IMPLEMENTING]
+- **Previously blocked by**: Task 957 (density frame condition - NOW COMPLETE)
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma), Task 957 (density frame condition)
+- **Supersedes**: Task 954 (hardcoded Int refactor), Task 955 (CanonicalR task_rel)
+- **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md), [research-002.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md), [research-003.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md), [research-004.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md), [research-005.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md), [research-006.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md), [research-007.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md), [research-008.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md), [research-009.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md), [research-010.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md), [research-011.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-011.md), [research-012.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-012.md), [research-013.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-013.md), [research-014.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-014.md), [research-015.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-015.md), [research-016.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-016.md), [research-017.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-017.md), [research-018.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-018.md), [research-019.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-019.md), [research-020.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-020.md), [research-021.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-021.md), [research-022.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-022.md), [research-031.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-031.md), [research-032.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-032.md), [research-033.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-033.md), [research-034.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md)
+- **Plan**: [implementation-015.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-015.md) (v015: unblocked by task 957)
+- **Summary**: [implementation-summary-20260310c.md](specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310c.md)
+- **Research**: [research-035.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-035.md) (team: density blocker + lex product densification)
+- **Research**: [research-036.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-036.md) (unblocking analysis: task 957 complete, Phase 5 unblocked)
+
+**Description**: Construct the temporal duration group D entirely from pure syntax as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, without assuming Int or defining a successor function. The construction proceeds:
+
+1. **Origin**: Extend consistent set Γ₀ to MCS w₀ via Lindenbaum — this is the designated origin
+2. **Timeline**: Build linear order T of MCSs reachable from w₀ via the existence lemma (if Fψ ∈ w, there exists w' > w with ψ ∈ w'; similarly for P). Temporal axioms force T to be a connected linear order without endpoints
+3. **Translation group**: Define D = Aut⁺(T) = {f : T → T | f is order-preserving bijection}. Group operation is composition, identity is id, inverse is f⁻¹
+4. **Origin bijection**: eval₀ : D → T defined by eval₀(d) = d(w₀). This is a bijection because D acts freely and transitively on T (homogeneity of T from temporal axioms + rigidity of order-automorphisms)
+5. **Ordered group**: Pull back order from T to D: d₁ < d₂ iff d₁(w₀) < d₂(w₀). Makes D a linearly ordered abelian group
+6. **task_rel = group action**: task_rel(d)(w) = d(w). This IS the group action — not an artificial map
+7. **Canonical model**: M = (T, <, D, task_rel, V) where V(p) = {w : p ∈ w}
+8. **Truth lemma**: M, w ⊨ φ ↔ φ ∈ w by structural induction
+9. **Completeness**: If ⊬ φ, extend {¬φ} to MCS w₀, build canonical model, w₀ ⊭ φ
+
+**Key advantages over previous approaches**:
+- No dovetailing chain or F-persistence problem (existence lemma provides witnesses directly)
+- No SuccOrder/PredOrder or orderIsoIntOfLinearSuccPredArch needed
+- No hardcoded D = Int — D emerges as whatever translation group the axioms produce
+- task_rel is the group action itself, not a separately-defined bridge
+- For discrete time axioms, D ≅ ℤ as a theorem; for dense time, D ≅ ℚ as a theorem
+
+---
 
 ### 955. Implement D and task_rel from pure syntax
 - **Effort**: 25-40 hours
@@ -80,7 +155,7 @@ technical_debt:
 
 ### 951. Implement sorry-free completeness via CanonicalMCS domain
 - **Effort**: 20-30 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 922 (research), Task 930 (analysis)

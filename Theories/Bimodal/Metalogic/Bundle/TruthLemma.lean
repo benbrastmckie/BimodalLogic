@@ -88,25 +88,25 @@ The forward direction uses the existing coherence conditions in FMCS.
 -/
 
 /--
-Helper: MCS all_future membership implies truth at all future times.
+Helper: MCS all_future membership implies truth at all strictly future times.
 
-If `G φ ∈ fam.mcs t`, then for all `s ≥ t`, we have `φ ∈ fam.mcs s`.
+If `G φ ∈ fam.mcs t`, then for all `s > t`, we have `φ ∈ fam.mcs s`.
 
-Uses the reflexive `forward_G` coherence condition directly.
+Uses the strict `forward_G` coherence condition (irreflexive semantics).
 -/
 lemma mcs_all_future_implies_phi_at_future (fam : FMCS D) (t s : D) (φ : Formula)
-    (hts : t ≤ s) (hG : Formula.all_future φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
+    (hts : t < s) (hG : Formula.all_future φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
   fam.forward_G t s φ hts hG
 
 /--
-Helper: MCS all_past membership implies truth at all past times.
+Helper: MCS all_past membership implies truth at all strictly past times.
 
-If `H φ ∈ fam.mcs t`, then for all `s ≤ t`, we have `φ ∈ fam.mcs s`.
+If `H φ ∈ fam.mcs t`, then for all `s < t`, we have `φ ∈ fam.mcs s`.
 
-Uses the reflexive `backward_H` coherence condition directly.
+Uses the strict `backward_H` coherence condition (irreflexive semantics).
 -/
 lemma mcs_all_past_implies_phi_at_past (fam : FMCS D) (t s : D) (φ : Formula)
-    (hst : s ≤ t) (hH : Formula.all_past φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
+    (hst : s < t) (hH : Formula.all_past φ ∈ fam.mcs t) : φ ∈ fam.mcs s :=
   fam.backward_H t s φ hst hH
 
 /-!
@@ -366,7 +366,7 @@ theorem bmcs_truth_lemma (B : BFMCS D) (h_tc : B.temporally_coherent)
         backward_P := h_backward_P
       }
       -- By IH backward: convert truth to MCS membership at each time
-      have h_all_mcs : ∀ s : D, t ≤ s → ψ ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
         intro s hts
         exact (ih fam hfam s).mpr (h_all s hts)
       -- Apply temporal_backward_G
@@ -391,7 +391,7 @@ theorem bmcs_truth_lemma (B : BFMCS D) (h_tc : B.temporally_coherent)
         backward_P := h_backward_P
       }
       -- By IH backward: convert truth to MCS membership at each time
-      have h_all_mcs : ∀ s : D, s ≤ t → ψ ∈ fam.mcs s := by
+      have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       -- Apply temporal_backward_H

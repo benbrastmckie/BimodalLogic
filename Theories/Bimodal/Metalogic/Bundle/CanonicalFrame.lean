@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.Bundle.TemporalContent
-import Bimodal.Metalogic.Bundle.DovetailingChain
+import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
@@ -32,7 +32,7 @@ The critical insight (from research-001) is that in the canonical model, each
 F-obligation `F(psi) ∈ M` gets its own witness `W = Lindenbaum({psi} ∪ GContent(M))`.
 This avoids the inter-obligation interference that blocked all 12 prior chain-based
 approaches. The proven lemma `forward_temporal_witness_seed_consistent` (in
-DovetailingChain.lean) guarantees `{psi} ∪ GContent(M)` is consistent, and
+WitnessSeed.lean) guarantees `{psi} ∪ GContent(M)` is consistent, and
 `set_lindenbaum` extends it to an MCS.
 
 ## References
@@ -164,41 +164,6 @@ theorem canonical_backward_P (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     exact Set.Subset.trans (HContent_subset_PastTemporalWitnessSeed M psi) h_extends
   · -- psi ∈ W: psi ∈ PastTemporalWitnessSeed M psi ⊆ W
     exact h_extends (psi_mem_PastTemporalWitnessSeed M psi)
-
-/-!
-## Reflexivity of Canonical Relations
-
-The canonical relations are reflexive for MCSes, using the T-axioms
-(temp_t_future: G phi -> phi, temp_t_past: H phi -> phi).
--/
-
-/--
-CanonicalR is reflexive for MCSes: `CanonicalR M M` holds for any MCS `M`.
-
-Proof: If `G phi ∈ M`, then by T-axiom `G phi -> phi` and MCS closure, `phi ∈ M`.
--/
-theorem canonicalR_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    CanonicalR M M := by
-  intro phi h_G_phi
-  -- phi ∈ GContent M means G phi ∈ M
-  -- By T-axiom: ⊢ G phi → phi
-  have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_future phi)
-  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_G_phi
-
-/--
-CanonicalR_past is reflexive for MCSes: `CanonicalR_past M M` holds for any MCS `M`.
-
-Proof: If `H phi ∈ M`, then by T-axiom `H phi -> phi` and MCS closure, `phi ∈ M`.
--/
-theorem canonicalR_past_reflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    CanonicalR_past M M := by
-  intro phi h_H_phi
-  -- phi ∈ HContent M means H phi ∈ M
-  -- By T-axiom: ⊢ H phi → phi
-  have h_T : [] ⊢ (Formula.all_past phi).imp phi :=
-    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_t_past phi)
-  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_H_phi
 
 /-!
 ## Transitivity of Canonical Relations
