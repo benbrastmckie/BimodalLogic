@@ -642,12 +642,12 @@
     {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
       "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-11T21:23:38Z",
+      "last_updated": "2026-03-11T21:31:28Z",
       "researched": "2026-03-11T21:23:38Z",
       "artifacts": [
         {
@@ -676,11 +676,6 @@
           "summary": "Comprehensive conservative extension implementation guide: 5 phases, ~650 lines, ConservativeExtension/ directory"
         },
         {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "6-phase Conservative Extension implementation plan (~650 lines)"
-        },
-        {
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311.md",
           "type": "summary",
           "summary": "Phases 1-2 completed (ExtFormula, ExtDerivation), Phase 3 blocked by mathematical gap"
@@ -694,13 +689,18 @@
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-006.md",
           "type": "research",
           "summary": "Research report analyzing Phase 3 mathematical gap with 3 viable approaches ranked"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "5-phase substitution-based conservative extension plan for CanonicalR irreflexivity"
         }
       ],
       "blocks": [
         956
       ],
-      "session_id": "sess_1773263530_9a4602",
-      "planned": "2026-03-11T20:42:51Z",
+      "session_id": "sess_1773264444_40680b",
+      "planned": "2026-03-11T21:31:28Z",
       "started": "2026-03-11T18:02:01Z",
       "resume_phase": 3
     }

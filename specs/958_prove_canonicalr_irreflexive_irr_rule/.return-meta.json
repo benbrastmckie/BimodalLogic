@@ -1,23 +1,19 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-006.md",
-      "summary": "Research report analyzing the Phase 3 mathematical gap in the irreflexivity proof, with 3 viable approaches ranked by effort, risk, and correctness"
+      "type": "plan",
+      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-003.md",
+      "summary": "5-phase implementation plan for substitution-based conservative extension approach to prove CanonicalR irreflexivity"
     }
   ],
-  "next_steps": "Run /plan 958 to create implementation plan selecting from the 3 approaches",
+  "next_steps": "Run /implement 958 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773263530_9a4602",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 900,
+    "session_id": "sess_1773264444_40680b",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 8,
-    "context_files_loaded": ["kripke-semantics-overview.md"],
-    "mathlib_lookups_performed": 2,
-    "context_extension_tasks": [],
-    "context_candidates_count": 2
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.5
   }
 }
