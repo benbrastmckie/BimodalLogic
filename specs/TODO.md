@@ -24,10 +24,10 @@ technical_debt:
 
 ### 957. Density frame condition under irreflexive temporal semantics
 - **Effort**: 8-16 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md), [research-002.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md), [research-003.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md) (IRR rule + selective Lindenbaum), [research-004.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-004.md) (IRR soundness)
 - **Plan**: [implementation-004.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-004.md) (v4: restrict IRR soundness to domain-inhabited times)
-- **Summary**: [implementation-summary-20260310.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310.md), [implementation-summary-20260310b.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310b.md) (Option C failure)
+- **Summary**: [implementation-summary-20260310c.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310c.md) (complete: all 5 phases)
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 956 context (StagedConstruction infrastructure, axiom system)

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #957 - Density Frame Condition via IRR Rule (v4)
 
 - **Task**: 957 - density_frame_condition_irreflexive_temporal
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 3-4 hours (remaining)
 - **Dependencies**: Task 956 Phase 5 (BLOCKED, this task unblocks it)
 - **Research Inputs**: research-004.md (IRR soundness analysis), research-003.md (Case B analysis)
