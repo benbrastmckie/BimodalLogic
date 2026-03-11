@@ -125,5 +125,6 @@
       }
     ]
   },
-  "model": "sonnet"
+  "model": "sonnet",
+  "effortLevel": "high"
 }
