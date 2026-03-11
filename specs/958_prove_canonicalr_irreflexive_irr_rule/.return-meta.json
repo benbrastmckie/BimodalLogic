@@ -1,19 +1,27 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Proof strategy blocker: The substitution approach requires neg(atom p) in M' for contradiction, but neg(atom p) mentions p and is not in atomFreeSubset M p, so it's not guaranteed to be in M'. The proof needs fundamental revision - either global freshness (impossible for infinite M) or a different approach.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-001.md",
-      "summary": "6-phase implementation plan for CanonicalR irreflexivity proof using IRR-based substitution approach"
+      "type": "implementation",
+      "path": "Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean",
+      "summary": "Partial implementation with 2 sorries: atomFreeSubset, namingSet, naming_set_consistent (partial), main theorem skeleton"
     }
   ],
-  "next_steps": "Run /implement 958 to execute the plan",
+  "partial_progress": {
+    "phases_completed": 0,
+    "phases_total": 6,
+    "current_phase": 5,
+    "current_phase_status": "blocked",
+    "blocking_issue": "Substitution proof requires neg(atom p) in M' but this fails because neg(atom p) is not p-free"
+  },
   "metadata": {
-    "session_id": "sess_1773251576_6be7037a",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 5
+    "session_id": "sess_1773252094_6a94a311",
+    "agent_type": "lean-implementation-agent",
+    "phases_completed": 0,
+    "phases_total": 6,
+    "sorry_count": 2,
+    "build_status": "fails"
   }
 }

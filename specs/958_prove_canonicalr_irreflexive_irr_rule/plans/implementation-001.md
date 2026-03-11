@@ -1,7 +1,7 @@
 # Implementation Plan: Task #958
 
 - **Task**: 958 - prove_canonicalr_irreflexive_irr_rule
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 4-6 hours
 - **Dependencies**: None (builds on existing MCS and IRR infrastructure)
 - **Research Inputs**: specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-002.md
@@ -66,7 +66,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: H-Closure Lemma [NOT STARTED]
+### Phase 1: H-Closure Lemma [IN PROGRESS]
 
 - **Dependencies:** None
 - **Goal:** Prove that GContent(M) subset M implies HContent(M) subset M
@@ -181,7 +181,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Main Theorem - CanonicalR Irreflexivity [NOT STARTED]
+### Phase 5: Main Theorem - CanonicalR Irreflexivity [BLOCKED]
 
 - **Dependencies:** Phase 1, Phase 3, Phase 4
 - **Goal:** Prove the main irreflexivity theorem
