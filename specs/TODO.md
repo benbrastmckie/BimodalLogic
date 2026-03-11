@@ -26,7 +26,7 @@ technical_debt:
 - **Effort**: 8-16 hours
 - **Status**: [PLANNED]
 - **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md), [research-002.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md), [research-003.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md) (IRR rule + selective Lindenbaum), [research-004.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-004.md) (IRR soundness)
-- **Plan**: [implementation-003.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-003.md) (v3: IRR rule approach)
+- **Plan**: [implementation-004.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-004.md) (v4: restrict IRR soundness to domain-inhabited times)
 - **Summary**: [implementation-summary-20260310.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310.md), [implementation-summary-20260310b.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310b.md) (Option C failure)
 - **Language**: lean
 - **Priority**: high
