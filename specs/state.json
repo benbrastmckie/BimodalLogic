@@ -642,13 +642,13 @@
     {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
       "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-11T22:34:10Z",
-      "researched": "2026-03-11T21:23:38Z",
+      "last_updated": "2026-03-11T22:51:07Z",
+      "researched": "2026-03-11T22:51:07Z",
       "artifacts": [
         {
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md",
@@ -694,12 +694,17 @@
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311b.md",
           "type": "summary",
           "summary": "Phases 1-3 complete (conservative extension + lift_derivation_qfree), Phase 4 blocked"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-007.md",
+          "type": "research",
+          "summary": "Phase 4 blocker analysis: GContent seed approach as primary, product frame as fallback"
         }
       ],
       "blocks": [
         956
       ],
-      "session_id": "sess_1773266640_482cc9",
+      "session_id": "sess_1773268682_0f667f",
       "planned": "2026-03-11T21:31:28Z",
       "started": "2026-03-11T21:33:56Z",
       "resume_phase": 4
