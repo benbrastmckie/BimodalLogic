@@ -1,27 +1,24 @@
 {
   "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Proof strategy blocker: The substitution approach requires neg(atom p) in M' for contradiction, but neg(atom p) mentions p and is not in atomFreeSubset M p, so it's not guaranteed to be in M'. The proof needs fundamental revision - either global freshness (impossible for infinite M) or a different approach.",
+  "started_at": "2026-03-11T12:00:00Z",
   "artifacts": [
     {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean",
-      "summary": "Partial implementation with 2 sorries: atomFreeSubset, namingSet, naming_set_consistent (partial), main theorem skeleton"
+      "type": "report",
+      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-003.md",
+      "summary": "Deep analysis of irreflexivity blocker: atoms(M) = String makes global freshness impossible; recommends ExtFormula approach with fresh atom type extension"
     }
   ],
   "partial_progress": {
-    "phases_completed": 0,
-    "phases_total": 6,
-    "current_phase": 5,
-    "current_phase_status": "blocked",
-    "blocking_issue": "Substitution proof requires neg(atom p) in M' but this fails because neg(atom p) is not p-free"
+    "stage": "research_findings_delivered",
+    "details": "Identified root cause (atoms(M) = String for all MCS), analyzed 12+ approaches, identified expanded atom type as primary viable fix. Report written to research-003.md."
   },
   "metadata": {
-    "session_id": "sess_1773252094_6a94a311",
-    "agent_type": "lean-implementation-agent",
-    "phases_completed": 0,
-    "phases_total": 6,
-    "sorry_count": 2,
-    "build_status": "fails"
+    "session_id": "sess_1773253973_633a3f0b",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "approaches_analyzed": 18,
+    "viable_alternatives": 2,
+    "recommended_approach": "ExtFormula with fresh atom type extension (~400-500 lines)"
   }
 }

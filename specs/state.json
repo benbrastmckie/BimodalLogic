@@ -629,13 +629,13 @@
     {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
       "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-11T18:02:01Z",
-      "researched": "2026-03-11T17:42:04Z",
+      "last_updated": "2026-03-11T18:49:17Z",
+      "researched": "2026-03-11T18:49:17Z",
       "artifacts": [
         {
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md",
@@ -651,12 +651,17 @@
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan for CanonicalR irreflexivity proof using IRR-based substitution approach"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-003.md",
+          "type": "research",
+          "summary": "Deep analysis of irreflexivity blocker: ExtFormula approach recommended (~400-500 lines)"
         }
       ],
       "blocks": [
         956
       ],
-      "session_id": "sess_1773252094_6a94a311",
+      "session_id": "sess_1773253973_633a3f0b",
       "planned": "2026-03-11T17:56:19Z",
       "started": "2026-03-11T18:02:01Z"
     }
