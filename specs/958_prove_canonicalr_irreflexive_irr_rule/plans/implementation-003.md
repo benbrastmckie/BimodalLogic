@@ -72,7 +72,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Substitution Infrastructure [NOT STARTED]
+### Phase 1: Substitution Infrastructure [COMPLETED]
 
 - **Dependencies:** None (uses existing ExtFormula.lean, ExtDerivation.lean)
 - **Goal:** Define substitution `sigma[q -> bot]` and prove preservation properties
@@ -102,7 +102,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Axiom Substitution Closure [NOT STARTED]
+### Phase 2: Axiom Substitution Closure [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove all axiom schemas closed under substitution
@@ -130,7 +130,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Lifting Theorem [NOT STARTED]
+### Phase 3: Lifting Theorem [PARTIAL]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Prove q-free F+ derivations project to F derivations via substitution
@@ -174,7 +174,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Irreflexivity Proof [NOT STARTED]
+### Phase 4: Irreflexivity Proof [BLOCKED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove canonicalR_irreflexive using the lifting theorem

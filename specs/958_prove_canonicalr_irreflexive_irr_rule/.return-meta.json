@@ -1,19 +1,29 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "requires_user_review": true,
+  "review_reason": "Phase 3 incomplete (substDerivation done, but lift_derivation_qfree and lifting theorem not implemented), Phase 4 blocked pending Phase 3 completion",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-003.md",
-      "summary": "5-phase implementation plan for substitution-based conservative extension approach to prove CanonicalR irreflexivity"
+      "type": "lean_file",
+      "path": "Theories/Bimodal/Metalogic/ConservativeExtension/Substitution.lean",
+      "summary": "Substitution sigma[q->bot] infrastructure: substFormula, preservation lemmas, axiom closure (~221 lines)"
+    },
+    {
+      "type": "lean_file",
+      "path": "Theories/Bimodal/Metalogic/ConservativeExtension/Lifting.lean",
+      "summary": "Lifting infrastructure: unembedFormula, substDerivation, parameterized substitution (~222 lines)"
     }
   ],
-  "next_steps": "Run /implement 958 to execute the plan",
+  "partial_progress": {
+    "stage": "implementation",
+    "details": "Phases 1-2 complete (Substitution.lean, Axiom closure). Phase 3 partial: substDerivation works, lift_derivation_qfree not implemented. Phase 4 blocked. All new code is sorry-free.",
+    "phases_completed": 2,
+    "phases_total": 5
+  },
   "metadata": {
-    "session_id": "sess_1773264444_40680b",
-    "agent_type": "planner-agent",
+    "session_id": "sess_1773264821_7ea68c",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 4.5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
   }
 }
