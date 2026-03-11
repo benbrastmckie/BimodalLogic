@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Staged Construction (v015)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 12 hours (remaining)
 - **Dependencies**: Task 957 (COMPLETE - density_frame_condition proven)
 - **Research Inputs**: research-034.md, research-035.md, research-036.md (unblocking analysis)
@@ -41,7 +41,7 @@ See implementation-014.md for details. All phases completed with zero sorries.
 
 ---
 
-### Phase 5: Cantor Prerequisites Verification [IN PROGRESS - REVISED]
+### Phase 5: Cantor Prerequisites Verification [COMPLETED]
 
 - **Dependencies:** Phase 4, Task 957 (COMPLETE)
 - **Goal:** Prove the staged timeline T satisfies Cantor prerequisites
@@ -97,7 +97,7 @@ Two strategies available:
 
 ---
 
-### Phase 6: Cantor Isomorphism Application [NOT STARTED]
+### Phase 6: Cantor Isomorphism Application [BLOCKED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Apply Cantor's theorem to establish T isomorphic to Q
