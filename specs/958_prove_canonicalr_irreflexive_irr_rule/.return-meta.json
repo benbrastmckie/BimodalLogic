@@ -1,23 +1,22 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-007.md",
-      "summary": "Research report with exhaustive analysis of the Phase 4 blocker across 3 paths: Path 1 (Full F+ MCS Machinery - does not resolve gap), Path B (GContent seed + conservative extension - resolves GContent transfer but not final contradiction), Path 2 (Product Frame bypass - architecturally viable fallback). Key discovery: F-MCS restriction technique (M'_F = {phi | embed(phi) in M'_ext}) proves M = M'_F, but the q-level contradiction does not propagate to F. Recommends GContent seed approach as primary with product frame as fallback."
+      "type": "plan",
+      "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-004.md",
+      "summary": "4-phase implementation plan for Path A (Direct F Proof), with structured fallback to Path B"
     }
   ],
-  "next_steps": "Run /plan 958 to create revised implementation plan for the GContent seed approach or product frame bypass",
+  "next_steps": "Run /implement 958 to execute the plan. Note: Research predicts Path A will likely fail at Phase 2, triggering pivot to Path B.",
   "metadata": {
-    "session_id": "sess_1773268682_0f667f",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 600,
+    "session_id": "sess_1773270224_2a82fc",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-logic-research"],
-    "findings_count": 8,
-    "context_files_loaded": ["README.md (logic context index)"],
-    "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 3
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.5,
+    "approach": "Path A: Substitute-and-Derive (Direct F Proof)",
+    "research_prediction": "Phase 2 likely BLOCKED - research-007.md concludes Path B is recommended"
   }
 }
