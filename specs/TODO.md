@@ -1,5 +1,5 @@
 ---
-next_project_number: 957
+next_project_number: 959
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,23 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 958. Prove CanonicalR irreflexivity via IRR rule
+- **Effort**: 3-6 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Priority**: high
+- **Blocks**: Task 956 (Phase 6: Cantor Isomorphism Application)
+- **Research**: [research-001.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md)
+
+**Description**: Prove `¬CanonicalR M M` for any MCS M. This unblocks Task 956 Phase 6 by providing the irreflexivity needed for NoMaxOrder, NoMinOrder, and DenselyOrdered on the `TimelineQuot` antisymmetrized quotient. Once proven, `Order.iso_of_countable_dense` applies and the Cantor isomorphism to Q is established.
+
+**Key files**:
+- Target: `Theories/Bimodal/Metalogic/Canonical/CanonicalR.lean` (or new file)
+- Uses: `DerivationTree.irr` (IRR rule from task 957)
+- Unblocks: `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean` (has sorry stubs)
+
+---
 
 ### 957. Density frame condition under irreflexive temporal semantics
 - **Effort**: 8-16 hours

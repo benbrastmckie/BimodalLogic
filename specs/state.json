@@ -625,6 +625,27 @@
       "resume_phase": 2,
       "completed": "2026-03-11T03:38:14Z",
       "completion_summary": "Proved the density frame condition for the canonical model under irreflexive temporal semantics. Phase 4 eliminated the sorry in IRR soundness by restricting to domain-inhabited evaluation times. Phase 5 resolved Case B of density_frame_condition using a novel purely syntactic argument: when G(delta) is in M but delta is not in M, either M' is reflexive (take W = M') or there exists an alternative distinguishing formula from GContent(M') that falls into Case A. Two sorries eliminated across two files."
+    },
+    {
+      "project_number": 958,
+      "project_name": "prove_canonicalr_irreflexive_irr_rule",
+      "status": "researched",
+      "language": "lean",
+      "priority": "high",
+      "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
+      "created": "2026-03-11T05:16:15Z",
+      "last_updated": "2026-03-11T05:16:15Z",
+      "researched": "2026-03-11T05:16:15Z",
+      "artifacts": [
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of CanonicalR irreflexivity blocker: 4 proof strategies, key files, connection to task 956 Phase 6"
+        }
+      ],
+      "blocks": [
+        956
+      ]
     }
   ],
   "completed_projects": [
@@ -639,7 +660,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 957,
+  "next_project_number": 959,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
