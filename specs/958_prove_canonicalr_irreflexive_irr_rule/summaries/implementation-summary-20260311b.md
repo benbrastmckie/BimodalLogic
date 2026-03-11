@@ -2,73 +2,85 @@
 
 **Task**: 958 - prove_canonicalr_irreflexive_irr_rule
 **Date**: 2026-03-11
-**Session**: sess_1773264821_7ea68c
-**Status**: PARTIAL (Phases 1-2 complete, Phase 3 partial, Phase 4 blocked)
+**Session**: sess_1773266640_482cc9
+**Plan**: implementation-003.md
+**Status**: PARTIAL (Phases 1-3 complete, Phase 4 blocked)
 
 ## Progress
 
 ### Phase 1: Substitution Infrastructure [COMPLETED]
 
 Created `ConservativeExtension/Substitution.lean` (~221 lines, zero sorries):
-- `substFormula : ExtFormula → ExtFormula` (replaces `atom (Sum.inr ())` with `bot`)
-- Structural lemmas: `substFormula_bot`, `substFormula_imp`, `substFormula_box`, etc.
-- Derived operator preservation: `substFormula_neg`, `substFormula_and`, `substFormula_or`, etc.
-- Key lemma: `substFormula_preserves_qfree` - q-free formulas are fixed points
-- `substFormula_of_embedded` - embedded formulas unchanged
-- `substFormula_idempotent` - substitution is idempotent
-- `freshAtom_not_in_substFormula_atoms` - fresh atom removed after substitution
+- `substFormula : ExtFormula -> ExtFormula` (replaces `atom (Sum.inr ())` with `bot`)
+- Structural lemmas, derived operator preservation
+- Key: `substFormula_preserves_qfree` - q-free formulas are fixed points
+- `substAxiom : ExtAxiom phi -> ExtAxiom (substFormula phi)` (20 axiom cases)
 
 ### Phase 2: Axiom Substitution Closure [COMPLETED]
 
-In `Substitution.lean`:
-- `substAxiom : ExtAxiom φ → ExtAxiom (substFormula φ)` (20 cases, all axiom schemas)
-- `substFormula_swap_temporal` - swap_temporal preserved
-- `substFormula_map_embedded` - list substitution distributes
+In `Substitution.lean` (same file as Phase 1, combined).
 
-### Phase 3: Lifting Theorem [PARTIAL]
+### Phase 3: Lifting Theorem [COMPLETED]
 
-Created `ConservativeExtension/Lifting.lean` (~222 lines, zero sorries):
-- `unembedFormula : ExtFormula → Formula` - inverse of embedFormula for q-free formulas
-- `unembed_embed` - unembedFormula is left-inverse of embedFormula
-- `embed_unembed_qfree` - embedFormula is left-inverse for q-free formulas
-- `substDerivation : ExtDerivationTree Γ φ → ExtDerivationTree (Γ.map substFormula) (substFormula φ)`
-  - Handles IRR case with p=freshAtom by preserving the step (φ unchanged since q-free)
-- `substFreshWith` - parameterized substitution replacing freshAtom with atom (Sum.inl s)
-- `substAxiomFresh` - axiom closure under parameterized substitution
+Extended `ConservativeExtension/Lifting.lean` (~617 lines, zero sorries):
 
-**Not yet implemented**:
-- `lift_derivation_qfree : ExtDerivationTree (L.map embedFormula) (embedFormula φ) → Nonempty (DerivationTree L φ)`
-- The main lifting theorem that projects F+ derivations back to F
+**Prior iteration infrastructure**:
+- `unembedFormula`, `substDerivation`, `substFreshWith`, `substAxiomFresh`
+
+**This session's additions**:
+- `unembedAxiom`: ExtAxiom -> base Axiom via unembedFormula
+- `unembed_swap_temporal`: unembedFormula commutes with swap_temporal
+- `inl_not_in_atoms_implies_unembed`: Freshness transfer from Ext to base
+- `collectInl`, `collectDerivInl`: Atom collection for derivation trees
+- `exists_fresh_string`: Infinite String provides fresh atoms
+- `substFreshWith_preserves_irr_fresh`: Freshness preservation under substFreshWith
+- `liftFormula`: Combined substFreshWith + unembedFormula
+- `liftAxiom`: Lifts ExtAxiom to base Axiom via liftFormula
+- `liftDerivationWith`: Full recursive conversion ExtDerivationTree -> DerivationTree
+- **`lift_derivation_qfree`**: Main theorem - F+ is conservative extension of F
+
+**Key theorem**:
+```lean
+theorem lift_derivation_qfree (L : List Formula) (phi : Formula)
+    (d : ExtDerivationTree (L.map embedFormula) (embedFormula phi)) :
+    Nonempty (DerivationTree L phi)
+```
+
+**Proof strategy**: Collect all inl atoms from derivation tree, choose globally fresh string s, apply `liftDerivationWith s` which simultaneously replaces Sum.inr () with Sum.inl s and unembeds. The irr (Sum.inr ()) case maps to DerivationTree.irr s (since s is globally fresh).
 
 ### Phase 4: Irreflexivity Proof [BLOCKED]
 
-Blocked on Phase 3 completion. The plan requires:
-- `embed_naming_set_consistent` - naming set consistency in F+
-- `canonicalR_irreflexive` - main irreflexivity theorem
+**Blocker type**: proof_impossible (with current approach)
 
-### Phase 5: Integration [NOT STARTED]
+The conservative extension + lifting theorem resolves the SYNTACTIC transfer problem (F+ derivations -> F derivations) but does NOT resolve the SEMANTIC gap in the irreflexivity proof.
 
-Pending Phase 4 completion.
+**The gap**: The standard Goldblatt/BdRV naming argument requires:
+1. Naming set consistency (proved - uses IRR)
+2. Extend naming set to MCS M'
+3. M subset M' (requires globally fresh atom for M)
+4. Duality: neg(p) in M
+5. M subset M' gives neg(p) in M', contradicting p in M'
 
-## Key Insight from Implementation
+In F+: step 3 works (embed '' M subset M'_ext). But the F-shadow M' = {phi | embed(phi) in M'_ext} equals M itself (proved during analysis). So the naming argument doesn't yield a genuinely new F-MCS.
 
-The IRR case in `substDerivation` with `p = freshAtom` is simpler than originally thought: since `freshAtom ∉ φ.atoms` (by the IRR freshness precondition), we have `substFormula φ = φ` by `substFormula_preserves_qfree`. This means the IRR step is preserved unchanged, NOT transformed via ex falso.
+The duality gives HContent(M) subset M, but combined with GContent(M) subset M (from CanonicalR(M,M)), this is consistent - no contradiction follows.
 
-## Files Created
+**Possible resolution paths**:
+1. Replicate F+-MCS machinery (Lindenbaum_Ext, duality_Ext) to derive contradiction within F+ using TWO F+-MCSs, then project back
+2. Product frame bypass from IRRSoundness.lean
+3. Find a different proof structure that avoids the naming argument wall
 
-| File | Lines | Sorries |
-|------|-------|---------|
-| `ConservativeExtension/Substitution.lean` | 221 | 0 |
-| `ConservativeExtension/Lifting.lean` | 222 | 0 |
+## Files Modified
+
+| File | Lines | Sorries | Status |
+|------|-------|---------|--------|
+| Lifting.lean | ~617 | 0 | Phase 3 complete |
+| Substitution.lean | 221 | 0 | Phases 1-2 (prior) |
+| ExtFormula.lean | ~329 | 0 | Phase 0 (prior) |
+| ExtDerivation.lean | ~182 | 0 | Phase 0 (prior) |
 
 ## Build Status
 
 - `lake build` passes with no errors
-- 4 warnings (unused simp args in Lifting.lean) - cosmetic only
-- Zero sorries in new files
-
-## Next Steps
-
-1. Complete `lift_derivation_qfree` theorem in `Lifting.lean`
-2. Proceed to Phase 4: implement `Irreflexivity.lean`
-3. Complete Phase 5: integration and cleanup
+- Zero sorries in all ConservativeExtension/ files
+- Existing sorries in CanonicalIrreflexivity.lean unchanged (Phase 5 not reached)
