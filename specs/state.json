@@ -8,12 +8,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-12T17:13:41Z",
+      "last_updated": "2026-03-12T18:34:16Z",
       "researched": "2026-03-12T17:04:10Z",
       "artifacts": [
         {
@@ -67,16 +67,22 @@
           "summary": "Mathematical correctness comparison - Pattern B (well-founded) recommended"
         },
         {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-042.md",
+          "type": "research",
+          "summary": "Mathematical elegance assessment: Pattern C (fuel + sufficiency) recommended over Pattern B"
+        },
+        {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-019.md",
           "type": "plan",
           "summary": "v019: Pattern B well-founded recursion approach"
         }
       ],
-      "session_id": "sess_1773335609_be44b4",
+      "session_id": "sess_1773340431_47e34957",
       "planned": "2026-03-12T17:10:29Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": 6,
-      "blocked_reason": "Phase 6 backward strictness: proving NOT CanonicalR V M requires iteration approach (research-039). Direct formula-based proofs fail under irreflexive semantics - mutual accessibility consistent with distinguishing formula. 8 sorries in density_frame_condition_strict + 3 in CantorApplication."
+      "blocked_reason": "Phase 6 backward strictness: Pattern C (fuel + sufficiency via Nat.strongRecOn) recommended for iteration approach. Finset decidability blocks Pattern B. 10 sorries in density_frame_condition_strict + 3 in CantorApplication.",
+      "last_updated": "2026-03-12T18:45:00Z"
     },
     {
       "project_number": 955,
