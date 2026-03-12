@@ -1,14 +1,14 @@
 ---
-next_project_number: 960
+next_project_number: 961
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 18
+  active: 19
   completed: 662
   in_progress: 0
-  not_started: 7
+  not_started: 8
   abandoned: 37
   total: 716
 technical_debt:
@@ -21,6 +21,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 960. Refactor documentation for bimodal Logos fragment
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: general
+
+**Description**: Refactor README.md and other documentation throughout this repository to make it clear that this is a Lean codebase implementing the semantics, proof theory, and metalogic for the bimodal fragment of the Logos, establishing completeness. Include a link to logos-labs.ai but do not include extensive information about the Logos aside from briefly indicating what it is and aims to do alongside providing the link. Instead of deleting Logos-specific documentation, move them to /home/benjamin/Projects/Logos/Theory/docs/boneyard/ to be integrated into that repo later.
+
+---
 
 ### 959. Orient pure-syntax D construction: archive Int chain, cleanup, clear roadmap
 - **Effort**: 4-6 hours
