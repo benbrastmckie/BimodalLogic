@@ -856,8 +856,31 @@ theorem density_frame_condition_strict
           exact h_VM h_G_phi_V
         · -- neg: M' does NOT see V, but V sees M
           -- V still sees M (h_VM), so V is NOT strict from M side
-          -- Need iteration - V is not a valid intermediate
-          sorry
+          -- Case split on M's reflexivity
+          by_cases h_M_refl : CanonicalR M M
+          · -- M is reflexive. This is the hard case requiring well-founded recursion.
+            -- V ~ M and V < M' strictly. We need a strict intermediate.
+            -- The iteration approach would use a termination measure.
+            -- For now, document as requiring proof restructure.
+            sorry
+          · -- M is NOT reflexive. Use the key lemma.
+            -- Any forward witness W from M with CanonicalR M W satisfies ¬CanonicalR W M.
+            -- V is such a witness (h_R_MV). So ¬CanonicalR V M.
+            -- This contradicts h_VM!
+            exfalso
+            rw [CanonicalR, Set.not_subset] at h_M_refl
+            obtain ⟨phi, h_phi_GContent_M, h_phi_not_M⟩ := h_M_refl
+            -- phi ∈ GContent(M) means G(phi) ∈ M
+            -- By T4: G(phi) → G(G(phi)), so G(G(phi)) ∈ M
+            have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+            have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
+              set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4_phi) h_phi_GContent_M
+            -- G(phi) ∈ GContent(M), so G(phi) ∈ V (by h_R_MV)
+            have h_G_phi_V : Formula.all_future phi ∈ V := h_R_MV h_GG_phi_M
+            -- phi ∈ GContent(V), and h_VM means GContent(V) ⊆ M, so phi ∈ M
+            have h_phi_M : phi ∈ M := h_VM h_G_phi_V
+            exact h_phi_not_M h_phi_M
       case neg =>
         -- V is strict from M side: ¬CanonicalR V M
         -- Now V is a valid strict intermediate candidate
@@ -894,8 +917,21 @@ theorem density_frame_condition_strict
           exact h_W₁M h_G_phi_W₁
         · -- neg: M' does NOT see W₁, but W₁ sees M
           -- W₁ still sees M (h_W₁M), so W₁ is NOT strict from M side
-          -- Need iteration - W₁ is not a valid intermediate
-          sorry
+          -- Case split on M's reflexivity
+          by_cases h_M_refl : CanonicalR M M
+          · -- M is reflexive. Hard case requiring well-founded recursion.
+            sorry
+          · -- M is NOT reflexive. Any forward witness doesn't see M back.
+            exfalso
+            rw [CanonicalR, Set.not_subset] at h_M_refl
+            obtain ⟨phi, h_phi_GContent_M, h_phi_not_M⟩ := h_M_refl
+            have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+            have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
+              set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4_phi) h_phi_GContent_M
+            have h_G_phi_W₁ : Formula.all_future phi ∈ W₁ := h_R_MW₁ h_GG_phi_M
+            have h_phi_M : phi ∈ M := h_W₁M h_G_phi_W₁
+            exact h_phi_not_M h_phi_M
       case neg =>
         -- W₁ is strict from M side: ¬CanonicalR W₁ M
         -- Now W₁ is a valid strict intermediate candidate

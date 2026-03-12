@@ -1,6 +1,6 @@
 {
   "status": "partial",
-  "started_at": "2026-03-12T18:00:00Z",
+  "started_at": "2026-03-12T20:00:00Z",
   "artifacts": [
     {
       "type": "implementation",
@@ -8,7 +8,7 @@
     },
     {
       "type": "handoff",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6a-handoff-20260312-iter4.md"
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6a-handoff-20260312-iter5.md"
     },
     {
       "type": "summary",
@@ -16,20 +16,27 @@
     }
   ],
   "partial_progress": {
-    "stage": "phase_6a_mathematical_analysis",
-    "details": "Iteration 4 complete. Key finding: 'W ~ M' case is mathematically consistent (not a contradiction). Proved gamma-based facts (G(gamma) not in V/W'/W''/M). Termination requires well-founded recursion - impossibility approach does not work. 13 sorries remain. Next: implement Nat.strongRecOn termination or derive M non-reflexive.",
+    "stage": "phase_6a_iteration_5_complete",
+    "details": "Iteration 5: Analyzed 13 sorry locations. Added M-reflexivity case splits at lines 860/865 and 921/923. When M is NOT reflexive, forward witnesses automatically don't see M back (proven via T4 propagation). Remaining sorries (13 total) are in cases where M IS reflexive - these require well-founded recursion with termination measure.",
     "phases_completed": 0,
     "phases_total": 5,
-    "handoff_path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6a-handoff-20260312-iter4.md"
+    "sorry_count": 13,
+    "sorry_locations": {
+      "density_frame_condition_strict_caseB1": [486, 490, 492, 585, 589, 591, 641, 646, 653],
+      "density_frame_condition_strict_caseA_M_reflexive": [865, 923],
+      "non_reflexive_target_has_strict_intermediate_M_reflexive": [1668, 1753]
+    }
   },
+  "requires_user_review": true,
+  "review_reason": "13 sorries remain in M-reflexive cases. Mathematical analysis shows these require well-founded recursion on a termination measure (subformula count or candidate formula cardinality). The W ~ M infinite iteration is mathematically consistent - impossibility approach does NOT work. Proof restructure needed.",
   "completion_data": {
-    "completion_summary": "Iteration 4: Deep analysis of 13 sorry locations. Proved W'' ~ M case is mathematically consistent. Established gamma-based derivations (G(gamma) not in any witness). Requires well-founded termination approach for resolution."
+    "completion_summary": "Iteration 5: Implemented M-reflexivity case splits. Proved that when M is NOT reflexive, forward witnesses don't see M back (via T4). 13 sorries remain in M-reflexive cases requiring well-founded recursion."
   },
   "metadata": {
     "session_id": "sess_1773353508_f76726",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "iteration": 4
+    "iteration": 5
   }
 }
