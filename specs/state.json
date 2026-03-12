@@ -8,10 +8,19 @@
     {
       "project_number": 960,
       "project_name": "refactor_documentation_bimodal_logos",
-      "status": "not_started",
+      "status": "researched",
       "language": "general",
       "created": "2026-03-12T20:10:25Z",
-      "last_updated": "2026-03-12T20:10:25Z"
+      "last_updated": "2026-03-12T20:18:09Z",
+      "session_id": "sess_1773346491_f042bd",
+      "researched": "2026-03-12T20:18:09Z",
+      "artifacts": [
+        {
+          "path": "specs/960_refactor_documentation_bimodal_logos/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying 8 documentation files requiring updates, content to move to boneyard, and 5-phase implementation plan"
+        }
+      ]
     },
     {
       "project_number": 956,
