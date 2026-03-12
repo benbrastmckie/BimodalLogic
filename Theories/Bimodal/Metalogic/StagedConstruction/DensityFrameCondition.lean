@@ -718,7 +718,55 @@ theorem density_frame_condition_strict
         -- Wait, delta ∉ M doesn't imply neg(delta) ∈ M (not complete for negation).
         -- And neg(delta) ∈ M doesn't contradict delta ∉ M (though it would mean delta ∉ M).
         --
-        -- Hmm, this is tricky. Let me try a sorry and move on.
+        -- Proof by contradiction: assume CanonicalR(V, M) and derive contradiction or
+        -- show M must be reflexive (problematic case).
+        intro h_VM
+        -- If CanonicalR(V, M) and CanonicalR(M, V) (which follows from h_R_MV via W₁), then
+        -- M and V are in the same equivalence class.
+        --
+        -- We have CanonicalR(M, W₁), CanonicalR(W₁, V), so CanonicalR(M, V) (h_R_MV).
+        -- If also CanonicalR(V, M), then by transitivity pattern, M is reflexive.
+        have h_M_refl : CanonicalR M M := by
+          intro phi h_phi_GContent
+          -- phi ∈ GContent(M) means G(phi) ∈ M
+          -- By Temporal 4: G(G(phi)) ∈ M, so G(phi) ∈ GContent(M)
+          -- G(phi) ∈ GContent(M) ⊆ W₁ (by h_R_MW₁)
+          -- G(phi) ∈ W₁ gives phi ∈ GContent(W₁) ⊆ V (by h_R_W₁V)
+          -- phi ∈ V and if CanonicalR(V, M), phi ∈ ... wait, that's not quite right.
+          -- We need: G(phi) ∈ V and if CanonicalR(V, M), then phi ∈ M.
+          have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+            DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+          have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
+            set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
+          -- G(phi) ∈ GContent(M) ⊆ W₁
+          have h_G_phi_W₁ : Formula.all_future phi ∈ W₁ := h_R_MW₁ h_GG_phi_M
+          -- By Temporal 4 in W₁: G(G(phi)) ∈ W₁
+          have h_GG_phi_W₁ : Formula.all_future (Formula.all_future phi) ∈ W₁ :=
+            set_mcs_implication_property h_W₁_mcs (theorem_in_mcs h_W₁_mcs h_T4) h_G_phi_W₁
+          -- G(phi) ∈ GContent(W₁) ⊆ V
+          have h_G_phi_V : Formula.all_future phi ∈ V := h_R_W₁V h_GG_phi_W₁
+          -- phi ∈ GContent(V) ⊆ M (by h_VM)
+          exact h_VM h_G_phi_V
+        -- Now M is reflexive. The contradiction must come from formula membership.
+        -- With M reflexive, GContent(M) ⊆ M.
+        -- We have delta ∉ M. Since M is reflexive and G(delta) ∉ M:
+        --   If G(delta) ∈ M, then delta ∈ GContent(M) ⊆ M. But delta ∉ M. Contradiction.
+        --   So G(delta) ∉ M, which is h_G_delta_M. Consistent.
+        --
+        -- The issue: we need to show ¬CanonicalR(V, M) but we've assumed it.
+        -- We need to derive a contradiction from h_VM.
+        --
+        -- Key observation: V has neg(delta). If G(neg(delta)) ∈ V, then neg(delta) ∈ GContent(V).
+        -- If CanonicalR(V, M), then neg(delta) ∈ M. Since delta ∉ M, neg(delta) ∈ M (MCS).
+        -- This is consistent, not a contradiction.
+        --
+        -- Alternative: V comes from W₁ via canonical_forward_F for neg(delta).
+        -- V = Lindenbaum({neg(delta)} ∪ GContent(W₁)).
+        --
+        -- If M ~ V (from h_VM and h_R_MV), then GContent(M) = GContent(V) (up to equivalence).
+        -- But V has neg(delta) ∈ V. Does GContent(V) differ from GContent(M)?
+        --
+        -- For now, this case requires iteration. Use sorry.
         sorry
       · -- ¬CanonicalR(M', V): Show GContent(M') ⊄ V
         -- G(delta) ∈ M' so delta ∈ GContent(M')
@@ -735,7 +783,509 @@ theorem density_frame_condition_strict
       rw [h_eq] at h_R_W₁V
       refine ⟨W₁, h_W₁_mcs, h_R_MW₁, h_R_W₁V, ?_, ?_⟩
       · -- ¬CanonicalR(W₁, M)
-        sorry
+        -- Proof by contradiction: assume CanonicalR(W₁, M) and CanonicalR(M, W₁).
+        -- Then by the mutual_canonicalR_implies_refl pattern, M must be reflexive.
+        -- But if M is reflexive, GContent(M) ⊆ M.
+        -- Combined with CanonicalR(M, M') and M' having G(delta), we can derive
+        -- that M' must be in the "forward" direction from M.
+        -- The key: if W₁ ~ M in quotient, and V = M' = forward from W₁,
+        -- then M ~ W₁ < M'. But we also need ¬CanonicalR(W₁, M) for strictness.
+        --
+        -- Strategy: show that if CanonicalR(W₁, M), combined with CanonicalR(M, W₁),
+        -- forces a contradiction with the structure of V = M'.
+        intro h_W₁M
+        -- h_W₁M : CanonicalR W₁ M means GContent(W₁) ⊆ M
+        -- h_R_MW₁ : CanonicalR M W₁ means GContent(M) ⊆ W₁
+        -- By Temporal 4 propagation, this makes M reflexive
+        have h_M_refl : CanonicalR M M := by
+          intro phi h_phi_GContent
+          -- phi ∈ GContent(M) means G(phi) ∈ M
+          -- By Temporal 4: G(G(phi)) ∈ M, so G(phi) ∈ GContent(M) ⊆ W₁
+          have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+            DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+          have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
+            set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
+          -- G(phi) ∈ GContent(M) ⊆ W₁
+          have h_G_phi_W₁ : Formula.all_future phi ∈ W₁ := h_R_MW₁ h_GG_phi_M
+          -- phi ∈ GContent(W₁) ⊆ M
+          exact h_W₁M h_G_phi_W₁
+        -- Now M is reflexive. Since GContent(M) ⊆ M, delta ∉ GContent(M) means G(delta) ∉ M.
+        -- This is h_G_delta_M which we already have.
+        -- The contradiction: V = M' and M' is not reflexive (since G(delta) ∈ M' and neg(delta) ∈ M'),
+        -- but M' is the Lindenbaum of {neg(delta)} ∪ GContent(W₁).
+        -- Since W₁ ~ M, GContent(W₁) = GContent(M) (by the reflexivity).
+        -- So M' = Lindenbaum({neg(delta)} ∪ GContent(M)).
+        -- But M' has G(delta) ∈ M' (h_G_delta_M'), which means G(delta) was added by Lindenbaum.
+        -- This requires neg(G(delta)) = F(neg(delta)) to NOT be in the consistent seed.
+        -- But neg(delta) is in the seed, and from neg(delta)... hmm, this doesn't derive F(neg(delta)).
+        -- Actually, the issue is more subtle.
+        --
+        -- Alternative: use h_not_R' : ¬CanonicalR M' M directly.
+        -- Since W₁ ~ M and CanonicalR(W₁, M'), we have CanonicalR(M, M') (by transitivity).
+        -- If also CanonicalR(M', W₁), then M' ~ W₁ ~ M, so CanonicalR(M', M). Contradiction.
+        -- So ¬CanonicalR(M', W₁).
+        -- But we're trying to show ¬CanonicalR(W₁, M), not ¬CanonicalR(M', W₁).
+        --
+        -- Hmm, this is still complex. Let me try using the irreflexive_mcs_has_strict_future.
+        -- If M is reflexive, this lemma doesn't apply directly.
+        --
+        -- Wait, maybe the issue is that M being reflexive leads to V = M' ~ M, which contradicts
+        -- ¬CanonicalR(M', M).
+        --
+        -- If W₁ ~ M and CanonicalR(W₁, M') and V = M':
+        -- - CanonicalR(M, W₁) ✓
+        -- - CanonicalR(W₁, M) (assumption for contradiction)
+        -- - CanonicalR(W₁, M') ✓ (this is h_R_W₁V with V = M')
+        -- By transitivity: CanonicalR(M, M') (which we have as h_R)
+        --
+        -- If additionally CanonicalR(M', W₁):
+        -- - Then CanonicalR(M', M) by transitivity (M' → W₁ → M). Contradiction with h_not_R'.
+        -- So ¬CanonicalR(M', W₁).
+        --
+        -- But ¬CanonicalR(M', W₁) means there exists phi with G(phi) ∈ M' and phi ∉ W₁.
+        -- We have G(delta) ∈ M' (h_G_delta_M'). Is delta ∉ W₁?
+        --
+        -- If delta ∈ W₁:
+        -- - By our assumption CanonicalR(W₁, M): GContent(W₁) ⊆ M
+        -- - If G(delta) ∈ W₁, then delta ∈ GContent(W₁) ⊆ M. But delta ∉ M. Contradiction.
+        -- - So G(delta) ∉ W₁.
+        -- - But delta ∈ W₁ and G(delta) ∉ W₁ is consistent.
+        --
+        -- If delta ∉ W₁:
+        -- - Then G(delta) ∈ M' and delta ∉ W₁, witnessing ¬CanonicalR(M', W₁).
+        --
+        -- So either:
+        -- 1. delta ∈ W₁: Then G(delta) ∉ W₁ (shown above), which doesn't contradict our assumption.
+        -- 2. delta ∉ W₁: Consistent with ¬CanonicalR(M', W₁).
+        --
+        -- The key is: does delta ∈ W₁ or delta ∉ W₁?
+        --
+        -- W₁ = Lindenbaum({F(neg(delta))} ∪ GContent(M)).
+        -- If delta is consistent with the seed, it might be added.
+        -- If neg(delta) is in the seed or derivable, then delta ∉ W₁.
+        --
+        -- Is neg(delta) derivable from {F(neg(delta))} ∪ GContent(M)?
+        -- F(neg(delta)) doesn't derive neg(delta) alone.
+        -- GContent(M): if G(neg(delta)) ∈ M, then neg(delta) ∈ GContent(M), so neg(delta) ∈ W₁.
+        --
+        -- Is G(neg(delta)) ∈ M?
+        -- We have h_G_neg_not_M from caseB... wait, that's for Case B.
+        -- In Case A, we have G(delta) ∉ M, but we don't know about G(neg(delta)).
+        --
+        -- If G(neg(delta)) ∈ M, then neg(delta) ∈ W₁, so delta ∉ W₁.
+        -- If G(neg(delta)) ∉ M, then F(delta) ∈ M (by MCS). F(delta) is in M but not directly in W₁'s seed.
+        --
+        -- Let's case-split on G(neg(delta)) ∈ M.
+        by_cases h_G_neg_delta_M : Formula.all_future (Formula.neg delta) ∈ M
+        · -- G(neg(delta)) ∈ M, so neg(delta) ∈ GContent(M) ⊆ W₁
+          have h_neg_delta_W₁ : Formula.neg delta ∈ W₁ := h_R_MW₁ h_G_neg_delta_M
+          -- So delta ∉ W₁ (by W₁ consistent)
+          have h_delta_not_W₁ : delta ∉ W₁ := fun h => set_consistent_not_both h_W₁_mcs.1 delta h h_neg_delta_W₁
+          -- G(delta) ∈ M' and delta ∉ W₁ means ¬CanonicalR(M', W₁)
+          -- This is consistent with our structure but doesn't give ¬CanonicalR(W₁, M) directly.
+          -- We need to find phi with G(phi) ∈ W₁ and phi ∉ M.
+          -- Since G(neg(delta)) ∈ M, by Temporal 4: G(G(neg(delta))) ∈ M.
+          -- So G(neg(delta)) ∈ GContent(M) ⊆ W₁.
+          have h_T4_neg : [] ⊢ (Formula.all_future (Formula.neg delta)).imp
+              (Formula.all_future (Formula.all_future (Formula.neg delta))) :=
+            DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.neg delta))
+          have h_GG_neg_delta_M : Formula.all_future (Formula.all_future (Formula.neg delta)) ∈ M :=
+            set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4_neg) h_G_neg_delta_M
+          have h_G_neg_delta_W₁ : Formula.all_future (Formula.neg delta) ∈ W₁ := h_R_MW₁ h_GG_neg_delta_M
+          -- neg(delta) ∈ GContent(W₁). If CanonicalR(W₁, M), then neg(delta) ∈ M.
+          have h_neg_delta_M : Formula.neg delta ∈ M := h_W₁M h_G_neg_delta_W₁
+          -- But we have delta ∉ M, which is consistent with neg(delta) ∈ M.
+          -- We need a different witness.
+          -- Since M is reflexive (h_M_refl), GContent(M) ⊆ M.
+          -- GContent(W₁) ⊆ M (from h_W₁M).
+          -- By our earlier analysis, GContent(M) = GContent(W₁) when M is reflexive and W₁ ~ M.
+          -- So everything in GContent(W₁) is in M. No contradiction here.
+          --
+          -- The contradiction must come from V = M'.
+          -- M' = Lindenbaum({neg(delta)} ∪ GContent(W₁)).
+          -- M' has G(delta) (given). So G(delta) was added by Lindenbaum.
+          -- If G(delta) is added, then neg(G(delta)) = F(neg(delta)) is not in the Lindenbaum extension.
+          -- But F(neg(delta)) ∈ W₁, and if the seed includes something that derives F(neg(delta))...
+          -- GContent(W₁) might include G(F(neg(delta))) if it's in W₁.
+          --
+          -- Actually, F(neg(delta)) ∈ W₁. If G(F(neg(delta))) ∈ W₁, then F(neg(delta)) ∈ GContent(W₁).
+          -- Then F(neg(delta)) ∈ M' (seed includes GContent(W₁)).
+          -- If F(neg(delta)) ∈ M', can M' also have G(delta)?
+          -- F(neg(delta)) = neg(G(delta)). So F(neg(delta)) and G(delta) are contradictory!
+          -- If F(neg(delta)) ∈ M' and G(delta) ∈ M', M' is inconsistent. Contradiction.
+          --
+          -- So: if G(F(neg(delta))) ∈ W₁, then M' is inconsistent.
+          -- Therefore: G(F(neg(delta))) ∉ W₁.
+          -- This means F(neg(delta)) ∉ GContent(W₁).
+          --
+          -- But F(neg(delta)) ∈ W₁. So G(F(neg(delta))) ∉ W₁ means F(neg(delta)) ∉ GContent(W₁).
+          -- This is consistent: F(neg(delta)) is in W₁ but G(F(neg(delta))) is not.
+          --
+          -- OK so we can't derive a contradiction from M' directly.
+          -- Let me think more...
+          --
+          -- Actually, we have shown that if CanonicalR(W₁, M) and G(neg(delta)) ∈ M, then M is reflexive.
+          -- We've also shown V = M' has both G(delta) and neg(delta), so M' is not reflexive.
+          -- And W₁ sees M' (CanonicalR(W₁, M')).
+          --
+          -- If W₁ ~ M (both directions), then by transitivity:
+          -- CanonicalR(M, M') from CanonicalR(M, W₁) and CanonicalR(W₁, M'). We have h_R.
+          -- CanonicalR(M', M)? From CanonicalR(M', W₁) and CanonicalR(W₁, M)?
+          -- We need CanonicalR(M', W₁) for this.
+          --
+          -- Is CanonicalR(M', W₁)?
+          -- M' = Lindenbaum({neg(delta)} ∪ GContent(W₁)).
+          -- GContent(M') ⊆ W₁ would be needed.
+          -- GContent(M') = {phi | G(phi) ∈ M'}.
+          -- G(delta) ∈ M', so delta ∈ GContent(M').
+          -- delta ∈ W₁? We established delta ∉ W₁ (since neg(delta) ∈ W₁).
+          -- So delta ∈ GContent(M') but delta ∉ W₁. Hence ¬CanonicalR(M', W₁).
+          --
+          -- So ¬CanonicalR(M', W₁). This is fine, but doesn't give ¬CanonicalR(W₁, M) directly.
+          --
+          -- Wait, I think I need to re-examine. We have:
+          -- - W₁ ~ M (assumption for contradiction)
+          -- - ¬CanonicalR(M', W₁) (just shown)
+          -- - CanonicalR(W₁, M') (h_R_W₁V with V = M')
+          --
+          -- This means [W₁] < [M'] strictly (since CanonicalR(W₁, M') and ¬CanonicalR(M', W₁)).
+          -- And [M] = [W₁] (by W₁ ~ M).
+          -- So [M] = [W₁] < [M'].
+          --
+          -- But we also have h_R : CanonicalR M M', so [M] ≤ [M']. Consistent.
+          -- And h_not_R' : ¬CanonicalR M' M, so [M'] > [M]. Consistent.
+          --
+          -- So [M] = [W₁] < [M'] with both orderings correct.
+          -- There's no direct contradiction in the quotient structure.
+          --
+          -- The contradiction must come from formula membership.
+          --
+          -- We have:
+          -- - M reflexive (h_M_refl)
+          -- - W₁ ~ M
+          -- - M' not reflexive
+          -- - CanonicalR(W₁, M')
+          -- - ¬CanonicalR(M', W₁)
+          --
+          -- M' = Lindenbaum({neg(delta)} ∪ GContent(W₁))
+          -- M' has G(delta) ∈ M' (from h_G_delta_M')
+          --
+          -- Since GContent(W₁) = GContent(M) (by W₁ ~ M and M reflexive)...
+          -- Wait, is this true? Let me check.
+          --
+          -- W₁ ~ M means CanonicalR(W₁, M) and CanonicalR(M, W₁).
+          -- GContent(M) ⊆ W₁ and GContent(W₁) ⊆ M.
+          -- By Temporal 4: GContent(M) ⊆ GContent(W₁) and GContent(W₁) ⊆ GContent(M).
+          -- So GContent(M) = GContent(W₁).
+          --
+          -- Therefore M' = Lindenbaum({neg(delta)} ∪ GContent(M)).
+          --
+          -- Now, M is reflexive, so GContent(M) ⊆ M.
+          -- M has neg(delta) (since delta ∉ M by MCS).
+          -- So {neg(delta)} ∪ GContent(M) ⊆ M.
+          --
+          -- M' is the Lindenbaum extension of a subset of M. Could M' = M?
+          -- If {neg(delta)} ∪ GContent(M) ⊆ M and M is MCS, then M' could be M itself!
+          -- Lindenbaum({neg(delta)} ∪ GContent(M)) = some MCS extending the set.
+          -- M is an MCS extending the set (since M ⊇ {neg(delta)} ∪ GContent(M)).
+          -- So Lindenbaum could choose M' = M.
+          --
+          -- If M' = M:
+          -- - G(delta) ∈ M' means G(delta) ∈ M. But h_G_delta_M says G(delta) ∉ M. Contradiction!
+          --
+          -- So M' ≠ M. The Lindenbaum extension must produce a DIFFERENT MCS.
+          -- But M is a valid extension of the seed. Lindenbaum just picks one.
+          --
+          -- Actually, Lindenbaum is not unique - it's an existential construction.
+          -- The canonical_forward_F chooses one specific MCS.
+          --
+          -- The key insight: canonical_forward_F constructs a SPECIFIC MCS that realizes the
+          -- witnessed formula. In this case, V = canonical_forward_F W₁ neg(delta).
+          -- V is constructed to have neg(delta), which M' should have.
+          --
+          -- But h_eq : V = M' came from the linearity case split. It's possible V = M' by coincidence
+          -- of the construction, but it requires V and M' to be the same set.
+          --
+          -- If V = M', then M' = canonical_forward_F W₁ neg(delta).
+          -- This specific construction has neg(delta) ∈ M'.
+          -- And G(delta) ∈ M' (from h_G_delta_M').
+          --
+          -- If also M' = M (from the above reasoning when M is reflexive), then:
+          -- - neg(delta) ∈ M
+          -- - G(delta) ∈ M
+          -- But h_G_delta_M says G(delta) ∉ M. Contradiction!
+          --
+          -- So M ≠ M'. But wait, we derived that the seed for M' is ⊆ M, so M could be M'.
+          -- The resolution: Lindenbaum doesn't have to return M even if M extends the seed.
+          -- But canonical_forward_F specifically constructs an MCS with the witnessed formula.
+          -- If M already has neg(delta) and extends GContent(W₁), could M be V?
+          --
+          -- V is defined as the Lindenbaum of the seed. Lindenbaum is an arbitrary choice.
+          -- But V ≠ M because G(delta) ∈ M' = V but G(delta) ∉ M.
+          --
+          -- So: V ≠ M, hence M' ≠ M (since V = M').
+          --
+          -- Now, we've established:
+          -- - M is reflexive
+          -- - W₁ ~ M
+          -- - M' ≠ M
+          -- - [M] < [M'] strictly
+          --
+          -- For ¬CanonicalR(W₁, M):
+          -- We assumed CanonicalR(W₁, M), leading to M reflexive.
+          -- But M' ≠ M and G(delta) ∈ M' but G(delta) ∉ M doesn't directly contradict.
+          --
+          -- Hmm, I'm still stuck. Let me try one more approach.
+          --
+          -- Since W₁ ~ M and M' = V is the forward witness from W₁:
+          -- M' is constructed from W₁'s GContent.
+          -- GContent(W₁) = GContent(M) (since W₁ ~ M and M reflexive).
+          -- So M' is the forward witness from M (via W₁).
+          --
+          -- Now, M is reflexive, so seriality from M gives an MCS M'' with CanonicalR(M, M'').
+          -- By the structure, M'' could be M itself (reflexive case) or a different MCS.
+          -- Since M is reflexive, GContent(M) ⊆ M, and M itself is a valid forward continuation.
+          --
+          -- But M' ≠ M, so M' is a DIFFERENT forward MCS from M.
+          -- M' has G(delta) but M doesn't.
+          --
+          -- For W₁ ~ M and CanonicalR(W₁, M'):
+          -- By transitivity: CanonicalR(M, M'). We have this as h_R.
+          -- CanonicalR(M', M)? We have ¬CanonicalR(M', M) as h_not_R'.
+          --
+          -- If W₁ ~ M and M' is "ahead" of W₁, is M' also "ahead" of M?
+          -- [M] = [W₁] < [M'], so [M] < [M']. Yes.
+          --
+          -- Everything is consistent. The contradiction isn't in the quotient.
+          --
+          -- Actually wait, let me reconsider. The assumption is CanonicalR(W₁, M), meaning W₁ ~ M.
+          -- I derived that M is reflexive.
+          -- Then GContent(M) = GContent(W₁).
+          -- M' = Lindenbaum({neg(delta)} ∪ GContent(W₁)) = Lindenbaum({neg(delta)} ∪ GContent(M)).
+          --
+          -- The seed is {neg(delta)} ∪ GContent(M).
+          -- M has neg(delta) (since delta ∉ M) and GContent(M) ⊆ M (reflexive).
+          -- So the seed ⊆ M.
+          --
+          -- If the seed ⊆ M and M is MCS, then M is a valid extension of the seed.
+          -- Lindenbaum could return M, but it doesn't have to.
+          --
+          -- The canonical_forward_F returns the Lindenbaum of {psi} ∪ GContent(W₁) for some psi.
+          -- Here psi = neg(delta).
+          --
+          -- The claim V = M' comes from h_eq : V = M'.
+          -- This means the specific Lindenbaum extension chosen is M'.
+          -- And G(delta) ∈ M' (given).
+          --
+          -- If the Lindenbaum could have returned M, then M would satisfy G(delta) ∈ M.
+          -- But G(delta) ∉ M. So M is NOT a valid Lindenbaum result here.
+          --
+          -- Wait, this is the key! Lindenbaum returns an MCS that CONTAINS the seed, but
+          -- the MCS could have ADDITIONAL formulas beyond the seed.
+          -- M contains the seed, so M could be the Lindenbaum result.
+          -- But Lindenbaum might return a DIFFERENT MCS, namely M'.
+          --
+          -- The fact that G(delta) ∈ M' and G(delta) ∉ M means M' ≠ M.
+          -- Both M and M' are MCSes extending the seed, but they differ.
+          --
+          -- Here's the key insight: since h_eq : V = M', the specific Lindenbaum extension
+          -- chosen for canonical_forward_F is M'. This is not necessarily the same as M.
+          --
+          -- So we have:
+          -- - Seed S = {neg(delta)} ∪ GContent(W₁) = {neg(delta)} ∪ GContent(M)
+          -- - M ⊇ S, M is MCS
+          -- - M' ⊇ S, M' is MCS (the Lindenbaum result)
+          -- - M ≠ M' (since G(delta) ∈ M', G(delta) ∉ M)
+          --
+          -- Both M and M' are MCSes containing S. They're different MCSes.
+          --
+          -- Now, in the quotient:
+          -- - [M] < [M'] (since CanonicalR(M, M') and ¬CanonicalR(M', M))
+          -- - [W₁] = [M] (by assumption CanonicalR(W₁, M) and CanonicalR(M, W₁))
+          --
+          -- CanonicalR(W₁, M') is h_R_W₁V (with V = M').
+          -- So W₁ sees M'.
+          --
+          -- By transitivity: M sees M' (CanonicalR(M, M')). We have h_R.
+          --
+          -- Now, G(delta) ∈ M' means delta ∈ GContent(M').
+          -- If CanonicalR(M', M), then delta ∈ M. But delta ∉ M. So ¬CanonicalR(M', M). ✓ (h_not_R')
+          -- If CanonicalR(M', W₁), then delta ∈ W₁.
+          --   We have neg(delta) ∈ W₁ (from G(neg(delta)) ∈ M and CanonicalR(M, W₁)).
+          --   If delta ∈ W₁, W₁ inconsistent. So delta ∉ W₁.
+          --   Hence ¬CanonicalR(M', W₁).
+          --
+          -- So [M'] > [W₁] = [M], i.e., M' is strictly ahead of both W₁ and M.
+          -- This is consistent with [M] = [W₁] < [M'].
+          --
+          -- The quotient structure is consistent. Where's the contradiction?
+          --
+          -- I've been assuming CanonicalR(W₁, M) and derived M is reflexive, W₁ ~ M, [M] < [M'].
+          -- But I haven't found a formula-level contradiction.
+          --
+          -- Let me try a completely different approach: maybe the goal IS satisfiable and
+          -- we can prove it directly without assuming for contradiction.
+          --
+          -- We want to show ¬CanonicalR(W₁, M), i.e., find phi with G(phi) ∈ W₁ and phi ∉ M.
+          --
+          -- What G-formulas are in W₁?
+          -- W₁ = Lindenbaum({F(neg(delta))} ∪ GContent(M)).
+          -- By Temporal 4, all G-formulas from M propagate: if G(psi) ∈ M, then G(psi) ∈ W₁.
+          -- Lindenbaum might add more G-formulas.
+          --
+          -- One candidate: G(F(neg(delta))). Is this in W₁?
+          -- G(F(neg(delta))) = "always, sometime neg(delta)".
+          -- W₁ has F(neg(delta)). By Temporal 4 in W₁: if F(neg(delta)) ∈ W₁, is G(F(neg(delta))) added?
+          -- Temporal 4 says G(psi) → G(G(psi)), not F(psi) → G(F(psi)).
+          -- So we can't conclude G(F(neg(delta))) ∈ W₁ from F(neg(delta)) ∈ W₁.
+          --
+          -- Actually, in temporal logic, there might be an axiom F(psi) → G(F(psi)) for serial dense frames?
+          -- Let me check... Hmm, I don't recall this being an axiom.
+          --
+          -- Without such an axiom, G(F(neg(delta))) might or might not be in W₁.
+          --
+          -- If G(F(neg(delta))) ∈ W₁:
+          -- Is F(neg(delta)) ∈ M? Yes, h_F_neg_delta says so.
+          -- So we'd need F(neg(delta)) ∉ M to get a contradiction. But F(neg(delta)) ∈ M.
+          --
+          -- So G(F(neg(delta))) doesn't give us the witness.
+          --
+          -- What about G(neg(delta))?
+          -- We're in the sub-case where G(neg(delta)) ∈ M (h_G_neg_delta_M).
+          -- By Temporal 4: G(G(neg(delta))) ∈ M, so G(neg(delta)) ∈ GContent(M) ⊆ W₁.
+          -- So G(neg(delta)) ∈ W₁.
+          -- Is neg(delta) ∈ M? Since delta ∉ M, neg(delta) ∈ M (by MCS).
+          -- So G(neg(delta)) ∈ W₁ and neg(delta) ∈ M. Not a witness for ¬CanonicalR(W₁, M).
+          --
+          -- Hmm. All the G-formulas I can identify in W₁ are also satisfied in M.
+          --
+          -- The issue: W₁ ~ M might actually be CONSISTENT in this sub-case.
+          -- If W₁ and M are in the same equivalence class, then CanonicalR(W₁, M) and we can't
+          -- prove its negation.
+          --
+          -- This means the sorry might not be provable in this sub-case with the current structure.
+          --
+          -- But wait, the goal is to prove density_frame_condition_STRICT. If W₁ ~ M, then W₁ is
+          -- NOT strictly between M and M'. It's in the same class as M.
+          --
+          -- The resolution: when W₁ ~ M, we need to find a DIFFERENT witness, not W₁.
+          -- The current proof structure uses W₁ when V = M'. But if W₁ ~ M, W₁ is not the right witness.
+          --
+          -- In this case (V = M' and W₁ ~ M), we should use a different intermediate.
+          -- But the current proof structure doesn't account for this.
+          --
+          -- This is why the well-founded iteration approach is mentioned in the plan.
+          -- When the first attempt doesn't give a strict witness, we iterate.
+          --
+          -- For now, I'll leave this as sorry and document the issue.
+          sorry
+        · -- G(neg(delta)) ∉ M, so F(delta) ∈ M
+          have h_F_delta_M : Formula.some_future delta ∈ M := by
+            cases set_mcs_negation_complete h_mcs (Formula.all_future (Formula.neg delta)) with
+            | inl h => exact absurd h h_G_neg_delta_M
+            | inr h => exact h
+          -- Now we have F(delta) ∈ M. Let's see if this helps.
+          -- W₁ = Lindenbaum({F(neg(delta))} ∪ GContent(M)).
+          -- F(delta) is not a G-formula, so it's not directly in the seed.
+          -- But F(delta) might be in W₁ by the Lindenbaum extension.
+          --
+          -- Actually, F(delta) = neg(G(neg(delta))). Since G(neg(delta)) ∉ M:
+          -- - The seed doesn't force G(neg(delta)) into W₁.
+          -- - W₁ might have G(neg(delta)) or not.
+          --
+          -- If G(neg(delta)) ∈ W₁:
+          -- - neg(delta) ∈ GContent(W₁) ⊆ V = M'.
+          -- - But neg(delta) ∈ M' anyway (h_neg_delta_V with V = M').
+          -- If G(neg(delta)) ∉ W₁:
+          -- - F(delta) ∈ W₁ (by MCS).
+          --
+          -- So W₁ has either G(neg(delta)) or F(delta).
+          --
+          -- If G(neg(delta)) ∈ W₁ and CanonicalR(W₁, M):
+          -- - neg(delta) ∈ GContent(W₁) ⊆ M.
+          -- - But neg(delta) ∈ M anyway (since delta ∉ M). No new info.
+          --
+          -- If F(delta) ∈ W₁:
+          -- - F(delta) = neg(G(neg(delta))), so G(neg(delta)) ∉ W₁.
+          -- - Does this help?
+          --
+          -- Hmm, let me think about the V = M' case with F(delta) ∈ M.
+          --
+          -- V = M' = Lindenbaum({neg(delta)} ∪ GContent(W₁)).
+          -- M' has G(delta) ∈ M' (given).
+          -- M' has neg(delta) (seed).
+          --
+          -- If G(delta) ∈ M' and M' is the Lindenbaum of {neg(delta)} ∪ GContent(W₁):
+          -- G(delta) was added by Lindenbaum (not in seed, since G(delta) ∉ GContent(W₁) would mean G(G(delta)) ∉ W₁).
+          --
+          -- Wait, is G(G(delta)) ∈ W₁?
+          -- W₁ = Lindenbaum({F(neg(delta))} ∪ GContent(M)).
+          -- G(delta) ∉ M (h_G_delta_M). So G(G(delta)) ∉ M (by contrapositive of Temporal 4? No, Temporal 4 says G → GG, not the converse).
+          -- Actually, we can't conclude G(G(delta)) ∉ M just from G(delta) ∉ M.
+          -- G(G(delta)) ∈ M would mean G(delta) ∈ GContent(M). And G(delta) ∈ M iff delta ∈ GContent(M)?
+          -- No, G(delta) ∈ M directly, not via GContent.
+          --
+          -- Let me re-examine. G(delta) ∈ M means... wait, h_G_delta_M says G(delta) ∉ M.
+          -- So delta ∈ GContent(M) is equivalent to G(delta) ∈ M, which is false.
+          -- Hence delta ∉ GContent(M).
+          --
+          -- Does G(G(delta)) ∈ M? If so, G(delta) ∈ GContent(M), so G(delta) ∈ W₁.
+          -- But we showed earlier G(delta) ∉ W₁ (else delta ∈ M' and neg(delta) ∈ M', contradiction).
+          -- So G(G(delta)) ∉ M (else G(delta) ∈ GContent(M) ⊆ W₁).
+          --
+          -- Hence G(delta) ∉ GContent(M), so G(delta) ∉ GContent(W₁) (since GContent(M) ⊆ GContent(W₁)).
+          -- So G(delta) ∉ seed of M'. G(delta) was added by Lindenbaum.
+          --
+          -- For Lindenbaum to add G(delta), F(neg(delta)) must not be derivable from the seed.
+          -- Seed = {neg(delta)} ∪ GContent(W₁).
+          -- Does GContent(W₁) contain something that derives F(neg(delta))?
+          --
+          -- If G(F(neg(delta))) ∈ W₁, then F(neg(delta)) ∈ GContent(W₁) ⊆ seed of M'.
+          -- Then M' ⊇ {F(neg(delta))}, so F(neg(delta)) ∈ M'.
+          -- F(neg(delta)) = neg(G(delta)). So neg(G(delta)) ∈ M'.
+          -- But G(delta) ∈ M' (given). Contradiction with M' consistent.
+          --
+          -- So G(F(neg(delta))) ∉ W₁. Hence F(neg(delta)) ∉ GContent(W₁).
+          --
+          -- But F(neg(delta)) ∈ W₁ (seed). So F(neg(delta)) ∈ W₁ but G(F(neg(delta))) ∉ W₁.
+          -- This means the G-formula of F(neg(delta)) is NOT in W₁.
+          --
+          -- Now, for ¬CanonicalR(W₁, M):
+          -- We need phi with G(phi) ∈ W₁ and phi ∉ M.
+          --
+          -- The G-formulas in W₁:
+          -- 1. All from GContent(M) (by Temporal 4 propagation)
+          -- 2. Possibly others added by Lindenbaum
+          --
+          -- For (1): G(psi) ∈ W₁ where G(G(psi)) ∈ M. Then psi ∈ GContent(M).
+          --   For such psi, is psi ∈ M?
+          --   If M is reflexive, yes. If M is not reflexive, maybe not.
+          --
+          -- If M is NOT reflexive:
+          -- There exists psi with G(psi) ∈ M and psi ∉ M.
+          -- By Temporal 4: G(G(psi)) ∈ M, so G(psi) ∈ GContent(M) ⊆ W₁.
+          -- So G(psi) ∈ W₁ and psi ∉ M. This is our witness!
+          --
+          -- So: if M is not reflexive, we can find a witness for ¬CanonicalR(W₁, M).
+          --
+          -- We derived earlier that if CanonicalR(W₁, M) and CanonicalR(M, W₁), then M is reflexive.
+          -- Contrapositive: if M is not reflexive, then ¬CanonicalR(W₁, M) or ¬CanonicalR(M, W₁).
+          -- We have CanonicalR(M, W₁) (h_R_MW₁), so if M is not reflexive, ¬CanonicalR(W₁, M).
+          --
+          -- Let me implement this case-split:
+          by_cases h_M_refl' : CanonicalR M M
+          · -- M is reflexive. Need a different argument.
+            -- In this sub-case, we have G(neg(delta)) ∉ M and M reflexive.
+            -- We still need ¬CanonicalR(W₁, M).
+            -- With M reflexive and CanonicalR(W₁, M) assumption, we derived GContent(W₁) ⊆ GContent(M).
+            -- Combined with GContent(M) ⊆ GContent(W₁) (Temporal 4), GContent(M) = GContent(W₁).
+            -- So W₁ ~ M.
+            -- But we need W₁ < M (strictly) for the density proof.
+            -- This is the problematic case requiring iteration.
+            sorry
+          · -- M is not reflexive. But we proved h_M_refl : CanonicalR M M earlier!
+            -- This is a contradiction with h_M_refl'.
+            exact absurd h_M_refl h_M_refl'
       · -- ¬CanonicalR(M', W₁)
         -- V = M' and W₁ sees V, so W₁ sees M'.
         -- If CanonicalR(M', W₁), then GContent(M') ⊆ W₁.
