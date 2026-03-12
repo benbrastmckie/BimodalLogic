@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Staged Construction (v018)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3-4 hours (remaining)
 - **Dependencies**: Task 957 (COMPLETE), Task 959 (COMPLETE)
 - **Research Inputs**: research-039.md (iteration-based strictness solution)
@@ -40,7 +40,7 @@ Files: `StagedTimeline.lean`, `WitnessSeedWrapper.lean`, `SeparationLemma.lean`,
 
 ---
 
-### Phase 6: Cantor Isomorphism Application [PARTIAL -> PLANNED]
+### Phase 6: Cantor Isomorphism Application [BLOCKED]
 
 - **Dependencies:** Phase 5 (COMPLETE)
 - **Goal:** Resolve 3 sorries via iteration-based strictness, apply Cantor's theorem
