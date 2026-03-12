@@ -140,12 +140,6 @@ ProofChecker/
 - [Testing Standards](docs/development/TESTING_STANDARDS.md) - Test requirements
 - [Module Organization](docs/development/MODULE_ORGANIZATION.md) - Project structure
 
-### Project Information
-
-- [Implementation Status](docs/project-info/IMPLEMENTATION_STATUS.md) - Module-by-module status
-- [Known Limitations](Theories/Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) - Gaps and workarounds
-- [Sorry Registry](docs/project-info/SORRY_REGISTRY.md) - Technical debt tracking
-
 ### Research
 
 - [Bimodal Logic](docs/research/bimodal-logic.md) - Theoretical foundations
