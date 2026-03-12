@@ -779,104 +779,21 @@ theorem density_frame_condition_strict
     have h_lin := canonical_forward_reachable_linear M V M' h_mcs h_V_mcs h_mcs' h_R_MV h_R
     rcases h_lin with h_VM' | h_M'V | h_eq
     · -- V is intermediate with CanonicalR(V, M')
-      refine ⟨V, h_V_mcs, h_R_MV, h_VM', ?_, ?_⟩
-      · -- ¬CanonicalR(V, M): Show GContent(V) ⊄ M
-        -- If CanonicalR(V, M), then for all phi, G(phi) ∈ V implies phi ∈ M
-        -- V has neg(delta) ∈ V. If G(neg(delta)) ∈ V, then neg(delta) ∈ M...
-        -- But we don't know G(neg(delta)) ∈ V.
-        -- Different approach: we know delta ∉ M.
-        -- If CanonicalR(V, M), then delta ∉ M means G(delta) ∉ V... wait, that's backwards.
-        -- Hmm, let me think again.
-        -- Actually, the distinguishing formula gives us:
-        --   G(delta) ∈ M' and delta ∉ M
-        -- If CanonicalR(V, M), then GContent(V) ⊆ M.
-        -- We need to find phi with G(phi) ∈ V and phi ∉ M.
-        -- V has neg(delta) ∈ V. Does V have G(neg(delta))? Not necessarily.
-        -- V is constructed as forward witness from W₁ for neg(delta).
-        -- V is Lindenbaum extension of {neg(delta)} ∪ GContent(W₁).
-        -- So GContent(V) = {phi | G(phi) ∈ V}.
-        -- The issue is we don't know what G-formulas are in V.
-        --
-        -- Alternative: by linearity of CanonicalR on M, V, M':
-        -- CanonicalR(V, M') holds, CanonicalR(M, V) holds.
-        -- If also CanonicalR(V, M), then by transitivity/linearity...
-        -- We have CanonicalR(M, V) and CanonicalR(V, M), so M ~ V in the quotient.
-        -- We have CanonicalR(V, M') and ¬CanonicalR(M', V) (need to check).
-        --
-        -- Wait, I should check: if CanonicalR(V, M) held, combined with CanonicalR(M, V),
-        -- we'd have M ~ V. Then since CanonicalR(M, M') and CanonicalR(V, M'), these
-        -- are consistent. But we need to derive a contradiction.
-        --
-        -- The key is: if M ~ V (mutual accessibility), then V satisfies the same
-        -- G-formulas as M (up to equivalence). Specifically, if G(phi) ∈ M, then
-        -- phi ∈ M (since GContent(M) ⊆ M by ... wait, we don't have reflexivity of M).
-        --
-        -- New approach: use formula membership directly.
-        -- delta ∉ M. V has neg(delta). We want to show CanonicalR(V, M) is false.
-        -- CanonicalR(V, M) means GContent(V) ⊆ M.
-        -- We need to find a formula phi with G(phi) ∈ V and phi ∉ M.
-        --
-        -- Consider: by the density construction, W₁ is from {F(neg(delta))} ∪ GContent(M).
-        -- Then V is from {neg(delta)} ∪ GContent(W₁).
-        -- The G-formulas in V depend on the Lindenbaum extension.
-        --
-        -- INSIGHT: If G(neg(delta)) is consistent with V's seed, then G(neg(delta)) ∈ V
-        -- (by maximality). And neg(delta) ∈ GContent(V). Then if CanonicalR(V, M),
-        -- neg(delta) ∈ M. But we have delta ∉ M...
-        -- Wait, delta ∉ M doesn't imply neg(delta) ∈ M (not complete for negation).
-        -- And neg(delta) ∈ M doesn't contradict delta ∉ M (though it would mean delta ∉ M).
-        --
-        -- Proof by contradiction: assume CanonicalR(V, M) and derive contradiction or
-        -- show M must be reflexive (problematic case).
-        intro h_VM
-        -- If CanonicalR(V, M) and CanonicalR(M, V) (which follows from h_R_MV via W₁), then
-        -- M and V are in the same equivalence class.
-        --
-        -- We have CanonicalR(M, W₁), CanonicalR(W₁, V), so CanonicalR(M, V) (h_R_MV).
-        -- If also CanonicalR(V, M), then by transitivity pattern, M is reflexive.
-        have h_M_refl : CanonicalR M M := by
-          intro phi h_phi_GContent
-          -- phi ∈ GContent(M) means G(phi) ∈ M
-          -- By Temporal 4: G(G(phi)) ∈ M, so G(phi) ∈ GContent(M)
-          -- G(phi) ∈ GContent(M) ⊆ W₁ (by h_R_MW₁)
-          -- G(phi) ∈ W₁ gives phi ∈ GContent(W₁) ⊆ V (by h_R_W₁V)
-          -- phi ∈ V and if CanonicalR(V, M), phi ∈ ... wait, that's not quite right.
-          -- We need: G(phi) ∈ V and if CanonicalR(V, M), then phi ∈ M.
-          have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-            DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-          have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
-            set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
-          -- G(phi) ∈ GContent(M) ⊆ W₁
-          have h_G_phi_W₁ : Formula.all_future phi ∈ W₁ := h_R_MW₁ h_GG_phi_M
-          -- By Temporal 4 in W₁: G(G(phi)) ∈ W₁
-          have h_GG_phi_W₁ : Formula.all_future (Formula.all_future phi) ∈ W₁ :=
-            set_mcs_implication_property h_W₁_mcs (theorem_in_mcs h_W₁_mcs h_T4) h_G_phi_W₁
-          -- G(phi) ∈ GContent(W₁) ⊆ V
-          have h_G_phi_V : Formula.all_future phi ∈ V := h_R_W₁V h_GG_phi_W₁
-          -- phi ∈ GContent(V) ⊆ M (by h_VM)
-          exact h_VM h_G_phi_V
-        -- Now M is reflexive. The contradiction must come from formula membership.
-        -- With M reflexive, GContent(M) ⊆ M.
-        -- We have delta ∉ M. Since M is reflexive and G(delta) ∉ M:
-        --   If G(delta) ∈ M, then delta ∈ GContent(M) ⊆ M. But delta ∉ M. Contradiction.
-        --   So G(delta) ∉ M, which is h_G_delta_M. Consistent.
-        --
-        -- The issue: we need to show ¬CanonicalR(V, M) but we've assumed it.
-        -- We need to derive a contradiction from h_VM.
-        --
-        -- Key observation: V has neg(delta). If G(neg(delta)) ∈ V, then neg(delta) ∈ GContent(V).
-        -- If CanonicalR(V, M), then neg(delta) ∈ M. Since delta ∉ M, neg(delta) ∈ M (MCS).
-        -- This is consistent, not a contradiction.
-        --
-        -- Alternative: V comes from W₁ via canonical_forward_F for neg(delta).
-        -- V = Lindenbaum({neg(delta)} ∪ GContent(W₁)).
-        --
-        -- If M ~ V (from h_VM and h_R_MV), then GContent(M) = GContent(V) (up to equivalence).
-        -- But V has neg(delta) ∈ V. Does GContent(V) differ from GContent(M)?
-        --
-        -- For now, this case requires iteration. Use sorry.
+      -- Case split on whether V is strict from M side
+      -- This replaces the problematic `intro h_VM; ...; sorry` pattern
+      by_cases h_VM : CanonicalR V M
+      case pos =>
+        -- V ~ M case: V and M are in the same equivalence class
+        -- This means V is NOT a strict intermediate between M and M'
+        -- We need iteration to find a different witness
+        -- (When CanonicalR V M and CanonicalR M V both hold, M is reflexive
+        -- and V is equivalent to M in the canonical preorder)
         sorry
-      · -- ¬CanonicalR(M', V): Show GContent(M') ⊄ V
+      case neg =>
+        -- V is strict from M side: ¬CanonicalR V M
+        -- Now V is a valid strict intermediate candidate
+        refine ⟨V, h_V_mcs, h_R_MV, h_VM', h_VM, ?_⟩
+        -- ¬CanonicalR(M', V): Show GContent(M') ⊄ V
         -- G(delta) ∈ M' so delta ∈ GContent(M')
         -- If CanonicalR(M', V), delta ∈ V
         -- But neg(delta) ∈ V, contradiction with V consistent
