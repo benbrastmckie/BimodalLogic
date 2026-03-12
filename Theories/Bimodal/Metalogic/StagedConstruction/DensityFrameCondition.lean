@@ -455,8 +455,35 @@ theorem density_frame_condition_strict
           · -- W sees M': check if M' sees W back
             by_cases h_M'_W_back : CanonicalR M' W
             · -- W ~ M' as well, still not strict from M' side
-              -- Need iteration for this case
-              sorry
+              -- Case split on G(neg(delta)) ∈ M' to find contradiction
+              cases set_mcs_negation_complete h_mcs' (Formula.all_future (Formula.neg delta)) with
+              | inl h_G_neg_delta_M' =>
+                -- G(neg(delta)) ∈ M', so neg(delta) ∈ GContent(M')
+                -- If CanonicalR M' W (h_M'_W_back), then neg(delta) ∈ W
+                have h_neg_delta_W : Formula.neg delta ∈ W := h_M'_W_back h_G_neg_delta_M'
+                -- G(delta) ∈ GContent(M) ⊆ W (via h_R_MW and T4)
+                have h_G_delta_in_W : Formula.all_future delta ∈ W := h_R_MW h_GG_delta_M
+                -- W reflexive via mutual accessibility with M':
+                -- W ~ M' (h_WM' and h_M'_W_back), so:
+                -- For any phi in GContent(W): G(phi) ∈ W
+                -- By T4: G(G(phi)) ∈ W, so G(phi) ∈ GContent(W) ⊆ M' (h_WM')
+                -- phi ∈ GContent(M') ⊆ W (h_M'_W_back), so phi ∈ W
+                have h_W_refl : CanonicalR W W := fun phi h_phi_GContent_W => by
+                  have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+                    DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+                  have h_GG_phi_W : Formula.all_future (Formula.all_future phi) ∈ W :=
+                    set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T4_phi) h_phi_GContent_W
+                  have h_G_phi_M' : Formula.all_future phi ∈ M' := h_WM' h_GG_phi_W
+                  exact h_M'_W_back h_G_phi_M'
+                -- delta ∈ W (W reflexive and G(delta) ∈ W)
+                have h_delta_W : delta ∈ W := h_W_refl h_G_delta_in_W
+                -- Contradiction: delta ∈ W and neg(delta) ∈ W
+                exfalso
+                exact set_consistent_not_both h_W_mcs.1 delta h_delta_W h_neg_delta_W
+              | inr h_F_delta_M' =>
+                -- F(delta) ∈ M' means G(neg(delta)) ∉ M'
+                -- This case requires iteration - the strict witness needs different construction
+                sorry
             · -- ¬CanonicalR M' W: W is a strict intermediate!
               exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
           · -- M' sees W: W is above M', not an intermediate
@@ -538,8 +565,24 @@ theorem density_frame_condition_strict
         rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
         · -- W sees M': check if M' sees W back
           by_cases h_M'_W_back : CanonicalR M' W
-          · -- W ~ M': need iteration
-            sorry
+          · -- W ~ M': Case split on G(neg(delta)) in M'
+            cases set_mcs_negation_complete h_mcs' (Formula.all_future (Formula.neg delta)) with
+            | inl h_G_neg_delta_M' =>
+              have h_neg_delta_W : Formula.neg delta ∈ W := h_M'_W_back h_G_neg_delta_M'
+              have h_G_delta_in_W : Formula.all_future delta ∈ W := h_R_MW h_GG_delta_M
+              have h_W_refl : CanonicalR W W := fun phi h_phi_GContent_W => by
+                have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+                  DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+                have h_GG_phi_W : Formula.all_future (Formula.all_future phi) ∈ W :=
+                  set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T4_phi) h_phi_GContent_W
+                have h_G_phi_M' : Formula.all_future phi ∈ M' := h_WM' h_GG_phi_W
+                exact h_M'_W_back h_G_phi_M'
+              have h_delta_W : delta ∈ W := h_W_refl h_G_delta_in_W
+              exfalso
+              exact set_consistent_not_both h_W_mcs.1 delta h_delta_W h_neg_delta_W
+            | inr h_F_delta_M' =>
+              -- F(delta) in M': requires iteration
+              sorry
           · -- ¬CanonicalR M' W: W is strict intermediate!
             exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
         · -- M' sees W: W above M', need iteration
@@ -578,9 +621,24 @@ theorem density_frame_condition_strict
         rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
         · -- CanonicalR W M': check if W is strict from M' side
           by_cases h_M'_W_back : CanonicalR M' W
-          · -- M' sees W - not strict on M' side
-            -- Need to find yet another witness. This requires iteration.
-            sorry
+          · -- M' sees W - Case split on G(neg(delta)) in M'
+            cases set_mcs_negation_complete h_mcs' (Formula.all_future (Formula.neg delta)) with
+            | inl h_G_neg_delta_M' =>
+              have h_neg_delta_W : Formula.neg delta ∈ W := h_M'_W_back h_G_neg_delta_M'
+              have h_G_delta_in_W : Formula.all_future delta ∈ W := h_R_MW h_GG_delta_M
+              have h_W_refl : CanonicalR W W := fun phi h_phi_GContent_W => by
+                have h_T4_phi : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+                  DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+                have h_GG_phi_W : Formula.all_future (Formula.all_future phi) ∈ W :=
+                  set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_T4_phi) h_phi_GContent_W
+                have h_G_phi_M' : Formula.all_future phi ∈ M' := h_WM' h_GG_phi_W
+                exact h_M'_W_back h_G_phi_M'
+              have h_delta_W : delta ∈ W := h_W_refl h_G_delta_in_W
+              exfalso
+              exact set_consistent_not_both h_W_mcs.1 delta h_delta_W h_neg_delta_W
+            | inr h_F_delta_M' =>
+              -- F(delta) in M': requires iteration
+              sorry
           · -- ¬CanonicalR M' W: W is strict intermediate!
             exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
         · -- CanonicalR M' W: W is above M' in quotient
@@ -784,11 +842,22 @@ theorem density_frame_condition_strict
       by_cases h_VM : CanonicalR V M
       case pos =>
         -- V ~ M case: V and M are in the same equivalence class
-        -- This means V is NOT a strict intermediate between M and M'
-        -- We need iteration to find a different witness
-        -- (When CanonicalR V M and CanonicalR M V both hold, M is reflexive
-        -- and V is equivalent to M in the canonical preorder)
-        sorry
+        -- Case split on CanonicalR M' V
+        by_cases h_M'_V : CanonicalR M' V
+        · -- pos: M' sees V, and V sees M (h_VM), so M' sees M via Temporal 4
+          exfalso
+          apply h_not_R'
+          intro phi h_phi_GContent_M'
+          have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+            DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+          have h_GG_phi_M' : Formula.all_future (Formula.all_future phi) ∈ M' :=
+            set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_phi_GContent_M'
+          have h_G_phi_V : Formula.all_future phi ∈ V := h_M'_V h_GG_phi_M'
+          exact h_VM h_G_phi_V
+        · -- neg: M' does NOT see V, but V sees M
+          -- V still sees M (h_VM), so V is NOT strict from M side
+          -- Need iteration - V is not a valid intermediate
+          sorry
       case neg =>
         -- V is strict from M side: ¬CanonicalR V M
         -- Now V is a valid strict intermediate candidate
@@ -811,16 +880,27 @@ theorem density_frame_condition_strict
       by_cases h_W₁M : CanonicalR W₁ M
       case pos =>
         -- W₁ ~ M case: W₁ and M are in the same equivalence class
-        -- (Both CanonicalR W₁ M and CanonicalR M W₁ hold, so M is reflexive
-        -- and W₁ is equivalent to M in the canonical preorder)
-        -- This means W₁ is NOT a strict intermediate between M and M'
-        -- We need iteration to find a different witness
-        sorry
+        -- Case split on CanonicalR M' W₁
+        by_cases h_M'_W₁ : CanonicalR M' W₁
+        · -- pos: M' sees W₁, and W₁ sees M (h_W₁M), so M' sees M via Temporal 4
+          exfalso
+          apply h_not_R'
+          intro phi h_phi_GContent_M'
+          have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+            DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+          have h_GG_phi_M' : Formula.all_future (Formula.all_future phi) ∈ M' :=
+            set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_phi_GContent_M'
+          have h_G_phi_W₁ : Formula.all_future phi ∈ W₁ := h_M'_W₁ h_GG_phi_M'
+          exact h_W₁M h_G_phi_W₁
+        · -- neg: M' does NOT see W₁, but W₁ sees M
+          -- W₁ still sees M (h_W₁M), so W₁ is NOT strict from M side
+          -- Need iteration - W₁ is not a valid intermediate
+          sorry
       case neg =>
         -- W₁ is strict from M side: ¬CanonicalR W₁ M
         -- Now W₁ is a valid strict intermediate candidate
         refine ⟨W₁, h_W₁_mcs, h_R_MW₁, h_R_W₁V, h_W₁M, ?_⟩
-      · -- ¬CanonicalR(M', W₁)
+        -- ¬CanonicalR(M', W₁)
         -- V = M' and W₁ sees V, so W₁ sees M'.
         -- If CanonicalR(M', W₁), then GContent(M') ⊆ W₁.
         -- G(delta) ∈ M', so delta ∈ W₁.

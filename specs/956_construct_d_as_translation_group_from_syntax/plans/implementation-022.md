@@ -73,11 +73,19 @@ exists W : Set Formula, SetMaximalConsistent W and
 
 ---
 
-#### Phase 6a: Seriality Escape Helper [NOT STARTED]
+#### Phase 6a: Seriality Escape Helper [PARTIAL]
 
 **Estimated time**: 30 minutes
 
 **Purpose**: Helper that escapes reflexive clusters via mcs_has_strict_future
+
+**Progress:**
+
+**Session: 2026-03-12, sess_1773353508_f76726**
+- Added: Case split on `G(neg(delta)) in M'` at lines 459, 569, 622 - proves `inl` case via delta/neg(delta) contradiction
+- Added: Case split on `CanonicalR M' witness` at lines 849, 887 - proves `pos` case via T4 transitivity contradiction
+- Sorries: 14 -> 14 (structural progress but iteration still needed)
+- Key insight: `inr` cases (F(delta) in M') and witness-sees-M cases require Pattern C iteration
 
 ```lean
 /-- When M' is reflexive, we can find M'' strictly above M' via seriality.
