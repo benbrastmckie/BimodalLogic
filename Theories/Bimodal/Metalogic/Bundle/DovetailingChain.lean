@@ -9,6 +9,30 @@ import Bimodal.Theorems.Combinators
 import Mathlib.Logic.Encodable.Basic
 
 /-!
+-- DEPRECATED (2026-03-11): Int-indexed construction violates pure-syntax constraint
+--
+-- This file/module is deprecated because it constructs an FMCS indexed by Int,
+-- which imports Int as the duration domain from outside the logic. The pure-syntax
+-- constraint (Architectural Decision: "D Must Emerge from Syntax") requires that D
+-- emerge from the temporal axioms via canonical timeline properties and Cantor's
+-- theorem, not be imported as Int or Rat.
+--
+-- Status:
+-- - Builds an FMCS Int using an interleaved dovetailing construction
+-- - Contains 2 sorries (forward_F, backward_P witness placement)
+-- - Not imported by the active StagedConstruction chain or D-from-syntax path
+-- - Will be superseded by the CanonicalMCS-based construction (Task 956)
+--
+-- References:
+-- - ROAD_MAP.md: Dead End "All Int/Rat Import Approaches"
+-- - Task 956: D Construction from Canonical Timeline
+-- - Task 959: Orientation and cleanup documentation
+--
+-- DO NOT USE for new development. Will be archived when D-from-syntax construction
+-- (Task 956) is complete.
+-/
+
+/-!
 # Dovetailing Temporal Chain Construction
 
 This module builds an `FMCS Int` with temporal coherence properties,

@@ -9,14 +9,29 @@ import Bimodal.Theorems.GeneralizedNecessitation
 /-!
 # Canonical Frame Irreflexivity
 
-This module proves that the canonical future relation `CanonicalR` is irreflexive:
-for any MCS M, `¬CanonicalR M M`.
+## STATUS: UNUSED, UNPROVABLE WITH STRING ATOMS
 
-## Main Result
+**This theorem is not imported anywhere in the active codebase.** The completeness
+chain does NOT require `canonicalR_irreflexive`. Irreflexivity of the canonical
+timeline is obtained for free via the preorder on CanonicalMCS, which uses strict `<`
+(the Preorder's `lt` relation is definitionally irreflexive).
 
-- `canonicalR_irreflexive`: For any MCS M, `¬CanonicalR M M`
+**Why unprovable with String atoms**: The proof requires a globally fresh atom `p`
+that does not appear in any formula of MCS M. With `String` atoms, every MCS contains
+formulas mentioning every possible atom (e.g., `atom "p" ∨ ¬(atom "p")` is a tautology
+in every MCS, and mentions `"p"`). The naming set construction requires `atomFreeSubset M p = M`
+for the proof to work, but this is impossible when p appears in tautologies within M.
+The standard proof in the literature assumes a countably infinite supply of atoms with
+freshness, which our `String`-based atoms cannot provide without additional infrastructure.
 
-## Proof Strategy
+See Task 958 research-009.md for the full analysis of why this proof strategy cannot
+complete with String atoms.
+
+## Main Result (sorry-dependent)
+
+- `canonicalR_irreflexive`: For any MCS M, `¬CanonicalR M M` (2 sorries, blocked)
+
+## Original Proof Strategy (Blocked)
 
 The proof uses the Gabbay Irreflexivity Rule (IRR) contrapositively, following
 the standard technique from Goldblatt (1992) and Blackburn-de Rijke-Venema (2001).
@@ -28,15 +43,17 @@ The key steps:
 4. Extend to MCS M' via Lindenbaum; show `CanonicalR M M'`
 5. Derive contradiction from the interaction of M and M'
 
-The freshness condition requires that `G(neg(atom p)) ∉ M`, which ensures
-`neg(atom p) ∉ GContent M` and avoids conflicts in M'.
+**Blocker**: Step 4 requires `GContent M ⊆ M'`, which fails for formulas mentioning p.
+The freshness condition cannot be satisfied for String atoms. See sorry at line ~1245.
 
 ## References
 
 - Goldblatt, R. (1992). Logics of Time and Computation. CSLI Lecture Notes.
 - Blackburn, P., de Rijke, M., Venema, Y. (2001). Modal Logic. Chapter 5.
 - Gabbay, D.M. (1981). An irreflexivity lemma.
-- Task 958 research-002.md
+- Task 958: Research confirmed theorem is unused and unprovable with current atoms
+  - research-002.md: Initial strategy analysis
+  - research-009.md: Definitive analysis (String atom freshness impossibility)
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -1169,6 +1186,17 @@ they are atom p (which is in M').
 
 /--
 CanonicalR is irreflexive: for any MCS M, `¬CanonicalR M M`.
+
+**STATUS: UNUSED AND UNPROVABLE** (Task 958)
+
+This theorem is not imported by any active code. The completeness chain does not
+require it -- irreflexivity comes for free from the strict `<` ordering on
+CanonicalMCS. The 2 sorries in this proof are intentional and well-documented:
+they cannot be resolved with String atoms (see module docstring for full analysis).
+
+**DO NOT attempt to resolve these sorries** without first addressing the atom
+freshness infrastructure (requires moving from String to a type with guaranteed
+fresh atom generation).
 
 Proof: Assume `CanonicalR M M` (i.e., `GContent M ⊆ M`) for contradiction.
 Choose any string p. The naming set `atomFreeSubset M p ∪ {atom p, H(¬p)}`

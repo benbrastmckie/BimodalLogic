@@ -13,6 +13,30 @@ import Bimodal.Syntax.Context
 import Bimodal.Theorems.Propositional
 
 /-!
+-- DEPRECATED (2026-03-11): Uses Int-indexed FMCS via TemporalCoherentConstruction
+--
+-- This file/module is deprecated because it builds standard completeness theorems
+-- (standard_weak_completeness, standard_strong_completeness) on top of the Int-indexed
+-- BFMCS construction from TemporalCoherentConstruction.lean. The Int dependency violates
+-- the pure-syntax constraint requiring D to emerge from temporal axioms.
+--
+-- Status:
+-- - Contains the current working standard completeness theorems (sorry-dependent)
+-- - All sorry dependency is inherited from construct_saturated_bfmcs_int (Int-indexed)
+-- - The canonical truth lemma, shifted truth lemma, and representation theorem structures
+--   are mathematically correct and will inform the D-from-syntax replacement
+-- - Will be superseded by Phase 8 TaskFrameFromSyntax.lean (Task 956)
+--
+-- References:
+-- - ROAD_MAP.md: Strategy "D Construction from Canonical Timeline"
+-- - Task 956: D Construction from Canonical Timeline (Phase 8 replaces this file)
+-- - Task 959: Orientation and cleanup documentation
+--
+-- DO NOT USE for new development. Will be superseded when D-from-syntax completeness
+-- (Task 956 Phase 8) is complete.
+-/
+
+/-!
 # Standard Representation and Completeness via BFMCS
 
 This module bridges the gap between the BFMCS (Bundle of Maximal Consistent Sets)

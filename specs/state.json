@@ -642,12 +642,12 @@
     {
       "project_number": 959,
       "project_name": "orient_pure_syntax_d_construction_cleanup",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "description": "Regain orientation for the D-from-syntax strategy. Audit and archive Int/Rat-tainted files (DovetailingChain.lean, TemporalCoherentConstruction.lean, Representation.lean) that violate the pure syntax constraint. Resolve Task 958 distraction (canonicalR_irreflexive is unused; add documentation and close). Map clear phases for Task 956 Phase 6-8: fix CantorApplication.lean Cantor prerequisites (NoMaxOrder, NoMinOrder, DenselyOrdered), apply Cantor isomorphism, build D and task_rel, construct TaskFrame, complete standard completeness without any Int/Rat imports.",
       "created": "2026-03-12T00:27:33Z",
-      "last_updated": "2026-03-12T00:45:07Z",
+      "last_updated": "2026-03-11T01:30:00Z",
       "blocks": [],
       "artifacts": [
         {
@@ -659,12 +659,18 @@
           "path": "specs/959_orient_pure_syntax_d_construction_cleanup/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase documentation plan: mark deprecated files with comments, document Task 958 as unused, update ROAD_MAP.md with progress"
+        },
+        {
+          "path": "specs/959_orient_pure_syntax_d_construction_cleanup/summaries/implementation-summary-20260311.md",
+          "type": "summary",
+          "summary": "Added deprecation comments to 3 Int-tainted files, documented Task 958 as unused, updated ROAD_MAP.md with D-from-syntax progress orientation"
         }
       ],
       "session_id": "sess_1741689800_959i",
       "researched": "2026-03-12T01:00:00Z",
       "planned": "2026-03-12T00:42:50Z",
-      "started": "2026-03-12T00:45:07Z"
+      "started": "2026-03-12T00:45:07Z",
+      "completed": "2026-03-11T01:30:00Z"
     }
   ],
   "completed_projects": [

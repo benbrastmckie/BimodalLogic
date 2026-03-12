@@ -1,6 +1,6 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-03-10
+**Last Updated**: 2026-03-11
 **Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness IN PROGRESS (pure syntax constraint, D Construction from Canonical Timeline strategy)
 
 > **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
@@ -152,13 +152,63 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 5. TaskFrame from syntax, truth lemma, completeness
 
 **Outcomes**:
-- (in progress)
+
+#### D-from-Syntax Phase Status (Task 956)
+
+| Phase | Name | Status | Notes |
+|-------|------|--------|-------|
+| 0 | Canonical Timeline Definition | COMPLETED | CanonicalMCS.lean, sorry-free |
+| 1 | Countability | COMPLETED | CanonicalCountable.lean, sorry-free |
+| 2 | Density | COMPLETED | CanonicalDensity.lean, sorry-free |
+| 3 | No Endpoints | COMPLETED | CanonicalNoEndpoints.lean, sorry-free |
+| 4 | Canonical FMCS | COMPLETED | CanonicalFMCS.lean, sorry-free |
+| 5 | CanonicalMCS BFMCS | COMPLETED | CanonicalConstruction.lean, sorry-free |
+| 6 | Cantor Application | **BLOCKED** | CantorApplication.lean, 3 sorries (quotient strictness gap) |
+| 7 | D from Syntax | NOT STARTED | Blocked by Phase 6 |
+| 8 | TaskFrame Completeness | NOT STARTED | Blocked by Phase 6 |
+
+**Current Blocker (Phase 6)**: The 3 sorries in `CantorApplication.lean` share a single root cause: `DenseTimeline` witnesses are not proven STRICT in the antisymmetrized quotient. The quotient collapses `<=`-equivalent MCSs, but the density/seriality witnesses need to be shown strictly ordered in the quotient (not just in the pre-quotient). See [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md) for detailed analysis.
+
+**Deprecated Files (Int/Rat path)**:
+- `DovetailingChain.lean` -- DEPRECATED: Int-indexed chain, not imported by active code
+- `TemporalCoherentConstruction.lean` -- DEPRECATED: Int-specialized, import dependency on StagedExecution.lean
+- `Representation.lean` -- DEPRECATED: Uses Int-indexed BFMCS, will be replaced by Phase 8
+
+**Task 958 (CanonicalIrreflexivity)**: Confirmed UNUSED and UNPROVABLE with String atoms. Irreflexivity is obtained for free via strict `<` on CanonicalMCS preorder; the standalone `canonicalR_irreflexive` theorem is not needed.
 
 **References**:
-- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md) - Implementation plan (v014, staged construction)
+- [Task 956 plan v014](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md) - Implementation plan (staged construction)
 - [research-020](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Strategy analysis
 - [research-021/023](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Strategy refinements
 - [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md) - ConstructiveQuotient blocker, staged construction justification
+- [Task 959 research](specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md) - Orientation analysis
+
+#### Phase 6-8 Roadmap (Path to Sorry-Free Standard Completeness)
+
+**Phase 6: CantorApplication.lean -- Resolve Quotient Strictness Gap**
+- **Root cause**: `DenseTimeline` witnesses (has_future, has_past, has_intermediate) provide CanonicalR witnesses but not STRICTLY ordered witnesses in the antisymmetrized quotient (TimelineQuot). If CanonicalR is bidirectional between two MCSs, they collapse to the same quotient element.
+- **3 sorries**: NoMaxOrder, NoMinOrder, DenselyOrdered on TimelineQuot
+- **Recommended strategy (Strategy C)**: Prove strict witnesses exist by using temporal linearity and careful formula choice. For NoMaxOrder: if the F-witness q has CanonicalR(q, p) (bidirectional), then repeated F-witness application with temporal linearity yields a genuinely strict successor. Key: the density axiom ensures F(F(phi)) witnesses are distinct from F(phi) witnesses when combined with linearity.
+- **Alternative strategies**: Strategy B (prove witnesses are distinct from sources), Strategy A (global irreflexivity -- BLOCKED by String atom issue)
+- **Estimated effort**: 3-4 hours
+- **References**: [Task 959 research-001](specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md) Recommendation 1, [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md)
+
+**Phase 7: DFromSyntax.lean -- Define D = Q via Cantor Isomorphism**
+- **Prerequisites**: Phase 6 complete (NoMaxOrder, NoMinOrder, DenselyOrdered on TimelineQuot)
+- **Construction**: Apply Cantor's theorem to get `cantor_iso : TimelineQuot ≃o Q`. Define D = Q. Define `task_rel(d)(w) = e⁻¹(e(w) + d)` where e is the Cantor isomorphism.
+- **Straightforward** once Phase 6 done -- the Cantor isomorphism theorem is already in Mathlib
+- **Estimated effort**: 1.5 hours
+
+**Phase 8: TaskFrameFromSyntax.lean -- Construct TaskFrame and Prove Completeness**
+- **Prerequisites**: Phase 7 complete
+- **Construction**: Build TaskFrame Q with canonical WorldState and task_rel from Phase 7. Prove the truth lemma connecting MCS membership to standard truth_at. Prove standard_weak_completeness and standard_strong_completeness.
+- **Architecture**: Follows the same structure as current Representation.lean but with D=Q from syntax instead of D=Int from import
+- **Most substantial phase** -- truth lemma needs to handle the Cantor isomorphism translation
+- **Estimated effort**: 2.5 hours
+
+**Total estimated effort for Phases 6-8**: 7-8 hours
+
+**Escape valve**: If Phase 6 quotient strictness proves intractable, mark [BLOCKED] for user review. The mathematical content is believed to be TRUE (the canonical timeline IS a strict order when viewed through the quotient), but the proof may require novel infrastructure.
 
 ---
 
@@ -447,6 +497,11 @@ Importing D from outside the logic violates the task's fundamental requirement. 
 - [Boneyard/Task956_IntRat/](Theories/Bimodal/Boneyard/Task956_IntRat/) - Archived Int/Rat approaches
 - [Task 956 research reports](specs/956_construct_d_as_translation_group_from_syntax/reports/) - 28+ research iterations
 - [implementation-010.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-010.md) - Final plan rejecting all Int/Rat approaches
+
+**Deprecated Files Still in Active Tree** (marked DEPRECATED 2026-03-11, Task 959):
+- [DovetailingChain.lean](Theories/Bimodal/Metalogic/Bundle/DovetailingChain.lean) - Int-indexed chain, not imported by active code
+- [TemporalCoherentConstruction.lean](Theories/Bimodal/Metalogic/Bundle/TemporalCoherentConstruction.lean) - Int-specialized, still imported by Representation.lean
+- [Representation.lean](Theories/Bimodal/Metalogic/Representation.lean) - Uses Int-indexed BFMCS, will be replaced by Phase 8
 
 **Lesson**:
 When the specification says D must emerge from syntax, importing D from outside is not a shortcut - it is a violation. Structure must be discovered, not assumed.
@@ -898,15 +953,35 @@ See Dead Ends section: "Non-Standard Validity Completeness (BFMCS/FMP)" for full
 
 ### Sorry Debt Status
 
-**Current State** (as of 2026-02-27): **3 sorries** in active Metalogic/ (excluding Boneyard)
+**Current State** (as of 2026-03-11): **11 sorries** in active Metalogic/ (excluding Boneyard)
 
-| File | Count | Description |
-|------|-------|-------------|
-| Bundle/TemporalCoherentConstruction.lean:600 | 1 | `fully_saturated_bfmcs_exists_int` - combines temporal + modal saturation |
-| Bundle/DovetailingChain.lean:1869 | 1 | `buildDovetailingChainFamily_forward_F` - F-witness placement |
-| Bundle/DovetailingChain.lean:1881 | 1 | `buildDovetailingChainFamily_backward_P` - P-witness placement |
+#### Critical Path (D-from-syntax, Task 956)
 
-**Impact on Standard Completeness**: These sorries are in the upstream BFMCS construction chain (`construct_saturated_bfmcs_int`). Standard completeness theorems (`standard_weak_completeness`, `standard_strong_completeness`) inherit this sorry dependency.
+| File | Count | Description | Status |
+|------|-------|-------------|--------|
+| StagedConstruction/CantorApplication.lean | 3 | Quotient strictness gap (DenseTimeline witnesses not proven strict in quotient) | **BLOCKED** (Phase 6) |
+
+These 3 sorries share a single root cause and block Phases 7-8 of the D-from-syntax construction.
+
+#### Deprecated Path (Int-indexed, to be archived)
+
+| File | Count | Description | Status |
+|------|-------|-------------|--------|
+| Bundle/TemporalCoherentConstruction.lean | 2 | `temporal_coherent_family_exists_Int`, `fully_saturated_bfmcs_exists_int` | DEPRECATED |
+| Bundle/DovetailingChain.lean | 2 | `forward_F`, `backward_P` witness placement | DEPRECATED |
+
+These 4 sorries are in deprecated Int-indexed files. They will be archived when D-from-syntax is complete.
+
+#### Isolated (not on critical path)
+
+| File | Count | Description | Status |
+|------|-------|-------------|--------|
+| Bundle/CanonicalIrreflexivity.lean | 2 | `canonicalR_irreflexive` proof (String atom freshness) | UNUSED, UNPROVABLE |
+| Canonical/ConstructiveFragment.lean | 2 | Constructive fragment lemmas | Low priority |
+
+These 4 sorries do not affect the completeness chain.
+
+**Impact on Standard Completeness**: The ONLY blocking sorries for D-from-syntax completeness are the 3 in CantorApplication.lean. The deprecated Int-indexed sorries are not on the critical path. Standard completeness theorems in Representation.lean inherit sorry dependency from the deprecated Int path and will be replaced by Phase 8.
 
 **What IS sorry-free**:
 - Soundness (`soundness`)

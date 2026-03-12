@@ -9,6 +9,32 @@ import Bimodal.Syntax.Formula
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
+-- DEPRECATED (2026-03-11): Int-specialized construction, violates pure-syntax constraint
+--
+-- This file/module is deprecated because it provides Int-specialized temporal
+-- coherence infrastructure (TemporalCoherentFamily, fully_saturated_bfmcs_exists_int)
+-- that imports Int as the duration domain. The pure-syntax constraint requires D to
+-- emerge from temporal axioms, not be imported as Int.
+--
+-- Status:
+-- - Contains temporal backward lemmas (temporal_backward_G, temporal_backward_H) -- these
+--   are mathematically sound and reusable for any D, but the file's main exports
+--   (fully_saturated_bfmcs_exists_int, construct_saturated_bfmcs_int) are Int-specific
+-- - Contains 1 sorry (fully_saturated_bfmcs_exists_int)
+-- - StagedExecution.lean and Representation.lean depend on this file (import refactoring
+--   needed before removal)
+-- - Will be superseded by D-from-syntax construction (Task 956)
+--
+-- References:
+-- - ROAD_MAP.md: Dead End "All Int/Rat Import Approaches"
+-- - Task 956: D Construction from Canonical Timeline
+-- - Task 959: Orientation and cleanup documentation
+--
+-- DO NOT USE for new development. Will be archived when D-from-syntax construction
+-- (Task 956) is complete.
+-/
+
+/-!
 # Temporal Backward Properties for Truth Lemma
 
 This module implements the temporal backward properties needed to eliminate sorries
