@@ -5,26 +5,28 @@
     {"path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260312c.md", "type": "summary", "summary": "Session C progress: added irreflexive_mcs_has_strict_future lemma, proved unreachable cases via Temporal 4 closure, improved CantorApplication structure"},
     {"path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260312d.md", "type": "summary", "summary": "Session D progress: added reflexivity derivation pattern for strict density proofs, reduced DensityFrameCondition sorries from 16 to 10"},
     {"path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6-handoff-20260312e.md", "type": "handoff", "summary": "Iteration 3 analysis: confirmed all sorries are reflexive MCS cases requiring Finset.strongInductionOn iteration approach"},
-    {"path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260312e.md", "type": "summary", "summary": "Session E: Deep analysis of 13 sorries, confirmed reflexive MCS root cause, implementation path via Finset.strongInductionOn identified"}
+    {"path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260312e.md", "type": "summary", "summary": "Session E: Deep analysis of 13 sorries, confirmed reflexive MCS root cause, implementation path via Finset.strongInductionOn identified"},
+    {"path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260312f.md", "type": "summary", "summary": "Session F: Attempted Finset approach, discovered decidability challenges, identified Nat recursion alternative"},
+    {"path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6-handoff-20260312f.md", "type": "handoff", "summary": "Iteration 4: Nat.strongRecOn approach recommended to avoid Finset decidability issues"}
   ],
   "partial_progress": {
-    "stage": "phase_6_analysis_complete",
-    "details": "Iteration 3: Deep analysis of remaining 13 sorries. Confirmed all are reflexive MCS cases where constructed witness V ~ M' in quotient. Direct proofs insufficient. Implementation path clear: use Finset.strongInductionOn on candidate distinguishing formulas. Handoff written with implementation approach.",
+    "stage": "phase_6_implementation_blocked",
+    "details": "Iteration 4: Attempted Finset.strongInductionOn but hit decidability issues with Set membership. Added SubformulaClosure import and Classical.propDecidable. Identified Nat recursion as cleaner alternative. 13 sorries remain (10 DensityFrameCondition, 3 CantorApplication).",
     "phases_completed": 5,
     "phases_total": 8,
     "sorries_density_frame_condition": 10,
     "sorries_cantor_application": 3,
-    "handoff_path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6-handoff-20260312e.md"
+    "handoff_path": "specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6-handoff-20260312f.md"
   },
   "requires_user_review": false,
   "completion_data": {
-    "completion_summary": "Iteration 3: Analysis phase complete. All 13 sorries confirmed to be reflexive MCS cases. Implementation path identified: well-founded iteration using Finset.strongInductionOn on candidate distinguishing formulas. Handoff written for next iteration."
+    "completion_summary": "Iteration 4: Attempted well-founded iteration via Finset.strongInductionOn. Discovered Finset.filter decidability issues with Set membership. Added SubformulaClosure import. Identified Nat.strongRecOn as cleaner alternative. Handoff written for next iteration."
   },
   "metadata": {
     "session_id": "sess_1773337195_0a1a7c",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "iteration": 3
+    "iteration": 4
   }
 }
