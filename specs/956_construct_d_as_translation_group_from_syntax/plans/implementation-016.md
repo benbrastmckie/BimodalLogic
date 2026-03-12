@@ -60,7 +60,7 @@ Files: `StagedTimeline.lean`, `WitnessSeedWrapper.lean`, `SeparationLemma.lean`,
 
 ---
 
-### Phase 6: Cantor Isomorphism Application [BLOCKED - 3 sorries]
+### Phase 6: Cantor Isomorphism Application [BLOCKED]
 
 - **Dependencies:** Phase 5 (COMPLETE)
 - **Goal:** Apply Cantor's theorem to establish TimelineQuot ≃o Q
