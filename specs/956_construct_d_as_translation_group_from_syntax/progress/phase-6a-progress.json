@@ -1,7 +1,7 @@
 {
   "phase": "6a",
   "status": "partial",
-  "current_objective": "Implement contradiction cases for reflexive cluster escapes",
+  "current_objective": "Implement reflexive_seriality_escape using seed consistency lemmas",
   "objectives": {
     "case_split_G_neg_delta": {
       "status": "partial",
@@ -10,6 +10,10 @@
     "case_split_M_prime_sees_witness": {
       "status": "partial",
       "details": "Implemented at lines 849, 887 - pos case proven via T4 transitivity M' -> witness -> M contradicts h_not_R', neg case remains"
+    },
+    "strict_escape_seed_infrastructure": {
+      "status": "done",
+      "details": "Added StrictEscapeSeed definition, strict_escape_seed_implies_no_backward, strict_escape_seed_consistent, reflexive_seriality_escape_via_seed"
     }
   },
   "approaches_tried": [
@@ -22,6 +26,11 @@
       "approach": "T4 transitivity M' -> V -> M",
       "result": "works when M' sees V and V sees M",
       "insight": "Derives M' sees M, contradicting h_not_R'. Only works when M' sees the witness."
+    },
+    {
+      "approach": "Seed consistency with G(neg(delta))",
+      "result": "requires h_indep: F(delta) not derivable from GContent(M')",
+      "insight": "Implemented lemmas but h_indep is hard to prove directly. Need Pattern C iteration."
     }
   ],
   "remaining_sorries": {
@@ -34,10 +43,15 @@
       "witness_sees_M_not_M_prime_sees_witness": [860, 898]
     }
   },
+  "new_infrastructure": {
+    "StrictEscapeSeed": "Definition of {G(neg(psi))} ∪ GContent(M')",
+    "strict_escape_seed_implies_no_backward": "If M'' extends seed and psi ∈ M', then ¬CanonicalR M'' M'",
+    "strict_escape_seed_consistent": "Seed is consistent when F(psi) independent of GContent(M')",
+    "reflexive_seriality_escape_via_seed": "Full escape construction using above lemmas"
+  },
   "next_steps": [
-    "Implement Pattern C: seriality escape from reflexive M' to M'' > M' strictly",
-    "Apply density(M, M'') to get witness W' between M and M''",
-    "Show W' is also between M and M' (since M'' > M')",
-    "Prove termination via subformula measure"
+    "Prove h_indep for specific context at sorry locations, OR",
+    "Implement Pattern C iteration with fuel that avoids needing h_indep directly",
+    "Use subformula termination measure to show iteration succeeds"
   ]
 }

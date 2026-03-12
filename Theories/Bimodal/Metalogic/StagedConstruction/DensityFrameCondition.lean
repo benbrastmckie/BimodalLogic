@@ -1157,6 +1157,155 @@ but that requires importing Subformulas.lean.
 def candidateDistinguishing (M M' : Set Formula) : Set Formula :=
   { phi | Formula.all_future phi ∈ M' ∧ phi ∉ M }
 
+/--
+Escape seed for strict future construction.
+
+Given a reflexive M' and a formula psi with F(psi) ∈ M' (equivalently G(neg(psi)) ∉ M'),
+the seed {G(neg(psi))} ∪ GContent(M') can potentially extend to an MCS M'' that
+doesn't see M' (¬CanonicalR M'' M').
+
+This is because M'' would have G(neg(psi)) ∈ M'', so neg(psi) ∈ GContent(M''),
+but neg(psi) ∉ M' (since psi ∈ M' by M' reflexivity and F(psi) ∈ M' ensures
+that from G(psi) ∈ M' we get psi ∈ M' by reflexivity, and M' is consistent).
+-/
+def StrictEscapeSeed (M' : Set Formula) (psi : Formula) : Set Formula :=
+  {Formula.all_future (Formula.neg psi)} ∪ GContent M'
+
+/--
+If the strict escape seed is consistent and M'' extends it, then M'' doesn't see M'.
+
+This is because G(neg(psi)) ∈ M'' (from the seed), so neg(psi) ∈ GContent(M'').
+If CanonicalR M'' M', then neg(psi) ∈ M'. But if M' has psi (e.g., via reflexivity
+from G(psi) ∈ M'), then both psi and neg(psi) would be in M', contradicting consistency.
+-/
+theorem strict_escape_seed_implies_no_backward
+    (M' M'' : Set Formula) (psi : Formula)
+    (h_mcs' : SetMaximalConsistent M')
+    (h_mcs'' : SetMaximalConsistent M'')
+    (h_psi_M' : psi ∈ M')
+    (h_seed : StrictEscapeSeed M' psi ⊆ M'') :
+    ¬CanonicalR M'' M' := by
+  intro h_R
+  -- G(neg(psi)) ∈ M'' from the seed
+  have h_G_neg_psi_M'' : Formula.all_future (Formula.neg psi) ∈ M'' :=
+    h_seed (Set.mem_union_left _ (Set.mem_singleton _))
+  -- neg(psi) ∈ GContent(M'') since G(neg(psi)) ∈ M''
+  have h_neg_psi_GContent : Formula.neg psi ∈ GContent M'' := h_G_neg_psi_M''
+  -- CanonicalR M'' M' means GContent(M'') ⊆ M'
+  have h_neg_psi_M' : Formula.neg psi ∈ M' := h_R h_neg_psi_GContent
+  -- Contradiction: psi ∈ M' and neg(psi) ∈ M'
+  exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
+
+/--
+The strict escape seed is consistent when F(psi) ∈ M' (i.e., G(neg(psi)) ∉ M').
+
+**Key insight**: The seed {G(neg(psi))} ∪ GContent(M') is consistent iff
+GContent(M') does NOT derive F(psi) = ¬G(neg(psi)).
+
+**Proof strategy**:
+- If the seed is inconsistent, then some finite L ⊆ GContent(M') ∪ {G(neg(psi))} derives ⊥
+- If G(neg(psi)) ∉ L, then L ⊆ GContent(M') ⊆ M' (by M' reflexivity), so L is consistent
+- If G(neg(psi)) ∈ L, by deduction L' ⊢ F(psi) where L' = L \ {G(neg(psi))}
+- Since L' ⊆ GContent(M') ⊆ M' and M' is an MCS, this means F(psi) is derivable from M'
+- But F(psi) ∈ M' is our hypothesis, so this is consistent - no contradiction!
+
+The issue is that consistency of the seed is NOT automatically guaranteed.
+The seed is consistent iff F(psi) is "independent" of GContent(M') in the derivation sense.
+
+This lemma captures when the escape construction succeeds.
+-/
+theorem strict_escape_seed_consistent
+    (M' : Set Formula) (psi : Formula)
+    (h_mcs' : SetMaximalConsistent M')
+    (h_refl : CanonicalR M' M')
+    (h_F_psi : Formula.some_future psi ∈ M')
+    -- Key hypothesis: F(psi) is not derivable from GContent(M') alone
+    (h_indep : ∀ L : List Formula, (∀ φ ∈ L, φ ∈ GContent M') →
+               ¬Nonempty (DerivationTree L (Formula.some_future psi))) :
+    SetConsistent (StrictEscapeSeed M' psi) := by
+  unfold StrictEscapeSeed SetConsistent
+  intro L hL
+  -- hL says all elements of L are in {G(neg(psi))} ∪ GContent(M')
+  -- We need to show L is consistent (doesn't derive ⊥)
+  intro ⟨d⟩
+  -- Case split: is G(neg(psi)) in L?
+  by_cases h_in : Formula.all_future (Formula.neg psi) ∈ L
+  · -- G(neg(psi)) ∈ L: use deduction theorem
+    -- By deduction: L \ {G(neg(psi))} ⊢ F(psi)
+    let L' := L.filter (fun φ => decide (φ ≠ Formula.all_future (Formula.neg psi)))
+    have h_L'_in_GContent : ∀ φ ∈ L', φ ∈ GContent M' := by
+      intro φ h_mem
+      have h_and := List.mem_filter.mp h_mem
+      have h_in_L := h_and.1
+      have h_ne : φ ≠ Formula.all_future (Formula.neg psi) := by
+        simp only [decide_eq_true_eq] at h_and
+        exact h_and.2
+      have h_in_seed := hL φ h_in_L
+      cases h_in_seed with
+      | inl h_eq =>
+        exfalso
+        have : φ = Formula.all_future (Formula.neg psi) := by
+          simp only [Set.mem_singleton_iff] at h_eq
+          exact h_eq
+        exact h_ne this
+      | inr h_in_G => exact h_in_G
+    -- Get derivation from L' of F(psi)
+    have h_perm := cons_filter_neq_perm h_in
+    have d_reord : DerivationTree (Formula.all_future (Formula.neg psi) :: L') Formula.bot :=
+      derivation_exchange d (fun x => (h_perm x).symm)
+    have d_neg : L' ⊢ Formula.neg (Formula.all_future (Formula.neg psi)) :=
+      deduction_theorem L' (Formula.all_future (Formula.neg psi)) Formula.bot d_reord
+    -- F(psi) = ¬G(neg(psi))
+    have h_F_eq : Formula.some_future psi = Formula.neg (Formula.all_future (Formula.neg psi)) := rfl
+    rw [← h_F_eq] at d_neg
+    -- This contradicts h_indep
+    exact h_indep L' h_L'_in_GContent ⟨d_neg⟩
+  · -- G(neg(psi)) ∉ L: L ⊆ GContent(M') ⊆ M'
+    have h_L_in_GContent : ∀ φ ∈ L, φ ∈ GContent M' := by
+      intro φ h_mem
+      have h_in_seed := hL φ h_mem
+      cases h_in_seed with
+      | inl h_eq =>
+        exfalso
+        simp only [Set.mem_singleton_iff] at h_eq
+        exact h_in (h_eq ▸ h_mem)
+      | inr h_in_G => exact h_in_G
+    -- L ⊆ GContent(M') ⊆ M' (by M' reflexivity)
+    have h_L_in_M' : ∀ φ ∈ L, φ ∈ M' := fun φ h_mem => h_refl (h_L_in_GContent φ h_mem)
+    -- M' is consistent, so L is consistent
+    exact h_mcs'.1 L h_L_in_M' ⟨d⟩
+
+/--
+When the strict escape seed is consistent, we can construct M'' strictly above M'.
+
+This combines `strict_escape_seed_consistent` with Lindenbaum to get an actual MCS,
+then uses `strict_escape_seed_implies_no_backward` to prove strictness.
+-/
+theorem reflexive_seriality_escape_via_seed
+    (M' : Set Formula) (psi : Formula)
+    (h_mcs' : SetMaximalConsistent M')
+    (h_refl : CanonicalR M' M')
+    (h_psi_M' : psi ∈ M')
+    (h_F_psi : Formula.some_future psi ∈ M')
+    (h_indep : ∀ L : List Formula, (∀ φ ∈ L, φ ∈ GContent M') →
+               ¬Nonempty (DerivationTree L (Formula.some_future psi))) :
+    ∃ M'' : Set Formula, SetMaximalConsistent M'' ∧
+      CanonicalR M' M'' ∧ ¬CanonicalR M'' M' := by
+  -- The seed is consistent
+  have h_seed_cons := strict_escape_seed_consistent M' psi h_mcs' h_refl h_F_psi h_indep
+  -- Extend to MCS via Lindenbaum
+  obtain ⟨M'', h_extends, h_mcs''⟩ := set_lindenbaum (StrictEscapeSeed M' psi) h_seed_cons
+  use M'', h_mcs''
+  constructor
+  · -- CanonicalR M' M'': GContent(M') ⊆ M''
+    -- GContent(M') ⊆ StrictEscapeSeed M' psi (by definition)
+    -- StrictEscapeSeed M' psi ⊆ M'' (by h_extends)
+    intro phi h_phi_GContent
+    apply h_extends
+    exact Set.mem_union_right _ h_phi_GContent
+  · -- ¬CanonicalR M'' M': use strict_escape_seed_implies_no_backward
+    exact strict_escape_seed_implies_no_backward M' M'' psi h_mcs' h_mcs'' h_psi_M' h_extends
+
 /-!
 ## Well-Founded Iteration for Strict Density
 
