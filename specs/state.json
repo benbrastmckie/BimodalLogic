@@ -70,6 +70,11 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260312g.md",
           "type": "summary",
           "summary": "Iteration 5: Pattern C structure added, transitivity fixes, 13 sorries remain"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-043.md",
+          "type": "research",
+          "summary": "Mathematical ideal path: Pattern C (fuel + sufficiency) for reflexive cluster escape"
         }
       ],
       "session_id": "sess_1773341155_cd27e0",
