@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Staged Construction (v019)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-6 hours (remaining)
 - **Dependencies**: Task 957 (COMPLETE), Task 959 (COMPLETE)
 - **Research Inputs**: research-041.md (Pattern B well-founded approach)
@@ -41,7 +41,7 @@ Files: `StagedTimeline.lean`, `WitnessSeedWrapper.lean`, `SeparationLemma.lean`,
 
 ---
 
-### Phase 6: Well-Founded Strict Density [PLANNED]
+### Phase 6: Well-Founded Strict Density [PARTIAL]
 
 - **Dependencies:** Phase 5 (COMPLETE)
 - **Goal:** Implement `density_frame_condition_strict` with intrinsic termination proof
