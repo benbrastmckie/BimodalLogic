@@ -12,8 +12,7 @@ Most reference materials are theory-specific. See:
 
 | Theory | Key References |
 |--------|----------------|
-| **Bimodal** | [Axioms](../../Bimodal/docs/reference/AXIOM_REFERENCE.md), [Operators](../../Bimodal/docs/reference/OPERATORS.md), [Tactics](../../Bimodal/docs/reference/TACTIC_REFERENCE.md) |
-| **Logos** | [Axioms](../../Logos/docs/reference/AXIOM_REFERENCE.md), [Glossary](../../Logos/docs/reference/GLOSSARY.md), [Extension Stubs](../../Logos/docs/reference/EXTENSION_STUBS.md) |
+| **Bimodal** | [Axioms](../../Theories/Bimodal/docs/reference/AXIOM_REFERENCE.md), [Operators](../../Theories/Bimodal/docs/reference/OPERATORS.md), [Tactics](../../Theories/Bimodal/docs/reference/TACTIC_REFERENCE.md) |
 
 ## Project-Wide Reference
 
@@ -26,8 +25,7 @@ Most reference materials are theory-specific. See:
 ### Looking for a Symbol?
 
 See theory-specific operator references:
-- **Bimodal**: [Operators](../../Bimodal/docs/reference/OPERATORS.md) - Modal, temporal, propositional operators
-- **Logos**: [Glossary](../../Logos/docs/reference/GLOSSARY.md) - Key concepts and terminology
+- **Bimodal**: [Operators](../../Theories/Bimodal/docs/reference/OPERATORS.md) - Modal, temporal, propositional operators
 
 ### Looking for API Details?
 

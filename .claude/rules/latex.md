@@ -107,18 +107,18 @@ Before committing LaTeX changes:
 
 ```bash
 # Build main document
-cd Theories/Logos/latex
-pdflatex LogosReference.tex
+cd Theories/Bimodal/latex
+pdflatex BimodalReference.tex
 
 # Build with bibliography
-pdflatex LogosReference.tex
-bibtex LogosReference
-pdflatex LogosReference.tex
-pdflatex LogosReference.tex
+pdflatex BimodalReference.tex
+bibtex BimodalReference
+pdflatex BimodalReference.tex
+pdflatex BimodalReference.tex
 
 # Build subfile standalone
-cd Theories/Logos/latex/subfiles
-pdflatex 01-ConstitutiveFoundation.tex
+cd Theories/Bimodal/latex/subfiles
+pdflatex 01-Syntax.tex
 ```
 
 ## Error Handling

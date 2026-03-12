@@ -1,4 +1,4 @@
-# UserGuide Documentation
+# User Guide Documentation
 
 [Back to Documentation](../README.md)
 
@@ -12,8 +12,7 @@ The primary working system is **Bimodal**, which has complete soundness and comp
 
 | Theory | Status | Quick Start | Additional Guides |
 |--------|--------|-------------|-------------------|
-| **Bimodal** | Complete | [Quick Start](../../Bimodal/docs/user-guide/QUICKSTART.md) | [Tutorial](../../Bimodal/docs/user-guide/TUTORIAL.md), [Examples](../../Bimodal/docs/user-guide/EXAMPLES.md), [Proof Patterns](../../Bimodal/docs/user-guide/PROOF_PATTERNS.md) |
-| **Logos** | Research | [Quick Start](../../Logos/docs/user-guide/QUICKSTART.md) | [Methodology](../../Logos/docs/user-guide/METHODOLOGY.md), [Current Status](../../Logos/docs/user-guide/CURRENT_STATUS.md) |
+| **Bimodal** | Complete | [Quick Start](../../Theories/Bimodal/docs/user-guide/QUICKSTART.md) | [Tutorial](../../Theories/Bimodal/docs/user-guide/TUTORIAL.md), [Examples](../../Theories/Bimodal/docs/user-guide/EXAMPLES.md), [Proof Patterns](../../Theories/Bimodal/docs/user-guide/PROOF_PATTERNS.md) |
 
 **Recommendation**: Start with Bimodal for a production-ready modal-temporal logic implementation.
 
@@ -46,15 +45,12 @@ This directory contains integration guides applicable across all theories:
 
 **Start with Bimodal** - the complete, verified implementation:
 
-1. [Bimodal Quick Start](../../Bimodal/docs/user-guide/QUICKSTART.md) - Get started with proofs
-2. [Bimodal Tutorial](../../Bimodal/docs/user-guide/TUTORIAL.md) - Step-by-step introduction
-3. [Bimodal Examples](../../Bimodal/docs/user-guide/EXAMPLES.md) - Worked examples
+1. [Bimodal Quick Start](../../Theories/Bimodal/docs/user-guide/QUICKSTART.md) - Get started with proofs
+2. [Bimodal Tutorial](../../Theories/Bimodal/docs/user-guide/TUTORIAL.md) - Step-by-step introduction
+3. [Bimodal Examples](../../Theories/Bimodal/docs/user-guide/EXAMPLES.md) - Worked examples
 
 For advanced tactic development:
-- [Tactic Development](../../Bimodal/docs/user-guide/TACTIC_DEVELOPMENT.md) - Custom tactics for Bimodal
-
-**Logos** (research roadmap) extends Bimodal with hyperintensional semantics:
-- [Logos Quick Start](../../Logos/docs/user-guide/QUICKSTART.md) - Research preview
+- [Tactic Development](../../Theories/Bimodal/docs/user-guide/TACTIC_DEVELOPMENT.md) - Custom tactics for Bimodal
 
 ## Related Documentation
 

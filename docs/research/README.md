@@ -1,6 +1,6 @@
 # Research Documentation
 
-Project-wide research documents applicable to all theories in ProofChecker.
+Project-wide research documents applicable to ProofChecker.
 
 **Audience**: Researchers, architects, contributors interested in design decisions
 
@@ -9,11 +9,9 @@ Project-wide research documents applicable to all theories in ProofChecker.
 | Theory | Status | Description |
 |--------|--------|-------------|
 | **Bimodal** | Complete | Production-ready with soundness/completeness proofs |
-| **Logos** | Research | Hyperintensional extensions (roadmap) |
 
-> **Theory-Specific Research**: For research specific to each logic theory, see:
-> - [Bimodal/docs/research/](../../Theories/Bimodal/docs/research/) - Proof search automation (complete implementation)
-> - [Logos/docs/research/](../../Theories/Logos/docs/research/) - Logos semantic architecture (research roadmap)
+> **Theory-Specific Research**: For research specific to the bimodal logic theory, see:
+> - [Theories/Bimodal/docs/research/](../../Theories/Bimodal/docs/research/) - Proof search automation (complete implementation)
 
 ## Project-Wide Research
 
@@ -23,10 +21,10 @@ Project-wide research documents applicable to all theories in ProofChecker.
 
 Authoritative presentation of Bimodal, a complete propositional intensional logic combining S5 modal
 and linear temporal operators with **verified soundness and completeness proofs**. Includes comprehensive
-operator and axiom coverage, perpetuity principles, and a comparison section with Logos research roadmap.
+operator and axiom coverage, perpetuity principles, and theoretical foundations.
 
 **Status**: Complete (production-ready implementation)
-**Related**: [Bimodal README](../../Theories/Bimodal/README.md), [Logos README](../../Theories/Logos/README.md)
+**Related**: [Bimodal README](../../Theories/Bimodal/README.md)
 
 ---
 
@@ -85,19 +83,11 @@ types.
 
 ## Theory-Specific Research
 
-Research specific to individual theories has been moved to theory directories:
-
-### Logos Research
-
-Located in [Logos/docs/research/](../../Theories/Logos/docs/research/):
-
-- **recursive-semantics.md** - Full Logos semantic specification
-- **layer-extensions.md** - Extension architecture overview
-- **conceptual-engineering.md** - Philosophical foundations
+Research specific to Bimodal has been moved to the theory directory:
 
 ### Bimodal Research
 
-Located in [Bimodal/docs/research/](../../Theories/Bimodal/docs/research/):
+Located in [Theories/Bimodal/docs/research/](../../Theories/Bimodal/docs/research/):
 
 - **modal-temporal-proof-search.md** - Proof search architecture
 - **proof-search-automation.md** - Automation strategies
@@ -121,9 +111,8 @@ Located in [Bimodal/docs/research/](../../Theories/Bimodal/docs/research/):
 ## Navigation
 
 - **Up**: [docs/](../README.md)
-- **Logos Research**: [Logos/docs/research/](../../Theories/Logos/docs/research/)
-- **Bimodal Research**: [Bimodal/docs/research/](../../Theories/Bimodal/docs/research/)
+- **Bimodal Research**: [Theories/Bimodal/docs/research/](../../Theories/Bimodal/docs/research/)
 
 ---
 
-_Last updated: January 2026_
+_Last updated: March 2026_

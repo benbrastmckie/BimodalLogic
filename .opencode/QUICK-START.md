@@ -48,7 +48,7 @@ The .opencode/ system has been successfully overhauled and is now ready for LEAN
 
 #### Develop Interactive Proof
 ```bash
-/lean-proof Theories/Logos/Layer1/Continuity.lean
+/lean-proof Theories/Bimodal/Metalogic/Soundness.lean
 ```
 
 ## 📁 System Architecture

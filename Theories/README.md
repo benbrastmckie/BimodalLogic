@@ -7,7 +7,6 @@ This directory contains the formal logic theories implemented in Lean 4.
 | Directory | Description |
 |-----------|-------------|
 | `Bimodal/` | TM bimodal logic combining S5 modal and linear temporal operators |
-| `Logos/` | Recursive semantics with hyperintensional foundation and layered extensions |
 
 ## Bimodal Theory
 
@@ -19,21 +18,6 @@ The Bimodal library provides:
 - Proof automation tactics
 
 See `Bimodal/README.md` for details.
-
-## Logos Theory
-
-The Logos library provides:
-- Constitutive semantics foundation (mereological state space)
-- Explanatory extension layer (task-based intensional semantics)
-- Planned extensions: Epistemic, Normative, Spatial, Agential
-
-The theory layers are organized under `Logos/SubTheories/`:
-- `Foundation/` - Constitutive frame with bilateral propositions
-- `Explanatory/` - Task relation and temporal structure
-- `Epistemic/` - Belief and knowledge operators (stub)
-- `Normative/` - Deontic and preference operators (stub)
-
-See `Logos/README.md` for details.
 
 ## Adding a New Theory
 

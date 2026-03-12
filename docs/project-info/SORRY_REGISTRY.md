@@ -4,7 +4,7 @@
 **Total Active Placeholders**: 46 (26 in Completeness.lean, 3 in ProofSearch.lean, 17 across other modules)
 **Total Axiom Declarations**: 7 (5 in Completeness.lean for canonical model construction, 2 in Examples)
 **Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
-**Note**: Count updated after comprehensive codebase review (sess_1768528304_4parxt) - Found 46 active sorry placeholders across Theories/Bimodal and Theories/Logos
+**Note**: Count updated after comprehensive codebase review (sess_1768528304_4parxt) - Found 46 active sorry placeholders in Theories/Bimodal
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Bimodal codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
 

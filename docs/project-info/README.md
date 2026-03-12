@@ -1,4 +1,4 @@
-# ProjectInfo Documentation
+# Project Info Documentation
 
 [Back to Documentation](../README.md)
 
@@ -14,12 +14,11 @@ For theory-specific implementation status, see:
 
 | Theory | Status Documents |
 |--------|------------------|
-| **Bimodal** | [Implementation Status](../../Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md), [Known Limitations](../../Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) |
-| **Logos** | [Implementation Status](../../Logos/docs/project-info/IMPLEMENTATION_STATUS.md), [Roadmap](../../Logos/docs/project-info/ROADMAP.md) |
+| **Bimodal** | [Implementation Status](../../Theories/Bimodal/docs/project-info/IMPLEMENTATION_STATUS.md), [Known Limitations](../../Theories/Bimodal/docs/project-info/KNOWN_LIMITATIONS.md) |
 
 ## Documentation Overview
 
-ProjectInfo maintains the authoritative records of implementation progress, feature capabilities,
+Project Info maintains the authoritative records of implementation progress, feature capabilities,
 technical debt (sorry placeholders), and the workflow for managing these documents.
 
 ## Status Tracking
@@ -39,7 +38,7 @@ Registry of features:
 |----------|-------------|
 | [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md) | Feature tracking and capability documentation |
 
-> **Theory-specific tactics**: See [Bimodal/docs/project-info/TACTIC_REGISTRY.md](../../Bimodal/docs/project-info/TACTIC_REGISTRY.md)
+> **Theory-specific tactics**: See [Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md](../../Theories/Bimodal/docs/project-info/TACTIC_REGISTRY.md)
 > for tactic implementation status and usage patterns.
 
 ## Workflow Documentation
@@ -72,7 +71,7 @@ See [MAINTENANCE.md](MAINTENANCE.md) for the complete workflow for updating thes
 ### Finding Capabilities
 
 - **Available features**: [FEATURE_REGISTRY.md](FEATURE_REGISTRY.md)
-- **Theory tactics**: See theory-specific ProjectInfo directories
+- **Theory tactics**: See theory-specific project-info directories
 
 ### Managing Tasks
 

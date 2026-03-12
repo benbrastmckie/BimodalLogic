@@ -1,14 +1,10 @@
 # A Bimodal Logic for Tense and Modality
 
-This document provides the authoritative presentation of Bimodal, a complete propositional intensional logic combining S5 modal and linear temporal operators. Developed in parallel with Logos, Bimodal provides an excellent starting point for understanding modal-temporal reasoning and demonstrates the boundaries of purely intensional semantics.
+This document provides the authoritative presentation of Bimodal, a complete propositional intensional logic combining S5 modal and linear temporal operators. This implementation provides an excellent starting point for understanding modal-temporal reasoning.
 
 ## Overview
 
-The ProofChecker project contains two distinct logical theories:
-
-1. **Bimodal** (production-ready): A propositional intensional logic implementing TM (Tense and Modality) with Kripke-style semantics and **fully verified soundness and completeness proofs**. This is the complete, working implementation.
-
-2. **Logos** (research roadmap): A second-order hyperintensional logic that extends beyond possible worlds semantics. This represents the research direction with layered extensions for explanatory, epistemic, and normative reasoning.
+Bimodal logic (TM) is a propositional intensional logic implementing Tense and Modality with Kripke-style semantics and **fully verified soundness and completeness proofs**. This is a complete, production-ready implementation.
 
 ---
 
@@ -94,39 +90,9 @@ Six theorems connecting modal and temporal operators:
 
 ---
 
-## Comparison with Logos
+## When to Use Bimodal
 
-### Intensional vs Hyperintensional Semantics
-
-The contrast between Bimodal's purely intensional semantics and Logos's hyperintensional foundation demonstrates the advantages of hyperintensional semantics for supporting a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
-
-### Key Differences
-
-| Aspect | Bimodal | Logos |
-|--------|---------|-------|
-| Semantic grain | World-states (coarse) | States (fine-grained) |
-| Logical order | Propositional (0th) | Second-order |
-| Interpretation | Sets of worlds | Variable assignments |
-| Hyperintensionality | No | Yes |
-| Quantification | None | First and second-order |
-
-### Hyperintensional Advantages
-
-Logos is designed to capture distinctions that possible worlds semantics cannot:
-
-1. **Propositional Attitude Distinctions**: In intensional semantics, believing P and believing Q are equivalent whenever P and Q are necessarily equivalent. Hyperintensional semantics distinguishes these, capturing the intuition that one can believe "2+2=4" without believing "Fermat's Last Theorem is true" even though both are necessary truths.
-
-2. **Explanatory Relations**: Grounding, essence, and constitution are hyperintensional---what grounds what cannot be captured by truth conditions alone. "Being crimson grounds being red" differs from arbitrary necessary connections.
-
-3. **Fine-Grained Content**: Hyperintensional semantics distinguishes propositions that have the same truth conditions but differ in what they are *about*. This enables more expressive reasoning about content and aboutness.
-
-4. **Layered Expressivity**: Logos's hyperintensional foundation supports a wider range of operators including explanatory, epistemic, and normative operators that require distinguishing necessarily equivalent propositions.
-
-### When to Use Each
-
-#### Start with Bimodal
-
-Bimodal is recommended as a starting point for:
+Bimodal is recommended for:
 
 1. **Learning modal-temporal reasoning**: Complete implementation with tutorials and examples
 2. **Standard modal reasoning**: Necessity, possibility, and their interactions
@@ -135,34 +101,11 @@ Bimodal is recommended as a starting point for:
 5. **S4/S5 style theorems**: Accessibility relation properties
 6. **Propositional proofs**: When zeroth-order logic suffices
 
-#### Use Logos For
-
-Logos is appropriate when you need:
-
-1. **Propositional attitude reports**: Belief, knowledge, desire contexts
-2. **Explanation and grounding**: Hyperintensional relations
-3. **Second-order quantification**: Properties of properties
-4. **Fine-grained content**: Distinguishing necessarily equivalent propositions
-5. **Layered extensions**: Epistemic, normative, and explanatory operators
-
----
-
-## Future: Repository Separation
-
-Bimodal is planned for extraction into a separate repository in the future. This will allow:
-
-- Independent versioning and releases
-- Cleaner dependency management
-- Focused documentation and examples
-- Use as a standalone modal-temporal logic library
-
-Until then, Bimodal continues to serve as both a complete implementation and a comparison baseline for Logos development.
-
 ---
 
 ## Theoretical Background
 
-### Possible Worlds Semantics (Bimodal)
+### Possible Worlds Semantics
 
 Bimodal follows the Kripke tradition:
 
@@ -170,29 +113,27 @@ Bimodal follows the Kripke tradition:
 - Accessibility relations determine modal truth
 - Two formulas are equivalent iff true at same worlds
 
-**Reference**: See "The Construction of Possible Worlds" (Brast-McKie, 2025) for the theoretical foundation.
+**Reference**: See ["The Construction of Possible Worlds"](https://www.benbrastmckie.com/wp-content/uploads/2025/11/possible_worlds.pdf) (Brast-McKie, 2025) for the theoretical foundation.
 
-### Hyperintensional Semantics (Logos)
+### Additional References
 
-Logos extends beyond possible worlds:
+- Brast-McKie, B. ["Counterfactual Worlds"](https://link.springer.com/article/10.1007/s10992-025-09793-8) (Journal of Philosophical Logic, 2025)
+- Brast-McKie, B. ["Identity and Aboutness"](https://link.springer.com/article/10.1007/s10992-021-09612-w) (Journal of Philosophical Logic, 2021)
 
-- States as more fine-grained than worlds
-- Structured propositions preserve more content
-- Two formulas can have same truth conditions but different content
+---
 
-**References**:
-- Brast-McKie, B. "Counterfactual Worlds" (Journal of Philosophical Logic, 2025)
-- Brast-McKie, B. "Identity and Aboutness" (Journal of Philosophical Logic, 2021)
+## The Logos Connection
+
+Bimodal logic is a fragment of the **Logos**, a formal language of thought designed to enable AI systems to reason with mathematical certainty. The Logos provides verified synthetic reasoning data of arbitrary complexity through an extensible system of proof theory and semantics. This repository focuses specifically on the bimodal fragment, which is of independent interest due to its completeness and decidability. For more about the Logos project, see [logos-labs.ai](https://logos-labs.ai/).
 
 ---
 
 ## Navigation
 
 - [Bimodal Implementation](../../Theories/Bimodal/README.md) - Full implementation details
-- [Logos Theory](../../Theories/Logos/README.md) - Primary research direction
 - [Research Documentation](README.md) - Research index
-- [Architecture Guide](../user-guide/ARCHITECTURE.md) - System architecture
+- [Architecture Guide](../../Theories/Bimodal/docs/user-guide/ARCHITECTURE.md) - System architecture
 
 ---
 
-_Last updated: January 2026_
+_Last updated: March 2026_

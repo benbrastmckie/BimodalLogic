@@ -24,10 +24,11 @@ technical_debt:
 
 ### 960. Refactor documentation for bimodal Logos fragment
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: general
 - **Research**: [research-001.md](specs/960_refactor_documentation_bimodal_logos/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/960_refactor_documentation_bimodal_logos/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260312.md](specs/960_refactor_documentation_bimodal_logos/summaries/implementation-summary-20260312.md)
 
 **Description**: Refactor README.md and other documentation throughout this repository to make it clear that this is a Lean codebase implementing the semantics, proof theory, and metalogic for the bimodal fragment of the Logos, establishing completeness. Include a link to logos-labs.ai but do not include extensive information about the Logos aside from briefly indicating what it is and aims to do alongside providing the link. Instead of deleting Logos-specific documentation, move them to /home/benjamin/Projects/Logos/Theory/docs/boneyard/ to be integrated into that repo later.
 
