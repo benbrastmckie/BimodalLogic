@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Staged Construction (v020)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 3-4 hours (remaining)
 - **Dependencies**: Task 957 (COMPLETE), Task 959 (COMPLETE)
 - **Research Inputs**: research-042.md (Pattern C fuel + sufficiency - recommended)

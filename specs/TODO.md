@@ -68,7 +68,7 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ### 956. Construct D as translation group from syntax
 - **Effort**: 30-50 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Previously blocked by**: Phase 6 quotient strictness gap (research-038 provides solution)
 - **Previously blocked by**: Task 957 (density frame condition - NOW COMPLETE)
 - **Language**: lean
