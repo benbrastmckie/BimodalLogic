@@ -1776,6 +1776,15 @@ noncomputable def checkStrictness (M M' W : Set Formula)
 /--
 Attempt to find a strict intermediate using fuel-based iteration.
 Returns Some if a strict witness is found within the fuel budget.
+
+The iteration strategy:
+1. Get non-strict intermediate W from density_frame_condition
+2. Check if W is strict
+3. If not strict (W ~ M or W ~ M'), try to escape via seriality
+
+Note: The escape mechanism may fail if M' is reflexive and all seriality
+witnesses are equivalent. The termination proof requires showing that
+sufficient fuel always exists (via subformula measure).
 -/
 noncomputable def strictDensityAttempt (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M)
@@ -1785,7 +1794,7 @@ noncomputable def strictDensityAttempt (M M' : Set Formula)
     (fuel : Nat) : Option (StrictDensityWitness M M') :=
   match fuel with
   | 0 => none
-  | _ + 1 =>
+  | n + 1 =>
     -- Get the non-strict intermediate from density_frame_condition
     let witness := density_frame_condition M M' h_mcs h_mcs' h_R h_not_R'
     let W := witness.choose
@@ -1794,7 +1803,37 @@ noncomputable def strictDensityAttempt (M M' : Set Formula)
     let h_R_MW := h_W.2.1
     let h_R_WM' := h_W.2.2
     -- Check if it's already strict
-    checkStrictness M M' W h_W_mcs h_R_MW h_R_WM'
+    match checkStrictness M M' W h_W_mcs h_R_MW h_R_WM' with
+    | some result => some result
+    | none =>
+      -- W is not strict. Try to escape via seriality from M'.
+      -- Get a seriality witness M'' from M'
+      let serialityWitness := mcs_has_strict_future M' h_mcs'
+      let M'' := serialityWitness.choose
+      let h_M''_spec := serialityWitness.choose_spec
+      let h_M''_mcs := h_M''_spec.1
+      let h_R_M'M'' := h_M''_spec.2
+      -- Check if M'' is strictly above M' (i.e., ¬CanonicalR M'' M')
+      if h_strict_M'' : ¬CanonicalR M'' M' then
+        -- M'' is strictly above M'. Now we can try density(M, M'').
+        -- First, check that M can reach M'' (by transitivity M -> M' -> M'')
+        let h_R_MM'' := canonicalR_transitive M M' M'' h_mcs h_R h_R_M'M''
+        -- Check that M'' doesn't see back to M
+        -- By transitivity: if M'' -> M, then M'' -> M -> M', so M'' -> M'
+        -- But we have ¬CanonicalR M'' M', so ¬CanonicalR M'' M
+        let h_not_M''_M : ¬CanonicalR M'' M := fun h_M''M =>
+          h_strict_M'' (canonicalR_transitive M'' M M' h_M''_mcs h_M''M h_R)
+        -- Recurse with new target M''
+        -- Note: The result type changes from StrictDensityWitness M M' to StrictDensityWitness M M''
+        -- We need to convert the result back to M M' form
+        -- Actually, the intermediate W' between M and M'' is also between M and M'
+        -- because CanonicalR W' M'' and CanonicalR M' M'' gives... hmm, this doesn't work
+        -- The W' sees M'' but we need W' to see M'
+        -- This is where the approach breaks down - we can't directly convert
+        none  -- Placeholder: iteration with changed target requires more infrastructure
+      else
+        -- M'' ~ M' (seriality didn't escape). Try a different approach.
+        none  -- Placeholder: need alternative escape mechanism
 
 /--
 Every strict ordering M < M' has a strict intermediate.

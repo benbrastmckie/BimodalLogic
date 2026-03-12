@@ -138,6 +138,19 @@ All phases completed with zero sorries.
 - Sorries: 11 -> 15 (12 DensityFrameCondition, 3 CantorApplication)
 - Note: Increase due to explicit case splits; more sub-cases now explicitly handled
 
+**Session: 2026-03-12, sess_1773349366_7bb216 (iteration 3)**
+- Analyzed: All 12 DensityFrameCondition sorries in detail via lean_goal
+- CRITICAL FINDING: The sorries are NOT provable by contradiction (exfalso)
+- Reason: The `intro h_VM; ...; sorry` pattern assumes `CanonicalR V M` leads to `False`
+- Reality: `CanonicalR V M` is CONSISTENT with all other hypotheses when M is reflexive
+- The proof structure itself is wrong, not just missing tactics
+- Added: Iteration skeleton to `strictDensityAttempt` (lines 1796-1831)
+- Added: Handoff document `phase-6-handoff-20260312-iter3.md` with detailed analysis
+- Confirmed: seriality_escape as stated is NOT directly provable (Lindenbaum non-constructive)
+- Confirmed: Need complete proof restructuring to replace exfalso with iteration
+- Sorries: 15 -> 15 (no change - requires restructuring, not tactics)
+- Recommendation: Restructure to use `by_cases h_VM : CanonicalR V M` with explicit iteration in positive case
+
 #### Phase 6a: Seriality Escape Helper (30 min)
 
 **Purpose**: Extract the "escape" mechanism from reflexive clusters into a clean helper.
