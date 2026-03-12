@@ -1,29 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-12T00:00:00Z",
-  "completed_at": "2026-03-12T00:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/960_refactor_documentation_bimodal_logos/reports/research-001.md",
-      "summary": "Research report identifying 8 documentation files requiring updates, content to move to boneyard, and 5-phase implementation plan"
+      "type": "plan",
+      "path": "specs/960_refactor_documentation_bimodal_logos/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for documentation refactoring"
     }
   ],
-  "next_steps": "Run /plan 960 to create implementation plan",
+  "next_steps": "Run /implement 960 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773346491_f042bd",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1773349393_844f61",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-researcher", "general-research-agent"],
-    "findings_count": 6,
-    "key_findings": [
-      "Theories/Logos/ directory does not exist - only Theories/Bimodal/ exists",
-      "README.md references multiple non-existent Logos paths",
-      "8 documentation files require updates to remove/redirect Logos references",
-      "Boneyard destination exists at /home/benjamin/Projects/Logos/Theory/docs/boneyard/",
-      "Paper link and logos-labs.ai descriptions captured for new documentation",
-      "5-phase implementation plan with estimated 3-5 hours effort"
-    ]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.0
   }
 }

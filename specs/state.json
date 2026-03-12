@@ -8,19 +8,25 @@
     {
       "project_number": 960,
       "project_name": "refactor_documentation_bimodal_logos",
-      "status": "researched",
+      "status": "planned",
       "language": "general",
       "created": "2026-03-12T20:10:25Z",
-      "last_updated": "2026-03-12T20:18:09Z",
-      "session_id": "sess_1773346491_f042bd",
+      "last_updated": "2026-03-12T21:05:40Z",
+      "session_id": "sess_1773349393_844f61",
       "researched": "2026-03-12T20:18:09Z",
       "artifacts": [
         {
           "path": "specs/960_refactor_documentation_bimodal_logos/reports/research-001.md",
           "type": "research",
           "summary": "Research report identifying 8 documentation files requiring updates, content to move to boneyard, and 5-phase implementation plan"
+        },
+        {
+          "path": "specs/960_refactor_documentation_bimodal_logos/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for documentation refactoring"
         }
-      ]
+      ],
+      "planned": "2026-03-12T21:05:40Z"
     },
     {
       "project_number": 956,
@@ -30,7 +36,7 @@
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-12T20:39:28Z",
+      "last_updated": "2026-03-12T21:03:00Z",
       "researched": "2026-03-12T17:04:10Z",
       "artifacts": [
         {
@@ -109,7 +115,7 @@
           "summary": "Final iteration: 9 sorries remain, proof restructuring required"
         }
       ],
-      "session_id": "sess_1773344838_384103",
+      "session_id": "sess_1773349366_7bb216",
       "planned": "2026-03-12T19:16:01Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": 6,
