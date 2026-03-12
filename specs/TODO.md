@@ -79,6 +79,7 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 - **Summary**: [implementation-summary-20260310c.md](specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260310c.md)
 - **Research**: [research-035.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-035.md) (team: density blocker + lex product densification)
 - **Research**: [research-036.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-036.md) (unblocking analysis: task 957 complete, Phase 5 unblocked)
+- **Research**: [research-037.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-037.md) (remaining work: Phase 6 blocker, 7-8h to completion)
 
 **Description**: Construct the temporal duration group D entirely from pure syntax as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, without assuming Int or defining a successor function. The construction proceeds:
 
