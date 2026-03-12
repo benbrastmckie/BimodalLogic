@@ -642,13 +642,13 @@
     {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
       "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-12T00:08:20Z",
-      "researched": "2026-03-11T23:45:23Z",
+      "last_updated": "2026-03-12T00:21:16Z",
+      "researched": "2026-03-12T00:21:16Z",
       "artifacts": [
         {
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md",
@@ -704,12 +704,17 @@
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311d.md",
           "type": "summary",
           "summary": "Phase 0 complete, product frame approach cannot resolve canonicalR_irreflexive, 3 alternative paths documented"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-009.md",
+          "type": "research",
+          "summary": "Definitive path forward: theorem unused, naming argument unfixable, recommend Document and Defer"
         }
       ],
       "blocks": [
         956
       ],
-      "session_id": "sess_1773273158_954466",
+      "session_id": "sess_1773274331_efac4f",
       "planned": "2026-03-11T23:50:58Z",
       "started": "2026-03-11T23:53:02Z",
       "resume_phase": 1
