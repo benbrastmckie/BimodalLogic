@@ -24,13 +24,13 @@ technical_debt:
 
 ### 958. Prove CanonicalR irreflexivity via IRR rule
 - **Effort**: 3-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Blocks**: Task 956 (Phase 6: Cantor Isomorphism Application)
 - **Research**: [research-007.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-007.md), [research-008.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-008.md) (bulldozing/product frame recommended)
 - **Plan**: [implementation-006.md](specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-006.md) (v6: product frame bulldozing)
-- **Summary**: [implementation-summary-20260311c.md](specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311c.md) (Path A proven impossible, pivot to Path B needed)
+- **Summary**: [implementation-summary-20260311d.md](specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311d.md) (product frame approach blocked, 3 alternatives documented)
 - **Handoff**: [phase-3-handoff-20260311.md](specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md) (Phase 3 blocked)
 
 **Description**: Prove `¬CanonicalR M M` for any MCS M. This unblocks Task 956 Phase 6 by providing the irreflexivity needed for NoMaxOrder, NoMinOrder, and DenselyOrdered on the `TimelineQuot` antisymmetrized quotient. Once proven, `Order.iso_of_countable_dense` applies and the Cantor isomorphism to Q is established.

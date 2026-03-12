@@ -1,7 +1,7 @@
 # Implementation Plan: Task #958 - Product Frame Bulldozing Resolution
 
 - **Task**: 958 - prove_canonicalr_irreflexive_irr_rule
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 6-8 hours
 - **Dependencies**: naming_set_consistent (sorry-free), IRRSoundness.lean prod_frame infrastructure
 - **Research Inputs**: specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-008.md
@@ -71,7 +71,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 0: Investigation - StagedTimeline Bypass Check [NOT STARTED]
+### Phase 0: Investigation - StagedTimeline Bypass Check [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Determine if StagedTimeline construction already guarantees irreflexivity
@@ -101,7 +101,7 @@ construction, then `canonicalR_irreflexive` may not be needed.
 
 ---
 
-### Phase 1: Product Frame Setup [NOT STARTED]
+### Phase 1: Product Frame Setup [BLOCKED]
 
 - **Dependencies:** Phase 0 (confirms product frame approach needed)
 - **Goal:** Adapt prod_frame/prod_model from IRRSoundness for canonical model irreflexivity
@@ -125,7 +125,7 @@ construction, then `canonicalR_irreflexive` may not be needed.
 
 ---
 
-### Phase 2: Truth Preservation [NOT STARTED]
+### Phase 2: Truth Preservation [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove truth lemma transfers through product frame projection
@@ -148,7 +148,7 @@ construction, then `canonicalR_irreflexive` may not be needed.
 
 ---
 
-### Phase 3: Completeness Integration [NOT STARTED]
+### Phase 3: Completeness Integration [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Connect product frame irreflexivity to existing completeness infrastructure
@@ -173,7 +173,7 @@ construction, then `canonicalR_irreflexive` may not be needed.
 
 ---
 
-### Phase 4: Cleanup and Documentation [NOT STARTED]
+### Phase 4: Cleanup and Documentation [BLOCKED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Remove obsolete naming argument code, document resolution
@@ -218,6 +218,17 @@ construction, then `canonicalR_irreflexive` may not be needed.
 - `Theories/Bimodal/Metalogic/Canonical/CanonicalIrreflexivity.lean` (modified)
 - `specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-{DATE}.md`
 - `specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-006.md` (this file)
+
+**Progress:**
+
+**Session: 2026-03-11, sess_1773273158_954466**
+- Completed: Phase 0 investigation - StagedTimeline bypass check
+- Finding: StagedTimeline does NOT bypass need for canonicalR_irreflexive (StagedPoint.lt is irreflexive by definition via conjunct negation, but completeness infrastructure needs the theorem for strict ordering properties)
+- Finding: canonicalR_irreflexive is NOT imported by any other Lean file currently
+- Finding: The product frame approach from plan does NOT directly prove the theorem - it provides an alternative completeness architecture
+- Finding: An F+ enlarged naming set approach COULD work but requires F+ Lindenbaum infrastructure (ExtSetMaximalConsistent, ext_set_lindenbaum) that does not exist (~100-150 lines to build)
+- Finding: The key mathematical insight confirmed: in F+, all embed'' GContent(M) formulas are q-free (where q = freshAtom = Sum.inr()), enabling the IRR argument that fails at the F level
+- Blocked: All phases 1-4 blocked because the plan's product frame approach does not resolve the theorem statement; the correct approach requires F+ Lindenbaum infrastructure
 
 ## Rollback/Contingency
 

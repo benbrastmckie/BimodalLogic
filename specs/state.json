@@ -642,12 +642,12 @@
     {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
       "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-11T23:50:58Z",
+      "last_updated": "2026-03-12T00:08:20Z",
       "researched": "2026-03-11T23:45:23Z",
       "artifacts": [
         {
@@ -691,11 +691,6 @@
           "summary": "Phase 4 blocker analysis: GContent seed approach as primary, product frame as fallback"
         },
         {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311c.md",
-          "type": "summary",
-          "summary": "Path A impossibility proof + closure lemmas (phases 1-2 of 4), requires Path B pivot"
-        },
-        {
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-008.md",
           "type": "research",
           "summary": "Definitive analysis of irreflexivity blocker: naming argument proven unfixable for String atoms, bulldozing/product frame recommended as elegant resolution"
@@ -704,15 +699,20 @@
           "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-006.md",
           "type": "plan",
           "summary": "5-phase implementation plan for product frame bulldozing approach to canonicalR_irreflexive"
+        },
+        {
+          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311d.md",
+          "type": "summary",
+          "summary": "Phase 0 complete, product frame approach cannot resolve canonicalR_irreflexive, 3 alternative paths documented"
         }
       ],
       "blocks": [
         956
       ],
-      "session_id": "sess_1773272844_5efd88",
+      "session_id": "sess_1773273158_954466",
       "planned": "2026-03-11T23:50:58Z",
-      "started": "2026-03-11T23:11:17Z",
-      "resume_phase": 3
+      "started": "2026-03-11T23:53:02Z",
+      "resume_phase": 1
     }
   ],
   "completed_projects": [
