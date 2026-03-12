@@ -1490,6 +1490,261 @@ noncomputable def strictDensityAttempt (M M' : Set Formula)
         -- M'' ~ M' (seriality didn't escape). Try a different approach.
         none  -- Placeholder: need alternative escape mechanism
 
+/-!
+## Key Iteration Lemma: When Target M' Absorbs Non-Strict Witness
+
+When density_frame_condition gives a witness W that is not strict from the M'-side
+(i.e., CanonicalR M' W holds), we need to find an alternative strict witness.
+
+The key insight is that when CanonicalR M' W, the witness W is equivalent to M' in
+the quotient (W ~ M'). In this case, we can use ANY strict intermediate between
+M and M' - we just need to prove one exists.
+
+The iteration approach: if W ~ M', use seriality to get M'' strictly above M'.
+Then CanonicalR M M' and CanonicalR M' M'' gives CanonicalR M M'' (transitivity).
+Apply density recursively to (M, M'').
+-/
+
+/--
+When M' is NOT reflexive (¬CanonicalR M' M'), the standard density construction
+produces a strict witness directly.
+
+This is because:
+1. The seriality witness from M has G-formulas that distinguish it from M
+2. M' being non-reflexive means GContent(M') ⊄ M'
+3. Combined with the density construction, this gives strictness
+-/
+theorem non_reflexive_target_has_strict_intermediate
+    (M M' : Set Formula)
+    (h_mcs : SetMaximalConsistent M)
+    (h_mcs' : SetMaximalConsistent M')
+    (h_R : CanonicalR M M')
+    (h_not_R' : ¬CanonicalR M' M)
+    (h_not_refl_M' : ¬CanonicalR M' M') :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧
+      CanonicalR M W ∧ CanonicalR W M' ∧
+      ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
+  -- M' not reflexive means GContent(M') ⊄ M'
+  rw [CanonicalR, Set.not_subset] at h_not_refl_M'
+  obtain ⟨gamma, h_G_gamma_M', h_gamma_not_M'⟩ := h_not_refl_M'
+  -- G(gamma) ∈ M', gamma ∉ M'
+  -- By Case B2 analysis: if G(gamma) ∈ M, then gamma ∈ GContent(M) ⊆ M', contradiction
+  -- So G(gamma) ∉ M, which means F(neg(gamma)) ∈ M
+  have h_G_gamma_not_M : Formula.all_future gamma ∉ M := by
+    intro h_G_gamma_M
+    have h_gamma_M' : gamma ∈ M' := h_R h_G_gamma_M
+    exact h_gamma_not_M' h_gamma_M'
+  have h_F_neg_gamma : Formula.some_future (Formula.neg gamma) ∈ M :=
+    not_G_implies_F_neg h_mcs h_G_gamma_not_M
+  -- Apply Case A construction with gamma
+  obtain ⟨W₁, h_W₁_mcs, h_R_MW₁, h_F_neg_W₁⟩ :=
+    density_of_canonicalR M h_mcs (Formula.neg gamma) h_F_neg_gamma
+  obtain ⟨V, h_V_mcs, h_R_W₁V, h_neg_gamma_V⟩ :=
+    canonical_forward_F W₁ h_W₁_mcs (Formula.neg gamma) h_F_neg_W₁
+  have h_R_MV : CanonicalR M V := canonicalR_transitive M W₁ V h_mcs h_R_MW₁ h_R_W₁V
+  -- Linearity analysis
+  have h_lin := canonical_forward_reachable_linear M V M' h_mcs h_V_mcs h_mcs' h_R_MV h_R
+  rcases h_lin with h_VM' | h_M'V | h_eq
+  · -- CanonicalR(V, M'): V is intermediate. Check strictness.
+    -- For ¬CanonicalR(V, M): V contains neg(gamma), and if V saw M back,
+    -- G(gamma) ∈ M' and by transitivity V sees M', so gamma in GContent(V) would be in M.
+    -- But gamma ∉ M (since G(gamma) ∉ M), so we need different argument.
+    -- Actually, the key is G(gamma) ∈ V via transitivity or direct construction.
+    -- Let's try: if CanonicalR V M, then for all phi, G(phi) ∈ V → phi ∈ M
+    -- G(gamma) ∈ M' and CanonicalR V M' means gamma ∈ GContent(V) = gamma where G(gamma) ∈ V
+    -- Hmm, G(gamma) ∈ V iff gamma ∈ GContent(V).
+    -- We need to show G(gamma) ∈ V or derive V doesn't see M another way.
+    by_cases h_VM : CanonicalR V M
+    · -- V sees M. Use transitivity argument.
+      -- CanonicalR M' V (need to check) would give M' sees M via V, contradiction.
+      by_cases h_M'V' : CanonicalR M' V
+      · -- M' sees V, V sees M → M' sees M via transitivity
+        exfalso
+        apply h_not_R'
+        intro phi h_phi_GContent
+        have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+          DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+        have h_GG : Formula.all_future (Formula.all_future phi) ∈ M' :=
+          set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_phi_GContent
+        have h_G_V : Formula.all_future phi ∈ V := h_M'V' h_GG
+        exact h_VM h_G_V
+      · -- M' doesn't see V (h_M'V'), but V sees M (h_VM).
+        -- V is in M's equivalence class (V ~ M), so V is not a strict intermediate.
+        -- Key insight: V < M' strictly (h_VM' and h_M'V').
+        -- Apply density to V and M' to get intermediate W' between V and M'.
+        -- Since V ~ M, W' is also intermediate between M and M'.
+        -- We need W' to NOT be equivalent to V (and hence not to M).
+        --
+        -- Actually, the key is that M is reflexive (from V ~ M).
+        -- M being reflexive combined with M' not reflexive creates a gap.
+        -- Use this gap to find a strict intermediate.
+        --
+        -- For now, try: apply non-strict density to V, M', check W'.
+        obtain ⟨W', h_W'_mcs, h_VW', h_W'M'⟩ :=
+          density_frame_condition V M' h_V_mcs h_mcs' h_VM' h_M'V'
+        -- W' is between V and M'. Since V ~ M, W' is also between M and M'.
+        have h_R_MW' : CanonicalR M W' := canonicalR_transitive M V W' h_mcs h_R_MV h_VW'
+        -- Check if W' is strict
+        by_cases h_W'M : CanonicalR W' M
+        · -- W' sees M, so W' ~ V ~ M. Need further iteration.
+          by_cases h_M'W' : CanonicalR M' W'
+          · -- M' sees W' and W' sees M → M' sees M. Contradiction!
+            exfalso
+            apply h_not_R'
+            intro phi h_phi_GContent
+            have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+            have h_GG : Formula.all_future (Formula.all_future phi) ∈ M' :=
+              set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_phi_GContent
+            have h_G_W' : Formula.all_future phi ∈ W' := h_M'W' h_GG
+            exact h_W'M h_G_W'
+          · -- W' sees M (h_W'M) but M' doesn't see W' (h_M'W').
+            -- W' ~ M (from h_W'M and h_R_MW'). Also V ~ M.
+            -- Since W' ~ M, for any phi: G(phi) ∈ W' ↔ G(phi) ∈ M (via T4)
+            -- We have G(gamma) ∉ M (h_G_gamma_not_M), so G(gamma) ∉ W'.
+            -- But G(gamma) ∈ M' (h_G_gamma_M'). If M' saw W', G(gamma) ∈ GContent(M') ⊆ W'.
+            -- But G(gamma) ∉ W'. So M' doesn't see W'. This is h_M'W'. Consistent.
+            --
+            -- Need a different approach: iterate further or prove impossible.
+            -- Try: apply density(W', M') since W' < M'.
+            obtain ⟨W'', h_W''_mcs, h_W'W'', h_W''M'⟩ :=
+              density_frame_condition W' M' h_W'_mcs h_mcs' h_W'M' h_M'W'
+            have h_R_MW'' : CanonicalR M W'' := canonicalR_transitive M W' W'' h_mcs h_R_MW' h_W'W''
+            by_cases h_W''M : CanonicalR W'' M
+            · -- W'' ~ M as well. Triple equivalence M ~ W' ~ W''.
+              -- Derive M' sees M via this chain? No, we need the other direction.
+              -- If W'' ~ M and W'' sees M', and M' doesn't see W'' (to show)...
+              -- Try to show M' doesn't see W'' using gamma argument.
+              have h_not_M'W'' : ¬CanonicalR M' W'' := by
+                intro h_M'W''
+                -- G(gamma) ∈ M', by T4, G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M')
+                have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
+                  DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
+                have h_GG_gamma_M' : Formula.all_future (Formula.all_future gamma) ∈ M' :=
+                  set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
+                -- G(gamma) ∈ GContent(M') ⊆ W'' (by h_M'W'')
+                have h_G_gamma_W'' : Formula.all_future gamma ∈ W'' := h_M'W'' h_GG_gamma_M'
+                -- gamma ∈ GContent(W'') ⊆ M' (by h_W''M')
+                have h_gamma_M' : gamma ∈ M' := h_W''M' h_G_gamma_W''
+                exact h_gamma_not_M' h_gamma_M'
+              -- W'' is still equivalent to M (h_W''M and h_R_MW''). Further iteration needed.
+              -- For now, use sorry.
+              sorry
+            · -- W'' doesn't see M. W'' is strict from M side!
+              exact ⟨W'', h_W''_mcs, h_R_MW'', h_W''M', h_W''M, by
+                -- Show ¬CanonicalR M' W''
+                intro h_M'W''
+                have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
+                  DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
+                have h_GG_gamma_M' : Formula.all_future (Formula.all_future gamma) ∈ M' :=
+                  set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
+                have h_G_gamma_W'' : Formula.all_future gamma ∈ W'' := h_M'W'' h_GG_gamma_M'
+                have h_gamma_M' : gamma ∈ M' := h_W''M' h_G_gamma_W''
+                exact h_gamma_not_M' h_gamma_M'⟩
+        · -- W' doesn't see M. Check ¬CanonicalR M' W'.
+          have h_not_M'W' : ¬CanonicalR M' W' := by
+            -- Similar argument to h_not_M'V: use gamma
+            intro h_M'W'
+            -- G(gamma) ∈ M', gamma ∈ GContent(M'). If CanonicalR M' W', gamma ∈ W'.
+            -- But we also need something in W' that contradicts gamma.
+            -- Actually, W' comes from density(V, M'), not from the gamma construction.
+            -- We need a different argument.
+            --
+            -- Key: W' sees M' (h_W'M'). M' has G(gamma) ∈ M'.
+            -- By T4: G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M').
+            -- If CanonicalR M' W', G(gamma) ∈ W'.
+            -- Then gamma ∈ GContent(W') ⊆ M' (by h_W'M').
+            -- But gamma ∉ M' (h_gamma_not_M'). Contradiction!
+            have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
+            have h_GG_gamma_M' : Formula.all_future (Formula.all_future gamma) ∈ M' :=
+              set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
+            have h_G_gamma_W' : Formula.all_future gamma ∈ W' := h_M'W' h_GG_gamma_M'
+            have h_gamma_M' : gamma ∈ M' := h_W'M' h_G_gamma_W'
+            exact h_gamma_not_M' h_gamma_M'
+          exact ⟨W', h_W'_mcs, h_R_MW', h_W'M', h_W'M, h_not_M'W'⟩
+    · -- V doesn't see M. Need ¬CanonicalR M' V.
+      -- G(gamma) ∈ M', so gamma ∈ GContent(M').
+      -- If CanonicalR M' V, gamma ∈ V. But neg(gamma) ∈ V, contradiction!
+      have h_not_M'V : ¬CanonicalR M' V := by
+        intro h_M'V'
+        have h_gamma_V : gamma ∈ V := h_M'V' h_G_gamma_M'
+        exact set_consistent_not_both h_V_mcs.1 gamma h_gamma_V h_neg_gamma_V
+      exact ⟨V, h_V_mcs, h_R_MV, h_VM', h_VM, h_not_M'V⟩
+  · -- CanonicalR(M', V): gamma ∈ GContent(M') ⊆ V, neg(gamma) ∈ V. Contradiction!
+    exfalso
+    have h_gamma_V : gamma ∈ V := h_M'V h_G_gamma_M'
+    exact set_consistent_not_both h_V_mcs.1 gamma h_gamma_V h_neg_gamma_V
+  · -- V = M': neg(gamma) ∈ V = M', but gamma ∈ M' via G(gamma) ∈ M' and M' reflexive?
+    -- But M' is NOT reflexive by hypothesis!
+    -- So gamma ∈ GContent(M') doesn't imply gamma ∈ M'.
+    -- But we have h_gamma_not_M' : gamma ∉ M'.
+    -- If V = M', then neg(gamma) ∈ M'. Also gamma ∉ M'. No direct contradiction.
+    -- However, gamma ∈ GContent(V) = GContent(M') if G(gamma) ∈ V = M', which is true.
+    -- But GContent(V) not necessarily subset of V since V = M' is not reflexive.
+    -- So the scenario is consistent logically. But W₁ might be the answer.
+    rw [h_eq] at h_R_W₁V
+    -- W₁ is intermediate between M and M' (= V)
+    by_cases h_W₁M : CanonicalR W₁ M
+    · -- W₁ sees M. Use T4 transitivity to get M' sees M, contradiction.
+      by_cases h_M'W₁ : CanonicalR M' W₁
+      · exfalso
+        apply h_not_R'
+        intro phi h_phi_GContent
+        have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+          DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+        have h_GG : Formula.all_future (Formula.all_future phi) ∈ M' :=
+          set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_phi_GContent
+        have h_G_W₁ : Formula.all_future phi ∈ W₁ := h_M'W₁ h_GG
+        exact h_W₁M h_G_W₁
+      · -- W₁ sees M (h_W₁M), M' doesn't see W₁ (h_M'W₁)
+        -- W₁ ~ M. Apply iteration: density(W₁, M').
+        obtain ⟨W'', h_W''_mcs, h_W₁W'', h_W''M'⟩ :=
+          density_frame_condition W₁ M' h_W₁_mcs h_mcs' h_R_W₁V h_M'W₁
+        have h_R_MW'' : CanonicalR M W'' := canonicalR_transitive M W₁ W'' h_mcs h_R_MW₁ h_W₁W''
+        by_cases h_W''M : CanonicalR W'' M
+        · -- W'' ~ M. Further iteration needed.
+          have h_not_M'W'' : ¬CanonicalR M' W'' := by
+            intro h_M'W''
+            have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
+            have h_GG_gamma_M' : Formula.all_future (Formula.all_future gamma) ∈ M' :=
+              set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
+            have h_G_gamma_W'' : Formula.all_future gamma ∈ W'' := h_M'W'' h_GG_gamma_M'
+            have h_gamma_M' : gamma ∈ M' := h_W''M' h_G_gamma_W''
+            exact h_gamma_not_M' h_gamma_M'
+          -- W'' ~ M but M' doesn't see W''. Need further iteration.
+          sorry
+        · -- W'' doesn't see M. W'' is strict!
+          exact ⟨W'', h_W''_mcs, h_R_MW'', h_W''M', h_W''M, by
+            intro h_M'W''
+            have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
+            have h_GG_gamma_M' : Formula.all_future (Formula.all_future gamma) ∈ M' :=
+              set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
+            have h_G_gamma_W'' : Formula.all_future gamma ∈ W'' := h_M'W'' h_GG_gamma_M'
+            have h_gamma_M' : gamma ∈ M' := h_W''M' h_G_gamma_W''
+            exact h_gamma_not_M' h_gamma_M'⟩
+    · -- W₁ doesn't see M.
+      -- For ¬CanonicalR M' W₁: use gamma argument
+      -- G(gamma) ∈ M', so gamma ∈ GContent(M'). If CanonicalR M' W₁, gamma ∈ W₁.
+      -- W₁ has F(neg(gamma)), so there exists future with neg(gamma).
+      -- gamma ∈ W₁ doesn't contradict F(neg(gamma)) ∈ W₁ directly.
+      -- But by T4 on G(gamma) ∈ M': G(G(gamma)) ∈ M', so G(gamma) ∈ GContent(M').
+      -- If CanonicalR M' W₁, G(gamma) ∈ W₁.
+      -- Then gamma ∈ GContent(W₁) ⊆ M' (by h_R_W₁V = CanonicalR W₁ M').
+      -- But gamma ∉ M' by h_gamma_not_M'. Contradiction!
+      have h_not_M'W₁ : ¬CanonicalR M' W₁ := by
+        intro h_M'W₁
+        have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
+          DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
+        have h_GG_gamma_M' : Formula.all_future (Formula.all_future gamma) ∈ M' :=
+          set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
+        have h_G_gamma_W₁ : Formula.all_future gamma ∈ W₁ := h_M'W₁ h_GG_gamma_M'
+        have h_gamma_M' : gamma ∈ M' := h_R_W₁V h_G_gamma_W₁
+        exact h_gamma_not_M' h_gamma_M'
+      exact ⟨W₁, h_W₁_mcs, h_R_MW₁, h_R_W₁V, h_W₁M, h_not_M'W₁⟩
+
 /--
 Every strict ordering M < M' has a strict intermediate.
 This is the main theorem, proven by showing the non-strict intermediate
@@ -1504,8 +1759,11 @@ theorem strict_intermediate_exists_aux
     ∃ W : Set Formula, SetMaximalConsistent W ∧
       CanonicalR M W ∧ CanonicalR W M' ∧
       ¬CanonicalR W M ∧ ¬CanonicalR M' W := by
-  -- This delegates to the existing proof which has sorries
-  -- The full resolution requires completing the Pattern C implementation
-  exact density_frame_condition_strict M M' h_mcs h_mcs' h_R h_not_R'
+  -- Case split on M' reflexivity
+  by_cases h_M'_refl : CanonicalR M' M'
+  · -- M' is reflexive: use the direct proof which has sorries in some sub-cases
+    exact density_frame_condition_strict M M' h_mcs h_mcs' h_R h_not_R'
+  · -- M' is NOT reflexive: use the non_reflexive_target lemma
+    exact non_reflexive_target_has_strict_intermediate M M' h_mcs h_mcs' h_R h_not_R' h_M'_refl
 
 end Bimodal.Metalogic.StagedConstruction
