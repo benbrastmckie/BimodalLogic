@@ -59,6 +59,15 @@ All phases completed with zero sorries.
 - Created: handoff document with detailed analysis
 - Sorries: 13 -> 13 (analysis only, no changes)
 
+**Session: 2026-03-12, sess_1773343944_60a8af**
+- Added: M reflexivity case split pattern to Case B2 (lines 635-659, 671-785)
+- Fixed: Case B2 non-reflexive M cases now fully proven using irreflexivity witness
+- Fixed: Case B2 V=M' `¬CanonicalR(M', W₁)` now fully proven using gamma + Temporal 4
+- Found: seriality_escape theorem as stated in plan is NOT directly provable
+- Found: All remaining sorries share single root cause: M reflexive makes witness equivalent
+- Recommendation: Implement Pattern C iteration with Nat.strongRecOn on subformula count
+- Sorries: 13 -> 12 (9 in DensityFrameCondition, 3 in CantorApplication)
+
 #### Phase 6a: Seriality Escape Helper (30 min)
 
 **Purpose**: Extract the "escape" mechanism from reflexive clusters into a clean helper.

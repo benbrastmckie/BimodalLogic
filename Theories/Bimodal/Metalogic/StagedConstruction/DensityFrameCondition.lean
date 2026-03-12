@@ -633,11 +633,30 @@ theorem density_frame_condition_strict
         -- Need to prove strictness: ¬CanonicalR(V, M) ∧ ¬CanonicalR(M', V)
         refine ⟨V, h_V_mcs, h_R_MV, h_VM', ?_, ?_⟩
         · -- ¬CanonicalR(V, M): Show GContent(V) ⊄ M
-          -- V has neg(gamma) ∈ V (from construction)
-          -- If G(neg(gamma)) ∈ V, then neg(gamma) ∈ GContent(V)
-          -- Then if CanonicalR(V, M), neg(gamma) ∈ M
-          -- But G(gamma) ∉ M and G(neg(gamma)) ∉ M... wait, we don't know G(neg(gamma)) ∈ V
-          sorry
+          -- Case split on M's reflexivity
+          by_cases h_M_refl : CanonicalR M M
+          · -- M is reflexive - requires iteration (Pattern C)
+            -- This case cannot be closed directly; needs well-founded recursion
+            sorry
+          · -- M is NOT reflexive: use irreflexivity witness
+            -- From ¬CanonicalR M M, get psi with G(psi) ∈ M and psi ∉ M
+            rw [CanonicalR, Set.not_subset] at h_M_refl
+            obtain ⟨psi, h_psi_GContent, h_psi_not_M⟩ := h_M_refl
+            -- By Temporal 4: G(G(psi)) ∈ M, so G(psi) ∈ GContent(M) ⊆ W₁
+            have h_T4 : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 psi)
+            have h_GG_psi_M : Formula.all_future (Formula.all_future psi) ∈ M :=
+              set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_psi_GContent
+            -- G(psi) ∈ GContent(M) ⊆ W₁
+            have h_G_psi_W₁ : Formula.all_future psi ∈ W₁ := h_R_MW₁ h_GG_psi_M
+            -- By Temporal 4 in W₁: G(G(psi)) ∈ W₁
+            have h_GG_psi_W₁ : Formula.all_future (Formula.all_future psi) ∈ W₁ :=
+              set_mcs_implication_property h_W₁_mcs (theorem_in_mcs h_W₁_mcs h_T4) h_G_psi_W₁
+            -- G(psi) ∈ GContent(W₁) ⊆ V
+            have h_G_psi_V : Formula.all_future psi ∈ V := h_R_W₁V h_GG_psi_W₁
+            -- Now: G(psi) ∈ V and psi ∉ M. This witnesses ¬CanonicalR V M.
+            rw [CanonicalR, Set.not_subset]
+            exact ⟨psi, h_G_psi_V, h_psi_not_M⟩
         · -- ¬CanonicalR(M', V): Show GContent(M') ⊄ V
           -- G(gamma) ∈ M' so gamma ∈ GContent(M')
           -- If CanonicalR(M', V), gamma ∈ V
@@ -653,14 +672,111 @@ theorem density_frame_condition_strict
         rw [h_eq] at h_R_W₁V
         refine ⟨W₁, h_W₁_mcs, h_R_MW₁, h_R_W₁V, ?_, ?_⟩
         · -- ¬CanonicalR(W₁, M)
-          sorry
+          by_cases h_M_refl : CanonicalR M M
+          · -- M reflexive - requires iteration
+            sorry
+          · -- M not reflexive - use irreflexivity witness
+            rw [CanonicalR, Set.not_subset] at h_M_refl
+            obtain ⟨psi, h_psi_GContent, h_psi_not_M⟩ := h_M_refl
+            have h_T4 : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 psi)
+            have h_GG_psi_M : Formula.all_future (Formula.all_future psi) ∈ M :=
+              set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_psi_GContent
+            have h_G_psi_W₁ : Formula.all_future psi ∈ W₁ := h_R_MW₁ h_GG_psi_M
+            rw [CanonicalR, Set.not_subset]
+            exact ⟨psi, h_G_psi_W₁, h_psi_not_M⟩
         · -- ¬CanonicalR(M', W₁)
           -- V = M' and CanonicalR(W₁, V) = CanonicalR(W₁, M')
           -- W₁ has F(neg(gamma)) ∈ W₁
           -- If CanonicalR(M', W₁), then GContent(M') ⊆ W₁
           -- gamma ∈ GContent(M') so gamma ∈ W₁
-          -- We need neg(gamma) ∈ W₁ to get contradiction, but W₁ has F(neg(gamma)), not neg(gamma)
-          sorry
+          -- Get forward witness from W₁ for neg(gamma), lands at V = M'
+          -- So neg(gamma) ∈ M'. If gamma ∈ W₁ (from M' -> W₁), then
+          -- we need neg(gamma) ∈ W₁ which we don't have directly.
+          -- However, since CanonicalR(W₁, M') and neg(gamma) ∈ M' (from V = M'),
+          -- and if CanonicalR(M', W₁), gamma ∈ W₁, we get:
+          -- gamma ∈ W₁ and forward from W₁ gives neg(gamma) - contradiction via linearity?
+          -- Actually: if M' ~ W₁, they're equivalent. gamma ∈ M' from GContent.
+          -- But gamma ∉ M' (h_gamma_not_M')!
+          intro h_M'_W₁
+          have h_gamma_W₁ : gamma ∈ W₁ := h_M'_W₁ h_G_gamma_M'
+          -- If CanonicalR(W₁, M'), then gamma ∈ GContent(W₁) would go to M'...
+          -- Actually, h_gamma_W₁ is gamma ∈ W₁, not G(gamma) ∈ W₁.
+          -- We have CanonicalR(W₁, M') (h_R_W₁V after rewrite).
+          -- If gamma ∈ GContent(W₁), then gamma ∈ M'.
+          -- We have gamma ∉ M'. So gamma ∉ GContent(W₁).
+          -- But having gamma ∈ W₁ and gamma ∉ GContent(W₁) is consistent (G(gamma) ∉ W₁).
+          -- Need different approach: use neg(gamma) from V = M'.
+          have h_neg_gamma_M' : gamma.neg ∈ M' := by rw [← h_eq]; exact h_neg_gamma_V
+          -- Both gamma ∈ W₁ and neg(gamma) ∈ M'. If W₁ ~ M':
+          -- CanonicalR(W₁, M') and CanonicalR(M', W₁) means GContent(W₁) ⊆ M' and GContent(M') ⊆ W₁.
+          -- If G(gamma) ∈ W₁, gamma ∈ GContent(W₁) ⊆ M'. But gamma ∉ M'. So G(gamma) ∉ W₁.
+          -- If G(gamma) ∈ M' (we have this), gamma ∈ GContent(M') ⊆ W₁. So gamma ∈ W₁ ✓ (consistent).
+          -- If G(neg(gamma)) ∈ M', neg(gamma) ∈ GContent(M') ⊆ W₁.
+          -- Both gamma ∈ W₁ (from above) and neg(gamma) ∈ W₁ - contradiction!
+          -- Need to show G(neg(gamma)) ∈ M' or derive otherwise.
+          -- We have gamma.all_future ∈ M' (h_G_gamma_M'). Do we have G(neg(gamma)) ∈ M'?
+          -- Not directly. But we have neg(gamma) ∈ M' (h_neg_gamma_M').
+          -- By MCS, either G(neg(gamma)) ∈ M' or F(gamma) ∈ M'.
+          -- If F(gamma) ∈ M': F(gamma) = neg(G(neg(gamma))). So G(neg(gamma)) ∉ M'.
+          -- Then neg(gamma) ∉ GContent(M').
+          -- But if h_M'_W₁, GContent(M') ⊆ W₁. And gamma ∈ GContent(M') (since G(gamma) ∈ M').
+          -- So gamma ∈ W₁. We have this.
+          -- We need: find something in GContent(M') that's not in W₁, or derive contradiction.
+          -- gamma ∈ GContent(M') and gamma ∈ W₁ - consistent with h_M'_W₁.
+          -- If neg(gamma) ∈ GContent(M'), neg(gamma) ∈ W₁, gamma ∈ W₁, contradiction.
+          -- But neg(gamma) ∈ GContent(M') iff G(neg(gamma)) ∈ M'.
+          cases set_mcs_negation_complete h_mcs' (Formula.all_future (Formula.neg gamma)) with
+          | inl h_G_neg_gamma_M' =>
+            -- G(neg(gamma)) ∈ M', so neg(gamma) ∈ GContent(M') ⊆ W₁
+            have h_neg_gamma_W₁ : gamma.neg ∈ W₁ := h_M'_W₁ h_G_neg_gamma_M'
+            exact set_consistent_not_both h_W₁_mcs.1 gamma h_gamma_W₁ h_neg_gamma_W₁
+          | inr h_F_gamma_M' =>
+            -- F(gamma) ∈ M', so there exists successor where gamma holds.
+            -- This is more complex. Need different approach.
+            -- Actually, we have gamma ∈ W₁ and neg(gamma) ∈ M'.
+            -- If W₁ = M', then both gamma and neg(gamma) in M', contradiction.
+            -- But W₁ ≠ M' generally.
+            -- If CanonicalR(M', W₁), we have GContent(M') ⊆ W₁.
+            -- gamma ∈ GContent(M') (since G(gamma) ∈ M'), so gamma ∈ W₁ ✓.
+            -- neg(gamma) ∈ M' but neg(gamma) ∉ GContent(M') (since G(neg(gamma)) ∉ M' in this case).
+            -- So we can't get neg(gamma) ∈ W₁ from GContent.
+            -- But W₁ has F(neg(gamma)) ∈ W₁ from construction!
+            -- F(neg(gamma)) ∈ W₁ means there's a successor of W₁ with neg(gamma).
+            -- That successor is V = M'! So neg(gamma) ∈ M' ✓ (consistent).
+            -- We need to find contradiction.
+            -- Since W₁ has gamma ∈ W₁ and F(neg(gamma)) ∈ W₁:
+            -- Forward witness from F(neg(gamma)) is V = M' with neg(gamma) ∈ V.
+            -- By linearity on W₁, M', M': W₁ sees M' (h_R_W₁V), and M' = M'.
+            -- This is consistent.
+            -- Alternative: Use that M' is not reflexive (h_R'_self).
+            -- M' not reflexive means GContent(M') ⊄ M'.
+            -- gamma ∈ GContent(M') and gamma ∉ M' (h_gamma_not_M') - yes!
+            -- So M' is not reflexive.
+            -- If CanonicalR(M', W₁) and CanonicalR(W₁, M'):
+            -- M' ~ W₁. But M' not reflexive means GContent(M') ⊄ M'.
+            -- If M' ~ W₁, then GContent(M') ⊆ W₁ and GContent(W₁) ⊆ M'.
+            -- gamma ∈ GContent(M') ⊆ W₁ ✓.
+            -- For any psi in GContent(W₁), psi ∈ M'.
+            -- If G(psi) ∈ W₁, then psi ∈ M'.
+            -- Is this consistent with M' not reflexive?
+            -- M' not reflexive: exists sigma with G(sigma) ∈ M' and sigma ∉ M'.
+            -- sigma ∈ GContent(M') ⊆ W₁. So sigma ∈ W₁.
+            -- If G(sigma) ∈ W₁, then sigma ∈ GContent(W₁) ⊆ M'. But sigma ∉ M'. Contradiction!
+            -- So G(sigma) ∉ W₁.
+            -- But is G(sigma) in W₁? G(sigma) ∈ M' (from GContent def).
+            -- Use gamma as the M' non-reflexivity witness
+            -- gamma ∈ GContent(M') means G(gamma) ∈ M' (h_G_gamma_M')
+            -- By Temporal 4: G(G(gamma)) ∈ M'
+            have h_T4_gamma : [] ⊢ (Formula.all_future gamma).imp (Formula.all_future (Formula.all_future gamma)) :=
+              DerivationTree.axiom [] _ (Axiom.temp_4 gamma)
+            have h_GG_gamma_M' : Formula.all_future (Formula.all_future gamma) ∈ M' :=
+              set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_gamma) h_G_gamma_M'
+            -- G(gamma) ∈ GContent(M') ⊆ W₁
+            have h_G_gamma_W₁ : Formula.all_future gamma ∈ W₁ := h_M'_W₁ h_GG_gamma_M'
+            -- gamma ∈ GContent(W₁) ⊆ M' (by h_R_W₁V)
+            have h_gamma_M' : gamma ∈ M' := h_R_W₁V h_G_gamma_W₁
+            exact h_gamma_not_M' h_gamma_M'
   · -- Case A: G(delta) ∉ M
     have h_F_neg_delta : Formula.some_future (Formula.neg delta) ∈ M :=
       not_G_implies_F_neg h_mcs h_G_delta_M
