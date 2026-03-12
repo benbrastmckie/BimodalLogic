@@ -1,4 +1,6 @@
 import Bimodal.Metalogic.StagedConstruction.StagedExecution
+import Bimodal.Syntax.Subformulas
+import Mathlib.Data.Finset.Card
 
 /-!
 # Density Frame Condition for Irreflexive Temporal Semantics
@@ -826,6 +828,43 @@ By Finset.strongInduction, this terminates.
 
 TODO: Implement this approach if the direct proofs prove too difficult.
 -/
+
+/-!
+## Helper: Irreflexive MCS has Strict Seriality Future
+
+If M is not reflexive (¬CanonicalR M M), then the seriality witness W
+satisfies ¬CanonicalR W M (strict future). This is because:
+1. If ¬CanonicalR M M, then ∃ phi with G(phi) ∈ M and phi ∉ M
+2. The seriality witness W ⊇ GContent(M), so phi ∈ W
+3. By Temporal 4, G(phi) ∈ GContent(M) ⊆ W, so G(phi) ∈ W
+4. Therefore phi ∈ GContent(W), but phi ∉ M
+5. So GContent(W) ⊄ M, hence ¬CanonicalR W M
+-/
+
+/--
+If M is not reflexive, then its seriality future W is strict: ¬CanonicalR W M.
+-/
+theorem irreflexive_mcs_has_strict_future
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (h_not_refl : ¬CanonicalR M M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M := by
+  -- Get the seriality witness
+  obtain ⟨W, h_W_mcs, h_R_MW⟩ := mcs_has_strict_future M h_mcs
+  refine ⟨W, h_W_mcs, h_R_MW, ?_⟩
+  -- Show ¬CanonicalR W M using the irreflexivity witness
+  rw [CanonicalR, Set.not_subset] at h_not_refl ⊢
+  obtain ⟨phi, h_phi_GContent, h_phi_not_M⟩ := h_not_refl
+  -- phi ∈ GContent(M), so G(phi) ∈ M
+  -- By Temporal 4: G(phi) → G(G(phi)), so G(G(phi)) ∈ M
+  -- Therefore G(phi) ∈ GContent(M) ⊆ W
+  have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+  have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
+  -- G(phi) ∈ GContent(M) ⊆ W
+  have h_G_phi_W : Formula.all_future phi ∈ W := h_R_MW h_GG_phi_M
+  -- phi ∈ GContent(W) because G(phi) ∈ W
+  exact ⟨phi, h_G_phi_W, h_phi_not_M⟩
 
 /--
 The candidate distinguishing formulas between M and M': formulas phi where

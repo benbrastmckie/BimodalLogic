@@ -41,7 +41,7 @@ Files: `StagedTimeline.lean`, `WitnessSeedWrapper.lean`, `SeparationLemma.lean`,
 
 ---
 
-### Phase 6: Well-Founded Strict Density [PARTIAL]
+### Phase 6: Well-Founded Strict Density [IN PROGRESS]
 
 - **Dependencies:** Phase 5 (COMPLETE)
 - **Goal:** Implement `density_frame_condition_strict` with intrinsic termination proof
@@ -174,6 +174,14 @@ theorem density_frame_condition_strict
 Use `density_frame_condition_strict` to resolve NoMaxOrder, NoMinOrder, DenselyOrdered sorries (same as v018 approach).
 
 **Timing:** 5.5 hours total
+
+**Progress:**
+
+**Session: 2026-03-12, sess_1773337195_0a1a7c**
+- Added: `irreflexive_mcs_has_strict_future` - proves non-reflexive MCS has strict seriality future via Temporal 4 closure
+- Fixed: NoMaxOrder unreachable case - mutual accessibility with non-reflexive MCS is contradiction
+- Improved: CantorApplication proof structure with explicit case analysis
+- Sorries: 16 + 3 = 19 total (DensityFrameCondition + CantorApplication)
 
 **Files to modify**:
 - `Theories/Bimodal/Metalogic/StagedConstruction/DensityFrameCondition.lean` - add well-founded theorem
