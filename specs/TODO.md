@@ -68,7 +68,7 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ### 956. Construct D as translation group from syntax
 - **Effort**: 30-50 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Previously blocked by**: Phase 6 quotient strictness gap (research-038 provides solution)
 - **Previously blocked by**: Task 957 (density frame condition - NOW COMPLETE)
 - **Language**: lean
@@ -82,6 +82,7 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 - **Research**: [research-036.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-036.md) (unblocking analysis: task 957 complete, Phase 5 unblocked)
 - **Research**: [research-037.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-037.md) (remaining work: Phase 6 blocker, 7-8h to completion)
 - **Research**: [research-038.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-038.md) (math: Case A strictness solution recommended)
+- **Research**: [research-039.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-039.md) (deep math: backward strictness - iteration approach)
 
 **Description**: Construct the temporal duration group D entirely from pure syntax as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, without assuming Int or defining a successor function. The construction proceeds:
 
