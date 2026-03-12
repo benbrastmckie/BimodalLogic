@@ -58,7 +58,26 @@ open Bimodal.ProofSystem
 When G(delta) in M (Case B), G(neg(delta)) cannot also be in M
 (under CanonicalR(M, M')), because this would place both delta and
 neg(delta) in M'.
+
+Key property: In Case B, M is NOT reflexive, because:
+- G(delta) ∈ M implies delta ∈ GContent(M)
+- If M were reflexive, GContent(M) ⊆ M, so delta ∈ M
+- But delta ∉ M (distinguishing formula), contradiction
 -/
+
+/--
+In Case B (G(delta) ∈ M with delta ∉ M), M is NOT reflexive.
+This is a key property for strict density proofs.
+-/
+theorem caseB_M_not_reflexive
+    {M : Set Formula} {delta : Formula}
+    (h_mcs : SetMaximalConsistent M)
+    (h_G_delta_M : Formula.all_future delta ∈ M)
+    (h_delta_not_M : delta ∉ M) :
+    ¬CanonicalR M M := by
+  intro h_refl
+  have h_delta_M : delta ∈ M := h_refl h_G_delta_M
+  exact h_delta_not_M h_delta_M
 
 /--
 In Case B (G(delta) in M with CanonicalR(M, M')), G(neg(delta)) is not in M.
@@ -211,6 +230,43 @@ theorem density_frame_condition
       not_G_implies_F_neg h_mcs h_G_delta_M
     -- Apply the Case A core lemma
     exact density_frame_condition_caseA h_mcs h_mcs' h_R h_G_delta_M' h_F_neg_delta
+
+/-!
+## Helper: Irreflexive MCS has Strict Seriality Future
+
+If M is not reflexive (¬CanonicalR M M), then the seriality witness W
+satisfies ¬CanonicalR W M (strict future). This is because:
+1. If ¬CanonicalR M M, then ∃ phi with G(phi) ∈ M and phi ∉ M
+2. The seriality witness W ⊇ GContent(M), so phi ∈ W
+3. By Temporal 4, G(phi) ∈ GContent(M) ⊆ W, so G(phi) ∈ W
+4. Therefore phi ∈ GContent(W), but phi ∉ M
+5. So GContent(W) ⊄ M, hence ¬CanonicalR W M
+-/
+
+/--
+If M is not reflexive, then its seriality future W is strict: ¬CanonicalR W M.
+-/
+theorem irreflexive_mcs_has_strict_future
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (h_not_refl : ¬CanonicalR M M) :
+    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M := by
+  -- Get the seriality witness
+  obtain ⟨W, h_W_mcs, h_R_MW⟩ := mcs_has_strict_future M h_mcs
+  refine ⟨W, h_W_mcs, h_R_MW, ?_⟩
+  -- Show ¬CanonicalR W M using the irreflexivity witness
+  rw [CanonicalR, Set.not_subset] at h_not_refl ⊢
+  obtain ⟨phi, h_phi_GContent, h_phi_not_M⟩ := h_not_refl
+  -- phi ∈ GContent(M), so G(phi) ∈ M
+  -- By Temporal 4: G(phi) → G(G(phi)), so G(G(phi)) ∈ M
+  -- Therefore G(phi) ∈ GContent(M) ⊆ W
+  have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+  have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
+    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
+  -- G(phi) ∈ GContent(M) ⊆ W
+  have h_G_phi_W : Formula.all_future phi ∈ W := h_R_MW h_GG_phi_M
+  -- phi ∈ GContent(W) because G(phi) ∈ W
+  exact ⟨phi, h_G_phi_W, h_phi_not_M⟩
 
 /-!
 ## Strict Density Frame Condition
@@ -603,13 +659,34 @@ theorem density_frame_condition_strict
         --
         -- Alternative: use a DIFFERENT formula to construct the intermediate.
         -- We have G(neg(delta)) ∉ M. So F(neg(neg(delta))) ∈ M.
-        -- Use this to get a different witness.
+        -- Use a different approach: since M is NOT reflexive in Case B,
+        -- we can get a strict future W from M using irreflexive_mcs_has_strict_future.
+        -- Then analyze W's relationship with M'.
         --
-        -- Actually, F(neg(neg(delta))) = ¬G(¬(¬¬delta)) = ¬G(neg(neg(neg(delta)))).
-        -- This is getting complex.
-        --
-        -- For now, sorry. The full solution needs more careful analysis or iteration.
-        sorry
+        -- M is not reflexive in Case B
+        have h_M_not_refl : ¬CanonicalR M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
+        -- Get strict future from M
+        obtain ⟨W, h_W_mcs, h_R_MW, h_not_WM⟩ := irreflexive_mcs_has_strict_future M h_mcs h_M_not_refl
+        -- Use linearity to get W's relation to M'
+        have h_lin_W := canonical_forward_reachable_linear M W M' h_mcs h_W_mcs h_mcs' h_R_MW h_R
+        rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
+        · -- CanonicalR W M': check if W is strict from M' side
+          by_cases h_M'_W_back : CanonicalR M' W
+          · -- M' sees W - not strict on M' side
+            -- Need to find yet another witness. This requires iteration.
+            sorry
+          · -- ¬CanonicalR M' W: W is strict intermediate!
+            exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
+        · -- CanonicalR M' W: W is above M' in quotient
+          -- Need iteration to find intermediate between M and M'
+          sorry
+        · -- W = M': This means the seriality witness from M landed at M'.
+          -- Combined with h_eq (V = M'), we have W = V = M'.
+          -- But we have h_not_WM (¬CanonicalR W M) and h_not_VM (¬CanonicalR V M).
+          -- Since W = M', we have ¬CanonicalR M' M, which is h_not_R'. Consistent.
+          -- We still need a strict intermediate between M and M'.
+          -- This case requires iteration or a different formula.
+          sorry
     · -- Sub-case B2: M' is not reflexive
       -- This reduces to Case A with a different formula
       rw [CanonicalR, Set.not_subset] at h_R'_self
@@ -1538,43 +1615,6 @@ By Finset.strongInduction, this terminates.
 
 TODO: Implement this approach if the direct proofs prove too difficult.
 -/
-
-/-!
-## Helper: Irreflexive MCS has Strict Seriality Future
-
-If M is not reflexive (¬CanonicalR M M), then the seriality witness W
-satisfies ¬CanonicalR W M (strict future). This is because:
-1. If ¬CanonicalR M M, then ∃ phi with G(phi) ∈ M and phi ∉ M
-2. The seriality witness W ⊇ GContent(M), so phi ∈ W
-3. By Temporal 4, G(phi) ∈ GContent(M) ⊆ W, so G(phi) ∈ W
-4. Therefore phi ∈ GContent(W), but phi ∉ M
-5. So GContent(W) ⊄ M, hence ¬CanonicalR W M
--/
-
-/--
-If M is not reflexive, then its seriality future W is strict: ¬CanonicalR W M.
--/
-theorem irreflexive_mcs_has_strict_future
-    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (h_not_refl : ¬CanonicalR M M) :
-    ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M := by
-  -- Get the seriality witness
-  obtain ⟨W, h_W_mcs, h_R_MW⟩ := mcs_has_strict_future M h_mcs
-  refine ⟨W, h_W_mcs, h_R_MW, ?_⟩
-  -- Show ¬CanonicalR W M using the irreflexivity witness
-  rw [CanonicalR, Set.not_subset] at h_not_refl ⊢
-  obtain ⟨phi, h_phi_GContent, h_phi_not_M⟩ := h_not_refl
-  -- phi ∈ GContent(M), so G(phi) ∈ M
-  -- By Temporal 4: G(phi) → G(G(phi)), so G(G(phi)) ∈ M
-  -- Therefore G(phi) ∈ GContent(M) ⊆ W
-  have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-  have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
-    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
-  -- G(phi) ∈ GContent(M) ⊆ W
-  have h_G_phi_W : Formula.all_future phi ∈ W := h_R_MW h_GG_phi_M
-  -- phi ∈ GContent(W) because G(phi) ∈ W
-  exact ⟨phi, h_G_phi_W, h_phi_not_M⟩
 
 /-!
 ## Pattern C: Seriality-Based Escape from Reflexive Clusters

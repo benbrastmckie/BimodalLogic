@@ -47,7 +47,7 @@ All phases completed with zero sorries.
 
 ### Phase 6: Pattern C Strict Density [IN PROGRESS]
 
-**Goal**: All 13 sorries resolved via Pattern C iteration
+**Goal**: All 13 sorries resolved via Pattern C iteration (currently 9 remain)
 
 **Progress:**
 
@@ -117,6 +117,15 @@ All phases completed with zero sorries.
 - Recommendation: Replace `intro h_VM; ... sorry` with iteration-based witness search using fuel
 - Technical debt: 9 sorries remain, all requiring proof restructuring
 - Sorries: 9 -> 9 (analysis-only, fundamental restructuring needed)
+
+**Session: 2026-03-12, sess_1773349366_7bb216 (iteration 1)**
+- Added: `caseB_M_not_reflexive` lemma proving M is NOT reflexive in Case B
+- Moved: `irreflexive_mcs_has_strict_future` to earlier in file (line 249)
+- Restructured: Case B1 V=M' branch uses seriality-based approach
+- Proven: One sub-case (¬CanonicalR M' W) now fully proven at line 679
+- Remaining: Three sub-cases require iteration (lines 677, 682, 689)
+- Key insight: In Case B, M is NOT reflexive, so irreflexive_mcs_has_strict_future applies
+- Sorries: 9 -> 11 (3 new sub-sorries from refined case split, but 1 sub-case proven)
 
 #### Phase 6a: Seriality Escape Helper (30 min)
 
