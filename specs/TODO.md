@@ -5,11 +5,11 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 19
+  active: 18
   completed: 662
   in_progress: 0
-  not_started: 8
-  abandoned: 36
+  not_started: 7
+  abandoned: 37
   total: 716
 technical_debt:
   sorry_count: 73
@@ -24,7 +24,7 @@ technical_debt:
 
 ### 959. Orient pure-syntax D construction: archive Int chain, cleanup, clear roadmap
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Research**: [research-001.md](specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md)
@@ -39,26 +39,6 @@ technical_debt:
 - Archive: `Bundle/DovetailingChain.lean` (uses Int), `Bundle/TemporalCoherentConstruction.lean` (uses Int), `Representation.lean` (depends on Int chain)
 - Fix: `StagedConstruction/CantorApplication.lean` (3 sorries: NoMaxOrder, NoMinOrder, DenselyOrdered)
 - New: D-from-syntax completeness path (Phases 7-8 of Task 956)
-
----
-
-### 958. Prove CanonicalR irreflexivity via IRR rule
-- **Effort**: 3-6 hours
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Priority**: high
-- **Blocks**: Task 956 (Phase 6: Cantor Isomorphism Application)
-- **Research**: [research-008.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-008.md), [research-009.md](specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-009.md) (Document and Defer recommended)
-- **Plan**: [implementation-006.md](specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-006.md) (v6: product frame bulldozing)
-- **Summary**: [implementation-summary-20260311d.md](specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311d.md) (product frame approach blocked, 3 alternatives documented)
-- **Handoff**: [phase-3-handoff-20260311.md](specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md) (Phase 3 blocked)
-
-**Description**: Prove `¬CanonicalR M M` for any MCS M. This unblocks Task 956 Phase 6 by providing the irreflexivity needed for NoMaxOrder, NoMinOrder, and DenselyOrdered on the `TimelineQuot` antisymmetrized quotient. Once proven, `Order.iso_of_countable_dense` applies and the Cantor isomorphism to Q is established.
-
-**Key files**:
-- Target: `Theories/Bimodal/Metalogic/Canonical/CanonicalR.lean` (or new file)
-- Uses: `DerivationTree.irr` (IRR rule from task 957)
-- Unblocks: `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean` (has sorry stubs)
 
 ---
 

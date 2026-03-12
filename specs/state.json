@@ -640,94 +640,14 @@
       "completion_summary": "Proved the density frame condition for the canonical model under irreflexive temporal semantics. Phase 4 eliminated the sorry in IRR soundness by restricting to domain-inhabited evaluation times. Phase 5 resolved Case B of density_frame_condition using a novel purely syntactic argument: when G(delta) is in M but delta is not in M, either M' is reflexive (take W = M') or there exists an alternative distinguishing formula from GContent(M') that falls into Case A. Two sorries eliminated across two files."
     },
     {
-      "project_number": 958,
-      "project_name": "prove_canonicalr_irreflexive_irr_rule",
-      "status": "researched",
-      "language": "lean",
-      "priority": "high",
-      "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
-      "created": "2026-03-11T05:16:15Z",
-      "last_updated": "2026-03-12T00:21:16Z",
-      "researched": "2026-03-12T00:21:16Z",
-      "artifacts": [
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-001.md",
-          "type": "research",
-          "summary": "Analysis of CanonicalR irreflexivity blocker: 4 proof strategies, key files, connection to task 956 Phase 6"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-002.md",
-          "type": "research",
-          "summary": "Team research with 2 teammates: IRR-based substitution approach recommended (run 002)"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-003.md",
-          "type": "research",
-          "summary": "Deep analysis of irreflexivity blocker: ExtFormula approach recommended (~400-500 lines)"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-004.md",
-          "type": "research",
-          "summary": "Deep structural analysis: fundamental tension identified, 3 viable options (bulldozing, conservative extension, accept sorry)"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-005.md",
-          "type": "research",
-          "summary": "Comprehensive conservative extension implementation guide: 5 phases, ~650 lines, ConservativeExtension/ directory"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/handoffs/phase-3-handoff-20260311.md",
-          "type": "handoff",
-          "summary": "Phase 3 blocker analysis with mathematical gap details"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-006.md",
-          "type": "research",
-          "summary": "Research report analyzing Phase 3 mathematical gap with 3 viable approaches ranked"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-007.md",
-          "type": "research",
-          "summary": "Phase 4 blocker analysis: GContent seed approach as primary, product frame as fallback"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-008.md",
-          "type": "research",
-          "summary": "Definitive analysis of irreflexivity blocker: naming argument proven unfixable for String atoms, bulldozing/product frame recommended as elegant resolution"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for product frame bulldozing approach to canonicalR_irreflexive"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/summaries/implementation-summary-20260311d.md",
-          "type": "summary",
-          "summary": "Phase 0 complete, product frame approach cannot resolve canonicalR_irreflexive, 3 alternative paths documented"
-        },
-        {
-          "path": "specs/958_prove_canonicalr_irreflexive_irr_rule/reports/research-009.md",
-          "type": "research",
-          "summary": "Definitive path forward: theorem unused, naming argument unfixable, recommend Document and Defer"
-        }
-      ],
-      "blocks": [
-        956
-      ],
-      "session_id": "sess_1773274331_efac4f",
-      "planned": "2026-03-11T23:50:58Z",
-      "started": "2026-03-11T23:53:02Z",
-      "resume_phase": 1
-    },
-    {
       "project_number": 959,
       "project_name": "orient_pure_syntax_d_construction_cleanup",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Regain orientation for the D-from-syntax strategy. Audit and archive Int/Rat-tainted files (DovetailingChain.lean, TemporalCoherentConstruction.lean, Representation.lean) that violate the pure syntax constraint. Resolve Task 958 distraction (canonicalR_irreflexive is unused; add documentation and close). Map clear phases for Task 956 Phase 6-8: fix CantorApplication.lean Cantor prerequisites (NoMaxOrder, NoMinOrder, DenselyOrdered), apply Cantor isomorphism, build D and task_rel, construct TaskFrame, complete standard completeness without any Int/Rat imports.",
       "created": "2026-03-12T00:27:33Z",
-      "last_updated": "2026-03-12T00:42:50Z",
+      "last_updated": "2026-03-12T00:45:07Z",
       "blocks": [],
       "artifacts": [
         {
@@ -741,9 +661,10 @@
           "summary": "5-phase documentation plan: mark deprecated files with comments, document Task 958 as unused, update ROAD_MAP.md with progress"
         }
       ],
-      "session_id": "sess_1741689700_959p",
+      "session_id": "sess_1741689800_959i",
       "researched": "2026-03-12T01:00:00Z",
-      "planned": "2026-03-12T00:42:50Z"
+      "planned": "2026-03-12T00:42:50Z",
+      "started": "2026-03-12T00:45:07Z"
     }
   ],
   "completed_projects": [

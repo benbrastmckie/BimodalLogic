@@ -2,6 +2,18 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 958,
+      "project_name": "prove_canonicalr_irreflexive_irr_rule",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "description": "Prove that CanonicalR is irreflexive: for any MCS M, NOT CanonicalR(M, M). This unblocks Task 956 Phase 6 (Cantor Isomorphism Application). CanonicalR(M, M) means GContent(M) ⊆ M, i.e., all G-formulas in M have their arguments in M. In an irreflexive dense linear order, no world is in its own strict future. The proof should derive a contradiction from CanonicalR(M, M) using the density axiom F(phi)→F(F(phi)), seriality, and/or the Gabbay IRR derivation rule (DerivationTree.irr). Once proven, NoMaxOrder, NoMinOrder, and DenselyOrdered on the antisymmetrized quotient TimelineQuot all follow, completing the Cantor prerequisites.",
+      "created": "2026-03-11T05:16:15Z",
+      "last_updated": "2026-03-12T00:21:16Z",
+      "researched": "2026-03-12T00:21:16Z",
+      "abandoned": "2026-03-12T00:45:54Z"
+    },
+    {
       "project_number": 924,
       "project_name": "prove_fully_saturated_bmcs_exists_modal_temporal",
       "status": "abandoned",
