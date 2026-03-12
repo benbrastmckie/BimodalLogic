@@ -260,6 +260,15 @@ theorem denseTimeline_mcs_comparable
     (denseStage_monotone_le root_mcs root_mcs_proof (Nat.le_max_left n m) hn)
     (denseStage_monotone_le root_mcs root_mcs_proof (Nat.le_max_right n m) hm)
 
+/-- The dense timeline union is linearly ordered: any two points are comparable under ≤. -/
+theorem denseTimeline_linearly_ordered
+    (a b : StagedPoint)
+    (ha : a ∈ denseTimelineUnion root_mcs root_mcs_proof)
+    (hb : b ∈ denseTimelineUnion root_mcs root_mcs_proof) :
+    StagedPoint.le a b ∨ StagedPoint.le b a :=
+  stagedPoint_le_of_mcs_comparable a b
+    (denseTimeline_mcs_comparable root_mcs root_mcs_proof a b ha hb)
+
 /-!
 ## Density (Intermediate existence)
 -/

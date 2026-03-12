@@ -1,78 +1,86 @@
-# Implementation Summary: Task 956 - Phase 6 Analysis
+# Implementation Summary: Task 956 - Phase 6 Partial Progress
 
 **Date**: 2026-03-12
-**Session**: sess_1773328315_2d7a1c
-**Status**: BLOCKED - requires user review
+**Session**: sess_1773509423_a7c3d2
+**Status**: PARTIAL (Phase 6 blocked on strictness proofs)
 
 ## Summary
 
-Phase 6 implementation attempted to resolve 3 sorries in `CantorApplication.lean`:
-- Line 135: NoMaxOrder sorry
-- Line 143: NoMinOrder sorry
-- Line 149: DenselyOrdered sorry
+Phase 6 implementation made progress on infrastructure but is blocked on proving strictness
+of density witnesses.
 
-## Key Finding: Quotient Strictness Gap
+## Work Completed This Session
 
-The current approach has a fundamental mathematical gap that prevents proving these three instances.
+### 1. Infrastructure Fixes in CantorApplication.lean
+- Added Mathlib imports: `Algebra.Order.Ring.Rat`, `Data.Rat.Encodable`, `Data.Rat.Cast.Order`, `Algebra.Order.Field.Basic`
+- Added `DecidableLE` and `DecidableLT` instances for `DenseTimelineElem`
+- Fixed `LinearOrder` instance using `inferInstanceAs`
+- Changed `ℚ` notation to `Rat` for import compatibility
 
-### Problem Statement
+### 2. Added Missing Lemma in DenseTimeline.lean
+- Added `denseTimeline_linearly_ordered`: converts `denseTimeline_mcs_comparable` to `StagedPoint.le` totality
+- Required for `IsTotal` instance on `DenseTimelineElem`
 
-For `NoMaxOrder`, `NoMinOrder`, and `DenselyOrdered`, we need to find **strict** successors/predecessors/intermediates in the quotient `TimelineQuot`. However:
+### 3. Implemented `density_frame_condition_strict` Structure (DensityFrameCondition.lean)
+- Partial implementation of the strict version of density_frame_condition
+- The theorem attempts to prove: given `CanonicalR M M'` and `NOT CanonicalR M' M`, there exists W with:
+  - `CanonicalR M W` and `CanonicalR W M'` (intermediate)
+  - `NOT CanonicalR W M` and `NOT CanonicalR M' W` (strictly between)
+- Forward strictness (`NOT CanonicalR M' W`) proofs work via contradiction with formula membership
+- Backward strictness (`NOT CanonicalR W M`) proofs are incomplete
 
-1. `dense_timeline_has_future` gives `CanonicalR(p, q)` but not necessarily `NOT CanonicalR(q, p)`
-2. `density_frame_condition` Case B1 (when target is reflexive) returns `W = b`, giving `[W] = [b]` in the quotient
+## Current Sorry Count
 
-### Detailed Analysis
+- **CantorApplication.lean**: 3 sorries (NoMaxOrder, NoMinOrder, DenselyOrdered)
+- **DensityFrameCondition.lean**: 8 sorries (in `density_frame_condition_strict`)
 
-**For NoMaxOrder** (and symmetrically NoMinOrder):
-- Given point `p`, we need to find `q` such that `[p] < [q]` (strict in quotient)
-- `dense_timeline_has_future` provides `q` with `CanonicalR(p, q)`
-- If also `CanonicalR(q, p)`, then `[p] = [q]` and `q` is not a strict successor
-- When `p` is reflexive, all F-witnesses may remain in the same equivalence class
+## Blocking Issue: Backward Non-Accessibility
 
-**For DenselyOrdered**:
-- Given `[a] < [b]` (strict), we need `[c]` with `[a] < [c] < [b]`
-- `density_frame_condition` gives `W` with `CanonicalR(a, W)` and `CanonicalR(W, b)`
-- Case B1: When `b` is reflexive (`CanonicalR(b, b)`), the condition returns `W = b`
-- This gives `[W] = [b]`, so `[W] < [b]` is false (since `[W] = [b]` implies `[W] < [b]` would be `[b] < [b]`)
+The main gap is proving `¬CanonicalR W M` (W does not see backward to M).
 
-### Why Case B1 Occurs
+### Why `¬CanonicalR M' W` Works
+- We have `G(phi) ∈ M'` (distinguishing formula)
+- W is constructed to have `neg(phi) ∈ W`
+- If `CanonicalR M' W`, then `phi ∈ W`, contradicting consistency of W
 
-The distinguishing formula analysis:
-1. `NOT CanonicalR(b, a)` implies exists `delta` with `G(delta) in b` and `delta not in a`
-2. Case B: `G(delta) in a` (so `a` is not reflexive since `delta not in a`)
-3. Case B1: `CanonicalR(b, b)` (b is reflexive) -> return `W = b`
+### Why `¬CanonicalR W M` Is Hard
+- Need to show `GContent(W) NOT subset M`
+- W has `neg(phi) ∈ W`, but we don't automatically have `G(neg(phi)) ∈ W`
+- The G-formulas in W depend on the Lindenbaum extension process
+- Without knowing which G-formulas are in W, we can't show the subset fails
 
-In this scenario, `a` is not reflexive but `b` is reflexive. The density_frame_condition returns `b` as the "intermediate", which collapses to `[b]` in the quotient.
+## Potential Approaches
 
-## Potential Solutions
+1. **Approach A**: Prove Lindenbaum preserves certain G-formulas
+   - If `G(neg(delta)) ∈ V`, then `neg(delta) ∈ GContent(V)`, which with `delta ∉ M` might work
 
-### Option 1: Prove All MCSs Are Non-Reflexive
-If we could prove `NOT CanonicalR(M, M)` for all MCSs in the dense timeline, Case B1 would never apply. However, this requires proving global irreflexivity of CanonicalR, which was the goal of Task 958 (abandoned as unnecessary for the original approach).
+2. **Approach B**: Analyze `canonical_forward_F` structure
+   - V is constructed from `{neg(delta)} ∪ GContent(W₁)`
+   - Determine what G-formulas must be in V by construction
 
-### Option 2: Modify Density Frame Condition
-Find a different intermediate construction that always produces strict witnesses, even when the target is reflexive.
+3. **Approach C**: Iterate density application
+   - Case B1 returns W = M' (non-strict)
+   - Apply density again between M and W to force Case A
 
-### Option 3: Different Quotient Construction
-Instead of quotienting by mutual CanonicalR, use a different equivalence relation that preserves density structure.
-
-### Option 4: Lexicographic Product
-Use a lexicographic product Q x Q to densify the quotient, as mentioned in the plan's contingency section (adds ~2 hours).
+4. **Approach D**: Strengthen density witness seed
+   - Modify `densityIntermediateMCS` to include formulas guaranteeing strictness
 
 ## Files Modified
 
-None - analysis only, sorries remain.
+- `Theories/Bimodal/Metalogic/StagedConstruction/DenseTimeline.lean` (added lemma)
+- `Theories/Bimodal/Metalogic/StagedConstruction/DensityFrameCondition.lean` (added partial theorem)
+- `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean` (fixed imports/instances)
+
+## Build Status
+
+`lake build` passes with sorry warnings. No errors.
 
 ## Recommendation
 
-This blocker requires mathematical insight to resolve. Recommend:
-1. Research whether all MCSs in the dense timeline are provably non-reflexive
-2. If not, explore Option 4 (lexicographic product) as fallback
-3. Consider whether the completeness proof can proceed with a weaker timeline structure
+The backward strictness proofs require deeper analysis of the Lindenbaum extension
+process and what G-formulas end up in the constructed MCS. This may require:
+1. Additional lemmas about `forward_temporal_witness_seed` and `lindenbaum_extension`
+2. Or a structural change to how density witnesses are constructed
+3. Or the iteration approach (Approach C) to avoid Case B1
 
-## Next Steps
-
-User should review the analysis and decide on approach:
-- Research irreflexivity of CanonicalR on the dense timeline
-- Or pivot to lexicographic product densification
-- Or explore alternative completeness proof strategies
+Requires user decision on which approach to pursue.

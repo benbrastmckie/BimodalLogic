@@ -1,6 +1,9 @@
 import Bimodal.Metalogic.StagedConstruction.DenseTimeline
 import Mathlib.Order.Antisymmetrization
 import Mathlib.Order.CountableDenseLinearOrder
+import Mathlib.Data.Rat.Encodable
+import Mathlib.Data.Rat.Cast.Order
+import Mathlib.Algebra.Order.Field.Basic
 
 /-!
 # Cantor Isomorphism Application
@@ -67,6 +70,14 @@ noncomputable instance : Preorder (DenseTimelineElem root_mcs root_mcs_proof) wh
 instance : IsTotal (DenseTimelineElem root_mcs root_mcs_proof) (· ≤ ·) where
   total a b := denseTimeline_linearly_ordered root_mcs root_mcs_proof a.1 b.1 a.2 b.2
 
+/-- Decidable ≤ for dense timeline elements (from classical decidability). -/
+noncomputable instance : DecidableLE (DenseTimelineElem root_mcs root_mcs_proof) :=
+  fun _ _ => Classical.propDecidable _
+
+/-- Decidable < for dense timeline elements (from classical decidability). -/
+noncomputable instance : DecidableLT (DenseTimelineElem root_mcs root_mcs_proof) :=
+  fun _ _ => Classical.propDecidable _
+
 /-!
 ## Timeline Quotient (Antisymmetrization)
 
@@ -79,8 +90,8 @@ def TimelineQuot : Type :=
   Antisymmetrization (DenseTimelineElem root_mcs root_mcs_proof) (· ≤ ·)
 
 /-- The timeline quotient has a linear order (from Antisymmetrization + total preorder). -/
-noncomputable instance : LinearOrder (TimelineQuot root_mcs root_mcs_proof) :=
-  inferInstance
+noncomputable instance TimelineQuotLinearOrder : LinearOrder (TimelineQuot root_mcs root_mcs_proof) :=
+  inferInstanceAs (LinearOrder (Antisymmetrization (DenseTimelineElem root_mcs root_mcs_proof) (· ≤ ·)))
 
 /-!
 ## Cantor Prerequisites for TimelineQuot
@@ -150,8 +161,8 @@ instance : DenselyOrdered (TimelineQuot root_mcs root_mcs_proof) where
 
 /-- Cantor's theorem: the timeline quotient is order-isomorphic to Q. -/
 theorem cantor_iso :
-    Nonempty (TimelineQuot root_mcs root_mcs_proof ≃o ℚ) :=
+    Nonempty (TimelineQuot root_mcs root_mcs_proof ≃o Rat) :=
   Order.iso_of_countable_dense
-    (TimelineQuot root_mcs root_mcs_proof) ℚ
+    (TimelineQuot root_mcs root_mcs_proof) Rat
 
 end Bimodal.Metalogic.StagedConstruction
