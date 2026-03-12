@@ -1,21 +1,19 @@
 {
   "status": "researched",
-  "started_at": "2026-03-12T12:00:00Z",
   "artifacts": [
     {
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-040.md",
-      "type": "research",
-      "summary": "Iteration termination patterns for density_frame_condition_strict - fuel-based approach recommended"
+      "type": "report",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-041.md",
+      "summary": "Mathematical correctness comparison of iteration patterns A, B, C. Pattern B (well-founded) recommended for strongest theorem statement."
     }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research-040 provides fuel-based iteration pattern matching codebase style (Saturation.lean)"
-  },
+  "next_steps": "Implement Pattern B using Finset.strongInduction on distinguishing formula set, or fall back to Pattern C if complexity is prohibitive",
   "metadata": {
-    "session_id": "sess_1773333866_6cea3f",
+    "session_id": "sess_1773334768_6d2e53",
     "agent_type": "lean-research-agent",
+    "duration_seconds": 1800,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "findings_count": 6
   }
 }
