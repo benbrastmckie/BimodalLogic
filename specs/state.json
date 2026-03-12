@@ -718,6 +718,18 @@
       "planned": "2026-03-11T23:50:58Z",
       "started": "2026-03-11T23:53:02Z",
       "resume_phase": 1
+    },
+    {
+      "project_number": 959,
+      "project_name": "orient_pure_syntax_d_construction_cleanup",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "description": "Regain orientation for the D-from-syntax strategy. Audit and archive Int/Rat-tainted files (DovetailingChain.lean, TemporalCoherentConstruction.lean, Representation.lean) that violate the pure syntax constraint. Resolve Task 958 distraction (canonicalR_irreflexive is unused; add documentation and close). Map clear phases for Task 956 Phase 6-8: fix CantorApplication.lean Cantor prerequisites (NoMaxOrder, NoMinOrder, DenselyOrdered), apply Cantor isomorphism, build D and task_rel, construct TaskFrame, complete standard completeness without any Int/Rat imports.",
+      "created": "2026-03-12T00:27:33Z",
+      "last_updated": "2026-03-12T00:27:33Z",
+      "blocks": [],
+      "artifacts": []
     }
   ],
   "completed_projects": [

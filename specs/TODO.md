@@ -1,16 +1,16 @@
 ---
-next_project_number: 959
+next_project_number: 960
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 18
+  active: 19
   completed: 662
   in_progress: 0
-  not_started: 7
+  not_started: 8
   abandoned: 36
-  total: 715
+  total: 716
 technical_debt:
   sorry_count: 73
   axiom_count: 19
@@ -21,6 +21,24 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 959. Orient pure-syntax D construction: archive Int chain, cleanup, clear roadmap
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Priority**: high
+
+**Description**: Regain orientation for the D-from-syntax strategy. Three work items:
+1. **Archive Int/Rat-tainted files**: `DovetailingChain.lean`, `TemporalCoherentConstruction.lean`, and the Int-dependent path in `Representation.lean` all violate the pure-syntax constraint. Archive to Boneyard. Clean up distracting comments pointing to these dead paths.
+2. **Close Task 958 distraction**: `canonicalR_irreflexive` is provably unused (research-009). Add documentation, mark as contained debt, close the task.
+3. **Map clear path for Task 956 Phases 6-8**: Fix 3 Cantor prerequisites in `CantorApplication.lean` (NoMaxOrder, NoMinOrder, DenselyOrdered on `TimelineQuot`), apply Cantor isomorphism → D, define `task_rel`, construct `TaskFrame`, prove standard completeness with zero Int/Rat imports.
+
+**Key files**:
+- Archive: `Bundle/DovetailingChain.lean` (uses Int), `Bundle/TemporalCoherentConstruction.lean` (uses Int), `Representation.lean` (depends on Int chain)
+- Fix: `StagedConstruction/CantorApplication.lean` (3 sorries: NoMaxOrder, NoMinOrder, DenselyOrdered)
+- New: D-from-syntax completeness path (Phases 7-8 of Task 956)
+
+---
 
 ### 958. Prove CanonicalR irreflexivity via IRR rule
 - **Effort**: 3-6 hours
