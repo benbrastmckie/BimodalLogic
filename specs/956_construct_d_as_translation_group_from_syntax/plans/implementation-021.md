@@ -84,6 +84,40 @@ All phases completed with zero sorries.
 - Found: Remaining sorries (505, 586, 612, 895, 1306, 1410) genuinely require iteration - constructed witness equivalent to endpoint
 - Sorries: 12 -> 9 (6 in DensityFrameCondition, 3 in CantorApplication)
 
+**Session: 2026-03-12, sess_1773344838_384103 (iteration 3)**
+- Analyzed: All 9 sorry goal states via lean_goal MCP tool
+- Confirmed: All DensityFrameCondition sorries are in Case A when M is reflexive
+- Key insight: M reflexive is derived from assuming CanonicalR(V, M), not given
+- Key insight: GContent propagation makes V ~ M when M reflexive - no formula contradiction
+- Confirmed: Pattern C iteration is the ONLY viable solution
+- Created: Detailed handoff (phase-6-handoff-20260312-004.md) with implementation code sketches
+- Outcome: Ready for Pattern C implementation
+- Sorries: 9 -> 9 (analysis-only session, implementation needed)
+
+**Session: 2026-03-12, sess_1773344838_384103 (iteration 4)**
+- Added: mutual_canonicalR_implies_reflexive - mutual R implies both endpoints reflexive
+- Added: equiv_GContent_subset - G-formula equivalence under mutual R
+- Added: reflexive_equiv_witness_sees_target - helper for equivalent witness analysis
+- Added: equiv_witness_preserves_intermediate - intermediate preservation
+- Added: StrictDensityWitness (structure) - packaging for strict witness
+- Added: checkStrictness - decidable check for strict intermediate
+- Added: strictDensityAttempt - fuel-based attempt function
+- Added: strict_intermediate_exists_aux - wrapper delegating to density_frame_condition_strict
+- Outcome: Infrastructure for Pattern C added, but sorries remain
+- Sorries: 9 -> 9 (infrastructure only, no sorries eliminated)
+
+**Session: 2026-03-12, sess_1773344838_384103 (iteration 5 - FINAL)**
+- Analyzed: All 6 DensityFrameCondition sorry locations via lean_goal MCP tool
+- Confirmed: Lines 505, 586, 612 in Case B1 (M' reflexive) with goal `False` or `¬CanonicalR M' V`
+- Confirmed: Lines 895, 1306, 1410 in Case A where M reflexive is DERIVED from h_VM assumption
+- Key finding: All sorry goals use `exfalso` pattern where NO contradiction exists
+- Key finding: When M ~ V (mutual accessibility), configuration is mathematically consistent
+- Key finding: seriality_escape theorem IS NOT directly provable - Lindenbaum doesn't guarantee fresh G-formula
+- Confirmed: Proof restructuring from exfalso to iteration is REQUIRED
+- Recommendation: Replace `intro h_VM; ... sorry` with iteration-based witness search using fuel
+- Technical debt: 9 sorries remain, all requiring proof restructuring
+- Sorries: 9 -> 9 (analysis-only, fundamental restructuring needed)
+
 #### Phase 6a: Seriality Escape Helper (30 min)
 
 **Purpose**: Extract the "escape" mechanism from reflexive clusters into a clean helper.
