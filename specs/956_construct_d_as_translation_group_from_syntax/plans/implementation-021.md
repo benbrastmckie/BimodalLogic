@@ -127,6 +127,17 @@ All phases completed with zero sorries.
 - Key insight: In Case B, M is NOT reflexive, so irreflexive_mcs_has_strict_future applies
 - Sorries: 9 -> 11 (3 new sub-sorries from refined case split, but 1 sub-case proven)
 
+**Session: 2026-03-12, sess_1773349366_7bb216 (iteration 2)**
+- Restructured: h_VM' branch (V sees M') now case splits on `CanonicalR M' V`
+- Proven: Sub-case where ¬CanonicalR M' V (V is strict intermediate)
+- Restructured: h_M'V branch (M' sees V) uses same seriality-based approach as h_eq
+- Pattern confirmed: All Case B1 sorries have same structure: W~M' or W>M' or W=M'
+- Pattern confirmed: All Case A sorries have same structure: V~M when M reflexive
+- Insight: Reflexive MCS acts as "attractor" - forward witnesses land at/above it
+- Insight: All sorries require Pattern C iteration (fuel-based recursion)
+- Sorries: 11 -> 15 (12 DensityFrameCondition, 3 CantorApplication)
+- Note: Increase due to explicit case splits; more sub-cases now explicitly handled
+
 #### Phase 6a: Seriality Escape Helper (30 min)
 
 **Purpose**: Extract the "escape" mechanism from reflexive clusters into a clean helper.

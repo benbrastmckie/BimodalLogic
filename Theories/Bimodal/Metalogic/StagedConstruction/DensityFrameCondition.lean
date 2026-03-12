@@ -441,124 +441,30 @@ theorem density_frame_condition_strict
         -- Alternative: use the specific construction from density_frame_condition_caseA.
         -- In Case A, we use the double-density trick which might give stricter control.
         --
-        -- For now, let me check if there's a simpler argument.
-        -- We have:
-        -- - CanonicalR(M, V) and CanonicalR(V, M')
-        -- - ¬CanonicalR(V, M) (proven)
-        -- - Need: ¬CanonicalR(M', V)
-        --
-        -- The forward witness V = Lindenbaum({delta} ∪ GContent(M)).
-        -- For ¬CanonicalR(M', V): need to show GContent(M') ⊄ V.
-        --
-        -- Suppose CanonicalR(M', V). Then for all phi, G(phi) ∈ M' → phi ∈ V.
-        -- M' is reflexive, so for all phi, G(phi) ∈ M' → phi ∈ M'.
-        -- Combined: for all phi, G(phi) ∈ M' → phi ∈ V ∩ M'.
-        --
-        -- Consider: what formulas are NOT in V?
-        -- V is the Lindenbaum extension of {delta} ∪ GContent(M).
-        -- A formula phi is NOT in V iff ¬phi is derivable from {delta} ∪ GContent(M),
-        -- or equivalently, phi.neg ∈ V.
-        --
-        -- Key: ¬delta ∉ V (since delta ∈ V and V consistent).
-        -- So if G(¬delta) ∈ M', then ¬delta ∈ GContent(M'), and if CanonicalR(M', V),
-        -- ¬delta ∈ V. Contradiction!
-        --
-        -- So: if G(¬delta) ∈ M', then ¬CanonicalR(M', V).
-        -- Does G(¬delta) ∈ M'? We have G(delta) ∈ M' (given).
-        -- In general, G(delta) and G(¬delta) can both be in M' if delta ∈ M' and ¬delta ∈ M',
-        -- which would make M' inconsistent. So at most one of G(delta), G(¬delta) is in M'.
-        -- We know G(delta) ∈ M'. Does this exclude G(¬delta)?
-        --
-        -- If M' is reflexive and consistent:
-        -- G(delta) ∈ M' → delta ∈ M' (reflexivity)
-        -- If G(¬delta) ∈ M' → ¬delta ∈ M' (reflexivity)
-        -- delta ∈ M' and ¬delta ∈ M' → M' inconsistent. Contradiction.
-        -- So G(¬delta) ∉ M' (since M' is MCS hence consistent).
-        --
-        -- Hmm, so G(¬delta) ∉ M', which doesn't help directly.
-        --
-        -- Try another approach: since ¬CanonicalR(M', M), there exists a formula
-        -- witnessing this. We used delta. But in M', since M' is reflexive,
-        -- delta ∈ M'. And delta ∉ M. So M' has something M doesn't.
-        --
-        -- For V: V was built from M's seed. V has delta (explicitly added).
-        -- V has GContent(M). What's in M' but not in V?
-        --
-        -- Consider: CanonicalR(M, M') means GContent(M) ⊆ M'.
-        -- So V ⊇ GContent(M), and M' ⊇ GContent(M). Both contain GContent(M).
-        -- V additionally has delta (and its closure).
-        -- M' is reflexive, so M' ⊇ GContent(M').
-        --
-        -- The gap: GContent(M') might have things not in GContent(M).
-        -- Specifically, since G(delta) ∈ M' but G(delta) ∈ M too (Case B!).
-        -- So delta ∈ GContent(M) ∩ GContent(M').
-        --
-        -- What about G(G(delta))? By Temp 4, G(delta) ∈ M → G(G(delta)) ∈ M.
-        -- So G(delta) ∈ GContent(M).
-        -- Similarly for M'.
-        --
-        -- It seems like GContent(M) and GContent(M') might overlap significantly in Case B.
-        --
-        -- Let me try: what if CanonicalR(V, M') AND CanonicalR(M', V)? Then V ~ M' in quotient.
-        -- But we've shown ¬CanonicalR(V, M) and CanonicalR(M, V).
-        -- So M < V ~ M' in the quotient ordering. That's STILL a strict intermediate!
-        -- [M] < [V] = [M'] means we found something strictly between [M] and [M'].
-        -- But wait, [V] = [M'] means V is in the same equivalence class as M'.
-        -- So V is NOT strictly between M and M' in the quotient.
-        --
-        -- This means we need V ~ M' to be FALSE for V to be a strict intermediate.
-        -- I.e., either ¬CanonicalR(V, M') or ¬CanonicalR(M', V).
-        -- We've established CanonicalR(V, M') in this branch.
-        -- So we need ¬CanonicalR(M', V).
-        --
-        -- The proof is getting complex. Let me try a different witness.
-        -- Instead of using F(delta) directly, use the double-density trick from Case A.
-        --
-        -- Actually, I realize: we have G(¬delta) ∉ M (by caseB_G_neg_not_in_M).
-        -- So F(¬¬delta) ∈ M by not_G_implies_F_neg.
-        -- And F(¬¬delta) using double-density might give a better witness.
-        --
-        -- But this is getting too complex. Let me use the existing
-        -- density_frame_condition and check if the result is strict.
-        -- If not, iterate with a different approach.
-        --
-        -- For now, I'll establish the refine structure and see where we are.
-        refine ⟨V, h_V_mcs, h_R_MV, h_VM', h_not_VM, ?_⟩
-        -- Need: ¬CanonicalR M' V
-        -- Strategy: ¬delta ∉ V (since delta ∈ V), so if G(¬delta) ∈ M', then ¬CanonicalR(M', V)
-        -- But we showed G(¬delta) ∉ M' when M' is reflexive and consistent with G(delta) ∈ M'.
-        -- So this approach doesn't work directly.
-        --
-        -- Alternative: find ANY gamma with G(gamma) ∈ M' and gamma ∉ V.
-        -- Since V = Lindenbaum({delta} ∪ GContent(M)) and M' ≠ V (hopefully),
-        -- there should be such a gamma.
-        --
-        -- Claim: M' and V differ because M' has formulas from its own closure that V lacks.
-        -- M' = some MCS, V = Lindenbaum starting from M's GContent.
-        --
-        -- Key insight for Case B1 + CanonicalR(V, M'):
-        -- If we also have CanonicalR(M', V), then M' ~ V.
-        -- But ¬CanonicalR(V, M) means [V] > [M].
-        -- And CanonicalR(M, M') means [M] ≤ [M'].
-        -- If [V] = [M'], then [M] ≤ [M'] = [V], and [V] > [M].
-        -- So [M] < [M'] = [V], meaning M' is strictly above M in the quotient.
-        -- But we need an intermediate BETWEEN [M] and [M'], not equal to [M'].
-        --
-        -- So if CanonicalR(M', V), our V is NOT the right witness.
-        -- We need to find a DIFFERENT witness in Case B1 + CanonicalR(V, M') + CanonicalR(M', V).
-        --
-        -- This is where iteration comes in: apply density to M and V (or M and M'')
-        -- with a different distinguishing formula.
-        --
-        -- For now, let me assume ¬CanonicalR(M', V) and see if we can prove it or
-        -- need to restructure.
-        --
-        -- Actually, let me use the research insight: Case B1 requires iteration.
-        -- The termination argument is that some measure decreases.
-        --
-        -- For now, use sorry for this subcase. The full solution requires
-        -- well-founded iteration as described in the plan.
-        sorry
+        -- Case split on whether M' sees V
+        by_cases h_M'_sees_V : CanonicalR M' V
+        · -- V ~ M' (mutual accessibility), V is NOT strictly between M and M'
+          -- In this case, V is in the same equivalence class as M'.
+          -- We need a different witness.
+          -- Use the irreflexive_mcs_has_strict_future on M (since M is NOT reflexive in Case B)
+          have h_M_not_refl : ¬CanonicalR M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
+          obtain ⟨W, h_W_mcs, h_R_MW, h_not_WM⟩ := irreflexive_mcs_has_strict_future M h_mcs h_M_not_refl
+          -- Check W's relation to M' via linearity
+          have h_lin_W := canonical_forward_reachable_linear M W M' h_mcs h_W_mcs h_mcs' h_R_MW h_R
+          rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
+          · -- W sees M': check if M' sees W back
+            by_cases h_M'_W_back : CanonicalR M' W
+            · -- W ~ M' as well, still not strict from M' side
+              -- Need iteration for this case
+              sorry
+            · -- ¬CanonicalR M' W: W is a strict intermediate!
+              exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
+          · -- M' sees W: W is above M', not an intermediate
+            sorry
+          · -- W = M': W is exactly M', same as V
+            sorry
+        · -- ¬CanonicalR M' V: V is a strict intermediate!
+          exact ⟨V, h_V_mcs, h_R_MV, h_VM', h_not_VM, h_M'_sees_V⟩
       · -- CanonicalR(M', V): delta ∈ GContent(M') ⊆ V, but delta ∈ V already. Consistent.
         -- This case means M' sees V. But V also has delta from construction.
         -- We have:
@@ -623,23 +529,23 @@ theorem density_frame_condition_strict
         --
         -- So in this branch, V is NOT the right witness. We need iteration.
         --
-        -- For now, use sorry. The full solution requires well-founded iteration.
-        exfalso
-        -- Actually, can we derive a contradiction in this branch?
-        -- We have:
-        -- - CanonicalR(M', V): GContent(M') ⊆ V
-        -- - delta ∈ GContent(M') (since G(delta) ∈ M')
-        -- - delta ∈ V (from forward witness construction)
-        -- - delta ∉ M (distinguishing formula)
-        -- - CanonicalR(M, V): GContent(M) ⊆ V
-        --
-        -- These are all consistent, no contradiction.
-        --
-        -- The issue: we need a witness strictly between M and M', but V is not it.
-        -- Case B1 with h_M'V leads to non-strict intermediate.
-        --
-        -- For now, sorry.
-        sorry
+        -- V is above M' (M' sees V), so V is NOT the right witness.
+        -- Use irreflexive_mcs_has_strict_future on M to get a different witness.
+        have h_M_not_refl : ¬CanonicalR M M := caseB_M_not_reflexive h_mcs h_G_delta_M h_delta_not_M
+        obtain ⟨W, h_W_mcs, h_R_MW, h_not_WM⟩ := irreflexive_mcs_has_strict_future M h_mcs h_M_not_refl
+        -- Check W's relation to M'
+        have h_lin_W := canonical_forward_reachable_linear M W M' h_mcs h_W_mcs h_mcs' h_R_MW h_R
+        rcases h_lin_W with h_WM' | h_M'W | h_W_eq_M'
+        · -- W sees M': check if M' sees W back
+          by_cases h_M'_W_back : CanonicalR M' W
+          · -- W ~ M': need iteration
+            sorry
+          · -- ¬CanonicalR M' W: W is strict intermediate!
+            exact ⟨W, h_W_mcs, h_R_MW, h_WM', h_not_WM, h_M'_W_back⟩
+        · -- M' sees W: W above M', need iteration
+          sorry
+        · -- W = M': need iteration
+          sorry
       · -- V = M': use a different witness
         -- If V = M', then the forward witness from F(delta) in M landed at M'.
         -- This means M' is exactly Lindenbaum({delta} ∪ GContent(M)).
