@@ -24,10 +24,11 @@ technical_debt:
 
 ### 959. Orient pure-syntax D construction: archive Int chain, cleanup, clear roadmap
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Research**: [research-001.md](specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/959_orient_pure_syntax_d_construction_cleanup/plans/implementation-001.md)
 
 **Description**: Regain orientation for the D-from-syntax strategy. Three work items:
 1. **Archive Int/Rat-tainted files**: `DovetailingChain.lean`, `TemporalCoherentConstruction.lean`, and the Int-dependent path in `Representation.lean` all violate the pure-syntax constraint. Archive to Boneyard. Clean up distracting comments pointing to these dead paths.

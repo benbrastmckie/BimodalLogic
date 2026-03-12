@@ -1,18 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-11T00:00:00Z",
-  "completed_at": "2026-03-11T01:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md",
-      "type": "research",
-      "summary": "Orientation audit: 3 Int-tainted files identified (DovetailingChain archivable, TemporalCoherentConstruction blocked by StagedExecution import, Representation active). Task 958 confirmed unused/closable. CantorApplication 3 sorries share single root cause: quotient strictness gap. Actionable roadmap for Phases 6-8 with Strategy C (prove strict witnesses) recommended."
+      "path": "specs/959_orient_pure_syntax_d_construction_cleanup/plans/implementation-001.md",
+      "type": "plan",
+      "summary": "5-phase documentation plan: mark deprecated files with comments, document Task 958 as unused, update ROAD_MAP.md with progress"
     }
   ],
+  "next_steps": "Run /implement 959 to execute the plan",
   "metadata": {
-    "session_id": "sess_1741689600_959r",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1741689700_959p",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 2.5
   }
 }
