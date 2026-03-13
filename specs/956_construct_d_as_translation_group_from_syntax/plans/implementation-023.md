@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Staged Construction (v023)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-5 hours (remaining)
 - **Dependencies**: Task 957 (COMPLETE), Task 959 (COMPLETE)
 - **Research Inputs**: research-045.md (well-founded termination measure)
@@ -70,7 +70,7 @@ theorem density_frame_condition_strict (M M' : Set Formula) ... :
 
 ---
 
-#### Phase 6a: Define Iteration Function [NOT STARTED]
+#### Phase 6a: Define Iteration Function [PARTIAL]
 
 **Estimated time**: 30 minutes
 
