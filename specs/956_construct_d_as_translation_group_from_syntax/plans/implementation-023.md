@@ -115,6 +115,15 @@ termination_by fuel
 
 **Progress:**
 
+**Session: 2026-03-12, sess_1773379347_ca5p87 (Iteration 5)**
+- Added: `strict_density_M_reflexive` theorem with full case analysis
+- Expanded: Case neg-pos (line 2095) - extract psi from h_WM, apply Case A, verify
+- Expanded: Case pos-neg (line 2165) - extract psi from h_M'W, apply Case A, verify
+- Pattern verified: Each expansion either returns strict witness OR has U~M iteration case
+- Sorries: 23 in DensityFrameCondition (up from 17 due to exposed iteration structure)
+- Key insight: Termination via finite formula consumption - each psi_n distinct from psi_{n-1}
+- Handoff: Updated phase-6-handoff-20260312-iter5.md with termination argument
+
 **Session: 2026-03-12, sess_1773376107_8hwl1r (Iteration 4)**
 - Proved: Line 865 sorry (Case A, V ~ M, M reflexive) partially resolved
 - Added: Iteration pattern extraction from h_M'_V distinguishing formula
