@@ -797,12 +797,12 @@
     {
       "project_number": 961,
       "project_name": "quotient_density_iteration_no_max_min_dense",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove NoMaxOrder, NoMinOrder, and DenselyOrdered for TimelineQuot in CantorApplication.lean by implementing well-founded iteration over distinguishing formulas. When density_frame_condition gives intermediate c between p and q but c falls in the same equivalence class as p or q (i.e., CanonicalR c p.mcs or CanonicalR q.mcs c), the argument must iterate using a different separating formula from the finite set subformulaClosure(anchor). The iteration terminates because each step either finds a strict intermediate (success) or consumes a formula from the finite distinguishing set, strictly decreasing a Nat measure. Implement using Nat.strongRecOn with fuel = subformulaClosure(anchor).card. Resolves 6 sorries: CantorApplication.lean lines 210 (NoMaxOrder reflexive), 269 (NoMinOrder reflexive), 332, 345, 380, 385 (DenselyOrdered iteration cases).",
       "created": "2026-03-13T00:00:00Z",
-      "last_updated": "2026-03-13T20:11:03Z",
+      "last_updated": "2026-03-13T20:43:03Z",
       "unblocks": [
         956
       ],
@@ -831,10 +831,15 @@
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md",
           "type": "handoff",
           "summary": "Phase 1 blocked: direct case-based proof generates unbounded iteration, plan v002 'at most 2 applications' claim incorrect"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md",
+          "type": "research",
+          "summary": "Blocker investigation: Classical.choose existence proof recommended over iterative construction"
         }
       ],
-      "session_id": "sess_1773432635_5e6f6680",
-      "researched": "2026-03-13T19:12:05Z",
+      "session_id": "sess_1773434223_24606",
+      "researched": "2026-03-13T20:43:03Z",
       "planned": "2026-03-13T20:08:50Z",
       "started": "2026-03-13T20:11:03Z",
       "blocked_reason": "Direct case-based proof generates unbounded iteration. Plan v002 'at most 2 density applications' claim is incorrect - counterexample: c~p and d~q gives [p]=[c]<[d]=[q] requiring 3+ iterations. Requires mathematical review for correct termination measure."
