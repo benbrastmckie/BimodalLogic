@@ -80,7 +80,8 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
 - **Effort**: 3-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md)
 - **Language**: lean
 - **Priority**: high
 - **Unblocks**: Task 956 (Phase 7)
