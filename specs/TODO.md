@@ -82,7 +82,7 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 - **Effort**: 3-5 hours
 - **Status**: [IMPLEMENTING]
 - **Plan**: [implementation-001.md](specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-001.md)
-- **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md)
+- **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis)
 - **Summary**: [implementation-summary-20260313.md](specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313.md) (partial: 4/6 sorries resolved)
 - **Language**: lean
 - **Priority**: high

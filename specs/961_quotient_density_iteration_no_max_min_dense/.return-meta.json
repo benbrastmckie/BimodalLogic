@@ -1,50 +1,35 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-13T00:00:00Z",
-  "requires_user_review": true,
-  "review_reason": "4 sorries remain: 2 fuel decrease checks in strict_intermediate_exists, 2 in NoMaxOrder/NoMinOrder reflexive cases. DenselyOrdered is resolved but depends on strict_intermediate_exists which has the fuel sorries.",
+  "status": "researched",
   "artifacts": [
     {
-      "path": "Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean",
-      "type": "lean",
-      "summary": "Added strict_intermediate_exists theorem with well-founded iteration infrastructure. Resolved 4/6 original sorries in DenselyOrdered but introduced 2 fuel decrease sorries."
-    },
-    {
-      "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313.md",
-      "type": "summary",
-      "summary": "Implementation summary documenting changes, remaining sorries, and recommendations."
+      "type": "report",
+      "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md",
+      "summary": "Blocker investigation: fuel-based termination is flawed, recommends direct case-based proof without recursion"
     }
   ],
-  "partial_progress": {
-    "stage": "phase_1_partial",
-    "details": "Implemented well-founded iteration infrastructure (strict_intermediate_exists). Resolved DenselyOrdered sorries using this lemma. NoMaxOrder/NoMinOrder reflexive cases require different approach - need to prove timeline has non-trivial structure.",
-    "phases_completed": 0,
-    "phases_total": 3,
-    "sorries_before": 6,
-    "sorries_after": 4,
-    "sorries_resolved": ["line 332 (d ~ c ~ p)", "line 345 (d ~ q)", "line 380 (d ~ p)", "line 385 (d ~ c ~ q)"],
-    "sorries_remaining": ["line 190 (fuel decrease c~p)", "line 211 (fuel decrease c~q)", "line 366 (NoMaxOrder reflexive)", "line 425 (NoMinOrder)"]
-  },
+  "next_steps": "Revise strict_intermediate_exists to use direct case-based proof (2 density applications max), then fix NoMaxOrder/NoMinOrder",
   "metadata": {
-    "session_id": "sess_1773429728_680b1ce2",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773431730_dcb2d24b",
+    "agent_type": "math-research-agent",
+    "duration_seconds": 2700,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 0,
-    "phases_total": 3
-  },
-  "errors": [
-    {
-      "type": "sorry_remains",
-      "message": "Fuel decrease check requires proving subformula closure relationship between consecutive distinguishing formulas",
-      "recoverable": true,
-      "recommendation": "Track distinguishing formulas explicitly and prove strict containment"
-    },
-    {
-      "type": "proof_strategy_missing",
-      "message": "NoMaxOrder/NoMinOrder reflexive cases need proof that timeline has non-reflexive structure",
-      "recoverable": true,
-      "recommendation": "Prove timeline has multiple equivalence classes using MCS distinctness argument"
+    "delegation_path": ["orchestrator", "research", "math-research-agent"],
+    "findings_count": 5,
+    "context_files_loaded": ["README.md", "ROAD_MAP.md"],
+    "mathlib_lookups_performed": 6,
+    "context_extension_tasks": [],
+    "context_candidates_count": 0,
+    "blockers_analyzed": {
+      "fuel_decrease_sorries": {
+        "lines": [190, 211],
+        "root_cause": "subformulaClosure cardinality is not the correct termination measure - consecutive distinguishing formulas are not subformula-related",
+        "recommendation": "Replace with direct case-based proof using at most 2 density applications"
+      },
+      "reflexive_case_sorries": {
+        "lines": [366, 425],
+        "root_cause": "When MCS is reflexive, seriality witnesses may all be equivalent to it",
+        "recommendation": "Use irreflexive_mcs_has_strict_future for non-reflexive, density iteration for reflexive"
+      }
     }
-  ]
+  }
 }
