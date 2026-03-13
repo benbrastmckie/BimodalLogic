@@ -1,7 +1,7 @@
 # Implementation Plan: Task #961
 
 - **Task**: 961 - quotient_density_iteration_no_max_min_dense
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: Task 956 (D Construction strategy), Task 957 (density_frame_condition)
 - **Research Inputs**: specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md
@@ -69,7 +69,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Well-Founded Iteration Infrastructure [NOT STARTED]
+### Phase 1: Well-Founded Iteration Infrastructure [PARTIAL]
 
 - **Dependencies:** None
 - **Goal:** Create the well-founded iteration machinery using `Nat.strongRecOn`
