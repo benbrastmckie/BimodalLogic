@@ -105,13 +105,22 @@ termination_by fuel
 
 ---
 
-#### Phase 6b: Prove Sufficiency via Nat.strongRecOn [BLOCKED]
+#### Phase 6b: Prove Sufficiency via Nat.strongRecOn [IN PROGRESS]
 
 **Estimated time**: 2-3 hours (critical phase)
 
 **Purpose**: Prove that sufficient fuel always exists
 
 **Key insight from research-045**: Each iteration "consumes" a distinguishing formula from `subformulaClosure(anchor)`. Since this set is finite, iteration terminates.
+
+**Progress:**
+
+**Session: 2026-03-12, sess_1773362894_63cc2c76 (Iteration 3)**
+- Attempted: Direct proof approach for M-reflexive case using V ~ M equivalence
+- Proved: `h_V_refl : CanonicalR V V` derived from M reflexive and V ~ M
+- Blocked: Cannot derive `phi in M implies phi in V` without `phi -> G(phi)` axiom (not valid in temporal logic)
+- Reverted: Recursive approach causes termination checker failure
+- Sorries: 16 (unchanged - 13 in DensityFrameCondition, 3 in CantorApplication)
 
 **Blocking Analysis (2026-03-12)**:
 

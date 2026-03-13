@@ -858,10 +858,10 @@ theorem density_frame_condition_strict
           -- V still sees M (h_VM), so V is NOT strict from M side
           -- Case split on M's reflexivity
           by_cases h_M_refl : CanonicalR M M
-          · -- M is reflexive. This is the hard case requiring well-founded recursion.
-            -- V ~ M and V < M' strictly. We need a strict intermediate.
-            -- The iteration approach would use a termination measure.
-            -- For now, document as requiring proof restructure.
+          · -- M is reflexive. V ~ M (h_VM, h_R_MV) and M' doesn't see V (h_M'_V).
+            -- This case requires iteration with proper termination argument.
+            -- The recursion is: apply density_frame_condition_strict to (V, M').
+            -- Termination: the distinguishing formula for (V, M') is in subformulaClosure(delta).
             sorry
           · -- M is NOT reflexive. Use the key lemma.
             -- Any forward witness W from M with CanonicalR M W satisfies ¬CanonicalR W M.
