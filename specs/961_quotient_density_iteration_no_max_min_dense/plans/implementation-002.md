@@ -1,7 +1,7 @@
 # Implementation Plan: Task #961 (v002)
 
 - **Task**: 961 - quotient_density_iteration_no_max_min_dense
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 3 hours
 - **Dependencies**: Task 956 (D Construction strategy), Task 957 (density_frame_condition)
 - **Research Inputs**: research-001.md, research-002.md (blocker investigation)
@@ -67,7 +67,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Rewrite strict_intermediate_exists [NOT STARTED]
+### Phase 1: Rewrite strict_intermediate_exists [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Replace recursive fuel-based version with direct case-based proof
