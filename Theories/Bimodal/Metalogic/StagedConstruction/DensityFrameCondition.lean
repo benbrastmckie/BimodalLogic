@@ -859,10 +859,68 @@ theorem density_frame_condition_strict
           -- Case split on M's reflexivity
           by_cases h_M_refl : CanonicalR M M
           · -- M is reflexive. V ~ M (h_VM, h_R_MV) and M' doesn't see V (h_M'_V).
-            -- This case requires iteration with proper termination argument.
-            -- The recursion is: apply density_frame_condition_strict to (V, M').
-            -- Termination: the distinguishing formula for (V, M') is in subformulaClosure(delta).
-            sorry
+            -- Extract distinguishing formula from h_M'_V
+            rw [CanonicalR, Set.not_subset] at h_M'_V
+            obtain ⟨psi, h_G_psi_M', h_psi_not_V⟩ := h_M'_V
+            -- Case split on G(psi) ∈ M
+            by_cases h_G_psi_M : Formula.all_future psi ∈ M
+            · -- G(psi) ∈ M: psi ∈ GContent(M) ⊆ V contradicts h_psi_not_V
+              have h_psi_V : psi ∈ V := h_R_MV h_G_psi_M
+              exfalso
+              exact h_psi_not_V h_psi_V
+            · -- G(psi) ∉ M: Case A with psi
+              have h_F_neg_psi : Formula.some_future (Formula.neg psi) ∈ M :=
+                not_G_implies_F_neg h_mcs h_G_psi_M
+              obtain ⟨U₁, h_U₁_mcs, h_R_MU₁, h_F_neg_U₁⟩ :=
+                density_of_canonicalR M h_mcs (Formula.neg psi) h_F_neg_psi
+              obtain ⟨U, h_U_mcs, h_R_U₁U, h_neg_psi_U⟩ :=
+                canonical_forward_F U₁ h_U₁_mcs (Formula.neg psi) h_F_neg_U₁
+              have h_R_MU : CanonicalR M U := canonicalR_transitive M U₁ U h_mcs h_R_MU₁ h_R_U₁U
+              -- U has neg(psi), and M' has G(psi)
+              -- Check U's relation to M'
+              have h_lin_U := canonical_forward_reachable_linear M U M' h_mcs h_U_mcs h_mcs' h_R_MU h_R
+              rcases h_lin_U with h_UM' | h_M'U | h_U_eq_M'
+              · -- CanonicalR U M': U is between M and M'
+                -- Check strictness: G(psi) ∈ M' and neg(psi) ∈ U give ¬CanonicalR M' U
+                have h_not_M'U : ¬CanonicalR M' U := by
+                  intro h_M'U_contra
+                  have h_psi_U : psi ∈ U := h_M'U_contra h_G_psi_M'
+                  exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
+                -- For ¬CanonicalR U M: M is reflexive, so need to check
+                by_cases h_UM : CanonicalR U M
+                · -- U ~ M: iteration needed with smaller measure
+                  -- But this is the same structure as before with different formula!
+                  -- For now, acknowledge this needs the full iteration machinery
+                  sorry
+                · -- ¬CanonicalR U M: U is strict!
+                  exact ⟨U, h_U_mcs, h_R_MU, h_UM', h_UM, h_not_M'U⟩
+              · -- CanonicalR M' U: psi ∈ GContent(M') ⊆ U contradicts neg(psi) ∈ U
+                exfalso
+                have h_psi_U : psi ∈ U := h_M'U h_G_psi_M'
+                exact set_consistent_not_both h_U_mcs.1 psi h_psi_U h_neg_psi_U
+              · -- U = M': Use U₁ as intermediate
+                rw [h_U_eq_M'] at h_R_U₁U
+                -- U₁ sees M' (= U), check strictness
+                have h_not_M'U₁ : ¬CanonicalR M' U₁ := by
+                  intro h_M'U₁
+                  -- G(psi) ∈ M', by T4, G(G(psi)) ∈ M'
+                  have h_T4_psi : [] ⊢ (Formula.all_future psi).imp (Formula.all_future (Formula.all_future psi)) :=
+                    DerivationTree.axiom [] _ (Axiom.temp_4 psi)
+                  have h_GG_psi_M' : Formula.all_future (Formula.all_future psi) ∈ M' :=
+                    set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4_psi) h_G_psi_M'
+                  -- G(psi) ∈ GContent(M') ⊆ U₁
+                  have h_G_psi_U₁ : Formula.all_future psi ∈ U₁ := h_M'U₁ h_GG_psi_M'
+                  -- psi ∈ GContent(U₁) ⊆ U (= M')
+                  have h_psi_M' : psi ∈ M' := h_R_U₁U h_G_psi_U₁
+                  -- But U = M' and neg(psi) ∈ U, so neg(psi) ∈ M'
+                  have h_neg_psi_M' : psi.neg ∈ M' := h_U_eq_M' ▸ h_neg_psi_U
+                  -- psi ∈ M' and neg(psi) ∈ M'. Contradiction!
+                  exact set_consistent_not_both h_mcs'.1 psi h_psi_M' h_neg_psi_M'
+                by_cases h_U₁M : CanonicalR U₁ M
+                · -- U₁ ~ M: iteration needed
+                  sorry
+                · -- ¬CanonicalR U₁ M: U₁ is strict!
+                  exact ⟨U₁, h_U₁_mcs, h_R_MU₁, h_R_U₁U, h_U₁M, h_not_M'U₁⟩
           · -- M is NOT reflexive. Use the key lemma.
             -- Any forward witness W from M with CanonicalR M W satisfies ¬CanonicalR W M.
             -- V is such a witness (h_R_MV). So ¬CanonicalR V M.

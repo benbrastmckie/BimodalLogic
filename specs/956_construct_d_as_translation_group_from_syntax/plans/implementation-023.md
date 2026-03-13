@@ -115,6 +115,14 @@ termination_by fuel
 
 **Progress:**
 
+**Session: 2026-03-12, sess_1773376107_8hwl1r (Iteration 4)**
+- Proved: Line 865 sorry (Case A, V ~ M, M reflexive) partially resolved
+- Added: Iteration pattern extraction from h_M'_V distinguishing formula
+- Added: Case A construction with new distinguishing formula psi
+- Added: Case splits for strictness and equivalence
+- Sorries: 17 (+1: eliminated 865 but added 894, 921 for iteration cases)
+- Key insight: Each iteration uses formula from subformulaClosure, guarantees termination
+
 **Session: 2026-03-12, sess_1773362894_63cc2c76 (Iteration 3)**
 - Attempted: Direct proof approach for M-reflexive case using V ~ M equivalence
 - Proved: `h_V_refl : CanonicalR V V` derived from M reflexive and V ~ M
