@@ -80,10 +80,10 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Plan**: [implementation-002.md](specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-002.md) (v002: direct case-based)
 - **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis)
-- **Summary**: [implementation-summary-20260313.md](specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313.md) (partial: 4/6 sorries resolved)
+- **Handoff**: [phase-1-handoff-20260313.md](specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md)
 - **Language**: lean
 - **Priority**: high
 - **Unblocks**: Task 956 (Phase 7)
