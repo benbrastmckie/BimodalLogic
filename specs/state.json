@@ -797,12 +797,12 @@
     {
       "project_number": 961,
       "project_name": "quotient_density_iteration_no_max_min_dense",
-      "status": "planned",
+      "status": "blocked",
       "language": "lean",
       "priority": "high",
       "description": "Prove NoMaxOrder, NoMinOrder, and DenselyOrdered for TimelineQuot in CantorApplication.lean by implementing well-founded iteration over distinguishing formulas. When density_frame_condition gives intermediate c between p and q but c falls in the same equivalence class as p or q (i.e., CanonicalR c p.mcs or CanonicalR q.mcs c), the argument must iterate using a different separating formula from the finite set subformulaClosure(anchor). The iteration terminates because each step either finds a strict intermediate (success) or consumes a formula from the finite distinguishing set, strictly decreasing a Nat measure. Implement using Nat.strongRecOn with fuel = subformulaClosure(anchor).card. Resolves 6 sorries: CantorApplication.lean lines 210 (NoMaxOrder reflexive), 269 (NoMinOrder reflexive), 332, 345, 380, 385 (DenselyOrdered iteration cases).",
       "created": "2026-03-13T00:00:00Z",
-      "last_updated": "2026-03-13T21:28:22Z",
+      "last_updated": "2026-03-13T21:30:21Z",
       "unblocks": [
         956
       ],
@@ -846,12 +846,19 @@
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-004.md",
           "type": "plan",
           "summary": "v004: Bounded iteration + Classical fallback from research-004"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313b.md",
+          "type": "summary",
+          "summary": "Blocker analysis: bounded iteration insufficient, density can return endpoints, need strict density guarantee"
         }
       ],
-      "session_id": "sess_1773435293_9a4f1c",
+      "session_id": "sess_1773437400_4f9e56",
       "researched": "2026-03-13T20:43:03Z",
       "planned": "2026-03-13T21:28:22Z",
-      "started": "2026-03-13T20:55:15Z"
+      "started": "2026-03-13T21:30:21Z",
+      "last_updated": "2026-03-13T22:30:00Z",
+      "blocker_reason": "Bounded iteration strategy (v004) insufficient. Density iteration swings between equivalence classes indefinitely. Requires density_frame_condition_strict (18+ sorries in Boneyard)."
     }
   ],
   "completed_projects": [

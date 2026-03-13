@@ -80,13 +80,15 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
 - **Effort**: 3-5 hours
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Plan**: [implementation-004.md](specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-004.md) (v004: bounded iteration + Classical fallback)
 - **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis), [research-003.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md) (Classical.choose), [research-004.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md) (quotient collapse)
+- **Summary**: [implementation-summary-20260313b.md](specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313b.md) (blocker analysis)
 - **Handoff**: [phase-1-handoff-20260313.md](specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md)
 - **Language**: lean
 - **Priority**: high
 - **Unblocks**: Task 956 (Phase 7)
+- **Blocker**: Bounded iteration insufficient. Density iteration swings between equivalence classes [a] and [b] indefinitely. Requires `density_frame_condition_strict` (18+ sorries in Boneyard).
 
 **Description**: Prove the three order-theoretic instances for `TimelineQuot root_mcs root_mcs_proof` that are currently sorry-blocked in `CantorApplication.lean`:
 

@@ -67,7 +67,7 @@
 
 ## Implementation Phases
 
-### Phase 1: Fill strict_intermediate_aux Sorries [NOT STARTED]
+### Phase 1: Fill strict_intermediate_aux Sorries [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Complete the 5 sorries in `strict_intermediate_aux` using bounded iteration + Classical fallback
