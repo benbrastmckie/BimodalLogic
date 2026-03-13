@@ -1,37 +1,23 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-13T14:00:00Z",
-  "completed_at": "2026-03-13T15:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md",
-      "summary": "Blocker investigation: Classical.choose existence proof recommended over iterative construction"
+      "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-003.md",
+      "type": "plan",
+      "summary": "5-phase implementation plan using Classical.choose existence proof to resolve 6 sorries"
     }
   ],
-  "next_steps": "Run /plan 961 to create implementation plan using Classical.choose approach",
-  "findings_summary": {
-    "approach_1_finite_classes": "NOT VIABLE - equivalence classes are not provably finite (GContent-based equivalence can have infinite classes)",
-    "approach_2_visited_set": "NOT VIABLE - no natural finite candidate set exists (GContent is infinite, subformulaClosure doesn't bound distinguishing formulas)",
-    "approach_3_classical_choose": "RECOMMENDED - prove existence non-constructively using density property and Classical.choose"
-  },
-  "key_insight": "The iteration termination problem is a proof engineering issue, not a mathematical one. Strict intermediates EXIST by the density property; we need not construct them iteratively.",
-  "implementation_strategy": {
-    "step_1": "Prove strict_intermediate_exists_core using contradiction - assume no strict intermediate exists, show quotient collapses",
-    "step_2": "Use intermediate_not_both_equiv to show c cannot be ~ both p and q",
-    "step_3": "Apply Classical.choose to the existence proof",
-    "step_4": "NoMaxOrder/NoMinOrder follow from strict_intermediate_exists"
-  },
+  "next_steps": "Run /implement 961 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773434223_24606",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 5400,
+    "session_id": "sess_1773434979_9c3df4",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 3,
-    "context_files_loaded": ["ROAD_MAP.md"],
-    "mathlib_lookups_performed": 8,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1
-  }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.5,
+    "plan_version": 3,
+    "supersedes": "implementation-002.md"
+  },
+  "summary": "Created v003 plan using Classical.choose existence proof approach (recommended by research-003.md) to replace the unbounded case-tree iteration from v002"
 }
