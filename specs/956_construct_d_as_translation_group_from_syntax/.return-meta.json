@@ -1,33 +1,22 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-13T10:00:00Z",
-  "completed_at": "2026-03-13T11:30:00Z",
-  "summary": "Quotient-first density strategy analyzed. Non-strict density_frame_condition (sorry-free) + well-founded iteration on distinguishing formulas = strict density at quotient level. 25 sorries in DensityFrameCondition.lean are Boneyard candidates.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-048.md",
-      "summary": "Comprehensive analysis of Approach A (Quotient-First Antisymmetrization) with step-by-step implementation strategy, Mathlib API mapping, and Boneyard recommendations"
+      "type": "plan",
+      "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-024.md",
+      "summary": "5-phase implementation plan (Phases 6-10) for quotient-first density with Boneyard archival"
     }
   ],
-  "next_steps": "Run /plan 956 to create revised implementation plan targeting quotient-level density",
+  "next_steps": "Run /implement 956 to execute the plan, starting with Phase 6 (Boneyard archival)",
   "metadata": {
-    "session_id": "sess_1773426198_8271",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 5400,
+    "session_id": "sess_1773426760_2331",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 8,
-    "context_files_loaded": ["research-047.md", "CantorApplication.lean", "DenseTimeline.lean", "DensityFrameCondition.lean", "ROAD_MAP.md"],
-    "mathlib_lookups_performed": 6,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0,
-    "key_findings": {
-      "quotient_strictness_automatic": "toAntisymmetrization_lt_toAntisymmetrization_iff provides a < b iff [a] < [b]",
-      "non_strict_density_sorry_free": "density_frame_condition (line 191) is proven without sorries",
-      "strict_density_blocked": "25 sorries in density_frame_condition_strict all in iteration cases",
-      "boneyard_candidates": "Lines 292-2559 of DensityFrameCondition.lean",
-      "implementation_approach": "Well-founded recursion on distinguishing formula set"
-    }
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 9.5,
+    "language": "lean",
+    "revision_note": "v024: quotient-first with archival, supersedes v023 Pattern C approach"
   }
 }

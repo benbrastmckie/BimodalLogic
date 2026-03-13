@@ -39,12 +39,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-13T18:31:06Z",
+      "last_updated": "2026-03-13T18:37:15Z",
       "researched": "2026-03-13T18:31:06Z",
       "artifacts": [
         {
@@ -151,10 +151,15 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-048.md",
           "type": "research",
           "summary": "Quotient-first density strategy: non-strict density + well-founded iteration = strict quotient density. Boneyard recommendations included."
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-024.md",
+          "type": "plan",
+          "summary": "v024: 5-phase quotient-first density with Boneyard archival, 9.5 hours estimated"
         }
       ],
-      "session_id": "sess_1773426198_8271",
-      "planned": "2026-03-13T00:06:08Z",
+      "session_id": "sess_1773426760_2331",
+      "planned": "2026-03-13T18:37:15Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": 6,
       "blocked_reason": "Phase 6b requires fuel_suffices theorem with Nat.strongRecOn on subformulaClosure.card. 17 sorries (14 DensityFrameCondition, 3 CantorApplication). Options: (1) implement well-founded recursion, (2) axiomatize strict density, (3) alternative mathematical approach."
