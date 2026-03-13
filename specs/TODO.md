@@ -78,6 +78,29 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ---
 
+### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Priority**: high
+- **Unblocks**: Task 956 (Phase 7)
+
+**Description**: Prove the three order-theoretic instances for `TimelineQuot root_mcs root_mcs_proof` that are currently sorry-blocked in `CantorApplication.lean`:
+
+1. `NoMaxOrder` (line 210): every element has a strictly greater element
+2. `NoMinOrder` (line 269): every element has a strictly lesser element
+3. `DenselyOrdered` (lines 332, 345, 380, 385): between any two distinct elements there is a third
+
+**The exact blocker**: `density_frame_condition` gives a non-strict intermediate `c` with `CanonicalR p.mcs c.mcs` and `CanonicalR c.mcs q.mcs`. When `c` falls in the same equivalence class as `p` (i.e. `CanonicalR c.mcs p.mcs` holds) or as `q` (i.e. `CanonicalR q.mcs c.mcs` holds), a naive proof gets stuck. The fix is to iterate, using a different distinguishing formula at each step.
+
+**Why iteration terminates**: The pair `[p] < [q]` in the quotient implies the existence of a *separating formula* `δ` with `G(δ) ∈ q.mcs` and `δ ∉ p.mcs`. Such a formula lies in `subformulaClosure(δ)`, a finite set. Every iteration that fails to produce a strict intermediate must use a strictly smaller sub-formula of `δ` as the new separating witness, so the measure `subformulaClosure(anchor).card` strictly decreases. Termination follows by `Nat.strongRecOn` on this measure.
+
+**Implementation**: Use `Nat.strongRecOn` with `fuel = subformulaClosure(anchor).card`. At each step: apply `density_frame_condition` → if result is not equivalent to either endpoint, done; otherwise recurse with the sub-formula that witnesses the remaining separation as the new anchor (fuel decreases by at least 1). The same iteration scheme handles NoMaxOrder and NoMinOrder by reducing them to the dense case with a one-sided endpoint.
+
+**Files to modify**: `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean` — replace 6 `sorry`s at lines 210, 269, 332, 345, 380, 385.
+
+---
+
 ### 956. Construct D as translation group from syntax
 - **Effort**: 30-50 hours
 - **Status**: [IMPLEMENTING]
@@ -85,7 +108,7 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 - **Previously blocked by**: Task 957 (density frame condition - NOW COMPLETE)
 - **Language**: lean
 - **Priority**: high
-- **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma), Task 957 (density frame condition)
+- **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma), Task 957 (density frame condition - COMPLETE), Task 961 (quotient density iteration - NOT STARTED)
 - **Supersedes**: Task 954 (hardcoded Int refactor), Task 955 (CanonicalR task_rel)
 - **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md), [research-002.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md), [research-003.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md), [research-004.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md), [research-005.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md), [research-006.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md), [research-007.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md), [research-008.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md), [research-009.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md), [research-010.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md), [research-011.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-011.md), [research-012.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-012.md), [research-013.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-013.md), [research-014.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-014.md), [research-015.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-015.md), [research-016.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-016.md), [research-017.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-017.md), [research-018.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-018.md), [research-019.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-019.md), [research-020.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-020.md), [research-021.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-021.md), [research-022.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-022.md), [research-031.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-031.md), [research-032.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-032.md), [research-033.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-033.md), [research-034.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md)
 - **Plan**: [implementation-024.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-024.md) (v024: quotient-first density with Boneyard archival)
