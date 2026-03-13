@@ -797,12 +797,12 @@
     {
       "project_number": 961,
       "project_name": "quotient_density_iteration_no_max_min_dense",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Prove NoMaxOrder, NoMinOrder, and DenselyOrdered for TimelineQuot in CantorApplication.lean by implementing well-founded iteration over distinguishing formulas. When density_frame_condition gives intermediate c between p and q but c falls in the same equivalence class as p or q (i.e., CanonicalR c p.mcs or CanonicalR q.mcs c), the argument must iterate using a different separating formula from the finite set subformulaClosure(anchor). The iteration terminates because each step either finds a strict intermediate (success) or consumes a formula from the finite distinguishing set, strictly decreasing a Nat measure. Implement using Nat.strongRecOn with fuel = subformulaClosure(anchor).card. Resolves 6 sorries: CantorApplication.lean lines 210 (NoMaxOrder reflexive), 269 (NoMinOrder reflexive), 332, 345, 380, 385 (DenselyOrdered iteration cases).",
       "created": "2026-03-13T00:00:00Z",
-      "last_updated": "2026-03-13T19:55:50Z",
+      "last_updated": "2026-03-13T20:08:50Z",
       "unblocks": [
         956
       ],
@@ -813,11 +813,6 @@
           "summary": "Research report with mathematical analysis of well-founded iteration for quotient density"
         },
         {
-          "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "3-phase implementation plan for quotient density iteration"
-        },
-        {
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313.md",
           "type": "summary",
           "summary": "Partial implementation: 4/6 sorries resolved, well-founded iteration infrastructure added"
@@ -826,11 +821,16 @@
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md",
           "type": "research",
           "summary": "Blocker investigation: fuel-based termination is flawed, recommends direct case-based proof"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "v002: Direct case-based proof (replaces flawed fuel recursion)"
         }
       ],
       "session_id": "sess_1773431730_dcb2d24b",
       "researched": "2026-03-13T19:12:05Z",
-      "planned": "2026-03-13T19:20:40Z",
+      "planned": "2026-03-13T20:08:50Z",
       "started": "2026-03-13T19:22:44Z"
     }
   ],
