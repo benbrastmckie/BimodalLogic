@@ -142,7 +142,7 @@
       "planned": "2026-03-13T00:06:08Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": 6,
-      "blocked_reason": "Phase 6: 16 sorries remain (13 DensityFrameCondition, 3 CantorApplication). Phase 6a partial (iteration structure). Phase 6b (fuel_suffices) is next critical work."
+      "blocked_reason": "Phase 6b blocked: Implementing fuel_suffices requires complex well-founded recursion infrastructure with Nat.strongRecOn. 13 sorries share pattern where witness is equivalent to endpoint. Options: (1) implement full iteration machinery, (2) axiomatize strict density."
     },
     {
       "project_number": 955,

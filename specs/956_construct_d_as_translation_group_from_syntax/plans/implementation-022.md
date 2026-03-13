@@ -81,11 +81,20 @@ exists W : Set Formula, SetMaximalConsistent W and
 
 **Progress:**
 
-**Session: 2026-03-12, sess_1773353508_f76726**
+**Session: 2026-03-12, sess_1773353508_f76726 (Iteration 2)**
 - Added: Case split on `G(neg(delta)) in M'` at lines 459, 569, 622 - proves `inl` case via delta/neg(delta) contradiction
 - Added: Case split on `CanonicalR M' witness` at lines 849, 887 - proves `pos` case via T4 transitivity contradiction
 - Sorries: 14 -> 14 (structural progress but iteration still needed)
 - Key insight: `inr` cases (F(delta) in M') and witness-sees-M cases require Pattern C iteration
+
+**Session: 2026-03-12, sess_1773353508_f76726 (Iteration 3)**
+- Added: `non_reflexive_target_has_strict_intermediate` theorem (lines 1517-1630)
+- Added: Iteration via `density_frame_condition(V, M')` when witness collapses to M's class
+- Added: T4 transitivity contradiction proofs for nested `CanonicalR M' W'` cases
+- Sorries: 14 -> 13 (one case resolved via iteration pattern)
+- New sorry locations: 486, 490, 492, 585, 589, 591, 641, 646, 653, 860, 898, 1603, 1662
+- Key blocker: Witnesses keep collapsing to M's equivalence class when M is reflexive
+- Mathematical insight: If V ~ M and W' from density(V, M') also ~ M, the iteration doesn't make progress. Need termination argument via formula measure.
 
 ```lean
 /-- When M' is reflexive, we can find M'' strictly above M' via seriality.

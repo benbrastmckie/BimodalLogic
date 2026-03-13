@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Staged Construction (v023)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 4-5 hours (remaining)
 - **Dependencies**: Task 957 (COMPLETE), Task 959 (COMPLETE)
 - **Research Inputs**: research-045.md (well-founded termination measure)
@@ -105,13 +105,37 @@ termination_by fuel
 
 ---
 
-#### Phase 6b: Prove Sufficiency via Nat.strongRecOn [NOT STARTED]
+#### Phase 6b: Prove Sufficiency via Nat.strongRecOn [BLOCKED]
 
 **Estimated time**: 2-3 hours (critical phase)
 
 **Purpose**: Prove that sufficient fuel always exists
 
 **Key insight from research-045**: Each iteration "consumes" a distinguishing formula from `subformulaClosure(anchor)`. Since this set is finite, iteration terminates.
+
+**Blocking Analysis (2026-03-12)**:
+
+The 13 sorries share a common pattern: constructed witness W is equivalent to an endpoint (M or M') in the CanonicalR preorder. The mathematical structure is:
+
+1. **When W ~ M' (9 sorries)**: W and M' are mutually accessible (reflexive cluster). Finding strict intermediate requires escaping this cluster.
+
+2. **When V ~ M (4 sorries)**: V is equivalent to M (M is reflexive in these cases). The witness needs to be strictly above M.
+
+**Key Dichotomy**:
+- If GContent(M') ⊈ GContent(M): There exists a "Case A" formula psi with G(psi) ∈ M' and G(psi) ∉ M. Such psi can be used to construct a strict intermediate directly.
+- If GContent(M') ⊆ GContent(M): ALL forward witnesses from M are seen by M'. Iteration is required to escape the absorbing cluster.
+
+**Required Implementation**:
+The fuel-based iteration must track:
+1. Current target (M' or equivalent W)
+2. Formula consumed from subformulaClosure(anchor)
+3. Termination via Nat.strongRecOn on closure cardinality
+
+The escape mechanism uses seriality from the absorbing cluster to find a new target M'' where the problem is "smaller" (fewer candidate distinguishing formulas in subformulaClosure).
+
+**Recommendation**: This requires well-founded recursion infrastructure that is complex to implement directly. Consider:
+1. Alternative: Axiomatize the strict density property and defer proof
+2. Alternative: Implement as a standalone module with explicit termination proof
 
 ```lean
 /-- The termination measure: subformula closure cardinality. -/
