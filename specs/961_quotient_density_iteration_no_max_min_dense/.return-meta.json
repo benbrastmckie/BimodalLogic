@@ -1,25 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-13T09:00:00Z",
-  "completed_at": "2026-03-13T09:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md",
-      "summary": "Research report with mathematical analysis of well-founded iteration for quotient density"
+      "type": "plan",
+      "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-001.md",
+      "summary": "3-phase implementation plan for quotient density iteration"
     }
   ],
-  "next_steps": "Run /plan 961 to create implementation plan",
+  "next_steps": "Run /implement 961 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773428828_ea1faed9",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1773429437_8b515279",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 5,
-    "context_files_loaded": ["README.md", "ROAD_MAP.md"],
-    "mathlib_lookups_performed": 6,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 4
   }
 }
