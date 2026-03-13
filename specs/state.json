@@ -841,6 +841,11 @@
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md",
           "type": "handoff",
           "summary": "Handoff for Phase 1 - strict_intermediate_aux helper created with 5 sorries"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md",
+          "type": "research",
+          "summary": "Quotient collapse proof strategy: bounded iteration + Classical existence fallback"
         }
       ],
       "session_id": "sess_1773435293_9a4f1c",
