@@ -1,63 +1,66 @@
-# Phase 1 Handoff: strict_intermediate_exists
+# Handoff: Task 961 Phase 1
 
+**Session**: sess_1773435293_9a4f1c
 **Created**: 2026-03-13
-**Session**: sess_1773432635_5e6f6680
-**Status**: BLOCKED - requires mathematical review
+**Status**: PARTIAL
 
 ## Immediate Next Action
 
-The direct case-based proof approach generates unbounded case trees. The "at most 2 density applications" claim from research-002.md appears to be incorrect.
-
-**Options for next agent**:
-1. Find a correct termination measure (not subformulaClosure.card, not depth-2 case analysis)
-2. Use well-founded recursion on the set of "visited" equivalence class representatives
-3. Prove that after K density applications (for some fixed K), a strict intermediate MUST exist
+Complete the `strict_intermediate_aux` lemma by filling sorries at lines 226, 248, 253, 274, 278 in CantorApplication.lean. These require proving existence of a strict intermediate when all density intermediates fall into equivalence classes with endpoints.
 
 ## Current State
 
-**File**: `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean`
+**File**: `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean`
 
-**Sorries in strict_intermediate_exists**: 6
-- Lines 326, 372, 420, 462: Branches where intermediate is ~one_endpoint but we need to continue iteration
-- These branches arise when: c~p and d~q (or symmetric)
+**Key Structures Added**:
+1. `canonicalR_T4_chain` (line ~116): Helper proving transitivity via Temporal 4
+2. `strict_intermediate_aux` (line ~156): Bounded-depth iteration for finding strict intermediates
+3. `strict_intermediate_exists` (line ~287): Now delegates to `strict_intermediate_aux`
 
-**Sorries in NoMaxOrder/NoMinOrder**: 2 (lines ~592, ~652)
-- These depend on strict_intermediate_exists being complete
+**Sorries** (7 total):
+- Line 226: Branch where d ~ c ~ a and d not b (need Classical existence)
+- Line 248: Branch where e ~ a, e not d (recursive iteration)
+- Line 253: Branch where e not a, e ~ b (recursive iteration)
+- Line 274: Branch where d ~ a (recursive iteration)
+- Line 278: Branch where d not a, d ~ b (recursive iteration)
+- Line 423: NoMaxOrder reflexive case
+- Line 482: NoMinOrder reflexive case
 
 ## Key Decisions Made
 
-1. **Removed fuel-based recursion**: The original `subformulaClosure(delta).card` measure is incorrect because consecutive distinguishing formulas are not subformula-related.
-
-2. **Added mutual_canonicalR_implies_reflexive theorem**: This proves that if M~M' (bidirectional CanonicalR), both are reflexive. This is key to understanding when Case A vs Case B of density_frame_condition applies.
-
-3. **Direct case-based approach attempted**: This generates an unbounded case tree because each density call can produce an intermediate equivalent to one endpoint, requiring further iteration.
+1. **Replaced case-tree with bounded helper**: The original 320+ line case-tree was removed and replaced with `strict_intermediate_aux` which has cleaner structure
+2. **T4-based transitivity**: Added `canonicalR_T4_chain` lemma to prove transitivity via Temporal 4 axiom
+3. **Classical existence approach**: The plan recommends proving existence by contradiction
 
 ## What NOT to Try
 
-1. **Depth-2 case analysis**: Does not work. Example: c~p, d~q gives [p] = [c] < [d] = [q], not a strict intermediate. Needs depth 3+.
-
-2. **subformulaClosure(delta).card as fuel**: Research-002 proved this is incorrect. Consecutive deltas are not subformula-related.
-
-3. **Assuming reflexive endpoints escape quickly**: Reflexive endpoints can keep producing equivalent intermediates indefinitely without the right measure.
+1. **Deeper case trees**: The original approach of expanding cases manually doesn't terminate
+2. **Direct construction of witness**: The strict intermediate cannot be directly constructed
+3. **Finite equivalence class argument**: Research-003 showed equivalence classes are NOT provably finite
 
 ## Critical Context
 
-1. **Key theorem**: `caseB_M_not_reflexive` - In Case B (G(delta) in M with delta not in M), M is NOT reflexive.
+### Mathematical Insight
+When [p] < [q] in the quotient and all density intermediates are ~ p or ~ q (but not both), the quotient would collapse to a single point. Since [p] != [q], this is a contradiction. Therefore, a strict intermediate MUST exist.
 
-2. **Consequence**: If p is reflexive, density(p, q) MUST be in Case A (or Case B2 which reduces to Case A). In Case A, the intermediate contains neg(delta) while q contains delta, so intermediate NOT~q.
+### Key Lemmas Available
+- `intermediate_not_both_equiv`: Intermediate cannot be ~ both endpoints
+- `canonicalR_T4_chain`: Transitivity via T4 (a -> b -> c implies a -> c)
+- `dense_timeline_has_intermediate`: Gets non-strict intermediate from density
+- `mutual_canonicalR_implies_reflexive`: Bidirectional CanonicalR implies reflexivity
 
-3. **But**: This says intermediate NOT~q, not intermediate NOT~p. The intermediate could still be ~p.
-
-4. **Termination insight needed**: We need to show that the sequence of intermediates equivalent to p (if it continues) eventually terminates. Each intermediate is constructed from a different distinguishing formula, but these formulas are not decreasing in any obvious measure.
+### Proof Strategy for Sorries
+1. Use `by_contra h_none` to assume no strict intermediate exists
+2. `push_neg at h_none` to get: every intermediate is ~ p or ~ q
+3. Apply density repeatedly to show quotient collapse
+4. Derive `False` from [p] != [q]
 
 ## References
 
-- Plan: `/home/benjamin/Projects/ProofChecker/specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-002.md`
-- Research: `/home/benjamin/Projects/ProofChecker/specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md`
-- DensityFrameCondition.lean: Contains `density_frame_condition`, `caseB_M_not_reflexive`, `irreflexive_mcs_has_strict_future`
+- Plan: `specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-003.md`
+- Research: `specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md`
+- File: `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean`
 
-## Suggested New Approach
+## Build Status
 
-Consider proving that the set of MCSs equivalent to p is FINITE (bounded by some function of the distinguishing formula complexity). Then well-founded recursion on the "unexplored" equivalents gives termination.
-
-Alternatively, use `Decidable` + Classical.choose to assert existence, then separately prove the property holds. But this requires proving existence without constructing the witness, which may be circular with DenselyOrdered.
+lake build passes with 7 sorries (warnings)

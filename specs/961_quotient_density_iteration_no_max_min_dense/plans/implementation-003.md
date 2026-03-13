@@ -75,7 +75,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Core Existence Lemma [NOT STARTED]
+### Phase 1: Core Existence Lemma [PARTIAL]
 
 - **Dependencies:** None
 - **Goal:** Prove existence of strict intermediate via contradiction using Classical.choose
@@ -113,6 +113,21 @@ The proof proceeds by contradiction. Assume no strict intermediate exists betwee
 **Verification:**
 - `lake build` passes for the new helper lemma
 - `lean_goal` shows "no goals" at lemma end
+
+**Progress:**
+
+**Session: 2026-03-13, sess_1773435293_9a4f1c**
+- Added: `canonicalR_T4_chain` - helper lemma for T4-based transitivity of CanonicalR
+- Added: `strict_intermediate_aux` - bounded-depth helper for finding strict intermediates
+- Refactored: `strict_intermediate_exists` now delegates to `strict_intermediate_aux`
+- Removed: 320+ lines of deep case-tree code (moved to git history)
+- Sorries: 6 -> 7 (restructured: 5 in strict_intermediate_aux, 2 in NoMaxOrder/NoMinOrder)
+- Discovered: Deep iteration branches require sophisticated Classical existence proof
+- Discovered: T4-based transitivity can prove some branches unreachable but others genuinely need iteration
+- Build: PASSES with 7 sorries
+
+**Blocked by:**
+The core existence proof requires showing that when all density intermediates fall into equivalence classes with endpoints, the quotient would collapse - contradicting [p] < [q] being distinct. This requires a careful well-foundedness or cardinality argument that was not completed.
 
 ---
 

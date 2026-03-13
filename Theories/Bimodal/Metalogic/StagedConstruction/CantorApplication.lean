@@ -113,6 +113,19 @@ theorem intermediate_not_both_equiv
   have hq_p := canonicalR_transitive q.mcs c.mcs p.mcs q.is_mcs hc_q hc_p
   exact hq_not_p hq_p
 
+/-- T4-based transitivity: if a -> b and b -> c, then a -> c via Temporal 4 axiom. -/
+theorem canonicalR_T4_chain (a b c : StagedPoint)
+    (hab : CanonicalR a.mcs b.mcs)
+    (hbc : CanonicalR b.mcs c.mcs) :
+    CanonicalR a.mcs c.mcs := by
+  intro phi h_phi_Ga
+  have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 phi)
+  have h_GGphi_a : Formula.all_future (Formula.all_future phi) ∈ a.mcs :=
+    set_mcs_implication_property a.is_mcs (theorem_in_mcs a.is_mcs h_T4) h_phi_Ga
+  have h_Gphi_b : Formula.all_future phi ∈ b.mcs := hab h_GGphi_a
+  exact hbc h_Gphi_b
+
 /-- When M and M' are mutually accessible, both are reflexive via Temporal 4 propagation. -/
 theorem mutual_canonicalR_implies_reflexive
     (M M' : Set Formula)
@@ -137,6 +150,137 @@ theorem mutual_canonicalR_implies_reflexive
     have h_G_phi_M : Formula.all_future phi ∈ M := h_R' h_GG_phi_M'
     exact h_R h_G_phi_M
 
+/-- Helper: Given two intermediates that form a strict chain (a -> b, NOT b -> a),
+    and both in the timeline, find a strict intermediate between them.
+    Uses 2-step iteration: apply density, check equivalences, apply again if needed. -/
+theorem strict_intermediate_aux
+    (a b : DenseTimelineElem root_mcs root_mcs_proof)
+    (hab : CanonicalR a.1.mcs b.1.mcs)
+    (hba_not : ¬CanonicalR b.1.mcs a.1.mcs)
+    (depth : Nat)
+    (hdepth : depth > 0) :
+    ∃ c : DenseTimelineElem root_mcs root_mcs_proof,
+      CanonicalR a.1.mcs c.1.mcs ∧ ¬CanonicalR c.1.mcs a.1.mcs ∧
+      CanonicalR c.1.mcs b.1.mcs ∧ ¬CanonicalR b.1.mcs c.1.mcs := by
+  -- Get intermediate via density
+  obtain ⟨c, hc_mem, hc_R_a, hc_R_b⟩ :=
+    dense_timeline_has_intermediate root_mcs root_mcs_proof a.1 b.1 a.2 b.2 hab hba_not
+  let c' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c, hc_mem⟩
+  -- Check equivalences
+  by_cases hca : CanonicalR c.mcs a.1.mcs
+  · -- c ~ a: NOT strictly above a. Try b side.
+    have hbc_not : ¬CanonicalR b.1.mcs c.mcs := by
+      intro hbc
+      exact hba_not (canonicalR_transitive b.1.mcs c.mcs a.1.mcs b.1.is_mcs hbc hca)
+    -- c ~ a and c -> b and NOT b -> c. So [a] = [c] < [b].
+    -- Get intermediate between c and b
+    obtain ⟨d, hd_mem, hd_R_c, hd_R_b⟩ :=
+      dense_timeline_has_intermediate root_mcs root_mcs_proof c b.1 hc_mem b.2 hc_R_b hbc_not
+    let d' : DenseTimelineElem root_mcs root_mcs_proof := ⟨d, hd_mem⟩
+    have hd_R_a : CanonicalR a.1.mcs d.mcs :=
+      canonicalR_transitive a.1.mcs c.mcs d.mcs a.1.is_mcs hc_R_a hd_R_c
+    by_cases hdc : CanonicalR d.mcs c.mcs
+    · by_cases hbd : CanonicalR b.1.mcs d.mcs
+      · exact False.elim (intermediate_not_both_equiv c b.1 d hc_R_b hbc_not hdc hbd)
+      · -- d ~ c ~ a, d ≁ b: d is strict above a (since d ~ c ~ a means [d] = [a])? NO!
+        -- d ~ c and c ~ a means d ~ a. So [d] = [a]. d is NOT strictly above a.
+        -- Need T4: d ~ c and a -> c means a -> d? No, we have c -> a and d -> c.
+        -- By transitivity: d -> c -> a means d -> a. So d ~ a (with a -> d from hd_R_a).
+        -- NOT a strict intermediate. Need more iteration.
+        -- For bounded depth, use the next level or fail.
+        -- In this case, d is ~ a, same as before. Skip to q-side approach.
+        have hda : CanonicalR d.mcs a.1.mcs :=
+          canonicalR_transitive d.mcs c.mcs a.1.mcs d.is_mcs hdc hca
+        -- d ~ a, so [d] = [a] < [b]. NOT strict intermediate from a.
+        -- But d ≁ b! So [a] = [d] < [b], and d is strictly below b.
+        -- d satisfies: a -> d (hd_R_a), NOT d -> a? No, hda says d -> a. So d ~ a.
+        -- We need NOT d -> a for strict. But hda proves d -> a. So d is NOT strict above a.
+        -- The proof cannot proceed in this branch without more iteration.
+        -- Use Classical existence for this case.
+        have hbd_not : ¬CanonicalR b.1.mcs d.mcs := hbd
+        -- Actually, we can use d as intermediate: a -> d, d -> b, NOT b -> d.
+        -- But is NOT d -> a? We have d -> c -> a, so d -> a (hda). So d ~ a.
+        -- d is NOT strictly above a. Need different witness.
+        -- Try getting intermediate between a and d? But d ~ a means [a] = [d].
+        -- There's no "between" at quotient level.
+        -- This branch genuinely needs Classical existence.
+        -- Use exfalso if we can derive contradiction, otherwise Classical.
+        -- Actually, we should return a witness that works or prove existence.
+        -- For now, assert existence via Classical.
+        classical
+        by_contra h_none
+        push_neg at h_none
+        -- h_none : ∀ c, CanonicalR a.1.mcs c.1.mcs → ¬CanonicalR c.1.mcs a.1.mcs →
+        --          CanonicalR c.1.mcs b.1.mcs → CanonicalR b.1.mcs c.1.mcs
+        -- Every strict-above-a reaching b is ~ b.
+        -- But d is strict-below-b (hbd_not). So d doesn't satisfy the consequent.
+        -- Wait, h_none says the negation of existence:
+        -- ∀ c, ¬(a -> c ∧ NOT c -> a ∧ c -> b ∧ NOT b -> c)
+        -- = ∀ c, a -> c → c -> a ∨ c NOT-> b ∨ b -> c
+        -- For d: a -> d (hd_R_a). So either d -> a OR d NOT-> b OR b -> d.
+        -- We have d -> a (hda). So d -> a is true. Consistent with h_none but no contradiction.
+        -- The issue: h_none doesn't give us a direct contradiction.
+        -- The mathematical argument is that density + quotient distinctness implies existence.
+        -- For this formal proof, we need a more careful argument.
+        -- Mark as sorry for now - will address in Phase 2.
+        sorry
+    · -- d ≁ c (hence d ≁ a since c ~ a)
+      have hda_not : ¬CanonicalR d.mcs a.1.mcs := by
+        intro hda
+        exact hdc (canonicalR_transitive d.mcs a.1.mcs c.mcs d.is_mcs hda hc_R_a)
+      by_cases hbd : CanonicalR b.1.mcs d.mcs
+      · -- d ≁ a, d ~ b: d is strictly above a, equal to b. [a] < [d] = [b].
+        -- Get intermediate between a and d
+        obtain ⟨e, he_mem, he_R_a, he_R_d⟩ :=
+          dense_timeline_has_intermediate root_mcs root_mcs_proof a.1 d a.2 hd_mem hd_R_a hda_not
+        let e' : DenseTimelineElem root_mcs root_mcs_proof := ⟨e, he_mem⟩
+        have he_R_b : CanonicalR e.mcs b.1.mcs :=
+          canonicalR_transitive e.mcs d.mcs b.1.mcs e.is_mcs he_R_d hd_R_b
+        by_cases hea : CanonicalR e.mcs a.1.mcs
+        · by_cases hde : CanonicalR d.mcs e.mcs
+          · exact False.elim (intermediate_not_both_equiv a.1 d e hd_R_a hda_not hea hde)
+          · -- e ~ a, e ≁ d (hence e ≁ b since d ~ b)
+            have hbe_not : ¬CanonicalR b.1.mcs e.mcs := by
+              intro hbe
+              exact hde (canonicalR_T4_chain d b.1 e hd_R_b hbe)
+            -- e ~ a means [e] = [a]. NOT strict above a.
+            -- Same situation as before. Use Classical.
+            sorry
+        · -- e ≁ a
+          by_cases hbe : CanonicalR b.1.mcs e.mcs
+          · -- e ≁ a, e ~ b: e strictly above a, equal to b. Get intermediate (a, e).
+            -- Similar iteration...
+            sorry
+          · -- e ≁ a AND e ≁ b: e is the strict intermediate!
+            exact ⟨e', he_R_a, hea, he_R_b, hbe⟩
+      · -- d ≁ a AND d ≁ b: d is the strict intermediate!
+        exact ⟨d', hd_R_a, hda_not, hd_R_b, hbd⟩
+  · -- c ≁ a: c is strictly above a
+    by_cases hbc : CanonicalR b.1.mcs c.mcs
+    · -- c ≁ a, c ~ b: c strictly above a, equal to b. Get intermediate (a, c).
+      obtain ⟨d, hd_mem, hd_R_a, hd_R_c⟩ :=
+        dense_timeline_has_intermediate root_mcs root_mcs_proof a.1 c a.2 hc_mem hc_R_a hca
+      let d' : DenseTimelineElem root_mcs root_mcs_proof := ⟨d, hd_mem⟩
+      have hd_R_b : CanonicalR d.mcs b.1.mcs :=
+        canonicalR_transitive d.mcs c.mcs b.1.mcs d.is_mcs hd_R_c hc_R_b
+      by_cases hda : CanonicalR d.mcs a.1.mcs
+      · by_cases hcd : CanonicalR c.mcs d.mcs
+        · exact False.elim (intermediate_not_both_equiv a.1 c d hc_R_a hca hda hcd)
+        · -- d ~ a, d ≁ c (hence d ≁ b since c ~ b)
+          have hbd_not : ¬CanonicalR b.1.mcs d.mcs := by
+            intro hbd
+            exact hcd (canonicalR_T4_chain c b.1 d hc_R_b hbd)
+          -- d ~ a, same as before
+          sorry
+      · -- d ≁ a
+        by_cases hbd : CanonicalR b.1.mcs d.mcs
+        · -- d ≁ a, d ~ b: similar iteration
+          sorry
+        · -- d ≁ a AND d ≁ b: d is the strict intermediate!
+          exact ⟨d', hd_R_a, hda, hd_R_b, hbd⟩
+    · -- c ≁ a AND c ≁ b: c is the strict intermediate!
+      exact ⟨c', hc_R_a, hca, hc_R_b, hbc⟩
+
 /-- Main theorem: Given [p] < [q], there exists a strict intermediate [c] with [p] < [c] < [q].
     The proof uses Classical.choose to assert existence, justified by the fact that the
     quotient timeline has distinct equivalence classes and density between any ordered pair. -/
@@ -146,335 +290,21 @@ theorem strict_intermediate_exists
     (hq_not_p : ¬CanonicalR q.1.mcs p.1.mcs) :
     ∃ c : DenseTimelineElem root_mcs root_mcs_proof,
       CanonicalR p.1.mcs c.1.mcs ∧ ¬CanonicalR c.1.mcs p.1.mcs ∧
-      CanonicalR c.1.mcs q.1.mcs ∧ ¬CanonicalR q.1.mcs c.1.mcs := by
-  -- Step 1: Get first intermediate c via density
-  obtain ⟨c, hc_mem, hc_R_p, hc_R_q⟩ :=
-    dense_timeline_has_intermediate root_mcs root_mcs_proof p.1 q.1 p.2 q.2 hp_q hq_not_p
-  let c' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c, hc_mem⟩
-  -- Step 2: Case split on c's equivalences
-  by_cases hc_p : CanonicalR c.mcs p.1.mcs
-  · -- Case: c ~ p (c is equivalent to p)
-    -- c ~ p implies q ≁ c (otherwise q -> c -> p, contradicting hq_not_p)
-    have hq_not_c : ¬CanonicalR q.1.mcs c.mcs := by
-      intro hq_c
-      exact hq_not_p (canonicalR_transitive q.1.mcs c.mcs p.1.mcs q.1.is_mcs hq_c hc_p)
-    -- Apply density to (c, q) to get second intermediate d
-    obtain ⟨d, hd_mem, hd_R_c, hd_R_q⟩ :=
-      dense_timeline_has_intermediate root_mcs root_mcs_proof c q.1 hc_mem q.2 hc_R_q hq_not_c
-    let d' : DenseTimelineElem root_mcs root_mcs_proof := ⟨d, hd_mem⟩
-    -- d cannot be ~ both c and q
-    by_cases hd_c : CanonicalR d.mcs c.mcs
-    · by_cases hq_d : CanonicalR q.1.mcs d.mcs
-      · -- d ~ c AND d ~ q: UNREACHABLE by intermediate_not_both_equiv
-        exact False.elim (intermediate_not_both_equiv c q.1 d hc_R_q hq_not_c hd_c hq_d)
-      · -- d ~ c ~ p AND d ≁ q: [d] = [p] < [q], need further analysis
-        -- d is NOT strictly above p (since d ~ p), but IS strictly below q
-        -- Apply density to (d, q) to get third intermediate e
-        have hd_R_p : CanonicalR p.1.mcs d.mcs :=
-          canonicalR_transitive p.1.mcs c.mcs d.mcs p.1.is_mcs hc_R_p hd_R_c
-        have hd_p : CanonicalR d.mcs p.1.mcs :=
-          canonicalR_transitive d.mcs c.mcs p.1.mcs d.is_mcs hd_c hc_p
-        -- Since d ~ p and d ≁ q, d is strictly below q but not strictly above p
-        -- The key: d is reflexive (since d ~ p means both d -> p and p -> d)
-        have hq_not_d : ¬CanonicalR q.1.mcs d.mcs := hq_d
-        obtain ⟨e, he_mem, he_R_d, he_R_q⟩ :=
-          dense_timeline_has_intermediate root_mcs root_mcs_proof d q.1 hd_mem q.2 hd_R_q hq_not_d
-        let e' : DenseTimelineElem root_mcs root_mcs_proof := ⟨e, he_mem⟩
-        have he_R_p : CanonicalR p.1.mcs e.mcs :=
-          canonicalR_transitive p.1.mcs d.mcs e.mcs p.1.is_mcs hd_R_p he_R_d
-        by_cases he_d : CanonicalR e.mcs d.mcs
-        · by_cases hq_e : CanonicalR q.1.mcs e.mcs
-          · exact False.elim (intermediate_not_both_equiv d q.1 e hd_R_q hq_not_d he_d hq_e)
-          · -- e ~ d ~ p, e ≁ q
-            have he_p : CanonicalR e.mcs p.1.mcs :=
-              canonicalR_transitive e.mcs d.mcs p.1.mcs e.is_mcs he_d hd_p
-            -- e ~ p and e strictly below q: not what we want ([e] = [p])
-            -- But q ≁ e, so [e] < [q]. And since e ~ p, [p] = [e] < [q].
-            -- This is consistent but e is not STRICTLY above p.
-            -- Continue iteration... but this could go forever unless we use a different argument.
-            -- Use Classical.choose: the strict intermediate EXISTS because the quotient is dense.
-            -- Since DenselyOrdered is being proven, we use an indirect existence argument.
-            have hq_not_e : ¬CanonicalR q.1.mcs e.mcs := hq_e
-            -- Get fourth intermediate...
-            obtain ⟨f, hf_mem, hf_R_e, hf_R_q⟩ :=
-              dense_timeline_has_intermediate root_mcs root_mcs_proof e q.1 he_mem q.2 he_R_q hq_not_e
-            let f' : DenseTimelineElem root_mcs root_mcs_proof := ⟨f, hf_mem⟩
-            have hf_R_p : CanonicalR p.1.mcs f.mcs :=
-              canonicalR_transitive p.1.mcs e.mcs f.mcs p.1.is_mcs he_R_p hf_R_e
-            by_cases hf_e : CanonicalR f.mcs e.mcs
-            · by_cases hq_f : CanonicalR q.1.mcs f.mcs
-              · exact False.elim (intermediate_not_both_equiv e q.1 f he_R_q hq_not_e hf_e hq_f)
-              · -- f ~ e ~ p, f ≁ q: continue pattern
-                -- At this point, we've applied density 4 times and keep getting intermediates
-                -- equivalent to p. This pattern MUST terminate because:
-                -- 1. The quotient has countably many equivalence classes
-                -- 2. The density construction uses distinguishing formulas from a finite set
-                -- 3. Eventually, Case A of density_frame_condition must apply, giving an
-                --    intermediate NOT equivalent to the upper endpoint
-                -- For now, assert existence and complete the proof.
-                have hf_p : CanonicalR f.mcs p.1.mcs :=
-                  canonicalR_transitive f.mcs e.mcs p.1.mcs f.is_mcs hf_e he_p
-                have hf_not_p : ¬CanonicalR f.mcs p.1.mcs := by
-                  -- This is FALSE: f ~ e ~ p means f ~ p
-                  -- The proof structure is wrong for this case.
-                  -- We need f ≁ p for strict intermediate, but f ~ p here.
-                  -- Use Decidable to handle: Classical.em on whether strict intermediate exists
-                  exact absurd hf_p (by
-                    intro _
-                    -- Can't derive False from hf_p in this branch
-                    -- This case genuinely has f ~ p
-                    exact hf_p)
-                exact ⟨f', hf_R_p, hf_not_p, hf_R_q, hq_f⟩
-            · -- f ≁ e (hence f ≁ p since e ~ p)
-              have hf_not_p : ¬CanonicalR f.mcs p.1.mcs := by
-                intro hf_p
-                exact hf_e (canonicalR_transitive f.mcs p.1.mcs e.mcs f.is_mcs hf_p
-                  (canonicalR_transitive p.1.mcs d.mcs e.mcs p.1.is_mcs hd_R_p he_R_d))
-              by_cases hq_f : CanonicalR q.1.mcs f.mcs
-              · -- f ≁ p, f ~ q: f is strictly above p but equal to q
-                have hf_R_q' : CanonicalR f.mcs q.1.mcs := hf_R_q
-                -- Get intermediate between e and f
-                have hf_not_e : ¬CanonicalR f.mcs e.mcs := hf_e
-                obtain ⟨g, hg_mem, hg_R_e, hg_R_f⟩ :=
-                  dense_timeline_has_intermediate root_mcs root_mcs_proof e f he_mem hf_mem hf_R_e hf_not_e
-                let g' : DenseTimelineElem root_mcs root_mcs_proof := ⟨g, hg_mem⟩
-                have hg_R_p : CanonicalR p.1.mcs g.mcs :=
-                  canonicalR_transitive p.1.mcs e.mcs g.mcs p.1.is_mcs he_R_p hg_R_e
-                have hg_R_q : CanonicalR g.mcs q.1.mcs :=
-                  canonicalR_transitive g.mcs f.mcs q.1.mcs g.is_mcs hg_R_f hf_R_q
-                by_cases hg_e : CanonicalR g.mcs e.mcs
-                · by_cases hf_g : CanonicalR f.mcs g.mcs
-                  · exact False.elim (intermediate_not_both_equiv e f g hf_R_e hf_not_e hg_e hf_g)
-                  · -- g ~ e ~ p, g ≁ f (hence g ≁ q since f ~ q)
-                    have hg_not_p : ¬CanonicalR g.mcs p.1.mcs := by
-                      intro hg_p
-                      -- g ~ e ~ p gives g ~ p, so hg_p is TRUE in this branch
-                      -- Can't derive False
-                      exact (by exact hg_p).elim (hg_p)
-                    have hq_not_g : ¬CanonicalR q.1.mcs g.mcs := by
-                      intro hq_g
-                      -- q ~ f and q -> g. Need f -> g for contradiction.
-                      -- We have g -> f (hg_R_f). If also f -> g, then f ~ g.
-                      -- But hf_g says ¬(f -> g). So q -> g doesn't directly give f -> g.
-                      -- Use Temporal 4: q -> g means GContent(q) ⊆ g.
-                      -- f ~ q means f -> q and q -> f.
-                      -- By T4: GContent(f) ⊆ GContent(q) (via G(phi) ∈ f → G(G(phi)) ∈ f → G(phi) ∈ q).
-                      -- GContent(f) ⊆ q, GContent(q) ⊆ g. By T4 again: GContent(f) ⊆ g, so f -> g.
-                      have h_fg : CanonicalR f.mcs g.mcs := by
-                        intro phi h_phi_Gf
-                        have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-                          DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-                        have h_GGphi : Formula.all_future (Formula.all_future phi) ∈ f.mcs :=
-                          set_mcs_implication_property f.is_mcs (theorem_in_mcs f.is_mcs h_T4) h_phi_Gf
-                        have h_Gphi_q : Formula.all_future phi ∈ q.1.mcs := hf_R_q h_GGphi
-                        exact hq_g h_Gphi_q
-                      exact hf_g h_fg
-                    exact ⟨g', hg_R_p, hg_not_p, hg_R_q, hq_not_g⟩
-                · -- g ≁ e (hence g ≁ p since e ~ p)
-                  have hg_not_p : ¬CanonicalR g.mcs p.1.mcs := by
-                    intro hg_p
-                    exact hg_e (canonicalR_transitive g.mcs p.1.mcs e.mcs g.is_mcs hg_p he_p)
-                  by_cases hq_g : CanonicalR q.1.mcs g.mcs
-                  · -- g ≁ p, g ~ q: strictly above p, equal to q. Get intermediate between e and g.
-                    have hg_not_e : ¬CanonicalR g.mcs e.mcs := hg_e
-                    obtain ⟨h_pt, hh_mem, hh_R_e, hh_R_g⟩ :=
-                      dense_timeline_has_intermediate root_mcs root_mcs_proof e g he_mem hg_mem hg_R_e hg_not_e
-                    let h' : DenseTimelineElem root_mcs root_mcs_proof := ⟨h_pt, hh_mem⟩
-                    have hh_R_p : CanonicalR p.1.mcs h_pt.mcs :=
-                      canonicalR_transitive p.1.mcs e.mcs h_pt.mcs p.1.is_mcs he_R_p hh_R_e
-                    have hh_R_q : CanonicalR h_pt.mcs q.1.mcs :=
-                      canonicalR_transitive h_pt.mcs g.mcs q.1.mcs h_pt.is_mcs hh_R_g hg_R_q
-                    by_cases hh_e : CanonicalR h_pt.mcs e.mcs
-                    · by_cases hg_h : CanonicalR g.mcs h_pt.mcs
-                      · exact False.elim (intermediate_not_both_equiv e g h_pt hg_R_e hg_not_e hh_e hg_h)
-                      · -- h ~ e ~ p, h ≁ g (hence h ≁ q)
-                        have hh_not_p : ¬CanonicalR h_pt.mcs p.1.mcs := by
-                          intro hh_p
-                          exact (by exact hh_p).elim hh_p
-                        have hq_not_h : ¬CanonicalR q.1.mcs h_pt.mcs := by
-                          intro hq_h
-                          have h_gh : CanonicalR g.mcs h_pt.mcs := by
-                            intro phi h_phi_Gg
-                            have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-                              DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-                            have h_GGphi : Formula.all_future (Formula.all_future phi) ∈ g.mcs :=
-                              set_mcs_implication_property g.is_mcs (theorem_in_mcs g.is_mcs h_T4) h_phi_Gg
-                            have h_Gphi_q : Formula.all_future phi ∈ q.1.mcs := hg_R_q h_GGphi
-                            exact hq_h h_Gphi_q
-                          exact hg_h h_gh
-                        exact ⟨h', hh_R_p, hh_not_p, hh_R_q, hq_not_h⟩
-                    · -- h ≁ e (hence h ≁ p)
-                      have hh_not_p : ¬CanonicalR h_pt.mcs p.1.mcs := by
-                        intro hh_p
-                        exact hh_e (canonicalR_transitive h_pt.mcs p.1.mcs e.mcs h_pt.is_mcs hh_p he_p)
-                      by_cases hq_h : CanonicalR q.1.mcs h_pt.mcs
-                      · -- h ≁ p, h ~ q: STILL not strict on q side. This pattern continues.
-                        -- Use Classical existence: there MUST be a strict intermediate.
-                        have hg_not_h : ¬CanonicalR g.mcs h_pt.mcs := by
-                          intro hg_h
-                          -- h ~ g (since g -> h from hg_not_e... wait, hh_R_g : h -> g)
-                          -- We have hg_h : g -> h and hh_R_g : h -> g. So h ~ g.
-                          -- But h_pt ≁ e, so h is strictly above e.
-                          -- And g ≁ e (hg_e = hg_not_e? Let me check).
-                          -- Actually hg_not_e is g ≁ e in this branch.
-                          -- If h ~ g and g ≁ e, then h should also be ≁ e.
-                          -- That's consistent with hh_e being ¬(h -> e).
-                          -- No contradiction here.
-                          exact (by exact hg_h).elim hg_h
-                        -- At this point the case tree is getting deep. Use sorry for this branch
-                        -- and handle it with a unified approach.
-                        sorry
-                      · -- h ≁ p AND h ≁ q: h is the strict intermediate!
-                        exact ⟨h', hh_R_p, hh_not_p, hh_R_q, hq_h⟩
-                  · -- g ≁ p AND g ≁ q: g is the strict intermediate!
-                    exact ⟨g', hg_R_p, hg_not_p, hg_R_q, hq_g⟩
-              · -- f ≁ p AND f ≁ q: f is the strict intermediate!
-                exact ⟨f', hf_R_p, hf_not_p, hf_R_q, hq_f⟩
-        · -- e ≁ d (hence e ≁ p since d ~ p)
-          have he_not_p : ¬CanonicalR e.mcs p.1.mcs := by
-            intro he_p
-            exact he_d (canonicalR_transitive e.mcs p.1.mcs d.mcs e.is_mcs he_p hd_R_p)
-          by_cases hq_e : CanonicalR q.1.mcs e.mcs
-          · -- e ≁ p, e ~ q: e is strictly above p, equal to q. Get intermediate between d and e.
-            have he_not_d : ¬CanonicalR e.mcs d.mcs := he_d
-            obtain ⟨f, hf_mem, hf_R_d, hf_R_e⟩ :=
-              dense_timeline_has_intermediate root_mcs root_mcs_proof d e hd_mem he_mem he_R_d he_not_d
-            let f' : DenseTimelineElem root_mcs root_mcs_proof := ⟨f, hf_mem⟩
-            have hf_R_p : CanonicalR p.1.mcs f.mcs :=
-              canonicalR_transitive p.1.mcs d.mcs f.mcs p.1.is_mcs hd_R_p hf_R_d
-            have hf_R_q : CanonicalR f.mcs q.1.mcs :=
-              canonicalR_transitive f.mcs e.mcs q.1.mcs f.is_mcs hf_R_e he_R_q
-            by_cases hf_d : CanonicalR f.mcs d.mcs
-            · by_cases he_f : CanonicalR e.mcs f.mcs
-              · exact False.elim (intermediate_not_both_equiv d e f he_R_d he_not_d hf_d he_f)
-              · -- f ~ d ~ p, f ≁ e (hence f ≁ q since e ~ q)
-                have hf_not_p : ¬CanonicalR f.mcs p.1.mcs := by
-                  intro hf_p
-                  exact (by exact hf_p).elim hf_p
-                have hq_not_f : ¬CanonicalR q.1.mcs f.mcs := by
-                  intro hq_f
-                  have h_ef : CanonicalR e.mcs f.mcs := by
-                    intro phi h_phi_Ge
-                    have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-                      DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-                    have h_GGphi : Formula.all_future (Formula.all_future phi) ∈ e.mcs :=
-                      set_mcs_implication_property e.is_mcs (theorem_in_mcs e.is_mcs h_T4) h_phi_Ge
-                    have h_Gphi_q : Formula.all_future phi ∈ q.1.mcs := he_R_q h_GGphi
-                    exact hq_f h_Gphi_q
-                  exact he_f h_ef
-                exact ⟨f', hf_R_p, hf_not_p, hf_R_q, hq_not_f⟩
-            · -- f ≁ d (hence f ≁ p since d ~ p)
-              have hf_not_p : ¬CanonicalR f.mcs p.1.mcs := by
-                intro hf_p
-                exact hf_d (canonicalR_transitive f.mcs p.1.mcs d.mcs f.is_mcs hf_p hd_R_p)
-              by_cases hq_f : CanonicalR q.1.mcs f.mcs
-              · -- f ≁ p, f ~ q: f strictly above p, equal to q
-                sorry -- Continue iteration pattern
-              · -- f ≁ p AND f ≁ q: f is the strict intermediate!
-                exact ⟨f', hf_R_p, hf_not_p, hf_R_q, hq_f⟩
-          · -- e ≁ d AND e ≁ q: e is the strict intermediate!
-            exact ⟨e', he_R_p, he_not_p, he_R_q, hq_e⟩
-    · -- d ≁ c: check q side
-      by_cases hq_d : CanonicalR q.1.mcs d.mcs
-      · -- d ≁ c AND d ~ q: d is strictly above c ~ p, equal to q
-        have hd_R_p : CanonicalR p.1.mcs d.mcs :=
-          canonicalR_transitive p.1.mcs c.mcs d.mcs p.1.is_mcs hc_R_p hd_R_c
-        have hd_not_p : ¬CanonicalR d.mcs p.1.mcs := by
-          intro hd_p
-          exact hd_c (canonicalR_transitive d.mcs p.1.mcs c.mcs d.is_mcs hd_p hc_R_p)
-        -- d ~ q means [d] = [q], not strictly below q. Get intermediate between c and d.
-        have hd_not_c : ¬CanonicalR d.mcs c.mcs := hd_c
-        obtain ⟨e, he_mem, he_R_c, he_R_d⟩ :=
-          dense_timeline_has_intermediate root_mcs root_mcs_proof c d hc_mem hd_mem hd_R_c hd_not_c
-        let e' : DenseTimelineElem root_mcs root_mcs_proof := ⟨e, he_mem⟩
-        have he_R_p : CanonicalR p.1.mcs e.mcs :=
-          canonicalR_transitive p.1.mcs c.mcs e.mcs p.1.is_mcs hc_R_p he_R_c
-        have he_R_q : CanonicalR e.mcs q.1.mcs :=
-          canonicalR_transitive e.mcs d.mcs q.1.mcs e.is_mcs he_R_d hd_R_q
-        by_cases he_c : CanonicalR e.mcs c.mcs
-        · by_cases hd_e : CanonicalR d.mcs e.mcs
-          · exact False.elim (intermediate_not_both_equiv c d e hd_R_c hd_not_c he_c hd_e)
-          · -- e ~ c ~ p, e ≁ d (hence e ≁ q since d ~ q)
-            have hq_not_e : ¬CanonicalR q.1.mcs e.mcs := by
-              intro hq_e
-              have h_de : CanonicalR d.mcs e.mcs := by
-                intro phi h_phi_Gd
-                have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-                  DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-                have h_GGphi : Formula.all_future (Formula.all_future phi) ∈ d.mcs :=
-                  set_mcs_implication_property d.is_mcs (theorem_in_mcs d.is_mcs h_T4) h_phi_Gd
-                have h_Gphi_q : Formula.all_future phi ∈ q.1.mcs := hd_R_q h_GGphi
-                exact hq_e h_Gphi_q
-              exact hd_e h_de
-            -- e ~ p, so e not strictly above p
-            have he_not_p : ¬CanonicalR e.mcs p.1.mcs := by
-              intro _
-              exact (by exact he_c).elim he_c
-            exact ⟨e', he_R_p, he_not_p, he_R_q, hq_not_e⟩
-        · -- e ≁ c (hence e ≁ p since c ~ p)
-          have he_not_p : ¬CanonicalR e.mcs p.1.mcs := by
-            intro he_p
-            exact he_c (canonicalR_transitive e.mcs p.1.mcs c.mcs e.is_mcs he_p hc_R_p)
-          by_cases hq_e : CanonicalR q.1.mcs e.mcs
-          · -- e ≁ p, e ~ q: strictly above p, equal to q
-            sorry -- Continue iteration
-          · -- e ≁ p AND e ≁ q: e is the strict intermediate!
-            exact ⟨e', he_R_p, he_not_p, he_R_q, hq_e⟩
-      · -- d ≁ c AND d ≁ q: d is the strict intermediate!
-        have hd_R_p : CanonicalR p.1.mcs d.mcs :=
-          canonicalR_transitive p.1.mcs c.mcs d.mcs p.1.is_mcs hc_R_p hd_R_c
-        have hd_not_p : ¬CanonicalR d.mcs p.1.mcs := by
-          intro hd_p
-          exact hd_c (canonicalR_transitive d.mcs p.1.mcs c.mcs d.is_mcs hd_p hc_R_p)
-        exact ⟨d', hd_R_p, hd_not_p, hd_R_q, hq_d⟩
-  · -- Case: c ≁ p
-    by_cases hq_c : CanonicalR q.1.mcs c.mcs
-    · -- c ≁ p AND c ~ q: apply density to (p, c)
-      have hc_not_p : ¬CanonicalR c.mcs p.1.mcs := hc_p
-      obtain ⟨d, hd_mem, hd_R_p, hd_R_c⟩ :=
-        dense_timeline_has_intermediate root_mcs root_mcs_proof p.1 c p.2 hc_mem hc_R_p hc_not_p
-      let d' : DenseTimelineElem root_mcs root_mcs_proof := ⟨d, hd_mem⟩
-      have hd_R_q : CanonicalR d.mcs q.1.mcs :=
-        canonicalR_transitive d.mcs c.mcs q.1.mcs d.is_mcs hd_R_c hc_R_q
-      by_cases hd_p : CanonicalR d.mcs p.1.mcs
-      · by_cases hc_d : CanonicalR c.mcs d.mcs
-        · exact False.elim (intermediate_not_both_equiv p.1 c d hc_R_p hc_not_p hd_p hc_d)
-        · -- d ~ p, d ≁ c (hence d ≁ q since c ~ q)
-          have hq_not_d : ¬CanonicalR q.1.mcs d.mcs := by
-            intro hq_d
-            have h_cd : CanonicalR c.mcs d.mcs := by
-              intro phi h_phi_Gc
-              have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-                DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-              have h_GGphi : Formula.all_future (Formula.all_future phi) ∈ c.mcs :=
-                set_mcs_implication_property c.is_mcs (theorem_in_mcs c.is_mcs h_T4) h_phi_Gc
-              have h_Gphi_q : Formula.all_future phi ∈ q.1.mcs := hc_R_q h_GGphi
-              exact hq_d h_Gphi_q
-            exact hc_d h_cd
-          -- d ~ p, not strictly above p
-          have hd_not_p : ¬CanonicalR d.mcs p.1.mcs := by
-            intro _
-            exact (by exact hd_p).elim hd_p
-          exact ⟨d', hd_R_p, hd_not_p, hd_R_q, hq_not_d⟩
-      · -- d ≁ p
-        by_cases hc_d : CanonicalR c.mcs d.mcs
-        · -- d ≁ p, d ~ c (hence d ~ q)
-          sorry -- d ~ q, not strictly below q. Continue iteration.
-        · -- d ≁ p AND d ≁ c (hence d ≁ q since c ~ q)
-          have hq_not_d : ¬CanonicalR q.1.mcs d.mcs := by
-            intro hq_d
-            have h_cd : CanonicalR c.mcs d.mcs := by
-              intro phi h_phi_Gc
-              have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
-                DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-              have h_GGphi : Formula.all_future (Formula.all_future phi) ∈ c.mcs :=
-                set_mcs_implication_property c.is_mcs (theorem_in_mcs c.is_mcs h_T4) h_phi_Gc
-              have h_Gphi_q : Formula.all_future phi ∈ q.1.mcs := hc_R_q h_GGphi
-              exact hq_d h_Gphi_q
-            exact hc_d h_cd
-          exact ⟨d', hd_R_p, hd_p, hd_R_q, hq_not_d⟩
-    · -- c ≁ p AND c ≁ q: c is the strict intermediate!
-      exact ⟨c', hc_R_p, hc_p, hc_R_q, hq_c⟩
+      CanonicalR c.1.mcs q.1.mcs ∧ ¬CanonicalR q.1.mcs c.1.mcs :=
+  strict_intermediate_aux root_mcs root_mcs_proof p q hp_q hq_not_p 1 (by omega)
+
+/-!
+## Old proof body removed - was causing nested case explosion.
+   The strict_intermediate_aux helper handles the case analysis with bounded depth.
+
+   NOTE: strict_intermediate_aux currently has sorries in deep iteration branches.
+   These need to be resolved via Classical.choose existence argument.
+-/
+
+/-! OLD CODE REMOVED - was the body of strict_intermediate_exists.
+    The new implementation uses strict_intermediate_aux.
+    See git history for original case-tree implementation.
+-/
 
 /-!
 ## Cantor Prerequisites for TimelineQuot
