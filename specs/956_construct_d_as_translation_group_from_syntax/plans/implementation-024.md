@@ -1,7 +1,7 @@
 # Implementation Plan: Task #956 - D Construction via Quotient-First Density (v024)
 
 - **Task**: 956 - Construct D as translation group from syntax
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 8-10 hours (total remaining)
 - **Dependencies**: Task 957 (COMPLETE), Task 959 (COMPLETE)
 - **Research Inputs**: research-048.md (quotient-first strategy), research-047.md (team trajectory)
@@ -112,7 +112,7 @@ All prerequisite infrastructure phases completed with zero sorries.
 
 ---
 
-### Phase 6: Boneyard Archival and Code Cleanup [NOT STARTED]
+### Phase 6: Boneyard Archival and Code Cleanup [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Archive blocked strict density code, retain sorry-free foundation
@@ -143,9 +143,19 @@ All prerequisite infrastructure phases completed with zero sorries.
 - `grep -rn "\bsorry\b" DensityFrameCondition.lean` returns empty
 - Archived code compiles independently (optional, low priority)
 
+**Progress:**
+
+**Session: 2026-03-13, sess_1773427217_a2328e07**
+- Added: `Theories/Bimodal/Boneyard/Task956_StrictDensity/` directory with README.md
+- Added: `DensityFrameCondition_StrictAttempt.lean` (2309 lines archived, 26 sorries)
+- Removed: Lines 271-2559 from DensityFrameCondition.lean (strict density blocked code)
+- Completed: DensityFrameCondition.lean trimmed to 278 lines, 0 sorries
+- Completed: `lake build DensityFrameCondition` passes
+- Note: CantorApplication.lean now fails due to removed `density_frame_condition_strict` - Phase 8 will fix
+
 ---
 
-### Phase 7: Quotient-Level Density with Well-Founded Iteration [NOT STARTED]
+### Phase 7: Quotient-Level Density with Well-Founded Iteration [PARTIAL]
 
 - **Dependencies:** Phase 6
 - **Goal:** Prove `quotient_density_via_iteration` using non-strict density + well-founded recursion
@@ -211,6 +221,26 @@ def quotient_density_iter (M M' : Set Formula) (fuel : Nat) : Option StrictWitne
       let new_anchor := next_distinguishing_formula ...
       quotient_density_iter M M' n  -- with new context
 ```
+
+**Progress:**
+
+**Session: 2026-03-13, sess_1773427217_a2328e07**
+- Attempted: QuotientDensity.lean creation, but circular dependency with CantorApplication.lean
+- Pivoted: Fixed DenselyOrdered directly in CantorApplication.lean using quotient-level argument
+- Completed: Base case of DenselyOrdered - when c ≁ p AND c ≁ q, c is strict intermediate
+- Completed: One level of iteration - apply density again to (c,q) or (p,c), check new intermediate d
+- Completed: Proved h_dq case using Temporal 4 transitivity through equivalent MCSs
+- Partial: 6 sorries remain (was 3) - 4 DenselyOrdered iteration, 2 NoMax/NoMin reflexive
+- Sorries: 210, 269, 332, 345, 380, 385 - all require well-founded iteration machinery
+- Build: `lake build CantorApplication` passes with sorry warnings
+- File: 493 lines (was 325)
+
+**Blocking Issue**: The DenselyOrdered proof requires well-founded iteration when:
+1. First intermediate c is equivalent to p (c ~ p): apply density to (c, q) -> get d
+2. Second intermediate d is equivalent to c (d ~ c ~ p): need further iteration
+3. Similar for symmetric cases (c ~ q, d ~ q, etc.)
+
+The iteration terminates because each step uses a different distinguishing formula from the finite subformulaClosure. Implementing this requires Nat.strongRecOn or fuel-based recursion with explicit termination proof.
 
 ---
 

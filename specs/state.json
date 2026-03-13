@@ -39,12 +39,12 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-13T18:37:15Z",
+      "last_updated": "2026-03-13T18:58:30Z",
       "researched": "2026-03-13T18:31:06Z",
       "artifacts": [
         {
@@ -113,11 +113,6 @@
           "summary": "Detailed analysis of 13 sorries with seriality_escape next action"
         },
         {
-          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/iteration-005-summary.md",
-          "type": "summary",
-          "summary": "11 sorries remain, all iteration-ready"
-        },
-        {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-044.md",
           "type": "research",
           "summary": "Streamlined approach analysis: Pattern C iteration with Nat.strongRecOn recommended"
@@ -156,13 +151,18 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-024.md",
           "type": "plan",
           "summary": "v024: 5-phase quotient-first density with Boneyard archival, 9.5 hours estimated"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260313.md",
+          "type": "summary",
+          "summary": "Implementation summary for Phase 6 (complete) and Phase 7 (partial)"
         }
       ],
-      "session_id": "sess_1773426760_2331",
+      "session_id": "sess_1773427217_a2328e07",
       "planned": "2026-03-13T18:37:15Z",
       "started": "2026-03-10T16:01:30Z",
-      "resume_phase": 6,
-      "blocked_reason": "Phase 6b requires fuel_suffices theorem with Nat.strongRecOn on subformulaClosure.card. 17 sorries (14 DensityFrameCondition, 3 CantorApplication). Options: (1) implement well-founded recursion, (2) axiomatize strict density, (3) alternative mathematical approach."
+      "resume_phase": 7,
+      "blocked_reason": "Phase 7 requires well-founded iteration machinery for DenselyOrdered proof. 6 sorries remain."
     },
     {
       "project_number": 955,
