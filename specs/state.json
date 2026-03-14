@@ -836,12 +836,12 @@
     {
       "project_number": 961,
       "project_name": "quotient_density_iteration_no_max_min_dense",
-      "status": "researching",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Prove NoMaxOrder, NoMinOrder, and DenselyOrdered for TimelineQuot in CantorApplication.lean by implementing well-founded iteration over distinguishing formulas. When density_frame_condition gives intermediate c between p and q but c falls in the same equivalence class as p or q (i.e., CanonicalR c p.mcs or CanonicalR q.mcs c), the argument must iterate using a different separating formula from the finite set subformulaClosure(anchor). The iteration terminates because each step either finds a strict intermediate (success) or consumes a formula from the finite distinguishing set, strictly decreasing a Nat measure. Implement using Nat.strongRecOn with fuel = subformulaClosure(anchor).card. Resolves 6 sorries: CantorApplication.lean lines 210 (NoMaxOrder reflexive), 269 (NoMinOrder reflexive), 332, 345, 380, 385 (DenselyOrdered iteration cases).",
       "created": "2026-03-13T00:00:00Z",
-      "last_updated": "2026-03-14T01:30:35Z",
+      "last_updated": "2026-03-14T01:45:33Z",
       "unblocks": [
         956
       ],
@@ -897,11 +897,6 @@
           "summary": "Iteration 3: bounded iteration with 8 termination sorries remaining"
         },
         {
-          "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for quotient density using denselyOrdered_iff_forall_not_covBy architecture"
-        },
-        {
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-006.md",
           "type": "research",
           "summary": "Team research: denselyOrdered_iff_forall_not_covBy architecture, termination gap analysis"
@@ -915,11 +910,16 @@
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-007.md",
           "type": "research",
           "summary": "Deep mathematical analysis: formula wellfoundedness vs non-iterative proof, proposes density_escapes_source_class lemma"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for proving density_escapes_source_class and resolving 6 sorries"
         }
       ],
-      "session_id": "sess_1773451794_c21ab3",
+      "session_id": "sess_1773452476_3y3z0i",
       "researched": "2026-03-13T20:43:03Z",
-      "planned": "2026-03-14T01:16:54Z",
+      "planned": "2026-03-14T01:45:33Z",
       "started": "2026-03-13T22:30:54Z",
       "blocked": "2026-03-13T16:30:00Z"
     }

@@ -1,25 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-13T10:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-007.md",
-      "summary": "Deep mathematical analysis of formula wellfoundedness vs non-iterative proof strategies for quotient density termination"
+      "type": "plan",
+      "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-007.md",
+      "summary": "4-phase implementation plan for proving density_escapes_source_class and resolving 6 sorries"
     }
   ],
-  "next_steps": "Run /plan 961 to create implementation plan based on the density_escapes_source_class approach",
+  "next_steps": "Run /implement 961 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773451794_c21ab3",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 5400,
+    "session_id": "sess_1773452476_3y3z0i",
+    "agent_type": "planner-agent",
+    "duration_seconds": 300,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 3,
-    "context_files_loaded": ["README.md", "ROAD_MAP.md"],
-    "mathlib_lookups_performed": 6,
-    "context_extension_tasks": [],
-    "context_candidates_count": 3,
-    "key_finding": "The missing lemma is density_escapes_source_class: analyzing Lindenbaum extension formula content may prove the intermediate escapes the source equivalence class, not just the target"
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3.5
   }
 }
