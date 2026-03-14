@@ -76,7 +76,7 @@
 
 ## Implementation Phases
 
-### Phase 1: Add density_escapes_source_class Lemma [NOT STARTED]
+### Phase 1: Add density_escapes_source_class Lemma [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Prove that when source is reflexive and `[source] < [target]`, the density construction produces an element not equivalent to source
@@ -124,6 +124,23 @@ theorem density_escapes_source_class
 - `lake build` passes
 - `density_escapes_source_class` compiles without sorry
 - Alternatively: phase marked [BLOCKED] if proof stuck
+
+**Progress:**
+
+**Session: 2026-03-13, sess_1773451073_66744d**
+- Attempted: Implementation using `dense_timeline_has_strict_intermediate` + reflexivity propagation
+- Analysis: The termination argument requires formalizing that:
+  1. Each density iteration uses a distinguishing formula delta with G(delta) in target
+  2. The intermediate contains negation of delta
+  3. If intermediate ~ source, the formula constraints accumulate
+  4. Wellfoundedness: formula content is bounded by `subformulaClosure(delta).card`
+- Blocking issue: The existing code handles 5 levels of iteration before giving up (see lines 286-304 in CantorApplication.lean). Beyond 5 levels, termination is asserted but not proven.
+- The same fundamental gap blocks all 8 sorries in CantorApplication.lean:
+  - `strict_intermediate_exists`: 4 sorries at lines 304, 419, 509, 573
+  - `NoMaxOrder`: 1 sorry at line 734
+  - `NoMinOrder`: 1 sorry at line 793
+- Result: [BLOCKED] - termination argument needs formula wellfoundedness formalization
+- No changes committed (blocking proof obstacle)
 
 ---
 
