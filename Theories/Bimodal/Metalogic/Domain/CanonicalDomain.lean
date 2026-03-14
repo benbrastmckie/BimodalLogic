@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Domain.DurationTransfer
+import Bimodal.Metalogic.Domain.DiscreteTimeline
 import Bimodal.Metalogic.StagedConstruction.CantorApplication
 
 /-!
@@ -180,22 +181,19 @@ noncomputable def denseCanonicalTaskFrame
     (denseCanonicalIsOrderedAddMonoid root_mcs root_mcs_proof)
 
 /-!
-## Discrete Case: Pipeline Stub
+## Discrete Case: Complete Pipeline (Sorry-Dependent)
 
 The discrete case follows the same transfer pattern but uses
 `orderIsoIntOfLinearSuccPredArch` instead of Cantor's theorem.
 
-The key prerequisites (SuccOrder, PredOrder, IsSuccArchimedean) need to be
-proved from the discreteness axiom DF and the canonical model construction.
--/
+The instances SuccOrder, PredOrder, IsSuccArchimedean, NoMaxOrder, NoMinOrder
+are defined (with sorries) in `DiscreteTimeline.lean`. The pipeline below
+connects them to `discreteTaskFrame` from `DurationTransfer.lean`.
 
--- The discrete pipeline would follow this pattern:
--- 1. Build DiscreteCanonicalTimeline (quotient of base staged timeline)
--- 2. Prove SuccOrder from discreteness axiom DF
--- 3. Prove PredOrder from backward discreteness
--- 4. Prove IsSuccArchimedean from linearity + no max/min
--- 5. Apply intOrderIso → intAddCommGroup → intIsOrderedAddMonoid
--- 6. Build TaskFrame via canonicalTaskFrame
+**Proof debt**: All discrete prerequisites have sorries — SuccOrder/PredOrder
+from DF coverness extraction, NoMaxOrder/NoMinOrder from reflexive MCS obstacle.
+See `DiscreteTimeline.lean` and research-002.md for details.
+-/
 
 /-!
 ## Base Case
