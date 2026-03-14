@@ -136,7 +136,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Update Core Syntax Files [NOT STARTED]
+### Phase 3: Update Core Syntax Files [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Update Subformulas.lean, SubformulaClosure.lean, and related files
