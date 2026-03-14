@@ -24,7 +24,7 @@ technical_debt:
 
 ### 964. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
 - **Effort**: 8-16 hours
-- **Status**: [PLANNED]
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md), [research-002.md](specs/964_resolve_atom_type_freshness_debt/reports/research-002.md), [research-003.md](specs/964_resolve_atom_type_freshness_debt/reports/research-003.md)

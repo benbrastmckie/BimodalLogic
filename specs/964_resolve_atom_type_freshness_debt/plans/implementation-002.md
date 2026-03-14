@@ -1,7 +1,7 @@
 # Implementation Plan: Resolve Atom Type Freshness Debt (Revised)
 
 - **Task**: 964 - resolve_atom_type_freshness_debt
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 8 hours (reduced from 14)
 - **Dependencies**: Phases 1-5 completed
 - **Research Inputs**: research-001.md, research-002.md, research-003.md
@@ -69,7 +69,7 @@ This revised plan addresses the blocking issue discovered in research-003: the T
 
 ## Implementation Phases
 
-### Phase 1: Semantic Irreflexivity Proof [NOT STARTED]
+### Phase 1: Semantic Irreflexivity Proof [BLOCKED]
 
 - **Dependencies:** Phases 1-5 completed
 - **Goal:** Prove canonicalR_irreflexive using frame semantics
@@ -109,6 +109,16 @@ The canonical relation `CanonicalR` is defined in terms of `GContent` (formulas 
 - `lean_goal` shows "no goals" at proof end
 - `lake build Bimodal.Metalogic.Canonical.CanonicalIrreflexivitySemantic` succeeds
 - `grep -n "\bsorry\b"` returns empty
+
+**Progress:**
+
+**Session: 2026-03-14, sess_1773516266_87af15**
+- Analyzed: Semantic approach requires connecting CanonicalR to frame ordering
+- Discovered: CanonicalR is syntactic (GContent subset), not directly tied to frame semantics
+- Analyzed: Standard Gabbay IRR proof structure and why it's blocked
+- Finding: T-axiom (H(phi)->phi) required but NOT valid in strict semantics
+- Finding: neg(atom p).atoms = {p}, so never p-free, cannot be in atomFreeSubset
+- Conclusion: Proof mathematically blocked - irreflexivity is frame property, not derivable
 
 ---
 

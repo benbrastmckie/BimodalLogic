@@ -8,13 +8,13 @@
     {
       "project_number": 964,
       "project_name": "resolve_atom_type_freshness_debt",
-      "status": "planned",
+      "status": "blocked",
       "language": "lean",
       "priority": "medium",
       "description": "The canonicalR_irreflexive axiom is a standard theorem blocked only by the String atom type lacking freshness. Change the atom type to support freshness (e.g., {base: String, fresh_index: Option Nat}) and prove the axiom as a theorem, removing the axiom declaration. Downstream: NoMaxOrder, NoMinOrder, DenselyOrdered (dense case), NoMaxOrder, NoMinOrder (discrete case) all become fully proven theorems.",
       "created": "2026-03-14T01:00:00Z",
-      "last_updated": "2026-03-14T19:19:25Z",
-      "session_id": "sess_1773514964_mueksr",
+      "last_updated": "2026-03-14T19:33:37Z",
+      "session_id": "sess_1773516266_87af15",
       "artifacts": [
         {
           "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-001.md",
