@@ -1,13 +1,17 @@
 # Implementation Summary: Task #961
 
 **Task**: 961 - quotient_density_iteration_no_max_min_dense
-**Status**: PARTIAL
+**Status**: BLOCKED
 **Date**: 2026-03-13
-**Session**: sess_1773429728_680b1ce2
+**Sessions**:
+- sess_1773429728_680b1ce2 (initial iteration attempt)
+- sess_1773452813_2rz88y (v007 - escape lemma investigation)
 
 ## Summary
 
-Implemented well-founded iteration infrastructure for quotient density proofs. Resolved 4 of 6 original DenselyOrdered sorries but introduced 2 new sorries for fuel decrease checks. NoMaxOrder and NoMinOrder reflexive cases remain unresolved.
+**Session 1**: Implemented well-founded iteration infrastructure for quotient density proofs. Resolved 4 of 6 original DenselyOrdered sorries but introduced 2 new sorries for fuel decrease checks. NoMaxOrder and NoMinOrder reflexive cases remain unresolved.
+
+**Session 2 (v007)**: Investigated the `density_escapes_source_class` lemma identified by research-007 as the key missing piece. **FOUND MATHEMATICAL OBSTRUCTION**: The lemma CANNOT be proven from the current construction because Lindenbaum extension is non-constructive and does not guarantee the intermediate escapes the source equivalence class.
 
 ## Changes Made
 
@@ -88,3 +92,48 @@ This requires proving that different MCSs have different G-content structures, w
 - Before: 6 sorries (lines 210, 269, 332, 345, 380, 385)
 - After: 4 sorries (lines 190, 211, 366, 425)
 - Net change: -2 sorries
+
+---
+
+## Session 2: v007 Investigation (sess_1773452813_2rz88y)
+
+### Investigation of `density_escapes_source_class`
+
+The plan-v007 identified a key lemma: prove that when source is reflexive, the density intermediate escapes the source equivalence class. This would provide single-step termination, avoiding the iteration problem.
+
+### Mathematical Analysis
+
+**Finding: The lemma CANNOT be proven from the current construction.**
+
+**Root Cause**: The density intermediate is constructed via Lindenbaum extension of `{neg delta} union GContent(W1)`. The Lindenbaum lemma is NON-CONSTRUCTIVE - it uses the axiom of choice to extend a consistent set to an MCS, providing NO CONTROL over which additional formulas (particularly G-formulas) end up in the final MCS.
+
+**Counterexample Structure**:
+- Source M is reflexive with GContent(M) = {alpha, beta, ...}
+- delta is the distinguishing formula: G(delta) in M', delta NOT in M
+- Since M is reflexive, G(delta) NOT in M (otherwise delta in M by reflexivity)
+- So F(neg delta) in M, and we construct c with neg delta in c
+
+However, the Lindenbaum extension MAY produce c such that GContent(c) subset M:
+- c inherits only G-formulas from GContent(M) (via transitivity through W1)
+- No new G-formulas with content NOT in M are added by Lindenbaum
+
+In such cases: c ~ M (c is equivalent to source), defeating the escape property.
+
+### Documentation Added
+
+- `Theories/Bimodal/Metalogic/StagedConstruction/DenseTimeline.lean` (lines 539-578): Added detailed documentation of the mathematical obstruction in a module comment.
+
+### Conclusion
+
+This confirms the FUNDAMENTAL TERMINATION GAP that blocked all previous implementation attempts (v001-v006). The iteration CAN produce intermediates that remain equivalent to the source, with no guarantee of termination.
+
+### Path Forward Options
+
+1. **Accept Termination Axiom**: Add `density_iteration_terminates` axiom (adds proof debt)
+2. **Alternative Proof Strategy**: Use `denselyOrdered_iff_forall_not_covBy` contradiction approach
+3. **Modify Construction**: Track formula consumption explicitly in density construction
+4. **Re-scope Task**: Accept bounded-depth iteration with explicit depth parameter
+
+### Task Status
+
+**BLOCKED** - Requires user decision on resolution path.

@@ -534,4 +534,49 @@ theorem dense_timeline_countable :
     exact Set.mem_iUnion.mpr ⟨n, hn⟩
   · exact Set.countable_iUnion (fun n => Set.Finite.countable (Finset.finite_toSet _))
 
+/-!
+## Investigation: Density Intermediate Escapes Source Class (Task 961)
+
+**Status: BLOCKED - Mathematical obstruction identified**
+
+**Investigation Result:**
+The `density_escapes_source_class` lemma CANNOT be proven from the current
+density_frame_condition construction.
+
+**Mathematical Analysis:**
+The intermediate c is constructed via density_frame_condition_reflexive_source,
+which uses the Lindenbaum extension of {neg delta} ∪ GContent(W₁).
+
+The key issue: Lindenbaum extension is NON-CONSTRUCTIVE. It uses the axiom of
+choice to pick formulas to add, maintaining consistency. We CANNOT control which
+G-formulas end up in the final MCS c.
+
+**Counterexample structure:**
+- M (source) is reflexive with GContent(M) = {alpha, beta, ...}
+- delta is the distinguishing formula: G(delta) ∈ M', delta ∉ M
+- Since M is reflexive, G(delta) ∉ M (otherwise delta ∈ M)
+- So F(neg delta) ∈ M, and we construct c with neg delta ∈ c
+
+However, the Lindenbaum extension of {neg delta} ∪ GContent(W₁) may produce c
+such that GContent(c) ⊆ M. This happens when:
+- c inherits only G-formulas from GContent(M) (via transitivity through W₁)
+- No new G-formulas with content NOT in M are added by Lindenbaum
+
+In such cases: c ~ M (c is equivalent to source), defeating the escape property.
+
+**Conclusion:**
+The "density_escapes_source_class" property is NOT a consequence of the
+density_frame_condition construction. The iteration CAN produce intermediates
+that remain equivalent to the source, with no guarantee of termination.
+
+This is the FUNDAMENTAL TERMINATION GAP identified in research-007.
+
+**Resolution requires either:**
+1. A stronger construction that tracks formula consumption
+2. Well-founded induction on a different measure
+3. Acceptance of an axiom for termination
+
+See: specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-007.md
+-/
+
 end Bimodal.Metalogic.StagedConstruction
