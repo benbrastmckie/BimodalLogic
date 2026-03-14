@@ -23,11 +23,14 @@ technical_debt:
 ## Tasks
 
 ### 965. Study branch duration-group-construction differences
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: Medium
+- **Status**: [RESEARCHED]
 - **Language**: meta
+- **Research**: [research-001.md](specs/965_study_branch_duration_group_construction/reports/research-001.md)
 
 **Description**: Study all elements of claude/duration-group-construction-SFEJg to evaluate how this branch differs from the main branch, evaluating the various advantages and costs for all differences.
+
+**Findings**: Branch already merged (commit 2ca7425d). Key changes: 4 new Lean files, axiom-based resolution for reflexive MCS obstacle, CantorApplication sorries 8+ -> 0 via axiom. Net improvement: proof debt reduced, architecture cleaner.
 
 ---
 
