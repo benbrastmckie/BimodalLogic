@@ -46,9 +46,9 @@ without the full semantic machinery. Useful for debugging and display.
 -/
 structure SimpleCountermodel where
   /-- Atoms that are true. -/
-  trueAtoms : List String
+  trueAtoms : List Atom
   /-- Atoms that are false. -/
-  falseAtoms : List String
+  falseAtoms : List Atom
   /-- The formula being refuted. -/
   formula : Formula
   deriving Repr
@@ -61,7 +61,7 @@ structure SimpleCountermodel where
 Extract the set of atoms that should be true from a saturated branch.
 An atom is true if T(atom) appears in the branch.
 -/
-def extractTrueAtoms (b : Branch) : List String :=
+def extractTrueAtoms (b : Branch) : List Atom :=
   b.filterMap fun sf =>
     match sf.sign, sf.formula with
     | .pos, .atom p => some p
@@ -71,7 +71,7 @@ def extractTrueAtoms (b : Branch) : List String :=
 Extract the set of atoms that should be false from a saturated branch.
 An atom is false if F(atom) appears in the branch.
 -/
-def extractFalseAtoms (b : Branch) : List String :=
+def extractFalseAtoms (b : Branch) : List Atom :=
   b.filterMap fun sf =>
     match sf.sign, sf.formula with
     | .neg, .atom p => some p
@@ -101,10 +101,13 @@ def SimpleCountermodel.isConsistent (cm : SimpleCountermodel) : Bool :=
 Display a simple countermodel as a string.
 -/
 def SimpleCountermodel.display (cm : SimpleCountermodel) : String :=
+  let atomToStr (a : Atom) : String := match a.fresh_index with
+    | none => a.base
+    | some n => s!"{a.base}_{n}"
   let trueStr := if cm.trueAtoms.isEmpty then "none"
-                 else String.intercalate ", " cm.trueAtoms
+                 else String.intercalate ", " (cm.trueAtoms.map atomToStr)
   let falseStr := if cm.falseAtoms.isEmpty then "none"
-                  else String.intercalate ", " cm.falseAtoms
+                  else String.intercalate ", " (cm.falseAtoms.map atomToStr)
   s!"Countermodel for {repr cm.formula}:\n  True atoms: {trueStr}\n  False atoms: {falseStr}"
 
 /-!
