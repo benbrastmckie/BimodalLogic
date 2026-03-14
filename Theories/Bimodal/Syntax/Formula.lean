@@ -1,6 +1,4 @@
-import Mathlib.Tactic.DeriveCountable
-import Mathlib.Data.Countable.Basic
-import Mathlib.Logic.Equiv.List
+import Bimodal.Syntax.Atom
 
 /-!
 # Formula - Syntax for Bimodal Logic TM
@@ -25,7 +23,8 @@ combining S5 modal logic with linear temporal logic.
 
 ## Implementation Notes
 
-- Atoms are represented as strings for simplicity (user responsibility to ensure validity)
+- Atoms are represented as `Atom` (structured type with base string and optional fresh index)
+- This enables freshness: for any finite set of atoms, there exists an atom not in the set
 - Bot (⊥) is primitive; negation is derived via implication
 - Box (□) is primitive; diamond (◇) is derived via De Morgan duality
 - `all_past` and `all_future` are primitive temporal operators
@@ -48,24 +47,6 @@ Use method syntax: `φ.all_past`, `φ.some_future`, etc.
 
 namespace Bimodal.Syntax
 
-/-!
-## Countability Prerequisites
-
-We need `Countable Char` and `Countable String` instances before Formula can derive Countable.
--/
-
-/-- Char is countable via injection into Nat. -/
-instance : Countable Char := by
-  have h : Function.Injective Char.toNat := by
-    intro c1 c2 heq
-    rw [← Char.ofNat_toNat c1, ← Char.ofNat_toNat c2, heq]
-  exact Function.Injective.countable h
-
-/-- String is countable via injection into List Char. -/
-instance : Countable String := by
-  have h : Function.Injective String.toList := fun _ _ => String.toList_injective
-  exact Function.Injective.countable h
-
 /--
 Formula type for bimodal logic TM.
 
@@ -84,7 +65,7 @@ names (`all_past`, `all_future`) and concise DSL notation (`H`, `G`).
 -/
 inductive Formula : Type where
   /-- Propositional atom (variable) -/
-  | atom : String → Formula
+  | atom : Atom → Formula
   /-- Bottom (⊥, falsum, contradiction) -/
   | bot : Formula
   /-- Implication (φ → ψ) -/
@@ -98,6 +79,10 @@ inductive Formula : Type where
   deriving Repr, DecidableEq, BEq, Hashable, Countable
 
 namespace Formula
+
+/-- Create an atom formula from a string (backward compatibility helper).
+    Uses `Atom.mk_base` to create a base atom with no fresh index. -/
+def atom_s (s : String) : Formula := atom (Atom.mk_base s)
 
 /--
 Structural complexity of a formula (number of connectives + 1).
@@ -136,7 +121,7 @@ private theorem beq_all_future_eq (a b : Formula) :
 /-- BEq on Formula is reflexive. -/
 theorem beq_refl (φ : Formula) : (φ == φ) = true := by
   induction φ with
-  | atom p => exact @beq_self_eq_true String _ _ p
+  | atom p => exact @beq_self_eq_true Atom _ _ p
   | bot => native_decide
   | imp a b iha ihb => rw [beq_imp_eq, iha, ihb]; rfl
   | box a ih => rw [beq_box_eq, ih]
@@ -477,7 +462,7 @@ def needsPositiveHypotheses : Formula → Bool
   | Formula.imp _ _ => false  -- All imp cases
   | _ => true  -- atom, bot, box, G, H
 
-@[simp] lemma needsPositiveHypotheses_atom (s : String) :
+@[simp] lemma needsPositiveHypotheses_atom (s : Atom) :
     (Formula.atom s).needsPositiveHypotheses = true := rfl
 
 @[simp] lemma needsPositiveHypotheses_bot :
@@ -503,7 +488,7 @@ Used for freshness conditions in the IRR (Irreflexivity) rule.
 -/
 
 /-- The set of propositional atoms appearing in a formula. -/
-def atoms : Formula → Finset String
+def atoms : Formula → Finset Atom
   | atom s => {s}
   | bot => ∅
   | imp φ ψ => φ.atoms ∪ ψ.atoms

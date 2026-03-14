@@ -111,7 +111,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Update Formula.lean [NOT STARTED]
+### Phase 2: Update Formula.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Change Formula to use Atom instead of String

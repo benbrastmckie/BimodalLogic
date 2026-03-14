@@ -74,6 +74,38 @@ structure Atom where
   fresh_index : Option Nat
   deriving Repr, DecidableEq, BEq, Hashable
 
+/-!
+## BEq instances for Atom
+
+We need ReflBEq and LawfulBEq instances for Atom to enable Formula's LawfulBEq.
+-/
+
+/-- BEq on Atom is reflexive. -/
+theorem Atom.beq_refl (a : Atom) : (a == a) = true := by
+  cases a with
+  | mk base idx =>
+    show (base == base && idx == idx) = true
+    simp only [beq_self_eq_true, Bool.and_self]
+
+instance : ReflBEq Atom where
+  rfl := Atom.beq_refl _
+
+/-- BEq on Atom is injective: if `a == b = true` then `a = b`. -/
+theorem Atom.eq_of_beq {a b : Atom} (h : (a == b) = true) : a = b := by
+  cases a with
+  | mk base1 idx1 =>
+    cases b with
+    | mk base2 idx2 =>
+      change (base1 == base2 && idx1 == idx2) = true at h
+      simp only [Bool.and_eq_true] at h
+      have hbase : base1 = base2 := beq_iff_eq.mp h.1
+      have hidx : idx1 = idx2 := beq_iff_eq.mp h.2
+      simp [hbase, hidx]
+
+instance : LawfulBEq Atom where
+  eq_of_beq := Atom.eq_of_beq
+  rfl := Atom.beq_refl _
+
 namespace Atom
 
 /-- Create a base atom from a string (no fresh index). -/
