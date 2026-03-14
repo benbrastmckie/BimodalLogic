@@ -27,13 +27,13 @@
     {
       "project_number": 964,
       "project_name": "resolve_atom_type_freshness_debt",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "description": "Archive the unused canonicalR_irreflexive axiom and clean up related code, maintaining irreflexive semantics. Research confirmed: (1) the axiom cannot be proven without T-axiom, which would break density proofs; (2) the axiom is UNUSED in the completeness chain - irreflexivity is already obtained via strict < on CanonicalMCS preorder; (3) reflexive refactoring would introduce 5+ blockers with 87-167h effort and HIGH risk. Action: archive CanonicalIrreflexivityAxiom.lean and CanonicalIrreflexivity.lean to Boneyard, update docstrings to clarify irreflexivity source, remove any dead imports.",
       "created": "2026-03-14T01:00:00Z",
-      "last_updated": "2026-03-14T22:15:53Z",
-      "session_id": "sess_1773526251_02406d",
+      "last_updated": "2026-03-14T22:18:16Z",
+      "session_id": "sess_1773526673_48dd46",
       "artifacts": [
         {
           "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-001.md",
