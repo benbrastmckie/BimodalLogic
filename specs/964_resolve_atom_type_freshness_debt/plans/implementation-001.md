@@ -212,7 +212,31 @@ After this implementation:
 
 ---
 
-### Phase 6: Complete CanonicalIrreflexivity Proof [IN PROGRESS]
+### Phase 6: Complete CanonicalIrreflexivity Proof [BLOCKED]
+
+**Blocker Analysis (2026-03-14):**
+The existing proof in CanonicalIrreflexivity.lean is 1360+ lines with intricate
+infrastructure designed specifically for String atoms. It cannot be simply updated
+to use Atom - the proof structure itself relies on String-specific theorems like
+`Finset_String_not_univ` and uses pattern matching/projections incompatible with Atom.
+
+A complete rewrite is required, which is beyond the scope of a single implementation phase.
+The proof requires:
+1. Reimplementing all helper theorems for Atom type
+2. Replacing `Finset_String_not_univ` with `Atom.exists_fresh`
+3. Rewriting ~40 proofs that use String-specific operations
+4. The naming set construction (~500 lines)
+5. The MCS extension argument (~400 lines)
+
+**Recommended next steps:**
+- Split Phase 6 into a separate task for proof rewrite
+- Or: Keep axiom for now, document that Atom type enables future proof
+
+**What was accomplished:**
+- Phases 1-5 completed successfully
+- Atom type defined with Infinite instance and exists_fresh theorem
+- All Formula, Semantics, ProofSystem, Examples updated to use Atom
+- Full project builds successfully (743 jobs)
 
 - **Dependencies:** Phase 5
 - **Goal:** Complete the sorried proof using freshness

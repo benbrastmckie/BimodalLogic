@@ -1,12 +1,20 @@
 {
-  "status": "in_progress",
+  "status": "partial",
   "started_at": "2026-03-14T10:00:00Z",
-  "artifacts": [],
+  "requires_user_review": true,
+  "review_reason": "Phase 6 blocked: CanonicalIrreflexivity.lean requires complete rewrite (1360+ lines) to use Atom type. Recommend creating follow-up task 965 for proof rewrite.",
+  "artifacts": [
+    "specs/964_resolve_atom_type_freshness_debt/summaries/implementation-summary-20260314.md"
+  ],
   "partial_progress": {
-    "stage": "phase_6_in_progress",
-    "details": "Phases 1-5 completed. Working on Phase 6: CanonicalIrreflexivity proof. File needs complete rewrite since proof structure was for String atoms.",
+    "stage": "phase_6_blocked",
+    "details": "Phases 1-5 completed. Atom type infrastructure established throughout codebase. Phase 6 blocked due to proof complexity.",
     "phases_completed": 5,
     "phases_total": 8
+  },
+  "completion_data": {
+    "completion_summary": "Introduced Atom type with freshness support across entire codebase (16 files modified). Phases 1-5 completed: Atom type definition, Formula/Semantics/ProofSystem/Examples updates. Phase 6 (proof rewrite) blocked due to complexity of existing 1360-line proof.",
+    "roadmap_items": []
   },
   "metadata": {
     "session_id": "sess_1773513290_ngiqpj",
