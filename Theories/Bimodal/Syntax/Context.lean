@@ -45,10 +45,10 @@ Used in the derivability relation `Γ ⊢ φ` where `Γ` is a context of assumpt
 example : Context := []
 
 -- Single formula context
-example : Context := [Formula.atom "p"]
+example : Context := [Formula.atom_s "p"]
 
 -- Multiple formulas
-example : Context := [Formula.atom "p", Formula.atom "q", Formula.bot]
+example : Context := [Formula.atom_s "p", Formula.atom_s "q", Formula.bot]
 ```
 -/
 abbrev Context := List Formula
@@ -65,11 +65,11 @@ This is used in inference rules like:
 ## Examples
 
 ```lean
-Context.map Formula.box [Formula.atom "p", Formula.atom "q"] =
-  [Formula.box (Formula.atom "p"), Formula.box (Formula.atom "q")]
+Context.map Formula.box [Formula.atom_s "p", Formula.atom_s "q"] =
+  [Formula.box (Formula.atom_s "p"), Formula.box (Formula.atom_s "q")]
 
-Context.map Formula.all_future [Formula.atom "p"] =
-  [Formula.all_future (Formula.atom "p")]
+Context.map Formula.all_future [Formula.atom_s "p"] =
+  [Formula.all_future (Formula.atom_s "p")]
 ```
 
 ## Performance
@@ -86,7 +86,7 @@ Check if a context is empty.
 
 ```lean
 isEmpty [] = true
-isEmpty [Formula.atom "p"] = false
+isEmpty [Formula.atom_s "p"] = false
 ```
 -/
 def isEmpty : Context → Bool
@@ -99,7 +99,7 @@ Create a context containing a single formula.
 ## Examples
 
 ```lean
-singleton (Formula.atom "p") = [Formula.atom "p"]
+singleton (Formula.atom_s "p") = [Formula.atom_s "p"]
 ```
 -/
 def singleton (φ : Formula) : Context := [φ]

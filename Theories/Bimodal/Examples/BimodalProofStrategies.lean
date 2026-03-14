@@ -630,9 +630,9 @@ Example: Physical laws are perpetual
 possible worlds), then it holds at all times (past, present, future).
 This is P1 applied to a physical law.
 -/
-example : ⊢ (Formula.atom "conservation_of_energy").box.imp
-    (Formula.atom "conservation_of_energy").always := by
-  exact perpetuity_1 (Formula.atom "conservation_of_energy")
+example : ⊢ (Formula.atom_s "conservation_of_energy").box.imp
+    (Formula.atom_s "conservation_of_energy").always := by
+  exact perpetuity_1 (Formula.atom_s "conservation_of_energy")
 
 /--
 Example: Mathematical truths persist to the future
@@ -640,9 +640,9 @@ Example: Mathematical truths persist to the future
 **Intuition**: If a mathematical fact is necessary, it will always be true
 in the future. This demonstrates `box_to_future`.
 -/
-example : ⊢ (Formula.atom "pythagorean_theorem").box.imp
-    (Formula.atom "pythagorean_theorem").all_future := by
-  exact box_to_future (Formula.atom "pythagorean_theorem")
+example : ⊢ (Formula.atom_s "pythagorean_theorem").box.imp
+    (Formula.atom_s "pythagorean_theorem").all_future := by
+  exact box_to_future (Formula.atom_s "pythagorean_theorem")
 
 /--
 Example: Logical laws were always true
@@ -650,9 +650,9 @@ Example: Logical laws were always true
 **Intuition**: If a logical law is necessary, it was always true in the past.
 This demonstrates `box_to_past` via temporal duality.
 -/
-example : ⊢ (Formula.atom "law_of_excluded_middle").box.imp
-    (Formula.atom "law_of_excluded_middle").all_past := by
-  exact box_to_past (Formula.atom "law_of_excluded_middle")
+example : ⊢ (Formula.atom_s "law_of_excluded_middle").box.imp
+    (Formula.atom_s "law_of_excluded_middle").all_past := by
+  exact box_to_past (Formula.atom_s "law_of_excluded_middle")
 
 /--
 Example: Necessary truths are necessarily always true
@@ -660,9 +660,9 @@ Example: Necessary truths are necessarily always true
 **Intuition**: If something is metaphysically necessary, then it's necessary
 that it holds at all times. This is P3 applied concretely.
 -/
-example : ⊢ (Formula.atom "identity_of_indiscernibles").box.imp
-    (Formula.atom "identity_of_indiscernibles").always.box := by
-  exact perpetuity_3 (Formula.atom "identity_of_indiscernibles")
+example : ⊢ (Formula.atom_s "identity_of_indiscernibles").box.imp
+    (Formula.atom_s "identity_of_indiscernibles").always.box := by
+  exact perpetuity_3 (Formula.atom_s "identity_of_indiscernibles")
 
 /--
 Example: Sometimes happening implies possibility
@@ -670,9 +670,9 @@ Example: Sometimes happening implies possibility
 **Intuition**: If an event occurred at some time (past, present, or future),
 then that event is possible. This is P2 applied concretely.
 -/
-example : ⊢ (Formula.atom "lunar_eclipse").sometimes.imp
-    (Formula.atom "lunar_eclipse").diamond := by
-  exact perpetuity_2 (Formula.atom "lunar_eclipse")
+example : ⊢ (Formula.atom_s "lunar_eclipse").sometimes.imp
+    (Formula.atom_s "lunar_eclipse").diamond := by
+  exact perpetuity_2 (Formula.atom_s "lunar_eclipse")
 
 /-!
 ## Summary of Bimodal Proof Strategies

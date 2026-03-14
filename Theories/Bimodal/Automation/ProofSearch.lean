@@ -551,8 +551,8 @@ This function applies the box operator to every formula in the context.
 **Complexity**: O(n) where n is the size of the context
 
 **Examples**:
-- `box_context [Formula.atom "p", Formula.atom "q"]` returns
-  `[Formula.box (Formula.atom "p"), Formula.box (Formula.atom "q")]`
+- `box_context [Formula.atom_s "p", Formula.atom_s "q"]` returns
+  `[Formula.box (Formula.atom_s "p"), Formula.box (Formula.atom_s "q")]`
 -/
 def box_context (Γ : Context) : Context :=
   Γ.map Formula.box
@@ -571,8 +571,8 @@ This function applies the all_future operator to every formula in the context.
 **Complexity**: O(n) where n is the size of the context
 
 **Examples**:
-- `future_context [Formula.atom "p", Formula.atom "q"]` returns
-  `[Formula.all_future (Formula.atom "p"), Formula.all_future (Formula.atom "q")]`
+- `future_context [Formula.atom_s "p", Formula.atom_s "q"]` returns
+  `[Formula.all_future (Formula.atom_s "p"), Formula.all_future (Formula.atom_s "q")]`
 -/
 def future_context (Γ : Context) : Context :=
   Γ.map Formula.all_future
@@ -1344,7 +1344,7 @@ These examples illustrate how proof search would work once implemented.
 -/
 
 /-- Example: Trivial search finds axiom immediately -/
-example : ∃ (proof : DerivationTree [] ((Formula.atom "p").box.imp (Formula.atom "p"))), True :=
+example : ∃ (proof : DerivationTree [] ((Formula.atom_s "p").box.imp (Formula.atom_s "p"))), True :=
   sorry  -- Would use: let proof := bounded_search [] _ 1
 
 /-- Example: Search with depth 2 for modus ponens application -/

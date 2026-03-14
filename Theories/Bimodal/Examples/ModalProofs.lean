@@ -67,8 +67,8 @@ then it is true in the actual world.
 -/
 
 /-- Axiom T on atomic formula -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") :=
-  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "p"))
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") :=
+  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "p"))
 
 /-- Axiom T on implication -/
 example (p q : Formula) : ⊢ (p.imp q).box.imp (p.imp q) :=
@@ -79,8 +79,8 @@ example (φ : Formula) : ⊢ φ.box.box.imp φ.box :=
   DerivationTree.axiom [] _ (Axiom.modal_t φ.box)
 
 /-- Axiom T demonstrates that necessity implies truth -/
-example : ⊢ (Formula.atom "necessary").box.imp (Formula.atom "necessary") :=
-  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "necessary"))
+example : ⊢ (Formula.atom_s "necessary").box.imp (Formula.atom_s "necessary") :=
+  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "necessary"))
 
 /-!
 ## Axiom 4: Transitivity (`□φ → □□φ`)
@@ -90,8 +90,8 @@ This expresses that the accessibility relation is transitive.
 -/
 
 /-- Axiom 4 on atomic formula -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").box.box :=
-  DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom "p"))
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box :=
+  DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "p"))
 
 /-- Axiom 4 on complex formula -/
 example (p q : Formula) : ⊢ (p.and q).box.imp (p.and q).box.box :=
@@ -102,8 +102,8 @@ example (φ : Formula) : ⊢ φ.neg.box.imp φ.neg.box.box :=
   DerivationTree.axiom [] _ (Axiom.modal_4 φ.neg)
 
 /-- Axiom 4 demonstrates positive introspection -/
-example : ⊢ (Formula.atom "known").box.imp (Formula.atom "known").box.box :=
-  DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom "known"))
+example : ⊢ (Formula.atom_s "known").box.imp (Formula.atom_s "known").box.box :=
+  DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "known"))
 
 /-!
 ## Axiom B: Symmetry (`φ → □◇φ`)
@@ -113,8 +113,8 @@ This expresses that the accessibility relation is symmetric.
 -/
 
 /-- Axiom B on atomic formula -/
-example : ⊢ (Formula.atom "p").imp (Formula.atom "p").diamond.box :=
-  DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom "p"))
+example : ⊢ (Formula.atom_s "p").imp (Formula.atom_s "p").diamond.box :=
+  DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom_s "p"))
 
 /-- Axiom B on implication -/
 example (p q : Formula) : ⊢ (p.imp q).imp (p.imp q).diamond.box :=
@@ -126,8 +126,8 @@ example (φ : Formula) : ⊢ φ.imp φ.diamond.box := by
   exact DerivationTree.axiom [] _ (Axiom.modal_b φ)
 
 /-- Axiom B demonstrates negative introspection -/
-example : ⊢ (Formula.atom "actual").imp (Formula.atom "actual").diamond.box :=
-  DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom "actual"))
+example : ⊢ (Formula.atom_s "actual").imp (Formula.atom_s "actual").diamond.box :=
+  DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom_s "actual"))
 
 /-!
 ## Propositional Axioms K and S
@@ -277,16 +277,16 @@ Clear examples for learning modal logic concepts.
 -/
 
 /-- Example: Something necessarily true is true -/
-example : ⊢ (Formula.atom "2+2=4").box.imp (Formula.atom "2+2=4") :=
-  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom "2+2=4"))
+example : ⊢ (Formula.atom_s "2+2=4").box.imp (Formula.atom_s "2+2=4") :=
+  DerivationTree.axiom [] _ (Axiom.modal_t (Formula.atom_s "2+2=4"))
 
 /-- Example: Mathematical truths are necessarily necessary -/
-example : ⊢ (Formula.atom "prime_infinity").box.imp (Formula.atom "prime_infinity").box.box :=
-  DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom "prime_infinity"))
+example : ⊢ (Formula.atom_s "prime_infinity").box.imp (Formula.atom_s "prime_infinity").box.box :=
+  DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "prime_infinity"))
 
 /-- Example: Actual facts are necessarily possible -/
-example : ⊢ (Formula.atom "I_exist").imp (Formula.atom "I_exist").diamond.box :=
-  DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom "I_exist"))
+example : ⊢ (Formula.atom_s "I_exist").imp (Formula.atom_s "I_exist").diamond.box :=
+  DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom_s "I_exist"))
 
 /-!
 ## Automated Proof Search
@@ -297,15 +297,15 @@ modal K distribution, and modus ponens applications.
 -/
 
 /-- Automated proof of modal T axiom using modal_search -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") := by
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
   modal_search
 
 /-- Automated proof of modal 4 axiom using modal_search -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").box.box := by
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box := by
   modal_search
 
 /-- Automated proof of modal B axiom using modal_search -/
-example : ⊢ (Formula.atom "p").imp (Formula.atom "p").diamond.box := by
+example : ⊢ (Formula.atom_s "p").imp (Formula.atom_s "p").diamond.box := by
   modal_search
 
 /-- Automated proof of modal K distribution using modal_search -/

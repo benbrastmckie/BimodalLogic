@@ -472,9 +472,9 @@ Example: Physical law persists into future
 **Intuition**: If a physical law holds at all future times, it holds at all
 times in the future of any future time. This demonstrates T4.
 -/
-example : ⊢ (Formula.atom "gravity_law").all_future.imp
-             (Formula.atom "gravity_law").all_future.all_future := by
-  exact DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom "gravity_law"))
+example : ⊢ (Formula.atom_s "gravity_law").all_future.imp
+             (Formula.atom_s "gravity_law").all_future.all_future := by
+  exact DerivationTree.axiom [] _ (Axiom.temp_4 (Formula.atom_s "gravity_law"))
 
 /--
 Example: Historical event remembered in future
@@ -482,9 +482,9 @@ Example: Historical event remembered in future
 **Intuition**: If an event happened, then at all future times, there exists
 a past time when it happened. This demonstrates TA.
 -/
-example : ⊢ (Formula.atom "moon_landing").imp
-             (Formula.atom "moon_landing").some_past.all_future := by
-  exact DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom "moon_landing"))
+example : ⊢ (Formula.atom_s "moon_landing").imp
+             (Formula.atom_s "moon_landing").some_past.all_future := by
+  exact DerivationTree.axiom [] _ (Axiom.temp_a (Formula.atom_s "moon_landing"))
 
 /--
 Example: Eternal truth is remembered
@@ -493,9 +493,9 @@ Example: Eternal truth is remembered
 then at all future times, it has always been true in the past.
 This demonstrates TL.
 -/
-example : ⊢ (Formula.atom "2+2=4").always.imp
-             (Formula.atom "2+2=4").all_past.all_future := by
-  exact DerivationTree.axiom [] _ (Axiom.temp_l (Formula.atom "2+2=4"))
+example : ⊢ (Formula.atom_s "2+2=4").always.imp
+             (Formula.atom_s "2+2=4").all_past.all_future := by
+  exact DerivationTree.axiom [] _ (Axiom.temp_l (Formula.atom_s "2+2=4"))
 
 /--
 Example: Past theorem from future theorem via duality
@@ -503,10 +503,10 @@ Example: Past theorem from future theorem via duality
 **Intuition**: If we can prove a theorem about the future, we can derive
 the corresponding theorem about the past using temporal duality.
 -/
-example : ⊢ (Formula.atom "conservation_law").all_past.imp
-             (Formula.atom "conservation_law").all_past.all_past := by
+example : ⊢ (Formula.atom_s "conservation_law").all_past.imp
+             (Formula.atom_s "conservation_law").all_past.all_past := by
   -- Use involution to prepare for duality
-  let φ := Formula.atom "conservation_law"
+  let φ := Formula.atom_s "conservation_law"
   -- Get T4 for swap_temporal φ
   have future_version : ⊢ φ.swap_temporal.all_future.imp
                            φ.swap_temporal.all_future.all_future :=

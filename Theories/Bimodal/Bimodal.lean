@@ -36,7 +36,7 @@ open Bimodal.ProofSystem
 open Bimodal.Automation
 
 -- Define a formula
-def my_formula : Formula := Formula.box (Formula.atom "p")
+def my_formula : Formula := Formula.box (Formula.atom_s "p")
 
 -- Prove a theorem
 example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by

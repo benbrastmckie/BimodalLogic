@@ -1,33 +1,17 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/964_resolve_atom_type_freshness_debt/plans/implementation-001.md",
-      "summary": "8-phase implementation plan for atom type freshness debt resolution"
-    }
-  ],
-  "next_steps": "Run /implement 964 to execute the plan",
+  "status": "in_progress",
+  "started_at": "2026-03-14T10:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context and reading plan",
+    "phases_completed": 0,
+    "phases_total": 8
+  },
   "metadata": {
-    "session_id": "sess_1773513012_1ambjn",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1773513290_ngiqpj",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 8,
-    "estimated_hours": 14,
-    "research_integrated": true,
-    "reports_integrated": [
-      {
-        "path": "reports/research-001.md",
-        "integrated_in_plan_version": 1,
-        "integrated_date": "2026-03-14"
-      },
-      {
-        "path": "reports/research-002.md",
-        "integrated_in_plan_version": 1,
-        "integrated_date": "2026-03-14"
-      }
-    ]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
   }
 }

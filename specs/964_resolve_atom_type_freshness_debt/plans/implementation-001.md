@@ -185,7 +185,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Update Proof System and Examples [NOT STARTED]
+### Phase 5: Update Proof System and Examples [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Update proof system modules and example files

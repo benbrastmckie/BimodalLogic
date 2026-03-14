@@ -442,8 +442,8 @@ Example: Mathematical necessity chain
 **Intuition**: If mathematical facts are necessary, they are necessarily necessary.
 This demonstrates M4 with a concrete example.
 -/
-example : ⊢ (Formula.atom "2+2=4").box.imp (Formula.atom "2+2=4").box.box := by
-  exact DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom "2+2=4"))
+example : ⊢ (Formula.atom_s "2+2=4").box.imp (Formula.atom_s "2+2=4").box.box := by
+  exact DerivationTree.axiom [] _ (Axiom.modal_4 (Formula.atom_s "2+2=4"))
 
 /--
 Example: Logical truth is necessarily possible
@@ -451,9 +451,9 @@ Example: Logical truth is necessarily possible
 **Intuition**: True statements are necessarily possible (Brouwer B axiom).
 This demonstrates MB with a concrete example.
 -/
-example : ⊢ (Formula.atom "law_of_identity").imp
-    (Formula.atom "law_of_identity").diamond.box := by
-  exact DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom "law_of_identity"))
+example : ⊢ (Formula.atom_s "law_of_identity").imp
+    (Formula.atom_s "law_of_identity").diamond.box := by
+  exact DerivationTree.axiom [] _ (Axiom.modal_b (Formula.atom_s "law_of_identity"))
 
 /--
 Example: Necessitation of theorems
@@ -461,9 +461,9 @@ Example: Necessitation of theorems
 **Intuition**: If something is a theorem (provable), it's necessarily true.
 This demonstrates the necessitation pattern.
 -/
-example : ⊢ ((Formula.atom "theorem").imp (Formula.atom "theorem")).box := by
-  have h : ⊢ (Formula.atom "theorem").imp (Formula.atom "theorem") :=
-    identity (Formula.atom "theorem")
+example : ⊢ ((Formula.atom_s "theorem").imp (Formula.atom_s "theorem")).box := by
+  have h : ⊢ (Formula.atom_s "theorem").imp (Formula.atom_s "theorem") :=
+    identity (Formula.atom_s "theorem")
   exact DerivationTree.necessitation _ h
 
 /-!

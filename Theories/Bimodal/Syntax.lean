@@ -48,15 +48,15 @@ import Bimodal.Syntax
 open Bimodal.Syntax
 
 -- Build formulas using constructors
-def necessity_p : Formula := Formula.box (Formula.atom "p")
-def future_q : Formula := Formula.all_future (Formula.atom "q")
+def necessity_p : Formula := Formula.box (Formula.atom_s "p")
+def future_q : Formula := Formula.all_future (Formula.atom_s "q")
 
 -- Use method syntax for derived operators
-def possibly_p : Formula := (Formula.atom "p").diamond
-def always_p : Formula := (Formula.atom "p").always
+def possibly_p : Formula := (Formula.atom_s "p").diamond
+def always_p : Formula := (Formula.atom_s "p").always
 
 -- Contexts for derivations
-def assumptions : Context := [Formula.atom "p", Formula.atom "q"]
+def assumptions : Context := [Formula.atom_s "p", Formula.atom_s "q"]
 ```
 
 ## References

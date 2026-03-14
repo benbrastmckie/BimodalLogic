@@ -55,10 +55,10 @@ example (φ : Formula) : ⊢ φ.box.imp φ.always := perpetuity_1 φ
 example (φ : Formula) : ⊢ φ.box.imp (△φ) := perpetuity_1 φ
 
 /-- P1 applied to atomic formula (dot notation) -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").always := perpetuity_1 _
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").always := perpetuity_1 _
 
 /-- P1 applied to atomic formula (triangle notation) -/
-example : ⊢ (Formula.atom "p").box.imp (△(Formula.atom "p")) := perpetuity_1 _
+example : ⊢ (Formula.atom_s "p").box.imp (△(Formula.atom_s "p")) := perpetuity_1 _
 
 /-!
 ## P2: Sometimes Implies Possible
@@ -91,10 +91,10 @@ example (φ : Formula) : ⊢ φ.box.imp φ.always.box := perpetuity_3 φ
 example (φ : Formula) : ⊢ φ.box.imp (△φ).box := perpetuity_3 φ
 
 /-- P3 demonstrates modal-temporal nesting -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").always.box := perpetuity_3 _
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").always.box := perpetuity_3 _
 
 /-- P3 with triangle shows combined operators: □△p -/
-example : ⊢ (Formula.atom "p").box.imp (△(Formula.atom "p")).box := perpetuity_3 _
+example : ⊢ (Formula.atom_s "p").box.imp (△(Formula.atom_s "p")).box := perpetuity_3 _
 
 /-!
 ## P4: Possibility of Occurrence
@@ -209,15 +209,15 @@ proof discovery for modal-temporal interactions.
 -/
 
 /-- Automated proof of modal T axiom using modal_search -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p") := by
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p") := by
   modal_search
 
 /-- Automated proof of modal 4 axiom using modal_search -/
-example : ⊢ (Formula.atom "p").box.imp (Formula.atom "p").box.box := by
+example : ⊢ (Formula.atom_s "p").box.imp (Formula.atom_s "p").box.box := by
   modal_search
 
 /-- Automated proof of temporal T4 axiom using temporal_search -/
-example : ⊢ (Formula.atom "p").all_future.imp (Formula.atom "p").all_future.all_future := by
+example : ⊢ (Formula.atom_s "p").all_future.imp (Formula.atom_s "p").all_future.all_future := by
   temporal_search
 
 /-- Automated proof combining modal and temporal reasoning -/

@@ -64,16 +64,16 @@ open Bimodal.Semantics
 open Bimodal.Syntax
 
 -- Validity notation
-#check (⊨ Formula.atom "p" : Prop)  -- Not valid
+#check (⊨ Formula.atom_s "p" : Prop)  -- Not valid
 
 -- Semantic consequence
-#check ([Formula.atom "p"] ⊨ Formula.atom "p" : Prop)  -- Valid
+#check ([Formula.atom_s "p"] ⊨ Formula.atom_s "p" : Prop)  -- Valid
 
 -- Work with specific temporal type
 variable {F : TaskFrame Int} (M : TaskModel F) (τ : WorldHistory F)
 variable (t : Int) (ht : τ.domain t)
 
-#check truth_at M τ t ht (Formula.box (Formula.atom "p"))
+#check truth_at M τ t ht (Formula.box (Formula.atom_s "p"))
 ```
 
 ## References

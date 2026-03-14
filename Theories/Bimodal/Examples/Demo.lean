@@ -286,21 +286,21 @@ These formulas are theorems of TM logic. The decision procedure finds proofs.
 
 /-- Modal T axiom: □p → p (necessity implies truth) -/
 def formula_modal_t : Formula :=
-  (Formula.atom "p").box.imp (Formula.atom "p")
+  (Formula.atom_s "p").box.imp (Formula.atom_s "p")
 
 -- Uncomment to see decision result:
 -- #eval decide formula_modal_t
 
 /-- Classical tautology: p → p (identity) -/
 def formula_identity : Formula :=
-  (Formula.atom "p").imp (Formula.atom "p")
+  (Formula.atom_s "p").imp (Formula.atom_s "p")
 
 -- #eval decide formula_identity
 
 /-- Modal K distribution: □(p → q) → (□p → □q) -/
 def formula_modal_k : Formula :=
-  let p := Formula.atom "p"
-  let q := Formula.atom "q"
+  let p := Formula.atom_s "p"
+  let q := Formula.atom_s "q"
   (p.imp q).box.imp (p.box.imp q.box)
 
 -- #eval decide formula_modal_k
@@ -313,13 +313,13 @@ These formulas are NOT theorems. The decision procedure finds countermodels.
 
 /-- Converse of T is invalid: p → □p -/
 def formula_converse_t : Formula :=
-  (Formula.atom "p").imp (Formula.atom "p").box
+  (Formula.atom_s "p").imp (Formula.atom_s "p").box
 
 -- #eval decide formula_converse_t  -- Should be invalid
 
 /-- Not everything possible is actual: ◇p → p -/
 def formula_possibility_to_actuality : Formula :=
-  (Formula.atom "p").diamond.imp (Formula.atom "p")
+  (Formula.atom_s "p").diamond.imp (Formula.atom_s "p")
 
 -- #eval decide formula_possibility_to_actuality  -- Should be invalid
 
@@ -351,7 +351,7 @@ def test_formulas : List Formula := [
 -- #eval isSatisfiable formula_converse_t
 
 -- Check if a formula is contingent (neither valid nor contradictory)
--- #eval isContingent (Formula.atom "p")
+-- #eval isContingent (Formula.atom_s "p")
 
 end DecisionProcedure
 
@@ -371,7 +371,7 @@ Physical laws are often considered necessary truths that hold at all times.
 -/
 
 /-- Conservation of energy: a necessary truth holds at all times -/
-def conservation_of_energy : Formula := Formula.atom "conservation_of_energy"
+def conservation_of_energy : Formula := Formula.atom_s "conservation_of_energy"
 
 /-- If conservation of energy is necessary, it holds at all times -/
 example : ⊢ conservation_of_energy.box.imp (△conservation_of_energy) :=
@@ -384,7 +384,7 @@ Events like eclipses illustrate temporal possibility.
 -/
 
 /-- A lunar eclipse is an event that happens sometimes -/
-def lunar_eclipse : Formula := Formula.atom "lunar_eclipse"
+def lunar_eclipse : Formula := Formula.atom_s "lunar_eclipse"
 
 /-- If an eclipse sometimes occurs, it is possible -/
 example : ⊢ (▽lunar_eclipse).imp lunar_eclipse.diamond :=
@@ -397,7 +397,7 @@ Mathematical truths are paradigmatic necessary truths.
 -/
 
 /-- Mathematical truth: 2 + 2 = 4 -/
-def two_plus_two_equals_four : Formula := Formula.atom "2+2=4"
+def two_plus_two_equals_four : Formula := Formula.atom_s "2+2=4"
 
 /-- Mathematical truths are necessarily eternal -/
 example : ⊢ two_plus_two_equals_four.box.imp (△two_plus_two_equals_four).box :=
@@ -410,7 +410,7 @@ Most everyday facts are contingent - they hold but could have been otherwise.
 -/
 
 /-- Rain is a contingent, temporal phenomenon -/
-def it_is_raining : Formula := Formula.atom "it_is_raining"
+def it_is_raining : Formula := Formula.atom_s "it_is_raining"
 
 /-- If it possibly rains sometime, rain is always possible -/
 noncomputable example : ⊢ (▽it_is_raining).diamond.imp (△(it_is_raining.diamond)) :=

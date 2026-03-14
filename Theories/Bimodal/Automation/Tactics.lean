@@ -33,7 +33,7 @@ bimodal logic system.
 
 ```lean
 -- Apply axiom by name
-example : ⊢ (Formula.box (Formula.atom "p")).imp (Formula.atom "p") := by
+example : ⊢ (Formula.box (Formula.atom_s "p")).imp (Formula.atom_s "p") := by
   apply_axiom modal_t
 
 -- Modal T application (automatic)
@@ -168,9 +168,9 @@ inference rules or axioms.
 
 ## Example
 ```lean
-#eval is_box_formula (Formula.box (Formula.atom "p"))  -- true
-#eval is_box_formula (Formula.atom "p")                -- false
-#eval is_box_formula (Formula.diamond (Formula.atom "p"))  -- false
+#eval is_box_formula (Formula.box (Formula.atom_s "p"))  -- true
+#eval is_box_formula (Formula.atom_s "p")                -- false
+#eval is_box_formula (Formula.diamond (Formula.atom_s "p"))  -- false
 ```
 -/
 def is_box_formula : Formula → Bool
@@ -195,9 +195,9 @@ inference rules or axioms.
 
 ## Example
 ```lean
-#eval is_future_formula (Formula.all_future (Formula.atom "p"))  -- true
-#eval is_future_formula (Formula.atom "p")                       -- false
-#eval is_future_formula (Formula.box (Formula.atom "p"))         -- false
+#eval is_future_formula (Formula.all_future (Formula.atom_s "p"))  -- true
+#eval is_future_formula (Formula.atom_s "p")                       -- false
+#eval is_future_formula (Formula.box (Formula.atom_s "p"))         -- false
 ```
 -/
 def is_future_formula : Formula → Bool
@@ -223,9 +223,9 @@ rules like modal T (`□φ → φ`) or modal 4 (`□φ → □□φ`).
 
 ## Example
 ```lean
-#eval extract_from_box (Formula.box (Formula.atom "p"))  -- some (Formula.atom "p")
-#eval extract_from_box (Formula.atom "p")                -- none
-#eval extract_from_box (Formula.diamond (Formula.atom "p"))  -- none
+#eval extract_from_box (Formula.box (Formula.atom_s "p"))  -- some (Formula.atom_s "p")
+#eval extract_from_box (Formula.atom_s "p")                -- none
+#eval extract_from_box (Formula.diamond (Formula.atom_s "p"))  -- none
 ```
 -/
 def extract_from_box : Formula → Option Formula
@@ -251,9 +251,9 @@ rules like temporal 4 (`Fφ → FFφ`) or temporal A (`φ → F(sometime_past φ
 
 ## Example
 ```lean
-#eval extract_from_future (Formula.all_future (Formula.atom "p"))  -- some (Formula.atom "p")
-#eval extract_from_future (Formula.atom "p")                       -- none
-#eval extract_from_future (Formula.box (Formula.atom "p"))         -- none
+#eval extract_from_future (Formula.all_future (Formula.atom_s "p"))  -- some (Formula.atom_s "p")
+#eval extract_from_future (Formula.atom_s "p")                       -- none
+#eval extract_from_future (Formula.box (Formula.atom_s "p"))         -- none
 ```
 -/
 def extract_from_future : Formula → Option Formula

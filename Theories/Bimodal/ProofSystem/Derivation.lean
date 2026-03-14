@@ -146,7 +146,7 @@ inductive DerivationTree : Context → Formula → Type where
   This rule is sound on irreflexive frames because at any time t in an
   irreflexive order, we can always find a valuation making p true only at t.
   -/
-  | irr (p : String) (φ : Formula)
+  | irr (p : Atom) (φ : Formula)
       (h_fresh : p ∉ φ.atoms)
       (d : DerivationTree []
         ((Formula.and (Formula.atom p)
@@ -290,7 +290,7 @@ Example: Modal T axiom is a theorem.
 
 `⊢ □p → p` for any propositional variable p.
 -/
-example (p : String) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by
+example (p : Atom) : ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by
   apply DerivationTree.axiom
   apply Axiom.modal_t
 
@@ -321,7 +321,7 @@ Example: Weakening allows adding assumptions.
 If we can derive `□p → p` from empty context,
 we can also derive it with extra assumptions.
 -/
-example (p : String) (ψ : Formula) : [ψ] ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by
+example (p : Atom) (ψ : Formula) : [ψ] ⊢ (Formula.box (Formula.atom p)).imp (Formula.atom p) := by
   apply DerivationTree.weakening (Γ := [])
   · apply DerivationTree.axiom
     apply Axiom.modal_t
