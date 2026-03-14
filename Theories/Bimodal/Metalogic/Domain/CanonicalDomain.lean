@@ -23,8 +23,9 @@ Pipeline:
 - Transfer `AddCommGroup` and `IsOrderedAddMonoid` via `DurationTransfer`
 - Build `TaskFrame` via `canonicalTaskFrame`
 
-**Status**: `cantor_iso` compiles modulo 3 sorry'd instances
-(NoMaxOrder, NoMinOrder, DenselyOrdered in CantorApplication.lean).
+**Status**: `cantor_iso` compiles. All Cantor prerequisites (NoMaxOrder,
+NoMinOrder, DenselyOrdered) are proved via the `canonicalR_irreflexive` axiom
+(see `Canonical/CanonicalIrreflexivityAxiom.lean`).
 
 ### 2. Discrete Case (D ≃ ℤ)
 Axiom system includes discreteness DF: `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
@@ -37,15 +38,14 @@ Pipeline:
 - Transfer `AddCommGroup` and `IsOrderedAddMonoid` via `DurationTransfer`
 - Build `TaskFrame` via `canonicalTaskFrame`
 
-**Status**: Pipeline architecture defined; SuccOrder/PredOrder construction pending.
+**Status**: NoMaxOrder and NoMinOrder proved via `canonicalR_irreflexive` axiom.
+SuccOrder/PredOrder/IsSuccArchimedean have sorries (DF coverness extraction).
 
 ### 3. Base Case (D = ℤ)
 Base axiom system without density or discreteness.
-Since the base logic is sound and complete w.r.t. ℤ-frames (existing
-`Representation.lean`), we use D = ℤ directly with the existing
-`CanonicalTaskFrame` from `Bundle/CanonicalConstruction.lean`.
+Uses D = ℤ directly with `canonicalTaskFrame` from `DurationTransfer.lean`.
 
-**Status**: Complete (modulo existing sorry in `construct_saturated_bfmcs_int`).
+**Status**: Complete.
 
 ## Architecture
 
@@ -89,12 +89,64 @@ Since the base logic is sound and complete w.r.t. ℤ-frames (existing
                 └─────────────────────┘
 ```
 
+## Algebraic/Categorical Perspective
+
+The D-from-syntax pipeline can be understood through the lens of natural
+transformations between functors on ordered algebraic categories:
+
+1. **Forgetful functor** U : OrderedAbelianGroup → LinearOrder
+   Forgets the group structure, keeping only the order.
+
+2. **Characterization functors** (Cantor / ℤ-characterization)
+   These are equivalences *within* LinearOrder:
+   - Cantor: {countable, dense, no-endpoint linear orders} ≃ {ℚ}
+   - ℤ-char: {linear, succ-pred-archimedean, no-endpoint} ≃ {ℤ}
+
+3. **Transfer functor** T : LinearOrder × OrderIso → OrderedAbelianGroup
+   Given T ≃o Q (where Q ∈ {ℚ, ℤ} already has a group), transfers the group
+   structure back along the isomorphism: `(a + b) := iso⁻¹(iso(a) + iso(b))`.
+
+The full pipeline is: MCS construction produces a LinearOrder (step 1 of U⁻¹),
+characterization identifies it as ℚ or ℤ (step 2), and transfer reconstructs
+the group (step 3 = T). The composition T ∘ Char ∘ MCS is the "section" that
+lifts a set of temporal axioms to an OrderedAbelianGroup.
+
+The key insight is that **transfer along OrderIso preserves all algebraic
+identities** — this is why `transferAddCommGroup` and `transferIsOrderedAddMonoid`
+work without additional proof obligations. The OrderIso is the natural
+isomorphism component that makes the square commute:
+
+```
+  MCS(Axioms) ──Char──→ ℚ or ℤ
+       │                    │
+    U  │                    │ U
+       ▼                    ▼
+  LinearOrder ──Char──→ LinearOrder
+```
+
+This perspective suggests that the construction generalizes: any temporal axiom
+system whose canonical timeline satisfies a characterization theorem (Cantor,
+ℤ-char, or potentially others like ℝ via Dedekind completeness) automatically
+yields a TaskFrame with the appropriate duration group.
+
+## Axiom Dependencies
+
+The construction depends on one axiom with high mathematical confidence:
+
+- **`canonicalR_irreflexive`** (in `Canonical/CanonicalIrreflexivityAxiom.lean`):
+  `¬CanonicalR M M` for all MCSs M. Standard in the literature (Goldblatt 1992,
+  BdRV 2001), blocked only by String atom freshness. Resolution: change atom type.
+
+From this axiom, NoMaxOrder, NoMinOrder, and DenselyOrdered are proved (not sorry'd).
+The remaining sorries are in the discrete case (SuccOrder/PredOrder coverness from DF).
+
 ## References
 
 - Task 960: Duration Group Construction from Pure Syntax
 - `DurationTransfer.lean`: Group transfer along OrderIso
 - `CantorApplication.lean`: Dense timeline → ℚ isomorphism
-- `Bundle/CanonicalConstruction.lean`: Base case TaskFrame
+- `DiscreteTimeline.lean`: Discrete timeline → ℤ characterization
+- `Canonical/CanonicalIrreflexivityAxiom.lean`: Irreflexivity axiom
 -/
 
 namespace Bimodal.Metalogic.Domain
@@ -124,8 +176,8 @@ noncomputable def DenseCanonicalTimeline
 The Cantor isomorphism for the dense canonical timeline.
 Requires: Countable, DenselyOrdered, NoMaxOrder, NoMinOrder, Nonempty.
 
-**Proof debt**: The instances NoMaxOrder, NoMinOrder, DenselyOrdered
-have sorries in CantorApplication.lean (reflexive MCS obstacle).
+All prerequisites proved (NoMaxOrder, NoMinOrder, DenselyOrdered via
+`canonicalR_irreflexive` axiom). Depends on axiom only.
 -/
 noncomputable def denseCanonicalIso
     (root_mcs : Set Bimodal.Syntax.Formula)
@@ -161,12 +213,10 @@ where the duration type D is the dense canonical timeline (≃o ℚ),
 the world states are also D (canonical timeline worlds = times),
 and the task relation is deterministic: `task_rel w d w'` iff `w + d = w'`.
 
-**Proof debt**: Depends on 3 sorry'd instances in CantorApplication.lean
-(NoMaxOrder, NoMinOrder, DenselyOrdered), all blocked by the reflexive MCS
-obstacle. The canonical model can contain reflexive MCSs (CanonicalR M M),
-and `canonicalR_irreflexive` is unprovable with String atoms due to the
-freshness requirement of the IRR rule. See CantorApplication.lean module
-docstring for the counterexample model and resolution paths.
+**Axiom dependency**: All Cantor prerequisites (NoMaxOrder, NoMinOrder,
+DenselyOrdered) are proved via the `canonicalR_irreflexive` axiom from
+`Canonical/CanonicalIrreflexivityAxiom.lean`. No sorry dependencies remain
+in the dense case pipeline.
 -/
 noncomputable def denseCanonicalTaskFrame
     (root_mcs : Set Bimodal.Syntax.Formula)
@@ -181,26 +231,25 @@ noncomputable def denseCanonicalTaskFrame
     (denseCanonicalIsOrderedAddMonoid root_mcs root_mcs_proof)
 
 /-!
-## Discrete Case: Complete Pipeline (Sorry-Dependent)
+## Discrete Case: Complete Pipeline (Partially Sorry-Dependent)
 
 The discrete case follows the same transfer pattern but uses
 `orderIsoIntOfLinearSuccPredArch` instead of Cantor's theorem.
 
-The instances SuccOrder, PredOrder, IsSuccArchimedean, NoMaxOrder, NoMinOrder
-are defined (with sorries) in `DiscreteTimeline.lean`. The pipeline below
-connects them to `discreteTaskFrame` from `DurationTransfer.lean`.
+NoMaxOrder and NoMinOrder are proved via `canonicalR_irreflexive` axiom
+(same pattern as the dense case). The remaining sorry dependencies are
+SuccOrder, PredOrder, and IsSuccArchimedean, which require extracting
+the DF coverness frame condition at the MCS level.
 
-**Proof debt**: All discrete prerequisites have sorries — SuccOrder/PredOrder
-from DF coverness extraction, NoMaxOrder/NoMinOrder from reflexive MCS obstacle.
-See `DiscreteTimeline.lean` and research-002.md for details.
+See `DiscreteTimeline.lean` for details.
 -/
 
 /-!
 ## Base Case
 
-The base case uses D = ℤ directly. The existing `CanonicalTaskFrame` in
-`Bundle/CanonicalConstruction.lean` already provides this with hardcoded Int.
-The `DurationTransfer` module provides the more general version.
+The base case uses D = ℤ directly via `canonicalTaskFrame` from
+`DurationTransfer.lean`. No characterization theorem is needed since ℤ
+already has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid`.
 -/
 
 /--

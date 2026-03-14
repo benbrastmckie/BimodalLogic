@@ -1,6 +1,6 @@
 -- Re-export commonly used modules for convenience
 import Bimodal.Metalogic.Soundness
-import Bimodal.Metalogic.Representation
+-- import Bimodal.Metalogic.Representation  -- ARCHIVED: hardcodes D = Int (see Boneyard/IntRepresentation/)
 import Bimodal.Metalogic.Decidability
 
 /-!
@@ -14,8 +14,8 @@ soundness, completeness, and decidability.
 | Result | Theorem | Module | Status |
 |--------|---------|--------|--------|
 | **Soundness** | `soundness` | `Soundness` | SORRY-FREE |
-| **Standard Weak Completeness** | `standard_weak_completeness` | `Representation` | sorry-dependent |
-| **Standard Strong Completeness** | `standard_strong_completeness` | `Representation` | sorry-dependent |
+| **Standard Weak Completeness** | `standard_weak_completeness` | ARCHIVED (Boneyard/IntRepresentation) | sorry-dependent, hardcoded D=Int |
+| **Standard Strong Completeness** | `standard_strong_completeness` | ARCHIVED (Boneyard/IntRepresentation) | sorry-dependent, hardcoded D=Int |
 | **Decidability** | `decide` | `Decidability.DecisionProcedure` | SORRY-FREE |
 
 The standard completeness theorems in Representation.lean are sorry-dependent because they

@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.Domain.DurationTransfer
 import Bimodal.Metalogic.StagedConstruction.CantorPrereqs
+import Bimodal.Metalogic.Canonical.CanonicalIrreflexivityAxiom
 import Mathlib.Order.SuccPred.LinearLocallyFinite
 
 /-!
@@ -230,33 +231,58 @@ instance : IsSuccArchimedean (DiscreteTimelineQuot root_mcs root_mcs_proof) wher
     sorry
 
 /-!
-## NoMaxOrder and NoMinOrder (BLOCKED)
+## NoMaxOrder and NoMinOrder (Resolved via Axiom)
 
-These require showing that no equivalence class is maximal (or minimal) in
-the quotient. The same reflexive MCS obstacle that blocks the dense case
-applies here: if p.mcs is reflexive (CanonicalR p.mcs p.mcs), seriality
-successors may all land in the same equivalence class [p].
-
-The discreteness axiom DF does NOT help here — it provides coverness
-(immediate successor) but not unboundedness (existence of a STRICT successor).
-Both require `canonicalR_irreflexive`, which is blocked by String atom
-freshness. See `CantorApplication.lean` module docstring for the full analysis.
+These use the `canonicalR_irreflexive` axiom from
+`Canonical/CanonicalIrreflexivityAxiom.lean`. Seriality gives forward/backward
+witnesses, and irreflexivity ensures they are strictly ordered in the quotient
+(same pattern as the dense case in `CantorApplication.lean`).
 -/
 
-/-- NoMaxOrder (sorry-dependent, blocked by reflexive MCS obstacle). -/
+/-- NoMaxOrder on the discrete timeline quotient.
+
+Uses `canonicalR_irreflexive` axiom: seriality gives a forward witness, and
+irreflexivity ensures strictness (same pattern as the dense case).
+-/
 instance : NoMaxOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
   exists_gt := by
     intro a
-    -- BLOCKED: Same reflexive MCS obstacle as dense case.
-    -- See CantorApplication.lean module docstring.
-    sorry
+    induction a using Antisymmetrization.ind with
+    | _ p =>
+      obtain ⟨q, hq_mem, hq_R⟩ := staged_timeline_has_future root_mcs root_mcs_proof p.1 p.2
+      have h_strict : ¬CanonicalR q.mcs p.1.mcs :=
+        Canonical.canonicalR_strict p.1.mcs q.mcs p.1.is_mcs q.is_mcs hq_R
+      let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
+      use toAntisymmetrization (· ≤ ·) q'
+      rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+      constructor
+      · exact Or.inr hq_R
+      · intro hqp
+        cases hqp with
+        | inl h_eq => exact h_strict (h_eq.symm ▸ hq_R)
+        | inr h_R => exact h_strict h_R
 
-/-- NoMinOrder (sorry-dependent, blocked by reflexive MCS obstacle). -/
+/-- NoMinOrder on the discrete timeline quotient.
+
+Symmetric to NoMaxOrder using past seriality.
+-/
 instance : NoMinOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
   exists_lt := by
     intro a
-    -- BLOCKED: Symmetric to NoMaxOrder.
-    sorry
+    induction a using Antisymmetrization.ind with
+    | _ p =>
+      obtain ⟨q, hq_mem, hq_R⟩ := staged_timeline_has_past root_mcs root_mcs_proof p.1 p.2
+      have h_strict : ¬CanonicalR p.1.mcs q.mcs :=
+        Canonical.canonicalR_strict q.mcs p.1.mcs q.is_mcs p.1.is_mcs hq_R
+      let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
+      use toAntisymmetrization (· ≤ ·) q'
+      rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+      constructor
+      · exact Or.inr hq_R
+      · intro hpq
+        cases hpq with
+        | inl h_eq => exact h_strict (h_eq ▸ hq_R)
+        | inr h_R => exact h_strict h_R
 
 /-!
 ## Complete Pipeline

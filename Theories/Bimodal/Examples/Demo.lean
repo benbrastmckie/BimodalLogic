@@ -3,7 +3,7 @@ import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Core.DeductionTheorem
-import Bimodal.Metalogic.Representation
+-- import Bimodal.Metalogic.Representation  -- ARCHIVED: hardcoded D=Int (see Boneyard/IntRepresentation/)
 import Bimodal.Metalogic.Decidability
 
 /-!
@@ -46,13 +46,18 @@ open Bimodal.ProofSystem
 open Bimodal.Semantics
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic
-open Bimodal.Metalogic.Representation (standard_weak_completeness standard_strong_completeness)
+-- open Bimodal.Metalogic.Representation (standard_weak_completeness standard_strong_completeness)
+-- ARCHIVED: standard completeness theorems hardcoded D=Int. Will be rebuilt on D-from-syntax.
 open Bimodal.Metalogic.Decidability
 open Bimodal.Theorems.Perpetuity
 
 /-- Main provability-validity equivalence theorem.
 
 Combines soundness and completeness to show derivability equals validity.
+
+**Proof debt**: The completeness direction (valid → provable) is pending rebuild
+on the D-from-syntax pipeline. The Int-indexed proof was archived to
+`Boneyard/IntRepresentation/Representation.lean`. The soundness direction is sorry-free.
 -/
 theorem main_provable_iff_valid (φ : Formula) : Nonempty (⊢ φ) ↔ valid φ := by
   constructor
@@ -60,7 +65,9 @@ theorem main_provable_iff_valid (φ : Formula) : Nonempty (⊢ φ) ↔ valid φ 
     intro D _ _ _ F M Omega h_sc τ h_mem t
     exact soundness [] φ h_deriv D F M Omega h_sc τ h_mem t (by simp)
   · intro h_valid
-    exact standard_weak_completeness φ h_valid
+    -- PROOF DEBT: standard_weak_completeness archived (hardcoded D=Int).
+    -- Will be rebuilt on D-from-syntax pipeline (Task 960).
+    sorry
 
 /-!
 ## Section 1: Quick Tour
@@ -157,8 +164,9 @@ Uses well-founded recursion on derivation structure. -/
 
 `standard_weak_completeness φ : (∀ w, ...) → (⊢ φ)`
 
-Uses semantic canonical model with finite world states. -/
-#check @standard_weak_completeness  -- validity → derivability
+ARCHIVED: Previously proven via Int-indexed canonical model (Boneyard/IntRepresentation/).
+To be rebuilt on D-from-syntax pipeline (Task 960). -/
+-- #check @standard_weak_completeness  -- ARCHIVED
 
 /-! **Main Theorem**: Derivability equals validity.
 

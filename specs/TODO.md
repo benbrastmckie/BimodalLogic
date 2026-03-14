@@ -1,5 +1,5 @@
 ---
-next_project_number: 961
+next_project_number: 962
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,24 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 961. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Priority**: medium
+- **Research**: [research-001.md](specs/961_resolve_atom_type_freshness_debt/reports/research-001.md)
+
+**Description**: The `canonicalR_irreflexive` axiom in `Canonical/CanonicalIrreflexivityAxiom.lean` is a mathematically standard result (Goldblatt 1992, BdRV 2001) that is currently hypothesized because the proof requires atom freshness, which the `String` atom type cannot provide. Change the atom type from `String` to a structured type supporting freshness (e.g., `{base : String, fresh_index : Option ℕ}`), then prove the axiom as a theorem and remove the `axiom` declaration.
+
+**Downstream impact**: 5 instances currently proved from this axiom (NoMaxOrder, NoMinOrder, DenselyOrdered on dense timeline; NoMaxOrder, NoMinOrder on discrete timeline) would become fully proved theorems. The axiom is used with high confidence — this is a formalization artifact, not a mathematical gap.
+
+**Key files**:
+- Axiom: `Theories/Bimodal/Metalogic/Canonical/CanonicalIrreflexivityAxiom.lean`
+- Failed proof: `Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean`
+- Formula type: `Theories/Bimodal/Syntax/Formula.lean`
+
+---
 
 ### 960. Refactor documentation for bimodal Logos fragment
 - **Effort**: 3-5 hours
