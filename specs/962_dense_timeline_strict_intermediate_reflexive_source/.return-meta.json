@@ -1,34 +1,21 @@
 {
-  "status": "researched",
-  "summary": "Confirmed fix: modify densityIntermediateMCS to use density_frame_condition_reflexive_source when source is reflexive. Requires moving strict lemma from CantorApplication.lean to DensityFrameCondition.lean first.",
+  "status": "planned",
+  "summary": "6-phase implementation plan for modifying DenseTimeline.lean to use density_frame_condition_reflexive_source when source is reflexive",
   "artifacts": [
     {
-      "path": "specs/962_dense_timeline_strict_intermediate_reflexive_source/reports/research-001.md",
-      "type": "research",
-      "summary": "Research report analyzing density frame condition variants and implementation plan for strict intermediate construction"
+      "type": "plan",
+      "path": "specs/962_dense_timeline_strict_intermediate_reflexive_source/plans/implementation-001.md",
+      "summary": "6-phase plan: move strict lemmas, modify densityIntermediateMCS, update spec, add strictness lemma, verify compatibility"
     }
   ],
-  "next_steps": "Run /plan 962 to create implementation plan",
+  "next_steps": "Run /implement 962 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773629812_b4e2f8",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 1800,
+    "session_id": "sess_1773630122_c7f3a2",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 5,
-    "context_files_loaded": [],
-    "mathlib_lookups_performed": 2,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0,
-    "key_findings": [
-      "density_frame_condition Case B1 can return endpoint (W = M') when target is reflexive",
-      "density_frame_condition_reflexive_source guarantees strictness from target when SOURCE is reflexive",
-      "Need to move density_frame_condition_reflexive_source from CantorApplication.lean to DensityFrameCondition.lean to avoid circular import",
-      "Implementation requires conditional dispatch based on source reflexivity",
-      "Downstream theorems (dense_timeline_has_intermediate) will automatically gain strictness property"
-    ],
-    "implementation_complexity": "medium",
-    "estimated_effort_hours": 2.5,
-    "risk_level": "low"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 2.5
   }
 }
