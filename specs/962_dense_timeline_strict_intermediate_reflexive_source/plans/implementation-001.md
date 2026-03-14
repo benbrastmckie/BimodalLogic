@@ -1,7 +1,7 @@
 # Implementation Plan: Task #962 (v001)
 
 - **Task**: 962 - dense_timeline_strict_intermediate_reflexive_source
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 957 (completed - density_frame_condition theorem)
 - **Research Inputs**: specs/962_dense_timeline_strict_intermediate_reflexive_source/reports/research-001.md
@@ -63,7 +63,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Move Strict Density Lemmas [NOT STARTED]
+### Phase 1: Move Strict Density Lemmas [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Relocate `density_frame_condition_caseA_strict` and `density_frame_condition_reflexive_source` from CantorApplication.lean to DensityFrameCondition.lean to avoid circular import
@@ -90,7 +90,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Modify densityIntermediateMCS [NOT STARTED]
+### Phase 2: Modify densityIntermediateMCS [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Update `densityIntermediateMCS` to use reflexive-source variant when applicable
@@ -114,7 +114,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Update densityIntermediateMCS_spec [NOT STARTED]
+### Phase 3: Update densityIntermediateMCS_spec [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Update the base spec lemma to handle both branches while preserving its signature
@@ -138,7 +138,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Add Strictness Lemma [NOT STARTED]
+### Phase 4: Add Strictness Lemma [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Add new `densityIntermediateMCS_strict_from_target` lemma exposing strictness when source is reflexive
@@ -162,7 +162,7 @@ After this implementation:
 
 ---
 
-### Phase 5: Verify Downstream Compatibility [NOT STARTED]
+### Phase 5: Verify Downstream Compatibility [COMPLETED]
 
 - **Dependencies:** Phase 3, Phase 4
 - **Goal:** Ensure all downstream theorems still compile
@@ -187,7 +187,7 @@ After this implementation:
 
 ---
 
-### Phase 6: Final Verification [NOT STARTED]
+### Phase 6: Final Verification [COMPLETED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Confirm implementation is complete and correct

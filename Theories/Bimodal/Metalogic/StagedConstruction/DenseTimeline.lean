@@ -43,12 +43,17 @@ variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mc
 ## Density Intermediate Construction
 -/
 
-/-- Extract the intermediate MCS from density_frame_condition. -/
+/-- Extract the intermediate MCS from density_frame_condition.
+    When the source a.mcs is reflexive, uses the strict variant that guarantees
+    ¬CanonicalR(b.mcs, W), ensuring the intermediate is not equivalent to the target. -/
 noncomputable def densityIntermediateMCS
     (a b : StagedPoint)
     (h_R : CanonicalR a.mcs b.mcs)
     (h_not_R : ¬CanonicalR b.mcs a.mcs) : Set Formula :=
-  (density_frame_condition a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R).choose
+  if h_refl : CanonicalR a.mcs a.mcs then
+    (density_frame_condition_reflexive_source a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R h_refl).choose
+  else
+    (density_frame_condition a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R).choose
 
 theorem densityIntermediateMCS_spec
     (a b : StagedPoint)
@@ -56,8 +61,27 @@ theorem densityIntermediateMCS_spec
     (h_not_R : ¬CanonicalR b.mcs a.mcs) :
     SetMaximalConsistent (densityIntermediateMCS a b h_R h_not_R) ∧
     CanonicalR a.mcs (densityIntermediateMCS a b h_R h_not_R) ∧
-    CanonicalR (densityIntermediateMCS a b h_R h_not_R) b.mcs :=
-  (density_frame_condition a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R).choose_spec
+    CanonicalR (densityIntermediateMCS a b h_R h_not_R) b.mcs := by
+  simp only [densityIntermediateMCS]
+  split
+  · -- Reflexive case: use density_frame_condition_reflexive_source
+    rename_i h_refl
+    have spec := (density_frame_condition_reflexive_source a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R h_refl).choose_spec
+    exact ⟨spec.1, spec.2.1, spec.2.2.1⟩
+  · -- Non-reflexive case: use density_frame_condition
+    exact (density_frame_condition a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R).choose_spec
+
+/-- When the source is reflexive, the density intermediate is strict from the target:
+    ¬CanonicalR(b.mcs, intermediate). This guarantees the intermediate is not
+    equivalent to b in the quotient. -/
+theorem densityIntermediateMCS_strict_from_target
+    (a b : StagedPoint)
+    (h_R : CanonicalR a.mcs b.mcs)
+    (h_not_R : ¬CanonicalR b.mcs a.mcs)
+    (h_refl : CanonicalR a.mcs a.mcs) :
+    ¬CanonicalR b.mcs (densityIntermediateMCS a b h_R h_not_R) := by
+  simp only [densityIntermediateMCS, dif_pos h_refl]
+  exact (density_frame_condition_reflexive_source a.mcs b.mcs a.is_mcs b.is_mcs h_R h_not_R h_refl).choose_spec.2.2.2
 
 /-- Create a StagedPoint from a density intermediate. -/
 noncomputable def densityIntermediatePoint
@@ -84,6 +108,17 @@ theorem densityIntermediatePoint_canonicalR_right
     (stage : Stage) :
     CanonicalR (densityIntermediatePoint a b h_R h_not_R stage).mcs b.mcs :=
   (densityIntermediateMCS_spec a b h_R h_not_R).2.2
+
+/-- When the source is reflexive, the density intermediate point is strict from target b:
+    ¬CanonicalR(b.mcs, c.mcs) where c is the intermediate. -/
+theorem densityIntermediatePoint_strict_from_target
+    (a b : StagedPoint)
+    (h_R : CanonicalR a.mcs b.mcs)
+    (h_not_R : ¬CanonicalR b.mcs a.mcs)
+    (stage : Stage)
+    (h_refl : CanonicalR a.mcs a.mcs) :
+    ¬CanonicalR b.mcs (densityIntermediatePoint a b h_R h_not_R stage).mcs :=
+  densityIntermediateMCS_strict_from_target a b h_R h_not_R h_refl
 
 /-!
 ## Dense Stage Construction

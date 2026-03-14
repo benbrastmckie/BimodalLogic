@@ -8,7 +8,7 @@
     {
       "project_number": 962,
       "project_name": "dense_timeline_strict_intermediate_reflexive_source",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "description": "Modify DenseTimeline.lean so that densityIntermediateMCS uses density_frame_condition_reflexive_source when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: density_frame_condition Case A only provides strictness from the TARGET (¬CanonicalR M'  W), not from the SOURCE (¬CanonicalR W M). By switching to density_frame_condition_reflexive_source for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to DenseTimeline.lean and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.",
@@ -19,9 +19,9 @@
         957
       ],
       "created": "2026-03-14T00:18:18Z",
-      "last_updated": "2026-03-14T00:37:30Z",
+      "last_updated": "2026-03-14T00:45:08Z",
       "researched": "2026-03-14T00:45:00Z",
-      "session_id": "sess_1773630122_c7f3a2",
+      "session_id": "sess_1773630312_d8e4f3",
       "artifacts": [
         {
           "path": "specs/962_dense_timeline_strict_intermediate_reflexive_source/reports/research-001.md",
@@ -32,9 +32,17 @@
           "path": "specs/962_dense_timeline_strict_intermediate_reflexive_source/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase plan: move strict lemmas, modify densityIntermediateMCS, update spec, add strictness lemma, verify compatibility"
+        },
+        {
+          "path": "specs/962_dense_timeline_strict_intermediate_reflexive_source/summaries/implementation-summary-20260313.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting all changes and new API"
         }
       ],
-      "planned": "2026-03-14T00:37:30Z"
+      "planned": "2026-03-14T00:37:30Z",
+      "started": "2026-03-14T00:38:19Z",
+      "completed": "2026-03-14T00:45:08Z",
+      "completion_summary": "Modified DenseTimeline.lean so densityIntermediateMCS uses strict density variant when source is reflexive, guaranteeing intermediate is not equivalent to target. Added densityIntermediateMCS_strict_from_target and densityIntermediatePoint_strict_from_target lemmas."
     },
     {
       "project_number": 960,
