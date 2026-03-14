@@ -1,5 +1,5 @@
 ---
-next_project_number: 965
+next_project_number: 966
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,9 +22,18 @@ technical_debt:
 
 ## Tasks
 
+### 965. Study branch duration-group-construction differences
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: meta
+
+**Description**: Study all elements of claude/duration-group-construction-SFEJg to evaluate how this branch differs from the main branch, evaluating the various advantages and costs for all differences.
+
+---
+
 ### 964. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
 - **Effort**: 8-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md), [research-002.md](specs/964_resolve_atom_type_freshness_debt/reports/research-002.md)
