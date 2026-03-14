@@ -212,7 +212,7 @@ After this implementation:
 
 ---
 
-### Phase 6: Complete CanonicalIrreflexivity Proof [NOT STARTED]
+### Phase 6: Complete CanonicalIrreflexivity Proof [IN PROGRESS]
 
 - **Dependencies:** Phase 5
 - **Goal:** Complete the sorried proof using freshness

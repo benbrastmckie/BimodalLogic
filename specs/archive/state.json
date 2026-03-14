@@ -2,6 +2,24 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 965,
+      "project_name": "study_branch_duration_group_construction",
+      "status": "abandoned",
+      "language": "meta",
+      "created": "2026-03-14T18:36:45Z",
+      "last_updated": "2026-03-14T19:00:00Z",
+      "session_id": "sess_1773513467_f78856",
+      "researched": "2026-03-14T19:00:00Z",
+      "artifacts": [
+        {
+          "path": "specs/965_study_branch_duration_group_construction/reports/research-001.md",
+          "type": "research",
+          "summary": "Branch comparison: 4 new files, axiom-based resolution, proof debt improved from 8+ sorries to 5 sorries + 1 axiom"
+        }
+      ],
+      "abandoned": "2026-03-14T18:46:15Z"
+    },
+    {
       "project_number": 958,
       "project_name": "prove_canonicalr_irreflexive_irr_rule",
       "status": "abandoned",
