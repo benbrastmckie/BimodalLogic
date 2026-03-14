@@ -220,4 +220,109 @@ theorem HContent_chain_transitive (M N V : Set Formula)
   -- phi ∈ HContent N, and HContent N ⊆ M, so phi ∈ M
   exact hMN h_Hphi_in_N
 
+/-!
+## Interplay between CanonicalR and CanonicalR_past
+
+The temporal connectedness axiom (temp_a: φ → G(P(φ))) and its past dual
+(φ → H(F(φ))) establish that CanonicalR and CanonicalR_past are inter-derivable
+in opposite directions. These are standard results in the literature (Goldblatt 1992,
+Logics of Time and Computation, §3.6).
+
+**Key results**:
+- `canonicalR_implies_past_reverse`: CanonicalR M N → CanonicalR_past N M
+  (if M sees N in the future, then N sees M in the past)
+- `canonicalR_past_implies_forward_reverse`: CanonicalR_past M N → CanonicalR N M
+  (if M sees N in the past, then N sees M in the future)
+
+**Proof sketch for canonicalR_implies_past_reverse**:
+Assume GContent M ⊆ N and H(ψ) ∈ N. Want ψ ∈ M.
+By contradiction: if ψ ∉ M, then ¬ψ ∈ M (MCS negation completeness).
+By temp_a: ¬ψ → G(P(¬ψ)) is a theorem, so G(P(¬ψ)) ∈ M.
+Hence P(¬ψ) ∈ GContent(M) ⊆ N, so P(¬ψ) ∈ N.
+But P(¬ψ) = ¬H(¬¬ψ), and since ψ → ¬¬ψ is provable,
+H(ψ) → H(¬¬ψ) is provable, so H(¬¬ψ) ∈ N.
+Then both ¬H(¬¬ψ) ∈ N and H(¬¬ψ) ∈ N, contradicting consistency of N.
+
+**Why this matters**:
+These lemmas are required for compositionality of the canonical task relation
+in mixed-sign duration cases. When a forward step (d > 0, CanonicalR) is
+composed with a backward step (d < 0, CanonicalR_past), these interplay
+lemmas allow the chain to be resolved.
+-/
+
+/--
+Forward canonical relation implies reverse past relation.
+
+If `CanonicalR M N` (GContent M ⊆ N) and both M, N are MCS, then
+`CanonicalR_past N M` (HContent N ⊆ M).
+
+Uses temp_a (φ → G(P(φ))) and MCS properties (negation completeness,
+double negation, H-distribution).
+
+**Literature**: Goldblatt 1992, §3.6, Lemma 3.6.3.
+-/
+theorem canonicalR_implies_past_reverse (M N : Set Formula)
+    (h_mcs_M : SetMaximalConsistent M) (h_mcs_N : SetMaximalConsistent N)
+    (h_R : CanonicalR M N) :
+    CanonicalR_past N M := by
+  -- Need: HContent N ⊆ M, i.e., for all ψ, H(ψ) ∈ N → ψ ∈ M
+  intro psi h_H_psi
+  -- h_H_psi : psi ∈ HContent N, i.e., H(psi) ∈ N (all_past psi ∈ N)
+  -- Want: psi ∈ M
+  -- By contradiction: suppose psi ∉ M
+  by_contra h_not_psi
+  -- Since M is MCS, ¬psi ∈ M
+  have h_neg_psi : psi.neg ∈ M := by
+    rcases set_mcs_negation_complete h_mcs_M psi with h | h
+    · exact absurd h h_not_psi
+    · exact h
+  -- By temp_a: ¬psi → G(P(¬psi)) is a theorem
+  -- temp_a gives: φ → G(sometime_past φ) where sometime_past φ = ¬H(¬φ)
+  -- Applied to ¬psi: ¬psi → G(sometime_past(¬psi)) = ¬psi → G(¬H(¬¬psi))
+  have h_temp_a := DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.temp_a psi.neg)
+  -- G(P(¬psi)) ∈ M by modus ponens
+  have h_GP : Formula.all_future psi.neg.sometime_past ∈ M :=
+    set_mcs_implication_property h_mcs_M (theorem_in_mcs h_mcs_M h_temp_a) h_neg_psi
+  -- P(¬psi) ∈ GContent(M), and GContent(M) ⊆ N, so P(¬psi) ∈ N
+  have h_P_in_N : psi.neg.sometime_past ∈ N := h_R h_GP
+  -- P(¬psi) = sometime_past(¬psi) = neg(all_past(neg(¬psi))) = ¬H(¬¬psi)
+  -- So ¬H(¬¬psi) ∈ N
+  -- We also have H(psi) ∈ N
+  -- We need: H(psi) and ¬H(¬¬psi) are contradictory in N
+  -- Since psi → ¬¬psi is provable, H(psi) → H(¬¬psi) is provable
+  -- (by H-necessitation of psi → ¬¬psi, then temp_k_dist for H)
+  -- So H(¬¬psi) ∈ N, contradicting ¬H(¬¬psi) ∈ N
+  --
+  -- The derivation: psi → ¬¬psi is provable, so H(psi → ¬¬psi) by H-rule,
+  -- then H(psi) → H(¬¬psi) by temp_k_dist for H,
+  -- combining with H(psi) ∈ N gives H(¬¬psi) ∈ N.
+  -- But P(¬psi) = ¬H(¬¬psi) ∈ N, contradicting consistency of N.
+  sorry
+
+/--
+Reverse past canonical relation implies forward relation.
+
+If `CanonicalR_past M N` (HContent M ⊆ N) and both M, N are MCS, then
+`CanonicalR N M` (GContent N ⊆ M).
+
+This is the temporal dual of `canonicalR_implies_past_reverse`, using
+the past dual of temp_a: φ → H(F(φ)).
+
+**Literature**: Goldblatt 1992, §3.6 (symmetric argument).
+-/
+theorem canonicalR_past_implies_forward_reverse (M N : Set Formula)
+    (h_mcs_M : SetMaximalConsistent M) (h_mcs_N : SetMaximalConsistent N)
+    (h_R : CanonicalR_past M N) :
+    CanonicalR N M := by
+  -- Need: GContent N ⊆ M, i.e., for all ψ, G(ψ) ∈ N → ψ ∈ M
+  -- Symmetric proof using past dual of temp_a: φ → H(F(φ))
+  -- F(φ) = ¬G(¬φ), so the dual axiom is: φ → H(¬G(¬φ))
+  --
+  -- Assume G(ψ) ∈ N and ψ ∉ M. Then ¬ψ ∈ M.
+  -- Past dual of temp_a applied to ¬ψ gives: ¬ψ → H(F(¬ψ)) = ¬ψ → H(¬G(¬¬ψ))
+  -- So H(¬G(¬¬ψ)) ∈ M, hence ¬G(¬¬ψ) ∈ HContent(M) ⊆ N.
+  -- Since ψ → ¬¬ψ is provable, G(ψ) → G(¬¬ψ) is provable,
+  -- so G(¬¬ψ) ∈ N and ¬G(¬¬ψ) ∈ N, contradicting consistency.
+  sorry
+
 end Bimodal.Metalogic.Bundle
