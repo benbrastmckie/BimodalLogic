@@ -8,12 +8,12 @@
     {
       "project_number": 964,
       "project_name": "resolve_atom_type_freshness_debt",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "The canonicalR_irreflexive axiom is a standard theorem blocked only by the String atom type lacking freshness. Change the atom type to support freshness (e.g., {base: String, fresh_index: Option Nat}) and prove the axiom as a theorem, removing the axiom declaration. Downstream: NoMaxOrder, NoMinOrder, DenselyOrdered (dense case), NoMaxOrder, NoMinOrder (discrete case) all become fully proven theorems.",
       "created": "2026-03-14T01:00:00Z",
-      "last_updated": "2026-03-14T19:03:10Z",
+      "last_updated": "2026-03-14T19:19:25Z",
       "session_id": "sess_1773514964_mueksr",
       "artifacts": [
         {
@@ -27,11 +27,6 @@
           "summary": "Deep analysis: atom type refactoring scope (31 files), Mathlib freshness lemmas, existing ExtFormula pattern, 12-18 hour estimate"
         },
         {
-          "path": "specs/964_resolve_atom_type_freshness_debt/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan for atom type freshness debt resolution"
-        },
-        {
           "path": "specs/964_resolve_atom_type_freshness_debt/summaries/implementation-summary-20260314.md",
           "type": "summary",
           "summary": "Partial implementation: 5/8 phases completed. Atom type infrastructure established. Phase 6 blocked on proof rewrite."
@@ -40,10 +35,15 @@
           "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-003.md",
           "type": "research",
           "summary": "Deep mathematical analysis: T-axiom not valid in TM, freshness may not suffice for syntactic proof, recommends semantic approach"
+        },
+        {
+          "path": "specs/964_resolve_atom_type_freshness_debt/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 3-phase plan: semantic proof approach (T-axiom not available)"
         }
       ],
       "researched": "2026-03-14T18:28:19Z",
-      "planned": "2026-03-14T18:32:58Z",
+      "planned": "2026-03-14T19:19:25Z",
       "started": "2026-03-14T18:35:09Z"
     },
     {
