@@ -1,10 +1,33 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 50,
-    "last_sync": "2026-03-14T12:00:00Z"
+    "total_tasks": 51,
+    "last_sync": "2026-03-14T18:00:00Z"
   },
   "active_projects": [
+    {
+      "project_number": 963,
+      "project_name": "duration_group_taskframe_refactor",
+      "status": "planned",
+      "language": "lean",
+      "created": "2026-03-14T18:00:00Z",
+      "last_updated": "2026-03-14T18:00:00Z",
+      "session_id": "sess_1773686400_a3f1c2",
+      "artifacts": [
+        {
+          "path": "specs/963_duration_group_taskframe_refactor/reports/research-001.md",
+          "type": "research",
+          "summary": "Mathematical analysis of compositionality: forward_comp + converse axiomatization"
+        },
+        {
+          "path": "specs/963_duration_group_taskframe_refactor/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase plan: TaskFrame, WorldHistory, CanonicalConstruction, DurationTransfer, IRRSoundness, Examples, backward_comp theorem"
+        }
+      ],
+      "researched": "2026-03-14T18:00:00Z",
+      "planned": "2026-03-14T18:00:00Z"
+    },
     {
       "project_number": 962,
       "project_name": "paper_footnote_task_relation_nondeterminism_truth_lemma_alignment",

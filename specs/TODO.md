@@ -1,16 +1,16 @@
 ---
-next_project_number: 963
+next_project_number: 964
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 19
+  active: 20
   completed: 662
   in_progress: 0
   not_started: 8
   abandoned: 37
-  total: 716
+  total: 717
 technical_debt:
   sorry_count: 73
   axiom_count: 19
@@ -21,6 +21,22 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 963. Duration group TaskFrame refactor: forward_comp + converse
+- **Effort**: 8-16 hours
+- **Status**: [PLANNED]
+- **Language**: lean
+- **Priority**: high
+- **Research**: [specs/963_duration_group_taskframe_refactor/reports/research-001.md]
+- **Plan**: [specs/963_duration_group_taskframe_refactor/plans/implementation-001.md]
+
+**Description**: Refactor `TaskFrame` to replace universal `compositionality` axiom with the mathematically precise decomposition: `forward_comp` (non-negative durations) + `converse` (biconditional time-reversal `task_rel w d v ↔ task_rel v (-d) w`). Drop the `s ≤ t` guard in `WorldHistory.respects_task`. Update `canonical_task_rel` to use `CanonicalR N.val M.val` (converse) for `d < 0` instead of `False`.
+
+**Mathematical justification**: Full mixed-sign compositionality is impossible for non-trivial canonical models (would require injective/functional accessibility). The forward_comp + converse decomposition is the correct axiomatization: backward compositionality derives as a theorem, and both directions of `respects_task` reduce to `forward_G` from FMCS coherence.
+
+**7 phases**: TaskFrame structure → WorldHistory guard removal → CanonicalConstruction update → DurationTransfer → IRRSoundness → Examples → backward_comp theorem
+
+**Key files**: `TaskFrame.lean`, `WorldHistory.lean`, `CanonicalConstruction.lean`, `DurationTransfer.lean`, `IRRSoundness.lean`, `TemporalStructures.lean`
 
 ### 962. Paper footnote on task relation nondeterminism and truth lemma alignment
 - **Effort**: 2-4 hours
