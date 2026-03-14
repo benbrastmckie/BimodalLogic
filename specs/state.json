@@ -13,8 +13,8 @@
       "priority": "medium",
       "description": "The canonicalR_irreflexive axiom is a standard theorem blocked only by the String atom type lacking freshness. Change the atom type to support freshness (e.g., {base: String, fresh_index: Option Nat}) and prove the axiom as a theorem, removing the axiom declaration. Downstream: NoMaxOrder, NoMinOrder, DenselyOrdered (dense case), NoMaxOrder, NoMinOrder (discrete case) all become fully proven theorems.",
       "created": "2026-03-14T01:00:00Z",
-      "last_updated": "2026-03-14T19:46:05Z",
-      "session_id": "sess_1773517290_b8e1a3",
+      "last_updated": "2026-03-14T20:01:46Z",
+      "session_id": "sess_1773518210_a917bd",
       "artifacts": [
         {
           "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-001.md",
@@ -45,9 +45,14 @@
           "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-004.md",
           "type": "research",
           "summary": "Deep mathematical analysis: non-standard proofs impossible, reflexive G/H forbidden, axiom is legitimate frame property"
+        },
+        {
+          "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-005.md",
+          "type": "research",
+          "summary": "Reflexive refactor analysis: 5+ blockers (density trivialization, frame condition collapse), 87-167h effort, HIGH risk. Current path: 0 blockers (axiom unused)."
         }
       ],
-      "researched": "2026-03-14T19:46:05Z",
+      "researched": "2026-03-14T20:01:46Z",
       "planned": "2026-03-14T19:19:25Z",
       "started": "2026-03-14T18:35:09Z"
     },

@@ -27,7 +27,7 @@ technical_debt:
 - **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: medium
-- **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md), [research-002.md](specs/964_resolve_atom_type_freshness_debt/reports/research-002.md), [research-003.md](specs/964_resolve_atom_type_freshness_debt/reports/research-003.md), [research-004.md](specs/964_resolve_atom_type_freshness_debt/reports/research-004.md)
+- **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md), [research-002.md](specs/964_resolve_atom_type_freshness_debt/reports/research-002.md), [research-003.md](specs/964_resolve_atom_type_freshness_debt/reports/research-003.md), [research-004.md](specs/964_resolve_atom_type_freshness_debt/reports/research-004.md), [research-005.md](specs/964_resolve_atom_type_freshness_debt/reports/research-005.md)
 - **Plan**: [implementation-002.md](specs/964_resolve_atom_type_freshness_debt/plans/implementation-002.md)
 
 **Description**: The `canonicalR_irreflexive` axiom in `Canonical/CanonicalIrreflexivityAxiom.lean` is a mathematically standard result (Goldblatt 1992, BdRV 2001) that is currently hypothesized because the proof requires atom freshness, which the `String` atom type cannot provide. Change the atom type from `String` to a structured type supporting freshness (e.g., `{base : String, fresh_index : Option ℕ}`), then prove the axiom as a theorem and remove the `axiom` declaration.
