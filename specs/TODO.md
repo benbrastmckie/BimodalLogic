@@ -23,12 +23,13 @@ technical_debt:
 ## Tasks
 
 ### 969. Refactor TaskFrame: restrict compositionality to non-negative durations
-- **Effort**: 3-6 hours
+- **Effort**: 6-8 hours
 - **Language**: lean
-- **Status**: [NOT STARTED]
+- **Status**: [PLANNED]
 - **Priority**: medium
 - **Dependencies**: Task 966 [COMPLETED] (decision: adopt `forward_comp + converse` axiomatization)
 - **Research**: [specs/research_sign_elimination/reports/research-001.md]
+- **Plan**: [specs/969_refactor_taskframe_restrict_compositionality/plans/implementation-001.md]
 
 **Description**: Replace the universal `compositionality` axiom in `TaskFrame` with `forward_compositionality` restricted to `0 <= x` and `0 <= y`. Mixed-sign compositionality is algebraically unachievable for non-deterministic relations (requires functionality of the positive-duration action, which the canonical model lacks). Restricted compositionality is sufficient for all downstream uses since `respects_task` only evaluates `task_rel` at `d = t - s` where `s <= t`.
 
