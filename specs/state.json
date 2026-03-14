@@ -836,12 +836,12 @@
     {
       "project_number": 961,
       "project_name": "quotient_density_iteration_no_max_min_dense",
-      "status": "blocked",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Prove NoMaxOrder, NoMinOrder, and DenselyOrdered for TimelineQuot in CantorApplication.lean by implementing well-founded iteration over distinguishing formulas. When density_frame_condition gives intermediate c between p and q but c falls in the same equivalence class as p or q (i.e., CanonicalR c p.mcs or CanonicalR q.mcs c), the argument must iterate using a different separating formula from the finite set subformulaClosure(anchor). The iteration terminates because each step either finds a strict intermediate (success) or consumes a formula from the finite distinguishing set, strictly decreasing a Nat measure. Implement using Nat.strongRecOn with fuel = subformulaClosure(anchor).card. Resolves 6 sorries: CantorApplication.lean lines 210 (NoMaxOrder reflexive), 269 (NoMinOrder reflexive), 332, 345, 380, 385 (DenselyOrdered iteration cases).",
       "created": "2026-03-13T00:00:00Z",
-      "last_updated": "2026-03-13T18:30:00Z",
+      "last_updated": "2026-03-14T01:30:35Z",
       "unblocks": [
         956
       ],
@@ -910,9 +910,14 @@
           "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313f.md",
           "type": "summary",
           "summary": "Iteration 4: Phase 1 blocked on termination proof formalization"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-007.md",
+          "type": "research",
+          "summary": "Deep mathematical analysis: formula wellfoundedness vs non-iterative proof, proposes density_escapes_source_class lemma"
         }
       ],
-      "session_id": "sess_1773451073_66744d",
+      "session_id": "sess_1773451794_c21ab3",
       "researched": "2026-03-13T20:43:03Z",
       "planned": "2026-03-14T01:16:54Z",
       "started": "2026-03-13T22:30:54Z",

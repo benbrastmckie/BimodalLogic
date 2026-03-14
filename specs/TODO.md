@@ -95,10 +95,10 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
 - **Effort**: 3-5 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHING]
 - **Unblocked by**: Task 962 (COMPLETE)
 - **Plan**: [implementation-006.md](specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-006.md) (v006: denselyOrdered_iff_forall_not_covBy architecture, Phase 1 BLOCKED)
-- **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis), [research-003.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md) (Classical.choose), [research-004.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md) (quotient collapse), [research-005.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-005.md) (no-covers approach), [research-006.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-006.md) (team: termination gap)
+- **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis), [research-003.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md) (Classical.choose), [research-004.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md) (quotient collapse), [research-005.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-005.md) (no-covers approach), [research-006.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-006.md) (team: termination gap), [research-007.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-007.md) (deep: density_escapes_source_class)
 - **Summary**: [implementation-summary-20260313f.md](specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313f.md) (iteration 4: Phase 1 blocked on termination proof)
 - **Handoff**: [phase-1-handoff-20260313.md](specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md)
 - **Blocker**: Termination proof requires formula wellfoundedness formalization not present in codebase
