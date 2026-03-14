@@ -1,35 +1,28 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-14T12:00:00Z",
-  "completed_at": "2026-03-14T13:30:00Z",
+  "status": "planned",
+  "started_at": "2026-03-14T10:00:00Z",
+  "completed_at": "2026-03-14T10:15:00Z",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-007.md",
-      "summary": "Reflexive G/H semantics feasibility analysis - NOT recommended due to density proof restructuring blockers"
+      "type": "plan",
+      "path": "specs/964_resolve_atom_type_freshness_debt/plans/implementation-004.md",
+      "summary": "4-phase plan to archive failed proof attempt and update axiom documentation"
     }
   ],
-  "next_steps": "No action recommended; current irreflexive architecture is complete",
+  "next_steps": "Run /implement 964 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773526251_02406d",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 5400,
+    "session_id": "sess_1773526673_48dd46",
+    "agent_type": "planner-agent",
+    "duration_seconds": 900,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": [
-      "kripke-semantics-overview.md"
-    ],
-    "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0,
-    "key_findings": {
-      "semantic_change_trivial": true,
-      "t_axiom_soundness_straightforward": true,
-      "density_axiom_does_not_trivialize": true,
-      "density_proof_restructure_required": true,
-      "prior_3month_effort_validates_difficulty": true,
-      "recommendation": "do_not_pursue_reflexive_refactor"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1.0,
+    "key_insights": {
+      "axiom_file_is_used": true,
+      "bundle_file_is_unused": true,
+      "reflexive_refactor_not_recommended": true,
+      "archival_scope_clarified": true
     }
   }
 }
