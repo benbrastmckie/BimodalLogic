@@ -65,7 +65,7 @@
 
 ### Phase 1: Prove timelineQuot_no_covBy [PARTIAL]
 **Started**: 2026-03-13T14:00:00Z
-**Updated**: 2026-03-13T15:30:00Z
+**Updated**: 2026-03-13T19:30:00Z
 
 - **Dependencies:** None
 - **Goal:** Prove that TimelineQuot has no covering pairs (no adjacent elements)
@@ -149,19 +149,26 @@ theorem timelineQuot_no_covBy (a b : TimelineQuot root_mcs root_mcs_proof) :
 - Sorries: 7 -> 5 (but 3 new sorries in new theorem)
 - Analysis: The core blocker is that `density_frame_condition_reflexive_source` gives an MCS that may not be in `denseTimelineUnion`. The timeline uses `density_frame_condition.choose` which can return endpoint (Case B1).
 
-**Blocker Analysis:**
-The remaining sorries all require showing that when the source p is reflexive:
-1. `density_frame_condition_reflexive_source(p, q)` gives MCS W with ¬CanonicalR q W
-2. This W must be demonstrated to exist in `denseTimelineUnion`
-3. But `denseTimelineUnion` is built using `densityIntermediateMCS` which uses `density_frame_condition.choose`
-4. These might give different MCSs (one is strict, one might be endpoint)
+**Session: 2026-03-13, sess_1773630722_e9f5a4**
+- Added: `dense_timeline_has_strict_intermediate` theorem in DenseTimeline.lean
+- Restructured: `strict_intermediate_exists` with bounded iteration (4 levels)
+- Key insight: if cN breaks equivalence with c(N-1), it breaks equivalence with p via T4 chain
+- Sorries: 5 -> 8 (iteration added more termination cases)
+- Build: passes with 3 declaration warnings
+
+**Blocker Analysis (Updated):**
+The remaining 8 sorries are all termination cases where bounded iteration hasn't found a strict intermediate:
+1. All intermediates remain equivalent to source
+2. Need wellfoundedness argument on formula set
+3. Each density step uses distinguishing formula, accumulating constraints
+4. By formula finiteness, chain must terminate
 
 **Options to complete:**
-A. Modify `DenseTimeline.lean` to use `density_frame_condition_reflexive_source` when applicable
-B. Prove non-constructively that the strict MCS must appear somewhere in the timeline
-C. Use a different proof strategy that doesn't require explicit strict intermediate construction
+A. Formalize termination via formula wellfoundedness (define measure on MCS)
+B. Prove non-constructively via quotient density argument
+C. Add lemma about timeline having 2+ distinct equivalence classes
 
-**Timing:** 1.5 hours estimated, 2.0 hours actual (partial)
+**Timing:** 1.5 hours estimated, 3.5 hours actual (partial)
 
 **Files to modify:**
 - `Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean`

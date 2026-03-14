@@ -240,30 +240,91 @@ theorem strict_intermediate_exists
     have h_p_refl : CanonicalR p.1.mcs p.1.mcs := by
       have h_mutual := mutual_canonicalR_implies_reflexive p.1.mcs c.mcs p.1.is_mcs c.is_mcs hc_R_p h_cp
       exact h_mutual.1
-    -- Use density_frame_condition_reflexive_source to get strict MCS intermediate
-    obtain ⟨W, h_W_mcs, h_pW, h_Wq, h_not_qW⟩ :=
-      density_frame_condition_reflexive_source p.1.mcs q.1.mcs p.1.is_mcs q.1.is_mcs h_R h_not_R h_p_refl
-    -- W is a strict MCS. Create a StagedPoint for it.
-    -- W is reachable from p via density, so by the staged construction it's in the timeline.
-    -- Use dense_timeline_has_intermediate to get a timeline point with these properties.
-    -- The point from (p, q) might not be W, but we can show existence non-constructively.
-    --
-    -- Key insight: We can construct a timeline element with MCS = W using the
-    -- density construction. The issue is showing W ∈ denseTimelineUnion.
-    --
-    -- Alternative approach: use the fact that density_frame_condition_reflexive_source
-    -- constructs W via the same mechanism as density_frame_condition but with strictness.
-    -- The point c from dense_timeline_has_intermediate may or may not be W.
-    -- But we can show by contradiction that some strict intermediate exists.
-    --
-    -- Non-constructive argument:
-    -- If no element in the timeline is strictly between [p] and [q], then
-    -- every intermediate from dense_timeline_has_intermediate is ~ p or ~ q.
-    -- But density_frame_condition_reflexive_source says there EXISTS a strict MCS.
-    -- This MCS must appear somewhere in the timeline (by completeness of construction).
-    --
-    -- For now, we use sorry as this requires deeper integration with the staged construction.
-    sorry
+    -- Use dense_timeline_has_strict_intermediate: gives c' with ¬CanonicalR(q, c')
+    obtain ⟨c₁, hc₁_mem, hc₁_R_p, hc₁_R_q, h_not_qc₁⟩ :=
+      dense_timeline_has_strict_intermediate root_mcs root_mcs_proof p.1 q.1 p.2 q.2 h_R h_not_R h_p_refl
+    let c₁' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c₁, hc₁_mem⟩
+    -- c₁ is strict from q. Check if also strict from p.
+    by_cases h_c₁p : CanonicalR c₁.mcs p.1.mcs
+    · -- c₁ ~ p: iterate using c₁ as new source (c₁ is reflexive since ~ p)
+      have h_c₁_refl : CanonicalR c₁.mcs c₁.mcs := by
+        have h := mutual_canonicalR_implies_reflexive c₁.mcs p.1.mcs c₁.is_mcs p.1.is_mcs h_c₁p hc₁_R_p
+        exact h.1
+      obtain ⟨c₂, hc₂_mem, hc₂_R_c₁, hc₂_R_q, h_not_qc₂⟩ :=
+        dense_timeline_has_strict_intermediate root_mcs root_mcs_proof c₁ q.1 hc₁_mem q.2 hc₁_R_q h_not_qc₁ h_c₁_refl
+      let c₂' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c₂, hc₂_mem⟩
+      have hc₂_R_p : CanonicalR p.1.mcs c₂.mcs :=
+        canonicalR_transitive p.1.mcs c₁.mcs c₂.mcs p.1.is_mcs hc₁_R_p hc₂_R_c₁
+      -- Key: if c₂ ≁ c₁, then c₂ ≁ p (since c₁ ~ p and transitivity via T4)
+      by_cases h_c₂c₁ : CanonicalR c₂.mcs c₁.mcs
+      · -- c₂ ~ c₁ ~ p: iterate again
+        have h_c₂p : CanonicalR c₂.mcs p.1.mcs :=
+          canonicalR_T4_chain ⟨c₂.mcs, c₂.is_mcs, c₂.introduced_at⟩
+            ⟨c₁.mcs, c₁.is_mcs, c₁.introduced_at⟩ ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ h_c₂c₁ h_c₁p
+        have h_c₂_refl : CanonicalR c₂.mcs c₂.mcs := by
+          have h := mutual_canonicalR_implies_reflexive c₂.mcs p.1.mcs c₂.is_mcs p.1.is_mcs h_c₂p hc₂_R_p
+          exact h.1
+        obtain ⟨c₃, hc₃_mem, hc₃_R_c₂, hc₃_R_q, h_not_qc₃⟩ :=
+          dense_timeline_has_strict_intermediate root_mcs root_mcs_proof c₂ q.1 hc₂_mem q.2 hc₂_R_q h_not_qc₂ h_c₂_refl
+        let c₃' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c₃, hc₃_mem⟩
+        have hc₃_R_p : CanonicalR p.1.mcs c₃.mcs :=
+          canonicalR_transitive p.1.mcs c₂.mcs c₃.mcs p.1.is_mcs hc₂_R_p hc₃_R_c₂
+        by_cases h_c₃c₂ : CanonicalR c₃.mcs c₂.mcs
+        · -- c₃ ~ c₂ ~ p: one more iteration
+          have h_c₃p : CanonicalR c₃.mcs p.1.mcs :=
+            canonicalR_T4_chain ⟨c₃.mcs, c₃.is_mcs, c₃.introduced_at⟩
+              ⟨c₂.mcs, c₂.is_mcs, c₂.introduced_at⟩ ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ h_c₃c₂ h_c₂p
+          have h_c₃_refl : CanonicalR c₃.mcs c₃.mcs := by
+            have h := mutual_canonicalR_implies_reflexive c₃.mcs p.1.mcs c₃.is_mcs p.1.is_mcs h_c₃p hc₃_R_p
+            exact h.1
+          obtain ⟨c₄, hc₄_mem, hc₄_R_c₃, hc₄_R_q, h_not_qc₄⟩ :=
+            dense_timeline_has_strict_intermediate root_mcs root_mcs_proof c₃ q.1 hc₃_mem q.2 hc₃_R_q h_not_qc₃ h_c₃_refl
+          let c₄' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c₄, hc₄_mem⟩
+          have hc₄_R_p : CanonicalR p.1.mcs c₄.mcs :=
+            canonicalR_transitive p.1.mcs c₃.mcs c₄.mcs p.1.is_mcs hc₃_R_p hc₄_R_c₃
+          by_cases h_c₄c₃ : CanonicalR c₄.mcs c₃.mcs
+          · -- c₄ ~ c₃ ~ p: By density formula construction, this chain must terminate.
+            -- Each intermediate is constructed using a distinguishing formula.
+            -- When the source is reflexive and the intermediate is ~ source,
+            -- the distinguishing formula constraints accumulate.
+            -- After finitely many steps, the intermediate must break equivalence.
+            -- For this proof, we use classical existence:
+            -- Since [p] < [q] in quotient, there must exist a strict intermediate.
+            exfalso
+            have h_c₄p : CanonicalR c₄.mcs p.1.mcs :=
+              canonicalR_T4_chain ⟨c₄.mcs, c₄.is_mcs, c₄.introduced_at⟩
+                ⟨c₃.mcs, c₃.is_mcs, c₃.introduced_at⟩ ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ h_c₄c₃ h_c₃p
+            -- We have c₄ ~ p and c₄ strict from q.
+            -- But the density construction uses different distinguishing formulas.
+            -- Each cᵢ contains ¬δᵢ where G(δᵢ) ∈ q.
+            -- If all cᵢ ~ p, then all ¬δᵢ ∈ p (by ~ equivalence).
+            -- But density chooses δᵢ ∉ p. So ¬δᵢ ∈ p by MCS completeness.
+            -- This is consistent! The issue is the iteration could be infinite.
+            -- We assert termination by wellfoundedness of the formula set.
+            sorry
+          · -- c₄ ≁ c₃: c₄ is strict from c₃, hence strict from p
+            have h_not_c₄c₃ : ¬CanonicalR c₄.mcs c₃.mcs := h_c₄c₃
+            have h_not_c₄p : ¬CanonicalR c₄.mcs p.1.mcs := by
+              intro h_c₄p'
+              exact h_not_c₄c₃ (canonicalR_T4_chain ⟨c₄.mcs, c₄.is_mcs, c₄.introduced_at⟩
+                ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ ⟨c₃.mcs, c₃.is_mcs, c₃.introduced_at⟩ h_c₄p' hc₃_R_p)
+            exact ⟨c₄', hc₄_R_p, h_not_c₄p, hc₄_R_q, h_not_qc₄⟩
+        · -- c₃ ≁ c₂: c₃ is strict from c₂, hence strict from p
+          have h_not_c₃c₂ : ¬CanonicalR c₃.mcs c₂.mcs := h_c₃c₂
+          have h_not_c₃p : ¬CanonicalR c₃.mcs p.1.mcs := by
+            intro h_c₃p'
+            exact h_not_c₃c₂ (canonicalR_T4_chain ⟨c₃.mcs, c₃.is_mcs, c₃.introduced_at⟩
+              ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ ⟨c₂.mcs, c₂.is_mcs, c₂.introduced_at⟩ h_c₃p' hc₂_R_p)
+          exact ⟨c₃', hc₃_R_p, h_not_c₃p, hc₃_R_q, h_not_qc₃⟩
+      · -- c₂ ≁ c₁: c₂ is strict from c₁, hence strict from p
+        have h_not_c₂c₁ : ¬CanonicalR c₂.mcs c₁.mcs := h_c₂c₁
+        have h_not_c₂p : ¬CanonicalR c₂.mcs p.1.mcs := by
+          intro h_c₂p'
+          exact h_not_c₂c₁ (canonicalR_T4_chain ⟨c₂.mcs, c₂.is_mcs, c₂.introduced_at⟩
+            ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ ⟨c₁.mcs, c₁.is_mcs, c₁.introduced_at⟩ h_c₂p' hc₁_R_p)
+        exact ⟨c₂', hc₂_R_p, h_not_c₂p, hc₂_R_q, h_not_qc₂⟩
+    · -- c₁ ≁ p: c₁ is the strict intermediate!
+      exact ⟨c₁', hc₁_R_p, h_c₁p, hc₁_R_q, h_not_qc₁⟩
   · -- c ≁ p: c is strictly above p
     by_cases h_cq : CanonicalR q.1.mcs c.mcs
     · -- c ~ q: symmetric case, iterate on (p, c)
@@ -281,8 +342,97 @@ theorem strict_intermediate_exists
         have h_p_refl : CanonicalR p.1.mcs p.1.mcs := by
           have h_mutual := mutual_canonicalR_implies_reflexive p.1.mcs d.mcs p.1.is_mcs d.is_mcs hd_R_p h_dp
           exact h_mutual.1
-        -- Similar to above case
-        sorry
+        -- We have c ~ q and c ≁ p. Also d ~ p.
+        -- We need to find a strict intermediate between p and q.
+        -- Since p is reflexive, use dense_timeline_has_strict_intermediate on (p, c)
+        -- Note: c ≁ p means ¬CanonicalR c.mcs p.1.mcs (h_cp = h_not_cp)
+        obtain ⟨e, he_mem, he_R_p, he_R_c, h_not_ce⟩ :=
+          dense_timeline_has_strict_intermediate root_mcs root_mcs_proof p.1 c p.2 hc_mem hc_R_p h_not_cp h_p_refl
+        let e' : DenseTimelineElem root_mcs root_mcs_proof := ⟨e, he_mem⟩
+        have he_R_q : CanonicalR e.mcs q.1.mcs := canonicalR_transitive e.mcs c.mcs q.1.mcs e.is_mcs he_R_c hc_R_q
+        -- h_not_ce : ¬CanonicalR c.mcs e.mcs
+        -- Since c ~ q, ¬CanonicalR c e implies ¬CanonicalR q e
+        have h_not_qe : ¬CanonicalR q.1.mcs e.mcs := by
+          intro h_qe
+          -- q -> e and c -> q (via c ~ q) would give c -> e by transitivity
+          -- Actually c ~ q means both CanonicalR c q and CanonicalR q c
+          -- We have h_cq : CanonicalR q c, and we want CanonicalR q e
+          -- If CanonicalR q e (h_qe), and CanonicalR q c (h_cq), then by linearity:
+          -- either c -> e, or e -> c, or c = e
+          -- But ¬CanonicalR c e (h_not_ce), so must be e -> c or c = e
+          -- e -> c: we have CanonicalR e c (he_R_c), so this is consistent
+          -- If e = c, then CanonicalR c e trivially, contradicting h_not_ce
+          -- Actually let me derive c -> e from the given:
+          -- We have CanonicalR q e. We need to connect q to c.
+          -- c ~ q gives us CanonicalR c q and CanonicalR q c.
+          -- By T4 chain: CanonicalR c q and CanonicalR q e gives CanonicalR c e
+          have h_ce := canonicalR_T4_chain
+            ⟨c.mcs, c.is_mcs, c.introduced_at⟩
+            ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+            ⟨e.mcs, e.is_mcs, e.introduced_at⟩
+            hc_R_q h_qe
+          exact h_not_ce h_ce
+        -- Now check if e ~ p
+        by_cases h_ep : CanonicalR e.mcs p.1.mcs
+        · -- e ~ p: iterate further
+          have h_e_refl : CanonicalR e.mcs e.mcs := by
+            have h := mutual_canonicalR_implies_reflexive e.mcs p.1.mcs e.is_mcs p.1.is_mcs h_ep he_R_p
+            exact h.1
+          obtain ⟨f, hf_mem, hf_R_e, hf_R_c, h_not_cf⟩ :=
+            dense_timeline_has_strict_intermediate root_mcs root_mcs_proof e c he_mem hc_mem he_R_c h_not_ce h_e_refl
+          let f' : DenseTimelineElem root_mcs root_mcs_proof := ⟨f, hf_mem⟩
+          have hf_R_p : CanonicalR p.1.mcs f.mcs := canonicalR_transitive p.1.mcs e.mcs f.mcs p.1.is_mcs he_R_p hf_R_e
+          have hf_R_q : CanonicalR f.mcs q.1.mcs := canonicalR_transitive f.mcs c.mcs q.1.mcs f.is_mcs hf_R_c hc_R_q
+          have h_not_qf : ¬CanonicalR q.1.mcs f.mcs := by
+            intro h_qf
+            have h_cf := canonicalR_T4_chain
+              ⟨c.mcs, c.is_mcs, c.introduced_at⟩
+              ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+              ⟨f.mcs, f.is_mcs, f.introduced_at⟩
+              hc_R_q h_qf
+            exact h_not_cf h_cf
+          by_cases h_fe : CanonicalR f.mcs e.mcs
+          · -- f ~ e ~ p
+            have h_fp : CanonicalR f.mcs p.1.mcs :=
+              canonicalR_T4_chain ⟨f.mcs, f.is_mcs, f.introduced_at⟩
+                ⟨e.mcs, e.is_mcs, e.introduced_at⟩ ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ h_fe h_ep
+            -- Iterate once more, then assert termination
+            have h_f_refl : CanonicalR f.mcs f.mcs := by
+              have h := mutual_canonicalR_implies_reflexive f.mcs p.1.mcs f.is_mcs p.1.is_mcs h_fp hf_R_p
+              exact h.1
+            obtain ⟨g, hg_mem, hg_R_f, hg_R_c, h_not_cg⟩ :=
+              dense_timeline_has_strict_intermediate root_mcs root_mcs_proof f c hf_mem hc_mem hf_R_c h_not_cf h_f_refl
+            let g' : DenseTimelineElem root_mcs root_mcs_proof := ⟨g, hg_mem⟩
+            have hg_R_p : CanonicalR p.1.mcs g.mcs := canonicalR_transitive p.1.mcs f.mcs g.mcs p.1.is_mcs hf_R_p hg_R_f
+            have hg_R_q : CanonicalR g.mcs q.1.mcs := canonicalR_transitive g.mcs c.mcs q.1.mcs g.is_mcs hg_R_c hc_R_q
+            have h_not_qg : ¬CanonicalR q.1.mcs g.mcs := by
+              intro h_qg
+              have h_cg := canonicalR_T4_chain
+                ⟨c.mcs, c.is_mcs, c.introduced_at⟩
+                ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                ⟨g.mcs, g.is_mcs, g.introduced_at⟩
+                hc_R_q h_qg
+              exact h_not_cg h_cg
+            by_cases h_gf : CanonicalR g.mcs f.mcs
+            · -- g ~ f ~ p: assert termination
+              exfalso
+              sorry
+            · -- g ≁ f: g is strict from f, hence strict from p
+              have h_not_gf : ¬CanonicalR g.mcs f.mcs := h_gf
+              have h_not_gp : ¬CanonicalR g.mcs p.1.mcs := by
+                intro h_gp
+                exact h_not_gf (canonicalR_T4_chain ⟨g.mcs, g.is_mcs, g.introduced_at⟩
+                  ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ ⟨f.mcs, f.is_mcs, f.introduced_at⟩ h_gp hf_R_p)
+              exact ⟨g', hg_R_p, h_not_gp, hg_R_q, h_not_qg⟩
+          · -- f ≁ e: f is strict from e, hence strict from p
+            have h_not_fe : ¬CanonicalR f.mcs e.mcs := h_fe
+            have h_not_fp : ¬CanonicalR f.mcs p.1.mcs := by
+              intro h_fp
+              exact h_not_fe (canonicalR_T4_chain ⟨f.mcs, f.is_mcs, f.introduced_at⟩
+                ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ ⟨e.mcs, e.is_mcs, e.introduced_at⟩ h_fp he_R_p)
+            exact ⟨f', hf_R_p, h_not_fp, hf_R_q, h_not_qf⟩
+        · -- e ≁ p: e is the strict intermediate!
+          exact ⟨e', he_R_p, h_ep, he_R_q, h_not_qe⟩
       · -- d ≁ p
         by_cases h_dc : CanonicalR c.mcs d.mcs
         · -- d ~ c ~ q
@@ -292,9 +442,157 @@ theorem strict_intermediate_exists
             -- d ~ c: CanonicalR d c (have hd_R_c) and CanonicalR c d (have h_dc)
             -- So CanonicalR q c and CanonicalR c d gives CanonicalR q d
             exact canonicalR_transitive q.1.mcs c.mcs d.mcs q.1.is_mcs h_cq h_dc
-          -- d ~ q and d ≁ p
-          -- Iterate again on (p, d)
-          sorry
+          -- d ~ q and d ≁ p: we have CanonicalR p d and ¬CanonicalR d p
+          -- d is strict from p, but equivalent to q.
+          -- Apply density to (p, d) where d ≁ p.
+          -- First check if p is reflexive
+          by_cases h_p_refl : CanonicalR p.1.mcs p.1.mcs
+          · -- p is reflexive: use strict intermediate
+            obtain ⟨e, he_mem, he_R_p, he_R_d, h_not_de⟩ :=
+              dense_timeline_has_strict_intermediate root_mcs root_mcs_proof p.1 d p.2 hd_mem hd_R_p h_dp h_p_refl
+            let e' : DenseTimelineElem root_mcs root_mcs_proof := ⟨e, he_mem⟩
+            have he_R_q : CanonicalR e.mcs q.1.mcs := canonicalR_transitive e.mcs d.mcs q.1.mcs e.is_mcs he_R_d hd_R_q
+            -- h_not_de : ¬CanonicalR d.mcs e.mcs
+            -- Since d ~ q, this gives ¬CanonicalR q e by T4 chain
+            have h_not_qe : ¬CanonicalR q.1.mcs e.mcs := by
+              intro h_qe
+              -- q -> e and d ~ q means d -> e by T4 chain
+              have h_de := canonicalR_T4_chain
+                ⟨d.mcs, d.is_mcs, d.introduced_at⟩
+                ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                ⟨e.mcs, e.is_mcs, e.introduced_at⟩
+                hd_R_q h_qe
+              exact h_not_de h_de
+            -- Check if e ~ p
+            by_cases h_ep : CanonicalR e.mcs p.1.mcs
+            · -- e ~ p: iterate on (e, d)
+              have h_e_refl : CanonicalR e.mcs e.mcs := by
+                have h := mutual_canonicalR_implies_reflexive e.mcs p.1.mcs e.is_mcs p.1.is_mcs h_ep he_R_p
+                exact h.1
+              obtain ⟨f, hf_mem, hf_R_e, hf_R_d, h_not_df⟩ :=
+                dense_timeline_has_strict_intermediate root_mcs root_mcs_proof e d he_mem hd_mem he_R_d h_not_de h_e_refl
+              let f' : DenseTimelineElem root_mcs root_mcs_proof := ⟨f, hf_mem⟩
+              have hf_R_p : CanonicalR p.1.mcs f.mcs := canonicalR_transitive p.1.mcs e.mcs f.mcs p.1.is_mcs he_R_p hf_R_e
+              have hf_R_q : CanonicalR f.mcs q.1.mcs := canonicalR_transitive f.mcs d.mcs q.1.mcs f.is_mcs hf_R_d hd_R_q
+              have h_not_qf : ¬CanonicalR q.1.mcs f.mcs := by
+                intro h_qf
+                have h_df := canonicalR_T4_chain
+                  ⟨d.mcs, d.is_mcs, d.introduced_at⟩
+                  ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                  ⟨f.mcs, f.is_mcs, f.introduced_at⟩
+                  hd_R_q h_qf
+                exact h_not_df h_df
+              by_cases h_fe : CanonicalR f.mcs e.mcs
+              · -- f ~ e ~ p: iterate once more
+                have h_fp : CanonicalR f.mcs p.1.mcs :=
+                  canonicalR_T4_chain ⟨f.mcs, f.is_mcs, f.introduced_at⟩
+                    ⟨e.mcs, e.is_mcs, e.introduced_at⟩ ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ h_fe h_ep
+                have h_f_refl : CanonicalR f.mcs f.mcs := by
+                  have h := mutual_canonicalR_implies_reflexive f.mcs p.1.mcs f.is_mcs p.1.is_mcs h_fp hf_R_p
+                  exact h.1
+                obtain ⟨g, hg_mem, hg_R_f, hg_R_d, h_not_dg⟩ :=
+                  dense_timeline_has_strict_intermediate root_mcs root_mcs_proof f d hf_mem hd_mem hf_R_d h_not_df h_f_refl
+                let g' : DenseTimelineElem root_mcs root_mcs_proof := ⟨g, hg_mem⟩
+                have hg_R_p : CanonicalR p.1.mcs g.mcs := canonicalR_transitive p.1.mcs f.mcs g.mcs p.1.is_mcs hf_R_p hg_R_f
+                have hg_R_q : CanonicalR g.mcs q.1.mcs := canonicalR_transitive g.mcs d.mcs q.1.mcs g.is_mcs hg_R_d hd_R_q
+                have h_not_qg : ¬CanonicalR q.1.mcs g.mcs := by
+                  intro h_qg
+                  have h_dg := canonicalR_T4_chain
+                    ⟨d.mcs, d.is_mcs, d.introduced_at⟩
+                    ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                    ⟨g.mcs, g.is_mcs, g.introduced_at⟩
+                    hd_R_q h_qg
+                  exact h_not_dg h_dg
+                by_cases h_gf : CanonicalR g.mcs f.mcs
+                · -- g ~ f ~ p: termination
+                  exfalso
+                  sorry
+                · -- g ≁ f: strict from f hence from p
+                  have h_not_gf : ¬CanonicalR g.mcs f.mcs := h_gf
+                  have h_not_gp : ¬CanonicalR g.mcs p.1.mcs := by
+                    intro h_gp
+                    exact h_not_gf (canonicalR_T4_chain ⟨g.mcs, g.is_mcs, g.introduced_at⟩
+                      ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ ⟨f.mcs, f.is_mcs, f.introduced_at⟩ h_gp hf_R_p)
+                  exact ⟨g', hg_R_p, h_not_gp, hg_R_q, h_not_qg⟩
+              · -- f ≁ e: strict from e hence from p
+                have h_not_fe : ¬CanonicalR f.mcs e.mcs := h_fe
+                have h_not_fp : ¬CanonicalR f.mcs p.1.mcs := by
+                  intro h_fp
+                  exact h_not_fe (canonicalR_T4_chain ⟨f.mcs, f.is_mcs, f.introduced_at⟩
+                    ⟨p.1.mcs, p.1.is_mcs, p.1.introduced_at⟩ ⟨e.mcs, e.is_mcs, e.introduced_at⟩ h_fp he_R_p)
+                exact ⟨f', hf_R_p, h_not_fp, hf_R_q, h_not_qf⟩
+            · -- e ≁ p: e is the strict intermediate!
+              exact ⟨e', he_R_p, h_ep, he_R_q, h_not_qe⟩
+          · -- p is NOT reflexive
+            -- Then use non-strict density, which still gives a useful intermediate
+            -- Actually, non-strict density gives c with CanonicalR p c and CanonicalR c d
+            -- If c ≁ p and c ≁ d, we're done
+            -- If c ~ p, then p is reflexive (contradiction with h_p_refl being false)
+            -- If c ~ d (hence ~ q), iterate
+            obtain ⟨e, he_mem, he_R_p, he_R_d⟩ :=
+              dense_timeline_has_intermediate root_mcs root_mcs_proof p.1 d p.2 hd_mem hd_R_p h_dp
+            let e' : DenseTimelineElem root_mcs root_mcs_proof := ⟨e, he_mem⟩
+            have he_R_q : CanonicalR e.mcs q.1.mcs := canonicalR_transitive e.mcs d.mcs q.1.mcs e.is_mcs he_R_d hd_R_q
+            by_cases h_ep : CanonicalR e.mcs p.1.mcs
+            · -- e ~ p: then p is reflexive, contradicting h_p_refl
+              exfalso
+              have h_p_refl' : CanonicalR p.1.mcs p.1.mcs := by
+                have h := mutual_canonicalR_implies_reflexive p.1.mcs e.mcs p.1.is_mcs e.is_mcs he_R_p h_ep
+                exact h.1
+              exact h_p_refl h_p_refl'
+            · -- e ≁ p
+              by_cases h_ed : CanonicalR d.mcs e.mcs
+              · -- e ~ d ~ q
+                have h_eq' : CanonicalR q.1.mcs e.mcs :=
+                  canonicalR_T4_chain ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                    ⟨d.mcs, d.is_mcs, d.introduced_at⟩ ⟨e.mcs, e.is_mcs, e.introduced_at⟩ h_dq h_ed
+                -- e ~ q and e ≁ p: iterate on (p, e)
+                -- This is similar to (p, d) case but with e instead of d
+                -- For bounded depth, just apply density once more
+                obtain ⟨f, hf_mem, hf_R_p, hf_R_e⟩ :=
+                  dense_timeline_has_intermediate root_mcs root_mcs_proof p.1 e p.2 he_mem he_R_p h_ep
+                let f' : DenseTimelineElem root_mcs root_mcs_proof := ⟨f, hf_mem⟩
+                have hf_R_q : CanonicalR f.mcs q.1.mcs := canonicalR_transitive f.mcs e.mcs q.1.mcs f.is_mcs hf_R_e he_R_q
+                by_cases h_fp : CanonicalR f.mcs p.1.mcs
+                · -- f ~ p: p reflexive, contradiction
+                  exfalso
+                  have h_p_refl' : CanonicalR p.1.mcs p.1.mcs := by
+                    have h := mutual_canonicalR_implies_reflexive p.1.mcs f.mcs p.1.is_mcs f.is_mcs hf_R_p h_fp
+                    exact h.1
+                  exact h_p_refl h_p_refl'
+                · -- f ≁ p
+                  by_cases h_fe : CanonicalR e.mcs f.mcs
+                  · -- f ~ e ~ q
+                    have h_fq : CanonicalR q.1.mcs f.mcs :=
+                      canonicalR_T4_chain ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                        ⟨e.mcs, e.is_mcs, e.introduced_at⟩ ⟨f.mcs, f.is_mcs, f.introduced_at⟩ h_eq' h_fe
+                    -- f ~ q and f ≁ p: iterate on (p, f)
+                    -- p is not reflexive, so intermediate also won't be ~ p
+                    -- By formula constraints, chain terminates
+                    exfalso
+                    sorry
+                  · -- f ≁ e: check if f ≁ q
+                    have h_not_qf : ¬CanonicalR q.1.mcs f.mcs := by
+                      intro h_qf
+                      -- q -> f and e ~ q means e -> f by T4
+                      have h_ef := canonicalR_T4_chain
+                        ⟨e.mcs, e.is_mcs, e.introduced_at⟩
+                        ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                        ⟨f.mcs, f.is_mcs, f.introduced_at⟩
+                        he_R_q h_qf
+                      exact h_fe h_ef
+                    exact ⟨f', hf_R_p, h_fp, hf_R_q, h_not_qf⟩
+              · -- e ≁ d: check if e ≁ q
+                have h_not_qe : ¬CanonicalR q.1.mcs e.mcs := by
+                  intro h_qe
+                  -- q -> e and d ~ q means d -> e by T4
+                  have h_de := canonicalR_T4_chain
+                    ⟨d.mcs, d.is_mcs, d.introduced_at⟩
+                    ⟨q.1.mcs, q.1.is_mcs, q.1.introduced_at⟩
+                    ⟨e.mcs, e.is_mcs, e.introduced_at⟩
+                    hd_R_q h_qe
+                  exact h_ed h_de
+                exact ⟨e', he_R_p, h_ep, he_R_q, h_not_qe⟩
         · -- d ≁ c, hence d ≁ q
           have h_not_dq : ¬CanonicalR q.1.mcs d.mcs := by
             intro h_qd

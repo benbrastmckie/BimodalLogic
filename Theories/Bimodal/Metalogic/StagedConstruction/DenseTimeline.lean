@@ -340,6 +340,43 @@ theorem dense_timeline_has_intermediate
   · exact densityIntermediatePoint_canonicalR_left a b h_R h_not_R (N + 1)
   · exact densityIntermediatePoint_canonicalR_right a b h_R h_not_R (N + 1)
 
+/-- When the source is reflexive, the intermediate from dense_timeline_has_intermediate
+    is strict from the target: ¬CanonicalR(b.mcs, c.mcs). This is the key property
+    for proving DenselyOrdered at the quotient level. -/
+theorem dense_timeline_has_strict_intermediate
+    (a b : StagedPoint)
+    (ha : a ∈ denseTimelineUnion root_mcs root_mcs_proof)
+    (hb : b ∈ denseTimelineUnion root_mcs root_mcs_proof)
+    (h_R : CanonicalR a.mcs b.mcs)
+    (h_not_R : ¬CanonicalR b.mcs a.mcs)
+    (h_refl : CanonicalR a.mcs a.mcs) :
+    ∃ c : StagedPoint, c ∈ denseTimelineUnion root_mcs root_mcs_proof ∧
+      CanonicalR a.mcs c.mcs ∧ CanonicalR c.mcs b.mcs ∧ ¬CanonicalR b.mcs c.mcs := by
+  obtain ⟨n, hn⟩ := ha
+  obtain ⟨m, hm⟩ := hb
+  set N := max n m
+  have ha_N := denseStage_monotone_le root_mcs root_mcs_proof (Nat.le_max_left n m) hn
+  have hb_N := denseStage_monotone_le root_mcs root_mcs_proof (Nat.le_max_right n m) hm
+  let c := densityIntermediatePoint a b h_R h_not_R (N + 1)
+  refine ⟨c, ⟨N + 1, ?_⟩, ?_, ?_, ?_⟩
+  · show c ∈ denseStage root_mcs root_mcs_proof (N + 1)
+    simp only [denseStage]
+    rw [Finset.mem_union]
+    right
+    simp only [densityWitnessesForSet]
+    rw [Finset.mem_biUnion]
+    have ha_combined : a ∈ stagedBuild root_mcs root_mcs_proof (N + 1) ∪
+        denseStage root_mcs root_mcs_proof N :=
+      Finset.mem_union.mpr (Or.inr ha_N)
+    have hb_combined : b ∈ stagedBuild root_mcs root_mcs_proof (N + 1) ∪
+        denseStage root_mcs root_mcs_proof N :=
+      Finset.mem_union.mpr (Or.inr hb_N)
+    exact ⟨a, ha_combined, Finset.mem_biUnion.mpr ⟨b, hb_combined,
+      by simp only [c]; rw [dif_pos ⟨h_R, h_not_R⟩]; exact Finset.mem_singleton.mpr rfl⟩⟩
+  · exact densityIntermediatePoint_canonicalR_left a b h_R h_not_R (N + 1)
+  · exact densityIntermediatePoint_canonicalR_right a b h_R h_not_R (N + 1)
+  · exact densityIntermediatePoint_strict_from_target a b h_R h_not_R (N + 1) h_refl
+
 /-!
 ## Origin tracking for dense timeline points
 
