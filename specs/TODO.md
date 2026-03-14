@@ -1,5 +1,5 @@
 ---
-next_project_number: 964
+next_project_number: 965
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,21 +22,31 @@ technical_debt:
 
 ## Tasks
 
+### 964. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Priority**: medium
+- **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md)
+
+**Description**: The `canonicalR_irreflexive` axiom in `Canonical/CanonicalIrreflexivityAxiom.lean` is a mathematically standard result (Goldblatt 1992, BdRV 2001) that is currently hypothesized because the proof requires atom freshness, which the `String` atom type cannot provide. Change the atom type from `String` to a structured type supporting freshness (e.g., `{base : String, fresh_index : Option ℕ}`), then prove the axiom as a theorem and remove the `axiom` declaration.
+
+**Downstream impact**: 5 instances currently proved from this axiom (NoMaxOrder, NoMinOrder, DenselyOrdered on dense timeline; NoMaxOrder, NoMinOrder on discrete timeline) would become fully proved theorems. The axiom is used with high confidence — this is a formalization artifact, not a mathematical gap.
+
+**Key files**:
+- Axiom: `Theories/Bimodal/Metalogic/Canonical/CanonicalIrreflexivityAxiom.lean`
+- Failed proof: `Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean`
+- Formula type: `Theories/Bimodal/Syntax/Formula.lean`
+
+---
+
 ### 963. Branch comparison: claude/duration-group-construction-SFEJg vs main
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Priority**: high
-- **Branch**: claude/duration-group-construction-SFEJg (locally tracked, fetched)
 
-**Description**: Systematically compare branch `claude/duration-group-construction-SFEJg` with `main` to determine if it should be merged. The branch takes a fundamentally different architectural approach — using an explicit `axiom canonicalR_irreflexive` (a well-documented standard result, blocked only by a `String` atom formalization artifact) to cleanly discharge all Cantor prerequisites. This makes `NoMaxOrder`, `NoMinOrder`, and `DenselyOrdered` trivially provable, reducing `CantorApplication.lean` from **8 sorries to 0**. The branch also adds new pipeline files (`CanonicalDomain.lean`, `DurationTransfer.lean`, `DiscreteTimeline.lean`) for a complete Dense/Discrete/Base case architecture.
-
-**Trade-off to evaluate**:
-- Branch advantage: CantorApplication 0 sorries (vs 8 on main), cleaner architecture, no iteration termination dead-ends
-- Branch disadvantage: diverged before task 962 completed, so `DensityFrameCondition.lean` regressed to ~12 sorries (vs 0 on main)
-- Resolution path: cherry-pick task 962 fixes onto branch, or merge branch into main with conflict resolution
-
-**Decision criteria**: Merge branch if it provides a cleaner, stronger, contamination-free path to the full representation theorem.
+**Outcome**: Branch merged into main. Architecture determined superior: `canonicalR_irreflexive` axiom (standard theorem, blocked only by `String` atom formalization artifact) cleanly discharges all Cantor prerequisites, reducing `CantorApplication.lean` from 8 sorries to 0. Auto-merge produced 0 sorries in `DensityFrameCondition.lean`. New files: `CanonicalDomain.lean`, `DurationTransfer.lean`, `DiscreteTimeline.lean`, `CanonicalIrreflexivityAxiom.lean`. Proof debt tracked as task 964.
 
 ---
 
@@ -51,7 +61,7 @@ technical_debt:
 - **Plan**: [implementation-001.md](specs/962_dense_timeline_strict_intermediate_reflexive_source/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260313.md](specs/962_dense_timeline_strict_intermediate_reflexive_source/summaries/implementation-summary-20260313.md)
 
-**Description**: Modify `DenseTimeline.lean` so that `densityIntermediateMCS` uses `density_frame_condition_reflexive_source` when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: `density_frame_condition` Case A only provides strictness from the TARGET (`¬CanonicalR M' W`), not from the SOURCE (`¬CanonicalR W M`). By switching to `density_frame_condition_reflexive_source` for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to `DenseTimeline.lean` and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.
+**Description**: Modify `DenseTimeline.lean` so that `densityIntermediateMCS` uses `density_frame_condition_reflexive_source` when the source MCS is reflexive. Zero sorries introduced.
 
 ---
 

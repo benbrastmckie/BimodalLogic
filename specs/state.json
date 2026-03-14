@@ -6,16 +6,36 @@
   },
   "active_projects": [
     {
+      "project_number": 964,
+      "project_name": "resolve_atom_type_freshness_debt",
+      "status": "researched",
+      "language": "lean",
+      "priority": "medium",
+      "description": "The canonicalR_irreflexive axiom is a standard theorem blocked only by the String atom type lacking freshness. Change the atom type to support freshness (e.g., {base: String, fresh_index: Option Nat}) and prove the axiom as a theorem, removing the axiom declaration. Downstream: NoMaxOrder, NoMinOrder, DenselyOrdered (dense case), NoMaxOrder, NoMinOrder (discrete case) all become fully proven theorems.",
+      "created": "2026-03-14T01:00:00Z",
+      "last_updated": "2026-03-14T01:00:00Z",
+      "session_id": "sess_1773452813_2rz88y",
+      "artifacts": [
+        {
+          "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-001.md",
+          "type": "research",
+          "summary": "Atom type freshness analysis: how to change String to a type supporting freshness to prove canonicalR_irreflexive"
+        }
+      ]
+    },
+    {
       "project_number": 963,
       "project_name": "branch_comparison_duration_group_vs_main",
-      "status": "not_started",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
       "description": "Systematically compare branch claude/duration-group-construction-SFEJg with main to determine if it should be merged. The branch introduces a fundamentally different architecture: (1) axiom canonicalR_irreflexive (documented proof-debt, resolves all Cantor prerequisites cleanly), (2) new files CanonicalDomain.lean, DurationTransfer.lean, DiscreteTimeline.lean building toward full representation theorem, (3) CantorApplication goes from 8 sorries to 0. However the branch diverged before task 962 completed, so DensityFrameCondition regressed from 0 to ~12 sorries. The comparison must determine: (a) file-by-file superiority, (b) whether canonicalR_irreflexive axiom is preferable to 8 CantorApplication sorries, (c) whether the task 962 fixes can be cherry-picked or the branches merged cleanly, (d) whether the overall architecture is cleaner and contamination-free. Merge the branch if it provides a superior, uncompromised path to the representation theorem.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-14T00:00:00Z",
+      "last_updated": "2026-03-14T01:00:00Z",
       "session_id": "sess_1773452813_2rz88y",
-      "artifacts": []
+      "artifacts": [],
+      "completed": "2026-03-14T01:00:00Z",
+      "completion_summary": "Branch claude/duration-group-construction-SFEJg merged into main. CantorApplication: 8->0 sorries. Architecture upgraded with canonicalR_irreflexive axiom. New files: CanonicalDomain.lean, DurationTransfer.lean, DiscreteTimeline.lean, CanonicalIrreflexivityAxiom.lean."
     },
     {
       "project_number": 962,
@@ -23,7 +43,7 @@
       "status": "completed",
       "language": "lean",
       "priority": "high",
-      "description": "Modify DenseTimeline.lean so that densityIntermediateMCS uses density_frame_condition_reflexive_source when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: density_frame_condition Case A only provides strictness from the TARGET (¬CanonicalR M'  W), not from the SOURCE (¬CanonicalR W M). By switching to density_frame_condition_reflexive_source for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to DenseTimeline.lean and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.",
+      "description": "Modify DenseTimeline.lean so that densityIntermediateMCS uses density_frame_condition_reflexive_source when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: density_frame_condition Case A only provides strictness from the TARGET (\u00acCanonicalR M'  W), not from the SOURCE (\u00acCanonicalR W M). By switching to density_frame_condition_reflexive_source for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to DenseTimeline.lean and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.",
       "unblocks": [
         961
       ],
@@ -93,7 +113,7 @@
       "status": "implementing",
       "language": "lean",
       "priority": "high",
-      "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
+      "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set \u2192 MCS origin (Lindenbaum) \u2192 linear order T of reachable MCSs (existence lemma) \u2192 D = Aut+(T) (translation group) \u2192 eval\u2080 : D \u2245 T (origin bijection) \u2192 linearly ordered abelian group \u2192 task_rel = group action \u2192 canonical model \u2192 truth lemma \u2192 completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
       "last_updated": "2026-03-13T18:58:30Z",
       "researched": "2026-03-13T18:31:06Z",
@@ -253,7 +273,7 @@
         {
           "type": "research",
           "path": "specs/954_refactor_representation_theorem_general_duration/reports/research-001.md",
-          "summary": "Comprehensive analysis of syntactic D construction pipeline: Fragment → Quotient → SuccOrder → OrderIso Z → Transfer AddCommGroup. 5-step construction from pure syntax, parameterizable by temporal theories for density extension."
+          "summary": "Comprehensive analysis of syntactic D construction pipeline: Fragment \u2192 Quotient \u2192 SuccOrder \u2192 OrderIso Z \u2192 Transfer AddCommGroup. 5-step construction from pure syntax, parameterizable by temporal theories for density extension."
         },
         {
           "path": "specs/954_refactor_representation_theorem_general_duration/plans/implementation-001.md",
@@ -270,7 +290,7 @@
       "status": "researched",
       "language": "lean",
       "priority": "medium",
-      "description": "Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with dual judgments: acceptance (Γ ⊢⁺ φ) and rejection (Γ ⊢⁻ φ). Parallel implementation with equivalence bridge.",
+      "description": "Refactor unilateral proof system (\u0393 \u22a2 \u03c6) to bilateral system with dual judgments: acceptance (\u0393 \u22a2\u207a \u03c6) and rejection (\u0393 \u22a2\u207b \u03c6). Parallel implementation with equivalence bridge.",
       "created": "2026-03-03T00:00:00Z",
       "last_updated": "2026-03-06T18:55:02Z",
       "researched": "2026-03-06T18:55:02Z",
@@ -592,7 +612,7 @@
           "summary": "Post-FMP-completeness reassessment. Key finding: FMP strong completeness via big conjunction trick is the path to zero-sorry (2-4h, 90%+ success). BFMCS modal saturation remains blocked over all domains."
         }
       ],
-      "description": "Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. CONSTRAINT: Sorry debt is NEVER acceptable — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.\n\nThe study should focus on LEARNING FROM FAILURES to inspire creative solutions:\n\n**Pattern Analysis of Failed Approaches:**\n- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?\n- Is the \"Lindenbaum opacity\" a fundamental barrier, or does it reveal a hidden assumption we can drop?\n- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?\n\n**Creative Reframing Questions:**\n- What if the problem is not \"prove forward_F for a chain\" but \"find a structure that makes forward_F trivially true\"?\n- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar \"witness existence under opacity\" problems?\n- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?\n- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?\n\n**Mandatory Outputs:**\n1. A \"lessons learned\" document identifying the precise mathematical property that all failed approaches lacked\n2. At least 3 genuinely novel approach ideas that do NOT fit the \"bottom-up chain construction\" pattern\n3. For each novel approach: a preliminary feasibility assessment with confidence level\n4. A ranked recommendation with clear decision criteria\n\nKey artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.",
+      "description": "Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. CONSTRAINT: Sorry debt is NEVER acceptable \u2014 the study must find a path to zero sorries, not evaluate sorry acceptance as an option.\n\nThe study should focus on LEARNING FROM FAILURES to inspire creative solutions:\n\n**Pattern Analysis of Failed Approaches:**\n- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?\n- Is the \"Lindenbaum opacity\" a fundamental barrier, or does it reveal a hidden assumption we can drop?\n- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?\n\n**Creative Reframing Questions:**\n- What if the problem is not \"prove forward_F for a chain\" but \"find a structure that makes forward_F trivially true\"?\n- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar \"witness existence under opacity\" problems?\n- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?\n- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?\n\n**Mandatory Outputs:**\n1. A \"lessons learned\" document identifying the precise mathematical property that all failed approaches lacked\n2. At least 3 genuinely novel approach ideas that do NOT fit the \"bottom-up chain construction\" pattern\n3. For each novel approach: a preliminary feasibility assessment with confidence level\n4. A ranked recommendation with clear decision criteria\n\nKey artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.",
       "researched": "2026-02-27T05:44:51Z",
       "planned": "2026-02-25T02:26:51Z",
       "started": "2026-02-24T19:18:29Z",
