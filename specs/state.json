@@ -8,7 +8,7 @@
     {
       "project_number": 962,
       "project_name": "dense_timeline_strict_intermediate_reflexive_source",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Modify DenseTimeline.lean so that densityIntermediateMCS uses density_frame_condition_reflexive_source when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: density_frame_condition Case A only provides strictness from the TARGET (¬CanonicalR M'  W), not from the SOURCE (¬CanonicalR W M). By switching to density_frame_condition_reflexive_source for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to DenseTimeline.lean and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.",
@@ -19,7 +19,16 @@
         957
       ],
       "created": "2026-03-14T00:18:18Z",
-      "last_updated": "2026-03-14T00:18:18Z"
+      "last_updated": "2026-03-14T00:45:00Z",
+      "researched": "2026-03-14T00:45:00Z",
+      "session_id": "sess_1773629812_b4e2f8",
+      "artifacts": [
+        {
+          "path": "specs/962_dense_timeline_strict_intermediate_reflexive_source/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing density frame condition variants and implementation plan for strict intermediate construction"
+        }
+      ]
     },
     {
       "project_number": 960,

@@ -24,11 +24,12 @@ technical_debt:
 
 ### 962. Modify DenseTimeline.lean: strict intermediate for reflexive sources
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
 - **Dependencies**: Task 957 (density_frame_condition - COMPLETE)
 - **Unblocks**: Task 961 (NoMaxOrder/NoMinOrder/DenselyOrdered for TimelineQuot)
+- **Research**: [specs/962_dense_timeline_strict_intermediate_reflexive_source/reports/research-001.md]
 
 **Description**: Modify `DenseTimeline.lean` so that `densityIntermediateMCS` uses `density_frame_condition_reflexive_source` when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: `density_frame_condition` Case A only provides strictness from the TARGET (`¬CanonicalR M' W`), not from the SOURCE (`¬CanonicalR W M`). By switching to `density_frame_condition_reflexive_source` for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to `DenseTimeline.lean` and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.
 
