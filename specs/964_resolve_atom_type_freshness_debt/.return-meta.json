@@ -1,42 +1,25 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-14T16:00:00Z",
-  "completed_at": "2026-03-14T18:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-005.md",
-      "summary": "Comprehensive analysis of reflexive G/H semantics refactoring blockers vs current strict semantics blockers. Concludes reflexive refactor has 5+ major blockers with HIGH risk, while current path has 0 practical blockers."
+      "type": "plan",
+      "path": "specs/964_resolve_atom_type_freshness_debt/plans/implementation-003.md",
+      "summary": "4-phase cleanup plan: archive failed proof attempt (NOT the axiom), update docs, verify build"
     }
   ],
-  "next_steps": "No code changes needed. The current irreflexive architecture is sound and complete. The 'blocker' (unprovable axiom) is unused.",
+  "next_steps": "Run /implement 964 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773518210_a917bd",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 7200,
+    "session_id": "sess_1773525006_a8e6cc",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-math-research", "math-research-agent"],
-    "findings_count": 8,
-    "context_files_loaded": ["ROAD_MAP.md", "research-024.md"],
-    "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1.5
   },
-  "research_findings": {
-    "reflexive_refactor_recommended": false,
-    "current_blockers_count": 1,
-    "current_blockers_practical_impact": "ZERO - canonicalR_irreflexive axiom is unused",
-    "reflexive_refactor_blockers_count": 5,
-    "reflexive_refactor_blockers": [
-      "R1: Density axiom trivialization (F(phi) -> F(F(phi)) becomes trivially true)",
-      "R2: Seriality axiom redundancy (proof structure changes)",
-      "R3: Density frame condition proof architecture collapse",
-      "R4: DenseTimeline construction incompatibility",
-      "R5: Cantor isomorphism prerequisites restructuring"
-    ],
-    "effort_estimate_reflexive_refactor": "87-167 hours with HIGH risk of mathematical impossibility",
-    "effort_estimate_current_path": "0 hours",
-    "historical_evidence": "Reflexive semantics tried 2025-12-01 to 2026-03-09 and ABANDONED after 3 months",
-    "recommendation": "DO NOT pursue reflexive refactor. Current irreflexive architecture is sound and complete."
+  "planning_notes": {
+    "discrepancy_found": true,
+    "discrepancy_description": "Task description said canonicalR_irreflexive axiom is UNUSED, but code analysis shows it IS used via canonicalR_strict theorem in CantorApplication.lean and DiscreteTimeline.lean",
+    "plan_deviation": "Plan does NOT archive CanonicalIrreflexivityAxiom.lean (would break build). Only archives failed proof attempt CanonicalIrreflexivity.lean"
   }
 }
