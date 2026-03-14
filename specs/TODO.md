@@ -74,10 +74,11 @@ technical_debt:
 
 ### 966. Branch comparison: duration group TaskFrame refactor vs main
 - **Effort**: 1-2 hours (decision task)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: meta
 - **Priority**: high
 - **Research**: [specs/966_branch_comparison_duration_group_refactor/reports/research-001.md], [specs/966_branch_comparison_duration_group_refactor/reports/research-002.md]
+- **Plan**: [specs/966_branch_comparison_duration_group_refactor/plans/implementation-001.md]
 
 **Description**: Compare branch `claude/duration-group-construction-SFEJg` against main. The branch proposes replacing the universal `compositionality` axiom in `TaskFrame` with `forward_comp` (non-negative) + `converse` (biconditional time-reversal). Three supporting research reports confirm the mathematical necessity.
 
