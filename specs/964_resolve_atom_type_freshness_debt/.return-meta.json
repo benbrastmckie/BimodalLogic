@@ -1,37 +1,33 @@
 {
-  "status": "research_complete",
-  "started_at": "2026-03-14T10:00:00Z",
-  "completed_at": "2026-03-14T10:45:00Z",
+  "status": "planned",
   "artifacts": [
-    "specs/964_resolve_atom_type_freshness_debt/reports/research-002.md"
+    {
+      "type": "plan",
+      "path": "specs/964_resolve_atom_type_freshness_debt/plans/implementation-001.md",
+      "summary": "8-phase implementation plan for atom type freshness debt resolution"
+    }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Deep research completed. Analyzed codebase, found Mathlib freshness lemmas, identified existing ExtFormula pattern, documented full refactoring scope."
-  },
+  "next_steps": "Run /implement 964 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773512635_0iynyl",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773513012_1ambjn",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
-  },
-  "findings": {
-    "primary_recommendation": "Option A: Structured Atom type",
-    "mathlib_key_lemma": "Infinite.exists_notMem_finset",
-    "existing_pattern": "ConservativeExtension/ExtFormula.lean",
-    "refactoring_scope": {
-      "files_affected": 31,
-      "estimated_lines": 980,
-      "estimated_hours": "12-18"
-    },
-    "downstream_impact": [
-      "NoMaxOrder (dense) becomes theorem",
-      "NoMinOrder (dense) becomes theorem",
-      "DenselyOrdered becomes theorem",
-      "NoMaxOrder (discrete) becomes theorem",
-      "NoMinOrder (discrete) becomes theorem",
-      "canonicalR_strict becomes theorem",
-      "canonicalR_antisymmetric_strict becomes theorem"
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 14,
+    "research_integrated": true,
+    "reports_integrated": [
+      {
+        "path": "reports/research-001.md",
+        "integrated_in_plan_version": 1,
+        "integrated_date": "2026-03-14"
+      },
+      {
+        "path": "reports/research-002.md",
+        "integrated_in_plan_version": 1,
+        "integrated_date": "2026-03-14"
+      }
     ]
   }
 }
