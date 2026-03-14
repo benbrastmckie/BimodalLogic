@@ -1,5 +1,5 @@
 ---
-next_project_number: 963
+next_project_number: 964
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,24 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 963. Branch comparison: claude/duration-group-construction-SFEJg vs main
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: meta
+- **Priority**: high
+- **Branch**: claude/duration-group-construction-SFEJg (locally tracked, fetched)
+
+**Description**: Systematically compare branch `claude/duration-group-construction-SFEJg` with `main` to determine if it should be merged. The branch takes a fundamentally different architectural approach — using an explicit `axiom canonicalR_irreflexive` (a well-documented standard result, blocked only by a `String` atom formalization artifact) to cleanly discharge all Cantor prerequisites. This makes `NoMaxOrder`, `NoMinOrder`, and `DenselyOrdered` trivially provable, reducing `CantorApplication.lean` from **8 sorries to 0**. The branch also adds new pipeline files (`CanonicalDomain.lean`, `DurationTransfer.lean`, `DiscreteTimeline.lean`) for a complete Dense/Discrete/Base case architecture.
+
+**Trade-off to evaluate**:
+- Branch advantage: CantorApplication 0 sorries (vs 8 on main), cleaner architecture, no iteration termination dead-ends
+- Branch disadvantage: diverged before task 962 completed, so `DensityFrameCondition.lean` regressed to ~12 sorries (vs 0 on main)
+- Resolution path: cherry-pick task 962 fixes onto branch, or merge branch into main with conflict resolution
+
+**Decision criteria**: Merge branch if it provides a cleaner, stronger, contamination-free path to the full representation theorem.
+
+---
 
 ### 962. Modify DenseTimeline.lean: strict intermediate for reflexive sources
 - **Effort**: 2-4 hours

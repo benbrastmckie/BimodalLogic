@@ -1,10 +1,22 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 49,
+    "total_tasks": 24,
     "last_sync": "2026-02-03T21:09:57Z"
   },
   "active_projects": [
+    {
+      "project_number": 963,
+      "project_name": "branch_comparison_duration_group_vs_main",
+      "status": "not_started",
+      "language": "meta",
+      "priority": "high",
+      "description": "Systematically compare branch claude/duration-group-construction-SFEJg with main to determine if it should be merged. The branch introduces a fundamentally different architecture: (1) axiom canonicalR_irreflexive (documented proof-debt, resolves all Cantor prerequisites cleanly), (2) new files CanonicalDomain.lean, DurationTransfer.lean, DiscreteTimeline.lean building toward full representation theorem, (3) CantorApplication goes from 8 sorries to 0. However the branch diverged before task 962 completed, so DensityFrameCondition regressed from 0 to ~12 sorries. The comparison must determine: (a) file-by-file superiority, (b) whether canonicalR_irreflexive axiom is preferable to 8 CantorApplication sorries, (c) whether the task 962 fixes can be cherry-picked or the branches merged cleanly, (d) whether the overall architecture is cleaner and contamination-free. Merge the branch if it provides a superior, uncompromised path to the representation theorem.",
+      "created": "2026-03-14T00:00:00Z",
+      "last_updated": "2026-03-14T00:00:00Z",
+      "session_id": "sess_1773452813_2rz88y",
+      "artifacts": []
+    },
     {
       "project_number": 962,
       "project_name": "dense_timeline_strict_intermediate_reflexive_source",
