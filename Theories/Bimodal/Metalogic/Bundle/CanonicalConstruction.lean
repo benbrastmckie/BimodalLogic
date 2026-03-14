@@ -1,5 +1,4 @@
 import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Metalogic.Core.MaximalConsistent
@@ -24,7 +23,7 @@ we prove the TruthLemma directly at the `truth_at` level, eliminating the interm
 ## Definitions
 
 - `CanonicalWorldState`: Subtype of MCS (maximal consistent sets)
-- `CanonicalTaskFrame`: TaskFrame Int with WorldState = CanonicalWorldState
+- `CanonicalTaskFrame`: TaskFrame Int with permissive task_rel (for type-checking only)
 - `CanonicalTaskModel`: TaskModel with valuation = MCS membership
 - `to_history`: Convert FMCS to WorldHistory
 - `CanonicalOmega`: Set of world-histories from bundle families
@@ -66,71 +65,40 @@ def CanonicalWorldState : Type :=
   { M : Set Formula // SetMaximalConsistent M }
 
 /--
-Canonical task relation between world states.
+Canonical task relation between world states (permissive).
 
-`canonical_task_rel M d N` holds iff:
-- GContent(M.val) ⊆ N.val (forward coherence)
-- HContent(N.val) ⊆ M.val (backward coherence)
+The task relation is defined as trivially `True` because:
+1. `truth_at` does NOT use task_rel — temporal operators G/H use the strict
+   order `<` on D directly, not the task relation.
+2. The meaningful task relation (deterministic group translation `w + d = w'`)
+   is constructed separately in `DurationTransfer.canonicalTaskFrame`, where
+   nullity follows from `add_zero` and compositionality from `add_assoc`.
+3. This permissive relation exists solely for `TaskFrame`/`WorldHistory`
+   type-checking — it carries no logical content for the TruthLemma.
 
-Both conditions are required unconditionally (regardless of the sign of d).
-This strengthened definition enables compositionality via uniform transitivity
-arguments using `canonicalR_transitive` and `HContent_chain_transitive`.
-
-The duration parameter `d` is present for TaskFrame compatibility but does not
-affect the relation -- temporal content inclusion is sufficient.
+The old definition (`GContent M ⊆ N ∧ HContent N ⊆ M`) required the temporal
+T-axiom (G(φ) → φ) for nullity, but this axiom is NOT sound under irreflexive
+semantics where G quantifies over strictly future times (`t < s`, not `t ≤ s`).
 -/
-def canonical_task_rel (M : CanonicalWorldState) (_d : Int) (N : CanonicalWorldState) : Prop :=
-  GContent M.val ⊆ N.val ∧ HContent N.val ⊆ M.val
-
-/--
-Nullity: canonical_task_rel M 0 M holds for any MCS M.
-
-Both conditions hold by T-axioms:
-- GContent(M) ⊆ M: by T-axiom G(phi) -> phi (canonicalR_reflexive)
-- HContent(M) ⊆ M: by T-axiom H(phi) -> phi (canonicalR_past_reflexive)
--/
-theorem canonical_task_rel_nullity (M : CanonicalWorldState) :
-    canonical_task_rel M 0 M := by
-  exact ⟨canonicalR_reflexive M.val M.property, canonicalR_past_reflexive M.val M.property⟩
-
-/--
-Compositionality: if canonical_task_rel M x N and canonical_task_rel N y V,
-then canonical_task_rel M (x + y) V.
-
-With the unconditional definition, this is a uniform two-line transitivity argument:
-- Forward (GContent): `canonicalR_transitive` via Temporal 4 (G phi -> GG phi)
-- Backward (HContent): `HContent_chain_transitive` via Temporal 4 past (H phi -> HH phi)
-
-Note: task_rel does NOT appear in truth_at, so this proof is orthogonal
-to the TruthLemma. It is needed only for well-typedness of the TaskFrame.
--/
-theorem canonical_task_rel_compositionality
-    (M N V : CanonicalWorldState) (x y : Int)
-    (hMN : canonical_task_rel M x N) (hNV : canonical_task_rel N y V) :
-    canonical_task_rel M (x + y) V := by
-  obtain ⟨hMN_fwd, hMN_bwd⟩ := hMN
-  obtain ⟨hNV_fwd, hNV_bwd⟩ := hNV
-  constructor
-  · -- GContent(M) ⊆ V via canonicalR_transitive
-    exact canonicalR_transitive M.val N.val V.val M.property hMN_fwd hNV_fwd
-  · -- HContent(V) ⊆ M via HContent_chain_transitive
-    exact HContent_chain_transitive M.val N.val V.val V.property hNV_bwd hMN_bwd
+def canonical_task_rel (_M : CanonicalWorldState) (_d : Int) (_N : CanonicalWorldState) : Prop :=
+  True
 
 /--
 The canonical task frame for the direct TruthLemma.
 
 WorldState = CanonicalWorldState (subtype of MCS)
-task_rel = canonical_task_rel (GContent/HContent coherence, unconditional)
+task_rel = True (permissive — task_rel is not used by truth_at)
 D = Int
 
-Nullity via T-axioms (reflexivity), compositionality via Temporal 4 (transitivity).
+This frame exists for type-checking purposes. The real algebraic TaskFrame
+(with `task_rel w d w' ↔ w + d = w'`) is constructed in
+`DurationTransfer.canonicalTaskFrame` via group transfer along `T ≃o ℚ` or `T ≃o ℤ`.
 -/
 def CanonicalTaskFrame : TaskFrame Int where
   WorldState := CanonicalWorldState
   task_rel := canonical_task_rel
-  nullity := canonical_task_rel_nullity
-  compositionality := fun M N V x y hMN hNV =>
-    canonical_task_rel_compositionality M N V x y hMN hNV
+  nullity := fun _ => trivial
+  compositionality := fun _ _ _ _ _ _ _ => trivial
 
 /--
 The canonical task model: valuation is MCS membership.
@@ -145,7 +113,7 @@ Convert an FMCS to a WorldHistory in the canonical TaskFrame.
 
 - domain: full (every integer time is in the domain)
 - states: the MCS at time t IS the world-state
-- respects_task: follows from forward_G coherence + reflexivity
+- respects_task: trivial (canonical_task_rel = True)
 
 Key property: domain = fun _ => True eliminates all domain-related complexity.
 -/
@@ -153,17 +121,7 @@ def to_history (fam : FMCS Int) : WorldHistory CanonicalTaskFrame where
   domain := fun _ => True
   convex := fun _ _ _ _ _ _ _ => True.intro
   states := fun t _ => ⟨fam.mcs t, fam.is_mcs t⟩
-  respects_task := by
-    intro s t hs ht hst
-    -- Need: canonical_task_rel (fam.mcs s, is_mcs s) (t - s) (fam.mcs t, is_mcs t)
-    -- i.e., GContent(fam.mcs s) ⊆ fam.mcs t ∧ HContent(fam.mcs t) ⊆ fam.mcs s
-    constructor
-    · -- GContent(fam.mcs s) ⊆ fam.mcs t via forward_G with s ≤ t
-      intro phi h_G_phi
-      exact fam.forward_G s t phi hst h_G_phi
-    · -- HContent(fam.mcs t) ⊆ fam.mcs s via backward_H with s ≤ t
-      intro phi h_H_phi
-      exact fam.backward_H t s phi hst h_H_phi
+  respects_task := fun _ _ _ _ _ => trivial
 
 /--
 The canonical Omega: the set of world-histories from bundle families.
@@ -292,16 +250,16 @@ theorem canonical_truth_lemma
       -- By modal_backward: box psi in MCS
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
   | all_future psi ih =>
-    -- G case: G psi in MCS <-> forall s >= t, truth tau s psi
+    -- G case: G psi in MCS <-> forall s > t, truth tau s psi
     simp only [truth_at]
     constructor
-    · -- Forward: G psi in MCS -> forall s >= t, truth tau s psi
+    · -- Forward: G psi in MCS -> forall s > t, truth tau s psi
       intro h_G s hts
       -- By forward_G: psi in fam.mcs s
       have h_psi_mcs : psi ∈ fam.mcs s := fam.forward_G t s psi hts h_G
       -- By IH: truth at s
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s >= t, truth tau s psi -> G psi in MCS
+    · -- Backward: forall s > t, truth tau s psi -> G psi in MCS
       intro h_all
       -- Extract forward_F and backward_P for this family from h_tc
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
@@ -311,23 +269,23 @@ theorem canonical_truth_lemma
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      -- By IH backward: psi in fam.mcs s for all s >= t
-      have h_all_mcs : ∀ s : Int, t ≤ s → psi ∈ fam.mcs s := by
+      -- By IH backward: psi in fam.mcs s for all s > t
+      have h_all_mcs : ∀ s : Int, t < s → psi ∈ fam.mcs s := by
         intro s hts
         exact (ih fam hfam s).mpr (h_all s hts)
       -- Apply temporal_backward_G
       exact temporal_backward_G tcf t psi h_all_mcs
   | all_past psi ih =>
-    -- H case: H psi in MCS <-> forall s <= t, truth tau s psi
+    -- H case: H psi in MCS <-> forall s < t, truth tau s psi
     simp only [truth_at]
     constructor
-    · -- Forward: H psi in MCS -> forall s <= t, truth tau s psi
+    · -- Forward: H psi in MCS -> forall s < t, truth tau s psi
       intro h_H s hst
       -- By backward_H: psi in fam.mcs s
       have h_psi_mcs : psi ∈ fam.mcs s := fam.backward_H t s psi hst h_H
       -- By IH: truth at s
       exact (ih fam hfam s).mp h_psi_mcs
-    · -- Backward: forall s <= t, truth tau s psi -> H psi in MCS
+    · -- Backward: forall s < t, truth tau s psi -> H psi in MCS
       intro h_all
       -- Extract forward_F and backward_P for this family from h_tc
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
@@ -337,8 +295,8 @@ theorem canonical_truth_lemma
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      -- By IH backward: psi in fam.mcs s for all s <= t
-      have h_all_mcs : ∀ s : Int, s ≤ t → psi ∈ fam.mcs s := by
+      -- By IH backward: psi in fam.mcs s for all s < t
+      have h_all_mcs : ∀ s : Int, s < t → psi ∈ fam.mcs s := by
         intro s hst
         exact (ih fam hfam s).mpr (h_all s hst)
       -- Apply temporal_backward_H
