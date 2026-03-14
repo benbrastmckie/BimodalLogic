@@ -1,10 +1,20 @@
 {
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
-    "total_tasks": 49,
-    "last_sync": "2026-02-03T21:09:57Z"
+    "total_tasks": 50,
+    "last_sync": "2026-03-14T12:00:00Z"
   },
   "active_projects": [
+    {
+      "project_number": 962,
+      "project_name": "paper_footnote_task_relation_nondeterminism_truth_lemma_alignment",
+      "status": "not_started",
+      "language": "general",
+      "created": "2026-03-14T12:00:00Z",
+      "last_updated": "2026-03-14T12:00:00Z",
+      "session_id": "sess_1773514656_e61587",
+      "artifacts": []
+    },
     {
       "project_number": 960,
       "project_name": "refactor_documentation_bimodal_logos",

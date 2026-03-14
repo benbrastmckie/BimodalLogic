@@ -1,5 +1,5 @@
 ---
-next_project_number: 962
+next_project_number: 963
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,31 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 962. Paper footnote on task relation nondeterminism and truth lemma alignment
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: general
+- **Priority**: medium
+
+**Description**: Two related items concerning the JPL paper and the Lean formalization:
+
+1. **Paper footnote**: Add a footnote to the JPL paper clarifying that the task relation is NOT a group action. A group action D × W → W would be a function — given d and w, a unique next state. But task_rel is a relation — from w and d, there may be many possible next states. This nondeterminism is exactly what makes modal operators meaningful: □φ quantifies over the multiple possible histories through a world state. This insight illuminates the semantic distinction between tense operators (which stay within a single deterministic history) and modal operators (which range across multiple histories through the same world state).
+
+2. **Truth lemma alignment check**: Verify and document that the canonical truth lemma (`CanonicalConstruction.lean:296`) is correctly aligned with the semantic definitions (`semantic_consequence` in `Validity.lean:95`). Key findings from initial analysis:
+
+   - The task relation IS present in the truth lemma through the type system: `to_history fam : WorldHistory CanonicalTaskFrame` requires `respects_task`, which uses `canonical_task_rel`. The task relation constrains which histories can appear in the box quantifier — this is a real semantic effect.
+   - The truth lemma PROOF does not directly reference `task_rel` because it works at the stronger FMCS/BFMCS level (forward_G implies CanonicalR coherence). This is correct — the proof-theoretic properties are strictly stronger than what the frame requires.
+   - **Alignment gap**: `semantic_consequence` requires `ShiftClosed Omega`, but the truth lemma does not require this, and `CanonicalOmega` is noted as "NOT necessarily ShiftClosed." For completeness (Γ ⊬ φ → Γ ⊭ φ), the canonical Omega MUST be shift-closed. This requires either (a) proving `CanonicalOmega` is shift-closed, or (b) using `satisfiable` (which doesn't require shift-closure) as the completeness target.
+   - The truth lemma statement itself does not need restating — the task relation's role is correctly captured by the WorldHistory type constraint.
+
+**Key files**:
+- Paper: JPL paper (external)
+- Truth lemma: `Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean`
+- Semantics: `Theories/Bimodal/Semantics/Truth.lean`, `Theories/Bimodal/Semantics/Validity.lean`
+- Task frame: `Theories/Bimodal/Semantics/TaskFrame.lean`
+
+---
 
 ### 961. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
 - **Effort**: 8-16 hours
