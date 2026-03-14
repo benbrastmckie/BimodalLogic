@@ -77,21 +77,24 @@ technical_debt:
 - **Status**: [RESEARCHED]
 - **Language**: meta
 - **Priority**: high
-- **Research**: [specs/966_branch_comparison_duration_group_refactor/reports/research-001.md]
+- **Research**: [specs/966_branch_comparison_duration_group_refactor/reports/research-001.md], [specs/966_branch_comparison_duration_group_refactor/reports/research-002.md]
 
 **Description**: Compare branch `claude/duration-group-construction-SFEJg` against main. The branch proposes replacing the universal `compositionality` axiom in `TaskFrame` with `forward_comp` (non-negative) + `converse` (biconditional time-reversal). Three supporting research reports confirm the mathematical necessity.
+
+**Research findings** (research-002.md):
+1. **Impossibility verified**: Full mixed-sign compositionality is mathematically impossible for relational (non-functional) canonical models
+2. **Converse axiom correct**: Expresses the group inverse relationship in duration group D
+3. **backward_comp derivable**: From forward_comp + converse via double converse application
+4. **Guardless respects_task sound**: With converse, s > t cases are handled via forward_G in reverse
+5. **ShiftClosed gap independent**: A property of the SET of histories, not individual history structure
+
+**Recommended axiomatization**: `nullity_identity + forward_comp + converse`
 
 **Key decisions**:
 1. Adopt `converse` formulation or keep current `compositionality + False` hack?
 2. Fix `ShiftClosed Omega` truth lemma alignment gap (documented in branch)?
 3. When to implement TaskFrame refactor — before or after task 956 completes?
 4. Renumber conflicting branch artifacts (branch 962/963 conflict with main 962/963)
-
-**Branch artifacts to adopt (renumbered)**:
-- `0_shift_closure_research/` → keep unnumbered
-- `research_sign_elimination/` → keep unnumbered
-- `962_algebraic_structure_sign_free_task_frame/` → `968_*`
-- `963_duration_group_taskframe_refactor/` → `969_*` (task 969)
 
 **Key files under consideration**:
 - `Theories/Bimodal/Semantics/TaskFrame.lean`
