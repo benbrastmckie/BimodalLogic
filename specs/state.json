@@ -6,6 +6,25 @@
   },
   "active_projects": [
     {
+      "project_number": 966,
+      "project_name": "branch_comparison_duration_group_refactor",
+      "status": "researched",
+      "language": "meta",
+      "priority": "high",
+      "description": "Systematically compare branch claude/duration-group-construction-SFEJg against main. The branch proposes replacing the universal compositionality axiom in TaskFrame with forward_comp + converse (biconditional time-reversal). Three supporting research reports confirm the mathematical necessity. Key decisions: (1) adopt converse formulation or keep current compositionality hack, (2) fix ShiftClosed Omega truth lemma alignment gap, (3) whether to implement TaskFrame refactor before or after task 956 completes, (4) how to renumber conflicting branch task artifacts (962/963 on branch conflict with different 962/963 on main).",
+      "created": "2026-03-14T00:00:00Z",
+      "last_updated": "2026-03-14T00:00:00Z",
+      "session_id": "sess_1773525761_remove",
+      "artifacts": [
+        {
+          "path": "specs/966_branch_comparison_duration_group_refactor/reports/research-001.md",
+          "type": "research",
+          "summary": "Full pros/cons comparison: forward_comp+converse vs universal compositionality, task number conflicts, recommendation to adopt research artifacts renumbered, defer implementation until after task 956"
+        }
+      ],
+      "researched": "2026-03-14T00:00:00Z"
+    },
+    {
       "project_number": 964,
       "project_name": "resolve_atom_type_freshness_debt",
       "status": "researching",
@@ -1012,7 +1031,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 966,
+  "next_project_number": 967,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

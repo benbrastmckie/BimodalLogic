@@ -1,16 +1,16 @@
 ---
-next_project_number: 966
+next_project_number: 967
 repository_health:
   overall_score: 90
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 19
+  active: 20
   completed: 662
   in_progress: 0
   not_started: 8
   abandoned: 37
-  total: 716
+  total: 717
 technical_debt:
   sorry_count: 73
   axiom_count: 19
@@ -21,6 +21,35 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 966. Branch comparison: duration group TaskFrame refactor vs main
+- **Effort**: 1-2 hours (decision task)
+- **Status**: [RESEARCHED]
+- **Language**: meta
+- **Priority**: high
+- **Research**: [specs/966_branch_comparison_duration_group_refactor/reports/research-001.md]
+
+**Description**: Compare branch `claude/duration-group-construction-SFEJg` against main. The branch proposes replacing the universal `compositionality` axiom in `TaskFrame` with `forward_comp` (non-negative) + `converse` (biconditional time-reversal). Three supporting research reports confirm the mathematical necessity.
+
+**Key decisions**:
+1. Adopt `converse` formulation or keep current `compositionality + False` hack?
+2. Fix `ShiftClosed Omega` truth lemma alignment gap (documented in branch)?
+3. When to implement TaskFrame refactor — before or after task 956 completes?
+4. Renumber conflicting branch artifacts (branch 962/963 conflict with main 962/963)
+
+**Branch artifacts to adopt (renumbered)**:
+- `0_shift_closure_research/` → keep unnumbered
+- `research_sign_elimination/` → keep unnumbered
+- `962_algebraic_structure_sign_free_task_frame/` → `968_*`
+- `963_duration_group_taskframe_refactor/` → `967_*` (task 967)
+
+**Key files under consideration**:
+- `Theories/Bimodal/Semantics/TaskFrame.lean`
+- `Theories/Bimodal/Semantics/WorldHistory.lean`
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean`
+- `Theories/Bimodal/Semantics/Validity.lean` (ShiftClosed gap)
+
+---
 
 ### 964. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
 - **Effort**: 1.5 hours
