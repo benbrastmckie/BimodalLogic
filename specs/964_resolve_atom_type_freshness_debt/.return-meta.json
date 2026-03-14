@@ -1,10 +1,13 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Phase 6 mathematically blocked: canonicalR_irreflexive theorem cannot be proven without T-axiom (H(phi)->phi), which is NOT valid in TM's strict temporal semantics. The axiom must remain as a frame property assumption.",
-  "started_at": "2026-03-14T10:00:00Z",
-  "completed_at": "2026-03-14T11:30:00Z",
+  "status": "researched",
+  "started_at": "2026-03-14T12:00:00Z",
+  "completed_at": "2026-03-14T14:00:00Z",
   "artifacts": [
+    {
+      "path": "specs/964_resolve_atom_type_freshness_debt/reports/research-004.md",
+      "type": "research",
+      "summary": "Deep mathematical analysis comparing non-standard proof approaches vs reflexive G/H refactoring. Concludes axiom is legitimate frame property."
+    },
     {
       "path": "specs/964_resolve_atom_type_freshness_debt/summaries/implementation-summary-20260314.md",
       "type": "summary",
@@ -16,29 +19,26 @@
       "summary": "Plan with Phase 1 marked [BLOCKED]"
     }
   ],
-  "partial_progress": {
-    "stage": "proof_impossible",
-    "details": "Phase 6 (prove canonicalR_irreflexive) cannot be completed. The standard Gabbay IRR proof requires T-axiom (H(phi)->phi) to derive neg(atom p) in M' from H(neg(atom p)) in M'. TM logic uses strict G/H semantics where T-axiom is NOT valid. Freshness (Atom.exists_fresh) does not resolve this mathematical gap.",
-    "phases_completed": 5,
-    "phases_total": 8
-  },
-  "errors": [
-    {
-      "type": "proof_impossible",
-      "message": "T-axiom not available in strict temporal semantics. Without T-axiom, cannot derive contradiction in Gabbay IRR proof structure.",
-      "recoverable": false,
-      "recommendation": "Accept canonicalR_irreflexive as an axiom (frame property for strict semantics). Update docstring to clarify it's a semantic assumption, not derivable."
-    }
-  ],
+  "next_steps": "Accept axiom as legitimate frame property. No code changes needed.",
   "metadata": {
-    "session_id": "sess_1773516266_87af15",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773517290_b8e1a3",
+    "agent_type": "math-research-agent",
+    "duration_seconds": 7200,
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 5,
-    "phases_total": 8
+    "delegation_path": ["orchestrator", "research", "skill-math-research", "math-research-agent"],
+    "findings_count": 5,
+    "context_files_loaded": ["kripke-semantics-overview.md", "math/README.md"],
+    "mathlib_lookups_performed": 4,
+    "context_extension_tasks": [],
+    "context_candidates_count": 0
   },
-  "completion_data": {
-    "completion_summary": "Phases 1-5 completed (Atom type infrastructure). Phase 6 mathematically blocked: irreflexivity theorem requires T-axiom not available in strict semantics. Axiom must remain as frame property."
+  "research_findings": {
+    "non_standard_proof_possible": false,
+    "reflexive_refactor_possible": true,
+    "reflexive_refactor_allowed": false,
+    "reflexive_refactor_blocked_by": "ROAD_MAP.md Dead End: Reflexive G/H Semantics Switch",
+    "axiom_legitimacy": "High - standard frame property assumption for strict semantics",
+    "axiom_usage": "UNUSED - irreflexivity obtained via strict < on CanonicalMCS preorder",
+    "recommended_action": "Keep axiom as documented frame property, no code changes"
   }
 }
