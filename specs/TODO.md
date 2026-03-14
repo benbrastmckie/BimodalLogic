@@ -30,14 +30,14 @@ technical_debt:
 - **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md), [research-002.md](specs/964_resolve_atom_type_freshness_debt/reports/research-002.md), [research-003.md](specs/964_resolve_atom_type_freshness_debt/reports/research-003.md), [research-004.md](specs/964_resolve_atom_type_freshness_debt/reports/research-004.md), [research-005.md](specs/964_resolve_atom_type_freshness_debt/reports/research-005.md)
 - **Plan**: [implementation-002.md](specs/964_resolve_atom_type_freshness_debt/plans/implementation-002.md)
 
-**Description**: The `canonicalR_irreflexive` axiom in `Canonical/CanonicalIrreflexivityAxiom.lean` is a mathematically standard result (Goldblatt 1992, BdRV 2001) that is currently hypothesized because the proof requires atom freshness, which the `String` atom type cannot provide. Change the atom type from `String` to a structured type supporting freshness (e.g., `{base : String, fresh_index : Option ℕ}`), then prove the axiom as a theorem and remove the `axiom` declaration.
+**Description**: Archive the unused `canonicalR_irreflexive` axiom and clean up related code, maintaining irreflexive semantics. Research confirmed: (1) the axiom cannot be proven without T-axiom, which would break density proofs; (2) the axiom is UNUSED in the completeness chain - irreflexivity is already obtained via strict `<` on CanonicalMCS preorder; (3) reflexive refactoring would introduce 5+ blockers with 87-167h effort and HIGH risk.
 
-**Downstream impact**: 5 instances currently proved from this axiom (NoMaxOrder, NoMinOrder, DenselyOrdered on dense timeline; NoMaxOrder, NoMinOrder on discrete timeline) would become fully proved theorems. The axiom is used with high confidence — this is a formalization artifact, not a mathematical gap.
+**Action**: Archive `CanonicalIrreflexivityAxiom.lean` and `CanonicalIrreflexivity.lean` to Boneyard, update docstrings to clarify irreflexivity source, remove any dead imports.
 
 **Key files**:
-- Axiom: `Theories/Bimodal/Metalogic/Canonical/CanonicalIrreflexivityAxiom.lean`
-- Failed proof: `Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean`
-- Formula type: `Theories/Bimodal/Syntax/Formula.lean`
+- Archive: `Theories/Bimodal/Metalogic/Canonical/CanonicalIrreflexivityAxiom.lean`
+- Archive: `Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean`
+- Update docstring: `Theories/Bimodal/Metalogic/Canonical/CanonicalMCS.lean` (irreflexivity source)
 
 ---
 
