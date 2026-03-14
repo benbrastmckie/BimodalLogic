@@ -157,7 +157,7 @@ theorem atom_iff_of_domain
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D} (ht : τ.domain t)
     (Omega : Set (WorldHistory F))
-    (p : String) :
+    (p : Atom) :
     (truth_at M Omega τ t (Formula.atom p)) ↔
       M.valuation (τ.states t ht) p := by
   simp only [truth_at]
@@ -176,7 +176,7 @@ theorem atom_false_of_not_domain
     {F : TaskFrame D} {M : TaskModel F} {τ : WorldHistory F}
     {t : D} (ht : ¬τ.domain t)
     (Omega : Set (WorldHistory F))
-    (p : String) :
+    (p : Atom) :
     ¬(truth_at M Omega τ t (Formula.atom p)) := by
   simp only [truth_at]
   intro ⟨ht', _⟩

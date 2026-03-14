@@ -15,7 +15,7 @@ This module defines task models, which extend task frames with valuation functio
 ## Implementation Notes
 
 - Valuation assigns truth values to atoms at each world state
-- Valuation function: `WorldState → String → Prop`
+- Valuation function: `WorldState → Atom → Prop`
 - Models provide complete semantic interpretation for TM formulas
 
 ## References
@@ -46,7 +46,7 @@ structure TaskModel {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMo
 
   `valuation w p` is true iff atomic proposition `p` is true at world state `w`.
   -/
-  valuation : F.WorldState → String → Prop
+  valuation : F.WorldState → Atom → Prop
 
 namespace TaskModel
 
@@ -68,9 +68,10 @@ def all_true : TaskModel F where
 Model where specific atoms have specific truth values.
 
 Helper function to construct models for testing.
+Takes a list of atom base names (without fresh indices) for backward compatibility.
 -/
 def from_list (trueAtoms : List String) : TaskModel F where
-  valuation := fun _ p => p ∈ trueAtoms
+  valuation := fun _ p => p.base ∈ trueAtoms ∧ p.fresh_index.isNone
 
 end TaskModel
 
