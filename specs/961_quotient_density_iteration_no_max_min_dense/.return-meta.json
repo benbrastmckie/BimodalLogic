@@ -1,55 +1,28 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-13T18:00:00Z",
-  "completed_at": "2026-03-13T19:30:00Z",
-  "requires_user_review": true,
-  "review_reason": "8 sorries remain requiring termination argument. All sorries are in bounded iteration patterns where wellfoundedness on formula constraints should close them, but formalization requires additional infrastructure.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313e.md",
-      "type": "summary",
-      "summary": "Partial implementation with strict density lemmas and bounded iteration structure"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/StagedConstruction/DenseTimeline.lean",
-      "type": "lean_source",
-      "summary": "Added dense_timeline_has_strict_intermediate theorem"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/StagedConstruction/CantorApplication.lean",
-      "type": "lean_source",
-      "summary": "Restructured proofs with bounded iteration, 8 sorries remain"
+      "type": "plan",
+      "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-006.md",
+      "summary": "5-phase implementation plan for quotient density using denselyOrdered_iff_forall_not_covBy architecture"
     }
   ],
-  "partial_progress": {
-    "stage": "proof_blocked_by_termination",
-    "details": "Added dense_timeline_has_strict_intermediate lemma and restructured proofs. Bounded iteration (4 levels) added but termination sorries remain. Key insight: if intermediate breaks equivalence with previous, it is strict from original source via T4 chain.",
-    "phases_completed": 1,
-    "phases_total": 4
-  },
-  "errors": [
-    {
-      "type": "termination_argument_needed",
-      "message": "Bounded iteration does not guarantee finding strict intermediate. Need wellfoundedness argument on formula set.",
-      "recoverable": true,
-      "recommendation": "Add a measure function on MCS showing each density step decreases the measure, or use non-constructive existence via quotient density."
-    }
-  ],
+  "next_steps": "Run /implement 961 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773630722_e9f5a4",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773686400_c2f961",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 1,
-    "phases_total": 4,
-    "sorries_before": 5,
-    "sorries_after": 8,
-    "build_status": "passes_with_warnings",
-    "iteration": 3,
-    "key_lemma_added": "dense_timeline_has_strict_intermediate",
-    "recommendation": "Formalize termination via formula wellfoundedness or non-constructive quotient density"
-  },
-  "completion_data": {
-    "completion_summary": "Added strict density lemma and bounded iteration proofs. 8 sorries remain needing termination argument via formula wellfoundedness."
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 3.0,
+    "plan_version": 6,
+    "key_changes_from_v005": [
+      "Use denselyOrdered_iff_forall_not_covBy as top-level structure",
+      "Contradiction-based proof instead of constructive iteration",
+      "New density_escapes_source_class lemma for termination",
+      "Escape valve for Phase 1 if termination proof blocked"
+    ],
+    "research_integrated": "research-006.md"
   }
 }
