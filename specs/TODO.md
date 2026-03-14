@@ -1,5 +1,5 @@
 ---
-next_project_number: 969
+next_project_number: 970
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -22,6 +22,25 @@ technical_debt:
 
 ## Tasks
 
+### 969. Refactor TaskFrame: restrict compositionality to non-negative durations
+- **Effort**: 3-6 hours
+- **Language**: lean
+- **Status**: [NOT STARTED]
+- **Priority**: medium
+- **Research**: [specs/research_sign_elimination/reports/research-001.md]
+
+**Description**: Replace the universal `compositionality` axiom in `TaskFrame` with `forward_compositionality` restricted to `0 <= x` and `0 <= y`. Mixed-sign compositionality is algebraically unachievable for non-deterministic relations (requires functionality of the positive-duration action, which the canonical model lacks). Restricted compositionality is sufficient for all downstream uses since `respects_task` only evaluates `task_rel` at `d = t - s` where `s <= t`.
+
+**Changes**:
+1. Rename `compositionality` → `forward_compositionality` in `TaskFrame` structure, add `0 <= x` and `0 <= y` hypotheses
+2. Update all call sites — hypotheses are always available since all use-sites have `s <= t` guards
+3. Optionally add `HasConverse` mixin class for frames where `task_rel w d u ↔ task_rel u (-d) w`
+4. Simplify `CanonicalConstruction.canonical_task_rel_compositionality` (no more `d < 0 => False` needed)
+
+**Key files**: `TaskFrame.lean`, `WorldHistory.lean` (respects_task), `CanonicalConstruction.lean` (canonical_task_rel), `DurationTransfer.lean`
+
+---
+
 ### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
 - **Effort**: 4-8 hours
 - **Status**: [NOT STARTED]
@@ -43,7 +62,7 @@ technical_debt:
 
 ### 967. Change atom type from String to freshness-supporting type
 - **Effort**: 12-18 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Priority**: medium
 

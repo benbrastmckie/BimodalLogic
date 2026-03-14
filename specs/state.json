@@ -6,6 +6,24 @@
   },
   "active_projects": [
     {
+      "project_number": 969,
+      "project_name": "refactor_taskframe_restrict_compositionality",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "description": "Replace universal compositionality in TaskFrame with forward_compositionality restricted to 0 <= x and 0 <= y. Mixed-sign compositionality is algebraically unachievable for non-deterministic relations without functionality of the positive-duration action (which the canonical model lacks). Restricted compositionality is sufficient since respects_task only uses d = t - s where s <= t. Changes: rename compositionality to forward_compositionality with non-negativity hypotheses, update call sites, optionally add HasConverse mixin, simplify canonical_task_rel_compositionality.",
+      "created": "2026-03-14T00:00:00Z",
+      "last_updated": "2026-03-14T00:00:00Z",
+      "session_id": "sess_1773526673_48dd46",
+      "artifacts": [
+        {
+          "path": "specs/research_sign_elimination/reports/research-001.md",
+          "type": "research",
+          "summary": "Algebraic analysis of sign-case elimination: full mixed-sign compositionality requires functionality (impossible for canonical model), restricted forward_compositionality is correct and sufficient, converse is optional mixin, current d<0=>False approach is sound"
+        }
+      ]
+    },
+    {
       "project_number": 968,
       "project_name": "prove_shift_closure_canonical_fmcs_bridge",
       "status": "not_started",
@@ -26,12 +44,13 @@
     {
       "project_number": 967,
       "project_name": "change_atom_type_for_freshness",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "description": "Change atom type from String to freshness-supporting type to eliminate canonicalR_irreflexive axiom debt. The Gabbay IRR proof (Goldblatt 1992) requires a fresh atom not in GContent(M). With String atoms this is impossible since G(s∨¬s) puts every string into GContent(M). Changing to a type with Option ℕ fresh_index (or similar) allows picking p = Atom.mk name (some n), completing the proof and eliminating the axiom. Scope: refactor Formula and all ~31 dependent files. See research-002 (task 964) for full obstacle analysis.",
       "created": "2026-03-14T22:37:25Z",
-      "last_updated": "2026-03-14T22:37:25Z"
+      "last_updated": "2026-03-14T22:39:32Z",
+      "session_id": "sess_1773527957_9e27df"
     },
     {
       "project_number": 966,
