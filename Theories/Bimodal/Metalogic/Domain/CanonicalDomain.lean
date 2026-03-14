@@ -160,7 +160,12 @@ where the duration type D is the dense canonical timeline (≃o ℚ),
 the world states are also D (canonical timeline worlds = times),
 and the task relation is deterministic: `task_rel w d w'` iff `w + d = w'`.
 
-**Proof debt**: Depends on 3 sorry'd instances in CantorApplication.lean.
+**Proof debt**: Depends on 3 sorry'd instances in CantorApplication.lean
+(NoMaxOrder, NoMinOrder, DenselyOrdered), all blocked by the reflexive MCS
+obstacle. The canonical model can contain reflexive MCSs (CanonicalR M M),
+and `canonicalR_irreflexive` is unprovable with String atoms due to the
+freshness requirement of the IRR rule. See CantorApplication.lean module
+docstring for the counterexample model and resolution paths.
 -/
 noncomputable def denseCanonicalTaskFrame
     (root_mcs : Set Bimodal.Syntax.Formula)

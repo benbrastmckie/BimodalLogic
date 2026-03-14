@@ -158,14 +158,17 @@ Similarly for PredOrder and IsSuccArchimedean.
 -- This is the main technical challenge for the discrete case.
 
 /-!
-## NoMaxOrder and NoMinOrder (TODO)
+## NoMaxOrder and NoMinOrder (BLOCKED)
 
-These follow from seriality axioms F(⊤) and P(⊤):
-- NoMaxOrder: For any [M], seriality gives N with CanonicalR(M, N).
-  If [N] = [M], we have a reflexive MCS (same issue as dense case).
-  In the discrete case, this is resolved differently: the discreteness
-  axiom prevents "density of equivalences."
-- NoMinOrder: Symmetric using P(⊤).
+These require showing that no equivalence class is maximal (or minimal) in
+the quotient. The same reflexive MCS obstacle that blocks the dense case
+applies here: if p.mcs is reflexive (CanonicalR p.mcs p.mcs), seriality
+successors may all land in the same equivalence class [p].
+
+The discreteness axiom DF does NOT help here — it provides coverness
+(immediate successor) but not unboundedness (existence of a STRICT successor).
+Both require `canonicalR_irreflexive`, which is blocked by String atom
+freshness. See `CantorApplication.lean` module docstring for the full analysis.
 -/
 
 /-!

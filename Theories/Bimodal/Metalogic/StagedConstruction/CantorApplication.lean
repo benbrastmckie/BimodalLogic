@@ -24,11 +24,48 @@ provides an order isomorphism T ≃o Q.
 - `TimelineQuot`: antisymmetrization of the timeline (has LinearOrder)
 - `cantor_iso`: Nonempty (TimelineQuot ≃o ℚ)
 
+## Known Obstacle: Reflexive MCS Problem
+
+The three sorry'd instances (`NoMaxOrder`, `NoMinOrder`, `DenselyOrdered`) are
+all blocked by the **reflexive MCS obstacle**: the canonical model can contain
+MCSs M with `CanonicalR M M` (GContent(M) ⊆ M), and these form "collapsed"
+equivalence classes in the Antisymmetrization quotient.
+
+### Why This Is Genuine (Not Just a Proof Gap)
+
+Consider a model `{w₀, w₁, w₂}` where w₁, w₂ are reflexive and mutually
+accessible, and w₀ has only forward relations to w₁, w₂. The density axiom
+`F(φ) → F(F(φ))` IS satisfied (F(F(φ)) at w₀ reduces to F(φ) because all
+successors have the same successors). But the quotient `{[w₀], [w₁]}` is NOT
+densely ordered and HAS a max element `[w₁]`.
+
+### Root Cause
+
+`canonicalR_irreflexive` (¬CanonicalR M M for all MCSs M) requires the IRR
+rule with a globally fresh atom. With `String` atoms, no such atom exists
+because every string appears in tautologies (e.g., `p ∨ ¬p`) present in every
+MCS. See `CanonicalIrreflexivity.lean` for the full analysis.
+
+### Resolution Paths
+
+1. **Change atom type**: Use a type supporting freshness (e.g., `Nat × Nat`
+   where the second component provides fresh atoms not used in the base logic).
+2. **Product construction**: Build `T × ℚ` with lexicographic order, where ℚ
+   provides density. Blocked by T-schema forcing (G(φ) → φ holds within each
+   fiber).
+3. **Direct construction on ℚ**: Assign MCSs to rationals directly via
+   dovetailing, bypassing the quotient. Avoids reflexive MCSs by construction.
+4. **Accept sorry**: The existing `CanonicalConstruction.lean` provides a
+   working `TaskFrame ℤ` that avoids this obstacle via unconditional
+   GContent/HContent dual requirements.
+
 ## References
 
 - Task 956, plan v015: Phase 6
+- Task 960: Duration Group Construction analysis
 - Mathlib `Order.iso_of_countable_dense`: Cantor's uniqueness theorem
 - Mathlib `Antisymmetrization`: quotient construction for preorders
+- `CanonicalIrreflexivity.lean`: Analysis of String atom freshness blocker
 -/
 
 namespace Bimodal.Metalogic.StagedConstruction
@@ -204,9 +241,18 @@ instance : NoMaxOrder (TimelineQuot root_mcs root_mcs_proof) where
           -- Check if p.mcs is reflexive
           by_cases h_p_refl : CanonicalR p.1.mcs p.1.mcs
           · -- p.mcs is reflexive
-            -- We have a loop: p ~ q ~ q' ~ ... all equivalent
-            -- Need to escape via density_frame_condition_strict
-            -- For now, use sorry - full solution needs well-founded iteration
+            -- BLOCKED: Reflexive MCS obstacle.
+            --
+            -- When p.mcs is reflexive (CanonicalR p.mcs p.mcs), all seriality
+            -- successors may land in the same equivalence class [p]. This is
+            -- a genuine semantic possibility (see module docstring for counter-
+            -- example) that cannot be ruled out without `canonicalR_irreflexive`,
+            -- which requires globally fresh atoms not available with String.
+            --
+            -- Resolution requires one of:
+            -- (a) Change atom type to support freshness
+            -- (b) Direct construction on ℚ (bypassing quotient)
+            -- (c) Accept sorry for the pure-syntax ℚ pipeline
             sorry
           · -- p.mcs is NOT reflexive - but this case is UNREACHABLE
             -- We have:
@@ -262,10 +308,9 @@ instance : NoMinOrder (TimelineQuot root_mcs root_mcs_proof) where
             exact h_strict (h_eq ▸ h_refl)
           | inr h_R => exact h_strict h_R
       case neg =>
-        -- Similar iteration as NoMaxOrder
         push_neg at h_strict
-        -- Full proof requires well-founded iteration on candidate formula set
-        -- For now, use sorry
+        -- BLOCKED: Symmetric to NoMaxOrder reflexive MCS obstacle.
+        -- See NoMaxOrder sorry and module docstring for full analysis.
         sorry
 
 /-- The timeline quotient is densely ordered. -/
@@ -295,24 +340,26 @@ instance : DenselyOrdered (TimelineQuot root_mcs root_mcs_proof) where
           cases h_le with
           | inl h_eq => exact absurd h_eq.symm h_neq
           | inr h_R => exact h_R
-        -- Apply density_frame_condition_strict to get a strict intermediate
-        obtain ⟨W, hW_mcs, hW_R_p, hW_R_q, hW_not_R_p, hW_not_R_q⟩ :=
-          density_frame_condition_strict p.1.mcs q.1.mcs p.1.is_mcs q.1.is_mcs h_R h_not_R
-        -- Now we need W to be in the dense timeline
-        -- Use dense_timeline_has_intermediate
+        -- BLOCKED: Two independent obstacles prevent closing this sorry:
+        --
+        -- 1. `density_frame_condition_strict` has 12 sorries, all in Case B
+        --    branches where the intermediate collapses to an endpoint.
+        --
+        -- 2. Even if strict density were proved at the MCS level, integrating
+        --    it with the dense timeline (getting the strict intermediate INTO
+        --    the `denseTimelineUnion`) requires additional infrastructure.
+        --
+        -- Root cause: same reflexive MCS obstacle as NoMaxOrder/NoMinOrder.
+        -- The non-strict `density_frame_condition` (fully proved) can return
+        -- W = M' in Case B1 (when M' is reflexive), giving [W] = [M'] in
+        -- the quotient — not a strict intermediate.
+        --
+        -- See module docstring for the counterexample model demonstrating
+        -- this is a genuine semantic gap, not just a proof gap.
         obtain ⟨c, hc_mem, hc_R_p, hc_R_q⟩ :=
           dense_timeline_has_intermediate root_mcs root_mcs_proof p.1 q.1 p.2 q.2 h_R h_not_R
-        -- c is an intermediate: CanonicalR p.1.mcs c.mcs and CanonicalR c.mcs q.1.mcs
-        -- But we need STRICT intermediate
-        -- The issue: c from dense_timeline_has_intermediate is NOT guaranteed strict
-        -- We need to use the STRICT density result
-        -- For now, use sorry - need to integrate density_frame_condition_strict with timeline
         let c' : DenseTimelineElem root_mcs root_mcs_proof := ⟨c, hc_mem⟩
         use toAntisymmetrization (· ≤ ·) c'
-        -- Need: a < c' < b
-        -- a < c': p < c
-        -- c' < b: c < q
-        -- This requires strict ordering which we haven't established for c
         sorry
 
 /-- Cantor's theorem: the timeline quotient is order-isomorphic to Q. -/
