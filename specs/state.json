@@ -30,6 +30,11 @@
           "path": "specs/964_resolve_atom_type_freshness_debt/plans/implementation-001.md",
           "type": "plan",
           "summary": "8-phase implementation plan for atom type freshness debt resolution"
+        },
+        {
+          "path": "specs/964_resolve_atom_type_freshness_debt/summaries/implementation-summary-20260314.md",
+          "type": "summary",
+          "summary": "Partial implementation: 5/8 phases completed. Atom type infrastructure established. Phase 6 blocked on proof rewrite."
         }
       ],
       "researched": "2026-03-14T18:28:19Z",
