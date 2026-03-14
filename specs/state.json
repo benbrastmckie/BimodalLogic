@@ -69,13 +69,13 @@
     {
       "project_number": 966,
       "project_name": "branch_comparison_duration_group_refactor",
-      "status": "planned",
+      "status": "completed",
       "language": "meta",
       "priority": "high",
-      "description": "Systematically compare branch claude/duration-group-construction-SFEJg against main. The branch proposes replacing the universal compositionality axiom in TaskFrame with forward_comp + converse (biconditional time-reversal). Research-002 provides rigorous mathematical verification: (1) impossibility of full mixed-sign compositionality for relational canonical models, (2) converse axiom correctly expresses group inverse, (3) backward_comp derivable from forward_comp + converse, (4) guardless respects_task is sound, (5) ShiftClosed gap independent of compositionality. Recommended axiomatization: nullity_identity + forward_comp + converse.",
+      "description": "DECISION ADOPTED: Replace universal compositionality in TaskFrame with nullity_identity + forward_comp + converse axiomatization. Research-002 verified: (1) full mixed-sign compositionality impossible for relational canonical models, (2) converse axiom correctly expresses group inverse, (3) backward_comp derivable, (4) guardless respects_task sound, (5) ShiftClosed gap independent. Tasks 967-969 created for implementation. ROAD_MAP.md updated with architectural decision.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-14T23:01:37Z",
-      "session_id": "sess_1773529285_aaaea8",
+      "last_updated": "2026-03-14T23:59:00Z",
+      "session_id": "sess_1773529908_ddc74c",
       "artifacts": [
         {
           "path": "specs/966_branch_comparison_duration_group_refactor/reports/research-001.md",
@@ -91,10 +91,18 @@
           "path": "specs/966_branch_comparison_duration_group_refactor/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase meta plan: decision documentation, artifact renumbering verification, task dependency audit, coordination notes"
+        },
+        {
+          "path": "specs/966_branch_comparison_duration_group_refactor/summaries/implementation-summary-20260314.md",
+          "type": "summary",
+          "summary": "Decision to adopt forward_comp + converse axiomatization. ROAD_MAP.md updated. Tasks 967-969 verified for implementation."
         }
       ],
       "researched": "2026-03-14T23:30:00Z",
-      "planned": "2026-03-14T23:45:00Z"
+      "planned": "2026-03-14T23:45:00Z",
+      "started": "2026-03-14T23:12:04Z",
+      "completed": "2026-03-14T23:59:00Z",
+      "completion_summary": "Adopted nullity_identity + forward_comp + converse axiomatization based on rigorous mathematical verification from research-002. Tasks 967 (Atom type), 968 (ShiftClosed bridge), and 969 (TaskFrame refactor) created for implementation. ROAD_MAP.md updated with new architectural decision."
     },
     {
       "project_number": 964,

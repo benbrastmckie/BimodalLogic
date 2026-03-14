@@ -1,6 +1,6 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-03-11
+**Last Updated**: 2026-03-14
 **Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness IN PROGRESS (pure syntax constraint, D Construction from Canonical Timeline strategy)
 
 > **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
@@ -268,6 +268,47 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 - D emerges from syntax: no Int/Rat imports
 - D construction is modular: change axioms → change D (e.g., density axioms → Q, discreteness axioms → Z)
 - task_rel is actual displacement, not trivial
+
+---
+
+### Decision: TaskFrame Forward Compositionality + Converse Axiomatization
+
+**Date**: 2026-03-14
+**Context**: Task 966 compared branch `claude/duration-group-construction-SFEJg` against main. The branch proposed replacing the universal `compositionality` axiom with `forward_comp + converse`. Research-002 provided rigorous mathematical verification.
+
+**Decision**: Adopt the `nullity_identity + forward_comp + converse` axiomatization for TaskFrame, replacing the current universal compositionality with sign-restricted forward compositionality plus the group-theoretic converse biconditional.
+
+**Key Findings** (from research-002.md):
+1. **Impossibility verified**: Full mixed-sign compositionality is mathematically impossible for relational (non-functional) canonical models where CanonicalR is not injective on targets.
+2. **Converse axiom correct**: Expresses the inverse relationship in the duration group D via `task_rel w d v <-> task_rel v (-d) w`.
+3. **backward_comp derivable**: From forward_comp + converse via double application of converse plus forward_comp on negated durations.
+4. **Guardless respects_task sound**: With converse, the s <= t guard becomes unnecessary; s > t cases use forward_G in reverse.
+5. **ShiftClosed gap independent**: This is a property of the SET of histories (task 968), not related to compositionality.
+
+**Recommended Axiom Set**:
+```lean
+structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] where
+  nullity_identity : forall w u, task_rel w 0 u <-> w = u
+  forward_comp : forall w u v x y, 0 <= x -> 0 <= y -> task_rel w x u -> task_rel u y v -> task_rel w (x + y) v
+  converse : forall w d u, task_rel w d u <-> task_rel u (-d) w
+```
+
+**Consequences**:
+- Replace `compositionality` with `forward_comp` (non-negative durations) + `converse`
+- Remove `d < 0 => False` hack from canonical_task_rel; use `CanonicalR N.val M.val` for d < 0
+- Remove s <= t guard from respects_task (both directions meaningful with converse)
+- backward_comp becomes a derived theorem, not an axiom
+- Simplifies canonical_task_rel_compositionality proof in Task 956
+
+**Implementation Tasks**:
+- Task 969: Refactor TaskFrame with forward_comp + converse
+- Task 968: ShiftClosed proof (independent, can proceed in parallel)
+- Task 967: Atom type change for freshness (independent prerequisite)
+
+**References**:
+- [Task 966 research-002](specs/966_branch_comparison_duration_group_refactor/reports/research-002.md) - Mathematical verification
+- [Task 966 research-001](specs/966_branch_comparison_duration_group_refactor/reports/research-001.md) - Branch comparison
+- [Task 969](specs/TODO.md) - TaskFrame refactor implementation
 
 ---
 

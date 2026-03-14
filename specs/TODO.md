@@ -27,7 +27,7 @@ technical_debt:
 - **Language**: lean
 - **Status**: [NOT STARTED]
 - **Priority**: medium
-- **Dependencies**: Task 966 (scope decision: conservative `forward_compositionality` vs full `forward_comp + converse`)
+- **Dependencies**: Task 966 [COMPLETED] (decision: adopt `forward_comp + converse` axiomatization)
 - **Research**: [specs/research_sign_elimination/reports/research-001.md]
 
 **Description**: Replace the universal `compositionality` axiom in `TaskFrame` with `forward_compositionality` restricted to `0 <= x` and `0 <= y`. Mixed-sign compositionality is algebraically unachievable for non-deterministic relations (requires functionality of the positive-duration action, which the canonical model lacks). Restricted compositionality is sufficient for all downstream uses since `respects_task` only evaluates `task_rel` at `d = t - s` where `s <= t`.
@@ -74,31 +74,32 @@ technical_debt:
 
 ### 966. Branch comparison: duration group TaskFrame refactor vs main
 - **Effort**: 1-2 hours (decision task)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: meta
 - **Priority**: high
 - **Research**: [specs/966_branch_comparison_duration_group_refactor/reports/research-001.md], [specs/966_branch_comparison_duration_group_refactor/reports/research-002.md]
 - **Plan**: [specs/966_branch_comparison_duration_group_refactor/plans/implementation-001.md]
+- **Summary**: [specs/966_branch_comparison_duration_group_refactor/summaries/implementation-summary-20260314.md]
 
-**Description**: Compare branch `claude/duration-group-construction-SFEJg` against main. The branch proposes replacing the universal `compositionality` axiom in `TaskFrame` with `forward_comp` (non-negative) + `converse` (biconditional time-reversal). Three supporting research reports confirm the mathematical necessity.
+**DECISION ADOPTED**: Replace universal `compositionality` in TaskFrame with `nullity_identity + forward_comp + converse` axiomatization.
 
-**Research findings** (research-002.md):
-1. **Impossibility verified**: Full mixed-sign compositionality is mathematically impossible for relational (non-functional) canonical models
-2. **Converse axiom correct**: Expresses the group inverse relationship in duration group D
-3. **backward_comp derivable**: From forward_comp + converse via double converse application
-4. **Guardless respects_task sound**: With converse, s > t cases are handled via forward_G in reverse
-5. **ShiftClosed gap independent**: A property of the SET of histories, not individual history structure
+**Key findings** (research-002.md):
+1. **Impossibility verified**: Full mixed-sign compositionality mathematically impossible for relational canonical models
+2. **Converse axiom correct**: Expresses group inverse relationship in D
+3. **backward_comp derivable**: From forward_comp + converse
+4. **Guardless respects_task sound**: s > t cases handled via forward_G in reverse
+5. **ShiftClosed gap independent**: Property of SET of histories (task 968)
 
-**Recommended axiomatization**: `nullity_identity + forward_comp + converse`
+**Decisions made**:
+1. ADOPT `converse` formulation (replaces `compositionality + False` hack)
+2. ShiftClosed gap addressed by task 968 (independent)
+3. TaskFrame refactor (task 969) depends on this decision, can proceed in parallel with task 956
+4. Branch artifacts renumbered to avoid conflicts with main (tasks 967-969 created)
 
-**Key decisions**:
-1. Adopt `converse` formulation or keep current `compositionality + False` hack?
-2. Fix `ShiftClosed Omega` truth lemma alignment gap (documented in branch)?
-3. When to implement TaskFrame refactor — before or after task 956 completes?
-4. Renumber conflicting branch artifacts (branch 962/963 conflict with main 962/963)
-
-**Key files under consideration**:
-- `Theories/Bimodal/Semantics/TaskFrame.lean`
+**Implementation tasks created**:
+- Task 969: TaskFrame refactor with forward_comp + converse
+- Task 968: ShiftClosed proof (independent)
+- Task 967: Atom type change for freshness (prerequisite)
 - `Theories/Bimodal/Semantics/WorldHistory.lean`
 - `Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean`
 - `Theories/Bimodal/Semantics/Validity.lean` (ShiftClosed gap)
