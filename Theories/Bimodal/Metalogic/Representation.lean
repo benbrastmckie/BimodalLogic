@@ -20,8 +20,7 @@ MCSs via order characterization theorems, making this file's approach obsolete.
 
 The D-from-syntax pipeline in `Domain/CanonicalDomain.lean` provides:
 - `denseCanonicalTaskFrame`: TaskFrame with D derived from syntax via ℚ characterization
-- `discreteCanonicalTaskFrame`: TaskFrame with D derived from syntax via ℤ characterization
-- `baseTaskFrame`: TaskFrame ℤ (direct, for the base case without density/discreteness axioms)
+- Discrete case: TaskFrame with D derived from syntax via ℤ characterization (in progress)
 
 Standard completeness theorems will be rebuilt on top of the D-from-syntax construction
 once the `CanonicalRIrreflexive` axiom is resolved (see `Canonical/CanonicalIrreflexivityAxiom.lean`).

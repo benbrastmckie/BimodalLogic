@@ -41,11 +41,12 @@ Pipeline:
 **Status**: NoMaxOrder and NoMinOrder proved via `canonicalR_irreflexive` axiom.
 SuccOrder/PredOrder/IsSuccArchimedean have sorries (DF coverness extraction).
 
-### 3. Base Case (D = ℤ)
-Base axiom system without density or discreteness.
-Uses D = ℤ directly with `canonicalTaskFrame` from `DurationTransfer.lean`.
+### 3. Base Case (no characterization theorem available)
+Base axiom system without density or discreteness. Without DN or DF, the
+canonical timeline lacks the order-theoretic properties needed for either
+Cantor's theorem or ℤ-characterization. No pure-syntax TaskFrame exists yet.
 
-**Status**: Complete.
+**Status**: Open problem. Hardcoding D = ℤ was the old approach (now archived).
 
 ## Architecture
 
@@ -63,22 +64,21 @@ Uses D = ℤ directly with `canonicalTaskFrame` from `DurationTransfer.lean`.
                     │   CanonicalFrame)   │
                     └─────────┬───────────┘
                               │
-              ┌───────────────┼───────────────┐
-              │               │               │
-    ┌─────────▼─────┐ ┌──────▼──────┐ ┌──────▼──────┐
-    │  Dense        │ │  Discrete   │ │  Base       │
-    │  Timeline     │ │  Timeline   │ │  (D = ℤ)    │
-    │  (Staged +    │ │  (Staged +  │ │             │
-    │   Density     │ │   Succ/Pred)│ │             │
-    │   Intermediates)│ │           │ │             │
-    └─────────┬─────┘ └──────┬──────┘ └──────┬──────┘
-              │               │               │
-    ┌─────────▼─────┐ ┌──────▼──────┐        │
-    │  Cantor       │ │  ℤ-Charact. │        │
-    │  T ≃o ℚ       │ │  T ≃o ℤ     │        │
-    └─────────┬─────┘ └──────┬──────┘        │
-              │               │               │
-    ┌─────────▼───────────────▼───────────────▼──────┐
+              ┌───────────────┴───────────────┐
+              │                               │
+    ┌─────────▼─────────┐          ┌──────────▼──────────┐
+    │  Dense Timeline   │          │  Discrete Timeline  │
+    │  (Staged +        │          │  (Staged +          │
+    │   Density         │          │   Succ/Pred)        │
+    │   Intermediates)  │          │                     │
+    └─────────┬─────────┘          └──────────┬──────────┘
+              │                               │
+    ┌─────────▼─────────┐          ┌──────────▼──────────┐
+    │  Cantor           │          │  ℤ-Characterization │
+    │  T ≃o ℚ           │          │  T ≃o ℤ             │
+    └─────────┬─────────┘          └──────────┬──────────┘
+              │                               │
+    ┌─────────▼───────────────────────────────▼──────┐
     │            DurationTransfer.lean               │
     │  transferAddCommGroup + transferIsOrderedAddMonoid │
     └─────────────────────┬──────────────────────────┘
@@ -247,18 +247,18 @@ See `DiscreteTimeline.lean` for details.
 /-!
 ## Base Case
 
-The base case uses D = ℤ directly via `canonicalTaskFrame` from
-`DurationTransfer.lean`. No characterization theorem is needed since ℤ
-already has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid`.
--/
+The base axiom system (without density or discreteness) has no characterization
+theorem to identify its canonical timeline with a known group. Without DN or DF,
+the timeline's order-theoretic properties are underdetermined — we cannot apply
+Cantor's theorem or the ℤ-characterization.
 
-/--
-Base case TaskFrame: D = ℤ.
+A pure-syntax base case would require either:
+1. A characterization theorem for a broader class of linear orders, or
+2. Constructing the group structure directly on the timeline without transfer.
 
-This is a special case where we don't need to transfer the group structure —
-ℤ already has `AddCommGroup`, `LinearOrder`, and `IsOrderedAddMonoid`.
+Until then, the base case has no pure-syntax TaskFrame construction.
+The archived `Boneyard/IntRepresentation/Representation.lean` hardcoded D = ℤ
+for this case, which is precisely the contamination pattern we are avoiding.
 -/
-noncomputable def baseTaskFrame : TaskFrame ℤ :=
-  canonicalTaskFrame ℤ
 
 end Bimodal.Metalogic.Domain
