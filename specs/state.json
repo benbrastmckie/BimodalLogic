@@ -21,6 +21,9 @@
           "type": "research",
           "summary": "Algebraic analysis of sign-case elimination: full mixed-sign compositionality requires functionality (impossible for canonical model), restricted forward_compositionality is correct and sufficient, converse is optional mixin, current d<0=>False approach is sound"
         }
+      ],
+      "dependencies": [
+        966
       ]
     },
     {
@@ -39,6 +42,10 @@
           "type": "research",
           "summary": "Deep analysis of shift-closure role in completeness: definition, why it's needed for MF/TF axiom soundness, proof strategy (trivial by translation invariance), BFMCS bypass and re-entry, WorldHistory construction from FMCS families"
         }
+      ],
+      "dependencies": [
+        967,
+        969
       ]
     },
     {
@@ -62,13 +69,13 @@
     {
       "project_number": 966,
       "project_name": "branch_comparison_duration_group_refactor",
-      "status": "researched",
+      "status": "researching",
       "language": "meta",
       "priority": "high",
       "description": "Systematically compare branch claude/duration-group-construction-SFEJg against main. The branch proposes replacing the universal compositionality axiom in TaskFrame with forward_comp + converse (biconditional time-reversal). Three supporting research reports confirm the mathematical necessity. Key decisions: (1) adopt converse formulation or keep current compositionality hack, (2) fix ShiftClosed Omega truth lemma alignment gap, (3) whether to implement TaskFrame refactor before or after task 956 completes, (4) how to renumber conflicting branch task artifacts (962/963 on branch conflict with different 962/963 on main).",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-14T00:00:00Z",
-      "session_id": "sess_1773525761_remove",
+      "last_updated": "2026-03-14T22:53:21Z",
+      "session_id": "sess_1773528783_17555",
       "artifacts": [
         {
           "path": "specs/966_branch_comparison_duration_group_refactor/reports/research-001.md",
@@ -81,10 +88,10 @@
     {
       "project_number": 964,
       "project_name": "resolve_atom_type_freshness_debt",
-      "status": "planned",
+      "status": "abandoned",
       "language": "lean",
       "priority": "medium",
-      "description": "Archive the unused canonicalR_irreflexive axiom and clean up related code, maintaining irreflexive semantics. Research confirmed: (1) the axiom cannot be proven without T-axiom, which would break density proofs; (2) the axiom is UNUSED in the completeness chain - irreflexivity is already obtained via strict < on CanonicalMCS preorder; (3) reflexive refactoring would introduce 5+ blockers with 87-167h effort and HIGH risk. Action: archive CanonicalIrreflexivityAxiom.lean and CanonicalIrreflexivity.lean to Boneyard, update docstrings to clarify irreflexivity source, remove any dead imports.",
+      "description": "SUPERSEDED BY TASK 967. Originally planned to archive Bundle/CanonicalIrreflexivity.lean and document canonicalR_irreflexive as permanent. Task 967 renders this moot: 967 will fix the proof in CanonicalIrreflexivity.lean using the new Atom type and remove the axiom entirely. Running 964 as planned would conflict (archiving a file that 967 needs to fix). Abandoned in favor of 967.",
       "created": "2026-03-14T01:00:00Z",
       "last_updated": "2026-03-14T22:30:00Z",
       "session_id": "sess_1773526673_48dd46",
@@ -1104,9 +1111,10 @@
     }
   ],
   "task_counts": {
-    "active": 12,
+    "active": 11,
     "not_started": 10,
-    "total": 335
+    "total": 335,
+    "abandoned": 38
   },
   "repository_health": {
     "last_assessed": "2026-02-27T02:52:44Z",

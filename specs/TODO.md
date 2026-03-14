@@ -5,11 +5,11 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 20
+  active: 19
   completed: 662
   in_progress: 0
   not_started: 8
-  abandoned: 37
+  abandoned: 38
   total: 717
 technical_debt:
   sorry_count: 73
@@ -27,6 +27,7 @@ technical_debt:
 - **Language**: lean
 - **Status**: [NOT STARTED]
 - **Priority**: medium
+- **Dependencies**: Task 966 (scope decision: conservative `forward_compositionality` vs full `forward_comp + converse`)
 - **Research**: [specs/research_sign_elimination/reports/research-001.md]
 
 **Description**: Replace the universal `compositionality` axiom in `TaskFrame` with `forward_compositionality` restricted to `0 <= x` and `0 <= y`. Mixed-sign compositionality is algebraically unachievable for non-deterministic relations (requires functionality of the positive-duration action, which the canonical model lacks). Restricted compositionality is sufficient for all downstream uses since `respects_task` only evaluates `task_rel` at `d = t - s` where `s <= t`.
@@ -56,7 +57,7 @@ technical_debt:
 
 **Key files**: `Truth.lean` (ShiftClosed), `WorldHistory.lean` (time_shift), `FMCSDef.lean` (FMCS), `BFMCSTruth.lean` (bmcs_truth_at), `TruthLemma.lean` (bmcs_truth_lemma), `Validity.lean` (semantic_consequence)
 
-**Dependencies**: Task 956 (canonical task relation needed for respects_task in WorldHistory construction)
+**Dependencies**: Task 956 (canonical task relation needed for respects_task in WorldHistory construction), Task 967 (atom type change affects Formula/BFMCSTruth), Task 969 (TaskFrame and WorldHistory structural changes)
 
 ---
 
@@ -90,7 +91,7 @@ technical_debt:
 - `0_shift_closure_research/` → keep unnumbered
 - `research_sign_elimination/` → keep unnumbered
 - `962_algebraic_structure_sign_free_task_frame/` → `968_*`
-- `963_duration_group_taskframe_refactor/` → `967_*` (task 967)
+- `963_duration_group_taskframe_refactor/` → `969_*` (task 969)
 
 **Key files under consideration**:
 - `Theories/Bimodal/Semantics/TaskFrame.lean`
@@ -102,20 +103,13 @@ technical_debt:
 
 ### 964. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
 - **Effort**: 1 hour
-- **Status**: [PLANNED]
+- **Status**: [ABANDONED]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md), [research-002.md](specs/964_resolve_atom_type_freshness_debt/reports/research-002.md), [research-003.md](specs/964_resolve_atom_type_freshness_debt/reports/research-003.md), [research-004.md](specs/964_resolve_atom_type_freshness_debt/reports/research-004.md), [research-005.md](specs/964_resolve_atom_type_freshness_debt/reports/research-005.md), [research-006.md](specs/964_resolve_atom_type_freshness_debt/reports/research-006.md), [research-007.md](specs/964_resolve_atom_type_freshness_debt/reports/research-007.md)
 - **Plan**: [implementation-004.md](specs/964_resolve_atom_type_freshness_debt/plans/implementation-004.md)
 
-**Description**: Archive the unused `canonicalR_irreflexive` axiom and clean up related code, maintaining irreflexive semantics. Research confirmed: (1) the axiom cannot be proven without T-axiom, which would break density proofs; (2) the axiom is UNUSED in the completeness chain - irreflexivity is already obtained via strict `<` on CanonicalMCS preorder; (3) reflexive refactoring would introduce 5+ blockers with 87-167h effort and HIGH risk.
-
-**Action**: Archive `CanonicalIrreflexivityAxiom.lean` and `CanonicalIrreflexivity.lean` to Boneyard, update docstrings to clarify irreflexivity source, remove any dead imports.
-
-**Key files**:
-- Archive: `Theories/Bimodal/Metalogic/Canonical/CanonicalIrreflexivityAxiom.lean`
-- Archive: `Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean`
-- Update docstring: `Theories/Bimodal/Metalogic/Canonical/CanonicalMCS.lean` (irreflexivity source)
+**Superseded by Task 967**. The plan to archive `Bundle/CanonicalIrreflexivity.lean` conflicts with task 967, which will *fix* that same file (converting `String → Atom`, completing its 2 sorries) and then remove the `canonicalR_irreflexive` axiom entirely. Research artifacts from this task (especially research-002, which maps the obstacle) are referenced by task 967 and should be preserved.
 
 ---
 
