@@ -6,6 +6,22 @@
   },
   "active_projects": [
     {
+      "project_number": 962,
+      "project_name": "dense_timeline_strict_intermediate_reflexive_source",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "description": "Modify DenseTimeline.lean so that densityIntermediateMCS uses density_frame_condition_reflexive_source when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: density_frame_condition Case A only provides strictness from the TARGET (¬CanonicalR M'  W), not from the SOURCE (¬CanonicalR W M). By switching to density_frame_condition_reflexive_source for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to DenseTimeline.lean and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.",
+      "unblocks": [
+        961
+      ],
+      "dependencies": [
+        957
+      ],
+      "created": "2026-03-14T00:18:18Z",
+      "last_updated": "2026-03-14T00:18:18Z"
+    },
+    {
       "project_number": 960,
       "project_name": "refactor_documentation_bimodal_logos",
       "status": "completed",
@@ -803,7 +819,7 @@
       "priority": "high",
       "description": "Prove NoMaxOrder, NoMinOrder, and DenselyOrdered for TimelineQuot in CantorApplication.lean by implementing well-founded iteration over distinguishing formulas. When density_frame_condition gives intermediate c between p and q but c falls in the same equivalence class as p or q (i.e., CanonicalR c p.mcs or CanonicalR q.mcs c), the argument must iterate using a different separating formula from the finite set subformulaClosure(anchor). The iteration terminates because each step either finds a strict intermediate (success) or consumes a formula from the finite distinguishing set, strictly decreasing a Nat measure. Implement using Nat.strongRecOn with fuel = subformulaClosure(anchor).card. Resolves 6 sorries: CantorApplication.lean lines 210 (NoMaxOrder reflexive), 269 (NoMinOrder reflexive), 332, 345, 380, 385 (DenselyOrdered iteration cases).",
       "created": "2026-03-13T00:00:00Z",
-      "last_updated": "2026-03-14T00:03:07Z",
+      "last_updated": "2026-03-14T00:18:41Z",
       "unblocks": [
         956
       ],
@@ -863,7 +879,10 @@
       "researched": "2026-03-13T20:43:03Z",
       "planned": "2026-03-13T21:28:22Z",
       "started": "2026-03-13T22:30:54Z",
-      "blocked": "2026-03-13T16:30:00Z"
+      "blocked": "2026-03-13T16:30:00Z",
+      "blocked_by": [
+        962
+      ]
     }
   ],
   "completed_projects": [
@@ -878,7 +897,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 962,
+  "next_project_number": 963,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

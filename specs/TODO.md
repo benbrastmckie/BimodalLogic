@@ -1,5 +1,5 @@
 ---
-next_project_number: 961
+next_project_number: 963
 repository_health:
   overall_score: 90
   production_readiness: improved
@@ -21,6 +21,18 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 962. Modify DenseTimeline.lean: strict intermediate for reflexive sources
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Priority**: high
+- **Dependencies**: Task 957 (density_frame_condition - COMPLETE)
+- **Unblocks**: Task 961 (NoMaxOrder/NoMinOrder/DenselyOrdered for TimelineQuot)
+
+**Description**: Modify `DenseTimeline.lean` so that `densityIntermediateMCS` uses `density_frame_condition_reflexive_source` when the source MCS is reflexive, guaranteeing that the intermediate is always strictly between the endpoints (never equal to either). This fixes the root cause blocking task 961: `density_frame_condition` Case A only provides strictness from the TARGET (`¬CanonicalR M' W`), not from the SOURCE (`¬CanonicalR W M`). By switching to `density_frame_condition_reflexive_source` for reflexive sources in the timeline construction, the intermediate MCS will satisfy both strictness conditions. The change is confined to `DenseTimeline.lean` and should not require modifications to any downstream callers, since the postconditions only strengthen (more guarantees, same interface). Zero sorries introduced.
+
+---
 
 ### 960. Refactor documentation for bimodal Logos fragment
 - **Effort**: 3-5 hours
@@ -81,7 +93,7 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 ### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
 - **Effort**: 3-5 hours
 - **Status**: [BLOCKED]
-- **Blocked on**: Mathematical limitation - density_frame_condition_reflexive_source provides strictness from TARGET only, not SOURCE. Requires Option A (modify DenseTimeline.lean).
+- **Blocked on**: Task 962 (modify DenseTimeline.lean for strict intermediate with reflexive sources)
 - **Plan**: [implementation-005.md](specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-005.md) (v005: quotient-level "no covers" proof)
 - **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis), [research-003.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md) (Classical.choose), [research-004.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md) (quotient collapse), [research-005.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-005.md) (no-covers approach)
 - **Summary**: [implementation-summary-20260313d.md](specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313d.md) (iteration 2: Option A required)
