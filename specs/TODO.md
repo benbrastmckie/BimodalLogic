@@ -61,10 +61,11 @@ technical_debt:
 ---
 
 ### 967. Change atom type from String to freshness-supporting type
-- **Effort**: 12-18 hours
-- **Status**: [RESEARCHING]
+- **Effort**: 4-8 hours (revised down from 12-18)
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: medium
+- **Research**: [specs/967_change_atom_type_for_freshness/reports/research-001.md]
 
 **Description**: Change atom type from String to freshness-supporting type to eliminate canonicalR_irreflexive axiom debt. The Gabbay IRR proof (Goldblatt 1992) requires a fresh atom not in GContent(M). With String atoms this is impossible since G(s∨¬s) puts every string into GContent(M). Changing to a type with Option ℕ fresh_index (or similar) allows picking p = Atom.mk name (some n), completing the proof and eliminating the axiom. Scope: refactor Formula and all ~31 dependent files. See research-002 (task 964) for full obstacle analysis.
 
