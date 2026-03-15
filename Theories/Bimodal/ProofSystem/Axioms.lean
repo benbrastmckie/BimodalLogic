@@ -3,14 +3,14 @@ import Bimodal.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 15 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 17 axiom schemata for bimodal logic TM (Tense and Modality).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 15 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
-  `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
-  `modal_future`, `temp_future`, `temp_linearity`
+- 17 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
+  `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_t_future`,
+  `temp_t_past`, `temp_a`, `temp_l`, `modal_future`, `temp_future`, `temp_linearity`
 
 ## Axiom Schemata
 
@@ -34,6 +34,8 @@ The TM logic includes:
 ### Temporal Axioms (future G, past H)
 - **TK** (Temporal K Distribution): `G(φ → ψ) → (Gφ → Gψ)` - future distributes over implication
 - **T4** (Temporal 4): `Gφ → GGφ` - future of future is future (transitivity)
+- **TT-F** (Temporal T Future): `Gφ → φ` - reflexivity for future (Task 967)
+- **TT-P** (Temporal T Past): `Hφ → φ` - reflexivity for past (Task 967)
 - **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
 - **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
 ### Modal-Temporal Interaction Axioms
@@ -59,7 +61,7 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM.
 
-A formula `φ` is an axiom if it matches one of the 15 axiom schema patterns.
+A formula `φ` is an axiom if it matches one of the 17 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
 -/
 inductive Axiom : Formula → Type where
@@ -216,6 +218,38 @@ inductive Axiom : Formula → Type where
   -/
   | temp_4 (φ : Formula) :
     Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
+
+  /--
+  Temporal T axiom (future): `Gφ → φ` (reflexivity for future).
+
+  What holds at all present and future times holds now. This is the temporal analog
+  of the modal T axiom (□φ → φ). Under reflexive temporal semantics (where G quantifies
+  over t' ≥ t instead of t' > t), this axiom is valid because the quantification
+  includes the current time t itself.
+
+  Semantically: if φ holds at all s ≥ t, then in particular φ holds at t (since t ≥ t).
+
+  **Added by Task 967**: Reflexive temporal semantics enables this axiom, which was
+  NOT valid under the previous irreflexive semantics (G quantifying over t' > t).
+  This axiom is essential for completing the Gabbay IRR proof.
+  -/
+  | temp_t_future (φ : Formula) : Axiom ((Formula.all_future φ).imp φ)
+
+  /--
+  Temporal T axiom (past): `Hφ → φ` (reflexivity for past).
+
+  What holds at all present and past times holds now. This is the temporal analog
+  of the modal T axiom (□φ → φ). Under reflexive temporal semantics (where H quantifies
+  over t' ≤ t instead of t' < t), this axiom is valid because the quantification
+  includes the current time t itself.
+
+  Semantically: if φ holds at all s ≤ t, then in particular φ holds at t (since t ≤ t).
+
+  **Added by Task 967**: Reflexive temporal semantics enables this axiom, which was
+  NOT valid under the previous irreflexive semantics (H quantifying over t' < t).
+  This axiom is essential for completing the Gabbay IRR proof.
+  -/
+  | temp_t_past (φ : Formula) : Axiom ((Formula.all_past φ).imp φ)
 
   /--
   Temporal A axiom: `φ → F(sometime_past φ)` (temporal connectedness).

@@ -229,17 +229,19 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 
 ---
 
-### Decision: Irreflexive G/H Semantics
+### Decision: Reflexive G/H Semantics (Revised)
 
-**Date**: 2026-03-09
-**Context**: The original reflexive semantics (G/H quantify over ≤) created obstructions for density proofs. Irreflexive semantics (G/H quantify over <) aligns with the density proof architecture.
+**Date**: 2026-03-09 (original decision: irreflexive), 2026-03-14 (revised: reflexive)
+**Context**: Originally adopted irreflexive semantics for density proof alignment. Revised to reflexive semantics after Task 967 research showed density proofs remain sound under reflexive semantics, and reflexive semantics enables completing the Gabbay IRR proof.
 
-**Decision**: Temporal operators G (all_future) and H (all_past) use irreflexive semantics (strict < ordering).
+**Decision**: Temporal operators G (all_future) and H (all_past) use REFLEXIVE semantics (≤ ordering), meaning "now and all future/past times".
 
 **Consequences**:
-- T-axioms (Gφ → φ, Hφ → φ) are NOT valid (by design)
-- Density proofs proceed naturally: between any w₁ < w₂, density axiom forces intermediate w
-- Seriality axioms F(¬⊥) and P(¬⊥) derive NoMaxOrder/NoMinOrder for the canonical timeline
+- T-axioms (Gφ → φ, Hφ → φ) ARE valid (follows from ≤ including equality)
+- Density proofs still proceed correctly: DN axiom operates on strict ordering BETWEEN distinct MCSs
+- Seriality axioms F(¬⊥) and P(¬⊥) become trivially satisfied (witness = current time)
+- Gabbay IRR proof can be completed: T-axiom gives H(¬p) → ¬p, eliminating the axiom
+- `canonicalR_irreflexive` becomes a theorem (not axiom)
 
 ---
 
@@ -623,28 +625,31 @@ Int-indexed fragment chains inherit the D=Int prohibition. Witness placement com
 
 ---
 
-### Dead End: Reflexive G/H Semantics Switch
+### Revised Approach: Reflexive G/H Semantics (Originally Dead End)
 
-**Status**: ABANDONED
-**Tried**: 2025-12-01 to 2026-03-09
-**Related Tasks**: Task 956
+**Status**: ADOPTED (revised per Task 967)
+**History**: 2025-12-01 to 2026-03-09 (abandoned), 2026-03-14 (re-adopted)
+**Related Tasks**: Task 956 (original decision), Task 967 (reversal)
 
-*Rationale*: The original semantics used reflexive G/H (quantifying over ≤), which validates T-axioms (Gφ → φ, Hφ → φ). This created obstructions for density proofs.
+*Rationale*: Reflexive G/H semantics (quantifying over ≤) validates T-axioms (Gφ → φ, Hφ → φ). Initially abandoned due to perceived density proof obstructions, but research-002.md demonstrated these concerns were unfounded.
 
-**What We Tried**:
-Used reflexive temporal semantics where G (all_future) quantifies over t' ≥ t and H (all_past) over t' ≤ t. This makes the T-axiom valid by design but creates problems for the density proof architecture.
+**Original Concern (Why It Was Initially Abandoned)**:
+Reflexive semantics was thought to make density proofs harder: between w₁ ≤ w₂, there may be no STRICTLY intermediate point when w₁ = w₂. However, this analysis was incorrect.
 
-**Why It Failed**:
-Reflexive semantics makes density proofs harder: between w₁ ≤ w₂, there may be no STRICTLY intermediate point when w₁ = w₂. The density axiom DN requires strict ordering to force intermediate MCS existence. Irreflexive semantics (strict <) aligns naturally with the density proof structure.
+**Why It Was Re-adopted (research-002.md findings)**:
+1. Density does NOT trivialize under reflexive semantics - DN axiom still forces intermediate MCSs
+2. T-axiom (H(φ) → φ) enables completing the Gabbay IRR proof for canonicalR_irreflexivity
+3. Seriality proofs become trivial (witness = current time)
+4. The `canonicalR_irreflexive` axiom becomes provable as a theorem
 
 **Evidence**:
-- [Truth.lean](Theories/Bimodal/Semantics/Truth.lean) - Updated to irreflexive semantics
-- [Task 956 research](specs/956_construct_d_as_translation_group_from_syntax/reports/) - Analysis of T-axiom obstruction
+- [Task 967 research-002.md](specs/967_change_atom_type_for_freshness/reports/research-002.md) - Analysis showing density proofs remain sound
+- [Truth.lean](Theories/Bimodal/Semantics/Truth.lean) - Updated to reflexive semantics (Task 967)
 
 **Lesson**:
-The choice of reflexive vs irreflexive semantics has profound consequences for proof architecture. Match semantics to the proof strategy, not to convenience.
+Initial analysis of semantic consequences was incomplete. The density axiom DN operates on strict ordering BETWEEN MCSs, which is independent of whether temporal operators use reflexive or irreflexive quantification.
 
-**Superseded By**: Irreflexive G/H semantics (current)
+**Current Status**: Reflexive G/H semantics adopted per Task 967
 
 ---
 

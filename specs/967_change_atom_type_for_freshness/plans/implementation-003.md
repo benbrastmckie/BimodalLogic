@@ -1,7 +1,7 @@
 # Implementation Plan: Task #967 (Reflexive Semantics Refactor)
 
 - **Task**: 967 - Reflexive Semantics Refactor to Eliminate canonicalR_irreflexive Axiom
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 40-100 hours (high variance due to cascading proof fixes)
 - **Dependencies**: None
 - **Research Inputs**: specs/967_change_atom_type_for_freshness/reports/research-002.md
@@ -101,7 +101,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 0: Documentation Update - ROAD_MAP.md and Code Comments [NOT STARTED]
+### Phase 0: Documentation Update - ROAD_MAP.md and Code Comments [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Update documentation to reflect the decision to use reflexive G/H semantics
@@ -144,7 +144,7 @@ After this implementation:
 
 ---
 
-### Phase 1: Semantic Foundation - Truth.lean [NOT STARTED]
+### Phase 1: Semantic Foundation - Truth.lean [COMPLETED]
 
 - **Dependencies:** Phase 0
 - **Goal:** Change temporal operator semantics from strict (<) to reflexive (<=)
@@ -167,7 +167,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Add T-Axioms - Axioms.lean [NOT STARTED]
+### Phase 2: Add T-Axioms - Axioms.lean [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Add temporal T-axioms to the TM logic axiom set
@@ -190,7 +190,7 @@ After this implementation:
 
 ---
 
-### Phase 3: T-Axiom Soundness - Soundness.lean [NOT STARTED]
+### Phase 3: T-Axiom Soundness - Soundness.lean [COMPLETED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Prove T-axioms are valid under reflexive semantics
@@ -213,7 +213,13 @@ After this implementation:
 
 ---
 
-### Phase 4: Core Soundness Cascade - Fix Build Errors [NOT STARTED]
+### Phase 4: Core Soundness Cascade - Fix Build Errors [COMPLETED]
+
+**Note**: Phase 4 was effectively completed as part of Phase 3. All soundness cascade fixes were applied during the T-axiom soundness work, and the full `lake build` passes (743 jobs).
+
+---
+
+### Phase 5: DensityFrameCondition.lean Rewrite [NOT STARTED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Fix immediate compilation errors in soundness-related modules

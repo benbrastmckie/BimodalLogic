@@ -163,14 +163,30 @@ theorem temp_k_dist_valid (φ ψ : Formula) :
   intro h_future_imp h_future_phi s hts
   exact h_future_imp s hts (h_future_phi s hts)
 
-/-- Temporal 4 axiom is valid: `⊨ Fφ → FFφ`. -/
+/-- Temporal 4 axiom is valid: `⊨ Gφ → GGφ`. -/
 theorem temp_4_valid (φ : Formula) : ⊨ ((φ.all_future).imp (φ.all_future.all_future)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_future s hts r hsr
-  exact h_future r (lt_trans hts hsr)
+  exact h_future r (le_trans hts hsr)
 
-/-- Temporal A axiom is valid: `⊨ φ → F(sometime_past φ)`. -/
+/-- Temporal T axiom (future) is valid: `⊨ Gφ → φ`.
+Under reflexive semantics, G quantifies over t' ≥ t, so t itself is included. -/
+theorem temp_t_future_valid (φ : Formula) : ⊨ ((φ.all_future).imp φ) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro h_future
+  exact h_future t (le_refl t)
+
+/-- Temporal T axiom (past) is valid: `⊨ Hφ → φ`.
+Under reflexive semantics, H quantifies over t' ≤ t, so t itself is included. -/
+theorem temp_t_past_valid (φ : Formula) : ⊨ ((φ.all_past).imp φ) := by
+  intro T _ _ _ F M Omega _h_sc τ _h_mem t
+  simp only [truth_at]
+  intro h_past
+  exact h_past t (le_refl t)
+
+/-- Temporal A axiom is valid: `⊨ φ → G(sometime_past φ)`. -/
 theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometime_past)) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
@@ -179,26 +195,27 @@ theorem temp_a_valid (φ : Formula) : ⊨ (φ.imp (Formula.all_future φ.sometim
   intro h_all_neg
   exact h_all_neg t hts h_phi
 
-/-- TL axiom validity: `△φ → F(Pφ)` is valid. -/
+/-- TL axiom validity: `△φ → G(Hφ)` is valid. -/
 theorem temp_l_valid (φ : Formula) :
     ⊨ (φ.always.imp (Formula.all_future (Formula.all_past φ))) := by
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_always s _hts r _hrs
   simp only [Formula.always, Formula.and, Formula.neg, truth_at] at h_always
+  -- Under reflexive semantics, always encodes: (∀ u ≤ t, φ(u)) ∧ ((φ(t) → (∀ v ≥ t, φ(v)) → ⊥) → ⊥)
   have h1 :
-    (∀ (u : T), u < t → truth_at M Omega τ u φ) ∧
+    (∀ (u : T), u ≤ t → truth_at M Omega τ u φ) ∧
     ((truth_at M Omega τ t φ →
-      (∀ (v : T), t < v → truth_at M Omega τ v φ) → False) → False) :=
+      (∀ (v : T), t ≤ v → truth_at M Omega τ v φ) → False) → False) :=
     and_of_not_imp_not h_always
   obtain ⟨h_past, h_middle⟩ := h1
-  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : T), t < v → truth_at M Omega τ v φ) :=
+  have h2 : truth_at M Omega τ t φ ∧ (∀ (v : T), t ≤ v → truth_at M Omega τ v φ) :=
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
-  · exact h_past r h_lt
-  · rw [h_eq]; exact h_now
-  · exact h_future r h_gt
+  -- With reflexive semantics, we have φ at all times
+  rcases le_or_lt r t with h_le | h_gt
+  · exact h_past r h_le
+  · exact h_future r (le_of_lt h_gt)
 
 /-- MF axiom validity: `□φ → □(Fφ)` is valid. Uses ShiftClosed Omega for time-shift invariance. -/
 theorem modal_future_valid (φ : Formula) : ⊨ ((φ.box).imp ((φ.all_future).box)) := by
@@ -229,17 +246,17 @@ theorem temp_linearity_valid (φ ψ : Formula) :
   intro T _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj
-  -- Extract F(phi) and F(psi) witnesses
-  have h_F_phi : (∀ (s : T), t < s → truth_at M Omega τ s φ → False) → False :=
+  -- Extract F(phi) and F(psi) witnesses (now using ≤ for reflexive semantics)
+  have h_F_phi : (∀ (s : T), t ≤ s → truth_at M Omega τ s φ → False) → False :=
     Classical.byContradiction (fun h_not =>
       h_conj (fun h1 _ => h_not (fun h_all => h1 (fun s hs h_phi => h_all s hs h_phi))))
-  have h_F_psi : (∀ (s : T), t < s → truth_at M Omega τ s ψ → False) → False :=
+  have h_F_psi : (∀ (s : T), t ≤ s → truth_at M Omega τ s ψ → False) → False :=
     Classical.byContradiction (fun h_not =>
       h_conj (fun _ h2 => h_not (fun h_all => h2 (fun s hs h_psi => h_all s hs h_psi))))
-  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+  have ⟨s1, hs1t, h_phi_s1⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ := by
     by_contra h_no; push_neg at h_no
     exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
-  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t < s ∧ truth_at M Omega τ s ψ := by
+  have ⟨s2, hs2t, h_psi_s2⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s ψ := by
     by_contra h_no; push_neg at h_no
     exact h_F_psi (fun s hs h_psi => h_no s hs h_psi)
   rcases lt_trichotomy s1 s2 with h_lt | h_eq | h_gt
@@ -250,7 +267,7 @@ theorem temp_linearity_valid (φ ψ : Formula) :
     apply h_neg_second
     intro h_all_neg_second
     exact h_all_neg_second s1 hs1t (fun h_imp => h_imp h_phi_s1 (fun h_neg_F_psi =>
-      h_neg_F_psi s2 h_lt h_psi_s2))
+      h_neg_F_psi s2 (le_of_lt h_lt) h_psi_s2))
   · -- s1 = s2: provide first disjunct F(φ ∧ ψ)
     subst h_eq
     intro h_neg_first
@@ -263,30 +280,26 @@ theorem temp_linearity_valid (φ ψ : Formula) :
     intro _
     intro h_all_neg_third
     exact h_all_neg_third s2 hs2t (fun h_imp => h_imp
-      (fun h_neg_F_phi => h_neg_F_phi s1 h_gt h_phi_s1) h_psi_s2)
+      (fun h_neg_F_phi => h_neg_F_phi s1 (le_of_lt h_gt) h_phi_s1) h_psi_s2)
 
 /-- Density axiom (DN) is valid on dense orders: `⊨_dense Fφ → FFφ`.
-With irreflexive semantics, Fφ means ∃ s > t with φ(s). Using DenselyOrdered,
-given witness s > t, we get u with t < u < s. Then Fφ holds at u (via s), so FFφ at t. -/
+Under reflexive semantics, this is trivially valid: if ∃ s ≥ t with φ(s),
+take u = t (reflexive) and v = s to witness FFφ. -/
 theorem density_valid (φ : Formula) : valid_dense (φ.some_future.imp φ.some_future.some_future) := by
   intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro h_F_phi h_GnFphi
-  -- h_F_phi : ¬∀ s > t, ¬φ(s), i.e., ∃ s > t, φ(s)
-  -- h_GnFphi : ∀ u > t, ¬(¬∀ v > u, ¬φ(v)), i.e., ∀ u > t, ∀ v > u, ¬φ(v)
-  -- Extract witness s > t with φ(s)
-  have ⟨s, hts, h_phi_s⟩ : ∃ s, t < s ∧ truth_at M Omega τ s φ := by
+  -- h_F_phi : ¬∀ s ≥ t, ¬φ(s), i.e., ∃ s ≥ t, φ(s)
+  -- h_GnFphi : ∀ u ≥ t, ¬(¬∀ v ≥ u, ¬φ(v))
+  have ⟨s, hts, h_phi_s⟩ : ∃ s, t ≤ s ∧ truth_at M Omega τ s φ := by
     by_contra h_no; push_neg at h_no
     exact h_F_phi (fun s hs h_phi => h_no s hs h_phi)
-  -- Use density to find u with t < u < s
-  obtain ⟨u, htu, hus⟩ := DenselyOrdered.dense t s hts
-  -- h_GnFphi at u says: ∀ v > u, ¬φ(v). But φ(s) and u < s. Contradiction.
-  exact h_GnFphi u htu (fun h_all_neg => h_all_neg s hus h_phi_s)
+  -- Use u = t (reflexive), then s with t ≤ s serves as witness for inner Fφ
+  exact h_GnFphi t (le_refl t) (fun h_all_neg => h_all_neg s hts h_phi_s)
 
 /-- Forward discreteness axiom (DF) is valid on discrete orders: `⊨_discrete (F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
-With irreflexive semantics and SuccOrder, given F⊤ (∃ s > t), φ at t, and Hφ at t (∀ r < t, φ(r)),
-we take u = Order.succ t. Then Hφ at u means ∀ r < succ(t), φ(r), which holds because
-r < succ(t) implies r ≤ t, and either r < t (by Hφ) or r = t (by φ at t). -/
+Under reflexive semantics, this is simpler: given Hφ at t (∀ r ≤ t, φ(r)),
+take s = t as the witness for F(Hφ) since t ≤ t. -/
 theorem discreteness_forward_valid (φ : Formula) :
     valid_discrete (Formula.and (Formula.bot.neg.some_future)
       (Formula.and φ (Formula.all_past φ)) |>.imp
@@ -294,65 +307,36 @@ theorem discreteness_forward_valid (φ : Formula) :
   intro T _ _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
   intro h_conj h_G_not_H
-  -- h_conj encodes (F⊤ → (φ → Hφ → ⊥) → ⊥) → ⊥, from which we extract three parts.
-  -- But the negation encoding means we work contrapositively.
-  -- We need: h_G_not_H applied at u = Order.succ t.
-  -- First show t is not maximal from h_conj (which encodes F⊤).
-  have h_not_max : ¬IsMax t := by
-    intro h_max
-    apply h_conj
-    intro h_F_top _
-    apply h_F_top
-    intro s hts
-    exact absurd hts (not_lt.mpr (h_max (le_of_lt hts)))
-  -- Take u = Order.succ t
-  have h_lt_succ : t < Order.succ t := Order.lt_succ_of_not_isMax h_not_max
-  -- h_G_not_H at Order.succ t: need to show (∀ r < succ t, φ(r)) → False is False
-  apply h_G_not_H (Order.succ t) h_lt_succ
-  -- Goal: ∀ r < succ(t), φ(r)
-  intro r h_r_lt_succ
-  have h_r_le_t : r ≤ t := Order.le_of_lt_succ h_r_lt_succ
-  -- Extract φ at t and Hφ at t from h_conj
+  -- h_conj encodes (F⊤ → (φ → Hφ → ⊥) → ⊥) → ⊥
+  -- Under reflexive semantics, take s = t as witness for F(Hφ)
+  -- Extract Hφ at t from h_conj
   have ⟨_, h_phi_and_H⟩ := and_of_not_imp_not h_conj
-  have ⟨h_phi, h_H⟩ := and_of_not_imp_not h_phi_and_H
-  rcases eq_or_lt_of_le h_r_le_t with h_eq | h_lt
-  · rw [h_eq]; exact h_phi
-  · exact h_H r h_lt
+  have ⟨_h_phi, h_H⟩ := and_of_not_imp_not h_phi_and_H
+  -- h_H : ∀ r ≤ t, φ(r)
+  -- Goal: ¬∀ s ≥ t, ¬(∀ r ≤ s, φ(r)) → False
+  -- h_G_not_H takes s ≥ t and a proof that ∀ r ≤ s, φ(r)
+  -- Take s = t (reflexive)
+  apply h_G_not_H t (le_refl t)
+  -- Goal: ∀ r ≤ t, φ(r), which is exactly h_H
+  exact h_H
 
 /-- Future seriality axiom is valid on dense orders: `⊨_dense F(¬⊥)`.
-Requires `Nontrivial D` (via `valid_dense`) to ensure there exist distinct elements,
-from which `NoMaxOrder` follows using the group structure. -/
+Under reflexive semantics, this is trivially valid: take s = t as witness. -/
 theorem seriality_future_valid : valid_dense (Formula.some_future (Formula.neg Formula.bot)) := by
   intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro h_all_neg
-  -- From Nontrivial + AddCommGroup + LinearOrder + IsOrderedAddMonoid, derive NoMaxOrder
-  have : NoMaxOrder T := by
-    constructor; intro a
-    obtain ⟨b, hb⟩ := exists_ne a
-    rcases lt_trichotomy a b with h | h | h
-    · exact ⟨b, h⟩
-    · exact absurd h (Ne.symm hb)
-    · exact ⟨a + (a - b), lt_add_of_pos_right a (sub_pos.mpr h)⟩
-  obtain ⟨s, hts⟩ := exists_gt t
-  exact h_all_neg s hts id
+  -- Trivially valid: t ≤ t and ¬⊥ holds
+  exact h_all_neg t (le_refl t) id
 
 /-- Past seriality axiom is valid on dense orders: `⊨_dense P(¬⊥)`.
-Requires `Nontrivial D` (via `valid_dense`) to ensure there exist distinct elements,
-from which `NoMinOrder` follows using the group structure. -/
+Under reflexive semantics, this is trivially valid: take s = t as witness. -/
 theorem seriality_past_valid : valid_dense (Formula.some_past (Formula.neg Formula.bot)) := by
   intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_past, Formula.neg, truth_at]
   intro h_all_neg
-  have : NoMinOrder T := by
-    constructor; intro a
-    obtain ⟨b, hb⟩ := exists_ne a
-    rcases lt_trichotomy a b with h | h | h
-    · exact ⟨a + (a - b), add_lt_of_neg_right a (sub_neg.mpr h)⟩
-    · exact absurd h (Ne.symm hb)
-    · exact ⟨b, h⟩
-  obtain ⟨s, hts⟩ := exists_lt t
-  exact h_all_neg s hts id
+  -- Trivially valid: t ≤ t and ¬⊥ holds
+  exact h_all_neg t (le_refl t) id
 
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With irreflexive semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
@@ -370,6 +354,8 @@ theorem axiom_base_valid {φ : Formula} (h : Axiom φ) (h_base : h.isBase) : ⊨
   | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ
   | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ
   | temp_4 ψ => exact temp_4_valid ψ
+  | temp_t_future ψ => exact temp_t_future_valid ψ
+  | temp_t_past ψ => exact temp_t_past_valid ψ
   | temp_a ψ => exact temp_a_valid ψ
   | temp_l ψ => exact temp_l_valid ψ
   | modal_future ψ => exact modal_future_valid ψ
@@ -395,6 +381,8 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | modal_k_dist φ ψ => exact Validity.valid_implies_valid_dense (modal_k_dist_valid φ ψ)
   | temp_k_dist φ ψ => exact Validity.valid_implies_valid_dense (temp_k_dist_valid φ ψ)
   | temp_4 ψ => exact Validity.valid_implies_valid_dense (temp_4_valid ψ)
+  | temp_t_future ψ => exact Validity.valid_implies_valid_dense (temp_t_future_valid ψ)
+  | temp_t_past ψ => exact Validity.valid_implies_valid_dense (temp_t_past_valid ψ)
   | temp_a ψ => exact Validity.valid_implies_valid_dense (temp_a_valid ψ)
   | temp_l ψ => exact Validity.valid_implies_valid_dense (temp_l_valid ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_dense (modal_future_valid ψ)
@@ -421,6 +409,8 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | modal_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (modal_k_dist_valid φ ψ)
   | temp_k_dist φ ψ => exact Validity.valid_implies_valid_discrete (temp_k_dist_valid φ ψ)
   | temp_4 ψ => exact Validity.valid_implies_valid_discrete (temp_4_valid ψ)
+  | temp_t_future ψ => exact Validity.valid_implies_valid_discrete (temp_t_future_valid ψ)
+  | temp_t_past ψ => exact Validity.valid_implies_valid_discrete (temp_t_past_valid ψ)
   | temp_a ψ => exact Validity.valid_implies_valid_discrete (temp_a_valid ψ)
   | temp_l ψ => exact Validity.valid_implies_valid_discrete (temp_l_valid ψ)
   | modal_future ψ => exact Validity.valid_implies_valid_discrete (modal_future_valid ψ)
@@ -429,30 +419,16 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | density _ => exact absurd h_dc id
   | discreteness_forward ψ => exact discreteness_forward_valid ψ
   | seriality_future =>
+    -- Under reflexive semantics, F(¬⊥) is trivially true: witness s = t
     intro T _ _ _ _ _ _ F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_future, Formula.neg, truth_at]
     intro h_all_neg
-    have : NoMaxOrder T := by
-      constructor; intro a
-      obtain ⟨b, hb⟩ := exists_ne a
-      rcases lt_trichotomy a b with h | h | h
-      · exact ⟨b, h⟩
-      · exact absurd h (Ne.symm hb)
-      · exact ⟨a + (a - b), lt_add_of_pos_right a (sub_pos.mpr h)⟩
-    obtain ⟨s, hts⟩ := exists_gt t
-    exact h_all_neg s hts id
+    exact h_all_neg t (le_refl t) id
   | seriality_past =>
+    -- Under reflexive semantics, P(¬⊥) is trivially true: witness s = t
     intro T _ _ _ _ _ _ F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_past, Formula.neg, truth_at]
     intro h_all_neg
-    have : NoMinOrder T := by
-      constructor; intro a
-      obtain ⟨b, hb⟩ := exists_ne a
-      rcases lt_trichotomy a b with h | h | h
-      · exact ⟨a + (a - b), add_lt_of_neg_right a (sub_neg.mpr h)⟩
-      · exact absurd h (Ne.symm hb)
-      · exact ⟨b, h⟩
-    obtain ⟨s, hts⟩ := exists_lt t
-    exact h_all_neg s hts id
+    exact h_all_neg t (le_refl t) id
 
 end Bimodal.Metalogic
