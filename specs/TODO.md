@@ -65,7 +65,7 @@ technical_debt:
 
 ### 967. Change atom type from String to freshness-supporting type
 - **Effort**: 40-100 hours (reflexive semantics refactor)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [specs/967_change_atom_type_for_freshness/reports/research-001.md], [specs/967_change_atom_type_for_freshness/reports/research-002.md]

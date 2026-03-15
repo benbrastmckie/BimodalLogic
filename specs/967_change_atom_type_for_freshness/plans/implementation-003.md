@@ -1,7 +1,7 @@
 # Implementation Plan: Task #967 (Reflexive Semantics Refactor)
 
 - **Task**: 967 - Reflexive Semantics Refactor to Eliminate canonicalR_irreflexive Axiom
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 40-100 hours (high variance due to cascading proof fixes)
 - **Dependencies**: None
 - **Research Inputs**: specs/967_change_atom_type_for_freshness/reports/research-002.md
@@ -324,7 +324,7 @@ The main build (743 jobs) passes without modifications to these files.
 
 ---
 
-### Phase 7: Fix CanonicalIrreflexivity.lean Type Errors [NOT STARTED]
+### Phase 7: Fix CanonicalIrreflexivity.lean Type Errors [IN PROGRESS]
 
 - **Dependencies:** Phase 6
 - **Goal:** Fix pre-existing String/Atom type mismatches before completing proof
