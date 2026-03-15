@@ -1,7 +1,7 @@
 # Implementation Plan: Task #967
 
 - **Task**: 967 - Change atom type from String to freshness-supporting type
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 5.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/967_change_atom_type_for_freshness/reports/research-001.md
@@ -84,7 +84,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Type Fixes in CanonicalIrreflexivity.lean [NOT STARTED]
+### Phase 1: Type Fixes in CanonicalIrreflexivity.lean [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Convert all String parameters to Atom type
