@@ -60,24 +60,63 @@ open Bimodal.Semantics
 Standard integer time task frame.
 
 This is the default temporal structure used in most temporal logic applications.
-Discrete time steps with integer arithmetic.
+Discrete time steps with integer arithmetic. WorldState is Unit (trivial).
 -/
 def intTimeFrame : TaskFrame Int where
   WorldState := Unit
   task_rel := fun _ _ _ => True
-  nullity := fun _ => trivial
-  compositionality := fun _ _ _ _ _ _ _ => trivial
+  nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
+  forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
+  converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
 
 /--
 Integer time task frame with natural number world states.
 
-A slightly more complex frame with `Nat` world states.
+A slightly more complex frame with `Nat` world states. Task relation is `d ≠ 0 ∨ w = u`
+to satisfy nullity_identity while remaining permissive for non-zero durations.
 -/
 def intNatFrame : TaskFrame Int where
   WorldState := Nat
-  task_rel := fun _ _ _ => True
-  nullity := fun _ => trivial
-  compositionality := fun _ _ _ _ _ _ _ => trivial
+  task_rel := fun w d u => d ≠ 0 ∨ w = u
+  nullity_identity := fun w u => by
+    constructor
+    · intro h
+      cases h with
+      | inl h => exact absurd rfl h
+      | inr h => exact h
+    · intro h
+      right; exact h
+  forward_comp := fun w u v x y hx hy h1 h2 => by
+    cases h1 with
+    | inl hxne =>
+      left
+      intro heq
+      have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+      have h1 : 0 ≤ -x := hy_eq ▸ hy
+      have h2 : x ≤ 0 := neg_nonneg.mp h1
+      have h3 : x = 0 := le_antisymm h2 hx
+      exact hxne h3
+    | inr hw =>
+      cases h2 with
+      | inl hyne =>
+        left
+        intro heq
+        have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+        have h1 : 0 ≤ -y := hx_eq ▸ hx
+        have h2 : y ≤ 0 := neg_nonneg.mp h1
+        have h3 : y = 0 := le_antisymm h2 hy
+        exact hyne h3
+      | inr hu => right; exact hw.trans hu
+  converse := fun w d u => by
+    constructor
+    · intro h
+      cases h with
+      | inl hd => left; simp [hd]
+      | inr heq => right; exact heq.symm
+    · intro h
+      cases h with
+      | inl hnd => left; simp at hnd; exact hnd
+      | inr heq => right; exact heq.symm
 
 /--
 Integer time world history with universal domain.
@@ -99,23 +138,63 @@ variable (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 /--
 Generic polymorphic task frame.
 
-Works with any temporal type `D` that has a `LinearOrderedAddCommGroup` instance.
-This demonstrates ProofChecker's polymorphic design.
+Works with any temporal type `D` that has ordered additive group instances.
+This demonstrates ProofChecker's polymorphic design. WorldState is Unit (trivial).
 -/
 def genericTimeFrame : TaskFrame D where
   WorldState := Unit
   task_rel := fun _ _ _ => True
-  nullity := fun _ => trivial
-  compositionality := fun _ _ _ _ _ _ _ => trivial
+  nullity_identity := fun _ _ => ⟨fun _ => Subsingleton.elim _ _, fun _ => trivial⟩
+  forward_comp := fun _ _ _ _ _ _ _ _ _ => trivial
+  converse := fun _ _ _ => ⟨fun _ => trivial, fun _ => trivial⟩
 
 /--
 Generic polymorphic task frame with natural number world states.
+
+Task relation is `d ≠ 0 ∨ w = u` to satisfy nullity_identity.
 -/
 def genericNatFrame : TaskFrame D where
   WorldState := Nat
-  task_rel := fun _ _ _ => True
-  nullity := fun _ => trivial
-  compositionality := fun _ _ _ _ _ _ _ => trivial
+  task_rel := fun w d u => d ≠ 0 ∨ w = u
+  nullity_identity := fun w u => by
+    constructor
+    · intro h
+      cases h with
+      | inl h => exact absurd rfl h
+      | inr h => exact h
+    · intro h
+      right; exact h
+  forward_comp := fun w u v x y hx hy h1 h2 => by
+    cases h1 with
+    | inl hxne =>
+      left
+      intro heq
+      have hy_eq : y = -x := (neg_eq_of_add_eq_zero_right heq).symm
+      have h1 : 0 ≤ -x := hy_eq ▸ hy
+      have h2 : x ≤ 0 := neg_nonneg.mp h1
+      have h3 : x = 0 := le_antisymm h2 hx
+      exact hxne h3
+    | inr hw =>
+      cases h2 with
+      | inl hyne =>
+        left
+        intro heq
+        have hx_eq : x = -y := (neg_eq_of_add_eq_zero_left heq).symm
+        have h1 : 0 ≤ -y := hx_eq ▸ hx
+        have h2 : y ≤ 0 := neg_nonneg.mp h1
+        have h3 : y = 0 := le_antisymm h2 hy
+        exact hyne h3
+      | inr hu => right; exact hw.trans hu
+  converse := fun w d u => by
+    constructor
+    · intro h
+      cases h with
+      | inl hd => left; simp [hd]
+      | inr heq => right; exact heq.symm
+    · intro h
+      cases h with
+      | inl hnd => left; simp at hnd; exact hnd
+      | inr heq => right; exact heq.symm
 
 /--
 Generic polymorphic world history with universal domain.
@@ -145,39 +224,42 @@ example : (genericTimeFrame Int).task_rel = intTimeFrame.task_rel := rfl
 /-! ## Properties -/
 
 /--
-Integer time satisfies the nullity constraint.
+Integer time satisfies the nullity constraint (derived from nullity_identity).
 -/
 theorem int_nullity_example : intTimeFrame.task_rel () 0 () :=
-  intTimeFrame.nullity ()
+  TaskFrame.nullity intTimeFrame ()
 
 /--
-Generic time satisfies the nullity constraint (polymorphic proof).
+Generic time satisfies the nullity constraint (polymorphic proof, derived from nullity_identity).
 -/
 theorem generic_nullity_example (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] :
     (genericTimeFrame D).task_rel () 0 () :=
-  (genericTimeFrame D).nullity ()
+  TaskFrame.nullity (genericTimeFrame D) ()
 
 /--
-Integer time compositionality example: 1 + 2 = 3 duration composition.
+Integer time forward compositionality example: 1 + 2 = 3 duration composition.
 -/
 theorem int_compositionality_example :
     intTimeFrame.task_rel () 3 () := by
   show intTimeFrame.task_rel () (1 + 2) ()
-  exact intTimeFrame.compositionality () () () 1 2
-    (intTimeFrame.nullity ())
-    (intTimeFrame.nullity ())
+  exact intTimeFrame.forward_comp () () () 1 2
+    (by omega : 0 ≤ (1 : Int))
+    (by omega : 0 ≤ (2 : Int))
+    (TaskFrame.nullity intTimeFrame ())
+    (TaskFrame.nullity intTimeFrame ())
 
 /--
-Generic compositionality theorem (polymorphic).
+Generic forward compositionality theorem (polymorphic).
 
-For any temporal type `D`, tasks of duration `x` and `y` compose
+For any temporal type `D` and non-negative durations `x` and `y`, tasks compose
 to a task of duration `x + y`.
 -/
-theorem generic_compositionality (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (x y : D) :
+theorem generic_compositionality (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    (x y : D) (hx : 0 ≤ x) (hy : 0 ≤ y) :
     (genericTimeFrame D).task_rel () (x + y) () :=
-  (genericTimeFrame D).compositionality () () () x y
-    ((genericTimeFrame D).nullity ())
-    ((genericTimeFrame D).nullity ())
+  (genericTimeFrame D).forward_comp () () () x y hx hy
+    (TaskFrame.nullity (genericTimeFrame D) ())
+    (TaskFrame.nullity (genericTimeFrame D) ())
 
 /-! ## History Domain Examples -/
 

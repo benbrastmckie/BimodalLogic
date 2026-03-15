@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 19
-  completed: 662
+  active: 18
+  completed: 663
   in_progress: 0
   not_started: 8
   abandoned: 38
@@ -25,21 +25,22 @@ technical_debt:
 ### 969. Refactor TaskFrame: restrict compositionality to non-negative durations
 - **Effort**: 6-8 hours
 - **Language**: lean
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Priority**: medium
 - **Dependencies**: Task 966 [COMPLETED] (decision: adopt `forward_comp + converse` axiomatization)
 - **Research**: [specs/research_sign_elimination/reports/research-001.md]
 - **Plan**: [specs/969_refactor_taskframe_restrict_compositionality/plans/implementation-001.md]
+- **Summary**: [specs/969_refactor_taskframe_restrict_compositionality/summaries/implementation-summary-20260314.md]
 
-**Description**: Replace the universal `compositionality` axiom in `TaskFrame` with `forward_compositionality` restricted to `0 <= x` and `0 <= y`. Mixed-sign compositionality is algebraically unachievable for non-deterministic relations (requires functionality of the positive-duration action, which the canonical model lacks). Restricted compositionality is sufficient for all downstream uses since `respects_task` only evaluates `task_rel` at `d = t - s` where `s <= t`.
+**IMPLEMENTATION COMPLETE**: Refactored TaskFrame from `nullity + compositionality` to `nullity_identity + forward_comp + converse`. Updated canonical_task_rel to handle negative durations via `CanonicalR N.val M.val` (backward accessibility). All 6 modified files build successfully with zero new sorries and zero new axioms.
 
-**Changes**:
-1. Rename `compositionality` → `forward_compositionality` in `TaskFrame` structure, add `0 <= x` and `0 <= y` hypotheses
-2. Update all call sites — hypotheses are always available since all use-sites have `s <= t` guards
-3. Optionally add `HasConverse` mixin class for frames where `task_rel w d u ↔ task_rel u (-d) w`
-4. Simplify `CanonicalConstruction.canonical_task_rel_compositionality` (no more `d < 0 => False` needed)
+**Changes made**:
+1. TaskFrame.lean: New axioms `nullity_identity`, `forward_comp`, `converse`; derived `nullity` theorem
+2. CanonicalConstruction.lean: `d < 0` now maps to `CanonicalR N.val M.val`, enabling converse proof
+3. nat_frame: Changed task_rel from `True` to `d != 0 \/ w = u` for `nullity_identity`
+4. prod_frame (IRRSoundness): Extended task_rel to require time stamp equality at d=0
 
-**Key files**: `TaskFrame.lean`, `WorldHistory.lean` (respects_task), `CanonicalConstruction.lean` (canonical_task_rel), `DurationTransfer.lean`
+**Key files**: `TaskFrame.lean`, `WorldHistory.lean`, `CanonicalConstruction.lean`, `DurationTransfer.lean`, `IRRSoundness.lean`, `TemporalStructures.lean`
 
 ---
 

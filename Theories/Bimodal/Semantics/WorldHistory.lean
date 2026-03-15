@@ -184,11 +184,11 @@ def universal_trivialFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrder
 /--
 Universal world history for nat frame with a specific constant Nat state.
 
-Since natFrame's task relation is always true (for any states and duration),
-any constant history respects the task relation.
+Since natFrame's task relation is `d ≠ 0 ∨ w = u`, a constant history with state `n`
+satisfies `respects_task` because `n = n` holds (right disjunct).
 
-This demonstrates that reflexive frames (where `task_rel w d w` for all `w, d`)
-admit universal constant histories. The full domain is convex.
+This demonstrates that frames with `nullity_identity` admit constant histories
+as long as zero-duration relates identical states. The full domain is convex.
 -/
 def universal_natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D] (n : Nat) :
     WorldHistory (TaskFrame.nat_frame (D := D)) where
@@ -199,8 +199,10 @@ def universal_natFrame {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAd
   states := fun _ _ => n
   respects_task := by
     intros s t hs ht hst
-    -- natFrame.task_rel is always True
-    exact True.intro
+    -- natFrame.task_rel is d ≠ 0 ∨ w = u
+    -- Since states s = states t = n, we have n = n
+    right
+    rfl
 
 /--
 Get the state at a time (helper function that bundles membership proof).

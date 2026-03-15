@@ -186,15 +186,29 @@ noncomputable def canonicalTaskFrame
     TaskFrame T where
   WorldState := T
   task_rel := canonicalTaskRel
-  nullity := fun w => by
-    show w + 0 = w
-    exact add_zero w
-  compositionality := fun w u v x y h1 h2 => by
-    show w + (x + y) = v
+  nullity_identity := fun w u => by
+    -- canonicalTaskRel w 0 u iff w + 0 = u iff w = u
+    show w + 0 = u ↔ w = u
+    rw [add_zero]
+  forward_comp := fun w u v x y _ _ h1 h2 => by
     -- h1 : w + x = u
     -- h2 : u + y = v
+    -- Goal: w + (x + y) = v
+    show w + (x + y) = v
     rw [← h2, ← h1]
     rw [add_assoc]
+  converse := fun w d u => by
+    -- canonicalTaskRel w d u iff w + d = u
+    -- canonicalTaskRel u (-d) w iff u + (-d) = w iff u - d = w
+    -- These are equivalent by group theory: w + d = u iff u - d = w
+    show w + d = u ↔ u + -d = w
+    constructor
+    · intro h
+      rw [← h]
+      simp [add_assoc]
+    · intro h
+      rw [← h]
+      simp [add_assoc]
 
 /-!
 ## Section 5: Convenience Wrappers

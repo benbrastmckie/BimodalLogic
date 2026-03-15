@@ -106,114 +106,142 @@ def CanonicalWorldState : Type :=
   { M : Set Formula // SetMaximalConsistent M }
 
 /--
-Canonical task relation: forward-only with identity at zero.
+Canonical task relation: forward accessibility with converse for negative durations.
 
 The task relation captures temporal coherence between MCSs along trajectories:
-- **d > 0**: `CanonicalR M N` (GContent M ⊆ N) — N is a forward-accessible world from M
+- **d > 0**: `CanonicalR M.val N.val` (GContent M ⊆ N) — N is forward-accessible from M
 - **d = 0**: `M = N` — zero displacement means same world-state
-- **d < 0**: `False` — negative durations are unreachable by `respects_task`
+- **d < 0**: `CanonicalR N.val M.val` — backward direction uses converse relationship
 
-**Design rationale**: WorldState and D are fundamentally different types.
+**Design rationale (Task 966/969)**: WorldState and D are fundamentally different types.
 WorldStates (MCS pairs) form a vast unstructured space. D (Int) carries the
 group structure. Histories pull totally ordered trajectories through the space
 of worlds — the total order lives in D, not in WorldState.
 
-Since `respects_task` only evaluates `task_rel` at `d = t - s ≥ 0` (because
-`s ≤ t`), negative durations are never tested. Making d < 0 → False is
-vacuously safe and eliminates all mixed-sign compositionality complexity.
+The key insight from task 966 research: instead of making `d < 0 → False`, we
+use `d < 0 → CanonicalR N.val M.val`. This allows us to prove the converse axiom
+(`task_rel M d N ↔ task_rel N (-d) M`) because:
+- If d > 0: LHS = CanonicalR M N, RHS (with -d < 0) = CanonicalR M N ✓
+- If d = 0: LHS = M = N, RHS (with -0 = 0) = N = M ✓
+- If d < 0: LHS = CanonicalR N M, RHS (with -d > 0) = CanonicalR N M ✓
 
 Making d = 0 → (M = N) rather than vacuous True is the key insight: zero
-time means no change. This avoids the T-axiom obstruction (we never need
-GContent M ⊆ M) while giving compositionality the information it needs to
-chain through d = 0 intermediates.
+time means no change. This gives the nullity_identity axiom (`task_rel M 0 N ↔ M = N`).
 
 **WorldHistory restriction**: A valid history must satisfy: for s < t,
-`CanonicalR (states s) (states t)`. This eliminates histories that make
-arbitrary jumps between unrelated MCSs — only CanonicalR-coherent
-trajectories qualify.
+`CanonicalR (states s) (states t)`. Since respects_task uses s ≤ t (so d ≥ 0),
+the d < 0 case is never tested by respects_task, but exists for converse.
 -/
 def canonical_task_rel (M : CanonicalWorldState) (d : Int) (N : CanonicalWorldState) : Prop :=
   if d > 0 then CanonicalR M.val N.val
-  else if d < 0 then False
+  else if d < 0 then CanonicalR N.val M.val
   else M = N  -- d = 0
 
 /--
-Nullity: `canonical_task_rel M 0 M` holds because d = 0 reduces to M = M.
+Nullity identity: `canonical_task_rel M 0 N` holds iff `M = N`.
 -/
-theorem canonical_task_rel_nullity (M : CanonicalWorldState) :
-    canonical_task_rel M 0 M := by
+theorem canonical_task_rel_nullity_identity (M N : CanonicalWorldState) :
+    canonical_task_rel M 0 N ↔ M = N := by
   simp [canonical_task_rel]
 
 /--
-Compositionality: `task_rel M x U → task_rel U y V → task_rel M (x+y) V`.
+Forward compositionality: `task_rel M x U → task_rel U y V → task_rel M (x+y) V`
+when `0 ≤ x` and `0 ≤ y`.
 
-Since `d < 0 → False`, any premise with x < 0 or y < 0 is False, making the
-implication vacuously true. Only the cases x ≥ 0, y ≥ 0 remain:
+Since we restrict to non-negative durations, only these cases apply:
 - x = 0, y = 0: M = U ∧ U = V → M = V (transitivity of equality)
 - x = 0, y > 0: M = U, substitute → CanonicalR M V
 - x > 0, y = 0: U = V, substitute → CanonicalR M V
 - x > 0, y > 0: chain via `canonicalR_transitive` (uses temp_4: G(φ) → G(G(φ)))
 -/
-theorem canonical_task_rel_compositionality
+theorem canonical_task_rel_forward_comp
     (M U V : CanonicalWorldState) (x y : Int)
+    (hx : 0 ≤ x) (hy : 0 ≤ y)
     (h1 : canonical_task_rel M x U) (h2 : canonical_task_rel U y V) :
     canonical_task_rel M (x + y) V := by
   unfold canonical_task_rel at *
-  -- Eliminate impossible cases where x < 0 or y < 0
-  by_cases hx_neg : x < 0
-  · simp [show ¬(x > 0) from by omega, hx_neg] at h1
-  by_cases hy_neg : y < 0
-  · simp [show ¬(y > 0) from by omega, hy_neg] at h2
-  -- Now x ≥ 0 and y ≥ 0, so x + y ≥ 0
-  have hx_nn : ¬(x < 0) := hx_neg
-  have hy_nn : ¬(y < 0) := hy_neg
-  have hsum_nn : ¬(x + y < 0) := by omega
+  -- With 0 ≤ x and 0 ≤ y, we have 0 ≤ x + y
   by_cases hx_pos : x > 0
   · -- x > 0: h1 gives CanonicalR M.val U.val
-    simp [hx_pos, show ¬(x < 0) from by omega] at h1
+    have hx_neg : ¬(x < 0) := by omega
+    rw [if_pos hx_pos] at h1
     by_cases hy_pos : y > 0
     · -- x > 0, y > 0: h2 gives CanonicalR U.val V.val, x + y > 0
-      simp [hy_pos, show ¬(y < 0) from by omega] at h2
-      simp [show x + y > 0 from by omega, hsum_nn]
+      have hy_neg : ¬(y < 0) := by omega
+      rw [if_pos hy_pos] at h2
+      have hsum_pos : x + y > 0 := by omega
+      rw [if_pos hsum_pos]
       exact canonicalR_transitive M.val U.val V.val M.property h1 h2
     · -- x > 0, y = 0: h2 gives U = V
       have hy_eq : y = 0 := by omega
       subst hy_eq
-      simp [show ¬(0 > (0 : Int)) from by omega, show ¬(0 < (0 : Int)) from by omega] at h2
+      have hy_neg : ¬((0 : Int) < 0) := by omega
+      have hy_npos : ¬((0 : Int) > 0) := by omega
+      rw [if_neg hy_npos, if_neg hy_neg] at h2
       subst h2  -- U = V
-      simp [show x + 0 > 0 from by omega, hsum_nn]
+      have hsum_pos : x + 0 > 0 := by omega
+      rw [if_pos hsum_pos]
       exact h1
   · -- x = 0: h1 gives M = U
     have hx_eq : x = 0 := by omega
     subst hx_eq
-    simp [show ¬(0 > (0 : Int)) from by omega, show ¬(0 < (0 : Int)) from by omega] at h1
+    have hx_neg : ¬((0 : Int) < 0) := by omega
+    have hx_npos : ¬((0 : Int) > 0) := by omega
+    rw [if_neg hx_npos, if_neg hx_neg] at h1
     subst h1  -- M = U
-    simp [show (0 : Int) + y = y from by omega] at h2 ⊢
+    simp only [zero_add]
     exact h2
+
+/--
+Converse axiom: `canonical_task_rel M d N ↔ canonical_task_rel N (-d) M`.
+
+This holds because of how we defined `canonical_task_rel`:
+- If d > 0: LHS = CanonicalR M N, RHS (with -d < 0) = CanonicalR M N ✓
+- If d = 0: LHS = M = N, RHS (with -0 = 0) = N = M ✓
+- If d < 0: LHS = CanonicalR N M, RHS (with -d > 0) = CanonicalR N M ✓
+-/
+theorem canonical_task_rel_converse
+    (M : CanonicalWorldState) (d : Int) (N : CanonicalWorldState) :
+    canonical_task_rel M d N ↔ canonical_task_rel N (-d) M := by
+  unfold canonical_task_rel
+  by_cases hd_pos : d > 0
+  · -- d > 0: LHS = CanonicalR M.val N.val
+    -- -d < 0: RHS = CanonicalR M.val N.val
+    simp [hd_pos, show ¬(d < 0) from by omega, show -d < 0 from by omega, show ¬(-d > 0) from by omega]
+  · by_cases hd_neg : d < 0
+    · -- d < 0: LHS = CanonicalR N.val M.val
+      -- -d > 0: RHS = CanonicalR N.val M.val
+      simp [show ¬(d > 0) from by omega, hd_neg, show -d > 0 from by omega, show ¬(-d < 0) from by omega]
+    · -- d = 0: LHS = M = N, RHS = N = M
+      have hd_eq : d = 0 := by omega
+      subst hd_eq
+      simp [show ¬(0 > (0 : Int)) from by omega, show ¬(0 < (0 : Int)) from by omega]
+      exact ⟨Eq.symm, Eq.symm⟩
 
 /--
 The canonical task frame for the direct TruthLemma.
 
 - **WorldState** = `CanonicalWorldState` (MCS pairs) — the space of possible worlds
 - **D** = `Int` — the group of temporal displacements
-- **task_rel** = `canonical_task_rel` — forward-only with identity at zero
+- **task_rel** = `canonical_task_rel` — forward accessibility with converse
 
 The group structure lives in D (addition, ordering), NOT in WorldState.
 Histories are trajectories through the unstructured space of MCSs, with the
 total order on D inducing sequential ordering on each trajectory. The task_rel
 constrains these trajectories to follow CanonicalR-chains in the forward direction.
 
-Nullity: d = 0 reduces to M = M (reflexivity of equality).
-Compositionality: only non-negative cases matter (negative premises are False).
-Non-negative compositionality follows from CanonicalR transitivity and substitution.
-No sorry dependencies.
+**Axiomatization (Task 969)**:
+- nullity_identity: d = 0 ↔ M = N (zero duration iff identical states)
+- forward_comp: non-negative durations compose via CanonicalR transitivity
+- converse: task_rel M d N ↔ task_rel N (-d) M (temporal symmetry)
 -/
 def CanonicalTaskFrame : TaskFrame Int where
   WorldState := CanonicalWorldState
   task_rel := canonical_task_rel
-  nullity := canonical_task_rel_nullity
-  compositionality := fun M U V x y h1 h2 =>
-    canonical_task_rel_compositionality M U V x y h1 h2
+  nullity_identity := canonical_task_rel_nullity_identity
+  forward_comp := fun M U V x y hx hy h1 h2 =>
+    canonical_task_rel_forward_comp M U V x y hx hy h1 h2
+  converse := canonical_task_rel_converse
 
 /--
 The canonical task model: valuation is MCS membership.
@@ -243,15 +271,18 @@ def to_history (fam : FMCS Int) : WorldHistory CanonicalTaskFrame where
   states := fun t _ => ⟨fam.mcs t, fam.is_mcs t⟩
   respects_task := fun s t _ _ hst => by
     -- Need: canonical_task_rel ⟨fam.mcs s, ...⟩ (t - s) ⟨fam.mcs t, ...⟩
+    show canonical_task_rel _ _ _
     unfold canonical_task_rel
+    -- Goal: if (t - s > 0) then CanonicalR ... else if (t - s < 0) then CanonicalR ... else (M = N)
     by_cases h_pos : t - s > 0
     · -- t - s > 0: need CanonicalR (fam.mcs s) (fam.mcs t)
-      simp [h_pos, show ¬(t - s < 0) from by omega]
+      rw [if_pos h_pos]
       intro phi h_G_phi
       exact fam.forward_G s t phi (by omega) h_G_phi
-    · -- t - s = 0 (can't be negative since s ≤ t)
+    · -- t - s ≤ 0, but s ≤ t means t - s ≥ 0, so t - s = 0
       have h_eq : t - s = 0 := by omega
-      simp [show ¬(t - s > 0) from by omega, show ¬(t - s < 0) from by omega]
+      have h_neg : ¬(t - s < 0) := by omega
+      rw [if_neg h_pos, if_neg h_neg]
       have : s = t := by omega
       subst this
       rfl

@@ -8,13 +8,13 @@
     {
       "project_number": 969,
       "project_name": "refactor_taskframe_restrict_compositionality",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "description": "Replace universal compositionality in TaskFrame with forward_compositionality restricted to 0 <= x and 0 <= y. Mixed-sign compositionality is algebraically unachievable for non-deterministic relations without functionality of the positive-duration action (which the canonical model lacks). Restricted compositionality is sufficient since respects_task only uses d = t - s where s <= t. Changes: rename compositionality to forward_compositionality with non-negativity hypotheses, update call sites, optionally add HasConverse mixin, simplify canonical_task_rel_compositionality.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-14T23:45:00Z",
-      "session_id": "sess_1773530339_c57d9f",
+      "last_updated": "2026-03-15T00:03:28Z",
+      "session_id": "sess_1773532994_8fbba9",
       "artifacts": [
         {
           "path": "specs/research_sign_elimination/reports/research-001.md",
@@ -25,11 +25,18 @@
           "path": "specs/969_refactor_taskframe_restrict_compositionality/plans/implementation-001.md",
           "type": "plan",
           "summary": "7-phase implementation plan for TaskFrame forward_comp + converse refactor"
+        },
+        {
+          "path": "specs/969_refactor_taskframe_restrict_compositionality/summaries/implementation-summary-20260314.md",
+          "type": "summary",
+          "summary": "Refactored TaskFrame with nullity_identity + forward_comp + converse axiomatization"
         }
       ],
       "dependencies": [
         966
-      ]
+      ],
+      "started": "2026-03-15T00:03:28Z",
+      "completed": "2026-03-14T12:30:00Z"
     },
     {
       "project_number": 968,

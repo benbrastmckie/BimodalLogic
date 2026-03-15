@@ -94,13 +94,57 @@ The product frame enriches states with a time component to eliminate state alias
 This ensures that different times always map to different product states.
 -/
 
-/-- Product frame: states enriched with time stamps. -/
+/-- Product frame: states enriched with time stamps.
+
+The task_rel projects to the underlying frame's task_rel. For nullity_identity
+to hold, we need to ensure that zero-duration transitions preserve both components.
+Since the underlying frame's nullity_identity gives w = u when F.task_rel w 0 u,
+and we require t1 = t2 for zero-duration, we get (w, t1) = (u, t2).
+-/
 noncomputable def prod_frame (F : TaskFrame D) : TaskFrame D where
   WorldState := F.WorldState × D
-  task_rel := fun (w1, _) d (w2, _) => F.task_rel w1 d w2
-  nullity := fun (w, _) => F.nullity w
-  compositionality := fun (w, _) (u, _) (v, _) x y h1 h2 =>
-    F.compositionality w u v x y h1 h2
+  -- For d ≠ 0, project to underlying frame. For d = 0, require time stamps equal too.
+  task_rel := fun (w1, t1) d (w2, t2) =>
+    F.task_rel w1 d w2 ∧ (d = 0 → t1 = t2)
+  nullity_identity := fun (w, t1) (u, t2) => by
+    constructor
+    · intro ⟨h_rel, h_time⟩
+      have hw : w = u := (F.nullity_identity w u).mp h_rel
+      have ht : t1 = t2 := h_time rfl
+      simp [hw, ht]
+    · intro h
+      cases h
+      constructor
+      · exact (F.nullity_identity w w).mpr rfl
+      · intro _; rfl
+  forward_comp := fun (w, tw) (u, tu) (v, tv) x y hx hy ⟨h1_rel, h1_time⟩ ⟨h2_rel, h2_time⟩ => by
+    constructor
+    · exact F.forward_comp w u v x y hx hy h1_rel h2_rel
+    · intro h_sum
+      -- If x + y = 0 with x ≥ 0 and y ≥ 0, then x = 0 and y = 0
+      have hx_eq : x = 0 := by
+        by_contra h
+        have : x > 0 := lt_of_le_of_ne hx (Ne.symm h)
+        have : y < 0 := by omega
+        exact absurd this (not_lt.mpr hy)
+      have hy_eq : y = 0 := by omega
+      have htw_tu : tw = tu := h1_time hx_eq
+      have htu_tv : tu = tv := h2_time hy_eq
+      exact htw_tu.trans htu_tv
+  converse := fun (w, tw) d (u, tu) => by
+    constructor
+    · intro ⟨h_rel, h_time⟩
+      constructor
+      · exact (F.converse w d u).mp h_rel
+      · intro h_neg
+        have h_zero : d = 0 := by omega
+        exact (h_time h_zero).symm
+    · intro ⟨h_rel, h_time⟩
+      constructor
+      · exact (F.converse w d u).mpr h_rel
+      · intro h_zero
+        have h_neg : -d = 0 := by omega
+        exact (h_time h_neg).symm
 
 /-- Lift a history to the product frame by adding time stamps. -/
 noncomputable def lift_history {F : TaskFrame D} (sigma : WorldHistory F) :
@@ -108,7 +152,14 @@ noncomputable def lift_history {F : TaskFrame D} (sigma : WorldHistory F) :
   domain := sigma.domain
   convex := sigma.convex
   states := fun t ht => (sigma.states t ht, t)
-  respects_task := fun s t hs ht hst => sigma.respects_task s t hs ht hst
+  respects_task := fun s t hs ht hst => by
+    -- Need: (prod_frame F).task_rel (sigma.states s hs, s) (t - s) (sigma.states t ht, t)
+    -- = F.task_rel (sigma.states s hs) (t - s) (sigma.states t ht) ∧ (t - s = 0 → s = t)
+    constructor
+    · exact sigma.respects_task s t hs ht hst
+    · intro h_zero
+      -- t - s = 0 means s = t
+      omega
 
 /-- A product-frame history projects to an original-frame history when the first
 components of all states match. -/
