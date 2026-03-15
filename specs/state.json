@@ -63,20 +63,26 @@
     {
       "project_number": 967,
       "project_name": "change_atom_type_for_freshness",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "description": "Change atom type from String to freshness-supporting type to eliminate canonicalR_irreflexive axiom debt. The Gabbay IRR proof (Goldblatt 1992) requires a fresh atom not in GContent(M). With String atoms this is impossible since G(s∨¬s) puts every string into GContent(M). Changing to a type with Option ℕ fresh_index (or similar) allows picking p = Atom.mk name (some n), completing the proof and eliminating the axiom. Scope: refactor Formula and all ~31 dependent files. See research-002 (task 964) for full obstacle analysis.",
       "created": "2026-03-14T22:37:25Z",
-      "last_updated": "2026-03-14T23:00:00Z",
-      "session_id": "sess_1773527957_9e27df",
+      "last_updated": "2026-03-15T00:23:04Z",
+      "session_id": "sess_1773533988_bd54ab",
       "artifacts": [
         {
           "path": "specs/967_change_atom_type_for_freshness/reports/research-001.md",
           "type": "research",
           "summary": "Verified Atom type with Infinite/Countable instances exists. Phases 1-3 complete. Remaining: fix CanonicalIrreflexivity.lean types (2 sorries), remove axiom. Estimated 4-8 hours."
+        },
+        {
+          "path": "specs/967_change_atom_type_for_freshness/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for eliminating canonicalR_irreflexive axiom via Atom freshness"
         }
-      ]
+      ],
+      "planned": "2026-03-15T00:23:04Z"
     },
     {
       "project_number": 966,

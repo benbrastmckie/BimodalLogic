@@ -1,29 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-14T10:00:00Z",
-  "completed_at": "2026-03-14T10:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/967_change_atom_type_for_freshness/reports/research-001.md",
-      "type": "research",
-      "summary": "Verified Atom type with Infinite/Countable instances exists. Phases 1-3 complete. Remaining: fix CanonicalIrreflexivity.lean types, complete 2 sorries, remove axiom. Estimated 4-8 hours."
+      "type": "plan",
+      "path": "specs/967_change_atom_type_for_freshness/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for eliminating canonicalR_irreflexive axiom via Atom freshness"
     }
   ],
+  "next_steps": "Run /implement 967 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773527957_9e27df",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773533988_bd54ab",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "findings": {
-    "phase_1_complete": true,
-    "phase_2_complete": true,
-    "axiom_still_exists": true,
-    "sorries_remaining": 2,
-    "files_with_type_errors": [
-      "Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean"
-    ],
-    "estimated_hours": "4-8",
-    "mathlib_lemma_verified": "Infinite.exists_notMem_finset"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 5.5
   }
 }
