@@ -1,34 +1,29 @@
 {
-  "status": "researched",
+  "status": "planned",
   "task_number": 967,
-  "session_id": "sess_1773535131_f8a2d1",
+  "session_id": "sess_1773535922_1e19bf",
   "artifacts": [
     {
-      "path": "specs/967_change_atom_type_for_freshness/reports/research-002.md",
-      "type": "research",
-      "summary": "Rigorous analysis confirming reflexive semantics refactor is mathematically sound but practically expensive (40-100 hours). canonicalR_irreflexive requires T-axiom; current axiom-based approach is legitimate. User decision required on priority."
+      "path": "specs/967_change_atom_type_for_freshness/plans/implementation-002.md",
+      "type": "plan",
+      "summary": "10-phase reflexive semantics refactor plan to eliminate canonicalR_irreflexive axiom"
     }
   ],
+  "next_steps": "Run /implement 967 to execute the plan",
   "metadata": {
-    "agent_type": "math-research-agent",
-    "duration_seconds": 900,
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 7,
-    "context_files_loaded": ["kripke-semantics-overview.md"],
-    "mathlib_lookups_performed": 1,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0,
-    "web_searches_performed": 3,
-    "key_findings": [
-      "canonicalR_irreflexive requires T-axiom (mathematically proven via one-world model)",
-      "Reflexive refactor WOULD eliminate the axiom debt",
-      "Density axiom does NOT trivialize under reflexive semantics",
-      "Estimated refactor effort: 40-100 hours with medium-high risk",
-      "Current axiom is mathematically legitimate (standard frame property)",
-      "Axiom is unused in completeness chain",
-      "Decision required: axiom elimination vs. refactor effort trade-off"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 10,
+    "estimated_hours": "40-100",
+    "high_risk_phases": [5, 9],
+    "key_changes": [
+      "Truth.lean: < to <= for temporal operators",
+      "Axioms.lean: add temp_t_future, temp_t_past",
+      "DensityFrameCondition.lean: rewrite case analysis",
+      "CanonicalIrreflexivity.lean: complete Gabbay IRR with T-axiom",
+      "CanonicalIrreflexivityAxiom.lean: axiom -> theorem"
     ]
-  },
-  "next_steps": "User decision required: proceed with reflexive refactor (40-100h effort) OR maintain current axiom-based architecture"
+  }
 }

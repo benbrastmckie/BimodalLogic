@@ -64,18 +64,14 @@ technical_debt:
 ---
 
 ### 967. Change atom type from String to freshness-supporting type
-- **Effort**: 4-8 hours (revised down from 12-18) OR 40-100 hours (reflexive semantics refactor)
-- **Status**: [RESEARCHED]
+- **Effort**: 40-100 hours (reflexive semantics refactor)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [specs/967_change_atom_type_for_freshness/reports/research-001.md], [specs/967_change_atom_type_for_freshness/reports/research-002.md]
-- **Summary**: [specs/967_change_atom_type_for_freshness/summaries/implementation-summary-20260315.md]
+- **Plan**: [specs/967_change_atom_type_for_freshness/plans/implementation-002.md]
 
-**BLOCKED - USER DECISION REQUIRED**: The original atom type change approach is mathematically impossible (research-002.md confirms: canonicalR_irreflexive requires T-axiom not in TM logic). Two options:
-
-1. **Option A: Reflexive semantics refactor** (40-100 hours, medium-high risk): Change G/H from strict `<` to non-strict `<=`, add T-axioms, complete Gabbay IRR proof. Mathematically sound but substantial effort.
-
-2. **Option B: Maintain current architecture** (0 hours): Keep `canonicalR_irreflexive` as documented frame property axiom. Mathematically legitimate, standard modal logic practice, axiom is unused in completeness chain.
+**SCOPE REVISED**: Proceeding with reflexive semantics refactor to eliminate `canonicalR_irreflexive` axiom for publication. Change G/H from strict `<` to non-strict `<=`, add T-axioms, complete Gabbay IRR proof. 10 phases, 40-100 hours estimated.
 
 **Description**: Change atom type from String to freshness-supporting type to eliminate canonicalR_irreflexive axiom debt. The Gabbay IRR proof (Goldblatt 1992) requires a fresh atom not in GContent(M). With String atoms this is impossible since G(s∨¬s) puts every string into GContent(M). Changing to a type with Option ℕ fresh_index (or similar) allows picking p = Atom.mk name (some n), completing the proof and eliminating the axiom. Scope: refactor Formula and all ~31 dependent files. See research-002 (task 964) for full obstacle analysis.
 
