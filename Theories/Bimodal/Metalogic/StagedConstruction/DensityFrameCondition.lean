@@ -4,10 +4,10 @@ import Bimodal.Syntax.SubformulaClosure
 import Mathlib.Data.Finset.Card
 
 /-!
-# Density Frame Condition for Irreflexive Temporal Semantics
+# Density Frame Condition for Reflexive Temporal Semantics
 
 This module proves the canonical model density frame condition under
-irreflexive semantics using temporal axioms alone: for all MCSs M, M'
+reflexive semantics using temporal axioms alone: for all MCSs M, M'
 with CanonicalR(M, M') and NOT CanonicalR(M', M), there exists W with
 CanonicalR(M, W) AND CanonicalR(W, M').
 
@@ -45,7 +45,7 @@ are archived in Boneyard/Task956_StrictDensity/.
 
 ## References
 
-- Task 957: density_frame_condition_irreflexive_temporal
+- Task 957: density_frame_condition (reflexive temporal semantics)
 - research-001 through research-004 (density frame condition analysis)
 - SeparationLemma.lean: distinguishing_formula_exists, not_G_implies_F_neg
 - StagedExecution.lean: canonical_forward_reachable_linear
@@ -186,7 +186,7 @@ Combines Case A and Case B analysis.
 -/
 
 /--
-The density frame condition under irreflexive temporal semantics.
+The density frame condition under reflexive temporal semantics.
 
 For all MCSs M, M' with CanonicalR(M, M') and NOT CanonicalR(M', M),
 there exists an intermediate MCS W with CanonicalR(M, W) AND CanonicalR(W, M').

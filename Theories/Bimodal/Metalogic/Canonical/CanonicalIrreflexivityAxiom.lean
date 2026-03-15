@@ -104,7 +104,7 @@ theorem canonicalR_antisymmetric_strict
     (M N : Set Formula)
     (hM : SetMaximalConsistent M) (hN : SetMaximalConsistent N)
     (h_MN : CanonicalR M N) (h_NM : CanonicalR N M) : False :=
-  canonicalR_irreflexive M hM (canonicalR_transitive M N M hM hN h_MN h_NM)
+  canonicalR_irreflexive M hM (canonicalR_transitive M N M hM h_MN h_NM)
 
 /--
 Corollary: any `CanonicalR` witness is strictly ordered in the quotient.
