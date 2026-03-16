@@ -26,12 +26,15 @@ technical_debt:
 ## Tasks
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 2-4 hours (typeclass modification)
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Depends On**: Task 978 [PLANNED]
+- **Depends On**: Task 978 [IMPLEMENTING]
+- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
+
+**Research Summary**: Deep analysis confirms covering lemma is THE critical gap - all approaches reduce to it. DF creates existential F-obligations that can be witnessed by any MCS, not specifically immediate successors. Density proof template does not invert. Recommends accepting axiom as architectural constraint and making `LocallyFiniteOrder` an explicit requirement in `DiscreteTemporalFrame` typeclass.
 
 ---
 
