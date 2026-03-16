@@ -8,12 +8,12 @@
     {
       "project_number": 968,
       "project_name": "prove_shift_closure_canonical_fmcs_bridge",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "description": "Prove shift-closure of canonical FMCS families (CanonicalOmega is ShiftClosed) and bridge the sorry-free BFMCS truth lemma to standard semantics. Two theorems: (1) FMCS shift-closure — fam_shift(t) := fam(t + Δ) is an FMCS, trivial by translation invariance; (2) BFMCS-to-standard bridge — construct WorldHistories from FMCS families and show bmcs_truth_at ↔ truth_at, connecting existing BFMCS completeness to semantic_consequence. Depends on canonical task relation from task 956.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-16T01:22:19Z",
+      "last_updated": "2026-03-15T00:00:00Z",
       "session_id": "sess_1773624117_7f26dd",
       "artifacts": [
         {
@@ -35,6 +35,11 @@
           "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan: FMCS shift infrastructure, ShiftClosedCanonicalOmega, box_persistent, shifted_truth_lemma, completeness theorems"
+        },
+        {
+          "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/summaries/implementation-summary-20260315.md",
+          "type": "summary",
+          "summary": "Implementation complete: ported shift-closure pattern from Boneyard to CanonicalConstruction.lean. Added ShiftClosedCanonicalOmega, box_persistent, shifted_truth_lemma. All sorry-free."
         }
       ],
       "dependencies": [
@@ -43,7 +48,8 @@
       ],
       "researched": "2026-03-16T01:30:00Z",
       "planned": "2026-03-16T01:15:45Z",
-      "started": "2026-03-16T01:22:19Z"
+      "started": "2026-03-16T01:22:19Z",
+      "completed": "2026-03-15T00:00:00Z"
     },
     {
       "project_number": 956,

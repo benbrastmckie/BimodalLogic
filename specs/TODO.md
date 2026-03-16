@@ -25,26 +25,14 @@ technical_debt:
 
 ### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
 - **Effort**: 4-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Plan**: [specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md]
+- **Summary**: [specs/968_prove_shift_closure_canonical_fmcs_bridge/summaries/implementation-summary-20260315.md]
 - **Language**: lean
 - **Priority**: high
 - **Research**: [specs/0_shift_closure_research/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md]
 
-**Research Summary (research-002)**: Bridge theorems cannot be fully eliminated, but the architecture is already optimal. Key findings:
-1. `bmcs_truth_at` intermediate is already bypassed by `canonical_truth_lemma` in CanonicalConstruction.lean
-2. `ShiftClosed Omega` is mathematically required for `valid`/`semantic_consequence`
-3. The remaining bridge is `shifted_truth_lemma` extending truth lemma to `ShiftClosedCanonicalOmega`
-4. Working implementation exists in `Boneyard/IntRepresentation/Representation.lean` - port this pattern
-
-**Implementation path**:
-1. Port `FMCS.shift` function (trivial by translation invariance)
-2. Port `ShiftClosedCanonicalOmega` construction
-3. Port `box_persistent` (Box phi persists to all times via TF axiom)
-4. Port `shifted_truth_lemma` using box_persistent + time_shift_preserves_truth
-5. Use for standard completeness theorems
-
-**Key files**: `Truth.lean` (ShiftClosed), `WorldHistory.lean` (time_shift), `CanonicalConstruction.lean` (canonical_truth_lemma), `Boneyard/IntRepresentation/Representation.lean` (shift-closure pattern)
+**Completed**: Ported shift-closure pattern from Boneyard to CanonicalConstruction.lean. Added ShiftClosedCanonicalOmega, shiftClosedCanonicalOmega_is_shift_closed, box_persistent, and shifted_truth_lemma. All theorems sorry-free. Also fixed canonical_truth_lemma for reflexive temporal semantics (Task 967).
 
 **Dependencies**: Task 967 [COMPLETED], Task 969 [COMPLETED]
 
