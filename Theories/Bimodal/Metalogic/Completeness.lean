@@ -609,21 +609,7 @@ Modal saturation (forward direction) is proven below. Full saturation theorems
 requiring canonical frame and history constructions have been archived to Boneyard.
 -/
 
-/--
-Modal saturation (forward): If □φ ∈ S, then φ holds at all accessible worlds.
-
-**Statement**: For all T accessible from S via canonical_task_rel at time 0,
-if □φ ∈ S then φ ∈ T.
-
-**Note**: This follows from the box closure property: □φ ∈ S implies φ ∈ S
-by Modal T, and the task relation transfers this appropriately.
--/
-theorem set_mcs_modal_saturation_forward {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
-    (h_box : Formula.box φ ∈ S) : φ ∈ S :=
-  -- Forward direction: Use box closure (Modal T axiom)
-  set_mcs_box_closure h_mcs h_box
-
+-- set_mcs_modal_saturation_forward removed in Task 970 (thin alias for set_mcs_box_closure)
 -- CanonicalWorldState was removed in Task 928 Phase 6 (duplicate of CanonicalMCS in CanonicalFMCS.lean)
 
 end Bimodal.Metalogic
