@@ -1,5 +1,5 @@
 ---
-next_project_number: 984
+next_project_number: 985
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,13 @@ technical_debt:
 # TODO
 
 ## Tasks
+### 984. Review and revise documentation to remove `.claude/` directory references
+- **Effort**: small
+- **Status**: [NOT STARTED]
+- **Language**: general
+
+**Description**: Review and revise all documentation to remove references to the `.claude/` directory (now gitignored), while preserving references to Claude Code itself.
+
 
 ### 983. Review decidability results and FMP for publication
 - **Effort**: TBD

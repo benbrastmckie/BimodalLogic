@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 984,
+      "project_name": "review_docs_remove_claude_dir_references",
+      "status": "not_started",
+      "language": "general",
+      "created": "2026-03-16T23:44:55Z",
+      "last_updated": "2026-03-16T23:44:55Z"
+    },
+    {
       "project_number": 983,
       "project_name": "review_decidability_fmp_completeness",
       "status": "researching",
@@ -185,7 +193,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 984,
+  "next_project_number": 985,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

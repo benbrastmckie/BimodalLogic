@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6-8 hours
 - **Dependencies**: None (builds on existing codebase)
 - **Research Inputs**: specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md
@@ -86,7 +86,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Define Discrete Immediate Successor Seed [NOT STARTED]
+### Phase 1: Define Discrete Immediate Successor Seed [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Define `discreteImmediateSuccSeed` with blocking formulas
@@ -110,7 +110,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Prove Blocking Seed Consistency [NOT STARTED]
+### Phase 2: Prove Blocking Seed Consistency [IN PROGRESS]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove `discreteImmediateSuccSeed M` is consistent for any serial MCS M
