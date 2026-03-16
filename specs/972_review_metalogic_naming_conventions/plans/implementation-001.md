@@ -27,12 +27,12 @@ From research-001.md:
 - Rename `GContent` to `g_content` and `HContent` to `h_content`
 - Rename `ForwardTemporalWitnessSeed` to `forward_temporal_witness_seed`
 - Rename `PastTemporalWitnessSeed` to `past_temporal_witness_seed`
-- Replace `bmcs_` prefix with `bfmcs_` prefix for consistency with type name `BFMCS`
+- Move `bmcs_reflexivity`, `bmcs_transitivity`, `bmcs_diamond_witness` into `namespace BFMCS`
 - Ensure `lake build` passes after each phase
 
 **Non-Goals**:
 - Changing abbreviations like `dne_theorem` / `dni_theorem` (Issue 3 from research)
-- Moving functions to namespaces (alternative approach for Issue 4)
+- Moving other free functions to namespaces beyond the three bmcs_* theorems
 - Renaming items in Boneyard/ (archived code, not in active use)
 
 ## Risks & Mitigations
@@ -122,17 +122,22 @@ From research-001.md:
 
 ---
 
-### Phase 3: Rename bmcs_ prefix to bfmcs_ [NOT STARTED]
+### Phase 3: Move bmcs_* theorems into BFMCS namespace [NOT STARTED]
 
 - **Dependencies:** Phase 2
-- **Goal:** Replace `bmcs_` prefix with `bfmcs_` prefix for consistency with type name `BFMCS`
+- **Goal:** Move `bmcs_reflexivity`, `bmcs_transitivity`, `bmcs_diamond_witness` into `namespace BFMCS`, making them callable as `B.reflexivity`, `B.transitivity`, `B.diamond_witness`
+
+**Rationale:** The `bmcs_` prefix is a manual namespace-in-miniature. Lean has namespaces; the prefix is redundant. `BFMCS.consistent` is already in the namespace (line 174) — these three theorems belong alongside it. Consistent with Mathlib conventions for theorems whose primary subject is a structure type.
 
 **Tasks**:
-- [ ] Rename in BFMCS.lean: `bmcs_reflexivity` -> `bfmcs_reflexivity`, `bmcs_transitivity` -> `bfmcs_transitivity`, `bmcs_diamond_witness` -> `bfmcs_diamond_witness`
-- [ ] Update CanonicalConstruction.lean (2 usages)
-- [ ] Update Completeness.lean (3 usages)
-- [ ] Update Metalogic.lean (1 usage in module docstring)
-- [ ] Update README.md files (documentation only, 15 occurrences in Bundle/README.md, 5 in Metalogic/README.md)
+- [ ] In `BFMCS.lean`: wrap the three theorems in `namespace BFMCS ... end BFMCS`, removing the `bmcs_` prefix:
+  - `bmcs_reflexivity` → `BFMCS.reflexivity`
+  - `bmcs_transitivity` → `BFMCS.transitivity` (update internal call from `bmcs_reflexivity` to `reflexivity`)
+  - `bmcs_diamond_witness` → `BFMCS.diamond_witness`
+- [ ] Update `CanonicalConstruction.lean` (2 usages) to dot notation
+- [ ] Update `Completeness.lean` (3 usages) to dot notation
+- [ ] Update `Metalogic.lean` (1 usage in module docstring)
+- [ ] Update `README.md` files (Bundle/README.md, Metalogic/README.md)
 - [ ] Run `lake build` to verify no breakage
 
 **Timing:** 30 minutes
@@ -147,7 +152,8 @@ From research-001.md:
 
 **Verification**:
 - `lake build` passes
-- `grep -rn "\bbmcs_" Theories/Bimodal/Metalogic/` returns empty (code only, docs updated)
+- `grep -rn "\bbmcs_" Theories/Bimodal/Metalogic/` returns empty in code files
+- `B.reflexivity`, `B.transitivity`, `B.diamond_witness` resolve correctly via dot notation
 
 ---
 
@@ -181,7 +187,7 @@ From research-001.md:
 ### General
 - [ ] All 192 GContent/HContent occurrences renamed
 - [ ] All 30 WitnessSeed occurrences renamed
-- [ ] All 8 bmcs_* function definitions renamed (34 total including usages and docs)
+- [ ] All 3 bmcs_* theorems moved to BFMCS namespace (34 total call sites and docs updated)
 - [ ] Boneyard/ explicitly excluded and unchanged
 
 ## Artifacts & Outputs
