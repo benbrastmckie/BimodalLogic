@@ -96,9 +96,10 @@ technical_debt:
 ---
 
 ### 949. Update Demo.lean for current bimodal logic state
-- **Effort**: Small
-- **Status**: [RESEARCHING]
+- **Effort**: Small (~2 hours)
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/949_update_demo_lean_bimodal_logic/reports/research-001.md)
 
 **Description**: Update Theories/Bimodal/Examples/Demo.lean given the current state of the bimodal logic. The demo file should reflect the current API and showcase the working features of the bimodal logic implementation.
 

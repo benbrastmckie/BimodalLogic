@@ -222,11 +222,19 @@
     {
       "project_number": 949,
       "project_name": "update_demo_lean_bimodal_logic",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-28T01:08:27Z",
-      "last_updated": "2026-03-16T02:22:44Z",
-      "session_id": "sess_1773627748_1dbc71"
+      "last_updated": "2026-03-16T02:25:31Z",
+      "session_id": "sess_1773627748_1dbc71",
+      "researched": "2026-03-16T02:25:31Z",
+      "artifacts": [
+        {
+          "path": "specs/949_update_demo_lean_bimodal_logic/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of Demo.lean state, API survey, recommended updates (remove obsolete refs, add BFMCS truth lemma showcase, D construction via Cantor, shift-closure), implementation plan (4 phases, ~2 hours)"
+        }
+      ]
     },
     {
       "project_number": 930,
