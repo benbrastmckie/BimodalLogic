@@ -27,8 +27,9 @@ technical_debt:
 
 ### 970. Review metalogic for publication readiness
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: logic
+- **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis)
 
 **Description**: Systematically review the metalogic to identify redundant definitions requiring bridge theorems or lemmas that can be removed in preference of direct implementation with correct semantic definitions. Simplify the space of defined terms, avoiding aliases or technical debt that could be refactored out. Examples include `bmcs_truth_lemma` and related artifacts from the laborious process of establishing representation and completeness theorems. Ensure all major theorems take mathematically standard forms relative to the provided semantics.
 
@@ -163,7 +164,7 @@ technical_debt:
 
 ### 399. Implement causal semantics in Lean
 - **Effort**: 6-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Parent**: Task 394
 - **Dependencies**: 398
