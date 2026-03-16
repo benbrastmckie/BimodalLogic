@@ -100,13 +100,13 @@
     {
       "project_number": 978,
       "project_name": "refactor_tm_typeclass_frame_conditions",
-      "status": "planning",
+      "status": "planned",
       "language": "logic",
       "depends_on": [
         977
       ],
       "created": "2026-03-16T17:29:12Z",
-      "last_updated": "2026-03-16T22:28:06Z",
+      "last_updated": "2026-03-16T22:30:20Z",
       "session_id": "sess_1773700072_15175",
       "researched": "2026-03-16T22:23:23Z",
       "artifacts": [
@@ -114,8 +114,14 @@
           "path": "specs/978_refactor_tm_typeclass_frame_conditions/reports/research-001.md",
           "type": "research",
           "summary": "Research report with typeclass-based frame condition architecture recommendations"
+        },
+        {
+          "path": "specs/978_refactor_tm_typeclass_frame_conditions/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for typeclass-based frame condition architecture"
         }
-      ]
+      ],
+      "planned": "2026-03-16T22:30:20Z"
     },
     {
       "project_number": 977,

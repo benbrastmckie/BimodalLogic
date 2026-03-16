@@ -54,11 +54,12 @@ technical_debt:
 ---
 
 ### 978. Refactor TM proof system to typeclass-based frame condition architecture
-- **Effort**: TBD
-- **Status**: [PLANNING]
+- **Effort**: 8-10 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: logic
 - **Depends on**: Task 977 (must be completed first)
 - **Research**: [research-001.md](specs/978_refactor_tm_typeclass_frame_conditions/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/978_refactor_tm_typeclass_frame_conditions/plans/implementation-001.md) (5 phases: typeclass-based frame condition architecture)
 
 **Description**: Following the completion of task 977 (which fills all metalogic gaps), refactor the TM proof system to implement the typeclass-based frame condition architecture described in the task 977 research (teammate D, architecture Option A). The refactor should make no compromises in pursuit of the most mathematically correct approach:
 
