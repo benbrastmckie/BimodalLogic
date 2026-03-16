@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.StagedConstruction.StagedExecution
+import Bimodal.Theorems.Propositional
 import Mathlib.Data.Set.Countable
 
 /-!
@@ -65,6 +66,174 @@ theorem SetMaximalConsistent.density_F_to_FF (M : Set Formula) (h_mcs : SetMaxim
       (Formula.some_future (Formula.some_future phi)) ∈ M :=
     theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.density phi))
   exact SetMaximalConsistent.implication_property h_mcs h_density h_F
+
+/-!
+## DN-Free MCS Richness
+
+For discrete timelines, we need to prove that every MCS contains F-formulas
+with arbitrarily large encodings, WITHOUT using the density axiom DN.
+
+The key insight: for any atom i, either G(bot ∧ ¬atom(i)) ∈ M or F(¬bot ∨ atom(i)) ∈ M.
+Since G(bot ∧ X) is semantically G(bot), and G(bot) contradicts F(¬bot) (seriality),
+we must have F(¬bot ∨ atom(i)) ∈ M for all i.
+
+The formulas (¬bot ∨ atom(i)) have unbounded encodings as i grows.
+This gives MCS Richness WITHOUT using DN.
+-/
+
+/-- G(bot) is not in any serial MCS because it contradicts F(¬bot).
+Proof: G(bot) → bot (by temp_t_future), and bot is not in any consistent set.
+Actually we use: G(bot) and F(¬bot) together imply inconsistency. -/
+theorem SetMaximalConsistent.G_bot_not_in (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (h_serial : Formula.some_future (Formula.neg Formula.bot) ∈ M) :
+    Formula.all_future Formula.bot ∉ M := by
+  intro h_G_bot
+  -- G(bot) → bot is an axiom (temp_t_future)
+  have h_impl : (Formula.all_future Formula.bot).imp Formula.bot ∈ M :=
+    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot))
+  have h_bot : Formula.bot ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs h_impl h_G_bot
+  -- bot ∈ M contradicts SetConsistent M
+  -- SetConsistent M means: for any L ⊆ M, Consistent L
+  -- If bot ∈ M, then [bot] ⊆ M, so Consistent [bot] should hold
+  -- But [bot] ⊢ bot (trivially), contradicting Consistent [bot]
+  have h_set_consistent : SetConsistent M := h_mcs.1
+  have h_bot_list_consistent : Consistent [Formula.bot] := by
+    apply h_set_consistent [Formula.bot]
+    intro φ hφ
+    simp at hφ
+    rw [hφ]
+    exact h_bot
+  have h_bot_in_list : Formula.bot ∈ [Formula.bot] := List.mem_singleton.mpr rfl
+  have h_bot_derives : DerivationTree [Formula.bot] Formula.bot :=
+    DerivationTree.assumption [Formula.bot] Formula.bot h_bot_in_list
+  exact h_bot_list_consistent ⟨h_bot_derives⟩
+
+/-- bot ∧ X is equivalent to bot. G(bot ∧ X) implies G(bot) via K-distribution.
+Actually we prove: G(bot ∧ X) ∈ M implies G(bot) ∈ M. -/
+theorem SetMaximalConsistent.G_bot_and_of_G_bot_and_X (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (X : Formula) (h_G : Formula.all_future (Formula.and Formula.bot X) ∈ M) :
+    Formula.all_future Formula.bot ∈ M := by
+  -- ⊢ (bot ∧ X) → bot is a tautology (and_elim_left)
+  -- ⊢ G((bot ∧ X) → bot) by temporal necessitation
+  -- ⊢ G(bot ∧ X) → G(bot) by K-distribution
+  -- Therefore G(bot ∧ X) ∈ M implies G(bot) ∈ M
+  have h_impl : [] ⊢ (Formula.and Formula.bot X).imp Formula.bot :=
+    Bimodal.Theorems.Propositional.lce_imp Formula.bot X
+  have h_G_impl : Formula.all_future ((Formula.and Formula.bot X).imp Formula.bot) ∈ M :=
+    theorem_in_mcs h_mcs (DerivationTree.temporal_necessitation _ h_impl)
+  have h_k_dist : (Formula.all_future ((Formula.and Formula.bot X).imp Formula.bot)).imp
+      ((Formula.all_future (Formula.and Formula.bot X)).imp (Formula.all_future Formula.bot)) ∈ M :=
+    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_k_dist (Formula.and Formula.bot X) Formula.bot))
+  have h_step := SetMaximalConsistent.implication_property h_mcs h_k_dist h_G_impl
+  exact SetMaximalConsistent.implication_property h_mcs h_step h_G
+
+/-- The MCS Richness lemma (DN-free): for any atom i, F(¬bot ∨ atom(i)) ∈ M.
+This is because G(¬(¬bot ∨ atom(i))) = G(bot ∧ ¬atom(i)) would imply G(bot),
+contradicting seriality F(¬bot). -/
+theorem SetMaximalConsistent.F_or_atom_in (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (i : Atom) :
+    Formula.some_future (Formula.or (Formula.neg Formula.bot) (Formula.atom i)) ∈ M := by
+  have h_serial := SetMaximalConsistent.contains_seriality_future M h_mcs
+  -- By MCS negation completeness: either G(¬(¬bot ∨ atom(i))) ∈ M or ¬G(¬(¬bot ∨ atom(i))) ∈ M
+  -- The latter is F(¬bot ∨ atom(i))
+  -- If G(¬(¬bot ∨ atom(i))) ∈ M:
+  --   ¬(¬bot ∨ atom(i)) = ¬¬bot ∧ ¬atom(i) = bot ∧ ¬atom(i) (by De Morgan + double negation)
+  --   So G(bot ∧ ¬atom(i)) ∈ M
+  --   By G_bot_and_of_G_bot_and_X, G(bot) ∈ M
+  --   But this contradicts G_bot_not_in
+  -- Therefore ¬G(¬(¬bot ∨ atom(i))) ∈ M, i.e., F(¬bot ∨ atom(i)) ∈ M
+  by_contra h_not_F
+  -- F(X) not in M, so by negation completeness, ¬F(X) ∈ M
+  -- F(X) = ¬G(¬X), so ¬F(X) = ¬¬G(¬X)
+  -- By double negation elimination, G(¬X) ∈ M
+  set X := Formula.or (Formula.neg Formula.bot) (Formula.atom i) with hX
+  -- F(X) = X.neg.all_future.neg
+  have h_FX_def : Formula.some_future X = X.neg.all_future.neg := rfl
+  -- ¬F(X) = F(X).neg = X.neg.all_future.neg.neg
+  have h_neg_FX : (Formula.some_future X).neg = X.neg.all_future.neg.neg := rfl
+  -- By negation completeness: either F(X) ∈ M or ¬F(X) ∈ M
+  have h_neg_complete := SetMaximalConsistent.negation_complete h_mcs (Formula.some_future X)
+  rcases h_neg_complete with h_F | h_neg_F
+  · exact h_not_F h_F  -- Contradiction: F(X) ∈ M but we assumed F(X) ∉ M
+  · -- ¬F(X) ∈ M, i.e., X.neg.all_future.neg.neg ∈ M
+    -- By double negation elimination: X.neg.all_future ∈ M, i.e., G(¬X) ∈ M
+    have h_G_neg_X : X.neg.all_future ∈ M :=
+      SetMaximalConsistent.double_neg_elim h_mcs X.neg.all_future h_neg_F
+    -- Key insight: X = ¬bot ∨ atom(i), and ⊢ ¬bot (since ¬bot = bot → bot is the identity)
+    -- So ⊢ X (since ⊢ A implies ⊢ A ∨ B by or_intro)
+    -- And ⊢ X.neg → bot (since ⊢ X implies ⊢ ¬¬X = X.neg.neg by dni)
+    -- Wait, X.neg → bot = X.neg.neg, which is ⊢ ¬¬X, not ⊢ ¬X → ⊥
+    --
+    -- Different approach: From G(¬X) ∈ M and ⊢ X:
+    -- ⊢ X means X is a theorem, so G(X) ∈ M (by temporal necessitation + MCS closure)
+    -- G(X) ∈ M and G(¬X) ∈ M together imply inconsistency:
+    -- G(X ∧ ¬X) ∈ M (by G-conjunction), and G(⊥) ∈ M (since X ∧ ¬X → ⊥)
+    -- But G(⊥) ∉ M (by G_bot_not_in)
+    --
+    -- Step 1: Show ⊢ X where X = ¬bot ∨ atom(i)
+    -- ⊢ ¬bot (since ¬bot = bot → bot = bot.imp bot, and ⊢ A → A for any A)
+    have h_neg_bot_thm : [] ⊢ Formula.neg Formula.bot := by
+      -- ⊢ bot → bot is the identity theorem
+      -- Formula.neg Formula.bot = Formula.bot.imp Formula.bot
+      unfold Formula.neg
+      exact Bimodal.Theorems.Combinators.identity Formula.bot
+    -- ⊢ ¬bot → (¬bot ∨ atom(i)) by or introduction
+    -- Note: A ∨ B = ¬A → B = A.neg.imp B, so A → (A ∨ B) = A → (A.neg.imp B) = raa A B
+    have h_or_intro : [] ⊢ (Formula.neg Formula.bot).imp X := by
+      -- X = ¬bot ∨ atom(i) = (¬bot).neg.imp (atom i) = ¬¬bot → atom(i)
+      -- raa gives ⊢ A → (A.neg.imp B) = A → (A ∨ B)
+      -- So raa (¬bot) (atom i) gives ⊢ ¬bot → (¬¬bot → atom i) = ¬bot → X
+      exact Bimodal.Theorems.Propositional.raa (Formula.neg Formula.bot) (Formula.atom i)
+    have h_X_thm : [] ⊢ X :=
+      DerivationTree.modus_ponens [] _ _ h_or_intro h_neg_bot_thm
+    -- Step 2: G(X) ∈ M since X is a theorem
+    have h_G_X_thm : [] ⊢ Formula.all_future X :=
+      DerivationTree.temporal_necessitation X h_X_thm
+    have h_G_X_in_M : Formula.all_future X ∈ M := theorem_in_mcs h_mcs h_G_X_thm
+    -- Step 3: From G(X) ∈ M and G(¬X) ∈ M, derive contradiction
+    -- We have G(X) ∈ M and G(X.neg) ∈ M
+    -- By G-conjunction intro: G(X ∧ ¬X) ∈ M (or we can derive bot directly)
+    -- Actually, let's use: G(X) ∧ G(¬X) implies G(X ∧ ¬X) which implies G(⊥)
+    -- Or simpler: from both X and ¬X holding everywhere, ⊥ holds everywhere
+    -- We need: ⊢ G(X) → G(X.neg) → G(⊥)
+    -- This follows from: G distributes and X ∧ ¬X → ⊥
+    -- From G(X) and G(¬X), we get G(X ∧ ¬X) via conjunction intro in G
+    -- Then G(X ∧ ¬X) → G(⊥) via X ∧ ¬X → ⊥
+    -- Simpler: Use set_consistent_not_both
+    -- We have X.all_future ∈ M and X.neg.all_future ∈ M
+    -- Want to derive contradiction...
+    -- Actually, G(φ) ∧ G(¬φ) in M means both φ and ¬φ hold in all futures
+    -- This means in all futures, we have both φ and ¬φ, hence ⊥ in all futures
+    -- So G(⊥) ∈ M, contradicting G_bot_not_in
+    --
+    -- To formalize: ⊢ G(A) → G(A.neg) → G(⊥)
+    -- From ⊢ A → A.neg → ⊥ (explosion)
+    -- By temporal necessitation: ⊢ G(A → A.neg → ⊥)
+    -- By K-dist twice: ⊢ G(A) → G(A.neg → ⊥), then ⊢ G(A) → G(A.neg) → G(⊥)
+    have h_explosion : [] ⊢ X.imp (X.neg.imp Formula.bot) := by
+      -- This is ⊢ X → ¬X → ⊥, which is the definition of modus ponens on ¬X
+      exact Bimodal.Theorems.Propositional.raa X Formula.bot
+    have h_G_explosion : [] ⊢ Formula.all_future (X.imp (X.neg.imp Formula.bot)) :=
+      DerivationTree.temporal_necessitation _ h_explosion
+    have h_G_explosion_in_M : Formula.all_future (X.imp (X.neg.imp Formula.bot)) ∈ M :=
+      theorem_in_mcs h_mcs h_G_explosion
+    -- K-dist: G(A → B) → G(A) → G(B)
+    have h_k1 : (Formula.all_future (X.imp (X.neg.imp Formula.bot))).imp
+        ((Formula.all_future X).imp (Formula.all_future (X.neg.imp Formula.bot))) ∈ M :=
+      theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_k_dist X (X.neg.imp Formula.bot)))
+    have h_step1 := SetMaximalConsistent.implication_property h_mcs h_k1 h_G_explosion_in_M
+    have h_G_neg_imp_bot : Formula.all_future (X.neg.imp Formula.bot) ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs h_step1 h_G_X_in_M
+    -- K-dist again: G(¬X → ⊥) → G(¬X) → G(⊥)
+    have h_k2 : (Formula.all_future (X.neg.imp Formula.bot)).imp
+        ((Formula.all_future X.neg).imp (Formula.all_future Formula.bot)) ∈ M :=
+      theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_k_dist X.neg Formula.bot))
+    have h_step2 := SetMaximalConsistent.implication_property h_mcs h_k2 h_G_neg_imp_bot
+    have h_G_bot : Formula.all_future Formula.bot ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs h_step2 h_G_neg_X
+    -- G(⊥) ∈ M contradicts seriality
+    exact SetMaximalConsistent.G_bot_not_in M h_mcs h_serial h_G_bot
 
 /-!
 ## Forward/Backward Witness at Specific Stage
