@@ -251,7 +251,7 @@ This plan systematically addresses all documentation issues identified across th
 
 ---
 
-### Phase 5: Create Priority 2 READMEs - Top-Level and Latex [NOT STARTED]
+### Phase 5: Create Priority 2 READMEs - Top-Level and Latex [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Create READMEs for 4 top-level directories and latex subdirectories
@@ -288,6 +288,19 @@ This plan systematically addresses all documentation issues identified across th
 **Verification**:
 - Each README accurately lists directory contents
 - Purpose of each directory is clear
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773678809_acc23f**
+- Created: scripts/README.md (8 files documented)
+- Created: benchmarks/README.md (2 files documented)
+- Created: specs/README.md (structure and naming documented)
+- Created: build/README.md (minimal, build artifacts)
+- Created: Theories/Bimodal/latex/README.md
+- Created: Theories/Bimodal/latex/subfiles/README.md (7 chapter files)
+- Created: Theories/Bimodal/latex/assets/README.md (3 style files)
+- Created: Theories/Bimodal/typst/chapters/README.md (7 chapter files)
+- Created: Theories/Bimodal/typst/notation/README.md (2 notation files)
 
 ---
 
