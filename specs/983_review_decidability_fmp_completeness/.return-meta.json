@@ -1,53 +1,25 @@
 {
-  "status": "researched",
-  "summary": "Team research completed: decidability soundness proven; FMP and decidability completeness are critical gaps requiring filtration approach; dense completeness needs domain wiring (Task 982); discrete completeness has axiom debt (Task 981). Roadmap: 40-61 hours across 4 sub-tasks.",
+  "status": "planned",
+  "summary": "8-phase implementation plan created: FMP via filtration (21 hrs), decidability completeness (8 hrs), coordination with Tasks 981/982, documentation (4 hrs). Total 45 hours estimated.",
   "artifacts": [
     {
       "type": "research",
       "path": "specs/983_review_decidability_fmp_completeness/reports/research-001.md",
       "summary": "Synthesized team research from 3 teammates (run 001)"
-    }
-  ],
-  "team_execution": {
-    "enabled": true,
-    "wave_count": 1,
-    "teammates_spawned": 3,
-    "teammates_completed": 3,
-    "teammates_failed": 0,
-    "token_usage_multiplier": 5.0,
-    "degraded_to_single": false
-  },
-  "teammate_results": [
-    {
-      "teammate": "A",
-      "angle": "Codebase analysis",
-      "status": "completed",
-      "confidence": "high",
-      "file": "research-001-teammate-a-findings.md"
     },
     {
-      "teammate": "B",
-      "angle": "Literature and standard results",
-      "status": "completed",
-      "confidence": "high",
-      "file": "research-001-teammate-b-findings.md"
-    },
-    {
-      "teammate": "C",
-      "angle": "Gap analysis and roadmap",
-      "status": "completed",
-      "confidence": "high",
-      "file": "research-001-teammate-c-findings.md"
+      "type": "plan",
+      "path": "specs/983_review_decidability_fmp_completeness/plans/implementation-001.md",
+      "summary": "8-phase implementation plan for decidability review and FMP formalization"
     }
   ],
-  "synthesis": {
-    "conflicts_found": 2,
-    "conflicts_resolved": 2,
-    "gaps_identified": 5,
-    "wave_2_triggered": false
-  },
+  "next_steps": "Run /implement 983 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773704373_51080a",
-    "agent_type": "skill-team-research"
+    "session_id": "sess_1773705186_445585",
+    "agent_type": "planner-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 45
   }
 }
