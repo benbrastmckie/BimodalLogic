@@ -38,23 +38,15 @@ technical_debt:
 
 ---
 
-
-
-
-
-
-
-
-
 ### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
 - **Effort**: 3-5 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Unblocked by**: Task 962 (COMPLETE)
 - **Plan**: [implementation-007.md](specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-007.md) (v007: density_escapes_source_class architecture)
-- **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis), [research-003.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md) (Classical.choose), [research-004.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md) (quotient collapse), [research-005.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-005.md) (no-covers approach), [research-006.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-006.md) (team: termination gap), [research-007.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-007.md) (deep: density_escapes_source_class)
+- **Research**: [research-001.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md), [research-002.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md) (blocker analysis), [research-003.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md) (Classical.choose), [research-004.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md) (quotient collapse), [research-005.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-005.md) (no-covers approach), [research-006.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-006.md) (team: termination gap), [research-007.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-007.md) (deep: density_escapes_source_class), [research-008.md](specs/961_quotient_density_iteration_no_max_min_dense/reports/research-008.md) (OBSOLETE: goal achieved via Task 967)
 - **Summary**: [implementation-summary-20260313.md](specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313.md) (v007 blocked: density_escapes_source_class CANNOT be proven)
 - **Handoff**: [phase-1-handoff-20260313.md](specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md)
-- **Blocker**: Mathematical obstruction - Lindenbaum extension is non-constructive, cannot guarantee intermediate escapes source equivalence class
+- **Resolution**: Goal ACHIEVED via Task 967 - CantorApplication.lean has 0 sorries, canonicalR_irreflexive provides strictness
 - **Language**: lean
 - **Priority**: high
 - **Unblocks**: Task 956 (Phase 7)
@@ -224,42 +216,6 @@ C. **Genuine gap**: If neither equivalence holds, determine whether MCS-membersh
 - Innovation to highlight: MCS-membership box semantics (`φ ∈ fam'.mcs t` instead of evaluating φ at fam') decouples box-truth from universal temporal coherence
 - 44/49 active files are sorry-free; 5 sorries all lie in non-primary alternative proof paths
 - The Boneyard contains 147 archived files with 187 sorries representing exhausted research paths; these are intentionally archived and do not affect build or publication
-
----
-
-### 922. Strategy study: identify viable path for forward_F/backward_P completeness
-- **Effort**: 8-16 hours
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Created**: 2026-02-24
-- **Started**: 2026-02-24
-- **Blocks**: Task 924
-- **Research**: [research-008.md](specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-008.md)
-- **Plan**: [implementation-005.md](specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-005.md)
-- **Summary**: [implementation-summary-20260224c.md](specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224c.md)
-
-**Description**: Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. **CONSTRAINT: Sorry debt is NEVER acceptable** — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.
-
-The study should focus on LEARNING FROM FAILURES to inspire creative solutions:
-
-**Pattern Analysis of Failed Approaches:**
-- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?
-- Is the "Lindenbaum opacity" a fundamental barrier, or does it reveal a hidden assumption we can drop?
-- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?
-
-**Creative Reframing Questions:**
-- What if the problem is not "prove forward_F for a chain" but "find a structure that makes forward_F trivially true"?
-- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar "witness existence under opacity" problems?
-- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?
-- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?
-
-**Mandatory Outputs:**
-1. A "lessons learned" document identifying the precise mathematical property that all failed approaches lacked
-2. At least 3 genuinely novel approach ideas that do NOT fit the "bottom-up chain construction" pattern
-3. For each novel approach: a preliminary feasibility assessment with confidence level
-4. A ranked recommendation with clear decision criteria
-
-Key artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.
 
 ---
 
