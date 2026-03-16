@@ -84,10 +84,10 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: TBD (requires architectural decision)
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md) (staged construction approach)
-- **Plan**: [implementation-002.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md) (v2: Phase 4 BLOCKED)
+- **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis)
+- **Plan**: [implementation-002.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md) (v2: Phase 4 BLOCKED — requires new plan)
 - **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
 
 **Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean. Phases 1-3 completed (7→3 sorries). Phase 4 BLOCKED on architectural issue.

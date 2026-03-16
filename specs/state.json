@@ -77,14 +77,14 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T18:45:00Z",
-      "session_id": "sess_1742179200_q8k3r",
-      "researched": "2026-03-16T16:12:35Z",
+      "last_updated": "2026-03-16T17:56:38Z",
+      "session_id": "sess_1742181000_r9l4s",
+      "researched": "2026-03-16T17:56:38Z",
       "blocked_on": "Architectural issue: buildStagedTimeline adds density intermediates via DN axiom; no discrete construction exists",
       "blocked_reason": "Phase 4 blocked: staged construction always adds density witnesses, making discreteness proofs impossible without new infrastructure (quotient collapse proof, discrete construction, or alternative proof strategy)",
       "artifacts": [
@@ -107,6 +107,11 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md",
           "type": "plan",
           "summary": "Phase 4 BLOCKED: staged construction adds density intermediates universally"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): Option B (discrete staged construction) resolves blocker; task 973 effectively complete; refactor-first (978) does not help 974"
         }
       ],
       "planned": "2026-03-16T17:28:52Z",
