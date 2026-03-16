@@ -8,19 +8,25 @@
     {
       "project_number": 980,
       "project_name": "remove_dn_based_seriality_proofs_tech_debt",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-16T20:56:19Z",
-      "last_updated": "2026-03-16T21:15:00Z",
-      "session_id": "sess_1773694612_8e1592",
+      "last_updated": "2026-03-16T21:10:06Z",
+      "session_id": "sess_1773695244_e62cb5",
       "researched": "2026-03-16T21:15:00Z",
       "artifacts": [
         {
           "path": "specs/980_remove_dn_based_seriality_proofs_tech_debt/reports/research-001.md",
           "type": "research",
           "summary": "Identified DN-based seriality proofs in CantorPrereqs.lean. Discrete timeline incorrectly uses density axiom DN for NoMaxOrder/NoMinOrder. Recommended fix: Direct NoMaxOrder via canonical model structure (5-8h effort)."
+        },
+        {
+          "path": "specs/980_remove_dn_based_seriality_proofs_tech_debt/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan to remove DN-based seriality proofs from discrete timeline construction"
         }
-      ]
+      ],
+      "planned": "2026-03-16T21:10:06Z"
     },
     {
       "project_number": 979,
