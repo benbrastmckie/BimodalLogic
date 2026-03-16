@@ -1,5 +1,5 @@
 ---
-next_project_number: 971
+next_project_number: 972
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 971. Refactor to eliminate bmcs_truth_at layer
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: logic
+
+**Description**: Research and implement a systematic refactor to fully eliminate the `bmcs_truth_at` layer as reported in the task 970 research findings.
+
+---
 
 ### 970. Review metalogic for publication readiness
 - **Effort**: 12 hours (10 phases)

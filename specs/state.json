@@ -6,12 +6,20 @@
   },
   "active_projects": [
     {
+      "project_number": 971,
+      "project_name": "refactor_eliminate_bmcs_truth_at_layer",
+      "status": "not_started",
+      "language": "logic",
+      "created": "2026-03-16T05:12:34Z",
+      "last_updated": "2026-03-16T05:12:34Z"
+    },
+    {
       "project_number": 970,
       "project_name": "review_metalogic_for_publication",
       "status": "planned",
       "language": "logic",
       "created": "2026-03-16T04:42:03Z",
-      "last_updated": "2026-03-16T05:01:44Z",
+      "last_updated": "2026-03-16T05:12:32Z",
       "session_id": "sess_1773637102_2283",
       "researched": "2026-03-16T04:53:13Z",
       "artifacts": [
@@ -21,12 +29,12 @@
           "summary": "Team research with 2 teammates (run 001)"
         },
         {
-          "path": "specs/970_review_metalogic_for_publication/plans/implementation-001.md",
+          "path": "specs/970_review_metalogic_for_publication/plans/implementation-002.md",
           "type": "plan",
-          "summary": "10 phases, 12 hours estimated - comprehensive refactor addressing all research findings"
+          "summary": "12 phases, 14 hours - v2 with correct semantic framework and theorem formulations"
         }
       ],
-      "planned": "2026-03-16T05:01:44Z"
+      "planned": "2026-03-16T05:12:32Z"
     },
     {
       "project_number": 953,
@@ -275,7 +283,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 971,
+  "next_project_number": 972,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
