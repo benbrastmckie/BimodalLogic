@@ -49,10 +49,10 @@
     {
       "project_number": 929,
       "project_name": "prepare_metalogic_for_publication",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-02-26T01:18:59Z",
-      "last_updated": "2026-03-16T02:33:36Z",
+      "last_updated": "2026-03-16T02:36:38Z",
       "session_id": "sess_1773628400_9119",
       "researched": "2026-03-16T02:31:16Z",
       "artifacts": [
@@ -60,8 +60,14 @@
           "path": "specs/929_prepare_metalogic_for_publication/reports/research-001.md",
           "type": "research",
           "summary": "Team research (3 teammates): comprehensive publication readiness checklist, 10-13h effort, 8-phase plan covering archival, export updates, build hygiene, documentation"
+        },
+        {
+          "path": "specs/929_prepare_metalogic_for_publication/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "9-phase publication readiness plan: task abandonment, archival, import refactoring, documentation, verification (10-13h)"
         }
-      ]
+      ],
+      "planned": "2026-03-16T02:36:38Z"
     },
     {
       "project_number": 868,
