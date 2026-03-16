@@ -1,28 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Team research completed with 4 teammates: current isBase/isDenseCompatible/isDiscreteCompatible predicates are theoretically correct; soundness is complete for all three variants; dense completeness components proven but wiring missing (critical gap); discrete completeness framework absent; 7-phase refactoring strategy recommended starting with additive enhancements",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/977_organize_tm_base_logic_with_extensions/reports/research-001.md",
-      "summary": "Synthesized research from 4 teammates (run 001)"
+      "type": "plan",
+      "path": "specs/977_organize_tm_base_logic_with_extensions/plans/implementation-001.md",
+      "summary": "7-phase implementation plan for TM logic organization: documentation update, derivation soundness, FrameClass enumeration, dense/base/discrete completeness wiring, and variants summary"
     }
   ],
-  "team_execution": {
-    "enabled": true,
-    "wave_count": 1,
-    "teammates_spawned": 4,
-    "teammates_completed": 4,
-    "teammates_failed": 0,
-    "degraded_to_single": false
-  },
-  "synthesis": {
-    "conflicts_found": 4,
-    "conflicts_resolved": 4,
-    "gaps_identified": 6
-  },
+  "next_steps": "Run /implement 977 to execute the plan. Note: Phases 4 and 6 are blocked by tasks 973 and 974 respectively.",
   "metadata": {
-    "session_id": "sess_1773680250_047fb0",
-    "agent_type": "skill-team-research"
+    "session_id": "sess_1773681481_808653",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 16
   }
 }
