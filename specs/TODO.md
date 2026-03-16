@@ -37,11 +37,11 @@ technical_debt:
 ---
 
 ### 970. Review metalogic for publication readiness
-- **Effort**: 7 hours (phases 5-9; 1-4, 10-12 completed)
+- **Effort**: 10 hours (phases 5-9; 1-4, 10-12 completed)
 - **Status**: [PLANNED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis) | [research-002.md](specs/970_review_metalogic_for_publication/reports/research-002.md) (phases 5-9 + task 971 coordination)
-- **Plan**: [implementation-003.md](specs/970_review_metalogic_for_publication/plans/implementation-003.md) (v3: reordered phases, diamondFormula fix, restricted Phase 9, task 971 coordination)
+- **Plan**: [implementation-004.md](specs/970_review_metalogic_for_publication/plans/implementation-004.md) (v4: remove weak completeness, full naming cleanup incl. SetMaximalConsistent)
 - **Summary**: [implementation-summary-20260315.md](specs/970_review_metalogic_for_publication/summaries/implementation-summary-20260315.md) (partial: 7/12 phases)
 
 **Description**: Systematically review the metalogic to identify redundant definitions requiring bridge theorems or lemmas that can be removed in preference of direct implementation with correct semantic definitions. Simplify the space of defined terms, avoiding aliases or technical debt that could be refactored out. Examples include `bmcs_truth_lemma` and related artifacts from the laborious process of establishing representation and completeness theorems. Ensure all major theorems take mathematically standard forms relative to the provided semantics.
