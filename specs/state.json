@@ -107,12 +107,12 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T20:15:00Z",
+      "last_updated": "2026-03-16T19:42:47Z",
       "session_id": "sess_1773689666_k4m8n",
       "researched": "2026-03-16T20:15:00Z",
       "unblocked_by": "Task 977 Phase 0 fixed DurationTransfer.lean errors",
@@ -138,11 +138,6 @@
           "summary": "Team research (3 teammates): Option B (discrete staged construction) resolves blocker; task 973 effectively complete; refactor-first (978) does not help 974"
         },
         {
-          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan for discrete staged construction approach (Option B)"
-        },
-        {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md",
           "type": "research",
           "summary": "DurationTransfer.lean has 7 API-level errors blocking DiscreteTimeline. Fix bundled with task 977. 3 DiscreteTimeline sorries addressable after DT fix."
@@ -151,9 +146,14 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-005.md",
           "type": "research",
           "summary": "DurationTransfer fixed but DiscreteTimeline has 7 new structural errors (type/function mismatch); recommend Phase 6.5 to fix before resolving 3 sorries"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan v4: added Phase 6.5 for structural error fix"
         }
       ],
-      "planned": "2026-03-16T18:14:22Z",
+      "planned": "2026-03-16T19:42:47Z",
       "started": "2026-03-16T16:40:04Z",
       "partial": "2026-03-16T19:30:00Z",
       "phases_completed": 5,

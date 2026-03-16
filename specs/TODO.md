@@ -84,11 +84,11 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 ---
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
-- **Effort**: 4 hours (8 phases)
-- **Status**: [RESEARCHED]
+- **Effort**: 4.5 hours (8 phases + Phase 6.5)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis), [research-004.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md) (DurationTransfer blocker analysis), [research-005.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-005.md) (current standing post-DT fix)
-- **Plan**: [implementation-003.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md) (v3: Option B discrete staged construction)
+- **Plan**: [implementation-004.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-004.md) (v4: added Phase 6.5 structural error fix)
 - **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
 - **Unblocked by**: Task 977 Phase 0 (DurationTransfer.lean fixed)
 
