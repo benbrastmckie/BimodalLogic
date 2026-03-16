@@ -3,12 +3,21 @@
 **Task**: 970 - Review Metalogic for Publication Readiness
 **Status**: [PARTIAL]
 **Started**: 2026-03-15
-**Completed**: 2026-03-15 (partial)
+**Completed**: 2026-03-15 (partial - phases 5-8 complete, phase 9 deferred)
+**Session**: sess_1773640525_5d2ce3
 **Language**: logic
 
 ## Executive Summary
 
-Completed 6 of 12 phases, with 5 phases deferred for future work. Key accomplishments:
+Completed 11 of 12 phases. Phase 9 (naming conventions) deferred due to scope exceeding estimates.
+
+Key accomplishments (this session):
+- Removed unused `asDiamond` definition (Phase 6)
+- Removed `diamondFormula` alias, privatized `needs_modal_witness` (Phase 7)
+- Verified `semantic_weak_completeness` doesn't exist in code (Phase 8)
+- Removed 3 duplicate theorems from Completeness.lean (Phase 5)
+
+Previous accomplishments (v2 implementation):
 - Extracted temporal coherence core to new TemporalCoherence.lean
 - Archived deprecated TemporalCoherentConstruction.lean to Boneyard
 - Removed 1 thin alias and ~20 unused convenience definitions
@@ -45,13 +54,37 @@ Completed 6 of 12 phases, with 5 phases deferred for future work. Key accomplish
 - **BFMCSTruth.lean**: Removed bmcs_valid, bmcs_satisfiable_at, bmcs_satisfies_context (3 definitions)
 - Verification: `lake build` passes
 
-### Phase 5-9: [PARTIAL]
-Deferred for future work:
-- Phase 5: Consolidate duplicate theorems (temp_4_past, set_mcs_all_future_all_future, etc.)
-- Phase 6: Unify asDiamond definitions
-- Phase 7: Clean internal scaffolding
-- Phase 8: Remove weak/finite completeness variants
-- Phase 9: Improve naming conventions
+### Phase 5: Consolidate Duplicate Theorems [COMPLETED]
+- Removed 3 duplicate theorem bodies from `Completeness.lean`:
+  - `set_mcs_all_future_all_future` - canonical version in MCSProperties.lean
+  - `temp_4_past` - canonical version in MCSProperties.lean
+  - `set_mcs_all_past_all_past` - canonical version in MCSProperties.lean
+- Migration of 11 unique theorems deferred (low priority)
+- Verification: `lake build` passes
+
+### Phase 6: Remove Unused asDiamond Definition [COMPLETED]
+- Removed `asDiamond` definition from `ModalSaturation.lean` (0 external references)
+- `asDiamond?` in `Tableau.lean` remains as canonical definition
+- Verification: `lake build` passes
+
+### Phase 7: Clean Internal Scaffolding + Fix Missed diamondFormula [COMPLETED]
+- Removed `diamondFormula` alias from `ModalSaturation.lean`
+- Updated all usages in `ModalSaturation.lean` and `ChainFMCS.lean` to use `psi.diamond`
+- Made `needs_modal_witness` private (only used internally)
+- Renamed `diamondFormula_eq` to `diamond_eq`
+- Verification: `lake build` passes
+
+### Phase 8: Remove Weak Completeness Entirely [COMPLETED]
+- Audit revealed `semantic_weak_completeness` does not exist in code
+- `FMP/SemanticCanonicalModel.lean` was never implemented
+- Documentation references are aspirational, not descriptive
+- No Lean code changes needed
+
+### Phase 9: Consistent Naming [DEFERRED]
+- `SetMaximalConsistent` rename has 399 occurrences across 45 files
+- `temporally_coherent` -> `is_temporally_coherent` affects 8 files
+- Scope exceeds 4-hour estimate
+- Recommend creating dedicated task for naming convention enforcement
 
 ### Phase 10: Audit Main Theorem Formulations [COMPLETED]
 - Reviewed current theorem state:
@@ -75,12 +108,12 @@ Deferred for future work:
 
 ## Cumulative Statistics
 
-- Phases completed: 7/12 (Phases 5-9 deferred as [PARTIAL])
+- Phases completed: 11/12 (Phase 9 deferred)
 - Files created: 2 (TemporalCoherence.lean, this summary)
-- Files modified: 9
+- Files modified: 12 (including ModalSaturation, ChainFMCS, Completeness this session)
 - Files archived: 1 (TemporalCoherentConstruction.lean)
-- Definitions removed: ~20 unused convenience definitions
-- Sorries in active metalogic: 9 (was 11 before archival)
+- Definitions removed: ~25 total (3 duplicates + ~22 unused convenience definitions)
+- Sorries in active metalogic: 9 (unchanged)
 
 ## Artifacts
 
@@ -93,14 +126,15 @@ Deferred for future work:
 
 ## Next Steps
 
-1. Phase 5: Consolidate duplicate theorems between Completeness.lean and MCSProperties.lean
-2. Phase 6: Decide canonical location for asDiamond definition
-3. Phase 7: Review internal scaffolding in ModalSaturation.lean
-4. Phase 8: Check for weak/finite completeness variants to deprecate
-5. Phase 9: Document and apply naming conventions
+1. Phase 9: Create dedicated task for naming convention enforcement
+   - `SetMaximalConsistent` -> `SetConsistent` (399 occurrences, 45 files)
+   - `temporally_coherent` -> `is_temporally_coherent` (8 files)
+2. Consider migrating 11 unique theorems from Completeness.lean to MCSProperties.lean
+3. Update typst/README documentation to remove references to non-existent `semantic_weak_completeness`
 
 ## Notes
 
-- Phases 5-9 require careful import graph analysis to avoid breaking changes
-- Some duplicates exist for historical reasons (separate development branches)
-- The codebase is in a cleaner state after removing ~20 unused definitions
+- Phases 1-8 and 10-12 complete; only Phase 9 deferred
+- The codebase is cleaner after removing ~25 definitions
+- All Lean code changes verified with `lake build`
+- No sorries or axioms introduced

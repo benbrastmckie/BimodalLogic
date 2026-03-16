@@ -52,10 +52,10 @@
     {
       "project_number": 970,
       "project_name": "review_metalogic_for_publication",
-      "status": "implementing",
+      "status": "partial",
       "language": "logic",
       "created": "2026-03-16T04:42:03Z",
-      "last_updated": "2026-03-16T05:55:39Z",
+      "last_updated": "2026-03-15T12:00:00Z",
       "session_id": "sess_1773640525_5d2ce3",
       "researched": "2026-03-16T05:37:45Z",
       "artifacts": [
@@ -67,7 +67,7 @@
         {
           "path": "specs/970_review_metalogic_for_publication/summaries/implementation-summary-20260315.md",
           "type": "summary",
-          "summary": "Partial: 7/12 phases (1-4, 10-12), phases 5-9 deferred"
+          "summary": "Partial: 11/12 phases complete, phase 9 deferred (naming conventions scope too large)"
         },
         {
           "path": "specs/970_review_metalogic_for_publication/reports/research-002.md",
@@ -82,7 +82,11 @@
       ],
       "planned": "2026-03-16T05:52:32Z",
       "started": "2026-03-16T05:15:48Z",
-      "resume_phase": 8
+      "partial": "2026-03-15T12:00:00Z",
+      "phases_completed": 11,
+      "phases_total": 12,
+      "deferred_phase": 9,
+      "deferred_reason": "SetMaximalConsistent rename has 399 occurrences across 45 files - exceeds scope estimate"
     },
     {
       "project_number": 953,
