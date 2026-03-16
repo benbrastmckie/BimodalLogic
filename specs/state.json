@@ -128,12 +128,12 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T18:34:20Z",
+      "last_updated": "2026-03-16T18:50:04Z",
       "session_id": "sess_1773686041_712a02",
       "researched": "2026-03-16T18:45:00Z",
       "artifacts": [
@@ -153,18 +153,20 @@
           "summary": "Import conflict root cause analysis: elaboration-order sensitivity due to diamond dependency. Solution: harden proofs with explicit type annotations (2.5-3h effort)"
         },
         {
-          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md",
-          "type": "summary",
-          "summary": "Documents import conflict blocker preventing NoMaxOrder/NoMinOrder proofs"
-        },
-        {
           "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-003.md",
           "type": "plan",
           "summary": "5-phase implementation plan using file extraction approach (Solution 2)"
+        },
+        {
+          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting file extraction approach and proof technique"
         }
       ],
       "planned": "2026-03-16T18:31:42Z",
-      "started": "2026-03-16T18:34:20Z"
+      "started": "2026-03-16T18:34:20Z",
+      "completed": "2026-03-16T18:50:04Z",
+      "completion_summary": "Proved NoMaxOrder and NoMinOrder instances for ConstructiveQuotient by creating CanonicalSerialFrameInstance.lean, using seriality witnesses and canonicalR_strict for strictness. Removed 2 sorries from ConstructiveFragment.lean."
     },
     {
       "project_number": 971,

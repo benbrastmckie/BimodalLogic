@@ -185,26 +185,23 @@ theorem ConstructiveReachable.encode_determines
     (h₁ : ConstructiveReachable M₀ h_mcs₀ M₁)
     (h₂ : ConstructiveReachable M₀ h_mcs₀ M₂)
     (h_eq : h₁.encode = h₂.encode) : M₁ = M₂ := by
-  induction h₁ with
+  induction h₁ generalizing M₂ with
   | root =>
     cases h₂ with
     | root => rfl
     | forward_witness _ _ _ _ _ => simp [encode] at h_eq
     | backward_witness _ _ _ _ _ => simp [encode] at h_eq
-  | forward_witness M₁' φ₁ _ h_mcs₁ h_F₁ ih =>
+  | forward_witness M₁' φ₁ h_reach₁ h_mcs₁ h_F₁ ih =>
     cases h₂ with
     | root => simp [encode] at h_eq
     | forward_witness M₂' φ₂ h_reach₂ h_mcs₂ h_F₂ =>
       simp [encode] at h_eq
       obtain ⟨h_prefix, h_φ_eq⟩ := h_eq
       have h_M_eq : M₁' = M₂' := ih h_reach₂ h_prefix
-      subst h_M_eq
-      -- After subst, h_mcs₁ = h_mcs₂ by proof irrelevance, h_F₁ = h_F₂ similarly
-      -- And φ₁ = φ₂ from h_φ_eq
-      subst h_φ_eq
+      subst h_M_eq h_φ_eq
       rfl
     | backward_witness _ _ _ _ _ => simp [encode] at h_eq
-  | backward_witness M₁' φ₁ _ h_mcs₁ h_P₁ ih =>
+  | backward_witness M₁' φ₁ h_reach₁ h_mcs₁ h_P₁ ih =>
     cases h₂ with
     | root => simp [encode] at h_eq
     | forward_witness _ _ _ _ _ => simp [encode] at h_eq
@@ -212,8 +209,7 @@ theorem ConstructiveReachable.encode_determines
       simp [encode] at h_eq
       obtain ⟨h_prefix, h_φ_eq⟩ := h_eq
       have h_M_eq : M₁' = M₂' := ih h_reach₂ h_prefix
-      subst h_M_eq
-      subst h_φ_eq
+      subst h_M_eq h_φ_eq
       rfl
 
 /--
@@ -224,9 +220,9 @@ noncomputable instance : Countable (ConstructiveFragment M₀ h_mcs₀) := by
   -- Two elements with the same encoding have the same underlying MCS
   apply Function.Injective.countable
     (f := fun (w : ConstructiveFragment M₀ h_mcs₀) => w.property.some.encode)
-  intro ⟨M₁, ⟨h₁⟩⟩ ⟨M₂, ⟨h₂⟩⟩ h_eq
+  intro ⟨M₁, h₁⟩ ⟨M₂, h₂⟩ h_eq
   simp only at h_eq
-  exact Subtype.ext (ConstructiveReachable.encode_determines h₁ h₂ h_eq)
+  exact Subtype.ext (ConstructiveReachable.encode_determines h₁.some h₂.some h_eq)
 
 /-!
 ## Total Preorder via CanonicalR + temp_linearity
@@ -236,10 +232,12 @@ noncomputable instance : Preorder (ConstructiveFragment M₀ h_mcs₀) where
   le a b := a.val = b.val ∨ CanonicalR a.val b.val
   le_refl a := Or.inl rfl
   le_trans a b c hab hbc := by
-    rcases hab with rfl | hab
-    · exact hbc
-    · rcases hbc with rfl | hbc
-      · exact Or.inr hab
+    rcases hab with h_eq_ab | hab
+    · rcases hbc with h_eq_bc | hbc
+      · exact Or.inl (h_eq_ab.trans h_eq_bc)
+      · exact Or.inr (h_eq_ab ▸ hbc)
+    · rcases hbc with h_eq_bc | hbc
+      · exact Or.inr (h_eq_bc ▸ hab)
       · exact Or.inr (canonicalR_transitive a.val b.val c.val a.is_mcs hab hbc)
 
 /-!
@@ -564,25 +562,9 @@ noncomputable instance : Countable (ConstructiveQuotient M₀ h_mcs₀) :=
 /-!
 ## NoMaxOrder and NoMinOrder
 
-These are the hardest parts of Phase 2B. The key challenge is showing that
-the forward/backward witnesses produce STRICTLY greater/lesser elements
-in the quotient (not just ≤-equivalent ones).
-
-The proofs are marked sorry pending a detailed analysis of when
-CanonicalR-equivalent MCSs collapse in the Antisymmetrization quotient.
+These instances are provided by `CanonicalSerialFrameInstance.lean`.
+The file separation avoids an elaboration-order conflict that occurs when
+`ConstructiveFragment.lean` imports `CanonicalIrreflexivityAxiom`.
 -/
-
-instance : NoMaxOrder (ConstructiveQuotient M₀ h_mcs₀) where
-  exists_gt a := by
-    induction a using Quotient.ind with | _ w =>
-    -- Every MCS has F(¬⊥) by seriality, giving a forward witness
-    -- The forward witness is ≥ w in the preorder
-    -- We need to show it's strictly > in the quotient
-    sorry
-
-instance : NoMinOrder (ConstructiveQuotient M₀ h_mcs₀) where
-  exists_lt a := by
-    induction a using Quotient.ind with | _ w =>
-    sorry
 
 end Bimodal.Metalogic.Canonical

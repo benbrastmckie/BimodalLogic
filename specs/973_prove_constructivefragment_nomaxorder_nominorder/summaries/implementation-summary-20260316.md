@@ -1,88 +1,57 @@
 # Implementation Summary: Task 973
 
-**Task**: Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
-**Status**: BLOCKED
+**Task**: Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient
+**Status**: Completed
 **Date**: 2026-03-16
-**Session**: sess_1773682669_6061b2
+**Session**: sess_1773686041_712a02
 
-## Blocker Description
+## Overview
 
-The implementation is blocked by an import conflict. Importing `Bimodal.Metalogic.Canonical.CanonicalIrreflexivityAxiom` (or the underlying `Bimodal.Metalogic.Bundle.CanonicalIrreflexivity`) causes elaboration failures in unrelated earlier proofs in `ConstructiveFragment.lean`.
+Implemented `NoMaxOrder` and `NoMinOrder` instances for `ConstructiveQuotient` by creating a new file `CanonicalSerialFrameInstance.lean`. This approach avoids an elaboration-order conflict that occurs when `ConstructiveFragment.lean` imports `CanonicalIrreflexivityAxiom`.
 
-### Specific Errors
+## Changes
 
-When the import is added, the following proofs break:
-- Line 201: `ih h_reach2 h_prefix` - Application type mismatch
-- Line 215: Same issue in backward_witness case
-- Line 230: `Subtype.ext` argument type mismatch
-- Line 240: `subst` fails on equality proof
+### Created Files
 
-These are in the `ConstructiveReachable.encode_determines` theorem and the `Countable` instance, which worked before the import was added.
+- `Theories/Bimodal/Metalogic/Canonical/CanonicalSerialFrameInstance.lean`
+  - `NoMaxOrder (ConstructiveQuotient M₀ h_mcs₀)` instance
+  - `NoMinOrder (ConstructiveQuotient M₀ h_mcs₀)` instance
 
-### Root Cause Analysis
+### Modified Files
 
-The issue appears to be an elaboration order or instance resolution conflict introduced by the transitive imports:
-- `CanonicalIrreflexivityAxiom` imports `Bundle.CanonicalIrreflexivity`
-- `CanonicalIrreflexivity` imports `Bundle.WitnessSeed`, `Core.MCSProperties`, etc.
-- Something in this import chain affects how Lean elaborates the induction hypothesis in `encode_determines`
+- `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean`
+  - Removed 2 sorry'd instances (NoMaxOrder, NoMinOrder)
+  - Fixed pre-existing bugs in `encode_determines` proof (added `generalizing M₂` to induction)
+  - Fixed pre-existing bugs in `Preorder` instance (replaced `rfl` pattern with explicit handling)
+  - Fixed pre-existing bugs in `Countable` instance (proper use of `h₁.some`)
 
-The lean-lsp MCP server shows the proofs working correctly, but `lake build` fails. This suggests a cache-dependent elaboration issue.
+## Proof Technique
 
-### Attempted Solutions
+Both proofs follow the same pattern from research-002.md:
 
-1. Moving import position (beginning, middle, end of import list) - No effect
-2. Cleaning `.lake/build/lib/Bimodal/Metalogic/Canonical/` cache - Temporarily works, then breaks again
-3. Importing `Bundle.CanonicalIrreflexivity` directly instead of the Axiom wrapper - Same issue
-4. Importing individual transitive dependencies (WitnessSeed, MCSProperties, Propositional) - All cause same issue
+1. **Seriality Witness**: Use `SetMaximalConsistent.contains_seriality_future/past` to get `F(neg bot)` or `P(neg bot)` in any MCS
+2. **Execute Step**: Use `executeForwardStep` or `executeBackwardStep` to construct successor/predecessor MCS N
+3. **Strictness**: Use `canonicalR_strict` to show the reverse relation doesn't hold
+4. **Construct Quotient Element**: Build `ConstructiveFragment` element `w'` with `N` and reachability proof
+5. **Show Strict Order**: Prove `w < w'` (or `w' < w`) using the preorder definition and strictness
 
-### Required Resolution
+## Verification
 
-The proofs require `canonicalR_irreflexive` and `canonicalR_strict` from `CanonicalIrreflexivityAxiom`. Options:
+- `lake build` passes with no errors
+- Zero sorries in `CanonicalSerialFrameInstance.lean`
+- Zero sorries in `ConstructiveFragment.lean`
+- No new axioms introduced
 
-1. **Fix the import conflict** (recommended): Investigate why importing CanonicalIrreflexivity affects the elaboration of unrelated proofs. This may require:
-   - Adding explicit type annotations to `encode_determines`
-   - Adjusting the proof structure to be more robust to elaboration changes
-   - Understanding what instance or definition in the import chain causes the conflict
+## Design Notes
 
-2. **Restructure ConstructiveFragment**: Move the `NoMaxOrder`/`NoMinOrder` instances to a separate file that can safely import CanonicalIrreflexivityAxiom
+The file separation foreshadows task 978's `SerialFrame` typeclass architecture:
+- `ConstructiveFragment.lean`: Concrete representation (encoding, Countable, Preorder)
+- `CanonicalSerialFrameInstance.lean`: Frame condition instances (NoMaxOrder, NoMinOrder)
 
-3. **Copy/inline the theorem**: Inline `canonicalR_irreflexive` in ConstructiveFragment (not ideal - would duplicate the 1200+ line proof)
+## Phases Completed
 
-## Proof Sketches (Ready to Use Once Import Fixed)
-
-### NoMaxOrder
-```lean
-instance : NoMaxOrder (ConstructiveQuotient M0 h_mcs0) where
-  exists_gt := by
-    intro a
-    induction a using Antisymmetrization.ind with
-    | _ w =>
-      have h_F := SetMaximalConsistent.contains_seriality_future w.val w.is_mcs
-      let N := executeForwardStep w.val w.is_mcs (Formula.neg Formula.bot) h_F
-      have h_N_mcs := executeForwardStep_mcs (h_mcs := w.is_mcs) (h_F := h_F)
-      have h_R := executeForwardStep_canonicalR (h_mcs := w.is_mcs) (h_F := h_F)
-      have h_strict : -CanonicalR N w.val := canonicalR_strict w.val N w.is_mcs h_N_mcs h_R
-      obtain <h_reach> := w.property
-      have h_N_reach : Nonempty (ConstructiveReachable M0 h_mcs0 N) :=
-        <ConstructiveReachable.forward_witness w.val (Formula.neg Formula.bot) h_reach w.is_mcs h_F>
-      let w' : ConstructiveFragment M0 h_mcs0 := <N, h_N_reach>
-      use toAntisymmetrization (. <= .) w'
-      rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
-      constructor
-      . exact Or.inr h_R
-      . intro h_le_back
-        cases h_le_back with
-        | inl h_eq => exact canonicalR_irreflexive w.val w.is_mcs (Eq.subst h_eq h_R)
-        | inr h_R_back => exact h_strict h_R_back
-```
-
-### NoMinOrder
-Similar structure using `executeBackwardStep` and `contains_seriality_past`.
-
-## Files Modified
-
-None (changes reverted due to blocker)
-
-## Recommendation
-
-This task requires user investigation of the import conflict before it can proceed. The proof logic is correct and verified via lean-lsp, but the import dependency creates an unresolvable build failure.
+1. Phase 1: Create new file with module structure [COMPLETED]
+2. Phase 2: Implement NoMaxOrder instance [COMPLETED]
+3. Phase 3: Implement NoMinOrder instance [COMPLETED]
+4. Phase 4: Remove sorry instances from ConstructiveFragment.lean [COMPLETED]
+5. Phase 5: Final verification [COMPLETED]
