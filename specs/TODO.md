@@ -1,14 +1,14 @@
 ---
-next_project_number: 983
+next_project_number: 984
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-16T23:45:00Z
 task_counts:
-  active: 6
+  active: 7
   completed: 686
   in_progress: 1
-  not_started: 1
+  not_started: 2
   abandoned: 42
   total: 743
 technical_debt:
@@ -24,6 +24,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 983. Review decidability results and FMP for publication
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: logic
+
+**Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.
+
+---
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 3-5 hours
