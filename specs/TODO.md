@@ -37,10 +37,11 @@ technical_debt:
 ---
 
 ### 975. Fix ProofSearch documentation example sorries
-- **Effort**: ~1 hour
-- **Status**: [PLANNING]
+- **Effort**: 0.5 hours (1 phase)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/975_fix_proofsearch_example_sorries/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/975_fix_proofsearch_example_sorries/plans/implementation-001.md)
 
 **Description**: Fix 3 sorry placeholders in `Theories/Bimodal/Automation/ProofSearch.lean` at lines 1348, 1353, and 1358. These are `example` blocks demonstrating how bounded proof search would be invoked. Since `bounded_search` returns `Bool` (not `DerivationTree`), the examples cannot use it directly. Fix by providing minimal direct witnesses using existing axioms/rules, or convert to comments if purely aspirational.
 

@@ -20,12 +20,12 @@
     {
       "project_number": 975,
       "project_name": "fix_proofsearch_example_sorries",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "low",
       "created": "2026-03-16T00:00:00Z",
       "description": "Fix 3 sorry placeholders in ProofSearch.lean documentation examples",
-      "last_updated": "2026-03-16T16:36:28Z",
+      "last_updated": "2026-03-16T16:38:56Z",
       "session_id": "sess_1742169600_975plan",
       "researched": "2026-03-16T16:20:00Z",
       "artifacts": [
@@ -33,8 +33,14 @@
           "path": "specs/975_fix_proofsearch_example_sorries/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of 3 sorry placeholders with recommended fixes using DerivationTree.axiom (modal_t), modus_ponens, and assumption constructors"
+        },
+        {
+          "path": "specs/975_fix_proofsearch_example_sorries/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "1-phase implementation plan for fixing 3 example sorries in ProofSearch.lean"
         }
-      ]
+      ],
+      "planned": "2026-03-16T16:38:56Z"
     },
     {
       "project_number": 974,
