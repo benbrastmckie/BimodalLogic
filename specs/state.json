@@ -19,13 +19,41 @@
     {
       "project_number": 977,
       "project_name": "organize_tm_base_logic_with_extensions",
-      "status": "planned",
+      "status": "implementing",
       "language": "logic",
       "created": "2026-03-16T16:52:13Z",
-      "last_updated": "2026-03-16T18:56:32Z",
-      "session_id": "sess_1773681481_808653",
+      "last_updated": "2026-03-16T21:30:00Z",
+      "session_id": "sess_1773687626_568c70",
       "researched": "2026-03-16T17:05:35Z",
-      "planned": "2026-03-16T18:56:32Z"
+      "planned": "2026-03-16T18:56:32Z",
+      "started": "2026-03-16T19:00:43Z",
+      "partial_progress": {
+        "phases_completed": 3,
+        "phases_total": 8,
+        "details": "Phase 0: Fixed DurationTransfer.lean; Phase 1: Updated docs to 21 axioms; Phase 2: Added soundness theorem"
+      },
+      "artifacts": [
+        {
+          "path": "specs/977_organize_tm_base_logic_with_extensions/reports/research-001.md",
+          "type": "research",
+          "summary": "4-teammate synthesis identifying 21 axioms, completeness gaps, and DN dependency"
+        },
+        {
+          "path": "specs/977_organize_tm_base_logic_with_extensions/reports/research-002.md",
+          "type": "research",
+          "summary": "Plan revision analysis identifying DurationTransfer blocker"
+        },
+        {
+          "path": "specs/977_organize_tm_base_logic_with_extensions/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan with Phase 0 DurationTransfer fix"
+        },
+        {
+          "path": "specs/977_organize_tm_base_logic_with_extensions/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Incremental summary: phases 0-2 complete"
+        }
+      ]
     },
     {
       "project_number": 976,
@@ -77,16 +105,15 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T18:46:08Z",
+      "last_updated": "2026-03-16T21:30:00Z",
       "session_id": "sess_1773686383_q7r2k",
       "researched": "2026-03-16T18:46:08Z",
-      "blocked_on": "Pre-existing build errors in DurationTransfer.lean block verification of DiscreteTimeline.lean",
-      "blocked_reason": "Phase 6 blocked: DurationTransfer.lean has type class instance resolution failures (IsOrderedAddMonoid, Countable) and type mismatch errors in ratAddCommGroup/intAddCommGroup. These are pre-existing issues unrelated to task 974.",
+      "unblocked_by": "Task 977 Phase 0 fixed DurationTransfer.lean errors",
       "artifacts": [
         {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md",
