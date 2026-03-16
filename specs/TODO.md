@@ -39,8 +39,8 @@ technical_debt:
 ---
 
 ### 956. Construct D as translation group from syntax
-- **Effort**: 4-5 hours remaining (was 30-50 total; Phases 0-8 COMPLETE)
-- **Status**: [PLANNED]
+- **Effort**: COMPLETE (was 30-50 total)
+- **Status**: [COMPLETED]
 - **Previously blocked by**: Phase 6 quotient strictness gap (research-038 provides solution)
 - **Previously blocked by**: Task 957 (density frame condition - NOW COMPLETE)
 - **Language**: lean
@@ -95,9 +95,6 @@ technical_debt:
 
 ---
 
-
-
-
 ### 949. Update Demo.lean for current bimodal logic state
 - **Effort**: Small
 - **Status**: [NOT STARTED]
@@ -109,7 +106,7 @@ technical_debt:
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Started**: 2026-02-25
 - **Research**: [research-001.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md), [research-002.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-002.md), [research-003.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-003.md), [research-004.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-004.md), [research-005.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-005.md), [research-006.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-006.md), [research-007.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-007.md)

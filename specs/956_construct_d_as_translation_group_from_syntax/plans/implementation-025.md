@@ -133,7 +133,7 @@ All prerequisite infrastructure phases completed with zero sorries.
 
 ---
 
-### Phase 9: D and task_rel from Cantor [NOT STARTED]
+### Phase 9: D and task_rel from Cantor [COMPLETED]
 
 - **Dependencies:** Phase 8 (COMPLETE)
 - **Goal:** Define D := Q with canonical isomorphism, define task_rel from group action
@@ -169,7 +169,7 @@ All prerequisite infrastructure phases completed with zero sorries.
 
 ---
 
-### Phase 10: TaskFrame + Completeness [NOT STARTED]
+### Phase 10: TaskFrame + Completeness [COMPLETED]
 
 - **Dependencies:** Phase 9
 - **Goal:** Complete staged_task_frame and staged_completeness
@@ -212,7 +212,7 @@ All prerequisite infrastructure phases completed with zero sorries.
 
 ---
 
-### Phase 11: Code Cleanup and Archival [NOT STARTED]
+### Phase 11: Code Cleanup and Archival [COMPLETED]
 
 - **Dependencies:** Phase 10
 - **Goal:** Archive deprecated files, ensure publication-ready codebase

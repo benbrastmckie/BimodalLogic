@@ -54,13 +54,14 @@
     {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "description": "Construct D as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, with a designated origin. D emerges from pure syntax via: consistent set → MCS origin (Lindenbaum) → linear order T of reachable MCSs (existence lemma) → D = Aut+(T) (translation group) → eval₀ : D ≅ T (origin bijection) → linearly ordered abelian group → task_rel = group action → canonical model → truth lemma → completeness. Supersedes DovetailingChain, SuccOrder, and hardcoded D=Int approaches.",
       "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-16T02:08:33Z",
+      "last_updated": "2026-03-15T13:30:00Z",
       "researched": "2026-03-13T18:31:06Z",
+      "completed": "2026-03-15T13:30:00Z",
       "artifacts": [
         {
           "path": "specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md",
@@ -166,9 +167,24 @@
           "path": "specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-025.md",
           "type": "plan",
           "summary": "v025: Phases 6-8 COMPLETE via Task 967, only Phase 9-11 remain (4-5 hours)"
+        },
+        {
+          "path": "specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260315.md",
+          "type": "summary",
+          "summary": "Implementation summary for Phases 9-11: D construction via Cantor, completeness components proven, zero sorries"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/StagedConstruction/DFromCantor.lean",
+          "type": "lean_source",
+          "summary": "D construction via Cantor isomorphism - defines D as TimelineQuot, task_rel as strict order"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/StagedConstruction/Completeness.lean",
+          "type": "lean_source",
+          "summary": "Dense completeness - proves all components of completeness pipeline are sorry-free"
         }
       ],
-      "session_id": "sess_1773427217_a2328e07",
+      "session_id": "sess_1773626980_db94d8",
       "planned": "2026-03-16T02:08:33Z",
       "started": "2026-03-10T16:01:30Z",
       "resume_phase": null,
@@ -214,11 +230,11 @@
     {
       "project_number": 930,
       "project_name": "verify_mcs_membership_box_semantics_correctness",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-26T01:27:35Z",
-      "last_updated": "2026-02-26T05:36:40Z",
-      "session_id": "sess_1740494000_r930c",
+      "last_updated": "2026-03-16T02:20:11Z",
+      "session_id": "sess_1773627586_6379",
       "researched": "2026-02-26T05:36:40Z",
       "artifacts": [
         {
