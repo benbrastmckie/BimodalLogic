@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 981,
+      "project_name": "remove_axiom_technical_debt_from_task_979",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-16T22:57:51Z",
+      "last_updated": "2026-03-16T22:57:51Z"
+    },
+    {
       "project_number": 980,
       "project_name": "remove_dn_based_seriality_proofs_tech_debt",
       "status": "completed",
@@ -608,7 +616,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 981,
+  "next_project_number": 982,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

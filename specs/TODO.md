@@ -1,5 +1,5 @@
 ---
-next_project_number: 981
+next_project_number: 982
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 981. Remove axiom technical debt from task 979
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Depends On**: Task 978 [PLANNED]
+
+**Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
+
+---
 
 ### 980. Remove DN-based seriality proofs technical debt
 - **Effort**: 6-8 hours (6 phases)
