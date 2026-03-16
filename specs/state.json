@@ -41,13 +41,13 @@
     {
       "project_number": 968,
       "project_name": "prove_shift_closure_canonical_fmcs_bridge",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Prove shift-closure of canonical FMCS families (CanonicalOmega is ShiftClosed) and bridge the sorry-free BFMCS truth lemma to standard semantics. Two theorems: (1) FMCS shift-closure — fam_shift(t) := fam(t + Δ) is an FMCS, trivial by translation invariance; (2) BFMCS-to-standard bridge — construct WorldHistories from FMCS families and show bmcs_truth_at ↔ truth_at, connecting existing BFMCS completeness to semantic_consequence. Depends on canonical task relation from task 956.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-15T12:30:00Z",
-      "session_id": "sess_1773620518_ce6f70",
+      "last_updated": "2026-03-16T01:04:19Z",
+      "session_id": "sess_1773623046_07f34d",
       "artifacts": [
         {
           "path": "specs/0_shift_closure_research/reports/research-001.md",
@@ -422,50 +422,6 @@
         "Task 957 (density frame condition - COMPLETE)",
         "Task 961 (quotient density iteration - IN PROGRESS)"
       ]
-    },
-    {
-      "project_number": 955,
-      "project_name": "implement_d_and_task_rel_from_pure_syntax",
-      "status": "planned",
-      "language": "lean",
-      "priority": "high",
-      "description": "Construct D and non-trivial task_rel from pure syntax. Replace trivial task_rel with CanonicalR-based definition. 6 phases: canonical TaskFrame, CanonicalR properties, WorldHistory, truth lemma, D justification, integration.",
-      "created": "2026-03-06T00:00:00Z",
-      "last_updated": "2026-03-06T00:00:00Z",
-      "session_id": "sess_1772822140_51132d",
-      "planned": "2026-03-06T00:00:00Z",
-      "artifacts": [
-        {
-          "type": "plan",
-          "path": "specs/955_implement_d_and_task_rel_from_pure_syntax/plans/implementation-001.md",
-          "summary": "6-phase plan: canonical TaskFrame with CanonicalR task_rel, CanonicalR properties, WorldHistory, truth lemma, D justification, integration. Comprehensive analysis of 7 approaches."
-        }
-      ]
-    },
-    {
-      "project_number": 954,
-      "project_name": "refactor_representation_theorem_general_duration",
-      "status": "planned",
-      "language": "lean",
-      "priority": "high",
-      "description": "Refactor representation theorem to avoid hardcoded Int. Construct D purely from syntax as a totally ordered abelian group via BidirectionalQuotient + Successor Algebra + orderIsoIntOfLinearSuccPredArch. Compatible with density axiom extension.",
-      "created": "2026-03-03T00:00:00Z",
-      "last_updated": "2026-03-06T19:03:43Z",
-      "researched": "2026-03-03T00:00:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/954_refactor_representation_theorem_general_duration/reports/research-001.md",
-          "summary": "Comprehensive analysis of syntactic D construction pipeline: Fragment → Quotient → SuccOrder → OrderIso Z → Transfer AddCommGroup. 5-step construction from pure syntax, parameterizable by temporal theories for density extension."
-        },
-        {
-          "path": "specs/954_refactor_representation_theorem_general_duration/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for refactoring representation theorem to use syntactically constructed duration type"
-        }
-      ],
-      "session_id": "sess_1772957156_a3f2b7",
-      "planned": "2026-03-06T19:03:43Z"
     },
     {
       "project_number": 953,

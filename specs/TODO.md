@@ -5,11 +5,11 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-02-28T01:03:09Z
 task_counts:
-  active: 18
+  active: 16
   completed: 663
   in_progress: 0
   not_started: 8
-  abandoned: 38
+  abandoned: 40
   total: 717
 technical_debt:
   sorry_count: 73
@@ -46,7 +46,7 @@ technical_debt:
 
 ### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Priority**: high
 - **Research**: [specs/0_shift_closure_research/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md]
@@ -279,35 +279,6 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 - No hardcoded D = Int — D emerges as whatever translation group the axioms produce
 - task_rel is the group action itself, not a separately-defined bridge
 - For discrete time axioms, D ≅ ℤ as a theorem; for dense time, D ≅ ℚ as a theorem
-
----
-
-### 955. Implement D and task_rel from pure syntax
-- **Effort**: 25-40 hours
-- **Status**: [PLANNED]
-- **Language**: lean
-- **Priority**: high
-- **Dependencies**: Task 951 (BFMCS infrastructure), Task 954 (general duration refactor)
-- **Plan**: [implementation-001.md](specs/955_implement_d_and_task_rel_from_pure_syntax/plans/implementation-001.md)
-
-**Description**: Construct the temporal duration group D and a non-trivial task_rel entirely from syntactic proof-theoretic data. Replace the trivial `task_rel := fun _ _ _ => True` in Representation.lean with `task_rel := fun w _d u => CanonicalR w.val u.val`, where CanonicalR is derived from GContent/HContent inclusion on maximal consistent sets. Nullity from T-axiom (Gφ → φ), compositionality from 4-axiom (Gφ → GGφ). D = Int justified as satisfiability witness (not universal model). Comprehensive analysis of 7 approaches (direct quotient, Grothendieck, orderIsoInt, torsor, chain-based, sign-based, CanonicalR) with proofs of impossibility for 6 of them. Plan covers 6 phases: canonical TaskFrame definition, CanonicalR property verification, WorldHistory construction, truth lemma compatibility, D construction justification, and full integration.
-
----
-
-### 954. Refactor representation theorem to avoid hardcoded Int for general duration type
-- **Effort**: 45-75 hours
-- **Status**: [PLANNED]
-- **Language**: lean
-- **Priority**: high
-- **Dependencies**: Task 951 (completeness infrastructure), Task 922 (strategy study)
-- **Research**: [research-001.md](specs/954_refactor_representation_theorem_general_duration/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/954_refactor_representation_theorem_general_duration/plans/implementation-001.md)
-
-**Description**: Refactor the representation theorem so that the duration type D is constructed purely from syntax — shown to be a totally ordered abelian group — rather than hardcoding D = Int. The construction builds D as the Antisymmetrization of the BidirectionalFragment (a linear order quotient of reachable MCSes), then derives AddCommGroup via successor/predecessor structure and Mathlib's `orderIsoIntOfLinearSuccPredArch`. The refactored construction should be fully general and compatible with an extension that includes a density axiom, parameterized by a "temporal theory" type: base logic yields D ≅ Z, density extension yields D ≅ Q.
-
-**Key construction pipeline**: Fragment → Quotient → SuccOrder/PredOrder → OrderIso to Z → Transfer AddCommGroup → TaskFrame D → FMCS D → BFMCS D → Truth lemma → Completeness.
-
-**Hardcoding points to eliminate**: (1) `CanonicalTaskFrame : TaskFrame Int` in CanonicalConstruction.lean, (2) `canonicalFrame : BFMCS Int → TaskFrame Int` in CanonicalCompleteness.lean, (3) `standard_representation : satisfiable Int [φ]` in Representation.lean.
 
 ---
 
