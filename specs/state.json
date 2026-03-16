@@ -107,12 +107,12 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T20:11:13Z",
+      "last_updated": "2026-03-16T20:13:51Z",
       "session_id": "sess_1773691459_r4t9w",
       "researched": "2026-03-16T20:15:00Z",
       "unblocked_by": "Task 977 Phase 0 fixed DurationTransfer.lean errors",
@@ -143,11 +143,6 @@
           "summary": "DurationTransfer fixed but DiscreteTimeline has 7 new structural errors (type/function mismatch); recommend Phase 6.5 to fix before resolving 3 sorries"
         },
         {
-          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan v4: added Phase 6.5 for structural error fix"
-        },
-        {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md",
           "type": "summary",
           "summary": "Phases 6.5-6 completed (structural fixes, NoMaxOrder/NoMinOrder). Phase 7 blocked on LocallyFiniteOrder."
@@ -156,9 +151,14 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-006.md",
           "type": "research",
           "summary": "Team research (3 teammates): elegant LocallyFiniteOrder via stage-bounded quotient images; discrete_Icc_stage_bounded is key lemma"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "8-phase plan v5: Phase 7 redesigned with elegant stage-bounding LocallyFiniteOrder approach (research-006)"
         }
       ],
-      "planned": "2026-03-16T19:42:47Z",
+      "planned": "2026-03-16T20:13:51Z",
       "started": "2026-03-16T16:40:04Z",
       "partial": "2026-03-16T19:30:00Z",
       "phases_completed": 7,
