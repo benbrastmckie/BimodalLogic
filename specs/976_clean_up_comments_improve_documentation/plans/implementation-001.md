@@ -132,7 +132,7 @@ This plan systematically addresses all documentation issues identified across th
 
 ---
 
-### Phase 3: Comment Cleanup [NOT STARTED]
+### Phase 3: Comment Cleanup [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Resolve or clean up TODO comments and verify DEPRECATED markers
@@ -159,6 +159,15 @@ This plan systematically addresses all documentation issues identified across th
 - `grep -rn "TODO" Theories/` returns only intentional/tracked items
 - All DEPRECATED markers point to valid replacement modules
 - No stale or misleading comments remain
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773678809_acc23f**
+- Verified: TODO in Boneyard/Task956_StrictDensity is appropriate (Boneyard code)
+- Fixed: TODO in CanonicalIrreflexivity.lean - clarified that argument not needed
+- Verified: All 3 DEPRECATED markers in Boneyard are comprehensive and accurate
+- Verified: Metalogic/Representation.lean correctly documented as archived
+- Verified: AesopRules.lean "deprecated" is documentation, not a deprecated tactic
 
 ---
 

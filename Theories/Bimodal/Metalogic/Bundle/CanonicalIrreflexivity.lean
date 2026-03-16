@@ -1180,7 +1180,8 @@ For formulas mentioning p: they are theorems (and hence in M') or
 they are atom p (which is in M').
 -/
 
--- TODO: This section needs the GContent ⊆ M' argument
+-- Note: The GContent ⊆ M' argument is not needed for the main theorem below,
+-- which uses the naming set construction directly.
 
 /-!
 ## Main Theorem: CanonicalR Irreflexivity

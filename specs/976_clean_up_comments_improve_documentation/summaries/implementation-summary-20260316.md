@@ -45,10 +45,24 @@
 - `grep -rn "sorry$" Theories/Bimodal/Metalogic/` shows 7 actual sorries
 - Bundle directory listing matches README architecture section
 
+### Phase 3: Comment Cleanup [COMPLETED]
+
+**Session: 2026-03-16, sess_1773678809_acc23f**
+
+- Verified: TODO in Boneyard/Task956_StrictDensity is appropriate (Boneyard code)
+- Fixed: TODO in CanonicalIrreflexivity.lean - clarified argument not needed for main theorem
+- Verified: 3 DEPRECATED markers in Boneyard are comprehensive and accurate
+- Verified: Metalogic/Representation.lean correctly documented as archived
+- Verified: AesopRules.lean "deprecated" is documentation, not a deprecated tactic
+
+**Verification**:
+- Only 2 TODO comments remain in Theories/ (both appropriate)
+- All DEPRECATED markers point to valid replacements
+
 ## Cumulative Statistics
 
-- Phases Completed: 2/8
-- Files Modified: 17
+- Phases Completed: 3/8
+- Files Modified: 18
 - Files Created: 1 (implementation summary)
 
 ## Notes
