@@ -148,9 +148,10 @@ C. **Genuine gap**: If neither equivalence holds, determine whether MCS-membersh
 ---
 
 ### 929. Prepare metalogic for publication
-- **Effort**: 16-24 hours
-- **Status**: [NOT STARTED]
+- **Effort**: 10-13 hours (revised estimate)
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/929_prepare_metalogic_for_publication/reports/research-001.md) (team: 3 teammates, full publication readiness checklist)
 
 **Description**: Systematic preparation of the bimodal temporal logic metalogic for publication. The codebase currently has two independent sorry-free, axiom-free completeness proofs (BMCS via ChainBundleBMCS.lean and FMP via SemanticCanonicalModel.lean), a sound and complete decidability procedure, and a clean build. The following work remains before publication:
 
