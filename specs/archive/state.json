@@ -2,6 +2,54 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 930,
+      "project_name": "verify_mcs_membership_box_semantics_correctness",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-26T01:27:35Z",
+      "last_updated": "2026-03-16T02:23:46Z",
+      "session_id": "sess_1773627586_6379",
+      "researched": "2026-03-16T02:23:46Z",
+      "artifacts": [
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md",
+          "type": "research",
+          "summary": "MCS-membership box semantics is mathematically sound; not a cheat. Two truth predicates differ structurally but yield equivalent completeness results via soundness chain."
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-002.md",
+          "type": "research",
+          "summary": "Removal plan for bmcs_valid_mcs: 3 defs + 11 theorems to delete from ChainBundleBFMCS.lean lines 350-691. All _mcs code self-contained with zero external dependents. Keep CanonicalBC construction."
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-004.md",
+          "type": "research",
+          "summary": "Deep analysis of canonical frame and world history definitions for bridging BFMCS and standard semantics"
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-005.md",
+          "type": "research",
+          "summary": "Deep analysis of how to model times D: identifies structural mismatch between CanonicalBC (Preorder) and standard validity (LinearOrderedAddCommGroup); recommends BFMCS soundness as bridge path"
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-006.md",
+          "type": "research",
+          "summary": "Parametric D strategy: Int is correct choice. Chain B (Representation.lean) already uses D=Int. Sole blocker is 2 sorries in DovetailingChain.lean for forward_F/backward_P witnesses."
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-007.md",
+          "type": "research",
+          "summary": "Root cause: constant witness families cannot have temporal coherence. CanonicalBC works because F-witness MCS IS a new time point. Recommended: weaken temporal coherence to eval-family only, then tackle DovetailingChain sorries via omega-squared construction."
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-008.md",
+          "type": "research",
+          "summary": "OBSOLETE: target definitions (bmcs_truth_at_mcs, bmcs_valid_mcs, bmcs_weak_completeness_mcs) in Boneyard; StagedConstruction is publication path. Recommend abandon Task 930."
+        }
+      ],
+      "abandoned": "2026-03-16T02:31:40Z"
+    },
+    {
       "project_number": 961,
       "project_name": "quotient_density_iteration_no_max_min_dense",
       "status": "abandoned",
