@@ -85,26 +85,26 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 4.5 hours (8 phases + Phase 6.5)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis), [research-004.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md) (DurationTransfer blocker analysis), [research-005.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-005.md) (current standing post-DT fix)
 - **Plan**: [implementation-004.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-004.md) (v4: added Phase 6.5 structural error fix)
 - **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
 - **Unblocked by**: Task 977 Phase 0 (DurationTransfer.lean fixed)
 
-**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean via Option B (discrete staged construction). Phases 1-5 completed (discrete staged construction infrastructure added). DurationTransfer.lean fixed by task 977, but **new structural errors** in DiscreteTimeline.lean (type/function mismatch) need Phase 6.5 fix before sorry resolution.
+**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean via Option B (discrete staged construction). **Phases 1-6.5-6 complete** (7/8 phases). Phase 7 blocked on LocallyFiniteOrder proof.
 
 **Completed Work**:
-- Added `discreteStagedBuild` to StagedExecution.lean (skips odd stages)
-- Added `discrete_staged_has_future/past` to CantorPrereqs.lean
-- Updated DiscreteTimeline.lean to use discrete construction
+- Phases 1-5: Discrete staged construction infrastructure
+- Phase 6.5: Fixed 25+ structural errors (definition reordering, namespace opens, lambda wrappers)
+- Phase 6: NoMaxOrder/NoMinOrder verified complete
 
-**New Blocker (research-005)**: 7 structural errors in DiscreteTimeline.lean - types using `variable` bindings have implicit parameters but instances try to pass explicit arguments. Fix: add Phase 6.5 to remove explicit arguments from instance declarations.
+**Phase 7 Blocked**: 3 sorries require `LocallyFiniteOrder` instance which needs proving `(Set.Icc a b).Finite` for quotient elements. Requires understanding stage structure of discrete timeline construction.
 
 **Remaining Sorries (3)**:
-- `discrete_timeline_lt_succFn` (193): Key discreteness for succ
-- `discrete_timeline_predFn_lt` (251): Key discreteness for pred
-- `IsSuccArchimedean.exists_succ_iterate_of_le` (296): Finite reachability
+- `discrete_timeline_lt_succFn` (248): Key discreteness for succ
+- `discrete_timeline_predFn_lt` (306): Key discreteness for pred
+- `IsSuccArchimedean.exists_succ_iterate_of_le` (351): Finite reachability
 
 ---
 

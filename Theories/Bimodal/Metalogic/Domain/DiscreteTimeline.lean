@@ -56,6 +56,7 @@ open Bimodal.Syntax
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.StagedConstruction
+open Bimodal.Semantics
 
 -- Classical decidability
 attribute [local instance] Classical.propDecidable
@@ -73,10 +74,6 @@ variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mc
 /-- Elements of the discrete (base) timeline. -/
 def DiscreteTimelineElem : Type :=
   { p : StagedPoint // p ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union }
-
-/-- The discrete timeline quotient: antisymmetrization of the base timeline. -/
-def DiscreteTimelineQuot : Type :=
-  Antisymmetrization (DiscreteTimelineElem root_mcs root_mcs_proof) (· ≤ ·)
 
 /-!
 ## Preorder and LinearOrder
@@ -103,6 +100,10 @@ noncomputable instance : DecidableLE (DiscreteTimelineElem root_mcs root_mcs_pro
 noncomputable instance : DecidableLT (DiscreteTimelineElem root_mcs root_mcs_proof) :=
   fun _ _ => Classical.propDecidable _
 
+/-- The discrete timeline quotient: antisymmetrization of the base timeline. -/
+def DiscreteTimelineQuot : Type :=
+  Antisymmetrization (DiscreteTimelineElem root_mcs root_mcs_proof) (· ≤ ·)
+
 /-- Linear order on the discrete timeline quotient. -/
 noncomputable instance : LinearOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) :=
   inferInstanceAs (LinearOrder (Antisymmetrization
@@ -117,6 +118,60 @@ The discrete timeline is nonempty (contains the root point).
 instance : Nonempty (DiscreteTimelineQuot root_mcs root_mcs_proof) := by
   obtain ⟨p, hp⟩ := discrete_staged_timeline_nonempty root_mcs root_mcs_proof
   exact ⟨toAntisymmetrization (· ≤ ·) ⟨p, hp⟩⟩
+
+/-!
+## NoMaxOrder and NoMinOrder (Resolved via Axiom)
+
+These use the `canonicalR_irreflexive` axiom from
+`Canonical/CanonicalIrreflexivityAxiom.lean`. Seriality gives forward/backward
+witnesses, and irreflexivity ensures they are strictly ordered in the quotient
+(same pattern as the dense case in `CantorApplication.lean`).
+-/
+
+/-- NoMaxOrder on the discrete timeline quotient.
+
+Uses `canonicalR_irreflexive` axiom: seriality gives a forward witness, and
+irreflexivity ensures strictness (same pattern as the dense case).
+-/
+instance : NoMaxOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
+  exists_gt := by
+    intro a
+    induction a using Antisymmetrization.ind with
+    | _ p =>
+      obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_future root_mcs root_mcs_proof p.1 p.2
+      have h_strict : ¬CanonicalR q.mcs p.1.mcs :=
+        Canonical.canonicalR_strict p.1.mcs q.mcs p.1.is_mcs q.is_mcs hq_R
+      let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
+      use toAntisymmetrization (· ≤ ·) q'
+      rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+      constructor
+      · exact Or.inr hq_R
+      · intro hqp
+        cases hqp with
+        | inl h_eq => exact h_strict (h_eq.symm ▸ hq_R)
+        | inr h_R => exact h_strict h_R
+
+/-- NoMinOrder on the discrete timeline quotient.
+
+Symmetric to NoMaxOrder using past seriality.
+-/
+instance : NoMinOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
+  exists_lt := by
+    intro a
+    induction a using Antisymmetrization.ind with
+    | _ p =>
+      obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_past root_mcs root_mcs_proof p.1 p.2
+      have h_strict : ¬CanonicalR p.1.mcs q.mcs :=
+        Canonical.canonicalR_strict q.mcs p.1.mcs q.is_mcs p.1.is_mcs hq_R
+      let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
+      use toAntisymmetrization (· ≤ ·) q'
+      rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+      constructor
+      · exact Or.inr hq_R
+      · intro hpq
+        cases hpq with
+        | inl h_eq => exact h_strict (h_eq ▸ hq_R)
+        | inr h_R => exact h_strict h_R
 
 /-!
 ## SuccOrder from Discreteness Axiom
@@ -265,7 +320,7 @@ noncomputable instance : PredOrder (DiscreteTimelineQuot root_mcs root_mcs_proof
     -- But discrete_timeline_predFn_lt says predFn a < a, contradiction
     have h_lt := discrete_timeline_predFn_lt root_mcs root_mcs_proof a
     exact absurd (le_antisymm (discretePredFn_le root_mcs root_mcs_proof a) h) (ne_of_lt h_lt)
-  le_pred_of_lt := le_discretePredFn_of_lt root_mcs root_mcs_proof
+  le_pred_of_lt := fun hab => le_discretePredFn_of_lt root_mcs root_mcs_proof _ _ hab
 
 /-- IsSuccArchimedean on the discrete timeline quotient.
 
@@ -294,60 +349,6 @@ instance : IsSuccArchimedean (DiscreteTimelineQuot root_mcs root_mcs_proof) wher
     -- With LocallyFiniteOrder, we could use:
     -- LinearLocallyFiniteOrder.instIsSuccArchimedean
     sorry
-
-/-!
-## NoMaxOrder and NoMinOrder (Resolved via Axiom)
-
-These use the `canonicalR_irreflexive` axiom from
-`Canonical/CanonicalIrreflexivityAxiom.lean`. Seriality gives forward/backward
-witnesses, and irreflexivity ensures they are strictly ordered in the quotient
-(same pattern as the dense case in `CantorApplication.lean`).
--/
-
-/-- NoMaxOrder on the discrete timeline quotient.
-
-Uses `canonicalR_irreflexive` axiom: seriality gives a forward witness, and
-irreflexivity ensures strictness (same pattern as the dense case).
--/
-instance : NoMaxOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
-  exists_gt := by
-    intro a
-    induction a using Antisymmetrization.ind with
-    | _ p =>
-      obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_future root_mcs root_mcs_proof p.1 p.2
-      have h_strict : ¬CanonicalR q.mcs p.1.mcs :=
-        Canonical.canonicalR_strict p.1.mcs q.mcs p.1.is_mcs q.is_mcs hq_R
-      let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
-      use toAntisymmetrization (· ≤ ·) q'
-      rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
-      constructor
-      · exact Or.inr hq_R
-      · intro hqp
-        cases hqp with
-        | inl h_eq => exact h_strict (h_eq.symm ▸ hq_R)
-        | inr h_R => exact h_strict h_R
-
-/-- NoMinOrder on the discrete timeline quotient.
-
-Symmetric to NoMaxOrder using past seriality.
--/
-instance : NoMinOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
-  exists_lt := by
-    intro a
-    induction a using Antisymmetrization.ind with
-    | _ p =>
-      obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_past root_mcs root_mcs_proof p.1 p.2
-      have h_strict : ¬CanonicalR p.1.mcs q.mcs :=
-        Canonical.canonicalR_strict q.mcs p.1.mcs q.is_mcs p.1.is_mcs hq_R
-      let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
-      use toAntisymmetrization (· ≤ ·) q'
-      rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
-      constructor
-      · exact Or.inr hq_R
-      · intro hpq
-        cases hpq with
-        | inl h_eq => exact h_strict (h_eq ▸ hq_R)
-        | inr h_R => exact h_strict h_R
 
 /-!
 ## Complete Pipeline

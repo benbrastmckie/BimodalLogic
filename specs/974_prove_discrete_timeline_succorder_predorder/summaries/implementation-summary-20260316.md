@@ -1,115 +1,75 @@
-# Implementation Summary: Task 974 (Partial)
+# Implementation Summary: Task 974
 
-**Task**: 974 - prove_discrete_timeline_succorder_predorder
+**Task**: prove_discrete_timeline_succorder_predorder
 **Date**: 2026-03-16
-**Session**: sess_1742184000_t5n8w
-**Status**: BLOCKED (external dependency)
-**Plan**: implementation-003.md (v3 - Discrete Staged Construction)
+**Status**: Partial (Phases 6.5-6 completed, Phase 7 blocked)
+**Session**: sess_1773690238_j8k3m
 
-## Overview
+## Summary
 
-This implementation session executed Phases 4-6 of the v3 plan (Option B: discrete staged construction). The work is blocked by a pre-existing build failure in `DurationTransfer.lean`, which prevents verification and continuation to Phase 7.
+Fixed structural compilation errors in DiscreteTimeline.lean. File now compiles with 3 expected sorries (down from 25+ errors). NoMaxOrder and NoMinOrder instances verified complete without sorries. Phase 7 blocked on LocallyFiniteOrder dependency.
 
-## Phase Status
+## Changes Made
 
-| Phase | Description | Status |
-|-------|-------------|--------|
-| 1-3 | Restructure SuccOrder/PredOrder (from v1) | COMPLETED (prior) |
-| 4 | Define discreteStagedBuild | COMPLETED |
-| 5 | Prove has_future/has_past for discrete build | COMPLETED |
-| 6 | Redefine DiscreteTimelineElem, update proofs | BLOCKED |
-| 7 | Prove local finiteness, resolve 3 sorries | NOT STARTED |
-| 8 | Final verification | NOT STARTED |
+### Phase 6.5: Fix Structural Type Errors [COMPLETED]
 
-## Completed Work
+**Problem**: The file had 25+ compilation errors including:
+- "Function expected at DiscreteTimelineQuot" (7 instances)
+- "Unknown identifier TaskFrame"
+- Missing IsPreorder instance for Antisymmetrization
+- Forward reference to NoMaxOrder/NoMinOrder
 
-### Phase 4: discreteStagedBuild (StagedExecution.lean)
+**Solution**:
+1. **Reordered definitions**: Moved `DiscreteTimelineQuot` definition to AFTER the `Preorder` instance for `DiscreteTimelineElem`, fixing the IsPreorder dependency
+2. **Moved NoMaxOrder/NoMinOrder early**: Relocated these instances to before `discrete_timeline_lt_succFn`, fixing forward reference errors
+3. **Added namespace opening**: Added `open Bimodal.Semantics` to make `TaskFrame` accessible
+4. **Fixed le_pred_of_lt field**: Changed from direct function reference to lambda wrapper for proper implicit argument handling
 
-Added new definitions and theorems for the discrete staged construction:
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean`
 
-- `discreteStagedBuild`: Staged build that skips odd stages (no density insertion)
-- `discreteStagedBuild_monotone`: Monotonicity proof
-- `discreteStagedBuild_monotone_le`: Monotonicity across stage gaps
-- `discreteStagedBuild_all_comparable_with_root`: Root comparability invariant
-- `discreteStagedBuild_linear`: Linearity of discrete build at each stage
-- `rootPoint_in_discreteStagedBuild_0`: Root membership
-- `buildDiscreteStagedTimeline`: StagedTimeline wrapper
+### Phase 6: Update NoMax/NoMin proofs [COMPLETED]
 
-### Phase 5: has_future/has_past (CantorPrereqs.lean)
+NoMaxOrder and NoMinOrder instances compile without sorries. Both use `canonicalR_irreflexive` axiom with seriality witnesses from `discrete_staged_timeline_has_future/past`.
 
-Added theorems for discrete timeline seriality:
+### Phase 7: Prove LocallyFiniteOrder [BLOCKED]
 
-- `discrete_forward_witness_at_stage`: Forward witness placement
-- `discrete_backward_witness_at_stage`: Backward witness placement
-- `discrete_staged_has_future`: Every point has CanonicalR-successor
-- `discrete_staged_has_past`: Every point has CanonicalR-predecessor
-- `discrete_staged_timeline_nonempty`: Union is nonempty
-- `discrete_staged_timeline_has_future`: Union-level has_future
-- `discrete_staged_timeline_has_past`: Union-level has_past
-- `discrete_staged_timeline_countable`: Union is countable
+**Blocking issue**: The 3 remaining sorries all depend on `LocallyFiniteOrder`:
 
-**Note**: The has_future/has_past proofs still use `iterated_future_in_mcs` which invokes the density axiom DN via `density_F_to_FF`. The "DN-free" goal from research-003 requires a more complex MCS richness approach that was not fully implemented. This is documented in the code.
+1. `discrete_timeline_lt_succFn` (line 248): Needs `isMax_of_succFn_le` which requires `LocallyFiniteOrder`
+2. `discrete_timeline_predFn_lt` (line 306): Symmetric to above
+3. `IsSuccArchimedean.exists_succ_iterate_of_le` (line 351): Requires `LocallyFiniteOrder`
 
-### Phase 6: DiscreteTimeline.lean Updates
+**Required infrastructure**: Need to prove `LocallyFiniteOrder.ofFiniteIcc`:
+```lean
+theorem discrete_staged_finitely_between (a b : DiscreteTimelineQuot) :
+    (Set.Icc a b).Finite
+```
 
-Changed `DiscreteTimelineElem` and related definitions to use the discrete staged construction:
+This requires showing that between any two elements in the quotient, there are only finitely many intermediate elements. This is non-trivial and requires understanding the stage structure of the discrete timeline construction.
 
-- `buildStagedTimeline` -> `buildDiscreteStagedTimeline`
-- `staged_timeline_nonempty` -> `discrete_staged_timeline_nonempty`
-- `staged_timeline_has_future` -> `discrete_staged_timeline_has_future`
-- `staged_timeline_has_past` -> `discrete_staged_timeline_has_past`
+## Current State
 
-## Blocking Issue
+```
+lake build Bimodal.Metalogic.Domain.DiscreteTimeline
+# Passes with 3 sorry warnings
+```
 
-**File**: `Theories/Bimodal/Metalogic/Domain/DurationTransfer.lean`
-**Errors**:
-1. Type class instance resolution failures (IsOrderedAddMonoid, Countable)
-2. Type mismatch errors in ratAddCommGroup/intAddCommGroup
-
-This is a pre-existing issue unrelated to task 974. DiscreteTimeline.lean imports DurationTransfer.lean, so the build fails before we can verify or continue.
-
-## Remaining Work (Phases 7-8)
-
-Once DurationTransfer.lean is fixed:
-
-1. **Phase 7**: Prove local finiteness of discrete intervals
-   - Prove `discrete_staged_finitely_between`
-   - Define `LocallyFiniteOrder` instance
-   - Resolve 3 sorries:
-     - `discrete_timeline_lt_succFn` (line 193)
-     - `discrete_timeline_predFn_lt` (line 251)
-     - `IsSuccArchimedean.exists_succ_iterate_of_le` (line 296)
-
-2. **Phase 8**: Final verification
-   - `lake build` full project
-   - Verify zero sorries
-   - Verify no new axioms
-
-## Files Modified
-
-1. `Theories/Bimodal/Metalogic/StagedConstruction/StagedExecution.lean`
-   - Added discrete staged construction (150+ lines)
-
-2. `Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean`
-   - Added discrete timeline theorems (250+ lines)
-
-3. `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean`
-   - Updated to use discrete construction (4 edits)
-
-## Build Verification
-
-- `StagedExecution.lean`: Builds successfully
-- `CantorPrereqs.lean`: Builds successfully
-- `DiscreteTimeline.lean`: BLOCKED by DurationTransfer.lean errors
+### Sorries Remaining
+| Line | Theorem | Blocker |
+|------|---------|---------|
+| 248 | discrete_timeline_lt_succFn | LocallyFiniteOrder |
+| 306 | discrete_timeline_predFn_lt | LocallyFiniteOrder |
+| 351 | IsSuccArchimedean.exists_succ_iterate_of_le | LocallyFiniteOrder |
 
 ## Recommendation
 
-1. Fix the pre-existing errors in `DurationTransfer.lean` (possibly a separate task)
-2. Resume task 974 Phase 7 after DurationTransfer.lean builds
-3. The discrete staged construction infrastructure is in place and verified
+Phase 7 requires substantial additional infrastructure:
+1. Define `LocallyFiniteOrder` instance by proving interval finiteness
+2. This likely requires new lemmas about stage bounds in the discrete construction
+3. Consider creating a follow-up task specifically for LocallyFiniteOrder
 
-## Sorries Status
+## Artifacts
 
-- **Modified files without sorries**: StagedExecution.lean, CantorPrereqs.lean
-- **DiscreteTimeline.lean**: 3 sorries remain (target of Phase 7)
-- **New axioms**: 0
+- Plan: `specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-004.md`
+- This summary: `specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md`

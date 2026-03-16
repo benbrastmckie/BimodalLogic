@@ -1,7 +1,7 @@
 # Implementation Plan: Task #974 (v4 - Structural Error Fix)
 
 - **Task**: 974 - prove_discrete_timeline_succorder_predorder
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours (revised: +0.5h for Phase 6.5)
 - **Dependencies**: Task 977 Phase 0 (DurationTransfer fix) [COMPLETED]
 - **Research Inputs**:
@@ -91,7 +91,7 @@ error: Function expected at DiscreteTimelineQuot but this term has type Type
 
 ---
 
-### Phase 6.5: Fix Structural Type Errors [NOT STARTED]
+### Phase 6.5: Fix Structural Type Errors [COMPLETED]
 
 - **Dependencies:** Task 977 Phase 0 (DurationTransfer fix) [COMPLETED]
 - **Goal:** Fix 7 structural errors so DiscreteTimeline.lean compiles (with sorries)
@@ -131,9 +131,18 @@ instance : PredOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
 - `lake build Bimodal.Metalogic.Domain.DiscreteTimeline` succeeds with only 3 sorry warnings
 - No "Function expected" errors
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773690238_j8k3m**
+- Fixed: Reordered `DiscreteTimelineQuot` definition to after `Preorder` instance (fixes IsPreorder dependency)
+- Fixed: Moved `NoMaxOrder` and `NoMinOrder` instances before `discrete_timeline_lt_succFn` (fixes forward reference)
+- Added: `open Bimodal.Semantics` for `TaskFrame` accessibility
+- Fixed: `le_pred_of_lt` field to use lambda wrapper for proper argument passing
+- Sorries: 25 errors -> 0 errors, 3 sorries remain (lines 248, 306, 351)
+
 ---
 
-### Phase 6: Update NoMax/NoMin proofs [NOT STARTED]
+### Phase 6: Update NoMax/NoMin proofs [COMPLETED]
 
 - **Dependencies:** Phase 6.5
 - **Goal:** Wire up discrete construction proofs
@@ -155,7 +164,7 @@ instance : PredOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
 
 ---
 
-### Phase 7: Prove local finiteness and resolve 3 sorries [NOT STARTED]
+### Phase 7: Prove local finiteness and resolve 3 sorries [BLOCKED]
 
 - **Dependencies:** Phase 6
 - **Goal:** Prove intervals are finite, derive discreteness, resolve remaining sorries

@@ -107,13 +107,13 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T19:42:47Z",
-      "session_id": "sess_1773689666_k4m8n",
+      "last_updated": "2026-03-16T20:00:55Z",
+      "session_id": "sess_1773690238_j8k3m",
       "researched": "2026-03-16T20:15:00Z",
       "unblocked_by": "Task 977 Phase 0 fixed DurationTransfer.lean errors",
       "artifacts": [
@@ -121,11 +121,6 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md",
           "type": "research",
           "summary": "Analyzed 7 sorries in DiscreteTimeline.lean. Root cause: flawed succ definition using Classical.choice instead of WellFounded.min. Fix requires redefining succ/pred, then proofs follow from Mathlib patterns."
-        },
-        {
-          "path": "specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md",
-          "type": "summary",
-          "summary": "Partial: Phases 4-5 completed (discrete staged construction infrastructure), Phase 6 blocked by DurationTransfer.lean errors"
         },
         {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md",
@@ -151,12 +146,17 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-004.md",
           "type": "plan",
           "summary": "8-phase implementation plan v4: added Phase 6.5 for structural error fix"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Phases 6.5-6 completed (structural fixes, NoMaxOrder/NoMinOrder). Phase 7 blocked on LocallyFiniteOrder."
         }
       ],
       "planned": "2026-03-16T19:42:47Z",
       "started": "2026-03-16T16:40:04Z",
       "partial": "2026-03-16T19:30:00Z",
-      "phases_completed": 5,
+      "phases_completed": 7,
       "phases_total": 8
     },
     {
