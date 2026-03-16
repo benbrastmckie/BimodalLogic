@@ -345,7 +345,7 @@ This plan systematically addresses all documentation issues identified across th
 
 ---
 
-### Phase 7: Create Priority 4 READMEs - Boneyard [NOT STARTED]
+### Phase 7: Create Priority 4 READMEs - Boneyard [COMPLETED]
 
 - **Dependencies**: Phase 3 (DEPRECATED markers verified)
 - **Goal**: Create minimal READMEs for 15+ Boneyard directories
@@ -396,6 +396,18 @@ This plan systematically addresses all documentation issues identified across th
 - All Boneyard directories have minimal READMEs
 - READMEs point to ROAD_MAP.md Dead Ends section
 - Archive dates are accurate where known
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773678809_acc23f**
+- Created: Boneyard/Metalogic/Compat/README.md
+- Created: Boneyard/Metalogic/Bundle/README.md
+- Created: Boneyard/Metalogic/FDSM_SingleHistory/README.md
+- Created: Theories/Bimodal/Boneyard/IntRepresentation/README.md
+- Created: Theories/Bimodal/Boneyard/Task970/README.md
+- Created: Theories/Bimodal/Boneyard/Task971/README.md
+- Created: Theories/Bimodal/Boneyard/Metalogic_v8/README.md
+- Note: Many Boneyard directories already had READMEs
 
 ---
 

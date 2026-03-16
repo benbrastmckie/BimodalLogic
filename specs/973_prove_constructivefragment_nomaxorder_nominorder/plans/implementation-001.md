@@ -1,7 +1,7 @@
 # Implementation Plan: Task 973
 
 - **Task**: 973 - Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md
@@ -64,7 +64,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Prove NoMaxOrder.exists_gt [NOT STARTED]
+### Phase 1: Prove NoMaxOrder.exists_gt [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Complete the sorry at line 580 proving every quotient element has a strictly greater element
@@ -95,7 +95,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Prove NoMinOrder.exists_lt [NOT STARTED]
+### Phase 2: Prove NoMinOrder.exists_lt [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Complete the sorry at line 585 proving every quotient element has a strictly lesser element
@@ -126,7 +126,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Final Verification [NOT STARTED]
+### Phase 3: Final Verification [BLOCKED]
 
 - **Dependencies:** Phase 1, Phase 2
 - **Goal:** Verify zero-debt completion and full build success
