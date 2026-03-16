@@ -27,10 +27,10 @@ technical_debt:
 
 ### 971. Refactor to eliminate bmcs_truth_at layer
 - **Effort**: 3.5 hours (7 phases)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: logic
-- **Research**: [research-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-001.md) (6 findings, implementation plan)
-- **Plan**: [implementation-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/plans/implementation-001.md) (7 phases, deprecation + archival)
+- **Research**: [research-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-001.md), [research-002.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-002.md) (7 elimination opportunities, full simplification)
+- **Plan**: [implementation-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/plans/implementation-001.md) (7 phases, deprecation + archival) - needs revision
 
 **Description**: Research and implement a systematic refactor to fully eliminate the `bmcs_truth_at` layer as reported in the task 970 research findings. The research confirms `bmcs_truth_at` is explicitly documented as redundant (CanonicalConstruction.lean line 20). Recommended approach: derive `bmcs_truth_lemma` as corollary of `canonical_truth_lemma`, mark BFMCSTruth.lean as deprecated, remove 4 unused definitions (`bmcs_valid`, `bmcs_satisfiable_at`, `bmcs_satisfies_context`, internal theorems).
 
@@ -38,7 +38,7 @@ technical_debt:
 
 ### 970. Review metalogic for publication readiness
 - **Effort**: 14 hours (12 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: logic
 - **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis)
 - **Plan**: [implementation-002.md](specs/970_review_metalogic_for_publication/plans/implementation-002.md) (v2: 12 phases, semantic framework + theorem formulations)
@@ -165,7 +165,7 @@ technical_debt:
 
 ### 398. Port causal semantics to recursive-semantics.md
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: markdown
 - **Parent**: Task 394
 - **Research**: [research-001.md](specs/398_port_causal_semantics_to_recursive_semantics_md/reports/research-001.md)
