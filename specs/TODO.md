@@ -97,7 +97,7 @@ technical_debt:
 
 ### 949. Update Demo.lean for current bimodal logic state
 - **Effort**: Small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 
 **Description**: Update Theories/Bimodal/Examples/Demo.lean given the current state of the bimodal logic. The demo file should reflect the current API and showcase the working features of the bimodal logic implementation.
@@ -106,10 +106,10 @@ technical_debt:
 
 ### 930. Verify correctness of MCS-membership box semantics in ChainBundleBFMCS
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Started**: 2026-02-25
-- **Research**: [research-001.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md), [research-002.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-002.md), [research-003.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-003.md), [research-004.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-004.md), [research-005.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-005.md), [research-006.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-006.md), [research-007.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-007.md)
+- **Research**: [research-001.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md), [research-002.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-002.md), [research-003.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-003.md), [research-004.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-004.md), [research-005.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-005.md), [research-006.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-006.md), [research-007.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-007.md), [research-008.md](specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-008.md) (OBSOLETE: target definitions in Boneyard, StagedConstruction is publication path)
 
 **Description**: Task 925 proved completeness using a modified truth predicate (`bmcs_truth_at_mcs`) in which the box case is defined by MCS-membership rather than recursive Kripke truth. Specifically:
 

@@ -222,20 +222,21 @@
     {
       "project_number": 949,
       "project_name": "update_demo_lean_bimodal_logic",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "created": "2026-02-28T01:08:27Z",
-      "last_updated": "2026-02-28T01:08:27Z"
+      "last_updated": "2026-03-16T02:22:44Z",
+      "session_id": "sess_1773627748_1dbc71"
     },
     {
       "project_number": 930,
       "project_name": "verify_mcs_membership_box_semantics_correctness",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-02-26T01:27:35Z",
-      "last_updated": "2026-03-16T02:20:11Z",
+      "last_updated": "2026-03-16T02:23:46Z",
       "session_id": "sess_1773627586_6379",
-      "researched": "2026-02-26T05:36:40Z",
+      "researched": "2026-03-16T02:23:46Z",
       "artifacts": [
         {
           "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-001.md",
@@ -266,6 +267,11 @@
           "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-007.md",
           "type": "research",
           "summary": "Root cause: constant witness families cannot have temporal coherence. CanonicalBC works because F-witness MCS IS a new time point. Recommended: weaken temporal coherence to eval-family only, then tackle DovetailingChain sorries via omega-squared construction."
+        },
+        {
+          "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-008.md",
+          "type": "research",
+          "summary": "OBSOLETE: target definitions (bmcs_truth_at_mcs, bmcs_valid_mcs, bmcs_weak_completeness_mcs) in Boneyard; StagedConstruction is publication path. Recommend abandon Task 930."
         }
       ]
     },

@@ -1,0 +1,49 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-15T10:00:00Z",
+  "completed_at": "2026-03-15T10:45:00Z",
+  "artifacts": [
+    {
+      "path": "specs/930_verify_mcs_membership_box_semantics_correctness/reports/research-008.md",
+      "type": "research",
+      "summary": "Task 930 revision analysis: original goal is OBSOLETE. Target definitions (bmcs_truth_at_mcs, bmcs_valid_mcs, bmcs_weak_completeness_mcs) already archived to Boneyard. StagedConstruction provides the publication path. Recommend abandoning Task 930 and creating cleanup task to archive deprecated Bundle files (DovetailingChain.lean, TemporalCoherentConstruction.lean, Construction.lean)."
+    }
+  ],
+  "partial_progress": null,
+  "metadata": {
+    "session_id": "sess_1773627586_6379",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "findings": {
+    "task_930_disposition": "ABANDON",
+    "reason": "Target definitions archived to Boneyard; StagedConstruction provides cleaner publication path",
+    "cruft_to_archive": [
+      "DovetailingChain.lean (1932 lines, deprecated 2026-03-11)",
+      "TemporalCoherentConstruction.lean (574 lines, deprecated 2026-03-11)",
+      "Construction.lean (270 lines, superseded by StagedConstruction)"
+    ],
+    "publication_path_files": {
+      "staged_construction": [
+        "CantorApplication.lean",
+        "DenseTimeline.lean",
+        "Completeness.lean"
+      ],
+      "bundle_essential": [
+        "BFMCS.lean",
+        "BFMCSTruth.lean",
+        "CanonicalFrame.lean",
+        "CanonicalConstruction.lean",
+        "CanonicalIrreflexivity.lean",
+        "TruthLemma.lean",
+        "ChainFMCS.lean"
+      ]
+    },
+    "mcs_suffix_definitions": {
+      "status": "archived",
+      "location": "Boneyard/Metalogic/Metalogic_v7/Bundle/ChainBundleBFMCS.lean",
+      "no_longer_needed": true
+    }
+  }
+}
