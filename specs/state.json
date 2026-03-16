@@ -103,7 +103,14 @@
       "created": "2026-03-16T17:29:12Z",
       "last_updated": "2026-03-16T22:23:23Z",
       "session_id": "sess_1773699530_28595",
-      "researched": "2026-03-16T22:23:23Z"
+      "researched": "2026-03-16T22:23:23Z",
+      "artifacts": [
+        {
+          "path": "specs/978_refactor_tm_typeclass_frame_conditions/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with typeclass-based frame condition architecture recommendations"
+        }
+      ]
     },
     {
       "project_number": 977,
