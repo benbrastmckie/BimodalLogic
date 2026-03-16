@@ -38,7 +38,7 @@ technical_debt:
 
 ### 975. Fix ProofSearch documentation example sorries
 - **Effort**: ~1 hour
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/975_fix_proofsearch_example_sorries/reports/research-001.md)
 
@@ -51,10 +51,11 @@ technical_debt:
 ---
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
-- **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Effort**: 2.5 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md)
 
 **Description**: Complete 7 sorry placeholders in `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean` for the discrete canonical timeline quotient, needed for the ℤ-isomorphism in the discrete D-from-syntax pipeline.
 
@@ -72,7 +73,7 @@ technical_debt:
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
 - **Effort**: 1.5 hours (3 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-001.md)
@@ -89,7 +90,7 @@ technical_debt:
 
 ### 972. Review metalogic naming conventions for improvements
 - **Effort**: 6-8 hours (6 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Created**: 2026-03-16
 - **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md), [research-002.md](specs/972_review_metalogic_naming_conventions/reports/research-002.md) (namespace migration)

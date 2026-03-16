@@ -20,13 +20,13 @@
     {
       "project_number": 975,
       "project_name": "fix_proofsearch_example_sorries",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "low",
       "created": "2026-03-16T00:00:00Z",
       "description": "Fix 3 sorry placeholders in ProofSearch.lean documentation examples",
-      "last_updated": "2026-03-16T16:20:00Z",
-      "session_id": "sess_1742169600_975res",
+      "last_updated": "2026-03-16T16:36:28Z",
+      "session_id": "sess_1742169600_975plan",
       "researched": "2026-03-16T16:20:00Z",
       "artifacts": [
         {
@@ -39,12 +39,12 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
-      "last_updated": "2026-03-16T16:34:33Z",
+      "last_updated": "2026-03-16T16:37:22Z",
       "session_id": "sess_1742169700_p4n7w",
       "researched": "2026-03-16T16:12:35Z",
       "artifacts": [
@@ -52,19 +52,25 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md",
           "type": "research",
           "summary": "Analyzed 7 sorries in DiscreteTimeline.lean. Root cause: flawed succ definition using Classical.choice instead of WellFounded.min. Fix requires redefining succ/pred, then proofs follow from Mathlib patterns."
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan to resolve 7 sorries in DiscreteTimeline.lean via WellFounded.min-based succ/pred definitions"
         }
-      ]
+      ],
+      "planned": "2026-03-16T16:37:22Z"
     },
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T16:32:44Z",
-      "session_id": "sess_1773678544_18808",
+      "last_updated": "2026-03-16T16:36:24Z",
+      "session_id": "sess_1773678967_4559",
       "researched": "2026-03-16T09:15:00Z",
       "artifacts": [
         {
@@ -78,7 +84,8 @@
           "summary": "3-phase implementation plan for NoMaxOrder/NoMinOrder proofs on ConstructiveQuotient"
         }
       ],
-      "planned": "2026-03-16T16:32:44Z"
+      "planned": "2026-03-16T16:32:44Z",
+      "started": "2026-03-16T16:36:24Z"
     },
     {
       "project_number": 971,
@@ -305,12 +312,12 @@
     {
       "project_number": 972,
       "project_name": "review_metalogic_naming_conventions",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T15:35:42Z",
-      "last_updated": "2026-03-16T16:34:30Z",
+      "last_updated": "2026-03-16T16:36:51Z",
       "description": "Review Theories/Bimodal/Metalogic/ for inconsistent, misleading, or redundant naming conventions. Identify improvements (not wholesale renames) — looking for names that are genuinely confusing, inconsistent with Mathlib conventions, or redundant given their context. Originated from task 970 phase 9 deferral.",
-      "session_id": "sess_1773677328_11daf7",
+      "session_id": "sess_1773678986_496ad6",
       "researched": "2026-03-16T16:00:00Z",
       "artifacts": [
         {
@@ -329,7 +336,8 @@
           "summary": "6-phase plan (v2): snake_case + namespace migrations for SetMaximalConsistent"
         }
       ],
-      "planned": "2026-03-16T16:34:30Z"
+      "planned": "2026-03-16T16:34:30Z",
+      "started": "2026-03-16T16:36:51Z"
     }
   ],
   "completed_projects": [
