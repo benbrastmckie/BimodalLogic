@@ -85,21 +85,23 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 4 hours (8 phases)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis), [research-004.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md) (DurationTransfer blocker analysis)
+- **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis), [research-004.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md) (DurationTransfer blocker analysis), [research-005.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-005.md) (current standing post-DT fix)
 - **Plan**: [implementation-003.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md) (v3: Option B discrete staged construction)
 - **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
 - **Unblocked by**: Task 977 Phase 0 (DurationTransfer.lean fixed)
 
-**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean via Option B (discrete staged construction). Phases 1-5 completed (discrete staged construction infrastructure added). Previously blocked by DurationTransfer.lean errors - now unblocked by task 977 phase 0.
+**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean via Option B (discrete staged construction). Phases 1-5 completed (discrete staged construction infrastructure added). DurationTransfer.lean fixed by task 977, but **new structural errors** in DiscreteTimeline.lean (type/function mismatch) need Phase 6.5 fix before sorry resolution.
 
 **Completed Work**:
 - Added `discreteStagedBuild` to StagedExecution.lean (skips odd stages)
 - Added `discrete_staged_has_future/past` to CantorPrereqs.lean
 - Updated DiscreteTimeline.lean to use discrete construction
 
-**Remaining Sorries (3)** (blocked until DurationTransfer.lean fixed):
+**New Blocker (research-005)**: 7 structural errors in DiscreteTimeline.lean - types using `variable` bindings have implicit parameters but instances try to pass explicit arguments. Fix: add Phase 6.5 to remove explicit arguments from instance declarations.
+
+**Remaining Sorries (3)**:
 - `discrete_timeline_lt_succFn` (193): Key discreteness for succ
 - `discrete_timeline_predFn_lt` (251): Key discreteness for pred
 - `IsSuccArchimedean.exists_succ_iterate_of_le` (296): Finite reachability

@@ -2,10 +2,15 @@
   "status": "researched",
   "artifacts": [
     {
-      "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md",
+      "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-005.md",
       "type": "research",
-      "summary": "DurationTransfer.lean has 7 API-level errors blocking DiscreteTimeline. Fix bundled with task 977. 3 DiscreteTimeline sorries addressable after DT fix. DN dependency in discrete construction is latent debt."
+      "summary": "DurationTransfer fixed but DiscreteTimeline has 7 new structural errors; recommend Phase 6.5 to fix type/function mismatch before resolving 3 sorries"
     }
   ],
-  "session_id": "sess_1773686383_q7r2k"
+  "session_id": "sess_1773689666_k4m8n",
+  "metadata": {
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
 }

@@ -107,14 +107,14 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T19:34:35Z",
+      "last_updated": "2026-03-16T20:15:00Z",
       "session_id": "sess_1773689666_k4m8n",
-      "researched": "2026-03-16T18:46:08Z",
+      "researched": "2026-03-16T20:15:00Z",
       "unblocked_by": "Task 977 Phase 0 fixed DurationTransfer.lean errors",
       "artifacts": [
         {
@@ -146,6 +146,11 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md",
           "type": "research",
           "summary": "DurationTransfer.lean has 7 API-level errors blocking DiscreteTimeline. Fix bundled with task 977. 3 DiscreteTimeline sorries addressable after DT fix."
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-005.md",
+          "type": "research",
+          "summary": "DurationTransfer fixed but DiscreteTimeline has 7 new structural errors (type/function mismatch); recommend Phase 6.5 to fix before resolving 3 sorries"
         }
       ],
       "planned": "2026-03-16T18:14:22Z",
