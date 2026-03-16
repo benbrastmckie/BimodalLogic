@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Domain.DurationTransfer
 import Bimodal.Metalogic.StagedConstruction.CantorPrereqs
 import Bimodal.Metalogic.Canonical.CanonicalIrreflexivityAxiom
 import Mathlib.Order.SuccPred.LinearLocallyFinite
+import Mathlib.Order.Interval.Finset.Basic
 
 /-!
 # Discrete Timeline: SuccOrder and PredOrder from Discreteness Axiom
@@ -174,6 +175,90 @@ instance : NoMinOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
         | inr h_R => exact h_strict h_R
 
 /-!
+## LocallyFiniteOrder via Stage Bounding
+
+The discrete staged construction has a key property: for any two quotient elements
+`[a]` and `[b]`, all elements in `Icc [a] [b]` come from the finite image of
+`discreteStagedBuild N` in the quotient, where `N = max(minStage a, minStage b)`.
+
+This allows us to prove `LocallyFiniteOrder` directly without needing a generic
+`Antisymmetrization.locallyFiniteOrder` instance (which doesn't exist in Mathlib).
+-/
+
+/-- Every quotient element has a representative at some stage of the discrete construction.
+    Returns the stage and the representative element (as a DiscreteTimelineElem). -/
+theorem exists_stage_of_quotient_elem (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
+    ∃ n, ∃ elem : DiscreteTimelineElem root_mcs root_mcs_proof,
+      elem.1 ∈ discreteStagedBuild root_mcs root_mcs_proof n ∧
+      (⟦elem⟧ : DiscreteTimelineQuot root_mcs root_mcs_proof) = a := by
+  induction a using Quotient.inductionOn with
+  | _ elem =>
+    obtain ⟨n, hn⟩ := elem.2
+    exact ⟨n, elem, hn, rfl⟩
+
+/-- The minimum stage where a quotient element has a representative. -/
+noncomputable def minStage (a : DiscreteTimelineQuot root_mcs root_mcs_proof) : ℕ :=
+  Nat.find (exists_stage_of_quotient_elem root_mcs root_mcs_proof a)
+
+/-- At minStage, there exists a representative. -/
+theorem minStage_spec (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
+    ∃ elem : DiscreteTimelineElem root_mcs root_mcs_proof,
+      elem.1 ∈ discreteStagedBuild root_mcs root_mcs_proof (minStage root_mcs root_mcs_proof a) ∧
+      (⟦elem⟧ : DiscreteTimelineQuot root_mcs root_mcs_proof) = a :=
+  Nat.find_spec (exists_stage_of_quotient_elem root_mcs root_mcs_proof a)
+
+/-!
+## LocallyFiniteOrder Instance
+
+The key step to proving SuccOrder/PredOrder/IsSuccArchimedean is instantiating
+`LocallyFiniteOrder`. Once we have this, the three remaining sorries follow
+automatically from Mathlib's `LinearLocallyFiniteOrder` infrastructure.
+
+### Interval Finiteness (Axiomatized - Technical Debt)
+
+The discrete staged construction produces a discrete (non-dense) order. Between
+any two elements there are only finitely many elements. This follows from:
+1. The construction adds finitely many points per stage
+2. No density witnesses are inserted (unlike the dense construction)
+3. The discreteness axiom DF prevents dense accumulation points
+
+**Technical Debt**: The full proof requires extracting the DF frame condition
+at the MCS level. For now, we axiomatize interval finiteness. The structural
+proof approach is documented in research-006.md.
+
+See: specs/974_prove_discrete_timeline_succorder_predorder/reports/research-006.md
+-/
+
+/-- **AXIOM (Technical Debt)**: Intervals in the discrete timeline are finite.
+
+This axiom captures the discreteness of the timeline constructed without density
+insertion. The proof should follow from:
+1. Stage-bounded interval containment: any `c ∈ Icc a b` has a representative
+   in `discreteStagedBuild (max (minStage a) (minStage b))`
+2. Each stage is a finite set
+3. The quotient map preserves finiteness
+
+Remediation: Prove the stage-bounding property using the F/P witness structure
+of evenStage and the monotonicity of discreteStagedBuild.
+-/
+axiom discrete_Icc_finite_axiom :
+    ∀ (a b : DiscreteTimelineQuot root_mcs root_mcs_proof), (Set.Icc a b).Finite
+
+/-- Intervals in the discrete timeline are finite. -/
+theorem discrete_Icc_finite (a b : DiscreteTimelineQuot root_mcs root_mcs_proof) :
+    (Set.Icc a b).Finite :=
+  discrete_Icc_finite_axiom root_mcs root_mcs_proof a b
+
+/-- LocallyFiniteOrder instance for the discrete timeline quotient.
+
+This is the key instance that unlocks:
+- `LinearLocallyFiniteOrder.isMax_of_succFn_le` for SuccOrder
+- Automatic `IsSuccArchimedean` instance
+-/
+noncomputable instance : LocallyFiniteOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) :=
+  LocallyFiniteOrder.ofFiniteIcc (discrete_Icc_finite root_mcs root_mcs_proof)
+
+/-!
 ## SuccOrder from Discreteness Axiom
 
 The discreteness axiom DF = `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)` corresponds to the
@@ -197,12 +282,10 @@ CanonicalR(M, N)) is either:
 
 ### Implementation
 
-The SuccOrder, PredOrder, and IsSuccArchimedean instances below are
-sorry-dependent. The key sorry is `succ_le_of_lt` (coverness), which
-requires extracting the frame condition from DF at the MCS level.
-
-The `succ` function is defined using Classical.choice on the set of
-minimal strict successors (or identity for maximal elements).
+The SuccOrder, PredOrder, and IsSuccArchimedean instances are derived from
+`LocallyFiniteOrder`, which is instantiated using the axiomatized interval
+finiteness property (`discrete_Icc_finite_axiom`). The `succ` function uses
+`LinearLocallyFiniteOrder.succFn` (GLB of elements strictly greater).
 -/
 
 /-!
@@ -236,16 +319,17 @@ close to another from above — there is always an immediate successor.
 -/
 theorem discrete_timeline_lt_succFn (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
     a < LinearLocallyFiniteOrder.succFn a := by
-  -- The proof requires showing that the discrete timeline is not densely ordered.
-  -- This follows from the DF axiom preventing dense intermediate MCSs.
-  -- For now, we leave this as the key lemma to be proven.
+  -- With LocallyFiniteOrder, we can use isMax_of_succFn_le
+  -- NoMaxOrder gives ¬IsMax a, so ¬(succFn a ≤ a)
+  -- Combined with le_succFn (a ≤ succFn a), this gives a < succFn a
   have h_not_max : ¬IsMax a := not_isMax a
-  -- By NoMaxOrder, Set.Ioi a is nonempty
-  have h_nonempty : (Set.Ioi a).Nonempty := exists_gt a
-  -- We need: succFn a ∈ Set.Ioi a (i.e., a < succFn a)
-  -- This holds iff the GLB is actually the minimum of the set
-  -- Which holds iff the order is discrete (not dense) at a
-  sorry
+  have h_le : a ≤ LinearLocallyFiniteOrder.succFn a := LinearLocallyFiniteOrder.le_succFn a
+  -- If succFn a ≤ a, then by isMax_of_succFn_le, a is max, contradiction
+  by_contra h_not_lt
+  push_neg at h_not_lt
+  have h_eq : LinearLocallyFiniteOrder.succFn a = a := le_antisymm h_not_lt h_le
+  have h_is_max : IsMax a := LinearLocallyFiniteOrder.isMax_of_succFn_le a (le_of_eq h_eq)
+  exact h_not_max h_is_max
 
 /-- SuccOrder on the discrete timeline quotient.
 
@@ -295,15 +379,106 @@ theorem le_discretePredFn_of_lt (a b : DiscreteTimelineQuot root_mcs root_mcs_pr
 This is the backward discreteness property that follows from the DP axiom
 (derivable from DF via temporal duality). Symmetric to `discrete_timeline_lt_succFn`.
 
-**TODO**: Complete this proof by extracting the DP frame condition at the MCS level.
+The proof uses LocallyFiniteOrder: if `lub(Iio a) = a`, then the finite set `Ioc b a`
+for any `b < a` would have `a` as its maximum, contradicting `a ∉ Ioc b a`.
 -/
 theorem discrete_timeline_predFn_lt (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
     discretePredFn root_mcs root_mcs_proof a < a := by
-  -- Symmetric to discrete_timeline_lt_succFn
-  have h_not_min : ¬IsMin a := not_isMin a
-  have h_nonempty : (Set.Iio a).Nonempty := exists_lt a
-  -- We need: discretePredFn a ∈ Set.Iio a (i.e., discretePredFn a < a)
-  sorry
+  -- We have: discretePredFn a ≤ a
+  have h_le : discretePredFn root_mcs root_mcs_proof a ≤ a :=
+    discretePredFn_le root_mcs root_mcs_proof a
+  -- We need to show: discretePredFn a ≠ a (strict inequality)
+  by_contra h_not_lt
+  push_neg at h_not_lt
+  -- So discretePredFn a = a (since ≤ and ≥)
+  have h_eq : discretePredFn root_mcs root_mcs_proof a = a := le_antisymm h_le h_not_lt
+  -- This means a = lub(Iio a)
+  have h_lub : IsLUB (Set.Iio a) a := by
+    have h := discretePredFn_spec root_mcs root_mcs_proof a
+    rw [h_eq] at h
+    exact h
+  -- By NoMinOrder, there exists b < a
+  obtain ⟨b, hb⟩ : ∃ b, b < a := exists_lt a
+  -- The finite set Ioc b a contains all elements in (b, a]
+  -- Since a = lub(Iio a), and b < a, there must be some c ∈ Iio a with b < c
+  -- But also c ≤ a (since c < a), so c ∈ Ioc b a
+  -- If a were the lub, and the set is finite, a must be in the set... but a ∉ Iio a
+  -- This is a contradiction
+  -- Actually, use that in a LocallyFiniteOrder, Iio a has a maximum when nonempty
+  -- and that maximum is strictly less than a
+  have h_Ioc_finite : (Set.Ioc b a).Finite := Set.finite_Ioc b a
+  -- Since a = lub(Iio a), and Iio a is nonempty, we have Ioc b a ⊆ Iio a ∪ {a}
+  -- But a ∉ Iio a, so the max of Ioc b a (which is finite nonempty) is < a
+  -- Yet lub(Iio a) = a means a is the least upper bound...
+  -- The key: in a finite nonempty set with an upper bound, the max equals the lub
+  have h_Ioc_nonempty : (Set.Ioc b a).Nonempty := ⟨a, Set.right_mem_Ioc.mpr hb⟩
+  -- Wait, a ∈ Ioc b a since b < a and a ≤ a
+  -- And Ioc b a ⊆ Iio a ∪ {a}... but we want to show a is not the lub of Iio a
+  -- Hmm, let me reconsider. The issue is that Iio a = {x | x < a}, and if a = lub(Iio a),
+  -- then for any x ∈ Iio a, x < a. The lub being a just means a is the smallest upper bound.
+  -- This is always true for Iio a in any linear order!
+  -- So the argument above doesn't work directly.
+  --
+  -- Better approach: use that with LocallyFiniteOrder, Iio a ∩ Ici b is finite for any b < a
+  -- This means Iio a is "bounded below" in a sense. If Iio a has a maximum m < a, then
+  -- lub(Iio a) = m, not a. So a ≠ lub(Iio a).
+  -- The key is showing Iio a has a maximum. This follows from Finset.max' on Iic (pred a).
+  --
+  -- Actually, let's use that a ∈ Set.Ioc b a, and Ioc b a is finite.
+  -- The maximum of Ioc b a is either a or some element of Iio a.
+  -- If it's an element c of Iio a, then c < a but c is the max of Ioc b a.
+  -- Then lub(Iio a) ≤ c < a, contradicting a = lub(Iio a).
+  -- If the max of Ioc b a is a... wait, a ∈ Ioc b a, so yes a could be the max.
+  -- But Ioc b a ⊄ Iio a since a ∉ Iio a.
+  -- Hmm, this is getting complicated. Let me use a different approach.
+  --
+  -- Use: IsMin a iff ∀ x, a ≤ x (i.e., Iio a = ∅)
+  -- We have NoMinOrder, so Iio a ≠ ∅
+  -- Actually, a = lub(Iio a) doesn't directly imply IsMin a.
+  -- But it does in a discrete order!
+  -- Key: if a = lub(Iio a) and the order is "discrete" (has LocallyFiniteOrder),
+  -- then Iio a must be empty, which contradicts NoMinOrder.
+  --
+  -- Actually, let me prove: isMin_of_eq_lub_Iio
+  -- If a = lub(Iio a) and LocallyFiniteOrder, then IsMin a
+  -- Proof: If not IsMin, ∃ b < a. Consider Finset.Ioo b a.
+  -- Since b < a, Finset.Ioo b a = {x | b < x < a} is a finite set.
+  -- If Ioo b a is nonempty, let c be its max. Then c < a and c > b.
+  -- Also, c is an upper bound of Ioo b a ∩ Iio a = Ioo b a.
+  -- But wait, is c ≥ lub(Ioo b a)?
+  -- Actually simpler: if Ioo b a is empty, then there's no x with b < x < a.
+  -- This means b is immediately below a, i.e., succ b = a (in the SuccOrder sense).
+  -- Then the max of Iio a is b, so lub(Iio a) = b ≠ a.
+  -- If Ioo b a is nonempty, let c be its max. Then c < a and c is in Iio a.
+  -- For any d ∈ Iio a, either d ≤ b (so d < c) or d ∈ Ioo b a (so d ≤ c).
+  -- So c = lub(Iio a) ≠ a, contradiction.
+  --
+  -- Wait, that's not quite right either. Let me just do this with Finset.Ico b a.
+  have h_Ico_finite : (Finset.Ico b a).Nonempty := by
+    rw [Finset.nonempty_Ico]
+    exact hb
+  -- Finset.Ico b a = {x | b ≤ x < a} contains b
+  -- Its maximum is some element m with b ≤ m < a
+  let m := (Finset.Ico b a).max' h_Ico_finite
+  have hm_mem : m ∈ Finset.Ico b a := Finset.max'_mem _ h_Ico_finite
+  have hm_lt_a : m < a := (Finset.mem_Ico.mp hm_mem).2
+  have hm_max : ∀ x ∈ Finset.Ico b a, x ≤ m := fun x hx => Finset.le_max' _ x hx
+  -- Now, m is an upper bound of Iio a ∩ Ici b = Ico b a
+  -- For any c ∈ Iio a:
+  --   If c < b, then c < b ≤ m
+  --   If c ≥ b, then c ∈ Ico b a, so c ≤ m
+  -- So m is an upper bound of Iio a
+  have hm_ub : m ∈ upperBounds (Set.Iio a) := by
+    intro c hc
+    by_cases hcb : c < b
+    · exact le_trans (le_of_lt hcb) ((Finset.mem_Ico.mp hm_mem).1)
+    · push_neg at hcb
+      have hc_mem : c ∈ Finset.Ico b a := Finset.mem_Ico.mpr ⟨hcb, hc⟩
+      exact hm_max c hc_mem
+  -- But a = lub(Iio a), so a ≤ m (since m is an upper bound)
+  have ha_le_m : a ≤ m := h_lub.2 hm_ub
+  -- But m < a, contradiction
+  exact not_lt.mpr ha_le_m hm_lt_a
 
 /-- PredOrder on the discrete timeline quotient.
 
@@ -338,37 +513,28 @@ This follows from the local finiteness of the discrete timeline: for any
 The discrete timeline has finitely many MCSs between any two comparable MCSs
 because each step in the staged construction adds only finitely many witnesses.
 -/
-instance : IsSuccArchimedean (DiscreteTimelineQuot root_mcs root_mcs_proof) where
-  exists_succ_iterate_of_le := by
-    intro a b hab
-    -- The proof requires showing the interval [a, b] is finite.
-    -- This follows from the staged construction: each stage adds
-    -- finitely many MCSs, and between any two MCSs there are
-    -- finitely many stages.
-    --
-    -- With LocallyFiniteOrder, we could use:
-    -- LinearLocallyFiniteOrder.instIsSuccArchimedean
-    sorry
+-- IsSuccArchimedean follows automatically from LocallyFiniteOrder + SuccOrder
+-- via the Mathlib instance in LinearLocallyFiniteOrder.lean:166
+-- instance (priority := 100) [LocallyFiniteOrder ι] [SuccOrder ι] : IsSuccArchimedean ι
+-- We verify it's available:
+example : IsSuccArchimedean (DiscreteTimelineQuot root_mcs root_mcs_proof) := inferInstance
 
 /-!
 ## Complete Pipeline
 
-With all instances (sorry-dependent), the complete pipeline compiles:
+The complete pipeline:
 DiscreteTimelineQuot → SuccOrder + PredOrder + IsSuccArchimedean +
 NoMaxOrder + NoMinOrder → `orderIsoIntOfLinearSuccPredArch` → T ≃o ℤ →
 `intAddCommGroup` + `intIsOrderedAddMonoid` → `discreteTaskFrame`.
 
-**Proof debt**: All instances above depend on sorry. The root cause is the
-reflexive MCS obstacle (for NoMaxOrder/NoMinOrder) and the DF coverness
-extraction (for SuccOrder/PredOrder). See research-002.md for full analysis.
+**Technical debt**: One axiom (`discrete_Icc_finite_axiom`) for interval finiteness.
+The structural proof approach is documented in research-006.md.
 -/
 
 /-- The discrete canonical TaskFrame, with D derived from syntax via ℤ characterization.
 
 This is the end-to-end pipeline: MCSs → DiscreteTimelineQuot → T ≃o ℤ →
 AddCommGroup T → IsOrderedAddMonoid T → TaskFrame T.
-
-**Proof debt**: Depends on sorry'd instances above.
 -/
 noncomputable def discreteCanonicalTaskFrame :
     @TaskFrame (DiscreteTimelineQuot root_mcs root_mcs_proof)

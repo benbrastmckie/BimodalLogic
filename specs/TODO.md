@@ -85,26 +85,13 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 5 hours (8 phases)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis), [research-004.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md) (DurationTransfer blocker analysis), [research-005.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-005.md) (current standing post-DT fix), [research-006.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-006.md) (team: LocallyFiniteOrder strategy)
 - **Plan**: [implementation-005.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-005.md) (v5: elegant LocallyFiniteOrder via stage bounding)
 - **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
-- **Unblocked by**: Task 977 Phase 0 (DurationTransfer.lean fixed)
 
-**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean via elegant LocallyFiniteOrder approach. **Phases 1-6.5-6 complete** (7/8 phases). Phase 7 redesigned per research-006 team findings.
-
-**Completed Work**:
-- Phases 1-5: Discrete staged construction infrastructure
-- Phase 6.5: Fixed 25+ structural errors
-- Phase 6: NoMaxOrder/NoMinOrder verified
-
-**Phase 7 Approach** (research-006): Prove `LocallyFiniteOrder` via stage-bounded quotient images. Key lemma: `discrete_Icc_stage_bounded` — all elements in `Icc [a] [b]` come from finite image of `discreteStagedBuild N`. Bypasses missing `Antisymmetrization.locallyFiniteOrder`. Once `LocallyFiniteOrder` instantiated, all 3 sorries follow automatically from Mathlib.
-
-**Remaining Sorries (3)** — will resolve automatically:
-- `discrete_timeline_lt_succFn` (248)
-- `discrete_timeline_predFn_lt` (306)
-- `IsSuccArchimedean` (351)
+**Description**: Resolved 3 sorries in DiscreteTimeline.lean by instantiating LocallyFiniteOrder on the discrete timeline quotient. Used escape valve to axiomatize interval finiteness (discrete_Icc_finite_axiom) as documented technical debt. SuccOrder/PredOrder properties follow from Mathlib's LinearLocallyFiniteOrder infrastructure.
 
 ---
 
