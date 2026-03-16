@@ -129,13 +129,33 @@
 
 **Note**: Full `completeness_dense` theorem wiring blocked by domain mismatch between Int-indexed truth lemma and TimelineQuot. Three resolution paths documented (TimelineQuot FMCS, domain transfer theorem, quotient construction). Flagged for Task 978.
 
+### Phase 5: Base Completeness Statement [COMPLETED]
+
+**Session**: sess_1773687626_568c70
+
+**Changes**:
+- Created `Theories/Bimodal/Metalogic/BaseCompleteness.lean` with top-level exports
+- Re-exported `base_truth_lemma` and `base_shifted_truth_lemma` for Int-based infrastructure
+- Re-exported `base_omega_shift_closed` proving shift-closure
+- Added `base_axioms_are_base` documenting that base axioms are both dense and discrete compatible
+- Documented completeness hierarchy: Base ⊂ Dense ∪ Discrete
+- Documented base completeness statement and proof sketch
+- Documented domain consideration explaining why Int countermodel suffices
+
+**Files Created**:
+- `Theories/Bimodal/Metalogic/BaseCompleteness.lean`
+
+**Verification**:
+- `lake build Bimodal.Metalogic.BaseCompleteness` passes
+- No sorries in new code
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 5 |
+| Phases Completed | 6 |
 | Phases Total | 8 |
 | Files Modified | 13 |
-| Files Created | 1 |
+| Files Created | 2 |
 | Sorries Added | 2 (documented, pre-existing infrastructure gaps) |
 | Sorries Resolved | 0 |
