@@ -77,13 +77,13 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T18:14:22Z",
-      "session_id": "sess_1742183000_p7k2m",
+      "last_updated": "2026-03-16T18:21:19Z",
+      "session_id": "sess_1742184000_t5n8w",
       "researched": "2026-03-16T17:56:38Z",
       "blocked_on": "Architectural issue: buildStagedTimeline adds density intermediates via DN axiom; no discrete construction exists",
       "blocked_reason": "Phase 4 blocked: staged construction always adds density witnesses, making discreteness proofs impossible without new infrastructure (quotient collapse proof, discrete construction, or alternative proof strategy)",
@@ -122,13 +122,13 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T18:45:00Z",
-      "session_id": "sess_1773684416_ef3bdc",
+      "last_updated": "2026-03-16T18:31:42Z",
+      "session_id": "sess_1773685680_d2e1e1",
       "researched": "2026-03-16T18:45:00Z",
       "artifacts": [
         {
@@ -147,17 +147,17 @@
           "summary": "Import conflict root cause analysis: elaboration-order sensitivity due to diamond dependency. Solution: harden proofs with explicit type annotations (2.5-3h effort)"
         },
         {
-          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "v2: Corrected phase markers, verified proof sketches, unblocked"
-        },
-        {
           "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md",
           "type": "summary",
           "summary": "Documents import conflict blocker preventing NoMaxOrder/NoMinOrder proofs"
+        },
+        {
+          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan using file extraction approach (Solution 2)"
         }
       ],
-      "planned": "2026-03-16T17:36:25Z",
+      "planned": "2026-03-16T18:31:42Z",
       "started": "2026-03-16T17:38:09Z"
     },
     {

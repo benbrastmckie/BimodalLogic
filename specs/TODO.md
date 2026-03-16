@@ -84,7 +84,7 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 4 hours (8 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis)
 - **Plan**: [implementation-003.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md) (v3: Option B discrete staged construction)
@@ -101,10 +101,10 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
 - **Effort**: 2.5-3 hours (5 phases, revised)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md), [research-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md), [research-003.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-003.md) (import conflict resolution)
-- **Plan**: [implementation-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md) (v2: corrected phase markers)
+- **Plan**: [implementation-003.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-003.md) (v3: file extraction approach)
 - **Summary**: [implementation-summary-20260316.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md)
 
 **Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 581 and 586.
