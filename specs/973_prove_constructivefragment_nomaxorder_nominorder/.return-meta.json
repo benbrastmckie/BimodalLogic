@@ -1,0 +1,16 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md",
+      "type": "research",
+      "summary": "NoMaxOrder/NoMinOrder proofs are straightforward using seriality axioms and canonicalR_strict; proof pattern from DiscreteTimeline.lean directly applicable"
+    }
+  ],
+  "session_id": "sess_1773677142_20067",
+  "metadata": {
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

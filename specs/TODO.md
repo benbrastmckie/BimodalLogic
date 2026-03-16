@@ -69,9 +69,10 @@ technical_debt:
 ---
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHING]
+- **Effort**: 1-2 hours
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md)
 
 **Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 580 and 585.
 

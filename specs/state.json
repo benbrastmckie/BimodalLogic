@@ -48,13 +48,21 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T16:06:11Z",
-      "session_id": "sess_1773677142_20067"
+      "last_updated": "2026-03-16T09:15:00Z",
+      "session_id": "sess_1773677142_20067",
+      "researched": "2026-03-16T09:15:00Z",
+      "artifacts": [
+        {
+          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md",
+          "type": "research",
+          "summary": "NoMaxOrder/NoMinOrder proofs are straightforward using seriality axioms and canonicalR_strict; proof pattern from DiscreteTimeline.lean directly applicable (1-2h effort)"
+        }
+      ]
     },
     {
       "project_number": 971,
