@@ -26,15 +26,15 @@ technical_debt:
 ## Tasks
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: 2-4 hours (typeclass modification)
-- **Status**: [RESEARCHING]
+- **Effort**: 4-8 hours (constructive method restructure)
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
-- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md)
+- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
 
-**Research Summary**: Deep analysis confirms covering lemma is THE critical gap - all approaches reduce to it. DF creates existential F-obligations that can be witnessed by any MCS, not specifically immediate successors. Density proof template does not invert. Recommends accepting axiom as architectural constraint and making `LocallyFiniteOrder` an explicit requirement in `DiscreteTemporalFrame` typeclass.
+**Research Summary (research-002, team)**: Standard tense logic proofs (Segerberg/Verbrugge) CONSTRUCT the immediate successor with a blocking formula seed `{¬ψ ∨ ¬G(ψ) | ¬G(ψ) ∈ M}` so covering holds by definition. ProofChecker's current forward witness lacks blocking formulas — this is the root cause of the axiom. Solution: define `discreteImmediateSuccSeed` with blocking formulas, prove consistency, derive `SuccOrder` by construction. Covering is then immediate without `discrete_Icc_finite_axiom`.
 
 ---
 

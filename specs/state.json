@@ -8,17 +8,22 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-16T23:20:49Z",
+      "last_updated": "2026-03-16T23:28:33Z",
       "session_id": "sess_1773703227_76434d",
-      "researched": "2026-03-16T23:30:00Z",
+      "researched": "2026-03-16T23:28:33Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
           "type": "research",
           "summary": "Deep mathematical analysis of discrete_Icc_finite_axiom debt. Covering lemma is critical gap. Recommends accepting axiom and making LocallyFiniteOrder explicit in DiscreteTemporalFrame typeclass."
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): constructive method path via blocking formula seed eliminates axiom"
         }
       ]
     },
