@@ -49,18 +49,13 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 977. Organize TM base logic with extensions
 - **Effort**: 16-20 hours (8 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/977_organize_tm_base_logic_with_extensions/reports/research-001.md), [research-002.md](specs/977_organize_tm_base_logic_with_extensions/reports/research-002.md) (plan revision analysis)
 - **Plan**: [implementation-002.md](specs/977_organize_tm_base_logic_with_extensions/plans/implementation-002.md) (v2: added Phase 0 DurationTransfer fix)
-- **Summary**: [implementation-summary-20260316.md](specs/977_organize_tm_base_logic_with_extensions/summaries/implementation-summary-20260316.md) (in progress)
+- **Summary**: [implementation-summary-20260316.md](specs/977_organize_tm_base_logic_with_extensions/summaries/implementation-summary-20260316.md)
 
-**Description**: The proof system TM should be arranged into a base logic with various extensions (e.g., adding a discreteness axiom, or density axiom, etc.) with corresponding frame constraints, establishing soundness and completeness for the base logic and each extension. It is critical to identify pairings between all axioms that have corresponding frame constraints, and the axioms that do not and should be taken to belong to the base logic for TM rather than one of its extensions. Research the present standing of the codebase and the steps needed to progress towards a fully satisfactory logic, semantics with appropriate frame constraints, and metalogical results, refactoring the repository as need be to improve organization and fill in any missing results.
-
-**Progress (Phases 0-2 of 8)**:
-- Phase 0: Fixed DurationTransfer.lean API errors (7 errors resolved)
-- Phase 1: Updated documentation to 21 axioms with base/dense/discrete organization
-- Phase 2: Added derivation soundness theorem (6/8 inference rules proven)
+**Description**: Organized TM proof system into Base/Dense/Discrete layers with FrameClass enumeration (18 Base, 1 Dense, 3 Discrete axioms). Created completeness modules documenting infrastructure status and gaps. Added LogicVariants.lean as unified summary, documenting DN dependency technical debt for discrete construction. All 4 new Lean files compile without new sorries.
 
 ---
 
@@ -90,7 +85,7 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 4 hours (8 phases)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis), [research-004.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md) (DurationTransfer blocker analysis)
 - **Plan**: [implementation-003.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md) (v3: Option B discrete staged construction)
