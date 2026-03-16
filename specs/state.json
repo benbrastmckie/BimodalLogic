@@ -41,22 +41,17 @@
     {
       "project_number": 970,
       "project_name": "review_metalogic_for_publication",
-      "status": "researched",
+      "status": "planned",
       "language": "logic",
       "created": "2026-03-16T04:42:03Z",
-      "last_updated": "2026-03-16T05:37:45Z",
-      "session_id": "sess_1773639168_11193",
+      "last_updated": "2026-03-16T05:43:12Z",
+      "session_id": "sess_1773639787_b22b14",
       "researched": "2026-03-16T05:37:45Z",
       "artifacts": [
         {
           "path": "specs/970_review_metalogic_for_publication/reports/research-001.md",
           "type": "research",
           "summary": "Team research with 2 teammates (run 001)"
-        },
-        {
-          "path": "specs/970_review_metalogic_for_publication/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "12 phases, 14 hours - v2 with correct semantic framework and theorem formulations"
         },
         {
           "path": "specs/970_review_metalogic_for_publication/summaries/implementation-summary-20260315.md",
@@ -67,9 +62,14 @@
           "path": "specs/970_review_metalogic_for_publication/reports/research-002.md",
           "type": "research",
           "summary": "Team research run 002: phases 5-9 analysis + task 971 coordination"
+        },
+        {
+          "path": "specs/970_review_metalogic_for_publication/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "v3: reordered phases 5-9, Phase 7 fixes missed diamondFormula, Phase 9 restricted scope, task 971 coordination"
         }
       ],
-      "planned": "2026-03-16T05:12:32Z",
+      "planned": "2026-03-16T05:43:12Z",
       "started": "2026-03-16T05:15:48Z",
       "resume_phase": 8
     },
