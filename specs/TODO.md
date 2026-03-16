@@ -1,5 +1,5 @@
 ---
-next_project_number: 976
+next_project_number: 977
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 976. Clean up comments and improve documentation
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: general
+
+**Description**: Clean up the comments throughout the codebase and then proceed to improve all documentation so that every subdirectory has an accurate and complete README.md that fully reports on the files and subdirectories in the directory to which that README.md belongs. Then update the ROAD_MAP.md to clearly represent the present state and what remains.
+
+---
 
 ### 975. Fix ProofSearch documentation example sorries
 - **Effort**: ~1 hour
