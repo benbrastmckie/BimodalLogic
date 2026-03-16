@@ -1,0 +1,53 @@
+{
+  "status": "researched",
+  "summary": "Team research completed: decidability soundness proven; FMP and decidability completeness are critical gaps requiring filtration approach; dense completeness needs domain wiring (Task 982); discrete completeness has axiom debt (Task 981). Roadmap: 40-61 hours across 4 sub-tasks.",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/983_review_decidability_fmp_completeness/reports/research-001.md",
+      "summary": "Synthesized team research from 3 teammates (run 001)"
+    }
+  ],
+  "team_execution": {
+    "enabled": true,
+    "wave_count": 1,
+    "teammates_spawned": 3,
+    "teammates_completed": 3,
+    "teammates_failed": 0,
+    "token_usage_multiplier": 5.0,
+    "degraded_to_single": false
+  },
+  "teammate_results": [
+    {
+      "teammate": "A",
+      "angle": "Codebase analysis",
+      "status": "completed",
+      "confidence": "high",
+      "file": "research-001-teammate-a-findings.md"
+    },
+    {
+      "teammate": "B",
+      "angle": "Literature and standard results",
+      "status": "completed",
+      "confidence": "high",
+      "file": "research-001-teammate-b-findings.md"
+    },
+    {
+      "teammate": "C",
+      "angle": "Gap analysis and roadmap",
+      "status": "completed",
+      "confidence": "high",
+      "file": "research-001-teammate-c-findings.md"
+    }
+  ],
+  "synthesis": {
+    "conflicts_found": 2,
+    "conflicts_resolved": 2,
+    "gaps_identified": 5,
+    "wave_2_triggered": false
+  },
+  "metadata": {
+    "session_id": "sess_1773704373_51080a",
+    "agent_type": "skill-team-research"
+  }
+}

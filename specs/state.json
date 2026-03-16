@@ -16,11 +16,19 @@
     {
       "project_number": 983,
       "project_name": "review_decidability_fmp_completeness",
-      "status": "researching",
+      "status": "researched",
       "language": "logic",
       "created": "2026-03-16T23:34:54Z",
-      "last_updated": "2026-03-16T23:39:53Z",
-      "session_id": "sess_1773704373_51080a"
+      "last_updated": "2026-03-16T23:46:09Z",
+      "session_id": "sess_1773704373_51080a",
+      "researched": "2026-03-16T23:46:09Z",
+      "artifacts": [
+        {
+          "path": "specs/983_review_decidability_fmp_completeness/reports/research-001.md",
+          "type": "research",
+          "summary": "Team research: 3 teammates, FMP/decidability gap analysis with filtration roadmap"
+        }
+      ]
     },
     {
       "project_number": 982,

@@ -33,11 +33,14 @@ technical_debt:
 
 
 ### 983. Review decidability results and FMP for publication
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 40-61 hours (4 sub-tasks)
+- **Status**: [RESEARCHED]
 - **Language**: logic
+- **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team: FMP/decidability gap analysis)
 
 **Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.
+
+**Research Summary**: Decidability soundness is proven (sorry-free). Critical gaps: (1) FMP not proven (prior attempt archived, Task 948); (2) decidability completeness not proven. Dense completeness has all components proven but needs domain wiring (Task 982, 3–4 hrs). Discrete completeness has axiom debt (Task 981, in progress). Recommended: FMP via filtration (new task, 15–25 hrs), then decidability completeness (new task, 5–10 hrs).
 
 ---
 
