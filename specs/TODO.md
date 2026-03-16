@@ -12,10 +12,13 @@ task_counts:
   abandoned: 42
   total: 730
 technical_debt:
-  sorry_count: 95
-  axiom_count: 4
+  sorry_count: 22
+  sorry_count_note: "Excluding Boneyard: 9 metalogic (non-publication), 13 examples"
+  publication_path_sorries: 0
+  axiom_count: 0
+  axiom_count_note: "Zero custom axioms on publication path"
   build_errors: 0
-  status: good
+  status: excellent
 ---
 
 # TODO
