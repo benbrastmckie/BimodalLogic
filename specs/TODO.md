@@ -27,7 +27,7 @@ technical_debt:
 
 ### 977. Organize TM base logic with extensions
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: logic
 
 **Description**: The proof system TM should be arranged into a base logic with various extensions (e.g., adding a discreteness axiom, or density axiom, etc.) with corresponding frame constraints, establishing soundness and completeness for the base logic and each extension. It is critical to identify pairings between all axioms that have corresponding frame constraints, and the axioms that do not and should be taken to belong to the base logic for TM rather than one of its extensions. Research the present standing of the codebase and the steps needed to progress towards a fully satisfactory logic, semantics with appropriate frame constraints, and metalogical results, refactoring the repository as need be to improve organization and fill in any missing results.
@@ -64,6 +64,7 @@ technical_debt:
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
 
 **Description**: Complete 7 sorry placeholders in `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean` for the discrete canonical timeline quotient, needed for the ℤ-isomorphism in the discrete D-from-syntax pipeline.
 

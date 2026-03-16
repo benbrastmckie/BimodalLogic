@@ -8,10 +8,11 @@
     {
       "project_number": 977,
       "project_name": "organize_tm_base_logic_with_extensions",
-      "status": "not_started",
+      "status": "researching",
       "language": "logic",
       "created": "2026-03-16T16:52:13Z",
-      "last_updated": "2026-03-16T16:52:13Z"
+      "last_updated": "2026-03-16T16:57:49Z",
+      "session_id": "sess_1773680250_047fb0"
     },
     {
       "project_number": 976,
@@ -68,7 +69,7 @@
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
-      "last_updated": "2026-03-16T16:40:04Z",
+      "last_updated": "2026-03-16T16:59:10Z",
       "session_id": "sess_1742170000_x7m2q",
       "researched": "2026-03-16T16:12:35Z",
       "artifacts": [
@@ -81,6 +82,11 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan to resolve 7 sorries in DiscreteTimeline.lean via WellFounded.min-based succ/pred definitions"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Detailed summary of restructuring work and remaining blockers"
         }
       ],
       "planned": "2026-03-16T16:37:22Z",
