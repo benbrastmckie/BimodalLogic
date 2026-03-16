@@ -8,11 +8,12 @@
     {
       "project_number": 977,
       "project_name": "organize_tm_base_logic_with_extensions",
-      "status": "researching",
+      "status": "researched",
       "language": "logic",
       "created": "2026-03-16T16:52:13Z",
-      "last_updated": "2026-03-16T16:57:49Z",
-      "session_id": "sess_1773680250_047fb0"
+      "last_updated": "2026-03-16T17:05:35Z",
+      "session_id": "sess_1773680250_047fb0",
+      "researched": "2026-03-16T17:05:35Z"
     },
     {
       "project_number": 976,
@@ -344,10 +345,10 @@
     {
       "project_number": 972,
       "project_name": "review_metalogic_naming_conventions",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "created": "2026-03-16T15:35:42Z",
-      "last_updated": "2026-03-16T16:36:51Z",
+      "last_updated": "2026-03-16T17:05:32Z",
       "description": "Review Theories/Bimodal/Metalogic/ for inconsistent, misleading, or redundant naming conventions. Identify improvements (not wholesale renames) — looking for names that are genuinely confusing, inconsistent with Mathlib conventions, or redundant given their context. Originated from task 970 phase 9 deferral.",
       "session_id": "sess_1773678986_496ad6",
       "researched": "2026-03-16T16:00:00Z",
@@ -369,7 +370,9 @@
         }
       ],
       "planned": "2026-03-16T16:34:30Z",
-      "started": "2026-03-16T16:36:51Z"
+      "started": "2026-03-16T16:36:51Z",
+      "completed": "2026-03-16T17:05:32Z",
+      "completion_summary": "Renamed GContent/HContent to snake_case, migrated bmcs_*, set_mcs_*, and mcs_* prefixed functions to proper Lean namespaces (BFMCS and SetMaximalConsistent). Enables dot notation throughout Metalogic/. Build passes with 975 jobs."
     }
   ],
   "completed_projects": [
