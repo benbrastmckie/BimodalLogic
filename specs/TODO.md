@@ -38,18 +38,16 @@ technical_debt:
 ---
 
 ### 979. Remove discrete_Icc_finite_axiom and prove stage-bounding lemma
-- **Effort**: 8-12 hours (8 phases)
-- **Status**: [RESEARCHED]
+- **Effort**: 4-6 hours (6 phases)
+- **Status**: [PLANNED]
 - **Depends On**: Task 980 [COMPLETED]
 - **Research**: [research-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-001.md) (team: SuccOrder-first approach), [research-002.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-002.md) (DN root cause), [research-003.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-003.md) (post-980 analysis), [research-004.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-004.md) (team math: h_content duality + phi=neg_bot analysis), [research-005.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-005.md) (IRR axiom analysis: proven theorem, retain unchanged)
-- **Plan**: [implementation-002.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-002.md) (v2: 8 phases, covering lemma approach, no escape valves)
+- **Plan**: [implementation-003.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-003.md) (v3: 6 phases, time-boxed h_content duality + phi=neg_bot with explicit fallback)
 - **Summary**: [implementation-summary-20260316.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/summaries/implementation-summary-20260316.md)
 - **Language**: lean
 - **Related**: Task 974 (Phase 7b escape valve), Task 978 (typeclass architecture)
 
-**Description**: Remove the axiom in Phase 7b (discrete_Icc_stage_bounded) of task 974 implementation plan, reflecting on research-006.md to provide the most mathematically correct approach with no compromises, producing the highest quality implementation.
-
-**Partial Progress**: Phase 3 BLOCKED. Added MCS.Covers definition and mcs_has_immediate_successor theorem statement, but core covering lemma proof cannot be completed. The gap is connecting DF axiom membership (syntactic) to covering property (structural). User review required to determine next steps.
+**Description**: Remove the axiom in Phase 7b (discrete_Icc_stage_bounded) of task 974 implementation plan. Time-boxed approach (4-6 hours) with research-004.md paths: verify H(neg bot) derivability, attempt covering via h_content duality chain, study density template inversion. Clear fallback: if covering fails within time budget, retain axiom as documented debt per proof-debt-policy.md.
 
 ---
 

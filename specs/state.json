@@ -39,13 +39,13 @@
     {
       "project_number": 979,
       "project_name": "remove_discrete_icc_finite_axiom_prove_stage_bounding",
-      "status": "researching",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T20:33:40Z",
-      "last_updated": "2026-03-16T22:25:07Z",
+      "last_updated": "2026-03-16T23:00:00Z",
       "description": "Remove the axiom in Phase 7b (discrete_Icc_stage_bounded) of task 974 implementation plan, reflecting on research-006.md to provide the most mathematically correct approach with no compromises",
-      "session_id": "sess_1773699894_57486e",
+      "session_id": "sess_1773700503_e9e427",
       "researched": "2026-03-16T22:23:09Z",
       "artifacts": [
         {
@@ -66,7 +66,12 @@
         {
           "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-002.md",
           "type": "plan",
-          "summary": "8-phase covering lemma approach with detailed sub-phases, no escape valves"
+          "summary": "8-phase covering lemma approach with detailed sub-phases, no escape valves (SUPERSEDED by v3)"
+        },
+        {
+          "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "6-phase time-boxed plan: h_content duality + phi=neg_bot paths with explicit fallback to documented debt"
         },
         {
           "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/summaries/implementation-summary-20260316.md",
@@ -84,7 +89,7 @@
           "summary": "IRR axiom analysis: canonicalR_irreflexive is a proven theorem (Task 967), appropriate for reflexive semantics, should be retained unchanged; 11 declarations depend on it; does not affect task 979 blocking"
         }
       ],
-      "planned": "2026-03-16T21:54:24Z",
+      "planned": "2026-03-16T23:00:00Z",
       "started": "2026-03-16T20:53:45Z",
       "partial": "2026-03-16T22:30:00Z",
       "partial_progress": {
@@ -92,7 +97,20 @@
         "phases_total": 8,
         "details": "Phase 3 BLOCKED. Added MCS.Covers and mcs_has_immediate_successor with sorry. Cannot derive contradiction from intermediate MCS using DF axiom membership."
       },
-      "blocked_reason": "Covering lemma proof blocked: DF membership (syntactic) doesn't directly constrain order structure (structural property). User review required.",
+      "plan_metadata": {
+        "phases": 6,
+        "total_effort_hours": 5,
+        "complexity": "complex",
+        "research_integrated": true,
+        "plan_version": 3,
+        "reports_integrated": [
+          {
+            "path": "reports/research-004.md",
+            "integrated_in_plan_version": 3,
+            "integrated_date": "2026-03-16"
+          }
+        ]
+      },
       "depends_on": [
         980
       ]
