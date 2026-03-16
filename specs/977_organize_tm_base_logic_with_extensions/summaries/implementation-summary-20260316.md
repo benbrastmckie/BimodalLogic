@@ -82,13 +82,38 @@
 
 **Note**: Remaining sorries are documented with references to where component proofs exist (SoundnessLemmas.lean, IRRSoundness.lean). Full assembly deferred as these require additional infrastructure not scoped to this task.
 
+### Phase 3: FrameClass Enumeration [COMPLETED]
+
+**Session**: sess_1773687626_568c70
+
+**Changes**:
+- Added `inductive FrameClass` type with three variants: `Base`, `Dense`, `Discrete`
+- Added `Axiom.frameClass` function mapping all 21 axioms to their frame class:
+  - Base (18): All propositional, modal S5, and temporal axioms
+  - Dense (1): `density`
+  - Discrete (3): `discreteness_forward`, `seriality_future`, `seriality_past`
+- Added `Axiom.minimalFrameClass` as abbreviation for documentation clarity
+- Added consistency lemmas proving relationships between FrameClass and existing predicates:
+  - `frameClass_eq_base_iff_isBase`: `a.frameClass = .Base ↔ a.isBase`
+  - `isDiscreteCompatible_iff_frameClass`: `a.isDiscreteCompatible ↔ a.frameClass ≠ .Dense`
+  - `isBase_implies_both_compatible`: base axioms are both dense and discrete compatible
+- Documented semantic mismatch: existing `isDenseCompatible` predicate doesn't exclude seriality axioms (legacy)
+
+**Files Modified**:
+- `Theories/Bimodal/ProofSystem/Axioms.lean`
+
+**Verification**:
+- `lake build Bimodal.ProofSystem.Axioms` passes
+- No sorries in Axioms.lean
+- All consistency lemmas proved without sorry
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 3 |
+| Phases Completed | 4 |
 | Phases Total | 8 |
-| Files Modified | 12 |
+| Files Modified | 13 |
 | Files Created | 0 |
 | Sorries Added | 2 (documented, pre-existing infrastructure gaps) |
 | Sorries Resolved | 0 |

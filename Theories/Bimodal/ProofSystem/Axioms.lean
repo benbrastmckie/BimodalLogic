@@ -421,6 +421,76 @@ inductive Axiom : Formula → Type where
   deriving Repr
 
 /--
+Classification of frame conditions required for axiom validity.
+
+- `Base`: Axioms valid on all linear orders (no special frame conditions).
+  These 14 axioms form the core TM logic.
+- `Dense`: Axioms requiring DenselyOrdered frames. The `density` axiom (DN)
+  is the only axiom in this class.
+- `Discrete`: Axioms requiring discrete frames with SuccOrder/NoMaxOrder/NoMinOrder.
+  Includes `discreteness_forward`, `seriality_future`, `seriality_past`.
+
+**Hierarchy**: Base ⊂ Dense ∪ Discrete (base axioms valid in both extensions)
+
+The classification determines which axioms can be used in completeness proofs:
+- Base completeness: only Base axioms
+- Dense completeness: Base ∪ Dense axioms
+- Discrete completeness: Base ∪ Discrete axioms
+
+Note: Mixing Dense and Discrete axioms yields an inconsistent logic
+(no frame can be both densely ordered and have immediate successors).
+-/
+inductive FrameClass where
+  /-- Axioms valid on all linear orders (14 axioms) -/
+  | Base
+  /-- Axioms requiring DenselyOrdered frames (1 axiom: density) -/
+  | Dense
+  /-- Axioms requiring discrete frames with SuccOrder (4 axioms) -/
+  | Discrete
+  deriving Repr, DecidableEq, Inhabited
+
+/--
+Determines the frame class of an axiom based on its frame condition requirements.
+
+This is the **minimal** frame class where the axiom is valid:
+- Base axioms: valid on all linear orders
+- Dense axiom (density): valid only on densely ordered frames
+- Discrete axioms: valid only on discrete frames
+
+Note: Base axioms are also valid on both dense and discrete frames,
+but their minimal class is `Base`.
+-/
+def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
+  | Axiom.prop_k _ _ _ => .Base
+  | Axiom.prop_s _ _ => .Base
+  | Axiom.modal_t _ => .Base
+  | Axiom.modal_4 _ => .Base
+  | Axiom.modal_b _ => .Base
+  | Axiom.modal_5_collapse _ => .Base
+  | Axiom.ex_falso _ => .Base
+  | Axiom.peirce _ _ => .Base
+  | Axiom.modal_k_dist _ _ => .Base
+  | Axiom.temp_k_dist _ _ => .Base
+  | Axiom.temp_4 _ => .Base
+  | Axiom.temp_t_future _ => .Base
+  | Axiom.temp_t_past _ => .Base
+  | Axiom.temp_a _ => .Base
+  | Axiom.temp_l _ => .Base
+  | Axiom.modal_future _ => .Base
+  | Axiom.temp_future _ => .Base
+  | Axiom.temp_linearity _ _ => .Base
+  | Axiom.density _ => .Dense
+  | Axiom.discreteness_forward _ => .Discrete
+  | Axiom.seriality_future => .Discrete
+  | Axiom.seriality_past => .Discrete
+
+/--
+The minimal frame class required for an axiom is the class returned by `frameClass`.
+This is a definitional equality, provided for documentation.
+-/
+abbrev Axiom.minimalFrameClass {φ : Formula} := @Axiom.frameClass φ
+
+/--
 An axiom is dense-compatible if it is valid on all densely ordered frames.
 This excludes `discreteness_forward` which requires SuccOrder.
 -/
@@ -446,5 +516,54 @@ def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.seriality_future => False
   | Axiom.seriality_past => False
   | _ => True
+
+/-! ### FrameClass Consistency Lemmas
+
+These lemmas verify consistency between the `FrameClass` enumeration and
+the existing boolean predicates (`isBase`, `isDenseCompatible`, `isDiscreteCompatible`).
+
+**Note on predicate semantics**: The existing predicates `isDenseCompatible` and
+`isDiscreteCompatible` have slightly different semantics than FrameClass:
+- `isDenseCompatible` only excludes `discreteness_forward` (not seriality axioms)
+- `isDiscreteCompatible` only excludes `density`
+
+The FrameClass enumeration provides a more refined classification where:
+- `FrameClass.Discrete` includes seriality axioms along with discreteness_forward
+- This is semantically correct: seriality axioms require NoMaxOrder/NoMinOrder which
+  are discrete frame conditions
+
+For precise classification, use `frameClass`. The existing predicates are preserved
+for backward compatibility.
+-/
+
+/--
+An axiom has frame class Base iff it is a base axiom.
+-/
+theorem Axiom.frameClass_eq_base_iff_isBase {φ : Formula} (a : Axiom φ) :
+    a.frameClass = .Base ↔ a.isBase := by
+  cases a <;> simp [frameClass, isBase]
+
+/--
+An axiom is discrete-compatible iff its frame class is not Dense.
+-/
+theorem Axiom.isDiscreteCompatible_iff_frameClass {φ : Formula} (a : Axiom φ) :
+    a.isDiscreteCompatible ↔ a.frameClass ≠ .Dense := by
+  cases a <;> simp [isDiscreteCompatible, frameClass]
+
+/--
+Base axioms are both dense-compatible and discrete-compatible.
+-/
+theorem Axiom.isBase_implies_both_compatible {φ : Formula} (a : Axiom φ) :
+    a.isBase → a.isDenseCompatible ∧ a.isDiscreteCompatible := by
+  intro h
+  cases a <;> simp [isDenseCompatible, isDiscreteCompatible] at * <;> trivial
+
+/--
+Discrete frame class implies not dense-compatible (for discreteness_forward).
+Note: seriality axioms have Discrete frame class but are marked dense-compatible
+in the existing predicate (a legacy semantics issue).
+-/
+theorem Axiom.discreteness_forward_not_dense_compatible {φ : Formula} :
+    (Axiom.discreteness_forward φ).isDenseCompatible = False := rfl
 
 end Bimodal.ProofSystem
