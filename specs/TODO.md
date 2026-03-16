@@ -1,19 +1,19 @@
 ---
 next_project_number: 970
 repository_health:
-  overall_score: 90
+  overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-02-28T01:03:09Z
+  last_assessed: 2026-03-15T18:30:00Z
 task_counts:
-  active: 16
-  completed: 663
+  active: 15
+  completed: 674
   in_progress: 0
   not_started: 8
-  abandoned: 40
-  total: 717
+  abandoned: 41
+  total: 730
 technical_debt:
-  sorry_count: 73
-  axiom_count: 19
+  sorry_count: 95
+  axiom_count: 4
   build_errors: 0
   status: good
 ---
@@ -22,31 +22,10 @@ technical_debt:
 
 ## Tasks
 
-### 969. Refactor TaskFrame: restrict compositionality to non-negative durations
-- **Effort**: 6-8 hours
-- **Language**: lean
-- **Status**: [COMPLETED]
-- **Priority**: medium
-- **Dependencies**: Task 966 [COMPLETED] (decision: adopt `forward_comp + converse` axiomatization)
-- **Research**: [specs/research_sign_elimination/reports/research-001.md]
-- **Plan**: [specs/969_refactor_taskframe_restrict_compositionality/plans/implementation-001.md]
-- **Summary**: [specs/969_refactor_taskframe_restrict_compositionality/summaries/implementation-summary-20260314.md]
-
-**IMPLEMENTATION COMPLETE**: Refactored TaskFrame from `nullity + compositionality` to `nullity_identity + forward_comp + converse`. Updated canonical_task_rel to handle negative durations via `CanonicalR N.val M.val` (backward accessibility). All 6 modified files build successfully with zero new sorries and zero new axioms.
-
-**Changes made**:
-1. TaskFrame.lean: New axioms `nullity_identity`, `forward_comp`, `converse`; derived `nullity` theorem
-2. CanonicalConstruction.lean: `d < 0` now maps to `CanonicalR N.val M.val`, enabling converse proof
-3. nat_frame: Changed task_rel from `True` to `d != 0 \/ w = u` for `nullity_identity`
-4. prod_frame (IRRSoundness): Extended task_rel to require time stamp equality at d=0
-
-**Key files**: `TaskFrame.lean`, `WorldHistory.lean`, `CanonicalConstruction.lean`, `DurationTransfer.lean`, `IRRSoundness.lean`, `TemporalStructures.lean`
-
----
 
 ### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
 - **Effort**: 4-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Plan**: [specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md]
 - **Language**: lean
 - **Priority**: high
@@ -71,152 +50,13 @@ technical_debt:
 
 ---
 
-### 967. Reflexive Semantics Refactor to Eliminate canonicalR_irreflexive Axiom
-- **Effort**: 40-100 hours (reflexive semantics refactor)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Priority**: medium
-- **Research**: [specs/967_change_atom_type_for_freshness/reports/research-001.md], [specs/967_change_atom_type_for_freshness/reports/research-002.md]
-- **Plan**: [specs/967_change_atom_type_for_freshness/plans/implementation-003.md]
-- **Summary**: [specs/967_change_atom_type_for_freshness/summaries/implementation-summary-20260315.md]
 
-**IMPLEMENTATION COMPLETE**: Eliminated canonicalR_irreflexive axiom by completing Gabbay IRR proof using T-axiom. Changed temporal semantics to reflexive (< to <=), proved T-axiom soundness, and converted axiom to theorem. Full build passes with zero new sorries or axioms.
 
-**Key changes**:
-1. Truth.lean: Changed temporal operators from strict `<` to reflexive `<=`
-2. Axioms.lean: Added T-axioms (temp_t_future, temp_t_past)
-3. Soundness.lean: Proved T-axiom soundness
-4. CanonicalIrreflexivity.lean: Fixed Lean 4 API issues, completed Gabbay IRR proof
-5. CanonicalIrreflexivityAxiom.lean: Converted axiom to theorem
 
----
 
-### 966. Branch comparison: duration group TaskFrame refactor vs main
-- **Effort**: 1-2 hours (decision task)
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Priority**: high
-- **Research**: [specs/966_branch_comparison_duration_group_refactor/reports/research-001.md], [specs/966_branch_comparison_duration_group_refactor/reports/research-002.md]
-- **Plan**: [specs/966_branch_comparison_duration_group_refactor/plans/implementation-001.md]
-- **Summary**: [specs/966_branch_comparison_duration_group_refactor/summaries/implementation-summary-20260314.md]
 
-**DECISION ADOPTED**: Replace universal `compositionality` in TaskFrame with `nullity_identity + forward_comp + converse` axiomatization.
 
-**Key findings** (research-002.md):
-1. **Impossibility verified**: Full mixed-sign compositionality mathematically impossible for relational canonical models
-2. **Converse axiom correct**: Expresses group inverse relationship in D
-3. **backward_comp derivable**: From forward_comp + converse
-4. **Guardless respects_task sound**: s > t cases handled via forward_G in reverse
-5. **ShiftClosed gap independent**: Property of SET of histories (task 968)
 
-**Decisions made**:
-1. ADOPT `converse` formulation (replaces `compositionality + False` hack)
-2. ShiftClosed gap addressed by task 968 (independent)
-3. TaskFrame refactor (task 969) depends on this decision, can proceed in parallel with task 956
-4. Branch artifacts renumbered to avoid conflicts with main (tasks 967-969 created)
-
-**Implementation tasks created**:
-- Task 969: TaskFrame refactor with forward_comp + converse
-- Task 968: ShiftClosed proof (independent)
-- Task 967: Atom type change for freshness (prerequisite)
-- `Theories/Bimodal/Semantics/WorldHistory.lean`
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean`
-- `Theories/Bimodal/Semantics/Validity.lean` (ShiftClosed gap)
-
----
-
-### 964. Resolve atom type freshness debt (canonicalR_irreflexive axiom)
-- **Effort**: 1 hour
-- **Status**: [ABANDONED]
-- **Language**: lean
-- **Priority**: medium
-- **Research**: [research-001.md](specs/964_resolve_atom_type_freshness_debt/reports/research-001.md), [research-002.md](specs/964_resolve_atom_type_freshness_debt/reports/research-002.md), [research-003.md](specs/964_resolve_atom_type_freshness_debt/reports/research-003.md), [research-004.md](specs/964_resolve_atom_type_freshness_debt/reports/research-004.md), [research-005.md](specs/964_resolve_atom_type_freshness_debt/reports/research-005.md), [research-006.md](specs/964_resolve_atom_type_freshness_debt/reports/research-006.md), [research-007.md](specs/964_resolve_atom_type_freshness_debt/reports/research-007.md)
-- **Plan**: [implementation-004.md](specs/964_resolve_atom_type_freshness_debt/plans/implementation-004.md)
-
-**Superseded by Task 967**. The plan to archive `Bundle/CanonicalIrreflexivity.lean` conflicts with task 967, which will *fix* that same file (converting `String → Atom`, completing its 2 sorries) and then remove the `canonicalR_irreflexive` axiom entirely. Research artifacts from this task (especially research-002, which maps the obstacle) are referenced by task 967 and should be preserved.
-
----
-
-### 963. Branch comparison: claude/duration-group-construction-SFEJg vs main
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Priority**: high
-
-**Outcome**: Branch merged into main. Architecture determined superior: `canonicalR_irreflexive` axiom (standard theorem, blocked only by `String` atom formalization artifact) cleanly discharges all Cantor prerequisites, reducing `CantorApplication.lean` from 8 sorries to 0. Auto-merge produced 0 sorries in `DensityFrameCondition.lean`. New files: `CanonicalDomain.lean`, `DurationTransfer.lean`, `DiscreteTimeline.lean`, `CanonicalIrreflexivityAxiom.lean`. Proof debt tracked as task 964.
-
----
-
-### 962. Modify DenseTimeline.lean: strict intermediate for reflexive sources
-- **Effort**: 2-4 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Priority**: high
-- **Dependencies**: Task 957 (density_frame_condition - COMPLETE)
-- **Unblocks**: Task 961 (NoMaxOrder/NoMinOrder/DenselyOrdered for TimelineQuot)
-- **Research**: [research-001.md](specs/962_dense_timeline_strict_intermediate_reflexive_source/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/962_dense_timeline_strict_intermediate_reflexive_source/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260313.md](specs/962_dense_timeline_strict_intermediate_reflexive_source/summaries/implementation-summary-20260313.md)
-
-**Description**: Modify `DenseTimeline.lean` so that `densityIntermediateMCS` uses `density_frame_condition_reflexive_source` when the source MCS is reflexive. Zero sorries introduced.
-
----
-
-### 960. Refactor documentation for bimodal Logos fragment
-- **Effort**: 3-5 hours
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Research**: [research-001.md](specs/960_refactor_documentation_bimodal_logos/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/960_refactor_documentation_bimodal_logos/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260312.md](specs/960_refactor_documentation_bimodal_logos/summaries/implementation-summary-20260312.md)
-
-**Description**: Refactor README.md and other documentation throughout this repository to make it clear that this is a Lean codebase implementing the semantics, proof theory, and metalogic for the bimodal fragment of the Logos, establishing completeness. Include a link to logos-labs.ai but do not include extensive information about the Logos aside from briefly indicating what it is and aims to do alongside providing the link. Instead of deleting Logos-specific documentation, move them to /home/benjamin/Projects/Logos/Theory/docs/boneyard/ to be integrated into that repo later.
-
----
-
-### 959. Orient pure-syntax D construction: archive Int chain, cleanup, clear roadmap
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Priority**: high
-- **Research**: [research-001.md](specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/959_orient_pure_syntax_d_construction_cleanup/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260311.md](specs/959_orient_pure_syntax_d_construction_cleanup/summaries/implementation-summary-20260311.md)
-
-**Description**: Regain orientation for the D-from-syntax strategy. Three work items:
-1. **Archive Int/Rat-tainted files**: `DovetailingChain.lean`, `TemporalCoherentConstruction.lean`, and the Int-dependent path in `Representation.lean` all violate the pure-syntax constraint. Archive to Boneyard. Clean up distracting comments pointing to these dead paths.
-2. **Close Task 958 distraction**: `canonicalR_irreflexive` is provably unused (research-009). Add documentation, mark as contained debt, close the task.
-3. **Map clear path for Task 956 Phases 6-8**: Fix 3 Cantor prerequisites in `CantorApplication.lean` (NoMaxOrder, NoMinOrder, DenselyOrdered on `TimelineQuot`), apply Cantor isomorphism → D, define `task_rel`, construct `TaskFrame`, prove standard completeness with zero Int/Rat imports.
-
-**Key files**:
-- Archive: `Bundle/DovetailingChain.lean` (uses Int), `Bundle/TemporalCoherentConstruction.lean` (uses Int), `Representation.lean` (depends on Int chain)
-- Fix: `StagedConstruction/CantorApplication.lean` (3 sorries: NoMaxOrder, NoMinOrder, DenselyOrdered)
-- New: D-from-syntax completeness path (Phases 7-8 of Task 956)
-
----
-
-### 957. Density frame condition under irreflexive temporal semantics
-- **Effort**: 8-16 hours
-- **Status**: [COMPLETED]
-- **Research**: [research-001.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-001.md), [research-002.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-002.md), [research-003.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-003.md) (IRR rule + selective Lindenbaum), [research-004.md](specs/957_density_frame_condition_irreflexive_temporal/reports/research-004.md) (IRR soundness)
-- **Plan**: [implementation-004.md](specs/957_density_frame_condition_irreflexive_temporal/plans/implementation-004.md) (v4: restrict IRR soundness to domain-inhabited times)
-- **Summary**: [implementation-summary-20260310c.md](specs/957_density_frame_condition_irreflexive_temporal/summaries/implementation-summary-20260310c.md) (complete: all 5 phases)
-- **Language**: lean
-- **Priority**: high
-- **Dependencies**: Task 956 context (StagedConstruction infrastructure, axiom system)
-- **Unblocks**: Task 956 (Phase 5: staged_timeline_densely_ordered)
-
-**Description**: Prove the density frame condition for the canonical model under irreflexive semantics from temporal axioms alone, without importing any external dense linear order (Q or otherwise).
-
-The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT CanonicalR M' M, there exists W with CanonicalR M W AND CanonicalR W M'.
-
-**Two sub-cases** (based on separating formula delta where G(delta) ∈ M' and delta ∉ M):
-- **Case A** (G(delta) ∉ M): Intermediate W = Lindenbaum(GContent(M) ∪ {¬delta}) appears to work — ¬CanonicalR(M', W) follows directly from G(delta) ∈ M' and ¬delta ∈ W without T-axiom. Needs formal verification.
-- **Case B** (G(delta) ∈ M, delta ∉ M): Obvious seed is inconsistent (delta ∈ GContent(M) conflicts with ¬delta). Investigate whether axioms force a Case A formula to always exist, or provide an alternative construction.
-
-**Key constraint**: Must derive density from the axioms (temp_linearity, density F(φ)→F(F(φ)), seriality). Importing Q or any dense linear order is FORBIDDEN.
-
----
 
 ### 961. Quotient density iteration: NoMaxOrder, NoMinOrder, DenselyOrdered for TimelineQuot
 - **Effort**: 3-5 hours
@@ -303,61 +143,8 @@ The condition to prove: for all MCS M, M' with CanonicalR M M' and NOT Canonical
 
 ---
 
-### 952. Sync Theory/.claude/ improvements into ProofChecker/.claude/
-- **Effort**: 3.5 hours
-- **Status**: [COMPLETED]
-- **Language**: meta
-- **Research**: [research-001.md](specs/952_sync_theory_claude_improvements_into_proofchecker_claude/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/952_sync_theory_claude_improvements_into_proofchecker_claude/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260301.md](specs/952_sync_theory_claude_improvements_into_proofchecker_claude/summaries/implementation-summary-20260301.md)
 
-**Description**: Sync Theory/.claude/ improvements into ProofChecker/.claude/. Bring in: typst-research skill+agent, /merge command, zero-padding ({NNN}) in paths and artifact templates, all domain content (category theory, bilateral semantics, mereology, bilattice-theory, monoidal-posets, scott-topology, etc.), logos-macros.md, extra orchestration files (delegation.md, orchestrator.md, routing.md, sessions.md, subagent-validation.md, validation.md), context-knowledge-template.md, README.md files in context/project/ subdirectories, extra typst patterns+standards, extra latex checklist items, tts-stt-integration.md, wezterm-integration.md in docs/guides/, opencode-conventions.md. PRESERVE: context/core/reference/ delegation, model: opus on agents, targeted file-by-file git staging, multi-agent team skills, condensed CLAUDE.md with @-references, all ProofChecker-specific patterns. IGNORE: output/ directory.
 
-**Completed**: Synced 40 files including domain content (category theory, bilateral semantics, mereology), typst-research skill/agent, /merge command, orchestration references, and documentation guides. All 32 ProofChecker-unique files preserved.
-
----
-
-### 951. Implement sorry-free completeness via CanonicalMCS domain
-- **Effort**: 20-30 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Priority**: high
-- **Dependencies**: Task 922 (research), Task 930 (analysis)
-- **Research**: [research-001.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-001.md), [research-002.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-002.md), [research-003.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-003.md), [research-008.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-008.md) (team), [research-009.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-009.md), [research-010.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-010.md), [research-011.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-011.md), [research-012.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-012.md) (team), [research-013.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-013.md), [research-014.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-014.md), [research-015.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-015.md) (team), [research-016.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-016.md) (architecture redesign), [research-018.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-018.md) (non-trivial task_rel from pure syntax), [research-019.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-019.md) (D construction obstruction analysis), [research-021.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-021.md) (team 4-agent — ideals map, catalog, gap analysis, all 5 gating questions answered), [research-022.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-022.md) (histories-first approach, R-order analysis, Flag infrastructure), [research-023.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-023.md) (deep analysis of alternative encoding strategies for F-persistence), [research-024.md](specs/951_implement_sorry_free_completeness_canonicalmcs/reports/research-024.md) (team: F-preserving seed consistency analysis)
-- **Plan**: [implementation-007.md](specs/951_implement_sorry_free_completeness_canonicalmcs/plans/implementation-007.md) (v7 - F-preserving seed consistency conjecture proof, 5 phases)
-- **Previous Blockers**: Plans v1-v6 SUPERSEDED. v7 BLOCKED: F-preserving seed conjecture proven false.
-- **Summary**: [implementation-summary-20260302.md](specs/951_implement_sorry_free_completeness_canonicalmcs/summaries/implementation-summary-20260302.md) (v7 blocked: counterexample found)
-
-**Description**: Implement standard completeness theorem using Bidirectional Reachable Fragment approach:
-1. Define bidirectional reachable fragment from root MCS
-2. Prove fragment is linearly ordered via linearity axiom
-3. Embed into Int via Antisymmetrization
-4. Pull back FMCS structure to get `FMCS Int` with forward_F/backward_P
-5. Build BFMCS with modal saturation
-6. Prove truth lemma and completeness
-
-**Plan v2 approach** (supersedes chain-based v1): Use Bidirectional Reachable Fragment. F/P are trivially sorry-free at CanonicalMCS level; embed linearly-ordered fragment into Int; pull back structure. Avoids F-formula non-persistence problem that blocked chain approach.
-
-**Key files**:
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean` - source of sorry-free forward_F/backward_P
-- `Boneyard/Metalogic/Bundle/CanonicalQuotientApproach/` - infrastructure to resurrect
-- `Theories/Bimodal/Metalogic/Bundle/CanonicalChain.lean` - Phase 1-2 infrastructure (857 lines)
-
----
-
-### 950. Move Bimodal Boneyard contents to Metalogic Boneyard
-- **Effort**: Small
-- **Status**: [COMPLETED]
-- **Language**: general
-- **Research**: [research-001.md](specs/950_move_bimodal_boneyard_contents/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/950_move_bimodal_boneyard_contents/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260227.md](specs/950_move_bimodal_boneyard_contents/summaries/implementation-summary-20260227.md)
-
-**Description**: Move the /home/benjamin/Projects/ProofChecker/Theories/Bimodal/Boneyard/ contents into /home/benjamin/Projects/ProofChecker/Boneyard/Metalogic/ as appropriate.
-
-**Completed**: Moved 112 Lean files to Boneyard/Metalogic/, updated Demo.lean and MaximalConsistent.lean imports to use active modules, consolidated MCS theory.
-
----
 
 ### 949. Update Demo.lean for current bimodal logic state
 - **Effort**: Small

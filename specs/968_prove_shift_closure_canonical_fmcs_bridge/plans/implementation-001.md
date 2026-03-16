@@ -1,7 +1,7 @@
 # Implementation Plan: Task #968
 
 - **Task**: 968 - prove_shift_closure_canonical_fmcs_bridge
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 6 hours
 - **Dependencies**: Task 967 (reflexive temporal semantics - completed)
 - **Research Inputs**: specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md
@@ -70,7 +70,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Port ShiftClosedCanonicalOmega Definition [NOT STARTED]
+### Phase 1: Port ShiftClosedCanonicalOmega Definition [IN PROGRESS]
 
 - **Dependencies**: None
 - **Goal**: Add the shift-closed Omega definition to CanonicalConstruction.lean

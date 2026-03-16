@@ -1,20 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md",
-      "summary": "5-phase implementation plan to port shift-closure infrastructure from Boneyard to active CanonicalConstruction.lean"
-    }
-  ],
-  "next_steps": "Run /implement 968 to execute the plan",
+  "status": "in_progress",
+  "started_at": "2026-03-15T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
   "metadata": {
-    "session_id": "sess_1773623549_390b68",
-    "agent_type": "planner-agent",
-    "duration_seconds": 420,
+    "session_id": "sess_1773624117_7f26dd",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 5,
-    "estimated_hours": 6
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
   }
 }
