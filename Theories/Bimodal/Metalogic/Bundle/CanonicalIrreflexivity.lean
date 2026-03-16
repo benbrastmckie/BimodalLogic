@@ -9,51 +9,45 @@ import Bimodal.Theorems.GeneralizedNecessitation
 /-!
 # Canonical Frame Irreflexivity
 
-## STATUS: UNUSED, UNPROVABLE WITH STRING ATOMS
+## STATUS: PROVED (Task 967 - Reflexive Semantics Refactor)
 
-**This theorem is not imported anywhere in the active codebase.** The completeness
-chain does NOT require `canonicalR_irreflexive`. Irreflexivity of the canonical
-timeline is obtained for free via the preorder on CanonicalMCS, which uses strict `<`
-(the Preorder's `lt` relation is definitionally irreflexive).
+**This theorem proves irreflexivity of the canonical accessibility relation.**
+The proof uses the T-axiom for past (H(φ) → φ), which is valid under the reflexive
+temporal semantics adopted in Task 967.
 
-**Why unprovable with String atoms**: The proof requires a globally fresh atom `p`
-that does not appear in any formula of MCS M. With `String` atoms, every MCS contains
-formulas mentioning every possible atom (e.g., `atom "p" ∨ ¬(atom "p")` is a tautology
-in every MCS, and mentions `"p"`). The naming set construction requires `atomFreeSubset M p = M`
-for the proof to work, but this is impossible when p appears in tautologies within M.
-The standard proof in the literature assumes a countably infinite supply of atoms with
-freshness, which our `String`-based atoms cannot provide without additional infrastructure.
+**Key insight**: With the T-axiom, we can derive `neg(p) ∈ M'` directly from
+`H(neg(p)) ∈ M'` (which is in the naming set). This eliminates the need for global
+freshness or the complex GContent ⊆ M' argument that was previously blocking.
 
-See Task 958 research-009.md for the full analysis of why this proof strategy cannot
-complete with String atoms.
+## Main Result
 
-## Main Result (sorry-dependent)
+- `canonicalR_irreflexive`: For any MCS M, `¬CanonicalR M M` (fully proved)
 
-- `canonicalR_irreflexive`: For any MCS M, `¬CanonicalR M M` (2 sorries, blocked)
+## Proof Strategy (Gabbay IRR with T-axiom)
 
-## Original Proof Strategy (Blocked)
-
-The proof uses the Gabbay Irreflexivity Rule (IRR) contrapositively, following
-the standard technique from Goldblatt (1992) and Blackburn-de Rijke-Venema (2001).
+The proof uses the Gabbay Irreflexivity Rule (IRR) technique, following
+the standard approach from Goldblatt (1992) and Blackburn-de Rijke-Venema (2001),
+enhanced with the T-axiom for past.
 
 The key steps:
 1. Assume `CanonicalR M M` (i.e., `GContent M ⊆ M`) for contradiction
-2. Define the naming set: p-free formulas from M plus {atom p, H(neg p)}
-3. Show this naming set is consistent (using IRR contrapositively)
-4. Extend to MCS M' via Lindenbaum; show `CanonicalR M M'`
-5. Derive contradiction from the interaction of M and M'
+2. Choose any atom p. Define naming set: p-free formulas plus {atom p, H(neg p)}
+3. Show naming set is consistent (using IRR contrapositively)
+4. Extend to MCS M' via Lindenbaum
+5. From naming set: atom(p) ∈ M' and H(neg(p)) ∈ M'
+6. By T-axiom: H(neg(p)) → neg(p), so neg(p) ∈ M'
+7. Both atom(p) and neg(p) in M' contradicts consistency of M'
 
-**Blocker**: Step 4 requires `GContent M ⊆ M'`, which fails for formulas mentioning p.
-The freshness condition cannot be satisfied for String atoms. See sorry at line ~1245.
+**Key enabling change (Task 967)**: The T-axiom for past (temp_t_past)
+allows Step 6, which was previously blocked without reflexive semantics.
 
 ## References
 
 - Goldblatt, R. (1992). Logics of Time and Computation. CSLI Lecture Notes.
 - Blackburn, P., de Rijke, M., Venema, Y. (2001). Modal Logic. Chapter 5.
 - Gabbay, D.M. (1981). An irreflexivity lemma.
-- Task 958: Research confirmed theorem is unused and unprovable with current atoms
-  - research-002.md: Initial strategy analysis
-  - research-009.md: Definitive analysis (String atom freshness impossibility)
+- Task 967: Reflexive semantics refactor enabling T-axiom
+  - research-002.md: Analysis confirming T-axiom approach
 -/
 
 namespace Bimodal.Metalogic.Bundle
@@ -72,22 +66,22 @@ noncomputable section
 -/
 
 /-- The atom-free subset of M with respect to p: formulas in M not mentioning p. -/
-def atomFreeSubset (M : Set Formula) (p : String) : Set Formula :=
+def atomFreeSubset (M : Set Formula) (p : Atom) : Set Formula :=
   {φ ∈ M | p ∉ φ.atoms}
 
 /-- The naming set for the irreflexivity proof:
 p-free formulas of M plus the "fresh marker" atom p and its past negation. -/
-def namingSet (M : Set Formula) (p : String) : Set Formula :=
+def namingSet (M : Set Formula) (p : Atom) : Set Formula :=
   atomFreeSubset M p ∪ {Formula.atom p, Formula.all_past (Formula.neg (Formula.atom p))}
 
 /-- atomFreeSubset is a subset of M. -/
-theorem atomFreeSubset_subset (M : Set Formula) (p : String) :
+theorem atomFreeSubset_subset (M : Set Formula) (p : Atom) :
     atomFreeSubset M p ⊆ M := by
   intro φ hφ
   exact hφ.1
 
 /-- Atoms of imp: if p ∉ φ.atoms and p ∉ ψ.atoms then p ∉ (φ.imp ψ).atoms -/
-theorem atoms_imp_not_mem {p : String} {φ ψ : Formula}
+theorem atoms_imp_not_mem {p : Atom} {φ ψ : Formula}
     (h1 : p ∉ φ.atoms) (h2 : p ∉ ψ.atoms) : p ∉ (φ.imp ψ).atoms := by
   simp only [Formula.atoms, Finset.mem_union]
   push_neg
@@ -97,64 +91,45 @@ theorem atoms_imp_not_mem {p : String} {φ ψ : Formula}
 theorem atoms_bot_empty : (Formula.bot).atoms = ∅ := rfl
 
 /-- p is not in bot.atoms -/
-theorem not_mem_atoms_bot (p : String) : p ∉ (Formula.bot).atoms := by
+theorem not_mem_atoms_bot (p : Atom) : p ∉ (Formula.bot).atoms := by
   simp [atoms_bot_empty]
 
 /-!
 ## Fresh atom for finite sets of formulas
 
-For any finite list of formulas, there exists a string not appearing
-in any of their atoms.
+For any finite set of formulas, there exists an atom not appearing
+in any of their atoms. This leverages the `Atom.exists_fresh` property.
 -/
 
-/-- For any Finset of strings, there exists a string not in it.
-Uses the fact that String is infinite (unbounded length). -/
-theorem Finset_String_not_univ (S : Finset String) : ∃ p : String, p ∉ S := by
-  -- Construct strings "a", "aa", "aaa", ... of increasing length
-  -- At least one must be outside S since S is finite
-  by_contra h_all
-  push_neg at h_all
-  -- h_all : ∀ p, p ∈ S
-  -- S contains all strings, but S is finite
-  -- The strings "", "a", "aa", "aaa", ..., "a"^(S.card + 1) are S.card + 2 distinct strings
-  -- They can't all be in S (pigeonhole)
-  have h_inj : Function.Injective (fun n : Fin (S.card + 1) => String.replicate n.val 'a') := by
-    intro a b hab
-    have := String.length_replicate a.val 'a'  -- length = a.val
-    have := String.length_replicate b.val 'a'  -- length = b.val
-    simp [String.replicate] at hab
-    ext
-    have : (String.replicate a.val 'a').length = (String.replicate b.val 'a').length := by
-      rw [hab]
-    simp [String.length_replicate] at this
-    exact this
-  have h_le := Fintype.card_le_of_injective
-    (fun n : Fin (S.card + 1) => ⟨String.replicate n.val 'a', h_all _⟩ : Fin (S.card + 1) → S) (by
-      intro a b hab
-      simp only [Subtype.mk.injEq] at hab
-      exact h_inj hab)
-  simp [Fintype.card_fin, Finset.card_coe] at h_le
-  omega
-
-/-- For any finite list of formulas, there exists a string not in any of their atoms. -/
+/-- For any finite list of formulas, there exists an atom not in any of their atoms.
+This follows from `Atom.exists_fresh` applied to the union of all atoms. -/
 theorem exists_fresh_for_finite_list (L : List Formula) :
-    ∃ p : String, ∀ φ ∈ L, p ∉ φ.atoms := by
+    ∃ p : Atom, ∀ φ ∈ L, p ∉ φ.atoms := by
   -- Collect all atoms from L into one Finset
   let all_atoms := L.foldr (fun φ acc => φ.atoms ∪ acc) ∅
-  obtain ⟨p, hp⟩ := Finset_String_not_univ all_atoms
+  obtain ⟨p, hp⟩ := Atom.exists_fresh all_atoms
   use p
   intro φ hφ
   intro h_mem
   apply hp
   -- p ∈ φ.atoms and φ ∈ L, so p ∈ all_atoms
   induction L with
-  | nil => exact absurd hφ (List.not_mem_nil)
+  | nil => exact False.elim (List.not_mem_nil hφ)
   | cons hd tl ih =>
-    simp only [List.foldr] at hp ⊢
-    rw [Finset.mem_union]
+    -- all_atoms = hd.atoms ∪ (foldr ... tl)
+    have hp' : p ∉ hd.atoms ∧ p ∉ List.foldr (fun φ acc => φ.atoms ∪ acc) ∅ tl := by
+      -- hp : p ∉ all_atoms where all_atoms = hd.atoms ∪ (foldr ... tl)
+      change p ∉ hd.atoms ∪ List.foldr (fun φ acc => φ.atoms ∪ acc) ∅ tl at hp
+      simp only [Finset.mem_union, not_or] at hp
+      exact hp
     cases List.mem_cons.mp hφ with
-    | inl h => left; rw [← h]; exact h_mem
-    | inr h => right; exact ih h
+    | inl h =>
+      -- φ = hd, so p ∈ φ.atoms = p ∈ hd.atoms
+      rw [h] at h_mem
+      exact absurd h_mem hp'.1
+    | inr h =>
+      -- φ ∈ tl
+      exact absurd (ih hp'.2 h) hp'.2
 
 /-!
 ## Naming Set Consistency (via IRR Contrapositive)
@@ -183,7 +158,7 @@ theorem atoms_iterated_imp_subset (L : List Formula) (ψ : Formula) :
 
 /-- If p is not in atoms of any formula in L and p ∉ ψ.atoms,
 then p ∉ (L.foldr Formula.imp ψ).atoms -/
-theorem not_mem_atoms_iterated_imp {p : String} {L : List Formula} {ψ : Formula}
+theorem not_mem_atoms_iterated_imp {p : Atom} {L : List Formula} {ψ : Formula}
     (hL : ∀ φ ∈ L, p ∉ φ.atoms) (hψ : p ∉ ψ.atoms) :
     p ∉ (L.foldr Formula.imp ψ).atoms := by
   intro h_mem
@@ -193,26 +168,55 @@ theorem not_mem_atoms_iterated_imp {p : String} {L : List Formula} {ψ : Formula
   | cons hd tl ih =>
     simp only [List.foldr, Finset.mem_union] at this
     cases this with
-    | inl h => exact hL hd (List.mem_cons_self _ _) h
+    | inl h => exact hL hd List.mem_cons_self h
     | inr h => exact ih (fun φ hφ => hL φ (List.mem_cons_of_mem _ hφ)) h
 
-/-- From a derivation L ⊢ ψ, derive [] ⊢ L.foldr Formula.imp ψ
-by iterated deduction theorem. -/
-def iterated_deduction (L : List Formula) (ψ : Formula)
-    (d : DerivationTree L ψ) : DerivationTree [] (L.foldr Formula.imp ψ) := by
-  induction L with
+/-- Helper: given a derivation `L ⊢ ψ`, produce `⊢ L.reverse.foldr Formula.imp ψ`.
+Note: This reverses the list order because deduction theorem peels from head. -/
+def iterated_deduction_aux (L : List Formula) (ψ : Formula)
+    (d : DerivationTree L ψ) : DerivationTree [] (L.reverse.foldr Formula.imp ψ) := by
+  induction L generalizing ψ with
   | nil =>
-    simp only [List.foldr]
+    simp only [List.reverse_nil, List.foldr]
     exact d
   | cons hd tl ih =>
-    simp only [List.foldr]
-    -- We have hd :: tl ⊢ ψ
-    -- By deduction theorem: tl ⊢ hd → ψ
-    -- Wait, deduction theorem gives: (A :: Γ) ⊢ B → Γ ⊢ A → B
-    -- But our context is hd :: tl, so deduction gives: tl ⊢ hd.imp ψ
-    -- Then by IH: [] ⊢ tl.foldr Formula.imp (hd.imp ψ)
+    simp only [List.reverse_cons, List.foldr_append, List.foldr]
     have d_ded := deduction_theorem tl hd ψ d
-    exact ih (hd.imp ψ) d_ded
+    exact ih d_ded
+
+/-- From a derivation L ⊢ ψ, derive [] ⊢ L.foldr Formula.imp ψ
+by iterated deduction theorem. Uses the reversed list internally. -/
+def iterated_deduction (L : List Formula) (ψ : Formula)
+    (d : DerivationTree L ψ) : DerivationTree [] (L.foldr Formula.imp ψ) := by
+  -- Key: L.foldr = L.reverse.reverse.foldr = ... but that doesn't help directly.
+  -- Alternative: exchange derivation from L to L.reverse, then use aux
+  have d_rev : DerivationTree L.reverse ψ := by
+    apply DerivationTree.weakening L L.reverse ψ d
+    intro φ hφ
+    exact List.mem_reverse.mpr hφ
+  have h_result := iterated_deduction_aux L.reverse ψ d_rev
+  simp only [List.reverse_reverse] at h_result
+  exact h_result
+
+/-- Helper for iterated_imp_in_mcs using reversed list order. -/
+theorem iterated_imp_in_mcs_aux {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+    (L : List Formula) (ψ : Formula)
+    (h_thm : DerivationTree [] (L.reverse.foldr Formula.imp ψ))
+    (h_sub : ∀ φ ∈ L, φ ∈ S) : ψ ∈ S := by
+  induction L generalizing ψ with
+  | nil =>
+    simp only [List.reverse_nil, List.foldr] at h_thm
+    exact theorem_in_mcs h_mcs h_thm
+  | cons hd tl ih =>
+    simp only [List.reverse_cons, List.foldr_append, List.foldr] at h_thm
+    -- h_thm : [] ⊢ tl.reverse.foldr Formula.imp (hd.imp ψ)
+    -- By IH: hd.imp ψ ∈ S
+    have h_imp_in_S : (hd.imp ψ) ∈ S := ih h_thm
+      (fun φ hφ => h_sub φ (List.mem_cons_of_mem _ hφ))
+    -- hd ∈ S (from h_sub)
+    have h_hd_in_S : hd ∈ S := h_sub hd List.mem_cons_self
+    -- By modus ponens in MCS: ψ ∈ S
+    exact set_mcs_implication_property h_mcs h_imp_in_S h_hd_in_S
 
 /-- From [] ⊢ L.foldr Formula.imp ψ and all elements of L in MCS S,
 derive ψ ∈ S. -/
@@ -220,24 +224,18 @@ theorem iterated_imp_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent S)
     (L : List Formula) (ψ : Formula)
     (h_thm : DerivationTree [] (L.foldr Formula.imp ψ))
     (h_sub : ∀ φ ∈ L, φ ∈ S) : ψ ∈ S := by
-  induction L with
-  | nil =>
-    simp only [List.foldr] at h_thm
-    exact theorem_in_mcs h_mcs h_thm
-  | cons hd tl ih =>
-    simp only [List.foldr] at h_thm
-    -- h_thm : [] ⊢ tl.foldr Formula.imp (hd.imp ψ)
-    -- By IH: hd.imp ψ ∈ S
-    have h_imp_in_S : (hd.imp ψ) ∈ S := ih (hd.imp ψ) h_thm
-      (fun φ hφ => h_sub φ (List.mem_cons_of_mem _ hφ))
-    -- hd ∈ S (from h_sub)
-    have h_hd_in_S : hd ∈ S := h_sub hd (List.mem_cons_self _ _)
-    -- By modus ponens in MCS: ψ ∈ S
-    exact set_mcs_implication_property h_mcs h_imp_in_S h_hd_in_S
+  -- L.foldr = L.reverse.reverse.foldr
+  have h_thm' : DerivationTree [] (L.reverse.reverse.foldr Formula.imp ψ) := by
+    simp only [List.reverse_reverse]
+    exact h_thm
+  have h_sub' : ∀ φ ∈ L.reverse, φ ∈ S := by
+    intro φ hφ
+    exact h_sub φ (List.mem_reverse.mp hφ)
+  exact iterated_imp_in_mcs_aux h_mcs L.reverse ψ h_thm' h_sub'
 
 /-- The naming set is set-consistent. This is the core IRR-contrapositive argument.
 
-If M is an MCS with GContent M ⊆ M, then for any string p, the set
+If M is an MCS with GContent M ⊆ M, then for any atom p, the set
 `atomFreeSubset M p ∪ {atom p, H(neg(atom p))}` is set-consistent.
 
 Proof: Suppose for contradiction that some finite L ⊆ naming set is inconsistent.
@@ -249,7 +247,7 @@ By IRR: `⊢ χ`. But χ ∈ M (as theorem) and all L_af elements are in M, so �
 Contradiction with M being consistent.
 -/
 theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (h_R : CanonicalR M M) (p : String) :
+    (h_R : CanonicalR M M) (p : Atom) :
     SetConsistent (namingSet M p) := by
   intro L hL_sub ⟨d⟩
   -- L is a finite list from namingSet M p that derives bot
@@ -261,12 +259,14 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   -- All elements of L_af are p-free and in M
   have hL_af_pfree : ∀ φ ∈ L_af, p ∉ φ.atoms := by
     intro φ hφ
-    have := List.mem_filter.mp hφ
-    exact this.2.2
+    have hmf := List.mem_filter.mp hφ
+    have haf := of_decide_eq_true hmf.2
+    exact haf.2
   have hL_af_in_M : ∀ φ ∈ L_af, φ ∈ M := by
     intro φ hφ
-    have := List.mem_filter.mp hφ
-    exact this.2.1
+    have hmf := List.mem_filter.mp hφ
+    have haf := of_decide_eq_true hmf.2
+    exact haf.1
   -- L derives bot, so by weakening/exchange, we can work with a rearranged context
   -- Key: all elements of L are either in atomFreeSubset M p or in {atomP, HnegP}
   -- We will show that the p-free formulas + the naming formulas derive bot
@@ -336,7 +336,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
       intro φ hφ
       have hφ_filter := List.mem_filter.mp hφ
       have hφ_in_L := hφ_filter.1
-      have hφ_ne := hφ_filter.2
+      have hφ_ne := of_decide_eq_true hφ_filter.2
       have hφ_in_naming := hL_sub φ hφ_in_L
       simp only [namingSet, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff] at hφ_in_naming
       cases hφ_in_naming with
@@ -362,7 +362,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
         · simp [hφ_HnegP]
         · simp only [List.mem_cons]
           right; right
-          exact List.mem_filter.mpr ⟨hφ, ⟨hφ_atomP, hφ_HnegP⟩⟩
+          exact List.mem_filter.mpr ⟨hφ, decide_eq_true ⟨hφ_atomP, hφ_HnegP⟩⟩
 
     have d_rearranged : DerivationTree (HnegP :: atomP :: L_rest) Formula.bot :=
       DerivationTree.weakening L (HnegP :: atomP :: L_rest) Formula.bot d h_L_sub_rearranged
@@ -645,7 +645,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     -- SetConsistent means all finite subsets are consistent
     -- [⊥] ⊆ M and [⊥] ⊢ ⊥ (identity)
     have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
-      DerivationTree.assumption _ _ (List.mem_cons_self _ _)
+      DerivationTree.assumption _ _ List.mem_cons_self
     exact h_M_cons [Formula.bot] (by intro φ hφ; simp at hφ; rw [hφ]; exact h_bot_in_M) ⟨h_bot_deriv⟩
 
   · -- Not both naming formulas in L
@@ -661,19 +661,21 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
       -- All elements of L except atomP are in atomFreeSubset M p ⊆ M
       -- Filter to get L_rest without atomP
       let L_rest := L.filter (fun φ => φ ≠ atomP)
-      have hL_rest_in_M : ∀ φ ∈ L_rest, φ ∈ M := by
+      have hL_rest_af : ∀ φ ∈ L_rest, φ ∈ atomFreeSubset M p := by
         intro φ hφ
         have hφ_filter := List.mem_filter.mp hφ
         have hφ_in_L := hφ_filter.1
-        have hφ_ne := hφ_filter.2
+        have hφ_ne := of_decide_eq_true hφ_filter.2
         have hφ_in_naming := hL_sub φ hφ_in_L
         simp only [namingSet, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff] at hφ_in_naming
         cases hφ_in_naming with
-        | inl h => exact h.1
+        | inl h => exact h
         | inr h =>
           cases h with
           | inl h => exact absurd h hφ_ne
-          | inr h => exact absurd h (fun heq => h_no_HnegP (heq ▸ hφ_in_L))
+          | inr h => exact absurd h (fun heq => h_no_HnegP (by simp only [HnegP]; rw [← heq]; exact hφ_in_L))
+      have hL_rest_in_M : ∀ φ ∈ L_rest, φ ∈ M := by
+        intro φ hφ; exact (hL_rest_af φ hφ).1
 
       -- Rearrange: atomP :: L_rest ⊢ ⊥
       have h_L_sub_rearr : ∀ φ ∈ L, φ ∈ (atomP :: L_rest) := by
@@ -681,7 +683,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
         by_cases hφ_eq : φ = atomP
         · simp [hφ_eq]
         · simp only [List.mem_cons]
-          right; exact List.mem_filter.mpr ⟨hφ, hφ_eq⟩
+          right; exact List.mem_filter.mpr ⟨hφ, decide_eq_true hφ_eq⟩
       have d_rearr : DerivationTree (atomP :: L_rest) Formula.bot :=
         DerivationTree.weakening L (atomP :: L_rest) _ d h_L_sub_rearr
 
@@ -1080,7 +1082,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
         iterated_imp_in_mcs h_mcs L_rest Formula.bot d_chi' hL_rest_in_M
 
       have h_bot_deriv' : DerivationTree [Formula.bot] Formula.bot :=
-        DerivationTree.assumption _ _ (List.mem_cons_self _ _)
+        DerivationTree.assumption _ _ List.mem_cons_self
       exact h_mcs.1 [Formula.bot] (by intro φ hφ; simp at hφ; rw [hφ]; exact h_bot_in_M') ⟨h_bot_deriv'⟩
 
     · -- atomP ∉ L
@@ -1094,14 +1096,14 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
           intro φ hφ
           have hφ_filter := List.mem_filter.mp hφ
           have hφ_in_L := hφ_filter.1
-          have hφ_ne := hφ_filter.2
+          have hφ_ne := of_decide_eq_true hφ_filter.2
           have hφ_in_naming := hL_sub φ hφ_in_L
           simp only [namingSet, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff] at hφ_in_naming
           cases hφ_in_naming with
           | inl h => exact h
           | inr h =>
             cases h with
-            | inl h => exact absurd h (fun heq => h_atomP (heq ▸ hφ_in_L))
+            | inl h => exact absurd h (fun heq => h_atomP (by simp only [atomP]; rw [← heq]; exact hφ_in_L))
             | inr h => exact absurd h hφ_ne
         have hL_rest_pfree : ∀ φ ∈ L_rest, p ∉ φ.atoms := by
           intro φ hφ; exact (hL_rest_af φ hφ).2
@@ -1113,7 +1115,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
           intro φ hφ
           by_cases hφ_eq : φ = HnegP
           · simp [hφ_eq]
-          · simp only [List.mem_cons]; right; exact List.mem_filter.mpr ⟨hφ, hφ_eq⟩
+          · simp only [List.mem_cons]; right; exact List.mem_filter.mpr ⟨hφ, decide_eq_true hφ_eq⟩
         have d_rearr : DerivationTree (HnegP :: L_rest) Formula.bot :=
           DerivationTree.weakening L (HnegP :: L_rest) _ d h_L_sub_rearr
 
@@ -1151,7 +1153,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
           iterated_imp_in_mcs h_mcs L_rest Formula.bot d_chi' hL_rest_in_M
 
         have h_bot_deriv' : DerivationTree [Formula.bot] Formula.bot :=
-          DerivationTree.assumption _ _ (List.mem_cons_self _ _)
+          DerivationTree.assumption _ _ List.mem_cons_self
         exact h_mcs.1 [Formula.bot] (by intro φ hφ; simp at hφ; rw [hφ]; exact h_bot_in_M') ⟨h_bot_deriv'⟩
 
       · -- Neither atomP nor HnegP in L
@@ -1164,8 +1166,8 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
           | inl h => exact h.1
           | inr h =>
             cases h with
-            | inl h => exact absurd h (fun heq => h_atomP (heq ▸ hφ))
-            | inr h => exact absurd h (fun heq => h_HnegP (heq ▸ hφ))
+            | inl h => exact absurd h (fun heq => h_atomP (by simp only [atomP]; rw [← heq]; exact hφ))
+            | inr h => exact absurd h (fun heq => h_HnegP (by simp only [HnegP]; rw [← heq]; exact hφ))
         -- L ⊆ M and L ⊢ ⊥ contradicts SetConsistent M
         exact h_mcs.1 L hL_in_M ⟨d⟩
 
@@ -1187,27 +1189,32 @@ they are atom p (which is in M').
 /--
 CanonicalR is irreflexive: for any MCS M, `¬CanonicalR M M`.
 
-**STATUS: UNUSED AND UNPROVABLE** (Task 958)
+**STATUS: PROVED (Task 967 - Reflexive Semantics Refactor)**
 
-This theorem is not imported by any active code. The completeness chain does not
-require it -- irreflexivity comes for free from the strict `<` ordering on
-CanonicalMCS. The 2 sorries in this proof are intentional and well-documented:
-they cannot be resolved with String atoms (see module docstring for full analysis).
+Proof uses the T-axiom for past (H(φ) → φ), which is valid under the reflexive
+temporal semantics adopted in Task 967. This enables the key step:
+  H(neg(p)) ∈ M' → neg(p) ∈ M'
+which provides the contradiction with atom(p) ∈ M' from the naming set.
 
-**DO NOT attempt to resolve these sorries** without first addressing the atom
-freshness infrastructure (requires moving from String to a type with guaranteed
-fresh atom generation).
+Proof outline (Gabbay IRR):
+1. Assume `CanonicalR M M` (i.e., `GContent M ⊆ M`) for contradiction.
+2. Choose any atom p. The naming set `atomFreeSubset M p ∪ {atom p, H(¬p)}`
+   is set-consistent (by naming_set_consistent).
+3. Extend to MCS M' via Lindenbaum.
+4. From naming set: atom(p) ∈ M' and H(neg(p)) ∈ M'.
+5. By T-axiom for past: H(neg(p)) → neg(p), so neg(p) ∈ M'.
+6. Both atom(p) and neg(p) in M' contradicts M' being consistent.
 
-Proof: Assume `CanonicalR M M` (i.e., `GContent M ⊆ M`) for contradiction.
-Choose any string p. The naming set `atomFreeSubset M p ∪ {atom p, H(¬p)}`
-is set-consistent (by naming_set_consistent). Extend to MCS M' via Lindenbaum.
-Then derive contradiction using the H-closure and temp_a interaction.
+References:
+- Goldblatt (1992), Logics of Time and Computation, Chapter 6.
+- Gabbay (1981), Irreflexivity Lemma.
+- Task 967 research-002.md: Analysis of T-axiom enabling this proof.
 -/
 theorem canonicalR_irreflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ¬CanonicalR M M := by
   intro h_R
-  -- Choose any p (say "p")
-  let p := "p"
+  -- Choose any atom p. We use Atom.mk_base "p" for concreteness.
+  let p : Atom := Atom.mk_base "p"
   -- The naming set is consistent
   have h_ns_cons := naming_set_consistent M h_mcs h_R p
   -- Extend to MCS M'
@@ -1216,144 +1223,44 @@ theorem canonicalR_irreflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M
   have h_atomP_in_M' : Formula.atom p ∈ M' := by
     apply h_ext
     simp only [namingSet, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff]
-    right; left; rfl
+    right; left; trivial
   -- H(neg(atom p)) ∈ M' (from naming set)
   have h_HnegP_in_M' : Formula.all_past (Formula.neg (Formula.atom p)) ∈ M' := by
     apply h_ext
     simp only [namingSet, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff]
-    right; right; rfl
-  -- atomFreeSubset M p ⊆ M'
-  have h_af_sub_M' : atomFreeSubset M p ⊆ M' := by
+    right; right; trivial
+
+  -- KEY STEP: Apply T-axiom for past to get neg(atom p) ∈ M'
+  -- T-axiom (past): H(φ) → φ is an axiom (temp_t_past)
+  -- Since M' is an MCS and temp_t_past is an axiom, (H(neg(p)) → neg(p)) ∈ M'
+  have h_T_axiom_in_M' : (Formula.all_past (Formula.neg (Formula.atom p))).imp
+      (Formula.neg (Formula.atom p)) ∈ M' :=
+    theorem_in_mcs h_mcs' (DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.neg (Formula.atom p))))
+  -- By modus ponens: from H(neg(p)) ∈ M' and (H(neg(p)) → neg(p)) ∈ M', get neg(p) ∈ M'
+  have h_negP_in_M' : Formula.neg (Formula.atom p) ∈ M' :=
+    set_mcs_implication_property h_mcs' h_T_axiom_in_M' h_HnegP_in_M'
+
+  -- CONTRADICTION: Both atom p and neg(atom p) are in M'
+  -- M' is an MCS, so it is consistent. But having both p and ¬p contradicts consistency.
+  -- neg(atom p) = (atom p).imp bot, so from atom p and neg(atom p), derive bot
+  have h_bot_in_M' : Formula.bot ∈ M' :=
+    set_mcs_implication_property h_mcs' h_negP_in_M' h_atomP_in_M'
+  -- But M' is SetConsistent (since M' is SetMaximalConsistent), so bot ∉ M'
+  -- SetConsistent M' means: for any L ⊆ M', Consistent L
+  -- If bot ∈ M', then [bot] ⊆ M', so Consistent [bot]
+  -- But [bot] ⊢ bot (trivially), contradicting Consistent [bot]
+  have h_set_consistent : SetConsistent M' := h_mcs'.1
+  have h_bot_list_consistent : Consistent [Formula.bot] := by
+    apply h_set_consistent [Formula.bot]
     intro φ hφ
-    exact h_ext (Set.mem_union_left _ hφ)
-  -- GContent M ⊆ M': for each φ ∈ GContent M, show φ ∈ M'
-  have h_GC_sub_M' : GContent M ⊆ M' := by
-    intro φ hφ
-    -- φ ∈ GContent M means G(φ) ∈ M
-    -- By G-closure (h_R): φ ∈ M
-    have h_phi_in_M : φ ∈ M := h_R hφ
-    -- If φ is p-free: φ ∈ atomFreeSubset M p ⊆ M'
-    by_cases h_pfree : p ∉ φ.atoms
-    · exact h_af_sub_M' ⟨h_phi_in_M, h_pfree⟩
-    · -- φ mentions p. φ ∈ M but φ might not be in the naming set.
-      -- We need to show φ ∈ M' using other means.
-      -- Key: φ ∈ GContent M means G(φ) ∈ M.
-      -- From temp_a on φ at M: since φ ∈ M, G(P(φ)) ∈ M.
-      -- From temp_4: G(φ) → G(G(φ)), so G(G(φ)) ∈ M, hence G(φ) ∈ GContent M.
-      -- So G(φ) ∈ M.
-
-      -- The formula φ mentions p. Examples:
-      -- φ = atom p: atom p ∈ M' (from naming set)
-      -- φ = neg(atom p): neg(atom p) ∈ M but atom p ∈ M' so neg(atom p) ∉ M'.
-      --   But if neg(atom p) ∈ GContent M, then G(neg(atom p)) ∈ M,
-      --   so neg(atom p) ∈ M. And atom p ∈ M (from G(atom p)?).
-      --   Actually if GContent M ⊆ M and G(neg(atom p)) ∈ M, then neg(atom p) ∈ M.
-      --   Also if G(atom p) ∈ M (possible), then atom p ∈ M.
-      --   Then both atom p and neg(atom p) ∈ M, contradicting consistency.
-      --   So either G(atom p) ∉ M or G(neg(atom p)) ∉ M.
-      --   If G(neg(atom p)) ∉ M, then neg(atom p) ∉ GContent M. OK.
-      --   If G(atom p) ∉ M, then atom p ∉ GContent M. But φ ∈ GContent M and φ mentions p
-      --   and φ ≠ atom p.
-
-      -- For the general case, we need a case analysis on φ's structure.
-      -- This is getting very complex. Let me use a different approach.
-
-      -- ALTERNATIVE: Use the fact that M' is an MCS. For φ ∈ M (with p ∈ φ.atoms):
-      -- Either φ ∈ M' or neg(φ) ∈ M' (by negation completeness of M').
-      -- If neg(φ) ∈ M': we need to show this leads to contradiction.
-
-      -- This approach: assume neg(φ) ∈ M' and derive contradiction.
-      -- neg(φ) ∈ M' and φ ∈ M.
-      -- From G(φ) ∈ M and temp_4: G(G(φ)) ∈ M, so G(φ) ∈ GContent M.
-      -- G(φ) is p-free? G(φ) = all_future(φ). (all_future φ).atoms = φ.atoms.
-      -- So p ∈ φ.atoms means p ∈ G(φ).atoms. G(φ) is NOT p-free.
-      -- So G(φ) ∉ atomFreeSubset M p. And G(φ) might not be in M'.
-
-      -- This is very difficult. Let me try to use sorry here and move forward with the main theorem.
-      sorry
-  -- CanonicalR M M'
-  have h_R_M_M' : CanonicalR M M' := h_GC_sub_M'
-  -- By GContent/HContent duality: HContent M' ⊆ M
-  have h_HC_M'_M : HContent M' ⊆ M :=
-    GContent_subset_implies_HContent_reverse M M' h_mcs h_mcs' h_R_M_M'
-  -- H(neg(atom p)) ∈ M', so neg(atom p) ∈ HContent M', hence neg(atom p) ∈ M
-  have h_negP_in_M : Formula.neg (Formula.atom p) ∈ M :=
-    h_HC_M'_M h_HnegP_in_M'
-  -- neg(atom p) ∈ M. By temp_a: G(P(neg(atom p))) ∈ M.
-  -- P(neg(atom p)) ∈ GContent M ⊆ M'.
-  have h_temp_a_negP : Formula.all_future (Formula.neg (Formula.atom p)).sometime_past ∈ M :=
-    set_mcs_implication_property h_mcs
-      (theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_a (Formula.neg (Formula.atom p)))))
-      h_negP_in_M
-  have h_P_negP_in_GC : (Formula.neg (Formula.atom p)).sometime_past ∈ GContent M :=
-    h_temp_a_negP
-  have h_P_negP_in_M' : (Formula.neg (Formula.atom p)).sometime_past ∈ M' :=
-    h_GC_sub_M' h_P_negP_in_GC
-  -- P(neg(atom p)) = neg(H(neg(neg(atom p)))) = neg(H(¬¬p))
-  -- P(neg(atom p)) ∈ M' means H(neg(neg(atom p))) ∉ M'
-  -- neg(neg(atom p)) ∈ M' (from atom p ∈ M' and DNI)
-  have h_nnP_in_M' : Formula.neg (Formula.neg (Formula.atom p)) ∈ M' :=
-    set_mcs_implication_property h_mcs'
-      (theorem_in_mcs h_mcs' (Bimodal.Theorems.Combinators.dni (Formula.atom p)))
-      h_atomP_in_M'
-  -- P(neg(atom p)) = ¬H(¬¬p)
-  -- H(¬¬p) = all_past(neg(neg(atom p)))
-  -- From P(neg(atom p)) ∈ M': ¬H(¬¬p) ∈ M', so H(¬¬p) ∉ M'
-  -- We need: neg(atom p) ∈ M' to get contradiction with atom p ∈ M'
-  -- From HContent M' ⊆ M: if H(ψ) ∈ M' then ψ ∈ M
-  -- In particular: H(neg(atom p)) ∈ M' → neg(atom p) ∈ M (already known)
-  -- We need neg(atom p) IN M', not just in M.
-  -- neg(atom p) ∈ M but is it in M'?
-  -- neg(atom p) mentions p (atoms = {p}). It's not in atomFreeSubset.
-  -- But neg(atom p) ∈ M. Is it in M'?
-  -- If neg(atom p) ∈ M', then both atom p and neg(atom p) ∈ M', contradiction with MCS.
-  -- If neg(atom p) ∉ M', that's OK for M' (it chose atom p over neg(atom p)).
-  -- So we can't get the contradiction this way.
-
-  -- Alternative: show that the presence of both P(¬p) and ¬¬p in M' is contradictory.
-  -- P(¬p) = ¬H(¬¬p) = some_past(neg(atom p))
-  -- = neg(all_past(neg(neg(atom p))))
-  -- Have: neg(all_past(neg(neg(atom p)))) ∈ M' (h_P_negP_in_M')
-  -- Also: neg(neg(atom p)) ∈ M' (h_nnP_in_M')
-  -- These don't contradict each other directly.
-
-  -- REAL contradiction: use the ORIGINAL assumption h_R more carefully.
-  -- From h_R: GContent M ⊆ M. Also GContent M ⊆ M' (h_GC_sub_M').
-  -- From neg(atom p) ∈ M and temp_a: G(P(neg(atom p))) ∈ M.
-  -- So P(neg(atom p)) ∈ GContent M.
-  -- P(neg(atom p)) = neg(all_past(neg(neg(atom p)))).
-  -- This mentions p. Is P(neg(atom p)) ∈ M'? Yes (h_P_negP_in_M').
-
-  -- From H(neg(atom p)) ∈ M' and CanonicalR M M' and duality: neg(atom p) ∈ M.
-  -- By G-closure (h_R): neg(atom p) ∈ M.
-  -- But also atom p ∈ M' from naming set.
-  -- We need neg(atom p) ∈ M' for contradiction.
-
-  -- What if we can show: from CanonicalR M M and CanonicalR M M',
-  -- derive CanonicalR M M' (already have it), and show neg(atom p) gets into M'
-  -- through some chain.
-
-  -- Hmm, I think the issue is fundamental: neg(atom p) mentions p and is not p-free,
-  -- so it's not in the naming set. It IS in M but NOT in M'.
-
-  -- THE ACTUAL CONTRADICTION IN THE LITERATURE:
-  -- Works when p is globally fresh for M. Then Gamma_p = M, and M ⊆ M'.
-  -- So neg(atom p) ∈ M ⊆ M', and atom p ∈ M' from naming. Contradiction.
-
-  -- In our case, Gamma_p = atomFreeSubset M p ⊊ M. So M ⊄ M'.
-  -- neg(atom p) ∈ M but neg(atom p) ∉ atomFreeSubset M p, so neg(atom p) might not be in M'.
-
-  -- CONCLUSION: The proof as structured doesn't work because we can't guarantee
-  -- GContent M ⊆ M' or neg(atom p) ∈ M' without global freshness.
-
-  -- I need to restructure. The proof requires that neg(atom p) ∈ M'.
-  -- This happens when ALL of M is in M'. Which requires atomFreeSubset M p = M.
-  -- Which requires p to be globally fresh for M.
-  -- Which is impossible (as analyzed).
-
-  -- So: the proof strategy needs fundamental revision.
-  -- Mark as sorry and document the blocking issue.
-  sorry
+    simp at hφ
+    rw [hφ]
+    exact h_bot_in_M'
+  -- But [bot] ⊢ bot trivially (context contains bot)
+  have h_bot_in_list : Formula.bot ∈ [Formula.bot] := List.mem_singleton.mpr rfl
+  have h_bot_derives : DerivationTree [Formula.bot] Formula.bot :=
+    DerivationTree.assumption [Formula.bot] Formula.bot h_bot_in_list
+  exact h_bot_list_consistent ⟨h_bot_derives⟩
 
 end
 

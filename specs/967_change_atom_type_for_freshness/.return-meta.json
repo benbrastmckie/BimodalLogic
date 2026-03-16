@@ -38,28 +38,28 @@
       "summary": "Fixed type error in canonicalR_antisymmetric_strict"
     },
     {
+      "path": "Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean",
+      "type": "lean_source",
+      "summary": "Partial Lean 4 API fixes - List.mem_filter, List.mem_cons_self, iterated_deduction restructure"
+    },
+    {
       "path": "specs/967_change_atom_type_for_freshness/summaries/implementation-summary-20260314.md",
       "type": "summary",
       "summary": "Implementation summary for phases 0-6 (updated)"
     }
   ],
   "partial_progress": {
-    "stage": "phases_0_to_6_complete",
-    "details": "Phases 0-6 completed. Main build passes (743 jobs). Phases 7-11 remain but are out of main build scope (CanonicalIrreflexivity.lean proof completion to eliminate axiom).",
+    "stage": "phase_7_partial",
+    "details": "Fixed 15+ Lean 4 API issues in CanonicalIrreflexivity.lean: List.mem_filter decide handling, List.mem_cons_self signature, iterated_deduction foldr order. 3 errors remain: not_mem_atoms_iterated_imp ih typing, iterated_deduction_aux generalizing, iterated_imp_in_mcs_aux generalizing.",
     "phases_completed": 6,
     "phases_total": 11,
     "resume_phase": 7
   },
-  "completion_data": {
-    "completion_summary": "Implemented reflexive temporal semantics with T-axioms. Main build (743 jobs) passes. Phases 0-6 complete. Remaining phases 7-11 involve completing CanonicalIrreflexivity.lean proof to eliminate the canonicalR_irreflexive axiom - these are out of main build scope.",
-    "main_build_status": "green",
-    "axiom_status": "canonicalR_irreflexive remains an axiom; elimination requires phases 7-10"
-  },
   "metadata": {
-    "session_id": "sess_1773555000_a7c3d9",
+    "session_id": "sess_1773558600_b2d4e7",
     "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "iteration": 2
+    "iteration": 4
   }
 }
