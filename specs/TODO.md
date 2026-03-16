@@ -26,11 +26,12 @@ technical_debt:
 ## Tasks
 
 ### 980. Remove DN-based seriality proofs technical debt
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 5-8 hours
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/980_remove_dn_based_seriality_proofs_tech_debt/reports/research-001.md)
 
-**Description**: Remove the technical debt associated with the DN-based seriality proofs listed under non-goals in specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-001.md
+**Description**: Remove the technical debt where the discrete timeline construction incorrectly uses density axiom DN for NoMaxOrder/NoMinOrder proofs in `CantorPrereqs.lean`. The recommended fix is Direct NoMaxOrder via canonical model structure, bypassing encoding arguments. Alternative: MCS Richness approach.
 
 ---
 
