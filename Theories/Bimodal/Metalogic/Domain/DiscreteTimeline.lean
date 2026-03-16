@@ -72,7 +72,7 @@ variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mc
 
 /-- Elements of the discrete (base) timeline. -/
 def DiscreteTimelineElem : Type :=
-  { p : StagedPoint // p ∈ (buildStagedTimeline root_mcs root_mcs_proof).union }
+  { p : StagedPoint // p ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union }
 
 /-- The discrete timeline quotient: antisymmetrization of the base timeline. -/
 def DiscreteTimelineQuot : Type :=
@@ -93,7 +93,7 @@ noncomputable instance : Preorder (DiscreteTimelineElem root_mcs root_mcs_proof)
 
 /-- The preorder is total. -/
 instance : IsTotal (DiscreteTimelineElem root_mcs root_mcs_proof) (· ≤ ·) where
-  total a b := (buildStagedTimeline root_mcs root_mcs_proof).union_linearly_ordered a.1 b.1 a.2 b.2
+  total a b := (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union_linearly_ordered a.1 b.1 a.2 b.2
 
 /-- Decidable ≤. -/
 noncomputable instance : DecidableLE (DiscreteTimelineElem root_mcs root_mcs_proof) :=
@@ -115,7 +115,7 @@ The discrete timeline is nonempty (contains the root point).
 -/
 
 instance : Nonempty (DiscreteTimelineQuot root_mcs root_mcs_proof) := by
-  obtain ⟨p, hp⟩ := staged_timeline_nonempty root_mcs root_mcs_proof
+  obtain ⟨p, hp⟩ := discrete_staged_timeline_nonempty root_mcs root_mcs_proof
   exact ⟨toAntisymmetrization (· ≤ ·) ⟨p, hp⟩⟩
 
 /-!
@@ -314,7 +314,7 @@ instance : NoMaxOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
     intro a
     induction a using Antisymmetrization.ind with
     | _ p =>
-      obtain ⟨q, hq_mem, hq_R⟩ := staged_timeline_has_future root_mcs root_mcs_proof p.1 p.2
+      obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_future root_mcs root_mcs_proof p.1 p.2
       have h_strict : ¬CanonicalR q.mcs p.1.mcs :=
         Canonical.canonicalR_strict p.1.mcs q.mcs p.1.is_mcs q.is_mcs hq_R
       let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩
@@ -336,7 +336,7 @@ instance : NoMinOrder (DiscreteTimelineQuot root_mcs root_mcs_proof) where
     intro a
     induction a using Antisymmetrization.ind with
     | _ p =>
-      obtain ⟨q, hq_mem, hq_R⟩ := staged_timeline_has_past root_mcs root_mcs_proof p.1 p.2
+      obtain ⟨q, hq_mem, hq_R⟩ := discrete_staged_timeline_has_past root_mcs root_mcs_proof p.1 p.2
       have h_strict : ¬CanonicalR p.1.mcs q.mcs :=
         Canonical.canonicalR_strict q.mcs p.1.mcs q.is_mcs p.1.is_mcs hq_R
       let q' : DiscreteTimelineElem root_mcs root_mcs_proof := ⟨q, hq_mem⟩

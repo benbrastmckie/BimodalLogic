@@ -973,4 +973,176 @@ noncomputable def buildStagedTimeline : StagedTimeline where
   monotone := stagedBuild_monotone root_mcs root_mcs_proof
   linear_at_stage := stagedBuild_linear root_mcs root_mcs_proof
 
+/-!
+## Discrete Staged Construction
+
+The discrete staged construction is a variant of the staged build that SKIPS
+odd stages (density insertion). This is used for discrete timelines where
+the DN (density) axiom is not available.
+
+Without odd stages, only F/P witnesses are added (no density intermediates).
+This produces a discrete (non-dense) timeline where every element has an
+immediate successor and predecessor.
+
+### Key Difference from `stagedBuild`
+
+- `stagedBuild`: Alternates evenStage (F/P witnesses) and oddStage (density)
+- `discreteStagedBuild`: Only applies evenStage, skips oddStage entirely
+
+### Mathematical Consequence
+
+The discrete construction has finitely many points between any two comparable
+points, enabling LocallyFiniteOrder and hence SuccOrder/PredOrder instances.
+-/
+
+/--
+The discrete staged build. Like `stagedBuild` but skips odd stages (no density insertion).
+- Stage 0: Just the root
+- Stage n+1: Process formula n for F/P obligations (evenStage only)
+
+This construction does NOT use the density axiom DN.
+-/
+noncomputable def discreteStagedBuild : Nat → Finset StagedPoint
+  | 0 => stage0 root_mcs root_mcs_proof
+  | n + 1 =>
+    let prev := discreteStagedBuild n
+    -- Always apply evenStage for formula n (no density insertion)
+    evenStage prev n (n + 1)
+
+/-!
+## Discrete Build: Monotonicity
+-/
+
+theorem discreteStagedBuild_monotone (n : Nat) :
+    discreteStagedBuild root_mcs root_mcs_proof n ⊆
+    discreteStagedBuild root_mcs root_mcs_proof (n + 1) := by
+  show discreteStagedBuild root_mcs root_mcs_proof n ⊆
+    evenStage (discreteStagedBuild root_mcs root_mcs_proof n) n (n + 1)
+  exact evenStage_monotone _ _ _
+
+theorem discreteStagedBuild_monotone_le (m n : Nat) (h : m ≤ n) :
+    discreteStagedBuild root_mcs root_mcs_proof m ⊆
+    discreteStagedBuild root_mcs root_mcs_proof n := by
+  induction n with
+  | zero =>
+    have : m = 0 := Nat.le_zero.mp h
+    rw [this]
+  | succ n ih =>
+    cases Nat.eq_or_lt_of_le h with
+    | inl h_eq => rw [h_eq]
+    | inr h_lt =>
+      have h_le : m ≤ n := Nat.lt_succ_iff.mp h_lt
+      exact Finset.Subset.trans (ih h_le) (discreteStagedBuild_monotone root_mcs root_mcs_proof n)
+
+/-!
+## Discrete Build: Root Comparability
+-/
+
+/-- All points in the discrete staged build are MCS-comparable with the root. -/
+theorem discreteStagedBuild_all_comparable_with_root (n : Nat)
+    (p : StagedPoint) (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
+    CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
+    CanonicalR p.mcs (rootPoint root_mcs root_mcs_proof).mcs ∨
+    (rootPoint root_mcs root_mcs_proof).mcs = p.mcs := by
+  induction n generalizing p with
+  | zero =>
+    simp only [discreteStagedBuild, stage0, Finset.mem_singleton] at hp
+    rw [hp]
+    exact root_comparable_self root_mcs root_mcs_proof
+  | succ n ih =>
+    by_cases h_prev : p ∈ discreteStagedBuild root_mcs root_mcs_proof n
+    · exact ih p h_prev
+    · -- p was added at stage n+1
+      simp only [discreteStagedBuild] at hp
+      unfold evenStage at hp
+      split at hp
+      · -- decodeFormulaStaged returns none, so no new points
+        exact ih p hp
+      · -- decodeFormulaStaged returns some phi
+        rename_i phi _h_decode
+        unfold processFormula at hp
+        rw [Finset.mem_union] at hp
+        rcases hp with h_old | h_new
+        · exact ih p h_old
+        · rw [Finset.mem_biUnion] at h_new
+          obtain ⟨q, hq_mem, hp_wit⟩ := h_new
+          have h_q_comp := ih q hq_mem
+          unfold witnessesForPoint at hp_wit
+          rw [Finset.mem_union] at hp_wit
+          rcases hp_wit with h_fwd | h_bwd
+          · -- forward witness
+            split at h_fwd
+            · rename_i h_F
+              rw [Finset.mem_singleton] at h_fwd
+              rw [h_fwd]
+              exact forward_witness_comparable_with_root root_mcs root_mcs_proof q phi h_F (n + 1) h_q_comp
+            · exact absurd h_fwd (Finset.notMem_empty _)
+          · -- backward witness
+            split at h_bwd
+            · rename_i h_P
+              rw [Finset.mem_singleton] at h_bwd
+              rw [h_bwd]
+              exact backward_witness_comparable_with_root root_mcs root_mcs_proof q phi h_P (n + 1) h_q_comp
+            · exact absurd h_bwd (Finset.notMem_empty _)
+
+/-!
+## Discrete Build: Linearity
+-/
+
+/-- The discrete staged build is linearly ordered at every stage. -/
+theorem discreteStagedBuild_linear (n : Nat) :
+    IsLinearlyOrdered (discreteStagedBuild root_mcs root_mcs_proof n) := by
+  intro a ha b hb
+  have h_a_comp := discreteStagedBuild_all_comparable_with_root root_mcs root_mcs_proof n a ha
+  have h_b_comp := discreteStagedBuild_all_comparable_with_root root_mcs root_mcs_proof n b hb
+  -- Both a and b are comparable with root, so they are comparable with each other
+  rcases h_a_comp with h_aR | h_Ra | h_aeq
+  · rcases h_b_comp with h_bR | h_Rb | h_beq
+    · have := canonical_forward_reachable_linear
+        (rootPoint root_mcs root_mcs_proof).mcs a.mcs b.mcs
+        root_mcs_proof a.is_mcs b.is_mcs h_aR h_bR
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · have := comparability_step_backward a.mcs
+        (rootPoint root_mcs root_mcs_proof).mcs b.mcs
+        a.is_mcs root_mcs_proof b.is_mcs
+        (Or.inr (Or.inl h_aR)) h_Rb
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · exact Or.inr (Or.inr (h_beq ▸ h_aR))
+  · rcases h_b_comp with h_bR | h_Rb | h_beq
+    · have := comparability_step_forward a.mcs
+        (rootPoint root_mcs root_mcs_proof).mcs b.mcs
+        a.is_mcs root_mcs_proof b.is_mcs
+        (Or.inl h_Ra) h_bR
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · have := canonical_backward_reachable_linear
+        (rootPoint root_mcs root_mcs_proof).mcs a.mcs b.mcs
+        root_mcs_proof a.is_mcs b.is_mcs h_Ra h_Rb
+      exact stagedPoint_le_of_mcs_comparable a b this
+    · exact Or.inl (Or.inr (h_beq ▸ h_Ra))
+  · rcases h_b_comp with h_bR | h_Rb | h_beq
+    · exact Or.inl (Or.inr (h_aeq ▸ h_bR))
+    · exact Or.inr (Or.inr (h_aeq ▸ h_Rb))
+    · exact Or.inl (Or.inl (h_aeq.symm.trans h_beq))
+
+/-- The root is in stage 0 of the discrete build. -/
+theorem rootPoint_in_discreteStagedBuild_0 :
+    rootPoint root_mcs root_mcs_proof ∈ discreteStagedBuild root_mcs root_mcs_proof 0 := by
+  simp [discreteStagedBuild, stage0]
+
+/-!
+## Discrete Staged Timeline
+-/
+
+/--
+The discrete staged timeline, constructed without density insertion.
+This is used for discrete (non-dense) timelines where DN is not available.
+-/
+noncomputable def buildDiscreteStagedTimeline : StagedTimeline where
+  root := rootPoint root_mcs root_mcs_proof
+  root_stage := rfl
+  at_stage := discreteStagedBuild root_mcs root_mcs_proof
+  root_in_stage_0 := rootPoint_in_discreteStagedBuild_0 root_mcs root_mcs_proof
+  monotone := discreteStagedBuild_monotone root_mcs root_mcs_proof
+  linear_at_stage := discreteStagedBuild_linear root_mcs root_mcs_proof
+
 end Bimodal.Metalogic.StagedConstruction

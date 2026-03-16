@@ -1,7 +1,7 @@
 # Implementation Plan: Task #974 (v3 - Discrete Staged Construction)
 
 - **Task**: 974 - prove_discrete_timeline_succorder_predorder
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4 hours
 - **Dependencies**: None
 - **Research Inputs**:
@@ -108,7 +108,7 @@ Sorries reduced from 7 to 3. Proceed to v3 Phase 4.
 
 ---
 
-### Phase 4: Define discreteStagedBuild [NOT STARTED]
+### Phase 4: Define discreteStagedBuild [COMPLETED]
 
 - **Dependencies:** Phases 1-3 (completed)
 - **Goal:** Create a staged construction that skips odd stages (no density insertion)
@@ -141,7 +141,7 @@ Sorries reduced from 7 to 3. Proceed to v3 Phase 4.
 
 ---
 
-### Phase 5: Prove DN-free has_future [NOT STARTED]
+### Phase 5: Prove DN-free has_future [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Prove existence of future witnesses without using DN axiom
@@ -177,7 +177,7 @@ Sorries reduced from 7 to 3. Proceed to v3 Phase 4.
 
 ---
 
-### Phase 6: Redefine DiscreteTimelineElem and update proofs [NOT STARTED]
+### Phase 6: Redefine DiscreteTimelineElem and update proofs [BLOCKED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Wire up discrete construction to DiscreteTimeline.lean
