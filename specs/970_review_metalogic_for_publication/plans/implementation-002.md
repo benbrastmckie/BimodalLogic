@@ -113,7 +113,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 2: Archive Deprecated File (Reduces Sorry Count) [NOT STARTED]
+### Phase 2: Archive Deprecated File (Reduces Sorry Count) [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Move `TemporalCoherentConstruction.lean` to Boneyard, eliminating 2 dead-code sorries from active codebase.
