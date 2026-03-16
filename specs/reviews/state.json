@@ -382,12 +382,42 @@
         "path_to_sorry_free": "CanonicalMCS domain (11-20 hours)"
       },
       "session_id": "sess_review_20260227_completeness"
+    },
+    {
+      "review_id": "review-20260316",
+      "date": "2026-03-16",
+      "scope": "all (full codebase with roadmap integration)",
+      "report_path": "specs/reviews/review-20260316.md",
+      "summary": {
+        "files_reviewed": 95,
+        "critical_issues": 0,
+        "high_issues": 1,
+        "medium_issues": 2,
+        "low_issues": 3
+      },
+      "tasks_created": [],
+      "registries_updated": [],
+      "roadmap_analysis": {
+        "strategies_active": 2,
+        "strategies_concluded": 1,
+        "strategies_superseded": 1,
+        "strategies_paused": 1,
+        "ambitions_high_priority": 3,
+        "sorry_count_active": 9,
+        "sorry_count_examples": 13,
+        "axiom_count": 0,
+        "publication_path_sorries": 0,
+        "tasks_completed_since_last": ["929", "970 (partial)", "971"],
+        "current_focus": "D Construction Strategy Phase 6"
+      },
+      "changelog_updated": true,
+      "session_id": "sess_review_20260316"
     }
   ],
   "statistics": {
-    "total_reviews": 18,
-    "last_review": "2026-02-27",
-    "total_issues_found": 229,
+    "total_reviews": 19,
+    "last_review": "2026-03-16",
+    "total_issues_found": 235,
     "total_tasks_created": 12
   }
 }

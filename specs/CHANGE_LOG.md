@@ -17,6 +17,12 @@
 Updated by /todo command during task archival.
 -->
 
+### 2026-03-16
+
+- **Review 2026-03-16**: Full codebase review. 1 high issue (D Construction Phase 6 blocked), 2 medium, 3 low. Zero sorries on publication path, zero custom axioms. Build passes (975 jobs).
+  - *Rationale*: Periodic codebase health assessment and roadmap progress tracking.
+  - *References*: [review report](specs/reviews/review-20260316.md)
+
 ### 2026-02-28
 
 - **Task 948**: Archived BFMCS Completeness and FMP Completeness theorems (5 files) to Boneyard/Metalogic_v8. Relocated 3 shared utilities to Construction.lean.

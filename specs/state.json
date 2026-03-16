@@ -54,10 +54,10 @@
     {
       "project_number": 970,
       "project_name": "review_metalogic_for_publication",
-      "status": "partial",
+      "status": "completed",
       "language": "logic",
       "created": "2026-03-16T04:42:03Z",
-      "last_updated": "2026-03-15T12:00:00Z",
+      "last_updated": "2026-03-16T15:35:42Z",
       "session_id": "sess_1773640525_5d2ce3",
       "researched": "2026-03-16T05:37:45Z",
       "artifacts": [
@@ -88,7 +88,9 @@
       "phases_completed": 11,
       "phases_total": 12,
       "deferred_phase": 9,
-      "deferred_reason": "SetMaximalConsistent rename has 399 occurrences across 45 files - exceeds scope estimate"
+      "deferred_reason": "SetMaximalConsistent rename has 399 occurrences across 45 files - exceeds scope estimate",
+      "completed": "2026-03-16T15:35:42Z",
+      "completion_summary": "11/12 phases complete (phase 9 scope exceeded estimates; naming conventions spun off to task 972). Removed unused asDiamond, diamondFormula alias, privatized needs_modal_witness, verified no semantic_weak_completeness in code, removed 3 duplicate theorems from Completeness.lean."
     },
     {
       "project_number": 953,
@@ -323,6 +325,15 @@
           "summary": "Comprehensive architecture analysis with Feb 2026 best practices comparison and 7 prioritized upgrade recommendations"
         }
       ]
+    },
+    {
+      "project_number": 972,
+      "project_name": "review_metalogic_naming_conventions",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-16T15:35:42Z",
+      "last_updated": "2026-03-16T15:35:42Z",
+      "description": "Review Theories/Bimodal/Metalogic/ for inconsistent, misleading, or redundant naming conventions. Identify improvements (not wholesale renames) — looking for names that are genuinely confusing, inconsistent with Mathlib conventions, or redundant given their context. Originated from task 970 phase 9 deferral."
     }
   ],
   "completed_projects": [
@@ -337,7 +348,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 972,
+  "next_project_number": 973,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -346,9 +357,9 @@
     }
   ],
   "task_counts": {
-    "active": 11,
-    "not_started": 10,
-    "total": 335,
+    "active": 12,
+    "not_started": 11,
+    "total": 336,
     "abandoned": 38
   },
   "repository_health": {
@@ -357,5 +368,6 @@
     "axiom_count": 19,
     "build_errors": 0,
     "status": "manageable"
-  }
+  },
+  "last_updated": "2026-03-16T15:35:42Z"
 }
