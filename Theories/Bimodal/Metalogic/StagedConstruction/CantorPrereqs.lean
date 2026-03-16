@@ -217,11 +217,22 @@ private theorem iteratedFuture_injective_on (phi : Formula) :
   · have := iteratedFuture_sizeOf_lt_of_lt phi b a h_gt
     simp [h_eq] at this
 
+/--
+For any N, there exists an iterated future formula with encoding ≥ N.
+
+This is used to show that the staged timeline has no maximum:
+given any point at stage n, we can find a later obligation stage m > n
+that produces a new forward witness.
+
+**Proof**: By pigeonhole. N+1 distinct formulas `F^k(F(neg bot))` for k = 0..N
+have N+1 distinct encodings (by formula injectivity + encoder injectivity).
+Since encodings are natural numbers and we have N+1 of them, at least one
+must have value ≥ N (otherwise they'd all fit in {0, ..., N-1}).
+-/
 theorem encoding_sufficiency (N : Nat) :
     ∃ m : Nat,
       @Encodable.encode Formula formulaEncodableStaged
         (iteratedFuture m (Formula.some_future (Formula.neg Formula.bot))) ≥ N := by
-  -- N+1 distinct formulas have N+1 distinct encodings; one must be ≥ N.
   by_contra h_all_small
   push_neg at h_all_small
   have h_enc_inj := @Encodable.encode_injective Formula formulaEncodableStaged

@@ -187,8 +187,21 @@ theorem base_union_subset_dense :
 
 /-!
 ## Linearity of Dense Timeline
+
+Linearity follows from the fact that all points are CanonicalR-reachable from the root,
+combined with the linearity axiom (temp_linearity) which ensures forward/backward
+reachable points are comparable.
 -/
 
+/--
+All points in the dense stage are CanonicalR-comparable with the root.
+
+**Proof strategy**: Induction on stage number `n`:
+- Base case (n=0): Points come from stagedBuild or densityWitnesses; use
+  `stagedBuild_all_comparable_with_root` and `comparability_step_forward`
+- Inductive case: Use the IH for the previous stage plus comparability steps
+  for newly added witnesses
+-/
 theorem denseStage_all_comparable_with_root (n : Nat)
     (p : StagedPoint) (hp : p ∈ denseStage root_mcs root_mcs_proof n) :
     CanonicalR (rootPoint root_mcs root_mcs_proof).mcs p.mcs ∨
