@@ -48,11 +48,11 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 ---
 
 ### 977. Organize TM base logic with extensions
-- **Effort**: 16 hours (7 phases)
+- **Effort**: 16-20 hours (8 phases)
 - **Status**: [PLANNED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/977_organize_tm_base_logic_with_extensions/reports/research-001.md), [research-002.md](specs/977_organize_tm_base_logic_with_extensions/reports/research-002.md) (plan revision analysis)
-- **Plan**: [implementation-001.md](specs/977_organize_tm_base_logic_with_extensions/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/977_organize_tm_base_logic_with_extensions/plans/implementation-002.md) (v2: added Phase 0 DurationTransfer fix)
 
 **Description**: The proof system TM should be arranged into a base logic with various extensions (e.g., adding a discreteness axiom, or density axiom, etc.) with corresponding frame constraints, establishing soundness and completeness for the base logic and each extension. It is critical to identify pairings between all axioms that have corresponding frame constraints, and the axioms that do not and should be taken to belong to the base logic for TM rather than one of its extensions. Research the present standing of the codebase and the steps needed to progress towards a fully satisfactory logic, semantics with appropriate frame constraints, and metalogical results, refactoring the repository as need be to improve organization and fill in any missing results.
 
