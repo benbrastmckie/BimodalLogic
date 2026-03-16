@@ -171,7 +171,7 @@ This plan systematically addresses all documentation issues identified across th
 
 ---
 
-### Phase 4: Create Priority 1 READMEs - Active Theories [NOT STARTED]
+### Phase 4: Create Priority 1 READMEs - Active Theories [COMPLETED]
 
 - **Dependencies**: Phase 1, Phase 2
 - **Goal**: Create READMEs for 10 active Theories directories (highest priority)
@@ -234,6 +234,20 @@ This plan systematically addresses all documentation issues identified across th
 - Each new README lists all .lean files in directory
 - Links to parent READMEs are valid
 - Descriptions are accurate based on file contents
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773678809_acc23f**
+- Created: Theories/Bimodal/Syntax/README.md (5 files documented)
+- Created: Theories/Bimodal/Semantics/README.md (5 files documented)
+- Created: Theories/Bimodal/ProofSystem/README.md (3 files documented)
+- Created: Theories/Bimodal/Examples/README.md (8 files documented)
+- Created: Theories/Bimodal/Theorems/README.md (8 files + subdirectory)
+- Created: Metalogic/ConservativeExtension/README.md (4 files)
+- Created: Metalogic/Canonical/README.md (3 files)
+- Created: Metalogic/Domain/README.md (3 files, noted 7 sorries)
+- Created: Metalogic/StagedConstruction/README.md (10 files)
+- Created: Metalogic/Relational/README.md (placeholder, empty directory)
 
 ---
 
