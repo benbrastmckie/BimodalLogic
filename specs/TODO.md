@@ -1,5 +1,5 @@
 ---
-next_project_number: 979
+next_project_number: 980
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,16 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 979. Remove discrete_Icc_finite_axiom and prove stage-bounding lemma
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Related**: Task 974 (Phase 7b escape valve), research-006.md
+
+**Description**: Remove the axiom in Phase 7b (discrete_Icc_stage_bounded) of task 974 implementation plan, reflecting on research-006.md to provide the most mathematically correct approach with no compromises, producing the highest quality implementation.
+
+---
 
 ### 978. Refactor TM proof system to typeclass-based frame condition architecture
 - **Effort**: TBD

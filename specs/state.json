@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 979,
+      "project_name": "remove_discrete_icc_finite_axiom_prove_stage_bounding",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "medium",
+      "created": "2026-03-16T20:33:40Z",
+      "last_updated": "2026-03-16T20:33:40Z",
+      "description": "Remove the axiom in Phase 7b (discrete_Icc_stage_bounded) of task 974 implementation plan, reflecting on research-006.md to provide the most mathematically correct approach with no compromises"
+    },
+    {
       "project_number": 978,
       "project_name": "refactor_tm_typeclass_frame_conditions",
       "status": "not_started",
@@ -481,7 +491,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 979,
+  "next_project_number": 980,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
