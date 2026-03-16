@@ -122,12 +122,12 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T17:38:09Z",
+      "last_updated": "2026-03-16T17:58:53Z",
       "session_id": "sess_1773682669_6061b2",
       "researched": "2026-03-16T09:15:00Z",
       "artifacts": [
@@ -145,10 +145,16 @@
           "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md",
           "type": "plan",
           "summary": "v2: Corrected phase markers, verified proof sketches, unblocked"
+        },
+        {
+          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Documents import conflict blocker preventing NoMaxOrder/NoMinOrder proofs"
         }
       ],
       "planned": "2026-03-16T17:36:25Z",
-      "started": "2026-03-16T17:38:09Z"
+      "started": "2026-03-16T17:38:09Z",
+      "blocked_on": "Import conflict: CanonicalIrreflexivityAxiom import breaks earlier encode_determines proof in ConstructiveFragment.lean"
     },
     {
       "project_number": 971,

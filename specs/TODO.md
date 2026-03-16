@@ -106,10 +106,12 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
 - **Effort**: 1.5 hours (3 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md), [research-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md) (blocker resolved)
 - **Plan**: [implementation-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md) (v2: corrected phase markers)
+- **Summary**: [implementation-summary-20260316.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md)
+- **Blocked on**: Import conflict - adding CanonicalIrreflexivityAxiom import breaks encode_determines proof
 
 **Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 581 and 586.
 
