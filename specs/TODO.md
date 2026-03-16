@@ -26,10 +26,11 @@ technical_debt:
 ## Tasks
 
 ### 971. Refactor to eliminate bmcs_truth_at layer
-- **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 3.5 hours (7 phases)
+- **Status**: [PLANNED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-001.md) (6 findings, implementation plan)
+- **Plan**: [implementation-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/plans/implementation-001.md) (7 phases, deprecation + archival)
 
 **Description**: Research and implement a systematic refactor to fully eliminate the `bmcs_truth_at` layer as reported in the task 970 research findings. The research confirms `bmcs_truth_at` is explicitly documented as redundant (CanonicalConstruction.lean line 20). Recommended approach: derive `bmcs_truth_lemma` as corollary of `canonical_truth_lemma`, mark BFMCSTruth.lean as deprecated, remove 4 unused definitions (`bmcs_valid`, `bmcs_satisfiable_at`, `bmcs_satisfies_context`, internal theorems).
 

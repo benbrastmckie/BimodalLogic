@@ -8,19 +8,25 @@
     {
       "project_number": 971,
       "project_name": "refactor_eliminate_bmcs_truth_at_layer",
-      "status": "researched",
+      "status": "planned",
       "language": "logic",
       "created": "2026-03-16T05:12:34Z",
-      "last_updated": "2026-03-16T05:30:00Z",
-      "session_id": "sess_1773638070_c1ee9a",
+      "last_updated": "2026-03-16T05:27:18Z",
+      "session_id": "sess_1773638625_50523e",
       "researched": "2026-03-16T05:30:00Z",
       "artifacts": [
         {
           "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-001.md",
           "type": "research",
           "summary": "Analysis of bmcs_truth_at redundancy with 6 findings and implementation plan (2-3h effort, low risk)"
+        },
+        {
+          "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan for eliminating bmcs_truth_at layer via deprecation and archival"
         }
-      ]
+      ],
+      "planned": "2026-03-16T05:27:18Z"
     },
     {
       "project_number": 970,
