@@ -26,17 +26,18 @@ technical_debt:
 ## Tasks
 
 ### 971. Refactor to eliminate bmcs_truth_at layer
-- **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
 - **Language**: logic
+- **Research**: [research-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-001.md) (6 findings, implementation plan)
 
-**Description**: Research and implement a systematic refactor to fully eliminate the `bmcs_truth_at` layer as reported in the task 970 research findings.
+**Description**: Research and implement a systematic refactor to fully eliminate the `bmcs_truth_at` layer as reported in the task 970 research findings. The research confirms `bmcs_truth_at` is explicitly documented as redundant (CanonicalConstruction.lean line 20). Recommended approach: derive `bmcs_truth_lemma` as corollary of `canonical_truth_lemma`, mark BFMCSTruth.lean as deprecated, remove 4 unused definitions (`bmcs_valid`, `bmcs_satisfiable_at`, `bmcs_satisfies_context`, internal theorems).
 
 ---
 
 ### 970. Review metalogic for publication readiness
 - **Effort**: 14 hours (12 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: logic
 - **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis)
 - **Plan**: [implementation-002.md](specs/970_review_metalogic_for_publication/plans/implementation-002.md) (v2: 12 phases, semantic framework + theorem formulations)

@@ -8,19 +8,28 @@
     {
       "project_number": 971,
       "project_name": "refactor_eliminate_bmcs_truth_at_layer",
-      "status": "not_started",
+      "status": "researched",
       "language": "logic",
       "created": "2026-03-16T05:12:34Z",
-      "last_updated": "2026-03-16T05:12:34Z"
+      "last_updated": "2026-03-16T05:30:00Z",
+      "session_id": "sess_1773638070_c1ee9a",
+      "researched": "2026-03-16T05:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of bmcs_truth_at redundancy with 6 findings and implementation plan (2-3h effort, low risk)"
+        }
+      ]
     },
     {
       "project_number": 970,
       "project_name": "review_metalogic_for_publication",
-      "status": "planned",
+      "status": "implementing",
       "language": "logic",
       "created": "2026-03-16T04:42:03Z",
-      "last_updated": "2026-03-16T05:12:32Z",
-      "session_id": "sess_1773637102_2283",
+      "last_updated": "2026-03-16T05:15:48Z",
+      "session_id": "sess_1773638126_9929",
       "researched": "2026-03-16T04:53:13Z",
       "artifacts": [
         {
@@ -34,7 +43,8 @@
           "summary": "12 phases, 14 hours - v2 with correct semantic framework and theorem formulations"
         }
       ],
-      "planned": "2026-03-16T05:12:32Z"
+      "planned": "2026-03-16T05:12:32Z",
+      "started": "2026-03-16T05:15:48Z"
     },
     {
       "project_number": 953,
