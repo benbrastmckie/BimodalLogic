@@ -8,10 +8,10 @@
     {
       "project_number": 971,
       "project_name": "refactor_eliminate_bmcs_truth_at_layer",
-      "status": "implementing",
+      "status": "completed",
       "language": "logic",
       "created": "2026-03-16T05:12:34Z",
-      "last_updated": "2026-03-16T05:53:36Z",
+      "last_updated": "2026-03-16T06:30:18Z",
       "session_id": "sess_1773640383_94ce8f",
       "researched": "2026-03-15T14:30:00Z",
       "artifacts": [
@@ -47,7 +47,9 @@
         }
       ],
       "planned": "2026-03-15T22:50:00Z",
-      "started": "2026-03-16T05:53:36Z"
+      "started": "2026-03-16T05:53:36Z",
+      "completed": "2026-03-16T06:30:18Z",
+      "completion_summary": "Fully eliminated bmcs_truth_at layer: deleted TruthLemma.lean and BFMCSTruth.lean (archived to Boneyard/Task971/), added helper defs to CanonicalConstruction.lean, removed all imports. Build passes (975 jobs)."
     },
     {
       "project_number": 970,

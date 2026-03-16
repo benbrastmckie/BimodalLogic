@@ -3,7 +3,6 @@ import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Completeness
 import Bimodal.Metalogic.Decidability
 import Bimodal.Metalogic.StagedConstruction.Completeness
-import Bimodal.Metalogic.Bundle.TruthLemma
 import Bimodal.Metalogic.Bundle.CanonicalConstruction
 
 /-!

@@ -1,13 +1,15 @@
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Bundle.TemporalCoherence
-import Bimodal.Metalogic.Bundle.TruthLemma
+import Bimodal.Metalogic.Core.DeductionTheorem
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Semantics.TaskFrame
 import Bimodal.Semantics.TaskModel
 import Bimodal.Semantics.Truth
 import Bimodal.Syntax.Formula
+import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Propositional
 
 /-!
 # Canonical Construction: Direct TruthLemma at TaskFrame Level
@@ -440,30 +442,56 @@ theorem box_persistent
 
 /-!
 ## Phase 2-5: The Direct TruthLemma
+
+Helper tautologies used by the imp case of `canonical_truth_lemma`:
 -/
 
-/--
-The direct canonical truth lemma: MCS membership corresponds to truth_at evaluation.
+/-- Classical tautology: ¬(ψ → χ) → ψ -/
+noncomputable def neg_imp_implies_antecedent (ψ χ : Formula) :
+    Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp ψ) := by
+  have h_efq : Bimodal.ProofSystem.DerivationTree [] (ψ.neg.imp (ψ.imp χ)) :=
+    Bimodal.Theorems.Propositional.efq_neg ψ χ
+  have h_efq_ctx : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg.imp (ψ.imp χ) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] [ψ.neg, (ψ.imp χ).neg] _ h_efq (by intro; simp)
+  have h_neg_psi : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have h_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_efq_ctx h_neg_psi
+  have h_neg_imp : [ψ.neg, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have h_bot : [ψ.neg, (ψ.imp χ).neg] ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+  have h_neg_neg_psi : [(ψ.imp χ).neg] ⊢ ψ.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] ψ.neg Formula.bot h_bot
+  have h_deduct : [] ⊢ (ψ.imp χ).neg.imp ψ.neg.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg ψ.neg.neg h_neg_neg_psi
+  have h_dne : [] ⊢ ψ.neg.neg.imp ψ :=
+    Bimodal.Theorems.Propositional.double_negation ψ
+  have h_b : [] ⊢ (ψ.neg.neg.imp ψ).imp (((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ)) :=
+    Bimodal.Theorems.Combinators.b_combinator
+  have h_step1 : [] ⊢ ((ψ.imp χ).neg.imp ψ.neg.neg).imp ((ψ.imp χ).neg.imp ψ) :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_b h_dne
+  exact Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_step1 h_deduct
 
-This is THE KEY THEOREM connecting the BFMCS construction to standard TaskFrame semantics.
-It eliminates the bmcs_truth_at intermediate entirely.
+/-- Classical tautology: ¬(ψ → χ) → ¬χ -/
+noncomputable def neg_imp_implies_neg_consequent (ψ χ : Formula) :
+    Bimodal.ProofSystem.DerivationTree [] ((ψ.imp χ).neg.imp χ.neg) := by
+  have h_prop_s : [] ⊢ χ.imp (ψ.imp χ) :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _ (Bimodal.ProofSystem.Axiom.prop_s χ ψ)
+  have h_prop_s_ctx : [χ, (ψ.imp χ).neg] ⊢ χ.imp (ψ.imp χ) :=
+    Bimodal.ProofSystem.DerivationTree.weakening [] [χ, (ψ.imp χ).neg] _ h_prop_s (by intro; simp)
+  have h_chi : [χ, (ψ.imp χ).neg] ⊢ χ :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have h_imp : [χ, (ψ.imp χ).neg] ⊢ ψ.imp χ :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_prop_s_ctx h_chi
+  have h_neg_imp : [χ, (ψ.imp χ).neg] ⊢ (ψ.imp χ).neg :=
+    Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)
+  have h_bot : [χ, (ψ.imp χ).neg] ⊢ Formula.bot :=
+    Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _ h_neg_imp h_imp
+  have h_neg_chi : [(ψ.imp χ).neg] ⊢ χ.neg :=
+    Bimodal.Metalogic.Core.deduction_theorem [(ψ.imp χ).neg] χ Formula.bot h_bot
+  exact Bimodal.Metalogic.Core.deduction_theorem [] (ψ.imp χ).neg χ.neg h_neg_chi
 
-The proof proceeds by structural induction on phi, with cases:
-- atom: domain is full (True.intro), valuation = MCS membership
-- bot: MCS consistency vs False
-- imp: MCS modus ponens + negation completeness (uses IH in both directions)
-- box: modal_forward/backward + IH
-- all_future (G): forward_G + temporal_backward_G via h_tc
-- all_past (H): backward_H + temporal_backward_H via h_tc
-
-**Note**: The truth lemma does NOT use task_rel in its proof — temporal
-operators (G, H) use the strict order < on D directly, and the box operator
-quantifies over histories in Omega (whose membership is determined by the
-BFMCS families, not by respects_task filtering). The task_rel constrains
-which functions qualify as `WorldHistory CanonicalTaskFrame` (only
-CanonicalR-coherent trajectories), but CanonicalOmega is constructed to
-ensure all its members satisfy respects_task.
--/
 theorem canonical_truth_lemma
     (B : BFMCS Int) (h_tc : B.temporally_coherent)
     (fam : FMCS Int) (hfam : fam ∈ B.families)

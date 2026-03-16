@@ -1,5 +1,5 @@
 import Bimodal.Metalogic.StagedConstruction.DFromCantor
-import Bimodal.Metalogic.Bundle.TruthLemma
+import Bimodal.Metalogic.Bundle.CanonicalConstruction
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 
 /-!

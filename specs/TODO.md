@@ -27,11 +27,11 @@ technical_debt:
 
 ### 971. Refactor to eliminate bmcs_truth_at layer
 - **Effort**: 5 hours (8 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-001.md), [research-002.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-002.md), [research-003.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-003.md) (deep-dive on 7 simplification opportunities)
 - **Plan**: [implementation-002.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/plans/implementation-002.md) (8 phases, aggressive clean-break elimination)
-- **Summary**: [implementation-summary-20260316.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/summaries/implementation-summary-20260316.md) (partial: imports not fully removed)
+- **Summary**: [implementation-summary-20260316.md](specs/971_refactor_eliminate_bmcs_truth_at_layer/summaries/implementation-summary-20260316.md) (completed: full elimination, build passes 975 jobs)
 
 **Description**: Aggressive clean-break refactor to fully eliminate the `bmcs_truth_at` layer. Unlike the conservative approach (implementation-001.md), this plan directly uses `canonical_truth_lemma` everywhere, archiving BFMCSTruth.lean and TruthLemma.lean to Boneyard/Task971/ with no compatibility shims. Research confirms `bmcs_truth_lemma` has NO non-deprecated code usage outside its module, making full elimination straightforward.
 
