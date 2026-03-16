@@ -27,7 +27,7 @@ technical_debt:
 
 ### 976. Clean up comments and improve documentation
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: general
 - **Research**: [research-001.md](specs/976_clean_up_comments_improve_documentation/reports/research-001.md), [research-002.md](specs/976_clean_up_comments_improve_documentation/reports/research-002.md)
 
@@ -37,14 +37,15 @@ technical_debt:
 
 ### 975. Fix ProofSearch documentation example sorries
 - **Effort**: ~1 hour
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/975_fix_proofsearch_example_sorries/reports/research-001.md)
 
 **Description**: Fix 3 sorry placeholders in `Theories/Bimodal/Automation/ProofSearch.lean` at lines 1348, 1353, and 1358. These are `example` blocks demonstrating how bounded proof search would be invoked. Since `bounded_search` returns `Bool` (not `DerivationTree`), the examples cannot use it directly. Fix by providing minimal direct witnesses using existing axioms/rules, or convert to comments if purely aspirational.
 
-- Line 1348: `⊢ □p → □p` exists — trivially witnessed (axiom or identity)
-- Line 1353: `∃ proof : DerivationTree [] q, True` given hypotheses h1, h2 — witness via modus ponens on h1, h2
-- Line 1358: `∃ proof : DerivationTree [□p] □p, True` — witness via `DerivationTree.hyp`
+- Line 1348: `⊢ □p → p` — use `DerivationTree.axiom` with `Axiom.modal_t`
+- Line 1353: `∃ proof : DerivationTree [] q, True` given hypotheses h1, h2 — use `DerivationTree.modus_ponens`
+- Line 1358: `∃ proof : DerivationTree [□p] □p, True` — use `DerivationTree.assumption`
 
 ---
 
@@ -84,13 +85,13 @@ technical_debt:
 
 ### 972. Review metalogic naming conventions for improvements
 - **Effort**: 2 hours (4 phases)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Created**: 2026-03-16
 - **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/972_review_metalogic_naming_conventions/plans/implementation-001.md)
 
-**Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent, misleading, or redundant naming conventions. Fix issues 1, 2, and 4 from research: (1) GContent/HContent → snake_case, (2) WitnessSeed definitions → snake_case, (4) bmcs_ prefix → bfmcs_ for consistency.
+**Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent naming conventions. Fix: (1) GContent/HContent → snake_case, (2) WitnessSeed defs → snake_case, (3) bmcs_* → BFMCS namespace.
 
 ---
 

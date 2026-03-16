@@ -1,0 +1,37 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-16T00:00:00Z",
+  "completed_at": "2026-03-16T00:10:00Z",
+  "artifacts": [
+    {
+      "path": "specs/975_fix_proofsearch_example_sorries/reports/research-001.md",
+      "type": "research",
+      "summary": "Analysis of 3 sorry placeholders in ProofSearch.lean examples with recommended fixes using DerivationTree.axiom (modal_t), modus_ponens, and assumption constructors"
+    }
+  ],
+  "partial_progress": {
+    "stage": "research_complete",
+    "details": "All three sorry locations analyzed with concrete fix recommendations"
+  },
+  "metadata": {
+    "session_id": "sess_1742169600_975res",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "findings": {
+    "example_1_line_1348": {
+      "goal": "box p -> p axiom instance",
+      "fix": "DerivationTree.axiom with Axiom.modal_t"
+    },
+    "example_2_line_1353": {
+      "goal": "modus ponens application",
+      "fix": "DerivationTree.modus_ponens using hypotheses h2 h1"
+    },
+    "example_3_line_1358": {
+      "goal": "assumption from context",
+      "fix": "DerivationTree.assumption with membership proof"
+    }
+  },
+  "recommendation": "Fix with direct witnesses rather than converting to comments - provides type-checked documentation"
+}

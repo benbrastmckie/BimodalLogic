@@ -8,23 +8,31 @@
     {
       "project_number": 976,
       "project_name": "clean_up_comments_improve_documentation",
-      "status": "researched",
+      "status": "planning",
       "language": "general",
       "created": "2026-03-16T15:52:59Z",
-      "last_updated": "2026-03-16T16:08:02Z",
-      "session_id": "sess_1773677076_2e1175",
+      "last_updated": "2026-03-16T16:09:52Z",
+      "session_id": "sess_1773677380_f47588",
       "researched": "2026-03-16T16:08:02Z"
     },
     {
       "project_number": 975,
       "project_name": "fix_proofsearch_example_sorries",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "low",
       "created": "2026-03-16T00:00:00Z",
       "description": "Fix 3 sorry placeholders in ProofSearch.lean documentation examples",
-      "last_updated": "2026-03-16T16:06:57Z",
-      "session_id": "sess_1742169600_975res"
+      "last_updated": "2026-03-16T16:20:00Z",
+      "session_id": "sess_1742169600_975res",
+      "researched": "2026-03-16T16:20:00Z",
+      "artifacts": [
+        {
+          "path": "specs/975_fix_proofsearch_example_sorries/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis of 3 sorry placeholders with recommended fixes using DerivationTree.axiom (modal_t), modus_ponens, and assumption constructors"
+        }
+      ]
     },
     {
       "project_number": 974,
@@ -273,12 +281,12 @@
     {
       "project_number": 972,
       "project_name": "review_metalogic_naming_conventions",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "created": "2026-03-16T15:35:42Z",
-      "last_updated": "2026-03-16T15:54:48Z",
+      "last_updated": "2026-03-16T16:09:22Z",
       "description": "Review Theories/Bimodal/Metalogic/ for inconsistent, misleading, or redundant naming conventions. Identify improvements (not wholesale renames) — looking for names that are genuinely confusing, inconsistent with Mathlib conventions, or redundant given their context. Originated from task 970 phase 9 deferral.",
-      "session_id": "sess_1773676239_8cf53e",
+      "session_id": "sess_1773677328_11daf7",
       "researched": "2026-03-16T16:00:00Z",
       "artifacts": [
         {
