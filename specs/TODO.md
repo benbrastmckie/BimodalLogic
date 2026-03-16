@@ -46,10 +46,10 @@ technical_debt:
 
 ### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
 - **Effort**: 4-8 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
-- **Research**: [specs/0_shift_closure_research/reports/research-001.md]
+- **Research**: [specs/0_shift_closure_research/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md]
 
 **Description**: Prove that the set of canonical FMCS families is shift-closed (i.e., `CanonicalOmega` is `ShiftClosed`), and bridge the sorry-free BFMCS truth lemma to the standard semantics. Two theorems:
 

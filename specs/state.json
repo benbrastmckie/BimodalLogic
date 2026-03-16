@@ -41,18 +41,23 @@
     {
       "project_number": 968,
       "project_name": "prove_shift_closure_canonical_fmcs_bridge",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove shift-closure of canonical FMCS families (CanonicalOmega is ShiftClosed) and bridge the sorry-free BFMCS truth lemma to standard semantics. Two theorems: (1) FMCS shift-closure — fam_shift(t) := fam(t + Δ) is an FMCS, trivial by translation invariance; (2) BFMCS-to-standard bridge — construct WorldHistories from FMCS families and show bmcs_truth_at ↔ truth_at, connecting existing BFMCS completeness to semantic_consequence. Depends on canonical task relation from task 956.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-14T00:00:00Z",
-      "session_id": "sess_1773526673_48dd46",
+      "last_updated": "2026-03-15T12:30:00Z",
+      "session_id": "sess_1773620518_ce6f70",
       "artifacts": [
         {
           "path": "specs/0_shift_closure_research/reports/research-001.md",
           "type": "research",
-          "summary": "Deep analysis of shift-closure role in completeness: definition, why it's needed for MF/TF axiom soundness, proof strategy (trivial by translation invariance), BFMCS bypass and re-entry, WorldHistory construction from FMCS families"
+          "summary": "Deep analysis of shift-closure role in completeness: definition, why it is needed for MF/TF axiom soundness, proof strategy (trivial by translation invariance), BFMCS bypass and re-entry, WorldHistory construction from FMCS families"
+        },
+        {
+          "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md",
+          "type": "research",
+          "summary": "Analysis in light of tasks 967/969: ShiftClosed infrastructure is complete, Boneyard shiftClosedCanonicalOmega pattern can be ported, task 956 dependency satisfied, implementation recommendations"
         }
       ],
       "dependencies": [
