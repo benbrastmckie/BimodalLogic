@@ -1,5 +1,5 @@
 ---
-next_project_number: 978
+next_project_number: 979
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,28 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 978. Refactor TM proof system to typeclass-based frame condition architecture
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: logic
+- **Depends on**: Task 977 (must be completed first)
+
+**Description**: Following the completion of task 977 (which fills all metalogic gaps), refactor the TM proof system to implement the typeclass-based frame condition architecture described in the task 977 research (teammate D, architecture Option A). The refactor should make no compromises in pursuit of the most mathematically correct approach:
+
+1. **Frame condition typeclasses**: Define `DenseFrame`, `DiscreteFrame`, and `SerialFrame` typeclasses that capture the precise frame conditions corresponding to each extension axiom, enabling Lean's typeclass resolution to automatically handle extension composition.
+
+2. **Parameterized axiom availability**: Refactor the axiom system so that extension axioms are only available under their corresponding typeclass constraints — density axiom under `[DenseFrame D]`, discreteness under `[DiscreteFrame D]`, seriality under `[SerialFrame D]` — enforcing correctness at the type level rather than via predicates.
+
+3. **Type-level proof system separation**: Introduce separate derivation types (or a single derivation type parameterized by frame class) so that a proof in TM Dense is structurally distinguished from a proof in TM Base — eliminating the possibility of accidentally using extension axioms in a base-logic proof.
+
+4. **Generic soundness and completeness**: Refactor the soundness and completeness theorems to be parameterized over frame typeclasses, so that `soundness [DenseFrame D]` and `completeness [DenseFrame D]` follow generically from the base theorems plus the extension axiom validity.
+
+5. **Directory reorganization**: Restructure `Theories/Bimodal/` to reflect the clean base/extension separation, with dedicated subdirectories for each logic variant and its metalogic.
+
+The goal is a fully modular, typeclass-driven architecture where adding a new temporal logic extension (e.g., a completeness axiom for real-closed fields) requires only: (a) a new frame typeclass, (b) a new axiom with that typeclass constraint, and (c) a validity proof — with soundness and completeness inherited automatically from the generic framework.
+
+---
 
 ### 977. Organize TM base logic with extensions
 - **Effort**: 16 hours (7 phases)

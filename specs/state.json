@@ -6,6 +6,17 @@
   },
   "active_projects": [
     {
+      "project_number": 978,
+      "project_name": "refactor_tm_typeclass_frame_conditions",
+      "status": "not_started",
+      "language": "logic",
+      "depends_on": [
+        977
+      ],
+      "created": "2026-03-16T17:29:12Z",
+      "last_updated": "2026-03-16T17:29:12Z"
+    },
+    {
       "project_number": 977,
       "project_name": "organize_tm_base_logic_with_extensions",
       "status": "planned",
@@ -66,12 +77,12 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
-      "last_updated": "2026-03-16T16:59:10Z",
+      "last_updated": "2026-03-16T17:28:52Z",
       "session_id": "sess_1742170000_x7m2q",
       "researched": "2026-03-16T16:12:35Z",
       "artifacts": [
@@ -79,11 +90,6 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md",
           "type": "research",
           "summary": "Analyzed 7 sorries in DiscreteTimeline.lean. Root cause: flawed succ definition using Classical.choice instead of WellFounded.min. Fix requires redefining succ/pred, then proofs follow from Mathlib patterns."
-        },
-        {
-          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan to resolve 7 sorries in DiscreteTimeline.lean via WellFounded.min-based succ/pred definitions"
         },
         {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md",
@@ -94,9 +100,14 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md",
           "type": "research",
           "summary": "Supplementary research identifying correct path for discreteness proofs via staged construction finiteness rather than DF frame condition extraction"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "Revised 2-phase plan using staged construction finiteness approach (supersedes v1)"
         }
       ],
-      "planned": "2026-03-16T16:37:22Z",
+      "planned": "2026-03-16T17:28:52Z",
       "started": "2026-03-16T16:40:04Z"
     },
     {
@@ -398,7 +409,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 978,
+  "next_project_number": 979,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
