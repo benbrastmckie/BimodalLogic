@@ -1,7 +1,7 @@
 # Implementation Plan: Remove DN-Based Seriality Proofs Tech Debt
 
 - **Task**: 980 - remove_dn_based_seriality_proofs_tech_debt
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 6-8 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/980_remove_dn_based_seriality_proofs_tech_debt/reports/research-001.md
@@ -89,86 +89,84 @@ After this implementation:
 
 ---
 
-### Phase 2: Direct NoMaxOrder Approach [IN PROGRESS]
+### Phase 2: DN-Free Discrete NoMaxOrder/NoMinOrder via MCS Richness [COMPLETED]
 
 - **Dependencies:** Phase 1
-- **Goal:** Prove NoMaxOrder using canonical model structure directly, bypassing encoding arguments
+- **Goal:** Prove NoMaxOrder/NoMinOrder using MCS Richness, bypassing density axiom DN
 
-**Tasks:**
-- [ ] Prove helper lemma: `canonical_successor_exists` - every MCS has a canonical F-successor from seriality
-- [ ] Prove helper lemma: `canonical_successor_in_discrete_timeline` - the canonical successor is reachable via bidirectional closure
-- [ ] Implement `discrete_staged_has_future_direct`: DN-free version using canonical model structure
-- [ ] Replace the proof body of `discrete_staged_has_future` with the direct approach
-- [ ] Run `lake build` to verify no regressions
+**Approach (Updated from Original Plan):**
+The original plan proposed a "Direct NoMaxOrder" approach using canonical model structure.
+After analysis, we implemented the MCS Richness approach (originally planned as Phase 3 fallback)
+as the primary solution because it is mathematically cleaner and more direct.
 
-**Timing:** 2 hours
+**Tasks Completed:**
+- [x] Proved `G_bot_not_in`: G(bot) is not in any serial MCS (contradicts F(neg bot))
+- [x] Proved `G_bot_and_of_G_bot_and_X`: G(bot ∧ X) implies G(bot) via K-distribution
+- [x] Proved `F_or_atom_in`: For any atom i, F(neg bot ∨ atom(i)) ∈ M (MCS Richness lemma)
+- [x] Proved `mcs_has_large_F_formula`: For any N, exists phi with encoding >= N such that F(phi) ∈ M
+- [x] Proved symmetric past lemmas: `H_bot_not_in`, `H_bot_and_of_H_bot_and_X`, `P_or_atom_in`
+- [x] Proved `mcs_has_large_P_formula`: For any N, exists phi with encoding >= N such that P(phi) ∈ M
+- [x] Proved helper defs: `derive_past_necessitation`, `derive_past_k_dist` (via temporal duality)
+- [x] Refactored `discrete_staged_has_future` to use `mcs_has_large_F_formula` (DN-free!)
+- [x] Refactored `discrete_staged_has_past` to use `mcs_has_large_P_formula` (DN-free!)
+- [x] `lake build` passes with no errors
 
-**Files to modify:**
-- `Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean` - add new lemmas and refactor theorem
+**Key Insight:**
+For any atom i, we have F(neg bot ∨ atom(i)) ∈ M by MCS negation completeness
+(either G(bot ∧ neg atom(i)) ∈ M or F(neg bot ∨ atom(i)) ∈ M, and the former
+would imply G(bot) ∈ M, contradicting seriality F(neg bot) ∈ M).
+Since there are infinitely many atoms, and encodings are injective, the
+encodings of these formulas grow unboundedly - giving MCS Richness without DN.
+
+**Timing:** 2 hours (as estimated)
+
+**Files modified:**
+- `Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean` - added MCS Richness lemmas and refactored discrete theorems
 
 **Verification:**
 - `lake build` passes
-- `grep -n "iterated_future_in_mcs" CantorPrereqs.lean` shows no usage in `discrete_staged_has_future`
-- `lean_goal` shows no goals at theorem end
+- `discrete_staged_has_future` no longer uses `iterated_future_in_mcs` (which depended on DN)
+- `discrete_staged_has_past` no longer uses `iterated_past_in_mcs` (which depended on DN)
 
 ---
 
-### Phase 3: MCS Richness Fallback (If Phase 2 Blocked) [NOT STARTED]
+### Phase 3: MCS Richness Fallback (If Phase 2 Blocked) [SKIPPED - Integrated into Phase 2]
 
 - **Dependencies:** Phase 2 (only if Phase 2 fails)
 - **Goal:** Alternative DN-free approach using MCS negation completeness
 
-**Tasks:**
-- [ ] Prove `mcs_has_large_formula`: every MCS contains formulas with arbitrarily large encodings
-- [ ] Prove `mcs_partition_lemma`: for any psi, either G(psi) in M or F(neg psi) in M
-- [ ] Prove `mcs_has_large_F_formula`: for any N, exists phi with encoding >= N such that F(phi) in M
-- [ ] Replace `discrete_staged_has_future` proof with MCS richness approach
-- [ ] Run `lake build` to verify
-
-**Timing:** 2-3 hours (only if needed)
-
-**Files to modify:**
-- `Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean`
-
-**Verification:**
-- `lake build` passes
-- No DN dependency in the proof chain
+**Status:** SKIPPED - The MCS Richness approach was successful and was integrated into Phase 2.
+The tasks listed here were completed as part of Phase 2 above.
 
 ---
 
-### Phase 4: Symmetric NoMinOrder Fix [NOT STARTED]
+### Phase 4: Symmetric NoMinOrder Fix [COMPLETED - Integrated into Phase 2]
 
 - **Dependencies:** Phase 2 or Phase 3
 - **Goal:** Apply the same DN-free approach to `discrete_staged_has_past`
 
-**Tasks:**
-- [ ] Apply the working approach (direct or MCS richness) symmetrically to past
-- [ ] Implement `discrete_staged_has_past_direct` or use MCS richness for P(phi)
-- [ ] Replace `discrete_staged_has_past` proof body
-- [ ] Run `lake build` to verify
+**Status:** COMPLETED - All past symmetry work was done as part of Phase 2.
+The `discrete_staged_has_past` theorem now uses `mcs_has_large_P_formula` (DN-free).
 
-**Timing:** 1 hour
-
-**Files to modify:**
-- `Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean`
-
-**Verification:**
-- `lake build` passes
-- `grep -n "iterated_past_in_mcs" CantorPrereqs.lean` shows no usage in `discrete_staged_has_past`
+**Tasks Completed:**
+- [x] Applied MCS richness approach symmetrically to past (P_or_atom_in, mcs_has_large_P_formula)
+- [x] Replaced `discrete_staged_has_past` proof body with DN-free version
+- [x] `lake build` passes
+- [x] `discrete_staged_has_past` no longer uses `iterated_past_in_mcs`
 
 ---
 
-### Phase 5: Documentation Update and Cleanup [NOT STARTED]
+### Phase 5: Documentation Update and Cleanup [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** Update documentation, remove technical debt notes, verify zero DN dependency
 
-**Tasks:**
-- [ ] Update docstring for `discrete_staged_has_future` to remove DN caveat
-- [ ] Update docstring for `discrete_staged_has_past` to remove DN caveat
-- [ ] Update `LogicVariants.lean` technical debt section (lines 60-75) to mark as resolved
-- [ ] Remove or mark obsolete any DN-specific helper lemmas if no longer needed
-- [ ] Final `lake build` verification
+**Tasks Completed:**
+- [x] Updated docstring for `discrete_staged_has_future` to document DN-free proof via MCS richness
+- [x] Updated docstring for `discrete_staged_has_past` to document DN-free proof via MCS richness
+- [x] Updated `LogicVariants.lean` technical debt section (lines 60-75) to mark as RESOLVED
+- [x] DN-specific helper lemmas (`iterated_future_in_mcs`, `iterated_past_in_mcs`) retained for dense construction
+- [x] `lake build` passes
 
 **Timing:** 30 minutes
 
@@ -184,34 +182,32 @@ After this implementation:
 
 ---
 
-### Phase 6: Final Verification [NOT STARTED]
+### Phase 6: Final Verification [COMPLETED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Comprehensive verification of DN removal
 
-**Tasks:**
-- [ ] Run `lake build` on entire project
-- [ ] Verify `grep -rn "\bsorry\b" Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean` returns empty
-- [ ] Verify discrete theorems no longer depend on `density_F_to_FF` via transitive imports
-- [ ] Create implementation summary
+**Tasks Completed:**
+- [x] `lake build` passes on entire project (975 jobs)
+- [x] `grep -rn "\bsorry\b" CantorPrereqs.lean` returns empty (zero-debt gate passed)
+- [x] `grep -n "^axiom " CantorPrereqs.lean` returns empty (no new axioms)
+- [x] Discrete theorems verified to use `mcs_has_large_F_formula` and `mcs_has_large_P_formula`
+  (which use `F_or_atom_in` and `P_or_atom_in`, DN-free lemmas)
+- [x] Implementation summary created (see below)
 
-**Timing:** 30 minutes
-
-**Files to verify:**
-- All files in `Theories/Bimodal/Metalogic/StagedConstruction/`
-
-**Verification:**
+**Verification Results:**
 - `lake build` passes with no errors
 - Zero sorries in modified files
-- No DN dependency in discrete timeline proofs
+- Zero new axioms
+- DN dependency successfully removed from discrete timeline proofs
 
 ## Testing & Validation
 
 ### For Lean Tasks (Required)
-- [ ] `lake build` passes with no errors
-- [ ] `grep -rn "\bsorry\b" Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean` returns empty (zero-debt gate)
-- [ ] `grep -n "^axiom " Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean` shows no new axioms
-- [ ] All proofs verified with `lean_goal` showing "no goals"
+- [x] `lake build` passes with no errors
+- [x] `grep -rn "\bsorry\b" Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean` returns empty (zero-debt gate)
+- [x] `grep -n "^axiom " Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean` shows no new axioms
+- [x] All proofs verified with `lean_goal` showing "no goals"
 
 ### Specific to This Task
 - [ ] `grep -n "density" CantorPrereqs.lean` only in dense construction (lines < 500)

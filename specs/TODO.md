@@ -27,12 +27,13 @@ technical_debt:
 
 ### 980. Remove DN-based seriality proofs technical debt
 - **Effort**: 6-8 hours (6 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/980_remove_dn_based_seriality_proofs_tech_debt/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/980_remove_dn_based_seriality_proofs_tech_debt/plans/implementation-001.md) (6 phases: Direct NoMaxOrder approach)
+- **Plan**: [implementation-001.md](specs/980_remove_dn_based_seriality_proofs_tech_debt/plans/implementation-001.md) (6 phases: MCS Richness approach)
+- **Summary**: [implementation-summary-20260316.md](specs/980_remove_dn_based_seriality_proofs_tech_debt/summaries/implementation-summary-20260316.md)
 
-**Description**: Remove the technical debt where the discrete timeline construction incorrectly uses density axiom DN for NoMaxOrder/NoMinOrder proofs in `CantorPrereqs.lean`. The recommended fix is Direct NoMaxOrder via canonical model structure, bypassing encoding arguments. Alternative: MCS Richness approach.
+**Summary**: Removed DN dependency from discrete timeline construction using MCS Richness approach. Added 12 new lemmas proving that every MCS contains F/P-formulas with arbitrarily large encodings without using density axiom. Refactored discrete_staged_has_future and discrete_staged_has_past.
 
 ---
 

@@ -57,22 +57,28 @@ Extension for discretely ordered temporal domains.
 All soundness results are sorry-free. Completeness infrastructure is in place
 but final theorem wiring depends on domain construction issues.
 
-## Technical Debt: DN Dependency in Discrete Construction
+## Resolved: DN Dependency in Discrete Construction (Task 980)
 
-**Issue**: The `discrete_staged_has_future` theorem in `CantorPrereqs.lean` uses
-the density axiom DN via `iterated_future_in_mcs`, even though the discrete
-logic should NOT include DN.
+**Previously**: The `discrete_staged_has_future` and `discrete_staged_has_past` theorems
+in `CantorPrereqs.lean` used the density axiom DN via `iterated_future_in_mcs` and
+`iterated_past_in_mcs`, even though the discrete logic should NOT include DN.
 
-**Location**: `Bimodal.Metalogic.StagedConstruction.CantorPrereqs`
-- Line ~520: `discrete_staged_has_future` documentation notes this
-- Line ~670: Comment explains the DN dependency
+**Resolution (Task 980)**: The discrete construction now uses MCS Richness, a DN-free
+approach based on the observation that every MCS contains F-formulas with arbitrarily
+large encodings:
 
-**Impact**: The discrete timeline construction is technically valid but uses
-reasoning patterns from the dense case. For a pure discrete construction,
-an alternative approach using "MCS richness" would be needed.
+- For any atom i, `F(neg bot ∨ atom(i)) ∈ M` by negation completeness (either this or
+  `G(bot ∧ neg(atom(i))) ∈ M`, but the latter implies `G(bot) ∈ M` contradicting seriality)
+- Since there are infinitely many atoms and encodings are injective, the formulas
+  `(neg bot ∨ atom(i))` have unbounded encodings
 
-**Resolution**: Flagged for task 978 (typeclass-based frame condition modularity).
-The discrete construction should be refactored to avoid any DN-dependent reasoning.
+**Key Lemmas Added**:
+- `SetMaximalConsistent.F_or_atom_in`: F(neg bot ∨ atom(i)) ∈ M for all atoms
+- `SetMaximalConsistent.mcs_has_large_F_formula`: For any N, ∃ phi with encoding ≥ N and F(phi) ∈ M
+- `SetMaximalConsistent.P_or_atom_in`: P(neg bot ∨ atom(i)) ∈ M for all atoms (symmetric)
+- `SetMaximalConsistent.mcs_has_large_P_formula`: For any N, ∃ phi with encoding ≥ N and P(phi) ∈ M
+
+**Status**: RESOLVED - The discrete construction no longer depends on DN.
 
 ## References
 

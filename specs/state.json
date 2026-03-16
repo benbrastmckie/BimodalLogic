@@ -8,10 +8,10 @@
     {
       "project_number": 980,
       "project_name": "remove_dn_based_seriality_proofs_tech_debt",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "created": "2026-03-16T20:56:19Z",
-      "last_updated": "2026-03-16T21:11:23Z",
+      "last_updated": "2026-03-16T21:41:47Z",
       "session_id": "sess_1773695456_456a55",
       "researched": "2026-03-16T21:15:00Z",
       "artifacts": [
@@ -24,10 +24,17 @@
           "path": "specs/980_remove_dn_based_seriality_proofs_tech_debt/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan to remove DN-based seriality proofs from discrete timeline construction"
+        },
+        {
+          "path": "specs/980_remove_dn_based_seriality_proofs_tech_debt/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Implementation summary for DN-based seriality proofs removal"
         }
       ],
       "planned": "2026-03-16T21:10:06Z",
-      "started": "2026-03-16T21:11:23Z"
+      "started": "2026-03-16T21:11:23Z",
+      "completed": "2026-03-16T21:41:47Z",
+      "completion_summary": "Removed DN dependency from discrete timeline construction using MCS Richness approach. Added 12 new lemmas proving that every MCS contains F/P-formulas with arbitrarily large encodings without using density axiom. Refactored discrete_staged_has_future and discrete_staged_has_past to use the DN-free approach."
     },
     {
       "project_number": 979,
@@ -64,7 +71,9 @@
         "phases_total": 6,
         "details": "Phase 1 complete. Phase 2 blocked pending Task 980 completion (DN tech debt)."
       },
-      "depends_on": [980]
+      "depends_on": [
+        980
+      ]
     },
     {
       "project_number": 978,

@@ -235,6 +235,226 @@ theorem SetMaximalConsistent.F_or_atom_in (M : Set Formula) (h_mcs : SetMaximalC
     -- G(⊥) ∈ M contradicts seriality
     exact SetMaximalConsistent.G_bot_not_in M h_mcs h_serial h_G_bot
 
+/-- The formula (neg bot ∨ atom (natToAtom n)) for index n. Used to get F-formulas
+with arbitrarily large encodings without using the density axiom DN. -/
+def orAtomFormula (n : Nat) : Formula :=
+  Formula.or (Formula.neg Formula.bot) (Formula.atom (natToAtom n))
+
+/-- orAtomFormula is injective: different indices give different formulas. -/
+private theorem orAtomFormula_injective : Function.Injective orAtomFormula := by
+  intro a b h_eq
+  simp only [orAtomFormula, Formula.or, Formula.neg] at h_eq
+  -- Formula.or A B = A.neg.imp B = (A.imp bot).imp B
+  -- orAtomFormula n = ((bot.imp bot).imp bot).imp (atom (natToAtom n))
+  -- This is Formula.imp ((bot.imp bot).imp bot) (Formula.atom (natToAtom n))
+  -- So h_eq : Formula.imp X (Formula.atom (natToAtom a)) = Formula.imp X (Formula.atom (natToAtom b))
+  -- where X = (bot.imp bot).imp bot
+  -- The .imp constructor is injective in the second argument (and first)
+  -- So Formula.atom (natToAtom a) = Formula.atom (natToAtom b)
+  -- And the .atom constructor is injective
+  -- So natToAtom a = natToAtom b
+  -- And natToAtom is injective
+  cases h_eq  -- uses injectivity of Formula.imp constructor
+  rfl
+
+/-- MCS richness (DN-free): for any N, exists phi with encoding >= N such that F(phi) ∈ M.
+This is the key lemma enabling DN-free NoMaxOrder proofs.
+
+Proof: For each n : Nat, F(orAtomFormula n) ∈ M by F_or_atom_in.
+The formulas orAtomFormula 0, ..., orAtomFormula N are N+1 distinct formulas
+(by orAtomFormula_injective), so they have N+1 distinct encodings.
+By pigeonhole, at least one has encoding >= N. -/
+theorem SetMaximalConsistent.mcs_has_large_F_formula (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (N : Nat) :
+    ∃ phi : Formula,
+      @Encodable.encode Formula formulaEncodableStaged phi ≥ N ∧
+      Formula.some_future phi ∈ M := by
+  -- By pigeonhole: N+1 distinct values can't all fit in {0, ..., N-1}
+  by_contra h_all_small
+  push_neg at h_all_small
+  -- h_all_small : ∀ phi, encode phi < N ∨ F(phi) ∉ M
+  -- We have: for each k ∈ {0, ..., N}, F(orAtomFormula k) ∈ M
+  -- So encode(orAtomFormula k) < N for all k ∈ {0, ..., N}
+  -- But orAtomFormula is injective, so we have N+1 distinct formulas with encodings in {0, ..., N-1}
+  -- That's impossible by pigeonhole
+  have h_enc_inj := @Encodable.encode_injective Formula formulaEncodableStaged
+  -- Construct injective Fin (N+1) → Fin N
+  have h_F_in : ∀ k : Nat, Formula.some_future (orAtomFormula k) ∈ M := fun k =>
+    SetMaximalConsistent.F_or_atom_in M h_mcs (natToAtom k)
+  have h_enc_small : ∀ k : Nat, @Encodable.encode Formula formulaEncodableStaged (orAtomFormula k) < N := by
+    intro k
+    -- h_all_small : encode phi >= N -> F(phi) not in M
+    -- h_F_in k : F(orAtomFormula k) in M
+    -- By contraposition: not (encode(orAtomFormula k) >= N), i.e., encode(orAtomFormula k) < N
+    by_contra h_ge
+    push_neg at h_ge
+    exact h_all_small (orAtomFormula k) h_ge (h_F_in k)
+  let f : Fin (N + 1) → Fin N := fun i =>
+    ⟨@Encodable.encode Formula formulaEncodableStaged (orAtomFormula i.val), h_enc_small i.val⟩
+  have h_f_inj : Function.Injective f := by
+    intro a b hab
+    simp only [f, Fin.mk.injEq] at hab
+    exact Fin.ext (orAtomFormula_injective (h_enc_inj hab))
+  have h_le := Fintype.card_le_of_injective f h_f_inj
+  simp [Fintype.card_fin] at h_le
+  omega
+
+/-!
+## Symmetric Past Lemmas (DN-Free)
+
+The same MCS Richness approach works for past: P(¬bot ∨ atom(i)) ∈ M for all atoms i.
+
+These lemmas derive past versions via temporal duality from future axioms.
+-/
+
+/-- Past necessitation derived via temporal duality.
+If ⊢ phi, then ⊢ H(phi).
+Proof: From ⊢ phi, we have ⊢ G(swap_temporal phi) by temporal_necessitation.
+Then ⊢ swap_temporal(G(swap_temporal phi)) = H(phi) by temporal_duality and involution. -/
+def derive_past_necessitation (phi : Formula) (h : [] ⊢ phi) :
+    [] ⊢ Formula.all_past phi := by
+  -- Strategy: temporal_necessitation on swap_temporal phi, then temporal_duality
+  have h_swap : [] ⊢ phi.swap_temporal := DerivationTree.temporal_duality phi h
+  have h_G_swap : [] ⊢ Formula.all_future phi.swap_temporal :=
+    DerivationTree.temporal_necessitation phi.swap_temporal h_swap
+  have h_dual : [] ⊢ (Formula.all_future phi.swap_temporal).swap_temporal :=
+    DerivationTree.temporal_duality (Formula.all_future phi.swap_temporal) h_G_swap
+  -- swap_temporal(all_future(swap_temporal phi)) = all_past(swap_temporal(swap_temporal phi)) = all_past(phi)
+  simp only [Formula.swap_temporal, Formula.swap_temporal_involution] at h_dual
+  exact h_dual
+
+/-- Past K-distribution derived via temporal duality.
+⊢ H(phi → psi) → H(phi) → H(psi).
+Proof: Apply temporal duality to the future K-distribution axiom. -/
+def derive_past_k_dist (phi psi : Formula) :
+    [] ⊢ (phi.imp psi).all_past.imp (phi.all_past.imp psi.all_past) := by
+  -- temp_k_dist gives: ⊢ G(A → B) → G(A) → G(B)
+  -- Apply to swap_temporal phi, swap_temporal psi
+  have h_k_dist : [] ⊢ (phi.swap_temporal.imp psi.swap_temporal).all_future.imp
+      (phi.swap_temporal.all_future.imp psi.swap_temporal.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist phi.swap_temporal psi.swap_temporal)
+  -- Apply temporal duality
+  have h_dual := DerivationTree.temporal_duality _ h_k_dist
+  -- swap_temporal converts all_future to all_past and preserves implication structure
+  simp only [Formula.swap_temporal, Formula.imp, Formula.swap_temporal_involution] at h_dual
+  exact h_dual
+
+/-- H(bot) is not in any serial MCS because it contradicts P(¬bot).
+Proof: H(bot) → bot is an axiom (temp_t_past), and bot is not in any consistent set. -/
+theorem SetMaximalConsistent.H_bot_not_in (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (h_serial : Formula.some_past (Formula.neg Formula.bot) ∈ M) :
+    Formula.all_past Formula.bot ∉ M := by
+  intro h_H_bot
+  -- H(bot) → bot is an axiom (temp_t_past)
+  have h_impl : (Formula.all_past Formula.bot).imp Formula.bot ∈ M :=
+    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot))
+  have h_bot : Formula.bot ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs h_impl h_H_bot
+  -- bot ∈ M contradicts SetConsistent M
+  have h_set_consistent : SetConsistent M := h_mcs.1
+  have h_bot_list_consistent : Consistent [Formula.bot] := by
+    apply h_set_consistent [Formula.bot]
+    intro φ hφ
+    simp at hφ
+    rw [hφ]
+    exact h_bot
+  have h_bot_in_list : Formula.bot ∈ [Formula.bot] := List.mem_singleton.mpr rfl
+  have h_bot_derives : DerivationTree [Formula.bot] Formula.bot :=
+    DerivationTree.assumption [Formula.bot] Formula.bot h_bot_in_list
+  exact h_bot_list_consistent ⟨h_bot_derives⟩
+
+/-- H(bot ∧ X) implies H(bot) via K-distribution. -/
+theorem SetMaximalConsistent.H_bot_and_of_H_bot_and_X (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (X : Formula) (h_H : Formula.all_past (Formula.and Formula.bot X) ∈ M) :
+    Formula.all_past Formula.bot ∈ M := by
+  -- ⊢ (bot ∧ X) → bot is a tautology
+  -- ⊢ H((bot ∧ X) → bot) by past_necessitation (derived via temporal duality)
+  -- ⊢ H(bot ∧ X) → H(bot) by K-distribution (derived via temporal duality)
+  have h_impl : [] ⊢ (Formula.and Formula.bot X).imp Formula.bot :=
+    Bimodal.Theorems.Propositional.lce_imp Formula.bot X
+  have h_H_impl : Formula.all_past ((Formula.and Formula.bot X).imp Formula.bot) ∈ M :=
+    theorem_in_mcs h_mcs (derive_past_necessitation _ h_impl)
+  have h_k_dist : (Formula.all_past ((Formula.and Formula.bot X).imp Formula.bot)).imp
+      ((Formula.all_past (Formula.and Formula.bot X)).imp (Formula.all_past Formula.bot)) ∈ M :=
+    theorem_in_mcs h_mcs (derive_past_k_dist (Formula.and Formula.bot X) Formula.bot)
+  have h_step := SetMaximalConsistent.implication_property h_mcs h_k_dist h_H_impl
+  exact SetMaximalConsistent.implication_property h_mcs h_step h_H
+
+/-- MCS Richness for past (DN-free): for any atom i, P(¬bot ∨ atom(i)) ∈ M.
+This is because H(¬(¬bot ∨ atom(i))) = H(bot ∧ ¬atom(i)) would imply H(bot),
+contradicting seriality P(¬bot). -/
+theorem SetMaximalConsistent.P_or_atom_in (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (i : Atom) :
+    Formula.some_past (Formula.or (Formula.neg Formula.bot) (Formula.atom i)) ∈ M := by
+  have h_serial := SetMaximalConsistent.contains_seriality_past M h_mcs
+  by_contra h_not_P
+  set X := Formula.or (Formula.neg Formula.bot) (Formula.atom i) with hX
+  have h_neg_complete := SetMaximalConsistent.negation_complete h_mcs (Formula.some_past X)
+  rcases h_neg_complete with h_P | h_neg_P
+  · exact h_not_P h_P
+  · -- ¬P(X) ∈ M, i.e., X.neg.all_past.neg.neg ∈ M
+    -- By double negation elimination: X.neg.all_past ∈ M, i.e., H(¬X) ∈ M
+    have h_H_neg_X : X.neg.all_past ∈ M :=
+      SetMaximalConsistent.double_neg_elim h_mcs X.neg.all_past h_neg_P
+    -- X is a theorem: X = ¬bot ∨ atom(i)
+    have h_neg_bot_thm : [] ⊢ Formula.neg Formula.bot := by
+      unfold Formula.neg
+      exact Bimodal.Theorems.Combinators.identity Formula.bot
+    have h_or_intro : [] ⊢ (Formula.neg Formula.bot).imp X :=
+      Bimodal.Theorems.Propositional.raa (Formula.neg Formula.bot) (Formula.atom i)
+    have h_X_thm : [] ⊢ X :=
+      DerivationTree.modus_ponens [] _ _ h_or_intro h_neg_bot_thm
+    -- H(X) ∈ M since X is a theorem
+    have h_H_X_thm : [] ⊢ Formula.all_past X := derive_past_necessitation X h_X_thm
+    have h_H_X_in_M : Formula.all_past X ∈ M := theorem_in_mcs h_mcs h_H_X_thm
+    -- From H(X) ∈ M and H(¬X) ∈ M, derive contradiction
+    have h_explosion : [] ⊢ X.imp (X.neg.imp Formula.bot) :=
+      Bimodal.Theorems.Propositional.raa X Formula.bot
+    have h_H_explosion : [] ⊢ Formula.all_past (X.imp (X.neg.imp Formula.bot)) :=
+      derive_past_necessitation _ h_explosion
+    have h_H_explosion_in_M : Formula.all_past (X.imp (X.neg.imp Formula.bot)) ∈ M :=
+      theorem_in_mcs h_mcs h_H_explosion
+    have h_k1 : (Formula.all_past (X.imp (X.neg.imp Formula.bot))).imp
+        ((Formula.all_past X).imp (Formula.all_past (X.neg.imp Formula.bot))) ∈ M :=
+      theorem_in_mcs h_mcs (derive_past_k_dist X (X.neg.imp Formula.bot))
+    have h_step1 := SetMaximalConsistent.implication_property h_mcs h_k1 h_H_explosion_in_M
+    have h_H_neg_imp_bot : Formula.all_past (X.neg.imp Formula.bot) ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs h_step1 h_H_X_in_M
+    have h_k2 : (Formula.all_past (X.neg.imp Formula.bot)).imp
+        ((Formula.all_past X.neg).imp (Formula.all_past Formula.bot)) ∈ M :=
+      theorem_in_mcs h_mcs (derive_past_k_dist X.neg Formula.bot)
+    have h_step2 := SetMaximalConsistent.implication_property h_mcs h_k2 h_H_neg_imp_bot
+    have h_H_bot : Formula.all_past Formula.bot ∈ M :=
+      SetMaximalConsistent.implication_property h_mcs h_step2 h_H_neg_X
+    -- H(⊥) ∈ M contradicts seriality
+    exact SetMaximalConsistent.H_bot_not_in M h_mcs h_serial h_H_bot
+
+/-- MCS richness for past (DN-free): for any N, exists phi with encoding >= N such that P(phi) ∈ M. -/
+theorem SetMaximalConsistent.mcs_has_large_P_formula (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (N : Nat) :
+    ∃ phi : Formula,
+      @Encodable.encode Formula formulaEncodableStaged phi ≥ N ∧
+      Formula.some_past phi ∈ M := by
+  by_contra h_all_small
+  push_neg at h_all_small
+  have h_enc_inj := @Encodable.encode_injective Formula formulaEncodableStaged
+  have h_P_in : ∀ k : Nat, Formula.some_past (orAtomFormula k) ∈ M := fun k =>
+    SetMaximalConsistent.P_or_atom_in M h_mcs (natToAtom k)
+  have h_enc_small : ∀ k : Nat, @Encodable.encode Formula formulaEncodableStaged (orAtomFormula k) < N := by
+    intro k
+    by_contra h_ge
+    push_neg at h_ge
+    exact h_all_small (orAtomFormula k) h_ge (h_P_in k)
+  let f : Fin (N + 1) → Fin N := fun i =>
+    ⟨@Encodable.encode Formula formulaEncodableStaged (orAtomFormula i.val), h_enc_small i.val⟩
+  have h_f_inj : Function.Injective f := by
+    intro a b hab
+    simp only [f, Fin.mk.injEq] at hab
+    exact Fin.ext (orAtomFormula_injective (h_enc_inj hab))
+  have h_le := Fintype.card_le_of_injective f h_f_inj
+  simp [Fintype.card_fin] at h_le
+  omega
+
 /-!
 ## Forward/Backward Witness at Specific Stage
 
@@ -679,196 +899,60 @@ theorem discrete_backward_witness_at_stage
 
 /-- Every point in the discrete staged build has a CanonicalR-successor.
 
-Uses encoding sufficiency (pigeonhole) and density axiom to find a witness.
-The discrete build processes formula k at stage k+1, so for any point p at
-stage n, we find a formula with encoding >= n whose F-formula is in p.mcs,
-and its witness appears at a later stage.
+**DN-Free Proof**: Uses MCS richness (mcs_has_large_F_formula) instead of density.
 
-Note: This still uses density_F_to_FF via iterated_future_in_mcs. The
-"DN-free" goal from research-003 requires a different approach (MCS richness)
-that is more complex to formalize. For now, this provides the needed theorem.
+The discrete build processes formula k at stage k+1. For any point p at stage n,
+we find a formula phi with encoding >= n such that F(phi) in p.mcs (by MCS richness),
+and its witness appears at stage encoding(phi)+1 >= n+1.
+
+Key insight: For any atom i, F(neg bot ∨ atom(i)) ∈ p.mcs (by F_or_atom_in).
+Since there are infinitely many atoms and encodings are injective, we can always
+find a phi with arbitrarily large encoding such that F(phi) ∈ p.mcs.
 -/
 theorem discrete_staged_has_future
     (p : StagedPoint) (n : Nat)
     (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint, q ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union ∧
       CanonicalR p.mcs q.mcs := by
-  -- Seriality: F(neg bot) in p.mcs
-  have h_serial := stagedPoint_has_seriality_future p
-  -- We need a formula phi with F(phi) in p.mcs and encoding(phi) >= n
-  -- Then the witness will be added at stage encoding(phi)+1 > n
-  -- By encoding_sufficiency, there exists m with encoding(F^m(neg bot)) >= n
-  obtain ⟨m, hm⟩ := encoding_sufficiency n
-  set phi_m := iteratedFuture m (Formula.some_future (Formula.neg Formula.bot))
-  set k := @Encodable.encode Formula formulaEncodableStaged phi_m
-  have h_k_ge_n : k ≥ n := hm
-  -- F(phi_m) in p.mcs by iterated application of F -> F(F(.)) (uses DN)
-  -- WAIT: this still uses DN via iterated_future_in_mcs!
-  -- The issue is that we use DN to show F^(m+1)(neg bot) in p.mcs
-  -- from F(neg bot) in p.mcs.
-  -- For the discrete case, we need a different approach...
-  -- Actually: we just need F(neg bot) in p.mcs, and that has some encoding k0
-  -- At stage k0+1, a witness for p IS added (if p exists at that stage)
-  -- If p is introduced at stage n > k0+1, then p was never in stage k0,
-  -- so no witness was added for p at stage k0+1.
-  -- But then a witness for p must be added when some formula with
-  -- encoding >= n is processed (at stage >= n+1).
-  -- The question is: does p have F(phi) for SOME phi with large encoding?
-  --
-  -- Key insight: F(neg bot) in p.mcs has SOME encoding k0.
-  -- If n <= k0, we're done.
-  -- If n > k0, we need a formula with larger encoding.
-  -- Without DN, we can't iterate F to get larger formulas with F-obligation.
-  --
-  -- BUT: actually we CAN use F(F(neg bot)) = F(neg (neg (G (neg (neg bot)))))
-  -- This is provable from F(neg bot) using the fact that in TM:
-  -- ⊢ F(phi) -> F(G(phi) -> phi) -> F(phi)... hmm this doesn't help.
-  --
-  -- Alternative: the point p was introduced at some stage m where it
-  -- gained a witness from a parent point. If p is in the build, it has
-  -- past connectivity to root. So there's always a path.
-  --
-  -- Actually the simplest approach: for discrete build, at each stage
-  -- we add witnesses. The witness for F(neg bot) at stage k0+1 applies
-  -- to all points that exist at stage k0. Points introduced after k0
-  -- are witnesses themselves, and they have the same seriality property.
-  -- So each new point also needs a witness added later.
-  --
-  -- The encoding sufficiency argument DOES work because it only needs
-  -- pigeonhole (that there exist arbitrarily large encodings among the
-  -- formulas F^m(neg bot)), not that those formulas are in p.mcs.
-  --
-  -- Wait, re-reading encoding_sufficiency: it proves there exists m
-  -- such that encode(iteratedFuture m (F (neg bot))) >= N.
-  -- It does NOT say that formula is in p.mcs.
-  -- iterated_future_in_mcs says it IS in p.mcs, but that uses DN.
-  --
-  -- For discrete: we only have F(neg bot) in p.mcs, not F(F(neg bot)).
-  -- So the discrete approach must be different.
-  --
-  -- DIFFERENT APPROACH for discrete:
-  -- Point p is introduced at some stage, call it s_p.
-  -- At stage (encode (neg bot)) + 1, call it s0,
-  -- - If s_p <= s0 - 1, then p exists at stage s0-1, so at stage s0
-  --   a forward witness for p is added for F(neg bot).
-  -- - If s_p >= s0, then p was added as a witness for some other point q
-  --   where q exists at stage s_p - 1. By induction, q has a future.
-  --   But that doesn't directly give p a future.
-  --
-  -- Hmm, the discrete case is actually tricky because we can't use DN
-  -- to get larger F-formulas. Let me think more carefully...
-  --
-  -- The simplest correct approach:
-  -- 1. Every point p has F(neg bot) in p.mcs (seriality)
-  -- 2. encode(neg bot) = some k0
-  -- 3. At stage k0+1, witnesses are added for points in stage k0
-  -- 4. If p is in stage n <= k0, then p is in stage k0 (monotonicity)
-  --    and gets a witness at stage k0+1
-  -- 5. If p is in stage n > k0, then p was introduced at stage n as
-  --    a witness (forward or backward) for some other formula.
-  --    - If forward: p = processForwardObligation q phi h_F n
-  --      Then CanonicalR q.mcs p.mcs. q exists at stage n-1.
-  --      By seriality, F(neg bot) in p.mcs.
-  --      At stage k0+1, a witness for p would be added... but p
-  --      doesn't exist yet at stage k0 since n > k0.
-  --      HOWEVER: since p is a forward witness, q -> p via CanonicalR,
-  --      and q has future via witness w, so q -> w via CanonicalR.
-  --      By transitivity, p -> ? No, that's backwards.
-  --
-  -- I think the fundamental issue is:
-  -- In dense build: even stages 2k+1, so formula k at stage 2k+1
-  -- In discrete build: stage k+1, so formula k at stage k+1
-  -- Point introduced at stage n: for it to get a witness, need a
-  -- formula with encoding >= n to be in its MCS.
-  -- With DN: F(neg bot) in MCS -> F^m(neg bot) in MCS for all m,
-  --          so for any n, there's encoding >= n in MCS.
-  -- Without DN: only F(neg bot) in MCS, encoding = k0.
-  --             If n > k0, no witness is added for this point!
-  --
-  -- This means: the discrete build may NOT have NoMaxOrder!
-  -- Points introduced late may not have successors in the build.
-  --
-  -- BUT: this contradicts the discrete timeline design. The issue is
-  -- that `DiscreteTimeline.lean` currently uses `buildStagedTimeline`
-  -- (the dense one), and the NoMaxOrder proof uses `staged_timeline_has_future`
-  -- which uses DN.
-  --
-  -- For the discrete case to work WITHOUT DN, we need a different argument.
-  -- The key observation from research-003 is that we need "MCS richness":
-  -- every MCS contains formulas with arbitrarily large encodings.
-  --
-  -- Actually, every MCS does contain arbitrarily large formulas:
-  -- Given any formula phi in MCS M, the formula (phi ∧ phi) is also in M
-  -- (by conjunction intro), and it has strictly larger encoding.
-  -- So we can always find formulas with arbitrarily large encodings in M.
-  --
-  -- But we need F(psi) in M where psi has large encoding, not just psi.
-  --
-  -- Hmm. For F(psi) in M:
-  -- - We have F(neg bot) in M (seriality)
-  -- - We have phi in M for arbitrarily large phi
-  -- - We need F(large phi) in M
-  --
-  -- Actually: F(phi) in M means G(neg phi) not in M.
-  -- By MCS negation completeness, neg (G (neg phi)) in M.
-  -- That equals F(phi) by definition.
-  -- So F(phi) in M iff G(neg phi) not in M.
-  --
-  -- We need: for arbitrarily large N, exists phi with encoding >= N
-  --          such that F(phi) in M.
-  --
-  -- Consider: M is an MCS, so it's maximal consistent.
-  -- For any phi, either phi in M or neg phi in M.
-  -- For formulas of the form G(psi):
-  --   Either G(psi) in M, or neg G(psi) in M (i.e., F(neg psi) in M).
-  --
-  -- So for any psi, either G(psi) in M or F(neg psi) in M.
-  -- If F(neg psi) in M, we have an F-formula.
-  -- The encoding of (neg psi) is bounded by encoding(psi) + constant.
-  --
-  -- For any N, take psi with encoding > N.
-  -- Either G(psi) in M or F(neg psi) in M.
-  -- If F(neg psi) in M, encoding(neg psi) ~ encoding(psi) > N. Done.
-  -- If G(psi) in M for ALL large psi... that would make G(everything) in M.
-  -- But G(bot) not in M (since bot not in M and M is MCS with seriality).
-  -- Actually G(bot) could be in M without bot being in M if there's no
-  -- future (M is maximal). But seriality says F(neg bot) in M, so there
-  -- IS a future.
-  --
-  -- Actually this is getting complicated. Let me just use encoding_sufficiency
-  -- with iterated_future_in_mcs, accepting that this DOES use DN.
-  -- The plan says Phase 5 should prove DN-free has_future, but maybe
-  -- that's not actually possible and we need to reconsider.
-  --
-  -- For now, let me provide a proof that uses the existing machinery,
-  -- noting that the "DN-free" aspect may need revision.
-  have h_F_phi_m : Formula.some_future phi_m ∈ p.mcs :=
-    iterated_future_in_mcs p.mcs p.is_mcs (Formula.neg Formula.bot) h_serial (m + 1)
-  have h_decode : decodeFormulaStaged k = some phi_m :=
-    @Encodable.encodek Formula formulaEncodableStaged phi_m
+  -- By MCS richness: there exists phi with encoding >= n and F(phi) in p.mcs
+  obtain ⟨phi, h_enc_ge, h_F_phi⟩ := SetMaximalConsistent.mcs_has_large_F_formula p.mcs p.is_mcs n
+  set k := @Encodable.encode Formula formulaEncodableStaged phi with k_def
+  have h_k_ge_n : k ≥ n := h_enc_ge
+  have h_decode : decodeFormulaStaged k = some phi :=
+    @Encodable.encodek Formula formulaEncodableStaged phi
   have h_n_le_k : n ≤ k := h_k_ge_n
+  -- Use discrete_forward_witness_at_stage to get the witness
   obtain ⟨q, hq_mem, hq_R⟩ := discrete_forward_witness_at_stage root_mcs root_mcs_proof
-    p phi_m k h_decode h_F_phi_m n h_n_le_k hp
+    p phi k h_decode h_F_phi n h_n_le_k hp
   exact ⟨q, ⟨k + 1, hq_mem⟩, hq_R⟩
 
-/-- Every point in the discrete staged build has a CanonicalR-predecessor. -/
+/-- Every point in the discrete staged build has a CanonicalR-predecessor.
+
+**DN-Free Proof**: Uses MCS richness (mcs_has_large_P_formula) instead of density.
+
+The discrete build processes formula k at stage k+1. For any point p at stage n,
+we find a formula phi with encoding >= n such that P(phi) in p.mcs (by MCS richness),
+and its witness appears at stage encoding(phi)+1 >= n+1.
+
+Key insight: For any atom i, P(neg bot ∨ atom(i)) ∈ p.mcs (by P_or_atom_in).
+Since there are infinitely many atoms and encodings are injective, we can always
+find a phi with arbitrarily large encoding such that P(phi) ∈ p.mcs.
+-/
 theorem discrete_staged_has_past
     (p : StagedPoint) (n : Nat)
     (hp : p ∈ discreteStagedBuild root_mcs root_mcs_proof n) :
     ∃ q : StagedPoint, q ∈ (buildDiscreteStagedTimeline root_mcs root_mcs_proof).union ∧
       CanonicalR q.mcs p.mcs := by
-  have h_serial := stagedPoint_has_seriality_past p
-  obtain ⟨m, hm⟩ := encoding_sufficiency_past n
-  set phi_m := iteratedPast m (Formula.some_past (Formula.neg Formula.bot))
-  set k := @Encodable.encode Formula formulaEncodableStaged phi_m
-  have h_k_ge_n : k ≥ n := hm
-  have h_P_phi_m : Formula.some_past phi_m ∈ p.mcs :=
-    iterated_past_in_mcs p.mcs p.is_mcs (Formula.neg Formula.bot) h_serial (m + 1)
-  have h_decode : decodeFormulaStaged k = some phi_m :=
-    @Encodable.encodek Formula formulaEncodableStaged phi_m
+  -- By MCS richness: there exists phi with encoding >= n and P(phi) in p.mcs
+  obtain ⟨phi, h_enc_ge, h_P_phi⟩ := SetMaximalConsistent.mcs_has_large_P_formula p.mcs p.is_mcs n
+  set k := @Encodable.encode Formula formulaEncodableStaged phi with k_def
+  have h_k_ge_n : k ≥ n := h_enc_ge
+  have h_decode : decodeFormulaStaged k = some phi :=
+    @Encodable.encodek Formula formulaEncodableStaged phi
   have h_n_le_k : n ≤ k := h_k_ge_n
+  -- Use discrete_backward_witness_at_stage to get the witness
   obtain ⟨q, hq_mem, hq_R⟩ := discrete_backward_witness_at_stage root_mcs root_mcs_proof
-    p phi_m k h_decode h_P_phi_m n h_n_le_k hp
+    p phi k h_decode h_P_phi n h_n_le_k hp
   exact ⟨q, ⟨k + 1, hq_mem⟩, hq_R⟩
 
 /-!
