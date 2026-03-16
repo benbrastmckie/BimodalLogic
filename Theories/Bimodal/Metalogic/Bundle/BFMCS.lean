@@ -136,7 +136,7 @@ Reflexivity: Box phi in MCS implies phi in MCS (from T axiom closure of MCS).
 This is the key insight: modal_forward gives us reflexivity "for free"
 because the quantification includes the original family.
 -/
-theorem bmcs_reflexivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
+theorem BFMCS.reflexivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box φ ∈ fam.mcs t) : φ ∈ fam.mcs t :=
   B.modal_forward fam hfam φ t h fam hfam
 
@@ -155,22 +155,22 @@ already implies this symmetry.
 Transitivity is trivial: Box Box phi implies Box phi.
 
 **Proof Strategy**:
-1. By bmcs_reflexivity, Box (Box phi) implies Box phi directly
+1. By BFMCS.reflexivity, Box (Box phi) implies Box phi directly
 2. This is because the T axiom (Box phi -> phi) applied to Box phi gives Box phi
 
 Actually, transitivity in S5 says: Box phi -> Box Box phi (4 axiom).
 For our purposes, we prove the more useful direction:
 If Box (Box phi) in MCS, then Box phi in MCS.
 -/
-theorem bmcs_transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
+theorem BFMCS.transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D) (h : Formula.box (Formula.box φ) ∈ fam.mcs t) :
     Formula.box φ ∈ fam.mcs t :=
-  bmcs_reflexivity B fam hfam (Formula.box φ) t h
+  B.reflexivity fam hfam (Formula.box φ) t h
 
 -- Unused accessors removed in Task 970: BFMCS.mcs_at, BFMCS.is_mcs
 -- These were thin wrappers around FMCS fields that were never used.
 
-/-- The MCS at any family and time is consistent (used by bmcs_diamond_witness) -/
+/-- The MCS at any family and time is consistent (used by BFMCS.diamond_witness) -/
 lemma BFMCS.consistent (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
     SetConsistent (fam.mcs t) :=
   (fam.is_mcs t).1
@@ -199,7 +199,7 @@ there exists fam' in families where phi in fam'.mcs t.
 
 This requires careful reasoning with negation completeness of MCS.
 -/
-theorem bmcs_diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
+theorem BFMCS.diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
     (φ : Formula) (t : D)
     (h_diamond : Formula.neg (Formula.box (Formula.neg φ)) ∈ fam.mcs t) :
     ∃ fam' ∈ B.families, φ ∈ fam'.mcs t := by
@@ -216,7 +216,7 @@ theorem bmcs_diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.fami
     have h_not_phi := h_no_witness fam' hfam'
     -- By MCS negation completeness
     have h_mcs := fam'.is_mcs t
-    rcases set_mcs_negation_complete h_mcs φ with h_phi | h_neg_phi
+    rcases SetMaximalConsistent.negation_complete h_mcs φ with h_phi | h_neg_phi
     · exact absurd h_phi h_not_phi
     · exact h_neg_phi
   -- By modal_backward, Box neg phi in fam.mcs t

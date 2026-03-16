@@ -62,7 +62,7 @@ return the specific Lindenbaum witness.
 -/
 noncomputable def executeForwardStep (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_F : Formula.some_future φ ∈ M) : Set Formula :=
-  lindenbaumMCS_set (ForwardTemporalWitnessSeed M φ)
+  lindenbaumMCS_set (forward_temporal_witness_seed M φ)
     (forward_temporal_witness_seed_consistent M h_mcs φ h_F)
 
 /--
@@ -71,7 +71,7 @@ return the specific Lindenbaum witness.
 -/
 noncomputable def executeBackwardStep (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_P : Formula.some_past φ ∈ M) : Set Formula :=
-  lindenbaumMCS_set (PastTemporalWitnessSeed M φ)
+  lindenbaumMCS_set (past_temporal_witness_seed M φ)
     (past_temporal_witness_seed_consistent M h_mcs φ h_P)
 
 /-!
@@ -81,17 +81,17 @@ noncomputable def executeBackwardStep (M : Set Formula) (h_mcs : SetMaximalConsi
 theorem executeForwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {φ : Formula} {h_F : Formula.some_future φ ∈ M} :
     CanonicalR M (executeForwardStep M h_mcs φ h_F) :=
-  fun _ h_ψ => lindenbaumMCS_set_extends _ _ (GContent_subset_ForwardTemporalWitnessSeed M φ h_ψ)
+  fun _ h_ψ => lindenbaumMCS_set_extends _ _ (g_content_subset_forward_temporal_witness_seed M φ h_ψ)
 
 theorem executeBackwardStep_canonicalR_past {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {φ : Formula} {h_P : Formula.some_past φ ∈ M} :
     CanonicalR_past M (executeBackwardStep M h_mcs φ h_P) :=
-  fun _ h_ψ => lindenbaumMCS_set_extends _ _ (HContent_subset_PastTemporalWitnessSeed M φ h_ψ)
+  fun _ h_ψ => lindenbaumMCS_set_extends _ _ (h_content_subset_past_temporal_witness_seed M φ h_ψ)
 
 theorem executeBackwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {φ : Formula} {h_P : Formula.some_past φ ∈ M} :
     CanonicalR (executeBackwardStep M h_mcs φ h_P) M :=
-  HContent_subset_implies_GContent_reverse M _ h_mcs
+  h_content_subset_implies_g_content_reverse M _ h_mcs
     (lindenbaumMCS_set_is_mcs _ _)
     (executeBackwardStep_canonicalR_past (h_mcs := h_mcs) (h_P := h_P))
 
@@ -252,11 +252,11 @@ lemma canonical_F_of_mem_successor (M M' : Set Formula)
     Formula.some_future phi ∈ M := by
   by_contra h_not_F
   have h_neg_F : Formula.neg (Formula.some_future phi) ∈ M := by
-    cases set_mcs_negation_complete h_mcs (Formula.some_future phi) with
+    cases SetMaximalConsistent.negation_complete h_mcs (Formula.some_future phi) with
     | inl h => exact absurd h h_not_F
     | inr h => exact h
   have h_G_neg : Formula.all_future (Formula.neg phi) ∈ M :=
-    mcs_double_neg_elim h_mcs _ h_neg_F
+    SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_F
   exact set_consistent_not_both h_mcs'.1 phi h_phi (h_R h_G_neg)
 
 lemma canonical_P_of_mem_predecessor (M M' : Set Formula)
@@ -264,17 +264,17 @@ lemma canonical_P_of_mem_predecessor (M M' : Set Formula)
     (h_R : CanonicalR M' M) (phi : Formula) (h_phi : phi ∈ M') :
     Formula.some_past phi ∈ M := by
   have h_R_past : CanonicalR_past M M' :=
-    GContent_subset_implies_HContent_reverse M' M h_mcs' h_mcs h_R
+    g_content_subset_implies_h_content_reverse M' M h_mcs' h_mcs h_R
   by_contra h_not_P
   have h_neg_P : Formula.neg (Formula.some_past phi) ∈ M := by
-    cases set_mcs_negation_complete h_mcs (Formula.some_past phi) with
+    cases SetMaximalConsistent.negation_complete h_mcs (Formula.some_past phi) with
     | inl h => exact absurd h h_not_P
     | inr h => exact h
   have h_H_neg : Formula.all_past (Formula.neg phi) ∈ M :=
-    mcs_double_neg_elim h_mcs _ h_neg_P
+    SetMaximalConsistent.double_neg_elim h_mcs _ h_neg_P
   exact set_consistent_not_both h_mcs'.1 phi h_phi (h_R_past h_H_neg)
 
-lemma mcs_F_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+lemma SetMaximalConsistent.F_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi psi : Formula)
     (h_Fphi : Formula.some_future phi ∈ M)
     (h_Fpsi : Formula.some_future psi ∈ M) :
@@ -286,12 +286,12 @@ lemma mcs_F_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
         (Formula.or (Formula.some_future (Formula.and phi (Formula.some_future psi)))
           (Formula.some_future (Formula.and (Formula.some_future phi) psi)))) :=
     DerivationTree.axiom [] _ (Axiom.temp_linearity phi psi)
-  have h_conj := set_mcs_conjunction_intro h_mcs h_Fphi h_Fpsi
-  have h_disj := set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_lin) h_conj
-  cases set_mcs_disjunction_elim h_mcs h_disj with
+  have h_conj := SetMaximalConsistent.conjunction_intro h_mcs h_Fphi h_Fpsi
+  have h_disj := SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_lin) h_conj
+  cases SetMaximalConsistent.disjunction_elim h_mcs h_disj with
   | inl h1 => exact Or.inl h1
   | inr h23 =>
-    cases set_mcs_disjunction_elim h_mcs h23 with
+    cases SetMaximalConsistent.disjunction_elim h_mcs h23 with
     | inl h2 => exact Or.inr (Or.inl h2)
     | inr h3 => exact Or.inr (Or.inr h3)
 
@@ -307,66 +307,67 @@ theorem canonical_forward_reachable_linear (M M1 M2 : Set Formula)
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    rw [Set.not_subset] at (show ¬(GContent M1 ⊆ M2) from h_12)
-    obtain ⟨alpha, h_alpha_G1, h_alpha_not2⟩ := this
+    rw [CanonicalR, Set.not_subset] at h_12
+    obtain ⟨alpha, h_alpha_G1, h_alpha_not2⟩ := h_12
     have h_neg_alpha_M2 : Formula.neg alpha ∈ M2 := by
-      cases set_mcs_negation_complete h_mcs2 alpha with
+      cases SetMaximalConsistent.negation_complete h_mcs2 alpha with
       | inl h => exact absurd h h_alpha_not2
       | inr h => exact h
-    rw [Set.not_subset] at (show ¬(GContent M2 ⊆ M1) from h_not_21)
-    obtain ⟨beta, h_beta_G2, h_beta_not1⟩ := this
+    have h_not_sub_21 : ¬(g_content M2 ⊆ M1) := h_not_21
+    rw [Set.not_subset] at h_not_sub_21
+    obtain ⟨beta, h_beta_G2, h_beta_not1⟩ := h_not_sub_21
     have h_neg_beta_M1 : Formula.neg beta ∈ M1 := by
-      cases set_mcs_negation_complete h_mcs1 beta with
+      cases SetMaximalConsistent.negation_complete h_mcs1 beta with
       | inl h => exact absurd h h_beta_not1
       | inr h => exact h
     have h_sep : ∃ gamma, gamma ∈ M1 ∧ gamma ∉ M2 := by
       by_contra h_all; push_neg at h_all; apply h_neq
       apply Set.Subset.antisymm h_all
       intro phi h_phi_M2
-      cases set_mcs_negation_complete h_mcs1 phi with
+      cases SetMaximalConsistent.negation_complete h_mcs1 phi with
       | inl h => exact h
       | inr h => exact absurd (h_all _ h) (fun h_neg_M2 =>
           set_consistent_not_both h_mcs2.1 phi h_phi_M2 h_neg_M2)
     obtain ⟨gamma, h_gamma_M1, h_gamma_not_M2⟩ := h_sep
     have h_neg_gamma_M2 : Formula.neg gamma ∈ M2 := by
-      cases set_mcs_negation_complete h_mcs2 gamma with
+      cases SetMaximalConsistent.negation_complete h_mcs2 gamma with
       | inl h => exact absurd h h_gamma_not_M2
       | inr h => exact h
-    have h_conj_M1 := set_mcs_conjunction_intro h_mcs1
-      (set_mcs_conjunction_intro h_mcs1 (h_alpha_G1 : Formula.all_future alpha ∈ M1) h_gamma_M1)
+    have h_conj_M1 := SetMaximalConsistent.conjunction_intro h_mcs1
+      (SetMaximalConsistent.conjunction_intro h_mcs1 (h_alpha_G1 : Formula.all_future alpha ∈ M1) h_gamma_M1)
       h_neg_beta_M1
-    have h_conj_M2 := set_mcs_conjunction_intro h_mcs2
-      (set_mcs_conjunction_intro h_mcs2 (h_beta_G2 : Formula.all_future beta ∈ M2) h_neg_gamma_M2)
+    have h_conj_M2 := SetMaximalConsistent.conjunction_intro h_mcs2
+      (SetMaximalConsistent.conjunction_intro h_mcs2 (h_beta_G2 : Formula.all_future beta ∈ M2) h_neg_gamma_M2)
       h_neg_alpha_M2
     have h_F_conj1 := canonical_F_of_mem_successor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
     have h_F_conj2 := canonical_F_of_mem_successor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
-    have h_lin := mcs_F_linearity M h_mcs _ _ h_F_conj1 h_F_conj2
+    have h_lin := SetMaximalConsistent.F_linearity M h_mcs _ _ h_F_conj1 h_F_conj2
     rcases h_lin with h_case1 | h_case2 | h_case3
     · obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case1
-      have h_big := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_inner1_W := (set_mcs_conjunction_elim h_W_mcs h_big.1).1
-      have h_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner1_W).2
-      have h_inner2_W := (set_mcs_conjunction_elim h_W_mcs h_big.2).1
-      have h_neg_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner2_W).2
+      have h_big := SetMaximalConsistent.conjunction_elim h_W_mcs h_W_mem
+      have h_inner1_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_big.1).1
+      have h_gamma_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner1_W).2
+      have h_inner2_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_big.2).1
+      have h_neg_gamma_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner2_W).2
       exact set_consistent_not_both h_W_mcs.1 gamma h_gamma_W h_neg_gamma_W
     · obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case2
-      have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_inner1 := (set_mcs_conjunction_elim h_W_mcs h_outer.1).1
-      have h_G_alpha_W := (set_mcs_conjunction_elim h_W_mcs h_inner1).1
+      have h_outer := SetMaximalConsistent.conjunction_elim h_W_mcs h_W_mem
+      have h_inner1 := (SetMaximalConsistent.conjunction_elim h_W_mcs h_outer.1).1
+      have h_G_alpha_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner1).1
       obtain ⟨W', h_W'_mcs, h_R_WW', h_conj2_W'⟩ := canonical_forward_F W h_W_mcs _ h_outer.2
-      have h_neg_alpha_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj2_W').2
+      have h_neg_alpha_W' := (SetMaximalConsistent.conjunction_elim h_W'_mcs h_conj2_W').2
       exact set_consistent_not_both h_W'_mcs.1 alpha
         (canonical_forward_G W W' h_R_WW' alpha h_G_alpha_W) h_neg_alpha_W'
     · obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_forward_F M h_mcs _ h_case3
-      have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_inner2 := (set_mcs_conjunction_elim h_W_mcs h_outer.2).1
-      have h_G_beta_W := (set_mcs_conjunction_elim h_W_mcs h_inner2).1
+      have h_outer := SetMaximalConsistent.conjunction_elim h_W_mcs h_W_mem
+      have h_inner2 := (SetMaximalConsistent.conjunction_elim h_W_mcs h_outer.2).1
+      have h_G_beta_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner2).1
       obtain ⟨W', h_W'_mcs, h_R_WW', h_conj1_W'⟩ := canonical_forward_F W h_W_mcs _ h_outer.1
-      have h_neg_beta_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj1_W').2
+      have h_neg_beta_W' := (SetMaximalConsistent.conjunction_elim h_W'_mcs h_conj1_W').2
       exact set_consistent_not_both h_W'_mcs.1 beta
         (canonical_forward_G W W' h_R_WW' beta h_G_beta_W) h_neg_beta_W'
 
-lemma mcs_P_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+lemma SetMaximalConsistent.P_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi psi : Formula)
     (h_Pphi : Formula.some_past phi ∈ M)
     (h_Ppsi : Formula.some_past psi ∈ M) :
@@ -383,12 +384,12 @@ lemma mcs_P_linearity (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.imp, Formula.neg,
     Formula.all_future, Formula.all_past, Formula.some_future, Formula.some_past,
     Formula.swap_temporal_involution] at h_dual
-  have h_conj := set_mcs_conjunction_intro h_mcs h_Pphi h_Ppsi
-  have h_disj := set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_dual) h_conj
-  cases set_mcs_disjunction_elim h_mcs h_disj with
+  have h_conj := SetMaximalConsistent.conjunction_intro h_mcs h_Pphi h_Ppsi
+  have h_disj := SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_dual) h_conj
+  cases SetMaximalConsistent.disjunction_elim h_mcs h_disj with
   | inl h1 => exact Or.inl h1
   | inr h23 =>
-    cases set_mcs_disjunction_elim h_mcs h23 with
+    cases SetMaximalConsistent.disjunction_elim h_mcs h23 with
     | inl h2 => exact Or.inr (Or.inl h2)
     | inr h3 => exact Or.inr (Or.inr h3)
 
@@ -404,68 +405,68 @@ theorem canonical_backward_reachable_linear (M M1 M2 : Set Formula)
     by_contra h_neg
     push_neg at h_neg
     obtain ⟨h_not_21, h_neq⟩ := h_neg
-    have h_not_H21 : ¬(HContent M2 ⊆ M1) := by
+    have h_not_H21 : ¬(h_content M2 ⊆ M1) := by
       intro h_HC
-      exact h_12 (HContent_subset_implies_GContent_reverse M2 M1 h_mcs2 h_mcs1 h_HC)
+      exact h_12 (h_content_subset_implies_g_content_reverse M2 M1 h_mcs2 h_mcs1 h_HC)
     rw [Set.not_subset] at h_not_H21
     obtain ⟨alpha, h_H_alpha_M2, h_alpha_not1⟩ := h_not_H21
     have h_neg_alpha_M1 : Formula.neg alpha ∈ M1 := by
-      cases set_mcs_negation_complete h_mcs1 alpha with
+      cases SetMaximalConsistent.negation_complete h_mcs1 alpha with
       | inl h => exact absurd h h_alpha_not1
       | inr h => exact h
-    have h_not_H12 : ¬(HContent M1 ⊆ M2) := by
+    have h_not_H12 : ¬(h_content M1 ⊆ M2) := by
       intro h_HC
-      exact h_not_21 (HContent_subset_implies_GContent_reverse M1 M2 h_mcs1 h_mcs2 h_HC)
+      exact h_not_21 (h_content_subset_implies_g_content_reverse M1 M2 h_mcs1 h_mcs2 h_HC)
     rw [Set.not_subset] at h_not_H12
     obtain ⟨beta, h_H_beta_M1, h_beta_not2⟩ := h_not_H12
     have h_neg_beta_M2 : Formula.neg beta ∈ M2 := by
-      cases set_mcs_negation_complete h_mcs2 beta with
+      cases SetMaximalConsistent.negation_complete h_mcs2 beta with
       | inl h => exact absurd h h_beta_not2
       | inr h => exact h
     have h_sep : ∃ gamma, gamma ∈ M1 ∧ gamma ∉ M2 := by
       by_contra h_all; push_neg at h_all; apply h_neq
       apply Set.Subset.antisymm h_all
       intro phi h_phi_M2
-      cases set_mcs_negation_complete h_mcs1 phi with
+      cases SetMaximalConsistent.negation_complete h_mcs1 phi with
       | inl h => exact h
       | inr h => exact absurd (h_all _ h) (fun h_neg_M2 =>
           set_consistent_not_both h_mcs2.1 phi h_phi_M2 h_neg_M2)
     obtain ⟨gamma, h_gamma_M1, h_gamma_not_M2⟩ := h_sep
     have h_neg_gamma_M2 : Formula.neg gamma ∈ M2 := by
-      cases set_mcs_negation_complete h_mcs2 gamma with
+      cases SetMaximalConsistent.negation_complete h_mcs2 gamma with
       | inl h => exact absurd h h_gamma_not_M2
       | inr h => exact h
-    have h_conj_M1 := set_mcs_conjunction_intro h_mcs1
-      (set_mcs_conjunction_intro h_mcs1 (h_H_beta_M1 : Formula.all_past beta ∈ M1) h_gamma_M1)
+    have h_conj_M1 := SetMaximalConsistent.conjunction_intro h_mcs1
+      (SetMaximalConsistent.conjunction_intro h_mcs1 (h_H_beta_M1 : Formula.all_past beta ∈ M1) h_gamma_M1)
       h_neg_alpha_M1
-    have h_conj_M2 := set_mcs_conjunction_intro h_mcs2
-      (set_mcs_conjunction_intro h_mcs2 (h_H_alpha_M2 : Formula.all_past alpha ∈ M2) h_neg_gamma_M2)
+    have h_conj_M2 := SetMaximalConsistent.conjunction_intro h_mcs2
+      (SetMaximalConsistent.conjunction_intro h_mcs2 (h_H_alpha_M2 : Formula.all_past alpha ∈ M2) h_neg_gamma_M2)
       h_neg_beta_M2
     have h_P_conj1 := canonical_P_of_mem_predecessor M M1 h_mcs h_mcs1 h_R1 _ h_conj_M1
     have h_P_conj2 := canonical_P_of_mem_predecessor M M2 h_mcs h_mcs2 h_R2 _ h_conj_M2
-    have h_lin := mcs_P_linearity M h_mcs _ _ h_P_conj1 h_P_conj2
+    have h_lin := SetMaximalConsistent.P_linearity M h_mcs _ _ h_P_conj1 h_P_conj2
     rcases h_lin with h_case1 | h_case2 | h_case3
     · obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case1
-      have h_big := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_inner1_W := (set_mcs_conjunction_elim h_W_mcs h_big.1).1
-      have h_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner1_W).2
-      have h_inner2_W := (set_mcs_conjunction_elim h_W_mcs h_big.2).1
-      have h_neg_gamma_W := (set_mcs_conjunction_elim h_W_mcs h_inner2_W).2
+      have h_big := SetMaximalConsistent.conjunction_elim h_W_mcs h_W_mem
+      have h_inner1_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_big.1).1
+      have h_gamma_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner1_W).2
+      have h_inner2_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_big.2).1
+      have h_neg_gamma_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner2_W).2
       exact set_consistent_not_both h_W_mcs.1 gamma h_gamma_W h_neg_gamma_W
     · obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case2
-      have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_inner1 := (set_mcs_conjunction_elim h_W_mcs h_outer.1).1
-      have h_H_beta_W := (set_mcs_conjunction_elim h_W_mcs h_inner1).1
+      have h_outer := SetMaximalConsistent.conjunction_elim h_W_mcs h_W_mem
+      have h_inner1 := (SetMaximalConsistent.conjunction_elim h_W_mcs h_outer.1).1
+      have h_H_beta_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner1).1
       obtain ⟨W', h_W'_mcs, h_R_past_WW', h_conj2_W'⟩ := canonical_backward_P W h_W_mcs _ h_outer.2
-      have h_neg_beta_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj2_W').2
+      have h_neg_beta_W' := (SetMaximalConsistent.conjunction_elim h_W'_mcs h_conj2_W').2
       exact set_consistent_not_both h_W'_mcs.1 beta
         (canonical_backward_H W W' h_R_past_WW' beta h_H_beta_W) h_neg_beta_W'
     · obtain ⟨W, h_W_mcs, _, h_W_mem⟩ := canonical_backward_P M h_mcs _ h_case3
-      have h_outer := set_mcs_conjunction_elim h_W_mcs h_W_mem
-      have h_inner2 := (set_mcs_conjunction_elim h_W_mcs h_outer.2).1
-      have h_H_alpha_W := (set_mcs_conjunction_elim h_W_mcs h_inner2).1
+      have h_outer := SetMaximalConsistent.conjunction_elim h_W_mcs h_W_mem
+      have h_inner2 := (SetMaximalConsistent.conjunction_elim h_W_mcs h_outer.2).1
+      have h_H_alpha_W := (SetMaximalConsistent.conjunction_elim h_W_mcs h_inner2).1
       obtain ⟨W', h_W'_mcs, h_R_past_WW', h_conj1_W'⟩ := canonical_backward_P W h_W_mcs _ h_outer.1
-      have h_neg_alpha_W' := (set_mcs_conjunction_elim h_W'_mcs h_conj1_W').2
+      have h_neg_alpha_W' := (SetMaximalConsistent.conjunction_elim h_W'_mcs h_conj1_W').2
       exact set_consistent_not_both h_W'_mcs.1 alpha
         (canonical_backward_H W W' h_R_past_WW' alpha h_H_alpha_W) h_neg_alpha_W'
 

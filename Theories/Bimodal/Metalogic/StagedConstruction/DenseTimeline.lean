@@ -558,21 +558,21 @@ density_frame_condition construction.
 
 **Mathematical Analysis:**
 The intermediate c is constructed via density_frame_condition_reflexive_source,
-which uses the Lindenbaum extension of {neg delta} ∪ GContent(W₁).
+which uses the Lindenbaum extension of {neg delta} ∪ g_content(W₁).
 
 The key issue: Lindenbaum extension is NON-CONSTRUCTIVE. It uses the axiom of
 choice to pick formulas to add, maintaining consistency. We CANNOT control which
 G-formulas end up in the final MCS c.
 
 **Counterexample structure:**
-- M (source) is reflexive with GContent(M) = {alpha, beta, ...}
+- M (source) is reflexive with g_content(M) = {alpha, beta, ...}
 - delta is the distinguishing formula: G(delta) ∈ M', delta ∉ M
 - Since M is reflexive, G(delta) ∉ M (otherwise delta ∈ M)
 - So F(neg delta) ∈ M, and we construct c with neg delta ∈ c
 
-However, the Lindenbaum extension of {neg delta} ∪ GContent(W₁) may produce c
-such that GContent(c) ⊆ M. This happens when:
-- c inherits only G-formulas from GContent(M) (via transitivity through W₁)
+However, the Lindenbaum extension of {neg delta} ∪ g_content(W₁) may produce c
+such that g_content(c) ⊆ M. This happens when:
+- c inherits only G-formulas from g_content(M) (via transitivity through W₁)
 - No new G-formulas with content NOT in M are added by Lindenbaum
 
 In such cases: c ~ M (c is equivalent to source), defeating the escape property.

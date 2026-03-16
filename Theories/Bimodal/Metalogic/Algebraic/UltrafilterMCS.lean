@@ -765,7 +765,7 @@ The MCS-ultrafilter correspondence is a bijection.
 
 `mcsToUltrafilter` and `ultrafilterToSet` are inverses of each other.
 -/
-theorem mcs_ultrafilter_correspondence :
+theorem SetMaximalConsistent.ultrafilter_correspondence :
     ∃ (f : {Γ : Set Formula // SetMaximalConsistent Γ} → Ultrafilter LindenbaumAlg)
       (g : Ultrafilter LindenbaumAlg → {Γ : Set Formula // SetMaximalConsistent Γ}),
       Function.LeftInverse g f ∧ Function.RightInverse g f := by

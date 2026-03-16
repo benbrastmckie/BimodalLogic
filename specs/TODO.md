@@ -103,13 +103,14 @@ technical_debt:
 
 ### 972. Review metalogic naming conventions for improvements
 - **Effort**: 6-8 hours (6 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Created**: 2026-03-16
 - **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md), [research-002.md](specs/972_review_metalogic_naming_conventions/reports/research-002.md) (namespace migration)
 - **Plan**: [implementation-002.md](specs/972_review_metalogic_naming_conventions/plans/implementation-002.md) (v2: full namespace migrations)
+- **Summary**: [implementation-summary-20260316.md](specs/972_review_metalogic_naming_conventions/summaries/implementation-summary-20260316.md)
 
-**Description**: Comprehensive naming improvements: (1) GContent/HContent → snake_case, (2) WitnessSeed → snake_case, (3) bmcs_* → BFMCS namespace, (4) set_mcs_* → SetMaximalConsistent namespace (16 defs), (5) mcs_* → SetMaximalConsistent (14 defs). Enables dot notation throughout.
+**Description**: Renamed GContent/HContent to snake_case, migrated bmcs_*, set_mcs_*, and mcs_* prefixed functions to proper Lean namespaces (BFMCS and SetMaximalConsistent). Enables dot notation throughout Metalogic/. Build passes with 975 jobs.
 
 ---
 

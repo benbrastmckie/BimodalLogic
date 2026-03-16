@@ -367,6 +367,11 @@
           "path": "specs/972_review_metalogic_naming_conventions/plans/implementation-002.md",
           "type": "plan",
           "summary": "6-phase plan (v2): snake_case + namespace migrations for SetMaximalConsistent"
+        },
+        {
+          "path": "specs/972_review_metalogic_naming_conventions/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Renamed GContent/HContent to snake_case, migrated bmcs_*, set_mcs_*, mcs_* to namespaces"
         }
       ],
       "planned": "2026-03-16T16:34:30Z",

@@ -404,7 +404,7 @@ Bridge lemma: SetMaximalConsistent implies consistency for any finite subset.
 For any list L whose elements are all in a SetMaximalConsistent set S,
 the list L is Consistent.
 -/
-lemma set_mcs_finite_subset_consistent {S : Set Formula}
+lemma SetMaximalConsistent.finite_subset_consistent {S : Set Formula}
     (h_mcs : SetMaximalConsistent S) (L : List Formula) (h_sub : ∀ φ ∈ L, φ ∈ S) :
     Consistent L :=
   h_mcs.1 L h_sub

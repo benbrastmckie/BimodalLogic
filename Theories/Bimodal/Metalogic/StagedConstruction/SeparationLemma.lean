@@ -23,7 +23,7 @@ The key results are:
 ## Approach
 
 Rather than proving a general separation lemma (which research-034 showed has
-difficulties with controlling GContent of Lindenbaum witnesses), we use the
+difficulties with controlling g_content of Lindenbaum witnesses), we use the
 density axiom directly: F(phi) → F(F(phi)) gives intermediate witnesses that
 preserve the F-obligation.
 
@@ -47,15 +47,15 @@ open Bimodal.ProofSystem
 
 If two MCSs M, M' satisfy CanonicalR(M, M') but NOT CanonicalR(M', M),
 then there exists a formula that distinguishes them: some formula is in
-GContent(M') but not in M.
+g_content(M') but not in M.
 -/
 
 /--
 If ¬CanonicalR(M', M), then there exists beta such that G(beta) ∈ M'
 and beta ∉ M. This is the distinguishing formula.
 
-Proof: ¬CanonicalR(M', M) means GContent(M') ⊄ M, i.e., there exists
-beta ∈ GContent(M') with beta ∉ M. By definition of GContent, G(beta) ∈ M'.
+Proof: ¬CanonicalR(M', M) means g_content(M') ⊄ M, i.e., there exists
+beta ∈ g_content(M') with beta ∉ M. By definition of g_content, G(beta) ∈ M'.
 -/
 theorem distinguishing_formula_exists
     {M M' : Set Formula}
@@ -63,11 +63,11 @@ theorem distinguishing_formula_exists
     (_h_mcs' : SetMaximalConsistent M')
     (h_not_R' : ¬CanonicalR M' M) :
     ∃ beta : Formula, Formula.all_future beta ∈ M' ∧ beta ∉ M := by
-  -- ¬CanonicalR(M', M) means GContent(M') ⊄ M
-  -- i.e., ∃ beta ∈ GContent(M'), beta ∉ M
+  -- ¬CanonicalR(M', M) means g_content(M') ⊄ M
+  -- i.e., ∃ beta ∈ g_content(M'), beta ∉ M
   rw [CanonicalR, Set.not_subset] at h_not_R'
   obtain ⟨beta, h_beta_G, h_beta_not_M⟩ := h_not_R'
-  -- beta ∈ GContent(M') means G(beta) ∈ M'
+  -- beta ∈ g_content(M') means G(beta) ∈ M'
   exact ⟨beta, h_beta_G, h_beta_not_M⟩
 
 /--
@@ -104,7 +104,7 @@ theorem not_G_implies_F_neg
     Formula.some_future (Formula.neg beta) ∈ M := by
   -- By MCS negation completeness, G(beta) ∉ M → ¬G(beta) ∈ M.
   have h_neg_G : Formula.neg (Formula.all_future beta) ∈ M := by
-    cases set_mcs_negation_complete h_mcs (Formula.all_future beta) with
+    cases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future beta) with
     | inl h => exact absurd h h_not_G
     | inr h => exact h
   -- F(¬beta) = some_future (neg beta) = neg (all_future (neg (neg beta)))
@@ -135,10 +135,10 @@ theorem not_G_implies_F_neg
   have h_not_G_nn : Formula.all_future (Formula.neg (Formula.neg beta)) ∉ M := by
     intro h_G_nn
     have h_imp_in_M := theorem_in_mcs h_mcs h_G_nn_imp_G
-    exact h_not_G (set_mcs_implication_property h_mcs h_imp_in_M h_G_nn)
+    exact h_not_G (SetMaximalConsistent.implication_property h_mcs h_imp_in_M h_G_nn)
   -- Step 6: ¬G(¬¬beta) ∈ M by MCS negation completeness
   have h_neg_G_nn : Formula.neg (Formula.all_future (Formula.neg (Formula.neg beta))) ∈ M := by
-    cases set_mcs_negation_complete h_mcs (Formula.all_future (Formula.neg (Formula.neg beta))) with
+    cases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future (Formula.neg (Formula.neg beta))) with
     | inl h => exact absurd h h_not_G_nn
     | inr h => exact h
   -- F(¬beta) = neg (all_future (neg (neg beta))) definitionally
@@ -148,7 +148,7 @@ theorem not_G_implies_F_neg
 ## Case A Forward Witness
 
 When Case A holds (G(beta) ∉ M), we have F(¬beta) ∈ M, and the forward
-witness W = Lindenbaum({¬beta} ∪ GContent(M)) satisfies:
+witness W = Lindenbaum({¬beta} ∪ g_content(M)) satisfies:
 - CanonicalR(M, W)
 - ¬beta ∈ W (and therefore beta ∉ W, since W is consistent)
 -/
@@ -210,18 +210,18 @@ no-endpoint properties for the staged timeline.
 Every MCS has a strict canonical future successor (from seriality F(¬⊥)).
 This is the key property for NoMaxOrder in the staged timeline.
 -/
-theorem mcs_has_strict_future (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+theorem SetMaximalConsistent.has_strict_future (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W := by
-  exact mcs_has_canonical_successor M h_mcs
+  exact SetMaximalConsistent.has_canonical_successor M h_mcs
 
 /--
 Every MCS has a strict canonical past predecessor (from seriality P(¬⊥)).
 This is the key property for NoMinOrder in the staged timeline.
 -/
-theorem mcs_has_strict_past (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+theorem SetMaximalConsistent.has_strict_past (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR W M := by
-  obtain ⟨W, h_W_mcs, h_R_past⟩ := mcs_has_canonical_predecessor M h_mcs
+  obtain ⟨W, h_W_mcs, h_R_past⟩ := SetMaximalConsistent.has_canonical_predecessor M h_mcs
   -- Convert CanonicalR_past to CanonicalR in the reverse direction
-  exact ⟨W, h_W_mcs, HContent_subset_implies_GContent_reverse M W h_mcs h_W_mcs h_R_past⟩
+  exact ⟨W, h_W_mcs, h_content_subset_implies_g_content_reverse M W h_mcs h_W_mcs h_R_past⟩
 
 end Bimodal.Metalogic.StagedConstruction

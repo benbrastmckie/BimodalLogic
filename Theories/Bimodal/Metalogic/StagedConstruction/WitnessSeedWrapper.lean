@@ -56,20 +56,20 @@ Replicated from ConstructiveFragment.lean to avoid importing that module
 
 /--
 Execute a single forward witness step: given an MCS M with F(phi) ∈ M,
-return the specific Lindenbaum witness MCS containing {phi} ∪ GContent(M).
+return the specific Lindenbaum witness MCS containing {phi} ∪ g_content(M).
 -/
 noncomputable def executeForwardStep (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) : Set Formula :=
-  lindenbaumMCS_set (ForwardTemporalWitnessSeed M phi)
+  lindenbaumMCS_set (forward_temporal_witness_seed M phi)
     (forward_temporal_witness_seed_consistent M h_mcs phi h_F)
 
 /--
 Execute a single backward witness step: given an MCS M with P(phi) ∈ M,
-return the specific Lindenbaum witness MCS containing {phi} ∪ HContent(M).
+return the specific Lindenbaum witness MCS containing {phi} ∪ h_content(M).
 -/
 noncomputable def executeBackwardStep (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) : Set Formula :=
-  lindenbaumMCS_set (PastTemporalWitnessSeed M phi)
+  lindenbaumMCS_set (past_temporal_witness_seed M phi)
     (past_temporal_witness_seed_consistent M h_mcs phi h_P)
 
 /-!
@@ -79,17 +79,17 @@ noncomputable def executeBackwardStep (M : Set Formula) (h_mcs : SetMaximalConsi
 theorem executeForwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_F : Formula.some_future phi ∈ M} :
     CanonicalR M (executeForwardStep M h_mcs phi h_F) :=
-  fun _ h_psi => lindenbaumMCS_set_extends _ _ (GContent_subset_ForwardTemporalWitnessSeed M phi h_psi)
+  fun _ h_psi => lindenbaumMCS_set_extends _ _ (g_content_subset_forward_temporal_witness_seed M phi h_psi)
 
 theorem executeBackwardStep_canonicalR_past {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_P : Formula.some_past phi ∈ M} :
     CanonicalR_past M (executeBackwardStep M h_mcs phi h_P) :=
-  fun _ h_psi => lindenbaumMCS_set_extends _ _ (HContent_subset_PastTemporalWitnessSeed M phi h_psi)
+  fun _ h_psi => lindenbaumMCS_set_extends _ _ (h_content_subset_past_temporal_witness_seed M phi h_psi)
 
 theorem executeBackwardStep_canonicalR {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_P : Formula.some_past phi ∈ M} :
     CanonicalR (executeBackwardStep M h_mcs phi h_P) M :=
-  HContent_subset_implies_GContent_reverse M _ h_mcs
+  h_content_subset_implies_g_content_reverse M _ h_mcs
     (lindenbaumMCS_set_is_mcs _ _)
     (executeBackwardStep_canonicalR_past (h_mcs := h_mcs) (h_P := h_P))
 
@@ -117,7 +117,7 @@ The forward witness contains phi (the target formula from the F-obligation).
 theorem executeForwardStep_contains_phi {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_F : Formula.some_future phi ∈ M} :
     phi ∈ executeForwardStep M h_mcs phi h_F :=
-  lindenbaumMCS_set_extends _ _ (psi_mem_ForwardTemporalWitnessSeed M phi)
+  lindenbaumMCS_set_extends _ _ (psi_mem_forward_temporal_witness_seed M phi)
 
 /--
 The backward witness contains phi (the target formula from the P-obligation).
@@ -125,7 +125,7 @@ The backward witness contains phi (the target formula from the P-obligation).
 theorem executeBackwardStep_contains_phi {M : Set Formula} {h_mcs : SetMaximalConsistent M}
     {phi : Formula} {h_P : Formula.some_past phi ∈ M} :
     phi ∈ executeBackwardStep M h_mcs phi h_P :=
-  lindenbaumMCS_set_extends _ _ (psi_mem_PastTemporalWitnessSeed M phi)
+  lindenbaumMCS_set_extends _ _ (psi_mem_past_temporal_witness_seed M phi)
 
 /-!
 ## StagedPoint Wrappers
@@ -207,14 +207,14 @@ Every StagedPoint has F(¬⊥) in its MCS (seriality future axiom is a theorem).
 -/
 theorem stagedPoint_has_seriality_future (p : StagedPoint) :
     Formula.some_future (Formula.neg Formula.bot) ∈ p.mcs :=
-  mcs_contains_seriality_future p.mcs p.is_mcs
+  SetMaximalConsistent.contains_seriality_future p.mcs p.is_mcs
 
 /--
 Every StagedPoint has P(¬⊥) in its MCS (seriality past axiom is a theorem).
 -/
 theorem stagedPoint_has_seriality_past (p : StagedPoint) :
     Formula.some_past (Formula.neg Formula.bot) ∈ p.mcs :=
-  mcs_contains_seriality_past p.mcs p.is_mcs
+  SetMaximalConsistent.contains_seriality_past p.mcs p.is_mcs
 
 /-!
 ## Density from Density Axiom

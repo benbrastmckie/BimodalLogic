@@ -135,7 +135,7 @@ theorem StagedPoint.le_trans (a b c : StagedPoint)
 
 /-!
 Note: Under irreflexive semantics, mutual CanonicalR (a.mcs, b.mcs and b.mcs, a.mcs)
-does NOT imply a.mcs = b.mcs. Two MCSs can agree on all G-formulas (GContent) while
+does NOT imply a.mcs = b.mcs. Two MCSs can agree on all G-formulas (g_content) while
 differing on base formulas. Antisymmetry is ensured by the staged construction itself,
 which maintains strict ordering between distinct MCSs. See `StagedTimeline.strict_between_distinct`.
 -/

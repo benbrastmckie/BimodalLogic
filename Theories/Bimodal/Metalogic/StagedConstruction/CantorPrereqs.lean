@@ -19,7 +19,7 @@ Cantor's isomorphism theorem application:
 
 - `forward_witness_at_stage`: Concrete witness placement at specific stages
 - `backward_witness_at_stage`: Symmetric for backward witnesses
-- `mcs_density_F_to_FF`: F(phi) ∈ M implies F(F(phi)) ∈ M (density axiom)
+- `SetMaximalConsistent.density_F_to_FF`: F(phi) ∈ M implies F(F(phi)) ∈ M (density axiom)
 
 ## References
 
@@ -58,13 +58,13 @@ F-obligations in any MCS.
 -/
 
 /-- If F(phi) ∈ M, then F(F(phi)) ∈ M. From the density axiom. -/
-theorem mcs_density_F_to_FF (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem SetMaximalConsistent.density_F_to_FF (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
     Formula.some_future (Formula.some_future phi) ∈ M := by
   have h_density : (Formula.some_future phi).imp
       (Formula.some_future (Formula.some_future phi)) ∈ M :=
     theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.density phi))
-  exact set_mcs_implication_property h_mcs h_density h_F
+  exact SetMaximalConsistent.implication_property h_mcs h_density h_F
 
 /-!
 ## Forward/Backward Witness at Specific Stage
@@ -175,9 +175,9 @@ theorem iterated_future_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M
   | succ n ih =>
     show Formula.some_future (iteratedFuture n (Formula.some_future phi)) ∈ M
     cases n with
-    | zero => exact mcs_density_F_to_FF M h_mcs phi h_F
+    | zero => exact SetMaximalConsistent.density_F_to_FF M h_mcs phi h_F
     | succ n' =>
-      exact mcs_density_F_to_FF M h_mcs
+      exact SetMaximalConsistent.density_F_to_FF M h_mcs
         (iteratedFuture n' (Formula.some_future phi)) ih
 
 /-- The encoding of F(iteratedFuture m (F ¬⊥)) grows: for any N, there exists m
@@ -277,7 +277,7 @@ theorem staged_has_future
   exact ⟨q, ⟨2 * k + 1, hq_mem⟩, hq_R⟩
 
 /-- Past density: P(phi) -> P(P(phi)) in any MCS. Derived from future density via temporal duality. -/
-theorem mcs_density_P_to_PP (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+theorem SetMaximalConsistent.density_P_to_PP (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
     Formula.some_past (Formula.some_past phi) ∈ M := by
   -- The density axiom gives: ⊢ F(phi^t) → F(F(phi^t))
@@ -292,7 +292,7 @@ theorem mcs_density_P_to_PP (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   -- After swap_temporal, we get P(phi) → P(P(phi))
   simp only [Formula.imp, Formula.some_future, Formula.neg, Formula.all_future,
     Formula.swap_temporal, Formula.swap_temporal_involution] at h_density_past
-  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_density_past) h_P
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_density_past) h_P
 
 /-- Iterated past: apply some_past n times to a formula. -/
 noncomputable def iteratedPast : Nat → Formula → Formula
@@ -308,9 +308,9 @@ theorem iterated_past_in_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   | succ n ih =>
     show Formula.some_past (iteratedPast n (Formula.some_past phi)) ∈ M
     cases n with
-    | zero => exact mcs_density_P_to_PP M h_mcs phi h_P
+    | zero => exact SetMaximalConsistent.density_P_to_PP M h_mcs phi h_P
     | succ n' =>
-      exact mcs_density_P_to_PP M h_mcs
+      exact SetMaximalConsistent.density_P_to_PP M h_mcs
         (iteratedPast n' (Formula.some_past phi)) ih
 
 private theorem iteratedPast_sizeOf_lt (phi : Formula) (n : Nat) :

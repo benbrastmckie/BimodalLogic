@@ -17,7 +17,7 @@ temporal semantics adopted in Task 967.
 
 **Key insight**: With the T-axiom, we can derive `neg(p) ∈ M'` directly from
 `H(neg(p)) ∈ M'` (which is in the naming set). This eliminates the need for global
-freshness or the complex GContent ⊆ M' argument that was previously blocking.
+freshness or the complex g_content ⊆ M' argument that was previously blocking.
 
 ## Main Result
 
@@ -30,7 +30,7 @@ the standard approach from Goldblatt (1992) and Blackburn-de Rijke-Venema (2001)
 enhanced with the T-axiom for past.
 
 The key steps:
-1. Assume `CanonicalR M M` (i.e., `GContent M ⊆ M`) for contradiction
+1. Assume `CanonicalR M M` (i.e., `g_content M ⊆ M`) for contradiction
 2. Choose any atom p. Define naming set: p-free formulas plus {atom p, H(neg p)}
 3. Show naming set is consistent (using IRR contrapositively)
 4. Extend to MCS M' via Lindenbaum
@@ -216,7 +216,7 @@ theorem iterated_imp_in_mcs_aux {S : Set Formula} (h_mcs : SetMaximalConsistent 
     -- hd ∈ S (from h_sub)
     have h_hd_in_S : hd ∈ S := h_sub hd List.mem_cons_self
     -- By modus ponens in MCS: ψ ∈ S
-    exact set_mcs_implication_property h_mcs h_imp_in_S h_hd_in_S
+    exact SetMaximalConsistent.implication_property h_mcs h_imp_in_S h_hd_in_S
 
 /-- From [] ⊢ L.foldr Formula.imp ψ and all elements of L in MCS S,
 derive ψ ∈ S. -/
@@ -235,7 +235,7 @@ theorem iterated_imp_in_mcs {S : Set Formula} (h_mcs : SetMaximalConsistent S)
 
 /-- The naming set is set-consistent. This is the core IRR-contrapositive argument.
 
-If M is an MCS with GContent M ⊆ M, then for any atom p, the set
+If M is an MCS with g_content M ⊆ M, then for any atom p, the set
 `atomFreeSubset M p ∪ {atom p, H(neg(atom p))}` is set-consistent.
 
 Proof: Suppose for contradiction that some finite L ⊆ naming set is inconsistent.
@@ -694,7 +694,7 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
       -- L_rest ⊆ M and L_rest ⊢ neg(atomP)
       -- By MCS closure: neg(atomP) ∈ M
       have h_neg_atomP_in_M : Formula.neg atomP ∈ M :=
-        set_mcs_closed_under_derivation h_mcs L_rest hL_rest_in_M d_neg_atomP
+        SetMaximalConsistent.closed_under_derivation h_mcs L_rest hL_rest_in_M d_neg_atomP
 
       -- Also, atomP may or may not be in M. We don't need this for contradiction.
       -- neg(atomP) ∈ M means (atom p → ⊥) ∈ M.
@@ -1172,15 +1172,15 @@ theorem naming_set_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
         exact h_mcs.1 L hL_in_M ⟨d⟩
 
 /-!
-## GContent M ⊆ M' (CanonicalR preservation)
+## g_content M ⊆ M' (CanonicalR preservation)
 
-When M' extends the naming set, we need GContent M ⊆ M'.
-For p-free formulas in GContent M, this is direct.
+When M' extends the naming set, we need g_content M ⊆ M'.
+For p-free formulas in g_content M, this is direct.
 For formulas mentioning p: they are theorems (and hence in M') or
 they are atom p (which is in M').
 -/
 
--- Note: The GContent ⊆ M' argument is not needed for the main theorem below,
+-- Note: The g_content ⊆ M' argument is not needed for the main theorem below,
 -- which uses the naming set construction directly.
 
 /-!
@@ -1198,7 +1198,7 @@ temporal semantics adopted in Task 967. This enables the key step:
 which provides the contradiction with atom(p) ∈ M' from the naming set.
 
 Proof outline (Gabbay IRR):
-1. Assume `CanonicalR M M` (i.e., `GContent M ⊆ M`) for contradiction.
+1. Assume `CanonicalR M M` (i.e., `g_content M ⊆ M`) for contradiction.
 2. Choose any atom p. The naming set `atomFreeSubset M p ∪ {atom p, H(¬p)}`
    is set-consistent (by naming_set_consistent).
 3. Extend to MCS M' via Lindenbaum.
@@ -1239,13 +1239,13 @@ theorem canonicalR_irreflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M
     theorem_in_mcs h_mcs' (DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.neg (Formula.atom p))))
   -- By modus ponens: from H(neg(p)) ∈ M' and (H(neg(p)) → neg(p)) ∈ M', get neg(p) ∈ M'
   have h_negP_in_M' : Formula.neg (Formula.atom p) ∈ M' :=
-    set_mcs_implication_property h_mcs' h_T_axiom_in_M' h_HnegP_in_M'
+    SetMaximalConsistent.implication_property h_mcs' h_T_axiom_in_M' h_HnegP_in_M'
 
   -- CONTRADICTION: Both atom p and neg(atom p) are in M'
   -- M' is an MCS, so it is consistent. But having both p and ¬p contradicts consistency.
   -- neg(atom p) = (atom p).imp bot, so from atom p and neg(atom p), derive bot
   have h_bot_in_M' : Formula.bot ∈ M' :=
-    set_mcs_implication_property h_mcs' h_negP_in_M' h_atomP_in_M'
+    SetMaximalConsistent.implication_property h_mcs' h_negP_in_M' h_atomP_in_M'
   -- But M' is SetConsistent (since M' is SetMaximalConsistent), so bot ∉ M'
   -- SetConsistent M' means: for any L ⊆ M', Consistent L
   -- If bot ∈ M', then [bot] ⊆ M', so Consistent [bot]

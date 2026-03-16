@@ -19,7 +19,7 @@ Given a root MCS `M₀`, we construct a FMCS where:
 - The domain is `CanonicalMCS` (all maximal consistent sets, with CanonicalR Preorder)
 - Each element `w` maps directly to `w.world` (the MCS itself)
 - `forward_G` follows from `canonical_forward_G` and the Preorder definition
-- `backward_H` follows from `GContent_subset_implies_HContent_reverse` duality
+- `backward_H` follows from `g_content_subset_implies_h_content_reverse` duality
 - `forward_F` uses `canonical_forward_F` - the witness MCS IS a domain element
 - `backward_P` uses `canonical_backward_P` - the witness MCS IS a domain element
 
@@ -28,9 +28,9 @@ Given a root MCS `M₀`, we construct a FMCS where:
 The v5 plan originally proposed using CanonicalReachable (future-reachable from M₀).
 This works for forward_F (future witnesses are future-reachable by transitivity),
 but FAILS for backward_P because:
-- `canonical_backward_P` gives witness W with `HContent(w.world) ⊆ W`
-- For W to be in CanonicalReachable, we need `CanonicalR M₀ W` (= `GContent(M₀) ⊆ W`)
-- There is no TM axiom that derives `GContent(M₀) ⊆ W` from the available hypotheses
+- `canonical_backward_P` gives witness W with `h_content(w.world) ⊆ W`
+- For W to be in CanonicalReachable, we need `CanonicalR M₀ W` (= `g_content(M₀) ⊆ W`)
+- There is no TM axiom that derives `g_content(M₀) ⊆ W` from the available hypotheses
 - The G and H modalities are independent; `G(phi) ∈ M₀` does NOT imply `H(phi) ∈ w.world`
 
 The all-MCS approach sidesteps this entirely:
@@ -73,7 +73,7 @@ A maximal consistent set, used as a domain element for the canonical FMCS.
 This is a structure (not an abbrev for Subtype) to avoid diamond instance conflicts:
 `Set Formula` has `LE` (subset), so `Subtype (Set Formula)` would inherit `Subtype.instLE`
 (where `a ≤ b := a.val ⊆ b.val`). Our Preorder uses `CanonicalR` (where `a ≤ b :=
-GContent(a.val) ⊆ b.val`), which is different. Using a structure avoids the conflict.
+g_content(a.val) ⊆ b.val`), which is different. Using a structure avoids the conflict.
 -/
 structure CanonicalMCS where
   /-- The underlying set of formulas -/
@@ -159,9 +159,9 @@ theorem canonicalMCS_forward_G
 /--
 Backward H coherence: if `w₂ < w₁` and `H phi ∈ mcs w₁`, then `phi ∈ mcs w₂`.
 
-Proof (using GContent/HContent duality):
+Proof (using g_content/h_content duality):
 1. `w₂ < w₁` implies `CanonicalR w₂.world w₁.world`
-2. By duality: `HContent(w₁.world) ⊆ w₂.world`
+2. By duality: `h_content(w₁.world) ⊆ w₂.world`
 3. Apply `canonical_backward_H`
 -/
 theorem canonicalMCS_backward_H
@@ -170,7 +170,7 @@ theorem canonicalMCS_backward_H
     phi ∈ canonicalMCS_mcs w₂ := by
   have h_R : CanonicalR w₂.world w₁.world := CanonicalMCS.canonicalR_of_lt w₂ w₁ h_lt
   have h_R_past : CanonicalR_past w₁.world w₂.world :=
-    GContent_subset_implies_HContent_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_R
+    g_content_subset_implies_h_content_reverse w₂.world w₁.world w₂.is_mcs w₁.is_mcs h_R
   exact canonical_backward_H w₁.world w₂.world h_R_past phi h_H
 
 /--
@@ -179,7 +179,7 @@ The canonical FMCS on all MCSes: a family of MCS indexed by CanonicalMCS.
 This construction satisfies all FMCS requirements:
 - Each element maps to its own MCS (identity mapping)
 - Forward G coherence via CanonicalR
-- Backward H coherence via GContent/HContent duality
+- Backward H coherence via g_content/h_content duality
 -/
 noncomputable def canonicalMCSBFMCS : FMCS CanonicalMCS where
   mcs := canonicalMCS_mcs
@@ -232,7 +232,7 @@ Backward P coherence: if `P phi ∈ mcs w`, then there exists `s ≤ w` with `ph
 
 **PROVEN** (no sorry!) - The witness from `canonical_backward_P` is an MCS,
 hence a CanonicalMCS element. The Preorder condition `s ≤ w` follows from
-HContent/GContent duality. No reachability check needed.
+h_content/g_content duality. No reachability check needed.
 
 This was the main blocker in the CanonicalReachable approach: the backward witness
 is NOT future-reachable from M₀. With all-MCS domain, this is a non-issue.
@@ -245,9 +245,9 @@ theorem canonicalMCS_backward_P
   -- W is an MCS, so it's a CanonicalMCS element (no reachability needed!)
   let s : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
   -- s ≤ w means CanonicalR s.world w.world = CanonicalR W w.world
-  -- This follows from HContent_subset_implies_GContent_reverse applied to h_R_past
+  -- This follows from h_content_subset_implies_g_content_reverse applied to h_R_past
   have h_R : CanonicalR W w.world :=
-    HContent_subset_implies_GContent_reverse w.world W w.is_mcs h_W_mcs h_R_past
+    h_content_subset_implies_g_content_reverse w.world W w.is_mcs h_W_mcs h_R_past
   exact ⟨s, CanonicalMCS.le_of_canonicalR s w h_R, h_phi_W⟩
 
 /--

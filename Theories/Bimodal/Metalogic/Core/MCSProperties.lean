@@ -11,12 +11,12 @@ needed for the Representation layer's canonical model construction.
 
 - `cons_filter_neq_perm`: Helper for context permutation with filter
 - `derivation_exchange`: Derivability preserved under context permutation
-- `set_mcs_closed_under_derivation`: Derivable formulas are in MCS
-- `set_mcs_implication_property`: Modus ponens reflected in membership
-- `set_mcs_negation_complete`: Either φ or ¬φ in MCS
+- `SetMaximalConsistent.closed_under_derivation`: Derivable formulas are in MCS
+- `SetMaximalConsistent.implication_property`: Modus ponens reflected in membership
+- `SetMaximalConsistent.negation_complete`: Either φ or ¬φ in MCS
 - `temp_4_past`: Derived temporal 4 axiom for past
-- `set_mcs_all_future_all_future`: Gφ ∈ S → GGφ ∈ S
-- `set_mcs_all_past_all_past`: Hφ ∈ S → HHφ ∈ S
+- `SetMaximalConsistent.all_future_all_future`: Gφ ∈ S → GGφ ∈ S
+- `SetMaximalConsistent.all_past_all_past`: Hφ ∈ S → HHφ ∈ S
 
 ## Dependencies
 
@@ -69,7 +69,7 @@ For set-based MCS, derivable formulas are in the set.
 
 If S is SetMaximalConsistent and L ⊆ S derives φ, then φ ∈ S.
 -/
-lemma set_mcs_closed_under_derivation {S : Set Formula} {φ : Formula}
+lemma SetMaximalConsistent.closed_under_derivation {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (L : List Formula) (h_sub : ∀ ψ ∈ L, ψ ∈ S)
     (h_deriv : DerivationTree L φ) : φ ∈ S := by
@@ -147,10 +147,10 @@ Set-based MCS implication property: modus ponens is reflected in membership.
 
 If (φ → ψ) ∈ S and φ ∈ S for a SetMaximalConsistent S, then ψ ∈ S.
 -/
-theorem set_mcs_implication_property {S : Set Formula} {φ ψ : Formula}
+theorem SetMaximalConsistent.implication_property {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_imp : (φ.imp ψ) ∈ S) (h_phi : φ ∈ S) : ψ ∈ S := by
-  -- Use set_mcs_closed_under_derivation with L = [φ, φ.imp ψ]
+  -- Use SetMaximalConsistent.closed_under_derivation with L = [φ, φ.imp ψ]
   have h_sub : ∀ χ ∈ [φ, φ.imp ψ], χ ∈ S := by
     intro χ h_mem
     simp only [List.mem_cons, List.mem_nil_iff, or_false] at h_mem
@@ -164,14 +164,14 @@ theorem set_mcs_implication_property {S : Set Formula} {φ ψ : Formula}
     have h_assume_imp : [φ, φ.imp ψ] ⊢ φ.imp ψ :=
       DerivationTree.assumption [φ, φ.imp ψ] (φ.imp ψ) (by simp)
     exact DerivationTree.modus_ponens [φ, φ.imp ψ] φ ψ h_assume_imp h_assume_phi
-  exact set_mcs_closed_under_derivation h_mcs [φ, φ.imp ψ] h_sub h_deriv
+  exact SetMaximalConsistent.closed_under_derivation h_mcs [φ, φ.imp ψ] h_sub h_deriv
 
 /--
 Set-based MCS: negation completeness.
 
 For SetMaximalConsistent S, either φ ∈ S or (¬φ) ∈ S.
 -/
-theorem set_mcs_negation_complete {S : Set Formula}
+theorem SetMaximalConsistent.negation_complete {S : Set Formula}
     (h_mcs : SetMaximalConsistent S) (φ : Formula) :
     φ ∈ S ∨ (Formula.neg φ) ∈ S := by
   by_cases h : φ ∈ S
@@ -212,8 +212,8 @@ theorem set_mcs_negation_complete {S : Set Formula}
         cases Set.mem_insert_iff.mp this with
         | inl h_eq => exact absurd h_eq h_ne
         | inr h_in_S => exact h_in_S
-      -- Now derive ¬φ ∈ S using set_mcs_closed_under_derivation
-      exact set_mcs_closed_under_derivation h_mcs L'_filt h_filt_sub d_neg_phi
+      -- Now derive ¬φ ∈ S using SetMaximalConsistent.closed_under_derivation
+      exact SetMaximalConsistent.closed_under_derivation h_mcs L'_filt h_filt_sub d_neg_phi
     · -- φ ∉ L', so L' ⊆ S
       have h_L'_in_S : ∀ ψ ∈ L', ψ ∈ S := by
         intro ψ h_mem
@@ -240,7 +240,7 @@ If Gφ ∈ S for a SetMaximalConsistent S, then GGφ ∈ S.
 
 This is the future transitivity property: always future implies always always future.
 -/
-theorem set_mcs_all_future_all_future {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.all_future_all_future {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
   -- Temporal 4 axiom: Gφ → GGφ
@@ -257,7 +257,7 @@ theorem set_mcs_all_future_all_future {S : Set Formula} {φ : Formula}
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_future_assume
   -- By closure: GGφ ∈ S
   have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by simp [h_all_future]
-  exact set_mcs_closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
+  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
 
 /--
 Derivation of temporal 4 axiom for past: Hφ → HHφ.
@@ -300,7 +300,7 @@ If Hφ ∈ S for a SetMaximalConsistent S, then HHφ ∈ S.
 
 This is the past transitivity property: always past implies always always past.
 -/
-theorem set_mcs_all_past_all_past {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.all_past_all_past {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_all_past : Formula.all_past φ ∈ S) : (Formula.all_past φ).all_past ∈ S := by
   -- Derived temporal 4 for past: Hφ → HHφ
@@ -317,7 +317,7 @@ theorem set_mcs_all_past_all_past {S : Set Formula} {φ : Formula}
     DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_past_assume
   -- By closure: HHφ ∈ S
   have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by simp [h_all_past]
-  exact set_mcs_closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
+  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
 
 /-! ## Consistency Properties -/
 
@@ -354,7 +354,7 @@ If φ.neg is in a set-maximal consistent set M, then φ is not in M.
 This is the contrapositive of negation completeness: if ¬φ ∈ M, then φ ∉ M.
 Used in the completeness proof to show countermodels exist.
 -/
-theorem set_mcs_neg_excludes {S : Set Formula} (h_mcs : SetMaximalConsistent S)
+theorem SetMaximalConsistent.neg_excludes {S : Set Formula} (h_mcs : SetMaximalConsistent S)
     (phi : Formula) (h_neg : phi.neg ∈ S) : phi ∉ S := by
   intro h_phi
   exact set_consistent_not_both h_mcs.1 phi h_phi h_neg

@@ -32,14 +32,14 @@ This file has been refactored from a monolithic ~3720 lines to ~680 lines by:
 
 Re-exported from Core modules:
 - `set_lindenbaum`: Lindenbaum's lemma via Zorn
-- `set_mcs_closed_under_derivation`: MCS deductive closure
-- `set_mcs_implication_property`, `set_mcs_negation_complete`: MCS properties
-- `set_mcs_all_future_all_future`, `set_mcs_all_past_all_past`, `temp_4_past`: Temporal 4 properties (canonical versions in MCSProperties.lean)
+- `SetMaximalConsistent.closed_under_derivation`: MCS deductive closure
+- `SetMaximalConsistent.implication_property`, `SetMaximalConsistent.negation_complete`: MCS properties
+- `SetMaximalConsistent.all_future_all_future`, `SetMaximalConsistent.all_past_all_past`, `temp_4_past`: Temporal 4 properties (canonical versions in MCSProperties.lean)
 
 Defined here:
-- `set_mcs_box_closure`: Modal T property for MCS
-- `set_mcs_box_box`: Modal 4 property for MCS
-- `set_mcs_diamond_box_duality`: Diamond-box duality
+- `SetMaximalConsistent.box_closure`: Modal T property for MCS
+- `SetMaximalConsistent.box_box`: Modal 4 property for MCS
+- `SetMaximalConsistent.diamond_box_duality`: Diamond-box duality
 - `CanonicalWorldState`: Type for set-based maximal consistent sets
 
 ## References
@@ -59,7 +59,7 @@ Set-based MCS: disjunction property (forward direction).
 If φ ∈ S or ψ ∈ S, then (φ ∨ ψ) ∈ S.
 Note: `φ.or ψ = φ.neg.imp ψ`
 -/
-theorem set_mcs_disjunction_intro {S : Set Formula} {φ ψ : Formula}
+theorem SetMaximalConsistent.disjunction_intro {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h : φ ∈ S ∨ ψ ∈ S) : (φ.or ψ) ∈ S := by
   -- φ.or ψ = φ.neg.imp ψ
@@ -68,7 +68,7 @@ theorem set_mcs_disjunction_intro {S : Set Formula} {φ ψ : Formula}
   | inl h_phi =>
     -- φ ∈ S. We derive (¬φ → ψ) from the axiom (φ → ¬φ → ψ) and modus ponens.
     -- Actually, we derive ¬φ → ψ by: from φ, derive ¬¬φ, then ¬¬φ → (¬φ → ψ) is tautology
-    -- Simpler: by set_mcs_negation_complete, either φ.neg ∈ S or φ.neg.neg ∈ S
+    -- Simpler: by SetMaximalConsistent.negation_complete, either φ.neg ∈ S or φ.neg.neg ∈ S
     -- Since φ ∈ S, we show φ.neg ∉ S (else inconsistent)
     -- So φ.neg.neg ∈ S is not directly helpful...
     -- Better: use the theorem that derives ¬φ → ψ from φ using weakening
@@ -94,7 +94,7 @@ theorem set_mcs_disjunction_intro {S : Set Formula} {φ ψ : Formula}
         exact DerivationTree.modus_ponens _ _ _ h_efq h_bot
       exact deduction_theorem [φ] φ.neg ψ h_inner
     have h_sub : ∀ χ ∈ [φ], χ ∈ S := by simp [h_phi]
-    exact set_mcs_closed_under_derivation h_mcs [φ] h_sub h_deriv
+    exact SetMaximalConsistent.closed_under_derivation h_mcs [φ] h_sub h_deriv
   | inr h_psi =>
     -- ψ ∈ S. We derive (¬φ → ψ) from the axiom ψ → (¬φ → ψ).
     have h_deriv : DerivationTree [ψ] (φ.or ψ) := by
@@ -107,34 +107,34 @@ theorem set_mcs_disjunction_intro {S : Set Formula} {φ ψ : Formula}
         DerivationTree.assumption _ _ (by simp)
       exact DerivationTree.modus_ponens _ _ _ h_prop_s h_psi_assume
     have h_sub : ∀ χ ∈ [ψ], χ ∈ S := by simp [h_psi]
-    exact set_mcs_closed_under_derivation h_mcs [ψ] h_sub h_deriv
+    exact SetMaximalConsistent.closed_under_derivation h_mcs [ψ] h_sub h_deriv
 
 /--
 Set-based MCS: disjunction property (backward direction).
 
 If (φ ∨ ψ) ∈ S, then φ ∈ S or ψ ∈ S.
 -/
-theorem set_mcs_disjunction_elim {S : Set Formula} {φ ψ : Formula}
+theorem SetMaximalConsistent.disjunction_elim {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h : (φ.or ψ) ∈ S) : φ ∈ S ∨ ψ ∈ S := by
   -- By negation completeness: either φ ∈ S or φ.neg ∈ S
-  cases set_mcs_negation_complete h_mcs φ with
+  cases SetMaximalConsistent.negation_complete h_mcs φ with
   | inl h_phi => exact Or.inl h_phi
   | inr h_neg_phi =>
     -- φ.neg ∈ S and (φ.or ψ) = (φ.neg.imp ψ) ∈ S
     -- By modus ponens: ψ ∈ S
     right
-    exact set_mcs_implication_property h_mcs h h_neg_phi
+    exact SetMaximalConsistent.implication_property h_mcs h h_neg_phi
 
 /--
 Set-based MCS: disjunction iff property.
 
 (φ ∨ ψ) ∈ S iff (φ ∈ S or ψ ∈ S).
 -/
-theorem set_mcs_disjunction_iff {S : Set Formula} {φ ψ : Formula}
+theorem SetMaximalConsistent.disjunction_iff {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent S) :
     (φ.or ψ) ∈ S ↔ (φ ∈ S ∨ ψ ∈ S) :=
-  ⟨set_mcs_disjunction_elim h_mcs, set_mcs_disjunction_intro h_mcs⟩
+  ⟨SetMaximalConsistent.disjunction_elim h_mcs, SetMaximalConsistent.disjunction_intro h_mcs⟩
 
 /--
 Set-based MCS: conjunction property (forward direction).
@@ -142,7 +142,7 @@ Set-based MCS: conjunction property (forward direction).
 If φ ∈ S and ψ ∈ S, then (φ ∧ ψ) ∈ S.
 Note: `φ.and ψ = (φ.imp ψ.neg).neg`
 -/
-theorem set_mcs_conjunction_intro {S : Set Formula} {φ ψ : Formula}
+theorem SetMaximalConsistent.conjunction_intro {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_phi : φ ∈ S) (h_psi : ψ ∈ S) : (φ.and ψ) ∈ S := by
   -- φ.and ψ = (φ.imp ψ.neg).neg
@@ -150,11 +150,11 @@ theorem set_mcs_conjunction_intro {S : Set Formula} {φ ψ : Formula}
   -- By negation completeness, either (φ.imp ψ.neg) ∈ S or (φ.imp ψ.neg).neg ∈ S
   -- Assume (φ.imp ψ.neg) ∈ S. Then with φ ∈ S, by implication property: ψ.neg ∈ S.
   -- But ψ ∈ S, and ψ.neg = ψ.imp ⊥ ∈ S would give ⊥ ∈ S, contradiction.
-  cases set_mcs_negation_complete h_mcs (φ.imp ψ.neg) with
+  cases SetMaximalConsistent.negation_complete h_mcs (φ.imp ψ.neg) with
   | inr h_neg => exact h_neg
   | inl h_imp =>
     -- (φ → ¬ψ) ∈ S and φ ∈ S, so ¬ψ ∈ S
-    have h_neg_psi : ψ.neg ∈ S := set_mcs_implication_property h_mcs h_imp h_phi
+    have h_neg_psi : ψ.neg ∈ S := SetMaximalConsistent.implication_property h_mcs h_imp h_phi
     -- ψ ∈ S and ¬ψ ∈ S gives ⊥ derivable from S
     -- This contradicts consistency
     exfalso
@@ -171,7 +171,7 @@ theorem set_mcs_conjunction_intro {S : Set Formula} {φ ψ : Formula}
       | inl h_eq => exact h_eq ▸ h_psi
       | inr h_eq => exact h_eq ▸ h_neg_psi
     have h_bot_in_S : Formula.bot ∈ S :=
-      set_mcs_closed_under_derivation h_mcs [ψ, ψ.neg] h_sub h_deriv
+      SetMaximalConsistent.closed_under_derivation h_mcs [ψ, ψ.neg] h_sub h_deriv
     -- ⊥ ∈ S contradicts consistency of S
     have h_cons := h_mcs.1
     unfold SetConsistent at h_cons
@@ -185,7 +185,7 @@ Set-based MCS: conjunction property (backward direction).
 
 If (φ ∧ ψ) ∈ S, then φ ∈ S and ψ ∈ S.
 -/
-theorem set_mcs_conjunction_elim {S : Set Formula} {φ ψ : Formula}
+theorem SetMaximalConsistent.conjunction_elim {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h : (φ.and ψ) ∈ S) : φ ∈ S ∧ ψ ∈ S := by
   -- (φ.and ψ) = (φ.imp ψ.neg).neg ∈ S
@@ -202,7 +202,7 @@ theorem set_mcs_conjunction_elim {S : Set Formula} {φ ψ : Formula}
   · -- Show φ ∈ S
     by_contra h_phi_not
     have h_neg_phi : φ.neg ∈ S := by
-      cases set_mcs_negation_complete h_mcs φ with
+      cases SetMaximalConsistent.negation_complete h_mcs φ with
       | inl h => exact absurd h h_phi_not
       | inr h => exact h
     -- From φ.neg we derive φ.imp ψ.neg
@@ -227,7 +227,7 @@ theorem set_mcs_conjunction_elim {S : Set Formula} {φ ψ : Formula}
       exact deduction_theorem [φ.neg] φ ψ.neg h_inner
     have h_sub : ∀ χ ∈ [φ.neg], χ ∈ S := by simp [h_neg_phi]
     have h_imp_in : (φ.imp ψ.neg) ∈ S :=
-      set_mcs_closed_under_derivation h_mcs [φ.neg] h_sub h_deriv
+      SetMaximalConsistent.closed_under_derivation h_mcs [φ.neg] h_sub h_deriv
     -- Now (φ.imp ψ.neg) ∈ S and (φ.imp ψ.neg).neg ∈ S, contradiction
     have h_deriv_bot : DerivationTree [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
       have h1 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg) :=
@@ -242,14 +242,14 @@ theorem set_mcs_conjunction_elim {S : Set Formula} {φ ψ : Formula}
       | inl h_eq => exact h_eq ▸ h_imp_in
       | inr h_eq => exact h_eq ▸ h
     have h_bot_in_S : Formula.bot ∈ S :=
-      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+      SetMaximalConsistent.closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
     have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
       DerivationTree.assumption _ _ (by simp)
     exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
   · -- Show ψ ∈ S (similar argument)
     by_contra h_psi_not
     have h_neg_psi : ψ.neg ∈ S := by
-      cases set_mcs_negation_complete h_mcs ψ with
+      cases SetMaximalConsistent.negation_complete h_mcs ψ with
       | inl h => exact absurd h h_psi_not
       | inr h => exact h
     -- From ψ.neg we derive φ.imp ψ.neg via prop_s: ψ.neg → (φ → ψ.neg)
@@ -263,7 +263,7 @@ theorem set_mcs_conjunction_elim {S : Set Formula} {φ ψ : Formula}
       exact DerivationTree.modus_ponens _ _ _ h_prop_s h_assume
     have h_sub : ∀ χ ∈ [ψ.neg], χ ∈ S := by simp [h_neg_psi]
     have h_imp_in : (φ.imp ψ.neg) ∈ S :=
-      set_mcs_closed_under_derivation h_mcs [ψ.neg] h_sub h_deriv
+      SetMaximalConsistent.closed_under_derivation h_mcs [ψ.neg] h_sub h_deriv
     -- Now (φ.imp ψ.neg) ∈ S and (φ.imp ψ.neg).neg ∈ S, contradiction
     have h_deriv_bot : DerivationTree [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] Formula.bot := by
       have h1 : [(φ.imp ψ.neg), (φ.imp ψ.neg).neg] ⊢ (φ.imp ψ.neg) :=
@@ -278,7 +278,7 @@ theorem set_mcs_conjunction_elim {S : Set Formula} {φ ψ : Formula}
       | inl h_eq => exact h_eq ▸ h_imp_in
       | inr h_eq => exact h_eq ▸ h
     have h_bot_in_S : Formula.bot ∈ S :=
-      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+      SetMaximalConsistent.closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
     have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
       DerivationTree.assumption _ _ (by simp)
     exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
@@ -288,10 +288,10 @@ Set-based MCS: conjunction iff property.
 
 (φ ∧ ψ) ∈ S iff (φ ∈ S and ψ ∈ S).
 -/
-theorem set_mcs_conjunction_iff {S : Set Formula} {φ ψ : Formula}
+theorem SetMaximalConsistent.conjunction_iff {S : Set Formula} {φ ψ : Formula}
     (h_mcs : SetMaximalConsistent S) :
     (φ.and ψ) ∈ S ↔ (φ ∈ S ∧ ψ ∈ S) :=
-  ⟨set_mcs_conjunction_elim h_mcs, fun ⟨h1, h2⟩ => set_mcs_conjunction_intro h_mcs h1 h2⟩
+  ⟨SetMaximalConsistent.conjunction_elim h_mcs, fun ⟨h1, h2⟩ => SetMaximalConsistent.conjunction_intro h_mcs h1 h2⟩
 
 /-!
 ### Modal Closure Properties
@@ -312,7 +312,7 @@ If □φ ∈ S for a SetMaximalConsistent S, then φ ∈ S.
 
 This is a fundamental property: what is necessarily true is actually true.
 -/
-theorem set_mcs_box_closure {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.box_closure {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_box : Formula.box φ ∈ S) : φ ∈ S := by
   -- Modal T axiom: □φ → φ
@@ -329,7 +329,7 @@ theorem set_mcs_box_closure {S : Set Formula} {φ : Formula}
     DerivationTree.modus_ponens _ _ _ h_modal_t h_box_assume
   -- By closure: φ ∈ S
   have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
-  exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
+  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
 
 /--
 Set-based MCS: modal 4 axiom property.
@@ -343,7 +343,7 @@ If □φ ∈ S for a SetMaximalConsistent S, then □□φ ∈ S.
 
 This is the positive introspection property: necessary truth implies necessarily necessary.
 -/
-theorem set_mcs_box_box {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.box_box {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_box : Formula.box φ ∈ S) : (Formula.box φ).box ∈ S := by
   -- Modal 4 axiom: □φ → □□φ
@@ -360,12 +360,12 @@ theorem set_mcs_box_box {S : Set Formula} {φ : Formula}
     DerivationTree.modus_ponens _ _ _ h_modal_4 h_box_assume
   -- By closure: □□φ ∈ S
   have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
-  exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
+  exact SetMaximalConsistent.closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
 
 -- Duplicate theorems removed in Task 970 Phase 5:
--- - set_mcs_all_future_all_future: canonical version in MCSProperties.lean
+-- - SetMaximalConsistent.all_future_all_future: canonical version in MCSProperties.lean
 -- - temp_4_past: canonical version in MCSProperties.lean
--- - set_mcs_all_past_all_past: canonical version in MCSProperties.lean
+-- - SetMaximalConsistent.all_past_all_past: canonical version in MCSProperties.lean
 
 /--
 Set-based MCS: diamond-box duality (forward direction).
@@ -374,7 +374,7 @@ If ¬(□φ) ∈ S, then ◇(¬φ) ∈ S.
 
 Note: ◇ψ = ¬□(¬ψ), so ◇(¬φ) = ¬□(¬¬φ).
 -/
-theorem set_mcs_neg_box_implies_diamond_neg {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.neg_box_implies_diamond_neg {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h : (Formula.box φ).neg ∈ S) : φ.neg.diamond ∈ S := by
   -- ◇(¬φ) = ¬□(¬¬φ)
@@ -395,7 +395,7 @@ theorem set_mcs_neg_box_implies_diamond_neg {S : Set Formula} {φ : Formula}
   --   Then φ.box ∈ S, contradicting (φ.box).neg ∈ S
   -- So (φ.neg.neg).box.neg ∈ S
   unfold Formula.diamond
-  cases set_mcs_negation_complete h_mcs (φ.neg.neg.box) with
+  cases SetMaximalConsistent.negation_complete h_mcs (φ.neg.neg.box) with
   | inr h_neg => exact h_neg
   | inl h_dne_box =>
     -- □(¬¬φ) ∈ S. We derive □φ from this, contradicting ¬□φ ∈ S.
@@ -421,7 +421,7 @@ theorem set_mcs_neg_box_implies_diamond_neg {S : Set Formula} {φ : Formula}
     have h_deriv : [φ.neg.neg.box] ⊢ φ.box :=
       DerivationTree.modus_ponens _ _ _ h_impl_ctx h_assume
     have h_box_in_S : φ.box ∈ S :=
-      set_mcs_closed_under_derivation h_mcs [φ.neg.neg.box] h_sub h_deriv
+      SetMaximalConsistent.closed_under_derivation h_mcs [φ.neg.neg.box] h_sub h_deriv
     -- Now φ.box ∈ S and (φ.box).neg ∈ S, contradiction
     have h_deriv_bot : DerivationTree [φ.box, (φ.box).neg] Formula.bot := by
       have h1 : [φ.box, (φ.box).neg] ⊢ φ.box :=
@@ -436,7 +436,7 @@ theorem set_mcs_neg_box_implies_diamond_neg {S : Set Formula} {φ : Formula}
       | inl h_eq => exact h_eq ▸ h_box_in_S
       | inr h_eq => exact h_eq ▸ h
     have h_bot_in_S : Formula.bot ∈ S :=
-      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+      SetMaximalConsistent.closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
     have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
       DerivationTree.assumption _ _ (by simp)
     exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
@@ -446,7 +446,7 @@ Set-based MCS: diamond-box duality (backward direction).
 
 If ◇(¬φ) ∈ S, then ¬(□φ) ∈ S.
 -/
-theorem set_mcs_diamond_neg_implies_neg_box {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.diamond_neg_implies_neg_box {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h : φ.neg.diamond ∈ S) : (Formula.box φ).neg ∈ S := by
   -- ◇(¬φ) = ¬□(¬¬φ) ∈ S
@@ -457,7 +457,7 @@ theorem set_mcs_diamond_neg_implies_neg_box {S : Set Formula} {φ : Formula}
   -- Actually, from □φ, we can derive □(¬¬φ) (since φ → ¬¬φ derivable)
   -- Then □(¬¬φ) ∈ S contradicts ¬□(¬¬φ) = ◇(¬φ) ∈ S
   unfold Formula.diamond at h
-  cases set_mcs_negation_complete h_mcs (Formula.box φ) with
+  cases SetMaximalConsistent.negation_complete h_mcs (Formula.box φ) with
   | inr h_neg => exact h_neg
   | inl h_box =>
     -- □φ ∈ S. We derive □(¬¬φ), contradicting ¬□(¬¬φ) ∈ S.
@@ -483,7 +483,7 @@ theorem set_mcs_diamond_neg_implies_neg_box {S : Set Formula} {φ : Formula}
     have h_deriv : [φ.box] ⊢ φ.neg.neg.box :=
       DerivationTree.modus_ponens _ _ _ h_impl_ctx h_assume
     have h_dne_box_in_S : φ.neg.neg.box ∈ S :=
-      set_mcs_closed_under_derivation h_mcs [φ.box] h_sub h_deriv
+      SetMaximalConsistent.closed_under_derivation h_mcs [φ.box] h_sub h_deriv
     -- Now φ.neg.neg.box ∈ S and (φ.neg.neg.box).neg ∈ S, contradiction
     have h_deriv_bot : DerivationTree [φ.neg.neg.box, (φ.neg.neg.box).neg] Formula.bot := by
       have h1 : [φ.neg.neg.box, (φ.neg.neg.box).neg] ⊢ φ.neg.neg.box :=
@@ -498,7 +498,7 @@ theorem set_mcs_diamond_neg_implies_neg_box {S : Set Formula} {φ : Formula}
       | inl h_eq => exact h_eq ▸ h_dne_box_in_S
       | inr h_eq => exact h_eq ▸ h
     have h_bot_in_S : Formula.bot ∈ S :=
-      set_mcs_closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
+      SetMaximalConsistent.closed_under_derivation h_mcs _ h_sub2 h_deriv_bot
     have h_bot_deriv : DerivationTree [Formula.bot] Formula.bot :=
       DerivationTree.assumption _ _ (by simp)
     exact h_mcs.1 [Formula.bot] (by simp [h_bot_in_S]) ⟨h_bot_deriv⟩
@@ -511,10 +511,10 @@ Set-based MCS: diamond-box duality iff property.
 This establishes the classical duality between box and diamond:
 ¬□φ ↔ ◇¬φ (equivalently, □φ ↔ ¬◇¬φ).
 -/
-theorem set_mcs_diamond_box_duality {S : Set Formula} {φ : Formula}
+theorem SetMaximalConsistent.diamond_box_duality {S : Set Formula} {φ : Formula}
     (h_mcs : SetMaximalConsistent S) :
     (Formula.box φ).neg ∈ S ↔ φ.neg.diamond ∈ S :=
-  ⟨set_mcs_neg_box_implies_diamond_neg h_mcs, set_mcs_diamond_neg_implies_neg_box h_mcs⟩
+  ⟨SetMaximalConsistent.neg_box_implies_diamond_neg h_mcs, SetMaximalConsistent.diamond_neg_implies_neg_box h_mcs⟩
 
 /-!
 ### Saturation Lemmas
@@ -523,7 +523,7 @@ Modal saturation (forward direction) is proven below. Full saturation theorems
 requiring canonical frame and history constructions have been archived to Boneyard.
 -/
 
--- set_mcs_modal_saturation_forward removed in Task 970 (thin alias for set_mcs_box_closure)
+-- SetMaximalConsistent.modal_saturation_forward removed in Task 970 (thin alias for SetMaximalConsistent.box_closure)
 -- CanonicalWorldState was removed in Task 928 Phase 6 (duplicate of CanonicalMCS in CanonicalFMCS.lean)
 
 end Bimodal.Metalogic

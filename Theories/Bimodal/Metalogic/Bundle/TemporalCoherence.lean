@@ -94,7 +94,7 @@ lemma neg_all_future_to_some_future_neg (M : Set Formula) (h_mcs : SetMaximalCon
     Formula.some_future (Formula.neg phi) ∈ M := by
   have h_G_dne := G_dne_theorem phi
   have h_neg_G_dne : Formula.neg (Formula.all_future (Formula.neg (Formula.neg phi))) ∈ M :=
-    mcs_contrapositive h_mcs h_G_dne h_neg_G
+    SetMaximalConsistent.contrapositive h_mcs h_G_dne h_neg_G
   have h_eq : Formula.some_future (Formula.neg phi) =
               Formula.neg (Formula.all_future (Formula.neg (Formula.neg phi))) := rfl
   rw [h_eq]
@@ -111,7 +111,7 @@ lemma neg_all_past_to_some_past_neg (M : Set Formula) (h_mcs : SetMaximalConsist
     Formula.some_past (Formula.neg phi) ∈ M := by
   have h_H_dne := H_dne_theorem phi
   have h_neg_H_dne : Formula.neg (Formula.all_past (Formula.neg (Formula.neg phi))) ∈ M :=
-    mcs_contrapositive h_mcs h_H_dne h_neg_H
+    SetMaximalConsistent.contrapositive h_mcs h_H_dne h_neg_H
   have h_eq : Formula.some_past (Formula.neg phi) =
               Formula.neg (Formula.all_past (Formula.neg (Formula.neg phi))) := rfl
   rw [h_eq]
@@ -122,11 +122,11 @@ Double negation elimination in MCS: if neg(neg phi) in MCS, then phi in MCS.
 
 Uses dne_theorem and MCS closure under derivation.
 -/
-lemma mcs_double_neg_elim {M : Set Formula} (h_mcs : SetMaximalConsistent M)
+lemma SetMaximalConsistent.double_neg_elim {M : Set Formula} (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_neg_neg : Formula.neg (Formula.neg phi) ∈ M) : phi ∈ M := by
   have h_dne : [] ⊢ (Formula.neg (Formula.neg phi)).imp phi := dne_theorem phi
   have h_thm_in_M : (Formula.neg (Formula.neg phi)).imp phi ∈ M := theorem_in_mcs h_mcs h_dne
-  exact set_mcs_implication_property h_mcs h_thm_in_M h_neg_neg
+  exact SetMaximalConsistent.implication_property h_mcs h_thm_in_M h_neg_neg
 
 /-!
 ## TemporalCoherentFamily and Backward Lemmas
@@ -169,7 +169,7 @@ theorem temporal_backward_G (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   by_contra h_not_G
   have h_mcs := fam.is_mcs t
   have h_neg_G : Formula.neg (Formula.all_future φ) ∈ fam.mcs t := by
-    rcases set_mcs_negation_complete h_mcs (Formula.all_future φ) with h_G | h_neg
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future φ) with h_G | h_neg
     · exact absurd h_G h_not_G
     · exact h_neg
   have h_F_neg : Formula.some_future (Formula.neg φ) ∈ fam.mcs t :=
@@ -195,7 +195,7 @@ theorem temporal_backward_H (fam : TemporalCoherentFamily D) (t : D) (φ : Formu
   by_contra h_not_H
   have h_mcs := fam.is_mcs t
   have h_neg_H : Formula.neg (Formula.all_past φ) ∈ fam.mcs t := by
-    rcases set_mcs_negation_complete h_mcs (Formula.all_past φ) with h_H | h_neg
+    rcases SetMaximalConsistent.negation_complete h_mcs (Formula.all_past φ) with h_H | h_neg
     · exact absurd h_H h_not_H
     · exact h_neg
   have h_P_neg : Formula.some_past (Formula.neg φ) ∈ fam.mcs t :=

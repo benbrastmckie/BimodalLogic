@@ -38,7 +38,7 @@ we prove the TruthLemma directly at the `truth_at` level, eliminating the interm
 
 The canonical task relation is forward-only with identity at zero:
 
-- **d > 0**: `CanonicalR M N` (GContent M ⊆ N — forward temporal accessibility)
+- **d > 0**: `CanonicalR M N` (g_content M ⊆ N — forward temporal accessibility)
 - **d = 0**: `M = N` (zero displacement = same world-state)
 - **d < 0**: `False` (negative durations unreachable by `respects_task`)
 
@@ -55,7 +55,7 @@ compositionality without loss.
 
 Making d = 0 → (M = N) rather than vacuous True gives compositionality the
 information it needs to chain through d = 0 intermediates (by substitution),
-while avoiding the T-axiom obstruction (we never need GContent M ⊆ M).
+while avoiding the T-axiom obstruction (we never need g_content M ⊆ M).
 
 ### Compositionality (no sorry)
 
@@ -130,7 +130,7 @@ def CanonicalWorldState : Type :=
 Canonical task relation: forward accessibility with converse for negative durations.
 
 The task relation captures temporal coherence between MCSs along trajectories:
-- **d > 0**: `CanonicalR M.val N.val` (GContent M ⊆ N) — N is forward-accessible from M
+- **d > 0**: `CanonicalR M.val N.val` (g_content M ⊆ N) — N is forward-accessible from M
 - **d = 0**: `M = N` — zero displacement means same world-state
 - **d < 0**: `CanonicalR N.val M.val` — backward direction uses converse relationship
 
@@ -424,12 +424,12 @@ theorem box_persistent
     theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
       (Bimodal.ProofSystem.Axiom.temp_future φ))
   have h_G_box : (Formula.box φ).all_future ∈ fam.mcs t :=
-    set_mcs_implication_property (fam.is_mcs t) h_tf h_box
+    SetMaximalConsistent.implication_property (fam.is_mcs t) h_tf h_box
   -- Step 2: H(Box phi) ∈ fam.mcs t via past-TF
   have h_past_tf : (Formula.box φ).imp (Formula.box φ).all_past ∈ fam.mcs t :=
     theorem_in_mcs (fam.is_mcs t) (past_tf_deriv φ)
   have h_H_box : (Formula.box φ).all_past ∈ fam.mcs t :=
-    set_mcs_implication_property (fam.is_mcs t) h_past_tf h_box
+    SetMaximalConsistent.implication_property (fam.is_mcs t) h_past_tf h_box
   -- Step 3: Case split on s vs t (three cases for irreflexive semantics)
   rcases lt_trichotomy t s with h_lt | h_eq | h_gt
   · -- s > t: use forward_G (strict)
@@ -531,26 +531,26 @@ theorem canonical_truth_lemma
       -- By IH backward: psi in MCS
       have h_psi_mcs : psi ∈ fam.mcs t := (ih_psi fam hfam t).mpr h_psi_true
       -- By MCS modus ponens: chi in MCS
-      have h_chi_mcs : chi ∈ fam.mcs t := set_mcs_implication_property h_mcs h_imp h_psi_mcs
+      have h_chi_mcs : chi ∈ fam.mcs t := SetMaximalConsistent.implication_property h_mcs h_imp h_psi_mcs
       -- By IH forward: truth chi
       exact (ih_chi fam hfam t).mp h_chi_mcs
     · -- Backward: (truth psi -> truth chi) -> (psi -> chi) in MCS
       intro h_truth_imp
-      rcases set_mcs_negation_complete h_mcs (psi.imp chi) with h_imp | h_neg_imp
+      rcases SetMaximalConsistent.negation_complete h_mcs (psi.imp chi) with h_imp | h_neg_imp
       · exact h_imp
       · -- neg(psi -> chi) in MCS - derive contradiction
         exfalso
         -- From neg(psi -> chi), we get psi in MCS and neg(chi) in MCS
         have h_psi_mcs : psi ∈ fam.mcs t := by
           have h_taut := neg_imp_implies_antecedent psi chi
-          exact set_mcs_closed_under_derivation h_mcs [(psi.imp chi).neg]
+          exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_chi_mcs : chi.neg ∈ fam.mcs t := by
           have h_taut := neg_imp_implies_neg_consequent psi chi
-          exact set_mcs_closed_under_derivation h_mcs [(psi.imp chi).neg]
+          exact SetMaximalConsistent.closed_under_derivation h_mcs [(psi.imp chi).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
@@ -606,7 +606,7 @@ theorem canonical_truth_lemma
         have h_T : (psi.all_future).imp psi ∈ fam.mcs t :=
           theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
             (Bimodal.ProofSystem.Axiom.temp_t_future psi))
-        have h_psi_mcs := set_mcs_implication_property (fam.is_mcs t) h_T h_G
+        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_G
         exact (ih fam hfam t).mp h_psi_mcs
     · -- Backward: forall s >= t, truth tau s psi -> G psi in MCS
       intro h_all
@@ -642,7 +642,7 @@ theorem canonical_truth_lemma
         have h_T : (psi.all_past).imp psi ∈ fam.mcs t :=
           theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
             (Bimodal.ProofSystem.Axiom.temp_t_past psi))
-        have h_psi_mcs := set_mcs_implication_property (fam.is_mcs t) h_T h_H
+        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_H
         exact (ih fam hfam t).mp h_psi_mcs
     · -- Backward: forall s <= t, truth tau s psi -> H psi in MCS
       intro h_all
@@ -712,21 +712,21 @@ theorem shifted_truth_lemma (B : BFMCS Int)
     constructor
     · intro h_imp h_ψ_true
       have h_ψ_mem := (ih_ψ fam hfam t).mpr h_ψ_true
-      exact (ih_χ fam hfam t).mp (set_mcs_implication_property h_mcs h_imp h_ψ_mem)
+      exact (ih_χ fam hfam t).mp (SetMaximalConsistent.implication_property h_mcs h_imp h_ψ_mem)
     · intro h_truth_imp
-      rcases set_mcs_negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
+      rcases SetMaximalConsistent.negation_complete h_mcs (ψ.imp χ) with h_imp | h_neg_imp
       · exact h_imp
       · exfalso
         have h_ψ_mcs : ψ ∈ fam.mcs t := by
           have h_taut := neg_imp_implies_antecedent ψ χ
-          exact set_mcs_closed_under_derivation h_mcs [(ψ.imp χ).neg]
+          exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
               (Bimodal.ProofSystem.DerivationTree.assumption _ _ (by simp)))
         have h_neg_χ_mcs : χ.neg ∈ fam.mcs t := by
           have h_taut := neg_imp_implies_neg_consequent ψ χ
-          exact set_mcs_closed_under_derivation h_mcs [(ψ.imp χ).neg]
+          exact SetMaximalConsistent.closed_under_derivation h_mcs [(ψ.imp χ).neg]
             (by simp [h_neg_imp])
             (Bimodal.ProofSystem.DerivationTree.modus_ponens _ _ _
               (Bimodal.ProofSystem.DerivationTree.weakening [] _ _ h_taut (by intro; simp))
@@ -783,7 +783,7 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         have h_T : (ψ.all_future).imp ψ ∈ fam.mcs t :=
           theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
             (Bimodal.ProofSystem.Axiom.temp_t_future ψ))
-        have h_psi_mcs := set_mcs_implication_property (fam.is_mcs t) h_T h_G
+        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_G
         exact (ih fam hfam t).mp h_psi_mcs
     · intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
@@ -808,7 +808,7 @@ theorem shifted_truth_lemma (B : BFMCS Int)
         have h_T : (ψ.all_past).imp ψ ∈ fam.mcs t :=
           theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
             (Bimodal.ProofSystem.Axiom.temp_t_past ψ))
-        have h_psi_mcs := set_mcs_implication_property (fam.is_mcs t) h_T h_H
+        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_H
         exact (ih fam hfam t).mp h_psi_mcs
     · intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam

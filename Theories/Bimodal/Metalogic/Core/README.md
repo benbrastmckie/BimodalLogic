@@ -61,7 +61,7 @@ A set is **SetMaximalConsistent** if it is consistent and any extension is incon
 - `set_lindenbaum`: Lindenbaum's lemma (extend consistent to MCS via Zorn's lemma)
 - `mcs_contains_or_neg`: Either φ or ¬φ in MCS (negation completeness)
 - `theorem_in_mcs`: All theorems are in every MCS
-- `set_mcs_modus_ponens`: Modus ponens reflected in membership
+- `SetMaximalConsistent.modus_ponens`: Modus ponens reflected in membership
 - `inconsistent_derives_bot`: Inconsistent contexts derive ⊥
 
 ### Deduction Theorem (`DeductionTheorem.lean`)
@@ -85,16 +85,16 @@ the recursive structure of derivation trees.
 ### MCS Properties (`MCSProperties.lean`)
 
 ```lean
-lemma set_mcs_closed_under_derivation {S : Set Formula} {phi : Formula}
+lemma SetMaximalConsistent.closed_under_derivation {S : Set Formula} {phi : Formula}
     (h_mcs : SetMaximalConsistent S)
     (L : List Formula) (h_sub : ∀ psi ∈ L, psi ∈ S)
     (h_deriv : DerivationTree L phi) : phi ∈ S
 
-lemma set_mcs_implication_property {S : Set Formula} {phi psi : Formula}
+lemma SetMaximalConsistent.implication_property {S : Set Formula} {phi psi : Formula}
     (h_mcs : SetMaximalConsistent S)
     (h_imp : phi.imp psi ∈ S) (h_phi : phi ∈ S) : psi ∈ S
 
-lemma set_mcs_negation_complete {S : Set Formula} {phi : Formula}
+lemma SetMaximalConsistent.negation_complete {S : Set Formula} {phi : Formula}
     (h_mcs : SetMaximalConsistent S) :
     phi ∈ S ∨ phi.neg ∈ S
 ```
@@ -106,11 +106,11 @@ Essential lemmas for canonical model construction:
 
 **Temporal Properties**:
 ```lean
-lemma set_mcs_all_future_all_future {S : Set Formula}
+lemma SetMaximalConsistent.all_future_all_future {S : Set Formula}
     (h_mcs : SetMaximalConsistent S) {phi : Formula}
     (h : Formula.all_future phi ∈ S) : Formula.all_future (Formula.all_future phi) ∈ S
 
-lemma set_mcs_all_past_all_past {S : Set Formula}
+lemma SetMaximalConsistent.all_past_all_past {S : Set Formula}
     (h_mcs : SetMaximalConsistent S) {phi : Formula}
     (h : Formula.all_past phi ∈ S) : Formula.all_past (Formula.all_past phi) ∈ S
 ```

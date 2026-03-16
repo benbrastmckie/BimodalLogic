@@ -8,7 +8,7 @@ import Bimodal.Metalogic.Bundle.CanonicalIrreflexivity
 ## Statement
 
 For every maximal consistent set M of the bimodal tense logic TM,
-`¬CanonicalR M M` — that is, `GContent(M) ⊄ M`.
+`¬CanonicalR M M` — that is, `g_content(M) ⊄ M`.
 
 ## Mathematical Status
 
@@ -30,7 +30,7 @@ Irreflexivity Rule (IRR) contrapositively with the T-axiom for past
 ## Historical Note
 
 The previous approach attempted to use atom freshness (Step 2 required a fresh
-atom not in `atoms(GContent(M))`). This failed with `String` atoms since every
+atom not in `atoms(g_content(M))`). This failed with `String` atoms since every
 string appears in tautologies. The resolution (Task 967) adopted reflexive
 temporal semantics, making the T-axiom valid, which provides an alternative
 path through Step 7 that does not require freshness.
@@ -64,7 +64,7 @@ open Bimodal.Metalogic.Bundle
 /--
 **Theorem**: The canonical accessibility relation is irreflexive on MCSs.
 
-For every maximal consistent set M, `GContent(M) ⊄ M` — the set of formulas
+For every maximal consistent set M, `g_content(M) ⊄ M` — the set of formulas
 that M asserts hold at all reflexive-future times is NOT a subset of M itself.
 
 The proof uses the Gabbay Irreflexivity Rule with the T-axiom for past

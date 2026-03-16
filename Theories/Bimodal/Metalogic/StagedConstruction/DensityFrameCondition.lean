@@ -24,15 +24,15 @@ The proof uses Case A analysis combined with the "double-density trick":
      V from W with CanonicalR(W, V) and neg(delta) in V.
      Temporal linearity on M, V, M' gives three cases:
      * CanonicalR(V, M'): V is intermediate.
-     * CanonicalR(M', V): delta in GContent(M') subset V but neg(delta)
+     * CanonicalR(M', V): delta in g_content(M') subset V but neg(delta)
        in V. Contradiction.
      * V = M': CanonicalR(W, V) = CanonicalR(W, M'), so W is intermediate.
    - Case B (G(delta) in M): Sub-split on CanonicalR(M', M'):
      * B1 (M' reflexive): Take W = M'. Both CanonicalR(M, M') and
        CanonicalR(M', M') hold.
-     * B2 (M' not reflexive): GContent(M') is not a subset of M', so
+     * B2 (M' not reflexive): g_content(M') is not a subset of M', so
        there exists gamma with G(gamma) in M' and gamma not in M'.
-       If G(gamma) were in M, then gamma would be in GContent(M) subset
+       If G(gamma) were in M, then gamma would be in g_content(M) subset
        M' (by CanonicalR(M, M')), contradicting gamma not in M'. So
        G(gamma) not in M, and we apply Case A with gamma.
 
@@ -67,8 +67,8 @@ When G(delta) in M (Case B), G(neg(delta)) cannot also be in M
 neg(delta) in M'.
 
 Key property: In Case B, M is NOT reflexive, because:
-- G(delta) ∈ M implies delta ∈ GContent(M)
-- If M were reflexive, GContent(M) ⊆ M, so delta ∈ M
+- G(delta) ∈ M implies delta ∈ g_content(M)
+- If M were reflexive, g_content(M) ⊆ M, so delta ∈ M
 - But delta ∉ M (distinguishing formula), contradiction
 -/
 
@@ -89,8 +89,8 @@ theorem caseB_M_not_reflexive
 /--
 In Case B (G(delta) in M with CanonicalR(M, M')), G(neg(delta)) is not in M.
 
-Proof: If G(neg(delta)) in M, then neg(delta) in GContent(M) subset M'.
-Also G(delta) in M gives delta in GContent(M) subset M'.
+Proof: If G(neg(delta)) in M, then neg(delta) in g_content(M) subset M'.
+Also G(delta) in M gives delta in g_content(M) subset M'.
 So both delta and neg(delta) in M', contradicting M' consistency.
 -/
 theorem caseB_G_neg_not_in_M
@@ -129,7 +129,7 @@ Strategy (double-density trick):
    CanonicalR(W_1, V) and neg(delta) in V.
 3. CanonicalR(M, V) by transitivity.
 4. Temporal linearity on M, V, M':
-   - CanonicalR(M', V): delta in GContent(M') subset V, but
+   - CanonicalR(M', V): delta in g_content(M') subset V, but
      neg(delta) in V. Contradiction.
    - CanonicalR(V, M'): V is intermediate.
    - V = M': CanonicalR(W_1, V) = CanonicalR(W_1, M'), so W_1 is intermediate.
@@ -157,9 +157,9 @@ theorem density_frame_condition_caseA
   rcases h_lin with h_VM' | h_M'V | h_eq
   · -- CanonicalR(V, M'): V is the intermediate
     exact ⟨V, h_V_mcs, h_R_MV, h_VM'⟩
-  · -- CanonicalR(M', V): delta in GContent(M') subset V, neg(delta) in V. Contradiction.
+  · -- CanonicalR(M', V): delta in g_content(M') subset V, neg(delta) in V. Contradiction.
     exfalso
-    have h_delta_GContent : delta ∈ GContent M' := h_G_delta_M'
+    have h_delta_GContent : delta ∈ g_content M' := h_G_delta_M'
     have h_delta_V : delta ∈ V := h_M'V h_delta_GContent
     exact set_consistent_not_both h_V_mcs.1 delta h_delta_V h_neg_delta_V
   · -- V = M': CanonicalR(W_1, V) = CanonicalR(W_1, M'), so W_1 is intermediate
@@ -177,10 +177,10 @@ Combines Case A and Case B analysis.
 - **Case B** (G(delta) in M, delta not in M): Two sub-cases:
   - **B1** (CanonicalR(M', M') holds): Take W = M' directly. Both
     CanonicalR(M, M') (given) and CanonicalR(M', M') (sub-case) hold.
-  - **B2** (CanonicalR(M', M') fails): Since GContent(M') is not a subset
+  - **B2** (CanonicalR(M', M') fails): Since g_content(M') is not a subset
     of M', there exists gamma with G(gamma) in M' and gamma not in M'.
     Crucially, G(gamma) cannot be in M: if it were, gamma would be in
-    GContent(M) subset M' (by CanonicalR(M, M')), contradicting gamma
+    g_content(M) subset M' (by CanonicalR(M, M')), contradicting gamma
     not in M'. So G(gamma) not in M, giving F(neg(gamma)) in M. This
     is exactly the Case A setup with gamma, so we apply Case A.
 -/
@@ -193,7 +193,7 @@ there exists an intermediate MCS W with CanonicalR(M, W) AND CanonicalR(W, M').
 
 The proof does not require the IRR rule -- it uses a purely syntactic argument
 that reduces Case B to Case A by finding an alternative distinguishing formula
-from GContent(M') that is not in M'.
+from g_content(M') that is not in M'.
 -/
 theorem density_frame_condition
     (M M' : Set Formula)
@@ -214,13 +214,13 @@ theorem density_frame_condition
       -- Take W = M'. Then CanonicalR(M, M') (given) and CanonicalR(M', M') hold.
       exact ⟨M', h_mcs', h_R, h_R'_self⟩
     · -- Sub-case B2: CanonicalR(M', M') does not hold.
-      -- ¬(GContent(M') ⊆ M'), so ∃ gamma with G(gamma) ∈ M' and gamma ∉ M'.
+      -- ¬(g_content(M') ⊆ M'), so ∃ gamma with G(gamma) ∈ M' and gamma ∉ M'.
       rw [CanonicalR, Set.not_subset] at h_R'_self
       obtain ⟨gamma, h_gamma_GContent, h_gamma_not_M'⟩ := h_R'_self
-      -- gamma ∈ GContent(M') means G(gamma) ∈ M'
+      -- gamma ∈ g_content(M') means G(gamma) ∈ M'
       have h_G_gamma_M' : Formula.all_future gamma ∈ M' := h_gamma_GContent
       -- Claim: G(gamma) ∉ M.
-      -- Proof: If G(gamma) ∈ M, then gamma ∈ GContent(M) ⊆ M' (by CanonicalR(M, M')).
+      -- Proof: If G(gamma) ∈ M, then gamma ∈ g_content(M) ⊆ M' (by CanonicalR(M, M')).
       -- But gamma ∉ M'. Contradiction.
       have h_G_gamma_not_M : Formula.all_future gamma ∉ M := by
         intro h_G_gamma_M
@@ -244,35 +244,35 @@ theorem density_frame_condition
 If M is not reflexive (¬CanonicalR M M), then the seriality witness W
 satisfies ¬CanonicalR W M (strict future). This is because:
 1. If ¬CanonicalR M M, then ∃ phi with G(phi) ∈ M and phi ∉ M
-2. The seriality witness W ⊇ GContent(M), so phi ∈ W
-3. By Temporal 4, G(phi) ∈ GContent(M) ⊆ W, so G(phi) ∈ W
-4. Therefore phi ∈ GContent(W), but phi ∉ M
-5. So GContent(W) ⊄ M, hence ¬CanonicalR W M
+2. The seriality witness W ⊇ g_content(M), so phi ∈ W
+3. By Temporal 4, G(phi) ∈ g_content(M) ⊆ W, so G(phi) ∈ W
+4. Therefore phi ∈ g_content(W), but phi ∉ M
+5. So g_content(W) ⊄ M, hence ¬CanonicalR W M
 -/
 
 /--
 If M is not reflexive, then its seriality future W is strict: ¬CanonicalR W M.
 -/
-theorem irreflexive_mcs_has_strict_future
+theorem irreflexive_SetMaximalConsistent.has_strict_future
     (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (h_not_refl : ¬CanonicalR M M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧ ¬CanonicalR W M := by
   -- Get the seriality witness
-  obtain ⟨W, h_W_mcs, h_R_MW⟩ := mcs_has_strict_future M h_mcs
+  obtain ⟨W, h_W_mcs, h_R_MW⟩ := SetMaximalConsistent.has_strict_future M h_mcs
   refine ⟨W, h_W_mcs, h_R_MW, ?_⟩
   -- Show ¬CanonicalR W M using the irreflexivity witness
   rw [CanonicalR, Set.not_subset] at h_not_refl ⊢
   obtain ⟨phi, h_phi_GContent, h_phi_not_M⟩ := h_not_refl
-  -- phi ∈ GContent(M), so G(phi) ∈ M
+  -- phi ∈ g_content(M), so G(phi) ∈ M
   -- By Temporal 4: G(phi) → G(G(phi)), so G(G(phi)) ∈ M
-  -- Therefore G(phi) ∈ GContent(M) ⊆ W
+  -- Therefore G(phi) ∈ g_content(M) ⊆ W
   have h_T4 : [] ⊢ (Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi)) :=
     DerivationTree.axiom [] _ (Axiom.temp_4 phi)
   have h_GG_phi_M : Formula.all_future (Formula.all_future phi) ∈ M :=
-    set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
-  -- G(phi) ∈ GContent(M) ⊆ W
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T4) h_phi_GContent
+  -- G(phi) ∈ g_content(M) ⊆ W
   have h_G_phi_W : Formula.all_future phi ∈ W := h_R_MW h_GG_phi_M
-  -- phi ∈ GContent(W) because G(phi) ∈ W
+  -- phi ∈ g_content(W) because G(phi) ∈ W
   exact ⟨phi, h_G_phi_W, h_phi_not_M⟩
 
 /-!
@@ -307,7 +307,7 @@ private theorem G_F_neg_inconsistent
     DerivationTree.modus_ponens [] _ _ h_K h_G_dni
   -- Step 5: G(¬¬δ) ∈ W
   have h_G_nn : Formula.all_future (Formula.neg (Formula.neg delta)) ∈ W :=
-    set_mcs_implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_imp) h_G_delta
+    SetMaximalConsistent.implication_property h_W_mcs (theorem_in_mcs h_W_mcs h_imp) h_G_delta
   -- Step 6: F(¬δ) = ¬G(¬¬δ) definitionally. So ¬G(¬¬δ) ∈ W.
   -- F(¬δ) = some_future(neg δ) = neg(all_future(neg(neg δ))) = neg(G(¬¬δ))
   -- So h_F_neg : neg(all_future(neg(neg delta))) ∈ W
@@ -317,7 +317,7 @@ private theorem G_F_neg_inconsistent
 
 /-- Strengthened Case A: when we have F(¬delta) ∈ M and G(delta) ∈ M',
     the density intermediate is STRICT: ¬CanonicalR(M', W).
-    The strictness comes from ¬delta in V contradicting delta from GContent(M'),
+    The strictness comes from ¬delta in V contradicting delta from g_content(M'),
     and the G/F duality making CanonicalR(M', W₁) impossible. -/
 theorem density_frame_condition_caseA_strict
     {M M' : Set Formula} {delta : Formula}
@@ -343,11 +343,11 @@ theorem density_frame_condition_caseA_strict
   -- Key: CanonicalR(M', W₁) is impossible by G/F duality
   have h_not_M'W₁ : ¬CanonicalR M' W₁ := by
     intro h_R'W₁
-    -- G(delta) ∈ M'. By T4: G(G(delta)) ∈ M'. So G(delta) ∈ GContent(M') ⊆ W₁.
+    -- G(delta) ∈ M'. By T4: G(G(delta)) ∈ M'. So G(delta) ∈ g_content(M') ⊆ W₁.
     have h_T4 : [] ⊢ (Formula.all_future delta).imp (Formula.all_future (Formula.all_future delta)) :=
       DerivationTree.axiom [] _ (Axiom.temp_4 delta)
     have h_GG : Formula.all_future (Formula.all_future delta) ∈ M' :=
-      set_mcs_implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_G_delta_M'
+      SetMaximalConsistent.implication_property h_mcs' (theorem_in_mcs h_mcs' h_T4) h_G_delta_M'
     have h_G_W₁ : Formula.all_future delta ∈ W₁ := h_R'W₁ h_GG
     -- G(delta) ∈ W₁ and F(¬delta) ∈ W₁: contradiction by duality
     exact G_F_neg_inconsistent h_W₁_mcs h_G_W₁ h_F_neg_W₁

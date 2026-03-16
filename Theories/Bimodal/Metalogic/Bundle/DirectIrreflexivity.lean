@@ -46,7 +46,7 @@ noncomputable section
 /-!
 ## Phase 1: CanonicalR Closure Lemmas
 
-When CanonicalR(M, M) holds (i.e., GContent(M) ⊆ M), combining with MCS properties
+When CanonicalR(M, M) holds (i.e., g_content(M) ⊆ M), combining with MCS properties
 and temporal axioms produces strong closure conditions on M's membership.
 -/
 
@@ -56,8 +56,8 @@ If CanonicalR(M, M) and phi in M, then P(phi) in M.
 Proof chain:
 1. phi in M
 2. By temp_a: phi -> G(P(phi)), so G(P(phi)) in M
-3. P(phi) in GContent(M) (since G(P(phi)) in M)
-4. By CanonicalR(M, M): GContent(M) ⊆ M, so P(phi) in M
+3. P(phi) in g_content(M) (since G(P(phi)) in M)
+4. By CanonicalR(M, M): g_content(M) ⊆ M, so P(phi) in M
 
 Note: P(phi) = sometime_past(phi) = neg(all_past(neg(phi))) = ¬H(¬phi)
 -/
@@ -70,8 +70,8 @@ theorem canonicalR_closure_temp_a (M : Set Formula) (h_mcs : SetMaximalConsisten
   -- Step 2: phi → G(P(phi)) is a theorem, so it's in M
   have h_imp_in_M := theorem_in_mcs h_mcs h_temp_a
   -- Step 3: By modus ponens in M: G(P(phi)) in M
-  have h_GP_in_M := set_mcs_implication_property h_mcs h_imp_in_M h_phi
-  -- Step 4: P(phi) in GContent(M) (definitionally: G(P(phi)) in M)
+  have h_GP_in_M := SetMaximalConsistent.implication_property h_mcs h_imp_in_M h_phi
+  -- Step 4: P(phi) in g_content(M) (definitionally: G(P(phi)) in M)
   -- Step 5: By CanonicalR(M, M): P(phi) in M
   exact h_R h_GP_in_M
 
@@ -85,7 +85,7 @@ theorem canonicalR_closure_temp_4 (M : Set Formula) (h_mcs : SetMaximalConsisten
     Formula.all_future (Formula.all_future phi) ∈ M := by
   have h_t4 : DerivationTree [] ((Formula.all_future phi).imp (Formula.all_future (Formula.all_future phi))) :=
     DerivationTree.axiom [] _ (Axiom.temp_4 phi)
-  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_t4) h_G
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_t4) h_G
 
 /--
 If phi in M, then G(P(phi)) in M.
@@ -98,7 +98,7 @@ theorem canonicalR_G_propagates (M : Set Formula) (h_mcs : SetMaximalConsistent 
     Formula.all_future phi.sometime_past ∈ M := by
   have h_temp_a : DerivationTree [] (phi.imp (Formula.all_future phi.sometime_past)) :=
     DerivationTree.axiom [] _ (Axiom.temp_a phi)
-  exact set_mcs_implication_property h_mcs (theorem_in_mcs h_mcs h_temp_a) h_phi
+  exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_temp_a) h_phi
 
 /--
 If CanonicalR(M, M) and atom(p) in M, then H(neg(atom(p))) not-in M.
@@ -138,7 +138,7 @@ theorem canonicalR_H_neg_exclusion (M : Set Formula) (h_mcs : SetMaximalConsiste
   have h_eq : (Formula.atom p).sometime_past = Formula.neg (Formula.all_past (Formula.neg (Formula.atom p))) := by
     simp [Formula.sometime_past, Formula.some_past, Formula.neg]
   rw [h_eq] at h_P_in_M
-  exact set_mcs_neg_excludes h_mcs _ h_P_in_M
+  exact SetMaximalConsistent.neg_excludes h_mcs _ h_P_in_M
 
 /--
 If G(phi) not-in M (where M is MCS), then F(neg(phi)) in M.
@@ -161,7 +161,7 @@ Let's just prove the direct version: neg(G(phi)) in M.
 theorem canonicalR_neg_G_from_not_mem (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_not_G : Formula.all_future phi ∉ M) :
     Formula.neg (Formula.all_future phi) ∈ M := by
-  cases set_mcs_negation_complete h_mcs (Formula.all_future phi) with
+  cases SetMaximalConsistent.negation_complete h_mcs (Formula.all_future phi) with
   | inl h => exact absurd h h_not_G
   | inr h => exact h
 
@@ -246,7 +246,7 @@ REQUIRES constructing a second MCS M' and deriving a contradiction between M and
 The naming set approach (with conservative extension to handle the freshness gap)
 is the correct path forward.
 
-**Recommendation**: Proceed to Path B (GContent seed + conservative extension)
+**Recommendation**: Proceed to Path B (g_content seed + conservative extension)
 as described in research-007.md.
 
 ## Phase 4: Pivot Documentation

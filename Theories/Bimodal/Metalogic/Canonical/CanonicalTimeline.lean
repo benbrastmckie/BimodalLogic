@@ -81,14 +81,14 @@ to have a future temporal witness. This gives NoMaxOrder on the canonical timeli
 /--
 Every MCS contains `F(¬⊥)` (the seriality future axiom is a theorem).
 -/
-theorem mcs_contains_seriality_future (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+theorem SetMaximalConsistent.contains_seriality_future (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Formula.some_future (Formula.neg Formula.bot) ∈ M :=
   theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.seriality_future)
 
 /--
 Every MCS contains `P(¬⊥)` (the seriality past axiom is a theorem).
 -/
-theorem mcs_contains_seriality_past (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+theorem SetMaximalConsistent.contains_seriality_past (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Formula.some_past (Formula.neg Formula.bot) ∈ M :=
   theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.seriality_past)
 
@@ -98,9 +98,9 @@ Every MCS has a strict canonical future successor.
 From `F(¬⊥) ∈ M` and `canonical_forward_F`, there exists MCS W with
 `CanonicalR M W` and `¬⊥ ∈ W`.
 -/
-theorem mcs_has_canonical_successor (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+theorem SetMaximalConsistent.has_canonical_successor (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W := by
-  have h_F := mcs_contains_seriality_future M h_mcs
+  have h_F := SetMaximalConsistent.contains_seriality_future M h_mcs
   obtain ⟨W, h_W_mcs, h_R, _⟩ := canonical_forward_F M h_mcs _ h_F
   exact ⟨W, h_W_mcs, h_R⟩
 
@@ -110,9 +110,9 @@ Every MCS has a strict canonical past predecessor.
 From `P(¬⊥) ∈ M` and `canonical_backward_P`, there exists MCS W with
 `CanonicalR_past M W` and `¬⊥ ∈ W`.
 -/
-theorem mcs_has_canonical_predecessor (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+theorem SetMaximalConsistent.has_canonical_predecessor (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR_past M W := by
-  have h_P := mcs_contains_seriality_past M h_mcs
+  have h_P := SetMaximalConsistent.contains_seriality_past M h_mcs
   obtain ⟨W, h_W_mcs, h_R_past, _⟩ := canonical_backward_P M h_mcs _ h_P
   exact ⟨W, h_W_mcs, h_R_past⟩
 
@@ -139,7 +139,7 @@ theorem density_of_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M)
   have h_density : (Formula.some_future φ).imp (Formula.some_future (Formula.some_future φ)) ∈ M :=
     theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.density φ))
   have h_FF : Formula.some_future (Formula.some_future φ) ∈ M :=
-    set_mcs_implication_property h_mcs h_density h_F
+    SetMaximalConsistent.implication_property h_mcs h_density h_F
   -- Step 2: F(Fφ) ∈ M means ∃ W with CanonicalR M W and Fφ ∈ W
   obtain ⟨W, h_W_mcs, h_R, h_Fφ_W⟩ := canonical_forward_F M h_mcs _ h_FF
   exact ⟨W, h_W_mcs, h_R, h_Fφ_W⟩

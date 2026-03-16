@@ -84,7 +84,7 @@ G and H are shown to be interior operators using the T and 4 axioms.
 ```lean
 def mcsToUltrafilter : SetMaximalConsistent S -> Ultrafilter LindenbaumAlg
 def ultrafilterToSet : Ultrafilter LindenbaumAlg -> Set Formula
-theorem mcs_ultrafilter_correspondence : -- Bijection
+theorem SetMaximalConsistent.ultrafilter_correspondence : -- Bijection
 ```
 
 Establishes the bijection between ultrafilters of the Lindenbaum algebra and maximal
