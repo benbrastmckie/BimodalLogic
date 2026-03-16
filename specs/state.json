@@ -77,13 +77,13 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
-      "last_updated": "2026-03-16T17:28:52Z",
-      "session_id": "sess_1742170000_x7m2q",
+      "last_updated": "2026-03-16T17:34:38Z",
+      "session_id": "sess_1742179200_q8k3r",
       "researched": "2026-03-16T16:12:35Z",
       "artifacts": [
         {
@@ -113,12 +113,12 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "blocked",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T18:00:00Z",
+      "last_updated": "2026-03-16T17:36:25Z",
       "session_id": "sess_1773678967_4559",
       "researched": "2026-03-16T09:15:00Z",
       "artifacts": [
@@ -128,14 +128,18 @@
           "summary": "NoMaxOrder/NoMinOrder proofs are straightforward using seriality axioms and canonicalR_strict; proof pattern from DiscreteTimeline.lean directly applicable (1-2h effort)"
         },
         {
-          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-001.md",
+          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md",
+          "type": "research",
+          "summary": "Blocker resolved (task 972 complete), verified lemma names and goal states, corrected proof sketches"
+        },
+        {
+          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md",
           "type": "plan",
-          "summary": "3-phase implementation plan for NoMaxOrder/NoMinOrder proofs on ConstructiveQuotient"
+          "summary": "v2: Corrected phase markers, verified proof sketches, unblocked"
         }
       ],
-      "planned": "2026-03-16T16:32:44Z",
-      "started": "2026-03-16T16:36:24Z",
-      "blocked_on": "Pre-existing build errors in ConstructiveFragment.lean - file uses undefined identifiers (GContent_subset_* etc.) that need casing fixes (task 972 Phase 1)"
+      "planned": "2026-03-16T17:36:25Z",
+      "started": "2026-03-16T16:36:24Z"
     },
     {
       "project_number": 971,

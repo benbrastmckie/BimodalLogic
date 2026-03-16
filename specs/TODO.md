@@ -84,7 +84,7 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 2.5-3 hours (2 phases remaining)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md) (staged construction approach)
 - **Plan**: [implementation-002.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md) (v2: staged construction finiteness)
@@ -103,21 +103,18 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
 - **Effort**: 1.5 hours (3 phases)
-- **Status**: [BLOCKED]
+- **Status**: [PLANNED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-001.md)
-- **Blocked on**: Pre-existing build errors in ConstructiveFragment.lean (task 972 Phase 1 will fix)
+- **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md), [research-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md) (blocker resolved)
+- **Plan**: [implementation-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md) (v2: corrected phase markers)
 
-**Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 580 and 585.
-
-**Blocking issue**: The target file has pre-existing build errors - it uses undefined identifiers like `GContent_subset_ForwardTemporalWitnessSeed` (should be `g_content_subset_ForwardTemporalWitnessSeed`). Task 972 Phase 1 will fix these casing issues as part of the GContent/HContent → snake_case migration.
+**Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 581 and 586.
 
 **Sorries:**
-- `NoMaxOrder.exists_gt` (580): Every quotient element has a strictly greater element
-- `NoMinOrder.exists_lt` (585): Every quotient element has a strictly lesser element
+- `NoMaxOrder.exists_gt` (581): Every quotient element has a strictly greater element
+- `NoMinOrder.exists_lt` (586): Every quotient element has a strictly lesser element
 
-**Proof strategy**: Use seriality witnesses (F(¬⊥) → forward witness, P(¬⊥) → backward witness). Show witnesses are **strictly** ordered in the antisymmetrization quotient using `canonicalR_strict` from `CanonicalTimeline.lean`. The pattern is identical to the already sorry-free `NoMaxOrder`/`NoMinOrder` in `DiscreteTimeline.lean` (lines 247–285) — port that proof structure to `ConstructiveQuotient`.
+**Proof strategy**: Use seriality witnesses (F(¬⊥) → forward witness, P(¬⊥) → backward witness). Show witnesses are **strictly** ordered in the antisymmetrization quotient using `canonicalR_strict` from `CanonicalIrreflexivityAxiom.lean`. The pattern is identical to the already sorry-free `NoMaxOrder`/`NoMinOrder` in `DiscreteTimeline.lean` (lines 247–285) — port that proof structure to `ConstructiveQuotient`.
 
 ---
 
