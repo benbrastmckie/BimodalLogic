@@ -304,8 +304,8 @@ theorem swap_axiom_tl_valid (φ : Formula) :
   intro h_always s h_s_le_t u h_s_le_u
   -- h_always encodes (swap) always: G(X) ∧ (X ∧ H(X)) where X = swap φ
   -- Under reflexive semantics, h_past : ∀ s ≤ t, X s, h_fut : ∀ s ≥ t, X s
-  -- We need X at u where s ≤ t and s ≤ u. Use le_or_lt on u vs t.
-  rcases le_or_lt u t with h_le | h_gt
+  -- We need X at u where s ≤ t and s ≤ u. Use le_or_gt on u vs t.
+  rcases le_or_gt u t with h_le | h_gt
   · -- Case: u ≤ t, use H(X) (past component, which now includes present via reflexivity)
     apply Classical.byContradiction
     intro h_neg
@@ -512,7 +512,7 @@ theorem axiom_swap_valid (φ : Formula) (h : Axiom φ) [DenselyOrdered D] [Nontr
   | temp_linearity ψ χ =>
     -- The swap of the future-linearity axiom is the past-linearity axiom
     -- P(φ) ∧ P(ψ) → P(φ ∧ ψ) ∨ P(φ ∧ P(ψ)) ∨ P(P(φ) ∧ ψ)
-    -- With reflexive ≤, use le_or_lt trichotomy on witnesses
+    -- With reflexive ≤, use le_or_gt trichotomy on witnesses
     intro F M Omega _h_sc τ _h_mem t
     simp only [Formula.swap_temporal, Formula.and, Formula.or, Formula.some_future,
                Formula.some_past, Formula.neg, truth_at]
@@ -731,7 +731,7 @@ private theorem axiom_temp_l_valid (φ : Formula) :
   obtain ⟨h_now, h_future⟩ := h2
   -- With reflexive semantics and conjunction, we have φ at all times
   -- r ≤ s and s ≤ t, so either r ≤ t (use h_past) or r > t (use h_future via le_of_lt)
-  rcases le_or_lt r t with h_le | h_gt
+  rcases le_or_gt r t with h_le | h_gt
   · exact h_past r h_le
   · exact h_future r (le_of_lt h_gt)
 

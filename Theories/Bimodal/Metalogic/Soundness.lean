@@ -213,7 +213,7 @@ theorem temp_l_valid (φ : Formula) :
     and_of_not_imp_not h_middle
   obtain ⟨h_now, h_future⟩ := h2
   -- With reflexive semantics, we have φ at all times
-  rcases le_or_lt r t with h_le | h_gt
+  rcases le_or_gt r t with h_le | h_gt
   · exact h_past r h_le
   · exact h_future r (le_of_lt h_gt)
 
