@@ -1,7 +1,7 @@
 # Implementation Plan: Task #929 - Prepare Metalogic for Publication
 
 - **Task**: 929 - prepare_metalogic_for_publication
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 10-13 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/929_prepare_metalogic_for_publication/reports/research-001.md
@@ -82,7 +82,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 0: Task Abandonment [NOT STARTED]
+### Phase 0: Task Abandonment [COMPLETED]
 
 - **Dependencies:** None
 - **Goal**: Abandon 6 obsolete/blocked tasks with proper state updates
@@ -112,7 +112,7 @@ After this implementation:
 
 ---
 
-### Phase 1: Immediate Archival (DovetailingChain) [NOT STARTED]
+### Phase 1: Immediate Archival (DovetailingChain) [IN PROGRESS]
 
 - **Dependencies:** None
 - **Goal**: Archive DovetailingChain.lean which has no active importers

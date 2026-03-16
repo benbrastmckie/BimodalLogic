@@ -47,7 +47,7 @@ technical_debt:
 
 ### 929. Prepare metalogic for publication
 - **Effort**: 10-13 hours (revised estimate)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/929_prepare_metalogic_for_publication/reports/research-001.md) (team: 3 teammates, full publication readiness checklist)
 - **Plan**: [implementation-001.md](specs/929_prepare_metalogic_for_publication/plans/implementation-001.md) (9 phases)
