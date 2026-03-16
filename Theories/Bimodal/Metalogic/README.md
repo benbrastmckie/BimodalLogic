@@ -8,10 +8,9 @@ completeness, decidability, and the finite model property.
 The metalogic proves the fundamental metatheoretic results for TM bimodal logic:
 
 1. **Soundness**: Every derivable formula is semantically valid
-2. **Completeness**: Every valid formula is derivable (via BFMCS and FMP approaches)
-3. **Finite Model Property**: Satisfiable formulas have finite models
-4. **Decidability**: Tableau-based decision procedure with proof extraction
-5. **Algebraic**: Alternative approach via Lindenbaum quotient and ultrafilter-MCS bijection
+2. **Completeness**: Every valid formula is derivable (via BFMCS approach)
+3. **Decidability**: Tableau-based decision procedure with proof extraction
+4. **Algebraic**: Alternative approach via Lindenbaum quotient and ultrafilter-MCS bijection
 
 ## Main Results
 
@@ -27,13 +26,6 @@ theorem bmcs_weak_completeness : bmcs_valid phi -> |- phi
 theorem bmcs_strong_completeness : bmcs_consequence Gamma phi -> Gamma |- phi
 ```
 Henkin-style completeness via Bundle of Maximal Consistent Sets.
-
-### FMP Completeness (`FMP/`)
-```lean
-def fmp_weak_completeness : (forall w, semantic_truth phi w t phi) -> |- phi
-theorem semanticWorldState_card_bound : card worlds <= 2^closureSize
-```
-Completeness via finite canonical model construction.
 
 ### Decidability (`Decidability/`)
 ```lean
@@ -63,17 +55,10 @@ Metalogic/
 ├── Bundle/                # BFMCS completeness (primary approach)
 │   ├── FMCS.lean
 │   ├── BFMCS.lean
-│   ├── BFMCSTruth.lean
-│   ├── TruthLemma.lean
+│   ├── TemporalCoherence.lean
 │   ├── ModalSaturation.lean
 │   ├── Construction.lean
-│   └── Completeness.lean
-│
-├── FMP/                   # Finite Model Property
-│   ├── Closure.lean
-│   ├── BoundedTime.lean
-│   ├── FiniteWorldState.lean
-│   └── SemanticCanonicalModel.lean
+│   └── CanonicalConstruction.lean
 │
 ├── Decidability/          # Tableau decision procedure
 │   ├── SignedFormula.lean
@@ -113,16 +98,16 @@ This flowchart shows how modules depend on each other. Arrows point from depende
            │                             │                             │
            v                             v                             v
 ┌────────────────────┐      ┌─────────────────────┐       ┌────────────────────┐
-│   Soundness.lean   │      │ Bundle/Completeness │       │ FMP/Semantic       │
-│ (Soundness theorem)│      │  (BFMCS completeness)│       │ CanonicalModel     │
+│   Soundness.lean   │      │ Bundle/Construction │       │   Decidability/    │
+│ (Soundness theorem)│      │ (BFMCS completeness)│       │ DecisionProcedure  │
 └────────────────────┘      └─────────────────────┘       └────────────────────┘
-           │                             │                             │
-           v                             │                             │
-┌────────────────────┐                   │                             │
-│ SoundnessLemmas    │                   │                             │
-│ (temporal duality) │                   │                             │
-└────────────────────┘                   │                             │
-                                         v                             v
+           │                             │
+           v                             │
+┌────────────────────┐                   │
+│ SoundnessLemmas    │                   │
+│ (temporal duality) │                   │
+└────────────────────┘                   │
+                                         v
                                 ┌─────────────────────────────────────────┐
                                 │             Core/ (Foundation)          │
                                 │ MaximalConsistent, DeductionTheorem,    │
@@ -164,37 +149,6 @@ This flowchart shows how modules depend on each other. Arrows point from depende
                    │ MaximalConsistent   │
                    │ MCSProperties       │
                    └─────────────────────┘
-```
-
-### FMP/ Dependencies (Finite Model Property)
-
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                      FMP/SemanticCanonicalModel.lean                        │
-│                         (fmp_weak_completeness)                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                         │
-           ┌─────────────────────────────┼─────────────────────────────┐
-           │                             │                             │
-           v                             v                             v
-┌────────────────────┐      ┌─────────────────────┐       ┌────────────────────┐
-│ FiniteWorldState   │      │   BoundedTime.lean  │       │   Soundness.lean   │
-│  (finite states)   │      │  (Fin (2k+1) time)  │       │ (for verification) │
-└────────────────────┘      └─────────────────────┘       └────────────────────┘
-           │
-           v
-┌────────────────────┐
-│   Closure.lean     │
-│ (subformula close) │
-└────────────────────┘
-           │
-           v
-┌────────────────────┐
-│       Core/        │
-│ MaximalConsistent  │
-│ MCSProperties      │
-│ DeductionTheorem   │
-└────────────────────┘
 ```
 
 ### Decidability/ Dependencies
@@ -283,11 +237,11 @@ This flowchart shows how modules depend on each other. Arrows point from depende
                                          ^
                                          │
         ┌────────────────────────────────┼────────────────────────────────┐
-        │                                │                                │
-┌───────┴───────┐              ┌─────────┴─────────┐            ┌─────────┴─────────┐
-│   Bundle/     │              │      FMP/         │            │   Algebraic/      │
-│ (BFMCS appr)   │              │ (FMP approach)    │            │ (Algebraic appr)  │
-└───────────────┘              └───────────────────┘            └───────────────────┘
+        │                                                                 │
+┌───────┴───────┐                                               ┌─────────┴─────────┐
+│   Bundle/     │                                               │   Algebraic/      │
+│ (BFMCS appr)  │                                               │ (Algebraic appr)  │
+└───────────────┘                                               └───────────────────┘
 
 ┌───────────────────────────────────────────────────────────────────────────────────┐
 │                              Decidability/                                        │
@@ -301,27 +255,27 @@ This flowchart shows how modules depend on each other. Arrows point from depende
 |-----------|---------|--------|--------|
 | [Core/](Core/README.md) | MCS theory, Lindenbaum's lemma | Sorry-free | Yes |
 | [Bundle/](Bundle/README.md) | BFMCS completeness | Sorry-free (main theorems) | Yes |
-| [FMP/](FMP/README.md) | Finite model property | Sorry-free | Yes |
 | [Decidability/](Decidability/README.md) | Tableau decision procedure | Sorry-free | Yes |
 | [Algebraic/](Algebraic/README.md) | Algebraic approach | Sorry-free | Yes |
 | [Soundness/](Soundness/README.md) | Conceptual grouping (files at top-level) | N/A | Yes |
+| [Canonical/](Canonical/) | Canonical model support | Active | No |
+| [Domain/](Domain/) | Domain-related constructions | Active | No |
+| [StagedConstruction/](StagedConstruction/) | Staged BFMCS construction | Active | No |
+| [Relational/](Relational/) | Relational semantics | Active | No |
+| [ConservativeExtension/](ConservativeExtension/) | Conservative extension | Active | No |
 | [Representation/](Representation/README.md) | Archived | Archived | Yes |
 | [Compactness/](Compactness/README.md) | Archived | Archived | Yes |
 
 ## Sorry Status
 
-**Active sorries in Metalogic/**: 17 across 4 files (in helper lemmas, documented with alternatives)
+**Active sorries in Metalogic/**: See Bundle/README.md for current sorry counts.
 
 | File | Count | Description | Impact |
 |------|-------|-------------|--------|
-| Bundle/TruthLemma.lean | 2 | Temporal backward directions | Does not affect completeness |
-| Bundle/Construction.lean | 1 | modal_backward | Architectural limitation |
-| Bundle/SaturatedConstruction.lean | 13 | Multi-family saturation WIP | Does not affect main theorems |
-| FMP/Closure.lean | 1 | Diamond membership edge case | Minor |
+| Bundle/*.lean | Various | See Bundle/README.md | Main theorems sorry-free |
 
-**Key Point**: These do NOT affect main theorems. All main completeness, soundness, and
-decidability theorems are sorry-free. The `SaturatedConstruction.lean` file is work-in-progress
-infrastructure for future multi-family BFMCS construction.
+**Key Point**: The main completeness, soundness, and decidability theorems are sorry-free.
+See individual module READMEs for detailed sorry status.
 
 **Verification command**:
 ```bash
@@ -332,14 +286,8 @@ grep -c "^[[:space:]]*sorry\$\|[[:space:]]sorry\$\|:= sorry\$" Theories/Bimodal/
 
 For BFMCS completeness (Henkin-style):
 ```lean
-import Bimodal.Metalogic.Bundle.Completeness
--- bmcs_weak_completeness, bmcs_strong_completeness
-```
-
-For FMP-based completeness:
-```lean
-import Bimodal.Metalogic.FMP.SemanticCanonicalModel
--- fmp_weak_completeness
+import Bimodal.Metalogic.Bundle.Construction
+-- BFMCS completeness infrastructure
 ```
 
 For decidability:

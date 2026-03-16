@@ -32,10 +32,10 @@ the subformula closure of the target formula.
 
 ## Design Notes
 
-This construction differs from `FMP.Closure` in that:
-1. It works with the Syntax.SubformulaClosure infrastructure
-2. It's designed to integrate with the Bundle BFMCS construction
-3. It uses Finset operations for termination reasoning
+This construction:
+1. Works with the Syntax.SubformulaClosure infrastructure
+2. Is designed to integrate with the Bundle BFMCS construction
+3. Uses Finset operations for termination reasoning
 
 ## References
 

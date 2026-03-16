@@ -98,7 +98,6 @@ open Bimodal.Metalogic.Decidability
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BFMCS completeness approach
-- [FMP README](../FMP/README.md) - Finite model property
 - [Core README](../Core/README.md) - MCS foundations
 - [Soundness README](../Soundness/README.md) - Soundness theorem
 

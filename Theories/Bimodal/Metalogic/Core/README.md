@@ -136,7 +136,6 @@ The deduction theorem for Hilbert systems requires careful handling:
 The Core modules are prerequisites for:
 - `Bundle/` - BFMCS completeness uses MCS extension and truth lemma
 - `Algebraic/UltrafilterMCS.lean` - Uses MCS definitions for ultrafilter correspondence
-- `FMP/` - Uses consistency and Lindenbaum's lemma for finite model construction
 
 ## Dependencies
 
@@ -148,7 +147,6 @@ The Core modules are prerequisites for:
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BFMCS completeness (uses Core)
 - [Algebraic README](../Algebraic/README.md) - Algebraic approach (uses Core)
-- [FMP README](../FMP/README.md) - Finite model property (uses Core)
 
 ## References
 

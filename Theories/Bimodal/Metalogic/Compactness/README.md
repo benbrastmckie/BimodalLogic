@@ -25,17 +25,12 @@ The archived compactness theorem provides:
 ## Alternative
 
 For sorry-free completeness proofs, use:
-- `Bimodal.Metalogic.FMP.semantic_weak_completeness` (weak completeness)
-- `Bimodal.Metalogic.Completeness.finite_strong_completeness` (finite-premise)
-
-The FMP approach does not provide infinitary completeness or compactness
-because it operates on single formulas, not infinite formula sets.
+- `Bimodal.Metalogic.Bundle.Construction` - BFMCS completeness infrastructure
 
 ## Related Documentation
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BFMCS completeness approach
-- [FMP README](../FMP/README.md) - FMP completeness approach
 
 ---
 

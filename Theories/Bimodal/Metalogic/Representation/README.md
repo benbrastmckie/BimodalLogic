@@ -40,17 +40,16 @@ Theories/Bimodal/Boneyard/Metalogic_v5/Completeness/
 
 ## Replacement
 
-For sorry-free completeness, use the FMP approach:
+For sorry-free completeness, use the BFMCS approach:
 ```lean
-import Bimodal.Metalogic.FMP.SemanticCanonicalModel
+import Bimodal.Metalogic.Bundle.Construction
 
--- Use: Bimodal.Metalogic.FMP.semantic_weak_completeness
+-- Use: BFMCS completeness infrastructure
 ```
 
-The FMP approach provides:
-- Sorry-free weak completeness
-- Finite model property with 2^closureSize bound
-- No trusted axioms
+The BFMCS approach provides:
+- Sorry-free main completeness theorems
+- Henkin-style canonical model construction
 
 ## Historical Note
 
@@ -62,14 +61,13 @@ The Representation approach successfully proved:
 These theorems used the truth lemma with its trusted axioms. The proofs were
 architecturally complete but relied on 30 gaps in auxiliary lemmas.
 
-For a truly sorry-free completeness proof suitable for publication, the FMP
+For a truly sorry-free completeness proof suitable for publication, the BFMCS
 approach is now canonical.
 
 ## Related Documentation
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - Current BFMCS completeness approach
-- [FMP README](../FMP/README.md) - Current FMP completeness approach
 
 ---
 

@@ -7,7 +7,6 @@ This directory contains test suites for the formal logic theories.
 | Directory | Description |
 |-----------|-------------|
 | `BimodalTest/` | Tests for Bimodal TM logic |
-| `LogosTest/` | Tests for Logos recursive semantics |
 
 ## BimodalTest
 
@@ -22,18 +21,11 @@ Comprehensive test coverage for the Bimodal library:
 
 See `BimodalTest/README.md` for testing standards.
 
-## LogosTest
-
-Tests for the Logos library:
-- `Syntax.lean` - Formula syntax tests
-- `Semantics.lean` - Constitutive semantics tests
-- `Integration.lean` - Cross-layer integration tests
-
 ## Running Tests
 
 Build all tests:
 ```bash
-lake build BimodalTest LogosTest
+lake build BimodalTest
 ```
 
 Run the test executable:

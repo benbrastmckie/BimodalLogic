@@ -124,7 +124,6 @@ import Bimodal.Metalogic.Soundness
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Bundle README](../Bundle/README.md) - BFMCS completeness (uses soundness)
-- [FMP README](../FMP/README.md) - FMP completeness (uses soundness)
 
 ## References
 

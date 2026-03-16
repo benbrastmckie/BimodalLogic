@@ -31,8 +31,7 @@ enables termination of the iterative saturation process.
 ## Design Notes
 
 This module bridges the existing `Bimodal.Syntax.Subformulas` (List-based)
-and `Bimodal.Metalogic.FMP.Closure` (Finset-based for FMP) with the specific
-needs of the multi-family BFMCS construction.
+with the specific needs of the multi-family BFMCS construction.
 
 ## References
 

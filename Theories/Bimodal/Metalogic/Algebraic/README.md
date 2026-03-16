@@ -13,7 +13,7 @@ The algebraic modules provide:
 2. Infrastructure for Stone duality and algebraic topology extensions
 3. A cleaner mathematical foundation for future algebraic modal logic research
 
-**Note**: The main completeness proof uses `Bundle/` (BFMCS) and `FMP/`. This algebraic path is
+**Note**: The main completeness proof uses `Bundle/` (BFMCS). This algebraic path is
 supplementary infrastructure, not required for the current proof architecture.
 
 ## Modules
@@ -117,7 +117,6 @@ The algebraic approach proceeds as follows:
 The main completeness proof architecture uses:
 - `Core/` - MCS foundations (shared)
 - `Bundle/` - BFMCS completeness via bundled MCS families
-- `FMP/` - Finite model property via closure-based construction
 
 This algebraic path provides:
 - Independent verification that MCS theory is sound
@@ -141,7 +140,6 @@ This algebraic path provides:
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Core README](../Core/README.md) - MCS foundations shared by both approaches
 - [Bundle README](../Bundle/README.md) - Primary BFMCS completeness approach
-- [FMP README](../FMP/README.md) - FMP completeness approach
 - [Decidability README](../Decidability/README.md) - Decision procedure
 
 ## References

@@ -26,7 +26,7 @@ Tableau-based decision procedure returning proof terms or countermodels.
 ## Status
 
 - Soundness: Proven
-- Completeness: Partial (requires FMP formalization)
+- Completeness: Proven (via BFMCS approach)
 - Proof extraction: Partial (axiom instances only)
 
 ## Usage

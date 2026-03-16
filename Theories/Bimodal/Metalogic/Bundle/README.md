@@ -155,7 +155,6 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 
 - [Metalogic README](../README.md) - Overall metalogic architecture
 - [Core README](../Core/README.md) - MCS foundations (dependency)
-- [FMP README](../FMP/README.md) - Alternative FMP-based completeness
 - [Decidability README](../Decidability/README.md) - Decision procedure
 - [Algebraic README](../Algebraic/README.md) - Alternative algebraic approach
 
