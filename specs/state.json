@@ -8,11 +8,11 @@
     {
       "project_number": 971,
       "project_name": "refactor_eliminate_bmcs_truth_at_layer",
-      "status": "researched",
+      "status": "planned",
       "language": "logic",
       "created": "2026-03-16T05:12:34Z",
-      "last_updated": "2026-03-16T05:35:01Z",
-      "session_id": "sess_1773639025_06fb95",
+      "last_updated": "2026-03-15T22:50:00Z",
+      "session_id": "sess_1773639553_02a65b",
       "researched": "2026-03-16T05:35:01Z",
       "artifacts": [
         {
@@ -23,15 +23,20 @@
         {
           "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/plans/implementation-001.md",
           "type": "plan",
-          "summary": "7-phase implementation plan for eliminating bmcs_truth_at layer via deprecation and archival"
+          "summary": "7-phase implementation plan for eliminating bmcs_truth_at layer via deprecation and archival (SUPERSEDED)"
         },
         {
           "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-002.md",
           "type": "research",
           "summary": "Deep simplification analysis: 7 elimination opportunities, direct use of canonical_truth_lemma"
+        },
+        {
+          "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "8-phase aggressive clean-break plan to fully eliminate bmcs_truth_at layer (5h)"
         }
       ],
-      "planned": "2026-03-16T05:27:18Z"
+      "planned": "2026-03-15T22:50:00Z"
     },
     {
       "project_number": 970,
