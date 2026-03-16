@@ -1,5 +1,5 @@
 ---
-next_project_number: 973
+next_project_number: 976
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -27,11 +27,14 @@ technical_debt:
 
 ### 972. Review metalogic naming conventions for improvements
 - **Effort**: 2-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Created**: 2026-03-16
+- **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md)
 
 **Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent, misleading, or redundant naming conventions. The goal is not wholesale renames but targeted improvements where names are genuinely confusing, inconsistent with surrounding conventions, or misleading about their mathematical content. Note: `temporally_coherent` and `SetMaximalConsistent` are acceptable as-is. Look for names that cause actual confusion when reading proofs or that conflict with standard mathematical terminology.
+
+**Research Finding**: Reviewed 16 files. Found naming conventions to be largely consistent and well-designed. No actionable changes recommended. The 2 minor inconsistencies identified (GContent/HContent casing, witness seed casing) are acceptable given internal consistency and widespread usage.
 
 ---
 
