@@ -45,11 +45,12 @@ technical_debt:
 ---
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: 4-8 hours (constructive method restructure)
-- **Status**: [PLANNING]
+- **Effort**: 7 hours (6 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path)
+- **Plan**: [implementation-001.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-001.md) (6 phases: blocking formula seed approach)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
 
@@ -59,7 +60,7 @@ technical_debt:
 
 ### 953. Refactor proof system to bilateral system
 - **Effort**: 55-90 hours
-- **Status**: [PLANNING]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [research-001.md](specs/953_refactor_proof_system_to_bilateral/reports/research-001.md)

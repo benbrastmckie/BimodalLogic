@@ -1,34 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-16T10:00:00Z",
-  "completed_at": "2026-03-16T12:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
-      "summary": "Deep mathematical analysis of discrete_Icc_finite_axiom debt. Covering lemma is the critical gap. Recommends accepting axiom and making LocallyFiniteOrder explicit in DiscreteTemporalFrame typeclass."
+      "type": "plan",
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for constructive method approach to eliminate discrete_Icc_finite_axiom"
     }
   ],
-  "next_steps": "Run /plan 981 to create implementation plan for typeclass modification",
+  "next_steps": "Run /implement 981 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773702379_d32614",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 7200,
+    "session_id": "sess_1773703759_f69482",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": ["DiscreteTimeline.lean", "FrameClass.lean", "DensityFrameCondition.lean"],
-    "mathlib_lookups_performed": 6,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1,
-    "key_findings": [
-      "Covering lemma is THE critical gap - all approaches reduce to it",
-      "DF creates existential F-obligations that don't constrain intermediates",
-      "Density proof template does not invert to covering proof",
-      "LocallyFiniteOrder should be explicit typeclass requirement",
-      "Axiom is mathematically sound - discrete orders have finite intervals",
-      "Multiple approaches (h_content duality, phi=neg_bot, density inversion) all blocked"
-    ],
-    "recommendation": "Accept axiom as architectural constraint; make LocallyFiniteOrder explicit in DiscreteTemporalFrame"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 7
   }
 }
