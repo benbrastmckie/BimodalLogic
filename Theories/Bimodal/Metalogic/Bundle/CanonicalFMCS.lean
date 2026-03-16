@@ -1,7 +1,8 @@
 import Bimodal.Metalogic.Bundle.CanonicalFrame
+import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.WitnessSeed
-import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+import Bimodal.Metalogic.Bundle.TemporalCoherence
 
 /-!
 # Canonical FMCS Construction (All-MCS Approach)

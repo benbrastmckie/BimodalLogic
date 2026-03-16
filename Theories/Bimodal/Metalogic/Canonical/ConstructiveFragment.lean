@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Canonical.CanonicalTimeline
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.Construction
+import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Completeness
 import Mathlib.Order.CountableDenseLinearOrder
 import Mathlib.Order.Antisymmetrization

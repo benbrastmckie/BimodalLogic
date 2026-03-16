@@ -1,6 +1,6 @@
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.BFMCSTruth
-import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Metalogic.Core.DeductionTheorem
