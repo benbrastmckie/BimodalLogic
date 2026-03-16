@@ -26,7 +26,7 @@ technical_debt:
 ## Tasks
 ### 984. Review and revise documentation to remove `.claude/` directory references
 - **Effort**: small
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 
 **Description**: Review and revise all documentation to remove references to the `.claude/` directory (now gitignored), while preserving references to Claude Code itself.
@@ -34,7 +34,7 @@ technical_debt:
 
 ### 983. Review decidability results and FMP for publication
 - **Effort**: 40-61 hours (4 sub-tasks)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: logic
 - **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team: FMP/decidability gap analysis)
 
@@ -45,12 +45,13 @@ technical_debt:
 ---
 
 ### 982. Wire dense completeness domain connection
-- **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 4.5 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
 - **Research**: [research-001.md](specs/982_wire_dense_completeness_domain_connection/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-001.md)
 
 **Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All individual components are proven sorry-free (`cantor_iso`, `bmcs_truth_lemma`, `temporal_coherent_family_exists_CanonicalMCS`). The 3 sorries in `FrameConditions/Completeness.lean` need wiring that connects these pieces through a domain transfer or unified construction.
 

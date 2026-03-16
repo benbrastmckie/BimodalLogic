@@ -8,19 +8,20 @@
     {
       "project_number": 984,
       "project_name": "review_docs_remove_claude_dir_references",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "created": "2026-03-16T23:44:55Z",
-      "last_updated": "2026-03-16T23:44:55Z"
+      "last_updated": "2026-03-16T23:53:01Z",
+      "session_id": "sess_1773705166_133169608"
     },
     {
       "project_number": 983,
       "project_name": "review_decidability_fmp_completeness",
-      "status": "researched",
+      "status": "planning",
       "language": "logic",
       "created": "2026-03-16T23:34:54Z",
-      "last_updated": "2026-03-16T23:46:09Z",
-      "session_id": "sess_1773704373_51080a",
+      "last_updated": "2026-03-16T23:53:19Z",
+      "session_id": "sess_1773705186_445585",
       "researched": "2026-03-16T23:46:09Z",
       "artifacts": [
         {
@@ -33,21 +34,27 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-16T23:40:37Z",
-      "session_id": "sess_1773880500_a7c3e2",
+      "last_updated": "2026-03-16T23:53:48Z",
+      "session_id": "sess_1773881200_b4d7f1",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
         {
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-001.md",
           "type": "research",
           "summary": "Analyzed CanonicalMCS vs TimelineQuot domain gap. Found TimelineQuot elements contain MCS info via DenseTimelineElem. Recommended Option D: build FMCS over TimelineQuot directly using quotient representatives, then use Cantor isomorphism to Rat for AddCommGroup constraint. Estimated 3-4 hours implementation."
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for wiring TimelineQuot-based dense completeness"
         }
-      ]
+      ],
+      "planned": "2026-03-16T23:53:48Z"
     },
     {
       "project_number": 981,
