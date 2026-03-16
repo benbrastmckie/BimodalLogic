@@ -73,19 +73,18 @@ Two alternative approaches to proving completeness were explored before the succ
 
 **Note**: The `semantic_task_rel_compositionality` theorem was removed in Task #616. The sorry is now inlined directly in the `SemanticCanonicalFrame` definition where the TaskFrame instance requires it. This keeps the sorry localized and avoids a named theorem claiming something mathematically false.
 
-## Replacement: Semantic Approach (Task 473)
+## Replacement: BFMCS Approach
 
-The successful approach is in `Metalogic/Completeness/FiniteCanonicalModel.lean`:
+The successful approach is in `Metalogic/Bundle/`:
 
-- **SemanticWorldState**: World states as quotients of (FiniteHistory, FiniteTime) pairs
-- **semantic_task_rel_v2**: Task relation via history/time existence
-- **semantic_truth_lemma_v2**: Proven without sorries
-- **semantic_weak_completeness**: Core completeness result (proven)
+- **BFMCS**: Bundle of Maximal Consistent Sets
+- **CanonicalConstruction**: Canonical BFMCS construction from consistent context
+- **CanonicalFMCS**: Temporal MCS families with coherence
 
 This approach works because:
-1. Truth is evaluated on histories, not abstract world states
-2. Compositionality is trivial by construction (histories already satisfy it)
-3. The negation-completeness issue is bypassed entirely
+1. Box quantification is restricted to bundled families
+2. Modal coherence conditions ensure the truth lemma is provable
+3. The negation-completeness issue is bypassed via the MCS construction
 
 ## Related Tasks
 
@@ -102,9 +101,9 @@ This approach works because:
 
 **DO NOT USE** for active development. These files may not build cleanly and contain fundamental gaps.
 
-For completeness proofs, use the semantic approach in `FiniteCanonicalModel.lean` (Phase 5-7 sections).
+For completeness proofs, use the BFMCS approach in `Metalogic/Bundle/`.
 
 ---
 
-*Last updated: 2026-01-19*
-*Reason: Superseded by SemanticWorldState approach*
+*Last updated: 2026-03-16*
+*Reason: Superseded by BFMCS approach*

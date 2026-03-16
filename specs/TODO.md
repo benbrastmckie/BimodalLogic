@@ -38,22 +38,19 @@ technical_debt:
 
 ### 975. Fix ProofSearch documentation example sorries
 - **Effort**: 0.5 hours (1 phase)
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/975_fix_proofsearch_example_sorries/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/975_fix_proofsearch_example_sorries/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260316.md](specs/975_fix_proofsearch_example_sorries/summaries/implementation-summary-20260316.md)
 
-**Description**: Fix 3 sorry placeholders in `Theories/Bimodal/Automation/ProofSearch.lean` at lines 1348, 1353, and 1358. These are `example` blocks demonstrating how bounded proof search would be invoked. Since `bounded_search` returns `Bool` (not `DerivationTree`), the examples cannot use it directly. Fix by providing minimal direct witnesses using existing axioms/rules, or convert to comments if purely aspirational.
-
-- Line 1348: `⊢ □p → p` — use `DerivationTree.axiom` with `Axiom.modal_t`
-- Line 1353: `∃ proof : DerivationTree [] q, True` given hypotheses h1, h2 — use `DerivationTree.modus_ponens`
-- Line 1358: `∃ proof : DerivationTree [□p] □p, True` — use `DerivationTree.assumption`
+**Description**: Fixed 3 sorry placeholders in `Theories/Bimodal/Automation/ProofSearch.lean` example blocks using DerivationTree constructors: `axiom` with `Axiom.modal_t`, `modus_ponens`, and `assumption`.
 
 ---
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 2.5 hours (5 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md)

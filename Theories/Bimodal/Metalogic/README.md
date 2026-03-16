@@ -328,4 +328,4 @@ ls Theories/Bimodal/Metalogic/Soundness.lean
 
 ---
 
-*Last verified: 2026-02-03*
+*Last verified: 2026-03-16*

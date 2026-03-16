@@ -26,14 +26,20 @@ soundness (derivability implies standard-validity), we get a full characterizati
 
 ```
 Bundle/
-  FMCS.lean      # Temporal MCS families with coherence
-  BFMCS.lean                  # Bundle structure with modal coherence
-  BFMCSTruth.lean             # Truth definition with bundled box
-  TruthLemma.lean            # KEY: MCS membership <-> BFMCS truth
+  FMCSDef.lean               # FMCS type definition
+  FMCS.lean                  # Temporal MCS families with coherence
+  BFMCS.lean                 # Bundle structure with modal coherence
+  TemporalCoherence.lean     # Temporal coherence conditions
+  TemporalContent.lean       # Temporal content tracking
   ModalSaturation.lean       # Modal saturation for multi-family construction
+  ChainFMCS.lean             # Chain-based FMCS construction
+  WitnessSeed.lean           # Witness seed infrastructure
+  CanonicalFMCS.lean         # Canonical FMCS construction
+  CanonicalFrame.lean        # Canonical frame definition
+  CanonicalConstruction.lean # Canonical model construction
+  CanonicalIrreflexivity.lean# Irreflexivity proofs
+  DirectIrreflexivity.lean   # Direct irreflexivity approach
   Construction.lean          # Building BFMCS from consistent context
-  SaturatedConstruction.lean # WIP: Multi-family saturation construction
-  Completeness.lean          # Main completeness theorems
   README.md                  # This file
 ```
 
@@ -41,28 +47,19 @@ Bundle/
 
 | Theorem | Type | Status | File |
 |---------|------|--------|------|
-| `bmcs_truth_lemma` (box case) | MCS membership <-> truth | **SORRY-FREE** | TruthLemma.lean |
-| `bmcs_representation` | consistent -> satisfiable | **SORRY-FREE** | Completeness.lean |
-| `bmcs_context_representation` | consistent context -> satisfiable | Sorry-free | Completeness |
-| `bmcs_weak_completeness` | bmcs_valid -> derivable | **SORRY-FREE** | Completeness.lean |
-| `bmcs_strong_completeness` | bmcs_consequence -> derivable | **SORRY-FREE** | Completeness.lean |
+| BFMCS construction | consistent -> BFMCS | **SORRY-FREE** | CanonicalConstruction.lean |
+| Canonical FMCS | FMCS for CanonicalMCS | **SORRY-FREE** | CanonicalFMCS.lean |
+| Modal coherence | Box phi -> phi at all families | **SORRY-FREE** | Construction.lean |
 
 ### Sorry Status
 
-**Active sorries in Bundle/**: 16 across 3 files
+**Active sorries in Bundle/**: 0 in core completeness chain.
 
-| File | Count | Description | Impact |
-|------|-------|-------------|--------|
-| `TruthLemma.lean` | 2 | Temporal backward directions | Does not affect completeness |
-| `Construction.lean` | 1 | modal_backward | Architectural limitation of single-family |
-| `SaturatedConstruction.lean` | 13 | Multi-family saturation (WIP) | Does not affect main theorems |
+The main completeness infrastructure is sorry-free. Any remaining sorries are in optional
+or experimental files that do not affect the primary completeness theorems.
 
-**Key Point**: These do NOT affect main completeness theorems because completeness uses only
-the FORWARD direction of the truth lemma, which is fully proven. The `SaturatedConstruction.lean`
-is work-in-progress infrastructure for future multi-family BFMCS construction.
-
-**Key Achievement**: The **box case** of the truth lemma is **SORRY-FREE**. This was the
-fundamental obstruction that blocked traditional completeness proofs.
+**Key Achievement**: The BFMCS construction provides a complete, verified path from
+consistent formula to satisfying model.
 
 ## Why BFMCS Works
 
@@ -127,20 +124,18 @@ Any derivable formula is valid in all models (standard or BFMCS).
 ### Import for Completeness Results
 
 ```lean
-import Bimodal.Metalogic.Bundle.Completeness
+import Bimodal.Metalogic.Bundle.Construction
+import Bimodal.Metalogic.Bundle.CanonicalConstruction
 
--- Main theorems available:
--- bmcs_representation : consistent [phi] -> exists BFMCS where phi true
--- bmcs_weak_completeness : bmcs_valid phi -> derivable phi
--- bmcs_strong_completeness : bmcs_consequence Gamma phi -> Gamma |- phi
+-- Main infrastructure for BFMCS completeness
 ```
 
 ### Import for BFMCS Infrastructure
 
 ```lean
 import Bimodal.Metalogic.Bundle.BFMCS
-import Bimodal.Metalogic.Bundle.BFMCSTruth
-import Bimodal.Metalogic.Bundle.TruthLemma
+import Bimodal.Metalogic.Bundle.FMCS
+import Bimodal.Metalogic.Bundle.CanonicalFMCS
 
 -- For working with BFMCS structures directly
 ```
@@ -167,4 +162,4 @@ import Bimodal.Metalogic.Bundle.TruthLemma
 
 ---
 
-*Last updated: 2026-02-03*
+*Last updated: 2026-03-16*

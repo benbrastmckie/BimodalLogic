@@ -1,20 +1,35 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-03-16T00:00:00Z",
+  "completed_at": "2026-03-16T00:05:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/975_fix_proofsearch_example_sorries/plans/implementation-001.md",
-      "summary": "1-phase implementation plan for fixing 3 example sorries in ProofSearch.lean"
+      "path": "specs/975_fix_proofsearch_example_sorries/summaries/implementation-summary-20260316.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting fixes to 3 example sorries using DerivationTree constructors"
+    },
+    {
+      "path": "Theories/Bimodal/Automation/ProofSearch.lean",
+      "type": "modified",
+      "summary": "Fixed 3 example sorries at lines 1348, 1353, 1358"
     }
   ],
-  "next_steps": "Run /implement 975 to execute the plan",
+  "partial_progress": {
+    "stage": "complete",
+    "details": "All 3 example sorries fixed with valid proof terms",
+    "phases_completed": 1,
+    "phases_total": 1
+  },
   "metadata": {
-    "session_id": "sess_1742169600_975plan",
-    "agent_type": "planner-agent",
-    "duration_seconds": 120,
+    "session_id": "sess_1742169600_975impl",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 1,
-    "estimated_hours": 0.5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
+    "phases_completed": 1,
+    "phases_total": 1
+  },
+  "completion_data": {
+    "completion_summary": "Fixed 3 example sorries in ProofSearch.lean using DerivationTree constructors: axiom with modal_t, modus_ponens, and assumption.",
+    "roadmap_items": []
   }
 }

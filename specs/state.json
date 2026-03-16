@@ -20,13 +20,13 @@
     {
       "project_number": 975,
       "project_name": "fix_proofsearch_example_sorries",
-      "status": "planned",
+      "status": "completed",
       "language": "lean",
       "priority": "low",
       "created": "2026-03-16T00:00:00Z",
       "description": "Fix 3 sorry placeholders in ProofSearch.lean documentation examples",
-      "last_updated": "2026-03-16T16:38:56Z",
-      "session_id": "sess_1742169600_975plan",
+      "last_updated": "2026-03-16T17:00:00Z",
+      "session_id": "sess_1742169600_975impl",
       "researched": "2026-03-16T16:20:00Z",
       "artifacts": [
         {
@@ -38,20 +38,28 @@
           "path": "specs/975_fix_proofsearch_example_sorries/plans/implementation-001.md",
           "type": "plan",
           "summary": "1-phase implementation plan for fixing 3 example sorries in ProofSearch.lean"
+        },
+        {
+          "path": "specs/975_fix_proofsearch_example_sorries/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Fixed 3 example sorries using DerivationTree constructors: axiom (modal_t), modus_ponens, assumption"
         }
       ],
-      "planned": "2026-03-16T16:38:56Z"
+      "planned": "2026-03-16T16:38:56Z",
+      "started": "2026-03-16T16:40:24Z",
+      "completed": "2026-03-16T17:00:00Z",
+      "completion_summary": "Fixed 3 example sorries in ProofSearch.lean using DerivationTree constructors: axiom with modal_t, modus_ponens, and assumption."
     },
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
-      "last_updated": "2026-03-16T16:37:22Z",
-      "session_id": "sess_1742169700_p4n7w",
+      "last_updated": "2026-03-16T16:40:04Z",
+      "session_id": "sess_1742170000_x7m2q",
       "researched": "2026-03-16T16:12:35Z",
       "artifacts": [
         {
@@ -65,7 +73,8 @@
           "summary": "5-phase implementation plan to resolve 7 sorries in DiscreteTimeline.lean via WellFounded.min-based succ/pred definitions"
         }
       ],
-      "planned": "2026-03-16T16:37:22Z"
+      "planned": "2026-03-16T16:37:22Z",
+      "started": "2026-03-16T16:40:04Z"
     },
     {
       "project_number": 973,

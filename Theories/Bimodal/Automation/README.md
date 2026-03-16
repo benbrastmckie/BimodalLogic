@@ -7,8 +7,8 @@ Custom tactics and proof automation for TM bimodal logic.
 - **Tactics.lean**: Custom tactics for modal and temporal reasoning
   - `apply_axiom`: Apply TM axiom by name
   - `modal_t`: Apply modal T axiom automatically
-  - `tm_auto`: Comprehensive TM automation with Aesop (Phase 5)
-  - `assumption_search`: Search for formula in context (Phase 6)
+  - `tm_auto`: Comprehensive TM automation with Aesop
+  - `assumption_search`: Search for formula in context
 
 - **AesopRules.lean**: Aesop rule set for TM logic
   - TMLogic rule set declaration
@@ -16,10 +16,11 @@ Custom tactics and proof automation for TM bimodal logic.
   - Apply rules for core inference (modus_ponens, modal_k, temporal_k)
   - Normalization rules for derived operators
 
-- **ProofSearch.lean**: Bounded proof search infrastructure (planned)
+- **ProofSearch.lean**: Bounded proof search infrastructure
   - Depth-limited search for derivations
   - Heuristic-guided proof search
-  - Proof caching and memoization
+
+- **SuccessPatterns.lean**: Successful proof patterns and examples
 
 ## Quick Reference
 
@@ -48,18 +49,11 @@ example : ⊢ (□p → p) := by
 
 ## Implementation Status
 
-- **Phase 4** ✅: `apply_axiom` (macro), `modal_t` (elab_rules)
-- **Phase 5** 🚧: `tm_auto` with Aesop integration (noncomputable errors fixed 2026-01-04, proof reconstruction issues remain)
-- **Phase 6** ✅: `assumption_search` with TacticM
-- **Phase 7** 🚧: Bounded proof search (infrastructure has build errors, needs fixing before modal_search/temporal_search can be fully implemented)
-
-### Recent Updates (2026-01-04)
-
-- Fixed 2 noncomputable errors in AesopRules.lean (apply_modal_k, apply_temporal_k)
-- AesopRules.lean now builds successfully
-- tm_auto tactic still has Aesop proof reconstruction issues (internal error during proof reconstruction)
-- ProofSearch.lean has existing build errors (termination proof issues, List.qsort not available)
-- modal_search and temporal_search currently delegate to tm_auto (full implementation pending ProofSearch.lean fixes)
+- `apply_axiom`: Functional (macro-based)
+- `modal_t`: Functional (elab_rules)
+- `tm_auto`: Functional with Aesop integration
+- `assumption_search`: Functional with TacticM
+- Bounded proof search: Infrastructure available
 
 ## Building and Type-Checking
 

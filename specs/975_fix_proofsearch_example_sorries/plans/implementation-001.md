@@ -62,7 +62,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Fix All Three Example Sorries [NOT STARTED]
+### Phase 1: Fix All Three Example Sorries [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Replace each sorry with a valid proof term using DerivationTree constructors
@@ -123,8 +123,16 @@ example (p : Formula) (h : DerivationTree [p.box] p) :
 ```
 
 **Verification**:
-- [ ] `lake build Bimodal.Automation.ProofSearch` passes
-- [ ] `grep -n "\bsorry\b" Theories/Bimodal/Automation/ProofSearch.lean` shows no sorries in lines 1340-1360
+- [x] `lake build Bimodal.Automation.ProofSearch` passes
+- [x] `grep -n "\bsorry\b" Theories/Bimodal/Automation/ProofSearch.lean` shows no sorries in lines 1340-1360
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1742169600_975impl**
+- Fixed: Example 1 (line 1348) - replaced sorry with `DerivationTree.axiom` using `Axiom.modal_t`
+- Fixed: Example 2 (line 1353) - replaced sorry with `DerivationTree.modus_ponens`
+- Fixed: Example 3 (line 1358) - replaced sorry with `DerivationTree.assumption`
+- Sorries: 3 -> 0 (all eliminated in example blocks)
 
 ---
 

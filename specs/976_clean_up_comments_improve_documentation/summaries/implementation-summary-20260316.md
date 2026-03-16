@@ -30,18 +30,34 @@
 - `grep -rn "LogosTest" Tests/` returns no hits
 - `grep -rn "UserGuide\|Reference/\|Research/\|ProjectInfo" Theories/Bimodal/docs/README.md` returns no hits
 
+### Phase 2: Outdated Content Updates [COMPLETED]
+
+**Session: 2026-03-16, sess_1773678809_acc23f**
+
+- Fixed: Theories/Bimodal/Metalogic/README.md - updated sorry status table
+- Fixed: Theories/Bimodal/Metalogic/Bundle/README.md - updated architecture to match current 15 files
+- Fixed: Boneyard/Metalogic/README.md - updated FiniteCanonicalModel.lean references to BFMCS
+- Fixed: Theories/Bimodal/Automation/README.md - updated implementation status
+- Verified: Tests/BimodalTest/README.md file listings are accurate
+- Verified: 7 actual sorries in Metalogic (all in Domain/DiscreteTimeline.lean)
+
+**Verification**:
+- `grep -rn "sorry$" Theories/Bimodal/Metalogic/` shows 7 actual sorries
+- Bundle directory listing matches README architecture section
+
 ## Cumulative Statistics
 
-- Phases Completed: 1/8
-- Files Modified: 13
-- Files Created: 0
+- Phases Completed: 2/8
+- Files Modified: 17
+- Files Created: 1 (implementation summary)
 
 ## Notes
 
 - FMP/ directory no longer exists; all references updated to point to BFMCS approach instead
 - LogosTest/ directory no longer exists in Tests/; all references removed
 - docs/ subdirectory names are lowercase (user-guide, reference, research, project-info)
-- Typst/LaTeX documentation still has FMP references (not in scope for Phase 1)
+- Typst/LaTeX documentation still has FMP references (not in scope for Phase 1 or 2)
+- Main completeness is sorry-free; only 7 sorries in Domain/DiscreteTimeline.lean
 
 ---
 
