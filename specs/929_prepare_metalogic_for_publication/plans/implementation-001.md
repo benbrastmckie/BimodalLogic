@@ -138,7 +138,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Import Refactoring [IN PROGRESS]
+### Phase 2: Import Refactoring [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal**: Refactor imports to allow archiving Construction.lean and TemporalCoherentConstruction.lean
@@ -182,7 +182,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Boneyard Documentation [NOT STARTED]
+### Phase 3: Boneyard Documentation [IN PROGRESS]
 
 - **Dependencies:** Phase 2
 - **Goal**: Create Boneyard READMEs documenting archived code
