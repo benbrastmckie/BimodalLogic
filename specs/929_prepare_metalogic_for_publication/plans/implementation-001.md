@@ -182,7 +182,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Boneyard Documentation [IN PROGRESS]
+### Phase 3: Boneyard Documentation [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal**: Create Boneyard READMEs documenting archived code
@@ -214,7 +214,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Export File Updates [NOT STARTED]
+### Phase 4: Export File Updates [IN PROGRESS]
 
 - **Dependencies:** Phase 2
 - **Goal**: Update Metalogic.lean export files to reflect current publication path

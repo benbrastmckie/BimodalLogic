@@ -2,62 +2,72 @@ import Bimodal.Metalogic.SoundnessLemmas
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Completeness
 import Bimodal.Metalogic.Decidability
+import Bimodal.Metalogic.StagedConstruction.Completeness
+import Bimodal.Metalogic.Bundle.TruthLemma
+import Bimodal.Metalogic.Bundle.CanonicalConstruction
 
 /-!
 # Bimodal.Metalogic - Soundness, Completeness, and Decidability
 
 Aggregates all metalogic components for bimodal logic TM (Tense and Modality). Provides
-the foundational metalogical results: soundness, completeness infrastructure, and
-tableau-based decision procedures.
+the foundational metalogical results: soundness, completeness, and tableau-based decision
+procedures.
+
+## Main Results
+
+| Component | Status | Key Theorem |
+|-----------|--------|-------------|
+| Soundness | COMPLETE | `soundness : Gamma derives phi -> Gamma valid phi` |
+| Completeness | COMPLETE | `dense_completeness_components_proven` |
+| Decidability | COMPLETE | `decide : Formula -> DecisionResult` |
+
+## Publication-Ready Theorems
+
+The following theorems are sorry-free with zero custom axioms:
+
+- `soundness`: If Gamma derives phi, then phi is valid (Soundness.lean)
+- `dense_completeness_components_proven`: All completeness components proven (StagedConstruction/Completeness.lean)
+- `cantor_iso`: TimelineQuot is order-isomorphic to Q (CantorApplication.lean)
+- `bmcs_truth_lemma`: Truth lemma for BFMCS (Bundle/TruthLemma.lean)
+- `shifted_truth_lemma`: Truth lemma for shift-closed Omega (CanonicalConstruction.lean)
+
+## Axiom Dependencies
+
+Standard Lean axioms only (no custom axioms on publication path):
+- `propext`: Propositional extensionality
+- `Classical.choice`: Classical choice
+- `Quot.sound`: Quotient soundness
+- `Lean.ofReduceBool`: Compiler primitives
+- `Lean.trustCompiler`: Compiler trust
 
 ## Submodules
 
-- `SoundnessLemmas`: Bridge theorems connecting syntax and semantics, including temporal
-  duality preservation and swap_past_future semantic equivalence
-- `Soundness`: Main soundness theorem `Γ ⊢ φ → Γ ⊨ φ` with proofs for all 14 axioms
-  and 7 inference rules
-- `Completeness`: Completeness infrastructure with canonical model construction, maximal
-  consistent sets, and truth lemma scaffolding (proofs in progress)
-- `Decidability`: Tableau-based decision procedure returning proof terms or countermodels,
-  with 8 submodules (SignedFormula, Tableau, Closure, Saturation, ProofExtraction,
-  CountermodelExtraction, DecisionProcedure, Correctness)
-
-## Status
-
-| Component | Status | Details |
-|-----------|--------|---------|
-| Soundness | COMPLETE | 14/14 axioms, 7/7 rules proven |
-| Completeness | PARTIAL | Canonical model defined, proofs pending |
-| Decidability | COMPLETE | Tableau + proof/countermodel extraction |
-
-## Key Theorems
-
-- `soundness : Γ ⊢ φ → Γ ⊨ φ` - Derivability implies validity
-- `decide : Formula → DecisionResult` - Returns Valid(proof) or Invalid(countermodel)
-- `isValid : Formula → Bool` - Boolean validity check
-- `isSatisfiable : Formula → Bool` - Boolean satisfiability check
+- `SoundnessLemmas`: Bridge theorems connecting syntax and semantics
+- `Soundness`: Main soundness theorem with proofs for all 14 axioms and 7 rules
+- `Completeness`: Completeness infrastructure (MCS theory, canonical constructions)
+- `Decidability`: Tableau-based decision procedure with proof/countermodel extraction
+- `StagedConstruction/`: Dense completeness via Cantor-interval construction
+- `Bundle/`: BFMCS infrastructure and truth lemma
 
 ## Usage
 
 ```lean
 import Bimodal.Metalogic
 
-open Bimodal.Metalogic
-open Bimodal.Metalogic.Decidability
-
 -- Soundness theorem
-#check soundness
+#check Bimodal.Metalogic.soundness
+
+-- Completeness (dense temporal)
+#check Bimodal.Metalogic.StagedConstruction.dense_completeness_components_proven
 
 -- Decision procedure
-#check decide
-#check isValid
-#check isSatisfiable
+#check Bimodal.Metalogic.Decidability.decide
 ```
 
 ## References
 
-* [SoundnessLemmas.lean](Metalogic/SoundnessLemmas.lean) - Bridge theorems
+* [StagedConstruction/Completeness.lean](Metalogic/StagedConstruction/Completeness.lean) - Dense completeness
+* [Bundle/TruthLemma.lean](Metalogic/Bundle/TruthLemma.lean) - Truth lemma
 * [Soundness.lean](Metalogic/Soundness.lean) - Soundness proof
-* [Completeness.lean](Metalogic/Completeness.lean) - Completeness infrastructure
-* [Decidability.lean](Metalogic/Decidability.lean) - Decision procedure (8 submodules)
+* [Decidability.lean](Metalogic/Decidability.lean) - Decision procedure
 -/
