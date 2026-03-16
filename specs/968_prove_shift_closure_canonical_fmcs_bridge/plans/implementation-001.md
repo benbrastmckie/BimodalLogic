@@ -70,7 +70,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Port ShiftClosedCanonicalOmega Definition [IN PROGRESS]
+### Phase 1: Port ShiftClosedCanonicalOmega Definition [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Add the shift-closed Omega definition to CanonicalConstruction.lean
@@ -95,7 +95,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Port box_persistent Helper [NOT STARTED]
+### Phase 2: Port box_persistent Helper [COMPLETED]
 
 - **Dependencies**: None (can run in parallel with Phase 1)
 - **Goal**: Add the box_persistent lemma that enables shifted_truth_lemma
@@ -117,7 +117,7 @@ After this implementation:
 
 ---
 
-### Phase 3: Port shifted_truth_lemma [NOT STARTED]
+### Phase 3: Port shifted_truth_lemma [COMPLETED]
 
 - **Dependencies**: Phase 1, Phase 2
 - **Goal**: Prove the shifted truth lemma connecting MCS membership to truth at ShiftClosedCanonicalOmega
@@ -141,7 +141,7 @@ After this implementation:
 
 ---
 
-### Phase 4: Integration and Documentation [NOT STARTED]
+### Phase 4: Integration and Documentation [COMPLETED]
 
 - **Dependencies**: Phase 3
 - **Goal**: Document the bridge, verify zero-debt completion
@@ -217,3 +217,14 @@ The implementation adds new content to CanonicalConstruction.lean without modify
 - The Boneyard code (Representation.lean) is marked DEPRECATED because it uses Int-indexed FMCS. However, the canonical construction in the active codebase ALSO uses Int, so the port is valid.
 - Phase 5 (standard completeness) is optional stretch goal; the core deliverable is shifted_truth_lemma.
 - The key insight from research: shift-closure is mathematically required for soundness of interaction axioms (MF, TF). This cannot be eliminated, only implemented cleanly.
+
+## Progress
+
+**Session: 2026-03-15, sess_1773624117_7f26dd**
+- Added: `ShiftClosedCanonicalOmega` - shift-closed enlargement of CanonicalOmega
+- Added: `shiftClosedCanonicalOmega_is_shift_closed` - proof that the set is shift-closed
+- Added: `canonicalOmega_subset_shiftClosed` - embedding of original Omega
+- Added: `box_persistent` - Box phi at time t implies Box phi at all times s
+- Added: `shifted_truth_lemma` - truth lemma for shift-closed Omega
+- Fixed: `canonical_truth_lemma` temporal cases for reflexive semantics (Task 967)
+- Sorries: 0 (all theorems sorry-free)
