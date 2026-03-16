@@ -52,8 +52,9 @@ technical_debt:
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md)
 
 **Description**: Complete 7 sorry placeholders in `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean` for the discrete canonical timeline quotient, needed for the ℤ-isomorphism in the discrete D-from-syntax pipeline.
 
