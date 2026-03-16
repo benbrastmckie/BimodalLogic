@@ -83,24 +83,21 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 ---
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
-- **Effort**: 2.5 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 2.5-3 hours (2 phases remaining)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md) (staged construction approach)
-- **Plan**: [implementation-001.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
+- **Plan**: [implementation-002.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md) (v2: staged construction finiteness)
+- **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md) (phases 1-3)
 
-**Description**: Complete 7 sorry placeholders in `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean` for the discrete canonical timeline quotient, needed for the ℤ-isomorphism in the discrete D-from-syntax pipeline.
+**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean using staged construction finiteness approach. Phases 1-3 completed (7→3 sorries). Revised plan uses absence of DN to prove finite intervals, deriving discreteness and LocallyFiniteOrder.
 
-**Sorries (lines 179, 187, 200, 212, 213, 218, 231):**
-- `SuccOrder.le_succ` (179): `a ≤ succ(a)` — follows from Classical.choice picking b > a
-- `SuccOrder.max_of_succ_le` (187): `IsMax a` when `succ(a) ≤ a` — contradiction with b > a
-- `SuccOrder.succ_le_of_lt` (200): **KEY** — Coverness from DF axiom: `a < b → succ(a) ≤ b`
-- `PredOrder.pred_le` (212), `PredOrder.min_of_le_pred` (213): symmetric to SuccOrder
-- `PredOrder.le_pred_of_lt` (218): Symmetric coverness from DP axiom
-- `IsSuccArchimedean.exists_succ_iterate_of_le` (231): Finite reachability via succ
+**Remaining Sorries (3)**:
+- `discrete_timeline_lt_succFn` (193): Key discreteness for succ
+- `discrete_timeline_predFn_lt` (251): Key discreteness for pred
+- `IsSuccArchimedean.exists_succ_iterate_of_le` (296): Finite reachability
 
-**Root cause**: `succ_le_of_lt` requires extracting the DF frame condition (no strict intermediate MCSs) at the canonical model level. The soundness proof shows DF is valid on the canonical frame, so coverness holds at the MCS level.
+**Revised approach**: DF is trivially valid under reflexive semantics — discreteness derives from staged construction lacking DN (no density intermediates). Finite intervals → GLB = min → `succFn a > a` → LocallyFiniteOrder → IsSuccArchimedean (Mathlib).
 
 ---
 
