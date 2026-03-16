@@ -26,10 +26,11 @@ technical_debt:
 ## Tasks
 
 ### 970. Review metalogic for publication readiness
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 12 hours (10 phases)
+- **Status**: [PLANNED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis)
+- **Plan**: [implementation-001.md](specs/970_review_metalogic_for_publication/plans/implementation-001.md) (10 phases, comprehensive refactor)
 
 **Description**: Systematically review the metalogic to identify redundant definitions requiring bridge theorems or lemmas that can be removed in preference of direct implementation with correct semantic definitions. Simplify the space of defined terms, avoiding aliases or technical debt that could be refactored out. Examples include `bmcs_truth_lemma` and related artifacts from the laborious process of establishing representation and completeness theorems. Ensure all major theorems take mathematically standard forms relative to the provided semantics.
 
@@ -37,7 +38,7 @@ technical_debt:
 
 ### 953. Refactor proof system to bilateral system
 - **Effort**: 55-90 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [research-001.md](specs/953_refactor_proof_system_to_bilateral/reports/research-001.md)
@@ -50,7 +51,7 @@ technical_debt:
 
 ### 949. Update Demo.lean for current bimodal logic state
 - **Effort**: Small (~2 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/949_update_demo_lean_bimodal_logic/reports/research-001.md)
 
