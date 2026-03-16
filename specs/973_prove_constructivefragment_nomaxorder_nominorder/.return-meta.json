@@ -1,39 +1,33 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Import conflict: CanonicalIrreflexivityAxiom import breaks earlier proofs in ConstructiveFragment.lean",
-  "started_at": "2026-03-16T12:00:00Z",
+  "status": "researched",
+  "started_at": "2026-03-16T10:00:00Z",
+  "completed_at": "2026-03-16T10:45:00Z",
   "artifacts": [
     {
-      "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md",
-      "type": "summary",
-      "summary": "Documents import conflict blocker preventing NoMaxOrder/NoMinOrder proofs"
+      "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-003.md",
+      "type": "research",
+      "summary": "Import conflict root cause analysis and solution recommendations. The elaboration-order sensitivity bug is fixable by hardening proofs with explicit type annotations. Recommended Solution 1: add 'generalizing M2' and explicit arguments to induction hypothesis applications."
     }
   ],
   "partial_progress": {
-    "stage": "proof_blocked_by_import",
-    "details": "Proof logic verified via lean-lsp, but importing CanonicalIrreflexivityAxiom causes elaboration failures in unrelated encode_determines proof at lines 201, 215, 230, 240",
-    "phases_completed": 0,
-    "phases_total": 3
+    "stage": "completed",
+    "details": "Research complete: identified root cause (diamond dependency causing elaboration order sensitivity), recommended Solution 1 (harden proofs), provided implementation plan"
   },
-  "errors": [
-    {
-      "type": "import_conflict",
-      "message": "Importing Bimodal.Metalogic.Canonical.CanonicalIrreflexivityAxiom causes elaboration failures in ConstructiveReachable.encode_determines (lines 201, 215) and Countable instance (lines 230, 240)",
-      "recoverable": false,
-      "recommendation": "Investigate why the import affects elaboration of unrelated proofs. Options: (1) Add explicit type annotations to encode_determines, (2) Move NoMaxOrder/NoMinOrder to separate file, (3) Restructure imports"
-    }
-  ],
   "metadata": {
-    "session_id": "sess_1773682669_6061b2",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773684416_ef3bdc",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "phases_completed": 0,
-    "phases_total": 3
-  },
-  "completion_data": {
-    "completion_summary": "BLOCKED: Import conflict prevents proof completion. CanonicalIrreflexivityAxiom import breaks earlier encode_determines proof in same file.",
-    "roadmap_items": []
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "key_findings": {
+      "root_cause": "Diamond import dependency between CanonicalFMCS and CanonicalIrreflexivity chains causes elaboration order sensitivity in induction hypothesis type inference",
+      "why_discretetimeline_works": "Imports CanonicalIrreflexivityAxiom directly without CanonicalFMCS chain, avoiding the diamond",
+      "solution": "Add 'generalizing M2' clause to induction and explicit type annotations to ih applications",
+      "effort_estimate": "2.5-3 hours to unblock and complete both proofs"
+    },
+    "cross_task_impact": {
+      "task_974": "Unrelated - its sorries are about DF discreteness property, not imports",
+      "task_977": "Phase 4 depends on 973; will be unblocked once 973 completes",
+      "task_978": "Typeclass architecture could eventually eliminate this class of issues"
+    }
   }
 }

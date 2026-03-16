@@ -84,7 +84,7 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: TBD (requires architectural decision)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis)
 - **Plan**: [implementation-002.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md) (v2: Phase 4 BLOCKED — requires new plan)
@@ -105,19 +105,20 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 ---
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
-- **Effort**: 1.5 hours (3 phases)
-- **Status**: [BLOCKED]
+- **Effort**: 2.5-3 hours (5 phases, revised)
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md), [research-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md) (blocker resolved)
+- **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md), [research-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md), [research-003.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-003.md) (import conflict resolution)
 - **Plan**: [implementation-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md) (v2: corrected phase markers)
 - **Summary**: [implementation-summary-20260316.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/summaries/implementation-summary-20260316.md)
-- **Blocked on**: Import conflict - adding CanonicalIrreflexivityAxiom import breaks encode_determines proof
 
 **Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 581 and 586.
 
 **Sorries:**
 - `NoMaxOrder.exists_gt` (581): Every quotient element has a strictly greater element
 - `NoMinOrder.exists_lt` (586): Every quotient element has a strictly lesser element
+
+**Import Conflict Resolution** (research-003): Adding `CanonicalIrreflexivityAxiom` import causes elaboration-order sensitivity errors in `encode_determines` due to diamond dependency. **Fix**: Harden proofs with explicit type annotations (`generalizing M₂` clause, explicit ih arguments).
 
 **Proof strategy**: Use seriality witnesses (F(¬⊥) → forward witness, P(¬⊥) → backward witness). Show witnesses are **strictly** ordered in the antisymmetrization quotient using `canonicalR_strict` from `CanonicalIrreflexivityAxiom.lean`. The pattern is identical to the already sorry-free `NoMaxOrder`/`NoMinOrder` in `DiscreteTimeline.lean` (lines 247–285) — port that proof structure to `ConstructiveQuotient`.
 

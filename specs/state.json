@@ -77,13 +77,13 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T17:56:38Z",
-      "session_id": "sess_1742181000_r9l4s",
+      "last_updated": "2026-03-16T18:11:02Z",
+      "session_id": "sess_1742183000_p7k2m",
       "researched": "2026-03-16T17:56:38Z",
       "blocked_on": "Architectural issue: buildStagedTimeline adds density intermediates via DN axiom; no discrete construction exists",
       "blocked_reason": "Phase 4 blocked: staged construction always adds density witnesses, making discreteness proofs impossible without new infrastructure (quotient collapse proof, discrete construction, or alternative proof strategy)",
@@ -122,14 +122,14 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T17:58:53Z",
-      "session_id": "sess_1773682669_6061b2",
-      "researched": "2026-03-16T09:15:00Z",
+      "last_updated": "2026-03-16T18:45:00Z",
+      "session_id": "sess_1773684416_ef3bdc",
+      "researched": "2026-03-16T18:45:00Z",
       "artifacts": [
         {
           "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md",
@@ -140,6 +140,11 @@
           "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md",
           "type": "research",
           "summary": "Blocker resolved (task 972 complete), verified lemma names and goal states, corrected proof sketches"
+        },
+        {
+          "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-003.md",
+          "type": "research",
+          "summary": "Import conflict root cause analysis: elaboration-order sensitivity due to diamond dependency. Solution: harden proofs with explicit type annotations (2.5-3h effort)"
         },
         {
           "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md",
@@ -153,8 +158,7 @@
         }
       ],
       "planned": "2026-03-16T17:36:25Z",
-      "started": "2026-03-16T17:38:09Z",
-      "blocked_on": "Import conflict: CanonicalIrreflexivityAxiom import breaks earlier encode_determines proof in ConstructiveFragment.lean"
+      "started": "2026-03-16T17:38:09Z"
     },
     {
       "project_number": 971,
