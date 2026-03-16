@@ -152,7 +152,7 @@ Tracked in Tasks 136-138, 261.
 
 Despite limitations, the following are fully functional:
 
-- ✅ All 14 axiom schemas
+- ✅ All 21 axiom schemas (base/dense/discrete layers)
 - ✅ All 7 inference rules
 - ✅ Full soundness proof
 - ✅ Task frame semantics

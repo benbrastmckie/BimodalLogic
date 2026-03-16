@@ -18,7 +18,7 @@ with linear temporal logic.
 
 - `Bimodal.Syntax`: Formula type with 6 primitives (atom, bot, imp, box, all_past, all_future)
   plus derived operators and context types
-- `Bimodal.ProofSystem`: Hilbert-style proof system with 14 axiom schemata and 7 inference rules
+- `Bimodal.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete) and 7 inference rules
 - `Bimodal.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
 - `Bimodal.Metalogic`: Soundness theorem, completeness infrastructure, and tableau decision procedure
 - `Bimodal.Theorems`: Derived theorems (6 modules: Combinators, Propositional, ModalS5, ModalS4,

@@ -1056,7 +1056,7 @@ example (p : Formula) : ⊢ (p.box).imp p := by
 
 **Algorithm**:
 1. Extract goal type and validate it's a `DerivationTree Γ φ` goal
-2. Try axiom matching against all 14 axiom schemata
+2. Try axiom matching against all 21 axiom schemata
 3. Try assumption matching if formula is in context
 4. Try modus ponens decomposition
 5. Try modal K rule (reduce □Γ ⊢ □φ to Γ ⊢ φ)

@@ -83,13 +83,23 @@ imported by other projects.
 
 ## Proof System Overview
 
-### Axiom Schemata (14 total)
+### Axiom Schemata (21 total)
+
+The axiom system is organized into three layers based on frame conditions:
+
+| Layer | Axioms | Frame Condition |
+|-------|--------|-----------------|
+| Base (17) | See below | Linear temporal order |
+| Dense (1) | DN (`Fφ → FFφ`) | DenselyOrdered |
+| Discrete (3) | DF, F-seriality, P-seriality | SuccOrder/NoMaxOrder/NoMinOrder |
+
+#### Base Axioms (17)
 
 | Category | Axioms | Description |
 |----------|--------|-------------|
 | Propositional | K, S, EFQ, Peirce | Classical propositional logic |
 | Modal (S5) | T (`□φ → φ`), 4 (`□φ → □□φ`), B (`φ → □◇φ`), 5 (`◇□φ → □φ`), K (`□(φ→ψ) → (□φ→□ψ)`) | Reflexive, transitive, symmetric |
-| Temporal | K (`G(φ→ψ) → (Gφ→Gψ)`), 4 (`Gφ → GGφ`), A (`φ → GPφ`), L (`△φ → GHφ`) | Linear temporal structure |
+| Temporal | K (`G(φ→ψ) → (Gφ→Gψ)`), 4 (`Gφ → GGφ`), T-F (`Gφ → φ`), T-P (`Hφ → φ`), A (`φ → GPφ`), L (`△φ → GHφ`), Lin | Linear temporal structure |
 | Interaction | MF (`□φ → □Gφ`), TF (`□φ → G□φ`) | Modal-temporal bridge |
 
 ### Inference Rules (7 total)
@@ -150,7 +160,7 @@ For Bimodal-specific guides and references, see [docs/](docs/README.md):
   - Derived operators (neg, top, or, and, dia, etc.)
 
 - **ProofSystem/**: Axioms and derivation trees
-  - 14 TM axiom schemata (propositional + modal + temporal + interaction)
+  - 21 TM axiom schemata organized into base (17), dense (1), and discrete (3) layers
   - 7 inference rules as `DerivationTree` constructors
   - Derivation trees as inductive `Type` (not `Prop`)
   - Computable `height` function for well-founded recursion
@@ -247,7 +257,7 @@ Bimodal is **production-ready** with complete metalogic verification.
 | Layer | Component | Status |
 |-------|-----------|--------|
 | 0 | Syntax | Complete |
-| 1 | ProofSystem | Complete (14 axioms, 7 rules) |
+| 1 | ProofSystem | Complete (21 axioms, 7 rules) |
 | 2 | Semantics | Complete (TaskFrame, TaskModel, Truth) |
 | 3 | Metalogic | **Complete** (Soundness, Completeness, Deduction, Decidability) |
 | 4 | Theorems | Complete (P1-P6 perpetuity principles) |

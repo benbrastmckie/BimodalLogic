@@ -3,14 +3,23 @@ import Bimodal.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 17 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 21 axiom schemata for bimodal logic TM (Tense and Modality).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 17 axiom constructors: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`,
-  `modal_b`, `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_t_future`,
+- 21 axiom constructors organized into three categories:
+  - **Base axioms** (17): Valid on all linear orders (no special frame conditions)
+  - **Dense extension** (1): `density` - requires DenselyOrdered
+  - **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` - require SuccOrder/NoMaxOrder/NoMinOrder
+
+## Axiom Constructors
+
+- Base: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`, `modal_b`,
+  `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_t_future`,
   `temp_t_past`, `temp_a`, `temp_l`, `modal_future`, `temp_future`, `temp_linearity`
+- Dense: `density`
+- Discrete: `discreteness_forward`, `seriality_future`, `seriality_past`
 
 ## Axiom Schemata
 
@@ -61,8 +70,19 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM.
 
-A formula `φ` is an axiom if it matches one of the 17 axiom schema patterns.
+A formula `φ` is an axiom if it matches one of the 21 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
+
+The axioms are organized into three categories based on frame conditions:
+- **Base axioms** (17): Valid on all frames with linear temporal order
+- **Dense extension** (1): `density` - valid on densely ordered frames
+- **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` -
+  valid on discrete ordered frames with SuccOrder/NoMaxOrder/NoMinOrder
+
+Classification predicates:
+- `isBase`: True for base axioms (neither density nor discreteness-specific)
+- `isDenseCompatible`: True for axioms valid on dense frames (excludes `discreteness_forward`)
+- `isDiscreteCompatible`: True for axioms valid on discrete frames (excludes `density`)
 -/
 inductive Axiom : Formula → Type where
   /--

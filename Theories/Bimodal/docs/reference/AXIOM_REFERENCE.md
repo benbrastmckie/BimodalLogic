@@ -4,14 +4,29 @@ Complete reference for TM (Tense and Modality) axiom schemas.
 
 ## Axiom Categories
 
-TM logic uses 14 axiom schemas organized into categories:
+TM logic uses 21 axiom schemas organized into three layers:
 
-| Category | Count | Purpose |
-|----------|-------|---------|
-| Propositional | 3 | Classical propositional logic |
-| Modal | 4 | Necessity and possibility |
-| Temporal | 4 | Past and future operators |
-| Interaction | 3 | Modal-temporal combinations |
+| Layer | Count | Description |
+|-------|-------|-------------|
+| Base | 17 | Valid on all linear temporal frames |
+| Dense Extension | 1 | Valid on densely ordered frames |
+| Discrete Extension | 3 | Valid on discrete ordered frames |
+
+### Base Axiom Categories
+
+| Category | Axioms | Purpose |
+|----------|--------|---------|
+| Propositional | K, S, EFQ, Peirce | Classical propositional logic |
+| Modal S5 | T, 4, B, 5-collapse, K | Necessity and possibility (S5) |
+| Temporal | K, 4, T-F, T-P, A, L, Lin | Past and future operators |
+| Interaction | MF, TF | Modal-temporal combinations |
+
+### Extension Axioms
+
+| Extension | Axiom | Frame Condition |
+|-----------|-------|-----------------|
+| Dense | DN (Fφ → FFφ) | DenselyOrdered |
+| Discrete | DF, F-seriality, P-seriality | SuccOrder/NoMaxOrder/NoMinOrder |
 
 ## Propositional Axioms
 

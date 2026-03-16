@@ -42,7 +42,7 @@ Standard Lean axioms only (no custom axioms on publication path):
 ## Submodules
 
 - `SoundnessLemmas`: Bridge theorems connecting syntax and semantics
-- `Soundness`: Main soundness theorem with proofs for all 14 axioms and 7 rules
+- `Soundness`: Main soundness theorem with proofs for all 21 axioms and 7 rules
 - `Completeness`: Completeness infrastructure (MCS theory, canonical constructions)
 - `Decidability`: Tableau-based decision procedure with proof/countermodel extraction
 - `StagedConstruction/`: Dense completeness via Cantor-interval construction
