@@ -41,13 +41,13 @@
     {
       "project_number": 968,
       "project_name": "prove_shift_closure_canonical_fmcs_bridge",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Prove shift-closure of canonical FMCS families (CanonicalOmega is ShiftClosed) and bridge the sorry-free BFMCS truth lemma to standard semantics. Two theorems: (1) FMCS shift-closure — fam_shift(t) := fam(t + Δ) is an FMCS, trivial by translation invariance; (2) BFMCS-to-standard bridge — construct WorldHistories from FMCS families and show bmcs_truth_at ↔ truth_at, connecting existing BFMCS completeness to semantic_consequence. Depends on canonical task relation from task 956.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-16T01:30:00Z",
-      "session_id": "sess_1773623046_07f34d",
+      "last_updated": "2026-03-16T01:15:45Z",
+      "session_id": "sess_1773623549_390b68",
       "artifacts": [
         {
           "path": "specs/0_shift_closure_research/reports/research-001.md",
@@ -63,13 +63,19 @@
           "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md",
           "type": "research",
           "summary": "Bridge theorem necessity analysis: bmcs_truth_at already bypassed by CanonicalConstruction.lean; ShiftClosed Omega mathematically required; port shifted_truth_lemma pattern from Boneyard/IntRepresentation/Representation.lean"
+        },
+        {
+          "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan: FMCS shift infrastructure, ShiftClosedCanonicalOmega, box_persistent, shifted_truth_lemma, completeness theorems"
         }
       ],
       "dependencies": [
         967,
         969
       ],
-      "researched": "2026-03-16T01:30:00Z"
+      "researched": "2026-03-16T01:30:00Z",
+      "planned": "2026-03-16T01:15:45Z"
     },
     {
       "project_number": 967,

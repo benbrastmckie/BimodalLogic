@@ -46,7 +46,8 @@ technical_debt:
 
 ### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
+- **Plan**: [specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md]
 - **Language**: lean
 - **Priority**: high
 - **Research**: [specs/0_shift_closure_research/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md]

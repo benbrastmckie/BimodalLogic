@@ -1,16 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Bridge theorems cannot be fully eliminated but can be minimized. CanonicalConstruction.lean already bypasses bmcs_truth_at with a direct truth lemma. The remaining bridge (shifted_truth_lemma) extends this to ShiftClosedCanonicalOmega, which is mathematically required for validity. Implementation path: port shift-closure pattern from Boneyard/IntRepresentation/Representation.lean to active codebase.",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md",
-      "summary": "Analysis of bridge theorem necessity. Key finding: bmcs_truth_at is already bypassed; ShiftClosed Omega is mathematically required; port Boneyard shifted_truth_lemma pattern."
+      "type": "plan",
+      "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md",
+      "summary": "5-phase implementation plan to port shift-closure infrastructure from Boneyard to active CanonicalConstruction.lean"
     }
   ],
+  "next_steps": "Run /implement 968 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773623046_07f34d",
-    "duration_seconds": 600,
-    "agent_type": "lean-research-agent"
+    "session_id": "sess_1773623549_390b68",
+    "agent_type": "planner-agent",
+    "duration_seconds": 420,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6
   }
 }
