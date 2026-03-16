@@ -126,8 +126,8 @@
         977
       ],
       "created": "2026-03-16T17:29:12Z",
-      "last_updated": "2026-03-16T22:30:20Z",
-      "session_id": "sess_1773700072_15175",
+      "last_updated": "2026-03-16T22:57:06Z",
+      "session_id": "sess_1773701724_28688",
       "researched": "2026-03-16T22:23:23Z",
       "artifacts": [
         {
@@ -136,12 +136,12 @@
           "summary": "Research report with typeclass-based frame condition architecture recommendations"
         },
         {
-          "path": "specs/978_refactor_tm_typeclass_frame_conditions/plans/implementation-001.md",
+          "path": "specs/978_refactor_tm_typeclass_frame_conditions/plans/implementation-002.md",
           "type": "plan",
-          "summary": "5-phase implementation plan for typeclass-based frame condition architecture"
+          "summary": "6-phase implementation plan (v2: includes completeness wiring, task 979 debt documented)"
         }
       ],
-      "planned": "2026-03-16T22:30:20Z"
+      "planned": "2026-03-16T22:57:06Z"
     },
     {
       "project_number": 977,
