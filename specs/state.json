@@ -8,19 +8,27 @@
     {
       "project_number": 984,
       "project_name": "review_docs_remove_claude_dir_references",
-      "status": "researching",
+      "status": "researched",
       "language": "general",
       "created": "2026-03-16T23:44:55Z",
-      "last_updated": "2026-03-16T23:53:01Z",
-      "session_id": "sess_1773705166_133169608"
+      "last_updated": "2026-03-16T23:55:39Z",
+      "session_id": "sess_1773705166_133169608",
+      "researched": "2026-03-16T23:55:39Z",
+      "artifacts": [
+        {
+          "path": "specs/984_review_docs_remove_claude_dir_references/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report identifying 7 documentation files with 18 .claude/ references requiring updates"
+        }
+      ]
     },
     {
       "project_number": 983,
       "project_name": "review_decidability_fmp_completeness",
-      "status": "planning",
+      "status": "planned",
       "language": "logic",
       "created": "2026-03-16T23:34:54Z",
-      "last_updated": "2026-03-16T23:53:19Z",
+      "last_updated": "2026-03-16T23:55:45Z",
       "session_id": "sess_1773705186_445585",
       "researched": "2026-03-16T23:46:09Z",
       "artifacts": [
@@ -28,8 +36,14 @@
           "path": "specs/983_review_decidability_fmp_completeness/reports/research-001.md",
           "type": "research",
           "summary": "Team research: 3 teammates, FMP/decidability gap analysis with filtration roadmap"
+        },
+        {
+          "path": "specs/983_review_decidability_fmp_completeness/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for FMP formalization and decidability completeness"
         }
-      ]
+      ],
+      "planned": "2026-03-16T23:55:45Z"
     },
     {
       "project_number": 982,

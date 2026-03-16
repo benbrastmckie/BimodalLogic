@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-16T10:00:00Z",
+  "completed_at": "2026-03-16T10:15:00Z",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/984_review_docs_remove_claude_dir_references/reports/research-001.md",
+      "summary": "Research report identifying 7 documentation files with 18 .claude/ references requiring updates"
+    }
+  ],
+  "next_steps": "Run /plan 984 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1773705166_133169608",
+    "agent_type": "general-research-agent",
+    "duration_seconds": 300,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "general-research-agent"],
+    "findings_count": 7
+  }
+}

@@ -26,17 +26,21 @@ technical_debt:
 ## Tasks
 ### 984. Review and revise documentation to remove `.claude/` directory references
 - **Effort**: small
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: general
+- **Research**: [research-001.md](specs/984_review_docs_remove_claude_dir_references/reports/research-001.md)
 
 **Description**: Review and revise all documentation to remove references to the `.claude/` directory (now gitignored), while preserving references to Claude Code itself.
 
+**Research Summary**: Found 7 documentation files with 18 `.claude/` references. Files affected: CLAUDE_CODE.md (5), COMMANDS.md (4), MAINTENANCE.md (4), STANDARDS.md (4), hub.md (1). Special case: claude-directory-export.md (75K-line snapshot requiring owner decision).
+
 
 ### 983. Review decidability results and FMP for publication
-- **Effort**: 40-61 hours (4 sub-tasks)
-- **Status**: [PLANNING]
+- **Effort**: 45 hours (8 phases)
+- **Status**: [PLANNED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team: FMP/decidability gap analysis)
+- **Plan**: [implementation-001.md](specs/983_review_decidability_fmp_completeness/plans/implementation-001.md) (8 phases: FMP filtration + decidability completeness)
 
 **Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.
 
