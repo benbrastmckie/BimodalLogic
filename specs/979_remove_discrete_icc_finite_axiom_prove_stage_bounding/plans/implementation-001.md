@@ -1,7 +1,7 @@
 # Implementation Plan: Task #979
 
 - **Task**: 979 - remove_discrete_icc_finite_axiom_prove_stage_bounding
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 5-7 hours
 - **Dependencies**: Task 974 [COMPLETED]
 - **Research Inputs**:
@@ -82,7 +82,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Locate and Analyze DF Frame Condition Infrastructure [NOT STARTED]
+### Phase 1: Locate and Analyze DF Frame Condition Infrastructure [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Understand existing DF soundness proof and determine extraction path
@@ -108,7 +108,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Extract DF Frame Condition at MCS Level [NOT STARTED]
+### Phase 2: Extract DF Frame Condition at MCS Level [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove the covering lemma for CanonicalR using DF soundness
