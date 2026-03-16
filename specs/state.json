@@ -77,13 +77,13 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "partial",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T19:30:00Z",
-      "session_id": "sess_1742184000_t5n8w",
+      "last_updated": "2026-03-16T18:40:14Z",
+      "session_id": "sess_1773686383_q7r2k",
       "researched": "2026-03-16T17:56:38Z",
       "blocked_on": "Pre-existing build errors in DurationTransfer.lean block verification of DiscreteTimeline.lean",
       "blocked_reason": "Phase 6 blocked: DurationTransfer.lean has type class instance resolution failures (IsOrderedAddMonoid, Countable) and type mismatch errors in ratAddCommGroup/intAddCommGroup. These are pre-existing issues unrelated to task 974.",
@@ -112,6 +112,11 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md",
           "type": "plan",
           "summary": "8-phase implementation plan for discrete staged construction approach (Option B)"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md",
+          "type": "research",
+          "summary": "DurationTransfer.lean has 7 API-level errors blocking DiscreteTimeline. Fix bundled with task 977. 3 DiscreteTimeline sorries addressable after DT fix."
         }
       ],
       "planned": "2026-03-16T18:14:22Z",
@@ -123,13 +128,13 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T18:31:42Z",
-      "session_id": "sess_1773685680_d2e1e1",
+      "last_updated": "2026-03-16T18:34:20Z",
+      "session_id": "sess_1773686041_712a02",
       "researched": "2026-03-16T18:45:00Z",
       "artifacts": [
         {
@@ -159,7 +164,7 @@
         }
       ],
       "planned": "2026-03-16T18:31:42Z",
-      "started": "2026-03-16T17:38:09Z"
+      "started": "2026-03-16T18:34:20Z"
     },
     {
       "project_number": 971,
@@ -454,5 +459,5 @@
     "build_errors": 0,
     "status": "manageable"
   },
-  "last_updated": "2026-03-16T15:35:42Z"
+  "last_updated": "2026-03-16T19:45:00Z"
 }
