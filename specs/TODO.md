@@ -1,5 +1,5 @@
 ---
-next_project_number: 972
+next_project_number: 973
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -25,6 +25,16 @@ technical_debt:
 
 ## Tasks
 
+### 972. Review metalogic naming conventions for improvements
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Created**: 2026-03-16
+
+**Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent, misleading, or redundant naming conventions. The goal is not wholesale renames but targeted improvements where names are genuinely confusing, inconsistent with surrounding conventions, or misleading about their mathematical content. Note: `temporally_coherent` and `SetMaximalConsistent` are acceptable as-is. Look for names that cause actual confusion when reading proofs or that conflict with standard mathematical terminology.
+
+---
+
 ### 971. Refactor to eliminate bmcs_truth_at layer
 - **Effort**: 5 hours (8 phases)
 - **Status**: [COMPLETED]
@@ -38,16 +48,14 @@ technical_debt:
 ---
 
 ### 970. Review metalogic for publication readiness
-- **Effort**: 10 hours (11/12 phases complete; phase 9 deferred)
-- **Status**: [PARTIAL]
+- **Effort**: 10 hours (11/12 phases complete)
+- **Status**: [COMPLETED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis) | [research-002.md](specs/970_review_metalogic_for_publication/reports/research-002.md) (phases 5-9 + task 971 coordination)
 - **Plan**: [implementation-004.md](specs/970_review_metalogic_for_publication/plans/implementation-004.md) (v4: remove weak completeness, full naming cleanup incl. SetMaximalConsistent)
-- **Summary**: [implementation-summary-20260315.md](specs/970_review_metalogic_for_publication/summaries/implementation-summary-20260315.md) (11/12 phases; phase 9 deferred)
+- **Summary**: [implementation-summary-20260315.md](specs/970_review_metalogic_for_publication/summaries/implementation-summary-20260315.md) (11/12 phases; phase 9 spun off to task 972)
 
 **Description**: Systematically review the metalogic to identify redundant definitions requiring bridge theorems or lemmas that can be removed in preference of direct implementation with correct semantic definitions. Simplify the space of defined terms, avoiding aliases or technical debt that could be refactored out. Examples include `bmcs_truth_lemma` and related artifacts from the laborious process of establishing representation and completeness theorems. Ensure all major theorems take mathematically standard forms relative to the provided semantics.
-
-**Deferred**: Phase 9 (naming conventions) deferred - `SetMaximalConsistent` rename has 399 occurrences across 45 files, exceeding scope estimates. Recommend dedicated task.
 
 ---
 
