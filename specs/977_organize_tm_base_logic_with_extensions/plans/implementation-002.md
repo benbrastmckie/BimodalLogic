@@ -1,7 +1,7 @@
 # Implementation Plan: Task #977 — Organize TM Base Logic with Extensions (v2)
 
 - **Task**: 977 - Organize TM base logic with extensions
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16-20 hours (8 phases)
 - **Dependencies**: Task 974 (partial, blocked on DurationTransfer) — addressed in Phase 0
 - **Research Inputs**: research-001.md (4-teammate synthesis), research-002.md (plan revision analysis)
@@ -86,7 +86,7 @@ Integrated findings from:
 
 ## Implementation Phases
 
-### Phase 0: Fix DurationTransfer.lean API Errors [NOT STARTED]
+### Phase 0: Fix DurationTransfer.lean API Errors [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Fix 7 API-level errors in DurationTransfer.lean to unblock the discrete pipeline
@@ -113,6 +113,15 @@ DurationTransfer.lean has 7 pre-existing errors preventing compilation:
 **Verification:**
 - `lake build Bimodal.Metalogic.Domain.DurationTransfer` passes
 - `lake build Bimodal.Metalogic.Domain.DiscreteTimeline` passes (may still have sorries, but compiles)
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773687626_568c70**
+- Fixed: `IsOrderedAddMonoid` type arguments - changed from `.toAddZeroClass.toAdd` to `.toAddCommMonoid` and `Preorder T` to `PartialOrder T`
+- Added: Imports for `Mathlib.Algebra.Order.Group.Int`, `Mathlib.Data.Rat.Encodable`, `Mathlib.Algebra.Order.Field.Basic`, `Mathlib.Algebra.Field.Rat`
+- Fixed: Universe level mismatch by constraining `canonicalTaskFrame`, `discreteTaskFrame`, `denseTaskFrame` to `T : Type` instead of `T : Type*`
+- Fixed: `transferIsOrderedAddMonoid` proof to handle both `add_le_add_left` and `add_le_add_right` constructor goals
+- Note: DiscreteTimeline.lean has pre-existing errors from task 974 (sorries), but DurationTransfer.lean compiles successfully
 
 ---
 

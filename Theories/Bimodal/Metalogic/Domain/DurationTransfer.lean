@@ -3,6 +3,10 @@ import Mathlib.Algebra.Group.TransferInstance
 import Mathlib.Order.SuccPred.LinearLocallyFinite
 import Mathlib.Order.CountableDenseLinearOrder
 import Mathlib.Algebra.Order.Ring.Rat
+import Mathlib.Algebra.Order.Group.Int
+import Mathlib.Data.Rat.Encodable
+import Mathlib.Algebra.Order.Field.Basic
+import Mathlib.Algebra.Field.Rat
 
 /-!
 # Duration Transfer: Group Structure from Order Isomorphism
@@ -72,25 +76,26 @@ theorem transferIsOrderedAddMonoid
     {T : Type*} {G : Type*} [LinearOrder T] [inst_G_acg : AddCommGroup G] [inst_G_lo : LinearOrder G]
     [inst_G_oam : IsOrderedAddMonoid G]
     (e : T ≃o G) :
-    @IsOrderedAddMonoid T (transferAddCommGroup e).toAddCommMonoid.toAddZeroClass.toAdd
-      (inferInstance : Preorder T) := by
+    @IsOrderedAddMonoid T (transferAddCommGroup e).toAddCommMonoid (inferInstance : PartialOrder T) := by
   letI : AddCommGroup T := transferAddCommGroup e
   constructor
-  intro a b hab c
-  -- Need: a + c ≤ b + c
-  -- The transferred + is: x + y = e.symm (e x + e y)
-  -- So a + c = e.symm (e a + e c) and b + c = e.symm (e b + e c)
-  -- Since e is an OrderIso, e preserves ≤
-  have h1 : e a ≤ e b := e.monotone hab
-  -- G has IsOrderedAddMonoid
-  have h2 : e a + e c ≤ e b + e c := add_le_add_right h1 (e c)
-  -- e.symm preserves ≤
-  have h3 : e.symm (e a + e c) ≤ e.symm (e b + e c) := e.symm.monotone h2
-  -- Now show the transferred additions match
-  -- By definition of Equiv.addCommGroup:
-  -- @HAdd.hAdd T T T ... a c = e.symm (e a + e c)
-  -- This should hold definitionally
-  convert h3 using 1 <;> rfl
+  -- Goal: add_le_add_left: ∀ a b, a ≤ b → ∀ c, a + c ≤ b + c
+  · intro a b hab c
+    -- The transferred + is: x + y = e.symm (e x + e y)
+    -- Since e is an OrderIso, e preserves ≤
+    have h1 : e a ≤ e b := e.monotone hab
+    -- G has IsOrderedAddMonoid, so a ≤ b → a + c ≤ b + c
+    have h2 : e a + e c ≤ e b + e c := IsOrderedAddMonoid.add_le_add_left (e a) (e b) h1 (e c)
+    -- e.symm preserves ≤
+    have h3 : e.symm (e a + e c) ≤ e.symm (e b + e c) := e.symm.monotone h2
+    -- The transferred additions match definitionally
+    convert h3 using 1
+  -- Goal: add_le_add_right: ∀ a b, a ≤ b → ∀ c, c + a ≤ c + b
+  · intro a b hab c
+    have h1 : e a ≤ e b := e.monotone hab
+    have h2 : e c + e a ≤ e c + e b := IsOrderedAddMonoid.add_le_add_right (e a) (e b) h1 (e c)
+    have h3 : e.symm (e c + e a) ≤ e.symm (e c + e b) := e.symm.monotone h2
+    convert h3 using 1
 
 /-!
 ## Section 2: ℤ Transfer (Discrete Case)
@@ -123,8 +128,7 @@ IsOrderedAddMonoid on T from ℤ characterization.
 theorem intIsOrderedAddMonoid
     (T : Type*) [LinearOrder T] [SuccOrder T] [PredOrder T]
     [IsSuccArchimedean T] [NoMaxOrder T] [NoMinOrder T] [Nonempty T] :
-    @IsOrderedAddMonoid T (intAddCommGroup T).toAddCommMonoid.toAddZeroClass.toAdd
-      (inferInstance : Preorder T) :=
+    @IsOrderedAddMonoid T (intAddCommGroup T).toAddCommMonoid (inferInstance : PartialOrder T) :=
   transferIsOrderedAddMonoid (intOrderIso T)
 
 /-!
@@ -158,8 +162,7 @@ IsOrderedAddMonoid on T from Cantor characterization.
 theorem ratIsOrderedAddMonoid
     (T : Type*) [LinearOrder T] [Countable T] [DenselyOrdered T]
     [NoMaxOrder T] [NoMinOrder T] [Nonempty T] :
-    @IsOrderedAddMonoid T (ratAddCommGroup T).toAddCommMonoid.toAddZeroClass.toAdd
-      (inferInstance : Preorder T) :=
+    @IsOrderedAddMonoid T (ratAddCommGroup T).toAddCommMonoid (inferInstance : PartialOrder T) :=
   transferIsOrderedAddMonoid (ratOrderIso T)
 
 /-!
@@ -180,9 +183,11 @@ Build a TaskFrame from a type with AddCommGroup + LinearOrder + IsOrderedAddMono
 
 The WorldState type IS the duration type T (worlds = times in the canonical timeline).
 The task relation is deterministic: `task_rel w d w'` iff `w + d = w'`.
+
+Note: T is restricted to Type (universe 0) because TaskFrame.WorldState : Type.
 -/
 noncomputable def canonicalTaskFrame
-    (T : Type*) [acg : AddCommGroup T] [lo : LinearOrder T] [oam : IsOrderedAddMonoid T] :
+    (T : Type) [acg : AddCommGroup T] [lo : LinearOrder T] [oam : IsOrderedAddMonoid T] :
     TaskFrame T where
   WorldState := T
   task_rel := canonicalTaskRel
@@ -220,9 +225,11 @@ Complete constructions for the two main cases.
 Complete TaskFrame construction for the discrete case.
 Given T with SuccOrder + PredOrder + IsSuccArchimedean + NoMaxOrder + NoMinOrder + Nonempty,
 produce TaskFrame T.
+
+Note: T is restricted to Type (universe 0) because TaskFrame.WorldState : Type.
 -/
 noncomputable def discreteTaskFrame
-    (T : Type*) [LinearOrder T] [SuccOrder T] [PredOrder T]
+    (T : Type) [LinearOrder T] [SuccOrder T] [PredOrder T]
     [IsSuccArchimedean T] [NoMaxOrder T] [NoMinOrder T] [Nonempty T] :
     @TaskFrame T (intAddCommGroup T) (inferInstance) (intIsOrderedAddMonoid T) :=
   @canonicalTaskFrame T (intAddCommGroup T) (inferInstance) (intIsOrderedAddMonoid T)
@@ -231,9 +238,11 @@ noncomputable def discreteTaskFrame
 Complete TaskFrame construction for the dense case.
 Given T with Countable + DenselyOrdered + NoMaxOrder + NoMinOrder + Nonempty,
 produce TaskFrame T.
+
+Note: T is restricted to Type (universe 0) because TaskFrame.WorldState : Type.
 -/
 noncomputable def denseTaskFrame
-    (T : Type*) [LinearOrder T] [Countable T] [DenselyOrdered T]
+    (T : Type) [LinearOrder T] [Countable T] [DenselyOrdered T]
     [NoMaxOrder T] [NoMinOrder T] [Nonempty T] :
     @TaskFrame T (ratAddCommGroup T) (inferInstance) (ratIsOrderedAddMonoid T) :=
   @canonicalTaskFrame T (ratAddCommGroup T) (inferInstance) (ratIsOrderedAddMonoid T)
