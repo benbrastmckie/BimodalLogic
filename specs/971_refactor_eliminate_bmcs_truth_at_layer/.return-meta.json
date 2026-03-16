@@ -2,22 +2,30 @@
   "status": "researched",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-002.md",
-      "summary": "Deep simplification analysis: full elimination of bmcs_truth_at layer, systematic identification of 7 similar simplification opportunities, revised implementation plan for direct use of canonical_truth_lemma"
+      "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-003.md",
+      "type": "research",
+      "summary": "Deep-dive analysis of 7 simplification opportunities: 2 already done (Task 912/970), 1 deferred (Generic D), 1 auto-resolved, 3 confirmed require no porting (0 external usage). Implementation-002.md fully addresses actionable items."
     }
   ],
-  "next_steps": "Run /plan 971 to create implementation plan for full elimination approach",
+  "next_steps": "Proceed with implementation-002.md phases; no plan changes needed",
   "metadata": {
-    "session_id": "sess_1773639025_06fb95",
+    "session_id": "sess_1773639994_9c231b",
     "agent_type": "logic-research-agent",
-    "duration_seconds": 420,
+    "duration_seconds": 480,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "logic-research-agent"],
     "findings_count": 7,
-    "context_files_loaded": ["README.md", "kripke-semantics-overview.md"],
-    "mathlib_lookups_performed": 0,
+    "context_files_loaded": ["research-002.md", "implementation-002.md", "research-001.md"],
+    "opportunities_analyzed": {
+      "5.1_EvalBFMCS": "DONE (Task 912)",
+      "5.2_GenericD": "DEFER to future task",
+      "5.3_DualPaths": "COVERED by impl-002",
+      "5.4_UnusedAccessors": "DONE (Task 970)",
+      "5.5_BoneyardItems": "CORE of impl-002",
+      "5.6_Corollaries": "No port needed (0 usage)",
+      "5.7_DerivedLemmas": "No port needed (0 usage)"
+    },
     "context_extension_tasks": [],
-    "context_candidates_count": 1
+    "context_candidates_count": 0
   }
 }
