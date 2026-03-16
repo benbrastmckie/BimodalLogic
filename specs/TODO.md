@@ -27,7 +27,8 @@ technical_debt:
 
 ### 979. Remove discrete_Icc_finite_axiom and prove stage-bounding lemma
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
+- **Research**: [research-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-001.md) (team: SuccOrder-first approach via DF frame condition)
 - **Language**: lean
 - **Related**: Task 974 (Phase 7b escape valve), research-006.md
 
