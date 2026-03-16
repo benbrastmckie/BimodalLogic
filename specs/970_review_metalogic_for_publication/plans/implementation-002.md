@@ -206,7 +206,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 5: Consolidate Duplicate Theorems [NOT STARTED]
+### Phase 5: Consolidate Duplicate Theorems [PARTIAL]
 
 - **Dependencies:** Phase 4
 - **Goal:** Eliminate duplicate theorem bodies by migrating unique content and removing redundant copies.
@@ -240,7 +240,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 6: Unify asDiamond Definitions [NOT STARTED]
+### Phase 6: Unify asDiamond Definitions [PARTIAL]
 
 - **Dependencies:** Phase 5
 - **Goal:** Eliminate duplicate `asDiamond` definitions by consolidating to a single location.
@@ -265,7 +265,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 7: Clean Internal Scaffolding [NOT STARTED]
+### Phase 7: Clean Internal Scaffolding [PARTIAL]
 
 - **Dependencies:** Phase 6
 - **Goal:** Mark or remove internal scaffolding that exists only for proof development, not as published interface.
@@ -288,7 +288,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 8: Remove Weak/Finite Completeness Variants [NOT STARTED]
+### Phase 8: Remove Weak/Finite Completeness Variants [PARTIAL]
 
 - **Dependencies:** Phase 7
 - **Goal:** Identify and remove or deprecate any weak or finite completeness variants that are not needed.
@@ -315,7 +315,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 9: Improve Naming Conventions [NOT STARTED]
+### Phase 9: Improve Naming Conventions [PARTIAL]
 
 - **Dependencies:** Phase 8
 - **Goal:** Establish and apply consistent naming conventions throughout the metalogic.
@@ -343,7 +343,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 10: Audit Main Theorem Formulations [NOT STARTED]
+### Phase 10: Audit Main Theorem Formulations [COMPLETED]
 
 - **Dependencies:** Phase 9
 - **Goal:** Ensure main theorems (soundness, completeness, representation) are stated in mathematically correct form for publication.
@@ -391,7 +391,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 11: Update Documentation [NOT STARTED]
+### Phase 11: Update Documentation [COMPLETED]
 
 - **Dependencies:** Phase 10
 - **Goal:** Update SORRY_REGISTRY.md and add legacy path markers to deprecated modules.
@@ -429,7 +429,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 12: Final Verification and Summary [NOT STARTED]
+### Phase 12: Final Verification and Summary [COMPLETED]
 
 - **Dependencies:** Phase 11
 - **Goal:** Comprehensive verification that all refactoring goals are met.

@@ -1,10 +1,9 @@
 # Sorry Placeholder Registry
 
-**Last Updated**: 2026-01-15
-**Total Active Placeholders**: 46 (26 in Completeness.lean, 3 in ProofSearch.lean, 17 across other modules)
-**Total Axiom Declarations**: 7 (5 in Completeness.lean for canonical model construction, 2 in Examples)
-**Total Resolved**: 60 (Plan 059 Phase 1: 6 De Morgan laws, Plan 060: diamond_disj_iff + s4_diamond_box_conj + s5_diamond_conj_diamond + k_dist_diamond + biconditional infrastructure, Task 46: 3 DeductionTheorem cases)
-**Note**: Count updated after comprehensive codebase review (sess_1768528304_4parxt) - Found 46 active sorry placeholders in Theories/Bimodal
+**Last Updated**: 2026-03-15
+**Total Active Placeholders (Metalogic)**: 9 (7 in Domain/DiscreteTimeline.lean, 2 in Canonical/ConstructiveFragment.lean)
+**Total Axiom Declarations (Metalogic)**: 0
+**Note**: Count updated after Task 970 refactoring - TemporalCoherentConstruction.lean (2 sorries) archived to Boneyard
 
 This document tracks `sorry` placeholders (unproven theorems) and `axiom` declarations (unproven lemmas) in the Bimodal codebase. It provides resolution context, effort estimates, and cross-references to related tasks.
 
@@ -122,25 +121,31 @@ P5 is derived as `theorem perpetuity_5 := imp_trans (perpetuity_4 phi) (persiste
 - **s4_diamond_box_conj**: `|- (diamond A and box B) -> diamond(A and box B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_4)
 - **s5_diamond_conj_diamond**: `|- diamond(A and diamond B) <-> (diamond A and diamond B)` [COMPLETE] (resolved 2025-12-09 using k_dist_diamond + modal_5)
 
-### Bimodal/Metalogic/Completeness.lean (26 sorry, 5 axioms)
+### Bimodal/Metalogic/Completeness.lean (0 sorry, 0 axioms)
 
-**Active Sorry Placeholders** (26 total):
-- **Lines 1341-1391**: Multiple placeholder proofs for canonical model construction
-- **Lines 1653-1794**: Truth lemma and related proofs with sorry gaps
-- **Lines 1837-2507**: Various auxiliary lemmas with sorry placeholders
-- **Lines 2612-2662**: Extension lemmas with sorry
-- **Lines 3332-3694**: Duration-based infrastructure with sorry gaps
-- **Context**: Main completeness theorem proving equivalence between provability and validity
-- **Dependencies**: Requires systematic resolution of canonical model construction (tasks 132-135)
-- **Status**: Major component requiring comprehensive work
-- **Estimate**: 20+ hours total (tasks 132-135 plus additional infrastructure)
+**Status**: COMPLETE - No sorries or axioms in active codebase.
 
-**Active Axiom Declarations** (5 total):
-1. **Line 1585**: `someWorldState_exists` - Existence of maximal consistent set
-2. **Line 2786**: `anotherWorldState_exists` - Existence of distinct maximal consistent set
-3. **Line 3569**: `truth_lemma` - Truth lemma for canonical worlds
-4. **Line 3600**: `weak_completeness` - Weak completeness theorem
-5. **Line 3620**: `strong_completeness` - Strong completeness theorem
+The old monolithic Completeness.lean has been refactored into:
+- `Bundle/TruthLemma.lean`: Sorry-free truth lemma
+- `Bundle/CanonicalConstruction.lean`: Sorry-free canonical construction
+- `StagedConstruction/Completeness.lean`: Dense completeness components (sorry-free)
+- `Core/MCSProperties.lean`: MCS theory (sorry-free)
+
+### Bimodal/Metalogic/Canonical/ConstructiveFragment.lean (2 sorry)
+
+**Active Sorry Placeholders** (2 total):
+- **Line 580**: `forward_reachable_transitive` - Transitivity of forward reachability
+- **Line 585**: `backward_reachable_transitive` - Transitivity of backward reachability
+- **Context**: Canonical timeline construction reachability proofs
+- **Status**: Low priority - alternative paths via CanonicalMCS approach
+
+### Bimodal/Metalogic/Domain/DiscreteTimeline.lean (7 sorry)
+
+**Active Sorry Placeholders** (7 total):
+- **Lines 179, 187**: `TimelineQuot` SuccOrder instance
+- **Lines 200, 212, 213, 218, 231**: `TimelineQuot` PredOrder/IsSuccArchimedean instances
+- **Context**: Discrete timeline characterization infrastructure
+- **Status**: Not on critical path - dense completeness uses ℚ characterization
 
 ### Bimodal/Automation/ProofSearch.lean (3 documentation examples)
 
