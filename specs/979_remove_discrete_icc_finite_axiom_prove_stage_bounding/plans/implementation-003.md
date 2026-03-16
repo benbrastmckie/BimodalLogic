@@ -1,7 +1,7 @@
 # Implementation Plan: Task #979 (v3)
 
 - **Task**: 979 - remove_discrete_icc_finite_axiom_prove_stage_bounding
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4-6 hours
 - **Dependencies**: Task 974 [COMPLETED], Task 980 [COMPLETED]
 - **Research Inputs**:
@@ -58,16 +58,16 @@ This revised plan takes a time-boxed approach to removing `discrete_Icc_finite_a
 
 ## Implementation Phases
 
-### Phase 1: Verify H(neg bot) Derivability [NOT STARTED]
+### Phase 1: Verify H(neg bot) Derivability [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Check whether `H(neg bot)` is a theorem, confirming research-004 phi=neg_bot path viability
 
 **Tasks:**
-- [ ] Search for existing `H(neg bot)` or `all_past (neg bot)` derivability lemma in proof system
-- [ ] If not found, attempt to prove: `[] derive (Formula.all_past (Formula.neg Formula.bot))`
-- [ ] If derivable, document path: seriality_past axiom gives `P(neg bot)` in every MCS, but `H(neg bot)` requires different reasoning
-- [ ] If NOT derivable, document that phi=neg_bot path is blocked
+- [x] Search for existing `H(neg bot)` or `all_past (neg bot)` derivability lemma in proof system
+- [x] If not found, attempt to prove: `[] derive (Formula.all_past (Formula.neg Formula.bot))`
+- [x] If derivable, document path: seriality_past axiom gives `P(neg bot)` in every MCS, but `H(neg bot)` requires different reasoning
+- [x] If NOT derivable, document that phi=neg_bot path is blocked
 
 **Timing:** 30 minutes
 
@@ -75,9 +75,18 @@ This revised plan takes a time-boxed approach to removing `discrete_Icc_finite_a
 - Clear determination of H(neg bot) derivability status
 - Documentation of implications for covering proof
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773784816_4a7c2e**
+- Verified: `H(neg bot)` IS derivable via `derive_past_necessitation`
+- Path: `neg bot = bot → bot` is derivable via identity combinator (`Bimodal.Theorems.Combinators.identity`)
+- Then: `derive_past_necessitation` (CantorPrereqs.lean:314) derives `H(phi)` from `⊢ phi`
+- Implication: phi=neg_bot path is VIABLE for covering proof attempt
+- Key fact: Every MCS contains `H(neg bot)` since it's a theorem
+
 ---
 
-### Phase 2: Attempt Covering Proof via h_content Duality [NOT STARTED]
+### Phase 2: Attempt Covering Proof via h_content Duality [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Complete proof of `mcs_has_immediate_successor` using h_content duality chain
@@ -123,9 +132,23 @@ By h_content duality chain:
 - Either: `mcs_has_immediate_successor` proof compiles without sorry
 - Or: Detailed documentation of the specific formula/property blocking proof
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773784816_4a7c2e**
+- BLOCKED: No complete proof path found after extensive exploration
+- Verified: h_content duality infrastructure available (g_content_subset_implies_h_content_reverse)
+- Attempted: Using distinguishing formula delta between K and M
+  - delta in K, neg(delta) in M leads to F(delta) in M, P(neg(delta)) in K
+  - But G(delta) in K just gives delta in W (no contradiction)
+- Attempted: Using DF with phi = neg bot
+  - F(H(neg bot)) in M, but this can be witnessed by K or W - no constraint on intermediates
+- Gap identified: DF/DP create existence obligations, but cannot force witnesses to be specific MCSes
+- This matches the gap documented in research-003.md and research-004.md
+- Proceeding to Phase 3 (density template study)
+
 ---
 
-### Phase 3: Study Density Template for Covering Inversion [NOT STARTED]
+### Phase 3: Study Density Template for Covering Inversion [COMPLETED]
 
 - **Dependencies:** Phase 2 (only if Phase 2 blocked)
 - **Goal:** Attempt covering proof by inverting density proof structure
@@ -149,9 +172,24 @@ By h_content duality chain:
 - Either: New proof approach found, proceed to proof attempt
 - Or: Document why density template doesn't invert for covering
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773784816_4a7c2e**
+- Studied DensityFrameCondition.lean (lines 107-240)
+- Density proof structure understood:
+  1. NOT CanonicalR(M', M) gives distinguishing formula delta
+  2. DN axiom provides F(F(neg delta)) from F(neg delta)
+  3. Construct intermediate W1, then V via forward witness
+  4. Temporal linearity places V between M and M'
+- Key insight: Density proof uses NEGATIVE constraint to get delta, then DN to CONSTRUCT intermediate
+- Covering proof has POSITIVE constraints (CanonicalR M K, CanonicalR K W), needs to EXCLUDE intermediate
+- Structural asymmetry: existence vs exclusion proofs are fundamentally different
+- No direct inversion found - density template does not provide covering path
+- Proceeding to Phase 4 (Decision Point - Fallback)
+
 ---
 
-### Phase 4: Decision Point and Fallback [NOT STARTED]
+### Phase 4: Decision Point and Fallback [COMPLETED]
 
 - **Dependencies:** Phase 2, Phase 3 (if attempted)
 - **Goal:** Make final decision on axiom handling based on proof attempt outcomes
@@ -186,9 +224,21 @@ Phase 2 success?
 - `lake build` passes
 - state.json updated appropriately
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773784816_4a7c2e**
+- Executed fallback path (Phase 2 and 3 both blocked)
+- Updated axiom docstring with research-004 insights (h_content duality, attempted approaches)
+- Removed mcs_has_immediate_successor theorem with sorry (dead code)
+- Replaced covering lemma section with comprehensive "Open Subproblem" documentation
+- Verified `lake build` passes: Build completed successfully (930 jobs)
+- Verified no sorries in DiscreteTimeline.lean
+- Verified 1 axiom remains: discrete_Icc_finite_axiom (line 316)
+- Axiom retained as documented technical debt per proof-debt-policy.md
+
 ---
 
-### Phase 5: Complete Success Path (Conditional) [NOT STARTED]
+### Phase 5: Complete Success Path (Conditional) [SKIPPED]
 
 - **Dependencies:** Phase 4 (success path chosen)
 - **Goal:** If covering proven, complete axiom removal
@@ -214,7 +264,7 @@ Phase 2 success?
 
 ---
 
-### Phase 6: Final Verification [NOT STARTED]
+### Phase 6: Final Verification [COMPLETED]
 
 - **Dependencies:** Phase 5 (success) or Phase 4 (fallback)
 - **Goal:** Complete verification and documentation
@@ -234,6 +284,13 @@ Phase 2 success?
 - `lake build` passes
 - Summary created
 - TODO.md updated
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773784816_4a7c2e**
+- Full `lake build` verified: 975 jobs completed successfully
+- Implementation summary created: summaries/implementation-summary-20260316.md
+- Task status: PARTIAL (axiom retained as documented debt)
 
 ---
 

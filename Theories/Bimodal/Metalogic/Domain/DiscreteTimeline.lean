@@ -209,91 +209,50 @@ theorem minStage_spec (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
   Nat.find_spec (exists_stage_of_quotient_elem root_mcs root_mcs_proof a)
 
 /-!
-## Covering Lemma: Immediate Successors from DF Frame Condition
+## Covering Lemma: Open Subproblem
 
-The discreteness axiom DF = `(F top and phi and H phi) -> F(H phi)` ensures that
-between any MCS and its forward witness, there is no intermediate MCS. This is
-the key lemma for deriving SuccOrder properties.
+The discreteness axiom DF = `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)` semantically corresponds to
+the existence of immediate successors (SuccOrder). However, extracting the MCS-level
+covering property from DF has proven to be a deep mathematical challenge.
 
-### MCS Covering Relation
+### The Covering Property
 
-An MCS W *covers* M if CanonicalR M W and there is no MCS K strictly between M and W.
-The DF axiom, being in every MCS, constrains the structure to ensure covering.
+An MCS W *covers* M if CanonicalR M W and there is no MCS K strictly between them.
+This is equivalent to W being the immediate successor of M in the quotient order.
 
-### Proof Strategy (from research-003.md)
+### Why This Is Hard
 
-Given serial MCS M with forward witness W:
-1. Suppose K is an intermediate MCS with g_content(M) subset K and g_content(K) subset W
-2. If K != M and K != W, then some formula discriminates K from M or W
-3. DF membership in M constrains what H-formulas can appear in intermediate MCS
-4. This leads to a contradiction, proving no strict intermediate exists
+The DF axiom membership creates `F(H(φ))` obligations in M when `F⊤ ∧ φ ∧ H(φ)` holds,
+but these are existential obligations that can be witnessed by any forward MCS, not
+necessarily the immediate successor. The challenge is bridging:
+
+- **Semantic level**: DF frame condition = immediate successors exist
+- **Syntactic level**: DF membership in MCSes creates F-obligations
+
+The gap is that F-obligations in M don't directly constrain which MCSes can be
+intermediate between M and a given witness W.
+
+### Research Summary (Task 979)
+
+Attempted approaches (all blocked):
+1. **h_content duality chain**: `g_content(M) ⊆ K` implies `h_content(K) ⊆ M`.
+   This constrains H-formulas in intermediates but doesn't create contradictions.
+2. **phi = neg bot**: `H(neg bot)` is derivable, so DF gives `F(H(neg bot)) ∈ M`.
+   But `H(neg bot)` is in every MCS, providing no discriminating power.
+3. **Distinguishing formula**: K ≠ M gives delta with delta ∈ K, neg(delta) ∈ M.
+   This leads to `F(delta) ∈ M` but no contradiction from DF/DP application.
+4. **Density template inversion**: Density proof uses NEGATIVE constraint to CONSTRUCT
+   intermediate; covering proof has POSITIVE constraints and needs to EXCLUDE intermediate.
+   Structural asymmetry prevents direct inversion.
+
+See specs/979_*/reports/research-003.md, research-004.md for detailed analysis.
+
+### Current Status
+
+The covering lemma remains an open subproblem. Interval finiteness is axiomatized
+via `discrete_Icc_finite_axiom` as documented technical debt. The covering lemma
+would allow deriving LocallyFiniteOrder structurally, eliminating this axiom.
 -/
-
-/-- MCS covering relation: W covers M iff W is an immediate successor (no strict intermediate). -/
-def MCS.Covers (M W : Set Formula) : Prop :=
-  CanonicalR M W ∧ ∀ K, SetMaximalConsistent K →
-    CanonicalR M K → CanonicalR K W → K = M ∨ K = W
-
-/-- Every serial MCS has an immediate successor (covering witness).
-
-This is the key lemma connecting DF frame condition to MCS structure. The proof
-requires showing that the forward witness construction yields an immediate successor.
-
-**Proof outline**:
-1. M is serial, so exists F(phi) in M for some phi
-2. Let W = Lindenbaum({phi} union g_content(M)) be the forward witness
-3. W is MCS and CanonicalR M W by canonical_forward_F
-4. For any K with CanonicalR M K and CanonicalR K W:
-   a. If K != M, then exists psi with psi in K but not determined by g_content(M)
-   b. If K != W, then exists chi with chi in W but chi not in K
-   c. DF in M constrains the relationship between H-formulas in K and W
-   d. This leads to contradiction, so K = M or K = W
-
-**PROOF BLOCKED**: The covering lemma requires showing that DF membership constrains
-intermediate MCS structure. This is identified as mathematically deep in research-003.md.
-
-**What we have**:
-- h_MK : g_content(M) ⊆ K
-- h_KW : g_content(K) ⊆ W
-- h_K_ne_M and h_K_ne_W : K differs from both endpoints
-- DF axiom in every MCS: (F⊤ ∧ φ ∧ Hφ) → F(Hφ)
-- g_content_subset_implies_h_content_reverse : g_content(M) ⊆ W → h_content(W) ⊆ M
-
-**The gap**: We cannot derive a contradiction from K being strictly between M and W.
-The DF axiom constrains what formulas are in M, but doesn't directly imply covering.
-
-**Potential approaches tried**:
-1. Use F(H(φ)) in M from DF to constrain W's H-formulas - but this propagates backwards,
-   doesn't constrain intermediate K
-2. Use K != W to find distinguishing formula chi - but chi could be outside g_content
-   structures, so DF doesn't apply
-3. Use K != M to find distinguishing formula psi - same issue
-
-**Recommendation**: This lemma requires additional mathematical insight or a different
-proof strategy. See research-003.md for detailed analysis.
--/
-theorem mcs_has_immediate_successor
-    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (h_serial : ∃ N, CanonicalR M N) :
-    ∃ W, SetMaximalConsistent W ∧ MCS.Covers M W := by
-  -- Get a forward witness via canonical_forward_F
-  -- From seriality_future axiom: F(neg bot) is in every MCS
-  have h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ M := by
-    apply theorem_in_mcs h_mcs
-    exact DerivationTree.axiom [] _ Axiom.seriality_future
-  -- Get the forward witness for F(neg bot)
-  obtain ⟨W, h_W_mcs, h_MW, h_top_in_W⟩ := canonical_forward_F M h_mcs (Formula.neg Formula.bot) h_F_top
-  use W, h_W_mcs
-  constructor
-  · exact h_MW
-  · intro K h_K_mcs h_MK h_KW
-    by_contra h_neither
-    push_neg at h_neither
-    obtain ⟨h_K_ne_M, h_K_ne_W⟩ := h_neither
-    -- BLOCKED: Cannot derive contradiction from K being strictly between M and W
-    -- The DF axiom membership doesn't directly constrain intermediate MCS structure
-    -- See docstring above for detailed analysis
-    sorry
 
 /-!
 ## LocallyFiniteOrder Instance
@@ -320,14 +279,39 @@ See: specs/974_prove_discrete_timeline_succorder_predorder/reports/research-006.
 /-- **AXIOM (Technical Debt)**: Intervals in the discrete timeline are finite.
 
 This axiom captures the discreteness of the timeline constructed without density
-insertion. The proof should follow from:
-1. Stage-bounded interval containment: any `c ∈ Icc a b` has a representative
-   in `discreteStagedBuild (max (minStage a) (minStage b))`
-2. Each stage is a finite set
-3. The quotient map preserves finiteness
+insertion. The proof should follow from the **covering lemma**: showing that the
+DF axiom implies immediate successors exist at the MCS level.
 
-Remediation: Prove the stage-bounding property using the F/P witness structure
-of evenStage and the monotonicity of discreteStagedBuild.
+### Why This Is Axiomatized
+
+The structural proof requires the covering lemma (see section above), which is
+blocked due to the gap between DF axiom membership and MCS covering property.
+Research (Task 979) explored multiple approaches without finding a complete proof.
+
+### Remediation Path
+
+To eliminate this axiom, prove one of:
+1. **Covering lemma**: Every serial MCS has an immediate successor (no intermediate K)
+2. **Stage-bounding**: Any `c ∈ Icc a b` has representative at bounded stage
+3. **Direct interval finiteness**: Via well-foundedness or other structural argument
+
+All three are equivalent; the covering lemma is considered the most natural path
+as it directly corresponds to the DF frame condition.
+
+### Impact
+
+This axiom is used only in `DiscreteTimeline.lean` and does not affect:
+- Dense completeness (uses density axiom DN instead)
+- Core metalogic (soundness, MCS properties)
+- Base TM completeness (no discreteness axioms)
+
+Publication using discrete completeness requires disclosing this axiom.
+
+### References
+
+- specs/979_*/reports/research-003.md - Post-980 analysis
+- specs/979_*/reports/research-004.md - Team math research (h_content duality)
+- specs/974_*/reports/research-006.md - Original stage-bounding analysis
 -/
 axiom discrete_Icc_finite_axiom :
     ∀ (a b : DiscreteTimelineQuot root_mcs root_mcs_proof), (Set.Icc a b).Finite
