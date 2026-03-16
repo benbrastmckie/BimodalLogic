@@ -77,14 +77,14 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T18:40:14Z",
+      "last_updated": "2026-03-16T18:46:08Z",
       "session_id": "sess_1773686383_q7r2k",
-      "researched": "2026-03-16T17:56:38Z",
+      "researched": "2026-03-16T18:46:08Z",
       "blocked_on": "Pre-existing build errors in DurationTransfer.lean block verification of DiscreteTimeline.lean",
       "blocked_reason": "Phase 6 blocked: DurationTransfer.lean has type class instance resolution failures (IsOrderedAddMonoid, Countable) and type mismatch errors in ratAddCommGroup/intAddCommGroup. These are pre-existing issues unrelated to task 974.",
       "artifacts": [

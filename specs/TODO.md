@@ -84,7 +84,7 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 4 hours (8 phases)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md), [research-003.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md) (team: strategic blocker analysis), [research-004.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-004.md) (DurationTransfer blocker analysis)
 - **Plan**: [implementation-003.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md) (v3: Option B discrete staged construction)
