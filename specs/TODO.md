@@ -1,19 +1,19 @@
 ---
-next_project_number: 982
+next_project_number: 983
 repository_health:
   overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-03-16T23:30:00Z
+  last_assessed: 2026-03-16T23:45:00Z
 task_counts:
-  active: 5
+  active: 6
   completed: 686
   in_progress: 1
-  not_started: 0
+  not_started: 1
   abandoned: 42
-  total: 742
+  total: 743
 technical_debt:
-  sorry_count: 22
-  sorry_count_note: "Excluding Boneyard: 9 metalogic (non-publication), 13 examples"
+  sorry_count: 16
+  sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
   publication_path_sorries: 0
   axiom_count: 1
   axiom_count_note: "discrete_Icc_finite_axiom (documented debt from task 979)"
@@ -25,9 +25,28 @@ technical_debt:
 
 ## Tasks
 
+### 982. Wire dense completeness domain connection
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Priority**: high
+- **Created**: 2026-03-16 (Review)
+
+**Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All individual components are proven sorry-free (`cantor_iso`, `bmcs_truth_lemma`, `temporal_coherent_family_exists_CanonicalMCS`). The 3 sorries in `FrameConditions/Completeness.lean` need wiring that connects these pieces through a domain transfer or unified construction.
+
+**Resolution Path**:
+1. Build FMCS directly over TimelineQuot (preferred), OR
+2. Prove a quotient transfer theorem relating CanonicalMCS truth to TimelineQuot semantics
+
+**Files to modify**:
+- `FrameConditions/Completeness.lean` (3 wiring sorries)
+- Potentially new infrastructure for domain transfer
+
+---
+
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 4-8 hours (constructive method restructure)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path)

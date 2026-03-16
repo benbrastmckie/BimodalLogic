@@ -6,13 +6,23 @@
   },
   "active_projects": [
     {
+      "project_number": 982,
+      "project_name": "wire_dense_completeness_domain_connection",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
+      "created": "2026-03-16T23:45:00Z",
+      "last_updated": "2026-03-16T23:45:00Z"
+    },
+    {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-16T23:28:33Z",
-      "session_id": "sess_1773703227_76434d",
+      "last_updated": "2026-03-16T23:29:34Z",
+      "session_id": "sess_1773703759_f69482",
       "researched": "2026-03-16T23:28:33Z",
       "artifacts": [
         {
@@ -145,7 +155,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 982,
+  "next_project_number": 983,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,7 +1,7 @@
 # ProofChecker Development Roadmap
 
 **Last Updated**: 2026-03-16
-**Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness IN PROGRESS (pure syntax constraint, D Construction from Canonical Timeline strategy)
+**Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Dense Completeness Components SORRY-FREE (wiring gap remains)
 
 > **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
 > Each entry should include *Rationale* (why) and *References* (learn more).
@@ -163,11 +163,13 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 | 3 | No Endpoints | COMPLETED | CanonicalNoEndpoints.lean, sorry-free |
 | 4 | Canonical FMCS | COMPLETED | CanonicalFMCS.lean, sorry-free |
 | 5 | CanonicalMCS BFMCS | COMPLETED | CanonicalConstruction.lean, sorry-free |
-| 6 | Cantor Application | **BLOCKED** | CantorApplication.lean, 3 sorries (quotient strictness gap) |
-| 7 | D from Syntax | NOT STARTED | Blocked by Phase 6 |
-| 8 | TaskFrame Completeness | NOT STARTED | Blocked by Phase 6 |
+| 6 | Cantor Application | COMPLETED | CantorApplication.lean, `cantor_iso` proven |
+| 7 | D from Syntax | COMPLETED | DFromCantor.lean, TimelineQuot ≃o Q |
+| 8 | TaskFrame Completeness | **WIRING GAP** | Components proven; domain connection needed |
 
-**Current Blocker (Phase 6)**: The 3 sorries in `CantorApplication.lean` share a single root cause: `DenseTimeline` witnesses are not proven STRICT in the antisymmetrized quotient. The quotient collapses `<=`-equivalent MCSs, but the density/seriality witnesses need to be shown strictly ordered in the quotient (not just in the pre-quotient). See [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md) for detailed analysis.
+**Current Blocker (Phase 8 Wiring)**: The `dense_completeness_components_proven` theorem in `StagedConstruction/Completeness.lean` proves all individual components are sorry-free. The gap is connecting the CanonicalMCS-based BFMCS (which has the proven truth lemma) to the TimelineQuot-based TaskFrame (which has the right temporal structure). The 3 sorries in `FrameConditions/Completeness.lean` are wiring the final theorem statement.
+
+**Architecture Note**: The D-from-Syntax construction successfully produces D = TimelineQuot ≃o Q from the canonical timeline's order-theoretic properties. The Cantor isomorphism is proven. The BFMCS truth lemma is proven. The gap is connecting these two pieces: the BFMCS uses `D = CanonicalMCS` while the TaskFrame semantics uses `D = TimelineQuot`.
 
 **Deprecated Files (Int/Rat path)**:
 - `DovetailingChain.lean` -- DEPRECATED: Int-indexed chain, not imported by active code
@@ -183,32 +185,27 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 - [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md) - ConstructiveQuotient blocker, staged construction justification
 - [Task 959 research](specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md) - Orientation analysis
 
-#### Phase 6-8 Roadmap (Path to Sorry-Free Standard Completeness)
+#### Remaining Work: Dense Completeness Wiring
 
-**Phase 6: CantorApplication.lean -- Resolve Quotient Strictness Gap**
-- **Root cause**: `DenseTimeline` witnesses (has_future, has_past, has_intermediate) provide CanonicalR witnesses but not STRICTLY ordered witnesses in the antisymmetrized quotient (TimelineQuot). If CanonicalR is bidirectional between two MCSs, they collapse to the same quotient element.
-- **3 sorries**: NoMaxOrder, NoMinOrder, DenselyOrdered on TimelineQuot
-- **Recommended strategy (Strategy C)**: Prove strict witnesses exist by using temporal linearity and careful formula choice. For NoMaxOrder: if the F-witness q has CanonicalR(q, p) (bidirectional), then repeated F-witness application with temporal linearity yields a genuinely strict successor. Key: the density axiom ensures F(F(phi)) witnesses are distinct from F(phi) witnesses when combined with linearity.
-- **Alternative strategies**: Strategy B (prove witnesses are distinct from sources), Strategy A (global irreflexivity -- BLOCKED by String atom issue)
-- **Estimated effort**: 3-4 hours
-- **References**: [Task 959 research-001](specs/959_orient_pure_syntax_d_construction_cleanup/reports/research-001.md) Recommendation 1, [research-034](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md)
+**Status**: All components proven (sorry-free), final theorem assembly needs wiring.
 
-**Phase 7: DFromSyntax.lean -- Define D = Q via Cantor Isomorphism**
-- **Prerequisites**: Phase 6 complete (NoMaxOrder, NoMinOrder, DenselyOrdered on TimelineQuot)
-- **Construction**: Apply Cantor's theorem to get `cantor_iso : TimelineQuot ≃o Q`. Define D = Q. Define `task_rel(d)(w) = e⁻¹(e(w) + d)` where e is the Cantor isomorphism.
-- **Straightforward** once Phase 6 done -- the Cantor isomorphism theorem is already in Mathlib
-- **Estimated effort**: 1.5 hours
+**What's Proven**:
+1. `cantor_iso : TimelineQuot ≃o Q` (Cantor isomorphism)
+2. `bmcs_truth_lemma` (MCS membership ↔ semantic truth for BFMCS)
+3. `temporal_coherent_family_exists_CanonicalMCS` (temporal coherent family construction)
+4. `dense_completeness_components_proven` (all three components together)
 
-**Phase 8: TaskFrameFromSyntax.lean -- Construct TaskFrame and Prove Completeness**
-- **Prerequisites**: Phase 7 complete
-- **Construction**: Build TaskFrame Q with canonical WorldState and task_rel from Phase 7. Prove the truth lemma connecting MCS membership to standard truth_at. Prove standard_weak_completeness and standard_strong_completeness.
-- **Architecture**: Follows the same structure as current Representation.lean but with D=Q from syntax instead of D=Int from import
-- **Most substantial phase** -- truth lemma needs to handle the Cantor isomorphism translation
-- **Estimated effort**: 2.5 hours
+**The Gap**: The BFMCS infrastructure uses `D = CanonicalMCS` (the all-MCS domain), while the TaskFrame/semantics uses `D = TimelineQuot` (the Cantor domain). The final completeness theorem needs to connect these two domains.
 
-**Total estimated effort for Phases 6-8**: 7-8 hours
+**Resolution Path** (choose one):
+1. Build FMCS directly over TimelineQuot (preferred), OR
+2. Prove a quotient transfer theorem relating CanonicalMCS truth to TimelineQuot semantics
 
-**Escape valve**: If Phase 6 quotient strictness proves intractable, mark [BLOCKED] for user review. The mathematical content is believed to be TRUE (the canonical timeline IS a strict order when viewed through the quotient), but the proof may require novel infrastructure.
+**Estimated effort**: 3-5 hours
+
+**Files to modify**:
+- `FrameConditions/Completeness.lean` (3 wiring sorries)
+- Potentially new infrastructure for domain transfer
 
 ---
 
@@ -999,11 +996,10 @@ See Dead Ends section: "Non-Standard Validity Completeness (BFMCS/FMP)" for full
 
 ### Sorry Debt Status
 
-**Current State** (as of 2026-03-16): **20 sorries** in active Theories/Bimodal/ (excluding Boneyard)
+**Current State** (as of 2026-03-16): **16 sorries** in active Theories/Bimodal/ (excluding Boneyard)
 
-- 7 in Metalogic/Domain/DiscreteTimeline.lean (SuccOrder/PredOrder instances)
-- 2 in Metalogic/Canonical/ConstructiveFragment.lean (low priority)
-- 11 in Examples/*.lean (demonstration proofs)
+- 3 in FrameConditions/Completeness.lean (wiring: connect components to final theorem)
+- 13 in Examples/*.lean (educational demonstrations)
 
 #### Critical Path (D-from-syntax, Task 956)
 
