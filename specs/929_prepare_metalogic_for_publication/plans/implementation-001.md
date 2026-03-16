@@ -112,7 +112,7 @@ After this implementation:
 
 ---
 
-### Phase 1: Immediate Archival (DovetailingChain) [IN PROGRESS]
+### Phase 1: Immediate Archival (DovetailingChain) [COMPLETED]
 
 - **Dependencies:** None
 - **Goal**: Archive DovetailingChain.lean which has no active importers
@@ -138,7 +138,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Import Refactoring [NOT STARTED]
+### Phase 2: Import Refactoring [IN PROGRESS]
 
 - **Dependencies:** Phase 1
 - **Goal**: Refactor imports to allow archiving Construction.lean and TemporalCoherentConstruction.lean

@@ -1,5 +1,4 @@
 import Bimodal.Metalogic.StagedConstruction.SeparationLemma
-import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
 import Bimodal.Metalogic.Completeness
 import Bimodal.ProofSystem.LinearityDerivedFacts
 import Mathlib.Data.Finset.Union
