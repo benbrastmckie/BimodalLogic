@@ -36,12 +36,12 @@
     {
       "project_number": 970,
       "project_name": "review_metalogic_for_publication",
-      "status": "researching",
+      "status": "researched",
       "language": "logic",
       "created": "2026-03-16T04:42:03Z",
-      "last_updated": "2026-03-16T05:33:17Z",
+      "last_updated": "2026-03-16T05:37:45Z",
       "session_id": "sess_1773639168_11193",
-      "researched": "2026-03-16T04:53:13Z",
+      "researched": "2026-03-16T05:37:45Z",
       "artifacts": [
         {
           "path": "specs/970_review_metalogic_for_publication/reports/research-001.md",
@@ -57,6 +57,11 @@
           "path": "specs/970_review_metalogic_for_publication/summaries/implementation-summary-20260315.md",
           "type": "summary",
           "summary": "Partial: 7/12 phases (1-4, 10-12), phases 5-9 deferred"
+        },
+        {
+          "path": "specs/970_review_metalogic_for_publication/reports/research-002.md",
+          "type": "research",
+          "summary": "Team research run 002: phases 5-9 analysis + task 971 coordination"
         }
       ],
       "planned": "2026-03-16T05:12:32Z",

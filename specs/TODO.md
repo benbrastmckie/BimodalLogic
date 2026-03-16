@@ -38,9 +38,9 @@ technical_debt:
 
 ### 970. Review metalogic for publication readiness
 - **Effort**: 14 hours (12 phases)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: logic
-- **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis)
+- **Research**: [research-001.md](specs/970_review_metalogic_for_publication/reports/research-001.md) (team: 2 teammates, redundancy analysis) | [research-002.md](specs/970_review_metalogic_for_publication/reports/research-002.md) (phases 5-9 + task 971 coordination)
 - **Plan**: [implementation-002.md](specs/970_review_metalogic_for_publication/plans/implementation-002.md) (v2: 12 phases, semantic framework + theorem formulations)
 - **Summary**: [implementation-summary-20260315.md](specs/970_review_metalogic_for_publication/summaries/implementation-summary-20260315.md) (partial: 7/12 phases)
 
