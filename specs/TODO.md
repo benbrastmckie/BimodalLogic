@@ -22,66 +22,6 @@ technical_debt:
 
 ## Tasks
 
-
-### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
-- **Effort**: 4-8 hours
-- **Status**: [COMPLETED]
-- **Plan**: [specs/968_prove_shift_closure_canonical_fmcs_bridge/plans/implementation-001.md]
-- **Summary**: [specs/968_prove_shift_closure_canonical_fmcs_bridge/summaries/implementation-summary-20260315.md]
-- **Language**: lean
-- **Priority**: high
-- **Research**: [specs/0_shift_closure_research/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md]
-
-**Completed**: Ported shift-closure pattern from Boneyard to CanonicalConstruction.lean. Added ShiftClosedCanonicalOmega, shiftClosedCanonicalOmega_is_shift_closed, box_persistent, and shifted_truth_lemma. All theorems sorry-free. Also fixed canonical_truth_lemma for reflexive temporal semantics (Task 967).
-
-**Dependencies**: Task 967 [COMPLETED], Task 969 [COMPLETED]
-
----
-
-### 956. Construct D as translation group from syntax
-- **Effort**: COMPLETE (was 30-50 total)
-- **Status**: [COMPLETED]
-- **Previously blocked by**: Phase 6 quotient strictness gap (research-038 provides solution)
-- **Previously blocked by**: Task 957 (density frame condition - NOW COMPLETE)
-- **Language**: lean
-- **Priority**: high
-- **Dependencies**: Task 951 (BFMCS infrastructure, existence lemma), Task 957 (density frame condition - COMPLETE), Task 961 (quotient density - RESOLVED via Task 967)
-- **Supersedes**: Task 954 (hardcoded Int refactor), Task 955 (CanonicalR task_rel)
-- **Research**: [research-001.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-001.md), [research-002.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-002.md), [research-003.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-003.md), [research-004.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-004.md), [research-005.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-005.md), [research-006.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-006.md), [research-007.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-007.md), [research-008.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-008.md), [research-009.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-009.md), [research-010.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-010.md), [research-011.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-011.md), [research-012.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-012.md), [research-013.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-013.md), [research-014.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-014.md), [research-015.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-015.md), [research-016.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-016.md), [research-017.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-017.md), [research-018.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-018.md), [research-019.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-019.md), [research-020.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-020.md), [research-021.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-021.md), [research-022.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-022.md), [research-031.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-031.md), [research-032.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-032.md), [research-033.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-033.md), [research-034.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-034.md)
-- **Plan**: [implementation-025.md](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-025.md) (v025: Phases 6-8 COMPLETE via Task 967, only Phases 9-11 remain)
-- **Research**: [research-049.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-049.md) (comprehensive audit: dense completeness PROVEN, 4-5h remaining)
-- **Summary**: [implementation-summary-20260313.md](specs/956_construct_d_as_translation_group_from_syntax/summaries/implementation-summary-20260313.md) (Phase 6 complete, Phase 7 partial - iteration needed)
-- **Handoff**: [phase-6-handoff-20260312.md](specs/956_construct_d_as_translation_group_from_syntax/handoffs/phase-6-handoff-20260312.md) (Phase 6 partial: iteration infrastructure added, fuel_suffices pending)
-- **Research**: [research-035.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-035.md) (team: density blocker + lex product densification)
-- **Research**: [research-036.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-036.md) (unblocking analysis: task 957 complete, Phase 5 unblocked)
-- **Research**: [research-037.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-037.md) (remaining work: Phase 6 blocker, 7-8h to completion)
-- **Research**: [research-038.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-038.md) (math: Case A strictness solution recommended)
-- **Research**: [research-039.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-039.md) (deep math: backward strictness - iteration approach)
-- **Research**: [research-040.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-040.md) (lean: iteration termination - fuel-based approach)
-- **Research**: [research-041.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-041.md) (lean: pattern comparison - well-founded recommended)
-- **Research**: [research-042.md](specs/956_construct_d_as_translation_group_from_syntax/reports/research-042.md) (math: Pattern C recommended - fuel + sufficiency)
-
-**Description**: Construct the temporal duration group D entirely from pure syntax as the group of order-preserving automorphisms (translations) of the canonical timeline of MCSs, without assuming Int or defining a successor function. The construction proceeds:
-
-1. **Origin**: Extend consistent set Γ₀ to MCS w₀ via Lindenbaum — this is the designated origin
-2. **Timeline**: Build linear order T of MCSs reachable from w₀ via the existence lemma (if Fψ ∈ w, there exists w' > w with ψ ∈ w'; similarly for P). Temporal axioms force T to be a connected linear order without endpoints
-3. **Translation group**: Define D = Aut⁺(T) = {f : T → T | f is order-preserving bijection}. Group operation is composition, identity is id, inverse is f⁻¹
-4. **Origin bijection**: eval₀ : D → T defined by eval₀(d) = d(w₀). This is a bijection because D acts freely and transitively on T (homogeneity of T from temporal axioms + rigidity of order-automorphisms)
-5. **Ordered group**: Pull back order from T to D: d₁ < d₂ iff d₁(w₀) < d₂(w₀). Makes D a linearly ordered abelian group
-6. **task_rel = group action**: task_rel(d)(w) = d(w). This IS the group action — not an artificial map
-7. **Canonical model**: M = (T, <, D, task_rel, V) where V(p) = {w : p ∈ w}
-8. **Truth lemma**: M, w ⊨ φ ↔ φ ∈ w by structural induction
-9. **Completeness**: If ⊬ φ, extend {¬φ} to MCS w₀, build canonical model, w₀ ⊭ φ
-
-**Key advantages over previous approaches**:
-- No dovetailing chain or F-persistence problem (existence lemma provides witnesses directly)
-- No SuccOrder/PredOrder or orderIsoIntOfLinearSuccPredArch needed
-- No hardcoded D = Int — D emerges as whatever translation group the axioms produce
-- task_rel is the group action itself, not a separately-defined bridge
-- For discrete time axioms, D ≅ ℤ as a theorem; for dense time, D ≅ ℚ as a theorem
-
----
-
 ### 953. Refactor proof system to bilateral system
 - **Effort**: 55-90 hours
 - **Status**: [RESEARCHED]
@@ -107,7 +47,7 @@ technical_debt:
 
 ### 929. Prepare metalogic for publication
 - **Effort**: 10-13 hours (revised estimate)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/929_prepare_metalogic_for_publication/reports/research-001.md) (team: 3 teammates, full publication readiness checklist)
 
