@@ -1,12 +1,17 @@
 # Implementation Summary: Task 974 - DiscreteTimeline SuccOrder/PredOrder
 
 **Date**: 2026-03-16
-**Session**: sess_1742170000_x7m2q
-**Status**: PARTIAL (3 sorries remaining from original 7)
+**Sessions**:
+- sess_1742170000_x7m2q (phases 1-3: restructure)
+- sess_1742179200_q8k3r (phase 4: blocker discovered)
+**Status**: BLOCKED (architectural issue discovered)
 
 ## Executive Summary
 
-Restructured the `SuccOrder` and `PredOrder` instances in `DiscreteTimeline.lean` to use proper Mathlib patterns instead of the flawed `Classical.choice` approach. Reduced sorries from 7 to 3. The remaining sorries require proving the discreteness property from the DF axiom, which involves formalizing the semantic correspondence at the MCS level.
+Phase 1-3 restructured SuccOrder/PredOrder using proper Mathlib patterns (7 sorries -> 3).
+Phase 4 discovered a fundamental architectural blocker: the staged construction always adds
+density intermediates using the DN axiom, making discreteness proofs impossible without
+new infrastructure or a different proof strategy.
 
 ## Changes Made
 
@@ -109,3 +114,70 @@ The DF axiom semantically ensures immediate successors exist. The challenge is:
 - `Mathlib.Order.SuccPred.LinearLocallyFinite`: For `succFn`, `le_succFn`, `succFn_le_of_lt`
 - `Mathlib.Order.Bounds.Basic`: For `exists_lub_Iio`, `IsLUB`
 - Existing: `NoMaxOrder`, `NoMinOrder`, `LinearOrder` instances (already proven)
+
+---
+
+## Phase 4 Analysis (Session: sess_1742179200_q8k3r)
+
+### Architectural Blocker Discovered
+
+During Phase 4 implementation, a fundamental architectural issue was discovered that
+blocks completion of the remaining 3 sorries.
+
+### Problem: Staged Construction Always Adds Density Intermediates
+
+The `buildStagedTimeline` construction (StagedExecution.lean) alternates between:
+- **Even stages**: Process F/P obligations (add forward/backward witnesses)
+- **Odd stages**: Add density intermediates via `processDensity`
+
+The density witness creation uses `density_of_canonicalR` (CanonicalTimeline.lean:134),
+which applies the DN axiom:
+```lean
+theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.density phi))
+```
+
+This happens REGARDLESS of whether we're building a "discrete" or "dense" timeline.
+
+### Why This Blocks Discreteness Proofs
+
+The three remaining sorries all require the timeline to be discrete (non-dense):
+
+1. `discrete_timeline_lt_succFn`: The GLB of `Set.Ioi a` must be strictly greater than `a`
+2. `discrete_timeline_predFn_lt`: The LUB of `Set.Iio a` must be strictly less than `a`
+3. `IsSuccArchimedean.exists_succ_iterate_of_le`: Intervals must be finite
+
+But the staged construction adds density witnesses at every odd stage, potentially
+making the order dense (not discrete).
+
+### Resolution Options
+
+**Option A: Prove Quotient Collapse** (Est. 4-8 hours)
+Show density witnesses collapse in the Antisymmetrization quotient.
+Requires detailed MCS equivalence analysis and new infrastructure.
+
+**Option B: Create Discrete Staged Construction** (Est. 3-5 hours)
+Build `buildDiscreteStagedTimeline` that skips odd-stage density insertion.
+Requires significant refactoring of StagedConstruction module.
+
+**Option C: Alternative Proof Strategy** (Est. unknown)
+Bypass staged construction and prove discreteness directly from DF frame conditions.
+Requires new research and proof approach.
+
+### Relationship to Research-002 Finding
+
+Research-002 correctly identified that DN is trivially valid under reflexive semantics.
+The proposed solution ("discreteness follows from staged construction lacking DN") was
+partially correct in principle, but incorrect in practice because:
+
+1. The staged construction DOES use DN (it's in the axiom set for all MCSs)
+2. There is NO separate discrete staged construction in the codebase
+3. The docstring saying "without density intermediates" is aspirational, not implemented
+
+### Recommendation
+
+This task requires architectural decisions before proof completion:
+1. Choose between Options A, B, or C
+2. Implement chosen solution
+3. Then complete the remaining 3 sorries
+
+Escalating to user review for architectural decision.

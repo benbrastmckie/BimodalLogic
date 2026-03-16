@@ -83,27 +83,30 @@ The goal is a fully modular, typeclass-driven architecture where adding a new te
 ---
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
-- **Effort**: 2.5-3 hours (2 phases remaining)
-- **Status**: [IMPLEMENTING]
+- **Effort**: TBD (requires architectural decision)
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md) (staged construction approach)
-- **Plan**: [implementation-002.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md) (v2: staged construction finiteness)
-- **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md) (phases 1-3)
+- **Plan**: [implementation-002.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md) (v2: Phase 4 BLOCKED)
+- **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
 
-**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean using staged construction finiteness approach. Phases 1-3 completed (7→3 sorries). Revised plan uses absence of DN to prove finite intervals, deriving discreteness and LocallyFiniteOrder.
+**Description**: Resolve 3 remaining sorries in DiscreteTimeline.lean. Phases 1-3 completed (7→3 sorries). Phase 4 BLOCKED on architectural issue.
+
+**BLOCKER**: Staged construction (`buildStagedTimeline`) always adds density intermediates via DN axiom. No separate discrete construction exists. The docstring "without density intermediates" is aspirational, not implemented. Resolution requires:
+- (A) Prove density witnesses collapse in quotient (4-8h), OR
+- (B) Create separate discrete staged construction (3-5h), OR
+- (C) Alternative proof strategy bypassing staged construction
 
 **Remaining Sorries (3)**:
 - `discrete_timeline_lt_succFn` (193): Key discreteness for succ
 - `discrete_timeline_predFn_lt` (251): Key discreteness for pred
 - `IsSuccArchimedean.exists_succ_iterate_of_le` (296): Finite reachability
 
-**Revised approach**: DF is trivially valid under reflexive semantics — discreteness derives from staged construction lacking DN (no density intermediates). Finite intervals → GLB = min → `succFn a > a` → LocallyFiniteOrder → IsSuccArchimedean (Mathlib).
-
 ---
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
 - **Effort**: 1.5 hours (3 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md), [research-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-002.md) (blocker resolved)
 - **Plan**: [implementation-002.md](specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-002.md) (v2: corrected phase markers)

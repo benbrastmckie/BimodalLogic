@@ -1,7 +1,7 @@
 # Implementation Plan: Task #974 (v2 — Staged Construction Approach)
 
 - **Task**: 974 - prove_discrete_timeline_succorder_predorder
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 2.5-3 hours
 - **Dependencies**: None (task 973 unblocked independently by task 972)
 - **Research Inputs**:
@@ -108,7 +108,7 @@ Sorries reduced from 7 to 3. Proceed to revised Phase 4.
 
 ---
 
-### Phase 4: Prove staged construction finiteness [NOT STARTED]
+### Phase 4: Prove staged construction finiteness [BLOCKED]
 
 - **Dependencies:** Phases 1-3 (completed)
 - **Goal:** Establish that between any two elements in `DiscreteTimelineQuot`, there are finitely many elements
@@ -139,6 +139,20 @@ Sorries reduced from 7 to 3. Proceed to revised Phase 4.
 **Verification:**
 - Finiteness theorem compiles without sorries
 - `lake build` passes
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1742179200_q8k3r**
+- Attempted: Phase 4 analysis of staged construction finiteness
+- Discovered: ARCHITECTURAL BLOCKER
+  - `buildStagedTimeline` adds density intermediates at all odd stages
+  - `processDensity` calls `densityWitnessForPoint` which uses `density_of_canonicalR`
+  - `density_of_canonicalR` (CanonicalTimeline.lean:134) applies DN axiom universally
+  - No separate discrete staged construction exists in the codebase
+  - The docstring "without density intermediates" is aspirational, not implemented
+- Blocked: Cannot prove discreteness when staged construction adds density witnesses
+- Sorries: 3 remaining (unchanged from Phase 3)
+- Recommendation: Choose resolution path (A: quotient collapse, B: discrete construction, C: alternative proof)
 
 ---
 

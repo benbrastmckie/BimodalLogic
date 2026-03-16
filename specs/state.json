@@ -77,14 +77,16 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
-      "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
-      "last_updated": "2026-03-16T17:34:38Z",
+      "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
+      "last_updated": "2026-03-16T18:45:00Z",
       "session_id": "sess_1742179200_q8k3r",
       "researched": "2026-03-16T16:12:35Z",
+      "blocked_on": "Architectural issue: buildStagedTimeline adds density intermediates via DN axiom; no discrete construction exists",
+      "blocked_reason": "Phase 4 blocked: staged construction always adds density witnesses, making discreteness proofs impossible without new infrastructure (quotient collapse proof, discrete construction, or alternative proof strategy)",
       "artifacts": [
         {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md",
@@ -94,7 +96,7 @@
         {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md",
           "type": "summary",
-          "summary": "Detailed summary of restructuring work and remaining blockers"
+          "summary": "BLOCKED - Phases 1-3 complete (7->3 sorries), Phase 4 blocked on staged construction architecture"
         },
         {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md",
@@ -104,22 +106,24 @@
         {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md",
           "type": "plan",
-          "summary": "Revised 2-phase plan using staged construction finiteness approach (supersedes v1)"
+          "summary": "Phase 4 BLOCKED: staged construction adds density intermediates universally"
         }
       ],
       "planned": "2026-03-16T17:28:52Z",
-      "started": "2026-03-16T16:40:04Z"
+      "started": "2026-03-16T16:40:04Z",
+      "phases_completed": 3,
+      "phases_total": 5
     },
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T17:36:25Z",
-      "session_id": "sess_1773678967_4559",
+      "last_updated": "2026-03-16T17:38:09Z",
+      "session_id": "sess_1773682669_6061b2",
       "researched": "2026-03-16T09:15:00Z",
       "artifacts": [
         {
@@ -139,7 +143,7 @@
         }
       ],
       "planned": "2026-03-16T17:36:25Z",
-      "started": "2026-03-16T16:36:24Z"
+      "started": "2026-03-16T17:38:09Z"
     },
     {
       "project_number": 971,
