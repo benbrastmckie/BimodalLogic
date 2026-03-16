@@ -1,16 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/reports/research-001.md",
-      "type": "research",
-      "summary": "NoMaxOrder/NoMinOrder proofs are straightforward using seriality axioms and canonicalR_strict; proof pattern from DiscreteTimeline.lean directly applicable"
+      "type": "plan",
+      "path": "specs/973_prove_constructivefragment_nomaxorder_nominorder/plans/implementation-001.md",
+      "summary": "3-phase implementation plan for NoMaxOrder/NoMinOrder proofs on ConstructiveQuotient"
     }
   ],
-  "session_id": "sess_1773677142_20067",
+  "next_steps": "Run /implement 973 to execute the plan",
   "metadata": {
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773678544_18808",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 1.5
   }
 }
