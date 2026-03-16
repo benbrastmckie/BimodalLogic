@@ -1,6 +1,6 @@
 # ProofChecker Development Roadmap
 
-**Last Updated**: 2026-03-14
+**Last Updated**: 2026-03-16
 **Status**: Soundness SORRY-FREE, Decidability SORRY-FREE, Standard Completeness IN PROGRESS (pure syntax constraint, D Construction from Canonical Timeline strategy)
 
 > **Content Boundaries**: ROAD_MAP.md = strategic vision (months-years), TODO.md = task queue (days-weeks), task artifacts = execution details (hours-days).
@@ -999,7 +999,11 @@ See Dead Ends section: "Non-Standard Validity Completeness (BFMCS/FMP)" for full
 
 ### Sorry Debt Status
 
-**Current State** (as of 2026-03-11): **11 sorries** in active Metalogic/ (excluding Boneyard)
+**Current State** (as of 2026-03-16): **20 sorries** in active Theories/Bimodal/ (excluding Boneyard)
+
+- 7 in Metalogic/Domain/DiscreteTimeline.lean (SuccOrder/PredOrder instances)
+- 2 in Metalogic/Canonical/ConstructiveFragment.lean (low priority)
+- 11 in Examples/*.lean (demonstration proofs)
 
 #### Critical Path (D-from-syntax, Task 956)
 
