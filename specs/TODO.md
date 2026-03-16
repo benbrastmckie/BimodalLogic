@@ -29,7 +29,7 @@ technical_debt:
 - **Effort**: TBD
 - **Status**: [RESEARCHED]
 - **Language**: general
-- **Research**: [research-001.md](specs/976_clean_up_comments_improve_documentation/reports/research-001.md)
+- **Research**: [research-001.md](specs/976_clean_up_comments_improve_documentation/reports/research-001.md), [research-002.md](specs/976_clean_up_comments_improve_documentation/reports/research-002.md)
 
 **Description**: Clean up the comments throughout the codebase and then proceed to improve all documentation so that every subdirectory has an accurate and complete README.md that fully reports on the files and subdirectories in the directory to which that README.md belongs. Then update the ROAD_MAP.md to clearly represent the present state and what remains.
 
@@ -37,7 +37,7 @@ technical_debt:
 
 ### 975. Fix ProofSearch documentation example sorries
 - **Effort**: ~1 hour
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 
 **Description**: Fix 3 sorry placeholders in `Theories/Bimodal/Automation/ProofSearch.lean` at lines 1348, 1353, and 1358. These are `example` blocks demonstrating how bounded proof search would be invoked. Since `bounded_search` returns `Bool` (not `DerivationTree`), the examples cannot use it directly. Fix by providing minimal direct witnesses using existing axioms/rules, or convert to comments if purely aspirational.
@@ -50,7 +50,7 @@ technical_debt:
 
 ### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 
 **Description**: Complete 7 sorry placeholders in `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean` for the discrete canonical timeline quotient, needed for the ℤ-isomorphism in the discrete D-from-syntax pipeline.
@@ -69,7 +69,7 @@ technical_debt:
 
 ### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
 - **Effort**: 2-3 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 
 **Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 580 and 585.

@@ -1,28 +1,26 @@
 {
   "status": "researched",
-  "started_at": "2026-03-16T10:00:00Z",
-  "completed_at": "2026-03-16T10:45:00Z",
+  "started_at": "2026-03-16T12:00:00Z",
+  "completed_at": "2026-03-16T13:00:00Z",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/976_clean_up_comments_improve_documentation/reports/research-001.md",
-      "summary": "Research report with inventory of 51 existing READMEs, 41 missing READMEs, comment quality assessment, and phased implementation recommendations"
+      "path": "specs/976_clean_up_comments_improve_documentation/reports/research-002.md",
+      "summary": "README quality evaluation: 7 critical inaccuracies (FMP/LogosTest refs), 5 outdated, 3 incomplete, 24+ good"
     }
   ],
-  "next_steps": "Run /plan 976 to create implementation plan",
+  "next_steps": "Run /plan 976 to create implementation plan addressing README fixes in priority order",
   "metadata": {
-    "session_id": "sess_1773676459_551992",
+    "session_id": "sess_1773677076_2e1175",
     "agent_type": "general-research-agent",
-    "duration_seconds": 2700,
+    "duration_seconds": 480,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 5,
-    "key_findings": [
-      "51 existing README.md files in project",
-      "41 directories missing README.md files",
-      "Excellent Lean documentation quality with module headers",
-      "2 TODO comments, 7+ DEPRECATED markers need cleanup",
-      "ROAD_MAP.md is extensive (1400 lines) but needs updating"
-    ]
+    "findings_count": 15,
+    "readmes_evaluated": 40,
+    "critical_issues": 7,
+    "outdated_issues": 5,
+    "incomplete_issues": 3,
+    "good_readmes": 24
   }
 }

@@ -11,36 +11,42 @@
       "status": "researched",
       "language": "general",
       "created": "2026-03-16T15:52:59Z",
-      "last_updated": "2026-03-16T15:58:38Z",
-      "session_id": "sess_1773676459_551992",
-      "researched": "2026-03-16T15:58:38Z"
+      "last_updated": "2026-03-16T16:08:02Z",
+      "session_id": "sess_1773677076_2e1175",
+      "researched": "2026-03-16T16:08:02Z"
     },
     {
       "project_number": 975,
       "project_name": "fix_proofsearch_example_sorries",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "low",
       "created": "2026-03-16T00:00:00Z",
-      "description": "Fix 3 sorry placeholders in ProofSearch.lean documentation examples"
+      "description": "Fix 3 sorry placeholders in ProofSearch.lean documentation examples",
+      "last_updated": "2026-03-16T16:06:57Z",
+      "session_id": "sess_1742169600_975res"
     },
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
-      "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)"
+      "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
+      "last_updated": "2026-03-16T16:06:31Z",
+      "session_id": "sess_1742169600_r8k3m"
     },
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
-      "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)"
+      "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
+      "last_updated": "2026-03-16T16:06:11Z",
+      "session_id": "sess_1773677142_20067"
     },
     {
       "project_number": 971,
