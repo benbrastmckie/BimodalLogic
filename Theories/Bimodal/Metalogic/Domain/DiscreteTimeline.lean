@@ -58,6 +58,7 @@ open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.StagedConstruction
 open Bimodal.Semantics
+open Bimodal.ProofSystem
 
 -- Classical decidability
 attribute [local instance] Classical.propDecidable
@@ -206,6 +207,93 @@ theorem minStage_spec (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
       elem.1 ∈ discreteStagedBuild root_mcs root_mcs_proof (minStage root_mcs root_mcs_proof a) ∧
       (⟦elem⟧ : DiscreteTimelineQuot root_mcs root_mcs_proof) = a :=
   Nat.find_spec (exists_stage_of_quotient_elem root_mcs root_mcs_proof a)
+
+/-!
+## Covering Lemma: Immediate Successors from DF Frame Condition
+
+The discreteness axiom DF = `(F top and phi and H phi) -> F(H phi)` ensures that
+between any MCS and its forward witness, there is no intermediate MCS. This is
+the key lemma for deriving SuccOrder properties.
+
+### MCS Covering Relation
+
+An MCS W *covers* M if CanonicalR M W and there is no MCS K strictly between M and W.
+The DF axiom, being in every MCS, constrains the structure to ensure covering.
+
+### Proof Strategy (from research-003.md)
+
+Given serial MCS M with forward witness W:
+1. Suppose K is an intermediate MCS with g_content(M) subset K and g_content(K) subset W
+2. If K != M and K != W, then some formula discriminates K from M or W
+3. DF membership in M constrains what H-formulas can appear in intermediate MCS
+4. This leads to a contradiction, proving no strict intermediate exists
+-/
+
+/-- MCS covering relation: W covers M iff W is an immediate successor (no strict intermediate). -/
+def MCS.Covers (M W : Set Formula) : Prop :=
+  CanonicalR M W ∧ ∀ K, SetMaximalConsistent K →
+    CanonicalR M K → CanonicalR K W → K = M ∨ K = W
+
+/-- Every serial MCS has an immediate successor (covering witness).
+
+This is the key lemma connecting DF frame condition to MCS structure. The proof
+requires showing that the forward witness construction yields an immediate successor.
+
+**Proof outline**:
+1. M is serial, so exists F(phi) in M for some phi
+2. Let W = Lindenbaum({phi} union g_content(M)) be the forward witness
+3. W is MCS and CanonicalR M W by canonical_forward_F
+4. For any K with CanonicalR M K and CanonicalR K W:
+   a. If K != M, then exists psi with psi in K but not determined by g_content(M)
+   b. If K != W, then exists chi with chi in W but chi not in K
+   c. DF in M constrains the relationship between H-formulas in K and W
+   d. This leads to contradiction, so K = M or K = W
+
+**PROOF BLOCKED**: The covering lemma requires showing that DF membership constrains
+intermediate MCS structure. This is identified as mathematically deep in research-003.md.
+
+**What we have**:
+- h_MK : g_content(M) ⊆ K
+- h_KW : g_content(K) ⊆ W
+- h_K_ne_M and h_K_ne_W : K differs from both endpoints
+- DF axiom in every MCS: (F⊤ ∧ φ ∧ Hφ) → F(Hφ)
+- g_content_subset_implies_h_content_reverse : g_content(M) ⊆ W → h_content(W) ⊆ M
+
+**The gap**: We cannot derive a contradiction from K being strictly between M and W.
+The DF axiom constrains what formulas are in M, but doesn't directly imply covering.
+
+**Potential approaches tried**:
+1. Use F(H(φ)) in M from DF to constrain W's H-formulas - but this propagates backwards,
+   doesn't constrain intermediate K
+2. Use K != W to find distinguishing formula chi - but chi could be outside g_content
+   structures, so DF doesn't apply
+3. Use K != M to find distinguishing formula psi - same issue
+
+**Recommendation**: This lemma requires additional mathematical insight or a different
+proof strategy. See research-003.md for detailed analysis.
+-/
+theorem mcs_has_immediate_successor
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (h_serial : ∃ N, CanonicalR M N) :
+    ∃ W, SetMaximalConsistent W ∧ MCS.Covers M W := by
+  -- Get a forward witness via canonical_forward_F
+  -- From seriality_future axiom: F(neg bot) is in every MCS
+  have h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ M := by
+    apply theorem_in_mcs h_mcs
+    exact DerivationTree.axiom [] _ Axiom.seriality_future
+  -- Get the forward witness for F(neg bot)
+  obtain ⟨W, h_W_mcs, h_MW, h_top_in_W⟩ := canonical_forward_F M h_mcs (Formula.neg Formula.bot) h_F_top
+  use W, h_W_mcs
+  constructor
+  · exact h_MW
+  · intro K h_K_mcs h_MK h_KW
+    by_contra h_neither
+    push_neg at h_neither
+    obtain ⟨h_K_ne_M, h_K_ne_W⟩ := h_neither
+    -- BLOCKED: Cannot derive contradiction from K being strictly between M and W
+    -- The DF axiom membership doesn't directly constrain intermediate MCS structure
+    -- See docstring above for detailed analysis
+    sorry
 
 /-!
 ## LocallyFiniteOrder Instance

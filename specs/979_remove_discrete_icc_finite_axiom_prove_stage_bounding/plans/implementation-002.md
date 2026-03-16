@@ -1,7 +1,7 @@
 # Implementation Plan: Task #979 (v2)
 
 - **Task**: 979 - remove_discrete_icc_finite_axiom_prove_stage_bounding
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8-12 hours
 - **Dependencies**: Task 974 [COMPLETED], Task 980 [COMPLETED]
 - **Research Inputs**:
@@ -54,7 +54,7 @@ This revised plan removes the `discrete_Icc_finite_axiom` from `DiscreteTimeline
 
 ## Implementation Phases
 
-### Phase 1: Infrastructure Audit and Lemma Inventory [NOT STARTED]
+### Phase 1: Infrastructure Audit and Lemma Inventory [COMPLETED]
 
 - **Dependencies:** None (restarts fresh from Phase 1)
 - **Goal:** Verify task 980 infrastructure and document reusable lemmas
@@ -81,9 +81,19 @@ This revised plan removes the `discrete_Icc_finite_axiom` from `DiscreteTimeline
 - DF soundness theorem documented
 - `lake build` passes
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773698234_dfbb66**
+- Verified: task 980 MCS Richness lemmas (G_bot_not_in, H_bot_not_in, F_or_atom_in, P_or_atom_in, mcs_has_large_F_formula, mcs_has_large_P_formula)
+- Verified: DF soundness (discreteness_forward_valid in Soundness.lean)
+- Verified: CanonicalR infrastructure (g_content subset semantics)
+- Verified: canonicalR_strict theorem for strictness
+- Verified: StagedPoint infrastructure for discrete timeline
+- Build: lake build passes (930 jobs)
+
 ---
 
-### Phase 2: State the Covering Lemma Precisely [NOT STARTED]
+### Phase 2: State the Covering Lemma Precisely [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Formalize the exact statement of the covering lemma at MCS level
@@ -115,9 +125,16 @@ This revised plan removes the `discrete_Icc_finite_axiom` from `DiscreteTimeline
 - Lemma statement compiles with sorry
 - `lake build` passes
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773698234_dfbb66**
+- Added: `MCS.Covers` - covering predicate for MCS pairs
+- Added: `mcs_has_immediate_successor` - statement with sorry placeholder
+- Build: lake build passes with sorry warning
+
 ---
 
-### Phase 3: Prove the Covering Lemma via DF Semantics [NOT STARTED]
+### Phase 3: Prove the Covering Lemma via DF Semantics [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Complete the covering lemma proof using DF frame condition
@@ -201,6 +218,27 @@ This is the core phase. The proof follows the sketch from research-003.md.
 **Verification:**
 - All lemmas compile without sorry
 - `lake build` passes
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773698234_dfbb66**
+- Added: `mcs_has_immediate_successor` theorem statement with proof structure
+- Attempted: Using DF membership to constrain intermediate MCS
+- Attempted: Using g_content_subset_implies_h_content_reverse for backwards propagation
+- Attempted: Finding distinguishing formula for K != W case
+- BLOCKED: Cannot derive contradiction from K being strictly between M and W
+- The DF axiom membership constrains what formulas are in M, but does not directly imply covering
+- See docstring in DiscreteTimeline.lean for detailed analysis
+- Build: lake build passes with sorry (1 sorry in mcs_has_immediate_successor)
+
+**Blocker Analysis:**
+- The covering lemma requires showing that if K is strictly between M and W (MCS with
+  CanonicalR M K and CanonicalR K W, but K != M and K != W), then we get a contradiction
+- DF axiom `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)` is in every MCS, but this constrains formula membership
+  in the source MCS, not the order structure
+- The gap is connecting DF membership (syntactic) to covering (structural property)
+- Lindenbaum extension is non-deterministic, so W is not uniquely determined
+- research-003.md identified this as mathematically deep; no simple resolution found
 
 ---
 
