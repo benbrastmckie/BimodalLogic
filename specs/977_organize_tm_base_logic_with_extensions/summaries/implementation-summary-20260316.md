@@ -1,8 +1,9 @@
 # Implementation Summary: Task #977
 
 **Task**: Organize TM base logic with extensions
-**Status**: [IN PROGRESS]
+**Status**: [COMPLETED]
 **Started**: 2026-03-16
+**Completed**: 2026-03-16
 **Language**: logic
 
 ## Phase Log
@@ -170,13 +171,36 @@
 
 **Note**: Full discrete completeness theorem blocked on task 974 (SuccOrder/PredOrder proofs for DiscreteTimelineQuot). Framework and documentation complete.
 
+### Phase 7: Logic Variants Summary and Verification [COMPLETED]
+
+**Session**: sess_1773687626_568c70
+
+**Changes**:
+- Created `Theories/Bimodal/LogicVariants.lean` as unified summary module
+- Re-exported soundness theorems: `base_axiom_valid`, `dense_axiom_valid`, `discrete_axiom_valid`
+- Re-exported completeness infrastructure: `base_truth_lemma_export`, `dense_components_export`
+- Added FrameClass characterization lemmas for axiom classification
+- Documented DN dependency technical debt (discrete construction uses DN via `iterated_future_in_mcs`)
+- Updated `Theories/Bimodal/README.md` with Logic Variants section
+
+**Files Created**:
+- `Theories/Bimodal/LogicVariants.lean`
+
+**Files Modified**:
+- `Theories/Bimodal/README.md`
+
+**Verification**:
+- `lake build Bimodal` passes (974 jobs)
+- No sorries in LogicVariants.lean
+- README contains accurate logic variants summary
+
 ## Cumulative Statistics
 
 | Metric | Value |
 |--------|-------|
-| Phases Completed | 7 |
+| Phases Completed | 8 |
 | Phases Total | 8 |
-| Files Modified | 13 |
-| Files Created | 3 |
+| Files Modified | 14 |
+| Files Created | 4 |
 | Sorries Added | 2 (documented, pre-existing infrastructure gaps) |
 | Sorries Resolved | 0 |

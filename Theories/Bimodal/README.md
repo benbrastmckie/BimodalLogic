@@ -137,6 +137,45 @@ The interaction axioms (MF, TF) ensure coherence between modal and temporal reas
 
 See BimodalReference Section 2 for formal semantic definitions.
 
+## Logic Variants
+
+TM logic has three variants based on frame conditions, with soundness/completeness organized accordingly:
+
+### TM Base (18 axioms)
+
+The core logic valid on all linear orders. See `FrameClass.Base` in [Axioms.lean](ProofSystem/Axioms.lean).
+
+- **Soundness**: `axiom_base_valid` - all base axioms valid on linear orders
+- **Completeness**: Documented in [BaseCompleteness.lean](Metalogic/BaseCompleteness.lean)
+- **Frame**: Linear temporal order (no additional constraints)
+
+### TM Dense (Base + 1 = 19 axioms)
+
+Extension requiring densely ordered temporal domains. See `FrameClass.Dense`.
+
+- **Additional Axiom**: DN (`Fφ → FFφ`) - density
+- **Soundness**: `axiom_valid_dense` - dense-compatible axioms valid on DenselyOrdered
+- **Completeness**: Documented in [DenseCompleteness.lean](Metalogic/DenseCompleteness.lean)
+- **Frame**: `DenselyOrdered D` - between any two times exists another
+
+### TM Discrete (Base + 3 = 21 axioms)
+
+Extension requiring discretely ordered temporal domains. See `FrameClass.Discrete`.
+
+- **Additional Axioms**: DF (discreteness), SF/SP (seriality)
+- **Soundness**: `axiom_valid_discrete` - discrete-compatible axioms valid on SuccOrder
+- **Completeness**: Framework in [DiscreteCompleteness.lean](Metalogic/DiscreteCompleteness.lean)
+- **Frame**: `SuccOrder D`, `PredOrder D`, `NoMaxOrder D`, `NoMinOrder D`
+
+### Variant Incompatibility
+
+Dense and discrete extensions are **incompatible**:
+- DN requires intermediate points (DenselyOrdered)
+- DF requires immediate successors (SuccOrder)
+- No domain satisfies both (except degenerate cases)
+
+See [LogicVariants.lean](LogicVariants.lean) for the unified summary module.
+
 ## Theory-Specific Documentation
 
 For Bimodal-specific guides and references, see [docs/](docs/README.md):
