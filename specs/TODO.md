@@ -27,7 +27,7 @@ technical_debt:
 
 ### 977. Organize TM base logic with extensions
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: logic
 - **Research**: [research-001.md](specs/977_organize_tm_base_logic_with_extensions/reports/research-001.md)
 
@@ -63,7 +63,7 @@ technical_debt:
 - **Effort**: 2.5 hours (5 phases)
 - **Status**: [IMPLEMENTING]
 - **Language**: lean
-- **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md)
+- **Research**: [research-001.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md), [research-002.md](specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md) (staged construction approach)
 - **Plan**: [implementation-001.md](specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260316.md](specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md)
 

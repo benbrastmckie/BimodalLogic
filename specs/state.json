@@ -8,11 +8,11 @@
     {
       "project_number": 977,
       "project_name": "organize_tm_base_logic_with_extensions",
-      "status": "researched",
+      "status": "planning",
       "language": "logic",
       "created": "2026-03-16T16:52:13Z",
-      "last_updated": "2026-03-16T17:05:35Z",
-      "session_id": "sess_1773680250_047fb0",
+      "last_updated": "2026-03-16T17:18:18Z",
+      "session_id": "sess_1773681481_808653",
       "researched": "2026-03-16T17:05:35Z"
     },
     {
@@ -88,6 +88,11 @@
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/summaries/implementation-summary-20260316.md",
           "type": "summary",
           "summary": "Detailed summary of restructuring work and remaining blockers"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplementary research identifying correct path for discreteness proofs via staged construction finiteness rather than DF frame condition extraction"
         }
       ],
       "planned": "2026-03-16T16:37:22Z",
