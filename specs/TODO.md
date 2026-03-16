@@ -27,7 +27,7 @@ technical_debt:
 
 ### 976. Clean up comments and improve documentation
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: general
 
 **Description**: Clean up the comments throughout the codebase and then proceed to improve all documentation so that every subdirectory has an accurate and complete README.md that fully reports on the files and subdirectories in the directory to which that README.md belongs. Then update the ROAD_MAP.md to clearly represent the present state and what remains.
@@ -82,15 +82,14 @@ technical_debt:
 ---
 
 ### 972. Review metalogic naming conventions for improvements
-- **Effort**: 2-4 hours
-- **Status**: [PLANNING]
+- **Effort**: 2 hours (4 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-03-16
 - **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/972_review_metalogic_naming_conventions/plans/implementation-001.md)
 
-**Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent, misleading, or redundant naming conventions. The goal is not wholesale renames but targeted improvements where names are genuinely confusing, inconsistent with surrounding conventions, or misleading about their mathematical content. Note: `temporally_coherent` and `SetMaximalConsistent` are acceptable as-is. Look for names that cause actual confusion when reading proofs or that conflict with standard mathematical terminology.
-
-**Research Finding**: Reviewed 16 files. Found naming conventions to be largely consistent and well-designed. No actionable changes recommended. The 2 minor inconsistencies identified (GContent/HContent casing, witness seed casing) are acceptable given internal consistency and widespread usage.
+**Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent, misleading, or redundant naming conventions. Fix issues 1, 2, and 4 from research: (1) GContent/HContent → snake_case, (2) WitnessSeed definitions → snake_case, (4) bmcs_ prefix → bfmcs_ for consistency.
 
 ---
 

@@ -8,10 +8,11 @@
     {
       "project_number": 976,
       "project_name": "clean_up_comments_improve_documentation",
-      "status": "not_started",
+      "status": "researching",
       "language": "general",
       "created": "2026-03-16T15:52:59Z",
-      "last_updated": "2026-03-16T15:52:59Z"
+      "last_updated": "2026-03-16T15:54:41Z",
+      "session_id": "sess_1773676459_551992"
     },
     {
       "project_number": 975,
@@ -347,10 +348,10 @@
     {
       "project_number": 972,
       "project_name": "review_metalogic_naming_conventions",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-16T15:35:42Z",
-      "last_updated": "2026-03-16T15:51:03Z",
+      "last_updated": "2026-03-16T15:54:48Z",
       "description": "Review Theories/Bimodal/Metalogic/ for inconsistent, misleading, or redundant naming conventions. Identify improvements (not wholesale renames) — looking for names that are genuinely confusing, inconsistent with Mathlib conventions, or redundant given their context. Originated from task 970 phase 9 deferral.",
       "session_id": "sess_1773676239_8cf53e",
       "researched": "2026-03-16T16:00:00Z",
@@ -359,8 +360,14 @@
           "path": "specs/972_review_metalogic_naming_conventions/reports/research-001.md",
           "type": "research",
           "summary": "Reviewed 16 files in Metalogic/. Found naming conventions largely consistent and well-designed. No actionable changes recommended - 2 minor inconsistencies identified (GContent casing, witness seed casing) are acceptable given internal consistency and usage."
+        },
+        {
+          "path": "specs/972_review_metalogic_naming_conventions/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for review_metalogic_naming_conventions"
         }
-      ]
+      ],
+      "planned": "2026-03-16T15:54:48Z"
     }
   ],
   "completed_projects": [

@@ -1,15 +1,20 @@
 {
-  "status": "in_progress",
-  "started_at": "2026-03-16T12:00:00Z",
-  "artifacts": [],
-  "partial_progress": {
-    "stage": "initializing",
-    "details": "Agent started, parsing delegation context"
-  },
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/972_review_metalogic_naming_conventions/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for review_metalogic_naming_conventions"
+    }
+  ],
+  "next_steps": "Run /implement 972 to execute the plan",
   "metadata": {
     "session_id": "sess_1773676239_8cf53e",
     "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 2
   }
 }
