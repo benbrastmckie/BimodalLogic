@@ -77,12 +77,12 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (3 remaining sorries)",
-      "last_updated": "2026-03-16T18:11:02Z",
+      "last_updated": "2026-03-16T18:14:22Z",
       "session_id": "sess_1742183000_p7k2m",
       "researched": "2026-03-16T17:56:38Z",
       "blocked_on": "Architectural issue: buildStagedTimeline adds density intermediates via DN axiom; no discrete construction exists",
@@ -104,17 +104,17 @@
           "summary": "Supplementary research identifying correct path for discreteness proofs via staged construction finiteness rather than DF frame condition extraction"
         },
         {
-          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Phase 4 BLOCKED: staged construction adds density intermediates universally"
-        },
-        {
           "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-003.md",
           "type": "research",
           "summary": "Team research (3 teammates): Option B (discrete staged construction) resolves blocker; task 973 effectively complete; refactor-first (978) does not help 974"
+        },
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for discrete staged construction approach (Option B)"
         }
       ],
-      "planned": "2026-03-16T17:28:52Z",
+      "planned": "2026-03-16T18:14:22Z",
       "started": "2026-03-16T16:40:04Z",
       "phases_completed": 3,
       "phases_total": 5
