@@ -8,29 +8,39 @@
     {
       "project_number": 983,
       "project_name": "review_decidability_fmp_completeness",
-      "status": "not_started",
+      "status": "researching",
       "language": "logic",
       "created": "2026-03-16T23:34:54Z",
-      "last_updated": "2026-03-16T23:34:54Z"
+      "last_updated": "2026-03-16T23:39:53Z",
+      "session_id": "sess_1773704373_51080a"
     },
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-16T23:45:00Z"
+      "last_updated": "2026-03-16T23:40:37Z",
+      "session_id": "sess_1773880500_a7c3e2",
+      "researched": "2026-03-16T23:40:37Z",
+      "artifacts": [
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-001.md",
+          "type": "research",
+          "summary": "Analyzed CanonicalMCS vs TimelineQuot domain gap. Found TimelineQuot elements contain MCS info via DenseTimelineElem. Recommended Option D: build FMCS over TimelineQuot directly using quotient representatives, then use Cantor isomorphism to Rat for AddCommGroup constraint. Estimated 3-4 hours implementation."
+        }
+      ]
     },
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-16T23:32:44Z",
-      "session_id": "sess_1773703759_f69482",
+      "last_updated": "2026-03-16T23:36:09Z",
+      "session_id": "sess_1773704156_320100",
       "researched": "2026-03-16T23:28:33Z",
       "artifacts": [
         {
@@ -49,7 +59,8 @@
           "summary": "6-phase implementation plan for constructive method approach to eliminate discrete_Icc_finite_axiom"
         }
       ],
-      "planned": "2026-03-16T23:32:44Z"
+      "planned": "2026-03-16T23:32:44Z",
+      "started": "2026-03-16T23:36:09Z"
     },
     {
       "project_number": 953,

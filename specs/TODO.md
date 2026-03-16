@@ -27,7 +27,7 @@ technical_debt:
 
 ### 983. Review decidability results and FMP for publication
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: logic
 
 **Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.
@@ -35,13 +35,16 @@ technical_debt:
 ---
 
 ### 982. Wire dense completeness domain connection
-- **Effort**: 3-5 hours
-- **Status**: [NOT STARTED]
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
+- **Research**: [research-001.md](specs/982_wire_dense_completeness_domain_connection/reports/research-001.md)
 
 **Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All individual components are proven sorry-free (`cantor_iso`, `bmcs_truth_lemma`, `temporal_coherent_family_exists_CanonicalMCS`). The 3 sorries in `FrameConditions/Completeness.lean` need wiring that connects these pieces through a domain transfer or unified construction.
+
+**Research Summary**: Analyzed CanonicalMCS vs TimelineQuot domain gap. Found TimelineQuot elements contain MCS info via DenseTimelineElem. Recommended Option D: build FMCS over TimelineQuot directly using quotient representatives, then use Cantor isomorphism to Rat for AddCommGroup constraint.
 
 **Resolution Path**:
 1. Build FMCS directly over TimelineQuot (preferred), OR
@@ -49,13 +52,13 @@ technical_debt:
 
 **Files to modify**:
 - `FrameConditions/Completeness.lean` (3 wiring sorries)
-- Potentially new infrastructure for domain transfer
+- New: TimelineQuotFMCS.lean (FMCS construction over TimelineQuot)
 
 ---
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 7 hours (6 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path)
