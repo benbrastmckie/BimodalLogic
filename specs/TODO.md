@@ -39,9 +39,9 @@ technical_debt:
 
 ### 979. Remove discrete_Icc_finite_axiom and prove stage-bounding lemma
 - **Effort**: 8-12 hours (8 phases)
-- **Status**: [PARTIAL]
+- **Status**: [RESEARCHED]
 - **Depends On**: Task 980 [COMPLETED]
-- **Research**: [research-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-001.md) (team: SuccOrder-first approach), [research-002.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-002.md) (DN root cause), [research-003.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-003.md) (post-980 analysis)
+- **Research**: [research-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-001.md) (team: SuccOrder-first approach), [research-002.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-002.md) (DN root cause), [research-003.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-003.md) (post-980 analysis), [research-004.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-004.md) (team math: h_content duality + phi=neg_bot analysis)
 - **Plan**: [implementation-002.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-002.md) (v2: 8 phases, covering lemma approach, no escape valves)
 - **Summary**: [implementation-summary-20260316.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/summaries/implementation-summary-20260316.md)
 - **Language**: lean
@@ -55,9 +55,10 @@ technical_debt:
 
 ### 978. Refactor TM proof system to typeclass-based frame condition architecture
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: logic
 - **Depends on**: Task 977 (must be completed first)
+- **Research**: [research-001.md](specs/978_refactor_tm_typeclass_frame_conditions/reports/research-001.md)
 
 **Description**: Following the completion of task 977 (which fills all metalogic gaps), refactor the TM proof system to implement the typeclass-based frame condition architecture described in the task 977 research (teammate D, architecture Option A). The refactor should make no compromises in pursuit of the most mathematically correct approach:
 
