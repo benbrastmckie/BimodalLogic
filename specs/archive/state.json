@@ -2,6 +2,147 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 961,
+      "project_name": "quotient_density_iteration_no_max_min_dense",
+      "status": "abandoned",
+      "language": "lean",
+      "priority": "high",
+      "description": "Prove NoMaxOrder, NoMinOrder, and DenselyOrdered for TimelineQuot in CantorApplication.lean by implementing well-founded iteration over distinguishing formulas. When density_frame_condition gives intermediate c between p and q but c falls in the same equivalence class as p or q (i.e., CanonicalR c p.mcs or CanonicalR q.mcs c), the argument must iterate using a different separating formula from the finite set subformulaClosure(anchor). The iteration terminates because each step either finds a strict intermediate (success) or consumes a formula from the finite distinguishing set, strictly decreasing a Nat measure. Implement using Nat.strongRecOn with fuel = subformulaClosure(anchor).card. Resolves 6 sorries: CantorApplication.lean lines 210 (NoMaxOrder reflexive), 269 (NoMinOrder reflexive), 332, 345, 380, 385 (DenselyOrdered iteration cases).",
+      "created": "2026-03-13T00:00:00Z",
+      "last_updated": "2026-03-16T01:52:52Z",
+      "unblocks": [
+        956
+      ],
+      "artifacts": [
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report with mathematical analysis of well-founded iteration for quotient density"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-002.md",
+          "type": "research",
+          "summary": "Blocker investigation: fuel-based termination is flawed, recommends direct case-based proof"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md",
+          "type": "handoff",
+          "summary": "Phase 1 blocked: direct case-based proof generates unbounded iteration, plan v002 'at most 2 applications' claim incorrect"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-003.md",
+          "type": "research",
+          "summary": "Blocker investigation: Classical.choose existence proof recommended over iterative construction"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/handoffs/phase-1-handoff-20260313.md",
+          "type": "handoff",
+          "summary": "Handoff for Phase 1 - strict_intermediate_aux helper created with 5 sorries"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-004.md",
+          "type": "research",
+          "summary": "Quotient collapse proof strategy: bounded iteration + Classical existence fallback"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-005.md",
+          "type": "research",
+          "summary": "Deep investigation: recommends quotient-level 'no covers' proof via toAntisymmetrization_lt_iff"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313c.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting changes, remaining sorries, and options"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313d.md",
+          "type": "summary",
+          "summary": "Iteration 2 analysis: Option B/C blocked by mathematical limitation, Option A (modify DenseTimeline.lean) required"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313e.md",
+          "type": "summary",
+          "summary": "Iteration 3: bounded iteration with 8 termination sorries remaining"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-006.md",
+          "type": "research",
+          "summary": "Team research: denselyOrdered_iff_forall_not_covBy architecture, termination gap analysis"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313f.md",
+          "type": "summary",
+          "summary": "Iteration 4: Phase 1 blocked on termination proof formalization"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-007.md",
+          "type": "research",
+          "summary": "Deep mathematical analysis: formula wellfoundedness vs non-iterative proof, proposes density_escapes_source_class lemma"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for proving density_escapes_source_class and resolving 6 sorries"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/summaries/implementation-summary-20260313.md",
+          "type": "summary",
+          "summary": "v007 investigation BLOCKED: density_escapes_source_class CANNOT be proven - Lindenbaum extension non-constructive"
+        },
+        {
+          "path": "specs/961_quotient_density_iteration_no_max_min_dense/reports/research-008.md",
+          "type": "research",
+          "summary": "OBSOLETE: goal achieved via Task 967 canonicalR_irreflexive - CantorApplication.lean has 0 sorries"
+        }
+      ],
+      "session_id": "sess_1773625711_9512",
+      "researched": "2026-03-16T01:52:52Z",
+      "planned": "2026-03-14T01:45:33Z",
+      "started": "2026-03-14T01:47:16Z",
+      "blocked": "2026-03-13T01:30:00Z",
+      "abandoned": "2026-03-16T02:06:26Z",
+      "abandoned_reason": "Goal achieved via Task 967 - canonicalR_irreflexive provides strictness, CantorApplication.lean has 0 sorries"
+    },
+    {
+      "project_number": 922,
+      "project_name": "strategy_study_fp_witness_completeness_blockers",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-02-24T17:33:56Z",
+      "last_updated": "2026-02-27T05:44:51Z",
+      "session_id": "sess_1772170595_cd6964",
+      "artifacts": [
+        {
+          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-008.md",
+          "type": "research",
+          "summary": "Deep investigation of unused LinearOrder/AddCommGroup, frame construction gap between semantics and completeness, and why the Preorder generalization eliminates the forward_F/backward_P blocker"
+        },
+        {
+          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for Preorder generalization approach to forward_F/backward_P completeness"
+        },
+        {
+          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/summaries/implementation-summary-20260224c.md",
+          "type": "summary",
+          "summary": "Phase D partial: fixed CanonicalMCS type, proved temporal_coherent_family_exists_CanonicalMCS (sorry-free), documented remaining blocker"
+        },
+        {
+          "path": "specs/922_strategy_study_fp_witness_completeness_blockers/reports/research-009.md",
+          "type": "research",
+          "summary": "Post-FMP-completeness reassessment. Key finding: FMP strong completeness via big conjunction trick is the path to zero-sorry (2-4h, 90%+ success). BFMCS modal saturation remains blocked over all domains."
+        }
+      ],
+      "description": "Meta-analysis of 16 research reports and 12 plan versions to extract actionable insights for overcoming the forward_F/backward_P completeness challenge. CONSTRAINT: Sorry debt is NEVER acceptable — the study must find a path to zero sorries, not evaluate sorry acceptance as an option.\n\nThe study should focus on LEARNING FROM FAILURES to inspire creative solutions:\n\n**Pattern Analysis of Failed Approaches:**\n- What common assumptions did linear chains, enriched chains, omega-squared chains, witness-graph-guided approaches, and FPreservingSeed all share that led to failure?\n- Is the \"Lindenbaum opacity\" a fundamental barrier, or does it reveal a hidden assumption we can drop?\n- Why did 12 successive plan revisions each believe their approach would work when all hit the same wall? What cognitive trap is at play?\n\n**Creative Reframing Questions:**\n- What if the problem is not \"prove forward_F for a chain\" but \"find a structure that makes forward_F trivially true\"?\n- Are there proof techniques from other domains (set theory, category theory, type theory) that handle similar \"witness existence under opacity\" problems?\n- Can we work backward from the goal state (a BFMCS Int with forward_F) to discover what properties the construction MUST have, rather than forward from chain construction?\n- What if we abandon BFMCS Int entirely and prove completeness through a different semantic structure?\n\n**Mandatory Outputs:**\n1. A \"lessons learned\" document identifying the precise mathematical property that all failed approaches lacked\n2. At least 3 genuinely novel approach ideas that do NOT fit the \"bottom-up chain construction\" pattern\n3. For each novel approach: a preliminary feasibility assessment with confidence level\n4. A ranked recommendation with clear decision criteria\n\nKey artifacts to study: `specs/916_implement_fp_witness_obligation_tracking/` (all reports, plans, handoffs), particularly the Phase 3 blocker analysis (`handoffs/phase-3-blocker-analysis-20260224.md`) which crystallizes the obstruction.",
+      "researched": "2026-02-27T05:44:51Z",
+      "planned": "2026-02-25T02:26:51Z",
+      "started": "2026-02-24T19:18:29Z",
+      "blocks": [
+        924
+      ],
+      "abandoned": "2026-03-16T01:51:18Z"
+    },
+    {
       "project_number": 9630,
       "project_name": "duration_group_taskframe_refactor",
       "status": "orphan_archived",
