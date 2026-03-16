@@ -25,6 +25,53 @@ technical_debt:
 
 ## Tasks
 
+### 975. Fix ProofSearch documentation example sorries
+- **Effort**: ~1 hour
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Fix 3 sorry placeholders in `Theories/Bimodal/Automation/ProofSearch.lean` at lines 1348, 1353, and 1358. These are `example` blocks demonstrating how bounded proof search would be invoked. Since `bounded_search` returns `Bool` (not `DerivationTree`), the examples cannot use it directly. Fix by providing minimal direct witnesses using existing axioms/rules, or convert to comments if purely aspirational.
+
+- Line 1348: `⊢ □p → □p` exists — trivially witnessed (axiom or identity)
+- Line 1353: `∃ proof : DerivationTree [] q, True` given hypotheses h1, h2 — witness via modus ponens on h1, h2
+- Line 1358: `∃ proof : DerivationTree [□p] □p, True` — witness via `DerivationTree.hyp`
+
+---
+
+### 974. Prove SuccOrder/PredOrder/IsSuccArchimedean in DiscreteTimeline.lean
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Complete 7 sorry placeholders in `Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean` for the discrete canonical timeline quotient, needed for the ℤ-isomorphism in the discrete D-from-syntax pipeline.
+
+**Sorries (lines 179, 187, 200, 212, 213, 218, 231):**
+- `SuccOrder.le_succ` (179): `a ≤ succ(a)` — follows from Classical.choice picking b > a
+- `SuccOrder.max_of_succ_le` (187): `IsMax a` when `succ(a) ≤ a` — contradiction with b > a
+- `SuccOrder.succ_le_of_lt` (200): **KEY** — Coverness from DF axiom: `a < b → succ(a) ≤ b`
+- `PredOrder.pred_le` (212), `PredOrder.min_of_le_pred` (213): symmetric to SuccOrder
+- `PredOrder.le_pred_of_lt` (218): Symmetric coverness from DP axiom
+- `IsSuccArchimedean.exists_succ_iterate_of_le` (231): Finite reachability via succ
+
+**Root cause**: `succ_le_of_lt` requires extracting the DF frame condition (no strict intermediate MCSs) at the canonical model level. The soundness proof shows DF is valid on the canonical frame, so coverness holds at the MCS level.
+
+---
+
+### 973. Prove NoMaxOrder/NoMinOrder on ConstructiveQuotient
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Complete 2 sorry placeholders in `Theories/Bimodal/Metalogic/Canonical/ConstructiveFragment.lean` at lines 580 and 585.
+
+**Sorries:**
+- `NoMaxOrder.exists_gt` (580): Every quotient element has a strictly greater element
+- `NoMinOrder.exists_lt` (585): Every quotient element has a strictly lesser element
+
+**Proof strategy**: Use seriality witnesses (F(¬⊥) → forward witness, P(¬⊥) → backward witness). Show witnesses are **strictly** ordered in the antisymmetrization quotient using `canonicalR_strict` from `CanonicalTimeline.lean`. The pattern is identical to the already sorry-free `NoMaxOrder`/`NoMinOrder` in `DiscreteTimeline.lean` (lines 247–285) — port that proof structure to `ConstructiveQuotient`.
+
+---
+
 ### 972. Review metalogic naming conventions for improvements
 - **Effort**: 2-4 hours
 - **Status**: [RESEARCHED]
