@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 977,
+      "project_name": "organize_tm_base_logic_with_extensions",
+      "status": "not_started",
+      "language": "logic",
+      "created": "2026-03-16T16:52:13Z",
+      "last_updated": "2026-03-16T16:52:13Z"
+    },
+    {
       "project_number": 976,
       "project_name": "clean_up_comments_improve_documentation",
       "status": "implementing",
@@ -79,12 +87,12 @@
     {
       "project_number": 973,
       "project_name": "prove_constructivefragment_nomaxorder_nominorder",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove NoMaxOrder and NoMinOrder on ConstructiveQuotient in ConstructiveFragment.lean (2 sorries)",
-      "last_updated": "2026-03-16T16:36:24Z",
+      "last_updated": "2026-03-16T18:00:00Z",
       "session_id": "sess_1773678967_4559",
       "researched": "2026-03-16T09:15:00Z",
       "artifacts": [
@@ -100,7 +108,8 @@
         }
       ],
       "planned": "2026-03-16T16:32:44Z",
-      "started": "2026-03-16T16:36:24Z"
+      "started": "2026-03-16T16:36:24Z",
+      "blocked_on": "Pre-existing build errors in ConstructiveFragment.lean - file uses undefined identifiers (GContent_subset_* etc.) that need casing fixes (task 972 Phase 1)"
     },
     {
       "project_number": 971,
@@ -367,7 +376,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 977,
+  "next_project_number": 978,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

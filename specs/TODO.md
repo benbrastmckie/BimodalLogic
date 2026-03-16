@@ -1,5 +1,5 @@
 ---
-next_project_number: 977
+next_project_number: 978
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 977. Organize TM base logic with extensions
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: logic
+
+**Description**: The proof system TM should be arranged into a base logic with various extensions (e.g., adding a discreteness axiom, or density axiom, etc.) with corresponding frame constraints, establishing soundness and completeness for the base logic and each extension. It is critical to identify pairings between all axioms that have corresponding frame constraints, and the axioms that do not and should be taken to belong to the base logic for TM rather than one of its extensions. Research the present standing of the codebase and the steps needed to progress towards a fully satisfactory logic, semantics with appropriate frame constraints, and metalogical results, refactoring the repository as need be to improve organization and fill in any missing results.
+
+---
 
 ### 976. Clean up comments and improve documentation
 - **Effort**: 12 hours (8 phases)
