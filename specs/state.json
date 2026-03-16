@@ -200,23 +200,6 @@
       "blocked_on": "lean-lsp-mcp issue #115 resolution"
     },
     {
-      "project_number": 793,
-      "project_name": "fix_claude_code_neovim_sidebar_black_screen",
-      "status": "researched",
-      "language": "general",
-      "created": "2026-02-01T21:58:48Z",
-      "last_updated": "2026-02-01T22:45:00Z",
-      "session_id": "sess_1769984537_dda9a0",
-      "researched": "2026-02-01T22:45:00Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md",
-          "summary": "Comprehensive research report analyzing Claude Code rendering issues, hook system timing, and Neovim integration with 9 prioritized fix recommendations"
-        }
-      ]
-    },
-    {
       "project_number": 394,
       "status": "researched",
       "project_name": "research_port_causal_semantics_from_paper",
@@ -356,12 +339,12 @@
     {
       "project_number": 972,
       "project_name": "review_metalogic_naming_conventions",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-03-16T15:35:42Z",
-      "last_updated": "2026-03-16T16:00:00Z",
+      "last_updated": "2026-03-16T15:51:03Z",
       "description": "Review Theories/Bimodal/Metalogic/ for inconsistent, misleading, or redundant naming conventions. Identify improvements (not wholesale renames) — looking for names that are genuinely confusing, inconsistent with Mathlib conventions, or redundant given their context. Originated from task 970 phase 9 deferral.",
-      "session_id": "sess_1773675555_31e621",
+      "session_id": "sess_1773676239_8cf53e",
       "researched": "2026-03-16T16:00:00Z",
       "artifacts": [
         {

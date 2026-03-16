@@ -74,7 +74,7 @@ technical_debt:
 
 ### 972. Review metalogic naming conventions for improvements
 - **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Created**: 2026-03-16
 - **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md)
@@ -199,18 +199,6 @@ technical_debt:
 - **Plan**: [implementation-002.md](specs/archive/619_agent_system_architecture_upgrade/plans/implementation-002.md)
 
 **Description**: Migrate all delegation skills from manual Task tool invocation to native `context: fork` frontmatter. Skills to migrate: skill-researcher, skill-lean-research, skill-planner, skill-implementer, skill-lean-implementation, skill-latex-implementation, skill-meta. Implementation plan has 3 phases: (1) verify bug fix with test skill, (2) migrate skill-researcher as pilot, (3) migrate remaining skills. Current workaround (Task tool delegation) continues to work. **Unblock when**: GitHub #16803 is closed AND fix verified locally. Last checked: 2026-02-17 — still OPEN (v2.1.32).
-
-### 793. Fix Claude Code neovim sidebar black screen delay
-- **Effort**: S
-- **Status**: [PLANNING]
-- **Language**: general
-- **Created**: 2026-02-01
-- **Researched**: 2026-02-01
-- **Research**: [research-001.md](specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md)
-
-**Description**: Investigate and fix issue where running a command in Claude Code sidebar in neovim causes an initial black screen (all text disappears) for approximately 30 seconds before showing activity. Functionality works correctly otherwise. Issue started recently. Root cause may be in hook system or external. Research online and review hook configuration to identify simple and elegant fix.
-
----
 
 ### 394. Research and port causal semantics from paper
 - **Effort**: 4-6 hours

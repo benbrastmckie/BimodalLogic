@@ -2,6 +2,24 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 793,
+      "project_name": "fix_claude_code_neovim_sidebar_black_screen",
+      "status": "abandoned",
+      "language": "general",
+      "created": "2026-02-01T21:58:48Z",
+      "last_updated": "2026-02-01T22:45:00Z",
+      "session_id": "sess_1769984537_dda9a0",
+      "researched": "2026-02-01T22:45:00Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/793_fix_claude_code_neovim_sidebar_black_screen/reports/research-001.md",
+          "summary": "Comprehensive research report analyzing Claude Code rendering issues, hook system timing, and Neovim integration with 9 prioritized fix recommendations"
+        }
+      ],
+      "abandoned": "2026-03-16T15:51:12Z"
+    },
+    {
       "project_number": 956,
       "project_name": "construct_d_as_translation_group_from_syntax",
       "status": "completed",
