@@ -39,13 +39,13 @@
     {
       "project_number": 979,
       "project_name": "remove_discrete_icc_finite_axiom_prove_stage_bounding",
-      "status": "researched",
+      "status": "researching",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T20:33:40Z",
-      "last_updated": "2026-03-16T22:23:09Z",
+      "last_updated": "2026-03-16T22:25:07Z",
       "description": "Remove the axiom in Phase 7b (discrete_Icc_stage_bounded) of task 974 implementation plan, reflecting on research-006.md to provide the most mathematically correct approach with no compromises",
-      "session_id": "sess_1773699358_4010cf",
+      "session_id": "sess_1773699894_57486e",
       "researched": "2026-03-16T22:23:09Z",
       "artifacts": [
         {
@@ -77,6 +77,11 @@
           "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-004.md",
           "type": "research",
           "summary": "Team math research (2 teammates): covering lemma gap confirmed; h_content duality chain and phi=neg_bot analysis identified as most promising paths"
+        },
+        {
+          "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-005.md",
+          "type": "research",
+          "summary": "IRR axiom analysis: canonicalR_irreflexive is a proven theorem (Task 967), appropriate for reflexive semantics, should be retained unchanged; 11 declarations depend on it; does not affect task 979 blocking"
         }
       ],
       "planned": "2026-03-16T21:54:24Z",
@@ -95,14 +100,14 @@
     {
       "project_number": 978,
       "project_name": "refactor_tm_typeclass_frame_conditions",
-      "status": "researched",
+      "status": "planning",
       "language": "logic",
       "depends_on": [
         977
       ],
       "created": "2026-03-16T17:29:12Z",
-      "last_updated": "2026-03-16T22:23:23Z",
-      "session_id": "sess_1773699530_28595",
+      "last_updated": "2026-03-16T22:28:06Z",
+      "session_id": "sess_1773700072_15175",
       "researched": "2026-03-16T22:23:23Z",
       "artifacts": [
         {
