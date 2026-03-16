@@ -167,20 +167,10 @@ theorem bmcs_transitivity (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.familie
     Formula.box φ ∈ fam.mcs t :=
   bmcs_reflexivity B fam hfam (Formula.box φ) t h
 
-/-!
-## Basic Accessors
--/
+-- Unused accessors removed in Task 970: BFMCS.mcs_at, BFMCS.is_mcs
+-- These were thin wrappers around FMCS fields that were never used.
 
-/-- Get the MCS of a family at a specific time -/
-def BFMCS.mcs_at (B : BFMCS D) (fam : FMCS D) (t : D) : Set Formula :=
-  fam.mcs t
-
-/-- The MCS at any family and time is maximal consistent -/
-lemma BFMCS.is_mcs (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
-    SetMaximalConsistent (fam.mcs t) :=
-  fam.is_mcs t
-
-/-- The MCS at any family and time is consistent -/
+/-- The MCS at any family and time is consistent (used by bmcs_diamond_witness) -/
 lemma BFMCS.consistent (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families) (t : D) :
     SetConsistent (fam.mcs t) :=
   (fam.is_mcs t).1
@@ -235,35 +225,8 @@ theorem bmcs_diamond_witness (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.fami
   -- But neg (Box neg phi) is also in fam.mcs t, contradicting consistency
   exact set_consistent_not_both (B.consistent fam hfam t) (Formula.box (Formula.neg φ)) h_box_neg h_diamond
 
-/-!
-## Useful Derived Lemmas
--/
-
-/--
-If phi is in all families at time t, then Box phi is in all families at time t.
--/
-lemma BFMCS.box_from_universal (B : BFMCS D) (φ : Formula) (t : D)
-    (h : ∀ fam ∈ B.families, φ ∈ fam.mcs t) :
-    ∀ fam ∈ B.families, Formula.box φ ∈ fam.mcs t := by
-  intro fam hfam
-  exact B.modal_backward fam hfam φ t h
-
-/--
-If Box phi is in some family at time t, then phi is in all families at time t.
--/
-lemma BFMCS.phi_from_box (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
-    (φ : Formula) (t : D) (h : Formula.box φ ∈ fam.mcs t) :
-    ∀ fam' ∈ B.families, φ ∈ fam'.mcs t :=
-  B.modal_forward fam hfam φ t h
-
-/--
-Box phi in MCS iff phi in all families' MCSes (the key bidirectional lemma).
--/
-theorem BFMCS.box_iff_universal (B : BFMCS D) (fam : FMCS D) (hfam : fam ∈ B.families)
-    (φ : Formula) (t : D) :
-    Formula.box φ ∈ fam.mcs t ↔ ∀ fam' ∈ B.families, φ ∈ fam'.mcs t := by
-  constructor
-  · exact B.phi_from_box fam hfam φ t
-  · exact B.modal_backward fam hfam φ t
+-- Unused derived lemmas removed in Task 970:
+-- BFMCS.box_from_universal, BFMCS.phi_from_box, BFMCS.box_iff_universal
+-- These were never used in any proofs.
 
 end Bimodal.Metalogic.Bundle

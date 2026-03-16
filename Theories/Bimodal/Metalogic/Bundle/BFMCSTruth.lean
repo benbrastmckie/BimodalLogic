@@ -97,28 +97,9 @@ def bmcs_truth_at (B : BFMCS D) (fam : FMCS D) (t : D) : Formula → Prop
 A formula is BFMCS-valid if it's true at all families, times, and bundles.
 -/
 
-/--
-BFMCS validity: a formula is valid iff true everywhere in every BFMCS.
-
-This is the semantic notion for the Henkin-style completeness proof.
-Completeness states: `bmcs_valid φ ↔ Derivable [] φ`
--/
-def bmcs_valid (φ : Formula) : Prop :=
-  ∀ (D : Type) [Preorder D],
-  ∀ (B : BFMCS D), ∀ fam ∈ B.families, ∀ t : D, bmcs_truth_at B fam t φ
-
-/--
-BFMCS satisfiability: a formula is satisfiable in a BFMCS at some family and time.
--/
-def bmcs_satisfiable_at (B : BFMCS D) (φ : Formula) : Prop :=
-  ∃ fam ∈ B.families, ∃ t : D, bmcs_truth_at B fam t φ
-
-/--
-Context is satisfied in a BFMCS at a given family and time.
--/
-def bmcs_satisfies_context (B : BFMCS D) (fam : FMCS D) (t : D)
-    (Γ : List Formula) : Prop :=
-  ∀ γ ∈ Γ, bmcs_truth_at B fam t γ
+-- Unused validity definitions removed in Task 970:
+-- bmcs_valid, bmcs_satisfiable_at, bmcs_satisfies_context
+-- These were never used in actual completeness proofs.
 
 /-!
 ## Basic Truth Properties

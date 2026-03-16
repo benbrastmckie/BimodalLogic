@@ -163,7 +163,7 @@ Main theorems must reflect this semantic framework and connect:
 
 ---
 
-### Phase 4: Remove Unused FMCS/BFMCS Convenience Definitions [NOT STARTED]
+### Phase 4: Remove Unused FMCS/BFMCS Convenience Definitions [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Remove ~15 unused accessor wrappers and derived lemmas created during proof development but never adopted.
