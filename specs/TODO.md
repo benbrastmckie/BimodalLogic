@@ -50,10 +50,11 @@ technical_debt:
 
 ### 929. Prepare metalogic for publication
 - **Effort**: 10-13 hours (revised estimate)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/929_prepare_metalogic_for_publication/reports/research-001.md) (team: 3 teammates, full publication readiness checklist)
 - **Plan**: [implementation-001.md](specs/929_prepare_metalogic_for_publication/plans/implementation-001.md) (9 phases)
+- **Summary**: [implementation-summary-20260315.md](specs/929_prepare_metalogic_for_publication/summaries/implementation-summary-20260315.md)
 
 **Description**: Systematic preparation of the bimodal temporal logic metalogic for publication. The codebase currently has two independent sorry-free, axiom-free completeness proofs (BMCS via ChainBundleBMCS.lean and FMP via SemanticCanonicalModel.lean), a sound and complete decidability procedure, and a clean build. The following work remains before publication:
 
