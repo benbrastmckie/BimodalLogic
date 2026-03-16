@@ -3,6 +3,7 @@ import Bimodal.Syntax
 import Bimodal.ProofSystem
 import Bimodal.Semantics
 import Bimodal.Metalogic.Metalogic
+import Bimodal.FrameConditions
 import Bimodal.Theorems
 import Bimodal.Automation
 import Bimodal.Examples
@@ -21,6 +22,10 @@ with linear temporal logic.
 - `Bimodal.ProofSystem`: Hilbert-style proof system with 21 axiom schemata (base/dense/discrete) and 7 inference rules
 - `Bimodal.Semantics`: Task frame semantics with world histories, truth evaluation, and validity
 - `Bimodal.Metalogic`: Soundness theorem, completeness infrastructure, and tableau decision procedure
+- `Bimodal.FrameConditions`: Typeclass-based frame condition architecture (Task 978)
+  - `LinearTemporalFrame`, `SerialFrame`, `DenseTemporalFrame`, `DiscreteTemporalFrame`
+  - Parameterized validity, soundness, and completeness
+  - Axiom compatibility typeclasses
 - `Bimodal.Theorems`: Derived theorems (6 modules: Combinators, Propositional, ModalS5, ModalS4,
   Perpetuity, GeneralizedNecessitation)
 - `Bimodal.Automation`: Proof tactics (modal_search, temporal_search) and native proof search
@@ -67,6 +72,7 @@ import Bimodal.Theorems
 * [ProofSystem.lean](ProofSystem.lean) - Axioms and derivation
 * [Semantics.lean](Semantics.lean) - Task frame semantics
 * [Metalogic.lean](Metalogic.lean) - Soundness, completeness, decidability
+* [FrameConditions.lean](FrameConditions.lean) - Typeclass-based frame conditions
 * [Theorems.lean](Theorems.lean) - Derived theorems (6 modules)
 * [Automation.lean](Automation.lean) - Proof tactics
 * [Examples.lean](Examples.lean) - Pedagogical examples

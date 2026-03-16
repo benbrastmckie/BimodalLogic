@@ -137,13 +137,13 @@
     {
       "project_number": 978,
       "project_name": "refactor_tm_typeclass_frame_conditions",
-      "status": "implementing",
+      "status": "completed",
       "language": "logic",
       "depends_on": [
         977
       ],
       "created": "2026-03-16T17:29:12Z",
-      "last_updated": "2026-03-16T22:58:39Z",
+      "last_updated": "2026-03-16T23:18:26Z",
       "session_id": "sess_1773701883_11424",
       "researched": "2026-03-16T22:23:23Z",
       "artifacts": [
@@ -161,10 +161,17 @@
           "path": "specs/978_refactor_tm_typeclass_frame_conditions/reports/research-002.md",
           "type": "research",
           "summary": "Mathematical foundations for frame condition typeclass architecture: order-theoretic characterization of discreteness, LocallyFiniteOrder as key bridge"
+        },
+        {
+          "path": "specs/978_refactor_tm_typeclass_frame_conditions/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Typeclass-based frame condition architecture implementation (6 phases, 5 new Lean files)"
         }
       ],
       "planned": "2026-03-16T22:57:06Z",
-      "started": "2026-03-16T22:58:39Z"
+      "started": "2026-03-16T22:58:39Z",
+      "completed": "2026-03-16T23:18:26Z",
+      "completion_summary": "Implemented typeclass-based frame condition architecture with LinearTemporalFrame, SerialFrame, DenseTemporalFrame, DiscreteTemporalFrame typeclasses. Created parameterized validity, soundness, and completeness theorems. All 21 axioms have compatibility instances."
     },
     {
       "project_number": 977,

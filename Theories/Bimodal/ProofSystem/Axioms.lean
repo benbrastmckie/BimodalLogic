@@ -439,6 +439,16 @@ The classification determines which axioms can be used in completeness proofs:
 
 Note: Mixing Dense and Discrete axioms yields an inconsistent logic
 (no frame can be both densely ordered and have immediate successors).
+
+**DEPRECATION NOTICE** (Task 978):
+This enum-based classification is superseded by the typeclass architecture
+in `Bimodal.FrameConditions`. For new code, prefer:
+- `LinearTemporalFrame`: replaces FrameClass.Base
+- `DenseTemporalFrame`: replaces FrameClass.Dense
+- `DiscreteTemporalFrame`: replaces FrameClass.Discrete
+
+The typeclasses provide stronger type-level guarantees and integrate
+with Mathlib's order typeclass hierarchy.
 -/
 inductive FrameClass where
   /-- Axioms valid on all linear orders (14 axioms) -/

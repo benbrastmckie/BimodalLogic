@@ -1,23 +1,49 @@
 {
-  "status": "researched",
+  "status": "implemented",
+  "session_id": "sess_1773701883_11424",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/978_refactor_tm_typeclass_frame_conditions/reports/research-002.md",
-      "summary": "Mathematical foundations for frame condition typeclass architecture: order-theoretic characterization of discreteness, LocallyFiniteOrder as key bridge, analysis of discrete_Icc_finite_axiom"
+      "path": "specs/978_refactor_tm_typeclass_frame_conditions/summaries/implementation-summary-20260316.md",
+      "type": "summary",
+      "summary": "Typeclass-based frame condition architecture implementation (6 phases, 5 new Lean files)"
+    },
+    {
+      "path": "Theories/Bimodal/FrameConditions/FrameClass.lean",
+      "type": "source",
+      "summary": "Frame condition typeclass definitions"
+    },
+    {
+      "path": "Theories/Bimodal/FrameConditions/Validity.lean",
+      "type": "source",
+      "summary": "Parameterized validity definitions"
+    },
+    {
+      "path": "Theories/Bimodal/FrameConditions/Soundness.lean",
+      "type": "source",
+      "summary": "Parameterized soundness theorems"
+    },
+    {
+      "path": "Theories/Bimodal/FrameConditions/Compatibility.lean",
+      "type": "source",
+      "summary": "Axiom compatibility typeclass instances"
+    },
+    {
+      "path": "Theories/Bimodal/FrameConditions/Completeness.lean",
+      "type": "source",
+      "summary": "Completeness wiring through typeclass API"
+    },
+    {
+      "path": "Theories/Bimodal/FrameConditions.lean",
+      "type": "source",
+      "summary": "Root module for FrameConditions"
     }
   ],
-  "next_steps": "Continue /implement 978 with mathematical foundations documented",
   "metadata": {
-    "session_id": "sess_1773701941_6cbd0a",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 7200,
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": ["order-theory/partial-orders.md", "project/math/README.md"],
-    "mathlib_lookups_performed": 12,
-    "context_extension_tasks": [],
-    "context_candidates_count": 1
-  }
+    "phases_completed": 6,
+    "phases_total": 6
+  },
+  "completion_data": {
+    "completion_summary": "Implemented typeclass-based frame condition architecture with LinearTemporalFrame, SerialFrame, DenseTemporalFrame, DiscreteTemporalFrame typeclasses. Created parameterized validity, soundness, and completeness theorems. All 21 axioms have compatibility instances."
+  },
+  "completed_at": "2026-03-16T14:30:00Z"
 }
