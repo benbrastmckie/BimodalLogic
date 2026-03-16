@@ -34,7 +34,7 @@ Re-exported from Core modules:
 - `set_lindenbaum`: Lindenbaum's lemma via Zorn
 - `set_mcs_closed_under_derivation`: MCS deductive closure
 - `set_mcs_implication_property`, `set_mcs_negation_complete`: MCS properties
-- `set_mcs_all_future_all_future`, `set_mcs_all_past_all_past`: Temporal 4 properties
+- `set_mcs_all_future_all_future`, `set_mcs_all_past_all_past`, `temp_4_past`: Temporal 4 properties (canonical versions in MCSProperties.lean)
 
 Defined here:
 - `set_mcs_box_closure`: Modal T property for MCS
@@ -362,96 +362,10 @@ theorem set_mcs_box_box {S : Set Formula} {φ : Formula}
   have h_sub : ∀ χ ∈ [Formula.box φ], χ ∈ S := by simp [h_box]
   exact set_mcs_closed_under_derivation h_mcs [Formula.box φ] h_sub h_deriv
 
-/--
-Set-based MCS: temporal 4 axiom property for all_future.
-
-If Gφ ∈ S for a SetMaximalConsistent S, then GGφ ∈ S.
-
-**Proof Strategy**:
-1. Temporal 4 axiom: Gφ → GGφ
-2. With Gφ ∈ S, derive GGφ via modus ponens
-3. By closure: GGφ ∈ S
-
-This is the future transitivity property: always future implies always always future.
--/
-theorem set_mcs_all_future_all_future {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
-    (h_all_future : Formula.all_future φ ∈ S) : (Formula.all_future φ).all_future ∈ S := by
-  -- Temporal 4 axiom: Gφ → GGφ
-  have h_temp_4_thm : [] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 φ)
-  -- Weaken to context [Gφ]
-  have h_temp_4 : [Formula.all_future φ] ⊢ (Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)) :=
-    DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
-  -- Assume Gφ in context
-  have h_all_future_assume : [Formula.all_future φ] ⊢ Formula.all_future φ :=
-    DerivationTree.assumption _ _ (by simp)
-  -- Apply modus ponens to get GGφ
-  have h_deriv : [Formula.all_future φ] ⊢ (Formula.all_future φ).all_future :=
-    DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_future_assume
-  -- By closure: GGφ ∈ S
-  have h_sub : ∀ χ ∈ [Formula.all_future φ], χ ∈ S := by simp [h_all_future]
-  exact set_mcs_closed_under_derivation h_mcs [Formula.all_future φ] h_sub h_deriv
-
-/--
-Derivation of temporal 4 axiom for past: Hφ → HHφ.
-
-Derived by applying temporal duality to the temp_4 axiom (Gφ → GGφ).
--/
-def temp_4_past (φ : Formula) : DerivationTree [] (φ.all_past.imp φ.all_past.all_past) := by
-  -- We want: Hφ → HHφ
-  -- By temporal duality from: Gψ → GGψ where ψ = swap_temporal φ
-  -- swap_temporal of (Gψ → GGψ) = Hφ' → HHφ' where φ' = swap_temporal ψ = φ
-  let ψ := φ.swap_temporal
-  -- Step 1: Get T4 axiom for ψ: Gψ → GGψ
-  have h1 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future) :=
-    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
-  -- Step 2: Apply temporal duality to get: H(swap ψ) → HH(swap ψ)
-  have h2 : DerivationTree [] (ψ.all_future.imp ψ.all_future.all_future).swap_temporal :=
-    DerivationTree.temporal_duality _ h1
-  -- Step 3: The result has type H(swap ψ) → HH(swap ψ) = Hφ → HHφ
-  -- since swap(swap φ) = φ by involution
-  have h3 : (ψ.all_future.imp ψ.all_future.all_future).swap_temporal =
-      φ.all_past.imp φ.all_past.all_past := by
-    -- ψ = φ.swap_temporal, so ψ.swap_temporal = φ.swap_temporal.swap_temporal = φ
-    simp only [Formula.swap_temporal]
-    -- Now we need to show: ψ.swap_temporal.all_past.imp ... = φ.all_past.imp ...
-    -- where ψ.swap_temporal = φ by involution
-    have h_inv : ψ.swap_temporal = φ := Formula.swap_temporal_involution φ
-    rw [h_inv]
-  rw [h3] at h2
-  exact h2
-
-/--
-Set-based MCS: temporal 4 axiom property for all_past.
-
-If Hφ ∈ S for a SetMaximalConsistent S, then HHφ ∈ S.
-
-**Proof Strategy**:
-1. Use derived temp_4_past: Hφ → HHφ
-2. With Hφ ∈ S, derive HHφ via modus ponens
-3. By closure: HHφ ∈ S
-
-This is the past transitivity property: always past implies always always past.
--/
-theorem set_mcs_all_past_all_past {S : Set Formula} {φ : Formula}
-    (h_mcs : SetMaximalConsistent S)
-    (h_all_past : Formula.all_past φ ∈ S) : (Formula.all_past φ).all_past ∈ S := by
-  -- Derived temporal 4 for past: Hφ → HHφ
-  have h_temp_4_past_thm : [] ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
-    temp_4_past φ
-  -- Weaken to context [Hφ]
-  have h_temp_4 : [Formula.all_past φ] ⊢ (Formula.all_past φ).imp (Formula.all_past (Formula.all_past φ)) :=
-    DerivationTree.weakening [] _ _ h_temp_4_past_thm (by intro; simp)
-  -- Assume Hφ in context
-  have h_all_past_assume : [Formula.all_past φ] ⊢ Formula.all_past φ :=
-    DerivationTree.assumption _ _ (by simp)
-  -- Apply modus ponens to get HHφ
-  have h_deriv : [Formula.all_past φ] ⊢ (Formula.all_past φ).all_past :=
-    DerivationTree.modus_ponens _ _ _ h_temp_4 h_all_past_assume
-  -- By closure: HHφ ∈ S
-  have h_sub : ∀ χ ∈ [Formula.all_past φ], χ ∈ S := by simp [h_all_past]
-  exact set_mcs_closed_under_derivation h_mcs [Formula.all_past φ] h_sub h_deriv
+-- Duplicate theorems removed in Task 970 Phase 5:
+-- - set_mcs_all_future_all_future: canonical version in MCSProperties.lean
+-- - temp_4_past: canonical version in MCSProperties.lean
+-- - set_mcs_all_past_all_past: canonical version in MCSProperties.lean
 
 /--
 Set-based MCS: diamond-box duality (forward direction).

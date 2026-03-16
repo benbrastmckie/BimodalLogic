@@ -323,7 +323,7 @@ Since Box chi_i ∈ M for all i (definition of BoxContent), Box(neg psi) ∈ M.
 But Diamond(psi) = neg(Box(neg psi)) is also in M, contradicting consistency.
 -/
 theorem modal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ M) :
+    (psi : Formula) (h_diamond : psi.diamond ∈ M) :
     SetConsistent (ModalWitnessSeed M psi) := by
   intro L hL_sub ⟨d⟩
 
@@ -367,7 +367,7 @@ theorem modal_witness_seed_consistent (M : Set Formula) (h_mcs : SetMaximalConsi
         h_Box_context_in_M d_Box_neg
 
     -- Contradiction: Diamond(psi) = neg(Box(neg psi)) is also in M
-    have h_diamond_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+    have h_diamond_eq : psi.diamond = Formula.neg (Formula.box (Formula.neg psi)) := rfl
     rw [h_diamond_eq] at h_diamond
     exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg psi)) h_Box_neg_in_M h_diamond
 
@@ -431,11 +431,11 @@ So G(neg(Box(neg psi))) ∈ M, i.e., G(Diamond(psi)) ∈ M.
 Hence Diamond(psi) ∈ GContent(M).
 -/
 theorem diamond_in_GContent (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ M) :
-    diamondFormula psi ∈ GContent M := by
+    (psi : Formula) (h_diamond : psi.diamond ∈ M) :
+    psi.diamond ∈ GContent M := by
   simp only [GContent, Set.mem_setOf_eq]
   -- Diamond(psi) = neg(Box(neg psi))
-  have h_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+  have h_eq : psi.diamond = Formula.neg (Formula.box (Formula.neg psi)) := rfl
   rw [h_eq] at h_diamond ⊢
   -- Step 1: By axiom 5, neg(Box(neg psi)) → Box(neg(Box(neg psi)))
   have h_ax5 := neg_box_to_box_neg_box (Formula.neg psi)
@@ -475,8 +475,8 @@ CanonicalR M M' means GContent(M) ⊆ M'.
 -/
 theorem diamond_persistent_forward (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M M') (psi : Formula) (h_diamond : diamondFormula psi ∈ M) :
-    diamondFormula psi ∈ M' :=
+    (h_R : CanonicalR M M') (psi : Formula) (h_diamond : psi.diamond ∈ M) :
+    psi.diamond ∈ M' :=
   h_R (diamond_in_GContent M h_mcs psi h_diamond)
 
 /--
@@ -496,10 +496,10 @@ by proving H(Diamond(psi)) ∈ M, using the derived lemma `box_to_past`
 -/
 theorem diamond_persistent_backward (M M' : Set Formula)
     (h_mcs : SetMaximalConsistent M) (h_mcs' : SetMaximalConsistent M')
-    (h_R : CanonicalR M' M) (psi : Formula) (h_diamond : diamondFormula psi ∈ M) :
-    diamondFormula psi ∈ M' := by
+    (h_R : CanonicalR M' M) (psi : Formula) (h_diamond : psi.diamond ∈ M) :
+    psi.diamond ∈ M' := by
   -- Diamond(psi) = neg(Box(neg psi))
-  have h_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+  have h_eq : psi.diamond = Formula.neg (Formula.box (Formula.neg psi)) := rfl
   rw [h_eq] at h_diamond ⊢
   -- Step 1: By axiom 5, neg(Box(neg psi)) → Box(neg(Box(neg psi)))
   have h_ax5 := neg_box_to_box_neg_box (Formula.neg psi)
@@ -704,16 +704,16 @@ Backward: if `Diamond(psi) ∈ mcs(w₂)` and `w₁ ≤ w₂`, then `Diamond(psi
 theorem chainFMCS_diamond_persistent_forward (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag)
     (h_le : w₁ ≤ w₂) (psi : Formula)
-    (h_diamond : diamondFormula psi ∈ chainFMCS_mcs flag w₁) :
-    diamondFormula psi ∈ chainFMCS_mcs flag w₂ :=
+    (h_diamond : psi.diamond ∈ chainFMCS_mcs flag w₁) :
+    psi.diamond ∈ chainFMCS_mcs flag w₂ :=
   diamond_persistent_forward w₁.val.world w₂.val.world
     w₁.val.is_mcs w₂.val.is_mcs h_le psi h_diamond
 
 theorem chainFMCS_diamond_persistent_backward (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag)
     (h_le : w₁ ≤ w₂) (psi : Formula)
-    (h_diamond : diamondFormula psi ∈ chainFMCS_mcs flag w₂) :
-    diamondFormula psi ∈ chainFMCS_mcs flag w₁ :=
+    (h_diamond : psi.diamond ∈ chainFMCS_mcs flag w₂) :
+    psi.diamond ∈ chainFMCS_mcs flag w₁ :=
   diamond_persistent_backward w₂.val.world w₁.val.world
     w₂.val.is_mcs w₁.val.is_mcs h_le psi h_diamond
 
@@ -723,7 +723,7 @@ of some chain element, then {psi} ∪ BoxContent(mcs(w)) is consistent.
 -/
 theorem chainFMCS_modal_witness_seed_consistent (flag : Flag CanonicalMCS)
     (w : ChainFMCSDomain flag) (psi : Formula)
-    (h_diamond : diamondFormula psi ∈ chainFMCS_mcs flag w) :
+    (h_diamond : psi.diamond ∈ chainFMCS_mcs flag w) :
     SetConsistent (ModalWitnessSeed (chainFMCS_mcs flag w) psi) :=
   modal_witness_seed_consistent w.val.world w.val.is_mcs psi h_diamond
 

@@ -79,7 +79,15 @@ Key findings from both research reports:
 
 ## Implementation Phases
 
-### Phase 1: Audit Dependencies and Establish Baseline [NOT STARTED]
+### Phase 1: Audit Dependencies and Establish Baseline [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Verified: `lake build` passes (baseline established)
+- Audited: TruthLemma.lean imported by 3 active files (Metalogic.lean, CanonicalConstruction.lean, Completeness.lean)
+- Audited: BFMCSTruth.lean imported by only TruthLemma.lean in active code
+- Confirmed: No unexpected dependencies - matches research findings exactly
 
 - **Dependencies:** None
 - **Goal:** Verify all dependency assumptions from research and establish clean baseline
@@ -107,7 +115,14 @@ Key findings from both research reports:
 
 ---
 
-### Phase 2: Archive BFMCSTruth.lean to Boneyard [NOT STARTED]
+### Phase 2: Archive BFMCSTruth.lean to Boneyard [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Created: Boneyard/Task971/ directory
+- Moved: BFMCSTruth.lean to Boneyard/Task971/ with archive header
+- Updated: Boneyard/README.md with Task 971 archive record
 
 - **Dependencies:** Phase 1
 - **Goal:** Move BFMCSTruth.lean to Boneyard in bulk (no shims, no deprecation in place)
@@ -150,7 +165,16 @@ canonical constructions are used. The `canonical_truth_lemma` in
 
 ---
 
-### Phase 3: Archive TruthLemma.lean to Boneyard [NOT STARTED]
+### Phase 3: Archive TruthLemma.lean to Boneyard [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Moved: TruthLemma.lean to Boneyard/Task971/ with archive header
+- Removed: `import Bimodal.Metalogic.Bundle.TruthLemma` from CanonicalConstruction.lean, Metalogic.lean, Completeness.lean
+- Added: `neg_imp_implies_antecedent` and `neg_imp_implies_neg_consequent` helper definitions to CanonicalConstruction.lean
+- Added: imports for DeductionTheorem and Propositional to CanonicalConstruction.lean
+- Verified: `lake build` passes
 
 - **Dependencies:** Phase 2
 - **Goal:** Move TruthLemma.lean to Boneyard in bulk (completing layer elimination)
@@ -194,7 +218,14 @@ in `CanonicalConstruction.lean`, which proves the same result directly at the
 
 ---
 
-### Phase 4: Fix CanonicalConstruction.lean Dependencies (If Needed) [NOT STARTED]
+### Phase 4: Fix CanonicalConstruction.lean Dependencies (If Needed) [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Dependencies resolved in Phase 3 (helper functions ported)
+- No additional corollaries needed - `bmcs_eval_truth`, `bmcs_eval_mcs`, `bmcs_box_iff_all_true` confirmed unused by active code per research
+- `lake build` passes
 
 - **Dependencies:** Phase 3
 - **Goal:** Resolve any missing definitions that CanonicalConstruction.lean imported from TruthLemma.lean
@@ -226,7 +257,15 @@ in `CanonicalConstruction.lean`, which proves the same result directly at the
 
 ---
 
-### Phase 5: Update Metalogic.lean Publication Exports [NOT STARTED]
+### Phase 5: Update Metalogic.lean Publication Exports [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Removed: `import Bimodal.Metalogic.Bundle.TruthLemma`
+- Updated: Publication-ready theorem list (bmcs_truth_lemma -> canonical_truth_lemma)
+- Updated: Submodule description (truth lemma -> canonical truth lemma)
+- Updated: References section (TruthLemma.lean -> CanonicalConstruction.lean)
 
 - **Dependencies:** Phase 4
 - **Goal:** Clean up the publication entry point to reflect streamlined architecture
@@ -253,7 +292,18 @@ in `CanonicalConstruction.lean`, which proves the same result directly at the
 
 ---
 
-### Phase 6: Update StagedConstruction/Completeness.lean Documentation [NOT STARTED]
+### Phase 6: Update StagedConstruction/Completeness.lean Documentation [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Removed: `import Bimodal.Metalogic.Bundle.TruthLemma`
+- Added: `import Bimodal.Metalogic.Bundle.CanonicalConstruction`
+- Updated: Architecture pipeline description (BFMCS + CanonicalConstruction)
+- Updated: Zero-Sorry Status (canonical_truth_lemma, shifted_truth_lemma)
+- Updated: References section (TruthLemma.lean -> CanonicalConstruction.lean)
+- Updated: Key Infrastructure Summary (bmcs_truth_lemma -> canonical_truth_lemma)
+- Verified: `lake build` passes
 
 - **Dependencies:** Phase 5
 - **Goal:** Update completeness pipeline documentation to reflect single path
@@ -277,7 +327,16 @@ in `CanonicalConstruction.lean`, which proves the same result directly at the
 
 ---
 
-### Phase 7: Clean Up Bundle/README.md and Documentation [NOT STARTED]
+### Phase 7: Clean Up Bundle/README.md and Documentation [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Rewrote: Bundle/README.md to reflect Task 971 architecture
+- Removed: All references to BFMCSTruth.lean and TruthLemma.lean
+- Added: Task 971 Architecture Simplification section
+- Updated: Main theorems table (canonical_truth_lemma, shifted_truth_lemma)
+- Updated: Usage examples to reference CanonicalConstruction.lean
 
 - **Dependencies:** Phase 6
 - **Goal:** Update all documentation to reflect the clean architecture
@@ -303,7 +362,17 @@ in `CanonicalConstruction.lean`, which proves the same result directly at the
 
 ---
 
-### Phase 8: Final Verification and Build [NOT STARTED]
+### Phase 8: Final Verification and Build [COMPLETED]
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773640383_94ce8f**
+- Verified: `lake build` passes with zero errors
+- Verified: BFMCSTruth.lean and TruthLemma.lean removed from Bundle/
+- Verified: 14 .lean files remain in Bundle/ (down from 16)
+- Verified: Only docstring references to bmcs_truth_at remain (explaining elimination)
+- Verified: No bmcs_truth_lemma in active code
+- Verified: All imports updated to use CanonicalConstruction.lean
 
 - **Dependencies:** Phase 7
 - **Goal:** Complete verification that elimination is successful

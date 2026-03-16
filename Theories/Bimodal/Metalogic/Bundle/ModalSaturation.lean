@@ -52,26 +52,6 @@ variable {D : Type*} [Preorder D]
 -/
 
 /--
-Diamond formula: neg (Box (neg phi)).
-
-This is the modal possibility operator: Diamond phi means "possibly phi",
-i.e., there exists an accessible world where phi holds.
-
-In our BFMCS construction, Diamond phi in fam.mcs t means there should exist
-a family fam' where phi is in fam'.mcs t.
--/
-def diamondFormula (phi : Formula) : Formula := phi.diamond
-
-/--
-Check if a formula is of the form Diamond psi (= neg (Box (neg psi))).
-
-Returns the inner formula psi if it is a Diamond formula, or none otherwise.
--/
-def asDiamond : Formula → Option Formula
-  | .imp (.box (.imp inner .bot)) .bot => some inner
-  | _ => none
-
-/--
 A Diamond formula in a family's MCS needs a witness if no other family
 in the BFMCS contains the inner formula in its MCS at that time.
 
@@ -79,8 +59,8 @@ Specifically: needs_modal_witness B fam t psi means:
 - Diamond psi is in fam.mcs t
 - There is no family fam' in B.families where psi is in fam'.mcs t
 -/
-def needs_modal_witness (B : BFMCS D) (fam : FMCS D) (t : D) (psi : Formula) : Prop :=
-  diamondFormula psi ∈ fam.mcs t ∧ ∀ fam' ∈ B.families, psi ∉ fam'.mcs t
+private def needs_modal_witness (B : BFMCS D) (fam : FMCS D) (t : D) (psi : Formula) : Prop :=
+  psi.diamond ∈ fam.mcs t ∧ ∀ fam' ∈ B.families, psi ∉ fam'.mcs t
 
 /--
 A BFMCS is modally saturated if every Diamond formula that is true in some
@@ -92,7 +72,7 @@ where psi is in fam'.mcs t.
 -/
 def is_modally_saturated (B : BFMCS D) : Prop :=
   ∀ fam ∈ B.families, ∀ t : D, ∀ psi : Formula,
-    diamondFormula psi ∈ fam.mcs t → ∃ fam' ∈ B.families, psi ∈ fam'.mcs t
+    psi.diamond ∈ fam.mcs t → ∃ fam' ∈ B.families, psi ∈ fam'.mcs t
 
 /--
 Alternative formulation: a BFMCS is modally saturated iff no Diamond formula
@@ -119,8 +99,8 @@ These lemmas connect Diamond formulas with MCS properties.
 /--
 The Diamond formula unfolds to: neg (Box (neg phi)).
 -/
-lemma diamondFormula_eq (phi : Formula) :
-    diamondFormula phi = Formula.neg (Formula.box (Formula.neg phi)) := rfl
+lemma diamond_eq (phi : Formula) :
+    phi.diamond = Formula.neg (Formula.box (Formula.neg phi)) := rfl
 
 /--
 If Diamond psi is in an MCS, then Box (neg psi) is not in that MCS.
@@ -129,10 +109,10 @@ This follows from MCS consistency: Diamond psi = neg (Box (neg psi)),
 so having both would violate consistency.
 -/
 lemma diamond_excludes_box_neg {S : Set Formula} (h_mcs : SetMaximalConsistent S)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ S) :
+    (psi : Formula) (h_diamond : psi.diamond ∈ S) :
     Formula.box (Formula.neg psi) ∉ S := by
   intro h_box
-  have h_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+  have h_eq : psi.diamond = Formula.neg (Formula.box (Formula.neg psi)) := rfl
   rw [h_eq] at h_diamond
   exact set_consistent_not_both h_mcs.1 (Formula.box (Formula.neg psi)) h_box h_diamond
 
@@ -142,7 +122,7 @@ If Diamond psi is in an MCS and psi is not in that MCS, then neg psi is in the M
 This is by MCS negation completeness.
 -/
 lemma diamond_and_not_psi_implies_neg {S : Set Formula} (h_mcs : SetMaximalConsistent S)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ S) (h_not_psi : psi ∉ S) :
+    (psi : Formula) (h_diamond : psi.diamond ∈ S) (h_not_psi : psi ∉ S) :
     Formula.neg psi ∈ S := by
   rcases set_mcs_negation_complete h_mcs psi with h_psi | h_neg
   · exact absurd h_psi h_not_psi
@@ -166,7 +146,7 @@ is in S (theorems are in MCS). But Diamond psi = neg (Box (neg psi)) is
 in S, contradicting consistency.
 -/
 lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsistent S)
-    (psi : Formula) (h_diamond : diamondFormula psi ∈ S) :
+    (psi : Formula) (h_diamond : psi.diamond ∈ S) :
     SetConsistent {psi} := by
   intro L hL ⟨d⟩
   by_cases h_psi_in_L : psi ∈ L
@@ -187,7 +167,7 @@ lemma diamond_implies_psi_consistent {S : Set Formula} (h_mcs : SetMaximalConsis
     -- Box (neg psi) is in S since it's a theorem
     have h_box_in_S : Formula.box (Formula.neg psi) ∈ S := theorem_in_mcs h_mcs d_box
     -- But Diamond psi = neg (Box (neg psi)) is also in S
-    have h_eq : diamondFormula psi = Formula.neg (Formula.box (Formula.neg psi)) := rfl
+    have h_eq : psi.diamond = Formula.neg (Formula.box (Formula.neg psi)) := rfl
     rw [h_eq] at h_diamond
     -- Contradiction with consistency
     exact set_consistent_not_both h_mcs.1 _ h_box_in_S h_diamond
@@ -370,10 +350,10 @@ theorem saturated_modal_backward (B : BFMCS D) (h_sat : is_modally_saturated B)
     mcs_contrapositive h_mcs h_box_dne h_neg_box
 
   -- Diamond(neg phi) = neg(Box(neg(neg phi))) by definition
-  have h_eq_diamond : diamondFormula (Formula.neg phi) =
+  have h_eq_diamond : (Formula.neg phi).diamond =
                       Formula.neg (Formula.box (Formula.neg (Formula.neg phi))) := rfl
 
-  have h_diamond_in : diamondFormula (Formula.neg phi) ∈ fam.mcs t := by
+  have h_diamond_in : (Formula.neg phi).diamond ∈ fam.mcs t := by
     rw [h_eq_diamond]
     exact h_diamond_neg
 

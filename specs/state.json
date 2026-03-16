@@ -8,11 +8,11 @@
     {
       "project_number": 971,
       "project_name": "refactor_eliminate_bmcs_truth_at_layer",
-      "status": "planned",
+      "status": "implementing",
       "language": "logic",
       "created": "2026-03-16T05:12:34Z",
-      "last_updated": "2026-03-15T14:30:00Z",
-      "session_id": "sess_1773639994_9c231b",
+      "last_updated": "2026-03-16T05:53:36Z",
+      "session_id": "sess_1773640383_94ce8f",
       "researched": "2026-03-15T14:30:00Z",
       "artifacts": [
         {
@@ -39,18 +39,24 @@
           "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/reports/research-003.md",
           "type": "research",
           "summary": "Deep-dive on 7 simplification opportunities: 2 done (Task 912/970), 1 deferred, 4 require no porting"
+        },
+        {
+          "path": "specs/971_refactor_eliminate_bmcs_truth_at_layer/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Partial: deleted BFMCSTruth.lean and TruthLemma.lean but imports not fully removed"
         }
       ],
-      "planned": "2026-03-15T22:50:00Z"
+      "planned": "2026-03-15T22:50:00Z",
+      "started": "2026-03-16T05:53:36Z"
     },
     {
       "project_number": 970,
       "project_name": "review_metalogic_for_publication",
-      "status": "planned",
+      "status": "implementing",
       "language": "logic",
       "created": "2026-03-16T04:42:03Z",
-      "last_updated": "2026-03-16T05:52:32Z",
-      "session_id": "sess_1773640260_991feb",
+      "last_updated": "2026-03-16T05:55:39Z",
+      "session_id": "sess_1773640525_5d2ce3",
       "researched": "2026-03-16T05:37:45Z",
       "artifacts": [
         {
