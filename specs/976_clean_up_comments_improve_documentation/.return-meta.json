@@ -1,26 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-16T12:00:00Z",
-  "completed_at": "2026-03-16T13:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/976_clean_up_comments_improve_documentation/reports/research-002.md",
-      "summary": "README quality evaluation: 7 critical inaccuracies (FMP/LogosTest refs), 5 outdated, 3 incomplete, 24+ good"
+      "type": "plan",
+      "path": "specs/976_clean_up_comments_improve_documentation/plans/implementation-001.md",
+      "summary": "8-phase implementation plan for comprehensive documentation improvement"
     }
   ],
-  "next_steps": "Run /plan 976 to create implementation plan addressing README fixes in priority order",
+  "next_steps": "Run /implement 976 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773677076_2e1175",
-    "agent_type": "general-research-agent",
-    "duration_seconds": 480,
+    "session_id": "sess_1773677380_f47588",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "general-research-agent"],
-    "findings_count": 15,
-    "readmes_evaluated": 40,
-    "critical_issues": 7,
-    "outdated_issues": 5,
-    "incomplete_issues": 3,
-    "good_readmes": 24
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 12
   }
 }

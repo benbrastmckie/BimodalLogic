@@ -8,12 +8,13 @@
     {
       "project_number": 976,
       "project_name": "clean_up_comments_improve_documentation",
-      "status": "planning",
+      "status": "planned",
       "language": "general",
       "created": "2026-03-16T15:52:59Z",
-      "last_updated": "2026-03-16T16:09:52Z",
+      "last_updated": "2026-03-16T16:12:54Z",
       "session_id": "sess_1773677380_f47588",
-      "researched": "2026-03-16T16:08:02Z"
+      "researched": "2026-03-16T16:08:02Z",
+      "planned": "2026-03-16T16:12:54Z"
     },
     {
       "project_number": 975,
@@ -37,13 +38,21 @@
     {
       "project_number": 974,
       "project_name": "prove_discrete_timeline_succorder_predorder",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T00:00:00Z",
       "description": "Prove SuccOrder, PredOrder, and IsSuccArchimedean instances in DiscreteTimeline.lean (7 sorries)",
-      "last_updated": "2026-03-16T16:06:31Z",
-      "session_id": "sess_1742169600_r8k3m"
+      "last_updated": "2026-03-16T16:12:35Z",
+      "session_id": "sess_1742169600_r8k3m",
+      "researched": "2026-03-16T16:12:35Z",
+      "artifacts": [
+        {
+          "path": "specs/974_prove_discrete_timeline_succorder_predorder/reports/research-001.md",
+          "type": "research",
+          "summary": "Analyzed 7 sorries in DiscreteTimeline.lean. Root cause: flawed succ definition using Classical.choice instead of WellFounded.min. Fix requires redefining succ/pred, then proofs follow from Mathlib patterns."
+        }
+      ]
     },
     {
       "project_number": 973,
