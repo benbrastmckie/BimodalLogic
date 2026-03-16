@@ -161,15 +161,15 @@ then p ∉ (L.foldr Formula.imp ψ).atoms -/
 theorem not_mem_atoms_iterated_imp {p : Atom} {L : List Formula} {ψ : Formula}
     (hL : ∀ φ ∈ L, p ∉ φ.atoms) (hψ : p ∉ ψ.atoms) :
     p ∉ (L.foldr Formula.imp ψ).atoms := by
-  intro h_mem
-  have := atoms_iterated_imp_subset L ψ p h_mem
   induction L with
-  | nil => exact hψ this
+  | nil =>
+    simp only [List.foldr]
+    exact hψ
   | cons hd tl ih =>
-    simp only [List.foldr, Finset.mem_union] at this
-    cases this with
-    | inl h => exact hL hd List.mem_cons_self h
-    | inr h => exact ih (fun φ hφ => hL φ (List.mem_cons_of_mem _ hφ)) h
+    simp only [List.foldr, Formula.atoms, Finset.mem_union, not_or]
+    constructor
+    · exact hL hd List.mem_cons_self
+    · exact ih (fun φ hφ => hL φ (List.mem_cons_of_mem _ hφ))
 
 /-- Helper: given a derivation `L ⊢ ψ`, produce `⊢ L.reverse.foldr Formula.imp ψ`.
 Note: This reverses the list order because deduction theorem peels from head. -/
@@ -182,7 +182,7 @@ def iterated_deduction_aux (L : List Formula) (ψ : Formula)
   | cons hd tl ih =>
     simp only [List.reverse_cons, List.foldr_append, List.foldr]
     have d_ded := deduction_theorem tl hd ψ d
-    exact ih d_ded
+    exact ih (hd.imp ψ) d_ded
 
 /-- From a derivation L ⊢ ψ, derive [] ⊢ L.foldr Formula.imp ψ
 by iterated deduction theorem. Uses the reversed list internally. -/
@@ -211,7 +211,7 @@ theorem iterated_imp_in_mcs_aux {S : Set Formula} (h_mcs : SetMaximalConsistent 
     simp only [List.reverse_cons, List.foldr_append, List.foldr] at h_thm
     -- h_thm : [] ⊢ tl.reverse.foldr Formula.imp (hd.imp ψ)
     -- By IH: hd.imp ψ ∈ S
-    have h_imp_in_S : (hd.imp ψ) ∈ S := ih h_thm
+    have h_imp_in_S : (hd.imp ψ) ∈ S := ih (hd.imp ψ) h_thm
       (fun φ hφ => h_sub φ (List.mem_cons_of_mem _ hφ))
     -- hd ∈ S (from h_sub)
     have h_hd_in_S : hd ∈ S := h_sub hd List.mem_cons_self
