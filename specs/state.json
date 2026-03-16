@@ -41,12 +41,12 @@
     {
       "project_number": 968,
       "project_name": "prove_shift_closure_canonical_fmcs_bridge",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Prove shift-closure of canonical FMCS families (CanonicalOmega is ShiftClosed) and bridge the sorry-free BFMCS truth lemma to standard semantics. Two theorems: (1) FMCS shift-closure — fam_shift(t) := fam(t + Δ) is an FMCS, trivial by translation invariance; (2) BFMCS-to-standard bridge — construct WorldHistories from FMCS families and show bmcs_truth_at ↔ truth_at, connecting existing BFMCS completeness to semantic_consequence. Depends on canonical task relation from task 956.",
       "created": "2026-03-14T00:00:00Z",
-      "last_updated": "2026-03-16T01:04:19Z",
+      "last_updated": "2026-03-16T01:30:00Z",
       "session_id": "sess_1773623046_07f34d",
       "artifacts": [
         {
@@ -58,12 +58,18 @@
           "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md",
           "type": "research",
           "summary": "Analysis in light of tasks 967/969: ShiftClosed infrastructure is complete, Boneyard shiftClosedCanonicalOmega pattern can be ported, task 956 dependency satisfied, implementation recommendations"
+        },
+        {
+          "path": "specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md",
+          "type": "research",
+          "summary": "Bridge theorem necessity analysis: bmcs_truth_at already bypassed by CanonicalConstruction.lean; ShiftClosed Omega mathematically required; port shifted_truth_lemma pattern from Boneyard/IntRepresentation/Representation.lean"
         }
       ],
       "dependencies": [
         967,
         969
-      ]
+      ],
+      "researched": "2026-03-16T01:30:00Z"
     },
     {
       "project_number": 967,

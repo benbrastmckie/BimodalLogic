@@ -46,20 +46,27 @@ technical_debt:
 
 ### 968. Prove shift-closure of canonical FMCS families and BFMCS-to-standard bridge
 - **Effort**: 4-8 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
-- **Research**: [specs/0_shift_closure_research/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md]
+- **Research**: [specs/0_shift_closure_research/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-001.md], [specs/968_prove_shift_closure_canonical_fmcs_bridge/reports/research-002.md]
 
-**Description**: Prove that the set of canonical FMCS families is shift-closed (i.e., `CanonicalOmega` is `ShiftClosed`), and bridge the sorry-free BFMCS truth lemma to the standard semantics. Two theorems:
+**Research Summary (research-002)**: Bridge theorems cannot be fully eliminated, but the architecture is already optimal. Key findings:
+1. `bmcs_truth_at` intermediate is already bypassed by `canonical_truth_lemma` in CanonicalConstruction.lean
+2. `ShiftClosed Omega` is mathematically required for `valid`/`semantic_consequence`
+3. The remaining bridge is `shifted_truth_lemma` extending truth lemma to `ShiftClosedCanonicalOmega`
+4. Working implementation exists in `Boneyard/IntRepresentation/Representation.lean` - port this pattern
 
-1. **Shift-closure of FMCS families** (Theorem 1): If `fam : FMCS D`, then `fam_shift(t) := fam(t + Δ)` is also an `FMCS D`. Proof is trivial by translation invariance of the ordered group — each coherence condition (forward_G, backward_H, forward_F, backward_P) transfers directly.
+**Implementation path**:
+1. Port `FMCS.shift` function (trivial by translation invariance)
+2. Port `ShiftClosedCanonicalOmega` construction
+3. Port `box_persistent` (Box phi persists to all times via TF axiom)
+4. Port `shifted_truth_lemma` using box_persistent + time_shift_preserves_truth
+5. Use for standard completeness theorems
 
-2. **BFMCS-to-standard bridge** (Theorem 4): Construct `WorldHistory` instances from canonical FMCS families (requires canonical task relation from task 956), then show `bmcs_truth_at B fam t φ ↔ truth_at M Omega (worldHistory fam) t φ` for a shift-closed `Omega`. This connects the existing sorry-free BFMCS truth lemma to standard completeness.
+**Key files**: `Truth.lean` (ShiftClosed), `WorldHistory.lean` (time_shift), `CanonicalConstruction.lean` (canonical_truth_lemma), `Boneyard/IntRepresentation/Representation.lean` (shift-closure pattern)
 
-**Key files**: `Truth.lean` (ShiftClosed), `WorldHistory.lean` (time_shift), `FMCSDef.lean` (FMCS), `BFMCSTruth.lean` (bmcs_truth_at), `TruthLemma.lean` (bmcs_truth_lemma), `Validity.lean` (semantic_consequence)
-
-**Dependencies**: Task 956 (canonical task relation needed for respects_task in WorldHistory construction), Task 967 (atom type change affects Formula/BFMCSTruth), Task 969 (TaskFrame and WorldHistory structural changes)
+**Dependencies**: Task 967 [COMPLETED], Task 969 [COMPLETED]
 
 ---
 
