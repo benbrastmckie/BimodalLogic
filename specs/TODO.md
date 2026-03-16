@@ -63,17 +63,23 @@ technical_debt:
 
 ---
 
-### 967. Change atom type from String to freshness-supporting type
+### 967. Reflexive Semantics Refactor to Eliminate canonicalR_irreflexive Axiom
 - **Effort**: 40-100 hours (reflexive semantics refactor)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Priority**: medium
 - **Research**: [specs/967_change_atom_type_for_freshness/reports/research-001.md], [specs/967_change_atom_type_for_freshness/reports/research-002.md]
 - **Plan**: [specs/967_change_atom_type_for_freshness/plans/implementation-003.md]
+- **Summary**: [specs/967_change_atom_type_for_freshness/summaries/implementation-summary-20260315.md]
 
-**SCOPE REVISED**: Proceeding with reflexive semantics refactor to eliminate `canonicalR_irreflexive` axiom for publication. Change G/H from strict `<` to non-strict `<=`, add T-axioms, complete Gabbay IRR proof. 11 phases (v003: added Phase 0 for documentation update), 40-100 hours estimated.
+**IMPLEMENTATION COMPLETE**: Eliminated canonicalR_irreflexive axiom by completing Gabbay IRR proof using T-axiom. Changed temporal semantics to reflexive (< to <=), proved T-axiom soundness, and converted axiom to theorem. Full build passes with zero new sorries or axioms.
 
-**Description**: Change atom type from String to freshness-supporting type to eliminate canonicalR_irreflexive axiom debt. The Gabbay IRR proof (Goldblatt 1992) requires a fresh atom not in GContent(M). With String atoms this is impossible since G(s∨¬s) puts every string into GContent(M). Changing to a type with Option ℕ fresh_index (or similar) allows picking p = Atom.mk name (some n), completing the proof and eliminating the axiom. Scope: refactor Formula and all ~31 dependent files. See research-002 (task 964) for full obstacle analysis.
+**Key changes**:
+1. Truth.lean: Changed temporal operators from strict `<` to reflexive `<=`
+2. Axioms.lean: Added T-axioms (temp_t_future, temp_t_past)
+3. Soundness.lean: Proved T-axiom soundness
+4. CanonicalIrreflexivity.lean: Fixed Lean 4 API issues, completed Gabbay IRR proof
+5. CanonicalIrreflexivityAxiom.lean: Converted axiom to theorem
 
 ---
 
