@@ -1,5 +1,5 @@
 ---
-next_project_number: 980
+next_project_number: 981
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -25,9 +25,18 @@ technical_debt:
 
 ## Tasks
 
+### 980. Remove DN-based seriality proofs technical debt
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Remove the technical debt associated with the DN-based seriality proofs listed under non-goals in specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-001.md
+
+---
+
 ### 979. Remove discrete_Icc_finite_axiom and prove stage-bounding lemma
 - **Effort**: 6 hours (6 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Research**: [research-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-001.md) (team: SuccOrder-first approach via DF frame condition)
 - **Plan**: [implementation-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-001.md) (6 phases: DF extraction approach)
 - **Language**: lean

@@ -6,15 +6,23 @@
   },
   "active_projects": [
     {
+      "project_number": 980,
+      "project_name": "remove_dn_based_seriality_proofs_tech_debt",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-16T20:56:19Z",
+      "last_updated": "2026-03-16T20:56:19Z"
+    },
+    {
       "project_number": 979,
       "project_name": "remove_discrete_icc_finite_axiom_prove_stage_bounding",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "medium",
       "created": "2026-03-16T20:33:40Z",
-      "last_updated": "2026-03-16T20:52:37Z",
+      "last_updated": "2026-03-16T20:53:45Z",
       "description": "Remove the axiom in Phase 7b (discrete_Icc_stage_bounded) of task 974 implementation plan, reflecting on research-006.md to provide the most mathematically correct approach with no compromises",
-      "session_id": "sess_1773893142_b5a3f8",
+      "session_id": "sess_1773694418_780a96",
       "researched": "2026-03-16T20:47:59Z",
       "artifacts": [
         {
@@ -28,7 +36,8 @@
           "summary": "6-phase implementation plan for removing discrete_Icc_finite_axiom via DF frame condition extraction"
         }
       ],
-      "planned": "2026-03-16T20:52:37Z"
+      "planned": "2026-03-16T20:52:37Z",
+      "started": "2026-03-16T20:53:45Z"
     },
     {
       "project_number": 978,
@@ -506,7 +515,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 980,
+  "next_project_number": 981,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
