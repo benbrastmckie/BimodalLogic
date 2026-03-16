@@ -1,5 +1,5 @@
 ---
-next_project_number: 970
+next_project_number: 971
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+
+### 970. Review metalogic for publication readiness
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: logic
+
+**Description**: Systematically review the metalogic to identify redundant definitions requiring bridge theorems or lemmas that can be removed in preference of direct implementation with correct semantic definitions. Simplify the space of defined terms, avoiding aliases or technical debt that could be refactored out. Examples include `bmcs_truth_lemma` and related artifacts from the laborious process of establishing representation and completeness theorems. Ensure all major theorems take mathematically standard forms relative to the provided semantics.
+
+---
 
 ### 953. Refactor proof system to bilateral system
 - **Effort**: 55-90 hours

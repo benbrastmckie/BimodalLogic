@@ -6,6 +6,14 @@
   },
   "active_projects": [
     {
+      "project_number": 970,
+      "project_name": "review_metalogic_for_publication",
+      "status": "not_started",
+      "language": "logic",
+      "created": "2026-03-16T04:42:03Z",
+      "last_updated": "2026-03-16T04:42:03Z"
+    },
+    {
       "project_number": 953,
       "project_name": "refactor_proof_system_to_bilateral",
       "status": "researched",
@@ -252,7 +260,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 968,
+  "next_project_number": 971,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
