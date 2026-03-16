@@ -39,11 +39,11 @@ technical_debt:
 
 ### 979. Remove discrete_Icc_finite_axiom and prove stage-bounding lemma
 - **Effort**: 6 hours (6 phases)
-- **Status**: [IMPLEMENTING] (Phase 1/6, blocked pending Task 980)
-- **Depends On**: Task 980
-- **Research**: [research-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-001.md) (team: SuccOrder-first approach via DF frame condition), [research-002.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-002.md) (DN tech debt root cause)
+- **Status**: [IMPLEMENTING] (Phase 1/6, ready to resume)
+- **Depends On**: Task 980 [COMPLETED]
+- **Research**: [research-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-001.md) (team: SuccOrder-first approach), [research-002.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-002.md) (DN root cause), [research-003.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-003.md) (post-980 analysis)
 - **Plan**: [implementation-001.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-001.md) (6 phases: DF extraction approach)
-- **Summary**: [implementation-summary-20260316.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/summaries/implementation-summary-20260316.md) (partial: Phase 2 blocked)
+- **Summary**: [implementation-summary-20260316.md](specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/summaries/implementation-summary-20260316.md) (partial: Phase 2 ready)
 - **Language**: lean
 - **Related**: Task 974 (Phase 7b escape valve), research-006.md
 

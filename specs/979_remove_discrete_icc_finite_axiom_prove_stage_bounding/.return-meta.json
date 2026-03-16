@@ -1,42 +1,37 @@
 {
-  "status": "researched",
+  "status": "partial",
+  "started_at": "2026-03-16T14:00:00Z",
+  "completed_at": "2026-03-16T14:45:00Z",
   "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-002.md",
-      "summary": "Supplementary research identifying DN tech debt as root cause of Phase 2 blocker, recommending Task 980 completion first"
-    }
+    "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-003.md"
   ],
-  "next_steps": "Complete Task 980 (DN-free seriality) first, then return to Task 979 implementation",
+  "summary": {
+    "findings": [
+      "Task 980 completion adds MCS Richness lemmas (mcs_has_large_F_formula, mcs_has_large_P_formula) but does not solve covering lemma",
+      "Stage-bounding approach confirmed as mathematically flawed - MCS Richness guarantees witnesses at arbitrary stages",
+      "Covering lemma (df_frame_condition_canonical) remains correct path but Phase 2 blocker unchanged",
+      "8 reusable lemmas from task 980 identified (G_bot_not_in, F_or_atom_in, etc.)",
+      "Task 978 typeclass architecture can proceed independently - axiom disclosure acceptable if proof not completed",
+      "Revised plan: focused 2-3 hour covering attempt with evaluation checkpoint"
+    ],
+    "recommendation": "Revise plan Phase 2 to focused covering lemma attack. If blocked after 2-3 hours, choose between keeping axiom as documented debt or requesting user review.",
+    "key_insight": "DF frame condition extraction requires connecting syntactic property (formula membership) to structural property (order covering) - the gap remains open"
+  },
+  "partial_progress": {
+    "stage": "research_complete",
+    "details": "Supplementary research analyzing task 980 impact completed; research-003.md created"
+  },
   "metadata": {
-    "session_id": "sess_1773695388_356c75",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1773697479_40b080",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-logic-research", "logic-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": [
-      ".claude/context/project/logic/README.md",
-      "specs/979_.../reports/research-001.md",
-      "specs/979_.../summaries/implementation-summary-20260316.md",
-      "specs/980_.../reports/research-001.md",
-      "specs/ROAD_MAP.md"
-    ],
-    "mathlib_lookups_performed": 4,
-    "context_extension_tasks": [],
-    "context_candidates_count": 2,
-    "key_findings": [
-      "Tasks 979 and 980 share DN tech debt root cause",
-      "Covering lemma blocker is downstream of DN dependency",
-      "DF frame condition exists in Soundness.lean but needs MCS extraction",
-      "Mathlib Order.covBy_succ confirms covering follows from SuccOrder + NoMaxOrder",
-      "Recommended: Complete Task 980 first, then Task 979 becomes tractable",
-      "Alternative: Direct covering lemma approach bypassing DN"
-    ],
-    "recommendations": {
-      "primary": "Complete Task 980 first (DN-free seriality)",
-      "secondary": "Direct covering lemma via forward witness minimality",
-      "tertiary": "Revised stage-bounding with formula-based bounds"
+    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"],
+    "context": {
+      "task_number": 979,
+      "task_name": "remove_discrete_icc_finite_axiom_prove_stage_bounding",
+      "language": "lean",
+      "trigger": "post_task_980_completion",
+      "prior_reports": ["research-001.md", "research-002.md"]
     }
   }
 }
