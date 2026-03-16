@@ -8,11 +8,11 @@
     {
       "project_number": 980,
       "project_name": "remove_dn_based_seriality_proofs_tech_debt",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T20:56:19Z",
-      "last_updated": "2026-03-16T21:10:06Z",
-      "session_id": "sess_1773695244_e62cb5",
+      "last_updated": "2026-03-16T21:11:23Z",
+      "session_id": "sess_1773695456_456a55",
       "researched": "2026-03-16T21:15:00Z",
       "artifacts": [
         {
@@ -26,7 +26,8 @@
           "summary": "6-phase implementation plan to remove DN-based seriality proofs from discrete timeline construction"
         }
       ],
-      "planned": "2026-03-16T21:10:06Z"
+      "planned": "2026-03-16T21:10:06Z",
+      "started": "2026-03-16T21:11:23Z"
     },
     {
       "project_number": 979,
@@ -46,6 +47,11 @@
           "summary": "Team research (3 teammates): stage-bounding gap identified; SuccOrder-first approach recommended via DF frame condition extraction"
         },
         {
+          "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/reports/research-002.md",
+          "type": "research",
+          "summary": "Supplementary research: DN tech debt root cause identified; recommends completing Task 980 first"
+        },
+        {
           "path": "specs/979_remove_discrete_icc_finite_axiom_prove_stage_bounding/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan for removing discrete_Icc_finite_axiom via DF frame condition extraction"
@@ -56,8 +62,9 @@
       "partial_progress": {
         "phases_completed": 1,
         "phases_total": 6,
-        "details": "Phase 1 complete. Phase 2 blocked on covering lemma proof."
-      }
+        "details": "Phase 1 complete. Phase 2 blocked pending Task 980 completion (DN tech debt)."
+      },
+      "depends_on": [980]
     },
     {
       "project_number": 978,
