@@ -298,10 +298,10 @@
     {
       "project_number": 972,
       "project_name": "review_metalogic_naming_conventions",
-      "status": "researching",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-16T15:35:42Z",
-      "last_updated": "2026-03-16T16:09:22Z",
+      "last_updated": "2026-03-16T16:14:23Z",
       "description": "Review Theories/Bimodal/Metalogic/ for inconsistent, misleading, or redundant naming conventions. Identify improvements (not wholesale renames) — looking for names that are genuinely confusing, inconsistent with Mathlib conventions, or redundant given their context. Originated from task 970 phase 9 deferral.",
       "session_id": "sess_1773677328_11daf7",
       "researched": "2026-03-16T16:00:00Z",
@@ -315,6 +315,11 @@
           "path": "specs/972_review_metalogic_naming_conventions/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for review_metalogic_naming_conventions"
+        },
+        {
+          "path": "specs/972_review_metalogic_naming_conventions/reports/research-002.md",
+          "type": "research",
+          "summary": "Namespace migration opportunities: set_mcs_* (high), mcs_* (medium), canonical_* (low)"
         }
       ],
       "planned": "2026-03-16T15:54:48Z"

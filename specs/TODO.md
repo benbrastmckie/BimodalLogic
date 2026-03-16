@@ -87,14 +87,14 @@ technical_debt:
 ---
 
 ### 972. Review metalogic naming conventions for improvements
-- **Effort**: 2 hours (4 phases)
-- **Status**: [RESEARCHING]
+- **Effort**: 2 hours (4 phases) + TBD for namespace migrations
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Created**: 2026-03-16
-- **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md)
+- **Research**: [research-001.md](specs/972_review_metalogic_naming_conventions/reports/research-001.md), [research-002.md](specs/972_review_metalogic_naming_conventions/reports/research-002.md) (namespace migration opportunities)
 - **Plan**: [implementation-001.md](specs/972_review_metalogic_naming_conventions/plans/implementation-001.md)
 
-**Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent naming conventions. Fix: (1) GContent/HContent → snake_case, (2) WitnessSeed defs → snake_case, (3) bmcs_* → BFMCS namespace.
+**Description**: Review `Theories/Bimodal/Metalogic/` for inconsistent naming conventions. Fix: (1) GContent/HContent → snake_case, (2) WitnessSeed defs → snake_case, (3) bmcs_* → BFMCS namespace. Additional research identified `set_mcs_*` (16 defs, 242 usages) as high-priority namespace migration candidates.
 
 ---
 
