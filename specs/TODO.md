@@ -60,20 +60,20 @@ technical_debt:
 
 ---
 
-### 986. BFMCS construction for D = Int (sorry-free)
-- **Effort**: 5.5 hours (5 phases)
-- **Status**: [PARTIAL]
+### 986. BFMCS construction for D = Int (conditional)
+- **Effort**: 2-3 hours (4 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md), [research-002.md](specs/986_bfmcs_construction_for_int/reports/research-002.md), [research-003.md](specs/986_bfmcs_construction_for_int/reports/research-003.md), [research-004.md](specs/986_bfmcs_construction_for_int/reports/research-004.md)
-- **Plan**: [implementation-001.md](specs/986_bfmcs_construction_for_int/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/986_bfmcs_construction_for_int/plans/implementation-002.md) (v2: Conditional approach)
 - **Summary**: [implementation-summary-20260317.md](specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md)
 - **Module**: [IntBFMCS.lean](Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean)
 
-**Description**: Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in `CanonicalFMCS.lean` has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an order-embedding, or find a direct construction. This is the core blocker for algebraic base completeness (task 987) and discrete algebraic completeness (task 989).
+**Description**: Provide CONDITIONAL BFMCS construction for D = Int. Research proved F/P coherence is mathematically impossible (Countability Obstruction: uncountable MCS space cannot be indexed by countable Int). Convert sorries to documented hypotheses, provide conditional algebraic representation. Algebraic path provides conditional completeness; D-from-syntax path provides sorry-free.
 
-**Research Summary (v4 - W vs D Architecture)**: Semantics has TWO components: W (WorldState=MCSes) and D (Duration=Int). History h: D→W maps times to states. F/P quantifies over D, evaluated at W. Countability obstruction affects what a SINGLE history can cover. Sorries are MATHEMATICALLY FUNDAMENTAL (not proof gaps). Accept algebraic/syntax split: algebraic path (D=Int) provides conditional completeness; D-from-syntax path provides sorry-free.
+**Research Summary (v4)**: W (MCSes) and D (Int) are distinct semantic components. History h: D→W maps times to states. Countability obstruction is FUNDAMENTAL - accept algebraic/syntax split.
 
-**Partial Progress**: Phases 1-2 complete (G/H coherence proven). Phase 3 blocked: forward_F/backward_P require witnesses outside chain range.
+**Plan v2**: Document obstruction, convert sorries to hypotheses, wire conditional representation. Preserves G/H infrastructure from v1 (614 lines).
 
 ---
 
