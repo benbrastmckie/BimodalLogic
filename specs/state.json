@@ -62,6 +62,11 @@
           "path": "Theories/Bimodal/Metalogic/BaseCompleteness.lean",
           "type": "implementation",
           "summary": "Added D-parametric architecture section explaining D = Int instantiation"
+        },
+        {
+          "path": "specs/990_representation_theorem_duration_design/summaries/01_architecture-decision-summary.md",
+          "type": "summary",
+          "summary": "Architecture decision summary with downstream task guidance for 987, 988, 989, 982"
         }
       ]
     },
