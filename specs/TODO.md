@@ -93,7 +93,7 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 4-5 hours (6 phases)
-- **Status**: [RESEARCHING]
+- **Status**: [PARTIAL]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: K4 gap analysis — T-axiom enables direct subset proof), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (covering proof blocker analysis — axiom retention recommended)

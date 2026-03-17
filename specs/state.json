@@ -201,12 +201,12 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researching",
+      "status": "partial",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T02:11:37Z",
+      "last_updated": "2026-03-17T02:18:07Z",
       "session_id": "sess_1773713470_76ec48",
-      "researched": "2026-03-17T01:27:53Z",
+      "researched": "2026-03-17T02:18:07Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
