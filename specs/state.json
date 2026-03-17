@@ -121,6 +121,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-002.md",
           "type": "plan",
           "summary": "5-phase plan: Direct Truth Lemma over TimelineQuot (publication-ready approach)"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-003.md",
+          "type": "research",
+          "summary": "Deep foundational research: Approach B (Domain-Agnostic Semantic Evaluation) with D=WorldState=TimelineQuot. 4 hours, zero-debt."
         }
       ],
       "planned": "2026-03-17T00:36:43Z",
