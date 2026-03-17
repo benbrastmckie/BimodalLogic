@@ -386,12 +386,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T22:25:39Z",
+      "last_updated": "2026-03-17T22:30:10Z",
       "session_id": "sess_1773786320_f4aede",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
@@ -476,11 +476,6 @@
           "summary": "Comprehensive gap analysis: 18 sorries, 1 axiom on active path. Primary blocker: TimelineQuot forward_F witness placement. Recommends multi-family BFMCS with on-demand saturation (8-12 hours)"
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-009.md",
-          "type": "plan",
-          "summary": "v9: Multi-family BFMCS over TimelineQuot with witness saturation - 4 phases, 8-12 hours"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-014.md",
           "type": "research",
           "summary": "Mathematical analysis of TimelineQuot quotient structure, algebraic transfer, and forward_F witness problem - recommends CanonicalMCS-based truth lemma"
@@ -494,9 +489,14 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/16_dovetailing-analysis.md",
           "type": "research",
           "summary": "Dovetailing analysis: backlog processing approach recommended over full dovetailing (~14h vs ~22h)"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/10_full-dovetailing.md",
+          "type": "plan",
+          "summary": "v10: Full dovetailing construction - 6 phases, 22 hours"
         }
       ],
-      "planned": "2026-03-17T16:59:47Z",
+      "planned": "2026-03-17T22:30:10Z",
       "started": "2026-03-17T21:06:50Z"
     },
     {

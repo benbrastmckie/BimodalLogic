@@ -139,13 +139,13 @@ technical_debt:
 ---
 
 ### 982. Wire dense completeness domain connection
-- **Effort**: 8-12 hours (4 phases)
+- **Effort**: 22 hours (6 phases)
 - **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D), [research-013.md](specs/982_wire_dense_completeness_domain_connection/reports/research-013.md) (gap analysis), [15_team-research.md](specs/982_wire_dense_completeness_domain_connection/reports/15_team-research.md) (team: Path B vs dovetailing), [16_dovetailing-analysis.md](specs/982_wire_dense_completeness_domain_connection/reports/16_dovetailing-analysis.md) (backlog approach - **recommended**)
-- **Plan**: [implementation-009.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-009.md) (v9: Multi-family BFMCS over TimelineQuot with witness saturation)
+- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D), [research-013.md](specs/982_wire_dense_completeness_domain_connection/reports/research-013.md) (gap analysis), [15_team-research.md](specs/982_wire_dense_completeness_domain_connection/reports/15_team-research.md) (team analysis), [16_dovetailing-analysis.md](specs/982_wire_dense_completeness_domain_connection/reports/16_dovetailing-analysis.md) (dovetailing deep-dive)
+- **Plan**: [10_full-dovetailing.md](specs/982_wire_dense_completeness_domain_connection/plans/10_full-dovetailing.md) (v10: Full dovetailing - **mathematically correct**)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md)
 
 **Description**: Complete dense completeness using W/D separated TaskFrame architecture: W = CanonicalMCS (world states), D = TimelineQuot (durations). Witnesses exist in W, not necessarily in Range(h).
