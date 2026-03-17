@@ -242,6 +242,7 @@ noncomputable def embed_quot_to_full (n : Nat)
   toAntisymmetrization (· ≤ ·)
     (embed_to_full root_mcs root_mcs_proof n (ofAntisymmetrization (· ≤ ·) a))
 
+set_option maxHeartbeats 800000 in
 /-- Every element of DiscreteTimelineQuot comes from some stage. -/
 theorem quot_from_stage (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
     ∃ n, ∃ a' : DiscreteTimelineQuot_at_stage root_mcs root_mcs_proof n,
@@ -274,14 +275,9 @@ theorem quot_from_stage (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
     @toAntisymmetrization_ofAntisymmetrization _ (· ≤ ·) inst_n (@toAntisymmetrization _ (· ≤ ·) inst_n p')
 
   -- From the class equality, we can derive the AntisymmRel
-  have h_class_stage : AntisymmRel (· ≤ ·) rep p' := by
-    constructor
-    · -- rep ≤ p' : rewrite using simp lemma then use equality
-      simp only [← toAntisymmetrization_le_toAntisymmetrization_iff]
-      rw [h_class_eq]
-    · -- p' ≤ rep : Similarly
-      simp only [← toAntisymmetrization_le_toAntisymmetrization_iff]
-      rw [← h_class_eq]
+  -- toAntisymmetrization is Quotient.mk, so equal images mean same equivalence class
+  have h_class_stage : AntisymmRel (· ≤ ·) rep p' :=
+    Quotient.exact h_class_eq
 
   -- The stage-level equivalence gives same underlying StagedPoint properties
   -- Since rep.1 and p'.1 have StagedPoint.le in both directions (that's what ≤ means at stage level)
@@ -350,10 +346,10 @@ theorem stage_embed_elem_injective (n : Nat)
     (h : stage_embed_elem root_mcs root_mcs_proof n p =
          stage_embed_elem root_mcs root_mcs_proof n q) :
     p = q := by
-  simp only [stage_embed_elem] at h
-  -- h : ⟨p.1, _⟩ = ⟨q.1, _⟩
-  have h_val : p.1 = q.1 := congrArg Subtype.val h
-  exact Subtype.eq h_val
+  exact Subtype.ext (by
+    have := Subtype.ext_iff.mp h
+    simp only [stage_embed_elem] at this
+    exact this)
 
 /-- Embed a quotient element from stage n into stage n+1.
 
@@ -397,12 +393,11 @@ theorem stage_embed_injective (n : Nat)
   simp only [stage_embed] at h
   -- h : toAnti (stage_embed_elem (ofAnti a)) = toAnti (stage_embed_elem (ofAnti b))
   -- Two elements are equal in Antisymmetrization iff they are AntisymmRel
+  -- Equal images under toAntisymmetrization means same equivalence class = AntisymmRel
   have h_class : AntisymmRel (· ≤ ·)
       (stage_embed_elem root_mcs root_mcs_proof n (ofAntisymmetrization (· ≤ ·) a))
-      (stage_embed_elem root_mcs root_mcs_proof n (ofAntisymmetrization (· ≤ ·) b)) := by
-    constructor
-    · rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h]
-    · rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h]
+      (stage_embed_elem root_mcs root_mcs_proof n (ofAntisymmetrization (· ≤ ·) b)) :=
+    Quotient.exact h
   -- AntisymmRel on embedded elements implies AntisymmRel on original elements
   have h_class_orig : AntisymmRel (· ≤ ·)
       (ofAntisymmetrization (· ≤ ·) a : DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n)

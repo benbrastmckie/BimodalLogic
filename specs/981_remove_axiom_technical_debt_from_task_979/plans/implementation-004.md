@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981 (Revision 4)
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 16-24 hours
 - **Dependencies**: None (builds on existing codebase)
 - **Research Inputs**: research-006.md (incremental construction approach)
