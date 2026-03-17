@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981 (Revision 4)
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 16-24 hours
 - **Dependencies**: None (builds on existing codebase)
 - **Research Inputs**: research-006.md (incremental construction approach)
@@ -108,7 +108,22 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Stage-Indexed Timeline Types [NOT STARTED]
+### Phase 1: Stage-Indexed Timeline Types [PARTIAL]
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773718331_6878f2**
+- Added: `DiscreteTimelineElem_at_stage n` - Elements of timeline at stage n
+- Added: `DiscreteTimelineQuot_at_stage n` - Quotient of elements at stage n
+- Added: `linearOrder_at_stage` - LinearOrder on stage quotient
+- Added: `finite_at_stage`, `finite_quot_at_stage` - Finiteness instances
+- Added: `locallyFiniteOrder_at_stage` - LocallyFiniteOrder (trivial from finiteness)
+- Added: `embed_to_full`, `embed_quot_to_full` - Embedding to full timeline
+- Added: `quot_from_stage` - Every quotient element comes from some stage
+- File: `Theories/Bimodal/Metalogic/StagedConstruction/IncrementalTimeline.lean` (NEW, ~310 lines)
+- Status: File compiles via LSP (lean_goal returns no errors), but lake build times out
+- Build verification pending due to very long compilation times
+- No sorries introduced
 
 - **Dependencies:** None
 - **Goal:** Define `DiscreteTimelineQuot_at_stage n` for each construction stage

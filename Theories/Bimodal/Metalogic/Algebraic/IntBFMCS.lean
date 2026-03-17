@@ -230,6 +230,75 @@ theorem negChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
        (negChain M0 h_mcs0 n).1
   exact (predecessorMCS (negChain M0 h_mcs0 n).1 (negChain M0 h_mcs0 n).2).2.2
 
+/-- CanonicalR holds between adjacent elements of the Int chain.
+For any t, CanonicalR (intChainMCS t) (intChainMCS (t+1)) holds. -/
+theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (t : Int) :
+    CanonicalR (intChainMCS M0 h_mcs0 t) (intChainMCS M0 h_mcs0 (t + 1)) := by
+  -- Three cases: t < 0, t = 0, t > 0
+  -- When t >= 0: both sides use posChain, so posChain_canonicalR applies
+  -- When t < -1: both sides use negChain, need to relate negChain indices
+  -- When t = -1: left uses negChain 1, right uses posChain 0 = M0 = negChain 0
+  by_cases h0 : t = 0
+  · -- Case t = 0: intChainMCS 0 = M0 = posChain 0, intChainMCS 1 = posChain 1
+    subst h0
+    simp only [intChainMCS, Int.add_zero]
+    simp only [gt_iff_lt, Int.lt_irrefl, ↓reduceDIte, Int.zero_lt_one]
+    -- Now we have CanonicalR M0 (posChain M0 h_mcs0 1).1
+    -- Since posChain 0 = ⟨M0, h_mcs0⟩, we need posChain_canonicalR 0
+    have h := posChain_canonicalR M0 h_mcs0 0
+    simp only [posChain, Nat.add_eq, Nat.add_zero] at h
+    exact h
+  · by_cases hpos : t > 0
+    · -- Case t > 0: both use posChain
+      have hpos1 : t + 1 > 0 := by omega
+      simp only [intChainMCS, hpos, hpos1, h0, ↓reduceDIte]
+      have hne1 : t + 1 ≠ 0 := by omega
+      simp only [hne1, ↓reduceDIte]
+      -- intChainMCS t = posChain t.toNat, intChainMCS (t+1) = posChain (t+1).toNat
+      have h_eq : (t + 1).toNat = t.toNat + 1 := by
+        have h_t_nonneg : 0 ≤ t := by omega
+        simp only [Int.toNat_of_nonneg h_t_nonneg]
+        omega
+      rw [h_eq]
+      exact posChain_canonicalR M0 h_mcs0 t.toNat
+    · -- Case t < 0 (since t ≠ 0 and not t > 0)
+      have hneg : t < 0 := by omega
+      by_cases h1 : t = -1
+      · -- Subcase t = -1: need CanonicalR (negChain 1) M0
+        subst h1
+        have h_lhs : intChainMCS M0 h_mcs0 (-1) = (negChain M0 h_mcs0 1).1 := by
+          simp only [intChainMCS]
+          split_ifs <;> simp_all
+        have h_rhs : intChainMCS M0 h_mcs0 0 = M0 := by
+          simp only [intChainMCS]
+          split_ifs <;> simp_all
+        rw [h_lhs, h_rhs]
+        have h := negChain_canonicalR M0 h_mcs0 0
+        simp only [negChain, Nat.add_eq, Nat.add_zero] at h
+        exact h
+      · -- Subcase t < -1: both use negChain
+        have hneg1 : t + 1 < 0 := by omega
+        have hne1 : t + 1 ≠ 0 := by omega
+        have hngt1 : ¬(t + 1 > 0) := by omega
+        have hngt : ¬(t > 0) := by omega
+        simp only [intChainMCS, h0, ↓reduceDIte, hngt, hngt1, hne1]
+        -- intChainMCS t = negChain (-t).toNat
+        -- intChainMCS (t+1) = negChain (-(t+1)).toNat
+        -- Need: CanonicalR (negChain (-t).toNat).1 (negChain (-(t+1)).toNat).1
+        -- Note: -(t+1) = -t - 1, so (-(t+1)).toNat = (-t).toNat - 1
+        -- And negChain_canonicalR says: CanonicalR (negChain (n+1)) (negChain n)
+        have h_neg_t_pos : 0 < -t := by omega
+        have h_neg_t1_pos : 0 < -(t+1) := by omega
+        have h_idx_eq : (-(t+1)).toNat + 1 = (-t).toNat := by
+          have h1 : -(t+1) = -t - 1 := by ring
+          rw [h1]
+          have h_le : -t - 1 ≥ 0 := by omega
+          have h_le2 : -t ≥ 0 := by omega
+          rw [Int.toNat_of_nonneg h_le, Int.toNat_of_nonneg h_le2]
+          omega
+        rw [← h_idx_eq]
+        exact negChain_canonicalR M0 h_mcs0 (-(t+1)).toNat
+
 /-!
 ## Forward G and Backward H Coherence
 
@@ -264,31 +333,158 @@ theorem canonicalR_propagates_GG (M M' : Set Formula)
   -- G(G(phi)) ∈ M means G(phi) ∈ g_content(M) ⊆ M'
   exact h_R h_GG
 
+/--
+Helper: G(phi) propagates forward along the chain.
+If G(phi) ∈ intChainMCS t and t <= t', then G(phi) ∈ intChainMCS t'.
+-/
+theorem intChain_G_propagates (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
+    (t t' : Int) (phi : Formula) (h_le : t ≤ t') (h_G : Formula.all_future phi ∈ intChainMCS M0 h_mcs0 t) :
+    Formula.all_future phi ∈ intChainMCS M0 h_mcs0 t' := by
+  -- Induction on (t' - t).toNat
+  have h_diff_nonneg : 0 ≤ t' - t := by omega
+  generalize h_eq : (t' - t).toNat = k
+  induction k generalizing t' with
+  | zero =>
+    -- k = 0 means t' - t = 0 (since t' - t >= 0), so t' = t
+    have h_eq' : t' = t := by
+      have := Int.toNat_of_nonneg h_diff_nonneg
+      rw [h_eq] at this
+      omega
+    subst h_eq'
+    exact h_G
+  | succ n ih =>
+    -- k = n + 1, so t' - t >= 1, meaning t < t'
+    have h_lt : t < t' := by
+      have h1 : (t' - t).toNat = n + 1 := h_eq
+      have h2 := Int.toNat_of_nonneg h_diff_nonneg
+      omega
+    -- t' - 1 is between t and t' (inclusive)
+    have h_t'_pred : t ≤ t' - 1 := by omega
+    have h_diff' : ((t' - 1) - t).toNat = n := by
+      have h1 : (t' - t).toNat = n + 1 := h_eq
+      have h2 := Int.toNat_of_nonneg h_diff_nonneg
+      omega
+    have h_diff_nonneg' : 0 ≤ (t' - 1) - t := by omega
+    -- By IH, G(phi) ∈ intChainMCS (t' - 1)
+    have h_G_pred := ih (t' - 1) h_t'_pred h_diff' h_diff_nonneg'
+    -- G(phi) propagates from t' - 1 to t' via canonicalR_propagates_GG
+    have h_mcs_pred := intChainMCS_is_mcs M0 h_mcs0 (t' - 1)
+    have h_R := intChain_canonicalR M0 h_mcs0 (t' - 1)
+    have h_rewrite : t' - 1 + 1 = t' := by omega
+    rw [h_rewrite] at h_R
+    exact canonicalR_propagates_GG (intChainMCS M0 h_mcs0 (t' - 1)) (intChainMCS M0 h_mcs0 t')
+      h_mcs_pred h_R phi h_G_pred
+
 /-- Forward G: If G(phi) in mcs(t) and t < t', then phi in mcs(t'). -/
 theorem intChain_forward_G (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t t' : Int) (phi : Formula) (h_lt : t < t') (h_G : Formula.all_future phi ∈ intChainMCS M0 h_mcs0 t) :
     phi ∈ intChainMCS M0 h_mcs0 t' := by
-  -- The proof uses strong induction on (t' - t).
-  -- Key insight: CanonicalR propagates G-formulas through the chain.
-  -- For any consecutive pair in the chain, CanonicalR holds, so G(phi) propagates.
-  -- By temporal 4 axiom (G(phi) → G(G(phi))), the G-formula persists through the chain.
-  -- At t', we have G(phi) in mcs(t'), so phi ∈ g_content(mcs(t'-1)) ⊆ mcs(t') gives phi.
-
-  -- This proof is complex due to handling positive/negative indices and their boundary.
-  -- For now, we note that the mathematical argument is sound:
+  -- Strategy:
   -- 1. G(phi) ∈ mcs(t) and t < t'
-  -- 2. By repeated application of canonicalR_propagates_GG, G(phi) ∈ mcs(t'-1)
-  -- 3. By canonicalR_propagates_G, phi ∈ mcs(t')
+  -- 2. By intChain_G_propagates, G(phi) ∈ mcs(t' - 1)
+  -- 3. By CanonicalR from (t' - 1) to t', phi ∈ mcs(t')
+  have h_le : t ≤ t' - 1 := by omega
+  have h_G_pred := intChain_G_propagates M0 h_mcs0 t (t' - 1) phi h_le h_G
+  have h_R := intChain_canonicalR M0 h_mcs0 (t' - 1)
+  have h_rewrite : t' - 1 + 1 = t' := by omega
+  rw [h_rewrite] at h_R
+  exact canonicalR_propagates_G (intChainMCS M0 h_mcs0 (t' - 1)) (intChainMCS M0 h_mcs0 t')
+    h_R phi h_G_pred
 
-  -- The technical challenge is formalizing the induction across the Int chain structure.
-  sorry
+/--
+CanonicalR_past holds between adjacent elements going backward.
+For any t, CanonicalR_past (intChainMCS (t+1)) (intChainMCS t) holds.
+This is derived from intChain_canonicalR via duality.
+-/
+theorem intChain_canonicalR_past (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0) (t : Int) :
+    CanonicalR_past (intChainMCS M0 h_mcs0 (t + 1)) (intChainMCS M0 h_mcs0 t) := by
+  have h_R := intChain_canonicalR M0 h_mcs0 t
+  have h_mcs_t := intChainMCS_is_mcs M0 h_mcs0 t
+  have h_mcs_t1 := intChainMCS_is_mcs M0 h_mcs0 (t + 1)
+  exact g_content_subset_implies_h_content_reverse (intChainMCS M0 h_mcs0 t) (intChainMCS M0 h_mcs0 (t + 1))
+    h_mcs_t h_mcs_t1 h_R
+
+/--
+CanonicalR_past propagates H-formulas: if CanonicalR_past M M' and H(phi) ∈ M, then phi ∈ M'.
+
+This follows directly from the definition: CanonicalR_past M M' = h_content(M) ⊆ M',
+and H(phi) ∈ M means phi ∈ h_content(M), so phi ∈ M'.
+-/
+theorem canonicalR_past_propagates_H (M M' : Set Formula)
+    (h_R : CanonicalR_past M M') (phi : Formula) (h_H : Formula.all_past phi ∈ M) :
+    phi ∈ M' :=
+  h_R h_H
+
+/--
+CanonicalR_past propagates H-formulas to the target (H(phi) ∈ M and CanonicalR_past M M' implies H(phi) ∈ M').
+
+This uses the temporal 4 axiom for H: H(phi) → H(H(phi)).
+-/
+theorem canonicalR_past_propagates_HH (M M' : Set Formula)
+    (h_mcs : SetMaximalConsistent M) (h_R : CanonicalR_past M M') (phi : Formula)
+    (h_H : Formula.all_past phi ∈ M) :
+    Formula.all_past phi ∈ M' := by
+  -- By temporal 4 for H: H(phi) → H(H(phi))
+  have h_H4 : [] ⊢ (Formula.all_past phi).imp (Formula.all_past (Formula.all_past phi)) :=
+    temp_4_past phi
+  have h_HH : Formula.all_past (Formula.all_past phi) ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_H4) h_H
+  -- H(H(phi)) ∈ M means H(phi) ∈ h_content(M) ⊆ M'
+  exact h_R h_HH
+
+/--
+Helper: H(phi) propagates backward along the chain.
+If H(phi) ∈ intChainMCS t and t' <= t, then H(phi) ∈ intChainMCS t'.
+-/
+theorem intChain_H_propagates (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
+    (t t' : Int) (phi : Formula) (h_le : t' ≤ t) (h_H : Formula.all_past phi ∈ intChainMCS M0 h_mcs0 t) :
+    Formula.all_past phi ∈ intChainMCS M0 h_mcs0 t' := by
+  -- Induction on (t - t').toNat
+  have h_diff_nonneg : 0 ≤ t - t' := by omega
+  generalize h_eq : (t - t').toNat = k
+  induction k generalizing t' with
+  | zero =>
+    -- k = 0 means t - t' = 0 (since t - t' >= 0), so t' = t
+    have h_eq' : t' = t := by
+      have := Int.toNat_of_nonneg h_diff_nonneg
+      rw [h_eq] at this
+      omega
+    subst h_eq'
+    exact h_H
+  | succ n ih =>
+    -- k = n + 1, so t - t' >= 1, meaning t' < t
+    have h_lt : t' < t := by
+      have h1 : (t - t').toNat = n + 1 := h_eq
+      have h2 := Int.toNat_of_nonneg h_diff_nonneg
+      omega
+    -- t' + 1 is between t' and t (inclusive)
+    have h_t'_succ : t' + 1 ≤ t := by omega
+    have h_diff' : (t - (t' + 1)).toNat = n := by
+      have h1 : (t - t').toNat = n + 1 := h_eq
+      have h2 := Int.toNat_of_nonneg h_diff_nonneg
+      omega
+    have h_diff_nonneg' : 0 ≤ t - (t' + 1) := by omega
+    -- By IH, H(phi) ∈ intChainMCS (t' + 1)
+    have h_H_succ := ih (t' + 1) h_t'_succ h_diff' h_diff_nonneg'
+    -- H(phi) propagates from t' + 1 to t' via canonicalR_past_propagates_HH
+    have h_mcs_succ := intChainMCS_is_mcs M0 h_mcs0 (t' + 1)
+    have h_R := intChain_canonicalR_past M0 h_mcs0 t'
+    exact canonicalR_past_propagates_HH (intChainMCS M0 h_mcs0 (t' + 1)) (intChainMCS M0 h_mcs0 t')
+      h_mcs_succ h_R phi h_H_succ
 
 /-- Backward H: If H(phi) in mcs(t) and t' < t, then phi in mcs(t'). -/
 theorem intChain_backward_H (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t t' : Int) (phi : Formula) (h_lt : t' < t) (h_H : Formula.all_past phi ∈ intChainMCS M0 h_mcs0 t) :
     phi ∈ intChainMCS M0 h_mcs0 t' := by
-  -- Symmetric to forward_G using H and the temporal 4 axiom for H.
-  sorry
+  -- Strategy:
+  -- 1. H(phi) ∈ mcs(t) and t' < t
+  -- 2. By intChain_H_propagates, H(phi) ∈ mcs(t' + 1)
+  -- 3. By CanonicalR_past from (t' + 1) to t', phi ∈ mcs(t')
+  have h_le : t' + 1 ≤ t := by omega
+  have h_H_succ := intChain_H_propagates M0 h_mcs0 t (t' + 1) phi h_le h_H
+  have h_R := intChain_canonicalR_past M0 h_mcs0 t'
+  exact canonicalR_past_propagates_H (intChainMCS M0 h_mcs0 (t' + 1)) (intChainMCS M0 h_mcs0 t')
+    h_R phi h_H_succ
 
 /-!
 ## Forward F and Backward P (The Hard Part)
