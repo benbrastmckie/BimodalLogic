@@ -35,7 +35,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 15-20 hours (4 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/988_dense_algebraic_completeness/plans/implementation-001.md)
@@ -58,7 +58,7 @@ technical_debt:
 
 ### 986. BFMCS construction for D = Int (sorry-free)
 - **Effort**: 5.5 hours (5 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/986_bfmcs_construction_for_int/plans/implementation-001.md)

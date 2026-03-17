@@ -8,10 +8,10 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T12:47:32Z",
+      "last_updated": "2026-03-17T12:56:57Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -26,8 +26,9 @@
           "summary": "5-phase implementation plan for sorry-free BFMCS construction over Int using dovetailing chain approach"
         }
       ],
-      "session_id": "sess_1773718859_6360f5",
-      "planned": "2026-03-17T12:47:32Z"
+      "session_id": "sess_1773752190_077933",
+      "planned": "2026-03-17T12:47:32Z",
+      "started": "2026-03-17T12:56:57Z"
     },
     {
       "project_number": 987,
@@ -42,10 +43,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T12:51:08Z",
+      "last_updated": "2026-03-17T12:55:57Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -59,9 +60,10 @@
           "summary": "4-phase implementation plan for dense algebraic completeness via CanonicalMCS -> Rat embedding"
         }
       ],
-      "session_id": "sess_1742148000_988p",
+      "session_id": "sess_1742152800_988i",
       "researched": "2026-03-17T03:39:59Z",
-      "planned": "2026-03-17T12:51:08Z"
+      "planned": "2026-03-17T12:51:08Z",
+      "started": "2026-03-17T12:55:57Z"
     },
     {
       "project_number": 989,

@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection (v5)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 6-8 hours (revised from 12-16)
 - **Dependencies**: Tasks 956 (D construction), 978 (typeclass architecture), 985 (parametric infrastructure)
 - **Research Inputs**:
@@ -135,7 +135,7 @@ Note: The WitnessChainFMCS primitives are reused in Phase 4 for building the BFM
 
 ---
 
-### Phase 4: Closure-Saturated BFMCS Construction [PARTIAL]
+### Phase 4: Closure-Saturated BFMCS Construction [IN PROGRESS]
 
 - **Dependencies**: Phase 3
 - **Goal**: Build a full BFMCS over TimelineQuot satisfying all BFMCS fields
