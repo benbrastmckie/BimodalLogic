@@ -156,11 +156,11 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T01:27:53Z",
-      "session_id": "sess_1773709593_2088bd",
+      "last_updated": "2026-03-17T01:33:17Z",
+      "session_id": "sess_1773710968_65fa85",
       "researched": "2026-03-17T01:27:53Z",
       "artifacts": [
         {
@@ -179,17 +179,17 @@
           "summary": "Team research run 003 (2 teammates): direct consistency proof via G-inference lifting; SuccOrder.ofCore path identified"
         },
         {
-          "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "Revised 6-phase plan: G-inference consistency proof + SuccOrder.ofCore"
-        },
-        {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md",
           "type": "research",
           "summary": "Team research run 004 (2 teammates, math domain): T-axiom → g_content⊆M direct proof; IRR+T-axiom inconsistency identified"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan v3: T-axiom direct subset argument (4-5 hours)"
         }
       ],
-      "planned": "2026-03-17T00:14:53Z",
+      "planned": "2026-03-17T01:33:17Z",
       "started": "2026-03-17T00:29:40Z"
     },
     {
