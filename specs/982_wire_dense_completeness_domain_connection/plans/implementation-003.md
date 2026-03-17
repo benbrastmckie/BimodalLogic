@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection (v3)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 8-10 hours
 - **Dependencies**: Tasks 956 (D construction), 978 (typeclass architecture)
 - **Research Inputs**:
@@ -78,7 +78,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Core Linking Lemma [PARTIAL]
+### Phase 1: Core Linking Lemma [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Prove timelineQuot_lt_implies_canonicalR
@@ -111,7 +111,7 @@ theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot) (h : t < t') :
 
 ---
 
-### Phase 2: FMCS over TimelineQuot [NOT STARTED]
+### Phase 2: FMCS over TimelineQuot [COMPLETED]
 
 - **Dependencies**: Phase 1
 - **Goal**: Build FMCS structure indexed by TimelineQuot
@@ -146,12 +146,27 @@ def timelineQuotFMCS (root_mcs : Set Formula) (h_mcs : SetMaximalConsistent root
 
 ---
 
-### Phase 3: BFMCS and TaskFrame [NOT STARTED]
+### Phase 3: BFMCS and TaskFrame [BLOCKED]
 
 - **Dependencies**: Phase 2
 - **Goal**: Build BFMCS bundle and TaskFrame with proper D/WorldState separation
 
-**BFMCS Structure** (singleton variant):
+**BLOCKER (2026-03-17)**: The singleton BFMCS approach is mathematically impossible.
+
+The plan claims `modal_backward` is "trivial for singleton" but this is INCORRECT:
+- `modal_backward` for singleton requires: `phi in mcs t -> Box phi in mcs t`
+- This is equivalent to `phi -> Box phi`, which is FALSE in general modal logic
+- See `Theories/Bimodal/Metalogic/Bundle/Construction.lean` lines 90-97
+- See `Boneyard/Metalogic/Metalogic_v7/Bundle/SingleFamilyBFMCS.lean`
+
+**Options for resolution**:
+1. Port multi-family construction from Int to TimelineQuot (complex, has sorries)
+2. Use existing Int-based infrastructure instead of TimelineQuot (violates D-from-syntax constraint)
+3. Find alternative proof architecture that avoids BFMCS modal_backward
+
+**Requires plan revision and user decision.**
+
+**BFMCS Structure** (singleton variant - INVALID):
 ```lean
 def timelineQuotBFMCS (root_mcs : Set Formula) (h_mcs : SetMaximalConsistent root_mcs) :
     BFMCS TimelineQuot where

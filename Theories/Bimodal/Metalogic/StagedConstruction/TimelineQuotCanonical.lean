@@ -47,9 +47,10 @@ open Bimodal.Metalogic.Canonical
 variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)
 
 -- Provide IsPreorder instance for DenseTimelineElem (needed for Antisymmetrization lemmas)
--- We need to use the EXACT form that Lean's elaboration produces: `fun x1 x2 ↦ x1 ≤ x2`
+-- Use the EXACT form that Lean's elaboration produces: `fun x1 x2 ↦ x1 ≤ x2`
+-- NOTE: Variable names x1, x2 match what Lean produces from (· ≤ ·)
 noncomputable instance denseTimelineElemIsPreorder :
-    IsPreorder (DenseTimelineElem root_mcs root_mcs_proof) (fun x y => x ≤ y) where
+    IsPreorder (DenseTimelineElem root_mcs root_mcs_proof) (fun x1 x2 ↦ x1 ≤ x2) where
   refl := fun a => le_refl a
   trans := fun a b c => le_trans
 
@@ -106,6 +107,9 @@ theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot root_mcs root_mc
     (h : t < t') :
     CanonicalR (timelineQuotMCS root_mcs root_mcs_proof t)
                (timelineQuotMCS root_mcs root_mcs_proof t') := by
+  -- Inject the IsPreorder instance for use in this proof
+  haveI : IsPreorder (DenseTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
+    denseTimelineElemIsPreorder root_mcs root_mcs_proof
   -- Use induction to work with representatives
   induction t using Antisymmetrization.ind with
   | _ p =>
@@ -156,33 +160,29 @@ theorem timelineQuot_lt_implies_canonicalR (t t' : TimelineQuot root_mcs root_mc
         let rep_q := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)
 
         -- rep_p is AntisymmRel to p (they represent the same class)
+        -- Key fact: toAntisymmetrization (ofAntisymmetrization a) = a
+        have h_rep_p_class : toAntisymmetrization (· ≤ ·) rep_p = toAntisymmetrization (· ≤ ·) p :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+        have h_rep_q_class : toAntisymmetrization (· ≤ ·) rep_q = toAntisymmetrization (· ≤ ·) q :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)
+
         have h_rep_p_equiv : AntisymmRel (· ≤ ·) rep_p p := by
           constructor
           · -- rep_p ≤ p
-            -- ofAntisymmetrization gives a representative, and by Quotient.out properties,
-            -- it satisfies rep_p ≤ p iff the quotient elements are ≤
-            have : toAntisymmetrization (· ≤ ·) rep_p = toAntisymmetrization (· ≤ ·) p :=
-              toAntisymmetrization_ofAntisymmetrization _
-            calc rep_p ≤ rep_p := le_refl _
-                 _ ≤ p := by
-                   rw [← toAntisymmetrization_le_toAntisymmetrization_iff, this]
+            show rep_p ≤ p
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_p_class]
           · -- p ≤ rep_p
-            have : toAntisymmetrization (· ≤ ·) rep_p = toAntisymmetrization (· ≤ ·) p :=
-              toAntisymmetrization_ofAntisymmetrization _
-            calc p ≤ p := le_refl _
-                 _ ≤ rep_p := by
-                   rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← this]
+            show p ≤ rep_p
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_p_class]
 
         have h_rep_q_equiv : AntisymmRel (· ≤ ·) rep_q q := by
           constructor
-          · have : toAntisymmetrization (· ≤ ·) rep_q = toAntisymmetrization (· ≤ ·) q :=
-              toAntisymmetrization_ofAntisymmetrization _
-            calc rep_q ≤ rep_q := le_refl _
-                 _ ≤ q := by rw [← toAntisymmetrization_le_toAntisymmetrization_iff, this]
-          · have : toAntisymmetrization (· ≤ ·) rep_q = toAntisymmetrization (· ≤ ·) q :=
-              toAntisymmetrization_ofAntisymmetrization _
-            calc q ≤ q := le_refl _
-                 _ ≤ rep_q := by rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← this]
+          · -- rep_q ≤ q
+            show rep_q ≤ q
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_q_class]
+          · -- q ≤ rep_q
+            show q ≤ rep_q
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_q_class]
 
         -- Now use the fact that equivalent elements have same MCS
         have h_mcs_p : rep_p.1.mcs = p.1.mcs :=
@@ -207,6 +207,9 @@ theorem canonicalR_implies_timelineQuot_le
     (h : CanonicalR (timelineQuotMCS root_mcs root_mcs_proof t)
                     (timelineQuotMCS root_mcs root_mcs_proof t')) :
     t ≤ t' := by
+  -- Inject the IsPreorder instance for use in this proof
+  haveI : IsPreorder (DenseTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
+    denseTimelineElemIsPreorder root_mcs root_mcs_proof
   induction t using Antisymmetrization.ind with
   | _ p =>
     induction t' using Antisymmetrization.ind with
@@ -218,26 +221,27 @@ theorem canonicalR_implies_timelineQuot_le
       simp only [timelineQuotMCS] at h
       let rep_p := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
       let rep_q := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)
+
+      -- Key facts: toAntisymmetrization (ofAntisymmetrization a) = a
+      have h_rep_p_class : toAntisymmetrization (· ≤ ·) rep_p = toAntisymmetrization (· ≤ ·) p :=
+        toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+      have h_rep_q_class : toAntisymmetrization (· ≤ ·) rep_q = toAntisymmetrization (· ≤ ·) q :=
+        toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)
+
       have h_rep_p_equiv : AntisymmRel (· ≤ ·) rep_p p := by
         constructor
-        · have : toAntisymmetrization (· ≤ ·) rep_p = toAntisymmetrization (· ≤ ·) p :=
-            toAntisymmetrization_ofAntisymmetrization _
-          calc rep_p ≤ rep_p := le_refl _
-               _ ≤ p := by rw [← toAntisymmetrization_le_toAntisymmetrization_iff, this]
-        · have : toAntisymmetrization (· ≤ ·) rep_p = toAntisymmetrization (· ≤ ·) p :=
-            toAntisymmetrization_ofAntisymmetrization _
-          calc p ≤ p := le_refl _
-               _ ≤ rep_p := by rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← this]
+        · show rep_p ≤ p
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_p_class]
+        · show p ≤ rep_p
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_p_class]
+
       have h_rep_q_equiv : AntisymmRel (· ≤ ·) rep_q q := by
         constructor
-        · have : toAntisymmetrization (· ≤ ·) rep_q = toAntisymmetrization (· ≤ ·) q :=
-            toAntisymmetrization_ofAntisymmetrization _
-          calc rep_q ≤ rep_q := le_refl _
-               _ ≤ q := by rw [← toAntisymmetrization_le_toAntisymmetrization_iff, this]
-        · have : toAntisymmetrization (· ≤ ·) rep_q = toAntisymmetrization (· ≤ ·) q :=
-            toAntisymmetrization_ofAntisymmetrization _
-          calc q ≤ q := le_refl _
-               _ ≤ rep_q := by rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← this]
+        · show rep_q ≤ q
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_q_class]
+        · show q ≤ rep_q
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_q_class]
+
       have h_mcs_p : rep_p.1.mcs = p.1.mcs :=
         denseTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep_p p
           h_rep_p_equiv.1 h_rep_p_equiv.2
