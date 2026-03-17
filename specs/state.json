@@ -8,10 +8,10 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "implementing",
+      "status": "partial",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T12:56:57Z",
+      "last_updated": "2026-03-17T14:30:00Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -24,11 +24,26 @@
           "path": "specs/986_bfmcs_construction_for_int/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for sorry-free BFMCS construction over Int using dovetailing chain approach"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean",
+          "type": "lean_module",
+          "summary": "Int-indexed BFMCS chain construction (partial, 4 sorries)"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md",
+          "type": "summary",
+          "summary": "Partial implementation: chain infrastructure complete, F/P witness proofs blocked by dovetailing requirement"
         }
       ],
       "session_id": "sess_1773752190_077933",
       "planned": "2026-03-17T12:47:32Z",
-      "started": "2026-03-17T12:56:57Z"
+      "started": "2026-03-17T12:56:57Z",
+      "partial_progress": {
+        "phases_completed": 0,
+        "phases_total": 5,
+        "details": "Phase 1 partial: created IntBFMCS.lean with chain construction, MCS successor/predecessor, CanonicalR properties. Blocked: forward_F/backward_P require dovetailing construction."
+      }
     },
     {
       "project_number": 987,

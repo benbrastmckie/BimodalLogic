@@ -1,7 +1,7 @@
 # Implementation Plan: BFMCS Construction for Int
 
 - **Task**: 986 - bfmcs_construction_for_int
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 5 hours
 - **Dependencies**: Task 985 (completed - provides algebraic infrastructure)
 - **Research Inputs**: specs/986_bfmcs_construction_for_int/reports/research-001.md
@@ -68,19 +68,23 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Chain Construction Core [NOT STARTED]
+### Phase 1: Chain Construction Core [PARTIAL]
 
 - **Dependencies:** None
 - **Goal:** Define the bi-infinite chain `c : Int -> Set Formula` where consecutive elements are CanonicalR-related and a designated root MCS appears at index 0.
 
 **Tasks:**
-- [ ] Create `Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean` with imports from CanonicalFMCS, TemporalCoherence, ParametricRepresentation
-- [ ] Define `ChainStep`: given an MCS `M`, produce a successor MCS `M'` with `CanonicalR M M'`, using `canonical_forward_F` on a chosen formula or `g_content`-based Lindenbaum extension
-- [ ] Define `PastStep`: given an MCS `M`, produce a predecessor MCS `M'` with `CanonicalR M' M`, using `canonical_backward_P` or h_content-based construction
-- [ ] Define `build_chain : Set Formula -> (h_mcs : SetMaximalConsistent M0) -> (Int -> Set Formula)` via recursion: `c(0) = M0`, `c(t+1) = ChainStep(c(t))`, `c(-(t+1)) = PastStep(c(-t))`
-- [ ] Prove `build_chain_is_mcs`: each `c(t)` is an MCS
-- [ ] Prove `build_chain_canonicalR_forward`: `CanonicalR (c t) (c (t+1))` for all t
-- [ ] Prove `build_chain_canonicalR_backward`: `CanonicalR (c (t-1)) (c t)` for all t
+- [x] Create `Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean` with imports from CanonicalFMCS, TemporalCoherence, DiscreteSuccSeed, CanonicalTimeline
+- [x] Define `successorMCS`: given an MCS `M`, produce a successor MCS `M'` with `CanonicalR M M'`, using g_content-based Lindenbaum extension
+- [x] Define `predecessorMCS`: given an MCS `M`, produce a predecessor MCS `M'` with `CanonicalR M' M`, using h_content-based construction
+- [x] Define `posChain` and `negChain` via Nat recursion
+- [x] Define `intChainMCS : Int -> Set Formula` combining posChain and negChain
+- [x] Prove `intChainMCS_is_mcs`: each `c(t)` is an MCS
+- [x] Prove `posChain_canonicalR`: `CanonicalR (c n) (c (n+1))` for positive chain
+- [x] Prove `negChain_canonicalR`: `CanonicalR (c (n+1)) (c n)` for negative chain
+- [x] Prove `h_content_consistent`: symmetric to existing `g_content_consistent`
+- [ ] Prove `intChain_forward_G`: G propagation through chain (sorry)
+- [ ] Prove `intChain_backward_H`: H propagation through chain (sorry)
 
 **Timing:** 1.5 hours
 
@@ -88,9 +92,20 @@ After this implementation:
 - `Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean` (new file)
 
 **Verification:**
-- `lake build Bimodal.Metalogic.Algebraic.IntBFMCS` compiles
-- `lean_goal` shows no sorry-requiring goals
-- `grep -n "\bsorry\b" IntBFMCS.lean` returns empty
+- [x] `lake build Bimodal.Metalogic.Algebraic.IntBFMCS` compiles
+- [ ] `lean_goal` shows no sorry-requiring goals
+- [ ] `grep -n "\bsorry\b" IntBFMCS.lean` returns empty
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773752190_077933**
+- Added: `successorMCS`, `predecessorMCS` - MCS successor/predecessor construction via Lindenbaum
+- Added: `posChain`, `negChain`, `intChainMCS` - Int-indexed chain definitions
+- Added: `intChainMCS_is_mcs` - proves each chain element is MCS
+- Added: `posChain_canonicalR`, `negChain_canonicalR` - CanonicalR between consecutive elements
+- Added: `h_content_consistent` - h_content of MCS is consistent (symmetric to g_content_consistent)
+- Sorries: 4 remaining (intChain_forward_G, intChain_backward_H, intFMCS_forward_F, intFMCS_backward_P)
+- Blocker: forward_G/backward_H require proof of G/H propagation through CanonicalR chain across positive/negative index boundary
 
 ---
 
