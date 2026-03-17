@@ -8,12 +8,12 @@
     {
       "project_number": 985,
       "project_name": "lindenbaum_tarski_representation_theorem",
-      "status": "researching",
+      "status": "researched",
       "language": "logic",
       "created": "2026-03-17T01:08:17Z",
-      "last_updated": "2026-03-17T01:25:32Z",
+      "last_updated": "2026-03-17T01:29:00Z",
       "session_id": "sess_1773710714_8a9e6a",
-      "researched": "2026-03-17T01:21:54Z"
+      "researched": "2026-03-17T01:29:00Z"
     },
     {
       "project_number": 984,
@@ -110,13 +110,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T01:21:17Z",
-      "session_id": "sess_1773707997_21695",
+      "last_updated": "2026-03-17T01:29:16Z",
+      "session_id": "sess_1773710941_20917",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
         {
@@ -151,7 +151,7 @@
         }
       ],
       "planned": "2026-03-17T01:21:17Z",
-      "started": "2026-03-17T00:40:12Z"
+      "started": "2026-03-17T01:29:16Z"
     },
     {
       "project_number": 981,

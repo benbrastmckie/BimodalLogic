@@ -1,29 +1,15 @@
 {
   "status": "researched",
-  "summary": "Team research completed: algebraic Lindenbaum-Tarski approach via Stone duality, bypassing domain mismatch. 5-phase implementation plan identified.",
+  "summary": "TaskFrame-specific algebraic construction: D-parametric representation theorem avoiding domain mismatch by accepting D as parameter rather than constructing from syntax",
   "artifacts": [
     {
       "type": "research",
-      "path": "specs/985_lindenbaum_tarski_representation_theorem/reports/research-001.md",
-      "summary": "Synthesized research from 2 teammates (run 001): algebraic approach + existing infrastructure analysis"
+      "path": "specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md",
+      "summary": "TaskFrame-specific Lindenbaum-Tarski construction: WorldState=UF, task_rel from G operator, D-parametric truth lemma"
     }
   ],
-  "team_execution": {
-    "enabled": true,
-    "wave_count": 1,
-    "teammates_spawned": 2,
-    "teammates_completed": 2,
-    "teammates_failed": 0,
-    "degraded_to_single": false
-  },
-  "synthesis": {
-    "conflicts_found": 3,
-    "conflicts_resolved": 3,
-    "gaps_identified": 4,
-    "wave_2_triggered": false
-  },
   "metadata": {
-    "session_id": "sess_1773709815_8170ec",
-    "agent_type": "skill-team-research"
+    "session_id": "sess_1773710714_8a9e6a",
+    "agent_type": "skill-logic-research"
   }
 }
