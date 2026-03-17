@@ -136,6 +136,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-003.md",
           "type": "research",
           "summary": "Deep foundational research: Approach B (Domain-Agnostic Semantic Evaluation) with D=WorldState=TimelineQuot. 4 hours, zero-debt."
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-004.md",
+          "type": "research",
+          "summary": "Deep math analysis: box_persistent as key resolution, singleton BFMCS variant, 2-3 hours"
         }
       ],
       "planned": "2026-03-17T00:36:43Z",
@@ -144,11 +149,11 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T00:29:40Z",
-      "session_id": "sess_1773707360_3d82ad",
+      "last_updated": "2026-03-17T01:09:00Z",
+      "session_id": "sess_1773709593_2088bd",
       "researched": "2026-03-17T00:11:20Z",
       "artifacts": [
         {
