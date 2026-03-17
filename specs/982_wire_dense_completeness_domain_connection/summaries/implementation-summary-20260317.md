@@ -323,3 +323,126 @@ Either prove:
 - `CanonicalEmbedding.lean:181`: ratFMCS_forward_F
 - `CanonicalEmbedding.lean:192`: ratFMCS_backward_P
 - `CanonicalEmbedding.lean:231`: ratBFMCS.modal_backward
+
+---
+
+## Session 4: Plan v8 Execution (sess_1773760161_eca24d) - 2026-03-17
+
+### Phase 1: Verify CanonicalMCS BFMCS Infrastructure [COMPLETED]
+
+#### Objective
+Confirm CanonicalMCS has the required infrastructure for the all-MCS approach from research-011.
+
+#### Key Findings
+
+1. **CanonicalMCS FMCS exists** (`canonicalMCSBFMCS` in CanonicalFMCS.lean lines 184-191)
+   - FMCS definition is sorry-free
+   - Maps each CanonicalMCS element to its underlying MCS
+
+2. **forward_F/backward_P are proven** (no sorries)
+   - `canonicalMCS_forward_F` (lines 222-228): Uses `canonical_forward_F`, witness is in CanonicalMCS by construction
+   - `canonicalMCS_backward_P` (lines 240-251): Uses `canonical_backward_P` + h_content/g_content duality
+
+3. **TemporalCoherentFamily exists** (`temporal_coherent_family_exists_CanonicalMCS` lines 293-311)
+   - Sorry-free proof extending consistent context to temporally coherent family
+
+4. **ParametricTruthLemma requirements** (ParametricTruthLemma.lean line 49):
+   ```lean
+   variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+   ```
+   - **CRITICAL**: Requires LinearOrder and AddCommGroup
+   - CanonicalMCS only has Preorder (not even total)
+   - Cannot directly use ParametricTruthLemma for CanonicalMCS
+
+5. **Int-based truth lemma exists** (CanonicalConstruction.lean)
+   - `canonical_truth_lemma` for `BFMCS Int` - proven, sorry-free
+   - `shifted_truth_lemma` for shift-closed Omega - proven, sorry-free
+   - BUT: Int is not DenselyOrdered
+
+#### Critical Insight: The Plan v8 Strategy Has Issues
+
+The plan's Phase 2-5 approach (building truth lemma for CanonicalMCS BFMCS) faces a fundamental challenge:
+
+- **CanonicalMCS is only Preorder** (not LinearOrder or AddCommGroup)
+- **The existing truth lemma machinery requires LinearOrder** for temporal quantification
+- **The Int-based infrastructure works** but Int is not DenselyOrdered
+
+#### Architecture Analysis
+
+From research-011 and codebase analysis:
+
+| Component | Domain | LinearOrder? | forward_F/backward_P |
+|-----------|--------|--------------|----------------------|
+| canonicalMCSBFMCS | CanonicalMCS | NO (Preorder) | PROVEN |
+| CanonicalConstruction | Int | YES | PROVEN |
+| ParametricTruthLemma | D generic | REQUIRED | N/A |
+| TimelineQuot | TimelineQuot | YES | BLOCKED (edge cases) |
+
+#### The Fundamental Gap
+
+1. **CanonicalMCS** has proven forward_F/backward_P (all MCS in domain)
+2. **Int-based construction** has proven truth lemma
+3. **TimelineQuot** has LinearOrder + AddCommGroup but forward_F/backward_P have sorries
+4. **No existing path** connects CanonicalMCS temporal coherence to a dense domain
+
+#### Research-011 Recommended Approach
+
+From Section 8.1 "Immediate Path":
+1. Check if truth lemma can work with Preorder only (for G/H cases)
+2. Build completeness using CanonicalMCS BFMCS (which has proven forward_F/backward_P)
+3. Connect to TaskFrame validity via two-stage approach:
+   - Stage 1: `bmcs_valid phi -> provable phi` (using CanonicalMCS)
+   - Stage 2: `valid_over_TimelineQuot phi -> bmcs_valid phi`
+
+### Files Read This Session
+
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalFMCS.lean` - CanonicalMCS FMCS (sorry-free)
+- `Theories/Bimodal/Metalogic/Bundle/ModalSaturation.lean` - Modal saturation infrastructure
+- `Theories/Bimodal/Metalogic/Algebraic/ParametricTruthLemma.lean` - Requires LinearOrder
+- `Theories/Bimodal/Metalogic/Bundle/BFMCS.lean` - BFMCS structure
+- `Theories/Bimodal/Metalogic/Bundle/TemporalCoherence.lean` - Temporal coherence
+- `Theories/Bimodal/Metalogic/Bundle/CanonicalConstruction.lean` - Int-based truth lemma
+- `Theories/Bimodal/Metalogic/DenseCompleteness.lean` - Current dense completeness status
+- `Theories/Bimodal/Metalogic/StagedConstruction/Completeness.lean` - Components proven
+- `specs/982_*/reports/research-011.md` - Deep analysis of Option C
+
+### Phase 1 Verification Checklist
+
+- [x] `canonicalMCSBFMCS` defined and sorry-free
+- [x] `canonicalMCS_forward_F` proven (no sorry)
+- [x] `canonicalMCS_backward_P` proven (no sorry)
+- [x] `temporal_coherent_family_exists_CanonicalMCS` proven (no sorry)
+- [x] Documented that ParametricTruthLemma requires LinearOrder
+- [x] Confirmed Int-based truth lemma exists but Int is not dense
+
+### Assessment: Can Plan v8 Phases 2-5 Be Completed?
+
+**Phase 2 (Modal-Saturated BFMCS over CanonicalMCS)**: Could be done using ModalSaturation.lean patterns. The infrastructure exists.
+
+**Phase 3 (Truth Lemma for CanonicalMCS)**: BLOCKED. The truth lemma requires:
+- For G case: quantification over `s >= t` (Preorder sufficient)
+- For H case: quantification over `s <= t` (Preorder sufficient)
+- For Box case: quantification over all histories (no issue)
+- **Problem**: The parametric truth lemma requires `[LinearOrder D]` for the temporal cases
+
+**Phase 4 (Completeness via Countermodel)**: Depends on Phase 3.
+
+**Phase 5 (Wire to TaskFrame)**: Depends on Phase 4.
+
+### Recommendation
+
+The plan v8 phases 2-5 cannot be directly completed because:
+
+1. **Phase 3 is blocked**: The truth lemma machinery requires LinearOrder D
+2. **CanonicalMCS is only Preorder**: Cannot satisfy LinearOrder constraint
+3. **Alternative needed**: Either modify truth lemma for Preorder or use different approach
+
+**Viable paths forward**:
+1. **Adapt truth lemma for Preorder**: Create CanonicalMCS-specific truth lemma that only uses Preorder
+2. **Use Int completeness as is**: Document that completeness is proven for Int (non-dense)
+3. **Accept limitation**: Mark dense completeness wiring as architectural limitation requiring Phase 10+ work
+
+### Status
+
+- **Phase 1**: COMPLETED (verification findings documented)
+- **Phases 2-5**: BLOCKED pending architectural resolution

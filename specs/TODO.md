@@ -35,7 +35,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 12-16 hours (5 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md) (W/D separated architecture)
 - **Plan**: [implementation-003.md](specs/988_dense_algebraic_completeness/plans/implementation-003.md) (v3: Separated W/D architecture)
@@ -123,7 +123,7 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 8-12 hours (5 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)

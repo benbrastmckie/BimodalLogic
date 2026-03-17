@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection (v8)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10-14 hours (5 phases)
 - **Dependencies**: None (prior phases 1-3 from v7 completed: SeparatedTaskFrame.lean, SeparatedHistory.lean exist)
 - **Research Inputs**:
@@ -11,6 +11,16 @@
 - **Standards**: plan-format.md, status-markers.md, artifact-management.md, tasks.md
 - **Type**: lean
 - **Lean Intent**: true
+
+## Progress
+
+**Session: 2026-03-17, sess_1773760161_eca24d**
+- Completed: Phase 1 (Verify CanonicalMCS BFMCS Infrastructure)
+- Verified: `canonicalMCS_forward_F` and `canonicalMCS_backward_P` are sorry-free
+- Verified: `temporal_coherent_family_exists_CanonicalMCS` is sorry-free
+- Blocked: Phase 3 requires `[LinearOrder D]` but CanonicalMCS is only `Preorder`
+- Impact: Phases 2-5 cannot proceed without architectural resolution
+- Summary: Plan v8 approach encounters fundamental type constraint mismatch
 
 ## Revision History
 
@@ -36,6 +46,8 @@ The completeness proof does NOT need forward_F/backward_P to be proven for Timel
 2. **Use CanonicalMCS for the truth lemma** - it's a Preorder (not LinearOrder), but the truth lemma doesn't require LinearOrder
 3. **Connect to TaskFrame validity via TimelineQuot embedding** - TimelineQuot provides the LinearOrder + AddCommGroup
 4. **Completeness follows** from the CanonicalMCS-based countermodel construction
+
+**CORRECTION (sess_1773760161_eca24d)**: Point 2 is INCORRECT. The ParametricTruthLemma (line 49) DOES require `[LinearOrder D]`. This blocks the plan. See Phase 3 status for details.
 
 ### Architecture Diagram
 
@@ -135,7 +147,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Verify CanonicalMCS BFMCS Infrastructure [NOT STARTED]
+### Phase 1: Verify CanonicalMCS BFMCS Infrastructure [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Confirm CanonicalMCS has all infrastructure needed for truth lemma
@@ -181,7 +193,13 @@ After this implementation:
 
 ---
 
-### Phase 2: Build Modal-Saturated BFMCS over CanonicalMCS [NOT STARTED]
+### Phase 2: Build Modal-Saturated BFMCS over CanonicalMCS [BLOCKED]
+
+**BLOCKER (Session sess_1773760161_eca24d)**: Phase 3 (Truth Lemma) is blocked because ParametricTruthLemma requires `[LinearOrder D]` but CanonicalMCS is only `Preorder`. Without a working truth lemma, subsequent phases cannot proceed.
+
+**Status**: Phase 2 implementation is possible (ModalSaturation.lean infrastructure exists), but completing it would not unblock Phase 3. Recommend resolving the LinearOrder requirement before proceeding.
+
+**Original Plan (preserved for reference)**:
 
 - **Dependencies**: Phase 1
 - **Goal**: Construct BFMCS over CanonicalMCS with proven modal_forward and modal_backward
@@ -226,7 +244,22 @@ noncomputable def canonicalMCSModalSaturatedBFMCS
 
 ---
 
-### Phase 3: Truth Lemma for CanonicalMCS BFMCS [NOT STARTED]
+### Phase 3: Truth Lemma for CanonicalMCS BFMCS [BLOCKED]
+
+**BLOCKER (Session sess_1773760161_eca24d)**: ParametricTruthLemma.lean line 49 requires:
+```lean
+variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+```
+
+CanonicalMCS is only `Preorder` (not LinearOrder, not AddCommGroup). The parametric truth lemma cannot be instantiated for CanonicalMCS.
+
+**Options to Unblock**:
+1. Create CanonicalMCS-specific truth lemma using only Preorder (major effort)
+2. Prove CanonicalMCS is actually total (unlikely - counterexamples exist)
+3. Use Int-based completeness and document dense completeness as future work
+4. Find alternative proof path that doesn't require BFMCS over CanonicalMCS
+
+**Original Plan (preserved for reference)**:
 
 - **Dependencies**: Phase 2
 - **Goal**: Prove truth lemma: phi in fam.mcs t <-> truth_at model Omega history t phi
@@ -290,7 +323,11 @@ theorem canonicalMCS_truth_lemma
 
 ---
 
-### Phase 4: Completeness via CanonicalMCS Countermodel [NOT STARTED]
+### Phase 4: Completeness via CanonicalMCS Countermodel [BLOCKED]
+
+**BLOCKER**: Depends on Phase 3 (Truth Lemma). Cannot proceed until Phase 3 is unblocked.
+
+**Original Plan (preserved for reference)**:
 
 - **Dependencies**: Phase 3
 - **Goal**: Prove completeness: not provable -> satisfiable countermodel in CanonicalMCS
@@ -335,7 +372,11 @@ theorem canonicalMCS_completeness (phi : Formula) :
 
 ---
 
-### Phase 5: Wire Dense Completeness Theorem [NOT STARTED]
+### Phase 5: Wire Dense Completeness Theorem [BLOCKED]
+
+**BLOCKER**: Depends on Phase 4 (Completeness). Cannot proceed until Phase 4 is unblocked.
+
+**Original Plan (preserved for reference)**:
 
 - **Dependencies**: Phase 4
 - **Goal**: Connect CanonicalMCS completeness to dense validity over TimelineQuot
