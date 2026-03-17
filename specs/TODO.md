@@ -40,7 +40,7 @@ technical_debt:
 
 ### 983. Review decidability results and FMP for publication
 - **Effort**: 48 hours (8 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: logic
 - **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team), [research-002.md](specs/983_review_decidability_fmp_completeness/reports/research-002.md) (Boneyard salvageability)
 - **Plan**: [implementation-002.md](specs/983_review_decidability_fmp_completeness/plans/implementation-002.md) (v2: clean FMP from scratch, no bridges, unified naming)
@@ -53,12 +53,12 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 4.5 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-001.md](specs/982_wire_dense_completeness_domain_connection/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-001.md)
+- **Research**: [research-001.md](specs/982_wire_dense_completeness_domain_connection/reports/research-001.md), [research-002.md](specs/982_wire_dense_completeness_domain_connection/reports/research-002.md) (blocker analysis)
+- **Plan**: [implementation-002.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-002.md) (revised)
 
 **Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All individual components are proven sorry-free (`cantor_iso`, `bmcs_truth_lemma`, `temporal_coherent_family_exists_CanonicalMCS`). The 3 sorries in `FrameConditions/Completeness.lean` need wiring that connects these pieces through a domain transfer or unified construction.
 
@@ -76,7 +76,7 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 5-7 hours (6 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof)
