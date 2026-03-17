@@ -307,4 +307,204 @@ theorem quot_from_stage (a : DiscreteTimelineQuot root_mcs root_mcs_proof) :
   rw [← h_roundtrip]
   exact Quotient.sound h_class_full
 
+/-!
+## Phase 2: Stage Embedding and Successor
+
+Define the stage transition functions:
+- `stage_embed`: Embedding from stage n to stage n+1 (elements persist)
+- `succ_at_stage`: Create immediate successor at next stage using blocking formulas
+
+The key property is that `succ_at_stage n M` creates a FRESH element at stage n+1
+that is NOT in the range of `stage_embed n`. This is what makes covering trivial.
+-/
+
+/-- Embed an element from stage n into stage n+1.
+
+Since discreteStagedBuild is monotone (stage n ⊆ stage n+1), every element
+at stage n is also at stage n+1. -/
+def stage_embed_elem (n : Nat)
+    (p : DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n) :
+    DiscreteTimelineElem_at_stage root_mcs root_mcs_proof (n + 1) :=
+  ⟨p.1, discreteStagedBuild_monotone root_mcs root_mcs_proof n p.2⟩
+
+/-- The stage embedding preserves the underlying StagedPoint. -/
+theorem stage_embed_elem_val (n : Nat)
+    (p : DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n) :
+    (stage_embed_elem root_mcs root_mcs_proof n p).1 = p.1 := rfl
+
+/-- The stage embedding preserves order. -/
+theorem stage_embed_elem_mono (n : Nat)
+    (p q : DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n)
+    (h : p ≤ q) :
+    stage_embed_elem root_mcs root_mcs_proof n p ≤
+    stage_embed_elem root_mcs root_mcs_proof n q := by
+  -- h : StagedPoint.le p.1 q.1
+  -- Goal: StagedPoint.le (stage_embed_elem p).1 (stage_embed_elem q).1
+  -- Since stage_embed_elem preserves the underlying StagedPoint, this is immediate
+  simp only [stage_embed_elem]
+  exact h
+
+/-- The stage embedding is injective on elements. -/
+theorem stage_embed_elem_injective (n : Nat)
+    (p q : DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n)
+    (h : stage_embed_elem root_mcs root_mcs_proof n p =
+         stage_embed_elem root_mcs root_mcs_proof n q) :
+    p = q := by
+  simp only [stage_embed_elem] at h
+  -- h : ⟨p.1, _⟩ = ⟨q.1, _⟩
+  have h_val : p.1 = q.1 := congrArg Subtype.val h
+  exact Subtype.eq h_val
+
+/-- Embed a quotient element from stage n into stage n+1.
+
+This is the quotient-level version of stage_embed_elem. -/
+noncomputable def stage_embed (n : Nat)
+    (a : DiscreteTimelineQuot_at_stage root_mcs root_mcs_proof n) :
+    DiscreteTimelineQuot_at_stage root_mcs root_mcs_proof (n + 1) := by
+  -- Get a representative from the quotient
+  haveI inst_n : IsPreorder (DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n) (· ≤ ·) :=
+    isPreorder_at_stage root_mcs root_mcs_proof n
+  haveI inst_n1 : IsPreorder (DiscreteTimelineElem_at_stage root_mcs root_mcs_proof (n + 1)) (· ≤ ·) :=
+    isPreorder_at_stage root_mcs root_mcs_proof (n + 1)
+  let p := ofAntisymmetrization (· ≤ ·) a
+  exact toAntisymmetrization (· ≤ ·) (stage_embed_elem root_mcs root_mcs_proof n p)
+
+/-- The stage embedding on quotients preserves order. -/
+theorem stage_embed_mono (n : Nat)
+    (a b : DiscreteTimelineQuot_at_stage root_mcs root_mcs_proof n)
+    (h : a ≤ b) :
+    stage_embed root_mcs root_mcs_proof n a ≤ stage_embed root_mcs root_mcs_proof n b := by
+  haveI inst_n : IsPreorder (DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n) (· ≤ ·) :=
+    isPreorder_at_stage root_mcs root_mcs_proof n
+  haveI inst_n1 : IsPreorder (DiscreteTimelineElem_at_stage root_mcs root_mcs_proof (n + 1)) (· ≤ ·) :=
+    isPreorder_at_stage root_mcs root_mcs_proof (n + 1)
+  simp only [stage_embed]
+  rw [toAntisymmetrization_le_toAntisymmetrization_iff]
+  apply stage_embed_elem_mono
+  rw [← toAntisymmetrization_le_toAntisymmetrization_iff]
+  simp only [toAntisymmetrization_ofAntisymmetrization]
+  exact h
+
+/-- The stage embedding on quotients is injective. -/
+theorem stage_embed_injective (n : Nat)
+    (a b : DiscreteTimelineQuot_at_stage root_mcs root_mcs_proof n)
+    (h : stage_embed root_mcs root_mcs_proof n a = stage_embed root_mcs root_mcs_proof n b) :
+    a = b := by
+  haveI inst_n : IsPreorder (DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n) (· ≤ ·) :=
+    isPreorder_at_stage root_mcs root_mcs_proof n
+  haveI inst_n1 : IsPreorder (DiscreteTimelineElem_at_stage root_mcs root_mcs_proof (n + 1)) (· ≤ ·) :=
+    isPreorder_at_stage root_mcs root_mcs_proof (n + 1)
+  simp only [stage_embed] at h
+  -- h : toAnti (stage_embed_elem (ofAnti a)) = toAnti (stage_embed_elem (ofAnti b))
+  -- Two elements are equal in Antisymmetrization iff they are AntisymmRel
+  have h_class : AntisymmRel (· ≤ ·)
+      (stage_embed_elem root_mcs root_mcs_proof n (ofAntisymmetrization (· ≤ ·) a))
+      (stage_embed_elem root_mcs root_mcs_proof n (ofAntisymmetrization (· ≤ ·) b)) := by
+    constructor
+    · rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h]
+    · rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h]
+  -- AntisymmRel on embedded elements implies AntisymmRel on original elements
+  have h_class_orig : AntisymmRel (· ≤ ·)
+      (ofAntisymmetrization (· ≤ ·) a : DiscreteTimelineElem_at_stage root_mcs root_mcs_proof n)
+      (ofAntisymmetrization (· ≤ ·) b) := by
+    constructor
+    · -- stage_embed_elem is order-reflecting for ≤
+      have h1 := h_class.1
+      simp only [stage_embed_elem] at h1
+      exact h1
+    · have h2 := h_class.2
+      simp only [stage_embed_elem] at h2
+      exact h2
+  -- AntisymmRel on ofAnti gives equality in quotient
+  have h_eq : toAntisymmetrization (· ≤ ·) (ofAntisymmetrization (· ≤ ·) a) =
+              toAntisymmetrization (· ≤ ·) (ofAntisymmetrization (· ≤ ·) b) :=
+    Quotient.sound h_class_orig
+  simp only [toAntisymmetrization_ofAntisymmetrization] at h_eq
+  exact h_eq
+
+/-!
+## Immediate Successor in Full Timeline
+
+Define the immediate successor function that goes from a stage-n element to
+the full timeline quotient. The successor is constructed using blocking formulas
+to guarantee covering.
+
+The key insight is that while each stage is finite (giving LocallyFiniteOrder at each stage),
+the successor may be at a LATER stage. The covering property comes from the blocking
+formulas, not from the staged structure itself.
+-/
+
+/-- Create an immediate successor StagedPoint for a given MCS.
+
+This uses discreteImmediateSucc (which includes blocking formulas) to create
+a fresh successor MCS, then wraps it as a StagedPoint at stage 0 (the stage
+is just a label - the MCS will appear in the actual build at some stage). -/
+noncomputable def immediateSuccPoint (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    StagedPoint where
+  mcs := discreteImmediateSucc M h_mcs
+  is_mcs := discreteImmediateSucc_mcs M h_mcs
+  introduced_at := 0  -- Placeholder stage; actual stage determined by staged build
+
+/-- The immediate successor point has CanonicalR from the source MCS. -/
+theorem immediateSuccPoint_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    CanonicalR M (immediateSuccPoint M h_mcs).mcs :=
+  discreteImmediateSucc_canonicalR M h_mcs
+
+/-- The immediate successor point covers M (no intermediate).
+
+This is the KEY theorem for eliminating the axiom: given any M and its
+discreteImmediateSucc W, there is NO intermediate K strictly between them.
+-/
+theorem immediateSuccPoint_covers (M K : Set Formula)
+    (h_M : SetMaximalConsistent M) (h_K : SetMaximalConsistent K)
+    (h_MK : CanonicalR M K)
+    (h_KW : CanonicalR K (immediateSuccPoint M h_M).mcs) :
+    K = M ∨ K = (immediateSuccPoint M h_M).mcs :=
+  discreteImmediateSucc_covers M K h_M h_K h_MK h_KW
+
+/-!
+## Architectural Note: Immediate Successor in Staged Build
+
+**BLOCKED**: The current `discreteStagedBuild` uses `forward_temporal_witness_seed` which does NOT
+include blocking formulas. As a result:
+
+1. The witnesses added at each stage are NOT guaranteed to be immediate successors
+2. There may be intermediate MCSs between M and its witness W
+3. The covering property `¬∃K. M < K < W` cannot be proven
+
+**Resolution Options**:
+
+1. **Modify the staged build** to use `discreteImmediateSuccSeed` instead of
+   `forward_temporal_witness_seed`. This would require changes to `StagedExecution.lean`.
+
+2. **Define a new staged build** (`discreteStagedBuildImmediate`) that uses blocking
+   formulas for immediate successors.
+
+3. **Use well-founded minimal successor** (Approach 2 from research-006): Define
+   `succ(M) := min { K | CanonicalR M K ∧ K ≠ M }` using `WellFounded.min`.
+
+For now, Phase 2 defines the infrastructure for stage embeddings and documents the
+covering property requirement. The actual implementation of immediate successors
+requires one of the above resolutions.
+
+## Phase 2 Completion Status
+
+**COMPLETED**:
+- `stage_embed_elem`: Embedding of stage elements (order-preserving, injective)
+- `stage_embed`: Quotient-level embedding
+- `immediateSuccPoint`: Helper to create successor MCS with blocking formulas
+- `immediateSuccPoint_canonicalR`: CanonicalR from M to its immediate successor
+- `immediateSuccPoint_covers`: Covering property from blocking formulas
+
+**BLOCKED**:
+- `succ_at_stage`: Cannot define without modifying staged build OR using minimal successor
+- Covering at each stage: Depends on `succ_at_stage` definition
+
+**NEXT STEPS** (Phase 3+ or plan revision):
+1. Choose resolution approach (modify build, new build, or minimal successor)
+2. Implement chosen approach
+3. Complete covering proofs
+
+-/
+
 end Bimodal.Metalogic.StagedConstruction.IncrementalTimeline

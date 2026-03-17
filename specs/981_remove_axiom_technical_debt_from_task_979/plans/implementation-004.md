@@ -108,7 +108,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Stage-Indexed Timeline Types [PARTIAL]
+### Phase 1: Stage-Indexed Timeline Types [COMPLETED]
 
 **Progress:**
 
@@ -155,7 +155,24 @@ def DiscreteTimelineQuot_at_stage (n : Nat) : Type :=
 
 ---
 
-### Phase 2: Stage Embedding and Successor [NOT STARTED]
+### Phase 2: Stage Embedding and Successor [PARTIAL]
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773718331_6878f2 (iteration 2)**
+- Added: `stage_embed_elem` - Element-level embedding from stage n to n+1
+- Added: `stage_embed_elem_mono` - Stage embedding preserves order
+- Added: `stage_embed_elem_injective` - Stage embedding is injective
+- Added: `stage_embed` - Quotient-level embedding
+- Added: `stage_embed_mono`, `stage_embed_injective` - Quotient properties
+- Added: `immediateSuccPoint` - Helper to create successor MCS with blocking formulas
+- Added: `immediateSuccPoint_canonicalR` - CanonicalR from M to immediate successor
+- Added: `immediateSuccPoint_covers` - Covering property from blocking formulas
+- BLOCKED: `succ_at_stage` cannot be defined because `discreteStagedBuild` uses
+  `forward_temporal_witness_seed` (no blocking formulas), not `discreteImmediateSuccSeed`
+- Resolution required: Modify staged build OR use well-founded minimal successor
+- File: `IncrementalTimeline.lean` updated with ~150 lines, no sorries
+- lake build passes
 
 - **Dependencies:** Phase 1
 - **Goal:** Define stage transitions and immediate successor function
