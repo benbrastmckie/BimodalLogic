@@ -69,31 +69,35 @@ technical_debt:
 ---
 
 ### 982. Wire dense completeness domain connection
-- **Effort**: 4.5 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 12-16 hours (7 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-001.md](specs/982_wire_dense_completeness_domain_connection/reports/research-001.md), [research-002.md](specs/982_wire_dense_completeness_domain_connection/reports/research-002.md) (blocker analysis)
-- **Plan**: [implementation-002.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-002.md) (revised)
+- **Research**: [research-006.md](specs/982_wire_dense_completeness_domain_connection/reports/research-006.md) (axiom-free modal saturation)
+- **Plan**: [implementation-004.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-004.md) (v4: closure-based saturation)
 
-**Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All individual components are proven sorry-free (`cantor_iso`, `bmcs_truth_lemma`, `temporal_coherent_family_exists_CanonicalMCS`). The 3 sorries in `FrameConditions/Completeness.lean` need wiring that connects these pieces through a domain transfer or unified construction.
+**Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics using closure-based modal saturation (axiom-free approach).
 
-**Research Summary**: Analyzed CanonicalMCS vs TimelineQuot domain gap. Found TimelineQuot elements contain MCS info via DenseTimelineElem. Recommended Option D: build FMCS over TimelineQuot directly using quotient representatives, then use Cantor isomorphism to Rat for AddCommGroup constraint.
+**Research Summary**: Singleton BFMCS is mathematically impossible (requires φ→□φ which is false). The correct approach: multi-family BFMCS with closure-based modal saturation. The `saturated_modal_backward` theorem derives modal_backward without axioms.
 
 **Resolution Path**:
-1. Build FMCS directly over TimelineQuot (preferred), OR
-2. Prove a quotient transfer theorem relating CanonicalMCS truth to TimelineQuot semantics
+1. Build witness family constructor via CanonicalR-chains (Phase 3)
+2. Implement closure saturation iteration (Phase 4)
+3. Prove closure-aware truth lemma (Phase 5)
+4. Complete the sorry (Phase 6)
 
-**Files to modify**:
-- `FrameConditions/Completeness.lean` (3 wiring sorries)
-- New: TimelineQuotFMCS.lean (FMCS construction over TimelineQuot)
+**Files to create/modify**:
+- `StagedConstruction/WitnessChainFMCS.lean` - NEW
+- `StagedConstruction/ClosureSaturation.lean` - NEW
+- `StagedConstruction/TimelineQuotCanonical.lean` - MODIFIED
+- `StagedConstruction/TimelineQuotCompleteness.lean` - MODIFIED (sorry resolved)
 
 ---
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 4-5 hours (6 phases)
-- **Status**: [PARTIAL]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: K4 gap analysis — T-axiom enables direct subset proof), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (covering proof blocker analysis — axiom retention recommended)

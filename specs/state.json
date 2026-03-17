@@ -150,12 +150,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-16T12:00:00Z",
+      "last_updated": "2026-03-17T02:27:40Z",
       "session_id": "sess_1773710941_20917",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
@@ -185,27 +185,27 @@
           "summary": "Rigorous analysis: Collapse variant unsound; correct structure D=TimelineQuot + WorldState=CanonicalWorldState. 8-10 hours."
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "6-phase plan: Rigorous Henkin-style canonical model with proper D/WorldState separation (8-10 hours)"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-006.md",
           "type": "research",
           "summary": "Deep logic analysis: axiom-free multi-family modal saturation approach (closure-based, 12-16 hours)"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "v4: Closure-based modal saturation (axiom-free, 12-16 hours)"
         }
       ],
-      "planned": "2026-03-17T01:21:17Z",
+      "planned": "2026-03-17T02:27:40Z",
       "started": "2026-03-17T01:29:16Z"
     },
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "partial",
+      "status": "researching",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T02:18:07Z",
-      "session_id": "sess_1773713470_76ec48",
+      "last_updated": "2026-03-17T02:27:51Z",
+      "session_id": "sess_1773714464_a0d5db",
       "researched": "2026-03-17T02:18:07Z",
       "artifacts": [
         {
