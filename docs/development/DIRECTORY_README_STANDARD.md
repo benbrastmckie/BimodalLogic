@@ -1,7 +1,7 @@
 # Directory README Standard - LEAN 4 Projects
 
 **Last Updated**: 2025-12-02
-**Applies To**: LEAN 4 project directories (not .claude/ system)
+**Applies To**: LEAN 4 project directories
 **Complements**: [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) (code-level documentation)
 
 ## 1. Purpose and Scope
@@ -19,14 +19,12 @@ This document establishes standards for directory-level README files in LEAN 4 p
 - Documentation organization directories (`docs/`, `docs/user-guide/`, etc.)
 
 **Out of Scope (Covered Elsewhere)**:
-- `.opencode/` system directories (see [documentation-standards.md](../../../.opencode/context/core/standards/documentation-standards.md))
 - LEAN code documentation (see [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md))
 - API documentation (handled by doc-gen4 and `.lean` module files)
 
 ### Integration with Existing Standards
 
 This standard **extends** and **complements**:
-- **.opencode/context/core/standards/documentation-standards.md**: Adapted patterns for LEAN 4 projects
 - **LEAN_STYLE_GUIDE.md**: Code-level documentation conventions
 - **TESTING_STANDARDS.md**: Test documentation requirements
 - **MODULE_ORGANIZATION.md**: Directory structure patterns
@@ -180,7 +178,6 @@ See [TESTING_STANDARDS.md](../docs/development/TESTING_STANDARDS.md) for:
 ## Related Documentation
 
 - [Testing Standards](../docs/development/TESTING_STANDARDS.md)
-- [Code Standards](../../.claude/docs/reference/standards/code-standards.md)
 - [Module Organization](../docs/development/MODULE_ORGANIZATION.md)
 ```
 
@@ -342,7 +339,7 @@ When updating documentation:
 All documentation files follow:
 - 100-character line limit
 - Markdown formatting conventions
-- Formal symbol backtick standard (see [documentation-standards.md](../../.claude/docs/reference/standards/documentation-standards.md#formal-symbol-backtick-standard))
+- Formal symbol backtick standard (use backticks for formal symbols like `[]`, `<>`)
 
 ## Related Files
 
@@ -520,7 +517,6 @@ When reviewing directory README:
 ## 11. References
 
 ### Standards Referenced
-- [documentation-standards.md](../../../.opencode/context/core/standards/documentation-standards.md) - OpenCode documentation standards
 - [LEAN_STYLE_GUIDE.md](LEAN_STYLE_GUIDE.md) - Code-level documentation
 - [TESTING_STANDARDS.md](TESTING_STANDARDS.md) - Test documentation requirements
 - [MODULE_ORGANIZATION.md](MODULE_ORGANIZATION.md) - Directory structure patterns

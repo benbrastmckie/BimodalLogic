@@ -2,9 +2,6 @@
 
 Project-wide documentation hub for the ProofChecker formal verification project.
 
-> **For AI-Assisted Development**: See [.claude/README.md](../.claude/README.md) for the
-> Claude Code configuration and task management system.
-
 ## Framework Overview
 
 ProofChecker implements TM bimodal logic (Tense and Modality) in Lean 4 with verified soundness and completeness proofs.

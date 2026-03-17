@@ -218,19 +218,19 @@ git log --all --since="2025-12-01" --oneline | wc -l
 
 ```bash
 # Find all summary files
-find .claude/specs -name "*summary*.md" -o -name "*FINAL*.md"
+find specs -name "*summary*.md" -o -name "*FINAL*.md"
 
 # Search summaries for task
 grep -r "Task 7" specs/*/summaries/
 
 # List summaries by size (find detailed docs)
-find .claude/specs -name "*summary*.md" -exec du -h {} \; | sort -hr
+find specs -name "*summary*.md" -exec du -h {} \; | sort -hr
 
 # Find recent summaries
-find .claude/specs -name "*summary*.md" -mtime -7
+find specs -name "*summary*.md" -mtime -7
 
 # Count total summary files
-find .claude/specs -name "*summary*.md" | wc -l
+find specs -name "*summary*.md" | wc -l
 
 # View specific summary
 cat specs/025_soundness_automation_implementation/summaries/004_iteration_3_final_summary.md

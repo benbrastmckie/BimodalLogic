@@ -8,10 +8,10 @@
     {
       "project_number": 984,
       "project_name": "review_docs_remove_claude_dir_references",
-      "status": "implementing",
+      "status": "completed",
       "language": "general",
       "created": "2026-03-16T23:44:55Z",
-      "last_updated": "2026-03-17T00:07:15Z",
+      "last_updated": "2026-03-17T00:11:22Z",
       "session_id": "sess_1773706019_1141613407",
       "researched": "2026-03-16T23:55:39Z",
       "artifacts": [
@@ -24,10 +24,17 @@
           "path": "specs/984_review_docs_remove_claude_dir_references/plans/implementation-001.md",
           "type": "plan",
           "summary": "4-phase implementation plan for removing .claude/ directory references from documentation"
+        },
+        {
+          "path": "specs/984_review_docs_remove_claude_dir_references/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Implementation summary with phase details and verification results"
         }
       ],
       "planned": "2026-03-17T00:06:02Z",
-      "started": "2026-03-17T00:07:15Z"
+      "started": "2026-03-17T00:07:15Z",
+      "completed": "2026-03-17T00:11:22Z",
+      "completion_summary": "Removed 17 .claude/ references from 6 documentation files, deleted 75K-line export file. Claude Code product name preserved throughout."
     },
     {
       "project_number": 983,
@@ -86,12 +93,12 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researching",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T00:03:18Z",
+      "last_updated": "2026-03-17T00:11:20Z",
       "session_id": "sess_1773705775_169372",
-      "researched": "2026-03-16T23:28:33Z",
+      "researched": "2026-03-17T00:11:20Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -107,6 +114,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-001.md",
           "type": "plan",
           "summary": "6-phase implementation plan for constructive method approach to eliminate discrete_Icc_finite_axiom"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md",
+          "type": "research",
+          "summary": "Team research run 003 (2 teammates): direct consistency proof via G-inference lifting; SuccOrder.ofCore path identified"
         }
       ],
       "planned": "2026-03-16T23:32:44Z",

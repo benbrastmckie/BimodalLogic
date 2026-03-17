@@ -26,14 +26,16 @@ technical_debt:
 ## Tasks
 ### 984. Review and revise documentation to remove `.claude/` directory references
 - **Effort**: 1.5 hours (4 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-17
 - **Language**: general
 - **Research**: [research-001.md](specs/984_review_docs_remove_claude_dir_references/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/984_review_docs_remove_claude_dir_references/plans/implementation-001.md)
+- **Summary**: [implementation-summary-20260316.md](specs/984_review_docs_remove_claude_dir_references/summaries/implementation-summary-20260316.md)
 
 **Description**: Review and revise all documentation to remove references to the `.claude/` directory (now gitignored), while preserving references to Claude Code itself.
 
-**Research Summary**: Found 7 documentation files with 18 `.claude/` references. Files affected: CLAUDE_CODE.md (5), COMMANDS.md (4), MAINTENANCE.md (4), STANDARDS.md (4), hub.md (1). Special case: claude-directory-export.md (75K-line snapshot requiring owner decision).
+**Completion Summary**: Removed 17 `.claude/` references from 6 documentation files, deleted 75K-line export file. Claude Code product name preserved throughout.
 
 
 ### 983. Review decidability results and FMP for publication
@@ -74,10 +76,10 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 7 hours (6 phases)
-- **Status**: [RESEARCHING]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
-- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path)
+- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof)
 - **Plan**: [implementation-001.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-001.md) (6 phases: blocking formula seed approach)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.

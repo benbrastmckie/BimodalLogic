@@ -185,7 +185,7 @@ theorem soundness (Γ : Context) (φ : Formula) : Γ ⊢ φ → Γ ⊨ φ := by
 
 **Rationale**:
 - Backticks improve visual clarity in VS Code hover tooltips
-- Consistent with markdown documentation standards (see `.claude/docs/reference/standards/documentation-standards.md`)
+- Consistent with markdown documentation standards
 - Monospace rendering distinguishes formal symbols from prose text
 
 **Special Cases**:

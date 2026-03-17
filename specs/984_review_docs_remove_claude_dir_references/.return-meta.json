@@ -1,20 +1,58 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Removed 17 .claude/ references from 6 documentation files and deleted 75K-line export file. All phases completed successfully. Claude Code product name preserved throughout.",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/984_review_docs_remove_claude_dir_references/plans/implementation-001.md",
-      "summary": "4-phase implementation plan for removing .claude/ directory references from documentation"
+      "type": "implementation",
+      "path": "docs/README.md",
+      "summary": "Removed callout box pointing to .claude/README.md"
+    },
+    {
+      "type": "implementation",
+      "path": "docs/installation/CLAUDE_CODE.md",
+      "summary": "Removed agent system section, renumbered remaining sections"
+    },
+    {
+      "type": "implementation",
+      "path": "docs/tts-stt-integration.md",
+      "summary": "Updated 4 hook configuration references"
+    },
+    {
+      "type": "implementation",
+      "path": "docs/development/DIRECTORY_README_STANDARD.md",
+      "summary": "Removed 6 broken .claude/.opencode links"
+    },
+    {
+      "type": "implementation",
+      "path": "docs/development/LEAN_STYLE_GUIDE.md",
+      "summary": "Removed 1 broken link"
+    },
+    {
+      "type": "implementation",
+      "path": "docs/project-info/MAINTENANCE.md",
+      "summary": "Fixed spec query paths"
+    },
+    {
+      "type": "deletion",
+      "path": "docs/claude-directory-export.md",
+      "summary": "Deleted 75K-line export file (2.2 MB)"
+    },
+    {
+      "type": "summary",
+      "path": "specs/984_review_docs_remove_claude_dir_references/summaries/implementation-summary-20260316.md",
+      "summary": "Implementation summary with phase details and verification results"
     }
   ],
-  "next_steps": "Run /implement 984 to execute the plan",
+  "completion_data": {
+    "completion_summary": "Removed 17 .claude/ references from 6 documentation files, deleted 75K-line export file. Claude Code product name preserved throughout."
+  },
   "metadata": {
-    "session_id": "sess_1773705839_305591845",
-    "agent_type": "planner-agent",
-    "duration_seconds": 120,
+    "session_id": "sess_1773706019_1141613407",
+    "agent_type": "general-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 1.5
-  }
+    "delegation_path": ["orchestrator", "implement", "general-implementation-agent"],
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "next_steps": "Review implementation and commit changes"
 }

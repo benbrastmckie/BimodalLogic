@@ -89,7 +89,7 @@ When Claude Code finishes responding, the Stop hook triggers `tts-notify.sh` whi
 
 ### Configuration
 
-The hook is configured in `.claude/settings.json` and runs automatically on every Claude Code completion.
+The hook runs automatically on every Claude Code completion when properly configured in your Claude Code settings.
 
 #### Environment Variables
 
@@ -262,7 +262,7 @@ This format is optimal for speech recognition and keeps file sizes small.
 
 | File | Purpose |
 |------|---------|
-| `.claude/hooks/tts-notify.sh` | Claude Code TTS hook |
+| `tts-notify.sh` | Claude Code TTS hook script |
 | `~/.config/nvim/lua/neotex/plugins/tools/stt/init.lua` | Neovim STT plugin |
 | `~/.config/nvim/lua/neotex/plugins/tools/stt-plugin.lua` | Lazy.nvim plugin spec |
 | `~/.config/nvim/lua/neotex/plugins/editor/which-key.lua` | Keybinding configuration |
@@ -284,8 +284,8 @@ Total disk usage: ~95 MB for both features.
 
 ### Remove TTS Notifications
 
-1. Edit `.claude/settings.json`, remove TTS hook entry from Stop hooks
-2. Delete `.claude/hooks/tts-notify.sh`
+1. Remove the TTS hook entry from your Claude Code Stop hooks configuration
+2. Delete the `tts-notify.sh` script
 3. Optionally delete `~/.local/share/piper/` to remove voice models
 
 ### Remove STT Plugin

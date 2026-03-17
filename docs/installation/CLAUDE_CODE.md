@@ -140,49 +140,7 @@ For detailed usage, see [Getting Started](GETTING_STARTED.md).
 
 ---
 
-## 4. Set Up the Agent System
-
-The ProofChecker repository includes an optional `.claude/` agent system that provides enhanced workflow commands.
-
-### What It Provides
-
-- **Task Management**: `/task`, `/research`, `/plan`, `/implement` cycle
-- **Specialized Skills**: Lean 4 development agents with MCP tool integration
-- **Context Files**: Domain knowledge for modal/temporal logic and theorem proving
-- **State Persistence**: Track progress across sessions
-
-### Installation
-
-The `.claude/` directory is already included in the ProofChecker repository. If you cloned the repo, you already have it.
-
-To verify:
-```bash
-ls -la .claude/
-# Should show CLAUDE.md, rules/, specs/, etc.
-```
-
-### After Installation
-
-1. **Restart Claude Code** - Exit and restart for commands to be available
-2. **Test the setup**:
-   ```
-   /task "Test task"
-   ```
-3. **Learn the commands** - See [.claude/CLAUDE.md](../../.claude/CLAUDE.md)
-
-### Available Commands
-
-| Command | Purpose |
-|---------|---------|
-| `/task` | Create and manage tasks |
-| `/research` | Conduct research on a task |
-| `/plan` | Create implementation plan |
-| `/implement` | Execute implementation |
-| `/todo` | Archive completed tasks |
-
----
-
-## 5. Using gh CLI for GitHub
+## 4. Using gh CLI for GitHub
 
 GitHub CLI (`gh`) integrates with Claude Code for repository management and issue tracking.
 
@@ -259,7 +217,7 @@ For comprehensive Git/GitHub workflows, see [Using Git](USING_GIT.md).
 
 ---
 
-## 6. Tips and Troubleshooting
+## 5. Tips and Troubleshooting
 
 ### Effective Prompts
 
@@ -318,15 +276,13 @@ gh repo view benbrastmckie/ProofChecker  # Test access
 
 ---
 
-## 7. Next Steps
+## 6. Next Steps
 
 - **[Getting Started](GETTING_STARTED.md)** - Terminal basics and editor setup
 - **[Using Git](USING_GIT.md)** - Git/GitHub workflows
 - **[Basic Installation](BASIC_INSTALLATION.md)** - Manual installation
 - **[Tutorial](../user-guide/TUTORIAL.md)** - Learn to write proofs
 - **[Contributing](../development/CONTRIBUTING.md)** - Contribution guidelines
-- **[Agent System Docs](../../.claude/CLAUDE.md)** - Full command reference
-
 ### Additional Resources
 
 - **[Claude Code Docs](https://docs.claude.com/claude-code)** - Official documentation
