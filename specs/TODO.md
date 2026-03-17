@@ -52,11 +52,14 @@ technical_debt:
 
 ### 987. Algebraic base completeness
 - **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Depends On**: Task 986
+- **Research**: [research-001.md](specs/987_algebraic_base_completeness/reports/research-001.md)
 
 **Description**: Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the `construct_bfmcs` argument to `parametric_algebraic_representation_conditional` (D = Int), then prove `valid φ → ⊢ φ`. Resolve any type mismatch between `CanonicalWorldState` and `ParametricCanonicalWorldState`. Create `AlgebraicBaseCompleteness.lean` with the closed completeness theorem.
+
+**Research Summary**: Task 986 has 2 sorries (forward_F/backward_P) blocking direct wiring. CanonicalWorldState and ParametricCanonicalWorldState are identical; real mismatch is D=Int (needs AddCommGroup) vs D=CanonicalMCS (sorry-free but only Preorder). Two paths: (A) complete task 986 dovetailing, or (B) semantic equivalence via CanonicalMCS completeness.
 
 ---
 

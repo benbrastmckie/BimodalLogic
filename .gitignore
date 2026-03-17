@@ -1,4 +1,5 @@
 # LEAN 4 build artifacts
+.claude/
 .lake/
 build/
 *.olean
