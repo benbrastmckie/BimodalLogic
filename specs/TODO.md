@@ -52,7 +52,7 @@ technical_debt:
 
 ### 987. Algebraic base completeness
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Depends On**: Task 986
 
@@ -127,7 +127,7 @@ technical_debt:
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D semantics), [research-010.md](specs/982_wire_dense_completeness_domain_connection/reports/research-010.md) (FMP path), [research-011.md](specs/982_wire_dense_completeness_domain_connection/reports/research-011.md) (Option C: CanonicalMCS all-MCS - **recommended**)
+- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D semantics), [research-010.md](specs/982_wire_dense_completeness_domain_connection/reports/research-010.md) (FMP path), [research-011.md](specs/982_wire_dense_completeness_domain_connection/reports/research-011.md) (Option C: CanonicalMCS all-MCS), [research-013.md](specs/982_wire_dense_completeness_domain_connection/reports/research-013.md) (comprehensive gap analysis - **recommended**)
 - **Plan**: [implementation-008.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-008.md) (v8: CanonicalMCS all-MCS approach)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md)
 
