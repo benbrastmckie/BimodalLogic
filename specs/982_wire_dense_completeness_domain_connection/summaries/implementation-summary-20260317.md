@@ -1,9 +1,9 @@
 # Implementation Summary: Task 982 - Wire Dense Completeness Domain Connection
 
 **Date**: 2026-03-17
-**Sessions**: sess_1773773089_a7e2f9 (earlier), sess_1773776521_d8f4a2 (latest)
-**Status**: Partial (Analysis complete, implementation blocked by domain mismatch)
-**Plan Version**: v6 (Domain Transfer Approach)
+**Sessions**: sess_1773773089_a7e2f9, sess_1773776521_d8f4a2, sess_1773756826_fa8a8c (current)
+**Status**: In Progress (Plan v7 - W/D Separation Approach)
+**Plan Version**: v7 (W/D Separation - see implementation-007.md)
 
 ## Completed Work
 
@@ -185,3 +185,141 @@ The domain transfer approach (via Cantor isomorphism TimelineQuot ≃o Rat) was 
 - **Phases Completed**: 0 (Phase 1 partial - analysis only)
 - **Files Modified**: Plan file, summary file
 - **Sorries Changed**: 0 (analysis session)
+
+---
+
+## Session 3: Plan v7 Implementation (sess_1773756826_fa8a8c) - 2026-03-17
+
+### Phase 1: Verify Semantics Architecture [COMPLETED]
+
+#### Objective
+Confirm that TaskFrame and truth evaluation support the W/D separation approach where:
+- **D** = TimelineQuot (the time domain)
+- **W** = CanonicalMCS (the space of ALL MCSs as world states)
+
+#### Key Findings
+
+**1. TaskFrame Structure (TaskFrame.lean lines 93-122)**
+
+The TaskFrame has TWO independent type parameters:
+- `D : Type*` - Duration/time domain with `AddCommGroup D`, `LinearOrder D`, `IsOrderedAddMonoid D`
+- `WorldState : Type` - Space of possible worlds (NO constraints)
+
+The `task_rel : WorldState -> D -> WorldState -> Prop` connects them.
+
+**Conclusion**: Architecture SUPPORTS W/D separation. WorldState is independent of D.
+
+**2. WorldHistory Structure (WorldHistory.lean lines 69-97)**
+
+A WorldHistory has:
+- `domain : D -> Prop` - Which times are in the history
+- `states : (t : D) -> domain t -> F.WorldState` - Maps times to world states
+- `respects_task` - States respect task relation
+
+**Conclusion**: WorldHistory maps D -> W, which is exactly what the plan requires.
+
+**3. Truth Evaluation (Truth.lean lines 113-120)**
+
+| Operator | Quantifies Over |
+|----------|-----------------|
+| Box | ALL histories sigma in Omega at fixed time t |
+| Past (H) | ALL times s <= t in D for fixed history |
+| Future (G) | ALL times s >= t in D for fixed history |
+
+**Critical Insight**: Box quantifies over HISTORIES (which map into W), NOT directly over W.
+For Diamond(psi) to be true at time t, there must exist SOME history sigma in Omega where psi is true at t.
+
+**4. ParametricCanonicalTaskFrame (ParametricCanonical.lean)**
+
+Already exists with:
+- `WorldState = ParametricCanonicalWorldState` = `{ M : Set Formula // SetMaximalConsistent M }`
+- `D` is parametric (can be Int, Rat, TimelineQuot, etc.)
+- `task_rel = parametric_canonical_task_rel` (uses CanonicalR)
+
+**Conclusion**: The parametric infrastructure from Task 985 already provides the W/D separation.
+
+**5. Why Previous Approaches Failed**
+
+| Previous Approach | Error |
+|-------------------|-------|
+| D = TimelineQuot, W = TimelineQuot | Conflated W and D; witnesses must be in Range(h) |
+| D = Rat (imported) | Violates pure-syntax constraint |
+| D = CanonicalMCS | Only Preorder, not LinearOrder |
+
+The correct separation:
+- **D = TimelineQuot** for dense linear order
+- **W = ParametricCanonicalWorldState** (ALL MCSs)
+- **WorldHistory maps D -> W** via the parametric infrastructure
+
+#### Next Steps: Phase 2
+
+Build the instantiation: `ParametricCanonicalTaskFrame TimelineQuot` with:
+1. FMCS over TimelineQuot mapping to MCSs in W
+2. BFMCS with modal saturation via CanonicalMCS witnesses
+3. Connect to parametric truth lemma
+
+#### Files Analyzed
+- `Theories/Bimodal/Semantics/TaskFrame.lean`
+- `Theories/Bimodal/Semantics/WorldHistory.lean`
+- `Theories/Bimodal/Semantics/Truth.lean`
+- `Theories/Bimodal/Metalogic/Algebraic/ParametricCanonical.lean`
+- `Theories/Bimodal/Metalogic/Algebraic/ParametricHistory.lean`
+- `Theories/Bimodal/Metalogic/Algebraic/ParametricTruthLemma.lean`
+- `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotCanonical.lean`
+- `Theories/Bimodal/Metalogic/StagedConstruction/ClosureSaturation.lean`
+
+### Phase 2: Build Separated TaskFrame [COMPLETED]
+
+**File Created**: `Theories/Bimodal/Metalogic/Algebraic/SeparatedTaskFrame.lean`
+
+Instantiated `ParametricCanonicalTaskFrame` with `D = TimelineQuot`:
+- `SeparatedCanonicalTaskFrame`: TaskFrame with D = TimelineQuot, W = ParametricCanonicalWorldState
+- Proved nullity_identity, forward_comp, converse (inherited from parametric construction)
+- `timelineQuotToWorldState`: Lifts TimelineQuot times to ParametricCanonicalWorldState
+
+**Sorries**: 0
+**Axioms**: 0
+
+### Phase 3: Build WorldHistories Over Separated Frame [COMPLETED]
+
+**File Created**: `Theories/Bimodal/Metalogic/Algebraic/SeparatedHistory.lean`
+
+Built WorldHistory infrastructure:
+- `separatedHistory`: WorldHistory mapping TimelineQuot -> ParametricCanonicalWorldState
+- `SeparatedCanonicalOmega`: Singleton set with separatedHistory
+- `ShiftClosedSeparatedOmega`: Shift-closed enlargement
+- Proved `shiftClosedSeparatedOmega_is_shift_closed`
+
+**Key Design**: The history maps each time t in TimelineQuot to its MCS wrapped as a ParametricCanonicalWorldState.
+
+**Sorries**: 0
+**Axioms**: 0
+
+### Phase 4: Truth Lemma for Separated Frame [IN PROGRESS - BLOCKED]
+
+**Analysis**: The truth lemma requires a BFMCS with `temporally_coherent` property, which includes:
+- `forward_F`: F(φ) ∈ mcs(t) → ∃ s > t, φ ∈ mcs(s)
+- `backward_P`: P(φ) ∈ mcs(t) → ∃ s < t, φ ∈ mcs(s)
+- `modal_backward`: φ in all families at t → Box(φ) in family at t
+
+**The Blocker**: These properties are NOT automatically resolved by W/D separation:
+
+1. **forward_F/backward_P gap**: The `canonical_forward_F` theorem gives a witness MCS W, but W may not be at any time in TimelineQuot. The staged construction has edge cases (m > 2k) where F-witnesses aren't added.
+
+2. **modal_backward gap**: Singleton BFMCS cannot satisfy modal_backward without additional structure. Multi-family BFMCS requires modal saturation (`saturated_modal_backward`), which in turn requires constructing witness families.
+
+**What W/D separation clarifies**: The WorldState W contains ALL MCSs, so witnesses exist in W. But FMCS structure requires mapping D -> W, and the witness must be at some time s in D.
+
+**Remaining Work**:
+Either prove:
+1. The staged construction DOES add all necessary F/P witnesses (resolve m > 2k edge case), or
+2. On-demand witness family construction (extend timeline with new MCS at chosen time), or
+3. Alternative completeness proof that doesn't require BFMCS temporal coherence
+
+**Related Sorries** (in other files):
+- `ClosureSaturation.lean:659`: timelineQuotFMCS_forward_F edge case
+- `ClosureSaturation.lean:679`: timelineQuotFMCS_backward_P
+- `ClosureSaturation.lean:724`: timelineQuotSingletonBFMCS.modal_backward
+- `CanonicalEmbedding.lean:181`: ratFMCS_forward_F
+- `CanonicalEmbedding.lean:192`: ratFMCS_backward_P
+- `CanonicalEmbedding.lean:231`: ratBFMCS.modal_backward

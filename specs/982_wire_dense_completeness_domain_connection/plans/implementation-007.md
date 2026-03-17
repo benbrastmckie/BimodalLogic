@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection (v7)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 8-12 hours (5 phases)
 - **Dependencies**: Task 985 (parametric infrastructure - complete)
 - **Research Inputs**:
@@ -88,7 +88,7 @@ With W/D separation:
 
 ## Implementation Phases
 
-### Phase 1: Verify Semantics Architecture [NOT STARTED]
+### Phase 1: Verify Semantics Architecture [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Confirm TaskFrame and truth evaluation support W/D separation
@@ -132,7 +132,7 @@ With W/D separation:
 
 ---
 
-### Phase 2: Build Separated TaskFrame [NOT STARTED]
+### Phase 2: Build Separated TaskFrame [COMPLETED]
 
 - **Dependencies**: Phase 1 (confirms architecture)
 - **Goal**: Define TaskFrame with D = TimelineQuot, W = CanonicalMCS
@@ -172,7 +172,7 @@ def separatedCanonicalTaskFrame
 
 ---
 
-### Phase 3: Build WorldHistories Over Separated Frame [NOT STARTED]
+### Phase 3: Build WorldHistories Over Separated Frame [COMPLETED]
 
 - **Dependencies**: Phase 2
 - **Goal**: Construct WorldHistories that map TimelineQuot into CanonicalMCS
@@ -211,7 +211,7 @@ def timelineQuotHistory
 
 ---
 
-### Phase 4: Truth Lemma for Separated Frame [NOT STARTED]
+### Phase 4: Truth Lemma for Separated Frame [BLOCKED]
 
 - **Dependencies**: Phase 3
 - **Goal**: Prove truth lemma with witnesses in W (CanonicalMCS)
@@ -390,3 +390,13 @@ With W/D separation:
 - The history through that MCS is in Ω
 
 The witness MCS doesn't need to be "already in TimelineQuot" - it just needs to exist in CanonicalMCS.
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773756826_fa8a8c**
+- Added: `SeparatedTaskFrame.lean` - TaskFrame with D = TimelineQuot, W = ParametricCanonicalWorldState
+- Added: `SeparatedHistory.lean` - WorldHistory mapping TimelineQuot -> MCSs with shift-closed Omega
+- Completed: Phase 1 (architecture verification), Phase 2 (TaskFrame), Phase 3 (WorldHistory)
+- Blocked: Phase 4 - BFMCS coherence (forward_F/backward_P/modal_backward) not resolved by W/D separation
+- Sorries: 0 added (existing sorries in ClosureSaturation.lean remain)
+- Axioms: 0 added
