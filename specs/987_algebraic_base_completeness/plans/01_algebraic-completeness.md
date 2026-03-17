@@ -1,7 +1,7 @@
 # Implementation Plan: Task #987
 
 - **Task**: 987 - algebraic_base_completeness
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4 hours
 - **Dependencies**: None (avoids task 986 by using CanonicalMCS sorry-free path)
 - **Research Inputs**: specs/987_algebraic_base_completeness/reports/02_taskframe-semantics.md
@@ -48,7 +48,7 @@ Wire algebraic base completeness by constructing a sorry-free `BFMCS CanonicalMC
 
 ## Implementation Phases
 
-### Phase 1: Analyze Type Bridge and Choose Architecture [NOT STARTED]
+### Phase 1: Analyze Type Bridge and Choose Architecture [COMPLETED]
 
 **Goal**: Determine the exact proof architecture for bridging CanonicalMCS-based sorry-free construction to the closed completeness theorem.
 
@@ -72,7 +72,7 @@ Wire algebraic base completeness by constructing a sorry-free `BFMCS CanonicalMC
 
 ---
 
-### Phase 2: Construct Sorry-Free BFMCS Int [NOT STARTED]
+### Phase 2: Construct Sorry-Free BFMCS Int [PARTIAL]
 
 **Goal**: Build a sorry-free `BFMCS Int` construction that can serve as the `construct_bfmcs` argument, leveraging the CanonicalMCS sorry-free infrastructure.
 
@@ -94,7 +94,7 @@ Wire algebraic base completeness by constructing a sorry-free `BFMCS CanonicalMC
 
 ---
 
-### Phase 3: Prove Closed Completeness Theorem [NOT STARTED]
+### Phase 3: Prove Closed Completeness Theorem [COMPLETED]
 
 **Goal**: State and prove the closed algebraic base completeness theorem.
 
@@ -117,7 +117,7 @@ Wire algebraic base completeness by constructing a sorry-free `BFMCS CanonicalMC
 
 ---
 
-### Phase 4: Integration and Verification [NOT STARTED]
+### Phase 4: Integration and Verification [COMPLETED]
 
 **Goal**: Integrate the new file into the project module structure and verify everything builds cleanly.
 

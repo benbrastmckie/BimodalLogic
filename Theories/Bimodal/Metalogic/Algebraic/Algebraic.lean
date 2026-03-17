@@ -10,6 +10,8 @@ import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Algebraic.DenseInstantiation
 import Bimodal.Metalogic.Algebraic.DiscreteInstantiation
+-- Completeness theorem (Task 987)
+import Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
 
 /-!
 # Algebraic Representation Theorem
@@ -33,7 +35,8 @@ Algebraic/
 ├── ParametricTruthLemma.lean     # D-parametric truth lemma
 ├── ParametricRepresentation.lean # D-parametric representation theorem
 ├── DenseInstantiation.lean       # D = Rat instantiation
-└── DiscreteInstantiation.lean    # D = Int instantiation
+├── DiscreteInstantiation.lean    # D = Int instantiation
+└── AlgebraicBaseCompleteness.lean # Closed completeness theorem (Task 987)
 ```
 
 ## Mathematical Overview
@@ -91,5 +94,6 @@ open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricRepresentation
 open Bimodal.Metalogic.Algebraic.DenseInstantiation
 open Bimodal.Metalogic.Algebraic.DiscreteInstantiation
+open Bimodal.Metalogic.Algebraic.AlgebraicBaseCompleteness
 
 end Bimodal.Metalogic.Algebraic
