@@ -57,7 +57,7 @@ technical_debt:
 
 ### 986. BFMCS construction for D = Int (sorry-free)
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md)
 
@@ -113,12 +113,12 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 12-16 hours (7 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
 - **Research**: [research-006.md](specs/982_wire_dense_completeness_domain_connection/reports/research-006.md) (axiom-free modal saturation), [research-007.md](specs/982_wire_dense_completeness_domain_connection/reports/research-007.md) (D-parametric instantiation)
-- **Plan**: [implementation-004.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-004.md) (v4: closure-based saturation)
+- **Plan**: [implementation-005.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-005.md) (v5: D-parametric instantiation, 6-8h)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md) (partial: phases 1-3 of 7)
 
 **Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics using closure-based modal saturation (axiom-free approach).

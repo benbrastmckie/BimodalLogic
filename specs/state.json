@@ -8,10 +8,10 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T03:39:26Z",
+      "last_updated": "2026-03-17T03:41:14Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -21,7 +21,7 @@
           "summary": "Research report analyzing BFMCS construction approaches for D=Int, recommending order-embedding transfer from CanonicalMCS"
         }
       ],
-      "session_id": "sess_1773718458_r986"
+      "session_id": "sess_1773718859_6360f5"
     },
     {
       "project_number": 987,
@@ -206,12 +206,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T02:33:07Z",
+      "last_updated": "2026-03-17T03:46:44Z",
       "session_id": "sess_1773714773_66f984",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
@@ -246,11 +246,6 @@
           "summary": "Deep logic analysis: axiom-free multi-family modal saturation approach (closure-based, 12-16 hours)"
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-004.md",
-          "type": "plan",
-          "summary": "v4: Closure-based modal saturation (axiom-free, 12-16 hours)"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Partial: phases 1-3 completed. Created witness MCS construction primitives (WitnessChainFMCS.lean) and modal saturation architecture documentation (ClosureSaturation.lean). Fixed ChainFMCS.lean build errors. Core sorry remains blocked on truth lemma infrastructure adaptation."
@@ -259,9 +254,14 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-007.md",
           "type": "research",
           "summary": "Blocker analysis: D-parametric infrastructure (ParametricTruthLemma) with D=TimelineQuot, 6-8h"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-005.md",
+          "type": "plan",
+          "summary": "v5: D-parametric instantiation with constant witness FMCS families (6-8h)"
         }
       ],
-      "planned": "2026-03-17T02:27:40Z",
+      "planned": "2026-03-17T03:46:44Z",
       "started": "2026-03-17T01:29:16Z"
     },
     {
