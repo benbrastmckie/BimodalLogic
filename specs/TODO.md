@@ -25,10 +25,11 @@ technical_debt:
 
 ## Tasks
 ### 984. Review and revise documentation to remove `.claude/` directory references
-- **Effort**: small
-- **Status**: [RESEARCHED]
+- **Effort**: 1.5 hours (4 phases)
+- **Status**: [PLANNED]
 - **Language**: general
 - **Research**: [research-001.md](specs/984_review_docs_remove_claude_dir_references/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/984_review_docs_remove_claude_dir_references/plans/implementation-001.md)
 
 **Description**: Review and revise all documentation to remove references to the `.claude/` directory (now gitignored), while preserving references to Claude Code itself.
 
@@ -73,7 +74,7 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 7 hours (6 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path)
