@@ -8,10 +8,29 @@
     {
       "project_number": 990,
       "project_name": "representation_theorem_duration_design",
-      "status": "not_started",
+      "status": "researched",
       "language": "formal",
       "created": "2026-03-17T21:49:37Z",
-      "last_updated": "2026-03-17T21:49:37Z"
+      "last_updated": "2026-03-17T22:30:00Z",
+      "session_id": "sess_1773784228_7938b0",
+      "researched": "2026-03-17T22:30:00Z",
+      "artifacts": [
+        {
+          "path": "specs/990_representation_theorem_duration_design/reports/01_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Primary literature approaches: Henkin-style completeness, Prior/Burgess/Goldblatt, D-from-syntax vs D-parametric. Conclusion: D-parametric is correct primary architecture."
+        },
+        {
+          "path": "specs/990_representation_theorem_duration_design/reports/01_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Alternative approaches: Montanari & de Rijke 1995 two-sorted MTL precedent, BAO/Stone duality limitations, category-theoretic and Since/Until approaches. Confirms D-parametric recommendation."
+        },
+        {
+          "path": "specs/990_representation_theorem_duration_design/reports/02_synthesis.md",
+          "type": "research",
+          "summary": "Synthesis of both teammates: unanimous recommendation for D-parametric with axioms. D-from-syntax infeasible for base logic, D-from-syntax kept as auxiliary for dense/discrete specialization."
+        }
+      ]
     },
     {
       "project_number": 986,
@@ -314,13 +333,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T14:37:01-07:00",
-      "session_id": "sess_1773781597_89602a",
+      "last_updated": "2026-03-17T21:57:25Z",
+      "session_id": "sess_1773784620_425488",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
         {

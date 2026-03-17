@@ -26,8 +26,9 @@ technical_debt:
 ## Tasks
 ### 990. Research representation theorem design for parametric durations
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: formal
+- **Research**: [01_teammate-a-findings.md](990_representation_theorem_duration_design/reports/01_teammate-a-findings.md), [01_teammate-b-findings.md](990_representation_theorem_duration_design/reports/01_teammate-b-findings.md), [02_synthesis.md](990_representation_theorem_duration_design/reports/02_synthesis.md)
 
 **Description**: Research how representation theorems for TM base logic and its dense/discrete extensions should handle durations D. The key question: should D be constructed from pure syntax, or should D be parametric with axioms (density, discreteness, or linear commutative group) constraining its structure? Conduct systematic research into existing results in modal logic completeness (algebraic and Henkin-style approaches) to inform the mathematically correct design, then implement the recommended architecture.
 
