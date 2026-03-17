@@ -37,13 +37,13 @@ technical_debt:
 - **Effort**: 15-20 hours (4 phases)
 - **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md)
+- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md)
 - **Plan**: [implementation-001.md](specs/988_dense_algebraic_completeness/plans/implementation-001.md)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 
-**Research Summary (v2)**: Root cause identified - TimelineQuot was designed for ORDER properties (dense, no endpoints), NOT temporal coherence (F(phi) witnesses). The `canonical_forward_F` witnesses exist in CanonicalMCS but may lie OUTSIDE the TimelineQuot subset.
+**Research Summary (v3 - Semantics Architecture)**: Semantics has TWO distinct components: W (world states) and D (durations). WorldHistory h: D → W is the fundamental object. Previous approaches import D (Rat/Int) which violates pure-syntax constraint. CanonicalMCS has witnesses but lacks order; TimelineQuot has order but lacks witnesses.
 
-**Recommended Approach (Option B)**: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS structure (temporal coherence preserved by `denseTimelineElem_mutual_le_implies_mcs_eq`), apply Cantor theorem for Rat isomorphism.
+**Recommended Approach**: Quotient CanonicalMCS to get CanonicalQuot with BOTH properties (witnesses + order). Then apply Cantor theorem to get D ≃ Rat from syntax. This constructs both W and D purely from syntax, respecting the semantics architecture.
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
 
