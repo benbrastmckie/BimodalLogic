@@ -78,7 +78,13 @@
       "created": "2026-03-17T02:43:07Z",
       "last_updated": "2026-03-17T15:55:05Z",
       "description": "Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the construct_bfmcs argument to parametric_algebraic_representation_conditional (D = Int), then prove valid φ → ⊢ φ. Resolve any type mismatch between CanonicalWorldState and ParametricCanonicalWorldState. Create AlgebraicBaseCompleteness.lean with the closed completeness theorem.",
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/987_algebraic_base_completeness/reports/research-001.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of algebraic base completeness. Found task 986 has 2 sorries blocking direct path. Recommends semantic equivalence approach or completing task 986 dovetailing."
+        }
+      ],
       "session_id": "sess_1773762635_r987",
       "researched": "2026-03-17T15:55:05Z"
     },
@@ -389,12 +395,12 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T15:44:12Z",
+      "last_updated": "2026-03-17T16:28:26Z",
       "session_id": "sess_1773762158_31046",
-      "researched": "2026-03-17T15:35:02Z",
+      "researched": "2026-03-17T16:28:26Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -460,6 +466,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-009.md",
           "type": "research",
           "summary": "Architectural clarity: W=D is a simplification in canonical construction, not a requirement. TaskFrame correctly separates W and D. Covering lemma difficulty is orthogonal to this."
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-010.md",
+          "type": "research",
+          "summary": "Team research run 010 (2 teammates, logic domain): W=D is fundamental error, correct W!=D architecture already exists in Algebraic/; remaining gap is FMCS TimelineQuot truth lemma"
         }
       ],
       "planned": "2026-03-17T14:51:26Z",
