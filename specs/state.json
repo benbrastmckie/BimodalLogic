@@ -109,12 +109,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T00:40:12Z",
+      "last_updated": "2026-03-17T01:21:17Z",
       "session_id": "sess_1773707997_21695",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
@@ -127,11 +127,6 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-002.md",
           "type": "research",
           "summary": "Blocker analysis: recommended direct truth lemma over TimelineQuot (3-4 hours, low risk, publication-ready)"
-        },
-        {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "5-phase plan: Direct Truth Lemma over TimelineQuot (publication-ready approach)"
         },
         {
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-003.md",
@@ -147,9 +142,14 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-005.md",
           "type": "research",
           "summary": "Rigorous analysis: Collapse variant unsound; correct structure D=TimelineQuot + WorldState=CanonicalWorldState. 8-10 hours."
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "6-phase plan: Rigorous Henkin-style canonical model with proper D/WorldState separation (8-10 hours)"
         }
       ],
-      "planned": "2026-03-17T00:36:43Z",
+      "planned": "2026-03-17T01:21:17Z",
       "started": "2026-03-17T00:40:12Z"
     },
     {
