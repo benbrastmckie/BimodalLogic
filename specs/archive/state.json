@@ -2,6 +2,82 @@
   "archived_projects": [],
   "completed_projects": [
     {
+      "project_number": 986,
+      "project_name": "bfmcs_construction_for_int",
+      "status": "abandoned",
+      "language": "lean",
+      "created": "2026-03-17T02:43:07Z",
+      "last_updated": "2026-03-17T23:05:00Z",
+      "researched": "2026-03-17T23:05:00Z",
+      "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
+      "artifacts": [
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing BFMCS construction approaches for D=Int, recommending order-embedding transfer from CanonicalMCS"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean",
+          "type": "lean_module",
+          "summary": "Int-indexed BFMCS chain construction (partial, 4 sorries)"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md",
+          "type": "summary",
+          "summary": "Partial implementation: G/H coherence proven, F/P witness blocked by dovetailing requirement"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-002.md",
+          "type": "research",
+          "summary": "Mathematical analysis: Int-indexed F/P coherence impossible due to chain incompleteness; recommends conditional theorem approach"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-003.md",
+          "type": "research",
+          "summary": "Deep mathematical analysis: Int-indexed F/P impossible; recommends CanonicalMCS domain with PreorderTaskFrame"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-004.md",
+          "type": "research",
+          "summary": "W vs D semantic architecture: W=WorldState, D=Duration, h: D->W. Sorries are mathematically fundamental (countability), not proof gaps."
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "v2: Conditional approach - convert sorries to documented hypotheses"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-005.md",
+          "type": "research",
+          "summary": "Histories-as-paths validated; obstruction refined to LINEARIZATION: tree-structured F/P witnesses cannot be linearized into Int chain"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-006.md",
+          "type": "research",
+          "summary": "DEFINITIVE: D=Int FORBIDDEN by ROAD_MAP; truth lemma needs ALL F/P witnesses; tree cannot linearize; task should be BLOCKED/ABANDONED"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/07_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Teammate B: D=Int not necessary for completeness; CanonicalMCS lacks AddCommGroup; <= vs < gap bridgeable via CanonicalR irreflexivity; recommended task 987 path via strengthened CanonicalMCS FMCS + multi-family modal saturation"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/07_team-research.md",
+          "type": "research",
+          "summary": "Team research synthesis: D=Int F/P sorries unfillable (linearization obstruction), recommend CanonicalMCS path for task 987"
+        }
+      ],
+      "session_id": "sess_1773785524_aedf5c",
+      "planned": "2026-03-17T14:36:30Z",
+      "started": "2026-03-17T12:56:57Z",
+      "partial_progress": {
+        "phases_completed": 2,
+        "phases_total": 5,
+        "details": "Phases 1-2 complete (G/H coherence). Phase 3 blocked: F/P witness construction requires enriched dovetailing approach."
+      },
+      "abandoned": "2026-03-17T22:39:10Z"
+    },
+    {
       "project_number": 793,
       "project_name": "fix_claude_code_neovim_sidebar_black_screen",
       "status": "abandoned",

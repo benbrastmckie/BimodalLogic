@@ -77,22 +77,6 @@ technical_debt:
 
 ---
 
-### 986. BFMCS construction for D = Int (conditional)
-- **Effort**: 2-3 hours (4 phases)
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md), [research-002.md](specs/986_bfmcs_construction_for_int/reports/research-002.md), [research-003.md](specs/986_bfmcs_construction_for_int/reports/research-003.md), [research-004.md](specs/986_bfmcs_construction_for_int/reports/research-004.md), [research-005.md](specs/986_bfmcs_construction_for_int/reports/research-005.md), [research-006.md](specs/986_bfmcs_construction_for_int/reports/research-006.md), [07_teammate-b-findings.md](specs/986_bfmcs_construction_for_int/reports/07_teammate-b-findings.md)
-- **Plan**: [implementation-002.md](specs/986_bfmcs_construction_for_int/plans/implementation-002.md) (v2: Conditional approach)
-- **Summary**: [implementation-summary-20260317.md](specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md)
-- **Module**: [IntBFMCS.lean](Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean)
-
-**Description**: Provide CONDITIONAL BFMCS construction for D = Int. Research proved F/P coherence is mathematically impossible (Countability Obstruction: uncountable MCS space cannot be indexed by countable Int). Convert sorries to documented hypotheses, provide conditional algebraic representation. Algebraic path provides conditional completeness; D-from-syntax path provides sorry-free.
-
-**Research Summary (v6 - DEFINITIVE)**: D=Int approach **FORBIDDEN** by ROAD_MAP.md Dead Ends. Truth lemma requires ALL F/P witnesses (Lindenbaum introduces arbitrary formulas beyond subformulas). Tree-structured witnesses CANNOT linearize to Int chain. Task should be BLOCKED/ABANDONED. Only acceptable path: D-from-Syntax (Task 956).
-
-**Plan v2**: Document obstruction, convert sorries to hypotheses, wire conditional representation. Preserves G/H infrastructure from v1 (614 lines).
-
----
 
 ### 985. Develop Lindenbaum-Tarski algebraic representation theorem approach
 - **Effort**: 12 hours (6 phases)
