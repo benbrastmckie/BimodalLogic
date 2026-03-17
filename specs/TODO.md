@@ -123,12 +123,12 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 8-12 hours (5 phases)
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
 - **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D semantics), [research-010.md](specs/982_wire_dense_completeness_domain_connection/reports/research-010.md) (FMP path), [research-011.md](specs/982_wire_dense_completeness_domain_connection/reports/research-011.md) (Option C: CanonicalMCS all-MCS - **recommended**)
-- **Plan**: [implementation-007.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-007.md) (v7: W/D separated architecture)
+- **Plan**: [implementation-008.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-008.md) (v8: CanonicalMCS all-MCS approach)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md)
 
 **Description**: Complete dense completeness using W/D separated TaskFrame architecture: W = CanonicalMCS (world states), D = TimelineQuot (durations). Witnesses exist in W, not necessarily in Range(h).

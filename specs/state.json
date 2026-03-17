@@ -83,10 +83,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T15:02:45Z",
+      "last_updated": "2026-03-17T15:06:06Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -125,11 +125,11 @@
           "summary": "v3: Separated W/D architecture - D=TimelineQuot, W=CanonicalMCS"
         }
       ],
-      "session_id": "sess_1742236800_988p3",
+      "session_id": "sess_1742238000_988i2",
       "researched": "2026-03-17T14:46:39Z",
       "planned": "2026-03-17T15:02:45Z",
       "recommendation": "Option B: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS, apply Cantor theorem for Rat isomorphism.",
-      "started": "2026-03-17T14:04:25Z"
+      "started": "2026-03-17T15:06:06Z"
     },
     {
       "project_number": 989,
@@ -286,12 +286,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T15:01:53Z",
+      "last_updated": "2026-03-17T15:06:13Z",
       "session_id": "sess_1773759699_d5d289",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
@@ -341,11 +341,6 @@
           "summary": "Semantics architecture analysis: W (world states) vs D (durations) distinction resolves witness gap"
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-007.md",
-          "type": "plan",
-          "summary": "v7: W/D separated architecture using TaskFrame semantics"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Implementation progress: Phases 1-3 complete (W/D separation verified, SeparatedTaskFrame and SeparatedHistory built). Phase 4 blocked on BFMCS coherence."
@@ -369,9 +364,14 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-011.md",
           "type": "research",
           "summary": "Option C analysis: use CanonicalMCS (all-MCS) with proven forward_F/backward_P, two-stage validity approach"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-008.md",
+          "type": "plan",
+          "summary": "v8: CanonicalMCS all-MCS approach - 5 phases, 12 hours"
         }
       ],
-      "planned": "2026-03-17T14:04:17Z",
+      "planned": "2026-03-17T15:06:13Z",
       "started": "2026-03-17T14:13:58Z"
     },
     {

@@ -1,44 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-011.md",
-      "summary": "Deep analysis of Option C (CanonicalQuot Domain Transfer) with complete step-by-step strategy"
+      "type": "plan",
+      "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-008.md",
+      "summary": "5-phase implementation plan for dense completeness using CanonicalMCS all-MCS approach"
     }
   ],
-  "next_steps": "Run /plan 982 to create implementation plan based on the two-stage validity approach",
+  "next_steps": "Run /implement 982 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773758883_4058e7",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 2400,
+    "session_id": "sess_1773759699_d5d289",
+    "agent_type": "planner-agent",
+    "duration_seconds": 480,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 8,
-    "context_files_loaded": [
-      "ROAD_MAP.md",
-      "CanonicalFMCS.lean",
-      "CanonicalQuot.lean",
-      "CantorApplication.lean",
-      "TimelineQuotAlgebra.lean",
-      "DurationTransfer.lean",
-      "TaskFrame.lean",
-      "research-010.md",
-      "research-003.md"
-    ],
-    "mathlib_lookups_performed": 2,
-    "context_extension_tasks": [],
-    "context_candidates_count": 2,
-    "key_findings": [
-      "Option C (CanonicalQuot) is the mathematically cleanest path",
-      "CanonicalMCS has PROVEN forward_F/backward_P (no sorries) because ALL MCS are in the domain",
-      "TimelineQuot sorries exist because staged construction witnesses may escape the timeline",
-      "The parametric truth lemma may work with Preorder (not requiring LinearOrder)",
-      "AddCommGroup can be transferred via Cantor isomorphism from Q to any countable dense linear order",
-      "Two-stage validity approach: prove BFMCS completeness, then connect to TaskFrame validity",
-      "The CanonicalReachable dead end was superseded by canonicalMCSBFMCS - this IS Option C",
-      "Modal saturation may require multi-family BFMCS construction"
-    ],
-    "recommended_path": "Use CanonicalMCS BFMCS for truth lemma (forward_F/backward_P proven), then connect to TaskFrame validity via TimelineQuot embedding"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 12
   }
 }
