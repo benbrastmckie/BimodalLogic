@@ -39,11 +39,11 @@ technical_debt:
 
 
 ### 983. Review decidability results and FMP for publication
-- **Effort**: 45 hours (8 phases)
+- **Effort**: 48 hours (8 phases)
 - **Status**: [PLANNED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team), [research-002.md](specs/983_review_decidability_fmp_completeness/reports/research-002.md) (Boneyard salvageability)
-- **Plan**: [implementation-001.md](specs/983_review_decidability_fmp_completeness/plans/implementation-001.md) (8 phases: FMP filtration + decidability completeness)
+- **Plan**: [implementation-002.md](specs/983_review_decidability_fmp_completeness/plans/implementation-002.md) (v2: clean FMP from scratch, no bridges, unified naming)
 
 **Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.
 

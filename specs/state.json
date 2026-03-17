@@ -42,7 +42,7 @@
       "status": "planned",
       "language": "logic",
       "created": "2026-03-16T23:34:54Z",
-      "last_updated": "2026-03-17T00:10:33Z",
+      "last_updated": "2026-03-17T00:21:04Z",
       "session_id": "sess_1773705982_1184ff",
       "researched": "2026-03-16T23:46:09Z",
       "artifacts": [
@@ -52,17 +52,17 @@
           "summary": "Team research: 3 teammates, FMP/decidability gap analysis with filtration roadmap"
         },
         {
-          "path": "specs/983_review_decidability_fmp_completeness/plans/implementation-001.md",
-          "type": "plan",
-          "summary": "8-phase implementation plan for FMP formalization and decidability completeness"
-        },
-        {
           "path": "specs/983_review_decidability_fmp_completeness/reports/research-002.md",
           "type": "research",
           "summary": "Boneyard salvageability analysis: Metalogic_v8/FMP HIGH salvageability"
+        },
+        {
+          "path": "specs/983_review_decidability_fmp_completeness/plans/implementation-002.md",
+          "type": "plan",
+          "summary": "v2: Clean FMP from scratch, no bridges, unified naming"
         }
       ],
-      "planned": "2026-03-16T23:55:45Z"
+      "planned": "2026-03-17T00:21:04Z"
     },
     {
       "project_number": 982,
