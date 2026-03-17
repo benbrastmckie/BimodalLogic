@@ -121,30 +121,32 @@ technical_debt:
 ---
 
 ### 982. Wire dense completeness domain connection
-- **Effort**: 12-16 hours (7 phases)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 8-10 hours (6 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-006.md](specs/982_wire_dense_completeness_domain_connection/reports/research-006.md) (axiom-free modal saturation), [research-007.md](specs/982_wire_dense_completeness_domain_connection/reports/research-007.md) (D-parametric instantiation)
-- **Plan**: [implementation-005.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-005.md) (v5: D-parametric instantiation, 6-8h)
-- **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md) (partial: phases 1-3 of 7)
+- **Research**: [research-008.md](specs/982_wire_dense_completeness_domain_connection/reports/research-008.md) (domain transfer approach - primary)
+- **Plan**: [implementation-006.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-006.md) (v6: Domain transfer via Rat BFMCS + validity isomorphism)
+- **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md) (partial progress from v5)
 
-**Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics using closure-based modal saturation (axiom-free approach).
+**Description**: Complete dense completeness theorem via domain transfer: use canonicalMCSBFMCS + Rat instantiation + validity transfer isomorphism.
 
-**Research Summary**: Singleton BFMCS is mathematically impossible (requires φ→□φ which is false). The correct approach: multi-family BFMCS with closure-based modal saturation. The `saturated_modal_backward` theorem derives modal_backward without axioms.
+**Research Summary**: The staged construction approach was abandoned (F-content doesn't transfer along CanonicalR). Domain transfer via TimelineQuot ≃o Rat is mathematically cleaner: use proven canonicalMCSBFMCS infrastructure with D=Rat.
 
 **Resolution Path**:
-1. Build witness family constructor via CanonicalR-chains (Phase 3)
-2. Implement closure saturation iteration (Phase 4)
-3. Prove closure-aware truth lemma (Phase 5)
-4. Complete the sorry (Phase 6)
+1. Cleanup and verify Rat instances (Phase 1)
+2. Build BFMCS over Rat (Phase 2)
+3. Prove validity transfer theorem (Phase 3)
+4. Wire dense completeness (Phase 4)
+5. Cleanup original sorry (Phase 5)
+6. Final verification (Phase 6)
 
 **Files to create/modify**:
-- `StagedConstruction/WitnessChainFMCS.lean` - NEW
-- `StagedConstruction/ClosureSaturation.lean` - NEW
-- `StagedConstruction/TimelineQuotCanonical.lean` - MODIFIED
-- `StagedConstruction/TimelineQuotCompleteness.lean` - MODIFIED (sorry resolved)
+- `Metalogic/Algebraic/RatBFMCS.lean` - NEW
+- `Metalogic/Algebraic/ValidityTransfer.lean` - NEW
+- `FrameConditions/Completeness.lean` - MODIFIED
+- `StagedConstruction/TimelineQuotCompleteness.lean` - MODIFIED (original sorry)
 
 ---
 
