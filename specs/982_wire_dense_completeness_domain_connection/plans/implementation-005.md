@@ -139,7 +139,7 @@ Note: The WitnessChainFMCS primitives are reused in Phase 4 for building the BFM
 
 **Progress:**
 
-**Session: 2026-03-17, sess_1773773089_a7e2f9**
+**Session: 2026-03-17, sess_1773773089_a7e2f9 (iteration 1)**
 - Added: `timelineQuotFMCS_forward_F` theorem signature (sorry: requires connecting to forward_witness_at_stage)
 - Added: `timelineQuotFMCS_backward_P` theorem signature (sorry: symmetric to forward_F)
 - Added: `timelineQuotSingletonBFMCS` structure (sorry: modal_backward for singleton cannot be proven)
@@ -149,6 +149,14 @@ Note: The WitnessChainFMCS primitives are reused in Phase 4 for building the BFM
 - Finding: Singleton BFMCS cannot satisfy modal_backward without modal saturation
 - Sorries: 3 introduced (forward_F, backward_P, modal_backward)
 - Handoff: `specs/982_wire_dense_completeness_domain_connection/handoffs/phase-4-handoff-20260317.md`
+
+**Session: 2026-03-17, sess_1773773089_a7e2f9 (iteration 2)**
+- Added: `forward_witness_at_stage_with_phi` in CantorPrereqs.lean (combines forward_witness_at_stage with phi membership)
+- Added: `backward_witness_at_stage_with_phi` in CantorPrereqs.lean (symmetric)
+- Partially proved: `timelineQuotFMCS_forward_F` - main case (m <= 2k) PROVEN
+- Sorries remaining: 4 (m > 2k case, density point case, backward_P, modal_backward)
+- Finding: The m > 2k case requires more infrastructure to trace when F-witnesses are added
+- Finding: The staged construction processes formulas in encoding order; late-added MCSs may have F-formulas whose encoding was already processed
 
 - **Dependencies**: Phase 3
 - **Goal**: Build a full BFMCS over TimelineQuot satisfying all BFMCS fields

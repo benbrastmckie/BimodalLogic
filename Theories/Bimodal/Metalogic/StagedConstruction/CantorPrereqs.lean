@@ -537,6 +537,84 @@ theorem backward_witness_at_stage
   right
   rw [dif_pos h_P, Finset.mem_singleton]
 
+/-- Forward witness with phi membership: the witness from forward_witness_at_stage
+contains phi in its MCS. -/
+theorem forward_witness_at_stage_with_phi
+    (p : StagedPoint) (phi : Formula) (k : Nat)
+    (h_decode : decodeFormulaStaged k = some phi)
+    (h_F : Formula.some_future phi ∈ p.mcs)
+    (n : Nat) (h_n_le : n ≤ 2 * k)
+    (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
+    ∃ q : StagedPoint,
+      q ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1) ∧
+      CanonicalR p.mcs q.mcs ∧
+      phi ∈ q.mcs := by
+  have hp_2k : p ∈ stagedBuild root_mcs root_mcs_proof (2 * k) :=
+    (StagedTimeline.monotone_le (buildStagedTimeline root_mcs root_mcs_proof) h_n_le) hp
+  let w := processForwardObligation p phi h_F (2 * k + 1)
+  refine ⟨w, ?_, processForwardObligation_canonicalR p phi h_F (2 * k + 1),
+    processForwardObligation_contains_phi p phi h_F (2 * k + 1)⟩
+  show w ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1)
+  have h_eq : stagedBuild root_mcs root_mcs_proof (2 * k + 1) =
+    (if (2 * k) % 2 = 0 then
+      evenStage (stagedBuild root_mcs root_mcs_proof (2 * k)) ((2 * k) / 2) (2 * k + 1)
+    else
+      oddStage (stagedBuild root_mcs root_mcs_proof (2 * k)) ((2 * k) / 2) (2 * k + 1)) := rfl
+  rw [h_eq]
+  have h_even : (2 * k) % 2 = 0 := by omega
+  have h_div : (2 * k) / 2 = k := by omega
+  simp only [h_even, ite_true, h_div]
+  unfold evenStage
+  rw [h_decode]
+  unfold processFormula
+  rw [Finset.mem_union]
+  right
+  rw [Finset.mem_biUnion]
+  refine ⟨p, hp_2k, ?_⟩
+  unfold witnessesForPoint
+  rw [Finset.mem_union]
+  left
+  rw [dif_pos h_F, Finset.mem_singleton]
+
+/-- Backward witness with phi membership: the witness from backward_witness_at_stage
+contains phi in its MCS. -/
+theorem backward_witness_at_stage_with_phi
+    (p : StagedPoint) (phi : Formula) (k : Nat)
+    (h_decode : decodeFormulaStaged k = some phi)
+    (h_P : Formula.some_past phi ∈ p.mcs)
+    (n : Nat) (h_n_le : n ≤ 2 * k)
+    (hp : p ∈ stagedBuild root_mcs root_mcs_proof n) :
+    ∃ q : StagedPoint,
+      q ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1) ∧
+      CanonicalR q.mcs p.mcs ∧
+      phi ∈ q.mcs := by
+  have hp_2k : p ∈ stagedBuild root_mcs root_mcs_proof (2 * k) :=
+    (StagedTimeline.monotone_le (buildStagedTimeline root_mcs root_mcs_proof) h_n_le) hp
+  let w := processBackwardObligation p phi h_P (2 * k + 1)
+  refine ⟨w, ?_, processBackwardObligation_canonicalR p phi h_P (2 * k + 1),
+    processBackwardObligation_contains_phi p phi h_P (2 * k + 1)⟩
+  show w ∈ stagedBuild root_mcs root_mcs_proof (2 * k + 1)
+  have h_eq : stagedBuild root_mcs root_mcs_proof (2 * k + 1) =
+    (if (2 * k) % 2 = 0 then
+      evenStage (stagedBuild root_mcs root_mcs_proof (2 * k)) ((2 * k) / 2) (2 * k + 1)
+    else
+      oddStage (stagedBuild root_mcs root_mcs_proof (2 * k)) ((2 * k) / 2) (2 * k + 1)) := rfl
+  rw [h_eq]
+  have h_even : (2 * k) % 2 = 0 := by omega
+  have h_div : (2 * k) / 2 = k := by omega
+  simp only [h_even, ite_true, h_div]
+  unfold evenStage
+  rw [h_decode]
+  unfold processFormula
+  rw [Finset.mem_union]
+  right
+  rw [Finset.mem_biUnion]
+  refine ⟨p, hp_2k, ?_⟩
+  unfold witnessesForPoint
+  rw [Finset.mem_union]
+  right
+  rw [dif_pos h_P, Finset.mem_singleton]
+
 /-!
 ## Encoding Sufficiency for Seriality
 
