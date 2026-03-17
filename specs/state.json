@@ -448,11 +448,6 @@
           "summary": "Team research: Covering proof gap confirmed unfillable. Modified staged construction approach recommended."
         },
         {
-          "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "5-phase modified staged construction with blocking formula seeds (16-22 hours)"
-        },
-        {
           "path": "Theories/Bimodal/Metalogic/StagedConstruction/ImmediateStagedBuild.lean",
           "type": "lean_module",
           "summary": "Alternative staged build using blocking formula seeds (~340 lines, compiles)"
@@ -476,6 +471,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-010.md",
           "type": "research",
           "summary": "Team research run 010 (2 teammates, logic domain): W=D is fundamental error, correct W!=D architecture already exists in Algebraic/; remaining gap is FMCS TimelineQuot truth lemma"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/07_timelinequot-truth-lemma.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan pivoting from W=D to TimelineQuot truth lemma completion"
         }
       ],
       "planned": "2026-03-17T17:00:31Z",
