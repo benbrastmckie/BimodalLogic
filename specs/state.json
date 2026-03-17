@@ -8,11 +8,11 @@
     {
       "project_number": 985,
       "project_name": "lindenbaum_tarski_representation_theorem",
-      "status": "planned",
+      "status": "implementing",
       "language": "logic",
       "created": "2026-03-17T01:08:17Z",
-      "last_updated": "2026-03-16T10:00:00Z",
-      "session_id": "sess_1773711683_12217",
+      "last_updated": "2026-03-17T01:47:44Z",
+      "session_id": "sess_1773712028_20989",
       "researched": "2026-03-17T01:29:00Z",
       "planned": "2026-03-16T10:00:00Z",
       "artifacts": [
@@ -45,7 +45,8 @@
             "integrated_date": "2026-03-16"
           }
         ]
-      }
+      },
+      "started": "2026-03-17T01:47:44Z"
     },
     {
       "project_number": 984,
@@ -188,10 +189,10 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "implementing",
+      "status": "partial",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T01:34:38Z",
+      "last_updated": "2026-03-16T18:00:00Z",
       "session_id": "sess_1773711262_a7f3c5",
       "researched": "2026-03-17T01:27:53Z",
       "artifacts": [
@@ -219,10 +220,20 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md",
           "type": "plan",
           "summary": "6-phase implementation plan v3: T-axiom direct subset argument (4-5 hours)"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md",
+          "type": "summary",
+          "summary": "Phases 2-3 complete. Phase 4 covering proof partial with 3 sorries."
         }
       ],
       "planned": "2026-03-17T01:33:17Z",
-      "started": "2026-03-17T00:29:40Z"
+      "started": "2026-03-17T00:29:40Z",
+      "partial_progress": {
+        "phases_completed": 3,
+        "phases_total": 6,
+        "details": "Phases 2-3 COMPLETED (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 PARTIAL (covering proof has 3 sorries at lines 525, 562, 595)."
+      }
     },
     {
       "project_number": 953,

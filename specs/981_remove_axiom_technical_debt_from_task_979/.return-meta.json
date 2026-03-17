@@ -1,20 +1,35 @@
 {
-  "status": "planned",
+  "status": "partial",
+  "started_at": "2026-03-16T15:00:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md",
-      "summary": "6-phase implementation plan v3: T-axiom direct subset argument (4-5 hours)"
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md",
+      "type": "summary",
+      "summary": "Implementation summary for phases 2-4"
     }
   ],
-  "next_steps": "Run /implement 981 to execute the plan",
+  "partial_progress": {
+    "stage": "phase_4_partial",
+    "details": "Phases 2-3 COMPLETED. Phase 4 covering proof PARTIAL with 3 sorries at lines 525, 562, 595 in discreteImmediateSucc_covers theorem. Blocking issue: set equality proof requires additional modal reasoning to rule out intermediate MCS configurations.",
+    "phases_completed": 3,
+    "phases_total": 6
+  },
+  "requires_user_review": false,
+  "errors": [
+    {
+      "type": "proof_incomplete",
+      "message": "Covering proof has 3 sorries. Cases where blocking formula constraints (neg psi or neg G(psi) in W) don't directly rule out intermediate K configurations.",
+      "recoverable": true,
+      "recommendation": "Continue covering proof with additional MCS lemmas or try quotient-level approach"
+    }
+  ],
   "metadata": {
-    "session_id": "sess_1773710968_65fa85",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1773711262_a7f3c5",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 6,
-    "estimated_hours": 4.5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+  },
+  "completion_data": {
+    "completion_summary": "Phases 2-3 complete (seed consistency, discreteImmediateSucc). Phase 4 covering proof partial with 3 sorries."
   }
 }

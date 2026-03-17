@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981 (Revision 3)
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-5 hours
 - **Dependencies**: None (builds on existing codebase)
 - **Research Inputs**: research-004.md (T-axiom direct subset argument)
@@ -112,7 +112,7 @@ After this implementation:
 
 ---
 
-### Phase 2: Fill Case 2 Sorry (T-Axiom Direct Subset) [NOT STARTED]
+### Phase 2: Fill Case 2 Sorry (T-Axiom Direct Subset) [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Fill the sorry at line 319 using the T-axiom to show `g_content(M) ⊆ M`
@@ -153,7 +153,7 @@ lemma g_content_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
 
 ---
 
-### Phase 3: Define Discrete Immediate Successor [NOT STARTED]
+### Phase 3: Define Discrete Immediate Successor [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Define `discreteImmediateSucc M` as Lindenbaum extension of the consistent seed
@@ -178,7 +178,7 @@ lemma g_content_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
 
 ---
 
-### Phase 4: Prove Covering Property [NOT STARTED]
+### Phase 4: Prove Covering Property [PARTIAL]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove no MCS exists strictly between M and `discreteImmediateSucc M`
