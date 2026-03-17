@@ -3,21 +3,22 @@
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/986_bfmcs_construction_for_int/reports/research-002.md",
-      "summary": "Research report with mathematical analysis of F/P witness coherence problem and 4 solution options"
+      "path": "specs/986_bfmcs_construction_for_int/reports/research-003.md",
+      "summary": "Deep mathematical analysis proving Int-indexed F/P coherence is mathematically impossible due to countability obstruction; recommends CanonicalMCS domain refactor as only sorry-free path"
     }
   ],
-  "next_steps": "Run /plan 986 to create implementation plan based on Option 3 (accept conditional) or Option 1 (enriched dovetailing)",
+  "next_steps": "Option 2 (Canonical Domain Refactor) is the only mathematically correct path. Implement PreorderTaskFrame infrastructure with D=CanonicalMCS to achieve sorry-free algebraic completeness.",
   "metadata": {
-    "session_id": "sess_1773755933_921ac7",
+    "session_id": "sess_1773757052_1758b7",
     "agent_type": "math-research-agent",
-    "duration_seconds": 2700,
+    "duration_seconds": 5400,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": ["README.md", "lattice-theory context"],
-    "mathlib_lookups_performed": 4,
+    "findings_count": 5,
+    "context_files_loaded": ["CanonicalFMCS.lean", "IntBFMCS.lean", "CanonicalFrame.lean", "WitnessSeed.lean", "DiscreteInstantiation.lean", "ParametricRepresentation.lean", "TemporalCoherence.lean", "ROAD_MAP.md"],
+    "mathlib_lookups_performed": 3,
+    "web_searches_performed": 3,
     "context_extension_tasks": [],
-    "context_candidates_count": 2
+    "context_candidates_count": 1
   }
 }

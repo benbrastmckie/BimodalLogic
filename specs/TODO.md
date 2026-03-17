@@ -63,14 +63,14 @@ technical_debt:
 - **Effort**: 5.5 hours (5 phases)
 - **Status**: [PARTIAL]
 - **Language**: lean
-- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md), [research-002.md](specs/986_bfmcs_construction_for_int/reports/research-002.md)
+- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md), [research-002.md](specs/986_bfmcs_construction_for_int/reports/research-002.md), [research-003.md](specs/986_bfmcs_construction_for_int/reports/research-003.md)
 - **Plan**: [implementation-001.md](specs/986_bfmcs_construction_for_int/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260317.md](specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md)
 - **Module**: [IntBFMCS.lean](Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean)
 
 **Description**: Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in `CanonicalFMCS.lean` has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an order-embedding, or find a direct construction. This is the core blocker for algebraic base completeness (task 987) and discrete algebraic completeness (task 989).
 
-**Research Summary (v2)**: Mathematical analysis proves Int-indexed chains cannot achieve full F/P coherence (Chain Incompleteness Theorem: countable chains cannot cover uncountably many MCS witnesses). Recommends: (1) Accept conditional theorem (D-from-syntax is primary path), or (2) Enriched witness-guided dovetailing (4-6h, complex).
+**Research Summary (v3)**: Countability Obstruction Theorem proves Int-indexed F/P coherence is MATHEMATICALLY IMPOSSIBLE (uncountable MCS space vs countable chain). Standard completeness proofs use ALL MCSes, not Int. Only sorry-free path: **Canonical Domain Refactor** - use D=CanonicalMCS with PreorderTaskFrame (no AddCommGroup required). Estimated 6-8 hours.
 
 **Partial Progress**: Phases 1-2 complete (G/H coherence proven). Phase 3 blocked: forward_F/backward_P require witnesses outside chain range.
 
@@ -151,7 +151,7 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 16-24 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: T-axiom path), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (blocker analysis), [research-006.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md) (axiom elimination approaches)
