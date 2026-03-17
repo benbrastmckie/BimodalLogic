@@ -1,25 +1,23 @@
 {
   "status": "researched",
-  "started_at": "2026-03-17T10:00:00Z",
-  "completed_at": "2026-03-17T11:30:00Z",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-008.md",
-      "summary": "Research report analyzing world history discreteness vs MCS covering - confirms they are mathematically equivalent, no new proof path found"
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-009.md",
+      "summary": "Architectural clarity analysis: W vs D separation in TaskFrame, clarifying research-008 confusion"
     }
   ],
-  "next_steps": "Run /plan 981 to create implementation plan for modified staged construction approach",
+  "next_steps": "Run /plan 981 to create implementation plan, or accept axiom as documented debt",
   "metadata": {
-    "session_id": "sess_1773760590_b22cbf",
+    "session_id": "sess_1773761405_f7bb94",
     "agent_type": "logic-research-agent",
-    "duration_seconds": 5400,
+    "duration_seconds": 7200,
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "skill-logic-research", "logic-research-agent"],
-    "findings_count": 7,
-    "context_files_loaded": ["task-semantics.md", "README.md (logic context)"],
+    "findings_count": 8,
+    "context_files_loaded": ["task-semantics.md", "README.md"],
     "mathlib_lookups_performed": 0,
     "context_extension_tasks": [],
-    "context_candidates_count": 0
+    "context_candidates_count": 2
   }
 }
