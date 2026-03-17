@@ -1,7 +1,7 @@
 # Implementation Plan: BFMCS Construction for Int
 
 - **Task**: 986 - bfmcs_construction_for_int
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 5 hours
 - **Dependencies**: Task 985 (completed - provides algebraic infrastructure)
 - **Research Inputs**: specs/986_bfmcs_construction_for_int/reports/research-001.md
@@ -68,7 +68,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Chain Construction Core [PARTIAL]
+### Phase 1: Chain Construction Core [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Define the bi-infinite chain `c : Int -> Set Formula` where consecutive elements are CanonicalR-related and a designated root MCS appears at index 0.
@@ -83,8 +83,8 @@ After this implementation:
 - [x] Prove `posChain_canonicalR`: `CanonicalR (c n) (c (n+1))` for positive chain
 - [x] Prove `negChain_canonicalR`: `CanonicalR (c (n+1)) (c n)` for negative chain
 - [x] Prove `h_content_consistent`: symmetric to existing `g_content_consistent`
-- [ ] Prove `intChain_forward_G`: G propagation through chain (sorry)
-- [ ] Prove `intChain_backward_H`: H propagation through chain (sorry)
+- [x] Prove `intChain_forward_G`: G propagation through chain
+- [x] Prove `intChain_backward_H`: H propagation through chain
 
 **Timing:** 1.5 hours
 
@@ -93,8 +93,8 @@ After this implementation:
 
 **Verification:**
 - [x] `lake build Bimodal.Metalogic.Algebraic.IntBFMCS` compiles
-- [ ] `lean_goal` shows no sorry-requiring goals
-- [ ] `grep -n "\bsorry\b" IntBFMCS.lean` returns empty
+- [x] `lean_goal` shows no sorry-requiring goals for G/H proofs
+- [ ] `grep -n "\bsorry\b" IntBFMCS.lean` returns empty (2 remain: forward_F, backward_P)
 
 **Progress:**
 
@@ -107,17 +107,27 @@ After this implementation:
 - Sorries: 4 remaining (intChain_forward_G, intChain_backward_H, intFMCS_forward_F, intFMCS_backward_P)
 - Blocker: forward_G/backward_H require proof of G/H propagation through CanonicalR chain across positive/negative index boundary
 
+**Session: 2026-03-17, sess_1773754705_cfda86**
+- Added: `intChain_canonicalR` - CanonicalR holds for all adjacent pairs in Int chain (handles boundary cases)
+- Added: `intChain_G_propagates` - G-formula preservation along chain via induction
+- Completed: `intChain_forward_G` - sorry-free proof using induction and canonicalR_propagates_G/GG
+- Added: `intChain_canonicalR_past` - CanonicalR_past via g/h duality
+- Added: `canonicalR_past_propagates_H`, `canonicalR_past_propagates_HH` - H propagation helpers
+- Added: `intChain_H_propagates` - H-formula preservation along chain via induction
+- Completed: `intChain_backward_H` - sorry-free proof symmetric to forward_G
+- Sorries: 2 remaining (intFMCS_forward_F, intFMCS_backward_P)
+
 ---
 
-### Phase 2: FMCS Int with G/H Coherence [NOT STARTED]
+### Phase 2: FMCS Int with G/H Coherence [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Wrap the chain into an `FMCS Int` with proven forward_G and backward_H.
 
 **Tasks:**
-- [ ] Define `intChainFMCS : (M0 : Set Formula) -> SetMaximalConsistent M0 -> FMCS Int` using `build_chain`
-- [ ] Prove `forward_G`: If `G(phi) in c(t)` and `t < t'`, then `phi in c(t')`. Strategy: induction on `t' - t`, using CanonicalR transitivity and `canonical_forward_G`.
-- [ ] Prove `backward_H`: If `H(phi) in c(t)` and `t' < t`, then `phi in c(t')`. Strategy: symmetric to forward_G using h_content/g_content duality.
+- [x] Define `intFMCS_basic : (M0 : Set Formula) -> SetMaximalConsistent M0 -> FMCS Int`
+- [x] Prove `forward_G`: If `G(phi) in c(t)` and `t < t'`, then `phi in c(t')`. Strategy: induction on `t' - t`, using CanonicalR transitivity and `canonical_forward_G`.
+- [x] Prove `backward_H`: If `H(phi) in c(t)` and `t' < t`, then `phi in c(t')`. Strategy: symmetric to forward_G using h_content/g_content duality.
 
 **Timing:** 1 hour
 
@@ -125,18 +135,24 @@ After this implementation:
 - `Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean`
 
 **Verification:**
-- `intChainFMCS` compiles with type `FMCS Int`
-- No sorry in forward_G or backward_H proofs
-- `lake build` passes
+- [x] `intFMCS_basic` compiles with type `FMCS Int`
+- [x] No sorry in forward_G or backward_H proofs
+- [x] `lake build` passes
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773754705_cfda86**
+- `intFMCS_basic` defined and compiles with `FMCS Int` type
+- forward_G and backward_H are sorry-free (proven in Phase 1)
 
 ---
 
-### Phase 3: Forward_F and Backward_P via Dovetailing [NOT STARTED]
+### Phase 3: Forward_F and Backward_P via Dovetailing [BLOCKED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove that the chain satisfies forward_F and backward_P temporal coherence.
 
-This is the core mathematical challenge. Two sub-approaches:
+This is the core mathematical challenge. Two sub-approaches were considered:
 
 **Sub-approach A (Preferred): Enriched chain construction.** Modify the chain construction from Phase 1 so that `ChainStep` at position `t` produces a successor that satisfies `phi in c(t+1)` for a specific phi determined by a dovetailing schedule. Since formulas are countably enumerable, we can enumerate all `(t, phi)` pairs where `F(phi) in c(t)` and ensure each is witnessed. Similarly for backward P.
 
@@ -151,9 +167,35 @@ This is the core mathematical challenge. Two sub-approaches:
 - [ ] Prove `backward_P`: symmetric argument for past direction
 
 **Tasks (Sub-approach B - only if A is infeasible):**
-- [ ] If Sub-approach A fails, mark phase [BLOCKED] with review_reason: "Dovetailing enumeration approach encountered unforeseen difficulty"
+- [x] Sub-approach B is INFEASIBLE: the simple chain does not guarantee witnesses land in chain range
 
-**Timing:** 1.5 hours
+**Timing:** 1.5 hours (estimated for implementation if approach were feasible)
+
+**Blocker Analysis:**
+
+The F/P witness problem is a fundamental architectural limitation:
+
+1. **The simple chain approach** (Phase 1's `successorMCS`/`predecessorMCS`) constructs each chain element as `Lindenbaum(g_content(prev))` or `Lindenbaum(h_content(prev))`. This does NOT include any specific F/P witness formulas.
+
+2. **The `canonical_forward_F` lemma** gives us a witness MCS W for any F(phi) obligation, but W is constructed as `Lindenbaum({phi} ∪ g_content(M))`. This W is SOME MCS in the space of all MCSes, but there is no guarantee that W equals `intChainMCS s` for any specific s.
+
+3. **The DovetailingChain in Boneyard** has the same 2 sorries (forward_F, backward_P) with a comment: "The remaining 2 sorries cannot be resolved for this linear chain construction because F-formulas do not persist through GContent seeds."
+
+4. **Implementing enriched dovetailing** requires a complex construction:
+   - Define formula enumeration
+   - Define obligation schedule
+   - Redefine chain construction to accept witness targets
+   - Prove schedule eventually covers all obligations
+   - This is significant additional work (~4-6 hours)
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773754705_cfda86**
+- Analyzed both sub-approaches
+- Confirmed Sub-approach B is infeasible for simple chain
+- Sub-approach A requires significant refactoring not in scope for current iteration
+- 2 sorries remain: `intFMCS_forward_F`, `intFMCS_backward_P`
+- Marked phase BLOCKED pending architectural decision
 
 **Files to modify:**
 - `Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean`

@@ -255,10 +255,7 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
       have hne1 : t + 1 ≠ 0 := by omega
       simp only [hne1, ↓reduceDIte]
       -- intChainMCS t = posChain t.toNat, intChainMCS (t+1) = posChain (t+1).toNat
-      have h_eq : (t + 1).toNat = t.toNat + 1 := by
-        have h_t_nonneg : 0 ≤ t := by omega
-        simp only [Int.toNat_of_nonneg h_t_nonneg]
-        omega
+      have h_eq : (t + 1).toNat = t.toNat + 1 := by omega
       rw [h_eq]
       exact posChain_canonicalR M0 h_mcs0 t.toNat
     · -- Case t < 0 (since t ≠ 0 and not t > 0)
@@ -266,6 +263,8 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
       by_cases h1 : t = -1
       · -- Subcase t = -1: need CanonicalR (negChain 1) M0
         subst h1
+        have h_sum : (-1 : Int) + 1 = 0 := by omega
+        rw [h_sum]
         have h_lhs : intChainMCS M0 h_mcs0 (-1) = (negChain M0 h_mcs0 1).1 := by
           simp only [intChainMCS]
           split_ifs <;> simp_all
@@ -274,7 +273,7 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
           split_ifs <;> simp_all
         rw [h_lhs, h_rhs]
         have h := negChain_canonicalR M0 h_mcs0 0
-        simp only [negChain, Nat.add_eq, Nat.add_zero] at h
+        simp only [negChain, Nat.add_eq] at h
         exact h
       · -- Subcase t < -1: both use negChain
         have hneg1 : t + 1 < 0 := by omega
@@ -287,15 +286,7 @@ theorem intChain_canonicalR (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0
         -- Need: CanonicalR (negChain (-t).toNat).1 (negChain (-(t+1)).toNat).1
         -- Note: -(t+1) = -t - 1, so (-(t+1)).toNat = (-t).toNat - 1
         -- And negChain_canonicalR says: CanonicalR (negChain (n+1)) (negChain n)
-        have h_neg_t_pos : 0 < -t := by omega
-        have h_neg_t1_pos : 0 < -(t+1) := by omega
-        have h_idx_eq : (-(t+1)).toNat + 1 = (-t).toNat := by
-          have h1 : -(t+1) = -t - 1 := by ring
-          rw [h1]
-          have h_le : -t - 1 ≥ 0 := by omega
-          have h_le2 : -t ≥ 0 := by omega
-          rw [Int.toNat_of_nonneg h_le, Int.toNat_of_nonneg h_le2]
-          omega
+        have h_idx_eq : (-(t+1)).toNat + 1 = (-t).toNat := by omega
         rw [← h_idx_eq]
         exact negChain_canonicalR M0 h_mcs0 (-(t+1)).toNat
 
@@ -366,7 +357,7 @@ theorem intChain_G_propagates (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent 
       omega
     have h_diff_nonneg' : 0 ≤ (t' - 1) - t := by omega
     -- By IH, G(phi) ∈ intChainMCS (t' - 1)
-    have h_G_pred := ih (t' - 1) h_t'_pred h_diff' h_diff_nonneg'
+    have h_G_pred := ih (t' - 1) h_t'_pred h_diff_nonneg' h_diff'
     -- G(phi) propagates from t' - 1 to t' via canonicalR_propagates_GG
     have h_mcs_pred := intChainMCS_is_mcs M0 h_mcs0 (t' - 1)
     have h_R := intChain_canonicalR M0 h_mcs0 (t' - 1)
@@ -465,7 +456,7 @@ theorem intChain_H_propagates (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent 
       omega
     have h_diff_nonneg' : 0 ≤ t - (t' + 1) := by omega
     -- By IH, H(phi) ∈ intChainMCS (t' + 1)
-    have h_H_succ := ih (t' + 1) h_t'_succ h_diff' h_diff_nonneg'
+    have h_H_succ := ih (t' + 1) h_t'_succ h_diff_nonneg' h_diff'
     -- H(phi) propagates from t' + 1 to t' via canonicalR_past_propagates_HH
     have h_mcs_succ := intChainMCS_is_mcs M0 h_mcs0 (t' + 1)
     have h_R := intChain_canonicalR_past M0 h_mcs0 t'
