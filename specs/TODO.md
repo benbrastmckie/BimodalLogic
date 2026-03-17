@@ -151,16 +151,16 @@ technical_debt:
 ---
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: 16-24 hours (5 phases)
-- **Status**: [RESEARCHING]
+- **Effort**: 16-22 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: T-axiom path), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (blocker analysis), [research-006.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md) (axiom elimination approaches)
-- **Plan**: [implementation-005.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-005.md) (v5: well-founded minimal successor)
+- **Plan**: [implementation-006.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-006.md) (v6: modified staged construction)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
 
-**Plan Summary (v5)**: Well-Founded Minimal Successor approach — define succ(M) := min { K : MCS | CanonicalR M K } using well-ordering. Covering follows trivially from minimality. Phases: (1) Stage-indexed infrastructure [COMPLETED], (2) Well-ordering on DiscreteTimelineQuot, (3) Minimal successor definition, (4) Covering from minimality and axiom elimination.
+**Plan Summary (v6)**: Modified Staged Construction approach — create `discreteStagedBuildImmediate` using blocking formula seeds instead of `forward_temporal_witness_seed`. Covering holds BY CONSTRUCTION (successor is fresh). Phases: (1) Stage-indexed infrastructure [COMPLETED], (2) Immediate successor staged build, (3) Stage-level covering, (4) Colimit isomorphism, (5) Axiom elimination.
 
 ---
 
