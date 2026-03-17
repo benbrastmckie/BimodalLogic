@@ -126,12 +126,12 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 8-12 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
 - **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D semantics), [research-010.md](specs/982_wire_dense_completeness_domain_connection/reports/research-010.md) (FMP path), [research-011.md](specs/982_wire_dense_completeness_domain_connection/reports/research-011.md) (Option C: CanonicalMCS all-MCS), [research-013.md](specs/982_wire_dense_completeness_domain_connection/reports/research-013.md) (comprehensive gap analysis - **recommended**)
-- **Plan**: [implementation-008.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-008.md) (v8: CanonicalMCS all-MCS approach)
+- **Plan**: [implementation-009.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-009.md) (v9: Multi-family BFMCS over TimelineQuot with witness saturation)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md)
 
 **Description**: Complete dense completeness using W/D separated TaskFrame architecture: W = CanonicalMCS (world states), D = TimelineQuot (durations). Witnesses exist in W, not necessarily in Range(h).
@@ -155,7 +155,7 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 16-22 hours (5 phases)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: T-axiom path), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (blocker analysis), [research-006.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md) (axiom elimination approaches), [research-007.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-007.md) (covering proof gap confirmed unfillable), [research-008.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-008.md) (world history discreteness - W=D equivalence), [research-009.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-009.md) (architectural clarity - W=D is simplification), [research-010.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-010.md) (team: W=D is fundamental error; correct W!=D architecture already exists; gap is FMCS TimelineQuot truth lemma)

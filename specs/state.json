@@ -73,10 +73,10 @@
     {
       "project_number": 987,
       "project_name": "algebraic_base_completeness",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T16:44:29Z",
+      "last_updated": "2026-03-17T17:00:10Z",
       "description": "Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the construct_bfmcs argument to parametric_algebraic_representation_conditional (D = Int), then prove valid φ → ⊢ φ. Resolve any type mismatch between CanonicalWorldState and ParametricCanonicalWorldState. Create AlgebraicBaseCompleteness.lean with the closed completeness theorem.",
       "artifacts": [
         {
@@ -90,7 +90,7 @@
           "summary": "Focused analysis of TaskFrame semantics: D = CanonicalMCS is WRONG (lacks AddCommGroup), D = Int is correct for discrete time, pure syntax means parametric approach."
         }
       ],
-      "session_id": "sess_1773762635_r987",
+      "session_id": "sess_1773766764_4b72cd",
       "researched": "2026-03-17T16:44:29Z"
     },
     {
@@ -299,12 +299,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T15:35:18Z",
+      "last_updated": "2026-03-17T16:59:47Z",
       "session_id": "sess_1773760161_eca24d",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
@@ -379,11 +379,6 @@
           "summary": "Option C analysis: use CanonicalMCS (all-MCS) with proven forward_F/backward_P, two-stage validity approach"
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-008.md",
-          "type": "plan",
-          "summary": "v8: CanonicalMCS all-MCS approach - 5 phases, 12 hours"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-012.md",
           "type": "research",
           "summary": "DN -> world history density derivation: 5-layer chain from DN through MCS density, density frame condition, TimelineQuot DenselyOrdered, to world history convexity"
@@ -392,19 +387,24 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-013.md",
           "type": "research",
           "summary": "Comprehensive gap analysis: 18 sorries, 1 axiom on active path. Primary blocker: TimelineQuot forward_F witness placement. Recommends multi-family BFMCS with on-demand saturation (8-12 hours)"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-009.md",
+          "type": "plan",
+          "summary": "v9: Multi-family BFMCS over TimelineQuot with witness saturation - 4 phases, 8-12 hours"
         }
       ],
-      "planned": "2026-03-17T15:06:13Z",
+      "planned": "2026-03-17T16:59:47Z",
       "started": "2026-03-17T15:09:37Z"
     },
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T16:28:26Z",
-      "session_id": "sess_1773762158_31046",
+      "last_updated": "2026-03-17T17:00:31Z",
+      "session_id": "sess_1773765876_5d6229",
       "researched": "2026-03-17T16:28:26Z",
       "artifacts": [
         {
@@ -478,7 +478,7 @@
           "summary": "Team research run 010 (2 teammates, logic domain): W=D is fundamental error, correct W!=D architecture already exists in Algebraic/; remaining gap is FMCS TimelineQuot truth lemma"
         }
       ],
-      "planned": "2026-03-17T14:51:26Z",
+      "planned": "2026-03-17T17:00:31Z",
       "started": "2026-03-17T14:53:35Z",
       "partial_progress": {
         "phases_completed": 3,
