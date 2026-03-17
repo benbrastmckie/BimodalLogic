@@ -11,7 +11,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T13:52:24Z",
+      "last_updated": "2026-03-17T14:06:25Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -34,6 +34,11 @@
           "path": "specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Partial implementation: G/H coherence proven, F/P witness blocked by dovetailing requirement"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-002.md",
+          "type": "research",
+          "summary": "Mathematical analysis: Int-indexed F/P coherence impossible due to chain incompleteness; recommends conditional theorem approach"
         }
       ],
       "session_id": "sess_1773754705_cfda86",

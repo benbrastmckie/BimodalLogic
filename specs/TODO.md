@@ -35,7 +35,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 12-16 hours (5 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md)
 - **Plan**: [implementation-002.md](specs/988_dense_algebraic_completeness/plans/implementation-002.md) (v2: CanonicalQuot approach)
@@ -63,16 +63,16 @@ technical_debt:
 - **Effort**: 5.5 hours (5 phases)
 - **Status**: [PARTIAL]
 - **Language**: lean
-- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md)
+- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md), [research-002.md](specs/986_bfmcs_construction_for_int/reports/research-002.md)
 - **Plan**: [implementation-001.md](specs/986_bfmcs_construction_for_int/plans/implementation-001.md)
 - **Summary**: [implementation-summary-20260317.md](specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md)
 - **Module**: [IntBFMCS.lean](Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean)
 
 **Description**: Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in `CanonicalFMCS.lean` has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an order-embedding, or find a direct construction. This is the core blocker for algebraic base completeness (task 987) and discrete algebraic completeness (task 989).
 
-**Research Summary**: Analyzed existing CanonicalMCS construction (sorry-free) and deprecated DovetailingChain (2 sorries). Recommended approach: order-embedding transfer from CanonicalMCS to Int-indexed structure, using CanonicalR-based witness existence.
+**Research Summary (v2)**: Mathematical analysis proves Int-indexed chains cannot achieve full F/P coherence (Chain Incompleteness Theorem: countable chains cannot cover uncountably many MCS witnesses). Recommends: (1) Accept conditional theorem (D-from-syntax is primary path), or (2) Enriched witness-guided dovetailing (4-6h, complex).
 
-**Partial Progress**: Phase 1 partial. Created `IntBFMCS.lean` with chain construction (successorMCS, predecessorMCS, posChain, negChain, intChainMCS), proved MCS property and CanonicalR chain properties. Blocked: forward_F/backward_P require dovetailing enumeration not implemented.
+**Partial Progress**: Phases 1-2 complete (G/H coherence proven). Phase 3 blocked: forward_F/backward_P require witnesses outside chain range.
 
 ---
 
