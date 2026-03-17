@@ -1,41 +1,23 @@
 {
-  "status": "researched",
+  "status": "planned",
+  "summary": "5-phase implementation plan for dense algebraic completeness using Separated W/D Architecture (Option C from research-004)",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/988_dense_algebraic_completeness/reports/research-004.md",
-      "summary": "Deep analysis of blocker root cause, W vs D architecture, and 5 options compared. Recommends Option C: separated W/D architecture using TimelineQuot (has LinearOrder via IsTotal) for D and CanonicalMCS for W with on-demand witness saturation."
+      "type": "plan",
+      "path": "specs/988_dense_algebraic_completeness/plans/implementation-003.md",
+      "summary": "5-phase plan: SeparatedHistory structure, TemporalCoherentFamily, BFMCS construction, Cantor transfer, DenseInstantiation wiring"
     }
   ],
-  "next_steps": "Run /plan 988 to create implementation plan v3 based on Option C (separated W/D architecture)",
+  "next_steps": "Run /implement 988 to execute the plan",
   "metadata": {
-    "session_id": "sess_1742235600_988r4",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 480,
+    "session_id": "sess_1742236800_988p3",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
-    "findings_count": 7,
-    "context_files_loaded": [
-      "TaskFrame.lean",
-      "WorldHistory.lean",
-      "ParametricCanonical.lean",
-      "CantorApplication.lean",
-      "CanonicalFMCS.lean",
-      "TimelineQuotCanonical.lean",
-      "CanonicalQuot.lean",
-      "ROAD_MAP.md"
-    ],
-    "mathlib_lookups_performed": 4,
-    "context_extension_tasks": [],
-    "context_candidates_count": 2,
-    "key_findings": [
-      "CanonicalMCS preorder lacks IsTotal - cannot give LinearOrder via Antisymmetrization",
-      "TimelineQuot already has IsTotal proven via denseTimeline_linearly_ordered",
-      "Cantor isomorphism TimelineQuot ≃o Rat already proven in codebase",
-      "W (world states) and D (durations) must be architecturally separated",
-      "TimelineQuotFMCS has forward_G/backward_H but missing forward_F/backward_P",
-      "On-demand witness saturation pattern can bridge the gap",
-      "Option C (separated W/D) aligns with existing parametric infrastructure"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 13.5,
+    "research_integrated": true,
+    "supersedes": "implementation-002.md",
+    "key_architecture": "Separated W/D: D=TimelineQuot (LinearOrder), W=CanonicalMCS (witnesses)"
   }
 }

@@ -83,10 +83,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T14:53:16Z",
+      "last_updated": "2026-03-17T15:02:45Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -110,11 +110,6 @@
           "summary": "Semantics architecture analysis: W-D distinction, WorldHistory structure, CanonicalQuot path"
         },
         {
-          "path": "specs/988_dense_algebraic_completeness/plans/implementation-002.md",
-          "type": "plan",
-          "summary": "v2: CanonicalQuot approach - D from syntax via Cantor"
-        },
-        {
           "path": "specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Blocked: plan architectural issues - CanonicalMCS lacks totality and countability"
@@ -123,11 +118,16 @@
           "path": "specs/988_dense_algebraic_completeness/reports/research-004.md",
           "type": "research",
           "summary": "Blocker analysis + W/D architecture. Recommends Option C: separated W/D with TimelineQuot for D"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/implementation-003.md",
+          "type": "plan",
+          "summary": "v3: Separated W/D architecture - D=TimelineQuot, W=CanonicalMCS"
         }
       ],
       "session_id": "sess_1742236800_988p3",
       "researched": "2026-03-17T14:46:39Z",
-      "planned": "2026-03-17T14:02:06Z",
+      "planned": "2026-03-17T15:02:45Z",
       "recommendation": "Option B: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS, apply Cantor theorem for Rat isomorphism.",
       "started": "2026-03-17T14:04:25Z"
     },
@@ -286,13 +286,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T14:53:54Z",
-      "session_id": "sess_1773758883_4058e7",
+      "last_updated": "2026-03-17T15:01:53Z",
+      "session_id": "sess_1773759699_d5d289",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
         {
