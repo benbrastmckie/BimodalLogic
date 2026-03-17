@@ -1,15 +1,20 @@
 {
-  "status": "researched",
-  "summary": "TaskFrame-specific algebraic construction: D-parametric representation theorem avoiding domain mismatch by accepting D as parameter rather than constructing from syntax",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md",
-      "summary": "TaskFrame-specific Lindenbaum-Tarski construction: WorldState=UF, task_rel from G operator, D-parametric truth lemma"
+      "type": "plan",
+      "path": "specs/985_lindenbaum_tarski_representation_theorem/plans/implementation-001.md",
+      "summary": "6-phase implementation plan for D-parametric Lindenbaum-Tarski algebraic representation theorem"
     }
   ],
+  "next_steps": "Run /implement 985 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773710714_8a9e6a",
-    "agent_type": "skill-logic-research"
+    "session_id": "sess_1773711683_12217",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 12
   }
 }

@@ -25,12 +25,15 @@ technical_debt:
 
 ## Tasks
 ### 985. Develop Lindenbaum-Tarski algebraic representation theorem approach
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 12 hours (6 phases)
+- **Status**: [PLANNED]
 - **Language**: logic
 - **Research**: [research-001.md](specs/985_lindenbaum_tarski_representation_theorem/reports/research-001.md) (team: algebraic approach), [research-002.md](specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md) (TaskFrame-specific algebraic construction)
+- **Plan**: [implementation-001.md](specs/985_lindenbaum_tarski_representation_theorem/plans/implementation-001.md)
 
 **Description**: Develop the purely algebraic Lindenbaum-Tarski approach to establishing a representation theorem for the base TM logic as well as both the dense and discrete extensions in parallel to the existing proof. Research how this should proceed, drawing on the existing completeness results for guidance.
+
+**Plan Summary**: D-parametric canonical TaskFrame construction that avoids domain mismatch by accepting D as a parameter. Phases: (1) D-parametric TaskFrame, (2) D-parametric FMCS/BFMCS, (3) D-parametric truth lemma, (4) algebraic representation theorem, (5) dense/discrete instantiation, (6) integration.
 
 ---
 
@@ -88,7 +91,7 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 4-5 hours (6 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: K4 gap analysis — T-axiom enables direct subset proof)
