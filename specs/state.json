@@ -39,11 +39,11 @@
     {
       "project_number": 983,
       "project_name": "review_decidability_fmp_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "logic",
       "created": "2026-03-16T23:34:54Z",
-      "last_updated": "2026-03-17T00:21:04Z",
-      "session_id": "sess_1773705982_1184ff",
+      "last_updated": "2026-03-17T00:31:23Z",
+      "session_id": "sess_1773707470_874b64",
       "researched": "2026-03-16T23:46:09Z",
       "artifacts": [
         {
@@ -62,7 +62,8 @@
           "summary": "v2: Clean FMP from scratch, no bridges, unified naming"
         }
       ],
-      "planned": "2026-03-17T00:21:04Z"
+      "planned": "2026-03-17T00:21:04Z",
+      "started": "2026-03-17T00:31:23Z"
     },
     {
       "project_number": 982,
@@ -85,6 +86,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-001.md",
           "type": "plan",
           "summary": "5-phase implementation plan for wiring TimelineQuot-based dense completeness"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-002.md",
+          "type": "research",
+          "summary": "Blocker analysis: recommended direct truth lemma over TimelineQuot (3-4 hours, low risk, publication-ready)"
         }
       ],
       "planned": "2026-03-16T23:53:48Z",
@@ -93,11 +99,11 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T00:14:53Z",
-      "session_id": "sess_1773705775_169372",
+      "last_updated": "2026-03-17T00:29:40Z",
+      "session_id": "sess_1773707360_3d82ad",
       "researched": "2026-03-17T00:11:20Z",
       "artifacts": [
         {
@@ -122,7 +128,7 @@
         }
       ],
       "planned": "2026-03-17T00:14:53Z",
-      "started": "2026-03-16T23:36:09Z"
+      "started": "2026-03-17T00:29:40Z"
     },
     {
       "project_number": 953,
