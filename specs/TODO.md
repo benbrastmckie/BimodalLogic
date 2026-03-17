@@ -1,5 +1,5 @@
 ---
-next_project_number: 985
+next_project_number: 986
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+### 985. Develop Lindenbaum-Tarski algebraic representation theorem approach
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: logic
+
+**Description**: Develop the purely algebraic Lindenbaum-Tarski approach to establishing a representation theorem for the base TM logic as well as both the dense and discrete extensions in parallel to the existing proof. Research how this should proceed, drawing on the existing completeness results for guidance.
+
+---
+
 ### 984. Review and revise documentation to remove `.claude/` directory references
 - **Effort**: 1.5 hours (4 phases)
 - **Status**: [COMPLETED]
