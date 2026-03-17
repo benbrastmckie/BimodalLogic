@@ -1,7 +1,7 @@
 # Implementation Plan: Dense Algebraic Completeness (D = Rat)
 
 - **Task**: 988 - dense_algebraic_completeness
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 15-20 hours
 - **Dependencies**: Task 985 (complete), Task 982 (independent/parallel)
 - **Research Inputs**: specs/988_dense_algebraic_completeness/reports/research-001.md
@@ -69,7 +69,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: CanonicalMCS Embedding Infrastructure [NOT STARTED]
+### Phase 1: CanonicalMCS Embedding Infrastructure [PARTIAL]
 
 - **Dependencies:** None
 - **Goal:** Create order-preserving embedding from CanonicalMCS to Rat
@@ -92,6 +92,24 @@ After this implementation:
 **Verification:**
 - `lake build Bimodal.Metalogic.Algebraic.CanonicalEmbedding` passes
 - `grep -n "\bsorry\b" Theories/Bimodal/Metalogic/Algebraic/CanonicalEmbedding.lean` returns empty
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1742152800_988i**
+- Added: `CanonicalEmbedding.lean` - infrastructure for FMCS over Rat via Cantor isomorphism
+- Added: `canonicalIso` - extracts order isomorphism `TimelineQuot ≃o ℚ` from `cantor_iso`
+- Added: `ratMCS`, `ratMCS_is_mcs` - MCS assignment for Rat via isomorphism
+- Added: `ratMCS_forward_G`, `ratMCS_backward_H` - FMCS coherence (proven)
+- Added: `ratFMCS` - FMCS structure over ℚ
+- Sorries: 5 introduced (see blockers below)
+
+**Blockers:**
+1. `ratFMCS_forward_F` - needs proof that canonical_forward_F witnesses appear in dense timeline
+2. `ratFMCS_backward_P` - symmetric to forward_F
+3. `ratBFMCS.modal_backward` - singleton bundle doesn't satisfy modal saturation
+4. `ratFMCS_root_eq` - needs proof that timelineQuotMCS of root equals root_mcs
+
+**Key Insight:** Direct embedding of CanonicalMCS into Rat is NOT possible because CanonicalMCS has Preorder (not LinearOrder). Used TimelineQuot (antisymmetrization) approach instead, which is already proven to have all required properties.
 
 ---
 

@@ -223,6 +223,125 @@ Specifically, `timelineQuot_not_valid_of_neg_consistent` needs to:
 -/
 
 /-!
+## Temporal Coherence for TimelineQuotFMCS
+
+The forward_F and backward_P properties follow from the staged construction.
+When F(φ) is in an MCS at time t, the staged construction adds a witness MCS
+at some later stage, and that witness is in the dense timeline.
+-/
+
+/--
+Forward F coherence for TimelineQuotFMCS: if F(φ) ∈ timelineQuotMCS(t), then
+∃ s > t, φ ∈ timelineQuotMCS(s).
+
+**Proof Strategy**:
+1. F(φ) ∈ timelineQuotMCS(t) gives an MCS M at t containing F(φ)
+2. By `canonical_forward_F`: ∃ witness W with CanonicalR(M, W) ∧ φ ∈ W
+3. By `forward_witness_at_stage`: W is in the staged build (hence in TimelineQuot)
+4. By `canonicalR_implies_timelineQuot_le` + irreflexivity: t < s strictly
+-/
+theorem timelineQuotFMCS_forward_F
+    (t : TimelineQuot root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_F : Formula.some_future phi ∈ (timelineQuotFMCS root_mcs root_mcs_proof).mcs t) :
+    ∃ s : TimelineQuot root_mcs root_mcs_proof,
+      t < s ∧ phi ∈ (timelineQuotFMCS root_mcs root_mcs_proof).mcs s := by
+  -- h_F says F φ ∈ timelineQuotMCS(t)
+  have h_MCS := timelineQuotMCS_is_mcs root_mcs root_mcs_proof t
+
+  -- By canonical_forward_F: ∃ W MCS with CanonicalR(t.mcs, W) ∧ φ ∈ W
+  obtain ⟨W, h_W_mcs, h_R, h_phi_W⟩ :=
+    canonical_forward_F (timelineQuotMCS root_mcs root_mcs_proof t) h_MCS phi h_F
+
+  -- The gap: we need W to be in the TimelineQuot
+  -- By the staged construction, F-witnesses are added to the build
+  -- This requires connecting canonical_forward_F's witness to forward_witness_at_stage
+
+  -- For now, this requires showing the staged construction contains F-witnesses
+  -- The detailed proof uses forward_witness_at_stage from CantorPrereqs.lean
+  sorry
+
+/--
+Backward P coherence for TimelineQuotFMCS: if P(φ) ∈ timelineQuotMCS(t), then
+∃ s < t, φ ∈ timelineQuotMCS(s).
+
+Symmetric to forward_F.
+-/
+theorem timelineQuotFMCS_backward_P
+    (t : TimelineQuot root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_P : Formula.some_past phi ∈ (timelineQuotFMCS root_mcs root_mcs_proof).mcs t) :
+    ∃ s : TimelineQuot root_mcs root_mcs_proof,
+      s < t ∧ phi ∈ (timelineQuotFMCS root_mcs root_mcs_proof).mcs s := by
+  -- Symmetric to forward_F using backward_witness_at_stage
+  sorry
+
+/-!
+## Temporal Coherent Family Structure
+
+Package timelineQuotFMCS with forward_F and backward_P.
+-/
+
+-- Note: TemporalCoherentFamily requires Zero D. For now, we define
+-- the coherence properties directly rather than bundling into the structure.
+
+/-!
+## Singleton BFMCS Construction
+
+For completeness, we build a singleton BFMCS with the primary timelineQuotFMCS.
+However, modal_backward for a singleton cannot be proven without additional structure.
+-/
+
+/--
+The singleton BFMCS over TimelineQuot with just the primary family.
+
+**Important**: modal_backward for this singleton BFMCS requires special handling.
+In a singleton, "φ in all families" reduces to "φ in the one family", and we need
+Box(φ) ∈ that family's MCS. This is NOT generally provable.
+
+For completeness, we need either:
+1. Modal saturation via additional witness families, or
+2. A different proof strategy that avoids modal_backward
+-/
+noncomputable def timelineQuotSingletonBFMCS : BFMCS (TimelineQuot root_mcs root_mcs_proof) where
+  families := {timelineQuotFMCS root_mcs root_mcs_proof}
+  nonempty := ⟨timelineQuotFMCS root_mcs root_mcs_proof, Set.mem_singleton _⟩
+  modal_forward := by
+    intro fam hfam φ t h_box fam' hfam'
+    simp only [Set.mem_singleton_iff] at hfam hfam'
+    subst hfam hfam'
+    -- Box φ ∈ mcs(t) implies φ ∈ mcs(t) by T-axiom closure
+    exact timelineQuot_modal_forward_singleton root_mcs root_mcs_proof t φ h_box
+  modal_backward := by
+    intro fam hfam φ t h_all
+    simp only [Set.mem_singleton_iff] at hfam
+    subst hfam
+    -- φ in the single family's MCS at t
+    -- Need Box φ in that MCS - this is the gap
+    -- In S5, this requires negative introspection or modal saturation
+    sorry
+  eval_family := timelineQuotFMCS root_mcs root_mcs_proof
+  eval_family_mem := Set.mem_singleton _
+
+/--
+The singleton BFMCS is temporally coherent (assuming forward_F and backward_P are proven).
+-/
+theorem timelineQuotSingletonBFMCS_temporally_coherent :
+    (timelineQuotSingletonBFMCS root_mcs root_mcs_proof).temporally_coherent := by
+  intro fam hfam
+  have h_eq : fam = timelineQuotFMCS root_mcs root_mcs_proof := by
+    simp only [timelineQuotSingletonBFMCS, Set.mem_singleton_iff] at hfam
+    exact hfam
+  subst h_eq
+  constructor
+  · -- forward_F
+    intro t φ h_F
+    exact timelineQuotFMCS_forward_F root_mcs root_mcs_proof t φ h_F
+  · -- backward_P
+    intro t φ h_P
+    exact timelineQuotFMCS_backward_P root_mcs root_mcs_proof t φ h_P
+
+/-!
 ## Summary
 
 This module documents the architectural approach for modal saturation in
