@@ -1,5 +1,6 @@
 import Bimodal.FrameConditions.Compatibility
 import Bimodal.Metalogic.StagedConstruction.Completeness
+import Bimodal.Metalogic.StagedConstruction.TimelineQuotCompleteness
 import Bimodal.Metalogic.DiscreteCompleteness
 
 /-!
@@ -108,23 +109,23 @@ def DenseCompletenessStatement (φ : Formula) : Prop :=
   Nonempty ([] ⊢ φ)
 
 /--
-Dense completeness proof (sorried for final assembly).
+Dense completeness proof.
 
 The proof structure:
 1. If φ not provable, then neg φ is consistent
 2. Extend neg φ to MCS via Lindenbaum
-3. Construct BFMCS with temporal coherent family
-4. Build canonical model over TimelineQuot
-5. By truth lemma, neg φ is true at evaluation point
-6. But TimelineQuot satisfies DenseTemporalFrame constraints
-7. So φ is valid there, contradiction
+3. Build TimelineQuot from that MCS
+4. TimelineQuot satisfies all DenseTemporalFrame constraints
+5. By hypothesis, φ is valid over TimelineQuot
+6. By timelineQuot_not_valid_of_neg_consistent, φ is NOT valid over TimelineQuot
+7. Contradiction
+
+**Status**: Uses `dense_completeness_theorem` from TimelineQuotCompleteness.lean
+which has one sorry in `timelineQuot_not_valid_of_neg_consistent` (the truth lemma gap).
 -/
 theorem dense_completeness_fc {φ : Formula} :
-    DenseCompletenessStatement φ := by
-  intro _h_valid
-  -- The actual completeness proof requires wiring components together
-  -- All components are proven; final assembly is straightforward
-  sorry
+    DenseCompletenessStatement φ :=
+  TimelineQuotCompleteness.dense_completeness_theorem
 
 /-! ## Discrete Completeness -/
 
