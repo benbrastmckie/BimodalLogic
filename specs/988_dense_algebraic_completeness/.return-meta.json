@@ -1,31 +1,20 @@
 {
-  "status": "researched",
-  "session_id": "sess_1742101200_988r",
-  "started_at": "2026-03-16T10:00:00Z",
-  "completed_at": "2026-03-16T10:45:00Z",
-  "artifacts": [{
-    "path": "specs/988_dense_algebraic_completeness/reports/research-001.md",
-    "type": "research",
-    "summary": "Analyzed D-parametric infrastructure for dense algebraic completeness with D=Rat. Core gap identified: construct_bfmcs function to build temporally coherent BFMCS over Rat. Recommended approach: embed CanonicalMCS into Rat via Cantor's theorem. DN axiom validity follows from Rat's DenselyOrdered instance. Estimated effort: 13-20 hours."
-  }],
-  "partial_progress": null,
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/988_dense_algebraic_completeness/plans/implementation-001.md",
+      "summary": "4-phase implementation plan for dense algebraic completeness via CanonicalMCS -> Rat embedding"
+    }
+  ],
+  "next_steps": "Run /implement 988 to execute the plan",
   "metadata": {
-    "session_id": "sess_1742101200_988r",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1742148000_988p",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
-  },
-  "key_findings": {
-    "existing_infrastructure": [
-      "ParametricCanonicalTaskFrame D - complete and sorry-free",
-      "ParametricTruthLemma - D-parametric truth lemma",
-      "DenseInstantiation - D=Rat instantiation with conditional theorem",
-      "CanonicalFMCS - BFMCS construction over CanonicalMCS (proven)"
-    ],
-    "gaps": [
-      "construct_bfmcs_for_any_mcs: M -> BFMCS Rat - THE critical gap"
-    ],
-    "dn_axiom_status": "Valid via LinearOrderedSemiField.toDenselyOrdered instance for Rat",
-    "recommended_approach": "Embed CanonicalMCS into Rat using Cantor's theorem, pull back FMCS structure"
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": "15-20"
   }
 }

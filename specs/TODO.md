@@ -34,10 +34,11 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: 13-20 hours (3 phases)
-- **Status**: [RESEARCHED]
+- **Effort**: 15-20 hours (4 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/988_dense_algebraic_completeness/plans/implementation-001.md)
 
 **Research Summary**: Core gap is `construct_bfmcs` function to build temporally coherent BFMCS over Rat. Recommended approach: embed CanonicalMCS into Rat via Cantor's theorem. DN axiom validity follows from `DenselyOrdered Rat`.
 
