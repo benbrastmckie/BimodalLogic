@@ -34,11 +34,11 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: 15-20 hours (4 phases)
-- **Status**: [RESEARCHED]
+- **Effort**: 12-16 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md)
-- **Plan**: [implementation-001.md](specs/988_dense_algebraic_completeness/plans/implementation-001.md)
+- **Plan**: [implementation-002.md](specs/988_dense_algebraic_completeness/plans/implementation-002.md) (v2: CanonicalQuot approach)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 
 **Research Summary (v3 - Semantics Architecture)**: Semantics has TWO distinct components: W (world states) and D (durations). WorldHistory h: D → W is the fundamental object. Previous approaches import D (Rat/Int) which violates pure-syntax constraint. CanonicalMCS has witnesses but lacks order; TimelineQuot has order but lacks witnesses.
