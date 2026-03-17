@@ -56,10 +56,11 @@ technical_debt:
 ---
 
 ### 986. BFMCS construction for D = Int (sorry-free)
-- **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Effort**: 5.5 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md)
+- **Plan**: [implementation-001.md](specs/986_bfmcs_construction_for_int/plans/implementation-001.md)
 
 **Description**: Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in `CanonicalFMCS.lean` has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an order-embedding, or find a direct construction. This is the core blocker for algebraic base completeness (task 987) and discrete algebraic completeness (task 989).
 
@@ -113,7 +114,7 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 12-16 hours (7 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)

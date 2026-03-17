@@ -1,23 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/986_bfmcs_construction_for_int/reports/research-001.md",
-      "summary": "Research report analyzing BFMCS construction approaches for D=Int, recommending order-embedding transfer from CanonicalMCS"
+      "type": "plan",
+      "path": "specs/986_bfmcs_construction_for_int/plans/implementation-001.md",
+      "summary": "5-phase implementation plan for sorry-free BFMCS construction over Int using dovetailing chain approach"
     }
   ],
-  "next_steps": "Run /plan 986 to create implementation plan",
+  "next_steps": "Run /implement 986 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773718458_r986",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1773718859_6360f5",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 5,
-    "context_files_loaded": ["ROAD_MAP.md"],
-    "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5.5
   }
 }

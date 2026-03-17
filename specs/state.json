@@ -8,10 +8,10 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T03:41:14Z",
+      "last_updated": "2026-03-17T12:47:32Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -19,9 +19,15 @@
           "path": "specs/986_bfmcs_construction_for_int/reports/research-001.md",
           "type": "research",
           "summary": "Research report analyzing BFMCS construction approaches for D=Int, recommending order-embedding transfer from CanonicalMCS"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/plans/implementation-001.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for sorry-free BFMCS construction over Int using dovetailing chain approach"
         }
       ],
-      "session_id": "sess_1773718859_6360f5"
+      "session_id": "sess_1773718859_6360f5",
+      "planned": "2026-03-17T12:47:32Z"
     },
     {
       "project_number": 987,
@@ -36,10 +42,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T03:39:59Z",
+      "last_updated": "2026-03-17T12:47:33Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -48,7 +54,7 @@
           "summary": "Analyzed D-parametric infrastructure for dense algebraic completeness with D=Rat. Core gap: construct_bfmcs function. Recommended: embed CanonicalMCS into Rat via Cantor theorem."
         }
       ],
-      "session_id": "sess_1742101200_988r",
+      "session_id": "sess_1742148000_988p",
       "researched": "2026-03-17T03:39:59Z"
     },
     {
@@ -206,13 +212,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T03:46:44Z",
-      "session_id": "sess_1773714773_66f984",
+      "last_updated": "2026-03-17T12:47:22Z",
+      "session_id": "sess_1773751627_9d82d6",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
         {
