@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection (v3)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 8-10 hours
 - **Dependencies**: Tasks 956 (D construction), 978 (typeclass architecture)
 - **Research Inputs**:
@@ -78,7 +78,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Core Linking Lemma [NOT STARTED]
+### Phase 1: Core Linking Lemma [PARTIAL]
 
 - **Dependencies**: None
 - **Goal**: Prove timelineQuot_lt_implies_canonicalR
