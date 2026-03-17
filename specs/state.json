@@ -11,7 +11,7 @@
       "status": "planned",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T14:49:08Z",
+      "last_updated": "2026-03-17T14:57:05Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -54,6 +54,11 @@
           "path": "specs/986_bfmcs_construction_for_int/reports/research-005.md",
           "type": "research",
           "summary": "Histories-as-paths validated; obstruction refined to LINEARIZATION: tree-structured F/P witnesses cannot be linearized into Int chain"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-006.md",
+          "type": "research",
+          "summary": "DEFINITIVE: D=Int FORBIDDEN by ROAD_MAP; truth lemma needs ALL F/P witnesses; tree cannot linearize; task should be BLOCKED/ABANDONED"
         }
       ],
       "session_id": "sess_1773754705_cfda86",
