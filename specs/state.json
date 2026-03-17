@@ -129,6 +129,11 @@
           "path": "specs/986_bfmcs_construction_for_int/reports/07_teammate-b-findings.md",
           "type": "research",
           "summary": "Teammate B: D=Int not necessary for completeness; CanonicalMCS lacks AddCommGroup; <= vs < gap bridgeable via CanonicalR irreflexivity; recommended task 987 path via strengthened CanonicalMCS FMCS + multi-family modal saturation"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/07_team-research.md",
+          "type": "research",
+          "summary": "Team research synthesis: D=Int F/P sorries unfillable (linearization obstruction), recommend CanonicalMCS path for task 987"
         }
       ],
       "session_id": "sess_1773785524_aedf5c",
@@ -381,13 +386,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planned",
+      "status": "planning",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T22:12:45Z",
-      "session_id": "sess_1773785278_7a142b",
+      "last_updated": "2026-03-17T22:25:39Z",
+      "session_id": "sess_1773786320_f4aede",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
         {
