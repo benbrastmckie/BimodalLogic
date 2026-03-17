@@ -72,7 +72,7 @@ Key findings from research-005.md Section 5-6:
 
 ## Implementation Phases
 
-### Phase 1: CanonicalMCS-based FMCS Structure [NOT STARTED]
+### Phase 1: CanonicalMCS-based FMCS Structure [BLOCKED]
 
 **Goal**: Define an FMCS over Rat using CanonicalMCS as the MCS source, with forward_F/backward_P from existing proven theorems.
 

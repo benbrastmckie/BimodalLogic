@@ -49,16 +49,16 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 15 hours (5 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md) (multi-family W/D approach)
 - **Plan**: [04_multi-family-dense-completeness.md](specs/988_dense_algebraic_completeness/plans/04_multi-family-dense-completeness.md) (v4: Multi-family W/D separation)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
-- **Summary**: [implementation-summary-20260317.md](specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md) (blocker analysis)
+- **Summary**: [implementation-summary-20260317.md](specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md), [02_implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/02_implementation-summary.md) (v4 plan blocked)
 
-**Research Summary (v5 - Multi-family W/D Separation)**: forward_F blocker diagnosed: witnesses from canonical_forward_F may not be CanonicalR-reachable from root MCS, hence not in TimelineQuot. Dovetailing alone insufficient due to inherited F-formulas. Solution: Multi-family BFMCS with proper W/D separation where D=TimelineQuot provides order and W=CanonicalMCS provides witnesses. Key infrastructure (`canonicalMCS_forward_F`/`backward_P`) is fully proven in CanonicalFMCS.lean.
+**Implementation Status (Phase 1 BLOCKED)**: The multi-family W/D separation approach has a fundamental architectural gap: `temporally_coherent` requires per-family F/P witnesses at domain times, but `canonicalMCS_forward_F` witnesses are in CanonicalMCS (not at Rat times). Multi-family BFMCS addresses modal coherence (Box/Diamond), not the needed temporal coherence (G/H/F/P). Constant witness families fail forward_F.
 
-**Recommended Approach**: Multi-family BFMCS over TimelineQuot where witness families (rooted at Lindenbaum witnesses) provide F/P temporal coherence. D gives structure, W gives witnesses. Witnesses don't need to be in D, just in W.
+**Possible Resolutions**: (1) Modify temporally_coherent to bundle-level (truth lemma rewrite), (2) Prove CanonicalMCS completeness then derive dense semantically, (3) Dovetailing path from Task 982 (22+ hours), (4) Alternative semantic proof restructuring.
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
 
