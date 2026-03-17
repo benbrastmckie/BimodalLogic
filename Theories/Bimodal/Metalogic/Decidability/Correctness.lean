@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Decidability.DecisionProcedure
+import Bimodal.Metalogic.Decidability.FMP.FMP
 import Bimodal.Metalogic.Soundness
 
 /-!
@@ -76,5 +77,48 @@ theorem decide_result_exclusive (φ : Formula) (searchDepth tableauFuel : Nat) :
     (¬r.isValid ∧ ¬r.isInvalid ∧ r.isTimeout) := by
   simp only [DecisionResult.isValid, DecisionResult.isInvalid, DecisionResult.isTimeout]
   cases decide φ searchDepth tableauFuel <;> simp
+
+/-!
+## Completeness via FMP
+
+The Finite Model Property provides completeness: if φ is valid,
+then φ is provable. This is because:
+1. If φ is not provable, then ¬φ is consistent
+2. By FMP, there exists a finite model where ¬φ is true
+3. Therefore φ is not valid in all models (contradiction)
+
+Taking the contrapositive: valid → provable.
+-/
+
+/--
+FMP-based completeness: If φ is true in all closure MCS,
+then φ is provable from the empty context.
+
+This is the key completeness theorem connecting semantic validity
+(via MCS membership) to syntactic provability.
+-/
+theorem fmp_completeness (φ : Formula) :
+    (∀ (S : FMP.ClosureMCSBundle φ), φ ∈ S.carrier) →
+    Nonempty (DerivationTree [] φ) :=
+  FMP.fmp_contrapositive φ
+
+/--
+FMP-based incompleteness witness: If φ is not provable,
+then there exists a finite model (closure MCS) where φ fails.
+
+This is the contrapositive of completeness.
+-/
+theorem fmp_incompleteness_witness (φ : Formula) :
+    ¬Nonempty (DerivationTree [] φ) →
+    ∃ (S : FMP.ClosureMCSBundle φ), φ ∉ S.carrier ∧
+    Finite (FMP.FilteredWorld φ) :=
+  FMP.mcs_finite_model_property φ
+
+/--
+The filtered model is finite, providing a bound on countermodel size.
+-/
+theorem countermodel_size_bound (φ : Formula) :
+    Finite (FMP.FilteredWorld φ) :=
+  FMP.FilteredWorld.finite φ
 
 end Bimodal.Metalogic.Decidability

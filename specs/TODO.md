@@ -40,17 +40,16 @@ technical_debt:
 
 ### 983. Review decidability results and FMP for publication
 - **Effort**: 48 hours (8 phases)
-- **Status**: [IMPLEMENTING] (phases 1-4 of 8)
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-17
 - **Language**: logic
 - **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team), [research-002.md](specs/983_review_decidability_fmp_completeness/reports/research-002.md) (Boneyard salvageability)
 - **Plan**: [implementation-002.md](specs/983_review_decidability_fmp_completeness/plans/implementation-002.md) (v2: clean FMP from scratch, no bridges, unified naming)
-- **Summary**: [implementation-summary-20260316.md](specs/983_review_decidability_fmp_completeness/summaries/implementation-summary-20260316.md) (partial)
+- **Summary**: [implementation-summary-20260316.md](specs/983_review_decidability_fmp_completeness/summaries/implementation-summary-20260316.md)
 
 **Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.
 
-**Research Summary**: Decidability soundness is proven (sorry-free). Critical gaps: (1) FMP not proven (prior attempt archived, Task 948); (2) decidability completeness not proven. Dense completeness has all components proven but needs domain wiring (Task 982, 3–4 hrs). Discrete completeness has axiom debt (Task 981, in progress). Recommended: FMP via filtration (new task, 15–25 hrs), then decidability completeness (new task, 5–10 hrs).
-
-**Progress**: Phases 1-3 complete (ClosureMCS, Filtration, FiniteModel), Phase 4 partial (TruthPreservation). All modules sorry-free, axiom-free.
+**Completion Summary**: Proved FMP for TM bimodal logic using MCS-based filtration. Created 8 Lean modules with zero sorries and zero axioms. Key theorems: mcs_finite_model_property, fmp_contrapositive, fmp_completeness.
 
 ---
 

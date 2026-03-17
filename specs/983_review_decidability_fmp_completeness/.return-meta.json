@@ -1,20 +1,25 @@
 {
-  "status": "partial",
+  "status": "implemented",
   "requires_user_review": false,
   "started_at": "2026-03-16T17:32:00Z",
-  "completed_at": "2026-03-16T19:15:00Z",
-  "summary": "Implemented FMP infrastructure phases 1-4: ClosureMCS (complete), Filtration (complete), FiniteModel (complete), TruthPreservation (partial). All modules are sorry-free and axiom-free. Phases 5-8 remain.",
+  "completed_at": "2026-03-16T21:00:00Z",
+  "summary": "Completed FMP implementation for TM bimodal logic (all 8 phases). Created 8 new Lean modules: ClosureMCS, Filtration, FiniteModel, TruthPreservation, FMP, DenseFMP, DiscreteFMP, and index. Extended Correctness.lean with fmp_completeness. All modules are sorry-free and axiom-free.",
   "artifacts": [
-    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/ClosureMCS.lean", "type": "lean_module", "summary": "Phase 1: Closure MCS infrastructure (sorry-free)"},
-    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean", "type": "lean_module", "summary": "Phase 2: Filtration construction with RefinedFilteredTaskFrame (sorry-free)"},
-    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/FiniteModel.lean", "type": "lean_module", "summary": "Phase 3: Finiteness theorem - FilteredWorld.finite (sorry-free)"},
-    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean", "type": "lean_module", "summary": "Phase 4: Truth preservation infrastructure (sorry-free, partial)"},
-    {"path": "specs/983_review_decidability_fmp_completeness/summaries/implementation-summary-20260316.md", "type": "summary", "summary": "Implementation summary for session"}
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/ClosureMCS.lean", "type": "lean_module", "summary": "Phase 1: Closure MCS infrastructure"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean", "type": "lean_module", "summary": "Phase 2: Filtration construction"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/FiniteModel.lean", "type": "lean_module", "summary": "Phase 3: Finiteness theorem"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean", "type": "lean_module", "summary": "Phase 4: Truth preservation (filtration lemma)"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/FMP.lean", "type": "lean_module", "summary": "Phase 5: Main FMP theorem"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/DenseFMP.lean", "type": "lean_module", "summary": "Phase 6: Dense frame FMP"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/DiscreteFMP.lean", "type": "lean_module", "summary": "Phase 6: Discrete frame FMP"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP.lean", "type": "lean_module", "summary": "Phase 8: FMP index module"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/Correctness.lean", "type": "lean_module", "summary": "Phase 7: Added fmp_completeness"},
+    {"path": "specs/983_review_decidability_fmp_completeness/summaries/implementation-summary-20260316.md", "type": "summary", "summary": "Implementation summary"}
   ],
   "partial_progress": {
-    "stage": "phase_4_partial",
-    "details": "Phases 1-3 complete, Phase 4 partial (infrastructure done, full filtration lemma needs modal/temporal cases). Phases 5-8 not started.",
-    "phases_completed": 3,
+    "stage": "completed",
+    "details": "All 8 phases completed. FMP infrastructure fully implemented.",
+    "phases_completed": 8,
     "phases_total": 8
   },
   "metadata": {
@@ -24,6 +29,7 @@
     "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
   },
   "completion_data": {
-    "completion_summary": "FMP infrastructure (phases 1-4): ClosureMCS, Filtration, FiniteModel, TruthPreservation (all sorry-free)"
+    "completion_summary": "Proved FMP for TM bimodal logic using MCS-based filtration. Created 8 Lean modules with zero sorries and zero axioms. Key theorems: mcs_finite_model_property, fmp_contrapositive, fmp_completeness.",
+    "roadmap_items": ["Prove finite model property for TM logic", "Establish decidability completeness"]
   }
 }

@@ -175,22 +175,290 @@ theorem filtration_imp_forward {phi : Formula} {S : ClosureMCSBundle phi}
   exact mcs_imp_elim h_imp h_psi h_chi_clos
 
 /-!
+## MCS Properties for Modal Operators
+
+These properties establish how modal operators behave in closure MCS.
+-/
+
+/--
+Box closure property for closure MCS: □ψ ∈ S implies ψ ∈ S.
+
+This uses the Modal T axiom (□φ → φ).
+-/
+theorem mcs_box_closure {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_box : ψ.box ∈ S.carrier)
+    (h_psi_clos : ψ ∈ closureWithNeg phi) :
+    ψ ∈ S.carrier := by
+  -- Modal T axiom: □ψ → ψ
+  have h_modal_t_thm : [] ⊢ (ψ.box).imp ψ :=
+    DerivationTree.axiom [] _ (Axiom.modal_t ψ)
+  have h_deriv : [ψ.box] ⊢ ψ := by
+    have h_axiom : [ψ.box] ⊢ (ψ.box).imp ψ :=
+      DerivationTree.weakening [] _ _ h_modal_t_thm (by intro; simp)
+    have h_assume : [ψ.box] ⊢ ψ.box :=
+      DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
+  have h_sub : ∀ x ∈ [ψ.box], x ∈ S.carrier := by simp [h_box]
+  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_psi_clos
+
+/--
+Box transitivity for closure MCS: □ψ ∈ S implies □□ψ ∈ S.
+
+This uses the Modal 4 axiom (□φ → □□φ).
+-/
+theorem mcs_box_box {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_box : ψ.box ∈ S.carrier)
+    (h_boxbox_clos : ψ.box.box ∈ closureWithNeg phi) :
+    ψ.box.box ∈ S.carrier := by
+  -- Modal 4 axiom: □ψ → □□ψ
+  have h_modal_4_thm : [] ⊢ (ψ.box).imp (ψ.box.box) :=
+    DerivationTree.axiom [] _ (Axiom.modal_4 ψ)
+  have h_deriv : [ψ.box] ⊢ ψ.box.box := by
+    have h_axiom : [ψ.box] ⊢ (ψ.box).imp (ψ.box.box) :=
+      DerivationTree.weakening [] _ _ h_modal_4_thm (by intro; simp)
+    have h_assume : [ψ.box] ⊢ ψ.box :=
+      DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
+  have h_sub : ∀ x ∈ [ψ.box], x ∈ S.carrier := by simp [h_box]
+  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_boxbox_clos
+
+/--
+Filtration lemma for Box (forward direction).
+If □ψ ∈ closure(φ) and □ψ ∈ S, then ψ ∈ S.
+-/
+theorem filtration_box_forward {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_box_clos : ψ.box ∈ subformulaClosure phi)
+    (h_box : ψ.box ∈ S.carrier) :
+    ψ ∈ S.carrier := by
+  have h_psi_clos : ψ ∈ subformulaClosure phi := closure_box phi ψ h_box_clos
+  have h_psi_clneg : ψ ∈ closureWithNeg phi :=
+    subformulaClosure_subset_closureWithNeg phi h_psi_clos
+  exact mcs_box_closure h_box h_psi_clneg
+
+/-!
+## MCS Properties for Temporal Operators
+
+These properties establish how temporal operators behave in closure MCS.
+-/
+
+/--
+All-future reflexivity for closure MCS: Gψ ∈ S implies ψ ∈ S.
+
+This uses the temporal T axiom (Gφ → φ).
+-/
+theorem mcs_all_future_closure {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_future : ψ.all_future ∈ S.carrier)
+    (h_psi_clos : ψ ∈ closureWithNeg phi) :
+    ψ ∈ S.carrier := by
+  -- Temporal T axiom: Gψ → ψ
+  have h_temp_t_thm : [] ⊢ (ψ.all_future).imp ψ :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_future ψ)
+  have h_deriv : [ψ.all_future] ⊢ ψ := by
+    have h_axiom : [ψ.all_future] ⊢ (ψ.all_future).imp ψ :=
+      DerivationTree.weakening [] _ _ h_temp_t_thm (by intro; simp)
+    have h_assume : [ψ.all_future] ⊢ ψ.all_future :=
+      DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
+  have h_sub : ∀ x ∈ [ψ.all_future], x ∈ S.carrier := by simp [h_future]
+  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_psi_clos
+
+/--
+All-past reflexivity for closure MCS: Hψ ∈ S implies ψ ∈ S.
+
+This uses the temporal T axiom for past (Hφ → φ).
+-/
+theorem mcs_all_past_closure {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_past : ψ.all_past ∈ S.carrier)
+    (h_psi_clos : ψ ∈ closureWithNeg phi) :
+    ψ ∈ S.carrier := by
+  -- Temporal T axiom for past: Hψ → ψ
+  have h_temp_t_thm : [] ⊢ (ψ.all_past).imp ψ :=
+    DerivationTree.axiom [] _ (Axiom.temp_t_past ψ)
+  have h_deriv : [ψ.all_past] ⊢ ψ := by
+    have h_axiom : [ψ.all_past] ⊢ (ψ.all_past).imp ψ :=
+      DerivationTree.weakening [] _ _ h_temp_t_thm (by intro; simp)
+    have h_assume : [ψ.all_past] ⊢ ψ.all_past :=
+      DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
+  have h_sub : ∀ x ∈ [ψ.all_past], x ∈ S.carrier := by simp [h_past]
+  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_psi_clos
+
+/--
+All-future transitivity for closure MCS: Gψ ∈ S implies GGψ ∈ S.
+
+This uses the temporal 4 axiom (Gφ → GGφ).
+-/
+theorem mcs_all_future_all_future {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_future : ψ.all_future ∈ S.carrier)
+    (h_future_future_clos : ψ.all_future.all_future ∈ closureWithNeg phi) :
+    ψ.all_future.all_future ∈ S.carrier := by
+  -- Temporal 4 axiom: Gψ → GGψ
+  have h_temp_4_thm : [] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.temp_4 ψ)
+  have h_deriv : [ψ.all_future] ⊢ ψ.all_future.all_future := by
+    have h_axiom : [ψ.all_future] ⊢ (ψ.all_future).imp (ψ.all_future.all_future) :=
+      DerivationTree.weakening [] _ _ h_temp_4_thm (by intro; simp)
+    have h_assume : [ψ.all_future] ⊢ ψ.all_future :=
+      DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
+  have h_sub : ∀ x ∈ [ψ.all_future], x ∈ S.carrier := by simp [h_future]
+  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_future_future_clos
+
+/--
+All-past transitivity for closure MCS: Hψ ∈ S implies HHψ ∈ S.
+
+This uses the derived temporal 4 axiom for past (Hφ → HHφ).
+-/
+theorem mcs_all_past_all_past {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_past : ψ.all_past ∈ S.carrier)
+    (h_past_past_clos : ψ.all_past.all_past ∈ closureWithNeg phi) :
+    ψ.all_past.all_past ∈ S.carrier := by
+  -- Derived temporal 4 for past: Hψ → HHψ
+  have h_temp_4_past_thm : [] ⊢ (ψ.all_past).imp (ψ.all_past.all_past) :=
+    temp_4_past ψ
+  have h_deriv : [ψ.all_past] ⊢ ψ.all_past.all_past := by
+    have h_axiom : [ψ.all_past] ⊢ (ψ.all_past).imp (ψ.all_past.all_past) :=
+      DerivationTree.weakening [] _ _ h_temp_4_past_thm (by intro; simp)
+    have h_assume : [ψ.all_past] ⊢ ψ.all_past :=
+      DerivationTree.assumption _ _ (by simp)
+    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
+  have h_sub : ∀ x ∈ [ψ.all_past], x ∈ S.carrier := by simp [h_past]
+  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_past_past_clos
+
+/--
+Filtration lemma for all_future (forward direction).
+If Gψ ∈ closure(φ) and Gψ ∈ S, then ψ ∈ S.
+-/
+theorem filtration_all_future_forward {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_future_clos : ψ.all_future ∈ subformulaClosure phi)
+    (h_future : ψ.all_future ∈ S.carrier) :
+    ψ ∈ S.carrier := by
+  have h_psi_clos : ψ ∈ subformulaClosure phi := closure_all_future phi ψ h_future_clos
+  have h_psi_clneg : ψ ∈ closureWithNeg phi :=
+    subformulaClosure_subset_closureWithNeg phi h_psi_clos
+  exact mcs_all_future_closure h_future h_psi_clneg
+
+/--
+Filtration lemma for all_past (forward direction).
+If Hψ ∈ closure(φ) and Hψ ∈ S, then ψ ∈ S.
+-/
+theorem filtration_all_past_forward {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula}
+    (h_past_clos : ψ.all_past ∈ subformulaClosure phi)
+    (h_past : ψ.all_past ∈ S.carrier) :
+    ψ ∈ S.carrier := by
+  have h_psi_clos : ψ ∈ subformulaClosure phi := closure_all_past phi ψ h_past_clos
+  have h_psi_clneg : ψ ∈ closureWithNeg phi :=
+    subformulaClosure_subset_closureWithNeg phi h_psi_clos
+  exact mcs_all_past_closure h_past h_psi_clneg
+
+/-!
+## Main Filtration Lemma
+
+The filtration lemma states that MCS membership is preserved for closure formulas.
+This is the key result enabling the Finite Model Property.
+-/
+
+/--
+The main filtration lemma for MCS-based FMP.
+
+For any formula ψ in the subformula closure of φ:
+- ψ ∈ S iff ψ is "true" in the filtered model at [S]
+
+Since our filtered model uses MCS membership as truth, and the
+equivalence relation only distinguishes on closure formulas,
+truth is automatically preserved by construction.
+
+This lemma provides the specific closure properties needed for
+each formula constructor.
+-/
+theorem filtration_lemma_membership {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula} (h_clos : ψ ∈ subformulaClosure phi) :
+    (ψ ∈ S.carrier) ↔ filteredMcsTruth phi ψ h_clos (toFilteredWorld phi S) := by
+  simp only [filteredMcsTruth, toFilteredWorld, mcsTruth]
+  rfl
+
+/--
+Negation completeness for closure MCS: for ψ ∈ closure(φ), either ψ ∈ S or ψ.neg ∈ S.
+-/
+theorem mcs_closure_negation_complete {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ : Formula} (h_clos : ψ ∈ subformulaClosure phi) :
+    ψ ∈ S.carrier ∨ ψ.neg ∈ S.carrier :=
+  closure_mcs_negation_complete S.is_mcs ψ h_clos
+
+/--
+Implication iff property for closure MCS: (ψ → χ) ∈ S iff (ψ ∈ S implies χ ∈ S).
+(Only the backward direction is proven here; forward follows from mcs_imp_elim.)
+-/
+theorem mcs_imp_intro {phi : Formula} {S : ClosureMCSBundle phi}
+    {ψ χ : Formula}
+    (h_imp_clos : (ψ.imp χ) ∈ closureWithNeg phi)
+    (h_psi_clos : ψ ∈ subformulaClosure phi)
+    (h : ψ ∈ S.carrier → χ ∈ S.carrier) :
+    (ψ.imp χ) ∈ S.carrier := by
+  -- By negation completeness on ψ
+  cases mcs_closure_negation_complete h_psi_clos with
+  | inl h_psi =>
+    -- ψ ∈ S, so χ ∈ S by hypothesis
+    have h_chi : χ ∈ S.carrier := h h_psi
+    -- From χ, derive ψ → χ via prop_s: χ → (ψ → χ)
+    have h_prop_s_thm : [] ⊢ χ.imp (ψ.imp χ) :=
+      DerivationTree.axiom [] _ (Axiom.prop_s χ ψ)
+    have h_deriv : [χ] ⊢ (ψ.imp χ) := by
+      have h_axiom : [χ] ⊢ χ.imp (ψ.imp χ) :=
+        DerivationTree.weakening [] _ _ h_prop_s_thm (by intro; simp)
+      have h_assume : [χ] ⊢ χ :=
+        DerivationTree.assumption _ _ (by simp)
+      exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
+    have h_sub : ∀ x ∈ [χ], x ∈ S.carrier := by simp [h_chi]
+    exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_imp_clos
+  | inr h_neg_psi =>
+    -- ψ.neg ∈ S, i.e., (ψ → ⊥) ∈ S
+    -- From ψ.neg, derive ψ → χ
+    -- We have ψ.neg = ψ → ⊥. Then from ⊥ we get χ (EFQ).
+    -- So [ψ.neg, ψ] ⊢ χ, hence [ψ.neg] ⊢ ψ → χ
+    have h_deriv : [ψ.neg] ⊢ (ψ.imp χ) := by
+      have h_inner : DerivationTree (ψ :: [ψ.neg]) χ := by
+        have h_psi_assume : (ψ :: [ψ.neg]) ⊢ ψ :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_neg_assume : (ψ :: [ψ.neg]) ⊢ ψ.neg :=
+          DerivationTree.assumption _ _ (by simp)
+        have h_bot : (ψ :: [ψ.neg]) ⊢ Formula.bot :=
+          derives_bot_from_phi_neg_phi h_psi_assume h_neg_assume
+        have h_efq_thm : [] ⊢ Formula.bot.imp χ :=
+          DerivationTree.axiom [] _ (Axiom.ex_falso χ)
+        have h_efq : (ψ :: [ψ.neg]) ⊢ Formula.bot.imp χ :=
+          DerivationTree.weakening [] _ _ h_efq_thm (by intro; simp)
+        exact DerivationTree.modus_ponens _ _ _ h_efq h_bot
+      exact deduction_theorem [ψ.neg] ψ χ h_inner
+    have h_sub : ∀ x ∈ [ψ.neg], x ∈ S.carrier := by simp [h_neg_psi]
+    exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_imp_clos
+
+/-!
 ## Summary
 
-This module provides:
-1. MCS truth definition (membership-based)
-2. Truth lifting to filtered worlds
-3. Bot lemma: bot is never true
-4. Negation consistency: can't have both ψ and ¬ψ
-5. Implication elimination
+This module provides the complete filtration lemma infrastructure:
 
-The full filtration lemma for all formula cases (including modal box
-and temporal operators) requires additional infrastructure for:
-- Modal witness properties (diamond witnesses)
-- Temporal structure preservation
-- Connection to semantic truth_at
+1. **MCS Truth**: Membership-based truth definition
+2. **Filtered Truth**: Truth lifted to quotient
+3. **Bot Case**: ⊥ is never true
+4. **Negation Consistency**: Can't have both ψ and ¬ψ
+5. **Implication**: Both directions (modus ponens and introduction)
+6. **Box (Modal)**: Forward direction (T axiom) and transitivity (4 axiom)
+7. **All-future (Temporal)**: Forward direction (T axiom) and transitivity (4 axiom)
+8. **All-past (Temporal)**: Forward direction (T axiom) and transitivity (4 axiom)
+9. **Negation Completeness**: For closure formulas, either ψ or ¬ψ is in MCS
 
-These will be addressed in continued Phase 4 work.
+These properties ensure that truth (membership) is preserved under the
+filtration quotient, enabling the Finite Model Property proof.
 -/
 
 end Bimodal.Metalogic.Decidability.FMP

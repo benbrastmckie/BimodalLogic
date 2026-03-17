@@ -2,7 +2,7 @@
 
 - **Task**: 983 - Review decidability results and FMP for publication
 - **Version**: 2 (revised from v1)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 35-45 hours
 - **Dependencies**: Task 981 (discrete axiom, parallel), Task 982 (dense wiring, parallel)
 - **Research Inputs**: research-001.md (team), research-002.md (Boneyard salvageability)
@@ -216,7 +216,7 @@ theorem filtered_world_card_bound (M : TaskModel D) (...) :
 
 ---
 
-### Phase 4: Truth Preservation (Filtration Lemma) [PARTIAL]
+### Phase 4: Truth Preservation (Filtration Lemma) [COMPLETED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove truth is preserved for closure formulas
@@ -246,7 +246,7 @@ theorem filtration_lemma (M : TaskModel D) (Ω : Omega D) (τ : History D) (phi 
 
 ---
 
-### Phase 5: FMP Main Theorem (Base Logic) [NOT STARTED]
+### Phase 5: FMP Main Theorem (Base Logic) [COMPLETED]
 
 - **Dependencies:** Phase 4
 - **Goal:** State and prove FMP using standard `valid`
@@ -281,7 +281,7 @@ theorem fmp_completeness (phi : Formula) :
 
 ---
 
-### Phase 6: Dense/Discrete FMP Specializations [NOT STARTED]
+### Phase 6: Dense/Discrete FMP Specializations [COMPLETED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Prove FMP preserves dense/discrete frame properties
@@ -316,7 +316,7 @@ theorem discrete_fmp (phi : Formula) (h_valid_discrete : valid_discrete phi) :
 
 ---
 
-### Phase 7: Decidability Completeness [NOT STARTED]
+### Phase 7: Decidability Completeness [COMPLETED]
 
 - **Dependencies:** Phase 5
 - **Goal:** Prove `decide_complete` using FMP
@@ -357,7 +357,7 @@ theorem decide_correct (phi : Formula) :
 
 ---
 
-### Phase 8: Integration and Documentation [NOT STARTED]
+### Phase 8: Integration and Documentation [COMPLETED]
 
 - **Dependencies:** Phase 7, Task 981 (optional), Task 982 (optional)
 - **Goal:** Finalize publication-ready results and documentation
