@@ -9,11 +9,41 @@ This module proves the D-parametric algebraic representation theorem for TaskFra
 The key insight is that the duration type D is a **parameter**, not constructed from syntax.
 This avoids the "domain mismatch" problems that arise when trying to build D from syntax.
 
+## Architectural Role
+
+This module provides the **PRIMARY** representation theorem for TM logic. The duration type
+D is parametric: completeness holds for ALL totally ordered abelian groups D, not just
+a specific one constructed from syntax.
+
+### Why Parametric?
+
+The base TM axiom system (without density DN or discreteness DF) provides insufficient
+order-theoretic structure to characterize the canonical timeline. Without a characterization
+theorem (Cantor for dense, Z-characterization for discrete), we cannot identify the
+canonical timeline with a specific group like Q or Z.
+
+The parametric approach resolves this: we prove completeness for ALL D satisfying
+the group+order constraints. For specific extensions:
+
+- **Base**: Instantiate with D = Int (or any suitable D)
+- **Dense**: Instantiate with D = Rat, add `[DenselyOrdered D]`
+- **Discrete**: Instantiate with D = Int, add `[SuccOrder D]`
+
+### Relationship to DFromCantor.lean
+
+The `DFromCantor.lean` module provides an **auxiliary** result: for dense TM logic,
+the canonical timeline (constructed from syntax) IS order-isomorphic to Q via
+Cantor's theorem. This is a CONSEQUENCE of the density axiom DN, not a requirement
+for the representation theorem.
+
+For base TM logic, `DFromCantor.lean` is NOT applicable because the base axioms
+do not force density. Base completeness uses D = Int parametrically.
+
 ## Main Results
 
-- `parametric_algebraic_representation`: For any D, if phi is not provable, then there
-  exists a countermodel over the D-parametric canonical TaskFrame
-- `parametric_completeness_contrapositive`: The contrapositive form: valid implies provable
+- `parametric_algebraic_representation_conditional`: For any D with BFMCS construction,
+  if phi is not provable, then there exists a countermodel over D-parametric canonical frame
+- `countermodel_implies_not_provable`: The contrapositive form (soundness direction)
 
 ## Proof Strategy
 
@@ -29,6 +59,14 @@ The construction is **uniform in D**: the same algebraic structure works for ANY
 ordered abelian group D (Int, Rat, or any other). This is the key insight that resolves
 the domain mismatch problems from tasks 977/978/982.
 
+## Domain Selection for Completeness Proofs
+
+| Extension | D | Constraint | BFMCS Construction |
+|-----------|---|------------|-------------------|
+| Base | Int | `AddCommGroup + LinearOrder + IsOrderedAddMonoid` | `temporal_coherent_family_exists_CanonicalMCS` |
+| Dense | Rat | `+ DenselyOrdered` | Same, with density axiom in MCSs |
+| Discrete | Int | `+ SuccOrder` | Same, with discreteness axiom in MCSs |
+
 ## Assumptions
 
 This module uses the D-parametric infrastructure from:
@@ -42,8 +80,10 @@ which is done in the instantiation modules.
 
 ## References
 
+- Research: specs/990_representation_theorem_duration_design/reports/02_synthesis.md (Task 990)
 - Research: specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md
 - Plan: specs/985_lindenbaum_tarski_representation_theorem/plans/implementation-001.md
+- Auxiliary: Theories/Bimodal/Metalogic/StagedConstruction/DFromCantor.lean
 -/
 
 namespace Bimodal.Metalogic.Algebraic.ParametricRepresentation

@@ -10,11 +10,40 @@ import Bimodal.ProofSystem.Derivation
 This module provides the completeness interface for the base temporal logic TM
 (using only base axioms, without density or discreteness extensions).
 
+## Relationship to D-Parametric Architecture
+
+This module instantiates the D-parametric representation theorem (from
+`ParametricRepresentation.lean`) with D = Int for base TM completeness.
+
+### Why D = Int?
+
+The base TM axioms provide no characterization theorem for the canonical timeline.
+Any linearly ordered abelian group D works; we choose Int because:
+1. It has the required algebraic structure (AddCommGroup, LinearOrder, IsOrderedAddMonoid)
+2. The Int-based canonical construction is well-tested
+3. Int is concrete and avoids universe issues
+
+**Key Architectural Insight** (Task 990): For base TM logic, D CANNOT be derived
+from syntax. The base axioms provide insufficient order-theoretic structure to
+apply Cantor's theorem or any other characterization. This is in contrast to
+dense TM logic where the density axiom DN enables the D-from-syntax construction.
+
+### What This Module Provides
+
+- `base_truth_lemma`: The Int-specialized truth lemma
+- `base_shifted_truth_lemma`: For shift-closed Omega
+- `base_omega_shift_closed`: The shift-closed property
+
+### For the Closed Completeness Theorem
+
+See `AlgebraicBaseCompleteness.lean` (task 987) which wires these components
+to prove `valid phi -> Nonempty (DerivationTree [] phi)`.
+
 ## Main Results
 
-- `canonical_truth_lemma_int`: Truth lemma for Int-indexed canonical model
-- `shifted_truth_lemma_int`: Shifted truth lemma for shift-closed Omega
-- `base_completeness_infrastructure`: Documents available infrastructure
+- `base_truth_lemma`: Truth lemma for Int-indexed canonical model
+- `base_shifted_truth_lemma`: Shifted truth lemma for shift-closed Omega
+- `base_omega_shift_closed`: Omega is shift-closed
 
 ## Relationship to Dense and Discrete Completeness
 
@@ -47,12 +76,13 @@ The canonical construction uses `D = Int`, providing:
 2. **Shifted Truth Lemma** (`shifted_truth_lemma`): For shift-closed Omega
 3. **Temporal Coherent FMCS** (`temporal_coherent_family_exists_CanonicalMCS`)
 
-### Domain Consideration
+### Domain Selection (Task 990 Architecture)
 
-The base completeness theorem quantifies over ALL linear ordered abelian groups D.
-The canonical construction uses `D = Int`, which is a specific instance. The gap
-between the Int-specific proof and the polymorphic statement is the same domain
-mismatch documented in `DenseCompleteness.lean`.
+| Extension | D | Why |
+|-----------|---|-----|
+| Base | Int | Any LOAG works; Int is simple and well-tested |
+| Dense | Rat | Or TimelineQuot via DFromCantor; `[DenselyOrdered D]` required |
+| Discrete | Int | With `[SuccOrder D]` constraint |
 
 **Key Insight**: The standard completeness-via-consistency approach constructs
 a SINGLE satisfying model (Int-indexed). This is sufficient for completeness
@@ -61,7 +91,9 @@ there EXISTS a model falsifying them). The Int model provides this witness.
 
 ## References
 
+- Task 990: D-parametric architecture decision
 - Task 977: Current organization task
+- `Algebraic/ParametricRepresentation.lean`: Abstract D-parametric representation theorem
 - `Bundle/CanonicalConstruction.lean`: Truth lemma infrastructure
 - `DenseCompleteness.lean`: Dense completeness (parallel structure)
 -/

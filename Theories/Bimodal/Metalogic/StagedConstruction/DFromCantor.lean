@@ -6,6 +6,41 @@ import Bimodal.Metalogic.StagedConstruction.CantorApplication
 This module defines the domain D for the canonical model as the TimelineQuot,
 which is order-isomorphic to the rationals Q via Cantor's theorem.
 
+## Architectural Role
+
+This module provides an **AUXILIARY** result for dense TM completeness. It shows that
+when the density axiom DN is present, the canonical timeline (TimelineQuot) is
+order-isomorphic to Q via Cantor's uniqueness theorem.
+
+### Why Auxiliary?
+
+The **PRIMARY** representation theorem in `ParametricRepresentation.lean` is parametric
+in D. This module provides a specific witness: given DN, the canonical timeline
+satisfies the D-parametric constraints with D = TimelineQuot (isomorphic to Q).
+
+### When to Use This Module
+
+1. To instantiate the parametric representation theorem with the "natural" D from syntax
+2. To show that dense TM completeness follows from the axioms alone (without importing Q)
+3. As evidence that the D-parametric architecture is flexible enough to accommodate
+   syntax-derived domains
+
+### Relationship to Base Completeness
+
+For base TM logic (no DN/DF), this module is **NOT applicable**. The base logic must
+use D = Int or another externally-provided group, as there is no characterization
+theorem to identify the canonical timeline with a known structure.
+
+### Relationship to ParametricRepresentation.lean
+
+The D-parametric approach (`ParametricRepresentation.lean`) is PRIMARY because:
+- Base TM cannot use D-from-syntax (no characterization theorem)
+- Dense TM CAN use D-from-syntax, but the parametric approach is simpler
+- Both approaches are valid for dense TM; parametric is preferred for uniformity
+
+This module remains valuable as a mathematical result showing that when density axioms
+are present, the syntax DOES determine a unique (up to isomorphism) D = Q.
+
 ## Overview
 
 The dense staged timeline (from DenseTimeline.lean and CantorApplication.lean)
@@ -25,7 +60,9 @@ This module:
 
 ## References
 
+- Task 990: Architecture decision (D-parametric primary, D-from-syntax auxiliary)
 - Task 956, plan v025: Phase 9
+- ParametricRepresentation.lean: Primary D-parametric representation theorem
 - CantorApplication.lean: Cantor isomorphism to Q
 - DenseTimeline.lean: Dense timeline construction
 -/

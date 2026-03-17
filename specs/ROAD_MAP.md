@@ -136,13 +136,23 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 
 ### Strategy: D Construction from Canonical Timeline
 
-**Status**: ACTIVE
+**Status**: CONCLUDED
 **Started**: 2026-03-09
+**Concluded**: 2026-03-17
 **Hypothesis**: D can be constructed purely from the canonical timeline's order-theoretic properties (countable, dense, no endpoints) via Cantor's theorem, without importing Int or Rat.
 
 *Rationale*: All prior approaches imported D (as Int or Rat) from outside the logic. The task's original intent requires D to EMERGE from the temporal axioms. This strategy achieves this: show the canonical timeline is a countable dense linear order without endpoints (from seriality + density axioms), apply Cantor's theorem to discover D as the isomorphic copy of Q, then define task_rel as actual displacement in this structure.
 
-**CRITICAL CONSTRAINT**: Importing Int or Rat as the duration domain D is STRICTLY FORBIDDEN. D must be discovered from the canonical timeline's order-theoretic properties, not imported. This constraint ensures the formalization faithfully represents the paper's intent: the algebraic structure of D is a CONSEQUENCE of the temporal axioms, not an external assumption.
+**RESEARCH OUTCOME** (Task 990): The D-from-syntax strategy is **VALID for dense TM logic** but **NOT APPLICABLE for base TM logic**. The key insight is that the base TM axioms provide insufficient order-theoretic structure to characterize the canonical timeline. Only with the density axiom DN can Cantor's theorem be applied. Therefore:
+
+- **D-parametric is PRIMARY**: The representation theorem is parametric in D for ALL TM extensions (base, dense, discrete). See `ParametricRepresentation.lean`.
+- **D-from-syntax is AUXILIARY**: For dense TM, `DFromCantor.lean` shows TimelineQuot ≃o Q, providing a concrete witness that the D-parametric constraints are satisfied.
+- **Base TM uses D = Int** (or any LOAG): No characterization theorem exists to derive D from syntax.
+- **Discrete TM uses D with [SuccOrder D]**: Z-characterization could apply, but D-parametric is simpler.
+
+**CONSTRAINT RELAXED**: The original "D from syntax only" constraint is relaxed for base logic. Importing D = Int for base completeness is acceptable because there is no mathematical path from base axioms alone to a characterized D. The constraint remains meaningful for dense logic where D DOES emerge from syntax.
+
+**Deprecated**: The "CRITICAL CONSTRAINT" below applied during active investigation but is superseded by the research outcome.
 
 **Approach**:
 1. Canonical timeline properties: countable, dense, no endpoints (from axioms)
@@ -194,18 +204,24 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 2. `bmcs_truth_lemma` (MCS membership ↔ semantic truth for BFMCS)
 3. `temporal_coherent_family_exists_CanonicalMCS` (temporal coherent family construction)
 4. `dense_completeness_components_proven` (all three components together)
+5. `parametric_algebraic_representation_conditional` (D-parametric representation theorem)
 
 **The Gap**: The BFMCS infrastructure uses `D = CanonicalMCS` (the all-MCS domain), while the TaskFrame/semantics uses `D = TimelineQuot` (the Cantor domain). The final completeness theorem needs to connect these two domains.
 
-**Resolution Path** (choose one):
-1. Build FMCS directly over TimelineQuot (preferred), OR
-2. Prove a quotient transfer theorem relating CanonicalMCS truth to TimelineQuot semantics
+**Resolution Path** (D-Parametric Approach - Task 990 Research Outcome):
+The **preferred resolution** is to use the D-parametric representation theorem from `ParametricRepresentation.lean`:
+1. Instantiate `parametric_algebraic_representation_conditional` with D = Rat and `[DenselyOrdered Rat]`
+2. Wire the `temporal_coherent_family_exists_CanonicalMCS` construction as the BFMCS provider
+3. The domain mismatch (CanonicalMCS vs TimelineQuot) becomes a wiring problem within the D-parametric framework
+
+**Alternative Path** (D-from-syntax as auxiliary):
+The `DFromCantor.lean` result remains available: instantiate the D-parametric theorem with D = TimelineQuot using the Cantor isomorphism as evidence that TimelineQuot satisfies the required constraints.
 
 **Estimated effort**: 3-5 hours
 
 **Files to modify**:
 - `FrameConditions/Completeness.lean` (3 wiring sorries)
-- Potentially new infrastructure for domain transfer
+- Potentially instantiation module for D = Rat with DenselyOrdered constraint
 
 ---
 
@@ -267,6 +283,43 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 - D emerges from syntax: no Int/Rat imports
 - D construction is modular: change axioms → change D (e.g., density axioms → Q, discreteness axioms → Z)
 - task_rel is actual displacement, not trivial
+
+**Note**: This decision is superseded by the "D-Parametric as Primary Representation Path" decision below for base logic. D-from-syntax via Cantor remains valid as an AUXILIARY result for dense TM logic.
+
+---
+
+### Decision: D-Parametric as Primary Representation Path
+
+**Date**: 2026-03-17
+**Context**: Task 990 research (synthesis of Teammate A and Teammate B findings) established that the D-from-syntax approach cannot work for base TM logic because there is no characterization theorem for the canonical timeline without density or discreteness axioms.
+
+**Decision**: The representation theorem for TM logic and all extensions is **parametric in D**:
+
+```
+forall (D : Type*) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D],
+  not provable phi -> exists countermodel over D-parametric canonical frame
+```
+
+This is implemented as `parametric_algebraic_representation_conditional` in `ParametricRepresentation.lean`.
+
+**Key Findings**:
+1. **Base TM**: D cannot be derived from syntax (no characterization theorem). Use D = Int or any linearly ordered abelian group (LOAG).
+2. **Dense TM**: D can optionally be derived from syntax (TimelineQuot ≃o Q via Cantor). Use D = Rat or D = TimelineQuot with `[DenselyOrdered D]`.
+3. **Discrete TM**: D would use Z-characterization. Use D = Int with `[SuccOrder D]`.
+4. **D-from-syntax is auxiliary**: `DFromCantor.lean` provides a concrete witness that TimelineQuot satisfies D-parametric constraints for dense logic.
+
+**Consequences**:
+- `ParametricRepresentation.lean` is the PRIMARY representation theorem
+- `DFromCantor.lean` is AUXILIARY (valid result, not required for completeness)
+- Base completeness (Task 987) uses D = Int via `temporal_coherent_family_exists_CanonicalMCS`
+- Dense completeness (Task 988) uses D = Rat with `[DenselyOrdered D]`
+- Discrete completeness (Task 989) uses D = Int with `[SuccOrder D]`
+- The "D must emerge from syntax" constraint is relaxed for base logic
+
+**References**:
+- [Task 990 synthesis](specs/990_representation_theorem_duration_design/reports/02_synthesis.md) - Research findings
+- [ParametricRepresentation.lean](Theories/Bimodal/Metalogic/Algebraic/ParametricRepresentation.lean) - Primary theorem
+- [DFromCantor.lean](Theories/Bimodal/Metalogic/StagedConstruction/DFromCantor.lean) - Auxiliary result
 
 ---
 
@@ -336,26 +389,35 @@ structure TaskFrame (D : Type*) [AddCommGroup D] [LinearOrder D] where
 
 ### Ambition: Syntactically-Derived Duration Domain
 
-**Priority**: HIGH
+**Priority**: MEDIUM (downgraded from HIGH)
 **Timeframe**: SHORT-TERM
+**Status**: PARTIALLY ACHIEVED (for dense logic only)
 
-*Rationale*: The duration domain D is the algebraic backbone of task semantics. Importing D (as Int, Rat, etc.) from outside the logic undermines the formalization's claim that temporal structure emerges from axioms. D-from-syntax is the PRIMARY path to sorry-free completeness.
+*Rationale*: The duration domain D is the algebraic backbone of task semantics. The original goal was to have D emerge purely from temporal axioms. Task 990 research clarified that this is achievable only for dense TM logic (via Cantor's theorem on the canonical timeline). For base TM logic, D must be provided parametrically.
 
-**Success Criteria**:
-- [ ] Canonical timeline shown countable, dense, no endpoints (from axioms)
-- [ ] Cantor isomorphism T ≅ Q constructed
-- [ ] D emerges as (Q, +) via Cantor
-- [ ] task_rel defined as actual displacement (non-trivial)
-- [ ] TaskFrame from syntax, truth lemma, completeness all sorry-free
-- [ ] No Int or Rat imports in completeness chain (except via Cantor discovery)
+**Success Criteria** (Revised):
+- [x] Canonical timeline shown countable, dense, no endpoints (from density axioms)
+- [x] Cantor isomorphism T ≅ Q constructed (`cantor_iso` in CantorApplication.lean)
+- [x] D emerges as TimelineQuot ≃o Q via Cantor (DFromCantor.lean)
+- [ ] Dense completeness via D-parametric with D = Rat (preferred) or D = TimelineQuot
+- [x] D-parametric representation theorem sorry-free (`parametric_algebraic_representation_conditional`)
+- [ ] Base completeness via D-parametric with D = Int
+- [ ] Discrete completeness via D-parametric with D = Int + SuccOrder
 
-**Description**:
-Construct D as the group that naturally emerges from the canonical timeline's order-theoretic properties. The temporal axioms (seriality, density) force the canonical timeline to be a countable dense linear order without endpoints; Cantor's theorem then identifies it with Q. D is (Q, +) - not imported, but discovered. This is the ONLY acceptable path for standard completeness.
+**Description** (Revised):
+The D-from-syntax construction succeeds for **dense TM logic**: the canonical timeline is order-isomorphic to Q via Cantor's theorem when density axioms are present. However, for **base TM logic**, there is no characterization theorem - D must be provided parametrically (e.g., D = Int).
 
-**Related Phases**: Phase 0 (Core Proofs), D Construction Strategy
+The **D-parametric approach** (see `ParametricRepresentation.lean`) is now PRIMARY: the representation theorem is parametric in D, and specific completeness theorems instantiate with appropriate D values:
+- Base: D = Int (any LOAG works)
+- Dense: D = Rat or D = TimelineQuot (with `[DenselyOrdered D]`)
+- Discrete: D = Int (with `[SuccOrder D]`)
+
+**Related Phases**: Phase 0 (Core Proofs), D Construction Strategy (CONCLUDED)
 **References**:
-- [Task 956 plan](specs/956_construct_d_as_translation_group_from_syntax/plans/implementation-014.md) - Implementation (v014, staged construction)
-- [D Construction strategy](#strategy-d-construction-from-canonical-timeline) - Strategy entry
+- [Task 990 research](specs/990_representation_theorem_duration_design/reports/02_synthesis.md) - Architecture decision
+- [ParametricRepresentation.lean](Theories/Bimodal/Metalogic/Algebraic/ParametricRepresentation.lean) - Primary theorem
+- [DFromCantor.lean](Theories/Bimodal/Metalogic/StagedConstruction/DFromCantor.lean) - Dense auxiliary result
+- [D-Parametric decision](#decision-d-parametric-as-primary-representation-path) - Architectural decision
 
 ---
 
