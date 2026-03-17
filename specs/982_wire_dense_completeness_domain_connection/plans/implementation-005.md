@@ -135,12 +135,25 @@ Note: The WitnessChainFMCS primitives are reused in Phase 4 for building the BFM
 
 ---
 
-### Phase 4: Closure-Saturated BFMCS Construction [IN PROGRESS]
+### Phase 4: Closure-Saturated BFMCS Construction [PARTIAL]
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773773089_a7e2f9**
+- Added: `timelineQuotFMCS_forward_F` theorem signature (sorry: requires connecting to forward_witness_at_stage)
+- Added: `timelineQuotFMCS_backward_P` theorem signature (sorry: symmetric to forward_F)
+- Added: `timelineQuotSingletonBFMCS` structure (sorry: modal_backward for singleton cannot be proven)
+- Added: `timelineQuotSingletonBFMCS_temporally_coherent` theorem
+- Added: `timelineQuot_modal_forward_singleton` theorem (PROVEN - uses T-axiom)
+- Finding: Constant witness families cannot satisfy temporal coherence (ModalSaturation.lean:193-209 analysis)
+- Finding: Singleton BFMCS cannot satisfy modal_backward without modal saturation
+- Sorries: 3 introduced (forward_F, backward_P, modal_backward)
+- Handoff: `specs/982_wire_dense_completeness_domain_connection/handoffs/phase-4-handoff-20260317.md`
 
 - **Dependencies**: Phase 3
 - **Goal**: Build a full BFMCS over TimelineQuot satisfying all BFMCS fields
 
-**Current state**: `ClosureSaturation.lean` documents architecture but has no actual construction.
+**Current state**: `ClosureSaturation.lean` has singleton BFMCS structure with identified blockers.
 
 **Construction Design**:
 

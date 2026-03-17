@@ -1,8 +1,8 @@
 # Implementation Summary: Task 982 - Wire Dense Completeness Domain Connection
 
 **Date**: 2026-03-17
-**Session**: sess_1773714773_66f984
-**Status**: Partial (Phases 1-3 complete, Phases 4-7 blocked)
+**Session**: sess_1773773089_a7e2f9 (latest)
+**Status**: Partial (Phases 1-3 complete, Phase 4 partial with blockers)
 
 ## Completed Work
 
@@ -22,95 +22,83 @@ Created witness MCS construction primitives:
 
 **Build Status**: Zero sorries, zero axioms introduced.
 
-### Phase 4: Architecture Documentation (PARTIAL)
+### Phase 4: Closure-Saturated BFMCS Construction (PARTIAL)
 **File**: `Theories/Bimodal/Metalogic/StagedConstruction/ClosureSaturation.lean`
 
-Documented the architectural approach:
-- Singleton BFMCS cannot satisfy modal_backward (fundamental limitation)
-- Modal saturation requires multi-family BFMCS
-- TimelineQuot provides TIME domain; CanonicalMCS provides MODAL domain
-- Direct truth lemma approach documented
+Added infrastructure:
+- `timelineQuot_modal_forward_singleton` (PROVEN): T-axiom closure for singleton
+- `timelineQuotFMCS_forward_F` signature (SORRY): Temporal forward F coherence
+- `timelineQuotFMCS_backward_P` signature (SORRY): Temporal backward P coherence
+- `timelineQuotSingletonBFMCS` structure (SORRY in modal_backward)
+- `timelineQuotSingletonBFMCS_temporally_coherent` (depends on forward_F/backward_P)
 
-**Build Status**: Zero sorries in file.
+**Key Findings**:
+1. **Constant witness families are flawed**: Cannot satisfy temporal coherence when F(phi) in M but phi not in M
+2. **Singleton BFMCS cannot satisfy modal_backward**: Fundamental limitation without saturation
+3. **Need multi-family modal saturation**: Use `saturated_modal_backward` (proven axiom-free)
 
-### Bug Fixes
-**File**: `Theories/Bimodal/Metalogic/Bundle/ChainFMCS.lean`
+**Build Status**: 3 sorries (forward_F, backward_P, modal_backward)
 
-Fixed pre-existing type mismatches:
-- `chainFMCS_forward_G`: Changed from `h_le` to `h_lt` (≤ to <)
-- `chainFMCS_backward_H`: Changed from `h_le` to `h_lt` (≤ to <)
-- `chainFMCS_boxcontent_propagation`: Added case split for ≤ vs CanonicalR
-- `chainFMCS_diamond_persistent_forward/backward`: Added case splits
+## Current Blockers
 
-## Remaining Work
+### Blocker 1: timelineQuotFMCS_forward_F
+**Issue**: Need to connect `canonical_forward_F`'s witness MCS to the TimelineQuot.
+**Path**: Use `forward_witness_at_stage` (CantorPrereqs.lean) to show witness is in staged build.
 
-### Phase 5: Closure-Aware Truth Lemma [NOT STARTED]
-**Blocker**: Requires porting truth lemma infrastructure from Int to TimelineQuot.
-
-The existing truth lemma (`canonical_truth_lemma`) is built for `D = Int`. Adapting to TimelineQuot requires:
-1. Building CanonicalTaskFrame over TimelineQuot
-2. Defining appropriate TaskModel with valuation
-3. Constructing shift-closed Omega set
-4. Proving all truth lemma cases
-
-**Alternative approach**: Use Cantor isomorphism (TimelineQuot ≃o Q) to transfer results.
-
-### Phase 6: Complete the Sorry [NOT STARTED]
-**Blocker**: Requires Phase 5 infrastructure.
-
-The sorry is in `timelineQuot_not_valid_of_neg_consistent` (TimelineQuotCompleteness.lean:127).
-
-### Phase 7: Final Verification [NOT STARTED]
-**Dependency**: Phases 5-6
+### Blocker 2: timelineQuotSingletonBFMCS.modal_backward
+**Issue**: Singleton BFMCS cannot satisfy modal_backward.
+**Path**: Build multi-family BFMCS with modal saturation, use `saturated_modal_backward`.
 
 ## Architectural Analysis
 
-The fundamental challenge is that the existing completeness infrastructure is built over Int:
-- `CanonicalTaskFrame`: Uses Int as time domain
-- `canonical_truth_lemma`: Proven for BFMCS over Int
-- `ShiftClosedCanonicalOmega`: Built for Int-based histories
+### Why Constant Families Fail
 
-TimelineQuot provides a different time domain with:
-- Order isomorphism to Q (via Cantor's theorem)
-- MCS assignment via `timelineQuotMCS`
-- Temporal coherence via `timelineQuot_lt_implies_canonicalR`
+The plan (v5) suggested constant FMCS (same MCS at every time) for witness families. This is flawed:
+- If F(phi) in M but phi not in M, then {F(phi), neg(phi)} is in M
+- Constant family with MCS=M has phi not at any time
+- Therefore forward_F fails for that family
 
-### Recommended Resolution Paths
+Evidence: ModalSaturation.lean:193-209 explicitly warns against constant witness families.
 
-**Option A: Port Truth Lemma to TimelineQuot**
-- Build `TimelineQuotTaskFrame`, `TimelineQuotTaskModel`
-- Prove `timelineQuot_truth_lemma`
-- Estimated effort: 8-12 hours
+### Why Singleton BFMCS Fails
 
-**Option B: Validity Transfer via Isomorphism**
-- Use `cantor_iso : TimelineQuot ≃o Q`
-- Build validity transfer theorem
-- Estimated effort: 4-6 hours
+For singleton BFMCS:
+- `modal_forward`: Box phi in mcs(t) -> phi in mcs(t) (T-axiom) - WORKS
+- `modal_backward`: phi in mcs(t) -> Box phi in mcs(t) - FAILS in general
 
-**Option C: Direct MCS-based Argument**
-- Define truth directly via MCS membership (bypass TaskFrame)
-- Show neg(phi) in M0 implies phi false semantically
-- Estimated effort: 6-8 hours
+Not every formula has its Box in the MCS. Need saturation.
 
-## Files Modified
+### Correct Approach
+
+1. Build witness families following TimelineQuot structure (not constant)
+2. Each witness rooted at Lindenbaum-extended MCS
+3. Use `saturated_modal_backward` for modal_backward (proven axiom-free)
+
+## Files Modified This Session
 
 | File | Change |
 |------|--------|
-| `StagedConstruction/WitnessChainFMCS.lean` | NEW - Witness MCS primitives |
-| `StagedConstruction/ClosureSaturation.lean` | NEW - Architecture documentation |
-| `Bundle/ChainFMCS.lean` | FIXED - Type mismatches in forward_G/backward_H |
+| `StagedConstruction/ClosureSaturation.lean` | Added singleton BFMCS infrastructure |
+| `plans/implementation-005.md` | Updated Phase 4 progress |
+| `handoffs/phase-4-handoff-20260317.md` | NEW - Handoff document |
 
 ## Sorries Status
 
-| File | Sorries Before | Sorries After |
-|------|----------------|---------------|
-| TimelineQuotCompleteness.lean | 1 | 1 (unchanged) |
-| WitnessChainFMCS.lean | - | 0 |
-| ClosureSaturation.lean | - | 0 |
+| File | Sorries |
+|------|---------|
+| TimelineQuotCompleteness.lean | 1 (unchanged - the main sorry) |
+| ClosureSaturation.lean | 3 (forward_F, backward_P, modal_backward) |
+| WitnessChainFMCS.lean | 0 |
 
 ## Next Steps
 
-1. Choose resolution path (A, B, or C above)
-2. Implement Phase 5 truth lemma infrastructure
-3. Complete Phase 6 sorry
-4. Run Phase 7 verification
+1. **Prove timelineQuotFMCS_forward_F**: Connect canonical_forward_F to forward_witness_at_stage
+2. **Prove timelineQuotFMCS_backward_P**: Symmetric to forward_F
+3. **Build multi-family BFMCS**: With witness families for modal saturation
+4. **Prove modal_backward via saturation**: Use saturated_modal_backward
+5. **Complete Phase 5**: Apply parametric_representation_from_neg_membership
+6. **Complete Phase 6**: Resolve the main sorry
+
+## Handoff
+
+See `handoffs/phase-4-handoff-20260317.md` for detailed continuation instructions.
