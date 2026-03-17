@@ -1,7 +1,7 @@
 # Implementation Plan: Task #985
 
 - **Task**: 985 - Lindenbaum-Tarski algebraic representation theorem
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 12 hours
 - **Dependencies**: None (algebraic infrastructure exists)
 - **Research Inputs**: specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md
@@ -69,7 +69,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: D-Parametric Canonical TaskFrame [NOT STARTED]
+### Phase 1: D-Parametric Canonical TaskFrame [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Generalize canonical TaskFrame from Int to arbitrary D
@@ -95,7 +95,7 @@ After this implementation:
 
 ---
 
-### Phase 2: D-Parametric FMCS and BFMCS [NOT STARTED]
+### Phase 2: D-Parametric FMCS and BFMCS [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Verify FMCS/BFMCS are already D-parametric and add conversion to WorldHistory
@@ -121,7 +121,7 @@ After this implementation:
 
 ---
 
-### Phase 3: D-Parametric Truth Lemma [NOT STARTED]
+### Phase 3: D-Parametric Truth Lemma [IN PROGRESS]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove the truth lemma for arbitrary D

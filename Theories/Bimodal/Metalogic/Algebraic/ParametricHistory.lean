@@ -61,7 +61,7 @@ Key property: domain = True eliminates all domain-related complexity.
 -/
 def parametric_to_history (fam : FMCS D) : WorldHistory (ParametricCanonicalTaskFrame D) where
   domain := fun _ => True
-  convex := fun _ _ _ _ _ _ => True.intro
+  convex := fun _ _ _ _ _ _ _ => True.intro
   states := fun t _ => ⟨fam.mcs t, fam.is_mcs t⟩
   respects_task := fun s t _ _ hst => by
     -- Need: parametric_canonical_task_rel <mcs s> (t - s) <mcs t>
@@ -71,12 +71,21 @@ def parametric_to_history (fam : FMCS D) : WorldHistory (ParametricCanonicalTask
     · -- t - s > 0: need CanonicalR (fam.mcs s) (fam.mcs t)
       rw [if_pos h_pos]
       intro phi h_G_phi
-      exact fam.forward_G s t phi (by omega) h_G_phi
+      -- t - s > 0 and s <= t, so s < t
+      have h_lt : s < t := by
+        by_contra h_nlt
+        have h_le : t ≤ s := le_of_not_lt h_nlt
+        have h_eq : s = t := le_antisymm hst h_le
+        subst h_eq
+        simp at h_pos
+      exact fam.forward_G s t phi h_lt h_G_phi
     · -- t - s <= 0, but s <= t means t - s >= 0, so t - s = 0
       have h_eq : t - s = 0 := le_antisymm (not_lt.mp h_pos) (sub_nonneg.mpr hst)
-      have h_neg : ¬(t - s < 0) := by omega
+      have h_neg : ¬(t - s < 0) := not_lt.mpr (sub_nonneg.mpr hst)
       rw [if_neg h_pos, if_neg h_neg]
-      have h_s_eq_t : s = t := by omega
+      have h_s_eq_t : s = t := by
+        have : t = s := sub_eq_zero.mp h_eq
+        exact this.symm
       subst h_s_eq_t
       rfl
 
@@ -125,7 +134,8 @@ private theorem time_shift_parametric_to_history_compose
     (delta delta' : D) :
     WorldHistory.time_shift (WorldHistory.time_shift (parametric_to_history fam) delta) delta' =
     WorldHistory.time_shift (parametric_to_history fam) (delta + delta') := by
-  have h_time_eq : ∀ t : D, t + delta' + delta = t + (delta + delta') := fun t => by ring
+  have h_time_eq : ∀ t : D, t + delta' + delta = t + (delta + delta') := fun t => by
+    rw [add_assoc, add_comm delta' delta]
   simp only [WorldHistory.time_shift, parametric_to_history]
   congr 1
   ext t ht
