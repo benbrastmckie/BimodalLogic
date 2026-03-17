@@ -75,12 +75,12 @@ technical_debt:
 ---
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: 7 hours (6 phases)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 5-7 hours (6 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof)
-- **Plan**: [implementation-001.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-001.md) (6 phases: blocking formula seed approach)
+- **Plan**: [implementation-002.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-002.md) (v2: G-inference consistency + SuccOrder.ofCore)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
 
