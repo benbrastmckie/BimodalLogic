@@ -173,3 +173,90 @@ The well-founded minimal successor approach (Approach 2) has a fundamental flaw.
 - **Plan**: `/home/benjamin/Projects/ProofChecker/specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-005.md`
 - **Research**: `/home/benjamin/Projects/ProofChecker/specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md`
 - **Blocking sorries**: `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/StagedConstruction/DiscreteSuccSeed.lean` (lines 525, 562, 595)
+
+---
+
+### Phase 2: Immediate Successor Staged Build (Plan v6) [COMPLETED]
+
+**Session**: 2026-03-17, sess_1773759199_613452 (plan v6, iteration 1)
+**Duration**: ~60 minutes
+
+**Approach**: Following plan v6 (Modified Staged Construction from research-007)
+
+**Changes Made**:
+- Created `Theories/Bimodal/Metalogic/StagedConstruction/ImmediateStagedBuild.lean` (~340 lines)
+- Defined `immediateForwardWitnessPoint` - Creates forward witness using blocking formula seed
+- Defined `processImmediateForwardObligation` - Wraps witness creation for staged build
+- Defined `discreteStagedBuildImmediate` - Alternative staged build using immediate successors
+- Proved `discreteStagedBuildImmediate_monotone` - Monotonicity
+- Proved `discreteStagedBuildImmediate_linear` - All points comparable with root, hence linear
+- Proved `has_immediate_successor_at_next_stage` - Every point has immediate successor
+- Proved `covering_at_stage` - Covering (delegates to `discreteImmediateSucc_covers`)
+- Defined `immediateStagedUnion` and `immediateStagedUnion_linear`
+
+**Verification**:
+- `lake build` passes (933 jobs, no errors)
+- No new sorries introduced (but depends on existing sorries in DiscreteSuccSeed.lean)
+
+---
+
+### Phase 3: Stage-Level Immediate Successor (Plan v6) [COMPLETED]
+
+**Session**: 2026-03-17, sess_1773759199_613452
+**Duration**: ~10 minutes
+
+**Analysis**:
+- Key covering content was already implemented in Phase 2
+- Plan's uniqueness claim (`immediateSucc_unique`) is mathematically incorrect (Lindenbaum extensions not unique)
+- Covering follows from blocking formulas, not uniqueness
+
+---
+
+### Phase 4: Colimit Isomorphism (Plan v6) [BLOCKED]
+
+**Session**: 2026-03-17, sess_1773759199_613452
+**Duration**: ~30 minutes
+
+**Discovery**: The implementation depends on `discreteImmediateSucc_covers` which has 3 UNFILLABLE sorries.
+
+**Analysis**:
+1. `immediateForwardWitnessPoint_covers` (Phase 2) delegates to `discreteImmediateSucc_covers`
+2. `discreteImmediateSucc_covers` (DiscreteSuccSeed.lean) has sorries at lines 525, 562, 595
+3. Research-007 confirmed these sorries are UNFILLABLE with current approach
+4. The "covering by construction" claim from research-007 is overly optimistic
+
+**Root Cause**:
+- Blocking formulas constrain the SUCCESSOR (W) but not arbitrary INTERMEDIATE K
+- K satisfying `CanonicalR M K` and `CanonicalR K W` is not constrained to equal M or W
+- The algebraic proof requires semantic reasoning not extractable from DF axiom membership
+
+**Mathematical Gap**:
+The gap between:
+- SEMANTIC: DF frame condition says immediate successors exist
+- SYNTACTIC: DF creates F(H(phi)) obligations in MCSs
+These F-obligations don't constrain intermediate MCSs - they can be witnessed by ANY forward MCS.
+
+---
+
+## Final Status
+
+| Phase | Status |
+|-------|--------|
+| Phase 1 | COMPLETED (prior session) |
+| Phase 2 | COMPLETED (new infrastructure) |
+| Phase 3 | COMPLETED (covering integrated with Phase 2) |
+| Phase 4 | BLOCKED (depends on unfillable sorries) |
+| Phase 5 | NOT STARTED (blocked by Phase 4) |
+
+## Files Created
+
+| File | Lines | Description |
+|------|-------|-------------|
+| `ImmediateStagedBuild.lean` | ~340 | Alternative staged build with blocking formulas |
+| `IncrementalTimeline.lean` | ~310 | Stage-indexed infrastructure (prior session) |
+
+## Conclusion
+
+The Modified Staged Construction approach (plan v6) made infrastructure progress but is ultimately blocked by the same covering proof gap that blocked all prior approaches. The 3 sorries in `discreteImmediateSucc_covers` represent a fundamental mathematical obstacle: the DF frame condition cannot be extracted from DF axiom membership at the MCS level.
+
+**Recommendation**: Mark Phase 4 as BLOCKED and require user review for next steps. The axiom remains as documented technical debt pending new mathematical insight.

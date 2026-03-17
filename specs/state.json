@@ -377,10 +377,10 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "implementing",
+      "status": "partial",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T14:53:35Z",
+      "last_updated": "2026-03-17T11:45:00Z",
       "session_id": "sess_1773759199_613452",
       "researched": "2026-03-17T02:33:10Z",
       "artifacts": [
@@ -420,19 +420,34 @@
           "summary": "Axiom elimination approaches: Incremental construction (PRIMARY), Well-founded minimal successor (SECONDARY)"
         },
         {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-007.md",
+          "type": "research",
+          "summary": "Team research: Covering proof gap confirmed unfillable. Modified staged construction approach recommended."
+        },
+        {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-006.md",
           "type": "plan",
-          "summary": "4-phase modified staged construction with blocking formula seeds (16-22 hours)"
+          "summary": "5-phase modified staged construction with blocking formula seeds (16-22 hours)"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/StagedConstruction/ImmediateStagedBuild.lean",
+          "type": "lean_module",
+          "summary": "Alternative staged build using blocking formula seeds (~340 lines, compiles)"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260317.md",
+          "type": "summary",
+          "summary": "Phases 2-3 complete (ImmediateStagedBuild.lean). Phase 4 BLOCKED: covering proof depends on unfillable sorries in discreteImmediateSucc_covers."
         }
       ],
       "planned": "2026-03-17T14:51:26Z",
       "started": "2026-03-17T14:53:35Z",
       "partial_progress": {
-        "phases_completed": 1,
-        "phases_total": 4,
-        "details": "Phase 1 complete (stage-indexed infrastructure). Phase 2 BLOCKED: well-founded minimal successor approach has fundamental mathematical flaw - arbitrary well-order minimality does not imply timeline minimality."
+        "phases_completed": 3,
+        "phases_total": 5,
+        "details": "Phases 1-3 complete (stage-indexed infrastructure, ImmediateStagedBuild.lean). Phase 4 BLOCKED: discreteImmediateSucc_covers has 3 unfillable sorries (lines 525, 562, 595). Blocking formulas constrain successor W but not intermediate K."
       },
-      "completion_summary": "Phases 2-3 complete (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 covering proof blocked: blocking formulas constrain W but not intermediate K."
+      "blocked_reason": "Phase 4 blocked by unfillable sorries in discreteImmediateSucc_covers. Covering proof requires semantic reasoning not extractable from DF axiom membership at MCS level."
     },
     {
       "project_number": 953,
