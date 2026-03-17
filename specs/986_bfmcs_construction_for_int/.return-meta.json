@@ -1,31 +1,36 @@
 {
   "status": "researched",
+  "started_at": "2026-03-17T10:00:00Z",
   "artifacts": [
     {
       "type": "report",
-      "path": "specs/986_bfmcs_construction_for_int/reports/research-004.md",
-      "summary": "W vs D semantic architecture analysis; clarifies that F/P witnesses exist in W (MCSes) but must be indexed by D; countability obstruction is fundamental for D=Int with single history; recommends accepting algebraic/syntax split with conditional completeness for algebraic path"
+      "path": "specs/986_bfmcs_construction_for_int/reports/research-005.md",
+      "summary": "Histories-as-paths reframe validated; countability obstruction refined to LINEARIZATION obstruction - tree-structured F/P witnesses cannot be linearized into Int chain; CanonicalMCS domain works (sorry-free); Int domain blocked by linearization; recommends accepting D=CanonicalMCS for completeness"
     }
   ],
-  "next_steps": "Decision needed: (1) Accept sorries as intentional for algebraic path, or (2) Refactor to D=CanonicalMCS. Recommend Option 1 (accept algebraic/syntax split).",
+  "next_steps": "Task 986 should be marked BLOCKED for Int-indexed F/P coherence. The linearization obstruction is fundamental. Use D=CanonicalMCS for unconditional completeness. IntBFMCS sorries are mathematically unfillable, not proof gaps.",
   "metadata": {
-    "session_id": "sess_1773757664_7c5499",
-    "agent_type": "math-research-agent",
-    "duration_seconds": 9000,
+    "session_id": "sess_1773758667_de7747",
+    "agent_type": "lean-research-agent",
+    "duration_seconds": 5400,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "math-research-agent"],
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
     "findings_count": 10,
-    "context_files_loaded": ["TaskFrame.lean", "WorldHistory.lean", "Truth.lean", "ParametricCanonical.lean", "IntBFMCS.lean", "CanonicalFMCS.lean", "ROAD_MAP.md", "research-003.md"],
+    "context_files_loaded": ["ParametricRepresentation.lean", "ParametricTruthLemma.lean", "CanonicalFMCS.lean", "IntBFMCS.lean", "TemporalCoherence.lean", "FMCSDef.lean", "Completeness.lean", "ParametricHistory.lean", "research-004.md"],
     "mathlib_lookups_performed": 0,
     "context_extension_tasks": [],
-    "context_candidates_count": 1,
+    "context_candidates_count": 0,
     "key_insights": [
-      "W (WorldState) and D (Duration) are DISTINCT components in TaskFrame semantics",
-      "Histories are functions h: D -> W mapping times to world states",
-      "F/P operators quantify over D (times), not W (world states)",
-      "Countability obstruction affects what a SINGLE history can cover, not what exists in W",
-      "CanonicalFMCS works by making D=W, collapsing the distinction",
-      "IntBFMCS sorries are mathematically unfillable due to countability, not proof gaps"
+      "User's reframe VALIDATED: histories are PATHS, not covering maps",
+      "Countability obstruction REFINED: not about 'too many witnesses' but about LINEARIZATION",
+      "F/P witnesses form a TREE structure; cannot be linearized into Int-indexed CHAIN",
+      "Each formula phi gets its OWN countermodel history - not universal history for all formulas",
+      "CanonicalMCS domain works because it uses non-linear (tree-like) witness structure",
+      "IntBFMCS sorries represent LINEARIZATION obstruction, not proof gaps",
+      "Conditional completeness (assuming F/P coherence) is already proven",
+      "Resolution: accept D=CanonicalMCS for unconditional completeness",
+      "The 'algebraic' path (D=Int) provides conditional results only",
+      "Task 986 should be marked BLOCKED with linearization obstruction documented"
     ]
   }
 }
