@@ -377,12 +377,12 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "partial",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T11:45:00Z",
-      "session_id": "sess_1773759199_613452",
-      "researched": "2026-03-17T02:33:10Z",
+      "last_updated": "2026-03-17T15:21:15Z",
+      "session_id": "sess_1773760590_b22cbf",
+      "researched": "2026-03-17T15:21:15Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -438,6 +438,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Phases 2-3 complete (ImmediateStagedBuild.lean). Phase 4 BLOCKED: covering proof depends on unfillable sorries in discreteImmediateSucc_covers."
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-008.md",
+          "type": "research",
+          "summary": "World history discreteness analysis - confirms W=D equivalence in canonical model, no new proof path but clarifies architectural boundary"
         }
       ],
       "planned": "2026-03-17T14:51:26Z",
