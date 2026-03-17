@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981 (Revision 5)
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 12-16 hours
 - **Dependencies**: None (builds on existing codebase)
 - **Research Inputs**: research-006.md (Approach 2: Well-Founded Minimal Successor)
@@ -126,7 +126,30 @@ After this implementation:
 
 ---
 
-### Phase 2: Well-Ordering on DiscreteTimelineQuot [NOT STARTED]
+### Phase 2: Well-Ordering on DiscreteTimelineQuot [BLOCKED]
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773756442_ae96f4**
+- Analyzed: Mathematical foundations of Approach 2 (well-founded minimal successor)
+- Discovered: **Fundamental conceptual flaw** in Approach 2
+- Issue: An arbitrary well-ordering `≺` on MCSs gives `≺`-minimal elements, NOT timeline-minimal elements
+- The `SuccOrder.ofCore` condition requires `a < b ↔ succ a ≤ b` in the **timeline order**
+- `WellFounded.min` with an arbitrary well-order does NOT guarantee timeline minimality
+- Mathlib's `exists_wellOrder` can give a well-order, but it's unrelated to the timeline order
+- The timeline order `<` is NOT well-founded (unbounded in both directions)
+- **Blocker**: Need to prove that well-order minimality implies timeline minimality, which requires a specific relationship between the two orders that does not exist in general
+
+**Alternative Approaches Analyzed**:
+1. Use `SuccOrder.ofLinearWellFoundedLT` - blocked because timeline `<` is not well-founded
+2. Prove `WellFoundedLT` on `Ioi M` - requires proving no infinite descending chains, which IS the covering property
+3. Use staged construction - `discreteStagedBuild` uses `forward_temporal_witness_seed` (no blocking formulas)
+4. Use `discreteImmediateSucc` covering - has 3 sorries at lines 525, 562, 595 of `DiscreteSuccSeed.lean`
+
+**Recommendation**: The approach in this plan has a mathematical gap. Consider:
+1. Proving the blocking formula covering (complete the sorries in `DiscreteSuccSeed.lean`)
+2. OR: Modifying `discreteStagedBuild` to use `discreteImmediateSuccSeed` instead of `forward_temporal_witness_seed`
+3. OR: Accepting the axiom as documented technical debt
 
 - **Dependencies:** None
 - **Goal:** Define a well-ordering on `DiscreteTimelineQuot` suitable for minimal successor extraction

@@ -100,8 +100,76 @@ The blocking formulas in `discreteImmediateSuccSeed` are what guarantee the cove
 
 3. **Effort estimate**: ~12-16 hours additional to implement Approach 2
 
+---
+
+### Phase 2 (Continued): Well-Ordering Approach [BLOCKED]
+
+**Session**: 2026-03-17, sess_1773756442_ae96f4 (plan v5, iteration 1)
+**Duration**: ~90 minutes
+
+**Approach Attempted**: Well-Founded Minimal Successor (Approach 2 from research-006, as specified in plan v5)
+
+**Analysis Performed**:
+1. Studied Mathlib infrastructure: `WellFounded.min`, `SuccOrder.ofCore`, `SuccOrder.ofLinearWellFoundedLT`
+2. Analyzed relationship between arbitrary well-orderings and timeline ordering
+3. Identified fundamental conceptual flaw in the approach
+
+**BLOCKER DISCOVERED**:
+
+The plan claims that defining `discreteSucc(M) := WellFounded.min wellOrder (Ioi M)` gives covering "trivially from minimality". This is **mathematically incorrect**.
+
+**The Flaw**:
+- `WellFounded.min` picks the minimum under the well-ordering `≺`
+- `SuccOrder.ofCore` requires: `a < b ↔ succ a ≤ b` in the **timeline order**
+- An arbitrary well-ordering `≺` is INDEPENDENT of the timeline order `<`
+- `≺`-minimality does NOT imply timeline-minimality
+
+**Example**:
+- Let `K` be the `≺`-minimum of `Ioi M = {x | M < x}`
+- Let `J ∈ Ioi M` with `J <_timeline K` (J is earlier than K in timeline)
+- We have `K ≺ J` (by `≺`-minimality of K), but `K >_timeline J`
+- No contradiction - the orderings are different
+
+**Alternative Approaches Ruled Out**:
+1. `SuccOrder.ofLinearWellFoundedLT`: Timeline `<` is not well-founded (unbounded)
+2. `WellFoundedLT` on `Ioi M`: Would require proving no infinite descending chains = covering
+3. Blocking formula covering (`discreteImmediateSucc_covers`): Has 3 sorries
+
+**Status**: Phase 2 BLOCKED due to fundamental mathematical impossibility of the approach as specified in plan v5.
+
+## Updated Cumulative Statistics
+
+| Metric | Value |
+|--------|-------|
+| Phases Completed | 1 (Phase 1) |
+| Phases Blocked | 1 (Phase 2) |
+| Phases Remaining | 2 (Phases 3-4) |
+| Files Created | 1 |
+| Files Modified | 1 (plan v5) |
+| Lines Added | ~460 |
+| Sorries Introduced | 0 |
+| Axioms Introduced | 0 |
+
+## Revised Recommendations
+
+The well-founded minimal successor approach (Approach 2) has a fundamental flaw. Recommendations:
+
+1. **Complete blocking formula covering** (highest priority):
+   - The 3 sorries in `DiscreteSuccSeed.lean:discreteImmediateSucc_covers` (lines 525, 562, 595)
+   - If these can be proved, covering follows and axiom can be eliminated
+   - This is the most direct path
+
+2. **Modify staged build to use blocking formulas**:
+   - Change `discreteStagedBuild` to use `discreteImmediateSuccSeed`
+   - Then covering holds "by construction" as originally intended
+
+3. **Accept as documented debt** (last resort):
+   - The axiom IS sound (discrete timelines have finite intervals)
+   - Document thoroughly and flag for publication review
+
 ## Key Files
 
 - **Implementation**: `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/StagedConstruction/IncrementalTimeline.lean`
-- **Plan**: `/home/benjamin/Projects/ProofChecker/specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-004.md`
+- **Plan**: `/home/benjamin/Projects/ProofChecker/specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-005.md`
 - **Research**: `/home/benjamin/Projects/ProofChecker/specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md`
+- **Blocking sorries**: `/home/benjamin/Projects/ProofChecker/Theories/Bimodal/Metalogic/StagedConstruction/DiscreteSuccSeed.lean` (lines 525, 562, 595)
