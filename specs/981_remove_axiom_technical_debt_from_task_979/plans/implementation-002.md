@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981 (Revision 2)
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 5-7 hours
 - **Dependencies**: None (builds on existing codebase)
 - **Research Inputs**: research-002.md (blocking formula approach), research-003.md (G-inference consistency proof)
@@ -81,7 +81,7 @@ This plan eliminates `discrete_Icc_finite_axiom` using the constructive method w
 
 ---
 
-### Phase 2: Prove Blocking Seed Consistency (Direct G-Inference) [NOT STARTED]
+### Phase 2: Prove Blocking Seed Consistency (Direct G-Inference) [BLOCKED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Prove `discreteImmediateSuccSeed M` is consistent using direct finite derivation argument

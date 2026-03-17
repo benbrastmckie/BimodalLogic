@@ -267,191 +267,55 @@ def blocking_formula_from_negG (ψ : Formula) :
 
 **Key Theorem**: If M is an MCS, then `discreteImmediateSuccSeed M` is consistent.
 
-**Proof Outline**:
-The seed = g_content(M) ∪ blockingFormulas(M).
-- g_content(M) is consistent (by `g_content_consistent`)
-- Each blocking formula ¬ψ ∨ ¬G(ψ) in blockingFormulas(M) has ¬G(ψ) ∈ M
-- The blocking formulas don't contradict g_content because:
-  - If G(δ) ∈ g_content(M), then G(δ) ∈ M
-  - So ¬G(δ) ∉ M (MCS consistency)
-  - So the blocking formula for δ is NOT in blockingFormulas(M)
-  - Therefore no blocking formula can conflict with g_content elements
+**Proof Strategy**:
+Case 1: If L ⊆ g_content(M), use g_content_consistent.
+Case 2: If L contains blocking formulas, each bf = ¬ψ ∨ ¬G(ψ) has trigger ¬G(ψ) ∈ M.
+        Since [¬G(ψ)] ⊢ bf, we can replace bf with its trigger.
+        The key is showing g_content(M) ∪ {triggers} is consistent.
+
+**Status**: Case 1 complete. Case 2 requires additional lemma about partial G-lifting.
 -/
 theorem discreteImmediateSuccSeed_consistent (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     SetConsistent (discreteImmediateSuccSeed M) := by
-  -- APPROACH: Use forward witness existence.
-  -- M is serial (has F(¬⊥)), so by canonical_forward_F, there exists MCS W
-  -- with g_content(M) ⊆ W. We show discreteImmediateSuccSeed(M) ⊆ W.
+  intro L hL_sub ⟨d⟩
 
-  -- Get forward witness W with g_content(M) ⊆ W
-  have h_serial : Formula.some_future (Formula.neg Formula.bot) ∈ M :=
-    SetMaximalConsistent.contains_seriality_future M h_mcs
-  obtain ⟨W, h_W_mcs, h_R, _⟩ := canonical_forward_F M h_mcs _ h_serial
-  -- h_R : CanonicalR M W, which means g_content(M) ⊆ W
+  -- Partition: every element of L is in g_content OR blockingFormulas
+  have h_partition : ∀ φ ∈ L, φ ∈ g_content M ∨ φ ∈ blockingFormulas M := by
+    intro φ hφ
+    have := hL_sub φ hφ
+    rw [mem_discreteImmediateSuccSeed_iff] at this
+    exact this
 
-  -- Show discreteImmediateSuccSeed(M) ⊆ W
-  have h_seed_subset_W : discreteImmediateSuccSeed M ⊆ W := by
-    intro φ h_φ
-    rw [mem_discreteImmediateSuccSeed_iff] at h_φ
-    rcases h_φ with h_gc | h_bf
-    · -- φ ∈ g_content(M), so φ ∈ W by CanonicalR
-      exact h_R h_gc
-    · -- φ ∈ blockingFormulas(M)
-      -- φ = ¬ψ ∨ ¬G(ψ) for some ψ with ¬G(ψ) ∈ M
-      rw [mem_blockingFormulas_iff] at h_bf
-      obtain ⟨ψ, h_negG_M, h_eq⟩ := h_bf
-      rw [h_eq]
-      -- Show blockingFormula(ψ) = ¬ψ ∨ ¬G(ψ) ∈ W
-      -- By MCS completeness, either it's in W or its negation is
-      rcases SetMaximalConsistent.negation_complete h_W_mcs (blockingFormula ψ) with h_in | h_neg_in
-      · exact h_in
-      · -- Suppose ¬(¬ψ ∨ ¬G(ψ)) ∈ W, i.e., ψ ∧ G(ψ) ∈ W (by De Morgan)
-        -- Then G(ψ) ∈ W.
-        -- Use: CanonicalR M W and h_content duality.
-        -- If G(ψ) ∈ W, then by h_content_subset_implies_g_content_reverse,
-        -- ψ ∈ g_content(W) ... but we need to connect back to M.
+  -- Check if any element is a blocking formula
+  by_cases h_all_gc : ∀ φ ∈ L, φ ∈ g_content M
 
-        -- Actually, use a different approach:
-        -- ¬(¬ψ ∨ ¬G(ψ)) ∈ W means ψ ∈ W and G(ψ) ∈ W (after De Morgan + MCS closure)
-        -- From G(ψ) ∈ W, we get: for any V with CanonicalR W V, ψ ∈ V.
-        -- But we need to connect this back to M to get a contradiction.
+  · -- Case 1: L ⊆ g_content(M), contradicting g_content_consistent
+    exact g_content_consistent M h_mcs L h_all_gc ⟨d⟩
 
-        -- Key insight: Use g_content_subset_implies_h_content_reverse.
-        -- g_content(M) ⊆ W implies h_content(W) ⊆ M.
-        -- So if H(χ) ∈ W, then χ ∈ M.
+  · -- Case 2: L contains at least one blocking formula
+    push_neg at h_all_gc
+    obtain ⟨bf, hbf_in_L, hbf_not_gc⟩ := h_all_gc
 
-        -- From ¬(¬ψ ∨ ¬G(ψ)) ∈ W:
-        -- ψ ∈ W and G(ψ) ∈ W (by De Morgan equivalence in MCS)
+    -- bf ∈ L and bf ∉ g_content(M), so bf ∈ blockingFormulas(M)
+    have hbf_blocking : bf ∈ blockingFormulas M := by
+      rcases h_partition bf hbf_in_L with h | h
+      · exact absurd h hbf_not_gc
+      · exact h
 
-        -- Actually, let's derive: ψ ∧ G(ψ) → G(P(ψ)) is a theorem (via temp_a)
-        -- Then G(P(ψ)) ∈ W. By h_content duality, P(ψ) ∈ M.
-        -- But also, ¬G(ψ) ∈ M means F(¬ψ) ∈ M (since ¬G(ψ) = F(¬ψ) = ¬G(¬¬ψ)... wait, that's not right)
-        -- ¬G(ψ) = ¬(ψ.neg.neg.all_future.neg.neg) ... this is getting complex.
+    -- bf = blockingFormula ψ for some ψ with ¬G(ψ) ∈ M
+    rw [mem_blockingFormulas_iff] at hbf_blocking
+    obtain ⟨ψ, h_negG_M, h_bf_eq⟩ := hbf_blocking
 
-        -- SIMPLER: Let me just prove using the h_content duality directly.
-        -- From ¬(blockingFormula ψ) ∈ W, we get ψ ∧ G(ψ) ∈ W (De Morgan, MCS closure).
+    -- Key insight: [¬G(ψ)] ⊢ blockingFormula ψ by rdi
+    have _h_trigger_derives_bf : [Formula.neg (Formula.all_future ψ)] ⊢ blockingFormula ψ :=
+      blocking_formula_from_negG ψ
 
-        -- Use theorem: ψ ∧ G(ψ) → ψ (trivial conjunction elimination)
-        -- So ψ ∈ W.
-
-        -- Use theorem: ψ ∧ G(ψ) → G(ψ) (trivial conjunction elimination)
-        -- So G(ψ) ∈ W.
-
-        -- From G(ψ) ∈ W and CanonicalR M W:
-        -- We want to show contradiction with ¬G(ψ) ∈ M.
-        -- Use: G(ψ) ∈ W implies ψ ∈ g_content(W).
-        -- Use axiom temp_a: ψ → G(P(ψ)).
-        -- So G(P(ψ)) ∈ W. This means P(ψ) ∈ g_content(W).
-
-        -- By g_content_subset_implies_h_content_reverse: g_content(M) ⊆ W implies h_content(W) ⊆ M.
-        -- If H(χ) ∈ W, then χ ∈ h_content(W), so χ ∈ M.
-
-        -- Hmm, we have G(P(ψ)) ∈ W, not H(...) ∈ W.
-
-        -- Try different approach: Use that ψ ∈ W and the structure of CanonicalR.
-        -- We have CanonicalR M W, meaning g_content(M) ⊆ W.
-        -- We also have ¬G(ψ) ∈ M.
-
-        -- Can we show: if ¬G(ψ) ∈ M and G(ψ) ∈ W with CanonicalR M W, contradiction?
-
-        -- NOT directly, because G(ψ) ∈ W doesn't imply G(ψ) ∈ M.
-
-        -- Let me try yet another approach: construct a specific MCS that
-        -- extends g_content(M) and includes all blocking formulas.
-
-        -- Use: forward_temporal_witness_seed(M, ¬⊥) = {¬⊥} ∪ g_content(M).
-        -- Its Lindenbaum extension W satisfies g_content(M) ⊆ W and ¬⊥ ∈ W.
-        -- W is an MCS. We just need to show blocking formulas are in W.
-
-        -- For ¬G(ψ) ∈ M, we need blockingFormula(ψ) ∈ W.
-        -- Suppose ¬blockingFormula(ψ) ∈ W. Then ψ ∧ G(ψ) ∈ W.
-
-        -- Use temp_a: ψ → G(P(ψ)). So G(P(ψ)) ∈ W.
-        -- P(ψ) ∈ g_content(W).
-
-        -- g_content(M) ⊆ W doesn't directly give us g_content(W) info.
-
-        -- BREAKTHROUGH: Use the 4 axiom!
-        -- temp_4: G(φ) → G(G(φ)).
-        -- If G(ψ) ∈ W, then G(G(ψ)) ∈ W (by temp_4 + MCS closure).
-        -- So G(ψ) ∈ g_content(W).
-
-        -- Now: g_content(M) ⊆ W. If G(ψ) ∈ g_content(W), does this relate to M?
-
-        -- Hmm, g_content(W) = {φ | G(φ) ∈ W}, not g_content(M).
-
-        -- OK, I'll use a cleaner semantic argument.
-        -- The blocking formula ¬ψ ∨ ¬G(ψ) is derivable from ¬G(ψ).
-        -- [¬G(ψ)] ⊢ ¬ψ ∨ ¬G(ψ) by rdi.
-
-        -- If we can show: for any φ ∈ discreteImmediateSuccSeed(M), there exists
-        -- χ ∈ M such that [χ] ⊢ φ, then we can reduce seed consistency to M consistency.
-
-        -- For φ ∈ g_content(M): G(φ) ∈ M, but [G(φ)] ⊢ φ is NOT valid (no reflexivity).
-        -- For φ ∈ blockingFormulas(M): φ = ¬ψ ∨ ¬G(ψ) with ¬G(ψ) ∈ M, and [¬G(ψ)] ⊢ φ by rdi.
-
-        -- This asymmetry is the problem. g_content elements can't be derived from M elements.
-
-        -- BUT: we don't need individual derivability. We need COLLECTIVE consistency.
-        -- g_content(M) is consistent (proven). Adding blocking formulas...
-
-        -- Let me just use that all blocking formulas are theorems in some sense.
-        -- Actually no, they're not theorems. ¬ψ ∨ ¬G(ψ) is not a theorem.
-
-        -- FINAL ATTEMPT: Use the specific construction.
-        -- We're given ¬(¬ψ ∨ ¬G(ψ)) ∈ W.
-        -- This means (¬ψ).neg ∧ (¬G(ψ)).neg ∈ W (De Morgan for ¬(A ∨ B) = ¬A ∧ ¬B).
-        -- So (¬ψ).neg ∈ W and (¬G(ψ)).neg ∈ W.
-        -- I.e., ψ.neg.neg ∈ W and G(ψ).neg.neg ∈ W.
-        -- By double negation (classical): ψ ∈ W and G(ψ) ∈ W.
-
-        -- Now use: G(ψ) ∈ W and W extends g_content(M).
-        -- temp_a: ψ → G(P(ψ)). So G(P(ψ)) ∈ W.
-        -- By g_content_subset_implies_h_content_reverse: h_content(W) ⊆ M.
-        -- If H(χ) ∈ W, then χ ∈ M.
-
-        -- We have G(P(ψ)) ∈ W. Does this give us something in h_content(W)?
-        -- h_content(W) = {χ | H(χ) ∈ W}.
-        -- G(P(ψ)) ∈ W means P(ψ) ∈ g_content(W), NOT h_content(W).
-
-        -- Use ANOTHER axiom: temp_l: φ.always → G(H(φ)).
-        -- Where φ.always = φ.all_future.and φ.all_past.
-
-        -- If G(ψ) ∈ W and H(ψ) ∈ W, then ψ.always ∈ W (by conjunction),
-        -- so G(H(ψ)) ∈ W. Then H(ψ) ∈ g_content(W).
-
-        -- But we only have G(ψ) ∈ W, not H(ψ) ∈ W.
-
-        -- Hmm. Let me just admit this is blocked and mark it.
-
-        -- Actually, the issue might be that the blocking formula approach
-        -- doesn't work as stated. Let me reconsider...
-
-        exfalso
-        -- Show: ¬blockingFormula(ψ) ∈ W leads to contradiction
-        -- We have ¬G(ψ) ∈ M. Need to derive G(ψ) ∉ W or similar.
-
-        -- From ¬(¬ψ ∨ ¬G(ψ)) ∈ W, extract ψ ∧ G(ψ) ∈ W using De Morgan
-
-        -- First establish ψ ∈ W and G(ψ) ∈ W from ¬blockingFormula ψ ∈ W
-        have h_neg_bf : Formula.neg (blockingFormula ψ) ∈ W := h_neg_in
-
-        -- ¬(¬ψ ∨ ¬G(ψ)) implies ψ ∧ G(ψ) by De Morgan
-        -- In MCS W, we need to derive the conjunction from the negated disjunction
-
-        -- Use MCS properties to extract components
-        -- ¬(A ∨ B) ↔ ¬A ∧ ¬B, so ¬(¬ψ ∨ ¬G(ψ)) ↔ ¬¬ψ ∧ ¬¬G(ψ) ↔ ψ ∧ G(ψ)
-
-        sorry -- TODO: Extract ψ, G(ψ) from ¬blockingFormula and derive contradiction
-
-  -- Since discreteImmediateSuccSeed(M) ⊆ W and W is MCS (hence consistent),
-  -- the seed is consistent.
-  intro L hL ⟨d⟩
-  -- L ⊆ discreteImmediateSuccSeed(M) ⊆ W
-  have h_L_sub_W : ∀ φ ∈ L, φ ∈ W := fun φ hφ => h_seed_subset_W (hL φ hφ)
-  -- W is MCS, so L is consistent (cannot derive ⊥)
-  have h_W_cons := h_W_mcs.1
-  -- SetConsistent W means: for all L ⊆ W, L doesn't derive ⊥
-  exact h_W_cons L h_L_sub_W ⟨d⟩
+    -- TODO: Complete Case 2 using cut/substitution to replace bf with trigger,
+    -- then show g_content(M) ∪ {¬G(ψ)} is consistent.
+    -- The challenge: g_content elements have G(φ) ∈ M, while ¬G(ψ) ∈ M directly.
+    -- Need partial G-lifting: from L_g ∪ {¬G(ψ)} ⊢ ⊥, derive G(L_g) ∪ {¬G(ψ)} ⊢ ⊥.
+    -- Then G(L_g) ⊆ M and ¬G(ψ) ∈ M gives M inconsistent. But this requires
+    -- showing the derivation structure allows partial lifting, which is non-trivial.
+    sorry
 
 end Bimodal.Metalogic.StagedConstruction
