@@ -217,7 +217,18 @@ and the task relation is deterministic: `task_rel w d w'` iff `w + d = w'`.
 DenselyOrdered) are proved via the `canonicalR_irreflexive` axiom from
 `Canonical/CanonicalIrreflexivityAxiom.lean`. No sorry dependencies remain
 in the dense case pipeline.
+
+**DEPRECATED**: This construction inherits the W = D error from `canonicalTaskFrame`.
+WorldState = DenseCanonicalTimeline = D, but W and D must be DISTINCT types.
+W should be MCSs (semantic content), D should be the timeline (temporal duration).
+
+Use `ParametricCanonicalTaskFrame` from `Algebraic/ParametricCanonical.lean` instead,
+instantiated with D = TimelineQuot. The correct dense completeness path uses
+`timelineQuotFMCS` from `TimelineQuotCanonical.lean`.
+
+See ROAD_MAP.md Dead End: "W = D Canonical Construction" for full analysis.
 -/
+@[deprecated "Use ParametricCanonicalTaskFrame with D = TimelineQuot instead" (since := "2026-03-17")]
 noncomputable def denseCanonicalTaskFrame
     (root_mcs : Set Bimodal.Syntax.Formula)
     (root_mcs_proof : Bimodal.Metalogic.Core.SetMaximalConsistent root_mcs) :

@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981 - TimelineQuot Truth Lemma Completion
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4-6 hours
 - **Dependencies**: None (all prerequisites already implemented and sorry-free)
 - **Research Inputs**: specs/981_remove_axiom_technical_debt_from_task_979/reports/research-010.md
@@ -47,16 +47,18 @@ From research-010:
 
 ## Implementation Phases
 
-### Phase 1: Documentation and Deprecation [NOT STARTED]
+### Phase 1: Documentation and Deprecation [COMPLETED]
 
 **Goal**: Mark W=D approach as abandoned, update ROAD_MAP.md, deprecate incorrect constructions.
 
 **Tasks**:
-- [ ] Add Dead End entry to `specs/ROAD_MAP.md` for W=D canonical construction
-- [ ] Add `@[deprecated]` attribute to `canonicalTaskFrame` in `DurationTransfer.lean` with warning comment
-- [ ] Add `@[deprecated]` attribute to `denseCanonicalTaskFrame` in `CanonicalDomain.lean`
-- [ ] Add `@[deprecated]` attribute to `discreteCanonicalTaskFrame` in `DiscreteTimeline.lean`
-- [ ] Update docstrings to point to `ParametricCanonicalTaskFrame` as replacement
+- [x] Add Dead End entry to `specs/ROAD_MAP.md` for W=D canonical construction
+- [x] Add `@[deprecated]` attribute to `canonicalTaskFrame` in `DurationTransfer.lean` with warning comment
+- [x] Add `@[deprecated]` attribute to `denseCanonicalTaskFrame` in `CanonicalDomain.lean`
+- [x] Add `@[deprecated]` attribute to `discreteCanonicalTaskFrame` in `DiscreteTimeline.lean`
+- [x] Update docstrings to point to `ParametricCanonicalTaskFrame` as replacement
+
+**Note**: `CanonicalDomain.lean` has pre-existing build errors (LinearOrder instance not synthesized) unrelated to deprecation changes. `DurationTransfer.lean` and `DiscreteTimeline.lean` build successfully with deprecation warnings as expected.
 
 **Timing**: 30-45 minutes
 
@@ -72,15 +74,15 @@ From research-010:
 
 ---
 
-### Phase 2: TaskFrame over TimelineQuot [NOT STARTED]
+### Phase 2: TaskFrame over TimelineQuot [COMPLETED]
 
 **Goal**: Instantiate `ParametricCanonicalTaskFrame` at `D = TimelineQuot` and verify it satisfies completeness requirements.
 
 **Tasks**:
-- [ ] Create `timelineQuotParametricTaskFrame` definition in `TimelineQuotCanonical.lean`
-- [ ] Prove `timelineQuotParametricTaskFrame` has the correct `WorldState` type (MCSs)
-- [ ] Verify `task_rel` is `parametric_canonical_task_rel` (uses `CanonicalR`)
-- [ ] Confirm all 3 TaskFrame axioms are satisfied (inherited from ParametricCanonicalTaskFrame)
+- [x] Create `timelineQuotParametricTaskFrame` definition in `TimelineQuotCanonical.lean`
+- [x] Prove `timelineQuotParametricTaskFrame` has the correct `WorldState` type (MCSs)
+- [x] Verify `task_rel` is `parametric_canonical_task_rel` (uses `CanonicalR`)
+- [x] Confirm all 3 TaskFrame axioms are satisfied (inherited from ParametricCanonicalTaskFrame)
 
 **Timing**: 45-60 minutes
 
@@ -93,15 +95,21 @@ From research-010:
 
 ---
 
-### Phase 3: WorldHistory and Omega Construction [NOT STARTED]
+### Phase 3: WorldHistory and Omega Construction [COMPLETED]
 
 **Goal**: Build the countermodel components (WorldHistory, shift-closed Omega set) over TimelineQuot.
 
 **Tasks**:
-- [ ] Define `timelineQuotWorldHistory` type using `SeparatedHistory` pattern
-- [ ] Define `timelineQuotOmega` as the set of histories containing the root MCS
-- [ ] Prove `timelineQuotOmega_shift_closed` (shift-closure property)
-- [ ] Prove `timelineQuotOmega_nonempty` (contains witness history)
+- [x] Define `timelineQuotWorldHistory` type using `SeparatedHistory` pattern
+- [x] Define `timelineQuotOmega` as the set of histories containing the root MCS
+- [x] Prove `timelineQuotOmega_shift_closed` (shift-closure property)
+- [x] Prove `timelineQuotOmega_nonempty` (contains witness history)
+
+**Note**: Phase 3 infrastructure already exists in `SeparatedHistory.lean`:
+- `separatedHistory` = WorldHistory over TimelineQuot
+- `ShiftClosedSeparatedOmega` = shift-closed Omega set
+- `shiftClosedSeparatedOmega_is_shift_closed` = shift-closure proof
+- `separatedHistory_in_shiftClosed` = nonemptiness proof
 
 **Timing**: 1-1.5 hours
 
@@ -114,15 +122,17 @@ From research-010:
 
 ---
 
-### Phase 4: Truth Lemma Bridge [NOT STARTED]
+### Phase 4: Truth Lemma Bridge [PARTIAL]
 
 **Goal**: Connect `timelineQuotFMCS` truth (MCS membership) to semantic truth in the TaskModel.
 
 **Tasks**:
-- [ ] Define `timelineQuotValuation` from `timelineQuotMCS` membership
-- [ ] Define `timelineQuotTaskModel` combining TaskFrame, valuation, Omega
-- [ ] Prove `timelineQuotTruthLemma` linking MCS membership to `truth_at`
-- [ ] Handle temporal operators via `timelineQuot_forward_G` and `timelineQuot_backward_H`
+- [x] Define `timelineQuotValuation` - already exists as `ParametricCanonicalTaskModel` with valuation = MCS membership
+- [x] Define `timelineQuotTaskModel` - use `ParametricCanonicalTaskModel (TimelineQuot ...)`
+- [ ] Prove `timelineQuotMCS_at_zero_eq_root` - root MCS is at time 0 (stub with sorry)
+- [ ] Prove forward truth lemma linking MCS membership to `truth_at` (blocked)
+
+**Blocking Issue**: The forward truth lemma requires adapting the `parametric_shifted_truth_lemma` from `ParametricTruthLemma.lean` to the separated construction. The key challenge is that the existing truth lemma uses BFMCS infrastructure with `modal_forward` and `modal_backward`, but the singleton BFMCS has a sorry in `modal_backward`. A forward-only version is needed.
 
 **Timing**: 1.5-2 hours
 

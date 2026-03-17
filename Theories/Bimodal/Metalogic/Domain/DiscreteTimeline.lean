@@ -607,7 +607,22 @@ The structural proof approach is documented in research-006.md.
 
 This is the end-to-end pipeline: MCSs → DiscreteTimelineQuot → T ≃o ℤ →
 AddCommGroup T → IsOrderedAddMonoid T → TaskFrame T.
+
+**DEPRECATED**: This construction inherits the W = D error from `canonicalTaskFrame`.
+WorldState = DiscreteTimelineQuot = D, but W and D must be DISTINCT types.
+W should be MCSs (semantic content), D should be the timeline (temporal duration).
+
+Additionally, this construction depends on `discrete_Icc_finite_axiom`, an axiom
+introduced as technical debt for the covering lemma. The dense completeness path
+(via TimelineQuot and ParametricCanonicalTaskFrame) avoids this axiom entirely.
+
+Use `ParametricCanonicalTaskFrame` from `Algebraic/ParametricCanonical.lean` instead.
+For dense completeness (the primary goal), use `timelineQuotFMCS` from
+`TimelineQuotCanonical.lean`.
+
+See ROAD_MAP.md Dead End: "W = D Canonical Construction" for full analysis.
 -/
+@[deprecated "Use ParametricCanonicalTaskFrame instead (discrete case also has axiom debt)" (since := "2026-03-17")]
 noncomputable def discreteCanonicalTaskFrame :
     @TaskFrame (DiscreteTimelineQuot root_mcs root_mcs_proof)
       (intAddCommGroup (DiscreteTimelineQuot root_mcs root_mcs_proof))

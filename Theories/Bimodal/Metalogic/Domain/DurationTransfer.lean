@@ -185,7 +185,18 @@ The WorldState type IS the duration type T (worlds = times in the canonical time
 The task relation is deterministic: `task_rel w d w'` iff `w + d = w'`.
 
 Note: T is restricted to Type (universe 0) because TaskFrame.WorldState : Type.
+
+**DEPRECATED**: This construction sets WorldState := T (W = D), which is a fundamental
+architectural error. W and D must be DISTINCT types: W = MCSs (semantic content),
+D = timeline (temporal duration). The W = D identification trivializes task_rel
+(deterministic translation) and causes irreconcilable type mismatches with BFMCS.
+
+Use `ParametricCanonicalTaskFrame` from `Algebraic/ParametricCanonical.lean` instead,
+which correctly separates W (ParametricCanonicalWorldState = MCSs) from D (TimelineQuot).
+
+See ROAD_MAP.md Dead End: "W = D Canonical Construction" for full analysis.
 -/
+@[deprecated "Use ParametricCanonicalTaskFrame instead (W and D must be distinct types)" (since := "2026-03-17")]
 noncomputable def canonicalTaskFrame
     (T : Type) [acg : AddCommGroup T] [lo : LinearOrder T] [oam : IsOrderedAddMonoid T] :
     TaskFrame T where

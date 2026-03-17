@@ -1,4 +1,6 @@
 import Bimodal.Metalogic.StagedConstruction.TimelineQuotCompleteness
+import Bimodal.Metalogic.StagedConstruction.TimelineQuotAlgebra
+import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
@@ -38,6 +40,7 @@ The key insight from research-005 is that D (time domain) and WorldState
 namespace Bimodal.Metalogic.StagedConstruction.TimelineQuotCanonical
 
 open Bimodal.Syntax
+open Bimodal.Semantics
 open Bimodal.Metalogic.Core
 open Bimodal.Metalogic.Bundle
 open Bimodal.Metalogic.StagedConstruction
@@ -313,5 +316,84 @@ noncomputable def timelineQuotFMCS : FMCS (TimelineQuot root_mcs root_mcs_proof)
     timelineQuot_forward_G root_mcs root_mcs_proof t t' phi h_lt h_G
   backward_H := fun t t' phi h_lt h_H =>
     timelineQuot_backward_H root_mcs root_mcs_proof t t' phi h_lt h_H
+
+/-!
+## Phase 2: TaskFrame over TimelineQuot
+
+The W/D-separated TaskFrame instantiation for dense completeness.
+-/
+
+-- Make algebraic instances available for ParametricCanonicalTaskFrame instantiation
+attribute [local instance] timelineQuotAddCommGroup timelineQuotIsOrderedAddMonoid
+
+open Algebraic.ParametricCanonical
+
+/--
+The W/D-separated TaskFrame for dense completeness over TimelineQuot.
+
+- **WorldState** = `ParametricCanonicalWorldState` (MCSs as subtypes)
+- **D** = `TimelineQuot` (syntactically-derived dense timeline)
+- **task_rel** = `parametric_canonical_task_rel` (uses CanonicalR)
+
+This is the correct architecture for dense completeness:
+- W (world states) = ALL maximal consistent sets (D-independent)
+- D (duration domain) = TimelineQuot (emerges from density axiom via Cantor)
+- task_rel uses CanonicalR between MCSs, not W = D translation
+
+The TaskFrame axioms are proven sorry-free in `ParametricCanonical.lean`.
+The Cantor isomorphism (TimelineQuot ≃o Q) provides the algebraic structure.
+-/
+noncomputable def timelineQuotParametricTaskFrame :
+    @TaskFrame (TimelineQuot root_mcs root_mcs_proof)
+      (timelineQuotAddCommGroup root_mcs root_mcs_proof)
+      (inferInstance : LinearOrder (TimelineQuot root_mcs root_mcs_proof))
+      (timelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof) :=
+  @ParametricCanonicalTaskFrame (TimelineQuot root_mcs root_mcs_proof)
+    (timelineQuotAddCommGroup root_mcs root_mcs_proof)
+    (inferInstance)
+    (timelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+
+/--
+The world state type of the TimelineQuot TaskFrame is `ParametricCanonicalWorldState`.
+
+This confirms W ≠ D: world states are MCSs, not timeline elements.
+-/
+theorem timelineQuotParametricTaskFrame_worldState :
+    (@timelineQuotParametricTaskFrame root_mcs root_mcs_proof).WorldState =
+    ParametricCanonicalWorldState := rfl
+
+/--
+The task relation is `parametric_canonical_task_rel`, which uses CanonicalR.
+
+This confirms the task relation is a genuine accessibility relation between MCSs,
+not the degenerate W = D translation (w + d = w').
+-/
+theorem timelineQuotParametricTaskFrame_task_rel :
+    (@timelineQuotParametricTaskFrame root_mcs root_mcs_proof).task_rel =
+    parametric_canonical_task_rel := rfl
+
+/-!
+## Phase 4: Forward-Only Truth Lemma (Stub)
+
+For the countermodel construction, we only need the FORWARD direction of the truth lemma:
+  MCS membership → semantic truth
+
+This avoids the `modal_backward` issue in singleton BFMCS.
+
+**Note**: The full forward truth lemma implementation is in `SeparatedHistory.lean` and
+related files. This stub documents the required theorems for completeness.
+-/
+
+/--
+The root MCS is at time 0 in TimelineQuot.
+
+The root point of the staged construction maps to 0 under the Cantor isomorphism transfer.
+
+**Proof**: The root point is the initial element of the staged construction.
+Under the Cantor isomorphism and AddCommGroup transfer, it maps to 0.
+-/
+theorem timelineQuotMCS_at_zero_eq_root :
+    timelineQuotMCS root_mcs root_mcs_proof 0 = root_mcs := by
+  sorry  -- Requires showing the root point is at time 0
 
 end Bimodal.Metalogic.StagedConstruction.TimelineQuotCanonical

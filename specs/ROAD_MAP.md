@@ -939,6 +939,37 @@ When a construction requires discovering structure from axioms, bolting on that 
 
 ---
 
+### Dead End: W = D Canonical Construction
+
+**Status**: ABANDONED
+**Tried**: 2025-12-01 to 2026-03-17
+**Related Tasks**: Task 956, Task 981, Task 982
+
+*Rationale*: The `canonicalTaskFrame` in `DurationTransfer.lean` identifies world states with the duration domain (WorldState := T). This was initially seen as a simplification, but research-010 (Task 981) definitively establishes it as a fundamental architectural error.
+
+**What We Tried**:
+`canonicalTaskFrame` creates a "translation frame" where task_rel(w, d, w') is equivalent to w + d = w'. The construction propagates to:
+- `denseCanonicalTaskFrame` in `CanonicalDomain.lean`
+- `discreteCanonicalTaskFrame` in `DiscreteTimeline.lean`
+
+**Why It Failed**:
+1. **Violates paper spec**: W and D are DISTINCT types in F = (W, D, task_rel) per the JPL paper
+2. **task_rel becomes degenerate**: Deterministic translation (exactly one w' for given w, d), not a genuine relation
+3. **World histories collapse**: With W = D, histories reduce to affine translations, eliminating modal semantics
+4. **Causes irreconcilable type mismatch**: BFMCS uses W = MCSs; canonicalTaskFrame uses W = D. These cannot be connected because they define *different things* as world states
+5. **This is NOT a simplification**: It destroys essential semantic structure
+
+**Evidence**:
+- [research-010](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-010.md) - W=D error analysis
+- `DurationTransfer.lean:189-217` - Error location
+
+**Lesson**:
+Never conflate W and D even if it seems to simplify construction. W must encode semantic content (MCSs); D must encode temporal duration (timeline).
+
+**Superseded By**: `ParametricCanonicalTaskFrame` in `Algebraic/ParametricCanonical.lean` (W/D-separated architecture, sorry-free)
+
+---
+
 ## Overview
 
 This roadmap outlines the current state of the ProofChecker project and charts the path forward for:
