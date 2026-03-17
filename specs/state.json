@@ -308,6 +308,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Phase 1 analysis complete; identified core blocker: forward_F/backward_P cannot be proven without resolving staged construction edge cases"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-009.md",
+          "type": "research",
+          "summary": "Semantics architecture analysis: W (world states) vs D (durations) distinction resolves witness gap"
         }
       ],
       "planned": "2026-03-17T13:39:14Z",
