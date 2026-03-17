@@ -35,7 +35,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 12-16 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md)
 - **Plan**: [implementation-002.md](specs/988_dense_algebraic_completeness/plans/implementation-002.md) (v2: CanonicalQuot approach) [BLOCKED]
@@ -123,11 +123,11 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 8-12 hours (5 phases)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D semantics architecture - primary)
+- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D semantics architecture), [research-010.md](specs/982_wire_dense_completeness_domain_connection/reports/research-010.md) (FMP-based completeness path - **recommended**)
 - **Plan**: [implementation-007.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-007.md) (v7: W/D separated architecture)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md)
 
