@@ -11,7 +11,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T14:23:12Z",
+      "last_updated": "2026-03-17T14:33:14Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -44,6 +44,11 @@
           "path": "specs/986_bfmcs_construction_for_int/reports/research-003.md",
           "type": "research",
           "summary": "Deep mathematical analysis: Int-indexed F/P impossible; recommends CanonicalMCS domain with PreorderTaskFrame"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-004.md",
+          "type": "research",
+          "summary": "W vs D semantic architecture: W=WorldState, D=Duration, h: D->W. Sorries are mathematically fundamental (countability), not proof gaps."
         }
       ],
       "session_id": "sess_1773754705_cfda86",
@@ -266,13 +271,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T14:24:29Z",
-      "session_id": "sess_1773756826_fa8a8c",
+      "last_updated": "2026-03-17T14:30:42Z",
+      "session_id": "sess_1773757826_b51fb1",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
         {
