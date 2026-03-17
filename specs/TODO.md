@@ -35,7 +35,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
@@ -54,7 +54,7 @@ technical_debt:
 
 ### 986. BFMCS construction for D = Int (sorry-free)
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 
 **Description**: Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in `CanonicalFMCS.lean` has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an order-embedding, or find a direct construction. This is the core blocker for algebraic base completeness (task 987) and discrete algebraic completeness (task 989).
@@ -111,7 +111,7 @@ technical_debt:
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-006.md](specs/982_wire_dense_completeness_domain_connection/reports/research-006.md) (axiom-free modal saturation)
+- **Research**: [research-006.md](specs/982_wire_dense_completeness_domain_connection/reports/research-006.md) (axiom-free modal saturation), [research-007.md](specs/982_wire_dense_completeness_domain_connection/reports/research-007.md) (D-parametric instantiation)
 - **Plan**: [implementation-004.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-004.md) (v4: closure-based saturation)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md) (partial: phases 1-3 of 7)
 
@@ -135,7 +135,7 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 16-24 hours (5 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: T-axiom path), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (blocker analysis), [research-006.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md) (axiom elimination approaches)
