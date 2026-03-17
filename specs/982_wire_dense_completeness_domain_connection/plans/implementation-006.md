@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection (v6)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Effort**: 8-10 hours (refined from research-008)
 - **Dependencies**: Task 985 (parametric infrastructure), Task 986 (BFMCS for Int/Rat)
 - **Research Inputs**:
@@ -68,16 +68,26 @@ The key insight: validity over one order-isomorphic domain equals validity over 
 
 ## Implementation Phases
 
-### Phase 1: Cleanup and Preparation [NOT STARTED]
+### Phase 1: Cleanup and Preparation [PARTIAL]
 
 - **Dependencies**: None
 - **Goal**: Clean up v005 sorries and prepare for domain transfer approach
 
 **Tasks**:
-- [ ] Document why staged construction approach was abandoned (comments in ClosureSaturation.lean)
-- [ ] Mark ClosureSaturation.lean sorries as intentionally deferred (not blocking this task)
-- [ ] Identify exact interface needed between canonical BFMCS and parametric infrastructure
-- [ ] Verify DenseInstantiation.lean provides all instances for Rat
+- [x] Document why staged construction approach was abandoned (comments in ClosureSaturation.lean)
+- [x] Mark ClosureSaturation.lean sorries as intentionally deferred (not blocking this task)
+- [x] Identify exact interface needed between canonical BFMCS and parametric infrastructure
+- [x] Verify DenseInstantiation.lean provides all instances for Rat
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1773776521_d8f4a2**
+- Analyzed: Full architecture of completeness infrastructure
+- Identified: Core blocker is `timelineQuot_not_valid_of_neg_consistent` (TimelineQuotCompleteness.lean:127)
+- Found: CanonicalMCSBFMCS over CanonicalMCS is sorry-free for forward_F/backward_P
+- Gap identified: CanonicalMCS has Preorder (not LinearOrder), but valid_over requires LinearOrder
+- Existing sorries: 5 in CanonicalEmbedding.lean, 2 in IntBFMCS.lean, 1 in TimelineQuotCompleteness.lean
+- Key insight: Domain transfer approach needs forward_F/backward_P proofs for FMCS over Rat, which inherits TimelineQuot gaps
 
 **Key verification**:
 ```lean

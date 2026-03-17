@@ -1,8 +1,9 @@
 # Implementation Summary: Task 982 - Wire Dense Completeness Domain Connection
 
 **Date**: 2026-03-17
-**Session**: sess_1773773089_a7e2f9 (latest)
-**Status**: Partial (Phases 1-3 complete, Phase 4 partial with blockers)
+**Sessions**: sess_1773773089_a7e2f9 (earlier), sess_1773776521_d8f4a2 (latest)
+**Status**: Partial (Analysis complete, implementation blocked by domain mismatch)
+**Plan Version**: v6 (Domain Transfer Approach)
 
 ## Completed Work
 
@@ -132,3 +133,55 @@ If the edge cases prove too complex, consider:
 ## Handoff
 
 See `handoffs/phase-4-handoff-20260317.md` for detailed continuation instructions.
+
+---
+
+## Session 2: Plan v6 Analysis (sess_1773776521_d8f4a2)
+
+### Key Analysis Findings
+
+#### The Domain Mismatch Problem
+
+| Infrastructure | Domain | LinearOrder? | forward_F/backward_P |
+|----------------|--------|--------------|----------------------|
+| canonicalMCSBFMCS | CanonicalMCS | NO (Preorder only) | PROVEN |
+| timelineQuotFMCS | TimelineQuot | YES | NOT PROVEN (edge cases) |
+| valid_over D | Any D | REQUIRED | N/A |
+
+The mismatch:
+1. `canonicalMCSBFMCS` has proven forward_F/backward_P but CanonicalMCS is not LinearOrder
+2. `valid_over D` requires D : LinearOrder
+3. Transferring to Rat via TimelineQuot inherits the TimelineQuot gaps
+
+#### Plan v6 Approach Assessment
+
+The domain transfer approach (via Cantor isomorphism TimelineQuot ≃o Rat) was analyzed:
+
+1. **ratFMCS construction**: Maps Rat -> TimelineQuot -> MCS via canonicalIso.symm
+2. **forward_F/backward_P gap**: The witness from canonical_forward_F is an MCS W, but W may not be in TimelineQuot
+3. **Same edge cases**: The m > 2k problem affects both TimelineQuot directly and the Rat transfer
+
+#### Existing Sorries (8 total)
+
+| File | Line | Description |
+|------|------|-------------|
+| CanonicalEmbedding.lean | 181 | ratFMCS_forward_F |
+| CanonicalEmbedding.lean | 192 | ratFMCS_backward_P |
+| CanonicalEmbedding.lean | 231 | ratBFMCS.modal_backward |
+| CanonicalEmbedding.lean | 280 | ratFMCS_root_eq |
+| CanonicalEmbedding.lean | 299 | construct_bfmcs_rat_for_root |
+| IntBFMCS.lean | 572 | intChain_backward_H |
+| IntBFMCS.lean | 583 | intFMCS_forward_F |
+| TimelineQuotCompleteness.lean | 127 | timelineQuot_not_valid_of_neg_consistent |
+
+### Recommendations
+
+1. **Resolve F-content preservation**: Prove that F-content transfers along CanonicalR chains (or show it doesn't and find workaround)
+2. **Alternative formulation**: Consider completeness relative to Preorder domains
+3. **Different countermodel**: Find countermodel construction that doesn't require BFMCS over LinearOrder
+
+### Session Status
+
+- **Phases Completed**: 0 (Phase 1 partial - analysis only)
+- **Files Modified**: Plan file, summary file
+- **Sorries Changed**: 0 (analysis session)
