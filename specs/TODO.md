@@ -35,12 +35,21 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 15-20 hours (4 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/988_dense_algebraic_completeness/plans/implementation-001.md)
+- **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 
 **Research Summary**: Core gap is `construct_bfmcs` function to build temporally coherent BFMCS over Rat. Recommended approach: embed CanonicalMCS into Rat via Cantor's theorem. DN axiom validity follows from `DenselyOrdered Rat`.
+
+**Blocked**: TimelineQuot transfer approach cannot prove temporal coherence (forward_F/backward_P). The staged construction was designed for NoMaxOrder/DenselyOrdered, NOT for phi-specific F-witnesses. `forward_witness_at_stage_with_phi` requires point at stage n <= 2k; late-arriving points lack phi-witnesses.
+
+**Resolution Options** (user decision required):
+- **A**: Modify staged construction to add phi-witnesses for all arriving points
+- **B**: Use CanonicalMCS directly with semantic equivalence argument to Rat models
+- **C**: Prove temporal coherence via semantic arguments
+- **D**: Abandon TimelineQuot approach for dense completeness
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
 

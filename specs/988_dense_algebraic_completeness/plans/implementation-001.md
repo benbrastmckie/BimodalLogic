@@ -69,7 +69,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: CanonicalMCS Embedding Infrastructure [PARTIAL]
+### Phase 1: CanonicalMCS Embedding Infrastructure [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Create order-preserving embedding from CanonicalMCS to Rat
@@ -110,6 +110,17 @@ After this implementation:
 4. `ratFMCS_root_eq` - needs proof that timelineQuotMCS of root equals root_mcs
 
 **Key Insight:** Direct embedding of CanonicalMCS into Rat is NOT possible because CanonicalMCS has Preorder (not LinearOrder). Used TimelineQuot (antisymmetrization) approach instead, which is already proven to have all required properties.
+
+**ARCHITECTURAL BLOCKER (Iteration 2, sess_1742152800_988i):**
+The TimelineQuot transfer approach CANNOT prove temporal coherence (forward_F/backward_P). Root cause: `forward_witness_at_stage_with_phi` requires source point at stage n <= 2k where k = encode(phi). Points arriving at later stages do NOT have their phi-specific witnesses added. The staged construction was designed for NoMaxOrder/DenselyOrdered, NOT for temporal coherence of arbitrary F(phi) formulas.
+
+**Alternative approaches requiring user decision:**
+- **Option A**: Modify staged construction to process F-obligations for all arriving points
+- **Option B**: Use CanonicalMCS directly with semantic equivalence argument to Rat models
+- **Option C**: Prove temporal coherence via semantic arguments instead of staged construction
+- **Option D**: Abandon TimelineQuot approach for dense completeness
+
+See handoff document for detailed analysis: `specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md`
 
 ---
 
