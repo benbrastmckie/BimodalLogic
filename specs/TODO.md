@@ -26,7 +26,7 @@ technical_debt:
 ## Tasks
 ### 984. Review and revise documentation to remove `.claude/` directory references
 - **Effort**: 1.5 hours (4 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: general
 - **Research**: [research-001.md](specs/984_review_docs_remove_claude_dir_references/reports/research-001.md)
 - **Plan**: [implementation-001.md](specs/984_review_docs_remove_claude_dir_references/plans/implementation-001.md)
@@ -40,7 +40,7 @@ technical_debt:
 - **Effort**: 45 hours (8 phases)
 - **Status**: [PLANNED]
 - **Language**: logic
-- **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team: FMP/decidability gap analysis)
+- **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team), [research-002.md](specs/983_review_decidability_fmp_completeness/reports/research-002.md) (Boneyard salvageability)
 - **Plan**: [implementation-001.md](specs/983_review_decidability_fmp_completeness/plans/implementation-001.md) (8 phases: FMP filtration + decidability completeness)
 
 **Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.

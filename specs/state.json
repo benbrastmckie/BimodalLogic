@@ -8,11 +8,11 @@
     {
       "project_number": 984,
       "project_name": "review_docs_remove_claude_dir_references",
-      "status": "planned",
+      "status": "implementing",
       "language": "general",
       "created": "2026-03-16T23:44:55Z",
-      "last_updated": "2026-03-17T00:06:02Z",
-      "session_id": "sess_1773705839_305591845",
+      "last_updated": "2026-03-17T00:07:15Z",
+      "session_id": "sess_1773706019_1141613407",
       "researched": "2026-03-16T23:55:39Z",
       "artifacts": [
         {
@@ -26,7 +26,8 @@
           "summary": "4-phase implementation plan for removing .claude/ directory references from documentation"
         }
       ],
-      "planned": "2026-03-17T00:06:02Z"
+      "planned": "2026-03-17T00:06:02Z",
+      "started": "2026-03-17T00:07:15Z"
     },
     {
       "project_number": 983,
@@ -34,8 +35,8 @@
       "status": "planned",
       "language": "logic",
       "created": "2026-03-16T23:34:54Z",
-      "last_updated": "2026-03-16T23:55:45Z",
-      "session_id": "sess_1773705186_445585",
+      "last_updated": "2026-03-17T00:10:33Z",
+      "session_id": "sess_1773705982_1184ff",
       "researched": "2026-03-16T23:46:09Z",
       "artifacts": [
         {
@@ -47,6 +48,11 @@
           "path": "specs/983_review_decidability_fmp_completeness/plans/implementation-001.md",
           "type": "plan",
           "summary": "8-phase implementation plan for FMP formalization and decidability completeness"
+        },
+        {
+          "path": "specs/983_review_decidability_fmp_completeness/reports/research-002.md",
+          "type": "research",
+          "summary": "Boneyard salvageability analysis: Metalogic_v8/FMP HIGH salvageability"
         }
       ],
       "planned": "2026-03-16T23:55:45Z"
