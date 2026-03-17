@@ -8,11 +8,12 @@
     {
       "project_number": 985,
       "project_name": "lindenbaum_tarski_representation_theorem",
-      "status": "researching",
+      "status": "researched",
       "language": "logic",
       "created": "2026-03-17T01:08:17Z",
-      "last_updated": "2026-03-17T01:10:39Z",
-      "session_id": "sess_1773709815_8170ec"
+      "last_updated": "2026-03-17T01:21:54Z",
+      "session_id": "sess_1773709815_8170ec",
+      "researched": "2026-03-17T01:21:54Z"
     },
     {
       "project_number": 984,
