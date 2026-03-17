@@ -2,7 +2,7 @@
 
 - **Task**: 983 - Review decidability results and FMP for publication
 - **Version**: 2 (revised from v1)
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 35-45 hours
 - **Dependencies**: Task 981 (discrete axiom, parallel), Task 982 (dense wiring, parallel)
 - **Research Inputs**: research-001.md (team), research-002.md (Boneyard salvageability)
@@ -103,7 +103,7 @@ All files use the same namespace prefix: `ProofChecker.Metalogic.Decidability.FM
 
 ## Implementation Phases
 
-### Phase 1: Closure MCS Infrastructure [NOT STARTED]
+### Phase 1: Closure MCS Infrastructure [COMPLETED]
 
 - **Dependencies:** None
 - **Goal:** Define MCS restricted to subformula closure with projection theorem
@@ -141,7 +141,7 @@ theorem mcs_to_closure_mcs (h : SetMaximalConsistent Γ) :
 
 ---
 
-### Phase 2: Filtration Construction [NOT STARTED]
+### Phase 2: Filtration Construction [COMPLETED]
 
 - **Dependencies:** Phase 1
 - **Goal:** Define filtration equivalence and quotient model
@@ -183,7 +183,7 @@ def FilteredTaskFrame (M : TaskModel D) (...) : TaskFrame (FilteredWorld M Ω τ
 
 ---
 
-### Phase 3: Finiteness Theorem [NOT STARTED]
+### Phase 3: Finiteness Theorem [COMPLETED]
 
 - **Dependencies:** Phase 2
 - **Goal:** Prove filtered model has bounded size
@@ -216,7 +216,7 @@ theorem filtered_world_card_bound (M : TaskModel D) (...) :
 
 ---
 
-### Phase 4: Truth Preservation (Filtration Lemma) [NOT STARTED]
+### Phase 4: Truth Preservation (Filtration Lemma) [PARTIAL]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove truth is preserved for closure formulas

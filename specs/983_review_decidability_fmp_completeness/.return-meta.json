@@ -1,42 +1,29 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-16T12:00:00Z",
-  "completed_at": "2026-03-16T12:45:00Z",
+  "status": "partial",
+  "requires_user_review": false,
+  "started_at": "2026-03-16T17:32:00Z",
+  "completed_at": "2026-03-16T19:15:00Z",
+  "summary": "Implemented FMP infrastructure phases 1-4: ClosureMCS (complete), Filtration (complete), FiniteModel (complete), TruthPreservation (partial). All modules are sorry-free and axiom-free. Phases 5-8 remain.",
   "artifacts": [
-    {
-      "type": "report",
-      "path": "specs/983_review_decidability_fmp_completeness/reports/research-002.md",
-      "summary": "Boneyard salvageability analysis for FMP/decidability: Metalogic_v8/FMP is HIGH salvageability (sorry-free), FMP_Bridge and FDSM are DO NOT SALVAGE"
-    }
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/ClosureMCS.lean", "type": "lean_module", "summary": "Phase 1: Closure MCS infrastructure (sorry-free)"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/Filtration.lean", "type": "lean_module", "summary": "Phase 2: Filtration construction with RefinedFilteredTaskFrame (sorry-free)"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/FiniteModel.lean", "type": "lean_module", "summary": "Phase 3: Finiteness theorem - FilteredWorld.finite (sorry-free)"},
+    {"path": "Theories/Bimodal/Metalogic/Decidability/FMP/TruthPreservation.lean", "type": "lean_module", "summary": "Phase 4: Truth preservation infrastructure (sorry-free, partial)"},
+    {"path": "specs/983_review_decidability_fmp_completeness/summaries/implementation-summary-20260316.md", "type": "summary", "summary": "Implementation summary for session"}
   ],
-  "next_steps": "Cherry-pick Metalogic_v8/FMP files to active codebase (3-5 hrs), then connect to decidability tableau for decide_complete proof",
+  "partial_progress": {
+    "stage": "phase_4_partial",
+    "details": "Phases 1-3 complete, Phase 4 partial (infrastructure done, full filtration lemma needs modal/temporal cases). Phases 5-8 not started.",
+    "phases_completed": 3,
+    "phases_total": 8
+  },
   "metadata": {
-    "session_id": "sess_1773705982_1184ff",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 2700,
+    "session_id": "sess_1773707470_874b64",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": [
-      "specs/ROAD_MAP.md",
-      "specs/983_review_decidability_fmp_completeness/reports/research-001.md"
-    ],
-    "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0,
-    "boneyard_resources_analyzed": 6,
-    "salvageable_resources": [
-      "Boneyard/Metalogic/Metalogic_v8/FMP/Closure.lean",
-      "Boneyard/Metalogic/Metalogic_v8/FMP/BoundedTime.lean",
-      "Boneyard/Metalogic/Metalogic_v8/FMP/FiniteWorldState.lean",
-      "Boneyard/Metalogic/Metalogic_v8/FMP/SemanticCanonicalModel.lean",
-      "Boneyard/Metalogic/Metalogic_v2/Representation/Closure.lean"
-    ],
-    "non_salvageable_resources": [
-      "Boneyard/Metalogic/Metalogic_v4/FMP/ (truth bridge gap)",
-      "Boneyard/FMP_Bridge/ (6 sorries, architecturally blocked)",
-      "Boneyard/Metalogic/FDSM/ (modal trivialization)",
-      "Boneyard/Metalogic/Metalogic_v2/Decidability/ (superseded by active code)"
-    ]
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+  },
+  "completion_data": {
+    "completion_summary": "FMP infrastructure (phases 1-4): ClosureMCS, Filtration, FiniteModel, TruthPreservation (all sorry-free)"
   }
 }
