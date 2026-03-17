@@ -8,11 +8,11 @@
     {
       "project_number": 990,
       "project_name": "representation_theorem_duration_design",
-      "status": "planned",
+      "status": "implementing",
       "language": "formal",
       "created": "2026-03-17T21:49:37Z",
-      "last_updated": "2026-03-17T22:25:00Z",
-      "session_id": "sess_1773785109_09fa8e",
+      "last_updated": "2026-03-17T22:13:21Z",
+      "session_id": "sess_1773785570_9024b3",
       "researched": "2026-03-17T22:01:11Z",
       "planned": "2026-03-17T22:25:00Z",
       "artifacts": [
@@ -41,10 +41,10 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T14:57:05Z",
+      "last_updated": "2026-03-17T22:13:04Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -94,7 +94,7 @@
           "summary": "DEFINITIVE: D=Int FORBIDDEN by ROAD_MAP; truth lemma needs ALL F/P witnesses; tree cannot linearize; task should be BLOCKED/ABANDONED"
         }
       ],
-      "session_id": "sess_1773754705_cfda86",
+      "session_id": "sess_1773785524_aedf5c",
       "planned": "2026-03-17T14:36:30Z",
       "started": "2026-03-17T12:56:57Z",
       "partial_progress": {
@@ -344,12 +344,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "researching",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T22:08:15Z",
+      "last_updated": "2026-03-17T22:12:45Z",
       "session_id": "sess_1773785278_7a142b",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
@@ -447,6 +447,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/15_team-research.md",
           "type": "research",
           "summary": "Team research: 2 teammates, forward_F gap analysis, Path B (Rat witness families) recommended"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/16_dovetailing-analysis.md",
+          "type": "research",
+          "summary": "Dovetailing analysis: backlog processing approach recommended over full dovetailing (~14h vs ~22h)"
         }
       ],
       "planned": "2026-03-17T16:59:47Z",
