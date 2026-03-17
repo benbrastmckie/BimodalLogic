@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection (v2)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4 hours (remaining)
 - **Dependencies**: Tasks 956 (D construction), 978 (typeclass architecture)
 - **Research Inputs**:
@@ -66,7 +66,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: FMCS over TimelineQuot [NOT STARTED]
+### Phase 1: FMCS over TimelineQuot [BLOCKED]
 
 - **Dependencies**: Existing TimelineQuotCompleteness.lean
 - **Goal**: Define FMCS structure indexed by TimelineQuot

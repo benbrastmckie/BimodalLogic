@@ -1,110 +1,93 @@
 # Implementation Summary: Task 982 - Wire Dense Completeness Domain Connection
 
-- **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Date**: 2026-03-16
-- **Status**: PARTIAL (Phase 1 complete, Phase 2 partial, Phase 4 complete)
-- **Session**: sess_1773705645_12453
+**Date**: 2026-03-16
+**Status**: BLOCKED - requires user review
+**Session**: sess_1773707997_21695
 
-## Overview
+## Summary
 
-This task aims to connect the existing completeness infrastructure (truth lemma over CanonicalMCS) to the TimelineQuot-based semantics required for the DenseCompletenessStatement.
+Attempted to implement the direct truth lemma approach (Approach A from research-002) for completing `timelineQuot_not_valid_of_neg_consistent`. The implementation encountered fundamental architectural challenges that require user decision on how to proceed.
 
-## Architecture Achievement
+## Current State
 
-The completeness wiring is now structurally complete:
-- `dense_completeness_fc` in `Completeness.lean` uses `dense_completeness_theorem`
-- `dense_completeness_theorem` in `TimelineQuotCompleteness.lean` implements contrapositive argument
-- Single remaining gap: `timelineQuot_not_valid_of_neg_consistent` (countermodel construction)
+### Files Modified
+- None committed (exploratory work only)
 
-## Completed Work
+### Existing Infrastructure
+1. `TimelineQuotAlgebra.lean` - AddCommGroup transfer (sorry-free)
+2. `TimelineQuotCompleteness.lean` - Completeness wiring structure (1 sorry remains)
+3. `dense_completeness_fc` - Wired to use `dense_completeness_theorem`
 
-### Phase 1: Analyze TaskFrame AddCommGroup Dependency [COMPLETED]
+### Remaining Sorry
+- `timelineQuot_not_valid_of_neg_consistent` at TimelineQuotCompleteness.lean:127
 
-**Analysis Results:**
-- TaskFrame requires `AddCommGroup D` in its type signature
-- `valid_over D` requires TaskFrame, inheriting the AddCommGroup requirement
-- DenseCompletenessStatement quantifies over all D with these constraints
-- TimelineQuot has LinearOrder, Countable, DenselyOrdered, NoMaxOrder, NoMinOrder but NOT AddCommGroup
+## Technical Analysis
 
-**Decision:** Use DurationTransfer.ratAddCommGroup to transfer AddCommGroup from Rat to TimelineQuot via the Cantor isomorphism.
+### What Was Attempted
 
-### Phase 2: Create TimelineQuot Infrastructure [PARTIAL]
+1. **Created TimelineQuotCanonical.lean** (exploratory, not committed) with:
+   - `timelineQuotFMCS : FMCS TimelineQuot` - FMCS indexed by TimelineQuot
+   - `lt_implies_canonicalR` - Shows quotient ordering implies CanonicalR
+   - `forward_G` and `backward_H` via CanonicalR transitivity
+   - Attempted `timelineQuotTaskFrame` via `denseTaskFrame`
 
-**Files Created:**
-1. `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotAlgebra.lean`
-2. `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotCompleteness.lean`
+2. **Discovered Key Obstacles**:
+   - **TypeClass Resolution**: TimelineQuot AddCommGroup is artificial (from DurationTransfer via Cantor iso), causing instance resolution issues
+   - **WorldState vs Duration Conflation**: The `denseTaskFrame` pattern conflates WorldState with Duration, which doesn't match the MCS-based semantic structure
+   - **Box Case in Truth Lemma**: Single-family FMCS doesn't provide modal saturation; full BFMCS is needed
 
-**TimelineQuotAlgebra.lean** (sorry-free):
-- `timelineQuotAddCommGroup`: AddCommGroup structure transferred from Q via Cantor isomorphism
-- `timelineQuotIsOrderedAddMonoid`: Order-compatible monoid structure
-- `timelineQuotNontrivial`: Nontrivial instance (distinct elements exist)
-- `timelineQuot_instantiate_dense`: Key lemma for instantiating validity quantification
+### Fundamental Issue
 
-**TimelineQuotCompleteness.lean** (one sorry):
-- `timelineQuotMCS`: Extract MCS from TimelineQuot element
-- `timelineQuotMCS_is_mcs`: Extracted MCS is maximal consistent
-- `timelineQuot_not_valid_of_neg_consistent`: KEY GAP - needs proof
-- `dense_completeness_theorem`: Main theorem using contrapositive
+The existing infrastructure has two separate completeness approaches:
 
-### Phase 4: Wire Dense Completeness Theorem [COMPLETED]
+1. **CanonicalMCS-based** (CanonicalFMCS.lean, CanonicalConstruction.lean):
+   - `FMCS CanonicalMCS` with sorry-free forward_F/backward_P
+   - `BFMCS Int` with full truth lemma
+   - Uses `D = Int` hardcoded
 
-**What Was Done:**
-- Updated `Completeness.lean` to import `TimelineQuotCompleteness`
-- Changed `dense_completeness_fc` to use `TimelineQuotCompleteness.dense_completeness_theorem`
-- Removed inline sorry in favor of structured dependency
+2. **TimelineQuot-based** (this task):
+   - Uses `D = TimelineQuot` for dense frame properties
+   - Needs `FMCS TimelineQuot` and `BFMCS TimelineQuot` with truth lemma
 
-## Remaining Gap
+The gap: There's no bridge between CanonicalMCS-based truth (which is proven) and TimelineQuot-based validity (which is needed).
 
-### The Key Lemma: `timelineQuot_not_valid_of_neg_consistent`
+## Options for Resolution
 
-**Goal:** Show that when [φ.neg] is consistent, φ is NOT valid over TimelineQuot built from that MCS.
+### Option A: Full TimelineQuot Infrastructure (Original Plan)
+- Build `FMCS TimelineQuot`, `BFMCS TimelineQuot`, and truth lemma from scratch
+- Effort: 4+ hours of careful proof work
+- Risk: The box case requires modal saturation which needs BFMCS bundle construction
 
-**What This Means:**
-- We have an MCS M₀ containing φ.neg
-- We need to construct a TaskFrame, TaskModel, Omega, history, and time over TimelineQuot
-- At that point, φ must evaluate to false (equivalently, φ.neg must evaluate to true)
+### Option B: Transfer Theorem
+- Prove validity transfers across order-isomorphic domains
+- Use existing Int-based truth lemma, transfer to TimelineQuot via Cantor iso
+- Effort: 2-3 hours
+- Risk: Technical complications with typeclass matching across isomorphism
 
-**Resolution Options:**
+### Option C: Axiomatic Approach
+- Introduce an axiom stating the truth lemma for TimelineQuot
+- Mark as documented technical debt (similar to `canonicalR_irreflexive`)
+- Effort: 30 minutes
+- Risk: Increases axiom count
 
-1. **Direct Countermodel Construction**: Build a simple model with MCS-based valuation
-2. **Full Truth Lemma**: Port CanonicalConstruction.lean infrastructure to TimelineQuot
-3. **Transfer Theorem**: Show satisfiability transfers along order isomorphisms
+### Option D: Simplify TimelineQuotCompleteness
+- Restructure to use CanonicalMCS directly in the completeness proof
+- Avoid the TimelineQuot-specific truth lemma entirely
+- Effort: 1-2 hours
+- Risk: May require significant architectural changes
 
-## Files Modified/Created
+## Recommendation
 
-| File | Status | Description |
-|------|--------|-------------|
-| `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotAlgebra.lean` | NEW | AddCommGroup transfer (sorry-free) |
-| `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotCompleteness.lean` | NEW | Completeness wiring (1 sorry) |
-| `Theories/Bimodal/FrameConditions/Completeness.lean` | MODIFIED | Uses dense_completeness_theorem |
-| `specs/982_wire_dense_completeness_domain_connection/plans/implementation-001.md` | MODIFIED | Phase status updates |
+**Option B (Transfer Theorem)** appears most principled for publication quality while being achievable. However, this requires user decision as it changes the planned approach.
 
-## Axiom/Sorry Status
+## Blocker Details
 
-- **New Sorries**: 1 (`timelineQuot_not_valid_of_neg_consistent`)
-- **New Axioms**: 0
-- **Pre-existing in pipeline**: 1 axiom (`canonicalR_irreflexive`)
+- **Type**: Hard blocker (requires user review)
+- **Reason**: Implementation approach requires significant infrastructure not originally scoped
+- **Gate Failure**: Cannot return "implemented" as sorry remains
 
-**Note:** The sorry in `dense_completeness_fc` has been replaced with a structured dependency on `dense_completeness_theorem`, which in turn depends on the single sorry above.
+## Next Steps (Pending User Decision)
 
-## Build Status
-
-```
-lake build Bimodal.Metalogic.StagedConstruction.TimelineQuotAlgebra  # passes (no sorries)
-lake build Bimodal.Metalogic.StagedConstruction.TimelineQuotCompleteness  # passes (1 sorry)
-lake build Bimodal.FrameConditions.Completeness  # passes
-```
-
-## Next Steps
-
-1. Prove `timelineQuot_not_valid_of_neg_consistent` using one of the resolution options
-2. This will make `dense_completeness_theorem` sorry-free
-3. Which will make `dense_completeness_fc` sorry-free
-4. Verify zero-debt completion gate
-
-## Time Spent
-
-- Phase 1: ~30 minutes (analysis)
-- Phase 2 (partial): ~2.5 hours (TimelineQuotAlgebra + TimelineQuotCompleteness)
-- Phase 4: ~30 minutes (wiring)
-- Total: ~3.5 hours of planned 4.5 hours
+1. User reviews options A-D above
+2. Select approach and create revised plan
+3. Continue implementation with selected approach
