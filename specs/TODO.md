@@ -1,11 +1,11 @@
 ---
-next_project_number: 986
+next_project_number: 990
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-16T23:45:00Z
 task_counts:
-  active: 7
+  active: 11
   completed: 686
   in_progress: 1
   not_started: 2
@@ -24,6 +24,43 @@ technical_debt:
 # TODO
 
 ## Tasks
+### 989. Discrete algebraic completeness
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Prove discrete algebraic completeness using D = Int. Requires: (1) proving DF and DP axioms are valid in `DiscreteCanonicalTaskFrame Int` (the G-operator Stone relation on Int-indexed MCS families satisfies immediate successor conditions), (2) using the BFMCS construction from task 986 for the discrete proof system, (3) wiring `discrete_representation_conditional` to obtain `valid_discrete φ → ⊢_discrete φ`. Does not overlap with task 981 (which removes an axiom from the staged construction; this uses the algebraic D = Int approach).
+
+---
+
+### 988. Dense algebraic completeness
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
+
+---
+
+### 987. Algebraic base completeness
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+- **Depends On**: Task 986
+
+**Description**: Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the `construct_bfmcs` argument to `parametric_algebraic_representation_conditional` (D = Int), then prove `valid φ → ⊢ φ`. Resolve any type mismatch between `CanonicalWorldState` and `ParametricCanonicalWorldState`. Create `AlgebraicBaseCompleteness.lean` with the closed completeness theorem.
+
+---
+
+### 986. BFMCS construction for D = Int (sorry-free)
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in `CanonicalFMCS.lean` has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an order-embedding, or find a direct construction. This is the core blocker for algebraic base completeness (task 987) and discrete algebraic completeness (task 989).
+
+---
+
 ### 985. Develop Lindenbaum-Tarski algebraic representation theorem approach
 - **Effort**: 12 hours (6 phases)
 - **Status**: [COMPLETED]

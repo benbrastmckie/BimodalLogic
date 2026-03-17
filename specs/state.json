@@ -6,6 +6,46 @@
   },
   "active_projects": [
     {
+      "project_number": 986,
+      "project_name": "bfmcs_construction_for_int",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-17T02:43:07Z",
+      "last_updated": "2026-03-17T02:43:07Z",
+      "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
+      "artifacts": []
+    },
+    {
+      "project_number": 987,
+      "project_name": "algebraic_base_completeness",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-17T02:43:07Z",
+      "last_updated": "2026-03-17T02:43:07Z",
+      "description": "Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the construct_bfmcs argument to parametric_algebraic_representation_conditional (D = Int), then prove valid φ → ⊢ φ. Resolve any type mismatch between CanonicalWorldState and ParametricCanonicalWorldState. Create AlgebraicBaseCompleteness.lean with the closed completeness theorem.",
+      "artifacts": []
+    },
+    {
+      "project_number": 988,
+      "project_name": "dense_algebraic_completeness",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-17T02:43:07Z",
+      "last_updated": "2026-03-17T02:43:07Z",
+      "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
+      "artifacts": []
+    },
+    {
+      "project_number": 989,
+      "project_name": "discrete_algebraic_completeness",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-17T02:43:07Z",
+      "last_updated": "2026-03-17T02:43:07Z",
+      "description": "Prove discrete algebraic completeness using D = Int. Requires: (1) proving DF and DP axioms are valid in DiscreteCanonicalTaskFrame Int (the G-operator Stone relation on Int-indexed MCS families satisfies immediate successor conditions), (2) using the BFMCS construction from task 986 for the discrete proof system, (3) wiring discrete_representation_conditional to obtain valid_discrete φ → ⊢_discrete φ. Does not overlap with task 981 (removes axiom from staged construction; this uses algebraic D = Int approach).",
+      "artifacts": []
+    },
+    {
       "project_number": 985,
       "project_name": "lindenbaum_tarski_representation_theorem",
       "status": "completed",
@@ -201,10 +241,10 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "partial",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T02:33:10Z",
+      "last_updated": "2026-03-17T02:43:47Z",
       "session_id": "sess_1773714464_a0d5db",
       "researched": "2026-03-17T02:33:10Z",
       "artifacts": [
@@ -229,11 +269,6 @@
           "summary": "Team research run 004 (2 teammates, math domain): T-axiom → g_content⊆M direct proof; IRR+T-axiom inconsistency identified"
         },
         {
-          "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan v3: T-axiom direct subset argument (4-5 hours)"
-        },
-        {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md",
           "type": "summary",
           "summary": "Phases 2-3 complete. Phase 4 covering proof partial with 3 sorries."
@@ -247,9 +282,14 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md",
           "type": "research",
           "summary": "Axiom elimination approaches: Incremental construction (PRIMARY), Well-founded minimal successor (SECONDARY)"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-004.md",
+          "type": "plan",
+          "summary": "5-phase incremental construction approach (16-24 hours)"
         }
       ],
-      "planned": "2026-03-17T01:33:17Z",
+      "planned": "2026-03-17T02:43:47Z",
       "started": "2026-03-17T00:29:40Z",
       "partial_progress": {
         "phases_completed": 3,
@@ -381,7 +421,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 986,
+  "next_project_number": 990,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
