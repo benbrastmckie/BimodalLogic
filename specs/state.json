@@ -58,10 +58,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T14:02:06Z",
+      "last_updated": "2026-03-17T14:04:25Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -90,10 +90,11 @@
           "summary": "v2: CanonicalQuot approach - D from syntax via Cantor"
         }
       ],
-      "session_id": "sess_1742162400_988r3",
+      "session_id": "sess_1742234400_988i1",
       "researched": "2026-03-17T13:51:39Z",
       "planned": "2026-03-17T14:02:06Z",
-      "recommendation": "Option B: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS, apply Cantor theorem for Rat isomorphism."
+      "recommendation": "Option B: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS, apply Cantor theorem for Rat isomorphism.",
+      "started": "2026-03-17T14:04:25Z"
     },
     {
       "project_number": 989,
@@ -250,12 +251,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T13:40:26Z",
+      "last_updated": "2026-03-17T14:04:17Z",
       "session_id": "sess_1773776521_d8f4a2",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
@@ -300,11 +301,6 @@
           "summary": "Mathematical analysis of dense completeness blocker with 4 approaches evaluated; recommends domain transfer via isomorphism"
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-006.md",
-          "type": "plan",
-          "summary": "v6: Domain transfer approach using Rat BFMCS + validity transfer isomorphism"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Phase 1 analysis complete; identified core blocker: forward_F/backward_P cannot be proven without resolving staged construction edge cases"
@@ -313,9 +309,14 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-009.md",
           "type": "research",
           "summary": "Semantics architecture analysis: W (world states) vs D (durations) distinction resolves witness gap"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-007.md",
+          "type": "plan",
+          "summary": "v7: W/D separated architecture using TaskFrame semantics"
         }
       ],
-      "planned": "2026-03-17T13:39:14Z",
+      "planned": "2026-03-17T14:04:17Z",
       "started": "2026-03-17T13:40:26Z"
     },
     {

@@ -121,32 +121,31 @@ technical_debt:
 ---
 
 ### 982. Wire dense completeness domain connection
-- **Effort**: 8-10 hours (6 phases)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 8-12 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-008.md](specs/982_wire_dense_completeness_domain_connection/reports/research-008.md) (domain transfer approach - primary)
-- **Plan**: [implementation-006.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-006.md) (v6: Domain transfer via Rat BFMCS + validity isomorphism)
-- **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md) (partial progress from v5)
+- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D semantics architecture - primary)
+- **Plan**: [implementation-007.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-007.md) (v7: W/D separated architecture)
+- **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md)
 
-**Description**: Complete dense completeness theorem via domain transfer: use canonicalMCSBFMCS + Rat instantiation + validity transfer isomorphism.
+**Description**: Complete dense completeness using W/D separated TaskFrame architecture: W = CanonicalMCS (world states), D = TimelineQuot (durations). Witnesses exist in W, not necessarily in Range(h).
 
-**Research Summary**: The staged construction approach was abandoned (F-content doesn't transfer along CanonicalR). Domain transfer via TimelineQuot ≃o Rat is mathematically cleaner: use proven canonicalMCSBFMCS infrastructure with D=Rat.
+**Research Summary**: The semantics has TWO distinct components: W (world states) and D (durations). Previous approaches conflated these. With separation: D = TimelineQuot (linear order), W = CanonicalMCS (all MCSs). Modal witnesses exist in W, making staged construction edge cases irrelevant.
 
 **Resolution Path**:
-1. Cleanup and verify Rat instances (Phase 1)
-2. Build BFMCS over Rat (Phase 2)
-3. Prove validity transfer theorem (Phase 3)
-4. Wire dense completeness (Phase 4)
-5. Cleanup original sorry (Phase 5)
-6. Final verification (Phase 6)
+1. Verify semantics architecture supports W/D separation (Phase 1)
+2. Build separated TaskFrame: D = TimelineQuot, W = CanonicalMCS (Phase 2)
+3. Build WorldHistories h : D → W (Phase 3)
+4. Prove truth lemma with witnesses in W (Phase 4)
+5. Complete dense completeness theorem (Phase 5)
 
 **Files to create/modify**:
-- `Metalogic/Algebraic/RatBFMCS.lean` - NEW
-- `Metalogic/Algebraic/ValidityTransfer.lean` - NEW
+- `Metalogic/Algebraic/SeparatedTaskFrame.lean` - NEW
+- `Metalogic/Algebraic/SeparatedHistory.lean` - NEW
+- `Metalogic/Algebraic/SeparatedTruthLemma.lean` - NEW
 - `FrameConditions/Completeness.lean` - MODIFIED
-- `StagedConstruction/TimelineQuotCompleteness.lean` - MODIFIED (original sorry)
 
 ---
 
