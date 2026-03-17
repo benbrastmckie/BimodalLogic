@@ -76,17 +76,22 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T15:55:05Z",
+      "last_updated": "2026-03-17T16:44:29Z",
       "description": "Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the construct_bfmcs argument to parametric_algebraic_representation_conditional (D = Int), then prove valid φ → ⊢ φ. Resolve any type mismatch between CanonicalWorldState and ParametricCanonicalWorldState. Create AlgebraicBaseCompleteness.lean with the closed completeness theorem.",
       "artifacts": [
         {
           "path": "specs/987_algebraic_base_completeness/reports/research-001.md",
           "type": "research",
           "summary": "Comprehensive analysis of algebraic base completeness. Found task 986 has 2 sorries blocking direct path. Recommends semantic equivalence approach or completing task 986 dovetailing."
+        },
+        {
+          "path": "specs/987_algebraic_base_completeness/reports/02_taskframe-semantics.md",
+          "type": "research",
+          "summary": "Focused analysis of TaskFrame semantics: D = CanonicalMCS is WRONG (lacks AddCommGroup), D = Int is correct for discrete time, pure syntax means parametric approach."
         }
       ],
       "session_id": "sess_1773762635_r987",
-      "researched": "2026-03-17T15:55:05Z"
+      "researched": "2026-03-17T16:44:29Z"
     },
     {
       "project_number": 988,
