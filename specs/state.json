@@ -78,10 +78,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "researched",
+      "status": "planning",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T14:46:39Z",
+      "last_updated": "2026-03-17T14:53:16Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -120,7 +120,7 @@
           "summary": "Blocker analysis + W/D architecture. Recommends Option C: separated W/D with TimelineQuot for D"
         }
       ],
-      "session_id": "sess_1742235600_988r4",
+      "session_id": "sess_1742236800_988p3",
       "researched": "2026-03-17T14:46:39Z",
       "planned": "2026-03-17T14:02:06Z",
       "recommendation": "Option B: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS, apply Cantor theorem for Rat isomorphism.",
@@ -281,14 +281,14 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T14:48:19Z",
+      "last_updated": "2026-03-17T14:53:54Z",
       "session_id": "sess_1773758883_4058e7",
-      "researched": "2026-03-17T14:36:27Z",
+      "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
         {
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-001.md",
@@ -359,6 +359,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-010.md",
           "type": "research",
           "summary": "Mathematical analysis of BFMCS temporal coherence blocker; recommends FMP-based completeness path"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-011.md",
+          "type": "research",
+          "summary": "Option C analysis: use CanonicalMCS (all-MCS) with proven forward_F/backward_P, two-stage validity approach"
         }
       ],
       "planned": "2026-03-17T14:04:17Z",
@@ -367,11 +372,11 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T14:51:26Z",
-      "session_id": "sess_1773758986_5b7c19",
+      "last_updated": "2026-03-17T14:53:35Z",
+      "session_id": "sess_1773759199_613452",
       "researched": "2026-03-17T02:33:10Z",
       "artifacts": [
         {
@@ -416,7 +421,7 @@
         }
       ],
       "planned": "2026-03-17T14:51:26Z",
-      "started": "2026-03-17T14:07:37Z",
+      "started": "2026-03-17T14:53:35Z",
       "partial_progress": {
         "phases_completed": 1,
         "phases_total": 4,
