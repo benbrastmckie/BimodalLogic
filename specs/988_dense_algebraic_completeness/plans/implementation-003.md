@@ -1,7 +1,7 @@
 # Implementation Plan: Dense Algebraic Completeness via Separated W/D Architecture (v3)
 
 - **Task**: 988 - dense_algebraic_completeness
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 12-15 hours (5 phases)
 - **Dependencies**: Task 985 (complete), Task 982 research
 - **Research Inputs**: research-004.md (blocker analysis and Option C recommendation)
@@ -77,7 +77,7 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: SeparatedHistory Structure and TimelineQuot FMCS forward_F [NOT STARTED]
+### Phase 1: SeparatedHistory Structure and TimelineQuot FMCS forward_F [BLOCKED]
 
 - **Dependencies:** None
 - **Goal:** Define the separated W/D history structure and prove forward_F for TimelineQuot FMCS
@@ -112,6 +112,31 @@ When `F(phi) in timelineQuotMCS(t)`:
 - `lake build Bimodal.Metalogic.Algebraic.SeparatedHistory` passes
 - `grep -n "\bsorry\b" SeparatedHistory.lean` returns empty
 - If forward_F/backward_P stuck, mark [BLOCKED] with review_reason
+
+**Progress:**
+
+**Session: 2026-03-17, sess_1742238000_988i2**
+- Analyzed: Existing infrastructure in ClosureSaturation.lean (lines 244-679)
+- Discovered: forward_F proof blocked for case m > 2k (point added after formula processed)
+- Root cause: Lindenbaum witness from canonical_forward_F not guaranteed in staged timeline
+- Existing sorries: ClosureSaturation.lean:659,664,679,724; TimelineQuotCompleteness.lean:127
+- Status: [BLOCKED] - requires architectural resolution
+
+**Blocker Analysis:**
+The `forward_witness_at_stage_with_phi` theorem (CantorPrereqs.lean:542) requires `n <= 2*k` where:
+- n = stage when point p entered staged build
+- k = encoding of formula phi
+
+When `m > 2*k` (point added AFTER formula was processed), the staged construction does NOT
+guarantee a witness for F(phi). The witness from canonical_forward_F is constructed via
+Lindenbaum extension of {phi} U g_content(M), which may NOT be CanonicalR-reachable from
+the root MCS.
+
+**Recommended Resolutions (for user review):**
+1. **Enriched staged construction**: Modify to add ALL witness MCSs during build
+2. **Multi-family BFMCS**: Use witness families pattern from ModalSaturation.lean
+3. **Direct semantic proof**: Prove completeness without BFMCS temporal coherence
+4. **Alternative domain**: Use a domain that avoids the witness placement problem
 
 ---
 
