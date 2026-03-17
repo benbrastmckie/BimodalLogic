@@ -133,19 +133,16 @@ technical_debt:
 ---
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: 16-24 hours (revised)
-- **Status**: [PARTIAL]
+- **Effort**: 16-24 hours (5 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: T-axiom path), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (blocker analysis), [research-006.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md) (axiom elimination approaches)
-- **Plan**: [implementation-003.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md) (v3: needs revision)
-- **Summary**: [implementation-summary-20260316.md](specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md)
+- **Plan**: [implementation-004.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-004.md) (v4: incremental construction)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
 
-**Progress (3/6 phases)**: Phases 2-3 COMPLETED (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 BLOCKED (blocking formula approach insufficient). Plan revision required.
-
-**Research Summary (research-006)**: Identified 5 axiom elimination approaches. PRIMARY: Incremental/staged construction (16-24h) — make covering hold BY CONSTRUCTION through incremental model building. SECONDARY: Well-founded minimal successor (12-16h) — define successor as minimum of forward-accessible MCSs. Blocking formula approach abandoned (constrains W but not intermediate K).
+**Plan Summary (v4)**: Incremental/staged construction approach — make covering hold BY CONSTRUCTION. Phases: (1) Stage-indexed timeline types, (2) Stage embedding and successor, (3) Covering at each stage, (4) Colimit construction, (5) Transfer covering and eliminate axiom.
 
 ---
 
