@@ -1,40 +1,56 @@
 {
   "status": "researched",
-  "started_at": "2026-03-16T16:00:00Z",
   "artifacts": [
     {
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md",
-      "type": "summary",
-      "summary": "Implementation summary for phases 2-4"
-    },
-    {
       "type": "report",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md",
-      "summary": "Deep analysis of covering proof blocker: blocking formula approach insufficient for canonical models, axiom retention recommended"
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md",
+      "summary": "Comprehensive research on axiom elimination approaches with 5 viable paths, prioritized by confidence"
     }
   ],
-  "next_steps": "Review research findings and decide: (1) Accept axiom retention as recommended, or (2) Create dedicated covering lemma research task, or (3) Attempt alternative well-ordering construction",
-  "partial_progress": {
-    "stage": "research_complete",
-    "details": "Research-005 completed. Root cause identified: blocking formula approach works for incremental constructions (Segerberg/Verbrugge) but not for all-at-once canonical models. Blocking formulas constrain W but not intermediate K. Covering property is structural/semantic, not derivable syntactically.",
-    "phases_completed": 3,
-    "phases_total": 6
-  },
-  "requires_user_review": true,
-  "review_reason": "Research-005 concludes that the covering proof cannot be completed with blocking formulas. The fundamental obstruction: blocking formulas constrain W's construction but cannot retroactively constrain intermediate MCSs K that already exist in the canonical model. Recommendation: retain discrete_Icc_finite_axiom.",
+  "next_steps": "Run /plan 981 to create implementation plan based on Approach 1 (Incremental Construction)",
   "metadata": {
-    "session_id": "sess_1773713470_76ec48",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 7200,
+    "session_id": "sess_1773714464_a0d5db",
+    "agent_type": "math-research-agent",
+    "duration_seconds": 9000,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "delegation_path": ["orchestrator", "research", "math-research-agent"],
     "findings_count": 5,
-    "context_files_loaded": ["README.md", "kripke-semantics-overview.md"],
-    "mathlib_lookups_performed": 4,
+    "context_files_loaded": ["README.md", "ROAD_MAP.md"],
+    "mathlib_lookups_performed": 8,
     "context_extension_tasks": [],
-    "context_candidates_count": 0
-  },
-  "completion_data": {
-    "completion_summary": "Research-005 deep analysis: Blocking formula approach insufficient. The covering property K=M or K=W given CanonicalR M K and CanonicalR K W cannot be proved because blocking formulas in W don't constrain intermediate K. Literature review confirms Segerberg/Verbrugge use incremental construction where covering holds by construction. Canonical model approach needs different strategy or axiom retention."
+    "context_candidates_count": 1,
+    "approaches_identified": [
+      {
+        "name": "Incremental/Staged Construction",
+        "effort_hours": "16-24",
+        "confidence": "HIGH",
+        "recommended_priority": 1
+      },
+      {
+        "name": "Well-Founded Minimal Successor",
+        "effort_hours": "12-16",
+        "confidence": "MEDIUM-HIGH",
+        "recommended_priority": 2
+      },
+      {
+        "name": "SuccOrder.ofLinearWellFoundedLT",
+        "effort_hours": "8-20",
+        "confidence": "LOW",
+        "recommended_priority": 3
+      },
+      {
+        "name": "Higher-Level Quotient",
+        "effort_hours": "20-30",
+        "confidence": "MEDIUM",
+        "recommended_priority": 4
+      },
+      {
+        "name": "Direct DF Covering",
+        "effort_hours": "8-12",
+        "confidence": "LOW",
+        "recommended_priority": 5
+      }
+    ],
+    "key_insight": "The covering property fails with blocking formulas because they constrain W but not intermediate K. The solution is to make covering hold BY CONSTRUCTION through incremental model building, following Segerberg/Verbrugge literature."
   }
 }

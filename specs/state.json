@@ -150,13 +150,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T02:27:40Z",
-      "session_id": "sess_1773710941_20917",
+      "last_updated": "2026-03-17T02:33:07Z",
+      "session_id": "sess_1773714773_66f984",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
         {
@@ -201,12 +201,12 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researching",
+      "status": "partial",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T02:27:51Z",
+      "last_updated": "2026-03-17T02:33:10Z",
       "session_id": "sess_1773714464_a0d5db",
-      "researched": "2026-03-17T02:18:07Z",
+      "researched": "2026-03-17T02:33:10Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -242,6 +242,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md",
           "type": "research",
           "summary": "Covering proof blocker analysis: blocking formula approach insufficient for canonical models; axiom retention recommended"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md",
+          "type": "research",
+          "summary": "Axiom elimination approaches: Incremental construction (PRIMARY), Well-founded minimal successor (SECONDARY)"
         }
       ],
       "planned": "2026-03-17T01:33:17Z",

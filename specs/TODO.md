@@ -70,7 +70,7 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 12-16 hours (7 phases)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
@@ -96,19 +96,19 @@ technical_debt:
 ---
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: 4-5 hours (6 phases)
-- **Status**: [RESEARCHING]
+- **Effort**: 16-24 hours (revised)
+- **Status**: [PARTIAL]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
-- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: K4 gap analysis — T-axiom enables direct subset proof), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (covering proof blocker analysis — axiom retention recommended)
-- **Plan**: [implementation-003.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md) (v3: T-axiom direct subset argument)
+- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: T-axiom path), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (blocker analysis), [research-006.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md) (axiom elimination approaches)
+- **Plan**: [implementation-003.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md) (v3: needs revision)
 - **Summary**: [implementation-summary-20260316.md](specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
 
-**Progress (3/6 phases)**: Phases 2-3 COMPLETED (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 PARTIAL (covering proof has 3 sorries). Phases 5-6 NOT STARTED.
+**Progress (3/6 phases)**: Phases 2-3 COMPLETED (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 BLOCKED (blocking formula approach insufficient). Plan revision required.
 
-**Research Summary (research-005)**: Deep analysis of Phase 4 covering proof blocker. Root cause: blocking formula approach from Segerberg/Verbrugge works for incremental constructions but not all-at-once canonical models. Blocking formulas constrain W (the successor) but cannot retroactively constrain intermediate MCSs K that already exist. Recommendation: retain `discrete_Icc_finite_axiom` as accepted technical debt. The covering property is structural/semantic, not syntactically derivable.
+**Research Summary (research-006)**: Identified 5 axiom elimination approaches. PRIMARY: Incremental/staged construction (16-24h) — make covering hold BY CONSTRUCTION through incremental model building. SECONDARY: Well-founded minimal successor (12-16h) — define successor as minimum of forward-accessible MCSs. Blocking formula approach abandoned (constrains W but not intermediate K).
 
 ---
 
