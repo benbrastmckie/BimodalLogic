@@ -1,0 +1,23 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/986_bfmcs_construction_for_int/reports/research-001.md",
+      "summary": "Research report analyzing BFMCS construction approaches for D=Int, recommending order-embedding transfer from CanonicalMCS"
+    }
+  ],
+  "next_steps": "Run /plan 986 to create implementation plan",
+  "metadata": {
+    "session_id": "sess_1773718458_r986",
+    "agent_type": "logic-research-agent",
+    "duration_seconds": 2700,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
+    "findings_count": 5,
+    "context_files_loaded": ["ROAD_MAP.md"],
+    "mathlib_lookups_performed": 0,
+    "context_extension_tasks": [],
+    "context_candidates_count": 0
+  }
+}

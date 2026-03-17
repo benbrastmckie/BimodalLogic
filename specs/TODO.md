@@ -53,11 +53,14 @@ technical_debt:
 ---
 
 ### 986. BFMCS construction for D = Int (sorry-free)
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md)
 
 **Description**: Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in `CanonicalFMCS.lean` has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an order-embedding, or find a direct construction. This is the core blocker for algebraic base completeness (task 987) and discrete algebraic completeness (task 989).
+
+**Research Summary**: Analyzed existing CanonicalMCS construction (sorry-free) and deprecated DovetailingChain (2 sorries). Recommended approach: order-embedding transfer from CanonicalMCS to Int-indexed structure, using CanonicalR-based witness existence.
 
 ---
 

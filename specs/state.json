@@ -8,12 +8,19 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T03:34:35Z",
+      "last_updated": "2026-03-17T04:00:00Z",
+      "researched": "2026-03-17T04:00:00Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
-      "artifacts": [],
+      "artifacts": [
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/research-001.md",
+          "type": "research",
+          "summary": "Research report analyzing BFMCS construction approaches for D=Int, recommending order-embedding transfer from CanonicalMCS"
+        }
+      ],
       "session_id": "sess_1773718458_r986"
     },
     {
