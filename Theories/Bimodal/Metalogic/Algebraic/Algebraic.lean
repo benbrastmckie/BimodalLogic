@@ -3,6 +3,13 @@ import Bimodal.Metalogic.Algebraic.BooleanStructure
 import Bimodal.Metalogic.Algebraic.InteriorOperators
 import Bimodal.Metalogic.Algebraic.UltrafilterMCS
 import Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+-- D-parametric modules (Task 985)
+import Bimodal.Metalogic.Algebraic.ParametricCanonical
+import Bimodal.Metalogic.Algebraic.ParametricHistory
+import Bimodal.Metalogic.Algebraic.ParametricTruthLemma
+import Bimodal.Metalogic.Algebraic.ParametricRepresentation
+import Bimodal.Metalogic.Algebraic.DenseInstantiation
+import Bimodal.Metalogic.Algebraic.DiscreteInstantiation
 
 /-!
 # Algebraic Representation Theorem
@@ -18,7 +25,15 @@ Algebraic/
 ├── BooleanStructure.lean     # Boolean algebra instance
 ├── InteriorOperators.lean    # G/H as interior operators (using T-axioms)
 ├── UltrafilterMCS.lean       # Bijection: ultrafilters ↔ MCS
-└── AlgebraicRepresentation.lean  # Main theorem
+├── AlgebraicRepresentation.lean  # Main theorem (original formulation)
+│
+│   D-Parametric Extension (Task 985)
+├── ParametricCanonical.lean      # D-parametric TaskFrame
+├── ParametricHistory.lean        # D-parametric history conversion
+├── ParametricTruthLemma.lean     # D-parametric truth lemma
+├── ParametricRepresentation.lean # D-parametric representation theorem
+├── DenseInstantiation.lean       # D = Rat instantiation
+└── DiscreteInstantiation.lean    # D = Int instantiation
 ```
 
 ## Mathematical Overview
@@ -68,5 +83,13 @@ open Bimodal.Metalogic.Algebraic.BooleanStructure
 open Bimodal.Metalogic.Algebraic.InteriorOperators
 open Bimodal.Metalogic.Algebraic.UltrafilterMCS
 open Bimodal.Metalogic.Algebraic.AlgebraicRepresentation
+
+-- D-parametric modules (Task 985)
+open Bimodal.Metalogic.Algebraic.ParametricCanonical
+open Bimodal.Metalogic.Algebraic.ParametricHistory
+open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
+open Bimodal.Metalogic.Algebraic.ParametricRepresentation
+open Bimodal.Metalogic.Algebraic.DenseInstantiation
+open Bimodal.Metalogic.Algebraic.DiscreteInstantiation
 
 end Bimodal.Metalogic.Algebraic

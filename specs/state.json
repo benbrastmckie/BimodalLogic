@@ -192,7 +192,7 @@
       "status": "partial",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-16T18:00:00Z",
+      "last_updated": "2026-03-17T02:06:53Z",
       "session_id": "sess_1773711262_a7f3c5",
       "researched": "2026-03-17T01:27:53Z",
       "artifacts": [
@@ -233,7 +233,8 @@
         "phases_completed": 3,
         "phases_total": 6,
         "details": "Phases 2-3 COMPLETED (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 PARTIAL (covering proof has 3 sorries at lines 525, 562, 595)."
-      }
+      },
+      "completion_summary": "Phases 2-3 complete (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 covering proof blocked: blocking formulas constrain W but not intermediate K."
     },
     {
       "project_number": 953,

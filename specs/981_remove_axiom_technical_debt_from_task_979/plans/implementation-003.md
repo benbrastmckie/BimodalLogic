@@ -1,7 +1,7 @@
 # Implementation Plan: Task #981 (Revision 3)
 
 - **Task**: 981 - remove_axiom_technical_debt_from_task_979
-- **Status**: [IMPLEMENTING]
+- **Status**: [PARTIAL]
 - **Effort**: 4-5 hours
 - **Dependencies**: None (builds on existing codebase)
 - **Research Inputs**: research-004.md (T-axiom direct subset argument)
@@ -178,7 +178,7 @@ lemma g_content_subset_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
 
 ---
 
-### Phase 4: Prove Covering Property [PARTIAL]
+### Phase 4: Prove Covering Property [BLOCKED]
 
 - **Dependencies:** Phase 3
 - **Goal:** Prove no MCS exists strictly between M and `discreteImmediateSucc M`
@@ -217,6 +217,31 @@ theorem discreteImmediateSucc_covers
 - `lake build` passes
 - `lean_goal` shows "no goals" at theorem QED
 - `grep -n "\bsorry\b" DiscreteSuccSeed.lean` returns empty
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773711262_a7f3c5** (blocked)
+- Attempted: Restructured covering proof with contradiction approach
+- Analysis: Blocking formulas constrain W but do not directly constrain intermediate K
+- Sorries: 3 (at lines 525, 562, 595 in discreteImmediateSucc_covers)
+- Finding: Cases where phi in K and neg phi in W cannot derive phi in W (impossible goal)
+- Finding: Blocking formula argument works for W construction but not K membership propagation
+- Blocked: Covering proof requires different approach or additional assumptions
+
+**Blocking Analysis:**
+1. The covering property claims: if CanonicalR M K and CanonicalR K W, then K = M or K = W
+2. CanonicalR M K gives: g_content(M) in K
+3. CanonicalR K W gives: g_content(K) in W
+4. Blocking formulas are in W, not in K
+5. For phi with G(phi) not in M: blocking formula (neg phi or neg G(phi)) is in W
+6. This doesn't force phi in K or phi not in K - it only constrains W
+7. An intermediate K can satisfy both CanonicalR constraints without being M or W
+
+**Options for Resolution:**
+- Option A: Strengthen blocking formula construction to constrain K
+- Option B: Accept existing axiom discrete_Icc_finite_axiom
+- Option C: Prove covering at quotient level using different structure
+- Option D: Add assumption about K (e.g., K extends same seed as W)
 
 ---
 
