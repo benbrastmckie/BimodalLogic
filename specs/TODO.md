@@ -34,9 +34,12 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: TBD
-- **Status**: [RESEARCHING]
+- **Effort**: 13-20 hours (3 phases)
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md)
+
+**Research Summary**: Core gap is `construct_bfmcs` function to build temporally coherent BFMCS over Rat. Recommended approach: embed CanonicalMCS into Rat via Cantor's theorem. DN axiom validity follows from `DenselyOrdered Rat`.
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
 
