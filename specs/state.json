@@ -291,7 +291,7 @@
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T15:16:42Z",
+      "last_updated": "2026-03-17T15:35:18Z",
       "session_id": "sess_1773760161_eca24d",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
@@ -369,6 +369,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-008.md",
           "type": "plan",
           "summary": "v8: CanonicalMCS all-MCS approach - 5 phases, 12 hours"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-012.md",
+          "type": "research",
+          "summary": "DN -> world history density derivation: 5-layer chain from DN through MCS density, density frame condition, TimelineQuot DenselyOrdered, to world history convexity"
         }
       ],
       "planned": "2026-03-17T15:06:13Z",
@@ -380,9 +385,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T15:21:15Z",
-      "session_id": "sess_1773760590_b22cbf",
-      "researched": "2026-03-17T15:21:15Z",
+      "last_updated": "2026-03-17T15:35:02Z",
+      "session_id": "sess_1773761405_f7bb94",
+      "researched": "2026-03-17T15:35:02Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -443,6 +448,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-008.md",
           "type": "research",
           "summary": "World history discreteness analysis - confirms W=D equivalence in canonical model, no new proof path but clarifies architectural boundary"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-009.md",
+          "type": "research",
+          "summary": "Architectural clarity: W=D is a simplification in canonical construction, not a requirement. TaskFrame correctly separates W and D. Covering lemma difficulty is orthogonal to this."
         }
       ],
       "planned": "2026-03-17T14:51:26Z",
