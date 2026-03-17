@@ -8,12 +8,13 @@
     {
       "project_number": 990,
       "project_name": "representation_theorem_duration_design",
-      "status": "researched",
+      "status": "planned",
       "language": "formal",
       "created": "2026-03-17T21:49:37Z",
-      "last_updated": "2026-03-17T22:01:11Z",
-      "session_id": "sess_1773784228_7938b0",
+      "last_updated": "2026-03-17T22:25:00Z",
+      "session_id": "sess_1773785109_09fa8e",
       "researched": "2026-03-17T22:01:11Z",
+      "planned": "2026-03-17T22:25:00Z",
       "artifacts": [
         {
           "path": "specs/990_representation_theorem_duration_design/reports/01_teammate-a-findings.md",
@@ -29,6 +30,11 @@
           "path": "specs/990_representation_theorem_duration_design/reports/02_synthesis.md",
           "type": "research",
           "summary": "Synthesis of both teammates: unanimous recommendation for D-parametric with axioms. D-from-syntax infeasible for base logic, D-from-syntax kept as auxiliary for dense/discrete specialization."
+        },
+        {
+          "path": "specs/990_representation_theorem_duration_design/plans/01_parametric-duration-architecture.md",
+          "type": "plan",
+          "summary": "5-phase plan: update ROAD_MAP.md strategy, add Lean documentation to ParametricRepresentation.lean and DFromCantor.lean, update BaseCompleteness.lean, create architecture summary"
         }
       ]
     },
@@ -338,13 +344,13 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "planned",
+      "status": "researching",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T22:03:58Z",
-      "session_id": "sess_1773784620_425488",
+      "last_updated": "2026-03-17T22:08:15Z",
+      "session_id": "sess_1773785278_7a142b",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
         {
