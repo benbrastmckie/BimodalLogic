@@ -570,22 +570,22 @@ theorem chainFMCS_is_mcs (flag : Flag CanonicalMCS) (w : ChainFMCSDomain flag) :
 /--
 Forward G coherence for chain-based FMCS.
 
-If `w₁ ≤ w₂` in the chain and `G phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
+If `w₁ < w₂` in the chain and `G phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
 
-Proof: `w₁ ≤ w₂` means `CanonicalR w₁.val.world w₂.val.world` (by Preorder definition),
+Proof: `w₁ < w₂` implies `CanonicalR w₁.val.world w₂.val.world` (via canonicalR_of_lt),
 and `G phi ∈ mcs(w₁)` means `phi ∈ g_content(w₁.val.world)`. Since
 `CanonicalR = g_content(·) ⊆ ·`, we get `phi ∈ w₂.val.world = mcs(w₂)`.
 -/
 theorem chainFMCS_forward_G (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag) (phi : Formula)
-    (h_le : w₁ ≤ w₂) (h_G : Formula.all_future phi ∈ chainFMCS_mcs flag w₁) :
+    (h_lt : w₁ < w₂) (h_G : Formula.all_future phi ∈ chainFMCS_mcs flag w₁) :
     phi ∈ chainFMCS_mcs flag w₂ :=
-  canonical_forward_G w₁.val.world w₂.val.world h_le phi h_G
+  canonical_forward_G w₁.val.world w₂.val.world (CanonicalMCS.canonicalR_of_lt w₁.val w₂.val h_lt) phi h_G
 
 /--
 Backward H coherence for chain-based FMCS.
 
-If `w₂ ≤ w₁` in the chain and `H phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
+If `w₂ < w₁` in the chain and `H phi ∈ mcs(w₁)`, then `phi ∈ mcs(w₂)`.
 
 Proof: By g_content/h_content duality, `CanonicalR w₂.val.world w₁.val.world`
 implies `h_content(w₁.val.world) ⊆ w₂.val.world`. Since `H phi ∈ mcs(w₁)`
@@ -593,11 +593,12 @@ means `phi ∈ h_content(w₁.val.world)`, we get `phi ∈ w₂.val.world = mcs(
 -/
 theorem chainFMCS_backward_H (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag) (phi : Formula)
-    (h_le : w₂ ≤ w₁) (h_H : Formula.all_past phi ∈ chainFMCS_mcs flag w₁) :
+    (h_lt : w₂ < w₁) (h_H : Formula.all_past phi ∈ chainFMCS_mcs flag w₁) :
     phi ∈ chainFMCS_mcs flag w₂ := by
+  have h_R : CanonicalR w₂.val.world w₁.val.world := CanonicalMCS.canonicalR_of_lt w₂.val w₁.val h_lt
   have h_R_past : CanonicalR_past w₁.val.world w₂.val.world :=
     g_content_subset_implies_h_content_reverse w₂.val.world w₁.val.world
-      w₂.val.is_mcs w₁.val.is_mcs h_le
+      w₂.val.is_mcs w₁.val.is_mcs h_R
   exact canonical_backward_H w₁.val.world w₂.val.world h_R_past phi h_H
 
 /--
@@ -685,14 +686,20 @@ theorem chainFMCS_backward_P_in_CanonicalMCS (flag : Flag CanonicalMCS)
 BoxContent propagation within a chain: if `w₁ ≤ w₂` in the chain,
 then `MCSBoxContent(mcs(w₁)) ⊆ MCSBoxContent(mcs(w₂))`.
 
-This follows from `MCSBoxContent_subset_of_CanonicalR`.
+This follows from `MCSBoxContent_subset_of_CanonicalR` for the CanonicalR case,
+and reflexivity for the equality case.
 -/
 theorem chainFMCS_boxcontent_propagation (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag)
     (h_le : w₁ ≤ w₂) :
-    MCSBoxContent (chainFMCS_mcs flag w₁) ⊆ MCSBoxContent (chainFMCS_mcs flag w₂) :=
-  MCSBoxContent_subset_of_CanonicalR w₁.val.world w₂.val.world
-    w₁.val.is_mcs w₂.val.is_mcs h_le
+    MCSBoxContent (chainFMCS_mcs flag w₁) ⊆ MCSBoxContent (chainFMCS_mcs flag w₂) := by
+  -- w₁ ≤ w₂ means w₁.val = w₂.val ∨ CanonicalR w₁.val.world w₂.val.world
+  rcases h_le with h_eq | h_R
+  · -- Case: w₁.val = w₂.val, so MCS are equal
+    simp only [chainFMCS_mcs, h_eq, Set.Subset.rfl]
+  · -- Case: CanonicalR
+    exact MCSBoxContent_subset_of_CanonicalR w₁.val.world w₂.val.world
+      w₁.val.is_mcs w₂.val.is_mcs h_R
 
 /--
 Diamond persistence within a chain: Diamond(psi) is preserved along the chain
@@ -705,17 +712,27 @@ theorem chainFMCS_diamond_persistent_forward (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag)
     (h_le : w₁ ≤ w₂) (psi : Formula)
     (h_diamond : psi.diamond ∈ chainFMCS_mcs flag w₁) :
-    psi.diamond ∈ chainFMCS_mcs flag w₂ :=
-  diamond_persistent_forward w₁.val.world w₂.val.world
-    w₁.val.is_mcs w₂.val.is_mcs h_le psi h_diamond
+    psi.diamond ∈ chainFMCS_mcs flag w₂ := by
+  rcases h_le with h_eq | h_R
+  · -- Case: w₁.val = w₂.val
+    simp only [chainFMCS_mcs, h_eq] at h_diamond ⊢
+    exact h_diamond
+  · -- Case: CanonicalR
+    exact diamond_persistent_forward w₁.val.world w₂.val.world
+      w₁.val.is_mcs w₂.val.is_mcs h_R psi h_diamond
 
 theorem chainFMCS_diamond_persistent_backward (flag : Flag CanonicalMCS)
     (w₁ w₂ : ChainFMCSDomain flag)
     (h_le : w₁ ≤ w₂) (psi : Formula)
     (h_diamond : psi.diamond ∈ chainFMCS_mcs flag w₂) :
-    psi.diamond ∈ chainFMCS_mcs flag w₁ :=
-  diamond_persistent_backward w₂.val.world w₁.val.world
-    w₂.val.is_mcs w₁.val.is_mcs h_le psi h_diamond
+    psi.diamond ∈ chainFMCS_mcs flag w₁ := by
+  rcases h_le with h_eq | h_R
+  · -- Case: w₁.val = w₂.val
+    simp only [chainFMCS_mcs, h_eq] at h_diamond ⊢
+    exact h_diamond
+  · -- Case: CanonicalR
+    exact diamond_persistent_backward w₂.val.world w₁.val.world
+      w₂.val.is_mcs w₁.val.is_mcs h_R psi h_diamond
 
 /--
 Modal witness seed consistency within a chain: if Diamond(psi) is in the MCS

@@ -113,6 +113,7 @@ technical_debt:
 - **Created**: 2026-03-16 (Review)
 - **Research**: [research-006.md](specs/982_wire_dense_completeness_domain_connection/reports/research-006.md) (axiom-free modal saturation)
 - **Plan**: [implementation-004.md](specs/982_wire_dense_completeness_domain_connection/plans/implementation-004.md) (v4: closure-based saturation)
+- **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md) (partial: phases 1-3 of 7)
 
 **Description**: Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics using closure-based modal saturation (axiom-free approach).
 

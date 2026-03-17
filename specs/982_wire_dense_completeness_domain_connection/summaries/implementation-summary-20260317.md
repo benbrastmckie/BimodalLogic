@@ -1,100 +1,116 @@
 # Implementation Summary: Task 982 - Wire Dense Completeness Domain Connection
 
-**Status**: PARTIAL (Phase 3 BLOCKED)
 **Date**: 2026-03-17
-**Session**: sess_1773710941_20917
-**Plan**: implementation-003.md
+**Session**: sess_1773714773_66f984
+**Status**: Partial (Phases 1-3 complete, Phases 4-7 blocked)
 
-## What Was Accomplished
+## Completed Work
 
-### Phase 1: Core Linking Lemma [COMPLETED]
+### Phase 1-2: Core Linking and FMCS (Pre-existing)
+- `timelineQuot_lt_implies_canonicalR`: Links TimelineQuot ordering to CanonicalR
+- `timelineQuotFMCS`: FMCS structure over TimelineQuot with forward_G/backward_H
 
-Created `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotCanonical.lean` with:
+### Phase 3: Witness Family Constructor (COMPLETED)
+**File**: `Theories/Bimodal/Metalogic/StagedConstruction/WitnessChainFMCS.lean`
 
-1. **`denseTimelineElemIsPreorder`** - IsPreorder instance for DenseTimelineElem
-   - Required explicit `haveI` injection in proof bodies due to typeclass resolution issues
+Created witness MCS construction primitives:
+- `buildWitnessMCS`: Construct witness MCS from Diamond formula membership
+- `buildWitnessMCS_contains_psi`: Witness contains the required formula
+- `buildWitnessMCS_is_mcs`: Witness is maximal consistent
+- `buildWitnessMCS_contains_boxcontent`: Witness preserves BoxContent
+- `boxcontent_subset_implies_box_forward`: BoxContent containment implies modal forward
 
-2. **`denseTimelineElem_mutual_le_implies_mcs_eq`** - Helper lemma
-   - If two DenseTimelineElems are mutually <= (same equivalence class), their MCSs are equal
-   - Uses `canonicalR_irreflexive` to rule out mutual CanonicalR
+**Build Status**: Zero sorries, zero axioms introduced.
 
-3. **`timelineQuot_lt_implies_canonicalR`** - Core linking lemma
-   - If t < t' in TimelineQuot, then CanonicalR between their underlying MCSs
-   - Uses `Antisymmetrization.ind` to work with representatives
-   - Key insight: representatives of same class have same MCS
+### Phase 4: Architecture Documentation (PARTIAL)
+**File**: `Theories/Bimodal/Metalogic/StagedConstruction/ClosureSaturation.lean`
 
-4. **`canonicalR_implies_timelineQuot_le`** - Converse direction
-   - CanonicalR implies <= in TimelineQuot
-   - Used for FMCS coherence conditions
+Documented the architectural approach:
+- Singleton BFMCS cannot satisfy modal_backward (fundamental limitation)
+- Modal saturation requires multi-family BFMCS
+- TimelineQuot provides TIME domain; CanonicalMCS provides MODAL domain
+- Direct truth lemma approach documented
 
-### Phase 2: FMCS over TimelineQuot [COMPLETED]
+**Build Status**: Zero sorries in file.
 
-5. **`timelineQuot_forward_G`** - Forward G coherence
-   - G phi at t, t < t' implies phi at t'
-   - Uses `timelineQuot_lt_implies_canonicalR` + `canonical_forward_G`
+### Bug Fixes
+**File**: `Theories/Bimodal/Metalogic/Bundle/ChainFMCS.lean`
 
-6. **`timelineQuot_backward_H`** - Backward H coherence
-   - H phi at t, t' < t implies phi at t'
-   - Uses `timelineQuot_lt_implies_canonicalR` + `g_content_subset_implies_h_content_reverse`
+Fixed pre-existing type mismatches:
+- `chainFMCS_forward_G`: Changed from `h_le` to `h_lt` (≤ to <)
+- `chainFMCS_backward_H`: Changed from `h_le` to `h_lt` (≤ to <)
+- `chainFMCS_boxcontent_propagation`: Added case split for ≤ vs CanonicalR
+- `chainFMCS_diamond_persistent_forward/backward`: Added case splits
 
-7. **`timelineQuotFMCS`** - FMCS structure over TimelineQuot
-   - Maps each time point to its MCS via `timelineQuotMCS`
-   - Temporal coherence from linking lemmas
+## Remaining Work
 
-### Verification
+### Phase 5: Closure-Aware Truth Lemma [NOT STARTED]
+**Blocker**: Requires porting truth lemma infrastructure from Int to TimelineQuot.
 
-- `lake build` passes for `TimelineQuotCanonical.lean`
-- Zero sorries in new file
-- Zero new axioms
+The existing truth lemma (`canonical_truth_lemma`) is built for `D = Int`. Adapting to TimelineQuot requires:
+1. Building CanonicalTaskFrame over TimelineQuot
+2. Defining appropriate TaskModel with valuation
+3. Constructing shift-closed Omega set
+4. Proving all truth lemma cases
 
-## What Blocked
+**Alternative approach**: Use Cantor isomorphism (TimelineQuot ≃o Q) to transfer results.
 
-### Phase 3: BFMCS and TaskFrame [BLOCKED]
+### Phase 6: Complete the Sorry [NOT STARTED]
+**Blocker**: Requires Phase 5 infrastructure.
 
-**Root Cause**: The implementation plan incorrectly assumed that single-family BFMCS `modal_backward` is "trivial for singleton".
+The sorry is in `timelineQuot_not_valid_of_neg_consistent` (TimelineQuotCompleteness.lean:127).
 
-**The Mathematical Error**: For singleton BFMCS, `modal_backward` requires:
-```
-(forall fam' in {fam}, phi in fam'.mcs t) -> Box phi in fam.mcs t
-```
-Since there's only one family, this simplifies to:
-```
-phi in fam.mcs t -> Box phi in fam.mcs t
-```
-This is equivalent to the statement `phi -> Box phi`, which is **FALSE in general modal logic**.
+### Phase 7: Final Verification [NOT STARTED]
+**Dependency**: Phases 5-6
 
-**Evidence**:
-- `Theories/Bimodal/Metalogic/Bundle/Construction.lean` lines 90-97 explicitly state this is NOT provable
-- `Boneyard/Metalogic_v7/Bundle/SingleFamilyBFMCS.lean` documents this as a known issue
-- The `singleFamilyBFMCS` definition was archived to Boneyard specifically because its `modal_backward` field requires `sorry`
+## Architectural Analysis
 
-**research-005.md Section 6.3 Error**: The research document claimed:
-> modal_backward becomes: phi in MCS t -> Box phi in MCS t (trivially, only one family)
+The fundamental challenge is that the existing completeness infrastructure is built over Int:
+- `CanonicalTaskFrame`: Uses Int as time domain
+- `canonical_truth_lemma`: Proven for BFMCS over Int
+- `ShiftClosedCanonicalOmega`: Built for Int-based histories
 
-This is mathematically incorrect. The existing codebase already documents this as a dead end.
+TimelineQuot provides a different time domain with:
+- Order isomorphism to Q (via Cantor's theorem)
+- MCS assignment via `timelineQuotMCS`
+- Temporal coherence via `timelineQuot_lt_implies_canonicalR`
 
-## Options for Proceeding
+### Recommended Resolution Paths
 
-1. **Multi-family construction**: Port the multi-family BFMCS construction from Int to TimelineQuot
-   - Pro: Mathematically correct
-   - Con: Complex, existing Int version has sorries in `fully_saturated_bfmcs_exists_int`
+**Option A: Port Truth Lemma to TimelineQuot**
+- Build `TimelineQuotTaskFrame`, `TimelineQuotTaskModel`
+- Prove `timelineQuot_truth_lemma`
+- Estimated effort: 8-12 hours
 
-2. **Use Int-based infrastructure**: Use existing Int-indexed completeness instead of TimelineQuot
-   - Pro: More complete infrastructure exists
-   - Con: Violates D-from-syntax constraint
+**Option B: Validity Transfer via Isomorphism**
+- Use `cantor_iso : TimelineQuot ≃o Q`
+- Build validity transfer theorem
+- Estimated effort: 4-6 hours
 
-3. **Alternative architecture**: Find proof architecture that doesn't require BFMCS `modal_backward`
-   - Pro: May be simpler
-   - Con: Requires new research
+**Option C: Direct MCS-based Argument**
+- Define truth directly via MCS membership (bypass TaskFrame)
+- Show neg(phi) in M0 implies phi false semantically
+- Estimated effort: 6-8 hours
 
 ## Files Modified
 
-- `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotCanonical.lean` - NEW (proven)
-- `specs/982_wire_dense_completeness_domain_connection/plans/implementation-003.md` - Updated status markers
+| File | Change |
+|------|--------|
+| `StagedConstruction/WitnessChainFMCS.lean` | NEW - Witness MCS primitives |
+| `StagedConstruction/ClosureSaturation.lean` | NEW - Architecture documentation |
+| `Bundle/ChainFMCS.lean` | FIXED - Type mismatches in forward_G/backward_H |
 
-## Recommendations
+## Sorries Status
 
-The plan needs revision. The mathematical error in research-005 led to an unworkable Phase 3 design. User decision required on which approach to take.
+| File | Sorries Before | Sorries After |
+|------|----------------|---------------|
+| TimelineQuotCompleteness.lean | 1 | 1 (unchanged) |
+| WitnessChainFMCS.lean | - | 0 |
+| ClosureSaturation.lean | - | 0 |
 
----
-Generated by lean-implementation-agent, iteration 2
+## Next Steps
+
+1. Choose resolution path (A, B, or C above)
+2. Implement Phase 5 truth lemma infrastructure
+3. Complete Phase 6 sorry
+4. Run Phase 7 verification
