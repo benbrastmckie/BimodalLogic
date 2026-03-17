@@ -41,11 +41,11 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T22:13:04Z",
-      "researched": "2026-03-17T03:39:26Z",
+      "last_updated": "2026-03-17T23:05:00Z",
+      "researched": "2026-03-17T23:05:00Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
         {
@@ -92,6 +92,11 @@
           "path": "specs/986_bfmcs_construction_for_int/reports/research-006.md",
           "type": "research",
           "summary": "DEFINITIVE: D=Int FORBIDDEN by ROAD_MAP; truth lemma needs ALL F/P witnesses; tree cannot linearize; task should be BLOCKED/ABANDONED"
+        },
+        {
+          "path": "specs/986_bfmcs_construction_for_int/reports/07_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Teammate B: D=Int not necessary for completeness; CanonicalMCS lacks AddCommGroup; <= vs < gap bridgeable via CanonicalR irreflexivity; recommended task 987 path via strengthened CanonicalMCS FMCS + multi-family modal saturation"
         }
       ],
       "session_id": "sess_1773785524_aedf5c",

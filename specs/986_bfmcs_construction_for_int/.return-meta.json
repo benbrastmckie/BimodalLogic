@@ -6,33 +6,42 @@
       "type": "report",
       "path": "specs/986_bfmcs_construction_for_int/reports/research-006.md",
       "summary": "Definitive analysis: D=Int approach FORBIDDEN by ROAD_MAP; truth lemma requires ALL F/P witnesses (not just subformulas); tree-structured witnesses cannot linearize to Int chain; Task 986 should be BLOCKED/ABANDONED"
+    },
+    {
+      "type": "report",
+      "path": "specs/986_bfmcs_construction_for_int/reports/07_teammate-b-findings.md",
+      "summary": "Teammate B alternative path analysis: D=Int not necessary for completeness; CanonicalMCS lacks AddCommGroup; strict < vs <= gap identified and bridgeable; recommended path via strengthened CanonicalMCS FMCS + multi-family modal saturation for task 987"
     }
   ],
-  "next_steps": "Mark Task 986 as BLOCKED/ABANDONED - D=Int import approaches explicitly forbidden by project architecture; redirect effort to Task 956 Phase 8 (D-from-Syntax wiring)",
+  "next_steps": "Synthesize Teammate A and B findings; update task 986 status; redirect task 987 to CanonicalMCS-based completeness path (strengthen temporal_coherent_family_exists_CanonicalMCS to strict <, build BFMCS CanonicalMCS via modal saturation, prove CanonicalMCS truth lemma)",
   "metadata": {
-    "session_id": "sess_1773759111_1a465a",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 3600,
+    "session_id": "sess_1773785524_aedf5c",
+    "agent_type": "math-research-agent",
+    "duration_seconds": 480,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-logic-research"],
-    "findings_count": 6,
-    "context_files_loaded": ["ROAD_MAP.md", "ParametricTruthLemma.lean", "TemporalCoherence.lean", "CanonicalFrame.lean", "IntBFMCS.lean", "research-005.md"],
+    "delegation_path": ["orchestrator", "research", "math-research-agent"],
+    "findings_count": 5,
+    "context_files_loaded": [
+      "CanonicalFMCS.lean",
+      "ParametricRepresentation.lean",
+      "TaskFrame.lean",
+      "Validity.lean",
+      "BaseCompleteness.lean",
+      "BFMCS.lean",
+      "ModalSaturation.lean",
+      "IntBFMCS.lean",
+      "AlgebraicBaseCompleteness.lean",
+      "TemporalCoherence.lean",
+      "ParametricCanonical.lean",
+      "DiscreteInstantiation.lean"
+    ],
     "mathlib_lookups_performed": 0,
-    "context_extension_tasks": [],
-    "context_candidates_count": 0,
     "key_insights": [
-      "ROAD_MAP explicitly marks ALL D=Int approaches as ABANDONED and FORBIDDEN",
-      "Truth lemma backward G case uses forward_F with neg(subformula)",
-      "Lindenbaum closure introduces arbitrary F/P obligations beyond subformulas",
-      "Witness tree has branching structure; Int is linear - structurally incompatible",
-      "CanonicalMCS domain works because it has no linear ordering constraint",
-      "The only acceptable path is D-from-Syntax via Cantor isomorphism (Task 956)"
-    ],
-    "roadmap_pitfalls_checked": [
-      "All Int/Rat Import Approaches - DIRECT HIT",
-      "D=Int canonical construction - DIRECT HIT",
-      "D=Int dovetailing chain - DIRECT HIT"
-    ],
-    "definitive_conclusion": "Task 986 objective is architecturally forbidden; sorries are mathematically unfillable"
+      "valid phi quantifies over ALL D; completeness needs only ONE countermodel in ONE D - D=Int is not mandatory",
+      "CanonicalMCS has Preorder but not AddCommGroup; cannot be used as TaskFrame D parameter directly",
+      "temporal_coherent_family_exists_CanonicalMCS uses <= for F/P, but BFMCS.temporally_coherent needs strict <",
+      "CanonicalR is irreflexive, so witness MCS is strictly greater; the <= can be strengthened to < with a proof fix",
+      "Recommended task 987 path: strengthen to strict <, build BFMCS CanonicalMCS via modal saturation, prove CanonicalMCS truth lemma"
+    ]
   }
 }

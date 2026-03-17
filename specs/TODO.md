@@ -26,10 +26,11 @@ technical_debt:
 ## Tasks
 ### 990. Research representation theorem design for parametric durations
 - **Effort**: 6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: formal
 - **Research**: [01_teammate-a-findings.md](990_representation_theorem_duration_design/reports/01_teammate-a-findings.md), [01_teammate-b-findings.md](990_representation_theorem_duration_design/reports/01_teammate-b-findings.md), [02_synthesis.md](990_representation_theorem_duration_design/reports/02_synthesis.md)
 - **Plan**: [01_parametric-duration-architecture.md](990_representation_theorem_duration_design/plans/01_parametric-duration-architecture.md)
+- **Started**: 2026-03-17
 
 **Description**: Research how representation theorems for TM base logic and its dense/discrete extensions should handle durations D. The key question: should D be constructed from pure syntax, or should D be parametric with axioms (density, discreteness, or linear commutative group) constraining its structure? Conduct systematic research into existing results in modal logic completeness (algebraic and Henkin-style approaches) to inform the mathematically correct design, then implement the recommended architecture.
 
@@ -76,9 +77,9 @@ technical_debt:
 
 ### 986. BFMCS construction for D = Int (conditional)
 - **Effort**: 2-3 hours (4 phases)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md), [research-002.md](specs/986_bfmcs_construction_for_int/reports/research-002.md), [research-003.md](specs/986_bfmcs_construction_for_int/reports/research-003.md), [research-004.md](specs/986_bfmcs_construction_for_int/reports/research-004.md), [research-005.md](specs/986_bfmcs_construction_for_int/reports/research-005.md), [research-006.md](specs/986_bfmcs_construction_for_int/reports/research-006.md)
+- **Research**: [research-001.md](specs/986_bfmcs_construction_for_int/reports/research-001.md), [research-002.md](specs/986_bfmcs_construction_for_int/reports/research-002.md), [research-003.md](specs/986_bfmcs_construction_for_int/reports/research-003.md), [research-004.md](specs/986_bfmcs_construction_for_int/reports/research-004.md), [research-005.md](specs/986_bfmcs_construction_for_int/reports/research-005.md), [research-006.md](specs/986_bfmcs_construction_for_int/reports/research-006.md), [07_teammate-b-findings.md](specs/986_bfmcs_construction_for_int/reports/07_teammate-b-findings.md)
 - **Plan**: [implementation-002.md](specs/986_bfmcs_construction_for_int/plans/implementation-002.md) (v2: Conditional approach)
 - **Summary**: [implementation-summary-20260317.md](specs/986_bfmcs_construction_for_int/summaries/implementation-summary-20260317.md)
 - **Module**: [IntBFMCS.lean](Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean)
