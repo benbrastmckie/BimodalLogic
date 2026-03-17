@@ -8,10 +8,11 @@
     {
       "project_number": 985,
       "project_name": "lindenbaum_tarski_representation_theorem",
-      "status": "not_started",
+      "status": "researching",
       "language": "logic",
       "created": "2026-03-17T01:08:17Z",
-      "last_updated": "2026-03-17T01:08:17Z"
+      "last_updated": "2026-03-17T01:10:39Z",
+      "session_id": "sess_1773709815_8170ec"
     },
     {
       "project_number": 984,
@@ -141,6 +142,11 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-004.md",
           "type": "research",
           "summary": "Deep math analysis: box_persistent as key resolution, singleton BFMCS variant, 2-3 hours"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-005.md",
+          "type": "research",
+          "summary": "Rigorous analysis: Collapse variant unsound; correct structure D=TimelineQuot + WorldState=CanonicalWorldState. 8-10 hours."
         }
       ],
       "planned": "2026-03-17T00:36:43Z",
