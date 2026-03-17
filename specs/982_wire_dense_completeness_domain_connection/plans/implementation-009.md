@@ -153,7 +153,57 @@ Phase 4 wires the completeness theorem.
 
 ## Implementation Phases
 
-### Phase 1: Define Multi-Family BFMCS Structure [NOT STARTED]
+### Phase 1: Define Multi-Family BFMCS Structure [BLOCKED]
+
+**BLOCKER (sess_1773781597_89602a)**: Architectural flaw discovered — the multi-family approach
+does NOT resolve the `forward_F`/`backward_P` problem.
+
+**Root Cause**: `BFMCS.temporally_coherent` requires EACH family in B.families to have
+`forward_F`/`backward_P` INTERNALLY (within that family). Specifically:
+```lean
+def BFMCS.temporally_coherent (B : BFMCS D) : Prop :=
+  ∀ fam ∈ B.families,
+    (∀ t φ, F(φ) ∈ fam.mcs t → ∃ s > t, φ ∈ fam.mcs s) ∧  -- within same fam
+    ...
+```
+This is NOT cross-family. Witness families added to the BFMCS must ALSO have
+their own internal `forward_F`/`backward_P`. Since witness families are FMCSs
+over TimelineQuot, they face the SAME m > 2k edge case as the primary family.
+
+**What was explored**:
+- `BFMCS` structure: families, modal_forward, modal_backward, eval_family (BFMCS.lean)
+- `BFMCS.temporally_coherent`: requires strict `<` forward_F for ALL families (TemporalCoherence.lean)
+- `parametric_canonical_truth_lemma`: requires `h_tc : B.temporally_coherent` (ParametricTruthLemma.lean:174)
+- `timelineQuotFMCS_forward_F`: sorry at m > 2k edge case (ClosureSaturation.lean:659)
+- `canonicalMCS_forward_F`: sorry-free but gives `≤` not `<` (CanonicalFMCS.lean:222)
+- `ParametricTruthLemma` requires `[LinearOrder D]` + `[AddCommGroup D]` (line 49)
+- `CanonicalMCS` is only Preorder (not LinearOrder) — same v8 blocker
+- `saturated_modal_backward` works but doesn't help with temporal coherence gap
+- `canonical_truth_lemma` for D=Int is sorry-free but Int is not DenselyOrdered
+
+**Remaining options**:
+1. Fix m > 2k edge case in `timelineQuotFMCS_forward_F` directly (15-20 hours, high risk)
+2. Prove CanonicalMCS forward_F with STRICT `<` using `canonicalR_irreflexive` (see below)
+3. Adapt `canonical_truth_lemma` (Int-based) to use with TimelineQuot via domain transfer
+
+**Option 2 Analysis**:
+- `canonical_forward_F` gives `CanonicalR w.world W.world`
+- `canonicalR_irreflexive` (proven, no axiom) gives `¬CanonicalR W.world W.world`
+- Therefore `w.world ≠ W.world`, so `w ≠ W_as_CanonicalMCS`
+- Combined: `w < W_as_CanonicalMCS` (strict) — NEEDS asymmetry of CanonicalR
+- CanonicalR asymmetry needs to be verified/proven
+- BUT: Even with strict forward_F on CanonicalMCS, ParametricTruthLemma requires `[LinearOrder D]`
+  and CanonicalMCS is only Preorder — so can't use ParametricTruthLemma with CanonicalMCS
+
+**Conclusion**: Plan v9 is INCORRECT. The multi-family approach does not bypass the temporal
+coherence requirement. The fundamental blocker remains:
+- TimelineQuot FMCSs have sorry'd forward_F (m > 2k edge case)
+- CanonicalMCS has sorry-free forward_F but requires separate truth lemma (no ParametricTruthLemma)
+- No existing path resolves both constraints without new proof work
+
+**Recommended next step**: Research task to find correct approach. Consider:
+1. Fix timelineQuotFMCS_forward_F m > 2k case (requires dovetailing construction changes)
+2. Build a CanonicalMCS-specific truth lemma that uses Preorder (not LinearOrder)
 
 - **Dependencies**: None
 - **Goal**: Define `TimelineQuotSaturatedBFMCS` using witness family pattern

@@ -126,7 +126,7 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 8-12 hours (4 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
