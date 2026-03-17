@@ -8,11 +8,11 @@
     {
       "project_number": 985,
       "project_name": "lindenbaum_tarski_representation_theorem",
-      "status": "researched",
+      "status": "researching",
       "language": "logic",
       "created": "2026-03-17T01:08:17Z",
-      "last_updated": "2026-03-17T01:21:54Z",
-      "session_id": "sess_1773709815_8170ec",
+      "last_updated": "2026-03-17T01:25:32Z",
+      "session_id": "sess_1773710714_8a9e6a",
       "researched": "2026-03-17T01:21:54Z"
     },
     {
@@ -156,12 +156,12 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T01:09:00Z",
+      "last_updated": "2026-03-17T01:27:53Z",
       "session_id": "sess_1773709593_2088bd",
-      "researched": "2026-03-17T00:11:20Z",
+      "researched": "2026-03-17T01:27:53Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -182,6 +182,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-002.md",
           "type": "plan",
           "summary": "Revised 6-phase plan: G-inference consistency proof + SuccOrder.ofCore"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md",
+          "type": "research",
+          "summary": "Team research run 004 (2 teammates, math domain): T-axiom → g_content⊆M direct proof; IRR+T-axiom inconsistency identified"
         }
       ],
       "planned": "2026-03-17T00:14:53Z",

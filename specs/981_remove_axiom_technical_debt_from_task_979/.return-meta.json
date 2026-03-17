@@ -1,43 +1,24 @@
 {
-  "status": "partial",
-  "requires_user_review": true,
-  "review_reason": "Phase 2 blocked: G-inference approach from research-003 has a gap. G(G(psi)) does NOT imply G(psi) in K4 logic (no T-axiom). Need alternative proof strategy for discreteImmediateSuccSeed_consistent.",
-  "started_at": "2026-03-16T17:00:00Z",
+  "status": "researched",
+  "summary": "Team research 004 (2 teammates, math domain): T-axiom (KT4) gives g_content(M) ⊆ M — sorry IS fillable via direct subset argument. IRR+T-axiom inconsistency identified as pre-existing issue.",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003-teammate-a-findings.md",
-      "summary": "Primary approaches analysis"
-    },
-    {
-      "type": "report",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003-teammate-b-findings.md",
-      "summary": "Alternative approaches analysis"
-    },
-    {
-      "type": "code",
-      "path": "Theories/Bimodal/Metalogic/StagedConstruction/DiscreteSuccSeed.lean",
-      "summary": "Partial Phase 2 implementation with 1 sorry at line 319 in discreteImmediateSuccSeed_consistent"
+      "type": "research",
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md",
+      "summary": "Team research run 004: T-axiom → g_content⊆M direct proof; IRR+T-axiom object-level inconsistency; sorry fillable"
     }
   ],
-  "partial_progress": {
-    "stage": "proof_blocked",
-    "details": "Phase 2 blocked at discreteImmediateSuccSeed_consistent Case 2. Research-003 G-inference approach fails because G(G(psi)) -> G(psi) is NOT valid in K4 logic (irreflexive semantics). Case 1 (L subset g_content) is complete. Case 2 (L contains blocking formulas) needs alternative strategy. Possible approaches: (1) Find different blocking formula that IS contained in arbitrary witnesses, (2) Use different proof technique for consistency, (3) Construct specific witness rather than showing containment in arbitrary witness.",
-    "phases_completed": 1,
-    "phases_total": 6
+  "team_execution": {
+    "enabled": true,
+    "wave_count": 1,
+    "teammates_spawned": 2,
+    "teammates_completed": 2,
+    "teammates_failed": 0,
+    "degraded_to_single": false
   },
-  "errors": [
-    {
-      "type": "proof_impossible",
-      "message": "G-inference approach assumes G(G(psi)) -> G(psi) which is NOT valid in K4 (irreflexive temporal logic). Research-003 approach has a fundamental gap.",
-      "recoverable": false,
-      "recommendation": "Need alternative proof strategy. Options: (1) Different blocking formula design, (2) Construct specific witness MCS, (3) Use different consistency argument that doesn't rely on partial G-lifting."
-    }
-  ],
   "metadata": {
-    "session_id": "sess_1773707360_3d82ad",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"]
+    "session_id": "sess_1773709593_2088bd",
+    "agent_type": "skill-team-research",
+    "run_number": "004"
   }
 }

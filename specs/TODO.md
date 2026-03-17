@@ -26,7 +26,7 @@ technical_debt:
 ## Tasks
 ### 985. Develop Lindenbaum-Tarski algebraic representation theorem approach
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: logic
 - **Research**: [research-001.md](specs/985_lindenbaum_tarski_representation_theorem/reports/research-001.md) (team: algebraic approach + infrastructure analysis)
 
@@ -88,10 +88,10 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 5-7 hours (6 phases)
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
-- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof)
+- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: K4 gap analysis — T-axiom enables direct subset proof)
 - **Plan**: [implementation-002.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-002.md) (v2: G-inference consistency + SuccOrder.ofCore)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
