@@ -8,10 +8,10 @@
     {
       "project_number": 986,
       "project_name": "bfmcs_construction_for_int",
-      "status": "partial",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T14:30:00Z",
+      "last_updated": "2026-03-17T13:38:39Z",
       "researched": "2026-03-17T03:39:26Z",
       "description": "Prove a sorry-free BFMCS construction for D = Int: given any MCS M, construct a temporally coherent BFMCS over Int containing M. The existing DovetailingChain approach in CanonicalFMCS.lean has F/P witness sorries. The sorry-free construction for D = CanonicalMCS exists but CanonicalMCS lacks AddCommGroup structure. Research and implement an alternative: either fix DovetailingChain, adapt the CanonicalMCS construction to Int via an embedding, or find a direct construction. This is the core blocker for algebraic base completeness.",
       "artifacts": [
@@ -36,7 +36,7 @@
           "summary": "Partial implementation: chain infrastructure complete, F/P witness proofs blocked by dovetailing requirement"
         }
       ],
-      "session_id": "sess_1773752190_077933",
+      "session_id": "sess_1773754705_cfda86",
       "planned": "2026-03-17T12:47:32Z",
       "started": "2026-03-17T12:56:57Z",
       "partial_progress": {
@@ -58,16 +58,21 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T13:33:54Z",
+      "last_updated": "2026-03-17T12:45:00Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
           "path": "specs/988_dense_algebraic_completeness/reports/research-001.md",
           "type": "research",
           "summary": "Analyzed D-parametric infrastructure for dense algebraic completeness with D=Rat. Core gap: construct_bfmcs function. Recommended: embed CanonicalMCS into Rat via Cantor theorem."
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/reports/research-002.md",
+          "type": "research",
+          "summary": "Deep blocker analysis: TimelineQuot designed for order properties not temporal coherence. Recommends Option B: CanonicalMCS quotient via Antisymmetrization + Cantor isomorphism."
         },
         {
           "path": "specs/988_dense_algebraic_completeness/plans/implementation-001.md",
@@ -81,10 +86,9 @@
         }
       ],
       "session_id": "sess_1742158800_988r2",
-      "researched": "2026-03-17T03:39:59Z",
+      "researched": "2026-03-17T12:45:00Z",
       "planned": "2026-03-17T12:51:08Z",
-      "started": "2026-03-17T12:55:57Z",
-      "blocked_reason": "TimelineQuot transfer approach cannot prove temporal coherence (forward_F/backward_P). Staged construction designed for NoMaxOrder/DenselyOrdered, not for phi-specific F-witnesses. User decision required: (A) Modify staged construction, (B) Use CanonicalMCS directly with semantic equivalence, (C) Semantic argument for temporal coherence, (D) Abandon approach."
+      "recommendation": "Option B: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS, apply Cantor theorem for Rat isomorphism."
     },
     {
       "project_number": 989,
@@ -241,12 +245,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-17T12:47:22Z",
+      "last_updated": "2026-03-17T13:39:14Z",
       "session_id": "sess_1773751627_9d82d6",
       "researched": "2026-03-16T23:40:37Z",
       "artifacts": [
@@ -286,11 +290,6 @@
           "summary": "Blocker analysis: D-parametric infrastructure (ParametricTruthLemma) with D=TimelineQuot, 6-8h"
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-005.md",
-          "type": "plan",
-          "summary": "v5: D-parametric instantiation with constant witness FMCS families (6-8h)"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md",
           "type": "summary",
           "summary": "Partial: Phase 4 forward_F main case proven, edge cases blocked requiring architectural decision"
@@ -299,9 +298,14 @@
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/research-008.md",
           "type": "research",
           "summary": "Mathematical analysis of dense completeness blocker with 4 approaches evaluated; recommends domain transfer via isomorphism"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/implementation-006.md",
+          "type": "plan",
+          "summary": "v6: Domain transfer approach using Rat BFMCS + validity transfer isomorphism"
         }
       ],
-      "planned": "2026-03-17T03:46:44Z",
+      "planned": "2026-03-17T13:39:14Z",
       "started": "2026-03-17T01:29:16Z"
     },
     {
