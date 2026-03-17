@@ -48,17 +48,17 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: 12-16 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 15 hours (4 phases)
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md) (W/D separated architecture)
-- **Plan**: [implementation-003.md](specs/988_dense_algebraic_completeness/plans/implementation-003.md) (v3: Separated W/D architecture)
+- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md) (multi-family W/D approach)
+- **Plan**: [implementation-003.md](specs/988_dense_algebraic_completeness/plans/implementation-003.md) (v3: Separated W/D architecture - needs revision)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 - **Summary**: [implementation-summary-20260317.md](specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md) (blocker analysis)
 
-**Research Summary (v3 - Semantics Architecture)**: Semantics has TWO distinct components: W (world states) and D (durations). WorldHistory h: D → W is the fundamental object. Previous approaches import D (Rat/Int) which violates pure-syntax constraint. CanonicalMCS has witnesses but lacks order; TimelineQuot has order but lacks witnesses.
+**Research Summary (v5 - Multi-family W/D Separation)**: forward_F blocker diagnosed: witnesses from canonical_forward_F may not be CanonicalR-reachable from root MCS, hence not in TimelineQuot. Dovetailing alone insufficient due to inherited F-formulas. Solution: Multi-family BFMCS with proper W/D separation where D=TimelineQuot provides order and W=CanonicalMCS provides witnesses. Key infrastructure (`canonicalMCS_forward_F`/`backward_P`) is fully proven in CanonicalFMCS.lean.
 
-**Recommended Approach**: Quotient CanonicalMCS to get CanonicalQuot with BOTH properties (witnesses + order). Then apply Cantor theorem to get D ≃ Rat from syntax. This constructs both W and D purely from syntax, respecting the semantics architecture.
+**Recommended Approach**: Multi-family BFMCS over TimelineQuot where witness families (rooted at Lindenbaum witnesses) provide F/P temporal coherence. D gives structure, W gives witnesses. Witnesses don't need to be in D, just in W.
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
 
@@ -76,7 +76,6 @@ technical_debt:
 **Research Summary**: Task 986 has 2 sorries (forward_F/backward_P) blocking direct wiring. CanonicalWorldState and ParametricCanonicalWorldState are identical; real mismatch is D=Int (needs AddCommGroup) vs D=CanonicalMCS (sorry-free but only Preorder). Two paths: (A) complete task 986 dovetailing, or (B) semantic equivalence via CanonicalMCS completeness.
 
 ---
-
 
 ### 985. Develop Lindenbaum-Tarski algebraic representation theorem approach
 - **Effort**: 12 hours (6 phases)
