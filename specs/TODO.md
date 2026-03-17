@@ -48,11 +48,11 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: 15 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Effort**: 10 hours (4 phases)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md) (multi-family W/D approach)
-- **Plan**: [04_multi-family-dense-completeness.md](specs/988_dense_algebraic_completeness/plans/04_multi-family-dense-completeness.md) (v4: Multi-family W/D separation)
+- **Plan**: [05_two-step-canonical-completeness.md](specs/988_dense_algebraic_completeness/plans/05_two-step-canonical-completeness.md) (v5: Two-step via CanonicalMCS)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 - **Summary**: [implementation-summary-20260317.md](specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md), [02_implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/02_implementation-summary.md) (v4 plan blocked)
 
