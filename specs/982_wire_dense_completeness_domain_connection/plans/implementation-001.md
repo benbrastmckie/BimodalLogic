@@ -1,7 +1,7 @@
 # Implementation Plan: Wire Dense Completeness Domain Connection
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4.5 hours
 - **Dependencies**: Tasks 956 (D construction), 978 (typeclass architecture)
 - **Research Inputs**: specs/982_wire_dense_completeness_domain_connection/reports/research-001.md
@@ -82,15 +82,15 @@ After this implementation:
 
 ## Implementation Phases
 
-### Phase 1: Analyze TaskFrame AddCommGroup Dependency [NOT STARTED]
+### Phase 1: Analyze TaskFrame AddCommGroup Dependency [COMPLETED]
 
 - **Dependencies**: None
 - **Goal**: Determine if AddCommGroup is needed for TaskFrame or only for specific validity definitions
 
 **Tasks**:
-- [ ] Read `Theories/Bimodal/Semantics/TaskFrame.lean` to understand AddCommGroup usage
-- [ ] Check if `valid_over` requires AddCommGroup or if it's only in DenseCompletenessStatement
-- [ ] Determine path: (A) remove AddCommGroup from TaskFrame, (B) remove from DenseCompletenessStatement, (C) build AddCommGroup on TimelineQuot via Cantor iso
+- [x] Read `Theories/Bimodal/Semantics/TaskFrame.lean` to understand AddCommGroup usage
+- [x] Check if `valid_over` requires AddCommGroup or if it's only in DenseCompletenessStatement
+- [x] Determine path: (A) remove AddCommGroup from TaskFrame, (B) remove from DenseCompletenessStatement, (C) build AddCommGroup on TimelineQuot via Cantor iso
 
 **Timing**: 30 minutes
 
@@ -103,32 +103,59 @@ After this implementation:
 - Clear understanding of where AddCommGroup is required
 - Decision documented on which path to take
 
+**Progress:**
+
+**Session: 2026-03-16, sess_1773705645_12453**
+- Analyzed: TaskFrame requires AddCommGroup D in type signature (line 93)
+- Analyzed: valid_over requires TaskFrame, so inherits AddCommGroup requirement
+- Analyzed: TimelineQuot has all instances needed for DurationTransfer.ratAddCommGroup
+- Decision: Use Option C - transfer AddCommGroup from Rat to TimelineQuot via Cantor isomorphism
+- Key insight: DurationTransfer.lean already provides ratAddCommGroup for any T with LinearOrder, Countable, DenselyOrdered, NoMaxOrder, NoMinOrder, Nonempty
+
 ---
 
-### Phase 2: Create TimelineQuotFMCS Module [NOT STARTED]
+### Phase 2: Create TimelineQuotFMCS Module [PARTIAL]
 
 - **Dependencies**: Phase 1
 - **Goal**: Define FMCS over TimelineQuot using representative MCSs
 
 **Tasks**:
-- [ ] Create `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotFMCS.lean`
+- [x] Create `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotAlgebra.lean`
+- [x] Define `timelineQuotAddCommGroup` via DurationTransfer.ratAddCommGroup
+- [x] Prove `timelineQuotIsOrderedAddMonoid`
+- [x] Prove `timelineQuotNontrivial`
+- [x] Define `timelineQuot_instantiate_dense` for validity quantification
 - [ ] Define `timelineQuotMCS : TimelineQuot -> Set Formula` using `ofAntisymmetrization`
-- [ ] Prove `timelineQuotMCS_is_mcs : SetMaximalConsistent (timelineQuotMCS t)`
-- [ ] Prove MCS equivalence under representative choice (AntisymDual property)
-- [ ] Define `timelineQuotFMCS : FMCS TimelineQuot` with:
-  - `mcs := timelineQuotMCS`
-  - `is_mcs := timelineQuotMCS_is_mcs`
-  - `forward_G`: uses `toAntisymmetrization_lt_toAntisymmetrization_iff` + CanonicalR
-  - `backward_H`: uses converse relationship
+- [ ] Prove `timelineQuot_lt_implies_canonicalR` for FMCS coherence
+- [ ] Define `timelineQuotFMCS : FMCS TimelineQuot`
 
-**Timing**: 1.5 hours
+**Timing**: 1.5 hours (estimated additional 1 hour needed)
 
-**Files to create/modify**:
-- `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotFMCS.lean` - NEW
+**Files created**:
+- `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotAlgebra.lean` - NEW, builds successfully
+
+**Blocking Issue**:
+The proof of `timelineQuot_lt_implies_canonicalR` is complex because:
+1. `ofAntisymmetrization` picks arbitrary representatives from equivalence classes
+2. Representatives may differ from the original elements
+3. Tracking CanonicalR through equivalent elements requires careful reasoning about g_content/h_content
+
+**Alternative Approach**:
+Instead of building FMCS directly over TimelineQuot, consider:
+1. Using the existing `canonical_truth_lemma` over `BFMCS Int`
+2. Building a TaskFrame over TimelineQuot (using timelineQuotAddCommGroup)
+3. Transferring validity through the semantic model
+
+**Progress:**
+
+**Session: 2026-03-16, sess_1773705645_12453**
+- Created: `TimelineQuotAlgebra.lean` with AddCommGroup transfer (builds successfully)
+- Attempted: `TimelineQuotFMCS.lean` but proof of `timelineQuot_lt_implies_canonicalR` blocked
+- Key insight: ofAntisymmetrization representative choice complicates CanonicalR tracking
+- Alternative: May need to use TaskFrame over TimelineQuot with different model construction
 
 **Verification**:
-- `lake build Bimodal.Metalogic.StagedConstruction.TimelineQuotFMCS` passes
-- `grep -n "\bsorry\b" TimelineQuotFMCS.lean` returns empty
+- `lake build Bimodal.Metalogic.StagedConstruction.TimelineQuotAlgebra` passes
 
 ---
 
