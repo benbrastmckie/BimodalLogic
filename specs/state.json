@@ -237,6 +237,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md",
           "type": "summary",
           "summary": "Phases 2-3 complete. Phase 4 covering proof partial with 3 sorries."
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md",
+          "type": "research",
+          "summary": "Covering proof blocker analysis: blocking formula approach insufficient for canonical models; axiom retention recommended"
         }
       ],
       "planned": "2026-03-17T01:33:17Z",

@@ -93,10 +93,10 @@ technical_debt:
 
 ### 981. Remove axiom technical debt from task 979
 - **Effort**: 4-5 hours (6 phases)
-- **Status**: [PARTIAL]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
-- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: K4 gap analysis — T-axiom enables direct subset proof)
+- **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution — direct G-inference consistency proof), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: K4 gap analysis — T-axiom enables direct subset proof), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (covering proof blocker analysis — axiom retention recommended)
 - **Plan**: [implementation-003.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/implementation-003.md) (v3: T-axiom direct subset argument)
 - **Summary**: [implementation-summary-20260316.md](specs/981_remove_axiom_technical_debt_from_task_979/summaries/implementation-summary-20260316.md)
 
@@ -104,7 +104,7 @@ technical_debt:
 
 **Progress (3/6 phases)**: Phases 2-3 COMPLETED (seed consistency via T-axiom, discreteImmediateSucc definition). Phase 4 PARTIAL (covering proof has 3 sorries). Phases 5-6 NOT STARTED.
 
-**Research Summary (research-002, team)**: Standard tense logic proofs (Segerberg/Verbrugge) CONSTRUCT the immediate successor with a blocking formula seed `{¬ψ ∨ ¬G(ψ) | ¬G(ψ) ∈ M}` so covering holds by definition. ProofChecker's current forward witness lacks blocking formulas — this is the root cause of the axiom. Solution: define `discreteImmediateSuccSeed` with blocking formulas, prove consistency, derive `SuccOrder` by construction. Covering is then immediate without `discrete_Icc_finite_axiom`.
+**Research Summary (research-005)**: Deep analysis of Phase 4 covering proof blocker. Root cause: blocking formula approach from Segerberg/Verbrugge works for incremental constructions but not all-at-once canonical models. Blocking formulas constrain W (the successor) but cannot retroactively constrain intermediate MCSs K that already exist. Recommendation: retain `discrete_Icc_finite_axiom` as accepted technical debt. The covering property is structural/semantic, not syntactically derivable.
 
 ---
 
