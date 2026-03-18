@@ -554,6 +554,22 @@ Level 4:  L₄ = {◦→, ⊡, G, H, U, S}       Counterfactual (Logos)
 
 ---
 
+## 11. Expressibility Ceilings
+
+Three important frame properties are **provably inexpressible** in all our languages:
+
+1. **Dedekind completeness** is not expressible even in L₂⁺ = {□, ⊡, G, H, U, S}. The logics of ℝ and ℚ coincide: Log(ℝ, <) = Log(ℚ, <) in all finitary tense-modal languages. Distinguishing them requires infinitary logic or second-order quantification.
+
+2. **Fullness of Ω** (Ω = W^D vs Ω ⊊ W^D) is not characterizable. Our formulas are preserved under restriction of the history space (generated subframes in the modal dimension).
+
+3. **Discreteness** is not characterizable in {G, H} (Goldblatt), motivating X. But even with X, **well-foundedness** of ℕ-like frames requires the non-canonical induction axiom G(a → Xa) → (a → Ga), which is the sole source of canonicity failure in the entire framework.
+
+### 11.0 Determinism as Orthogonal Axis
+
+The determinism conditions (⊡(Ga) → G(⊡a) and ⊡(Ha) → H(⊡a)) operate on the history space Ω, while all temporal conditions operate on (D, ≤). These axes are **orthogonal**: any temporal extension can be freely combined with any determinism condition. This gives a 4× multiplier: {none, forward-det, backward-det, full-det} × {20 temporal combinations} = **80 total consistent extension combinations**, each with a precise frame characterization and representation theorem.
+
+---
+
 ## 11. Axiom–Frame Correspondence Table
 
 ### 11.1 Complete Table
