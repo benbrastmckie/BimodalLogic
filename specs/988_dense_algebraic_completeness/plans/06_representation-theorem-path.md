@@ -49,7 +49,7 @@ This plan assumes direct fix. If task 982 completes first, Phase 1 simplifies to
 
 ## Phases
 
-### Phase 1: Fix ClosureSaturation.lean Sorries [NOT STARTED]
+### Phase 1: Fix ClosureSaturation.lean Sorries [BLOCKED]
 
 **Estimated effort**: 12-15h (main effort)
 
