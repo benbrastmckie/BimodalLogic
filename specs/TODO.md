@@ -48,17 +48,15 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: 10 hours (4 phases)
+- **Effort**: 17-20 hours (3 phases)
 - **Status**: [PLANNED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md) (multi-family W/D approach)
-- **Plan**: [05_two-step-canonical-completeness.md](specs/988_dense_algebraic_completeness/plans/05_two-step-canonical-completeness.md) (v5: Two-step via CanonicalMCS)
+- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md), [06_team-research.md](specs/988_dense_algebraic_completeness/reports/06_team-research.md)
+- **Plan**: [06_representation-theorem-path.md](specs/988_dense_algebraic_completeness/plans/06_representation-theorem-path.md) (v6: Fix sorries, transport, wire)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 - **Summary**: [implementation-summary-20260317.md](specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md), [02_implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/02_implementation-summary.md) (v4 plan blocked)
 
-**Implementation Status (Phase 1 BLOCKED)**: The multi-family W/D separation approach has a fundamental architectural gap: `temporally_coherent` requires per-family F/P witnesses at domain times, but `canonicalMCS_forward_F` witnesses are in CanonicalMCS (not at Rat times). Multi-family BFMCS addresses modal coherence (Box/Diamond), not the needed temporal coherence (G/H/F/P). Constant witness families fail forward_F.
-
-**Possible Resolutions**: (1) Modify temporally_coherent to bundle-level (truth lemma rewrite), (2) Prove CanonicalMCS completeness then derive dense semantically, (3) Dovetailing path from Task 982 (22+ hours), (4) Alternative semantic proof restructuring.
+**Plan v6 approach**: Use `dense_representation_conditional` directly. The 4 sorries in ClosureSaturation.lean (lines 659, 664, 679, 724) are the only blockers. Fix them -> transport via `cantor_isomorphism : TimelineQuot ~=o Rat` -> wire into representation theorem.
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
 
