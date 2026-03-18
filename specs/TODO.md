@@ -1,5 +1,5 @@
 ---
-next_project_number: 992
+next_project_number: 993
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,11 +24,21 @@ technical_debt:
 # TODO
 
 ## Tasks
+### 992. Implement Shift-Closed Tense S5 Algebra representation theorem
+- **Effort**: TBD
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Research**: [01_stsa-algebraic-analysis.md](992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md)
+
+**Description**: Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with box, G, H, sigma operators and interaction axioms. Lift temporal duality sigma from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.
+
+---
+
 ### 991. Irreflexive semantics refactoring and STSA representation theorem
 - **Effort**: 5 hours
 - **Status**: [COMPLETED]
 - **Language**: lean
-- **Research**: [research-001.md](991_temporal_algebraic_representation/reports/research-001.md), [research-002.md](991_temporal_algebraic_representation/reports/research-002.md), [research-003-irreflexive-refactoring-plan.md](991_temporal_algebraic_representation/reports/research-003-irreflexive-refactoring-plan.md), [04_synthesis.md](991_temporal_algebraic_representation/reports/04_synthesis.md), [05_extension-lattice-analysis.md](991_temporal_algebraic_representation/reports/05_extension-lattice-analysis.md), [06_irreflexivity-rigorous-analysis.md](991_temporal_algebraic_representation/reports/06_irreflexivity-rigorous-analysis.md), [07_axiom-vs-irr-analysis.md](991_temporal_algebraic_representation/reports/07_axiom-vs-irr-analysis.md), [08_discrete-completeness-strict-semantics.md](991_temporal_algebraic_representation/reports/08_discrete-completeness-strict-semantics.md)
+- **Research**: [research-002.md](991_temporal_algebraic_representation/reports/research-002.md), [research-003-irreflexive-refactoring-plan.md](991_temporal_algebraic_representation/reports/research-003-irreflexive-refactoring-plan.md), [04_synthesis.md](991_temporal_algebraic_representation/reports/04_synthesis.md), [05_extension-lattice-analysis.md](991_temporal_algebraic_representation/reports/05_extension-lattice-analysis.md), [06_irreflexivity-rigorous-analysis.md](991_temporal_algebraic_representation/reports/06_irreflexivity-rigorous-analysis.md), [07_axiom-vs-irr-analysis.md](991_temporal_algebraic_representation/reports/07_axiom-vs-irr-analysis.md), [08_discrete-completeness-strict-semantics.md](991_temporal_algebraic_representation/reports/08_discrete-completeness-strict-semantics.md)
 - **Plan**: [04_seriality-based-completion.md](991_temporal_algebraic_representation/plans/04_seriality-based-completion.md)
 - **Started**: 2026-03-18
 - **Completed**: 2026-03-18

@@ -6,6 +6,23 @@
   },
   "active_projects": [
     {
+      "project_number": 992,
+      "project_name": "shift_closed_tense_s5_algebra",
+      "status": "researched",
+      "language": "lean",
+      "created": "2026-03-18T20:24:23Z",
+      "last_updated": "2026-03-18T20:24:23Z",
+      "researched": "2026-03-18T20:24:23Z",
+      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with □, G, H, σ operators and interaction axioms. Lift temporal duality σ from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md",
+          "summary": "Comprehensive STSA design with axiom-to-equation translation, representation theorem architecture, and MF/TF interaction analysis"
+        }
+      ]
+    },
+    {
       "project_number": 991,
       "project_name": "temporal_algebraic_representation",
       "status": "completed",
@@ -14,11 +31,6 @@
       "last_updated": "2026-03-18T20:16:44Z",
       "description": "Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Research report 003 provides a complete file-by-file change specification.",
       "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/991_temporal_algebraic_representation/reports/research-001.md",
-          "summary": "Design of the Shift-Closed Tense S5 Algebra (STSA) structure as a unified algebraic framework for temporal-modal representation theorems."
-        },
         {
           "type": "research",
           "path": "specs/991_temporal_algebraic_representation/reports/research-002.md",
@@ -775,7 +787,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 992,
+  "next_project_number": 993,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
