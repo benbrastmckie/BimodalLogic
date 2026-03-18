@@ -8,10 +8,10 @@
     {
       "project_number": 991,
       "project_name": "temporal_algebraic_representation",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-18T00:00:00Z",
-      "last_updated": "2026-03-18T18:01:17Z",
+      "last_updated": "2026-03-18T19:00:00Z",
       "description": "Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Research report 003 provides a complete file-by-file change specification.",
       "artifacts": [
         {
@@ -38,10 +38,15 @@
           "path": "specs/991_temporal_algebraic_representation/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "Partial implementation summary for strict temporal semantics refactoring (phases 1-2 complete, phase 3 partial)"
+        },
+        {
+          "type": "research",
+          "path": "specs/991_temporal_algebraic_representation/reports/05_extension-lattice-analysis.md",
+          "summary": "Comprehensive analysis of temporal logic extension lattice with 7 natural subsystems and representation theorems"
         }
       ],
       "researched": "2026-03-18T00:00:00Z",
-      "session_id": "sess_1773856073_988fc7",
+      "session_id": "sess_1773857149_d2b42a",
       "planned": "2026-03-18T16:34:50Z",
       "started": "2026-03-18T16:40:24Z",
       "partial_progress": {
