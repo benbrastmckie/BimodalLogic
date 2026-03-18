@@ -728,8 +728,8 @@ All counterexamples use a single canonical frame:
 | 13 | □(X(a)) = X(□(a)) | **Valid** | Quantifier swap (discrete) |
 | 14 | ⊡(X(a)) → X(⊡(a)) | **Invalid** | F₁, a = {(α,1),(β,1)}: LHS true at (α,0), RHS false |
 | 15 | X(⊡(a)) → ⊡(X(a)) | **Invalid** | F₁, a = {(α,1),(γ,1)}: LHS true at (α,0), RHS false |
-| 16 | ⊡(a)∧G(⊡(a→Ga))→G(a) | **Invalid** | "Stable induction" fails: hypothesis satisfied but conclusion false |
-| 17 | ⊡(a)∧⊡(G(a→Xa))→⊡(Ga) | **Valid but vacuous** | Hypothesis forces determinism; unreachable in branching |
+| 16 | ⊡(a)∧G(⊡(a→Ga))→G(a) | **Invalid** | History diverges to isolated state; conditional holds vacuously |
+| 17 | ⊡(a)∧⊡(G(a→Xa))→⊡(Ga) | **Strict G: Invalid; Reflexive G: Valid** | Strict misses base step a(t)→a(t+1); reflexive includes it |
 | 18 | GGp → Gp | **Density axiom** | Sound for dense <; fails in D={0,1,2} with p={2} |
 | 19 | G(Gp→p) → Gp | **Well-foundedness** | Sound for well-founded <; fails in (ℤ,<) |
 
@@ -771,9 +771,15 @@ With F₁ and a = {(α,1), (γ,1)}:
 
 **X not definable from {□, ⊡, G, H}**: By bounded morphism from (ℚ,<) to (ℤ,<), all {□,⊡,G,H}-formulas agree but ℚ has no immediate successors while ℤ does.
 
-### 15.5 Key Insight: Stable Induction is Vacuous in Branching Models
+### 15.5 Stable Induction: Reflexive vs. Strict G
 
-The axiom ⊡(a) ∧ ⊡(G(a → X(a))) → ⊡(G(a)) is technically valid but its hypothesis ⊡(G(a → X(a))) forces all histories through the current state to agree on `a` at all future times. In any genuinely branching model (where histories sharing a state can later diverge), this hypothesis is unsatisfiable for non-trivial `a`. The axiom therefore provides no inductive power across branches — you cannot "inductively prove" a property holds on all branches simultaneously.
+The axiom ⊡(a) ∧ ⊡(G(a → X(a))) → ⊡(G(a)) ("stable discrete induction") has different status depending on whether G is reflexive or strict:
+
+**With strict G (s > t): INVALID.** The hypothesis G(a → X(a)) only provides the implication a(s) → a(s+1) for s > t, missing the crucial base step a(t) → a(t+1). Counterexample: D = ω, α constant w₁, β(0) = w₁ then w₂ forever, a true everywhere for α but only at 0 for β. The hypotheses hold at (β, 0) but ⊡(G(a)) fails because β doesn't satisfy a at time 1.
+
+**With reflexive G (s ≥ t): VALID.** The hypothesis G(a → X(a)) includes s = t, giving a(t) → a(t+1). Combined with ⊡(a) (a holds at t for all histories through this state), ordinary induction gives a at all future times for all such histories.
+
+This is another argument favoring reflexive G for the discrete extension: it gives the base step of induction "for free," making stable discrete induction a theorem rather than a non-theorem.
 
 ### 15.6 Note on Existing Formalization: Reflexive vs. Strict
 
