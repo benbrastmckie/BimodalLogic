@@ -587,11 +587,11 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-18T21:56:27Z",
-      "session_id": "sess_1773870768_c282af",
+      "last_updated": "2026-03-18T22:01:37Z",
+      "session_id": "sess_1773871270_a1e3eb",
       "researched": "2026-03-18T21:50:32Z",
       "artifacts": [
         {
@@ -683,6 +683,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/09_temporal-coherence-wiring.md",
           "type": "plan",
           "summary": "5-phase implementation plan for wiring DovetailedCoverage to TimelineQuot temporal coherence to fill completeness sorry"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/26_forward-f-termination-analysis.md",
+          "type": "research",
+          "summary": "Approach D (induction on density index j) is the cleanest path: after one witness_at_large_step, all subsequent calls are guaranteed large steps, making j strictly decrease."
         }
       ],
       "planned": "2026-03-18T21:56:27Z",
