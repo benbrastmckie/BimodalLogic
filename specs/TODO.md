@@ -186,16 +186,16 @@ temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representat
 ---
 
 ### 981. Remove axiom technical debt from task 979
-- **Effort**: 4-6 hours (4 phases)
+- **Effort**: 5-8 hours (4 phases)
 - **Status**: [PLANNED]
 - **Language**: lean
 - **Depends On**: Task 978 [COMPLETED]
 - **Research**: [research-001.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md), [research-002.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-002.md) (team: constructive method path), [research-003.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-003.md) (team: blocker resolution), [research-004.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-004.md) (team: T-axiom path), [research-005.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-005.md) (blocker analysis), [research-006.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-006.md) (axiom elimination approaches), [research-007.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-007.md) (covering proof gap confirmed unfillable), [research-008.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-008.md) (world history discreteness - W=D equivalence), [research-009.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-009.md) (architectural clarity - W=D is simplification), [research-010.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-010.md) (team: W=D is fundamental error), [research-011.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/research-011.md) (post-task 991 assessment), [24_synthesis-report.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/24_synthesis-report.md) (DEAD END: forward-only approach), [25_correct-truth-lemma-approaches.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/25_correct-truth-lemma-approaches.md) (CORRECT: wire dovetailed coverage for BFMCS temporal coherence)
-- **Plan**: [09_temporal-coherence-wiring.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/09_temporal-coherence-wiring.md) (v9: Wire DovetailedCoverage to TimelineQuot temporal coherence)
+- **Plan**: [12_density-index-induction.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/12_density-index-induction.md) (v12: Approach D - induction on density index j with large-step propagation)
 
 **Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
 
-**Plan Summary (v9)**: 5-phase plan to wire DovetailedCoverage infrastructure to TimelineQuot. Phase 1: Type bridge (TimelineQuot ↔ DovetailedTimeline). Phase 2: Prove timelineQuotFMCS_forward_F/backward_P via dovetailedTimeline_has_future/past. Phase 3: Construct singleton temporally coherent BFMCS. Phase 4: Wire to parametric_representation_from_neg_membership. Phase 5: Verify axiom-free build.
+**Plan Summary (v12)**: 4-phase plan implementing Approach D (density index induction). Phase 1: Large step propagation lemma (witness_large_step_propagates). Phase 2: forward_F_by_density_index using induction on j. Phase 3: backward_P_by_density_index (symmetric). Phase 4: Cleanup and verification. Key insight: after ONE witness_at_large_step, ALL subsequent calls are guaranteed large steps.
 
 ---
 
