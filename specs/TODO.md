@@ -26,7 +26,7 @@ technical_debt:
 ## Tasks
 ### 991. Irreflexive semantics refactoring and STSA representation theorem
 - **Effort**: 10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Research**: [research-001.md](991_temporal_algebraic_representation/reports/research-001.md), [research-002.md](991_temporal_algebraic_representation/reports/research-002.md), [research-003-irreflexive-refactoring-plan.md](991_temporal_algebraic_representation/reports/research-003-irreflexive-refactoring-plan.md), [04_synthesis.md](991_temporal_algebraic_representation/reports/04_synthesis.md), [05_extension-lattice-analysis.md](991_temporal_algebraic_representation/reports/05_extension-lattice-analysis.md)
 - **Plan**: [02_revised-irreflexive-semantics.md](991_temporal_algebraic_representation/plans/02_revised-irreflexive-semantics.md)
