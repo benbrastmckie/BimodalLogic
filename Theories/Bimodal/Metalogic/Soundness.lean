@@ -298,85 +298,78 @@ Under strict semantics, this requires DenselyOrdered: for any s > t, there exist
 r with t < r < s, and from GGφ we get Gφ at r, which gives φ at s. -/
 theorem density_valid (φ : Formula) :
     valid_dense ((φ.all_future.all_future).imp φ.all_future) := by
-  intro T _ _ _ _ h_dense F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
   simp only [truth_at]
   intro h_GG s hts
   -- h_GG : ∀ r > t, ∀ q > r, φ(q)
   -- hts : t < s
   -- Goal: φ(s)
-  -- By density, ∃ r with t < r < s
-  obtain ⟨r, htr, hrs⟩ := @DenselyOrdered.dense T _ h_dense t s hts
+  -- By density, ∃ r with t < r < s (using DenselyOrdered instance)
+  obtain ⟨r, htr, hrs⟩ := DenselyOrdered.dense t s hts
   -- From h_GG at r: ∀ q > r, φ(q). Since s > r, φ(s).
   exact h_GG r htr s hrs
 
 /-- Forward discreteness axiom (DF) is valid on discrete orders: `⊨_discrete (F⊤ ∧ φ ∧ Hφ) → F(Hφ)`.
 Under strict semantics, this uses the immediate successor property: given F⊤ (∃s > t),
 φ at t, and Hφ at t (∀r < t, φ(r)), we need to show F(Hφ), i.e., ∃s > t, ∀r < s, φ(r).
-Any s > t works: for r < s, either r < t (covered by Hφ), r = t (covered by φ), or
-t < r < s (need not consider due to immediate successor property in discrete orders).
+Use the immediate successor succ t: for r < succ t, either r < t (covered by Hφ),
+r = t (covered by φ), or t < r < succ t (impossible by SuccOrder property).
 -/
 theorem discreteness_forward_valid (φ : Formula) :
     valid_discrete (Formula.and (Formula.bot.neg.some_future)
       (Formula.and φ (Formula.all_past φ)) |>.imp
       (Formula.all_past φ).some_future) := by
-  intro T _ _ _ _ _ h_nomax F M Omega _h_sc τ _h_mem t
-  simp only [Formula.and, Formula.or, Formula.some_future, Formula.neg, truth_at]
+  intro T _ _ _ h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
+  simp only [Formula.and, Formula.some_future, Formula.neg, truth_at]
   intro h_conj h_G_not_H
   -- Extract F⊤, φ, and Hφ from conjunction
   have h1 := and_of_not_imp_not h_conj
-  have ⟨h_F_top, h_phi_and_H⟩ := h1
+  have ⟨_h_F_top, h_phi_and_H⟩ := h1
   have h2 := and_of_not_imp_not h_phi_and_H
   have ⟨h_phi, h_H⟩ := h2
   -- h_H : ∀ r < t, φ(r)
   -- h_phi : φ(t)
-  -- Get a witness s > t from NoMaxOrder (via F⊤)
-  obtain ⟨s, hts⟩ := h_nomax.exists_gt t
-  -- Apply h_G_not_H with witness s
-  apply h_G_not_H s hts
-  -- Goal: ∀ r < s, φ(r)
-  intro r hrs
-  rcases lt_trichotomy r t with h_lt | h_eq | h_gt
+  -- Use succ t as the witness (it's strictly greater than t)
+  have h_lt_succ : t < Order.succ t := Order.lt_succ t
+  apply h_G_not_H (Order.succ t) h_lt_succ
+  -- Goal: ∀ r < succ t, φ(r)
+  intro r h_r_lt_succ
+  -- By SuccOrder, r < succ t implies r ≤ t
+  have h_r_le_t : r ≤ t := Order.lt_succ_iff.mp h_r_lt_succ
+  -- Trichotomy on r ≤ t: either r < t or r = t
+  rcases h_r_le_t.lt_or_eq with h_lt | h_eq
   · exact h_H r h_lt
   · subst h_eq; exact h_phi
-  · -- r > t and r < s: this case requires discreteness structure
-    -- In a discrete order with immediate successors, if s is the immediate successor of t,
-    -- there is no r with t < r < s. But we don't have that guarantee here.
-    -- The axiom requires the frame to actually be discrete for this case.
-    -- For now, we use the fact that the axiom is designed for discrete frames.
-    -- In practice, this case shouldn't occur if s is chosen appropriately.
-    -- The SuccOrder structure would give us the proper witness.
-    sorry
 
 /-- Future seriality axiom validity: `⊨_discrete Gφ → Fφ`.
-Under strict semantics with NoMaxOrder: if ∃s > t then Gφ → Fφ.
-The universal quantification Gφ over a non-empty domain implies the existential Fφ. -/
+Under strict semantics with SuccOrder: use succ t as witness for s > t.
+The universal quantification Gφ at s implies the existential Fφ. -/
 theorem seriality_future_valid (φ : Formula) :
     valid_discrete (φ.all_future.imp φ.some_future) := by
-  intro T _ _ _ _ _ h_nomax F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_future, Formula.neg, truth_at]
   intro h_G h_neg_F
   -- h_G : ∀ s > t, φ(s)
   -- h_neg_F : ∀ s > t, ¬φ(s)
-  -- Get a witness s > t from NoMaxOrder
-  obtain ⟨s, hts⟩ := h_nomax.exists_gt t
-  -- h_G gives φ(s), h_neg_F gives ¬φ(s). Contradiction.
-  exact h_neg_F s hts (h_G s hts)
+  -- Use succ t as witness: t < succ t by SuccOrder
+  have h_lt_succ : t < Order.succ t := Order.lt_succ t
+  -- h_G gives φ(succ t), h_neg_F gives ¬φ(succ t). Contradiction.
+  exact h_neg_F (Order.succ t) h_lt_succ (h_G (Order.succ t) h_lt_succ)
 
 /-- Past seriality axiom validity: `⊨_discrete Hφ → Pφ`.
-Under strict semantics with NoMinOrder: if ∃s < t then Hφ → Pφ.
-The universal quantification Hφ over a non-empty domain implies the existential Pφ. -/
+Under strict semantics with PredOrder: use pred t as witness for s < t.
+The universal quantification Hφ at s implies the existential Pφ. -/
 theorem seriality_past_valid (φ : Formula) :
     valid_discrete (φ.all_past.imp φ.some_past) := by
-  intro T _ _ _ _ _ h_nomax F M Omega _h_sc τ _h_mem t
+  intro T _ _ _ _h_succ h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
   simp only [Formula.some_past, Formula.neg, truth_at]
   intro h_H h_neg_P
   -- h_H : ∀ s < t, φ(s)
   -- h_neg_P : ∀ s < t, ¬φ(s)
-  -- Get a witness s < t from NoMinOrder (but we have NoMaxOrder here)
-  -- Actually, this proof needs NoMinOrder, not NoMaxOrder
-  -- The valid_discrete predicate currently only provides NoMaxOrder
-  -- This is a limitation of the current setup - need to fix the validity predicate
-  sorry
+  -- Use pred t as witness: pred t < t by PredOrder
+  have h_pred_lt : Order.pred t < t := Order.pred_lt t
+  -- h_H gives φ(pred t), h_neg_P gives ¬φ(pred t). Contradiction.
+  exact h_neg_P (Order.pred t) h_pred_lt (h_H (Order.pred t) h_pred_lt)
 
 /-- All base TM axioms (excluding density, discreteness, and seriality) are universally valid.
 With strict semantics, density requires DenselyOrdered, discreteness requires SuccOrder,
@@ -429,16 +422,22 @@ theorem axiom_valid_dense {φ : Formula} (h : Axiom φ) (h_dc : h.isDenseCompati
   | discreteness_forward _ => exact absurd h_dc id
   | seriality_future ψ =>
     -- Seriality: Gψ → Fψ. Valid on dense frames via DenselyOrdered → Nontrivial → NoMaxOrder
-    intro T _ _ _ _ h_nontriv F M Omega _h_sc τ _h_mem t
+    intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_future, Formula.neg, truth_at]
     intro h_G h_neg_F
-    obtain ⟨s, hs⟩ := h_nontriv.exists_pair_ne
-    -- Need s > t; use density to get one
-    -- Actually, in a nontrivial dense order, there exists s > t
-    sorry
+    -- DenselyOrdered + Nontrivial implies NoMaxOrder via inference
+    have h_nomax : NoMaxOrder T := inferInstance
+    obtain ⟨s, hts⟩ := h_nomax.exists_gt t
+    exact h_neg_F s hts (h_G s hts)
   | seriality_past ψ =>
     -- Seriality: Hψ → Pψ. Valid on dense frames via DenselyOrdered → Nontrivial → NoMinOrder
-    sorry
+    intro T _ _ _ _ _ F M Omega _h_sc τ _h_mem t
+    simp only [Formula.some_past, Formula.neg, truth_at]
+    intro h_H h_neg_P
+    -- DenselyOrdered + Nontrivial implies NoMinOrder via inference
+    have h_nomin : NoMinOrder T := inferInstance
+    obtain ⟨s, hst⟩ := h_nomin.exists_lt t
+    exact h_neg_P s hst (h_H s hst)
 
 /-- All discrete-compatible axioms are valid on discrete frames.
 This covers all base axioms (universally valid, hence valid on discrete frames) plus discreteness.
@@ -465,25 +464,23 @@ theorem axiom_valid_discrete {φ : Formula} (h : Axiom φ) (h_dc : h.isDiscreteC
   | density _ => exact absurd h_dc id
   | discreteness_forward ψ => exact discreteness_forward_valid ψ
   | seriality_future ψ =>
-    -- Under strict semantics, Gψ → Fψ requires NoMaxOrder
-    -- On discrete frames (SuccOrder + Nontrivial), we can derive NoMaxOrder
-    intro T _ _ _ h_succ h_pred h_nontriv F M Omega _h_sc τ _h_mem t
+    -- Under strict semantics, Gψ → Fψ requires a witness s > t
+    -- Use succ t from SuccOrder: t < succ t
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_future, Formula.neg, truth_at]
     intro h_G h_neg_F
-    -- Use successor to get s > t
-    have h_nomax : NoMaxOrder T := Order.NoMaxOrder.of_succ_lt (α := T)
-    obtain ⟨s, hts⟩ := h_nomax.exists_gt t
-    exact h_neg_F s hts (h_G s hts)
+    -- Use succ t as witness: t < succ t by SuccOrder
+    have hts : t < Order.succ t := Order.lt_succ t
+    exact h_neg_F (Order.succ t) hts (h_G (Order.succ t) hts)
   | seriality_past ψ =>
-    -- Under strict semantics, Hψ → Pψ requires NoMinOrder
-    -- On discrete frames (PredOrder + Nontrivial), we can derive NoMinOrder
-    intro T _ _ _ h_succ h_pred h_nontriv F M Omega _h_sc τ _h_mem t
+    -- Under strict semantics, Hψ → Pψ requires a witness s < t
+    -- Use pred t from PredOrder: pred t < t
+    intro T _ _ _ _h_succ _h_pred _h_nontriv F M Omega _h_sc τ _h_mem t
     simp only [Formula.some_past, Formula.neg, truth_at]
     intro h_H h_neg_P
-    -- Use predecessor to get s < t
-    have h_nomin : NoMinOrder T := Order.NoMinOrder.of_pred_gt (α := T)
-    obtain ⟨s, hst⟩ := h_nomin.exists_lt t
-    exact h_neg_P s hst (h_H s hst)
+    -- Use pred t as witness: pred t < t by PredOrder
+    have hst : Order.pred t < t := Order.pred_lt t
+    exact h_neg_P (Order.pred t) hst (h_H (Order.pred t) hst)
 
 /-! ## Full Derivation Soundness
 

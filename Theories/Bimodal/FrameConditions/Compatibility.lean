@@ -28,11 +28,11 @@ This enables:
 
 | Frame Class | Axioms | Count |
 |-------------|--------|-------|
-| Linear (Base) | prop_k, prop_s, ex_falso, peirce, modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_t_future, temp_t_past, temp_a, temp_l, modal_future, temp_future, temp_linearity | 18 |
+| Linear (Base) | prop_k, prop_s, ex_falso, peirce, modal_t, modal_4, modal_b, modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_a, temp_l, modal_future, temp_future, temp_linearity | 16 |
 | Dense | density | 1 |
 | Discrete | discreteness_forward, seriality_future, seriality_past | 3 |
 
-Total: 21 axioms
+Total: 19 axioms (2 T-axioms removed under strict semantics)
 
 ## References
 
@@ -151,12 +151,6 @@ instance (φ ψ : Formula) : AxiomLinearCompatible (Axiom.temp_k_dist φ ψ) whe
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_4 φ) where
   valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_4 φ) (by simp [Axiom.isBase]) D
 
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_t_future φ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_t_future φ) (by simp [Axiom.isBase]) D
-
-instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_t_past φ) where
-  valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_t_past φ) (by simp [Axiom.isBase]) D
-
 instance (φ : Formula) : AxiomLinearCompatible (Axiom.temp_a φ) where
   valid := fun D _ _ _ _ => axiom_base_valid_linear (Axiom.temp_a φ) (by simp [Axiom.isBase]) D
 
@@ -189,13 +183,13 @@ instance (φ : Formula) : AxiomDiscreteCompatible (Axiom.discreteness_forward φ
   valid := fun D _ _ _ _ _ _ _ _ _ _ =>
     axiom_valid_discrete_fc (Axiom.discreteness_forward φ) (by simp [Axiom.isDiscreteCompatible]) D
 
-instance : AxiomDiscreteCompatible Axiom.seriality_future where
+instance (φ : Formula) : AxiomDiscreteCompatible (Axiom.seriality_future φ) where
   valid := fun D _ _ _ _ _ _ _ _ _ _ =>
-    axiom_valid_discrete_fc Axiom.seriality_future (by simp [Axiom.isDiscreteCompatible]) D
+    axiom_valid_discrete_fc (Axiom.seriality_future φ) (by simp [Axiom.isDiscreteCompatible]) D
 
-instance : AxiomDiscreteCompatible Axiom.seriality_past where
+instance (φ : Formula) : AxiomDiscreteCompatible (Axiom.seriality_past φ) where
   valid := fun D _ _ _ _ _ _ _ _ _ _ =>
-    axiom_valid_discrete_fc Axiom.seriality_past (by simp [Axiom.isDiscreteCompatible]) D
+    axiom_valid_discrete_fc (Axiom.seriality_past φ) (by simp [Axiom.isDiscreteCompatible]) D
 
 /-! ## Compatibility Theorems -/
 

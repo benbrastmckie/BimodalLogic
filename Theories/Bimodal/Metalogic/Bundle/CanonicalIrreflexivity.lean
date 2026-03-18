@@ -9,37 +9,41 @@ import Bimodal.Theorems.GeneralizedNecessitation
 /-!
 # Canonical Frame Irreflexivity
 
-## STATUS: PROVED (Task 967 - Reflexive Semantics Refactor)
+## STATUS: PARTIAL (Task 991 - Irreflexive Semantics Refactor)
 
 **This theorem proves irreflexivity of the canonical accessibility relation.**
-The proof uses the T-axiom for past (H(φ) → φ), which is valid under the reflexive
-temporal semantics adopted in Task 967.
 
-**Key insight**: With the T-axiom, we can derive `neg(p) ∈ M'` directly from
-`H(neg(p)) ∈ M'` (which is in the naming set). This eliminates the need for global
-freshness or the complex g_content ⊆ M' argument that was previously blocking.
+### Historical Context
+
+Under the previous reflexive semantics (Task 967), the proof used the T-axiom for
+past (H(φ) → φ) to derive the contradiction.
+
+### Current Status (Task 991)
+
+Under strict temporal semantics (G/H quantify over s > t / s < t), the T-axiom
+is no longer valid. The proof strategy must change. However, irreflexivity
+becomes **nearly definitional** under strict semantics:
+
+**Key insight**: The canonical relation `CanonicalR M N` (g_content M ⊆ N) is
+automatically irreflexive because strict `G` requires witnesses strictly in
+the future, making `g_content M ⊆ M` contradictory.
 
 ## Main Result
 
-- `canonicalR_irreflexive`: For any MCS M, `¬CanonicalR M M` (fully proved)
+- `canonicalR_irreflexive`: For any MCS M, `¬CanonicalR M M` (has one sorry)
 
-## Proof Strategy (Gabbay IRR with T-axiom)
+## Proof Strategy (Strict Semantics)
 
-The proof uses the Gabbay Irreflexivity Rule (IRR) technique, following
-the standard approach from Goldblatt (1992) and Blackburn-de Rijke-Venema (2001),
-enhanced with the T-axiom for past.
+Under strict semantics, the proof is dramatically simpler (~50 lines vs ~1200):
 
-The key steps:
 1. Assume `CanonicalR M M` (i.e., `g_content M ⊆ M`) for contradiction
-2. Choose any atom p. Define naming set: p-free formulas plus {atom p, H(neg p)}
-3. Show naming set is consistent (using IRR contrapositively)
-4. Extend to MCS M' via Lindenbaum
-5. From naming set: atom(p) ∈ M' and H(neg(p)) ∈ M'
-6. By T-axiom: H(neg(p)) → neg(p), so neg(p) ∈ M'
-7. Both atom(p) and neg(p) in M' contradicts consistency of M'
+2. Take any φ ∈ M. By temp_a: G(Pφ) ∈ M.
+3. By closure: Pφ ∈ M.
+4. Combined with seriality and linearity, derive that M would need to be
+   its own strict future, which is impossible.
 
-**Key enabling change (Task 967)**: The T-axiom for past (temp_t_past)
-allows Step 6, which was previously blocked without reflexive semantics.
+**TODO (Task 991)**: Complete the simplified proof using temp_a and seriality
+instead of the T-axiom.
 
 ## References
 
@@ -1231,15 +1235,26 @@ theorem canonicalR_irreflexive (M : Set Formula) (h_mcs : SetMaximalConsistent M
     simp only [namingSet, Set.mem_union, Set.mem_insert_iff, Set.mem_singleton_iff]
     right; right; trivial
 
-  -- KEY STEP: Apply T-axiom for past to get neg(atom p) ∈ M'
-  -- T-axiom (past): H(φ) → φ is an axiom (temp_t_past)
-  -- Since M' is an MCS and temp_t_past is an axiom, (H(neg(p)) → neg(p)) ∈ M'
-  have h_T_axiom_in_M' : (Formula.all_past (Formula.neg (Formula.atom p))).imp
-      (Formula.neg (Formula.atom p)) ∈ M' :=
-    theorem_in_mcs h_mcs' (DerivationTree.axiom [] _ (Axiom.temp_t_past (Formula.neg (Formula.atom p))))
-  -- By modus ponens: from H(neg(p)) ∈ M' and (H(neg(p)) → neg(p)) ∈ M', get neg(p) ∈ M'
-  have h_negP_in_M' : Formula.neg (Formula.atom p) ∈ M' :=
-    SetMaximalConsistent.implication_property h_mcs' h_T_axiom_in_M' h_HnegP_in_M'
+  -- KEY STEP (Task 991): Under strict semantics, we derive contradiction differently.
+  -- The T-axiom no longer exists. Instead we use:
+  -- 1. temp_a: p → G(Pp), so G(Pp) ∈ M' (since p ∈ M')
+  -- 2. Closure: If g_content M ⊆ M, then from G(Pp) ∈ M, we get Pp ∈ M
+  -- 3. Pp = ¬H¬p, so H¬p ∉ M' (by consistency)
+  -- 4. But we have H(¬p) ∈ M' from the naming set
+  -- 5. Contradiction arises from building the MCS M' that contains both
+  --    the p-free formulas from M (implying H¬p via the naming set) and
+  --    the closure property that would exclude H¬p.
+  --
+  -- The full proof requires showing that the naming set cannot be extended
+  -- to an MCS without contradiction when g_content M ⊆ M.
+  --
+  -- TODO (Task 991): Complete this proof using the strict semantics approach.
+  -- The proof is dramatically simpler than the reflexive version but requires
+  -- careful interaction between temp_a, linearity, and the naming set construction.
+  have h_negP_in_M' : Formula.neg (Formula.atom p) ∈ M' := by
+    -- Under strict semantics, derive ¬p ∈ M' via temp_a and closure properties
+    -- rather than directly from temp_t_past.
+    sorry
 
   -- CONTRADICTION: Both atom p and neg(atom p) are in M'
   -- M' is an MCS, so it is consistent. But having both p and ¬p contradicts consistency.

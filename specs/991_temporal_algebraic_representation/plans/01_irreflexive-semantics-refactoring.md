@@ -102,7 +102,7 @@ The key insight is that irreflexive semantics makes the canonical ordering align
 
 ---
 
-### Phase 3: Soundness Proof Updates [PARTIAL]
+### Phase 3: Soundness Proof Updates [COMPLETED]
 
 **Goal**: Fix all soundness proofs to work with strict semantics.
 
@@ -133,7 +133,7 @@ The key insight is that irreflexive semantics makes the canonical ordering align
 
 ---
 
-### Phase 4: Canonical Irreflexivity Simplification [NOT STARTED]
+### Phase 4: Canonical Irreflexivity Simplification [IN PROGRESS]
 
 **Goal**: Replace the 1200-line Gabbay IRR proof with a simple definitional argument.
 

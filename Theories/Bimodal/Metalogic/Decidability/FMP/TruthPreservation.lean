@@ -247,46 +247,38 @@ These properties establish how temporal operators behave in closure MCS.
 /--
 All-future reflexivity for closure MCS: Gψ ∈ S implies ψ ∈ S.
 
-This uses the temporal T axiom (Gφ → φ).
+**DEPRECATED (Task 991)**: Under strict temporal semantics, the T-axiom (Gφ → φ) is
+NOT valid, so this theorem does not hold. The FMP proof strategy needs redesign
+to avoid relying on reflexive semantics.
+
+**Status**: Uses sorry pending FMP redesign.
 -/
 theorem mcs_all_future_closure {phi : Formula} {S : ClosureMCSBundle phi}
     {ψ : Formula}
     (h_future : ψ.all_future ∈ S.carrier)
     (h_psi_clos : ψ ∈ closureWithNeg phi) :
     ψ ∈ S.carrier := by
-  -- Temporal T axiom: Gψ → ψ
-  have h_temp_t_thm : [] ⊢ (ψ.all_future).imp ψ :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_future ψ)
-  have h_deriv : [ψ.all_future] ⊢ ψ := by
-    have h_axiom : [ψ.all_future] ⊢ (ψ.all_future).imp ψ :=
-      DerivationTree.weakening [] _ _ h_temp_t_thm (by intro; simp)
-    have h_assume : [ψ.all_future] ⊢ ψ.all_future :=
-      DerivationTree.assumption _ _ (by simp)
-    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
-  have h_sub : ∀ x ∈ [ψ.all_future], x ∈ S.carrier := by simp [h_future]
-  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_psi_clos
+  -- Under strict semantics, Gψ only says ψ at times > t, not at t itself.
+  -- This theorem is NOT derivable and needs FMP redesign.
+  sorry
 
 /--
 All-past reflexivity for closure MCS: Hψ ∈ S implies ψ ∈ S.
 
-This uses the temporal T axiom for past (Hφ → φ).
+**DEPRECATED (Task 991)**: Under strict temporal semantics, the T-axiom for past
+(Hφ → φ) is NOT valid, so this theorem does not hold. The FMP proof strategy needs
+redesign to avoid relying on reflexive semantics.
+
+**Status**: Uses sorry pending FMP redesign.
 -/
 theorem mcs_all_past_closure {phi : Formula} {S : ClosureMCSBundle phi}
     {ψ : Formula}
     (h_past : ψ.all_past ∈ S.carrier)
     (h_psi_clos : ψ ∈ closureWithNeg phi) :
     ψ ∈ S.carrier := by
-  -- Temporal T axiom for past: Hψ → ψ
-  have h_temp_t_thm : [] ⊢ (ψ.all_past).imp ψ :=
-    DerivationTree.axiom [] _ (Axiom.temp_t_past ψ)
-  have h_deriv : [ψ.all_past] ⊢ ψ := by
-    have h_axiom : [ψ.all_past] ⊢ (ψ.all_past).imp ψ :=
-      DerivationTree.weakening [] _ _ h_temp_t_thm (by intro; simp)
-    have h_assume : [ψ.all_past] ⊢ ψ.all_past :=
-      DerivationTree.assumption _ _ (by simp)
-    exact DerivationTree.modus_ponens _ _ _ h_axiom h_assume
-  have h_sub : ∀ x ∈ [ψ.all_past], x ∈ S.carrier := by simp [h_past]
-  exact closure_mcs_deductively_closed S.is_mcs h_sub h_deriv h_psi_clos
+  -- Under strict semantics, Hψ only says ψ at times < t, not at t itself.
+  -- This theorem is NOT derivable and needs FMP redesign.
+  sorry
 
 /--
 All-future transitivity for closure MCS: Gψ ∈ S implies GGψ ∈ S.

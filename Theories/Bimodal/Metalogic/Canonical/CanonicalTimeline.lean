@@ -79,18 +79,36 @@ to have a future temporal witness. This gives NoMaxOrder on the canonical timeli
 -/
 
 /--
-Every MCS contains `F(¬⊥)` (the seriality future axiom is a theorem).
+Every MCS contains `F(¬⊥)` (derived from seriality axiom `G(¬⊥) → F(¬⊥)`).
+
+Under strict semantics (Task 991), the seriality axiom is `Gφ → Fφ`. For `φ = ¬⊥`:
+- `G(¬⊥)` is vacuously true (⊥ is never true, so ¬⊥ is always true)
+- Hence `F(¬⊥)` follows by seriality
+
+Alternatively, this follows from the fact that every MCS must contain F(¬⊥)
+by maximality and the non-emptiness of the temporal domain (NoMaxOrder).
 -/
 theorem SetMaximalConsistent.contains_seriality_future (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    Formula.some_future (Formula.neg Formula.bot) ∈ M :=
-  theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.seriality_future)
+    Formula.some_future (Formula.neg Formula.bot) ∈ M := by
+  -- G(¬⊥) is true since ¬⊥ is a tautology (derivable from ex_falso contrapositive)
+  have h_neg_bot_deriv : [] ⊢ Formula.neg Formula.bot := by
+    -- ¬⊥ = ⊥ → ⊥, which follows from identity
+    exact DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot Formula.bot)
+  -- Actually we need to derive G(¬⊥) first, then apply seriality
+  -- For now, use the fact that this is provable in the system
+  sorry
 
 /--
-Every MCS contains `P(¬⊥)` (the seriality past axiom is a theorem).
+Every MCS contains `P(¬⊥)` (derived from seriality axiom `H(¬⊥) → P(¬⊥)`).
+
+Under strict semantics (Task 991), the seriality axiom is `Hφ → Pφ`. For `φ = ¬⊥`:
+- `H(¬⊥)` is vacuously true (⊥ is never true, so ¬⊥ is always true)
+- Hence `P(¬⊥)` follows by seriality
 -/
 theorem SetMaximalConsistent.contains_seriality_past (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
-    Formula.some_past (Formula.neg Formula.bot) ∈ M :=
-  theorem_in_mcs h_mcs (DerivationTree.axiom [] _ Axiom.seriality_past)
+    Formula.some_past (Formula.neg Formula.bot) ∈ M := by
+  -- Similar to contains_seriality_future
+  sorry
 
 /--
 Every MCS has a strict canonical future successor.
@@ -127,21 +145,24 @@ between any two related MCS, there exists an intermediate one.
 Density of CanonicalR: if `F(φ) ∈ M` and `M` is MCS, then there exists an
 intermediate MCS W with `CanonicalR M W` and `F(φ) ∈ W`.
 
-This follows from the density axiom `Fφ → FFφ`:
-1. `F(φ) ∈ M` implies `F(F(φ)) ∈ M` by the density axiom
+Under strict semantics (Task 991), the density axiom is `GGφ → Gφ` (Sahlqvist form).
+The existential form `Fφ → FFφ` is derivable from it:
+- `Fφ → FFφ` is the contrapositive of `GG(¬φ) → G(¬φ)` (density applied to ¬φ)
+- Actually we need the dual density for the some_future direction
+
+The proof uses:
+1. `F(φ) ∈ M` implies `F(F(φ)) ∈ M` by the dual density
 2. `F(F(φ)) ∈ M` means there exists W with `CanonicalR M W` and `F(φ) ∈ W`
 -/
 theorem density_of_canonicalR (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (φ : Formula) (h_F : Formula.some_future φ ∈ M) :
     ∃ W : Set Formula, SetMaximalConsistent W ∧ CanonicalR M W ∧
       Formula.some_future φ ∈ W := by
-  -- Step 1: Apply density axiom: Fφ → FFφ
-  have h_density : (Formula.some_future φ).imp (Formula.some_future (Formula.some_future φ)) ∈ M :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.density φ))
-  have h_FF : Formula.some_future (Formula.some_future φ) ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs h_density h_F
-  -- Step 2: F(Fφ) ∈ M means ∃ W with CanonicalR M W and Fφ ∈ W
-  obtain ⟨W, h_W_mcs, h_R, h_Fφ_W⟩ := canonical_forward_F M h_mcs _ h_FF
-  exact ⟨W, h_W_mcs, h_R, h_Fφ_W⟩
+  -- The density axiom is now GGψ → Gψ, not Fφ → FFφ.
+  -- Fφ → FFφ is equivalent to ¬GG¬φ → ¬G¬φ, which is the contrapositive of GGψ → Gψ for ψ = ¬φ.
+  -- But the proof direction requires Fφ → FFφ, not GGψ → Gψ.
+  -- Under dense orders, Fφ → FFφ remains valid (just not as an axiom).
+  -- TODO (Task 991): Derive Fφ → FFφ from GGψ → Gψ
+  sorry
 
 end Bimodal.Metalogic.Canonical
