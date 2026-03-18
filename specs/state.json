@@ -11,7 +11,7 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-03-18T00:00:00Z",
-      "last_updated": "2026-03-18T18:52:08Z",
+      "last_updated": "2026-03-18T19:12:02Z",
       "description": "Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Research report 003 provides a complete file-by-file change specification.",
       "artifacts": [
         {
@@ -53,10 +53,15 @@
           "path": "specs/991_temporal_algebraic_representation/reports/06_irreflexivity-rigorous-analysis.md",
           "type": "research",
           "summary": "Rigorous mathematical analysis proving irreflexivity non-definability with literature review"
+        },
+        {
+          "path": "specs/991_temporal_algebraic_representation/reports/07_axiom-vs-irr-analysis.md",
+          "type": "research",
+          "summary": "Comparative analysis: axiom declaration (recommended) vs IRR rule (impractical) vs alternatives"
         }
       ],
       "researched": "2026-03-18T00:00:00Z",
-      "session_id": "sess_1773859510_428550",
+      "session_id": "sess_1773860804_6f27ca",
       "planned": "2026-03-18T18:32:02Z",
       "started": "2026-03-18T16:40:24Z",
       "partial_progress": {
