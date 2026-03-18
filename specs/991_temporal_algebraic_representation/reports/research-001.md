@@ -405,7 +405,70 @@ The STSA representation theorem makes this precise: **MF and TF are the algebrai
 
 ---
 
-## 11. Future Directions
+## 11. Categorical Picture
+
+### 11.1 The Two Categories
+
+**TM-Algebras (Alg)**: Objects are Boolean algebras A with operators □, G, H : A → A satisfying the TM identities. Morphisms are Boolean homomorphisms commuting with all three operators.
+
+**TM-Frames (Frm)**: Objects are tuples (W, D, Ω, task_rel) where:
+- W is a set of world states
+- D is a totally ordered abelian group
+- task_rel : W × D × W → Prop satisfies nullity_identity, forward_comp, converse
+- Ω is a shift-closed set of world histories D → W respecting task_rel
+
+Morphisms are pairs (f : W₁ → W₂, g : D₁ → D₂) jointly preserving task_rel and mapping histories to histories.
+
+### 11.2 The Functors
+
+**Complex algebra functor** Cmplx : Frm → Alg:
+Sends a TM-frame to P({(τ,t) | τ ∈ Ω, t ∈ D}) with:
+- □S = {(τ,t) | ∀σ ∈ Ω, (σ,t) ∈ S}
+- G(S) = {(τ,t) | ∀s ≥ t, (τ,s) ∈ S}
+- H(S) = {(τ,t) | ∀s ≤ t, (τ,s) ∈ S}
+
+**Canonical frame functor** Can : Alg → Frm:
+Sends a TM-algebra A to the canonical frame where W = Spec(A) (ultrafilters), D is parametric, Ω is the shift-closed BFMCS set, and task_rel is the parametric canonical task relation.
+
+### 11.3 The Representation as Unit
+
+The representation theorem = the unit η : Id → Cmplx ∘ Can is injective.
+
+The unit sends a ∈ A to {(τ,t) | a ∈ τ(t)} in the complex algebra of the canonical frame. Injectivity: if a ≠ b, there exists an ultrafilter (MCS) separating them, hence an FMCS and time witnessing a but not b.
+
+---
+
+## 12. Critical Assessment
+
+### 12.1 Resolved Non-Issues
+
+| Problem | Verdict |
+|---------|---------|
+| Where do times come from? | D is an external parameter (correct architectural decision) |
+| Is G normal? | Yes — TK + monotonicity give G(a⊓b) = G(a)⊓G(b). ~15 lines to formalize |
+| Are TM axioms equational? | Yes — all are BA inequalities. TM-algebras form a variety |
+| Shift-closure second-order? | Resolved — construct shift-closed enlargement, MF+TF ensure truth lemma survives |
+| Need canonical extensions? | No — Henkin-style proof sidesteps entirely |
+| Temporal duality? | Clean — σ is an involutive automorphism, ~30 lines to formalize on quotient |
+| Subsumption? | Clear — algebraic rep = atemporal fiber of parametric rep |
+
+### 12.2 Precise Role of MF+TF
+
+The critical review sharpened the understanding: MF+TF don't axiomatize shift-closure as a frame correspondence condition in the Sahlqvist sense. Instead:
+
+1. The codebase **constructs** ShiftClosedParametricCanonicalOmega by explicitly closing under all time-shifts (trivially shift-closed by construction)
+2. The truth lemma must **survive** this enlargement — the box case needs box formulas to persist to all times in the enlarged model
+3. `parametric_box_persistent` proves this persistence using MF (□φ → □Gφ gives future persistence) and the TF dual (□φ → □Hφ gives past persistence)
+
+So the precise role of MF+TF is: **ensuring that box membership in an MCS is time-invariant across the FMCS, which makes the shift-closed enlargement truth-preserving.**
+
+### 12.3 The Single Genuine Blocker
+
+None of the 7 theoretical problems blocks the approach. The single remaining gap is `construct_bfmcs` — the function building a temporally coherent BFMCS from an MCS over a specific D. This is the open obligation at `ParametricRepresentation.lean:257`. Everything else either exists or is straightforward (~80% complete).
+
+---
+
+## 13. Future Directions
 
 ### 11.1 Canonical Extensions
 For the abstract representation (arbitrary STSA, not just Lindenbaum), the Gehrke-Jónsson canonical extension theory provides the proper framework. The canonical extension Aσ of an STSA A is a complete STSA, and the σ-extensions of □, G, H are completely additive operators. This gives a full Jónsson-Tarski representation for arbitrary STSAs.
