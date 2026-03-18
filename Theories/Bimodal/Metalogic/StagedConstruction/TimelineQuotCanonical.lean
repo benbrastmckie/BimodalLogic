@@ -385,15 +385,64 @@ related files. This stub documents the required theorems for completeness.
 -/
 
 /--
-The root MCS is at time 0 in TimelineQuot.
+The root point of the dense timeline construction, wrapped as a DenseTimelineElem.
+-/
+noncomputable def rootTimelineElem : DenseTimelineElem root_mcs root_mcs_proof :=
+  ⟨rootPoint root_mcs root_mcs_proof,
+   ⟨0, stagedBuild_subset_denseStage root_mcs root_mcs_proof 0
+       (rootPoint_in_stagedBuild_0 root_mcs root_mcs_proof)⟩⟩
 
-The root point of the staged construction maps to 0 under the Cantor isomorphism transfer.
+/--
+The time in TimelineQuot corresponding to the root MCS.
+This is the equivalence class of the root point under Antisymmetrization.
+-/
+noncomputable def rootTime : TimelineQuot root_mcs root_mcs_proof :=
+  toAntisymmetrization (· ≤ ·) (rootTimelineElem root_mcs root_mcs_proof)
 
-**Proof**: The root point is the initial element of the staged construction.
-Under the Cantor isomorphism and AddCommGroup transfer, it maps to 0.
+/--
+The MCS at root time equals the root MCS.
+
+**Proof**: The root time is the equivalence class of rootTimelineElem.
+By `denseTimelineElem_mutual_le_implies_mcs_eq`, all representatives in
+the same class have the same MCS. Since rootTimelineElem has mcs = root_mcs,
+any representative (including what ofAntisymmetrization returns) has this MCS.
+-/
+theorem timelineQuotMCS_root_time_eq :
+    timelineQuotMCS root_mcs root_mcs_proof (rootTime root_mcs root_mcs_proof) = root_mcs := by
+  haveI : IsPreorder (DenseTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
+    denseTimelineElemIsPreorder root_mcs root_mcs_proof
+  simp only [timelineQuotMCS, rootTime]
+  -- ofAntisymmetrization returns a representative of the equivalence class
+  -- We need to show its MCS equals rootTimelineElem's MCS (which is root_mcs)
+  set root_elem := rootTimelineElem root_mcs root_mcs_proof with h_root_elem
+  set rep := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) root_elem) with h_rep
+  -- rep is in the same equivalence class as root_elem
+  have h_class : toAntisymmetrization (· ≤ ·) rep = toAntisymmetrization (· ≤ ·) root_elem :=
+    toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) root_elem)
+  -- Extract the ≤ relationships from being in the same class
+  have h_rep_le_root : rep ≤ root_elem := by
+    rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_class]
+  have h_root_le_rep : root_elem ≤ rep := by
+    rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_class]
+  -- By mutual_le_implies_mcs_eq, their MCSs are equal
+  have h_mcs_eq := denseTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof
+    rep root_elem h_rep_le_root h_root_le_rep
+  -- root_elem.1.mcs = root_mcs by definition
+  have h_root : root_elem.1.mcs = root_mcs := rfl
+  -- Combine
+  exact h_mcs_eq.trans h_root
+
+/--
+**DEPRECATED**: Use `timelineQuotMCS_root_time_eq` with `rootTime` instead.
+
+The claim that the AddCommGroup zero equals root_mcs is NOT necessarily true
+because the Cantor isomorphism is non-constructive and arbitrary.
 -/
 theorem timelineQuotMCS_at_zero_eq_root :
     timelineQuotMCS root_mcs root_mcs_proof 0 = root_mcs := by
-  sorry  -- Requires showing the root point is at time 0
+  -- This theorem is likely false as stated.
+  -- The 0 element is ratOrderIso.symm 0 where ratOrderIso is an arbitrary Cantor isomorphism.
+  -- Instead, use rootTime and timelineQuotMCS_root_time_eq.
+  sorry  -- Intentionally left as sorry - use timelineQuotMCS_root_time_eq instead
 
 end Bimodal.Metalogic.StagedConstruction.TimelineQuotCanonical

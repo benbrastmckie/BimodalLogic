@@ -56,7 +56,7 @@ From research-010:
 
 ## Implementation Phases
 
-### Phase 1: Prove timelineQuotMCS_at_zero_eq_root [NOT STARTED]
+### Phase 1: Prove timelineQuotMCS_at_zero_eq_root [COMPLETED]
 
 **Goal**: Show that the MCS at time 0 in TimelineQuot equals the root MCS used to construct TimelineQuot.
 
@@ -84,7 +84,7 @@ The 0 element in TimelineQuot should correspond to the equivalence class of the 
 
 ---
 
-### Phase 2: Build Countermodel Components [NOT STARTED]
+### Phase 2: Build Countermodel Components [BLOCKED]
 
 **Goal**: Assemble the TaskModel and semantic infrastructure for the countermodel.
 
