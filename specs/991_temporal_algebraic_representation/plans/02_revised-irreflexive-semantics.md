@@ -63,7 +63,7 @@ This revised plan continues from Phase 4 with a new proof strategy.
 
 ## Implementation Phases
 
-### Phase 4: Irreflexivity via temp_a + Linearity [NOT STARTED]
+### Phase 4: Irreflexivity via temp_a + Linearity [BLOCKED]
 
 **Goal**: Replace the blocked naming set proof with a direct proof using temp_a and linearity axioms.
 
@@ -99,6 +99,46 @@ Assume `CanonicalR M M` (i.e., `g_content M subset M`). Derive contradiction:
 - Proof uses only temp_a, linearity, and MCS properties
 
 **Fallback**: If temp_a proof is too complex, fall back to seriality-in-base approach (add G(phi)->F(phi) to base axioms).
+
+### BLOCKING ISSUE (2026-03-18)
+
+The temp_a + linearity proof strategy does NOT close the proof gap. Analysis:
+
+**Why the current naming set approach fails (confirmed)**:
+- Under strict semantics, `{p, H(neg p)}` is semantically consistent
+- It models "p is true now for the first time" (p now, neg p at all strictly past times)
+- Without T-axiom (`H(phi) -> phi`), we cannot derive `neg p in M'` from `H(neg p) in M'`
+
+**Why temp_a + linearity doesn't help (discovered)**:
+- The temp_a closure gives: for any `phi in M`, `P(phi) in M` (via `G(P(phi)) in M` + CanonicalR closure)
+- This means `H(neg phi) not-in M` for any `phi in M`
+- BUT: This is analyzed in DirectIrreflexivity.lean which concludes **"Path A is impossible"**
+- The reason: any theorem psi is automatically in M (MCS closure), so neg(psi) not-in M
+- There is NO formula psi where both "derives psi" and "neg(psi) in M"
+- The contradiction REQUIRES comparing M with a DIFFERENT MCS M' (the naming set approach)
+
+**Why linearity doesn't provide the needed contradiction**:
+- The linearity axiom `temp_linearity` governs ordering between F-witnesses
+- Steps 5-7 of the proof sketch (infinite regress via linearity) are not rigorously specified
+- The DirectIrreflexivity.lean systematic search found no usable contradiction
+
+**Why seriality fallback also fails**:
+- Moving seriality (`G(phi) -> F(phi)`, `H(phi) -> P(phi)`) to base doesn't help
+- Seriality gives `P(neg p) in M'` from `H(neg p) in M'`
+- But `P(neg p)` means "neg p at some past time", NOT "neg p now"
+- Still cannot derive `neg p in M'`
+
+**Fundamental Issue**:
+Under strict semantics, irreflexivity is **not derivable from the base axioms**. This is a known result:
+irreflexivity is NOT modally definable (no modal formula characterizes it). The Gabbay IRR rule was invented precisely for this.
+
+**Options to Resolve**:
+1. **Keep the T-axiom** (revert to reflexive semantics) - contradicts Task 991 goal
+2. **Use IRR rule explicitly** - requires atom freshness which has implementation issues with String atoms
+3. **Accept irreflexivity as axiomatic** - change `canonicalR_irreflexive` to an axiom, not a theorem
+4. **Product frame/bulldozing** - semantic post-processing to enforce irreflexivity
+
+**Recommendation**: Option 3 (axiom) is simplest. The irreflexivity is semantically correct under strict semantics; we just cannot derive it syntactically without additional apparatus.
 
 ---
 
