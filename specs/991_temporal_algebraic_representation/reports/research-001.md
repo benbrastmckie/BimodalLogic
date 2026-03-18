@@ -468,7 +468,59 @@ None of the 7 theoretical problems blocks the approach. The single remaining gap
 
 ---
 
-## 13. Future Directions
+## 13. Literature Connections
+
+### 13.1 Conjugacy and Galois Connections
+
+The tense operators satisfy a fundamental adjunction (von Karger 1998, "Temporal Algebra"):
+
+```
+P ⊣ G :  P(a) ≤ b  iff  a ≤ G(b)
+F ⊣ H :  F(a) ≤ b  iff  a ≤ H(b)
+```
+
+This is equivalent to the conjugacy condition: `a ⊓ F(b) = ⊥ iff P(a) ⊓ b = ⊥`, which encodes that F and P arise from a single binary relation and its converse. Von Karger showed all 17 Manna-Pnueli LTL axioms follow from just these two Galois connections. The TA axiom `a ≤ G(Pa)` is exactly the unit of the P ⊣ G adjunction.
+
+### 13.2 MF+TF as Subalgebra Invariance
+
+The interaction axioms have a clean algebraic characterization: MF+TF ensure that **Im(□) = {a ∈ A : □a = a}** is closed under G and H. That is:
+
+> G restricts to an endomorphism of the range of □
+
+This is because:
+- TF: □a = a implies □a ≤ G(□a), so a ≤ G(a), and G(a) ≤ a (deflationary), giving G(a) = a
+- MF: □a = a implies □a ≤ □(G(a)) = □a (since G(a) = a by TF), confirming closure
+
+So Im(□) ⊆ Fix(G) ∩ Fix(H): **necessary propositions are temporally constant**. This is the algebraic form of shift-closure — the S5-equivalence classes are time-invariant.
+
+### 13.3 Relation to MS4.t (Bezhanishvili-Carai 2020)
+
+The closest studied system is MS4.t (monadic tense S4), which has the interaction axiom □(∀a) ≤ ∀(□a) — commutativity between spatial and monadic modalities. TM strengthens this in two ways:
+- □ is S5 (not just S4) — the accessibility relation is an equivalence
+- G, H satisfy linearity — the temporal order is total
+
+The STSA variety is a subvariety of bimodal BAOs that has not been explicitly studied in the literature. Its finite model property (FMP) status is open but likely follows from the FMP of MS4.t (proven by Bezhanishvili-Carai).
+
+### 13.4 Jónsson-Tarski Representation
+
+The standard representation theorem (Jónsson-Tarski 1951-52) applies: every STSA embeds into the complex algebra of its ultrafilter frame. The ultrafilter frame has:
+- W = Spec(A) with R_□ (equivalence), R_G (preorder), R_H = R_G⁻¹
+- The interaction conditions on the algebra translate to frame conditions: each R_□-class is closed under R_G
+
+For the Lindenbaum algebra specifically, this is exactly the canonical model construction already in the codebase — the Jónsson-Tarski representation IS the canonical frame construction, just stated algebraically.
+
+### 13.5 Key References
+
+- Jónsson & Tarski, "Boolean algebras with operators" I-II (1951, 1952)
+- Goldblatt, "Varieties of Complex Algebras" (1989) — persistence under ultrafilter extensions
+- von Karger, "Temporal Algebra" (1998) — Galois connection approach to tense operators
+- Bezhanishvili & Carai, "MS4.t algebras" (arXiv:2009.00218, 2020) — closest studied system
+- Blackburn, de Rijke & Venema, *Modal Logic* (2001) Ch. 5 — algebraic semantics of polymodal logics
+- Gehrke, "Canonical extensions: algebraic approach to Stone duality" (2018)
+
+---
+
+## 14. Future Directions
 
 ### 11.1 Canonical Extensions
 For the abstract representation (arbitrary STSA, not just Lindenbaum), the Gehrke-Jónsson canonical extension theory provides the proper framework. The canonical extension Aσ of an STSA A is a complete STSA, and the σ-extensions of □, G, H are completely additive operators. This gives a full Jónsson-Tarski representation for arbitrary STSAs.
