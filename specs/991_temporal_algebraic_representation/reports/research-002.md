@@ -781,12 +781,32 @@ The existing Lean formalization uses **reflexive** G (with axioms TT-F: Gφ → 
 
 ---
 
+### 15.7 Key Literature Connections
+
+**Closest precursors to the stability operator ⊡:**
+
+- **Zanardo (1998)**, "Undivided and indistinguishable histories in branching-time logics," *JLLI* 7(3):297–315. Introduces an "indistinguishability function" assigning each moment a partition of histories — formally identical to our ∼_t equivalence relation. Ockhamist and Peircean semantics are limiting cases.
+
+- **Rumberg (2016)**, "Transition semantics for branching time," *JLLI* 25:77–108. Introduces an explicit **stability operator S** quantifying over extensions of incomplete courses of events. Truth and stability come apart. Most direct formal precursor to ⊡.
+
+- **Ciuni & Zanardo (2015)**, "Axiomatization of a Branching Time Logic with Indistinguishability Relations," *JPL*. Proves a backward-persistence condition is needed: if two histories are indistinguishable at t, they are indistinguishable at all past times. This corresponds to the backward-determinism frame condition ⊡(Ha) → H(⊡a) — which our analysis shows is NOT valid in general frames but IS valid under backward determinism.
+
+- **Fagin, Halpern, Moses & Vardi (1995)**, *Reasoning About Knowledge*, MIT Press. The foundational text on knowledge via local-state equivalence in distributed systems. The "perfect recall" condition (equivalence refines over time) is the temporal-epistemic analogue of backward persistence.
+
+**Decidability constraints:**
+
+- **Hirsch, Hodkinson & Kurucz**, "On modal logics between K×K×K and S5×S5×S5." Every n-modal logic between K^n and S5^n is undecidable for n ≥ 3. Our design (two S5 modalities □, ⊡ plus one linear temporal G) stays in the potentially decidable two-dimensional case.
+
+- **Gabbay, Kurucz, Wolter & Zakharyaschev (2003)**, *Many-Dimensional Modal Logics*, Elsevier. Pure products of transitive logics are usually undecidable, but products with S5 can remain decidable.
+
+---
+
 ## 16. References
 
 1. Blackburn, de Rijke & Venema, *Modal Logic* (2001) — Sahlqvist theory, BAO representation
 2. Burgess, "Logic and time" (1979) — Tense logic completeness
-3. Burgess, "Axioms for tense logic, II" (1982) — Extended completeness results
-4. Bezhanishvili & Carai, "MS4.t algebras" (2020) — Closest studied system
+3. Burgess, "Axioms for tense logic, I & II" (1982) — Until/Since axiomatizations
+4. Bezhanishvili & Carai, "MS4.t algebras" (2020) — Closest studied algebraic system
 5. Gabbay, Hodkinson & Reynolds, *Temporal Logic* (1994) — Comprehensive reference
 6. Gabbay & Shehtman, "Products of modal logics" (2000) — Transfer theorems
 7. Goldblatt, *Logics of Time and Computation* (1992) — Definability results
@@ -797,4 +817,13 @@ The existing Lean formalization uses **reflexive** G (with axioms TT-F: Gφ → 
 12. von Karger, "Temporal algebra" (1998) — Galois connection approach
 13. Sahlqvist, "Completeness and correspondence" (1975) — The Sahlqvist theorem
 14. Segerberg, "Modal logics with linear alternative relations" (1970) — Discrete temporal logic
+15. Brast-McKie, "The Construction of Possible Worlds" (2025) — The foundational paper
+16. Zanardo, "Undivided and indistinguishable histories" (1998) — Precursor to stability operator
+17. Rumberg, "Transition semantics for branching time" (2016) — Explicit stability operator
+18. Ciuni & Zanardo, "Axiomatization of BTL with indistinguishability" (2015) — Backward persistence
+19. Fagin, Halpern, Moses & Vardi, *Reasoning About Knowledge* (1995) — Knowledge via local states
+20. Gabbay, Kurucz, Wolter & Zakharyaschev, *Many-Dimensional Modal Logics* (2003) — Product logic decidability
+21. Conradie, Goranko & Vakarelov, "SQEMA algorithm" (2006) — Generalized Sahlqvist theory
+22. Venema, "Algebras and coalgebras" (2006) — BAO representation handbook chapter
+23. Hodkinson & Reynolds, "Temporal Logic" (2006) — Handbook chapter on temporal logic
 15. Brast-McKie, "The Construction of Possible Worlds" (2025) — The foundational paper
