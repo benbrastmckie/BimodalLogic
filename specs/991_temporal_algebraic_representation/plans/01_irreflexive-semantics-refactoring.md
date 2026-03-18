@@ -133,17 +133,36 @@ The key insight is that irreflexive semantics makes the canonical ordering align
 
 ---
 
-### Phase 4: Canonical Irreflexivity Simplification [IN PROGRESS]
+### Phase 4: Canonical Irreflexivity Simplification [BLOCKED]
 
-**Status Update (2026-03-18)**: Fixed cascading build errors in CanonicalConstruction.lean, CanonicalTimeline.lean, and CantorPrereqs.lean caused by:
-1. Removal of temp_t_future/temp_t_past axioms (T-axioms)
-2. Change from reflexive (≤) to strict (<) semantics in truth lemma cases
-3. Density axiom change from Fφ→FFφ to GGφ→Gφ
+**Status Update (2026-03-18)**: Analysis reveals fundamental blocker in the irreflexivity proof.
+
+**Problem Analysis**:
+The naming set approach relies on deriving `¬p ∈ M'` from `H(¬p) ∈ M'`:
+- Under reflexive semantics: T-axiom `H(φ) → φ` gives `H(¬p) → ¬p`, done.
+- Under strict semantics: T-axiom is invalid. No base axiom provides this.
+- Seriality `H(φ) → P(φ)` gives `P(¬p) ∈ M'` but NOT `¬p ∈ M'`.
+- Seriality is in Discrete extension, not Base axioms.
+
+**Key Finding**: The naming set `{p, H(¬p)} ∪ atomFreeSubset M p` is consistent (proven via IRR).
+After extending to MCS M': both `p ∈ M'` and `H(¬p) ∈ M'`, but `¬p ∉ M'` (since `p ∈ M'`).
+Without T-axiom, there is NO contradiction. M' is a valid MCS under strict semantics.
+
+**Research-003 Overclaim**: The claim that irreflexivity becomes "nearly definitional" under strict semantics appears incorrect. The proof requires either:
+1. T-axiom (only valid under reflexive semantics)
+2. Seriality (only in Discrete extension, not Base)
+3. A completely different proof strategy
 
 **Remaining Issues**:
-- `derive_F_to_FF` in CantorPrereqs.lean uses sorry - needs derivation of Fφ→FFφ from GGφ→Gφ
-- `density_of_canonicalR` in CanonicalTimeline.lean uses sorry - same issue
-- CanonicalIrreflexivity.lean simplification NOT started (still 1283 lines)
+- `canonicalR_irreflexive` in CanonicalIrreflexivity.lean:1257 - BLOCKED pending new proof strategy
+- `derive_F_to_FF` in CantorPrereqs.lean:111 - needs Fφ→FFφ from GGφ→Gφ
+- `density_of_canonicalR` in CanonicalTimeline.lean:183 - same derivation issue
+
+**Options**:
+A. Prove irreflexivity only for discrete frames (where seriality is available)
+B. Find a completely different proof not using naming set
+C. Add seriality to base axioms (changes the logic)
+D. Accept that base irreflexivity requires separate treatment
 
 **Goal**: Replace the 1200-line Gabbay IRR proof with a simple definitional argument.
 

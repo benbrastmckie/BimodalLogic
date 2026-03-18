@@ -3,11 +3,17 @@
   "started_at": "2026-03-18T12:00:00Z",
   "artifacts": [],
   "partial_progress": {
-    "stage": "phase_4_build_fixed",
-    "details": "Fixed all build errors. Remaining sorries in derive_F_to_FF (CantorPrereqs.lean) and density_of_canonicalR (CanonicalTimeline.lean) require derivation of Fφ → FFφ from new density axiom GGφ → Gφ.",
+    "stage": "phase_4_blocked",
+    "details": "Deep analysis of CanonicalIrreflexivity.lean reveals fundamental blocker: naming set approach requires deriving ¬p ∈ M' from H(¬p) ∈ M', but p ∈ M' (by construction) so ¬p ∉ M' (by consistency). Without T-axiom, no contradiction is derivable. The naming set {p, H(¬p)} ∪ atomFreeSubset extends to a valid MCS M' under strict semantics.",
     "phases_completed": ["1", "2", "3"],
     "current_phase": "4",
     "blocking_issues": [
+      {
+        "file": "Theories/Bimodal/Metalogic/Bundle/CanonicalIrreflexivity.lean",
+        "line": 1257,
+        "issue": "FUNDAMENTAL: naming set proof cannot derive contradiction - p ∈ M' and H(¬p) ∈ M' is consistent under strict semantics without T-axiom",
+        "analysis": "The proof tried to derive ¬p ∈ M' from H(¬p) ∈ M' using T-axiom H(φ)→φ. Under strict semantics, T-axiom is invalid. Seriality H(φ)→P(φ) gives P(¬p)=¬H(p) but NOT ¬p. Even with seriality, cannot derive ¬p ∈ M'. The MCS M' containing both p and H(¬p) is semantically valid: p true at current time, ¬p true at all strictly past times."
+      },
       {
         "file": "Theories/Bimodal/Metalogic/StagedConstruction/CantorPrereqs.lean",
         "line": 111,
@@ -18,10 +24,16 @@
         "line": 183,
         "issue": "density_of_canonicalR needs same derivation"
       }
+    ],
+    "recommendations": [
+      "Option A: Prove irreflexivity only for discrete frames (seriality available)",
+      "Option B: Find completely different proof strategy not using naming set",
+      "Option C: Research whether strict-semantics irreflexivity is even provable with base axioms alone",
+      "Option D: Consider if the research-003 claim was based on incorrect analysis"
     ]
   },
   "requires_user_review": true,
-  "review_reason": "New sorry introduced in derive_F_to_FF - needs derivation of Fφ → FFφ from density axiom GGφ → Gφ",
+  "review_reason": "Phase 4 BLOCKED: fundamental issue with naming set proof under strict semantics. The claim in research-003 that irreflexivity becomes 'nearly definitional' appears incorrect - the proof requires T-axiom (invalid under strict semantics) or seriality (not a base axiom). Need user decision on how to proceed.",
   "metadata": {
     "session_id": "sess_1773852834_5e8a60",
     "agent_type": "lean-implementation-agent",

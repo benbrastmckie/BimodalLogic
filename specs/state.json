@@ -11,7 +11,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-03-18T00:00:00Z",
-      "last_updated": "2026-03-18T17:23:12Z",
+      "last_updated": "2026-03-18T18:01:17Z",
       "description": "Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Research report 003 provides a complete file-by-file change specification.",
       "artifacts": [
         {
@@ -41,15 +41,15 @@
         }
       ],
       "researched": "2026-03-18T00:00:00Z",
-      "session_id": "sess_1773853777_dc19c4",
+      "session_id": "sess_1773856073_988fc7",
       "planned": "2026-03-18T16:34:50Z",
       "started": "2026-03-18T16:40:24Z",
       "partial_progress": {
         "phases_completed": 3,
-        "phases_partial": 1,
+        "phases_blocked": 1,
         "phases_total": 10,
         "current_phase": 4,
-        "blocking_issue": "Phase 4 partial: build errors fixed, CanonicalIrreflexivity.lean simplification pending (1283->50 lines)"
+        "blocking_issue": "Phase 4 BLOCKED: T-axiom invalid under strict semantics, naming set proof fails. Need alternative irreflexivity proof or reconsider design."
       }
     },
     {
