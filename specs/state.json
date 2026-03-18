@@ -11,7 +11,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-03-18T00:00:00Z",
-      "last_updated": "2026-03-18T19:37:08Z",
+      "last_updated": "2026-03-18T20:15:00Z",
       "description": "Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Research report 003 provides a complete file-by-file change specification.",
       "artifacts": [
         {
@@ -63,6 +63,11 @@
           "path": "specs/991_temporal_algebraic_representation/summaries/04_axiom-completion-summary.md",
           "type": "summary",
           "summary": "Implementation summary: phases 4-5, 7-9 complete; phase 6 partial (DiscreteSuccSeed.lean)"
+        },
+        {
+          "type": "research",
+          "path": "specs/991_temporal_algebraic_representation/reports/08_discrete-completeness-strict-semantics.md",
+          "summary": "Rigorous analysis of discrete completeness under strict semantics with seriality-based consistency proof"
         }
       ],
       "researched": "2026-03-18T00:00:00Z",
