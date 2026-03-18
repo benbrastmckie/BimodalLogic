@@ -1,7 +1,7 @@
 # Implementation Plan: Dense Completeness via Density Argument (v11)
 
 - **Task**: 982 - Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Effort**: 8 hours (4 phases remaining)
 - **Dependencies**: None
 - **Research Inputs**:
@@ -34,13 +34,13 @@ From reports/17_blocker-resolution.md: mathematically sound, requires 4 lemmas.
 | 1: Dovetailing Infrastructure | [COMPLETED] | Dovetailing.lean - Cantor pairing, ProcessObligation |
 | 2: Dovetailed Staged Build | [COMPLETED] | DovetailedBuild.lean - DovetailedPoint, monotonicity |
 | 3: Timeline Properties | [COMPLETED] | Countability, linearity, point index invariants |
-| 4: Coverage via Density | [NOT STARTED] | NEW: density argument approach |
-| 5: Main Theorems | [NOT STARTED] | has_future, has_past completion |
-| 6: Dense Completeness | [NOT STARTED] | Final theorem assembly |
+| 4: Coverage via Density | [COMPLETED] | DovetailedCoverage.lean - density argument |
+| 5: Main Theorems | [COMPLETED] | has_future, has_past proven |
+| 6: Dense Completeness | [COMPLETED] | DovetailedCompleteness.lean |
 
 ## Implementation Phases
 
-### Phase 4: Coverage via Density Argument [NOT STARTED]
+### Phase 4: Coverage via Density Argument [COMPLETED]
 
 **Goal**: Prove the 4 key lemmas for density-based coverage
 
@@ -118,7 +118,7 @@ theorem witness_at_large_step
 
 ---
 
-### Phase 5: Main Theorems (has_future, has_past) [NOT STARTED]
+### Phase 5: Main Theorems (has_future, has_past) [IN PROGRESS]
 
 **Goal**: Complete the sorry theorems using Phase 4 lemmas
 
