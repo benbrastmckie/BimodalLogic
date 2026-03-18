@@ -3,21 +3,21 @@ import Bimodal.Syntax.Formula
 /-!
 # Axioms - TM Axiom Schemata
 
-This module defines the 21 axiom schemata for bimodal logic TM (Tense and Modality).
+This module defines the 19 axiom schemata for bimodal logic TM (Tense and Modality).
 
 ## Main Definitions
 
 - `Axiom`: Inductive type characterizing valid axiom instances
-- 21 axiom constructors organized into three categories:
-  - **Base axioms** (17): Valid on all linear orders (no special frame conditions)
+- 19 axiom constructors organized into three categories:
+  - **Base axioms** (15): Valid on all linear orders (no special frame conditions)
   - **Dense extension** (1): `density` - requires DenselyOrdered
   - **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` - require SuccOrder/NoMaxOrder/NoMinOrder
 
 ## Axiom Constructors
 
 - Base: `prop_k`, `prop_s`, `ex_falso`, `peirce`, `modal_t`, `modal_4`, `modal_b`,
-  `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_t_future`,
-  `temp_t_past`, `temp_a`, `temp_l`, `modal_future`, `temp_future`, `temp_linearity`
+  `modal_5_collapse`, `modal_k_dist`, `temp_k_dist`, `temp_4`, `temp_a`, `temp_l`,
+  `modal_future`, `temp_future`, `temp_linearity`
 - Dense: `density`
 - Discrete: `discreteness_forward`, `seriality_future`, `seriality_past`
 
@@ -43,10 +43,13 @@ The TM logic includes:
 ### Temporal Axioms (future G, past H)
 - **TK** (Temporal K Distribution): `G(φ → ψ) → (Gφ → Gψ)` - future distributes over implication
 - **T4** (Temporal 4): `Gφ → GGφ` - future of future is future (transitivity)
-- **TT-F** (Temporal T Future): `Gφ → φ` - reflexivity for future (Task 967)
-- **TT-P** (Temporal T Past): `Hφ → φ` - reflexivity for past (Task 967)
 - **TA** (Temporal A): `φ → GPφ` - the present was in the past of the future
 - **TL** (Temporal L): `always φ → GPφ` - perpetuity implies recurrence
+
+**Note**: Under strict semantics (Task 991), the T-axioms (Gφ → φ, Hφ → φ) are
+NOT valid and are NOT included. Strict semantics quantifies over s > t, so the
+present is excluded from temporal quantification. This simplifies the canonical
+model construction by making irreflexivity definitional.
 ### Modal-Temporal Interaction Axioms
 - **MF** (Modal-Future): `□φ → □Fφ` - necessary truths remain necessary in future
 - **TF** (Temporal-Future): `□φ → F□φ` - necessary truths were/will-be necessary
@@ -70,14 +73,18 @@ open Bimodal.Syntax
 /--
 Axiom schemata for bimodal logic TM.
 
-A formula `φ` is an axiom if it matches one of the 21 axiom schema patterns.
+A formula `φ` is an axiom if it matches one of the 19 axiom schema patterns.
 Each constructor takes formula parameters representing the schema instantiation.
 
 The axioms are organized into three categories based on frame conditions:
-- **Base axioms** (17): Valid on all frames with linear temporal order
+- **Base axioms** (15): Valid on all frames with linear temporal order
 - **Dense extension** (1): `density` - valid on densely ordered frames
 - **Discrete extension** (3): `discreteness_forward`, `seriality_future`, `seriality_past` -
   valid on discrete ordered frames with SuccOrder/NoMaxOrder/NoMinOrder
+
+**Note (Task 991)**: Under strict temporal semantics (G/H quantify over s > t / s < t),
+the T-axioms (Gφ → φ, Hφ → φ) are NOT valid and NOT included. This simplifies the
+canonical model by making irreflexivity definitional.
 
 Classification predicates:
 - `isBase`: True for base axioms (neither density nor discreteness-specific)
@@ -240,38 +247,6 @@ inductive Axiom : Formula → Type where
     Axiom ((Formula.all_future φ).imp (Formula.all_future (Formula.all_future φ)))
 
   /--
-  Temporal T axiom (future): `Gφ → φ` (reflexivity for future).
-
-  What holds at all present and future times holds now. This is the temporal analog
-  of the modal T axiom (□φ → φ). Under reflexive temporal semantics (where G quantifies
-  over t' ≥ t instead of t' > t), this axiom is valid because the quantification
-  includes the current time t itself.
-
-  Semantically: if φ holds at all s ≥ t, then in particular φ holds at t (since t ≥ t).
-
-  **Added by Task 967**: Reflexive temporal semantics enables this axiom, which was
-  NOT valid under the previous irreflexive semantics (G quantifying over t' > t).
-  This axiom is essential for completing the Gabbay IRR proof.
-  -/
-  | temp_t_future (φ : Formula) : Axiom ((Formula.all_future φ).imp φ)
-
-  /--
-  Temporal T axiom (past): `Hφ → φ` (reflexivity for past).
-
-  What holds at all present and past times holds now. This is the temporal analog
-  of the modal T axiom (□φ → φ). Under reflexive temporal semantics (where H quantifies
-  over t' ≤ t instead of t' < t), this axiom is valid because the quantification
-  includes the current time t itself.
-
-  Semantically: if φ holds at all s ≤ t, then in particular φ holds at t (since t ≤ t).
-
-  **Added by Task 967**: Reflexive temporal semantics enables this axiom, which was
-  NOT valid under the previous irreflexive semantics (H quantifying over t' < t).
-  This axiom is essential for completing the Gabbay IRR proof.
-  -/
-  | temp_t_past (φ : Formula) : Axiom ((Formula.all_past φ).imp φ)
-
-  /--
   Temporal A axiom: `φ → F(sometime_past φ)` (temporal connectedness).
 
   If something is true now, at all future times there exists a past time where it was true.
@@ -345,24 +320,33 @@ inductive Axiom : Formula → Type where
             (Formula.some_future (Formula.and (Formula.some_future φ) ψ)))))
 
   /--
-  Density axiom (DN): `Fφ → FFφ` (dense temporal order).
+  Density axiom (DN): `GGφ → Gφ` (dense temporal order, Sahlqvist form).
 
-  If there exists a future time where φ holds, then there exists a future time
-  where "there exists a further future time where φ holds" also holds.
+  If φ holds at all times strictly after all times strictly after now,
+  then φ holds at all times strictly after now.
 
   **Frame condition**: DN is valid on a frame iff the temporal order is densely
-  ordered: for all s < t, there exists u with s < u < t.
+  ordered: for all t < s, there exists u with t < u < s.
 
-  Semantically: if φ holds at some s > t, and the order is dense, then there
-  exists u with t < u < s. At u, φ holds at the further future time s > u,
-  so Fφ holds at u, hence FFφ holds at t.
+  Semantically (under strict semantics):
+  - `GGφ` at t means: ∀r > t, ∀s > r, φ(s)
+  - `Gφ` at t means: ∀s > t, φ(s)
+  - For any s > t, by density ∃r with t < r < s. Then GGφ gives Gφ at r,
+    which gives φ at s (since s > r). Hence φ at s.
+
+  **Sahlqvist form**: This formulation is Sahlqvist (boxed antecedent, positive
+  consequent), giving automatic canonicity and frame correspondence.
+
+  **Note (Task 991)**: The dual existential form `Fφ → FFφ` is also valid on
+  dense orders (and equivalent), but we prefer the Sahlqvist universal form
+  for canonical completeness.
 
   **References**:
-  - Research-013 Section 3.2: Layer 1 dense extension
+  - Research-003: Irreflexive semantics refactoring plan
   - Goldblatt 1992: density axiom for tense logic
   -/
   | density (φ : Formula) :
-      Axiom (φ.some_future.imp φ.some_future.some_future)
+      Axiom ((φ.all_future.all_future).imp φ.all_future)
 
   /--
   Forward discreteness axiom (DF): `(F⊤ ∧ φ ∧ Hφ) → F(Hφ)` (discrete temporal order).
@@ -386,45 +370,65 @@ inductive Axiom : Formula → Type where
         (Formula.all_past φ).some_future)
 
   /--
-  Seriality axiom (future): `F(¬⊥)` (there exists a future time).
+  Seriality axiom (future): `Gφ → Fφ` (there exists a future time, Sahlqvist form).
 
-  Every time has a strict successor. This is the standard temporal logic
-  axiom for "no maximum element" in the temporal order. Equivalent to
-  `NoMaxOrder D` on the frame.
+  If φ holds at all strictly future times, then φ holds at some strictly
+  future time. This is equivalent to asserting that there exists a strictly
+  future time (no maximum element in the temporal order).
 
-  Semantically: at any time t, there exists s > t. The formula `¬⊥` is
-  always true, so `F(¬⊥)` means "there exists a future time" which is
-  precisely the seriality/no-max condition.
+  **Frame condition**: Valid iff `NoMaxOrder D` on the frame.
+
+  Semantically (under strict semantics):
+  - `Gφ` at t means: ∀s > t, φ(s)
+  - `Fφ` at t means: ∃s > t, φ(s)
+  - If there exists any s > t (NoMaxOrder), then Gφ → Fφ: the universal
+    quantification implies the existential since the domain is non-empty.
+
+  **Sahlqvist form**: This formulation is Sahlqvist (boxed antecedent, positive
+  consequent), giving automatic canonicity and frame correspondence.
+
+  **Note (Task 991)**: The simpler `F⊤` is also equivalent but we prefer
+  the Sahlqvist form for canonical completeness.
 
   **References**:
+  - Research-003: Irreflexive semantics refactoring plan
   - Goldblatt 1992, *Logics of Time and Computation* (seriality axiom)
-  - Research-024: seriality vs T-axioms analysis
   -/
-  | seriality_future : Axiom (Formula.some_future (Formula.neg Formula.bot))
+  | seriality_future (φ : Formula) : Axiom (φ.all_future.imp φ.some_future)
 
   /--
-  Seriality axiom (past): `P(¬⊥)` (there exists a past time).
+  Seriality axiom (past): `Hφ → Pφ` (there exists a past time, Sahlqvist form).
 
-  Every time has a strict predecessor. This is the standard temporal logic
-  axiom for "no minimum element" in the temporal order. Equivalent to
-  `NoMinOrder D` on the frame.
+  If φ holds at all strictly past times, then φ holds at some strictly
+  past time. This is equivalent to asserting that there exists a strictly
+  past time (no minimum element in the temporal order).
 
-  Semantically: at any time t, there exists s < t. The formula `¬⊥` is
-  always true, so `P(¬⊥)` means "there exists a past time" which is
-  precisely the seriality/no-min condition.
+  **Frame condition**: Valid iff `NoMinOrder D` on the frame.
+
+  Semantically (under strict semantics):
+  - `Hφ` at t means: ∀s < t, φ(s)
+  - `Pφ` at t means: ∃s < t, φ(s)
+  - If there exists any s < t (NoMinOrder), then Hφ → Pφ: the universal
+    quantification implies the existential since the domain is non-empty.
+
+  **Sahlqvist form**: This formulation is Sahlqvist (boxed antecedent, positive
+  consequent), giving automatic canonicity and frame correspondence.
+
+  **Note (Task 991)**: The simpler `P⊤` is also equivalent but we prefer
+  the Sahlqvist form for canonical completeness.
 
   **References**:
+  - Research-003: Irreflexive semantics refactoring plan
   - Goldblatt 1992, *Logics of Time and Computation* (seriality axiom)
-  - Research-024: seriality vs T-axioms analysis
   -/
-  | seriality_past : Axiom (Formula.some_past (Formula.neg Formula.bot))
+  | seriality_past (φ : Formula) : Axiom (φ.all_past.imp φ.some_past)
   deriving Repr
 
 /--
 Classification of frame conditions required for axiom validity.
 
 - `Base`: Axioms valid on all linear orders (no special frame conditions).
-  These 14 axioms form the core TM logic.
+  These 15 axioms form the core TM logic.
 - `Dense`: Axioms requiring DenselyOrdered frames. The `density` axiom (DN)
   is the only axiom in this class.
 - `Discrete`: Axioms requiring discrete frames with SuccOrder/NoMaxOrder/NoMinOrder.
@@ -451,7 +455,7 @@ The typeclasses provide stronger type-level guarantees and integrate
 with Mathlib's order typeclass hierarchy.
 -/
 inductive FrameClass where
-  /-- Axioms valid on all linear orders (14 axioms) -/
+  /-- Axioms valid on all linear orders (15 axioms) -/
   | Base
   /-- Axioms requiring DenselyOrdered frames (1 axiom: density) -/
   | Dense
@@ -482,8 +486,6 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.modal_k_dist _ _ => .Base
   | Axiom.temp_k_dist _ _ => .Base
   | Axiom.temp_4 _ => .Base
-  | Axiom.temp_t_future _ => .Base
-  | Axiom.temp_t_past _ => .Base
   | Axiom.temp_a _ => .Base
   | Axiom.temp_l _ => .Base
   | Axiom.modal_future _ => .Base
@@ -491,8 +493,8 @@ def Axiom.frameClass {φ : Formula} : Axiom φ → FrameClass
   | Axiom.temp_linearity _ _ => .Base
   | Axiom.density _ => .Dense
   | Axiom.discreteness_forward _ => .Discrete
-  | Axiom.seriality_future => .Discrete
-  | Axiom.seriality_past => .Discrete
+  | Axiom.seriality_future _ => .Discrete
+  | Axiom.seriality_past _ => .Discrete
 
 /--
 The minimal frame class required for an axiom is the class returned by `frameClass`.
@@ -523,8 +525,8 @@ This excludes both `density` and `discreteness_forward`.
 def Axiom.isBase {φ : Formula} : Axiom φ → Prop
   | Axiom.density _ => False
   | Axiom.discreteness_forward _ => False
-  | Axiom.seriality_future => False
-  | Axiom.seriality_past => False
+  | Axiom.seriality_future _ => False
+  | Axiom.seriality_past _ => False
   | _ => True
 
 /-! ### FrameClass Consistency Lemmas
