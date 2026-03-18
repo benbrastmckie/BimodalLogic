@@ -1,42 +1,20 @@
 {
-  "status": "partial",
-  "summary": "Completed Phases 1-3, partial Phase 4. W=D approach deprecated, TaskFrame and WorldHistory infrastructure in place. Truth lemma bridge blocked on forward-only truth lemma adaptation.",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/07_timelinequot-truth-lemma.md",
       "type": "plan",
-      "summary": "6-phase implementation plan, Phases 1-3 complete, Phase 4 partial"
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/08_truth-lemma-wiring.md",
+      "summary": "4-phase plan v8 for completing dense completeness via truth lemma wiring"
     }
   ],
-  "requires_user_review": true,
-  "review_reason": "Phase 4 blocked: forward-only truth lemma adaptation needed. The singleton BFMCS has modal_backward sorry, requiring a forward-only version of the truth lemma.",
+  "next_steps": "Run /implement 981 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773783600_b2e4f7",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773866726_179821",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "phases_completed": 3,
-    "phases_total": 6,
-    "remaining_sorries": 2
-  },
-  "completion_data": {
-    "completion_summary": "Completed W=D deprecation (Phase 1), TimelineQuot TaskFrame instantiation (Phase 2), and verified existing WorldHistory/Omega infrastructure (Phase 3). Phase 4 (truth lemma bridge) is partially complete but blocked on adapting the forward-only truth lemma. Two sorries remain: timelineQuotMCS_at_zero_eq_root and the main countermodel sorry in TimelineQuotCompleteness.lean."
-  },
-  "partial_progress": {
-    "stage": "phase_4",
-    "details": "Phase 4 partial - truth lemma infrastructure identified but forward-only adaptation needed",
-    "completed_phases": ["Phase 1: Documentation and Deprecation", "Phase 2: TaskFrame over TimelineQuot", "Phase 3: WorldHistory and Omega Construction"],
-    "files_modified": [
-      "specs/ROAD_MAP.md",
-      "Theories/Bimodal/Metalogic/Domain/DurationTransfer.lean",
-      "Theories/Bimodal/Metalogic/Domain/CanonicalDomain.lean",
-      "Theories/Bimodal/Metalogic/Domain/DiscreteTimeline.lean",
-      "Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotCanonical.lean"
-    ],
-    "blocking_issues": [
-      "timelineQuotSingletonBFMCS has sorry in modal_backward",
-      "Forward-only truth lemma not yet implemented",
-      "timelineQuotMCS_at_zero_eq_root needs proof that root point maps to time 0"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 4
   }
 }
