@@ -108,10 +108,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-18T15:32:48Z",
+      "last_updated": "2026-03-18T15:42:35Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -165,19 +165,19 @@
           "summary": "Post-982 resolution: direct TimelineQuot truth lemma approach, avoids BFMCS modal_backward issue"
         },
         {
-          "path": "specs/988_dense_algebraic_completeness/plans/07_direct-truth-lemma.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for dense algebraic completeness using direct TimelineQuot truth lemma"
-        },
-        {
           "path": "specs/988_dense_algebraic_completeness/reports/08_bridge-elimination-analysis.md",
           "type": "research",
           "summary": "Analysis of bridge-free approaches to dense algebraic completeness, recommending DovetailedTimelineQuot path"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/08_dovetailed-timelinequot.md",
+          "type": "plan",
+          "summary": "5-phase plan using DovetailedTimelineQuot, bypassing TimelineQuot entirely (19h)"
         }
       ],
       "session_id": "sess_1773847762_e27b95",
       "researched": "2026-03-18T15:32:48Z",
-      "planned": "2026-03-18T15:26:06Z",
+      "planned": "2026-03-18T15:42:35Z",
       "recommendation": "Direct TimelineQuot truth lemma via DovetailedCoverage bridge. Fill timelineQuot_not_valid_of_neg_consistent without BFMCS. 22h estimated.",
       "started": "2026-03-17T22:59:53Z",
       "partial_progress": {
