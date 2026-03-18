@@ -1,22 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-18T22:15:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/25_correct-truth-lemma-approaches.md",
-      "summary": "Documents exact mathematical gap (forward_F/backward_P for TimelineQuotFMCS) and recommends wiring dovetailed coverage infrastructure to construct temporally coherent BFMCS"
+      "type": "plan",
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/09_temporal-coherence-wiring.md",
+      "summary": "5-phase implementation plan for wiring DovetailedCoverage to TimelineQuot temporal coherence to fill completeness sorry"
     }
   ],
+  "next_steps": "Run /implement 981 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773870320_cabe0f",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773870768_c282af",
+    "agent_type": "planner-agent",
+    "duration_seconds": 300,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
-    "key_finding": "The gap is precisely forward_F/backward_P for TimelineQuotFMCS; dovetailed coverage provides sorry-free witnesses that need to be wired to BFMCS temporal coherence",
-    "recommended_approach": "Wire DovetailedCoverage theorems to prove timelineQuotFMCS_forward_F/backward_P, then construct singleton BFMCS with temporal coherence",
-    "estimated_effort_hours": 4,
-    "zero_debt_compliant": true,
-    "files_analyzed": 15
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.5
   }
 }
