@@ -477,4 +477,870 @@ theorem dovetailedTimelineQuot_instantiate_dense {P : Type → Prop}
   letI : DenseTemporalFrame (DovetailedTimelineQuot root_mcs root_mcs_proof) := {}
   exact h (DovetailedTimelineQuot root_mcs root_mcs_proof)
 
+/-!
+## Phase 3: FMCS Structure over DovetailedTimelineQuot
+
+This section builds the FMCS (Family of MCS) and BFMCS structures needed for
+the truth lemma and completeness.
+-/
+
+open Bimodal.Metalogic.Bundle
+
+/--
+**Core Linking Lemma**: If t < t' in DovetailedTimelineQuot, then CanonicalR between their underlying MCSs.
+
+**Proof Idea**:
+- t < t' in DovetailedTimelineQuot means: for representatives p, q, we have p ≤ q and ¬(q ≤ p)
+- DovetailedPoint.le p q means: p.mcs = q.mcs or CanonicalR p.mcs q.mcs
+- The equality case is excluded by ¬(q ≤ p), which requires p.mcs ≠ q.mcs
+- Therefore CanonicalR p.mcs q.mcs
+-/
+theorem dovetailedTimelineQuot_lt_implies_canonicalR
+    (t t' : DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (h : t < t') :
+    CanonicalR (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+               (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t') := by
+  -- Inject the IsPreorder instance for use in this proof
+  haveI : IsPreorder (DovetailedTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
+    instIsPreorderDovetailedTimelineElem root_mcs root_mcs_proof
+  -- Use induction to work with representatives
+  induction t using Antisymmetrization.ind with
+  | _ p =>
+    induction t' using Antisymmetrization.ind with
+    | _ q =>
+      rw [toAntisymmetrization_lt_toAntisymmetrization_iff] at h
+      obtain ⟨h_le, h_not_le⟩ := h
+      have h_le' : DovetailedPoint.le p.1 q.1 := h_le
+      have h_not_le' : ¬DovetailedPoint.le q.1 p.1 := h_not_le
+      simp only [DovetailedPoint.le] at h_le' h_not_le'
+      push_neg at h_not_le'
+      cases h_le' with
+      | inl h_eq =>
+        exact absurd h_eq.symm h_not_le'.1
+      | inr h_R =>
+        -- We have CanonicalR p.1.mcs q.1.mcs
+        -- Now connect to dovetailedTimelineQuotMCS
+        simp only [dovetailedTimelineQuotMCS]
+        let rep_p := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+        let rep_q := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)
+
+        have h_rep_p_class : toAntisymmetrization (· ≤ ·) rep_p = toAntisymmetrization (· ≤ ·) p :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+        have h_rep_q_class : toAntisymmetrization (· ≤ ·) rep_q = toAntisymmetrization (· ≤ ·) q :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) q)
+
+        have h_rep_p_equiv : AntisymmRel (· ≤ ·) rep_p p := by
+          constructor
+          · show rep_p ≤ p
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_p_class]
+          · show p ≤ rep_p
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_p_class]
+
+        have h_rep_q_equiv : AntisymmRel (· ≤ ·) rep_q q := by
+          constructor
+          · show rep_q ≤ q
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_q_class]
+          · show q ≤ rep_q
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_q_class]
+
+        have h_mcs_p : rep_p.1.mcs = p.1.mcs :=
+          dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep_p p
+            h_rep_p_equiv.1 h_rep_p_equiv.2
+
+        have h_mcs_q : rep_q.1.mcs = q.1.mcs :=
+          dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep_q q
+            h_rep_q_equiv.1 h_rep_q_equiv.2
+
+        rw [h_mcs_p, h_mcs_q]
+        exact h_R
+
+/--
+Forward G coherence for DovetailedTimelineQuot: G φ at t, t < t' implies φ at t'.
+
+Uses dovetailedTimelineQuot_lt_implies_canonicalR + canonical_forward_G.
+-/
+theorem dovetailedTimelineQuot_forward_G
+    (t t' : DovetailedTimelineQuot root_mcs root_mcs_proof) (phi : Formula)
+    (h_lt : t < t')
+    (h_G : Formula.all_future phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof t) :
+    phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof t' := by
+  have h_R := dovetailedTimelineQuot_lt_implies_canonicalR root_mcs root_mcs_proof t t' h_lt
+  exact canonical_forward_G
+    (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+    (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t')
+    h_R phi h_G
+
+/--
+Backward H coherence for DovetailedTimelineQuot: H φ at t, t' < t implies φ at t'.
+
+Uses dovetailedTimelineQuot_lt_implies_canonicalR + canonical_backward_H.
+-/
+theorem dovetailedTimelineQuot_backward_H
+    (t t' : DovetailedTimelineQuot root_mcs root_mcs_proof) (phi : Formula)
+    (h_lt : t' < t)
+    (h_H : Formula.all_past phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof t) :
+    phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof t' := by
+  have h_R := dovetailedTimelineQuot_lt_implies_canonicalR root_mcs root_mcs_proof t' t h_lt
+  have h_t'_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t'
+  have h_t_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof t
+  have h_R_past : CanonicalR_past
+      (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+      (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t') :=
+    g_content_subset_implies_h_content_reverse
+      (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t')
+      (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+      h_t'_mcs h_t_mcs h_R
+  exact canonical_backward_H
+    (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t)
+    (dovetailedTimelineQuotMCS root_mcs root_mcs_proof t')
+    h_R_past phi h_H
+
+/--
+The FMCS structure over DovetailedTimelineQuot.
+
+Each time point t maps to its MCS via dovetailedTimelineQuotMCS.
+Temporal coherence follows from the linking lemma.
+-/
+noncomputable def dovetailedTimelineQuotFMCS : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof) where
+  mcs := dovetailedTimelineQuotMCS root_mcs root_mcs_proof
+  is_mcs := dovetailedTimelineQuotMCS_is_mcs root_mcs root_mcs_proof
+  forward_G := fun t t' phi h_lt h_G =>
+    dovetailedTimelineQuot_forward_G root_mcs root_mcs_proof t t' phi h_lt h_G
+  backward_H := fun t t' phi h_lt h_H =>
+    dovetailedTimelineQuot_backward_H root_mcs root_mcs_proof t t' phi h_lt h_H
+
+/-!
+## Phase 4: Forward F and Backward P Coherence
+
+These are the key temporal coherence properties needed for the truth lemma.
+They follow from DovetailedCoverage's dovetailedTimeline_has_future/has_past.
+-/
+
+/--
+Helper lemma: iteratedFuture j (F X) = F (iteratedFuture j X).
+-/
+theorem iteratedFuture_some_future_comm (j : Nat) (X : Formula) :
+    iteratedFuture j (Formula.some_future X) = Formula.some_future (iteratedFuture j X) := by
+  induction j with
+  | zero => simp only [iteratedFuture]
+  | succ j' ih => simp only [iteratedFuture]; rw [ih]
+
+/--
+Helper lemma: iteratedFuture m (iteratedFuture n psi) = iteratedFuture (m + n) psi.
+-/
+theorem iteratedFuture_add (m n : Nat) (psi : Formula) :
+    iteratedFuture m (iteratedFuture n psi) = iteratedFuture (m + n) psi := by
+  induction m with
+  | zero => simp only [iteratedFuture, Nat.zero_add]
+  | succ m' ih => simp only [iteratedFuture, Nat.succ_add]; rw [ih]
+
+/--
+**Forward F witness via well-founded recursion on stage**:
+
+Given `F(psi) ∈ p.mcs`, find `q` with `CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs`.
+
+The key insight: even though the formula depth can INCREASE via density,
+the construction eventually terminates because:
+1. Each large step adds the witness with the target formula
+2. After the witness is added, we can continue from the witness at a HIGHER stage
+3. At any stage, we can always use density to find a large encoding
+4. Eventually we reach j = 0 (base formula) at some stage
+
+Proof structure: we use the fact that `witness_at_large_step` directly gives
+us a witness with the target formula, without needing further recursion.
+-/
+theorem forward_F_core (p : DovetailedPoint)
+    (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (psi : Formula)
+    (h_F : Formula.some_future psi ∈ p.mcs) :
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs := by
+  -- Get stage n where p is in build
+  obtain ⟨n, hn⟩ := hp
+  simp only [dovetailedBuild, List.mem_toFinset] at hn
+  -- Get encoding of psi
+  obtain ⟨k, h_dec⟩ := formula_has_encoding psi
+  -- Case split on whether pair(p.point_index, k) > n
+  by_cases h_large : Nat.pair p.point_index k > n
+  · -- Large step case: direct witness with psi ∈ w.mcs
+    obtain ⟨w, hw_mem, hw_R, hw_psi⟩ :=
+      witness_at_large_step root_mcs root_mcs_proof p n hn psi h_F k h_dec h_large
+    exact ⟨w, ⟨Nat.pair p.point_index k, by simp [dovetailedBuild, List.mem_toFinset]; exact hw_mem⟩, hw_R, hw_psi⟩
+  · -- Small step case: use density to find a formula with larger encoding
+    push_neg at h_large
+    -- Find j such that encode(iteratedFuture j psi) >= n + 1
+    obtain ⟨j, h_enc_ge⟩ := iterated_future_encoding_unbounded_general psi (n + 1)
+    -- From F(psi) ∈ p.mcs, get F(iteratedFuture j psi) ∈ p.mcs by density
+    have h_density : iteratedFuture j (Formula.some_future psi) ∈ p.mcs :=
+      density_iterate_in_mcs p.mcs p.is_mcs psi h_F j
+    rw [iteratedFuture_some_future_comm] at h_density
+    -- h_density : F(iteratedFuture j psi) ∈ p.mcs
+    -- Get encoding
+    let k' := @Encodable.encode Formula formulaEncodableStaged (iteratedFuture j psi)
+    have h_dec' : decodeFormulaStaged k' = some (iteratedFuture j psi) :=
+      @Encodable.encodek Formula formulaEncodableStaged (iteratedFuture j psi)
+    have h_large' : Nat.pair p.point_index k' > n := by
+      have h_k'_ge : k' ≥ n + 1 := h_enc_ge
+      have h_pair_ge := pair_ge_add p.point_index k'
+      omega
+    -- Apply witness_at_large_step for iteratedFuture j psi
+    obtain ⟨w, hw_mem, hw_R, hw_psi⟩ :=
+      witness_at_large_step root_mcs root_mcs_proof p n hn
+        (iteratedFuture j psi) h_density k' h_dec' h_large'
+    -- w has iteratedFuture j psi ∈ w.mcs
+    -- If j = 0, we're done: iteratedFuture 0 psi = psi ∈ w.mcs
+    -- If j > 0, iteratedFuture j psi = F(iteratedFuture (j-1) psi) ∈ w.mcs
+    -- and we need to recursively peel off the F's from w
+    have h_w_in_union : w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+      use Nat.pair p.point_index k'
+      simp only [dovetailedBuild, List.mem_toFinset]
+      exact hw_mem
+    -- Use induction on j to peel off the F's
+    -- But this is the same recursion problem!
+    -- The key: we need to track that we're making progress.
+    --
+    -- Actually, let me try a different approach.
+    -- The witness_at_large_step gives us iteratedFuture j psi ∈ w.mcs.
+    -- This is either psi (j=0) or F(something) (j>0).
+    -- In the j>0 case, we have F(iteratedFuture (j-1) psi) ∈ w.mcs.
+    -- We can recursively call this theorem on w with formula (iteratedFuture (j-1) psi).
+    -- The recursion terminates because j decreases.
+    --
+    -- Wait, but we need to prove that THIS theorem is well-defined (doesn't loop).
+    -- The issue is: we're in the small step case, and we call ourselves recursively.
+    -- The recursion is:
+    --   forward_F_core p psi h_F
+    --   -> forward_F_core w (iteratedFuture (j-1) psi) h_F'  (if j > 0)
+    --   -> forward_F_core w' (iteratedFuture (j'-1) psi) h_F'' (if j' > 0)
+    --   -> ...
+    --
+    -- Each time, we get a witness at a HIGHER stage, and the formula might be different.
+    -- The termination argument: eventually j reaches 0.
+    -- But j can increase via density!
+    --
+    -- No wait, j is FIXED by density. We choose j such that encode(iteratedFuture j psi) >= n+1.
+    -- Then we get iteratedFuture j psi in w.mcs.
+    -- If j > 0, we recursively call with (iteratedFuture (j-1) psi).
+    -- The NEXT recursion will choose j' for (iteratedFuture (j-1) psi).
+    -- j' could be anything, not necessarily related to j.
+    --
+    -- So the termination is NOT on j. It's on... what?
+    --
+    -- THE INSIGHT: The termination is on (stage, sizeOf(formula)).
+    -- - stage increases each time (n -> m -> m' -> ...)
+    -- - sizeOf(formula) could increase or decrease
+    -- - But we eventually reach a point where j = 0 (direct large step)
+    --
+    -- Actually, we CAN'T guarantee j = 0 directly. But we CAN observe:
+    -- - The build is finite at each stage
+    -- - All points are countable
+    -- - The formula is fixed (psi)
+    --
+    -- The correct termination: use `decreasing_by` or well-founded recursion
+    -- with a custom measure.
+    --
+    -- For now, let's use a simpler approach: strong induction on j.
+    -- The key: j is chosen by density, and we DON'T recurse with j-1.
+    -- Instead, we recurse with THE SAME theorem on the witness w.
+    -- The recursive call is for F(iteratedFuture (j-1) psi) ∈ w.mcs.
+    -- That call will choose its own j', which could be 0 (direct large step) or > 0.
+    --
+    -- If j' = 0, we're done.
+    -- If j' > 0, we recurse again.
+    --
+    -- The termination: eventually one of the recursive calls has j' = 0.
+    -- Why? Because at SOME stage, the encoding of (iteratedFuture (j-1) psi)
+    -- will be large enough for a direct large step.
+    --
+    -- Actually, this isn't guaranteed! The encoding could always be small.
+    -- But we can CHOOSE to use density to make it large.
+    --
+    -- OK I think I see the issue. Let me try proving by strong induction on j.
+    cases j with
+    | zero =>
+      -- j = 0: iteratedFuture 0 psi = psi ∈ w.mcs
+      simp only [iteratedFuture] at hw_psi
+      exact ⟨w, h_w_in_union, hw_R, hw_psi⟩
+    | succ j' =>
+      -- j = j' + 1: F(iteratedFuture j' psi) ∈ w.mcs
+      simp only [iteratedFuture] at hw_psi
+      -- hw_psi : F(iteratedFuture j' psi) ∈ w.mcs
+      -- Recursively call this theorem on w with formula (iteratedFuture j' psi)
+      -- But wait - this is the WRONG recursion! We're calling the theorem
+      -- with a DIFFERENT formula (iteratedFuture j' psi), not psi.
+      -- The theorem is about F(psi) -> psi, not about F(iteratedFuture j' psi) -> psi.
+      --
+      -- What we SHOULD do: prove a helper lemma that says
+      -- "F(chi) ∈ p.mcs -> chi ∈ q.mcs for some reachable q"
+      -- and apply it repeatedly.
+      --
+      -- But that's exactly what we're trying to prove!
+      --
+      -- The issue is circular: to prove forward_F_core, we need forward_F_core.
+      --
+      -- THE FIX: Use well-founded recursion on the formula itself.
+      -- Define: termination_by (sizeOf psi) or something similar.
+      --
+      -- But actually, looking at the goal more carefully:
+      -- We want: ∃ q, CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs
+      -- We have: F(iteratedFuture j' psi) ∈ w.mcs, CanonicalR p.mcs w.mcs
+      --
+      -- If we can find q' with CanonicalR w.mcs q'.mcs ∧ iteratedFuture j' psi ∈ q'.mcs,
+      -- then by transitivity CanonicalR p.mcs q'.mcs.
+      -- Then from q' we need to get to psi.
+      --
+      -- This IS the same problem, but with formula (iteratedFuture j' psi) instead of psi.
+      -- And iteratedFuture j' psi has SMALLER sizeOf than psi... no wait, it's LARGER!
+      -- iteratedFuture j' psi = F^j'(psi) which is bigger.
+      --
+      -- OK so sizeOf doesn't decrease.
+      --
+      -- Let me try a different termination measure: use well-founded recursion on
+      -- the "stage gap" (how far from the target encoding).
+      --
+      -- Actually, I think the cleanest solution is to accept that this theorem
+      -- requires mutual recursion or a more complex termination proof.
+      --
+      -- For now, mark this case as sorry and document the issue.
+      -- This corresponds to the original sorry at line 770/839.
+      sorry
+
+/--
+**Chain lemma**: If F^(i+1)(phi) ∈ p.mcs, then ∃ q in timeline with CanonicalR p.mcs q.mcs and phi ∈ q.mcs.
+
+Proof by strong induction on i.
+-/
+theorem forward_F_chain_witness (i : Nat) (p : DovetailedPoint)
+    (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_F_iter : iteratedFuture (i + 1) phi ∈ p.mcs) :
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      CanonicalR p.mcs q.mcs ∧ phi ∈ q.mcs := by
+  -- Strong induction on i
+  induction i using Nat.strong_induction_on generalizing p with
+  | _ i ih =>
+    -- Get stage n where p is in build
+    obtain ⟨n, hn⟩ := hp
+    simp only [dovetailedBuild, List.mem_toFinset] at hn
+    -- F^(i+1)(phi) = F(F^i(phi)) = F(iteratedFuture i phi) ∈ p.mcs
+    have h_F_i : Formula.some_future (iteratedFuture i phi) ∈ p.mcs := by
+      simp only [iteratedFuture] at h_F_iter
+      exact h_F_iter
+    -- Get encoding of iteratedFuture i phi
+    obtain ⟨k, h_dec⟩ := formula_has_encoding (iteratedFuture i phi)
+    -- We use the density argument to always reach a large step
+    -- Find j such that encode(iteratedFuture j (iteratedFuture i phi)) >= n + 1
+    obtain ⟨j, h_enc⟩ := iterated_future_encoding_unbounded_general (iteratedFuture i phi) (n + 1)
+    -- From F(iteratedFuture i phi) ∈ p.mcs, apply density to get F(iteratedFuture j (iteratedFuture i phi)) ∈ p.mcs
+    -- density_iterate_in_mcs gives iteratedFuture j (F(iteratedFuture i phi)) = iteratedFuture (j+1) (iteratedFuture i phi)
+    -- which equals F(iteratedFuture j (iteratedFuture i phi))
+    have h_density : iteratedFuture j (Formula.some_future (iteratedFuture i phi)) ∈ p.mcs :=
+      density_iterate_in_mcs p.mcs p.is_mcs (iteratedFuture i phi) h_F_i j
+    -- Rewrite: iteratedFuture j (F(X)) = F(iteratedFuture (j-1) (F(X))) for j >= 1, and = F(X) for j = 0
+    -- Actually, iteratedFuture j (F(X)) = iteratedFuture (j+1) X by the combination property
+    -- So h_density gives iteratedFuture (j+1) (iteratedFuture i phi) ∈ p.mcs
+    -- which is F(iteratedFuture j (iteratedFuture i phi)) ∈ p.mcs
+    have h_F_j : Formula.some_future (iteratedFuture j (iteratedFuture i phi)) ∈ p.mcs := by
+      -- iteratedFuture j (F(X)) = F(iteratedFuture (j-1) (F(X))) for j > 0, = F(X) for j = 0
+      -- Use the relationship iteratedFuture j (F X) = iteratedFuture 1 (iteratedFuture j X) = F(iteratedFuture j X)?
+      -- No, that's wrong. Let me think...
+      -- iteratedFuture j (F X):
+      --   j = 0: F X = F (iteratedFuture 0 X)
+      --   j = 1: F (iteratedFuture 0 (F X)) = F (F X) = F (iteratedFuture 1 X)
+      --   j = k+1: F (iteratedFuture k (F X)) = F (iteratedFuture (k+1) X)  (by IH iteratedFuture k (F X) = iteratedFuture (k+1) X)
+      -- So iteratedFuture j (F X) = F (iteratedFuture j X). Wait no...
+      -- Let me be more careful:
+      --   iteratedFuture 0 (F X) = F X
+      --   iteratedFuture 1 (F X) = F (iteratedFuture 0 (F X)) = F (F X)
+      -- So iteratedFuture j (F X) applies F j more times to F X, giving F^(j+1) X.
+      -- F^(j+1) X = F (F^j X) = F (iteratedFuture j X)
+      -- So iteratedFuture j (F X) = F (iteratedFuture j X)? Let me verify:
+      --   j = 0: iteratedFuture 0 (F X) = F X. F (iteratedFuture 0 X) = F X. Equal!
+      --   j = 1: iteratedFuture 1 (F X) = F (F X). F (iteratedFuture 1 X) = F (F X). Equal!
+      --   j = k+1: iteratedFuture (k+1) (F X) = F (iteratedFuture k (F X)) = F (F (iteratedFuture k X)) (by IH)
+      --            F (iteratedFuture (k+1) X) = F (F (iteratedFuture k X)). Equal!
+      -- So iteratedFuture j (F X) = F (iteratedFuture j X). Great!
+      -- Lemma: iteratedFuture j (F X) = F (iteratedFuture j X)
+      have h_eq : ∀ (j : Nat) (X : Formula),
+          iteratedFuture j (Formula.some_future X) = Formula.some_future (iteratedFuture j X) := by
+        intro j X
+        induction j with
+        | zero => simp only [iteratedFuture]
+        | succ j' ih_j => simp only [iteratedFuture]; rw [ih_j]
+      rw [h_eq j (iteratedFuture i phi)] at h_density
+      exact h_density
+    -- Get encoding (which is >= n + 1)
+    -- Use the exact encoding from h_enc
+    let k' := @Encodable.encode Formula formulaEncodableStaged (iteratedFuture j (iteratedFuture i phi))
+    have h_dec' : decodeFormulaStaged k' = some (iteratedFuture j (iteratedFuture i phi)) :=
+      @Encodable.encodek Formula formulaEncodableStaged (iteratedFuture j (iteratedFuture i phi))
+    have h_large : Nat.pair p.point_index k' > n := by
+      have h_k'_ge : k' ≥ n + 1 := h_enc
+      have h_pair_ge := pair_ge_add p.point_index k'
+      omega
+    -- Apply witness_at_large_step
+    obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+      witness_at_large_step root_mcs root_mcs_proof p n hn
+        (iteratedFuture j (iteratedFuture i phi)) h_F_j k' h_dec' h_large
+    -- w is in timeline
+    have h_w_in_union : w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+      use Nat.pair p.point_index k'
+      simp only [dovetailedBuild, List.mem_toFinset]
+      exact hw_mem
+    -- iteratedFuture j (iteratedFuture i phi) = iteratedFuture (j + i) phi ∈ w.mcs
+    -- This combination property is proved separately to avoid context issues
+    have h_combine_general : ∀ (m n : Nat) (psi : Formula),
+        iteratedFuture m (iteratedFuture n psi) = iteratedFuture (m + n) psi := by
+      intro m n psi
+      induction m with
+      | zero => simp only [iteratedFuture, Nat.zero_add]
+      | succ m' ih => simp only [iteratedFuture, Nat.succ_add]; rw [ih]
+    have h_combine := h_combine_general j i phi
+    rw [h_combine] at hw_phi
+    -- Now: iteratedFuture (j + i) phi ∈ w.mcs
+    -- If j + i = 0, then phi ∈ w.mcs. Done!
+    -- Otherwise, iteratedFuture (j+i) phi = F(iteratedFuture (j+i-1) phi) ∈ w.mcs
+    -- Apply ih with index (j + i - 1) < i? No, j + i - 1 could be >= i!
+    --
+    -- KEY INSIGHT: We DON'T need j + i - 1 < i!
+    -- The induction hypothesis applies to ANY point in the timeline.
+    -- What decreases is NOT j+i, but the formula iteration depth from phi.
+    --
+    -- Wait, but the ih signature is:
+    -- ih : ∀ m < i, ∀ p' in timeline, F^(m+1)(phi) ∈ p'.mcs => ...
+    --
+    -- We have F^(j+i+1)(phi) ∈ p.mcs (which is h_F_iter with our indexing)
+    -- We got w with F^(j+i)(phi) ∈ w.mcs
+    -- To apply ih, we need m < i where F^(m+1)(phi) ∈ w.mcs
+    -- We have F^(j+i)(phi) = iteratedFuture (j+i) phi ∈ w.mcs
+    -- If j + i > 0, this is F(iteratedFuture (j+i-1) phi) ∈ w.mcs
+    -- So m = j + i - 1, and we need j + i - 1 < i, i.e., j < 1, i.e., j = 0
+    --
+    -- If j = 0: iteratedFuture i phi ∈ w.mcs
+    --   If i = 0: phi ∈ w.mcs. Done!
+    --   If i > 0: F(iteratedFuture (i-1) phi) ∈ w.mcs. Apply ih with m = i - 1 < i. Works!
+    --
+    -- If j > 0: iteratedFuture (j+i) phi = F(iteratedFuture (j+i-1) phi) ∈ w.mcs
+    --   j + i - 1 >= i, so we can't apply ih directly
+    --   But we can apply THIS theorem recursively (not ih) with a different well-foundedness!
+    --
+    -- The correct measure: (build_stage, formula_index)
+    -- w is at build stage pair(p.index, k') > n >= build_stage(p)
+    -- So even though formula_index may increase, build_stage increases!
+    --
+    -- For now, let's handle the j = 0 case and leave j > 0 as sorry.
+    cases j with
+    | zero =>
+      -- j = 0: iteratedFuture i phi ∈ w.mcs
+      simp only [Nat.zero_add] at hw_phi h_combine
+      cases i with
+      | zero =>
+        -- i = 0: phi ∈ w.mcs
+        simp only [iteratedFuture] at hw_phi
+        exact ⟨w, h_w_in_union, hw_R, hw_phi⟩
+      | succ i' =>
+        -- i = i' + 1: F(iteratedFuture i' phi) ∈ w.mcs
+        -- Apply ih with m = i'
+        simp only [iteratedFuture] at hw_phi
+        have h_ih := ih i' (Nat.lt_succ_self i') w h_w_in_union hw_phi
+        obtain ⟨q, hq_mem, hq_R, hq_phi⟩ := h_ih
+        -- Chain: CanonicalR p.mcs w.mcs, CanonicalR w.mcs q.mcs
+        have h_trans := canonicalR_transitive p.mcs w.mcs q.mcs p.is_mcs hw_R hq_R
+        exact ⟨q, hq_mem, h_trans, hq_phi⟩
+    | succ j' =>
+      -- j = j' + 1 > 0: need more sophisticated argument
+      -- The formula in w.mcs is F^(j'+1+i)(phi), which has depth j'+1+i from phi
+      -- This is MORE than i, so ih doesn't apply directly
+      --
+      -- Resolution: Use well-founded recursion on a lexicographic order
+      -- or prove a helper lemma that handles this case.
+      --
+      -- For now, use sorry.
+      sorry
+
+/--
+Symmetric auxiliary lemma for backward_P.
+-/
+theorem backward_P_chain_witness (i : Nat) (p : DovetailedPoint)
+    (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_P_iter : iteratedPast (i + 1) phi ∈ p.mcs) :
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      CanonicalR q.mcs p.mcs ∧ phi ∈ q.mcs := by
+  -- Symmetric structure to forward_F_chain_witness
+  induction i using Nat.strong_induction_on generalizing p with
+  | _ i ih =>
+    obtain ⟨n, hn⟩ := hp
+    simp only [dovetailedBuild, List.mem_toFinset] at hn
+    have h_P_i : Formula.some_past (iteratedPast i phi) ∈ p.mcs := by
+      simp only [iteratedPast] at h_P_iter
+      exact h_P_iter
+    obtain ⟨j, h_enc⟩ := iterated_past_encoding_unbounded_general (iteratedPast i phi) (n + 1)
+    -- Similar to forward case: iteratedPast j (P(X)) = P(iteratedPast j X)
+    have h_density : iteratedPast j (Formula.some_past (iteratedPast i phi)) ∈ p.mcs :=
+      density_iterate_past_in_mcs p.mcs p.is_mcs (iteratedPast i phi) h_P_i j
+    have h_P_j : Formula.some_past (iteratedPast j (iteratedPast i phi)) ∈ p.mcs := by
+      -- Lemma: iteratedPast j (P X) = P (iteratedPast j X)
+      have h_eq : ∀ (j : Nat) (X : Formula),
+          iteratedPast j (Formula.some_past X) = Formula.some_past (iteratedPast j X) := by
+        intro j X
+        induction j with
+        | zero => simp only [iteratedPast]
+        | succ j' ih_j => simp only [iteratedPast]; rw [ih_j]
+      rw [h_eq j (iteratedPast i phi)] at h_density
+      exact h_density
+    let k' := @Encodable.encode Formula formulaEncodableStaged (iteratedPast j (iteratedPast i phi))
+    have h_dec' : decodeFormulaStaged k' = some (iteratedPast j (iteratedPast i phi)) :=
+      @Encodable.encodek Formula formulaEncodableStaged (iteratedPast j (iteratedPast i phi))
+    have h_large : Nat.pair p.point_index k' > n := by
+      have h_k'_ge : k' ≥ n + 1 := h_enc
+      have h_pair_ge := pair_ge_add p.point_index k'
+      omega
+    obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+      backward_witness_at_large_step root_mcs root_mcs_proof p n hn
+        (iteratedPast j (iteratedPast i phi)) h_P_j k' h_dec' h_large
+    have h_w_in_union : w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+      use Nat.pair p.point_index k'
+      simp only [dovetailedBuild, List.mem_toFinset]
+      exact hw_mem
+    have h_combine_general : ∀ (m n : Nat) (psi : Formula),
+        iteratedPast m (iteratedPast n psi) = iteratedPast (m + n) psi := by
+      intro m n psi
+      induction m with
+      | zero => simp only [iteratedPast, Nat.zero_add]
+      | succ m' ih => simp only [iteratedPast, Nat.succ_add]; rw [ih]
+    have h_combine := h_combine_general j i phi
+    rw [h_combine] at hw_phi
+    cases j with
+    | zero =>
+      simp only [Nat.zero_add] at hw_phi h_combine
+      cases i with
+      | zero =>
+        simp only [iteratedPast] at hw_phi
+        exact ⟨w, h_w_in_union, hw_R, hw_phi⟩
+      | succ i' =>
+        simp only [iteratedPast] at hw_phi
+        have h_ih := ih i' (Nat.lt_succ_self i') w h_w_in_union hw_phi
+        obtain ⟨q, hq_mem, hq_R, hq_phi⟩ := h_ih
+        have h_trans := canonicalR_transitive q.mcs w.mcs p.mcs q.is_mcs hq_R hw_R
+        exact ⟨q, hq_mem, h_trans, hq_phi⟩
+    | succ j' =>
+      sorry
+
+/--
+**Key auxiliary lemma for forward_F**: If F(phi) ∈ p.mcs and p is in the timeline,
+then there exists q in the timeline with CanonicalR p.mcs q.mcs and phi ∈ q.mcs.
+
+This is a wrapper around forward_F_chain_witness with i = 0.
+F(phi) = iteratedFuture 1 phi = F(iteratedFuture 0 phi), which matches the signature.
+-/
+theorem forward_F_witness_in_timeline (p : DovetailedPoint)
+    (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_F : Formula.some_future phi ∈ p.mcs) :
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      CanonicalR p.mcs q.mcs ∧ phi ∈ q.mcs :=
+  -- F(phi) = iteratedFuture 1 phi = F(iteratedFuture 0 phi)
+  -- forward_F_chain_witness with i = 0 requires iteratedFuture (0+1) phi = F(phi) ∈ p.mcs
+  forward_F_chain_witness root_mcs root_mcs_proof 0 p hp phi h_F
+
+/--
+Symmetric lemma for backward_P.
+-/
+theorem backward_P_witness_in_timeline (p : DovetailedPoint)
+    (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_P : Formula.some_past phi ∈ p.mcs) :
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      CanonicalR q.mcs p.mcs ∧ phi ∈ q.mcs :=
+  backward_P_chain_witness root_mcs root_mcs_proof 0 p hp phi h_P
+
+/--
+Forward F coherence: if F(φ) ∈ dovetailedTimelineQuotMCS(t), then
+∃ s > t, φ ∈ dovetailedTimelineQuotMCS(s).
+
+**Proof Strategy**:
+1. F(φ) in MCS at t gives a representative DovetailedPoint p with F(φ) in p.mcs
+2. Use density_large_step_exists to find (psi, k) with large encoding
+3. witness_at_large_step gives a witness w with CanonicalR and psi ∈ w.mcs
+4. For the specific F(phi), we need to apply the same argument with phi's encoding
+
+Actually, we need to track phi specifically. The dovetailedTimeline_has_future
+gives CanonicalR but discards phi membership. Let's use witness_at_large_step directly.
+-/
+theorem dovetailedTimelineQuotFMCS_forward_F
+    (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_F : Formula.some_future phi ∈ (dovetailedTimelineQuotFMCS root_mcs root_mcs_proof).mcs t) :
+    ∃ s : DovetailedTimelineQuot root_mcs root_mcs_proof,
+      t < s ∧ phi ∈ (dovetailedTimelineQuotFMCS root_mcs root_mcs_proof).mcs s := by
+  -- Inject the IsPreorder instance for use in this proof
+  haveI : IsPreorder (DovetailedTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
+    instIsPreorderDovetailedTimelineElem root_mcs root_mcs_proof
+  -- Work with a representative of the DovetailedTimelineQuot element
+  induction t using Antisymmetrization.ind with
+  | _ p =>
+    -- p : DovetailedTimelineElem, p.1 : DovetailedPoint, p.2 : p.1 ∈ dovetailedTimelineUnion
+
+    -- Step 1: Get F(phi) in p.1.mcs (the representative's MCS)
+    have h_F_rep : Formula.some_future phi ∈ p.1.mcs := by
+      simp only [dovetailedTimelineQuotFMCS, FMCS.mcs, dovetailedTimelineQuotMCS] at h_F
+      let rep := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+      have h_rep_class : toAntisymmetrization (· ≤ ·) rep = toAntisymmetrization (· ≤ ·) p :=
+        toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+      have h_rep_equiv : AntisymmRel (· ≤ ·) rep p := by
+        constructor
+        · show rep ≤ p
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_class]
+        · show p ≤ rep
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_class]
+      have h_mcs_eq : rep.1.mcs = p.1.mcs :=
+        dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep p
+          h_rep_equiv.1 h_rep_equiv.2
+      rw [← h_mcs_eq]
+      exact h_F
+
+    -- Step 2: Get encoding k of phi
+    obtain ⟨k, h_decode⟩ := formula_has_encoding phi
+
+    -- Step 3: Get stage n where p.1 is in dovetailedBuild
+    obtain ⟨n, hn⟩ := p.2
+    simp only [dovetailedBuild, List.mem_toFinset] at hn
+
+    -- Step 4: Use density_large_step_exists to find a large step
+    -- We want pair(p.1.point_index, k') > n for some k' related to phi
+    -- Since phi has encoding k, we can check if pair(p.1.point_index, k) > n
+    -- If not, use the density argument to find a larger formula
+
+    -- Key insight: If pair(p.1.point_index, k) ≤ n, we use iterated futures
+    -- F(phi) ∈ MCS implies F(F(phi)) ∈ MCS implies ... F^m(phi) with large encoding
+    -- But we need the ORIGINAL phi to be in the witness, not some iterated version
+
+    -- The correct approach: Use the staged construction's witness addition
+    -- At step pair(p.1.point_index, k), if p.1 is in the build, the witness for F(phi) is added
+    -- If step > n, p.1 is in the build by monotonicity
+
+    by_cases h_step : Nat.pair p.1.point_index k > n
+    · -- Case 1: The formula encoding k gives a large enough step
+      -- Use witness_at_large_step
+      obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+        witness_at_large_step root_mcs root_mcs_proof p.1 n hn phi h_F_rep k h_decode h_step
+
+      -- w is in the timeline union
+      have h_w_in_union : w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+        use Nat.pair p.1.point_index k
+        simp only [dovetailedBuild, List.mem_toFinset]
+        exact hw_mem
+
+      -- Build the DovetailedTimelineQuot element s from w
+      let w' : DovetailedTimelineElem root_mcs root_mcs_proof := ⟨w, h_w_in_union⟩
+      let s := toAntisymmetrization (· ≤ ·) w'
+
+      -- Show t < s
+      have h_lt : toAntisymmetrization (· ≤ ·) p < s := by
+        rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+        constructor
+        · -- p ≤ w (via CanonicalR)
+          show DovetailedPoint.le p.1 w
+          simp only [DovetailedPoint.le]
+          exact Or.inr hw_R
+        · -- ¬(w ≤ p)
+          intro h_wp
+          simp only [DovetailedPoint.le] at h_wp
+          cases h_wp with
+          | inl h_eq =>
+            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq ▸ hw_R
+            exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
+          | inr h_R_wp =>
+            have h_R_self := canonicalR_transitive p.1.mcs w.mcs p.1.mcs p.1.is_mcs hw_R h_R_wp
+            exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
+
+      -- Show phi ∈ dovetailedTimelineQuotMCS(s)
+      have h_phi_s : phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof s := by
+        simp only [dovetailedTimelineQuotMCS, s]
+        let rep := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_class : toAntisymmetrization (· ≤ ·) rep = toAntisymmetrization (· ≤ ·) w' :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_equiv : AntisymmRel (· ≤ ·) rep w' := by
+          constructor
+          · show rep ≤ w'
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_class]
+          · show w' ≤ rep
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_class]
+        have h_mcs_eq : rep.1.mcs = w'.1.mcs :=
+          dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep w'
+            h_rep_equiv.1 h_rep_equiv.2
+        rw [h_mcs_eq]
+        exact hw_phi
+
+      exact ⟨s, h_lt, h_phi_s⟩
+
+    · -- Case 2: pair(p.1.point_index, k) ≤ n
+      -- Use forward_F_witness_in_timeline which handles the density chaining
+      push_neg at h_step
+      obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+        forward_F_witness_in_timeline root_mcs root_mcs_proof p.1 p.2 phi h_F_rep
+      -- Build the quotient element s from w
+      let w' : DovetailedTimelineElem root_mcs root_mcs_proof := ⟨w, hw_mem⟩
+      let s := toAntisymmetrization (· ≤ ·) w'
+      -- Show t < s (same as large step case)
+      have h_lt : toAntisymmetrization (· ≤ ·) p < s := by
+        rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+        constructor
+        · show DovetailedPoint.le p.1 w
+          simp only [DovetailedPoint.le]
+          exact Or.inr hw_R
+        · intro h_wp
+          simp only [DovetailedPoint.le] at h_wp
+          cases h_wp with
+          | inl h_eq =>
+            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq ▸ hw_R
+            exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
+          | inr h_R_wp =>
+            have h_R_self := canonicalR_transitive p.1.mcs w.mcs p.1.mcs p.1.is_mcs hw_R h_R_wp
+            exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
+      -- Show phi ∈ dovetailedTimelineQuotMCS(s)
+      have h_phi_s : phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof s := by
+        simp only [dovetailedTimelineQuotMCS, s]
+        let rep := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_class : toAntisymmetrization (· ≤ ·) rep = toAntisymmetrization (· ≤ ·) w' :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_equiv : AntisymmRel (· ≤ ·) rep w' := by
+          constructor
+          · show rep ≤ w'
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_class]
+          · show w' ≤ rep
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_class]
+        have h_mcs_eq : rep.1.mcs = w'.1.mcs :=
+          dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep w'
+            h_rep_equiv.1 h_rep_equiv.2
+        rw [h_mcs_eq]
+        exact hw_phi
+      exact ⟨s, h_lt, h_phi_s⟩
+
+/--
+Backward P coherence: if P(φ) ∈ dovetailedTimelineQuotMCS(t), then
+∃ s < t, φ ∈ dovetailedTimelineQuotMCS(s).
+
+Symmetric to forward_F using dovetailedTimeline_has_past and backward witnesses.
+-/
+theorem dovetailedTimelineQuotFMCS_backward_P
+    (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_P : Formula.some_past phi ∈ (dovetailedTimelineQuotFMCS root_mcs root_mcs_proof).mcs t) :
+    ∃ s : DovetailedTimelineQuot root_mcs root_mcs_proof,
+      s < t ∧ phi ∈ (dovetailedTimelineQuotFMCS root_mcs root_mcs_proof).mcs s := by
+  -- Inject the IsPreorder instance for use in this proof
+  haveI : IsPreorder (DovetailedTimelineElem root_mcs root_mcs_proof) (· ≤ ·) :=
+    instIsPreorderDovetailedTimelineElem root_mcs root_mcs_proof
+  -- Symmetric to forward_F using backward_witness_at_large_step
+  induction t using Antisymmetrization.ind with
+  | _ p =>
+    have h_P_rep : Formula.some_past phi ∈ p.1.mcs := by
+      simp only [dovetailedTimelineQuotFMCS, FMCS.mcs, dovetailedTimelineQuotMCS] at h_P
+      let rep := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+      have h_rep_class : toAntisymmetrization (· ≤ ·) rep = toAntisymmetrization (· ≤ ·) p :=
+        toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) p)
+      have h_rep_equiv : AntisymmRel (· ≤ ·) rep p := by
+        constructor
+        · show rep ≤ p
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_class]
+        · show p ≤ rep
+          rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_class]
+      have h_mcs_eq : rep.1.mcs = p.1.mcs :=
+        dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep p
+          h_rep_equiv.1 h_rep_equiv.2
+      rw [← h_mcs_eq]
+      exact h_P
+
+    obtain ⟨k, h_decode⟩ := formula_has_encoding phi
+    obtain ⟨n, hn⟩ := p.2
+    simp only [dovetailedBuild, List.mem_toFinset] at hn
+
+    by_cases h_step : Nat.pair p.1.point_index k > n
+    · obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+        backward_witness_at_large_step root_mcs root_mcs_proof p.1 n hn phi h_P_rep k h_decode h_step
+
+      have h_w_in_union : w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+        use Nat.pair p.1.point_index k
+        simp only [dovetailedBuild, List.mem_toFinset]
+        exact hw_mem
+
+      let w' : DovetailedTimelineElem root_mcs root_mcs_proof := ⟨w, h_w_in_union⟩
+      let s := toAntisymmetrization (· ≤ ·) w'
+
+      have h_lt : s < toAntisymmetrization (· ≤ ·) p := by
+        rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+        constructor
+        · show DovetailedPoint.le w p.1
+          simp only [DovetailedPoint.le]
+          exact Or.inr hw_R
+        · intro h_pw
+          simp only [DovetailedPoint.le] at h_pw
+          cases h_pw with
+          | inl h_eq =>
+            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq.symm ▸ hw_R
+            exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
+          | inr h_R_pw =>
+            have h_R_self := canonicalR_transitive w.mcs p.1.mcs w.mcs w.is_mcs hw_R h_R_pw
+            exact Canonical.canonicalR_irreflexive w.mcs w.is_mcs h_R_self
+
+      have h_phi_s : phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof s := by
+        simp only [dovetailedTimelineQuotMCS, s]
+        let rep := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_class : toAntisymmetrization (· ≤ ·) rep = toAntisymmetrization (· ≤ ·) w' :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_equiv : AntisymmRel (· ≤ ·) rep w' := by
+          constructor
+          · show rep ≤ w'
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_class]
+          · show w' ≤ rep
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_class]
+        have h_mcs_eq : rep.1.mcs = w'.1.mcs :=
+          dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep w'
+            h_rep_equiv.1 h_rep_equiv.2
+        rw [h_mcs_eq]
+        exact hw_phi
+
+      exact ⟨s, h_lt, h_phi_s⟩
+
+    · -- pair(p.1.point_index, k) ≤ n - use backward_P_witness_in_timeline
+      push_neg at h_step
+      obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+        backward_P_witness_in_timeline root_mcs root_mcs_proof p.1 p.2 phi h_P_rep
+      let w' : DovetailedTimelineElem root_mcs root_mcs_proof := ⟨w, hw_mem⟩
+      let s := toAntisymmetrization (· ≤ ·) w'
+      have h_lt : s < toAntisymmetrization (· ≤ ·) p := by
+        rw [toAntisymmetrization_lt_toAntisymmetrization_iff]
+        constructor
+        · show DovetailedPoint.le w p.1
+          simp only [DovetailedPoint.le]
+          exact Or.inr hw_R
+        · intro h_pw
+          simp only [DovetailedPoint.le] at h_pw
+          cases h_pw with
+          | inl h_eq =>
+            have h_R_self : CanonicalR p.1.mcs p.1.mcs := h_eq.symm ▸ hw_R
+            exact Canonical.canonicalR_irreflexive p.1.mcs p.1.is_mcs h_R_self
+          | inr h_R_pw =>
+            have h_R_self := canonicalR_transitive w.mcs p.1.mcs w.mcs w.is_mcs hw_R h_R_pw
+            exact Canonical.canonicalR_irreflexive w.mcs w.is_mcs h_R_self
+      have h_phi_s : phi ∈ dovetailedTimelineQuotMCS root_mcs root_mcs_proof s := by
+        simp only [dovetailedTimelineQuotMCS, s]
+        let rep := ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_class : toAntisymmetrization (· ≤ ·) rep = toAntisymmetrization (· ≤ ·) w' :=
+          toAntisymmetrization_ofAntisymmetrization (· ≤ ·) (toAntisymmetrization (· ≤ ·) w')
+        have h_rep_equiv : AntisymmRel (· ≤ ·) rep w' := by
+          constructor
+          · show rep ≤ w'
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, h_rep_class]
+          · show w' ≤ rep
+            rw [← toAntisymmetrization_le_toAntisymmetrization_iff, ← h_rep_class]
+        have h_mcs_eq : rep.1.mcs = w'.1.mcs :=
+          dovetailedTimelineElem_mutual_le_implies_mcs_eq root_mcs root_mcs_proof rep w'
+            h_rep_equiv.1 h_rep_equiv.2
+        rw [h_mcs_eq]
+        exact hw_phi
+      exact ⟨s, h_lt, h_phi_s⟩
+
 end Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuot

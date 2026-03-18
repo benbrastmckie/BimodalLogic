@@ -49,7 +49,7 @@ The `parametric_shifted_truth_lemma` (ParametricTruthLemma.lean) provides the fu
 
 ## Implementation Phases
 
-### Phase 1: Prove forward_F for TimelineQuotFMCS [NOT STARTED]
+### Phase 1: Prove forward_F for TimelineQuotFMCS [IN PROGRESS]
 
 **Goal**: Prove that if F(phi) is in timelineQuotMCS at time t, there exists s > t with phi in mcs(s).
 

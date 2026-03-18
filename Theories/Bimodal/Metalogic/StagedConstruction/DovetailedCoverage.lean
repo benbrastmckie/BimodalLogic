@@ -126,6 +126,32 @@ theorem iterated_future_encoding_unbounded (N : Nat) :
   simp only [Fintype.card_fin] at h_le
   omega
 
+/-- **Generalized encoding unboundedness**: For any base formula phi_base and any bound N,
+    there exists i such that the encoding of iteratedFuture i phi_base is >= N.
+
+    This is the general version needed for the small-step case in forward_F/backward_P proofs. -/
+theorem iterated_future_encoding_unbounded_general (phi_base : Formula) (N : Nat) :
+    ∃ i : Nat,
+      @Encodable.encode Formula formulaEncodableStaged (iteratedFuture i phi_base) ≥ N := by
+  by_contra h_all_small
+  push_neg at h_all_small
+  -- h_all_small : ∀ i, encode(iteratedFuture i phi_base) < N
+  -- We have N+1 distinct formulas (for i = 0, 1, ..., N) with encodings in {0, ..., N-1}
+  -- By pigeonhole, this is impossible
+  have h_enc_inj := @Encodable.encode_injective Formula formulaEncodableStaged
+  let f : Fin (N + 1) → Fin N := fun i =>
+    ⟨@Encodable.encode Formula formulaEncodableStaged (iteratedFuture i.val phi_base),
+     h_all_small i.val⟩
+  have h_f_inj : Function.Injective f := by
+    intro a b hab
+    simp only [f, Fin.mk.injEq] at hab
+    have h_formula_eq := h_enc_inj hab
+    have h_idx_eq := iteratedFuture_injective phi_base h_formula_eq
+    exact Fin.ext h_idx_eq
+  have h_le := Fintype.card_le_of_injective f h_f_inj
+  simp only [Fintype.card_fin] at h_le
+  omega
+
 /-- For any bound N, there exists a formula phi and encoding k such that:
     1. decodeFormulaStaged k = some phi
     2. k >= N
@@ -358,6 +384,27 @@ theorem iterated_past_encoding_unbounded (N : Nat) :
   push_neg at h_all_small
   have h_enc_inj := @Encodable.encode_injective Formula formulaEncodableStaged
   let phi_base := Formula.some_past (Formula.neg Formula.bot)
+  let f : Fin (N + 1) → Fin N := fun i =>
+    ⟨@Encodable.encode Formula formulaEncodableStaged (iteratedPast i.val phi_base),
+     h_all_small i.val⟩
+  have h_f_inj : Function.Injective f := by
+    intro a b hab
+    simp only [f, Fin.mk.injEq] at hab
+    have h_formula_eq := h_enc_inj hab
+    have h_idx_eq := iteratedPast_injective phi_base h_formula_eq
+    exact Fin.ext h_idx_eq
+  have h_le := Fintype.card_le_of_injective f h_f_inj
+  simp only [Fintype.card_fin] at h_le
+  omega
+
+/-- **Generalized encoding unboundedness for past**: For any base formula phi_base and any bound N,
+    there exists i such that the encoding of iteratedPast i phi_base is >= N. -/
+theorem iterated_past_encoding_unbounded_general (phi_base : Formula) (N : Nat) :
+    ∃ i : Nat,
+      @Encodable.encode Formula formulaEncodableStaged (iteratedPast i phi_base) ≥ N := by
+  by_contra h_all_small
+  push_neg at h_all_small
+  have h_enc_inj := @Encodable.encode_injective Formula formulaEncodableStaged
   let f : Fin (N + 1) → Fin N := fun i =>
     ⟨@Encodable.encode Formula formulaEncodableStaged (iteratedPast i.val phi_base),
      h_all_small i.val⟩

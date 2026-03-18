@@ -1,8 +1,29 @@
 {
-  "status": "researched",
-  "artifacts": [{
-    "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/26_forward-f-termination-analysis.md",
-    "type": "research",
-    "summary": "Approach D (induction on density index j) is the cleanest path: after one witness_at_large_step, all subsequent calls are guaranteed large steps, making j strictly decrease."
-  }]
+  "status": "partial",
+  "started_at": "2026-03-18T12:00:00Z",
+  "completed_at": "2026-03-18T14:30:00Z",
+  "artifacts": [
+    {
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/13_density-index-implementation.md",
+      "type": "summary",
+      "summary": "Partial implementation of density index approach; discovered mathematical gap in termination argument"
+    }
+  ],
+  "partial_progress": {
+    "stage": "phase_1_partial",
+    "details": "Added helper lemmas. The succ j' case requires well-founded recursion on a complex measure that was not fully developed."
+  },
+  "metadata": {
+    "session_id": "sess_1773876363_a46902",
+    "agent_type": "lean-implementation-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 0,
+    "phases_total": 4,
+    "sorries_before": 3,
+    "sorries_after": 4,
+    "build_status": "success"
+  },
+  "requires_user_review": true,
+  "review_reason": "The research report's claim about 'large step propagation' is not directly provable. The termination argument requires showing that a random walk on formula depths eventually reaches 0, which needs a more sophisticated well-founded recursion."
 }

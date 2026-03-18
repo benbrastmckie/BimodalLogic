@@ -35,7 +35,7 @@ This guarantees ALL subsequent calls are large steps, making `j` strictly decrea
 
 ---
 
-## Phase 1: Large Step Propagation Lemma [NOT STARTED]
+## Phase 1: Large Step Propagation Lemma [PARTIAL]
 
 **Estimated effort**: 2 hours
 
