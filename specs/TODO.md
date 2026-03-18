@@ -25,11 +25,11 @@ technical_debt:
 
 ## Tasks
 ### 991. Irreflexive semantics refactoring and STSA representation theorem
-- **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Effort**: 10 hours
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [research-001.md](991_temporal_algebraic_representation/reports/research-001.md), [research-002.md](991_temporal_algebraic_representation/reports/research-002.md), [research-003-irreflexive-refactoring-plan.md](991_temporal_algebraic_representation/reports/research-003-irreflexive-refactoring-plan.md), [04_synthesis.md](991_temporal_algebraic_representation/reports/04_synthesis.md), [05_extension-lattice-analysis.md](991_temporal_algebraic_representation/reports/05_extension-lattice-analysis.md)
-- **Plan**: [01_irreflexive-semantics-refactoring.md](991_temporal_algebraic_representation/plans/01_irreflexive-semantics-refactoring.md)
+- **Plan**: [02_revised-irreflexive-semantics.md](991_temporal_algebraic_representation/plans/02_revised-irreflexive-semantics.md)
 - **Started**: 2026-03-18
 
 **Description**: Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)
