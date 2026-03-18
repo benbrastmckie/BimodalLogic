@@ -6,6 +6,15 @@
   },
   "active_projects": [
     {
+      "project_number": 993,
+      "project_name": "add_stability_operator",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-18T20:28:35Z",
+      "last_updated": "2026-03-18T20:28:35Z",
+      "description": "Add the stability operator (box-dot) to the bimodal formula language. The stability operator quantifies over histories passing through the same world state at a given time: (box-dot)phi at (alpha, t) holds iff phi holds at (beta, t) for all beta in Omega with beta(t) = alpha(t). Requires: (1) extend Formula inductive type with stability constructor, (2) define semantics in TaskModel, (3) add S5(box-dot) axiom schemas (T, 4, B, K), (4) prove box implies box-dot (absorption), (5) prove box-dot commutes with box but NOT with G/H. Per research-002 Section 6: box-dot and G have no valid interaction axioms due to genuine branching."
+    },
+    {
       "project_number": 992,
       "project_name": "shift_closed_tense_s5_algebra",
       "status": "researched",
@@ -787,7 +796,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 993,
+  "next_project_number": 994,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

@@ -1,5 +1,5 @@
 ---
-next_project_number: 993
+next_project_number: 994
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,15 @@ technical_debt:
 # TODO
 
 ## Tasks
+### 993. Add stability operator to bimodal formula language
+- **Effort**: TBD
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Add the stability operator (box-dot) to the bimodal formula language. The stability operator quantifies over histories passing through the same world state at a given time: (box-dot)phi at (alpha, t) holds iff phi holds at (beta, t) for all beta in Omega with beta(t) = alpha(t). Requires: (1) extend Formula inductive type with stability constructor, (2) define semantics in TaskModel, (3) add S5(box-dot) axiom schemas (T, 4, B, K), (4) prove box implies box-dot (absorption), (5) prove box-dot commutes with box but NOT with G/H. Per research-002 Section 6: box-dot and G have no valid interaction axioms due to genuine branching.
+
+---
+
 ### 992. Implement Shift-Closed Tense S5 Algebra representation theorem
 - **Effort**: TBD
 - **Status**: [RESEARCHED]
