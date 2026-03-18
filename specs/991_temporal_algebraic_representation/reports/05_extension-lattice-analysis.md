@@ -13,7 +13,7 @@ This report analyzes the correct lattice structure of frame classes for temporal
 1. **The base logic Kt.Lin (strict)** is over arbitrary strict linear orders, which may have endpoints
 2. **Seriality is the natural first extension** - it eliminates endpoints, giving unbounded frames
 3. **Density and discreteness are incompatible second-level extensions** of seriality
-4. **The extension lattice is a diamond** with Kt.Lin at bottom, Kt.Lin.Ser in the middle, and Kt.Lin.Dn.Ser and Kt.Lin.Disc.Ser as incomparable tops (under the containment order of frame classes)
+4. **The extension lattice is a Y** with Kt.Lin at bottom, Kt.Lin.Ser in the middle, and Kt.Lin.Dn.Ser and Kt.Lin.Disc.Ser as incomparable tops (under the containment order of frame classes)
 
 ---
 

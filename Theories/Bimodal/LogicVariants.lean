@@ -16,17 +16,21 @@ soundness/completeness results.
 The TM (Tense and Modality) bimodal logic has three variants based on
 frame conditions:
 
-### TM Base (18 axioms)
+### TM Base (16 axioms)
 
 The core logic valid on all linear orders. No special frame conditions required.
 
 **Axioms**: prop_k, prop_s, ex_falso, peirce, modal_t, modal_4, modal_b,
-modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_t_future,
-temp_t_past, temp_a, temp_l, modal_future, temp_future, temp_linearity
+modal_5_collapse, modal_k_dist, temp_k_dist, temp_4, temp_a, temp_l,
+modal_future, temp_future, temp_linearity
 
-**Frame Condition**: Linear temporal order (no additional constraints)
+**Frame Condition**: Linear temporal order (strict: s > t for future)
 
-### TM Dense (Base + 1 axiom = 19 axioms)
+**Note (Task 991)**: Under strict temporal semantics, the T-axioms temp_t_future
+and temp_t_past have been removed. These were valid only under reflexive semantics
+where G quantified over s >= t.
+
+### TM Dense (Base + 1 axiom = 17 axioms)
 
 Extension for densely ordered temporal domains.
 
@@ -35,7 +39,7 @@ Extension for densely ordered temporal domains.
 **Frame Condition**: `DenselyOrdered D` - between any two distinct times
 exists another time.
 
-### TM Discrete (Base + 3 axioms = 21 axioms)
+### TM Discrete (Base + 3 axioms = 19 axioms)
 
 Extension for discretely ordered temporal domains.
 

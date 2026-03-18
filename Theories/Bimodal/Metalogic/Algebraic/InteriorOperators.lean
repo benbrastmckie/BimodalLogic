@@ -3,27 +3,36 @@ import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Theorems.Perpetuity
 
 /-!
-# Interior Operators for Temporal Modalities
+# Interior Operators for Modal and Temporal Modalities
 
-This module proves that G (all_future) and H (all_past) are interior operators
-on the Lindenbaum algebra, using the reflexive T-axioms.
+This module defines interior operators on the Lindenbaum algebra.
 
 ## Main Definitions
 
 - `InteriorOp`: Structure for interior operators (dual of closure operators)
-- `G_interior`: Instance showing G is an interior operator
-- `H_interior`: Instance showing H is an interior operator
+- `box_interior`: Instance showing Box (□) is an interior operator
 
 ## Key Properties
 
 Interior operators satisfy:
-1. **Deflationary**: `c(a) ≤ a` (from T-axiom: `Gφ → φ`)
+1. **Deflationary**: `c(a) ≤ a` (from T-axiom: `□φ → φ`)
 2. **Monotone**: `a ≤ b → c(a) ≤ c(b)` (from K-distribution)
-3. **Idempotent**: `c(c(a)) = c(a)` (from 4-axiom: `Gφ → GGφ` and T-axiom)
+3. **Idempotent**: `c(c(a)) = c(a)` (from 4-axiom: `□φ → □□φ` and T-axiom)
 
 ## Status
 
-Phase 4 of Task 700.
+Under strict temporal semantics (Task 991), G and H are NOT interior operators:
+- The T-axiom `Gφ → φ` is not valid when G quantifies over s > t (strict future)
+- The T-axiom `Hφ → φ` is not valid when H quantifies over s < t (strict past)
+
+However, the modal operator Box (□) remains an interior operator because
+the modal T-axiom `□φ → φ` is still valid (modal accessibility is reflexive).
+
+## Historical Note
+
+This module previously included `G_interior` and `H_interior` instances
+under reflexive temporal semantics (Task 967). Under strict semantics,
+only monotonicity (G_monotone, H_monotone) remains valid.
 -/
 
 namespace Bimodal.Metalogic.Algebraic.InteriorOperators
@@ -52,24 +61,14 @@ structure InteriorOp (α : Type*) [PartialOrder α] where
   idempotent : ∀ a, toFun (toFun a) = toFun a
 
 /-!
-## G as Interior Operator
+## G Monotonicity (Valid Under Strict Semantics)
 -/
-
-/--
-G is deflationary: `Gφ ≤ φ`.
-
-Uses T-axiom `temp_t_future`: `Gφ → φ`.
--/
-theorem G_le_self (a : LindenbaumAlg) : G_quot a ≤ a := by
-  induction a using Quotient.ind
-  rename_i φ
-  show Derives φ.all_future φ
-  exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ)⟩
 
 /--
 G is monotone: `φ ≤ ψ → Gφ ≤ Gψ`.
 
 Uses K-distribution and temporal necessitation.
+This property holds under both reflexive and strict semantics.
 -/
 theorem G_monotone (a b : LindenbaumAlg) (h : a ≤ b) : G_quot a ≤ G_quot b := by
   induction a using Quotient.ind
@@ -84,48 +83,15 @@ theorem G_monotone (a b : LindenbaumAlg) (h : a ≤ b) : G_quot a ≤ G_quot b :
     DerivationTree.axiom [] _ (Axiom.temp_k_dist φ ψ)
   exact ⟨DerivationTree.modus_ponens [] _ _ d_k d_temp⟩
 
-/--
-G is idempotent: `G(Gφ) = Gφ`.
-
-Uses 4-axiom `temp_4`: `Gφ → GGφ` and T-axiom for the converse.
--/
-theorem G_idempotent (a : LindenbaumAlg) : G_quot (G_quot a) = G_quot a := by
-  induction a using Quotient.ind
-  rename_i φ
-  apply Quotient.sound
-  show ProvEquiv φ.all_future.all_future φ.all_future
-  constructor
-  · exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_future φ.all_future)⟩
-  · exact ⟨DerivationTree.axiom [] _ (Axiom.temp_4 φ)⟩
-
-/--
-G is an interior operator on the Lindenbaum algebra.
--/
-def G_interior : InteriorOp LindenbaumAlg where
-  toFun := G_quot
-  le_self := G_le_self
-  monotone := G_monotone
-  idempotent := G_idempotent
-
 /-!
-## H as Interior Operator
+## H Monotonicity (Valid Under Strict Semantics)
 -/
-
-/--
-H is deflationary: `Hφ ≤ φ`.
-
-Uses T-axiom `temp_t_past`: `Hφ → φ`.
--/
-theorem H_le_self (a : LindenbaumAlg) : H_quot a ≤ a := by
-  induction a using Quotient.ind
-  rename_i φ
-  show Derives φ.all_past φ
-  exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ)⟩
 
 /--
 H is monotone: `φ ≤ ψ → Hφ ≤ Hψ`.
 
 Uses `past_mono` from Perpetuity (derived via temporal duality).
+This property holds under both reflexive and strict semantics.
 -/
 theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : H_quot a ≤ H_quot b := by
   induction a using Quotient.ind
@@ -136,31 +102,11 @@ theorem H_monotone (a b : LindenbaumAlg) (h : a ≤ b) : H_quot a ≤ H_quot b :
   obtain ⟨d⟩ := h'
   exact ⟨Bimodal.Theorems.Perpetuity.past_mono d⟩
 
-/--
-H is idempotent: `H(Hφ) = Hφ`.
-
-Uses `temp_4_past` (derived via temporal duality from temp_4).
--/
-theorem H_idempotent (a : LindenbaumAlg) : H_quot (H_quot a) = H_quot a := by
-  induction a using Quotient.ind
-  rename_i φ
-  apply Quotient.sound
-  show ProvEquiv φ.all_past.all_past φ.all_past
-  constructor
-  · exact ⟨DerivationTree.axiom [] _ (Axiom.temp_t_past φ.all_past)⟩
-  · exact ⟨Bimodal.Metalogic.Core.temp_4_past φ⟩
-
-/--
-H is an interior operator on the Lindenbaum algebra.
--/
-def H_interior : InteriorOp LindenbaumAlg where
-  toFun := H_quot
-  le_self := H_le_self
-  monotone := H_monotone
-  idempotent := H_idempotent
-
 /-!
 ## Box as Interior Operator
+
+The modal operator Box (□) is an interior operator because the modal T-axiom
+`□φ → φ` remains valid. Modal accessibility is reflexive in our logic.
 -/
 
 /--
@@ -214,5 +160,32 @@ def box_interior : InteriorOp LindenbaumAlg where
   le_self := box_le_self
   monotone := box_monotone
   idempotent := box_idempotent
+
+/-!
+## Note on G and H Under Strict Semantics
+
+Under strict temporal semantics (Task 991), G and H are NOT interior operators
+because they fail the deflationary property:
+
+- `Gφ → φ` is not valid when G quantifies over s > t (strict future)
+- `Hφ → φ` is not valid when H quantifies over s < t (strict past)
+
+The T-axioms `temp_t_future` and `temp_t_past` have been removed from the
+proof system as part of the Task 991 refactoring.
+
+Mathematically, this is expected: under strict semantics, "always in the future"
+does not imply "now", and "always in the past" does not imply "now".
+
+The G and H operators still satisfy:
+- Monotonicity (G_monotone, H_monotone) - preserved
+- The 4-axiom direction (Gφ → GGφ) - preserved
+- K-distribution - preserved
+
+But they fail:
+- Deflationarity (Gφ → φ, Hφ → φ) - invalid
+- Full idempotency (requires T-axiom for one direction)
+
+Thus, `G_interior` and `H_interior` instances are not defined under strict semantics.
+-/
 
 end Bimodal.Metalogic.Algebraic.InteriorOperators

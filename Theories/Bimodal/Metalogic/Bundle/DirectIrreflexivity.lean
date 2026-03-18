@@ -113,7 +113,7 @@ Note: P(phi) = phi.sometime_past = phi.neg.all_past.neg
 So P(atom(p)) = (atom(p)).neg.all_past.neg = (all_past (neg (atom p))).neg
 -/
 theorem canonicalR_H_neg_exclusion (M : Set Formula) (h_mcs : SetMaximalConsistent M)
-    (h_R : CanonicalR M M) (p : String) (h_atom : Formula.atom p ∈ M) :
+    (h_R : CanonicalR M M) (p : Atom) (h_atom : Formula.atom p ∈ M) :
     Formula.all_past (Formula.neg (Formula.atom p)) ∉ M := by
   -- P(atom(p)) in M by closure
   have h_P_in_M := canonicalR_closure_temp_a M h_mcs h_R (Formula.atom p) h_atom

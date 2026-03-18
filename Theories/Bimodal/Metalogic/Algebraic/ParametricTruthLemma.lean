@@ -272,76 +272,44 @@ theorem parametric_canonical_truth_lemma
       -- By modal_backward: box psi in MCS
       exact B.modal_backward fam hfam psi t h_psi_all_mcs
   | all_future psi ih =>
-    -- G case: G psi in MCS <-> forall s >= t, truth tau s psi
-    -- Note: Reflexive semantics (t <= s) per Task 967
+    -- G case: Under strict semantics (Task 991), G quantifies over s > t
     simp only [truth_at]
     constructor
-    · -- Forward: G psi in MCS -> forall s >= t, truth tau s psi
+    · -- Forward: G psi in MCS -> forall s > t, truth tau s psi
       intro h_G s hts
-      -- Case split: t = s (use temporal T axiom) or t < s (use forward_G)
-      rcases hts.lt_or_eq with hts_lt | hts_eq
-      · -- t < s: use forward_G
-        have h_psi_mcs : psi ∈ fam.mcs s := fam.forward_G t s psi hts_lt h_G
-        exact (ih fam hfam s).mp h_psi_mcs
-      · -- t = s: use temporal T axiom (Gphi -> phi)
-        rw [← hts_eq]
-        have h_T : (psi.all_future).imp psi ∈ fam.mcs t :=
-          theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
-            (Bimodal.ProofSystem.Axiom.temp_t_future psi))
-        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_G
-        exact (ih fam hfam t).mp h_psi_mcs
-    · -- Backward: forall s >= t, truth tau s psi -> G psi in MCS
+      have h_psi_mcs : psi ∈ fam.mcs s := fam.forward_G t s psi hts h_G
+      exact (ih fam hfam s).mp h_psi_mcs
+    · -- Backward: forall s > t, truth tau s psi -> G psi in MCS
       intro h_all
-      -- Extract forward_F and backward_P for this family from h_tc
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily D := {
         toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      -- By IH backward: psi in fam.mcs s for all s > t
-      -- (temporal_backward_G only needs strict inequality)
       have h_all_mcs : ∀ s : D, t < s → psi ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
-      -- Apply temporal_backward_G
+        exact (ih fam hfam s).mpr (h_all s hts)
       exact temporal_backward_G tcf t psi h_all_mcs
   | all_past psi ih =>
-    -- H case: H psi in MCS <-> forall s <= t, truth tau s psi
-    -- Note: Reflexive semantics (s <= t) per Task 967
+    -- H case: Under strict semantics (Task 991), H quantifies over s < t
     simp only [truth_at]
     constructor
-    · -- Forward: H psi in MCS -> forall s <= t, truth tau s psi
+    · -- Forward: H psi in MCS -> forall s < t, truth tau s psi
       intro h_H s hst
-      -- Case split: s = t (use temporal T axiom) or s < t (use backward_H)
-      rcases hst.lt_or_eq with hst_lt | hst_eq
-      · -- s < t: use backward_H
-        have h_psi_mcs : psi ∈ fam.mcs s := fam.backward_H t s psi hst_lt h_H
-        exact (ih fam hfam s).mp h_psi_mcs
-      · -- s = t: use temporal T axiom (Hphi -> phi)
-        rw [hst_eq]
-        have h_T : (psi.all_past).imp psi ∈ fam.mcs t :=
-          theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
-            (Bimodal.ProofSystem.Axiom.temp_t_past psi))
-        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_H
-        exact (ih fam hfam t).mp h_psi_mcs
-    · -- Backward: forall s <= t, truth tau s psi -> H psi in MCS
+      have h_psi_mcs : psi ∈ fam.mcs s := fam.backward_H t s psi hst h_H
+      exact (ih fam hfam s).mp h_psi_mcs
+    · -- Backward: forall s < t, truth tau s psi -> H psi in MCS
       intro h_all
-      -- Extract forward_F and backward_P for this family from h_tc
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
-      -- Build a TemporalCoherentFamily
       let tcf : TemporalCoherentFamily D := {
         toFMCS := fam
         forward_F := h_forward_F
         backward_P := h_backward_P
       }
-      -- By IH backward: psi in fam.mcs s for all s < t
-      -- (temporal_backward_H only needs strict inequality)
       have h_all_mcs : ∀ s : D, s < t → psi ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
-      -- Apply temporal_backward_H
+        exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t psi h_all_mcs
 
 /-!
@@ -451,20 +419,15 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
         exact (ih fam' hfam' t).mpr (h_all_σ (parametric_to_history fam') h_mem)
       exact B.modal_backward fam hfam ψ t h_all_fam
   | all_future ψ ih =>
-    -- G case: same as parametric_canonical_truth_lemma (temporal cases are Omega-independent)
+    -- G case: Under strict semantics (Task 991), G quantifies over s > t
     simp only [truth_at]
     constructor
-    · intro h_G s hts
-      rcases hts.lt_or_eq with hts_lt | hts_eq
-      · have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts_lt h_G
-        exact (ih fam hfam s).mp h_psi_mcs
-      · rw [← hts_eq]
-        have h_T : (ψ.all_future).imp ψ ∈ fam.mcs t :=
-          theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
-            (Bimodal.ProofSystem.Axiom.temp_t_future ψ))
-        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_G
-        exact (ih fam hfam t).mp h_psi_mcs
-    · intro h_all
+    · -- Forward: G ψ ∈ fam.mcs t → ∀ s > t, truth_at ... s ψ
+      intro h_G s hts
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.forward_G t s ψ hts h_G
+      exact (ih fam hfam s).mp h_psi_mcs
+    · -- Backward: (∀ s > t, truth_at ... s ψ) → G ψ ∈ fam.mcs t
+      intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       let tcf : TemporalCoherentFamily D := {
         toFMCS := fam
@@ -473,23 +436,18 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       }
       have h_all_mcs : ∀ s : D, t < s → ψ ∈ fam.mcs s := by
         intro s hts
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hts))
+        exact (ih fam hfam s).mpr (h_all s hts)
       exact temporal_backward_G tcf t ψ h_all_mcs
   | all_past ψ ih =>
-    -- H case: same as parametric_canonical_truth_lemma (temporal cases are Omega-independent)
+    -- H case: Under strict semantics (Task 991), H quantifies over s < t
     simp only [truth_at]
     constructor
-    · intro h_H s hst
-      rcases hst.lt_or_eq with hst_lt | hst_eq
-      · have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst_lt h_H
-        exact (ih fam hfam s).mp h_psi_mcs
-      · rw [hst_eq]
-        have h_T : (ψ.all_past).imp ψ ∈ fam.mcs t :=
-          theorem_in_mcs (fam.is_mcs t) (Bimodal.ProofSystem.DerivationTree.axiom [] _
-            (Bimodal.ProofSystem.Axiom.temp_t_past ψ))
-        have h_psi_mcs := SetMaximalConsistent.implication_property (fam.is_mcs t) h_T h_H
-        exact (ih fam hfam t).mp h_psi_mcs
-    · intro h_all
+    · -- Forward: H ψ ∈ fam.mcs t → ∀ s < t, truth_at ... s ψ
+      intro h_H s hst
+      have h_psi_mcs : ψ ∈ fam.mcs s := fam.backward_H t s ψ hst h_H
+      exact (ih fam hfam s).mp h_psi_mcs
+    · -- Backward: (∀ s < t, truth_at ... s ψ) → H ψ ∈ fam.mcs t
+      intro h_all
       obtain ⟨h_forward_F, h_backward_P⟩ := h_tc fam hfam
       let tcf : TemporalCoherentFamily D := {
         toFMCS := fam
@@ -498,7 +456,7 @@ theorem parametric_shifted_truth_lemma (B : BFMCS D)
       }
       have h_all_mcs : ∀ s : D, s < t → ψ ∈ fam.mcs s := by
         intro s hst
-        exact (ih fam hfam s).mpr (h_all s (le_of_lt hst))
+        exact (ih fam hfam s).mpr (h_all s hst)
       exact temporal_backward_H tcf t ψ h_all_mcs
 
 end Bimodal.Metalogic.Algebraic.ParametricTruthLemma

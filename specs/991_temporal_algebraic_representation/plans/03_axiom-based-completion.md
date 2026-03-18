@@ -57,7 +57,7 @@ This plan completes the irreflexive temporal semantics refactoring using the **a
 
 ## Implementation Phases
 
-### Phase 4: Axiom Declaration [NOT STARTED]
+### Phase 4: Axiom Declaration [COMPLETED]
 
 **Goal**: Replace the sorry at line 1257 of CanonicalIrreflexivity.lean with a proper axiom declaration.
 
@@ -83,7 +83,7 @@ This plan completes the irreflexive temporal semantics refactoring using the **a
 
 ---
 
-### Phase 5: Truth Lemma Simplification [NOT STARTED]
+### Phase 5: Truth Lemma Simplification [COMPLETED]
 
 **Goal**: Remove reflexive case branches from the canonical model truth lemma.
 
@@ -109,7 +109,7 @@ This plan completes the irreflexive temporal semantics refactoring using the **a
 
 ---
 
-### Phase 6: Staged Construction & Cantor [NOT STARTED]
+### Phase 6: Staged Construction & Cantor [PARTIAL]
 
 **Goal**: Remove reflexive case splits from staged construction, update Cantor prerequisites.
 
@@ -141,7 +141,7 @@ This plan completes the irreflexive temporal semantics refactoring using the **a
 
 ---
 
-### Phase 7: Algebraic Module Updates [NOT STARTED]
+### Phase 7: Algebraic Module Updates [COMPLETED]
 
 **Goal**: Update algebraic representation and parametric truth lemma modules.
 
@@ -166,7 +166,7 @@ This plan completes the irreflexive temporal semantics refactoring using the **a
 
 ---
 
-### Phase 8: Derived Theorems [NOT STARTED]
+### Phase 8: Derived Theorems [COMPLETED]
 
 **Goal**: Verify and update perpetuity principles and linearity facts.
 
@@ -194,7 +194,7 @@ This plan completes the irreflexive temporal semantics refactoring using the **a
 
 ---
 
-### Phase 9: Final Cleanup & Documentation [NOT STARTED]
+### Phase 9: Final Cleanup & Documentation [COMPLETED]
 
 **Goal**: Remove all cruft, update documentation, verify clean build.
 

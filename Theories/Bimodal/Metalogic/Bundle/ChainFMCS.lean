@@ -178,21 +178,18 @@ lemma Boxg_content_subset_g_content (M : Set Formula) (h_mcs : SetMaximalConsist
   exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h_boxg
 
 /--
-The full hierarchy: MCSBoxContent(M) ⊆ Boxg_content(M) ⊆ g_content(M) ⊆ M.
+The content hierarchy: MCSBoxContent(M) ⊆ Boxg_content(M) ⊆ g_content(M).
+
+Note: Under strict temporal semantics (Task 991), we do NOT have g_content(M) ⊆ M.
+The T-axiom G(φ) → φ is not valid when G quantifies strictly (s > t).
 
 Combining the individual inclusion lemmas.
 -/
 theorem boxcontent_hierarchy (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     MCSBoxContent M ⊆ Boxg_content M ∧
-    Boxg_content M ⊆ g_content M ∧
-    g_content M ⊆ M := by
+    Boxg_content M ⊆ g_content M := by
   exact ⟨MCSBoxContent_subset_Boxg_content M h_mcs,
-         Boxg_content_subset_g_content M h_mcs,
-         fun phi h => by
-           simp only [g_content, Set.mem_setOf_eq] at h
-           have h_T : [] ⊢ (Formula.all_future phi).imp phi :=
-             DerivationTree.axiom [] _ (Axiom.temp_t_future phi)
-           exact SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_T) h⟩
+         Boxg_content_subset_g_content M h_mcs⟩
 
 /-!
 ## Boxh_content: Past Analogue of Boxg_content
