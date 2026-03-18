@@ -121,12 +121,12 @@ technical_debt:
 
 ### 982. Wire dense completeness domain connection
 - **Effort**: 22 hours (6 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Created**: 2026-03-16 (Review)
-- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D), [research-013.md](specs/982_wire_dense_completeness_domain_connection/reports/research-013.md) (gap analysis), [15_team-research.md](specs/982_wire_dense_completeness_domain_connection/reports/15_team-research.md) (team analysis), [16_dovetailing-analysis.md](specs/982_wire_dense_completeness_domain_connection/reports/16_dovetailing-analysis.md) (dovetailing deep-dive), [17_blocker-resolution.md](specs/982_wire_dense_completeness_domain_connection/reports/17_blocker-resolution.md) (Phase 4 blocker resolution)
-- **Plan**: [10_full-dovetailing.md](specs/982_wire_dense_completeness_domain_connection/plans/10_full-dovetailing.md) (v10: Full dovetailing - **mathematically correct**)
+- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D), [research-013.md](specs/982_wire_dense_completeness_domain_connection/reports/research-013.md) (gap analysis), [15_team-research.md](specs/982_wire_dense_completeness_domain_connection/reports/15_team-research.md) (team analysis), [16_dovetailing-analysis.md](specs/982_wire_dense_completeness_domain_connection/reports/16_dovetailing-analysis.md) (dovetailing deep-dive), [17_blocker-resolution.md](specs/982_wire_dense_completeness_domain_connection/reports/17_blocker-resolution.md) (blocker resolution)
+- **Plan**: [11_density-resolution.md](specs/982_wire_dense_completeness_domain_connection/plans/11_density-resolution.md) (v11: Density argument - 8 hours remaining)
 - **Summary**: [implementation-summary-20260317.md](specs/982_wire_dense_completeness_domain_connection/summaries/implementation-summary-20260317.md)
 
 **Description**: Complete dense completeness using W/D separated TaskFrame architecture: W = CanonicalMCS (world states), D = TimelineQuot (durations). Witnesses exist in W, not necessarily in Range(h).

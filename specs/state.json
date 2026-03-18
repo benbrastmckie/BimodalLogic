@@ -331,12 +331,12 @@
     {
       "project_number": 982,
       "project_name": "wire_dense_completeness_domain_connection",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "description": "Wire dense completeness: connect CanonicalMCS-based BFMCS to TimelineQuot-based semantics. All components are sorry-free; final theorem assembly needs domain transfer.",
       "created": "2026-03-16T23:45:00Z",
-      "last_updated": "2026-03-18T01:10:18Z",
+      "last_updated": "2026-03-18T01:14:07Z",
       "session_id": "sess_1773795980_12f0f7",
       "researched": "2026-03-17T14:53:54Z",
       "artifacts": [
@@ -436,17 +436,17 @@
           "summary": "Dovetailing analysis: backlog processing approach recommended over full dovetailing (~14h vs ~22h)"
         },
         {
-          "path": "specs/982_wire_dense_completeness_domain_connection/plans/10_full-dovetailing.md",
-          "type": "plan",
-          "summary": "v10: Full dovetailing construction - 6 phases, 22 hours"
-        },
-        {
           "path": "specs/982_wire_dense_completeness_domain_connection/reports/17_blocker-resolution.md",
           "type": "research",
           "summary": "Blocker resolution via density argument: F^i(neg bot) encodings grow unboundedly, ensuring coverage"
+        },
+        {
+          "path": "specs/982_wire_dense_completeness_domain_connection/plans/11_density-resolution.md",
+          "type": "plan",
+          "summary": "v11: Density argument resolution - 4 remaining phases, 8 hours"
         }
       ],
-      "planned": "2026-03-17T22:30:10Z",
+      "planned": "2026-03-18T01:14:07Z",
       "started": "2026-03-17T21:06:50Z"
     },
     {
