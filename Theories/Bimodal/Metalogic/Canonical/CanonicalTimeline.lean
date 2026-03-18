@@ -3,6 +3,8 @@ import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Core.MaximalConsistent
 import Bimodal.Metalogic.Core.MCSProperties
 import Bimodal.Syntax.Formula
+import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
 # Canonical Timeline for D-from-Syntax Construction
@@ -90,13 +92,18 @@ by maximality and the non-emptiness of the temporal domain (NoMaxOrder).
 -/
 theorem SetMaximalConsistent.contains_seriality_future (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Formula.some_future (Formula.neg Formula.bot) ∈ M := by
-  -- G(¬⊥) is true since ¬⊥ is a tautology (derivable from ex_falso contrapositive)
-  have h_neg_bot_deriv : [] ⊢ Formula.neg Formula.bot := by
-    -- ¬⊥ = ⊥ → ⊥, which follows from identity
-    exact DerivationTree.axiom [] _ (Axiom.prop_s Formula.bot Formula.bot)
-  -- Actually we need to derive G(¬⊥) first, then apply seriality
-  -- For now, use the fact that this is provable in the system
-  sorry
+  -- G(¬⊥) is derivable since ¬⊥ is a tautology (identity combinator + temporal_necessitation)
+  have h_neg_bot_deriv : [] ⊢ Formula.neg Formula.bot :=
+    Bimodal.Theorems.Combinators.identity Formula.bot
+  -- Apply temporal_necessitation to get G(¬⊥)
+  have h_G_neg_bot : [] ⊢ (Formula.neg Formula.bot).all_future :=
+    DerivationTree.temporal_necessitation (Formula.neg Formula.bot) h_neg_bot_deriv
+  -- Then apply seriality Gφ → Fφ
+  have h_seriality : [] ⊢ (Formula.neg Formula.bot).all_future.imp (Formula.neg Formula.bot).some_future :=
+    DerivationTree.axiom [] _ (Axiom.seriality_future (Formula.neg Formula.bot))
+  have h_F_neg_bot : [] ⊢ (Formula.neg Formula.bot).some_future :=
+    DerivationTree.modus_ponens _ _ _ h_seriality h_G_neg_bot
+  exact theorem_in_mcs h_mcs h_F_neg_bot
 
 /--
 Every MCS contains `P(¬⊥)` (derived from seriality axiom `H(¬⊥) → P(¬⊥)`).
@@ -107,8 +114,18 @@ Under strict semantics (Task 991), the seriality axiom is `Hφ → Pφ`. For `φ
 -/
 theorem SetMaximalConsistent.contains_seriality_past (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Formula.some_past (Formula.neg Formula.bot) ∈ M := by
-  -- Similar to contains_seriality_future
-  sorry
+  -- H(¬⊥) is derivable since ¬⊥ is a tautology (identity combinator + past_necessitation)
+  have h_neg_bot_deriv : [] ⊢ Formula.neg Formula.bot :=
+    Bimodal.Theorems.Combinators.identity Formula.bot
+  -- Apply past_necessitation (derived via temporal duality) to get H(¬⊥)
+  have h_H_neg_bot : [] ⊢ (Formula.neg Formula.bot).all_past :=
+    Bimodal.Theorems.past_necessitation (Formula.neg Formula.bot) h_neg_bot_deriv
+  -- Then apply seriality Hφ → Pφ
+  have h_seriality : [] ⊢ (Formula.neg Formula.bot).all_past.imp (Formula.neg Formula.bot).some_past :=
+    DerivationTree.axiom [] _ (Axiom.seriality_past (Formula.neg Formula.bot))
+  have h_P_neg_bot : [] ⊢ (Formula.neg Formula.bot).some_past :=
+    DerivationTree.modus_ponens _ _ _ h_seriality h_H_neg_bot
+  exact theorem_in_mcs h_mcs h_P_neg_bot
 
 /--
 Every MCS has a strict canonical future successor.

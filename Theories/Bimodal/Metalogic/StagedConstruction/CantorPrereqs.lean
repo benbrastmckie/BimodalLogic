@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.StagedConstruction.StagedExecution
 import Bimodal.Theorems.Propositional
+import Bimodal.Theorems.Combinators
 import Mathlib.Data.Set.Countable
 
 /-!
@@ -54,17 +55,68 @@ theorem formula_has_encoding (phi : Formula) :
 /-!
 ## Density in MCS
 
-The density axiom F(phi) -> F(F(phi)) allows deriving infinitely many
-F-obligations in any MCS.
+The density axiom GGφ → Gφ (Task 991 Sahlqvist form) implies Fψ → FFψ.
+
+Derivation:
+1. GG(¬φ) → G(¬φ) (density axiom with ψ := ¬φ)
+2. ¬G(¬φ) → ¬GG(¬φ) (contrapositive)
+3. By definition: ¬G(¬φ) = Fφ and ¬GG(¬φ) = ¬G(G(¬φ)) = F(¬G(¬φ)) = FFφ
+4. So we get: Fφ → FFφ
 -/
 
-/-- If F(phi) ∈ M, then F(F(phi)) ∈ M. From the density axiom. -/
+/-- Derive Fφ → FFφ from the density axiom GGψ → Gψ (Task 991 strict semantics).
+
+The density axiom changed from Fψ → FFψ to GGψ → Gψ in Task 991.
+We derive the old form from the new via contraposition.
+
+Key observation:
+- some_future φ = φ.neg.all_future.neg = ¬G(¬φ)
+- some_future (some_future φ) = (¬G(¬φ)).neg.all_future.neg = ¬G(G(¬φ))
+  because (¬X).neg.all_future.neg = X.all_future.neg = ¬G(X)
+  where X = G(¬φ)
+
+Wait, that's not right either. Let's compute:
+- (¬G(¬φ)).neg = (G(¬φ).neg).neg = G(¬φ).neg.neg
+- But Formula.neg X = X.imp ⊥, so this gets complicated.
+
+Actually, the key is:
+- Fψ = ψ.neg.all_future.neg (definition of some_future)
+- FFφ = (Fφ).neg.all_future.neg = (φ.neg.all_future.neg).neg.all_future.neg
+
+Now (φ.neg.all_future.neg).neg = (φ.neg.all_future).neg.neg (since neg X = X.imp ⊥)
+No wait, (X.neg).neg = (X.imp ⊥).imp ⊥ = ¬¬X
+
+So FFφ = (¬¬(φ.neg.all_future)).all_future.neg = ¬G(¬¬G(¬φ))
+
+We have from contraposition: ¬G(¬φ) → ¬GG(¬φ)
+We need: ¬G(¬φ) → ¬G(¬¬G(¬φ))
+
+These are NOT the same! We need an additional step.
+
+From GG(ψ) → G(¬¬ψ) (derivable via DNI + temporal necessitation + K-dist),
+we get ¬G(¬¬ψ) → ¬GG(ψ) by contrapositive.
+
+Combined: ¬G(¬φ) → ¬GG(¬φ) and ¬G(¬¬G(¬φ)) → ¬GG(¬φ) (with ψ = G(¬φ))
+Hmm, this still doesn't chain correctly.
+
+Actually, for strict semantics, we might need to work with the contrapositive differently.
+The cleaner approach is to prove semantically that Fφ → FFφ follows from density.
+For now, use sorry as this requires a longer derivation chain.
+-/
+noncomputable def derive_F_to_FF (phi : Formula) :
+    DerivationTree [] ((Formula.some_future phi).imp (Formula.some_future (Formula.some_future phi))) := by
+  -- TODO (Task 991): Complete this derivation from the new density axiom
+  -- The density axiom GGψ → Gψ implies Fφ → FFφ, but the proof requires
+  -- chaining through double negation elimination and K-distribution.
+  sorry
+
+/-- If F(phi) ∈ M, then F(F(phi)) ∈ M. Derived from the density axiom. -/
 theorem SetMaximalConsistent.density_F_to_FF (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
     Formula.some_future (Formula.some_future phi) ∈ M := by
   have h_density : (Formula.some_future phi).imp
       (Formula.some_future (Formula.some_future phi)) ∈ M :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.density phi))
+    theorem_in_mcs h_mcs (derive_F_to_FF phi)
   exact SetMaximalConsistent.implication_property h_mcs h_density h_F
 
 /-!
@@ -82,32 +134,38 @@ This gives MCS Richness WITHOUT using DN.
 -/
 
 /-- G(bot) is not in any serial MCS because it contradicts F(¬bot).
-Proof: G(bot) → bot (by temp_t_future), and bot is not in any consistent set.
-Actually we use: G(bot) and F(¬bot) together imply inconsistency. -/
+
+Under strict semantics (Task 991), we don't have Gφ → φ. Instead, we use:
+- G(⊥) → G(¬¬⊥) (using DNI + temporal necessitation + K-distribution)
+- F(¬⊥) = ¬G(¬¬⊥) definitionally
+- Contradiction
+-/
 theorem SetMaximalConsistent.G_bot_not_in (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (h_serial : Formula.some_future (Formula.neg Formula.bot) ∈ M) :
     Formula.all_future Formula.bot ∉ M := by
   intro h_G_bot
-  -- G(bot) → bot is an axiom (temp_t_future)
-  have h_impl : (Formula.all_future Formula.bot).imp Formula.bot ∈ M :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_future Formula.bot))
-  have h_bot : Formula.bot ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs h_impl h_G_bot
-  -- bot ∈ M contradicts SetConsistent M
-  -- SetConsistent M means: for any L ⊆ M, Consistent L
-  -- If bot ∈ M, then [bot] ⊆ M, so Consistent [bot] should hold
-  -- But [bot] ⊢ bot (trivially), contradicting Consistent [bot]
-  have h_set_consistent : SetConsistent M := h_mcs.1
-  have h_bot_list_consistent : Consistent [Formula.bot] := by
-    apply h_set_consistent [Formula.bot]
-    intro φ hφ
-    simp at hφ
-    rw [hφ]
-    exact h_bot
-  have h_bot_in_list : Formula.bot ∈ [Formula.bot] := List.mem_singleton.mpr rfl
-  have h_bot_derives : DerivationTree [Formula.bot] Formula.bot :=
-    DerivationTree.assumption [Formula.bot] Formula.bot h_bot_in_list
-  exact h_bot_list_consistent ⟨h_bot_derives⟩
+  -- Step 1: ⊥ → ¬¬⊥ is a theorem (double negation introduction)
+  have h_dni : [] ⊢ Formula.bot.imp (Formula.neg (Formula.neg Formula.bot)) :=
+    Bimodal.Theorems.Combinators.dni Formula.bot
+  -- Step 2: G(⊥ → ¬¬⊥) by temporal necessitation
+  have h_G_dni : [] ⊢ Formula.all_future (Formula.bot.imp (Formula.neg (Formula.neg Formula.bot))) :=
+    DerivationTree.temporal_necessitation _ h_dni
+  -- Step 3: G(⊥ → ¬¬⊥) → (G(⊥) → G(¬¬⊥)) by temporal K distribution
+  have h_K : [] ⊢ (Formula.all_future (Formula.bot.imp (Formula.neg (Formula.neg Formula.bot)))).imp
+      ((Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg (Formula.neg Formula.bot)))) :=
+    DerivationTree.axiom [] _ (Axiom.temp_k_dist Formula.bot (Formula.neg (Formula.neg Formula.bot)))
+  -- Step 4: G(⊥) → G(¬¬⊥)
+  have h_imp : [] ⊢ (Formula.all_future Formula.bot).imp (Formula.all_future (Formula.neg (Formula.neg Formula.bot))) :=
+    DerivationTree.modus_ponens [] _ _ h_K h_G_dni
+  -- Step 5: G(¬¬⊥) ∈ M
+  have h_G_nn : Formula.all_future (Formula.neg (Formula.neg Formula.bot)) ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_imp) h_G_bot
+  -- Step 6: F(¬⊥) = ¬G(¬¬⊥) definitionally. So ¬G(¬¬⊥) ∈ M.
+  -- F(¬⊥) = some_future(neg ⊥) = neg(all_future(neg(neg ⊥))) = neg(G(¬¬⊥))
+  -- So h_serial : neg(all_future(neg(neg ⊥))) ∈ M
+  -- And h_G_nn : all_future(neg(neg ⊥)) ∈ M
+  -- Contradiction by consistency
+  exact set_consistent_not_both h_mcs.1 (Formula.all_future (Formula.neg (Formula.neg Formula.bot))) h_G_nn h_serial
 
 /-- bot ∧ X is equivalent to bot. G(bot ∧ X) implies G(bot) via K-distribution.
 Actually we prove: G(bot ∧ X) ∈ M implies G(bot) ∈ M. -/
@@ -340,28 +398,38 @@ def derive_past_k_dist (phi psi : Formula) :
   exact h_dual
 
 /-- H(bot) is not in any serial MCS because it contradicts P(¬bot).
-Proof: H(bot) → bot is an axiom (temp_t_past), and bot is not in any consistent set. -/
+
+Under strict semantics (Task 991), we don't have Hφ → φ. Instead, we use:
+- H(⊥) → H(¬¬⊥) (using DNI + past necessitation + K-distribution)
+- P(¬⊥) = ¬H(¬¬⊥) definitionally
+- Contradiction
+-/
 theorem SetMaximalConsistent.H_bot_not_in (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (h_serial : Formula.some_past (Formula.neg Formula.bot) ∈ M) :
     Formula.all_past Formula.bot ∉ M := by
   intro h_H_bot
-  -- H(bot) → bot is an axiom (temp_t_past)
-  have h_impl : (Formula.all_past Formula.bot).imp Formula.bot ∈ M :=
-    theorem_in_mcs h_mcs (DerivationTree.axiom [] _ (Axiom.temp_t_past Formula.bot))
-  have h_bot : Formula.bot ∈ M :=
-    SetMaximalConsistent.implication_property h_mcs h_impl h_H_bot
-  -- bot ∈ M contradicts SetConsistent M
-  have h_set_consistent : SetConsistent M := h_mcs.1
-  have h_bot_list_consistent : Consistent [Formula.bot] := by
-    apply h_set_consistent [Formula.bot]
-    intro φ hφ
-    simp at hφ
-    rw [hφ]
-    exact h_bot
-  have h_bot_in_list : Formula.bot ∈ [Formula.bot] := List.mem_singleton.mpr rfl
-  have h_bot_derives : DerivationTree [Formula.bot] Formula.bot :=
-    DerivationTree.assumption [Formula.bot] Formula.bot h_bot_in_list
-  exact h_bot_list_consistent ⟨h_bot_derives⟩
+  -- Step 1: ⊥ → ¬¬⊥ is a theorem (double negation introduction)
+  have h_dni : [] ⊢ Formula.bot.imp (Formula.neg (Formula.neg Formula.bot)) :=
+    Bimodal.Theorems.Combinators.dni Formula.bot
+  -- Step 2: H(⊥ → ¬¬⊥) by past necessitation (derived via temporal duality)
+  have h_H_dni : [] ⊢ Formula.all_past (Formula.bot.imp (Formula.neg (Formula.neg Formula.bot))) :=
+    derive_past_necessitation (Formula.bot.imp (Formula.neg (Formula.neg Formula.bot))) h_dni
+  -- Step 3: H(⊥ → ¬¬⊥) → (H(⊥) → H(¬¬⊥)) by past K distribution
+  have h_K : [] ⊢ (Formula.all_past (Formula.bot.imp (Formula.neg (Formula.neg Formula.bot)))).imp
+      ((Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg (Formula.neg Formula.bot)))) :=
+    derive_past_k_dist Formula.bot (Formula.neg (Formula.neg Formula.bot))
+  -- Step 4: H(⊥) → H(¬¬⊥)
+  have h_imp : [] ⊢ (Formula.all_past Formula.bot).imp (Formula.all_past (Formula.neg (Formula.neg Formula.bot))) :=
+    DerivationTree.modus_ponens [] _ _ h_K h_H_dni
+  -- Step 5: H(¬¬⊥) ∈ M
+  have h_H_nn : Formula.all_past (Formula.neg (Formula.neg Formula.bot)) ∈ M :=
+    SetMaximalConsistent.implication_property h_mcs (theorem_in_mcs h_mcs h_imp) h_H_bot
+  -- Step 6: P(¬⊥) = ¬H(¬¬⊥) definitionally. So ¬H(¬¬⊥) ∈ M.
+  -- P(¬⊥) = some_past(neg ⊥) = neg(all_past(neg(neg ⊥))) = neg(H(¬¬⊥))
+  -- So h_serial : neg(all_past(neg(neg ⊥))) ∈ M
+  -- And h_H_nn : all_past(neg(neg ⊥)) ∈ M
+  -- Contradiction by consistency
+  exact set_consistent_not_both h_mcs.1 (Formula.all_past (Formula.neg (Formula.neg Formula.bot))) h_H_nn h_serial
 
 /-- H(bot ∧ X) implies H(bot) via K-distribution. -/
 theorem SetMaximalConsistent.H_bot_and_of_H_bot_and_X (M : Set Formula) (h_mcs : SetMaximalConsistent M)
@@ -747,13 +815,13 @@ theorem staged_has_future
 theorem SetMaximalConsistent.density_P_to_PP (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
     Formula.some_past (Formula.some_past phi) ∈ M := by
-  -- The density axiom gives: ⊢ F(phi^t) → F(F(phi^t))
+  -- Use derive_F_to_FF for the future density: ⊢ F(phi^t) → F(F(phi^t))
   -- where phi^t = swap_temporal(phi)
   -- Temporal duality converts to: ⊢ P(phi) → P(P(phi))
   -- because swap_temporal(F(psi)) = P(swap_temporal(psi))
   have h_density_future : [] ⊢ (Formula.some_future phi.swap_temporal).imp
       (Formula.some_future (Formula.some_future phi.swap_temporal)) :=
-    DerivationTree.axiom [] _ (Axiom.density phi.swap_temporal)
+    derive_F_to_FF phi.swap_temporal
   have h_density_past := DerivationTree.temporal_duality _ h_density_future
   -- swap_temporal converts F to P and preserves the structure
   -- After swap_temporal, we get P(phi) → P(P(phi))

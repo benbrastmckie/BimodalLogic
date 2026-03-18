@@ -135,6 +135,16 @@ The key insight is that irreflexive semantics makes the canonical ordering align
 
 ### Phase 4: Canonical Irreflexivity Simplification [IN PROGRESS]
 
+**Status Update (2026-03-18)**: Fixed cascading build errors in CanonicalConstruction.lean, CanonicalTimeline.lean, and CantorPrereqs.lean caused by:
+1. Removal of temp_t_future/temp_t_past axioms (T-axioms)
+2. Change from reflexive (≤) to strict (<) semantics in truth lemma cases
+3. Density axiom change from Fφ→FFφ to GGφ→Gφ
+
+**Remaining Issues**:
+- `derive_F_to_FF` in CantorPrereqs.lean uses sorry - needs derivation of Fφ→FFφ from GGφ→Gφ
+- `density_of_canonicalR` in CanonicalTimeline.lean uses sorry - same issue
+- CanonicalIrreflexivity.lean simplification NOT started (still 1283 lines)
+
 **Goal**: Replace the 1200-line Gabbay IRR proof with a simple definitional argument.
 
 **Tasks**:
