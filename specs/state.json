@@ -108,10 +108,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "partial",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-18T00:28:11Z",
+      "last_updated": "2026-03-18T02:20:00Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -163,12 +163,17 @@
           "path": "specs/988_dense_algebraic_completeness/summaries/03_sorry-analysis-summary.md",
           "type": "summary",
           "summary": "Analysis of 4 ClosureSaturation sorries - forward_F/backward_P need dovetailing, modal_backward needs multi-family BFMCS"
+        },
+        {
+          "type": "research",
+          "path": "specs/988_dense_algebraic_completeness/reports/07_post-982-resolution.md",
+          "summary": "Post-982 resolution: direct TimelineQuot truth lemma approach, avoids BFMCS modal_backward issue"
         }
       ],
       "session_id": "sess_1773792880_132dac",
-      "researched": "2026-03-17T22:48:15Z",
+      "researched": "2026-03-18T02:20:00Z",
       "planned": "2026-03-18T00:12:50Z",
-      "recommendation": "Option B: Use CanonicalMCS directly with semantic equivalence. Quotient CanonicalMCS via Antisymmetrization to get linear order, transfer FMCS, apply Cantor theorem for Rat isomorphism.",
+      "recommendation": "Direct TimelineQuot truth lemma via DovetailedCoverage bridge. Fill timelineQuot_not_valid_of_neg_consistent without BFMCS. 22h estimated.",
       "started": "2026-03-17T22:59:53Z",
       "partial_progress": {
         "phases_completed": 0,
