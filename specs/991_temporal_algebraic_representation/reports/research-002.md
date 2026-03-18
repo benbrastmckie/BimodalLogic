@@ -691,7 +691,81 @@ TMS (base)
 
 ---
 
-## 15. References
+## 15. Appendix: Concrete Counterexamples and Proofs
+
+All counterexamples use a single canonical frame:
+
+**Frame F₁**: D = {0, 1}, W = {w₁, w₂, w₃}, Ω = {α, β, γ}
+- α(0) = w₁, α(1) = w₂
+- β(0) = w₁, β(1) = w₃
+- γ(0) = w₂, γ(1) = w₂
+
+### 15.1 Complete Verification Table
+
+| # | Candidate Axiom | Status | Witness |
+|---|----------------|--------|---------|
+| 8 | □(⊡(a)) = □(a) | **Valid** | ∀-quantifier argument |
+| 9 | ⊡(□(a)) = □(a) | **Valid** | □(a) independent of history |
+| 10 | □(G(a)) = G(□(a)) | **Valid** | Universal quantifier swap (Fubini) |
+| 11 | ⊡(G(a)) → G(⊡(a)) | **Invalid** | F₁, a = {(α,1),(β,1)}: LHS true, RHS false at (α,0) |
+| 12 | G(⊡(a)) → ⊡(G(a)) | **Invalid** | F₁, a = {(α,1),(γ,1)}: LHS true, RHS false at (α,0) |
+| 13 | □(X(a)) = X(□(a)) | **Valid** | Quantifier swap (discrete) |
+| 14 | ⊡(X(a)) → X(⊡(a)) | **Invalid** | F₁, a = {(α,1),(β,1)}: LHS true at (α,0), RHS false |
+| 15 | X(⊡(a)) → ⊡(X(a)) | **Invalid** | F₁, a = {(α,1),(γ,1)}: LHS true at (α,0), RHS false |
+| 16 | ⊡(a)∧G(⊡(a→Ga))→G(a) | **Invalid** | "Stable induction" fails: hypothesis satisfied but conclusion false |
+| 17 | ⊡(a)∧⊡(G(a→Xa))→⊡(Ga) | **Valid but vacuous** | Hypothesis forces determinism; unreachable in branching |
+| 18 | GGp → Gp | **Density axiom** | Sound for dense <; fails in D={0,1,2} with p={2} |
+| 19 | G(Gp→p) → Gp | **Well-foundedness** | Sound for well-founded <; fails in (ℤ,<) |
+
+### 15.2 Detailed Verification of Example 11 (⊡G ⊄ G⊡)
+
+With F₁ and a = {(α,1), (β,1)}:
+
+**⊡(G(a)) at (α,0)**: Histories sharing w₁ at t=0: {α, β}.
+- G(a) at (α,0) = a(α,1) = T
+- G(a) at (β,0) = a(β,1) = T
+- Result: **TRUE**
+
+**G(⊡(a)) at (α,0)**: Need ⊡(a) at (α,1).
+- Histories sharing w₂ at t=1: {α, γ}
+- a(α,1) = T, a(γ,1) = F
+- ⊡(a) at (α,1) = **FALSE**
+- Result: **FALSE**
+
+### 15.3 Detailed Verification of Example 12 (G⊡ ⊄ ⊡G)
+
+With F₁ and a = {(α,1), (γ,1)}:
+
+**G(⊡(a)) at (α,0)**: Need ⊡(a) at (α,1).
+- Histories sharing w₂ at t=1: {α, γ}
+- a(α,1) = T, a(γ,1) = T
+- ⊡(a) at (α,1) = **TRUE**
+- Result: **TRUE**
+
+**⊡(G(a)) at (α,0)**: Histories sharing w₁ at t=0: {α, β}.
+- G(a) at (α,0) = a(α,1) = T
+- G(a) at (β,0) = a(β,1) = F
+- Result: **FALSE**
+
+### 15.4 Non-Definability Results
+
+**⊡ not definable from {□, G, H}**: Models M₁ = ({w₁}, {α,β}, {0}) with α(0)=β(0)=w₁ and M₂ = ({w₁,w₂}, {α,β}, {0}) with α(0)=w₁, β(0)=w₂. The map (α₁,0)↔(α₂,0), (β₁,0)↔(β₂,0) is a {□,G,H}-bisimulation. But ⊡(p) differs: FALSE in M₁ (β₁ shares state), TRUE in M₂ (only α₂ has w₁).
+
+**□ not definable from {⊡, G, H}**: M₃ = ({w₁,w₂}, {α}, {0}) with α(0)=w₁ (single history) and M₄ = ({w₁,w₂}, {α,β}, {0}) with β(0)=w₂. Map (α₃,0)↔(α₄,0). ⊡ agrees (same ∼_0-class) but □(p) differs: TRUE in M₃ (only history satisfies p), FALSE in M₄ (β doesn't).
+
+**X not definable from {□, ⊡, G, H}**: By bounded morphism from (ℚ,<) to (ℤ,<), all {□,⊡,G,H}-formulas agree but ℚ has no immediate successors while ℤ does.
+
+### 15.5 Key Insight: Stable Induction is Vacuous in Branching Models
+
+The axiom ⊡(a) ∧ ⊡(G(a → X(a))) → ⊡(G(a)) is technically valid but its hypothesis ⊡(G(a → X(a))) forces all histories through the current state to agree on `a` at all future times. In any genuinely branching model (where histories sharing a state can later diverge), this hypothesis is unsatisfiable for non-trivial `a`. The axiom therefore provides no inductive power across branches — you cannot "inductively prove" a property holds on all branches simultaneously.
+
+### 15.6 Note on Existing Formalization: Reflexive vs. Strict
+
+The existing Lean formalization uses **reflexive** G (with axioms TT-F: Gφ → φ, TT-P: Hφ → φ), while this report recommends **strict** G for the base. The reflexive formalization corresponds to the TMS + reflexivity extension — a Sahlqvist extension of the strict base. The existing theorems remain valid as theorems of the extended system. The strict base simply allows more frame properties to be non-trivially characterized (notably density: GGp → Gp is trivial with reflexive G but characterizes dense < with strict G).
+
+---
+
+## 16. References
 
 1. Blackburn, de Rijke & Venema, *Modal Logic* (2001) — Sahlqvist theory, BAO representation
 2. Burgess, "Logic and time" (1979) — Tense logic completeness
