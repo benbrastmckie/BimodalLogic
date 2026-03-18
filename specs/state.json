@@ -587,11 +587,11 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-18T20:59:56Z",
-      "session_id": "sess_1773867079_dd3321",
+      "last_updated": "2026-03-18T14:32:13-07:00",
+      "session_id": "sess_1773867883_4f74c5",
       "researched": "2026-03-17T16:28:26Z",
       "artifacts": [
         {
@@ -673,6 +673,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/09_implementation-summary.md",
           "type": "summary",
           "summary": "Implementation summary documenting Phase 1 completion and remaining blockers"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/24_synthesis-report.md",
+          "type": "research",
+          "summary": "Synthesis: forward-only truth lemma approach bypasses BFMCS blocker entirely"
         }
       ],
       "planned": "2026-03-18T20:48:48Z",
