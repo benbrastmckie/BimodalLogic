@@ -587,10 +587,10 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-17T21:37:11Z",
+      "last_updated": "2026-03-18T20:37:00Z",
       "session_id": "sess_1773783600_b2e4f7",
       "researched": "2026-03-17T16:28:26Z",
       "artifacts": [
@@ -663,6 +663,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/07_timelinequot-truth-lemma.md",
           "type": "plan",
           "summary": "6-phase implementation plan pivoting from W=D to TimelineQuot truth lemma completion"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-011.md",
+          "type": "research",
+          "summary": "Post-task 991 assessment: task 991 orthogonal (discrete path), remaining work is one sorry in TimelineQuotCompleteness.lean:127. Recommends Option A (complete truth lemma) or Option B (document current state)."
         }
       ],
       "planned": "2026-03-17T17:00:31Z",
