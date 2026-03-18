@@ -108,10 +108,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-18T15:58:26Z",
+      "last_updated": "2026-03-18T16:01:34Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -170,11 +170,6 @@
           "summary": "Analysis of bridge-free approaches to dense algebraic completeness, recommending DovetailedTimelineQuot path"
         },
         {
-          "path": "specs/988_dense_algebraic_completeness/plans/08_dovetailed-timelinequot.md",
-          "type": "plan",
-          "summary": "5-phase plan using DovetailedTimelineQuot, bypassing TimelineQuot entirely (19h)"
-        },
-        {
           "path": "Theories/Bimodal/Metalogic/StagedConstruction/DovetailedTimelineQuot.lean",
           "type": "implementation",
           "summary": "DovetailedTimelineQuot with Cantor prerequisites (1 sorry in density intermediate)"
@@ -188,11 +183,16 @@
           "path": "specs/988_dense_algebraic_completeness/handoffs/02_density-gap-analysis.md",
           "type": "handoff",
           "summary": "Analysis of density gap: dovetailed construction lacks pair-wise density"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/09_timelinequot-coverage-hybrid.md",
+          "type": "plan",
+          "summary": "4-phase hybrid plan: TimelineQuot for density, DovetailedCoverage for coverage (16h)"
         }
       ],
       "session_id": "sess_1773848716_f870d9",
       "researched": "2026-03-18T15:32:48Z",
-      "planned": "2026-03-18T15:42:35Z",
+      "planned": "2026-03-18T16:01:34Z",
       "recommendation": "Direct TimelineQuot truth lemma via DovetailedCoverage bridge. Fill timelineQuot_not_valid_of_neg_consistent without BFMCS. 22h estimated.",
       "started": "2026-03-18T15:45:47Z",
       "partial_progress": {
