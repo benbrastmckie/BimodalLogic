@@ -590,9 +590,9 @@
       "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-18T14:32:13-07:00",
-      "session_id": "sess_1773867883_4f74c5",
-      "researched": "2026-03-17T16:28:26Z",
+      "last_updated": "2026-03-18T21:50:32Z",
+      "session_id": "sess_1773870320_cabe0f",
+      "researched": "2026-03-18T21:50:32Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -678,6 +678,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/24_synthesis-report.md",
           "type": "research",
           "summary": "Synthesis: forward-only truth lemma approach bypasses BFMCS blocker entirely"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/25_correct-truth-lemma-approaches.md",
+          "type": "research",
+          "summary": "Documents exact mathematical gap (forward_F/backward_P for TimelineQuotFMCS) and recommends wiring dovetailed coverage infrastructure to construct temporally coherent BFMCS"
         }
       ],
       "planned": "2026-03-18T20:48:48Z",

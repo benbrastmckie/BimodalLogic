@@ -1032,6 +1032,43 @@ Never conflate W and D even if it seems to simplify construction. W must encode 
 
 ---
 
+### Dead End: Forward-Only Truth Lemma for Completeness
+
+**Status**: ABANDONED
+**Tried**: 2026-03-18
+**Related Tasks**: Task 981
+
+*Rationale*: Attempted to prove the completeness direction using only the forward direction of the truth lemma (MCS membership → semantic truth), avoiding the BFMCS construction for the backward direction.
+
+**What We Tried**:
+The forward-only approach aimed to bypass the full biconditional truth lemma by observing that:
+1. For completeness (¬provable → ¬valid), we need `φ.neg ∈ mcs → truth_at ... φ.neg`
+2. This is the forward direction only
+3. The box case could use the modal T-axiom (`□φ → φ`) instead of modal_backward
+4. The G/H cases could use `forward_G`/`backward_H` (already sorry-free in `timelineQuotFMCS`)
+
+**Why It Failed**:
+The forward and backward directions of the truth lemma **cannot be separated in Lean**:
+
+1. **Structural coupling**: The truth lemma is proven by mutual induction on formula structure. The forward and backward cases for each connective/operator are structurally interdependent.
+
+2. **Backward G requires forward_F**: The `temporal_backward_G` theorem in `TemporalCoherence.lean` uses `forward_F` witnesses in its contraposition argument. Without F/P temporal coherence, the backward direction of G/H cases cannot be proven.
+
+3. **Box case bidirectionality**: Even with the T-axiom for the box case, the truth lemma's induction requires establishing both directions for all subformulas, including nested boxes.
+
+4. **Unpublishable result**: A "forward-only" proof would necessarily leave sorries in the backward cases, making the result unsuitable for publication.
+
+**Evidence**:
+- [24_synthesis-report.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/24_synthesis-report.md) - Initial (incorrect) recommendation
+- [25_correct-truth-lemma-approaches.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/25_correct-truth-lemma-approaches.md) - Correction and proper approach
+
+**Lesson**:
+Do not try to cut corners on the truth lemma. The biconditional `φ ∈ mcs t ↔ truth_at M Omega τ t φ` is structurally required for the induction to close. The forward and backward directions must be proven together, which requires the full BFMCS infrastructure with temporal coherence (forward_F/backward_P witnesses).
+
+**Superseded By**: Wire dovetailed coverage infrastructure to construct temporally coherent BFMCS over TimelineQuot
+
+---
+
 ## Overview
 
 This roadmap outlines the current state of the ProofChecker project and charts the path forward for:

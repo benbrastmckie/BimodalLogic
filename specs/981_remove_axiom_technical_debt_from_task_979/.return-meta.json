@@ -1,24 +1,22 @@
 {
   "status": "researched",
-  "started_at": "2026-03-18T21:05:46Z",
-  "completed_at": "2026-03-18T21:30:00Z",
+  "started_at": "2026-03-18T22:15:00Z",
   "artifacts": [
     {
-      "type": "report",
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/23_teammate-b-findings.md",
-      "summary": "Research report identifying 4 alternative approaches to the dense completeness sorry, with forward-only truth lemma identified as the cleanest path requiring only sorry-free infrastructure"
+      "type": "research",
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/25_correct-truth-lemma-approaches.md",
+      "summary": "Documents exact mathematical gap (forward_F/backward_P for TimelineQuotFMCS) and recommends wiring dovetailed coverage infrastructure to construct temporally coherent BFMCS"
     }
   ],
-  "next_steps": "Discuss with Teammate A to choose approach; recommend implementing forward-only truth lemma for timelineQuot_not_valid_of_neg_consistent",
   "metadata": {
-    "session_id": "sess_1773867883_4f74c5",
-    "agent_type": "logic-research-agent",
-    "duration_seconds": 1454,
+    "session_id": "sess_1773870320_cabe0f",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "logic-research-agent"],
-    "findings_count": 6,
-    "context_files_loaded": ["TimelineQuotCompleteness.lean", "DenseCompleteness.lean", "StagedConstruction/Completeness.lean", "DovetailedCompleteness.lean", "TimelineQuotCanonical.lean", "CanonicalConstruction.lean", "CanonicalFMCS.lean", "DiscreteCompleteness.lean", "BaseCompleteness.lean", "AlgebraicBaseCompleteness.lean", "ParametricRepresentation.lean", "ParametricTruthLemma.lean", "ParametricCanonical.lean", "DenseInstantiation.lean", "SeparatedHistory.lean", "ModalSaturation.lean", "BFMCS.lean"],
-    "mathlib_lookups_performed": 0,
-    "key_finding": "Forward-only truth lemma for TimelineQuot countermodel avoids all BFMCS/dovetailing infrastructure and uses only sorry-free components"
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "key_finding": "The gap is precisely forward_F/backward_P for TimelineQuotFMCS; dovetailed coverage provides sorry-free witnesses that need to be wired to BFMCS temporal coherence",
+    "recommended_approach": "Wire DovetailedCoverage theorems to prove timelineQuotFMCS_forward_F/backward_P, then construct singleton BFMCS with temporal coherence",
+    "estimated_effort_hours": 4,
+    "zero_debt_compliant": true,
+    "files_analyzed": 15
   }
 }
