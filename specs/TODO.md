@@ -1,5 +1,5 @@
 ---
-next_project_number: 991
+next_project_number: 992
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -24,6 +24,18 @@ technical_debt:
 # TODO
 
 ## Tasks
+### 991. Irreflexive semantics refactoring and STSA representation theorem
+- **Effort**: TBD
+- **Status**: [PLANNED]
+- **Language**: lean
+- **Research**: [research-001.md](991_temporal_algebraic_representation/reports/research-001.md), [research-002.md](991_temporal_algebraic_representation/reports/research-002.md), [research-003-irreflexive-refactoring-plan.md](991_temporal_algebraic_representation/reports/research-003-irreflexive-refactoring-plan.md)
+- **Plan**: [01_irreflexive-semantics-refactoring.md](991_temporal_algebraic_representation/plans/01_irreflexive-semantics-refactoring.md)
+
+**Description**: Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)
+temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Switching to irreflexive semantics makes these axioms genuinely characterize their respective frame classes, simplifies the codebase (eliminates the ~1200-line Gabbay IRR proof, removes reflexive case branches), and enables a clean algebraic variety representation theorem. Research report 003 provides a complete file-by-file change specification.
+
+---
+
 ### 990. Research representation theorem design for parametric durations
 - **Effort**: 6 hours
 - **Status**: [COMPLETED]

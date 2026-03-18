@@ -6,6 +6,40 @@
   },
   "active_projects": [
     {
+      "project_number": 991,
+      "project_name": "temporal_algebraic_representation",
+      "status": "planned",
+      "language": "lean",
+      "created": "2026-03-18T00:00:00Z",
+      "last_updated": "2026-03-18T16:34:50Z",
+      "description": "Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Research report 003 provides a complete file-by-file change specification.",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/991_temporal_algebraic_representation/reports/research-001.md",
+          "summary": "Design of the Shift-Closed Tense S5 Algebra (STSA) structure as a unified algebraic framework for temporal-modal representation theorems."
+        },
+        {
+          "type": "research",
+          "path": "specs/991_temporal_algebraic_representation/reports/research-002.md",
+          "summary": "Minimal base language {□, ⊡, G, H} with strict semantics; STSAS axiomatization (23 axioms); extension lattice analysis; Next operator deferral recommendation."
+        },
+        {
+          "type": "research",
+          "path": "specs/991_temporal_algebraic_representation/reports/research-003-irreflexive-refactoring-plan.md",
+          "summary": "Complete file-by-file irreflexive semantics refactoring plan: truth definition, axiom system, soundness, IRR proof elimination, canonical truth lemma, staged construction, and Cantor prerequisites."
+        },
+        {
+          "path": "specs/991_temporal_algebraic_representation/plans/01_irreflexive-semantics-refactoring.md",
+          "type": "plan",
+          "summary": "10-phase implementation plan for irreflexive semantics refactoring eliminating ~1200 lines of Gabbay IRR proof"
+        }
+      ],
+      "researched": "2026-03-18T00:00:00Z",
+      "session_id": "sess_1773851428_32e443",
+      "planned": "2026-03-18T16:34:50Z"
+    },
+    {
       "project_number": 990,
       "project_name": "representation_theorem_duration_design",
       "status": "completed",
@@ -693,7 +727,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 991,
+  "next_project_number": 992,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
