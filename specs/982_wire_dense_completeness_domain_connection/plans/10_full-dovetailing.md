@@ -112,7 +112,7 @@ Full dovetailing handles this by processing ALL (point, formula) pairs across th
 
 ## Implementation Phases
 
-### Phase 1: Dovetailing Infrastructure [NOT STARTED]
+### Phase 1: Dovetailing Infrastructure [COMPLETED]
 
 **Goal**: Define Cantor pairing functions and dovetailing enumeration types
 
@@ -151,7 +151,7 @@ Full dovetailing handles this by processing ALL (point, formula) pairs across th
 
 ---
 
-### Phase 2: Dovetailed Staged Build [NOT STARTED]
+### Phase 2: Dovetailed Staged Build [COMPLETED]
 
 **Goal**: Replace the current oddStage/evenStage with dovetailed processing
 
@@ -220,7 +220,7 @@ Full dovetailing handles this by processing ALL (point, formula) pairs across th
 
 ---
 
-### Phase 3: Dovetailed Timeline Union [NOT STARTED]
+### Phase 3: Dovetailed Timeline Union [COMPLETED]
 
 **Goal**: Define the union of all dovetailed stages and prove key properties
 
@@ -267,7 +267,30 @@ Full dovetailing handles this by processing ALL (point, formula) pairs across th
 
 ---
 
-### Phase 4: Forward_F Coverage Theorem [NOT STARTED]
+### Phase 4: Forward_F Coverage Theorem [BLOCKED]
+
+**BLOCKING ISSUE**: Coverage gap in dovetailing construction identified.
+
+When a point p enters the timeline at step s, and `pair(p.point_index, k) < s` for some formula encoding k:
+- The obligation `(p.point_index, k)` was already processed at step `pair(p.point_index, k)`
+- At that step, p did not exist yet (p enters later at step s)
+- Therefore, F(phi) with encoding k was never processed FOR p
+
+**Analysis**: This happens because point indices are assigned based on list length at entry time. If the point index L is small but the point enters late (step s > pair(L, k)), the step for processing (L, k) has already passed.
+
+**Resolution Options**:
+1. **Modify construction**: Re-process obligations when new points are added (adds complexity)
+2. **Density argument**: Use the fact that F^i(neg bot) is in every MCS for all i, and encodings grow unboundedly. For large enough i, pair(L, encoding_i) > s, so the witness IS added.
+3. **Different enumeration**: Use (step, formula) pairs instead of (point_index, formula) pairs
+
+**Recommended**: Option 2 (density argument) is mathematically elegant and doesn't require construction changes. The proof sketch:
+- Given p at step n with F(neg bot) in p.mcs
+- By density, F^i(neg bot) is in p.mcs for all i
+- Encodings of F^i(neg bot) grow without bound as i increases
+- For large enough i, pair(p.point_index, encoding_i) > n
+- At that step, p is in build and gets processed, adding a CanonicalR-witness
+
+**Previous status**: [NOT STARTED]
 
 **Goal**: Prove forward_F holds for ALL points in the dovetailed timeline
 
