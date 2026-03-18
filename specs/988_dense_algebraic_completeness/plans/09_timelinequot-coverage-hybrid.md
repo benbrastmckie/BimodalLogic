@@ -2,7 +2,7 @@
 
 - **Task**: 988 - dense_algebraic_completeness
 - **Version**: 9 (revised from v8 based on density gap discovery)
-- **Status**: [NOT STARTED]
+- **Status**: [BLOCKED]
 - **Effort**: 16 hours
 - **Dependencies**: Task 982 (completed)
 - **Research Inputs**: specs/988_dense_algebraic_completeness/handoffs/02_density-gap-analysis.md
@@ -60,7 +60,7 @@ Fill `timelineQuot_not_valid_of_neg_consistent` by:
 
 ## Implementation Phases
 
-### Phase 1: TimelineQuot Forward_F/Backward_P via DovetailedCoverage [NOT STARTED]
+### Phase 1: TimelineQuot Forward_F/Backward_P via DovetailedCoverage [BLOCKED]
 
 **Goal**: Prove forward_F and backward_P for TimelineQuot using DovetailedCoverage bridge
 
