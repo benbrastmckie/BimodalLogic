@@ -37,7 +37,7 @@ technical_debt:
 ## Tasks
 ### 1001. Fix IRRSoundness.lean pre-existing type errors
 - **Effort**: TBD (estimated 2-3 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [01_irr-soundness-type-errors.md](1001_irrSoundness_type_errors/reports/01_irr-soundness-type-errors.md)
 - **Plan**: [01_fix-irr-type-errors.md](1001_irrSoundness_type_errors/plans/01_fix-irr-type-errors.md)
@@ -140,10 +140,10 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 10-12 hours (Zorn approach)
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [13_dense-completeness-synthesis.md](988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md) (synthesis), [12_teammate-a-findings.md](988_dense_algebraic_completeness/reports/12_teammate-a-findings.md), [12_teammate-b-findings.md](988_dense_algebraic_completeness/reports/12_teammate-b-findings.md)
-- **Plan**: [10_dovetailed-timelinequot-bridge.md](988_dense_algebraic_completeness/plans/10_dovetailed-timelinequot-bridge.md) (v10: BLOCKED - TimelineQuot forward_F bridge)
+- **Plan**: [11_zorn-saturated-chain.md](988_dense_algebraic_completeness/plans/11_zorn-saturated-chain.md) (v11: Zorn saturated chain approach)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 - **Summary**: [05_v10-implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/05_v10-implementation-summary.md) (v10 blocked)
 

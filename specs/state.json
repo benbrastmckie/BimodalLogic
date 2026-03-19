@@ -169,10 +169,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "planning",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T18:20:49Z",
+      "last_updated": "2026-03-19T18:23:17Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -279,11 +279,16 @@
           "path": "specs/988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md",
           "type": "research",
           "summary": "Synthesis: Two blockers (forward_F termination, modal_backward). Recommends Zorn saturated chain approach avoiding TimelineQuot gap."
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/11_zorn-saturated-chain.md",
+          "type": "plan",
+          "summary": "4-phase Zorn saturated chain implementation plan for dense algebraic completeness"
         }
       ],
       "session_id": "sess_1773944434_8300d0",
       "researched": "2026-03-19T18:14:50Z",
-      "planned": "2026-03-19T17:47:33Z",
+      "planned": "2026-03-19T18:23:17Z",
       "recommendation": "Zorn saturated chain approach: use ChainFMCS infrastructure + Zorn to build saturated Flag containing forward_F witnesses by construction. Avoids TimelineQuot termination gap. Est. 10-12h.",
       "started": "2026-03-19T17:49:56Z",
       "partial_progress": {
@@ -428,10 +433,10 @@
     {
       "project_number": 1001,
       "project_name": "irrSoundness_type_errors",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T18:21:18Z",
+      "last_updated": "2026-03-19T18:22:54Z",
       "description": "Fix two classes of pre-existing build errors in IRRSoundness.lean that block the IRR case in soundness_dense: (1) Type mismatch: p : String should be p : Atom in prod_model, truth_prod_iff, and irr_sound_dense_at_domain — the Atom type was likely renamed or the import changed. (2) omega tactic failures in prod_frame construction on generic ordered group type D — omega only works on Int/Nat, not abstract [AddCommGroup D] [LinearOrder D]. Fix: replace String with Atom throughout IRRSoundness.lean and replace omega with appropriate algebraic lemmas for the generic ordered group context.",
       "artifacts": [
         {
@@ -445,9 +450,10 @@
           "summary": "2-phase plan fixing String->Atom type mismatches and omega->algebraic lemma replacements in IRRSoundness.lean"
         }
       ],
-      "session_id": "sess_1773944358_e76e88",
+      "session_id": "sess_1773944553_5d4988",
       "researched": "2026-03-19T18:14:03Z",
-      "planned": "2026-03-19T18:21:18Z"
+      "planned": "2026-03-19T18:21:18Z",
+      "started": "2026-03-19T18:22:54Z"
     }
   ],
   "completed_projects": [
