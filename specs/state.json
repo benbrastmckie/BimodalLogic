@@ -542,14 +542,14 @@
     {
       "project_number": 1002,
       "project_name": "design_modal_witness_infrastructure",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "description": "Research and design the modal witness infrastructure needed for multi-family BFMCS construction. The current blocker in task 988 is that modal_backward cannot be proven for single-family constructions because 'phi in MCS implies Box phi in MCS' is not valid in general modal logic. This task will: (1) Analyze why single-family modal_backward fails mathematically, (2) Design a DiamondWitness structure that connects families across the bundle, (3) Specify ModalWitnessFamily construction from consistent seeds, (4) Document the proof strategy for modal_backward using the contrapositive argument with witness families. Deliverables: Research report with formal analysis, design document with Lean structure sketches, proof strategy with key lemma statements.",
       "effort": "4-6 hours",
       "parent_task": 988,
       "dependencies": [],
       "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T20:56:59Z",
+      "last_updated": "2026-03-19T21:03:47Z",
       "artifacts": [
         {
           "type": "research",
@@ -565,12 +565,19 @@
           "path": "specs/1002_design_modal_witness_infrastructure/plans/02_revised-modal-witness.md",
           "type": "plan",
           "summary": "3-phase design plan for saturated BFMCS construction using existing modal witness infrastructure"
+        },
+        {
+          "path": "specs/1002_design_modal_witness_infrastructure/reports/03_design-document.md",
+          "type": "design",
+          "summary": "Design document specifying Lean structures for saturated BFMCS construction including ModalWitnessData, buildWitnessMCS, SaturatedCanonicalBFMCS, and integration guide for task 1003"
         }
       ],
       "session_id": "sess_1773953787_172dc3",
       "planned": "2026-03-19T19:47:19Z",
       "researched": "2026-03-19T19:32:21Z",
-      "started": "2026-03-19T20:56:59Z"
+      "started": "2026-03-19T20:56:59Z",
+      "completed": "2026-03-19T21:03:47Z",
+      "completion_summary": "Created design document specifying Lean structures for modal witness infrastructure. Defined ModalWitnessData structure linking Diamond formulas to witness MCSes, buildWitnessMCS construction via Lindenbaum extension, SaturatedCanonicalBFMCS bundling saturation proof, and proof strategy using existing saturated_modal_backward theorem. Integration guide maps design to implementation files for task 1003."
     },
     {
       "project_number": 1003,
