@@ -1,36 +1,19 @@
 {
-  "status": "done",
-  "started_at": "2026-03-19T10:00:00Z",
-  "finished_at": "2026-03-19T10:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/1003_implement_modal_coherence/reports/03_blocker-analysis.md",
-      "summary": "Deep analysis of is_modally_saturated semantics, verification of singleton bundle failure, and multi-family BFMCS path forward"
+      "type": "plan",
+      "path": "specs/1003_implement_modal_coherence/plans/02_multi-family-plan.md",
+      "summary": "6-phase revised implementation plan for multi-family BFMCS modal coherence (10 hours)"
     }
   ],
-  "partial_progress": null,
-  "research_findings": {
-    "blocker_verified": true,
-    "blocker_cause": "Singleton bundle conflates modal accessibility with identity - Diamond(psi) does NOT imply psi in same MCS",
-    "recommended_path": "Multi-family BFMCS bundle with distinct mcs functions where witness families place witness MCSes at appropriate times",
-    "effort_estimate": "9-12 hours for complete sorry-free implementation",
-    "key_infrastructure": [
-      "modal_witness_seed_consistent (ChainFMCS.lean:322)",
-      "chainFMCS (ChainFMCS.lean:613)",
-      "saturated_modal_backward (ModalSaturation.lean:328)"
-    ],
-    "implementation_components": [
-      "WitnessFamilyBundle type",
-      "closedFlags closure construction",
-      "saturatedBFMCS BFMCS construction",
-      "Wire to completeness"
-    ]
-  },
+  "next_steps": "Run /implement 1003 to execute the multi-family BFMCS construction plan",
   "metadata": {
-    "session_id": "sess_1773956051_0d57e8",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773956468_819fff",
+    "agent_type": "planner-agent",
     "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 10
   }
 }
