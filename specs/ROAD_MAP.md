@@ -909,7 +909,7 @@ Constant families cannot satisfy forward_F or backward_P. An F-obligation F(psi)
 **Lesson**:
 Temporal saturation requires time-varying families. Witnesses must be placed at specific times, not everywhere.
 
-**Superseded By**: DovetailingChain (time-varying family construction)
+**Superseded By**: DovetailingChain for G/H propagation; CanonicalFMCS for F/P witnesses (DovetailingChain cannot prove forward_F/backward_P in Int-indexed chains — see Dead End: Int-Indexed Chain Forward_F/Backward_P Witnesses)
 
 ---
 
@@ -1095,7 +1095,40 @@ The forward and backward directions of the truth lemma **cannot be separated in 
 **Lesson**:
 Do not try to cut corners on the truth lemma. The biconditional `φ ∈ mcs t ↔ truth_at M Omega τ t φ` is structurally required for the induction to close. The forward and backward directions must be proven together, which requires the full BFMCS infrastructure with temporal coherence (forward_F/backward_P witnesses).
 
-**Superseded By**: Wire dovetailed coverage infrastructure to construct temporally coherent BFMCS over TimelineQuot
+**Superseded By**: CanonicalFMCS with FlagBFMCS for modal saturation (dovetailed coverage is itself a dead end for F/P witnesses — see Dead End below)
+
+---
+
+### Dead End: Int-Indexed Chain Forward_F/Backward_P Witnesses
+
+**Status**: ABANDONED
+**Tried**: 2026-03-19
+**Related Tasks**: Task 1004
+
+*Rationale*: Attempted to resolve `intFMCS_forward_F` and `intFMCS_backward_P` sorries in `IntBFMCS.lean` via an "enriched dovetailing chain" construction. The plan was to enumerate (position, formula) obligation pairs using Cantor pairing and place witness MCSes at designated Int positions, ensuring every `F(φ)` at position `t` gets a witness at some `s > t`.
+
+**What We Tried**:
+Phase 1 (completed) built `IntObligation` with Cantor pairing infrastructure and `intObligationAtStep` for enumerating (Int position, formula) pairs. The design would extend the chain so each F/P obligation is processed in dovetailing order, with a witness MCS placed at the appropriate Int position.
+
+**Why It Failed**:
+F-formulas do not persist through Lindenbaum extensions. Witnesses produced by `canonical_forward_F` are floating MCSes with no intrinsic Int index:
+
+1. `canonical_forward_F` yields a witness MCS `W` with `φ ∈ W`, but `W` has no Int position
+2. The chain's MCS at each position `s` is determined by Lindenbaum extension from the previous step — it cannot be *forced* to produce a specific pre-built MCS
+3. Dovetailing ensures every obligation is *processed*, but "processing" means choosing a Lindenbaum extension at the *current* step — it cannot assign a pre-existing `W` to a *future* Int position
+
+This is a **fundamental structural mismatch**: time positions are determined sequentially by the construction, while witnesses exist as syntactic objects (MCSes) with no inherent position. The time domain and the witness domain are orthogonal.
+
+**Evidence**:
+- [01_dovetailing-chain-research.md](specs/1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
+- [02_team-research.md](specs/1004_dovetailing_chain_fp_witnesses/reports/02_team-research.md) — Confirmed fundamental limitation via team research
+- [06_semantic-bridge-evaluation.md](specs/1004_dovetailing_chain_fp_witnesses/reports/06_semantic-bridge-evaluation.md) — Architectural analysis of bridge vs refactor
+- [IntBFMCS.lean](Theories/Bimodal/Metalogic/Algebraic/IntBFMCS.lean) — Contains the sorry'd theorems with limitation comments
+
+**Lesson**:
+Int-indexed F/P witnesses are impossible because canonical witnesses are floating MCSes with no intrinsic position. Assigning them to chain positions requires the positions to be flexible, but sequential chain construction fixes each position as it is built. The correct domain for F/P witness proofs is CanonicalFMCS, where the domain IS the MCS space — witnesses automatically live at their own element.
+
+**Superseded By**: CanonicalFMCS (domain = all CanonicalMCSes; F/P witnesses trivially available at their own position)
 
 ---
 
