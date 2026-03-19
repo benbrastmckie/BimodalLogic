@@ -41,7 +41,11 @@ technical_debt:
 - **Blocker**: Fundamental architectural limitation - linear chain constructions cannot satisfy forward_F/backward_P (see summary)
 - **Language**: lean4
 - **Dependencies**: None
-- **Research**: [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
+- **Research**:
+  - [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
+  - [02_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/02_team-research.md) (F/P persistence limitation)
+  - [05_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/05_team-research.md) (semantic foundations)
+  - [06_semantic-bridge-evaluation.md](1004_dovetailing_chain_fp_witnesses/reports/06_semantic-bridge-evaluation.md) (bridge vs refactor analysis)
 - **Plan**: [01_dovetailing-chain-plan.md](1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md)
 - **Summary**: [01_dovetailing-chain-summary.md](1004_dovetailing_chain_fp_witnesses/summaries/01_dovetailing-chain-summary.md)
 
