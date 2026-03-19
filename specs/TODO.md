@@ -63,9 +63,10 @@ technical_debt:
 
 ### 995. FMCS domain transfer lemma
 - **Effort**: TBD (estimated 8-12 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
 - **Priority**: high
+- **Research**: [01_fmcs-domain-transfer.md](995_fmcs_domain_transfer_lemma/reports/01_fmcs-domain-transfer.md)
 
 **Description**: Build a general FMCS transfer lemma: given an order-embedding `e : CanonicalMCS → D` (where D has `AddCommGroup + LinearOrder + IsOrderedAddMonoid`), transfer temporal coherence (forward_F, backward_P) from the sorry-free `CanonicalMCS`-based BFMCS to a `BFMCS D`. This is the single highest-leverage piece of work in the codebase. The CanonicalMCS construction (in `CanonicalFMCS.lean`) is fully proven with zero sorries for forward_F, backward_P, and modal saturation. The only remaining gap is that `CanonicalMCS` lacks `AddCommGroup`, so it cannot serve as D in `TaskFrame`. This transfer lemma bridges that gap and simultaneously unblocks: (1) base completeness (embed into ℤ), (2) dense completeness (embed into ℚ via Cantor), (3) discrete completeness (embed into ℤ with SuccOrder).
 

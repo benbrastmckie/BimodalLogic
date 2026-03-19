@@ -1,0 +1,38 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-19T09:00:00Z",
+  "completed_at": "2026-03-19T09:45:00Z",
+  "artifacts": [
+    {
+      "path": "specs/995_fmcs_domain_transfer_lemma/reports/01_fmcs-domain-transfer.md",
+      "type": "research",
+      "summary": "Comprehensive analysis of FMCS domain transfer approaches. Recommends FMCSTransfer structure with embedding/retraction pair to transfer temporal coherence from CanonicalMCS to target domains (Z, Q). Identifies key challenges: Preorder-vs-LinearOrder mismatch, witness inclusion, retraction surjectivity."
+    }
+  ],
+  "partial_progress": {
+    "stage": "research_completed",
+    "details": "Full analysis of transfer approaches, Mathlib support, and implementation strategy"
+  },
+  "metadata": {
+    "session_id": "sess_1773939954_e417d4",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "research_findings": {
+    "main_approach": "FMCSTransfer structure with order embedding plus compatible retraction",
+    "key_insight": "CanonicalMCS provides sorry-free temporal coherence; transfer along embeddings rather than proving directly",
+    "challenges": [
+      "CanonicalMCS has Preorder, not LinearOrder - requires chain extraction or quotient",
+      "Retraction must be monotone and compatible with embedding",
+      "Witness inclusion requires embedding to preserve strict order"
+    ],
+    "estimated_effort": "10-15 hours total",
+    "existing_infrastructure": [
+      "CanonicalFMCS.lean - sorry-free forward_F/backward_P on CanonicalMCS",
+      "DurationTransfer.lean - algebraic structure transfer via OrderIso",
+      "IntBFMCS.lean - chain construction (partial, has F/P sorries)",
+      "CanonicalEmbedding.lean - Cantor isomorphism approach (partial, has F/P sorries)"
+    ]
+  }
+}
