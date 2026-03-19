@@ -91,7 +91,7 @@ technical_debt:
 
 ### 996. Wire soundness theorem assembly
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [01_soundness-wiring.md](996_soundness_theorem_assembly/reports/01_soundness-wiring.md), [02_irr-wiring-analysis.md](996_soundness_theorem_assembly/reports/02_irr-wiring-analysis.md)
 - **Plan**: [02_irr-wiring-restructure.md](996_soundness_theorem_assembly/plans/02_irr-wiring-restructure.md)
