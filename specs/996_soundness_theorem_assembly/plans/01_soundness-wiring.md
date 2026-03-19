@@ -1,7 +1,7 @@
 # Implementation Plan: Task #996 - Soundness Theorem Assembly
 
 - **Task**: 996 - Wire the 6 remaining sorries in Soundness.lean using proven component theorems
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/996_soundness_theorem_assembly/reports/01_soundness-wiring.md
@@ -68,7 +68,7 @@ Wire the 6 remaining sorries in `Theories/Bimodal/Metalogic/Soundness.lean` (lin
 
 ---
 
-### Phase 2: Wire temporal_duality case in soundness_dense [IN PROGRESS]
+### Phase 2: Wire temporal_duality case in soundness_dense [PARTIAL]
 
 **Goal**: Complete the temporal_duality case using derivation-indexed proof
 
@@ -91,7 +91,7 @@ Wire the 6 remaining sorries in `Theories/Bimodal/Metalogic/Soundness.lean` (lin
 
 ---
 
-### Phase 3: Wire IRR case in soundness_dense [NOT STARTED]
+### Phase 3: Wire IRR case in soundness_dense [BLOCKED]
 
 **Goal**: Complete the IRR case with domain restriction
 

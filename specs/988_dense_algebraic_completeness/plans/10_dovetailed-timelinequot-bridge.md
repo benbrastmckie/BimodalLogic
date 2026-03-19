@@ -67,7 +67,7 @@ The approach: Fill the TimelineQuot forward_F/backward_P by showing that Dovetai
 
 ## Implementation Phases
 
-### Phase 1: DovetailedCoverage to TimelineQuot Connection [NOT STARTED]
+### Phase 1: DovetailedCoverage to TimelineQuot Connection [IN PROGRESS]
 
 **Goal**: Prove that DovetailedCoverage witnesses exist in the TimelineQuot construction
 
