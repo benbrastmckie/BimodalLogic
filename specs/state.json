@@ -713,8 +713,19 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/14_coverage-implementation.md",
           "type": "summary",
           "summary": "Partial: CanonicalR_chain definitions created, coverage theorem blocked by termination issue"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/29_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Teammate A: Exhaustive analysis proving all proposed well-founded measures fail; non-constructive existence proof via by_contra identified as most promising new direction"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/30_termination-blocker-synthesis.md",
+          "type": "research",
+          "summary": "Synthesis: all measures confirmed incorrect, termination is infinitary; recommends by_contra non-constructive proof or accepting documented sorries"
         }
       ],
+      "last_updated": "2026-03-18T08:00:00Z",
       "planned": "2026-03-19T05:13:46Z",
       "started": "2026-03-19T05:15:00Z",
       "partial_progress": {
