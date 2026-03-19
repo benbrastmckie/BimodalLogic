@@ -1,22 +1,22 @@
 ---
-next_project_number: 995
+next_project_number: 997
 repository_health:
   overall_score: 92
   production_readiness: improved
-  last_assessed: 2026-03-16T23:45:00Z
+  last_assessed: 2026-03-19T00:00:00Z
 task_counts:
-  active: 11
+  active: 10
   completed: 686
   in_progress: 1
-  not_started: 2
-  abandoned: 42
-  total: 743
+  not_started: 3
+  abandoned: 45
+  total: 745
 technical_debt:
   sorry_count: 16
   sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
   publication_path_sorries: 0
-  axiom_count: 1
-  axiom_count_note: "discrete_Icc_finite_axiom (documented debt from task 979)"
+  axiom_count: 3
+  axiom_count_note: "canonicalR_irreflexive_axiom (justified per task 991), discrete_Icc_finite_axiom (documented debt from task 979), discreteImmediateSuccSeed_consistent_axiom (justified per task 991)"
   build_errors: 0
   status: excellent
 ---
@@ -24,19 +24,6 @@ technical_debt:
 # TODO
 
 ## Tasks
-### 994. Archive dead code in StagedConstruction while preserving important elements, refactoring as necessary
-- **Effort**: TBD
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Completed**: 2026-03-19
-- **Research**: [01_dead-code-analysis.md](994_archive_dead_code_in_staged_construction/reports/01_dead-code-analysis.md)
-- **Plan**: [01_archive-plan.md](994_archive_dead_code_in_staged_construction/plans/01_archive-plan.md)
-- **Summary**: [01_archive-summary.md](994_archive_dead_code_in_staged_construction/summaries/01_archive-summary.md)
-
-**Description**: Archive dead code in the StagedConstruction module while preserving important elements, refactoring as necessary. Key context: `forward_F_chain_witness`, `backward_P_chain_witness`, `forward_F_witness_in_timeline`, `backward_P_witness_in_timeline`, and `dovetailedTimelineQuotFMCS_forward_F/backward_P` in DovetailedTimelineQuot.lean are currently dead code (not used by any downstream file). Identify which elements have future value vs. which can be cleanly removed or moved to Boneyard, and refactor the file accordingly.
-
----
-
 ### 993. Add stability operator to bimodal formula language
 - **Effort**: TBD
 - **Status**: [NOT STARTED]
@@ -53,35 +40,6 @@ technical_debt:
 - **Research**: [01_stsa-algebraic-analysis.md](992_shift_closed_tense_s5_algebra/reports/01_stsa-algebraic-analysis.md)
 
 **Description**: Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with box, G, H, sigma operators and interaction axioms. Lift temporal duality sigma from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.
-
----
-
-### 991. Irreflexive semantics refactoring and STSA representation theorem
-- **Effort**: 5 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Research**: [research-002.md](991_temporal_algebraic_representation/reports/research-002.md), [research-003-irreflexive-refactoring-plan.md](991_temporal_algebraic_representation/reports/research-003-irreflexive-refactoring-plan.md), [04_synthesis.md](991_temporal_algebraic_representation/reports/04_synthesis.md), [05_extension-lattice-analysis.md](991_temporal_algebraic_representation/reports/05_extension-lattice-analysis.md), [06_irreflexivity-rigorous-analysis.md](991_temporal_algebraic_representation/reports/06_irreflexivity-rigorous-analysis.md), [07_axiom-vs-irr-analysis.md](991_temporal_algebraic_representation/reports/07_axiom-vs-irr-analysis.md), [08_discrete-completeness-strict-semantics.md](991_temporal_algebraic_representation/reports/08_discrete-completeness-strict-semantics.md)
-- **Plan**: [04_seriality-based-completion.md](991_temporal_algebraic_representation/plans/04_seriality-based-completion.md)
-- **Started**: 2026-03-18
-- **Completed**: 2026-03-18
-- **Summary**: [05_seriality-completion-summary.md](991_temporal_algebraic_representation/summaries/05_seriality-completion-summary.md)
-
-**Description**: Refactor the ProofChecker codebase from reflexive (≤/≥) to irreflexive (</>)
-temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representation theorem. Under current reflexive semantics, density/seriality/discreteness axioms are trivially valid on all frames, making parametric representation theorems for distinct frame classes impossible. Switching to irreflexive semantics makes these axioms genuinely characterize their respective frame classes, simplifies the codebase (eliminates the ~1200-line Gabbay IRR proof, removes reflexive case branches), and enables a clean algebraic variety representation theorem. Research report 003 provides a complete file-by-file change specification.
-
----
-
-### 990. Research representation theorem design for parametric durations
-- **Effort**: 6 hours
-- **Status**: [COMPLETED]
-- **Language**: formal
-- **Research**: [01_teammate-a-findings.md](990_representation_theorem_duration_design/reports/01_teammate-a-findings.md), [01_teammate-b-findings.md](990_representation_theorem_duration_design/reports/01_teammate-b-findings.md), [02_synthesis.md](990_representation_theorem_duration_design/reports/02_synthesis.md)
-- **Plan**: [01_parametric-duration-architecture.md](990_representation_theorem_duration_design/plans/01_parametric-duration-architecture.md)
-- **Summary**: [01_architecture-decision-summary.md](990_representation_theorem_duration_design/summaries/01_architecture-decision-summary.md)
-- **Started**: 2026-03-17
-- **Completed**: 2026-03-17
-
-**Description**: Research how representation theorems for TM base logic and its dense/discrete extensions should handle durations D. The key question: should D be constructed from pure syntax, or should D be parametric with axioms (density, discreteness, or linear commutative group) constraining its structure? Conduct systematic research into existing results in modal logic completeness (algebraic and Henkin-style approaches) to inform the mathematically correct design, then implement the recommended architecture.
 
 ---
 
@@ -119,82 +77,6 @@ temporal semantics, and build a Shift-Closed Tense S5 Algebra (STSA) representat
 **Description**: Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the `construct_bfmcs` argument to `parametric_algebraic_representation_conditional` (D = Int), then prove `valid φ → ⊢ φ`. Resolve any type mismatch between `CanonicalWorldState` and `ParametricCanonicalWorldState`. Create `AlgebraicBaseCompleteness.lean` with the closed completeness theorem.
 
 **Research Summary**: Task 986 has 2 sorries (forward_F/backward_P) blocking direct wiring. CanonicalWorldState and ParametricCanonicalWorldState are identical; real mismatch is D=Int (needs AddCommGroup) vs D=CanonicalMCS (sorry-free but only Preorder). Two paths: (A) complete task 986 dovetailing, or (B) semantic equivalence via CanonicalMCS completeness.
-
----
-
-### 985. Develop Lindenbaum-Tarski algebraic representation theorem approach
-- **Effort**: 12 hours (6 phases)
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-17
-- **Language**: logic
-- **Research**: [research-001.md](specs/985_lindenbaum_tarski_representation_theorem/reports/research-001.md) (team: algebraic approach), [research-002.md](specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md) (TaskFrame-specific algebraic construction)
-- **Plan**: [implementation-001.md](specs/985_lindenbaum_tarski_representation_theorem/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260316.md](specs/985_lindenbaum_tarski_representation_theorem/summaries/implementation-summary-20260316.md)
-
-**Description**: Develop the purely algebraic Lindenbaum-Tarski approach to establishing a representation theorem for the base TM logic as well as both the dense and discrete extensions in parallel to the existing proof. Research how this should proceed, drawing on the existing completeness results for guidance.
-
-**Completion Summary**: Implemented D-parametric Lindenbaum-Tarski algebraic representation theorem. Created 6 new Lean modules (ParametricCanonical, ParametricHistory, ParametricTruthLemma, ParametricRepresentation, DenseInstantiation, DiscreteInstantiation) with zero sorries.
-
----
-
-### 984. Review and revise documentation to remove `.claude/` directory references
-- **Effort**: 1.5 hours (4 phases)
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-17
-- **Language**: general
-- **Research**: [research-001.md](specs/984_review_docs_remove_claude_dir_references/reports/research-001.md)
-- **Plan**: [implementation-001.md](specs/984_review_docs_remove_claude_dir_references/plans/implementation-001.md)
-- **Summary**: [implementation-summary-20260316.md](specs/984_review_docs_remove_claude_dir_references/summaries/implementation-summary-20260316.md)
-
-**Description**: Review and revise all documentation to remove references to the `.claude/` directory (now gitignored), while preserving references to Claude Code itself.
-
-**Completion Summary**: Removed 17 `.claude/` references from 6 documentation files, deleted 75K-line export file. Claude Code product name preserved throughout.
-
-
-### 983. Review decidability results and FMP for publication
-- **Effort**: 48 hours (8 phases)
-- **Status**: [COMPLETED]
-- **Completed**: 2026-03-17
-- **Language**: logic
-- **Research**: [research-001.md](specs/983_review_decidability_fmp_completeness/reports/research-001.md) (team), [research-002.md](specs/983_review_decidability_fmp_completeness/reports/research-002.md) (Boneyard salvageability)
-- **Plan**: [implementation-002.md](specs/983_review_decidability_fmp_completeness/plans/implementation-002.md) (v2: clean FMP from scratch, no bridges, unified naming)
-- **Summary**: [implementation-summary-20260316.md](specs/983_review_decidability_fmp_completeness/summaries/implementation-summary-20260316.md)
-
-**Description**: Review the decidability results that have been established, and what remains to be done to establish the FMP and all natural decidability results that we might aim to establish alongside soundness and completeness, researching and implementing any missing results at the highest level of quality for the purposes of publication.
-
-**Completion Summary**: Proved FMP for TM bimodal logic using MCS-based filtration. Created 8 Lean modules with zero sorries and zero axioms. Key theorems: mcs_finite_model_property, fmp_contrapositive, fmp_completeness.
-
----
-
-### 982. Wire dense completeness domain connection
-- **Effort**: 22 hours (6 phases)
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Priority**: high
-- **Created**: 2026-03-16 (Review)
-- **Completed**: 2026-03-17
-- **Research**: [research-009.md](specs/982_wire_dense_completeness_domain_connection/reports/research-009.md) (W vs D), [research-013.md](specs/982_wire_dense_completeness_domain_connection/reports/research-013.md) (gap analysis), [15_team-research.md](specs/982_wire_dense_completeness_domain_connection/reports/15_team-research.md) (team analysis), [16_dovetailing-analysis.md](specs/982_wire_dense_completeness_domain_connection/reports/16_dovetailing-analysis.md) (dovetailing deep-dive), [17_blocker-resolution.md](specs/982_wire_dense_completeness_domain_connection/reports/17_blocker-resolution.md) (blocker resolution)
-- **Plan**: [11_density-resolution.md](specs/982_wire_dense_completeness_domain_connection/plans/11_density-resolution.md) (v11: Density argument)
-- **Summary**: [03_density-resolution-summary.md](specs/982_wire_dense_completeness_domain_connection/summaries/03_density-resolution-summary.md)
-
-**Completion Summary**: Proved dense completeness via full dovetailing. Created DovetailedCoverage.lean with sorry-free has_future/has_past theorems using density argument (F^i formulas with unbounded encodings). Created DovetailedCompleteness.lean wiring to TimelineQuot-based completeness.
-
-**Description**: Complete dense completeness using W/D separated TaskFrame architecture: W = CanonicalMCS (world states), D = TimelineQuot (durations). Witnesses exist in W, not necessarily in Range(h).
-
-**Research Summary**: The semantics has TWO distinct components: W (world states) and D (durations). Previous approaches conflated these. With separation: D = TimelineQuot (linear order), W = CanonicalMCS (all MCSs). Modal witnesses exist in W, making staged construction edge cases irrelevant.
-
-**Resolution Path**:
-1. Verify semantics architecture supports W/D separation (Phase 1)
-2. Build separated TaskFrame: D = TimelineQuot, W = CanonicalMCS (Phase 2)
-3. Build WorldHistories h : D → W (Phase 3)
-4. Prove truth lemma with witnesses in W (Phase 4)
-5. Complete dense completeness theorem (Phase 5)
-
-**Files to create/modify**:
-- `Metalogic/Algebraic/SeparatedTaskFrame.lean` - NEW
-- `Metalogic/Algebraic/SeparatedHistory.lean` - NEW
-- `Metalogic/Algebraic/SeparatedTruthLemma.lean` - NEW
-- `FrameConditions/Completeness.lean` - MODIFIED
 
 ---
 
