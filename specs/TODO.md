@@ -37,7 +37,7 @@ technical_debt:
 ## Tasks
 ### 1004. Implement dovetailing chain for F/P temporal witnesses
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Blocker**: Fundamental architectural limitation - linear chain constructions cannot satisfy forward_F/backward_P (see summary)
 - **Language**: lean4
 - **Dependencies**: None
@@ -51,7 +51,7 @@ technical_debt:
 
 ### 1003. Implement Sorry-Free Multi-Family Modal Coherence
 - **Effort**: 6-8 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHING]
 - **Blocker**: Singleton BFMCS approach mathematically impossible; MCS-level saturation achieved but BFMCS-level requires heterogeneous domains (see summaries/02_multi-family-summary.md)
 - **Language**: lean
 - **Dependencies**: Task #1002
@@ -193,7 +193,7 @@ technical_debt:
 
 ### 989. Discrete algebraic completeness
 - **Effort**: TBD
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHING]
 - **Blocked on**: Task 995 (FMCS domain transfer lemma), Task 974 (SuccOrder instance)
 - **Language**: lean
 
@@ -203,7 +203,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 8 hours (multi-family BFMCS)
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Dependencies**: Task #1002, Task #1003
 - **Research**: [13_dense-completeness-synthesis.md](988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md) (synthesis), [12_teammate-a-findings.md](988_dense_algebraic_completeness/reports/12_teammate-a-findings.md), [12_teammate-b-findings.md](988_dense_algebraic_completeness/reports/12_teammate-b-findings.md)
