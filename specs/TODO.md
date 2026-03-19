@@ -109,9 +109,10 @@ technical_debt:
 
 ### 997. Wire algebraic base completeness using FMCS domain transfer
 - **Effort**: TBD (estimated 2-4 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Depends On**: Task 995
+- **Research**: [01_wire-base-completeness.md](997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md)
 
 **Description**: Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding `CanonicalMCS → Int`, fill the 2 sorries in `AlgebraicBaseCompleteness.lean` (lines 104, 155) to prove `valid φ → ⊢ φ` for base TM logic. The file already has the right structure: `construct_bfmcs_int` (via CanonicalMCS transfer) feeds `parametric_algebraic_representation_conditional` with `D = Int`. This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).
 
