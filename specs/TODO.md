@@ -33,10 +33,21 @@ technical_debt:
 6. **949** → update Demo.lean (small, anytime)
 7. **992** → STSA representation theorem (after completeness)
 
+8. **1004** -> research (independent)
 ## Tasks
+### 1004. Implement dovetailing chain for F/P temporal witnesses
+- **Effort**: TBD (estimated 4-6 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: None
+
+**Description**: Implement enriched dovetailing chain construction in IntBFMCS.lean to resolve the 2 sorries: `intFMCS_forward_F` (line 563) and `intFMCS_backward_P` (line 574). The basic `intChainMCS` only takes G-successor and H-predecessor at each step, but cannot guarantee that F/P witnesses from `canonical_forward_F`/`canonical_backward_P` appear in the chain. The fix requires enumerating all (position, formula) pairs with F/P obligations and satisfying them in dovetailing order during chain construction. This ensures every `Fφ` at position `t` has a witness `s > t` in the chain, and every `Pφ` at position `t` has a witness `s < t`. Resolving these sorries completes temporal coherence for the Int BFMCS, which is needed by task 997 (algebraic base completeness) and task 988 (dense algebraic completeness).
+
+---
+
 ### 1003. Implement Sorry-Free Multi-Family Modal Coherence
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Dependencies**: Task #1002
 - **Parent Task**: #988
