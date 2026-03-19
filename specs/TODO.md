@@ -80,20 +80,6 @@ technical_debt:
 
 ---
 
-### 981. Remove axiom technical debt from task 979
-- **Effort**: 4-6 hours (4 phases)
-- **Status**: [RESEARCHED]
-- **Language**: lean
-- **Depends On**: Task 978 [COMPLETED]
-- **Research**: [31_team-research.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/31_team-research.md) (team research: density produces wrong formula, clean sorry recommended), [29_teammate-a-findings.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/29_teammate-a-findings.md), [29_teammate-b-findings.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/29_teammate-b-findings.md), [30_synthesis-big-picture.md](specs/981_remove_axiom_technical_debt_from_task_979/reports/30_synthesis-big-picture.md)
-- **Plan**: [13_coverage-based-approach.md](specs/981_remove_axiom_technical_debt_from_task_979/plans/13_coverage-based-approach.md) (v13: Coverage-based - prove dovetailed_covers_reachable by induction on CanonicalR chain length)
-
-**Description**: Task 979 incurred technical debt (accepting an axiom temporarily). After completing the systematic refactor in task 978, research the problem deeply, implement the mathematically correct solution, and remove the axiom to yield a debt-free repository.
-
-**Plan Summary (v13)**: 4-phase coverage-based approach. Phase 1: Define CanonicalR_chain reachability. Phase 2: Prove dovetailed_covers_reachable (by induction on chain length, NOT formula depth). Phase 3: Derive forward_F/backward_P from coverage theorem. Phase 4: Cleanup and verification. Key insight: induction on CanonicalR chain length avoids the formula depth measure problem entirely.
-
----
-
 ### 953. Refactor proof system to bilateral system
 - **Effort**: 55-90 hours
 - **Status**: [RESEARCHED]
