@@ -1,7 +1,7 @@
 # Implementation Plan: Task #996 - IRR Wiring Restructure
 
 - **Task**: 996 - Wire the remaining sorry in soundness_dense (IRR case) via restructured proof
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2.5 hours
 - **Dependencies**: Task 1000 (temporal_duality fixed), Task 1001 (IRRSoundness.lean fixed)
 - **Research Inputs**: specs/996_soundness_theorem_assembly/reports/02_irr-wiring-analysis.md
@@ -78,7 +78,7 @@ The research (02_irr-wiring-analysis.md) identified that the induction hypothesi
 
 ---
 
-### Phase 2: Wire IRR case with domain case analysis [IN PROGRESS]
+### Phase 2: Wire IRR case with domain case analysis [COMPLETED]
 
 **Goal**: Complete the IRR case using `irr_sound_dense_at_domain` with domain case analysis
 
@@ -102,7 +102,7 @@ The research (02_irr-wiring-analysis.md) identified that the induction hypothesi
 
 ---
 
-### Phase 3: Refactor soundness_dense as corollary [NOT STARTED]
+### Phase 3: Refactor soundness_dense as corollary [COMPLETED]
 
 **Goal**: Update `soundness_dense` to use `soundness_dense_valid` and verify full build
 
