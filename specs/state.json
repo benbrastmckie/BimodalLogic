@@ -438,22 +438,19 @@
     {
       "project_number": 1004,
       "project_name": "dovetailing_chain_fp_witnesses",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-19T21:21:33Z",
-      "last_updated": "2026-03-19T23:29:08Z",
-      "depends_on": [],
-      "description": "Implement enriched dovetailing chain construction in IntBFMCS.lean to resolve the 2 sorries: intFMCS_forward_F (line 563) and intFMCS_backward_P (line 574). The basic intChainMCS only takes G-successor and H-predecessor at each step, but cannot guarantee that F/P witnesses from canonical_forward_F/canonical_backward_P appear in the chain. The fix requires enumerating all (position, formula) pairs with F/P obligations and satisfying them in dovetailing order during chain construction. This ensures every Fφ at position t has a witness s > t in the chain, and every Pφ at position t has a witness s < t. Resolving these sorries completes temporal coherence for the Int BFMCS, which is needed by task 997 (algebraic base completeness) and task 988 (dense algebraic completeness).",
+      "last_updated": "2026-03-19T23:32:50Z",
+      "depends_on": [
+        1003
+      ],
+      "description": "Build a semantic bridge connecting FlagBFMCS (metalogic) to WorldHistory (semantics). Research established that IntBFMCS F/P sorries are a FUNDAMENTAL LIMITATION of linear chain constructions. The revised approach: (1) Document IntBFMCS F/P sorries as limitations not blockers, (2) Define CanonicalTaskFrame with WorldState = CanonicalMCS, (3) Construct Flag-to-History embedding, (4) Prove truth preservation between metalogic satisfaction and WorldHistory truth.",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md",
           "summary": "Analysis of IntBFMCS F/P witness sorries with enriched dovetailing chain solution using existing Cantor pairing infrastructure"
-        },
-        {
-          "path": "specs/1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for enriched dovetailing chain construction to resolve F/P witness sorries in IntBFMCS.lean"
         },
         {
           "type": "summary",
@@ -474,13 +471,17 @@
           "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/06_semantic-bridge-evaluation.md",
           "type": "research",
           "summary": "Evaluates bridge vs refactor approaches; concludes bridge is mathematically standard and correct"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/plans/02_semantic-bridge-plan.md",
+          "type": "plan",
+          "summary": "5-phase semantic bridge plan: document IntBFMCS limitation, build CanonicalTaskFrame, prove truth preservation"
         }
       ],
       "session_id": "sess_1773962714_708376",
       "researched": "2026-03-19T23:29:08Z",
-      "planned": "2026-03-19T21:34:56Z",
-      "started": "2026-03-19T21:54:24Z",
-      "blocker": "Fundamental architectural limitation: linear chain constructions cannot satisfy forward_F/backward_P because F-formulas don't persist through Lindenbaum extensions. Working alternative: use CanonicalFMCS.lean."
+      "planned": "2026-03-19T23:32:50Z",
+      "started": "2026-03-19T21:54:24Z"
     }
   ],
   "completed_projects": [

@@ -32,24 +32,25 @@ technical_debt:
 5. **999** → F→FF derivation (small, anytime)
 6. **949** → update Demo.lean (small, anytime)
 7. **992** → STSA representation theorem (after completeness)
-8. **1004** → blocked (architectural limitation)
+8. **1004** → implement (semantic bridge, after 1003)
 
 ## Tasks
-### 1004. Implement dovetailing chain for F/P temporal witnesses
-- **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [RESEARCHED]
-- **Blocker**: Fundamental architectural limitation - linear chain constructions cannot satisfy forward_F/backward_P (see summary)
+### 1004. Build semantic bridge from FlagBFMCS to WorldHistory
+- **Effort**: 6-8 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
-- **Dependencies**: None
+- **Dependencies**: Task #1003 (FlagBFMCS implementation)
 - **Research**:
   - [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
   - [02_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/02_team-research.md) (F/P persistence limitation)
   - [05_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/05_team-research.md) (semantic foundations)
   - [06_semantic-bridge-evaluation.md](1004_dovetailing_chain_fp_witnesses/reports/06_semantic-bridge-evaluation.md) (bridge vs refactor analysis)
-- **Plan**: [01_dovetailing-chain-plan.md](1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md)
+- **Plan**:
+  - [01_dovetailing-chain-plan.md](1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md) (v1: OBSOLETE - dovetailing approach impossible)
+  - [02_semantic-bridge-plan.md](1004_dovetailing_chain_fp_witnesses/plans/02_semantic-bridge-plan.md) (v2: semantic bridge approach)
 - **Summary**: [01_dovetailing-chain-summary.md](1004_dovetailing_chain_fp_witnesses/summaries/01_dovetailing-chain-summary.md)
 
-**Description**: Implement enriched dovetailing chain construction in IntBFMCS.lean to resolve the 2 sorries: `intFMCS_forward_F` (line 563) and `intFMCS_backward_P` (line 574). The basic `intChainMCS` only takes G-successor and H-predecessor at each step, but cannot guarantee that F/P witnesses from `canonical_forward_F`/`canonical_backward_P` appear in the chain. The fix requires enumerating all (position, formula) pairs with F/P obligations and satisfying them in dovetailing order during chain construction. This ensures every `Fφ` at position `t` has a witness `s > t` in the chain, and every `Pφ` at position `t` has a witness `s < t`. Resolving these sorries completes temporal coherence for the Int BFMCS, which is needed by task 997 (algebraic base completeness) and task 988 (dense algebraic completeness).
+**Description**: Build a semantic bridge connecting FlagBFMCS (metalogic) to WorldHistory (semantics). Research established that IntBFMCS F/P sorries are a FUNDAMENTAL LIMITATION of linear chain constructions - they cannot be proven. The revised approach: (1) Document IntBFMCS F/P sorries as limitations not blockers, (2) Define CanonicalTaskFrame with WorldState = CanonicalMCS, (3) Construct Flag-to-History embedding, (4) Prove truth preservation between metalogic satisfaction and WorldHistory truth. This follows standard proof theory architecture where completeness IS the bridge between syntax and semantics - separation of layers is a feature, not a bug.
 
 ---
 
