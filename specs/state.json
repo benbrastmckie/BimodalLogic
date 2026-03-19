@@ -433,10 +433,10 @@
     {
       "project_number": 1000,
       "project_name": "temporal_duality_mutual_recursion",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T18:40:03Z",
+      "last_updated": "2026-03-19T18:51:01Z",
       "description": "Implement the mutual recursion needed for the temporal_duality case in soundness_dense. The case requires derivable_locally_valid (⊢ φ → φ valid) and derivable_implies_swap_valid (⊢ φ → φ.swap valid) to be mutually recursive. Lean termination checker cannot infer structural recursion on DerivationTree [] φ because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on DerivationTree.height, or restructure as a single well-founded induction threading both goals simultaneously via a Prod or mutual block with termination_by d.height.",
       "artifacts": [
         {
@@ -448,12 +448,19 @@
           "path": "specs/1000_temporal_duality_mutual_recursion/plans/01_combined-wf-induction.md",
           "type": "plan",
           "summary": "4-phase implementation plan for combined well-founded induction resolving temporal_duality mutual recursion"
+        },
+        {
+          "path": "specs/1000_temporal_duality_mutual_recursion/summaries/01_combined-wf-induction-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the combined theorem approach and verification results"
         }
       ],
       "session_id": "sess_1773945577_0c93c0",
       "researched": "2026-03-19T18:31:12Z",
       "planned": "2026-03-19T18:36:05Z",
-      "started": "2026-03-19T18:40:03Z"
+      "started": "2026-03-19T18:40:03Z",
+      "completed": "2026-03-19T18:51:01Z",
+      "completion_summary": "Implemented mutual recursion via combined well-founded induction on derivation height. The temporal_duality case in soundness_dense is now complete (no sorry). IRR case remains sorry as expected (separate task)."
     },
     {
       "project_number": 1001,

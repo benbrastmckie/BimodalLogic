@@ -871,4 +871,129 @@ private theorem axiom_locally_valid [DenselyOrdered D] [Nontrivial D] {φ : Form
     obtain ⟨s, hst⟩ := h_nomin.exists_lt t
     exact h_all_neg s hst (h_H s hst)
 
+/-! ## Rule Preservation for Local Validity
+
+Helper lemmas proving that inference rules preserve local validity.
+These are needed for the combined soundness theorem.
+-/
+
+/-- Modus ponens preserves local validity.
+If φ → ψ and φ are both locally valid, then ψ is locally valid. -/
+private theorem mp_preserves_valid {φ ψ : Formula}
+    (h_imp : is_valid D (φ.imp ψ))
+    (h_phi : is_valid D φ) :
+    is_valid D ψ := by
+  intro F M Omega h_sc τ h_mem t
+  exact h_imp F M Omega h_sc τ h_mem t (h_phi F M Omega h_sc τ h_mem t)
+
+/-- Modal necessitation preserves local validity.
+If φ is locally valid, then □φ is locally valid. -/
+private theorem necessitation_preserves_local_valid {φ : Formula}
+    (h : is_valid D φ) :
+    is_valid D (Formula.box φ) := by
+  intro F M Omega h_sc τ _h_mem t
+  simp only [truth_at]
+  intro σ h_σ_mem
+  exact h F M Omega h_sc σ h_σ_mem t
+
+/-- Temporal necessitation preserves local validity.
+If φ is locally valid, then Gφ is locally valid. -/
+private theorem temporal_necessitation_preserves_local_valid {φ : Formula}
+    (h : is_valid D φ) :
+    is_valid D (Formula.all_future φ) := by
+  intro F M Omega h_sc τ h_mem t
+  simp only [truth_at]
+  intro s _hts
+  exact h F M Omega h_sc τ h_mem s
+
+/-! ## Combined Soundness and Swap-Soundness
+
+The main theorem proving both local validity AND swap validity simultaneously
+for derivable formulas. Uses well-founded induction on derivation height to
+resolve the mutual dependency between validity and swap-validity in the
+temporal_duality case.
+-/
+
+/--
+Combined soundness: derivability implies both validity and swap-validity.
+
+For any formula φ derivable from the empty context with a dense-compatible
+derivation, both φ and φ.swap are valid.
+
+**Key Insight**: The temporal_duality case has the following structure:
+- Derivation: `temporal_duality φ d` where d proves φ
+- Goal for validity: φ.swap is valid (since the formula index is φ.swap)
+- Goal for swap-validity: (φ.swap).swap = φ is valid
+
+The induction hypothesis `ih` provides both `is_valid D φ` and `is_valid D φ.swap`
+for the subderivation. We use:
+- `ih.2` (swap validity of φ) for the validity goal
+- `ih.1` (validity of φ) for the swap-validity goal, via the involution lemma
+
+This resolves the mutual recursion by proving both goals in a single pass.
+-/
+theorem derivable_valid_and_swap_valid [DenselyOrdered D] [Nontrivial D]
+    {φ : Formula} (d : DerivationTree [] φ) (h_dc : d.isDenseCompatible) :
+    is_valid D φ ∧ is_valid D φ.swap_past_future := by
+  match d with
+  | .axiom _ _ h_ax => exact ⟨axiom_locally_valid h_ax h_dc, axiom_swap_valid _ h_ax h_dc⟩
+  | .assumption _ _ h_mem => exact absurd h_mem (Syntax.Context.not_mem_nil _)
+  | .modus_ponens _ ψ' _ d1 d2 =>
+    obtain ⟨h_dc1, h_dc2⟩ := h_dc
+    obtain ⟨h1_valid, h1_swap⟩ := derivable_valid_and_swap_valid d1 h_dc1
+    obtain ⟨h2_valid, h2_swap⟩ := derivable_valid_and_swap_valid d2 h_dc2
+    exact ⟨mp_preserves_valid h1_valid h2_valid, mp_preserves_swap_valid ψ' _ h1_swap h2_swap⟩
+  | .necessitation ψ' d' =>
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d' h_dc
+    exact ⟨necessitation_preserves_local_valid h_valid, modal_k_preserves_swap_valid ψ' h_swap⟩
+  | .temporal_necessitation ψ' d' =>
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d' h_dc
+    exact ⟨temporal_necessitation_preserves_local_valid h_valid, temporal_k_preserves_swap_valid ψ' h_swap⟩
+  | .temporal_duality ψ' d' =>
+    obtain ⟨h_valid, h_swap⟩ := derivable_valid_and_swap_valid d' h_dc
+    constructor
+    · exact h_swap
+    · simp only [Formula.swap_past_future_involution]; exact h_valid
+  | .irr p ψ' h_fresh d' =>
+    -- IRR case: to be addressed in separate task
+    sorry
+  | .weakening Γ' _ _ d' h_sub =>
+    -- Since d : DerivationTree [] φ, and weakening gives Δ = [], we have Γ' ⊆ []
+    -- Therefore Γ' = [] and d' : DerivationTree Γ' φ where Γ' = []
+    have h_eq : Γ' = [] := List.eq_nil_of_subset_nil h_sub
+    -- For termination: (h_eq ▸ d').height = d'.height < (weakening ...).height
+    have h_dc_sub : (h_eq ▸ d').isDenseCompatible := by
+      simp only [DerivationTree.isDenseCompatible] at h_dc
+      subst h_eq
+      exact h_dc
+    have h_height_eq : (h_eq ▸ d').height = d'.height := by subst h_eq; rfl
+    have h_term : (h_eq ▸ d').height < (DerivationTree.weakening Γ' [] _ d' h_sub).height := by
+      simp only [h_height_eq, DerivationTree.height]
+      omega
+    exact derivable_valid_and_swap_valid (h_eq ▸ d') h_dc_sub
+termination_by d.height
+decreasing_by
+  all_goals first
+    | exact DerivationTree.mp_height_gt_left _ _
+    | exact DerivationTree.mp_height_gt_right _ _
+    | simp only [DerivationTree.height]; omega
+
+/-! ## Extracted Theorems
+
+Individual theorems extracted from the combined result for convenience.
+-/
+
+/-- Derivability implies local validity (extracted from combined theorem). -/
+theorem derivable_locally_valid [DenselyOrdered D] [Nontrivial D]
+    {φ : Formula} (d : DerivationTree [] φ) (h_dc : d.isDenseCompatible) :
+    is_valid D φ :=
+  (derivable_valid_and_swap_valid d h_dc).1
+
+/-- Derivability implies swap validity (extracted from combined theorem).
+This is the theorem needed for the temporal_duality case in soundness_dense. -/
+theorem derivable_implies_swap_valid [DenselyOrdered D] [Nontrivial D]
+    {φ : Formula} (d : DerivationTree [] φ) (h_dc : d.isDenseCompatible) :
+    is_valid D φ.swap_past_future :=
+  (derivable_valid_and_swap_valid d h_dc).2
+
 end Bimodal.Metalogic.SoundnessLemmas

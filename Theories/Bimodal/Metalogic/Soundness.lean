@@ -688,13 +688,10 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     -- For theorems (empty context), the ih gives truth at any (τ, s)
     exact ih h_dc τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
-    -- d' : ⊢ φ', and the goal is truth_at ... φ'.swap
-    -- This requires derivable_implies_swap_valid from SoundnessLemmas, which proves
-    -- that for derivable formulas, their swap is also valid.
-    -- However, implementing this requires resolving mutual recursion between
-    -- derivable_locally_valid and derivable_implies_swap_valid (see research report).
-    -- For now, marked sorry pending proper implementation.
-    sorry
+    -- d' : ⊢ φ', and the goal is truth_at M Omega τ t φ'.swap_past_future
+    -- Use derivable_implies_swap_valid from SoundnessLemmas
+    -- h_dc : (temporal_duality φ' d').isDenseCompatible = d'.isDenseCompatible
+    exact SoundnessLemmas.derivable_implies_swap_valid d' h_dc F M Omega h_sc τ h_mem t
   | irr p φ' h_fresh _ ih =>
     sorry -- Phase 3: Wire using irr_sound_dense_at_domain
   | weakening Γ' Δ' φ' _ h_sub ih =>

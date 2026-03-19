@@ -1,24 +1,26 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "summary": "Implemented combined well-founded induction theorem for temporal_duality soundness. Added derivable_valid_and_swap_valid with termination_by d.height, extracted derivable_locally_valid and derivable_implies_swap_valid. Wired into soundness_dense temporal_duality case.",
   "artifacts": [
     {
-      "path": "specs/1000_temporal_duality_mutual_recursion/reports/01_mutual-recursion-patterns.md",
-      "type": "research",
-      "summary": "Comprehensive analysis of mutual recursion patterns for temporal_duality soundness, recommending combined well-founded induction on Prod return type"
-    },
-    {
-      "path": "specs/1000_temporal_duality_mutual_recursion/plans/01_combined-wf-induction.md",
-      "type": "plan",
-      "summary": "4-phase implementation plan for combined well-founded induction resolving temporal_duality mutual recursion"
+      "path": "specs/1000_temporal_duality_mutual_recursion/summaries/01_combined-wf-induction-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting the combined theorem approach and verification results"
     }
   ],
-  "next_steps": "Run /implement 1000 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773945207_f6c499",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 2.5
+    "session_id": "sess_1773945577_0c93c0",
+    "phases_completed": 4,
+    "phases_total": 4,
+    "completion_data": "Implemented mutual recursion via combined well-founded induction on derivation height. The temporal_duality case in soundness_dense is now complete (no sorry). IRR case remains sorry as expected (separate task).",
+    "files_modified": [
+      "Theories/Bimodal/Metalogic/SoundnessLemmas.lean",
+      "Theories/Bimodal/Metalogic/Soundness.lean"
+    ],
+    "sorries_remaining": {
+      "SoundnessLemmas.lean": 1,
+      "Soundness.lean": 8,
+      "notes": "IRR cases and frame-general axiom cases as expected"
+    }
   }
 }
