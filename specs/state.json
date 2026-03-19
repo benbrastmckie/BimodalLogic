@@ -583,7 +583,7 @@
     {
       "project_number": 1003,
       "project_name": "implement_modal_coherence",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).",
       "effort": "6-8 hours",
@@ -592,7 +592,7 @@
         1002
       ],
       "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T21:10:36Z",
+      "last_updated": "2026-03-19T21:14:30Z",
       "artifacts": [
         {
           "type": "research",
@@ -603,10 +603,16 @@
           "path": "specs/1003_implement_modal_coherence/reports/02_design-integration-research.md",
           "type": "research",
           "summary": "Design integration research verifying Task 1002 design against existing infrastructure; confirms all components exist, sorry-free path identified"
+        },
+        {
+          "path": "specs/1003_implement_modal_coherence/plans/01_modal-coherence-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for sorry-free modal coherence in multi-family BFMCS"
         }
       ],
-      "session_id": "sess_1773954420_868e8c",
-      "researched": "2026-03-19T21:10:36Z"
+      "session_id": "sess_1773954700_af24ae",
+      "researched": "2026-03-19T21:10:36Z",
+      "planned": "2026-03-19T21:14:30Z"
     }
   ],
   "completed_projects": [
