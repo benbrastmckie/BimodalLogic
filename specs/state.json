@@ -587,12 +587,12 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "researching",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-19T05:29:00Z",
+      "last_updated": "2026-03-19T05:36:48Z",
       "session_id": "sess_1773898120_b61263",
-      "researched": "2026-03-18T21:50:32Z",
+      "researched": "2026-03-19T05:36:48Z",
       "artifacts": [
         {
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/research-001.md",
@@ -723,9 +723,13 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/30_termination-blocker-synthesis.md",
           "type": "research",
           "summary": "Synthesis: all measures confirmed incorrect, termination is infinitary; recommends by_contra non-constructive proof or accepting documented sorries"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/31_team-research.md",
+          "type": "research",
+          "summary": "Team research (2 teammates): density produces wrong formula, clean sorry recommended"
         }
       ],
-      "last_updated": "2026-03-18T08:00:00Z",
       "planned": "2026-03-19T05:13:46Z",
       "started": "2026-03-19T05:15:00Z",
       "partial_progress": {
