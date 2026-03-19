@@ -37,7 +37,7 @@ technical_debt:
 ## Tasks
 ### 1004. Implement dovetailing chain for F/P temporal witnesses
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [PARTIAL]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Research**: [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
@@ -49,8 +49,8 @@ technical_debt:
 
 ### 1003. Implement Sorry-Free Multi-Family Modal Coherence
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
-- **Blocker**: Design flaw - singleton BFMCS cannot satisfy modal saturation (see summaries/01_modal-coherence-summary.md)
+- **Status**: [BLOCKED]
+- **Blocker**: Singleton BFMCS approach mathematically impossible; MCS-level saturation achieved but BFMCS-level requires heterogeneous domains (see summaries/02_multi-family-summary.md)
 - **Language**: lean
 - **Dependencies**: Task #1002
 - **Parent Task**: #988
@@ -61,6 +61,7 @@ technical_debt:
 - **Plan**:
   - [01_modal-coherence-plan.md](1003_implement_modal_coherence/plans/01_modal-coherence-plan.md) (v1: OBSOLETE - singleton approach)
   - [02_multi-family-plan.md](1003_implement_modal_coherence/plans/02_multi-family-plan.md) (v2: multi-family approach)
+- **Summary**: [02_multi-family-summary.md](1003_implement_modal_coherence/summaries/02_multi-family-summary.md) (partial: MCS-level saturation achieved, singleton approach proven impossible)
 
 **Description**: Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).
 

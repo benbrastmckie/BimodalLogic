@@ -1,7 +1,7 @@
 # Implementation Plan: Task #1003 (v2)
 
 - **Task**: 1003 - Implement Sorry-Free Multi-Family Modal Coherence
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 10 hours
 - **Dependencies**: Task #1002 (completed design document, now OUTDATED)
 - **Research Inputs**: specs/1003_implement_modal_coherence/reports/03_blocker-analysis.md
@@ -52,7 +52,7 @@ The blocker analysis (report 03) verified:
 
 ## Implementation Phases
 
-### Phase 1: WitnessFamilyBundle Foundation [NOT STARTED]
+### Phase 1: WitnessFamilyBundle Foundation [COMPLETED]
 
 **Goal**: Define the `WitnessFamilyBundle` structure that tracks modal obligations and their witness families.
 
@@ -87,7 +87,7 @@ The blocker analysis (report 03) verified:
 
 ---
 
-### Phase 2: Multi-Flag Closure Construction [NOT STARTED]
+### Phase 2: Multi-Flag Closure Construction [COMPLETED]
 
 **Goal**: Build the closure of flags needed to satisfy all modal obligations.
 
@@ -121,7 +121,7 @@ The blocker analysis (report 03) verified:
 
 ---
 
-### Phase 3: Saturated BFMCS Construction [NOT STARTED]
+### Phase 3: Saturated BFMCS Construction [COMPLETED]
 
 **Goal**: Construct a BFMCS from closed flags and prove it is modally saturated.
 
@@ -164,7 +164,7 @@ The blocker analysis (report 03) verified:
 
 ---
 
-### Phase 4: Modal Forward Proof [NOT STARTED]
+### Phase 4: Modal Forward Proof [COMPLETED]
 
 **Goal**: Prove `modal_forward` for the saturated BFMCS (straightforward from T-axiom).
 
@@ -192,7 +192,7 @@ The blocker analysis (report 03) verified:
 
 ---
 
-### Phase 5: Wire to MultiFamilyBFMCS [NOT STARTED]
+### Phase 5: Wire to MultiFamilyBFMCS [PARTIAL]
 
 **Goal**: Replace/augment the sorry in MultiFamilyBFMCS.lean with the saturated construction.
 
@@ -214,7 +214,7 @@ The blocker analysis (report 03) verified:
 
 ---
 
-### Phase 6: Integration and Final Verification [NOT STARTED]
+### Phase 6: Integration and Final Verification [COMPLETED]
 
 **Goal**: Verify complete build passes and all new infrastructure is sorry-free.
 

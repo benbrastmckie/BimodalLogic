@@ -2,6 +2,7 @@ import Bimodal.Metalogic.Algebraic.SaturatedChain
 import Bimodal.Metalogic.Bundle.ChainFMCS
 import Bimodal.Metalogic.Bundle.BFMCS
 import Bimodal.Metalogic.Bundle.TemporalCoherence
+import Bimodal.Metalogic.Bundle.SaturatedBFMCSConstruction
 import Mathlib.Order.Zorn
 import Mathlib.Algebra.Order.Ring.Rat
 import Mathlib.Order.CountableDenseLinearOrder
@@ -271,9 +272,18 @@ noncomputable def singletonCanonicalBFMCS : BFMCS CanonicalMCS where
       -- Then Box phi should be in MCS (by truth lemma backward direction)
 
       -- The issue is the singleton construction conflates the semantics.
-      -- Let's add an axiom-based condition instead.
-
-      -- For now, use sorry to focus on the multi-family approach which is the intended path.
+      --
+      -- BLOCKER ANALYSIS (Task 1003, report 03):
+      -- The singleton BFMCS approach is MATHEMATICALLY IMPOSSIBLE.
+      -- For modal saturation: Diamond(psi) in t.world -> psi in t.world
+      -- This would require "possibly-psi implies actually-psi" which is FALSE.
+      -- Counterexample: {Diamond(p), neg(p)} is consistent and extends to an MCS.
+      --
+      -- The correct approach requires multi-family BFMCS with DIFFERENT mcs functions.
+      -- See SaturatedBFMCSConstruction.lean for the alternative infrastructure.
+      -- See closedFlags_union_modally_saturated for MCS-level saturation.
+      --
+      -- This sorry cannot be eliminated without changing the construction approach.
       sorry
   eval_family := AllCanonicalMCS_FMCS
   eval_family_mem := Set.mem_singleton _
@@ -333,14 +343,15 @@ Given an MCS M with Diamond(psi) in M, construct the modal witness MCS.
 The witness is the Lindenbaum extension of {psi} ∪ BoxContent(M), which
 is consistent by `modal_witness_seed_consistent`.
 -/
+-- NOTE: modal_witness_mcs is superseded by WitnessFamilyBundle.buildWitnessRecord
+-- which uses the proper ModalWitnessData infrastructure.
+-- See Bimodal.Metalogic.Bundle.WitnessFamilyBundle for the correct implementation.
 noncomputable def modal_witness_mcs (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (psi : Formula) (h_diamond : psi.diamond ∈ M) : Set Formula :=
-  lindenbaumMCS (psi :: (BoxContent_list M)) (by
-    -- Need to show [psi] ++ BoxContent_list M is consistent
-    -- This follows from modal_witness_seed_consistent but we need list version
-    sorry)
-  where
-  BoxContent_list (_M : Set Formula) : List Formula := []  -- Placeholder
+  -- Use the proper infrastructure from WitnessFamilyBundle
+  let W : CanonicalMCS := { world := M, is_mcs := h_mcs }
+  let ob : WitnessObligation := { source := W, inner_formula := psi, obligation_mem := h_diamond }
+  (buildWitnessRecord ob).witness.world
 
 /-!
 ### Phase 2 Preparation: Modal Coherence via BoxContent
@@ -555,7 +566,9 @@ theorem canonical_modal_backward
     -- in different families. The canonical construction with constant assignment
     -- doesn't give us modal_backward for free.
 
-    -- Mark as sorry - this requires Phase 3/4 infrastructure
+    -- BLOCKER: Same issue as singletonCanonicalBFMCS.modal_backward.
+    -- The singleton canonical approach is mathematically impossible.
+    -- See SaturatedBFMCSConstruction.lean and Task 1003 report 03 for analysis.
     sorry
 
 /-!
