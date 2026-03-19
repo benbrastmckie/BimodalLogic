@@ -428,6 +428,11 @@
           "type": "plan",
           "path": "specs/1003_implement_modal_coherence/plans/03_flagbfmcs-plan.md",
           "summary": "5-phase FlagBFMCS implementation plan (v3: correct architecture)"
+        },
+        {
+          "path": "specs/1003_implement_modal_coherence/summaries/03_flagbfmcs-summary.md",
+          "type": "summary",
+          "summary": "Final implementation summary documenting Phase 4 completion and remaining architectural gaps"
         }
       ],
       "session_id": "sess_1773962016_603893",

@@ -77,20 +77,21 @@ For every Diamond obligation, there exists a Flag containing the witness MCS.
 -/
 
 /--
-For every Diamond(psi) in an MCS M, there exists a Flag containing a witness MCS with psi.
+For every Diamond(psi) in an MCS M, there exists a Flag containing a witness MCS with psi
+that preserves BoxContent from M.
 
-This combines `witness_exists_for_diamond` (witness MCS exists) with
-`canonicalMCS_in_some_flag` (every MCS is in some Flag).
+This combines `witness_preserves_boxcontent` (witness MCS exists with BoxContent)
+with `canonicalMCS_in_some_flag` (every MCS is in some Flag).
 -/
 theorem witness_flag_exists (M : CanonicalMCS) (psi : Formula)
     (h_diamond : psi.diamond ∈ M.world) :
     ∃ (flag : Flag CanonicalMCS) (W : CanonicalMCS),
-      W ∈ flag ∧ psi ∈ W.world := by
-  -- Get witness MCS
-  obtain ⟨W, h_psi⟩ := witness_exists_for_diamond M psi h_diamond
+      W ∈ flag ∧ psi ∈ W.world ∧ MCSBoxContent M.world ⊆ W.world := by
+  -- Get witness MCS with BoxContent preservation
+  obtain ⟨W, h_psi, h_box⟩ := witness_preserves_boxcontent M psi h_diamond
   -- Get Flag containing W
   obtain ⟨flag, h_mem⟩ := canonicalMCS_in_some_flag W
-  exact ⟨flag, W, h_mem, h_psi⟩
+  exact ⟨flag, W, h_mem, h_psi, h_box⟩
 
 /-!
 ## Closed Flag Set Predicate
@@ -100,23 +101,26 @@ has a witness in some MCS in some Flag in the set.
 -/
 
 /--
-A set of Flags is closed under modal witnesses.
+A set of Flags is closed under modal witnesses with BoxContent preservation.
 
 For every Flag in the set, every MCS in that Flag, and every Diamond(psi) in that MCS,
-there exists a Flag in the set containing an MCS with psi.
+there exists a Flag in the set containing an MCS W with:
+- psi in W.world (the witness satisfies the formula)
+- MCSBoxContent M.world ⊆ W.world (BoxContent is preserved for accessibility)
 -/
 def ClosedFlagSet (flags : Set (Flag CanonicalMCS)) : Prop :=
   ∀ flag ∈ flags, ∀ M : CanonicalMCS, M ∈ flag →
     ∀ psi : Formula, psi.diamond ∈ M.world →
-      ∃ flag' ∈ flags, ∃ W : CanonicalMCS, W ∈ flag' ∧ psi ∈ W.world
+      ∃ flag' ∈ flags, ∃ W : CanonicalMCS, W ∈ flag' ∧ psi ∈ W.world ∧
+        MCSBoxContent M.world ⊆ W.world
 
 /--
 The set of all Flags is closed (trivially, by witness_flag_exists).
 -/
 theorem allFlags_closed : ClosedFlagSet Set.univ := by
   intro flag _ M _ psi h_diamond
-  obtain ⟨flag', W, h_mem, h_psi⟩ := witness_flag_exists M psi h_diamond
-  exact ⟨flag', Set.mem_univ flag', W, h_mem, h_psi⟩
+  obtain ⟨flag', W, h_mem, h_psi, h_box⟩ := witness_flag_exists M psi h_diamond
+  exact ⟨flag', Set.mem_univ flag', W, h_mem, h_psi, h_box⟩
 
 /-!
 ## One-Step Closure Operator
@@ -222,10 +226,12 @@ The closed Flags set satisfies the ClosedFlagSet property.
 -/
 
 /--
-**Key Theorem**: The closed Flags set is witness-closed.
+**Key Theorem**: The closed Flags set is witness-closed with BoxContent preservation.
 
 For every Diamond(psi) in any MCS in any Flag in closedFlags M0,
-there exists a Flag in closedFlags M0 containing a witness MCS with psi.
+there exists a Flag in closedFlags M0 containing a witness MCS W with:
+- psi in W.world
+- MCSBoxContent M.world ⊆ W.world (preserving accessibility)
 -/
 theorem closedFlags_closed_under_witnesses (M0 : CanonicalMCS) :
     ClosedFlagSet (closedFlags M0) := by
@@ -233,8 +239,8 @@ theorem closedFlags_closed_under_witnesses (M0 : CanonicalMCS) :
   -- flag is in closedFlags, so it's in some iterateWitnessFlags n
   simp only [closedFlags] at h_flag
   obtain ⟨n, h_n⟩ := Set.mem_iUnion.mp h_flag
-  -- Get witness MCS and its Flag
-  obtain ⟨flag', W, h_W_in_flag', h_psi⟩ := witness_flag_exists M psi h_diamond
+  -- Get witness MCS and its Flag with BoxContent preservation
+  obtain ⟨flag', W, h_W_in_flag', h_psi, h_box⟩ := witness_flag_exists M psi h_diamond
   -- flag' is in iterateWitnessFlags (n + 1) by addWitnessFlags construction
   have h_flag'_in_next : flag' ∈ iterateWitnessFlags M0 (n + 1) := by
     simp only [iterateWitnessFlags, addWitnessFlags]
@@ -242,7 +248,7 @@ theorem closedFlags_closed_under_witnesses (M0 : CanonicalMCS) :
     exact ⟨flag, h_n, M, h_M_in_flag, psi, h_diamond, W, h_W_in_flag', h_psi⟩
   -- Hence flag' is in closedFlags
   exact ⟨flag', iterateWitnessFlags_subset_closedFlags M0 (n + 1) h_flag'_in_next,
-         W, h_W_in_flag', h_psi⟩
+         W, h_W_in_flag', h_psi, h_box⟩
 
 /--
 The root MCS is in some Flag in closedFlags.
