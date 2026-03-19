@@ -2,9 +2,28 @@
   "metadata": {
     "generated_at": "2026-01-20T20:55:08.000000",
     "total_tasks": 24,
-    "last_sync": "2026-03-14T22:30:00Z"
+    "last_sync": "2026-03-19T00:00:00Z"
   },
   "active_projects": [
+    {
+      "project_number": 996,
+      "project_name": "soundness_theorem_assembly",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-19T00:00:00Z",
+      "last_updated": "2026-03-19T00:00:00Z",
+      "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties."
+    },
+    {
+      "project_number": 995,
+      "project_name": "fmcs_domain_transfer_lemma",
+      "status": "not_started",
+      "language": "lean",
+      "priority": "high",
+      "created": "2026-03-19T00:00:00Z",
+      "last_updated": "2026-03-19T00:00:00Z",
+      "description": "Build a general FMCS transfer lemma: given an order-embedding e : CanonicalMCS → D (where D has AddCommGroup + LinearOrder + IsOrderedAddMonoid), transfer temporal coherence from sorry-free CanonicalMCS BFMCS to BFMCS D. Unblocks base (D=Int), dense (D=Rat), and discrete (D=Int+SuccOrder) completeness simultaneously."
+    },
     {
       "project_number": 993,
       "project_name": "add_stability_operator",
@@ -34,10 +53,12 @@
     {
       "project_number": 987,
       "project_name": "algebraic_base_completeness",
-      "status": "researched",
+      "status": "abandoned",
+      "abandoned": "2026-03-19T00:00:00Z",
+      "abandoned_reason": "Dependency task 986 archived with unresolvable sorries. Superseded by task 995 (FMCS domain transfer).",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-18T20:23:01Z",
+      "last_updated": "2026-03-19T00:00:00Z",
       "description": "Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the construct_bfmcs argument to parametric_algebraic_representation_conditional (D = Int), then prove valid φ → ⊢ φ. Resolve any type mismatch between CanonicalWorldState and ParametricCanonicalWorldState. Create AlgebraicBaseCompleteness.lean with the closed completeness theorem.",
       "artifacts": [
         {
@@ -69,10 +90,11 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "implementing",
+      "status": "blocked",
+      "blocked_on": "Task 995 (FMCS domain transfer lemma)",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-18T16:13:00Z",
+      "last_updated": "2026-03-19T00:00:00Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -170,11 +192,12 @@
     {
       "project_number": 989,
       "project_name": "discrete_algebraic_completeness",
-      "status": "not_started",
+      "status": "blocked",
+      "blocked_on": "Task 995 (FMCS domain transfer) + Task 974 (SuccOrder instance)",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-17T02:43:07Z",
-      "description": "Prove discrete algebraic completeness using D = Int. Requires: (1) proving DF and DP axioms are valid in DiscreteCanonicalTaskFrame Int (the G-operator Stone relation on Int-indexed MCS families satisfies immediate successor conditions), (2) using the BFMCS construction from task 986 for the discrete proof system, (3) wiring discrete_representation_conditional to obtain valid_discrete φ → ⊢_discrete φ. Does not overlap with task 981 (removes axiom from staged construction; this uses algebraic D = Int approach).",
+      "last_updated": "2026-03-19T00:00:00Z",
+      "description": "Prove discrete algebraic completeness using D = Int. Requires: (1) FMCS domain transfer from CanonicalMCS to Int (task 995), (2) proving DF and DP axioms are valid in DiscreteCanonicalTaskFrame Int (the parametric canonical TaskFrame instantiated at Int), (3) SuccOrder instance on DiscreteTimelineQuot (task 974, archived), (4) wiring discrete_representation_conditional to obtain valid_discrete φ → ⊢_discrete φ.",
       "artifacts": []
     },
     {
@@ -226,11 +249,12 @@
     {
       "project_number": 868,
       "project_name": "reinstate_lean_mcp_tools",
-      "status": "blocked",
+      "status": "abandoned",
+      "abandoned": "2026-03-19T00:00:00Z",
+      "abandoned_reason": "Tools already reinstated and working in current .mcp.json configuration. Issue #115 is minor inconvenience, not blocker.",
       "language": "meta",
       "created": "2026-02-11T00:41:47Z",
-      "last_updated": "2026-02-11T00:41:47Z",
-      "blocked_on": "lean-lsp-mcp issue #115 resolution"
+      "last_updated": "2026-03-19T00:00:00Z"
     },
     {
       "project_number": 619,
@@ -300,7 +324,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 995,
+  "next_project_number": 997,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -309,17 +333,17 @@
     }
   ],
   "task_counts": {
-    "active": 12,
-    "not_started": 11,
-    "total": 336,
-    "abandoned": 38
+    "active": 9,
+    "not_started": 3,
+    "total": 747,
+    "abandoned": 45
   },
   "repository_health": {
-    "last_assessed": "2026-02-27T02:52:44Z",
-    "sorry_count": 76,
-    "axiom_count": 19,
+    "last_assessed": "2026-03-19T00:00:00Z",
+    "sorry_count": 16,
+    "axiom_count": 3,
     "build_errors": 0,
-    "status": "manageable"
+    "status": "excellent"
   },
-  "last_updated": "2026-03-16T19:45:00Z"
+  "last_updated": "2026-03-19T00:00:00Z"
 }
