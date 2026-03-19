@@ -1,7 +1,7 @@
 # Implementation Plan: Task #995
 
 - **Task**: 995 - fmcs_domain_transfer_lemma
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 12 hours
 - **Dependencies**: None (CanonicalFMCS.lean is already sorry-free)
 - **Research Inputs**: specs/995_fmcs_domain_transfer_lemma/reports/01_fmcs-domain-transfer.md
@@ -116,7 +116,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 4: Prove transfer_backward_P [IN PROGRESS]
+### Phase 4: Prove transfer_backward_P [COMPLETED]
 
 **Goal**: Prove the backward_P property transfers from CanonicalMCS to D.
 
@@ -138,7 +138,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 5: Main Transfer Theorem and Instantiation Infrastructure [NOT STARTED]
+### Phase 5: Main Transfer Theorem and Instantiation Infrastructure [COMPLETED]
 
 **Goal**: Package the transfer into a main theorem and provide infrastructure for Int/Rat instantiation.
 
@@ -162,7 +162,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 6: Integration and Testing [NOT STARTED]
+### Phase 6: Integration and Testing [COMPLETED]
 
 **Goal**: Verify integration with existing codebase and document usage patterns.
 

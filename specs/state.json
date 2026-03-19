@@ -62,11 +62,11 @@
     {
       "project_number": 995,
       "project_name": "fmcs_domain_transfer_lemma",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "priority": "high",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T17:24:55Z",
+      "last_updated": "2026-03-19T17:35:17Z",
       "description": "Build a general FMCS transfer lemma: given an order-embedding e : CanonicalMCS → D (where D has AddCommGroup + LinearOrder + IsOrderedAddMonoid), transfer temporal coherence from sorry-free CanonicalMCS BFMCS to BFMCS D. Unblocks base (D=Int), dense (D=Rat), and discrete (D=Int+SuccOrder) completeness simultaneously.",
       "session_id": "sess_1773941070_69f7c4",
       "researched": "2026-03-19T17:10:07Z",
@@ -80,10 +80,17 @@
           "path": "specs/995_fmcs_domain_transfer_lemma/plans/01_fmcs-domain-transfer.md",
           "type": "plan",
           "summary": "6-phase implementation plan for FMCS domain transfer lemma. Defines FMCSTransfer structure, transferred FMCS, and proves transfer_forward_F/backward_P without sorries."
+        },
+        {
+          "path": "specs/995_fmcs_domain_transfer_lemma/summaries/01_fmcs-domain-transfer-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the FMCS transfer approach and usage"
         }
       ],
       "planned": "2026-03-19T17:23:20Z",
-      "started": "2026-03-19T17:24:55Z"
+      "started": "2026-03-19T17:24:55Z",
+      "completed": "2026-03-19T17:35:17Z",
+      "completion_summary": "Created FMCSTransfer.lean with sorry-free transfer infrastructure for temporal coherence properties (forward_F, backward_P) from CanonicalMCS to arbitrary domains via embedding/retraction pairs."
     },
     {
       "project_number": 993,

@@ -316,4 +316,79 @@ theorem transfer_backward_P (T : FMCSTransfer D) (d : D) (phi : Formula)
     -- canonicalMCS_mcs w = w.world = W
     exact h_phi_W
 
+/-!
+## Main Transfer Theorem (Phase 5)
+
+Package the transfer results into a single theorem that provides a complete
+temporally coherent family on D given an FMCSTransfer.
+-/
+
+/--
+Main FMCS domain transfer theorem: Given an FMCSTransfer from CanonicalMCS to D,
+we get a FMCS on D with forward_F and backward_P coherence properties.
+
+This theorem packages all the transfer results together, showing that the
+transferred FMCS satisfies the temporal coherence conditions needed for
+completeness proofs.
+
+**Components**:
+- `fam`: The transferred FMCS on D
+- `forward_F`: F(phi) at d implies witness s > d with phi at s
+- `backward_P`: P(phi) at d implies witness s < d with phi at s
+
+**Usage**: Instantiate FMCSTransfer for a specific D (e.g., Int, Rat), then
+apply this theorem to get the temporal coherence properties automatically.
+-/
+theorem fmcs_domain_transfer (T : FMCSTransfer D) :
+    ∃ (fam : FMCS D),
+      (∀ d : D, ∀ φ : Formula, Formula.some_future φ ∈ fam.mcs d →
+        ∃ s : D, d < s ∧ φ ∈ fam.mcs s) ∧
+      (∀ d : D, ∀ φ : Formula, Formula.some_past φ ∈ fam.mcs d →
+        ∃ s : D, s < d ∧ φ ∈ fam.mcs s) :=
+  ⟨transferredFMCS T, transfer_forward_F T, transfer_backward_P T⟩
+
+/--
+Convenience wrapper: Create a TemporalCoherentFamily from an FMCSTransfer.
+
+This combines the transferred FMCS with the forward_F and backward_P proofs
+into a single structure suitable for use in completeness arguments.
+
+Requires [Zero D] for the TemporalCoherentFamily structure.
+-/
+noncomputable def transferredTemporalCoherentFamily [Zero D] (T : FMCSTransfer D) :
+    TemporalCoherentFamily D where
+  toFMCS := transferredFMCS T
+  forward_F := transfer_forward_F T
+  backward_P := transfer_backward_P T
+
+/-!
+## Instantiation Infrastructure
+
+To instantiate FMCSTransfer for a specific domain D, you need to provide:
+
+1. **embed : CanonicalMCS →o D** - A monotone map from CanonicalMCS to D
+2. **retract : D → CanonicalMCS** - An inverse map from D to CanonicalMCS
+3. **retract_left_inverse** - Proof that retract (embed w) = w
+4. **embed_retract_eq** - Proof that embed (retract d) = d
+5. **retract_lt** - Proof that retract strictly preserves order
+6. **embed_lt** - Proof that embed strictly preserves order
+
+### Int Instantiation (requires dovetailing chain)
+
+For D = Int, the chain construction needs to ensure:
+- Every integer maps to some MCS in the chain
+- The chain includes witnesses for all F/P requirements
+
+This is a separate task (dovetailing enriched chain construction).
+
+### Rat Instantiation (requires Cantor ordering)
+
+For D = Rat, use the TimelineQuot construction:
+- Timeline is built with staged saturation including F/P witnesses
+- Cantor ordering provides the bijection to Q
+- embed/retract come from the OrderIso
+
+This is a separate task (linking TimelineQuot to FMCSTransfer).
+-/
+
 end Bimodal.Metalogic.Bundle
