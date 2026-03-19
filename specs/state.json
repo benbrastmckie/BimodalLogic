@@ -26,23 +26,29 @@
     {
       "project_number": 997,
       "project_name": "wire_algebraic_base_completeness",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-19T17:05:00Z",
-      "last_updated": "2026-03-19T20:56:44Z",
+      "last_updated": "2026-03-19T21:00:59Z",
       "depends_on": [
         995
       ],
       "description": "Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding CanonicalMCS → Int, fill the 2 sorries in AlgebraicBaseCompleteness.lean (lines 104, 155) to prove valid φ → ⊢ φ for base TM logic. The file already has the right structure (construct_bfmcs_int from CanonicalMCS transfer, then use parametric_algebraic_representation_conditional with D = Int). This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).",
-      "session_id": "sess_1773953586_58e9a7",
+      "session_id": "sess_1773953881_b8b975",
       "researched": "2026-03-19T20:56:44Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md",
           "summary": "Analysis of FMCSTransfer wiring for base completeness - identifies need for Int dovetailing chain construction as prerequisite"
+        },
+        {
+          "type": "plan",
+          "path": "specs/997_wire_algebraic_base_completeness/plans/01_wire-base-completeness-plan.md",
+          "summary": "4-phase implementation plan for wiring FMCSTransfer Int to complete algebraic base completeness theorem"
         }
-      ]
+      ],
+      "planned": "2026-03-19T21:00:59Z"
     },
     {
       "project_number": 996,
@@ -536,14 +542,14 @@
     {
       "project_number": 1002,
       "project_name": "design_modal_witness_infrastructure",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Research and design the modal witness infrastructure needed for multi-family BFMCS construction. The current blocker in task 988 is that modal_backward cannot be proven for single-family constructions because 'phi in MCS implies Box phi in MCS' is not valid in general modal logic. This task will: (1) Analyze why single-family modal_backward fails mathematically, (2) Design a DiamondWitness structure that connects families across the bundle, (3) Specify ModalWitnessFamily construction from consistent seeds, (4) Document the proof strategy for modal_backward using the contrapositive argument with witness families. Deliverables: Research report with formal analysis, design document with Lean structure sketches, proof strategy with key lemma statements.",
       "effort": "4-6 hours",
       "parent_task": 988,
       "dependencies": [],
       "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T19:47:19Z",
+      "last_updated": "2026-03-19T20:56:59Z",
       "artifacts": [
         {
           "type": "research",
@@ -561,9 +567,10 @@
           "summary": "3-phase design plan for saturated BFMCS construction using existing modal witness infrastructure"
         }
       ],
-      "session_id": "sess_1773949475_7e042f",
+      "session_id": "sess_1773953787_172dc3",
       "planned": "2026-03-19T19:47:19Z",
-      "researched": "2026-03-19T19:32:21Z"
+      "researched": "2026-03-19T19:32:21Z",
+      "started": "2026-03-19T20:56:59Z"
     },
     {
       "project_number": 1003,

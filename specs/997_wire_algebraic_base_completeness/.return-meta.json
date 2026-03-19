@@ -1,16 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md",
-      "type": "research",
-      "summary": "Analysis of FMCSTransfer wiring for base completeness - identifies need for Int dovetailing chain construction as prerequisite"
+      "type": "plan",
+      "path": "specs/997_wire_algebraic_base_completeness/plans/01_wire-base-completeness-plan.md",
+      "summary": "4-phase implementation plan for wiring FMCSTransfer Int to complete algebraic base completeness theorem"
     }
   ],
+  "next_steps": "Run /implement 997 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773953586_58e9a7",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773953881_b8b975",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 4.5
   }
 }
