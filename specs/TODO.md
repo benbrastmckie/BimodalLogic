@@ -51,8 +51,8 @@ technical_debt:
 
 ### 1003. Implement Sorry-Free Multi-Family Modal Coherence
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHING]
-- **Blocker**: Singleton BFMCS approach mathematically impossible; MCS-level saturation achieved but BFMCS-level requires heterogeneous domains (see summaries/02_multi-family-summary.md)
+- **Status**: [RESEARCHED]
+- **Blocker**: BFMCS fixed-domain constraint makes modal saturation impossible; correct approach is FlagBFMCS (see reports/04_team-research.md)
 - **Language**: lean
 - **Dependencies**: Task #1002
 - **Parent Task**: #988
@@ -60,6 +60,7 @@ technical_debt:
   - [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
   - [02_design-integration-research.md](1003_implement_modal_coherence/reports/02_design-integration-research.md)
   - [03_blocker-analysis.md](1003_implement_modal_coherence/reports/03_blocker-analysis.md)
+  - [04_team-research.md](1003_implement_modal_coherence/reports/04_team-research.md) (team: FlagBFMCS architecture recommendation)
 - **Plan**:
   - [01_modal-coherence-plan.md](1003_implement_modal_coherence/plans/01_modal-coherence-plan.md) (v1: OBSOLETE - singleton approach)
   - [02_multi-family-plan.md](1003_implement_modal_coherence/plans/02_multi-family-plan.md) (v2: multi-family approach)
