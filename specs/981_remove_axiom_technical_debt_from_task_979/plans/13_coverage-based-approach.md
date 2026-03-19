@@ -28,7 +28,7 @@ The dovetailed construction processes ALL (point_index, formula_encoding) pairs 
 
 ---
 
-## Phase 1: Define CanonicalR_chain [NOT STARTED]
+## Phase 1: Define CanonicalR_chain [PARTIAL]
 
 **Estimated effort**: 30 minutes
 

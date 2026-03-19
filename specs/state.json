@@ -587,11 +587,11 @@
     {
       "project_number": 981,
       "project_name": "remove_axiom_technical_debt_from_task_979",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-16T22:57:51Z",
-      "last_updated": "2026-03-19T05:13:46Z",
-      "session_id": "sess_1773876363_a46902",
+      "last_updated": "2026-03-19T05:24:21Z",
+      "session_id": "sess_1773897291_51f2ab",
       "researched": "2026-03-18T21:50:32Z",
       "artifacts": [
         {
@@ -708,14 +708,19 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/plans/13_coverage-based-approach.md",
           "type": "plan",
           "summary": "Coverage-based approach: prove dovetailed_covers_reachable by induction on CanonicalR chain length"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/14_coverage-implementation.md",
+          "type": "summary",
+          "summary": "Partial: CanonicalR_chain definitions created, coverage theorem blocked by termination issue"
         }
       ],
       "planned": "2026-03-19T05:13:46Z",
-      "started": "2026-03-18T23:26:25Z",
+      "started": "2026-03-19T05:15:00Z",
       "partial_progress": {
         "phases_completed": 0,
         "phases_total": 4,
-        "details": "Phase 1 partial: discovered mathematical gap in termination argument. Large step propagation claim is not directly provable - list length at step m not guaranteed >= m."
+        "details": "Phase 1 partial (DovetailedCoverageReach.lean created). Coverage theorem blocked by same termination issue - density argument can arbitrarily increase formula depth."
       }
     },
     {
