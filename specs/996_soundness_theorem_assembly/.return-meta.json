@@ -1,20 +1,15 @@
 {
-  "status": "planned",
-  "artifacts": [
-    {
-      "type": "plan",
-      "path": "specs/996_soundness_theorem_assembly/plans/02_irr-wiring-restructure.md",
-      "summary": "3-phase plan to wire IRR case via soundness_dense_valid theorem restructure"
-    }
-  ],
-  "next_steps": "Run /implement 996 to execute the plan",
+  "status": "in_progress",
+  "started_at": "2026-03-19T00:00:00Z",
+  "artifacts": [],
+  "partial_progress": {
+    "stage": "initializing",
+    "details": "Agent started, parsing delegation context"
+  },
   "metadata": {
-    "session_id": "sess_1773947364_a42c9a",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1773947706_e29c49",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 3,
-    "estimated_hours": 2.5
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"]
   }
 }

@@ -173,10 +173,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T19:15:25Z",
+      "last_updated": "2026-03-19T19:19:26Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -315,7 +315,7 @@
           "summary": "Multi-family BFMCS infrastructure with Phase 1 complete, Phase 2 blocked on modal_backward"
         }
       ],
-      "session_id": "sess_1773947096_688bbe",
+      "session_id": "sess_1773947942_bb4af4",
       "researched": "2026-03-19T18:55:50Z",
       "planned": "2026-03-19T19:00:50Z",
       "recommendation": "Zorn saturated chain approach: use ChainFMCS infrastructure + Zorn to build saturated Flag containing forward_F witnesses by construction. Avoids TimelineQuot termination gap. Est. 10-12h.",
@@ -325,7 +325,11 @@
         "phases_total": 4,
         "blocking_issue": "modal_backward requires semantic reasoning not available in syntactic MCS theory",
         "recommendation": "True multi-family bundle with distinct witnesses per family, or alternative completeness approach"
-      }
+      },
+      "dependencies": [
+        1002,
+        1003
+      ]
     },
     {
       "project_number": 989,
@@ -512,6 +516,46 @@
       "started": "2026-03-19T18:22:54Z",
       "completed": "2026-03-19T18:26:17Z",
       "completion_summary": "Fixed all build errors in IRRSoundness.lean: 4 String->Atom type fixes and 5 omega->algebraic lemma replacements. Build passes with no sorries or new axioms."
+    },
+    {
+      "project_number": 1002,
+      "project_name": "design_modal_witness_infrastructure",
+      "status": "researched",
+      "language": "lean",
+      "description": "Research and design the modal witness infrastructure needed for multi-family BFMCS construction. The current blocker in task 988 is that modal_backward cannot be proven for single-family constructions because 'phi in MCS implies Box phi in MCS' is not valid in general modal logic. This task will: (1) Analyze why single-family modal_backward fails mathematically, (2) Design a DiamondWitness structure that connects families across the bundle, (3) Specify ModalWitnessFamily construction from consistent seeds, (4) Document the proof strategy for modal_backward using the contrapositive argument with witness families. Deliverables: Research report with formal analysis, design document with Lean structure sketches, proof strategy with key lemma statements.",
+      "effort": "4-6 hours",
+      "parent_task": 988,
+      "dependencies": [],
+      "created": "2026-03-19T19:22:33Z",
+      "last_updated": "2026-03-19T19:22:33Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/988_dense_algebraic_completeness/reports/16_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 988"
+        }
+      ]
+    },
+    {
+      "project_number": 1003,
+      "project_name": "implement_modal_coherence",
+      "status": "researched",
+      "language": "lean",
+      "description": "Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).",
+      "effort": "6-8 hours",
+      "parent_task": 988,
+      "dependencies": [
+        1002
+      ],
+      "created": "2026-03-19T19:22:33Z",
+      "last_updated": "2026-03-19T19:22:33Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/988_dense_algebraic_completeness/reports/16_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task 988"
+        }
+      ]
     }
   ],
   "completed_projects": [
@@ -526,7 +570,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 1002,
+  "next_project_number": 1004,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

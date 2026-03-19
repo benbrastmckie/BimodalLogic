@@ -1,0 +1,24 @@
+{
+  "new_tasks": [
+    {
+      "index": 0,
+      "title": "Design Modal Witness Infrastructure for Multi-Family BFMCS",
+      "description": "Research and design the modal witness infrastructure needed for multi-family BFMCS construction. The current blocker in task 988 is that modal_backward cannot be proven for single-family constructions because 'phi in MCS implies Box phi in MCS' is not valid in general modal logic. This task will: (1) Analyze why single-family modal_backward fails mathematically, (2) Design a DiamondWitness structure that connects families across the bundle, (3) Specify ModalWitnessFamily construction from consistent seeds, (4) Document the proof strategy for modal_backward using the contrapositive argument with witness families. Deliverables: Research report with formal analysis, design document with Lean structure sketches, proof strategy with key lemma statements.",
+      "effort": "4-6 hours",
+      "language": "lean",
+      "dependencies": []
+    },
+    {
+      "index": 1,
+      "title": "Implement Sorry-Free Multi-Family Modal Coherence",
+      "description": "Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain). This task requires the design task to be complete first because the Lean implementation structure depends on the specific design choices for witness family indexing, seed consistency lemmas, and closure enumeration strategy.",
+      "effort": "6-8 hours",
+      "language": "lean",
+      "dependencies": [0]
+    }
+  ],
+  "dependency_order": [0, 1],
+  "parent_task_number": 988,
+  "analysis_summary": "Task 988 Phase 2 (modal coherence) blocked because modal_backward cannot be proven for single-family BFMCS - 'phi in MCS implies Box phi in MCS' requires semantic reasoning not available from syntactic MCS theory. Two new tasks proposed: (1) design modal witness infrastructure, (2) implement sorry-free multi-family modal coherence using that design.",
+  "report_path": "specs/988_dense_algebraic_completeness/reports/16_spawn-analysis.md"
+}

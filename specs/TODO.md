@@ -35,6 +35,30 @@ technical_debt:
 8. **992** → STSA representation theorem (after completeness)
 
 ## Tasks
+### 1003. Implement Sorry-Free Multi-Family Modal Coherence
+- **Effort**: 6-8 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Dependencies**: Task #1002
+- **Parent Task**: #988
+- **Research**: [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
+
+**Description**: Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).
+
+---
+
+### 1002. Design Modal Witness Infrastructure for Multi-Family BFMCS
+- **Effort**: 4-6 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean
+- **Dependencies**: None
+- **Parent Task**: #988
+- **Research**: [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
+
+**Description**: Research and design the modal witness infrastructure needed for multi-family BFMCS construction. The current blocker in task 988 is that modal_backward cannot be proven for single-family constructions because 'phi in MCS implies Box phi in MCS' is not valid in general modal logic. This task will: (1) Analyze why single-family modal_backward fails mathematically, (2) Design a DiamondWitness structure that connects families across the bundle, (3) Specify ModalWitnessFamily construction from consistent seeds, (4) Document the proof strategy for modal_backward using the contrapositive argument with witness families. Deliverables: Research report with formal analysis, design document with Lean structure sketches, proof strategy with key lemma statements.
+
+---
+
 ### 1001. Fix IRRSoundness.lean pre-existing type errors
 - **Effort**: TBD (estimated 2-3 hours)
 - **Status**: [COMPLETED]
@@ -145,8 +169,9 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 8 hours (multi-family BFMCS)
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean
+- **Dependencies**: Task #1002, Task #1003
 - **Research**: [13_dense-completeness-synthesis.md](988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md) (synthesis), [12_teammate-a-findings.md](988_dense_algebraic_completeness/reports/12_teammate-a-findings.md), [12_teammate-b-findings.md](988_dense_algebraic_completeness/reports/12_teammate-b-findings.md)
 - **Plan**: [12_multi-family-bfmcs-bundle.md](988_dense_algebraic_completeness/plans/12_multi-family-bfmcs-bundle.md) (v12: Multi-family BFMCS bundle)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)

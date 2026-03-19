@@ -49,7 +49,7 @@ The research (02_irr-wiring-analysis.md) identified that the induction hypothesi
 
 ## Implementation Phases
 
-### Phase 1: Create soundness_dense_valid theorem scaffold [NOT STARTED]
+### Phase 1: Create soundness_dense_valid theorem scaffold [COMPLETED]
 
 **Goal**: Create the new `soundness_dense_valid` theorem structure that proves `valid_dense` directly
 
@@ -78,7 +78,7 @@ The research (02_irr-wiring-analysis.md) identified that the induction hypothesi
 
 ---
 
-### Phase 2: Wire IRR case with domain case analysis [NOT STARTED]
+### Phase 2: Wire IRR case with domain case analysis [IN PROGRESS]
 
 **Goal**: Complete the IRR case using `irr_sound_dense_at_domain` with domain case analysis
 
