@@ -37,10 +37,12 @@ technical_debt:
 ## Tasks
 ### 1001. Fix IRRSoundness.lean pre-existing type errors
 - **Effort**: TBD (estimated 2-3 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Research**: [01_irr-soundness-type-errors.md](1001_irrSoundness_type_errors/reports/01_irr-soundness-type-errors.md)
 - **Plan**: [01_fix-irr-type-errors.md](1001_irrSoundness_type_errors/plans/01_fix-irr-type-errors.md)
+- **Completed**: 2026-03-19
+- **Summary**: [02_fix-irr-type-errors-summary.md](1001_irrSoundness_type_errors/summaries/02_fix-irr-type-errors-summary.md)
 
 **Description**: Fix two classes of pre-existing build errors in `IRRSoundness.lean` that block the IRR case in `soundness_dense`: (1) Type mismatch: `p : String` should be `p : Atom` in `prod_model`, `truth_prod_iff`, and `irr_sound_dense_at_domain` — the `Atom` type was likely renamed or the import changed. (2) `omega` tactic failures in `prod_frame` construction on generic ordered group type D — `omega` only works on `Int`/`Nat`, not abstract `[AddCommGroup D] [LinearOrder D]`. Fix: replace `String` with `Atom` throughout `IRRSoundness.lean` and replace `omega` with appropriate algebraic lemmas for the generic ordered group context.
 

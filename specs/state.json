@@ -433,10 +433,10 @@
     {
       "project_number": 1001,
       "project_name": "irrSoundness_type_errors",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T18:22:54Z",
+      "last_updated": "2026-03-19T18:26:17Z",
       "description": "Fix two classes of pre-existing build errors in IRRSoundness.lean that block the IRR case in soundness_dense: (1) Type mismatch: p : String should be p : Atom in prod_model, truth_prod_iff, and irr_sound_dense_at_domain — the Atom type was likely renamed or the import changed. (2) omega tactic failures in prod_frame construction on generic ordered group type D — omega only works on Int/Nat, not abstract [AddCommGroup D] [LinearOrder D]. Fix: replace String with Atom throughout IRRSoundness.lean and replace omega with appropriate algebraic lemmas for the generic ordered group context.",
       "artifacts": [
         {
@@ -448,12 +448,19 @@
           "path": "specs/1001_irrSoundness_type_errors/plans/01_fix-irr-type-errors.md",
           "type": "plan",
           "summary": "2-phase plan fixing String->Atom type mismatches and omega->algebraic lemma replacements in IRRSoundness.lean"
+        },
+        {
+          "path": "specs/1001_irrSoundness_type_errors/summaries/02_fix-irr-type-errors-summary.md",
+          "type": "summary",
+          "summary": "Fixed String->Atom type mismatches and replaced omega tactics with Mathlib algebraic lemmas in IRRSoundness.lean"
         }
       ],
       "session_id": "sess_1773944553_5d4988",
       "researched": "2026-03-19T18:14:03Z",
       "planned": "2026-03-19T18:21:18Z",
-      "started": "2026-03-19T18:22:54Z"
+      "started": "2026-03-19T18:22:54Z",
+      "completed": "2026-03-19T18:26:17Z",
+      "completion_summary": "Fixed all build errors in IRRSoundness.lean: 4 String->Atom type fixes and 5 omega->algebraic lemma replacements. Build passes with no sorries or new axioms."
     }
   ],
   "completed_projects": [

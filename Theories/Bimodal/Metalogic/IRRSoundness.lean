@@ -52,7 +52,7 @@ theorem truth_independent_of_valuation_change
     {F : TaskFrame D} {M1 M2 : TaskModel F}
     {Omega : Set (WorldHistory F)}
     {phi : Formula}
-    (h_agree : ∀ (s : F.WorldState) (q : String), q ∈ phi.atoms →
+    (h_agree : ∀ (s : F.WorldState) (q : Atom), q ∈ phi.atoms →
       (M1.valuation s q ↔ M2.valuation s q))
     (tau : WorldHistory F) (t : D) :
     truth_at M1 Omega tau t phi ↔ truth_at M2 Omega tau t phi := by
@@ -125,9 +125,8 @@ noncomputable def prod_frame (F : TaskFrame D) : TaskFrame D where
       have hx_eq : x = 0 := by
         by_contra h
         have : x > 0 := lt_of_le_of_ne hx (Ne.symm h)
-        have : y < 0 := by omega
-        exact absurd this (not_lt.mpr hy)
-      have hy_eq : y = 0 := by omega
+        exact absurd h_sum (ne_of_gt (add_pos_of_pos_of_nonneg this hy))
+      have hy_eq : y = 0 := by simp [hx_eq] at h_sum; exact h_sum
       have htw_tu : tw = tu := h1_time hx_eq
       have htu_tv : tu = tv := h2_time hy_eq
       exact htw_tu.trans htu_tv
@@ -137,14 +136,12 @@ noncomputable def prod_frame (F : TaskFrame D) : TaskFrame D where
       constructor
       · exact (F.converse w d u).mp h_rel
       · intro h_neg
-        have h_zero : d = 0 := by omega
-        exact (h_time h_zero).symm
+        exact (h_time (neg_eq_zero.mp h_neg)).symm
     · intro ⟨h_rel, h_time⟩
       constructor
       · exact (F.converse w d u).mpr h_rel
       · intro h_zero
-        have h_neg : -d = 0 := by omega
-        exact (h_time h_neg).symm
+        exact (h_time (by simp [h_zero] : -d = 0)).symm
 
 /-- Lift a history to the product frame by adding time stamps. -/
 noncomputable def lift_history {F : TaskFrame D} (sigma : WorldHistory F) :
@@ -159,7 +156,7 @@ noncomputable def lift_history {F : TaskFrame D} (sigma : WorldHistory F) :
     · exact sigma.respects_task s t hs ht hst
     · intro h_zero
       -- t - s = 0 means s = t
-      omega
+      exact (sub_eq_zero.mp h_zero).symm
 
 /-- A product-frame history projects to an original-frame history when the first
 components of all states match. -/
@@ -176,7 +173,7 @@ def omega_prod {F : TaskFrame D}
 
 /-- Product model: fresh variable p is true iff time = t0, other atoms from M. -/
 noncomputable def prod_model {F : TaskFrame D}
-    (M : TaskModel F) (p : String) (t0 : D) : TaskModel (prod_frame F) where
+    (M : TaskModel F) (p : Atom) (t0 : D) : TaskModel (prod_frame F) where
   valuation := fun sw q => if q = p then sw.2 = t0 else M.valuation sw.1 q
 
 /-- omega_prod preserves shift-closure. -/
@@ -211,7 +208,7 @@ the original model via the projection relationship.
 /-- Truth correspondence: for phi not mentioning p, truth at prod_model/omega_prod
 equals truth at M/Omega via the projection. -/
 theorem truth_prod_iff {F : TaskFrame D} {M : TaskModel F}
-    {Omega : Set (WorldHistory F)} {p : String} {t0 : D}
+    {Omega : Set (WorldHistory F)} {p : Atom} {t0 : D}
     {phi : Formula} (h_fresh : p ∉ phi.atoms)
     {h_prod : WorldHistory (prod_frame F)} {sigma : WorldHistory F}
     (h_proj : projects_to h_prod sigma) (h_sigma_mem : sigma ∈ Omega)
@@ -281,7 +278,7 @@ a separate semantic question about the task model framework -- see the
 analysis in IRRSoundness.lean comments for the `box(q) → q` counterexample
 showing the general statement requires additional framework assumptions. -/
 theorem irr_sound_dense_at_domain
-    {p : String} {phi : Formula}
+    {p : Atom} {phi : Formula}
     (h_fresh : p ∉ phi.atoms)
     (h_premise : valid_dense
       ((Formula.and (Formula.atom p)
