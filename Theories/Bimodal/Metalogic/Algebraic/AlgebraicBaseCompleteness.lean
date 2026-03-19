@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
+import Bimodal.Metalogic.Bundle.IntFMCSTransfer
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.Soundness
 
@@ -91,6 +92,10 @@ variable {D : Type*} [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
 /--
 The single-family BFMCS construction from an FMCS.
 
+**DEPRECATED**: This construction is not used by the completeness proof. The main theorem
+`algebraic_base_completeness` uses `construct_bfmcs_from_mcs_Int` from IntFMCSTransfer.lean
+instead, which provides a working (with documented sorries) Int-specific construction.
+
 **Note**: This construction is BLOCKED because `modal_backward` requires
 `phi -> Box phi` which is NOT a theorem of TM. Single-family bundles cannot
 satisfy the modal backward condition in general.
@@ -99,6 +104,7 @@ For a proper construction, use the multi-family modal saturation from
 `ModalSaturation.lean`.
 -/
 noncomputable def singleFamilyBFMCS (fam : FMCS D) (h_fam_ne : fam.mcs 0 ≠ ∅) : BFMCS D := by
+  -- DEPRECATED: Not used by completeness proof.
   -- Single-family BFMCS is blocked: modal_backward requires phi -> Box phi
   -- which is not provable in TM. Use modal saturation instead.
   sorry
@@ -113,45 +119,21 @@ The ModalSaturation module provides this construction.
 /--
 Helper: Given an MCS M, construct a temporally coherent BFMCS D containing M at time 0.
 
-This uses modal saturation to ensure modal coherence, and temporal coherent family
-construction to ensure temporal coherence.
+**DEPRECATED**: This generic definition has a sorry. The completeness theorem
+`algebraic_base_completeness` uses `construct_bfmcs_from_mcs_Int` from IntFMCSTransfer.lean
+directly for the D = Int case.
 
-For the CanonicalMCS-indexed construction, F/P coherence is trivial.
-The challenge is translating this to BFMCS D for arbitrary D.
+The challenge for a generic D is translating temporal coherence from CanonicalMCS to D,
+which requires a bijection-like structure (FMCSTransfer). Since CanonicalMCS is uncountable
+and typical D (like Int) are countable, a full bijection is impossible.
 -/
 noncomputable def construct_bfmcs_from_mcs
     (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Σ' (B : BFMCS D) (h_tc : B.temporally_coherent)
        (fam : FMCS D) (hfam : fam ∈ B.families) (t : D),
        M = fam.mcs t := by
-  -- Strategy:
-  -- 1. Build a constant FMCS where mcs(t) = M for all t
-  -- 2. For G/H coherence: G phi in M implies phi in M (by T axiom)
-  -- 3. For F/P coherence: Use the temporal saturation argument
-  --    If F phi in M, then phi in M (by T axiom applied to G(neg phi) -> neg(F phi))
-  --    Actually wait: F phi = neg(G(neg phi)), and we don't have G(neg phi) -> neg(F phi) directly
-  --    We have the dual: F phi = neg(G(neg phi)), so if G(neg phi) in M then F phi not in M
-  --
-  -- Actually for a CONSTANT family (mcs(t) = M for all t):
-  -- - forward_G: G phi in mcs(t) implies phi in mcs(t') for t < t'
-  --   Since mcs(t') = M and G phi in M, need phi in M
-  --   By T axiom: G phi -> phi, so phi in M
-  -- - backward_H: H phi in mcs(t) implies phi in mcs(t') for t' < t
-  --   Since mcs(t') = M and H phi in M, need phi in M
-  --   By T axiom for H: H phi -> phi, so phi in M
-  --
-  -- For F/P coherence in constant family:
-  -- - forward_F: F phi in mcs(t) implies exists s > t with phi in mcs(s)
-  --   mcs(s) = M, so need phi in M
-  --   But F phi in M does NOT imply phi in M (F phi is existential, not universal)
-  --   BLOCKED: Constant family does NOT have forward_F in general!
-  --
-  -- The solution: Use the parametric construction with dovetailing.
-  -- Since we don't have dovetailing for D, we use the alternative path:
-  -- The completeness theorem can be proven using the CanonicalMCS-indexed
-  -- construction directly, without needing BFMCS D.
-  --
-  -- For now, we leave this sorry and take the alternative path in the completeness theorem.
+  -- DEPRECATED: Not used by completeness proof.
+  -- For D = Int, use construct_bfmcs_from_mcs_Int from IntFMCSTransfer.lean directly.
   sorry
 
 /-!
@@ -251,9 +233,9 @@ theorem algebraic_base_completeness (phi : Formula) (h_valid : valid phi) :
   -- neg(phi) is consistent and extends to MCS M
   obtain ⟨M, h_mcs, h_neg_in⟩ := not_provable_neg_extends_mcs phi h_not_prov
   -- Construct BFMCS Int containing M at time 0
-  -- This is blocked by the F/P coherence sorries in IntBFMCS.lean
+  -- Uses IntFMCSTransfer.construct_bfmcs_from_mcs_Int
   obtain ⟨B, h_tc, fam, hfam, t, h_M_eq⟩ :=
-    construct_bfmcs_from_mcs (D := Int) M h_mcs
+    construct_bfmcs_from_mcs_Int M h_mcs
   -- neg(phi) in fam.mcs t
   have h_neg_in_fam : phi.neg ∈ fam.mcs t := h_M_eq ▸ h_neg_in
   -- By representation theorem: phi is false at the canonical model

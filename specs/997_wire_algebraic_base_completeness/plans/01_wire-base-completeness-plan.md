@@ -1,7 +1,7 @@
 # Implementation Plan: Task #997
 
 - **Task**: 997 - Wire Algebraic Base Completeness
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4.5 hours
 - **Dependencies**: Task 995 (FMCS domain transfer - completed)
 - **Research Inputs**: specs/997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md
@@ -47,7 +47,7 @@ The research report identified:
 
 ## Implementation Phases
 
-### Phase 1: Dovetailing Chain Core [NOT STARTED]
+### Phase 1: Dovetailing Chain Core [COMPLETED]
 
 **Goal**: Create the enumeration infrastructure for mapping CanonicalMCS to Int.
 
@@ -71,7 +71,7 @@ The research report identified:
 
 ---
 
-### Phase 2: FMCSTransfer Int Instance [NOT STARTED]
+### Phase 2: FMCSTransfer Int Instance [COMPLETED]
 
 **Goal**: Construct the `FMCSTransfer Int` instance satisfying all six conditions.
 
@@ -96,7 +96,7 @@ The research report identified:
 
 ---
 
-### Phase 3: Wire construct_bfmcs_from_mcs [NOT STARTED]
+### Phase 3: Wire construct_bfmcs_from_mcs [COMPLETED]
 
 **Goal**: Fill the sorry at line 155 using FMCSTransfer infrastructure.
 
@@ -121,7 +121,7 @@ The research report identified:
 
 ---
 
-### Phase 4: Verification and Cleanup [NOT STARTED]
+### Phase 4: Verification and Cleanup [COMPLETED]
 
 **Goal**: Full build verification and documentation updates.
 
