@@ -1,18 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-19T12:00:00Z",
-  "completed_at": "2026-03-19T12:15:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/1001_irrSoundness_type_errors/reports/01_irr-soundness-type-errors.md",
-      "type": "research",
-      "summary": "Complete analysis of String-to-Atom type mismatch and omega-to-algebraic-lemma replacements needed in IRRSoundness.lean"
+      "type": "plan",
+      "path": "specs/1001_irrSoundness_type_errors/plans/01_fix-irr-type-errors.md",
+      "summary": "2-phase plan fixing String->Atom type mismatches and omega->algebraic lemma replacements in IRRSoundness.lean"
     }
   ],
+  "next_steps": "Run /implement 1001 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773943778_5f44ca",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773944358_e76e88",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 2,
+    "estimated_hours": 1.0
   }
 }
