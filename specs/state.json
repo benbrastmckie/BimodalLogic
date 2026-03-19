@@ -169,10 +169,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T18:02:40Z",
+      "last_updated": "2026-03-19T18:07:34Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -266,7 +266,7 @@
           "summary": "Plan v10 Phase 1 blocked: chain witness lemmas need j>0 case proved"
         }
       ],
-      "session_id": "sess_1773942570_45c1de",
+      "session_id": "sess_1773943631_590b1f",
       "researched": "2026-03-19T17:42:05Z",
       "planned": "2026-03-19T17:47:33Z",
       "recommendation": "Direct TimelineQuot truth lemma via DovetailedCoverage bridge. Fill timelineQuot_not_valid_of_neg_consistent without BFMCS. 22h estimated.",
@@ -413,12 +413,20 @@
     {
       "project_number": 1001,
       "project_name": "irrSoundness_type_errors",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T00:00:00Z",
+      "last_updated": "2026-03-19T18:14:03Z",
       "description": "Fix two classes of pre-existing build errors in IRRSoundness.lean that block the IRR case in soundness_dense: (1) Type mismatch: p : String should be p : Atom in prod_model, truth_prod_iff, and irr_sound_dense_at_domain — the Atom type was likely renamed or the import changed. (2) omega tactic failures in prod_frame construction on generic ordered group type D — omega only works on Int/Nat, not abstract [AddCommGroup D] [LinearOrder D]. Fix: replace String with Atom throughout IRRSoundness.lean and replace omega with appropriate algebraic lemmas for the generic ordered group context.",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/1001_irrSoundness_type_errors/reports/01_irr-soundness-type-errors.md",
+          "type": "research",
+          "summary": "Complete analysis of String-to-Atom type mismatch and omega-to-algebraic-lemma replacements needed in IRRSoundness.lean"
+        }
+      ],
+      "session_id": "sess_1773943778_5f44ca",
+      "researched": "2026-03-19T18:14:03Z"
     }
   ],
   "completed_projects": [

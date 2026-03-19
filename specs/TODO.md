@@ -37,8 +37,9 @@ technical_debt:
 ## Tasks
 ### 1001. Fix IRRSoundness.lean pre-existing type errors
 - **Effort**: TBD (estimated 2-3 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [01_irr-soundness-type-errors.md](1001_irrSoundness_type_errors/reports/01_irr-soundness-type-errors.md)
 
 **Description**: Fix two classes of pre-existing build errors in `IRRSoundness.lean` that block the IRR case in `soundness_dense`: (1) Type mismatch: `p : String` should be `p : Atom` in `prod_model`, `truth_prod_iff`, and `irr_sound_dense_at_domain` — the `Atom` type was likely renamed or the import changed. (2) `omega` tactic failures in `prod_frame` construction on generic ordered group type D — `omega` only works on `Int`/`Nat`, not abstract `[AddCommGroup D] [LinearOrder D]`. Fix: replace `String` with `Atom` throughout `IRRSoundness.lean` and replace `omega` with appropriate algebraic lemmas for the generic ordered group context.
 
@@ -138,7 +139,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 14 hours (5 phases)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: lean
 - **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md), [06_team-research.md](specs/988_dense_algebraic_completeness/reports/06_team-research.md), [09_fmcs-transfer-unblock.md](988_dense_algebraic_completeness/reports/09_fmcs-transfer-unblock.md)
 - **Plan**: [10_dovetailed-timelinequot-bridge.md](988_dense_algebraic_completeness/plans/10_dovetailed-timelinequot-bridge.md) (v10: TimelineQuot forward_F bridge)
