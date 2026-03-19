@@ -37,9 +37,10 @@ technical_debt:
 ## Tasks
 ### 1004. Implement dovetailing chain for F/P temporal witnesses
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: None
+- **Research**: [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
 
 **Description**: Implement enriched dovetailing chain construction in IntBFMCS.lean to resolve the 2 sorries: `intFMCS_forward_F` (line 563) and `intFMCS_backward_P` (line 574). The basic `intChainMCS` only takes G-successor and H-predecessor at each step, but cannot guarantee that F/P witnesses from `canonical_forward_F`/`canonical_backward_P` appear in the chain. The fix requires enumerating all (position, formula) pairs with F/P obligations and satisfying them in dovetailing order during chain construction. This ensures every `Fφ` at position `t` has a witness `s > t` in the chain, and every `Pφ` at position `t` has a witness `s < t`. Resolving these sorries completes temporal coherence for the Int BFMCS, which is needed by task 997 (algebraic base completeness) and task 988 (dense algebraic completeness).
 
