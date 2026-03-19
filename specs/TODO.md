@@ -40,7 +40,9 @@ technical_debt:
 - **Language**: lean
 - **Dependencies**: Task #1002
 - **Parent Task**: #988
-- **Research**: [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
+- **Research**:
+  - [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
+  - [02_design-integration-research.md](1003_implement_modal_coherence/reports/02_design-integration-research.md)
 
 **Description**: Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).
 
@@ -112,7 +114,7 @@ technical_debt:
 
 ### 997. Wire algebraic base completeness using FMCS domain transfer
 - **Effort**: TBD (estimated 2-4 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Depends On**: Task 995
 - **Research**: [01_wire-base-completeness.md](997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md)

@@ -26,15 +26,15 @@
     {
       "project_number": 997,
       "project_name": "wire_algebraic_base_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-19T17:05:00Z",
-      "last_updated": "2026-03-19T21:00:59Z",
+      "last_updated": "2026-03-19T21:04:14Z",
       "depends_on": [
         995
       ],
       "description": "Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding CanonicalMCS → Int, fill the 2 sorries in AlgebraicBaseCompleteness.lean (lines 104, 155) to prove valid φ → ⊢ φ for base TM logic. The file already has the right structure (construct_bfmcs_int from CanonicalMCS transfer, then use parametric_algebraic_representation_conditional with D = Int). This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).",
-      "session_id": "sess_1773953881_b8b975",
+      "session_id": "sess_1773954200_f0e934",
       "researched": "2026-03-19T20:56:44Z",
       "artifacts": [
         {
@@ -48,7 +48,8 @@
           "summary": "4-phase implementation plan for wiring FMCSTransfer Int to complete algebraic base completeness theorem"
         }
       ],
-      "planned": "2026-03-19T21:00:59Z"
+      "planned": "2026-03-19T21:00:59Z",
+      "started": "2026-03-19T21:04:14Z"
     },
     {
       "project_number": 996,
@@ -591,14 +592,21 @@
         1002
       ],
       "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T19:22:33Z",
+      "last_updated": "2026-03-19T21:10:36Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/988_dense_algebraic_completeness/reports/16_spawn-analysis.md",
           "summary": "Spawn analysis from parent task 988"
+        },
+        {
+          "path": "specs/1003_implement_modal_coherence/reports/02_design-integration-research.md",
+          "type": "research",
+          "summary": "Design integration research verifying Task 1002 design against existing infrastructure; confirms all components exist, sorry-free path identified"
         }
-      ]
+      ],
+      "session_id": "sess_1773954420_868e8c",
+      "researched": "2026-03-19T21:10:36Z"
     }
   ],
   "completed_projects": [
