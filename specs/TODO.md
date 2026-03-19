@@ -138,15 +138,15 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: 14 hours (5 phases)
-- **Status**: [RESEARCHING]
+- **Effort**: 10-12 hours (Zorn approach)
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md), [06_team-research.md](specs/988_dense_algebraic_completeness/reports/06_team-research.md), [09_fmcs-transfer-unblock.md](988_dense_algebraic_completeness/reports/09_fmcs-transfer-unblock.md)
-- **Plan**: [10_dovetailed-timelinequot-bridge.md](988_dense_algebraic_completeness/plans/10_dovetailed-timelinequot-bridge.md) (v10: TimelineQuot forward_F bridge)
+- **Research**: [13_dense-completeness-synthesis.md](988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md) (synthesis), [12_teammate-a-findings.md](988_dense_algebraic_completeness/reports/12_teammate-a-findings.md), [12_teammate-b-findings.md](988_dense_algebraic_completeness/reports/12_teammate-b-findings.md)
+- **Plan**: [10_dovetailed-timelinequot-bridge.md](988_dense_algebraic_completeness/plans/10_dovetailed-timelinequot-bridge.md) (v10: BLOCKED - TimelineQuot forward_F bridge)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
-- **Summary**: [implementation-summary-20260317.md](specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md), [02_implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/02_implementation-summary.md) (v4 plan blocked), [03_sorry-analysis-summary.md](specs/988_dense_algebraic_completeness/summaries/03_sorry-analysis-summary.md) (v6 plan blocked), [04_architectural-gap-analysis.md](specs/988_dense_algebraic_completeness/summaries/04_architectural-gap-analysis.md) (v9 plan blocked)
+- **Summary**: [05_v10-implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/05_v10-implementation-summary.md) (v10 blocked)
 
-**Status note (2026-03-19)**: Plans v4, v6, and v9 all blocked at Phase 1 due to the same fundamental issue: CanonicalMCS (sorry-free BFMCS) lacks AddCommGroup for TaskFrame D. The correct path is via task 995 (FMCS domain transfer): transfer the sorry-free CanonicalMCS construction to D = Rat via Cantor isomorphism (CanonicalMCS antisymmetrization ≃o ℚ). All temporal coherence components are already proven.
+**Status note (2026-03-19)**: Plans v4-v10 all blocked. Synthesis report 13 identifies two independent blockers: (1) forward_F chain witness termination, (2) modal_backward multi-family requirement. **Recommended approach**: Zorn saturated chain via ChainFMCS infrastructure - builds saturation by construction, avoids TimelineQuot termination gap. Next: create plan v11.
 
 **Description**: Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in `DenseCanonicalTaskFrame Rat` (Rat's density gives the required intermediate witnesses), (3) wiring `dense_representation_conditional` to obtain `valid_dense φ → ⊢_dense φ`. Does not overlap with task 982 (TimelineQuot approach).
 
