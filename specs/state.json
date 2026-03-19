@@ -8,7 +8,7 @@
     {
       "project_number": 1005,
       "project_name": "resolve_flagbfmcs_temporal_truth_lemma",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "description": "Resolve the 2 remaining sorries in FlagBFMCSTruthLemma.lean — mem_of_satisfies_at_all_future and mem_of_satisfies_at_all_past — which are blocked by an architectural gap: F/P witnesses from chainFMCS_forward_F_in_CanonicalMCS may exist outside the current Flag, so the contrapositive argument cannot be completed within same-Flag semantics. Three resolution paths identified: (A) extend closedFlags construction to include temporal witness closure ensuring F/P witnesses land in the same Flag, (B) change the satisfaction relation to quantify temporal operators across all Flags (cross-Flag temporal satisfaction, more aligned with standard bundle semantics), (C) accept partial completeness with modal cases proven and document temporal gaps.",
       "parent_task": 1003,
@@ -16,8 +16,16 @@
         1003
       ],
       "created": "2026-03-19T23:47:43Z",
-      "last_updated": "2026-03-19T23:49:50Z",
-      "session_id": "sess_1773964179_ce8c92"
+      "last_updated": "2026-03-19T23:54:20Z",
+      "session_id": "sess_1773964179_ce8c92",
+      "researched": "2026-03-19T23:54:20Z",
+      "artifacts": [
+        {
+          "path": "specs/1005_resolve_flagbfmcs_temporal_truth_lemma/reports/01_temporal-truth-resolution.md",
+          "type": "research",
+          "summary": "Analysis of temporal truth lemma sorries with recommendation for Path B (Cross-Flag Temporal Satisfaction)"
+        }
+      ]
     },
     {
       "project_number": 999,
