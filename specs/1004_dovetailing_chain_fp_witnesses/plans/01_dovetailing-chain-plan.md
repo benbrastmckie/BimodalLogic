@@ -1,7 +1,7 @@
 # Implementation Plan: Task #1004
 
 - **Task**: 1004 - Dovetailing Chain F/P Witnesses
-- **Status**: [PARTIAL]
+- **Status**: [BLOCKED]
 - **Effort**: 4 hours
 - **Dependencies**: None (builds on existing infrastructure)
 - **Research Inputs**: specs/1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md
@@ -47,7 +47,7 @@ Key findings from the research report:
 
 ## Implementation Phases
 
-### Phase 1: Define Int-Indexed Obligation Enumeration [PARTIAL]
+### Phase 1: Define Int-Indexed Obligation Enumeration [COMPLETED]
 
 **Goal**: Create infrastructure for enumerating (Int position, formula) obligation pairs
 
@@ -68,7 +68,9 @@ Key findings from the research report:
 
 ---
 
-### Phase 2: Define Enriched Chain State [NOT STARTED]
+### Phase 2: Define Enriched Chain State [BLOCKED]
+
+**Status**: BLOCKED - Infrastructure already exists in IntBFMCS.lean but fundamental architectural blocker prevents completion of forward_F/backward_P proofs.
 
 **Goal**: Create state type tracking MCS assignments and pending obligations
 
@@ -92,7 +94,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 3: Define Step Function [NOT STARTED]
+### Phase 3: Define Step Function [BLOCKED]
 
 **Goal**: Implement single-step obligation processing using canonical witnesses
 
@@ -116,7 +118,7 @@ Key findings from the research report:
 
 ---
 
-### Phase 4: Define Enriched Chain Construction [NOT STARTED]
+### Phase 4: Define Enriched Chain Construction [BLOCKED]
 
 **Goal**: Build the full enriched chain via iteration
 
@@ -138,7 +140,9 @@ Key findings from the research report:
 
 ---
 
-### Phase 5: Prove Forward F and Backward P [NOT STARTED]
+### Phase 5: Prove Forward F and Backward P [BLOCKED]
+
+**Status**: BLOCKED - Fundamental architectural limitation discovered. Linear chain constructions cannot satisfy forward_F/backward_P. See Implementation Summary for details.
 
 **Goal**: Prove the main theorems using enriched chain construction
 

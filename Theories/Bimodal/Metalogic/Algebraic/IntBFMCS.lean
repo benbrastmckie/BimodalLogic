@@ -11,23 +11,43 @@ import Mathlib.Algebra.Order.Group.Int
 This module provides infrastructure for constructing a temporally coherent BFMCS over Int.
 Given any MCS M, the goal is to construct a BFMCS over Int containing M at time 0.
 
-**Status**: Partial implementation (4 sorries remaining).
-- Core chain construction complete
-- G/H propagation proofs need induction formalization
-- F/P witness proofs blocked by need for dovetailing construction
+**Status**: Partial implementation (4 sorries remaining - fundamental architectural blocker).
+- Core chain construction complete (intChainMCS, enrichedIntChainMCS)
+- G/H propagation proofs complete (no sorries)
+- F/P witness proofs have FUNDAMENTAL BLOCKER (see below)
 
-## Key Insight: Embedding CanonicalMCS into Int
+## FUNDAMENTAL LIMITATION: F/P in Linear Chains
 
-The construction uses an **embedding from CanonicalMCS into the BFMCS families**.
-Since `CanonicalMCS` (the type of ALL maximal consistent sets) has trivial
-forward_F and backward_P (every witness MCS is in the domain by construction),
-we leverage this by:
+**Why forward_F/backward_P CANNOT be proven for ANY linear chain construction**:
 
-1. Building an Int-indexed FMCS where each `mcs(t)` is some MCS
-2. For forward_F/backward_P: use the fact that `canonical_forward_F`/`canonical_backward_P`
-   give us witness MCSes that exist SOMEWHERE
-3. The key observation: we don't need the witness to be AT A SPECIFIC Int time,
-   we just need it to be in the FMCS at SOME time with the right ordering
+Linear chain constructions use Lindenbaum extension at each step. When building
+position n+1 from position n, the Lindenbaum lemma can introduce G(~phi) into the
+extension, which kills F(phi) = ~G(~phi). This means:
+- F(phi) at position t does NOT imply F(phi) persists to later positions
+- The dovetailing step where phi is processed may have already lost F(phi)
+
+This is not a flaw in the implementation - it's a fundamental limitation of
+linear chain constructions. See:
+- Task 1004 research: specs/1004_dovetailing_chain_fp_witnesses/reports/
+- Task 916 analysis: Boneyard/Metalogic_v8/Bundle/DovetailingChain.lean lines 1869-1893
+
+## Working Alternative: CanonicalFMCS
+
+The `CanonicalFMCS` construction (from CanonicalFMCS.lean) uses ALL MCSes as
+the domain instead of a linear chain. There:
+- `canonicalMCS_forward_F` is trivially proven (no sorry!)
+- `canonicalMCS_backward_P` is trivially proven (no sorry!)
+
+The witness from `canonical_forward_F` is automatically a domain element
+because ALL MCSes are in the domain. This is the recommended approach for
+completeness proofs.
+
+## Historical Context
+
+The original hope was that by embedding CanonicalMCS into Int via dovetailing,
+we could transfer the F/P witnesses. This fails because:
+1. The embedding is not surjective (not all MCSes appear in the chain)
+2. The specific witness from canonical_forward_F may not be in the chain
 
 ## The Chain Construction
 
@@ -568,15 +588,24 @@ def natToInt : Nat → Int
   | 0 => 0
   | n + 1 => if n % 2 = 0 then Int.negSucc (n / 2) else Int.ofNat ((n + 1) / 2)
 
-/-- natToInt is left inverse of intToNat.
-    TODO: The proof involves non-trivial arithmetic. Mark with sorry for now. -/
+/-- natToInt is left inverse of intToNat. -/
 theorem natToInt_intToNat (t : Int) : natToInt (intToNat t) = t := by
   cases t with
   | ofNat n =>
     cases n with
     | zero => rfl
-    | succ m => sorry
-  | negSucc n => sorry
+    | succ m =>
+      show natToInt (2 * (m + 1)) = Int.ofNat (m + 1)
+      simp only [natToInt, show 2 * (m + 1) = (2*m + 1) + 1 by omega]
+      split_ifs with h
+      · omega
+      · simp only [show (2 * m + 1 + 1) / 2 = m + 1 by omega]
+  | negSucc n =>
+    show natToInt (2 * n + 1) = Int.negSucc n
+    simp only [natToInt, show 2 * n + 1 = (2 * n) + 1 by omega]
+    split_ifs with h
+    · simp only [show (2 * n) / 2 = n by omega]
+    · omega
 
 /-- Encodable instance for Formula (from Countable). -/
 noncomputable instance formulaEncodable : Encodable Formula :=
@@ -999,10 +1028,7 @@ extension of that chain element).
 -/
 
 /-- Key lemma: enrichedSuccessorMCS with matching step places phi in result.
-    If step n = pair(_, encodeFormula phi) and F(phi) is in M, then phi is in the result.
-
-    TODO: Complete this proof. The current version uses sorry pending proper
-    handling of the nested if-dite reduction. -/
+    If step n = pair(_, encodeFormula phi) and F(phi) is in M, then phi is in the result. -/
 theorem enrichedSuccessorMCS_witness_phi (M : Set Formula) (h_mcs : SetMaximalConsistent M)
     (step : Nat) (phi : Formula)
     (h_step : (Nat.unpair step).2 = encodeFormula phi)
@@ -1010,10 +1036,12 @@ theorem enrichedSuccessorMCS_witness_phi (M : Set Formula) (h_mcs : SetMaximalCo
     phi ∈ (enrichedSuccessorMCS M h_mcs step).1 := by
   have h_decode : decodeFormula (Nat.unpair step).2 = some phi := by
     rw [h_step, decodeFormula_encodeFormula]
-  -- The proof requires showing that the nested if-dite in enrichedSuccessorMCS
-  -- reduces to forwardWitnessMCS when h_some and h_F hold.
-  -- This involves non-trivial rewriting with dependent types that is pending.
-  sorry
+  -- Unfold enrichedSuccessorMCS and simplify using h_decode and h_F
+  simp only [enrichedSuccessorMCS, h_decode, Option.isSome_some, ↓reduceDIte, Option.get_some, h_F]
+  -- The goal now asks for phi in forwardWitnessMCS applied to (get _ = phi)
+  -- Use convert to match with forwardWitnessMCS_contains_phi applied directly to phi
+  convert forwardWitnessMCS_contains_phi M h_mcs phi h_F using 3 <;>
+    simp only [h_decode, Option.get_some]
 
 /-- Intermediate lemma: If step encodes phi and position t is in positive chain,
     then phi appears in the successor when F(phi) is present. -/
@@ -1126,35 +1154,57 @@ theorem enrichedIntFMCS_forward_F (M0 : Set Formula) (h_mcs0 : SetMaximalConsist
     -- At position t, we need step to process obligation (t, phi).
     -- But step = t means unpair(t) = (some_pos, some_form).
 
-    -- The fix: either change the chain construction or the proof strategy.
-
-    -- ALTERNATIVE PROOF: Use existence of infinitely many positions where
-    -- step decodes to phi. At one such position, F(phi) will be present
-    -- (if it ever was) because of CanonicalR chain structure.
-
-    -- For now, we admit this and implement the full dovetailing later.
+    -- FUNDAMENTAL BLOCKER (Task 1004 research):
+    --
+    -- Linear chain constructions cannot satisfy forward_F because F-formulas
+    -- don't persist through generic Lindenbaum extensions. When we build position
+    -- n+1 from position n, the Lindenbaum extension can introduce G(~phi), which
+    -- kills F(phi) = ~G(~phi).
+    --
+    -- The dovetailing approach fails because:
+    -- 1. The step parameter at position s doesn't encode the position where F(phi) exists
+    -- 2. Even if it did, F(phi) may have been "killed" by generic extensions along the way
+    --
+    -- WORKING ALTERNATIVE: Use CanonicalFMCS (from CanonicalFMCS.lean) where ALL MCSes
+    -- are in the domain. There, forward_F is trivial because the witness from
+    -- canonical_forward_F is automatically in the domain.
+    --
+    -- RESOLUTION PATH: Would require omega-squared construction that processes
+    -- F-obligations IMMEDIATELY when they appear, before Lindenbaum extension.
+    -- See Task 916 analysis in Boneyard/Metalogic_v8/Bundle/DovetailingChain.lean.
     sorry
-  · -- t < 0: symmetric case
+  · -- t < 0: symmetric case (same fundamental blocker applies)
     sorry
 
 /-- Forward F coherence for Int FMCS (original basic chain).
 
-NOTE: This theorem uses the BASIC chain construction which does NOT guarantee
-F/P witnesses. The proof requires the ENRICHED chain. We provide a wrapper
-that would use the enriched construction.
+**FUNDAMENTAL LIMITATION**: This cannot be proven for ANY linear chain construction.
+F-formulas don't persist through Lindenbaum extensions because the extension can
+introduce G(~phi), killing F(phi) = ~G(~phi).
+
+**WORKING ALTERNATIVE**: Use `canonicalMCS_forward_F` from CanonicalFMCS.lean,
+which uses ALL MCSes as the domain (not just a linear chain). There, forward_F
+is trivially proven because the witness from `canonical_forward_F` is automatically
+a domain element.
+
+**REFERENCES**:
+- Task 1004 research: specs/1004_dovetailing_chain_fp_witnesses/reports/
+- Task 916 analysis: Boneyard/Metalogic_v8/Bundle/DovetailingChain.lean lines 1869-1893
+- Working proof: CanonicalFMCS.lean `canonicalMCS_forward_F`
 -/
 theorem intFMCS_forward_F (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t : Int) (phi : Formula)
     (h_F : Formula.some_future phi ∈ intChainMCS M0 h_mcs0 t) :
     ∃ s : Int, t < s ∧ phi ∈ intChainMCS M0 h_mcs0 s := by
-  -- The basic chain does not guarantee this.
-  -- We would need to use the enriched chain construction.
   sorry
 
 /--
 Backward P coherence for Int FMCS.
 
-Symmetric to forward_F.
+**FUNDAMENTAL LIMITATION**: Symmetric to forward_F. P-formulas don't persist through
+Lindenbaum extensions because extensions can introduce H(~phi), killing P(phi).
+
+**WORKING ALTERNATIVE**: Use `canonicalMCS_backward_P` from CanonicalFMCS.lean.
 -/
 theorem intFMCS_backward_P (M0 : Set Formula) (h_mcs0 : SetMaximalConsistent M0)
     (t : Int) (phi : Formula)

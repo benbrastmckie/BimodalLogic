@@ -679,6 +679,11 @@
           "path": "specs/1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for enriched dovetailing chain construction to resolve F/P witness sorries in IntBFMCS.lean"
+        },
+        {
+          "type": "summary",
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/summaries/01_dovetailing-chain-summary.md",
+          "summary": "Implementation summary documenting fundamental architectural limitation in linear chain constructions"
         }
       ],
       "session_id": "sess_1773959385_fc6ed8",
