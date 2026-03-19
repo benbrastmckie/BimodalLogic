@@ -1,16 +1,19 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/994_archive_dead_code_in_staged_construction/reports/01_dead-code-analysis.md",
-      "type": "research",
-      "summary": "Comprehensive analysis revealing both DovetailedTimelineQuot.lean and DovetailedFMCS.lean are orphaned from active completeness chain. Recommends archiving both files to Boneyard rather than surgical removal of individual declarations."
+      "type": "plan",
+      "path": "specs/994_archive_dead_code_in_staged_construction/plans/01_archive-plan.md",
+      "summary": "4-phase implementation plan to archive DovetailedTimelineQuot.lean and DovetailedFMCS.lean to Boneyard with documentation"
     }
   ],
+  "next_steps": "Run /implement 994 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773937270_e0c0a8",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773937574_bcd088",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 1.5
   }
 }
