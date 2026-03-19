@@ -593,7 +593,7 @@
     {
       "project_number": 1003,
       "project_name": "implement_modal_coherence",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "description": "Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).",
       "effort": "6-8 hours",
@@ -602,7 +602,7 @@
         1002
       ],
       "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T21:17:23Z",
+      "last_updated": "2026-03-19T21:28:28Z",
       "artifacts": [
         {
           "type": "research",
@@ -618,6 +618,21 @@
           "path": "specs/1003_implement_modal_coherence/plans/01_modal-coherence-plan.md",
           "type": "plan",
           "summary": "4-phase implementation plan for sorry-free modal coherence in multi-family BFMCS"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/ModalWitnessData.lean",
+          "type": "implementation",
+          "summary": "Modal witness data structure and helpers (sorry-free)"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean",
+          "type": "implementation",
+          "summary": "Documents why singleton saturation fails; provides helper lemmas"
+        },
+        {
+          "path": "specs/1003_implement_modal_coherence/summaries/01_modal-coherence-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting blocker and partial progress"
         }
       ],
       "session_id": "sess_1773955022_49e639",
@@ -628,13 +643,14 @@
     {
       "project_number": 1004,
       "project_name": "dovetailing_chain_fp_witnesses",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-19T21:21:33Z",
-      "last_updated": "2026-03-19T21:21:33Z",
+      "last_updated": "2026-03-19T21:26:08Z",
       "depends_on": [],
       "description": "Implement enriched dovetailing chain construction in IntBFMCS.lean to resolve the 2 sorries: intFMCS_forward_F (line 563) and intFMCS_backward_P (line 574). The basic intChainMCS only takes G-successor and H-predecessor at each step, but cannot guarantee that F/P witnesses from canonical_forward_F/canonical_backward_P appear in the chain. The fix requires enumerating all (position, formula) pairs with F/P obligations and satisfying them in dovetailing order during chain construction. This ensures every Fφ at position t has a witness s > t in the chain, and every Pφ at position t has a witness s < t. Resolving these sorries completes temporal coherence for the Int BFMCS, which is needed by task 997 (algebraic base completeness) and task 988 (dense algebraic completeness).",
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1773955554_7a7dc8"
     }
   ],
   "completed_projects": [

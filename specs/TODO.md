@@ -32,12 +32,12 @@ technical_debt:
 5. **999** → F→FF derivation (small, anytime)
 6. **949** → update Demo.lean (small, anytime)
 7. **992** → STSA representation theorem (after completeness)
-
 8. **1004** -> research (independent)
+
 ## Tasks
 ### 1004. Implement dovetailing chain for F/P temporal witnesses
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: None
 
@@ -47,7 +47,8 @@ technical_debt:
 
 ### 1003. Implement Sorry-Free Multi-Family Modal Coherence
 - **Effort**: 6-8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
+- **Blocker**: Design flaw - singleton BFMCS cannot satisfy modal saturation (see summaries/01_modal-coherence-summary.md)
 - **Language**: lean
 - **Dependencies**: Task #1002
 - **Parent Task**: #988
