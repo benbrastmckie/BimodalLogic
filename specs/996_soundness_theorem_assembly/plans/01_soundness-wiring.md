@@ -44,7 +44,7 @@ Wire the 6 remaining sorries in `Theories/Bimodal/Metalogic/Soundness.lean` (lin
 
 ## Implementation Phases
 
-### Phase 1: Create soundness_dense theorem scaffold [IN PROGRESS]
+### Phase 1: Create soundness_dense theorem scaffold [COMPLETED]
 
 **Goal**: Create the `soundness_dense` theorem structure with frame constraints and wire base axiom cases
 
@@ -68,7 +68,7 @@ Wire the 6 remaining sorries in `Theories/Bimodal/Metalogic/Soundness.lean` (lin
 
 ---
 
-### Phase 2: Wire temporal_duality case in soundness_dense [NOT STARTED]
+### Phase 2: Wire temporal_duality case in soundness_dense [IN PROGRESS]
 
 **Goal**: Complete the temporal_duality case using derivation-indexed proof
 

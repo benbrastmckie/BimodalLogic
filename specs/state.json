@@ -159,10 +159,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T17:42:05Z",
+      "last_updated": "2026-03-19T17:47:33Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -236,11 +236,6 @@
           "summary": "Analysis of density gap: dovetailed construction lacks pair-wise density"
         },
         {
-          "path": "specs/988_dense_algebraic_completeness/plans/09_timelinequot-coverage-hybrid.md",
-          "type": "plan",
-          "summary": "4-phase hybrid plan: TimelineQuot for density, DovetailedCoverage for coverage (16h)"
-        },
-        {
           "path": "specs/988_dense_algebraic_completeness/summaries/04_architectural-gap-analysis.md",
           "type": "summary",
           "summary": "Detailed analysis of why plan v9 TimelineQuot-DovetailedCoverage bridge cannot be implemented - architectural gap between DenseTimeline and DovetailedBuild constructions"
@@ -249,11 +244,16 @@
           "path": "specs/988_dense_algebraic_completeness/reports/09_fmcs-transfer-unblock.md",
           "type": "research",
           "summary": "Analysis of how FMCSTransfer from Task 995 relates to dense algebraic completeness; identifies that direct instantiation for D=Rat is blocked but recommends DovetailedCoverage bridges instead"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/plans/10_dovetailed-timelinequot-bridge.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for dense algebraic completeness via TimelineQuot forward_F connection (v10)"
         }
       ],
-      "session_id": "sess_1773941880_8b3394",
+      "session_id": "sess_1773942202_c120df",
       "researched": "2026-03-19T17:42:05Z",
-      "planned": "2026-03-18T16:01:34Z",
+      "planned": "2026-03-19T17:47:33Z",
       "recommendation": "Direct TimelineQuot truth lemma via DovetailedCoverage bridge. Fill timelineQuot_not_valid_of_neg_consistent without BFMCS. 22h estimated.",
       "started": "2026-03-18T15:45:47Z",
       "partial_progress": {

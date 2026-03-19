@@ -1,7 +1,6 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.SoundnessLemmas
-import Bimodal.Metalogic.IRRSoundness
 
 /-!
 # Soundness - Soundness Theorem for TM Logic
@@ -609,19 +608,18 @@ that the general soundness theorem cannot handle extension axioms without frame 
 /--
 **Soundness for Dense Frames**: Derivability implies semantic consequence on dense frames.
 
-If `Γ ⊢ φ` with a dense-compatible derivation and `τ.domain t`, then `Γ ⊨_dense φ`.
+If `Γ ⊢ φ` with a dense-compatible derivation, then `Γ ⊨_dense φ`.
 
 **Frame Constraints**:
 - `[DenselyOrdered D]`: Required for density axiom (GGφ → Gφ)
 - `[Nontrivial D]`: Required for seriality axioms (provides NoMaxOrder/NoMinOrder)
 
-**Domain Restriction** (`h_dom : τ.domain t`):
-The IRR rule soundness proof (`irr_sound_dense_at_domain`) requires the evaluation time
-to be in the history's domain. This is satisfied in canonical model constructions where
-`τ.domain = Set.univ`.
-
 **Dense Compatibility** (`h_dc : d.isDenseCompatible`):
 Ensures the derivation doesn't use `discreteness_forward` which is invalid on dense frames.
+
+**Note on IRR rule**: The IRR case requires additional domain membership hypothesis
+(`τ.domain t`) for the product frame construction. For now, this case is marked sorry.
+Canonical models use full domains (`Set.univ`) where this is trivially satisfied.
 -/
 theorem soundness_dense (Γ : Context) (φ : Formula)
     (d : DerivationTree Γ φ) (h_dc : d.isDenseCompatible)
@@ -630,7 +628,6 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     (F : TaskFrame D) (M : TaskModel F)
     (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
     (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D)
-    (h_dom : τ.domain t)
     (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) :
     truth_at M Omega τ t φ := by
   induction d generalizing τ t with
@@ -654,7 +651,7 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t
     | density ψ =>
       -- Density axiom: GGψ → Gψ. Valid on dense frames via DenselyOrdered.
-      exact density_valid ψ D _ _ _ _ _ F M Omega h_sc τ h_mem t
+      exact density_valid ψ D F M Omega h_sc τ h_mem t
     | discreteness_forward _ =>
       -- discreteness_forward is NOT dense-compatible, eliminated by h_dc
       exact absurd h_dc id
@@ -676,26 +673,25 @@ theorem soundness_dense (Γ : Context) (φ : Formula)
     exact h_ctx φ' h_in
   | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
     have ⟨h_dc1, h_dc2⟩ := h_dc
-    have h1 := ih1 h_dc1 τ h_mem t h_dom h_ctx
-    have h2 := ih2 h_dc2 τ h_mem t h_dom h_ctx
+    have h1 := ih1 h_dc1 τ h_mem t h_ctx
+    have h2 := ih2 h_dc2 τ h_mem t h_ctx
     simp only [truth_at] at h1
     exact h1 h2
   | necessitation φ' _ ih =>
     simp only [truth_at]
     intro σ h_σ_mem
-    -- For necessitation, we need domain membership at σ
-    -- Since Omega is shift-closed and σ ∈ Omega, we can use τ's domain
-    -- But we need to show σ.domain t. For now, assume canonical models have full domains.
-    sorry -- TODO: requires σ.domain t
+    -- For theorems (empty context), the ih gives truth at any (σ, t)
+    exact ih h_dc σ h_σ_mem t (by simp)
   | temporal_necessitation φ' _ ih =>
     simp only [truth_at]
     intro s _hts
-    sorry -- TODO: requires τ.domain s
+    -- For theorems (empty context), the ih gives truth at any (τ, s)
+    exact ih h_dc τ h_mem s (by simp)
   | temporal_duality φ' d' ih =>
     sorry -- Phase 2: Wire using axiom_swap_valid
   | irr p φ' h_fresh _ ih =>
     sorry -- Phase 3: Wire using irr_sound_dense_at_domain
   | weakening Γ' Δ' φ' _ h_sub ih =>
-    exact ih h_dc τ h_mem t h_dom (fun ψ h_in => h_ctx ψ (h_sub h_in))
+    exact ih h_dc τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 end Bimodal.Metalogic
