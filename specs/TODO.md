@@ -37,7 +37,7 @@ technical_debt:
 ## Tasks
 ### 1004. Implement dovetailing chain for F/P temporal witnesses
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Blocker**: Fundamental architectural limitation - linear chain constructions cannot satisfy forward_F/backward_P (see summary)
 - **Language**: lean4
 - **Dependencies**: None
