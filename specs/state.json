@@ -38,23 +38,18 @@
     {
       "project_number": 996,
       "project_name": "soundness_theorem_assembly",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T19:07:46Z",
+      "last_updated": "2026-03-19T19:12:35Z",
       "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties.",
-      "session_id": "sess_1773946919_c4924e",
+      "session_id": "sess_1773947364_a42c9a",
       "researched": "2026-03-19T19:07:46Z",
       "artifacts": [
         {
           "path": "specs/996_soundness_theorem_assembly/reports/01_soundness-wiring.md",
           "type": "research",
           "summary": "Comprehensive analysis of 6 sorries with wiring strategy, component theorem inventory, and implementation path"
-        },
-        {
-          "path": "specs/996_soundness_theorem_assembly/plans/01_soundness-wiring.md",
-          "type": "plan",
-          "summary": "5-phase plan: scaffold soundness_dense, wire temporal_duality, wire IRR with domain restriction, create soundness_discrete, update documentation"
         },
         {
           "path": "specs/996_soundness_theorem_assembly/summaries/01_soundness-wiring-summary.md",
@@ -65,9 +60,14 @@
           "path": "specs/996_soundness_theorem_assembly/reports/02_irr-wiring-analysis.md",
           "type": "research",
           "summary": "Analysis of IRR case wiring options, recommending restructure to prove valid_dense directly"
+        },
+        {
+          "path": "specs/996_soundness_theorem_assembly/plans/02_irr-wiring-restructure.md",
+          "type": "plan",
+          "summary": "3-phase plan to wire IRR case via soundness_dense_valid theorem restructure"
         }
       ],
-      "planned": "2026-03-19T17:32:50Z",
+      "planned": "2026-03-19T19:12:35Z",
       "started": "2026-03-19T17:38:40Z",
       "dependencies": [
         1000,
