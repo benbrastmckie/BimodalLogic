@@ -423,20 +423,26 @@
     {
       "project_number": 1000,
       "project_name": "temporal_duality_mutual_recursion",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T18:31:12Z",
+      "last_updated": "2026-03-19T18:36:05Z",
       "description": "Implement the mutual recursion needed for the temporal_duality case in soundness_dense. The case requires derivable_locally_valid (⊢ φ → φ valid) and derivable_implies_swap_valid (⊢ φ → φ.swap valid) to be mutually recursive. Lean termination checker cannot infer structural recursion on DerivationTree [] φ because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on DerivationTree.height, or restructure as a single well-founded induction threading both goals simultaneously via a Prod or mutual block with termination_by d.height.",
       "artifacts": [
         {
           "path": "specs/1000_temporal_duality_mutual_recursion/reports/01_mutual-recursion-patterns.md",
           "type": "research",
           "summary": "Comprehensive analysis of mutual recursion patterns for temporal_duality soundness, recommending combined well-founded induction on Prod return type"
+        },
+        {
+          "path": "specs/1000_temporal_duality_mutual_recursion/plans/01_combined-wf-induction.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for combined well-founded induction resolving temporal_duality mutual recursion"
         }
       ],
-      "session_id": "sess_1773944850_1f2cb3",
-      "researched": "2026-03-19T18:31:12Z"
+      "session_id": "sess_1773945207_f6c499",
+      "researched": "2026-03-19T18:31:12Z",
+      "planned": "2026-03-19T18:36:05Z"
     },
     {
       "project_number": 1001,

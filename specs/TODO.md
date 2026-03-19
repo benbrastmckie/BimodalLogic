@@ -50,9 +50,10 @@ technical_debt:
 
 ### 1000. Implement soundness_dense temporal_duality mutual recursion
 - **Effort**: TBD (estimated 3-4 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [01_mutual-recursion-patterns.md](1000_temporal_duality_mutual_recursion/reports/01_mutual-recursion-patterns.md)
+- **Plan**: [01_combined-wf-induction.md](1000_temporal_duality_mutual_recursion/plans/01_combined-wf-induction.md)
 
 **Description**: Implement the mutual recursion needed for the `temporal_duality` case in `soundness_dense`. The case requires `derivable_locally_valid` (`⊢ φ → φ` valid) and `derivable_implies_swap_valid` (`⊢ φ → φ.swap` valid) to be mutually recursive. Lean's termination checker cannot infer structural recursion on `DerivationTree [] φ` because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on `DerivationTree.height`, or restructure as a single well-founded induction threading both goals simultaneously via a `Prod` or `mutual` block with `termination_by d.height`.
 
