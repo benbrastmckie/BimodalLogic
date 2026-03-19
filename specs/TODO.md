@@ -64,7 +64,7 @@ technical_debt:
 ### 999. Derive F(phi) → FF(phi) from density axiom
 - **Effort**: TBD (estimated 2-4 hours)
 - **Status**: [NOT STARTED]
-- **Language**: lean4
+- **Language**: lean
 
 **Description**: Prove the derivation of `F(φ) → FF(φ)` from the density axiom `GGψ → Gψ`. Two files have the same sorry with the same mathematical gap: (1) `derive_F_to_FF` in `StagedConstruction/CantorPrereqs.lean` (line 111) — needs a `DerivationTree` for `F(φ) → FF(φ)`; (2) `density_of_canonicalR` in `Canonical/CanonicalTimeline.lean` (line 183) — needs the same derivation to find an intermediate `CanonicalR` witness. The density axiom is `GGψ → Gψ` (universal form). The existential dual `F(φ) → FF(φ)` follows via contrapositive: `Fφ = ¬G¬φ`, `FFφ = ¬G¬Fφ = ¬GG¬φ`, so `Fφ → FFφ` is `¬G¬φ → ¬GG¬φ`, the contrapositive of `GGψ → Gψ` for `ψ = ¬φ`. The derivation chains through double-negation and temporal K-distribution. Both sorries are marked `TODO (Task 991)`. Fixing them completes the staged construction pipeline for density proofs.
 
@@ -145,11 +145,11 @@ technical_debt:
 ---
 
 ### 988. Dense algebraic completeness
-- **Effort**: 10-12 hours (Zorn approach)
-- **Status**: [RESEARCHED]
+- **Effort**: 8 hours (multi-family BFMCS)
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Research**: [13_dense-completeness-synthesis.md](988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md) (synthesis), [12_teammate-a-findings.md](988_dense_algebraic_completeness/reports/12_teammate-a-findings.md), [12_teammate-b-findings.md](988_dense_algebraic_completeness/reports/12_teammate-b-findings.md)
-- **Plan**: [11_zorn-saturated-chain.md](988_dense_algebraic_completeness/plans/11_zorn-saturated-chain.md) (v11: Zorn saturated chain approach)
+- **Plan**: [12_multi-family-bfmcs-bundle.md](988_dense_algebraic_completeness/plans/12_multi-family-bfmcs-bundle.md) (v12: Multi-family BFMCS bundle)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 - **Summary**: [05_v10-implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/05_v10-implementation-summary.md) (v10 blocked)
 
