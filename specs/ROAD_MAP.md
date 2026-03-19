@@ -311,7 +311,7 @@ This is implemented as `parametric_algebraic_representation_conditional` in `Par
 **Consequences**:
 - `ParametricRepresentation.lean` is the PRIMARY representation theorem
 - `DFromCantor.lean` is AUXILIARY (valid result, not required for completeness)
-- Base completeness (Task 987) uses D = Int via `temporal_coherent_family_exists_CanonicalMCS`
+- Base completeness (Task 997, supersedes Task 987) uses D = Int via FMCS domain transfer (Task 995 complete)
 - Dense completeness (Task 988) uses D = Rat with `[DenselyOrdered D]`
 - Discrete completeness (Task 989) uses D = Int with `[SuccOrder D]`
 - The "D must emerge from syntax" constraint is relaxed for base logic

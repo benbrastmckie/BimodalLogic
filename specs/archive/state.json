@@ -10416,6 +10416,62 @@
       "started": "2026-03-17T21:06:50Z",
       "completed": "2026-03-18T01:44:06Z",
       "completion_summary": "Proved dense completeness via full dovetailing. Created DovetailedCoverage.lean with sorry-free has_future/has_past theorems using density argument (F^i formulas with unbounded encodings). Created DovetailedCompleteness.lean wiring to TimelineQuot-based completeness."
+    },
+    {
+      "project_number": 995,
+      "project_name": "fmcs_domain_transfer_lemma",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-03-19T12:00:00Z",
+      "completion_summary": "Created FMCSTransfer.lean with sorry-free transfer infrastructure for temporal coherence properties (forward_F, backward_P) from CanonicalMCS to arbitrary domains via embedding/retraction pairs."
+    },
+    {
+      "project_number": 996,
+      "project_name": "soundness_theorem_assembly",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-03-19T12:00:00Z",
+      "completion_summary": "Restructured soundness proof by creating soundness_dense_valid theorem that proves valid_dense directly. This enabled wiring the IRR case in soundness_dense using irr_sound_dense_at_domain. The non-domain case remains a documented sorry as anticipated in research (canonical models use full domains where this is vacuous)."
+    },
+    {
+      "project_number": 1000,
+      "project_name": "temporal_duality_mutual_recursion",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-03-19T12:00:00Z",
+      "completion_summary": "Implemented mutual recursion via combined well-founded induction on derivation height. The temporal_duality case in soundness_dense is now complete (no sorry). IRR case remains sorry as expected (separate task)."
+    },
+    {
+      "project_number": 1001,
+      "project_name": "irrSoundness_type_errors",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-03-19T12:00:00Z",
+      "completion_summary": "Fixed all build errors in IRRSoundness.lean: 4 String->Atom type fixes and 5 omega->algebraic lemma replacements. Build passes with no sorries or new axioms."
+    },
+    {
+      "project_number": 1002,
+      "project_name": "design_modal_witness_infrastructure",
+      "status": "completed",
+      "language": "lean",
+      "archived": "2026-03-19T12:00:00Z",
+      "completion_summary": "Created design document specifying Lean structures for modal witness infrastructure. Defined ModalWitnessData structure linking Diamond formulas to witness MCSes, buildWitnessMCS construction via Lindenbaum extension, SaturatedCanonicalBFMCS bundling saturation proof, and proof strategy using existing saturated_modal_backward theorem. Integration guide maps design to implementation files for task 1003."
+    },
+    {
+      "project_number": 987,
+      "project_name": "algebraic_base_completeness",
+      "status": "abandoned",
+      "language": "lean",
+      "archived": "2026-03-19T12:00:00Z",
+      "abandoned_reason": "Dependency task 986 archived with unresolvable sorries. Superseded by task 995 (FMCS domain transfer)."
+    },
+    {
+      "project_number": 868,
+      "project_name": "reinstate_lean_mcp_tools",
+      "status": "abandoned",
+      "language": "meta",
+      "archived": "2026-03-19T12:00:00Z",
+      "abandoned_reason": "Tools already reinstated and working in current .mcp.json configuration. Issue #115 is minor inconvenience, not blocker."
     }
   ]
 }

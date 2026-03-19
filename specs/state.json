@@ -62,85 +62,6 @@
       "started": "2026-03-19T21:04:14Z"
     },
     {
-      "project_number": 996,
-      "project_name": "soundness_theorem_assembly",
-      "status": "completed",
-      "language": "lean",
-      "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T19:26:52Z",
-      "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties.",
-      "session_id": "sess_1773947706_e29c49",
-      "researched": "2026-03-19T19:07:46Z",
-      "artifacts": [
-        {
-          "path": "specs/996_soundness_theorem_assembly/reports/01_soundness-wiring.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of 6 sorries with wiring strategy, component theorem inventory, and implementation path"
-        },
-        {
-          "path": "specs/996_soundness_theorem_assembly/summaries/01_soundness-wiring-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting partial completion and blocking issues"
-        },
-        {
-          "path": "specs/996_soundness_theorem_assembly/reports/02_irr-wiring-analysis.md",
-          "type": "research",
-          "summary": "Analysis of IRR case wiring options, recommending restructure to prove valid_dense directly"
-        },
-        {
-          "path": "specs/996_soundness_theorem_assembly/plans/02_irr-wiring-restructure.md",
-          "type": "plan",
-          "summary": "3-phase plan to wire IRR case via soundness_dense_valid theorem restructure"
-        },
-        {
-          "path": "specs/996_soundness_theorem_assembly/summaries/03_irr-wiring-restructure-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary for IRR wiring restructure"
-        }
-      ],
-      "planned": "2026-03-19T19:12:35Z",
-      "started": "2026-03-19T17:38:40Z",
-      "dependencies": [
-        1000,
-        1001
-      ],
-      "completed": "2026-03-19T19:26:52Z",
-      "completion_summary": "Restructured soundness proof by creating soundness_dense_valid theorem that proves valid_dense directly. This enabled wiring the IRR case in soundness_dense using irr_sound_dense_at_domain. The non-domain case remains a documented sorry as anticipated in research (canonical models use full domains where this is vacuous)."
-    },
-    {
-      "project_number": 995,
-      "project_name": "fmcs_domain_transfer_lemma",
-      "status": "completed",
-      "language": "lean",
-      "priority": "high",
-      "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T17:35:17Z",
-      "description": "Build a general FMCS transfer lemma: given an order-embedding e : CanonicalMCS → D (where D has AddCommGroup + LinearOrder + IsOrderedAddMonoid), transfer temporal coherence from sorry-free CanonicalMCS BFMCS to BFMCS D. Unblocks base (D=Int), dense (D=Rat), and discrete (D=Int+SuccOrder) completeness simultaneously.",
-      "session_id": "sess_1773941070_69f7c4",
-      "researched": "2026-03-19T17:10:07Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/995_fmcs_domain_transfer_lemma/reports/01_fmcs-domain-transfer.md",
-          "summary": "Comprehensive analysis of FMCS domain transfer approaches. Recommends FMCSTransfer structure with embedding/retraction pair to transfer temporal coherence from CanonicalMCS to target domains (Z, Q)."
-        },
-        {
-          "path": "specs/995_fmcs_domain_transfer_lemma/plans/01_fmcs-domain-transfer.md",
-          "type": "plan",
-          "summary": "6-phase implementation plan for FMCS domain transfer lemma. Defines FMCSTransfer structure, transferred FMCS, and proves transfer_forward_F/backward_P without sorries."
-        },
-        {
-          "path": "specs/995_fmcs_domain_transfer_lemma/summaries/01_fmcs-domain-transfer-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting the FMCS transfer approach and usage"
-        }
-      ],
-      "planned": "2026-03-19T17:23:20Z",
-      "started": "2026-03-19T17:24:55Z",
-      "completed": "2026-03-19T17:35:17Z",
-      "completion_summary": "Created FMCSTransfer.lean with sorry-free transfer infrastructure for temporal coherence properties (forward_F, backward_P) from CanonicalMCS to arbitrary domains via embedding/retraction pairs."
-    },
-    {
       "project_number": 993,
       "project_name": "add_stability_operator",
       "status": "not_started",
@@ -165,43 +86,6 @@
           "summary": "Comprehensive STSA design with axiom-to-equation translation, representation theorem architecture, and MF/TF interaction analysis"
         }
       ]
-    },
-    {
-      "project_number": 987,
-      "project_name": "algebraic_base_completeness",
-      "status": "abandoned",
-      "abandoned": "2026-03-19T00:00:00Z",
-      "abandoned_reason": "Dependency task 986 archived with unresolvable sorries. Superseded by task 995 (FMCS domain transfer).",
-      "language": "lean",
-      "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T00:00:00Z",
-      "description": "Wire algebraic base completeness: use the sorry-free BFMCS construction from task 986 as the construct_bfmcs argument to parametric_algebraic_representation_conditional (D = Int), then prove valid φ → ⊢ φ. Resolve any type mismatch between CanonicalWorldState and ParametricCanonicalWorldState. Create AlgebraicBaseCompleteness.lean with the closed completeness theorem.",
-      "artifacts": [
-        {
-          "path": "specs/987_algebraic_base_completeness/reports/research-001.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of algebraic base completeness. Found task 986 has 2 sorries blocking direct path. Recommends semantic equivalence approach or completing task 986 dovetailing."
-        },
-        {
-          "path": "specs/987_algebraic_base_completeness/reports/02_taskframe-semantics.md",
-          "type": "research",
-          "summary": "Focused analysis of TaskFrame semantics: D = CanonicalMCS is WRONG (lacks AddCommGroup), D = Int is correct for discrete time, pure syntax means parametric approach."
-        },
-        {
-          "path": "specs/987_algebraic_base_completeness/plans/01_algebraic-completeness.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for algebraic base completeness using CanonicalMCS sorry-free infrastructure"
-        },
-        {
-          "path": "specs/987_algebraic_base_completeness/summaries/01_implementation-summary.md",
-          "type": "summary",
-          "summary": "Partial implementation - completeness structure created, blocked by task 986 F/P witness construction"
-        }
-      ],
-      "session_id": "sess_1773782512_14e26c",
-      "researched": "2026-03-17T16:44:29Z",
-      "planned": "2026-03-17T21:11:34Z",
-      "started": "2026-03-17T21:23:12Z"
     },
     {
       "project_number": 988,
@@ -422,16 +306,6 @@
       ]
     },
     {
-      "project_number": 868,
-      "project_name": "reinstate_lean_mcp_tools",
-      "status": "abandoned",
-      "abandoned": "2026-03-19T00:00:00Z",
-      "abandoned_reason": "Tools already reinstated and working in current .mcp.json configuration. Issue #115 is minor inconvenience, not blocker.",
-      "language": "meta",
-      "created": "2026-02-11T00:41:47Z",
-      "last_updated": "2026-03-19T00:00:00Z"
-    },
-    {
       "project_number": 619,
       "project_name": "agent_system_architecture_upgrade",
       "status": "researched",
@@ -487,113 +361,9 @@
       ]
     },
     {
-      "project_number": 1000,
-      "project_name": "temporal_duality_mutual_recursion",
-      "status": "completed",
-      "language": "lean",
-      "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T18:51:01Z",
-      "description": "Implement the mutual recursion needed for the temporal_duality case in soundness_dense. The case requires derivable_locally_valid (⊢ φ → φ valid) and derivable_implies_swap_valid (⊢ φ → φ.swap valid) to be mutually recursive. Lean termination checker cannot infer structural recursion on DerivationTree [] φ because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on DerivationTree.height, or restructure as a single well-founded induction threading both goals simultaneously via a Prod or mutual block with termination_by d.height.",
-      "artifacts": [
-        {
-          "path": "specs/1000_temporal_duality_mutual_recursion/reports/01_mutual-recursion-patterns.md",
-          "type": "research",
-          "summary": "Comprehensive analysis of mutual recursion patterns for temporal_duality soundness, recommending combined well-founded induction on Prod return type"
-        },
-        {
-          "path": "specs/1000_temporal_duality_mutual_recursion/plans/01_combined-wf-induction.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for combined well-founded induction resolving temporal_duality mutual recursion"
-        },
-        {
-          "path": "specs/1000_temporal_duality_mutual_recursion/summaries/01_combined-wf-induction-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting the combined theorem approach and verification results"
-        }
-      ],
-      "session_id": "sess_1773945577_0c93c0",
-      "researched": "2026-03-19T18:31:12Z",
-      "planned": "2026-03-19T18:36:05Z",
-      "started": "2026-03-19T18:40:03Z",
-      "completed": "2026-03-19T18:51:01Z",
-      "completion_summary": "Implemented mutual recursion via combined well-founded induction on derivation height. The temporal_duality case in soundness_dense is now complete (no sorry). IRR case remains sorry as expected (separate task)."
-    },
-    {
-      "project_number": 1001,
-      "project_name": "irrSoundness_type_errors",
-      "status": "completed",
-      "language": "lean",
-      "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T18:26:17Z",
-      "description": "Fix two classes of pre-existing build errors in IRRSoundness.lean that block the IRR case in soundness_dense: (1) Type mismatch: p : String should be p : Atom in prod_model, truth_prod_iff, and irr_sound_dense_at_domain — the Atom type was likely renamed or the import changed. (2) omega tactic failures in prod_frame construction on generic ordered group type D — omega only works on Int/Nat, not abstract [AddCommGroup D] [LinearOrder D]. Fix: replace String with Atom throughout IRRSoundness.lean and replace omega with appropriate algebraic lemmas for the generic ordered group context.",
-      "artifacts": [
-        {
-          "path": "specs/1001_irrSoundness_type_errors/reports/01_irr-soundness-type-errors.md",
-          "type": "research",
-          "summary": "Complete analysis of String-to-Atom type mismatch and omega-to-algebraic-lemma replacements needed in IRRSoundness.lean"
-        },
-        {
-          "path": "specs/1001_irrSoundness_type_errors/plans/01_fix-irr-type-errors.md",
-          "type": "plan",
-          "summary": "2-phase plan fixing String->Atom type mismatches and omega->algebraic lemma replacements in IRRSoundness.lean"
-        },
-        {
-          "path": "specs/1001_irrSoundness_type_errors/summaries/02_fix-irr-type-errors-summary.md",
-          "type": "summary",
-          "summary": "Fixed String->Atom type mismatches and replaced omega tactics with Mathlib algebraic lemmas in IRRSoundness.lean"
-        }
-      ],
-      "session_id": "sess_1773944553_5d4988",
-      "researched": "2026-03-19T18:14:03Z",
-      "planned": "2026-03-19T18:21:18Z",
-      "started": "2026-03-19T18:22:54Z",
-      "completed": "2026-03-19T18:26:17Z",
-      "completion_summary": "Fixed all build errors in IRRSoundness.lean: 4 String->Atom type fixes and 5 omega->algebraic lemma replacements. Build passes with no sorries or new axioms."
-    },
-    {
-      "project_number": 1002,
-      "project_name": "design_modal_witness_infrastructure",
-      "status": "completed",
-      "language": "lean",
-      "description": "Research and design the modal witness infrastructure needed for multi-family BFMCS construction. The current blocker in task 988 is that modal_backward cannot be proven for single-family constructions because 'phi in MCS implies Box phi in MCS' is not valid in general modal logic. This task will: (1) Analyze why single-family modal_backward fails mathematically, (2) Design a DiamondWitness structure that connects families across the bundle, (3) Specify ModalWitnessFamily construction from consistent seeds, (4) Document the proof strategy for modal_backward using the contrapositive argument with witness families. Deliverables: Research report with formal analysis, design document with Lean structure sketches, proof strategy with key lemma statements.",
-      "effort": "4-6 hours",
-      "parent_task": 988,
-      "dependencies": [],
-      "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T21:03:47Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/988_dense_algebraic_completeness/reports/16_spawn-analysis.md",
-          "summary": "Spawn analysis from parent task 988"
-        },
-        {
-          "path": "specs/1002_design_modal_witness_infrastructure/reports/02_modal-witness-research.md",
-          "type": "research",
-          "summary": "Complete analysis of modal_backward blocker with design for multi-family BFMCS using existing saturated_modal_backward infrastructure"
-        },
-        {
-          "path": "specs/1002_design_modal_witness_infrastructure/plans/02_revised-modal-witness.md",
-          "type": "plan",
-          "summary": "3-phase design plan for saturated BFMCS construction using existing modal witness infrastructure"
-        },
-        {
-          "path": "specs/1002_design_modal_witness_infrastructure/reports/03_design-document.md",
-          "type": "design",
-          "summary": "Design document specifying Lean structures for saturated BFMCS construction including ModalWitnessData, buildWitnessMCS, SaturatedCanonicalBFMCS, and integration guide for task 1003"
-        }
-      ],
-      "session_id": "sess_1773953787_172dc3",
-      "planned": "2026-03-19T19:47:19Z",
-      "researched": "2026-03-19T19:32:21Z",
-      "started": "2026-03-19T20:56:59Z",
-      "completed": "2026-03-19T21:03:47Z",
-      "completion_summary": "Created design document specifying Lean structures for modal witness infrastructure. Defined ModalWitnessData structure linking Diamond formulas to witness MCSes, buildWitnessMCS construction via Lindenbaum extension, SaturatedCanonicalBFMCS bundling saturation proof, and proof strategy using existing saturated_modal_backward theorem. Integration guide maps design to implementation files for task 1003."
-    },
-    {
       "project_number": 1003,
       "project_name": "implement_modal_coherence",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "description": "Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).",
       "effort": "6-8 hours",
@@ -602,7 +372,7 @@
         1002
       ],
       "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T23:11:45Z",
+      "last_updated": "2026-03-19T23:14:08Z",
       "artifacts": [
         {
           "type": "research",
@@ -660,7 +430,7 @@
           "summary": "5-phase FlagBFMCS implementation plan (v3: correct architecture)"
         }
       ],
-      "session_id": "sess_1773961633_31172d",
+      "session_id": "sess_1773962016_603893",
       "researched": "2026-03-19T23:02:19Z",
       "planned": "2026-03-19T23:11:45Z",
       "started": "2026-03-19T21:17:23Z"
