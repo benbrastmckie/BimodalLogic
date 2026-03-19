@@ -8,10 +8,19 @@
     {
       "project_number": 994,
       "project_name": "archive_dead_code_in_staged_construction",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-19T16:17:59Z",
-      "last_updated": "2026-03-19T16:17:59Z"
+      "last_updated": "2026-03-19T16:25:19Z",
+      "session_id": "sess_1773937270_e0c0a8",
+      "researched": "2026-03-19T16:25:19Z",
+      "artifacts": [
+        {
+          "path": "specs/994_archive_dead_code_in_staged_construction/reports/01_dead-code-analysis.md",
+          "type": "research",
+          "summary": "Comprehensive analysis revealing both DovetailedTimelineQuot.lean and DovetailedFMCS.lean are orphaned from active completeness chain. Recommends archiving both files to Boneyard rather than surgical removal of individual declarations."
+        }
+      ]
     },
     {
       "project_number": 993,

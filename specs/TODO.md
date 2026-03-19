@@ -26,8 +26,9 @@ technical_debt:
 ## Tasks
 ### 994. Archive dead code in StagedConstruction while preserving important elements, refactoring as necessary
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
+- **Research**: [01_dead-code-analysis.md](994_archive_dead_code_in_staged_construction/reports/01_dead-code-analysis.md)
 
 **Description**: Archive dead code in the StagedConstruction module while preserving important elements, refactoring as necessary. Key context: `forward_F_chain_witness`, `backward_P_chain_witness`, `forward_F_witness_in_timeline`, `backward_P_witness_in_timeline`, and `dovetailedTimelineQuotFMCS_forward_F/backward_P` in DovetailedTimelineQuot.lean are currently dead code (not used by any downstream file). Identify which elements have future value vs. which can be cleanly removed or moved to Boneyard, and refactor the file accordingly.
 
