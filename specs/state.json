@@ -38,13 +38,13 @@
     {
       "project_number": 996,
       "project_name": "soundness_theorem_assembly",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T00:00:00Z",
+      "last_updated": "2026-03-19T19:07:46Z",
       "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties.",
-      "session_id": "sess_1773941900_433cc3",
-      "researched": "2026-03-19T17:27:38Z",
+      "session_id": "sess_1773946919_c4924e",
+      "researched": "2026-03-19T19:07:46Z",
       "artifacts": [
         {
           "path": "specs/996_soundness_theorem_assembly/reports/01_soundness-wiring.md",
@@ -60,6 +60,11 @@
           "path": "specs/996_soundness_theorem_assembly/summaries/01_soundness-wiring-summary.md",
           "type": "summary",
           "summary": "Implementation summary documenting partial completion and blocking issues"
+        },
+        {
+          "path": "specs/996_soundness_theorem_assembly/reports/02_irr-wiring-analysis.md",
+          "type": "research",
+          "summary": "Analysis of IRR case wiring options, recommending restructure to prove valid_dense directly"
         }
       ],
       "planned": "2026-03-19T17:32:50Z",
@@ -67,8 +72,7 @@
       "dependencies": [
         1000,
         1001
-      ],
-      "blocked_on": "Task 1000 (temporal_duality mutual recursion), Task 1001 (IRRSoundness type errors)"
+      ]
     },
     {
       "project_number": 995,
@@ -169,10 +173,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T19:00:50Z",
+      "last_updated": "2026-03-19T19:05:21Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -306,7 +310,7 @@
           "summary": "4-phase implementation plan for dense algebraic completeness via multi-family BFMCS bundle approach"
         }
       ],
-      "session_id": "sess_1773946680_d4431d",
+      "session_id": "sess_1773947096_688bbe",
       "researched": "2026-03-19T18:55:50Z",
       "planned": "2026-03-19T19:00:50Z",
       "recommendation": "Zorn saturated chain approach: use ChainFMCS infrastructure + Zorn to build saturated Flag containing forward_F witnesses by construction. Avoids TimelineQuot termination gap. Est. 10-12h.",

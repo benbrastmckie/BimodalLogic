@@ -1,53 +1,17 @@
 {
-  "status": "partial",
-  "summary": "Created soundness_dense theorem scaffold with frame constraints. Wired all base axiom cases and most rule cases. Blocked on temporal_duality (mutual recursion termination) and IRR (pre-existing IRRSoundness errors). 2 sorries remain in soundness_dense, original 6 sorries in soundness unchanged.",
+  "status": "researched",
   "artifacts": [
     {
-      "path": "specs/996_soundness_theorem_assembly/summaries/01_soundness-wiring-summary.md",
-      "type": "summary",
-      "summary": "Implementation summary documenting partial completion and blocking issues"
-    },
-    {
-      "path": "Theories/Bimodal/ProofSystem/Derivation.lean",
-      "type": "implementation",
-      "summary": "Added isDenseCompatible and isDiscreteCompatible predicates to DerivationTree"
-    },
-    {
-      "path": "Theories/Bimodal/Metalogic/Soundness.lean",
-      "type": "implementation",
-      "summary": "Added soundness_dense theorem with 2 remaining sorries"
+      "path": "specs/996_soundness_theorem_assembly/reports/02_irr-wiring-analysis.md",
+      "type": "research",
+      "summary": "Analysis of IRR case wiring options, recommending restructure to prove valid_dense directly"
     }
   ],
-  "requires_user_review": true,
-  "review_reason": "2 sorries remain in soundness_dense theorem (temporal_duality, irr). Blocking issues: (1) temporal_duality requires mutual recursion with termination proof, (2) IRR case blocked by pre-existing IRRSoundness.lean build errors.",
-  "partial_progress": {
-    "stage": "implementation",
-    "details": "Phase 1 completed. Phase 2-5 blocked.",
-    "completed_items": [
-      "Added isDenseCompatible predicate to DerivationTree",
-      "Added isDiscreteCompatible predicate to DerivationTree",
-      "Created soundness_dense theorem scaffold",
-      "Wired all 16 base axiom cases",
-      "Wired density axiom case",
-      "Wired seriality_future and seriality_past cases",
-      "Wired modus_ponens, necessitation, temporal_necessitation, weakening cases",
-      "Eliminated discreteness_forward as absurd"
-    ],
-    "remaining_items": [
-      "temporal_duality case (requires derivable_implies_swap_valid with mutual recursion)",
-      "IRR case (requires fixing IRRSoundness.lean pre-existing errors)",
-      "soundness_discrete theorem (Phase 4)",
-      "Documentation updates (Phase 5)"
-    ]
-  },
+  "summary": "The IRR case in soundness_dense cannot be directly wired to irr_sound_dense_at_domain due to a scope mismatch: ih provides model-specific validity while the theorem requires universal valid_dense. Recommended approach: restructure soundness_dense to prove valid_dense directly (like derivable_valid_and_swap_valid pattern), enabling direct application of irr_sound_dense_at_domain. Domain restriction (h_dom) is semantically necessary but satisfied in canonical model applications.",
   "metadata": {
-    "session_id": "sess_1773941900_433cc3",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773946919_c4924e",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "phases_completed": 1,
-    "phases_total": 5,
-    "sorries_in_new_code": 2,
-    "build_status": "success"
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   }
 }
