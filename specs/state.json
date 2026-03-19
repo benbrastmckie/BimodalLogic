@@ -167,7 +167,7 @@
       "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T17:49:56Z",
+      "last_updated": "2026-03-19T18:02:40Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -254,6 +254,11 @@
           "path": "specs/988_dense_algebraic_completeness/plans/10_dovetailed-timelinequot-bridge.md",
           "type": "plan",
           "summary": "5-phase implementation plan for dense algebraic completeness via TimelineQuot forward_F connection (v10)"
+        },
+        {
+          "path": "specs/988_dense_algebraic_completeness/summaries/05_v10-implementation-summary.md",
+          "type": "summary",
+          "summary": "Plan v10 Phase 1 blocked: chain witness lemmas need j>0 case proved"
         }
       ],
       "session_id": "sess_1773942570_45c1de",
@@ -263,8 +268,9 @@
       "started": "2026-03-19T17:49:56Z",
       "partial_progress": {
         "phases_completed": 0,
-        "phases_total": 4,
-        "details": "Plan v9 Phase 1 BLOCKED: Architectural gap between DenseTimeline and DovetailedBuild constructions."
+        "phases_total": 5,
+        "blocking_issue": "forward_F_chain_witness j>0 case needs well-founded recursion proof",
+        "recommendation": "Restore DovetailedTimelineQuot from Boneyard and complete j>0 case"
       }
     },
     {
