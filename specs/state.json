@@ -38,10 +38,10 @@
     {
       "project_number": 996,
       "project_name": "soundness_theorem_assembly",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T17:38:40Z",
+      "last_updated": "2026-03-19T00:00:00Z",
       "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties.",
       "session_id": "sess_1773941900_433cc3",
       "researched": "2026-03-19T17:27:38Z",
@@ -63,7 +63,12 @@
         }
       ],
       "planned": "2026-03-19T17:32:50Z",
-      "started": "2026-03-19T17:38:40Z"
+      "started": "2026-03-19T17:38:40Z",
+      "dependencies": [
+        1000,
+        1001
+      ],
+      "blocked_on": "Task 1000 (temporal_duality mutual recursion), Task 1001 (IRRSoundness type errors)"
     },
     {
       "project_number": 995,
@@ -394,6 +399,26 @@
           "summary": "Comprehensive architecture analysis with Feb 2026 best practices comparison and 7 prioritized upgrade recommendations"
         }
       ]
+    },
+    {
+      "project_number": 1000,
+      "project_name": "temporal_duality_mutual_recursion",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-19T00:00:00Z",
+      "last_updated": "2026-03-19T00:00:00Z",
+      "description": "Implement the mutual recursion needed for the temporal_duality case in soundness_dense. The case requires derivable_locally_valid (⊢ φ → φ valid) and derivable_implies_swap_valid (⊢ φ → φ.swap valid) to be mutually recursive. Lean termination checker cannot infer structural recursion on DerivationTree [] φ because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on DerivationTree.height, or restructure as a single well-founded induction threading both goals simultaneously via a Prod or mutual block with termination_by d.height.",
+      "artifacts": []
+    },
+    {
+      "project_number": 1001,
+      "project_name": "irrSoundness_type_errors",
+      "status": "not_started",
+      "language": "lean",
+      "created": "2026-03-19T00:00:00Z",
+      "last_updated": "2026-03-19T00:00:00Z",
+      "description": "Fix two classes of pre-existing build errors in IRRSoundness.lean that block the IRR case in soundness_dense: (1) Type mismatch: p : String should be p : Atom in prod_model, truth_prod_iff, and irr_sound_dense_at_domain — the Atom type was likely renamed or the import changed. (2) omega tactic failures in prod_frame construction on generic ordered group type D — omega only works on Int/Nat, not abstract [AddCommGroup D] [LinearOrder D]. Fix: replace String with Atom throughout IRRSoundness.lean and replace omega with appropriate algebraic lemmas for the generic ordered group context.",
+      "artifacts": []
     }
   ],
   "completed_projects": [
@@ -408,7 +433,7 @@
       "archived_reason": "abandoned"
     }
   ],
-  "next_project_number": 1000,
+  "next_project_number": 1002,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

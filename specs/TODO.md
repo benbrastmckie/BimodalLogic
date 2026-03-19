@@ -35,6 +35,24 @@ technical_debt:
 8. **992** → STSA representation theorem (after completeness)
 
 ## Tasks
+### 1001. Fix IRRSoundness.lean pre-existing type errors
+- **Effort**: TBD (estimated 2-3 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Fix two classes of pre-existing build errors in `IRRSoundness.lean` that block the IRR case in `soundness_dense`: (1) Type mismatch: `p : String` should be `p : Atom` in `prod_model`, `truth_prod_iff`, and `irr_sound_dense_at_domain` — the `Atom` type was likely renamed or the import changed. (2) `omega` tactic failures in `prod_frame` construction on generic ordered group type D — `omega` only works on `Int`/`Nat`, not abstract `[AddCommGroup D] [LinearOrder D]`. Fix: replace `String` with `Atom` throughout `IRRSoundness.lean` and replace `omega` with appropriate algebraic lemmas for the generic ordered group context.
+
+---
+
+### 1000. Implement soundness_dense temporal_duality mutual recursion
+- **Effort**: TBD (estimated 3-4 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean
+
+**Description**: Implement the mutual recursion needed for the `temporal_duality` case in `soundness_dense`. The case requires `derivable_locally_valid` (`⊢ φ → φ` valid) and `derivable_implies_swap_valid` (`⊢ φ → φ.swap` valid) to be mutually recursive. Lean's termination checker cannot infer structural recursion on `DerivationTree [] φ` because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on `DerivationTree.height`, or restructure as a single well-founded induction threading both goals simultaneously via a `Prod` or `mutual` block with `termination_by d.height`.
+
+---
+
 ### 999. Derive F(phi) → FF(phi) from density axiom
 - **Effort**: TBD (estimated 2-4 hours)
 - **Status**: [NOT STARTED]
@@ -65,7 +83,8 @@ technical_debt:
 
 ### 996. Wire soundness theorem assembly
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
+- **Blocked on**: Task 1000 (temporal_duality mutual recursion), Task 1001 (IRRSoundness type errors)
 - **Language**: lean
 - **Research**: [01_soundness-wiring.md](996_soundness_theorem_assembly/reports/01_soundness-wiring.md)
 - **Plan**: [01_soundness-wiring.md](996_soundness_theorem_assembly/plans/01_soundness-wiring.md)
