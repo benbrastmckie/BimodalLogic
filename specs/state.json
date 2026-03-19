@@ -65,6 +65,11 @@
           "path": "specs/996_soundness_theorem_assembly/plans/02_irr-wiring-restructure.md",
           "type": "plan",
           "summary": "3-phase plan to wire IRR case via soundness_dense_valid theorem restructure"
+        },
+        {
+          "path": "specs/996_soundness_theorem_assembly/summaries/03_irr-wiring-restructure-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for IRR wiring restructure"
         }
       ],
       "planned": "2026-03-19T19:12:35Z",

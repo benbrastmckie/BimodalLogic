@@ -26,13 +26,12 @@ technical_debt:
 ## Recommended Order
 
 1. **995** → plan + implement (unblocks 988, 989, 997)
-2. **996** → soundness wiring (independent, bounded)
-3. **988** → dense completeness (after 995)
-4. **989** → discrete completeness (after 988)
-5. **997** → base completeness (after 995, simplest)
-6. **999** → F→FF derivation (small, anytime)
-7. **949** → update Demo.lean (small, anytime)
-8. **992** → STSA representation theorem (after completeness)
+2. **988** → dense completeness (after 995)
+3. **989** → discrete completeness (after 988)
+4. **997** → base completeness (after 995, simplest)
+5. **999** → F→FF derivation (small, anytime)
+6. **949** → update Demo.lean (small, anytime)
+7. **992** → STSA representation theorem (after completeness)
 
 ## Tasks
 ### 1003. Implement Sorry-Free Multi-Family Modal Coherence
@@ -116,10 +115,12 @@ technical_debt:
 
 ### 996. Wire soundness theorem assembly
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Research**: [01_soundness-wiring.md](996_soundness_theorem_assembly/reports/01_soundness-wiring.md), [02_irr-wiring-analysis.md](996_soundness_theorem_assembly/reports/02_irr-wiring-analysis.md)
 - **Plan**: [02_irr-wiring-restructure.md](996_soundness_theorem_assembly/plans/02_irr-wiring-restructure.md)
+- **Completed**: 2026-03-19
+- **Summary**: [03_irr-wiring-restructure-summary.md](996_soundness_theorem_assembly/summaries/03_irr-wiring-restructure-summary.md)
 
 **Description**: Wire the 6 remaining sorries in `Soundness.lean` (lines 565, 569, 572, 575, 595, 598) using the already-proven component theorems. The sorries cover: (1) density axiom validity — proven in `DenseSoundness.axiom_dense_valid`, (2) discreteness_forward validity — proven in `DiscreteSoundness.axiom_discrete_valid`, (3) seriality_future/past validity — proven in `DiscreteSoundness`, (4) temporal_duality rule — component proof in `SoundnessLemmas.axiom_swap_valid`, (5) IRR rule — needs product frame construction. The main challenge is that the soundness theorem quantifies over ALL D, but the extension axioms are only valid on frames with specific properties (DenselyOrdered, SuccOrder, etc.). Resolution: either restrict the soundness statement to appropriate frame classes, or use the `Axiom.frameClass` classification already defined in `Axioms.lean` (lines 477-497) to dispatch each axiom to its correct frame class.
 
