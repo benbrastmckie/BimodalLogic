@@ -938,6 +938,36 @@ Multi-family bundles are essential for modal completeness without T-axiom. Singl
 
 ---
 
+### Dead End: Singleton Bundle Modal Saturation
+
+**Status**: ABANDONED
+**Tried**: 2026-03-19
+**Related Tasks**: Task 1002 (design), Task 1003 (implementation attempt)
+
+*Rationale*: Attempted to prove the singleton bundle `{canonicalMCSBFMCS}` is modally saturated, thereby deriving `modal_backward` via `saturated_modal_backward`.
+
+**What We Tried**:
+Task 1002 designed a `SaturatedCanonicalBFMCS` based on the claim that `{canonicalMCSBFMCS}` is inherently modally saturated because witness MCSes from `buildWitnessMCS` are automatically `CanonicalMCS` elements (no reachability needed). Task 1003 attempted to implement this design.
+
+**Why It Failed**:
+The `is_modally_saturated` predicate requires: if `Diamond(psi) ∈ fam.mcs t`, then `psi ∈ fam'.mcs t` for some family `fam'` in the bundle. For a singleton bundle where all families share `mcs t = t.world`, this reduces to:
+
+> `Diamond(psi) ∈ t.world → psi ∈ t.world`
+
+This says "possibly psi implies actually psi", which is **false** in S5 modal logic. `Diamond(psi)` means psi holds in some accessible world, not necessarily the current world. The singleton approach conflates "there exists a witness MCS" with "the witness appears at the same time point in the bundle" — the witness MCS exists as a `CanonicalMCS` element but is NOT automatically placed at time `t` in `canonicalMCSBFMCS`.
+
+**Evidence**:
+- [Task 1002 design document](specs/1002_design_modal_witness_infrastructure/reports/03_design-document.md)
+- [Task 1003 summary](specs/1003_implement_modal_coherence/summaries/01_modal-coherence-summary.md)
+- [SaturatedConstruction.lean](Theories/Bimodal/Metalogic/Bundle/SaturatedConstruction.lean) — Documents the failure
+
+**Lesson**:
+Modal saturation requires a **multi-family** bundle where witness families have *different* `mcs` functions mapping time points to different MCS sets. Each witness family must independently satisfy temporal coherence (`forward_G`, `backward_H`). The singleton bundle is a dead end for the same fundamental reason as single-family BFMCS: you cannot prove `Diamond(psi) → psi` without multiple families providing alternative world-assignments at the same time.
+
+**Superseded By**: Requires true multi-family BFMCS with time-varying witness families satisfying independent temporal coherence
+
+---
+
 ### Dead End: Non-Standard Validity Completeness (BFMCS/FMP)
 
 **Status**: SUPERSEDED

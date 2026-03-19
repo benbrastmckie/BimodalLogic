@@ -1,16 +1,19 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md",
-      "summary": "Analysis of IntBFMCS F/P witness sorries with enriched dovetailing chain solution using existing Cantor pairing infrastructure"
+      "type": "plan",
+      "path": "specs/1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md",
+      "summary": "5-phase implementation plan for enriched dovetailing chain construction to resolve F/P witness sorries in IntBFMCS.lean"
     }
   ],
+  "next_steps": "Run /implement 1004 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773955554_7a7dc8",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773955899_0e66ef",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.0
   }
 }
