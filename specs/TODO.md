@@ -1,16 +1,16 @@
 ---
-next_project_number: 997
+next_project_number: 1000
 repository_health:
   overall_score: 92
   production_readiness: improved
   last_assessed: 2026-03-19T00:00:00Z
 task_counts:
-  active: 9
+  active: 12
   completed: 686
   in_progress: 0
-  not_started: 3
+  not_started: 6
   abandoned: 45
-  total: 747
+  total: 750
 technical_debt:
   sorry_count: 16
   sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
@@ -24,6 +24,34 @@ technical_debt:
 # TODO
 
 ## Tasks
+### 999. Derive F(phi) → FF(phi) from density axiom
+- **Effort**: TBD (estimated 2-4 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Prove the derivation of `F(φ) → FF(φ)` from the density axiom `GGψ → Gψ`. Two files have the same sorry with the same mathematical gap: (1) `derive_F_to_FF` in `StagedConstruction/CantorPrereqs.lean` (line 111) — needs a `DerivationTree` for `F(φ) → FF(φ)`; (2) `density_of_canonicalR` in `Canonical/CanonicalTimeline.lean` (line 183) — needs the same derivation to find an intermediate `CanonicalR` witness. The density axiom is `GGψ → Gψ` (universal form). The existential dual `F(φ) → FF(φ)` follows via contrapositive: `Fφ = ¬G¬φ`, `FFφ = ¬G¬Fφ = ¬GG¬φ`, so `Fφ → FFφ` is `¬G¬φ → ¬GG¬φ`, the contrapositive of `GGψ → Gψ` for `ψ = ¬φ`. The derivation chains through double-negation and temporal K-distribution. Both sorries are marked `TODO (Task 991)`. Fixing them completes the staged construction pipeline for density proofs.
+
+---
+
+### 998. Redesign FMP filtration for strict temporal semantics
+- **Effort**: TBD (estimated 4-8 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Redesign the FMP (Finite Model Property) filtration for strict temporal semantics. The 2 sorry'd theorems in `Decidability/FMP/TruthPreservation.lean` — `mcs_all_future_closure` (line 263) and `mcs_all_past_closure` (line 281) — are deprecated because the temporal T-axiom (`Gφ → φ`) is NOT valid under strict semantics. `filtration_all_future_forward` and `filtration_all_past_forward` depend on them. The FMP module is separate from the main decidability pipeline (`decide` is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: `mcs_finite_model_property` in `FMP.lean` does NOT directly use these sorry'd lemmas, so the impact is localized to `filtration_all_future_forward`/`backward`.
+
+---
+
+### 997. Wire algebraic base completeness using FMCS domain transfer
+- **Effort**: TBD (estimated 2-4 hours)
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Depends On**: Task 995
+
+**Description**: Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding `CanonicalMCS → Int`, fill the 2 sorries in `AlgebraicBaseCompleteness.lean` (lines 104, 155) to prove `valid φ → ⊢ φ` for base TM logic. The file already has the right structure: `construct_bfmcs_int` (via CanonicalMCS transfer) feeds `parametric_algebraic_representation_conditional` with `D = Int`. This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).
+
+---
+
 ### 996. Wire soundness theorem assembly
 - **Effort**: TBD (estimated 4-6 hours)
 - **Status**: [NOT STARTED]
