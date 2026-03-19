@@ -1,7 +1,7 @@
 # Implementation Plan: Task #1004
 
 - **Task**: 1004 - Dovetailing Chain F/P Witnesses
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 4 hours
 - **Dependencies**: None (builds on existing infrastructure)
 - **Research Inputs**: specs/1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md
@@ -47,7 +47,7 @@ Key findings from the research report:
 
 ## Implementation Phases
 
-### Phase 1: Define Int-Indexed Obligation Enumeration [NOT STARTED]
+### Phase 1: Define Int-Indexed Obligation Enumeration [PARTIAL]
 
 **Goal**: Create infrastructure for enumerating (Int position, formula) obligation pairs
 

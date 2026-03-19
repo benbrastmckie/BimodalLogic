@@ -37,7 +37,7 @@ technical_debt:
 ## Tasks
 ### 1004. Implement dovetailing chain for F/P temporal witnesses
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [PARTIAL]
 - **Language**: lean4
 - **Dependencies**: None
 - **Research**: [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
