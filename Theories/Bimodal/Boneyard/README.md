@@ -48,6 +48,19 @@ Contains Int-specialized representation theory:
 
 *Why archived*: Publication path uses CanonicalMCS (syntax-only) as D, not Int.
 
+### Task994_DovetailedQuot/
+
+**Archived 2026-03-19** (Task 994)
+
+Contains the dovetailed timeline quotient construction, an alternative approach to completeness:
+
+- **DovetailedTimelineQuot.lean**: Dovetailed timeline quotient with witness chain proofs (65KB)
+- **DovetailedFMCS.lean**: FMCS wrapper for dovetailed construction (13KB)
+
+*Why archived*: Orphaned from completeness chain - main proof uses TimelineQuot path instead. All sorries stem from proving density witnesses exist in the dovetailed timeline union.
+
+*Patterns preserved*: Strong induction on iterated modalities, density-via-encoding-overflow technique.
+
 ## Restoration
 
 To restore any file for exploration:
@@ -75,5 +88,5 @@ All publication-path files are sorry-free with zero custom axioms.
 
 ---
 
-*Last updated: 2026-03-15*
-*Task: 929 (prepare_metalogic_for_publication)*
+*Last updated: 2026-03-19*
+*Task: 994 (archive_dead_code_in_staged_construction)*

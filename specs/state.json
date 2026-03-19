@@ -8,11 +8,11 @@
     {
       "project_number": 994,
       "project_name": "archive_dead_code_in_staged_construction",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-19T16:17:59Z",
-      "last_updated": "2026-03-19T16:28:26Z",
-      "session_id": "sess_1773937574_bcd088",
+      "last_updated": "2026-03-19T16:38:25Z",
+      "session_id": "sess_1773938117_f4a8f5",
       "researched": "2026-03-19T16:25:19Z",
       "artifacts": [
         {
@@ -24,9 +24,17 @@
           "path": "specs/994_archive_dead_code_in_staged_construction/plans/01_archive-plan.md",
           "type": "plan",
           "summary": "4-phase implementation plan to archive DovetailedTimelineQuot.lean and DovetailedFMCS.lean to Boneyard with documentation"
+        },
+        {
+          "path": "specs/994_archive_dead_code_in_staged_construction/summaries/01_archive-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting file moves, documentation created, and verification results"
         }
       ],
-      "planned": "2026-03-19T16:28:26Z"
+      "planned": "2026-03-19T16:28:26Z",
+      "started": "2026-03-19T16:35:35Z",
+      "completed": "2026-03-19T16:38:25Z",
+      "completion_summary": "Archived DovetailedTimelineQuot.lean (65KB) and DovetailedFMCS.lean (13KB) to Boneyard/Task994_DovetailedQuot/ with documentation. Files were orphaned from completeness chain - build verified clean with no import errors."
     },
     {
       "project_number": 993,

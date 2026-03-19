@@ -1,19 +1,34 @@
 {
-  "status": "planned",
+  "status": "implemented",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/994_archive_dead_code_in_staged_construction/plans/01_archive-plan.md",
-      "summary": "4-phase implementation plan to archive DovetailedTimelineQuot.lean and DovetailedFMCS.lean to Boneyard with documentation"
+      "path": "specs/994_archive_dead_code_in_staged_construction/summaries/01_archive-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary documenting file moves, documentation created, and verification results"
+    },
+    {
+      "path": "Theories/Bimodal/Boneyard/Task994_DovetailedQuot/DovetailedTimelineQuot.lean",
+      "type": "implementation",
+      "summary": "Archived dovetailed timeline quotient construction (65KB)"
+    },
+    {
+      "path": "Theories/Bimodal/Boneyard/Task994_DovetailedQuot/DovetailedFMCS.lean",
+      "type": "implementation",
+      "summary": "Archived FMCS wrapper for dovetailed construction (13KB)"
+    },
+    {
+      "path": "Theories/Bimodal/Boneyard/Task994_DovetailedQuot/README.md",
+      "type": "implementation",
+      "summary": "Documentation of archived code purpose, patterns, and restoration notes"
     }
   ],
-  "next_steps": "Run /implement 994 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773937574_bcd088",
-    "agent_type": "planner-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 1.5
+    "session_id": "sess_1773938117_f4a8f5",
+    "agent_type": "lean-implementation-agent",
+    "phases_completed": 4,
+    "phases_total": 4
+  },
+  "completion_data": {
+    "completion_summary": "Archived DovetailedTimelineQuot.lean (65KB) and DovetailedFMCS.lean (13KB) to Boneyard/Task994_DovetailedQuot/ with documentation. Files were orphaned from completeness chain - build verified clean with no import errors."
   }
 }

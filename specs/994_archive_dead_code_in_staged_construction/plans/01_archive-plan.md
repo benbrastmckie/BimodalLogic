@@ -1,7 +1,7 @@
 # Implementation Plan: Task #994
 
 - **Task**: 994 - Archive dead code in StagedConstruction
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 1.5 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/994_archive_dead_code_in_staged_construction/reports/01_dead-code-analysis.md
@@ -44,7 +44,7 @@ Key findings from the dead code analysis:
 
 ## Implementation Phases
 
-### Phase 1: Prepare Boneyard Directory [NOT STARTED]
+### Phase 1: Prepare Boneyard Directory [COMPLETED]
 
 **Goal**: Create archive directory structure following Boneyard conventions.
 
@@ -62,7 +62,7 @@ Key findings from the dead code analysis:
 
 ---
 
-### Phase 2: Move Source Files [NOT STARTED]
+### Phase 2: Move Source Files [COMPLETED]
 
 **Goal**: Move orphaned Lean files to Boneyard while preserving git history.
 
@@ -83,7 +83,7 @@ Key findings from the dead code analysis:
 
 ---
 
-### Phase 3: Create Documentation [NOT STARTED]
+### Phase 3: Create Documentation [COMPLETED]
 
 **Goal**: Document the archived files with context for future reference.
 
@@ -107,7 +107,7 @@ Key findings from the dead code analysis:
 
 ---
 
-### Phase 4: Build Verification [NOT STARTED]
+### Phase 4: Build Verification [COMPLETED]
 
 **Goal**: Confirm the build passes after file removal.
 
