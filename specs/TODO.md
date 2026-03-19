@@ -50,7 +50,7 @@ technical_debt:
 
 ### 1000. Implement soundness_dense temporal_duality mutual recursion
 - **Effort**: TBD (estimated 3-4 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [01_mutual-recursion-patterns.md](1000_temporal_duality_mutual_recursion/reports/01_mutual-recursion-patterns.md)
 - **Plan**: [01_combined-wf-induction.md](1000_temporal_duality_mutual_recursion/plans/01_combined-wf-induction.md)

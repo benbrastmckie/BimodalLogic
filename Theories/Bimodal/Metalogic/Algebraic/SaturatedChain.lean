@@ -355,28 +355,22 @@ theorem canonicalMCS_has_future (M : CanonicalMCS) :
   -- M.world contains F(neg bot) by seriality
   have h_serial : Formula.some_future (Formula.neg Formula.bot) ∈ M.world :=
     SetMaximalConsistent.contains_seriality_future M.world M.is_mcs
-  -- Get witness N with CanonicalR M.world N.world
-  obtain ⟨N, h_le, _h_phi⟩ := canonicalMCS_forward_F M (Formula.neg Formula.bot) h_serial
-  -- h_le : M <= N. We need M < N (strict).
-  -- By irreflexivity, if M <= N and N <= M, then M = N and CanonicalR M M, contradiction.
-  rcases h_le with h_eq | h_R
-  · -- M = N: But then CanonicalR M.world M.world, contradicting irreflexivity
-    -- Actually M = N doesn't give CanonicalR automatically... need to check
-    -- The witness N from canonical_forward_F has CanonicalR M.world N.world
-    -- If M = N, then CanonicalR M.world M.world
-    -- But we need to verify canonical_forward_F actually returns CanonicalR
-    -- Let's look at canonicalMCS_forward_F more carefully
-    sorry -- This case needs more careful analysis
-  · -- CanonicalR M.world N.world: use irreflexivity to show strict
-    refine ⟨N, Or.inr h_R, ?_⟩
-    intro h_NM
-    rcases h_NM with h_eq' | h_R'
-    · -- N = M: then CanonicalR M.world N.world rewrites to CanonicalR M.world M.world
-      rw [h_eq'] at h_R
-      exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_R
-    · -- CanonicalR N.world M.world: then by transitivity CanonicalR M.world M.world
-      have h_MM := canonicalR_transitive M.world N.world M.world M.is_mcs h_R h_R'
-      exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_MM
+  -- Get witness directly from canonical_forward_F (gives CanonicalR without Or wrapper)
+  obtain ⟨W, h_W_mcs, h_R, _h_phi⟩ := canonical_forward_F M.world M.is_mcs (Formula.neg Formula.bot) h_serial
+  -- Construct N from the witness
+  let N : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
+  -- Show M < N using CanonicalR and irreflexivity
+  refine ⟨N, Or.inr h_R, ?_⟩
+  intro h_NM
+  rcases h_NM with h_eq | h_R'
+  · -- N = M: then W = N.world = M.world, so CanonicalR M.world M.world
+    have h_N_world : N.world = W := rfl
+    have h_eq_world : M.world = N.world := congrArg CanonicalMCS.world h_eq.symm
+    rw [h_eq_world, h_N_world] at h_R
+    exact Canonical.canonicalR_irreflexive W h_W_mcs h_R
+  · -- CanonicalR N.world M.world = CanonicalR W M.world
+    have h_MM := canonicalR_transitive M.world W M.world M.is_mcs h_R h_R'
+    exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_MM
 
 /--
 Every CanonicalMCS element has a CanonicalR-predecessor in CanonicalMCS.
@@ -388,17 +382,26 @@ theorem canonicalMCS_has_past (M : CanonicalMCS) :
   -- M.world contains P(neg bot) by seriality
   have h_serial : Formula.some_past (Formula.neg Formula.bot) ∈ M.world :=
     SetMaximalConsistent.contains_seriality_past M.world M.is_mcs
-  -- Get witness N with CanonicalR N.world M.world
-  obtain ⟨N, h_le, _h_phi⟩ := canonicalMCS_backward_P M (Formula.neg Formula.bot) h_serial
-  rcases h_le with h_eq | h_R
-  · sorry -- Same case analysis as above
-  · refine ⟨N, Or.inr h_R, ?_⟩
-    intro h_MN
-    rcases h_MN with h_eq' | h_R'
-    · rw [← h_eq'] at h_R
-      exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_R
-    · have h_NN := canonicalR_transitive N.world M.world N.world N.is_mcs h_R h_R'
-      exact Canonical.canonicalR_irreflexive N.world N.is_mcs h_NN
+  -- Get witness directly from canonical_backward_P (gives CanonicalR_past without Or wrapper)
+  obtain ⟨W, h_W_mcs, h_R_past, _h_phi⟩ := canonical_backward_P M.world M.is_mcs (Formula.neg Formula.bot) h_serial
+  -- Construct N from the witness
+  let N : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
+  -- The h_R_past : CanonicalR_past M.world W = h_content M.world ⊆ W
+  -- We need CanonicalR W M.world for N < M
+  -- Use h_content_subset_implies_g_content_reverse
+  have h_R : CanonicalR W M.world :=
+    h_content_subset_implies_g_content_reverse M.world W M.is_mcs h_W_mcs h_R_past
+  -- Show N < M using CanonicalR and irreflexivity
+  refine ⟨N, Or.inr h_R, ?_⟩
+  intro h_MN
+  rcases h_MN with h_eq | h_R'
+  · -- M = N: then M.world = N.world = W, so CanonicalR W W = CanonicalR M.world M.world
+    have h_eq_world : M.world = W := congrArg CanonicalMCS.world h_eq
+    rw [← h_eq_world] at h_R
+    exact Canonical.canonicalR_irreflexive M.world M.is_mcs h_R
+  · -- CanonicalR M.world N.world = CanonicalR M.world W
+    have h_WW := canonicalR_transitive W M.world W h_W_mcs h_R h_R'
+    exact Canonical.canonicalR_irreflexive W h_W_mcs h_WW
 
 /--
 Between any strictly ordered pair in CanonicalMCS, there exists an intermediate.

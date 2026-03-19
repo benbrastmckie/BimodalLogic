@@ -78,7 +78,7 @@ Integrated from reports/12_teammate-a-findings.md and reports/12_teammate-b-find
 
 ---
 
-### Phase 2: Density and Order Properties [IN PROGRESS]
+### Phase 2: Density and Order Properties [COMPLETED]
 
 **Goal**: Prove saturated flags satisfy DenselyOrdered, NoMinOrder, NoMaxOrder using the DN axiom and seriality.
 
@@ -105,7 +105,7 @@ Integrated from reports/12_teammate-a-findings.md and reports/12_teammate-b-find
 
 ---
 
-### Phase 3: Cantor Isomorphism and BFMCS Construction [NOT STARTED]
+### Phase 3: Cantor Isomorphism and BFMCS Construction [BLOCKED]
 
 **Goal**: Apply Cantor's theorem to saturated flag, build BFMCS over Rat, wire to completeness.
 
