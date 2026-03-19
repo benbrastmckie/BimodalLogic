@@ -54,7 +54,7 @@ Integrated from reports/12_teammate-a-findings.md and reports/12_teammate-b-find
 
 ## Implementation Phases
 
-### Phase 1: Saturated Chain Definition and Zorn Argument [NOT STARTED]
+### Phase 1: Saturated Chain Definition and Zorn Argument [COMPLETED]
 
 **Goal**: Define the saturated chain predicate and prove Zorn gives a maximal saturated flag containing any root MCS.
 
@@ -78,7 +78,7 @@ Integrated from reports/12_teammate-a-findings.md and reports/12_teammate-b-find
 
 ---
 
-### Phase 2: Density and Order Properties [NOT STARTED]
+### Phase 2: Density and Order Properties [IN PROGRESS]
 
 **Goal**: Prove saturated flags satisfy DenselyOrdered, NoMinOrder, NoMaxOrder using the DN axiom and seriality.
 

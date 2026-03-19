@@ -169,10 +169,10 @@
     {
       "project_number": 988,
       "project_name": "dense_algebraic_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
-      "last_updated": "2026-03-19T18:23:17Z",
+      "last_updated": "2026-03-19T18:26:51Z",
       "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
@@ -286,11 +286,11 @@
           "summary": "4-phase Zorn saturated chain implementation plan for dense algebraic completeness"
         }
       ],
-      "session_id": "sess_1773944434_8300d0",
+      "session_id": "sess_1773944791_3909af",
       "researched": "2026-03-19T18:14:50Z",
       "planned": "2026-03-19T18:23:17Z",
       "recommendation": "Zorn saturated chain approach: use ChainFMCS infrastructure + Zorn to build saturated Flag containing forward_F witnesses by construction. Avoids TimelineQuot termination gap. Est. 10-12h.",
-      "started": "2026-03-19T17:49:56Z",
+      "started": "2026-03-19T18:26:51Z",
       "partial_progress": {
         "phases_completed": 0,
         "phases_total": 5,
@@ -423,12 +423,20 @@
     {
       "project_number": 1000,
       "project_name": "temporal_duality_mutual_recursion",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T00:00:00Z",
+      "last_updated": "2026-03-19T18:31:12Z",
       "description": "Implement the mutual recursion needed for the temporal_duality case in soundness_dense. The case requires derivable_locally_valid (⊢ φ → φ valid) and derivable_implies_swap_valid (⊢ φ → φ.swap valid) to be mutually recursive. Lean termination checker cannot infer structural recursion on DerivationTree [] φ because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on DerivationTree.height, or restructure as a single well-founded induction threading both goals simultaneously via a Prod or mutual block with termination_by d.height.",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/1000_temporal_duality_mutual_recursion/reports/01_mutual-recursion-patterns.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of mutual recursion patterns for temporal_duality soundness, recommending combined well-founded induction on Prod return type"
+        }
+      ],
+      "session_id": "sess_1773944850_1f2cb3",
+      "researched": "2026-03-19T18:31:12Z"
     },
     {
       "project_number": 1001,

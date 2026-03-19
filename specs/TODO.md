@@ -50,8 +50,9 @@ technical_debt:
 
 ### 1000. Implement soundness_dense temporal_duality mutual recursion
 - **Effort**: TBD (estimated 3-4 hours)
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean
+- **Research**: [01_mutual-recursion-patterns.md](1000_temporal_duality_mutual_recursion/reports/01_mutual-recursion-patterns.md)
 
 **Description**: Implement the mutual recursion needed for the `temporal_duality` case in `soundness_dense`. The case requires `derivable_locally_valid` (`⊢ φ → φ` valid) and `derivable_implies_swap_valid` (`⊢ φ → φ.swap` valid) to be mutually recursive. Lean's termination checker cannot infer structural recursion on `DerivationTree [] φ` because the formula index is not a variable. Resolution: implement using explicit well-founded recursion on `DerivationTree.height`, or restructure as a single well-founded induction threading both goals simultaneously via a `Prod` or `mutual` block with `termination_by d.height`.
 
@@ -142,7 +143,7 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 10-12 hours (Zorn approach)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [13_dense-completeness-synthesis.md](988_dense_algebraic_completeness/reports/13_dense-completeness-synthesis.md) (synthesis), [12_teammate-a-findings.md](988_dense_algebraic_completeness/reports/12_teammate-a-findings.md), [12_teammate-b-findings.md](988_dense_algebraic_completeness/reports/12_teammate-b-findings.md)
 - **Plan**: [11_zorn-saturated-chain.md](988_dense_algebraic_completeness/plans/11_zorn-saturated-chain.md) (v11: Zorn saturated chain approach)
