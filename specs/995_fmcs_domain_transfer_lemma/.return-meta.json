@@ -1,38 +1,24 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-19T09:00:00Z",
-  "completed_at": "2026-03-19T09:45:00Z",
+  "status": "planned",
   "artifacts": [
     {
       "path": "specs/995_fmcs_domain_transfer_lemma/reports/01_fmcs-domain-transfer.md",
       "type": "research",
-      "summary": "Comprehensive analysis of FMCS domain transfer approaches. Recommends FMCSTransfer structure with embedding/retraction pair to transfer temporal coherence from CanonicalMCS to target domains (Z, Q). Identifies key challenges: Preorder-vs-LinearOrder mismatch, witness inclusion, retraction surjectivity."
+      "summary": "Comprehensive analysis of FMCS domain transfer approaches. Recommends FMCSTransfer structure with embedding/retraction pair to transfer temporal coherence from CanonicalMCS to target domains (Z, Q)."
+    },
+    {
+      "path": "specs/995_fmcs_domain_transfer_lemma/plans/01_fmcs-domain-transfer.md",
+      "type": "plan",
+      "summary": "6-phase implementation plan for FMCS domain transfer lemma. Defines FMCSTransfer structure, transferred FMCS, and proves transfer_forward_F/backward_P without sorries."
     }
   ],
-  "partial_progress": {
-    "stage": "research_completed",
-    "details": "Full analysis of transfer approaches, Mathlib support, and implementation strategy"
-  },
+  "next_steps": "Run /implement 995 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773939954_e417d4",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773940796_770cf3",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "research_findings": {
-    "main_approach": "FMCSTransfer structure with order embedding plus compatible retraction",
-    "key_insight": "CanonicalMCS provides sorry-free temporal coherence; transfer along embeddings rather than proving directly",
-    "challenges": [
-      "CanonicalMCS has Preorder, not LinearOrder - requires chain extraction or quotient",
-      "Retraction must be monotone and compatible with embedding",
-      "Witness inclusion requires embedding to preserve strict order"
-    ],
-    "estimated_effort": "10-15 hours total",
-    "existing_infrastructure": [
-      "CanonicalFMCS.lean - sorry-free forward_F/backward_P on CanonicalMCS",
-      "DurationTransfer.lean - algebraic structure transfer via OrderIso",
-      "IntBFMCS.lean - chain construction (partial, has F/P sorries)",
-      "CanonicalEmbedding.lean - Cantor isomorphism approach (partial, has F/P sorries)"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 12
   }
 }

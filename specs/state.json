@@ -47,21 +47,27 @@
     {
       "project_number": 995,
       "project_name": "fmcs_domain_transfer_lemma",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "priority": "high",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T17:10:07Z",
+      "last_updated": "2026-03-19T17:23:20Z",
       "description": "Build a general FMCS transfer lemma: given an order-embedding e : CanonicalMCS → D (where D has AddCommGroup + LinearOrder + IsOrderedAddMonoid), transfer temporal coherence from sorry-free CanonicalMCS BFMCS to BFMCS D. Unblocks base (D=Int), dense (D=Rat), and discrete (D=Int+SuccOrder) completeness simultaneously.",
-      "session_id": "sess_1773939954_e417d4",
+      "session_id": "sess_1773940796_770cf3",
       "researched": "2026-03-19T17:10:07Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/995_fmcs_domain_transfer_lemma/reports/01_fmcs-domain-transfer.md",
           "summary": "Comprehensive analysis of FMCS domain transfer approaches. Recommends FMCSTransfer structure with embedding/retraction pair to transfer temporal coherence from CanonicalMCS to target domains (Z, Q)."
+        },
+        {
+          "path": "specs/995_fmcs_domain_transfer_lemma/plans/01_fmcs-domain-transfer.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for FMCS domain transfer lemma. Defines FMCSTransfer structure, transferred FMCS, and proves transfer_forward_F/backward_P without sorries."
         }
-      ]
+      ],
+      "planned": "2026-03-19T17:23:20Z"
     },
     {
       "project_number": 993,

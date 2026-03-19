@@ -23,6 +23,17 @@ technical_debt:
 
 # TODO
 
+## Recommended Order
+
+1. **995** → plan + implement (unblocks 988, 989, 997)
+2. **996** → soundness wiring (independent, bounded)
+3. **988** → dense completeness (after 995)
+4. **989** → discrete completeness (after 988)
+5. **997** → base completeness (after 995, simplest)
+6. **999** → F→FF derivation (small, anytime)
+7. **949** → update Demo.lean (small, anytime)
+8. **992** → STSA representation theorem (after completeness)
+
 ## Tasks
 ### 999. Derive F(phi) → FF(phi) from density axiom
 - **Effort**: TBD (estimated 2-4 hours)
@@ -63,10 +74,11 @@ technical_debt:
 
 ### 995. FMCS domain transfer lemma
 - **Effort**: TBD (estimated 8-12 hours)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Priority**: high
 - **Research**: [01_fmcs-domain-transfer.md](995_fmcs_domain_transfer_lemma/reports/01_fmcs-domain-transfer.md)
+- **Plan**: [01_fmcs-domain-transfer.md](995_fmcs_domain_transfer_lemma/plans/01_fmcs-domain-transfer.md)
 
 **Description**: Build a general FMCS transfer lemma: given an order-embedding `e : CanonicalMCS → D` (where D has `AddCommGroup + LinearOrder + IsOrderedAddMonoid`), transfer temporal coherence (forward_F, backward_P) from the sorry-free `CanonicalMCS`-based BFMCS to a `BFMCS D`. This is the single highest-leverage piece of work in the codebase. The CanonicalMCS construction (in `CanonicalFMCS.lean`) is fully proven with zero sorries for forward_F, backward_P, and modal saturation. The only remaining gap is that `CanonicalMCS` lacks `AddCommGroup`, so it cannot serve as D in `TaskFrame`. This transfer lemma bridges that gap and simultaneously unblocks: (1) base completeness (embed into ℤ), (2) dense completeness (embed into ℚ via Cantor), (3) discrete completeness (embed into ℤ with SuccOrder).
 
