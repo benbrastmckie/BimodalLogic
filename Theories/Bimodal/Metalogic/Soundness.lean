@@ -1,6 +1,7 @@
 import Bimodal.ProofSystem.Derivation
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.SoundnessLemmas
+import Bimodal.Metalogic.IRRSoundness
 
 /-!
 # Soundness - Soundness Theorem for TM Logic
@@ -598,5 +599,103 @@ theorem soundness (Γ : Context) (φ : Formula) :
     sorry -- Full proof uses product frame construction
   | weakening Γ' Δ' φ' _ h_sub ih =>
     exact ih τ h_mem t (fun ψ h_in => h_ctx ψ (h_sub h_in))
+
+/-! ## Frame-Class-Restricted Soundness Theorems
+
+These theorems provide soundness for specific frame classes, resolving the limitation
+that the general soundness theorem cannot handle extension axioms without frame constraints.
+-/
+
+/--
+**Soundness for Dense Frames**: Derivability implies semantic consequence on dense frames.
+
+If `Γ ⊢ φ` with a dense-compatible derivation and `τ.domain t`, then `Γ ⊨_dense φ`.
+
+**Frame Constraints**:
+- `[DenselyOrdered D]`: Required for density axiom (GGφ → Gφ)
+- `[Nontrivial D]`: Required for seriality axioms (provides NoMaxOrder/NoMinOrder)
+
+**Domain Restriction** (`h_dom : τ.domain t`):
+The IRR rule soundness proof (`irr_sound_dense_at_domain`) requires the evaluation time
+to be in the history's domain. This is satisfied in canonical model constructions where
+`τ.domain = Set.univ`.
+
+**Dense Compatibility** (`h_dc : d.isDenseCompatible`):
+Ensures the derivation doesn't use `discreteness_forward` which is invalid on dense frames.
+-/
+theorem soundness_dense (Γ : Context) (φ : Formula)
+    (d : DerivationTree Γ φ) (h_dc : d.isDenseCompatible)
+    (D : Type) [AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]
+    [DenselyOrdered D] [Nontrivial D]
+    (F : TaskFrame D) (M : TaskModel F)
+    (Omega : Set (WorldHistory F)) (h_sc : ShiftClosed Omega)
+    (τ : WorldHistory F) (h_mem : τ ∈ Omega) (t : D)
+    (h_dom : τ.domain t)
+    (h_ctx : ∀ ψ ∈ Γ, truth_at M Omega τ t ψ) :
+    truth_at M Omega τ t φ := by
+  induction d generalizing τ t with
+  | «axiom» Γ' φ' h_ax =>
+    cases h_ax with
+    | prop_k φ ψ χ => exact prop_k_valid φ ψ χ D F M Omega h_sc τ h_mem t
+    | prop_s φ ψ => exact prop_s_valid φ ψ D F M Omega h_sc τ h_mem t
+    | modal_t ψ => exact modal_t_valid ψ D F M Omega h_sc τ h_mem t
+    | modal_4 ψ => exact modal_4_valid ψ D F M Omega h_sc τ h_mem t
+    | modal_b ψ => exact modal_b_valid ψ D F M Omega h_sc τ h_mem t
+    | modal_5_collapse ψ => exact modal_5_collapse_valid ψ D F M Omega h_sc τ h_mem t
+    | ex_falso ψ => exact ex_falso_valid ψ D F M Omega h_sc τ h_mem t
+    | peirce φ ψ => exact peirce_valid φ ψ D F M Omega h_sc τ h_mem t
+    | modal_k_dist φ ψ => exact modal_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_k_dist φ ψ => exact temp_k_dist_valid φ ψ D F M Omega h_sc τ h_mem t
+    | temp_4 ψ => exact temp_4_valid ψ D F M Omega h_sc τ h_mem t
+    | temp_a ψ => exact temp_a_valid ψ D F M Omega h_sc τ h_mem t
+    | temp_l ψ => exact temp_l_valid ψ D F M Omega h_sc τ h_mem t
+    | modal_future ψ => exact modal_future_valid ψ D F M Omega h_sc τ h_mem t
+    | temp_future ψ => exact temp_future_valid ψ D F M Omega h_sc τ h_mem t
+    | temp_linearity φ ψ => exact temp_linearity_valid φ ψ D F M Omega h_sc τ h_mem t
+    | density ψ =>
+      -- Density axiom: GGψ → Gψ. Valid on dense frames via DenselyOrdered.
+      exact density_valid ψ D _ _ _ _ _ F M Omega h_sc τ h_mem t
+    | discreteness_forward _ =>
+      -- discreteness_forward is NOT dense-compatible, eliminated by h_dc
+      exact absurd h_dc id
+    | seriality_future ψ =>
+      -- Seriality: Gψ → Fψ. Valid on dense frames via NoMaxOrder (from DenselyOrdered + Nontrivial)
+      simp only [Formula.some_future, Formula.neg, truth_at]
+      intro h_G h_neg_F
+      have h_nomax : NoMaxOrder D := inferInstance
+      obtain ⟨s, hts⟩ := h_nomax.exists_gt t
+      exact h_neg_F s hts (h_G s hts)
+    | seriality_past ψ =>
+      -- Seriality: Hψ → Pψ. Valid on dense frames via NoMinOrder (from DenselyOrdered + Nontrivial)
+      simp only [Formula.some_past, Formula.neg, truth_at]
+      intro h_H h_neg_P
+      have h_nomin : NoMinOrder D := inferInstance
+      obtain ⟨s, hst⟩ := h_nomin.exists_lt t
+      exact h_neg_P s hst (h_H s hst)
+  | assumption Γ' φ' h_in =>
+    exact h_ctx φ' h_in
+  | modus_ponens Γ' φ' ψ' _ _ ih1 ih2 =>
+    have ⟨h_dc1, h_dc2⟩ := h_dc
+    have h1 := ih1 h_dc1 τ h_mem t h_dom h_ctx
+    have h2 := ih2 h_dc2 τ h_mem t h_dom h_ctx
+    simp only [truth_at] at h1
+    exact h1 h2
+  | necessitation φ' _ ih =>
+    simp only [truth_at]
+    intro σ h_σ_mem
+    -- For necessitation, we need domain membership at σ
+    -- Since Omega is shift-closed and σ ∈ Omega, we can use τ's domain
+    -- But we need to show σ.domain t. For now, assume canonical models have full domains.
+    sorry -- TODO: requires σ.domain t
+  | temporal_necessitation φ' _ ih =>
+    simp only [truth_at]
+    intro s _hts
+    sorry -- TODO: requires τ.domain s
+  | temporal_duality φ' d' ih =>
+    sorry -- Phase 2: Wire using axiom_swap_valid
+  | irr p φ' h_fresh _ ih =>
+    sorry -- Phase 3: Wire using irr_sound_dense_at_domain
+  | weakening Γ' Δ' φ' _ h_sub ih =>
+    exact ih h_dc τ h_mem t h_dom (fun ψ h_in => h_ctx ψ (h_sub h_in))
 
 end Bimodal.Metalogic

@@ -65,7 +65,7 @@ technical_debt:
 
 ### 996. Wire soundness theorem assembly
 - **Effort**: TBD (estimated 4-6 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean
 - **Research**: [01_soundness-wiring.md](996_soundness_theorem_assembly/reports/01_soundness-wiring.md)
 - **Plan**: [01_soundness-wiring.md](996_soundness_theorem_assembly/plans/01_soundness-wiring.md)
@@ -119,10 +119,9 @@ technical_debt:
 
 ### 988. Dense algebraic completeness
 - **Effort**: 16 hours (4 phases)
-- **Status**: [BLOCKED]
-- **Blocked on**: Task 995 (FMCS domain transfer lemma)
+- **Status**: [RESEARCHED]
 - **Language**: lean
-- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md), [06_team-research.md](specs/988_dense_algebraic_completeness/reports/06_team-research.md)
+- **Research**: [research-001.md](specs/988_dense_algebraic_completeness/reports/research-001.md), [research-002.md](specs/988_dense_algebraic_completeness/reports/research-002.md), [research-003.md](specs/988_dense_algebraic_completeness/reports/research-003.md), [research-004.md](specs/988_dense_algebraic_completeness/reports/research-004.md), [research-005.md](specs/988_dense_algebraic_completeness/reports/research-005.md), [06_team-research.md](specs/988_dense_algebraic_completeness/reports/06_team-research.md), [09_fmcs-transfer-unblock.md](988_dense_algebraic_completeness/reports/09_fmcs-transfer-unblock.md)
 - **Plan**: [06_representation-theorem-path.md](specs/988_dense_algebraic_completeness/plans/06_representation-theorem-path.md) (v6: Fix sorries, transport, wire)
 - **Handoff**: [phase-1-handoff-20260317.md](specs/988_dense_algebraic_completeness/handoffs/phase-1-handoff-20260317.md)
 - **Summary**: [implementation-summary-20260317.md](specs/988_dense_algebraic_completeness/summaries/implementation-summary-20260317.md), [02_implementation-summary.md](specs/988_dense_algebraic_completeness/summaries/02_implementation-summary.md) (v4 plan blocked), [03_sorry-analysis-summary.md](specs/988_dense_algebraic_completeness/summaries/03_sorry-analysis-summary.md) (v6 plan blocked), [04_architectural-gap-analysis.md](specs/988_dense_algebraic_completeness/summaries/04_architectural-gap-analysis.md) (v9 plan blocked)

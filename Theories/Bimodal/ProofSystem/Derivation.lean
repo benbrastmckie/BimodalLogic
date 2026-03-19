@@ -267,6 +267,47 @@ theorem temporal_duality_height_succ {φ : Formula}
   simp [height]
   omega
 
+/-! ## Frame Class Compatibility Predicates
+
+These predicates characterize which derivations are valid on which frame classes.
+A derivation is dense-compatible if it only uses axioms valid on densely ordered frames
+(i.e., avoids discreteness_forward).
+-/
+
+/--
+A derivation is dense-compatible if it only uses axioms valid on densely ordered frames.
+
+This excludes `discreteness_forward` which requires SuccOrder (a discrete frame property).
+All other axioms including seriality are dense-compatible because DenselyOrdered + Nontrivial
+implies NoMaxOrder/NoMinOrder which suffices for seriality axioms.
+-/
+def isDenseCompatible {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Prop
+  | .axiom _ _ h => h.isDenseCompatible
+  | .assumption _ _ _ => True
+  | .modus_ponens _ _ _ d1 d2 => d1.isDenseCompatible ∧ d2.isDenseCompatible
+  | .necessitation _ d => d.isDenseCompatible
+  | .temporal_necessitation _ d => d.isDenseCompatible
+  | .temporal_duality _ d => d.isDenseCompatible
+  | .irr _ _ _ d => d.isDenseCompatible
+  | .weakening _ _ _ d _ => d.isDenseCompatible
+
+/--
+A derivation is discrete-compatible if it only uses axioms valid on discrete frames.
+
+This excludes `density` which requires DenselyOrdered (a dense frame property).
+All other axioms including seriality are discrete-compatible because SuccOrder/PredOrder
++ Nontrivial provides the NoMaxOrder/NoMinOrder needed for seriality.
+-/
+def isDiscreteCompatible {Γ : Context} {φ : Formula} : DerivationTree Γ φ → Prop
+  | .axiom _ _ h => h.isDiscreteCompatible
+  | .assumption _ _ _ => True
+  | .modus_ponens _ _ _ d1 d2 => d1.isDiscreteCompatible ∧ d2.isDiscreteCompatible
+  | .necessitation _ d => d.isDiscreteCompatible
+  | .temporal_necessitation _ d => d.isDiscreteCompatible
+  | .temporal_duality _ d => d.isDiscreteCompatible
+  | .irr _ _ _ d => d.isDiscreteCompatible
+  | .weakening _ _ _ d _ => d.isDiscreteCompatible
+
 end DerivationTree
 
 /--
