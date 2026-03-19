@@ -48,14 +48,16 @@ technical_debt:
 
 ### 1002. Design Modal Witness Infrastructure for Multi-Family BFMCS
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean
 - **Dependencies**: None
 - **Parent Task**: #988
 - **Research**:
   - [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
   - [02_modal-witness-research.md](1002_design_modal_witness_infrastructure/reports/02_modal-witness-research.md)
-- **Plan**: [01_modal-witness-design.md](1002_design_modal_witness_infrastructure/plans/01_modal-witness-design.md)
+- **Plan**:
+  - [01_modal-witness-design.md](1002_design_modal_witness_infrastructure/plans/01_modal-witness-design.md)
+  - [02_revised-modal-witness.md](1002_design_modal_witness_infrastructure/plans/02_revised-modal-witness.md) (v2: uses existing infrastructure)
 
 **Description**: Research and design the modal witness infrastructure needed for multi-family BFMCS construction. The current blocker in task 988 is that modal_backward cannot be proven for single-family constructions because 'phi in MCS implies Box phi in MCS' is not valid in general modal logic. This task will: (1) Analyze why single-family modal_backward fails mathematically, (2) Design a DiamondWitness structure that connects families across the bundle, (3) Specify ModalWitnessFamily construction from consistent seeds, (4) Document the proof strategy for modal_backward using the contrapositive argument with witness families. Deliverables: Research report with formal analysis, design document with Lean structure sketches, proof strategy with key lemma statements.
 

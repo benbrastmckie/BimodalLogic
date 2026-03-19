@@ -1,10 +1,20 @@
 {
-  "status": "researched",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/1002_design_modal_witness_infrastructure/reports/02_modal-witness-research.md",
-      "summary": "Complete analysis of modal_backward blocker with design for multi-family BFMCS using existing saturated_modal_backward infrastructure"
+      "type": "plan",
+      "path": "specs/1002_design_modal_witness_infrastructure/plans/02_revised-modal-witness.md",
+      "summary": "3-phase design plan for saturated BFMCS construction using existing modal witness infrastructure"
     }
-  ]
+  ],
+  "next_steps": "Run /implement 1002 to execute the plan and create the design document",
+  "metadata": {
+    "session_id": "sess_1773949475_7e042f",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 3,
+    "estimated_hours": 3.0
+  }
 }
