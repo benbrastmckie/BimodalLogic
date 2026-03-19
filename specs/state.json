@@ -698,6 +698,11 @@
           "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/13_density-index-implementation.md",
           "type": "summary",
           "summary": "Partial implementation: discovered mathematical gap in termination argument"
+        },
+        {
+          "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/27_well-founded-recursion-analysis.md",
+          "type": "research",
+          "summary": "Coverage-based approach: prove dovetailed_covers_forward_reachable rather than flawed induction on formula depth"
         }
       ],
       "planned": "2026-03-18T23:22:09Z",

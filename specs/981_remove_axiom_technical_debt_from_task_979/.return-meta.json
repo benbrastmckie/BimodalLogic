@@ -1,29 +1,22 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-18T12:00:00Z",
-  "completed_at": "2026-03-18T14:30:00Z",
+  "status": "researched",
+  "started_at": "2026-03-18T10:00:00Z",
+  "completed_at": "2026-03-18T10:45:00Z",
   "artifacts": [
     {
-      "path": "specs/981_remove_axiom_technical_debt_from_task_979/summaries/13_density-index-implementation.md",
-      "type": "summary",
-      "summary": "Partial implementation of density index approach; discovered mathematical gap in termination argument"
+      "path": "specs/981_remove_axiom_technical_debt_from_task_979/reports/27_well-founded-recursion-analysis.md",
+      "type": "research",
+      "summary": "Identified that forward_F termination requires coverage-based approach proving all CanonicalR-reachable MCSs from root are in dovetailed timeline, rather than flawed induction on formula depth."
     }
   ],
   "partial_progress": {
-    "stage": "phase_1_partial",
-    "details": "Added helper lemmas. The succ j' case requires well-founded recursion on a complex measure that was not fully developed."
+    "stage": "research_complete",
+    "details": "Analyzed three approaches for forward_F termination; recommended abandoning current induction-on-depth in favor of proving dovetailed_covers_forward_reachable theorem"
   },
   "metadata": {
-    "session_id": "sess_1773876363_a46902",
-    "agent_type": "lean-implementation-agent",
+    "session_id": "sess_1773893999_6d58c5",
+    "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "phases_completed": 0,
-    "phases_total": 4,
-    "sorries_before": 3,
-    "sorries_after": 4,
-    "build_status": "success"
-  },
-  "requires_user_review": true,
-  "review_reason": "The research report's claim about 'large step propagation' is not directly provable. The termination argument requires showing that a random walk on formula depths eventually reaches 0, which needs a more sophisticated well-founded recursion."
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
 }
