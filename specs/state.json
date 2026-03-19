@@ -38,22 +38,31 @@
     {
       "project_number": 996,
       "project_name": "soundness_theorem_assembly",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T00:00:00Z",
-      "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties."
+      "last_updated": "2026-03-19T17:27:38Z",
+      "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties.",
+      "session_id": "sess_1773941024_4f4dcb",
+      "researched": "2026-03-19T17:27:38Z",
+      "artifacts": [
+        {
+          "path": "specs/996_soundness_theorem_assembly/reports/01_soundness-wiring.md",
+          "type": "research",
+          "summary": "Comprehensive analysis of 6 sorries with wiring strategy, component theorem inventory, and implementation path"
+        }
+      ]
     },
     {
       "project_number": 995,
       "project_name": "fmcs_domain_transfer_lemma",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean",
       "priority": "high",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T17:23:20Z",
+      "last_updated": "2026-03-19T17:24:55Z",
       "description": "Build a general FMCS transfer lemma: given an order-embedding e : CanonicalMCS → D (where D has AddCommGroup + LinearOrder + IsOrderedAddMonoid), transfer temporal coherence from sorry-free CanonicalMCS BFMCS to BFMCS D. Unblocks base (D=Int), dense (D=Rat), and discrete (D=Int+SuccOrder) completeness simultaneously.",
-      "session_id": "sess_1773940796_770cf3",
+      "session_id": "sess_1773941070_69f7c4",
       "researched": "2026-03-19T17:10:07Z",
       "artifacts": [
         {
@@ -67,7 +76,8 @@
           "summary": "6-phase implementation plan for FMCS domain transfer lemma. Defines FMCSTransfer structure, transferred FMCS, and proves transfer_forward_F/backward_P without sorries."
         }
       ],
-      "planned": "2026-03-19T17:23:20Z"
+      "planned": "2026-03-19T17:23:20Z",
+      "started": "2026-03-19T17:24:55Z"
     },
     {
       "project_number": 993,
