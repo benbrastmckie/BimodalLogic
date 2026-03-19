@@ -1,5 +1,5 @@
 ---
-next_project_number: 1000
+next_project_number: 1006
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -26,15 +26,25 @@ technical_debt:
 ## Recommended Order
 
 1. **1003** → implement (FlagBFMCS modal coherence)
-2. **997** → implement (base completeness, task 995 complete)
-3. **988** → dense completeness (after 1003)
-4. **989** → discrete completeness (after 988)
-5. **999** → F→FF derivation (small, anytime)
-6. **949** → update Demo.lean (small, anytime)
-7. **992** → STSA representation theorem (after completeness)
-8. **1004** → implement (semantic bridge, after 1003)
+2. **1005** -> research (independent)
+3. **997** → implement (base completeness, task 995 complete)
+4. **988** → dense completeness (after 1003)
+5. **989** → discrete completeness (after 988)
+6. **999** → F→FF derivation (small, anytime)
+7. **949** → update Demo.lean (small, anytime)
+8. **992** → STSA representation theorem (after completeness)
+9. **1004** → implement (semantic bridge, after 1003)
 
 ## Tasks
+### 1005. Resolve FlagBFMCS temporal truth lemma sorries
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task #1003
+- **Parent**: Task #1003
+
+**Description**: Resolve the 2 remaining sorries in FlagBFMCSTruthLemma.lean — mem_of_satisfies_at_all_future and mem_of_satisfies_at_all_past — which are blocked by an architectural gap: F/P witnesses from chainFMCS_forward_F_in_CanonicalMCS may exist outside the current Flag, so the contrapositive argument cannot be completed within same-Flag semantics. Three resolution paths: (A) extend closedFlags with temporal witness closure, (B) cross-Flag temporal satisfaction relation, (C) accept partial completeness.
+
 ### 1004. Build semantic bridge from FlagBFMCS to WorldHistory
 - **Effort**: 6-8 hours
 - **Status**: [PLANNED]
