@@ -593,7 +593,7 @@
     {
       "project_number": 1003,
       "project_name": "implement_modal_coherence",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "description": "Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).",
       "effort": "6-8 hours",
@@ -602,7 +602,7 @@
         1002
       ],
       "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-19T23:01:48Z",
+      "last_updated": "2026-03-19T23:11:45Z",
       "artifacts": [
         {
           "type": "research",
@@ -630,11 +630,6 @@
           "summary": "Deep analysis of is_modally_saturated semantics, verification of singleton bundle failure, and multi-family BFMCS path forward"
         },
         {
-          "path": "specs/1003_implement_modal_coherence/plans/02_multi-family-plan.md",
-          "type": "plan",
-          "summary": "6-phase revised implementation plan for multi-family BFMCS modal coherence (10 hours)"
-        },
-        {
           "type": "implementation",
           "path": "Theories/Bimodal/Metalogic/Bundle/WitnessFamilyBundle.lean",
           "summary": "Witness obligation tracking and construction infrastructure (sorry-free)"
@@ -658,20 +653,25 @@
           "type": "research",
           "path": "specs/1003_implement_modal_coherence/reports/04_team-research.md",
           "summary": "Team research (2 agents): FlagBFMCS architecture recommended; proves constant families impossible without temporal T-axioms; identifies closedFlags as correct saturation content"
+        },
+        {
+          "type": "plan",
+          "path": "specs/1003_implement_modal_coherence/plans/03_flagbfmcs-plan.md",
+          "summary": "5-phase FlagBFMCS implementation plan (v3: correct architecture)"
         }
       ],
-      "session_id": "sess_1773960371_e0d0e2",
+      "session_id": "sess_1773961633_31172d",
       "researched": "2026-03-19T23:02:19Z",
-      "planned": "2026-03-19T21:44:50Z",
+      "planned": "2026-03-19T23:11:45Z",
       "started": "2026-03-19T21:17:23Z"
     },
     {
       "project_number": 1004,
       "project_name": "dovetailing_chain_fp_witnesses",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-19T21:21:33Z",
-      "last_updated": "2026-03-19T23:01:05Z",
+      "last_updated": "2026-03-19T23:12:20Z",
       "depends_on": [],
       "description": "Implement enriched dovetailing chain construction in IntBFMCS.lean to resolve the 2 sorries: intFMCS_forward_F (line 563) and intFMCS_backward_P (line 574). The basic intChainMCS only takes G-successor and H-predecessor at each step, but cannot guarantee that F/P witnesses from canonical_forward_F/canonical_backward_P appear in the chain. The fix requires enumerating all (position, formula) pairs with F/P obligations and satisfying them in dovetailing order during chain construction. This ensures every Fφ at position t has a witness s > t in the chain, and every Pφ at position t has a witness s < t. Resolving these sorries completes temporal coherence for the Int BFMCS, which is needed by task 997 (algebraic base completeness) and task 988 (dense algebraic completeness).",
       "artifacts": [
@@ -696,7 +696,7 @@
           "summary": "Team research (2 teammates): confirmed F/P persistence is fundamental limitation, recommended CanonicalFMCS approach"
         }
       ],
-      "session_id": "sess_1773960389_7ada9f",
+      "session_id": "sess_1773961909_41cd34",
       "researched": "2026-03-19T23:01:05Z",
       "planned": "2026-03-19T21:34:56Z",
       "started": "2026-03-19T21:54:24Z",

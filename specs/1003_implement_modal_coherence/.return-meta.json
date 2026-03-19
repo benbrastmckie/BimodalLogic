@@ -1,59 +1,27 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-19T12:00:00Z",
-  "completed_at": "2026-03-19T15:00:00Z",
-  "verification": {
-    "verification_passed": true,
-    "sorry_count": 0,
-    "axiom_count": 0,
-    "build_passed": true,
-    "notes": "All three NEW files are sorry-free. Existing sorries in MultiFamilyBFMCS.lean remain but are documented as mathematically necessary blockers."
-  },
+  "status": "planned",
   "artifacts": [
     {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/WitnessFamilyBundle.lean",
-      "summary": "Witness obligation tracking and construction infrastructure"
-    },
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/ClosedFlagBundle.lean",
-      "summary": "Multi-flag closure construction for modal saturation"
-    },
-    {
-      "type": "implementation",
-      "path": "Theories/Bimodal/Metalogic/Bundle/SaturatedBFMCSConstruction.lean",
-      "summary": "MCS-level saturation and modal forward proof"
-    },
-    {
-      "type": "summary",
-      "path": "specs/1003_implement_modal_coherence/summaries/02_multi-family-summary.md",
-      "summary": "Implementation summary documenting what was achieved and why sorries remain"
+      "type": "plan",
+      "path": "specs/1003_implement_modal_coherence/plans/03_flagbfmcs-plan.md",
+      "summary": "5-phase implementation plan for FlagBFMCS approach to sorry-free modal coherence"
     }
   ],
-  "requires_user_review": true,
-  "review_reason": "The original sorries in MultiFamilyBFMCS.lean (modal_backward) cannot be eliminated with the singleton approach - this is mathematically proven impossible. The task created sorry-free infrastructure for the correct multi-family approach, but full resolution requires architectural changes to BFMCS (heterogeneous domains or families with different mcs functions).",
-  "partial_progress": {
-    "stage": "completed_with_documented_blockers",
-    "phases_completed": ["Phase 1", "Phase 2", "Phase 3", "Phase 4", "Phase 6"],
-    "phases_partial": ["Phase 5"],
-    "details": "Created sorry-free infrastructure (3 new files, ~580 lines). Key theorem: closedFlags_closed_under_witnesses proves MCS-level saturation. MultiFamilyBFMCS sorries documented as mathematically necessary blockers."
-  },
+  "next_steps": "Run /implement 1003 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773959331_94de9b",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 2,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation", "lean-implementation-agent"],
-    "key_theorems_proven": [
-      "buildWitnessRecord_contains_psi",
-      "buildWitnessRecord_preserves_boxcontent",
-      "witness_exists_for_diamond",
-      "witness_preserves_boxcontent",
-      "closedFlags_closed_under_witnesses",
-      "closedFlags_union_modally_saturated",
-      "canonicalMCSBFMCS_modal_forward",
-      "saturated_implies_modal_backward"
+    "session_id": "sess_1773961633_31172d",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 8,
+    "plan_version": 3,
+    "previous_plans_obsolete": [
+      "plans/01_modal-coherence-plan.md",
+      "plans/02_multi-family-plan.md"
     ],
-    "blocker_analysis": "Singleton BFMCS approach is mathematically impossible. Diamond(psi) in t.world does NOT imply psi in t.world. Counterexample: {Diamond(p), neg(p)} is consistent. Multi-family with different mcs functions is required."
+    "key_architectural_change": "FlagBFMCS bundles Flags with heterogeneous domains instead of BFMCS with fixed domain",
+    "research_integrated": "reports/04_team-research.md"
   }
 }
