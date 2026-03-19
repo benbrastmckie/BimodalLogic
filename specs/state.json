@@ -38,20 +38,26 @@
     {
       "project_number": 996,
       "project_name": "soundness_theorem_assembly",
-      "status": "researched",
+      "status": "planned",
       "language": "lean",
       "created": "2026-03-19T00:00:00Z",
-      "last_updated": "2026-03-19T17:27:38Z",
+      "last_updated": "2026-03-19T17:32:50Z",
       "description": "Wire the 6 remaining sorries in Soundness.lean using proven component theorems in DenseSoundness and DiscreteSoundness. Key challenge: soundness quantifies over all D but extension axioms need specific frame properties.",
-      "session_id": "sess_1773941024_4f4dcb",
+      "session_id": "sess_1773941426_649de0",
       "researched": "2026-03-19T17:27:38Z",
       "artifacts": [
         {
           "path": "specs/996_soundness_theorem_assembly/reports/01_soundness-wiring.md",
           "type": "research",
           "summary": "Comprehensive analysis of 6 sorries with wiring strategy, component theorem inventory, and implementation path"
+        },
+        {
+          "path": "specs/996_soundness_theorem_assembly/plans/01_soundness-wiring.md",
+          "type": "plan",
+          "summary": "5-phase plan: scaffold soundness_dense, wire temporal_duality, wire IRR with domain restriction, create soundness_discrete, update documentation"
         }
-      ]
+      ],
+      "planned": "2026-03-19T17:32:50Z"
     },
     {
       "project_number": 995,

@@ -1,17 +1,20 @@
 {
-  "status": "researched",
-  "summary": "Analyzed 6 sorries in Soundness.lean (lines 565, 569, 572, 575, 595, 598). Root cause: soundness theorem quantifies over ALL D without frame constraints needed by extension axioms. Resolution requires frame-class-restricted theorems (soundness_dense, soundness_discrete). All component proofs exist in DenseSoundness, DiscreteSoundness, SoundnessLemmas, and IRRSoundness. Temporal duality needs derivation-indexed proof; IRR limited to domain times.",
+  "status": "planned",
+  "summary": "5-phase implementation plan for wiring 6 sorries in Soundness.lean. Creates soundness_dense and soundness_discrete theorems with appropriate frame constraints using existing component proofs.",
   "artifacts": [
     {
-      "path": "specs/996_soundness_theorem_assembly/reports/01_soundness-wiring.md",
-      "type": "research",
-      "summary": "Comprehensive analysis of 6 sorries with wiring strategy, component theorem inventory, and implementation path"
+      "type": "plan",
+      "path": "specs/996_soundness_theorem_assembly/plans/01_soundness-wiring.md",
+      "summary": "5-phase plan: scaffold soundness_dense, wire temporal_duality, wire IRR with domain restriction, create soundness_discrete, update documentation"
     }
   ],
+  "next_steps": "Run /implement 996 to execute the plan",
   "metadata": {
-    "session_id": "sess_1773941024_4f4dcb",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1773941426_649de0",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 5
   }
 }
