@@ -15,7 +15,7 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T20:08:08Z",
+      "last_updated": "2026-03-20T20:16:41Z",
       "session_id": "sess_1774026376_393879",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
@@ -138,6 +138,11 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md",
           "type": "research",
           "summary": "Rigidity counterexample: x→2x on ℚ proves Aut+(T) approach unsound; recommends Cantor transfer D=ℚ"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md",
+          "type": "research",
+          "summary": "D-polymorphism research: existing ParametricCanonicalTaskFrame D is already polymorphic; separate dense/discrete modules recommended"
         }
       ],
       "planned": "2026-03-20T16:48:23Z",
