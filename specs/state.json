@@ -15,7 +15,7 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T18:45:15Z",
+      "last_updated": "2026-03-20T19:01:31Z",
       "session_id": "sess_1774026376_393879",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
@@ -123,6 +123,11 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/11_team-research.md",
           "type": "research",
           "summary": "Team synthesis: Torsor viable but medium risk; Cantor transfer recommended for Task 1006, torsor for follow-up"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md",
+          "type": "research",
+          "summary": "Complete torsor construction: D=Aut+(T), Rigidity, Homogeneity, Holder theorem, AddTorsor, TaskFrame (~430-530 lines estimated)"
         }
       ],
       "planned": "2026-03-20T16:48:23Z",
