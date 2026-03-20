@@ -26,16 +26,16 @@
     {
       "project_number": 997,
       "project_name": "wire_algebraic_base_completeness",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-19T17:05:00Z",
-      "last_updated": "2026-03-19T21:17:05Z",
+      "last_updated": "2026-03-20T00:48:41Z",
       "depends_on": [
         995
       ],
       "description": "Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding CanonicalMCS → Int, fill the 2 sorries in AlgebraicBaseCompleteness.lean (lines 104, 155) to prove valid φ → ⊢ φ for base TM logic. The file already has the right structure (construct_bfmcs_int from CanonicalMCS transfer, then use parametric_algebraic_representation_conditional with D = Int). This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).",
-      "session_id": "sess_1773954200_f0e934",
-      "researched": "2026-03-19T20:56:44Z",
+      "session_id": "sess_1773967479_9b7a1c",
+      "researched": "2026-03-20T00:48:41Z",
       "artifacts": [
         {
           "type": "research",
@@ -56,6 +56,11 @@
           "type": "summary",
           "path": "specs/997_wire_algebraic_base_completeness/summaries/01_wire-base-completeness-summary.md",
           "summary": "Implementation summary documenting changes and sorry inventory"
+        },
+        {
+          "path": "specs/997_wire_algebraic_base_completeness/reports/02_post-flagbfmcs-analysis.md",
+          "type": "research",
+          "summary": "Post-FlagBFMCS analysis comparing sorry-free canonical model completeness with algebraic completeness"
         }
       ],
       "planned": "2026-03-19T21:00:59Z",
@@ -363,10 +368,10 @@
     {
       "project_number": 1004,
       "project_name": "dovetailing_chain_fp_witnesses",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-19T21:21:33Z",
-      "last_updated": "2026-03-20T00:31:49Z",
+      "last_updated": "2026-03-20T00:40:43Z",
       "depends_on": [
         1003
       ],
@@ -406,12 +411,19 @@
           "path": "specs/1004_dovetailing_chain_fp_witnesses/plans/03_temporal-completeness-plan.md",
           "type": "plan",
           "summary": "4-phase plan to fix temporal completeness gap in FlagBFMCS (v3)"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/summaries/02_temporal-completeness-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the allFlagsBFMCS solution"
         }
       ],
-      "session_id": "sess_1773966127_39c93c",
+      "session_id": "sess_1773966771_877a84",
       "researched": "2026-03-20T00:28:49Z",
       "planned": "2026-03-20T00:31:49Z",
-      "started": "2026-03-19T21:54:24Z"
+      "started": "2026-03-19T21:54:24Z",
+      "completed": "2026-03-20T00:40:43Z",
+      "completion_summary": "Fixed FlagBFMCS temporal completeness gap by implementing allFlagsBFMCS construction using Set.univ instead of closedFlags. The completeness theorem now compiles without sorries and is wired into the build via Metalogic.lean."
     }
   ],
   "next_project_number": 1006,

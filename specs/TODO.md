@@ -36,9 +36,10 @@ technical_debt:
 ## Tasks
 ### 1004. Complete FlagBFMCS temporal completeness
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Dependencies**: Task #1003 (FlagBFMCS implementation) [COMPLETED]
+- **Completed**: 2026-03-19
 - **Research**:
   - [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
   - [02_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/02_team-research.md) (F/P persistence limitation)
@@ -49,7 +50,7 @@ technical_debt:
   - [01_dovetailing-chain-plan.md](1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md) (v1: OBSOLETE - dovetailing impossible)
   - [02_semantic-bridge-plan.md](1004_dovetailing_chain_fp_witnesses/plans/02_semantic-bridge-plan.md) (v2: OBSOLETE - premature)
   - [03_temporal-completeness-plan.md](1004_dovetailing_chain_fp_witnesses/plans/03_temporal-completeness-plan.md) (v3: fix temporal completeness gap)
-- **Summary**: [01_dovetailing-chain-summary.md](1004_dovetailing_chain_fp_witnesses/summaries/01_dovetailing-chain-summary.md)
+- **Summary**: [02_temporal-completeness-summary.md](1004_dovetailing_chain_fp_witnesses/summaries/02_temporal-completeness-summary.md)
 
 **Description**: Fix the CRITICAL gap in FlagBFMCS completeness: `FlagBFMCSCompleteness.lean` has unsolved goal `⊢ B.temporally_complete` at line 52. The truth lemma requires `temporally_complete` (every CanonicalMCS in some Flag), but `closedFlags` only provides modal saturation. Two options: (A) prove `closedFlags_temporally_complete`, or (B) use `Set.univ` (all Flags) for trivial temporal completeness. The semantic bridge is deferred until this infrastructure works.
 
@@ -73,10 +74,12 @@ technical_debt:
 
 ### 997. Wire algebraic base completeness using FMCS domain transfer
 - **Effort**: TBD (estimated 2-4 hours)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Depends On**: Task 995
-- **Research**: [01_wire-base-completeness.md](997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md)
+- **Research**:
+  - [01_wire-base-completeness.md](997_wire_algebraic_base_completeness/reports/01_wire-base-completeness.md)
+  - [02_post-flagbfmcs-analysis.md](997_wire_algebraic_base_completeness/reports/02_post-flagbfmcs-analysis.md)
 - **Plan**: [01_wire-base-completeness-plan.md](997_wire_algebraic_base_completeness/plans/01_wire-base-completeness-plan.md)
 
 **Description**: Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding `CanonicalMCS → Int`, fill the 2 sorries in `AlgebraicBaseCompleteness.lean` (lines 104, 155) to prove `valid φ → ⊢ φ` for base TM logic. The file already has the right structure: `construct_bfmcs_int` (via CanonicalMCS transfer) feeds `parametric_algebraic_representation_conditional` with `D = Int`. This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).
