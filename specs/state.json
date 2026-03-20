@@ -8,17 +8,24 @@
     {
       "project_number": 1007,
       "project_name": "archive_satisfies_at_infrastructure",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-20T23:46:51Z",
-      "last_updated": "2026-03-20T23:46:51Z",
+      "last_updated": "2026-03-20T23:55:35Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md",
           "summary": "Complete inventory of FlagBFMCS files to archive, definitions to preserve, and import fixes needed"
+        },
+        {
+          "path": "specs/1007_archive_satisfies_at_infrastructure/plans/02_archive-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan to archive FlagBFMCS completeness infrastructure to Boneyard"
         }
-      ]
+      ],
+      "session_id": "sess_1774050728_2740da",
+      "planned": "2026-03-20T23:55:35Z"
     },
     {
       "project_number": 1008,

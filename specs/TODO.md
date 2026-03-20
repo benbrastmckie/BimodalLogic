@@ -49,9 +49,10 @@ technical_debt:
 
 ### 1007. Archive satisfies_at and FlagBFMCS completeness infrastructure to Boneyard
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Research**: [01_teardown-inventory.md](1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md)
+- **Plan**: [02_archive-plan.md](1007_archive_satisfies_at_infrastructure/plans/02_archive-plan.md)
 
 **Description**: Archive the `satisfies_at` relation and all FlagBFMCS completeness infrastructure to the Boneyard. The `satisfies_at` definition is a custom Kripke-style satisfaction relation that does not use TaskFrame D, WorldHistory, convexity, or the task relation — it is structurally different from the official `truth_at` semantics and cannot bridge to it (the convexity sorry in FlagBFMCSRatBundle is provably false). Archive 6 files: FlagBFMCS.lean, FlagBFMCSTruthLemma.lean, FlagBFMCSCompleteness.lean, FlagBFMCSValidityBridge.lean, FlagBFMCSIntBundle.lean, FlagBFMCSRatBundle.lean. Before archiving, extract reusable lemmas: g_content_propagation, h_content_propagation (relocate to canonical MCS theory), PartialOrder/LinearOrder instances on CanonicalMCS/ChainFMCSDomain (relocate to order infrastructure). Fix the single broken import in Metalogic.lean. Add deprecation README to Boneyard directory.
 
