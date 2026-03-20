@@ -15,7 +15,7 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T18:01:50Z",
+      "last_updated": "2026-03-20T18:45:15Z",
       "session_id": "sess_1774026376_393879",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
@@ -108,6 +108,21 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/10_team-research.md",
           "type": "research",
           "summary": "Team synthesis: Torsor vs Cantor transfer approaches, deriving D structure from axioms"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/11_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Teammate A: Pure-syntax D advantages - modularity, structure from axioms, unified construction"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/11_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Teammate B: Torsor feasibility - 180 lines needed, 70-80% success probability, base homogeneity uncertain"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/11_team-research.md",
+          "type": "research",
+          "summary": "Team synthesis: Torsor viable but medium risk; Cantor transfer recommended for Task 1006, torsor for follow-up"
         }
       ],
       "planned": "2026-03-20T16:48:23Z",
