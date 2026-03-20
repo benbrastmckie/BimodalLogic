@@ -15,7 +15,7 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T17:18:48Z",
+      "last_updated": "2026-03-20T18:01:50Z",
       "session_id": "sess_1774026376_393879",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
@@ -93,6 +93,21 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/09_fp-crux-analysis.md",
           "type": "research",
           "summary": "Deep analysis of F/P completeness crux: characterizes fundamental tension (CanonicalR not total, linear chains require totality, F-witnesses off-chain), evaluates 5 approaches, recommends flag saturation lemma or omega-squared construction"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/10_teammate-a-findings.md",
+          "type": "research",
+          "summary": "Teammate A: Torsor construction analysis - TranslationGroup AddGroup proven, AddCommGroup needs Holder theorem"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/10_teammate-b-findings.md",
+          "type": "research",
+          "summary": "Teammate B: Alternative approaches - structural blocker analysis, sign-only semantics insight"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/10_team-research.md",
+          "type": "research",
+          "summary": "Team synthesis: Torsor vs Cantor transfer approaches, deriving D structure from axioms"
         }
       ],
       "planned": "2026-03-20T16:48:23Z",
