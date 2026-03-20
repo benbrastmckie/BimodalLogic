@@ -25,15 +25,13 @@ technical_debt:
 
 ## Recommended Order
 
-1. **1003** → implement (FlagBFMCS modal coherence)
-2. **1005** -> research (independent)
-3. **997** → implement (base completeness, task 995 complete)
-4. **988** → dense completeness (after 1003)
-5. **989** → discrete completeness (after 988)
-6. **999** → F→FF derivation (small, anytime)
-7. **949** → update Demo.lean (small, anytime)
-8. **992** → STSA representation theorem (after completeness)
-9. **1004** → implement (semantic bridge, after 1003)
+1. **997** → implement (base completeness, task 995 complete)
+2. **988** → implement (dense completeness, 1003 complete)
+3. **989** → implement (discrete completeness, after 988)
+4. **999** → implement (F→FF derivation, small, anytime)
+5. **949** → implement (update Demo.lean, small, anytime)
+6. **992** → implement (STSA representation theorem, after completeness)
+7. **1004** → implement (semantic bridge, 1003 complete)
 
 ## Tasks
 ### 1005. Resolve FlagBFMCS temporal truth lemma sorries
@@ -71,10 +69,11 @@ technical_debt:
 
 ### 1003. Implement Sorry-Free Multi-Family Modal Coherence
 - **Effort**: 8 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean
 - **Dependencies**: Task #1002, Task #1005
 - **Parent Task**: #988
+- **Completed**: 2026-03-19
 - **Research**:
   - [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
   - [02_design-integration-research.md](1003_implement_modal_coherence/reports/02_design-integration-research.md)
@@ -84,7 +83,7 @@ technical_debt:
   - [01_modal-coherence-plan.md](1003_implement_modal_coherence/plans/01_modal-coherence-plan.md) (v1: OBSOLETE - singleton approach)
   - [02_multi-family-plan.md](1003_implement_modal_coherence/plans/02_multi-family-plan.md) (v2: BLOCKED - multi-family over CanonicalMCS)
   - [03_flagbfmcs-plan.md](1003_implement_modal_coherence/plans/03_flagbfmcs-plan.md) (v3: FlagBFMCS architecture)
-- **Summary**: [02_multi-family-summary.md](1003_implement_modal_coherence/summaries/02_multi-family-summary.md) (partial: MCS-level saturation achieved, singleton approach proven impossible)
+- **Summary**: [03_flagbfmcs-summary.md](1003_implement_modal_coherence/summaries/03_flagbfmcs-summary.md)
 
 **Description**: Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).
 
