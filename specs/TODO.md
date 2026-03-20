@@ -38,7 +38,7 @@ technical_debt:
 ## Tasks
 ### 1005. Resolve FlagBFMCS temporal truth lemma sorries
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task #1003
 - **Parent**: Task #1003
@@ -71,7 +71,7 @@ technical_debt:
 - **Effort**: 8 hours
 - **Status**: [IMPLEMENTING]
 - **Language**: lean
-- **Dependencies**: Task #1002
+- **Dependencies**: Task #1002, Task #1005
 - **Parent Task**: #988
 - **Research**:
   - [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
