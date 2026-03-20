@@ -37,7 +37,7 @@ technical_debt:
 
 ### 1006. Replace FlagBFMCS satisfies_at with canonical TaskFrame using truth_at
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task #1003
 - **Research**:
@@ -56,6 +56,7 @@ technical_debt:
   - [13_rigidity-counterexample-analysis.md](1006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md)
   - [14_d-polymorphism-dense-discrete.md](1006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md)
   - [15_completeness-module-structure.md](1006_canonical_taskframe_completeness/reports/15_completeness-module-structure.md)
+  - [16_blocker-resolution-research.md](1006_canonical_taskframe_completeness/reports/16_blocker-resolution-research.md)
 - **Plan**:
   - [04_three-completeness-plan.md](1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md)
   - [05_torsor-construction-plan.md](1006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md)
