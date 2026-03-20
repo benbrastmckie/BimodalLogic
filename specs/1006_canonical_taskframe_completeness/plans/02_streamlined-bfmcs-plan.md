@@ -54,7 +54,7 @@ Replace the FlagBFMCS `satisfies_at` relation with a canonical TaskFrame constru
 
 ## Implementation Phases
 
-### Phase 1: Global Countable Enumeration [NOT STARTED]
+### Phase 1: Global Countable Enumeration [COMPLETED]
 
 **Goal**: Define single global injection `enum_mcs : CanonicalMCS -> Int`.
 
@@ -87,7 +87,7 @@ noncomputable def enum_mcs : CanonicalMCS -> Int :=
 
 ---
 
-### Phase 2: Per-Flag FMCS Int Construction [NOT STARTED]
+### Phase 2: Per-Flag FMCS Int Construction [BLOCKED]
 
 **Goal**: Convert `chainFMCS F : FMCS (ChainFMCSDomain F)` to `FMCS Int` using global enumeration.
 
