@@ -15,8 +15,8 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T15:42:52Z",
-      "session_id": "sess_1774020213_d32e65",
+      "last_updated": "2026-03-20T16:24:33Z",
+      "session_id": "sess_1774023083_63dd8e",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
         {
@@ -78,6 +78,11 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/06_team-research.md",
           "type": "research",
           "summary": "Team synthesis: Dovetailed Flag + ℤ isomorphism approach to resolve convexity and cross-Flag witness blockers"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md",
+          "type": "research",
+          "summary": "Detailed analysis of Dovetailed Flag + Z approach: Z for discrete case, Rat for dense; key fix is parametric_to_history with full domain"
         }
       ],
       "planned": "2026-03-20T06:27:04Z",
