@@ -2,7 +2,7 @@
 
 - **Task**: 1006 - canonical_taskframe_completeness
 - **Version**: 03 (FMCSTransfer Rat approach)
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Effort**: 6 hours
 - **Dependencies**: None
 - **Research Inputs**:
@@ -64,7 +64,7 @@ The existing `FMCSTransfer` infrastructure (`FMCSTransfer.lean`) provides sorry-
 
 ## Implementation Phases
 
-### Phase 1: Cantor Order-Embedding Infrastructure [NOT STARTED]
+### Phase 1: Cantor Order-Embedding Infrastructure [COMPLETED]
 
 **Goal**: Establish that Flags embed order-preservingly into Rat.
 
@@ -103,7 +103,7 @@ noncomputable def embed_flag (F : Flag CanonicalMCS) : FlagChain F ↪o ℚ := .
 
 ---
 
-### Phase 2: FMCSTransfer Rat Construction [NOT STARTED]
+### Phase 2: FMCSTransfer Rat Construction [COMPLETED]
 
 **Goal**: Build `FMCSTransfer Rat` for each Flag using the Cantor embedding.
 
@@ -148,7 +148,7 @@ noncomputable def fmcsTransfer_flag (F : Flag CanonicalMCS) :
 
 ---
 
-### Phase 3: Multi-Family BFMCS Rat [NOT STARTED]
+### Phase 3: Multi-Family BFMCS Rat [COMPLETED]
 
 **Goal**: Bundle transferred FMCSes from all Flags into `BFMCS Rat`.
 
@@ -197,7 +197,7 @@ noncomputable def bfmcs_from_flagbfmcs (B : FlagBFMCS) : BFMCS ℚ where
 
 ---
 
-### Phase 4: Canonical Completeness Theorem [NOT STARTED]
+### Phase 4: Canonical Completeness Theorem [COMPLETED]
 
 **Goal**: State and prove completeness using `valid` via parametric pipeline.
 
