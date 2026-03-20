@@ -1,5 +1,5 @@
 ---
-next_project_number: 1007
+next_project_number: 1009
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -25,15 +25,37 @@ technical_debt:
 
 ## Recommended Order
 
-1. **997** → implement (base completeness, task 995 complete)
-2. **988** → implement (dense completeness, 1003 complete)
-3. **989** → implement (discrete completeness, after 988)
-4. **999** → implement (F→FF derivation, small, anytime)
-5. **949** → implement (update Demo.lean, small, anytime)
-6. **992** → implement (STSA representation theorem, after completeness)
-7. **1006** -> implement (Torsor Construction, v5 plan)
+1. **1007** → plan + implement (archive satisfies_at infrastructure, unblocks 1008)
+2. **1008** → research + plan (genuine truth_at completeness, after 1007)
+3. **999** → implement (F→FF derivation, small, anytime)
+4. **949** → implement (update Demo.lean, small, anytime)
+5. **997** → implement (base completeness, depends on 1008 approach)
+6. **988** → implement (dense completeness, depends on 1008 approach)
+7. **989** → implement (discrete completeness, after 988)
+8. **992** → implement (STSA representation theorem, after completeness)
 
 ## Tasks
+
+### 1008. Establish genuine truth_at completeness theorems for TM logic
+- **Effort**: 12-20 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task #1007
+- **Research**: [01_completeness-architecture.md](1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
+
+**Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
+
+---
+
+### 1007. Archive satisfies_at and FlagBFMCS completeness infrastructure to Boneyard
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Research**: [01_teardown-inventory.md](1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md)
+
+**Description**: Archive the `satisfies_at` relation and all FlagBFMCS completeness infrastructure to the Boneyard. The `satisfies_at` definition is a custom Kripke-style satisfaction relation that does not use TaskFrame D, WorldHistory, convexity, or the task relation — it is structurally different from the official `truth_at` semantics and cannot bridge to it (the convexity sorry in FlagBFMCSRatBundle is provably false). Archive 6 files: FlagBFMCS.lean, FlagBFMCSTruthLemma.lean, FlagBFMCSCompleteness.lean, FlagBFMCSValidityBridge.lean, FlagBFMCSIntBundle.lean, FlagBFMCSRatBundle.lean. Before archiving, extract reusable lemmas: g_content_propagation, h_content_propagation (relocate to canonical MCS theory), PartialOrder/LinearOrder instances on CanonicalMCS/ChainFMCSDomain (relocate to order infrastructure). Fix the single broken import in Metalogic.lean. Add deprecation README to Boneyard directory.
+
+---
 
 ### 1006. Replace FlagBFMCS satisfies_at with canonical TaskFrame using truth_at
 - **Effort**: 8-12 hours

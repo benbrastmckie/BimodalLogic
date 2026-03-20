@@ -6,6 +6,39 @@
   },
   "active_projects": [
     {
+      "project_number": 1007,
+      "project_name": "archive_satisfies_at_infrastructure",
+      "status": "researched",
+      "language": "lean4",
+      "created": "2026-03-20T23:46:51Z",
+      "last_updated": "2026-03-20T23:46:51Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md",
+          "summary": "Complete inventory of FlagBFMCS files to archive, definitions to preserve, and import fixes needed"
+        }
+      ]
+    },
+    {
+      "project_number": 1008,
+      "project_name": "genuine_truth_at_completeness",
+      "status": "researched",
+      "language": "lean4",
+      "created": "2026-03-20T23:46:51Z",
+      "last_updated": "2026-03-20T23:46:51Z",
+      "dependencies": [
+        1007
+      ],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md",
+          "summary": "Analysis of genuine completeness proof requirements using truth_at, identifying exact gaps and viable approaches"
+        }
+      ]
+    },
+    {
       "project_number": 1006,
       "project_name": "canonical_taskframe_completeness",
       "status": "researched",
@@ -539,7 +572,7 @@
       ]
     }
   ],
-  "next_project_number": 1007,
+  "next_project_number": 1009,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
