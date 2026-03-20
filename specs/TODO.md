@@ -31,7 +31,7 @@ technical_debt:
 4. **999** → implement (F→FF derivation, small, anytime)
 5. **949** → implement (update Demo.lean, small, anytime)
 6. **992** → implement (STSA representation theorem, after completeness)
-7. **1006** -> implement (FMCSTransfer Rat approach, v3 plan)
+7. **1006** -> implement (Three Completeness Theorems, v4 plan)
 
 ## Tasks
 
@@ -46,7 +46,10 @@ technical_debt:
   - [03_dense-discrete-compatibility.md](1006_canonical_taskframe_completeness/reports/03_dense-discrete-compatibility.md)
   - [04_team-research.md](1006_canonical_taskframe_completeness/reports/04_team-research.md)
   - [05_rat-discrete-compatibility.md](1006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md)
-- **Plan**: [03_fmcstransfer-rat-plan.md](1006_canonical_taskframe_completeness/plans/03_fmcstransfer-rat-plan.md)
+  - [06_team-research.md](1006_canonical_taskframe_completeness/reports/06_team-research.md)
+  - [07_dovetailed-z-detailed.md](1006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md)
+  - [08_base-dense-discrete-strategy.md](1006_canonical_taskframe_completeness/reports/08_base-dense-discrete-strategy.md)
+- **Plan**: [04_three-completeness-plan.md](1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md)
 
 **Description**: Replace the internal `satisfies_at` relation in FlagBFMCS completeness with the official `truth_at` from the semantic layer. Construct a canonical TaskFrame directly from FlagBFMCS data: (1) canonical world states from CanonicalMCS, (2) duration domain D parametrically from Flag chain positions, (3) task relation R from CanonicalR, (4) WorldHistory instances from Flags (each Flag maps durations to world states), (5) canonical TaskFrame and TaskModel, (6) truth lemma for truth_at directly, (7) completeness theorem using canonical `valid`. Supersedes validity bridge approach in task 997.
 

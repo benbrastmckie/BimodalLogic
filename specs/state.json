@@ -8,14 +8,14 @@
     {
       "project_number": 1006,
       "project_name": "canonical_taskframe_completeness",
-      "status": "implementing",
+      "status": "planned",
       "language": "lean4",
       "description": "Replace FlagBFMCS satisfies_at with a canonical TaskFrame using truth_at. The current FlagBFMCS completeness theorem uses an internal satisfies_at relation rather than the official truth_at from the semantic layer. Eliminate satisfies_at entirely and construct a canonical TaskFrame directly from FlagBFMCS data, so that the completeness theorem states: consistent S implies existence of a TaskModel and world where truth_at holds for all φ ∈ S. Key architectural requirements: (1) Define canonical world states from CanonicalMCS, (2) Define the duration domain D parametrically (positions within each Flag chain serve as durations), (3) Define the task relation R on world states using CanonicalR, (4) Construct WorldHistory instances from Flags (each Flag yields a history mapping durations to world states), (5) Define the canonical TaskFrame and TaskModel using these components, (6) Prove the truth lemma directly for truth_at rather than satisfies_at, (7) State and prove the completeness theorem using the canonical valid predicate. The existing FlagBFMCS infrastructure (closedFlags, chainFMCS, modal saturation, temporal completeness) provides all the raw material. The work is restructuring it to fit the official TaskFrame/TaskModel/WorldHistory architecture. This supersedes the validity bridge approach in task 997.",
       "dependencies": [
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T16:37:00Z",
+      "last_updated": "2026-03-20T16:48:23Z",
       "session_id": "sess_1774024172_bb385f",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
@@ -48,11 +48,6 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/04_team-research.md",
           "type": "research",
           "summary": "Team research on order-preserving embedding: FMCSTransfer with D=Rat, multi-family BFMCS for temporal coherence"
-        },
-        {
-          "path": "specs/1006_canonical_taskframe_completeness/plans/03_fmcstransfer-rat-plan.md",
-          "type": "plan",
-          "summary": "v3 plan using FMCSTransfer Rat with per-Flag order-preserving embedding"
         },
         {
           "path": "specs/1006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md",
@@ -88,9 +83,14 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/08_base-dense-discrete-strategy.md",
           "type": "research",
           "summary": "Base TM + dense/discrete extension strategy: D-polymorphic approach, shared infrastructure, separate constructions per logic"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md",
+          "type": "plan",
+          "summary": "v4 plan: Prove all three completeness theorems (base/dense/discrete) using parametric_to_history with full domain"
         }
       ],
-      "planned": "2026-03-20T06:27:04Z",
+      "planned": "2026-03-20T16:48:23Z",
       "started": "2026-03-20T02:13:52Z"
     },
     {
