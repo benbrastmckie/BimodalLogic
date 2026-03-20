@@ -15,9 +15,9 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T06:27:04Z",
+      "last_updated": "2026-03-20T06:34:02Z",
       "session_id": "sess_1773986150_79a41d",
-      "researched": "2026-03-20T06:03:26Z",
+      "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
         {
           "path": "specs/1006_canonical_taskframe_completeness/reports/01_team-research.md",
@@ -53,6 +53,11 @@
           "path": "specs/1006_canonical_taskframe_completeness/plans/03_fmcstransfer-rat-plan.md",
           "type": "plan",
           "summary": "v3 plan using FMCSTransfer Rat with per-Flag order-preserving embedding"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md",
+          "type": "research",
+          "summary": "Analysis confirming D=Rat for base completeness is compatible with D=Int for discrete extension"
         }
       ],
       "planned": "2026-03-20T06:27:04Z",

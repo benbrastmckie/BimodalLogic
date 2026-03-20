@@ -45,6 +45,7 @@ technical_debt:
   - [02_direct-construction.md](1006_canonical_taskframe_completeness/reports/02_direct-construction.md)
   - [03_dense-discrete-compatibility.md](1006_canonical_taskframe_completeness/reports/03_dense-discrete-compatibility.md)
   - [04_team-research.md](1006_canonical_taskframe_completeness/reports/04_team-research.md)
+  - [05_rat-discrete-compatibility.md](1006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md)
 - **Plan**: [03_fmcstransfer-rat-plan.md](1006_canonical_taskframe_completeness/plans/03_fmcstransfer-rat-plan.md)
 
 **Description**: Replace the internal `satisfies_at` relation in FlagBFMCS completeness with the official `truth_at` from the semantic layer. Construct a canonical TaskFrame directly from FlagBFMCS data: (1) canonical world states from CanonicalMCS, (2) duration domain D parametrically from Flag chain positions, (3) task relation R from CanonicalR, (4) WorldHistory instances from Flags (each Flag maps durations to world states), (5) canonical TaskFrame and TaskModel, (6) truth lemma for truth_at directly, (7) completeness theorem using canonical `valid`. Supersedes validity bridge approach in task 997.
