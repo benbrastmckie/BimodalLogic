@@ -67,7 +67,7 @@ From `15_completeness-module-structure.md`:
 
 ## Implementation Phases
 
-### Phase 1: Archive Unsound Code [NOT STARTED]
+### Phase 1: Archive Unsound Code [COMPLETED]
 
 **Goal**: Move mathematically unsound D = Aut+(T) code to Boneyard.
 
@@ -90,7 +90,7 @@ From `15_completeness-module-structure.md`:
 
 ---
 
-### Phase 2: Verify Cantor Infrastructure [NOT STARTED]
+### Phase 2: Verify Cantor Infrastructure [COMPLETED]
 
 **Goal**: Confirm all pieces exist to construct `TimelineQuot ≃o Rat`.
 
@@ -124,7 +124,7 @@ From `15_completeness-module-structure.md`:
 
 ---
 
-### Phase 3: BFMCS Construction - Identify Gaps [NOT STARTED]
+### Phase 3: BFMCS Construction - Identify Gaps [COMPLETED]
 
 **Goal**: Understand exactly what the blocking sorries require.
 
@@ -155,7 +155,7 @@ From `15_completeness-module-structure.md`:
 
 ---
 
-### Phase 4: Fill BFMCS Construction Sorries [NOT STARTED]
+### Phase 4: Fill BFMCS Construction Sorries [BLOCKED]
 
 **Goal**: Prove F/P witness coherence for temporal model construction.
 
@@ -192,7 +192,7 @@ From `15_completeness-module-structure.md`:
 
 ---
 
-### Phase 5: Wire Completeness Theorem [NOT STARTED]
+### Phase 5: Wire Completeness Theorem [BLOCKED]
 
 **Goal**: Connect BFMCS construction to final completeness statement.
 
@@ -234,7 +234,7 @@ valid_dense φ
 
 ---
 
-### Phase 6: Cleanup and Documentation [NOT STARTED]
+### Phase 6: Cleanup and Documentation [PARTIAL]
 
 **Goal**: Update documentation and remove dead code paths.
 

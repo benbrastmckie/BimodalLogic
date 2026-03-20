@@ -4,6 +4,27 @@ import Mathlib.Algebra.Order.Group.End
 import Mathlib.Algebra.Group.TypeTags.Basic
 
 /-!
+# DEPRECATED: Translation Group Construction
+
+**Status**: DEPRECATED as of Task 1006 (v6 plan)
+
+**Reason**: The D = Aut+(T) approach is mathematically unsound. Report
+`specs/1006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md`
+proves that rigidity (if f : T ≃o T fixes a point, then f = id) is FALSE via
+the elementary counterexample x → 2x on ℚ. This means:
+- D cannot have a linear order via eval-at-origin (non-injective)
+- AddCommGroup cannot be established via Holder's theorem (no freeness)
+- The entire torsor-based approach is blocked
+
+**Resolution**: Use the Cantor transfer approach instead:
+- Set D = ℚ directly (via `Order.iso_of_countable_dense`)
+- All algebraic structure comes from Mathlib (AddCommGroup, LinearOrder, etc.)
+- See `ParametricCanonicalTaskFrame Rat` in `Algebraic/ParametricCanonical.lean`
+
+This file is preserved for historical reference only. Do not import or extend.
+-/
+
+/-!
 # Translation Group: D from Canonical Timeline
 
 This module constructs the duration type D as the group of order-preserving

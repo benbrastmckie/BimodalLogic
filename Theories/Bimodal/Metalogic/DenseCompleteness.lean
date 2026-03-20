@@ -32,24 +32,49 @@ All individual components of the dense completeness pipeline are proven sorry-fr
 4. **Shifted Truth Lemma** (`Bundle/CanonicalConstruction.lean`):
    Truth lemma extends to shift-closed Omega
 
-## Domain Mismatch (Task 977 Documentation)
+## Domain Mismatch (Tasks 977, 1006 Analysis)
 
 The full wiring of the dense completeness theorem requires connecting:
 
 - **CanonicalMCS domain**: Used by BFMCS and truth lemma (all MCSs as times)
 - **TimelineQuot domain**: The Cantor-isomorphic domain (D ≃o ℚ) with DenselyOrdered
+- **ParametricCanonicalTaskFrame D**: Requires `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`
 
 The gap is that the truth lemma is proven for `D = Int` (or CanonicalMCS), while
 the `valid_dense` definition quantifies over all `D` with `DenselyOrdered D`.
+
+### Task 1006 v6 Analysis: Fundamental Blockers
+
+**Blocker 1**: Linear chain constructions cannot satisfy forward_F/backward_P.
+F-formulas do not persist through generic Lindenbaum extensions. When building
+position n+1 from n, Lindenbaum extension can introduce G(~phi), which kills
+F(phi) = ~G(~phi). This blocks IntBFMCS (sorries at lines 1175, 1177, 1199, 1213).
+
+**Blocker 2**: FlagBFMCS uses `satisfies_at` (internal), not `truth_at` (semantic layer).
+The bridge from FlagBFMCS completeness (sorry-free) to `valid` (uses truth_at) requires
+embedding FlagBFMCS into ParametricCanonicalTaskFrame. This has sorries:
+- FlagBFMCSRatBundle.lean:364 - Convexity (shifted domain not convex in Rat)
+- FlagBFMCSRatBundle.lean:438 - Shifted truth lemma
+
+**Blocker 3**: CanonicalMCS has Preorder but NOT AddCommGroup/LinearOrder.
+The ParametricCanonicalTaskFrame requires these typeclasses. CanonicalMCS (all MCSs)
+is a non-linear Preorder, cannot be embedded into an AddCommGroup.
+
+### Working Infrastructure (Sorry-Free)
+
+1. **CanonicalFMCS.lean**: FMCS CanonicalMCS with forward_F/backward_P proven
+2. **FlagBFMCS pipeline**: completeness via `satisfies_at` (internal)
+3. **ParametricCanonical/History/TruthLemma**: D-polymorphic truth lemma (needs BFMCS D)
+4. **CantorApplication.lean**: TimelineQuot ≃o Rat
 
 ### Resolution Paths (Future Work)
 
 1. **Direct TimelineQuot FMCS**: Build FMCS with D = TimelineQuot directly
 2. **Transfer Theorem**: Prove equivalence between CanonicalMCS truth and TimelineQuot semantics
 3. **Semantic Quotient**: Show CanonicalMCS/TimelineQuot quotient preserves truth
+4. **FlagBFMCS Bridge**: Prove convexity and truth lemma for shifted FlagBFMCS histories
 
-These are beyond the scope of Task 977 (organization) and are flagged for
-architectural follow-up in Task 978.
+These are beyond the scope of Task 977/1006 and flagged for future work.
 
 ## References
 
