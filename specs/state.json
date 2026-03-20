@@ -15,8 +15,8 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T16:24:33Z",
-      "session_id": "sess_1774023083_63dd8e",
+      "last_updated": "2026-03-20T16:37:00Z",
+      "session_id": "sess_1774024172_bb385f",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
         {
@@ -83,6 +83,11 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md",
           "type": "research",
           "summary": "Detailed analysis of Dovetailed Flag + Z approach: Z for discrete case, Rat for dense; key fix is parametric_to_history with full domain"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/08_base-dense-discrete-strategy.md",
+          "type": "research",
+          "summary": "Base TM + dense/discrete extension strategy: D-polymorphic approach, shared infrastructure, separate constructions per logic"
         }
       ],
       "planned": "2026-03-20T06:27:04Z",
