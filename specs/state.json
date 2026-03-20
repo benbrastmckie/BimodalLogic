@@ -15,9 +15,9 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T02:00:56Z",
-      "session_id": "sess_1773971823_7608a1",
-      "researched": "2026-03-20T02:00:56Z",
+      "last_updated": "2026-03-20T02:09:07Z",
+      "session_id": "sess_1773972315_7f6236",
+      "researched": "2026-03-20T02:09:07Z",
       "artifacts": [
         {
           "path": "specs/1006_canonical_taskframe_completeness/reports/01_team-research.md",
@@ -33,6 +33,11 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/02_direct-construction.md",
           "type": "research",
           "summary": "Supplemental research on direct TaskFrame construction alternatives, recommending streamlined BFMCS Int construction using global enumeration"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/reports/03_dense-discrete-compatibility.md",
+          "type": "research",
+          "summary": "Analysis of task 1006 compatibility with dense (task 988) and discrete (task 989) completeness extensions"
         }
       ],
       "planned": "2026-03-20T01:52:43Z"
