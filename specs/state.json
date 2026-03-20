@@ -26,15 +26,15 @@
     {
       "project_number": 997,
       "project_name": "wire_algebraic_base_completeness",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-19T17:05:00Z",
-      "last_updated": "2026-03-20T01:00:46Z",
+      "last_updated": "2026-03-20T01:29:01Z",
       "depends_on": [
         995
       ],
       "description": "Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding CanonicalMCS → Int, fill the 2 sorries in AlgebraicBaseCompleteness.lean (lines 104, 155) to prove valid φ → ⊢ φ for base TM logic. The file already has the right structure (construct_bfmcs_int from CanonicalMCS transfer, then use parametric_algebraic_representation_conditional with D = Int). This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).",
-      "session_id": "sess_1773968245_768e4d",
+      "session_id": "sess_1773969577_99eb4f",
       "researched": "2026-03-20T00:55:55Z",
       "artifacts": [
         {
@@ -66,10 +66,15 @@
           "path": "specs/997_wire_algebraic_base_completeness/plans/02_validity-bridge-plan.md",
           "type": "plan",
           "summary": "4-phase implementation plan to bridge FlagBFMCS satisfaction to canonical validity via Int-embedding"
+        },
+        {
+          "path": "specs/997_wire_algebraic_base_completeness/summaries/02_validity-bridge-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the bridge gap and recommendations"
         }
       ],
       "planned": "2026-03-20T01:00:46Z",
-      "started": "2026-03-19T21:04:14Z"
+      "started": "2026-03-20T01:19:59Z"
     },
     {
       "project_number": 993,

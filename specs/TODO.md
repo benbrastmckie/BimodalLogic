@@ -74,7 +74,7 @@ technical_debt:
 
 ### 997. Wire algebraic base completeness using FMCS domain transfer
 - **Effort**: TBD (estimated 2-4 hours)
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Depends On**: Task 995
 - **Research**:
