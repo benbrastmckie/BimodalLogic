@@ -15,7 +15,7 @@
         1003
       ],
       "created": "2026-03-20T01:35:23Z",
-      "last_updated": "2026-03-20T19:01:31Z",
+      "last_updated": "2026-03-20T19:11:06Z",
       "session_id": "sess_1774026376_393879",
       "researched": "2026-03-20T06:33:37Z",
       "artifacts": [
@@ -128,6 +128,11 @@
           "path": "specs/1006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md",
           "type": "research",
           "summary": "Complete torsor construction: D=Aut+(T), Rigidity, Homogeneity, Holder theorem, AddTorsor, TaskFrame (~430-530 lines estimated)"
+        },
+        {
+          "path": "specs/1006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md",
+          "type": "plan",
+          "summary": "v5 plan: Torsor construction approach for D = Aut+(T) with rigidity, homogeneity, Holder's theorem"
         }
       ],
       "planned": "2026-03-20T16:48:23Z",

@@ -61,7 +61,7 @@ The v3 plan's `shiftedFlagWorldHistory` is **mathematically blocked** — discre
 
 ## Implementation Phases
 
-### Phase 1: Fix Common F/P Infrastructure [NOT STARTED]
+### Phase 1: Fix Common F/P Infrastructure [BLOCKED]
 
 **Goal**: Establish self-contained F/P witness infrastructure that works for all three logics.
 

@@ -31,7 +31,7 @@ technical_debt:
 4. **999** → implement (F→FF derivation, small, anytime)
 5. **949** → implement (update Demo.lean, small, anytime)
 6. **992** → implement (STSA representation theorem, after completeness)
-7. **1006** -> implement (Three Completeness Theorems, v4 plan)
+7. **1006** -> implement (Torsor Construction, v5 plan)
 
 ## Tasks
 
@@ -53,7 +53,9 @@ technical_debt:
   - [10_team-research.md](1006_canonical_taskframe_completeness/reports/10_team-research.md)
   - [11_team-research.md](1006_canonical_taskframe_completeness/reports/11_team-research.md)
   - [12_torsor-construction-full.md](1006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md)
-- **Plan**: [04_three-completeness-plan.md](1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md)
+- **Plan**:
+  - [04_three-completeness-plan.md](1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md)
+  - [05_torsor-construction-plan.md](1006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md)
 
 **Description**: Replace the internal `satisfies_at` relation in FlagBFMCS completeness with the official `truth_at` from the semantic layer. Construct a canonical TaskFrame directly from FlagBFMCS data: (1) canonical world states from CanonicalMCS, (2) duration domain D parametrically from Flag chain positions, (3) task relation R from CanonicalR, (4) WorldHistory instances from Flags (each Flag maps durations to world states), (5) canonical TaskFrame and TaskModel, (6) truth lemma for truth_at directly, (7) completeness theorem using canonical `valid`. Supersedes validity bridge approach in task 997.
 
