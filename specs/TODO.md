@@ -38,13 +38,15 @@ technical_debt:
 ## Tasks
 ### 1005. Resolve FlagBFMCS temporal truth lemma sorries
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Language**: lean4
 - **Dependencies**: Task #1003
 - **Parent**: Task #1003
 - **Started**: 2026-03-19
+- **Completed**: 2026-03-19
 - **Research**: [01_temporal-truth-resolution.md](1005_resolve_flagbfmcs_temporal_truth_lemma/reports/01_temporal-truth-resolution.md)
 - **Plan**: [01_cross-flag-temporal.md](1005_resolve_flagbfmcs_temporal_truth_lemma/plans/01_cross-flag-temporal.md)
+- **Summary**: [01_cross-flag-temporal-summary.md](1005_resolve_flagbfmcs_temporal_truth_lemma/summaries/01_cross-flag-temporal-summary.md)
 
 **Description**: Resolve the 2 remaining sorries in FlagBFMCSTruthLemma.lean — mem_of_satisfies_at_all_future and mem_of_satisfies_at_all_past — which are blocked by an architectural gap: F/P witnesses from chainFMCS_forward_F_in_CanonicalMCS may exist outside the current Flag, so the contrapositive argument cannot be completed within same-Flag semantics. Three resolution paths: (A) extend closedFlags with temporal witness closure, (B) cross-Flag temporal satisfaction relation, (C) accept partial completeness.
 

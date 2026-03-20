@@ -1,4 +1,5 @@
 import Bimodal.Metalogic.Bundle.FlagBFMCS
+import Bimodal.Metalogic.Bundle.FMCSTransfer
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 import Bimodal.Theorems.Propositional
 import Bimodal.Theorems.Perpetuity.Bridge
@@ -37,6 +38,70 @@ open Bimodal.Metalogic.Core
 open Bimodal.ProofSystem
 
 /-!
+## Temporal Completeness Property (Task 1005)
+
+For the truth lemma to work with cross-Flag temporal quantification,
+we need B.flags to contain "enough" Flags so that every CanonicalMCS
+is in some Flag in B.flags. This is trivially true when B.flags = Set.univ.
+-/
+
+/--
+A FlagBFMCS is temporally complete if every CanonicalMCS is in some Flag in B.flags.
+
+This property is required for the truth lemma's temporal cases (G and H),
+where we need to find temporal witnesses (from canonical_forward_F/backward_P)
+within B.flags.
+
+Note: This is automatically satisfied when B.flags = Set.univ (all Flags).
+-/
+def FlagBFMCS.temporally_complete (B : FlagBFMCS) : Prop :=
+  ∀ M : CanonicalMCS, ∃ F ∈ B.flags, M ∈ F
+
+/--
+Using all Flags (Set.univ) gives temporal completeness trivially.
+-/
+theorem allFlags_temporally_complete :
+    ∀ M : CanonicalMCS, ∃ F ∈ (@Set.univ (Flag CanonicalMCS)), M ∈ F := by
+  intro M
+  obtain ⟨F, hM⟩ := canonicalMCS_in_some_flag M
+  exact ⟨F, Set.mem_univ F, hM⟩
+
+/-!
+## Cross-Flag Temporal Content Propagation (Task 1005)
+
+These lemmas establish that G(phi) / H(phi) membership propagates across
+the CanonicalMCS ordering, enabling cross-Flag temporal satisfaction.
+-/
+
+/--
+G-content propagates through CanonicalMCS ordering:
+If G(phi) is in M.world and M < M', then phi is in M'.world.
+
+This follows from: M < M' implies CanonicalR M.world M'.world,
+which means g_content(M.world) ⊆ M'.world. Since G(phi) ∈ M.world
+means phi ∈ g_content(M.world), we get phi ∈ M'.world.
+-/
+theorem g_content_propagation (M M' : CanonicalMCS) (φ : Formula)
+    (h_G : φ.all_future ∈ M.world) (h_lt : M < M') : φ ∈ M'.world := by
+  have h_R : CanonicalR M.world M'.world := CanonicalMCS.canonicalR_of_lt M M' h_lt
+  exact canonical_forward_G M.world M'.world h_R φ h_G
+
+/--
+H-content propagates through CanonicalMCS ordering (backwards):
+If H(phi) is in M.world and M' < M, then phi is in M'.world.
+
+This follows from: M' < M implies CanonicalR M'.world M.world,
+and by g_content/h_content duality, h_content(M.world) ⊆ M'.world.
+Since H(phi) ∈ M.world means phi ∈ h_content(M.world), we get phi ∈ M'.world.
+-/
+theorem h_content_propagation (M M' : CanonicalMCS) (φ : Formula)
+    (h_H : φ.all_past ∈ M.world) (h_lt : M' < M) : φ ∈ M'.world := by
+  have h_R : CanonicalR M'.world M.world := CanonicalMCS.canonicalR_of_lt M' M h_lt
+  have h_R_past : CanonicalR_past M.world M'.world :=
+    g_content_subset_implies_h_content_reverse M'.world M.world M'.is_mcs M.is_mcs h_R
+  exact canonical_backward_H M.world M'.world h_R_past φ h_H
+
+/-!
 ## Satisfaction Relation for FlagBFMCS
 
 We define satisfaction at a position (F, x) in a FlagBFMCS.
@@ -51,7 +116,9 @@ This is defined by induction on formulas:
 - Implication: psi.imp chi satisfied iff psi not satisfied or chi satisfied
 - Box: phi.box satisfied iff phi satisfied at all modally accessible positions
 - G (all_future): phi.all_future satisfied iff phi satisfied at all strictly future positions
+  **Cross-Flag**: Quantifies over ALL Flags in B.flags (Task 1005 fix)
 - H (all_past): phi.all_past satisfied iff phi satisfied at all strictly past positions
+  **Cross-Flag**: Quantifies over ALL Flags in B.flags (Task 1005 fix)
 -/
 def satisfies_at (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
     (x : ChainFMCSDomain F) : Formula → Prop
@@ -61,8 +128,10 @@ def satisfies_at (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
   | .box φ => ∀ (F' : Flag CanonicalMCS) (hF' : F' ∈ B.flags) (x' : ChainFMCSDomain F'),
       MCSBoxContent x.val.world ⊆ MCSBoxContent x'.val.world →
       satisfies_at B F' hF' x' φ
-  | .all_future φ => ∀ (x' : ChainFMCSDomain F), x < x' → satisfies_at B F hF x' φ
-  | .all_past φ => ∀ (x' : ChainFMCSDomain F), x' < x → satisfies_at B F hF x' φ
+  | .all_future φ => ∀ (F' : Flag CanonicalMCS) (hF' : F' ∈ B.flags) (x' : ChainFMCSDomain F'),
+      x.val < x'.val → satisfies_at B F' hF' x' φ
+  | .all_past φ => ∀ (F' : Flag CanonicalMCS) (hF' : F' ∈ B.flags) (x' : ChainFMCSDomain F'),
+      x'.val < x.val → satisfies_at B F' hF' x' φ
 
 /-!
 ## Truth Lemma: Base Cases
@@ -212,87 +281,148 @@ The temporal cases use the chainFMCS forward_G and backward_H properties.
 
 /--
 Truth lemma for G (all_future) backward: G phi in MCS implies satisfied.
+
+**Cross-Flag version (Task 1005)**: Now quantifies over all Flags in B.flags.
+Uses g_content_propagation to bridge from G(phi) in x.val.world to phi in x'.val.world.
 -/
 theorem satisfies_at_all_future_of_mem (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
     (x : ChainFMCSDomain F) (φ : Formula)
-    (ih : ∀ (x' : ChainFMCSDomain F), satisfies_at B F hF x' φ ↔ φ ∈ (chainFMCS F).mcs x')
+    (ih : ∀ (F' : Flag CanonicalMCS) (hF' : F' ∈ B.flags) (x' : ChainFMCSDomain F'),
+      satisfies_at B F' hF' x' φ ↔ φ ∈ (chainFMCS F').mcs x')
     (h_mem : φ.all_future ∈ (chainFMCS F).mcs x) :
     satisfies_at B F hF x φ.all_future := by
   simp only [satisfies_at]
-  intro x' h_lt
-  rw [ih x']
-  exact chainFMCS_forward_G F x x' φ h_lt h_mem
+  intro F' hF' x' h_lt
+  rw [ih F' hF' x']
+  -- G(φ) ∈ x.val.world and x.val < x'.val, so φ ∈ x'.val.world
+  simp only [chainFMCS, chainFMCS_mcs]
+  simp only [chainFMCS, chainFMCS_mcs] at h_mem
+  exact g_content_propagation x.val x'.val φ h_mem h_lt
 
 /--
 Truth lemma for G (all_future) forward: satisfied implies G phi in MCS.
 
-**ARCHITECTURAL GAP**: This direction requires temporal saturation WITHIN the Flag.
+**Cross-Flag version (Task 1005)**: Now uses cross-Flag IH and quantification.
 
-The contrapositive argument needs:
-1. neg(G phi) = F(neg phi) in MCS at x
-2. By temporal duality, this implies a witness x' > x with neg(phi) in x'.mcs
-3. But `chainFMCS_forward_F_in_CanonicalMCS` only guarantees the witness exists in CanonicalMCS,
-   not necessarily in the same Flag.
+The contrapositive argument:
+1. Assume neg(G phi) in MCS at x, i.e., F(neg phi) in x.val.world
+2. By canonical_forward_F, get witness s : CanonicalMCS with x.val < s and neg(phi) in s.world
+3. By Zorn (canonicalMCS_in_some_flag), s is in some Flag F'
+4. Since h_sat quantifies over ALL Flags, we need F' ∈ B.flags
 
-The satisfaction relation `satisfies_at ... φ.all_future` quantifies over x' IN THE SAME FLAG,
-but the F(neg phi) witness may exist outside the Flag.
-
-**Possible Fixes**:
-1. Strengthen FlagBFMCS to include "temporally closed" Flags where F/P witnesses are internal
-2. Use a different satisfaction relation that quantifies across Flags for temporal operators
-3. Prove that maximal chains (Flags) are "dense enough" to contain witnesses
-
-For now, this remains as a well-documented architectural gap. The Box case IS complete.
+For this proof to work, we require B.flags to contain a Flag containing s.
+This is guaranteed when B.flags = Set.univ (all Flags).
 -/
-theorem mem_of_satisfies_at_all_future (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
+theorem mem_of_satisfies_at_all_future (B : FlagBFMCS) (h_complete : B.temporally_complete)
+    (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
     (x : ChainFMCSDomain F) (φ : Formula)
-    (ih : ∀ (x' : ChainFMCSDomain F), satisfies_at B F hF x' φ ↔ φ ∈ (chainFMCS F).mcs x')
+    (ih : ∀ (F' : Flag CanonicalMCS) (hF' : F' ∈ B.flags) (x' : ChainFMCSDomain F'),
+      satisfies_at B F' hF' x' φ ↔ φ ∈ (chainFMCS F').mcs x')
     (h_sat : satisfies_at B F hF x φ.all_future) :
     φ.all_future ∈ (chainFMCS F).mcs x := by
   have h_mcs := chainFMCS_is_mcs F x
   rcases SetMaximalConsistent.negation_complete h_mcs φ.all_future with h_G | h_neg_G
   · exact h_G
-  · -- BLOCKED: F(neg phi) witness may not be in the same Flag
-    -- See docstring for detailed explanation
-    sorry
+  · -- Contrapositive: neg(G phi) in MCS, derive contradiction
+    -- Step 1: neg(G phi) implies F(neg phi) by temporal duality
+    simp only [chainFMCS_mcs] at h_neg_G
+    have h_F : (φ.neg).some_future ∈ x.val.world :=
+      neg_all_future_to_some_future_neg x.val.world x.val.is_mcs φ h_neg_G
+
+    -- Step 2: Get witness s in CanonicalMCS with neg(phi) in s.world
+    obtain ⟨W, h_W_mcs, h_R, h_neg_phi⟩ := canonical_forward_F x.val.world x.val.is_mcs φ.neg h_F
+    let s : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
+    have h_lt : x.val < s := CanonicalMCS.lt_of_canonicalR x.val s h_R
+
+    -- Step 3: s is in some Flag F' in B.flags (by temporal completeness)
+    obtain ⟨F', hF', h_s_in_F'⟩ := h_complete s
+
+    -- Step 4: Construct position x' in F' corresponding to s
+    let x' : ChainFMCSDomain F' := ⟨s, h_s_in_F'⟩
+
+    -- Step 5: By h_sat (cross-Flag), phi must be satisfied at x'
+    simp only [satisfies_at] at h_sat
+    have h_sat_x' : satisfies_at B F' hF' x' φ := h_sat F' hF' x' h_lt
+
+    -- Step 6: By IH, phi ∈ s.world
+    have h_phi : φ ∈ s.world := by
+      rw [ih F' hF' x'] at h_sat_x'
+      simp only [chainFMCS, chainFMCS_mcs] at h_sat_x'
+      exact h_sat_x'
+
+    -- Step 7: Contradiction: both phi and neg(phi) in s.world
+    exact absurd h_phi (set_consistent_not_both s.is_mcs.1 φ · h_neg_phi)
 
 /--
 Truth lemma for H (all_past) backward: H phi in MCS implies satisfied.
+
+**Cross-Flag version (Task 1005)**: Now quantifies over all Flags in B.flags.
+Uses h_content_propagation to bridge from H(phi) in x.val.world to phi in x'.val.world.
 -/
 theorem satisfies_at_all_past_of_mem (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
     (x : ChainFMCSDomain F) (φ : Formula)
-    (ih : ∀ (x' : ChainFMCSDomain F), satisfies_at B F hF x' φ ↔ φ ∈ (chainFMCS F).mcs x')
+    (ih : ∀ (F' : Flag CanonicalMCS) (hF' : F' ∈ B.flags) (x' : ChainFMCSDomain F'),
+      satisfies_at B F' hF' x' φ ↔ φ ∈ (chainFMCS F').mcs x')
     (h_mem : φ.all_past ∈ (chainFMCS F).mcs x) :
     satisfies_at B F hF x φ.all_past := by
   simp only [satisfies_at]
-  intro x' h_lt
-  rw [ih x']
-  exact chainFMCS_backward_H F x x' φ h_lt h_mem
+  intro F' hF' x' h_lt
+  rw [ih F' hF' x']
+  -- H(φ) ∈ x.val.world and x'.val < x.val, so φ ∈ x'.val.world
+  simp only [chainFMCS, chainFMCS_mcs]
+  simp only [chainFMCS, chainFMCS_mcs] at h_mem
+  exact h_content_propagation x.val x'.val φ h_mem h_lt
 
 /--
 Truth lemma for H (all_past) forward: satisfied implies H phi in MCS.
 
-**ARCHITECTURAL GAP**: Same issue as `mem_of_satisfies_at_all_future`.
+**Cross-Flag version (Task 1005)**: Symmetric to mem_of_satisfies_at_all_future.
 
-The contrapositive argument needs:
-1. neg(H phi) = P(neg phi) in MCS at x
-2. By temporal duality, this implies a witness x' < x with neg(phi) in x'.mcs
-3. But `chainFMCS_backward_P_in_CanonicalMCS` only guarantees the witness exists in CanonicalMCS,
-   not necessarily in the same Flag.
-
-See `mem_of_satisfies_at_all_future` docstring for detailed analysis and possible fixes.
+The contrapositive argument:
+1. Assume neg(H phi) in MCS at x, i.e., P(neg phi) in x.val.world
+2. By canonical_backward_P, get witness s : CanonicalMCS with s < x.val and neg(phi) in s.world
+3. By Zorn (canonicalMCS_in_some_flag), s is in some Flag F'
+4. Since h_sat quantifies over ALL Flags, we need F' ∈ B.flags
 -/
-theorem mem_of_satisfies_at_all_past (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
+theorem mem_of_satisfies_at_all_past (B : FlagBFMCS) (h_complete : B.temporally_complete)
+    (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
     (x : ChainFMCSDomain F) (φ : Formula)
-    (ih : ∀ (x' : ChainFMCSDomain F), satisfies_at B F hF x' φ ↔ φ ∈ (chainFMCS F).mcs x')
+    (ih : ∀ (F' : Flag CanonicalMCS) (hF' : F' ∈ B.flags) (x' : ChainFMCSDomain F'),
+      satisfies_at B F' hF' x' φ ↔ φ ∈ (chainFMCS F').mcs x')
     (h_sat : satisfies_at B F hF x φ.all_past) :
     φ.all_past ∈ (chainFMCS F).mcs x := by
   have h_mcs := chainFMCS_is_mcs F x
   rcases SetMaximalConsistent.negation_complete h_mcs φ.all_past with h_H | h_neg_H
   · exact h_H
-  · -- BLOCKED: P(neg phi) witness may not be in the same Flag
-    -- See docstring and mem_of_satisfies_at_all_future for detailed explanation
-    sorry
+  · -- Contrapositive: neg(H phi) in MCS, derive contradiction
+    -- Step 1: neg(H phi) implies P(neg phi) by temporal duality
+    simp only [chainFMCS_mcs] at h_neg_H
+    have h_P : (φ.neg).some_past ∈ x.val.world :=
+      neg_all_past_to_some_past_neg x.val.world x.val.is_mcs φ h_neg_H
+
+    -- Step 2: Get witness s in CanonicalMCS with neg(phi) in s.world
+    obtain ⟨W, h_W_mcs, h_R_past, h_neg_phi⟩ := canonical_backward_P x.val.world x.val.is_mcs φ.neg h_P
+    let s : CanonicalMCS := { world := W, is_mcs := h_W_mcs }
+    have h_lt : s < x.val := CanonicalMCS.lt_of_canonicalR_past x.val s h_R_past
+
+    -- Step 3: s is in some Flag F' in B.flags (by temporal completeness)
+    obtain ⟨F', hF', h_s_in_F'⟩ := h_complete s
+
+    -- Step 4: Construct position x' in F' corresponding to s
+    let x' : ChainFMCSDomain F' := ⟨s, h_s_in_F'⟩
+
+    -- Step 5: By h_sat (cross-Flag), phi must be satisfied at x'
+    simp only [satisfies_at] at h_sat
+    have h_sat_x' : satisfies_at B F' hF' x' φ := h_sat F' hF' x' h_lt
+
+    -- Step 6: By IH, phi ∈ s.world
+    have h_phi : φ ∈ s.world := by
+      rw [ih F' hF' x'] at h_sat_x'
+      simp only [chainFMCS, chainFMCS_mcs] at h_sat_x'
+      exact h_sat_x'
+
+    -- Step 7: Contradiction: both phi and neg(phi) in s.world
+    exact absurd h_phi (set_consistent_not_both s.is_mcs.1 φ · h_neg_phi)
 
 /-!
 ## Truth Lemma: Modal Cases
@@ -409,8 +539,12 @@ For any position (F, x) in a FlagBFMCS and any formula phi:
   phi in (chainFMCS F).mcs x ↔ satisfies_at B F hF x phi
 
 This is proven by induction on the formula structure.
+
+**Note (Task 1005)**: Requires `h_complete : B.temporally_complete` to ensure that
+temporal witnesses (from F/P operators) can be found within B.flags.
 -/
-theorem satisfies_at_iff_mem (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
+theorem satisfies_at_iff_mem (B : FlagBFMCS) (h_complete : B.temporally_complete)
+    (F : Flag CanonicalMCS) (hF : F ∈ B.flags)
     (x : ChainFMCSDomain F) (φ : Formula) :
     satisfies_at B F hF x φ ↔ φ ∈ (chainFMCS F).mcs x := by
   induction φ generalizing F x with
@@ -428,11 +562,11 @@ theorem satisfies_at_iff_mem (B : FlagBFMCS) (F : Flag CanonicalMCS) (hF : F ∈
     · exact satisfies_at_box_of_mem B F hF x ψ (fun F' hF' x' => ih F' hF' x')
   | all_future ψ ih =>
     constructor
-    · exact mem_of_satisfies_at_all_future B F hF x ψ (fun x' => ih F hF x')
-    · exact satisfies_at_all_future_of_mem B F hF x ψ (fun x' => ih F hF x')
+    · exact mem_of_satisfies_at_all_future B h_complete F hF x ψ (fun F' hF' x' => ih F' hF' x')
+    · exact satisfies_at_all_future_of_mem B F hF x ψ (fun F' hF' x' => ih F' hF' x')
   | all_past ψ ih =>
     constructor
-    · exact mem_of_satisfies_at_all_past B F hF x ψ (fun x' => ih F hF x')
-    · exact satisfies_at_all_past_of_mem B F hF x ψ (fun x' => ih F hF x')
+    · exact mem_of_satisfies_at_all_past B h_complete F hF x ψ (fun F' hF' x' => ih F' hF' x')
+    · exact satisfies_at_all_past_of_mem B F hF x ψ (fun F' hF' x' => ih F' hF' x')
 
 end Bimodal.Metalogic.Bundle
