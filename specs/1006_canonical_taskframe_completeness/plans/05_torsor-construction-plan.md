@@ -65,7 +65,7 @@ From `12_torsor-construction-full.md`:
 
 ## Implementation Phases
 
-### Phase 1: Rigidity Theorem [NOT STARTED]
+### Phase 1: Rigidity Theorem [BLOCKED]
 
 **Goal**: Prove that any order automorphism fixing a point is the identity.
 
