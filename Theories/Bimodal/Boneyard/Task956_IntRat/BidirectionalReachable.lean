@@ -1,7 +1,7 @@
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.CanonicalFrame
 import Bimodal.Metalogic.Completeness
-import Bimodal.Metalogic.Bundle.TemporalCoherentConstruction
+import Bimodal.Boneyard.Task970.TemporalCoherentConstruction
 import Mathlib.Order.Antisymmetrization
 
 /-!

@@ -37,7 +37,7 @@ technical_debt:
 
 ### 1006. Replace FlagBFMCS satisfies_at with canonical TaskFrame using truth_at
 - **Effort**: 8-12 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task #1003
 - **Research**:
@@ -53,9 +53,13 @@ technical_debt:
   - [10_team-research.md](1006_canonical_taskframe_completeness/reports/10_team-research.md)
   - [11_team-research.md](1006_canonical_taskframe_completeness/reports/11_team-research.md)
   - [12_torsor-construction-full.md](1006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md)
+  - [13_rigidity-counterexample-analysis.md](1006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md)
+  - [14_d-polymorphism-dense-discrete.md](1006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md)
+  - [15_completeness-module-structure.md](1006_canonical_taskframe_completeness/reports/15_completeness-module-structure.md)
 - **Plan**:
   - [04_three-completeness-plan.md](1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md)
   - [05_torsor-construction-plan.md](1006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md)
+  - [06_cantor-transfer-plan.md](1006_canonical_taskframe_completeness/plans/06_cantor-transfer-plan.md)
 
 **Description**: Replace the internal `satisfies_at` relation in FlagBFMCS completeness with the official `truth_at` from the semantic layer. Construct a canonical TaskFrame directly from FlagBFMCS data: (1) canonical world states from CanonicalMCS, (2) duration domain D parametrically from Flag chain positions, (3) task relation R from CanonicalR, (4) WorldHistory instances from Flags (each Flag maps durations to world states), (5) canonical TaskFrame and TaskModel, (6) truth lemma for truth_at directly, (7) completeness theorem using canonical `valid`. Supersedes validity bridge approach in task 997.
 

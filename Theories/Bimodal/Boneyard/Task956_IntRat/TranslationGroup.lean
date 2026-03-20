@@ -1,4 +1,4 @@
-import Bimodal.Metalogic.Bundle.BidirectionalReachable
+import Bimodal.Boneyard.Task956_IntRat.BidirectionalReachable
 import Bimodal.Semantics.TaskFrame
 import Mathlib.Algebra.Order.Group.End
 import Mathlib.Algebra.Group.TypeTags.Basic
