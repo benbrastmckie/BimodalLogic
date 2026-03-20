@@ -17,6 +17,12 @@
 Updated by /todo command during task archival.
 -->
 
+### 2026-03-19
+
+- **Task 1004**: Fixed FlagBFMCS temporal completeness gap by implementing allFlagsBFMCS construction using Set.univ instead of closedFlags. Completeness theorem compiles without sorries and is wired into the build via Metalogic.lean.
+  - *Rationale*: The truth lemma required `temporally_complete` (every CanonicalMCS in some Flag), but closedFlags only provided modal saturation. Using Set.univ (all Flags) provides trivial temporal completeness.
+  - *References*: [summary](specs/archive/1004_dovetailing_chain_fp_witnesses/summaries/02_temporal-completeness-summary.md)
+
 ### 2026-03-16
 
 - **Review 2026-03-16 (Comprehensive)**: Full metalogic assessment. Zero sorries on publication path (soundness, decidability, dense completeness components). 1 custom axiom (`discrete_Icc_finite_axiom`, documented debt). 16 sorries total: 3 wiring, 13 examples. Build passes (1001 jobs).

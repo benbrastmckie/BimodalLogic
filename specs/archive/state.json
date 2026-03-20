@@ -10596,6 +10596,67 @@
       "completed": "2026-03-20T00:15:58Z",
       "completion_summary": "Resolved 2 sorries in FlagBFMCSTruthLemma.lean by implementing cross-Flag temporal satisfaction. Modified satisfies_at definition to quantify G/H across all Flags, added temporal completeness property, and updated all temporal proofs.",
       "archived": "2026-03-20T00:20:36Z"
+    },
+    {
+      "project_number": 1004,
+      "project_name": "dovetailing_chain_fp_witnesses",
+      "status": "completed",
+      "language": "lean4",
+      "created": "2026-03-19T21:21:33Z",
+      "last_updated": "2026-03-20T00:40:43Z",
+      "depends_on": [
+        1003
+      ],
+      "description": "Fix the CRITICAL gap in FlagBFMCS completeness: FlagBFMCSCompleteness.lean has unsolved goal B.temporally_complete at line 52. The truth lemma requires temporally_complete (every CanonicalMCS in some Flag), but closedFlags only provides modal saturation. Two options: (A) prove closedFlags_temporally_complete, or (B) use Set.univ (all Flags) for trivial temporal completeness.",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md",
+          "summary": "Analysis of IntBFMCS F/P witness sorries with enriched dovetailing chain solution using existing Cantor pairing infrastructure"
+        },
+        {
+          "type": "summary",
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/summaries/01_dovetailing-chain-summary.md",
+          "summary": "Implementation summary documenting fundamental architectural limitation in linear chain constructions"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research (2 teammates): confirmed F/P persistence is fundamental limitation, recommended CanonicalFMCS approach"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/05_team-research.md",
+          "type": "research",
+          "summary": "Team research round 2: semantic foundations - world states vs durations vs histories, Thomason/Prior/Ockhamist analysis"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/06_semantic-bridge-evaluation.md",
+          "type": "research",
+          "summary": "Evaluates bridge vs refactor approaches; concludes bridge is mathematically standard and correct"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/07_post-completion-evaluation.md",
+          "type": "research",
+          "summary": "CRITICAL: FlagBFMCS completeness broken; temporally_complete gap discovered; task revision recommended"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/plans/03_temporal-completeness-plan.md",
+          "type": "plan",
+          "summary": "4-phase plan to fix temporal completeness gap in FlagBFMCS (v3)"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/summaries/02_temporal-completeness-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting the allFlagsBFMCS solution"
+        }
+      ],
+      "session_id": "sess_1773966771_877a84",
+      "researched": "2026-03-20T00:28:49Z",
+      "planned": "2026-03-20T00:31:49Z",
+      "started": "2026-03-19T21:54:24Z",
+      "completed": "2026-03-20T00:40:43Z",
+      "completion_summary": "Fixed FlagBFMCS temporal completeness gap by implementing allFlagsBFMCS construction using Set.univ instead of closedFlags. The completeness theorem now compiles without sorries and is wired into the build via Metalogic.lean.",
+      "archived": "2026-03-20T01:30:45Z"
     }
   ]
 }

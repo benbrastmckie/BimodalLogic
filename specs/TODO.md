@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-19T23:50:22Z
 task_counts:
-  active: 11
-  completed: 693
+  active: 10
+  completed: 694
   in_progress: 1
   not_started: 4
   abandoned: 47
@@ -31,29 +31,7 @@ technical_debt:
 4. **999** → implement (F→FF derivation, small, anytime)
 5. **949** → implement (update Demo.lean, small, anytime)
 6. **992** → implement (STSA representation theorem, after completeness)
-7. **1004** → implement (semantic bridge, 1003 complete)
-
 ## Tasks
-### 1004. Complete FlagBFMCS temporal completeness
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Dependencies**: Task #1003 (FlagBFMCS implementation) [COMPLETED]
-- **Completed**: 2026-03-19
-- **Research**:
-  - [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
-  - [02_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/02_team-research.md) (F/P persistence limitation)
-  - [05_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/05_team-research.md) (semantic foundations)
-  - [06_semantic-bridge-evaluation.md](1004_dovetailing_chain_fp_witnesses/reports/06_semantic-bridge-evaluation.md) (bridge vs refactor analysis)
-  - [07_post-completion-evaluation.md](1004_dovetailing_chain_fp_witnesses/reports/07_post-completion-evaluation.md) (CRITICAL: temporal completeness gap)
-- **Plan**:
-  - [01_dovetailing-chain-plan.md](1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md) (v1: OBSOLETE - dovetailing impossible)
-  - [02_semantic-bridge-plan.md](1004_dovetailing_chain_fp_witnesses/plans/02_semantic-bridge-plan.md) (v2: OBSOLETE - premature)
-  - [03_temporal-completeness-plan.md](1004_dovetailing_chain_fp_witnesses/plans/03_temporal-completeness-plan.md) (v3: fix temporal completeness gap)
-- **Summary**: [02_temporal-completeness-summary.md](1004_dovetailing_chain_fp_witnesses/summaries/02_temporal-completeness-summary.md)
-
-**Description**: Fix the CRITICAL gap in FlagBFMCS completeness: `FlagBFMCSCompleteness.lean` has unsolved goal `⊢ B.temporally_complete` at line 52. The truth lemma requires `temporally_complete` (every CanonicalMCS in some Flag), but `closedFlags` only provides modal saturation. Two options: (A) prove `closedFlags_temporally_complete`, or (B) use `Set.univ` (all Flags) for trivial temporal completeness. The semantic bridge is deferred until this infrastructure works.
-
 ### 999. Derive F(phi) → FF(phi) from density axiom
 - **Effort**: TBD (estimated 2-4 hours)
 - **Status**: [NOT STARTED]
