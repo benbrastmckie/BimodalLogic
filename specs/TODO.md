@@ -34,22 +34,24 @@ technical_debt:
 7. **1004** → implement (semantic bridge, 1003 complete)
 
 ## Tasks
-### 1004. Build semantic bridge from FlagBFMCS to WorldHistory
-- **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+### 1004. Complete FlagBFMCS temporal completeness
+- **Effort**: 4-6 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
-- **Dependencies**: Task #1003 (FlagBFMCS implementation)
+- **Dependencies**: Task #1003 (FlagBFMCS implementation) [COMPLETED]
 - **Research**:
   - [01_dovetailing-chain-research.md](1004_dovetailing_chain_fp_witnesses/reports/01_dovetailing-chain-research.md)
   - [02_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/02_team-research.md) (F/P persistence limitation)
   - [05_team-research.md](1004_dovetailing_chain_fp_witnesses/reports/05_team-research.md) (semantic foundations)
   - [06_semantic-bridge-evaluation.md](1004_dovetailing_chain_fp_witnesses/reports/06_semantic-bridge-evaluation.md) (bridge vs refactor analysis)
+  - [07_post-completion-evaluation.md](1004_dovetailing_chain_fp_witnesses/reports/07_post-completion-evaluation.md) (CRITICAL: temporal completeness gap)
 - **Plan**:
-  - [01_dovetailing-chain-plan.md](1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md) (v1: OBSOLETE - dovetailing approach impossible)
-  - [02_semantic-bridge-plan.md](1004_dovetailing_chain_fp_witnesses/plans/02_semantic-bridge-plan.md) (v2: semantic bridge approach)
+  - [01_dovetailing-chain-plan.md](1004_dovetailing_chain_fp_witnesses/plans/01_dovetailing-chain-plan.md) (v1: OBSOLETE - dovetailing impossible)
+  - [02_semantic-bridge-plan.md](1004_dovetailing_chain_fp_witnesses/plans/02_semantic-bridge-plan.md) (v2: OBSOLETE - premature)
+  - [03_temporal-completeness-plan.md](1004_dovetailing_chain_fp_witnesses/plans/03_temporal-completeness-plan.md) (v3: fix temporal completeness gap)
 - **Summary**: [01_dovetailing-chain-summary.md](1004_dovetailing_chain_fp_witnesses/summaries/01_dovetailing-chain-summary.md)
 
-**Description**: Build a semantic bridge connecting FlagBFMCS (metalogic) to WorldHistory (semantics). Research established that IntBFMCS F/P sorries are a FUNDAMENTAL LIMITATION of linear chain constructions - they cannot be proven. The revised approach: (1) Document IntBFMCS F/P sorries as limitations not blockers, (2) Define CanonicalTaskFrame with WorldState = CanonicalMCS, (3) Construct Flag-to-History embedding, (4) Prove truth preservation between metalogic satisfaction and WorldHistory truth. This follows standard proof theory architecture where completeness IS the bridge between syntax and semantics - separation of layers is a feature, not a bug.
+**Description**: Fix the CRITICAL gap in FlagBFMCS completeness: `FlagBFMCSCompleteness.lean` has unsolved goal `⊢ B.temporally_complete` at line 52. The truth lemma requires `temporally_complete` (every CanonicalMCS in some Flag), but `closedFlags` only provides modal saturation. Two options: (A) prove `closedFlags_temporally_complete`, or (B) use `Set.univ` (all Flags) for trivial temporal completeness. The semantic bridge is deferred until this infrastructure works.
 
 ### 999. Derive F(phi) → FF(phi) from density axiom
 - **Effort**: TBD (estimated 2-4 hours)
