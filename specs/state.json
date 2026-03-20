@@ -363,10 +363,10 @@
     {
       "project_number": 1004,
       "project_name": "dovetailing_chain_fp_witnesses",
-      "status": "planned",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-19T21:21:33Z",
-      "last_updated": "2026-03-19T23:32:50Z",
+      "last_updated": "2026-03-20T00:28:49Z",
       "depends_on": [
         1003
       ],
@@ -401,10 +401,15 @@
           "path": "specs/1004_dovetailing_chain_fp_witnesses/plans/02_semantic-bridge-plan.md",
           "type": "plan",
           "summary": "5-phase semantic bridge plan: document IntBFMCS limitation, build CanonicalTaskFrame, prove truth preservation"
+        },
+        {
+          "path": "specs/1004_dovetailing_chain_fp_witnesses/reports/07_post-completion-evaluation.md",
+          "type": "research",
+          "summary": "CRITICAL: FlagBFMCS completeness broken; temporally_complete gap discovered; task revision recommended"
         }
       ],
-      "session_id": "sess_1773962714_708376",
-      "researched": "2026-03-19T23:29:08Z",
+      "session_id": "sess_1773966127_39c93c",
+      "researched": "2026-03-20T00:28:49Z",
       "planned": "2026-03-19T23:32:50Z",
       "started": "2026-03-19T21:54:24Z"
     }

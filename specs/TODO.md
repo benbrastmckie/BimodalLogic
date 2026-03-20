@@ -36,7 +36,7 @@ technical_debt:
 ## Tasks
 ### 1004. Build semantic bridge from FlagBFMCS to WorldHistory
 - **Effort**: 6-8 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task #1003 (FlagBFMCS implementation)
 - **Research**:
