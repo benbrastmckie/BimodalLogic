@@ -5,12 +5,12 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-19T23:50:22Z
 task_counts:
-  active: 12
-  completed: 691
-  in_progress: 2
+  active: 11
+  completed: 693
+  in_progress: 1
   not_started: 4
   abandoned: 47
-  total: 750
+  total: 752
 technical_debt:
   sorry_count: 16
   sorry_count_note: "Excluding Boneyard: 3 wiring (FrameConditions/Completeness), 13 examples"
@@ -34,20 +34,6 @@ technical_debt:
 7. **1004** → implement (semantic bridge, 1003 complete)
 
 ## Tasks
-### 1005. Resolve FlagBFMCS temporal truth lemma sorries
-- **Effort**: 4-6 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Dependencies**: Task #1003
-- **Parent**: Task #1003
-- **Started**: 2026-03-19
-- **Completed**: 2026-03-19
-- **Research**: [01_temporal-truth-resolution.md](1005_resolve_flagbfmcs_temporal_truth_lemma/reports/01_temporal-truth-resolution.md)
-- **Plan**: [01_cross-flag-temporal.md](1005_resolve_flagbfmcs_temporal_truth_lemma/plans/01_cross-flag-temporal.md)
-- **Summary**: [01_cross-flag-temporal-summary.md](1005_resolve_flagbfmcs_temporal_truth_lemma/summaries/01_cross-flag-temporal-summary.md)
-
-**Description**: Resolve the 2 remaining sorries in FlagBFMCSTruthLemma.lean — mem_of_satisfies_at_all_future and mem_of_satisfies_at_all_past — which are blocked by an architectural gap: F/P witnesses from chainFMCS_forward_F_in_CanonicalMCS may exist outside the current Flag, so the contrapositive argument cannot be completed within same-Flag semantics. Three resolution paths: (A) extend closedFlags with temporal witness closure, (B) cross-Flag temporal satisfaction relation, (C) accept partial completeness.
-
 ### 1004. Build semantic bridge from FlagBFMCS to WorldHistory
 - **Effort**: 6-8 hours
 - **Status**: [PLANNED]
@@ -64,30 +50,6 @@ technical_debt:
 - **Summary**: [01_dovetailing-chain-summary.md](1004_dovetailing_chain_fp_witnesses/summaries/01_dovetailing-chain-summary.md)
 
 **Description**: Build a semantic bridge connecting FlagBFMCS (metalogic) to WorldHistory (semantics). Research established that IntBFMCS F/P sorries are a FUNDAMENTAL LIMITATION of linear chain constructions - they cannot be proven. The revised approach: (1) Document IntBFMCS F/P sorries as limitations not blockers, (2) Define CanonicalTaskFrame with WorldState = CanonicalMCS, (3) Construct Flag-to-History embedding, (4) Prove truth preservation between metalogic satisfaction and WorldHistory truth. This follows standard proof theory architecture where completeness IS the bridge between syntax and semantics - separation of layers is a feature, not a bug.
-
----
-
-### 1003. Implement Sorry-Free Multi-Family Modal Coherence
-- **Effort**: 8 hours
-- **Status**: [COMPLETED]
-- **Language**: lean
-- **Dependencies**: Task #1002, Task #1005
-- **Parent Task**: #988
-- **Completed**: 2026-03-19
-- **Research**:
-  - [16_spawn-analysis.md](988_dense_algebraic_completeness/reports/16_spawn-analysis.md)
-  - [02_design-integration-research.md](1003_implement_modal_coherence/reports/02_design-integration-research.md)
-  - [03_blocker-analysis.md](1003_implement_modal_coherence/reports/03_blocker-analysis.md)
-  - [04_team-research.md](1003_implement_modal_coherence/reports/04_team-research.md) (team: FlagBFMCS architecture recommendation)
-- **Plan**:
-  - [01_modal-coherence-plan.md](1003_implement_modal_coherence/plans/01_modal-coherence-plan.md) (v1: OBSOLETE - singleton approach)
-  - [02_multi-family-plan.md](1003_implement_modal_coherence/plans/02_multi-family-plan.md) (v2: BLOCKED - multi-family over CanonicalMCS)
-  - [03_flagbfmcs-plan.md](1003_implement_modal_coherence/plans/03_flagbfmcs-plan.md) (v3: FlagBFMCS architecture)
-- **Summary**: [03_flagbfmcs-summary.md](1003_implement_modal_coherence/summaries/03_flagbfmcs-summary.md)
-
-**Description**: Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).
-
----
 
 ### 999. Derive F(phi) → FF(phi) from density axiom
 - **Effort**: TBD (estimated 2-4 hours)

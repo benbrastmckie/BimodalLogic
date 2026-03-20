@@ -6,42 +6,6 @@
   },
   "active_projects": [
     {
-      "project_number": 1005,
-      "project_name": "resolve_flagbfmcs_temporal_truth_lemma",
-      "status": "completed",
-      "language": "lean4",
-      "description": "Resolve the 2 remaining sorries in FlagBFMCSTruthLemma.lean — mem_of_satisfies_at_all_future and mem_of_satisfies_at_all_past — which are blocked by an architectural gap: F/P witnesses from chainFMCS_forward_F_in_CanonicalMCS may exist outside the current Flag, so the contrapositive argument cannot be completed within same-Flag semantics. Three resolution paths identified: (A) extend closedFlags construction to include temporal witness closure ensuring F/P witnesses land in the same Flag, (B) change the satisfaction relation to quantify temporal operators across all Flags (cross-Flag temporal satisfaction, more aligned with standard bundle semantics), (C) accept partial completeness with modal cases proven and document temporal gaps.",
-      "parent_task": 1003,
-      "dependencies": [
-        1003
-      ],
-      "created": "2026-03-19T23:47:43Z",
-      "last_updated": "2026-03-20T00:15:58Z",
-      "session_id": "sess_1773965028_eca40d",
-      "researched": "2026-03-19T23:54:20Z",
-      "artifacts": [
-        {
-          "path": "specs/1005_resolve_flagbfmcs_temporal_truth_lemma/reports/01_temporal-truth-resolution.md",
-          "type": "research",
-          "summary": "Analysis of temporal truth lemma sorries with recommendation for Path B (Cross-Flag Temporal Satisfaction)"
-        },
-        {
-          "path": "specs/1005_resolve_flagbfmcs_temporal_truth_lemma/plans/01_cross-flag-temporal.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for cross-Flag temporal satisfaction (Path B)"
-        },
-        {
-          "path": "specs/1005_resolve_flagbfmcs_temporal_truth_lemma/summaries/01_cross-flag-temporal-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting cross-Flag temporal satisfaction approach"
-        }
-      ],
-      "planned": "2026-03-20T00:01:09Z",
-      "started": "2026-03-20T00:04:06Z",
-      "completed": "2026-03-20T00:15:58Z",
-      "completion_summary": "Resolved 2 sorries in FlagBFMCSTruthLemma.lean by implementing cross-Flag temporal satisfaction. Modified satisfies_at definition to quantify G/H across all Flags, added temporal completeness property, and updated all temporal proofs."
-    },
-    {
       "project_number": 999,
       "project_name": "derive_f_to_ff_from_density_axiom",
       "status": "not_started",
@@ -395,92 +359,6 @@
           "summary": "Comprehensive architecture analysis with Feb 2026 best practices comparison and 7 prioritized upgrade recommendations"
         }
       ]
-    },
-    {
-      "project_number": 1003,
-      "project_name": "implement_modal_coherence",
-      "status": "completed",
-      "language": "lean",
-      "description": "Implement the modal witness infrastructure designed in the prerequisite task, providing sorry-free proofs of modal_forward and modal_backward for a multi-family BFMCS over CanonicalMCS. This implementation will: (1) Define DiamondWitness structure tracking Diamond obligations and their witness families, (2) Implement ModalWitnessFamily construction using Lindenbaum on {psi} union BoxContent(M), (3) Define ModallyClosedBFMCS that includes all required witness families, (4) Prove modal_forward (straightforward from T-axiom), (5) Prove modal_backward using the contrapositive argument with witness families, (6) Provide integration point for Phase 3 (Cantor isomorphism to Rat domain).",
-      "effort": "6-8 hours",
-      "parent_task": 988,
-      "dependencies": [
-        1002
-      ],
-      "created": "2026-03-19T19:22:33Z",
-      "last_updated": "2026-03-20T00:18:29Z",
-      "artifacts": [
-        {
-          "type": "research",
-          "path": "specs/988_dense_algebraic_completeness/reports/16_spawn-analysis.md",
-          "summary": "Spawn analysis from parent task 988"
-        },
-        {
-          "path": "specs/1003_implement_modal_coherence/reports/02_design-integration-research.md",
-          "type": "research",
-          "summary": "Design integration research verifying Task 1002 design against existing infrastructure; confirms all components exist, sorry-free path identified"
-        },
-        {
-          "path": "Theories/Bimodal/Metalogic/Bundle/ModalWitnessData.lean",
-          "type": "implementation",
-          "summary": "Modal witness data structure and helpers (sorry-free)"
-        },
-        {
-          "path": "specs/1003_implement_modal_coherence/summaries/01_modal-coherence-summary.md",
-          "type": "summary",
-          "summary": "Implementation summary documenting blocker and partial progress"
-        },
-        {
-          "path": "specs/1003_implement_modal_coherence/reports/03_blocker-analysis.md",
-          "type": "research",
-          "summary": "Deep analysis of is_modally_saturated semantics, verification of singleton bundle failure, and multi-family BFMCS path forward"
-        },
-        {
-          "type": "implementation",
-          "path": "Theories/Bimodal/Metalogic/Bundle/WitnessFamilyBundle.lean",
-          "summary": "Witness obligation tracking and construction infrastructure (sorry-free)"
-        },
-        {
-          "type": "implementation",
-          "path": "Theories/Bimodal/Metalogic/Bundle/ClosedFlagBundle.lean",
-          "summary": "Multi-flag closure construction for modal saturation (sorry-free)"
-        },
-        {
-          "type": "implementation",
-          "path": "Theories/Bimodal/Metalogic/Bundle/SaturatedBFMCSConstruction.lean",
-          "summary": "MCS-level saturation and modal forward proof (sorry-free)"
-        },
-        {
-          "type": "summary",
-          "path": "specs/1003_implement_modal_coherence/summaries/02_multi-family-summary.md",
-          "summary": "Implementation summary: MCS-level saturation achieved, singleton BFMCS approach proven mathematically impossible"
-        },
-        {
-          "type": "research",
-          "path": "specs/1003_implement_modal_coherence/reports/04_team-research.md",
-          "summary": "Team research (2 agents): FlagBFMCS architecture recommended; proves constant families impossible without temporal T-axioms; identifies closedFlags as correct saturation content"
-        },
-        {
-          "type": "plan",
-          "path": "specs/1003_implement_modal_coherence/plans/03_flagbfmcs-plan.md",
-          "summary": "5-phase FlagBFMCS implementation plan (v3: correct architecture)"
-        },
-        {
-          "path": "specs/1003_implement_modal_coherence/summaries/03_flagbfmcs-summary.md",
-          "type": "summary",
-          "summary": "Final implementation summary documenting Phase 4 completion and remaining architectural gaps"
-        }
-      ],
-      "session_id": "sess_1773962016_603893",
-      "researched": "2026-03-19T23:02:19Z",
-      "planned": "2026-03-19T23:11:45Z",
-      "started": "2026-03-19T21:17:23Z",
-      "depends_on": [
-        1002,
-        1005
-      ],
-      "completed": "2026-03-20T00:18:29Z",
-      "completion_summary": "Implemented sorry-free FlagBFMCS modal completeness: FlagBFMCS structure with Flag-indexed semantics, canonicalFlagBFMCS construction using closedFlags, full truth lemma (atom, neg, conj, box, diamond, temporal operators), and completeness theorem wiring. Task 1005 resolved the temporal truth lemma sorries (mem_of_satisfies_at_all_future/past)."
     },
     {
       "project_number": 1004,
