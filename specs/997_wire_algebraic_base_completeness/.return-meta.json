@@ -1,28 +1,34 @@
 {
   "status": "research_done",
   "started_at": "2026-03-19T10:00:00Z",
-  "completed_at": "2026-03-19T10:45:00Z",
+  "completed_at": "2026-03-19T12:30:00Z",
   "artifacts": [
     {
       "type": "research",
       "path": "specs/997_wire_algebraic_base_completeness/reports/02_post-flagbfmcs-analysis.md",
       "summary": "Post-FlagBFMCS analysis comparing sorry-free canonical model completeness with algebraic completeness"
+    },
+    {
+      "type": "research",
+      "path": "specs/997_wire_algebraic_base_completeness/reports/03_validity-unification.md",
+      "summary": "Validity definition unification analysis - found ONE canonical `valid`, gap is satisfies_at bridge"
     }
   ],
   "partial_progress": {
     "stage": "research_complete",
-    "details": "Analyzed FlagBFMCS infrastructure (0 sorries), identified bridge gap to TaskFrame validity"
+    "details": "Analyzed validity definitions: ONE canonical `valid` exists; `satisfies_at` is internal construction, not competing validity"
   },
   "metadata": {
-    "session_id": "sess_1773967479_9b7a1c",
+    "session_id": "sess_1773967928_4fdf2d",
     "agent_type": "lean-research-agent",
     "delegation_depth": 2,
     "delegation_path": ["orchestrator", "research", "skill-lean-research", "lean-research-agent"]
   },
   "findings": {
-    "flagbfmcs_status": "sorry-free (0 sorries across 3 files)",
-    "algebraic_status": "3 sorries in active path (modal_backward, forward_F, backward_P)",
-    "gap_identified": "Bridge lemma needed: FlagBFMCS satisfaction <-> TaskFrame validity",
-    "recommended_approach": "Declare FlagBFMCS completeness as primary result; prove equivalence to `valid` predicate"
+    "validity_count": "ONE canonical definition (`valid` in Bimodal.Semantics.Validity)",
+    "satisfies_at_role": "Internal FlagBFMCS construction, NOT a validity definition",
+    "gap_identified": "No bridge lemma connects `satisfies_at` to `truth_at`/`valid`",
+    "type_obstacle": "CanonicalMCS lacks AddCommGroup, cannot directly instantiate TaskFrame",
+    "recommended_approach": "Prove bridge lemma via Int-embedding: FlagBFMCS → TaskFrame Int"
   }
 }
