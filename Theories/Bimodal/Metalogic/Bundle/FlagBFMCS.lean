@@ -224,6 +224,54 @@ theorem canonicalFlagBFMCS_eval_mcs (M0 : CanonicalMCS) :
   FlagBFMCS.eval_mcs_eq_root (canonicalFlagBFMCS M0)
 
 /-!
+## All-Flags FlagBFMCS Construction
+
+Alternative construction using all Flags (Set.univ) instead of closedFlags.
+This provides trivial temporal completeness via canonicalMCS_in_some_flag.
+-/
+
+/--
+FlagBFMCS using all Flags (Set.univ).
+
+Unlike canonicalFlagBFMCS which uses closedFlags (witness-closed subset),
+this construction uses all Flags. The advantage is that temporal completeness
+is trivially satisfied since canonicalMCS_in_some_flag proves every CanonicalMCS
+is in some Flag.
+
+**Properties**:
+- `flags = Set.univ`: All Flags are included
+- `modally_saturated`: Provided by allFlags_closed
+- `temporally_complete`: Trivial via canonicalMCS_in_some_flag
+-/
+noncomputable def allFlagsBFMCS (M0 : CanonicalMCS) : FlagBFMCS where
+  root := M0
+  flags := Set.univ
+  flags_nonempty := by
+    obtain ⟨flag, h_mem⟩ := Flag.exists_mem M0
+    exact ⟨flag, Set.mem_univ flag⟩
+  modally_saturated := allFlags_closed
+  eval_flag := (canonicalMCS_in_some_flag M0).choose
+  eval_flag_mem := Set.mem_univ _
+  root_in_eval_flag := (canonicalMCS_in_some_flag M0).choose_spec
+
+/--
+The root MCS is in the evaluation Flag of allFlagsBFMCS.
+-/
+theorem allFlagsBFMCS_root_in_eval_flag (M0 : CanonicalMCS) :
+    M0 ∈ (allFlagsBFMCS M0).eval_flag :=
+  (allFlagsBFMCS M0).root_in_eval_flag
+
+/--
+The evaluation MCS of allFlagsBFMCS is the root MCS's world.
+-/
+theorem allFlagsBFMCS_eval_mcs (M0 : CanonicalMCS) :
+    (allFlagsBFMCS M0).mcs_at
+      (allFlagsBFMCS M0).eval_flag
+      (allFlagsBFMCS M0).eval_flag_mem
+      (allFlagsBFMCS M0).eval_element = M0.world :=
+  FlagBFMCS.eval_mcs_eq_root (allFlagsBFMCS M0)
+
+/-!
 ## Temporal Coherence Properties
 
 The temporal coherence properties are inherited from chainFMCS for each Flag.

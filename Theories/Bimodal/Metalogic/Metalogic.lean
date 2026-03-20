@@ -2,6 +2,7 @@
 import Bimodal.Metalogic.Soundness
 import Bimodal.Metalogic.Decidability
 import Bimodal.Metalogic.StagedConstruction.Completeness
+import Bimodal.Metalogic.Bundle.FlagBFMCSCompleteness
 
 /-!
 # Bimodal Metalogic

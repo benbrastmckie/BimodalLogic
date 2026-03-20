@@ -66,6 +66,18 @@ theorem allFlags_temporally_complete :
   obtain ⟨F, hM⟩ := canonicalMCS_in_some_flag M
   exact ⟨F, Set.mem_univ F, hM⟩
 
+/--
+The allFlagsBFMCS is temporally complete: every CanonicalMCS is in some Flag in B.flags.
+
+This is trivially true since B.flags = Set.univ and canonicalMCS_in_some_flag
+proves every CanonicalMCS is in some Flag.
+-/
+theorem allFlagsBFMCS_temporally_complete (M0 : CanonicalMCS) :
+    (allFlagsBFMCS M0).temporally_complete := by
+  intro M
+  obtain ⟨F, hM⟩ := canonicalMCS_in_some_flag M
+  exact ⟨F, Set.mem_univ F, hM⟩
+
 /-!
 ## Cross-Flag Temporal Content Propagation (Task 1005)
 

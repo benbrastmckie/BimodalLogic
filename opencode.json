@@ -1,242 +1,242 @@
 {
   "agent": {
-    "spreadsheet": {
-      "prompt": "{file:.opencode/agent/subagents/spreadsheet-agent.md}",
-      "mode": "subagent",
-      "description": "Convert and process spreadsheet files (XLSX, CSV, etc.)",
-      "tools": {
-        "bash": true,
-        "glob": true,
-        "edit": true,
-        "read": true,
-        "write": true,
-        "grep": true
-      }
-    },
-    "typst-research": {
-      "prompt": "{file:.opencode/agent/subagents/typst-research-agent.md}",
-      "mode": "subagent",
-      "description": "Research Typst documentation and formatting topics",
-      "tools": {
-        "bash": true,
-        "glob": true,
-        "websearch": true,
-        "edit": true,
-        "read": true,
-        "write": true,
-        "webfetch": true,
-        "grep": true
-      }
-    },
     "document": {
       "prompt": "{file:.opencode/agent/subagents/document-agent.md}",
-      "mode": "subagent",
+      "tools": {
+        "grep": true,
+        "bash": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
       "description": "Convert and process document files (DOCX, PDF, etc.)",
-      "tools": {
-        "bash": true,
-        "glob": true,
-        "edit": true,
-        "read": true,
-        "write": true,
-        "grep": true
-      }
+      "mode": "subagent"
     },
-    "typst-implementation": {
-      "prompt": "{file:.opencode/agent/subagents/typst-implementation-agent.md}",
-      "mode": "subagent",
-      "description": "Implement Typst documents and formatting",
+    "formal-research": {
+      "prompt": "{file:.opencode/agent/subagents/formal-research-agent.md}",
       "tools": {
-        "bash": true,
-        "glob": true,
-        "edit": true,
-        "read": true,
-        "write": true,
-        "grep": true
-      }
-    },
-    "math-research": {
-      "prompt": "{file:.opencode/agent/subagents/math-research-agent.md}",
-      "mode": "subagent",
-      "description": "Research mathematics and abstract algebra topics",
-      "tools": {
-        "bash": true,
-        "glob": true,
+        "grep": true,
         "websearch": true,
-        "edit": true,
-        "read": true,
-        "write": true,
-        "webfetch": true,
-        "grep": true
-      }
-    },
-    "filetypes-router": {
-      "prompt": "{file:.opencode/agent/subagents/filetypes-router-agent.md}",
-      "mode": "subagent",
-      "description": "Routes file conversion tasks to appropriate specialist agents",
-      "tools": {
         "bash": true,
-        "glob": true,
-        "edit": true,
-        "read": true,
-        "write": true,
-        "grep": true
-      }
-    },
-    "physics-research": {
-      "prompt": "{file:.opencode/agent/subagents/physics-research-agent.md}",
-      "mode": "subagent",
-      "description": "Research physics and mathematical physics topics",
-      "tools": {
-        "bash": true,
-        "glob": true,
-        "websearch": true,
-        "edit": true,
-        "read": true,
-        "write": true,
         "webfetch": true,
-        "grep": true
-      }
-    },
-    "latex-research": {
-      "prompt": "{file:.opencode/agent/subagents/latex-research-agent.md}",
-      "mode": "subagent",
-      "description": "Research LaTeX documentation and formatting topics",
-      "tools": {
-        "bash": true,
         "glob": true,
-        "websearch": true,
-        "edit": true,
-        "read": true,
         "write": true,
-        "webfetch": true,
-        "grep": true
-      }
-    },
-    "lean-research": {
-      "prompt": "{file:.opencode/agent/subagents/lean-research-agent.md}",
-      "mode": "subagent",
-      "description": "Research Lean 4 theorem proving and Mathlib",
-      "tools": {
-        "bash": true,
-        "glob": true,
-        "websearch": true,
         "edit": true,
-        "read": true,
-        "write": true,
-        "webfetch": true,
-        "grep": true
-      }
-    },
-    "logic-research": {
-      "prompt": "{file:.opencode/agent/subagents/logic-research-agent.md}",
-      "mode": "subagent",
-      "description": "Research mathematical logic and proof theory",
-      "tools": {
-        "bash": true,
-        "glob": true,
-        "websearch": true,
-        "edit": true,
-        "read": true,
-        "write": true,
-        "webfetch": true,
-        "grep": true
-      }
+        "read": true
+      },
+      "description": "Research formal methods and verification topics",
+      "mode": "subagent"
     },
     "lean-research-agent": {
+      "mode": "subagent",
       "tools": {
         "lean-lsp-mcp_leansearch": true,
         "lean-lsp-mcp_local_search": true,
         "lean-lsp-mcp_leanfinder": true,
         "lean-lsp-mcp_state_search": true,
         "lean-lsp-mcp_loogle": true
-      },
-      "mode": "subagent"
+      }
     },
     "lean-implementation": {
       "prompt": "{file:.opencode/agent/subagents/lean-implementation-agent.md}",
-      "mode": "subagent",
-      "description": "Implement Lean 4 proofs and definitions",
       "tools": {
+        "grep": true,
         "bash": true,
         "glob": true,
-        "edit": true,
-        "read": true,
         "write": true,
-        "grep": true
-      }
-    },
-    "formal-research": {
-      "prompt": "{file:.opencode/agent/subagents/formal-research-agent.md}",
-      "mode": "subagent",
-      "description": "Research formal methods and verification topics",
-      "tools": {
-        "bash": true,
-        "glob": true,
-        "websearch": true,
         "edit": true,
-        "read": true,
-        "write": true,
-        "webfetch": true,
-        "grep": true
-      }
-    },
-    "lean-implementation-agent": {
-      "tools": {
-        "lean-lsp-mcp_hover_info": true,
-        "lean-lsp-mcp_file_outline": true,
-        "lean-lsp-mcp_goal": true,
-        "lean-lsp-mcp_build": true,
-        "lean-lsp-mcp_term_goal": true,
-        "lean-lsp-mcp_diagnostic_messages": true,
-        "lean-lsp-mcp_run_code": true
+        "read": true
       },
+      "description": "Implement Lean 4 proofs and definitions",
+      "mode": "subagent"
+    },
+    "latex-research": {
+      "prompt": "{file:.opencode/agent/subagents/latex-research-agent.md}",
+      "tools": {
+        "grep": true,
+        "websearch": true,
+        "bash": true,
+        "webfetch": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Research LaTeX documentation and formatting topics",
+      "mode": "subagent"
+    },
+    "spreadsheet": {
+      "prompt": "{file:.opencode/agent/subagents/spreadsheet-agent.md}",
+      "tools": {
+        "grep": true,
+        "bash": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Convert and process spreadsheet files (XLSX, CSV, etc.)",
+      "mode": "subagent"
+    },
+    "filetypes-router": {
+      "prompt": "{file:.opencode/agent/subagents/filetypes-router-agent.md}",
+      "tools": {
+        "grep": true,
+        "bash": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Routes file conversion tasks to appropriate specialist agents",
+      "mode": "subagent"
+    },
+    "physics-research": {
+      "prompt": "{file:.opencode/agent/subagents/physics-research-agent.md}",
+      "tools": {
+        "grep": true,
+        "websearch": true,
+        "bash": true,
+        "webfetch": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Research physics and mathematical physics topics",
       "mode": "subagent"
     },
     "presentation": {
       "prompt": "{file:.opencode/agent/subagents/presentation-agent.md}",
-      "mode": "subagent",
-      "description": "Convert and process presentation files (PPTX, etc.)",
       "tools": {
+        "grep": true,
         "bash": true,
         "glob": true,
-        "edit": true,
-        "read": true,
         "write": true,
-        "grep": true
+        "edit": true,
+        "read": true
+      },
+      "description": "Convert and process presentation files (PPTX, etc.)",
+      "mode": "subagent"
+    },
+    "lean-research": {
+      "prompt": "{file:.opencode/agent/subagents/lean-research-agent.md}",
+      "tools": {
+        "grep": true,
+        "websearch": true,
+        "bash": true,
+        "webfetch": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Research Lean 4 theorem proving and Mathlib",
+      "mode": "subagent"
+    },
+    "lean-implementation-agent": {
+      "mode": "subagent",
+      "tools": {
+        "lean-lsp-mcp_file_outline": true,
+        "lean-lsp-mcp_goal": true,
+        "lean-lsp-mcp_run_code": true,
+        "lean-lsp-mcp_build": true,
+        "lean-lsp-mcp_term_goal": true,
+        "lean-lsp-mcp_diagnostic_messages": true,
+        "lean-lsp-mcp_hover_info": true
       }
+    },
+    "math-research": {
+      "prompt": "{file:.opencode/agent/subagents/math-research-agent.md}",
+      "tools": {
+        "grep": true,
+        "websearch": true,
+        "bash": true,
+        "webfetch": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Research mathematics and abstract algebra topics",
+      "mode": "subagent"
+    },
+    "logic-research": {
+      "prompt": "{file:.opencode/agent/subagents/logic-research-agent.md}",
+      "tools": {
+        "grep": true,
+        "websearch": true,
+        "bash": true,
+        "webfetch": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Research mathematical logic and proof theory",
+      "mode": "subagent"
     },
     "latex-implementation": {
       "prompt": "{file:.opencode/agent/subagents/latex-implementation-agent.md}",
-      "mode": "subagent",
-      "description": "Implement LaTeX documents and formatting",
       "tools": {
+        "grep": true,
         "bash": true,
         "glob": true,
-        "edit": true,
-        "read": true,
         "write": true,
-        "grep": true
-      }
+        "edit": true,
+        "read": true
+      },
+      "description": "Implement LaTeX documents and formatting",
+      "mode": "subagent"
+    },
+    "typst-implementation": {
+      "prompt": "{file:.opencode/agent/subagents/typst-implementation-agent.md}",
+      "tools": {
+        "grep": true,
+        "bash": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Implement Typst documents and formatting",
+      "mode": "subagent"
+    },
+    "typst-research": {
+      "prompt": "{file:.opencode/agent/subagents/typst-research-agent.md}",
+      "tools": {
+        "grep": true,
+        "websearch": true,
+        "bash": true,
+        "webfetch": true,
+        "glob": true,
+        "write": true,
+        "edit": true,
+        "read": true
+      },
+      "description": "Research Typst documentation and formatting topics",
+      "mode": "subagent"
     }
   },
-  "default_agent": "orchestrator",
-  "$schema": "https://opencode.ai/config.json",
   "mcp": {
     "lean-lsp-mcp": {
-      "enabled": true,
-      "environment": {
-        "LEAN_PROJECT_ROOT": "{env:PWD}"
-      },
-      "type": "local",
-      "timeout": 10000,
       "command": [
         "npx",
         "-y",
         "lean-lsp-mcp"
-      ]
+      ],
+      "timeout": 10000,
+      "type": "local",
+      "enabled": true,
+      "environment": {
+        "LEAN_PROJECT_ROOT": "{env:PWD}"
+      }
     }
   },
   "tools": {
     "lean-lsp-mcp*": false
-  }
+  },
+  "default_agent": "orchestrator",
+  "$schema": "https://opencode.ai/config.json"
 }
