@@ -197,7 +197,7 @@ noncomputable def bfmcs_from_flagbfmcs (B : FlagBFMCS) : BFMCS ℚ where
 
 ---
 
-### Phase 4: Canonical Completeness Theorem [COMPLETED]
+### Phase 4: Canonical Completeness Theorem [PARTIAL]
 
 **Goal**: State and prove completeness using `valid` via parametric pipeline.
 

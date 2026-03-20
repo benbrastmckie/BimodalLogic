@@ -269,6 +269,35 @@ theorem shifted_flag_embed_retract (F : Flag CanonicalMCS) (center : ChainFMCSDo
   have h := shifted_flag_retract_spec F center (shifted_flag_embed F center x) ⟨x, rfl⟩
   exact shifted_flag_embed_injective F center h
 
+/--
+If s < t in the shifted domain, then their retracts are ordered in the chain.
+-/
+theorem shifted_flag_retract_lt (F : Flag CanonicalMCS) (center : ChainFMCSDomain F)
+    (s t : ℚ) (hs : s ∈ ShiftedFlagTimeDomain F center)
+    (ht : t ∈ ShiftedFlagTimeDomain F center) (h_lt : s < t) :
+    shifted_flag_retract F center s hs < shifted_flag_retract F center t ht := by
+  -- Since shifted_flag_embed is strictly monotone, its inverse preserves strict order
+  have h_spec_s := shifted_flag_retract_spec F center s hs
+  have h_spec_t := shifted_flag_retract_spec F center t ht
+  by_contra h_not_lt
+  have h_le : shifted_flag_retract F center t ht ≤ shifted_flag_retract F center s hs :=
+    le_of_not_lt h_not_lt
+  have h_embed_le := (shifted_flag_embed_strict_mono F center).monotone h_le
+  rw [h_spec_s, h_spec_t] at h_embed_le
+  exact not_lt.mpr h_embed_le h_lt
+
+/--
+If s ≤ t in the shifted domain, then their retracts are ordered in the chain.
+-/
+theorem shifted_flag_retract_le (F : Flag CanonicalMCS) (center : ChainFMCSDomain F)
+    (s t : ℚ) (hs : s ∈ ShiftedFlagTimeDomain F center)
+    (ht : t ∈ ShiftedFlagTimeDomain F center) (h_le : s ≤ t) :
+    shifted_flag_retract F center s hs ≤ shifted_flag_retract F center t ht := by
+  rcases h_le.lt_or_eq with h_lt | rfl
+  · exact le_of_lt (shifted_flag_retract_lt F center s t hs ht h_lt)
+  · -- s = t, so hs = ht by proof irrelevance, and retracts are equal
+    rfl
+
 /-!
 ## Phase 3: WorldHistory Construction
 
@@ -338,8 +367,41 @@ noncomputable def shiftedFlagWorldHistory (F : Flag CanonicalMCS) (center : Chai
     -- For s ≤ t in domain, need: task_rel (state s) (t - s) (state t)
     -- This follows from chainFMCS coherence: if s ≤ t then the MCSs are R-related.
     intro s t hs ht hst
-    -- The proof requires showing CanonicalR between MCSs when shifted times are ordered.
-    sorry
+    -- task_rel is parametric_canonical_task_rel
+    show parametric_canonical_task_rel _ _ _
+    unfold parametric_canonical_task_rel
+    by_cases h_pos : t - s > 0
+    · -- t - s > 0, so s < t. Need CanonicalR between the MCSs.
+      rw [if_pos h_pos]
+      -- Get the chain elements
+      let ws := shifted_flag_retract F center s hs
+      let wt := shifted_flag_retract F center t ht
+      -- s < t since t - s > 0
+      have h_lt : s < t := by
+        by_contra h_nlt
+        have h_le : t ≤ s := le_of_not_lt h_nlt
+        have h_eq : s = t := le_antisymm hst h_le
+        subst h_eq
+        simp at h_pos
+      -- Chain elements are ordered: ws < wt
+      have h_chain_lt : ws < wt := shifted_flag_retract_lt F center s t hs ht h_lt
+      -- Apply canonicalR_of_lt
+      -- shiftedWorldState returns ⟨shiftedMCS ..., ...⟩
+      -- shiftedMCS = chainFMCS_mcs F (shifted_flag_retract ...)
+      -- We need CanonicalR between the underlying MCS sets
+      simp only [shiftedWorldState, shiftedMCS]
+      -- The MCS at ws.val.world and wt.val.world
+      show CanonicalR (chainFMCS_mcs F ws) (chainFMCS_mcs F wt)
+      simp only [chainFMCS_mcs]
+      exact CanonicalMCS.canonicalR_of_lt ws.val wt.val h_chain_lt
+    · -- t - s ≤ 0, but s ≤ t means t - s ≥ 0, so t - s = 0, meaning s = t
+      have h_eq : t - s = 0 := le_antisymm (not_lt.mp h_pos) (sub_nonneg.mpr hst)
+      have h_s_eq_t : s = t := by linarith
+      have h_neg : ¬(t - s < 0) := not_lt.mpr (sub_nonneg.mpr hst)
+      rw [if_neg h_pos, if_neg h_neg]
+      -- Need to show states are equal when s = t
+      subst h_s_eq_t
+      rfl
 
 theorem shiftedFlagWorldHistory_domain_zero (F : Flag CanonicalMCS) (center : ChainFMCSDomain F) :
     (shiftedFlagWorldHistory F center).domain 0 :=
