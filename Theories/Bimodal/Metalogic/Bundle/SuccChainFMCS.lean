@@ -349,8 +349,12 @@ theorem succ_chain_forward_G (M0 : SerialMCS) (n m : Int) (phi : Formula)
   rw [h_m_eq]
   exact (succ_chain_G_propagates_succ M0 n phi j h_G).1
 
-/-- Axiom: H(phi) -> H(H(phi)) -/
-axiom past_4_axiom (phi : Formula) : [] ⊢ (Formula.all_past phi).imp (Formula.all_past (Formula.all_past phi))
+/-- H(phi) -> H(H(phi)) - derivable via temporal duality from temp_4.
+
+This was previously an axiom but is now proven via temp_4_past in MCSProperties.lean.
+-/
+noncomputable def past_4_theorem (phi : Formula) : [] ⊢ (Formula.all_past phi).imp (Formula.all_past (Formula.all_past phi)) :=
+  temp_4_past phi
 
 /-- H-propagation step -/
 theorem succ_chain_backward_H_step (M0 : SerialMCS) (n : Int) (phi : Formula)
@@ -368,7 +372,7 @@ theorem succ_chain_backward_H_step (M0 : SerialMCS) (n : Int) (phi : Formula)
   have h_phi_in_h : phi ∈ h_content (succ_chain_fam M0 n) := h_H
   have h_phi_prev : phi ∈ succ_chain_fam M0 (n - 1) := h_h_subset h_phi_in_h
   have h_HH : Formula.all_past (Formula.all_past phi) ∈ succ_chain_fam M0 n :=
-    SetMaximalConsistent.implication_property h_mcs_n (theorem_in_mcs h_mcs_n (past_4_axiom phi)) h_H
+    SetMaximalConsistent.implication_property h_mcs_n (theorem_in_mcs h_mcs_n (past_4_theorem phi)) h_H
   have h_H_in_h : Formula.all_past phi ∈ h_content (succ_chain_fam M0 n) := h_HH
   have h_H_prev : Formula.all_past phi ∈ succ_chain_fam M0 (n - 1) := h_h_subset h_H_in_h
   exact ⟨h_phi_prev, h_H_prev⟩

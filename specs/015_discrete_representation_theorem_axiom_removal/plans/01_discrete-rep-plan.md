@@ -69,7 +69,7 @@ Key findings from research report integrated into this plan:
 
 ---
 
-### Phase 2: BFMCS Wrapper Construction [IN PROGRESS]
+### Phase 2: BFMCS Wrapper Construction [COMPLETED]
 
 **Goal**: Create `SuccChainBFMCS.lean` that wraps a SuccChainFMCS as a singleton BFMCS with temporal coherence.
 
@@ -95,7 +95,7 @@ Key findings from research report integrated into this plan:
 
 ---
 
-### Phase 3: construct_bfmcs Implementation [NOT STARTED]
+### Phase 3: construct_bfmcs Implementation [COMPLETED]
 
 **Goal**: Implement the `construct_bfmcs` callback function that DiscreteInstantiation needs.
 
@@ -120,7 +120,7 @@ Key findings from research report integrated into this plan:
 
 ---
 
-### Phase 4: Wire to DiscreteInstantiation [NOT STARTED]
+### Phase 4: Wire to DiscreteInstantiation [COMPLETED]
 
 **Goal**: Use construct_bfmcs_impl to prove the unconditional discrete representation theorem.
 
@@ -150,7 +150,7 @@ Key findings from research report integrated into this plan:
 
 ---
 
-### Phase 5: Axiom Documentation and past_4 Elimination [NOT STARTED]
+### Phase 5: Axiom Documentation and past_4 Elimination [COMPLETED]
 
 **Goal**: Document axiom dependencies and attempt to prove past_4_axiom via temporal duality.
 

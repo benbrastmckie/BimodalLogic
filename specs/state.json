@@ -232,7 +232,7 @@
       "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:13:06Z",
+      "last_updated": "2026-03-21T11:31:57Z",
       "dependencies": [
         13,
         14
@@ -248,6 +248,11 @@
           "path": "specs/015_discrete_representation_theorem_axiom_removal/plans/01_discrete-rep-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for wiring Succ-chain FMCS to discrete representation theorem"
+        },
+        {
+          "path": "specs/015_discrete_representation_theorem_axiom_removal/summaries/01_discrete-rep-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: unconditional discrete representation theorem created, past_4_axiom eliminated, 1 sorry in modal_backward, 4 axioms remain"
         }
       ],
       "session_id": "sess_1774091562_5d7efa",
