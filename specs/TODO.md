@@ -60,7 +60,7 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 8-16 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
@@ -77,7 +77,7 @@ technical_debt:
 
 ### 26. Remove or justify canonicalR_irreflexive_axiom
 - **Effort**: 2-8 hours (depends on path chosen)
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -91,6 +91,7 @@ technical_debt:
   - [18_teammate-a-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/18_teammate-a-findings.md) — CanonicalTask as central relation: negative duration verified, irreflexivity reformulation
   - [18_teammate-b-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/18_teammate-b-findings.md) — 69-file usage map, 4-phase refactoring strategy, backward sorry as critical blocker
   - [18_team-research.md](026_remove_canonicalr_irreflexive_axiom/reports/18_team-research.md) — Wave 6 synthesis: CanonicalTask as native TaskFrame concept, irreflexivity reformulation path
+- **Plan**: [01_eliminate-canonicalr.md](026_remove_canonicalr_irreflexive_axiom/plans/01_eliminate-canonicalr.md) — 8-phase plan for eliminating CanonicalR as primary concept
 
 **Description**: Investigate removal of `canonicalR_irreflexive_axiom` (CanonicalIrreflexivity.lean:1212). Research conclusively shows CanonicalTask refactoring does NOT help — `¬CanonicalTask(u,1,u)` reduces exactly to `¬CanonicalR(u,u)` because the f_content condition in Succ is trivially satisfied on the diagonal. All 16 usage sites across 6 active files (SaturatedChain 8, FMCSTransfer 2, CanonicalSerialFrameInstance 2+2, TimelineQuotCanonical 1, ClosureSaturation 2, IncrementalTimeline 1) require CanonicalR-level irreflexivity. Three viable paths: **(A)** Prove via reflexive T-axiom — `CanonicalIrreflexivity.lean` contains 1170 lines of complete proof infrastructure from Task 967 that works under reflexive semantics; check if temporal T-axiom `H(φ)→φ` is available. **(B)** Add Gabbay IRR inference rule to proof system (high effort but principled). **(C)** Accept axiom with fixed documentation — `CanonicalIrreflexivityAxiom.lean` falsely claims "proven theorem (Task 967)" but actual implementation is a Lean axiom since Task 991's strict semantics revert. Fix this inconsistency regardless of path chosen.
 

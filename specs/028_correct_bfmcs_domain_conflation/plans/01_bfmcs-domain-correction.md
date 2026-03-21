@@ -1,7 +1,7 @@
 # Implementation Plan: Task #28
 
 - **Task**: 28 - Correct W=D conflation in BFMCS domain architecture
-- **Status**: [NOT STARTED]
+- **Status**: [IN PROGRESS]
 - **Effort**: 12 hours (8-16 hour range from task description)
 - **Dependencies**: Task 27 (unify dense/dovetailed timelines) - provides TimelineQuot infrastructure
 - **Research Inputs**: specs/028_correct_bfmcs_domain_conflation/reports/01_team-research.md
@@ -49,7 +49,7 @@ Key findings from team research:
 
 ## Implementation Phases
 
-### Phase 1: Foundation - Temporal Content Extractors [NOT STARTED]
+### Phase 1: Foundation - Temporal Content Extractors [COMPLETED]
 
 **Goal**: Add f_content and p_content extractors as foundation for Succ relation
 
@@ -71,7 +71,7 @@ Key findings from team research:
 
 ---
 
-### Phase 2: Succ Relation Definition [NOT STARTED]
+### Phase 2: Succ Relation Definition [COMPLETED]
 
 **Goal**: Define the immediate successor relation that enforces F-step progression
 
@@ -93,7 +93,7 @@ Key findings from team research:
 
 ---
 
-### Phase 3: CanonicalTask Three-Place Relation [NOT STARTED]
+### Phase 3: CanonicalTask Three-Place Relation [COMPLETED]
 
 **Goal**: Define the three-place task relation that directly instantiates TaskFrame Int
 
@@ -119,7 +119,7 @@ Key findings from team research:
 
 ---
 
-### Phase 4: Successor Existence Theorem [NOT STARTED]
+### Phase 4: Successor Existence Theorem [COMPLETED]
 
 **Goal**: Prove that Succ-successors exist under discrete axioms (the key construction)
 
@@ -143,7 +143,7 @@ Key findings from team research:
 
 ---
 
-### Phase 5: Fix DirectMultiFamilyBFMCS with Succ-Chains [NOT STARTED]
+### Phase 5: Fix DirectMultiFamilyBFMCS with Succ-Chains [IN PROGRESS]
 
 **Goal**: Replace arbitrary Lindenbaum chains with Succ-chains for cross-family modal coherence
 
