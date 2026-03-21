@@ -4,7 +4,8 @@ import Bimodal.Metalogic.Bundle.ModalSaturation
 -- REMOVED (Task 15): import Bimodal.Metalogic.Bundle.IntFMCSTransfer
 -- IntFMCSTransfer moved to Boneyard - singleton BFMCS has unprovable modal_backward
 -- Task 15 Phase 4: Use ClosedFlagIntBFMCS for modal saturation approach
-import Bimodal.Metalogic.Bundle.ClosedFlagIntBFMCS
+-- Task 22: Use DirectMultiFamilyBFMCS for improved coverage at t=0
+import Bimodal.Metalogic.Bundle.DirectMultiFamilyBFMCS
 import Mathlib.Algebra.Order.Group.Int
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.Soundness
@@ -172,23 +173,27 @@ trying to falsify.
 -/
 
 /--
-Task 15 Phase 4: Use the v3 construction from ClosedFlagIntBFMCS.
+Task 22: Use the v4 construction from DirectMultiFamilyBFMCS.
 
-This provides modal saturation via `discreteMCS_modal_backward` at MCS level.
+This provides modal saturation via `discreteMCS_modal_backward` at MCS level,
+with improved coverage at t=0 (families indexed directly by discreteClosedMCS).
 
-**Sorry Inventory** (from ClosedFlagIntBFMCS):
-1. `closedFlagFMCS_modal_backward` - requires families to cover discreteClosedMCS
-2. `rootClosedFlagFMCS_Int.mcs_in_closed` for t ≠ 0 - chain staying in closed set
+**Sorry Inventory** (from DirectMultiFamilyBFMCS):
+1. `directFamilies_modal_forward` - cross-family transfer (S5 not provable in TM)
+2. `directFamilies_modal_backward` at t≠0 - chain positions may not be in closed set
 3. `intFMCS_forward_F` - F witness existence (dovetailing gap)
 4. `intFMCS_backward_P` - P witness existence (dovetailing gap)
-5. `modal_forward` - cross-family transfer (saturation coverage)
+
+**Improvements over v3 (ClosedFlagIntBFMCS)**:
+- `modal_backward` at t=0 is sorry-free (was sorry in v3)
+- Chain membership assertion removed (was sorry in v3 for t≠0)
 -/
 noncomputable def construct_bfmcs_from_mcs_Int
     (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent)
        (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),
        M = fam.mcs t :=
-  construct_bfmcs_from_mcs_Int_v3 M h_mcs
+  construct_bfmcs_from_mcs_Int_v4 M h_mcs
 
 /--
 Auxiliary: If phi is not provable, then neg(phi) is consistent.

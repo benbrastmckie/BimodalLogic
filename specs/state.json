@@ -23,7 +23,7 @@
       "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T19:40:14Z",
+      "last_updated": "2026-03-21T19:48:52Z",
       "dependencies": [
         15
       ],
@@ -45,6 +45,16 @@
           "path": "specs/022_direct_multi_family_bundle/plans/01_direct-bundle-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for direct multi-family BFMCS construction"
+        },
+        {
+          "path": "Theories/Bimodal/Metalogic/Bundle/DirectMultiFamilyBFMCS.lean",
+          "type": "lean_module",
+          "summary": "Direct multi-family BFMCS construction indexed by discreteClosedMCS members"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting completed work and remaining sorries"
         }
       ],
       "planned": "2026-03-21T19:38:43Z",

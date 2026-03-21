@@ -6,6 +6,13 @@ import Mathlib.Algebra.Order.Group.Int
 /-!
 # Int-Indexed BFMCS via Closed Flag Modal Saturation (Task 15 Phase 3)
 
+**DEPRECATED**: This module is superseded by `DirectMultiFamilyBFMCS.lean` (Task 22).
+The direct construction eliminates the coverage sorries at t=0 by indexing families
+directly by `discreteClosedMCS` members. Use `construct_bfmcs_from_mcs_Int_v4` from
+`DirectMultiFamilyBFMCS.lean` instead of `construct_bfmcs_from_mcs_Int_v3`.
+
+---
+
 This module bridges the MCS-level modal saturation from `ModallyCoherentBFMCS.lean`
 to Int-indexed BFMCS structure required by `DiscreteInstantiation.lean`.
 
