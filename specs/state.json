@@ -8,10 +8,10 @@
     {
       "project_number": 29,
       "project_name": "switch_to_reflexive_gh_semantics",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T21:31:52Z",
-      "last_updated": "2026-03-21T22:27:27Z",
+      "last_updated": "2026-03-21T22:30:42Z",
       "dependencies": [],
       "description": "Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md",
       "session_id": "sess_1774132019_117bc3",
@@ -26,18 +26,24 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md",
           "type": "research",
           "summary": "Historical issues analysis: reflexive vs strict G/H semantics"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md",
+          "type": "plan",
+          "summary": "7-phase implementation plan for switching TM metalogic to reflexive G/H semantics"
         }
-      ]
+      ],
+      "planned": "2026-03-21T22:30:42Z"
     },
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T22:28:13Z",
-      "session_id": "sess_1774129402_c72839",
+      "last_updated": "2026-03-21T22:30:56Z",
+      "session_id": "sess_1774132230_661edd",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
         {

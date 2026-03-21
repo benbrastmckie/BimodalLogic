@@ -1,31 +1,37 @@
 {
-  "status": "done",
+  "status": "researched",
   "started_at": "2026-03-21T10:00:00Z",
-  "completed_at": "2026-03-21T10:30:00Z",
+  "completed_at": "2026-03-21T10:45:00Z",
   "artifacts": [
-    "specs/028_correct_bfmcs_domain_conflation/reports/05_modal-coherence-solutions.md"
+    {
+      "path": "specs/028_correct_bfmcs_domain_conflation/reports/05_s5-modal-coherence-analysis.md",
+      "type": "research_report",
+      "summary": "Deep analysis of S5 modal coherence properties revealing documentation error and true source of unprovability"
+    }
   ],
-  "partial_progress": {
-    "stage": "report_written",
-    "details": "Research report completed with analysis of sorries and solutions"
-  },
+  "summary": "TM logic HAS full S5 axioms (including modal_5_collapse). Documentation claiming otherwise is incorrect. However, sorries remain unprovable because S5 axioms operate WITHIN individual MCS, not across MCS. Cross-MCS transfer requires modal saturation at BFMCS level, which holds at t=0 but breaks at t!=0 when chains leave the closed set. Succ-chain bypass remains the correct path.",
   "metadata": {
-    "session_id": "sess_1774129402_c72839",
+    "session_id": "sess_1774131422_702923",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"],
     "key_findings": [
-      "3 sorries in DirectMultiFamilyBFMCS are architecturally unprovable without S5 axiom",
-      "TM logic has T+4 axioms but lacks 5-axiom (Euclidean property)",
-      "Succ-chain bypass is the correct path for discrete completeness",
-      "Single-family FMCS Int avoids cross-family modal coherence requirement",
-      "Infrastructure for Succ-chain bypass is largely complete (Tasks 10-14)"
+      "CRITICAL: DirectMultiFamilyBFMCS incorrectly claims TM lacks 5-axiom - it HAS modal_5_collapse as base axiom",
+      "3 sorries unprovable because S5 operates WITHIN MCS, not ACROSS MCS",
+      "Cross-MCS transfer requires modal saturation, which breaks at t!=0",
+      "discreteMCS_modal_backward works at t=0 via closedFlags_union_modally_saturated",
+      "Chain positions at t!=0 may leave discreteClosedMCS, breaking saturation",
+      "Succ-chain bypass is correct path (no cross-family coherence needed)"
+    ],
+    "documentation_fixes_needed": [
+      "Update DirectMultiFamilyBFMCS.lean lines 24-26 to correct S5 claim",
+      "Replace 'TM lacks 5-axiom' with 'S5 operates within MCS, not across MCS'",
+      "Add explanation that modal saturation is the missing semantic property"
     ],
     "recommendations": [
-      "Document sorries as architecturally unprovable (not mathematical gaps)",
-      "Mark BFMCS approach as deprecated for discrete completeness",
-      "Complete SuccChainTaskFrame.lean to build TaskFrame Int directly",
-      "Wire Succ-chain infrastructure to DiscreteInstantiation"
+      "Update documentation to correctly describe S5 status",
+      "Mark sorries as architecturally blocked due to saturation gap, not missing axiom",
+      "Complete Succ-chain bypass as primary discrete completeness path"
     ]
   }
 }

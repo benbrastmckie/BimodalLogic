@@ -46,7 +46,7 @@ From the spawn analysis report (14_spawn-analysis.md):
 
 ## Implementation Phases
 
-### Phase 1: Analyze BFMCS Requirements [NOT STARTED]
+### Phase 1: Analyze BFMCS Requirements [COMPLETED]
 
 **Goal**: Understand exactly what structure the parametric truth lemma expects from a BFMCS
 
@@ -69,7 +69,7 @@ From the spawn analysis report (14_spawn-analysis.md):
 
 ---
 
-### Phase 2: Construct BFMCS Structure [NOT STARTED]
+### Phase 2: Construct BFMCS Structure [IN PROGRESS]
 
 **Goal**: Define the BFMCS structure with families indexed by DovetailedTimelineQuot
 

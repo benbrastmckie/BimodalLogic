@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md",
+      "summary": "7-phase implementation plan for switching TM metalogic to reflexive G/H semantics"
+    }
+  ],
+  "next_steps": "Run /implement 29 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1774132019_117bc3",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 7,
+    "estimated_hours": 12
+  }
+}
