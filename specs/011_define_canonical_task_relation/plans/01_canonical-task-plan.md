@@ -50,7 +50,7 @@ From report 01_canonical-task-research.md:
 
 ## Implementation Phases
 
-### Phase 1: File Setup and Helper Definitions [NOT STARTED]
+### Phase 1: File Setup and Helper Definitions [COMPLETED]
 
 **Goal**: Create CanonicalTaskRelation.lean with imports, namespace, and iter_F helper
 
@@ -73,7 +73,7 @@ From report 01_canonical-task-research.md:
 
 ---
 
-### Phase 2: Forward and Backward Chain Definitions [NOT STARTED]
+### Phase 2: Forward and Backward Chain Definitions [COMPLETED]
 
 **Goal**: Define CanonicalTask_forward and CanonicalTask_backward inductively
 
@@ -98,7 +98,7 @@ From report 01_canonical-task-research.md:
 
 ---
 
-### Phase 3: Combined CanonicalTask Definition [NOT STARTED]
+### Phase 3: Combined CanonicalTask Definition [COMPLETED]
 
 **Goal**: Define CanonicalTask with Int index, combining forward and backward chains
 
@@ -120,7 +120,7 @@ From report 01_canonical-task-research.md:
 
 ---
 
-### Phase 4: Nullity Identity Axiom [NOT STARTED]
+### Phase 4: Nullity Identity Axiom [IN PROGRESS]
 
 **Goal**: Prove CanonicalTask(u, 0, v) iff u = v
 

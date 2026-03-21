@@ -49,7 +49,7 @@ From the research report (01_succ-existence-research.md):
 
 ## Implementation Phases
 
-### Phase 1: Seed Definitions and Membership Lemmas [NOT STARTED]
+### Phase 1: Seed Definitions and Membership Lemmas [COMPLETED]
 
 **Goal**: Define the successor and predecessor deferral seeds with basic lemmas.
 
@@ -77,7 +77,7 @@ From the research report (01_succ-existence-research.md):
 
 ---
 
-### Phase 2: Successor Seed Consistency (Core Challenge) [NOT STARTED]
+### Phase 2: Successor Seed Consistency (Core Challenge) [IN PROGRESS]
 
 **Goal**: Prove or axiomatize `successor_deferral_seed_consistent`.
 

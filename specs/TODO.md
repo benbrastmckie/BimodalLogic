@@ -159,11 +159,12 @@ technical_debt:
 
 ### 13. Prove CanonicalR recovery from CanonicalTask
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Tasks 11, 12
 - **Files**: New CanonicalRecovery.lean or extend CanonicalTask.lean
 - **Research**: [01_canonicalr-recovery-analysis.md](013_canonical_r_recovery_from_canonical_task/reports/01_canonicalr-recovery-analysis.md)
+- **Plan**: [01_canonicalr-recovery-plan.md](013_canonical_r_recovery_from_canonical_task/plans/01_canonicalr-recovery-plan.md)
 - **Background (task 6)**:
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.8 — recovery proposition, forward/backward directions, note on difficulty of backward direction
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §6 — recovery proof strategy using temp_4 and F-nesting depth bounds
@@ -174,7 +175,7 @@ technical_debt:
 
 ### 12. Prove Succ-based successor and predecessor existence under discrete axioms
 - **Effort**: 6-10 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New SuccExistence.lean, references DiscreteSuccSeed.lean
@@ -190,7 +191,7 @@ technical_debt:
 
 ### 11. Define CanonicalTask inductive three-place relation and prove TaskFrame axioms
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New CanonicalTask.lean

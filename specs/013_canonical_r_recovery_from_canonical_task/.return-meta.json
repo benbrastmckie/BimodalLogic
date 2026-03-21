@@ -1,38 +1,19 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-21T00:00:00Z",
-  "completed_at": "2026-03-21T00:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "path": "specs/013_canonical_r_recovery_from_canonical_task/reports/01_canonicalr-recovery-analysis.md",
-      "type": "report",
-      "summary": "Analysis recommending CanonicalR be kept as derived shorthand. CanonicalR used in 36+ active files for Preorder definitions, transitivity chains, and witness extraction. Recovery theorem CanonicalR <-> exists n>=1 CanonicalTask bridges duration-agnostic and duration-precise reasoning. Removal would require massive refactoring with ergonomic costs."
+      "type": "plan",
+      "path": "specs/013_canonical_r_recovery_from_canonical_task/plans/01_canonicalr-recovery-plan.md",
+      "summary": "5-phase implementation plan for CanonicalR recovery theorem with backward-compatibility layer"
     }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Research complete - analyzed 57 files using CanonicalR, evaluated keep vs remove tradeoffs"
-  },
+  "next_steps": "Run /implement 13 to execute the plan (requires tasks 11 and 12 completion first)",
   "metadata": {
-    "session_id": "sess_1774087088_3924ec",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774087378_b3c1a8",
+    "agent_type": "planner-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "key_findings": {
-    "recommendation": "Keep CanonicalR as derived shorthand",
-    "usage_count": "36+ active files",
-    "key_patterns": [
-      "Preorder definition via reflexive closure",
-      "Transitivity chains via canonicalR_transitive",
-      "Witness extraction via canonical_forward_F/P",
-      "Task relation dispatch in parametric_canonical_task_rel"
-    ],
-    "recovery_theorem": "CanonicalR(u,v) <-> exists n>=1, CanonicalTask(u,n,v)",
-    "implementation_notes": [
-      "Forward direction (CanonicalTask -> CanonicalR) is easy via temp_4 transitivity",
-      "Backward direction requires successor existence (task 12) and F-nesting bounds",
-      "Backward-compat layer proves canonical_forward_G/F from CanonicalTask"
-    ]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 4.5
   }
 }

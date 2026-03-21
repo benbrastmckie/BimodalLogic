@@ -74,10 +74,10 @@
     {
       "project_number": 11,
       "project_name": "define_canonical_task_relation",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:02:26Z",
+      "last_updated": "2026-03-21T10:03:40Z",
       "dependencies": [
         10
       ],
@@ -94,17 +94,18 @@
           "summary": "8-phase implementation plan for CanonicalTask relation with TaskFrame axioms"
         }
       ],
-      "session_id": "sess_1774087183_be9cc2",
+      "session_id": "sess_1774087397_98ff34",
       "researched": "2026-03-21T09:58:38Z",
-      "planned": "2026-03-21T10:02:26Z"
+      "planned": "2026-03-21T10:02:26Z",
+      "started": "2026-03-21T10:03:40Z"
     },
     {
       "project_number": 12,
       "project_name": "succ_successor_predecessor_existence",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:02:01Z",
+      "last_updated": "2026-03-21T10:03:41Z",
       "dependencies": [
         10
       ],
@@ -121,17 +122,18 @@
           "summary": "5-phase implementation plan for Succ successor/predecessor existence with deferral seed construction"
         }
       ],
-      "session_id": "sess_1774087129_0cbb44",
+      "session_id": "sess_1774087401_ff8cff",
       "researched": "2026-03-21T09:58:15Z",
-      "planned": "2026-03-21T10:02:01Z"
+      "planned": "2026-03-21T10:02:01Z",
+      "started": "2026-03-21T10:03:41Z"
     },
     {
       "project_number": 13,
       "project_name": "canonical_r_recovery_from_canonical_task",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:01:51Z",
+      "last_updated": "2026-03-21T10:05:44Z",
       "dependencies": [
         11,
         12
@@ -142,10 +144,16 @@
           "path": "specs/013_canonical_r_recovery_from_canonical_task/reports/01_canonicalr-recovery-analysis.md",
           "type": "report",
           "summary": "Analysis recommending CanonicalR be kept as derived shorthand. Recovery theorem bridges duration-agnostic and duration-precise reasoning."
+        },
+        {
+          "path": "specs/013_canonical_r_recovery_from_canonical_task/plans/01_canonicalr-recovery-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for CanonicalR recovery theorem with backward-compatibility layer"
         }
       ],
-      "session_id": "sess_1774087088_3924ec",
-      "researched": "2026-03-21T10:01:51Z"
+      "session_id": "sess_1774087378_b3c1a8",
+      "researched": "2026-03-21T10:01:51Z",
+      "planned": "2026-03-21T10:05:44Z"
     },
     {
       "project_number": 14,
