@@ -51,7 +51,7 @@ The proof is by induction on n, using succ_chain_fam_succ for each step.
 -/
 theorem succ_chain_gives_canonical_forward (M0 : SerialMCS) (s : Int) (n : Nat) :
     CanonicalTask_forward (succ_chain_fam M0 s) n (succ_chain_fam M0 (s + n)) := by
-  induction n with
+  induction n generalizing s with
   | zero =>
     have h : s + (0 : Nat) = s := by omega
     rw [h]
@@ -59,17 +59,13 @@ theorem succ_chain_gives_canonical_forward (M0 : SerialMCS) (s : Int) (n : Nat) 
   | succ n' ih =>
     -- CanonicalTask_forward s (n'+1) (s + n'+1)
     -- = step from s to s+1, then CanonicalTask_forward (s+1) n' (s+1+n')
-    -- But ih gives us: CanonicalTask_forward s n' (s + n')
-    -- We need to restructure: CanonicalTask_forward s (n'+1) (s+n'+1)
-    -- requires Succ s s' and CanonicalTask_forward s' n' (s+n'+1) where s' = s+1
+    -- ih is now generalized over s, so ih (s+1) gives what we need
     have h_succ : Succ (succ_chain_fam M0 s) (succ_chain_fam M0 (s + 1)) := succ_chain_fam_succ M0 s
     have h_eq : s + (↑(n' + 1) : Int) = (s + 1) + ↑n' := by omega
     rw [h_eq]
     -- Need CanonicalTask_forward (s+1) n' ((s+1) + n')
-    have ih' : CanonicalTask_forward (succ_chain_fam M0 (s + 1)) n' (succ_chain_fam M0 ((s + 1) + ↑n')) := by
-      have := succ_chain_gives_canonical_forward M0 (s + 1) n'
-      convert this using 2
-      ring
+    have ih' : CanonicalTask_forward (succ_chain_fam M0 (s + 1)) n' (succ_chain_fam M0 ((s + 1) + ↑n')) :=
+      ih (s + 1)
     exact CanonicalTask_forward.step h_succ ih'
 
 /--
