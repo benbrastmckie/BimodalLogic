@@ -179,7 +179,7 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 
 **Current Blocker (Phase 8 Wiring)**: The `dense_completeness_components_proven` theorem in `StagedConstruction/Completeness.lean` proves all individual components are sorry-free. The gap is connecting the CanonicalMCS-based BFMCS (which has the proven truth lemma) to the TimelineQuot-based TaskFrame (which has the right temporal structure). The 3 sorries in `FrameConditions/Completeness.lean` are wiring the final theorem statement.
 
-**Architecture Note**: The D-from-Syntax construction successfully produces D = TimelineQuot ≃o Q from the canonical timeline's order-theoretic properties. The Cantor isomorphism is proven. The BFMCS truth lemma is proven. The gap is connecting these two pieces: the BFMCS uses `D = CanonicalMCS` while the TaskFrame semantics uses `D = TimelineQuot`.
+**Architecture Note**: The D-from-Syntax construction successfully produces D = TimelineQuot ≃o Q from the canonical timeline's order-theoretic properties. The Cantor isomorphism is proven. The BFMCS truth lemma is proven. The gap is connecting these two pieces: the BFMCS uses CanonicalMCS as its indexing type (a proof-theoretic technique that trivializes F/P witnesses) while the TaskFrame semantics uses D = TimelineQuot (a proper temporal domain with algebraic structure).
 
 **Deprecated Files (Int/Rat path)**:
 - `DovetailingChain.lean` -- DEPRECATED: Int-indexed chain, not imported by active code
@@ -206,7 +206,7 @@ Design uses a family of MCS indexed by time, where coherence conditions (forward
 4. `dense_completeness_components_proven` (all three components together)
 5. `parametric_algebraic_representation_conditional` (D-parametric representation theorem)
 
-**The Gap**: The BFMCS infrastructure uses `D = CanonicalMCS` (the all-MCS domain), while the TaskFrame/semantics uses `D = TimelineQuot` (the Cantor domain). The final completeness theorem needs to connect these two domains.
+**The Gap**: The BFMCS infrastructure uses CanonicalMCS as its indexing type (proof-theoretic: every MCS is in the domain, so F/P witnesses are trivial), while the TaskFrame semantics uses D = TimelineQuot (semantic: proper temporal domain with AddCommGroup + LinearOrder). The final completeness theorem needs to connect these two domains via transfer.
 
 **Resolution Path** (D-Parametric Approach - Task 990 Research Outcome):
 The **preferred resolution** is to use the D-parametric representation theorem from `ParametricRepresentation.lean`:

@@ -8,10 +8,10 @@
     {
       "project_number": 1009,
       "project_name": "clarify_canonicalmcs_role",
-      "status": "planned",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T01:03:40Z",
-      "last_updated": "2026-03-21T02:29:29Z",
+      "last_updated": "2026-03-21T02:43:35Z",
       "dependencies": [],
       "artifacts": [
         {
@@ -33,11 +33,19 @@
           "path": "specs/1009_clarify_canonicalmcs_role/plans/06_architectural-cleanup-plan.md",
           "type": "plan",
           "summary": "6-phase architectural cleanup: remove ALL FMCS CanonicalMCS constructions, archive to Boneyard"
+        },
+        {
+          "path": "specs/1009_clarify_canonicalmcs_role/summaries/09_cleanup-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting role clarification changes and plan reinterpretation"
         }
       ],
-      "session_id": "sess_1774059755_a3e282",
+      "session_id": "sess_1774060664_90e3d3",
       "researched": "2026-03-21T02:25:31Z",
-      "planned": "2026-03-21T02:29:29Z"
+      "planned": "2026-03-21T02:29:29Z",
+      "started": "2026-03-21T02:38:13Z",
+      "completed": "2026-03-21T02:43:35Z",
+      "completion_summary": "Clarified CanonicalMCS role through documentation updates. FMCS CanonicalMCS is legitimate proof-theoretic infrastructure, not a mistake. Removed all 'D = CanonicalMCS' notation from active code and documentation."
     },
     {
       "project_number": 1007,

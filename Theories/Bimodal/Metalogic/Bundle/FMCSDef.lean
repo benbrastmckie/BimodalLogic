@@ -9,6 +9,27 @@ This module defines the `FMCS` (Family of Maximal Consistent Sets) structure
 that assigns a maximal consistent set (MCS) to each time point in D, with temporal
 coherence conditions ensuring proper formula propagation.
 
+## FMCS Indexing Type (Task 1009)
+
+The type parameter `D` in `FMCS D` is the **indexing type** for the family. For
+proper temporal model construction, `D` should be a temporal domain such as:
+- `Int` or `Nat` for discrete time
+- `TimelineQuot` or `Rat` for dense time (Cantor domain)
+- Any type with `AddCommGroup + LinearOrder` for duration arithmetic
+
+**Proof-Theoretic Special Case**: The construction `FMCS CanonicalMCS` (in
+CanonicalFMCS.lean) uses all maximal consistent sets as the indexing type.
+This creates a "degenerate" family where `mcs(w) = w.world` (identity mapping).
+This construction:
+- Is mathematically valid and sorry-free
+- Trivializes forward_F and backward_P witness obligations
+- Serves the TruthLemma proof but is NOT a standard temporal model
+- Has only Preorder structure (not the LinearOrder needed for TaskFrame semantics)
+
+**Key Distinction**:
+- `FMCS CanonicalMCS`: Indexing type with Preorder only (proof-theoretic)
+- `TaskFrame D`: Temporal domain with AddCommGroup + LinearOrder (semantic)
+
 ## Terminology (Task 928)
 
 - **FMCS**: A SINGLE time-indexed family of MCS (Family of MCS)

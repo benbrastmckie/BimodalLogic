@@ -36,7 +36,7 @@ All individual components of the dense completeness pipeline are proven sorry-fr
 
 The full wiring of the dense completeness theorem requires connecting:
 
-- **CanonicalMCS domain**: Used by BFMCS and truth lemma (all MCSs as times)
+- **CanonicalMCS indexing**: Used by BFMCS for proof-theoretic trivial F/P witnesses
 - **TimelineQuot domain**: The Cantor-isomorphic domain (D ≃o ℚ) with DenselyOrdered
 - **ParametricCanonicalTaskFrame D**: Requires `[AddCommGroup D] [LinearOrder D] [IsOrderedAddMonoid D]`
 

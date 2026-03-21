@@ -13,6 +13,24 @@ fragment), but backward_P requires past witnesses which are NOT in the future-re
 fragment. The solution uses ALL MCSes as the domain, making both forward_F and backward_P
 trivial.
 
+## Architectural Note (Task 1009)
+
+This construction uses `CanonicalMCS` as the FMCS indexing type, creating a
+"degenerate" or "identity" family where `mcs(w) = w.world`. This is a **proof-theoretic
+technique** to trivialize F/P witness obligations, NOT a standard temporal model:
+
+| Aspect | Standard FMCS | FMCS CanonicalMCS |
+|--------|---------------|-------------------|
+| Indexing Type | `Int`, `TimelineQuot`, `Rat` | `CanonicalMCS` |
+| Structure | AddCommGroup + LinearOrder | Preorder only |
+| mcs Function | Maps time points to worlds | Identity: mcs(w) = w.world |
+| F/P Witnesses | Must be constructed | Trivial (every MCS is in domain) |
+| Purpose | Semantic model | TruthLemma proof |
+
+This construction is **legitimate and necessary** for the completeness proof pipeline.
+The gap between this proof-theoretic construction and the semantic `TaskFrame D`
+is bridged by transfer theorems (see `StagedConstruction/Completeness.lean`).
+
 ## Overview
 
 Given a root MCS `M₀`, we construct a FMCS where:
@@ -283,7 +301,8 @@ root element such that:
 2. Forward_F holds (F phi at t implies witness at s >= t)
 3. Backward_P holds (P phi at t implies witness at s <= t)
 
-This eliminates the `temporal_coherent_family_exists` sorry for `D = CanonicalMCS`.
+This eliminates the `temporal_coherent_family_exists` sorry when CanonicalMCS is used
+as the FMCS indexing type.
 The Int-generic version remains sorry-backed because Int uses DovetailingChain
 which has F/P witness sorries.
 

@@ -42,13 +42,17 @@ technical_debt:
 
 ### 1009. Remove FMCS CanonicalMCS architecture (world states are not time indices)
 - **Effort**: 8-12 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
+- **Started**: 2026-03-20
+- **Completed**: 2026-03-20
+- **Summary**: Clarified CanonicalMCS role through documentation updates. FMCS CanonicalMCS is legitimate proof-theoretic infrastructure, not a mistake. Removed all 'D = CanonicalMCS' notation.
 - **Research**:
   - [01_canonicalmcs-role-audit.md](1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md)
   - [03_d-equals-canonicalmcs-audit.md](1009_clarify_canonicalmcs_role/reports/03_d-equals-canonicalmcs-audit.md)
   - [05_fmcs-indexing-architecture.md](1009_clarify_canonicalmcs_role/reports/05_fmcs-indexing-architecture.md)
 - **Plan**: [06_architectural-cleanup-plan.md](1009_clarify_canonicalmcs_role/plans/06_architectural-cleanup-plan.md)
+- **Summary**: [09_cleanup-summary.md](1009_clarify_canonicalmcs_role/summaries/09_cleanup-summary.md)
 
 **Description**: Remove ALL trivial FMCS indexing where FMCS is indexed by CanonicalMCS. CanonicalMCS is the world-state space (not a temporal domain), so using it as an FMCS index creates degenerate identity mappings (mcs(w) = w.world) and architectural confusion. The D parameter in FMCS should be a temporal domain (Int, Rat, TimelineQuot), not world states. Archive incorrect constructions (CanonicalFMCS.lean, related MultiFamilyBFMCS patterns) to Boneyard. Update documentation to prohibit "D = CanonicalMCS" notation. This supersedes the original documentation-only scope.
 

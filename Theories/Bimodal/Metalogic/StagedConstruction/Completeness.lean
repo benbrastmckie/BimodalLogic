@@ -113,8 +113,8 @@ the CanonicalMCS-based BFMCS (which has the proven truth lemma) to the
 TimelineQuot-based TaskFrame (which has the right temporal structure). This
 connection is non-trivial because:
 
-1. The BFMCS uses `D = CanonicalMCS` (the all-MCS domain)
-2. The TaskFrame uses `D = TimelineQuot` (the Cantor domain)
+1. The BFMCS uses CanonicalMCS as its indexing type (proof-theoretic: trivializes F/P witnesses)
+2. The TaskFrame uses D = TimelineQuot (semantic: proper temporal domain with algebraic structure)
 
 The existing `canonical_truth_lemma` in CanonicalConstruction.lean uses `D = Int`,
 which is a hardcoded approach we're avoiding.
