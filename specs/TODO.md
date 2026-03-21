@@ -194,12 +194,14 @@ technical_debt:
 
 ### 11. Define CanonicalTask inductive three-place relation and prove TaskFrame axioms
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-21
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New CanonicalTask.lean
 - **Research**: [01_canonical-task-research.md](011_define_canonical_task_relation/reports/01_canonical-task-research.md)
 - **Plan**: [01_canonical-task-plan.md](011_define_canonical_task_relation/plans/01_canonical-task-plan.md)
+- **Summary**: [01_canonical-task-summary.md](011_define_canonical_task_relation/summaries/01_canonical-task-summary.md)
 - **Research (task 6)**:
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.4–2.5, §4 — inductive definition, proof of all three TaskFrame axioms, bounded witness corollary
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §4 — Lean encoding with Fin chains, comparison with parametric_canonical_task_rel

@@ -74,10 +74,10 @@
     {
       "project_number": 11,
       "project_name": "define_canonical_task_relation",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:03:40Z",
+      "last_updated": "2026-03-21T10:12:34Z",
       "dependencies": [
         10
       ],
@@ -92,12 +92,19 @@
           "path": "specs/011_define_canonical_task_relation/plans/01_canonical-task-plan.md",
           "type": "plan",
           "summary": "8-phase implementation plan for CanonicalTask relation with TaskFrame axioms"
+        },
+        {
+          "path": "specs/011_define_canonical_task_relation/summaries/01_canonical-task-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: CanonicalTask relation with TaskFrame axioms proven"
         }
       ],
       "session_id": "sess_1774087397_98ff34",
       "researched": "2026-03-21T09:58:38Z",
       "planned": "2026-03-21T10:02:26Z",
-      "started": "2026-03-21T10:03:40Z"
+      "started": "2026-03-21T10:03:40Z",
+      "completed": "2026-03-21T10:12:34Z",
+      "completion_summary": "Defined CanonicalTask relation with iter_F, forward/backward chains, and Int-indexed combined definition. Proved TaskFrame axioms: nullity identity, forward compositionality, and converse. Proved bounded witness corollary. 540 lines, 0 sorries."
     },
     {
       "project_number": 12,
