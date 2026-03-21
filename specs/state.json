@@ -265,11 +265,6 @@
           "summary": "Teammate A multi-BFMCS research: singleton BFMCS modal_backward is mathematically impossible. Multi-family modally saturated BFMCS is the correct approach. saturated_modal_backward theorem is sorry-free. Domain transfer from CanonicalMCS to Int via FMCSTransfer is the remaining blocker."
         },
         {
-          "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/03_synthesis.md",
-          "type": "research_report",
-          "summary": "Team synthesis: both teammates confirm singleton BFMCS modal_backward is impossible. Correct path is multi-family BFMCS with saturated_modal_backward (already sorry-free). Task is BLOCKED pending multi-family BFMCS construction with temporally coherent witness families."
-        },
-        {
           "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/03_team-research-synthesis.md",
           "type": "research_report",
           "summary": "Team synthesis: singleton BFMCS modal_backward is mathematically impossible. Multi-family modally saturated BFMCS using closedFlags + saturated_modal_backward is the correct approach. Domain transfer from CanonicalMCS to Int via FMCSTransfer is the remaining blocker. Recommends deprecating SuccChainBFMCS and revising the plan."
