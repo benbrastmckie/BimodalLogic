@@ -229,10 +229,10 @@
     {
       "project_number": 15,
       "project_name": "discrete_representation_theorem_axiom_removal",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T17:35:48Z",
+      "last_updated": "2026-03-21T18:13:41Z",
       "dependencies": [
         13,
         14
@@ -273,10 +273,15 @@
           "path": "specs/015_discrete_representation_theorem_axiom_removal/summaries/02_multi-bfmcs-summary.md",
           "type": "summary",
           "summary": "Multi-BFMCS implementation: modal_backward sorry eliminated via saturated_modal_backward, singleton approach deprecated, ROAD_MAP.md dead end documented"
+        },
+        {
+          "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/04_domain-semantics-research.md",
+          "type": "research_report",
+          "summary": "Domain semantics clarification: CanonicalMCS as world states vs Int as time indices, boneyard candidates, path forward"
         }
       ],
-      "session_id": "sess_1774113819_1d3a45",
-      "researched": "2026-03-21T11:07:24Z",
+      "session_id": "sess_1774116558_345227",
+      "researched": "2026-03-21T18:13:41Z",
       "planned": "2026-03-21T17:21:56Z",
       "plan_metadata": {
         "phases": 5,
@@ -376,10 +381,10 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T18:07:35Z",
+      "last_updated": "2026-03-21T18:11:20Z",
       "dependencies": [
         17
       ],
@@ -406,7 +411,7 @@
           "summary": "Team research (2 teammates): Identified singleton BFMCS impossibility, CanonicalMCS domain confusion, m>2k staged construction gap. Recommends fresh closure-based multi-family BFMCS over TimelineQuot with temporal F-witness saturation."
         }
       ],
-      "session_id": "sess_1774116112_f3c5e3",
+      "session_id": "sess_1774116652_23b527",
       "researched": "2026-03-21T18:07:35Z",
       "planned": "2026-03-21T17:13:41Z",
       "started": "2026-03-21T17:15:15Z"

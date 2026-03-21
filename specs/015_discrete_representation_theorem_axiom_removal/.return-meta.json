@@ -1,0 +1,55 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "type": "report",
+      "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/04_domain-semantics-research.md",
+      "summary": "Research report clarifying domain semantics: CanonicalMCS as world states vs Int as time indices, identifying conceptual confusions in codebase"
+    }
+  ],
+  "next_steps": "Run /plan 15 to create revised implementation plan addressing domain separation",
+  "metadata": {
+    "session_id": "sess_1774116558_345227",
+    "agent_type": "math-research-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "skill-math-research"],
+    "findings_count": 8,
+    "context_files_loaded": ["math/README.md"],
+    "mathlib_lookups_performed": 0,
+    "key_findings": [
+      "CanonicalMCS is world state space (MCS), NOT time index domain",
+      "Int/TimelineQuot is correct time index domain with AddCommGroup",
+      "BFMCS encodes space of world histories, parametric in D (time domain)",
+      "FMCS CanonicalMCS is proof technique, not semantic model",
+      "W=D conflation marked deprecated in DurationTransfer.lean",
+      "ModallyCoherentBFMCS.lean has MCS-level saturation (sorry-free)",
+      "SuccChainBFMCS.lean should be boneyarded (singleton modal_backward impossible)",
+      "Phase 4 gap: wiring MCS-level saturation to BFMCS Int structure"
+    ],
+    "files_reviewed": [
+      "Bundle/ModallyCoherentBFMCS.lean",
+      "Bundle/SuccChainBFMCS.lean",
+      "Algebraic/DiscreteInstantiation.lean",
+      "Bundle/BFMCS.lean",
+      "Bundle/FMCS.lean",
+      "Bundle/FMCSDef.lean",
+      "Bundle/CanonicalFMCS.lean",
+      "Domain/DurationTransfer.lean",
+      "Domain/CanonicalDomain.lean",
+      "Bundle/IntFMCSTransfer.lean",
+      "Algebraic/IntBFMCS.lean",
+      "StagedConstruction/DenseTaskRelation.lean"
+    ],
+    "boneyard_candidates": [
+      "Bundle/SuccChainBFMCS.lean",
+      "Domain/DurationTransfer.lean (deprecated functions)",
+      "Bundle/IntFMCSTransfer.lean (singleFamilyBFMCS_Int)"
+    ],
+    "comments_needing_fixes": [
+      "ModallyCoherentBFMCS.lean lines 39-52: D=CanonicalMCS conflation",
+      "CanonicalDomain.lean: world states are also D comment",
+      "DurationTransfer.lean: already deprecated, consider boneyard"
+    ]
+  }
+}
