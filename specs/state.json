@@ -229,10 +229,10 @@
     {
       "project_number": 15,
       "project_name": "discrete_representation_theorem_axiom_removal",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T18:13:41Z",
+      "last_updated": "2026-03-21T18:19:36Z",
       "dependencies": [
         13,
         14
@@ -265,11 +265,6 @@
           "summary": "Team synthesis: singleton BFMCS modal_backward is mathematically impossible. Multi-family modally saturated BFMCS using closedFlags + saturated_modal_backward is the correct approach. Domain transfer from CanonicalMCS to Int via FMCSTransfer is the remaining blocker. Recommends deprecating SuccChainBFMCS and revising the plan."
         },
         {
-          "path": "specs/015_discrete_representation_theorem_axiom_removal/plans/02_multi-bfmcs-plan.md",
-          "type": "plan",
-          "summary": "5-phase implementation plan for multi-family modally saturated BFMCS, replacing failed singleton approach"
-        },
-        {
           "path": "specs/015_discrete_representation_theorem_axiom_removal/summaries/02_multi-bfmcs-summary.md",
           "type": "summary",
           "summary": "Multi-BFMCS implementation: modal_backward sorry eliminated via saturated_modal_backward, singleton approach deprecated, ROAD_MAP.md dead end documented"
@@ -278,32 +273,30 @@
           "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/04_domain-semantics-research.md",
           "type": "research_report",
           "summary": "Domain semantics clarification: CanonicalMCS as world states vs Int as time indices, boneyard candidates, path forward"
+        },
+        {
+          "path": "specs/015_discrete_representation_theorem_axiom_removal/plans/03_domain-correct-plan.md",
+          "type": "plan",
+          "summary": "5-phase plan v3 for domain-correct discrete representation with MCS-level modal saturation bridge"
         }
       ],
-      "session_id": "sess_1774116558_345227",
+      "session_id": "sess_1774116976_d39aa6",
       "researched": "2026-03-21T18:13:41Z",
-      "planned": "2026-03-21T17:21:56Z",
+      "planned": "2026-03-21T18:19:36Z",
       "plan_metadata": {
         "phases": 5,
-        "total_effort_hours": 6,
+        "total_effort_hours": 4,
         "complexity": "high",
         "research_integrated": true,
-        "plan_version": 2,
-        "supersedes": "plans/01_discrete-rep-plan.md",
+        "plan_version": 3,
+        "supersedes": [
+          "plans/01_discrete-rep-plan.md",
+          "plans/02_multi-bfmcs-plan.md"
+        ],
         "reports_integrated": [
           {
-            "path": "reports/03_team-research-synthesis.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-03-21"
-          },
-          {
-            "path": "reports/02_teammate-a-findings.md",
-            "integrated_in_plan_version": 2,
-            "integrated_date": "2026-03-21"
-          },
-          {
-            "path": "reports/02_teammate-b-findings.md",
-            "integrated_in_plan_version": 2,
+            "path": "reports/04_domain-semantics-research.md",
+            "integrated_in_plan_version": 3,
             "integrated_date": "2026-03-21"
           }
         ]
@@ -381,10 +374,10 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T18:14:11Z",
+      "last_updated": "2026-03-21T18:17:19Z",
       "dependencies": [
         17
       ],
@@ -411,7 +404,7 @@
           "summary": "5-phase implementation plan addressing singleton BFMCS impossibility with closure-based F-witness saturation"
         }
       ],
-      "session_id": "sess_1774116652_23b527",
+      "session_id": "sess_1774117009_502180",
       "researched": "2026-03-21T18:07:35Z",
       "planned": "2026-03-21T18:14:11Z",
       "started": "2026-03-21T17:15:15Z"
