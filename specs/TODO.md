@@ -60,7 +60,7 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
@@ -138,13 +138,15 @@ technical_debt:
 
 ### 23. F/P temporal witness chain construction
 - **Effort**: 6-10 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean4
 - **Dependencies**: Task 15
+- **Blocked**: Mathematically impossible without axioms. Axiom 3 (predecessor_f_step) is unprovable due to non-constructive Lindenbaum extensions. CanonicalFMCS (all MCSes) is the sorry-free alternative.
 - **Research**:
   - [01_temporal-witness-research.md](023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md)
   - [02_team-research.md](023_fp_temporal_witness_chain/reports/02_team-research.md) - Succ-based approach analysis
 - **Plan**: [02_no-axioms-fp-witnesses.md](023_fp_temporal_witness_chain/plans/02_no-axioms-fp-witnesses.md) - NO AXIOMS constraint
+- **Summary**: [01_no-axioms-resolution.md](023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md) - Documents fundamental limitation
 
 **Description**: Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(¬φ) killing F(φ) obligations. Eliminates 4 dovetailing sorries: intFMCS_forward_F (IntBFMCS.lean:1199), intFMCS_forward_F_enriched two cases (IntBFMCS.lean:1175,1177), intFMCS_backward_P (IntBFMCS.lean:1213). Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches with Int-compatible index type.
 

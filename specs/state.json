@@ -8,12 +8,12 @@
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T20:43:35Z",
-      "session_id": "sess_1774124591_5f0ef6",
+      "last_updated": "2026-03-21T20:49:01Z",
+      "session_id": "sess_1774126130_14ecb6",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
         {
@@ -90,7 +90,7 @@
       "dependencies": [
         15
       ],
-      "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern \u2014 the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer.",
+      "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer.",
       "session_id": "sess_1774122768_262dc8",
       "researched": "2026-03-21T19:25:25Z",
       "artifacts": [
@@ -131,10 +131,10 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:42:28Z",
+      "last_updated": "2026-03-21T20:49:14Z",
       "dependencies": [
         15
       ],
@@ -156,10 +156,16 @@
           "path": "specs/023_fp_temporal_witness_chain/plans/02_no-axioms-fp-witnesses.md",
           "type": "plan",
           "summary": "Revised 4-phase plan with NO AXIOMS constraint: prove axioms OR reroute via CanonicalFMCS"
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md",
+          "type": "summary",
+          "summary": "Documents fundamental limitation: F/P witnesses for linear chains require axioms that are unprovable"
         }
       ],
       "planned": "2026-03-21T20:38:36Z",
-      "started": "2026-03-21T20:42:28Z"
+      "started": "2026-03-21T20:42:28Z",
+      "blocked_reason": "Mathematically impossible: F/P witnesses for linear chains require axioms. Axiom 3 (predecessor_f_step) is unprovable due to non-constructive Lindenbaum extensions. CanonicalFMCS (all MCSes) is the sorry-free alternative."
     },
     {
       "project_number": 24,
@@ -182,7 +188,7 @@
       "created": "2026-03-21T00:00:00Z",
       "last_updated": "2026-03-21T09:25:40Z",
       "dependencies": [],
-      "description": "Add f_content and p_content to TemporalContent.lean. These existential extractors (f_content(M)={\u03c6|F\u03c6\u2208M}, p_content(M)={\u03c6|P\u03c6\u2208M}) complement existing g_content/h_content. Prove basic duality lemmas. Foundation for both Succ relation (discrete track) and DenseTask relation (dense track).",
+      "description": "Add f_content and p_content to TemporalContent.lean. These existential extractors (f_content(M)={φ|Fφ∈M}, p_content(M)={φ|Pφ∈M}) complement existing g_content/h_content. Prove basic duality lemmas. Foundation for both Succ relation (discrete track) and DenseTask relation (dense track).",
       "artifacts": [
         {
           "path": "specs/009_add_existential_temporal_extractors/reports/01_temporal-extractors.md",
@@ -216,7 +222,7 @@
       "dependencies": [
         9
       ],
-      "description": "Define Succ(u,v) := g_content(u)\u2286v \u2227 f_content(u)\u2286v\u222af_content(v) in new SuccRelation.lean. Prove: Succ implies CanonicalR, g/h duality for Succ pairs, and the single-step forcing theorem (F\u03c6\u2208u \u2227 FF\u03c6\u2209u \u2227 Succ(u,v) \u2192 \u03c6\u2208v). The single-step forcing theorem is the key result connecting F-nesting depth to witness distance.",
+      "description": "Define Succ(u,v) := g_content(u)⊆v ∧ f_content(u)⊆v∪f_content(v) in new SuccRelation.lean. Prove: Succ implies CanonicalR, g/h duality for Succ pairs, and the single-step forcing theorem (Fφ∈u ∧ FFφ∉u ∧ Succ(u,v) → φ∈v). The single-step forcing theorem is the key result connecting F-nesting depth to witness distance.",
       "artifacts": [
         {
           "path": "specs/010_define_succ_relation/reports/01_succ-relation-research.md",
@@ -250,7 +256,7 @@
       "dependencies": [
         10
       ],
-      "description": "Define CanonicalTask(u,n,v) inductively from Succ: base u=v for n=0, step \u2203w,Succ(u,w)\u2227CanonicalTask(w,n,v) for n\u22651, converse for n<0. Prove the three TaskFrame axioms (nullity identity, forward compositionality by chain concatenation, converse by definition). Prove bounded witness corollary: F^n\u03c6\u2208u \u2227 F^(n+1)\u03c6\u2209u implies witness within n Succ-steps.",
+      "description": "Define CanonicalTask(u,n,v) inductively from Succ: base u=v for n=0, step ∃w,Succ(u,w)∧CanonicalTask(w,n,v) for n≥1, converse for n<0. Prove the three TaskFrame axioms (nullity identity, forward compositionality by chain concatenation, converse by definition). Prove bounded witness corollary: F^nφ∈u ∧ F^(n+1)φ∉u implies witness within n Succ-steps.",
       "artifacts": [
         {
           "path": "specs/011_define_canonical_task_relation/reports/01_canonical-task-research.md",
@@ -285,7 +291,7 @@
       "dependencies": [
         10
       ],
-      "description": "Prove that under discrete axioms (base+DF+seriality), for any MCS u with F\u22a4\u2208u, there exists MCS v with Succ(u,v). Constructs deferral seed g_content(u)\u222a{\u03c6\u2228F\u03c6|F\u03c6\u2208u}, proves consistency via DF, extends by Lindenbaum. Symmetric predecessor existence via DB. This is the critical proof obligation that bypasses the covering lemma and replaces discrete_Icc_finite_axiom.",
+      "description": "Prove that under discrete axioms (base+DF+seriality), for any MCS u with F⊤∈u, there exists MCS v with Succ(u,v). Constructs deferral seed g_content(u)∪{φ∨Fφ|Fφ∈u}, proves consistency via DF, extends by Lindenbaum. Symmetric predecessor existence via DB. This is the critical proof obligation that bypasses the covering lemma and replaces discrete_Icc_finite_axiom.",
       "artifacts": [
         {
           "path": "specs/012_succ_successor_predecessor_existence/reports/01_succ-existence-research.md",
@@ -321,7 +327,7 @@
         11,
         12
       ],
-      "description": "Prove CanonicalR(u,v) \u2194 \u2203n\u22651, CanonicalTask(u,n,v). Forward: CanonicalTask implies CanonicalR by g_content transitivity through Succ-chains via temp_4. Backward: CanonicalR implies some CanonicalTask using successor existence and F-nesting bounds. Also prove existing lemmas (canonical_forward_G, canonical_forward_F) from new definitions as backward-compatibility layer.",
+      "description": "Prove CanonicalR(u,v) ↔ ∃n≥1, CanonicalTask(u,n,v). Forward: CanonicalTask implies CanonicalR by g_content transitivity through Succ-chains via temp_4. Backward: CanonicalR implies some CanonicalTask using successor existence and F-nesting bounds. Also prove existing lemmas (canonical_forward_G, canonical_forward_F) from new definitions as backward-compatibility layer.",
       "artifacts": [
         {
           "path": "specs/013_canonical_r_recovery_from_canonical_task/reports/01_canonicalr-recovery-analysis.md",
@@ -356,7 +362,7 @@
         11,
         12
       ],
-      "description": "Construct a time-indexed FMCS family over Int from Succ-chains: enumerate forward/backward via successor/predecessor existence to build fam:\u2124\u2192MCS satisfying FMCS coherence (forward_G, backward_H, forward_F, backward_P). Instantiate DiscreteCanonicalTaskFrame using CanonicalTask as task_rel. Verify WorldHistory respects_task via Succ-chain propagation.",
+      "description": "Construct a time-indexed FMCS family over Int from Succ-chains: enumerate forward/backward via successor/predecessor existence to build fam:ℤ→MCS satisfying FMCS coherence (forward_G, backward_H, forward_F, backward_P). Instantiate DiscreteCanonicalTaskFrame using CanonicalTask as task_rel. Verify WorldHistory respects_task via Succ-chain propagation.",
       "artifacts": [
         {
           "path": "specs/014_succ_chain_fmcs_and_taskframe_int/reports/01_succ-fmcs-research.md",
@@ -406,7 +412,7 @@
         13,
         14
       ],
-      "description": "Wire the Succ-chain FMCS and CanonicalTask-based TaskFrame Int into the unconditional discrete representation theorem: valid_discrete \u03c6 \u2192 \u22a2_discrete \u03c6. Instantiate parametric truth lemma with D=\u2124 and the Succ-chain task relation. Once sorry-free, remove discrete_Icc_finite_axiom from DiscreteTimeline.lean and the two unproven axioms from DiscreteSuccSeed.lean.",
+      "description": "Wire the Succ-chain FMCS and CanonicalTask-based TaskFrame Int into the unconditional discrete representation theorem: valid_discrete φ → ⊢_discrete φ. Instantiate parametric truth lemma with D=ℤ and the Succ-chain task relation. Once sorry-free, remove discrete_Icc_finite_axiom from DiscreteTimeline.lean and the two unproven axioms from DiscreteSuccSeed.lean.",
       "artifacts": [
         {
           "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/01_discrete-rep-research.md",
@@ -482,7 +488,7 @@
       "created": "2026-03-21T00:00:00Z",
       "last_updated": "2026-03-21T10:57:55Z",
       "dependencies": [],
-      "description": "Define DenseTask(u,q,v) \u2194 e(tv)-e(tu)=q using the existing Cantor isomorphism TimelineQuot\u2243o\u211a and the canonicalTaskRel (w+d=w') from DurationTransfer.lean. Verify TaskFrame axioms (trivial from group properties). Prove density interpolation theorem: any positive-duration task has arbitrary rational subdivision. Replaces duration-coarse parametric_canonical_task_rel for the dense case.",
+      "description": "Define DenseTask(u,q,v) ↔ e(tv)-e(tu)=q using the existing Cantor isomorphism TimelineQuot≃oℚ and the canonicalTaskRel (w+d=w') from DurationTransfer.lean. Verify TaskFrame axioms (trivial from group properties). Prove density interpolation theorem: any positive-duration task has arbitrary rational subdivision. Replaces duration-coarse parametric_canonical_task_rel for the dense case.",
       "artifacts": [
         {
           "path": "specs/016_define_dense_task_relation/reports/01_dense-task-research.md",
@@ -553,7 +559,7 @@
         17,
         27
       ],
-      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame \u211a into the unconditional dense representation theorem: valid_dense \u03c6 \u2192 \u22a2_dense \u03c6. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
+      "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
       "artifacts": [
         {
           "path": "specs/018_dense_representation_theorem_completion/reports/01_dense-representation-research.md",
@@ -686,7 +692,7 @@
       "project_name": "canonical_taskframe_completeness",
       "status": "researched",
       "language": "lean4",
-      "description": "Replace FlagBFMCS satisfies_at with a canonical TaskFrame using truth_at. The current FlagBFMCS completeness theorem uses an internal satisfies_at relation rather than the official truth_at from the semantic layer. Eliminate satisfies_at entirely and construct a canonical TaskFrame directly from FlagBFMCS data, so that the completeness theorem states: consistent S implies existence of a TaskModel and world where truth_at holds for all \u03c6 \u2208 S. Key architectural requirements: (1) Define canonical world states from CanonicalMCS, (2) Define the duration domain D parametrically (positions within each Flag chain serve as durations), (3) Define the task relation R on world states using CanonicalR, (4) Construct WorldHistory instances from Flags (each Flag yields a history mapping durations to world states), (5) Define the canonical TaskFrame and TaskModel using these components, (6) Prove the truth lemma directly for truth_at rather than satisfies_at, (7) State and prove the completeness theorem using the canonical valid predicate. The existing FlagBFMCS infrastructure (closedFlags, chainFMCS, modal saturation, temporal completeness) provides all the raw material. The work is restructuring it to fit the official TaskFrame/TaskModel/WorldHistory architecture. This supersedes the validity bridge approach in task 997.",
+      "description": "Replace FlagBFMCS satisfies_at with a canonical TaskFrame using truth_at. The current FlagBFMCS completeness theorem uses an internal satisfies_at relation rather than the official truth_at from the semantic layer. Eliminate satisfies_at entirely and construct a canonical TaskFrame directly from FlagBFMCS data, so that the completeness theorem states: consistent S implies existence of a TaskModel and world where truth_at holds for all φ ∈ S. Key architectural requirements: (1) Define canonical world states from CanonicalMCS, (2) Define the duration domain D parametrically (positions within each Flag chain serve as durations), (3) Define the task relation R on world states using CanonicalR, (4) Construct WorldHistory instances from Flags (each Flag yields a history mapping durations to world states), (5) Define the canonical TaskFrame and TaskModel using these components, (6) Prove the truth lemma directly for truth_at rather than satisfies_at, (7) State and prove the completeness theorem using the canonical valid predicate. The existing FlagBFMCS infrastructure (closedFlags, chainFMCS, modal saturation, temporal completeness) provides all the raw material. The work is restructuring it to fit the official TaskFrame/TaskModel/WorldHistory architecture. This supersedes the validity bridge approach in task 997.",
       "dependencies": [
         3
       ],
@@ -743,12 +749,12 @@
         {
           "path": "specs/006_canonical_taskframe_completeness/reports/06_teammate-b-findings.md",
           "type": "research",
-          "summary": "Teammate B: Alternative constructions analysis, dovetailed chain + \u2124 recommendation"
+          "summary": "Teammate B: Alternative constructions analysis, dovetailed chain + ℤ recommendation"
         },
         {
           "path": "specs/006_canonical_taskframe_completeness/reports/06_team-research.md",
           "type": "research",
-          "summary": "Team synthesis: Dovetailed Flag + \u2124 isomorphism approach to resolve convexity and cross-Flag witness blockers"
+          "summary": "Team synthesis: Dovetailed Flag + ℤ isomorphism approach to resolve convexity and cross-Flag witness blockers"
         },
         {
           "path": "specs/006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md",
@@ -813,7 +819,7 @@
         {
           "path": "specs/006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md",
           "type": "research",
-          "summary": "Rigidity counterexample: x\u21922x on \u211a proves Aut+(T) approach unsound; recommends Cantor transfer D=\u211a"
+          "summary": "Rigidity counterexample: x→2x on ℚ proves Aut+(T) approach unsound; recommends Cantor transfer D=ℚ"
         },
         {
           "path": "specs/006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md",
@@ -851,7 +857,7 @@
       "language": "lean4",
       "created": "2026-03-19T17:05:50Z",
       "last_updated": "2026-03-19T17:05:50Z",
-      "description": "Prove the derivation of F(phi) -> FF(phi) from the density axiom GGpsi -> Gpsi. Two files have the same sorry with the same mathematical gap: (1) derive_F_to_FF in StagedConstruction/CantorPrereqs.lean (line 111) \u2014 needs a DerivationTree for F(phi) -> FF(phi); (2) density_of_canonicalR in Canonical/CanonicalTimeline.lean (line 183) \u2014 needs the same derivation to find an intermediate CanonicalR witness. The density axiom is GGpsi -> Gpsi (universal form). The existential dual F(phi) -> FF(phi) is equivalent via contrapositive: F(phi) is ~G(~phi), FF(phi) is ~G(~F(phi)) = ~GG(~phi), so F(phi) -> FF(phi) is ~G(~phi) -> ~GG(~phi), which is the contrapositive of GGpsi -> Gpsi for psi = ~phi. The derivation requires chaining through double-negation and temporal K-distribution. Both sorries are marked TODO (Task 991). Fixing them completes the staged construction pipeline for density proofs and removes the dependency on unproven density helpers."
+      "description": "Prove the derivation of F(phi) -> FF(phi) from the density axiom GGpsi -> Gpsi. Two files have the same sorry with the same mathematical gap: (1) derive_F_to_FF in StagedConstruction/CantorPrereqs.lean (line 111) — needs a DerivationTree for F(phi) -> FF(phi); (2) density_of_canonicalR in Canonical/CanonicalTimeline.lean (line 183) — needs the same derivation to find an intermediate CanonicalR witness. The density axiom is GGpsi -> Gpsi (universal form). The existential dual F(phi) -> FF(phi) is equivalent via contrapositive: F(phi) is ~G(~phi), FF(phi) is ~G(~F(phi)) = ~GG(~phi), so F(phi) -> FF(phi) is ~G(~phi) -> ~GG(~phi), which is the contrapositive of GGpsi -> Gpsi for psi = ~phi. The derivation requires chaining through double-negation and temporal K-distribution. Both sorries are marked TODO (Task 991). Fixing them completes the staged construction pipeline for density proofs and removes the dependency on unproven density helpers."
     },
     {
       "project_number": 998,
@@ -860,7 +866,7 @@
       "language": "lean4",
       "created": "2026-03-19T17:05:39Z",
       "last_updated": "2026-03-19T17:05:39Z",
-      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean \u2014 mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) \u2014 are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
+      "description": "Redesign the FMP filtration for strict temporal semantics. The 2 sorry theorems in Decidability/FMP/TruthPreservation.lean — mcs_all_future_closure (line 263) and mcs_all_past_closure (line 281) — are deprecated because the temporal T-axiom (Gphi -> phi) is NOT valid under strict semantics. filtration_all_future_forward and filtration_all_past_forward depend on them. The FMP module is separate from the main decidability pipeline (decide is sorry-free), but completing it formally proves the finite model property. Resolution options: (A) restrict FMP statement to serial frames where temporal seriality holds, (B) redesign filtration to avoid temporal reflexivity entirely, (C) prove the filtered model satisfies a weaker correctness property sufficient for the FMP theorem. Note: mcs_finite_model_property in FMP.lean does NOT directly use these sorry lemmas, so the impact is localized to filtration_all_future_forward/backward."
     },
     {
       "project_number": 997,
@@ -872,7 +878,7 @@
       "depends_on": [
         995
       ],
-      "description": "Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding CanonicalMCS \u2192 Int, fill the 2 sorries in AlgebraicBaseCompleteness.lean (lines 104, 155) to prove valid \u03c6 \u2192 \u22a2 \u03c6 for base TM logic. The file already has the right structure (construct_bfmcs_int from CanonicalMCS transfer, then use parametric_algebraic_representation_conditional with D = Int). This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).",
+      "description": "Wire the algebraic base completeness theorem using the FMCS domain transfer lemma (task 995). After task 995 provides the order-embedding CanonicalMCS → Int, fill the 2 sorries in AlgebraicBaseCompleteness.lean (lines 104, 155) to prove valid φ → ⊢ φ for base TM logic. The file already has the right structure (construct_bfmcs_int from CanonicalMCS transfer, then use parametric_algebraic_representation_conditional with D = Int). This supersedes abandoned task 987 and completes the base completeness leg of the three-way completeness suite (base/dense/discrete).",
       "session_id": "sess_1773969577_99eb4f",
       "researched": "2026-03-20T00:55:55Z",
       "artifacts": [
@@ -932,7 +938,7 @@
       "created": "2026-03-18T20:24:23Z",
       "last_updated": "2026-03-18T20:24:23Z",
       "researched": "2026-03-18T20:24:23Z",
-      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with \u25a1, G, H, \u03c3 operators and interaction axioms. Lift temporal duality \u03c3 from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
+      "description": "Implement the Shift-Closed Tense S5 Algebra (STSA) representation theorem. Define STSA as a Lean structure extending BooleanAlgebra with □, G, H, σ operators and interaction axioms. Lift temporal duality σ from swap_temporal to the Lindenbaum quotient. Prove LindenbaumAlg is an STSA instance by wiring existing pieces (BooleanStructure, InteriorOperators, UltrafilterMCS). Restructure ParametricRepresentation into unified STSA representation theorem. Research report 001 provides complete algebraic analysis with ~80% of formalization already existing.",
       "artifacts": [
         {
           "type": "research",
@@ -948,7 +954,7 @@
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
       "last_updated": "2026-03-19T19:19:26Z",
-      "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense \u03c6 \u2192 \u22a2_dense \u03c6. Does not overlap with task 982 (TimelineQuot approach).",
+      "description": "Prove dense algebraic completeness using D = Rat. Requires: (1) a sorry-free BFMCS construction over Rat (adapting the Int construction with density-exploiting witness placement), (2) proving the DN axiom is valid in DenseCanonicalTaskFrame Rat (truth lemma shows density axiom holds because Rat is densely ordered), (3) wiring dense_representation_conditional to obtain valid_dense φ → ⊢_dense φ. Does not overlap with task 982 (TimelineQuot approach).",
       "artifacts": [
         {
           "path": "specs/988_dense_algebraic_completeness/reports/research-001.md",
@@ -1110,7 +1116,7 @@
       "language": "lean",
       "created": "2026-03-17T02:43:07Z",
       "last_updated": "2026-03-19T00:00:00Z",
-      "description": "Prove discrete algebraic completeness using D = Int. Requires: (1) FMCS domain transfer from CanonicalMCS to Int (task 995), (2) proving DF and DP axioms are valid in DiscreteCanonicalTaskFrame Int (the parametric canonical TaskFrame instantiated at Int), (3) SuccOrder instance on DiscreteTimelineQuot (task 974, archived), (4) wiring discrete_representation_conditional to obtain valid_discrete \u03c6 \u2192 \u22a2_discrete \u03c6.",
+      "description": "Prove discrete algebraic completeness using D = Int. Requires: (1) FMCS domain transfer from CanonicalMCS to Int (task 995), (2) proving DF and DP axioms are valid in DiscreteCanonicalTaskFrame Int (the parametric canonical TaskFrame instantiated at Int), (3) SuccOrder instance on DiscreteTimelineQuot (task 974, archived), (4) wiring discrete_representation_conditional to obtain valid_discrete φ → ⊢_discrete φ.",
       "artifacts": []
     },
     {
@@ -1119,7 +1125,7 @@
       "status": "researched",
       "language": "lean",
       "priority": "medium",
-      "description": "Refactor unilateral proof system (\u0393 \u22a2 \u03c6) to bilateral system with dual judgments: acceptance (\u0393 \u22a2\u207a \u03c6) and rejection (\u0393 \u22a2\u207b \u03c6). Parallel implementation with equivalence bridge.",
+      "description": "Refactor unilateral proof system (Γ ⊢ φ) to bilateral system with dual judgments: acceptance (Γ ⊢⁺ φ) and rejection (Γ ⊢⁻ φ). Parallel implementation with equivalence bridge.",
       "created": "2026-03-03T00:00:00Z",
       "last_updated": "2026-03-16T14:45:00Z",
       "researched": "2026-03-16T14:45:00Z",
