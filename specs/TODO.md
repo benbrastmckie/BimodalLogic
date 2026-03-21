@@ -105,7 +105,8 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-21
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
@@ -121,7 +122,9 @@ technical_debt:
   - [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — v1: 8-phase plan (PARTIAL, Phase 5 S5-blocked)
   - [02_succ-chain-completion.md](028_correct_bfmcs_domain_conflation/plans/02_succ-chain-completion.md) — v2: 4-phase plan (superseded by v3)
   - [03_succ-chain-discrete-completeness.md](028_correct_bfmcs_domain_conflation/plans/03_succ-chain-discrete-completeness.md) — v3: 4-phase plan with corrected S5 understanding (4 hours)
-- **Summary**: [01_bfmcs-domain-correction-summary.md](028_correct_bfmcs_domain_conflation/summaries/01_bfmcs-domain-correction-summary.md) — PARTIAL: Phase 5 blocked (S5 requirement), Succ-chain bypass documented
+- **Summary**:
+  - [01_bfmcs-domain-correction-summary.md](028_correct_bfmcs_domain_conflation/summaries/01_bfmcs-domain-correction-summary.md) — PARTIAL: Phase 5 blocked (S5 requirement), Succ-chain bypass documented
+  - [01_succ-chain-discrete-summary.md](028_correct_bfmcs_domain_conflation/summaries/01_succ-chain-discrete-summary.md) — COMPLETED: All 4 phases done, 3 semantic axioms, backward P coherence proven
 
 **Description**: Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis.
 

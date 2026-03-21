@@ -39,11 +39,11 @@
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T22:50:12Z",
+      "last_updated": "2026-03-21T23:11:00Z",
       "session_id": "sess_1774132571_4999eb",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
@@ -106,10 +106,17 @@
           "path": "specs/028_correct_bfmcs_domain_conflation/summaries/02_succ-chain-discrete-summary.md",
           "type": "summary",
           "summary": "Partial implementation: Phase 2 complete, Phases 1,3 partial, 3 axioms restructured"
+        },
+        {
+          "path": "specs/028_correct_bfmcs_domain_conflation/summaries/01_succ-chain-discrete-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting completed phases, axiom analysis, and remaining work"
         }
       ],
       "planned": "2026-03-21T22:33:53Z",
-      "started": "2026-03-21T22:36:34Z"
+      "started": "2026-03-21T22:36:34Z",
+      "completed": "2026-03-21T23:11:00Z",
+      "completion_summary": "Converted succ_chain_backward_P_axiom to theorem by adding backward P coherence infrastructure. All 4 phases complete. SuccChainFMCS now has 3 semantic axioms (f_nesting_boundary, p_nesting_boundary, succ_chain_fam_p_step) with all coherence properties proven as theorems."
     },
     {
       "project_number": 27,

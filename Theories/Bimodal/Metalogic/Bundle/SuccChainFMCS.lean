@@ -785,8 +785,7 @@ theorem succ_chain_canonicalTask_backward_MCS_P_from (M0 : SerialMCS) (start : I
     -- We have u = succ_chain_fam M0 (start - (↑k + 1)) which equals succ_chain_fam M0 (start - ↑(k + 1))
     --
     -- Use convert to handle the type difference
-    convert CanonicalTask_backward_MCS_P.step h_mcs_u h_mcs_w h_succ h_p_step h_chain using 2 <;>
-    simp only [Int.ofNat_add, Int.ofNat_one]
+    convert CanonicalTask_backward_MCS_P.step h_mcs_u h_mcs_w h_succ h_p_step h_chain using 2
 
 /--
 Backward P coherence: If P(phi) ∈ mcs(n), then exists m < n with phi ∈ mcs(m).
