@@ -1,5 +1,5 @@
 ---
-next_project_number: 9
+next_project_number: 21
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -27,6 +27,24 @@ technical_debt:
 
 ## Recommended Order
 
+### Metalogic Refactoring Track (Reports 17-20)
+
+**Discrete CanonicalTask (bypass covering lemma)**:
+1. **9** → implement (foundation for both tracks)
+2. **10** → implement (depends: 9)
+3. **11** → implement (depends: 10) | **12** → implement (depends: 10) [parallel]
+4. **13** → implement (depends: 11,12) | **14** → implement (depends: 11,12) [parallel]
+5. **15** → implement (depends: 13,14) — removes 3 axioms
+
+**Dense DenseTask (complete dense completeness)**:
+1. **16** → implement (independent)
+2. **17** → implement (depends: 16) — hardest task
+3. **18** → implement (depends: 17)
+
+**Cleanup**: **19** (depends: 15) | **20** (depends: 15,18)
+
+### Existing Tasks
+
 1. **8** -> implement (independent)
 2. **6** -> plan (independent)
 3. **999** -> research (independent)
@@ -41,6 +59,137 @@ technical_debt:
 12. **619** -> plan (independent)
 
 ## Tasks
+
+---
+
+## Metalogic Refactoring: Three-Place Task Relations (Reports 17-20)
+
+### 20. Audit and update parametric canonical infrastructure
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Tasks 15, 18
+
+**Description**: Review ParametricCanonical.lean, ParametricTruthLemma.lean, and ParametricRepresentation.lean. Determine whether the parametric infrastructure can be refactored to accept a generic task_rel parameter (not hardcoded duration-coarse relation), enabling both CanonicalTask and DenseTask as instantiations. If feasible, refactor; otherwise document the relationship between parametric (base) and specialized (discrete/dense) paths.
+
+---
+
+### 19. Deprecate old discrete pipeline
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 15
+
+**Description**: Once discrete completeness is proved via Succ-chains (task 15), deprecate the old quotient-based pipeline: DiscreteTimelineElem, DiscreteTimelineQuot, SuccOrder/PredOrder construction attempt, and the orderIsoIntOfLinearSuccPredArch pathway. Mark files as deprecated with doc comments pointing to the new Succ-chain approach. Tasks 989 (discrete algebraic completeness) and 974 (SuccOrder) are superseded by tasks 10-15 and can be marked [EXPANDED].
+
+---
+
+### 18. Complete dense representation theorem via DenseTask
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 17
+
+**Description**: Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.
+
+---
+
+### 17. Build BFMCS over TimelineQuot for dense completeness
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 16
+
+**Description**: Construct a temporally complete BFMCS bundle with families indexed by TimelineQuot satisfying both modal_backward (requires multiple families; timelineQuotSingletonBFMCS fails here) and temporal coherence (forward_F, backward_P). Uses timelineQuotFMCS from TimelineQuotCanonical.lean as base family. The DenseTask relation provides a natural framework: witnesses from canonical_forward_F are placed at Cantor-assigned rationals. This is the hardest task in the dense track and the key blocker for task 988.
+
+---
+
+### 16. Define DenseTask relation via Cantor isomorphism
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: none (independent of discrete track)
+- **Files**: DurationTransfer.lean (canonicalTaskRel), CantorApplication.lean (isomorphism), new DenseTask.lean
+
+**Description**: Define DenseTask(u,q,v) ↔ e(tv)-e(tu)=q using the Cantor isomorphism TimelineQuot≃oℚ and the existing canonicalTaskRel (w+d=w') from DurationTransfer.lean. Verify TaskFrame ℚ axioms (trivial from group properties). Prove density interpolation theorem: any positive-duration task has arbitrary rational subdivision. Replaces duration-coarse parametric_canonical_task_rel for the dense case and directly instantiates TaskFrame ℚ with DenselyOrdered.
+
+---
+
+### 15. Complete discrete representation theorem and remove Icc finite axiom
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Tasks 13, 14
+
+**Description**: Wire the Succ-chain FMCS and CanonicalTask-based TaskFrame ℤ into the unconditional discrete representation theorem: valid_discrete φ → ⊢_discrete φ. Instantiate parametric truth lemma with D=ℤ and the Succ-chain task relation. Once sorry-free, remove discrete_Icc_finite_axiom (DiscreteTimeline.lean:316) and the two axioms discreteImmediateSuccSeed_consistent_axiom and discreteImmediateSucc_covers_axiom from DiscreteSuccSeed.lean. Reduces axiom_count from 3 to 1.
+
+---
+
+### 14. Build Succ-chain FMCS and discrete TaskFrame ℤ instantiation
+- **Effort**: 5-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Tasks 11, 12
+- **Files**: New DiscreteSuccFMCS.lean, update DiscreteInstantiation.lean
+
+**Description**: Construct a time-indexed FMCS family over ℤ from Succ-chains: enumerate forward/backward via successor/predecessor existence to build fam:ℤ→MCS satisfying FMCS coherence (forward_G, backward_H, forward_F, backward_P). Instantiate DiscreteCanonicalTaskFrame using CanonicalTask as task_rel (replacing duration-coarse parametric_canonical_task_rel for the discrete case). Verify WorldHistory respects_task condition via Succ-chain propagation.
+
+---
+
+### 13. Prove CanonicalR recovery from CanonicalTask
+- **Effort**: 3-5 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Tasks 11, 12
+- **Files**: New CanonicalRecovery.lean or extend CanonicalTask.lean
+
+**Description**: Prove CanonicalR(u,v) ↔ ∃n≥1, CanonicalTask(u,n,v). Forward direction: CanonicalTask implies CanonicalR by g_content transitivity through Succ-chains via temp_4. Backward direction: CanonicalR implies some CanonicalTask using successor existence and F-nesting depth bounds. Also prove existing lemmas (canonical_forward_G, canonical_forward_F) from new definitions as backward-compatibility layer for downstream code.
+
+---
+
+### 12. Prove Succ-based successor and predecessor existence under discrete axioms
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 10
+- **Files**: New SuccExistence.lean, references DiscreteSuccSeed.lean
+
+**Description**: Prove that under discrete axioms (base+DF+seriality), for any MCS u with F⊤∈u, there exists MCS v with Succ(u,v). Constructs deferral seed g_content(u)∪{φ∨Fφ|Fφ∈u}, proves consistency via DF (analogous to forward_temporal_witness_seed_consistent but with disjunctive deferrals), extends by Lindenbaum. Symmetric predecessor existence via DB. Critical proof: the deferral seed consistency argument is the crux that replaces discrete_Icc_finite_axiom. Fallback: axiomatize successor existence (weaker and more transparent than the current interval-finiteness axiom).
+
+---
+
+### 11. Define CanonicalTask inductive three-place relation and prove TaskFrame axioms
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 10
+- **Files**: New CanonicalTask.lean
+
+**Description**: Define CanonicalTask(u,n,v) inductively from Succ: u=v for n=0, ∃w,Succ(u,w)∧CanonicalTask(w,n,v) for n≥1, converse for n<0. Prove the three TaskFrame axioms: nullity identity (n=0 ↔ u=v), forward compositionality (chain concatenation, induction on first argument), and converse (definitional flip). Also prove the bounded witness corollary: F^nφ∈u ∧ F^(n+1)φ∉u implies ∃v with CanonicalTask(u,k,v) ∧ φ∈v for some 1≤k≤n.
+
+---
+
+### 10. Define Succ relation and prove basic properties
+- **Effort**: 3-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 9
+- **Files**: New SuccRelation.lean in Theories/Bimodal/Metalogic/Bundle/
+
+**Description**: Define Succ(u,v) := g_content(u)⊆v ∧ f_content(u)⊆v∪f_content(v) in new SuccRelation.lean. Prove: (1) Succ implies CanonicalR (projection to G-persistence condition), (2) g/h duality for Succ pairs using existing g_content_subset_implies_h_content_reverse, (3) the single-step forcing theorem: Fφ∈u ∧ FFφ∉u ∧ Succ(u,v) → φ∈v. The single-step forcing theorem is the key insight connecting F-nesting depth to witness distance in discrete models.
+
+---
+
+### 9. Add f_content and p_content existential temporal extractors
+- **Effort**: 1-2 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: none
+- **Files**: Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean
+
+**Description**: Add f_content(M):={φ|Fφ∈M} and p_content(M):={φ|Pφ∈M} to TemporalContent.lean, complementing the existing g_content (universal future) and h_content (universal past). Prove basic duality lemmas: relationship between f_content and g_content via MCS negation completeness (Fφ=¬G¬φ), and symmetrically for p_content/h_content. These two extractors are the foundation for the Succ relation (discrete track, tasks 10-15) and DenseTask relation (dense track, tasks 16-18).
+
+---
 
 ### 8. Establish genuine truth_at completeness theorems for TM logic
 - **Effort**: 12-20 hours
