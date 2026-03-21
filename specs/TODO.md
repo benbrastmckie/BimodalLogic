@@ -1,5 +1,5 @@
 ---
-next_project_number: 21
+next_project_number: 26
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -59,6 +59,16 @@ technical_debt:
 ---
 
 ## Discrete Sorry Elimination (Post Task 15)
+
+### 25. Rename CanonicalR to ExistsTask and refactor usage
+- **Effort**: 4-8 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 18
+
+**Description**: After task 18 adds ExistsTask alias for CanonicalR, replace all CanonicalR references with ExistsTask throughout the codebase. Search for uses that would benefit from directly using CanonicalTask (from which ExistsTask is derived) and update them appropriately. Update documentation to reflect the new naming.
+
+---
 
 ### 22. Direct multi-family bundle construction
 - **Effort**: 4-6 hours
