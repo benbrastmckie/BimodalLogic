@@ -41,7 +41,7 @@
       "status": "planned",
       "language": "lean4",
       "created": "2026-03-20T23:46:51Z",
-      "last_updated": "2026-03-21T00:18:24Z",
+      "last_updated": "2026-03-21T00:33:31Z",
       "dependencies": [
         1007
       ],
@@ -53,12 +53,13 @@
         },
         {
           "type": "plan",
-          "path": "specs/1008_genuine_truth_at_completeness/plans/02_completeness-plan.md",
-          "summary": "6-phase implementation plan for genuine truth_at completeness theorems"
+          "path": "specs/1008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md",
+          "summary": "6-phase revised plan: corrects D=CanonicalMCS confusion, focuses on 3 real sorries (modal_backward, forward_F, backward_P)"
         }
       ],
-      "session_id": "sess_1774052075_246324",
-      "planned": "2026-03-21T00:18:24Z"
+      "session_id": "sess_1774052410_109e6c",
+      "planned": "2026-03-21T00:33:31Z",
+      "started": "2026-03-21T00:20:41Z"
     },
     {
       "project_number": 1006,
