@@ -60,7 +60,7 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 8-16 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
@@ -68,7 +68,9 @@ technical_debt:
   - [01_teammate-b-findings.md](028_correct_bfmcs_domain_conflation/reports/01_teammate-b-findings.md) — Mathematical foundations: W/D distinction, DenselyOrdered/SuccOrder mutual exclusion, cross-family modal coherence, alternative architectural patterns
   - [01_team-research.md](028_correct_bfmcs_domain_conflation/reports/01_team-research.md) — Synthesized findings: 4 conflation sites, prescribed architecture (D=TimelineQuot dense, D=ℤ discrete)
   - [02_blocker-analysis.md](028_correct_bfmcs_domain_conflation/reports/02_blocker-analysis.md) — Phase 5 blocker analysis: S5 correct but Succ-chain bypass viable, 4 axioms remaining
-- **Plan**: [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — 8-phase implementation plan (12 hours estimated)
+- **Plan**:
+  - [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — v1: 8-phase plan (PARTIAL, Phase 5 S5-blocked)
+  - [02_succ-chain-completion.md](028_correct_bfmcs_domain_conflation/plans/02_succ-chain-completion.md) — v2: 4-phase plan to prove SuccChainFMCS axioms (3 hours)
 - **Summary**: [01_bfmcs-domain-correction-summary.md](028_correct_bfmcs_domain_conflation/summaries/01_bfmcs-domain-correction-summary.md) — PARTIAL: Phase 5 blocked (S5 requirement), Succ-chain bypass documented
 
 **Description**: Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis.
