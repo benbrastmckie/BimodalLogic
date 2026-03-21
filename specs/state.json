@@ -1564,7 +1564,7 @@
     {
       "project_number": 31,
       "project_name": "wire_dense_truth_lemma_instantiation",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "description": "Instantiate parametric_shifted_truth_lemma at D = DovetailedTimelineQuot and close the sorry in timelineQuot_not_valid_of_neg_consistent at TimelineQuotCompleteness.lean:127. This requires: (1) Use the temporally coherent BFMCS from the dependency task, (2) Construct ParametricCanonicalTaskModel (DovetailedTimelineQuot ...) and ShiftClosedParametricCanonicalOmega B, (3) Connect root MCS membership (phi.neg in M0) to semantic falsity (not valid_over D phi), (4) Close the sorry that blocks dense_completeness_theorem. The implementation should follow the pattern from DiscreteInstantiation.lean for the discrete case.",
       "effort": "2-3 hours",
@@ -1573,7 +1573,7 @@
         30
       ],
       "created": "2026-03-21T21:47:35Z",
-      "last_updated": "2026-03-21T22:45:54Z",
+      "last_updated": "2026-03-21T22:58:29Z",
       "artifacts": [
         {
           "type": "research",
@@ -1584,11 +1584,18 @@
           "path": "specs/031_wire_dense_truth_lemma_instantiation/plans/01_truth-lemma-instantiation.md",
           "type": "plan",
           "summary": "4-phase implementation plan for wiring dense truth lemma instantiation to close TimelineQuotCompleteness sorry"
+        },
+        {
+          "path": "specs/031_wire_dense_truth_lemma_instantiation/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Dense completeness wiring: closed TimelineQuotCompleteness sorry, 0 new sorries"
         }
       ],
       "session_id": "sess_1774133130_8b60ec",
       "planned": "2026-03-21T22:43:20Z",
-      "started": "2026-03-21T22:45:54Z"
+      "started": "2026-03-21T22:45:54Z",
+      "completed": "2026-03-21T22:58:29Z",
+      "completion_summary": "Closed TimelineQuotCompleteness sorry via dense truth lemma instantiation; 0 new sorries"
     }
   ],
   "next_project_number": 32,

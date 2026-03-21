@@ -50,7 +50,7 @@ From the spawn analysis (14_spawn-analysis.md):
 
 ## Implementation Phases
 
-### Phase 1: Typeclass Instantiation [NOT STARTED]
+### Phase 1: Typeclass Instantiation [COMPLETED]
 
 **Goal**: Verify and document that DovetailedTimelineQuot satisfies all required typeclasses for the D-parametric construction.
 
@@ -73,7 +73,7 @@ From the spawn analysis (14_spawn-analysis.md):
 
 ---
 
-### Phase 2: BFMCS Wrapper Construction [NOT STARTED]
+### Phase 2: BFMCS Wrapper Construction [COMPLETED]
 
 **Goal**: Create a wrapper function `construct_bfmcs_from_mcs_Dense` that takes an MCS and returns a BFMCS containing it at time 0.
 
@@ -96,7 +96,7 @@ From the spawn analysis (14_spawn-analysis.md):
 
 ---
 
-### Phase 3: Representation Theorems [NOT STARTED]
+### Phase 3: Representation Theorems [COMPLETED]
 
 **Goal**: Prove dense analogs of the representation theorems from DiscreteInstantiation.lean.
 
@@ -120,7 +120,7 @@ From the spawn analysis (14_spawn-analysis.md):
 
 ---
 
-### Phase 4: TimelineQuotCompleteness Wiring [NOT STARTED]
+### Phase 4: TimelineQuotCompleteness Wiring [COMPLETED]
 
 **Goal**: Close the sorry in `timelineQuot_not_valid_of_neg_consistent` using the dense instantiation.
 

@@ -1,20 +1,37 @@
 {
-  "status": "planned",
+  "status": "implemented",
+  "started_at": "2026-03-21T00:00:00Z",
+  "completed_at": "2026-03-21T00:30:00Z",
   "artifacts": [
     {
-      "type": "plan",
-      "path": "specs/031_wire_dense_truth_lemma_instantiation/plans/01_truth-lemma-instantiation.md",
-      "summary": "4-phase implementation plan for wiring dense truth lemma instantiation to close TimelineQuotCompleteness sorry"
+      "path": "Theories/Bimodal/Metalogic/Algebraic/DenseInstantiation.lean",
+      "type": "implementation",
+      "summary": "Dense instantiation of parametric representation theorem at D = DovetailedTimelineQuot"
+    },
+    {
+      "path": "Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotCompleteness.lean",
+      "type": "implementation",
+      "summary": "Dense completeness wiring - closed sorry at line 127"
+    },
+    {
+      "path": "specs/031_wire_dense_truth_lemma_instantiation/summaries/01_implementation-summary.md",
+      "type": "summary",
+      "summary": "Implementation summary for Task 31"
     }
   ],
-  "next_steps": "Run /implement 31 to execute the plan",
+  "verification": {
+    "verification_passed": true,
+    "sorry_count": 0,
+    "axiom_count": 0,
+    "build_passed": true,
+    "build_output": "Build completed successfully (1044 jobs)"
+  },
   "metadata": {
-    "session_id": "sess_1774132840_07818c",
-    "agent_type": "planner-agent",
-    "duration_seconds": 180,
+    "session_id": "sess_1774133130_8b60ec",
+    "agent_type": "lean-implementation-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
-    "phase_count": 4,
-    "estimated_hours": 3
+    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
+    "phases_completed": 4,
+    "phases_total": 4
   }
 }

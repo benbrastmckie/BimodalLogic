@@ -72,15 +72,15 @@ section TypeclassVerification
 variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)
 
 -- DovetailedTimelineQuot has an AddCommGroup structure (transferred from Q)
-example : AddCommGroup (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+noncomputable example : AddCommGroup (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
   dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof
 
 -- DovetailedTimelineQuot has a LinearOrder structure
-example : LinearOrder (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+noncomputable example : LinearOrder (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
   inferInstance
 
 -- DovetailedTimelineQuot is an ordered additive monoid (transferred from Q)
-example : @IsOrderedAddMonoid (DovetailedTimelineQuot root_mcs root_mcs_proof)
+noncomputable example : @IsOrderedAddMonoid (DovetailedTimelineQuot root_mcs root_mcs_proof)
     (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof).toAddCommMonoid
     (inferInstance : PartialOrder (DovetailedTimelineQuot root_mcs root_mcs_proof)) :=
   dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof
@@ -111,6 +111,9 @@ Since DovetailedTimelineQuot depends on the root MCS, these are parameterized.
 
 variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)
 
+-- Make the typeclass instances available locally for the remainder of this section
+attribute [local instance] dovetailedTimelineQuotAddCommGroup dovetailedTimelineQuotIsOrderedAddMonoid
+
 /--
 The dense canonical TaskFrame: the parametric canonical TaskFrame with D = DovetailedTimelineQuot.
 
@@ -122,10 +125,7 @@ This TaskFrame has:
 The frame satisfies all TaskFrame axioms by the parametric construction.
 -/
 noncomputable abbrev DenseCanonicalTaskFrame : TaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
-  @ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
-    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-    inferInstance
-    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+  ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
 
 /--
 The dense canonical TaskModel: the parametric canonical TaskModel with D = DovetailedTimelineQuot.
@@ -133,10 +133,7 @@ The dense canonical TaskModel: the parametric canonical TaskModel with D = Dovet
 Valuation is MCS membership: atom p is true at world M iff p ∈ M.
 -/
 noncomputable abbrev DenseCanonicalTaskModel : TaskModel (DenseCanonicalTaskFrame root_mcs root_mcs_proof) :=
-  @ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
-    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-    inferInstance
-    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+  ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
 
 /-!
 ## Dense Representation Theorem
@@ -169,26 +166,10 @@ theorem dense_representation_from_neg_membership
     (hfam : fam ∈ B.families)
     (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
     (h_neg_in : φ.neg ∈ fam.mcs t) :
-    ¬@truth_at (DovetailedTimelineQuot root_mcs root_mcs_proof)
-      (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-      inferInstance
-      (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
-      (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
-        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-        inferInstance
-        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
-      (@ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
-        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-        inferInstance
-        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+    ¬truth_at (ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof))
       (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ :=
-  @parametric_representation_from_neg_membership
-    (DovetailedTimelineQuot root_mcs root_mcs_proof)
-    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-    inferInstance
-    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
-    B h_tc φ fam hfam t h_neg_in
+  parametric_representation_from_neg_membership B h_tc φ fam hfam t h_neg_in
 
 /--
 Dense countermodel implies non-provability.
@@ -203,27 +184,11 @@ theorem dense_countermodel_implies_not_provable
     (fam : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
     (hfam : fam ∈ B.families)
     (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
-    (h_false : ¬@truth_at (DovetailedTimelineQuot root_mcs root_mcs_proof)
-      (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-      inferInstance
-      (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
-      (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
-        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-        inferInstance
-        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
-      (@ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
-        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-        inferInstance
-        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+    (h_false : ¬truth_at (ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof))
       (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ) :
     ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ) :=
-  @countermodel_implies_not_provable
-    (DovetailedTimelineQuot root_mcs root_mcs_proof)
-    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-    inferInstance
-    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
-    B h_tc φ fam hfam t h_false
+  countermodel_implies_not_provable B h_tc φ fam hfam t h_false
 
 /--
 **Dense Representation Theorem (Conditional Version)**
@@ -249,26 +214,10 @@ theorem dense_representation_conditional
       (fam : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
       (hfam : fam ∈ B.families)
       (t : DovetailedTimelineQuot root_mcs root_mcs_proof),
-      ¬@truth_at (DovetailedTimelineQuot root_mcs root_mcs_proof)
-        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-        inferInstance
-        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
-        (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
-          (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-          inferInstance
-          (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
-        (@ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
-          (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-          inferInstance
-          (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+      ¬truth_at (ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof))
         (ShiftClosedParametricCanonicalOmega B)
         (parametric_to_history fam) t φ :=
-  @parametric_algebraic_representation_conditional
-    (DovetailedTimelineQuot root_mcs root_mcs_proof)
-    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
-    inferInstance
-    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
-    φ h_not_prov construct_bfmcs
+  parametric_algebraic_representation_conditional φ h_not_prov construct_bfmcs
 
 /-!
 ## BFMCS Construction Function
@@ -301,17 +250,19 @@ noncomputable def construct_bfmcs_from_mcs_Dense
        (fam : FMCS (DovetailedTimelineQuot M h_mcs))
        (hfam : fam ∈ B.families)
        (t : DovetailedTimelineQuot M h_mcs),
-       M = fam.mcs t := by
+       M = fam.mcs t :=
   -- Build the BFMCS from dovetailedTimelineQuotBFMCS
   let B := dovetailedTimelineQuotBFMCS M h_mcs
-  have h_tc := dovetailedTimelineQuotBFMCS_temporally_coherent M h_mcs
+  let h_tc := dovetailedTimelineQuotBFMCS_temporally_coherent M h_mcs
   -- The evaluation family is the dovetailedFMCS
   let fam := dovetailedFMCS M h_mcs
-  have hfam : fam ∈ B.families := Set.mem_singleton _
+  let hfam : fam ∈ B.families := Set.mem_singleton _
   -- Get the time where root MCS appears
-  obtain ⟨t, h_eq⟩ := dovetailedTimelineQuot_root_exists M h_mcs
+  let root_result := dovetailedTimelineQuot_root_exists M h_mcs
+  let t := root_result.choose
+  let h_eq := root_result.choose_spec
   -- M = fam.mcs t
-  exact ⟨B, h_tc, fam, hfam, t, h_eq.symm⟩
+  ⟨B, h_tc, fam, hfam, t, h_eq.symm⟩
 
 /-!
 ## Unconditional Dense Representation Theorem
@@ -349,24 +300,19 @@ theorem dense_representation_unconditional
       (fam : FMCS (DovetailedTimelineQuot M h_mcs))
       (hfam : fam ∈ B.families)
       (t : DovetailedTimelineQuot M h_mcs),
-      ¬@truth_at (DovetailedTimelineQuot M h_mcs)
-        (dovetailedTimelineQuotAddCommGroup M h_mcs)
-        inferInstance
-        (dovetailedTimelineQuotIsOrderedAddMonoid M h_mcs)
-        (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot M h_mcs)
-          (dovetailedTimelineQuotAddCommGroup M h_mcs)
-          inferInstance
-          (dovetailedTimelineQuotIsOrderedAddMonoid M h_mcs))
-        (@ParametricCanonicalTaskModel (DovetailedTimelineQuot M h_mcs)
-          (dovetailedTimelineQuotAddCommGroup M h_mcs)
-          inferInstance
-          (dovetailedTimelineQuotIsOrderedAddMonoid M h_mcs))
+      ¬truth_at (ParametricCanonicalTaskModel (DovetailedTimelineQuot M h_mcs))
         (ShiftClosedParametricCanonicalOmega B)
         (parametric_to_history fam) t φ := by
   -- Step 1: Get MCS containing φ.neg
   obtain ⟨M, h_mcs, h_neg_in⟩ := dense_not_provable_implies_neg_extends_to_mcs φ h_not_prov
-  -- Step 2: Construct the BFMCS
-  obtain ⟨B, h_tc, fam, hfam, t, h_eq⟩ := construct_bfmcs_from_mcs_Dense M h_mcs
+  -- Step 2: Construct the BFMCS using let bindings (PSigma)
+  let result := construct_bfmcs_from_mcs_Dense M h_mcs
+  let B := result.1
+  let h_tc := result.2.1
+  let fam := result.2.2.1
+  let hfam := result.2.2.2.1
+  let t := result.2.2.2.2.1
+  let h_eq := result.2.2.2.2.2
   -- Step 3: φ.neg ∈ fam.mcs t
   have h_neg_in_fam : φ.neg ∈ fam.mcs t := h_eq ▸ h_neg_in
   -- Step 4: Apply representation theorem
