@@ -1,7 +1,7 @@
 # Implementation Plan: Task #1007
 
 - **Task**: 1007 - Archive satisfies_at Infrastructure to Boneyard
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 2 hours
 - **Dependencies**: None
 - **Research Inputs**: specs/1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md
@@ -49,7 +49,7 @@ The research report identified:
 
 ## Implementation Phases
 
-### Phase 1: Extract Reusable Lemmas [NOT STARTED]
+### Phase 1: Extract Reusable Lemmas [COMPLETED]
 
 **Goal**: Extract g_content_propagation, h_content_propagation, and PartialOrder instances to canonical locations before archiving source files.
 
@@ -75,7 +75,7 @@ The research report identified:
 
 ---
 
-### Phase 2: Create Boneyard Directory and Archive Files [NOT STARTED]
+### Phase 2: Create Boneyard Directory and Archive Files [COMPLETED]
 
 **Goal**: Move all 6 FlagBFMCS files to the Boneyard with proper directory structure.
 
@@ -104,7 +104,7 @@ The research report identified:
 
 ---
 
-### Phase 3: Fix Metalogic.lean Import [NOT STARTED]
+### Phase 3: Fix Metalogic.lean Import [COMPLETED]
 
 **Goal**: Remove the FlagBFMCSCompleteness import from Metalogic.lean and verify no other FlagBFMCS dependencies exist.
 
@@ -125,7 +125,7 @@ The research report identified:
 
 ---
 
-### Phase 4: Add Deprecation README [NOT STARTED]
+### Phase 4: Add Deprecation README [COMPLETED]
 
 **Goal**: Document why the FlagBFMCS pipeline was archived for future reference.
 
@@ -147,7 +147,7 @@ The research report identified:
 
 ---
 
-### Phase 5: Final Build Verification [NOT STARTED]
+### Phase 5: Final Build Verification [COMPLETED]
 
 **Goal**: Ensure clean build and complete archival.
 

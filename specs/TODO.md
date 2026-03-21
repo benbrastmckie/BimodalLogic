@@ -25,14 +25,13 @@ technical_debt:
 
 ## Recommended Order
 
-1. **1007** → plan + implement (archive satisfies_at infrastructure, unblocks 1008)
-2. **1008** → research + plan (genuine truth_at completeness, after 1007)
-3. **999** → implement (F→FF derivation, small, anytime)
-4. **949** → implement (update Demo.lean, small, anytime)
-5. **997** → implement (base completeness, depends on 1008 approach)
-6. **988** → implement (dense completeness, depends on 1008 approach)
-7. **989** → implement (discrete completeness, after 988)
-8. **992** → implement (STSA representation theorem, after completeness)
+1. **1008** → research + plan (genuine truth_at completeness, after 1007)
+2. **999** → implement (F→FF derivation, small, anytime)
+3. **949** → implement (update Demo.lean, small, anytime)
+4. **997** → implement (base completeness, depends on 1008 approach)
+5. **988** → implement (dense completeness, depends on 1008 approach)
+6. **989** → implement (discrete completeness, after 988)
+7. **992** → implement (STSA representation theorem, after completeness)
 
 ## Tasks
 
@@ -49,10 +48,13 @@ technical_debt:
 
 ### 1007. Archive satisfies_at and FlagBFMCS completeness infrastructure to Boneyard
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [COMPLETED]
 - **Language**: lean4
+- **Completed**: 2026-03-20
+- **Summary**: Archived 6 FlagBFMCS files (~1840 lines, 21 sorries) to Boneyard. Structural incompatibility with truth_at semantics. Build passes.
 - **Research**: [01_teardown-inventory.md](1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md)
 - **Plan**: [02_archive-plan.md](1007_archive_satisfies_at_infrastructure/plans/02_archive-plan.md)
+- **Summary**: [03_archive-summary.md](1007_archive_satisfies_at_infrastructure/summaries/03_archive-summary.md)
 
 **Description**: Archive the `satisfies_at` relation and all FlagBFMCS completeness infrastructure to the Boneyard. The `satisfies_at` definition is a custom Kripke-style satisfaction relation that does not use TaskFrame D, WorldHistory, convexity, or the task relation — it is structurally different from the official `truth_at` semantics and cannot bridge to it (the convexity sorry in FlagBFMCSRatBundle is provably false). Archive 6 files: FlagBFMCS.lean, FlagBFMCSTruthLemma.lean, FlagBFMCSCompleteness.lean, FlagBFMCSValidityBridge.lean, FlagBFMCSIntBundle.lean, FlagBFMCSRatBundle.lean. Before archiving, extract reusable lemmas: g_content_propagation, h_content_propagation (relocate to canonical MCS theory), PartialOrder/LinearOrder instances on CanonicalMCS/ChainFMCSDomain (relocate to order infrastructure). Fix the single broken import in Metalogic.lean. Add deprecation README to Boneyard directory.
 
