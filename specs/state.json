@@ -179,10 +179,10 @@
     {
       "project_number": 14,
       "project_name": "succ_chain_fmcs_and_taskframe_int",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:19:14Z",
+      "last_updated": "2026-03-21T12:40:00Z",
       "dependencies": [
         11,
         12
@@ -193,10 +193,30 @@
           "path": "specs/014_succ_chain_fmcs_and_taskframe_int/reports/01_succ-fmcs-research.md",
           "type": "research_report",
           "summary": "Research report on Succ-chain FMCS construction, FMCS coherence, TaskFrame instantiation, and respects_task verification"
+        },
+        {
+          "path": "specs/014_succ_chain_fmcs_and_taskframe_int/plans/01_succ-fmcs-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for Succ-chain FMCS and TaskFrame Int construction"
         }
       ],
-      "session_id": "sess_1774088087_283ed1",
-      "researched": "2026-03-21T10:19:14Z"
+      "session_id": "sess_1774089147_2614f4",
+      "researched": "2026-03-21T10:19:14Z",
+      "planned": "2026-03-21T12:40:00Z",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 5,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/01_succ-fmcs-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-03-21"
+          }
+        ]
+      }
     },
     {
       "project_number": 15,

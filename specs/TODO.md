@@ -144,12 +144,13 @@ technical_debt:
 ---
 
 ### 14. Build Succ-chain FMCS and discrete TaskFrame ℤ instantiation
-- **Effort**: 5-8 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 5 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Tasks 11, 12
 - **Files**: New DiscreteSuccFMCS.lean, update DiscreteInstantiation.lean
 - **Research**: [01_succ-fmcs-research.md](014_succ_chain_fmcs_and_taskframe_int/reports/01_succ-fmcs-research.md)
+- **Plan**: [01_succ-fmcs-plan.md](014_succ_chain_fmcs_and_taskframe_int/plans/01_succ-fmcs-plan.md)
 - **Research (task 6)**:
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §4 stages 2–4, §6 discrete table — how the Succ-chain FMCS fits the BFMCS pipeline, WorldHistory respects_task condition
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §7.2, §8 phase 4 — bypass pipeline diagram and implementation steps 11–13
