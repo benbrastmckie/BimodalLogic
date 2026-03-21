@@ -616,13 +616,15 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "implementing",
+      "status": "blocked",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T21:39:42Z",
+      "last_updated": "2026-03-21T21:44:14Z",
       "dependencies": [
         17,
-        27
+        27,
+        30,
+        31
       ],
       "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
       "artifacts": [
@@ -682,7 +684,7 @@
           "summary": "Multi-family BFMCS with modal_forward and modal_backward"
         }
       ],
-      "session_id": "sess_1774126078_de498c",
+      "session_id": "sess_1774129435_e3b597",
       "researched": "2026-03-21T19:07:01Z",
       "planned": "2026-03-21T20:44:03Z",
       "started": "2026-03-21T17:15:15Z",
@@ -1482,9 +1484,49 @@
       "session_id": "sess_1774126671_9ca427",
       "researched": "2026-03-21T20:50:40Z",
       "planned": "2026-03-21T21:02:08Z"
+    },
+    {
+      "project_number": 30,
+      "project_name": "build_temporally_coherent_dense_bfmcs",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Create a complete BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof) structure with proven temporally_coherent field. The existing DovetailedTimelineQuotBFMCS module provides modal saturation via closedFlags, but does NOT construct a full BFMCS type with temporal coherence. This task must: (1) Define dovetailedTimelineQuotBFMCS as a proper BFMCS structure with families indexed by DovetailedTimelineQuot, (2) Prove dovetailedTimelineQuotBFMCS_temporally_coherent by lifting the existing dovetailedFMCS_forward_F and dovetailedFMCS_backward_P proofs to all families in the bundle. Use the DirectMultiFamilyBFMCS pattern from the discrete case as a template.",
+      "effort": "3-4 hours",
+      "parent_task": 18,
+      "dependencies": [],
+      "created": "2026-03-21T21:47:35Z",
+      "last_updated": "2026-03-21T21:47:35Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/018_dense_representation_theorem_completion/reports/14_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
+    },
+    {
+      "project_number": 31,
+      "project_name": "wire_dense_truth_lemma_instantiation",
+      "status": "researched",
+      "language": "lean4",
+      "description": "Instantiate parametric_shifted_truth_lemma at D = DovetailedTimelineQuot and close the sorry in timelineQuot_not_valid_of_neg_consistent at TimelineQuotCompleteness.lean:127. This requires: (1) Use the temporally coherent BFMCS from the dependency task, (2) Construct ParametricCanonicalTaskModel (DovetailedTimelineQuot ...) and ShiftClosedParametricCanonicalOmega B, (3) Connect root MCS membership (phi.neg in M0) to semantic falsity (not valid_over D phi), (4) Close the sorry that blocks dense_completeness_theorem. The implementation should follow the pattern from DiscreteInstantiation.lean for the discrete case.",
+      "effort": "2-3 hours",
+      "parent_task": 18,
+      "dependencies": [
+        30
+      ],
+      "created": "2026-03-21T21:47:35Z",
+      "last_updated": "2026-03-21T21:47:35Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/018_dense_representation_theorem_completion/reports/14_spawn-analysis.md",
+          "summary": "Spawn analysis from parent task"
+        }
+      ]
     }
   ],
-  "next_project_number": 30,
+  "next_project_number": 32,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

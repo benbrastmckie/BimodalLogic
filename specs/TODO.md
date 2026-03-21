@@ -1,5 +1,5 @@
 ---
-next_project_number: 30
+next_project_number: 32
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -55,6 +55,30 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 31. Wire dense truth lemma instantiation
+- **Effort**: 2-3 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: Task 30
+- **Parent Task**: #18
+- **Research**: [14_spawn-analysis.md](018_dense_representation_theorem_completion/reports/14_spawn-analysis.md)
+
+**Description**: Instantiate parametric_shifted_truth_lemma at D = DovetailedTimelineQuot and close the sorry in timelineQuot_not_valid_of_neg_consistent at TimelineQuotCompleteness.lean:127. Use the temporally coherent BFMCS from task 30, construct ParametricCanonicalTaskModel and ShiftClosedParametricCanonicalOmega, then connect root MCS membership to semantic falsity to close dense_completeness_theorem.
+
+---
+
+### 30. Build temporally coherent dense BFMCS
+- **Effort**: 3-4 hours
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: None
+- **Parent Task**: #18
+- **Research**: [14_spawn-analysis.md](018_dense_representation_theorem_completion/reports/14_spawn-analysis.md)
+
+**Description**: Create a complete BFMCS structure with proven temporally_coherent field. Define dovetailedTimelineQuotBFMCS as a proper BFMCS structure with families indexed by DovetailedTimelineQuot. Prove dovetailedTimelineQuotBFMCS_temporally_coherent by lifting existing dovetailedFMCS_forward_F and dovetailedFMCS_backward_P proofs. Use DirectMultiFamilyBFMCS pattern from discrete case.
 
 ---
 
@@ -222,9 +246,9 @@ technical_debt:
 
 ### 18. Complete dense representation theorem via DenseTask
 - **Effort**: 6-7 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [BLOCKED]
 - **Language**: lean4
-- **Dependencies**: Tasks 17, 27
+- **Dependencies**: Tasks 17, 27, 30, 31
 - **Research (task 6)**:
   - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §5 — replacing CanonicalR with DenseTask in the dense setting, truth condition restatement
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §3.2, §6 dense table — full wiring of dense representation pipeline, use of timelineQuot_instantiate_dense to close the domain mismatch

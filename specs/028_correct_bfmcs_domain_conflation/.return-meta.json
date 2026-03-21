@@ -1,23 +1,31 @@
 {
-  "status": "report_written",
-  "started_at": "2026-03-21T12:00:00Z",
+  "status": "done",
+  "started_at": "2026-03-21T10:00:00Z",
+  "completed_at": "2026-03-21T10:30:00Z",
   "artifacts": [
-    "specs/028_correct_bfmcs_domain_conflation/reports/04_bimodal-box-semantics.md"
+    "specs/028_correct_bfmcs_domain_conflation/reports/05_modal-coherence-solutions.md"
   ],
   "partial_progress": {
     "stage": "report_written",
-    "details": "Analysis complete - Box semantics are sound, concern is about degenerate singleton bundles not actual implementation"
+    "details": "Research report completed with analysis of sorries and solutions"
   },
   "metadata": {
-    "session_id": "sess_1774128910_0c1efc",
+    "session_id": "sess_1774129402_c72839",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
-  },
-  "summary": {
-    "concern_valid": false,
-    "root_cause": "The concern assumes singleton Omega, but BFMCS has multiple families",
-    "key_finding": "Box quantifies over all histories from all families in B.families, not just one chain",
-    "phi_implies_box_phi": "NOT valid because different families can have different MCS at same time"
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"],
+    "key_findings": [
+      "3 sorries in DirectMultiFamilyBFMCS are architecturally unprovable without S5 axiom",
+      "TM logic has T+4 axioms but lacks 5-axiom (Euclidean property)",
+      "Succ-chain bypass is the correct path for discrete completeness",
+      "Single-family FMCS Int avoids cross-family modal coherence requirement",
+      "Infrastructure for Succ-chain bypass is largely complete (Tasks 10-14)"
+    ],
+    "recommendations": [
+      "Document sorries as architecturally unprovable (not mathematical gaps)",
+      "Mark BFMCS approach as deprecated for discrete completeness",
+      "Complete SuccChainTaskFrame.lean to build TaskFrame Int directly",
+      "Wire Succ-chain infrastructure to DiscreteInstantiation"
+    ]
   }
 }
