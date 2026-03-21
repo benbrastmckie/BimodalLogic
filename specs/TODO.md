@@ -40,17 +40,17 @@ technical_debt:
 13. **1009** -> research (independent)
 ## Tasks
 
-### 1009. Clarify CanonicalMCS role as world-state space, not temporal domain
-- **Effort**: 2-4 hours
-- **Status**: [RESEARCHED]
+### 1009. Remove FMCS CanonicalMCS architecture (world states are not time indices)
+- **Effort**: 8-12 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Research**:
   - [01_canonicalmcs-role-audit.md](1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md)
   - [03_d-equals-canonicalmcs-audit.md](1009_clarify_canonicalmcs_role/reports/03_d-equals-canonicalmcs-audit.md)
   - [05_fmcs-indexing-architecture.md](1009_clarify_canonicalmcs_role/reports/05_fmcs-indexing-architecture.md)
-- **Plan**: [04_revised-clarification-plan.md](1009_clarify_canonicalmcs_role/plans/04_revised-clarification-plan.md)
+- **Plan**: [06_architectural-cleanup-plan.md](1009_clarify_canonicalmcs_role/plans/06_architectural-cleanup-plan.md)
 
-**Description**: Clarify that CanonicalMCS is the space of world states (WorldState in TaskFrame), not the temporal domain D. Update all comments, docstrings, and ROAD_MAP.md that conflate CanonicalMCS with the temporal domain in TaskFrame semantics. The persistent confusion arises because research reports keep suggesting "use CanonicalMCS as the domain" when CanonicalMCS cannot serve as D (which requires AddCommGroup/LinearOrder). CanonicalMCS elements are world states indexed by time, not time points themselves. Systematically document this distinction across the codebase.
+**Description**: Remove ALL trivial FMCS indexing where FMCS is indexed by CanonicalMCS. CanonicalMCS is the world-state space (not a temporal domain), so using it as an FMCS index creates degenerate identity mappings (mcs(w) = w.world) and architectural confusion. The D parameter in FMCS should be a temporal domain (Int, Rat, TimelineQuot), not world states. Archive incorrect constructions (CanonicalFMCS.lean, related MultiFamilyBFMCS patterns) to Boneyard. Update documentation to prohibit "D = CanonicalMCS" notation. This supersedes the original documentation-only scope.
 
 ---
 
