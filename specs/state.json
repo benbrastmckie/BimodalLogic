@@ -434,10 +434,10 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:20:36Z",
+      "last_updated": "2026-03-21T19:27:05Z",
       "dependencies": [
         17
       ],
@@ -489,7 +489,7 @@
           "summary": "v3: 5-phase plan with dovetailed construction, multi-family BFMCS, no closure operators"
         }
       ],
-      "session_id": "sess_1774120597_4b10f1",
+      "session_id": "sess_1774121197_66e848",
       "researched": "2026-03-21T19:07:01Z",
       "planned": "2026-03-21T19:20:36Z",
       "started": "2026-03-21T17:15:15Z"
@@ -1104,10 +1104,10 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:21:35Z",
+      "last_updated": "2026-03-21T19:28:53Z",
       "dependencies": [
         15,
         18
@@ -1143,10 +1143,16 @@
           "path": "specs/021_technical_debt_cleanup/reports/02_teammate-c-findings.md",
           "type": "report",
           "summary": "Frame condition theory analysis of 19 proof system axioms + 11 Lean axiom declarations"
+        },
+        {
+          "path": "specs/021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md",
+          "type": "plan",
+          "summary": "6-phase implementation plan for technical debt cleanup focusing on axiom elimination"
         }
       ],
-      "session_id": "sess_1774120112_3b758d",
-      "researched": "2026-03-21T19:21:35Z"
+      "session_id": "sess_1774121152_2f49cc",
+      "researched": "2026-03-21T19:21:35Z",
+      "planned": "2026-03-21T19:28:53Z"
     }
   ],
   "next_project_number": 26,

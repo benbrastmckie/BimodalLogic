@@ -105,9 +105,10 @@ technical_debt:
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Tasks 15, 18
+- **Plan**: [01_tech-debt-cleanup-plan.md](021_technical_debt_cleanup/plans/01_tech-debt-cleanup-plan.md) — 6 phases: axiom elimination, dead-code resolution, documentation
 - **Research**:
   - [01_tech-debt-audit.md](021_technical_debt_cleanup/reports/01_tech-debt-audit.md) — comprehensive 4-agent parallel audit of all code from tasks 9-20
   - [02_team-research.md](021_technical_debt_cleanup/reports/02_team-research.md) — synthesized team research: axiom classification, derivation priorities, action plan
@@ -147,7 +148,7 @@ technical_debt:
 
 ### 18. Complete dense representation theorem via DenseTask
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 17
 - **Research (task 6)**:
