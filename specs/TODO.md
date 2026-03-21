@@ -72,12 +72,15 @@ technical_debt:
 
 ### 30. Build temporally coherent dense BFMCS
 - **Effort**: 3-4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-21
+- **Summary**: BFMCS with proven temporal coherence; modal_backward sorry (known limitation)
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #18
 - **Research**: [14_spawn-analysis.md](018_dense_representation_theorem_completion/reports/14_spawn-analysis.md)
 - **Plan**: [01_bfmcs-temporal-coherence.md](030_build_temporally_coherent_dense_bfmcs/plans/01_bfmcs-temporal-coherence.md)
+- **Summary Artifact**: [01_implementation-summary.md](030_build_temporally_coherent_dense_bfmcs/summaries/01_implementation-summary.md)
 
 **Description**: Create a complete BFMCS structure with proven temporally_coherent field. Define dovetailedTimelineQuotBFMCS as a proper BFMCS structure with families indexed by DovetailedTimelineQuot. Prove dovetailedTimelineQuotBFMCS_temporally_coherent by lifting existing dovetailedFMCS_forward_F and dovetailedFMCS_backward_P proofs. Use DirectMultiFamilyBFMCS pattern from discrete case.
 
@@ -99,7 +102,7 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
@@ -184,7 +187,7 @@ technical_debt:
 
 ### 23. F/P temporal witness chain construction
 - **Effort**: 6-8 hours
-- **Status**: [RESEARCHED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 15
 - **Research**:

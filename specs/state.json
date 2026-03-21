@@ -8,13 +8,13 @@
     {
       "project_number": 29,
       "project_name": "switch_to_reflexive_gh_semantics",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T21:31:52Z",
-      "last_updated": "2026-03-21T22:30:42Z",
+      "last_updated": "2026-03-21T22:36:09Z",
       "dependencies": [],
       "description": "Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md",
-      "session_id": "sess_1774132019_117bc3",
+      "session_id": "sess_1774132532_cfde31",
       "researched": "2026-03-21T21:38:06Z",
       "artifacts": [
         {
@@ -33,17 +33,18 @@
           "summary": "7-phase implementation plan for switching TM metalogic to reflexive G/H semantics"
         }
       ],
-      "planned": "2026-03-21T22:30:42Z"
+      "planned": "2026-03-21T22:30:42Z",
+      "started": "2026-03-21T22:36:09Z"
     },
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T22:33:53Z",
-      "session_id": "sess_1774132230_661edd",
+      "last_updated": "2026-03-21T22:36:34Z",
+      "session_id": "sess_1774132571_4999eb",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
         {
@@ -103,7 +104,7 @@
         }
       ],
       "planned": "2026-03-21T22:33:53Z",
-      "started": "2026-03-21T20:59:01Z"
+      "started": "2026-03-21T22:36:34Z"
     },
     {
       "project_number": 27,
@@ -203,15 +204,15 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researched",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T22:35:08Z",
+      "last_updated": "2026-03-21T22:37:50Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774132327_5fd873",
+      "session_id": "sess_1774132655_b34ab9",
       "researched": "2026-03-21T22:35:08Z",
       "artifacts": [
         {
@@ -1519,7 +1520,7 @@
     {
       "project_number": 30,
       "project_name": "build_temporally_coherent_dense_bfmcs",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "description": "Create a complete BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof) structure with proven temporally_coherent field. The existing DovetailedTimelineQuotBFMCS module provides modal saturation via closedFlags, but does NOT construct a full BFMCS type with temporal coherence. This task must: (1) Define dovetailedTimelineQuotBFMCS as a proper BFMCS structure with families indexed by DovetailedTimelineQuot, (2) Prove dovetailedTimelineQuotBFMCS_temporally_coherent by lifting the existing dovetailedFMCS_forward_F and dovetailedFMCS_backward_P proofs to all families in the bundle. Use the DirectMultiFamilyBFMCS pattern from the discrete case as a template.",
       "effort": "3-4 hours",
@@ -1547,7 +1548,8 @@
       "session_id": "sess_1774132107_da5efd",
       "planned": "2026-03-21T22:20:44Z",
       "started": "2026-03-21T22:28:45Z",
-      "resume_phase": 4
+      "completion_summary": "BFMCS with proven temporal coherence; modal_backward sorry (known limitation)",
+      "completed": "2026-03-21T22:38:45Z"
     },
     {
       "project_number": 31,
