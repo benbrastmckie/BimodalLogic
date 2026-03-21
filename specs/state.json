@@ -126,15 +126,15 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:25:18Z",
+      "last_updated": "2026-03-21T20:31:06Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774124405_87b663",
+      "session_id": "sess_1774125051_a9fbaa",
       "researched": "2026-03-21T20:25:18Z",
       "artifacts": [
         {
@@ -1319,6 +1319,11 @@
           "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/04_team-research.md",
           "type": "report",
           "summary": "Team research: IRR without T-axiom, reflexive semantics implications (3 teammates)"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/05_teammate-b-findings.md",
+          "type": "report",
+          "summary": "Correct irreflexivity formulation in CanonicalTask terms"
         }
       ],
       "session_id": "sess_1774124986_13b8b6",
