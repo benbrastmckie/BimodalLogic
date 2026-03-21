@@ -1,5 +1,5 @@
 ---
-next_project_number: 1010
+next_project_number: 1000
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -23,10 +23,12 @@ technical_debt:
 
 # TODO
 
+<!-- Vault transition: 2026-03-20 - Archived to specs/vault/01-vault/ -->
+
 ## Recommended Order
 
-1. **1008** -> implement (independent)
-2. **1006** -> plan (independent)
+1. **8** -> implement (independent)
+2. **6** -> plan (independent)
 3. **999** -> research (independent)
 4. **998** -> research (independent)
 5. **997** -> implement (independent)
@@ -40,47 +42,47 @@ technical_debt:
 
 ## Tasks
 
-### 1008. Establish genuine truth_at completeness theorems for TM logic
+### 8. Establish genuine truth_at completeness theorems for TM logic
 - **Effort**: 12-20 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task #1007
 - **Research**:
-  - [01_completeness-architecture.md](1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
-  - [02_completeness-blockers.md](1008_genuine_truth_at_completeness/reports/02_completeness-blockers.md)
-  - [03_team-research.md](1008_genuine_truth_at_completeness/reports/03_team-research.md)
-- **Plan**: [03_revised-completeness-plan.md](1008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
+  - [01_completeness-architecture.md](008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
+  - [02_completeness-blockers.md](008_genuine_truth_at_completeness/reports/02_completeness-blockers.md)
+  - [03_team-research.md](008_genuine_truth_at_completeness/reports/03_team-research.md)
+- **Plan**: [03_revised-completeness-plan.md](008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
 
 **Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
 
 ---
 
-### 1006. Replace FlagBFMCS satisfies_at with canonical TaskFrame using truth_at
+### 6. Replace FlagBFMCS satisfies_at with canonical TaskFrame using truth_at
 - **Effort**: 8-12 hours
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task #1003
 - **Research**:
-  - [01_team-research.md](1006_canonical_taskframe_completeness/reports/01_team-research.md)
-  - [02_direct-construction.md](1006_canonical_taskframe_completeness/reports/02_direct-construction.md)
-  - [03_dense-discrete-compatibility.md](1006_canonical_taskframe_completeness/reports/03_dense-discrete-compatibility.md)
-  - [04_team-research.md](1006_canonical_taskframe_completeness/reports/04_team-research.md)
-  - [05_rat-discrete-compatibility.md](1006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md)
-  - [06_team-research.md](1006_canonical_taskframe_completeness/reports/06_team-research.md)
-  - [07_dovetailed-z-detailed.md](1006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md)
-  - [08_base-dense-discrete-strategy.md](1006_canonical_taskframe_completeness/reports/08_base-dense-discrete-strategy.md)
-  - [09_fp-crux-analysis.md](1006_canonical_taskframe_completeness/reports/09_fp-crux-analysis.md)
-  - [10_team-research.md](1006_canonical_taskframe_completeness/reports/10_team-research.md)
-  - [11_team-research.md](1006_canonical_taskframe_completeness/reports/11_team-research.md)
-  - [12_torsor-construction-full.md](1006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md)
-  - [13_rigidity-counterexample-analysis.md](1006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md)
-  - [14_d-polymorphism-dense-discrete.md](1006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md)
-  - [15_completeness-module-structure.md](1006_canonical_taskframe_completeness/reports/15_completeness-module-structure.md)
-  - [16_blocker-resolution-research.md](1006_canonical_taskframe_completeness/reports/16_blocker-resolution-research.md)
+  - [01_team-research.md](006_canonical_taskframe_completeness/reports/01_team-research.md)
+  - [02_direct-construction.md](006_canonical_taskframe_completeness/reports/02_direct-construction.md)
+  - [03_dense-discrete-compatibility.md](006_canonical_taskframe_completeness/reports/03_dense-discrete-compatibility.md)
+  - [04_team-research.md](006_canonical_taskframe_completeness/reports/04_team-research.md)
+  - [05_rat-discrete-compatibility.md](006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md)
+  - [06_team-research.md](006_canonical_taskframe_completeness/reports/06_team-research.md)
+  - [07_dovetailed-z-detailed.md](006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md)
+  - [08_base-dense-discrete-strategy.md](006_canonical_taskframe_completeness/reports/08_base-dense-discrete-strategy.md)
+  - [09_fp-crux-analysis.md](006_canonical_taskframe_completeness/reports/09_fp-crux-analysis.md)
+  - [10_team-research.md](006_canonical_taskframe_completeness/reports/10_team-research.md)
+  - [11_team-research.md](006_canonical_taskframe_completeness/reports/11_team-research.md)
+  - [12_torsor-construction-full.md](006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md)
+  - [13_rigidity-counterexample-analysis.md](006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md)
+  - [14_d-polymorphism-dense-discrete.md](006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md)
+  - [15_completeness-module-structure.md](006_canonical_taskframe_completeness/reports/15_completeness-module-structure.md)
+  - [16_blocker-resolution-research.md](006_canonical_taskframe_completeness/reports/16_blocker-resolution-research.md)
 - **Plan**:
-  - [04_three-completeness-plan.md](1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md)
-  - [05_torsor-construction-plan.md](1006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md)
-  - [06_cantor-transfer-plan.md](1006_canonical_taskframe_completeness/plans/06_cantor-transfer-plan.md)
+  - [04_three-completeness-plan.md](006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md)
+  - [05_torsor-construction-plan.md](006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md)
+  - [06_cantor-transfer-plan.md](006_canonical_taskframe_completeness/plans/06_cantor-transfer-plan.md)
 
 **Description**: Replace the internal `satisfies_at` relation in FlagBFMCS completeness with the official `truth_at` from the semantic layer. Construct a canonical TaskFrame directly from FlagBFMCS data: (1) canonical world states from CanonicalMCS, (2) duration domain D parametrically from Flag chain positions, (3) task relation R from CanonicalR, (4) WorldHistory instances from Flags (each Flag maps durations to world states), (5) canonical TaskFrame and TaskModel, (6) truth lemma for truth_at directly, (7) completeness theorem using canonical `valid`. Supersedes validity bridge approach in task 997.
 

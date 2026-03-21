@@ -6,39 +6,39 @@
   },
   "active_projects": [
     {
-      "project_number": 1008,
+      "project_number": 8,
       "project_name": "genuine_truth_at_completeness",
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-20T23:46:51Z",
       "last_updated": "2026-03-21T01:02:30Z",
       "dependencies": [
-        1007
+        7
       ],
       "artifacts": [
         {
           "type": "research",
-          "path": "specs/1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md",
+          "path": "specs/008_genuine_truth_at_completeness/reports/01_completeness-architecture.md",
           "summary": "Analysis of genuine completeness proof requirements using truth_at, identifying exact gaps and viable approaches"
         },
         {
           "type": "plan",
-          "path": "specs/1008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md",
+          "path": "specs/008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md",
           "summary": "6-phase revised plan: corrects D=CanonicalMCS confusion, focuses on 3 real sorries (modal_backward, forward_F, backward_P)"
         },
         {
           "type": "summary",
-          "path": "specs/1008_genuine_truth_at_completeness/summaries/04_completeness-summary.md",
+          "path": "specs/008_genuine_truth_at_completeness/summaries/04_completeness-summary.md",
           "summary": "Detailed analysis of 3 sorries in completeness pipeline, documenting architectural blockers"
         },
         {
           "type": "research",
-          "path": "specs/1008_genuine_truth_at_completeness/reports/02_completeness-blockers.md",
+          "path": "specs/008_genuine_truth_at_completeness/reports/02_completeness-blockers.md",
           "summary": "Detailed mathematical analysis of 3 sorries blocking completeness: modal_backward, forward_F, backward_P"
         },
         {
           "type": "research",
-          "path": "specs/1008_genuine_truth_at_completeness/reports/03_team-research.md",
+          "path": "specs/008_genuine_truth_at_completeness/reports/03_team-research.md",
           "summary": "Team research: 4 resolution paths analyzed, recommends FMP + generalized TaskFrame"
         }
       ],
@@ -48,13 +48,13 @@
       "researched": "2026-03-21T01:02:30Z"
     },
     {
-      "project_number": 1006,
+      "project_number": 6,
       "project_name": "canonical_taskframe_completeness",
       "status": "researched",
       "language": "lean4",
       "description": "Replace FlagBFMCS satisfies_at with a canonical TaskFrame using truth_at. The current FlagBFMCS completeness theorem uses an internal satisfies_at relation rather than the official truth_at from the semantic layer. Eliminate satisfies_at entirely and construct a canonical TaskFrame directly from FlagBFMCS data, so that the completeness theorem states: consistent S implies existence of a TaskModel and world where truth_at holds for all φ ∈ S. Key architectural requirements: (1) Define canonical world states from CanonicalMCS, (2) Define the duration domain D parametrically (positions within each Flag chain serve as durations), (3) Define the task relation R on world states using CanonicalR, (4) Construct WorldHistory instances from Flags (each Flag yields a history mapping durations to world states), (5) Define the canonical TaskFrame and TaskModel using these components, (6) Prove the truth lemma directly for truth_at rather than satisfies_at, (7) State and prove the completeness theorem using the canonical valid predicate. The existing FlagBFMCS infrastructure (closedFlags, chainFMCS, modal saturation, temporal completeness) provides all the raw material. The work is restructuring it to fit the official TaskFrame/TaskModel/WorldHistory architecture. This supersedes the validity bridge approach in task 997.",
       "dependencies": [
-        1003
+        3
       ],
       "created": "2026-03-20T01:35:23Z",
       "last_updated": "2026-03-20T22:12:31Z",
@@ -62,17 +62,17 @@
       "researched": "2026-03-20T22:12:31Z",
       "artifacts": [
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/01_team-research.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research with 2 teammates: canonical TaskFrame construction approach"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/02_direct-construction.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/02_direct-construction.md",
           "type": "research",
           "summary": "Supplemental research on direct TaskFrame construction alternatives, recommending streamlined BFMCS Int construction using global enumeration"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/03_dense-discrete-compatibility.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/03_dense-discrete-compatibility.md",
           "type": "research",
           "summary": "Analysis of task 1006 compatibility with dense (task 988) and discrete (task 989) completeness extensions"
         },
@@ -82,127 +82,127 @@
           "summary": "Phase 1: Global countable enumeration of CanonicalMCS to Int"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/summaries/01_implementation-summary.md",
+          "path": "specs/006_canonical_taskframe_completeness/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "Implementation summary with blocking issue documentation"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/04_team-research.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/04_team-research.md",
           "type": "research",
           "summary": "Team research on order-preserving embedding: FMCSTransfer with D=Rat, multi-family BFMCS for temporal coherence"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/05_rat-discrete-compatibility.md",
           "type": "research",
           "summary": "Analysis confirming D=Rat for base completeness is compatible with D=Int for discrete extension"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/summaries/01_partial-implementation-summary.md",
+          "path": "specs/006_canonical_taskframe_completeness/summaries/01_partial-implementation-summary.md",
           "type": "summary",
           "summary": "Partial implementation: closed respects_task, 2 sorries remain (convex, shifted_truth_lemma) due to WorldHistory convexity blocker"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/06_teammate-a-findings.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/06_teammate-a-findings.md",
           "type": "research",
           "summary": "Teammate A: Semantic analysis of convexity blocker, pipeline redirect recommendation"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/06_teammate-b-findings.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/06_teammate-b-findings.md",
           "type": "research",
           "summary": "Teammate B: Alternative constructions analysis, dovetailed chain + ℤ recommendation"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/06_team-research.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/06_team-research.md",
           "type": "research",
           "summary": "Team synthesis: Dovetailed Flag + ℤ isomorphism approach to resolve convexity and cross-Flag witness blockers"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/07_dovetailed-z-detailed.md",
           "type": "research",
           "summary": "Detailed analysis of Dovetailed Flag + Z approach: Z for discrete case, Rat for dense; key fix is parametric_to_history with full domain"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/08_base-dense-discrete-strategy.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/08_base-dense-discrete-strategy.md",
           "type": "research",
           "summary": "Base TM + dense/discrete extension strategy: D-polymorphic approach, shared infrastructure, separate constructions per logic"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md",
+          "path": "specs/006_canonical_taskframe_completeness/plans/04_three-completeness-plan.md",
           "type": "plan",
           "summary": "v4 plan: Prove all three completeness theorems (base/dense/discrete) using parametric_to_history with full domain"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/09_fp-crux-analysis.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/09_fp-crux-analysis.md",
           "type": "research",
           "summary": "Deep analysis of F/P completeness crux: characterizes fundamental tension (CanonicalR not total, linear chains require totality, F-witnesses off-chain), evaluates 5 approaches, recommends flag saturation lemma or omega-squared construction"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/10_teammate-a-findings.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/10_teammate-a-findings.md",
           "type": "research",
           "summary": "Teammate A: Torsor construction analysis - TranslationGroup AddGroup proven, AddCommGroup needs Holder theorem"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/10_teammate-b-findings.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/10_teammate-b-findings.md",
           "type": "research",
           "summary": "Teammate B: Alternative approaches - structural blocker analysis, sign-only semantics insight"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/10_team-research.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/10_team-research.md",
           "type": "research",
           "summary": "Team synthesis: Torsor vs Cantor transfer approaches, deriving D structure from axioms"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/11_teammate-a-findings.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/11_teammate-a-findings.md",
           "type": "research",
           "summary": "Teammate A: Pure-syntax D advantages - modularity, structure from axioms, unified construction"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/11_teammate-b-findings.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/11_teammate-b-findings.md",
           "type": "research",
           "summary": "Teammate B: Torsor feasibility - 180 lines needed, 70-80% success probability, base homogeneity uncertain"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/11_team-research.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/11_team-research.md",
           "type": "research",
           "summary": "Team synthesis: Torsor viable but medium risk; Cantor transfer recommended for Task 1006, torsor for follow-up"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/12_torsor-construction-full.md",
           "type": "research",
           "summary": "Complete torsor construction: D=Aut+(T), Rigidity, Homogeneity, Holder theorem, AddTorsor, TaskFrame (~430-530 lines estimated)"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md",
+          "path": "specs/006_canonical_taskframe_completeness/plans/05_torsor-construction-plan.md",
           "type": "plan",
           "summary": "v5 plan: Torsor construction approach for D = Aut+(T) with rigidity, homogeneity, Holder's theorem"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/13_rigidity-counterexample-analysis.md",
           "type": "research",
           "summary": "Rigidity counterexample: x→2x on ℚ proves Aut+(T) approach unsound; recommends Cantor transfer D=ℚ"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/14_d-polymorphism-dense-discrete.md",
           "type": "research",
           "summary": "D-polymorphism research: existing ParametricCanonicalTaskFrame D is already polymorphic; separate dense/discrete modules recommended"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/15_completeness-module-structure.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/15_completeness-module-structure.md",
           "type": "research",
           "summary": "Module structure analysis: ParametricCanonicalTaskFrame D is complete; blocking sorries in BFMCS wiring, not parametric framework"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/plans/06_cantor-transfer-plan.md",
+          "path": "specs/006_canonical_taskframe_completeness/plans/06_cantor-transfer-plan.md",
           "type": "plan",
           "summary": "v6 plan: Cantor transfer (D=Rat) after rigidity counterexample proved v5 unsound"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/summaries/02_execution-summary.md",
+          "path": "specs/006_canonical_taskframe_completeness/summaries/02_execution-summary.md",
           "type": "summary",
           "summary": "Implementation summary documenting completed phases (1-3) and blocked phases (4-6) with detailed analysis of fundamental blockers"
         },
         {
-          "path": "specs/1006_canonical_taskframe_completeness/reports/16_blocker-resolution-research.md",
+          "path": "specs/006_canonical_taskframe_completeness/reports/16_blocker-resolution-research.md",
           "type": "research",
           "summary": "Deep mathematical analysis of v6 blockers; recommends removing WorldHistory convexity requirement or accepting FlagBFMCS as canonical completeness"
         }
@@ -464,8 +464,8 @@
         "recommendation": "True multi-family bundle with distinct witnesses per family, or alternative completeness approach"
       },
       "dependencies": [
-        1002,
-        1003
+        2,
+        3
       ]
     },
     {
@@ -581,7 +581,7 @@
       ]
     }
   ],
-  "next_project_number": 1010,
+  "next_project_number": 1000,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
@@ -602,5 +602,13 @@
     "build_errors": 0,
     "status": "excellent"
   },
-  "last_updated": "2026-03-19T00:00:00Z"
+  "last_updated": "2026-03-19T00:00:00Z",
+  "vault_count": 1,
+  "vault_history": [
+    {
+      "vault_number": 1,
+      "vault_dir": "specs/vault/01-vault/",
+      "created_at": "2026-03-21T03:01:33Z"
+    }
+  ]
 }
