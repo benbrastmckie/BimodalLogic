@@ -2,7 +2,31 @@ import Bimodal.Metalogic.Bundle.SuccChainFMCS
 import Bimodal.Metalogic.Bundle.TemporalCoherence
 
 /-!
-# Succ-Chain BFMCS Construction
+# DEPRECATED: Succ-Chain BFMCS Construction
+
+**STATUS**: DEPRECATED (Task 15, 2026-03-21)
+
+**REASON**: The singleton BFMCS approach for discrete representation is **mathematically
+impossible**. The `modal_backward` property requires `φ ∈ MCS → □φ ∈ MCS`, which is the
+converse of the T-axiom and does NOT hold for contingent formulas in TM logic.
+
+**EVIDENCE**: An MCS can contain a contingent formula φ without containing □φ.
+Counterexample: `{◇p, ¬p, φ}` is consistent and extends to an MCS where φ holds but □φ
+does not (since ¬□φ is consistent with the seed).
+
+**SUPERSEDED BY**: Multi-family modally saturated BFMCS approach via
+`ModallyCoherentBFMCS.lean` using `saturated_modal_backward` from `ModalSaturation.lean`.
+
+**DO NOT**:
+- Import this module in new code
+- Use `SingletonBFMCS` or `construct_bfmcs_impl`
+- Try to eliminate the `modal_backward` sorry (it is provably impossible)
+
+See ROAD_MAP.md "Dead End: Singleton BFMCS for Discrete Representation" for full analysis.
+
+---
+
+## Original Description (Historical, DO NOT USE)
 
 This module wraps a SuccChainFMCS as a singleton BFMCS (Bundle of FMCS) with both
 modal and temporal coherence properties.
@@ -13,17 +37,18 @@ modal and temporal coherence properties.
 - `SuccChainBFMCS`: The SuccChainFMCS wrapped as a singleton BFMCS
 - `construct_bfmcs_impl`: The callback function for DiscreteInstantiation
 
-## Key Insight
+## Key Insight (INCORRECT - SEE DEPRECATION NOTICE)
 
 A singleton BFMCS has trivial modal coherence:
 - `modal_forward`: Box phi in the single family implies phi in all families (just itself)
 - `modal_backward`: phi in all families (just itself) implies Box phi by MCS T-axiom closure
+  **THIS IS FALSE FOR CONTINGENT FORMULAS**
 
 Temporal coherence comes from SuccChainTemporalCoherent.
 
 ## References
 
-- Task 15: discrete_representation_theorem_axiom_removal
+- Task 15: discrete_representation_theorem_axiom_removal (deprecation)
 - Task 14: SuccChainFMCS construction
 -/
 
@@ -41,9 +66,13 @@ A singleton bundle containing exactly one FMCS family.
 
 /-- Create a singleton BFMCS from a single FMCS.
 
-Modal coherence is trivial for a singleton:
-- modal_forward: Box phi in fam implies phi in fam (by T axiom closure of MCS)
-- modal_backward: phi in all families (just fam) implies Box phi in fam (axiom for now)
+**DEPRECATED**: This construction has an unprovable `modal_backward` sorry.
+See module-level deprecation notice.
+
+Modal coherence for a singleton:
+- modal_forward: Box phi in fam implies phi in fam (by T axiom closure of MCS) - OK
+- modal_backward: phi in all families implies Box phi in fam - **IMPOSSIBLE**
+  The goal requires φ ∈ MCS → □φ ∈ MCS, which is false for contingent formulas.
 -/
 noncomputable def SingletonBFMCS (theFam : FMCS Int) : BFMCS Int where
   families := {theFam}

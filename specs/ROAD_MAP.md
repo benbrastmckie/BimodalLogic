@@ -684,6 +684,43 @@ Int-indexed fragment chains inherit the D=Int prohibition. Witness placement com
 
 ---
 
+### Dead End: Singleton BFMCS for Discrete Representation
+
+**Status**: ABANDONED
+**Tried**: 2026-03-19 to 2026-03-21
+**Related Tasks**: Task 14 (implementation), Task 15 (deprecation)
+
+*Rationale*: Task 14 attempted to construct a singleton BFMCS (wrapping a single FMCS as a bundle) for the discrete representation theorem, under the assumption that modal coherence would be "trivial" for a singleton bundle.
+
+**What We Tried**:
+`SuccChainBFMCS.lean` defined:
+- `SingletonBFMCS`: Wrapping a single FMCS as a BFMCS (singleton bundle)
+- `construct_bfmcs_impl`: Using the singleton wrapper for `discrete_representation_conditional`
+
+The reasoning was: for a singleton bundle, "phi in ALL families" reduces to "phi in the single family", so modal_backward should be provable directly from the T-axiom.
+
+**Why It Failed**:
+The `modal_backward` property requires: if φ is in ALL families at time t, then □φ is in fam.mcs t. For a singleton, this reduces to: φ ∈ MCS → □φ ∈ MCS.
+
+**THIS IS THE CONVERSE OF THE T-AXIOM**, which TM logic does NOT have. An MCS can contain a contingent formula φ without containing □φ.
+
+**Counterexample**: The seed set `{◇p, ¬p, φ}` is consistent and extends to an MCS where:
+- φ ∈ MCS (by extension)
+- □φ ∉ MCS (since ¬□φ is consistent with the seed: adding □φ would force p by T-axiom, contradicting ¬p)
+
+This is NOT a temporary sorry waiting for proof - it is **mathematically impossible** to prove `modal_backward` for a singleton BFMCS in TM logic.
+
+**Evidence**:
+- [SuccChainBFMCS.lean](Theories/Bimodal/Metalogic/Bundle/SuccChainBFMCS.lean) - Deprecated, CANNOT be fixed
+- [Team research synthesis](specs/015_discrete_representation_theorem_axiom_removal/reports/03_team-research-synthesis.md) - Impossibility proof
+
+**Lesson**:
+Modal coherence is NOT trivial for singleton bundles. The "all families contain phi" hypothesis is only meaningful when there are MULTIPLE families that could potentially have different contents. Singleton bundles collapse this structure, making the converse T-axiom required (which is invalid). Multi-family saturation is necessary for modal_backward.
+
+**Superseded By**: Multi-family modally saturated BFMCS using `saturated_modal_backward` from `ModalSaturation.lean`
+
+---
+
 ### Revised Approach: Reflexive G/H Semantics (Originally Dead End)
 
 **Status**: ADOPTED (revised per Task 967)

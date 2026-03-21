@@ -1,5 +1,7 @@
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
-import Bimodal.Metalogic.Bundle.SuccChainBFMCS
+-- REMOVED (Task 15): import Bimodal.Metalogic.Bundle.SuccChainBFMCS
+-- The singleton BFMCS approach has an unprovable modal_backward sorry.
+-- See SuccChainBFMCS.lean deprecation notice.
 import Mathlib.Algebra.Order.Group.Int
 
 /-!
@@ -162,12 +164,26 @@ theorem discrete_representation_conditional
 /-!
 ## Unconditional Discrete Representation Theorem
 
-Using the Succ-chain BFMCS construction from SuccChainBFMCS.lean, we can now
-prove the unconditional discrete representation theorem.
+**STATUS**: REMOVED (Task 15, 2026-03-21)
+
+The unconditional theorem was removed because it depended on `construct_bfmcs_impl`
+from `SuccChainBFMCS.lean`, which has an unprovable `modal_backward` sorry.
+
+The singleton BFMCS approach requires `φ ∈ MCS → □φ ∈ MCS` (converse of T-axiom),
+which is mathematically impossible for contingent formulas in TM logic.
+
+**PATH FORWARD**: Task 15 Phase 2+ will implement a multi-family modally saturated
+BFMCS using `saturated_modal_backward` from `ModalSaturation.lean`. Once complete,
+the unconditional theorem can be restored with a sorry-free `modal_backward`.
+
+See ROAD_MAP.md "Dead End: Singleton BFMCS for Discrete Representation".
 -/
 
+/-
+-- REMOVED (Task 15): Unconditional theorem depends on broken singleton BFMCS
+
 /--
-**Discrete Representation Theorem (Unconditional Version)**
+**Discrete Representation Theorem (Unconditional Version)** [DEPRECATED]
 
 If a formula is not provable in the TM proof system with discrete axioms,
 then there exists a countermodel in the discrete canonical TaskFrame.
@@ -177,14 +193,14 @@ This theorem uses the Succ-chain BFMCS construction which:
 2. Builds a forward/backward chain of MCSs via successor/predecessor existence
 3. Wraps the chain as a singleton BFMCS with temporal coherence
 
-**Axiom Dependencies**:
+**Axiom Dependencies** (ALL BROKEN):
 This theorem depends on axioms in SuccChainFMCS.lean and SuccChainBFMCS.lean:
 - `F_top_propagates`: F_top propagates through Succ
 - `P_top_propagates`: P_top propagates through Pred
 - `succ_chain_forward_F_axiom`: F(φ) in MCS implies witness exists
 - `succ_chain_backward_P_axiom`: P(φ) in MCS implies witness exists
 - `past_4_axiom`: H(φ) → H(H(φ))
-- `SingletonBFMCS.modal_backward`: Singleton modal coherence (sorry)
+- `SingletonBFMCS.modal_backward`: Singleton modal coherence (IMPOSSIBLE)
 
 See Phase 5 documentation for axiom status and elimination roadmap.
 -/
@@ -195,6 +211,7 @@ theorem discrete_representation_unconditional
       ¬truth_at DiscreteCanonicalTaskModel (ShiftClosedParametricCanonicalOmega B)
         (parametric_to_history fam) t φ :=
   discrete_representation_conditional φ h_not_prov construct_bfmcs_impl
+-/
 
 /-!
 ## Summary
@@ -205,12 +222,19 @@ algebraic representation theorem:
 1. **DiscreteCanonicalTaskFrame**: TaskFrame with D = Int
 2. **DiscreteCanonicalTaskModel**: TaskModel with MCS-based valuation
 3. **discrete_representation_conditional**: Conditional representation theorem
-4. **discrete_representation_unconditional**: Full representation theorem using
-   Succ-chain BFMCS construction
+4. **discrete_representation_unconditional**: REMOVED (Task 15) - depended on
+   broken singleton BFMCS with impossible `modal_backward` sorry
 
-**Axiom Dependencies**:
-The unconditional theorem depends on axioms in SuccChainFMCS.lean and
-SuccChainBFMCS.lean. See the theorem documentation for the full list.
+**Current Status** (Task 15, 2026-03-21):
+The conditional theorem remains available. To obtain the unconditional theorem,
+a caller must provide a `construct_bfmcs` function that builds a BFMCS Int with:
+- Temporal coherence (forward_F, backward_P, forward_G, backward_H)
+- Modal coherence (modal_forward, modal_backward)
+
+The singleton BFMCS approach CANNOT satisfy modal_backward. Task 15 Phase 2+
+will implement a multi-family modally saturated BFMCS using:
+- `saturated_modal_backward` from `ModalSaturation.lean` (sorry-free)
+- `closedFlags` from `ClosedFlagBundle.lean` (provides saturation content)
 
 **Connection to Discrete Completeness**:
 The discrete completeness theorem (valid_discrete φ → provable φ) is the
