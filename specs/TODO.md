@@ -141,8 +141,8 @@ technical_debt:
 ---
 
 ### 15. Complete discrete representation theorem and remove Icc finite axiom
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 6 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Tasks 13, 14
 - **Research**:
@@ -150,7 +150,7 @@ technical_debt:
   - [02_teammate-a-findings.md](015_discrete_representation_theorem_axiom_removal/reports/02_teammate-a-findings.md)
   - [02_teammate-b-findings.md](015_discrete_representation_theorem_axiom_removal/reports/02_teammate-b-findings.md)
   - [03_team-research-synthesis.md](015_discrete_representation_theorem_axiom_removal/reports/03_team-research-synthesis.md)
-- **Plan**: [01_discrete-rep-plan.md](015_discrete_representation_theorem_axiom_removal/plans/01_discrete-rep-plan.md)
+- **Plan**: [02_multi-bfmcs-plan.md](015_discrete_representation_theorem_axiom_removal/plans/02_multi-bfmcs-plan.md) (v2, supersedes singleton approach)
 - **Research (task 6)**:
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §3.3, §5.2 — how CanonicalTask resolves the SuccOrder blocker (Task 974), full pipeline for discrete representation theorem
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §7 — old vs new pipeline comparison, what is bypassed, §8 risk assessment
