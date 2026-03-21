@@ -1166,39 +1166,39 @@
       "planned": "2026-03-21T19:28:53Z"
     },
     {
-      "project_number": 22,
+      "project_number": 26,
       "project_name": "remove_canonicalr_irreflexive_axiom",
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
       "last_updated": "2026-03-21T13:00:00Z",
       "dependencies": [],
-      "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity. Documentation inconsistency found: wrapper file claims proven but implementation is axiom.",
+      "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
         {
-          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/01_teammate-a-findings.md",
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-a-findings.md",
           "type": "report",
-          "summary": "CanonicalTask vs CanonicalR irreflexivity analysis: nullity_identity insufficient, forward recovery independent"
+          "summary": "CanonicalTask vs CanonicalR irreflexivity analysis"
         },
         {
-          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/01_teammate-b-findings.md",
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-b-findings.md",
           "type": "report",
-          "summary": "Complete usage map: 16 direct uses across 6 files, all at CanonicalR level, CanonicalTask refactoring not viable"
+          "summary": "Complete usage map: 16 direct uses across 6 files"
         },
         {
-          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/01_teammate-c-findings.md",
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-c-findings.md",
           "type": "report",
-          "summary": "Modal logic theoretical analysis: CanonicalTask reduction exact, Cantor path circular, documentation inconsistency found"
+          "summary": "Modal logic theoretical analysis and alternative paths"
         },
         {
-          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/02_synthesis.md",
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/02_synthesis.md",
           "type": "report",
-          "summary": "Synthesized findings: 3 viable paths (T-axiom proof, IRR rule, accept axiom), CanonicalTask path definitively ruled out"
+          "summary": "Synthesized findings: 3 viable paths identified"
         }
       ]
     }
   ],
-  "next_project_number": 23,
+  "next_project_number": 27,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

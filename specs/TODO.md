@@ -58,6 +58,23 @@ technical_debt:
 
 ---
 
+## Axiom Investigation
+
+### 26. Remove or justify canonicalR_irreflexive_axiom
+- **Effort**: 2-8 hours (depends on path chosen)
+- **Status**: [RESEARCHED]
+- **Language**: lean4
+- **Dependencies**: none
+- **Research**:
+  - [01_teammate-a-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-a-findings.md) — CanonicalTask vs CanonicalR irreflexivity analysis
+  - [01_teammate-b-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-b-findings.md) — complete usage map (16 sites, 6 files)
+  - [01_teammate-c-findings.md](026_remove_canonicalr_irreflexive_axiom/reports/01_teammate-c-findings.md) — modal logic theoretical analysis
+  - [02_synthesis.md](026_remove_canonicalr_irreflexive_axiom/reports/02_synthesis.md) — synthesized findings and 3 viable paths
+
+**Description**: Investigate removal of `canonicalR_irreflexive_axiom` (CanonicalIrreflexivity.lean:1212). Research conclusively shows CanonicalTask refactoring does NOT help — `¬CanonicalTask(u,1,u)` reduces exactly to `¬CanonicalR(u,u)` because the f_content condition in Succ is trivially satisfied on the diagonal. All 16 usage sites across 6 active files (SaturatedChain 8, FMCSTransfer 2, CanonicalSerialFrameInstance 2+2, TimelineQuotCanonical 1, ClosureSaturation 2, IncrementalTimeline 1) require CanonicalR-level irreflexivity. Three viable paths: **(A)** Prove via reflexive T-axiom — `CanonicalIrreflexivity.lean` contains 1170 lines of complete proof infrastructure from Task 967 that works under reflexive semantics; check if temporal T-axiom `H(φ)→φ` is available. **(B)** Add Gabbay IRR inference rule to proof system (high effort but principled). **(C)** Accept axiom with fixed documentation — `CanonicalIrreflexivityAxiom.lean` falsely claims "proven theorem (Task 967)" but actual implementation is a Lean axiom since Task 991's strict semantics revert. Fix this inconsistency regardless of path chosen.
+
+---
+
 ## Discrete Sorry Elimination (Post Task 15)
 
 ### 25. Rename CanonicalR to ExistsTask and refactor usage
