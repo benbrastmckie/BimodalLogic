@@ -1,0 +1,21 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-20T00:00:00Z",
+  "artifacts": [
+    {
+      "type": "research",
+      "path": "specs/1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md",
+      "summary": "Comprehensive audit of 15+ Lean files and ROAD_MAP.md identifying where CanonicalMCS is conflated with the temporal domain D. Found 6 high-priority files, 5 medium-priority files. Root cause: overloaded type parameter name D and FMCSDef.lean time language predating CanonicalFMCS construction. SeparatedTaskFrame.lean and CanonicalConstruction.lean already use the correct distinction."
+    }
+  ],
+  "partial_progress": {
+    "stage": "research_delivered",
+    "details": "Full codebase audit of CanonicalMCS role confusion across active Lean files and documentation"
+  },
+  "metadata": {
+    "session_id": "sess_1774055083_f4dc61",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
