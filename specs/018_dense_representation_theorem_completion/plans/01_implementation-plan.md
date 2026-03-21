@@ -49,7 +49,7 @@ From `reports/01_dense-representation-research.md`:
 
 ## Implementation Phases
 
-### Phase 1: Temporal Coherence [NOT STARTED]
+### Phase 1: Temporal Coherence [BLOCKED]
 
 **Goal**: Prove forward_F and backward_P for timelineQuotFMCS, establishing temporal witness existence.
 
