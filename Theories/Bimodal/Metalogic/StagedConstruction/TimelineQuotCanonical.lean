@@ -1,5 +1,6 @@
 import Bimodal.Metalogic.StagedConstruction.TimelineQuotCompleteness
 import Bimodal.Metalogic.StagedConstruction.TimelineQuotAlgebra
+import Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuot
 import Bimodal.Metalogic.Algebraic.ParametricCanonical
 import Bimodal.Metalogic.Bundle.FMCSDef
 import Bimodal.Metalogic.Bundle.BFMCS
@@ -446,3 +447,44 @@ theorem timelineQuotMCS_at_zero_eq_root :
   sorry  -- Intentionally left as sorry - use timelineQuotMCS_root_time_eq instead
 
 end Bimodal.Metalogic.StagedConstruction.TimelineQuotCanonical
+
+/-!
+## Dovetailed Timeline Re-exports
+
+The DovetailedTimelineQuot construction provides temporal coherence (forward_F, backward_P)
+via the dovetailing enumeration. Re-export key definitions for unified access.
+-/
+
+namespace Bimodal.Metalogic.StagedConstruction.DovetailedTimelineCanonical
+
+open Bimodal.Syntax
+open Bimodal.Metalogic.Core
+open Bimodal.Metalogic.Bundle
+open Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuot
+open Bimodal.Metalogic.StagedConstruction.DovetailedBuild
+
+variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)
+
+/-- Re-export: The dovetailed FMCS with temporal coherence (forward_F, backward_P). -/
+noncomputable abbrev dovetailedFMCS' : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  dovetailedTimelineQuotFMCS root_mcs root_mcs_proof
+
+/-- Re-export: Forward F temporal coherence for dovetailed timeline. -/
+theorem dovetailedFMCS_forward_F
+    (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_F : Formula.some_future phi ∈ (dovetailedFMCS' root_mcs root_mcs_proof).mcs t) :
+    ∃ s : DovetailedTimelineQuot root_mcs root_mcs_proof,
+      t < s ∧ phi ∈ (dovetailedFMCS' root_mcs root_mcs_proof).mcs s :=
+  dovetailedTimelineQuotFMCS_forward_F root_mcs root_mcs_proof t phi h_F
+
+/-- Re-export: Backward P temporal coherence for dovetailed timeline. -/
+theorem dovetailedFMCS_backward_P
+    (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (phi : Formula)
+    (h_P : Formula.some_past phi ∈ (dovetailedFMCS' root_mcs root_mcs_proof).mcs t) :
+    ∃ s : DovetailedTimelineQuot root_mcs root_mcs_proof,
+      s < t ∧ phi ∈ (dovetailedFMCS' root_mcs root_mcs_proof).mcs s :=
+  dovetailedTimelineQuotFMCS_backward_P root_mcs root_mcs_proof t phi h_P
+
+end Bimodal.Metalogic.StagedConstruction.DovetailedTimelineCanonical

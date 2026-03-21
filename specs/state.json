@@ -31,16 +31,20 @@
     {
       "project_number": 27,
       "project_name": "unify_densetimeline_dovetailedtimeline",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T19:53:54Z",
-      "last_updated": "2026-03-21T20:21:29Z",
+      "last_updated": "2026-03-21T20:30:00Z",
       "blocks": [
         18
       ],
       "description": "Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type.",
       "session_id": "sess_1774124468_fbb8fd",
       "researched": "2026-03-21T20:03:04Z",
+      "planned": "2026-03-21T20:08:39Z",
+      "started": "2026-03-21T20:21:29Z",
+      "completed": "2026-03-21T20:30:00Z",
+      "completion_summary": "Replaced DenseTimeline with DovetailedTimeline in TimelineQuot construction. Created DovetailedTimelineQuot.lean and DovetailedFMCS.lean. Eliminated m>2k gap in staged construction by using Cantor-pairing dovetailing. ClosureSaturation.lean forward_F/backward_P sorries resolved via DovetailedCoverageReach theorems. All 6 phases completed.",
       "artifacts": [
         {
           "path": "specs/027_unify_densetimeline_dovetailedtimeline/reports/01_timeline-unification.md",
@@ -51,10 +55,13 @@
           "path": "specs/027_unify_densetimeline_dovetailedtimeline/plans/01_timeline-unification-plan.md",
           "type": "plan",
           "summary": "6-phase implementation plan for unifying DenseTimeline and DovetailedTimeline"
+        },
+        {
+          "path": "specs/027_unify_densetimeline_dovetailedtimeline/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation complete: DovetailedTimelineQuot replaces DenseTimeline, forward_F/backward_P sorries eliminated in ClosureSaturation"
         }
-      ],
-      "planned": "2026-03-21T20:08:39Z",
-      "started": "2026-03-21T20:21:29Z"
+      ]
     },
     {
       "project_number": 25,
@@ -1246,10 +1253,10 @@
     {
       "project_number": 26,
       "project_name": "remove_canonicalr_irreflexive_axiom",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T20:20:45Z",
+      "last_updated": "2026-03-21T20:29:53Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -1314,7 +1321,7 @@
           "summary": "Team research: IRR without T-axiom, reflexive semantics implications (3 teammates)"
         }
       ],
-      "session_id": "sess_1774124111_6d706e",
+      "session_id": "sess_1774124986_13b8b6",
       "researched": "2026-03-21T20:02:33Z"
     }
   ],

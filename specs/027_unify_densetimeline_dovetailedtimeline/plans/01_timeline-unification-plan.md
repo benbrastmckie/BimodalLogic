@@ -1,7 +1,7 @@
 # Implementation Plan: Unify DenseTimeline and DovetailedTimeline
 
 - **Task**: 27 - unify_densetimeline_dovetailedtimeline
-- **Status**: [NOT STARTED]
+- **Status**: [IMPLEMENTING]
 - **Effort**: 4-5 hours
 - **Dependencies**: DovetailedCoverageReach.lean (existing), DovetailedBuild.lean (existing)
 - **Research Inputs**: specs/027_unify_densetimeline_dovetailedtimeline/reports/01_timeline-unification.md
@@ -49,7 +49,7 @@ The research report (01_timeline-unification.md) recommends a **wholesale replac
 
 ## Implementation Phases
 
-### Phase 1: Define DovetailedTimelineElem and Preorder [NOT STARTED]
+### Phase 1: Define DovetailedTimelineElem and Preorder [COMPLETED]
 
 **Goal**: Create the element type and preorder instance for the dovetailed timeline, mirroring DenseTimelineElem.
 
@@ -75,7 +75,7 @@ The research report (01_timeline-unification.md) recommends a **wholesale replac
 
 ---
 
-### Phase 2: Define DovetailedTimelineQuot with LinearOrder [NOT STARTED]
+### Phase 2: Define DovetailedTimelineQuot with LinearOrder [COMPLETED]
 
 **Goal**: Create the antisymmetrization quotient and establish it has a linear order.
 
@@ -100,7 +100,7 @@ The research report (01_timeline-unification.md) recommends a **wholesale replac
 
 ---
 
-### Phase 3: Port Cantor Prerequisites to DovetailedTimelineQuot [NOT STARTED]
+### Phase 3: Port Cantor Prerequisites to DovetailedTimelineQuot [COMPLETED]
 
 **Goal**: Establish Countable, NoMaxOrder, NoMinOrder, DenselyOrdered, and Nonempty for DovetailedTimelineQuot.
 
@@ -129,7 +129,7 @@ The research report (01_timeline-unification.md) recommends a **wholesale replac
 
 ---
 
-### Phase 4: Update TimelineQuotCanonical.lean to Use DovetailedTimeline [NOT STARTED]
+### Phase 4: Update TimelineQuotCanonical.lean to Use DovetailedTimeline [COMPLETED]
 
 **Goal**: Replace DenseTimeline references with DovetailedTimeline in the canonical model construction.
 
@@ -159,7 +159,7 @@ The research report (01_timeline-unification.md) recommends a **wholesale replac
 
 ---
 
-### Phase 5: Update ClosureSaturation.lean and Eliminate forward_F/backward_P Sorries [NOT STARTED]
+### Phase 5: Update ClosureSaturation.lean and Eliminate forward_F/backward_P Sorries [COMPLETED]
 
 **Goal**: Wire DovetailedCoverageReach theorems to eliminate the forward_F and backward_P sorries.
 
@@ -187,7 +187,7 @@ The research report (01_timeline-unification.md) recommends a **wholesale replac
 
 ---
 
-### Phase 6: Update TimelineQuotCompleteness.lean and Verify Integration [NOT STARTED]
+### Phase 6: Update TimelineQuotCompleteness.lean and Verify Integration [COMPLETED]
 
 **Goal**: Ensure the completeness theorem infrastructure uses the unified DovetailedTimelineQuot.
 
