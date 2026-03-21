@@ -220,4 +220,29 @@ theorem h_content_chain_transitive (M N V : Set Formula)
   -- phi ∈ h_content N, and h_content N ⊆ M, so phi ∈ M
   exact hMN h_Hphi_in_N
 
+/-!
+## ExistsTask Alias
+
+The canonical relation `CanonicalR` represents temporal accessibility: M sees M' in the
+future iff `g_content M ⊆ M'`. In the semantics literature, this is sometimes called
+the "ExistsTask" relation, as it encodes when there EXISTS a task (temporal obligation)
+connecting two MCSes.
+
+This alias is provided for documentation clarity and to connect with the CanonicalTask
+infrastructure in the staged construction.
+-/
+
+/--
+ExistsTask: Alias for CanonicalR.
+
+The name reflects the semantic interpretation: `ExistsTask M M'` means there exists
+a temporal task (F-obligation) connecting M to M'. Specifically:
+- Every G phi in M holds at M'
+- Equivalently: g_content(M) ⊆ M'
+
+This is derived from the CanonicalTask relation in the staged construction where
+`CanonicalTask M n M'` witnesses n steps of F-chaining from M to M'.
+-/
+abbrev ExistsTask := CanonicalR
+
 end Bimodal.Metalogic.Bundle
