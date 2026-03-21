@@ -5,24 +5,30 @@
     {
       "path": "specs/023_fp_temporal_witness_chain/reports/09_blocker-analysis.md",
       "type": "report"
+    },
+    {
+      "path": "specs/023_fp_temporal_witness_chain/reports/10_s5-box-analysis.md",
+      "type": "report"
     }
   ],
   "partial_progress": {
     "stage": "research_delivered",
-    "details": "Blocker analysis complete. Report identifies axiom proof paths and correct architecture."
+    "details": "S5 Box analysis complete. Confirmed TM has full S5 axioms but BFMCS bypass remains correct."
   },
   "metadata": {
-    "session_id": "sess_1774131563_f25147",
+    "session_id": "sess_1774132327_5fd873",
     "agent_type": "lean-research-agent",
     "delegation_depth": 1,
     "delegation_path": ["orchestrator", "research", "lean-research-agent"]
   },
   "findings": {
-    "axioms_analyzed": 3,
-    "provable_axioms": 2,
-    "needs_infrastructure": 1,
+    "s5_axioms_present": ["modal_t", "modal_4", "modal_b", "modal_5_collapse", "modal_k_dist"],
+    "s5_provides": "MCS-internal syntactic closure",
+    "s5_does_not_provide": "cross-MCS semantic transfer for BFMCS modal_forward",
+    "bfmcs_modal_forward_status": "architecturally_unprovable",
     "architecture_recommendation": "bypass_bfmcs",
-    "existing_infrastructure": ["SuccChainTaskFrame", "SuccChainWorldHistory"],
+    "recommendation_reason": "S5 axioms work within single MCS; BFMCS needs cross-family transfer",
+    "correct_path": ["SuccChainFMCS", "CanonicalTaskTaskFrame", "succ_chain_history"],
     "infrastructure_status": "sorry_free"
   }
 }

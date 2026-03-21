@@ -203,16 +203,16 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T22:32:26Z",
+      "last_updated": "2026-03-21T22:35:08Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
       "session_id": "sess_1774132327_5fd873",
-      "researched": "2026-03-21T22:24:10Z",
+      "researched": "2026-03-21T22:35:08Z",
       "artifacts": [
         {
           "path": "specs/023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md",
@@ -253,6 +253,11 @@
           "path": "specs/023_fp_temporal_witness_chain/plans/04_bypass-bfmcs.md",
           "type": "plan",
           "summary": "Revised plan v4: Bypass BFMCS using TaskFrame+WorldHistory (S5 vs T4 architecture)"
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/reports/10_s5-box-analysis.md",
+          "type": "report",
+          "summary": "S5 Box analysis: TM has full S5 axioms but BFMCS bypass still correct (S5 = MCS-internal, not cross-family)"
         }
       ],
       "planned": "2026-03-21T22:28:28Z",
