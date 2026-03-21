@@ -60,13 +60,14 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHING]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
   - [01_teammate-a-findings.md](028_correct_bfmcs_domain_conflation/reports/01_teammate-a-findings.md) — Audit of 4 W=D conflation sites; confirms CanonicalMCS domain wrong for non-base logics; prescribes TimelineQuot for dense and Succ-chain bypass for discrete completeness
   - [01_teammate-b-findings.md](028_correct_bfmcs_domain_conflation/reports/01_teammate-b-findings.md) — Mathematical foundations: W/D distinction, DenselyOrdered/SuccOrder mutual exclusion, cross-family modal coherence, alternative architectural patterns
   - [01_team-research.md](028_correct_bfmcs_domain_conflation/reports/01_team-research.md) — Synthesized findings: 4 conflation sites, prescribed architecture (D=TimelineQuot dense, D=ℤ discrete)
+  - [02_blocker-analysis.md](028_correct_bfmcs_domain_conflation/reports/02_blocker-analysis.md) — Phase 5 blocker analysis: S5 correct but Succ-chain bypass viable, 4 axioms remaining
 - **Plan**: [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — 8-phase implementation plan (12 hours estimated)
 - **Summary**: [01_bfmcs-domain-correction-summary.md](028_correct_bfmcs_domain_conflation/summaries/01_bfmcs-domain-correction-summary.md) — PARTIAL: Phase 5 blocked (S5 requirement), Succ-chain bypass documented
 
