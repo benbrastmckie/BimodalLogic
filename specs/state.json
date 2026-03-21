@@ -229,10 +229,10 @@
     {
       "project_number": 15,
       "project_name": "discrete_representation_theorem_axiom_removal",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:07:24Z",
+      "last_updated": "2026-03-21T11:08:28Z",
       "dependencies": [
         13,
         14
@@ -245,7 +245,7 @@
           "summary": "Comprehensive analysis of wiring Succ-chain FMCS to discrete representation theorem. Identifies 8 axioms across 3 files; recommends wiring with documented axioms first, then axiom elimination in follow-up tasks."
         }
       ],
-      "session_id": "sess_1774090934_0d8079",
+      "session_id": "sess_1774091292_60023c",
       "researched": "2026-03-21T11:07:24Z"
     },
     {
@@ -284,10 +284,10 @@
     {
       "project_number": 17,
       "project_name": "bfmcs_over_timeline_quot_dense",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:06:23Z",
+      "last_updated": "2026-03-21T11:08:58Z",
       "dependencies": [
         16
       ],
@@ -297,10 +297,16 @@
           "path": "specs/017_bfmcs_over_timeline_quot_dense/reports/01_bfmcs-dense-research.md",
           "type": "research_report",
           "summary": "Comprehensive analysis of BFMCS construction over TimelineQuot. Identified singleton BFMCS modal_backward blocker. Proposed multi-family architecture using ClosedFlagBundle pattern with DenseTask integration."
+        },
+        {
+          "path": "specs/017_bfmcs_over_timeline_quot_dense/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for multi-family BFMCS over TimelineQuot with modal and temporal coherence"
         }
       ],
       "session_id": "sess_1774091168_8e6187",
-      "researched": "2026-03-21T11:05:18Z"
+      "researched": "2026-03-21T11:05:18Z",
+      "planned": "2026-03-21T11:08:58Z"
     },
     {
       "project_number": 18,
