@@ -129,7 +129,7 @@
       "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:33:45Z",
+      "last_updated": "2026-03-21T20:38:36Z",
       "dependencies": [
         15
       ],
@@ -148,12 +148,12 @@
           "summary": "Team research (2 teammates): Succ-based approach bypasses linear chain impossibility. 3 axioms remain in SuccExistence.lean."
         },
         {
-          "path": "specs/023_fp_temporal_witness_chain/plans/01_succ-based-fp-witnesses.md",
+          "path": "specs/023_fp_temporal_witness_chain/plans/02_no-axioms-fp-witnesses.md",
           "type": "plan",
-          "summary": "4-phase implementation plan analyzing 3 SuccExistence axioms for F/P temporal witness resolution"
+          "summary": "Revised 4-phase plan with NO AXIOMS constraint: prove axioms OR reroute via CanonicalFMCS"
         }
       ],
-      "planned": "2026-03-21T20:33:45Z"
+      "planned": "2026-03-21T20:38:36Z"
     },
     {
       "project_number": 24,

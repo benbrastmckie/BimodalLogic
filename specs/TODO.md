@@ -140,7 +140,7 @@ technical_debt:
 - **Research**:
   - [01_temporal-witness-research.md](023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md)
   - [02_team-research.md](023_fp_temporal_witness_chain/reports/02_team-research.md) - Succ-based approach analysis
-- **Plan**: [01_succ-based-fp-witnesses.md](023_fp_temporal_witness_chain/plans/01_succ-based-fp-witnesses.md)
+- **Plan**: [02_no-axioms-fp-witnesses.md](023_fp_temporal_witness_chain/plans/02_no-axioms-fp-witnesses.md) - NO AXIOMS constraint
 
 **Description**: Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(¬φ) killing F(φ) obligations. Eliminates 4 dovetailing sorries: intFMCS_forward_F (IntBFMCS.lean:1199), intFMCS_forward_F_enriched two cases (IntBFMCS.lean:1175,1177), intFMCS_backward_P (IntBFMCS.lean:1213). Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches with Int-compatible index type.
 
