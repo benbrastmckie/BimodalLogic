@@ -72,7 +72,7 @@ technical_debt:
 
 ### 30. Build temporally coherent dense BFMCS
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #18
@@ -85,10 +85,12 @@ technical_debt:
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: TBD
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: none
-- **Research**: [01_team-research.md](029_switch_to_reflexive_gh_semantics/reports/01_team-research.md)
+- **Research**:
+  - [01_team-research.md](029_switch_to_reflexive_gh_semantics/reports/01_team-research.md)
+  - [02_historical-issues-analysis.md](029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md)
 
 **Description**: Switch TM metalogic to reflexive semantics for G and H. Under reflexive semantics, Gφ means φ holds at all t ≥ now (including now), making CanonicalR reflexive and eliminating the canonicalR_irreflexive_axiom entirely. Study all consequences for: (1) base TM logic axioms, (2) density extension (DN axiom, DenselyOrdered), (3) discreteness extension (DF/SF/SP axioms, SuccOrder), (4) soundness proofs, (5) truth lemma, (6) completeness pipeline, (7) Succ relation and CanonicalTask definitions, (8) the 3 current axioms. Create detailed refactoring plan and update ROAD_MAP.md.
 
@@ -178,15 +180,16 @@ technical_debt:
 ---
 
 ### 23. F/P temporal witness chain construction
-- **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Effort**: 6-8 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 15
 - **Research**:
   - [01_temporal-witness-research.md](023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md)
   - [02_team-research.md](023_fp_temporal_witness_chain/reports/02_team-research.md) - Succ-based approach analysis
   - [08_team-research.md](023_fp_temporal_witness_chain/reports/08_team-research.md) - ARCHITECTURE CORRECTION: Succ-based IS viable
-- **Plan**: [03_succ-chain-construction.md](023_fp_temporal_witness_chain/plans/03_succ-chain-construction.md) - SuccChain construction (v3, based on corrected architecture)
+  - [09_blocker-analysis.md](023_fp_temporal_witness_chain/reports/09_blocker-analysis.md) - BFMCS bypass recommendation (S5 vs T4)
+- **Plan**: [04_bypass-bfmcs.md](023_fp_temporal_witness_chain/plans/04_bypass-bfmcs.md) - Bypass BFMCS using TaskFrame+WorldHistory (v4)
 - **Summary**: [01_no-axioms-resolution.md](023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md) - Documents fundamental limitation (SUPERSEDED)
 
 **Description**: Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(¬φ) killing F(φ) obligations. Eliminates 4 dovetailing sorries: intFMCS_forward_F (IntBFMCS.lean:1199), intFMCS_forward_F_enriched two cases (IntBFMCS.lean:1175,1177), intFMCS_backward_P (IntBFMCS.lean:1213). Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches with Int-compatible index type.
