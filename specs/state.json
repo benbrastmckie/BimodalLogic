@@ -1498,22 +1498,28 @@
     {
       "project_number": 30,
       "project_name": "build_temporally_coherent_dense_bfmcs",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "description": "Create a complete BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof) structure with proven temporally_coherent field. The existing DovetailedTimelineQuotBFMCS module provides modal saturation via closedFlags, but does NOT construct a full BFMCS type with temporal coherence. This task must: (1) Define dovetailedTimelineQuotBFMCS as a proper BFMCS structure with families indexed by DovetailedTimelineQuot, (2) Prove dovetailedTimelineQuotBFMCS_temporally_coherent by lifting the existing dovetailedFMCS_forward_F and dovetailedFMCS_backward_P proofs to all families in the bundle. Use the DirectMultiFamilyBFMCS pattern from the discrete case as a template.",
       "effort": "3-4 hours",
       "parent_task": 18,
       "dependencies": [],
       "created": "2026-03-21T21:47:35Z",
-      "last_updated": "2026-03-21T22:17:57Z",
+      "last_updated": "2026-03-21T22:20:44Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/018_dense_representation_theorem_completion/reports/14_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "path": "specs/030_build_temporally_coherent_dense_bfmcs/plans/01_bfmcs-temporal-coherence.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for temporally coherent BFMCS over DovetailedTimelineQuot"
         }
       ],
-      "session_id": "sess_1774131461_4bbc00"
+      "session_id": "sess_1774131461_4bbc00",
+      "planned": "2026-03-21T22:20:44Z"
     },
     {
       "project_number": 31,
