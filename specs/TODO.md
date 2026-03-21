@@ -1,5 +1,5 @@
 ---
-next_project_number: 1000
+next_project_number: 9
 repository_health:
   overall_score: 92
   production_readiness: improved
