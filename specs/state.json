@@ -74,42 +74,52 @@
     {
       "project_number": 11,
       "project_name": "define_canonical_task_relation",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T09:54:14Z",
       "dependencies": [
         10
       ],
       "description": "Define CanonicalTask(u,n,v) inductively from Succ: base u=v for n=0, step ∃w,Succ(u,w)∧CanonicalTask(w,n,v) for n≥1, converse for n<0. Prove the three TaskFrame axioms (nullity identity, forward compositionality by chain concatenation, converse by definition). Prove bounded witness corollary: F^nφ∈u ∧ F^(n+1)φ∉u implies witness within n Succ-steps.",
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1774086842_9dd65b"
     },
     {
       "project_number": 12,
       "project_name": "succ_successor_predecessor_existence",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T09:58:15Z",
       "dependencies": [
         10
       ],
       "description": "Prove that under discrete axioms (base+DF+seriality), for any MCS u with F⊤∈u, there exists MCS v with Succ(u,v). Constructs deferral seed g_content(u)∪{φ∨Fφ|Fφ∈u}, proves consistency via DF, extends by Lindenbaum. Symmetric predecessor existence via DB. This is the critical proof obligation that bypasses the covering lemma and replaces discrete_Icc_finite_axiom.",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/012_succ_successor_predecessor_existence/reports/01_succ-existence-research.md",
+          "type": "report",
+          "summary": "Deferral seed construction, DF consistency, symmetric predecessor existence"
+        }
+      ],
+      "session_id": "sess_1774086844_40ae2e",
+      "researched": "2026-03-21T09:58:15Z"
     },
     {
       "project_number": 13,
       "project_name": "canonical_r_recovery_from_canonical_task",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T09:58:24Z",
       "dependencies": [
         11,
         12
       ],
       "description": "Prove CanonicalR(u,v) ↔ ∃n≥1, CanonicalTask(u,n,v). Forward: CanonicalTask implies CanonicalR by g_content transitivity through Succ-chains via temp_4. Backward: CanonicalR implies some CanonicalTask using successor existence and F-nesting bounds. Also prove existing lemmas (canonical_forward_G, canonical_forward_F) from new definitions as backward-compatibility layer.",
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1774087088_3924ec"
     },
     {
       "project_number": 14,

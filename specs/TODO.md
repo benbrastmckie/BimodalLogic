@@ -173,11 +173,12 @@ technical_debt:
 
 ### 12. Prove Succ-based successor and predecessor existence under discrete axioms
 - **Effort**: 6-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New SuccExistence.lean, references DiscreteSuccSeed.lean
-- **Research (task 6)**:
+- **Research**:
+  - [01_succ-existence-research.md](012_succ_successor_predecessor_existence/reports/01_succ-existence-research.md) — deferral seed construction, DF consistency, symmetric predecessor existence
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.7 — successor existence proof sketch, deferral seed, use of DF and Lindenbaum
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §5 — detailed deferral seed construction, consistency argument, comparison with DiscreteSuccSeed blocking-formula approach, fallback strategy
 
@@ -187,7 +188,7 @@ technical_debt:
 
 ### 11. Define CanonicalTask inductive three-place relation and prove TaskFrame axioms
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New CanonicalTask.lean
