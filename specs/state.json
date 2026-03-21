@@ -8,10 +8,10 @@
     {
       "project_number": 9,
       "project_name": "add_existential_temporal_extractors",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T09:16:43Z",
+      "last_updated": "2026-03-21T09:20:12Z",
       "dependencies": [],
       "description": "Add f_content and p_content to TemporalContent.lean. These existential extractors (f_content(M)={φ|Fφ∈M}, p_content(M)={φ|Pφ∈M}) complement existing g_content/h_content. Prove basic duality lemmas. Foundation for both Succ relation (discrete track) and DenseTask relation (dense track).",
       "artifacts": [
@@ -19,10 +19,16 @@
           "path": "specs/009_add_existential_temporal_extractors/reports/01_temporal-extractors.md",
           "type": "report",
           "summary": "Research report for f_content and p_content extractors. Specifies definitions, simp lemmas, and duality lemmas using existing MCS infrastructure. Low complexity, no blockers."
+        },
+        {
+          "path": "specs/009_add_existential_temporal_extractors/plans/01_temporal-extractors-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for f_content/p_content extractors with duality lemmas"
         }
       ],
-      "session_id": "sess_1774084393_07c89f",
-      "researched": "2026-03-21T09:16:43Z"
+      "session_id": "sess_1774084684_f00743",
+      "researched": "2026-03-21T09:16:43Z",
+      "planned": "2026-03-21T09:20:12Z"
     },
     {
       "project_number": 10,
