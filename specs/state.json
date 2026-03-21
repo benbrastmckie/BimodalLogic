@@ -6,6 +6,18 @@
   },
   "active_projects": [
     {
+      "project_number": 27,
+      "project_name": "unify_densetimeline_dovetailedtimeline",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-21T19:53:54Z",
+      "last_updated": "2026-03-21T19:53:54Z",
+      "blocks": [
+        18
+      ],
+      "description": "Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type."
+    },
+    {
       "project_number": 25,
       "project_name": "rename_canonicalr_to_existstask",
       "status": "not_started",
@@ -20,15 +32,15 @@
     {
       "project_number": 22,
       "project_name": "direct_multi_family_bundle",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T19:48:52Z",
+      "last_updated": "2026-03-21T19:53:04Z",
       "dependencies": [
         15
       ],
       "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer.",
-      "session_id": "sess_1774121985_71f81f",
+      "session_id": "sess_1774122768_262dc8",
       "researched": "2026-03-21T19:25:25Z",
       "artifacts": [
         {
@@ -1206,7 +1218,7 @@
       "session_id": "sess_1774122144_418c32"
     }
   ],
-  "next_project_number": 27,
+  "next_project_number": 28,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

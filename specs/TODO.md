@@ -1,5 +1,5 @@
 ---
-next_project_number: 26
+next_project_number: 28
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -87,9 +87,19 @@ technical_debt:
 
 ---
 
+### 27. Unify DenseTimeline and DovetailedTimeline constructions
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Blocks**: Task 18 (phase 3)
+
+**Description**: Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type.
+
+---
+
 ### 22. Direct multi-family bundle construction
 - **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Task 15
 - **Research**:
