@@ -264,6 +264,11 @@
           "path": "specs/023_fp_temporal_witness_chain/reports/10_s5-box-analysis.md",
           "type": "report",
           "summary": "S5 Box analysis: TM has full S5 axioms but BFMCS bypass still correct (S5 = MCS-internal, not cross-family)"
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/summaries/03_bypass-bfmcs-summary.md",
+          "type": "summary",
+          "summary": "Partial: Forward F proven, backward P uses semantic axioms. TaskFrame+WorldHistory ready."
         }
       ],
       "planned": "2026-03-21T22:28:28Z",
