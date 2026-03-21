@@ -102,11 +102,12 @@ technical_debt:
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Tasks 15, 18
 - **Research**:
   - [01_tech-debt-audit.md](021_technical_debt_cleanup/reports/01_tech-debt-audit.md) — comprehensive 4-agent parallel audit of all code from tasks 9-20
+  - [02_team-research.md](021_technical_debt_cleanup/reports/02_team-research.md) — team research (3 teammates): axiom semantic validity, proof dependencies, frame condition theory
 
 **Description**: Pay down technical debt accumulated across the metalogic refactoring track (tasks 9-20). Systematic cleanup in 4 phases: (1) **Dead code removal** — delete redundant lemmas in CanonicalTaskRelation.lean (iter_F_succ_eq, CanonicalTask_neg_succ_nat, 3 unused accessors), unused helpers in TimelineQuotBFMCS.lean (6 items), deprecated dead-end code in AlgebraicBaseCompleteness.lean (2 items). (2) **Deprecation marking** — mark discreteTaskFrame/denseTaskFrame as deprecated in DurationTransfer.lean, evaluate CanonicalRecovery.lean compat wrappers. (3) **Bridge assessment** — evaluate ClosedFlagIntBFMCS.lean bridge for simplification, assess downstream usage of compat wrappers, document dovetailing gap resolution path. (4) **Deferred items** — re-audit after tasks 18-20 complete to capture final debt state. Note: Tasks 18 (researching), 19 (not started), and 20 (not started) may introduce or resolve additional debt.
 
@@ -140,7 +141,7 @@ technical_debt:
 
 ### 18. Complete dense representation theorem via DenseTask
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: Task 17
 - **Research (task 6)**:

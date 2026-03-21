@@ -413,10 +413,10 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:07:01Z",
+      "last_updated": "2026-03-21T19:17:03Z",
       "dependencies": [
         17
       ],
@@ -468,7 +468,7 @@
           "summary": "Team research (3 teammates): CanonicalTask vs CanonicalR analysis, ExistsTask refactoring, TaskFrame-based closure design"
         }
       ],
-      "session_id": "sess_1774119590_f7e705",
+      "session_id": "sess_1774120597_4b10f1",
       "researched": "2026-03-21T19:07:01Z",
       "planned": "2026-03-21T18:14:11Z",
       "started": "2026-03-21T17:15:15Z"
@@ -1083,10 +1083,10 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:08:53Z",
+      "last_updated": "2026-03-21T19:17:46Z",
       "dependencies": [
         15,
         18
@@ -1097,9 +1097,15 @@
           "path": "specs/021_technical_debt_cleanup/reports/01_tech-debt-audit.md",
           "type": "report",
           "summary": "Comprehensive 4-agent audit of tasks 9-20: dead code, bridges, axioms, sorries, deprecation candidates, and cleanup action plan"
+        },
+        {
+          "path": "specs/021_technical_debt_cleanup/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research (3 teammates): axiom semantic validity, proof dependencies, frame condition theory"
         }
       ],
-      "session_id": "sess_1774120112_3b758d"
+      "session_id": "sess_1774120112_3b758d",
+      "researched": "2026-03-21T19:17:46Z"
     }
   ],
   "next_project_number": 25,
