@@ -118,7 +118,7 @@ technical_debt:
 
 ### 16. Define DenseTask relation via Cantor isomorphism
 - **Effort**: 3-4 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: none (independent of discrete track)
 - **Files**: DurationTransfer.lean (canonicalTaskRel), CantorApplication.lean (isomorphism), new DenseTask.lean
