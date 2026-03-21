@@ -11,7 +11,7 @@
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-20T23:46:51Z",
-      "last_updated": "2026-03-21T01:02:30Z",
+      "last_updated": "2026-03-21T03:23:50Z",
       "dependencies": [
         7
       ],
@@ -40,12 +40,17 @@
           "type": "research",
           "path": "specs/008_genuine_truth_at_completeness/reports/03_team-research.md",
           "summary": "Team research: 4 resolution paths analyzed, recommends FMP + generalized TaskFrame"
+        },
+        {
+          "path": "specs/008_genuine_truth_at_completeness/reports/04_team-research.md",
+          "type": "research",
+          "summary": "Team research: base TM vs dense/discrete completeness, recommends dense-first strategy"
         }
       ],
-      "session_id": "sess_1774054508_f9e852",
+      "session_id": "sess_1774063039_c87a2a",
       "planned": "2026-03-21T00:33:31Z",
       "started": "2026-03-21T00:34:44Z",
-      "researched": "2026-03-21T01:02:30Z"
+      "researched": "2026-03-21T03:23:50Z"
     },
     {
       "project_number": 6,
