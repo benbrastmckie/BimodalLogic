@@ -139,13 +139,13 @@ technical_debt:
 
 ### 23. F/P temporal witness chain construction
 - **Effort**: 6-10 hours
-- **Status**: [BLOCKED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 15
-- **Blocked**: Mathematically impossible without axioms. Axiom 3 (predecessor_f_step) is unprovable due to non-constructive Lindenbaum extensions. CanonicalFMCS (all MCSes) is the sorry-free alternative.
 - **Research**:
   - [01_temporal-witness-research.md](023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md)
   - [02_team-research.md](023_fp_temporal_witness_chain/reports/02_team-research.md) - Succ-based approach analysis
+  - [05_team-research.md](023_fp_temporal_witness_chain/reports/05_team-research.md) - CanonicalFMCS refactoring study
 - **Plan**: [02_no-axioms-fp-witnesses.md](023_fp_temporal_witness_chain/plans/02_no-axioms-fp-witnesses.md) - NO AXIOMS constraint
 - **Summary**: [01_no-axioms-resolution.md](023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md) - Documents fundamental limitation
 

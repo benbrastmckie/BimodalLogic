@@ -1,36 +1,36 @@
 {
-  "status": "partial",
-  "started_at": "2026-03-21T12:00:00Z",
-  "completed_at": "2026-03-21T14:30:00Z",
+  "status": "researched",
+  "summary": "Team research on CanonicalFMCS refactoring: domain separation is the solution",
   "artifacts": [
     {
-      "path": "specs/023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md",
-      "type": "summary",
-      "summary": "Documents fundamental limitation: F/P witnesses cannot be proven for linear chains without axioms"
+      "type": "research",
+      "path": "specs/023_fp_temporal_witness_chain/reports/05_team-research.md",
+      "summary": "CanonicalFMCS refactoring study: domain separation, architectural roadmap"
+    },
+    {
+      "type": "research",
+      "path": "specs/023_fp_temporal_witness_chain/reports/05_teammate-a-findings.md",
+      "summary": "IntBFMCS usage map and gap analysis"
+    },
+    {
+      "type": "research",
+      "path": "specs/023_fp_temporal_witness_chain/reports/05_teammate-b-findings.md",
+      "summary": "Architecture options and implementation roadmap"
     }
   ],
-  "requires_user_review": true,
-  "review_reason": "Task goal (eliminate sorries without axioms) is mathematically impossible. Documentation provided.",
-  "verification": {
-    "verification_passed": false,
-    "sorry_count": 4,
-    "axiom_count": 3,
-    "build_passed": true,
-    "notes": "Sorries and axioms remain because they represent fundamental mathematical limitations, not missing proofs"
+  "team_execution": {
+    "enabled": true,
+    "wave_count": 1,
+    "teammates_spawned": 2,
+    "teammates_completed": 2,
+    "teammates_failed": 0
+  },
+  "synthesis": {
+    "conflicts_found": 0,
+    "key_finding": "Domain separation solution: CanonicalMCS for proof-theoretic F/P (sorry-free), TaskFrame D for semantic arithmetic. Completeness pipeline is closer to complete than expected."
   },
   "metadata": {
-    "session_id": "sess_1774125724_d36488",
-    "agent_type": "lean-implementation-agent",
-    "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "implement", "skill-lean-implementation"],
-    "phases_completed": 4,
-    "phases_total": 4,
-    "axiom_analysis": {
-      "axiom_1_successor_deferral_seed_consistent": "LIKELY_PROVABLE",
-      "axiom_2_predecessor_deferral_seed_consistent": "LIKELY_PROVABLE",
-      "axiom_3_predecessor_f_step": "UNPROVABLE"
-    },
-    "decision": "Path B - CanonicalFMCS reroute",
-    "resolution": "Documented as fundamental limitation - F/P witnesses for linear chains are mathematically impossible without axioms"
+    "session_id": "sess_1774126357_b611bb",
+    "agent_type": "skill-team-research"
   }
 }

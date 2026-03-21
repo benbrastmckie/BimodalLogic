@@ -137,16 +137,16 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "blocked",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:49:14Z",
+      "last_updated": "2026-03-21T20:57:01Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774125724_d36488",
-      "researched": "2026-03-21T20:25:18Z",
+      "session_id": "sess_1774126357_b611bb",
+      "researched": "2026-03-21T20:57:01Z",
       "artifacts": [
         {
           "path": "specs/023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md",
@@ -167,11 +167,15 @@
           "path": "specs/023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md",
           "type": "summary",
           "summary": "Documents fundamental limitation: F/P witnesses for linear chains require axioms that are unprovable"
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/reports/05_team-research.md",
+          "type": "research",
+          "summary": "CanonicalFMCS refactoring study: domain separation solution, architectural roadmap"
         }
       ],
       "planned": "2026-03-21T20:38:36Z",
-      "started": "2026-03-21T20:42:28Z",
-      "blocked_reason": "Mathematically impossible: F/P witnesses for linear chains require axioms. Axiom 3 (predecessor_f_step) is unprovable due to non-constructive Lindenbaum extensions. CanonicalFMCS (all MCSes) is the sorry-free alternative."
+      "started": "2026-03-21T20:42:28Z"
     },
     {
       "project_number": 24,
