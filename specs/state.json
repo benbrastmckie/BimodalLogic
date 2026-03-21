@@ -21,17 +21,22 @@
           "path": "specs/029_switch_to_reflexive_gh_semantics/reports/01_team-research.md",
           "type": "research",
           "summary": "Team research: axiom analysis under reflexive G/H semantics (teammate A)"
+        },
+        {
+          "path": "specs/029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md",
+          "type": "research",
+          "summary": "Historical issues analysis: reflexive vs strict G/H semantics"
         }
       ]
     },
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T21:43:39Z",
+      "last_updated": "2026-03-21T22:18:52Z",
       "session_id": "sess_1774129402_c72839",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
@@ -74,6 +79,11 @@
           "path": "specs/028_correct_bfmcs_domain_conflation/reports/04_bimodal-box-semantics.md",
           "type": "research_report",
           "summary": "Bimodal Box analysis: concern is about degenerate singletons, multi-family BFMCS is sound"
+        },
+        {
+          "path": "specs/028_correct_bfmcs_domain_conflation/reports/05_modal-coherence-solutions.md",
+          "type": "research_report",
+          "summary": "Analysis confirms 3 sorries are architecturally unprovable without S5; Succ-chain bypass is correct path"
         }
       ],
       "planned": "2026-03-21T21:27:21Z",
@@ -1488,21 +1498,22 @@
     {
       "project_number": 30,
       "project_name": "build_temporally_coherent_dense_bfmcs",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "description": "Create a complete BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof) structure with proven temporally_coherent field. The existing DovetailedTimelineQuotBFMCS module provides modal saturation via closedFlags, but does NOT construct a full BFMCS type with temporal coherence. This task must: (1) Define dovetailedTimelineQuotBFMCS as a proper BFMCS structure with families indexed by DovetailedTimelineQuot, (2) Prove dovetailedTimelineQuotBFMCS_temporally_coherent by lifting the existing dovetailedFMCS_forward_F and dovetailedFMCS_backward_P proofs to all families in the bundle. Use the DirectMultiFamilyBFMCS pattern from the discrete case as a template.",
       "effort": "3-4 hours",
       "parent_task": 18,
       "dependencies": [],
       "created": "2026-03-21T21:47:35Z",
-      "last_updated": "2026-03-21T21:47:35Z",
+      "last_updated": "2026-03-21T22:17:57Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/018_dense_representation_theorem_completion/reports/14_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
         }
-      ]
+      ],
+      "session_id": "sess_1774131461_4bbc00"
     },
     {
       "project_number": 31,
