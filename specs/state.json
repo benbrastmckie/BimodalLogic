@@ -38,10 +38,10 @@
     {
       "project_number": 1008,
       "project_name": "genuine_truth_at_completeness",
-      "status": "implementing",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-20T23:46:51Z",
-      "last_updated": "2026-03-21T00:34:44Z",
+      "last_updated": "2026-03-21T01:02:30Z",
       "dependencies": [
         1007
       ],
@@ -65,11 +65,17 @@
           "type": "research",
           "path": "specs/1008_genuine_truth_at_completeness/reports/02_completeness-blockers.md",
           "summary": "Detailed mathematical analysis of 3 sorries blocking completeness: modal_backward, forward_F, backward_P"
+        },
+        {
+          "type": "research",
+          "path": "specs/1008_genuine_truth_at_completeness/reports/03_team-research.md",
+          "summary": "Team research: 4 resolution paths analyzed, recommends FMP + generalized TaskFrame"
         }
       ],
-      "session_id": "sess_1774053265_4bf706",
+      "session_id": "sess_1774054508_f9e852",
       "planned": "2026-03-21T00:33:31Z",
-      "started": "2026-03-21T00:34:44Z"
+      "started": "2026-03-21T00:34:44Z",
+      "researched": "2026-03-21T01:02:30Z"
     },
     {
       "project_number": 1006,
