@@ -59,7 +59,7 @@ This plan creates `SuccChainFMCS.lean` using the existing Succ infrastructure to
 
 ## Implementation Phases
 
-### Phase 1: Create SuccChainFMCS.lean [NOT STARTED]
+### Phase 1: Create SuccChainFMCS.lean [COMPLETED]
 
 **Goal**: Define FMCS Int using Succ-chain construction.
 
@@ -87,7 +87,7 @@ This plan creates `SuccChainFMCS.lean` using the existing Succ infrastructure to
 
 ---
 
-### Phase 2: Prove Temporal Coherence [NOT STARTED]
+### Phase 2: Prove Temporal Coherence [PARTIAL]
 
 **Goal**: Prove forward_G, backward_H, forward_F, backward_P for SuccChainFMCS.
 
@@ -111,7 +111,7 @@ This plan creates `SuccChainFMCS.lean` using the existing Succ infrastructure to
 
 ---
 
-### Phase 3: Wire to Completeness [NOT STARTED]
+### Phase 3: Wire to Completeness [BLOCKED]
 
 **Goal**: Update completeness path to use SuccChainFMCS.
 

@@ -27,12 +27,12 @@
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "planned",
+      "status": "researching",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T21:38:20Z",
-      "session_id": "sess_1774128910_0c1efc",
+      "last_updated": "2026-03-21T21:43:39Z",
+      "session_id": "sess_1774129402_c72839",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
         {
@@ -222,6 +222,11 @@
           "path": "specs/023_fp_temporal_witness_chain/plans/03_succ-chain-construction.md",
           "type": "plan",
           "summary": "Revised plan v3: SuccChain construction using corrected architecture"
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/summaries/02_succ-chain-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: G/H proven, F/P single-step proven, 3 axioms remain. Phase 3 blocked on BFMCS architecture."
         }
       ],
       "planned": "2026-03-21T21:20:03Z",
