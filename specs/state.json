@@ -229,10 +229,10 @@
     {
       "project_number": 15,
       "project_name": "discrete_representation_theorem_axiom_removal",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:31:57Z",
+      "last_updated": "2026-03-21T17:10:48Z",
       "dependencies": [
         13,
         14
@@ -245,6 +245,11 @@
           "summary": "Comprehensive analysis of wiring Succ-chain FMCS to discrete representation theorem. Identifies 8 axioms across 3 files; recommends wiring with documented axioms first, then axiom elimination in follow-up tasks."
         },
         {
+          "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/02_teammate-b-findings.md",
+          "type": "research_report",
+          "summary": "Singleton BFMCS cleanup research: SingletonBFMCS.modal_backward is definitively unprovable (requires phi->Box(phi), converse of T-axiom). Identifies artifacts to remove/deprecate and proposes ROAD_MAP.md dead end entry."
+        },
+        {
           "path": "specs/015_discrete_representation_theorem_axiom_removal/plans/01_discrete-rep-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for wiring Succ-chain FMCS to discrete representation theorem"
@@ -255,7 +260,7 @@
           "summary": "Partial implementation: unconditional discrete representation theorem created, past_4_axiom eliminated, 1 sorry in modal_backward, 4 axioms remain"
         }
       ],
-      "session_id": "sess_1774091562_5d7efa",
+      "session_id": "sess_1774113018_b8c88f",
       "researched": "2026-03-21T11:07:24Z",
       "planned": "2026-03-21T11:11:30Z",
       "plan_metadata": {
@@ -345,10 +350,10 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T17:10:11Z",
+      "last_updated": "2026-03-21T17:13:41Z",
       "dependencies": [
         17
       ],
@@ -358,10 +363,16 @@
           "path": "specs/018_dense_representation_theorem_completion/reports/01_dense-representation-research.md",
           "type": "research_report",
           "summary": "Complete analysis of dense representation theorem wiring strategy. Key finding: truth lemma gap over TimelineQuot. Resolution: build BFMCS indexed by TimelineQuot with forward_F/backward_P temporal coherence, then port truth lemma structure. Estimated 7-11 hours implementation."
+        },
+        {
+          "path": "specs/018_dense_representation_theorem_completion/plans/01_implementation-plan.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for dense representation theorem completion: temporal coherence (2.5h), model construction (1.5h), truth lemma (3.5h), final wiring (1.5h)"
         }
       ],
-      "session_id": "sess_1774112752_a2a584",
-      "researched": "2026-03-21T17:10:11Z"
+      "session_id": "sess_1774113074_86bd6a",
+      "researched": "2026-03-21T17:10:11Z",
+      "planned": "2026-03-21T17:13:41Z"
     },
     {
       "project_number": 19,
