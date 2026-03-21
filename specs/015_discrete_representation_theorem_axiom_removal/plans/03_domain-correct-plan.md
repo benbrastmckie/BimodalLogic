@@ -64,7 +64,7 @@ Key findings from domain semantics research (report 04):
 
 ## Implementation Phases
 
-### Phase 1: Boneyard Deprecated Files [NOT STARTED]
+### Phase 1: Boneyard Deprecated Files [COMPLETED]
 
 **Goal**: Move deprecated singleton BFMCS files to Boneyard to prevent accidental usage.
 
@@ -89,7 +89,7 @@ Key findings from domain semantics research (report 04):
 
 ---
 
-### Phase 2: Fix Misleading Comments [NOT STARTED]
+### Phase 2: Fix Misleading Comments [IN PROGRESS]
 
 **Goal**: Correct documentation that conflates world states (W) with time indices (D).
 

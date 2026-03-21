@@ -1,7 +1,10 @@
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
-import Bimodal.Metalogic.Bundle.IntFMCSTransfer
+-- REMOVED (Task 15): import Bimodal.Metalogic.Bundle.IntFMCSTransfer
+-- IntFMCSTransfer moved to Boneyard - singleton BFMCS has unprovable modal_backward
+-- TODO (Task 15 Phase 3-4): Import ClosedFlagIntBFMCS instead
+import Mathlib.Algebra.Order.Group.Int
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.Soundness
 
@@ -166,6 +169,21 @@ The key observation: the countermodel construction does not require ALL
 formulas to have F/P witnesses - only the specific neg(phi) that we're
 trying to falsify.
 -/
+
+/--
+TEMPORARY (Task 15): Placeholder for construct_bfmcs_from_mcs_Int.
+
+This replaces the import from IntFMCSTransfer.lean (moved to Boneyard).
+Task 15 Phases 3-4 will provide a proper implementation using ClosedFlagIntBFMCS.
+
+**Status**: sorry - blocks algebraic_base_completeness until Phase 4 complete.
+-/
+noncomputable def construct_bfmcs_from_mcs_Int
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent)
+       (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),
+       M = fam.mcs t := by
+  sorry
 
 /--
 Auxiliary: If phi is not provable, then neg(phi) is consistent.

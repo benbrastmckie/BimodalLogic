@@ -9,6 +9,42 @@ This module constructs a BFMCS over TimelineQuot that is modally saturated for
 the subformula closure of a target formula. This enables the truth lemma's
 box case without requiring a global axiom.
 
+## ARCHITECTURAL NOTE (Task 18, 2026-03-21)
+
+**DEAD END: Singleton BFMCS Approach**
+
+The singleton BFMCS approach (one family) is **mathematically impossible**:
+- `modal_backward` requires: φ ∈ MCS → □φ ∈ MCS
+- This is the CONVERSE of the T-axiom and does NOT hold for contingent formulas
+- Counterexample: {◇p, ¬p, φ} is consistent and extends to an MCS where φ holds
+  but □φ does not (since ¬□φ is consistent with the seed)
+
+**DEAD END: CanonicalMCS as BFMCS Domain**
+
+CanonicalMCS (the set of all MCSes) is the domain of **world states** (W), NOT
+the duration domain (D). Using CanonicalMCS as BFMCS indexing type creates a
+degenerate identity mapping mcs(w) = w.world with no meaningful structure.
+
+**Correct Domain Assignment**:
+- W (World States): CanonicalMCS — provides modal accessibility via CanonicalR
+- D (Duration/Time): TimelineQuot — provides AddCommGroup + DenselyOrdered structure
+- BFMCS families: Should be indexed by TimelineQuot (time points)
+
+**DEAD END: m > 2k Gap in Staged Construction**
+
+The staged construction has a gap: when a point p enters at stage m > 2k (where
+k = encode(phi)), the F(phi) witness for p was never created. The construction
+does NOT retroactively add witnesses for earlier formulas. This is documented
+in sorries at lines 659, 664, 679.
+
+**CORRECT PATH FORWARD** (Task 18 plan v2):
+1. Implement closure-based F-witness saturation over TimelineQuot
+2. Build multi-family BFMCS with closedFlags pattern (not singleton)
+3. Use iterative construction that processes ALL F-obligations at each stage
+
+See `specs/018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md`
+for the implementation plan.
+
 ## Overview
 
 For completeness, we need a BFMCS where `modal_backward` holds. The key insight
@@ -46,6 +82,7 @@ This follows from `saturated_modal_backward` via modal saturation.
 
 ## References
 
+- Task 18: Dense representation theorem completion (current task)
 - Task 982: Wire dense completeness domain connection
 - research-006.md: Axiom-free modal saturation analysis
 - ModalSaturation.lean: `saturated_modal_backward` theorem
@@ -688,14 +725,31 @@ Package timelineQuotFMCS with forward_F and backward_P.
 -- the coherence properties directly rather than bundling into the structure.
 
 /-!
-## Singleton BFMCS Construction
+## DEPRECATED: Singleton BFMCS Construction
+
+**STATUS**: DEPRECATED (Task 18, 2026-03-21)
+
+**REASON**: Singleton BFMCS is **mathematically impossible** for modal_backward.
+The sorry at line 724 CANNOT be eliminated - it requires φ ∈ MCS → □φ ∈ MCS,
+which is the converse of the T-axiom and does not hold for contingent formulas.
+
+**SUPERSEDED BY**: Multi-family BFMCS with closedFlags pattern.
+See Phase 3 of Task 18 implementation plan.
+
+**DO NOT**:
+- Use `timelineQuotSingletonBFMCS` in new code
+- Try to eliminate the `modal_backward` sorry (it is provably impossible)
+- Build completeness proofs depending on this construction
 
 For completeness, we build a singleton BFMCS with the primary timelineQuotFMCS.
 However, modal_backward for a singleton cannot be proven without additional structure.
 -/
 
 /--
-The singleton BFMCS over TimelineQuot with just the primary family.
+**DEPRECATED**: The singleton BFMCS over TimelineQuot with just the primary family.
+
+**WARNING**: The `modal_backward` field uses sorry and CANNOT be proven.
+This construction is kept for documentation purposes only.
 
 **Important**: modal_backward for this singleton BFMCS requires special handling.
 In a singleton, "φ in all families" reduces to "φ in the one family", and we need

@@ -14,6 +14,28 @@ This module implements the multi-family BFMCS bundle approach to dense algebraic
 completeness. The key insight is that each Flag (maximal chain) in CanonicalMCS
 becomes a separate FMCS family, with modal coherence tying them together.
 
+## ARCHITECTURAL NOTE (Task 18, 2026-03-21)
+
+**DEAD END: singletonCanonicalBFMCS (lines 175-289)**
+
+The singleton BFMCS approach using CanonicalMCS as domain is **mathematically impossible**:
+- `modal_backward` requires: φ ∈ MCS → □φ ∈ MCS (converse of T-axiom, FALSE)
+- The sorry at line 287 CANNOT be eliminated
+
+**DEAD END: canonical_modal_backward (lines 531-572)**
+
+Same issue: attempts to prove φ ∈ t.world → □φ ∈ t.world, which is false.
+The sorry at line 572 CANNOT be eliminated.
+
+**Domain Confusion**:
+- CanonicalMCS is the domain of **world states** (W), NOT the duration domain (D)
+- Using CanonicalMCS as BFMCS indexing type creates degenerate mcs(w) = w.world
+
+**CORRECT PATH FORWARD** (Task 18 plan v2):
+- Build multi-family BFMCS indexed by TimelineQuot (the time domain)
+- Use closedFlags pattern for modal saturation
+- See `specs/018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md`
+
 ## Overview
 
 The previous approach (v11) blocked because Lindenbaum witnesses for F/P obligations
@@ -48,6 +70,7 @@ For `modal_backward` (phi in all families implies Box phi):
 
 ## References
 
+- Task 18: Dense representation theorem completion (current task)
 - Task 988 research: specs/988_dense_algebraic_completeness/reports/15_blocker-resolution.md
 - Plan v12: specs/988_dense_algebraic_completeness/plans/12_multi-family-bfmcs-bundle.md
 - ChainFMCS.lean: chainFMCS_forward_F_in_CanonicalMCS, chainFMCS_backward_P_in_CanonicalMCS

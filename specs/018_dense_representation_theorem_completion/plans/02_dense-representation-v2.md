@@ -52,7 +52,7 @@ From `reports/02_team-research.md` (supersedes v1 research):
 
 ## Implementation Phases
 
-### Phase 1: Archive Dead-End Code [NOT STARTED]
+### Phase 1: Archive Dead-End Code [COMPLETED]
 
 **Goal**: Remove singleton BFMCS constructions that are mathematically impossible, clean up domain confusion.
 
