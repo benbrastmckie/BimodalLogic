@@ -179,10 +179,10 @@
     {
       "project_number": 14,
       "project_name": "succ_chain_fmcs_and_taskframe_int",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T12:40:00Z",
+      "last_updated": "2026-03-21T10:37:01Z",
       "dependencies": [
         11,
         12
@@ -200,7 +200,7 @@
           "summary": "5-phase implementation plan for Succ-chain FMCS and TaskFrame Int construction"
         }
       ],
-      "session_id": "sess_1774089147_2614f4",
+      "session_id": "sess_1774089400_80f454",
       "researched": "2026-03-21T10:19:14Z",
       "planned": "2026-03-21T12:40:00Z",
       "plan_metadata": {
@@ -216,7 +216,8 @@
             "integrated_date": "2026-03-21"
           }
         ]
-      }
+      },
+      "started": "2026-03-21T10:37:01Z"
     },
     {
       "project_number": 15,
@@ -235,13 +236,21 @@
     {
       "project_number": 16,
       "project_name": "define_dense_task_relation",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T10:41:51Z",
       "dependencies": [],
       "description": "Define DenseTask(u,q,v) ↔ e(tv)-e(tu)=q using the existing Cantor isomorphism TimelineQuot≃oℚ and the canonicalTaskRel (w+d=w') from DurationTransfer.lean. Verify TaskFrame axioms (trivial from group properties). Prove density interpolation theorem: any positive-duration task has arbitrary rational subdivision. Replaces duration-coarse parametric_canonical_task_rel for the dense case.",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/016_define_dense_task_relation/reports/01_dense-task-research.md",
+          "type": "research_report",
+          "summary": "Complete analysis of DenseTask implementation: leverages existing canonicalTaskRel from DurationTransfer.lean with TimelineQuot. TaskFrame axioms trivial from group properties. Density interpolation straightforward. Estimated 1-2 hours implementation."
+        }
+      ],
+      "session_id": "sess_1774089479_3926ec",
+      "researched": "2026-03-21T10:41:51Z"
     },
     {
       "project_number": 17,

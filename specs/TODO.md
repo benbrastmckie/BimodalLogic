@@ -118,13 +118,14 @@ technical_debt:
 
 ### 16. Define DenseTask relation via Cantor isomorphism
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: none (independent of discrete track)
 - **Files**: DurationTransfer.lean (canonicalTaskRel), CantorApplication.lean (isomorphism), new DenseTask.lean
 - **Research (task 6)**:
   - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §2.3–2.5 — DenseTask definition via Cantor isomorphism, TaskFrame axiom proofs, density interpolation theorem
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §2.3, §3.2 — DenseTask as bridge between syntax and semantics, role in dense representation pipeline
+- **Research**: [01_dense-task-research.md](016_define_dense_task_relation/reports/01_dense-task-research.md)
 
 **Description**: Define DenseTask(u,q,v) ↔ e(tv)-e(tu)=q using the Cantor isomorphism TimelineQuot≃oℚ and the existing canonicalTaskRel (w+d=w') from DurationTransfer.lean. Verify TaskFrame ℚ axioms (trivial from group properties). Prove density interpolation theorem: any positive-duration task has arbitrary rational subdivision. Replaces duration-coarse parametric_canonical_task_rel for the dense case and directly instantiates TaskFrame ℚ with DenselyOrdered.
 
@@ -145,7 +146,7 @@ technical_debt:
 
 ### 14. Build Succ-chain FMCS and discrete TaskFrame ℤ instantiation
 - **Effort**: 5 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Tasks 11, 12
 - **Files**: New DiscreteSuccFMCS.lean, update DiscreteInstantiation.lean
