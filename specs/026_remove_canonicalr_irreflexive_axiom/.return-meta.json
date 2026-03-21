@@ -1,0 +1,22 @@
+{
+  "status": "done",
+  "started_at": "2026-03-21T12:00:00Z",
+  "completed_at": "2026-03-21T12:30:00Z",
+  "artifacts": [
+    "specs/026_remove_canonicalr_irreflexive_axiom/reports/03_semantics-research.md"
+  ],
+  "partial_progress": null,
+  "metadata": {
+    "session_id": "sess_1774122144_418c32",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "key_findings": {
+    "temporal_semantics": "strict (G/H quantify over s > t / s < t)",
+    "t_axiom_available": false,
+    "path_a_viable": false,
+    "path_c_recommended": true,
+    "reason": "T-axioms intentionally removed in Task 991; reflexive semantics trivializes frame class distinctions"
+  }
+}

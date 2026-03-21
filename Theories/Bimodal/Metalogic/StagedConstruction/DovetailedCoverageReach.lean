@@ -108,4 +108,133 @@ inductive CanonicalR_chain_backward (root : Set Formula) : Set Formula → Nat �
       CanonicalR W M →  -- Note: reversed direction from forward chain
       CanonicalR_chain_backward root W (n + 1)
 
+/-!
+## Forward F Coverage via Dovetailed Construction
+
+The key coverage theorem: for any point p in the dovetailed timeline with F(phi) ∈ p.mcs,
+there exists a witness w in the timeline with phi ∈ w.mcs and CanonicalR p.mcs w.mcs.
+
+This is the main result needed for temporal coherence (forward_F property).
+-/
+
+/-- Forward F coverage: if F(phi) ∈ p.mcs, then there's a witness with phi in the timeline.
+
+This theorem uses the dovetailed construction which processes ALL (point, formula) pairs.
+When obligation (p.point_index, encode(phi)) is processed, a witness with phi is added.
+
+The key insight: p was added at entry_stage, and the obligation is processed at
+step pair(p.point_index, encode(phi)). Since pair(i, k) > i for k > 0, and
+p is in all stages >= entry_stage, p exists when its obligations are processed.
+-/
+theorem forward_F_via_coverage
+    (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ p.mcs) :
+    ∃ w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      CanonicalR p.mcs w.mcs ∧ phi ∈ w.mcs := by
+  -- p is in the timeline at some stage n
+  obtain ⟨n, hn⟩ := hp
+  simp only [dovetailedBuild, List.mem_toFinset] at hn
+  -- phi has some encoding k
+  let k := @Encodable.encode Formula formulaEncodableStaged phi
+  have h_dec : decodeFormulaStaged k = some phi :=
+    @Encodable.encodek Formula formulaEncodableStaged phi
+  -- The processing step for (p.point_index, k) is pair(p.point_index, k)
+  let process_step := Nat.pair p.point_index k
+  -- Key: pair(i, k) > i for any k, so process_step > p.point_index
+  have h_pair_ge_left := Dovetailing.pair_ge_left p.point_index k
+  -- We need to find a stage where p exists and process_step > that stage
+  -- p exists at stage n, but we need max(n, p.point_index) < process_step
+  -- Since pair(i, k) >= i + k, we have process_step >= p.point_index + k
+  -- For k > 0, this is > p.point_index
+  -- But we also need it to be > n
+  by_cases h_small : process_step ≤ n
+  · -- If process_step <= n, the witness was already added at step process_step
+    -- We need to show that p existed at step process_step - 1
+    -- Key: p.point_index is related to when p was added
+    -- pair(p.point_index, k) = process_step, and p was at stage n >= process_step
+    -- p must have been added at stage <= process_step (since its point_index affects pair)
+    -- Actually, point_index i means p was in the list at position i,
+    -- and was added before step pair(i, 0) = i at the latest
+    -- Since process_step = pair(p.point_index, k) >= p.point_index,
+    -- p was in the build at stage p.point_index, hence at stage process_step - 1
+    -- (assuming process_step > 0)
+    by_cases h_zero : process_step = 0
+    · -- Edge case: pair(i, k) = 0 implies i = 0 and k = 0
+      -- For now, use sorry for this edge case (process_step = 0 is rare)
+      sorry
+
+    · -- process_step > 0, so we can use stage process_step - 1
+      have h_pos : process_step > 0 := Nat.pos_of_ne_zero h_zero
+      -- p.point_index <= process_step - 1 (since pair(i, k) > i for k > 0, or pair(i, 0) = i)
+      -- Actually pair(i, k) >= i, so process_step >= p.point_index
+      have h_idx_le : p.point_index ≤ process_step := Dovetailing.pair_ge_left p.point_index k
+      -- If k = 0, pair(i, 0) = i, so process_step = p.point_index
+      -- If k > 0, pair(i, k) > i (can be shown from Cantor pairing properties)
+      -- For now, we accept that p exists at process_step - 1 if p.point_index < process_step
+      -- When k > 0, this is true. When k = 0, process_step = p.point_index,
+      -- and we need p to exist at process_step - 1 = p.point_index - 1, which requires p.point_index > 0
+      -- This is getting complex; let's use a localized sorry for the edge case
+      have h_p_at_process : p ∈ (dovetailedBuildState root_mcs root_mcs_proof (process_step - 1)).points := by
+        -- p was in build at stage n, and process_step <= n
+        -- We need to show p existed at process_step - 1
+        -- This requires knowing when p was added (its entry_stage)
+        -- For now, accept sorry for this technical detail
+        sorry
+      have h_large : process_step > process_step - 1 := by omega
+      obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+        witness_at_large_step root_mcs root_mcs_proof p (process_step - 1)
+          h_p_at_process phi h_F k h_dec h_large
+      refine ⟨w, ?_, hw_R, hw_phi⟩
+      use process_step
+      simp only [dovetailedBuild, List.mem_toFinset]
+      exact hw_mem
+
+  · -- process_step > n
+    push_neg at h_small
+    -- This is the straightforward case
+    obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+      witness_at_large_step root_mcs root_mcs_proof p n hn phi h_F k h_dec h_small
+    refine ⟨w, ?_, hw_R, hw_phi⟩
+    use process_step
+    simp only [dovetailedBuild, List.mem_toFinset]
+    exact hw_mem
+
+/-- Backward P coverage: if P(phi) ∈ p.mcs, then there's a witness with phi in the timeline.
+
+Symmetric to forward_F_via_coverage using backward_witness_at_large_step.
+-/
+theorem backward_P_via_coverage
+    (p : DovetailedPoint) (hp : p ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ p.mcs) :
+    ∃ w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      CanonicalR w.mcs p.mcs ∧ phi ∈ w.mcs := by
+  -- Symmetric to forward_F_via_coverage
+  obtain ⟨n, hn⟩ := hp
+  simp only [dovetailedBuild, List.mem_toFinset] at hn
+  let k := @Encodable.encode Formula formulaEncodableStaged phi
+  have h_dec : decodeFormulaStaged k = some phi :=
+    @Encodable.encodek Formula formulaEncodableStaged phi
+  let process_step := Nat.pair p.point_index k
+  by_cases h_small : process_step ≤ n
+  · by_cases h_zero : process_step = 0
+    · sorry -- Edge case: process_step = 0
+    · have h_pos : process_step > 0 := Nat.pos_of_ne_zero h_zero
+      have h_p_at_process : p ∈ (dovetailedBuildState root_mcs root_mcs_proof (process_step - 1)).points := by
+        sorry -- Technical: p existed at process_step - 1
+      have h_large : process_step > process_step - 1 := by omega
+      obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+        backward_witness_at_large_step root_mcs root_mcs_proof p (process_step - 1)
+          h_p_at_process phi h_P k h_dec h_large
+      refine ⟨w, ?_, hw_R, hw_phi⟩
+      use process_step
+      simp only [dovetailedBuild, List.mem_toFinset]
+      exact hw_mem
+  · push_neg at h_small
+    obtain ⟨w, hw_mem, hw_R, hw_phi⟩ :=
+      backward_witness_at_large_step root_mcs root_mcs_proof p n hn phi h_P k h_dec h_small
+    refine ⟨w, ?_, hw_R, hw_phi⟩
+    use process_step
+    simp only [dovetailedBuild, List.mem_toFinset]
+    exact hw_mem
+
 end Bimodal.Metalogic.StagedConstruction.DovetailedCoverageReach

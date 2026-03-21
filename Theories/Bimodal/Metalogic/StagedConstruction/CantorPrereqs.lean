@@ -1,6 +1,7 @@
 import Bimodal.Metalogic.StagedConstruction.StagedExecution
 import Bimodal.Theorems.Propositional
 import Bimodal.Theorems.Combinators
+import Bimodal.Theorems.Perpetuity
 import Mathlib.Data.Set.Countable
 
 /-!
@@ -91,24 +92,47 @@ So FFφ = (¬¬(φ.neg.all_future)).all_future.neg = ¬G(¬¬G(¬φ))
 We have from contraposition: ¬G(¬φ) → ¬GG(¬φ)
 We need: ¬G(¬φ) → ¬G(¬¬G(¬φ))
 
-These are NOT the same! We need an additional step.
-
-From GG(ψ) → G(¬¬ψ) (derivable via DNI + temporal necessitation + K-dist),
-we get ¬G(¬¬ψ) → ¬GG(ψ) by contrapositive.
-
-Combined: ¬G(¬φ) → ¬GG(¬φ) and ¬G(¬¬G(¬φ)) → ¬GG(¬φ) (with ψ = G(¬φ))
-Hmm, this still doesn't chain correctly.
-
-Actually, for strict semantics, we might need to work with the contrapositive differently.
-The cleaner approach is to prove semantically that Fφ → FFφ follows from density.
-For now, use sorry as this requires a longer derivation chain.
+The key derivation is:
+1. DNE: ⊢ ¬¬G(¬φ) → G(¬φ)
+2. future_mono: ⊢ G(¬¬G(¬φ)) → GG(¬φ)
+3. Density: ⊢ GG(¬φ) → G(¬φ)
+4. Compose 2,3: ⊢ G(¬¬G(¬φ)) → G(¬φ)
+5. Contrapose: ⊢ ¬G(¬φ) → ¬G(¬¬G(¬φ)) = Fφ → FFφ
 -/
 noncomputable def derive_F_to_FF (phi : Formula) :
     DerivationTree [] ((Formula.some_future phi).imp (Formula.some_future (Formula.some_future phi))) := by
-  -- TODO (Task 991): Complete this derivation from the new density axiom
-  -- The density axiom GGψ → Gψ implies Fφ → FFφ, but the proof requires
-  -- chaining through double negation elimination and K-distribution.
-  sorry
+  -- Derive Fφ → FFφ from the density axiom GGψ → Gψ.
+  --
+  -- Strategy:
+  -- 1. DNE on G(¬φ): ⊢ ¬¬G(¬φ) → G(¬φ)
+  -- 2. future_mono: ⊢ G(¬¬G(¬φ)) → GG(¬φ)
+  -- 3. Density: ⊢ GG(¬φ) → G(¬φ)
+  -- 4. Compose 2 and 3: ⊢ G(¬¬G(¬φ)) → G(¬φ)
+  -- 5. Contrapose: ⊢ ¬G(¬φ) → ¬G(¬¬G(¬φ))
+  -- This is Fφ → FFφ by definition of some_future.
+
+  -- Step 1: DNE on G(¬φ): ⊢ ¬¬G(¬φ) → G(¬φ)
+  have dne_G : ⊢ (phi.neg.all_future).neg.neg.imp (phi.neg.all_future) :=
+    Bimodal.Theorems.Propositional.double_negation (phi.neg.all_future)
+
+  -- Step 2: future_mono on DNE: ⊢ G(¬¬G(¬φ)) → G(G(¬φ))
+  have G_dne : ⊢ ((phi.neg.all_future).neg.neg.all_future).imp ((phi.neg.all_future).all_future) :=
+    Bimodal.Theorems.Perpetuity.future_mono dne_G
+
+  -- Step 3: Density axiom: ⊢ GG(¬φ) → G(¬φ)
+  have density : ⊢ ((phi.neg.all_future).all_future).imp (phi.neg.all_future) :=
+    DerivationTree.axiom [] _ (Axiom.density phi.neg)
+
+  -- Step 4: Compose G_dne and density: ⊢ G(¬¬G(¬φ)) → G(¬φ)
+  have composed : ⊢ ((phi.neg.all_future).neg.neg.all_future).imp (phi.neg.all_future) :=
+    Bimodal.Theorems.Combinators.imp_trans G_dne density
+
+  -- Step 5: Contrapose: ⊢ ¬G(¬φ) → ¬G(¬¬G(¬φ))
+  have contra : ⊢ (phi.neg.all_future).neg.imp ((phi.neg.all_future).neg.neg.all_future).neg :=
+    Bimodal.Theorems.Propositional.contraposition composed
+
+  -- The goal type unfolds to exactly this
+  exact contra
 
 /-- If F(phi) ∈ M, then F(F(phi)) ∈ M. Derived from the density axiom. -/
 theorem SetMaximalConsistent.density_F_to_FF (M : Set Formula) (h_mcs : SetMaximalConsistent M)

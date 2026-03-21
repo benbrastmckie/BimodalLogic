@@ -62,7 +62,7 @@ technical_debt:
 
 ### 26. Remove or justify canonicalR_irreflexive_axiom
 - **Effort**: 2-8 hours (depends on path chosen)
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -89,7 +89,7 @@ technical_debt:
 
 ### 22. Direct multi-family bundle construction
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 15
 - **Research**:
@@ -182,6 +182,7 @@ technical_debt:
   - [01_implementation-plan.md](018_dense_representation_theorem_completion/plans/01_implementation-plan.md)
   - [02_dense-representation-v2.md](018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md) — v2: closure-based F-witness saturation
   - [03_dense-representation-v3.md](018_dense_representation_theorem_completion/plans/03_dense-representation-v3.md) — v3: dovetailed construction, derive_F_to_FF first, ExistsTask alias
+- **Summary**: [03_implementation-summary.md](018_dense_representation_theorem_completion/summaries/03_implementation-summary.md) — Phases 1-2 complete, Phase 3 blocked
 
 **Description**: Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.
 
