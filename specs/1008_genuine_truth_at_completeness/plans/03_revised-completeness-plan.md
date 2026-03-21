@@ -1,7 +1,7 @@
 # Implementation Plan: Task #1008
 
 - **Task**: 1008 - Establish genuine truth_at completeness theorems for TM logic
-- **Status**: [NOT STARTED]
+- **Status**: [PARTIAL]
 - **Version**: 3 (revised — corrects D = CanonicalMCS confusion in v2)
 - **Effort**: 10–14 hours
 - **Dependencies**: Task #1007 (completed)
@@ -81,7 +81,7 @@ Resolve the 3 sorries in two independent tracks:
 
 ## Implementation Phases
 
-### Phase 1: Multi-Family Modally Saturated BFMCS Int [NOT STARTED]
+### Phase 1: Multi-Family Modally Saturated BFMCS Int [BLOCKED]
 
 **Goal**: Replace `singleFamilyBFMCS_Int` with a modally-saturated multi-family BFMCS that eliminates the `modal_backward` sorry.
 

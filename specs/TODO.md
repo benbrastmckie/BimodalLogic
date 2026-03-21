@@ -41,7 +41,7 @@ technical_debt:
 
 ### 1008. Establish genuine truth_at completeness theorems for TM logic
 - **Effort**: 12-20 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task #1007
 - **Research**: [01_completeness-architecture.md](1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
