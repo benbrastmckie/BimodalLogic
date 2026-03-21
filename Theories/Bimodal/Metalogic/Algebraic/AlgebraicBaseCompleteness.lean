@@ -3,7 +3,8 @@ import Bimodal.Metalogic.Bundle.CanonicalFMCS
 import Bimodal.Metalogic.Bundle.ModalSaturation
 -- REMOVED (Task 15): import Bimodal.Metalogic.Bundle.IntFMCSTransfer
 -- IntFMCSTransfer moved to Boneyard - singleton BFMCS has unprovable modal_backward
--- TODO (Task 15 Phase 3-4): Import ClosedFlagIntBFMCS instead
+-- Task 15 Phase 4: Use ClosedFlagIntBFMCS for modal saturation approach
+import Bimodal.Metalogic.Bundle.ClosedFlagIntBFMCS
 import Mathlib.Algebra.Order.Group.Int
 import Bimodal.Semantics.Validity
 import Bimodal.Metalogic.Soundness
@@ -171,19 +172,23 @@ trying to falsify.
 -/
 
 /--
-TEMPORARY (Task 15): Placeholder for construct_bfmcs_from_mcs_Int.
+Task 15 Phase 4: Use the v3 construction from ClosedFlagIntBFMCS.
 
-This replaces the import from IntFMCSTransfer.lean (moved to Boneyard).
-Task 15 Phases 3-4 will provide a proper implementation using ClosedFlagIntBFMCS.
+This provides modal saturation via `discreteMCS_modal_backward` at MCS level.
 
-**Status**: sorry - blocks algebraic_base_completeness until Phase 4 complete.
+**Sorry Inventory** (from ClosedFlagIntBFMCS):
+1. `closedFlagFMCS_modal_backward` - requires families to cover discreteClosedMCS
+2. `rootClosedFlagFMCS_Int.mcs_in_closed` for t ≠ 0 - chain staying in closed set
+3. `intFMCS_forward_F` - F witness existence (dovetailing gap)
+4. `intFMCS_backward_P` - P witness existence (dovetailing gap)
+5. `modal_forward` - cross-family transfer (saturation coverage)
 -/
 noncomputable def construct_bfmcs_from_mcs_Int
     (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
     Σ' (B : BFMCS Int) (h_tc : B.temporally_coherent)
        (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),
-       M = fam.mcs t := by
-  sorry
+       M = fam.mcs t :=
+  construct_bfmcs_from_mcs_Int_v3 M h_mcs
 
 /--
 Auxiliary: If phi is not provable, then neg(phi) is consistent.

@@ -34,22 +34,39 @@ This phase establishes the theoretical infrastructure:
 3. **Modal forward**: T-axiom gives modal_forward for identity-mcs families
 4. **Temporal coherence**: All F/P/G/H conditions proven in `canonicalMCSBFMCS`
 
-## Key Insight: The Domain Problem
+## Key Insight: Domain Semantics and Modal Saturation
 
-The BFMCS modal_backward condition quantifies over families AT THE SAME TIME t:
+### Correct Domain Separation
+
+- **CanonicalMCS** = space of world STATES (maximal consistent sets)
+- **Int** (or TimelineQuot) = time INDEX domain for histories
+- **BFMCS D** = bundle of families indexed by D (not by world states)
+
+The modal_backward condition quantifies over families AT THE SAME TIME t:
   ∀ fam ∈ families, ∀ φ t, (∀ fam' ∈ families, φ ∈ fam'.mcs t) → □φ ∈ fam.mcs t
 
 For this to work without the impossible φ → □φ axiom, we need families with
 DIFFERENT values of `mcs t` for the same t. This means families must have
 different `mcs` functions that produce different MCS for the same input.
 
-With D = CanonicalMCS and `mcs t = t.world` (identity), all families produce
-the same MCS at each time, collapsing saturation.
+### The Identity Family Collapse (Proof-Theoretic Case)
 
-The solution requires either:
-1. Flag-based chains where different Flags give different chains (Phase 3)
-2. Generalized parametric framework accepting `D = CanonicalMCS` (alternative)
-3. Domain transfer from CanonicalMCS to Int (Phase 4)
+The construction `FMCS CanonicalMCS` with `mcs t = t.world` (identity) is a
+**proof-theoretic technique**, NOT a standard temporal model. It trivializes
+F/P witness obligations (every MCS is in the domain) but collapses modal
+saturation because all identity families produce the same MCS at each time.
+
+**WARNING**: Using CanonicalMCS as D conflates world states with time indices.
+This is a valid proof technique for specific lemmas (like canonicalMCS_forward_F)
+but should NOT be confused with the semantic model structure where D is a
+temporal domain like Int with AddCommGroup structure.
+
+### Solutions for Modal Saturation
+
+The proven approach (sorry-free) is:
+- `discreteMCS_modal_backward` works at MCS level using `discreteClosedMCS`
+- Modal saturation at MCS level lifts to BFMCS via the multi-family construction
+- For Int-indexed BFMCS, use the bridge from MCS saturation (see ClosedFlagIntBFMCS)
 
 ## References
 

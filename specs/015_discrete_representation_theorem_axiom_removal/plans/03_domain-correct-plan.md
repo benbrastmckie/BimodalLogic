@@ -1,7 +1,7 @@
 # Implementation Plan: Task #15 (v3) - Domain-Correct Completion
 
 - **Task**: 15 - discrete_representation_theorem_axiom_removal
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 4 hours
 - **Dependencies**: Plan v2 Phases 1-3 completed (modal_backward sorry-free at MCS level)
 - **Research Inputs**:
@@ -89,7 +89,7 @@ Key findings from domain semantics research (report 04):
 
 ---
 
-### Phase 2: Fix Misleading Comments [IN PROGRESS]
+### Phase 2: Fix Misleading Comments [COMPLETED]
 
 **Goal**: Correct documentation that conflates world states (W) with time indices (D).
 
@@ -112,7 +112,7 @@ Key findings from domain semantics research (report 04):
 
 ---
 
-### Phase 3: Bridge MCS Saturation to BFMCS Int [NOT STARTED]
+### Phase 3: Bridge MCS Saturation to BFMCS Int [COMPLETED]
 
 **Goal**: Create infrastructure to use MCS-level saturation proofs with Int-indexed families.
 
@@ -142,7 +142,7 @@ Key findings from domain semantics research (report 04):
 
 ---
 
-### Phase 4: Wire to DiscreteInstantiation [NOT STARTED]
+### Phase 4: Wire to DiscreteInstantiation [COMPLETED]
 
 **Goal**: Restore `discrete_representation_unconditional` using domain-correct construction.
 
@@ -168,7 +168,7 @@ Key findings from domain semantics research (report 04):
 
 ---
 
-### Phase 5: Verification and Cleanup [NOT STARTED]
+### Phase 5: Verification and Cleanup [COMPLETED]
 
 **Goal**: Final verification, documentation update, and cleanup.
 

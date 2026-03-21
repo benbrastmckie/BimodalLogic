@@ -30,6 +30,12 @@ This construction:
 - `FMCS CanonicalMCS`: Indexing type with Preorder only (proof-theoretic)
 - `TaskFrame D`: Temporal domain with AddCommGroup + LinearOrder (semantic)
 
+**WARNING: W=D Conflation Error** (Task 15): Some deprecated constructions
+set `WorldState := D`, conflating world states (MCS) with time indices. This
+is architecturally incorrect: world states describe WHAT is true; time indices
+describe WHEN. See Boneyard/Domain/ for deprecated examples and avoid this
+pattern in new code.
+
 ## Terminology (Task 928)
 
 - **FMCS**: A SINGLE time-indexed family of MCS (Family of MCS)

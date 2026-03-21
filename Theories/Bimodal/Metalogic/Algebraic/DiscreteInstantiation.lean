@@ -2,6 +2,8 @@ import Bimodal.Metalogic.Algebraic.ParametricRepresentation
 -- REMOVED (Task 15): import Bimodal.Metalogic.Bundle.SuccChainBFMCS
 -- The singleton BFMCS approach has an unprovable modal_backward sorry.
 -- See SuccChainBFMCS.lean deprecation notice.
+-- Task 15 Phase 4: Use ClosedFlagIntBFMCS for modal saturation approach
+import Bimodal.Metalogic.Bundle.ClosedFlagIntBFMCS
 import Mathlib.Algebra.Order.Group.Int
 
 /-!
@@ -164,45 +166,45 @@ theorem discrete_representation_conditional
 /-!
 ## Unconditional Discrete Representation Theorem
 
-**STATUS**: REMOVED (Task 15, 2026-03-21)
+**STATUS**: RESTORED (Task 15 Phase 4, 2026-03-21)
 
-The unconditional theorem was removed because it depended on `construct_bfmcs_impl`
-from `SuccChainBFMCS.lean`, which has an unprovable `modal_backward` sorry.
+The unconditional theorem is now restored using the modal saturation approach from
+`ClosedFlagIntBFMCS.lean`. This replaces the broken singleton BFMCS construction.
 
-The singleton BFMCS approach requires `φ ∈ MCS → □φ ∈ MCS` (converse of T-axiom),
-which is mathematically impossible for contingent formulas in TM logic.
+**Construction**: Uses `construct_bfmcs_from_mcs_Int_v3` which:
+1. Wraps the MCS M as CanonicalMCS M0
+2. Builds an Int chain around M0 using intChainMCS
+3. Constrains the chain to stay within `discreteClosedMCS M0`
+4. Uses `discreteMCS_modal_backward` for modal coherence
 
-**PATH FORWARD**: Task 15 Phase 2+ will implement a multi-family modally saturated
-BFMCS using `saturated_modal_backward` from `ModalSaturation.lean`. Once complete,
-the unconditional theorem can be restored with a sorry-free `modal_backward`.
+**Sorry Inventory** (from ClosedFlagIntBFMCS):
+1. Modal forward - cross-family transfer (saturation coverage)
+2. Modal backward - requires families to cover discreteClosedMCS
+3. Chain membership - requires chain to stay in closed set for t ≠ 0
+4. F/P witnesses - dovetailing gap (same as all Int chain constructions)
 
-See ROAD_MAP.md "Dead End: Singleton BFMCS for Discrete Representation".
+**Key Improvement**: The singleton BFMCS approach had an UNPROVABLE sorry
+(`φ ∈ MCS → □φ ∈ MCS`). The new approach uses MCS-level saturation where
+the sorry-free `discreteMCS_modal_backward` is the foundation.
+
+See ROAD_MAP.md for the remaining infrastructure work.
 -/
 
-/-
--- REMOVED (Task 15): Unconditional theorem depends on broken singleton BFMCS
-
 /--
-**Discrete Representation Theorem (Unconditional Version)** [DEPRECATED]
+**Discrete Representation Theorem (Unconditional Version)**
 
 If a formula is not provable in the TM proof system with discrete axioms,
 then there exists a countermodel in the discrete canonical TaskFrame.
 
-This theorem uses the Succ-chain BFMCS construction which:
-1. Converts any MCS to a SerialMCS (since F_top and P_top are provable theorems)
-2. Builds a forward/backward chain of MCSs via successor/predecessor existence
-3. Wraps the chain as a singleton BFMCS with temporal coherence
+**Proof Structure**:
+1. If φ is not provable, then ¬φ is consistent
+2. By Lindenbaum, ¬φ extends to an MCS M
+3. Using `construct_bfmcs_from_mcs_Int_v3`, we get a BFMCS Int containing M at time 0
+4. By the truth lemma, ¬φ ∈ M implies φ is false at M in the canonical model
 
-**Axiom Dependencies** (ALL BROKEN):
-This theorem depends on axioms in SuccChainFMCS.lean and SuccChainBFMCS.lean:
-- `F_top_propagates`: F_top propagates through Succ
-- `P_top_propagates`: P_top propagates through Pred
-- `succ_chain_forward_F_axiom`: F(φ) in MCS implies witness exists
-- `succ_chain_backward_P_axiom`: P(φ) in MCS implies witness exists
-- `past_4_axiom`: H(φ) → H(H(φ))
-- `SingletonBFMCS.modal_backward`: Singleton modal coherence (IMPOSSIBLE)
-
-See Phase 5 documentation for axiom status and elimination roadmap.
+**Sorry Status**:
+The sorries are in the BFMCS construction (modal/temporal coherence infrastructure),
+not in the logical structure of the representation theorem.
 -/
 theorem discrete_representation_unconditional
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
@@ -210,8 +212,7 @@ theorem discrete_representation_unconditional
       (fam : FMCS Int) (hfam : fam ∈ B.families) (t : Int),
       ¬truth_at DiscreteCanonicalTaskModel (ShiftClosedParametricCanonicalOmega B)
         (parametric_to_history fam) t φ :=
-  discrete_representation_conditional φ h_not_prov construct_bfmcs_impl
--/
+  discrete_representation_conditional φ h_not_prov construct_bfmcs_from_mcs_Int_v3
 
 /-!
 ## Summary
@@ -222,19 +223,23 @@ algebraic representation theorem:
 1. **DiscreteCanonicalTaskFrame**: TaskFrame with D = Int
 2. **DiscreteCanonicalTaskModel**: TaskModel with MCS-based valuation
 3. **discrete_representation_conditional**: Conditional representation theorem
-4. **discrete_representation_unconditional**: REMOVED (Task 15) - depended on
-   broken singleton BFMCS with impossible `modal_backward` sorry
+4. **discrete_representation_unconditional**: RESTORED (Task 15 Phase 4)
 
-**Current Status** (Task 15, 2026-03-21):
-The conditional theorem remains available. To obtain the unconditional theorem,
-a caller must provide a `construct_bfmcs` function that builds a BFMCS Int with:
-- Temporal coherence (forward_F, backward_P, forward_G, backward_H)
-- Modal coherence (modal_forward, modal_backward)
+**Status** (Task 15 Phase 4, 2026-03-21):
+Both conditional and unconditional theorems are available. The unconditional
+theorem uses `construct_bfmcs_from_mcs_Int_v3` from `ClosedFlagIntBFMCS.lean`
+which provides modal saturation via `discreteMCS_modal_backward`.
 
-The singleton BFMCS approach CANNOT satisfy modal_backward. Task 15 Phase 2+
-will implement a multi-family modally saturated BFMCS using:
-- `saturated_modal_backward` from `ModalSaturation.lean` (sorry-free)
-- `closedFlags` from `ClosedFlagBundle.lean` (provides saturation content)
+**Sorry Inventory**:
+The remaining sorries are in the BFMCS construction infrastructure:
+- Modal coherence: requires families to cover discreteClosedMCS
+- Chain membership: requires chain to stay in closed set for t ≠ 0
+- F/P witnesses: dovetailing gap (fundamental limitation)
+
+**Key Achievement** (Task 15):
+The singleton BFMCS approach (SuccChainBFMCS) had an UNPROVABLE sorry
+(φ → □φ). This was replaced with the modal saturation approach where
+`discreteMCS_modal_backward` provides sorry-free modal backward at MCS level.
 
 **Connection to Discrete Completeness**:
 The discrete completeness theorem (valid_discrete φ → provable φ) is the

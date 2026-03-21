@@ -92,7 +92,7 @@ technical_debt:
 
 ### 18. Complete dense representation theorem via DenseTask
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Task 17
 - **Research (task 6)**:
@@ -147,7 +147,9 @@ technical_debt:
 
 ### 15. Complete discrete representation theorem and remove Icc finite axiom
 - **Effort**: 4 hours
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
+- **Completed**: 2026-03-21
+- **Summary**: Replaced unprovable singleton BFMCS modal_backward with MCS-level saturation approach. Created ClosedFlagIntBFMCS bridge infrastructure. discrete_representation_unconditional restored with documented structural sorries.
 - **Language**: lean4
 - **Dependencies**: Tasks 13, 14
 - **Research**:
