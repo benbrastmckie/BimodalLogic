@@ -126,10 +126,10 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:31:06Z",
+      "last_updated": "2026-03-21T20:33:45Z",
       "dependencies": [
         15
       ],
@@ -146,8 +146,14 @@
           "path": "specs/023_fp_temporal_witness_chain/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research (2 teammates): Succ-based approach bypasses linear chain impossibility. 3 axioms remain in SuccExistence.lean."
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/plans/01_succ-based-fp-witnesses.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan analyzing 3 SuccExistence axioms for F/P temporal witness resolution"
         }
-      ]
+      ],
+      "planned": "2026-03-21T20:33:45Z"
     },
     {
       "project_number": 24,
