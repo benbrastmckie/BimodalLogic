@@ -25,22 +25,27 @@ technical_debt:
 
 ## Recommended Order
 
-1. **1008** → research + plan (genuine truth_at completeness, after 1007)
-2. **999** → implement (F→FF derivation, small, anytime)
-3. **949** → implement (update Demo.lean, small, anytime)
-4. **997** → implement (base completeness, depends on 1008 approach)
-5. **988** → implement (dense completeness, depends on 1008 approach)
-6. **989** → implement (discrete completeness, after 988)
-7. **992** → implement (STSA representation theorem, after completeness)
-
+1. **1008** -> implement (independent)
+2. **1006** -> plan (independent)
+3. **999** -> research (independent)
+4. **998** -> research (independent)
+5. **997** -> implement (independent)
+6. **993** -> research (independent)
+7. **992** -> plan (independent)
+8. **988** -> blocked (independent)
+9. **989** -> blocked (independent)
+10. **953** -> plan (independent)
+11. **949** -> plan (independent)
+12. **619** -> plan (independent)
 ## Tasks
 
 ### 1008. Establish genuine truth_at completeness theorems for TM logic
 - **Effort**: 12-20 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task #1007
 - **Research**: [01_completeness-architecture.md](1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
+- **Plan**: [02_completeness-plan.md](1008_genuine_truth_at_completeness/plans/02_completeness-plan.md)
 
 **Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
 
