@@ -10657,6 +10657,78 @@
       "completed": "2026-03-20T00:40:43Z",
       "completion_summary": "Fixed FlagBFMCS temporal completeness gap by implementing allFlagsBFMCS construction using Set.univ instead of closedFlags. The completeness theorem now compiles without sorries and is wired into the build via Metalogic.lean.",
       "archived": "2026-03-20T01:30:45Z"
+    },
+    {
+      "project_number": 1009,
+      "project_name": "clarify_canonicalmcs_role",
+      "status": "completed",
+      "language": "lean4",
+      "created": "2026-03-21T01:03:40Z",
+      "last_updated": "2026-03-21T02:43:35Z",
+      "dependencies": [],
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md",
+          "summary": "Audit of 15+ Lean files identifying where CanonicalMCS is conflated with temporal domain D. 6 high-priority, 5 medium-priority files. Root cause: overloaded D parameter and legacy time language."
+        },
+        {
+          "type": "research",
+          "path": "specs/1009_clarify_canonicalmcs_role/reports/03_d-equals-canonicalmcs-audit.md",
+          "summary": "Audit of 'D=CanonicalMCS' notation: categorical error conflating FMCS indexing with TaskFrame temporal domain, 80+ occurrences, correction patterns"
+        },
+        {
+          "type": "research",
+          "path": "specs/1009_clarify_canonicalmcs_role/reports/05_fmcs-indexing-architecture.md",
+          "summary": "Why FMCS CanonicalMCS exists: degenerate identity mapping for trivializing F/P witnesses; serves proof-theoretic purpose but cannot connect to TaskFrame semantics"
+        },
+        {
+          "path": "specs/1009_clarify_canonicalmcs_role/plans/06_architectural-cleanup-plan.md",
+          "type": "plan",
+          "summary": "6-phase architectural cleanup: remove ALL FMCS CanonicalMCS constructions, archive to Boneyard"
+        },
+        {
+          "path": "specs/1009_clarify_canonicalmcs_role/summaries/09_cleanup-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting role clarification changes and plan reinterpretation"
+        }
+      ],
+      "session_id": "sess_1774060664_90e3d3",
+      "researched": "2026-03-21T02:25:31Z",
+      "planned": "2026-03-21T02:29:29Z",
+      "started": "2026-03-21T02:38:13Z",
+      "completed": "2026-03-21T02:43:35Z",
+      "completion_summary": "Clarified CanonicalMCS role through documentation updates. FMCS CanonicalMCS is legitimate proof-theoretic infrastructure, not a mistake. Removed all 'D = CanonicalMCS' notation from active code and documentation."
+    },
+    {
+      "project_number": 1007,
+      "project_name": "archive_satisfies_at_infrastructure",
+      "status": "completed",
+      "language": "lean4",
+      "created": "2026-03-20T23:46:51Z",
+      "last_updated": "2026-03-21T00:12:50Z",
+      "artifacts": [
+        {
+          "type": "research",
+          "path": "specs/1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md",
+          "summary": "Complete inventory of FlagBFMCS files to archive, definitions to preserve, and import fixes needed"
+        },
+        {
+          "path": "specs/1007_archive_satisfies_at_infrastructure/plans/02_archive-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan to archive FlagBFMCS completeness infrastructure to Boneyard"
+        },
+        {
+          "type": "summary",
+          "path": "specs/1007_archive_satisfies_at_infrastructure/summaries/03_archive-summary.md",
+          "summary": "Implementation summary documenting archival of FlagBFMCS pipeline"
+        }
+      ],
+      "session_id": "sess_1774051615_b8b388",
+      "planned": "2026-03-20T23:55:35Z",
+      "started": "2026-03-21T00:07:24Z",
+      "completed": "2026-03-21T00:12:50Z",
+      "completion_summary": "Archived 6 FlagBFMCS completeness files (~1840 lines, 21 sorries) to Boneyard/Metalogic/Bundle/FlagBFMCSCompleteness/. The satisfies_at relation was structurally incompatible with truth_at semantics. Build passes, sorry count reduced from 416 to 395."
     }
   ]
 }

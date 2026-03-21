@@ -5,8 +5,8 @@ repository_health:
   production_readiness: improved
   last_assessed: 2026-03-19T23:50:22Z
 task_counts:
-  active: 10
-  completed: 694
+  active: 8
+  completed: 696
   in_progress: 1
   not_started: 4
   abandoned: 47
@@ -37,26 +37,8 @@ technical_debt:
 10. **953** -> plan (independent)
 11. **949** -> plan (independent)
 12. **619** -> plan (independent)
-13. **1009** -> research (independent)
+
 ## Tasks
-
-### 1009. Remove FMCS CanonicalMCS architecture (world states are not time indices)
-- **Effort**: 8-12 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Started**: 2026-03-20
-- **Completed**: 2026-03-20
-- **Summary**: Clarified CanonicalMCS role through documentation updates. FMCS CanonicalMCS is legitimate proof-theoretic infrastructure, not a mistake. Removed all 'D = CanonicalMCS' notation.
-- **Research**:
-  - [01_canonicalmcs-role-audit.md](1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md)
-  - [03_d-equals-canonicalmcs-audit.md](1009_clarify_canonicalmcs_role/reports/03_d-equals-canonicalmcs-audit.md)
-  - [05_fmcs-indexing-architecture.md](1009_clarify_canonicalmcs_role/reports/05_fmcs-indexing-architecture.md)
-- **Plan**: [06_architectural-cleanup-plan.md](1009_clarify_canonicalmcs_role/plans/06_architectural-cleanup-plan.md)
-- **Summary**: [09_cleanup-summary.md](1009_clarify_canonicalmcs_role/summaries/09_cleanup-summary.md)
-
-**Description**: Remove ALL trivial FMCS indexing where FMCS is indexed by CanonicalMCS. CanonicalMCS is the world-state space (not a temporal domain), so using it as an FMCS index creates degenerate identity mappings (mcs(w) = w.world) and architectural confusion. The D parameter in FMCS should be a temporal domain (Int, Rat, TimelineQuot), not world states. Archive incorrect constructions (CanonicalFMCS.lean, related MultiFamilyBFMCS patterns) to Boneyard. Update documentation to prohibit "D = CanonicalMCS" notation. This supersedes the original documentation-only scope.
-
----
 
 ### 1008. Establish genuine truth_at completeness theorems for TM logic
 - **Effort**: 12-20 hours
@@ -70,20 +52,6 @@ technical_debt:
 - **Plan**: [03_revised-completeness-plan.md](1008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
 
 **Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
-
----
-
-### 1007. Archive satisfies_at and FlagBFMCS completeness infrastructure to Boneyard
-- **Effort**: 2-3 hours
-- **Status**: [COMPLETED]
-- **Language**: lean4
-- **Completed**: 2026-03-20
-- **Summary**: Archived 6 FlagBFMCS files (~1840 lines, 21 sorries) to Boneyard. Structural incompatibility with truth_at semantics. Build passes.
-- **Research**: [01_teardown-inventory.md](1007_archive_satisfies_at_infrastructure/reports/01_teardown-inventory.md)
-- **Plan**: [02_archive-plan.md](1007_archive_satisfies_at_infrastructure/plans/02_archive-plan.md)
-- **Summary**: [03_archive-summary.md](1007_archive_satisfies_at_infrastructure/summaries/03_archive-summary.md)
-
-**Description**: Archive the `satisfies_at` relation and all FlagBFMCS completeness infrastructure to the Boneyard. The `satisfies_at` definition is a custom Kripke-style satisfaction relation that does not use TaskFrame D, WorldHistory, convexity, or the task relation — it is structurally different from the official `truth_at` semantics and cannot bridge to it (the convexity sorry in FlagBFMCSRatBundle is provably false). Archive 6 files: FlagBFMCS.lean, FlagBFMCSTruthLemma.lean, FlagBFMCSCompleteness.lean, FlagBFMCSValidityBridge.lean, FlagBFMCSIntBundle.lean, FlagBFMCSRatBundle.lean. Before archiving, extract reusable lemmas: g_content_propagation, h_content_propagation (relocate to canonical MCS theory), PartialOrder/LinearOrder instances on CanonicalMCS/ChainFMCSDomain (relocate to order infrastructure). Fix the single broken import in Metalogic.lean. Add deprecation README to Boneyard directory.
 
 ---
 
