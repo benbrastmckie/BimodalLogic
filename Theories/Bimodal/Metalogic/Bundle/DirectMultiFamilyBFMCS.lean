@@ -11,6 +11,47 @@ This module constructs a BFMCS Int where bundle families are indexed directly by
 `discreteClosedMCS M0` members. This eliminates the 3 modal coverage sorries from
 `ClosedFlagIntBFMCS.lean` by ensuring families cover the closed set by construction.
 
+## ARCHITECTURAL LIMITATION (Task 28 Analysis, 2026-03-21)
+
+### The W=D Conflation Problem
+
+This module contains 3 sorries that are **architecturally unprovable** without the S5 axiom:
+
+1. **modal_forward at t=0** (line ~255): Cross-family transfer Box φ → φ in different MCS
+2. **modal_forward at t≠0** (line ~258): Chains may be completely disjoint
+3. **modal_backward at t≠0** (line ~368): Coverage at arbitrary chain positions
+
+**Root Cause**: TM logic has T and 4 axioms but NOT the 5-axiom (Euclidean property).
+BFMCS `modal_forward` requires: `Box φ ∈ fam.mcs t → φ ∈ fam'.mcs t` for ALL families.
+This is S5 universal accessibility - mathematically unprovable in T4 logic.
+
+### Why Succ-Chains Don't Fix This
+
+The sorries persist even with Succ-chain families (vs arbitrary Lindenbaum chains) because:
+- The issue is the BFMCS structure's cross-family requirement, not chain construction
+- Different roots produce chains with unrelated MCS at t≠0
+- No chain structure can force Box φ → φ across unrelated MCS without S5
+
+### Correct Path for Discrete Completeness
+
+The Succ-chain infrastructure bypasses BFMCS entirely:
+
+1. **CanonicalTaskTaskFrame** (SuccChainTaskFrame.lean): TaskFrame Int from CanonicalTask
+2. **succ_chain_history** (SuccChainWorldHistory.lean): WorldHistory respecting CanonicalTask
+3. **Single FMCS + TaskFrame**: No cross-family modal coherence needed
+
+This path provides discrete completeness WITHOUT the BFMCS modal coherence requirement.
+See specs/006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md
+
+### Recommendation
+
+For discrete completeness, use:
+- `SuccChainFMCS` for temporal coherence (single family)
+- `CanonicalTaskTaskFrame` for TaskFrame structure
+- `succ_chain_history` for WorldHistory
+
+The BFMCS approach is retained for documentation and comparison purposes only.
+
 ## Background: Why the Bridge Pattern Fails
 
 The previous approach (`ClosedFlagIntBFMCS.lean`) used a bridge/wrapper pattern:
@@ -43,8 +84,11 @@ transfers from the closed set structure, not from individual family coverage.
 
 - Task 22 plan: specs/022_direct_multi_family_bundle/plans/01_direct-bundle-plan.md
 - Research: specs/022_direct_multi_family_bundle/reports/01_multi-family-research.md
+- Task 28 analysis: specs/028_correct_bfmcs_domain_conflation/reports/01_team-research.md
+- Succ-chain bypass: specs/006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md
 - ModallyCoherentBFMCS.lean: discreteMCS_modal_backward (sorry-free)
 - IntBFMCS.lean: intFMCS_basic, chain infrastructure
+- SuccChainFMCS.lean, SuccChainTaskFrame.lean, SuccChainWorldHistory.lean: Bypass infrastructure
 -/
 
 namespace Bimodal.Metalogic.Bundle

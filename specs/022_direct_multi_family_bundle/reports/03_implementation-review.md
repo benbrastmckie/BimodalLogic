@@ -233,3 +233,28 @@ The DirectMultiFamilyBFMCS implementation is mathematically sound within its con
 3. Cross-family modal_forward (S5 universal accessibility)
 
 The most mathematically correct path forward is to use `BFMCS CanonicalMCS` where all sorries can be eliminated. If Int semantics are required, the sorries should be documented as architectural limitations, not logical gaps.
+
+---
+
+## Task 28 Addendum (2026-03-21)
+
+**W vs D Clarification**:
+
+This report correctly identifies the architectural limitation but uses terminology that could be misunderstood:
+
+- **W (WorldState)** = CanonicalMCS (maximal consistent sets) - carries WHAT is true
+- **D (Duration)** = temporal domain type (Int, TimelineQuot, etc.) - carries WHEN it is true
+
+The recommendation "use BFMCS CanonicalMCS" refers to using CanonicalMCS as the **D** parameter (temporal indexing), which makes `mcs(w) = w.world` (identity). This eliminates modal_forward sorries but conflates W and D.
+
+**Correct Discrete Path** (bypasses BFMCS):
+- Use `CanonicalTaskTaskFrame` from SuccChainTaskFrame.lean
+- Use `succ_chain_history` from SuccChainWorldHistory.lean
+- No BFMCS modal coherence required
+
+**Correct Dense Path** (dual-domain BFMCS):
+- Use `TimelineQuotBFMCS` from TimelineQuotBFMCS.lean
+- Modal domain: CanonicalMCS with closedFlags saturation
+- Temporal domain: TimelineQuot
+
+See: specs/028_correct_bfmcs_domain_conflation/reports/01_team-research.md

@@ -12,7 +12,7 @@
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T20:59:01Z",
+      "last_updated": "2026-03-21T21:08:57Z",
       "session_id": "sess_1774126722_e148d7",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
@@ -35,6 +35,11 @@
           "path": "specs/028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md",
           "type": "plan",
           "summary": "8-phase implementation plan for correcting W=D conflation in BFMCS domain architecture"
+        },
+        {
+          "path": "specs/028_correct_bfmcs_domain_conflation/summaries/01_bfmcs-domain-correction-summary.md",
+          "type": "summary",
+          "summary": "Partial implementation: Phase 5 blocked (S5 requirement), Succ-chain bypass documented"
         }
       ],
       "planned": "2026-03-21T20:52:08Z",

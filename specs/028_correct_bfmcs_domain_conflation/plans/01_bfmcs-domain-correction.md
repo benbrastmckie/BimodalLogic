@@ -1,7 +1,7 @@
 # Implementation Plan: Task #28
 
 - **Task**: 28 - Correct W=D conflation in BFMCS domain architecture
-- **Status**: [IN PROGRESS]
+- **Status**: [PARTIAL]
 - **Effort**: 12 hours (8-16 hour range from task description)
 - **Dependencies**: Task 27 (unify dense/dovetailed timelines) - provides TimelineQuot infrastructure
 - **Research Inputs**: specs/028_correct_bfmcs_domain_conflation/reports/01_team-research.md
@@ -143,100 +143,153 @@ Key findings from team research:
 
 ---
 
-### Phase 5: Fix DirectMultiFamilyBFMCS with Succ-Chains [IN PROGRESS]
+### Phase 5: Fix DirectMultiFamilyBFMCS with Succ-Chains [BLOCKED]
 
 **Goal**: Replace arbitrary Lindenbaum chains with Succ-chains for cross-family modal coherence
 
-**Tasks**:
-- [ ] Import SuccRelation.lean and CanonicalTask.lean
-- [ ] Replace `intFMCS_basic` with Succ-chain FMCS construction
-- [ ] Define `succChainFMCS : CanonicalMCS -> FMCS Int` using CanonicalTask
-- [ ] Fix `directFamilies_modal_forward` at t=/=0 using Succ determinism
-- [ ] Fix `directFamilies_modal_backward` at t=/=0 using F-step constraint
-- [ ] Update module documentation explaining the fix
+**Status**: BLOCKED - Analysis reveals fundamental architectural limitation
 
-**Timing**: 2 hours
+**Analysis Findings**:
+The 3 sorries in DirectMultiFamilyBFMCS.lean are:
+1. `modal_forward` at t=0 (line 255): Cross-family transfer requires S5 (5-axiom)
+2. `modal_forward` at t!=0 (line 258): Chains may be completely disjoint
+3. `modal_backward` at t!=0 (line 368): Coverage at chain positions
+
+**Root Cause**: TM logic has T and 4 axioms but NOT the 5-axiom (Euclidean property).
+BFMCS modal_forward requires: Box φ in any family -> φ in ALL families (S5 universal transfer).
+This is mathematically unprovable without the 5-axiom.
+
+**Alternative Path**: The Succ-chain infrastructure (SuccChainFMCS, CanonicalTaskTaskFrame,
+SuccChainWorldHistory) provides a completeness path that BYPASSES BFMCS entirely:
+- CanonicalTask directly instantiates TaskFrame Int
+- succ_chain_history provides WorldHistory respecting CanonicalTask
+- This avoids the cross-family modal coherence requirement
+
+**Existing Infrastructure** (already sorry-free):
+- SuccRelation.lean, CanonicalTaskRelation.lean (0 sorries, 0 axioms)
+- SuccChainTaskFrame.lean, SuccChainWorldHistory.lean (0 sorries)
+- SuccExistence.lean (3 axioms: seed consistency, documented)
+- SuccChainFMCS.lean (4 axioms: F_top/P_top propagation, forward_F/backward_P)
+
+**Decision**: Document this as architectural limitation. The DirectMultiFamilyBFMCS sorries
+are NOT fixable with Succ-chains because the issue is the BFMCS structure itself, not
+the chain construction. The Succ-chain bypass via CanonicalTask is the correct path.
+
+**Tasks** (Updated):
+- [x] Analyze sorries (mathematically unprovable without S5)
+- [x] Verify Succ-chain infrastructure exists (yes, in multiple files)
+- [ ] Document architectural limitation in DirectMultiFamilyBFMCS.lean
+- [ ] Update module docstring to point to CanonicalTask bypass
+
+**Timing**: 0.5 hours (documentation only)
 
 **Files to modify**:
-- `Theories/Bimodal/Metalogic/Bundle/DirectMultiFamilyBFMCS.lean` - refactor to use Succ-chains
+- `Theories/Bimodal/Metalogic/Bundle/DirectMultiFamilyBFMCS.lean` - add documentation only
 
 **Verification**:
-- 4 sorries in this file eliminated or reduced to seed consistency axiom
-- `modal_forward` and `modal_backward` work for all t, not just t=0
-- `lake build` passes
+- Documentation added explaining the W/D conflation issue
+- Pointers to CanonicalTask bypass included
+- No code changes (sorries remain as architectural limitation)
 
 ---
 
-### Phase 6: Dense Completeness Path Assessment [NOT STARTED]
+### Phase 6: Dense Completeness Path Assessment [COMPLETED]
 
 **Goal**: Choose and complete one viable path for dense completeness
 
-**Tasks**:
-- [ ] Audit `TimelineQuotBFMCS.lean` for integration with task 27 TimelineQuot
-- [ ] Audit `CanonicalEmbedding.lean` for F/P witness sorries
-- [ ] Choose path based on: fewer sorries, cleaner architecture, task 27 readiness
-- [ ] If TimelineQuotBFMCS path: unify to use D = TimelineQuot throughout
-- [ ] If CanonicalEmbedding path: complete F/P witness proofs via Cantor transfer
-- [ ] Document chosen path rationale in module
+**Assessment Results**:
 
-**Timing**: 1.5 hours (assessment) + implementation deferred to follow-up if complex
+| Path | File | Sorries | Architecture | Recommendation |
+|------|------|---------|--------------|----------------|
+| TimelineQuotBFMCS | `TimelineQuotBFMCS.lean` | 0 in file (deps have sorries) | Dual-domain (CanonicalMCS for modal, TimelineQuot for temporal) | Preferred |
+| CanonicalEmbedding | `CanonicalEmbedding.lean` | 5 (F/P witnesses, modal_backward, root_eq, construction) | Direct Rat via Cantor isomorphism | More difficult |
 
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotBFMCS.lean` - OR
-- `Theories/Bimodal/Metalogic/Algebraic/CanonicalEmbedding.lean`
+**Decision**: TimelineQuotBFMCS path is preferred because:
+1. File itself has 0 sorries (sorries are in dependencies DovetailedTimelineQuot, TimelineQuotCanonical)
+2. Architecture correctly separates modal domain (CanonicalMCS) from temporal domain (TimelineQuot)
+3. Aligns with task 27 (unify dense/dovetailed timelines) infrastructure
 
-**Verification**:
-- Clear decision documented
-- If implementation included: reduced sorries on chosen path
-- Unchosen path documented as alternative
+**Sorries in dependency chain**:
+- DovetailedTimelineQuot.lean: 3 sorries (lines 652, 813, 964)
+- TimelineQuotCanonical.lean: 1 sorry (line 442)
 
----
+These are NOT W=D conflation sorries but rather timeline construction sorries that are
+tracked in task 27. The TimelineQuotBFMCS module correctly uses dual-domain architecture.
 
-### Phase 7: Clean Up Dead-End Code [NOT STARTED]
+**CanonicalEmbedding sorries** (5 total):
+- Line 181: ratFMCS_forward_F - F witness existence via Cantor transfer
+- Line 192: ratFMCS_backward_P - P witness existence via Cantor transfer
+- Line 231: modal_backward for singleton bundle (needs S5-like argument)
+- Line 280: ratFMCS_root_eq - root MCS at root time
+- Line 299: construct_bfmcs_rat_for_root - main construction
 
-**Goal**: Remove or deprecate MultiFamilyBFMCS.lean and update task 22 report
-
-**Tasks**:
-- [ ] Add deprecation notice to `MultiFamilyBFMCS.lean` header explaining W=D impossibility
-- [ ] Comment out or remove the `modal_backward` sorry (provably impossible)
-- [ ] Update `specs/022_direct_multi_family_bundle/reports/03_*.md` with W vs D clarification
-- [ ] Add note: "CanonicalMCS as BFMCS modal domain W is correct; as temporal D is incorrect"
-- [ ] Cross-reference task 28 completion in task 22 report
-
-**Timing**: 1 hour
-
-**Files to modify**:
-- `Theories/Bimodal/Metalogic/Algebraic/MultiFamilyBFMCS.lean` - add deprecation
-- `specs/022_direct_multi_family_bundle/reports/` - update relevant report
-
-**Verification**:
-- MultiFamilyBFMCS.lean marked as dead-end with explanation
-- Task 22 report includes clarifying note
-- No functional code removed (only documentation changes)
-
----
-
-### Phase 8: Verification and Integration [NOT STARTED]
-
-**Goal**: Full build, sorry audit, and documentation completion
-
-**Tasks**:
-- [ ] Run `lake build` on full codebase
-- [ ] Grep for remaining sorries in modified files
-- [ ] Compare sorry count before/after (target: net reduction of 4+)
-- [ ] Update module docstrings with W/D distinction documentation
-- [ ] Verify no regressions in dependent modules
-- [ ] Create implementation summary
+**Tasks** (Completed):
+- [x] Audit `TimelineQuotBFMCS.lean` (0 sorries in file, dual-domain architecture)
+- [x] Audit `CanonicalEmbedding.lean` (5 sorries, harder proofs)
+- [x] Choose path: TimelineQuotBFMCS
+- [x] Document rationale
 
 **Timing**: 0.5 hours
 
-**Files to modify**:
-- Multiple files (documentation updates only)
+**Files reviewed**:
+- `Theories/Bimodal/Metalogic/StagedConstruction/TimelineQuotBFMCS.lean`
+- `Theories/Bimodal/Metalogic/Algebraic/CanonicalEmbedding.lean`
 
 **Verification**:
-- `lake build` passes with no new errors
-- Sorry count reduced or held constant (no new sorries)
-- All modified modules have accurate docstrings
+- [x] Clear decision documented (TimelineQuotBFMCS)
+- [x] Alternative path documented (CanonicalEmbedding has harder sorries)
+- No implementation needed for this phase (assessment only)
+
+---
+
+### Phase 7: Clean Up Dead-End Code [COMPLETED]
+
+**Goal**: Remove or deprecate MultiFamilyBFMCS.lean and update task 22 report
+
+**Tasks** (Completed):
+- [x] Add deprecation notice to `MultiFamilyBFMCS.lean` header explaining W=D impossibility
+- [x] Cross-reference task 28 analysis in dead-end documentation
+- [x] Update `specs/022_direct_multi_family_bundle/reports/03_implementation-review.md` with W vs D clarification
+- [x] Add Task 28 Addendum section to task 22 report
+- [x] Document correct discrete/dense paths
+
+**Timing**: 0.5 hours
+
+**Files modified**:
+- `Theories/Bimodal/Metalogic/Algebraic/MultiFamilyBFMCS.lean` - enhanced deprecation notice
+- `Theories/Bimodal/Metalogic/Bundle/DirectMultiFamilyBFMCS.lean` - added architectural limitation section
+- `specs/022_direct_multi_family_bundle/reports/03_implementation-review.md` - added Task 28 Addendum
+
+**Verification**:
+- [x] MultiFamilyBFMCS.lean marked as dead-end with W=D explanation
+- [x] Task 22 report includes W vs D clarification
+- [x] DirectMultiFamilyBFMCS.lean documents the CanonicalTask bypass
+- [x] No functional code removed (documentation changes only)
+
+---
+
+### Phase 8: Verification and Integration [COMPLETED]
+
+**Goal**: Full build, sorry audit, and documentation completion
+
+**Tasks** (Completed):
+- [x] Run `lake build` on full codebase - passes (1024 jobs)
+- [x] Grep for remaining sorries in modified files - unchanged (architectural)
+- [x] Sorry count assessment - 3 in DirectMultiFamilyBFMCS (documented as unprovable)
+- [x] Update module docstrings with W/D distinction documentation
+- [x] Verify no regressions in dependent modules
+- [x] Create implementation summary
+
+**Timing**: 0.5 hours
+
+**Files created**:
+- `specs/028_correct_bfmcs_domain_conflation/summaries/01_bfmcs-domain-correction-summary.md`
+
+**Verification Results**:
+- [x] `lake build` passes with no new errors (1024 jobs successful)
+- [x] No new sorries introduced (count unchanged)
+- [x] Succ-chain bypass infrastructure verified (0 sorries, 7 axioms documented)
+- [x] All modified modules have accurate docstrings
 
 ## Testing & Validation
 

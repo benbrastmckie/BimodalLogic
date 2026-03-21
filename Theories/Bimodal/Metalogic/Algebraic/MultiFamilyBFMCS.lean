@@ -14,7 +14,12 @@ This module implements the multi-family BFMCS bundle approach to dense algebraic
 completeness. The key insight is that each Flag (maximal chain) in CanonicalMCS
 becomes a separate FMCS family, with modal coherence tying them together.
 
-## ARCHITECTURAL NOTE (Task 18, 2026-03-21)
+## ARCHITECTURAL NOTE (Task 18/28, 2026-03-21)
+
+**STATUS**: DEAD END - W=D CONFLATION
+
+This module conflates world states (W = CanonicalMCS) with the duration domain (D),
+which is **mathematically impossible** for the BFMCS modal coherence properties.
 
 **DEAD END: singletonCanonicalBFMCS (lines 175-289)**
 
@@ -27,14 +32,24 @@ The singleton BFMCS approach using CanonicalMCS as domain is **mathematically im
 Same issue: attempts to prove φ ∈ t.world → □φ ∈ t.world, which is false.
 The sorry at line 572 CANNOT be eliminated.
 
-**Domain Confusion**:
+**Root Cause** (Task 28 analysis):
 - CanonicalMCS is the domain of **world states** (W), NOT the duration domain (D)
 - Using CanonicalMCS as BFMCS indexing type creates degenerate mcs(w) = w.world
+- TM logic has T and 4 axioms but NOT the 5-axiom (Euclidean property)
+- BFMCS `modal_forward` requires S5 universal accessibility
+- See: specs/028_correct_bfmcs_domain_conflation/reports/01_team-research.md
 
-**CORRECT PATH FORWARD** (Task 18 plan v2):
-- Build multi-family BFMCS indexed by TimelineQuot (the time domain)
-- Use closedFlags pattern for modal saturation
-- See `specs/018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md`
+**CORRECT PATHS** (Task 18/28):
+
+For **discrete completeness**:
+- Use CanonicalTask (SuccChainTaskFrame.lean) to instantiate TaskFrame Int directly
+- WorldHistory via succ_chain_history (SuccChainWorldHistory.lean)
+- Bypasses BFMCS entirely
+
+For **dense completeness**:
+- Use TimelineQuotBFMCS (TimelineQuotBFMCS.lean) with dual-domain architecture
+- Modal domain: CanonicalMCS with closedFlags saturation
+- Temporal domain: TimelineQuot via Cantor isomorphism
 
 ## Overview
 
