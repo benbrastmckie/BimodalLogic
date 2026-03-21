@@ -27,40 +27,32 @@ technical_debt:
 
 ## Recommended Order
 
-### Metalogic Refactoring Track (Reports 17-20)
+### Metalogic Refactoring Track
 
-**Discrete CanonicalTask (bypass covering lemma)**:
-1. **9** → implement (foundation for both tracks)
-2. **10** → implement (depends: 9)
-3. **11** → implement (depends: 10) | **12** → implement (depends: 10) [parallel]
-4. **13** → implement (depends: 11,12) | **14** → implement (depends: 11,12) [parallel]
-5. **15** → ~~implement~~ COMPLETED
-
-**Discrete sorry elimination (post task 15)**:
-1. **22** → research (depends: 15) | **23** → research (depends: 15) [parallel]
+**Discrete sorry elimination** (tasks 9-15 completed):
+1. **22** → research | **23** → research [parallel, ready now]
 2. **24** → implement (depends: 22, 23) — removes 3 axioms, final cleanup
 
-**Dense DenseTask (complete dense completeness)**:
-1. **16** → implement (independent)
-2. **17** → implement (depends: 16) — hardest task
-3. **18** → implement (depends: 17)
+**Dense completion** (tasks 16-17 completed):
+1. **18** → implement (ready now)
 
-**Cleanup**: **19** (depends: 15) | **20** (depends: 15,18) | **21** → plan (depends: 15,18)
+**Cleanup** (after discrete + dense):
+1. **19** → implement (ready now) | **997** → complete [parallel]
+2. **20** → implement (depends: 18) | **21** → plan (depends: 18)
 
-### Existing Tasks
+### Independent Tasks
 
-1. **8** -> implement (independent)
-2. **6** -> plan (independent)
-3. **999** -> research (independent)
-4. **998** -> research (independent)
-5. **997** -> implement (independent)
-6. **993** -> research (independent)
-7. **992** -> plan (independent)
-8. **988** -> blocked (independent)
-9. **989** -> blocked (independent)
-10. **953** -> plan (independent)
-11. **949** -> plan (independent)
-12. **619** -> plan (independent)
+1. **8** → plan (researched)
+2. **6** → plan (researched)
+3. **992** → plan (researched)
+4. **953** → plan (researched)
+5. **949** → plan (researched)
+6. **619** → plan (researched)
+7. **999** → research (not started)
+8. **998** → research (not started)
+9. **993** → research (not started)
+10. **988** → blocked (likely superseded by 16-18)
+11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
 
