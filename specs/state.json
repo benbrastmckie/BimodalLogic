@@ -141,13 +141,13 @@
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:57:01Z",
+      "last_updated": "2026-03-21T21:07:27Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774126357_b611bb",
-      "researched": "2026-03-21T20:57:01Z",
+      "session_id": "sess_1774127008_34bd86",
+      "researched": "2026-03-21T21:07:27Z",
       "artifacts": [
         {
           "path": "specs/023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md",
@@ -173,6 +173,11 @@
           "path": "specs/023_fp_temporal_witness_chain/reports/05_team-research.md",
           "type": "research",
           "summary": "CanonicalFMCS refactoring study: domain separation solution, architectural roadmap"
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/reports/08_team-research.md",
+          "type": "research",
+          "summary": "ARCHITECTURE CORRECTION: CanonicalMCS=WorldState (not D). Task 23 IS solvable via Succ-based approach."
         }
       ],
       "planned": "2026-03-21T20:38:36Z",

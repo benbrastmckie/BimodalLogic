@@ -146,9 +146,9 @@ technical_debt:
 - **Research**:
   - [01_temporal-witness-research.md](023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md)
   - [02_team-research.md](023_fp_temporal_witness_chain/reports/02_team-research.md) - Succ-based approach analysis
-  - [05_team-research.md](023_fp_temporal_witness_chain/reports/05_team-research.md) - CanonicalFMCS refactoring study
-- **Plan**: [02_no-axioms-fp-witnesses.md](023_fp_temporal_witness_chain/plans/02_no-axioms-fp-witnesses.md) - NO AXIOMS constraint
-- **Summary**: [01_no-axioms-resolution.md](023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md) - Documents fundamental limitation
+  - [08_team-research.md](023_fp_temporal_witness_chain/reports/08_team-research.md) - ARCHITECTURE CORRECTION: Succ-based IS viable
+- **Plan**: [02_no-axioms-fp-witnesses.md](023_fp_temporal_witness_chain/plans/02_no-axioms-fp-witnesses.md) - NO AXIOMS constraint (OUTDATED)
+- **Summary**: [01_no-axioms-resolution.md](023_fp_temporal_witness_chain/summaries/01_no-axioms-resolution.md) - Documents fundamental limitation (SUPERSEDED)
 
 **Description**: Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(¬φ) killing F(φ) obligations. Eliminates 4 dovetailing sorries: intFMCS_forward_F (IntBFMCS.lean:1199), intFMCS_forward_F_enriched two cases (IntBFMCS.lean:1175,1177), intFMCS_backward_P (IntBFMCS.lean:1213). Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches with Int-compatible index type.
 
@@ -209,7 +209,7 @@ technical_debt:
 
 ### 18. Complete dense representation theorem via DenseTask
 - **Effort**: 6-7 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Tasks 17, 27
 - **Research (task 6)**:
