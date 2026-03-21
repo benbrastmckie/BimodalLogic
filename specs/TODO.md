@@ -75,7 +75,9 @@ technical_debt:
 - **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 15
-- **Research**: [01_multi-family-research.md](022_direct_multi_family_bundle/reports/01_multi-family-research.md)
+- **Research**:
+  - [01_multi-family-research.md](022_direct_multi_family_bundle/reports/01_multi-family-research.md)
+  - [02_naming-conventions.md](022_direct_multi_family_bundle/reports/02_naming-conventions.md)
 
 **Description**: Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries: (1) modal_forward cross-family transfer (ClosedFlagIntBFMCS.lean:187), (2) modal_backward coverage gap (ClosedFlagIntBFMCS.lean:135), (3) chain membership for t!=0 (ClosedFlagIntBFMCS.lean:267). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer. The key insight: if families cover all of discreteClosedMCS, then "true in all families" = "true in all closed-set MCS", resolving the coverage gap.
 

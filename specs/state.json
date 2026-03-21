@@ -35,6 +35,11 @@
           "path": "specs/022_direct_multi_family_bundle/reports/01_multi-family-research.md",
           "type": "research_report",
           "summary": "Analysis of 3 coverage sorries in ClosedFlagIntBFMCS bridge pattern; proposes direct multi-family construction where families = discreteClosedMCS members, eliminating modal coverage sorries while F/P sorries remain as documented blockers"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/reports/02_naming-conventions.md",
+          "type": "research_report",
+          "summary": "Naming convention analysis from reports 17-20: distinguishes MCS (world states) from D (time indices), proposes variable naming guidelines, identifies W=D conflation anti-pattern"
         }
       ]
     },
