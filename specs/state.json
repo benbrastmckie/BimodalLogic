@@ -29,7 +29,14 @@
       ],
       "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer.",
       "session_id": "sess_1774120905_6222ed",
-      "researched": "2026-03-21T19:25:25Z"
+      "researched": "2026-03-21T19:25:25Z",
+      "artifacts": [
+        {
+          "path": "specs/022_direct_multi_family_bundle/reports/01_multi-family-research.md",
+          "type": "research_report",
+          "summary": "Analysis of 3 coverage sorries in ClosedFlagIntBFMCS bridge pattern; proposes direct multi-family construction where families = discreteClosedMCS members, eliminating modal coverage sorries while F/P sorries remain as documented blockers"
+        }
+      ]
     },
     {
       "project_number": 23,
