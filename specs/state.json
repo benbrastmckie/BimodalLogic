@@ -144,10 +144,10 @@
     {
       "project_number": 13,
       "project_name": "canonical_r_recovery_from_canonical_task",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:14:10Z",
+      "last_updated": "2026-03-21T10:22:20Z",
       "dependencies": [
         11,
         12
@@ -163,12 +163,18 @@
           "path": "specs/013_canonical_r_recovery_from_canonical_task/plans/01_canonicalr-recovery-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for CanonicalR recovery theorem with backward-compatibility layer"
+        },
+        {
+          "path": "specs/013_canonical_r_recovery_from_canonical_task/summaries/01_canonicalr-recovery-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary: 8 theorems proven, 1 sorry on backward direction (CanonicalR -> CanonicalTask chain)"
         }
       ],
       "session_id": "sess_1774087606_e95408",
       "researched": "2026-03-21T10:01:51Z",
       "planned": "2026-03-21T10:05:44Z",
-      "started": "2026-03-21T10:14:10Z"
+      "started": "2026-03-21T10:14:10Z",
+      "completed": "2026-03-21T10:22:20Z"
     },
     {
       "project_number": 14,
