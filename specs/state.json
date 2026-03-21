@@ -8,24 +8,25 @@
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T20:09:08Z"
+      "last_updated": "2026-03-21T20:23:28Z",
+      "session_id": "sess_1774124591_5f0ef6"
     },
     {
       "project_number": 27,
       "project_name": "unify_densetimeline_dovetailedtimeline",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T19:53:54Z",
-      "last_updated": "2026-03-21T20:08:39Z",
+      "last_updated": "2026-03-21T20:21:29Z",
       "blocks": [
         18
       ],
       "description": "Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type.",
-      "session_id": "sess_1774123515_fb43d7",
+      "session_id": "sess_1774124468_fbb8fd",
       "researched": "2026-03-21T20:03:04Z",
       "artifacts": [
         {
@@ -39,7 +40,8 @@
           "summary": "6-phase implementation plan for unifying DenseTimeline and DovetailedTimeline"
         }
       ],
-      "planned": "2026-03-21T20:08:39Z"
+      "planned": "2026-03-21T20:08:39Z",
+      "started": "2026-03-21T20:21:29Z"
     },
     {
       "project_number": 25,
@@ -104,21 +106,26 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:20:17Z",
+      "last_updated": "2026-03-21T20:25:18Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
       "session_id": "sess_1774124405_87b663",
-      "researched": "2026-03-21T20:00:16Z",
+      "researched": "2026-03-21T20:25:18Z",
       "artifacts": [
         {
           "path": "specs/023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md",
           "type": "report",
           "summary": "Research on F/P temporal witness construction. Finding: mathematical impossibility for linear chains. Recommendation: use existing CanonicalFMCS sorry-free infrastructure."
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/reports/02_team-research.md",
+          "type": "research",
+          "summary": "Team research (2 teammates): Succ-based approach bypasses linear chain impossibility. 3 axioms remain in SuccExistence.lean."
         }
       ]
     },
