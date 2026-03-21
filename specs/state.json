@@ -187,16 +187,16 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T22:19:38Z",
+      "last_updated": "2026-03-21T22:24:10Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
       "session_id": "sess_1774131563_f25147",
-      "researched": "2026-03-21T21:07:27Z",
+      "researched": "2026-03-21T22:24:10Z",
       "artifacts": [
         {
           "path": "specs/023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md",
@@ -237,6 +237,11 @@
           "path": "specs/023_fp_temporal_witness_chain/summaries/02_succ-chain-summary.md",
           "type": "summary",
           "summary": "Partial implementation: G/H proven, F/P single-step proven, 3 axioms remain. Phase 3 blocked on BFMCS architecture."
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/reports/09_blocker-analysis.md",
+          "type": "report",
+          "summary": "Blocker analysis: 2 axioms provable via bounded_witness, 1 needs past infrastructure. Recommends bypassing BFMCS using existing sorry-free SuccChainTaskFrame/WorldHistory."
         }
       ],
       "planned": "2026-03-21T21:20:03Z",
