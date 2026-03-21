@@ -8,10 +8,10 @@
     {
       "project_number": 1009,
       "project_name": "clarify_canonicalmcs_role",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T01:03:40Z",
-      "last_updated": "2026-03-21T02:05:34Z",
+      "last_updated": "2026-03-21T02:19:28Z",
       "dependencies": [],
       "artifacts": [
         {
@@ -20,19 +20,19 @@
           "summary": "Audit of 15+ Lean files identifying where CanonicalMCS is conflated with temporal domain D. 6 high-priority, 5 medium-priority files. Root cause: overloaded D parameter and legacy time language."
         },
         {
-          "type": "plan",
-          "path": "specs/1009_clarify_canonicalmcs_role/plans/02_clarification-plan.md",
-          "summary": "6-phase plan for clarifying CanonicalMCS as world-state space, not temporal domain"
-        },
-        {
           "type": "research",
           "path": "specs/1009_clarify_canonicalmcs_role/reports/03_d-equals-canonicalmcs-audit.md",
           "summary": "Audit of 'D=CanonicalMCS' notation: categorical error conflating FMCS indexing with TaskFrame temporal domain, 80+ occurrences, correction patterns"
+        },
+        {
+          "path": "specs/1009_clarify_canonicalmcs_role/plans/04_revised-clarification-plan.md",
+          "type": "plan",
+          "summary": "6-phase revised plan: eliminates 'D=CanonicalMCS' notation, uses 'FMCS indexed by CanonicalMCS' consistently"
         }
       ],
       "session_id": "sess_1774058546_21d8fb",
       "researched": "2026-03-21T02:05:34Z",
-      "planned": "2026-03-21T01:13:50Z"
+      "planned": "2026-03-21T02:19:28Z"
     },
     {
       "project_number": 1007,
