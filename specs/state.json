@@ -381,10 +381,10 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T18:11:20Z",
+      "last_updated": "2026-03-21T18:14:11Z",
       "dependencies": [
         17
       ],
@@ -396,11 +396,6 @@
           "summary": "Complete analysis of dense representation theorem wiring strategy. Key finding: truth lemma gap over TimelineQuot. Resolution: build BFMCS indexed by TimelineQuot with forward_F/backward_P temporal coherence, then port truth lemma structure. Estimated 7-11 hours implementation."
         },
         {
-          "path": "specs/018_dense_representation_theorem_completion/plans/01_implementation-plan.md",
-          "type": "plan",
-          "summary": "4-phase implementation plan for dense representation theorem completion: temporal coherence (2.5h), model construction (1.5h), truth lemma (3.5h), final wiring (1.5h)"
-        },
-        {
           "path": "specs/018_dense_representation_theorem_completion/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "Implementation blocked by temporal coherence sorries in ClosureSaturation.lean (forward_F, backward_P, modal_backward)"
@@ -409,11 +404,16 @@
           "path": "specs/018_dense_representation_theorem_completion/reports/02_team-research.md",
           "type": "research_report",
           "summary": "Team research (2 teammates): Identified singleton BFMCS impossibility, CanonicalMCS domain confusion, m>2k staged construction gap. Recommends fresh closure-based multi-family BFMCS over TimelineQuot with temporal F-witness saturation."
+        },
+        {
+          "path": "specs/018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan addressing singleton BFMCS impossibility with closure-based F-witness saturation"
         }
       ],
       "session_id": "sess_1774116652_23b527",
       "researched": "2026-03-21T18:07:35Z",
-      "planned": "2026-03-21T17:13:41Z",
+      "planned": "2026-03-21T18:14:11Z",
       "started": "2026-03-21T17:15:15Z"
     },
     {
