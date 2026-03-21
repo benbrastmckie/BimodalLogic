@@ -60,6 +60,11 @@
           "type": "summary",
           "path": "specs/1008_genuine_truth_at_completeness/summaries/04_completeness-summary.md",
           "summary": "Detailed analysis of 3 sorries in completeness pipeline, documenting architectural blockers"
+        },
+        {
+          "type": "research",
+          "path": "specs/1008_genuine_truth_at_completeness/reports/02_completeness-blockers.md",
+          "summary": "Detailed mathematical analysis of 3 sorries blocking completeness: modal_backward, forward_F, backward_P"
         }
       ],
       "session_id": "sess_1774053265_4bf706",

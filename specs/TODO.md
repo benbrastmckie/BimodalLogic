@@ -44,7 +44,9 @@ technical_debt:
 - **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task #1007
-- **Research**: [01_completeness-architecture.md](1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
+- **Research**:
+  - [01_completeness-architecture.md](1008_genuine_truth_at_completeness/reports/01_completeness-architecture.md)
+  - [02_completeness-blockers.md](1008_genuine_truth_at_completeness/reports/02_completeness-blockers.md)
 - **Plan**: [03_revised-completeness-plan.md](1008_genuine_truth_at_completeness/plans/03_revised-completeness-plan.md)
 
 **Description**: Establish genuine completeness theorems for base, dense, and discrete TM logic using the official `truth_at` semantics over `TaskFrame D` with convex `WorldHistory` structures — not the internal `satisfies_at` substitute. The existing parametric infrastructure (ParametricCanonicalTaskFrame, ParametricTruthLemma, ParametricRepresentation) is already sorry-free and correctly uses `truth_at` with `domain = True` (trivially convex). The core open problem is constructing a multi-family `BFMCS D` satisfying both modal coherence (modal_backward requires multiple families, not singleton) and temporal coherence (forward_F/backward_P — linear chain constructions via Lindenbaum extension cannot satisfy these because F-witnesses escape the chain). CanonicalFMCS over CanonicalMCS solves F/P trivially but CanonicalMCS lacks AddCommGroup/LinearOrder. The gap is bridging sorry-free CanonicalMCS results to a concrete D (Int for base/discrete, Rat for dense). Supersedes tasks 997, 988, 989 in approach (those tasks remain as they track the individual completeness legs).
