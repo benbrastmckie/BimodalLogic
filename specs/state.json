@@ -148,10 +148,10 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T21:07:27Z",
+      "last_updated": "2026-03-21T21:20:03Z",
       "dependencies": [
         15
       ],
@@ -188,9 +188,14 @@
           "path": "specs/023_fp_temporal_witness_chain/reports/08_team-research.md",
           "type": "research",
           "summary": "ARCHITECTURE CORRECTION: CanonicalMCS=WorldState (not D). Task 23 IS solvable via Succ-based approach."
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/plans/03_succ-chain-construction.md",
+          "type": "plan",
+          "summary": "Revised plan v3: SuccChain construction using corrected architecture"
         }
       ],
-      "planned": "2026-03-21T20:38:36Z",
+      "planned": "2026-03-21T21:20:03Z",
       "started": "2026-03-21T20:42:28Z"
     },
     {
