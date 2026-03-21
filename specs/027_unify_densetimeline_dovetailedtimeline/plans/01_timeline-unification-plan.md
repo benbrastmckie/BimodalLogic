@@ -1,7 +1,7 @@
 # Implementation Plan: Unify DenseTimeline and DovetailedTimeline
 
 - **Task**: 27 - unify_densetimeline_dovetailedtimeline
-- **Status**: [IMPLEMENTING]
+- **Status**: [COMPLETED]
 - **Effort**: 4-5 hours
 - **Dependencies**: DovetailedCoverageReach.lean (existing), DovetailedBuild.lean (existing)
 - **Research Inputs**: specs/027_unify_densetimeline_dovetailedtimeline/reports/01_timeline-unification.md
