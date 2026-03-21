@@ -201,11 +201,12 @@ technical_debt:
 
 ### 10. Define Succ relation and prove basic properties
 - **Effort**: 3-4 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 9
 - **Files**: New SuccRelation.lean in Theories/Bimodal/Metalogic/Bundle/
-- **Research (task 6)**:
+- **Research**: [01_succ-relation-research.md](010_define_succ_relation/reports/01_succ-relation-research.md)
+- **Background (task 6)**:
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.2–2.3, §2.6 — Succ definition, G/F-persistence conditions, single-step forcing theorem with full proof
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §2–3 — Lean spelling of Succ, relationship to CanonicalR, single-step forcing proof steps
 
