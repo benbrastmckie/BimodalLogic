@@ -42,11 +42,12 @@ technical_debt:
 
 ### 1009. Clarify CanonicalMCS role as world-state space, not temporal domain
 - **Effort**: 2-4 hours
-- **Status**: [PLANNED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Research**:
   - [01_canonicalmcs-role-audit.md](1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md)
   - [03_d-equals-canonicalmcs-audit.md](1009_clarify_canonicalmcs_role/reports/03_d-equals-canonicalmcs-audit.md)
+  - [05_fmcs-indexing-architecture.md](1009_clarify_canonicalmcs_role/reports/05_fmcs-indexing-architecture.md)
 - **Plan**: [04_revised-clarification-plan.md](1009_clarify_canonicalmcs_role/plans/04_revised-clarification-plan.md)
 
 **Description**: Clarify that CanonicalMCS is the space of world states (WorldState in TaskFrame), not the temporal domain D. Update all comments, docstrings, and ROAD_MAP.md that conflate CanonicalMCS with the temporal domain in TaskFrame semantics. The persistent confusion arises because research reports keep suggesting "use CanonicalMCS as the domain" when CanonicalMCS cannot serve as D (which requires AddCommGroup/LinearOrder). CanonicalMCS elements are world states indexed by time, not time points themselves. Systematically document this distinction across the codebase.
