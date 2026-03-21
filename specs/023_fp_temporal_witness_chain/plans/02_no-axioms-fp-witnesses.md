@@ -55,7 +55,7 @@ This plan addresses the 4 IntBFMCS sorries with the hard constraint that **no ne
 
 ## Implementation Phases
 
-### Phase 1: Deep Axiom Analysis [NOT STARTED]
+### Phase 1: Deep Axiom Analysis [IN PROGRESS]
 
 **Goal**: Determine exactly what would prove each axiom, and whether those proofs exist or can be constructed.
 

@@ -201,8 +201,8 @@ technical_debt:
 ---
 
 ### 18. Complete dense representation theorem via DenseTask
-- **Effort**: 4-6 hours
-- **Status**: [IMPLEMENTING]
+- **Effort**: 6-7 hours
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Tasks 17, 27
 - **Research (task 6)**:
@@ -213,11 +213,8 @@ technical_debt:
   - [02_team-research.md](018_dense_representation_theorem_completion/reports/02_team-research.md) — team research: blocker analysis, domain confusion, correct approach
   - [05_team-research.md](018_dense_representation_theorem_completion/reports/05_team-research.md) — team research run 2: 7 real sorries, revised 4-phase plan A-D, no closure operator needed
   - [13_post-task27-analysis.md](018_dense_representation_theorem_completion/reports/13_post-task27-analysis.md) — post-task27: 4 localized sorries in j>0 termination, DovetailedTimelineQuot integration
-- **Plan**:
-  - [01_implementation-plan.md](018_dense_representation_theorem_completion/plans/01_implementation-plan.md)
-  - [02_dense-representation-v2.md](018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md) — v2: closure-based F-witness saturation
-  - [03_dense-representation-v3.md](018_dense_representation_theorem_completion/plans/03_dense-representation-v3.md) — v3: dovetailed construction, derive_F_to_FF first, ExistsTask alias
-- **Summary**: [03_implementation-summary.md](018_dense_representation_theorem_completion/summaries/03_implementation-summary.md) — Phases 1-2 complete, Phase 3 blocked
+- **Plan**: [04_dense-representation-v4.md](018_dense_representation_theorem_completion/plans/04_dense-representation-v4.md) — v4: post-task27 using DovetailedTimelineQuot, 3 remaining phases
+- **Summary**: [03_implementation-summary.md](018_dense_representation_theorem_completion/summaries/03_implementation-summary.md) — Phases 1-2 complete (v3), plan revised for phases 3-5
 
 **Description**: Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.
 
