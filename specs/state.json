@@ -144,10 +144,10 @@
     {
       "project_number": 13,
       "project_name": "canonical_r_recovery_from_canonical_task",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:05:44Z",
+      "last_updated": "2026-03-21T10:14:10Z",
       "dependencies": [
         11,
         12
@@ -165,23 +165,32 @@
           "summary": "5-phase implementation plan for CanonicalR recovery theorem with backward-compatibility layer"
         }
       ],
-      "session_id": "sess_1774087378_b3c1a8",
+      "session_id": "sess_1774087606_e95408",
       "researched": "2026-03-21T10:01:51Z",
-      "planned": "2026-03-21T10:05:44Z"
+      "planned": "2026-03-21T10:05:44Z",
+      "started": "2026-03-21T10:14:10Z"
     },
     {
       "project_number": 14,
       "project_name": "succ_chain_fmcs_and_taskframe_int",
-      "status": "not_started",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T10:19:14Z",
       "dependencies": [
         11,
         12
       ],
       "description": "Construct a time-indexed FMCS family over Int from Succ-chains: enumerate forward/backward via successor/predecessor existence to build fam:ℤ→MCS satisfying FMCS coherence (forward_G, backward_H, forward_F, backward_P). Instantiate DiscreteCanonicalTaskFrame using CanonicalTask as task_rel. Verify WorldHistory respects_task via Succ-chain propagation.",
-      "artifacts": []
+      "artifacts": [
+        {
+          "path": "specs/014_succ_chain_fmcs_and_taskframe_int/reports/01_succ-fmcs-research.md",
+          "type": "research_report",
+          "summary": "Research report on Succ-chain FMCS construction, FMCS coherence, TaskFrame instantiation, and respects_task verification"
+        }
+      ],
+      "session_id": "sess_1774088087_283ed1",
+      "researched": "2026-03-21T10:19:14Z"
     },
     {
       "project_number": 15,
