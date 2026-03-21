@@ -20,15 +20,15 @@
     {
       "project_number": 22,
       "project_name": "direct_multi_family_bundle",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T19:25:25Z",
+      "last_updated": "2026-03-21T19:38:43Z",
       "dependencies": [
         15
       ],
       "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer.",
-      "session_id": "sess_1774120905_6222ed",
+      "session_id": "sess_1774121735_6e609c",
       "researched": "2026-03-21T19:25:25Z",
       "artifacts": [
         {
@@ -40,8 +40,14 @@
           "path": "specs/022_direct_multi_family_bundle/reports/02_naming-conventions.md",
           "type": "research_report",
           "summary": "Naming convention analysis from reports 17-20: distinguishes MCS (world states) from D (time indices), proposes variable naming guidelines, identifies W=D conflation anti-pattern"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/plans/01_direct-bundle-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for direct multi-family BFMCS construction"
         }
-      ]
+      ],
+      "planned": "2026-03-21T19:38:43Z"
     },
     {
       "project_number": 23,
@@ -1158,9 +1164,41 @@
       "session_id": "sess_1774121152_2f49cc",
       "researched": "2026-03-21T19:21:35Z",
       "planned": "2026-03-21T19:28:53Z"
+    },
+    {
+      "project_number": 22,
+      "project_name": "remove_canonicalr_irreflexive_axiom",
+      "status": "researched",
+      "language": "lean4",
+      "created": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T13:00:00Z",
+      "dependencies": [],
+      "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity. Documentation inconsistency found: wrapper file claims proven but implementation is axiom.",
+      "artifacts": [
+        {
+          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/01_teammate-a-findings.md",
+          "type": "report",
+          "summary": "CanonicalTask vs CanonicalR irreflexivity analysis: nullity_identity insufficient, forward recovery independent"
+        },
+        {
+          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/01_teammate-b-findings.md",
+          "type": "report",
+          "summary": "Complete usage map: 16 direct uses across 6 files, all at CanonicalR level, CanonicalTask refactoring not viable"
+        },
+        {
+          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/01_teammate-c-findings.md",
+          "type": "report",
+          "summary": "Modal logic theoretical analysis: CanonicalTask reduction exact, Cantor path circular, documentation inconsistency found"
+        },
+        {
+          "path": "specs/022_remove_canonicalr_irreflexive_axiom/reports/02_synthesis.md",
+          "type": "report",
+          "summary": "Synthesized findings: 3 viable paths (T-axiom proof, IRR rule, accept axiom), CanonicalTask path definitively ruled out"
+        }
+      ]
     }
   ],
-  "next_project_number": 26,
+  "next_project_number": 23,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",

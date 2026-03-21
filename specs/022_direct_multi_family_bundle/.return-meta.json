@@ -1,48 +1,36 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-21T10:00:00Z",
-  "completed_at": "2026-03-21T10:30:00Z",
+  "status": "planned",
   "artifacts": [
     {
       "path": "specs/022_direct_multi_family_bundle/reports/01_multi-family-research.md",
       "type": "research_report",
-      "summary": "Analysis of 3 coverage sorries in ClosedFlagIntBFMCS bridge pattern; proposes direct multi-family construction where families = discreteClosedMCS members, eliminating modal coverage sorries while F/P sorries remain as documented blockers"
+      "summary": "Analysis of 3 coverage sorries in ClosedFlagIntBFMCS bridge pattern"
     },
     {
       "path": "specs/022_direct_multi_family_bundle/reports/02_naming-conventions.md",
       "type": "research_report",
-      "summary": "Naming convention analysis from reports 17-20: distinguishes MCS (world states) from D (time indices), proposes variable naming guidelines (w/u/v for states, t/s for times), identifies W=D conflation anti-pattern, provides concrete recommendations for task 22 implementation"
+      "summary": "Naming convention analysis: w/u/v for MCS, t/s for time indices"
+    },
+    {
+      "path": "specs/022_direct_multi_family_bundle/plans/01_direct-bundle-plan.md",
+      "type": "plan",
+      "summary": "5-phase implementation plan for direct multi-family BFMCS construction"
     }
   ],
-  "partial_progress": {
-    "stage": "research_complete",
-    "details": "Analyzed reports 17-20 for naming conventions, created supplementary report"
-  },
+  "next_steps": "Run /implement 22 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774121377_ca25e3",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774121735_6e609c",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 5,
+    "estimated_hours": 6
   },
-  "key_findings": {
-    "core_distinction": {
-      "world_states": "MCS - instantaneous semantic content (WHAT is true)",
-      "time_indices": "D - temporal coordinate (WHEN)",
-      "world_history": "FMCS - trajectory through state space",
-      "history_bundle": "BFMCS - set of histories with modal coherence"
-    },
-    "naming_recommendations": {
-      "world_state_variables": ["w", "u", "v", "m", "n"],
-      "time_index_variables": ["t", "s", "r"],
-      "duration_variables": ["d", "delta", "q"],
-      "avoid_variable_W_for_values": true
-    },
-    "new_definitions_needed": ["f_content", "p_content", "Succ relation"],
-    "files_to_update": [
-      "Core/TemporalContent.lean",
-      "Bundle/FMCSDef.lean",
-      "Bundle/ClosedFlagIntBFMCS.lean"
-    ],
-    "anti_pattern_documented": "W=D conflation (WorldState := D) in deprecated files"
+  "plan_metadata": {
+    "phases": 5,
+    "total_effort_hours": 6,
+    "sorries_to_eliminate": 3,
+    "remaining_sorries": "F/P dovetailing (documented blockers)"
   }
 }
