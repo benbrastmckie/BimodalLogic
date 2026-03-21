@@ -211,6 +211,7 @@ technical_debt:
   - [01_dense-representation-research.md](018_dense_representation_theorem_completion/reports/01_dense-representation-research.md)
   - [02_team-research.md](018_dense_representation_theorem_completion/reports/02_team-research.md) — team research: blocker analysis, domain confusion, correct approach
   - [05_team-research.md](018_dense_representation_theorem_completion/reports/05_team-research.md) — team research run 2: 7 real sorries, revised 4-phase plan A-D, no closure operator needed
+  - [13_post-task27-analysis.md](018_dense_representation_theorem_completion/reports/13_post-task27-analysis.md) — post-task27: 4 localized sorries in j>0 termination, DovetailedTimelineQuot integration
 - **Plan**:
   - [01_implementation-plan.md](018_dense_representation_theorem_completion/plans/01_implementation-plan.md)
   - [02_dense-representation-v2.md](018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md) — v2: closure-based F-witness saturation

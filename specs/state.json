@@ -588,6 +588,11 @@
           "path": "specs/018_dense_representation_theorem_completion/summaries/03_implementation-summary.md",
           "type": "summary",
           "summary": "Phases 1-2 complete (derive_F_to_FF, dovetailed coverage). Phase 3 blocked by DenseTimeline/DovetailedTimeline bridge."
+        },
+        {
+          "path": "specs/018_dense_representation_theorem_completion/reports/13_post-task27-analysis.md",
+          "type": "research_report",
+          "summary": "Post-task27 analysis: 4 localized sorries in j>0 termination, DovetailedTimelineQuot replaces DenseTimeline"
         }
       ],
       "session_id": "sess_1774121197_66e848",
