@@ -20,6 +20,11 @@
           "path": "specs/028_correct_bfmcs_domain_conflation/reports/01_teammate-a-findings.md",
           "type": "research_report",
           "summary": "Audit of 4 W=D conflation sites; confirms CanonicalMCS domain is wrong for non-base logics; prescribes TimelineQuot for dense and Succ-chain bypass for discrete completeness"
+        },
+        {
+          "path": "specs/028_correct_bfmcs_domain_conflation/reports/01_teammate-b-findings.md",
+          "type": "research_report",
+          "summary": "Mathematical foundations: W/D distinction, DenselyOrdered/SuccOrder mutual exclusion, cross-family modal coherence, alternative architectural patterns"
         }
       ]
     },
