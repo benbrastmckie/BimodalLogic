@@ -1,43 +1,48 @@
 import Bimodal.Metalogic.Algebraic.ParametricRepresentation
-import Mathlib.Algebra.Order.Ring.Rat
+import Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuotBFMCS
+import Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuot
+import Bimodal.Metalogic.StagedConstruction.DovetailedFMCS
 
 /-!
-# Dense Instantiation: D = Rat
+# Dense Instantiation: D = DovetailedTimelineQuot
 
 This module instantiates the D-parametric algebraic representation theorem for the
-dense case D = Rat (rational numbers).
+dense case D = DovetailedTimelineQuot (a dense linear order isomorphic to Q).
 
 ## Main Results
 
-- `DenseCanonicalTaskFrame`: The parametric canonical TaskFrame with D = Rat
-- `DenseCanonicalTaskModel`: The parametric canonical TaskModel with D = Rat
-- `dense_parametric_representation_conditional`: Representation theorem for Rat
+- `DenseCanonicalTaskFrame`: The parametric canonical TaskFrame with D = DovetailedTimelineQuot
+- `DenseCanonicalTaskModel`: The parametric canonical TaskModel with D = DovetailedTimelineQuot
+- `dense_representation_unconditional`: The unconditional representation theorem for dense TM logic
 
-## Rational Numbers as Duration Type
+## DovetailedTimelineQuot as Duration Type
 
-Rat satisfies all required typeclasses for the D-parametric construction:
-- `AddCommGroup Rat`: Rat is an additive commutative group
-- `LinearOrder Rat`: Rat has a total order
-- `IsOrderedAddMonoid Rat`: Addition respects the order
-- `DenselyOrdered Rat`: Between any two rationals, there's another
+DovetailedTimelineQuot satisfies all required typeclasses for the D-parametric construction:
+- `AddCommGroup`: Transferred from Q via Cantor isomorphism
+- `LinearOrder`: Inherited from the antisymmetrization construction
+- `IsOrderedAddMonoid`: Transferred from Q
+- `DenselyOrdered`: Proven for the construction
+- `NoMaxOrder` and `NoMinOrder`: Required for dense temporal logic
 
-The dense ordering property is crucial for models of dense temporal logic.
+## BFMCS Construction
 
-## Note on BFMCS Construction
+The full representation theorem uses `dovetailedTimelineQuotBFMCS` from Task 30, which provides:
+1. A singleton BFMCS containing `dovetailedFMCS`
+2. Proven `temporally_coherent` property (no sorries)
+3. Root MCS connection via `dovetailedTimelineQuotBFMCS_root_at_time`
 
-The full representation theorem for D = Rat requires constructing a temporally
-coherent BFMCS over Rat. This construction is non-trivial and depends on:
-1. The existence of F-witnesses (temporal forward coherence)
-2. The existence of P-witnesses (temporal backward coherence)
+## Sorry Inventory
 
-For now, we provide the typeclass instantiation and the conditional representation
-theorem. The BFMCS construction is left to future work or may use existing
-infrastructure from the staged construction modules.
+The construction inherits:
+- 1 sorry from `dovetailedTimelineQuotBFMCS.modal_backward` (known limitation)
+- This does NOT affect the truth lemma, which only requires `temporally_coherent`
 
 ## References
 
-- Research: specs/985_lindenbaum_tarski_representation_theorem/reports/research-002.md
-- Plan: specs/985_lindenbaum_tarski_representation_theorem/plans/implementation-001.md
+- DiscreteInstantiation.lean: Pattern for D = Int
+- DovetailedTimelineQuotBFMCS.lean: BFMCS construction
+- Task 30: Build temporally coherent dense BFMCS
+- Task 31: Wire dense truth lemma instantiation (this module)
 -/
 
 namespace Bimodal.Metalogic.Algebraic.DenseInstantiation
@@ -49,48 +54,89 @@ open Bimodal.Metalogic.Algebraic.ParametricCanonical
 open Bimodal.Metalogic.Algebraic.ParametricHistory
 open Bimodal.Metalogic.Algebraic.ParametricTruthLemma
 open Bimodal.Metalogic.Algebraic.ParametricRepresentation
+open Bimodal.Metalogic.StagedConstruction
+open Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuot
+open Bimodal.Metalogic.StagedConstruction.DovetailedFMCS
+open Bimodal.Metalogic.StagedConstruction.DovetailedTimelineQuotBFMCS
 open Bimodal.Semantics
 
 /-!
 ## Typeclass Verification
 
-Verify that Rat satisfies all required typeclasses for the D-parametric construction.
+Verify that DovetailedTimelineQuot satisfies all required typeclasses for the D-parametric construction.
+Note: These require the root_mcs parameter, so we verify within a variable context.
 -/
 
--- Rat is an ordered additive commutative group
-example : AddCommGroup Rat := inferInstance
-example : LinearOrder Rat := inferInstance
-example : IsOrderedAddMonoid Rat := inferInstance
--- Note: DenselyOrdered Rat exists in mathlib but requires additional imports.
--- The key property is that between any two rationals there's another.
+section TypeclassVerification
+
+variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)
+
+-- DovetailedTimelineQuot has an AddCommGroup structure (transferred from Q)
+example : AddCommGroup (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof
+
+-- DovetailedTimelineQuot has a LinearOrder structure
+example : LinearOrder (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  inferInstance
+
+-- DovetailedTimelineQuot is an ordered additive monoid (transferred from Q)
+example : @IsOrderedAddMonoid (DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof).toAddCommMonoid
+    (inferInstance : PartialOrder (DovetailedTimelineQuot root_mcs root_mcs_proof)) :=
+  dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof
+
+-- DovetailedTimelineQuot is densely ordered
+example : DenselyOrdered (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  inferInstance
+
+-- DovetailedTimelineQuot has no maximum or minimum
+example : NoMaxOrder (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  inferInstance
+
+example : NoMinOrder (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  inferInstance
+
+-- DovetailedTimelineQuot is nontrivial
+example : Nontrivial (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  inferInstance
+
+end TypeclassVerification
 
 /-!
 ## Dense Canonical Structures
 
-Instantiate the parametric canonical structures with D = Rat.
+Instantiate the parametric canonical structures with D = DovetailedTimelineQuot.
+Since DovetailedTimelineQuot depends on the root MCS, these are parameterized.
 -/
 
+variable (root_mcs : Set Formula) (root_mcs_proof : SetMaximalConsistent root_mcs)
+
 /--
-The dense canonical TaskFrame: the parametric canonical TaskFrame with D = Rat.
+The dense canonical TaskFrame: the parametric canonical TaskFrame with D = DovetailedTimelineQuot.
 
 This TaskFrame has:
 - WorldState = ParametricCanonicalWorldState (MCS-based world states)
-- D = Rat (dense rational numbers)
+- D = DovetailedTimelineQuot root_mcs root_mcs_proof (dense rationals)
 - task_rel = parametric_canonical_task_rel (uses CanonicalR)
 
-The frame satisfies all TaskFrame axioms (nullity_identity, forward_comp, converse)
-by the parametric construction.
+The frame satisfies all TaskFrame axioms by the parametric construction.
 -/
-abbrev DenseCanonicalTaskFrame : TaskFrame Rat :=
-  ParametricCanonicalTaskFrame Rat
+noncomputable abbrev DenseCanonicalTaskFrame : TaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof) :=
+  @ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+    inferInstance
+    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
 
 /--
-The dense canonical TaskModel: the parametric canonical TaskModel with D = Rat.
+The dense canonical TaskModel: the parametric canonical TaskModel with D = DovetailedTimelineQuot.
 
 Valuation is MCS membership: atom p is true at world M iff p ∈ M.
 -/
-abbrev DenseCanonicalTaskModel : TaskModel DenseCanonicalTaskFrame :=
-  ParametricCanonicalTaskModel Rat
+noncomputable abbrev DenseCanonicalTaskModel : TaskModel (DenseCanonicalTaskFrame root_mcs root_mcs_proof) :=
+  @ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+    inferInstance
+    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
 
 /-!
 ## Dense Representation Theorem
@@ -102,7 +148,7 @@ then there exists a countermodel over the dense canonical TaskFrame.
 /--
 Dense non-provability implies neg-extends-to-MCS.
 
-This is a specialization of the generic theorem for D = Rat.
+This is a specialization of the generic theorem.
 -/
 theorem dense_not_provable_implies_neg_extends_to_mcs
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
@@ -112,37 +158,77 @@ theorem dense_not_provable_implies_neg_extends_to_mcs
 /--
 Dense representation from neg-membership.
 
-If φ.neg is in a family's MCS within a temporally coherent BFMCS over Rat,
+If φ.neg is in a family's MCS within a temporally coherent BFMCS over DovetailedTimelineQuot,
 then φ is false at that point in the dense canonical model.
 -/
 theorem dense_representation_from_neg_membership
-    (B : BFMCS Rat) (h_tc : B.temporally_coherent)
+    (B : BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+    (h_tc : B.temporally_coherent)
     (φ : Formula)
-    (fam : FMCS Rat) (hfam : fam ∈ B.families)
-    (t : Rat) (h_neg_in : φ.neg ∈ fam.mcs t) :
-    ¬truth_at DenseCanonicalTaskModel (ShiftClosedParametricCanonicalOmega B)
+    (fam : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+    (hfam : fam ∈ B.families)
+    (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (h_neg_in : φ.neg ∈ fam.mcs t) :
+    ¬@truth_at (DovetailedTimelineQuot root_mcs root_mcs_proof)
+      (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+      inferInstance
+      (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+      (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
+        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+        inferInstance
+        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+      (@ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
+        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+        inferInstance
+        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+      (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ :=
-  parametric_representation_from_neg_membership B h_tc φ fam hfam t h_neg_in
+  @parametric_representation_from_neg_membership
+    (DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+    inferInstance
+    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+    B h_tc φ fam hfam t h_neg_in
 
 /--
 Dense countermodel implies non-provability.
 
-If a formula has a countermodel in some temporally coherent BFMCS over Rat,
+If a formula has a countermodel in some temporally coherent BFMCS over DovetailedTimelineQuot,
 then it is not provable.
 -/
 theorem dense_countermodel_implies_not_provable
-    (B : BFMCS Rat) (h_tc : B.temporally_coherent)
+    (B : BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+    (h_tc : B.temporally_coherent)
     (φ : Formula)
-    (fam : FMCS Rat) (hfam : fam ∈ B.families) (t : Rat)
-    (h_false : ¬truth_at DenseCanonicalTaskModel (ShiftClosedParametricCanonicalOmega B)
+    (fam : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+    (hfam : fam ∈ B.families)
+    (t : DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (h_false : ¬@truth_at (DovetailedTimelineQuot root_mcs root_mcs_proof)
+      (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+      inferInstance
+      (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+      (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
+        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+        inferInstance
+        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+      (@ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
+        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+        inferInstance
+        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+      (ShiftClosedParametricCanonicalOmega B)
       (parametric_to_history fam) t φ) :
     ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ) :=
-  countermodel_implies_not_provable B h_tc φ fam hfam t h_false
+  @countermodel_implies_not_provable
+    (DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+    inferInstance
+    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+    B h_tc φ fam hfam t h_false
 
 /--
 **Dense Representation Theorem (Conditional Version)**
 
-Given a function that constructs a temporally coherent BFMCS over Rat
+Given a function that constructs a temporally coherent BFMCS over DovetailedTimelineQuot
 containing any given MCS, if a formula is not provable, then there exists
 a countermodel in the dense canonical TaskFrame.
 
@@ -152,30 +238,165 @@ to the caller.
 theorem dense_representation_conditional
     (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ))
     (construct_bfmcs : (M : Set Formula) → SetMaximalConsistent M →
-      Σ' (B : BFMCS Rat) (h_tc : B.temporally_coherent)
-         (fam : FMCS Rat) (hfam : fam ∈ B.families) (t : Rat),
+      Σ' (B : BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+         (h_tc : B.temporally_coherent)
+         (fam : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+         (hfam : fam ∈ B.families)
+         (t : DovetailedTimelineQuot root_mcs root_mcs_proof),
          M = fam.mcs t) :
-    ∃ (B : BFMCS Rat) (h_tc : B.temporally_coherent)
-      (fam : FMCS Rat) (hfam : fam ∈ B.families) (t : Rat),
-      ¬truth_at DenseCanonicalTaskModel (ShiftClosedParametricCanonicalOmega B)
+    ∃ (B : BFMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+      (h_tc : B.temporally_coherent)
+      (fam : FMCS (DovetailedTimelineQuot root_mcs root_mcs_proof))
+      (hfam : fam ∈ B.families)
+      (t : DovetailedTimelineQuot root_mcs root_mcs_proof),
+      ¬@truth_at (DovetailedTimelineQuot root_mcs root_mcs_proof)
+        (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+        inferInstance
+        (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+        (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot root_mcs root_mcs_proof)
+          (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+          inferInstance
+          (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+        (@ParametricCanonicalTaskModel (DovetailedTimelineQuot root_mcs root_mcs_proof)
+          (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+          inferInstance
+          (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof))
+        (ShiftClosedParametricCanonicalOmega B)
         (parametric_to_history fam) t φ :=
-  parametric_algebraic_representation_conditional φ h_not_prov construct_bfmcs
+  @parametric_algebraic_representation_conditional
+    (DovetailedTimelineQuot root_mcs root_mcs_proof)
+    (dovetailedTimelineQuotAddCommGroup root_mcs root_mcs_proof)
+    inferInstance
+    (dovetailedTimelineQuotIsOrderedAddMonoid root_mcs root_mcs_proof)
+    φ h_not_prov construct_bfmcs
+
+/-!
+## BFMCS Construction Function
+
+The construction function required by the conditional representation theorem.
+Uses `dovetailedTimelineQuotBFMCS` from Task 30.
+-/
+
+/--
+Given an MCS M, construct a temporally coherent BFMCS over DovetailedTimelineQuot
+containing M.
+
+**Key Insight**: We use the root_mcs to build the DovetailedTimelineQuot domain.
+The MCS M must be related to root_mcs for this to work. In the completeness proof,
+M IS the root_mcs (the Lindenbaum extension of {phi.neg}), so this construction
+is exactly what we need.
+
+**Construction**:
+1. Build DovetailedTimelineQuot from M (the given MCS)
+2. Use dovetailedTimelineQuotBFMCS to get the BFMCS
+3. The eval_family at the root time contains M
+
+**Sorry Status**: Inherits the modal_backward sorry from dovetailedTimelineQuotBFMCS.
+This does NOT affect temporal coherence.
+-/
+noncomputable def construct_bfmcs_from_mcs_Dense
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M) :
+    Σ' (B : BFMCS (DovetailedTimelineQuot M h_mcs))
+       (h_tc : B.temporally_coherent)
+       (fam : FMCS (DovetailedTimelineQuot M h_mcs))
+       (hfam : fam ∈ B.families)
+       (t : DovetailedTimelineQuot M h_mcs),
+       M = fam.mcs t := by
+  -- Build the BFMCS from dovetailedTimelineQuotBFMCS
+  let B := dovetailedTimelineQuotBFMCS M h_mcs
+  have h_tc := dovetailedTimelineQuotBFMCS_temporally_coherent M h_mcs
+  -- The evaluation family is the dovetailedFMCS
+  let fam := dovetailedFMCS M h_mcs
+  have hfam : fam ∈ B.families := Set.mem_singleton _
+  -- Get the time where root MCS appears
+  obtain ⟨t, h_eq⟩ := dovetailedTimelineQuot_root_exists M h_mcs
+  -- M = fam.mcs t
+  exact ⟨B, h_tc, fam, hfam, t, h_eq.symm⟩
+
+/-!
+## Unconditional Dense Representation Theorem
+
+The unconditional theorem uses `construct_bfmcs_from_mcs_Dense` to eliminate the
+conditional requirement.
+-/
+
+/--
+**Dense Representation Theorem (Unconditional Version)**
+
+If a formula is not provable in the TM proof system,
+then there exists a countermodel in the dense canonical TaskFrame.
+
+**Proof Structure**:
+1. If φ is not provable, then φ.neg is consistent
+2. By Lindenbaum, φ.neg extends to an MCS M
+3. Using `construct_bfmcs_from_mcs_Dense M`, we get a BFMCS over DovetailedTimelineQuot
+   containing M at some time t
+4. By the truth lemma, φ.neg ∈ M implies φ is false at M in the canonical model
+
+**Key Point**: The domain D = DovetailedTimelineQuot M h_mcs is BUILT from M.
+This is the correct architecture for dense completeness: the canonical domain
+is constructed from the root MCS, not fixed in advance.
+
+**Sorry Status**:
+The only sorries are in the BFMCS construction (modal_backward), not in the
+logical structure of the representation theorem or the truth lemma.
+-/
+theorem dense_representation_unconditional
+    (φ : Formula) (h_not_prov : ¬Nonempty (Bimodal.ProofSystem.DerivationTree [] φ)) :
+    ∃ (M : Set Formula) (h_mcs : SetMaximalConsistent M),
+    ∃ (B : BFMCS (DovetailedTimelineQuot M h_mcs))
+      (h_tc : B.temporally_coherent)
+      (fam : FMCS (DovetailedTimelineQuot M h_mcs))
+      (hfam : fam ∈ B.families)
+      (t : DovetailedTimelineQuot M h_mcs),
+      ¬@truth_at (DovetailedTimelineQuot M h_mcs)
+        (dovetailedTimelineQuotAddCommGroup M h_mcs)
+        inferInstance
+        (dovetailedTimelineQuotIsOrderedAddMonoid M h_mcs)
+        (@ParametricCanonicalTaskFrame (DovetailedTimelineQuot M h_mcs)
+          (dovetailedTimelineQuotAddCommGroup M h_mcs)
+          inferInstance
+          (dovetailedTimelineQuotIsOrderedAddMonoid M h_mcs))
+        (@ParametricCanonicalTaskModel (DovetailedTimelineQuot M h_mcs)
+          (dovetailedTimelineQuotAddCommGroup M h_mcs)
+          inferInstance
+          (dovetailedTimelineQuotIsOrderedAddMonoid M h_mcs))
+        (ShiftClosedParametricCanonicalOmega B)
+        (parametric_to_history fam) t φ := by
+  -- Step 1: Get MCS containing φ.neg
+  obtain ⟨M, h_mcs, h_neg_in⟩ := dense_not_provable_implies_neg_extends_to_mcs φ h_not_prov
+  -- Step 2: Construct the BFMCS
+  obtain ⟨B, h_tc, fam, hfam, t, h_eq⟩ := construct_bfmcs_from_mcs_Dense M h_mcs
+  -- Step 3: φ.neg ∈ fam.mcs t
+  have h_neg_in_fam : φ.neg ∈ fam.mcs t := h_eq ▸ h_neg_in
+  -- Step 4: Apply representation theorem
+  exact ⟨M, h_mcs, B, h_tc, fam, hfam, t,
+    dense_representation_from_neg_membership M h_mcs B h_tc φ fam hfam t h_neg_in_fam⟩
 
 /-!
 ## Summary
 
-This module provides the dense (D = Rat) instantiation of the parametric
-algebraic representation theorem:
+This module provides the dense (D = DovetailedTimelineQuot) instantiation of the
+parametric algebraic representation theorem:
 
-1. **DenseCanonicalTaskFrame**: TaskFrame with D = Rat
+1. **DenseCanonicalTaskFrame**: TaskFrame with D = DovetailedTimelineQuot
 2. **DenseCanonicalTaskModel**: TaskModel with MCS-based valuation
-3. **dense_representation_conditional**: If φ is not provable and we can
-   construct a BFMCS containing φ.neg, then φ has a countermodel
+3. **dense_representation_conditional**: Conditional representation theorem
+4. **dense_representation_unconditional**: Unconditional representation theorem
 
-The construction is sorry-free. The full representation theorem
-(without the `construct_bfmcs` assumption) requires building a temporally
-coherent BFMCS over Rat that contains any given MCS. This construction
-exists in the staged construction modules but is not wired here.
+**Status** (Task 31, 2026-03-21):
+Both conditional and unconditional theorems are available. The unconditional
+theorem uses `construct_bfmcs_from_mcs_Dense` which builds on Task 30's
+`dovetailedTimelineQuotBFMCS` with proven temporal coherence.
+
+**Sorry Inventory**:
+The remaining sorries are in the BFMCS construction infrastructure:
+- Modal backward: requires `phi -> Box phi` which is not generally provable
+
+**Key Achievement** (Task 31):
+This module provides the representation theorem infrastructure needed to close
+the sorry in `timelineQuot_not_valid_of_neg_consistent`. The next step is to
+wire this into `TimelineQuotCompleteness.lean`.
 
 **Connection to Dense Completeness**:
 The dense completeness theorem (valid_dense φ → provable φ) is the

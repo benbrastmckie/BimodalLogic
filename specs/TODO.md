@@ -60,7 +60,7 @@ technical_debt:
 
 ### 31. Wire dense truth lemma instantiation
 - **Effort**: 2-3 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 30
 - **Parent Task**: #18

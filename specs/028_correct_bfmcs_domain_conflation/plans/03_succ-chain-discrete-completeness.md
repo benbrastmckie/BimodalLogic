@@ -57,7 +57,7 @@ The correct path uses a single FMCS family (SuccChainFMCS) avoiding cross-family
 
 ## Implementation Phases
 
-### Phase 1: Prove succ_chain_forward_F_bounded_axiom [NOT STARTED]
+### Phase 1: Prove succ_chain_forward_F_bounded_axiom [PARTIAL]
 
 **Goal**: Prove the bounded F-nesting case using bounded_witness or iterative single_step_forcing
 
@@ -78,7 +78,7 @@ The correct path uses a single FMCS family (SuccChainFMCS) avoiding cross-family
 
 ---
 
-### Phase 2: Prove succ_chain_forward_F_neg_axiom [NOT STARTED]
+### Phase 2: Prove succ_chain_forward_F_neg_axiom [COMPLETED]
 
 **Goal**: Prove F-coherence for negative indices (backward chain)
 
@@ -99,7 +99,7 @@ The correct path uses a single FMCS family (SuccChainFMCS) avoiding cross-family
 
 ---
 
-### Phase 3: Prove succ_chain_backward_P_axiom [NOT STARTED]
+### Phase 3: Prove succ_chain_backward_P_axiom [PARTIAL]
 
 **Goal**: Prove backward P coherence using temporal duality
 

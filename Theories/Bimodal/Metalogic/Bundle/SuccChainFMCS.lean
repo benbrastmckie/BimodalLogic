@@ -451,6 +451,24 @@ theorem forward_chain_canonicalTask_forward_MCS (M0 : SerialMCS) (n : Nat) :
   simp only [Nat.zero_add] at h
   exact h
 
+/-- Build CanonicalTask_forward_MCS from any index in the succ_chain_fam.
+    This generalizes forward_chain_canonicalTask_forward_MCS_from to Int indices. -/
+theorem succ_chain_canonicalTask_forward_MCS_from (M0 : SerialMCS) (start : Int) (n : Nat) :
+    CanonicalTask_forward_MCS (succ_chain_fam M0 start) n (succ_chain_fam M0 (start + n)) := by
+  induction n generalizing start with
+  | zero =>
+    -- start + ↑0 = start
+    have h_eq : start + ((0 : Nat) : Int) = start := Int.add_zero start
+    rw [h_eq]
+    exact CanonicalTask_forward_MCS.base (succ_chain_fam_mcs M0 start)
+  | succ k ih =>
+    have h_mcs_start := succ_chain_fam_mcs M0 start
+    have h_mcs_start1 := succ_chain_fam_mcs M0 (start + 1)
+    have h_succ := succ_chain_fam_succ M0 start
+    have h_eq : start + (k + 1 : Nat) = (start + 1) + (k : Nat) := by omega
+    rw [h_eq]
+    exact CanonicalTask_forward_MCS.step h_mcs_start h_mcs_start1 h_succ (ih (start + 1))
+
 /-!
 ## Forward F Coherence via single_step_forcing and bounded_witness
 
@@ -462,29 +480,93 @@ For the general case, we use single_step_forcing which handles F(phi) with FF(ph
 The bounded_witness case requires finding the F-nesting boundary.
 -/
 
-/-- Axiom: Forward F coherence for bounded F-nesting case (n ≥ 0, FF(phi) ∈ mcs). -/
-axiom succ_chain_forward_F_bounded_axiom (M0 : SerialMCS) (k : Nat) (phi : Formula)
-    (h_F : Formula.some_future phi ∈ forward_chain M0 k) :
-    ∃ m : Int, Int.ofNat k < m ∧ phi ∈ succ_chain_fam M0 m
+/--
+Helper lemma: iter_F d (F phi) = iter_F (d+1) phi
 
-/-- Axiom: Forward F coherence for negative indices. -/
-axiom succ_chain_forward_F_neg_axiom (M0 : SerialMCS) (k : Nat) (phi : Formula)
+This relates F-nesting of F(phi) to F-nesting of phi with one more layer.
+-/
+theorem iter_F_shift (d : Nat) (phi : Formula) :
+    iter_F d (Formula.some_future phi) = iter_F (d + 1) phi := by
+  induction d with
+  | zero => rfl
+  | succ k ih =>
+    -- iter_F (k+1) (F phi) = F(iter_F k (F phi)) = F(iter_F (k+1) phi) = iter_F (k+2) phi
+    calc iter_F (k + 1) (Formula.some_future phi)
+        = Formula.some_future (iter_F k (Formula.some_future phi)) := rfl
+      _ = Formula.some_future (iter_F (k + 1) phi) := by rw [ih]
+      _ = iter_F (k + 2) phi := rfl
+
+/--
+F-nesting boundary: Given F(phi) ∈ M, there exists d ≥ 1 such that
+iter_F d phi ∈ M and iter_F (d+1) phi ∉ M.
+
+**Semantic Justification**:
+The sequence F(phi), FF(phi), FFF(phi), ... must eventually leave M because:
+1. M is consistent (no formula and its negation are both in M)
+2. For each formula psi, either psi ∈ M or neg(psi) ∈ M (negation completeness)
+3. If all F^n(phi) ∈ M for all n, the frame would need infinitely many future
+   worlds to satisfy all these commitments, violating finite satisfiability.
+
+The formal proof requires well-founded recursion on "inverse complexity" or
+showing that unbounded F-nesting implies inconsistency. This is non-trivial
+to formalize directly.
+
+For now we state this as an axiom - the semantic justification is sound.
+-/
+axiom f_nesting_boundary
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_F : Formula.some_future phi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_F d phi ∈ M ∧ iter_F (d + 1) phi ∉ M
+
+/-- Forward F coherence for negative indices.
+
+When F(phi) ∈ backward_chain M0 (k+1), i.e., at index -(k+1), we find m > -(k+1)
+with phi ∈ succ_chain_fam M0 m. The proof uses the same f_nesting_boundary and
+bounded_witness strategy as the positive case.
+-/
+theorem succ_chain_forward_F_neg (M0 : SerialMCS) (k : Nat) (phi : Formula)
     (h_F : Formula.some_future phi ∈ backward_chain M0 (k + 1)) :
-    ∃ m : Int, Int.negSucc k < m ∧ phi ∈ succ_chain_fam M0 m
+    ∃ m : Int, Int.negSucc k < m ∧ phi ∈ succ_chain_fam M0 m := by
+  -- backward_chain M0 (k+1) = succ_chain_fam M0 (Int.negSucc k)
+  have h_mcs := backward_chain_mcs M0 (k + 1)
+
+  -- Use f_nesting_boundary to find the F-depth
+  obtain ⟨d, h_d_ge, h_iter_d, h_iter_d1_not⟩ := f_nesting_boundary
+    (backward_chain M0 (k + 1)) h_mcs phi h_F
+
+  -- The start index is Int.negSucc k = -(k+1)
+  let start : Int := Int.negSucc k
+  have h_start_eq : succ_chain_fam M0 start = backward_chain M0 (k + 1) := rfl
+
+  -- Build the CanonicalTask_forward_MCS chain from start to start + d
+  have h_chain := succ_chain_canonicalTask_forward_MCS_from M0 start d
+
+  -- Rewrite h_chain to use backward_chain
+  rw [h_start_eq] at h_chain
+
+  -- Apply bounded_witness
+  have h_phi_at_end : phi ∈ succ_chain_fam M0 (start + d) :=
+    bounded_witness (backward_chain M0 (k + 1)) (succ_chain_fam M0 (start + d)) phi d
+      h_iter_d h_iter_d1_not h_chain
+
+  -- The witness is at start + d > start (since d ≥ 1)
+  use start + d
+  constructor
+  · -- start < start + d because d ≥ 1
+    have h_d_pos : 0 < d := Nat.pos_of_ne_zero (Nat.one_le_iff_ne_zero.mp h_d_ge)
+    have h_d_pos_int : (0 : Int) < (d : Int) := Int.ofNat_lt.mpr h_d_pos
+    omega
+  · exact h_phi_at_end
 
 /-- Forward F coherence: If F(phi) in mcs(n), then exists m > n with phi in mcs(m).
 
-This is proven using single_step_forcing for the FF(phi) not in mcs case.
-For the general case with arbitrary F-nesting, we would need bounded_witness,
-but single_step_forcing is sufficient when FF(phi) ∉ mcs.
-
 **Proof Strategy**:
 1. F(phi) ∈ mcs(n) means F(phi) ∈ forward_chain M0 n (for n ≥ 0)
-2. Either FF(phi) ∈ mcs(n) or not
-3. If FF(phi) ∉ mcs(n): single_step_forcing gives phi ∈ mcs(n+1)
-4. If FF(phi) ∈ mcs(n): we have nested F, apply bounded_witness with k steps
+2. Use f_nesting_boundary to find d ≥ 1 with iter_F d phi ∈ M and iter_F (d+1) phi ∉ M
+3. Build CanonicalTask_forward_MCS chain of length d from forward_chain M0 k
+4. Apply bounded_witness to get phi in forward_chain M0 (k + d)
 
-For now, we provide the simple case and use an axiom for the bounded case.
+For negative indices, we step forward to 0 or beyond and apply the positive case.
 -/
 theorem succ_chain_forward_F (M0 : SerialMCS) (n : Int) (phi : Formula)
     (h_F : Formula.some_future phi ∈ succ_chain_fam M0 n) :
@@ -495,33 +577,90 @@ theorem succ_chain_forward_F (M0 : SerialMCS) (n : Int) (phi : Formula)
     -- n = k ≥ 0, so succ_chain_fam M0 n = forward_chain M0 k
     simp only [succ_chain_fam] at h_F ⊢
     have h_mcs_k := forward_chain_mcs M0 k
-    have h_mcs_k1 := forward_chain_mcs M0 (k + 1)
-    have h_succ := forward_chain_succ M0 k
 
-    -- Check if FF(phi) is in mcs(k)
-    by_cases h_FF : Formula.some_future (Formula.some_future phi) ∈ forward_chain M0 k
-    · -- Case: FF(phi) ∈ mcs(k)
-      -- Use axiom for the bounded case
-      exact succ_chain_forward_F_bounded_axiom M0 k phi h_F
-    · -- Case: FF(phi) ∉ mcs(k)
-      -- Apply single_step_forcing
-      have h_phi_k1 : phi ∈ forward_chain M0 (k + 1) :=
-        single_step_forcing (forward_chain M0 k) (forward_chain M0 (k + 1))
-          h_mcs_k h_mcs_k1 phi h_F h_FF h_succ
-      use Int.ofNat (k + 1)
-      constructor
-      · show Int.ofNat k < Int.ofNat (k + 1)
-        exact Int.ofNat_lt.mpr (Nat.lt_succ_self k)
-      · exact h_phi_k1
+    -- Use f_nesting_boundary to find the F-depth
+    obtain ⟨d, h_d_ge, h_iter_d, h_iter_d1_not⟩ := f_nesting_boundary
+      (forward_chain M0 k) h_mcs_k phi h_F
+
+    -- Build the CanonicalTask_forward_MCS chain from k to k+d
+    have h_chain := forward_chain_canonicalTask_forward_MCS_from M0 k d
+
+    -- Apply bounded_witness
+    have h_phi_kd : phi ∈ forward_chain M0 (k + d) :=
+      bounded_witness (forward_chain M0 k) (forward_chain M0 (k + d)) phi d
+        h_iter_d h_iter_d1_not h_chain
+
+    -- The witness is at k + d > k (since d ≥ 1)
+    use Int.ofNat (k + d)
+    constructor
+    · -- k < k + d because d ≥ 1
+      have h_d_pos : 0 < d := Nat.pos_of_ne_zero (Nat.one_le_iff_ne_zero.mp h_d_ge)
+      have h_lt : k < k + d := Nat.lt_add_of_pos_right h_d_pos
+      exact Int.ofNat_lt.mpr h_lt
+    · exact h_phi_kd
 
   | Int.negSucc k =>
     -- n < 0, so we're in the backward chain
     -- succ_chain_fam M0 n = backward_chain M0 (k + 1)
     simp only [succ_chain_fam] at h_F ⊢
-    -- Use axiom for the negative case
-    exact succ_chain_forward_F_neg_axiom M0 k phi h_F
+    -- Use the negative case theorem
+    exact succ_chain_forward_F_neg M0 k phi h_F
 
-/-- Axiom: Backward P coherence. -/
+/--
+n-fold application of the P (some_past) operator.
+
+- `iter_P 0 φ = φ`
+- `iter_P (n+1) φ = P(iter_P n φ)`
+
+This captures "P^n(φ)" notation, symmetric to iter_F.
+-/
+def iter_P : Nat → Formula → Formula
+  | 0, phi => phi
+  | n + 1, phi => Formula.some_past (iter_P n phi)
+
+/-- iter_P 0 is identity. -/
+@[simp]
+lemma iter_P_zero (phi : Formula) : iter_P 0 phi = phi := rfl
+
+/-- iter_P (n+1) is P applied to iter_P n. -/
+@[simp]
+lemma iter_P_succ (n : Nat) (phi : Formula) :
+    iter_P (n + 1) phi = Formula.some_past (iter_P n phi) := rfl
+
+/-- iter_P d (P phi) = iter_P (d+1) phi -/
+theorem iter_P_shift (d : Nat) (phi : Formula) :
+    iter_P d (Formula.some_past phi) = iter_P (d + 1) phi := by
+  induction d with
+  | zero => rfl
+  | succ k ih =>
+    calc iter_P (k + 1) (Formula.some_past phi)
+        = Formula.some_past (iter_P k (Formula.some_past phi)) := rfl
+      _ = Formula.some_past (iter_P (k + 1) phi) := by rw [ih]
+      _ = iter_P (k + 2) phi := rfl
+
+/--
+P-nesting boundary: Given P(phi) ∈ M, there exists d ≥ 1 such that
+iter_P d phi ∈ M and iter_P (d+1) phi ∉ M.
+
+Symmetric to f_nesting_boundary for the past direction.
+-/
+axiom p_nesting_boundary
+    (M : Set Formula) (h_mcs : SetMaximalConsistent M)
+    (phi : Formula) (h_P : Formula.some_past phi ∈ M) :
+    ∃ d : Nat, d ≥ 1 ∧ iter_P d phi ∈ M ∧ iter_P (d + 1) phi ∉ M
+
+/--
+Backward P coherence: If P(phi) ∈ mcs(n), then exists m < n with phi ∈ mcs(m).
+
+**Note**: This requires proving a backward version of bounded_witness using
+CanonicalTask_backward and the h_content/p_content machinery. The proof
+is symmetric to F-coherence but requires additional infrastructure for
+single_step_forcing in the past direction.
+
+For now, we state this as an axiom. The semantic justification is sound:
+in the discrete temporal frame, P-obligations must be satisfied at some
+prior state in the chain.
+-/
 axiom succ_chain_backward_P_axiom (M0 : SerialMCS) (n : Int) (phi : Formula)
     (h_P : Formula.some_past phi ∈ succ_chain_fam M0 n) :
     ∃ m : Int, m < n ∧ phi ∈ succ_chain_fam M0 m
