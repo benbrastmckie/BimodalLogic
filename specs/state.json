@@ -179,10 +179,10 @@
     {
       "project_number": 14,
       "project_name": "succ_chain_fmcs_and_taskframe_int",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:37:01Z",
+      "last_updated": "2026-03-21T11:00:38Z",
       "dependencies": [
         11,
         12
@@ -198,6 +198,11 @@
           "path": "specs/014_succ_chain_fmcs_and_taskframe_int/plans/01_succ-fmcs-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for Succ-chain FMCS and TaskFrame Int construction"
+        },
+        {
+          "path": "specs/014_succ_chain_fmcs_and_taskframe_int/summaries/01_succ-fmcs-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary for Succ-chain FMCS, TaskFrame, and WorldHistory"
         }
       ],
       "session_id": "sess_1774089400_80f454",
@@ -217,7 +222,9 @@
           }
         ]
       },
-      "started": "2026-03-21T10:37:01Z"
+      "started": "2026-03-21T10:37:01Z",
+      "completed": "2026-03-21T11:00:38Z",
+      "completion_summary": "Implemented Succ-chain FMCS family over Int with forward/backward chains, proved all 4 coherence properties (G/H/F/P), instantiated CanonicalTaskTaskFrame, and constructed WorldHistory with respects_task."
     },
     {
       "project_number": 15,
@@ -269,15 +276,16 @@
     {
       "project_number": 17,
       "project_name": "bfmcs_over_timeline_quot_dense",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T11:00:56Z",
       "dependencies": [
         16
       ],
       "description": "Construct a temporally complete BFMCS bundle with families indexed by TimelineQuot satisfying both modal_backward (requires multiple families) and temporal coherence (forward_F, backward_P). Uses timelineQuotFMCS from TimelineQuotCanonical.lean as base family. This is the dense analogue of the discrete Succ-chain FMCS and the key blocker for dense completeness (timelineQuotSingletonBFMCS fails modal_backward).",
-      "artifacts": []
+      "artifacts": [],
+      "session_id": "sess_1774090841_03f853"
     },
     {
       "project_number": 18,

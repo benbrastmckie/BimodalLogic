@@ -249,23 +249,24 @@ theorem succ_chain_forward_G_step (M0 : SerialMCS) (n : Int) (phi : Formula)
   have h_G_next : Formula.all_future phi ∈ succ_chain_fam M0 (n + 1) := h_succ.g_persistence h_G_in_g
   exact ⟨h_phi_next, h_G_next⟩
 
-/-- Helper: G(phi) propagates through k steps (for k >= 1) -/
-theorem succ_chain_G_propagates (M0 : SerialMCS) (n : Int) (phi : Formula) (k : Nat)
+/-- Helper: G(phi) propagates through k+1 steps -/
+theorem succ_chain_G_propagates_succ (M0 : SerialMCS) (n : Int) (phi : Formula) (k : Nat)
     (h_G : Formula.all_future phi ∈ succ_chain_fam M0 n) :
-    phi ∈ succ_chain_fam M0 (n + k) ∧ Formula.all_future phi ∈ succ_chain_fam M0 (n + k) := by
-  induction k with
+    phi ∈ succ_chain_fam M0 (n + (k + 1)) ∧ Formula.all_future phi ∈ succ_chain_fam M0 (n + (k + 1)) := by
+  induction k generalizing n with
   | zero =>
-    -- k = 0: need phi at n, but strict semantics doesn't give this from G(phi) at n
-    -- This case won't be used since forward_G requires n < m, meaning k >= 1
-    -- Use sorry for the phi part (never called), G(phi) is trivial
-    have h_eq : n + (0 : Nat) = n := by omega
+    -- k = 0, so we need to show result for n + 1
+    have h_eq : n + ((0 : Nat) + 1) = n + 1 := by omega
     rw [h_eq]
-    exact ⟨sorry, h_G⟩
+    exact succ_chain_forward_G_step M0 n phi h_G
   | succ k' ih =>
-    have ⟨_, h_G_at_k'⟩ := ih
-    have h_eq : n + (↑(k' + 1) : Int) = (n + ↑k') + 1 := by omega
+    -- k = k' + 1, so we need result for n + (k' + 2)
+    have h_eq : n + (↑(k' + 1) + 1) = (n + 1) + (↑k' + 1) := by omega
     rw [h_eq]
-    exact succ_chain_forward_G_step M0 (n + k') phi h_G_at_k'
+    -- Get G(phi) at n + 1 from the step
+    have ⟨_, h_G_next⟩ := succ_chain_forward_G_step M0 n phi h_G
+    -- Apply induction hypothesis with n + 1
+    exact ih (n + 1) h_G_next
 
 /-- Forward G coherence -/
 theorem succ_chain_forward_G (M0 : SerialMCS) (n m : Int) (phi : Formula)
@@ -278,9 +279,11 @@ theorem succ_chain_forward_G (M0 : SerialMCS) (n m : Int) (phi : Formula)
     cases k with
     | zero => simp at hk; omega
     | succ k' => exact Nat.succ_pos k'
-  have h_m_eq : m = n + k := by omega
+  -- k > 0 means k = j + 1 for some j
+  obtain ⟨j, hj⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.pos_iff_ne_zero.mp hk_pos)
+  have h_m_eq : m = n + (j + 1) := by omega
   rw [h_m_eq]
-  exact (succ_chain_G_propagates M0 n phi k h_G).1
+  exact (succ_chain_G_propagates_succ M0 n phi j h_G).1
 
 /-- Axiom: H(phi) -> H(H(phi)) -/
 axiom past_4_axiom (phi : Formula) : [] ⊢ (Formula.all_past phi).imp (Formula.all_past (Formula.all_past phi))
@@ -306,21 +309,24 @@ theorem succ_chain_backward_H_step (M0 : SerialMCS) (n : Int) (phi : Formula)
   have h_H_prev : Formula.all_past phi ∈ succ_chain_fam M0 (n - 1) := h_h_subset h_H_in_h
   exact ⟨h_phi_prev, h_H_prev⟩
 
-/-- Helper: H(phi) propagates backward through k steps -/
-theorem succ_chain_H_propagates (M0 : SerialMCS) (n : Int) (phi : Formula) (k : Nat)
+/-- Helper: H(phi) propagates backward through k+1 steps -/
+theorem succ_chain_H_propagates_succ (M0 : SerialMCS) (n : Int) (phi : Formula) (k : Nat)
     (h_H : Formula.all_past phi ∈ succ_chain_fam M0 n) :
-    phi ∈ succ_chain_fam M0 (n - k) ∧ Formula.all_past phi ∈ succ_chain_fam M0 (n - k) := by
-  induction k with
+    phi ∈ succ_chain_fam M0 (n - (k + 1)) ∧ Formula.all_past phi ∈ succ_chain_fam M0 (n - (k + 1)) := by
+  induction k generalizing n with
   | zero =>
-    -- k = 0: same issue as forward case
-    have h_eq : n - (0 : Nat) = n := by omega
+    -- k = 0, so we need to show result for n - 1
+    have h_eq : n - ((0 : Nat) + 1) = n - 1 := by omega
     rw [h_eq]
-    exact ⟨sorry, h_H⟩
+    exact succ_chain_backward_H_step M0 n phi h_H
   | succ k' ih =>
-    have ⟨_, h_H_at_k'⟩ := ih
-    have h_eq : n - (↑(k' + 1) : Int) = (n - ↑k') - 1 := by omega
+    -- k = k' + 1, so we need result for n - (k' + 2)
+    have h_eq : n - (↑(k' + 1) + 1) = (n - 1) - (↑k' + 1) := by omega
     rw [h_eq]
-    exact succ_chain_backward_H_step M0 (n - k') phi h_H_at_k'
+    -- Get H(phi) at n - 1 from the step
+    have ⟨_, h_H_prev⟩ := succ_chain_backward_H_step M0 n phi h_H
+    -- Apply induction hypothesis with n - 1
+    exact ih (n - 1) h_H_prev
 
 /-- Backward H coherence -/
 theorem succ_chain_backward_H (M0 : SerialMCS) (n m : Int) (phi : Formula)
@@ -333,9 +339,11 @@ theorem succ_chain_backward_H (M0 : SerialMCS) (n m : Int) (phi : Formula)
     cases k with
     | zero => simp at hk; omega
     | succ k' => exact Nat.succ_pos k'
-  have h_m_eq : m = n - k := by omega
+  -- k > 0 means k = j + 1 for some j
+  obtain ⟨j, hj⟩ := Nat.exists_eq_succ_of_ne_zero (Nat.pos_iff_ne_zero.mp hk_pos)
+  have h_m_eq : m = n - (j + 1) := by omega
   rw [h_m_eq]
-  exact (succ_chain_H_propagates M0 n phi k h_H).1
+  exact (succ_chain_H_propagates_succ M0 n phi j h_H).1
 
 /-- Axiom: Forward F coherence -/
 axiom succ_chain_forward_F_axiom (M0 : SerialMCS) (n : Int) (phi : Formula)

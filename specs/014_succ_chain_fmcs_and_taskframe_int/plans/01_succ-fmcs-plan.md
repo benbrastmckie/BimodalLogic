@@ -1,7 +1,7 @@
 # Implementation Plan: Succ-Chain FMCS and TaskFrame Int
 
 - **Task**: 14 - succ_chain_fmcs_and_taskframe_int
-- **Status**: [NOT STARTED]
+- **Status**: [COMPLETED]
 - **Effort**: 5 hours
 - **Dependencies**: Task 10 (Succ relation), Task 11 (CanonicalTask), Task 12 (Succ existence)
 - **Research Inputs**: reports/01_succ-fmcs-research.md
@@ -145,7 +145,7 @@ Key findings from research report:
 
 ---
 
-### Phase 5: WorldHistory Construction [IN PROGRESS]
+### Phase 5: WorldHistory Construction [COMPLETED]
 
 **Goal**: Construct WorldHistory from Succ-chain with respects_task proven.
 
