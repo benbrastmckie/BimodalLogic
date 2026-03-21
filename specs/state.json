@@ -229,10 +229,10 @@
     {
       "project_number": 15,
       "project_name": "discrete_representation_theorem_axiom_removal",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:08:28Z",
+      "last_updated": "2026-03-21T11:11:30Z",
       "dependencies": [
         13,
         14
@@ -243,10 +243,30 @@
           "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/01_discrete-rep-research.md",
           "type": "research_report",
           "summary": "Comprehensive analysis of wiring Succ-chain FMCS to discrete representation theorem. Identifies 8 axioms across 3 files; recommends wiring with documented axioms first, then axiom elimination in follow-up tasks."
+        },
+        {
+          "path": "specs/015_discrete_representation_theorem_axiom_removal/plans/01_discrete-rep-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for wiring Succ-chain FMCS to discrete representation theorem"
         }
       ],
       "session_id": "sess_1774091292_60023c",
-      "researched": "2026-03-21T11:07:24Z"
+      "researched": "2026-03-21T11:07:24Z",
+      "planned": "2026-03-21T11:11:30Z",
+      "plan_metadata": {
+        "phases": 5,
+        "total_effort_hours": 4,
+        "complexity": "medium",
+        "research_integrated": true,
+        "plan_version": 1,
+        "reports_integrated": [
+          {
+            "path": "reports/01_discrete-rep-research.md",
+            "integrated_in_plan_version": 1,
+            "integrated_date": "2026-03-21"
+          }
+        ]
+      }
     },
     {
       "project_number": 16,
@@ -284,10 +304,10 @@
     {
       "project_number": 17,
       "project_name": "bfmcs_over_timeline_quot_dense",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:08:58Z",
+      "last_updated": "2026-03-21T11:11:07Z",
       "dependencies": [
         16
       ],
@@ -304,9 +324,10 @@
           "summary": "5-phase implementation plan for multi-family BFMCS over TimelineQuot with modal and temporal coherence"
         }
       ],
-      "session_id": "sess_1774091168_8e6187",
+      "session_id": "sess_1774091442_2d1843",
       "researched": "2026-03-21T11:05:18Z",
-      "planned": "2026-03-21T11:08:58Z"
+      "planned": "2026-03-21T11:08:58Z",
+      "started": "2026-03-21T11:11:07Z"
     },
     {
       "project_number": 18,
