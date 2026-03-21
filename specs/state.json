@@ -376,10 +376,10 @@
     {
       "project_number": 18,
       "project_name": "dense_representation_theorem_completion",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T18:44:20Z",
+      "last_updated": "2026-03-21T18:51:10Z",
       "dependencies": [
         17
       ],
@@ -414,10 +414,15 @@
           "path": "specs/018_dense_representation_theorem_completion/reports/05_team-research.md",
           "type": "research_report",
           "summary": "Team research (2 teammates, run 5): 7 real sorries identified, dependency DAG, revised 4-phase plan A-D avoiding closure operator. Key insight: temporal coherence needs CanonicalR-to-TimelineQuot bridge, not new closure infrastructure."
+        },
+        {
+          "path": "specs/018_dense_representation_theorem_completion/reports/08_team-research.md",
+          "type": "research_report",
+          "summary": "Team research (3 teammates): closure fixpoint = CanonicalMCS, 3 viable approaches ranked by elegance"
         }
       ],
       "session_id": "sess_1774117703_fa1892",
-      "researched": "2026-03-21T19:15:00Z",
+      "researched": "2026-03-21T18:51:10Z",
       "planned": "2026-03-21T18:14:11Z",
       "started": "2026-03-21T17:15:15Z"
     },
