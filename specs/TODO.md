@@ -159,7 +159,7 @@ technical_debt:
 
 ### 13. Prove CanonicalR recovery from CanonicalTask
 - **Effort**: 3-5 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Tasks 11, 12
 - **Files**: New CanonicalRecovery.lean or extend CanonicalTask.lean
@@ -188,10 +188,11 @@ technical_debt:
 
 ### 11. Define CanonicalTask inductive three-place relation and prove TaskFrame axioms
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New CanonicalTask.lean
+- **Research**: [01_canonical-task-research.md](011_define_canonical_task_relation/reports/01_canonical-task-research.md)
 - **Research (task 6)**:
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.4–2.5, §4 — inductive definition, proof of all three TaskFrame axioms, bounded witness corollary
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §4 — Lean encoding with Fin chains, comparison with parametric_canonical_task_rel

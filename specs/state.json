@@ -74,16 +74,23 @@
     {
       "project_number": 11,
       "project_name": "define_canonical_task_relation",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T09:54:14Z",
+      "last_updated": "2026-03-21T09:58:38Z",
       "dependencies": [
         10
       ],
       "description": "Define CanonicalTask(u,n,v) inductively from Succ: base u=v for n=0, step ∃w,Succ(u,w)∧CanonicalTask(w,n,v) for n≥1, converse for n<0. Prove the three TaskFrame axioms (nullity identity, forward compositionality by chain concatenation, converse by definition). Prove bounded witness corollary: F^nφ∈u ∧ F^(n+1)φ∉u implies witness within n Succ-steps.",
-      "artifacts": [],
-      "session_id": "sess_1774086842_9dd65b"
+      "artifacts": [
+        {
+          "path": "specs/011_define_canonical_task_relation/reports/01_canonical-task-research.md",
+          "type": "research_report",
+          "summary": "Implementation guidance for CanonicalTask relation with inductive definition strategy and TaskFrame axiom proofs"
+        }
+      ],
+      "session_id": "sess_1774086842_9dd65b",
+      "researched": "2026-03-21T09:58:38Z"
     },
     {
       "project_number": 12,
