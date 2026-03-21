@@ -74,10 +74,10 @@
     {
       "project_number": 11,
       "project_name": "define_canonical_task_relation",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T10:00:04Z",
+      "last_updated": "2026-03-21T10:02:26Z",
       "dependencies": [
         10
       ],
@@ -87,10 +87,16 @@
           "path": "specs/011_define_canonical_task_relation/reports/01_canonical-task-research.md",
           "type": "research_report",
           "summary": "Implementation guidance for CanonicalTask relation with inductive definition strategy and TaskFrame axiom proofs"
+        },
+        {
+          "path": "specs/011_define_canonical_task_relation/plans/01_canonical-task-plan.md",
+          "type": "plan",
+          "summary": "8-phase implementation plan for CanonicalTask relation with TaskFrame axioms"
         }
       ],
       "session_id": "sess_1774087183_be9cc2",
-      "researched": "2026-03-21T09:58:38Z"
+      "researched": "2026-03-21T09:58:38Z",
+      "planned": "2026-03-21T10:02:26Z"
     },
     {
       "project_number": 12,

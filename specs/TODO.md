@@ -174,7 +174,7 @@ technical_debt:
 
 ### 12. Prove Succ-based successor and predecessor existence under discrete axioms
 - **Effort**: 6-10 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New SuccExistence.lean, references DiscreteSuccSeed.lean
@@ -182,6 +182,7 @@ technical_debt:
   - [01_succ-existence-research.md](012_succ_successor_predecessor_existence/reports/01_succ-existence-research.md) — deferral seed construction, DF consistency, symmetric predecessor existence
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.7 — successor existence proof sketch, deferral seed, use of DF and Lindenbaum
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §5 — detailed deferral seed construction, consistency argument, comparison with DiscreteSuccSeed blocking-formula approach, fallback strategy
+- **Plan**: [01_succ-existence-plan.md](012_succ_successor_predecessor_existence/plans/01_succ-existence-plan.md)
 
 **Description**: Prove that under discrete axioms (base+DF+seriality), for any MCS u with F⊤∈u, there exists MCS v with Succ(u,v). Constructs deferral seed g_content(u)∪{φ∨Fφ|Fφ∈u}, proves consistency via DF (analogous to forward_temporal_witness_seed_consistent but with disjunctive deferrals), extends by Lindenbaum. Symmetric predecessor existence via DB. Critical proof: the deferral seed consistency argument is the crux that replaces discrete_Icc_finite_axiom. Fallback: axiomatize successor existence (weaker and more transparent than the current interval-finiteness axiom).
 
@@ -189,11 +190,12 @@ technical_debt:
 
 ### 11. Define CanonicalTask inductive three-place relation and prove TaskFrame axioms
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 10
 - **Files**: New CanonicalTask.lean
 - **Research**: [01_canonical-task-research.md](011_define_canonical_task_relation/reports/01_canonical-task-research.md)
+- **Plan**: [01_canonical-task-plan.md](011_define_canonical_task_relation/plans/01_canonical-task-plan.md)
 - **Research (task 6)**:
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.4–2.5, §4 — inductive definition, proof of all three TaskFrame axioms, bounded witness corollary
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §4 — Lean encoding with Fin chains, comparison with parametric_canonical_task_rel
