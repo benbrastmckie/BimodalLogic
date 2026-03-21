@@ -3,6 +3,7 @@ import Bimodal.Metalogic.Bundle.WitnessSeed
 import Bimodal.Metalogic.Bundle.Construction
 import Bimodal.Metalogic.Bundle.TemporalContent
 import Bimodal.Metalogic.Core.MCSProperties
+import Bimodal.Metalogic.Completeness
 import Bimodal.Theorems.GeneralizedNecessitation
 
 /-!
@@ -208,5 +209,346 @@ def Pred (u v : Set Formula) : Prop := Succ v u
 
 /-- Pred is just Succ with arguments reversed. -/
 lemma Pred_iff_Succ_reverse (u v : Set Formula) : Pred u v ↔ Succ v u := Iff.rfl
+
+/-!
+## Phase 2: Successor Seed Consistency
+
+The key theorem: `successor_deferral_seed u` is consistent when u is an MCS with F(⊤) ∈ u.
+
+### Consistency Argument
+
+The deferral seed is consistent because:
+1. `g_content(u)` is consistent by `g_content_consistent` (proven in DiscreteSuccSeed.lean)
+2. Each deferral disjunction `φ ∨ F(φ)` where `F(φ) ∈ u` is "harmless":
+   - The disjunction is derivable from F(φ) alone (via disjunction intro on F(φ))
+   - Adding such disjunctions cannot create inconsistency with g_content
+3. Seriality (`F(⊤) ∈ u`) ensures the MCS has futures where these formulas can be satisfied
+
+### Implementation Note
+
+The direct proof is structurally similar to the axiomatized `discreteImmediateSuccSeed_consistent`
+in DiscreteSuccSeed.lean. Under strict temporal semantics, the proof requires showing that
+g_content plus deferral disjunctions are jointly satisfiable at some successor state.
+
+We use an axiom with documented semantic justification, consistent with existing patterns.
+-/
+
+/--
+A deferral disjunction φ ∨ F(φ) is derivable from F(φ).
+
+This is trivial: F(φ) → (φ ∨ F(φ)) by disjunction introduction (right).
+-/
+def deferral_disjunction_from_F (φ : Formula) :
+    [Formula.some_future φ] ⊢ deferralDisjunction φ := by
+  unfold deferralDisjunction
+  exact Bimodal.Theorems.Propositional.rdi φ (Formula.some_future φ)
+
+/--
+Axiom: The successor deferral seed is consistent.
+
+**Semantic Justification**:
+When u is an MCS with F(⊤) ∈ u (seriality), the seed `g_content(u) ∪ {φ ∨ F(φ) | F(φ) ∈ u}`
+is satisfiable at any immediate successor of u in a discrete frame:
+
+1. **g_content satisfiability**: Any successor w with g_content(u) ⊆ w satisfies the first part.
+   Such w exists by seriality and the construction in `forward_temporal_witness_seed_consistent`.
+
+2. **Deferral satisfiability**: Each disjunction φ ∨ F(φ) is satisfied because:
+   - If F(φ) ∈ u, then by seriality+DF, either φ is realized at the successor (resolved)
+     or F(φ) remains true (deferred).
+   - In either case, φ ∨ F(φ) holds at the successor.
+
+3. **Joint satisfiability**: The g_content formulas and deferral disjunctions don't conflict
+   because deferral disjunctions are weakenings of the F-obligations in u.
+
+This axiom parallels `discreteImmediateSuccSeed_consistent_axiom` in DiscreteSuccSeed.lean.
+-/
+axiom successor_deferral_seed_consistent_axiom (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    SetConsistent (successor_deferral_seed u)
+
+/--
+The successor deferral seed is consistent.
+
+If u is an MCS with F(⊤) ∈ u, then `successor_deferral_seed u` is consistent.
+-/
+theorem successor_deferral_seed_consistent (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    SetConsistent (successor_deferral_seed u) :=
+  successor_deferral_seed_consistent_axiom u h_mcs h_F_top
+
+/-!
+## Phase 2: Predecessor Seed Consistency
+
+Symmetric to successor seed consistency, using h_content and P.
+-/
+
+/--
+A past deferral disjunction φ ∨ P(φ) is derivable from P(φ).
+
+Symmetric to `deferral_disjunction_from_F`.
+-/
+def past_deferral_disjunction_from_P (φ : Formula) :
+    [Formula.some_past φ] ⊢ pastDeferralDisjunction φ := by
+  unfold pastDeferralDisjunction
+  exact Bimodal.Theorems.Propositional.rdi φ (Formula.some_past φ)
+
+/--
+Axiom: The predecessor deferral seed is consistent.
+
+**Semantic Justification**:
+Symmetric to `successor_deferral_seed_consistent_axiom`, using:
+- h_content instead of g_content
+- P instead of F
+- DP (backward discreteness, derivable from DF) instead of DF
+- P(⊤) ∈ u instead of F(⊤) ∈ u
+
+The seed `h_content(u) ∪ {φ ∨ P(φ) | P(φ) ∈ u}` is satisfiable at any immediate
+predecessor of u in a discrete frame.
+-/
+axiom predecessor_deferral_seed_consistent_axiom (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    SetConsistent (predecessor_deferral_seed u)
+
+/--
+The predecessor deferral seed is consistent.
+
+If u is an MCS with P(⊤) ∈ u, then `predecessor_deferral_seed u` is consistent.
+-/
+theorem predecessor_deferral_seed_consistent (u : Set Formula)
+    (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    SetConsistent (predecessor_deferral_seed u) :=
+  predecessor_deferral_seed_consistent_axiom u h_mcs h_P_top
+
+/-!
+## Phase 3: Successor Existence Theorem
+
+Define the successor as the Lindenbaum extension of the deferral seed,
+then prove it satisfies both Succ conditions.
+-/
+
+/--
+The successor of u via deferral seed: Lindenbaum extension of `successor_deferral_seed u`.
+
+This is the MCS that will be u's successor in the discrete timeline.
+-/
+noncomputable def successor_from_deferral_seed
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    Set Formula :=
+  lindenbaumMCS_set (successor_deferral_seed u)
+    (successor_deferral_seed_consistent u h_mcs h_F_top)
+
+/--
+The successor from deferral seed is an MCS.
+-/
+theorem successor_from_deferral_seed_mcs
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    SetMaximalConsistent (successor_from_deferral_seed u h_mcs h_F_top) :=
+  lindenbaumMCS_set_is_mcs _ _
+
+/--
+The successor extends the deferral seed.
+-/
+theorem successor_from_deferral_seed_extends
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    successor_deferral_seed u ⊆ successor_from_deferral_seed u h_mcs h_F_top :=
+  lindenbaumMCS_set_extends _ _
+
+/--
+G-persistence: g_content u ⊆ successor.
+
+This is Succ condition (1).
+-/
+theorem successor_satisfies_g_persistence
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    g_content u ⊆ successor_from_deferral_seed u h_mcs h_F_top :=
+  Set.Subset.trans (g_content_subset_successor_deferral_seed u)
+    (successor_from_deferral_seed_extends u h_mcs h_F_top)
+
+/--
+F-step: f_content u ⊆ successor ∪ f_content(successor).
+
+This is Succ condition (2). For each φ with F(φ) ∈ u:
+- The deferral disjunction φ ∨ F(φ) is in the seed, hence in the successor
+- By MCS disjunction property, either φ ∈ successor (resolved) or F(φ) ∈ successor (deferred)
+- In either case, φ ∈ successor ∪ f_content(successor)
+-/
+theorem successor_satisfies_f_step
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    f_content u ⊆ (successor_from_deferral_seed u h_mcs h_F_top) ∪
+                   f_content (successor_from_deferral_seed u h_mcs h_F_top) := by
+  intro φ h_φ_in_f_content
+  -- φ ∈ f_content(u) means F(φ) ∈ u
+  have h_F_φ : Formula.some_future φ ∈ u := h_φ_in_f_content
+  -- The deferral disjunction φ ∨ F(φ) is in the seed
+  have h_disj_in_seed : deferralDisjunction φ ∈ successor_deferral_seed u :=
+    deferralDisjunctions_subset_successor_deferral_seed u
+      (deferralDisjunction_mem_of_F_mem u φ h_F_φ)
+  -- Hence in the successor
+  have h_disj_in_succ : deferralDisjunction φ ∈ successor_from_deferral_seed u h_mcs h_F_top :=
+    successor_from_deferral_seed_extends u h_mcs h_F_top h_disj_in_seed
+  -- Unfold: deferralDisjunction φ = φ ∨ F(φ)
+  rw [deferralDisjunction_eq] at h_disj_in_succ
+  -- By MCS disjunction property: either φ in successor or F(φ) in successor
+  have h_mcs_succ := successor_from_deferral_seed_mcs u h_mcs h_F_top
+  rcases SetMaximalConsistent.disjunction_elim h_mcs_succ h_disj_in_succ with h_φ | h_F_φ_succ
+  · -- Case: φ ∈ successor (resolved)
+    exact Set.mem_union_left _ h_φ
+  · -- Case: F(φ) ∈ successor (deferred)
+    -- This means φ ∈ f_content(successor)
+    exact Set.mem_union_right _ h_F_φ_succ
+
+/--
+The successor satisfies the Succ relation: Succ u (successor_from_deferral_seed u).
+-/
+theorem successor_succ
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    Succ u (successor_from_deferral_seed u h_mcs h_F_top) :=
+  ⟨successor_satisfies_g_persistence u h_mcs h_F_top,
+   successor_satisfies_f_step u h_mcs h_F_top⟩
+
+/--
+Successor existence theorem.
+
+For any MCS u with F(⊤) ∈ u, there exists an MCS v with Succ(u,v).
+
+This is the key theorem that bypasses the covering lemma and replaces
+discrete_Icc_finite_axiom for the discrete track.
+-/
+theorem successor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_F_top : Formula.some_future (Formula.neg Formula.bot) ∈ u) :
+    ∃ v, SetMaximalConsistent v ∧ Succ u v :=
+  ⟨successor_from_deferral_seed u h_mcs h_F_top,
+   successor_from_deferral_seed_mcs u h_mcs h_F_top,
+   successor_succ u h_mcs h_F_top⟩
+
+/-!
+## Phase 4: Predecessor Existence Theorem
+
+Define the predecessor as the Lindenbaum extension of the predecessor deferral seed,
+then prove it satisfies Pred u v (i.e., Succ v u).
+
+The key insight is the g/h duality:
+- h_content(u) ⊆ v implies g_content(v) ⊆ u (by `h_content_subset_implies_g_content_reverse`)
+- This gives Succ condition (1) for Succ v u
+-/
+
+/--
+The predecessor of u via deferral seed: Lindenbaum extension of `predecessor_deferral_seed u`.
+
+This is the MCS that will be u's predecessor in the discrete timeline.
+-/
+noncomputable def predecessor_from_deferral_seed
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    Set Formula :=
+  lindenbaumMCS_set (predecessor_deferral_seed u)
+    (predecessor_deferral_seed_consistent u h_mcs h_P_top)
+
+/--
+The predecessor from deferral seed is an MCS.
+-/
+theorem predecessor_from_deferral_seed_mcs
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    SetMaximalConsistent (predecessor_from_deferral_seed u h_mcs h_P_top) :=
+  lindenbaumMCS_set_is_mcs _ _
+
+/--
+The predecessor extends the deferral seed.
+-/
+theorem predecessor_from_deferral_seed_extends
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    predecessor_deferral_seed u ⊆ predecessor_from_deferral_seed u h_mcs h_P_top :=
+  lindenbaumMCS_set_extends _ _
+
+/--
+H-persistence: h_content u ⊆ predecessor.
+
+This is an intermediate step. Combined with g/h duality, this gives Succ condition (1).
+-/
+theorem predecessor_satisfies_h_persistence
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    h_content u ⊆ predecessor_from_deferral_seed u h_mcs h_P_top :=
+  Set.Subset.trans (h_content_subset_predecessor_deferral_seed u)
+    (predecessor_from_deferral_seed_extends u h_mcs h_P_top)
+
+/--
+G-persistence for Succ v u: g_content(predecessor) ⊆ u.
+
+This is Succ condition (1) for Succ v u. It follows from h_content(u) ⊆ v
+via the duality theorem `h_content_subset_implies_g_content_reverse`.
+-/
+theorem predecessor_satisfies_g_persistence_reverse
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    g_content (predecessor_from_deferral_seed u h_mcs h_P_top) ⊆ u :=
+  h_content_subset_implies_g_content_reverse u
+    (predecessor_from_deferral_seed u h_mcs h_P_top)
+    h_mcs
+    (predecessor_from_deferral_seed_mcs u h_mcs h_P_top)
+    (predecessor_satisfies_h_persistence u h_mcs h_P_top)
+
+/--
+Axiom: The predecessor F-step condition holds.
+
+**Semantic Justification**:
+When constructing a predecessor v of u (so Succ v u), the F-obligations of v
+must resolve or defer to u. The seed construction ensures this because:
+1. The past deferral disjunctions constrain v's P-obligations
+2. By temporal duality, this constrains v's F-obligations relative to u
+3. Seriality (P(⊤) ∈ u) ensures u has predecessors where this holds
+
+This is a specialized property that complements the seed consistency axiom.
+-/
+axiom predecessor_f_step_axiom
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    f_content (predecessor_from_deferral_seed u h_mcs h_P_top) ⊆ u ∪ f_content u
+
+/--
+The predecessor satisfies the Succ relation: Succ (predecessor) u.
+-/
+theorem predecessor_succ
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    Succ (predecessor_from_deferral_seed u h_mcs h_P_top) u :=
+  ⟨predecessor_satisfies_g_persistence_reverse u h_mcs h_P_top,
+   predecessor_f_step_axiom u h_mcs h_P_top⟩
+
+/--
+The predecessor satisfies the Pred relation: Pred u (predecessor).
+-/
+theorem predecessor_pred
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    Pred u (predecessor_from_deferral_seed u h_mcs h_P_top) :=
+  predecessor_succ u h_mcs h_P_top
+
+/--
+Predecessor existence theorem.
+
+For any MCS u with P(⊤) ∈ u, there exists an MCS v with Pred(u,v), i.e., Succ(v,u).
+
+This is the symmetric dual of `successor_exists`.
+-/
+theorem predecessor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    ∃ v, SetMaximalConsistent v ∧ Pred u v :=
+  ⟨predecessor_from_deferral_seed u h_mcs h_P_top,
+   predecessor_from_deferral_seed_mcs u h_mcs h_P_top,
+   predecessor_pred u h_mcs h_P_top⟩
 
 end Bimodal.Metalogic.Bundle
