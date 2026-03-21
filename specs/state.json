@@ -1203,10 +1203,10 @@
     {
       "project_number": 26,
       "project_name": "remove_canonicalr_irreflexive_axiom",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:42:49Z",
+      "last_updated": "2026-03-21T20:02:33Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -1229,9 +1229,30 @@
           "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/02_synthesis.md",
           "type": "report",
           "summary": "Synthesized findings: 3 viable paths identified"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/03_teammate-a-findings.md",
+          "type": "report",
+          "summary": "Modal definability theory and Goldblatt-Thomason analysis"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/03_teammate-b-findings.md",
+          "type": "report",
+          "summary": "GL/Grz complete axiom systems analysis"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/03_teammate-c-findings.md",
+          "type": "report",
+          "summary": "Gabbay IRR rule formulation and implementation analysis"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/03_team-research.md",
+          "type": "report",
+          "summary": "Team research: modal non-definability, IRR rule, completeness (3 teammates)"
         }
       ],
-      "session_id": "sess_1774122144_418c32"
+      "session_id": "sess_1774122144_418c32",
+      "researched": "2026-03-21T20:02:33Z"
     }
   ],
   "next_project_number": 28,
