@@ -551,4 +551,49 @@ theorem predecessor_exists (u : Set Formula) (h_mcs : SetMaximalConsistent u)
    predecessor_from_deferral_seed_mcs u h_mcs h_P_top,
    predecessor_pred u h_mcs h_P_top⟩
 
+/-!
+## P-step Property for Predecessor Construction
+
+The P-step property captures how P-obligations propagate backward through predecessors.
+If Succ v u (so v is the predecessor of u), then p_content(u) ⊆ v ∪ p_content(v).
+This means each P(φ) ∈ u is either satisfied at v (φ ∈ v) or deferred (P(φ) ∈ v).
+
+This is the backward dual of the F-step property, and follows from the
+pastDeferralDisjunctions in the predecessor seed construction.
+-/
+
+/--
+P-step for predecessors: p_content(u) ⊆ predecessor ∪ p_content(predecessor).
+
+For each formula φ with P(φ) ∈ u:
+- The past deferral disjunction φ ∨ P(φ) is in the seed, hence in the predecessor
+- By MCS disjunction property, either φ ∈ predecessor (resolved) or P(φ) ∈ predecessor (deferred)
+- In either case, φ ∈ predecessor ∪ p_content(predecessor)
+-/
+theorem predecessor_satisfies_p_step
+    (u : Set Formula) (h_mcs : SetMaximalConsistent u)
+    (h_P_top : Formula.some_past (Formula.neg Formula.bot) ∈ u) :
+    p_content u ⊆ (predecessor_from_deferral_seed u h_mcs h_P_top) ∪
+                   p_content (predecessor_from_deferral_seed u h_mcs h_P_top) := by
+  intro φ h_φ_in_p_content
+  -- φ ∈ p_content(u) means P(φ) ∈ u
+  have h_P_φ : Formula.some_past φ ∈ u := h_φ_in_p_content
+  -- The past deferral disjunction φ ∨ P(φ) is in the seed
+  have h_disj_in_seed : pastDeferralDisjunction φ ∈ predecessor_deferral_seed u :=
+    pastDeferralDisjunctions_subset_predecessor_deferral_seed u
+      (pastDeferralDisjunction_mem_of_P_mem u φ h_P_φ)
+  -- Hence in the predecessor
+  have h_disj_in_pred : pastDeferralDisjunction φ ∈ predecessor_from_deferral_seed u h_mcs h_P_top :=
+    predecessor_from_deferral_seed_extends u h_mcs h_P_top h_disj_in_seed
+  -- Unfold: pastDeferralDisjunction φ = φ ∨ P(φ)
+  rw [pastDeferralDisjunction_eq] at h_disj_in_pred
+  -- By MCS disjunction property: either φ in predecessor or P(φ) in predecessor
+  have h_mcs_pred := predecessor_from_deferral_seed_mcs u h_mcs h_P_top
+  rcases SetMaximalConsistent.disjunction_elim h_mcs_pred h_disj_in_pred with h_φ | h_P_φ_pred
+  · -- Case: φ ∈ predecessor (resolved)
+    exact Set.mem_union_left _ h_φ
+  · -- Case: P(φ) ∈ predecessor (deferred)
+    -- This means φ ∈ p_content(predecessor)
+    exact Set.mem_union_right _ h_P_φ_pred
+
 end Bimodal.Metalogic.Bundle

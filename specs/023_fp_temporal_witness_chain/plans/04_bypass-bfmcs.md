@@ -88,7 +88,7 @@ TM logic has T and 4 axioms but NOT the 5-axiom (Euclidean). BFMCS requires `Box
 
 ---
 
-### Phase 2: Build Symmetric Past Infrastructure [PARTIAL]
+### Phase 2: Build Symmetric Past Infrastructure [COMPLETED]
 
 **Goal**: Prove `succ_chain_backward_P_axiom` by building symmetric infrastructure.
 

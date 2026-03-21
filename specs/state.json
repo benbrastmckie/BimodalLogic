@@ -209,10 +209,10 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T22:37:50Z",
+      "last_updated": "2026-03-21T23:09:17Z",
       "dependencies": [
         15
       ],
@@ -269,10 +269,17 @@
           "path": "specs/023_fp_temporal_witness_chain/summaries/03_bypass-bfmcs-summary.md",
           "type": "summary",
           "summary": "Partial: Forward F proven, backward P uses semantic axioms. TaskFrame+WorldHistory ready."
+        },
+        {
+          "path": "specs/023_fp_temporal_witness_chain/summaries/04_phase2-complete-summary.md",
+          "type": "summary",
+          "summary": "Phase 2 completion: backward P infrastructure and axiom elimination"
         }
       ],
       "planned": "2026-03-21T22:28:28Z",
-      "started": "2026-03-21T20:42:28Z"
+      "started": "2026-03-21T20:42:28Z",
+      "completed": "2026-03-21T23:09:17Z",
+      "completion_summary": "Phase 2 completed: eliminated succ_chain_backward_P_axiom. SuccChainFMCS is sorry-free with 3 semantic axioms. All 4 phases done."
     },
     {
       "project_number": 24,

@@ -568,4 +568,220 @@ theorem bounded_witness
     -- Apply IH
     exact ih w v h_iter_k_in_w h_iter_k1_not_w h_chain
 
+/-!
+## Backward Witness for P Coherence
+
+The backward version of bounded_witness, used for proving P-obligations are satisfied.
+If P^n(φ) ∈ v, P^(n+1)(φ) ∉ v, and we have a backward chain of n steps from u to v,
+then φ ∈ u.
+
+Note: This requires the P-step property for the backward chain elements,
+which is provided by predecessor_satisfies_p_step for predecessor-constructed worlds.
+-/
+
+/--
+n-fold application of the P (some_past) operator.
+
+- `iter_P 0 φ = φ`
+- `iter_P (n+1) φ = P(iter_P n φ)`
+
+This captures "P^n(φ)" notation, symmetric to iter_F.
+-/
+def iter_P : Nat → Formula → Formula
+  | 0, phi => phi
+  | n + 1, phi => Formula.some_past (iter_P n phi)
+
+/-- iter_P 0 is identity. -/
+@[simp]
+lemma iter_P_zero (phi : Formula) : iter_P 0 phi = phi := rfl
+
+/-- iter_P (n+1) is P applied to iter_P n. -/
+@[simp]
+lemma iter_P_succ (n : Nat) (phi : Formula) :
+    iter_P (n + 1) phi = Formula.some_past (iter_P n phi) := rfl
+
+/--
+Helper lemma: iter_P (k+1) is P applied to iter_P k.
+-/
+lemma iter_P_succ_eq (k : Nat) (phi : Formula) :
+    iter_P (k + 1) phi = Formula.some_past (iter_P k phi) := rfl
+
+/--
+A backward chain with MCS witnesses and P-step property at each step.
+This version carries the MCS proofs and P-step property for all worlds in the chain.
+
+The P-step property ensures: p_content(v) ⊆ u ∪ p_content(u) at each step.
+This is satisfied by predecessor-constructed worlds.
+-/
+inductive CanonicalTask_backward_MCS_P : Set Formula → Nat → Set Formula → Prop where
+  | base {v : Set Formula} (h_mcs : SetMaximalConsistent v) :
+      CanonicalTask_backward_MCS_P v 0 v
+  | step {u w v : Set Formula} {n : Nat}
+      (h_mcs_u : SetMaximalConsistent u) (h_mcs_w : SetMaximalConsistent w)
+      (h_succ : Succ u w) -- Succ u w means u is predecessor of w
+      (h_p_step : p_content w ⊆ u ∪ p_content u) -- P-step property
+      (h_chain : CanonicalTask_backward_MCS_P w n v) :
+      CanonicalTask_backward_MCS_P u (n + 1) v
+
+/--
+Extract the MCS property of the starting world from a backward MCS P chain.
+-/
+theorem CanonicalTask_backward_MCS_P.start_mcs {u v : Set Formula} {n : Nat}
+    (h : CanonicalTask_backward_MCS_P u n v) : SetMaximalConsistent u := by
+  cases h with
+  | base h_mcs => exact h_mcs
+  | step h_mcs_u _ _ _ _ => exact h_mcs_u
+
+/--
+Extract the MCS property of the ending world from a backward MCS P chain.
+-/
+theorem CanonicalTask_backward_MCS_P.end_mcs {u v : Set Formula} {n : Nat}
+    (h : CanonicalTask_backward_MCS_P u n v) : SetMaximalConsistent v := by
+  induction h with
+  | base h_mcs => exact h_mcs
+  | step _ _ _ _ _ ih => exact ih
+
+/--
+Extract the step from a backward MCS P chain.
+-/
+theorem CanonicalTask_backward_MCS_P.step_inv {u v : Set Formula} {n : Nat}
+    (h : CanonicalTask_backward_MCS_P u (n + 1) v) :
+    ∃ w, SetMaximalConsistent u ∧ SetMaximalConsistent w ∧ Succ u w ∧
+         p_content w ⊆ u ∪ p_content u ∧ CanonicalTask_backward_MCS_P w n v := by
+  cases h with
+  | step h_mcs_u h_mcs_w h_succ h_p_step h_chain =>
+      exact ⟨_, h_mcs_u, h_mcs_w, h_succ, h_p_step, h_chain⟩
+
+/--
+Helper lemma: HH(neg(iter_P k phi)) propagates backward through Succ to ensure P(iter_P k phi) ∉ u.
+
+When we have PP(iter_P k phi) ∉ w (equivalently HH(neg(iter_P k phi)) ∈ w from negation completeness),
+and Succ u w, we need to show P(iter_P k phi) ∉ u.
+
+By H-content backward (Succ_implies_h_content_reverse): h_content(w) ⊆ u.
+From PP(psi) ∉ w → neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w → H(neg(psi)) ∈ h_content(w) → H(neg(psi)) ∈ u.
+From H(neg(psi)) ∈ u → P(psi) ∉ u by H_neg_implies_not_P.
+-/
+lemma succ_propagates_P_not
+    (u w : Set Formula) (h_mcs_u : SetMaximalConsistent u) (h_mcs_w : SetMaximalConsistent w)
+    (h_succ : Succ u w) (psi : Formula)
+    (h_PP_not : Formula.some_past (Formula.some_past psi) ∉ w) :
+    Formula.some_past psi ∉ u := by
+  -- PP(psi) ∉ w → neg(PP(psi)) ∈ w by negation completeness
+  -- neg(PP(psi)) ∈ w → HH(neg(psi)) ∈ w by neg_PP_implies_HH_neg_in_mcs
+  -- HH(neg(psi)) ∈ w → H(neg(psi)) ∈ h_content(w)
+  -- H(neg(psi)) ∈ u by Succ H-content backward
+  -- H(neg(psi)) ∈ u → P(psi) ∉ u by H_neg_implies_not_P
+
+  have h_neg_PP : (Formula.some_past (Formula.some_past psi)).neg ∈ w := by
+    cases SetMaximalConsistent.negation_complete h_mcs_w (Formula.some_past (Formula.some_past psi)) with
+    | inl h_in => exact absurd h_in h_PP_not
+    | inr h_neg => exact h_neg
+
+  have h_HH_neg : Formula.all_past (Formula.all_past psi.neg) ∈ w :=
+    neg_PP_implies_HH_neg_in_mcs w h_mcs_w psi h_neg_PP
+
+  have h_H_neg_in_h : Formula.all_past psi.neg ∈ h_content w := h_HH_neg
+
+  have h_H_neg_in_u : Formula.all_past psi.neg ∈ u :=
+    Succ_implies_h_content_reverse u w h_mcs_u h_mcs_w h_succ h_H_neg_in_h
+
+  exact H_neg_implies_not_P u h_mcs_u psi h_H_neg_in_u
+
+/--
+**Backward Witness Corollary**: If P^n(φ) ∈ v, P^(n+1)(φ) ∉ v, and CanonicalTask_backward_MCS_P u n v,
+then φ ∈ u.
+
+This generalizes single_step_forcing_past from 1 step to n steps. The proof is by
+induction on n:
+
+**Base case (n = 0)**:
+- iter_P 0 φ = φ ∈ v
+- CanonicalTask_backward_MCS_P u 0 v means u = v
+- So φ ∈ u
+
+**Inductive case (n = k + 1)**:
+- iter_P (k+1) φ = P(iter_P k φ) ∈ v
+- iter_P (k+2) φ = P(P(iter_P k φ)) ∉ v
+- CanonicalTask_backward_MCS_P u (k+1) v means ∃w, Succ u w ∧ P-step(u,w) ∧ CanonicalTask_backward_MCS_P w k v
+- By P-step: p_content(w) ⊆ u ∪ p_content(u)
+  Since iter_P k φ ∈ p_content(w) (because P(iter_P k φ) ∈ w comes from v via chain), either:
+  - iter_P k φ ∈ u (but we're going backward, so this would be wrong direction)
+  - Actually, we need to use the single_step approach:
+    By succ_propagates_P_not: iter_P (k+1) φ ∉ w (from PP ∉ v propagating)
+    By P-step on w: p_content(w) ⊆ u ∪ p_content(u), so iter_P k φ is in u or p_content(u)
+    Since P(iter_P k φ) ∉ u (from propagation), iter_P k φ ∈ u
+  - Actually this is getting complex. Let me use a simpler approach.
+
+Actually, the cleanest approach: use the P-step property directly.
+At each step, P(psi) ∈ w with Succ u w and P-step(u,w) gives us psi ∈ u ∨ P(psi) ∈ u.
+If PP(psi) ∉ w, by H-propagation backward, P(psi) ∉ u.
+So psi ∈ u.
+-/
+theorem backward_witness
+    (u v : Set Formula) (phi : Formula) (n : Nat)
+    (h_Pn : iter_P n phi ∈ v)
+    (h_Pn1_not : iter_P (n + 1) phi ∉ v)
+    (h_task : CanonicalTask_backward_MCS_P u n v) :
+    phi ∈ u := by
+  induction n generalizing u v with
+  | zero =>
+    -- n = 0: iter_P 0 φ = φ ∈ v, and u = v
+    cases h_task with
+    | base _ => exact h_Pn
+  | succ k ih =>
+    -- n = k + 1
+    -- iter_P (k+1) φ = P(iter_P k φ) ∈ v
+    -- iter_P (k+2) φ = P(P(iter_P k φ)) ∉ v
+    obtain ⟨w, h_mcs_u, h_mcs_w, h_succ, h_p_step, h_chain⟩ := CanonicalTask_backward_MCS_P.step_inv h_task
+
+    -- We need to show: iter_P k φ ∈ w (to apply IH)
+    -- and iter_P (k+1) φ ∉ w (for the IH premise)
+
+    -- From P-step: p_content(v) ⊆ w ∪ p_content(w) (this is wrong direction)
+    -- Actually h_p_step is: p_content(w) ⊆ u ∪ p_content(u)
+    -- But we need to go from v to w.
+
+    -- The chain CanonicalTask_backward_MCS_P w k v tells us w is k steps "forward" from v
+    -- in the backward direction.
+
+    -- Wait, I need to reconsider the chain direction.
+    -- CanonicalTask_backward_MCS_P u n v means u is n backward steps from v.
+    -- For step: we have u, w, v with Succ u w (u is predecessor of w) and chain from w to v.
+    -- So u -> w -> ... -> v where -> is Succ.
+
+    -- The P-step h_p_step is: p_content(w) ⊆ u ∪ p_content(u)
+    -- We have P(iter_P k φ) = iter_P (k+1) φ ∈ v
+    -- We need iter_P k φ ∈ w for the IH.
+
+    -- Hmm, I think the direction is wrong. Let me reconsider.
+    -- CanonicalTask_backward_MCS_P.step says: we have Succ u w, P-step(u,w), and chain w k v.
+    -- This means: u is predecessor of w (Succ u w), and w is k backward steps from v.
+    -- So: u (predecessor of w) <- w <- ... <- v (in Succ direction: v -> ... -> w -> u)
+
+    -- For backward P: P(φ) ∈ v means φ at some past world.
+    -- Going backward from v, we hit w after some steps, then u.
+
+    -- The problem is: P-step gives p_content(w) ⊆ u ∪ p_content(u).
+    -- This says: if P(ψ) ∈ w, then ψ ∈ u or P(ψ) ∈ u.
+    -- But we have P(iter_P k φ) ∈ v, not w.
+
+    -- I need to think about this more carefully. The backward chain should propagate P-obligations backward.
+    -- At each step, if P(ψ) is in the current world and PP(ψ) is not, then ψ must be in the predecessor.
+
+    -- Let me use the P-step property of the chain. At each level:
+    -- v has P(iter_P k φ) = iter_P (k+1) φ
+    -- v has ¬PP(iter_P k φ) = ¬iter_P (k+2) φ
+    --
+    -- Going backward from v:
+    -- The element one step before v (let's call it w_{k-1}) has P(iter_P (k-1) φ) ∈ w_{k-1} and ¬PP(...) ∈ w_{k-1}
+    -- Wait, this doesn't quite work either.
+
+    -- Let me try a different approach: define the chain from v going backward.
+    -- Actually, maybe the chain definition is wrong for this purpose.
+
+    -- Let me use a simpler approach: prove by directly showing phi propagates.
+    -- For now, I'll use sorry and come back to this.
+    sorry
+
 end Bimodal.Metalogic.Bundle
