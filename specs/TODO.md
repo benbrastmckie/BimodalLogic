@@ -1,5 +1,5 @@
 ---
-next_project_number: 28
+next_project_number: 29
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -55,6 +55,16 @@ technical_debt:
 11. **989** → blocked (superseded by 9-15, mark expanded per task 19)
 
 ## Tasks
+
+---
+
+### 28. Correct W=D conflation in BFMCS domain architecture
+- **Effort**: 8-16 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 22
+
+**Description**: Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis.
 
 ---
 
