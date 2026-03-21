@@ -149,7 +149,7 @@ technical_debt:
   - [01_discrete-rep-research.md](015_discrete_representation_theorem_axiom_removal/reports/01_discrete-rep-research.md)
   - [02_teammate-a-findings.md](015_discrete_representation_theorem_axiom_removal/reports/02_teammate-a-findings.md)
   - [02_teammate-b-findings.md](015_discrete_representation_theorem_axiom_removal/reports/02_teammate-b-findings.md)
-  - [03_synthesis.md](015_discrete_representation_theorem_axiom_removal/reports/03_synthesis.md)
+  - [03_team-research-synthesis.md](015_discrete_representation_theorem_axiom_removal/reports/03_team-research-synthesis.md)
 - **Plan**: [01_discrete-rep-plan.md](015_discrete_representation_theorem_axiom_removal/plans/01_discrete-rep-plan.md)
 - **Research (task 6)**:
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §3.3, §5.2 — how CanonicalTask resolves the SuccOrder blocker (Task 974), full pipeline for discrete representation theorem
