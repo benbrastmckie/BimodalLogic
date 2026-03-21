@@ -72,7 +72,7 @@ technical_debt:
 
 ### 30. Build temporally coherent dense BFMCS
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNING]
 - **Language**: lean4
 - **Dependencies**: None
 - **Parent Task**: #18
@@ -95,7 +95,7 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
@@ -105,6 +105,7 @@ technical_debt:
   - [02_blocker-analysis.md](028_correct_bfmcs_domain_conflation/reports/02_blocker-analysis.md) — Phase 5 blocker analysis: S5 correct but Succ-chain bypass viable, 4 axioms remaining
   - [03_single-family-critique.md](028_correct_bfmcs_domain_conflation/reports/03_single-family-critique.md) — Critical analysis confirms single-family IS sufficient; formula-specific, not universal model
   - [04_bimodal-box-semantics.md](028_correct_bfmcs_domain_conflation/reports/04_bimodal-box-semantics.md) — Bimodal Box analysis: concern is about degenerate singletons, multi-family BFMCS is sound
+  - [05_modal-coherence-solutions.md](028_correct_bfmcs_domain_conflation/reports/05_modal-coherence-solutions.md) — Analysis confirms 3 sorries are architecturally unprovable without S5; Succ-chain bypass is correct path
 - **Plan**:
   - [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — v1: 8-phase plan (PARTIAL, Phase 5 S5-blocked)
   - [02_succ-chain-completion.md](028_correct_bfmcs_domain_conflation/plans/02_succ-chain-completion.md) — v2: 4-phase plan to prove SuccChainFMCS axioms (3 hours)
