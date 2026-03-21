@@ -1,0 +1,29 @@
+{
+  "status": "researched",
+  "artifacts": [
+    {
+      "path": "specs/023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md",
+      "type": "report",
+      "summary": "Research on F/P temporal witness construction. Finding: mathematical impossibility for linear chains. Recommendation: use existing CanonicalFMCS sorry-free infrastructure."
+    }
+  ],
+  "metadata": {
+    "session_id": "sess_1774122937_291cbd",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  },
+  "findings_summary": {
+    "sorry_count": 4,
+    "sorry_sites": [
+      "enrichedIntFMCS_forward_F (t >= 0) - line 1175",
+      "enrichedIntFMCS_forward_F (t < 0) - line 1177",
+      "intFMCS_forward_F - line 1199",
+      "intFMCS_backward_P - line 1213"
+    ],
+    "root_cause": "Mathematical impossibility: Lindenbaum extension can introduce G(~phi) which kills F(phi) before witness step",
+    "existing_solution": "CanonicalFMCS.lean has sorry-free forward_F/backward_P using all MCSes as domain",
+    "recommendation": "Strategy A: Document as fundamental limitation, route through CanonicalMCS infrastructure",
+    "effort_estimate": "1-2 hours for documentation; alternatives range 20-50 hours with high risk"
+  }
+}

@@ -81,15 +81,23 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T19:56:03Z",
+      "last_updated": "2026-03-21T20:00:16Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774122937_291cbd"
+      "session_id": "sess_1774122937_291cbd",
+      "researched": "2026-03-21T20:00:16Z",
+      "artifacts": [
+        {
+          "path": "specs/023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md",
+          "type": "report",
+          "summary": "Research on F/P temporal witness construction. Finding: mathematical impossibility for linear chains. Recommendation: use existing CanonicalFMCS sorry-free infrastructure."
+        }
+      ]
     },
     {
       "project_number": 24,

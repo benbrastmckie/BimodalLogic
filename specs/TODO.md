@@ -30,7 +30,7 @@ technical_debt:
 ### Metalogic Refactoring Track
 
 **Discrete sorry elimination** (tasks 9-15 completed):
-1. **22** → research | **23** → research [parallel, ready now]
+1. **22** → research | **23** → plan [parallel, 22 researching, 23 researched]
 2. **24** → implement (depends: 22, 23) — removes 3 axioms, final cleanup
 
 **Dense completion** (tasks 16-17 completed):
@@ -114,9 +114,10 @@ technical_debt:
 
 ### 23. F/P temporal witness chain construction
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 15
+- **Research**: [01_temporal-witness-research.md](023_fp_temporal_witness_chain/reports/01_temporal-witness-research.md)
 
 **Description**: Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(¬φ) killing F(φ) obligations. Eliminates 4 dovetailing sorries: intFMCS_forward_F (IntBFMCS.lean:1199), intFMCS_forward_F_enriched two cases (IntBFMCS.lean:1175,1177), intFMCS_backward_P (IntBFMCS.lean:1213). Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches with Int-compatible index type.
 
