@@ -8,15 +8,23 @@
     {
       "project_number": 27,
       "project_name": "unify_densetimeline_dovetailedtimeline",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:53:54Z",
-      "last_updated": "2026-03-21T19:58:17Z",
+      "last_updated": "2026-03-21T20:03:04Z",
       "blocks": [
         18
       ],
       "description": "Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type.",
-      "session_id": "sess_1774123083_20eddb"
+      "session_id": "sess_1774123083_20eddb",
+      "researched": "2026-03-21T20:03:04Z",
+      "artifacts": [
+        {
+          "path": "specs/027_unify_densetimeline_dovetailedtimeline/reports/01_timeline-unification.md",
+          "type": "research_report",
+          "summary": "Recommends replacing DenseTimeline with DovetailedTimeline in TimelineQuot to enable forward_F/backward_P proofs"
+        }
+      ]
     },
     {
       "project_number": 25,

@@ -90,7 +90,8 @@ technical_debt:
 
 ### 27. Unify DenseTimeline and DovetailedTimeline constructions
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
+- **Research**: [01_timeline-unification.md](027_unify_densetimeline_dovetailedtimeline/reports/01_timeline-unification.md)
 - **Language**: lean4
 - **Blocks**: Task 18 (phase 3)
 
