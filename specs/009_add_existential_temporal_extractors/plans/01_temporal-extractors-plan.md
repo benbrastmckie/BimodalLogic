@@ -47,7 +47,7 @@ The research report (01_temporal-extractors.md) confirms:
 
 ## Implementation Phases
 
-### Phase 1: Definitions and Membership Lemmas [NOT STARTED]
+### Phase 1: Definitions and Membership Lemmas [COMPLETED]
 
 **Goal**: Add `f_content` and `p_content` definitions with simp lemmas
 
@@ -69,7 +69,7 @@ The research report (01_temporal-extractors.md) confirms:
 
 ---
 
-### Phase 2: F/G Duality Lemma [NOT STARTED]
+### Phase 2: F/G Duality Lemma [COMPLETED]
 
 **Goal**: Prove `f_content_iff_not_neg_in_g_content` relating F and G extractors
 
@@ -94,7 +94,7 @@ The research report (01_temporal-extractors.md) confirms:
 
 ---
 
-### Phase 3: P/H Duality Lemma [NOT STARTED]
+### Phase 3: P/H Duality Lemma [COMPLETED]
 
 **Goal**: Prove `p_content_iff_not_neg_in_h_content` (symmetric to Phase 2)
 
@@ -114,7 +114,7 @@ The research report (01_temporal-extractors.md) confirms:
 
 ---
 
-### Phase 4: Documentation and Final Verification [NOT STARTED]
+### Phase 4: Documentation and Final Verification [COMPLETED]
 
 **Goal**: Update module docstring and verify full build
 
