@@ -635,6 +635,250 @@ theorem iteratedFuture_add (m n : Nat) (psi : Formula) :
   | succ m' ih => simp only [iteratedFuture, Nat.succ_add]; rw [ih]
 
 /--
+**Peeling lemma**: If iteratedFuture j psi ∈ w.mcs (where j can be any natural),
+then there exists q reachable from w (via zero or more CanonicalR steps) with psi ∈ q.mcs.
+
+This lemma uses strong induction on j to "peel off" F operators one at a time.
+When j = 0, psi is already in w.mcs. When j > 0, we use witness_at_large_step to
+get a witness w' with iteratedFuture (j-1) psi in w'.mcs, then apply IH.
+-/
+theorem forward_iteratedFuture_peeling (j : Nat) (w : DovetailedPoint)
+    (hw : w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (psi : Formula)
+    (h : iteratedFuture j psi ∈ w.mcs) :
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      (CanonicalR w.mcs q.mcs ∨ w.mcs = q.mcs) ∧ psi ∈ q.mcs := by
+  -- Strong induction on j
+  induction j using Nat.strong_induction_on generalizing w with
+  | _ j ih =>
+    cases j with
+    | zero =>
+      -- j = 0: iteratedFuture 0 psi = psi ∈ w.mcs
+      simp only [iteratedFuture] at h
+      exact ⟨w, hw, Or.inr rfl, h⟩
+    | succ j' =>
+      -- j = j' + 1: iteratedFuture (j'+1) psi = F(iteratedFuture j' psi) ∈ w.mcs
+      simp only [iteratedFuture] at h
+      -- h : F(iteratedFuture j' psi) ∈ w.mcs
+      -- Get stage n where w is in build
+      obtain ⟨n, hn⟩ := hw
+      simp only [dovetailedBuild, List.mem_toFinset] at hn
+      -- Get encoding of iteratedFuture j' psi
+      let chi := iteratedFuture j' psi
+      obtain ⟨k, h_dec⟩ := formula_has_encoding chi
+      -- Case split on whether pair(w.point_index, k) > n
+      by_cases h_large : Nat.pair w.point_index k > n
+      · -- Large step case: witness_at_large_step gives chi directly
+        obtain ⟨w', hw'_mem, hw'_R, hw'_chi⟩ :=
+          witness_at_large_step root_mcs root_mcs_proof w n hn chi h k h_dec h_large
+        have h_w'_in_union : w' ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+          use Nat.pair w.point_index k
+          simp only [dovetailedBuild, List.mem_toFinset]
+          exact hw'_mem
+        -- Apply IH with j' < j'+1 on w' with iteratedFuture j' psi ∈ w'.mcs
+        have h_lt : j' < j' + 1 := Nat.lt_succ_self j'
+        -- hw'_chi : chi ∈ w'.mcs where chi = iteratedFuture j' psi
+        obtain ⟨q, hq_mem, hq_rel, hq_psi⟩ := ih j' h_lt w' h_w'_in_union hw'_chi
+        -- Chain: w -> w' (via CanonicalR) -> q (via CanonicalR or equal)
+        cases hq_rel with
+        | inl hq_R =>
+          have h_trans := canonicalR_transitive w.mcs w'.mcs q.mcs w.is_mcs hw'_R hq_R
+          exact ⟨q, hq_mem, Or.inl h_trans, hq_psi⟩
+        | inr hq_eq =>
+          exact ⟨q, hq_mem, Or.inl (hq_eq ▸ hw'_R), hq_psi⟩
+      · -- Small step case: use density to find larger encoding
+        push_neg at h_large
+        -- Find i such that encode(iteratedFuture i chi) >= n + 1
+        obtain ⟨i, h_enc_ge⟩ := iterated_future_encoding_unbounded_general chi (n + 1)
+        -- From F(chi) ∈ w.mcs, get F(iteratedFuture i chi) ∈ w.mcs by density
+        have h_density : iteratedFuture i (Formula.some_future chi) ∈ w.mcs :=
+          density_iterate_in_mcs w.mcs w.is_mcs chi h i
+        rw [iteratedFuture_some_future_comm] at h_density
+        -- h_density : F(iteratedFuture i chi) ∈ w.mcs
+        -- Get encoding
+        let k' := @Encodable.encode Formula formulaEncodableStaged (iteratedFuture i chi)
+        have h_dec' : decodeFormulaStaged k' = some (iteratedFuture i chi) :=
+          @Encodable.encodek Formula formulaEncodableStaged (iteratedFuture i chi)
+        have h_large' : Nat.pair w.point_index k' > n := by
+          have h_k'_ge : k' ≥ n + 1 := h_enc_ge
+          have h_pair_ge := pair_ge_add w.point_index k'
+          omega
+        -- Apply witness_at_large_step for iteratedFuture i chi
+        obtain ⟨w', hw'_mem, hw'_R, hw'_iter⟩ :=
+          witness_at_large_step root_mcs root_mcs_proof w n hn
+            (iteratedFuture i chi) h_density k' h_dec' h_large'
+        have h_w'_in_union : w' ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+          use Nat.pair w.point_index k'
+          simp only [dovetailedBuild, List.mem_toFinset]
+          exact hw'_mem
+        -- hw'_iter : iteratedFuture i chi ∈ w'.mcs
+        -- chi = iteratedFuture j' psi, so iteratedFuture i chi = iteratedFuture i (iteratedFuture j' psi)
+        --                                                      = iteratedFuture (i + j') psi
+        have h_combine : iteratedFuture i chi = iteratedFuture (i + j') psi := by
+          simp only [chi]
+          exact iteratedFuture_add i j' psi
+        rw [h_combine] at hw'_iter
+        -- Apply IH with (i + j') on w'
+        -- Need i + j' < j' + 1? No, that's not true in general!
+        -- i can be arbitrarily large.
+        --
+        -- INSIGHT: The termination here is NOT on formula depth, but on BUILD STAGE.
+        -- w' is at a higher stage than w. Eventually, at a high enough stage,
+        -- the direct (j=0 or small step -> large step) case will apply.
+        --
+        -- This requires a different termination argument: use well-founded
+        -- recursion on (stage, j) with lexicographic ordering.
+        -- When j > 0 and small step, stage increases but j might increase.
+        -- When j > 0 and large step, j decreases.
+        -- When j = 0, we're done.
+        --
+        -- For now, apply IH - this is justified because even though i+j' might be > j'+1,
+        -- the recursion terminates because eventually we hit a large step case where
+        -- j decreases to j' < j'+1.
+        --
+        -- Actually, we CAN'T use IH here directly because i + j' is not < j' + 1.
+        -- The termination is more subtle.
+        --
+        -- ALTERNATIVE FIX: Restructure the proof to use well-founded recursion
+        -- on the stage instead of on j. At each step:
+        -- - If we're at a large step, we directly get the witness
+        -- - If we're at a small step, we move to a higher stage
+        -- The stages are bounded by the countability of the construction.
+        --
+        -- For now, we use the observation that the TOTAL number of F's to peel is finite,
+        -- and we're making progress towards peeling them all. Use partial order on
+        -- (remaining F's, current stage) - but this is complex to formalize.
+        --
+        -- SIMPLER APPROACH: Use the fact that in the small step case, we recursively
+        -- call with the SAME w (not w'), but with a larger encoding that guarantees
+        -- a large step. Then the large step case applies, and j decreases.
+        --
+        -- Wait, that's not what the code does. Let me re-read...
+        --
+        -- Actually, the code above DOES use a larger encoding and gets a witness w'
+        -- with iteratedFuture i chi ∈ w'.mcs. The issue is that i + j' might be larger
+        -- than j' + 1, so the IH doesn't apply.
+        --
+        -- THE REAL FIX: Don't use strong induction on j alone. Use well-founded
+        -- recursion on a combined measure. But for now, we accept this sorry
+        -- and document it as needing a more sophisticated termination argument.
+        --
+        -- Actually wait - let me reconsider. The key insight is:
+        -- We want to prove: from F(iteratedFuture j' psi) ∈ w.mcs, get psi ∈ q.mcs
+        -- In the small step case, we get iteratedFuture (i + j') psi ∈ w'.mcs
+        -- where w' is at a HIGHER stage than w.
+        --
+        -- If we use induction on (max_possible_stage - current_stage, j), then:
+        -- - In large step case: j decreases, first component stays same or decreases
+        -- - In small step case: first component decreases (stage increases toward max)
+        --
+        -- But "max_possible_stage" doesn't exist - the construction is unbounded!
+        --
+        -- FINAL INSIGHT: The construction is FINITE at any given point, but the timeline
+        -- is countably infinite. The termination argument is that we're working within
+        -- the dovetailed timeline which is countable, and every point has a finite stage.
+        -- The recursion terminates because:
+        -- 1. We either directly get the witness (large step with j decreasing), or
+        -- 2. We move to a witness at a higher stage
+        -- Since we're proving existence, we can argue that the witness exists by the
+        -- coverage lemmas, without explicitly constructing the recursion depth.
+        --
+        -- For formal correctness, accept this as a sorry that requires a more
+        -- sophisticated termination argument using accessibility predicates.
+        sorry
+
+/--
+Helper lemma: iteratedPast j (P X) = P (iteratedPast j X).
+-/
+theorem iteratedPast_some_past_comm (j : Nat) (X : Formula) :
+    iteratedPast j (Formula.some_past X) = Formula.some_past (iteratedPast j X) := by
+  induction j with
+  | zero => simp only [iteratedPast]
+  | succ j' ih => simp only [iteratedPast]; rw [ih]
+
+/--
+Helper lemma: iteratedPast m (iteratedPast n psi) = iteratedPast (m + n) psi.
+-/
+theorem iteratedPast_add (m n : Nat) (psi : Formula) :
+    iteratedPast m (iteratedPast n psi) = iteratedPast (m + n) psi := by
+  induction m with
+  | zero => simp only [iteratedPast, Nat.zero_add]
+  | succ m' ih => simp only [iteratedPast, Nat.succ_add]; rw [ih]
+
+/--
+**Backward peeling lemma**: If iteratedPast j psi ∈ w.mcs, then there exists q reachable
+from w (via zero or more reverse CanonicalR steps) with psi ∈ q.mcs.
+
+Symmetric to forward_iteratedFuture_peeling for the past direction.
+-/
+theorem backward_iteratedPast_peeling (j : Nat) (w : DovetailedPoint)
+    (hw : w ∈ dovetailedTimelineUnion root_mcs root_mcs_proof)
+    (psi : Formula)
+    (h : iteratedPast j psi ∈ w.mcs) :
+    ∃ q ∈ dovetailedTimelineUnion root_mcs root_mcs_proof,
+      (CanonicalR q.mcs w.mcs ∨ q.mcs = w.mcs) ∧ psi ∈ q.mcs := by
+  -- Strong induction on j
+  induction j using Nat.strong_induction_on generalizing w with
+  | _ j ih =>
+    cases j with
+    | zero =>
+      -- j = 0: iteratedPast 0 psi = psi ∈ w.mcs
+      simp only [iteratedPast] at h
+      exact ⟨w, hw, Or.inr rfl, h⟩
+    | succ j' =>
+      -- j = j' + 1: iteratedPast (j'+1) psi = P(iteratedPast j' psi) ∈ w.mcs
+      simp only [iteratedPast] at h
+      -- h : P(iteratedPast j' psi) ∈ w.mcs
+      obtain ⟨n, hn⟩ := hw
+      simp only [dovetailedBuild, List.mem_toFinset] at hn
+      let chi := iteratedPast j' psi
+      obtain ⟨k, h_dec⟩ := formula_has_encoding chi
+      by_cases h_large : Nat.pair w.point_index k > n
+      · -- Large step case: backward_witness_at_large_step gives chi directly
+        obtain ⟨w', hw'_mem, hw'_R, hw'_chi⟩ :=
+          backward_witness_at_large_step root_mcs root_mcs_proof w n hn chi h k h_dec h_large
+        have h_w'_in_union : w' ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+          use Nat.pair w.point_index k
+          simp only [dovetailedBuild, List.mem_toFinset]
+          exact hw'_mem
+        -- Apply IH with j' < j'+1 on w' with iteratedPast j' psi ∈ w'.mcs
+        have h_lt : j' < j' + 1 := Nat.lt_succ_self j'
+        obtain ⟨q, hq_mem, hq_rel, hq_psi⟩ := ih j' h_lt w' h_w'_in_union hw'_chi
+        -- Chain: q -> w' (via CanonicalR or equal) -> w (via CanonicalR)
+        cases hq_rel with
+        | inl hq_R =>
+          have h_trans := canonicalR_transitive q.mcs w'.mcs w.mcs q.is_mcs hq_R hw'_R
+          exact ⟨q, hq_mem, Or.inl h_trans, hq_psi⟩
+        | inr hq_eq =>
+          exact ⟨q, hq_mem, Or.inl (hq_eq ▸ hw'_R), hq_psi⟩
+      · -- Small step case: use density to find larger encoding
+        push_neg at h_large
+        obtain ⟨i, h_enc_ge⟩ := iterated_past_encoding_unbounded_general chi (n + 1)
+        have h_density : iteratedPast i (Formula.some_past chi) ∈ w.mcs :=
+          density_iterate_past_in_mcs w.mcs w.is_mcs chi h i
+        rw [iteratedPast_some_past_comm] at h_density
+        let k' := @Encodable.encode Formula formulaEncodableStaged (iteratedPast i chi)
+        have h_dec' : decodeFormulaStaged k' = some (iteratedPast i chi) :=
+          @Encodable.encodek Formula formulaEncodableStaged (iteratedPast i chi)
+        have h_large' : Nat.pair w.point_index k' > n := by
+          have h_k'_ge : k' ≥ n + 1 := h_enc_ge
+          have h_pair_ge := pair_ge_add w.point_index k'
+          omega
+        obtain ⟨w', hw'_mem, hw'_R, hw'_iter⟩ :=
+          backward_witness_at_large_step root_mcs root_mcs_proof w n hn
+            (iteratedPast i chi) h_density k' h_dec' h_large'
+        have h_w'_in_union : w' ∈ dovetailedTimelineUnion root_mcs root_mcs_proof := by
+          use Nat.pair w.point_index k'
+          simp only [dovetailedBuild, List.mem_toFinset]
+          exact hw'_mem
+        have h_combine : iteratedPast i chi = iteratedPast (i + j') psi := by
+          simp only [chi]
+          exact iteratedPast_add i j' psi
+        rw [h_combine] at hw'_iter
+        -- Same termination issue as forward case - accept sorry
+        sorry
+
+/--
 **Forward F witness via well-founded recursion on stage**:
 
 Given `F(psi) ∈ p.mcs`, find `q` with `CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs`.
@@ -765,45 +1009,18 @@ theorem forward_F_core (p : DovetailedPoint)
       -- j = j' + 1: F(iteratedFuture j' psi) ∈ w.mcs
       simp only [iteratedFuture] at hw_psi
       -- hw_psi : F(iteratedFuture j' psi) ∈ w.mcs
-      -- Recursively call this theorem on w with formula (iteratedFuture j' psi)
-      -- But wait - this is the WRONG recursion! We're calling the theorem
-      -- with a DIFFERENT formula (iteratedFuture j' psi), not psi.
-      -- The theorem is about F(psi) -> psi, not about F(iteratedFuture j' psi) -> psi.
-      --
-      -- What we SHOULD do: prove a helper lemma that says
-      -- "F(chi) ∈ p.mcs -> chi ∈ q.mcs for some reachable q"
-      -- and apply it repeatedly.
-      --
-      -- But that's exactly what we're trying to prove!
-      --
-      -- The issue is circular: to prove forward_F_core, we need forward_F_core.
-      --
-      -- THE FIX: Use well-founded recursion on the formula itself.
-      -- Define: termination_by (sizeOf psi) or something similar.
-      --
-      -- But actually, looking at the goal more carefully:
-      -- We want: ∃ q, CanonicalR p.mcs q.mcs ∧ psi ∈ q.mcs
-      -- We have: F(iteratedFuture j' psi) ∈ w.mcs, CanonicalR p.mcs w.mcs
-      --
-      -- If we can find q' with CanonicalR w.mcs q'.mcs ∧ iteratedFuture j' psi ∈ q'.mcs,
-      -- then by transitivity CanonicalR p.mcs q'.mcs.
-      -- Then from q' we need to get to psi.
-      --
-      -- This IS the same problem, but with formula (iteratedFuture j' psi) instead of psi.
-      -- And iteratedFuture j' psi has SMALLER sizeOf than psi... no wait, it's LARGER!
-      -- iteratedFuture j' psi = F^j'(psi) which is bigger.
-      --
-      -- OK so sizeOf doesn't decrease.
-      --
-      -- Let me try a different termination measure: use well-founded recursion on
-      -- the "stage gap" (how far from the target encoding).
-      --
-      -- Actually, I think the cleanest solution is to accept that this theorem
-      -- requires mutual recursion or a more complex termination proof.
-      --
-      -- For now, mark this case as sorry and document the issue.
-      -- This corresponds to the original sorry at line 770/839.
-      sorry
+      -- This equals iteratedFuture (j' + 1) psi = F(F^{j'}(psi))
+      -- Use forward_iteratedFuture_peeling with j = j' + 1 on w
+      have h_iter : iteratedFuture (j' + 1) psi ∈ w.mcs := hw_psi
+      obtain ⟨q, hq_mem, hq_rel, hq_psi⟩ :=
+        forward_iteratedFuture_peeling root_mcs root_mcs_proof (j' + 1) w h_w_in_union psi h_iter
+      -- Chain: CanonicalR p.mcs w.mcs and (CanonicalR w.mcs q.mcs ∨ w.mcs = q.mcs)
+      cases hq_rel with
+      | inl hq_R =>
+        have h_trans := canonicalR_transitive p.mcs w.mcs q.mcs p.is_mcs hw_R hq_R
+        exact ⟨q, hq_mem, h_trans, hq_psi⟩
+      | inr hq_eq =>
+        exact ⟨q, hq_mem, hq_eq ▸ hw_R, hq_psi⟩
 
 /--
 **Chain lemma**: If F^(i+1)(phi) ∈ p.mcs, then ∃ q in timeline with CanonicalR p.mcs q.mcs and phi ∈ q.mcs.
@@ -948,15 +1165,17 @@ theorem forward_F_chain_witness (i : Nat) (p : DovetailedPoint)
         have h_trans := canonicalR_transitive p.mcs w.mcs q.mcs p.is_mcs hw_R hq_R
         exact ⟨q, hq_mem, h_trans, hq_phi⟩
     | succ j' =>
-      -- j = j' + 1 > 0: need more sophisticated argument
-      -- The formula in w.mcs is F^(j'+1+i)(phi), which has depth j'+1+i from phi
-      -- This is MORE than i, so ih doesn't apply directly
-      --
-      -- Resolution: Use well-founded recursion on a lexicographic order
-      -- or prove a helper lemma that handles this case.
-      --
-      -- For now, use sorry.
-      sorry
+      -- j = j' + 1 > 0: use forward_iteratedFuture_peeling
+      -- hw_phi : iteratedFuture (j' + 1 + i) phi ∈ w.mcs
+      obtain ⟨q, hq_mem, hq_rel, hq_phi⟩ :=
+        forward_iteratedFuture_peeling root_mcs root_mcs_proof (j' + 1 + i) w h_w_in_union phi hw_phi
+      -- Chain: CanonicalR p.mcs w.mcs and (CanonicalR w.mcs q.mcs ∨ w.mcs = q.mcs)
+      cases hq_rel with
+      | inl hq_R =>
+        have h_trans := canonicalR_transitive p.mcs w.mcs q.mcs p.is_mcs hw_R hq_R
+        exact ⟨q, hq_mem, h_trans, hq_phi⟩
+      | inr hq_eq =>
+        exact ⟨q, hq_mem, hq_eq ▸ hw_R, hq_phi⟩
 
 /--
 Symmetric auxiliary lemma for backward_P.
@@ -1025,7 +1244,17 @@ theorem backward_P_chain_witness (i : Nat) (p : DovetailedPoint)
         have h_trans := canonicalR_transitive q.mcs w.mcs p.mcs q.is_mcs hq_R hw_R
         exact ⟨q, hq_mem, h_trans, hq_phi⟩
     | succ j' =>
-      sorry
+      -- j = j' + 1 > 0: use backward_iteratedPast_peeling
+      -- hw_phi : iteratedPast (j' + 1 + i) phi ∈ w.mcs
+      obtain ⟨q, hq_mem, hq_rel, hq_phi⟩ :=
+        backward_iteratedPast_peeling root_mcs root_mcs_proof (j' + 1 + i) w h_w_in_union phi hw_phi
+      -- Chain: q -> w (via CanonicalR or equal) -> p (via CanonicalR)
+      cases hq_rel with
+      | inl hq_R =>
+        have h_trans := canonicalR_transitive q.mcs w.mcs p.mcs q.is_mcs hq_R hw_R
+        exact ⟨q, hq_mem, h_trans, hq_phi⟩
+      | inr hq_eq =>
+        exact ⟨q, hq_mem, hq_eq ▸ hw_R, hq_phi⟩
 
 /--
 **Key auxiliary lemma for forward_F**: If F(phi) ∈ p.mcs and p is in the timeline,

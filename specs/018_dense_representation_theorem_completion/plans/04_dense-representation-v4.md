@@ -59,7 +59,7 @@ This plan completes the dense representation theorem using DovetailedTimelineQuo
 
 ## Implementation Phases
 
-### Phase 3: Discharge j>0 Termination Sorries [NOT STARTED]
+### Phase 3: Discharge j>0 Termination Sorries [PARTIAL]
 
 **Goal**: Discharge the j>0 case sorries in forward_F_chain_witness and backward_P_chain_witness.
 

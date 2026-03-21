@@ -8,12 +8,12 @@
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "implementing",
+      "status": "researching",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T21:08:57Z",
-      "session_id": "sess_1774126722_e148d7",
+      "last_updated": "2026-03-21T21:15:35Z",
+      "session_id": "sess_1774127721_cd85ba",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
         {
@@ -575,7 +575,7 @@
       "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T20:48:17Z",
+      "last_updated": "2026-03-21T21:17:54Z",
       "dependencies": [
         17,
         27
@@ -626,6 +626,11 @@
           "path": "specs/018_dense_representation_theorem_completion/plans/04_dense-representation-v4.md",
           "type": "plan",
           "summary": "v4: Post-task27 revision using DovetailedTimelineQuot, 3 phases remaining"
+        },
+        {
+          "path": "specs/018_dense_representation_theorem_completion/summaries/04_implementation-summary.md",
+          "type": "summary",
+          "summary": "Phase 3 partial: peeling lemmas for j>0 cases, termination sorries remain"
         }
       ],
       "session_id": "sess_1774126078_de498c",
