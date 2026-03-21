@@ -1,0 +1,17 @@
+{
+  "status": "done",
+  "started_at": "2026-03-21T00:00:00Z",
+  "artifacts": [
+    "specs/028_correct_bfmcs_domain_conflation/reports/01_teammate-a-findings.md"
+  ],
+  "partial_progress": {
+    "stage": "research_complete",
+    "details": "Audited all BFMCS constructions, identified W=D conflation sites, documented recommended approach per specs/006 reports 17-20"
+  },
+  "metadata": {
+    "session_id": "agent_system-1768239349",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}
