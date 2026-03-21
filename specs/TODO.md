@@ -108,7 +108,8 @@ technical_debt:
   - [02_blocker-analysis.md](028_correct_bfmcs_domain_conflation/reports/02_blocker-analysis.md) — Phase 5 blocker analysis: S5 correct but Succ-chain bypass viable, 4 axioms remaining
   - [03_single-family-critique.md](028_correct_bfmcs_domain_conflation/reports/03_single-family-critique.md) — Critical analysis confirms single-family IS sufficient; formula-specific, not universal model
   - [04_bimodal-box-semantics.md](028_correct_bfmcs_domain_conflation/reports/04_bimodal-box-semantics.md) — Bimodal Box analysis: concern is about degenerate singletons, multi-family BFMCS is sound
-  - [05_modal-coherence-solutions.md](028_correct_bfmcs_domain_conflation/reports/05_modal-coherence-solutions.md) — Analysis confirms 3 sorries are architecturally unprovable without S5; Succ-chain bypass is correct path
+  - [05_modal-coherence-solutions.md](028_correct_bfmcs_domain_conflation/reports/05_modal-coherence-solutions.md) — Initial analysis (superseded by 05_s5 report below)
+  - [05_s5-modal-coherence-analysis.md](028_correct_bfmcs_domain_conflation/reports/05_s5-modal-coherence-analysis.md) — Critical correction: TM IS S5 (has modal_5_collapse); sorries blocked by saturation gap at t!=0, not missing axiom
 - **Plan**:
   - [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — v1: 8-phase plan (PARTIAL, Phase 5 S5-blocked)
   - [02_succ-chain-completion.md](028_correct_bfmcs_domain_conflation/plans/02_succ-chain-completion.md) — v2: 4-phase plan to prove SuccChainFMCS axioms (3 hours)

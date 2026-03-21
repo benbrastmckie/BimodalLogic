@@ -15,22 +15,31 @@ This module constructs a BFMCS Int where bundle families are indexed directly by
 
 ### The W=D Conflation Problem
 
-This module contains 3 sorries that are **architecturally unprovable** without the S5 axiom:
+This module contains 3 sorries that are **architecturally unprovable**:
 
 1. **modal_forward at t=0** (line ~255): Cross-family transfer Box φ → φ in different MCS
 2. **modal_forward at t≠0** (line ~258): Chains may be completely disjoint
 3. **modal_backward at t≠0** (line ~368): Coverage at arbitrary chain positions
 
-**Root Cause**: TM logic has T and 4 axioms but NOT the 5-axiom (Euclidean property).
-BFMCS `modal_forward` requires: `Box φ ∈ fam.mcs t → φ ∈ fam'.mcs t` for ALL families.
-This is S5 universal accessibility - mathematically unprovable in T4 logic.
+**Root Cause**: The BFMCS `modal_forward` condition requires cross-MCS transfer:
+  `Box φ ∈ fam.mcs t → φ ∈ fam'.mcs t` for ALL families fam, fam'.
+This is a SEMANTIC property requiring modal accessibility between MCS.
+
+TM logic includes full S5 axioms (T, 4, B, modal_5_collapse), but these operate
+WITHIN individual MCS. The 5-collapse axiom (`◇□φ → □φ`) gives internal modal
+collapse, not cross-MCS transfer.
+
+Cross-MCS transfer requires MODAL SATURATION: every Diamond formula in any
+family must have a witness in some other family. At t=0, `discreteClosedMCS`
+provides this via `closedFlags_union_modally_saturated`. At t≠0, chain
+positions may leave the closed set, breaking saturation.
 
 ### Why Succ-Chains Don't Fix This
 
 The sorries persist even with Succ-chain families (vs arbitrary Lindenbaum chains) because:
 - The issue is the BFMCS structure's cross-family requirement, not chain construction
 - Different roots produce chains with unrelated MCS at t≠0
-- No chain structure can force Box φ → φ across unrelated MCS without S5
+- Chain positions at t≠0 may leave the `discreteClosedMCS`, breaking saturation
 
 ### Correct Path for Discrete Completeness
 
