@@ -8,10 +8,10 @@
     {
       "project_number": 1009,
       "project_name": "clarify_canonicalmcs_role",
-      "status": "planned",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T01:03:40Z",
-      "last_updated": "2026-03-21T01:13:50Z",
+      "last_updated": "2026-03-21T02:05:34Z",
       "dependencies": [],
       "artifacts": [
         {
@@ -23,10 +23,15 @@
           "type": "plan",
           "path": "specs/1009_clarify_canonicalmcs_role/plans/02_clarification-plan.md",
           "summary": "6-phase plan for clarifying CanonicalMCS as world-state space, not temporal domain"
+        },
+        {
+          "type": "research",
+          "path": "specs/1009_clarify_canonicalmcs_role/reports/03_d-equals-canonicalmcs-audit.md",
+          "summary": "Audit of 'D=CanonicalMCS' notation: categorical error conflating FMCS indexing with TaskFrame temporal domain, 80+ occurrences, correction patterns"
         }
       ],
-      "session_id": "sess_1774055457_4d8179",
-      "researched": "2026-03-21T01:10:05Z",
+      "session_id": "sess_1774058546_21d8fb",
+      "researched": "2026-03-21T02:05:34Z",
       "planned": "2026-03-21T01:13:50Z"
     },
     {
