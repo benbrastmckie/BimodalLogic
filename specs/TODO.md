@@ -105,12 +105,13 @@ technical_debt:
 
 ### 17. Build BFMCS over TimelineQuot for dense completeness
 - **Effort**: 6-10 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 16
 - **Research (task 6)**:
   - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §2.2 — dense staged timeline construction (stages 1–6), how density frame condition enables intermediate witnesses
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §4 stage 2 (dense), §5.1 — BFMCS construction strategy over TimelineQuot, temporal coherence proof obligations, placement of Lindenbaum witnesses via Cantor rationals
+- **Research**: [01_bfmcs-dense-research.md](017_bfmcs_over_timeline_quot_dense/reports/01_bfmcs-dense-research.md)
 
 **Description**: Construct a temporally complete BFMCS bundle with families indexed by TimelineQuot satisfying both modal_backward (requires multiple families; timelineQuotSingletonBFMCS fails here) and temporal coherence (forward_F, backward_P). Uses timelineQuotFMCS from TimelineQuotCanonical.lean as base family. The DenseTask relation provides a natural framework: witnesses from canonical_forward_F are placed at Cantor-assigned rationals. This is the hardest task in the dense track and the key blocker for task 988.
 
@@ -136,7 +137,7 @@ technical_debt:
 
 ### 15. Complete discrete representation theorem and remove Icc finite axiom
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Tasks 13, 14
 - **Research (task 6)**:
