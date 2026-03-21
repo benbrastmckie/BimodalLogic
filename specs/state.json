@@ -8,20 +8,26 @@
     {
       "project_number": 1009,
       "project_name": "clarify_canonicalmcs_role",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T01:03:40Z",
-      "last_updated": "2026-03-21T01:10:05Z",
+      "last_updated": "2026-03-21T01:13:50Z",
       "dependencies": [],
       "artifacts": [
         {
           "type": "research",
           "path": "specs/1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md",
           "summary": "Audit of 15+ Lean files identifying where CanonicalMCS is conflated with temporal domain D. 6 high-priority, 5 medium-priority files. Root cause: overloaded D parameter and legacy time language."
+        },
+        {
+          "type": "plan",
+          "path": "specs/1009_clarify_canonicalmcs_role/plans/02_clarification-plan.md",
+          "summary": "6-phase plan for clarifying CanonicalMCS as world-state space, not temporal domain"
         }
       ],
-      "session_id": "sess_1774055083_f4dc61",
-      "researched": "2026-03-21T01:10:05Z"
+      "session_id": "sess_1774055457_4d8179",
+      "researched": "2026-03-21T01:10:05Z",
+      "planned": "2026-03-21T01:13:50Z"
     },
     {
       "project_number": 1007,

@@ -1,21 +1,20 @@
 {
-  "status": "researched",
-  "started_at": "2026-03-20T00:00:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research",
-      "path": "specs/1009_clarify_canonicalmcs_role/reports/01_canonicalmcs-role-audit.md",
-      "summary": "Comprehensive audit of 15+ Lean files and ROAD_MAP.md identifying where CanonicalMCS is conflated with the temporal domain D. Found 6 high-priority files, 5 medium-priority files. Root cause: overloaded type parameter name D and FMCSDef.lean time language predating CanonicalFMCS construction. SeparatedTaskFrame.lean and CanonicalConstruction.lean already use the correct distinction."
+      "type": "plan",
+      "path": "specs/1009_clarify_canonicalmcs_role/plans/02_clarification-plan.md",
+      "summary": "6-phase implementation plan for clarifying CanonicalMCS as world-state space, not temporal domain"
     }
   ],
-  "partial_progress": {
-    "stage": "research_delivered",
-    "details": "Full codebase audit of CanonicalMCS role confusion across active Lean files and documentation"
-  },
+  "next_steps": "Run /implement 1009 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774055083_f4dc61",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774055457_4d8179",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 6,
+    "estimated_hours": 2.5
   }
 }
