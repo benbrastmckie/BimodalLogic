@@ -229,17 +229,24 @@
     {
       "project_number": 15,
       "project_name": "discrete_representation_theorem_axiom_removal",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:02:27Z",
+      "last_updated": "2026-03-21T11:07:24Z",
       "dependencies": [
         13,
         14
       ],
       "description": "Wire the Succ-chain FMCS and CanonicalTask-based TaskFrame Int into the unconditional discrete representation theorem: valid_discrete φ → ⊢_discrete φ. Instantiate parametric truth lemma with D=ℤ and the Succ-chain task relation. Once sorry-free, remove discrete_Icc_finite_axiom from DiscreteTimeline.lean and the two unproven axioms from DiscreteSuccSeed.lean.",
-      "artifacts": [],
-      "session_id": "sess_1774090934_0d8079"
+      "artifacts": [
+        {
+          "path": "specs/015_discrete_representation_theorem_axiom_removal/reports/01_discrete-rep-research.md",
+          "type": "research_report",
+          "summary": "Comprehensive analysis of wiring Succ-chain FMCS to discrete representation theorem. Identifies 8 axioms across 3 files; recommends wiring with documented axioms first, then axiom elimination in follow-up tasks."
+        }
+      ],
+      "session_id": "sess_1774090934_0d8079",
+      "researched": "2026-03-21T11:07:24Z"
     },
     {
       "project_number": 16,
@@ -277,10 +284,10 @@
     {
       "project_number": 17,
       "project_name": "bfmcs_over_timeline_quot_dense",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:05:18Z",
+      "last_updated": "2026-03-21T11:06:23Z",
       "dependencies": [
         16
       ],
@@ -292,7 +299,7 @@
           "summary": "Comprehensive analysis of BFMCS construction over TimelineQuot. Identified singleton BFMCS modal_backward blocker. Proposed multi-family architecture using ClosedFlagBundle pattern with DenseTask integration."
         }
       ],
-      "session_id": "sess_1774090841_03f853",
+      "session_id": "sess_1774091168_8e6187",
       "researched": "2026-03-21T11:05:18Z"
     },
     {
