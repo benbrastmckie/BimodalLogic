@@ -133,7 +133,7 @@ technical_debt:
 
 ### 18. Complete dense representation theorem via DenseTask
 - **Effort**: 4-6 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 17
 - **Research (task 6)**:
@@ -146,6 +146,7 @@ technical_debt:
 - **Plan**:
   - [01_implementation-plan.md](018_dense_representation_theorem_completion/plans/01_implementation-plan.md)
   - [02_dense-representation-v2.md](018_dense_representation_theorem_completion/plans/02_dense-representation-v2.md) — v2: closure-based F-witness saturation
+  - [03_dense-representation-v3.md](018_dense_representation_theorem_completion/plans/03_dense-representation-v3.md) — v3: dovetailed construction, derive_F_to_FF first, ExistsTask alias
 
 **Description**: Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.
 
