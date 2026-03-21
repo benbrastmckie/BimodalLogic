@@ -1,5 +1,5 @@
 ---
-next_project_number: 1009
+next_project_number: 1010
 repository_health:
   overall_score: 92
   production_readiness: improved
@@ -37,7 +37,17 @@ technical_debt:
 10. **953** -> plan (independent)
 11. **949** -> plan (independent)
 12. **619** -> plan (independent)
+13. **1009** -> research (independent)
 ## Tasks
+
+### 1009. Clarify CanonicalMCS role as world-state space, not temporal domain
+- **Effort**: 2-4 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+
+**Description**: Clarify that CanonicalMCS is the space of world states (WorldState in TaskFrame), not the temporal domain D. Update all comments, docstrings, and ROAD_MAP.md that conflate CanonicalMCS with the temporal domain in TaskFrame semantics. The persistent confusion arises because research reports keep suggesting "use CanonicalMCS as the domain" when CanonicalMCS cannot serve as D (which requires AddCommGroup/LinearOrder). CanonicalMCS elements are world states indexed by time, not time points themselves. Systematically document this distinction across the codebase.
+
+---
 
 ### 1008. Establish genuine truth_at completeness theorems for TM logic
 - **Effort**: 12-20 hours

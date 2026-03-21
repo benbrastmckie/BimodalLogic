@@ -6,6 +6,16 @@
   },
   "active_projects": [
     {
+      "project_number": 1009,
+      "project_name": "clarify_canonicalmcs_role",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-21T01:03:40Z",
+      "last_updated": "2026-03-21T01:03:40Z",
+      "dependencies": [],
+      "artifacts": []
+    },
+    {
       "project_number": 1007,
       "project_name": "archive_satisfies_at_infrastructure",
       "status": "completed",
@@ -611,7 +621,7 @@
       ]
     }
   ],
-  "next_project_number": 1009,
+  "next_project_number": 1010,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
