@@ -379,7 +379,7 @@
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T18:51:10Z",
+      "last_updated": "2026-03-21T19:07:01Z",
       "dependencies": [
         17
       ],
@@ -419,10 +419,20 @@
           "path": "specs/018_dense_representation_theorem_completion/reports/08_team-research.md",
           "type": "research_report",
           "summary": "Team research (3 teammates): closure fixpoint = CanonicalMCS, 3 viable approaches ranked by elegance"
+        },
+        {
+          "path": "specs/018_dense_representation_theorem_completion/reports/12_team-research.md",
+          "type": "research_report",
+          "summary": "Team research (2 teammates, run 12): CanonicalTask/ExistsTask perspective. Key finding: CanonicalR is the existential projection of CanonicalTask (ExistsTask alias recommended). Duration-coarse parametric_canonical_task_rel is acceptable for completeness. No new sorries; critical path from run 05 unchanged."
+        },
+        {
+          "path": "specs/018_dense_representation_theorem_completion/reports/12_team-research.md",
+          "type": "research_report",
+          "summary": "Team research (3 teammates): CanonicalTask vs CanonicalR analysis, ExistsTask refactoring, TaskFrame-based closure design"
         }
       ],
-      "session_id": "sess_1774117703_fa1892",
-      "researched": "2026-03-21T18:51:10Z",
+      "session_id": "sess_1774119590_f7e705",
+      "researched": "2026-03-21T19:07:01Z",
       "planned": "2026-03-21T18:14:11Z",
       "started": "2026-03-21T17:15:15Z"
     },
@@ -1032,9 +1042,29 @@
           "summary": "Comprehensive architecture analysis with Feb 2026 best practices comparison and 7 prioritized upgrade recommendations"
         }
       ]
+    },
+    {
+      "project_number": 21,
+      "project_name": "technical_debt_cleanup",
+      "status": "researched",
+      "language": "lean4",
+      "created": "2026-03-21T00:00:00Z",
+      "last_updated": "2026-03-21T12:00:00Z",
+      "dependencies": [
+        15,
+        18
+      ],
+      "description": "Clean up technical debt accumulated across tasks 9-20 metalogic refactoring track. Remove dead code, unused helpers, deprecated wrappers, and bridge infrastructure. Consolidate compatibility layers. Audit based on 4-agent parallel research of all completed task artifacts and source files.",
+      "artifacts": [
+        {
+          "path": "specs/021_technical_debt_cleanup/reports/01_tech-debt-audit.md",
+          "type": "report",
+          "summary": "Comprehensive 4-agent audit of tasks 9-20: dead code, bridges, axioms, sorries, deprecation candidates, and cleanup action plan"
+        }
+      ]
     }
   ],
-  "next_project_number": 21,
+  "next_project_number": 22,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
