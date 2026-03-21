@@ -12,9 +12,9 @@
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T20:23:28Z",
+      "last_updated": "2026-03-21T20:43:35Z",
       "session_id": "sess_1774124591_5f0ef6",
-      "researched": "2026-03-21T20:30:00Z",
+      "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
         {
           "path": "specs/028_correct_bfmcs_domain_conflation/reports/01_teammate-a-findings.md",
@@ -25,6 +25,11 @@
           "path": "specs/028_correct_bfmcs_domain_conflation/reports/01_teammate-b-findings.md",
           "type": "research_report",
           "summary": "Mathematical foundations: W/D distinction, DenselyOrdered/SuccOrder mutual exclusion, cross-family modal coherence, alternative architectural patterns"
+        },
+        {
+          "path": "specs/028_correct_bfmcs_domain_conflation/reports/01_team-research.md",
+          "type": "research",
+          "summary": "Team research with 2 teammates: W=D conflation audit and mathematical foundations"
         }
       ]
     },
@@ -126,15 +131,15 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:38:36Z",
+      "last_updated": "2026-03-21T20:42:28Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774125051_a9fbaa",
+      "session_id": "sess_1774125724_d36488",
       "researched": "2026-03-21T20:25:18Z",
       "artifacts": [
         {
@@ -153,7 +158,8 @@
           "summary": "Revised 4-phase plan with NO AXIOMS constraint: prove axioms OR reroute via CanonicalFMCS"
         }
       ],
-      "planned": "2026-03-21T20:38:36Z"
+      "planned": "2026-03-21T20:38:36Z",
+      "started": "2026-03-21T20:42:28Z"
     },
     {
       "project_number": 24,
@@ -1264,10 +1270,10 @@
     {
       "project_number": 26,
       "project_name": "remove_canonicalr_irreflexive_axiom",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T20:34:49Z",
+      "last_updated": "2026-03-21T20:42:02Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -1357,7 +1363,7 @@
           "summary": "Team research: CanonicalTask vs CanonicalR reframing, axiom validity (3 teammates)"
         }
       ],
-      "session_id": "sess_1774124986_13b8b6",
+      "session_id": "sess_1774125687_b9ad5b",
       "researched": "2026-03-21T20:02:33Z"
     }
   ],
