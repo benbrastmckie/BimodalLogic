@@ -48,7 +48,7 @@ Key findings from research report integrated into this plan:
 
 ## Implementation Phases
 
-### Phase 1: SerialMCS Infrastructure [NOT STARTED]
+### Phase 1: SerialMCS Infrastructure [COMPLETED]
 
 **Goal**: Establish that every MCS is serial (contains F_top and P_top), enabling conversion to SerialMCS.
 
@@ -69,7 +69,7 @@ Key findings from research report integrated into this plan:
 
 ---
 
-### Phase 2: BFMCS Wrapper Construction [NOT STARTED]
+### Phase 2: BFMCS Wrapper Construction [IN PROGRESS]
 
 **Goal**: Create `SuccChainBFMCS.lean` that wraps a SuccChainFMCS as a singleton BFMCS with temporal coherence.
 

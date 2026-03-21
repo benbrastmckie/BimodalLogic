@@ -229,10 +229,10 @@
     {
       "project_number": 15,
       "project_name": "discrete_representation_theorem_axiom_removal",
-      "status": "planned",
+      "status": "implementing",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:11:30Z",
+      "last_updated": "2026-03-21T11:13:06Z",
       "dependencies": [
         13,
         14
@@ -250,7 +250,7 @@
           "summary": "5-phase implementation plan for wiring Succ-chain FMCS to discrete representation theorem"
         }
       ],
-      "session_id": "sess_1774091292_60023c",
+      "session_id": "sess_1774091562_5d7efa",
       "researched": "2026-03-21T11:07:24Z",
       "planned": "2026-03-21T11:11:30Z",
       "plan_metadata": {
@@ -266,7 +266,8 @@
             "integrated_date": "2026-03-21"
           }
         ]
-      }
+      },
+      "started": "2026-03-21T11:13:06Z"
     },
     {
       "project_number": 16,
@@ -304,10 +305,10 @@
     {
       "project_number": 17,
       "project_name": "bfmcs_over_timeline_quot_dense",
-      "status": "implementing",
+      "status": "completed",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T11:11:07Z",
+      "last_updated": "2026-03-21T11:20:10Z",
       "dependencies": [
         16
       ],
@@ -322,12 +323,19 @@
           "path": "specs/017_bfmcs_over_timeline_quot_dense/plans/01_implementation-plan.md",
           "type": "plan",
           "summary": "5-phase implementation plan for multi-family BFMCS over TimelineQuot with modal and temporal coherence"
+        },
+        {
+          "path": "specs/017_bfmcs_over_timeline_quot_dense/summaries/01_implementation-summary.md",
+          "type": "summary",
+          "summary": "Implementation summary documenting dual-domain architecture and key theorems"
         }
       ],
       "session_id": "sess_1774091442_2d1843",
       "researched": "2026-03-21T11:05:18Z",
       "planned": "2026-03-21T11:08:58Z",
-      "started": "2026-03-21T11:11:07Z"
+      "started": "2026-03-21T11:11:07Z",
+      "completed": "2026-03-21T11:20:10Z",
+      "completion_summary": "Created TimelineQuotBFMCS with dual-domain architecture. Proved modal_forward via T-axiom, modal_backward via closedFlags saturation, forward_F and backward_P by wrapping canonical witnesses. Zero sorries, full build passes."
     },
     {
       "project_number": 18,

@@ -108,7 +108,7 @@ theorem closedFlags_union_modally_saturated (M0 : CanonicalMCS) :
     MCSSetModallySaturated { M | ∃ flag ∈ closedFlags M0, M ∈ flag } := by
   intro M ⟨flag, h_flag, h_M⟩ psi h_diamond
   -- Use closedFlags_closed_under_witnesses
-  obtain ⟨flag', h_flag', W, h_W_in_flag', h_psi⟩ :=
+  obtain ⟨flag', h_flag', W, h_W_in_flag', h_psi, _h_box⟩ :=
     closedFlags_closed_under_witnesses M0 flag h_flag M h_M psi h_diamond
   exact ⟨W, ⟨flag', h_flag', h_W_in_flag'⟩, h_psi⟩
 

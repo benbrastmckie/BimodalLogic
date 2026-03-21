@@ -70,6 +70,70 @@ structure SerialMCS where
   has_P_top : P_top ∈ world
 
 /-!
+## Seriality Theorems
+
+F_top and P_top are provable theorems in the discrete TM proof system (with seriality axioms).
+This enables conversion from any MCS to SerialMCS.
+-/
+
+/-- neg bot (i.e., top) is a provable theorem. -/
+noncomputable def neg_bot_theorem : [] ⊢ Formula.neg Formula.bot := by
+  -- neg bot = bot -> bot, which is the identity on bot
+  -- Use prop_s axiom: A -> (B -> A) instantiated with bot twice gives bot -> (bot -> bot)
+  -- Then use identity: bot -> bot
+  exact Bimodal.Theorems.Combinators.identity Formula.bot
+
+/-- G(neg bot) is provable (by temporal necessitation on neg bot). -/
+noncomputable def G_neg_bot_theorem : [] ⊢ Formula.all_future (Formula.neg Formula.bot) :=
+  Bimodal.ProofSystem.DerivationTree.temporal_necessitation _ neg_bot_theorem
+
+/-- H(neg bot) is provable (by past necessitation on neg bot). -/
+noncomputable def H_neg_bot_theorem : [] ⊢ Formula.all_past (Formula.neg Formula.bot) :=
+  Bimodal.Theorems.past_necessitation _ neg_bot_theorem
+
+/-- F(neg bot) is provable using the seriality_future axiom: G(phi) -> F(phi).
+    Instantiating with phi = neg bot and applying modus ponens with G_neg_bot_theorem. -/
+noncomputable def F_top_theorem : [] ⊢ F_top := by
+  unfold F_top
+  -- seriality_future axiom: G(neg bot) -> F(neg bot)
+  have h_serial : [] ⊢ (Formula.neg Formula.bot).all_future.imp
+                        (Formula.neg Formula.bot).some_future :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _
+      (Bimodal.ProofSystem.Axiom.seriality_future (Formula.neg Formula.bot))
+  exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_serial G_neg_bot_theorem
+
+/-- P(neg bot) is provable using the seriality_past axiom: H(phi) -> P(phi).
+    Instantiating with phi = neg bot and applying modus ponens with H_neg_bot_theorem. -/
+noncomputable def P_top_theorem : [] ⊢ P_top := by
+  unfold P_top
+  -- seriality_past axiom: H(neg bot) -> P(neg bot)
+  have h_serial : [] ⊢ (Formula.neg Formula.bot).all_past.imp
+                        (Formula.neg Formula.bot).some_past :=
+    Bimodal.ProofSystem.DerivationTree.axiom [] _
+      (Bimodal.ProofSystem.Axiom.seriality_past (Formula.neg Formula.bot))
+  exact Bimodal.ProofSystem.DerivationTree.modus_ponens [] _ _ h_serial H_neg_bot_theorem
+
+/-- Every MCS contains F_top because F_top is a theorem.
+    Theorems are in every MCS by closure under derivation. -/
+theorem SetMaximalConsistent.contains_F_top {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) : F_top ∈ M :=
+  theorem_in_mcs h_mcs F_top_theorem
+
+/-- Every MCS contains P_top because P_top is a theorem.
+    Theorems are in every MCS by closure under derivation. -/
+theorem SetMaximalConsistent.contains_P_top {M : Set Formula}
+    (h_mcs : SetMaximalConsistent M) : P_top ∈ M :=
+  theorem_in_mcs h_mcs P_top_theorem
+
+/-- Convert any MCS to a SerialMCS.
+    This is possible because F_top and P_top are theorems, hence in every MCS. -/
+noncomputable def MCS_to_SerialMCS (M : Set Formula) (h_mcs : SetMaximalConsistent M) : SerialMCS where
+  world := M
+  is_mcs := h_mcs
+  has_F_top := SetMaximalConsistent.contains_F_top h_mcs
+  has_P_top := SetMaximalConsistent.contains_P_top h_mcs
+
+/-!
 ## Forward Chain Construction
 
 We define the forward chain as a dependent type that bundles the set,
