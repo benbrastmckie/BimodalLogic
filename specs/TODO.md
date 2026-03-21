@@ -118,7 +118,7 @@ technical_debt:
 
 ### 16. Define DenseTask relation via Cantor isomorphism
 - **Effort**: 3-4 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none (independent of discrete track)
 - **Files**: DurationTransfer.lean (canonicalTaskRel), CantorApplication.lean (isomorphism), new DenseTask.lean
@@ -126,6 +126,7 @@ technical_debt:
   - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §2.3–2.5 — DenseTask definition via Cantor isomorphism, TaskFrame axiom proofs, density interpolation theorem
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §2.3, §3.2 — DenseTask as bridge between syntax and semantics, role in dense representation pipeline
 - **Research**: [01_dense-task-research.md](016_define_dense_task_relation/reports/01_dense-task-research.md)
+- **Plan**: [01_implementation-plan.md](016_define_dense_task_relation/plans/01_implementation-plan.md)
 
 **Description**: Define DenseTask(u,q,v) ↔ e(tv)-e(tu)=q using the Cantor isomorphism TimelineQuot≃oℚ and the existing canonicalTaskRel (w+d=w') from DurationTransfer.lean. Verify TaskFrame ℚ axioms (trivial from group properties). Prove density interpolation theorem: any positive-duration task has arbitrary rational subdivision. Replaces duration-coarse parametric_canonical_task_rel for the dense case and directly instantiates TaskFrame ℚ with DenselyOrdered.
 
