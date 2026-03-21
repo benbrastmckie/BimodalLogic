@@ -1276,10 +1276,10 @@
     {
       "project_number": 26,
       "project_name": "remove_canonicalr_irreflexive_axiom",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T21:30:00Z",
+      "last_updated": "2026-03-21T20:50:40Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -1382,10 +1382,25 @@
           "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/18_team-research.md",
           "type": "report",
           "summary": "Wave 6 synthesis: CanonicalTask as native TaskFrame concept, irreflexivity reformulation path"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/18_teammate-a-findings.md",
+          "type": "report",
+          "summary": "CanonicalTask negative duration support verified; converse proven"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/18_teammate-b-findings.md",
+          "type": "report",
+          "summary": "69-file usage map; refactoring strategy; backward sorry diagnosis"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/18_team-research.md",
+          "type": "report",
+          "summary": "Wave 6 synthesis: CanonicalTask as central relation"
         }
       ],
       "session_id": "sess_1774125687_b9ad5b",
-      "researched": "2026-03-21T20:02:33Z"
+      "researched": "2026-03-21T20:50:40Z"
     }
   ],
   "next_project_number": 29,

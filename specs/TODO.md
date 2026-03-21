@@ -76,7 +76,7 @@ technical_debt:
 
 ### 26. Remove or justify canonicalR_irreflexive_axiom
 - **Effort**: 2-8 hours (depends on path chosen)
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
