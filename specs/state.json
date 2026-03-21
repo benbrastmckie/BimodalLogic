@@ -104,15 +104,15 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T20:00:16Z",
+      "last_updated": "2026-03-21T20:20:17Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774122937_291cbd",
+      "session_id": "sess_1774124405_87b663",
       "researched": "2026-03-21T20:00:16Z",
       "artifacts": [
         {
@@ -1229,7 +1229,7 @@
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T20:02:33Z",
+      "last_updated": "2026-03-21T20:20:45Z",
       "dependencies": [],
       "description": "Investigate and execute removal of canonicalR_irreflexive_axiom. Research shows CanonicalTask refactoring is not viable (exact reduction to CanonicalR). Three paths identified: (A) prove via reflexive T-axiom if available in proof system, (B) add Gabbay IRR inference rule, (C) accept with proper documentation. 16 usage sites across 6 files all require CanonicalR-level irreflexivity.",
       "artifacts": [
@@ -1272,9 +1272,29 @@
           "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/03_team-research.md",
           "type": "report",
           "summary": "Team research: modal non-definability, IRR rule, completeness (3 teammates)"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/04_teammate-a-findings.md",
+          "type": "report",
+          "summary": "Novel IRR techniques without T-axiom: none found"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/04_teammate-b-findings.md",
+          "type": "report",
+          "summary": "Reflexive semantics destroys frame class parametricity"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/04_teammate-c-findings.md",
+          "type": "report",
+          "summary": "TaskFrame completeness under reflexive semantics analysis"
+        },
+        {
+          "path": "specs/026_remove_canonicalr_irreflexive_axiom/reports/04_team-research.md",
+          "type": "report",
+          "summary": "Team research: IRR without T-axiom, reflexive semantics implications (3 teammates)"
         }
       ],
-      "session_id": "sess_1774122144_418c32",
+      "session_id": "sess_1774124111_6d706e",
       "researched": "2026-03-21T20:02:33Z"
     }
   ],
