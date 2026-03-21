@@ -89,7 +89,7 @@ technical_debt:
 
 ### 27. Unify DenseTimeline and DovetailedTimeline constructions
 - **Effort**: 4-6 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Blocks**: Task 18 (phase 3)
 
@@ -99,12 +99,13 @@ technical_debt:
 
 ### 22. Direct multi-family bundle construction
 - **Effort**: 4-6 hours
-- **Status**: [RESEARCHING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: Task 15
 - **Research**:
   - [01_multi-family-research.md](022_direct_multi_family_bundle/reports/01_multi-family-research.md)
   - [02_naming-conventions.md](022_direct_multi_family_bundle/reports/02_naming-conventions.md)
+  - [03_implementation-review.md](022_direct_multi_family_bundle/reports/03_implementation-review.md)
 - **Plan**: [01_direct-bundle-plan.md](022_direct_multi_family_bundle/plans/01_direct-bundle-plan.md)
 
 **Description**: Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries: (1) modal_forward cross-family transfer (ClosedFlagIntBFMCS.lean:187), (2) modal_backward coverage gap (ClosedFlagIntBFMCS.lean:135), (3) chain membership for t!=0 (ClosedFlagIntBFMCS.lean:267). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer. The key insight: if families cover all of discreteClosedMCS, then "true in all families" = "true in all closed-set MCS", resolving the coverage gap.
@@ -113,7 +114,7 @@ technical_debt:
 
 ### 23. F/P temporal witness chain construction
 - **Effort**: 6-10 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Task 15
 
@@ -180,7 +181,7 @@ technical_debt:
 - **Effort**: 4-6 hours
 - **Status**: [IMPLEMENTING]
 - **Language**: lean4
-- **Dependencies**: Task 17
+- **Dependencies**: Tasks 17, 27
 - **Research (task 6)**:
   - [18_dense-three-place-task-relation.md](006_canonical_taskframe_completeness/reports/18_dense-three-place-task-relation.md) §5 — replacing CanonicalR with DenseTask in the dense setting, truth condition restatement
   - [19_role-in-representation-theorems.md](006_canonical_taskframe_completeness/reports/19_role-in-representation-theorems.md) §3.2, §6 dense table — full wiring of dense representation pipeline, use of timelineQuot_instantiate_dense to close the domain mismatch

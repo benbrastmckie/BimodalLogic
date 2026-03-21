@@ -8,14 +8,15 @@
     {
       "project_number": 27,
       "project_name": "unify_densetimeline_dovetailedtimeline",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T19:53:54Z",
-      "last_updated": "2026-03-21T19:53:54Z",
+      "last_updated": "2026-03-21T19:58:17Z",
       "blocks": [
         18
       ],
-      "description": "Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type."
+      "description": "Unify DenseTimeline and DovetailedTimeline constructions to enable ClosureSaturation temporal coherence proofs. ClosureSaturation.lean forward_F/backward_P sorries require DovetailedTimeline coverage theorems but currently use DenseTimeline. Either refactor ClosureSaturation to use DovetailedTimeline, create a bridge layer between the two constructions, or unify them into a single timeline type.",
+      "session_id": "sess_1774123083_20eddb"
     },
     {
       "project_number": 25,
@@ -32,10 +33,10 @@
     {
       "project_number": 22,
       "project_name": "direct_multi_family_bundle",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T19:53:04Z",
+      "last_updated": "2026-03-21T19:58:43Z",
       "dependencies": [
         15
       ],
@@ -67,6 +68,11 @@
           "path": "specs/022_direct_multi_family_bundle/summaries/01_implementation-summary.md",
           "type": "summary",
           "summary": "Implementation summary documenting completed work and remaining sorries"
+        },
+        {
+          "path": "specs/022_direct_multi_family_bundle/reports/03_implementation-review.md",
+          "type": "research_report",
+          "summary": "Mathematical analysis of BFMCS Int architecture; identifies cross-family modal_forward as fundamentally impossible; recommends CanonicalMCS domain for sorry-free completion"
         }
       ],
       "planned": "2026-03-21T19:38:43Z",
@@ -75,14 +81,15 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T19:16:01Z",
+      "last_updated": "2026-03-21T19:56:03Z",
       "dependencies": [
         15
       ],
-      "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P)."
+      "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
+      "session_id": "sess_1774122937_291cbd"
     },
     {
       "project_number": 24,
@@ -473,7 +480,8 @@
       "created": "2026-03-21T00:00:00Z",
       "last_updated": "2026-03-21T19:44:54Z",
       "dependencies": [
-        17
+        17,
+        27
       ],
       "description": "Wire the TimelineQuot BFMCS and DenseTask-based TaskFrame ℚ into the unconditional dense representation theorem: valid_dense φ → ⊢_dense φ. Instantiate parametric truth lemma with D=TimelineQuot (which carries DenselyOrdered). Use timelineQuot_instantiate_dense to instantiate valid_dense at D=TimelineQuot. Resolves the Task 988 blocker via the DenseTask framework.",
       "artifacts": [
