@@ -60,7 +60,7 @@ technical_debt:
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: none
 
@@ -70,7 +70,7 @@ technical_debt:
 
 ### 28. Correct W=D conflation in BFMCS domain architecture
 - **Effort**: 8-16 hours
-- **Status**: [RESEARCHING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 22
 - **Research**:
@@ -78,6 +78,7 @@ technical_debt:
   - [01_teammate-b-findings.md](028_correct_bfmcs_domain_conflation/reports/01_teammate-b-findings.md) — Mathematical foundations: W/D distinction, DenselyOrdered/SuccOrder mutual exclusion, cross-family modal coherence, alternative architectural patterns
   - [01_team-research.md](028_correct_bfmcs_domain_conflation/reports/01_team-research.md) — Synthesized findings: 4 conflation sites, prescribed architecture (D=TimelineQuot dense, D=ℤ discrete)
   - [02_blocker-analysis.md](028_correct_bfmcs_domain_conflation/reports/02_blocker-analysis.md) — Phase 5 blocker analysis: S5 correct but Succ-chain bypass viable, 4 axioms remaining
+  - [03_single-family-critique.md](028_correct_bfmcs_domain_conflation/reports/03_single-family-critique.md) — Critical analysis confirms single-family IS sufficient; formula-specific, not universal model
 - **Plan**:
   - [01_bfmcs-domain-correction.md](028_correct_bfmcs_domain_conflation/plans/01_bfmcs-domain-correction.md) — v1: 8-phase plan (PARTIAL, Phase 5 S5-blocked)
   - [02_succ-chain-completion.md](028_correct_bfmcs_domain_conflation/plans/02_succ-chain-completion.md) — v2: 4-phase plan to prove SuccChainFMCS axioms (3 hours)
@@ -150,7 +151,7 @@ technical_debt:
 
 ### 23. F/P temporal witness chain construction
 - **Effort**: 4-6 hours
-- **Status**: [PLANNED]
+- **Status**: [IMPLEMENTING]
 - **Language**: lean4
 - **Dependencies**: Task 15
 - **Research**:
