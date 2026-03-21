@@ -1,0 +1,20 @@
+{
+  "status": "planned",
+  "artifacts": [
+    {
+      "type": "plan",
+      "path": "specs/031_wire_dense_truth_lemma_instantiation/plans/01_truth-lemma-instantiation.md",
+      "summary": "4-phase implementation plan for wiring dense truth lemma instantiation to close TimelineQuotCompleteness sorry"
+    }
+  ],
+  "next_steps": "Run /implement 31 to execute the plan",
+  "metadata": {
+    "session_id": "sess_1774132840_07818c",
+    "agent_type": "planner-agent",
+    "duration_seconds": 180,
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "plan", "skill-planner", "planner-agent"],
+    "phase_count": 4,
+    "estimated_hours": 3
+  }
+}

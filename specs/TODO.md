@@ -60,11 +60,12 @@ technical_debt:
 
 ### 31. Wire dense truth lemma instantiation
 - **Effort**: 2-3 hours
-- **Status**: [RESEARCHED]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: Task 30
 - **Parent Task**: #18
 - **Research**: [14_spawn-analysis.md](018_dense_representation_theorem_completion/reports/14_spawn-analysis.md)
+- **Plan**: [01_truth-lemma-instantiation.md](031_wire_dense_truth_lemma_instantiation/plans/01_truth-lemma-instantiation.md)
 
 **Description**: Instantiate parametric_shifted_truth_lemma at D = DovetailedTimelineQuot and close the sorry in timelineQuot_not_valid_of_neg_consistent at TimelineQuotCompleteness.lean:127. Use the temporally coherent BFMCS from task 30, construct ParametricCanonicalTaskModel and ShiftClosedParametricCanonicalOmega, then connect root MCS membership to semantic falsity to close dense_completeness_theorem.
 

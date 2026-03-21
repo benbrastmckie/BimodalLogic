@@ -1554,7 +1554,7 @@
     {
       "project_number": 31,
       "project_name": "wire_dense_truth_lemma_instantiation",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "description": "Instantiate parametric_shifted_truth_lemma at D = DovetailedTimelineQuot and close the sorry in timelineQuot_not_valid_of_neg_consistent at TimelineQuotCompleteness.lean:127. This requires: (1) Use the temporally coherent BFMCS from the dependency task, (2) Construct ParametricCanonicalTaskModel (DovetailedTimelineQuot ...) and ShiftClosedParametricCanonicalOmega B, (3) Connect root MCS membership (phi.neg in M0) to semantic falsity (not valid_over D phi), (4) Close the sorry that blocks dense_completeness_theorem. The implementation should follow the pattern from DiscreteInstantiation.lean for the discrete case.",
       "effort": "2-3 hours",
@@ -1563,14 +1563,21 @@
         30
       ],
       "created": "2026-03-21T21:47:35Z",
-      "last_updated": "2026-03-21T21:47:35Z",
+      "last_updated": "2026-03-21T22:43:20Z",
       "artifacts": [
         {
           "type": "research",
           "path": "specs/018_dense_representation_theorem_completion/reports/14_spawn-analysis.md",
           "summary": "Spawn analysis from parent task"
+        },
+        {
+          "path": "specs/031_wire_dense_truth_lemma_instantiation/plans/01_truth-lemma-instantiation.md",
+          "type": "plan",
+          "summary": "4-phase implementation plan for wiring dense truth lemma instantiation to close TimelineQuotCompleteness sorry"
         }
-      ]
+      ],
+      "session_id": "sess_1774132840_07818c",
+      "planned": "2026-03-21T22:43:20Z"
     }
   ],
   "next_project_number": 32,
