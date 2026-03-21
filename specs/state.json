@@ -8,14 +8,15 @@
     {
       "project_number": 22,
       "project_name": "direct_multi_family_bundle",
-      "status": "not_started",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T19:16:01Z",
+      "last_updated": "2026-03-21T19:21:55Z",
       "dependencies": [
         15
       ],
-      "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer."
+      "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer.",
+      "session_id": "sess_1774120905_6222ed"
     },
     {
       "project_number": 23,
@@ -1086,7 +1087,7 @@
       "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T19:17:46Z",
+      "last_updated": "2026-03-21T19:21:35Z",
       "dependencies": [
         15,
         18
@@ -1102,10 +1103,30 @@
           "path": "specs/021_technical_debt_cleanup/reports/02_team-research.md",
           "type": "research",
           "summary": "Team research (3 teammates): axiom semantic validity, proof dependencies, frame condition theory"
+        },
+        {
+          "path": "specs/021_technical_debt_cleanup/reports/02_team-research.md",
+          "type": "report",
+          "summary": "Synthesized team research: axiom classification, derivation priorities, reconciled action plan"
+        },
+        {
+          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-a-findings.md",
+          "type": "report",
+          "summary": "Axiom semantic validity analysis (11 axioms classified: 2 derivable, 2 unjustified, 5 valid-semantic, 2 valid-frame)"
+        },
+        {
+          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-b-findings.md",
+          "type": "report",
+          "summary": "Axiom proof dependencies and derivation paths with priority matrix"
+        },
+        {
+          "path": "specs/021_technical_debt_cleanup/reports/02_teammate-c-findings.md",
+          "type": "report",
+          "summary": "Frame condition theory analysis of 19 proof system axioms + 11 Lean axiom declarations"
         }
       ],
       "session_id": "sess_1774120112_3b758d",
-      "researched": "2026-03-21T19:17:46Z"
+      "researched": "2026-03-21T19:21:35Z"
     }
   ],
   "next_project_number": 25,
