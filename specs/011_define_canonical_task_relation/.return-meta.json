@@ -1,34 +1,20 @@
 {
-  "status": "research_complete",
-  "started_at": "2026-03-21T09:00:00Z",
-  "completed_at": "2026-03-21T09:15:00Z",
+  "status": "planned",
   "artifacts": [
     {
-      "type": "research_report",
-      "path": "specs/011_define_canonical_task_relation/reports/01_canonical-task-research.md",
-      "summary": "Implementation guidance for CanonicalTask relation with inductive definition strategy and TaskFrame axiom proofs"
+      "type": "plan",
+      "path": "specs/011_define_canonical_task_relation/plans/01_canonical-task-plan.md",
+      "summary": "8-phase implementation plan for CanonicalTask relation with TaskFrame axioms"
     }
   ],
-  "partial_progress": {
-    "stage": "completed",
-    "details": "Research complete with comprehensive implementation plan"
-  },
-  "findings": {
-    "recommended_approach": "Split inductive definition (forward/backward chains) following CanonicalR_chain pattern",
-    "estimated_lines": "150-180",
-    "difficulty": "moderate",
-    "blocking_dependencies": "none",
-    "key_insights": [
-      "Use CanonicalTask_forward and CanonicalTask_backward separately then combine",
-      "Converse theorem requires careful constructor design",
-      "Bounded witness proof uses single_step_forcing inductively",
-      "All Task 10 prerequisites are available in SuccRelation.lean"
-    ]
-  },
+  "next_steps": "Run /implement 11 to execute the plan",
   "metadata": {
-    "session_id": "sess_1774086842_9dd65b",
-    "agent_type": "lean-research-agent",
+    "session_id": "sess_1774087183_be9cc2",
+    "agent_type": "planner-agent",
+    "duration_seconds": 120,
     "delegation_depth": 1,
-    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+    "delegation_path": ["orchestrator", "plan", "planner-agent"],
+    "phase_count": 8,
+    "estimated_hours": 3.5
   }
 }

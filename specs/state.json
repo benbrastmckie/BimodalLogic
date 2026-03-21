@@ -74,10 +74,10 @@
     {
       "project_number": 11,
       "project_name": "define_canonical_task_relation",
-      "status": "researched",
+      "status": "planning",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T09:58:38Z",
+      "last_updated": "2026-03-21T10:00:04Z",
       "dependencies": [
         10
       ],
@@ -89,16 +89,16 @@
           "summary": "Implementation guidance for CanonicalTask relation with inductive definition strategy and TaskFrame axiom proofs"
         }
       ],
-      "session_id": "sess_1774086842_9dd65b",
+      "session_id": "sess_1774087183_be9cc2",
       "researched": "2026-03-21T09:58:38Z"
     },
     {
       "project_number": 12,
       "project_name": "succ_successor_predecessor_existence",
-      "status": "researched",
+      "status": "planned",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T09:58:15Z",
+      "last_updated": "2026-03-21T10:02:01Z",
       "dependencies": [
         10
       ],
@@ -108,25 +108,38 @@
           "path": "specs/012_succ_successor_predecessor_existence/reports/01_succ-existence-research.md",
           "type": "report",
           "summary": "Deferral seed construction, DF consistency, symmetric predecessor existence"
+        },
+        {
+          "path": "specs/012_succ_successor_predecessor_existence/plans/01_succ-existence-plan.md",
+          "type": "plan",
+          "summary": "5-phase implementation plan for Succ successor/predecessor existence with deferral seed construction"
         }
       ],
-      "session_id": "sess_1774086844_40ae2e",
-      "researched": "2026-03-21T09:58:15Z"
+      "session_id": "sess_1774087129_0cbb44",
+      "researched": "2026-03-21T09:58:15Z",
+      "planned": "2026-03-21T10:02:01Z"
     },
     {
       "project_number": 13,
       "project_name": "canonical_r_recovery_from_canonical_task",
-      "status": "researching",
+      "status": "researched",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T09:58:24Z",
+      "last_updated": "2026-03-21T10:01:51Z",
       "dependencies": [
         11,
         12
       ],
       "description": "Prove CanonicalR(u,v) ↔ ∃n≥1, CanonicalTask(u,n,v). Forward: CanonicalTask implies CanonicalR by g_content transitivity through Succ-chains via temp_4. Backward: CanonicalR implies some CanonicalTask using successor existence and F-nesting bounds. Also prove existing lemmas (canonical_forward_G, canonical_forward_F) from new definitions as backward-compatibility layer.",
-      "artifacts": [],
-      "session_id": "sess_1774087088_3924ec"
+      "artifacts": [
+        {
+          "path": "specs/013_canonical_r_recovery_from_canonical_task/reports/01_canonicalr-recovery-analysis.md",
+          "type": "report",
+          "summary": "Analysis recommending CanonicalR be kept as derived shorthand. Recovery theorem bridges duration-agnostic and duration-precise reasoning."
+        }
+      ],
+      "session_id": "sess_1774087088_3924ec",
+      "researched": "2026-03-21T10:01:51Z"
     },
     {
       "project_number": 14,
