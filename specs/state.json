@@ -38,11 +38,11 @@
     {
       "project_number": 28,
       "project_name": "correct_bfmcs_domain_conflation",
-      "status": "planning",
+      "status": "planned",
       "language": "lean4",
       "description": "Correct W=D conflation in BFMCS domain architecture: TimelineQuotBFMCS and DirectMultiFamilyBFMCS use CanonicalMCS as BFMCS domain parameter D, conflating world states with time indices. For dense completeness, D must be TimelineQuot (DenselyOrdered); for discrete completeness, D must be Int (SuccOrder). Reports 17-20 in specs/006 prescribe the correct architecture. Task 22 research report 03 recommendation to 'use CanonicalMCS domain' is wrong for non-base logics. Requires: (1) audit all BFMCS constructions for W=D conflation, (2) redesign TimelineQuotBFMCS to use TimelineQuot as D, (3) redesign DirectMultiFamilyBFMCS to use Int as D, (4) solve cross-family modal coherence for non-CanonicalMCS domains, (5) update task 22 report with corrected analysis",
       "created": "2026-03-21T20:09:08Z",
-      "last_updated": "2026-03-21T22:30:56Z",
+      "last_updated": "2026-03-21T22:33:53Z",
       "session_id": "sess_1774132230_661edd",
       "researched": "2026-03-21T20:43:35Z",
       "artifacts": [
@@ -95,9 +95,14 @@
           "path": "specs/028_correct_bfmcs_domain_conflation/reports/05_s5-modal-coherence-analysis.md",
           "type": "research_report",
           "summary": "Critical correction: TM IS S5 (has modal_5_collapse); sorries blocked by saturation gap at t!=0, not missing axiom"
+        },
+        {
+          "path": "specs/028_correct_bfmcs_domain_conflation/plans/03_succ-chain-discrete-completeness.md",
+          "type": "plan",
+          "summary": "v3: 4-phase plan for discrete completeness via Succ-chain bypass, corrected S5 understanding"
         }
       ],
-      "planned": "2026-03-21T21:27:21Z",
+      "planned": "2026-03-21T22:33:53Z",
       "started": "2026-03-21T20:59:01Z"
     },
     {
@@ -198,15 +203,15 @@
     {
       "project_number": 23,
       "project_name": "fp_temporal_witness_chain",
-      "status": "planned",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T19:16:01Z",
-      "last_updated": "2026-03-21T22:28:28Z",
+      "last_updated": "2026-03-21T22:32:26Z",
       "dependencies": [
         15
       ],
       "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P).",
-      "session_id": "sess_1774131563_f25147",
+      "session_id": "sess_1774132327_5fd873",
       "researched": "2026-03-21T22:24:10Z",
       "artifacts": [
         {
