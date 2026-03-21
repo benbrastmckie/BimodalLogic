@@ -34,7 +34,11 @@ technical_debt:
 2. **10** → implement (depends: 9)
 3. **11** → implement (depends: 10) | **12** → implement (depends: 10) [parallel]
 4. **13** → implement (depends: 11,12) | **14** → implement (depends: 11,12) [parallel]
-5. **15** → implement (depends: 13,14) — removes 3 axioms
+5. **15** → ~~implement~~ COMPLETED
+
+**Discrete sorry elimination (post task 15)**:
+1. **22** → research (depends: 15) | **23** → research (depends: 15) [parallel]
+2. **24** → implement (depends: 22, 23) — removes 3 axioms, final cleanup
 
 **Dense DenseTask (complete dense completeness)**:
 1. **16** → implement (independent)
@@ -62,11 +66,43 @@ technical_debt:
 
 ---
 
+## Discrete Sorry Elimination (Post Task 15)
+
+### 22. Direct multi-family bundle construction
+- **Effort**: 4-6 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 15
+
+**Description**: Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries: (1) modal_forward cross-family transfer (ClosedFlagIntBFMCS.lean:187), (2) modal_backward coverage gap (ClosedFlagIntBFMCS.lean:135), (3) chain membership for t!=0 (ClosedFlagIntBFMCS.lean:267). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer. The key insight: if families cover all of discreteClosedMCS, then "true in all families" = "true in all closed-set MCS", resolving the coverage gap.
+
+---
+
+### 23. F/P temporal witness chain construction
+- **Effort**: 6-10 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Task 15
+
+**Description**: Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(¬φ) killing F(φ) obligations. Eliminates 4 dovetailing sorries: intFMCS_forward_F (IntBFMCS.lean:1199), intFMCS_forward_F_enriched two cases (IntBFMCS.lean:1175,1177), intFMCS_backward_P (IntBFMCS.lean:1213). Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches with Int-compatible index type.
+
+---
+
+### 24. Discrete axiom removal and documentation cleanup
+- **Effort**: 2-3 hours
+- **Status**: [NOT STARTED]
+- **Language**: lean4
+- **Dependencies**: Tasks 22, 23
+
+**Description**: Final cleanup gated on sorry-free discrete_representation_unconditional. (1) Remove 3 axioms: discrete_Icc_finite_axiom (DiscreteTimeline.lean:316), discreteImmediateSuccSeed_consistent_axiom (DiscreteSuccSeed.lean:284), discreteImmediateSucc_covers_axiom (DiscreteSuccSeed.lean:414). (2) Fix stale docstrings in AlgebraicBaseCompleteness.lean referencing IntFMCSTransfer.lean (lines 100, 127, 140, 259). (3) Remove dead code: singleFamilyBFMCS and construct_bfmcs_from_mcs (AlgebraicBaseCompleteness.lean lines 96-141). (4) Update Bundle/README.md: add ClosedFlagIntBFMCS.lean and ModallyCoherentBFMCS.lean to architecture table, fix stale 0-sorries claim, update Future Work item 3, update timestamp. (5) Update TODO.md metadata (sorry_count, axiom_count). Subsumes relevant items from task 21 scope.
+
+---
+
 ## Metalogic Refactoring: Three-Place Task Relations (Reports 17-20)
 
 ### 21. Clean up technical debt from tasks 9-20
 - **Effort**: 3-5 hours
-- **Status**: [RESEARCHED]
+- **Status**: [RESEARCHING]
 - **Language**: lean4
 - **Dependencies**: Tasks 15, 18
 - **Research**:

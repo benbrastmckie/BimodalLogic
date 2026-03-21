@@ -6,6 +6,43 @@
   },
   "active_projects": [
     {
+      "project_number": 22,
+      "project_name": "direct_multi_family_bundle",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-21T19:16:01Z",
+      "last_updated": "2026-03-21T19:16:01Z",
+      "dependencies": [
+        15
+      ],
+      "description": "Replace ClosedFlagIntBFMCS bridge/wrapper with direct multi-family construction where bundle families = all discreteClosedMCS members. Eliminates 3 coverage sorries (modal_forward cross-family transfer, modal_backward coverage gap, chain membership for t!=0). Refactors away the bridge pattern — the BFMCS Int should be constructed directly from the closed set, not wrapped through an intermediate ClosedFlagFMCS layer."
+    },
+    {
+      "project_number": 23,
+      "project_name": "fp_temporal_witness_chain",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-21T19:16:01Z",
+      "last_updated": "2026-03-21T19:16:01Z",
+      "dependencies": [
+        15
+      ],
+      "description": "Replace linear Lindenbaum chain construction in IntBFMCS.lean with one satisfying forward-F and backward-P temporal witness properties. Current linear chains fundamentally cannot satisfy these: Lindenbaum extensions can introduce G(neg phi) killing F(phi) obligations. Requires research into omega-squared, two-pass, or CanonicalFMCS-based approaches. Eliminates 4 dovetailing sorries (intFMCS_forward_F, intFMCS_forward_F_enriched x2, intFMCS_backward_P)."
+    },
+    {
+      "project_number": 24,
+      "project_name": "discrete_axiom_removal_cleanup",
+      "status": "not_started",
+      "language": "lean4",
+      "created": "2026-03-21T19:16:01Z",
+      "last_updated": "2026-03-21T19:16:01Z",
+      "dependencies": [
+        22,
+        23
+      ],
+      "description": "Final cleanup gated on sorry-free discrete_representation_unconditional. (1) Remove 3 axioms: discrete_Icc_finite_axiom (DiscreteTimeline.lean:316), discreteImmediateSuccSeed_consistent_axiom (DiscreteSuccSeed.lean:284), discreteImmediateSucc_covers_axiom (DiscreteSuccSeed.lean:414). (2) Fix stale docstrings in AlgebraicBaseCompleteness.lean referencing IntFMCSTransfer.lean (lines 100, 127, 140, 259). (3) Remove dead code: singleFamilyBFMCS and construct_bfmcs_from_mcs (lines 96-141). (4) Update Bundle/README.md: add ClosedFlagIntBFMCS.lean and ModallyCoherentBFMCS.lean to architecture table, fix stale 0-sorries claim, update Future Work item 3, update timestamp. (5) Update TODO.md metadata (sorry_count, axiom_count)."
+    },
+    {
       "project_number": 9,
       "project_name": "add_existential_temporal_extractors",
       "status": "completed",
@@ -1046,10 +1083,10 @@
     {
       "project_number": 21,
       "project_name": "technical_debt_cleanup",
-      "status": "researched",
+      "status": "researching",
       "language": "lean4",
       "created": "2026-03-21T00:00:00Z",
-      "last_updated": "2026-03-21T12:00:00Z",
+      "last_updated": "2026-03-21T19:08:53Z",
       "dependencies": [
         15,
         18
@@ -1061,10 +1098,11 @@
           "type": "report",
           "summary": "Comprehensive 4-agent audit of tasks 9-20: dead code, bridges, axioms, sorries, deprecation candidates, and cleanup action plan"
         }
-      ]
+      ],
+      "session_id": "sess_1774120112_3b758d"
     }
   ],
-  "next_project_number": 22,
+  "next_project_number": 25,
   "artifacts": [
     {
       "path": "specs/636_fix_sorries_temporalproofstrategies_examples/plans/implementation-001.md",
