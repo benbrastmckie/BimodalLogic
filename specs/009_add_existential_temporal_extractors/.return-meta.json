@@ -1,0 +1,22 @@
+{
+  "status": "researched",
+  "started_at": "2026-03-21T12:00:00Z",
+  "completed_at": "2026-03-21T12:15:00Z",
+  "artifacts": [
+    {
+      "path": "specs/009_add_existential_temporal_extractors/reports/01_temporal-extractors.md",
+      "type": "report",
+      "summary": "Research report for f_content and p_content extractors. Specifies 2-line definitions, simp lemmas, and duality lemmas using existing MCS infrastructure. Low complexity, no blockers."
+    }
+  ],
+  "partial_progress": {
+    "stage": "complete",
+    "details": "Research complete. Report covers definitions, duality lemmas, dependencies, and implementation order."
+  },
+  "metadata": {
+    "session_id": "sess_1774084393_07c89f",
+    "agent_type": "lean-research-agent",
+    "delegation_depth": 1,
+    "delegation_path": ["orchestrator", "research", "lean-research-agent"]
+  }
+}

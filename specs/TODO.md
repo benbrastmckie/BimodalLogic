@@ -215,11 +215,13 @@ technical_debt:
 
 ### 9. Add f_content and p_content existential temporal extractors
 - **Effort**: 1-2 hours
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Files**: Theories/Bimodal/Metalogic/Bundle/TemporalContent.lean
-- **Research (task 6)**:
+- **Research**:
+  - [01_temporal-extractors.md](009_add_existential_temporal_extractors/reports/01_temporal-extractors.md)
+- **Background (task 6)**:
   - [17_three-place-canonical-task-relation.md](006_canonical_taskframe_completeness/reports/17_three-place-canonical-task-relation.md) §2.1 — defines f_content, p_content, their role alongside g/h content
   - [20_succ-based-bypass-of-covering-lemma.md](006_canonical_taskframe_completeness/reports/20_succ-based-bypass-of-covering-lemma.md) §2.1 — Lean definitions and the four-extractor table
 
