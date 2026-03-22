@@ -70,7 +70,7 @@ technical_debt:
 
 ### 33. Expand design-choices section with comprehensive reflexive vs irreflexive semantics analysis
 - **Effort**: TBD
-- **Status**: [NOT STARTED]
+- **Status**: [RESEARCHING]
 - **Language**: formal
 
 **Description**: Expand sec:design-choices in 06-notes.typ with deeper analysis of reflexive vs irreflexive semantics for G/H. Include: (1) expressive power differences, (2) frame constraints (serial, density, discreteness), (3) representation theorem challenges for irreflexive vs collapsed logic for reflexive, (4) algebraic perspective (G, H, Box as interior operators). Research codebase, archived projects in vault, and past research to distill comprehensive content for additional sections as needed.
@@ -133,10 +133,12 @@ technical_debt:
 ---
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
-- **Effort**: 12-20 hours
-- **Status**: [RESEARCHING]
+- **Effort**: 12-16 hours
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: none
+- **Research**:
+  - [01_team-research.md](025_rename_canonicalr_to_existstask/reports/01_team-research.md) — Audit + architecture + irreflexivity (3 teammates)
 
 **Description**: Systematically shift the proof architecture from CanonicalR to CanonicalTask/Succ as primary abstractions. Rename CanonicalR to ExistsTask but minimize its use — prefer reasoning in terms of Succ (for immediate succession) and CanonicalTask (for n-step reachability) directly. ExistsTask should only appear where the existential quantification over duration is genuinely needed. Audit all 63 files referencing CanonicalR: categorize each use as (1) naturally Succ, (2) naturally CanonicalTask, or (3) genuinely ExistsTask. Restate definitions, theorems, and proof obligations in the most natural abstraction. This subsumes task 29 Phases 5-6 (canonicalR_irreflexive removal) and task 18 (ExistsTask alias).
 
