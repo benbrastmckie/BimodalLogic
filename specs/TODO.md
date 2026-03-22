@@ -82,7 +82,7 @@ technical_debt:
 
 ### 29. Switch TM metalogic to reflexive G/H semantics
 - **Effort**: 17-18 hours (revised up from 12)
-- **Status**: [IMPLEMENTING]
+- **Status**: [RESEARCHED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
@@ -90,6 +90,7 @@ technical_debt:
   - [02_historical-issues-analysis.md](029_switch_to_reflexive_gh_semantics/reports/02_historical-issues-analysis.md) — Historical issues (all resolved/surmountable)
   - [05_team-research.md](029_switch_to_reflexive_gh_semantics/reports/05_team-research.md) — Wave 2: prerequisites, ordering, revised 9-phase plan (3 teammates)
   - [06_theoretical-analysis.md](029_switch_to_reflexive_gh_semantics/reports/06_theoretical-analysis.md) — Theoretical analysis: frame definability, expressiveness, recommendation
+  - [07_team-research.md](029_switch_to_reflexive_gh_semantics/reports/07_team-research.md) — Wave 3: blocker resolution (canonicalR_antisymmetric FALSE, Option D recommended)
 - **Plan**:
   - [02_reflexive-semantics-revised.md](029_switch_to_reflexive_gh_semantics/plans/02_reflexive-semantics-revised.md) — v2: 9 phases, 17-18h (incorporates Wave 2 research)
   - [01_reflexive-semantics-refactoring.md](029_switch_to_reflexive_gh_semantics/plans/01_reflexive-semantics-refactoring.md) — v1 (superseded)
