@@ -139,11 +139,12 @@ technical_debt:
 
 ### 25. Shift proof architecture from CanonicalR to CanonicalTask/Succ
 - **Effort**: 12-16 hours
-- **Status**: [PLANNING]
+- **Status**: [PLANNED]
 - **Language**: lean4
 - **Dependencies**: none
 - **Research**:
   - [01_team-research.md](025_rename_canonicalr_to_existstask/reports/01_team-research.md) — Audit + architecture + irreflexivity (3 teammates)
+- **Plan**: [01_implementation-plan.md](025_rename_canonicalr_to_existstask/plans/01_implementation-plan.md)
 
 **Description**: Systematically shift the proof architecture from CanonicalR to CanonicalTask/Succ as primary abstractions. Rename CanonicalR to ExistsTask but minimize its use — prefer reasoning in terms of Succ (for immediate succession) and CanonicalTask (for n-step reachability) directly. ExistsTask should only appear where the existential quantification over duration is genuinely needed. Audit all 63 files referencing CanonicalR: categorize each use as (1) naturally Succ, (2) naturally CanonicalTask, or (3) genuinely ExistsTask. Restate definitions, theorems, and proof obligations in the most natural abstraction. This subsumes task 29 Phases 5-6 (canonicalR_irreflexive removal) and task 18 (ExistsTask alias).
 
